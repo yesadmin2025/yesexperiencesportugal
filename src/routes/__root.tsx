@@ -6,6 +6,7 @@ import {
   createRootRoute,
   HeadContent,
   Scripts,
+  useRouterState,
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -19,6 +20,8 @@ import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
 import { installAnalyticsAttrs } from "@/lib/analytics";
+import { LocaleProvider } from "@/i18n/locale-context";
+import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
 
 /* ──────────────────────────────────────────────────────────────────
  * App readiness flag — sets `window.__APP_READY__ = true` and fires
