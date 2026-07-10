@@ -273,7 +273,8 @@ function PageLightbox({
           <ChevronRight size={18} aria-hidden="true" />
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
