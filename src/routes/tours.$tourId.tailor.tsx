@@ -392,6 +392,19 @@ function TailorPage() {
     });
     setDetailsOpen(false);
     setCheckoutOpen(true);
+    // GA4 add_to_cart + begin_checkout — Tailored reserve intent.
+    try {
+      gaAddToCartSignature({ tour, guests: details.guests, perPaxEur: estimatedPrice });
+      const item = buildTourItem(tour, {
+        quantity: details.guests,
+        tier: "tailored",
+        itemCategory: "Signature",
+      });
+      item.price = estimatedPrice;
+      gaBeginCheckout({ items: [item], valueEur: Math.round(estimatedPrice * details.guests) });
+    } catch {
+      /* silent */
+    }
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
       const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
@@ -431,6 +444,22 @@ function TailorPage() {
       }
       setClientSecret(resp.clientSecret);
       setPublishableKey(resp.publishableKey);
+      // GA4 add_payment_info — payment surface ready.
+      try {
+        const item = buildTourItem(tour, {
+          quantity: details.guests,
+          tier: "tailored",
+          itemCategory: "Signature",
+        });
+        item.price = estimatedPrice;
+        gaAddPaymentInfo({
+          paymentType: "stripe",
+          items: [item],
+          valueEur: Math.round(estimatedPrice * details.guests),
+        });
+      } catch {
+        /* silent */
+      }
     } catch (e) {
       console.error("Tailor checkout failed", e);
       toast.error("Checkout unavailable right now. Please try again in a moment.");
