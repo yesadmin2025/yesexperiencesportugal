@@ -315,6 +315,7 @@ export const INITIAL_STATE: StudioV3State = {
   destinationIntent: "no-preference",
   pathMode: "guided",
   rerollCount: 0,
+  guestDraft: null,
 };
 
 export interface ChoiceOption<T extends string> {
