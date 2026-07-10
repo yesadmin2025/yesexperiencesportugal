@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-10T15:24:44.424Z",
-  "filesScanned": 571,
+  "generatedAt": "2026-07-10T17:19:33.870Z",
+  "filesScanned": 588,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -683,7 +683,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 70,
+      "line": 71,
       "col": 364,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -692,7 +692,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 73,
+      "line": 74,
       "col": 321,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -701,7 +701,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 101,
+      "line": 102,
       "col": 250,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -710,7 +710,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 178,
+      "line": 179,
       "col": 351,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -719,7 +719,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 191,
+      "line": 192,
       "col": 351,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -728,7 +728,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 207,
+      "line": 208,
       "col": 353,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
