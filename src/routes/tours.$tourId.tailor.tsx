@@ -1230,10 +1230,10 @@ function TailorPage() {
 
                   <div>
                     <p className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-                      Itinerary ({keptStops.length} of {(tour.stops ?? []).length})
+                      Itinerary ({summaryStops.length} of {summaryTotal})
                     </p>
                     <ol className="mt-2 space-y-1.5 list-none p-0">
-                      {keptStops.map((s: TourStop, i: number) => (
+                      {summaryStops.map((s, i) => (
                         <li key={s.label + i} className="flex gap-2.5">
                           <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] w-5 shrink-0 mt-0.5">
                             {String(i + 1).padStart(2, "0")}
@@ -1241,13 +1241,14 @@ function TailorPage() {
                           <span className="text-[13px] leading-snug">{s.label}</span>
                         </li>
                       ))}
-                      {keptStops.length === 0 && (
+                      {summaryStops.length === 0 && (
                         <li className="text-[12px] italic text-[color:var(--charcoal-soft)]">
                           Add at least one stop back.
                         </li>
                       )}
                     </ol>
                   </div>
+
 
                   {(addons.size > 0 || lunch) && (
                     <div>
