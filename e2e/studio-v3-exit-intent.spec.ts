@@ -2,14 +2,16 @@ import { test, expect, type Page } from "@playwright/test";
 
 /**
  * Batch C — validates:
- *   1. The price anchor hint ("Drops to €X / pp with N guests") renders on
- *      the reveal with REAL data attributes pulled from `priceTiersEUR`.
- *   2. Clicking it opens the guest picker (selection state changes).
+ *   1. The full questionnaire (incl. language phase gate) is reachable end-to-end.
+ *   2. A real per-guest price renders on the reveal.
  *   3. The exit-intent rescue modal arms after ~8s, triggers on
  *      `visibilitychange:hidden`, exposes a `wa.me/` Save link, persists
  *      dismissal in `sessionStorage` under `sv3-exit-intent-dismissed=1`,
  *      and does not re-open after dismissal.
- *   4. The full questionnaire (incl. language) is reachable end-to-end.
+ *
+ * The price-anchor "Drops to €X / pp with N guests" hint was retired with
+ * the Refine screen simplification (single live price line only), so its
+ * assertions were removed. Filename kept short: `studio-v3-exit-intent`.
  *
  * Reuses the same generic walker convention (`data-phase-cta`) used by
  * `studio-v3-reveal-walkthrough.spec.ts` so the two tests stay in lockstep.
@@ -116,8 +118,8 @@ async function walkToReveal(page: Page): Promise<Set<string>> {
   return seen;
 }
 
-test.describe("studio-v3 — price anchor + exit-intent + full question coverage", () => {
-  test("anchor hint renders with real tier data, exit-intent modal persists dismissal, language phase reached", async ({
+test.describe("studio-v3 — exit-intent + full question coverage", () => {
+  test("full questionnaire reachable, real price renders, exit-intent modal persists dismissal", async ({
     page,
   }) => {
     test.setTimeout(150_000);
@@ -148,7 +150,7 @@ test.describe("studio-v3 — price anchor + exit-intent + full question coverage
     // belong to the human confirmation step after Reveal, not the cinematic
     // builder. The product decision is documented at curation.ts:1828-1834.
 
-    console.log("[anchor-spec] phases seen:", Array.from(seenPhases).join(" → "));
+    console.log("[exit-intent-spec] phases seen:", Array.from(seenPhases).join(" → "));
     const requiredPhases = [
       "feeling",
       "who",
@@ -180,32 +182,17 @@ test.describe("studio-v3 — price anchor + exit-intent + full question coverage
       "reveal must display a real per-guest price",
     ).toBeGreaterThan(0);
 
-    // ─── 1b. Price anchor — conditional: only renders when the cheapest
-    // real tier is strictly cheaper than the currently-displayed per-pax
-    // price. When it does render, its data attributes MUST carry real,
-    // numeric values pulled from `priceTiersEUR`, and clicking it MUST
-    // open the guest picker.
-    const anchor = page.locator('[data-testid="studio-v3-anchor-hint"]').first();
-    const anchorVisible = await anchor.isVisible({ timeout: 2_000 }).catch(() => false);
-    if (anchorVisible) {
-      const tierAttr = await anchor.getAttribute("data-anchor-tier");
-      const eurAttr = await anchor.getAttribute("data-anchor-eur");
-      expect(tierAttr, "anchor must carry resolved tier").toMatch(/^\d+$/);
-      expect(eurAttr, "anchor must carry resolved EUR price").toMatch(/^\d+$/);
-      expect(Number(eurAttr)).toBeGreaterThan(0);
-      await expect(anchor).toContainText(/Drops to\s+€\d+\s+\/\s+pp with/i);
+    // ─── 2. Anchor hint retired — assert it never renders ───────────────
+    expect(
+      await page.locator('[data-testid="studio-v3-anchor-hint"]').count(),
+      "anchor-hint element was retired with the Refine simplification and must not render",
+    ).toBe(0);
+    expect(
+      await page.locator("text=/Drops to\\s+€\\d+\\s+\\/\\s+pp with/i").count(),
+      "\"Drops to €X / pp with…\" copy was retired and must not render",
+    ).toBe(0);
 
-      await anchor.click();
-      await page.waitForTimeout(350);
-      const pickerOpen = await page
-        .locator('button:has-text("guests"), button:has-text("guest")')
-        .count();
-      expect(pickerOpen, "guest picker should open after anchor tap").toBeGreaterThan(0);
-    } else {
-      console.log(
-        "[anchor-spec] anchor hint hidden — current guests already at cheapest tier (legal product state)",
-      );
-    }
+
 
     // ─── 3. Exit-intent: arm wait then trigger via visibilitychange ──────
     // Modal arms after 8s on the reveal — wait, then flip visibility.
