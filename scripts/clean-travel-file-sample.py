@@ -90,13 +90,14 @@ def build_cover_page() -> PageObject:
     draw.rectangle([frame_pad, py(55), W - frame_pad, py(155)], fill=ivory)
 
     # ── Zone B: only the "14 nights · Designed for Jennifer Oliver" line
-    #    (dates line stays). Copy the clean sunset gradient band from
-    #    just above (between dates line and name line) over the name.
-    name_top, name_bot = py(566), py(605)
-    src_top = py(548)  # clean band 548–587 above the name text (text starts 578)
-    band_h = name_bot - name_top
+    #    (dates line stays). Source = clean sunset band between dates
+    #    (ends 544) and name (starts 578); must NOT include the name.
+    src_top, src_bot = py(548), py(575)          # 27pt clean gradient
+    dst_top          = py(573)                    # covers name 578–592
+    band_h           = src_bot - src_top
     src = img.crop((0, src_top, W, src_top + band_h))
-    img.paste(src, (0, name_top))
+    img.paste(src, (0, dst_top))
+
 
 
 
