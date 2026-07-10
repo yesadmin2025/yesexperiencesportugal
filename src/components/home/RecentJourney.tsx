@@ -1,66 +1,42 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Link } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight, ExternalLink, X, ZoomIn } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CtaPair } from "@/components/ui/CtaPair";
 
-// Pages from the same real, anonymised private travel file used on
-// the /multi-day Travel Designer page — kept in sync so the homepage
-// proof and the deep page show the exact same document.
-const samplePage01 = { url: "/travel-file-sample/page-01.jpg" };
-const samplePage02 = { url: "/travel-file-sample/page-02.jpg" };
-const samplePage03 = { url: "/travel-file-sample/page-03.jpg" };
-const samplePage04 = { url: "/travel-file-sample/page-04.jpg" };
-const samplePage05 = { url: "/travel-file-sample/page-05.jpg" };
-const samplePage06 = { url: "/travel-file-sample/page-06.jpg" };
-const samplePdfUrl = "/travel-file-sample/sample.pdf";
-
 /**
  * Bespoke Travel Designer — proof block.
  *
- * Typography v3: Montserrat headings + Georgia italic emphasis only on
- * the focal phrase. Proof = a real delivered travel file rendered as a
- * flip-through book. Mobile swipes; desktop turns pages from the spine
- * with 3D perspective; both modes share keyboard nav (← →, Home, End),
- * a clickable thumbnail rail, aria-live page announcements, and
- * eager preloading of adjacent pages so each flip is instant. All
- * motion collapses to a fade when prefers-reduced-motion is set.
+ * All 23 pages of a real, anonymised private travel file, flippable in
+ * place and tappable to open full-screen so guests on a phone can
+ * actually read the itinerary. No external PDF — the pages themselves
+ * are the proof.
  */
 
-const PAGES = [
-  {
-    src: samplePage01.url,
-    label: "Cover",
-    alt: "Travel Designer Portugal sample itinerary file — cover page",
-  },
-  {
-    src: samplePage02.url,
-    label: "Welcome",
-    alt: "Private multi-day Portugal itinerary — welcome page",
-  },
-  {
-    src: samplePage03.url,
-    label: "Reservations",
-    alt: "Private Portugal journey — confirmed reservations page",
-  },
-  {
-    src: samplePage04.url,
-    label: "Route",
-    alt: "Portugal Travel Designer journey across regions — route map",
-  },
-  {
-    src: samplePage05.url,
-    label: "Planning",
-    alt: "Private multi-day Portugal itinerary with local route planning",
-  },
-  {
-    src: samplePage06.url,
-    label: "A day",
-    alt: "Travel Designer Portugal — day-by-day itinerary card",
-  },
-] as const;
+const TOTAL_PAGES = 23;
+
+const PAGE_LABELS: Record<number, string> = {
+  1: "Cover",
+  2: "Welcome",
+  3: "Reservations",
+  4: "Route",
+  5: "Planning",
+};
+
+const PAGES = Array.from({ length: TOTAL_PAGES }, (_, i) => {
+  const n = i + 1;
+  const label = PAGE_LABELS[n] ?? `Page ${n}`;
+  return {
+    src: `/travel-file-sample/page-${String(n).padStart(2, "0")}.jpg`,
+    label,
+    alt:
+      n === 1
+        ? "Travel Designer Portugal — private travel file, cover page"
+        : `Private Portugal travel file — ${label.toLowerCase()}`,
+  };
+}) as ReadonlyArray<{ src: string; label: string; alt: string }>;
+
 
 const PILLARS = [
   {
