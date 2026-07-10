@@ -1313,7 +1313,7 @@ export function SignaturePriceCard({
                 color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
               }}
             >
-              No hidden fees — every detail of the day is included.
+              Optional additions are priced separately and shown before checkout.
             </p>
           </footer>
         ) : null}
