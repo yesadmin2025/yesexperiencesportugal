@@ -8,10 +8,12 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { findTour } from "@/data/signatureTours";
+import { gaPurchase, buildTourItem } from "@/lib/analytics-ga4";
 
 interface Search {
   session_id?: string;
