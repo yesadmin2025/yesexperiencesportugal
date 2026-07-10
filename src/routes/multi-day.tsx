@@ -343,16 +343,9 @@ function MultiDayPage() {
                   </div>
                 ))}
               </div>
-              <div className="mt-6">
-                <CtaButton
-                  href={samplePdf.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="primary"
-                >
-                  Open Sample Travel File
-                </CtaButton>
-              </div>
+              <p className="mt-6 font-serif italic text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
+                An example of a real file is shown below — every page, in full.
+              </p>
             </div>
           </div>
 
