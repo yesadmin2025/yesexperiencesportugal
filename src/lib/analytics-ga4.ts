@@ -208,9 +208,14 @@ export function gaPurchase(args: {
 }
 
 /** GA4: generate_lead — contact / WhatsApp / tailor "Talk to a local". */
-export function gaGenerateLead(args: { leadSource: string; method: string }): void {
+export function gaGenerateLead(args: {
+  leadSource: string;
+  method: string;
+  requestType?: string;
+}): void {
   pushEvent("generate_lead", {
     lead_source: args.leadSource,
     method: args.method,
+    ...(args.requestType ? { request_type: args.requestType } : {}),
   });
 }
