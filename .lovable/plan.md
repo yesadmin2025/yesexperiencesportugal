@@ -1,103 +1,53 @@
-# GA4 ecommerce dataLayer on GTM-M82SQS79
+# Standardize WhatsApp prefills → English, page-specific
 
-Data-layer / logic only. No styling, no palette, no button changes.
+## Goal
+Every `wa.me/351911889992` link opens with an English, page-aware prefill that identifies the source. Remove all Portuguese "Olá…" prefills. No visual/styling/palette changes — only the message text passed into `whatsappUrl()` / `whatsappHref()`.
 
-## Audit — what's already in place
+## Canonical message catalog (English)
+Central strings, one per surface:
 
-- GTM container `GTM-M82SQS79` is installed in `src/routes/__root.tsx:196` (script + `<noscript>` iframe). No changes needed.
-- `src/lib/analytics.ts` already owns a `track(event, params)` primitive that pushes to `window.dataLayer` and mirrors to `gtag`. It's SSR/test-safe.
-- `src/lib/studio-v3-funnel.ts` already tracks per-step funnel enters via `useStepTimer` and knows `stepNumber`/`stepKey`.
-- `computeQualityScore(state)` in `src/lib/studio-v3-quality.ts` returns the 0–100 quality read.
-- Booking-confirmed page (`src/routes/booking-confirmed.tsx`) polls session status and receives `amountTotal`, `currency`, `paymentStatus`, `environment` — the natural home for `purchase`.
-- Studio v3 fires an existing `tier_chosen` internal funnel event at `src/components/studio-v3/StudioV3.tsx:1355` — the perfect anchor for `add_to_cart` (tier).
+- Generic FAB / footer / nav / about: `Hi YES — I'd like a hand planning my Portugal experience.`
+- Support FAB (checkout-adjacent help): keep existing `Hi YES Experiences Portugal — I'd like a hand with my booking.` (already English).
+- Signature tour page (`/tours/:tourId`): `Hi YES — I'm interested in the {Tour Name} and have a question.`
+- Signature price card / tailor CTA: `Hi YES — I'm interested in the {Tour Name} and would like to tailor it.`
+- Talk-to-a-local on tailor page: `Hi YES — I'd like to talk to a local about the {Tour Name}.`
+- `/studio-v3` (all Studio v3 surfaces incl. LeadCaptureSheet, SignaturePriceCard fallback, StudioV3 host handoff): `Hi YES — I'm designing my day in the Studio and would like a suggestion.`
+- `/multi-day` + MultiDayConcierge: `Hi YES — I'd like to plan a multi-day Portugal journey.`
+- `/corporate` (if a WhatsApp link exists there; add one only if already present): `Hi YES — I'd like to plan a group/corporate day.`
+- Studio v2 surfaces (PersistentChatFab, StudioBuilderChrome host chip, StudioV2 handoffs, HostHandoffPanel, FinalBookingPanel): English equivalents preserving name/region interpolation, e.g. `Hi YES — I just designed a day in {region} in the Studio and would like to refine it with a local designer.` / with-name variant `Hi YES — I'm {name}. I just designed a day in {region} in the Studio and would like to refine it with a local designer.`
 
-## New module: `src/lib/analytics-ga4.ts`
+All strings live in a new tiny module `src/lib/whatsapp-messages.ts` exporting typed builders (`waGeneric()`, `waSignature(tourName)`, `waSignatureTailor(tourName)`, `waTalkToLocal(tourName)`, `waStudioV3()`, `waMultiDay()`, `waCorporate()`, `waStudioV2Refine({name?, region?})`, `waStudioV2Handoff({name?})`). Keeps copy in one place for future audits.
 
-A thin, typed layer on top of `track()`. Every call:
+## Files to edit (message text only)
+- `src/components/WhatsAppFab.tsx` — replace `DEFAULT_TEXT` with `waGeneric()`.
+- `src/components/studio-v2/PersistentChatFab.tsx` — English builder using `intent`/`total`.
+- `src/components/studio-v2/StudioBuilderChrome.tsx` — replace `HOST_WA_MSG`.
+- `src/components/studio-v2/StudioV2.tsx` — 4 PT strings → English equivalents (with/without name; region interpolation preserved).
+- `src/components/studio-v2/conversion/HostHandoffPanel.tsx` — `greeting` → English.
+- `src/components/studio-v2/conversion/FinalBookingPanel.tsx` — `Olá! Sou {who}` line → English.
+- `src/components/studio-v3/StudioV3.tsx` (line ~3896) — `waStudioV3()`.
+- `src/components/studio-v3/SignaturePriceCard.tsx` (lines ~1288, 1484) — `waSignatureTailor(tourName)` / `waSignature(tourName)`.
+- `src/components/studio-v3/LeadCaptureSheet.tsx` — audit and use `waStudioV3()`.
+- `src/routes/multi-day.tsx` — `waMultiDay()`.
+- `src/routes/tours.$tourId.tsx` — ensure any WhatsApp CTA uses `waSignature(tour.title)`.
+- `src/routes/tours.$tourId.tailor.tsx` — `waTalkToLocal(tour.title)`.
+- `src/components/SimpleTailorForm.tsx` — English message including tour name if available, otherwise `waGeneric()`.
+- `src/routes/index.tsx` (line 965) — already English; align wording to `waGeneric()` for consistency.
+- `src/routes/about.tsx`, `src/components/Footer.tsx`, `src/components/Navbar.tsx`, `src/components/MobileStickyCTA.tsx`, `src/components/FloatingActions.tsx`, `src/components/checkout/TrustStrip.tsx` — pass `waGeneric()` (or keep TrustStrip's existing English support copy).
+- `src/lib/drift/i18n.ts` — `wa.intro` value → English equivalent.
+- `src/components/builder/types.ts` and `src/components/builder/v3/MultiDayConcierge.tsx` / `StudioDrift.tsx` — route to `waMultiDay()` or `waStudioV3()` per surface.
+- `/corporate` route — grep for any existing WhatsApp link and swap to `waCorporate()`; do not add new CTAs if none exist.
 
-1. `window.dataLayer.push({ ecommerce: null })` — required GA4 reset.
-2. `window.dataLayer.push({ event, ecommerce: { … } })` — the real push, with the exact GA4 event name and standard `items[]` shape.
+Email template (`src/lib/email-templates/checkout-receipt.tsx`) and analytics files are left alone — no user-visible prefill there.
 
-No mirroring to `gtag` — GA4 in GTM consumes dataLayer directly; keeping the reset paired with the payload avoids double-fire.
-
-Exported helpers (all no-op during SSR/test):
-
-```ts
-gaViewItem({ tour })                       // GA4: view_item
-gaStudioStart()                            // custom: studio_start
-gaStudioStep({ stepNumber, stepKey, qualityScore })  // custom: studio_step
-gaAddToCartSignature({ tour, guests })     // GA4: add_to_cart  (tier: "signature")
-gaAddToCartStudioTier({ tier, priceEur, tourId?, tourTitle? })  // GA4: add_to_cart
-gaBeginCheckout({ items, valueEur })       // GA4: begin_checkout
-gaAddPaymentInfo({ paymentType, items, valueEur })  // GA4: add_payment_info
-gaPurchase({ transactionId, valueEur, items, currency? })  // GA4: purchase
-gaGenerateLead({ leadSource, method })     // GA4: generate_lead
-```
-
-`buildTourItem(tour, { quantity, tier })` centralizes the GA4 item shape:
-`{ item_id, item_name, item_category: "Signature" | "Studio", item_brand: "YES Experiences Portugal", price, quantity, currency: "EUR" }`.
-
-## Call sites
-
-### 1. `view_item` — `/tours/*`
-`src/routes/tours.$tourId.tsx` — `useEffect(() => gaViewItem({ tour }), [tour.id])` inside the page component. Fires once per tour load.
-
-### 2. `studio_start` — Begin click
-`src/components/studio-v3/StudioV3Intro.tsx:136` — add `onClick={() => { gaStudioStart(); setStep("name"); }}` (composes with the existing handler). No visual change.
-
-### 3. `studio_step` — every configurator step
-`src/lib/studio-v3-funnel.ts` — extend `useStepTimer` signature to accept an optional `qualityScoreProvider: () => number | null`, and call `gaStudioStep({ stepNumber, stepKey: input.stepKey, qualityScore: qualityScoreProvider?.() ?? null })` inside the same `enter` branch that already runs `trackStep`. In `StudioV3.tsx`, pass `() => computeQualityScore(state)?.total ?? null` to the hook. Existing Supabase funnel logging is untouched.
-
-### 4. `add_to_cart` — Signature Reserve
-`src/components/SimpleBookingForm.tsx` — inside the submit handler, immediately before the `supabase.functions.invoke("create-signature-checkout", …)` call, fire `gaAddToCartSignature({ tour, guests })`. Same call added in `src/routes/tours.$tourId.tailor.tsx:390` (tailor path shares the same edge function). Both are Reserve intents.
-
-### 5. `add_to_cart` — Studio tier selected
-`src/components/studio-v3/StudioV3.tsx` around line 1355 (inside the existing `onTierChosen` handler that already emits `tier_chosen`) — fire `gaAddToCartStudioTier({ tier: id, priceEur, tourId, tourTitle })`.
-
-### 6. `begin_checkout` — Stripe redirect
-Fired at three checkout entry points, right before the `create-signature-checkout` invoke:
-- `src/components/studio-v3/StudioV3.tsx:758`
-- `src/components/SimpleBookingForm.tsx:83`
-- `src/routes/tours.$tourId.tailor.tsx:390`
-
-Payload: `value: totalEur || (priceFrom * guests)`, `currency: "EUR"`, `items: [buildTourItem(tour, { quantity: guests, tier })]`.
-
-### 7. `add_payment_info`
-Best available signal in this codebase is "embedded Stripe UI mounted with a valid clientSecret" — the user has reached the payment surface. Fire once when `setClientSecret(resp.clientSecret)` succeeds in the three checkout callers above (guarded by a ref so re-mounts don't double-fire per session). `payment_type: "stripe"` (Stripe Embedded doesn't expose the chosen method until confirm; we use the wrapper as the payment type).
-
-### 8. `purchase` — confirmation
-`src/routes/booking-confirmed.tsx` — in the existing `useEffect` that resolves session status, when `data.paymentStatus === "paid"`, fire `gaPurchase({ transactionId: session_id, valueEur: data.amountTotal / 100, currency: data.currency ?? "EUR", items: [buildTourItem(tourById(tour), { quantity: 1, tier: "signature" })] })`. Guarded by a ref keyed on `session_id` so polling never double-fires.
-
-### 9. `generate_lead` — 3 sources
-- Contact submit: `src/routes/contact.tsx:160` — inside `setStatus("success")` branch, `gaGenerateLead({ leadSource: "contact_form", method: "email" })`.
-- WhatsApp click: `src/components/support/WhatsAppSupportButton.tsx` and the shared `data-analytics="whatsapp_click"` delegator — extend the click handler (or add a wrapper in `installAnalyticsAttrs`) so any element with `data-analytics="whatsapp_click"` also fires `gaGenerateLead({ leadSource: dataset.analyticsPlacement ?? "whatsapp", method: "whatsapp" })`. Covers TrustStrip, Footer, FAB.
-- Tailor "Talk to a local": `src/routes/tours.$tourId.tailor.tsx:1099` — add `onClick={() => gaGenerateLead({ leadSource: "tailor_talk_to_local", method: "whatsapp" })}` to the anchor.
-
-## Files touched
-
-New:
-- `src/lib/analytics-ga4.ts`
-- `src/lib/__tests__/analytics-ga4.test.ts` (verifies each helper pushes `{ecommerce: null}` first, then the correct GA4 payload; verifies items[] shape and `currency: "EUR"`)
-
-Edited:
-- `src/lib/analytics.ts` — extend delegator to also fire `generate_lead` when `data-analytics="whatsapp_click"` matches.
-- `src/lib/studio-v3-funnel.ts` — add optional `qualityScoreProvider` to `useStepTimer`, fire `gaStudioStep` on enter.
-- `src/routes/tours.$tourId.tsx` — `useEffect` view_item.
-- `src/components/studio-v3/StudioV3Intro.tsx` — onClick studio_start.
-- `src/components/studio-v3/StudioV3.tsx` — pass qualityScoreProvider to timer, fire add_to_cart on tier_chosen, fire begin_checkout + add_payment_info around Stripe invoke.
-- `src/components/SimpleBookingForm.tsx` — fire add_to_cart + begin_checkout + add_payment_info.
-- `src/routes/tours.$tourId.tailor.tsx` — fire add_to_cart + begin_checkout + add_payment_info + generate_lead on Talk to a local.
-- `src/routes/contact.tsx` — fire generate_lead on success.
-- `src/routes/booking-confirmed.tsx` — fire purchase when paid, dedupe by session_id ref.
-
-Zero visual, style, palette, or copy changes. No package installs.
+## Out of scope (unchanged)
+- Button styling, positioning, colors, iconography, palette tokens.
+- `whatsappUrl()` in `src/config/business-nap.ts` (helper stays as-is; number unchanged).
+- Analytics events (`whatsapp_click` tracking untouched).
+- Any non-WhatsApp copy.
 
 ## Verification
-
-1. `bun run test src/lib/__tests__/analytics-ga4.test.ts` — asserts reset-then-push contract and payload shape per event.
-2. Playwright script that navigates through `/tours/sintra-private-tour` → tailor → begin_checkout, and separately `/studio-v3` intro → step 1, capturing `window.dataLayer` after each interaction and asserting the exact GA4 event names and `items[]` structure appear in order, each preceded by `{ ecommerce: null }`.
-3. Manual: GTM Preview mode against the container to confirm each event surfaces with the expected params.
-
-## Risk
-
-Low. Additive analytics only — every call site is guarded by SSR/test checks and swallowed try/catch. No changes to Stripe payloads, checkout logic, routing, RLS, or components' visible output. The one shared change (studio-v3-funnel `useStepTimer` signature gaining an optional arg) is backward-compatible.
+1. `rg -n "Olá|Ola!" src/` returns zero WhatsApp-related hits (only unrelated content, if any).
+2. `rg -n "whatsappUrl\(|whatsappHref\(" src/` — every call site now passes a builder from `whatsapp-messages.ts` (or an inline English string on the two generic sites).
+3. Manual spot-check via preview on `/`, `/tours/<one>`, `/tours/<one>/tailor`, `/studio-v3`, `/multi-day`, `/corporate`: click each WhatsApp affordance and confirm `wa.me/351911889992?text=…` decodes to the expected English string.
+4. `nap-consistency` test still passes (only message argument changes).
