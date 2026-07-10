@@ -7,6 +7,7 @@ import { VIATOR_META } from "@/data/signatureToursViator";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
 import { ImageQualityToggle } from "@/components/ImageQualityToggle";
+import ogImg from "@/assets/hero-coast.jpg";
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -28,6 +29,12 @@ export const Route = createFileRoute("/experiences")({
           "A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond. Book as designed, or quietly tailor a few details.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/experiences" },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "YES Signature Experiences — private Portugal days" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/experiences" }],
     scripts: [

@@ -7,6 +7,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
+import ogImg from "@/assets/edit-viewpoint.jpg";
 
 type JournalPost = {
   slug: string;
@@ -34,6 +35,12 @@ export const Route = createFileRoute("/local-stories/")({
         content: "Notes from the road, written by the locals who design our experiences.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/local-stories" },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "Local Stories — notes from the road by YES designers" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],
     // NOTE: canonical intentionally omitted here. This route is a parent of
     // `/local-stories/$slug` in TanStack's flat routing, and `links` from
