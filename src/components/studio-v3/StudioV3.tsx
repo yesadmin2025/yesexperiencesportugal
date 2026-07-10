@@ -745,6 +745,35 @@ export function StudioV3() {
     setSelectedAddOnsTotalEur(0);
   }, [state.tourId]);
 
+  // Guest Details snapshot — captured on Guest Details submit, then rendered
+  // in CheckoutSummary before we open Stripe. Kept in local state (not the
+  // persisted signature) since it holds personal info.
+  const [pendingGuestDetails, setPendingGuestDetails] = useState<GuestDetails | null>(null);
+
+  // Save-my-signature handler for the Final Reveal secondary CTA.
+  const [savingSignature, setSavingSignature] = useState(false);
+  const saveSig = useServerFn(saveStudioV3Signature);
+  const handleSaveSignature = useCallback(async () => {
+    if (savingSignature) return;
+    setSavingSignature(true);
+    try {
+      await saveSig({
+        data: {
+          journeyTitle: state.journeyTitle ?? "Your Signature",
+          skeletonTourKey: state.tourId ?? null,
+          state: state as unknown as Record<string, unknown>,
+        },
+      });
+      toast.success("Signature saved to your journey.");
+    } catch (e) {
+      console.error("[studio-v3 save-signature]", e);
+      toast.error("Could not save right now — please try again.");
+    } finally {
+      setSavingSignature(false);
+    }
+  }, [savingSignature, saveSig, state]);
+
+
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsState, setDetailsState] = useState<StudioV3State | null>(null);
