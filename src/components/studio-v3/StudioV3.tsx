@@ -3272,38 +3272,10 @@ export function StoryboardHandoff({
           className="mt-6 inline-block h-px w-10"
           style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
         />
-        {/* YES Approved trust mark */}
-        <div
-          className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
-          style={{
-            border: "1px solid color-mix(in oklab, var(--teal) 35%, transparent)",
-            background: "color-mix(in oklab, var(--ivory) 80%, transparent)",
-          }}
-          aria-label="YES Approved Signature"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 16 16"
-            aria-hidden
-            style={{ color: "var(--gold)" }}
-          >
-            <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" strokeWidth="1.25" />
-            <path
-              d="M4.5 8.4 7 10.8l4.5-5.2"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span
-            className="text-[10px] uppercase tracking-[0.26em] font-semibold"
-            style={{ color: "var(--teal)" }}
-          >
-            YES Approved
-          </span>
+        {/* Plan §H approval state machine — never renders "YES Approved"
+            unless validateItinerary() returns "approved". */}
+        <div className="mt-5">
+          <ApprovalBadge state={approvalStatus} />
         </div>
       </header>
 
