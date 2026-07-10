@@ -155,14 +155,13 @@ const FILE_GROUPS: Card[] = [
   },
 ];
 
-const SAMPLE_PAGES = [
-  { src: samplePage01.url, alt: "Travel Designer Portugal sample itinerary file — cover page" },
-  { src: samplePage02.url, alt: "Private multi-day Portugal itinerary — welcome page" },
-  { src: samplePage03.url, alt: "Private Portugal journey — confirmed reservations page" },
-  { src: samplePage04.url, alt: "Portugal Travel Designer journey across regions — route map" },
-  { src: samplePage05.url, alt: "Private multi-day Portugal itinerary with local route planning" },
-  { src: samplePage06.url, alt: "Travel Designer Portugal — day-by-day itinerary card" },
-];
+const SAMPLE_PAGES = Array.from({ length: TOTAL_SAMPLE_PAGES }, (_, i) => {
+  const n = i + 1;
+  return {
+    src: `/travel-file-sample/page-${String(n).padStart(2, "0")}.jpg`,
+    alt: `Private Portugal travel file — page ${n}`,
+  };
+});
 
 function GroupCard({ title, body }: Card) {
   return (
