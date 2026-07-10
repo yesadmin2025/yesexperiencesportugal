@@ -59,8 +59,8 @@ const ContactReceived: React.FC<ContactReceivedProps> = ({ firstName, message })
         <Text style={eyebrow}>YES Experiences · Portugal</Text>
         <Heading style={h1}>{firstName ? `Thank you, ${firstName}.` : "Thank you."}</Heading>
         <Text style={body}>
-          Your message has reached our Travel Designers in Portugal. We read every note personally
-          and will reply within one business day — often much sooner.
+          Your message has reached our Travel Designers in Portugal. We read every note personally —
+          a local usually replies within a few hours.
         </Text>
         {message ? (
           <>

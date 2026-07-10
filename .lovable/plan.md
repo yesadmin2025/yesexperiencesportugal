@@ -1,57 +1,59 @@
-# Add on-brand og:image + twitter:image to priority routes
+# Contact form upgrade + response-time standardization
 
-## Context
-Codebase scan found zero `storage.googleapis.com/gpt-engineer-file-uploads` URLs anywhere in `src/`, `public/`, or `index.html`. What the SEO scanner is likely flagging is that the priority routes ship no `og:image` / `twitter:image` at all, so social crawlers fall back to a hosted default (which on Lovable can be a `storage.googleapis.com` screenshot). Fix = give each route its own branded share image on the same origin.
+## 1. `/contact` form (src/routes/contact.tsx) — max 5 fields
+Replace the current 4-field layout with a 5-field form, keeping the current minimalist `Field` styling (underline inputs, uppercase eyebrow labels, teal focus):
 
-Existing routes `/` (heroImg), `/multi-day`, `/proposal-in-portugal`, `/corporate`, `/tours/*`, `/tours/*/tailor`, `/press`, `/local-stories/$slug` already have branded og/twitter images — leave them alone.
+1. First name + Last name (existing, grouped on one row — counts as one visual row but two schema fields; keep as-is)
+2. Email (existing)
+3. **New:** "What can we help you plan?" — required `<select>` styled like `Field` (border-bottom, transparent bg). Options:
+   - A private day
+   - The Studio
+   - A multi-day journey
+   - A proposal or celebration
+   - A corporate/group day
+   - Something else
+4. **New:** "When are you travelling?" — optional native `<input type="date">` (min = today), styled to match.
+5. "What are you dreaming of?" (existing textarea)
 
-## Route → image mapping (all Vite-imported, served from `/assets/…` on our domain)
-- `/studio-v3` → `src/assets/decision-studio.jpg` (Studio composition — matches the composer promise)
-- `/about` → existing `src/assets/about-founder-wine-experience.jpg.asset.json` (CDN pointer, already on our infra)
-- `/experiences` → `src/assets/hero-coast.jpg` (Signature collection editorial hero)
-- `/contact` → `src/assets/why-image.jpg` (warm, human, on-brand)
-- `/terms` → `src/assets/hero-coast.jpg` (brand-neutral coastal hero; legal page, no bespoke image needed)
-- `/local-stories` (index route `local-stories.index.tsx`) → `src/assets/edit-viewpoint.jpg` (editorial mood matching Local Stories)
-- `/proposal-in-portugal` → already uses `imgRomantic`; verify it's absolute-URL wrapped and add matching `twitter:image` if missing.
+Total = 5 fields max as counted by the user (name pair, email, request type, date, message). Add a new `SelectField` and `DateField` (or extend `Field`) inside the file — no new components elsewhere.
 
-All images are already premium landscape brand photography ≥1200px wide, so they satisfy the ~1200×630 social-preview requirement (crawlers accept larger; center-crop). No new imagery generated (user picked "Add on-brand og:image + twitter:image" over regeneration).
+Extend `contactSchema` with `requestType` (enum, required) and `travelDate` (optional ISO date string, `.optional()`), and include both in the POST body to `/api/public/contact` (fields are additive; backend ignores unknown keys safely — no server edits in this plan).
 
-## Implementation (meta only, no visual changes)
-For each route above, inside the existing `head()` `meta` array add:
+## 2. Response-time copy — single site-wide message
+Standardize to: **"A local usually replies within a few hours."**
+
+- `src/routes/contact.tsx` line 115–116: replace "We'll respond within one business day." → new copy.
+- `src/routes/index.tsx` line 975: replace "A local usually replies within the hour." → new copy (aligns homepage + contact per user request).
+
+Leave unchanged (different context, not the promise the user flagged):
+- `checkout.$token.tsx`, `booking-confirmation.tsx`, `EmbeddedConfirmationSheet.tsx` — post-booking confirmation timing, already say "within a few hours".
+- `contact-received.tsx` email template still says "within one business day" — update to "within a few hours" for consistency with the site promise.
+- `privacy.tsx` "30 days" is a legal GDPR clause, untouched.
+
+## 3. Analytics
+On successful submit, replace the current `gaGenerateLead({ leadSource: "contact_form", method: "email" })` call with a direct dataLayer push carrying the selected request type:
+
 ```ts
-{ property: "og:image", content: `https://yesexperiencesportugal.com${routeImg}` },
-{ property: "og:image:width", content: "1200" },
-{ property: "og:image:height", content: "630" },
-{ property: "og:image:alt", content: "<route-appropriate alt>" },
-{ name: "twitter:card", content: "summary_large_image" },
-{ name: "twitter:image", content: `https://yesexperiencesportugal.com${routeImg}` },
+window.dataLayer?.push({
+  event: "generate_lead",
+  lead_source: "contact_form",
+  request_type: parsed.data.requestType, // e.g. "private_day"
+  method: "email",
+});
 ```
-Import the image at the top of each route file:
-```ts
-import ogImg from "@/assets/<file>.jpg";
-```
-For `/about`, use the existing `.asset.json` pattern already in the file (`founderAsset.url`) — prefix with `BASE_URL` if it starts with `/`, or use as-is if already absolute (CDN pointer URLs are `/__l5e/…`, so they need the domain prefix).
 
-For `/proposal-in-portugal`, add the `twitter:card` + `twitter:image` pair alongside the existing `og:image` (currently only OG is set).
+Implement by extending `gaGenerateLead` in `src/lib/analytics-ga4.ts` to accept an optional `requestType` and forward it as `request_type` — keeps one code path, non-breaking for existing callers (WhatsApp / tailor).
 
-No canonical or URL changes. No JSON-LD changes. No component/JSX changes. Palette untouched.
+Request-type values sent to GA use snake_case slugs (`private_day`, `studio`, `multi_day`, `proposal`, `corporate`, `other`) with the human labels shown in the UI.
 
-## Files edited
-- `src/routes/studio-v3.tsx`
-- `src/routes/about.tsx`
-- `src/routes/experiences.tsx`
-- `src/routes/contact.tsx`
-- `src/routes/terms.tsx`
-- `src/routes/local-stories.index.tsx`
-- `src/routes/proposal-in-portugal.tsx` (add missing `twitter:image` only)
+## 4. Guardrails
+- No palette changes: reuse `--teal`, `--charcoal`, `--sand`, `--gold` tokens already on the page.
+- No new components, no layout shift beyond the two added fields inserted between Email and Message.
+- Native `<select>` and `<input type="date">` styled with the existing `Field` border-bottom pattern for consistency with the minimalist form.
+- Mobile-first: inputs stay full-width, 16px base to avoid iOS zoom.
 
-## Verification
-1. `rg -n "storage\.googleapis\.com/gpt-engineer" .` → still zero (was zero before too).
-2. `rg -n "og:image" src/routes/{studio-v3,about,experiences,contact,terms,local-stories.index,proposal-in-portugal}.tsx` → each returns a hit pointing at `https://yesexperiencesportugal.com/assets/…`.
-3. Build succeeds (`bun run build`).
-4. Tell the user: previously scraped previews stay cached until each platform re-fetches; use the Facebook/LinkedIn/Twitter debug tools to force a refresh.
-
-## Out of scope
-- Regenerating bespoke 1200×630 stills per route (offered, user declined).
-- Any visual/layout/palette changes.
-- Routes already carrying og:image (home, multi-day, corporate, tours, press, local-stories/$slug).
+## Files touched
+- `src/routes/contact.tsx` — schema + 2 new fields + copy + analytics payload
+- `src/routes/index.tsx` — one line copy change
+- `src/lib/analytics-ga4.ts` — add optional `requestType` param
+- `src/lib/email-templates/contact-received.tsx` — align email to "within a few hours"

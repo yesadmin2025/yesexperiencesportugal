@@ -16,10 +16,30 @@ import {
   PHONE_DISPLAY,
 } from "@/config/business-nap";
 
+const REQUEST_TYPES = [
+  { value: "private_day", label: "A private day" },
+  { value: "studio", label: "The Studio" },
+  { value: "multi_day", label: "A multi-day journey" },
+  { value: "proposal", label: "A proposal or celebration" },
+  { value: "corporate", label: "A corporate/group day" },
+  { value: "other", label: "Something else" },
+] as const;
+
+const requestTypeValues = REQUEST_TYPES.map((r) => r.value) as [string, ...string[]];
+
 const contactSchema = z.object({
   first: z.string().trim().min(1, "Please enter your first name").max(80),
   last: z.string().trim().min(1, "Please enter your last name").max(80),
   email: z.string().trim().toLowerCase().email("Enter a valid email").max(254),
+  requestType: z.enum(requestTypeValues as [string, ...string[]], {
+    errorMap: () => ({ message: "Please choose what we can help you plan" }),
+  }),
+  travelDate: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Enter a valid date")
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
   message: z
     .string()
     .trim()
@@ -112,8 +132,8 @@ function Page() {
             Begin Your <SectionTitle.Em>Portugal Story</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Tell us a little about who you are and what you'd love to experience. We'll respond
-            within one business day.
+            Tell us a little about who you are and what you'd love to experience. A local usually
+            replies within a few hours.
           </p>
         </div>
       </section>
@@ -139,6 +159,8 @@ function Page() {
                     first: String(data.get("first") ?? ""),
                     last: String(data.get("last") ?? ""),
                     email: String(data.get("email") ?? ""),
+                    requestType: String(data.get("requestType") ?? ""),
+                    travelDate: String(data.get("travelDate") ?? ""),
                     message: String(data.get("message") ?? ""),
                   });
                   if (!parsed.success) {
@@ -154,6 +176,8 @@ function Page() {
                         first: parsed.data.first,
                         last: parsed.data.last,
                         email: parsed.data.email,
+                        requestType: parsed.data.requestType,
+                        travelDate: parsed.data.travelDate ?? null,
                         message: parsed.data.message,
                         source: "contact-page",
                         locale: typeof navigator !== "undefined" ? navigator.language : null,
@@ -167,7 +191,11 @@ function Page() {
                     setStatus("success");
                     setSent(true);
                     void import("@/lib/analytics-ga4").then((m) =>
-                      m.gaGenerateLead({ leadSource: "contact_form", method: "email" }),
+                      m.gaGenerateLead({
+                        leadSource: "contact_form",
+                        method: "email",
+                        requestType: parsed.data.requestType,
+                      }),
                     );
                   } catch (err) {
                     console.error("[contact] submit failed", err);
@@ -185,6 +213,18 @@ function Page() {
                   <Field label="Last Name" name="last" />
                 </div>
                 <Field label="Email" name="email" type="email" />
+                <SelectField
+                  label="What can we help you plan?"
+                  name="requestType"
+                  options={REQUEST_TYPES}
+                />
+                <Field
+                  label="When are you travelling? (optional)"
+                  name="travelDate"
+                  type="date"
+                  required={false}
+                  min={new Date().toISOString().slice(0, 10)}
+                />
                 <Field label="What are you dreaming of?" name="message" textarea />
                 {errorMsg ? (
                   <p className="text-[13px] text-red-700" role="alert">
@@ -226,11 +266,15 @@ function Field({
   name,
   type = "text",
   textarea = false,
+  required = true,
+  min,
 }: {
   label: string;
   name: string;
   type?: string;
   textarea?: boolean;
+  required?: boolean;
+  min?: string;
 }) {
   return (
     <label className="block">
@@ -241,7 +285,7 @@ function Field({
         <textarea
           name={name}
           rows={5}
-          required
+          required={required}
           maxLength={4000}
           className="mt-2 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base resize-none transition-colors"
         />
@@ -249,11 +293,45 @@ function Field({
         <input
           type={type}
           name={name}
-          required
+          required={required}
+          min={min}
           maxLength={type === "email" ? 254 : 80}
           className="mt-2 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base transition-colors"
         />
       )}
+    </label>
+  );
+}
+
+function SelectField({
+  label,
+  name,
+  options,
+}: {
+  label: string;
+  name: string;
+  options: ReadonlyArray<{ value: string; label: string }>;
+}) {
+  return (
+    <label className="block">
+      <span className="text-xs uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)]">
+        {label}
+      </span>
+      <select
+        name={name}
+        required
+        defaultValue=""
+        className="mt-2 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base transition-colors appearance-none"
+      >
+        <option value="" disabled>
+          Choose one…
+        </option>
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
     </label>
   );
 }
