@@ -1,8 +1,11 @@
 // The inline CTA (`studio-v3-cta-primary`) and the mobile sticky CTA
-// (`studio-v3-cta-sticky`) both render the current investment inline in
-// their label — e.g. "Yes — reserve · €1240". When any add-on toggles,
-// both labels must update immediately to reflect the recalculated
-// `party-total` (or per-person price when party-total is not exposed).
+// (`studio-v3-cta-sticky`) expose the current investment via a
+// `data-total-eur` attribute — the visible label no longer prints the
+// euro amount (the amount lives on the price card; the button advances
+// to the storytelling letter). When any add-on toggles, both attrs must
+// update immediately to reflect the recalculated party-total (or
+// per-person price when party-total is not exposed).
+
 
 import { expect, test } from "@playwright/test";
 import {
@@ -12,11 +15,12 @@ import {
   walkToReveal,
 } from "./studio-v3-walk-to-reveal";
 
-function parseEur(text: string | null | undefined): number | null {
-  if (!text) return null;
-  const m = text.match(/€\s?(\d+)/);
-  return m ? Number(m[1]) : null;
+function parseEurAttr(attr: string | null | undefined): number | null {
+  if (attr == null || attr === "") return null;
+  const n = Number(attr);
+  return Number.isFinite(n) ? n : null;
 }
+
 
 test.describe("Studio V3 — CTA labels update live with totals", () => {
   test.beforeEach(async ({ page }) => {
@@ -43,7 +47,7 @@ test.describe("Studio V3 — CTA labels update live with totals", () => {
 
     // Baseline: primary CTA must contain the current €-total.
     const baseExpected = await readExpected();
-    expect(parseEur(await primary.textContent())).toBe(baseExpected);
+    expect(parseEurAttr(await primary.getAttribute("data-total-eur"))).toBe(baseExpected);
 
     const addons = (await readInteractableAddons(page)).slice(0, 2);
     test.skip(addons.length === 0, "no interactable add-ons available");
@@ -58,7 +62,7 @@ test.describe("Studio V3 — CTA labels update live with totals", () => {
       const expected = await readExpected();
       // Same-frame read — CTA must reflect the new total on the next paint.
       await expect
-        .poll(async () => parseEur(await primary.textContent()), { timeout: 3_000 })
+        .poll(async () => parseEurAttr(await primary.getAttribute("data-total-eur")), { timeout: 3_000 })
         .toBe(expected);
     }
 
@@ -78,10 +82,10 @@ test.describe("Studio V3 — CTA labels update live with totals", () => {
       await btn.click();
       const expected = await readExpected();
       await expect
-        .poll(async () => parseEur(await sticky.textContent()), { timeout: 3_000 })
+        .poll(async () => parseEurAttr(await sticky.getAttribute("data-total-eur")), { timeout: 3_000 })
         .toBe(expected);
       // Inline CTA must agree too (labels stay in lock-step).
-      expect(parseEur(await primary.textContent())).toBe(expected);
+      expect(parseEurAttr(await primary.getAttribute("data-total-eur"))).toBe(expected);
     }
 
     // Restore everything and assert the CTA snapped back to the baseline label.
@@ -96,7 +100,7 @@ test.describe("Studio V3 — CTA labels update live with totals", () => {
       }
     }
     await expect
-      .poll(async () => parseEur(await primary.textContent()), { timeout: 3_000 })
+      .poll(async () => parseEurAttr(await primary.getAttribute("data-total-eur")), { timeout: 3_000 })
       .toBe(baseExpected);
   });
 });

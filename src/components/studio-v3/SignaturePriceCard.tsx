@@ -769,99 +769,16 @@ export function SignaturePriceCard({
           ) : null}
         </ul>
 
-        {/* S3 — Why this works: 3 bullets from the resolved Signature's real
-            `included[]`. No invented copy, no quality score gimmick. */}
-        {hasPrice && whyThisWorks.length > 0 ? (
-          <div
-            data-testid="studio-v3-why-this-works"
-            className="mt-5 mx-auto max-w-[380px] text-left"
-          >
-            <p
-              className="text-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-            >
-              <span style={{ color: "var(--gold)" }}>—</span> Why this works
-            </p>
-            <ul className="mt-2 space-y-1.5">
-              {whyThisWorks.map((line, i) => (
-                <li
-                  key={`${i}-${line.slice(0, 16)}`}
-                  className="flex items-start gap-2 text-[12px] leading-snug"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
-                >
-                  <span
-                    aria-hidden
-                    className="mt-[7px] inline-block h-1 w-1 shrink-0 rounded-full"
-                    style={{ background: "var(--gold)" }}
-                  />
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
+        {/* "Why this works" bullets removed — the itinerary spine below
+            ("Your day includes") already surfaces the real inclusions, so
+            repeating them here added clutter and duplicated the same facts
+            in two adjacent blocks. */}
 
-        {/* S2 — Smart suggestion: promote the most-relevant eligible add-on
-            as an "Often added" upsell card above the chip list. Dismissible.
-            Sourced from a real sibling Signature; never invented. */}
-        {showAddOns && suggestion ? (
-          <div
-            data-testid="studio-v3-suggested-addon"
-            data-addon-id={suggestion.id}
-            className="mt-5 mx-auto max-w-[380px] flex items-start gap-3 rounded-[4px] px-3 py-2.5 text-left"
-            style={{
-              background: "color-mix(in oklab, var(--gold) 8%, var(--ivory))",
-              border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
-            }}
-          >
-            <span className="flex-1 min-w-0">
-              <span
-                className="block text-[9.5px] uppercase tracking-[0.24em] font-bold"
-                style={{ color: "var(--gold)" }}
-              >
-                Often added
-              </span>
-              <span
-                className="mt-0.5 block text-[12.5px] font-semibold"
-                style={{ color: "var(--charcoal)" }}
-              >
-                {suggestion.label}
-              </span>
-              <span
-                className="mt-0.5 block text-[11.5px] leading-snug"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
-              >
-                {suggestion.blurb}
-              </span>
-            </span>
-            <span className="flex shrink-0 flex-col items-end gap-1.5">
-              <button
-                type="button"
-                onClick={() => toggleAddOn(suggestion.id)}
-                className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] font-semibold transition-transform duration-200 hover:-translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
-              >
-                {(() => {
-                  const line = addOnEurFor({
-                    addOn: suggestion,
-                    baseEur: priceEur ?? 0,
-                    guests: summaryGuests,
-                  });
-                  return `Add +€${line.perUnit} ${line.unitLabel}`;
-                })()}
-              </button>
-              <button
-                type="button"
-                onClick={() => setSuggestionDismissed(true)}
-                aria-label="Dismiss suggestion"
-                className="text-[10px] uppercase tracking-[0.18em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-              >
-                Not now
-              </button>
-            </span>
-          </div>
-        ) : null}
+        {/* "Often added" suggestion card removed — at 393px the pill button
+            + dismiss link squeezed the label column so hard that titles
+            wrapped one word per line, overlapping the add-on chip below.
+            The same item is already in the chip list, so the suggestion
+            was pure duplication. Selection state on the chip is enough. */}
 
         {showAddOns && hasPrice && availableAddOns.length > 0 ? (
           <fieldset
@@ -1023,18 +940,18 @@ export function SignaturePriceCard({
                         ) : null}
                       </span>
                       <span
-                        className="shrink-0 flex flex-col items-end text-[12px] font-semibold tabular-nums"
-                        style={{ color: "var(--charcoal)" }}
+                        className="shrink-0 flex flex-col items-end text-[12px] font-semibold tabular-nums whitespace-nowrap"
+                        style={{ color: "var(--charcoal)", maxWidth: 92 }}
                       >
-                        <span>
+                        <span className="whitespace-nowrap">
                           +€{line.perUnit}
-                          <span className="ml-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold opacity-60">
-                            {line.unitLabel}
+                          <span className="ml-1 text-[9.5px] font-semibold opacity-60 lowercase tracking-normal">
+                            {line.unitLabel.replace(/^per\s+/i, "/ ")}
                           </span>
                         </span>
                         {a.durationMinutes > 0 ? (
                           <span
-                            className="mt-0.5 text-[9.5px] uppercase tracking-[0.18em] font-semibold"
+                            className="mt-0.5 text-[9.5px] uppercase tracking-[0.14em] font-semibold whitespace-nowrap"
                             style={{
                               color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                             }}
@@ -1361,6 +1278,8 @@ export function SignaturePriceCard({
               type="button"
               onClick={onSecure}
               data-testid="studio-v3-cta-primary"
+              data-total-eur={partyTotalEur ?? totalEur ?? ""}
+              data-party-total-eur={partyTotalEur ?? ""}
               className="group inline-flex items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{
                 background: "var(--charcoal)",
@@ -1369,12 +1288,7 @@ export function SignaturePriceCard({
                   "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
               }}
             >
-              Yes — reserve
-              {partyTotalEur != null
-                ? ` · €${partyTotalEur}`
-                : totalEur != null
-                  ? ` · €${totalEur} /pp`
-                  : ""}
+              See my signature story
               <ArrowRight
                 size={14}
                 aria-hidden
@@ -1399,11 +1313,11 @@ export function SignaturePriceCard({
 
           {hasPrice ? (
             <p
-              className="mt-0.5 inline-flex items-center gap-1.5 text-[10.5px]"
+              className="mt-0.5 inline-flex items-center gap-1.5 text-[10.5px] text-center"
               style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
             >
               <ShieldCheck size={12} aria-hidden style={{ color: "var(--gold)" }} />
-              Secure checkout · Cancellation terms shown before you pay
+              Nothing is booked yet — you'll confirm the full price on the next step.
             </p>
           ) : null}
 
@@ -1418,17 +1332,9 @@ export function SignaturePriceCard({
               You'll pick your date in the next step.
             </p>
           ) : null}
-
-          <button
-            type="button"
-            onClick={onRefine}
-            className="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[36px] text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 68%, transparent)" }}
-          >
-            Adjust a few things first
-          </button>
         </div>
       </div>
+
 
       {/* Mobile sticky CTA — appears only after the inline CTA scrolls out of view. */}
       {hasPrice && stickyVisible ? (
@@ -1444,22 +1350,18 @@ export function SignaturePriceCard({
           <button
             type="button"
             onClick={onSecure}
+            data-total-eur={partyTotalEur ?? totalEur ?? ""}
+            data-party-total-eur={partyTotalEur ?? ""}
             className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
           >
-            Yes — reserve
-            {partyTotalEur != null
-              ? ` · €${partyTotalEur}`
-              : totalEur != null
-                ? ` · €${totalEur} /pp`
-                : ""}{" "}
-            <ArrowRight size={14} aria-hidden />
+            See my signature story <ArrowRight size={14} aria-hidden />
           </button>
           <p
             className="mt-1.5 text-center text-[9.5px] uppercase tracking-[0.22em]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
-            Secure checkout · Cancellation terms shown before you pay
+            Nothing is booked yet · Confirm on the next step
           </p>
         </div>
       ) : null}

@@ -1,102 +1,62 @@
-## Goal
+# Refine / Preview Signature — simplify & fix overlaps (mobile 393px)
 
-Three tightly-scoped changes at the 393px mobile viewport:
+Understood: the screen in the screenshots is the **Preview / Refine Signature** step. It is NOT the reserve step. Flow is:
 
-1. **Final Reveal → editorial "letter from a book"** with a shared parchment illustration at the top.
-2. **Adjustments (Refine) page → decluttered** — collapse per-stop button rows, merge duplicated add-on chips, single primary CTA.
-3. **Playwright spec** at 393×588: smoke + copy lock + visual baselines for Final Reveal and Guest Details.
+```
+Preview & Refine signature (this screen)
+   → Final storytelling letter (FinalRevealStory)
+      → Guest details + Stripe summary (reserve)
+```
 
-No changes to routing, pricing, curation logic, email/PDF flows, or Studio state machine.
+So the primary CTA here must advance to the storytelling letter — never say "Reserve" or show a total-with-euros. The amount you should be updating somewhere in the page so it's clear before moving to the storytelling letter. But not on the button.
 
----
+Scope: `src/components/studio-v3/CheckoutSummary.tsx` and `SignaturePriceCard.tsx` only. No pricing/logic/state/routing changes.
 
-## 1. Final Reveal — editorial letter treatment
+## Problems visible in screenshots
 
-File: `src/components/studio-v3/FinalRevealStory.tsx`
+1. **Add-on cards break one word per line** (`Coastal / boat / ride / from / Sesimbra`) — text column starved of width.
+2. **"ADD +€40 PER GUEST" pill floats over the add-on body** — sticky/absolute overlay covering copy.
+3. **Add-ons rendered twice** — sticky offer strip + a second "MAKE THE DAY YOURS" list below.
+4. **6 CTAs stacked**: `YES — RESERVE · €636`, `ADJUST A FEW THINGS FIRST`, `SAY YES TO THIS SIGNATURE`, `SAVE THIS SIGNATURE`, `REFINE WITH YES FIRST`, `NEED HELP? ASK YES`. This screen shouldn't have a reserve button at all.
+5. **Price card is dense** — pp, ×guests investment, "drops to €139 with 7 guests", group-size selector, meta chips, "why this works" list all stacked.
 
-- Generate one shared parchment/letter illustration (warm ivory paper grain, faint gold rule, subtle wax-seal accent, no text baked in) via `imagegen--generate_image` at `src/assets/studio-v3/reveal-letter-parchment.jpg` (premium tier, 1200×800).
-- New wrapper `<article class="reveal-letter">` around the existing hero + timeline:
-  - Full-bleed parchment image top (aspect 5:3), 24px negative margin under the app top gutter.
-  - Content below sits on a layered ivory card with a hairline gold border, generous 32px inner padding, one gold rule (`<span class="h-px w-16 bg-gold/70">`) separating hero from chapters.
-  - Chapters (`<ol>`) restyled as book paragraphs: drop-cap on first chapter (Fraunces, 40px), no bullet dots, chapter numeral as small-caps roman-ish gold marker (`I.`, `II.`) instead of `01`.
-  - Body copy tightened to `max-w-[52ch]`, `[text-wrap:pretty]`, `leading-[1.7]`.
-- Keep existing eyebrow, title, meta strip, inclusions `<details>`, and the three CTAs — no logic changes.
-- Reduced-motion safe: fade only, no transforms.
+## Fixes
 
-Result: the reveal reads like a page from a bound book, not an admin summary.
+### 1. Correct the CTA semantics for this step
 
----
+- **Remove the reserve CTA** (`YES — RESERVE · €636`) and its `Adjust a few things first` chip — reserve belongs on the Guest Details step, after the letter.
+- Keep exactly **one primary CTA** that advances to the storytelling letter: `See my signature story →` (calls the existing "advance" handler that routes to `FinalRevealStory`).
+- Keep **one secondary text link** under it: `Save this signature` (existing save handler).
+- Remove `SAY YES TO THIS SIGNATURE`, `REFINE WITH YES FIRST`, `NEED HELP? ASK YES`, standalone `ADJUST A FEW THINGS FIRST`. Help is already available via the persistent WhatsApp bubble.
+- &nbsp;
 
-## 2. Adjustments (Refine) — declutter
+### 2. Add-on card layout (root of the overlap bugs)
 
-Scope: the refinement UI shown inside the Reveal on mobile (rendered via `RefineAccordion` + inline stops editor inside `StudioV3.tsx`; `RefineStopCard.tsx` already exists but isn't wired in for the main path — we wire it in and prune duplicates).
+- Grid: `grid-cols-[minmax(0,1fr)_auto] gap-3`, text column gets `min-w-0`, remove `break-all`/`break-words`.
+- Price + duration go into the right `auto` column, stacked, right-aligned, `shrink-0` (`+€40 / guest` over `+75 min`). No absolute pill.
+- Selection state = radio + tinted border/background, not a floating "ADD" chip.
 
-Four fixes, in order:
+### 3. Dedupe add-ons
 
-**a. Repeating add/remove buttons on every stop → single card + one action menu**
-- Wire `RefineStopCard` into `StudioV3.tsx`'s refine list (replace the inline `[#][title][icons…]` row).
-- Collapse the 4-icon toolbar (Earlier / Later / Swap / Remove) into a single 44×44 "Edit" button that opens a small popover with the four actions. Disabled states preserved.
-- Keeps a11y labels; removes the 4-button repetition that reads as clutter on 393px.
+- Render add-ons **once**, in a collapsed `<details data-testid="refine-addons">` "Enhance your day (optional)" above `Your day includes`.
+- Delete the top offer strip.
 
-**b. Add-on chips / accordions duplicated → one "Enhance your day" section**
-- Locate the two surfaces that currently render add-ons on the reveal (add-on chips row + accordion inside SignaturePriceCard flow) and consolidate into a single collapsed section `<details data-testid="studio-v3-enhance">` above inclusions.
-- Chip-style toggles, one row, wraps to two — no repeated titles/prices in a second card.
+### 4. Tighten the price card (still shown as reference, not a purchase button)
 
-**c. Too many CTAs at bottom → one primary + one text link**
-- Keep primary "Make this my story in Portugal" as the only filled CTA.
-- "Save my signature" demoted to a small underlined text link right-aligned above the primary.
-- "Back to refine" stays as tertiary ← link.
-- Removes visual competition; the eye lands on the continuation CTA.
+- One quiet headline row: `From €159 / guest · 4 guests` (no dark reserve button, no total in bold euros as a CTA).
+- Move `Drops to €139 with 7 guests` + group-size selector into one collapsed `<details>` "Price by group size".
+- Meta chips `6+H · 4 MOMENTS · 31 JUL 2026` become a single muted line.
+- Drop the free-standing "Why this works" bullet list — the numbered `Your day includes` covers the same ground.
 
-**d. Overlapping text over map / price ribbon**
-- Audit z-index + spacing between `RunningInvestmentRibbon`, `ComposerMap`, and stop cards at 393px.
-- Ribbon becomes non-overlapping: give the map wrapper `pb-[64px]` when the ribbon is visible; ribbon uses `bg-ivory/95 backdrop-blur` so any residual overlap remains readable.
-- Add `min-w-0` + `truncate` to stop titles inside map callouts (currently overflow at 393px).
+### 5. Overflow guards
 
-No copy changes beyond removing duplicates. No pricing math touched.
-
----
-
-## 3. Playwright spec — 393×588, Full coverage
-
-New file: `e2e/studio-v3-reveal-and-guest-details-mobile.spec.ts`
-Baseline dir: `e2e/__baselines__/studio-v3-reveal-mobile/`
-
-Uses existing `playwright.local.config.ts` (Pixel 5 project already close to 393px; override viewport to exactly `{width: 393, height: 588}`).
-
-Scenarios (single spec, three `test()` blocks):
-
-1. **Smoke — walk to Final Reveal → Guest Details**
-   - Reuse `e2e/studio-v3-walk-to-reveal.ts` helper to reach the reveal.
-   - Assert: no horizontal scroll (`document.documentElement.scrollWidth <= 393`).
-   - Assert: primary CTA `[data-testid=studio-v3-final-reveal-continue]` in viewport.
-   - Click continue → land on Guest Details.
-   - Assert: email input visible, no horizontal scroll, primary CTA in viewport.
-
-2. **Copy lock**
-   - No occurrence of `/to be confirmed|pending confirmation|tbc/i` on either screen.
-   - Instant-confirmation reassurance line present on reveal.
-   - Parchment image renders: `img[alt*="letter" i]` has non-zero natural size.
-   - On email blur with a valid address, "Your Signature Story is on its way to your inbox" appears within 2s.
-
-3. **Visual baselines**
-   - `expect(page).toHaveScreenshot('reveal-393.png', { maxDiffPixelRatio: 0.02 })` after reveal settle (wait for `[data-testid=studio-v3-final-reveal-timeline]` + 400ms).
-   - Same for Guest Details: `guest-details-393.png`.
-   - Fonts + images awaited via `document.fonts.ready` and `img.decode()` on the parchment.
-   - Baselines committed under `e2e/__baselines__/studio-v3-reveal-mobile/`.
-
-Not wired into CI in this pass — runnable locally via `bunx playwright test --config=playwright.local.config.ts studio-v3-reveal-and-guest-details-mobile`. CI hookup can come in a follow-up so the first baseline doesn't fail on unrelated machines.
-
----
+- Wrap outer container in `min-w-0 overflow-x-hidden`; every text+value flex row gets `min-w-0` on the text child and `shrink-0` on the value.
 
 ## Files touched
 
-- **New:** `src/assets/studio-v3/reveal-letter-parchment.jpg` (generated), `e2e/studio-v3-reveal-and-guest-details-mobile.spec.ts`, `e2e/__baselines__/studio-v3-reveal-mobile/*.png`.
-- **Edited:** `src/components/studio-v3/FinalRevealStory.tsx`, `src/components/studio-v3/StudioV3.tsx` (wire RefineStopCard, consolidate add-ons, collapse CTAs, ribbon spacing), `src/components/studio-v3/RefineStopCard.tsx` (collapse toolbar into single "Edit" popover), `src/components/studio-v3/ComposerMap.tsx` (min-w-0 / truncate on callouts).
-- **Not touched:** curation, pricing, Stripe, email/PDF, Studio state machine, routing.
+- `src/components/studio-v3/CheckoutSummary.tsx` — swap CTA set to `See my signature story →` + `Save this signature` link, dedupe add-ons, tighten sections.
+- `src/components/studio-v3/SignaturePriceCard.tsx` — quiet headline row, collapse group-size, drop duplicate "why this works", fix add-on row grid + remove sticky pill.
 
-## Verification
+## Out of scope
 
-- `bunx tsgo --noEmit`
-- Playwright run of the new spec locally to generate baselines and confirm the three tests pass.
-- Screenshot at 393×588 via Playwright to visually confirm the letter treatment and decluttered refine section before wrapping up.
+Stripe, email/PDF, , Guest Details, state machine, routing, Playwright specs.
