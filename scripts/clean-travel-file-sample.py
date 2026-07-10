@@ -92,17 +92,18 @@ def build_cover_page() -> PageObject:
     frame_pad = py(38)
     draw.rectangle([frame_pad, py(55), W - frame_pad, py(155)], fill=ivory)
 
-    # ── Zone B: erase "14 nights · Designed for Jennifer Oliver" line
-    #    with OpenCV content-aware inpainting so the sunset gradient
-    #    reconstructs seamlessly (no visible patch/box).
+    # ── Zone B: erase "14 nights · Designed for Jennifer Oliver" line.
+    #    Verified via cropped inspection: name line sits at pdf y ≈ 432–452
+    #    (dates "September 8 — September 22, 2026" is just above at ≈ 405–425).
+    #    Use OpenCV inpainting so the sunset gradient reconstructs seamlessly.
     arr = np.array(img)
     mask = np.zeros(arr.shape[:2], dtype=np.uint8)
-    # Name text occupies pdf y ≈ 578–592; pad ±6pt for antialias halo.
-    mask[py(572):py(598), py(140):W - py(140)] = 255
+    mask[py(428):py(456), py(120):W - py(120)] = 255
     inpainted = cv2.inpaint(
-        cv2.cvtColor(arr, cv2.COLOR_RGB2BGR), mask, 6, cv2.INPAINT_TELEA
+        cv2.cvtColor(arr, cv2.COLOR_RGB2BGR), mask, 8, cv2.INPAINT_TELEA
     )
     img = Image.fromarray(cv2.cvtColor(inpainted, cv2.COLOR_BGR2RGB))
+
 
 
 
