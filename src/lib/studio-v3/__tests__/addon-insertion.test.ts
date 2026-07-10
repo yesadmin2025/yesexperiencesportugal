@@ -31,9 +31,9 @@ describe("planAddonInsertion", () => {
     stop("ss", "Sesimbra lunch", SESIMBRA, "lunch"),
     stop("lx-back", "Lisbon drop-off", LISBON, "viewpoint"),
   ];
-  // Real-ish minutes / km for the base itinerary. 4 legs, total ≈ 155 min.
-  const baseLegMinutes = [45, 20, 25, 55];
-  const baseLegDistancesKm = [45, 15, 20, 55];
+  // Real-ish minutes / km for the base itinerary. 4 legs, total ≈ 125 min.
+  const baseLegMinutes = [35, 15, 20, 55];
+  const baseLegDistancesKm = [40, 12, 18, 55];
 
   it("recommends a small on-route detour (preferred badge)", () => {
     const result = planAddonInsertion({
