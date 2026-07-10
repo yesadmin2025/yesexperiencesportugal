@@ -452,13 +452,15 @@ function buildConfirmationSummary(state: StudioV3State): string | undefined {
   }
   if (state.rhythm) {
     const rhythmLabel =
-      state.rhythm === "gentle"
+      state.rhythm === "slow"
         ? "Gentle rhythm"
-        : state.rhythm === "full"
-          ? "Full rhythm"
-          : state.rhythm === "immersive"
-            ? "Immersive rhythm"
-            : null;
+        : state.rhythm === "balanced"
+          ? "Balanced rhythm"
+          : state.rhythm === "full"
+            ? "Full rhythm"
+            : state.rhythm === "immersive"
+              ? "Immersive rhythm"
+              : null;
     if (rhythmLabel) parts.push(rhythmLabel);
   }
   if (typeof state.guests === "number" && state.guests > 0) {
