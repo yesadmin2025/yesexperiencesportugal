@@ -259,6 +259,7 @@ const PHASE_ORDER: StudioV3Phase[] = [
   "language",
   "map",
   "storyboard",
+  "confirmation",
 ];
 
 function stepOf(phase: StudioV3Phase): number {
