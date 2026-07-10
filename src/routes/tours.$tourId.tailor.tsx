@@ -33,6 +33,13 @@ import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
+import {
+  gaAddPaymentInfo,
+  gaAddToCartSignature,
+  gaBeginCheckout,
+  gaGenerateLead,
+  buildTourItem,
+} from "@/lib/analytics-ga4";
 
 /* ════════════════════════════════════════════════════════════════
  * /tours/$tourId/tailor — Tailor a Signature
