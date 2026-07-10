@@ -168,21 +168,66 @@ function normalizePath(pathname: string): string {
 }
 
 /**
- * If the request is on a legacy host, return either:
- *   - a 301 to the canonical equivalent (preserving query string), or
- *   - a 410 Gone response for unmapped paths.
- * Otherwise return null and the caller should continue normal handling.
+ * Paths that only ever exist on the legacy WordPress install and can
+ * never legitimately exist on the canonical app. Used to 410 on ANY host
+ * — because Lovable's platform 302s every legacy-host request 1:1 to the
+ * primary domain BEFORE our middleware runs, so `/wp-admin`, `/tour/xxx`,
+ * `/category/xxx` etc. arrive at the canonical origin and would otherwise
+ * hit the SPA's 404 (a soft-404 for Google, dilutes equity).
+ *
+ * Keep this list conservative: anything matched here on the canonical
+ * host will be served 410 Gone, so it must be a pattern the real app
+ * would never expose.
+ */
+const WP_LEGACY_410_PATTERNS: readonly RegExp[] = [
+  /^\/wp-/i,                    // /wp-admin, /wp-login.php, /wp-content, /wp-json, ...
+  /^\/xmlrpc\.php$/i,
+  /^\/trackback\/?$/i,
+  /^\/feed\/?$/i,
+  /^\/comments\/feed\/?$/i,
+  /^\/category\//i,
+  /^\/tag\//i,
+  /^\/author\//i,
+  /^\/\?p=\d+/i,
+  /^\/\?page_id=\d+/i,
+  /^\/tour\//i,                 // unmapped /tour/<slug> — new site uses /tours/<slug>
+];
+
+function matchesWpLegacyPattern(pathname: string): boolean {
+  return WP_LEGACY_410_PATTERNS.some((re) => re.test(pathname));
+}
+
+/**
+ * Hybrid legacy handler that runs on EVERY host (not just the legacy one).
+ *
+ * On the legacy host (`yesexperiences.pt`): full behavior — 301 for any
+ * mapped path, 410 for anything else. Rarely hit in practice: Lovable's
+ * platform layer 302s legacy-host requests 1:1 to the primary domain
+ * before our middleware even runs, but we keep this path in case that
+ * behavior changes.
+ *
+ * On any OTHER host (including the canonical primary): only fire when
+ * we're certain — either the path is a WordPress-legacy pattern that
+ * cannot legitimately exist on the app (→ 410), or the path is in the
+ * 301 map AND the target differs from the source (→ 301, no self-loop).
+ * Anything else returns null so the app handles the request normally.
+ *
+ * This is what turns the platform's 302 → primary into a proper
+ *   302 (platform) → 301 (us) → real canonical path
+ * chain, or a clean 410 for retired WordPress-only URLs.
  */
 export function buildLegacy301Response(request: Request): Response | null {
   try {
     const url = new URL(request.url);
     const host = (request.headers.get("host") ?? url.host).toLowerCase();
-    if (!LEGACY_HOSTS.has(host)) return null;
+    const onLegacyHost = LEGACY_HOSTS.has(host);
 
     const key = normalizePath(url.pathname);
     const target = LEGACY_REDIRECT_MAP[key];
 
-    if (target) {
+    // 301: map hit. On legacy host, always. On any other host, only when
+    // target differs from source (prevents /about → /about self-loops).
+    if (target && (onLegacyHost || target !== key)) {
       const location = `${CANONICAL_ORIGIN}${target}${url.search}`;
       return new Response(null, {
         status: 301,
@@ -197,7 +242,11 @@ export function buildLegacy301Response(request: Request): Response | null {
       });
     }
 
-    // Unmapped legacy path — 410 Gone, no Location header.
+    // 410: on legacy host, everything unmapped. On other hosts, only
+    // WordPress-specific patterns (/wp-*, /tour/*, /category/*, ...).
+    const shouldGone = onLegacyHost || matchesWpLegacyPattern(key);
+    if (!shouldGone) return null;
+
     return new Response(GONE_BODY, {
       status: 410,
       headers: {
@@ -208,6 +257,7 @@ export function buildLegacy301Response(request: Request): Response | null {
     });
   } catch {
     return null;
+
   }
 }
 
