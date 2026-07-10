@@ -16,11 +16,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Check, ChevronDown, ShieldCheck } from "lucide-react";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import {
+  addOnEurFor,
   addOnEurFromBase,
   selectSignatureAddOns,
   selectSignatureAddOnsWithBudget,
   regionBucket,
   LISBON_SUBREGION_BY_TOUR_ID,
+  type AddOnPricingUnit,
   type SignatureAddOn,
 } from "@/data/signatureAddOns";
 import type { SignatureTour } from "@/data/signatureTours";
