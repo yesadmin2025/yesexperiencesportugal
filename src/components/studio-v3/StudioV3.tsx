@@ -440,6 +440,33 @@ export function investmentShapingLine(tier: InvestmentTier | null): string | nul
   }
 }
 
+/** ConfirmationPause summary strip — one honest line: region · rhythm · guests.
+ *  Purely presentational: never invents facts, uses only what state already
+ *  carries. Returns undefined when there's nothing meaningful to show. */
+function buildConfirmationSummary(state: StudioV3State): string | undefined {
+  const tour = state.tourId ? findTour(state.tourId) : null;
+  const parts: string[] = [];
+  const region = tour?.region ?? null;
+  if (region) {
+    parts.push(region.charAt(0).toUpperCase() + region.slice(1));
+  }
+  if (state.rhythm) {
+    const rhythmLabel =
+      state.rhythm === "gentle"
+        ? "Gentle rhythm"
+        : state.rhythm === "full"
+          ? "Full rhythm"
+          : state.rhythm === "immersive"
+            ? "Immersive rhythm"
+            : null;
+    if (rhythmLabel) parts.push(rhythmLabel);
+  }
+  if (typeof state.guests === "number" && state.guests > 0) {
+    parts.push(state.guests === 1 ? "1 guest" : `${state.guests} guests`);
+  }
+  return parts.length ? parts.join(" · ") : undefined;
+}
+
 /**
  * Adaptive progress whisper — emotional milestone + soft percent.
  *
