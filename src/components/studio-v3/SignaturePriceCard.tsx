@@ -940,18 +940,18 @@ export function SignaturePriceCard({
                         ) : null}
                       </span>
                       <span
-                        className="shrink-0 flex flex-col items-end text-[12px] font-semibold tabular-nums"
-                        style={{ color: "var(--charcoal)" }}
+                        className="shrink-0 flex flex-col items-end text-[12px] font-semibold tabular-nums whitespace-nowrap"
+                        style={{ color: "var(--charcoal)", maxWidth: 92 }}
                       >
-                        <span>
+                        <span className="whitespace-nowrap">
                           +€{line.perUnit}
-                          <span className="ml-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold opacity-60">
-                            {line.unitLabel}
+                          <span className="ml-1 text-[9.5px] font-semibold opacity-60 lowercase tracking-normal">
+                            {line.unitLabel.replace(/^per\s+/i, "/ ")}
                           </span>
                         </span>
                         {a.durationMinutes > 0 ? (
                           <span
-                            className="mt-0.5 text-[9.5px] uppercase tracking-[0.18em] font-semibold"
+                            className="mt-0.5 text-[9.5px] uppercase tracking-[0.14em] font-semibold whitespace-nowrap"
                             style={{
                               color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                             }}
