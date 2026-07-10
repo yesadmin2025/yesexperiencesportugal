@@ -61,6 +61,8 @@ import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as QaHeroRouteImport } from './routes/qa.hero'
+import { Route as PtCookiesRouteImport } from './routes/pt.cookies'
+import { Route as PtContactRouteImport } from './routes/pt.contact'
 import { Route as PtSplatRouteImport } from './routes/pt.$'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
 import { Route as Itineraries10DayPrivatePortugalTourRouteImport } from './routes/itineraries.10-day-private-portugal-tour'
@@ -373,6 +375,16 @@ const QaHeroRoute = QaHeroRouteImport.update({
   id: '/qa/hero',
   path: '/qa/hero',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PtCookiesRoute = PtCookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => PtRoute,
+} as any)
+const PtContactRoute = PtContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => PtRoute,
 } as any)
 const PtSplatRoute = PtSplatRouteImport.update({
   id: '/$',
@@ -709,6 +721,8 @@ export interface FileRoutesByFullPath {
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/pt/$': typeof PtSplatRoute
+  '/pt/contact': typeof PtContactRoute
+  '/pt/cookies': typeof PtCookiesRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
@@ -810,6 +824,8 @@ export interface FileRoutesByTo {
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/pt/$': typeof PtSplatRoute
+  '/pt/contact': typeof PtContactRoute
+  '/pt/cookies': typeof PtCookiesRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
@@ -914,6 +930,8 @@ export interface FileRoutesById {
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
   '/pt/$': typeof PtSplatRoute
+  '/pt/contact': typeof PtContactRoute
+  '/pt/cookies': typeof PtCookiesRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
@@ -1019,6 +1037,8 @@ export interface FileRouteTypes {
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
     | '/pt/$'
+    | '/pt/contact'
+    | '/pt/cookies'
     | '/qa/hero'
     | '/qa/mobile'
     | '/review/$token'
@@ -1120,6 +1140,8 @@ export interface FileRouteTypes {
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
     | '/pt/$'
+    | '/pt/contact'
+    | '/pt/cookies'
     | '/qa/hero'
     | '/qa/mobile'
     | '/review/$token'
@@ -1223,6 +1245,8 @@ export interface FileRouteTypes {
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
     | '/pt/$'
+    | '/pt/contact'
+    | '/pt/cookies'
     | '/qa/hero'
     | '/qa/mobile'
     | '/review/$token'
@@ -1710,6 +1734,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QaHeroRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pt/cookies': {
+      id: '/pt/cookies'
+      path: '/cookies'
+      fullPath: '/pt/cookies'
+      preLoaderRoute: typeof PtCookiesRouteImport
+      parentRoute: typeof PtRoute
+    }
+    '/pt/contact': {
+      id: '/pt/contact'
+      path: '/contact'
+      fullPath: '/pt/contact'
+      preLoaderRoute: typeof PtContactRouteImport
+      parentRoute: typeof PtRoute
+    }
     '/pt/$': {
       id: '/pt/$'
       path: '/$'
@@ -2072,11 +2110,15 @@ const LocalStoriesRouteWithChildren = LocalStoriesRoute._addFileChildren(
 
 interface PtRouteChildren {
   PtSplatRoute: typeof PtSplatRoute
+  PtContactRoute: typeof PtContactRoute
+  PtCookiesRoute: typeof PtCookiesRoute
   PtIndexRoute: typeof PtIndexRoute
 }
 
 const PtRouteChildren: PtRouteChildren = {
   PtSplatRoute: PtSplatRoute,
+  PtContactRoute: PtContactRoute,
+  PtCookiesRoute: PtCookiesRoute,
   PtIndexRoute: PtIndexRoute,
 }
 
@@ -2209,13 +2251,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
