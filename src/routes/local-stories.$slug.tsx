@@ -1,5 +1,5 @@
 import type React from "react";
-import { createFileRoute, Link, notFound, useRouter, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 
 
 import { SiteLayout } from "@/components/SiteLayout";
@@ -143,22 +143,8 @@ export const Route = createFileRoute("/local-stories/$slug")({
   head: ({ params, loaderData }) => {
     const article = getLocalStoryArticle(params.slug);
 
-    // The day-trips guide now lives at its dedicated SEO route.
-    if (article && article.slug === "best-day-trips-from-lisbon") {
-      const canonicalUrl = `${BASE}/day-trips-from-lisbon`;
-      return {
-        meta: [
-          { title: article.title },
-          { name: "description", content: article.metaDescription },
-          { property: "og:title", content: article.title },
-          { property: "og:description", content: article.metaDescription },
-          { property: "og:url", content: canonicalUrl },
-          { property: "og:type", content: "article" },
-          { property: "article:published_time", content: article.datePublished },
-        ],
-        links: [{ rel: "canonical", href: canonicalUrl }],
-      };
-    }
+    // Every Local Story is self-canonical at /local-stories/<slug>.
+
 
     if (article) {
       const url = `${BASE}/local-stories/${params.slug}`;
@@ -276,10 +262,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
   },
 
   beforeLoad: ({ params }) => {
-    // The day-trips guide now lives at its own SEO-focused route.
-    if (params.slug === "best-day-trips-from-lisbon") {
-      throw redirect({ to: "/day-trips-from-lisbon", statusCode: 301 });
-    }
+
     // Placeholder / malformed slugs ($slug, %24slug, undefined, template
     // stubs, anything that can't be a real article) must serve a real 404
     // with noindex — NOT a 301 to the listing. A 301 keeps the URL alive

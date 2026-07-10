@@ -152,12 +152,12 @@ export function Footer() {
               { to: "/portugal-tours", label: "Portugal tours" },
               { to: "/luxury-tours-portugal", label: "Luxury Portugal tours" },
               { to: "/private-tours-portugal", label: "Private tours Portugal" },
-              { to: "/portugal-wine-tours", label: "Portugal wine tours" },
-              { to: "/sintra-day-tour-from-lisbon", label: "Sintra day tour from Lisbon" },
-              { to: "/private-wine-tour-lisbon", label: "Private wine tour Lisbon" },
-              { to: "/arrabida-day-trip-from-lisbon", label: "Arrábida day trip from Lisbon" },
-              { to: "/day-trips-from-lisbon", label: "Day trips from Lisbon" },
-              { to: "/wine-tours-lisbon", label: "Alentejo wine tour from Lisbon" },
+              { to: "/local-stories/$slug", params: { slug: "portugal-wine-tours" }, label: "Portugal wine tours" },
+              { to: "/local-stories/$slug", params: { slug: "sintra-day-tour-from-lisbon" }, label: "Sintra day tour from Lisbon" },
+              { to: "/local-stories/$slug", params: { slug: "private-wine-tour-lisbon" }, label: "Private wine tour Lisbon" },
+              { to: "/local-stories/$slug", params: { slug: "arrabida-day-trip-from-lisbon" }, label: "Arrábida day trip from Lisbon" },
+              { to: "/local-stories/$slug", params: { slug: "best-day-trips-from-lisbon" }, label: "Day trips from Lisbon" },
+              { to: "/local-stories/$slug", params: { slug: "alentejo-wine-tour-from-lisbon" }, label: "Alentejo wine tour from Lisbon" },
               {
                 to: "/itineraries/10-day-private-portugal-tour",
                 label: "10-day private Portugal tour",
@@ -165,14 +165,16 @@ export function Footer() {
               { to: "/multi-day", label: "Portugal Travel Designer" },
               { to: "/proposal-in-portugal", label: "Proposal in Portugal" },
             ].map((l) => (
-              <li key={l.to}>
+              <li key={`${l.to}:${l.label}`}>
                 <Link
                   to={l.to}
+                  params={"params" in l ? l.params : undefined}
                   className="link-hairline-gold tap text-[color:var(--ivory)]/80 hover:text-[color:var(--gold-soft)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
                 >
                   {l.label}
                 </Link>
               </li>
+
             ))}
           </ul>
         </div>

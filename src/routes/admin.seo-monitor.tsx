@@ -9,7 +9,7 @@ const KEY_URLS = [
   "https://yesexperiencesportugal.com/experiences",
   "https://yesexperiencesportugal.com/studio-v3",
   "https://yesexperiencesportugal.com/tours/arrabida-wine-allinclusive",
-  "https://yesexperiencesportugal.com/day-trips-from-lisbon",
+  "https://yesexperiencesportugal.com/local-stories/best-day-trips-from-lisbon",
 ];
 
 export const Route = createFileRoute("/admin/seo-monitor")({

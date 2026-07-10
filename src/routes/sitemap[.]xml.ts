@@ -40,15 +40,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/proposal-in-portugal", changefreq: "monthly", priority: "0.8" },
           { path: "/corporate", changefreq: "monthly", priority: "0.7" },
           { path: "/local-stories", changefreq: "weekly", priority: "0.7" },
-          { path: "/day-trips-from-lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/wine-tours-lisbon", changefreq: "monthly", priority: "0.9" },
-          { path: "/private-wine-tour-lisbon", changefreq: "monthly", priority: "0.85" },
-          { path: "/arrabida-wine-tour", changefreq: "monthly", priority: "0.85" },
-          { path: "/sintra-day-tour-from-lisbon", changefreq: "monthly", priority: "0.85" },
-          { path: "/arrabida-day-trip-from-lisbon", changefreq: "monthly", priority: "0.85" },
-          { path: "/alentejo-wine-tour-from-lisbon", changefreq: "monthly", priority: "0.85" },
-          { path: "/evora-private-tour-from-lisbon", changefreq: "monthly", priority: "0.85" },
-          { path: "/evora-alentejo-wine-tour", changefreq: "monthly", priority: "0.85" },
           {
             path: "/itineraries/10-day-private-portugal-tour",
             changefreq: "monthly",
@@ -57,7 +48,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/portugal-tours", changefreq: "monthly", priority: "0.9" },
           { path: "/luxury-tours-portugal", changefreq: "monthly", priority: "0.85" },
           { path: "/private-tours-portugal", changefreq: "monthly", priority: "0.85" },
-          { path: "/portugal-wine-tours", changefreq: "monthly", priority: "0.85" },
+
+
 
           { path: "/terms", changefreq: "yearly", priority: "0.4" },
           { path: "/privacy", changefreq: "yearly", priority: "0.4" },
@@ -92,8 +84,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s) && s.length >= 2;
         };
 
-        const staticArticleEntries: SitemapEntry[] = LOCAL_STORIES_ARTICLES.filter(
-          (a) => a.slug !== "best-day-trips-from-lisbon" && isRealSlug(a.slug),
+        const staticArticleEntries: SitemapEntry[] = LOCAL_STORIES_ARTICLES.filter((a) =>
+          isRealSlug(a.slug),
         ).map((a) => ({
           path: `/local-stories/${a.slug}`,
           // Omit <lastmod> for static articles — the schema has no
@@ -102,6 +94,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           changefreq: "monthly",
           priority: "0.7",
         }));
+
 
         let postEntries: SitemapEntry[] = [];
         try {
