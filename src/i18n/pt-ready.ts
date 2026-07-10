@@ -17,7 +17,10 @@ const READY_PATHS = new Set<string>([
   "/corporate", // → /pt/corporate
   "/day-tours", // → /pt/day-tours
   "/experiences", // → /pt/experiences
+  "/faq", // → /pt/faq (redirect stub, mirrors EN)
+  "/moments", // → /pt/moments (redirect stub, mirrors EN)
   "/privacy", // → /pt/privacy
+  "/proposals", // → /pt/proposals (redirect stub, mirrors EN)
   "/reviews", // → /pt/reviews
   "/terms", // → /pt/terms
 ]);
