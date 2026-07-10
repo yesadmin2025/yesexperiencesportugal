@@ -219,6 +219,7 @@ import {
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
+import { ConfirmationPause } from "./ConfirmationPause";
 import {
   BrandedCheckoutDrawer,
   type CheckoutSummary,
