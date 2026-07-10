@@ -1689,7 +1689,8 @@ export function StudioV3() {
     state.phase === "intro" ||
     state.phase === "feeling" ||
     state.phase === "map" ||
-    state.phase === "storyboard";
+    state.phase === "storyboard" ||
+    state.phase === "confirmation";
 
   // ComposerMap — Studio Bible §4 "live map updates as stops change".
   // Lightweight, peripheral, progressive: renders the moment the traveller
