@@ -86,6 +86,52 @@ export function CheckoutSummary({
       ? tour.included
       : ["Private guide", "Private transport", "All confirmed entries"];
 
+  const [pdfLoading, setPdfLoading] = React.useState(false);
+  const handleDownloadPdf = async () => {
+    if (pdfLoading) return;
+    setPdfLoading(true);
+    try {
+      const [{ pdf }, { SignatureOnePager }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("./signatureOnePagerPdf"),
+      ]);
+      const blob = await pdf(
+        <SignatureOnePager
+          data={{
+            title,
+            dateLabel,
+            guests: typeof guestDetails.guests === "number" ? guestDetails.guests : 2,
+            pickupLabel,
+            languageLabel: guestDetails.language === "pt" ? "Portuguese" : "English",
+            inclusions: included,
+            additions: selectedAddOns.map((a) => ({ label: a.label, priceEur: a.priceEur })),
+            totalEur,
+            perPaxEur,
+          }}
+        />,
+      ).toBlob();
+      const url = URL.createObjectURL(blob);
+      const slug = (title || "signature-day")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "")
+        .slice(0, 60);
+      const isoBit = (guestDetails.tourDate ?? state.dateExact ?? "").replace(/[^0-9-]/g, "");
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = isoBit ? `signature-day-${slug}-${isoBit}.pdf` : `signature-day-${slug}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    } catch (err) {
+      console.error("[CheckoutSummary] PDF generation failed", err);
+      toast.error("Couldn't generate the PDF — please try again.");
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
   return (
     <section
       data-testid={testId ?? "studio-v3-checkout-summary"}
