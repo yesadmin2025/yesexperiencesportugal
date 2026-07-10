@@ -242,7 +242,7 @@ function SharedItineraryPage() {
         {/* CTA — hidden in print */}
         <div className="mt-10 flex flex-col gap-3 print:hidden">
           <a
-            href={`/builder?j=${token}`}
+            href={`/studio-v3?j=${token}`}
             className="inline-flex items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)] bg-[color:var(--charcoal)] px-5 py-3 text-[12px] font-semibold uppercase tracking-[0.22em] text-[color:var(--ivory)] hover:bg-[color:var(--teal)] transition-colors"
           >
             <Check size={14} />
