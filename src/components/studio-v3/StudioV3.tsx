@@ -2628,7 +2628,11 @@ function ContinueCta({
   );
 }
 
-function StoryboardHandoff({
+// Exported so `SignatureDayReveal` (see ./SignatureDayReveal.tsx) can
+// re-export it under its final name. Physical body-move is deferred until
+// Steps 6–9 rebuild the reveal sections; this establishes the module
+// boundary the plan calls for without a high-risk 1,300-line hoist.
+export function StoryboardHandoff({
   state,
   onStateChange,
   onBack,
