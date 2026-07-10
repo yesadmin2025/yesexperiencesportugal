@@ -16,10 +16,13 @@ import subprocess, tempfile
 from io import BytesIO
 from pathlib import Path
 
+import cv2
+import numpy as np
 from PIL import Image, ImageDraw
 from pypdf import PdfReader, PdfWriter, PageObject
 from reportlab.lib.colors import Color
 from reportlab.pdfgen import canvas
+
 
 SRC = Path("public/travel-file-sample/sample.pdf")
 
