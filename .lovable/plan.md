@@ -1,62 +1,50 @@
+## Plan — swap uploaded PDF in as new base, then fix it
 
-## Goal
+### 1 · Adopt upload as the new source
 
-Every PDF the site serves must reflect the current brand contacts:
+- Copy `user-uploads://Jennifer_Oliver_Travel_File_FINAL_PREMIUM-2.pdf` → `public/travel-file-sample/sample.pdf` (overwrite).
+- Keep filename `sample.pdf` — every consumer (`/multi-day`, homepage `RecentJourney`, existing `.asset.json`) already points at that path/URL name.
 
-- Website: `yesexperiencesportugal.com` (currently `yesexperiences.pt`)
-- Email: `info@yesexperiencesportugal.com` (currently `info@yesexperiences.pt`)
-- Phone: `+351 911 889 992` (already correct)
+### 2 · Re-apply the text patch to pages 2–23
 
-Source of truth: `src/config/business-nap.ts` (`EMAIL`, `PHONE_DISPLAY`).
+- Run the same `pikepdf` script as before against the new file:
+  - `yesexperiences.pt` → `yesexperiencesportugal.com`
+  - `info@yesexperiences.pt` → `info@yesexperiencesportugal.com`
+- Verify with `pdftotext | grep -Fc` → 0 hits old, 24 hits new domain, 23 hits new email.
+- Pages 2–23 only; page 1 is a raster image and has no text objects to patch.
 
-## Scope
+### 3 · Pixel-edit the cover (page 1)
 
-**Primary — the "travel design" file**
-`public/travel-file-sample/sample.pdf` (23 pages). It's used two ways:
-1. Download link on `/multi-day` (`src/routes/multi-day.tsx`).
-2. Rendered as `page-01.jpg … page-06.jpg` on `/multi-day` and the homepage `RecentJourney` section.
+The cover is a single embedded JPEG (1054×1492, high-res this time). Edit in Pillow, re-embed with `pikepdf`:
 
-Every page footer reads:
-`yesexperiences.pt · info@yesexperiences.pt · +351 911 889 992`
-and the final contact block (page 23) repeats the wrong web + email.
+1. Extract cover JPEG with `pdfimages -j`.
+2. **Footer strip** — sample the ivory background under the old footer line, paint a clean rectangle over `yesexperiences.pt · info@yesexperiences.pt · +351 911 889 992`, redraw the same three-item footer with gold `·` separators using the new domain/email in the same serif-ish face at the same size and vertical position.
+3. **Logo block** — paint over the old script `yes experiences PORTUGAL` mark, composite the canonical `public/brand/svg/yes-experiences-portugal-centered-full.svg` (rasterized via `cairosvg` at 3× for crispness) in the same slot at matching width and baseline.
+4. Re-embed the edited JPEG onto object 8's stream (`pikepdf`), preserving all other page content (frame, hero photo, "Portugal / Beyond the Postcards", date, DATES/ROUTE/TRANSPORT/STATUS card).
+5. Linearize output.
 
-**Secondary — brand PDFs under `public/brand/`**
-- `yes-brand-board.pdf`
-- 6 logo-pack PDFs (`yes-experiences-portugal-*.pdf`)
+### 4 · Route table on page 4 (best-effort)
 
-`pdftotext` sweep shows no `yesexperiences.pt`/old email strings inside any of them — they're vector logo/board pages. Audit confirms nothing to patch. I'll re-run the sweep at fix time and note the result; no re-issuance needed unless something turns up.
+Attempt a content-stream nudge to shift the "Costa Vicentina" and "Lisbon — Return via Coast" row baselines down ~14pt so cells stop overlapping. If the stream is too tangled to edit safely, leave that page and flag it in the report — that's a source-file design defect and the honest fix is re-exporting page 4 from the original tool.
 
-## Approach — In-place text patch (approved)
+### 5 · Regenerate previews + refresh assets
 
-Use `pikepdf` (qpdf backend) to rewrite the two strings inside the PDF's content streams while preserving layout, xref, fonts, embedded logo, and page geometry. Fastest path, keeps the existing design pixel-identical, only fixes text. The logo currently embedded stays as-is — matches "in-place text patch only" choice.
+- Render pages 1–6 at existing preview resolution (match current `page-0N.jpg` dimensions) with `pdftoppm`.
+- Overwrite `public/travel-file-sample/page-01.jpg … page-06.jpg`.
+- Re-upload the new `sample.pdf` and pages 2–6 as Lovable assets (page-01 has no `.asset.json`, just the file swap). Update the six `.asset.json` files.
 
-Replacements (applied to every page + the page-23 contact block):
-- `yesexperiences.pt` → `yesexperiencesportugal.com`
-- `info@yesexperiences.pt` → `info@yesexperiencesportugal.com`
+### 6 · Verify (visual QA, mandatory)
 
-The new strings are longer than the originals. In content streams, PDF text is drawn with `Tj`/`TJ` operators on literal strings — length changes are safe (they don't affect xref because pikepdf regenerates the xref on save). Kerning of the footer line will shift slightly to the right; if that pushes past the page margin on any page, I'll adjust the footer's starting x-offset for that content stream, or fall back to shortening spacing between the `·` separators. QA (below) verifies this per page.
+- `pdftotext` sweep → 0 old-domain / 0 old-email hits.
+- Render all 23 pages at 150dpi to `/tmp/qa/`, inspect: cover (correct logo + new footer, layout intact), page 4 (table overlap), page 23 (final contact block), plus one page per section.
+- Compare page-01.jpg to the uploaded reference visually — confirm hero image, "Portugal / Beyond the Postcards", date, and info card are untouched; only the logo and footer changed.
 
-## Steps
+### Out of scope
 
-1. **Script** `/tmp/patch_travel_pdf.py` using `pikepdf`:
-   - Open `public/travel-file-sample/sample.pdf`.
-   - For each page, walk content streams and any Form XObjects; decode, replace both literal strings (handle both `(...)` and `<...>` hex-encoded literals; sample PDF uses parenthesized literals per `pdftotext` output but the script handles both defensively).
-   - Save to same path (linearized, deterministic).
-2. **Verify text**: `pdftotext -layout` → grep for `yesexperiences.pt` and `info@yesexperiences.pt`. Expected: zero hits. Grep for `yesexperiencesportugal.com` and `info@yesexperiencesportugal.com`. Expected: hits on every page footer + page-23 contact block.
-3. **Visual QA (mandatory)**: render all 23 pages with `pdftoppm -jpeg -r 120` to `/tmp/qa/`, view each with `code--view`, look specifically for:
-   - Footer text clipped at right margin (new string is 8 chars longer).
-   - Overlap with page-number `— N —`.
-   - Any other page furniture disturbed.
-   If any page fails, patch that page's content stream to shift/rescale the footer line and re-verify.
-4. **Regenerate the 6 preview JPGs** used on `/multi-day` and homepage `RecentJourney`:
-   - Render pages 1–6 of the patched PDF at the current preview resolution (match the dimensions of the existing `public/travel-file-sample/page-0N.jpg`) with `pdftoppm`.
-   - Overwrite `public/travel-file-sample/page-01.jpg … page-06.jpg`.
-   - Re-upload each as a Lovable asset (`lovable-assets create`) so `src/assets/travel-file-sample/page-0N.jpg.asset.json` points at the new CDN URL. `page-01` currently uses a `/public` URL only (no `.asset.json` in `RecentJourney`/`multi-day` imports), so it just needs the file replaced.
-5. **Brand PDF audit**: re-run `pdftotext` sweep over `public/brand/*.pdf`; if any references surface, apply the same patch. Otherwise note "no text to fix" in the reply.
-6. **Report**: list files changed, QA findings, and confirm all footers on all 23 pages plus the preview JPGs show the new domain/email.
+- Rebuilding the PDF from scratch, changing typography, hero image, colors, or the date block.
+- Editing HTML routes (already source-of-truth from `business-nap.ts`).
+- Brand PDFs under `public/brand/` — already audited clean, no changes.
 
-## Out of scope (per your answers)
+### Risk to flag
 
-- Rebuilding the PDF from scratch or changing typography.
-- Swapping the embedded logo (you chose "in-place text patch only" — the current logo stays; if you also want the logo replaced I'd need option 1 or 2 instead).
-- Editing any HTML/route pages — those already use `EMAIL`/`PHONE_DISPLAY` from `business-nap.ts`.
+The cover cover-photo font on the original PDF is a Cormorant/Playfair-like serif that we don't have the exact file for. The re-drawn footer will use the closest available system serif (Playfair/EB Garamond) at the same size — at cover viewing distance this reads as identical, but a side-by-side of just the footer strip would show the swap. If pixel-perfect font match matters, the cleaner path is you exporting a single corrected cover page from the design tool and I splice only that page.
