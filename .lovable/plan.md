@@ -1,62 +1,37 @@
-# Refine / Preview Signature — simplify & fix overlaps (mobile 393px)
+Two small dev-only additions to the Preview/Refine Signature screen. Both are gated behind `?qa=1` (or `localStorage.YES_QA=1`) so they never ship to real users.
 
-Understood: the screen in the screenshots is the **Preview / Refine Signature** step. It is NOT the reserve step. Flow is:
+## 1. QA checklist overlay
 
-```
-Preview & Refine signature (this screen)
-   → Final storytelling letter (FinalRevealStory)
-      → Guest details + Stripe summary (reserve)
-```
+A fixed, collapsible panel bottom-left of the Preview/Refine screen. Runs live DOM assertions and shows pass/fail with a colored dot.
 
-So the primary CTA here must advance to the storytelling letter — never say "Reserve" or show a total-with-euros. The amount you should be updating somewhere in the page so it's clear before moving to the storytelling letter. But not on the button.
+Checks:
+- ❌ "Why this works" block is absent (`[data-qa="why-this-works"]` not in DOM)
+- ❌ "Often added" smart-suggestion card is absent (`[data-qa="often-added"]` not in DOM)
+- ✅ Primary CTA exists with label `See my signature story` (via `[data-qa="primary-cta"]`)
+- ✅ Primary CTA carries `data-total-eur` attribute (money preserved for tests, not shown to user)
+- ✅ Secondary CTA is `Save this signature` (via `[data-qa="save-cta"]`)
+- ❌ No CTA text contains `Reserve`, `SAY YES`, `REFINE WITH YES`, `NEED HELP` on this screen
 
-Scope: `src/components/studio-v3/CheckoutSummary.tsx` and `SignaturePriceCard.tsx` only. No pricing/logic/state/routing changes.
+Each row shows the rule + current state. Re-runs on route change and on a manual "Re-check" button. Zero prod impact — component returns `null` when the QA flag is off.
 
-## Problems visible in screenshots
+## 2. Screenshot export button
 
-1. **Add-on cards break one word per line** (`Coastal / boat / ride / from / Sesimbra`) — text column starved of width.
-2. **"ADD +€40 PER GUEST" pill floats over the add-on body** — sticky/absolute overlay covering copy.
-3. **Add-ons rendered twice** — sticky offer strip + a second "MAKE THE DAY YOURS" list below.
-4. **6 CTAs stacked**: `YES — RESERVE · €636`, `ADJUST A FEW THINGS FIRST`, `SAY YES TO THIS SIGNATURE`, `SAVE THIS SIGNATURE`, `REFINE WITH YES FIRST`, `NEED HELP? ASK YES`. This screen shouldn't have a reserve button at all.
-5. **Price card is dense** — pp, ×guests investment, "drops to €139 with 7 guests", group-size selector, meta chips, "why this works" list all stacked.
+Small button in the same overlay: **Export screenshot**. Uses `html-to-image` (`toPng`) against the Preview/Refine root node, captures at the current CSS viewport (393×588 for you right now, at devicePixelRatio 3), and triggers a download as `preview-refine-<viewport>-<timestamp>.png`.
 
-## Fixes
-
-### 1. Correct the CTA semantics for this step
-
-- **Remove the reserve CTA** (`YES — RESERVE · €636`) and its `Adjust a few things first` chip — reserve belongs on the Guest Details step, after the letter.
-- Keep exactly **one primary CTA** that advances to the storytelling letter: `See my signature story →` (calls the existing "advance" handler that routes to `FinalRevealStory`).
-- Keep **one secondary text link** under it: `Save this signature` (existing save handler).
-- Remove `SAY YES TO THIS SIGNATURE`, `REFINE WITH YES FIRST`, `NEED HELP? ASK YES`, standalone `ADJUST A FEW THINGS FIRST`. Help is already available via the persistent WhatsApp bubble.
-- &nbsp;
-
-### 2. Add-on card layout (root of the overlap bugs)
-
-- Grid: `grid-cols-[minmax(0,1fr)_auto] gap-3`, text column gets `min-w-0`, remove `break-all`/`break-words`.
-- Price + duration go into the right `auto` column, stacked, right-aligned, `shrink-0` (`+€40 / guest` over `+75 min`). No absolute pill.
-- Selection state = radio + tinted border/background, not a floating "ADD" chip.
-
-### 3. Dedupe add-ons
-
-- Render add-ons **once**, in a collapsed `<details data-testid="refine-addons">` "Enhance your day (optional)" above `Your day includes`.
-- Delete the top offer strip.
-
-### 4. Tighten the price card (still shown as reference, not a purchase button)
-
-- One quiet headline row: `From €159 / guest · 4 guests` (no dark reserve button, no total in bold euros as a CTA).
-- Move `Drops to €139 with 7 guests` + group-size selector into one collapsed `<details>` "Price by group size".
-- Meta chips `6+H · 4 MOMENTS · 31 JUL 2026` become a single muted line.
-- Drop the free-standing "Why this works" bullet list — the numbered `Your day includes` covers the same ground.
-
-### 5. Overflow guards
-
-- Wrap outer container in `min-w-0 overflow-x-hidden`; every text+value flex row gets `min-w-0` on the text child and `shrink-0` on the value.
+Notes:
+- `html-to-image` is ~15 kB gz and works client-side; no server round-trip.
+- Captures exactly what's on screen at real DPR, so it matches what you see in the preview.
+- Add-only dependency; used only inside the QA overlay component so tree-shaking keeps it out of the main bundle for normal users.
 
 ## Files touched
 
-- `src/components/studio-v3/CheckoutSummary.tsx` — swap CTA set to `See my signature story →` + `Save this signature` link, dedupe add-ons, tighten sections.
-- `src/components/studio-v3/SignaturePriceCard.tsx` — quiet headline row, collapse group-size, drop duplicate "why this works", fix add-on row grid + remove sticky pill.
+- `src/components/studio-v3/QaOverlay.tsx` — new component (checks + export button)
+- `src/components/studio-v3/StudioV3.tsx` — mount `<QaOverlay />` on the Preview/Refine screen only, add the `data-qa="*"` hooks to the two CTAs
+- `src/components/studio-v3/SignaturePriceCard.tsx` — add `data-qa="primary-cta"` / `data-qa="save-cta"` to the buttons (no logic change)
+- `package.json` — add `html-to-image`
 
-## Out of scope
+Out of scope: changing any copy, layout, pricing, routing, or Playwright specs; adding the overlay to any screen other than Preview/Refine; wiring it into published builds.
 
-Stripe, email/PDF, , Guest Details, state machine, routing, Playwright specs.
+## Approve to build
+
+Reply "approve" and I'll implement. If you'd rather the export button live somewhere visible without the `?qa=1` flag, say so and I'll adjust.
