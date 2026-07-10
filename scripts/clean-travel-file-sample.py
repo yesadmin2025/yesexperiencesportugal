@@ -32,13 +32,11 @@ from reportlab.pdfgen import canvas
 
 SRC = Path("public/travel-file-sample/sample.pdf")
 
-# Warm-ivory tokens sampled from the brand palette + cover artwork.
-IVORY = Color(0xFA / 255, 0xF8 / 255, 0xF3 / 255)   # --ivory  #FAF8F3
-SAND  = Color(0xF3 / 255, 0xEB / 255, 0xDA / 255)   # cover inner ivory frame (sampled)
-TEAL  = Color(0x29 / 255, 0x5B / 255, 0x61 / 255)   # --teal (page 23 dark band)
-SUNSET = Color(0xE9 / 255, 0xD3 / 255, 0xB0 / 255)  # sampled sunset tone under "14 nights"
-CHARCOAL = Color(0x2E / 255, 0x2E / 255, 0x2E / 255)  # --charcoal
-CHARCOAL_SOFT = Color(0x5A / 255, 0x5A / 255, 0x5A / 255)
+# Tones sampled from the raster cover + brand palette.
+IVORY_INTERIOR = Color(0xFA / 255, 0xF8 / 255, 0xF3 / 255)  # --ivory  #FAF8F3
+IVORY_COVER    = Color(250 / 255, 245 / 255, 239 / 255)     # cover inner frame — sampled
+TEAL           = Color(0x29 / 255, 0x5B / 255, 0x61 / 255)  # --teal (final-page band)
+CHARCOAL_SOFT  = Color(0x5A / 255, 0x5A / 255, 0x5A / 255)
 
 PAGE_W, PAGE_H = 595.276, 841.89  # A4
 
@@ -50,14 +48,11 @@ def _base_canvas() -> tuple[canvas.Canvas, BytesIO]:
 
 
 def build_header_overlay() -> PageObject:
-    """Full-width ivory strip along the top ~28pt — hides the running
+    """Full-width ivory strip along the top ~40pt — hides the running
     'YES EXPERIENCES PORTUGAL · PRIVATE TRAVEL FILE · JENNIFER OLIVER
     ... SEPTEMBER 2026' line on every interior page."""
     c, buf = _base_canvas()
-    c.setFillColor(IVORY)
-    # Header text runs at top≈22.9→29.9pt from the page top.
-    # In reportlab coords (y from bottom), that is 812.0→819.0. Give it a
-    # generous 6pt safety margin above and below so no glyph tails survive.
+    c.setFillColor(IVORY_INTERIOR)
     c.rect(0, PAGE_H - 40, PAGE_W, 40, stroke=0, fill=1)
     c.save()
     buf.seek(0)
@@ -65,50 +60,49 @@ def build_header_overlay() -> PageObject:
 
 
 def build_cover_overlay() -> PageObject:
-    """Cover is one flattened image with the logo and client name baked
-    into the raster. Cover the logo block (top ivory frame — matches the
-    surrounding tone), and the "· Designed for Jennifer Oliver" tail
-    (sunset tone), then rewrite the meta line without the name."""
+    """The cover is one flattened image with the logo + client name baked
+    into the raster. Both target areas actually sit inside the ivory
+    frame at the top of the page (sampling confirmed the pixel tone is
+    ~#FAF5EF), so a full-width ivory rectangle blends seamlessly."""
     c, buf = _base_canvas()
 
-    # ── 1. Kill the logo block sitting inside the top ivory frame.
-    # Approximate PDF coords derived from the cover raster (A4 @ 100dpi).
-    c.setFillColor(SAND)
-    c.rect(120, PAGE_H - 200, PAGE_W - 240, 175, stroke=0, fill=1)
+    # ── 1. Logo block — top of the ivory frame, edge-to-edge inside the
+    # decorative border. Sits at raster y ≈ 40–260 (1170px tall image).
+    c.setFillColor(IVORY_COVER)
+    c.rect(55, PAGE_H - 260, PAGE_W - 110, 235, stroke=0, fill=1)
 
-    # ── 2. Kill the "14 nights · Designed for Jennifer Oliver" line and
-    # rewrite it, tone-matched to the sunset area behind it.
-    band_y = PAGE_H - 460  # ~top=456pt in PDF space
-    band_h = 30
-    c.setFillColor(SUNSET)
-    c.rect(150, band_y, PAGE_W - 300, band_h, stroke=0, fill=1)
+    # ── 2. "14 nights · Designed for Jennifer Oliver" line — also on
+    # ivory, ~y=615-655 in raster ⇒ PDF y ≈ 372–401.
+    c.setFillColor(IVORY_COVER)
+    c.rect(55, 370, PAGE_W - 110, 32, stroke=0, fill=1)
 
-    # Rewrite: "14 nights · Private Portugal journey"
-    c.setFillColor(CHARCOAL)
-    c.setFont("Helvetica", 14)
-    replacement = "14 nights  \u00b7  Private Portugal journey"
-    tw = c.stringWidth(replacement, "Helvetica", 14)
-    c.drawString((PAGE_W - tw) / 2, band_y + 10, replacement)
+    # Rewrite: keep the "14 nights" info, drop the name.
+    c.setFillColor(CHARCOAL_SOFT)
+    c.setFont("Helvetica", 12)
+    line = "14 nights  \u00b7  A private Portugal journey"
+    tw = c.stringWidth(line, "Helvetica", 12)
+    c.drawString((PAGE_W - tw) / 2, 380, line)
 
     c.save()
     buf.seek(0)
     return PdfReader(buf).pages[0]
 
 
-def build_page23_overlay(header_overlay: PageObject) -> PageObject:
-    """Same header strip as every other page, plus an ivory box over the
-    'YES experiences PORTUGAL' wordmark near the middle."""
+def build_page23_overlay() -> PageObject:
+    """Same header strip as every other page, plus a teal-tone box over
+    the 'YES experiences PORTUGAL' wordmark that sits on the dark teal
+    band near the middle of the final page."""
     c, buf = _base_canvas()
-    # Header
-    c.setFillColor(IVORY)
+    c.setFillColor(IVORY_INTERIOR)
     c.rect(0, PAGE_H - 40, PAGE_W, 40, stroke=0, fill=1)
-    # Wordmark: extracted words sit at top=240.8→258.8, x0=185.7 → x1=409.6.
-    # Reportlab y_bottom = 842 - 258.8 = 583.2, height ≈ 24 (padded).
-    c.setFillColor(IVORY)
-    c.rect(150, PAGE_H - 265, PAGE_W - 300, 30, stroke=0, fill=1)
+    # Wordmark words sit at top=240.8→258.8pt.  reportlab y_bottom ≈ 583,
+    # height ≈ 22 (padded). Match the surrounding teal band, not ivory.
+    c.setFillColor(TEAL)
+    c.rect(80, PAGE_H - 270, PAGE_W - 160, 40, stroke=0, fill=1)
     c.save()
     buf.seek(0)
     return PdfReader(buf).pages[0]
+
 
 
 def main() -> None:
