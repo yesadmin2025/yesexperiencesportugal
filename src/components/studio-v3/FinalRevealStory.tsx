@@ -29,6 +29,17 @@ import {
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import { cn } from "@/lib/utils";
+import parchmentLetter from "@/assets/studio-v3/reveal-letter-parchment.jpg";
+
+// Roman numerals for chapter markers — the reveal reads like a bound book,
+// not a checklist. Falls back to arabic beyond XII so we never render blank.
+const ROMAN = [
+  "I", "II", "III", "IV", "V", "VI",
+  "VII", "VIII", "IX", "X", "XI", "XII",
+];
+function romanFor(i: number): string {
+  return ROMAN[i] ?? String(i + 1);
+}
 
 export interface FinalRevealStoryProps {
   readonly state: StudioV3State;
