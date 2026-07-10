@@ -94,6 +94,11 @@ import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import { RouteLegend } from "@/components/studio-v3/RouteLegend";
+import { ApprovalBadge } from "@/components/studio-v3/ApprovalBadge";
+import {
+  validateItinerary,
+  type ValidationStatus,
+} from "@/lib/studio-v3/itinerary-validation";
 
 // Lazy — Leaflet ships only when the reveal mounts.
 const BuilderMap = lazy(() =>
