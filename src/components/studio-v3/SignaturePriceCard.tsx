@@ -1350,22 +1350,18 @@ export function SignaturePriceCard({
           <button
             type="button"
             onClick={onSecure}
+            data-total-eur={partyTotalEur ?? totalEur ?? ""}
+            data-party-total-eur={partyTotalEur ?? ""}
             className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
           >
-            Yes — reserve
-            {partyTotalEur != null
-              ? ` · €${partyTotalEur}`
-              : totalEur != null
-                ? ` · €${totalEur} /pp`
-                : ""}{" "}
-            <ArrowRight size={14} aria-hidden />
+            See my signature story <ArrowRight size={14} aria-hidden />
           </button>
           <p
             className="mt-1.5 text-center text-[9.5px] uppercase tracking-[0.22em]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
-            Secure checkout · Cancellation terms shown before you pay
+            Nothing is booked yet · Confirm on the next step
           </p>
         </div>
       ) : null}
