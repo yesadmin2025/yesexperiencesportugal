@@ -7,9 +7,9 @@
  * PayPal, Klarna, Multibanco, MB WAY, Revolut Pay, Apple Pay, Google Pay.
  *
  * Palette (locked):
- *   - Badge background: var(--ivory) (Warm Ivory #FAF8F3)
+ *   - Badge background: var(--ivory) (Warm Ivory var(--ivory))
  *   - Badge hairline:   color-mix(var(--charcoal) 10%)
- *   - Mark color:       var(--charcoal) (#2E2E2E) via currentColor
+ *   - Mark color:       var(--charcoal) (var(--charcoal)) via currentColor
  *
  * Inline SVGs — no external requests, layout-stable, uniform h-4 marks.
  */
