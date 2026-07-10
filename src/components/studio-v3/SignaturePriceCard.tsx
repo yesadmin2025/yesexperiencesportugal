@@ -45,14 +45,34 @@ function usdToEurAnchor(usd: number): number {
 export interface SelectedAddOnSummaryItem {
   id: string;
   label: string;
+  /**
+   * Legacy per-person anchor for this add-on. Retained for backward
+   * compatibility with checkout code that still scales add-ons by
+   * `guests`. New code should read `amount` / `perUnit` / `unit`.
+   */
   priceEur: number;
   durationMinutes: number;
   pricePctOfBase: number;
+  /** Unit-aware per-unit price (per_person → per guest, etc.). */
+  perUnit: number;
+  /** Unit-aware line total for the current party size. */
+  amount: number;
+  /** How the add-on is billed. */
+  unit: AddOnPricingUnit;
+  /** Human unit label (e.g. "per guest", "per group"). */
+  unitLabel: string;
 }
 
 export interface SelectedAddOnSummary {
   ids: string[];
+  /**
+   * Legacy per-person total (sum of `priceEur`). Checkout code that
+   * scales add-ons by guest count still reads this; new code should
+   * prefer `partyTotalEur` which is already unit-aware.
+   */
   totalEur: number;
+  /** Unit-aware party total = sum of `items[].amount`. */
+  partyTotalEur: number;
   totalMinutes: number;
   items: SelectedAddOnSummaryItem[];
 }
