@@ -1,0 +1,66 @@
+/**
+ * signature-day-copy.ts
+ *
+ * Single source of truth for user-facing copy on the Signature Day reveal.
+ * Introduced in Step 6 of the post-builder journey plan.
+ *
+ * Non-negotiable rules (see plan §G):
+ *   - Never use "Everything included" or "All entrances included" on the
+ *     Studio reveal path. Use INCLUSION_HEADER + INCLUSION_FOOTNOTE.
+ *   - Add-on line items always display their pricing unit ("per guest",
+ *     "per group", "per vehicle", or flat) — enforced by SignaturePriceCard
+ *     via addOnEurFor(). Copy here is the label side of that contract.
+ *   - No invented superlatives, no comparisons to competitors, no invented
+ *     stops or partners. All strings here describe operational truth only.
+ *
+ * All strings are const so they can be imported by tests to assert copy
+ * drift and by SEO checks without duplicating literals.
+ */
+
+export const INCLUSION_HEADER = "Included in your selected itinerary" as const;
+
+export const INCLUSION_FOOTNOTE =
+  "Optional additions are priced separately and shown before checkout." as const;
+
+export const APPROVAL_LABELS = {
+  approved: "YES Approved",
+  review: "Route being reviewed",
+  reject: "Preliminary itinerary",
+  incomplete: "Preliminary itinerary",
+} as const;
+
+export const CTA_PRIMARY = "Continue with my Signature Day" as const;
+export const CTA_REBALANCE = "Rebalance this day" as const;
+export const CTA_REFINE = "Adjust the moments" as const;
+export const CTA_READ_FULL_STORY = "Read the full story" as const;
+export const CTA_SHOW_DRIVING = "Show driving details" as const;
+export const CTA_HIDE_DRIVING = "Hide driving details" as const;
+export const CTA_SEE_MORE_ADDONS = "See more options" as const;
+export const CTA_SEE_INCLUSIONS = "See what's included" as const;
+
+export const REASSURANCE_DEFAULT: ReadonlyArray<{
+  readonly key: string;
+  readonly label: string;
+  readonly detail: string;
+}> = [
+  {
+    key: "private-guide",
+    label: "Private guide",
+    detail: "A licensed local host, only for your party.",
+  },
+  {
+    key: "private-transport",
+    label: "Private transport",
+    detail: "Door-to-door, no shared vans.",
+  },
+  {
+    key: "real-operator",
+    label: "Real local operator",
+    detail: "Every stop is run by the people we already work with.",
+  },
+  {
+    key: "flexible",
+    label: "Flexible on the day",
+    detail: "Small changes are welcome — just tell your guide.",
+  },
+];
