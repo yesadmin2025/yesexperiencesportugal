@@ -36,13 +36,15 @@ const mobileSocialLinks = [
   },
 ];
 
-const mobileLinks = desktopLinks;
-
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
+  const desktopLinks = useDesktopLinks();
+  const mobilePrimaryLinks = desktopLinks;
+  const mobileSecondaryLinks = useMobileSecondaryLinks();
+  const t = useT();
 
   // Progressive logo reveal: at the very top of the homepage we show ONLY the
   // handwritten "YES" mark. After ~24px of scroll (or on any non-home route)
