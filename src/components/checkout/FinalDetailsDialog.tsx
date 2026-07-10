@@ -478,8 +478,8 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="flex items-baseline justify-between text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
+    <div className="block">
+      <div className="flex items-baseline justify-between text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
         <span>
           {label}
           {required && (
@@ -494,8 +494,8 @@ function Field({
             {hint}
           </span>
         )}
-      </span>
+      </div>
       {children}
-    </label>
+    </div>
   );
 }
