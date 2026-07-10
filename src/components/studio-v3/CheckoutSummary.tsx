@@ -7,7 +7,8 @@
  */
 
 import * as React from "react";
-import { ArrowLeft, Lock } from "lucide-react";
+import { ArrowLeft, Download, Loader2, Lock } from "lucide-react";
+import { toast } from "sonner";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
@@ -84,6 +85,52 @@ export function CheckoutSummary({
     tour?.included && tour.included.length > 0
       ? tour.included
       : ["Private guide", "Private transport", "All confirmed entries"];
+
+  const [pdfLoading, setPdfLoading] = React.useState(false);
+  const handleDownloadPdf = async () => {
+    if (pdfLoading) return;
+    setPdfLoading(true);
+    try {
+      const [{ pdf }, { SignatureOnePager }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("./signatureOnePagerPdf"),
+      ]);
+      const blob = await pdf(
+        <SignatureOnePager
+          data={{
+            title,
+            dateLabel,
+            guests: typeof guestDetails.guests === "number" ? guestDetails.guests : 2,
+            pickupLabel,
+            languageLabel: guestDetails.language === "pt" ? "Portuguese" : "English",
+            inclusions: included,
+            additions: selectedAddOns.map((a) => ({ label: a.label, priceEur: a.priceEur })),
+            totalEur,
+            perPaxEur,
+          }}
+        />,
+      ).toBlob();
+      const url = URL.createObjectURL(blob);
+      const slug = (title || "signature-day")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "")
+        .slice(0, 60);
+      const isoBit = (guestDetails.tourDate ?? state.dateExact ?? "").replace(/[^0-9-]/g, "");
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = isoBit ? `signature-day-${slug}-${isoBit}.pdf` : `signature-day-${slug}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    } catch (err) {
+      console.error("[CheckoutSummary] PDF generation failed", err);
+      toast.error("Couldn't generate the PDF — please try again.");
+    } finally {
+      setPdfLoading(false);
+    }
+  };
 
   return (
     <section
@@ -202,6 +249,28 @@ export function CheckoutSummary({
             ) : null}
           </span>
         </div>
+      </div>
+
+      {/* One-pager PDF download */}
+      <div className="mt-6">
+        <CtaButton
+          type="button"
+          variant="ghost"
+          size="md"
+          className="w-full"
+          iconLeading={
+            pdfLoading ? (
+              <Loader2 size={14} className="animate-spin" aria-hidden />
+            ) : (
+              <Download size={14} aria-hidden />
+            )
+          }
+          onClick={handleDownloadPdf}
+          disabled={pdfLoading}
+          data-testid="studio-v3-checkout-summary-pdf"
+        >
+          {pdfLoading ? "Preparing PDF…" : "Download one-pager (PDF)"}
+        </CtaButton>
       </div>
 
       {/* Guest details recap */}

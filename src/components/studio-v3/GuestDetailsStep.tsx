@@ -37,6 +37,13 @@ export interface GuestDetailsStepProps {
   readonly submitting?: boolean;
   readonly onBack: () => void;
   readonly onSubmit: (details: GuestDetails) => Promise<void> | void;
+  /**
+   * Called once the traveller blurs a valid email. Parent owns the
+   * snapshot + email dispatch — this component only forwards the address.
+   * Debounced + deduped internally so repeated blurs of the same address
+   * never fire twice.
+   */
+  readonly onEmailBlur?: (email: string) => Promise<void> | void;
   readonly className?: string;
   readonly testId?: string;
 }
@@ -57,6 +64,7 @@ export function GuestDetailsStep({
   submitting = false,
   onBack,
   onSubmit,
+  onEmailBlur,
   className,
   testId,
 }: GuestDetailsStepProps) {
@@ -81,9 +89,32 @@ export function GuestDetailsStep({
   const [slotsMapped, setSlotsMapped] = useState(false);
   const slotsFetchToken = useRef(0);
 
+  const [storySent, setStorySent] = useState(false);
+  const sentEmailRef = useRef<string | null>(null);
+  const blurTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
     prewarmStripeScript();
   }, []);
+
+  useEffect(() => () => {
+    if (blurTimerRef.current) clearTimeout(blurTimerRef.current);
+  }, []);
+
+  const triggerEmailBlur = (raw: string) => {
+    const value = raw.trim().toLowerCase();
+    if (!onEmailBlur || !isEmail(value)) return;
+    if (sentEmailRef.current === value) return;
+    if (blurTimerRef.current) clearTimeout(blurTimerRef.current);
+    blurTimerRef.current = setTimeout(() => {
+      sentEmailRef.current = value;
+      Promise.resolve(onEmailBlur(value))
+        .then(() => setStorySent(true))
+        .catch(() => {
+          // silent — email dispatch never blocks reservation flow
+        });
+    }, 400);
+  };
 
   // Fetch availability whenever date or tour changes.
   useEffect(() => {
@@ -227,11 +258,22 @@ export function GuestDetailsStep({
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (storySent && e.target.value.trim().toLowerCase() !== sentEmailRef.current) {
+                  setStorySent(false);
+                }
+              }}
+              onBlur={(e) => triggerEmailBlur(e.target.value)}
               className={inputClass}
               autoComplete="email"
               inputMode="email"
             />
+            {storySent ? (
+              <p className="mt-1.5 text-[11px] italic text-[color:var(--teal)]">
+                Your Signature Story is on its way to your inbox.
+              </p>
+            ) : null}
           </Field>
           <Field label="Phone / WhatsApp" required>
             <input
