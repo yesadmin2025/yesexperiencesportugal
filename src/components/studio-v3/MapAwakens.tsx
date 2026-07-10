@@ -604,25 +604,10 @@ export function MapAwakens({
               Personalise a few details <ArrowRight size={14} aria-hidden />
             </button>
 
-            {onReshape ? (
-              <div className="mt-3">
-                <button
-                  type="button"
-                  onClick={onReshape}
-                  data-testid="studio-v3-reshape-day"
-                  className="inline-flex items-center gap-2 px-3 py-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                  style={{
-                    color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
-                    background: "transparent",
-                    borderBottom: "1px solid color-mix(in oklab, var(--gold) 60%, transparent)",
-                  }}
-                  aria-label="Reshape this day — keep your answers, see another route"
-                >
-                  <RefreshCw size={12} aria-hidden style={{ color: "var(--gold)" }} />
-                  Reshape this day
-                </button>
-              </div>
-            ) : null}
+            {/* Reshape / secondary CTAs intentionally removed here per the
+                approved flow plan — this screen is the silent cinematic
+                reveal; all editing (including re-shape via Back → answers)
+                lives on the next screen (Refine). */}
             <p
               className="mt-3 text-[10px] uppercase tracking-[0.24em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}
