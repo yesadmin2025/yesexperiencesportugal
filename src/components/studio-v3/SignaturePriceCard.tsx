@@ -774,67 +774,11 @@ export function SignaturePriceCard({
             repeating them here added clutter and duplicated the same facts
             in two adjacent blocks. */}
 
-        {/* S2 — Smart suggestion: promote the most-relevant eligible add-on
-            as an "Often added" upsell card above the chip list. Dismissible.
-            Sourced from a real sibling Signature; never invented. */}
-        {showAddOns && suggestion ? (
-          <div
-            data-testid="studio-v3-suggested-addon"
-            data-addon-id={suggestion.id}
-            className="mt-5 mx-auto max-w-[380px] flex items-start gap-3 rounded-[4px] px-3 py-2.5 text-left"
-            style={{
-              background: "color-mix(in oklab, var(--gold) 8%, var(--ivory))",
-              border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
-            }}
-          >
-            <span className="flex-1 min-w-0">
-              <span
-                className="block text-[9.5px] uppercase tracking-[0.24em] font-bold"
-                style={{ color: "var(--gold)" }}
-              >
-                Often added
-              </span>
-              <span
-                className="mt-0.5 block text-[12.5px] font-semibold"
-                style={{ color: "var(--charcoal)" }}
-              >
-                {suggestion.label}
-              </span>
-              <span
-                className="mt-0.5 block text-[11.5px] leading-snug"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
-              >
-                {suggestion.blurb}
-              </span>
-            </span>
-            <span className="flex shrink-0 flex-col items-end gap-1.5">
-              <button
-                type="button"
-                onClick={() => toggleAddOn(suggestion.id)}
-                className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] font-semibold transition-transform duration-200 hover:-translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
-              >
-                {(() => {
-                  const line = addOnEurFor({
-                    addOn: suggestion,
-                    baseEur: priceEur ?? 0,
-                    guests: summaryGuests,
-                  });
-                  return `Add +€${line.perUnit} ${line.unitLabel}`;
-                })()}
-              </button>
-              <button
-                type="button"
-                onClick={() => setSuggestionDismissed(true)}
-                aria-label="Dismiss suggestion"
-                className="text-[10px] uppercase tracking-[0.18em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-              >
-                Not now
-              </button>
-            </span>
-          </div>
-        ) : null}
+        {/* "Often added" suggestion card removed — at 393px the pill button
+            + dismiss link squeezed the label column so hard that titles
+            wrapped one word per line, overlapping the add-on chip below.
+            The same item is already in the chip list, so the suggestion
+            was pure duplication. Selection state on the chip is enough. */}
 
         {showAddOns && hasPrice && availableAddOns.length > 0 ? (
           <fieldset
