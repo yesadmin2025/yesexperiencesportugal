@@ -23,9 +23,9 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 
-const ROOT = new URL("../..", import.meta.url).pathname;
+const ROOT = process.cwd();
 const SRC = join(ROOT, "src");
-const SELF = relative(ROOT, new URL(import.meta.url).pathname);
+const SELF = "src/__tests__/no-french-tour-language.test.ts";
 
 const IGNORE_FILES = new Set<string>([SELF]);
 
