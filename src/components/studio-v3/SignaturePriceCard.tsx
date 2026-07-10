@@ -815,7 +815,14 @@ export function SignaturePriceCard({
                 className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] font-semibold transition-transform duration-200 hover:-translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
               >
-                Add +€{addOnEurFromBase(priceEur ?? 0, suggestion.pricePctOfBase)}
+                {(() => {
+                  const line = addOnEurFor({
+                    addOn: suggestion,
+                    baseEur: priceEur ?? 0,
+                    guests: summaryGuests,
+                  });
+                  return `Add +€${line.perUnit} ${line.unitLabel}`;
+                })()}
               </button>
               <button
                 type="button"
