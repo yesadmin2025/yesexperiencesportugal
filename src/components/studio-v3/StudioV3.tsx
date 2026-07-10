@@ -2732,7 +2732,7 @@ export function StoryboardHandoff({
       stops: editedStops.map((s, i) => ({
         key: `${i}-${s.label}`,
         label: s.label,
-        category: "attraction",
+        category: "village",
       })),
       legMinutes: revealLegMinutes ?? null,
     });
