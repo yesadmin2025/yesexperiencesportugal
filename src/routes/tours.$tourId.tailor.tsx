@@ -1299,7 +1299,7 @@ function TailorPage() {
                   <button
                     type="button"
                     onClick={() => setDetailsOpen(true)}
-                    disabled={checkoutPending || keptStops.length === 0}
+                    disabled={checkoutPending || summaryStops.length === 0}
                     className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
                   >
                     {checkoutPending ? (
