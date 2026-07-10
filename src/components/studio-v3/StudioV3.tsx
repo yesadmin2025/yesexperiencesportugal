@@ -261,6 +261,7 @@ const PHASE_ORDER: StudioV3Phase[] = [
   "map",
   "storyboard",
   "confirmation",
+  "guestDetails",
 ];
 
 function stepOf(phase: StudioV3Phase): number {
@@ -947,7 +948,7 @@ export function StudioV3() {
     if (typeof window === "undefined") return;
     const onHide = () => {
       if (document.visibilityState !== "hidden") return;
-      if (state.phase === "intro" || state.phase === "storyboard" || state.phase === "confirmation") return;
+      if (state.phase === "intro" || state.phase === "storyboard" || state.phase === "confirmation" || state.phase === "guestDetails") return;
       trackStep({
         stepNumber: stepOf(state.phase),
         stepKey: state.phase,
@@ -1721,7 +1722,8 @@ export function StudioV3() {
     state.phase === "feeling" ||
     state.phase === "map" ||
     state.phase === "storyboard" ||
-    state.phase === "confirmation";
+    state.phase === "confirmation" ||
+    state.phase === "guestDetails";
 
   // ComposerMap — Studio Bible §4 "live map updates as stops change".
   // Lightweight, peripheral, progressive: renders the moment the traveller
@@ -1752,7 +1754,7 @@ export function StudioV3() {
   ];
   const chromeReady = state.pickup != null && !EARLY_PHASES.includes(state.phase);
   const composerHidden =
-    !!reaction || !chromeReady || state.phase === "map" || state.phase === "storyboard" || state.phase === "confirmation";
+    !!reaction || !chromeReady || state.phase === "map" || state.phase === "storyboard" || state.phase === "confirmation" || state.phase === "guestDetails";
 
   // Phase 7D — saved-link hydration overlays. Loading spinner while we
   // fetch a `?saved=<token>` Signature; graceful card if it's missing or
