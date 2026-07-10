@@ -15,7 +15,7 @@
  * protects against a stray locale prop value at the boundary.
  */
 
-export type SupportedLocale = "pt" | "en" | "es" | "fr";
+export type SupportedLocale = "pt" | "en";
 
 type LocaleDict<K extends string> = Record<SupportedLocale, Record<K, string>>;
 
@@ -23,8 +23,7 @@ export function mergeLocale<K extends string>(
   dict: LocaleDict<K>,
   locale: SupportedLocale | string | undefined | null,
 ): Record<K, string> {
-  const safe: SupportedLocale =
-    locale === "pt" || locale === "en" || locale === "es" || locale === "fr" ? locale : "en";
+  const safe: SupportedLocale = locale === "pt" || locale === "en" ? locale : "en";
   // Per-key fallback: EN provides the safety net, locale overrides.
   return { ...dict.en, ...(dict[safe] ?? {}) } as Record<K, string>;
 }

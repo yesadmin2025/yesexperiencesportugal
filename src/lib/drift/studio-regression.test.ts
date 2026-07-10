@@ -80,16 +80,15 @@ describe("Studio Drift · i18n regression", () => {
     expect(t("cta.book", "en")).toBe("Secure Your Experience");
   });
 
-  it("exposes ES + FR for non-English speakers without falling back to PT", () => {
-    for (const loc of ["es", "fr"] as DriftLocale[]) {
+  it("exposes PT + EN only (ES/FR removed)", () => {
+    for (const loc of ["pt", "en"] as DriftLocale[]) {
       const eyebrow = t("reveal.eyebrow", loc);
-      expect(eyebrow).not.toBe(t("reveal.eyebrow", "pt"));
       expect(eyebrow.length).toBeGreaterThan(0);
     }
   });
 
   it("interpolates the traveller name into every locale's reveal eyebrow", () => {
-    for (const loc of ["en", "pt", "es", "fr"] as DriftLocale[]) {
+    for (const loc of ["en", "pt"] as DriftLocale[]) {
       const named = tName("reveal.eyebrow", loc, "Sofia");
       expect(named).toContain("Sofia");
       // Falls back gracefully when no name supplied.
@@ -99,7 +98,7 @@ describe("Studio Drift · i18n regression", () => {
   });
 
   it("never leaves a placeholder unreplaced or returns the raw key", () => {
-    for (const loc of ["en", "pt", "es", "fr"] as DriftLocale[]) {
+    for (const loc of ["en", "pt"] as DriftLocale[]) {
       for (const k of SAMPLED_KEYS) {
         const v = t(k, loc);
         expect(v).not.toBe(k);

@@ -29,7 +29,7 @@ interface Props {
   /** Hide chrome for small embedded previews inside Studio Drift. */
   chrome?: boolean;
   /** Locale for the on-map chip labels ("a tomar forma" / "shaping" etc.). */
-  locale?: "pt" | "en" | "es" | "fr";
+  locale?: "pt" | "en";
 }
 
 const CHIP_I18N = {
@@ -52,26 +52,6 @@ const CHIP_I18N = {
     stopsStatic: "stops",
     mapAria: "Live route map",
     outOfRange: "out of range",
-  },
-  es: {
-    live: "tomando forma",
-    stop: "momento",
-    stops: "momentos",
-    liveStatic: "ruta en vivo",
-    stopStatic: "parada",
-    stopsStatic: "paradas",
-    mapAria: "Mapa del recorrido",
-    outOfRange: "fuera de alcance",
-  },
-  fr: {
-    live: "en formation",
-    stop: "moment",
-    stops: "moments",
-    liveStatic: "itinéraire en direct",
-    stopStatic: "arrêt",
-    stopsStatic: "arrêts",
-    mapAria: "Carte de l'itinéraire",
-    outOfRange: "hors de portée",
   },
 } as const;
 

@@ -35,7 +35,7 @@ export interface GuestDetails {
   bokunAvailabilityId?: number;
   guests: number;
   pickupAddress: string;
-  language: "en" | "pt" | "es" | "fr";
+  language: "en" | "pt";
   mainContact: string;
   dietary?: string;
   mobility?: string;
@@ -343,8 +343,8 @@ export function FinalDetailsDialog({
               />
             </Field>
             <Field label="Preferred tour language" required>
-              <div className="grid grid-cols-4 border border-[color:var(--border)]">
-                {(["en", "pt", "es", "fr"] as const).map((l) => (
+              <div className="grid grid-cols-2 border border-[color:var(--border)]">
+                {(["en", "pt"] as const).map((l) => (
                   <button
                     key={l}
                     type="button"
@@ -361,6 +361,9 @@ export function FinalDetailsDialog({
                   </button>
                 ))}
               </div>
+              <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+                Spanish available on request — subject to guide availability.
+              </p>
             </Field>
           </Section>
 

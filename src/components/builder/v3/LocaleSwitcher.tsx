@@ -11,11 +11,11 @@ interface Props {
 }
 
 /**
- * Discreet floating locale switcher. PT · EN · ES · FR.
+ * Discreet floating locale switcher. PT · EN.
  * Tap-target ≥44px, stays out of the cinematic frame.
  */
 export function LocaleSwitcher({ locale, onChange, tone = "light", collapsed = false }: Props) {
-  const items: StudioLocale[] = ["pt", "en", "es", "fr"];
+  const items: StudioLocale[] = ["pt", "en"];
   const isLight = tone === "light";
   const [open, setOpen] = useState(!collapsed);
 

@@ -82,7 +82,7 @@ export type Consideration =
   | "avoid-long-walks"
   | "quiet-pace";
 
-export type Language = "en" | "pt" | "es" | "fr" | "other";
+export type Language = "en" | "pt" | "es" | "other";
 
 export type InvestmentTier = "considered" | "elevated" | "bespoke" | "open";
 

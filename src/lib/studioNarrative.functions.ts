@@ -26,14 +26,14 @@ import { rateLimit } from "./rateLimit.server";
  * a static editorial fallback. Caller never sees an error.
  */
 
-type Locale = "pt" | "en" | "es" | "fr";
+type Locale = "pt" | "en";
 type Mode = "narrative" | "proposal";
 type Stage = "invitation" | "recognition" | "emergence" | "reveal";
 
 const inputSchema = z.object({
   sessionId: z.string().min(8).max(64),
   mode: z.enum(["narrative", "proposal"]),
-  locale: z.enum(["pt", "en", "es", "fr"]).default("en"),
+  locale: z.enum(["pt", "en"]).default("en"),
   mood: z.string().max(40).nullable().optional(),
   who: z.string().max(40).nullable().optional(),
   intention: z.string().max(40).nullable().optional(),
@@ -123,58 +123,6 @@ const NARRATIVE_FALLBACKS: Record<Locale, Record<Stage, string[]>> = {
       "Um dia feito do que já aprecia — e um pouco de espaço para vaguear.",
     ],
   },
-  es: {
-    invitation: [
-      "La costa guarda sus mañanas lentas, sal secándose en la piedra.",
-      "El viento de los pinares atraviesa la tarde, sin prisa.",
-      "Los azulejos sostienen la luz un poco más aquí.",
-      "La tarde se posa sobre la piedra antigua como un suspiro lento.",
-    ],
-    recognition: [
-      "Una mesa de madera espera a la sombra de los alcornoques.",
-      "Sal secándose en las tablas, junto a la marea tardía.",
-      "Pan partido sin prisa, copas llenas sin ceremonia.",
-      "Viñas quietas, almuerzo largo, el día se estira por sí solo.",
-    ],
-    emergence: [
-      "Sol tardío en un café de azulejos, una copa de vinho verde, sin hora.",
-      "Acantilados que caen, un barco trazando la línea de la bahía.",
-      "Piedra fresca, patio abierto, un único limonero.",
-      "Una travesía en ferry, el río ancho bajo la luz de la tarde.",
-    ],
-    reveal: [
-      "Parece el tipo de día adecuado — lento, con sal, generoso.",
-      "El día está hecho: almuerzos largos, aire de mar, sin prisas.",
-      "Mesa tranquila, tarde larga, la costa observando desde abajo.",
-      "Un día hecho de lo que usted aprecia — con espacio para vagar.",
-    ],
-  },
-  fr: {
-    invitation: [
-      "La côte garde ses matins lents, le sel sèche sur la pierre.",
-      "Le vent des pins traverse l'après-midi, sans hâte.",
-      "Les façades en azulejos retiennent la lumière un peu plus.",
-      "L'après-midi se pose sur la pierre comme un souffle lent.",
-    ],
-    recognition: [
-      "Une table en bois attend à l'ombre des chênes-lièges.",
-      "Du sel séchant sur les planches, près de la marée tardive.",
-      "Du pain rompu sans hâte, des verres remplis sans cérémonie.",
-      "Vignes calmes, déjeuner long, la journée s'étire d'elle-même.",
-    ],
-    emergence: [
-      "Soleil tardif sur un café aux azulejos, un verre de vinho verde, sans heure.",
-      "Falaises qui tombent, un bateau dessine la baie.",
-      "Pierre fraîche, cour ouverte, un seul citronnier.",
-      "Une traversée en ferry, le fleuve large dans la lumière de l'après-midi.",
-    ],
-    reveal: [
-      "Cela ressemble à la bonne journée — lente, salée, généreuse.",
-      "La journée est tracée : longs déjeuners, air marin, sans hâte.",
-      "Table calme, après-midi long, la côte qui regarde d'en bas.",
-      "Une journée faite de ce que vous aimez déjà — avec un peu d'espace.",
-    ],
-  },
 };
 
 const PROPOSAL_FALLBACKS: Record<Locale, { titles: string[]; subtitleTemplates: string[] }> = {
@@ -206,34 +154,6 @@ const PROPOSAL_FALLBACKS: Record<Locale, { titles: string[]; subtitleTemplates: 
       "Luz tardia, almoços generosos, a estrada no seu próprio passo.",
     ],
   },
-  es: {
-    titles: [
-      "Entre Sal y Viñas",
-      "La Mesa Atlántica",
-      "Marea Lenta",
-      "La Tarde Larga",
-      "Corcho, Mar, Luz Tardía",
-    ],
-    subtitleTemplates: [
-      "Un día hecho de mesas lentas, aire de mar y tardes largas.",
-      "Viñas tranquilas, costa abierta, una mesa esperando a la sombra.",
-      "Luz tardía, almuerzos generosos, la carretera a su propio ritmo.",
-    ],
-  },
-  fr: {
-    titles: [
-      "Entre Sel et Vignes",
-      "La Table Atlantique",
-      "Marée Lente",
-      "L'Après-midi Long",
-      "Liège, Mer, Lumière Tardive",
-    ],
-    subtitleTemplates: [
-      "Une journée faite de tables lentes, d'air marin et de longs après-midis.",
-      "Vignes tranquilles, côte ouverte, une table qui attend à l'ombre.",
-      "Lumière tardive, déjeuners généreux, la route à son propre rythme.",
-    ],
-  },
 };
 
 function pickStable<T>(arr: T[], seed: string): T {
@@ -260,13 +180,7 @@ function proposalFallback(
   const title = pickStable(pack.titles, seed);
   let subtitle = pickStable(pack.subtitleTemplates, seed + "_sub");
   if (travellerName) {
-    if (locale === "pt")
-      subtitle = `${travellerName}, ${subtitle.charAt(0).toLowerCase()}${subtitle.slice(1)}`;
-    else if (locale === "es")
-      subtitle = `${travellerName}, ${subtitle.charAt(0).toLowerCase()}${subtitle.slice(1)}`;
-    else if (locale === "fr")
-      subtitle = `${travellerName}, ${subtitle.charAt(0).toLowerCase()}${subtitle.slice(1)}`;
-    else subtitle = `${travellerName}, ${subtitle.charAt(0).toLowerCase()}${subtitle.slice(1)}`;
+    subtitle = `${travellerName}, ${subtitle.charAt(0).toLowerCase()}${subtitle.slice(1)}`;
   }
   return { title, subtitle };
 }
@@ -323,9 +237,7 @@ Register: Cereal Magazine · Aman Journals · Kinfolk.
 Return ONLY the two lines — no quotes, no labels, no prefixes.`;
 
 function localeName(loc: Locale): string {
-  return { en: "English", pt: "European Portuguese", es: "Spanish (Spain)", fr: "French (France)" }[
-    loc
-  ];
+  return { en: "English", pt: "European Portuguese" }[loc];
 }
 
 function buildUserPrompt(data: z.infer<typeof inputSchema>): string {

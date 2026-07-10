@@ -51,20 +51,6 @@ const COPY: Record<
     perGuest: "per guest",
     cta: "Open experience",
   },
-  es: {
-    eyebrow: "también encaja con usted",
-    subtitle: "Otras experiencias reales con el mismo ritmo.",
-    from: "desde",
-    perGuest: "por persona",
-    cta: "Ver experiencia",
-  },
-  fr: {
-    eyebrow: "vous correspond aussi",
-    subtitle: "D'autres expériences réelles au même rythme.",
-    from: "à partir de",
-    perGuest: "par personne",
-    cta: "Découvrir",
-  },
 };
 
 /** Map the drift style dimension onto the SignatureTour tags we score against. */

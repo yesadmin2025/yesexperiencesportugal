@@ -485,63 +485,23 @@ function chapterSortKey(
 }
 
 const PROFILE_LABELS: Record<string, Record<DriftLocale, string>> = {
-  solo: { en: "solo", pt: "a sós", es: "a solas", fr: "seul" },
-  couple: { en: "for two", pt: "a dois", es: "para dos", fr: "à deux" },
-  group: { en: "with your people", pt: "com os seus", es: "con su gente", fr: "avec vos proches" },
-  lisbon: {
-    en: "from Lisbon",
-    pt: "a partir de Lisboa",
-    es: "desde Lisboa",
-    fr: "depuis Lisbonne",
-  },
-  centro: {
-    en: "through Central Portugal",
-    pt: "pelo Centro",
-    es: "por el Centro",
-    fr: "dans le Centre",
-  },
-  alentejo: { en: "in Alentejo", pt: "no Alentejo", es: "en Alentejo", fr: "en Alentejo" },
-  near: {
-    en: "close and slow",
-    pt: "perto e devagar",
-    es: "cerca y despacio",
-    fr: "proche et lent",
-  },
-  far: {
-    en: "a full day out",
-    pt: "um dia inteiro fora",
-    es: "un día completo fuera",
-    fr: "une journée entière dehors",
-  },
-  anywhere: {
-    en: "where it is worth it",
-    pt: "onde valer a pena",
-    es: "donde valga la pena",
-    fr: "là où cela vaut le détour",
-  },
-  slow: { en: "slow", pt: "lento", es: "lento", fr: "lent" },
-  vivid: { en: "vivid", pt: "vivo", es: "vivo", fr: "vivant" },
-  coast: { en: "Atlantic", pt: "Atlântico", es: "Atlántico", fr: "Atlantique" },
-  heritage: { en: "old stone", pt: "pedra antiga", es: "piedra antigua", fr: "pierre ancienne" },
-  wine: {
-    en: "vineyard ritual",
-    pt: "ritual da vinha",
-    es: "ritual de viñedo",
-    fr: "rituel des vignes",
-  },
-  table: { en: "long table", pt: "mesa longa", es: "mesa larga", fr: "longue table" },
-  intimate: {
-    en: "quietly private",
-    pt: "discreto e privado",
-    es: "discreto y privado",
-    fr: "discret et privé",
-  },
-  shared: {
-    en: "generously shared",
-    pt: "generosamente partilhado",
-    es: "generosamente compartido",
-    fr: "généreusement partagé",
-  },
+  solo: { en: "solo", pt: "a sós" },
+  couple: { en: "for two", pt: "a dois" },
+  group: { en: "with your people", pt: "com os seus" },
+  lisbon: { en: "from Lisbon", pt: "a partir de Lisboa" },
+  centro: { en: "through Central Portugal", pt: "pelo Centro" },
+  alentejo: { en: "in Alentejo", pt: "no Alentejo" },
+  near: { en: "close and slow", pt: "perto e devagar" },
+  far: { en: "a full day out", pt: "um dia inteiro fora" },
+  anywhere: { en: "where it is worth it", pt: "onde valer a pena" },
+  slow: { en: "slow", pt: "lento" },
+  vivid: { en: "vivid", pt: "vivo" },
+  coast: { en: "Atlantic", pt: "Atlântico" },
+  heritage: { en: "old stone", pt: "pedra antiga" },
+  wine: { en: "vineyard ritual", pt: "ritual da vinha" },
+  table: { en: "long table", pt: "mesa longa" },
+  intimate: { en: "quietly private", pt: "discreto e privado" },
+  shared: { en: "generously shared", pt: "generosamente partilhado" },
 };
 
 function labelValue(value: string | undefined, locale: DriftLocale): string | null {
@@ -570,18 +530,6 @@ function predictiveCue(confidence: number, locale: DriftLocale): string {
       : confidence >= 0.48
         ? "isto encaixa a seguir"
         : "talvez também goste disto";
-  if (locale === "es")
-    return confidence >= 0.72
-      ? "esto sigue con naturalidad"
-      : confidence >= 0.48
-        ? "esto encaja a continuación"
-        : "quizá también le guste";
-  if (locale === "fr")
-    return confidence >= 0.72
-      ? "cela vient naturellement"
-      : confidence >= 0.48
-        ? "cela s’enchaîne bien"
-        : "vous pourriez aussi aimer";
   return confidence >= 0.72
     ? "this follows naturally"
     : confidence >= 0.48

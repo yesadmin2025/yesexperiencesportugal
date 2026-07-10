@@ -26,7 +26,7 @@ const profileSchema = z
     social: z.enum(["intimate", "shared"]).optional(),
     confidence: z.record(z.string(), z.number()).optional(),
     // Predictive + i18n hints (all optional, never invent facts):
-    locale: z.enum(["pt", "en", "es", "fr"]).optional(),
+    locale: z.enum(["pt", "en"]).optional(),
     tonalRegister: z.enum(["intimate", "expansive", "playful", "ritual"]).optional(),
     intensityPreference: z.number().min(1).max(5).optional(),
     sessionId: z.string().min(8).max(64),
