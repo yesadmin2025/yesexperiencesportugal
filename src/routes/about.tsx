@@ -16,7 +16,7 @@ import {
 
 const TITLE = "About YES Experiences Portugal | Founder-Led Private Travel";
 const DESCRIPTION =
-  "Founder-led private tour operator based in Sesimbra since 2022. Meet the local team behind YES — licensed RNAAT nº 31/2023, designing private journeys across Portugal.";
+  "Founder-led private tour operator in Sesimbra since 2022. Meet the team behind YES — licensed RNAAT nº 31/2023, designing private journeys across Portugal.";
 
 
 export const Route = createFileRoute("/about")({
