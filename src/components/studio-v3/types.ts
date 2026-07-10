@@ -278,6 +278,18 @@ export interface StudioV3State {
    * caps or the no-invention rule.
    */
   rerollCount: number;
+  /**
+   * guestDraft — persisted Guest Details form values so back-nav from
+   * checkoutSummary/finalReveal preserves what the traveller already typed.
+   * Null until the guestDetails phase captures anything.
+   */
+  guestDraft: {
+    fullName?: string;
+    email?: string;
+    phone?: string;
+    pickupAddress?: string;
+    guideNotes?: string;
+  } | null;
 }
 
 export const INITIAL_STATE: StudioV3State = {
