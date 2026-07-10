@@ -914,8 +914,11 @@ export function SignaturePriceCard({
               : null}
             <ul className="flex flex-col gap-2">
               {availableAddOns.map((a) => {
-                const eur = addOnEurFromBase(priceEur ?? 0, a.pricePctOfBase);
-
+                const line = addOnEurFor({
+                  addOn: a,
+                  baseEur: priceEur ?? 0,
+                  guests: summaryGuests,
+                });
                 const selected = selectedAddOnIds.includes(a.id);
                 const pending = pendingAddOnId === a.id;
                 const fits = fitsBudgetById[a.id] !== false;
