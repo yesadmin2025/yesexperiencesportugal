@@ -15,20 +15,21 @@ const stop = (
   key: string,
   label: string,
   coords: { lat: number; lng: number },
+  category: ValidationStop["category"] = "viewpoint",
 ): ValidationStop => ({
   key,
   label,
-  category: "viewpoint",
+  category,
   coords,
 });
 
 describe("planAddonInsertion", () => {
   const baseStops: ValidationStop[] = [
-    stop("lx", "Lisbon pickup", LISBON),
-    stop("az", "Azeitão wine estate", AZEITAO),
-    stop("ar", "Arrábida viewpoint", ARRABIDA_VP),
-    stop("ss", "Sesimbra lunch", SESIMBRA),
-    stop("lx-back", "Lisbon drop-off", LISBON),
+    stop("lx", "Lisbon pickup", LISBON, "viewpoint"),
+    stop("az", "Azeitão wine estate", AZEITAO, "winery"),
+    stop("ar", "Arrábida viewpoint", ARRABIDA_VP, "viewpoint"),
+    stop("ss", "Sesimbra lunch", SESIMBRA, "lunch"),
+    stop("lx-back", "Lisbon drop-off", LISBON, "viewpoint"),
   ];
   // Real-ish minutes / km for the base itinerary. 4 legs, total ≈ 155 min.
   const baseLegMinutes = [45, 20, 25, 55];
