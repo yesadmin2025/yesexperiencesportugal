@@ -19,6 +19,7 @@ import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
 import { Route as ReviewsRouteImport } from './routes/reviews'
+import { Route as PtRouteImport } from './routes/pt'
 import { Route as ProposalsRouteImport } from './routes/proposals'
 import { Route as ProposalInPortugalRouteImport } from './routes/proposal-in-portugal'
 import { Route as PrivateWineTourLisbonRouteImport } from './routes/private-wine-tour-lisbon'
@@ -52,6 +53,7 @@ import { Route as ArrabidaDayTripFromLisbonRouteImport } from './routes/arrabida
 import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentejo-wine-tour-from-lisbon'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PtIndexRouteImport } from './routes/pt.index'
 import { Route as LocalStoriesIndexRouteImport } from './routes/local-stories.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
@@ -59,6 +61,7 @@ import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as QaHeroRouteImport } from './routes/qa.hero'
+import { Route as PtSplatRouteImport } from './routes/pt.$'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
 import { Route as Itineraries10DayPrivatePortugalTourRouteImport } from './routes/itineraries.10-day-private-portugal-tour'
 import { Route as ITokenRouteImport } from './routes/i.$token'
@@ -156,6 +159,11 @@ const SintraDayTourFromLisbonRoute = SintraDayTourFromLisbonRouteImport.update({
 const ReviewsRoute = ReviewsRouteImport.update({
   id: '/reviews',
   path: '/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PtRoute = PtRouteImport.update({
+  id: '/pt',
+  path: '/pt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProposalsRoute = ProposalsRouteImport.update({
@@ -326,6 +334,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PtIndexRoute = PtIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PtRoute,
+} as any)
 const LocalStoriesIndexRoute = LocalStoriesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -360,6 +373,11 @@ const QaHeroRoute = QaHeroRouteImport.update({
   id: '/qa/hero',
   path: '/qa/hero',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PtSplatRoute = PtSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => PtRoute,
 } as any)
 const LocalStoriesSlugRoute = LocalStoriesSlugRouteImport.update({
   id: '/$slug',
@@ -644,6 +662,7 @@ export interface FileRoutesByFullPath {
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposal-in-portugal': typeof ProposalInPortugalRoute
   '/proposals': typeof ProposalsRoute
+  '/pt': typeof PtRouteWithChildren
   '/reviews': typeof ReviewsRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -689,6 +708,7 @@ export interface FileRoutesByFullPath {
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
+  '/pt/$': typeof PtSplatRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
@@ -696,6 +716,7 @@ export interface FileRoutesByFullPath {
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
+  '/pt/': typeof PtIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -788,6 +809,7 @@ export interface FileRoutesByTo {
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
+  '/pt/$': typeof PtSplatRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
@@ -795,6 +817,7 @@ export interface FileRoutesByTo {
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/local-stories': typeof LocalStoriesIndexRoute
+  '/pt': typeof PtIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -844,6 +867,7 @@ export interface FileRoutesById {
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposal-in-portugal': typeof ProposalInPortugalRoute
   '/proposals': typeof ProposalsRoute
+  '/pt': typeof PtRouteWithChildren
   '/reviews': typeof ReviewsRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -889,6 +913,7 @@ export interface FileRoutesById {
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
+  '/pt/$': typeof PtSplatRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
@@ -896,6 +921,7 @@ export interface FileRoutesById {
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
+  '/pt/': typeof PtIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -946,6 +972,7 @@ export interface FileRouteTypes {
     | '/private-wine-tour-lisbon'
     | '/proposal-in-portugal'
     | '/proposals'
+    | '/pt'
     | '/reviews'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
@@ -991,6 +1018,7 @@ export interface FileRouteTypes {
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
+    | '/pt/$'
     | '/qa/hero'
     | '/qa/mobile'
     | '/review/$token'
@@ -998,6 +1026,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/admin/'
     | '/local-stories/'
+    | '/pt/'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1090,6 +1119,7 @@ export interface FileRouteTypes {
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
+    | '/pt/$'
     | '/qa/hero'
     | '/qa/mobile'
     | '/review/$token'
@@ -1097,6 +1127,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/admin'
     | '/local-stories'
+    | '/pt'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1145,6 +1176,7 @@ export interface FileRouteTypes {
     | '/private-wine-tour-lisbon'
     | '/proposal-in-portugal'
     | '/proposals'
+    | '/pt'
     | '/reviews'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
@@ -1190,6 +1222,7 @@ export interface FileRouteTypes {
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
+    | '/pt/$'
     | '/qa/hero'
     | '/qa/mobile'
     | '/review/$token'
@@ -1197,6 +1230,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/admin/'
     | '/local-stories/'
+    | '/pt/'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1246,6 +1280,7 @@ export interface RootRouteChildren {
   PrivateWineTourLisbonRoute: typeof PrivateWineTourLisbonRoute
   ProposalInPortugalRoute: typeof ProposalInPortugalRoute
   ProposalsRoute: typeof ProposalsRoute
+  PtRoute: typeof PtRouteWithChildren
   ReviewsRoute: typeof ReviewsRoute
   SintraDayTourFromLisbonRoute: typeof SintraDayTourFromLisbonRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -1379,6 +1414,13 @@ declare module '@tanstack/react-router' {
       path: '/reviews'
       fullPath: '/reviews'
       preLoaderRoute: typeof ReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pt': {
+      id: '/pt'
+      path: '/pt'
+      fullPath: '/pt'
+      preLoaderRoute: typeof PtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/proposals': {
@@ -1612,6 +1654,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pt/': {
+      id: '/pt/'
+      path: '/'
+      fullPath: '/pt/'
+      preLoaderRoute: typeof PtIndexRouteImport
+      parentRoute: typeof PtRoute
+    }
     '/local-stories/': {
       id: '/local-stories/'
       path: '/'
@@ -1660,6 +1709,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/qa/hero'
       preLoaderRoute: typeof QaHeroRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/pt/$': {
+      id: '/pt/$'
+      path: '/$'
+      fullPath: '/pt/$'
+      preLoaderRoute: typeof PtSplatRouteImport
+      parentRoute: typeof PtRoute
     }
     '/local-stories/$slug': {
       id: '/local-stories/$slug'
@@ -2014,6 +2070,18 @@ const LocalStoriesRouteWithChildren = LocalStoriesRoute._addFileChildren(
   LocalStoriesRouteChildren,
 )
 
+interface PtRouteChildren {
+  PtSplatRoute: typeof PtSplatRoute
+  PtIndexRoute: typeof PtIndexRoute
+}
+
+const PtRouteChildren: PtRouteChildren = {
+  PtSplatRoute: PtSplatRoute,
+  PtIndexRoute: PtIndexRoute,
+}
+
+const PtRouteWithChildren = PtRoute._addFileChildren(PtRouteChildren)
+
 interface StudioV2RouteChildren {
   StudioV2ITokenRoute: typeof StudioV2ITokenRoute
 }
@@ -2072,6 +2140,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivateWineTourLisbonRoute: PrivateWineTourLisbonRoute,
   ProposalInPortugalRoute: ProposalInPortugalRoute,
   ProposalsRoute: ProposalsRoute,
+  PtRoute: PtRouteWithChildren,
   ReviewsRoute: ReviewsRoute,
   SintraDayTourFromLisbonRoute: SintraDayTourFromLisbonRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
@@ -2140,13 +2209,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

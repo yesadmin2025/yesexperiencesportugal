@@ -6,6 +6,7 @@ import {
   createRootRoute,
   HeadContent,
   Scripts,
+  useRouterState,
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -19,6 +20,8 @@ import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
 import { installAnalyticsAttrs } from "@/lib/analytics";
+import { LocaleProvider } from "@/i18n/locale-context";
+import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
 
 /* ──────────────────────────────────────────────────────────────────
  * App readiness flag — sets `window.__APP_READY__ = true` and fires
@@ -87,21 +90,32 @@ function NotFoundComponent() {
   if (typeof window !== "undefined" && window.location.pathname === "/index") {
     return <Navigate to="/" replace />;
   }
+  const isPt =
+    typeof window !== "undefined" && window.location.pathname.startsWith("/pt");
+  const strings = isPt
+    ? {
+        title: "Página não encontrada",
+        body: "A página que procura não existe ou foi movida.",
+        cta: "Ir para o início",
+      }
+    : {
+        title: "Page not found",
+        body: "The page you're looking for doesn't exist or has been moved.",
+        cta: "Go home",
+      };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">{strings.title}</h2>
+        <p className="mt-2 text-sm text-muted-foreground">{strings.body}</p>
         <div className="mt-6">
           <Link
-            to="/"
+            to={isPt ? "/pt" : "/"}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Go home
+            {strings.cta}
           </Link>
         </div>
       </div>
@@ -205,8 +219,10 @@ export const Route = createRootRoute({
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { locale } = parseLocaleFromPath(pathname);
   return (
-    <html lang="en">
+    <html lang={LOCALE_BCP47[locale]}>
       <head>
         <HeadContent />
       </head>
@@ -242,6 +258,8 @@ function RootComponent() {
   useEffect(() => installClientErrorLogger(), []);
   useEffect(() => installDevHardReload(), []);
   useEffect(() => installAnalyticsAttrs(), []);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { locale } = parseLocaleFromPath(pathname);
   // Single QueryClient per browser session — keeps SignaturePriceCard and
 
   // any future useQuery hook resolvable without each route wiring its own.
@@ -250,9 +268,11 @@ function RootComponent() {
   );
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
-      <WhatsAppSupportButton />
-      <Toaster position="bottom-left" richColors closeButton />
+      <LocaleProvider locale={locale}>
+        <Outlet />
+        <WhatsAppSupportButton />
+        <Toaster position="bottom-left" richColors closeButton />
+      </LocaleProvider>
     </QueryClientProvider>
   );
 }
