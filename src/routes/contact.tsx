@@ -159,6 +159,8 @@ function Page() {
                     first: String(data.get("first") ?? ""),
                     last: String(data.get("last") ?? ""),
                     email: String(data.get("email") ?? ""),
+                    requestType: String(data.get("requestType") ?? ""),
+                    travelDate: String(data.get("travelDate") ?? ""),
                     message: String(data.get("message") ?? ""),
                   });
                   if (!parsed.success) {
@@ -174,6 +176,8 @@ function Page() {
                         first: parsed.data.first,
                         last: parsed.data.last,
                         email: parsed.data.email,
+                        requestType: parsed.data.requestType,
+                        travelDate: parsed.data.travelDate ?? null,
                         message: parsed.data.message,
                         source: "contact-page",
                         locale: typeof navigator !== "undefined" ? navigator.language : null,
@@ -187,7 +191,11 @@ function Page() {
                     setStatus("success");
                     setSent(true);
                     void import("@/lib/analytics-ga4").then((m) =>
-                      m.gaGenerateLead({ leadSource: "contact_form", method: "email" }),
+                      m.gaGenerateLead({
+                        leadSource: "contact_form",
+                        method: "email",
+                        requestType: parsed.data.requestType,
+                      }),
                     );
                   } catch (err) {
                     console.error("[contact] submit failed", err);
@@ -205,6 +213,18 @@ function Page() {
                   <Field label="Last Name" name="last" />
                 </div>
                 <Field label="Email" name="email" type="email" />
+                <SelectField
+                  label="What can we help you plan?"
+                  name="requestType"
+                  options={REQUEST_TYPES}
+                />
+                <Field
+                  label="When are you travelling? (optional)"
+                  name="travelDate"
+                  type="date"
+                  required={false}
+                  min={new Date().toISOString().slice(0, 10)}
+                />
                 <Field label="What are you dreaming of?" name="message" textarea />
                 {errorMsg ? (
                   <p className="text-[13px] text-red-700" role="alert">
