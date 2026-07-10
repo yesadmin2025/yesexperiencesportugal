@@ -16,10 +16,30 @@ import {
   PHONE_DISPLAY,
 } from "@/config/business-nap";
 
+const REQUEST_TYPES = [
+  { value: "private_day", label: "A private day" },
+  { value: "studio", label: "The Studio" },
+  { value: "multi_day", label: "A multi-day journey" },
+  { value: "proposal", label: "A proposal or celebration" },
+  { value: "corporate", label: "A corporate/group day" },
+  { value: "other", label: "Something else" },
+] as const;
+
+const requestTypeValues = REQUEST_TYPES.map((r) => r.value) as [string, ...string[]];
+
 const contactSchema = z.object({
   first: z.string().trim().min(1, "Please enter your first name").max(80),
   last: z.string().trim().min(1, "Please enter your last name").max(80),
   email: z.string().trim().toLowerCase().email("Enter a valid email").max(254),
+  requestType: z.enum(requestTypeValues as [string, ...string[]], {
+    errorMap: () => ({ message: "Please choose what we can help you plan" }),
+  }),
+  travelDate: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Enter a valid date")
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
   message: z
     .string()
     .trim()
