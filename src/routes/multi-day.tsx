@@ -23,15 +23,9 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
-// Preview pages + full PDF live directly in public/ so they can be
-// served without a CDN round-trip and reused in the mobile lightbox.
-const samplePage01 = { url: "/travel-file-sample/page-01.jpg" };
-const samplePage02 = { url: "/travel-file-sample/page-02.jpg" };
-const samplePage03 = { url: "/travel-file-sample/page-03.jpg" };
-const samplePage04 = { url: "/travel-file-sample/page-04.jpg" };
-const samplePage05 = { url: "/travel-file-sample/page-05.jpg" };
-const samplePage06 = { url: "/travel-file-sample/page-06.jpg" };
-const samplePdf = { url: "/travel-file-sample/sample.pdf" };
+// All 23 pages of the anonymised private travel file live in public/ so
+// they can be shown inline — no external PDF.
+const TOTAL_SAMPLE_PAGES = 23;
 
 export const Route = createFileRoute("/multi-day")({
   head: () => ({
