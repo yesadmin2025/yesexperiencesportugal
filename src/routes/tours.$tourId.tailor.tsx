@@ -32,6 +32,7 @@ import { evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
+import { CANCELLATION_SHORT } from "@/config/business-nap";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
 import {
   gaAddPaymentInfo,
@@ -1317,6 +1318,9 @@ function TailorPage() {
                   </p>
                   <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
                     <Lock size={10} /> Secure checkout
+                  </p>
+                  <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center leading-relaxed">
+                    {CANCELLATION_SHORT}
                   </p>
                 </div>
               </div>
