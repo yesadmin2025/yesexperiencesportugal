@@ -1,28 +1,52 @@
 /**
  * Dictionary loader — typed, SSR-safe, no runtime libraries.
  *
- * Dictionaries are plain JSON, namespaced per page or area
- * (common, nav, footer, home, studio, etc.). Each locale ships
- * the same set of namespaces; missing keys fall back to EN.
+ * Dictionaries live under `src/content/i18n/<locale>/<namespace>.json`.
+ * Any new JSON file dropped in a locale folder is picked up automatically
+ * via Vite's eager glob — no loader edit required. All namespaces merge
+ * into ONE flat dictionary per locale keyed by "namespace.key" (the JSON
+ * files themselves may either be flat or use dotted keys inside a
+ * namespace file; both are supported).
  *
- * Static imports keep tree-shaking honest and avoid dynamic-import
- * surprises during SSR on the Worker runtime.
+ * Missing keys in a non-default locale fall back to EN silently.
+ *
+ * Phase 2: ES removed. Only `en` and `pt` are shipped.
  */
 
 import type { Locale } from "./config";
-import { DEFAULT_LOCALE } from "./config";
-
-import enCommon from "@/content/i18n/en/common.json";
-import esCommon from "@/content/i18n/es/common.json";
-import ptCommon from "@/content/i18n/pt/common.json";
+import { DEFAULT_LOCALE, LOCALES } from "./config";
 
 export type Dictionary = Record<string, string>;
 
-const DICTIONARIES: Record<Locale, Dictionary> = {
-  en: { ...(enCommon as Dictionary) },
-  es: { ...(esCommon as Dictionary) },
-  pt: { ...(ptCommon as Dictionary) },
-};
+// Eager glob → bundled at build, no dynamic import cost.
+const modules = import.meta.glob("/src/content/i18n/**/*.json", {
+  eager: true,
+  import: "default",
+}) as Record<string, Record<string, string>>;
+
+function buildDictionaries(): Record<Locale, Dictionary> {
+  const out = {} as Record<Locale, Dictionary>;
+  for (const loc of LOCALES) out[loc] = {};
+
+  for (const [path, json] of Object.entries(modules)) {
+    // path is /src/content/i18n/<locale>/<namespace>.json
+    const match = path.match(/\/content\/i18n\/([^/]+)\/([^/]+)\.json$/);
+    if (!match) continue;
+    const [, locale, ns] = match;
+    if (!(LOCALES as readonly string[]).includes(locale)) continue;
+    const dict = out[locale as Locale];
+    for (const [k, v] of Object.entries(json)) {
+      // If the JSON key already starts with the namespace prefix (legacy
+      // "nav.experiences" style), keep as-is. Otherwise prefix with ns.
+      const fullKey = k.startsWith(`${ns}.`) || ns === "common" ? k : `${ns}.${k}`;
+      dict[fullKey] = String(v);
+    }
+  }
+
+  return out;
+}
+
+const DICTIONARIES: Record<Locale, Dictionary> = buildDictionaries();
 
 /** Get the merged dictionary for a locale (with EN fallback baked in). */
 export function getDictionary(locale: Locale): Dictionary {

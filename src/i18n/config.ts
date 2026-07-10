@@ -3,9 +3,13 @@
  *
  * Keep this file dependency-free; it's imported by client code, server
  * functions, the sitemap, and build-time scripts.
+ *
+ * Phase 2: LOCALES trimmed to EN + PT. Spanish (`es`) was removed as a
+ * WEBSITE locale — Spanish remains only as an optional TOUR language
+ * (see src/components/studio-v3/types.ts `Language`).
  */
 
-export const LOCALES = ["en", "es", "pt"] as const;
+export const LOCALES = ["en", "pt"] as const;
 export type Locale = (typeof LOCALES)[number];
 
 export const DEFAULT_LOCALE: Locale = "en";
@@ -13,21 +17,18 @@ export const DEFAULT_LOCALE: Locale = "en";
 /** Human-readable labels for the language switcher. */
 export const LOCALE_LABELS: Record<Locale, { short: string; long: string }> = {
   en: { short: "EN", long: "English" },
-  es: { short: "ES", long: "Español" },
   pt: { short: "PT", long: "Português" },
 };
 
 /** BCP-47 tags emitted in <html lang> and og:locale. */
 export const LOCALE_BCP47: Record<Locale, string> = {
   en: "en",
-  es: "es-ES",
   pt: "pt-PT",
 };
 
 /** og:locale values (full BCP-47 with underscore). */
 export const LOCALE_OG: Record<Locale, string> = {
   en: "en_US",
-  es: "es_ES",
   pt: "pt_PT",
 };
 
@@ -38,7 +39,7 @@ export function isLocale(value: unknown): value is Locale {
 /**
  * Build the URL prefix for a locale.
  * EN is the default and has NO prefix — clean URLs preserved.
- * Returns "" for EN, "/es" / "/pt" for others.
+ * Returns "" for EN, "/pt" for PT.
  */
 export function localePrefix(locale: Locale): string {
   return locale === DEFAULT_LOCALE ? "" : `/${locale}`;
@@ -46,11 +47,11 @@ export function localePrefix(locale: Locale): string {
 
 /**
  * Given any URL path, return its locale and the path without prefix.
- * "/es/tours/sintra" -> { locale: "es", path: "/tours/sintra" }
+ * "/pt/tours/sintra" -> { locale: "pt", path: "/tours/sintra" }
  * "/about"           -> { locale: "en", path: "/about" }
  */
 export function parseLocaleFromPath(pathname: string): { locale: Locale; path: string } {
-  const match = pathname.match(/^\/(es|pt)(\/.*|$)/);
+  const match = pathname.match(/^\/(pt)(\/.*|$)/);
   if (match) {
     return { locale: match[1] as Locale, path: match[2] || "/" };
   }
