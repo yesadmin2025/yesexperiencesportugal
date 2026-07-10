@@ -15,11 +15,12 @@ import {
   walkToReveal,
 } from "./studio-v3-walk-to-reveal";
 
-function parseEur(text: string | null | undefined): number | null {
-  if (!text) return null;
-  const m = text.match(/€\s?(\d+)/);
-  return m ? Number(m[1]) : null;
+function parseEurAttr(attr: string | null | undefined): number | null {
+  if (attr == null || attr === "") return null;
+  const n = Number(attr);
+  return Number.isFinite(n) ? n : null;
 }
+
 
 test.describe("Studio V3 — CTA labels update live with totals", () => {
   test.beforeEach(async ({ page }) => {
