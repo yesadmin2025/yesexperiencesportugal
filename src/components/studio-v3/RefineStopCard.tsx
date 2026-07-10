@@ -129,15 +129,14 @@ export function RefineStopCard({
         </div>
       ) : null}
 
-      {/* Row 3 — 44×44 action toolbar */}
+      {/* Row 3 — compact icon-only action cluster, right-aligned */}
       <div
         role="toolbar"
         aria-label={`Actions for ${label}`}
-        className="mt-4 flex items-center gap-2 pl-9 pt-3 border-t"
-        style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
+        className="mt-3 flex items-center justify-end gap-1 pl-9"
       >
         <ActionButton
-          icon={<ArrowUp size={16} aria-hidden />}
+          icon={<ArrowUp size={15} aria-hidden />}
           label="Earlier"
           ariaLabel={`Move ${label} earlier in the day`}
           disabled={isFirst || !onMoveEarlier}
@@ -145,7 +144,7 @@ export function RefineStopCard({
           testId="studio-v3-refine-earlier"
         />
         <ActionButton
-          icon={<ArrowDown size={16} aria-hidden />}
+          icon={<ArrowDown size={15} aria-hidden />}
           label="Later"
           ariaLabel={`Move ${label} later in the day`}
           disabled={isLast || !onMoveLater}
@@ -153,7 +152,7 @@ export function RefineStopCard({
           testId="studio-v3-refine-later"
         />
         <ActionButton
-          icon={<ArrowLeftRight size={16} aria-hidden />}
+          icon={<ArrowLeftRight size={15} aria-hidden />}
           label="Swap"
           ariaLabel={`Swap ${label} for another moment`}
           disabled={!canSwap || !onToggleSwap}
@@ -162,7 +161,7 @@ export function RefineStopCard({
           testId="studio-v3-refine-swap"
         />
         <ActionButton
-          icon={<X size={16} aria-hidden />}
+          icon={<X size={15} aria-hidden />}
           label="Remove"
           ariaLabel={`Remove ${label} from the day`}
           disabled={!canRemove || !onRemove}
@@ -170,6 +169,7 @@ export function RefineStopCard({
           testId="studio-v3-refine-remove"
         />
       </div>
+
 
       {/* Swap pool — expands in place */}
       {swapOpen && swapPool && swapPool.length > 0 ? (

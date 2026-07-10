@@ -29,6 +29,17 @@ import {
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import { cn } from "@/lib/utils";
+import parchmentLetter from "@/assets/studio-v3/reveal-letter-parchment.jpg";
+
+// Roman numerals for chapter markers — the reveal reads like a bound book,
+// not a checklist. Falls back to arabic beyond XII so we never render blank.
+const ROMAN = [
+  "I", "II", "III", "IV", "V", "VI",
+  "VII", "VIII", "IX", "X", "XI", "XII",
+];
+function romanFor(i: number): string {
+  return ROMAN[i] ?? String(i + 1);
+}
 
 export interface FinalRevealStoryProps {
   readonly state: StudioV3State;
@@ -117,95 +128,141 @@ export function FinalRevealStory({
       data-testid={testId ?? "studio-v3-final-reveal"}
       aria-labelledby="studio-v3-final-reveal-title"
       className={cn(
-        "w-full max-w-[620px] mx-auto px-5 pt-10 pb-[calc(env(safe-area-inset-bottom)+7rem)]",
+        "w-full max-w-[620px] mx-auto px-4 pt-6 pb-[calc(env(safe-area-inset-bottom)+7rem)]",
         className,
       )}
     >
-      {/* Hero */}
-      <header className="text-center">
-        <Eyebrow>The final story</Eyebrow>
-        <h2
-          id="studio-v3-final-reveal-title"
-          className="mt-3 text-[26px] leading-[1.15] [text-wrap:balance]"
-          style={{
-            fontFamily: "var(--font-editorial)",
-            color: "var(--charcoal)",
-            fontWeight: 500,
-          }}
-        >
-          <span className="italic" style={{ color: "var(--teal)" }}>
-            {REVEAL_TITLE}
-          </span>
-        </h2>
-        <p
-          className="mt-3 text-[15px] leading-[1.6] [text-wrap:pretty]"
-          style={{
-            color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
-            fontFamily: "var(--font-editorial)",
-          }}
-        >
-          <span className="italic">{title}</span>
-        </p>
-        {(dateLabel || guestsLabel || pickupLabel) ? (
-          <p
-            className="mt-3 text-[11px] uppercase tracking-[0.22em]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-          >
-            {[dateLabel, pickupLabel, guestsLabel].filter(Boolean).join(" · ")}
-          </p>
-        ) : null}
-        <span
-          aria-hidden
-          className="mt-6 inline-block h-px w-12"
-          style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
-        />
-      </header>
-
-      {/* Chaptered story */}
-      <ol
-        className="mt-10 space-y-8"
-        data-testid="studio-v3-final-reveal-timeline"
+      {/* Editorial "letter from a book" card */}
+      <article
+        data-testid="studio-v3-final-reveal-letter"
+        className="relative overflow-hidden rounded-[6px]"
+        style={{
+          background: "var(--ivory)",
+          border: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
+          boxShadow:
+            "0 1px 0 color-mix(in oklab, var(--charcoal) 6%, transparent), 0 24px 60px -32px color-mix(in oklab, var(--charcoal) 32%, transparent)",
+        }}
       >
-        {timeline.map((beat, i) => (
-          <li key={`${beat.kind}-${i}-${beat.label}`} className="relative pl-6">
-            <span
-              aria-hidden
-              className="absolute left-0 top-2 text-[10px] uppercase tracking-[0.24em] tabular-nums"
-              style={{ color: "var(--gold)", fontWeight: 600 }}
-            >
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            <h3
-              className="text-[17px] leading-[1.3]"
+        {/* Parchment top-plate — the paper the story is written on */}
+        <div
+          className="relative w-full"
+          style={{ aspectRatio: "5 / 3" }}
+        >
+          <img
+            src={parchmentLetter}
+            alt="Handwritten letter on aged parchment paper, sealed in deep teal wax"
+            width={1200}
+            height={720}
+            loading="eager"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-x-0 bottom-0 h-24"
+            style={{
+              background:
+                "linear-gradient(to bottom, transparent, var(--ivory))",
+            }}
+          />
+        </div>
+
+        {/* Letter body */}
+        <div className="px-6 pt-2 pb-10 sm:px-9">
+          {/* Hero */}
+          <header className="text-center">
+            <Eyebrow>The final story</Eyebrow>
+            <h2
+              id="studio-v3-final-reveal-title"
+              className="mt-3 text-[26px] leading-[1.15] [text-wrap:balance]"
               style={{
                 fontFamily: "var(--font-editorial)",
                 color: "var(--charcoal)",
                 fontWeight: 500,
               }}
             >
-              {beat.label}
-              {beat.kind === "addition" ? (
-                <span
-                  className="ml-2 text-[10px] uppercase tracking-[0.22em] align-middle"
-                  style={{ color: "var(--teal)" }}
-                >
-                  · your addition
-                </span>
-              ) : null}
-            </h3>
-            {beat.story ? (
+              <span className="italic" style={{ color: "var(--teal)" }}>
+                {REVEAL_TITLE}
+              </span>
+            </h2>
+            <p
+              className="mt-3 mx-auto max-w-[38ch] text-[15px] leading-[1.6] [text-wrap:pretty]"
+              style={{
+                color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                fontFamily: "var(--font-editorial)",
+              }}
+            >
+              <span className="italic">{title}</span>
+            </p>
+            {(dateLabel || guestsLabel || pickupLabel) ? (
               <p
-                className="mt-2 text-[14.5px] leading-[1.65] [text-wrap:pretty]"
-                style={{
-                  color: "color-mix(in oklab, var(--charcoal) 74%, transparent)",
-                }}
+                className="mt-3 text-[11px] uppercase tracking-[0.22em]"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
               >
-                {beat.story}
+                {[dateLabel, pickupLabel, guestsLabel].filter(Boolean).join(" · ")}
               </p>
             ) : null}
-          </li>
-        ))}
-      </ol>
+            <span
+              aria-hidden
+              className="mt-6 inline-block h-px w-16"
+              style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
+            />
+          </header>
+
+          {/* Chaptered story — book paragraphs */}
+          <ol
+            className="mt-8 space-y-7"
+            data-testid="studio-v3-final-reveal-timeline"
+          >
+            {timeline.map((beat, i) => (
+              <li key={`${beat.kind}-${i}-${beat.label}`} className="relative pl-8">
+                <span
+                  aria-hidden
+                  className="absolute left-0 top-[2px] w-6 text-[12px] tracking-[0.12em] tabular-nums"
+                  style={{
+                    fontFamily: "var(--font-editorial)",
+                    color: "var(--gold)",
+                    fontWeight: 600,
+                    fontStyle: "italic",
+                  }}
+                >
+                  {romanFor(i)}.
+                </span>
+                <h3
+                  className="text-[17px] leading-[1.3]"
+                  style={{
+                    fontFamily: "var(--font-editorial)",
+                    color: "var(--charcoal)",
+                    fontWeight: 500,
+                  }}
+                >
+                  {beat.label}
+                  {beat.kind === "addition" ? (
+                    <span
+                      className="ml-2 text-[10px] uppercase tracking-[0.22em] align-middle"
+                      style={{ color: "var(--teal)" }}
+                    >
+                      · your addition
+                    </span>
+                  ) : null}
+                </h3>
+                {beat.story ? (
+                  <p
+                    className="mt-2 max-w-[52ch] text-[14.5px] leading-[1.7] [text-wrap:pretty]"
+                    style={{
+                      fontFamily: "var(--font-editorial)",
+                      color: "color-mix(in oklab, var(--charcoal) 76%, transparent)",
+                    }}
+                  >
+                    {beat.story}
+                  </p>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+        </div>
+      </article>
+
 
       {/* Reassurance — replaces removed pending/status copy */}
       <p
@@ -287,8 +344,20 @@ export function FinalRevealStory({
         </div>
       </details>
 
-      {/* CTAs */}
+      {/* CTAs — one primary, save as small link, back tertiary */}
       <div className="mt-8 flex flex-col items-stretch gap-3">
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={onSaveSignature}
+            disabled={saving}
+            data-testid="studio-v3-final-reveal-save"
+            className="inline-flex items-center min-h-[36px] px-1 text-[12px] tracking-[0.02em] underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-60"
+            style={{ color: "var(--teal)" }}
+          >
+            {saving ? "Saving…" : CTA_SAVE_SIGNATURE}
+          </button>
+        </div>
         <button
           type="button"
           onClick={onContinue}
@@ -298,20 +367,6 @@ export function FinalRevealStory({
         >
           {CTA_MAKE_STORY}
           <span aria-hidden>→</span>
-        </button>
-        <button
-          type="button"
-          onClick={onSaveSignature}
-          disabled={saving}
-          data-testid="studio-v3-final-reveal-save"
-          className="w-full min-h-[48px] inline-flex items-center justify-center rounded-full border px-6 text-[12.5px] uppercase tracking-[0.22em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-60"
-          style={{
-            borderColor: "var(--teal)",
-            color: "var(--teal)",
-            background: "transparent",
-          }}
-        >
-          {saving ? "Saving…" : CTA_SAVE_SIGNATURE}
         </button>
         <button
           type="button"
@@ -325,6 +380,7 @@ export function FinalRevealStory({
           ← {CTA_BACK_TO_REFINE}
         </button>
       </div>
+
     </section>
   );
 }
