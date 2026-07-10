@@ -172,7 +172,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "troia-comporta-guide",
     title: "Tróia & Comporta from Lisbon — A Local's Slow Alentejo Day",
     metaDescription:
-      "Tróia, Comporta and the slow Alentejo coast — Roman ruins, sandy-soil wineries, palafitic piers and untouched beaches. A local's guide to a private day south of Lisbon.",
+      "Tróia, Comporta and the slow Alentejo coast — Roman ruins, sandy-soil wineries and untouched beaches. A local's guide to a private day south of Lisbon.",
     h1: "Tróia & Comporta — Beaches, Ruins and Slow Alentejo Days",
     eyebrow: "Tróia · Comporta · Alentejo",
     standfirst:
@@ -213,7 +213,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "southwest-vicentine-coast-guide",
     title: "Portugal's Southwest Coast: A Local's Guide to the Vicentine Coast",
     metaDescription:
-      "The wild Vicentine coast from Lisbon — Porto Covo, Milfontes, Odeceixe, Aljezur. A licensed local's guide to Portugal's hidden Atlantic between Alentejo and Algarve.",
+      "The wild Vicentine coast from Lisbon — Porto Covo, Milfontes, Odeceixe. A local's guide to Portugal's hidden Atlantic between Alentejo and Algarve.",
     h1: "The Southwest Vicentine Coast — Portugal's Hidden Atlantic",
     eyebrow: "Vicentine Coast · Alentejo · Costa",
     standfirst:
@@ -488,7 +488,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "arrabida-day-trip-from-lisbon",
     title: "Arrábida Day Trip from Lisbon — Private Wine & Beaches",
     metaDescription:
-      "Private Arrábida day trip from Lisbon — Setúbal market, family wineries in Azeitão, a long Portuguese lunch and an optional close at Sesimbra Castle. Door-to-door driving.",
+      "Private Arrábida day trip from Lisbon — Setúbal market, family wineries in Azeitão and a long Portuguese lunch. Door-to-door driving.",
     h1: "Arrábida Day Trip from Lisbon — wine, hills & sea",
     eyebrow: "Lisbon · Arrábida Day",
     standfirst:
@@ -612,7 +612,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "portugal-wine-tours",
     title: "Portugal Wine Tours | Private Wine Days by YES Experiences",
     metaDescription:
-      "Private wine days across Arrábida, Setúbal, Azeitão and Alentejo — small family cellars, slow lunches and real winemakers. All-inclusive private days from Lisbon.",
+      "Private wine days across Arrábida, Setúbal, Azeitão and Alentejo — small family cellars, slow lunches and real winemakers, all-inclusive from Lisbon.",
     h1: "Portugal wine tours, poured properly.",
     eyebrow: "Portugal · Wine Tours",
     standfirst:
@@ -686,7 +686,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "private-wine-tour-lisbon",
     title: "Private Wine Tour from Lisbon — Arrábida, Azeitão & Setúbal",
     metaDescription:
-      "Private wine tour from Lisbon to Arrábida and Azeitão — two or three family wineries, a long Portuguese lunch and door-to-door driving, designed by a licensed local team.",
+      "Private wine tour from Lisbon to Arrábida and Azeitão — two or three family wineries, a long Portuguese lunch and door-to-door driving.",
     h1: "Private Wine Tour from Lisbon — Arrábida & Azeitão",
     eyebrow: "Lisbon · Private Wine Day",
     standfirst:
@@ -720,7 +720,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "alentejo-wine-tour-from-lisbon",
     title: "Alentejo Wine Tour from Lisbon | Private Évora & Cork",
     metaDescription:
-      "Private Alentejo wine tour from Lisbon — Évora's UNESCO old town, two family wineries and a cork tradition stop, with a long Alentejo lunch. Door-to-door driving.",
+      "Private Alentejo wine tour from Lisbon — Évora's UNESCO old town, two family wineries and a cork stop, with a long Alentejo lunch. Door-to-door.",
     h1: "Alentejo Wine Tour from Lisbon — wine, cork & Évora",
     eyebrow: "Lisbon · Alentejo wine country",
     standfirst:
