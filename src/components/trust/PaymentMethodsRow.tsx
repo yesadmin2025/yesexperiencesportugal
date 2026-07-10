@@ -210,7 +210,7 @@ export function PaymentMethodsRow() {
         </p>
         <ul
           className="flex flex-wrap items-center gap-x-2 gap-y-2"
-          aria-label="Accepted payment methods: Visa, Mastercard, American Express, PayPal, Klarna, Multibanco, MB WAY, Revolut Pay, Apple Pay, Google Pay"
+          aria-label="Accepted payment methods: Visa, Mastercard, American Express, PayPal, Klarna, Multibanco, Revolut Pay, Apple Pay, Google Pay"
         >
           {MARKS.map((m) => (
             <li
