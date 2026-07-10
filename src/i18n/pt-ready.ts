@@ -14,8 +14,11 @@ const READY_PATHS = new Set<string>([
   "/about", // → /pt/about
   "/contact", // → /pt/contact
   "/cookies", // → /pt/cookies
+  "/corporate", // → /pt/corporate
+  "/day-tours", // → /pt/day-tours
   "/experiences", // → /pt/experiences
   "/privacy", // → /pt/privacy
+  "/reviews", // → /pt/reviews
   "/terms", // → /pt/terms
 ]);
 
