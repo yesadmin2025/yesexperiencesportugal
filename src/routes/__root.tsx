@@ -208,8 +208,10 @@ export const Route = createRootRoute({
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { locale } = parseLocaleFromPath(pathname);
   return (
-    <html lang="en">
+    <html lang={LOCALE_BCP47[locale]}>
       <head>
         <HeadContent />
       </head>
@@ -245,6 +247,8 @@ function RootComponent() {
   useEffect(() => installClientErrorLogger(), []);
   useEffect(() => installDevHardReload(), []);
   useEffect(() => installAnalyticsAttrs(), []);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { locale } = parseLocaleFromPath(pathname);
   // Single QueryClient per browser session — keeps SignaturePriceCard and
 
   // any future useQuery hook resolvable without each route wiring its own.
@@ -253,9 +257,11 @@ function RootComponent() {
   );
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
-      <WhatsAppSupportButton />
-      <Toaster position="bottom-left" richColors closeButton />
+      <LocaleProvider locale={locale}>
+        <Outlet />
+        <WhatsAppSupportButton />
+        <Toaster position="bottom-left" richColors closeButton />
+      </LocaleProvider>
     </QueryClientProvider>
   );
 }

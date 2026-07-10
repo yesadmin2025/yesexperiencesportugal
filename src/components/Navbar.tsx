@@ -5,28 +5,27 @@ import { Logo } from "@/components/Logo";
 
 import { CtaButton } from "@/components/ui/CtaButton";
 import { whatsappUrl } from "@/config/business-nap";
+import { useT } from "@/i18n/locale-context";
 
-const desktopLinks = [
-  { to: "/experiences", label: "Experiences", hidden: false },
-  { to: "/studio-v3", label: "Studio", hidden: false },
-  { to: "/multi-day", label: "Travel Designer", hidden: false },
-  { to: "/corporate", label: "Corporate", hidden: false },
-  { to: "/proposal-in-portugal", label: "Moments", hidden: false },
-];
+function useDesktopLinks() {
+  const t = useT();
+  return [
+    { to: "/experiences", label: t("nav.experiences"), hidden: false },
+    { to: "/studio-v3", label: t("nav.studio"), hidden: false },
+    { to: "/multi-day", label: t("nav.travel_designer"), hidden: false },
+    { to: "/corporate", label: t("nav.corporate"), hidden: false },
+    { to: "/proposal-in-portugal", label: t("nav.moments"), hidden: false },
+  ];
+}
 
-const mobilePrimaryLinks = [
-  { to: "/experiences", label: "Experiences" },
-  { to: "/studio-v3", label: "Studio" },
-  { to: "/multi-day", label: "Travel Designer" },
-  { to: "/corporate", label: "Corporate" },
-  { to: "/proposal-in-portugal", label: "Moments" },
-];
-
-const mobileSecondaryLinks = [
-  { to: "/about", label: "About" },
-  { to: "/local-stories", label: "Local Stories" },
-  { to: "/contact", label: "Contact" },
-];
+function useMobileSecondaryLinks() {
+  const t = useT();
+  return [
+    { to: "/about", label: t("nav.about") },
+    { to: "/local-stories", label: t("nav.local_stories") },
+    { to: "/contact", label: t("nav.contact") },
+  ];
+}
 
 const mobileSocialLinks = [
   { href: whatsappUrl(), label: "WhatsApp" },
