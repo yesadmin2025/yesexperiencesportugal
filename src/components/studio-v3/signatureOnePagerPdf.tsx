@@ -9,10 +9,10 @@
 import * as React from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
-const TEAL = "#295B61";
-const GOLD = "#C9A96A";
-const CHARCOAL = "#2E2E2E";
-const IVORY = "#FAF8F3";
+const TEAL = "var(--teal)";
+const GOLD = "var(--gold)";
+const CHARCOAL = "var(--charcoal)";
+const IVORY = "var(--ivory)";
 const SAND = "#F4EEE2";
 
 export interface SignatureOnePagerData {

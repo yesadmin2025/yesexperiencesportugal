@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-10T22:18:49.656Z",
-  "filesScanned": 607,
+  "generatedAt": "2026-07-10T22:27:34.833Z",
+  "filesScanned": 611,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 360,
-    "approved": 87,
-    "allowlisted": 63,
-    "mismatch": 210
+    "total": 368,
+    "approved": 90,
+    "allowlisted": 64,
+    "mismatch": 214
   },
   "findings": [
     {
@@ -1717,6 +1717,33 @@
       "status": "allowlisted"
     },
     {
+      "file": "src/components/studio-v3/signatureOnePagerPdf.tsx",
+      "line": 16,
+      "col": 15,
+      "raw": "#F4EEE2",
+      "normalized": "#f4eee2",
+      "snippet": "const SAND = \"#F4EEE2\";",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/signatureOnePagerPdf.tsx",
+      "line": 57,
+      "col": 13,
+      "raw": "#4a4a4a",
+      "normalized": "#4a4a4a",
+      "snippet": "color: \"#4a4a4a\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/signatureOnePagerPdf.tsx",
+      "line": 140,
+      "col": 13,
+      "raw": "#4a4a4a",
+      "normalized": "#4a4a4a",
+      "snippet": "color: \"#4a4a4a\",",
+      "status": "mismatch"
+    },
+    {
       "file": "src/components/studio-v3/useStudioDebug.tsx",
       "line": 103,
       "col": 37,
@@ -2507,6 +2534,51 @@
       "normalized": "#999999",
       "snippet": "const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }",
       "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/signature-story.tsx",
+      "line": 21,
+      "col": 15,
+      "raw": "#295B61",
+      "normalized": "#295b61",
+      "snippet": "const TEAL = \"#295B61\";",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/signature-story.tsx",
+      "line": 22,
+      "col": 15,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "const GOLD = \"#C9A96A\";",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/signature-story.tsx",
+      "line": 23,
+      "col": 19,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "const CHARCOAL = \"#2E2E2E\";",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/signature-story.tsx",
+      "line": 24,
+      "col": 15,
+      "raw": "#F4EEE2",
+      "normalized": "#f4eee2",
+      "snippet": "const SAND = \"#F4EEE2\";",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/signature-story.tsx",
+      "line": 135,
+      "col": 34,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "const main = { backgroundColor: \"#ffffff\", fontFamily: 'Georgia, \"Times New Roman\", serif' } as const;",
+      "status": "allowlisted"
     },
     {
       "file": "src/lib/email-templates/signup.tsx",
