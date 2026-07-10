@@ -230,15 +230,12 @@ function PageLightbox({
         >
           <ChevronLeft size={18} aria-hidden="true" />
         </button>
-        <a
-          href={samplePdfUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
+        <p
+          aria-hidden="true"
+          className="font-[family-name:var(--font-serif)] italic text-[13px] text-[color:var(--charcoal-soft)] px-2 truncate"
         >
-          Open the full PDF
-          <ExternalLink size={13} aria-hidden="true" className="text-[color:var(--gold-deep)]" />
-        </a>
+          {page.label}
+        </p>
         <button
           type="button"
           onClick={() => onIndex(Math.min(total - 1, index + 1))}
