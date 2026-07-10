@@ -313,6 +313,29 @@ function TailorPage() {
     [tour.stops, skipped],
   );
 
+  // When a blueprint exists, the Live summary must reflect the actual
+  // current selection (fixed core minus skipped-core + chosen wineries +
+  // optional viewpoints the user added) — not the full Viator pool.
+  const summaryStops = useMemo<{ label: string }[]>(() => {
+    if (!blueprint) return keptStops.map((s: TourStop) => ({ label: s.label }));
+    return [
+      ...blueprint.core.filter((s) => !skippedCore.has(s.id)),
+      ...(blueprint.choice
+        ? blueprint.choice.options.filter((o) => choiceSelected.has(o.id))
+        : []),
+      ...blueprint.optional.filter((o) => optionalSelected.has(o.id)),
+    ];
+  }, [blueprint, keptStops, skippedCore, choiceSelected, optionalSelected]);
+
+  // Denominator: what a fully-satisfied plan would contain right now
+  // (core kept + required choice count + optionals the user picked).
+  const summaryTotal = useMemo(() => {
+    if (!blueprint) return (tour.stops ?? []).length;
+    const coreKept = blueprint.core.filter((s) => !skippedCore.has(s.id)).length;
+    const choiceTarget = blueprint.choice?.pickCount ?? 0;
+    return coreKept + choiceTarget + optionalSelected.size;
+  }, [blueprint, tour.stops, skippedCore, optionalSelected]);
+
   const estimatedHours = useMemo(() => {
     const base = parseHours(tour.durationHours);
     const paceDelta = pace === "relaxed" ? 1 : pace === "full" ? -0.5 : 0;
@@ -338,14 +361,24 @@ function TailorPage() {
 
   const estimatedPrice = useMemo(() => {
     let p = basePerPax;
-    p += added.size * ADD_STOP_DELTA;
-    p -= skipped.size * REMOVE_STOP_DELTA;
+    if (blueprint) {
+      // Blueprint tours: price reacts to the real selection state.
+      // Chosen `pickCount` is baseline; skipped-core credits, extra
+      // optionals cost extra.
+      p += optionalSelected.size * ADD_STOP_DELTA;
+      p -= skippedCore.size * REMOVE_STOP_DELTA;
+    } else {
+      // Non-blueprint tours keep legacy add/skip deltas.
+      p += added.size * ADD_STOP_DELTA;
+      p -= skipped.size * REMOVE_STOP_DELTA;
+    }
     if (addons.has("photographer")) p += 75;
     if (addons.has("wine")) p += 25;
     if (lunch === "premium") p += 35;
     const floor = Math.round(basePerPax * 0.85);
     return Math.max(floor, Math.round(p));
-  }, [basePerPax, added, skipped, addons, lunch]);
+  }, [basePerPax, blueprint, added, skipped, skippedCore, optionalSelected, addons, lunch]);
+
 
   // ─── Helpers ────────────────────────────────────────────────
   const toggle = <T extends string>(setter: (s: Set<T>) => void, current: Set<T>, val: T) => {
@@ -1197,10 +1230,10 @@ function TailorPage() {
 
                   <div>
                     <p className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-                      Itinerary ({keptStops.length} of {(tour.stops ?? []).length})
+                      Itinerary ({summaryStops.length} of {summaryTotal})
                     </p>
                     <ol className="mt-2 space-y-1.5 list-none p-0">
-                      {keptStops.map((s: TourStop, i: number) => (
+                      {summaryStops.map((s, i) => (
                         <li key={s.label + i} className="flex gap-2.5">
                           <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] w-5 shrink-0 mt-0.5">
                             {String(i + 1).padStart(2, "0")}
@@ -1208,13 +1241,14 @@ function TailorPage() {
                           <span className="text-[13px] leading-snug">{s.label}</span>
                         </li>
                       ))}
-                      {keptStops.length === 0 && (
+                      {summaryStops.length === 0 && (
                         <li className="text-[12px] italic text-[color:var(--charcoal-soft)]">
                           Add at least one stop back.
                         </li>
                       )}
                     </ol>
                   </div>
+
 
                   {(addons.size > 0 || lunch) && (
                     <div>
@@ -1265,7 +1299,7 @@ function TailorPage() {
                   <button
                     type="button"
                     onClick={() => setDetailsOpen(true)}
-                    disabled={checkoutPending || keptStops.length === 0}
+                    disabled={checkoutPending || summaryStops.length === 0}
                     className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
                   >
                     {checkoutPending ? (
