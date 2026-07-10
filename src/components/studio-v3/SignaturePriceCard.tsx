@@ -353,12 +353,24 @@ export function SignaturePriceCard({
   );
 
   const displayPerPaxEur = realPerPax?.real ? realPerPax.eurPerPax : priceEur;
-  const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
   const partyCount = effectiveGuests && effectiveGuests >= 2 ? effectiveGuests : null;
+  // Unit-aware add-on total for the currently *previewed* party — used
+  // in the visible "Final estimated total" so the picker updates it live.
+  const displayGuests = Math.max(1, effectiveGuests ?? guests ?? 1);
+  const addOnsDisplayPartyEur = useMemo(() => {
+    if (!hasPrice || !priceEur) return 0;
+    return selectedAddOns.reduce(
+      (sum, a) =>
+        sum +
+        addOnEurFor({ addOn: a, baseEur: priceEur, guests: displayGuests }).amount,
+      0,
+    );
+  }, [selectedAddOns, hasPrice, priceEur, displayGuests]);
+  const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
   const partyBaseEur =
     displayPerPaxEur != null && partyCount != null ? displayPerPaxEur * partyCount : null;
   const partyTotalEur =
-    partyBaseEur != null ? partyBaseEur + addOnsTotalEur * (partyCount ?? 1) : null;
+    partyBaseEur != null ? partyBaseEur + addOnsDisplayPartyEur : null;
 
   // Tier rows for the picker — real per-pax when available, "from" anchor otherwise.
   const tierRows = useMemo(() => {
