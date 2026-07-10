@@ -411,7 +411,8 @@ function BookFlip() {
               <img
                 src={current.src}
                 alt={current.alt}
-                className="absolute inset-0 h-full w-full object-contain"
+                onClick={openLightbox}
+                className="absolute inset-0 h-full w-full object-contain cursor-zoom-in"
                 draggable={false}
                 loading="lazy"
                 decoding="async"
@@ -420,6 +421,15 @@ function BookFlip() {
             ) : (
               <PageSkeleton />
             )}
+            {/* Expand affordance — tap target for mobile readability */}
+            <button
+              type="button"
+              onClick={openLightbox}
+              aria-label="Open this page full screen"
+              className="absolute bottom-3 right-3 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--ivory)]/95 text-[color:var(--charcoal)] shadow-[0_6px_18px_-8px_rgba(46,46,46,0.5)] ring-1 ring-[color:var(--charcoal)]/15 backdrop-blur-sm transition hover:bg-[color:var(--ivory)] hover:ring-[color:var(--charcoal)]/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
+            >
+              <ZoomIn size={16} aria-hidden="true" />
+            </button>
             {/* Spine gradient */}
             <div
               aria-hidden="true"
