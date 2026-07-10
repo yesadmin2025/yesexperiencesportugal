@@ -240,6 +240,20 @@ export function SignaturePriceCard({
     () => selectedAddOns.reduce((sum, a) => sum + (a.durationMinutes || 0), 0),
     [selectedAddOns],
   );
+  // Unit-aware party total for the selected add-ons — sum of line items
+  // priced by their own unit (per_person × guests, per_group × 1, etc.).
+  // Used by the "Final estimated total" line and by the Reserve CTA when
+  // the guest count is known. Never scaled a second time by the caller.
+  const addOnsPartyTotalEur = useMemo(() => {
+    if (!hasPrice || !priceEur) return 0;
+    const partyGuests = Math.max(1, guests ?? 1);
+    return selectedAddOns.reduce(
+      (sum, a) =>
+        sum +
+        addOnEurFor({ addOn: a, baseEur: priceEur, guests: partyGuests }).amount,
+      0,
+    );
+  }, [selectedAddOns, hasPrice, priceEur, guests]);
   const freeMinutes = remainingMinutes != null ? remainingMinutes - addOnsMinutes : null;
 
   // Notify the parent whenever the effective add-on selection or its resolved
