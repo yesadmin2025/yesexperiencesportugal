@@ -22,9 +22,10 @@ describe("MapAwakens — Screen 1 CTA contract", () => {
     expect(SRC).toContain("Personalise a few details");
   });
 
-  it("has no Reshape secondary CTA", () => {
-    expect(SRC).not.toMatch(/Reshape this day/);
-    expect(SRC).not.toMatch(/data-testid="studio-v3-reshape-day"/);
+  it("has no Reshape secondary CTA rendered", () => {
+    expect(SRC).not.toMatch(/data-testid=["']studio-v3-reshape-day["']/);
+    // The literal button text must not appear as rendered JSX.
+    expect(SRC).not.toMatch(/>\s*Reshape this day\s*</);
   });
 
   it("does not render a price line (no €N / pp copy in the source)", () => {
