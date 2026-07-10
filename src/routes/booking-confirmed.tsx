@@ -56,6 +56,7 @@ function BookingConfirmedPage() {
     | { kind: "ok"; data: SessionStatus }
     | { kind: "error"; message: string }
   >({ kind: session_id ? "loading" : "idle" });
+  const purchaseFiredFor = useRef<string | null>(null);
 
   useEffect(() => {
     if (!session_id) return;
