@@ -2288,7 +2288,7 @@ export function StudioV3() {
               state={state}
               onStateChange={setState}
               onBack={() => back("map")}
-              onSecure={() => requestStripeCheckout(state)}
+              onSecure={() => advance("confirmation")}
               onRefine={() => openLeadSheet("refine")}
               pending={checkoutPending}
               tourPriceTiers={tourPriceTiers}
@@ -2298,6 +2298,17 @@ export function StudioV3() {
 
           </PhaseShell>
         </>
+      ) : null}
+
+      {state.phase === "confirmation" ? (
+        <PhaseShell accent="ivory" exiting={exiting}>
+          <ConfirmationPause
+            journeyTitle={state.journeyTitle ?? "Your Signature Day"}
+            summaryLine={buildConfirmationSummary(state)}
+            onContinue={() => requestStripeCheckout(state)}
+            onBack={() => back("storyboard")}
+          />
+        </PhaseShell>
       ) : null}
 
       <FinalDetailsDialog
