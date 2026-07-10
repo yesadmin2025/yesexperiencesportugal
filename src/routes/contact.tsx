@@ -132,8 +132,8 @@ function Page() {
             Begin Your <SectionTitle.Em>Portugal Story</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Tell us a little about who you are and what you'd love to experience. We'll respond
-            within one business day.
+            Tell us a little about who you are and what you'd love to experience. A local usually
+            replies within a few hours.
           </p>
         </div>
       </section>
