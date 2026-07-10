@@ -219,6 +219,7 @@ import {
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
+import { ConfirmationPause } from "./ConfirmationPause";
 import {
   BrandedCheckoutDrawer,
   type CheckoutSummary,
@@ -259,6 +260,7 @@ const PHASE_ORDER: StudioV3Phase[] = [
   "language",
   "map",
   "storyboard",
+  "confirmation",
 ];
 
 function stepOf(phase: StudioV3Phase): number {
@@ -299,6 +301,7 @@ const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
   investment: ["Next, we choose the moments", "Next, what draws you", "Next, the experiences"],
   map: ["Next, your draft"],
   storyboard: [""],
+  confirmation: [""],
 };
 
 function pickTeaser(phase: StudioV3Phase, seed: string): string {
@@ -435,6 +438,35 @@ export function investmentShapingLine(tier: InvestmentTier | null): string | nul
     default:
       return null;
   }
+}
+
+/** ConfirmationPause summary strip — one honest line: region · rhythm · guests.
+ *  Purely presentational: never invents facts, uses only what state already
+ *  carries. Returns undefined when there's nothing meaningful to show. */
+function buildConfirmationSummary(state: StudioV3State): string | undefined {
+  const tour = state.tourId ? findTour(state.tourId) : null;
+  const parts: string[] = [];
+  const region = tour?.region ?? null;
+  if (region) {
+    parts.push(region.charAt(0).toUpperCase() + region.slice(1));
+  }
+  if (state.rhythm) {
+    const rhythmLabel =
+      state.rhythm === "slow"
+        ? "Gentle rhythm"
+        : state.rhythm === "balanced"
+          ? "Balanced rhythm"
+          : state.rhythm === "full"
+            ? "Full rhythm"
+            : state.rhythm === "immersive"
+              ? "Immersive rhythm"
+              : null;
+    if (rhythmLabel) parts.push(rhythmLabel);
+  }
+  if (typeof state.guests === "number" && state.guests > 0) {
+    parts.push(state.guests === 1 ? "1 guest" : `${state.guests} guests`);
+  }
+  return parts.length ? parts.join(" · ") : undefined;
 }
 
 /**
@@ -914,7 +946,7 @@ export function StudioV3() {
     if (typeof window === "undefined") return;
     const onHide = () => {
       if (document.visibilityState !== "hidden") return;
-      if (state.phase === "intro" || state.phase === "storyboard") return;
+      if (state.phase === "intro" || state.phase === "storyboard" || state.phase === "confirmation") return;
       trackStep({
         stepNumber: stepOf(state.phase),
         stepKey: state.phase,
@@ -1687,7 +1719,8 @@ export function StudioV3() {
     state.phase === "intro" ||
     state.phase === "feeling" ||
     state.phase === "map" ||
-    state.phase === "storyboard";
+    state.phase === "storyboard" ||
+    state.phase === "confirmation";
 
   // ComposerMap — Studio Bible §4 "live map updates as stops change".
   // Lightweight, peripheral, progressive: renders the moment the traveller
@@ -1718,7 +1751,7 @@ export function StudioV3() {
   ];
   const chromeReady = state.pickup != null && !EARLY_PHASES.includes(state.phase);
   const composerHidden =
-    !!reaction || !chromeReady || state.phase === "map" || state.phase === "storyboard";
+    !!reaction || !chromeReady || state.phase === "map" || state.phase === "storyboard" || state.phase === "confirmation";
 
   // Phase 7D — saved-link hydration overlays. Loading spinner while we
   // fetch a `?saved=<token>` Signature; graceful card if it's missing or
@@ -2285,7 +2318,7 @@ export function StudioV3() {
               state={state}
               onStateChange={setState}
               onBack={() => back("map")}
-              onSecure={() => requestStripeCheckout(state)}
+              onSecure={() => advance("confirmation")}
               onRefine={() => openLeadSheet("refine")}
               pending={checkoutPending}
               tourPriceTiers={tourPriceTiers}
@@ -2295,6 +2328,17 @@ export function StudioV3() {
 
           </PhaseShell>
         </>
+      ) : null}
+
+      {state.phase === "confirmation" ? (
+        <PhaseShell accent="ivory" exiting={exiting}>
+          <ConfirmationPause
+            journeyTitle={state.journeyTitle ?? "Your Signature Day"}
+            summaryLine={buildConfirmationSummary(state)}
+            onContinue={() => requestStripeCheckout(state)}
+            onBack={() => back("storyboard")}
+          />
+        </PhaseShell>
       ) : null}
 
       <FinalDetailsDialog
