@@ -77,17 +77,17 @@ describe("validateItinerary — state machine", () => {
   });
 
   it("flags review (soft) when driving is over preferred but under cap", () => {
-    // Force drivingPct into (preferred, max] with very short dwell
+    // Long-dwell day where drivingPct lands in (preferred, max]
     const stops = [
-      { ...mkStop("a", "viewpoint"), dwellMinutesOverride: 20 },
-      { ...mkStop("b", "viewpoint"), dwellMinutesOverride: 20 },
-      { ...mkStop("c", "viewpoint"), dwellMinutesOverride: 20 },
+      mkStop("a", "winery"),
+      mkStop("b", "workshop"),
+      mkStop("c", "lunch"),
     ];
     const r = validateItinerary({
       region: "arrabida",
       stops,
-      legMinutes: [40, 40],
-      legDistancesKm: [30, 30],
+      legMinutes: [50, 50],
+      legDistancesKm: [40, 40],
     });
     expect(r.status).toBe("review");
     expect(r.failures.some((f) => f.code === "driving_over_preferred_pct")).toBe(true);
