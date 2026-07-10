@@ -1,151 +1,175 @@
 #!/usr/bin/env python3
-"""Redact personal details + logo from the public Travel Designer sample PDF.
+"""
+Clean the Jennifer Oliver travel file for public sample display.
 
-Cover page (page 1) is a flattened raster — we rasterize it, pixel-edit
-only two zones (logo band and the "Designed for Jennifer Oliver" tail),
-then replace page 1 with the edited image. Interior pages 2–22 get an
-ivory strip over the running header. Page 23 gets a teal strip over the
-"YES experiences PORTUGAL" wordmark. Nothing else is touched.
+Approach: plain color-patch redaction (no reconstruction, no inpainting).
+For each personal-info string we locate its bounding box with pdfplumber,
+rasterize each page to a JPG, and paint a solid rectangle sampled from
+the surrounding background over it.
 
-Idempotent — safe to re-run.
+Redacted:
+- Cover: YES logo (top block), personalized "· Designed for Jennifer Oliver"
+- Interior (p2-22): running header (brand + name), footer (email/site/phone)
+- Back (p23): running header, footer, contact block (email/whatsapp/wordmark)
+- Any body occurrence of "Jennifer" / "Oliver"
 
-Run: `python3 scripts/clean-travel-file-sample.py`
+Usage:
+  python3 scripts/clean-travel-file-sample.py <source.pdf> <out_dir>
 """
 from __future__ import annotations
-import subprocess, tempfile
-from io import BytesIO
+import os
+import sys
+import subprocess
+import tempfile
 from pathlib import Path
 
-import cv2
-import numpy as np
-from PIL import Image, ImageDraw
-from pypdf import PdfReader, PdfWriter, PageObject
-from reportlab.lib.colors import Color
-from reportlab.pdfgen import canvas
+import pdfplumber
+from PIL import Image
+
+DPI = 150
+JPG_QUALITY = 85
+
+# personal-info strings to redact wherever they appear (case-insensitive substring match on line)
+LINE_REDACTIONS = [
+    "YES EXPERIENCES PORTUGAL · PRIVATE TRAVEL FILE",  # header line
+    "yesexperiences.pt",                                # footer line
+    "info@yesexperiences.pt",
+    "+351 911 889 992",
+    "Jennifer Oliver",
+    "Designed for Jennifer",
+]
+
+# On page 23, extra full-line contact block items
+PAGE23_EXTRA = [
+    "YES experiences PORTUGAL",
+    "EMAIL info@yesexperiences.pt",
+    "WHATSAPP +351 911 889 992",
+]
+
+# Cover page 1: fixed pixel-boxes (in PDF pts) — pdfplumber can't extract these
+# because they're rendered as image/glyphs in the cover art.
+COVER_LOGO_BOX = (170, 50, 425, 175)     # YES logo mark + wordmark, top center
+COVER_NAME_BOX = (150, 428, 450, 458)    # "14 nights · Designed for Jennifer Oliver"
+COVER_FOOTER_BOX = (95, 785, 500, 815)   # bottom contact strip (globe/email/whatsapp)
 
 
-SRC = Path("public/travel-file-sample/sample.pdf")
-
-IVORY_INTERIOR = Color(0xFA / 255, 0xF8 / 255, 0xF3 / 255)
-TEAL           = Color(0x29 / 255, 0x5B / 255, 0x61 / 255)
-
-PAGE_W, PAGE_H = 595.276, 841.89  # A4 pt
-
-
-def _canvas() -> tuple[canvas.Canvas, BytesIO]:
-    buf = BytesIO()
-    return canvas.Canvas(buf, pagesize=(PAGE_W, PAGE_H)), buf
-
-
-def build_header_overlay() -> PageObject:
-    """Ivory strip over the top ~40pt on interior pages (running header)."""
-    c, buf = _canvas()
-    c.setFillColor(IVORY_INTERIOR)
-    c.rect(0, PAGE_H - 40, PAGE_W, 40, stroke=0, fill=1)
-    c.save()
-    buf.seek(0)
-    return PdfReader(buf).pages[0]
-
-
-def build_page23_overlay() -> PageObject:
-    """Ivory header strip + teal patch over the wordmark on the final page."""
-    c, buf = _canvas()
-    c.setFillColor(IVORY_INTERIOR)
-    c.rect(0, PAGE_H - 40, PAGE_W, 40, stroke=0, fill=1)
-    c.setFillColor(TEAL)
-    c.rect(80, PAGE_H - 270, PAGE_W - 160, 40, stroke=0, fill=1)
-    c.save()
-    buf.seek(0)
-    return PdfReader(buf).pages[0]
-
-
-def build_cover_page() -> PageObject:
-    """Rasterize page 1 at 300 dpi, erase logo + client-name line via
-    content-aware pixel copy (no drawn text, no visible boxes), then
-    return a fresh PDF page containing the edited image."""
+def rasterize_page(pdf_path: str, page_num: int, out_jpg: Path, dpi: int = DPI) -> Image.Image:
+    """Rasterize a single 1-indexed page to a JPG file. Returns the PIL image."""
     with tempfile.TemporaryDirectory() as td:
+        prefix = os.path.join(td, "p")
         subprocess.run(
-            ["pdftoppm", "-jpeg", "-jpegopt", "quality=94", "-r", "300",
-             "-f", "1", "-l", "1", str(SRC), f"{td}/p"],
-            check=True,
+            ["pdftoppm", "-jpeg", "-r", str(dpi),
+             "-f", str(page_num), "-l", str(page_num),
+             pdf_path, prefix],
+            check=True, capture_output=True,
         )
-        img = Image.open(f"{td}/p-01.jpg").convert("RGB")
-
-    W, H = img.size  # ≈ 2480 x 3508 for A4 @ 300dpi
-    # Helpers: convert PDF top-down pt to pixel y.
-    def py(pt_top_down: float) -> int:
-        return int(round(pt_top_down * H / PAGE_H))
-
-    # Measured from the 300dpi raster of the original cover:
-    #   logo YES glyphs        pdf y  84–115
-    #   eyebrow "PRIVATE …"    pdf y ~180–210 (gold, low contrast)
-    #   Portugal title         pdf y 235–323
-    #   Beyond the Postcards   pdf y 408–418
-    #   gold rule              pdf y 432–439
-    #   dates line             pdf y 505–544  (KEEP)
-    #   "14 nights · Designed for Jennifer Oliver"  pdf y 578–592 (ERASE)
-    #   info card starts       pdf y ~619
-
-    # ── Zone A: LOGO only. Pure ivory zone above the eyebrow — flat fill.
-    ivory = img.getpixel((int(W * 0.12), py(30)))
-    draw = ImageDraw.Draw(img)
-    frame_pad = py(38)
-    draw.rectangle([frame_pad, py(55), W - frame_pad, py(155)], fill=ivory)
-
-    # ── Zone B: erase "14 nights · Designed for Jennifer Oliver" line.
-    #    Verified via cropped inspection: name line sits at pdf y ≈ 432–452
-    #    (dates "September 8 — September 22, 2026" is just above at ≈ 405–425).
-    #    Use OpenCV inpainting so the sunset gradient reconstructs seamlessly.
-    arr = np.array(img)
-    mask = np.zeros(arr.shape[:2], dtype=np.uint8)
-    mask[py(428):py(456), py(120):W - py(120)] = 255
-    inpainted = cv2.inpaint(
-        cv2.cvtColor(arr, cv2.COLOR_RGB2BGR), mask, 8, cv2.INPAINT_TELEA
-    )
-    img = Image.fromarray(cv2.cvtColor(inpainted, cv2.COLOR_BGR2RGB))
+        # pdftoppm names files like p-01.jpg / p-1.jpg depending on total pages
+        candidates = sorted(Path(td).glob("p-*.jpg"))
+        assert candidates, "pdftoppm produced no output"
+        img = Image.open(candidates[0]).convert("RGB")
+    return img
 
 
+def sample_bg(img: Image.Image, box_px: tuple[int, int, int, int]) -> tuple[int, int, int]:
+    """Sample a background color from just outside the box (prefer above, then left)."""
+    x0, y0, x1, y1 = box_px
+    W, H = img.size
+    candidates = []
+    # a strip just above the box
+    if y0 - 6 > 0:
+        candidates.append(img.crop((max(0, x0), max(0, y0 - 6), min(W, x1), y0 - 1)))
+    # strip just below
+    if y1 + 6 < H:
+        candidates.append(img.crop((max(0, x0), y1 + 1, min(W, x1), min(H, y1 + 6))))
+    # strip to the left
+    if x0 - 6 > 0:
+        candidates.append(img.crop((max(0, x0 - 6), max(0, y0), x0 - 1, min(H, y1))))
+    if not candidates:
+        return (250, 246, 235)  # ivory fallback
+    # average pixel of the largest strip
+    strip = max(candidates, key=lambda s: s.size[0] * s.size[1])
+    small = strip.resize((1, 1))
+    return small.getpixel((0, 0))
 
 
+def paint_box(img: Image.Image, box_pt: tuple[float, float, float, float], scale: float, pad: int = 2):
+    """Paint a solid rectangle over the given PDF-pt box, sampled from surroundings."""
+    from PIL import ImageDraw
+    x0, y0, x1, y1 = box_pt
+    x0 = max(0, int(x0 * scale) - pad)
+    y0 = max(0, int(y0 * scale) - pad)
+    x1 = min(img.size[0], int(x1 * scale) + pad)
+    y1 = min(img.size[1], int(y1 * scale) + pad)
+    if x1 <= x0 or y1 <= y0:
+        return
+    color = sample_bg(img, (x0, y0, x1, y1))
+    ImageDraw.Draw(img).rectangle((x0, y0, x1, y1), fill=color)
 
 
-    # ── Rebuild page 1: single-image PDF page at A4.
-    img_buf = BytesIO()
-    img.save(img_buf, format="JPEG", quality=92, optimize=True)
-    img_buf.seek(0)
+def line_bbox_for_text(page, needle: str) -> list[tuple[float, float, float, float]]:
+    """Return bboxes of full text lines that contain `needle` (case-insensitive).
 
-    c, buf = _canvas()
-    from reportlab.lib.utils import ImageReader
-    c.drawImage(ImageReader(img_buf), 0, 0, width=PAGE_W, height=PAGE_H)
-    c.save()
-    buf.seek(0)
-    return PdfReader(buf).pages[0]
+    Uses word extraction and groups words on the same baseline.
+    """
+    needle_l = needle.lower()
+    words = page.extract_words(use_text_flow=True, keep_blank_chars=False)
+    if not words:
+        return []
+
+    # group words by ~line (rounded top)
+    lines: dict[int, list] = {}
+    for w in words:
+        key = round(w["top"] / 3) * 3  # 3pt buckets
+        lines.setdefault(key, []).append(w)
+
+    hits = []
+    for key, ws in lines.items():
+        ws.sort(key=lambda w: w["x0"])
+        line_text = " ".join(w["text"] for w in ws).lower()
+        if needle_l in line_text:
+            x0 = min(w["x0"] for w in ws)
+            x1 = max(w["x1"] for w in ws)
+            y0 = min(w["top"] for w in ws)
+            y1 = max(w["bottom"] for w in ws)
+            hits.append((x0, y0, x1, y1))
+    return hits
 
 
-def main() -> None:
-    assert SRC.exists(), f"missing {SRC}"
-    cover_page = build_cover_page()  # rasterize + edit BEFORE opening writer
-    reader = PdfReader(str(SRC))
-    writer = PdfWriter()
+def process(pdf_path: str, out_dir: Path):
+    out_dir.mkdir(parents=True, exist_ok=True)
+    with pdfplumber.open(pdf_path) as pdf:
+        for i, page in enumerate(pdf.pages, start=1):
+            print(f"page {i}...")
+            img = rasterize_page(pdf_path, i, out_dir)
+            scale = img.size[0] / page.width  # px per pt
 
-    header = build_header_overlay()
-    page23 = build_page23_overlay()
-    last = len(reader.pages) - 1
+            # collect redaction boxes
+            boxes: list[tuple[float, float, float, float]] = []
+            needles = list(LINE_REDACTIONS)
+            if i == 23:
+                needles.extend(PAGE23_EXTRA)
+            for n in needles:
+                boxes.extend(line_bbox_for_text(page, n))
 
-    for i, page in enumerate(reader.pages):
-        if i == 0:
-            writer.add_page(cover_page)
-        elif i == last:
-            page.merge_page(page23)
-            writer.add_page(page)
-        else:
-            page.merge_page(header)
-            writer.add_page(page)
+            # cover-specific pixel boxes for logo + personal name line
+            if i == 1:
+                boxes.append(COVER_LOGO_BOX)
+                boxes.append(COVER_NAME_BOX)
+                boxes.append(COVER_FOOTER_BOX)
 
-    with open(SRC, "wb") as f:
-        writer.write(f)
-    print(f"wrote {SRC} — {len(reader.pages)} pages")
+            # paint each box (expand a hair for anti-aliased glyph edges)
+            for b in boxes:
+                # expand horizontally a bit for header/footer full-width bars
+                x0, y0, x1, y1 = b
+                paint_box(img, (x0 - 4, y0 - 3, x1 + 4, y1 + 3), scale, pad=1)
+
+            out_path = out_dir / f"page-{i:02d}.jpg"
+            img.save(out_path, "JPEG", quality=JPG_QUALITY, optimize=True)
+            print(f"  wrote {out_path}")
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) != 3:
+        print("usage: clean-travel-file-sample.py <source.pdf> <out_dir>")
+        sys.exit(1)
+    process(sys.argv[1], Path(sys.argv[2]))

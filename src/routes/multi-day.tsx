@@ -23,15 +23,9 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
-// Preview pages + full PDF live directly in public/ so they can be
-// served without a CDN round-trip and reused in the mobile lightbox.
-const samplePage01 = { url: "/travel-file-sample/page-01.jpg" };
-const samplePage02 = { url: "/travel-file-sample/page-02.jpg" };
-const samplePage03 = { url: "/travel-file-sample/page-03.jpg" };
-const samplePage04 = { url: "/travel-file-sample/page-04.jpg" };
-const samplePage05 = { url: "/travel-file-sample/page-05.jpg" };
-const samplePage06 = { url: "/travel-file-sample/page-06.jpg" };
-const samplePdf = { url: "/travel-file-sample/sample.pdf" };
+// All 23 pages of the anonymised private travel file live in public/ so
+// they can be shown inline — no external PDF.
+const TOTAL_SAMPLE_PAGES = 23;
 
 export const Route = createFileRoute("/multi-day")({
   head: () => ({
@@ -161,14 +155,13 @@ const FILE_GROUPS: Card[] = [
   },
 ];
 
-const SAMPLE_PAGES = [
-  { src: samplePage01.url, alt: "Travel Designer Portugal sample itinerary file — cover page" },
-  { src: samplePage02.url, alt: "Private multi-day Portugal itinerary — welcome page" },
-  { src: samplePage03.url, alt: "Private Portugal journey — confirmed reservations page" },
-  { src: samplePage04.url, alt: "Portugal Travel Designer journey across regions — route map" },
-  { src: samplePage05.url, alt: "Private multi-day Portugal itinerary with local route planning" },
-  { src: samplePage06.url, alt: "Travel Designer Portugal — day-by-day itinerary card" },
-];
+const SAMPLE_PAGES = Array.from({ length: TOTAL_SAMPLE_PAGES }, (_, i) => {
+  const n = i + 1;
+  return {
+    src: `/travel-file-sample/page-${String(n).padStart(2, "0")}.jpg`,
+    alt: `Private Portugal travel file — page ${n}`,
+  };
+});
 
 function GroupCard({ title, body }: Card) {
   return (
@@ -317,16 +310,22 @@ function MultiDayPage() {
           </div>
 
           <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-start">
-            {/* Lead spread */}
+            {/* Lead spread — cover, tappable to open full-size */}
             <div className="md:col-span-7">
-              <div className="overflow-hidden border border-[color:var(--border)] shadow-[0_24px_60px_-24px_rgba(46,46,46,0.32)] bg-white">
+              <a
+                href={SAMPLE_PAGES[0].src}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open the cover page full size"
+                className="block overflow-hidden border border-[color:var(--border)] shadow-[0_24px_60px_-24px_rgba(46,46,46,0.32)] bg-white cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+              >
                 <img
                   src={SAMPLE_PAGES[0].src}
                   alt={SAMPLE_PAGES[0].alt}
                   loading="lazy"
                   className="w-full h-auto object-contain"
                 />
-              </div>
+              </a>
             </div>
 
             {/* What's inside — grouped cards */}
@@ -350,57 +349,41 @@ function MultiDayPage() {
                   </div>
                 ))}
               </div>
-              <div className="mt-6">
-                <CtaButton
-                  href={samplePdf.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="primary"
-                >
-                  Open Sample Travel File
-                </CtaButton>
-              </div>
+              <p className="mt-6 font-serif italic text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
+                An example of a real, anonymised file — every page shown below. Tap any page to
+                read it full size.
+              </p>
             </div>
           </div>
 
-          {/* Sample pages — swipeable on mobile, grid on desktop */}
+          {/* All 23 pages — tap any thumbnail to open the page full size */}
           <div className="mt-10 md:mt-14">
             <p className="text-center font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)]">
-              Sample pages
+              Every page of the file
             </p>
-            <div
-              className="mt-5 md:hidden -mx-4 px-4 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-              role="list"
-              aria-label="Travel file sample pages"
-            >
-              {SAMPLE_PAGES.slice(1).map((p) => (
-                <div
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
+              {SAMPLE_PAGES.slice(1).map((p, i) => (
+                <a
                   key={p.src}
-                  role="listitem"
-                  className="snap-center shrink-0 w-[78%] overflow-hidden border border-[color:var(--border)] shadow-[0_16px_36px_-18px_rgba(46,46,46,0.32)] bg-white"
+                  href={p.src}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Open page ${i + 2} full size`}
+                  className="group relative block overflow-hidden border border-[color:var(--border)] shadow-[0_12px_30px_-16px_rgba(46,46,46,0.28)] bg-white cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
                 >
                   <img
                     src={p.src}
                     alt={p.alt}
                     loading="lazy"
-                    className="w-full h-auto object-contain"
+                    className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-[1.02]"
                   />
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 hidden md:grid grid-cols-5 gap-5">
-              {SAMPLE_PAGES.slice(1).map((p) => (
-                <div
-                  key={p.src}
-                  className="overflow-hidden border border-[color:var(--border)] shadow-[0_12px_30px_-16px_rgba(46,46,46,0.28)] bg-white"
-                >
-                  <img
-                    src={p.src}
-                    alt={p.alt}
-                    loading="lazy"
-                    className="w-full h-auto object-contain hover:scale-[1.02] transition-transform duration-700"
-                  />
-                </div>
+                  <span
+                    aria-hidden="true"
+                    className="absolute bottom-2 right-2 font-[family-name:var(--font-display)] text-[10px] uppercase tracking-[0.2em] font-semibold text-[color:var(--charcoal)] bg-[color:var(--ivory)]/90 px-1.5 py-0.5 rounded-sm"
+                  >
+                    {String(i + 2).padStart(2, "0")}
+                  </span>
+                </a>
               ))}
             </div>
           </div>

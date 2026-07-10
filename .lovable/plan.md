@@ -1,37 +1,44 @@
-# Fix the cover — minimal edits only
+## Goal
 
-You're right. On the cover I should have only:
+&nbsp;
 
-1. Removed the YES logo block at the top.
-2. Removed the client's name.
-3. Left the footer's website/email alone (they're already correct per `business-nap`).
+Premmium look 
 
-Instead I redrew the meta line in Helvetica, which broke the typography ("Septem ber", wrong font, boxed background). That gets reverted.
+Match what you did on your phone: cover personal info with plain color patches, show **all 23 pages** on the site as clickable, zoomable thumbnails, and **remove the "Open the full PDF" button** entirely.
 
-## What changes in `scripts/clean-travel-file-sample.py`
+## 1. Redaction script — simplified
 
-Cover page (page 1) — keep two ivory rectangles, delete the redrawn text:
+Rewrite `scripts/clean-travel-file-sample.py` to stop reconstructing anything. For each area, just paint a solid rectangle in the surrounding background color (ivory on light pages, teal on dark pages). No inpainting, no OpenCV, no pasted gradient strips.
 
-- **Rect 1 (logo)** — unchanged, ivory strip over the top ~145pt band.
-- **Rect 2 (client name)** — cover the meta line (Designed for Jennifer Oliver") with a single ivory rectangle. Keep the dates .**Do NOT redraw anything.** 
+Areas covered on every page:
 
-Remove all `setFont` / `drawString` / `stringWidth` calls from `build_cover_overlay()`. Result: cover shows the original "Portugal / Beyond the Postcards" wordmark, then whitespace, then the original info card and original footer — nothing rewritten.
+- YES logo (top of cover, top-left header on interior pages, wordmark on back page)
+- Guest name (after "Designed for" on cover; anywhere else it appears)
+- Email address (wherever it appears)
+- Website URL (wherever it appears)
+- Phone number if present
 
-Interior pages (2–22) and page 23 wordmark redaction: **unchanged** — those overlays worked correctly.
+Same technique you used: sample the surrounding background color, drop a rectangle over the personal detail, leave everything else untouched (dates, itinerary, photos, layout — all preserved).
 
-## Rerun + QA
+## 2. Regenerate all page previews
 
-- `python3 scripts/clean-travel-file-sample.py` against the current sample.
-- `pdftoppm -jpeg -r 150 -f 1 -l 1` and visually confirm: no logo, no name, no boxed/redrawn text, original fonts intact above and below the erased strip, footer untouched.
-- Regenerate `page-01.jpg` preview only (other previews unchanged).
+Rasterize the cleaned 23-page PDF to `public/travel-file-sample/page-01.jpg` … `page-23.jpg` at readable resolution. Delete `sample.pdf` from `public/` since it's no longer linked.
 
-## Out of scope (explicitly not touching)
+## 3. Inline gallery — all 23 pages
 
-- Footer website / email / phone — already correct, no edits.
-- Interior page header strip — already correct.
-- Page 23 wordmark cover — already correct.
-- Flip-book / lightbox / `/multi-day` UI — no changes.
+Update `src/components/home/RecentJourney.tsx` and `src/routes/multi-day.tsx`:
 
-## Note on re-running
+- Replace the 6-page flip-book with a scrollable/grid gallery of all 23 pages.
+- Each page is a tappable thumbnail.
+- Tap opens the existing full-screen lightbox at that page.
+- Lightbox gets prev/next arrows + swipe to move through all 23.
+- **Remove** the "Open the full 15-day PDF" / "Open Sample Travel File" buttons and their handlers.
+- Remove `samplePdfUrl` / `samplePdf` constants.
 
-The redaction script overlays on top of the current `sample.pdf`. Since the current file already has my bad overlay baked in, I'll re-run from the original. If the original isn't recoverable from disk, I'll ask you to re-upload the untouched 23-page PDF before applying the minimal overlay — safer than stacking overlays on the broken cover.
+## 4. Technical notes
+
+- Script uses `pypdf` + `Pillow` only (no cv2). Coordinates measured against the original 23-page PDF, applied once per run against the untouched original — never re-stacked on prior output.
+- Gallery keeps current editorial styling (ivory frame, gold rule, Fraunces eyebrow). Mobile: single column of full-width page cards. Desktop: 3-up grid.
+- Lightbox reuses existing `PageLightbox`, extended with `index` state and keyboard/swipe navigation across all 23 pages.
+
+No other pages, copy, or brand tokens change.
