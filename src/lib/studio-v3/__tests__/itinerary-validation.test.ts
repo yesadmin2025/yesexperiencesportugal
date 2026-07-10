@@ -32,14 +32,15 @@ describe("validateItinerary — state machine", () => {
   it("approves a clean, well-paced day", () => {
     const stops = [
       mkStop("winery-1", "winery", { lat: 38.5, lng: -8.9 }),
-      mkStop("lunch", "lunch", { lat: 38.51, lng: -8.88 }),
+      mkStop("workshop", "workshop", { lat: 38.51, lng: -8.88 }),
+      mkStop("lunch", "lunch", { lat: 38.515, lng: -8.87 }),
       mkStop("viewpoint", "viewpoint", { lat: 38.52, lng: -8.86 }),
     ];
     const r = validateItinerary({
       region: "arrabida",
       stops,
-      legMinutes: [20, 15],
-      legDistancesKm: [12, 9],
+      legMinutes: [20, 15, 15],
+      legDistancesKm: [12, 9, 8],
     });
     expect(r.status).toBe("approved");
     expect(r.failures.filter((f) => f.severity === "hard")).toHaveLength(0);
