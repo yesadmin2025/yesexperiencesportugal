@@ -60,9 +60,9 @@ export function GuestDetailsStep({
   className,
   testId,
 }: GuestDetailsStepProps) {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [fullName, setFullName] = useState(initial?.fullName ?? "");
+  const [email, setEmail] = useState(initial?.email ?? "");
+  const [phone, setPhone] = useState(initial?.phone ?? "");
   const [tourDate, setTourDate] = useState(initial?.tourDate ?? "");
   const [guests, setGuests] = useState(initial?.guests ?? 2);
   const [pickupAddress, setPickupAddress] = useState(initial?.pickupAddress ?? "");
@@ -72,7 +72,7 @@ export function GuestDetailsStep({
   const [mobility, setMobility] = useState("");
   const [children, setChildren] = useState("");
   const [occasion, setOccasion] = useState("");
-  const [guideNotes, setGuideNotes] = useState("");
+  const [guideNotes, setGuideNotes] = useState(initial?.guideNotes ?? "");
 
   const [slots, setSlots] = useState<SlotOption[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);

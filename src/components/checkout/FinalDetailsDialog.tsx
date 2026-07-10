@@ -49,6 +49,10 @@ export interface FinalDetailsInitial {
   guests?: number;
   pickupAddress?: string | null;
   language?: GuestDetails["language"];
+  fullName?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  guideNotes?: string | null;
 }
 
 interface Props {
