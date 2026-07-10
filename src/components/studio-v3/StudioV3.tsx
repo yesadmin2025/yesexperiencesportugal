@@ -300,6 +300,7 @@ const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
   investment: ["Next, we choose the moments", "Next, what draws you", "Next, the experiences"],
   map: ["Next, your draft"],
   storyboard: [""],
+  confirmation: [""],
 };
 
 function pickTeaser(phase: StudioV3Phase, seed: string): string {
