@@ -11,7 +11,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = join(process.cwd(), "src/content/i18n");
-const LOCALES = ["en", "es", "pt"] as const;
+const LOCALES = ["en", "pt"] as const;
 
 function loadLocale(locale: string): Record<string, Record<string, string>> {
   const dir = join(ROOT, locale);

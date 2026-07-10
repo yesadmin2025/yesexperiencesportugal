@@ -43,7 +43,7 @@ export function buildI18nHead({ path, locale }: I18nHeadInput): I18nHeadOutput {
 
   const links: I18nHeadOutput["links"] = [
     // Self-canonical points to THIS locale's URL — critical for avoiding
-    // duplicate-content penalties across /es and /pt.
+    // duplicate-content penalties across / and /pt.
     { rel: "canonical", href: buildLocaleUrl(normalized, locale, ORIGIN) },
   ];
 
