@@ -79,9 +79,9 @@ describe("validateItinerary — state machine", () => {
   it("flags review (soft) when driving is over preferred but under cap", () => {
     // Long-dwell day where drivingPct lands in (preferred, max]
     const stops = [
-      mkStop("a", "winery"),
-      mkStop("b", "workshop"),
-      mkStop("c", "lunch"),
+      mkStop("a", "workshop"),
+      mkStop("b", "lunch"),
+      mkStop("c", "viewpoint"),
     ];
     const r = validateItinerary({
       region: "arrabida",
