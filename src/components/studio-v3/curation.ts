@@ -2455,6 +2455,7 @@ const LINEAR_ORDER: StudioV3Phase[] = [
   "storyboard",
   "confirmation",
   "guestDetails",
+  "checkoutSummary",
 ];
 
 /**

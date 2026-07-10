@@ -219,7 +219,8 @@ import {
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
-import { ConfirmationPause } from "./ConfirmationPause";
+import { FinalRevealStory } from "./FinalRevealStory";
+import { CheckoutSummary as CheckoutSummaryStep } from "./CheckoutSummary";
 import { GuestDetailsStep } from "./GuestDetailsStep";
 import {
   BrandedCheckoutDrawer,
@@ -263,6 +264,7 @@ const PHASE_ORDER: StudioV3Phase[] = [
   "storyboard",
   "confirmation",
   "guestDetails",
+  "checkoutSummary",
 ];
 
 function stepOf(phase: StudioV3Phase): number {
@@ -305,6 +307,7 @@ const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
   storyboard: [""],
   confirmation: [""],
   guestDetails: [""],
+  checkoutSummary: [""],
 };
 
 function pickTeaser(phase: StudioV3Phase, seed: string): string {
@@ -742,6 +745,35 @@ export function StudioV3() {
     setSelectedAddOnsTotalEur(0);
   }, [state.tourId]);
 
+  // Guest Details snapshot — captured on Guest Details submit, then rendered
+  // in CheckoutSummary before we open Stripe. Kept in local state (not the
+  // persisted signature) since it holds personal info.
+  const [pendingGuestDetails, setPendingGuestDetails] = useState<GuestDetails | null>(null);
+
+  // Save-my-signature handler for the Final Reveal secondary CTA.
+  const [savingSignature, setSavingSignature] = useState(false);
+  const saveSig = useServerFn(saveStudioV3Signature);
+  const handleSaveSignature = useCallback(async () => {
+    if (savingSignature) return;
+    setSavingSignature(true);
+    try {
+      await saveSig({
+        data: {
+          journeyTitle: state.journeyTitle ?? "Your Signature",
+          skeletonTourKey: state.tourId ?? null,
+          state: state as unknown as Record<string, unknown>,
+        },
+      });
+      toast.success("Signature saved to your journey.");
+    } catch (e) {
+      console.error("[studio-v3 save-signature]", e);
+      toast.error("Could not save right now — please try again.");
+    } finally {
+      setSavingSignature(false);
+    }
+  }, [savingSignature, saveSig, state]);
+
+
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsState, setDetailsState] = useState<StudioV3State | null>(null);
@@ -949,7 +981,7 @@ export function StudioV3() {
     if (typeof window === "undefined") return;
     const onHide = () => {
       if (document.visibilityState !== "hidden") return;
-      if (state.phase === "intro" || state.phase === "storyboard" || state.phase === "confirmation" || state.phase === "guestDetails") return;
+      if (state.phase === "intro" || state.phase === "storyboard" || state.phase === "confirmation" || state.phase === "guestDetails" || state.phase === "checkoutSummary") return;
       trackStep({
         stepNumber: stepOf(state.phase),
         stepKey: state.phase,
@@ -1724,7 +1756,8 @@ export function StudioV3() {
     state.phase === "map" ||
     state.phase === "storyboard" ||
     state.phase === "confirmation" ||
-    state.phase === "guestDetails";
+    state.phase === "guestDetails" ||
+    state.phase === "checkoutSummary";
 
   // ComposerMap — Studio Bible §4 "live map updates as stops change".
   // Lightweight, peripheral, progressive: renders the moment the traveller
@@ -1755,7 +1788,7 @@ export function StudioV3() {
   ];
   const chromeReady = state.pickup != null && !EARLY_PHASES.includes(state.phase);
   const composerHidden =
-    !!reaction || !chromeReady || state.phase === "map" || state.phase === "storyboard" || state.phase === "confirmation" || state.phase === "guestDetails";
+    !!reaction || !chromeReady || state.phase === "map" || state.phase === "storyboard" || state.phase === "confirmation" || state.phase === "guestDetails" || state.phase === "checkoutSummary";
 
   // Phase 7D — saved-link hydration overlays. Loading spinner while we
   // fetch a `?saved=<token>` Signature; graceful card if it's missing or
@@ -2336,10 +2369,32 @@ export function StudioV3() {
 
       {state.phase === "confirmation" ? (
         <PhaseShell accent="ivory" exiting={exiting}>
-          <ConfirmationPause
-            journeyTitle={state.journeyTitle ?? "Your Signature Day"}
-            summaryLine={buildConfirmationSummary(state)}
+          <FinalRevealStory
+            state={state}
+            selectedAddOns={selectedAddOnItems}
+            perPaxEur={(() => {
+              const tour = state.tourId ? findTour(state.tourId) : null;
+              if (!tour) return null;
+              const g = typeof state.guests === "number" ? state.guests : 2;
+              return (
+                resolvePerPaxEur(tour, g, tourPriceTiers)?.eurPerPax ??
+                tour.priceFrom ??
+                null
+              );
+            })()}
+            totalEur={(() => {
+              const tour = state.tourId ? findTour(state.tourId) : null;
+              if (!tour) return null;
+              const g = typeof state.guests === "number" && state.guests > 0 ? state.guests : 2;
+              const perPax =
+                resolvePerPaxEur(tour, g, tourPriceTiers)?.eurPerPax ??
+                tour.priceFrom ??
+                0;
+              return Math.round(perPax * g + selectedAddOnsTotalEur * g);
+            })()}
+            saving={savingSignature}
             onContinue={() => advance("guestDetails")}
+            onSaveSignature={handleSaveSignature}
             onBack={() => back("storyboard")}
           />
         </PhaseShell>
@@ -2350,22 +2405,75 @@ export function StudioV3() {
           <GuestDetailsStep
             tourId={state.tourId ?? undefined}
             journeyTitle={state.journeyTitle ?? undefined}
-            submitting={checkoutPending}
+            submitting={false}
             initial={{
               tourDate: state.dateExact ?? null,
               guests:
                 typeof state.guests === "number" && state.guests > 0
                   ? Math.min(12, Math.max(1, Math.round(state.guests)))
                   : 2,
-              pickupAddress: pickupCityLabel(state.pickup) ?? null,
+              pickupAddress:
+                state.guestDraft?.pickupAddress ?? pickupCityLabel(state.pickup) ?? null,
+              fullName: state.guestDraft?.fullName ?? null,
+              email: state.guestDraft?.email ?? null,
+              phone: state.guestDraft?.phone ?? null,
+              guideNotes: state.guestDraft?.guideNotes ?? null,
             }}
             onBack={() => back("confirmation")}
             onSubmit={async (d) => {
-              await handleStripeCheckout(state, d);
+              setPendingGuestDetails(d);
+              setState((s) => ({
+                ...s,
+                guestDraft: {
+                  fullName: d.fullName,
+                  email: d.email,
+                  phone: d.phone,
+                  pickupAddress: d.pickupAddress,
+                  guideNotes: d.guideNotes,
+                },
+              }));
+              advance("checkoutSummary");
             }}
           />
         </PhaseShell>
       ) : null}
+
+      {state.phase === "checkoutSummary" && pendingGuestDetails ? (
+        <PhaseShell accent="ivory" exiting={exiting}>
+          <CheckoutSummaryStep
+            state={state}
+            guestDetails={pendingGuestDetails}
+            selectedAddOns={selectedAddOnItems}
+            perPaxEur={(() => {
+              const tour = state.tourId ? findTour(state.tourId) : null;
+              if (!tour) return null;
+              return (
+                resolvePerPaxEur(tour, pendingGuestDetails.guests, tourPriceTiers)?.eurPerPax ??
+                tour.priceFrom ??
+                null
+              );
+            })()}
+            totalEur={(() => {
+              const tour = state.tourId ? findTour(state.tourId) : null;
+              if (!tour) return null;
+              const perPax =
+                resolvePerPaxEur(tour, pendingGuestDetails.guests, tourPriceTiers)?.eurPerPax ??
+                tour.priceFrom ??
+                0;
+              const g = pendingGuestDetails.guests;
+              return Math.round(perPax * g + selectedAddOnsTotalEur * g);
+            })()}
+            submitting={checkoutPending}
+            onBack={() => back("guestDetails")}
+            onEditGuestDetails={() => back("guestDetails")}
+            onReserve={() => {
+              void handleStripeCheckout(state, pendingGuestDetails);
+            }}
+          />
+        </PhaseShell>
+      ) : null}
+
+
 
 
       <BrandedCheckoutDrawer

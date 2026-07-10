@@ -102,8 +102,15 @@ export type StudioV3Phase =
   | "investment"
   | "map"
   | "storyboard"
+  /**
+   * finalReveal — cinematic editorial presentation of the day the traveller
+   * just refined (kept under the legacy `"confirmation"` string so saved
+   * signatures and existing tests continue to hydrate without migration).
+   */
   | "confirmation"
-  | "guestDetails";
+  | "guestDetails"
+  /** checkoutSummary — compact recap + downloadable one-pager, before payment. */
+  | "checkoutSummary";
 
 /** Operational date mode (Phase 2): exact ISO date, flexible window, or undecided. */
 export type DateMode = "exact" | "flexible" | "undecided";
@@ -271,6 +278,18 @@ export interface StudioV3State {
    * caps or the no-invention rule.
    */
   rerollCount: number;
+  /**
+   * guestDraft — persisted Guest Details form values so back-nav from
+   * checkoutSummary/finalReveal preserves what the traveller already typed.
+   * Null until the guestDetails phase captures anything.
+   */
+  guestDraft: {
+    fullName?: string;
+    email?: string;
+    phone?: string;
+    pickupAddress?: string;
+    guideNotes?: string;
+  } | null;
 }
 
 export const INITIAL_STATE: StudioV3State = {
@@ -296,6 +315,7 @@ export const INITIAL_STATE: StudioV3State = {
   destinationIntent: "no-preference",
   pathMode: "guided",
   rerollCount: 0,
+  guestDraft: null,
 };
 
 export interface ChoiceOption<T extends string> {

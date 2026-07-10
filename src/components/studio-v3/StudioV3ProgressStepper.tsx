@@ -62,6 +62,7 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
     case "storyboard":
     case "confirmation":
     case "guestDetails":
+    case "checkoutSummary":
       return 3;
     default:
       return null;

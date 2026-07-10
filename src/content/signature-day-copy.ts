@@ -38,6 +38,18 @@ export const CTA_HIDE_DRIVING = "Hide driving details" as const;
 export const CTA_SEE_MORE_ADDONS = "See more options" as const;
 export const CTA_SEE_INCLUSIONS = "See what's included" as const;
 
+// Final Reveal — cinematic story screen after refinement.
+export const REVEAL_TITLE = "Your story in Portugal" as const;
+export const CTA_MAKE_STORY = "Make this my story in Portugal" as const;
+export const CTA_SAVE_SIGNATURE = "Save my signature" as const;
+export const CTA_BACK_TO_REFINE = "Back to refine" as const;
+
+// Checkout Summary — last screen before payment.
+export const CHECKOUT_HEADER = "Ready to reserve" as const;
+export const CTA_RESERVE_AND_PAY = "Reserve and pay" as const;
+export const INSTANT_CONFIRMATION =
+  "Instant confirmation. Your date is held the moment you reserve." as const;
+
 export const REASSURANCE_DEFAULT: ReadonlyArray<{
   readonly key: string;
   readonly label: string;
