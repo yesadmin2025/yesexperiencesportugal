@@ -173,6 +173,10 @@ function TourDetailPage() {
   useEffect(() => {
     logTourValidation(validation);
   }, [validation]);
+  useEffect(() => {
+    // GA4 view_item — fired once per tour page.
+    void import("@/lib/analytics-ga4").then((m) => m.gaViewItem({ tour }));
+  }, [tour.id]);
 
   if (pathname.replace(/\/$/, "").endsWith(`/tours/${tour.id}/tailor`)) {
     return <Outlet />;
