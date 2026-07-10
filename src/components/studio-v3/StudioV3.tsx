@@ -3307,10 +3307,18 @@ export function StoryboardHandoff({
     );
   }
 
+  // Product-flow contract (approved plan): this component owns the
+  // Refine screen. Three screens, one job each:
+  //   map        → MapAwakens              (cinematic route reveal)
+  //   storyboard → Refine (this component) (edit stops + add-ons + live price)
+  //   confirmation → Storytelling Signature (FinalRevealStory)
+  // Testid `studio-v3-reveal` is preserved for backward compatibility;
+  // `data-studio-v3-screen="refine"` is the stable product-level hook.
   return (
     <div
       className="relative w-full max-w-[640px] px-5 pb-12"
       data-testid="studio-v3-reveal"
+      data-studio-v3-screen="refine"
       data-reveal-region={skeletonTour?.region ?? ""}
       data-reveal-tour={skeletonTour?.id ?? ""}
       data-reveal-stops={editedStops.length}
