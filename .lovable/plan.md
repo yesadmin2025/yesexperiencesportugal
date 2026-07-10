@@ -1,55 +1,37 @@
-# Travel Designer PDF — clean the real file, keep all 23 pages, add mobile lightbox
+# Fix the cover — minimal edits only
 
-The existing `public/travel-file-sample/sample.pdf` is the real 23-page travel file. We keep it verbatim — all 23 pages, all the later logistics/appendix pages the user wants preserved — and only strip the two things that make it feel personal/cheap:
+You're right. On the cover I should have only:
 
-1. The running header on every page: `YES EXPERIENCES PORTUGAL · PRIVATE TRAVEL FILE · JENNIFER OLIVER … SEPTEMBER 2026`
-2. The `YES experiences PORTUGAL` wordmark on the final page(s).
+1. Removed the YES logo block at the top.
+2. Removed the client's name.
+3. Left the footer's website/email alone (they're already correct per `business-nap`).
 
-The homepage flip-book stays in sync and every page becomes tappable to open full-screen readable on mobile.
+Instead I redrew the meta line in Helvetica, which broke the typography ("Septem ber", wrong font, boxed background). That gets reverted.
 
-## 1. Redact the existing PDF (no re-typesetting)
+## What changes in `scripts/clean-travel-file-sample.py`
 
-New script: `scripts/clean-travel-file-sample.py` (Python + `pypdf` + `reportlab`).
+Cover page (page 1) — keep two ivory rectangles, delete the redrawn text:
 
-- Load `public/travel-file-sample/sample.pdf` (23 pages, A4 595×842pt).
-- For every page, stamp an ivory-coloured filled rectangle over the top header band (top ~40pt strip, full width) using a reportlab overlay merged via `pypdf.PageObject.merge_page`. This wipes the "JENNIFER OLIVER" + "YES EXPERIENCES PORTUGAL · PRIVATE TRAVEL FILE" line on every page in one pass, without touching body copy or the footer.
-- Detect the wordmark(s) on the closing pages by extracting page text and, if it contains `YES experiences PORTUGAL`, stamp an ivory rectangle over that region (identified by its y-coordinate via `pdfplumber`'s `extract_words`). No logo image is embedded in the PDF, so no image removal is needed — the wordmark is text.
-- Preserve the footer (`yesexperiencesportugal.com · info@yesexperiencesportugal.com · +351 911 889 992 · —N—`) untouched. It's already the correct brand contact block from `src/config/business-nap.ts` and the user only asked to fix the *header* website/email presentation — which was actually the top header, now fully removed.
-- Write to `public/travel-file-sample/sample.pdf` (overwrite in place; the old file was hand-uploaded, no history to preserve).
-- Regenerate the six preview JPGs from the cleaned PDF via `pdftoppm -jpeg -r 150 -f N -l N` so `page-01.jpg` … `page-06.jpg` reflect the new headerless look. Kept as 6 previews so the flip-book animation stays fast; the "Open full PDF" CTA below the flip-book carries the user to the complete 23-page document including the later pages.
+- **Rect 1 (logo)** — unchanged, ivory strip over the top ~145pt band.
+- **Rect 2 (client name)** — cover the meta line (Designed for Jennifer Oliver") with a single ivory rectangle. Keep the dates .**Do NOT redraw anything.** 
 
-Add `scripts/clean-travel-file-sample.py` to `package.json` as `pdf:clean` so re-running is one command.
+Remove all `setFont` / `drawString` / `stringWidth` calls from `build_cover_overlay()`. Result: cover shows the original "Portugal / Beyond the Postcards" wordmark, then whitespace, then the original info card and original footer — nothing rewritten.
 
-### QA (mandatory before commit)
+Interior pages (2–22) and page 23 wordmark redaction: **unchanged** — those overlays worked correctly.
 
-- `pdftoppm -jpeg -r 150` every page of the cleaned PDF to `/tmp/qa/`, view each with `code--view`, confirm:
-  - no "JENNIFER OLIVER" anywhere,
-  - no `YES experiences PORTUGAL` wordmark on the closing pages,
-  - top of every page is clean ivory with no leftover glyph fragments,
-  - footer, body copy, tables, day cards, and the final logistics/appendix pages are untouched,
-  - page count still 23.
-- Iterate on the rectangle y-coords until every page is clean.
+## Rerun + QA
 
-## 2. Homepage + `/multi-day` flip-book — tap to open, full-screen readable
+- `python3 scripts/clean-travel-file-sample.py` against the current sample.
+- `pdftoppm -jpeg -r 150 -f 1 -l 1` and visually confirm: no logo, no name, no boxed/redrawn text, original fonts intact above and below the erased strip, footer untouched.
+- Regenerate `page-01.jpg` preview only (other previews unchanged).
 
-`src/components/home/RecentJourney.tsx` currently renders each preview as a small `<img>` with no way to enlarge — unreadable at 393px. Add:
+## Out of scope (explicitly not touching)
 
-- Wrap the main flip page and each thumbnail in a `<button>` that opens a new `PageLightbox` component.
-- `PageLightbox` = `role="dialog" aria-modal="true"`, ivory backdrop, one page rendered `max-h-[100dvh] object-contain`, pinch-to-zoom via `touch-action: pinch-zoom`, swipe left/right between pages, ← / → / Esc keyboard shortcuts, 44×44 close button top-right, page counter bottom-centre. Reuses existing `usePrefersReducedMotion()`.
-- Add a secondary CTA immediately under the flip-book: **"Open the full 15-day PDF"** → `/travel-file-sample/sample.pdf` in a new tab. This is what carries the user to the later logistics/appendix pages the flip-book doesn't preview.
-- Same behaviour on `/multi-day` since it imports the same six preview images.
+- Footer website / email / phone — already correct, no edits.
+- Interior page header strip — already correct.
+- Page 23 wordmark cover — already correct.
+- Flip-book / lightbox / `/multi-day` UI — no changes.
 
-No other homepage/multi-day copy or layout changes.
+## Note on re-running
 
-## 3. Out of scope
-
-- No re-typesetting of the PDF, no font swap, no cover redesign — the real document is what makes this proof credible.
-- No PDF.js in-browser viewer — image lightbox + "Open full PDF" is lighter and reads better on mobile.
-- No localisation of the PDF to PT.
-- No changes to the `.asset.json` wrappers (the files live in `public/` and are already served directly).
-
-## Technical notes
-
-- `pypdf` + `reportlab` + `pdfplumber` are all pure-Python and safe in the sandbox; no Node/Chrome dependency.
-- Redaction here is a *visual* overlay, not a text-layer scrub. That's the right trade-off for a public marketing sample: the client's name no longer renders on screen or in "copy text" from the app-side viewer for casual readers, and re-typesetting the whole 23-page dossier for that would risk breaking the very later pages the user wants preserved. If the user later asks for true PII scrubbing (removing text from the content stream), that's a follow-up.
-- Everything else in the flip-book UI (motion, keyboard, thumbnails, aria) stays exactly as it is today.
+The redaction script overlays on top of the current `sample.pdf`. Since the current file already has my bad overlay baked in, I'll re-run from the original. If the original isn't recoverable from disk, I'll ask you to re-upload the untouched 23-page PDF before applying the minimal overlay — safer than stacking overlays on the broken cover.
