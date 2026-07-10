@@ -761,6 +761,16 @@ export function StudioV3() {
       setCheckoutTourId(tour.id);
       setDetailsOpen(false);
       setCheckoutOpen(true);
+      // GA4 begin_checkout — user reached Stripe surface.
+      try {
+        const item = buildTourItem(
+          { id: tour.id, title: tour.title ?? tour.id, priceFrom: perPaxBase },
+          { quantity: details.guests, tier: "studio", itemCategory: "Studio" },
+        );
+        gaBeginCheckout({ items: [item], valueEur: totalEur });
+      } catch {
+        /* silent */
+      }
       try {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
         const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
@@ -793,6 +803,16 @@ export function StudioV3() {
         }
         setClientSecret(resp.clientSecret);
         setPublishableKey(resp.publishableKey);
+        // GA4 add_payment_info — payment surface (Stripe embedded) is ready.
+        try {
+          const item = buildTourItem(
+            { id: tour.id, title: tour.title ?? tour.id, priceFrom: perPaxBase },
+            { quantity: details.guests, tier: "studio", itemCategory: "Studio" },
+          );
+          gaAddPaymentInfo({ paymentType: "stripe", items: [item], valueEur: totalEur });
+        } catch {
+          /* silent */
+        }
       } catch (e) {
         console.error("Stripe checkout failed", e);
         toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
