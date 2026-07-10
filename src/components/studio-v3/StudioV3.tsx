@@ -1049,7 +1049,7 @@ export function StudioV3() {
         gaStudioStep({
           stepNumber: stepOf(s.phase),
           stepKey: s.phase,
-          qualityScore: computeQualityScore(nextState)?.total ?? null,
+          qualityScore: computeQualityScore(nextState)?.score ?? null,
         });
       } catch {
         /* silent */
