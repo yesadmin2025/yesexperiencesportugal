@@ -18,7 +18,7 @@
 
 ## Local Stories
 
-- [Best Day Trips from Lisbon](/day-trips-from-lisbon)
+- [Best Day Trips from Lisbon](/local-stories/best-day-trips-from-lisbon)
 - [Arrábida vs Sintra](/local-stories/arrabida-vs-sintra)
 - [Setúbal Wine Guide](/local-stories/setubal-wine-guide)
 - [What to Do in Sesimbra](/local-stories/what-to-do-in-sesimbra)

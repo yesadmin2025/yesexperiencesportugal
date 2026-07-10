@@ -14,16 +14,16 @@ import { SITE_URL } from "@/lib/seo";
  * Powers `/admin/seo-jsonld`.
  */
 
-/** Landing routes whose JSON-LD was tightened for Search Console. */
+/** Local Stories articles migrated from legacy landing routes. */
 export const AFFECTED_PATHS = [
-  "/private-wine-tour-lisbon",
-  "/wine-tours-lisbon",
-  "/arrabida-wine-tour",
-  "/arrabida-day-trip-from-lisbon",
-  "/sintra-day-tour-from-lisbon",
-  "/evora-private-tour-from-lisbon",
-  "/evora-alentejo-wine-tour",
-  "/alentejo-wine-tour-from-lisbon",
+  "/local-stories/private-wine-tour-lisbon",
+  "/local-stories/wine-tours-lisbon",
+  "/local-stories/arrabida-wine-tour",
+  "/local-stories/arrabida-day-trip-from-lisbon",
+  "/local-stories/sintra-day-tour-from-lisbon",
+  "/local-stories/evora-private-tour-from-lisbon",
+  "/local-stories/evora-alentejo-wine-tour",
+  "/local-stories/alentejo-wine-tour-from-lisbon",
 ] as const;
 
 export type JsonLdCheck = {
