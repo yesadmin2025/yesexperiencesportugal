@@ -61,27 +61,34 @@ def build_header_overlay() -> PageObject:
 
 def build_cover_overlay() -> PageObject:
     """The cover is one flattened image with the logo + client name baked
-    into the raster. Both target areas actually sit inside the ivory
-    frame at the top of the page (sampling confirmed the pixel tone is
-    ~#FAF5EF), so a full-width ivory rectangle blends seamlessly."""
+    into the raster. Both target areas sit inside the ivory frame at the
+    top of the page (sampling confirmed pixel tone ≈ #FAF5EF), so a
+    full-width ivory rectangle blends seamlessly."""
     c, buf = _base_canvas()
 
     # ── 1. Logo block — top of the ivory frame, edge-to-edge inside the
-    # decorative border. Sits at raster y ≈ 40–260 (1170px tall image).
+    # decorative border. Raster y ≈ 40–235 ⇒ PDF y ≈ 673–813.
     c.setFillColor(IVORY_COVER)
-    c.rect(55, PAGE_H - 260, PAGE_W - 110, 235, stroke=0, fill=1)
+    c.rect(55, 670, PAGE_W - 110, 145, stroke=0, fill=1)
 
-    # ── 2. "14 nights · Designed for Jennifer Oliver" line — also on
-    # ivory, ~y=615-655 in raster ⇒ PDF y ≈ 372–401.
+    # ── 2. Meta lines — kills the whole "September 8 …" + "14 nights ·
+    # Designed for Jennifer Oliver" block, then re-draws it cleanly
+    # without the personal name. Raster y ≈ 585–670 ⇒ PDF y ≈ 361–428.
     c.setFillColor(IVORY_COVER)
-    c.rect(55, 370, PAGE_W - 110, 32, stroke=0, fill=1)
+    c.rect(55, 358, PAGE_W - 110, 72, stroke=0, fill=1)
 
-    # Rewrite: keep the "14 nights" info, drop the name.
+    # Rewrite: dates + nights, matching the original's tone hierarchy.
+    c.setFillColor(Color(0x2E / 255, 0x2E / 255, 0x2E / 255))
+    c.setFont("Helvetica-Bold", 15)
+    dates = "September 8 \u2014 September 22, 2026"
+    tw = c.stringWidth(dates, "Helvetica-Bold", 15)
+    c.drawString((PAGE_W - tw) / 2, 400, dates)
+
     c.setFillColor(CHARCOAL_SOFT)
     c.setFont("Helvetica", 12)
     line = "14 nights  \u00b7  A private Portugal journey"
     tw = c.stringWidth(line, "Helvetica", 12)
-    c.drawString((PAGE_W - tw) / 2, 380, line)
+    c.drawString((PAGE_W - tw) / 2, 375, line)
 
     c.save()
     buf.seek(0)
