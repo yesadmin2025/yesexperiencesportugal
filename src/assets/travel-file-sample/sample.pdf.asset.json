@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "asset_id": "c20a61f3-213a-4880-adad-bac4b0997c93",
+  "asset_id": "fe3c5438-1cbf-4ef2-be61-735da2f12eb8",
   "project_id": "5351efc5-c55a-4e41-b282-a4a019690d38",
-  "url": "/__l5e/assets-v1/c20a61f3-213a-4880-adad-bac4b0997c93/sample.pdf",
-  "r2_key": "a/v1/5351efc5-c55a-4e41-b282-a4a019690d38/c20a61f3-213a-4880-adad-bac4b0997c93/sample.pdf",
+  "url": "/__l5e/assets-v1/fe3c5438-1cbf-4ef2-be61-735da2f12eb8/sample.pdf",
+  "r2_key": "a/v1/5351efc5-c55a-4e41-b282-a4a019690d38/fe3c5438-1cbf-4ef2-be61-735da2f12eb8/sample.pdf",
   "original_filename": "sample.pdf",
-  "size": 595329,
+  "size": 386452,
   "content_type": "application/pdf",
-  "created_at": "2026-07-10T16:37:35Z"
+  "created_at": "2026-07-10T17:00:50Z"
 }
