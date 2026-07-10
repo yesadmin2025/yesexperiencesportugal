@@ -117,7 +117,7 @@ export function MapAwakens({
   dateExact,
   rerollCount = 0,
   studioState,
-  onReshape,
+  onReshape: _onReshape,
   onBack,
   onContinue,
 }: Props) {
