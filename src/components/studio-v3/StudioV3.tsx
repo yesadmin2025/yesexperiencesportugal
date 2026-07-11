@@ -80,6 +80,8 @@ import {
   createStudioSession,
   type StudioQuoteSnapshot,
 } from "@/lib/studio-v3/quoteClient";
+import { useResolvedSignature } from "./useResolvedSignature";
+import { canonicalConfirmedStops } from "@/lib/studio-v3/canonicalRouteStops";
 import { toast } from "sonner";
 
 /** Real minimum priceFrom across every Signature in the catalogue. Used as
