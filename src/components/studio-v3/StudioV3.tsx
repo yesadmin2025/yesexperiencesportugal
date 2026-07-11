@@ -804,6 +804,116 @@ export function StudioV3() {
         openLeadSheet("book");
         return;
       }
+
+      // ── Studio V3 authoritative quote path (Pass 1B §5, §6, §7) ──────────
+      // For tours the server catalogue prices (currently the golden fixture
+      // azeitao-cheese), we request a signed quote and open Stripe using
+      // ONLY the server total. If the server declines (unsupported guest
+      // count, pending route, etc.) we do NOT silently fall through — we
+      // block payment and open the lead sheet, per §7 + §9.
+      const STUDIO_QUOTE_TOURS = new Set<string>(["azeitao-cheese"]);
+      const useQuotePath = STUDIO_QUOTE_TOURS.has(tour.id);
+      if (useQuotePath) {
+        setCheckoutPending(true);
+        try {
+          const routeStops = (tour.stops ?? []).slice(0, 4).map((s, i) => ({
+            id: (s as { id?: string; slug?: string }).id
+              ?? (s as { slug?: string }).slug
+              ?? `stop-${i}`,
+            label: s.label,
+          }));
+          const snapshot: StudioQuoteSnapshot = {
+            commercialProductKey: "studio-v3-private-full-day",
+            signatureId: tour.id,
+            title: currentState.journeyTitle ?? tour.title ?? tour.id,
+            destinationRegion: tour.region ?? "Setúbal",
+            pickupCity: pickupCityLabel(currentState.pickup) ?? "Lisbon",
+            date: (details.tourDate || currentState.dateExact || "").slice(0, 10),
+            startTime: (details.startTime && /^\d{2}:\d{2}$/.test(details.startTime))
+              ? details.startTime
+              : "09:00",
+            language: (details.language === "pt" ? "pt" : "en"),
+            guests: details.guests,
+            routeStops,
+            selectedAddOns: selectedAddOnItems.map((i) => ({ id: i.id, quantity: 1 })),
+            routeStatus: "pending-review",
+          };
+
+          const quote = await fetchStudioQuote(snapshot);
+          if (quote.pricing.status !== "quoted") {
+            toast.error("Live pricing for this group size requires a tailored quote.");
+            openLeadSheet("book");
+            return;
+          }
+
+          // Populate the visible summary from the AUTHORITATIVE server pricing.
+          setCheckoutSummary({
+            tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
+            region: tour.region,
+            durationHours: tour.durationHours,
+            guests: details.guests,
+            dateExact: details.tourDate || currentState.dateExact || null,
+            startTime: details.startTime ?? null,
+            pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
+            pricePerPaxEur: quote.pricing.unitEur,
+            totalEur: quote.pricing.totalEur,
+            heroSrc: tour.img ?? null,
+            beats: quote.itinerary.routeStops.map((s) => s.label).slice(0, 4),
+            flowLabel: "Studio",
+            addOns: quote.addOns.map((a) => ({
+              id: a.id,
+              label: a.label,
+              priceEur: Math.round(a.lineSubtotalEur),
+            })),
+            addOnsTotalEur: Math.round(quote.pricing.addOnsSubtotalEur),
+          });
+          setCheckoutTourId(tour.id);
+          setDetailsOpen(false);
+          setCheckoutOpen(true);
+          try {
+            const item = buildTourItem(
+              { id: tour.id, title: tour.title ?? tour.id, priceFrom: quote.pricing.unitEur },
+              { quantity: details.guests, tier: "studio", itemCategory: "Studio" },
+            );
+            gaBeginCheckout({ items: [item], valueEur: quote.pricing.totalEur });
+          } catch { /* silent */ }
+
+          const origin = typeof window !== "undefined" ? window.location.origin : "";
+          const session = await createStudioSession({
+            quoteToken: quote.quoteToken,
+            currentRevision: quote.revision,
+            snapshot,
+            environment: getStripeEnvironment(),
+            returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
+            uiMode: "embedded",
+            customerEmail: details.email,
+            guestDetails: { ...details, hotelPickupIncluded: true },
+          });
+          if (!session.clientSecret || !session.publishableKey) {
+            throw new Error("Embedded checkout unavailable");
+          }
+          setClientSecret(session.clientSecret);
+          setPublishableKey(session.publishableKey);
+          try {
+            const item = buildTourItem(
+              { id: tour.id, title: tour.title ?? tour.id, priceFrom: quote.pricing.unitEur },
+              { quantity: details.guests, tier: "studio", itemCategory: "Studio" },
+            );
+            gaAddPaymentInfo({ paymentType: "stripe", items: [item], valueEur: quote.pricing.totalEur });
+          } catch { /* silent */ }
+          return;
+        } catch (e) {
+          console.error("[studio-v3 quote-checkout] failed", e);
+          toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
+          setCheckoutOpen(false);
+          openLeadSheet("book");
+          return;
+        } finally {
+          setCheckoutPending(false);
+        }
+      }
+
+      // ── Legacy path (unchanged) for tours not yet on the server catalogue ─
       setCheckoutPending(true);
       // Open the drawer immediately with a branded skeleton.
       const stopLabels = (tour.stops ?? []).map((s) => s.label).slice(0, 6);
