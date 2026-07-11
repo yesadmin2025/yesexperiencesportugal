@@ -75,6 +75,11 @@ import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  fetchStudioQuote,
+  createStudioSession,
+  type StudioQuoteSnapshot,
+} from "@/lib/studio-v3/quoteClient";
 import { toast } from "sonner";
 
 /** Real minimum priceFrom across every Signature in the catalogue. Used as
