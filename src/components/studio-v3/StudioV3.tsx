@@ -806,15 +806,45 @@ export function StudioV3() {
         resolvePerPaxEur(tour, details.guests, tourPriceTiers)?.eurPerPax ??
         tour.priceFrom ??
         180;
-      // Add-ons are per-pax (matches the price card): scale by guest count for
-      // the drawer total, Stripe line items, and metadata so nothing drifts.
+      // Unit-aware party total for add-ons — mirrors `addOnEurFor` in the
+      // price card so per_person, per_group, per_vehicle and fixed add-ons
+      // all resolve to the same amount the traveler sees in the reveal.
+      // Never assume "per_person × guests" — that over-charges per_group
+      // add-ons the moment the catalog gains one. P2 #15 price parity.
+      const partyAmountFor = (item: (typeof selectedAddOnItems)[number]) => {
+        switch (item.unit) {
+          case "per_person":
+            return item.perUnit * details.guests;
+          case "per_vehicle":
+            return item.perUnit * Math.ceil(details.guests / 4);
+          case "per_group":
+          case "fixed":
+            return item.perUnit;
+          default:
+            return item.amount;
+        }
+      };
+      // Add-ons for the Stripe edge function. Today the function hardcodes
+      // `quantity: guests`, so it only computes the correct charge when every
+      // line is per_person. All current catalog entries are per_person; warn
+      // loudly if a non-per_person add-on ever slips through so we catch it
+      // before the payment is off by (guests - 1) × price.
+      const nonPerPerson = selectedAddOnItems.filter((i) => i.unit !== "per_person");
+      if (nonPerPerson.length > 0 && typeof console !== "undefined") {
+        console.warn(
+          "[studio-v3 price-parity] Non per_person add-on(s) reached checkout:",
+          nonPerPerson.map((i) => ({ id: i.id, unit: i.unit })),
+        );
+      }
       const addOnsForCheckout = selectedAddOnItems.map((i) => ({
         id: i.id,
         label: i.label,
         priceEur: Math.round(i.priceEur),
         durationMinutes: i.durationMinutes,
       }));
-      const addOnsPartyTotalEur = Math.round(selectedAddOnsTotalEur * details.guests);
+      const addOnsPartyTotalEur = Math.round(
+        selectedAddOnItems.reduce((sum, i) => sum + partyAmountFor(i), 0),
+      );
       const totalEur = Math.round(perPaxBase * details.guests + addOnsPartyTotalEur);
       setCheckoutSummary({
         tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
