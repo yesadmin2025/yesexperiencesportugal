@@ -51,6 +51,12 @@ export interface EditorialMapProps {
   showLabels?: boolean;
   /** Accessibility label for the whole map artefact. */
   ariaLabel?: string;
+  /**
+   * Optional drive-time minutes between consecutive stops. Length should be
+   * `stops.length - 1`. When provided (and non-null), a small gold-tinted
+   * chip is rendered near the midpoint of each visible leg, e.g. "35 min".
+   */
+  legMinutes?: ReadonlyArray<number | null | undefined>;
 }
 
 const VB_W = 200;
