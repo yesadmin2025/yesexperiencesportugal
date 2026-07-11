@@ -19,7 +19,11 @@ import { whatsappUrl } from "@/config/business-nap";
 
 const WA_DEFAULT_MESSAGE = "Hi YES Experiences Portugal — I'd like a hand with my booking.";
 
-const HIDE_PATTERNS: RegExp[] = [/^\/checkout(\/|$)/i];
+// Studio V3 is a cinematic funnel — restraint > support noise. The
+// "Ask a curator for help" secondary CTA (see signature-day-copy.ts)
+// covers the same intent inside the funnel. Also hide on checkout so
+// the bubble never competes with the primary action.
+const HIDE_PATTERNS: RegExp[] = [/^\/checkout(\/|$)/i, /^\/studio-v3(\/|$)/i];
 
 declare global {
   interface WindowEventMap {

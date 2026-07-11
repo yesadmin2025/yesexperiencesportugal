@@ -90,7 +90,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                 color: "var(--ivory)",
               }}
             >
-              Let's compose your{" "}
+              Let’s compose your{" "}
               <span
                 style={{
                   fontFamily: "var(--font-editorial)",
@@ -112,25 +112,23 @@ export function StudioV3Intro({ onComplete }: Props) {
               Not a form. A few quiet choices, and Portugal responds.
             </p>
 
-            <div
+            {/* Quiet meta line — was previously three bordered pills that
+               read as fake CTAs on mobile (audit P1 #4). Now a single
+               inline strip that describes what Studio does without
+               competing with the real BEGIN button below. */}
+            <p
               aria-label="Studio preview updates now active"
-              className="mx-auto mt-6 grid max-w-[18rem] grid-cols-1 gap-2 text-left sm:max-w-none sm:grid-cols-3"
+              data-testid="studio-v3-intro-meta"
+              className="mx-auto mt-6 max-w-[22rem] text-center text-[10.5px] font-semibold uppercase leading-[1.6]"
+              style={{
+                color: "color-mix(in oklab, var(--ivory) 72%, transparent)",
+                letterSpacing: "0.22em",
+                fontFamily: "var(--font-body)",
+              }}
             >
-              {["Live route map", "Drive-time checks", "Region-aware moments"].map((label) => (
-                <span
-                  key={label}
-                  className="inline-flex min-h-[34px] items-center justify-center border px-3 text-center text-[9.5px] font-semibold uppercase leading-tight"
-                  style={{
-                    borderColor: "color-mix(in oklab, var(--gold) 34%, transparent)",
-                    color: "color-mix(in oklab, var(--ivory) 76%, transparent)",
-                    background: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
-                    letterSpacing: "0.18em",
-                  }}
-                >
-                  {label}
-                </span>
-              ))}
-            </div>
+              Live route map <span style={{ color: "var(--gold)" }}>·</span> Drive-time checks{" "}
+              <span style={{ color: "var(--gold)" }}>·</span> Region-aware moments
+            </p>
 
             <button
               type="button"
