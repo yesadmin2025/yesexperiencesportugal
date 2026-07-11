@@ -4182,6 +4182,7 @@ export function StoryboardHandoff({
           showAddOns={true}
           selectedAddOnIds={selectedAddOnIds}
           onAddOnsChange={onAddOnsChange}
+          serverPricing={resolvedServerPricing}
 
           remainingMinutes={
             revealLegsLoading
