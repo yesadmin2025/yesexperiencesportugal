@@ -96,6 +96,7 @@ export function CheckoutSummary({
   onReserve,
   className,
   testId,
+  serverPricing = null,
 }: CheckoutSummaryProps) {
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your Signature";
@@ -104,7 +105,27 @@ export function CheckoutSummary({
     guestDetails.pickupAddress ||
     pickupCityLabel(state.pickup) ||
     "Pickup shared with your host";
+  // Pass 1B Slice A: server pricing wins when quoted. Legacy props are
+  // pre-quote placeholders only. Additions list mirrors the signed snapshot
+  // so no client add-on arithmetic can reach a visible amount.
+  const useServer = serverPricing?.status === "quoted";
+  const displayTotalEur = useServer ? serverPricing!.totalEur : totalEur;
+  const displayPerPaxEur = useServer ? serverPricing!.unitEur : perPaxEur;
+  const displayAddOns = useServer
+    ? serverPricing!.addOnLines.map((a) => ({
+        id: a.id,
+        label: a.label,
+        priceEur: a.lineSubtotalEur,
+        pendingReview: a.routeIntegration === "pending-review",
+      }))
+    : selectedAddOns.map((a) => ({
+        id: a.id,
+        label: a.label,
+        priceEur: a.priceEur,
+        pendingReview: false,
+      }));
   const included: string[] =
+    // TODO(pass-1b-slice-b): source inclusions from resolved.inclusions
     tour?.included && tour.included.length > 0
       ? tour.included
       : ["Private guide", "Private transport", "All confirmed entries"];
