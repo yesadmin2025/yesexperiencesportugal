@@ -411,15 +411,23 @@ Deno.serve(async (req) => {
       return await handleStudioQuote(body.snapshot);
     }
     if (body.mode === "create-session") {
-      if (!body.quoteToken || !body.currentRevision || !body.snapshot) {
+      if (!body.quoteToken || !body.currentRevision) {
         return jsonError("Missing quote fields", 400);
       }
       return await handleStudioCreateSession(body as unknown as StudioCreateSessionBody);
     }
 
-    // Legacy Signature/Tailor path below (unchanged).
+    // Legacy Signature/Tailor path below.
     if (!body.tourId || typeof body.tourId !== "string" || body.tourId.length > 80)
       return jsonError("Invalid tourId", 400);
+
+    // §7 — Studio V3 commercial keys MUST use the authoritative quote path.
+    // Block any attempt to reach the legacy tier-based checkout under a
+    // Studio V3 commercial identity.
+    if (body.tourId === "studio-v3-private-full-day") {
+      return jsonError("studio_quote_required", 409);
+    }
+
     if (!body.tourTitle || typeof body.tourTitle !== "string" || body.tourTitle.length > 160)
       return jsonError("Invalid title", 400);
     if (!Number.isInteger(body.guests) || body.guests < 1 || body.guests > 12)
