@@ -131,6 +131,7 @@ export function EditorialMap({
   className,
   showLabels = true,
   ariaLabel,
+  legMinutes,
 }: EditorialMapProps) {
   const points = useMemo(() => resolveStopPoints(stops), [stops]);
   const visible = Math.max(0, Math.min(points.length, activeCount ?? points.length));
