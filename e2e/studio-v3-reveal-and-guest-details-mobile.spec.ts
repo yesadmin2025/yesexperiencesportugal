@@ -28,7 +28,7 @@
  */
 
 import { test, expect, type Page } from "@playwright/test";
-import { walkToReveal } from "./studio-v3-walk-to-reveal";
+import { walkToReveal, advanceRefineToStorytelling } from "./studio-v3-walk-to-reveal";
 
 const VIEWPORT = { width: 393, height: 588 } as const;
 const FORBIDDEN_COPY = /to be confirmed|pending confirmation|\btbc\b/i;
@@ -51,19 +51,6 @@ async function assertNoHorizontalOverflow(page: Page): Promise<void> {
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
   expect(overflow, "horizontal overflow at 393px").toBeLessThanOrEqual(1);
-}
-
-/** After `walkToReveal` lands on Refine (phase=storyboard), advance to
- *  Storytelling (phase=confirmation) by clicking the Refine primary CTA. */
-async function advanceRefineToStorytelling(page: Page): Promise<void> {
-  const refineCta = page
-    .locator('[data-studio-v3-screen="refine"]')
-    .getByRole("button", { name: /^See my signature story/i })
-    .first();
-  if (!(await refineCta.isVisible().catch(() => false))) return;
-  await refineCta.scrollIntoViewIfNeeded().catch(() => undefined);
-  await refineCta.click({ timeout: 4_000 }).catch(() => undefined);
-  await page.getByTestId("studio-v3-final-reveal").waitFor({ timeout: 8_000 }).catch(() => undefined);
 }
 
 test.describe("Studio V3 · Final Reveal + Guest Details @ 393×588", () => {
