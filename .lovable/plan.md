@@ -1,45 +1,77 @@
-# Studio V3 — Full End-to-End Audit
 
-Goal: walk the Studio from `/studio-v3` intro all the way through map → curation → storyboard → refine → storytelling → guest details, and produce a single consolidated audit report covering copy, typography, structure, logic, palette, CTAs, price logic, and clarity. No code changes in this pass — findings only, grouped by severity, each with file:line references and a proposed fix. A follow-up plan will implement the fixes you approve.
+# Studio V3 — P0 Implementation Plan
 
-## How the audit runs
+Ships the four BLOCKER-severity fixes from `.lovable/studio-v3-audit.md`, one focused change per finding, each with a Playwright regression test on mobile (393×588) so the fix stays fixed.
 
-1. **Live mobile walkthrough (393×588, the user's viewport)** via Playwright against `http://localhost:8080/studio-v3`:
-   - Screenshot every phase (intro, feeling, who, rhythm, region, arrival, tier, date, map/moments, storyboard, refine, storytelling, guest details).
-   - Capture console warnings (esp. `[font-fallback]`), network errors, and telemetry events (`curation.decision`, `reveal.validation`, `builder.step`).
-   - Exercise both a "minimal" path (fewest add-ons) and a "rich" path (Arrábida + multiple add-ons) so price logic is stressed.
-2. **Static audit** of the Studio V3 source (`src/components/studio-v3/**`, `src/content/signature-day-copy.ts`, `src/data/signatureAddOns.ts`, `src/data/signatureTourPricing.ts`, `src/hooks/useStudioState.ts`) for the categories below.
-3. **Cross-reference** live findings against the Studio north-star memory (`mem://design/studio-philosophy`), brand guardrails, typography v3, and the "no invented stops" constraint.
+## 1. Storytelling reveal renders empty on mobile
 
-## Audit dimensions
+**Files:** `src/components/studio-v3/FinalRevealStory.tsx`, `src/components/studio-v3/SignatureDayReveal.tsx` (re-export), `src/components/studio-v3/StudioV3.tsx` (mount site).
 
-Each finding is tagged `[BLOCKER | HIGH | MEDIUM | LOW]` with file:line + suggested fix.
+**Diagnosis pass first** — run the walker with `page.evaluate` dumping the reveal subtree's outerHTML + computed opacity/transform/display of the root container and its first three descendants; also log which of these is truthy: parchment image `naturalWidth`, `useReducedMotion()` gate, IntersectionObserver-driven reveal class, scroll container `scrollTop`. Only then pick the fix from:
+- image-load gate → paint text at opacity 1 immediately, fade parchment behind
+- reveal-on-scroll gate → mount already-revealed on first paint when phase === `storytelling`
+- scroll-container offset → force `scrollTo(0,0)` on phase transition
 
-- **Copy** — sentence case, no invented facts, no competitor claims, tone consistent across phases, microcopy on CTAs matches destination screen, error/empty states, no leftover placeholder strings.
-- **Typography** — only Fraunces (headings + italic emphasis) and Inter (body/UI); no Montserrat/Georgia/Cormorant regressions; correct sizes on mobile; italic emphasis restricted to headings; runtime `[font-fallback]` warnings surface here.
-- **Structure** — phase order matches the philosophy (feeling → who → rhythm → region → arrival → tier → date → map → storyboard → refine → storytelling → guest details); no dead phases; back/forward preserves state; deep-link/refresh behaviour.
-- **Logic** — selections persist across phases; tier + region + rhythm gates work; add-on availability (minStops, region compatibility) is correct; guest count math; date "flexible" bypass; refine ↔ storytelling round-trip preserves toggles.
-- **Color palette** — only the 8 brand tokens; no hardcoded hex/`text-white`/`bg-black`; gold used as micro-detail only; contrast ≥ 4.5:1 on --charcoal and --ivory surfaces.
-- **CTAs** — every actionable card has `data-phase-cta`; primary/ghost variants use `<CtaButton>`; labels match the destination ("See my signature story", "Continue to guest details", "Save my signature", "← Back to refine"); 44×44 tap targets; visible focus ring; disabled reasons are explained inline.
-- **Price logic** — per-guest base × guests + add-ons × guests; `studio-v3-add-ons-total` and `studio-v3-party-total` agree; add-ons that are disabled never contribute; currency formatting (€, no decimals); tier upgrade updates totals in the same frame; storytelling → refine → storytelling preserves the total.
-- **Clarity** — every screen answers "what am I choosing / what happens next / how much"; no jargon; empty and edge states (no add-ons, single guest, minimum tier) read naturally; a11y labels match visible text.
+**Regression test:** new `e2e/studio-v3-storytelling-reveal-non-empty-mobile.spec.ts`. Walks intro → refine → tap "See my signature story", then asserts within 2500 ms on mobile-chromium (393×588):
+- `[data-testid="studio-v3-final-reveal"]` visible AND `innerText.length > 40`
+- `[data-testid="studio-v3-party-total"]` visible with `€` and a positive integer
+- `[data-testid="studio-v3-add-ons-total"]` present (may be `€0`)
 
-## Deliverable
+## 2. Retire Montserrat / Georgia fallbacks + italic-Fraunces-as-body
 
-A single audit report written to `.lovable/studio-v3-audit.md` with:
+**Files:** `src/components/studio-v3/StudioV3Intro.tsx` (lines 89, 96, 109, 168, 175, 203, 252, 259, 343, 353), `src/components/studio-v3/ChoiceGrid.tsx` (lines 6 comment, 97, 105, 107), `src/components/studio-v3/MapAwakens.tsx` (line 524), `src/components/studio-v3/StudioV3.tsx` (line 1982 hint), storytelling voice overlay in `FinalRevealStory.tsx`.
 
-- Table of contents by phase.
-- Screenshot thumbnails per phase (saved under `/tmp/browser/studio-v3-audit/`).
-- Findings grouped by severity, each with: phase, category, file:line, evidence (screenshot or quoted code), proposed fix, effort estimate (S/M/L).
-- A short "green list" of things that are already correct, so we don't regress them later.
-- A prioritized fix backlog ready to be converted into an implementation plan.
+**Rule:** everywhere those files set `fontFamily: "var(--font-display, 'Montserrat', ...)"` or `"var(--font-serif, Georgia, ...)"`, replace with `var(--font-editorial)` (headings) or `var(--font-body)` (body/whisper/hint/meta). Whisper subtitles on Feeling tiles and any body-length paragraph switch to Inter regular, `text-[13px]`, `--charcoal-soft`, non-italic. Italic Fraunces stays ONLY inside H1/H2 emphasis spans.
 
-## Out of scope for this pass
+**Regression test:** new `e2e/studio-v3-typography-two-family-mobile.spec.ts`. On each phase (intro / feeling / map / refine / storytelling / guest-details), assert:
+- no computed `font-family` on any visible element in `[data-studio-v3-root]` contains `Montserrat`, `Georgia`, `Times`, or `Cormorant`
+- any element with computed `font-style: italic` has a tag name in `H1..H6` OR sits inside one
+- console during the walk emits zero `[font-fallback]` warnings (hook the detector, fail on any)
 
-- No source edits, no snapshot updates, no CI changes.
-- No changes to pricing data, add-on catalog, or tour content.
-- Desktop/tablet audit — mobile 393×588 only (matches your working viewport). Desktop can be a follow-up.
+## 3. Map beat delivers on its intro promise
 
-## Next step after you approve
+**Files:** `src/components/studio-v3/MapAwakens.tsx`, `src/components/studio-v3/StudioV3Intro.tsx` (intro chips copy).
 
-I run the walkthrough + static audit, publish `.lovable/studio-v3-audit.md`, and then propose a second plan that implements the BLOCKER/HIGH fixes in priority order.
+**Approach:** replace the `PortugalSilhouette` SVG blob at the `map` phase with the existing `EditorialMap` / Mapbox render used by `LivingMap` (already imported elsewhere) so the beat actually shows a coastline + route line + stops. Also:
+- badge collision: give the drive-time badge `min-w-[52px] whitespace-nowrap`, stack the label under it on `<sm`
+- stop-name truncation: replace `truncate` with `line-clamp-2` on `.route-breakdown-row [data-stop-name]`; drop leading `Lisbon → ` when pickup city already shown in badge
+- meta wording: `1 DRIVING` → `1 leg · 34.7 km`
+- eyebrow contrast: `--gold` → `--gold-soft` on dark surfaces
+- retire the italic Fraunces line "Matching wine to one real route." (handled in fix #2)
+
+If the Mapbox mount is heavier than we want here, fallback plan: keep the silhouette but rebrand the beat header to "Route timeline" and update the intro chip copy in `StudioV3Intro.tsx` so the promise matches what renders. Pick Mapbox by default; only fall back if the reveal-blank fix (#1) shows the map render is what's blocking paint.
+
+**Regression test:** extend `e2e/studio-v3-map-legend.spec.ts` (or a new sibling if simpler). On mobile:
+- map surface has `[data-testid="studio-v3-live-map"]` visible with a rendered `<canvas>` OR SVG containing at least one `<path>` for a route line
+- drive-time badge and its label never overlap (`getBoundingClientRect` non-intersecting)
+- no route-breakdown row shows a `…` truncation
+
+## 4. Guest-details footer clipping "FINAL PRICE SHO…"
+
+**File:** `src/components/studio-v3/GuestDetailsStep.tsx:467`.
+
+Change `tracking-[0.22em]` to `tracking-[0.12em]` on that line AND shorten to `Secure checkout · Final price shown at payment`. Also add `whitespace-nowrap` off + `flex-wrap` on the container so the line can wrap on 360 px.
+
+**Regression test:** extend `e2e/studio-v3-reveal-and-guest-details-mobile.spec.ts`. On mobile, at the Guest Details phase, assert the footer microcopy `element.scrollWidth <= element.clientWidth + 1` AND `innerText` does not contain `…` / `\u2026`.
+
+---
+
+## Cross-cutting scaffolding (shared by tests above)
+
+- Extend `e2e/studio-v3-walk-to-reveal.ts` with a `walkToStorytelling(page)` helper that stops one beat before Guest Details, so tests #1 and #4 share setup.
+- Register a Playwright console listener helper `expectNoFontFallback(page)` that fails the test if any `[font-fallback]` warning fires during the walk. Reused by test #2 and can be added to the existing walk-to-reveal spec.
+- All new specs go under the existing `mobile-chromium` project in `playwright.config.ts` (393×588, `deviceScaleFactor: 3`), matching the audit's viewport.
+
+## CI wiring
+
+Add a single new workflow `.github/workflows/studio-v3-p0-regression.yml` that runs the four new/extended specs on every PR + push to main, uploads failed diffs to `test-results/`, and uses `studio-v3-p0-${{ github.ref }}` concurrency with cancel-in-progress. Same shape as `.github/workflows/studio-v3-your-additions-visual.yml`.
+
+## Out of scope for this plan
+
+- P1/P2 items (stepper vocabulary, hydration mismatch, WhatsApp bubble hiding, phase reordering, Refine silhouette upgrade). Each becomes its own plan after P0 lands.
+- Pricing data, add-on catalog, tour content — untouched.
+- Desktop / tablet — mobile only.
+
+## Deliverable per finding
+
+Each finding ships as a single logical change: the code fix + its regression test + (for #3 only) the CI wiring update. I will verify each fix with the Playwright walker on mobile before marking it done.
