@@ -20,7 +20,7 @@ import { findTour } from "@/data/signatureTours";
 import { pickupCityLabel } from "./curation";
 import {
   CTA_BACK_TO_REFINE,
-  CTA_MAKE_STORY,
+  CTA_CONTINUE_TO_GUEST_DETAILS,
   CTA_SAVE_SIGNATURE,
   CTA_SEE_INCLUSIONS,
   INCLUSION_HEADER,
