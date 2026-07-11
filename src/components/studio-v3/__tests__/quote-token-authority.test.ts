@@ -147,9 +147,10 @@ describe("§12 quote token + snapshot integrity", () => {
   it("reordered stops change snapshotHash", async () => {
     const { hash } = await signGolden();
     const g = goldenSnapshot();
+    const stops = g.routeStops as Array<{ id: string; label: string }>;
     const tampered = {
       ...g,
-      routeStops: [g.routeStops![1], g.routeStops![0], g.routeStops![2], g.routeStops![3]],
+      routeStops: [stops[1], stops[0], stops[2], stops[3]],
     };
     const norm = validateAndNormaliseSnapshot(tampered);
     const rehash = await sha256Hex(canonicalJson(norm));
