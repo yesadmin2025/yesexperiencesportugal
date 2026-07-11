@@ -51,6 +51,28 @@ export async function sha256Hex(input: string): Promise<string> {
   return out;
 }
 
+export interface EmbeddedSnapshot {
+  signatureId: string;
+  commercialProductKey: string;
+  title: string;
+  destinationRegion: string;
+  pickupCity: string;
+  date: string;
+  startTime: string;
+  language: string;
+  guests: number;
+  routeStatus: "validated" | "pending-review" | "unavailable";
+  routeStops: Array<{ id: string; label: string }>;
+  selectedAddOns: Array<{ id: string; quantity: number }>;
+  inclusionIds: string[];
+}
+export interface EmbeddedPricing {
+  unitEur: number;
+  baseSubtotalEur: number;
+  addOnLineItems: Array<{ id: string; label: string; unitEur: number; quantity: number; lineSubtotalEur: number }>;
+  totalEur: number;
+  currency: "EUR";
+}
 export interface QuoteTokenPayload {
   v: 1;
   revision: string;
@@ -62,6 +84,8 @@ export interface QuoteTokenPayload {
   currency: "EUR";
   routeStatus: "validated" | "pending-review" | "unavailable";
   availabilityStatus: "validated" | "pending-review" | "unavailable";
+  snapshot: EmbeddedSnapshot;
+  pricing: EmbeddedPricing;
   iat: number; // epoch seconds
   exp: number; // epoch seconds
 }
