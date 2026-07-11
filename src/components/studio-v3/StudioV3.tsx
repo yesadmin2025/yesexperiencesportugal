@@ -80,6 +80,8 @@ import {
   createStudioSession,
   type StudioQuoteSnapshot,
 } from "@/lib/studio-v3/quoteClient";
+import { useResolvedSignature } from "./useResolvedSignature";
+import { canonicalConfirmedStops } from "@/lib/studio-v3/canonicalRouteStops";
 import { toast } from "sonner";
 
 /** Real minimum priceFrom across every Signature in the catalogue. Used as
@@ -756,6 +758,75 @@ export function StudioV3() {
   // in CheckoutSummary before we open Stripe. Kept in local state (not the
   // persisted signature) since it holds personal info.
   const [pendingGuestDetails, setPendingGuestDetails] = useState<GuestDetails | null>(null);
+
+  // ── Pass 1B Slice A — hoisted server-authoritative quote ──────────────
+  // One `useResolvedSignature` for the whole Studio V3 tree. The hook only
+  // fetches when phase enters the final-presentation family (see §1). All
+  // downstream visible surfaces (SignaturePriceCard, CheckoutSummary, and
+  // eventually FinalRevealStory / LivingJourneyPanel / GuestDetailsStep)
+  // must render the SAME €{totalEur} sourced from `resolved.pricing`.
+  const hoistedTour = state.tourId ? findTour(state.tourId) : null;
+  const hoistedSnapshot = useMemo<StudioQuoteSnapshot | null>(() => {
+    if (!hoistedTour) return null;
+    const routeStops = canonicalConfirmedStops(state);
+    if (routeStops.length === 0) return null;
+    const guests = pendingGuestDetails?.guests ?? state.guests ?? 2;
+    return {
+      commercialProductKey: "studio-v3-private-full-day",
+      signatureId: hoistedTour.id,
+      title: state.journeyTitle ?? hoistedTour.title ?? hoistedTour.id,
+      destinationRegion: hoistedTour.region ?? "Setúbal",
+      pickupCity: pickupCityLabel(state.pickup) ?? "Lisbon",
+      date: (pendingGuestDetails?.tourDate || state.dateExact || "").slice(0, 10) || "2099-01-01",
+      startTime: /^\d{2}:\d{2}$/.test(pendingGuestDetails?.startTime ?? "")
+        ? (pendingGuestDetails!.startTime as string)
+        : "09:00",
+      language: pendingGuestDetails?.language === "pt" ? "pt" : "en",
+      guests,
+      routeStops,
+      selectedAddOns: selectedAddOnItems.map((i) => ({ id: i.id, quantity: 1 })),
+      routeStatus: "pending-review",
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    hoistedTour?.id,
+    state.journeyTitle,
+    state.pickup,
+    state.dateExact,
+    state.guests,
+    state.editedRoutePoints,
+    pendingGuestDetails?.guests,
+    pendingGuestDetails?.tourDate,
+    pendingGuestDetails?.startTime,
+    pendingGuestDetails?.language,
+    selectedAddOnItems,
+  ]);
+  const resolved = useResolvedSignature({
+    phase: state.phase as unknown as string,
+    snapshot: hoistedSnapshot,
+  });
+  const resolvedServerPricing = useMemo(() => {
+    if (!resolved.quote) {
+      return resolved.isLoading
+        ? { status: "loading" as const, unitEur: 0, baseSubtotalEur: 0, addOnsSubtotalEur: 0, totalEur: 0, routeStatus: "loading" as const, addOnLines: [] }
+        : null;
+    }
+    const q = resolved.quote;
+    return {
+      status: q.pricing.status,
+      unitEur: q.pricing.unitEur,
+      baseSubtotalEur: q.pricing.baseSubtotalEur,
+      addOnsSubtotalEur: q.pricing.addOnsSubtotalEur,
+      totalEur: q.pricing.totalEur,
+      routeStatus: q.routeStatus,
+      addOnLines: q.addOns.map((a) => ({
+        id: a.id,
+        label: a.label,
+        lineSubtotalEur: a.lineSubtotalEur,
+        routeIntegration: a.routeIntegration,
+      })),
+    };
+  }, [resolved.quote, resolved.isLoading]);
 
   // Save-my-signature handler for the Final Reveal secondary CTA.
   const [savingSignature, setSavingSignature] = useState(false);
@@ -2511,6 +2582,7 @@ export function StudioV3() {
               tourPriceTiers={tourPriceTiers}
               selectedAddOnIds={selectedAddOnIds}
               onAddOnsChange={handleAddOnsChange}
+              serverPricing={resolvedServerPricing}
             />
 
           </PhaseShell>
@@ -2658,6 +2730,7 @@ export function StudioV3() {
             onReserve={() => {
               void handleStripeCheckout(state, pendingGuestDetails);
             }}
+            serverPricing={resolvedServerPricing}
           />
         </PhaseShell>
       ) : null}
@@ -2996,6 +3069,7 @@ export function StoryboardHandoff({
   tourPriceTiers,
   selectedAddOnIds,
   onAddOnsChange,
+  serverPricing,
 }: {
   state: StudioV3State;
   onStateChange: Dispatch<SetStateAction<StudioV3State>>;
@@ -3006,6 +3080,7 @@ export function StoryboardHandoff({
   tourPriceTiers?: import("@/hooks/use-tour-price-tiers").TourPriceTiersMap;
   selectedAddOnIds?: ReadonlyArray<string>;
   onAddOnsChange?: (summary: SelectedAddOnSummary) => void;
+  serverPricing?: React.ComponentProps<typeof SignaturePriceCard>["serverPricing"];
 }) {
 
   const pickupCity = pickupCityLabel(state.pickup);
@@ -4110,6 +4185,7 @@ export function StoryboardHandoff({
           showAddOns={true}
           selectedAddOnIds={selectedAddOnIds}
           onAddOnsChange={onAddOnsChange}
+          serverPricing={serverPricing ?? null}
 
           remainingMinutes={
             revealLegsLoading

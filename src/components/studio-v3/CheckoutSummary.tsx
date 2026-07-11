@@ -17,12 +17,33 @@ import { pickupCityLabel } from "./curation";
 import {
   CHECKOUT_HEADER,
   CTA_RESERVE_AND_PAY,
-  INSTANT_CONFIRMATION,
+  confirmationCopy,
+  type ConfirmationStatus,
 } from "@/content/signature-day-copy";
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { cn } from "@/lib/utils";
+
+/**
+ * Pass 1B Slice A — server-authoritative pricing override.
+ * When present + status === "quoted", these values REPLACE every visible
+ * amount and per-add-on line. Legacy props remain the fallback for pre-quote
+ * phases only. Set `routeStatus` to gate confirmation copy.
+ */
+export interface CheckoutSummaryServerPricing {
+  readonly status: "quoted" | "loading" | "unavailable";
+  readonly unitEur: number;
+  readonly totalEur: number;
+  readonly addOnsSubtotalEur: number;
+  readonly addOnLines: ReadonlyArray<{
+    readonly id: string;
+    readonly label: string;
+    readonly lineSubtotalEur: number;
+    readonly routeIntegration: "validated" | "pending-review" | "unavailable";
+  }>;
+  readonly routeStatus: ConfirmationStatus;
+}
 
 export interface CheckoutSummaryProps {
   readonly state: StudioV3State;
@@ -36,6 +57,8 @@ export interface CheckoutSummaryProps {
   readonly onReserve: () => void;
   readonly className?: string;
   readonly testId?: string;
+  /** Server-signed quote. When quoted, wins over legacy perPaxEur/totalEur. */
+  readonly serverPricing?: CheckoutSummaryServerPricing | null;
 }
 
 function formatEur(n: number | null): string {
@@ -73,6 +96,7 @@ export function CheckoutSummary({
   onReserve,
   className,
   testId,
+  serverPricing = null,
 }: CheckoutSummaryProps) {
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your Signature";
@@ -81,7 +105,27 @@ export function CheckoutSummary({
     guestDetails.pickupAddress ||
     pickupCityLabel(state.pickup) ||
     "Pickup shared with your host";
+  // Pass 1B Slice A: server pricing wins when quoted. Legacy props are
+  // pre-quote placeholders only. Additions list mirrors the signed snapshot
+  // so no client add-on arithmetic can reach a visible amount.
+  const useServer = serverPricing?.status === "quoted";
+  const displayTotalEur = useServer ? serverPricing!.totalEur : totalEur;
+  const displayPerPaxEur = useServer ? serverPricing!.unitEur : perPaxEur;
+  const displayAddOns = useServer
+    ? serverPricing!.addOnLines.map((a) => ({
+        id: a.id,
+        label: a.label,
+        priceEur: a.lineSubtotalEur,
+        pendingReview: a.routeIntegration === "pending-review",
+      }))
+    : selectedAddOns.map((a) => ({
+        id: a.id,
+        label: a.label,
+        priceEur: a.priceEur,
+        pendingReview: false,
+      }));
   const included: string[] =
+    // TODO(pass-1b-slice-b): source inclusions from resolved.inclusions
     tour?.included && tour.included.length > 0
       ? tour.included
       : ["Private guide", "Private transport", "All confirmed entries"];
@@ -209,15 +253,25 @@ export function CheckoutSummary({
           </ul>
         </div>
 
-        {selectedAddOns.length > 0 ? (
+        {displayAddOns.length > 0 ? (
           <div className="pt-3 border-t" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
             <p className="text-[10px] uppercase tracking-[0.22em] mb-2" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
               Your additions
             </p>
             <ul className="space-y-1 text-[13px]" style={{ color: "var(--charcoal)" }}>
-              {selectedAddOns.map((a) => (
-                <li key={a.id} className="flex justify-between gap-3">
-                  <span>· {a.label}</span>
+              {displayAddOns.map((a) => (
+                <li key={a.id} data-testid="studio-v3-checkout-addon-row" className="flex justify-between gap-3">
+                  <span>
+                    · {a.label}
+                    {a.pendingReview ? (
+                      <span
+                        className="ml-2 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                      >
+                        Pending review
+                      </span>
+                    ) : null}
+                  </span>
                   <span className="tabular-nums" style={{ color: "var(--teal)" }}>
                     {formatEur(a.priceEur)}
                   </span>
@@ -230,6 +284,9 @@ export function CheckoutSummary({
         <div
           className="pt-3 border-t flex justify-between items-baseline"
           style={{ borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)" }}
+          data-testid="studio-v3-checkout-total-row"
+          data-total-eur={displayTotalEur ?? ""}
+          data-pricing-source={useServer ? "server" : "legacy"}
         >
           <span className="text-[11px] uppercase tracking-[0.22em]" style={{ color: "var(--charcoal)" }}>
             Total
@@ -238,13 +295,15 @@ export function CheckoutSummary({
             className="text-[22px] tabular-nums"
             style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
           >
-            {formatEur(totalEur)}
-            {perPaxEur != null ? (
+            {serverPricing?.status === "loading"
+              ? "Calculating live price…"
+              : formatEur(displayTotalEur)}
+            {displayPerPaxEur != null && serverPricing?.status !== "loading" ? (
               <span
                 className="ml-2 text-[11px] uppercase tracking-[0.2em]"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
               >
-                · {formatEur(perPaxEur)} / guest
+                · {formatEur(displayPerPaxEur)} / guest
               </span>
             ) : null}
           </span>
@@ -299,7 +358,7 @@ export function CheckoutSummary({
           color: "color-mix(in oklab, var(--charcoal) 68%, transparent)",
         }}
       >
-        {INSTANT_CONFIRMATION}
+        {confirmationCopy(serverPricing?.routeStatus ?? "validated")}
       </p>
 
       {/* Sticky CTA bar */}
