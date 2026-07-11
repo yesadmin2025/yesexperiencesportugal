@@ -3,6 +3,19 @@
 
 P0 blockers shipped (storytelling reveal, typography cleanup, live route map, guest-details footer). This plan tackles the P1 backlog from `.lovable/studio-v3-audit.md` — trust, clarity, brand consistency, and hydration correctness. One PR-sized change per finding, each with a mobile regression test (393×588, `mobile-chromium`).
 
+## Status snapshot (rolling)
+
+- [x] #1 Stepper vocabulary (Feel/Shape/Time/Compose) + `beatIndexForPhase` mapping — shipped in `StudioV3ProgressStepper.tsx`. Stepper self-hides on intro (returns null) so early-mounting is a no-op; deferred until an audit shows a phase where it's actually missing.
+- [x] #2 Stepper close-button overlap — `pr-12` reservation + `whitespace-nowrap` on labels, no `truncate`.
+- [x] #3 Feeling grid — no pre-hover dim exists in `ChoiceGrid.tsx` (unselected tiles stay at opacity 1); rows share height via grid default `stretch`. Explicit Continue pill deferred — current auto-advance is intentional Studio pacing (see `mem://design/studio-philosophy.md`).
+- [x] #4 Intro polish — curly `’` in H1, single meta line replaces three bordered pills, contrast solid on charcoal 92% ground.
+- [x] #5 Refine → Storytelling CTA vocabulary — `CTA_MAKE_STORY` retired (kept as value-identical alias), `CTA_CONTINUE_TO_GUEST_DETAILS` used everywhere; Save moved to ghost pill peer beside primary Continue.
+- [x] #6 SSR hydration — `useHydrated()` hook added; ripgrep sweep of `src/components/studio-v3` + `src/hooks` shows only one lazy `useState(() => …)` (LivingJourneyPanel) and it returns an SSR-safe default. No adopters needed today.
+- [x] #7 Stripe.js single-load — `src/lib/stripe.ts` already module-level singleton; `BrandedCheckoutDrawer.tsx` uses a per-PK cache. No duplicate `loadStripe` sites remain.
+- [x] #8 Hide global WhatsApp inside Studio V3 — `WhatsAppSupportButton.tsx` `HIDE_PATTERNS` gains `/studio-v3/`.
+
+Regression coverage: `e2e/studio-v3-p1-audit-fixes-mobile.spec.ts` wired into `.github/workflows/studio-v3-p0-regression.yml`.
+
 ## 1. Stepper vocabulary + early mounting
 
 **Files:** `src/components/studio-v3/StudioV3ProgressStepper.tsx`, `src/components/studio-v3/StudioV3.tsx` (mount site).
