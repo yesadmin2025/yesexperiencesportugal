@@ -32,6 +32,7 @@ async function handleStudioQuote(snapshotRaw: RawQuoteSnapshot) {
   const secret = Deno.env.get("STUDIO_QUOTE_SIGNING_SECRET");
   if (!secret) return jsonError("Quote signing secret not configured", 500);
   const now = Math.floor(Date.now() / 1000);
+  const inclusionIds = resolved.inclusions.map((i) => i.id);
   const token = await signQuoteToken(
     {
       v: 1,
@@ -44,6 +45,34 @@ async function handleStudioQuote(snapshotRaw: RawQuoteSnapshot) {
       currency: "EUR",
       routeStatus: resolved.routeStatus,
       availabilityStatus: resolved.availabilityStatus,
+      snapshot: {
+        signatureId: snapshot.signatureId,
+        commercialProductKey: snapshot.commercialProductKey,
+        title: snapshot.title,
+        destinationRegion: snapshot.destinationRegion,
+        pickupCity: snapshot.pickupCity,
+        date: snapshot.date,
+        startTime: snapshot.startTime,
+        language: snapshot.language,
+        guests: snapshot.guests,
+        routeStatus: snapshot.routeStatus,
+        routeStops: snapshot.routeStops,
+        selectedAddOns: snapshot.selectedAddOns,
+        inclusionIds,
+      },
+      pricing: {
+        unitEur: resolved.pricing.unitEur,
+        baseSubtotalEur: resolved.pricing.baseSubtotalEur,
+        addOnLineItems: resolved.addOns.map((a) => ({
+          id: a.id,
+          label: a.label,
+          unitEur: a.unitEur,
+          quantity: a.quantity,
+          lineSubtotalEur: a.lineSubtotalEur,
+        })),
+        totalEur: resolved.pricing.totalEur,
+        currency: "EUR",
+      },
       iat: now,
       exp: now + QUOTE_TTL_SECONDS,
     },
@@ -105,33 +134,60 @@ async function handleStudioCreateSession(body: StudioCreateSessionBody) {
   if (body.currentRevision !== payload.revision) {
     return jsonError("Quote is stale — please refresh", 409);
   }
+interface StudioCreateSessionBody {
+  mode: "create-session";
+  quoteToken: string;
+  currentRevision: string;
+  /** Optional — server ignores it for pricing/metadata; token is authoritative. */
+  snapshot?: RawQuoteSnapshot;
+  environment: StripeEnv;
+  returnUrl: string;
+  cancelUrl?: string;
+  uiMode?: "hosted" | "embedded";
+  customerEmail?: string;
+  guestDetails?: Record<string, unknown>;
+}
+
+async function handleStudioCreateSession(body: StudioCreateSessionBody) {
+  const secret = Deno.env.get("STUDIO_QUOTE_SIGNING_SECRET");
+  if (!secret) return jsonError("Quote signing secret not configured", 500);
+  if (body.environment !== "sandbox" && body.environment !== "live") {
+    return jsonError("Invalid environment", 400);
+  }
+  if (!validateReturnOrigin(body.returnUrl)) return jsonError("Return URL not allowed", 400);
+
+  let payload;
+  try {
+    payload = await verifyQuoteToken(body.quoteToken, secret);
+  } catch (e) {
+    return jsonError(`Quote token invalid: ${(e as Error).message}`, 400);
+  }
+  if (body.currentRevision !== payload.revision) {
+    return jsonError("Quote is stale — please refresh", 409);
+  }
   if (payload.routeStatus === "unavailable" || payload.availabilityStatus === "unavailable") {
     return jsonError("This journey is unavailable", 409);
   }
   if (payload.totalEur < 50) return jsonError("Computed amount below minimum", 400);
 
-  // Re-resolve to make sure the snapshot the client is submitting matches
-  // what was signed (defence-in-depth even though snapshotHash is bound).
-  const snapshot = validateAndNormaliseSnapshot(body.snapshot);
-  const resolved = resolveQuote(snapshot);
-  const rehash = await sha256Hex(canonicalJson(snapshot));
-  if (rehash !== payload.snapshotHash) return jsonError("Quote snapshot mismatch", 409);
-  if (resolved.pricing.status !== "quoted") return jsonError("Pricing unavailable", 409);
-  if (resolved.pricing.totalEur !== payload.totalEur) return jsonError("Pricing drifted", 409);
+  // Snapshot + pricing are read STRICTLY from the signed token.
+  // Client-sent snapshot / amountEur / add-ons are ignored here.
+  const snap = payload.snapshot;
+  const pricing = payload.pricing;
 
   const stripe = createStripeClient(body.environment);
   const uiMode: "hosted" | "embedded" = body.uiMode === "embedded" ? "embedded" : "hosted";
 
-  const productName = `YES Studio — ${snapshot.title}`.slice(0, 180);
-  const stopLabelsCompact = snapshot.routeStops.map((s) => s.label).slice(0, 8).join(" · ").slice(0, 480);
-  const inclusionIdsCompact = resolved.inclusions.map((i) => i.id).join(",").slice(0, 480);
-  const addOnIdsCompact = resolved.addOns.map((a) => a.id).join(",").slice(0, 200);
+  const productName = `YES Studio — ${snap.title}`.slice(0, 180);
+  const stopLabelsCompact = snap.routeStops.map((s) => s.label).slice(0, 8).join(" · ").slice(0, 480);
+  const inclusionIdsCompact = snap.inclusionIds.join(",").slice(0, 480);
+  const addOnIdsCompact = pricing.addOnLineItems.map((a) => a.id).join(",").slice(0, 200);
 
   const pendingReviewNote =
     "Your request is received after payment and remains subject to final route and availability confirmation.";
   const description = [
-    `${snapshot.guests} guest${snapshot.guests > 1 ? "s" : ""} · ${snapshot.destinationRegion}`,
-    `Date ${snapshot.date} · ${snapshot.startTime}`,
+    `${snap.guests} guest${snap.guests > 1 ? "s" : ""} · ${snap.destinationRegion}`,
+    `Date ${snap.date} · ${snap.startTime}`,
     `Stops: ${stopLabelsCompact}`,
     pendingReviewNote,
   ]
@@ -147,11 +203,11 @@ async function handleStudioCreateSession(body: StudioCreateSessionBody) {
           description,
           images: ["https://yesexperiencesportugal.com/og-cover.jpg"],
         },
-        unit_amount: Math.round(payload.unitEur * 100),
+        unit_amount: Math.round(pricing.unitEur * 100),
       },
-      quantity: snapshot.guests,
+      quantity: snap.guests,
     },
-    ...resolved.addOns.map((a) => ({
+    ...pricing.addOnLineItems.map((a) => ({
       price_data: {
         currency: "eur",
         product_data: { name: `Add-on — ${a.label}`.slice(0, 180) },
@@ -179,27 +235,27 @@ async function handleStudioCreateSession(body: StudioCreateSessionBody) {
     consent_collection: { terms_of_service: "required" },
     payment_intent_data: {
       statement_descriptor_suffix: "YES EXPERIENCES",
-      description: `${productName} · ${snapshot.date}`.slice(0, 1000),
+      description: `${productName} · ${snap.date}`.slice(0, 1000),
     },
     ...(body.customerEmail && { customer_email: body.customerEmail }),
     metadata: {
       booking_type: "studio-v3",
       flow: "studio",
       commercial_product_key: payload.commercialProductKey,
-      signature_id: snapshot.signatureId,
+      signature_id: snap.signatureId,
       revision: payload.revision,
       snapshot_hash: payload.snapshotHash,
-      guests: String(snapshot.guests),
-      per_pax_eur: String(payload.unitEur),
-      total_eur: String(payload.totalEur),
-      date: snapshot.date,
-      start_time: snapshot.startTime,
-      language: snapshot.language,
-      pickup_city: snapshot.pickupCity.slice(0, 80),
-      destination_region: snapshot.destinationRegion.slice(0, 80),
+      guests: String(snap.guests),
+      per_pax_eur: String(pricing.unitEur),
+      total_eur: String(pricing.totalEur),
+      date: snap.date,
+      start_time: snap.startTime,
+      language: snap.language,
+      pickup_city: snap.pickupCity.slice(0, 80),
+      destination_region: snap.destinationRegion.slice(0, 80),
       route_status: payload.routeStatus,
       availability_status: payload.availabilityStatus,
-      stop_ids: snapshot.routeStops.map((s) => s.id).join(",").slice(0, 480),
+      stop_ids: snap.routeStops.map((s) => s.id).join(",").slice(0, 480),
       stop_labels: stopLabelsCompact,
       add_on_ids: addOnIdsCompact,
       inclusion_ids: inclusionIdsCompact,
@@ -237,9 +293,9 @@ async function handleStudioCreateSession(body: StudioCreateSessionBody) {
       sessionId: session.id,
       publishableKey,
       uiMode,
-      pricing: resolved.pricing,
-      routeStatus: resolved.routeStatus,
-      availabilityStatus: resolved.availabilityStatus,
+      pricing,
+      routeStatus: payload.routeStatus,
+      availabilityStatus: payload.availabilityStatus,
       idempotencyKey,
     }),
     { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
@@ -355,15 +411,23 @@ Deno.serve(async (req) => {
       return await handleStudioQuote(body.snapshot);
     }
     if (body.mode === "create-session") {
-      if (!body.quoteToken || !body.currentRevision || !body.snapshot) {
+      if (!body.quoteToken || !body.currentRevision) {
         return jsonError("Missing quote fields", 400);
       }
       return await handleStudioCreateSession(body as unknown as StudioCreateSessionBody);
     }
 
-    // Legacy Signature/Tailor path below (unchanged).
+    // Legacy Signature/Tailor path below.
     if (!body.tourId || typeof body.tourId !== "string" || body.tourId.length > 80)
       return jsonError("Invalid tourId", 400);
+
+    // §7 — Studio V3 commercial keys MUST use the authoritative quote path.
+    // Block any attempt to reach the legacy tier-based checkout under a
+    // Studio V3 commercial identity.
+    if (body.tourId === "studio-v3-private-full-day") {
+      return jsonError("studio_quote_required", 409);
+    }
+
     if (!body.tourTitle || typeof body.tourTitle !== "string" || body.tourTitle.length > 160)
       return jsonError("Invalid title", 400);
     if (!Number.isInteger(body.guests) || body.guests < 1 || body.guests > 12)
