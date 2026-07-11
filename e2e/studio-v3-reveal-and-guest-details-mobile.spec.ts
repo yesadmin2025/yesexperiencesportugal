@@ -53,12 +53,25 @@ async function assertNoHorizontalOverflow(page: Page): Promise<void> {
   expect(overflow, "horizontal overflow at 393px").toBeLessThanOrEqual(1);
 }
 
+/** After `walkToReveal` lands on Refine (phase=storyboard), advance to
+ *  Storytelling (phase=confirmation) by clicking the Refine primary CTA. */
+async function advanceRefineToStorytelling(page: Page): Promise<void> {
+  const refineCta = page
+    .locator('[data-studio-v3-screen="refine"]')
+    .getByRole("button", { name: /^See my signature story/i })
+    .first();
+  if (!(await refineCta.isVisible().catch(() => false))) return;
+  await refineCta.scrollIntoViewIfNeeded().catch(() => undefined);
+  await refineCta.click({ timeout: 4_000 }).catch(() => undefined);
+  await page.getByTestId("studio-v3-final-reveal").waitFor({ timeout: 8_000 }).catch(() => undefined);
+}
+
 test.describe("Studio V3 · Final Reveal + Guest Details @ 393×588", () => {
   test.use({ viewport: VIEWPORT });
 
   test("smoke — reveal reachable, no overflow, continue lands on Guest Details", async ({ page }) => {
-    await page.goto("/studio");
-    await walkToReveal(page);
+    await page.goto("/studio-v3");
+    await walkToReveal(page); await advanceRefineToStorytelling(page);
 
     const reveal = page.getByTestId("studio-v3-final-reveal");
     if (!(await reveal.isVisible().catch(() => false))) {
@@ -80,8 +93,8 @@ test.describe("Studio V3 · Final Reveal + Guest Details @ 393×588", () => {
   });
 
   test("copy lock — no 'to be confirmed', letter image renders, email blur confirms", async ({ page }) => {
-    await page.goto("/studio");
-    await walkToReveal(page);
+    await page.goto("/studio-v3");
+    await walkToReveal(page); await advanceRefineToStorytelling(page);
 
     const reveal = page.getByTestId("studio-v3-final-reveal");
     if (!(await reveal.isVisible().catch(() => false))) {
@@ -130,8 +143,8 @@ test.describe("Studio V3 · Final Reveal + Guest Details @ 393×588", () => {
   });
 
   test("visual — reveal and Guest Details baselines", async ({ page }) => {
-    await page.goto("/studio");
-    await walkToReveal(page);
+    await page.goto("/studio-v3");
+    await walkToReveal(page); await advanceRefineToStorytelling(page);
 
     const reveal = page.getByTestId("studio-v3-final-reveal");
     if (!(await reveal.isVisible().catch(() => false))) {
