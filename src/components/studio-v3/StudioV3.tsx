@@ -864,6 +864,7 @@ export function StudioV3() {
               id: a.id,
               label: a.label,
               priceEur: Math.round(a.lineSubtotalEur),
+              durationMinutes: 0,
             })),
             addOnsTotalEur: Math.round(quote.pricing.addOnsSubtotalEur),
           });
