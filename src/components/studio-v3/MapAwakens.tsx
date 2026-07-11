@@ -298,6 +298,25 @@ export function MapAwakens({
   }, [legMinutes, routeStops, active]);
   const activeDwellMin = dwellByIndex[active];
 
+  // Per-moment-to-moment drive minutes (moments[i] → moments[i+1]).
+  // `routeStops` may prepend the pickup origin, so we skip the pickup leg
+  // and align the remainder with the moments sequence.
+  const momentLegMinutes: (number | null)[] = useMemo(() => {
+    const out: (number | null)[] = [];
+    if (!legMinutes || legMinutes.length === 0) return out;
+    for (let i = 0; i < journey.moments.length - 1; i += 1) {
+      const fromIdx = routeStops.findIndex((s) => s.key === `m-${i}`);
+      const toIdx = routeStops.findIndex((s) => s.key === `m-${i + 1}`);
+      if (fromIdx < 0 || toIdx < 0 || toIdx !== fromIdx + 1) {
+        out.push(null);
+        continue;
+      }
+      const m = legMinutes[toIdx - 1];
+      out.push(typeof m === "number" ? m : null);
+    }
+    return out;
+  }, [legMinutes, routeStops, journey.moments.length]);
+
   return (
     <div
       className="relative w-full min-h-[100dvh] flex flex-col sm:block"
