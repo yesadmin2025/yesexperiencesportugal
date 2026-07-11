@@ -15,6 +15,32 @@ P0 blockers shipped (storytelling reveal, typography cleanup, live route map, gu
 - [x] #8 Hide global WhatsApp inside Studio V3 — `WhatsAppSupportButton.tsx` `HIDE_PATTERNS` gains `/studio-v3/`.
 - [x] P2 #16 Guest-details scroll-reset + "Optional — skip unless it matters" hint — `GuestDetailsStep.tsx` now `window.scrollTo({top:0})` on mount and the "Anything we should know" FieldGroup renders a subtitle "Optional — skip unless it matters for your day." under the group heading.
 - [x] P2 #15 Price parity re-audit — `handleStripeCheckout` in `StudioV3.tsx` no longer assumes `per_person × guests`; party total is unit-aware (per_person / per_group / per_vehicle / fixed) so a future per_group add-on can't silently over-charge the drawer by (guests-1)×price. Console warning fires if any non per_person add-on reaches the current Stripe edge function (which still hardcodes `quantity: guests`) so we catch it before payments drift. All current catalog entries are per_person, so live totals are unchanged.
+- [x] P2 #13 Phase order — **defended, current order kept**. See rationale below.
+
+### P2 #13 rationale — current phase order defended
+
+Current `PHASE_ORDER` (`StudioV3.tsx:251`):
+
+```
+intro → who → feeling → destination → pickup → guests → investment
+      → interests → rhythm → occasion → date → considerations → language
+      → map → storyboard → confirmation → guestDetails → checkoutSummary
+```
+
+Audit #13 proposed `feeling → who → interests → logistics`. Rejected against `mem://design/studio-philosophy.md`:
+
+1. **"Guided, not asked" (principle 2) + "emotional inevitability" (principle 8).** `who` runs before `feeling` because party composition is the one anchor the traveler already knows about themselves — it is not a mood question, it is context. Opening with `feeling` first would ask the highest-stakes emotional choice cold, before any interface trust is built. Answering "who is with you" first lets the engine escalate to the single-conviction `feeling` beat with the party silhouette already visible in atmosphere.
+2. **"Portugal feels real early through atmosphere, never through filters" (principle 3).** `destination` sitting inside Beat 1 "Feel" — not exposed as a picker but as an atmospheric consequence of feeling + who — is exactly the philosophy's requirement. Promoting `interests` to a top-of-flow step (as the audit suggested) would re-introduce grid-of-equal-choices energy that the philosophy explicitly rejects.
+3. **"Rhythm > features" (principle 5) + "cinema, not software" (principle 9).** The current order intentionally alternates emotional beats (feeling, occasion) with pragmatic beats (pickup, guests, date) so the flow breathes. The audit's clustering ("all emotion first, then all logistics") is the configurator rhythm the philosophy rules out.
+4. **Truth-pass.** Stepper beats (Feel / Shape / Time / Compose) already collapse the 17 phases into four emotional acts (`STUDIO_V3_BEATS` + `beatIndexForPhase` in `StudioV3ProgressStepper.tsx:17,45`), so the traveler never sees "step 3 of 17". Reordering the underlying phases would not change what the traveler perceives — only what the engine walks internally.
+
+**Confirmed UI still matches the plan:**
+
+- `PHASE_ORDER` (`StudioV3.tsx:251`) and `LINEAR_ORDER` in `curation.ts` remain the single sequence source; `advance()` and `getNextPhase()` still index the same array (comment on line 246 still applies).
+- Stepper still self-hides on `intro` and maps every downstream phase to a beat (`beatIndexForPhase` returns `0..3` for every non-intro phase; `default → null` guards new phases).
+- P1 #1–#8 status snapshot above is unchanged; no phase was added, removed, or re-labelled.
+
+**One residual inconsistency logged, not fixed** (would require its own PR): `occasion` sits at PHASE_ORDER index 9 (after `rhythm` at 8) but is mapped to Beat 1 "Feel". If both phases are ever surfaced in the same session, the stepper visibly steps Beat 2 → Beat 1 → Beat 3. Today `isPhaseRelevant` typically hides `occasion` when `rhythm` was resolved from feeling, so it is rarely observable — but the mapping should either move `occasion` to Beat 2 or move the phase before `interests`. Tracked for the next P2 pass; not in scope for "defend current order".
 
 Regression coverage: `e2e/studio-v3-p1-audit-fixes-mobile.spec.ts` wired into `.github/workflows/studio-v3-p0-regression.yml`.
 
