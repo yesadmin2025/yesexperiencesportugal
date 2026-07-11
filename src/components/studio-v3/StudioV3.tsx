@@ -3068,6 +3068,7 @@ export function StoryboardHandoff({
   tourPriceTiers,
   selectedAddOnIds,
   onAddOnsChange,
+  serverPricing,
 }: {
   state: StudioV3State;
   onStateChange: Dispatch<SetStateAction<StudioV3State>>;
@@ -3078,6 +3079,7 @@ export function StoryboardHandoff({
   tourPriceTiers?: import("@/hooks/use-tour-price-tiers").TourPriceTiersMap;
   selectedAddOnIds?: ReadonlyArray<string>;
   onAddOnsChange?: (summary: SelectedAddOnSummary) => void;
+  serverPricing?: React.ComponentProps<typeof SignaturePriceCard>["serverPricing"];
 }) {
 
   const pickupCity = pickupCityLabel(state.pickup);
