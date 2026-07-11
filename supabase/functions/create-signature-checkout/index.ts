@@ -32,6 +32,7 @@ async function handleStudioQuote(snapshotRaw: RawQuoteSnapshot) {
   const secret = Deno.env.get("STUDIO_QUOTE_SIGNING_SECRET");
   if (!secret) return jsonError("Quote signing secret not configured", 500);
   const now = Math.floor(Date.now() / 1000);
+  const inclusionIds = resolved.inclusions.map((i) => i.id);
   const token = await signQuoteToken(
     {
       v: 1,
@@ -44,6 +45,34 @@ async function handleStudioQuote(snapshotRaw: RawQuoteSnapshot) {
       currency: "EUR",
       routeStatus: resolved.routeStatus,
       availabilityStatus: resolved.availabilityStatus,
+      snapshot: {
+        signatureId: snapshot.signatureId,
+        commercialProductKey: snapshot.commercialProductKey,
+        title: snapshot.title,
+        destinationRegion: snapshot.destinationRegion,
+        pickupCity: snapshot.pickupCity,
+        date: snapshot.date,
+        startTime: snapshot.startTime,
+        language: snapshot.language,
+        guests: snapshot.guests,
+        routeStatus: snapshot.routeStatus,
+        routeStops: snapshot.routeStops,
+        selectedAddOns: snapshot.selectedAddOns,
+        inclusionIds,
+      },
+      pricing: {
+        unitEur: resolved.pricing.unitEur,
+        baseSubtotalEur: resolved.pricing.baseSubtotalEur,
+        addOnLineItems: resolved.addOns.map((a) => ({
+          id: a.id,
+          label: a.label,
+          unitEur: a.unitEur,
+          quantity: a.quantity,
+          lineSubtotalEur: a.lineSubtotalEur,
+        })),
+        totalEur: resolved.pricing.totalEur,
+        currency: "EUR",
+      },
       iat: now,
       exp: now + QUOTE_TTL_SECONDS,
     },
