@@ -13,6 +13,7 @@ P0 blockers shipped (storytelling reveal, typography cleanup, live route map, gu
 - [x] #6 SSR hydration — `useHydrated()` hook added; ripgrep sweep of `src/components/studio-v3` + `src/hooks` shows only one lazy `useState(() => …)` (LivingJourneyPanel) and it returns an SSR-safe default. No adopters needed today.
 - [x] #7 Stripe.js single-load — `src/lib/stripe.ts` already module-level singleton; `BrandedCheckoutDrawer.tsx` uses a per-PK cache. No duplicate `loadStripe` sites remain.
 - [x] #8 Hide global WhatsApp inside Studio V3 — `WhatsAppSupportButton.tsx` `HIDE_PATTERNS` gains `/studio-v3/`.
+- [x] P2 #16 Guest-details scroll-reset + "Optional — skip unless it matters" hint — `GuestDetailsStep.tsx` now `window.scrollTo({top:0})` on mount and the "Anything we should know" FieldGroup renders a subtitle "Optional — skip unless it matters for your day." under the group heading.
 
 Regression coverage: `e2e/studio-v3-p1-audit-fixes-mobile.spec.ts` wired into `.github/workflows/studio-v3-p0-regression.yml`.
 

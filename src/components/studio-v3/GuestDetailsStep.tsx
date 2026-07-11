@@ -97,6 +97,16 @@ export function GuestDetailsStep({
     prewarmStripeScript();
   }, []);
 
+  // P2 #16 — reset scroll to top on mount so travellers land on the
+  // "Almost there" header, not mid-form (previous phase's scroll position
+  // otherwise leaks into this step because the composer + guest-details
+  // share the same scroll container).
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+  }, []);
+
   useEffect(() => () => {
     if (blurTimerRef.current) clearTimeout(blurTimerRef.current);
   }, []);
@@ -401,7 +411,11 @@ export function GuestDetailsStep({
           </Field>
         </FieldGroup>
 
-        <FieldGroup title="Anything we should know" optional>
+        <FieldGroup
+          title="Anything we should know"
+          optional
+          subtitle="Optional — skip unless it matters for your day."
+        >
           <Field label="Dietary restrictions">
             <input
               value={dietary}
@@ -479,10 +493,12 @@ const inputClass =
 function FieldGroup({
   title,
   optional,
+  subtitle,
   children,
 }: {
   title: string;
   optional?: boolean;
+  subtitle?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -497,6 +513,11 @@ function FieldGroup({
           </span>
         ) : null}
       </div>
+      {subtitle ? (
+        <p className="text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
+          {subtitle}
+        </p>
+      ) : null}
       <div className="space-y-3">{children}</div>
     </div>
   );
