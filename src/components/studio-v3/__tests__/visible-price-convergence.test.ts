@@ -71,6 +71,7 @@ const goldenGuestDetails = {
   startTime: "09:00",
   language: "en" as const,
   pickupAddress: "Lisbon",
+  mainContact: "Test Guest",
 };
 
 describe("Pass 1B Slice A — visible price convergence", () => {
