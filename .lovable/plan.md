@@ -1,109 +1,52 @@
-## North star
+## Goal
+Extend Playwright coverage for the Refine → Storytelling flow on mobile (393×588) with three additions: (1) round-trip ordering/styling assertion for add-ons under "— Your additions", (2) navigation contract for the three primary CTAs, and (3) a11y validation for reveal CTAs and add-on controls.
 
-Three screens, one job each. Everything the traveller can do lives in exactly one place. No duplicate CTAs, no shadow controls, no invented content.
+## Scope
+Tests only. No product code changes. All new specs run against the sandbox dev server via `playwright.local.config.ts` and reuse `walkToReveal` + the local `advanceRefineToStorytelling` helper pattern.
 
-```text
-   MapAwakens          →           Refine                →       Storytelling Signature      →   Guest Details
- "This is your day"          "Shape it to fit you"            "Live it before you book"           (existing)
+## Changes
+
+### 1. Extend `e2e/studio-v3-unified-signature-card.spec.ts`
+Add a new test: **"— Your additions round-trip ordering & styling"**.
+- Read the full list of add-on toggle testids in the Refine screen.
+- Toggle ON add-on A, then B, then C in that order → assert the `[data-studio-v3-your-additions] li` sequence matches the toggle order (DOM order = tap order), each row shows `+€N` in gold, uppercase divider "— Your additions" retains `uppercase`, `font-semibold`, `tracking-[0.22em]`, and gold token color.
+- Toggle OFF B → assert only A, C remain, still in original relative order, divider still present.
+- Toggle OFF A and C → assert divider is removed and `Included in your day` returns to its baseline list only.
+- Assert `Included in your day` items never re-order during any of the above.
+
+### 2. New spec `e2e/studio-v3-cta-navigation-mobile.spec.ts` (viewport 393×588)
+Verifies the three CTA transitions:
+- **"See my signature story" (Refine → Storytelling)** — from Refine screen, click primary CTA, assert `data-studio-v3-screen="storytelling"` visible and `studio-v3-final-reveal` present; Refine root no longer in DOM.
+- **"Continue to guest details" (Storytelling → Guest Details)** — click `studio-v3-final-reveal-continue`, assert the email field (`getByLabel(/email/i)`) is visible and `studio-v3-guest-details` testid mounts.
+- **"Save my signature" (Storytelling side-effect, stays on screen)** — click `studio-v3-final-reveal-save`, assert toast/confirmation surface appears and screen remains Storytelling (no route change, `studio-v3-final-reveal` still visible).
+- **"Back to refine" (Storytelling → Refine)** — locate the back control on Storytelling, click, assert `data-studio-v3-screen="refine"` returns, previously-selected add-ons are still toggled ON (state preserved through the round-trip).
+
+Uses existing `walkToReveal` + `advanceRefineToStorytelling` helper (extract helper into shared `e2e/studio-v3-walk-to-reveal.ts` so both specs import it — one-line addition, no behavior change).
+
+### 3. New spec `e2e/studio-v3-reveal-a11y-mobile.spec.ts` (viewport 393×588)
+A11y-focused assertions on Refine + Storytelling:
+- **Labels**: every add-on toggle has an accessible name (via `aria-label` or associated `<label>`); each reveal CTA (`Continue to guest details`, `Save my signature`, `Back to refine`) has a non-empty accessible name matching visible text.
+- **Focus order**: on Refine, press `Tab` repeatedly from the top of `[data-studio-v3-screen="refine"]` and record `document.activeElement` testids/labels; assert order = add-on toggles (in DOM order) → primary CTA → ghost curator CTA. On Storytelling, assert order = Back to refine → Continue to guest details → Save my signature.
+- **Keyboard interaction**: focus first add-on toggle, press `Space` → assert its `aria-pressed`/`aria-checked` flips and `— Your additions` row appears; press `Space` again → row removed. Focus primary "See my signature story" and press `Enter` → screen advances to Storytelling.
+- **Focus visibility**: after Tab lands on each CTA, assert `:focus-visible` styles resolve to a non-transparent outline (computed `outline-width > 0` OR box-shadow ring), so keyboard users see the focus ring.
+- Run `@axe-core/playwright` scan scoped to `[data-studio-v3-screen="refine"]` and `[data-studio-v3-final-reveal]`; fail on `serious`/`critical` violations only (excluding color-contrast for now to avoid noise — brand palette contrast is covered elsewhere).
+
+### 4. Small helper extraction
+Move `advanceRefineToStorytelling` from `studio-v3-reveal-and-guest-details-mobile.spec.ts` into `e2e/studio-v3-walk-to-reveal.ts` as a named export so the three specs (existing mobile reveal + two new ones) share one implementation.
+
+## Dependencies
+- `@axe-core/playwright` — add via `bun add -D @axe-core/playwright` if not already present (check `package.json` at build time; if present, skip).
+
+## Non-goals
+- No product code changes.
+- No new baselines beyond what already exists.
+- No changes to visual snapshot spec.
+- No CI workflow additions (local run only, matching the existing mobile reveal spec pattern).
+
+## How to run locally
 ```
-
-Current code already runs this sequence, but the middle screen is coded under the confusing phase name `storyboard` and mixes concerns. Plan below tightens each screen, keeps the flow, and locks the handoff contract between them.
-
-## Screen 1 — MapAwakens (`phase: "map"`)
-
-**Role.** Cinematic reveal of the route. Purely emotional. No pricing, no editing.
-
-**Contract.**
-- Route draws stop-by-stop with existing sequence + hold-journey CTA.
-- Single primary CTA: **"Personalise a few details"** → advances to Refine.
-- No secondary CTA visible on this screen (the "Ask a curator" ghost lives on Refine only, to keep this moment silent).
-- No price chip, no add-on preview, no inclusions here.
-
-**Change.** None functionally — just enforce "no price / no CTA duplication" as a lint-style unit assertion.
-
-## Screen 2 — Refine (`phase: "storyboard"`, `StoryboardHandoff` + `SignaturePriceCard`)
-
-**Role.** The only place the traveller edits: reorder / remove / swap stops, add moments, toggle add-ons, see live price. Every interaction updates one shared state slice (`editedRoutePoints`, `selectedAddOnIds`, `guests`).
-
-**Layout, top → bottom, single column, mobile-first:**
-
-1. **Header.** Journey title (existing) + one-line "for {N} guests in {pickupCity}".
-2. **Stops editor** (`studio-v3-stops-editor`, already implemented, stays exactly as-is):
-   - Drag-reorder.
-   - Per-stop **Remove** (X) → shows an inline "Suggestion" chip pulled from the SAME resolved Signature's pool (never from other tours), tap to accept swap.
-   - Per-stop **Swap** → expands `studio-v3-swap-pool` with pool candidates.
-   - "— Refine the moments" divider then **Add a moment** → expands `studio-v3-add-pool`, capped by rhythm.
-   - "Reset to original" appears only when `editedRoutePoints !== null`.
-3. **Add-ons** (`studio-v3-add-ons`, kept separate from stops per user note): grid of toggleable chips with real `+€N / pp` price. Live `studio-v3-add-ons-total`.
-4. **Included in your day** footnote (`studio-v3-inclusions-footnote`):
-   - Header: `Included in your day` (exact, from `INCLUDED_HEADER_REFINE`).
-   - Real `included[]` from resolved Signature, capped at 4.
-   - After any add-on toggle, appends `— Your additions` divider + one row per toggled add-on with `+€N`. Divider disappears when no add-ons selected.
-5. **Price block** — one live line only:
-   `For {N} guests · €{perPax} / guest · €{partyTotal} total`
-   No tier picker, no "Drops to €X with 8+" hint (already removed), no duration/moments chips.
-6. **CTAs — exactly two, no sticky duplicates on desktop:**
-   - Primary (charcoal, arrow): **"See my signature story"** → advances to Storytelling.
-   - Ghost link: **"Ask a curator for help"** → WhatsApp handoff with journey title in body.
-   - Mobile only: one bottom sticky mirror of the primary CTA + the "Nothing is booked yet · Confirm on the next step" microcopy. Not visible on desktop.
-
-**What is explicitly NOT on Refine:** the itinerary spine repeat, blueprint optionals, trust strip, QualityScore, `Save my signature` button (that belongs to Storytelling), any second "See my signature story" outside the sticky mirror.
-
-**State written here, read by Screen 3:** `editedRoutePoints`, `selectedAddOnIds`, `guests`, `tourId`. No new state.
-
-## Screen 3 — Storytelling Signature (`phase: "confirmation"`, `FinalRevealStory`)
-
-**Role.** Cinematic proof: "here is the day you just composed, in words." No editing.
-
-**Contract.**
-- **Timeline source (locked):** `state.editedRoutePoints ?? composedStops ?? tour.stops` — already wired via the `composedStops` prop set in `StudioV3.tsx:2377`. Never widens past the resolved Signature.
-- **Add-on beats** append after kept stops, in `selectedAddOns` order. Same voice, no invented stops.
-- **Price line** mirrors Refine exactly (`perPax`, `partyTotal`) — read from props, never recomputed with a different rule.
-- **CTAs — exactly two:**
-   - Primary: **"Continue to guest details"** → `onContinue` (advances to `guestDetails`).
-   - Secondary: **"Save my signature"** → `onSaveSignature` (emails the letter; stays on screen with confirmation line).
-- Back button returns to Refine, preserving all edits.
-
-**What is explicitly NOT on Storytelling:** stops editor, add-on toggles, swap pool, guest picker. If the traveller wants to change anything, they go back — one direction of edit-authority.
-
-## Handoff contract (the one thing that keeps the flow honest)
-
-Single source of truth per field, one writer, many readers:
-
-| Field                 | Written on | Read on                          |
-|-----------------------|------------|----------------------------------|
-| `tourId`              | `map`      | Refine, Storytelling, Checkout   |
-| `editedRoutePoints`   | Refine     | Storytelling, Checkout           |
-| `selectedAddOnIds`    | Refine     | Storytelling, Checkout           |
-| `guests`              | questions  | Refine, Storytelling, Checkout   |
-| `journeyTitle`        | `map`      | Refine, Storytelling, WhatsApp   |
-
-Guarantee: Storytelling never calls `resolveStudioV3Route` with different inputs than Refine did. It receives `composedStops` and `perPax/totalEur` as props only.
-
-## Naming cleanup (comments + testids only, no phase rename)
-
-Renaming the `storyboard` phase string is a wide-blast-radius change (analytics, saved-signature hydration, tests). Instead:
-
-- Add a top-of-file comment in `StudioV3.tsx` mapping the three product screens to their phase strings: `map → MapAwakens`, `storyboard → Refine`, `confirmation → Storytelling`.
-- Add stable testids: `studio-v3-screen="refine"` on `StoryboardHandoff` root, `studio-v3-screen="storytelling"` on `FinalRevealStory` root. Existing testids stay for backward compat.
-
-## Playwright + unit spec updates (follows the earlier plan you already saw)
-
-- `studio-v3-unified-signature-card.spec.ts` — add: exactly-two-CTA assertion on Refine, `Included in your day` header lock, `Your additions` divider + ordering + styling contract, add-on toggle round-trip. Keep swap-pool / add-pool expand tests.
-- `studio-v3-price-anchor-exit-intent.spec.ts` → rename to `studio-v3-exit-intent.spec.ts`, delete the anchor-hint block, keep exit-intent + questionnaire coverage.
-- `studio-v3-reveal-and-guest-details-mobile.spec.ts` — no functional change; flag PNG baselines for `--update-snapshots`; add a copy-lock that Storytelling has `Continue to guest details` and `Save my signature`, and does NOT have `See my signature story` or add-on toggles.
-- New tiny unit test: `MapAwakens` renders only ONE primary CTA, labelled `Personalise a few details`, and no price string.
-
-## Non-goals (deliberately excluded)
-
-- Renaming the `storyboard` phase string (risky, low value).
-- Any new backend, pricing, or add-on catalogue changes.
-- New animations or visual redesign on any of the three screens.
-- Touching Guest Details / Checkout Summary.
-- Reintroducing anchor hints, tier picker, itinerary spine, or trust strip.
-
-## Verification
-
-1. `bunx tsgo --noEmit` clean.
-2. Headed Playwright run of the unified-signature-card spec against `http://localhost:8080`.
-3. Manual mobile pass at 393×588: MapAwakens → Personalise → Refine (remove one stop, accept suggestion, toggle one add-on, watch price + `Your additions` update) → See my signature story → Storytelling (verify timeline matches kept stops + add-on beats) → Continue.
+bunx playwright test --config=playwright.local.config.ts \
+  studio-v3-unified-signature-card \
+  studio-v3-cta-navigation-mobile \
+  studio-v3-reveal-a11y-mobile
+```

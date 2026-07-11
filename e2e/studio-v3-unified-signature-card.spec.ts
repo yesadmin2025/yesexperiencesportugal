@@ -330,4 +330,138 @@ test.describe("Studio V3 — unified Signature card", () => {
 
     await card.screenshot({ path: "/tmp/browser/unified-card/after-toggles.png" });
   });
+
+  test("— Your additions round-trip: ordering + styling survive add/remove refinement", async ({
+    page,
+  }) => {
+    const reveal = page.locator(REVEAL).first();
+    if (!(await reveal.isVisible().catch(() => false))) {
+      test.skip(true, "funnel did not reach the reveal");
+    }
+    const card = page.locator(CARD).first();
+    await expect(card).toBeVisible();
+    const footnote = card.locator('[data-testid="studio-v3-inclusions-footnote"]').first();
+    if (!(await footnote.isVisible().catch(() => false))) {
+      test.skip(true, "inclusions footnote not visible in this region");
+    }
+
+    const addons = await readInteractableAddons(page);
+    test.skip(addons.length < 2, "need at least 2 interactable add-ons for round-trip");
+
+    // Snapshot the baseline `Included in your day` items — they must never
+    // re-order during add-on toggles.
+    const baselineIncluded = await footnote.evaluate((root) => {
+      const items = Array.from(root.querySelectorAll("ul")).flatMap((ul) =>
+        Array.from(ul.querySelectorAll("li:not([data-testid='studio-v3-included-addon-row'])")),
+      );
+      return items.map((li) => (li.textContent ?? "").trim());
+    });
+
+    const clickAddon = async (id: string) => {
+      const btn = page
+        .locator(`[data-testid="studio-v3-add-ons"] button[data-addon-id="${id}"]`)
+        .first();
+      await btn.scrollIntoViewIfNeeded().catch(() => undefined);
+      await btn.click();
+    };
+
+    const rowIds = () =>
+      footnote
+        .locator('[data-testid="studio-v3-included-addon-row"]')
+        .evaluateAll((els) => els.map((el) => el.getAttribute("data-addon-id") ?? ""));
+
+    // Catalog (button) order — rows always render in catalog order, NOT tap order.
+    const catalogOrder = await page
+      .locator('[data-testid="studio-v3-add-ons"] button[data-addon-id]')
+      .evaluateAll((els) => els.map((el) => el.getAttribute("data-addon-id") ?? ""));
+    const expectedOrder = (ids: string[]) => catalogOrder.filter((id) => ids.includes(id));
+
+    // Toggle up to 3 add-ons ON (respect the MAX_ADDONS cap).
+    const picks = addons.slice(0, Math.min(3, addons.length)).map((a) => a.id);
+
+    // Turn them ON in reverse-catalog order to prove ordering isn't tap order.
+    const tapOrder = [...picks].sort(
+      (a, b) => catalogOrder.indexOf(b) - catalogOrder.indexOf(a),
+    );
+    for (const id of tapOrder) await clickAddon(id);
+
+    await expect
+      .poll(async () => (await rowIds()).length)
+      .toBe(picks.length);
+    expect(await rowIds()).toEqual(expectedOrder(picks));
+
+    // Styling contract on every row.
+    const rowStyle = await footnote
+      .locator('[data-testid="studio-v3-included-addon-row"]')
+      .evaluateAll((rows) =>
+        rows.map((row) => {
+          const bullet = row.querySelector("span[aria-hidden]") as HTMLElement | null;
+          const priceCell = row.querySelector(
+            "span.tabular-nums, span[class*='tabular-nums']",
+          ) as HTMLElement | null;
+          const cs = (el: Element | null) => (el ? window.getComputedStyle(el) : null);
+          return {
+            hasPriceText: /\+€\d+/.test(row.textContent ?? ""),
+            bulletBg: cs(bullet)?.backgroundColor ?? "",
+            priceTabular: (cs(priceCell)?.fontVariantNumeric ?? "").includes("tabular-nums"),
+            priceWeight: Number(cs(priceCell)?.fontWeight ?? "0"),
+          };
+        }),
+      );
+    for (const s of rowStyle) {
+      expect(s.hasPriceText).toBe(true);
+      expect(s.priceTabular).toBe(true);
+      expect(s.priceWeight).toBeGreaterThanOrEqual(600);
+      expect(s.bulletBg.length).toBeGreaterThan(0);
+    }
+    // All bullets share the same gold color.
+    const uniqBullets = new Set(rowStyle.map((s) => s.bulletBg));
+    expect(uniqBullets.size).toBe(1);
+
+    // Divider still renders with uppercase / bold / wide tracking.
+    const dividerStyle = await footnote.evaluate((root) => {
+      const p = Array.from(root.querySelectorAll("p")).find((el) =>
+        /Your additions/.test(el.textContent ?? ""),
+      );
+      const cs = p ? window.getComputedStyle(p) : null;
+      return {
+        transform: cs?.textTransform ?? "",
+        weight: Number(cs?.fontWeight ?? "0"),
+        letter: parseFloat(cs?.letterSpacing ?? "0"),
+      };
+    });
+    expect(dividerStyle.transform).toBe("uppercase");
+    expect(dividerStyle.weight).toBeGreaterThanOrEqual(600);
+    expect(dividerStyle.letter).toBeGreaterThan(1);
+
+    // Remove the MIDDLE pick — ordering of the survivors must still equal
+    // catalog order (not left-to-right by removal).
+    if (picks.length >= 3) {
+      const middle = expectedOrder(picks)[1];
+      await clickAddon(middle);
+      const remaining = picks.filter((id) => id !== middle);
+      await expect
+        .poll(async () => (await rowIds()).length)
+        .toBe(remaining.length);
+      expect(await rowIds()).toEqual(expectedOrder(remaining));
+    }
+
+    // Toggle everything OFF — divider + rows disappear, base included list
+    // never re-ordered during the round-trip.
+    const stillOn = await rowIds();
+    for (const id of stillOn) await clickAddon(id);
+    await expect
+      .poll(async () => footnote.getByText(/Your additions/).count())
+      .toBe(0);
+    expect(
+      await footnote.locator('[data-testid="studio-v3-included-addon-row"]').count(),
+    ).toBe(0);
+    const finalIncluded = await footnote.evaluate((root) => {
+      const items = Array.from(root.querySelectorAll("ul")).flatMap((ul) =>
+        Array.from(ul.querySelectorAll("li:not([data-testid='studio-v3-included-addon-row'])")),
+      );
+      return items.map((li) => (li.textContent ?? "").trim());
+    });
+    expect(finalIncluded).toEqual(baselineIncluded);
+  });
 });

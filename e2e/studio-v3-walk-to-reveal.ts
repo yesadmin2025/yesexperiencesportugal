@@ -192,3 +192,23 @@ export async function parsePartyTotalEur(page: Page): Promise<number | null> {
   const m = text.match(/€\s?(\d+)/);
   return m ? Number(m[1]) : null;
 }
+
+/**
+ * After `walkToReveal` lands on Refine (phase=storyboard), advance to
+ * Storytelling (phase=confirmation) by clicking the Refine primary CTA.
+ * Shared across mobile reveal / navigation / a11y specs so the transition
+ * stays in lockstep.
+ */
+export async function advanceRefineToStorytelling(page: import("@playwright/test").Page): Promise<void> {
+  const refineCta = page
+    .locator('[data-studio-v3-screen="refine"]')
+    .getByRole("button", { name: /^See my signature story/i })
+    .first();
+  if (!(await refineCta.isVisible().catch(() => false))) return;
+  await refineCta.scrollIntoViewIfNeeded().catch(() => undefined);
+  await refineCta.click({ timeout: 4_000 }).catch(() => undefined);
+  await page
+    .getByTestId("studio-v3-final-reveal")
+    .waitFor({ timeout: 8_000 })
+    .catch(() => undefined);
+}
