@@ -20,7 +20,7 @@ function stateWithRefinedStops(
   editedLabels: string[] | null,
 ): StudioV3State {
   return {
-    feeling: "curious-explorer",
+    feeling: "wine-food",
     companions: "couple",
     occasion: null,
     dateFlex: "flex-week",
