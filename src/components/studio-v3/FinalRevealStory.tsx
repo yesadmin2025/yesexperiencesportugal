@@ -395,7 +395,7 @@ export function FinalRevealStory({
           className="w-full min-h-[52px] inline-flex items-center justify-center gap-2 rounded-full px-6 text-[13px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] transition-colors"
           style={{ background: "var(--gold)", color: "var(--charcoal)" }}
         >
-          {CTA_MAKE_STORY}
+          {CTA_CONTINUE_TO_GUEST_DETAILS}
           <span aria-hidden>→</span>
         </button>
         <button
