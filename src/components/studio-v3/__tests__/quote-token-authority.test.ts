@@ -27,9 +27,9 @@ import {
   canonicalJson,
   SnapshotValidationError,
   type RawQuoteSnapshot,
-} from "../quoteSnapshotSchema.ts";
-import { resolveQuote } from "../resolveQuote.ts";
-import { signQuoteToken, verifyQuoteToken, sha256Hex } from "../quoteToken.ts";
+} from "../../../../supabase/functions/_shared/quoteSnapshotSchema.ts";
+import { resolveQuote } from "../../../../supabase/functions/_shared/resolveQuote.ts";
+import { signQuoteToken, verifyQuoteToken, sha256Hex } from "../../../../supabase/functions/_shared/quoteToken.ts";
 
 const SECRET = "test-signing-secret-do-not-use-in-prod";
 
