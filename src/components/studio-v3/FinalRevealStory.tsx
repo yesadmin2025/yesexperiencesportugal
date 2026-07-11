@@ -14,6 +14,7 @@
  */
 
 import * as React from "react";
+import { useEffect } from "react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { findTour } from "@/data/signatureTours";
 import { pickupCityLabel } from "./curation";
@@ -99,6 +100,15 @@ export function FinalRevealStory({
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your private Portugal day";
 
+  // Defensive: when this reveal mounts (phase transition into storytelling),
+  // reset window scroll to the top so the parchment header is guaranteed to
+  // paint above the fold on mobile — regression fix for the "reveal renders
+  // blank on 393×588" audit finding (walker landed scrolled below the letter).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, []);
+
   // Editorial timeline — always reflect the traveller's kept set.
   // Priority: refined stops (editedRoutePoints) → composed stops (what
   // Studio actually surfaced pre-refine) → tour catalog (deep-link edge
@@ -160,10 +170,13 @@ export function FinalRevealStory({
             "0 1px 0 color-mix(in oklab, var(--charcoal) 6%, transparent), 0 24px 60px -32px color-mix(in oklab, var(--charcoal) 32%, transparent)",
         }}
       >
-        {/* Parchment top-plate — the paper the story is written on */}
+        {/* Parchment top-plate — the paper the story is written on.
+            Mobile keeps a shorter 8:3 aspect so the editorial title and
+            first chapter of the reveal sit above the fold on 393×588
+            viewports (regression fix for audit BLOCKER #1). Desktop keeps
+            the taller 5:3 crop for cinematic weight. */}
         <div
-          className="relative w-full"
-          style={{ aspectRatio: "5 / 3" }}
+          className="relative w-full aspect-[8/3] sm:aspect-[5/3]"
         >
           <img
             src={parchmentLetter}

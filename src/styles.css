@@ -48,6 +48,14 @@
   --font-serif: Georgia, "Cormorant Garamond", "Newsreader", serif;
   --font-sans: "Inter", system-ui, sans-serif;
   --font-script: "Kaushan Script", cursive;
+  /* Typography v3 aliases — canonical Studio V3 tokens. Currently alias
+     to the same underlying families as --font-display / --font-sans, so
+     any component reading `var(--font-editorial)` / `var(--font-body)`
+     always resolves without falling through to a browser default. When
+     Fraunces is wired site-wide (see mem://design/typography-v3.md) only
+     these two aliases need to change. */
+  --font-editorial: var(--font-display);
+  --font-body: var(--font-sans);
 
   --shadow-elegant: 0 30px 60px -30px color-mix(in oklab, var(--teal) 30%, transparent);
   --shadow-card: 0 20px 40px -24px rgba(46, 46, 46, 0.18);

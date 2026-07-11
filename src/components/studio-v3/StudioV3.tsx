@@ -2729,9 +2729,9 @@ function PhaseHeader({
 function FooterHint({ children }: { children: React.ReactNode }) {
   return (
     <p
-      className="mt-8 text-center text-[12px] italic max-w-[320px]"
+      className="mt-8 text-center text-[12px] max-w-[320px]"
       style={{
-        fontFamily: "var(--font-serif)",
+        fontFamily: "var(--font-body)",
         color: "color-mix(in oklab, var(--charcoal) 52%, transparent)",
         animation: "studioV3RiseIn 600ms ease-out 320ms both",
       }}

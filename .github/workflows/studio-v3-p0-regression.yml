@@ -1,0 +1,60 @@
+name: studio-v3-p0-regression
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: studio-v3-p0-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  studio-v3-p0:
+    name: Studio V3 P0 regression (mobile)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CI: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('bun.lockb', 'package.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
+
+      - name: Run Studio V3 P0 regression specs
+        run: |
+          bunx playwright test \
+            e2e/studio-v3-p0-storytelling-reveal-mobile.spec.ts \
+            e2e/studio-v3-p0-typography-two-family-mobile.spec.ts \
+            e2e/studio-v3-p0-guest-details-footer-mobile.spec.ts \
+            --project=mobile-chromium
+
+      - name: Upload failed diffs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-v3-p0-failures
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
