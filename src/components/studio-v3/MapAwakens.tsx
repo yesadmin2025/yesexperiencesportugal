@@ -410,6 +410,7 @@ export function MapAwakens({
             className="w-full h-full"
             aspectRatio="auto"
             showLabels={false}
+            legMinutes={momentLegMinutes}
           />
 
           {/* Cinematic vignette — soft dark wash at top + bottom for a
