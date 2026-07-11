@@ -40,7 +40,11 @@ Audit #13 proposed `feeling → who → interests → logistics`. Rejected again
 - Stepper still self-hides on `intro` and maps every downstream phase to a beat (`beatIndexForPhase` returns `0..3` for every non-intro phase; `default → null` guards new phases).
 - P1 #1–#8 status snapshot above is unchanged; no phase was added, removed, or re-labelled.
 
-**One residual inconsistency logged, not fixed** (would require its own PR): `occasion` sits at PHASE_ORDER index 9 (after `rhythm` at 8) but is mapped to Beat 1 "Feel". If both phases are ever surfaced in the same session, the stepper visibly steps Beat 2 → Beat 1 → Beat 3. Today `isPhaseRelevant` typically hides `occasion` when `rhythm` was resolved from feeling, so it is rarely observable — but the mapping should either move `occasion` to Beat 2 or move the phase before `interests`. Tracked for the next P2 pass; not in scope for "defend current order".
+**Residual `occasion` stepper mismatch — fixed.** `beatIndexForPhase` in `StudioV3ProgressStepper.tsx` now maps `occasion` to Beat 2 "Shape" (was Beat 1 "Feel"), so the stepper no longer regresses Beat 2 → Beat 1 → Beat 3 on sessions that surface `occasion` after `rhythm`. Matches its actual position at PHASE_ORDER index 9.
+
+- [x] P2 #14 Refine → real map of composed stops — **already shipped**. `StudioV3.tsx` renders the storyboard/refine surface via `StudioV3SignatureMap`, which projects real `lat/lng` from `resolveStudioV3Route → routePoints` into a padded bounding box with haversine drive-minute chips per leg. Silhouette only appears as the ambient background anchor (`PortugalSilhouette`), never as the refine map itself. Audit finding was stale.
+- [x] P2 #17 Uppercase-tracking sweep (393px) — Playwright DOM scan of every `text-transform: uppercase` leaf at 393×588 on `/studio-v3` intro and the first post-intro phase reports zero elements with `scrollWidth > clientWidth + 1`. No sub-word truncations at the entry surfaces. Deeper phase-walk deferred until the pacing walker helper is generalised (would need real state seeded through localStorage or the walker). Retest cadence: run the same DOM sweep in `e2e/studio-v3-p1-audit-fixes-mobile.spec.ts` at every phase we can seed today.
+- [x] P2 #18 Reveal telemetry test — already shipped in `e2e/studio-v3-p0-storytelling-reveal-mobile.spec.ts` (asserts `[data-testid=studio-v3-final-reveal]` visible ≤ 2500 ms and non-empty innerText). No new spec needed.
 
 Regression coverage: `e2e/studio-v3-p1-audit-fixes-mobile.spec.ts` wired into `.github/workflows/studio-v3-p0-regression.yml`.
 
