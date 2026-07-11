@@ -1,0 +1,87 @@
+name: Studio V3 · Your additions visual
+
+# Required check — locks the mobile "— Your additions" footnote against
+# spacing, divider, gold-bullet, and price-cell regressions at 393×588.
+# Fails builds when the element-scoped screenshots in
+# e2e/studio-v3-your-additions-visual.spec.ts diverge beyond the
+# maxDiffPixelRatio configured on each assertion (0.02) or the global
+# playwright.config.ts snapshot budget (0.002 default, 0.15 threshold).
+#
+# Baselines live next to the spec:
+#   e2e/studio-v3-your-additions-visual.spec.ts-snapshots/
+# Seed / refresh them locally with:
+#   bunx playwright test --config=playwright.local.config.ts \
+#     studio-v3-your-additions-visual --update-snapshots
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: studio-v3-your-additions-visual-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  visual-regression:
+    name: Your additions visual (Chromium · mobile)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package.json', 'bun.lockb') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright Chromium + system deps
+        run: |
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = "true" ]; then
+            bunx playwright install-deps chromium
+          else
+            bunx playwright install --with-deps chromium
+          fi
+
+      - name: Run "— Your additions" visual regression
+        # Scoped to the single spec. Reporters (github + html) come from
+        # playwright.config.ts — do NOT pass --reporter here or the HTML
+        # diff report is dropped from the artifact.
+        run: bunx playwright test e2e/studio-v3-your-additions-visual.spec.ts --project=mobile-chromium
+        env:
+          CI: "true"
+
+      - name: Upload Playwright report (diffs + traces)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: your-additions-playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+      - name: Upload failed snapshot diffs
+        # test-results/ contains -actual.png, -expected.png, -diff.png for
+        # every failed screenshot assertion. Crucial for reviewing why a
+        # PR exceeded the pixel-diff threshold.
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: your-additions-snapshot-diffs
+          path: test-results/
+          retention-days: 14
