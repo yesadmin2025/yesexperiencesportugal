@@ -127,7 +127,7 @@ describe("Pass 1B Slice A — visible price convergence", () => {
       title: "Setúbal · Azeitão · Sesimbra",
       region: "Setúbal",
       priceFrom: 145,
-      durationHours: 8,
+      durationHours: "8 hours",
       duration: "Full day",
       included: [],
       stops: [],
