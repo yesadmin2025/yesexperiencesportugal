@@ -41,12 +41,13 @@ jobs:
       - name: Install Playwright Chromium
         run: bunx playwright install --with-deps chromium
 
-      - name: Run Studio V3 P0 regression specs
+      - name: Run Studio V3 P0 + P1 regression specs
         run: |
           bunx playwright test \
             e2e/studio-v3-p0-storytelling-reveal-mobile.spec.ts \
             e2e/studio-v3-p0-typography-two-family-mobile.spec.ts \
             e2e/studio-v3-p0-guest-details-footer-mobile.spec.ts \
+            e2e/studio-v3-p1-audit-fixes-mobile.spec.ts \
             --project=mobile-chromium
 
       - name: Upload failed diffs
