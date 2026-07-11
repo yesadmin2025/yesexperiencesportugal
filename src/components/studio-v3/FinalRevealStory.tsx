@@ -170,10 +170,13 @@ export function FinalRevealStory({
             "0 1px 0 color-mix(in oklab, var(--charcoal) 6%, transparent), 0 24px 60px -32px color-mix(in oklab, var(--charcoal) 32%, transparent)",
         }}
       >
-        {/* Parchment top-plate — the paper the story is written on */}
+        {/* Parchment top-plate — the paper the story is written on.
+            Mobile keeps a shorter 8:3 aspect so the editorial title and
+            first chapter of the reveal sit above the fold on 393×588
+            viewports (regression fix for audit BLOCKER #1). Desktop keeps
+            the taller 5:3 crop for cinematic weight. */}
         <div
-          className="relative w-full"
-          style={{ aspectRatio: "5 / 3" }}
+          className="relative w-full aspect-[8/3] sm:aspect-[5/3]"
         >
           <img
             src={parchmentLetter}
