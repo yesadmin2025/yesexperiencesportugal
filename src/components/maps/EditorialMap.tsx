@@ -370,6 +370,53 @@ export function EditorialMap({
         </ul>
       ) : null}
 
+      {/* Drive-time chips — small gold-outlined pills near each leg midpoint
+          along the visible route. Only rendered when legMinutes are provided
+          and the corresponding leg is currently visible. */}
+      {legMinutes && shown.length >= 2 ? (
+        <ul className="pointer-events-none absolute inset-0 m-0 list-none p-0">
+          {shown.slice(1).map((b, i) => {
+            const a = shown[i];
+            const mins = legMinutes[i];
+            if (typeof mins !== "number" || mins <= 0) return null;
+            // Match the curve's control point (Q ... cy = min(a.y,b.y) - 14).
+            // Approximate midpoint of the quadratic at t=0.5:
+            // P = 0.25*A + 0.5*C + 0.25*B
+            const cx = (a.x + b.x) / 2;
+            const cy = Math.min(a.y, b.y) - 14;
+            const mx = 0.25 * a.x + 0.5 * cx + 0.25 * b.x;
+            const my = 0.25 * a.y + 0.5 * cy + 0.25 * b.y;
+            const xPct = (mx / VB_W) * 100;
+            const yPct = (my / VB_H) * 100;
+            const delay = i * 320 + 900;
+            return (
+              <li
+                key={`leg-${i}`}
+                className="absolute text-[9px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
+                style={{
+                  left: `${xPct}%`,
+                  top: `${yPct}%`,
+                  transform: "translate(-50%, -50%)",
+                  padding: "2px 6px",
+                  borderRadius: "999px",
+                  background: isDark
+                    ? "color-mix(in oklab, var(--charcoal-deep, #14181a) 82%, transparent)"
+                    : "color-mix(in oklab, var(--ivory) 92%, transparent)",
+                  color: isDark
+                    ? "color-mix(in oklab, var(--ivory) 92%, transparent)"
+                    : "color-mix(in oklab, var(--charcoal) 82%, transparent)",
+                  border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                  opacity: active ? 1 : 0,
+                  transition: `opacity 520ms ease ${delay}ms`,
+                }}
+              >
+                {Math.round(mins)} min
+              </li>
+            );
+          })}
+        </ul>
+      ) : null}
+
       {/* Bottom strip */}
       {caption || footerRight ? (
         <div className="absolute left-4 bottom-4 right-4 flex items-end justify-between gap-3">
