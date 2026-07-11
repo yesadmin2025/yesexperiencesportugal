@@ -374,30 +374,37 @@ export function FinalRevealStory({
         </div>
       </details>
 
-      {/* CTAs — one primary, save as small link, back tertiary */}
+      {/* CTAs — primary continue + ghost save (P1 audit #5: Save moves
+          from right-aligned gold underline to a peer ghost pill beside
+          the primary so both share the pill family and the primary
+          voice reads first). Back stays tertiary. */}
       <div className="mt-8 flex flex-col items-stretch gap-3">
-        <div className="flex justify-end">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            type="button"
+            onClick={onContinue}
+            data-testid="studio-v3-final-reveal-continue"
+            className="flex-1 min-h-[52px] inline-flex items-center justify-center gap-2 rounded-full px-6 text-[13px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] transition-colors"
+            style={{ background: "var(--gold)", color: "var(--charcoal)" }}
+          >
+            {CTA_CONTINUE_TO_GUEST_DETAILS}
+            <span aria-hidden>→</span>
+          </button>
           <button
             type="button"
             onClick={onSaveSignature}
             disabled={saving}
             data-testid="studio-v3-final-reveal-save"
-            className="inline-flex items-center min-h-[36px] px-1 text-[12px] tracking-[0.02em] underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-60"
-            style={{ color: "var(--teal)" }}
+            className="sm:flex-none min-h-[52px] inline-flex items-center justify-center rounded-full border px-6 text-[12px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-60 transition-colors"
+            style={{
+              color: "var(--teal)",
+              borderColor: "color-mix(in oklab, var(--teal) 45%, transparent)",
+              background: "transparent",
+            }}
           >
             {saving ? "Saving…" : CTA_SAVE_SIGNATURE}
           </button>
         </div>
-        <button
-          type="button"
-          onClick={onContinue}
-          data-testid="studio-v3-final-reveal-continue"
-          className="w-full min-h-[52px] inline-flex items-center justify-center gap-2 rounded-full px-6 text-[13px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] transition-colors"
-          style={{ background: "var(--gold)", color: "var(--charcoal)" }}
-        >
-          {CTA_CONTINUE_TO_GUEST_DETAILS}
-          <span aria-hidden>→</span>
-        </button>
         <button
           type="button"
           onClick={onBack}

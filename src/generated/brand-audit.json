@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-11T01:27:09.760Z",
-  "filesScanned": 612,
+  "generatedAt": "2026-07-11T01:46:15.683Z",
+  "filesScanned": 613,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1763,7 +1763,7 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 63,
+      "line": 67,
       "col": 30,
       "raw": "#295B61",
       "normalized": "#295b61",
@@ -1772,7 +1772,7 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 63,
+      "line": 67,
       "col": 64,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -1781,7 +1781,7 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 65,
+      "line": 69,
       "col": 39,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1790,7 +1790,7 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 66,
+      "line": 70,
       "col": 38,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1799,7 +1799,7 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 67,
+      "line": 71,
       "col": 94,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
