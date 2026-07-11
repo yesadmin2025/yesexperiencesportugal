@@ -35,37 +35,59 @@ const baseSnapshot = {
   routeStatus: "pending-review" as const,
 };
 
+async function sha256Hex(input: string): Promise<string> {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+function canonicalJson(value: unknown): string {
+  const walk = (v: unknown): unknown => {
+    if (v === null || typeof v !== "object") return v;
+    if (Array.isArray(v)) return v.map(walk);
+    const out: Record<string, unknown> = {};
+    for (const k of Object.keys(v as Record<string, unknown>).sort()) {
+      out[k] = walk((v as Record<string, unknown>)[k]);
+    }
+    return out;
+  };
+  return JSON.stringify(walk(value));
+}
+
 beforeEach(() => {
   fetchStudioQuote.mockReset();
-  fetchStudioQuote.mockResolvedValue({
-    quoteToken: "tok",
-    revision: "abc",
-    snapshotHash: "abc",
-    expiresAt: new Date(Date.now() + 60000).toISOString(),
-    pricing: {
-      status: "quoted",
-      commercialProductKey: "studio-v3-private-full-day",
-      guests: 3,
-      unitEur: 145,
-      baseSubtotalEur: 435,
-      addOnsSubtotalEur: 90,
-      totalEur: 525,
-      currency: "EUR",
-    },
-    addOns: [],
-    inclusions: [],
-    routeStatus: "pending-review",
-    availabilityStatus: "pending-review",
-    itinerary: {
-      title: baseSnapshot.title,
-      destinationRegion: baseSnapshot.destinationRegion,
-      pickupCity: baseSnapshot.pickupCity,
-      date: baseSnapshot.date,
-      startTime: baseSnapshot.startTime,
-      language: baseSnapshot.language,
-      guests: baseSnapshot.guests,
-      routeStops: baseSnapshot.routeStops,
-    },
+  fetchStudioQuote.mockImplementation(async (snap: unknown) => {
+    const rev = (await sha256Hex(canonicalJson(snap))).slice(0, 16);
+    return {
+      quoteToken: "tok",
+      revision: rev,
+      snapshotHash: rev,
+      expiresAt: new Date(Date.now() + 60000).toISOString(),
+      pricing: {
+        status: "quoted",
+        commercialProductKey: "studio-v3-private-full-day",
+        guests: 3,
+        unitEur: 145,
+        baseSubtotalEur: 435,
+        addOnsSubtotalEur: 90,
+        totalEur: 525,
+        currency: "EUR",
+      },
+      addOns: [],
+      inclusions: [],
+      routeStatus: "pending-review",
+      availabilityStatus: "pending-review",
+      itinerary: {
+        title: baseSnapshot.title,
+        destinationRegion: baseSnapshot.destinationRegion,
+        pickupCity: baseSnapshot.pickupCity,
+        date: baseSnapshot.date,
+        startTime: baseSnapshot.startTime,
+        language: baseSnapshot.language,
+        guests: baseSnapshot.guests,
+        routeStops: baseSnapshot.routeStops,
+      },
+    };
   });
 });
 
