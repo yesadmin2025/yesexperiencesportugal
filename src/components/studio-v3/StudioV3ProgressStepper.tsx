@@ -49,12 +49,12 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
     case "feeling":
     case "destination":
     case "who":
-    case "occasion":
     case "pickup":
     case "guests":
       return 0;
     case "interests":
     case "rhythm":
+    case "occasion":
     case "considerations":
     case "language":
     case "investment":
