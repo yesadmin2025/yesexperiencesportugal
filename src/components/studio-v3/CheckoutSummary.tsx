@@ -17,12 +17,33 @@ import { pickupCityLabel } from "./curation";
 import {
   CHECKOUT_HEADER,
   CTA_RESERVE_AND_PAY,
-  INSTANT_CONFIRMATION,
+  confirmationCopy,
+  type ConfirmationStatus,
 } from "@/content/signature-day-copy";
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { cn } from "@/lib/utils";
+
+/**
+ * Pass 1B Slice A — server-authoritative pricing override.
+ * When present + status === "quoted", these values REPLACE every visible
+ * amount and per-add-on line. Legacy props remain the fallback for pre-quote
+ * phases only. Set `routeStatus` to gate confirmation copy.
+ */
+export interface CheckoutSummaryServerPricing {
+  readonly status: "quoted" | "loading" | "unavailable";
+  readonly unitEur: number;
+  readonly totalEur: number;
+  readonly addOnsSubtotalEur: number;
+  readonly addOnLines: ReadonlyArray<{
+    readonly id: string;
+    readonly label: string;
+    readonly lineSubtotalEur: number;
+    readonly routeIntegration: "validated" | "pending-review" | "unavailable";
+  }>;
+  readonly routeStatus: ConfirmationStatus;
+}
 
 export interface CheckoutSummaryProps {
   readonly state: StudioV3State;
@@ -36,6 +57,8 @@ export interface CheckoutSummaryProps {
   readonly onReserve: () => void;
   readonly className?: string;
   readonly testId?: string;
+  /** Server-signed quote. When quoted, wins over legacy perPaxEur/totalEur. */
+  readonly serverPricing?: CheckoutSummaryServerPricing | null;
 }
 
 function formatEur(n: number | null): string {
