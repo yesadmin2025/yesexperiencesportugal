@@ -231,10 +231,19 @@ export function EditorialMap({
         preserveAspectRatio="xMidYMid slice"
       >
         <path
-          d="M 56 8 L 132 12 L 138 60 L 144 120 L 142 200 L 138 280 L 128 340 L 114 380 L 90 392 L 64 384 L 48 350 L 40 280 L 44 200 L 48 120 L 50 60 Z"
-          fill="rgba(201,169,106,0.05)"
-          stroke="rgba(201,169,106,0.22)"
-          strokeWidth="0.7"
+          d="M 78 12 C 96 10 118 14 138 18 C 146 46 148 78 150 108 C 152 148 154 188 152 226 C 150 262 148 296 142 326 C 136 354 126 376 112 388 C 96 398 78 396 66 388 C 54 378 48 358 46 336 C 42 300 44 262 46 224 C 48 184 50 144 54 108 C 58 74 64 44 78 12 Z"
+          fill="rgba(201,169,106,0.06)"
+          stroke="rgba(201,169,106,0.32)"
+          strokeWidth="0.9"
+          strokeLinejoin="round"
+        />
+        {/* Faint interior spine hinting at the Tagus/Douro axis */}
+        <path
+          d="M 60 60 Q 96 140 106 230 T 118 360"
+          fill="none"
+          stroke="rgba(201,169,106,0.10)"
+          strokeWidth="0.5"
+          strokeDasharray="2 3"
         />
       </svg>
 
