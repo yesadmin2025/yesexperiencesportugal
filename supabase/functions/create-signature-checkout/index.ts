@@ -134,27 +134,54 @@ async function handleStudioCreateSession(body: StudioCreateSessionBody) {
   if (body.currentRevision !== payload.revision) {
     return jsonError("Quote is stale — please refresh", 409);
   }
+interface StudioCreateSessionBody {
+  mode: "create-session";
+  quoteToken: string;
+  currentRevision: string;
+  /** Optional — server ignores it for pricing/metadata; token is authoritative. */
+  snapshot?: RawQuoteSnapshot;
+  environment: StripeEnv;
+  returnUrl: string;
+  cancelUrl?: string;
+  uiMode?: "hosted" | "embedded";
+  customerEmail?: string;
+  guestDetails?: Record<string, unknown>;
+}
+
+async function handleStudioCreateSession(body: StudioCreateSessionBody) {
+  const secret = Deno.env.get("STUDIO_QUOTE_SIGNING_SECRET");
+  if (!secret) return jsonError("Quote signing secret not configured", 500);
+  if (body.environment !== "sandbox" && body.environment !== "live") {
+    return jsonError("Invalid environment", 400);
+  }
+  if (!validateReturnOrigin(body.returnUrl)) return jsonError("Return URL not allowed", 400);
+
+  let payload;
+  try {
+    payload = await verifyQuoteToken(body.quoteToken, secret);
+  } catch (e) {
+    return jsonError(`Quote token invalid: ${(e as Error).message}`, 400);
+  }
+  if (body.currentRevision !== payload.revision) {
+    return jsonError("Quote is stale — please refresh", 409);
+  }
   if (payload.routeStatus === "unavailable" || payload.availabilityStatus === "unavailable") {
     return jsonError("This journey is unavailable", 409);
   }
   if (payload.totalEur < 50) return jsonError("Computed amount below minimum", 400);
 
-  // Re-resolve to make sure the snapshot the client is submitting matches
-  // what was signed (defence-in-depth even though snapshotHash is bound).
-  const snapshot = validateAndNormaliseSnapshot(body.snapshot);
-  const resolved = resolveQuote(snapshot);
-  const rehash = await sha256Hex(canonicalJson(snapshot));
-  if (rehash !== payload.snapshotHash) return jsonError("Quote snapshot mismatch", 409);
-  if (resolved.pricing.status !== "quoted") return jsonError("Pricing unavailable", 409);
-  if (resolved.pricing.totalEur !== payload.totalEur) return jsonError("Pricing drifted", 409);
+  // Snapshot + pricing are read STRICTLY from the signed token.
+  // Client-sent snapshot / amountEur / add-ons are ignored here.
+  const snap = payload.snapshot;
+  const pricing = payload.pricing;
 
   const stripe = createStripeClient(body.environment);
   const uiMode: "hosted" | "embedded" = body.uiMode === "embedded" ? "embedded" : "hosted";
 
-  const productName = `YES Studio — ${snapshot.title}`.slice(0, 180);
-  const stopLabelsCompact = snapshot.routeStops.map((s) => s.label).slice(0, 8).join(" · ").slice(0, 480);
-  const inclusionIdsCompact = resolved.inclusions.map((i) => i.id).join(",").slice(0, 480);
-  const addOnIdsCompact = resolved.addOns.map((a) => a.id).join(",").slice(0, 200);
+  const productName = `YES Studio — ${snap.title}`.slice(0, 180);
+  const stopLabelsCompact = snap.routeStops.map((s) => s.label).slice(0, 8).join(" · ").slice(0, 480);
+  const inclusionIdsCompact = snap.inclusionIds.join(",").slice(0, 480);
+  const addOnIdsCompact = pricing.addOnLineItems.map((a) => a.id).join(",").slice(0, 200);
 
   const pendingReviewNote =
     "Your request is received after payment and remains subject to final route and availability confirmation.";
