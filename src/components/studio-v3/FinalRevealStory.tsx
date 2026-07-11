@@ -100,6 +100,15 @@ export function FinalRevealStory({
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your private Portugal day";
 
+  // Defensive: when this reveal mounts (phase transition into storytelling),
+  // reset window scroll to the top so the parchment header is guaranteed to
+  // paint above the fold on mobile — regression fix for the "reveal renders
+  // blank on 393×588" audit finding (walker landed scrolled below the letter).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, []);
+
   // Editorial timeline — always reflect the traveller's kept set.
   // Priority: refined stops (editedRoutePoints) → composed stops (what
   // Studio actually surfaced pre-refine) → tour catalog (deep-link edge
