@@ -493,10 +493,12 @@ const inputClass =
 function FieldGroup({
   title,
   optional,
+  subtitle,
   children,
 }: {
   title: string;
   optional?: boolean;
+  subtitle?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -511,6 +513,11 @@ function FieldGroup({
           </span>
         ) : null}
       </div>
+      {subtitle ? (
+        <p className="text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
+          {subtitle}
+        </p>
+      ) : null}
       <div className="space-y-3">{children}</div>
     </div>
   );
