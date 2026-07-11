@@ -411,7 +411,11 @@ export function GuestDetailsStep({
           </Field>
         </FieldGroup>
 
-        <FieldGroup title="Anything we should know" optional>
+        <FieldGroup
+          title="Anything we should know"
+          optional
+          subtitle="Optional — skip unless it matters for your day."
+        >
           <Field label="Dietary restrictions">
             <input
               value={dietary}
