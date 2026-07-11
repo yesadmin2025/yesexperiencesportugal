@@ -53,6 +53,13 @@ export const REVEAL_TITLE = "Your story in Portugal" as const;
 // the approved flow plan (one job per screen; the emotional beat lives in
 // the letter body, the CTA does its transactional job).
 export const CTA_CONTINUE_TO_GUEST_DETAILS = "Continue to guest details" as const;
+/**
+ * @deprecated Retired P1 (audit fix #5). The same string used to appear
+ * on both Refine and Storytelling — Refine now says "See my signature
+ * story", Storytelling keeps `CTA_CONTINUE_TO_GUEST_DETAILS`. Kept only
+ * as a value-identical alias so external imports don't break; delete
+ * once no consumers remain.
+ */
 export const CTA_MAKE_STORY = CTA_CONTINUE_TO_GUEST_DETAILS;
 export const CTA_SAVE_SIGNATURE = "Save my signature" as const;
 export const CTA_BACK_TO_REFINE = "Back to refine" as const;

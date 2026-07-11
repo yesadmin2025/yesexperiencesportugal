@@ -11,10 +11,13 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { StudioV3Phase } from "./types";
 import { recordStudioV3BuilderStep } from "@/lib/studio-v3-telemetry";
 
+// P1 audit fix #1: labels rewritten so each beat maps 1:1 to a real
+// group of `data-phase` values (see `beatIndexForPhase` below). IDs are
+// kept for telemetry/back-compat; only labels + reassurance changed.
 export const STUDIO_V3_BEATS = [
-  { id: "region", label: "Region" },
-  { id: "rhythm", label: "Rhythm" },
-  { id: "dates", label: "Dates" },
+  { id: "region", label: "Feel" },
+  { id: "rhythm", label: "Shape" },
+  { id: "dates", label: "Time" },
   { id: "compose", label: "Compose" },
 ] as const;
 
@@ -23,10 +26,10 @@ export type StudioV3BeatId = (typeof STUDIO_V3_BEATS)[number]["id"];
 /** Quiet reassurance line under the stepper — short and uniform so the
  *  mobile header stays calm. Desktop keeps the same line for parity. */
 const BEAT_REASSURANCE: Record<StudioV3BeatId, string> = {
-  region: "Beat 1 of 4",
-  rhythm: "Beat 2 of 4",
-  dates: "Beat 3 of 4",
-  compose: "Beat 4 of 4",
+  region: "Beat 1 of 4 — Feel",
+  rhythm: "Beat 2 of 4 — Shape",
+  dates: "Beat 3 of 4 — Time",
+  compose: "Beat 4 of 4 — Compose",
 };
 
 /** First phase associated with each beat — used as jump-back target. */
@@ -150,7 +153,9 @@ export function StudioV3ProgressStepper({
         aria-label="Studio progress"
         data-testid="studio-v3-progress-stepper"
         data-active-beat={STUDIO_V3_BEATS[active].id}
-        className="mt-4 mb-1 flex w-full items-center justify-between gap-2 px-5"
+        // pr-12 reserves right-hand hit-area so the close (X) button in
+        // StudioV3 header never overlaps the last beat label (audit P1 #2).
+        className="mt-4 mb-1 flex w-full items-center justify-between gap-2 pl-5 pr-12"
       >
         {STUDIO_V3_BEATS.map((beat, i) => {
           const isActive = i === active;
@@ -173,9 +178,9 @@ export function StudioV3ProgressStepper({
           );
           const label = (
             <span
-              className="text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+              className="text-[10px] uppercase tracking-[0.16em] font-semibold whitespace-nowrap"
               style={{
-                fontFamily: "var(--font-display)",
+                fontFamily: "var(--font-editorial)",
                 color: isReachable
                   ? "var(--charcoal)"
                   : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
