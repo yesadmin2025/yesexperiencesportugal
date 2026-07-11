@@ -1,52 +1,45 @@
-## Goal
-Extend Playwright coverage for the Refine → Storytelling flow on mobile (393×588) with three additions: (1) round-trip ordering/styling assertion for add-ons under "— Your additions", (2) navigation contract for the three primary CTAs, and (3) a11y validation for reveal CTAs and add-on controls.
+# Studio V3 — Full End-to-End Audit
 
-## Scope
-Tests only. No product code changes. All new specs run against the sandbox dev server via `playwright.local.config.ts` and reuse `walkToReveal` + the local `advanceRefineToStorytelling` helper pattern.
+Goal: walk the Studio from `/studio-v3` intro all the way through map → curation → storyboard → refine → storytelling → guest details, and produce a single consolidated audit report covering copy, typography, structure, logic, palette, CTAs, price logic, and clarity. No code changes in this pass — findings only, grouped by severity, each with file:line references and a proposed fix. A follow-up plan will implement the fixes you approve.
 
-## Changes
+## How the audit runs
 
-### 1. Extend `e2e/studio-v3-unified-signature-card.spec.ts`
-Add a new test: **"— Your additions round-trip ordering & styling"**.
-- Read the full list of add-on toggle testids in the Refine screen.
-- Toggle ON add-on A, then B, then C in that order → assert the `[data-studio-v3-your-additions] li` sequence matches the toggle order (DOM order = tap order), each row shows `+€N` in gold, uppercase divider "— Your additions" retains `uppercase`, `font-semibold`, `tracking-[0.22em]`, and gold token color.
-- Toggle OFF B → assert only A, C remain, still in original relative order, divider still present.
-- Toggle OFF A and C → assert divider is removed and `Included in your day` returns to its baseline list only.
-- Assert `Included in your day` items never re-order during any of the above.
+1. **Live mobile walkthrough (393×588, the user's viewport)** via Playwright against `http://localhost:8080/studio-v3`:
+   - Screenshot every phase (intro, feeling, who, rhythm, region, arrival, tier, date, map/moments, storyboard, refine, storytelling, guest details).
+   - Capture console warnings (esp. `[font-fallback]`), network errors, and telemetry events (`curation.decision`, `reveal.validation`, `builder.step`).
+   - Exercise both a "minimal" path (fewest add-ons) and a "rich" path (Arrábida + multiple add-ons) so price logic is stressed.
+2. **Static audit** of the Studio V3 source (`src/components/studio-v3/**`, `src/content/signature-day-copy.ts`, `src/data/signatureAddOns.ts`, `src/data/signatureTourPricing.ts`, `src/hooks/useStudioState.ts`) for the categories below.
+3. **Cross-reference** live findings against the Studio north-star memory (`mem://design/studio-philosophy`), brand guardrails, typography v3, and the "no invented stops" constraint.
 
-### 2. New spec `e2e/studio-v3-cta-navigation-mobile.spec.ts` (viewport 393×588)
-Verifies the three CTA transitions:
-- **"See my signature story" (Refine → Storytelling)** — from Refine screen, click primary CTA, assert `data-studio-v3-screen="storytelling"` visible and `studio-v3-final-reveal` present; Refine root no longer in DOM.
-- **"Continue to guest details" (Storytelling → Guest Details)** — click `studio-v3-final-reveal-continue`, assert the email field (`getByLabel(/email/i)`) is visible and `studio-v3-guest-details` testid mounts.
-- **"Save my signature" (Storytelling side-effect, stays on screen)** — click `studio-v3-final-reveal-save`, assert toast/confirmation surface appears and screen remains Storytelling (no route change, `studio-v3-final-reveal` still visible).
-- **"Back to refine" (Storytelling → Refine)** — locate the back control on Storytelling, click, assert `data-studio-v3-screen="refine"` returns, previously-selected add-ons are still toggled ON (state preserved through the round-trip).
+## Audit dimensions
 
-Uses existing `walkToReveal` + `advanceRefineToStorytelling` helper (extract helper into shared `e2e/studio-v3-walk-to-reveal.ts` so both specs import it — one-line addition, no behavior change).
+Each finding is tagged `[BLOCKER | HIGH | MEDIUM | LOW]` with file:line + suggested fix.
 
-### 3. New spec `e2e/studio-v3-reveal-a11y-mobile.spec.ts` (viewport 393×588)
-A11y-focused assertions on Refine + Storytelling:
-- **Labels**: every add-on toggle has an accessible name (via `aria-label` or associated `<label>`); each reveal CTA (`Continue to guest details`, `Save my signature`, `Back to refine`) has a non-empty accessible name matching visible text.
-- **Focus order**: on Refine, press `Tab` repeatedly from the top of `[data-studio-v3-screen="refine"]` and record `document.activeElement` testids/labels; assert order = add-on toggles (in DOM order) → primary CTA → ghost curator CTA. On Storytelling, assert order = Back to refine → Continue to guest details → Save my signature.
-- **Keyboard interaction**: focus first add-on toggle, press `Space` → assert its `aria-pressed`/`aria-checked` flips and `— Your additions` row appears; press `Space` again → row removed. Focus primary "See my signature story" and press `Enter` → screen advances to Storytelling.
-- **Focus visibility**: after Tab lands on each CTA, assert `:focus-visible` styles resolve to a non-transparent outline (computed `outline-width > 0` OR box-shadow ring), so keyboard users see the focus ring.
-- Run `@axe-core/playwright` scan scoped to `[data-studio-v3-screen="refine"]` and `[data-studio-v3-final-reveal]`; fail on `serious`/`critical` violations only (excluding color-contrast for now to avoid noise — brand palette contrast is covered elsewhere).
+- **Copy** — sentence case, no invented facts, no competitor claims, tone consistent across phases, microcopy on CTAs matches destination screen, error/empty states, no leftover placeholder strings.
+- **Typography** — only Fraunces (headings + italic emphasis) and Inter (body/UI); no Montserrat/Georgia/Cormorant regressions; correct sizes on mobile; italic emphasis restricted to headings; runtime `[font-fallback]` warnings surface here.
+- **Structure** — phase order matches the philosophy (feeling → who → rhythm → region → arrival → tier → date → map → storyboard → refine → storytelling → guest details); no dead phases; back/forward preserves state; deep-link/refresh behaviour.
+- **Logic** — selections persist across phases; tier + region + rhythm gates work; add-on availability (minStops, region compatibility) is correct; guest count math; date "flexible" bypass; refine ↔ storytelling round-trip preserves toggles.
+- **Color palette** — only the 8 brand tokens; no hardcoded hex/`text-white`/`bg-black`; gold used as micro-detail only; contrast ≥ 4.5:1 on --charcoal and --ivory surfaces.
+- **CTAs** — every actionable card has `data-phase-cta`; primary/ghost variants use `<CtaButton>`; labels match the destination ("See my signature story", "Continue to guest details", "Save my signature", "← Back to refine"); 44×44 tap targets; visible focus ring; disabled reasons are explained inline.
+- **Price logic** — per-guest base × guests + add-ons × guests; `studio-v3-add-ons-total` and `studio-v3-party-total` agree; add-ons that are disabled never contribute; currency formatting (€, no decimals); tier upgrade updates totals in the same frame; storytelling → refine → storytelling preserves the total.
+- **Clarity** — every screen answers "what am I choosing / what happens next / how much"; no jargon; empty and edge states (no add-ons, single guest, minimum tier) read naturally; a11y labels match visible text.
 
-### 4. Small helper extraction
-Move `advanceRefineToStorytelling` from `studio-v3-reveal-and-guest-details-mobile.spec.ts` into `e2e/studio-v3-walk-to-reveal.ts` as a named export so the three specs (existing mobile reveal + two new ones) share one implementation.
+## Deliverable
 
-## Dependencies
-- `@axe-core/playwright` — add via `bun add -D @axe-core/playwright` if not already present (check `package.json` at build time; if present, skip).
+A single audit report written to `.lovable/studio-v3-audit.md` with:
 
-## Non-goals
-- No product code changes.
-- No new baselines beyond what already exists.
-- No changes to visual snapshot spec.
-- No CI workflow additions (local run only, matching the existing mobile reveal spec pattern).
+- Table of contents by phase.
+- Screenshot thumbnails per phase (saved under `/tmp/browser/studio-v3-audit/`).
+- Findings grouped by severity, each with: phase, category, file:line, evidence (screenshot or quoted code), proposed fix, effort estimate (S/M/L).
+- A short "green list" of things that are already correct, so we don't regress them later.
+- A prioritized fix backlog ready to be converted into an implementation plan.
 
-## How to run locally
-```
-bunx playwright test --config=playwright.local.config.ts \
-  studio-v3-unified-signature-card \
-  studio-v3-cta-navigation-mobile \
-  studio-v3-reveal-a11y-mobile
-```
+## Out of scope for this pass
+
+- No source edits, no snapshot updates, no CI changes.
+- No changes to pricing data, add-on catalog, or tour content.
+- Desktop/tablet audit — mobile 393×588 only (matches your working viewport). Desktop can be a follow-up.
+
+## Next step after you approve
+
+I run the walkthrough + static audit, publish `.lovable/studio-v3-audit.md`, and then propose a second plan that implements the BLOCKER/HIGH fixes in priority order.
