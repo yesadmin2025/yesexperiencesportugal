@@ -341,8 +341,27 @@ Deno.serve(async (req) => {
     return new Response("Method not allowed", { status: 405, headers: corsHeaders });
 
   try {
-    const body = (await req.json()) as Body;
+    const body = (await req.json()) as Body & {
+      mode?: "quote" | "create-session";
+      snapshot?: RawQuoteSnapshot;
+      quoteToken?: string;
+      currentRevision?: string;
+    };
     if (!body || typeof body !== "object") return jsonError("Invalid body", 400);
+
+    // Studio V3 authoritative-quote paths.
+    if (body.mode === "quote") {
+      if (!body.snapshot) return jsonError("Missing snapshot", 400);
+      return await handleStudioQuote(body.snapshot);
+    }
+    if (body.mode === "create-session") {
+      if (!body.quoteToken || !body.currentRevision || !body.snapshot) {
+        return jsonError("Missing quote fields", 400);
+      }
+      return await handleStudioCreateSession(body as unknown as StudioCreateSessionBody);
+    }
+
+    // Legacy Signature/Tailor path below (unchanged).
     if (!body.tourId || typeof body.tourId !== "string" || body.tourId.length > 80)
       return jsonError("Invalid tourId", 400);
     if (!body.tourTitle || typeof body.tourTitle !== "string" || body.tourTitle.length > 160)
