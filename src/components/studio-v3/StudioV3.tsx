@@ -2729,6 +2729,7 @@ export function StudioV3() {
             onReserve={() => {
               void handleStripeCheckout(state, pendingGuestDetails);
             }}
+            serverPricing={resolvedServerPricing}
           />
         </PhaseShell>
       ) : null}
