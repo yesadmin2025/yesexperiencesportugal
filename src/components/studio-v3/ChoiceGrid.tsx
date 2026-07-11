@@ -3,7 +3,7 @@ import type { ChoiceOption } from "./types";
 /**
  * ChoiceGrid — the editorial selector used by every Studio V3 question phase.
  *
- * Renders a sentence-case label + a Georgia-italic whisper subtitle inside a
+ * Renders a sentence-case label (editorial) + an Inter whisper subtitle inside a
  * tactile tile. No checkboxes, no dropdowns. Tiles fade-rise on mount in a
  * staggered cadence (max ~360ms total) and respect prefers-reduced-motion.
  *
