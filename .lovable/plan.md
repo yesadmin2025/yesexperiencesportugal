@@ -14,6 +14,7 @@ P0 blockers shipped (storytelling reveal, typography cleanup, live route map, gu
 - [x] #7 Stripe.js single-load — `src/lib/stripe.ts` already module-level singleton; `BrandedCheckoutDrawer.tsx` uses a per-PK cache. No duplicate `loadStripe` sites remain.
 - [x] #8 Hide global WhatsApp inside Studio V3 — `WhatsAppSupportButton.tsx` `HIDE_PATTERNS` gains `/studio-v3/`.
 - [x] P2 #16 Guest-details scroll-reset + "Optional — skip unless it matters" hint — `GuestDetailsStep.tsx` now `window.scrollTo({top:0})` on mount and the "Anything we should know" FieldGroup renders a subtitle "Optional — skip unless it matters for your day." under the group heading.
+- [x] P2 #15 Price parity re-audit — `handleStripeCheckout` in `StudioV3.tsx` no longer assumes `per_person × guests`; party total is unit-aware (per_person / per_group / per_vehicle / fixed) so a future per_group add-on can't silently over-charge the drawer by (guests-1)×price. Console warning fires if any non per_person add-on reaches the current Stripe edge function (which still hardcodes `quantity: guests`) so we catch it before payments drift. All current catalog entries are per_person, so live totals are unchanged.
 
 Regression coverage: `e2e/studio-v3-p1-audit-fixes-mobile.spec.ts` wired into `.github/workflows/studio-v3-p0-regression.yml`.
 
