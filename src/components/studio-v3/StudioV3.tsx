@@ -805,25 +805,27 @@ export function StudioV3() {
         return;
       }
 
-      // ── Studio V3 authoritative quote path (Pass 1B §5, §6, §7) ──────────
-      // For tours the server catalogue prices (currently the golden fixture
-      // azeitao-cheese), we request a signed quote and open Stripe using
-      // ONLY the server total. If the server declines (unsupported guest
-      // count, pending route, etc.) we do NOT silently fall through — we
-      // block payment and open the lead sheet, per §7 + §9.
-      const STUDIO_QUOTE_TOURS = new Set<string>(["azeitao-cheese"]);
-      const useQuotePath = STUDIO_QUOTE_TOURS.has(tour.id);
+      // ── Studio V3 authoritative quote path (Pass 1B §1a, §1b, §5, §6, §7) ─
+      // GATE: every Studio V3 itinerary uses the server-signed quote path,
+      // regardless of which Signature tour the curation currently resembles.
+      // The commercial identity is `studio-v3-private-full-day` — the
+      // resolved tour id is only editorial/itinerary context and MUST NOT
+      // decide pricing authority. Legacy tier checkout remains only for
+      // genuinely non-Studio product flows (which do not enter this branch).
+      const STUDIO_COMMERCIAL_KEY = "studio-v3-private-full-day" as const;
+      const useQuotePath = true; // Studio V3 is always quote-first
       if (useQuotePath) {
         setCheckoutPending(true);
         try {
-          const routeStops = (tour.stops ?? []).slice(0, 4).map((s, i) => ({
-            id: (s as { id?: string; slug?: string }).id
-              ?? (s as { slug?: string }).slug
-              ?? `stop-${i}`,
-            label: s.label,
-          }));
+          // Refined route (§1b): stops come from the guest's actually-refined
+          // day (resolveStudioV3Route + editedRoutePoints override), NEVER
+          // from the static Signature catalogue `tour.stops`.
+          const { canonicalConfirmedStops } = await import(
+            "@/lib/studio-v3/canonicalRouteStops"
+          );
+          const routeStops = canonicalConfirmedStops(currentState);
           const snapshot: StudioQuoteSnapshot = {
-            commercialProductKey: "studio-v3-private-full-day",
+            commercialProductKey: STUDIO_COMMERCIAL_KEY,
             signatureId: tour.id,
             title: currentState.journeyTitle ?? tour.title ?? tour.id,
             destinationRegion: tour.region ?? "Setúbal",
