@@ -103,11 +103,10 @@ export function StudioV3Intro({ onComplete }: Props) {
               </span>
             </h2>
             <p
-              className="mt-5 text-[14px] leading-[1.6]"
+              className="mt-5 text-[13px] leading-[1.6]"
               style={{
                 color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
-                fontFamily: "var(--font-editorial)",
-                fontStyle: "italic",
+                fontFamily: "var(--font-body)",
               }}
             >
               Not a form. A few quiet choices, and Portugal responds.
