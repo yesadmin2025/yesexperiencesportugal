@@ -2582,6 +2582,7 @@ export function StudioV3() {
               tourPriceTiers={tourPriceTiers}
               selectedAddOnIds={selectedAddOnIds}
               onAddOnsChange={handleAddOnsChange}
+              serverPricing={resolvedServerPricing}
             />
 
           </PhaseShell>
