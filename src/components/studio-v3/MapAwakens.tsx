@@ -521,9 +521,9 @@ export function MapAwakens({
                 </p>
               ) : null}
               <p
-                className="mt-2 text-[13px] leading-relaxed italic"
+                className="mt-2 text-[13px] leading-relaxed"
                 style={{
-                  fontFamily: "var(--font-serif)",
+                  fontFamily: "var(--font-body)",
                   color: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
                 }}
               >
