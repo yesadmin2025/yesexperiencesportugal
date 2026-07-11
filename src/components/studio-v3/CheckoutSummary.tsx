@@ -253,15 +253,25 @@ export function CheckoutSummary({
           </ul>
         </div>
 
-        {selectedAddOns.length > 0 ? (
+        {displayAddOns.length > 0 ? (
           <div className="pt-3 border-t" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
             <p className="text-[10px] uppercase tracking-[0.22em] mb-2" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
               Your additions
             </p>
             <ul className="space-y-1 text-[13px]" style={{ color: "var(--charcoal)" }}>
-              {selectedAddOns.map((a) => (
-                <li key={a.id} className="flex justify-between gap-3">
-                  <span>· {a.label}</span>
+              {displayAddOns.map((a) => (
+                <li key={a.id} data-testid="studio-v3-checkout-addon-row" className="flex justify-between gap-3">
+                  <span>
+                    · {a.label}
+                    {a.pendingReview ? (
+                      <span
+                        className="ml-2 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                      >
+                        Pending review
+                      </span>
+                    ) : null}
+                  </span>
                   <span className="tabular-nums" style={{ color: "var(--teal)" }}>
                     {formatEur(a.priceEur)}
                   </span>
@@ -274,6 +284,9 @@ export function CheckoutSummary({
         <div
           className="pt-3 border-t flex justify-between items-baseline"
           style={{ borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)" }}
+          data-testid="studio-v3-checkout-total-row"
+          data-total-eur={displayTotalEur ?? ""}
+          data-pricing-source={useServer ? "server" : "legacy"}
         >
           <span className="text-[11px] uppercase tracking-[0.22em]" style={{ color: "var(--charcoal)" }}>
             Total
@@ -282,13 +295,15 @@ export function CheckoutSummary({
             className="text-[22px] tabular-nums"
             style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
           >
-            {formatEur(totalEur)}
-            {perPaxEur != null ? (
+            {serverPricing?.status === "loading"
+              ? "Calculating live price…"
+              : formatEur(displayTotalEur)}
+            {displayPerPaxEur != null && serverPricing?.status !== "loading" ? (
               <span
                 className="ml-2 text-[11px] uppercase tracking-[0.2em]"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
               >
-                · {formatEur(perPaxEur)} / guest
+                · {formatEur(displayPerPaxEur)} / guest
               </span>
             ) : null}
           </span>
