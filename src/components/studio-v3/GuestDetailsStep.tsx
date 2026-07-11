@@ -97,6 +97,16 @@ export function GuestDetailsStep({
     prewarmStripeScript();
   }, []);
 
+  // P2 #16 — reset scroll to top on mount so travellers land on the
+  // "Almost there" header, not mid-form (previous phase's scroll position
+  // otherwise leaks into this step because the composer + guest-details
+  // share the same scroll container).
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+  }, []);
+
   useEffect(() => () => {
     if (blurTimerRef.current) clearTimeout(blurTimerRef.current);
   }, []);
