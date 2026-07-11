@@ -322,7 +322,7 @@ export function CheckoutSummary({
           color: "color-mix(in oklab, var(--charcoal) 68%, transparent)",
         }}
       >
-        {INSTANT_CONFIRMATION}
+        {confirmationCopy(serverPricing?.routeStatus ?? "validated")}
       </p>
 
       {/* Sticky CTA bar */}
