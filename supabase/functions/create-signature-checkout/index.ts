@@ -1,10 +1,19 @@
 // Stripe sandbox checkout for Studio V3 Signature reveal.
-// Prices are resolved SERVER-SIDE from public.tour_price_tiers (the same
-// source the admin editor writes to). The client cannot influence price.
+// Prices are resolved SERVER-SIDE. Legacy Signature/Tailor paths read
+// public.tour_price_tiers; Studio V3 uses the server commercial catalogue
+// via mode: "quote" / "create-session" (see resolveQuote.ts).
 
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
 import { getActivity } from "../_shared/bokun.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import {
+  validateAndNormaliseSnapshot,
+  canonicalJson,
+  type RawQuoteSnapshot,
+  type NormalisedSnapshot,
+} from "../_shared/quoteSnapshotSchema.ts";
+import { resolveQuote } from "../_shared/resolveQuote.ts";
+import { signQuoteToken, verifyQuoteToken, sha256Hex } from "../_shared/quoteToken.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,6 +21,230 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
+
+const QUOTE_TTL_SECONDS = 600; // 10 minutes
+
+async function handleStudioQuote(snapshotRaw: RawQuoteSnapshot) {
+  const snapshot = validateAndNormaliseSnapshot(snapshotRaw);
+  const resolved = resolveQuote(snapshot);
+  const snapshotHash = await sha256Hex(canonicalJson(snapshot));
+  const revision = snapshotHash.slice(0, 16);
+  const secret = Deno.env.get("STUDIO_QUOTE_SIGNING_SECRET");
+  if (!secret) return jsonError("Quote signing secret not configured", 500);
+  const now = Math.floor(Date.now() / 1000);
+  const token = await signQuoteToken(
+    {
+      v: 1,
+      revision,
+      snapshotHash,
+      commercialProductKey: resolved.pricing.commercialProductKey,
+      guests: resolved.pricing.guests,
+      unitEur: resolved.pricing.unitEur,
+      totalEur: resolved.pricing.totalEur,
+      currency: "EUR",
+      routeStatus: resolved.routeStatus,
+      availabilityStatus: resolved.availabilityStatus,
+      iat: now,
+      exp: now + QUOTE_TTL_SECONDS,
+    },
+    secret,
+  );
+  return new Response(
+    JSON.stringify({
+      quoteToken: token,
+      revision,
+      snapshotHash,
+      expiresAt: new Date((now + QUOTE_TTL_SECONDS) * 1000).toISOString(),
+      pricing: resolved.pricing,
+      addOns: resolved.addOns,
+      inclusions: resolved.inclusions,
+      routeStatus: resolved.routeStatus,
+      availabilityStatus: resolved.availabilityStatus,
+      itinerary: {
+        title: snapshot.title,
+        destinationRegion: snapshot.destinationRegion,
+        pickupCity: snapshot.pickupCity,
+        date: snapshot.date,
+        startTime: snapshot.startTime,
+        language: snapshot.language,
+        guests: snapshot.guests,
+        routeStops: snapshot.routeStops,
+      },
+    }),
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+  );
+}
+
+interface StudioCreateSessionBody {
+  mode: "create-session";
+  quoteToken: string;
+  currentRevision: string;
+  snapshot: RawQuoteSnapshot;
+  environment: StripeEnv;
+  returnUrl: string;
+  cancelUrl?: string;
+  uiMode?: "hosted" | "embedded";
+  customerEmail?: string;
+  guestDetails?: Record<string, unknown>;
+}
+
+async function handleStudioCreateSession(body: StudioCreateSessionBody) {
+  const secret = Deno.env.get("STUDIO_QUOTE_SIGNING_SECRET");
+  if (!secret) return jsonError("Quote signing secret not configured", 500);
+  if (body.environment !== "sandbox" && body.environment !== "live") {
+    return jsonError("Invalid environment", 400);
+  }
+  if (!validateReturnOrigin(body.returnUrl)) return jsonError("Return URL not allowed", 400);
+
+  let payload;
+  try {
+    payload = await verifyQuoteToken(body.quoteToken, secret);
+  } catch (e) {
+    return jsonError(`Quote token invalid: ${(e as Error).message}`, 400);
+  }
+  if (body.currentRevision !== payload.revision) {
+    return jsonError("Quote is stale — please refresh", 409);
+  }
+  if (payload.routeStatus === "unavailable" || payload.availabilityStatus === "unavailable") {
+    return jsonError("This journey is unavailable", 409);
+  }
+  if (payload.totalEur < 50) return jsonError("Computed amount below minimum", 400);
+
+  // Re-resolve to make sure the snapshot the client is submitting matches
+  // what was signed (defence-in-depth even though snapshotHash is bound).
+  const snapshot = validateAndNormaliseSnapshot(body.snapshot);
+  const resolved = resolveQuote(snapshot);
+  const rehash = await sha256Hex(canonicalJson(snapshot));
+  if (rehash !== payload.snapshotHash) return jsonError("Quote snapshot mismatch", 409);
+  if (resolved.pricing.status !== "quoted") return jsonError("Pricing unavailable", 409);
+  if (resolved.pricing.totalEur !== payload.totalEur) return jsonError("Pricing drifted", 409);
+
+  const stripe = createStripeClient(body.environment);
+  const uiMode: "hosted" | "embedded" = body.uiMode === "embedded" ? "embedded" : "hosted";
+
+  const productName = `YES Studio — ${snapshot.title}`.slice(0, 180);
+  const stopLabelsCompact = snapshot.routeStops.map((s) => s.label).slice(0, 8).join(" · ").slice(0, 480);
+  const inclusionIdsCompact = resolved.inclusions.map((i) => i.id).join(",").slice(0, 480);
+  const addOnIdsCompact = resolved.addOns.map((a) => a.id).join(",").slice(0, 200);
+
+  const pendingReviewNote =
+    "Your request is received after payment and remains subject to final route and availability confirmation.";
+  const description = [
+    `${snapshot.guests} guest${snapshot.guests > 1 ? "s" : ""} · ${snapshot.destinationRegion}`,
+    `Date ${snapshot.date} · ${snapshot.startTime}`,
+    `Stops: ${stopLabelsCompact}`,
+    pendingReviewNote,
+  ]
+    .join(" · ")
+    .slice(0, 500);
+
+  const lineItems: Array<Record<string, unknown>> = [
+    {
+      price_data: {
+        currency: "eur",
+        product_data: {
+          name: productName,
+          description,
+          images: ["https://yesexperiencesportugal.com/og-cover.jpg"],
+        },
+        unit_amount: Math.round(payload.unitEur * 100),
+      },
+      quantity: snapshot.guests,
+    },
+    ...resolved.addOns.map((a) => ({
+      price_data: {
+        currency: "eur",
+        product_data: { name: `Add-on — ${a.label}`.slice(0, 180) },
+        unit_amount: Math.round(a.unitEur * 100),
+      },
+      quantity: a.quantity,
+    })),
+  ];
+
+  const sessionParams: Record<string, unknown> = {
+    line_items: lineItems,
+    mode: "payment",
+    locale: "auto",
+    submit_type: "book",
+    billing_address_collection: "auto",
+    phone_number_collection: { enabled: true },
+    allow_promotion_codes: true,
+    custom_text: {
+      submit: { message: pendingReviewNote },
+      terms_of_service_acceptance: {
+        message:
+          "By booking you accept the [YES Experiences Portugal terms](https://yesexperiencesportugal.com/terms) and [privacy policy](https://yesexperiencesportugal.com/privacy).",
+      },
+    },
+    consent_collection: { terms_of_service: "required" },
+    payment_intent_data: {
+      statement_descriptor_suffix: "YES EXPERIENCES",
+      description: `${productName} · ${snapshot.date}`.slice(0, 1000),
+    },
+    ...(body.customerEmail && { customer_email: body.customerEmail }),
+    metadata: {
+      booking_type: "studio-v3",
+      flow: "studio",
+      commercial_product_key: payload.commercialProductKey,
+      signature_id: snapshot.signatureId,
+      revision: payload.revision,
+      snapshot_hash: payload.snapshotHash,
+      guests: String(snapshot.guests),
+      per_pax_eur: String(payload.unitEur),
+      total_eur: String(payload.totalEur),
+      date: snapshot.date,
+      start_time: snapshot.startTime,
+      language: snapshot.language,
+      pickup_city: snapshot.pickupCity.slice(0, 80),
+      destination_region: snapshot.destinationRegion.slice(0, 80),
+      route_status: payload.routeStatus,
+      availability_status: payload.availabilityStatus,
+      stop_ids: snapshot.routeStops.map((s) => s.id).join(",").slice(0, 480),
+      stop_labels: stopLabelsCompact,
+      add_on_ids: addOnIdsCompact,
+      inclusion_ids: inclusionIdsCompact,
+      ui_mode: uiMode,
+      ...(body.guestDetails?.bokunAvailabilityId
+        ? { bokun_availability_id: String(body.guestDetails.bokunAvailabilityId) }
+        : {}),
+    },
+  };
+
+  if (uiMode === "embedded") {
+    sessionParams.ui_mode = "embedded_page";
+    sessionParams.return_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
+  } else {
+    sessionParams.success_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
+    if (body.cancelUrl) sessionParams.cancel_url = body.cancelUrl;
+  }
+
+  // Deterministic idempotency key — repeated calls with same quote token
+  // return the same Stripe session id (Stripe handles the dedupe server-side).
+  const tokenHash = await sha256Hex(body.quoteToken);
+  const idempotencyKey = `studio-v3:${tokenHash}`;
+  const session = await stripe.checkout.sessions.create(sessionParams, { idempotencyKey });
+
+  const rawPublishable =
+    body.environment === "live"
+      ? (Deno.env.get("STRIPE_LIVE_PUBLISHABLE_KEY") ?? "")
+      : (Deno.env.get("STRIPE_SANDBOX_PUBLISHABLE_KEY") ?? "");
+  const publishableKey = rawPublishable.startsWith("pk_") ? rawPublishable : "";
+
+  return new Response(
+    JSON.stringify({
+      url: (session as { url?: string }).url ?? null,
+      clientSecret: (session as { client_secret?: string }).client_secret ?? null,
+      sessionId: session.id,
+      publishableKey,
+      uiMode,
+      pricing: resolved.pricing,
+      routeStatus: resolved.routeStatus,
+      availabilityStatus: resolved.availabilityStatus,
+      idempotencyKey,
+    }),
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+  );
+}
 
 interface Body {
   tourId: string;
