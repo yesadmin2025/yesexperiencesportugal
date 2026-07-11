@@ -40,7 +40,8 @@ async function hmacSign(secret: string, data: string): Promise<Uint8Array> {
 }
 async function hmacVerify(secret: string, data: string, sig: Uint8Array): Promise<boolean> {
   const key = await importKey(secret);
-  return crypto.subtle.verify("HMAC", key, sig, enc.encode(data));
+  const sigBuf = sig.buffer.slice(sig.byteOffset, sig.byteOffset + sig.byteLength) as ArrayBuffer;
+  return crypto.subtle.verify("HMAC", key, sigBuf, enc.encode(data));
 }
 
 export async function sha256Hex(input: string): Promise<string> {
