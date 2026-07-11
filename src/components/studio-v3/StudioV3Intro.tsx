@@ -349,8 +349,7 @@ function PathCard({
         className="mt-1.5 text-[12.5px] leading-[1.5]"
         style={{
           color: "color-mix(in oklab, var(--ivory) 70%, transparent)",
-          fontFamily: "var(--font-editorial)",
-          fontStyle: "italic",
+          fontFamily: "var(--font-body)",
         }}
       >
         {whisper}
