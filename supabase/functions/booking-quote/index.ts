@@ -34,6 +34,7 @@ import {
   type BookingQuoteBaseLine,
   type BookingQuoteResponse,
   type BookingQuoteUnavailable,
+  type BookingQuoteDiagnostics,
 } from "../_shared/bookingQuote.ts";
 import { signBookingQuoteToken } from "../_shared/bookingQuoteToken.ts";
 import { syncOneBokunPricing } from "../_shared/syncBokunPricing.ts";
@@ -112,13 +113,47 @@ Deno.serve(async (req) => {
   });
 
   const composition = coerceComposition(input.travellerComposition);
+  const t0 = Date.now();
+
+  // Diagnostics accumulate across the request so we can surface them
+  // on any unavailable envelope AND emit a single structured log line.
+  const diag: BookingQuoteDiagnostics = {
+    tourId: input.commercialProductKey,
+    mirrorHadCategories: false,
+    autoSyncTriggered: false,
+  };
+  function logDiag(stage: string, extra?: Record<string, unknown>) {
+    console.log(JSON.stringify({
+      fn: "booking-quote",
+      stage,
+      flow: input.flow,
+      durationMs: Date.now() - t0,
+      ...diag,
+      ...extra,
+    }));
+  }
+  function unavailableWithDiag(
+    reason: BookingQuoteUnavailable["reason"],
+    message: string,
+    extra?: Partial<BookingQuoteUnavailable>,
+  ): Response {
+    diag.durationMs = Date.now() - t0;
+    logDiag("unavailable", { reason, message });
+    return unavailable(input.flow, input.commercialProductKey, reason, message, {
+      diagnostics: diag,
+      ...extra,
+    });
+  }
 
   // 1. Resolve commercial mapping (Studio isolated from Signature by helper).
   const mappingResult = await resolveCommercialMapping(admin, input.flow, input.commercialProductKey);
   if (!mappingResult.ok) {
-    return unavailable(input.flow, input.commercialProductKey, mappingResult.error.reason, mappingResult.error.message);
+    return unavailableWithDiag(mappingResult.error.reason, mappingResult.error.message);
   }
   const mapping = mappingResult.mapping;
+  diag.bokunProductId = String(mapping.bokunProductId);
+  diag.bokunOptionId = mapping.bokunOptionId ?? null;
+  diag.bokunRateId = mapping.bokunRateId ?? null;
 
   // 2. Load the Bókun category mirror (age ranges live here).
   //    Auto-heal: if empty, trigger a live sync for this product and re-read once.
@@ -131,9 +166,18 @@ Deno.serve(async (req) => {
     return (data?.bokun_categories ?? []) as MappedBokunPricingCategory[];
   }
 
+  function summariseCategories(cats: MappedBokunPricingCategory[]) {
+    diag.categoryCountAfter = cats.length;
+    diag.confirmedCount = cats.filter((c) => c.mappingStatus === "confirmed").length;
+    diag.suggestedCount = cats.filter((c) => c.mappingStatus === "suggested").length;
+    diag.unmappedCount = cats.filter((c) => c.mappingStatus === "unmapped").length;
+  }
+
   let bokunCategories = await loadMirror();
+  diag.mirrorHadCategories = bokunCategories.length > 0;
   if (!bokunCategories.length) {
-    console.log(`[booking-quote] mirror empty for ${input.commercialProductKey}; auto-syncing product ${mapping.bokunProductId}`);
+    diag.autoSyncTriggered = true;
+    logDiag("auto-sync-start");
     try {
       const syncResult = await syncOneBokunPricing(
         admin,
@@ -141,29 +185,35 @@ Deno.serve(async (req) => {
         String(mapping.bokunProductId),
         false,
       );
+      diag.autoSyncOk = syncResult.ok;
+      diag.autoSyncReason = syncResult.reason;
+      diag.autoSyncWarnings = syncResult.warnings;
       if (!syncResult.ok) {
-        return unavailable(input.flow, input.commercialProductKey, "no_commercial_mapping",
+        return unavailableWithDiag("no_commercial_mapping",
           `Auto-sync failed: ${syncResult.reason ?? "unknown"}`);
       }
       bokunCategories = await loadMirror();
     } catch (e) {
-      return unavailable(input.flow, input.commercialProductKey, "no_commercial_mapping",
-        `Auto-sync error: ${e instanceof Error ? e.message : String(e)}`);
+      diag.autoSyncOk = false;
+      diag.autoSyncReason = e instanceof Error ? e.message : String(e);
+      return unavailableWithDiag("no_commercial_mapping",
+        `Auto-sync error: ${diag.autoSyncReason}`);
     }
   }
+  summariseCategories(bokunCategories);
   if (!bokunCategories.length) {
-    return unavailable(input.flow, input.commercialProductKey, "no_commercial_mapping",
+    return unavailableWithDiag("no_commercial_mapping",
       "No Bókun pricing categories mirrored for this product after auto-sync.");
   }
 
   // 3. Resolve traveller composition → confirmed Bókun categories.
   const resolved = resolveComposition(composition, bokunCategories);
   if (resolved.unresolvedAges.includes(-1)) {
-    return unavailable(input.flow, input.commercialProductKey, "no_adult_category",
+    return unavailableWithDiag("no_adult_category",
       "This product has no adult pricing category configured.");
   }
   if (resolved.unresolvedAges.length) {
-    return unavailable(input.flow, input.commercialProductKey, "age_unsupported",
+    return unavailableWithDiag("age_unsupported",
       `Ages not accepted by this product: ${resolved.unresolvedAges.join(", ")}`,
       { unresolvedAges: resolved.unresolvedAges });
   }
@@ -173,11 +223,11 @@ Deno.serve(async (req) => {
   try {
     slots = await getActivityAvailabilities(mapping.bokunProductId, input.date);
   } catch (e) {
-    return unavailable(input.flow, input.commercialProductKey, "bokun_unreachable",
+    return unavailableWithDiag("bokun_unreachable",
       `Bókun availability fetch failed: ${e instanceof Error ? e.message : String(e)}`);
   }
   if (!slots.length) {
-    return unavailable(input.flow, input.commercialProductKey, "no_slots",
+    return unavailableWithDiag("no_slots",
       "No slots available on the requested date.");
   }
 
@@ -187,7 +237,7 @@ Deno.serve(async (req) => {
     const wanted = String(input.availabilityId);
     slot = usable.find((s) => String(s.id) === wanted) ?? null;
     if (!slot) {
-      return unavailable(input.flow, input.commercialProductKey, "slot_capacity_lost",
+      return unavailableWithDiag("slot_capacity_lost",
         `Slot ${wanted} no longer has capacity for ${resolved.totalParticipants} participants.`);
     }
   } else if (input.startTime) {
@@ -196,7 +246,7 @@ Deno.serve(async (req) => {
     slot = usable[0];
   }
   if (!slot) {
-    return unavailable(input.flow, input.commercialProductKey, "slot_unavailable",
+    return unavailableWithDiag("slot_unavailable",
       "Requested slot is unavailable.");
   }
 
@@ -227,7 +277,7 @@ Deno.serve(async (req) => {
     if (unit == null) {
       if (category.uiBand === "infant" && category.normallyFree) unit = 0;
       else {
-        return unavailable(input.flow, input.commercialProductKey, "price_missing",
+        return unavailableWithDiag("price_missing",
           `No live unit price for category ${category.bokunTitle} (${category.bokunCategoryId}).`);
       }
     }
@@ -245,7 +295,7 @@ Deno.serve(async (req) => {
     });
   }
   if (!baseLines.length) {
-    return unavailable(input.flow, input.commercialProductKey, "no_adult_category",
+    return unavailableWithDiag("no_adult_category",
       "No billable travellers resolved.");
   }
   const baseSubtotal = Math.round(baseLines.reduce((s, l) => s + l.subtotalEur, 0) * 100) / 100;
@@ -258,7 +308,7 @@ Deno.serve(async (req) => {
     totalParticipants: resolved.totalParticipants,
   });
   if (!addOns.ok) {
-    return unavailable(input.flow, input.commercialProductKey, "add_on_invalid",
+    return unavailableWithDiag("add_on_invalid",
       `Rejected add-ons: ${(addOns.invalidIds ?? []).join(", ") || "unknown"}`);
   }
 
@@ -370,5 +420,6 @@ Deno.serve(async (req) => {
     availabilityStatus: "available",
   };
 
+  logDiag("available", { finalTotalEur, availabilityId: String(slot.id) });
   return json(200, response satisfies BookingQuoteResponse);
 });
