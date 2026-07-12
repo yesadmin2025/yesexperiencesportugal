@@ -47,13 +47,19 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   return (
     <div className="space-y-3">
       <BokunRolloutBadge readiness={readiness} tourId={tour.id} />
-      <LegacySimpleBookingForm tour={tour} />
+      <LegacySimpleBookingForm tour={tour} readiness={readiness} />
     </div>
   );
 }
 
 
-function LegacySimpleBookingForm({ tour }: { tour: SignatureTour }) {
+function LegacySimpleBookingForm({
+  tour,
+  readiness,
+}: {
+  tour: SignatureTour;
+  readiness: import("@/hooks/use-tour-bokun-readiness").TourBokunReadiness | null | undefined;
+}) {
   const navigate = useNavigate();
   const [date, setDate] = useState("");
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
@@ -101,6 +107,7 @@ function LegacySimpleBookingForm({ tour }: { tour: SignatureTour }) {
       heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
       beats: meta?.included && meta.included.length > 0 ? meta.included : (tour.highlights ?? []),
       flowLabel: "Signature",
+      bokunReadiness: readiness,
     });
     setDetailsOpen(false);
     setCheckoutOpen(true);

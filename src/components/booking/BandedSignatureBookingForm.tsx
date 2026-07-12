@@ -102,6 +102,7 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
       heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
       beats: meta?.included?.length ? meta.included : (tour.highlights ?? []),
       flowLabel: "Signature",
+      bokunReadiness: readiness,
     });
     setDetailsOpen(false);
     setCheckoutOpen(true);
