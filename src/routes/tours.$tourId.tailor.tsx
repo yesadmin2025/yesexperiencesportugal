@@ -27,7 +27,6 @@ import {
   fetchBookingQuote,
 } from "@/lib/pricing/bookingQuoteCheckout";
 import {
-  compositionFromLegacyGuests,
   hasMinors,
   totalParticipants,
   type TravellerComposition,
