@@ -13,7 +13,13 @@
  */
 import { assert } from "https://deno.land/std@0.208.0/assert/mod.ts";
 
-Deno.test("create-signature-checkout module parses and loads", async () => {
+Deno.test({
+  name: "create-signature-checkout module parses and loads",
+  // index.ts calls Deno.serve() at module scope, which opens an HTTP
+  // listener. Disable sanitizers so this smoke test only asserts parse+load.
+  sanitizeResources: false,
+  sanitizeOps: false,
+  fn: async () => {
   Deno.env.set("STRIPE_SANDBOX_API_KEY", "sk_test_dummy");
   Deno.env.set("STRIPE_LIVE_API_KEY", "sk_live_dummy");
   Deno.env.set("STRIPE_SANDBOX_PUBLISHABLE_KEY", "pk_test_dummy");
