@@ -56,6 +56,120 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_add_ons: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          id: string
+          inclusion_ids: Json
+          label: string
+          pricing_unit: string
+          unit_eur: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id: string
+          inclusion_ids?: Json
+          label: string
+          pricing_unit: string
+          unit_eur: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          inclusion_ids?: Json
+          label?: string
+          pricing_unit?: string
+          unit_eur?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      booking_quotes: {
+        Row: {
+          add_on_pricing: Json
+          availability_id: string
+          base_pricing: Json
+          bokun_option_id: string | null
+          bokun_product_id: string
+          bokun_rate_id: string | null
+          commercial_mapping_id: string
+          commercial_product_key: string
+          consumed_at: string | null
+          created_at: string
+          currency: string
+          date: string
+          expires_at: string
+          final_total_eur: number
+          flow: string
+          itinerary_revision: string | null
+          itinerary_snapshot: Json | null
+          pricing_revision: string
+          quote_id: string
+          quote_token: string
+          resolved_guest_mix: Json
+          start_time: string | null
+          traveller_composition: Json
+        }
+        Insert: {
+          add_on_pricing: Json
+          availability_id: string
+          base_pricing: Json
+          bokun_option_id?: string | null
+          bokun_product_id: string
+          bokun_rate_id?: string | null
+          commercial_mapping_id: string
+          commercial_product_key: string
+          consumed_at?: string | null
+          created_at?: string
+          currency?: string
+          date: string
+          expires_at: string
+          final_total_eur: number
+          flow: string
+          itinerary_revision?: string | null
+          itinerary_snapshot?: Json | null
+          pricing_revision: string
+          quote_id?: string
+          quote_token: string
+          resolved_guest_mix: Json
+          start_time?: string | null
+          traveller_composition: Json
+        }
+        Update: {
+          add_on_pricing?: Json
+          availability_id?: string
+          base_pricing?: Json
+          bokun_option_id?: string | null
+          bokun_product_id?: string
+          bokun_rate_id?: string | null
+          commercial_mapping_id?: string
+          commercial_product_key?: string
+          consumed_at?: string | null
+          created_at?: string
+          currency?: string
+          date?: string
+          expires_at?: string
+          final_total_eur?: number
+          flow?: string
+          itinerary_revision?: string | null
+          itinerary_snapshot?: Json | null
+          pricing_revision?: string
+          quote_id?: string
+          quote_token?: string
+          resolved_guest_mix?: Json
+          start_time?: string | null
+          traveller_composition?: Json
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           amount_total: number
@@ -1648,6 +1762,42 @@ export type Database = {
         }
         Relationships: []
       }
+      studio_commercial_bokun_mapping: {
+        Row: {
+          active: boolean
+          bokun_option_id: string | null
+          bokun_product_id: string | null
+          bokun_rate_id: string | null
+          commercial_product_key: string
+          created_at: string
+          notes: string | null
+          pricing_party_size_rule: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          bokun_option_id?: string | null
+          bokun_product_id?: string | null
+          bokun_rate_id?: string | null
+          commercial_product_key: string
+          created_at?: string
+          notes?: string | null
+          pricing_party_size_rule?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          bokun_option_id?: string | null
+          bokun_product_id?: string | null
+          bokun_rate_id?: string | null
+          commercial_product_key?: string
+          created_at?: string
+          notes?: string | null
+          pricing_party_size_rule?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       studio_drafts: {
         Row: {
           created_at: string
@@ -1917,6 +2067,44 @@ export type Database = {
           reason?: string
         }
         Relationships: []
+      }
+      tour_available_add_ons: {
+        Row: {
+          active: boolean
+          add_on_id: string
+          created_at: string
+          scope: string
+          sort_order: number
+          tour_id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          add_on_id: string
+          created_at?: string
+          scope: string
+          sort_order?: number
+          tour_id: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          add_on_id?: string
+          created_at?: string
+          scope?: string
+          sort_order?: number
+          tour_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_available_add_ons_add_on_id_fkey"
+            columns: ["add_on_id"]
+            isOneToOne: false
+            referencedRelation: "booking_add_ons"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tour_bokun_mapping: {
         Row: {
