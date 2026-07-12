@@ -26,7 +26,14 @@ import {
   createBookingQuoteSession,
   fetchBookingQuote,
 } from "@/lib/pricing/bookingQuoteCheckout";
-import { compositionFromLegacyGuests } from "@/lib/pricing/travellerComposition";
+import {
+  compositionFromLegacyGuests,
+  hasMinors,
+  totalParticipants,
+  type TravellerComposition,
+} from "@/lib/pricing/travellerComposition";
+import { TravellerCompositionPicker } from "@/components/booking/TravellerCompositionPicker";
+import { useCategoryAwareCheckoutReadyFor } from "@/hooks/use-category-aware-checkout-ready";
 import { computePricingRevision, isQuoteAvailable } from "@/lib/pricing/bookingQuote";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
