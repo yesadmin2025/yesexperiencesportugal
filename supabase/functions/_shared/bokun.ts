@@ -162,13 +162,108 @@ export async function getActivity(productId: string | number): Promise<BokunActi
   }
 }
 
+// ---------- Category-aware pricing helpers ---------------------------------
+
+export interface BokunRawCategory {
+  id: number | string;
+  title: string;
+  minAge?: number;
+  maxAge?: number;
+  /** Base price when Bókun exposes one on the activity itself. */
+  price?: number;
+  defaultPrice?: number;
+  pricePerGroup?: { amount?: number };
+}
+
+/** Extract category list from a fetched activity payload (Bókun tenants vary). */
+export function extractActivityCategories(activity: unknown): BokunRawCategory[] {
+  if (!activity || typeof activity !== "object") return [];
+  const raw = (activity as Record<string, unknown>).pricingCategories;
+  if (!Array.isArray(raw)) return [];
+  return raw.map((c) => c as BokunRawCategory);
+}
+
+/**
+ * Resolve the unit price per Bókun category for one specific availability slot.
+ * Prefers slot-level price → category-level price → activity default. Missing =
+ * `null` (caller must NOT invent a value).
+ */
+export function pickSlotUnitPrice(
+  slotCategory: Record<string, unknown> | undefined,
+  activityCategory: BokunRawCategory | undefined,
+): number | null {
+  const candidates: unknown[] = [
+    slotCategory?.price,
+    slotCategory?.amount,
+    (slotCategory?.pricePerGroup as Record<string, unknown> | undefined)?.amount,
+    activityCategory?.price,
+    (activityCategory as Record<string, unknown> | undefined)?.amount,
+    activityCategory?.defaultPrice,
+    activityCategory?.pricePerGroup?.amount,
+  ];
+  for (const c of candidates) {
+    const n = typeof c === "number" ? c : Number(c);
+    if (Number.isFinite(n) && n >= 0) return Math.round(n * 100) / 100;
+  }
+  return null;
+}
+
+/**
+ * Probe multiple dates to detect whether a product's prices vary across dates
+ * or across slots. Returns a `pricingMode` classification the sync writer can
+ * store; callers with `date-dependent`+ MUST always request a live quote.
+ */
+export function detectPricingMode(
+  perDate: Array<{ dateISO: string; slotUnitPrices: Array<Map<string /*catId*/, number>> }>,
+): "flat" | "date-dependent" | "slot-dependent" | "inconsistent" {
+  if (perDate.length === 0) return "inconsistent";
+
+  // Slot variance within any single date → slot-dependent.
+  for (const d of perDate) {
+    for (const cat of catIds(d.slotUnitPrices)) {
+      const uniq = new Set<number>();
+      for (const slot of d.slotUnitPrices) {
+        const v = slot.get(cat);
+        if (typeof v === "number") uniq.add(v);
+      }
+      if (uniq.size > 1) return "slot-dependent";
+    }
+  }
+
+  // Cross-date variance → date-dependent.
+  const firstByCat = new Map<string, number>();
+  let dateVaries = false;
+  for (const d of perDate) {
+    const flat = new Map<string, number>();
+    for (const slot of d.slotUnitPrices) for (const [k, v] of slot) flat.set(k, v);
+    for (const [cat, v] of flat) {
+      if (!firstByCat.has(cat)) firstByCat.set(cat, v);
+      else if (firstByCat.get(cat) !== v) dateVaries = true;
+    }
+  }
+  if (dateVaries) return "date-dependent";
+  return firstByCat.size ? "flat" : "inconsistent";
+}
+function catIds(slots: Array<Map<string, number>>): Set<string> {
+  const s = new Set<string>();
+  for (const slot of slots) for (const k of slot.keys()) s.add(k);
+  return s;
+}
+
+// ---------- Reservation ----------------------------------------------------
+
+export interface ReserveCategoryQty {
+  pricingCategoryId: number;
+  quantity: number;
+}
+
 export interface ReserveInput {
   productId: string | number;
   availabilityId: number;
   startTime: string;
   date: string;
-  guests: number;
-  pricingCategoryId: number;
+  /** One entry per non-zero category. Infants included even at €0. */
+  pricingCategoryBookings: ReserveCategoryQty[];
   customer: {
     firstName: string;
     lastName: string;
@@ -181,15 +276,17 @@ export interface ReserveInput {
 }
 
 /**
- * Best-effort: reserve + confirm an activity booking via Bokun REST.
- * Throws on any HTTP error so the caller can record the failure.
+ * Reserve + confirm an activity booking with one bookings entry per non-empty
+ * category. Never collapse mixed-band parties into a single line.
  */
 export async function reserveAndConfirm(input: ReserveInput): Promise<{
   bookingId: string;
   confirmationCode?: string;
   raw: unknown;
 }> {
-  // Step 1: reserve
+  if (!input.pricingCategoryBookings.length) {
+    throw new Error("reserveAndConfirm requires at least one pricingCategoryBookings entry");
+  }
   const reserveBody = {
     activityBookings: [
       {
@@ -197,9 +294,12 @@ export async function reserveAndConfirm(input: ReserveInput): Promise<{
         startTimeId: input.availabilityId,
         startTime: input.startTime,
         date: input.date,
-        pricingCategoryBookings: [
-          { pricingCategoryId: input.pricingCategoryId, quantity: input.guests },
-        ],
+        pricingCategoryBookings: input.pricingCategoryBookings
+          .filter((b) => b.quantity > 0)
+          .map((b) => ({
+            pricingCategoryId: Number(b.pricingCategoryId),
+            quantity: b.quantity,
+          })),
       },
     ],
     customer: {
@@ -226,11 +326,9 @@ export async function reserveAndConfirm(input: ReserveInput): Promise<{
   const bookingId = String(reserved?.id ?? reserved?.bookingId ?? "");
   if (!bookingId) throw new Error("Bokun reserve returned no booking id");
 
-  // Step 2: confirm
   try {
     await bokunFetch(`/booking.json/${bookingId}/confirm`, "POST", {});
   } catch (e) {
-    // Reservation exists but confirm failed — surface to caller.
     throw new Error(
       `Reserved ${bookingId} but confirm failed: ${e instanceof Error ? e.message : String(e)}`,
     );
