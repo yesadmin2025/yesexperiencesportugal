@@ -44,8 +44,14 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   if (readiness?.bandedPricingEnabled && hasConfirmedCategory) {
     return <BandedSignatureBookingForm tour={tour} readiness={readiness} />;
   }
-  return <LegacySimpleBookingForm tour={tour} />;
+  return (
+    <div className="space-y-3">
+      <BokunRolloutBadge readiness={readiness} tourId={tour.id} />
+      <LegacySimpleBookingForm tour={tour} />
+    </div>
+  );
 }
+
 
 function LegacySimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const navigate = useNavigate();
