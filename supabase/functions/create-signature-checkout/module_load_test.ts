@@ -29,6 +29,8 @@ Deno.test({
   Deno.env.set("SUPABASE_PUBLISHABLE_KEY", "pk_dummy");
   Deno.env.set("SUPABASE_SERVICE_ROLE_KEY", "sr_dummy");
 
-  const mod = await import(`./index.ts?cache=${Date.now()}`);
-  assert(mod, "module import returned nothing");
+    const mod = await import(`./index.ts?cache=${Date.now()}`);
+    assert(mod, "module import returned nothing");
+  },
 });
+
