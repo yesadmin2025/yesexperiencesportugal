@@ -1,12 +1,21 @@
-// Client-side helper for the launch-spec v3 checkout path.
+// Client-side helpers for the launch-spec v3 checkout path.
 //
-// Invokes `create-signature-checkout` in `mode: "booking-quote-create-session"`,
-// which verifies the signed quoteToken, re-reads the persisted quote from
-// `booking_quotes`, revalidates the exact Bókun availability slot and returns
-// a Stripe session. All three surfaces (Signature, Tailored, Studio V3) go
-// through this single entry point.
+// Two entry points:
+//   • fetchBookingQuote() → one-shot invoke of the `booking-quote` edge
+//     function; returns a signed BookingQuote (or unavailable reason).
+//   • createBookingQuoteSession() → invokes `create-signature-checkout` in
+//     `mode: "booking-quote-create-session"`, which verifies the signed
+//     quoteToken, re-reads the persisted quote, revalidates the Bókun slot
+//     and returns a Stripe session. All three surfaces (Signature,
+//     Tailored, Studio V3) go through this single entry point.
 
 import { supabase } from "@/integrations/supabase/client";
+import type {
+  BookingFlow,
+  BookingQuoteResponse,
+} from "@/lib/pricing/bookingQuote";
+import type { TravellerComposition } from "@/lib/pricing/travellerComposition";
+
 
 export type BookingQuoteCheckoutInput = {
   quoteToken: string;
