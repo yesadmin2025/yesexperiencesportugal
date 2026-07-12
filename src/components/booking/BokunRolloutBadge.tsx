@@ -31,8 +31,9 @@ export function resolveBokunRolloutState(
   const hasConfirmed = categories.some((c) => c.mappingStatus === "confirmed");
   const modeOk =
     readiness.pricingMode === "flat" ||
-    readiness.pricingMode === "date" ||
-    readiness.pricingMode === "slot";
+    readiness.pricingMode === "date-dependent" ||
+    readiness.pricingMode === "slot-dependent";
+
 
   if (readiness.bandedPricingEnabled) {
     if (hasConfirmed && modeOk) return "enabled";
