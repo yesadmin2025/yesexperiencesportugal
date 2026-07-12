@@ -480,7 +480,7 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
   try {
     tokenPayload = await verifyBookingQuoteToken(body.quoteToken, secret);
   } catch (e) {
-    return jsonError(`quote_token_invalid:${(e as Error).message}`, 400);
+    return jsonError(`quote_stale:${(e as Error).message}`, 400);
   }
 
   // 2. Re-read the persisted quote — DB is truth.
@@ -496,9 +496,17 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
     .maybeSingle();
   if (storedErr) return jsonError(`quote_lookup_failed:${storedErr.message}`, 500);
   if (!stored) return jsonError("quote_not_found", 404);
-  if (stored.consumed_at) return jsonError("quote_already_consumed", 409);
+
+  // Idempotent replay: if this quote already produced a Stripe session, return it.
+  // Repeated button-taps must not create a second Bókun reservation or session.
+  if (stored.stripe_session_id && stored.state === "checkout-created") {
+    return jsonReplayFromStored(stored, body.environment);
+  }
+  if (stored.consumed_at && stored.state !== "checkout-created") {
+    return jsonError("quote_already_consumed", 409);
+  }
   if (new Date(stored.expires_at).getTime() < Date.now()) {
-    return jsonError("quote_expired", 409);
+    return jsonError("quote_stale:expired", 409);
   }
   if (stored.quote_token !== body.quoteToken) return jsonError("quote_token_mismatch", 400);
 
@@ -512,21 +520,110 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
   }
   if (finalTotalEur < 50) return jsonError("Computed amount below minimum", 400);
 
-  // 3. Revalidate live Bókun slot for exact date + capacity.
-  const totalParticipants =
-    (stored.resolved_guest_mix as { totalParticipants?: number })?.totalParticipants ?? 0;
+  const resolvedGuestMix =
+    (stored.resolved_guest_mix as { totalParticipants?: number }) ?? {};
+  const totalParticipants = resolvedGuestMix.totalParticipants ?? 0;
+
+  // 3. Revalidate live Bókun slot + verify every category still exists there.
+  let slot: import("../_shared/bokun.ts").AvailabilitySlot | null = null;
   try {
     const slots = await getActivityAvailabilities(stored.bokun_product_id, stored.date);
-    const slot = slots.find((s) => String(s.id) === String(stored.availability_id));
-    if (!slot) return jsonError("slot_no_longer_offered", 409);
+    slot = slots.find((s) => String(s.id) === String(stored.availability_id)) ?? null;
+    if (!slot) return jsonError("slot_unavailable:slot_no_longer_offered", 409);
     if ((slot.availabilityCount ?? 0) < totalParticipants) {
-      return jsonError("slot_capacity_lost", 409);
+      return jsonError("capacity_exceeded:slot_capacity_lost", 409);
+    }
+    const slotCatIds = new Set((slot.pricingCategories ?? []).map((c) => String(c.id)));
+    for (const line of basePricing.lines) {
+      if (line.quantity <= 0) continue;
+      // Free lines (infants) may be absent on slot per Bókun policy — allow.
+      if (line.isFree || line.unitEur === 0) continue;
+      if (!slotCatIds.has(line.bokunCategoryId)) {
+        return jsonError(`mapping_mismatch:missing_category_${line.bokunCategoryId}`, 409);
+      }
     }
   } catch (e) {
     return jsonError(`bokun_unreachable:${e instanceof Error ? e.message : String(e)}`, 502);
   }
 
-  // 4. Stripe line items — one per non-zero base category, one per add-on.
+  // 4. Provisional Bókun reserve BEFORE Stripe. If this fails, no session created.
+  //    Idempotency: if we already reserved for this quote (paid was interrupted
+  //    before checkout-created), reuse it — never create a second reservation.
+  let reservationId: string | null = stored.bokun_reservation_id ?? null;
+  let reservationConfirmationCode: string | null = null;
+
+  if (!reservationId) {
+    // Build Bókun pricingCategoryBookings from the STORED quote lines directly.
+    // No re-classification of ages, no substitution of Adult, infants included
+    // even at €0 provided the category exists on this slot.
+    const pricingCategoryBookings: Array<{ pricingCategoryId: number; quantity: number }> = [];
+    for (const line of basePricing.lines) {
+      if (line.quantity <= 0) continue;
+      const slotCat = slot.pricingCategories?.find(
+        (c) => String(c.id) === line.bokunCategoryId,
+      );
+      if (!slotCat) {
+        // Free line whose category the slot doesn't expose — skip from Bókun
+        // call per Bókun policy, still counted in participant totals.
+        if (line.isFree || line.unitEur === 0) continue;
+        return jsonError(`mapping_mismatch:missing_category_${line.bokunCategoryId}`, 409);
+      }
+      pricingCategoryBookings.push({
+        pricingCategoryId: Number(slotCat.id),
+        quantity: line.quantity,
+      });
+    }
+    if (!pricingCategoryBookings.length) {
+      return jsonError("mapping_mismatch:no_billable_categories", 409);
+    }
+
+    const [firstName, ...rest] = (body.customerEmail ?? "guest@yesexperiencesportugal.com")
+      .split("@")[0]
+      .replace(/[^A-Za-z0-9]/g, " ")
+      .trim()
+      .split(/\s+/);
+    try {
+      const { reserveActivity } = await import("../_shared/bokun.ts");
+      const reserved = await reserveActivity({
+        productId: stored.bokun_product_id,
+        availabilityId: Number(stored.availability_id),
+        startTime: stored.start_time ?? slot.startTime,
+        date: stored.date,
+        pricingCategoryBookings,
+        customer: {
+          firstName: firstName || "Guest",
+          lastName: rest.join(" ") || "Pending",
+          email: body.customerEmail ?? "noreply@yesexperiencesportugal.com",
+          language: "EN",
+        },
+        externalBookingReference: `quote:${stored.quote_id}`,
+        notes: `YES provisional reserve · quote ${stored.quote_id}`,
+      });
+      reservationId = reserved.reservationId;
+      reservationConfirmationCode = reserved.confirmationCode ?? null;
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      await admin
+        .from("booking_quotes")
+        .update({ state: "failed", last_error: `reservation_failed:${msg}`.slice(0, 500) })
+        .eq("quote_id", stored.quote_id);
+      return jsonError(`reservation_failed:${msg}`, 502);
+    }
+
+    await admin
+      .from("booking_quotes")
+      .update({
+        state: "reserved",
+        bokun_reservation_id: reservationId,
+        bokun_reservation_status: "reserved",
+        reserved_at: new Date().toISOString(),
+        bokun_base_subtotal_eur: basePricing.subtotalEur,
+        database_addon_subtotal_eur: addOnPricing.subtotalEur,
+      })
+      .eq("quote_id", stored.quote_id);
+  }
+
+  // 5. Stripe line items — one per non-zero base category, one per add-on.
   //    Free lines (e.g. infants) preserved in metadata but omitted from Stripe.
   const flow = stored.flow as Flow;
   const copy = FLOW_COPY[flow];
@@ -618,9 +715,11 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
       ...(stored.bokun_option_id ? { bokun_option_id: String(stored.bokun_option_id) } : {}),
       ...(stored.bokun_rate_id ? { bokun_rate_id: String(stored.bokun_rate_id) } : {}),
       bokun_availability_id: String(stored.availability_id),
+      bokun_reservation_id: String(reservationId),
       date_exact: stored.date,
       start_time: (stored.start_time ?? "").slice(0, 16),
       total_eur: String(finalTotalEur),
+      final_total_eur: String(finalTotalEur),
       base_subtotal_eur: String(basePricing.subtotalEur),
       add_on_subtotal_eur: String(addOnPricing.subtotalEur),
       guests_total: String(totalParticipants),
@@ -640,16 +739,37 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
     if (body.cancelUrl) sessionParams.cancel_url = body.cancelUrl;
   }
 
-  const tokenHash = await sha256Hex(body.quoteToken);
+  // Deterministic idempotency: quote + reservation → same Stripe session on retry.
+  const tokenHash = await sha256Hex(`${body.quoteToken}:${reservationId}`);
   const idempotencyKey = `booking-quote-v3:${tokenHash}`;
-  const session = await stripe.checkout.sessions.create(sessionParams, { idempotencyKey });
+  let session;
+  try {
+    session = await stripe.checkout.sessions.create(sessionParams, { idempotencyKey });
+  } catch (e) {
+    // Stripe failed AFTER we reserved — best-effort release, then surface error.
+    const { releaseReservation } = await import("../_shared/bokun.ts");
+    await releaseReservation(String(reservationId));
+    await admin
+      .from("booking_quotes")
+      .update({
+        state: "failed",
+        bokun_reservation_status: "released",
+        last_error: `stripe_create_failed:${e instanceof Error ? e.message : String(e)}`.slice(0, 500),
+      })
+      .eq("quote_id", stored.quote_id);
+    return jsonError(`stripe_create_failed:${e instanceof Error ? e.message : String(e)}`, 502);
+  }
 
-  // Mark the quote consumed only after Stripe accepts the session.
+  // Mark the quote checkout-created + consumed only after Stripe accepts.
   await admin
     .from("booking_quotes")
-    .update({ consumed_at: new Date().toISOString() })
-    .eq("quote_id", stored.quote_id)
-    .is("consumed_at", null);
+    .update({
+      state: "checkout-created",
+      stripe_session_id: session.id,
+      checkout_created_at: new Date().toISOString(),
+      consumed_at: new Date().toISOString(),
+    })
+    .eq("quote_id", stored.quote_id);
 
   const rawPublishable =
     body.environment === "live"
@@ -667,6 +787,18 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
       productName,
       submitMessage,
       uiMode,
+      readiness: {
+        slotVerified: true,
+        categoriesVerified: true,
+        capacityVerified: true,
+        addOnsVerified: true,
+        provisionalReservationCreated: true,
+      },
+      reservation: {
+        bokunReservationId: reservationId,
+        bokunReservationStatus: "reserved",
+        confirmationCode: reservationConfirmationCode,
+      },
       pricing: {
         baseLines: basePricing.lines,
         baseSubtotalEur: basePricing.subtotalEur,
@@ -679,6 +811,39 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
     { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
   );
 }
+
+// Idempotent replay path — repeated create-session calls for the same quote
+// after a session was already created return the stored session id without
+// re-hitting Stripe or Bókun.
+async function jsonReplayFromStored(
+  stored: Record<string, unknown>,
+  environment: StripeEnv,
+): Promise<Response> {
+  const rawPublishable =
+    environment === "live"
+      ? (Deno.env.get("STRIPE_LIVE_PUBLISHABLE_KEY") ?? "")
+      : (Deno.env.get("STRIPE_SANDBOX_PUBLISHABLE_KEY") ?? "");
+  const publishableKey = rawPublishable.startsWith("pk_") ? rawPublishable : "";
+  return new Response(
+    JSON.stringify({
+      sessionId: stored.stripe_session_id,
+      url: null,
+      clientSecret: null,
+      publishableKey,
+      flow: stored.flow,
+      idempotent: true,
+      reservation: {
+        bokunReservationId: stored.bokun_reservation_id,
+        bokunReservationStatus: stored.bokun_reservation_status,
+      },
+      pricing: {
+        finalTotalEur: Number(stored.final_total_eur),
+      },
+    }),
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+  );
+}
+
 
 interface Body {
   tourId: string;
