@@ -14,6 +14,7 @@ import { createStripeClient, type StripeEnv } from "../_shared/stripe.ts";
 import {
   getActivityAvailabilities,
   reserveAndConfirm,
+  confirmReservation,
   type AvailabilitySlot,
 } from "../_shared/bokun.ts";
 
