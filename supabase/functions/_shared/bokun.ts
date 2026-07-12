@@ -315,6 +315,9 @@ export async function reserveAndConfirm(input: ReserveInput): Promise<{
     ...(input.notes && { note: input.notes }),
     source: "API",
     paymentType: "RESERVE_FOR_EXTERNAL_PAYMENT",
+    ...(Deno.env.get("BOKUN_CHANNEL_UUID")
+      ? { bookingChannel: { uuid: Deno.env.get("BOKUN_CHANNEL_UUID") } }
+      : {}),
   };
 
   const reserved = (await bokunFetch(
