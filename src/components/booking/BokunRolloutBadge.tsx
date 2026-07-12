@@ -92,11 +92,12 @@ export function BokunRolloutBadge({
 
   if (state === "enabled") {
     const modeLabel =
-      readiness?.pricingMode === "slot"
+      readiness?.pricingMode === "slot-dependent"
         ? "Live · per slot"
-        : readiness?.pricingMode === "date"
+        : readiness?.pricingMode === "date-dependent"
           ? "Live · per date"
           : "Live · flat";
+
     return (
       <div
         data-testid="bokun-rollout-badge"
