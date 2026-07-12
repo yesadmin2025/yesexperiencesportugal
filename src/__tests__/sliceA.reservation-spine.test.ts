@@ -54,10 +54,10 @@ function baseVsFinalParity(bokunBaseEur: number, dbAddonEur: number, finalEur: n
 describe("Slice A — reservation spine", () => {
   it("mixed family: 2 adults + [15, 8, 0] → 4 category lines, infant included even if free", () => {
     const baseLines: BaseLine[] = [
-      { bokunCategoryId: "adult", label: "Adult", quantity: 2, unitEur: 220, subtotalEur: 440 },
-      { bokunCategoryId: "youth", label: "Youth (13-17)", quantity: 1, unitEur: 180, subtotalEur: 180 },
-      { bokunCategoryId: "child", label: "Child (5-12)", quantity: 1, unitEur: 100, subtotalEur: 100 },
-      { bokunCategoryId: "infant", label: "Infant (0-4)", quantity: 1, unitEur: 0, subtotalEur: 0, isFree: true },
+      { bokunCategoryId: "101", label: "Adult", quantity: 2, unitEur: 220, subtotalEur: 440 },
+      { bokunCategoryId: "102", label: "Youth (13-17)", quantity: 1, unitEur: 180, subtotalEur: 180 },
+      { bokunCategoryId: "103", label: "Child (5-12)", quantity: 1, unitEur: 100, subtotalEur: 100 },
+      { bokunCategoryId: "104", label: "Infant (0-4)", quantity: 1, unitEur: 0, subtotalEur: 0, isFree: true },
     ];
     const slotCategories: SlotCategory[] = [
       { id: 101, title: "Adult" },
@@ -68,16 +68,14 @@ describe("Slice A — reservation spine", () => {
     const { pricingCategoryBookings, error } = buildReservationPayload(baseLines, slotCategories);
     expect(error).toBeUndefined();
     expect(pricingCategoryBookings).toHaveLength(4);
-    // Infant preserved with quantity 1 even at €0.
     expect(pricingCategoryBookings.find((b) => b.pricingCategoryId === 104)?.quantity).toBe(1);
-    // Quantities preserved verbatim from the stored quote.
     expect(pricingCategoryBookings.map((b) => b.quantity)).toEqual([2, 1, 1, 1]);
   });
 
   it("free infant is silently skipped when the slot omits the infant category", () => {
     const baseLines: BaseLine[] = [
-      { bokunCategoryId: "adult", label: "Adult", quantity: 2, unitEur: 220, subtotalEur: 440 },
-      { bokunCategoryId: "infant", label: "Infant", quantity: 1, unitEur: 0, subtotalEur: 0, isFree: true },
+      { bokunCategoryId: "101", label: "Adult", quantity: 2, unitEur: 220, subtotalEur: 440 },
+      { bokunCategoryId: "104", label: "Infant", quantity: 1, unitEur: 0, subtotalEur: 0, isFree: true },
     ];
     const slotCategories: SlotCategory[] = [{ id: 101, title: "Adult" }];
     const { pricingCategoryBookings, error } = buildReservationPayload(baseLines, slotCategories);
@@ -87,12 +85,12 @@ describe("Slice A — reservation spine", () => {
 
   it("paid category missing on slot blocks the reserve with mapping_mismatch", () => {
     const baseLines: BaseLine[] = [
-      { bokunCategoryId: "adult", label: "Adult", quantity: 2, unitEur: 220, subtotalEur: 440 },
-      { bokunCategoryId: "youth", label: "Youth", quantity: 1, unitEur: 180, subtotalEur: 180 },
+      { bokunCategoryId: "101", label: "Adult", quantity: 2, unitEur: 220, subtotalEur: 440 },
+      { bokunCategoryId: "102", label: "Youth", quantity: 1, unitEur: 180, subtotalEur: 180 },
     ];
     const slotCategories: SlotCategory[] = [{ id: 101, title: "Adult" }];
     const { error } = buildReservationPayload(baseLines, slotCategories);
-    expect(error).toMatch(/^mapping_mismatch:youth$/);
+    expect(error).toBe("mapping_mismatch:102");
   });
 
   it("Stripe amount MUST equal final_total_eur (webhook parity check)", () => {
