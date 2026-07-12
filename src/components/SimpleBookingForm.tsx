@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Calendar, Users, Sparkles, Lock, Loader2 } from "lucide-react";
 import { useTourBokunReadinessFor } from "@/hooks/use-tour-bokun-readiness";
 import { BandedSignatureBookingForm } from "@/components/booking/BandedSignatureBookingForm";
+import { BokunRolloutBadge } from "@/components/booking/BokunRolloutBadge";
+
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { SignatureTour } from "@/data/signatureTours";
 import { Eyebrow } from "@/components/ui/Eyebrow";
