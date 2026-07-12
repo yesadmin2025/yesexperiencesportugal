@@ -662,64 +662,94 @@ function SyncDiffRow({ result, tourTitle }: { result: SyncOneResult; tourTitle: 
               </tr>
             </thead>
             <tbody>
-              {BANDS.map((band) => (
-                <tr key={band} className="border-t border-[color:var(--border)]">
-                  <td className="py-1 pr-3 capitalize">{band}</td>
-                  {BUCKETS.map((b) => {
-                    const before = tierVal(result.before, band, b);
-                    const after = tierVal(result.after, band, b);
-                    const diff = before !== after;
-                    const cls = !diff
-                      ? "text-[color:var(--charcoal-soft)]"
-                      : before == null
-                      ? "text-green-700"
-                      : after == null
-                      ? "text-red-700 line-through"
-                      : "text-amber-800 font-medium";
-                    return (
-                      <td key={b} className={`text-right py-1 px-1 ${cls}`}>
-                        {before == null && after == null
-                          ? "—"
-                          : diff
-                          ? `${before ?? "–"}→${after ?? "–"}`
-                          : after}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-              {infantChanged(result.before, result.after) ? (
-                <tr className="border-t border-[color:var(--border)]">
-                  <td className="py-1 pr-3">Infant</td>
-                  <td colSpan={8} className="text-right py-1 px-1 text-amber-800">
-                    {result.before?.infant ?? "–"} → {result.after?.infant ?? "–"}
-                  </td>
-                </tr>
-              ) : null}
+              {(() => {
+                const beforeT = beforeTiers(result);
+                const afterT = afterTiers(result);
+                return (
+                  <>
+                    {BANDS.map((band) => (
+                      <tr key={band} className="border-t border-[color:var(--border)]">
+                        <td className="py-1 pr-3 capitalize">{band}</td>
+                        {BUCKETS.map((b) => {
+                          const before = tierVal(beforeT, band, b);
+                          const after = tierVal(afterT, band, b);
+                          const diff = before !== after;
+                          const cls = !diff
+                            ? "text-[color:var(--charcoal-soft)]"
+                            : before == null
+                            ? "text-green-700"
+                            : after == null
+                            ? "text-red-700 line-through"
+                            : "text-amber-800 font-medium";
+                          return (
+                            <td key={b} className={`text-right py-1 px-1 ${cls}`}>
+                              {before == null && after == null
+                                ? "—"
+                                : diff
+                                ? `${before ?? "–"}→${after ?? "–"}`
+                                : after}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                    {infantChanged(beforeT, afterT) ? (
+                      <tr className="border-t border-[color:var(--border)]">
+                        <td className="py-1 pr-3">Infant</td>
+                        <td colSpan={8} className="text-right py-1 px-1 text-amber-800">
+                          {beforeT?.infant ?? "–"} → {afterT?.infant ?? "–"}
+                        </td>
+                      </tr>
+                    ) : null}
+                  </>
+                );
+              })()}
             </tbody>
           </table>
 
-          {result.bokunCategories ? (
+          {result.after?.bokunCategories?.length ? (
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {BANDS.concat(["infant"]).map((band) => {
-                const c = result.bokunCategories?.[band];
-                if (!c) return null;
+              {result.after.bokunCategories.map((c) => {
                 const range =
                   c.minAge != null || c.maxAge != null
                     ? ` · ${c.minAge ?? 0}${c.maxAge != null ? `–${c.maxAge}` : "+"}`
                     : "";
+                const statusColor =
+                  c.mappingStatus === "confirmed"
+                    ? "border-emerald-300 bg-emerald-50"
+                    : c.mappingStatus === "suggested"
+                    ? "border-amber-300 bg-amber-50"
+                    : "border-red-300 bg-red-50";
                 return (
                   <span
-                    key={band}
-                    className="text-[10px] uppercase tracking-[0.14em] border border-[color:var(--border)] bg-[color:var(--sand)]/40 px-2 py-0.5"
+                    key={c.bokunCategoryId}
+                    className={`text-[10px] uppercase tracking-[0.14em] border px-2 py-0.5 ${statusColor}`}
+                    title={`${c.mappingStatus} · uiBand=${c.uiBand}`}
                   >
-                    <span className="capitalize">{band}</span> · #{c.id} · {c.title}
+                    <span className="capitalize">{c.uiBand}</span> · #{c.bokunCategoryId} · {c.bokunTitle}
                     {range}
                   </span>
                 );
               })}
             </div>
           ) : null}
+
+          {result.after?.pricingMode ? (
+            <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+              pricing mode: {result.after.pricingMode}
+            </p>
+          ) : null}
+
+          {result.warnings?.length ? (
+            <ul className="mt-2 text-[11px] text-amber-800 list-disc list-inside space-y-0.5">
+              {result.warnings.map((w, i) => <li key={i}>{w}</li>)}
+            </ul>
+          ) : null}
+        </div>
+      ) : null}
+    </article>
+  );
+}
         </div>
       ) : null}
     </article>
