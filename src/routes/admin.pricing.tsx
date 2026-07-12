@@ -223,6 +223,8 @@ function AdminPricingPage() {
             }}
           />
 
+          <BokunCategoryMappingPanel tours={tours} />
+
           <div className="mt-8 space-y-5">
             {tours.map((tour) => (
               <TourRow
