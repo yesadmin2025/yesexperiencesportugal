@@ -107,7 +107,9 @@ export type Database = {
           checkout_created_at: string | null
           commercial_mapping_id: string
           commercial_product_key: string
+          confirm_attempts: number
           confirmed_at: string | null
+          confirming_at: string | null
           consumed_at: string | null
           created_at: string
           currency: string
@@ -145,7 +147,9 @@ export type Database = {
           checkout_created_at?: string | null
           commercial_mapping_id: string
           commercial_product_key: string
+          confirm_attempts?: number
           confirmed_at?: string | null
+          confirming_at?: string | null
           consumed_at?: string | null
           created_at?: string
           currency?: string
@@ -183,7 +187,9 @@ export type Database = {
           checkout_created_at?: string | null
           commercial_mapping_id?: string
           commercial_product_key?: string
+          confirm_attempts?: number
           confirmed_at?: string | null
+          confirming_at?: string | null
           consumed_at?: string | null
           created_at?: string
           currency?: string
