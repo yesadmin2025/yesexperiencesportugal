@@ -1,232 +1,237 @@
-// Sync Bokun pricingCategories → tour_price_tiers banded tiers.
+// Sync Bókun catalogue → tour_price_tiers mirror.
 //
-// For each row in tour_bokun_mapping (or a single tourId in the request body):
-//  1. Fetch the Bokun activity to read its pricingCategories.
-//  2. Probe availability ~14 days ahead to pick up per-slot pricing.
-//  3. Classify each pricingCategory into adult | youth | child | infant using
-//     title + minAge/maxAge heuristics (with configurable overrides via
-//     `bokun_category_aliases` body param).
-//  4. Build banded tiers { adult: {1..8}, youth?, child?, infant? } from
-//     Bokun's category prices. If Bokun exposes only a single flat price per
-//     category we use it for all buckets 1..8; group-size discounts stay
-//     handled by admin overrides.
-//  5. Upsert into tour_price_tiers with bokun_categories + synced_from_bokun_at.
-//     Returns a diff so admin UI can show what changed and require confirm.
+// Phase A semantics:
+//   • Writes ONLY synced_tiers, bokun_categories, pricing_mode, synced_from_bokun_at.
+//   • NEVER touches override_tiers / override_metadata.
+//   • Preserves confirmed category mappings (mergeCategoryMappings).
+//   • Detects pricing_mode by probing multiple dates and comparing per-slot prices.
+//   • Returns a rich dry-run diff so /admin/pricing can render category-level review.
+//
+// Runtime precedence at the checkout is set elsewhere (bokun-quote → override → sync mirror).
+// This function is intentionally the *only* writer of the mirror.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { requireAdmin } from "../_shared/auth.ts";
-import { bokunFetch, getActivityAvailabilities } from "../_shared/bokun.ts";
+import {
+  bokunFetch,
+  detectPricingMode,
+  extractActivityCategories,
+  getActivityAvailabilities,
+  pickSlotUnitPrice,
+  type BokunRawCategory,
+} from "../_shared/bokun.ts";
 import {
   normaliseBandedTiers,
   type AgeBand,
   type BandedTiers,
   type BandTier,
 } from "../_shared/ageBandPricing.ts";
+import {
+  mergeCategoryMappings,
+  pickCategoryForBand,
+  type MappedBokunPricingCategory,
+  type PricingMode,
+} from "../_shared/bokunCategories.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-type BokunCategory = {
-  id: number;
-  title: string;
-  minAge?: number;
-  maxAge?: number;
-  defaultPrice?: number;
-  price?: number;
-};
+interface SyncOneResult {
+  tourId: string;
+  productId: string;
+  ok: boolean;
+  reason?: string;
 
-type Alias = { pattern: string; band: AgeBand };
+  before: {
+    syncedTiers: BandedTiers | null;
+    overrideTiers: BandedTiers | null;
+    bokunCategories: MappedBokunPricingCategory[] | null;
+    pricingMode: PricingMode | null;
+    syncedAt: string | null;
+  } | null;
 
-const DEFAULT_ALIASES: Alias[] = [
-  { pattern: "infant", band: "infant" },
-  { pattern: "baby", band: "infant" },
-  { pattern: "toddler", band: "infant" },
-  { pattern: "child", band: "child" },
-  { pattern: "kid", band: "child" },
-  { pattern: "junior", band: "child" },
-  { pattern: "youth", band: "youth" },
-  { pattern: "teen", band: "youth" },
-  { pattern: "student", band: "youth" },
-  { pattern: "adult", band: "adult" },
-  { pattern: "senior", band: "adult" },
-];
+  after: {
+    syncedTiers: BandedTiers | null;
+    bokunCategories: MappedBokunPricingCategory[];
+    pricingMode: PricingMode;
+  } | null;
 
-function classify(cat: BokunCategory, aliases: Alias[]): AgeBand {
-  const title = (cat.title ?? "").toLowerCase();
-  for (const a of aliases) {
-    if (title.includes(a.pattern.toLowerCase())) return a.band;
-  }
-  // Fall back to age band heuristics.
-  const maxAge = typeof cat.maxAge === "number" ? cat.maxAge : undefined;
-  const minAge = typeof cat.minAge === "number" ? cat.minAge : undefined;
-  if (maxAge !== undefined && maxAge <= 2) return "infant";
-  if (maxAge !== undefined && maxAge <= 11) return "child";
-  if (maxAge !== undefined && maxAge <= 17) return "youth";
-  if (minAge !== undefined && minAge >= 18) return "adult";
-  return "adult";
+  warnings: string[];
 }
 
-function firstNumber(...vals: unknown[]): number | null {
-  for (const v of vals) {
-    const n = typeof v === "number" ? v : Number(v);
-    if (Number.isFinite(n) && n > 0) return Math.round(n);
-  }
-  return null;
-}
-
-function extractCategoryPrice(
-  cat: Record<string, unknown>,
-  slotCatsById: Map<number, Record<string, unknown>>,
-): number | null {
-  const id = Number(cat.id);
-  const slotCat = slotCatsById.get(id) ?? {};
-  return firstNumber(
-    slotCat.price,
-    slotCat.amount,
-    (slotCat.pricePerGroup as Record<string, unknown> | undefined)?.amount,
-    cat.price,
-    cat.amount,
-    cat.defaultPrice,
-    (cat.pricePerGroup as Record<string, unknown> | undefined)?.amount,
-  );
-}
-
-function flatTier(eur: number): BandTier {
+function flatBandTier(eur: number): BandTier {
   const out: BandTier = {};
   for (let i = 1; i <= 8; i++) (out as Record<string, number>)[String(i)] = eur;
   return out;
 }
 
-async function fetchActivityRaw(productId: string): Promise<Record<string, unknown> | null> {
-  try {
-    return (await bokunFetch(
-      `/activity.json/${productId}?lang=EN&currency=EUR`,
-      "GET",
-    )) as Record<string, unknown> | null;
-  } catch (e) {
-    console.error("activity fetch failed", productId, e instanceof Error ? e.message : e);
-    return null;
-  }
-}
-
-async function pickAvailabilityCats(
-  productId: string,
-): Promise<Map<number, Record<string, unknown>>> {
-  const out = new Map<number, Record<string, unknown>>();
-  // Try today + 14 days.
+async function probePricing(productId: string): Promise<{
+  slotCatPricesByDate: Array<{ dateISO: string; slotUnitPrices: Array<Map<string, number>> }>;
+  firstSeenCatPrice: Map<string, number>;
+}> {
+  const slotCatPricesByDate: Array<{ dateISO: string; slotUnitPrices: Array<Map<string, number>> }> = [];
+  const firstSeenCatPrice = new Map<string, number>();
   for (const offset of [1, 7, 14, 30]) {
     const d = new Date();
     d.setUTCDate(d.getUTCDate() + offset);
     const iso = d.toISOString().slice(0, 10);
     try {
       const slots = await getActivityAvailabilities(productId, iso);
-      const slot = slots.find((s) => Array.isArray(s.pricingCategories) && s.pricingCategories!.length);
-      if (slot?.pricingCategories) {
-        for (const c of slot.pricingCategories as unknown as Array<Record<string, unknown>>) {
-          out.set(Number(c.id), c);
+      const perSlot: Array<Map<string, number>> = [];
+      for (const slot of slots) {
+        const map = new Map<string, number>();
+        for (const raw of slot.pricingCategories ?? []) {
+          const catRec = raw as unknown as Record<string, unknown>;
+          const price = pickSlotUnitPrice(catRec, undefined);
+          if (price != null) {
+            const id = String(raw.id);
+            map.set(id, price);
+            if (!firstSeenCatPrice.has(id)) firstSeenCatPrice.set(id, price);
+          }
         }
-        if (out.size) return out;
+        if (map.size) perSlot.push(map);
       }
+      if (perSlot.length) slotCatPricesByDate.push({ dateISO: iso, slotUnitPrices: perSlot });
     } catch (e) {
       console.warn("availability probe failed", productId, iso, e instanceof Error ? e.message : e);
     }
   }
-  return out;
+  return { slotCatPricesByDate, firstSeenCatPrice };
 }
-
-type SyncOne = {
-  tourId: string;
-  productId: string;
-  ok: boolean;
-  before: BandedTiers | null;
-  after: BandedTiers | null;
-  bokunCategories: Record<AgeBand, { id: number; title: string; minAge?: number; maxAge?: number } | null> | null;
-  reason?: string;
-};
 
 async function syncOne(
   admin: ReturnType<typeof createClient>,
   tourId: string,
   productId: string,
-  aliases: Alias[],
   dryRun: boolean,
-): Promise<SyncOne> {
-  const activity = await fetchActivityRaw(productId);
-  if (!activity) {
+): Promise<SyncOneResult> {
+  const warnings: string[] = [];
+
+  // 1. Activity + raw categories
+  let activity: unknown;
+  try {
+    activity = await bokunFetch(`/activity.json/${productId}?lang=EN&currency=EUR`, "GET");
+  } catch (e) {
     return {
-      tourId, productId, ok: false, before: null, after: null,
-      bokunCategories: null, reason: "activity fetch failed",
+      tourId, productId, ok: false, before: null, after: null, warnings,
+      reason: `activity fetch failed: ${e instanceof Error ? e.message : String(e)}`,
+    };
+  }
+  const rawCats: BokunRawCategory[] = extractActivityCategories(activity);
+  if (!rawCats.length) {
+    return {
+      tourId, productId, ok: false, before: null, after: null, warnings,
+      reason: "activity has no pricingCategories",
     };
   }
 
-  const rawCats = (activity.pricingCategories ?? []) as BokunCategory[];
-  if (!Array.isArray(rawCats) || !rawCats.length) {
-    return {
-      tourId, productId, ok: false, before: null, after: null,
-      bokunCategories: null, reason: "activity has no pricingCategories",
-    };
-  }
+  // 2. Load existing row so confirmed mappings + overrides survive.
+  const { data: existing } = await admin
+    .from("tour_price_tiers")
+    .select("synced_tiers, override_tiers, tiers, bokun_categories, pricing_mode, synced_from_bokun_at")
+    .eq("tour_id", tourId)
+    .maybeSingle();
 
-  const slotCats = await pickAvailabilityCats(productId);
+  const existingCats = (existing?.bokun_categories ?? null) as MappedBokunPricingCategory[] | null;
+  const before = existing
+    ? {
+        syncedTiers: normaliseBandedTiers(existing.synced_tiers ?? existing.tiers ?? null),
+        overrideTiers: normaliseBandedTiers(existing.override_tiers ?? null),
+        bokunCategories: existingCats,
+        pricingMode: (existing.pricing_mode as PricingMode | null) ?? null,
+        syncedAt: (existing.synced_from_bokun_at as string | null) ?? null,
+      }
+    : null;
 
-  const byBand: Record<AgeBand, { cat: BokunCategory; eur: number | null } | null> = {
-    adult: null, youth: null, child: null, infant: null,
-  };
-  const bokunCategories: SyncOne["bokunCategories"] = {
-    adult: null, youth: null, child: null, infant: null,
-  };
+  // 3. Merge category mappings (preserve confirmed).
+  const merged = mergeCategoryMappings(
+    rawCats.map((c) => ({ id: c.id, title: c.title, minAge: c.minAge, maxAge: c.maxAge })),
+    existingCats,
+  );
 
-  for (const cat of rawCats) {
-    const band = classify(cat, aliases);
-    const eur = extractCategoryPrice(cat as unknown as Record<string, unknown>, slotCats);
-    // Prefer the first category we see per band; skip duplicates.
-    if (!byBand[band]) {
-      byBand[band] = { cat, eur };
-      bokunCategories![band] = {
-        id: Number(cat.id),
-        title: cat.title,
-        ...(typeof cat.minAge === "number" ? { minAge: cat.minAge } : {}),
-        ...(typeof cat.maxAge === "number" ? { maxAge: cat.maxAge } : {}),
-      };
+  // 4. Probe pricing across representative dates.
+  const { slotCatPricesByDate, firstSeenCatPrice } = await probePricing(productId);
+  const pricingMode: PricingMode = detectPricingMode(slotCatPricesByDate);
+
+  // 5. Build synced_tiers per band using the FIRST resolvable slot price.
+  //    For date/slot-dependent products the mirror is a preview only —
+  //    checkout must use bokun-quote for the real total.
+  const bands: AgeBand[] = ["adult", "youth", "child", "infant"];
+  const syncedTiers: BandedTiers = { adult: {} };
+  let hasAdult = false;
+  for (const band of bands) {
+    const mapping = pickCategoryForBand(merged, band);
+    if (!mapping) continue;
+    // Prefer slot-observed price; fall back to category-level default on the activity.
+    let unit = firstSeenCatPrice.get(mapping.bokunCategoryId);
+    if (unit == null) {
+      const activityCat = rawCats.find((c) => String(c.id) === mapping.bokunCategoryId);
+      const fromActivity = pickSlotUnitPrice(undefined, activityCat);
+      if (fromActivity != null) unit = fromActivity;
+    }
+    if (unit == null) {
+      if (mapping.uiBand === "infant") {
+        // Infants may be free & unpriced by Bókun — treat as €0.
+        syncedTiers.infant = 0;
+      } else {
+        warnings.push(`No resolvable price for band ${band} (Bókun category ${mapping.bokunCategoryId})`);
+      }
+      continue;
+    }
+    if (band === "infant") {
+      syncedTiers.infant = unit;
+    } else if (band === "adult") {
+      syncedTiers.adult = flatBandTier(unit);
+      hasAdult = true;
+    } else {
+      syncedTiers[band] = flatBandTier(unit);
     }
   }
 
-  if (!byBand.adult || byBand.adult.eur == null) {
+  if (!hasAdult) {
     return {
-      tourId, productId, ok: false, before: null, after: null,
-      bokunCategories, reason: "no adult price resolvable from Bokun",
+      tourId, productId, ok: false, before, after: null,
+      reason: "no adult price resolvable from Bókun",
+      warnings,
     };
   }
 
-  const tiers: BandedTiers = { adult: flatTier(byBand.adult.eur) };
-  if (byBand.youth?.eur != null) tiers.youth = flatTier(byBand.youth.eur);
-  if (byBand.child?.eur != null) tiers.child = flatTier(byBand.child.eur);
-  if (byBand.infant) tiers.infant = byBand.infant.eur ?? 0;
-
-  const { data: existing } = await admin
-    .from("tour_price_tiers")
-    .select("tiers")
-    .eq("tour_id", tourId)
-    .maybeSingle();
-  const before = normaliseBandedTiers(existing?.tiers ?? null);
+  const suggestedCount = merged.filter((c) => c.mappingStatus === "suggested").length;
+  const unmappedCount = merged.filter((c) => c.mappingStatus === "unmapped").length;
+  if (suggestedCount) warnings.push(`${suggestedCount} category(ies) awaiting admin confirmation`);
+  if (unmappedCount) warnings.push(`${unmappedCount} category(ies) unmapped — booking will be rejected`);
+  if (pricingMode === "date-dependent" || pricingMode === "slot-dependent") {
+    warnings.push(`pricing_mode=${pricingMode} — mirror is preview only; checkout must call bokun-quote`);
+  }
 
   if (!dryRun) {
     const { error } = await admin
       .from("tour_price_tiers")
       .upsert({
         tour_id: tourId,
-        tiers: tiers as unknown as Record<string, unknown>,
-        bokun_categories: bokunCategories as unknown as Record<string, unknown>,
+        // Legacy `tiers` column stays in sync with synced_tiers for BC —
+        // Phase C UI toggles per-tour to switch consumers to synced/override.
+        tiers: syncedTiers as unknown as Record<string, unknown>,
+        synced_tiers: syncedTiers as unknown as Record<string, unknown>,
+        bokun_categories: merged as unknown as Record<string, unknown>,
+        pricing_mode: pricingMode,
         synced_from_bokun_at: new Date().toISOString(),
       });
     if (error) {
-      return { tourId, productId, ok: false, before, after: tiers, bokunCategories, reason: error.message };
+      return {
+        tourId, productId, ok: false, before, after: null, warnings,
+        reason: `upsert failed: ${error.message}`,
+      };
     }
   }
 
-  return { tourId, productId, ok: true, before, after: tiers, bokunCategories };
+  return {
+    tourId, productId, ok: true, before,
+    after: { syncedTiers, bokunCategories: merged, pricingMode },
+    warnings,
+  };
 }
 
 Deno.serve(async (req) => {
@@ -240,21 +245,11 @@ Deno.serve(async (req) => {
     });
   }
 
-  let body: {
-    tourId?: string;
-    dryRun?: boolean;
-    aliases?: Array<{ pattern: string; band: AgeBand }>;
-  } = {};
+  let body: { tourId?: string; dryRun?: boolean } = {};
   try {
     body = req.method === "POST" ? await req.json() : {};
-  } catch {
-    body = {};
-  }
+  } catch { body = {}; }
   const dryRun = body.dryRun === true;
-  const aliases = [
-    ...(Array.isArray(body.aliases) ? body.aliases : []),
-    ...DEFAULT_ALIASES,
-  ];
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -292,10 +287,10 @@ Deno.serve(async (req) => {
     mappings = data ?? [];
   }
 
-  const results: SyncOne[] = [];
+  const results: SyncOneResult[] = [];
   for (const m of mappings) {
-    // Run sequentially — Bokun rate-limits and we want deterministic logs.
-    const r = await syncOne(admin, m.tour_id, m.bokun_product_id, aliases, dryRun);
+    // Sequential — Bókun rate-limits and we want deterministic logs.
+    const r = await syncOne(admin, m.tour_id, m.bokun_product_id, dryRun);
     results.push(r);
   }
 
