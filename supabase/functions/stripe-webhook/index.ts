@@ -737,8 +737,16 @@ Deno.serve(async (req) => {
     console.error("send checkout email failed:", e instanceof Error ? e.message : e);
   }
 
-  return new Response(JSON.stringify({ ok: true, bookingId, bokun: bokunResult }), {
-    status: 200,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+  return new Response(
+    JSON.stringify({
+      ok: retryHttpStatus === null,
+      bookingId,
+      bokun: bokunResult,
+      retryable: retryHttpStatus !== null,
+    }),
+    {
+      status: retryHttpStatus ?? 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    },
+  );
 });
