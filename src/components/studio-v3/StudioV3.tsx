@@ -2379,12 +2379,14 @@ export function StudioV3() {
                 minorAges: state.minorAges,
               }}
               onChange={(next) => {
-                patch({
-                  guests: next.adults + next.minorAges.length,
+                const total = next.adults + next.minorAges.length;
+                setState((s) => ({
+                  ...s,
+                  guests: total,
                   minorAges: next.minorAges,
                   guestsInferred: false,
-                  guestsPrivateEvent: next.adults + next.minorAges.length >= 11,
-                });
+                  guestsPrivateEvent: total >= 11,
+                }));
               }}
               minAdults={1}
               maxCapacity={14}
