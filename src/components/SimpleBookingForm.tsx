@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Calendar, Users, Sparkles, Lock, Loader2 } from "lucide-react";
 import { useTourBokunReadinessFor } from "@/hooks/use-tour-bokun-readiness";
 import { BandedSignatureBookingForm } from "@/components/booking/BandedSignatureBookingForm";
+import { BokunRolloutBadge } from "@/components/booking/BokunRolloutBadge";
+
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { SignatureTour } from "@/data/signatureTours";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -42,8 +44,14 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   if (readiness?.bandedPricingEnabled && hasConfirmedCategory) {
     return <BandedSignatureBookingForm tour={tour} readiness={readiness} />;
   }
-  return <LegacySimpleBookingForm tour={tour} />;
+  return (
+    <div className="space-y-3">
+      <BokunRolloutBadge readiness={readiness} tourId={tour.id} />
+      <LegacySimpleBookingForm tour={tour} />
+    </div>
+  );
 }
+
 
 function LegacySimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const navigate = useNavigate();
