@@ -15,6 +15,9 @@ import {
 import { resolveQuote } from "../_shared/resolveQuote.ts";
 import { signQuoteToken, verifyQuoteToken, sha256Hex } from "../_shared/quoteToken.ts";
 import { revalidateBokunQuote } from "../_shared/bokunQuoteRevalidate.ts";
+import { verifyBookingQuoteToken } from "../_shared/bookingQuoteToken.ts";
+import { getActivityAvailabilities } from "../_shared/bokun.ts";
+import type { BookingQuote } from "../_shared/bookingQuote.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
