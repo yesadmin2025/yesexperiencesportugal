@@ -22,6 +22,12 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getStripeEnvironment } from "@/lib/stripe";
+import {
+  createBookingQuoteSession,
+  fetchBookingQuote,
+} from "@/lib/pricing/bookingQuoteCheckout";
+import { compositionFromLegacyGuests } from "@/lib/pricing/travellerComposition";
+import { computePricingRevision, isQuoteAvailable } from "@/lib/pricing/bookingQuote";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
   BrandedCheckoutDrawer,
