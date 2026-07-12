@@ -5,6 +5,8 @@ import { Lock, X, MapPin, Clock, Users, Calendar } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
+import { BokunRolloutBadge } from "@/components/booking/BokunRolloutBadge";
+import type { TourBokunReadiness } from "@/hooks/use-tour-bokun-readiness";
 
 /**
  * BrandedCheckoutDrawer
@@ -36,6 +38,8 @@ export interface CheckoutSummary {
   addOns?: Array<{ id: string; label: string; priceEur: number; durationMinutes: number }>;
   /** Sum of add-on EUR (flat per booking). */
   addOnsTotalEur?: number;
+  /** Bókun banded-pricing rollout state for the selected tour. */
+  bokunReadiness?: TourBokunReadiness | null;
 }
 
 
@@ -279,6 +283,11 @@ function ExperienceSummaryCard({
         </div>
       ) : null}
 
+      {summary.bokunReadiness ? (
+        <div className="mt-3">
+          <BokunRolloutBadge readiness={summary.bokunReadiness} />
+        </div>
+      ) : null}
 
       {total != null ? (
         <div className="mt-4 pt-3 border-t border-[color:var(--border)] flex items-baseline justify-between">
