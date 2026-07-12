@@ -1214,6 +1214,7 @@ export function pickPrimaryTour(
   destinationIntent: DestinationIntent | null,
   seed: number = 0,
   rhythm: Rhythm | null = null,
+  restrictToTourIds?: ReadonlySet<string> | null,
 ): { tour: SignatureTour; alternates: SignatureTour[] } {
   const { tour, alternates } = pickPrimaryTourWithFit(
     feeling,
@@ -1223,6 +1224,7 @@ export function pickPrimaryTour(
     destinationIntent,
     seed,
     rhythm,
+    restrictToTourIds,
   );
   return { tour, alternates };
 }
@@ -1245,6 +1247,7 @@ export function pickPrimaryTourWithFit(
   destinationIntent: DestinationIntent | null,
   seed: number = 0,
   rhythm: Rhythm | null = null,
+  restrictToTourIds?: ReadonlySet<string> | null,
 ): {
   tour: SignatureTour;
   alternates: SignatureTour[];
@@ -1266,9 +1269,19 @@ export function pickPrimaryTourWithFit(
   const mergedIds = Array.from(
     new Set([...candidateIds, ...intentTargets, ...interestTargets, ...discoveryTargets]),
   );
-  const candidates = mergedIds
+  let candidates = mergedIds
     .map((id) => signatureTours.find((t) => t.id === id))
     .filter((t): t is SignatureTour => Boolean(t));
+
+  // Slice B closure — age-composition filter (applied BEFORE ranking).
+  // Callers pass a pre-computed compatible-tour-id set (composition already
+  // resolved against confirmed Bókun categories). Excluded candidates never
+  // reach scoring. If the filter empties the pool we still fall through to
+  // the default fallback so the caller can decide what to render — the
+  // unsupported-age signal is enforced upstream in `resolveStudioV3Route`.
+  if (restrictToTourIds && restrictToTourIds.size > 0) {
+    candidates = candidates.filter((t) => restrictToTourIds.has(t.id));
+  }
 
   if (candidates.length === 0) {
     const fallbackId = FEELING_FALLBACK[feeling];
@@ -1365,6 +1378,8 @@ export function curateJourney(
      *  when several fit + gentle per-stop jitter so the day re-arranges
      *  without breaking any cap or inventing stops. */
     seed?: number | string;
+    /** Slice B: compatible tour ids after age filtering. Empty/undefined = no filter. */
+    restrictToTourIds?: ReadonlySet<string> | null;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
@@ -1382,6 +1397,8 @@ export function curateJourney(
     pickup,
     destinationIntent,
     seedNum,
+    null,
+    options?.restrictToTourIds ?? null,
   );
 
   // STRICT containment: pool = primary tour's own stops only.
@@ -1686,6 +1703,12 @@ export interface ResolvedStudioV3Route {
   whatToConfirm: string;
   /** Resolution confidence — drives the fallback messaging upstream. */
   confidence: RouteConfidence;
+  /** Slice B: state of the composition/age filter. */
+  ageFilterStatus?: "not-checked" | "loading" | "resolved" | "unsupported";
+  /** Slice B: ages that no compatible candidate can serve. */
+  unsupportedAges?: number[];
+  /** Slice B: tour ids excluded by the age filter (debug/audit). */
+  excludedTourIds?: string[];
 }
 
 /**
@@ -1715,27 +1738,55 @@ export function resolveStudioV3Route(input: {
   /** ISO yyyy-mm-dd — forwarded to curateJourney so operational closures
    *  (e.g. Mercado do Livramento on Mondays) are respected end-to-end. */
   dateExact?: string | null;
+  /** Slice B closure — age filter inputs. When present, only compatible
+   *  candidates reach ranking. `loading` short-circuits generation. */
+  ageFilter?: {
+    status: "loading" | "resolved";
+    compatibleTourIds?: ReadonlySet<string>;
+    unsupportedAges?: number[];
+    excludedTourIds?: string[];
+  } | null;
 }): ResolvedStudioV3Route {
   const { feeling, companions, rhythm, interests, pickup, occasion } = input;
   const investment = input.investment ?? null;
   const destinationIntent = input.destinationIntent ?? null;
   const dateExact = input.dateExact ?? null;
   const origin = pickupCityLabel(pickup);
+  const ageFilter = input.ageFilter ?? null;
+
+  const emptyFallback = (
+    overrides: Partial<ResolvedStudioV3Route> = {},
+  ): ResolvedStudioV3Route => ({
+    skeletonTourKey: null,
+    skeletonTitleInternal: null,
+    routeAreaLabel: "Tailor-made by YES",
+    suggestedRouteLabel: "To be refined with YES",
+    routePoints: [],
+    journeyTitle: "Your private Portugal day",
+    whyItFits: [],
+    refinements: [],
+    whatToConfirm: "Availability and final details are confirmed before your experience.",
+    confidence: "needs-human-refinement",
+    ...overrides,
+  });
 
   // Fallback when we don't have enough to safely resolve a Signature.
-  if (!feeling || !companions || !rhythm) {
-    return {
-      skeletonTourKey: null,
-      skeletonTitleInternal: null,
-      routeAreaLabel: "Tailor-made by YES",
-      suggestedRouteLabel: "To be refined with YES",
-      routePoints: [],
-      journeyTitle: "Your private Portugal day",
-      whyItFits: [],
-      refinements: [],
-      whatToConfirm: "Availability and final details are confirmed before your experience.",
-      confidence: "needs-human-refinement",
-    };
+  if (!feeling || !companions || !rhythm) return emptyFallback();
+
+  // Slice B closure — age filter gating BEFORE any generation.
+  if (ageFilter?.status === "loading") {
+    return emptyFallback({ ageFilterStatus: "loading" });
+  }
+  if (
+    ageFilter?.status === "resolved" &&
+    ageFilter.compatibleTourIds &&
+    ageFilter.compatibleTourIds.size === 0
+  ) {
+    return emptyFallback({
+      ageFilterStatus: "unsupported",
+      unsupportedAges: ageFilter.unsupportedAges ?? [],
+      excludedTourIds: ageFilter.excludedTourIds ?? [],
+    });
   }
 
   const journey = curateJourney(feeling, companions, rhythm, {
@@ -1744,6 +1795,8 @@ export function resolveStudioV3Route(input: {
     investment,
     destinationIntent,
     dateExact,
+    restrictToTourIds:
+      ageFilter?.status === "resolved" ? ageFilter.compatibleTourIds ?? null : null,
   });
 
   // Fase 5 — telemetria de decisão. Fire-and-forget; nunca bloqueia.
@@ -1934,6 +1987,8 @@ export function resolveStudioV3Route(input: {
     refinements: finalRefinements,
     whatToConfirm: "Availability and final details are confirmed before your experience.",
     confidence,
+    ageFilterStatus: ageFilter?.status === "resolved" ? "resolved" : "not-checked",
+    excludedTourIds: ageFilter?.excludedTourIds ?? [],
   };
 }
 

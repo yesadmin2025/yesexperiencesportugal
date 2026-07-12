@@ -151,6 +151,10 @@ export interface CategoryBooking {
   minAge: number | null;
   maxAge: number | null;
   quantity: number;
+  /** Which pricing band this category represents. */
+  uiBand: "adult" | "youth" | "child" | "infant" | "other" | string;
+  /** Always "confirmed" — resolver rejects anything else. Kept for defense-in-depth. */
+  mappingStatus: "confirmed";
 }
 
 export interface ResolvedCompositionAgainstCategories {
@@ -182,7 +186,7 @@ export function resolveCompositionAgainstCategories(
   composition: TravellerComposition,
   categories: MappedBokunPricingCategory[],
 ): ResolvedCompositionAgainstCategories {
-  const bookings = new Map<string, CategoryBooking & { uiBand: string }>();
+  const bookings = new Map<string, CategoryBooking>();
   const mix = { adults: 0, youths: 0, children: 0, infants: 0 };
   const unsupportedAges: number[] = [];
 
@@ -196,6 +200,7 @@ export function resolveCompositionAgainstCategories(
       maxAge: typeof c.maxAge === "number" ? c.maxAge : null,
       quantity: qty,
       uiBand: c.uiBand,
+      mappingStatus: "confirmed",
     });
     if (c.uiBand === "adult") mix.adults += qty;
     else if (c.uiBand === "youth") mix.youths += qty;
@@ -221,7 +226,7 @@ export function resolveCompositionAgainstCategories(
   return {
     travellerComposition: composition,
     resolvedGuestMix: { ...mix, totalParticipants },
-    categoryBookings: [...bookings.values()].map(({ uiBand: _u, ...rest }) => rest),
+    categoryBookings: [...bookings.values()],
     unsupportedAges,
   };
 }

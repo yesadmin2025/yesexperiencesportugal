@@ -13,6 +13,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { TravellerCompositionPicker } from "@/components/booking/TravellerCompositionPicker";
+import { useTourBokunReadiness } from "@/hooks/use-tour-bokun-readiness";
+import { filterSignatureCandidatesForAges } from "@/lib/pricing/filterSignatureCandidatesForAges";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
 import { loadStudioV3Signature } from "@/lib/studio-v3/load-signature.functions";
 import { ChoiceGrid } from "./ChoiceGrid";
@@ -3145,6 +3147,40 @@ export function StoryboardHandoff({
   // Source of truth: resolveStudioV3Route → routePoints. The user may
   // reorder/remove/swap stops; pool is restricted to the SAME resolved
   // Signature tour's own `stops` (no invented stops, per memory rule).
+  // Slice B closure — Studio candidate filtering by traveller composition.
+  // We fetch the tour-wide Bókun readiness map, exclude any candidate whose
+  // confirmed categories cannot serve every selected age, and pass the
+  // compatible id set into `resolveStudioV3Route` BEFORE any generation.
+  // Loading vs unsupported are kept strictly separate (loading never
+  // labels an age as unsupported).
+  const readinessQuery = useTourBokunReadiness();
+  const ageFilter = useMemo<
+    Parameters<typeof resolveStudioV3Route>[0]["ageFilter"]
+  >(() => {
+    const composition = {
+      adults: Math.max(1, (state.guests ?? 2) - state.minorAges.length),
+      minorAges: state.minorAges,
+    };
+    if (composition.minorAges.length === 0) return null; // adult-only → no filter
+    if (readinessQuery.isLoading || !readinessQuery.data) {
+      return { status: "loading" };
+    }
+    const { compatible, excluded } = filterSignatureCandidatesForAges(
+      composition,
+      signatureTours,
+      readinessQuery.data,
+    );
+    const unsupportedAges = Array.from(
+      new Set(excluded.flatMap((e) => e.unsupportedAges).filter((a) => a >= 0)),
+    );
+    return {
+      status: "resolved",
+      compatibleTourIds: new Set(compatible.map((c) => c.id)),
+      unsupportedAges,
+      excludedTourIds: excluded.map((e) => e.tourId),
+    };
+  }, [state.guests, state.minorAges, readinessQuery.isLoading, readinessQuery.data]);
+
   const resolved = useMemo(
     () =>
       resolveStudioV3Route({
@@ -3157,6 +3193,7 @@ export function StoryboardHandoff({
         considerations: state.considerations,
         investment: state.investment,
         destinationIntent: state.destinationIntent,
+        ageFilter,
       }),
     [
       state.feeling,
@@ -3168,6 +3205,7 @@ export function StoryboardHandoff({
       state.considerations,
       state.investment,
       state.destinationIntent,
+      ageFilter,
     ],
   );
 
