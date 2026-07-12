@@ -24,3 +24,9 @@ verify_jwt = false
 [functions.stripe-session-status]
 verify_jwt = false
 
+[functions.audit-bokun-mapping]
+verify_jwt = false
+
+[functions.sync-all-bokun-pricing]
+verify_jwt = false
+
