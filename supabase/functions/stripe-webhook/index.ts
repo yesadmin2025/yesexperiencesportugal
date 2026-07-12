@@ -315,26 +315,6 @@ Deno.serve(async (req) => {
         storedQuoteRow = q ?? null;
         if (q?.bokun_reservation_id) bokunReservationId = String(q.bokun_reservation_id);
         if (q?.final_total_eur != null) expectedTotalEur = Number(q.final_total_eur);
-
-        // Idempotent replay of a webhook we've already confirmed.
-        if (q?.state === "confirmed" && q?.bokun_reservation_id) {
-          await admin
-            .from("bookings")
-            .update({
-              bokun_status: "confirmed",
-              bokun_booking_id: String(q.bokun_reservation_id),
-              bokun_reservation_id: String(q.bokun_reservation_id),
-              quote_id: q.quote_id as string,
-              final_total_eur: Number(q.final_total_eur),
-              bokun_base_subtotal_eur: q.bokun_base_subtotal_eur ?? null,
-              database_addon_subtotal_eur: q.database_addon_subtotal_eur ?? null,
-            })
-            .eq("id", bookingId);
-          return new Response(
-            JSON.stringify({ ok: true, bookingId, bokun: "already_confirmed", idempotent: true }),
-            { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-          );
-        }
       }
 
       // Parity: Stripe amount (in cents) must equal final_total_eur.
@@ -349,40 +329,85 @@ Deno.serve(async (req) => {
         }
       }
 
-      if (!bokunReservationId) {
+      if (!quoteId) {
+        bokunResult = { status: "needs_review", error: "no_quote_id_in_metadata" };
+      } else if (!bokunReservationId) {
         bokunResult = { status: "needs_review", error: "no_reservation_id_on_quote" };
       } else {
-        const confirmed = await confirmReservation(bokunReservationId);
-        bokunResult = {
-          status: "confirmed",
-          booking_id: confirmed.bookingId,
-          confirmation: confirmed.confirmationCode,
-        };
-        if (quoteId) {
-          await admin
-            .from("booking_quotes")
-            .update({
-              state: "confirmed",
-              bokun_reservation_status: "confirmed",
-              paid_at: new Date().toISOString(),
-              confirmed_at: new Date().toISOString(),
-            })
-            .eq("quote_id", quoteId);
-        }
-        // Mirror reservation identifiers + parity fields onto bookings row.
-        await admin
-          .from("bookings")
+        // Atomic single-writer claim: only one of {payment-confirm, expiry-release}
+        // can transition the row. Excludes expired/cancelled/confirmed/failed so
+        // an expiry that already released the reservation cannot be overwritten.
+        const nowIso = new Date().toISOString();
+        const { data: claimed } = await admin
+          .from("booking_quotes")
           .update({
-            quote_id: quoteId,
-            bokun_reservation_id: bokunReservationId,
-            final_total_eur: expectedTotalEur,
-            bokun_base_subtotal_eur:
-              (storedQuoteRow?.bokun_base_subtotal_eur as number | null) ?? null,
-            database_addon_subtotal_eur:
-              (storedQuoteRow?.database_addon_subtotal_eur as number | null) ?? null,
+            state: "confirmed",
+            bokun_reservation_status: "confirmed",
+            paid_at: nowIso,
+            confirmed_at: nowIso,
           })
-          .eq("id", bookingId);
+          .eq("quote_id", quoteId)
+          .in("state", ["reserved", "checkout-created"])
+          .select(
+            "quote_id, bokun_reservation_id, final_total_eur, bokun_base_subtotal_eur, database_addon_subtotal_eur",
+          )
+          .maybeSingle();
+
+        if (!claimed) {
+          // Row is already confirmed, or was expired/cancelled by another writer.
+          // Idempotent replay: mirror whatever we have on the stored row.
+          if (storedQuoteRow?.state === "confirmed" && storedQuoteRow?.bokun_reservation_id) {
+            await admin
+              .from("bookings")
+              .update({
+                bokun_status: "confirmed",
+                bokun_booking_id: String(storedQuoteRow.bokun_reservation_id),
+                bokun_reservation_id: String(storedQuoteRow.bokun_reservation_id),
+                quote_id: String(storedQuoteRow.quote_id),
+                final_total_eur: Number(storedQuoteRow.final_total_eur),
+                bokun_base_subtotal_eur:
+                  (storedQuoteRow.bokun_base_subtotal_eur as number | null) ?? null,
+                database_addon_subtotal_eur:
+                  (storedQuoteRow.database_addon_subtotal_eur as number | null) ?? null,
+              })
+              .eq("id", bookingId);
+            return new Response(
+              JSON.stringify({
+                ok: true,
+                bookingId,
+                bokun: "already_confirmed",
+                idempotent: true,
+              }),
+              { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+            );
+          }
+          bokunResult = {
+            status: "needs_review",
+            error: `quote_claim_lost:state=${String(storedQuoteRow?.state ?? "unknown")}`,
+          };
+        } else {
+          const confirmed = await confirmReservation(String(claimed.bokun_reservation_id));
+          bokunResult = {
+            status: "confirmed",
+            booking_id: confirmed.bookingId,
+            confirmation: confirmed.confirmationCode,
+          };
+          // Mirror reservation identifiers + parity fields onto bookings row.
+          await admin
+            .from("bookings")
+            .update({
+              quote_id: quoteId,
+              bokun_reservation_id: String(claimed.bokun_reservation_id),
+              final_total_eur: expectedTotalEur,
+              bokun_base_subtotal_eur:
+                (claimed.bokun_base_subtotal_eur as number | null) ?? null,
+              database_addon_subtotal_eur:
+                (claimed.database_addon_subtotal_eur as number | null) ?? null,
+            })
+            .eq("id", bookingId);
+        }
       }
+
     } else {
       // Legacy path (pre-reservation-spine): reserve+confirm at webhook time.
       // Retained for older Stripe sessions still in flight.
