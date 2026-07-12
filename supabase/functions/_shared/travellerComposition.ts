@@ -3,8 +3,8 @@
 // the SELECTED Bókun product's real age categories. Browser never decides
 // whether an age is Youth/Child/Infant.
 
-import type { AgeBand, GuestMix } from "./ageBandPricing";
-import type { MappedBokunPricingCategory } from "./bokunCategories";
+import type { AgeBand, GuestMix } from "./ageBandPricing.ts";
+import type { MappedBokunPricingCategory } from "./bokunCategories.ts";
 
 export interface TravellerComposition {
   adults: number;
