@@ -468,7 +468,7 @@ function TailorPage() {
         itineraryRevision,
         itinerarySnapshot: {
           title: `Tailored — ${tour.title.split("—")[0].trim()}`,
-          routeStops: stopLabels.map((label, i) => ({ id: `s${i}`, label })),
+          routeStops: stopLabels.map((label: string, i: number) => ({ id: `s${i}`, label })),
         },
       });
       if (!isQuoteAvailable(quoteResp)) {
