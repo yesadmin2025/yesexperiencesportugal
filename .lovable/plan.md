@@ -1,33 +1,64 @@
 ## Goal
-Guarantee `POST /create-signature-checkout` keeps working for the legacy Signature and Tailored body shape after the recent dedupe fix — and catch parse-time regressions (like the duplicated `StudioCreateSessionBody` block) before they ship.
+Execute the full Playwright end-to-end checkout walkthrough against the running app and report results for both Studio V3 and legacy Signature/Tailored flows. No source code changes.
 
-## Approach
-Two layers, both cheap and CI-friendly. No new infra.
+## Scope — which specs run
+Three groups, all under `e2e/`:
 
-### 1. Deno module-load smoke test (catches the exact regression)
-New file: `supabase/functions/create-signature-checkout/module_load_test.ts`
+1. **Legacy Signature / Tailored + Bókun wiring** (deployed edge fn)
+   - `instant-booking-checkout.spec.ts` (4 tests — includes the 2 legacy body cases just added)
+   - `instant-booking-checkout-negative.spec.ts`
+   - `bokun-checkout-coverage.spec.ts`
 
-- `Deno.test("module parses and exports Deno.serve handler", …)` that dynamic-`import()`s `./index.ts`.
-- Assertion: import resolves without throwing. This alone would have failed on the duplicated-interface bug.
-- Stubs required env (`STRIPE_SANDBOX_API_KEY`, `STUDIO_QUOTE_SIGNING_SECRET`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`) with dummy values via `Deno.env.set` before import so top-level reads don't blow up.
+2. **Studio V3 reveal → quote → checkout golden walkthrough**
+   - `studio-v3-reveal-walkthrough.spec.ts`
+   - `studio-v3-final-investment-live.spec.ts`
+   - `studio-v3-intro-to-investment.spec.ts`
+   - `studio-v3-cta-labels-live.spec.ts`
+   - `studio-v3-add-ons-total.spec.ts`
+   - `studio-v3-add-ons-round-trip.spec.ts`
+   - `studio-v3-add-ons-disabled-vs-enabled.spec.ts`
+   - `studio-v3-add-ons-disabled-never-affect-total.spec.ts`
 
-### 2. Legacy Signature/Tailor integration test against the deployed function
-Extend `e2e/instant-booking-checkout.spec.ts` with one focused block, `test.describe("legacy checkout body — no Studio V3 fields")`, containing two tests:
+3. **CTA / navigation smoke around the reveal**
+   - `studio-v3-reveal-and-guest-details-mobile.spec.ts`
+   - `studio-v3-p0-guest-details-footer-mobile.spec.ts`
 
-- **Signature legacy** — POST body with only the pre-Studio-V3 fields (`tourId`, `tourTitle`, `guests`, `stopLabels`, `pickupLabel`, `dateExact`, `journeyTitle`, `priceFromEur`, `returnUrl`, `cancelUrl`, `environment: "sandbox"`, `tailored: false`) — no `flow`, no `mode`, no `quoteToken`. Assert 200, `json.url` matches `^https://checkout\.stripe\.com/`, `json.sessionId` matches `^cs_`, and `resolveFlow` defaulted to `"signature"` (`json.flow === "signature"`, `productName` starts with `"YES Signature — "`).
-- **Tailored legacy** — same shape with `tailored: true` and one swapped stop. Assert `json.flow === "tailor"`, `productName` starts with `"YES Tailored — "`, `submitMessage` contains `"within 2 hours"`.
+Excluded (not checkout-related): hero, homepage, typography, map-visual specs.
 
-Both use the existing `TOUR_ID = "sintra-cascais"` (already Bókun-mapped) and the existing `invokeCheckout` helper — extended so `flow` is optional in `CheckoutBody`.
+## Execution
+Run against the local dev server (`playwright.local.config.ts`) using Chromium:
 
-### Files
-- **New**: `supabase/functions/create-signature-checkout/module_load_test.ts`
-- **Edit**: `e2e/instant-booking-checkout.spec.ts` — make `flow` optional in `CheckoutBody`, add the `legacy checkout body` describe block (2 tests).
+```bash
+bunx playwright test --config playwright.local.config.ts \
+  e2e/instant-booking-checkout.spec.ts \
+  e2e/instant-booking-checkout-negative.spec.ts \
+  e2e/bokun-checkout-coverage.spec.ts \
+  e2e/studio-v3-reveal-walkthrough.spec.ts \
+  e2e/studio-v3-final-investment-live.spec.ts \
+  e2e/studio-v3-intro-to-investment.spec.ts \
+  e2e/studio-v3-cta-labels-live.spec.ts \
+  e2e/studio-v3-add-ons-total.spec.ts \
+  e2e/studio-v3-add-ons-round-trip.spec.ts \
+  e2e/studio-v3-add-ons-disabled-vs-enabled.spec.ts \
+  e2e/studio-v3-add-ons-disabled-never-affect-total.spec.ts \
+  e2e/studio-v3-reveal-and-guest-details-mobile.spec.ts \
+  e2e/studio-v3-p0-guest-details-footer-mobile.spec.ts \
+  --reporter=list 2>&1 | tee /tmp/e2e-golden.log
+```
 
-### Runs in CI
-- Deno test executes via existing `supabase--test_edge_functions` tool / any Deno-test CI step.
-- Playwright test runs alongside the existing `instant-booking-checkout.spec.ts` — no new workflow needed.
+Timeout budget: up to 10 minutes total (the harness caps each shell call). If a single group exceeds the cap, split into three sequential runs (group 1, then 2, then 3) and concatenate logs.
 
-### Out of scope
-- No changes to `index.ts`.
-- No mocking of Stripe in the e2e layer — the deployed sandbox already returns real `cs_test_...` sessions, matching what the existing suite does.
-- No Bókun assertion (already covered by the existing "Bókun is wired" test).
+## Reporting
+After each run:
+- Summarise `passed / failed / flaky / skipped` counts per group.
+- For any failure: file path, test name, first 20 lines of the error, and (if produced) the trace or screenshot path.
+- Call out any pre-existing failures unrelated to the checkout fix so they aren't blamed on it.
+- Confirm the two new legacy-body tests (`Signature legacy body …`, `Tailored legacy body …`) pass.
+
+## What this will NOT do
+- No code edits, no deploys, no migrations.
+- Will not open real Stripe checkout — legacy tests stop at the returned `cs_test_...` session URL, matching current suite behaviour.
+- Live billing is untouched (`environment: "sandbox"` throughout).
+
+## Rollback
+None needed — this is a read-only test run.
