@@ -425,6 +425,12 @@ function TailorPage() {
 
   const handleReserve = async (details: GuestDetails) => {
     if (checkoutPending) return;
+    if (mixedFamilyBlocked) {
+      toast.error(
+        "This tour isn't yet set up for family pricing. Please contact us to confirm ages.",
+      );
+      return;
+    }
     setCheckoutPending(true);
     // Open the drawer immediately so a branded skeleton appears while
     // the edge function is in flight — avoids "blank screen" feel.
