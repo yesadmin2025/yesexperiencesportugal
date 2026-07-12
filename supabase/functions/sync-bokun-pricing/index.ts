@@ -75,7 +75,7 @@ Deno.serve(async (req) => {
   const results: SyncOneResult[] = [];
   for (const m of mappings) {
     // Sequential — Bókun rate-limits and we want deterministic logs.
-    const r = await syncOne(admin, m.tour_id, m.bokun_product_id, dryRun);
+    const r = await syncOneBokunPricing(admin, m.tour_id, m.bokun_product_id, dryRun);
     results.push(r);
   }
 
