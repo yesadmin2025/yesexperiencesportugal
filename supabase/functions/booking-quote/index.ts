@@ -34,6 +34,7 @@ import {
   type BookingQuoteBaseLine,
   type BookingQuoteResponse,
   type BookingQuoteUnavailable,
+  type BookingQuoteDiagnostics,
 } from "../_shared/bookingQuote.ts";
 import { signBookingQuoteToken } from "../_shared/bookingQuoteToken.ts";
 import { syncOneBokunPricing } from "../_shared/syncBokunPricing.ts";
