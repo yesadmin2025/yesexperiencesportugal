@@ -100,14 +100,14 @@ describe("Slice B — traveller composition wiring", () => {
         tourId: "adult-only",
         bandedPricingEnabled: true,
         bokunCategories: ADULT_ONLY_CATS,
-        pricingMode: "banded",
+        pricingMode: "flat",
         syncedAt: null,
       },
       family: {
         tourId: "family",
         bandedPricingEnabled: true,
         bokunCategories: FAMILY_CATS,
-        pricingMode: "banded",
+        pricingMode: "flat",
         syncedAt: null,
       },
     };
