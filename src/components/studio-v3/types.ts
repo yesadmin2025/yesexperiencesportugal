@@ -231,6 +231,13 @@ export interface StudioV3State {
   pickup: Pickup | null;
   /** Exact guest count (1–14). Null until resolved (explicit or inferred). */
   guests: number | null;
+  /**
+   * Slice B: ordered ages of minor travellers (0–17). Length = minor count.
+   * `guests` remains authoritative for legacy code paths that read total pax
+   * (adults + minors). Default `[]` = adults-only; fully backward compatible
+   * with saved drafts and existing inference paths.
+   */
+  minorAges: number[];
   interests: Interest[];
   rhythm: Rhythm | null;
   considerations: Consideration[];
@@ -301,6 +308,7 @@ export const INITIAL_STATE: StudioV3State = {
   dateExact: null,
   pickup: null,
   guests: null,
+  minorAges: [],
   interests: [],
   rhythm: null,
   considerations: [],

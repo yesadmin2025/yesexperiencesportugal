@@ -26,7 +26,13 @@ import {
   createBookingQuoteSession,
   fetchBookingQuote,
 } from "@/lib/pricing/bookingQuoteCheckout";
-import { compositionFromLegacyGuests } from "@/lib/pricing/travellerComposition";
+import {
+  hasMinors,
+  totalParticipants,
+  type TravellerComposition,
+} from "@/lib/pricing/travellerComposition";
+import { TravellerCompositionPicker } from "@/components/booking/TravellerCompositionPicker";
+import { useCategoryAwareCheckoutReadyFor } from "@/hooks/use-category-aware-checkout-ready";
 import { computePricingRevision, isQuoteAvailable } from "@/lib/pricing/bookingQuote";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
@@ -178,7 +184,15 @@ function TailorPage() {
   const [date, setDate] = useState("");
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
   const [pace, setPace] = useState<"relaxed" | "balanced" | "full">("balanced");
-  const [guests, setGuests] = useState(2);
+  const [composition, setComposition] = useState<TravellerComposition>({
+    adults: 2,
+    minorAges: [],
+  });
+  const guests = totalParticipants(composition);
+  const setGuests = (n: number) =>
+    setComposition((c) => ({ ...c, adults: Math.max(1, n - c.minorAges.length) }));
+  const categoryReady = useCategoryAwareCheckoutReadyFor(tour.id);
+  const mixedFamilyBlocked = hasMinors(composition) && !categoryReady.ready;
   const [language, setLanguage] = useState<"en" | "pt">("en");
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
   const [added, setAdded] = useState<Set<string>>(new Set());
@@ -410,6 +424,12 @@ function TailorPage() {
 
   const handleReserve = async (details: GuestDetails) => {
     if (checkoutPending) return;
+    if (mixedFamilyBlocked) {
+      toast.error(
+        "This tour isn't yet set up for family pricing. Please contact us to confirm ages.",
+      );
+      return;
+    }
     setCheckoutPending(true);
     // Open the drawer immediately so a branded skeleton appears while
     // the edge function is in flight — avoids "blank screen" feel.
@@ -447,7 +467,7 @@ function TailorPage() {
     }
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
-      const composition = compositionFromLegacyGuests(details.guests);
+      // Slice B: live composition (adults + minorAges) from state.
       const pricingRevision = computePricingRevision({
         commercialProductKey: tour.id,
         date: details.tourDate ?? "",
@@ -715,23 +735,38 @@ function TailorPage() {
 
               {/* Group */}
               <Group title="Your group">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Field label="Guests">
-                    <Stepper value={guests} onChange={setGuests} min={1} max={12} />
-                  </Field>
-                  <Field label="Guide language">
-                    <Segmented
-                      value={language}
-                      onChange={setLanguage}
-                      options={[
-                        { v: "en", l: "EN" },
-                        { v: "pt", l: "PT" },
-                      ]}
-                    />
-                    <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
-                      Spanish available on request — subject to guide availability.
-                    </p>
-                  </Field>
+                <div className="mt-2" data-testid="tailor-travellers">
+                  <TravellerCompositionPicker
+                    value={composition}
+                    onChange={setComposition}
+                    maxCapacity={12}
+                    minAdults={1}
+                  />
+                  {mixedFamilyBlocked ? (
+                    <div
+                      role="alert"
+                      data-testid="tailor-mixed-family-block"
+                      className="mt-3 border border-red-600/40 bg-red-50/60 px-3 py-2 text-[12px] text-red-800"
+                    >
+                      This tour isn't yet configured for family pricing.
+                      Please contact us so we can confirm ages and rates.
+                    </div>
+                  ) : null}
+                  <div className="mt-3 grid grid-cols-1 gap-3">
+                    <Field label="Guide language">
+                      <Segmented
+                        value={language}
+                        onChange={setLanguage}
+                        options={[
+                          { v: "en", l: "EN" },
+                          { v: "pt", l: "PT" },
+                        ]}
+                      />
+                      <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+                        Spanish available on request — subject to guide availability.
+                      </p>
+                    </Field>
+                  </div>
                 </div>
               </Group>
 

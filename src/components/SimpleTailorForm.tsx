@@ -1,32 +1,31 @@
 import { useMemo, useState } from "react";
-import { MessageCircle, Calendar, Users, Gauge, Plus, Check } from "lucide-react";
+import { MessageCircle, Calendar, Gauge, Plus, Check } from "lucide-react";
 import type { SignatureTour } from "@/data/signatureTours";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { TravellerCompositionPicker } from "@/components/booking/TravellerCompositionPicker";
+import {
+  type TravellerComposition,
+  EMPTY_COMPOSITION,
+  totalParticipants,
+} from "@/lib/pricing/travellerComposition";
 
 /**
  * Minimal "Tailor this tour" panel.
  *
- * Locks region, theme and overall storyline (the user already chose this
- * specific signature tour). Lets them tweak just the details a guide can
- * actually change on the day:
- *
- *   - Date
- *   - Group size
- *   - Pace (relaxed / balanced / packed)
- *   - Add-ons (lunch upgrade, hotel pickup, photographer, guide language)
- *   - Toggle individual stops on/off
- *
- * Submits as a pre-filled WhatsApp message — no booking engine required.
+ * Slice B: emits `TravellerComposition` (adults + minorAges) instead of a
+ * flat guest count. Backward compat: legacy adults-only drafts stay valid
+ * because `EMPTY_COMPOSITION` = { adults: 1, minorAges: [] }.
  */
 export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
-  // The stops we offer to toggle come from the tour's pace cues — they're
-  // already short, human-readable and curated per tour.
   const allStops = useMemo(() => tour.pace, [tour.pace]);
 
   const [date, setDate] = useState("");
-  const [guests, setGuests] = useState(2);
+  const [composition, setComposition] = useState<TravellerComposition>({
+    ...EMPTY_COMPOSITION,
+    adults: 2,
+  });
   const [pace, setPace] = useState<"relaxed" | "balanced" | "packed">("balanced");
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
   const [addons, setAddons] = useState<Set<string>>(new Set(["pickup"]));
@@ -52,10 +51,15 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
 
   const message = useMemo(() => {
     const kept = allStops.filter((s) => !skipped.has(s));
+    const total = totalParticipants(composition);
+    const guestsLine =
+      composition.minorAges.length > 0
+        ? `${composition.adults} adult${composition.adults === 1 ? "" : "s"} + minors aged ${composition.minorAges.join(", ")} (total ${total})`
+        : `${composition.adults}`;
     const lines = [
       `Hi YES — I'd like to tailor the ${tour.title} (${tour.region}).`,
       `• Date: ${date || "flexible"}`,
-      `• Guests: ${guests}`,
+      `• Guests: ${guestsLine}`,
       `• Pace: ${pace}`,
       `• Stops to keep: ${kept.length ? kept.join(", ") : "guide's choice"}`,
       skipped.size ? `• Skip: ${[...skipped].join(", ")}` : "",
@@ -64,7 +68,7 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
       notes ? `• Notes: ${notes}` : "",
     ].filter(Boolean);
     return lines.join("\n");
-  }, [tour, date, guests, pace, skipped, addons, language, notes, allStops]);
+  }, [tour, date, composition, pace, skipped, addons, language, notes, allStops]);
 
   return (
     <div className="border border-[color:var(--border)] bg-[color:var(--card)] p-5 sm:p-7">
@@ -76,8 +80,8 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
         Match this experience to your rhythm — the route, story and local guide stay intact.
       </p>
 
-      {/* Date + guests */}
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {/* Date */}
+      <div className="mt-6">
         <Field label="Date" icon={<Calendar size={14} />}>
           <input
             type="date"
@@ -86,27 +90,16 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
             className="w-full bg-transparent border border-[color:var(--border)] px-3 py-2.5 text-sm focus:outline-none focus:border-[color:var(--gold)]"
           />
         </Field>
-        <Field label="Guests" icon={<Users size={14} />}>
-          <div className="flex items-center border border-[color:var(--border)]">
-            <button
-              type="button"
-              onClick={() => setGuests((g) => Math.max(1, g - 1))}
-              className="px-3 py-2.5 text-lg leading-none text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
-              aria-label="Fewer guests"
-            >
-              −
-            </button>
-            <span className="flex-1 text-center text-sm">{guests}</span>
-            <button
-              type="button"
-              onClick={() => setGuests((g) => Math.min(12, g + 1))}
-              className="px-3 py-2.5 text-lg leading-none text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
-              aria-label="More guests"
-            >
-              +
-            </button>
-          </div>
-        </Field>
+      </div>
+
+      {/* Travellers */}
+      <div className="mt-4" data-testid="tailor-travellers">
+        <TravellerCompositionPicker
+          value={composition}
+          onChange={setComposition}
+          maxCapacity={12}
+          minAdults={1}
+        />
       </div>
 
       {/* Pace */}
@@ -131,7 +124,7 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
         </div>
       </Field>
 
-      {/* Stops to keep */}
+      {/* Stops */}
       <Field label="Stops" className="mt-4">
         <p className="text-xs text-[color:var(--charcoal-soft)] mb-2">
           Tap to skip any stop you'd rather replace with extra time elsewhere.
