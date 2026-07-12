@@ -36,6 +36,7 @@ import {
   type BookingQuoteUnavailable,
 } from "../_shared/bookingQuote.ts";
 import { signBookingQuoteToken } from "../_shared/bookingQuoteToken.ts";
+import { syncOneBokunPricing } from "../_shared/syncBokunPricing.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -120,16 +121,39 @@ Deno.serve(async (req) => {
   const mapping = mappingResult.mapping;
 
   // 2. Load the Bókun category mirror (age ranges live here).
-  const { data: mirror } = await admin
-    .from("tour_price_tiers")
-    .select("bokun_categories")
-    .eq("tour_id", input.commercialProductKey)
-    .maybeSingle();
+  //    Auto-heal: if empty, trigger a live sync for this product and re-read once.
+  async function loadMirror() {
+    const { data } = await admin
+      .from("tour_price_tiers")
+      .select("bokun_categories")
+      .eq("tour_id", input.commercialProductKey)
+      .maybeSingle();
+    return (data?.bokun_categories ?? []) as MappedBokunPricingCategory[];
+  }
 
-  const bokunCategories = (mirror?.bokun_categories ?? []) as MappedBokunPricingCategory[];
+  let bokunCategories = await loadMirror();
+  if (!bokunCategories.length) {
+    console.log(`[booking-quote] mirror empty for ${input.commercialProductKey}; auto-syncing product ${mapping.bokunProductId}`);
+    try {
+      const syncResult = await syncOneBokunPricing(
+        admin,
+        input.commercialProductKey,
+        String(mapping.bokunProductId),
+        false,
+      );
+      if (!syncResult.ok) {
+        return unavailable(input.flow, input.commercialProductKey, "no_commercial_mapping",
+          `Auto-sync failed: ${syncResult.reason ?? "unknown"}`);
+      }
+      bokunCategories = await loadMirror();
+    } catch (e) {
+      return unavailable(input.flow, input.commercialProductKey, "no_commercial_mapping",
+        `Auto-sync error: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
   if (!bokunCategories.length) {
     return unavailable(input.flow, input.commercialProductKey, "no_commercial_mapping",
-      "No Bókun pricing categories mirrored for this product.");
+      "No Bókun pricing categories mirrored for this product after auto-sync.");
   }
 
   // 3. Resolve traveller composition → confirmed Bókun categories.
