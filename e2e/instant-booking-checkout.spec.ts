@@ -163,3 +163,37 @@ test.describe("instant booking checkout", () => {
     ).toBe(true);
   });
 });
+
+test.describe("legacy checkout body — no Studio V3 fields", () => {
+  test("Signature legacy body (no flow, no mode) defaults to signature and returns a Stripe session", async () => {
+    const { status, json, raw } = await invokeCheckout({
+      ...baseBody,
+      stopLabels: ["Quinta da Regaleira", "Cabo da Roca", "Cascais Old Town"],
+      journeyTitle: TOUR_TITLE.split("—")[0].trim(),
+      tailored: false,
+      // note: no `flow` — resolveFlow must default to "signature"
+    });
+    expect(status, `legacy signature checkout failed: ${raw}`).toBe(200);
+    expect(json.url).toMatch(/^https:\/\/checkout\.stripe\.com\//);
+    expect(json.sessionId).toMatch(/^cs_/);
+    expect(json.flow).toBe("signature");
+    expect(json.productName).toMatch(/^YES Signature — /);
+  });
+
+  test("Tailored legacy body (tailored=true, no flow) resolves to tailor and returns a Stripe session", async () => {
+    const { status, json, raw } = await invokeCheckout({
+      ...baseBody,
+      stopLabels: ["Quinta da Regaleira", "Pena Palace", "Cascais Old Town"],
+      journeyTitle: TOUR_TITLE.split("—")[0].trim(),
+      tailored: true,
+      // note: no `flow` — resolveFlow must map tailored=true → "tailor"
+    });
+    expect(status, `legacy tailor checkout failed: ${raw}`).toBe(200);
+    expect(json.url).toMatch(/^https:\/\/checkout\.stripe\.com\//);
+    expect(json.sessionId).toMatch(/^cs_/);
+    expect(json.flow).toBe("tailor");
+    expect(json.productName).toMatch(/^YES Tailored — /);
+    expect(json.submitMessage).toContain("within 2 hours");
+  });
+});
+
