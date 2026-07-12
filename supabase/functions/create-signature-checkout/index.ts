@@ -680,6 +680,7 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
   );
 }
 
+interface Body {
   tourId: string;
   tourTitle: string;
   guests: number;
