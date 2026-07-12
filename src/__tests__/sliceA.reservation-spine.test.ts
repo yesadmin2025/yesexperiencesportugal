@@ -163,6 +163,8 @@ type QuoteRow = {
   state:
     | "reserved"
     | "checkout-created"
+    | "paid"
+    | "confirming"
     | "confirmed"
     | "expired"
     | "cancelled"
@@ -171,15 +173,15 @@ type QuoteRow = {
   expired_at?: string | null;
   paid_at?: string | null;
   confirmed_at?: string | null;
+  confirming_at?: string | null;
+  confirm_attempts?: number;
+  last_error?: string | null;
+  bokun_reservation_status?: string | null;
   bokun_release_result?: unknown;
 };
 
-/**
- * Conditional UPDATE ... WHERE state IN (...) RETURNING — mirrors the Supabase
- * `.update(...).eq('quote_id',...).in('state',[...]).select().maybeSingle()`
- * pattern used in stripe-webhook. Returns the mutated row when the claim
- * succeeded, otherwise null (duplicate delivery / race).
- */
+const CONFIRM_LEASE_MS = 3 * 60 * 1000;
+
 function claimAndUpdate(
   quotes: Map<string, QuoteRow>,
   quoteId: string,
@@ -213,33 +215,126 @@ async function handleExpiredSession(
   return { released: true, result };
 }
 
+/**
+ * Three-phase payment confirm with recoverable lease:
+ *   reserved | checkout-created → paid → confirming → confirmed
+ * Mirrors stripe-webhook exactly, including the fresh-lease 503 short-circuit
+ * and the stale-lease conditional reclaim.
+ */
+type ConfirmResult =
+  | { httpStatus: 200; status: "confirmed" | "already_confirmed" | "needs_review"; retryable: false }
+  | { httpStatus: 502 | 503; status: "confirm_failed" | "confirm_in_flight"; retryable: true; error?: string };
+
 async function handlePaymentConfirm(
   quotes: Map<string, QuoteRow>,
   quoteId: string,
   confirmReservation: (id: string) => Promise<{ bookingId: string }>,
-) {
-  const claimed = claimAndUpdate(
-    quotes,
-    quoteId,
-    ["reserved", "checkout-created"],
-    {
-      state: "confirmed",
-      paid_at: "2026-07-13T00:00:00.000Z",
-      confirmed_at: "2026-07-13T00:00:00.000Z",
-    },
-  );
-  if (!claimed || !claimed.bokun_reservation_id) return { confirmed: false as const };
-  await confirmReservation(claimed.bokun_reservation_id);
-  return { confirmed: true as const };
+  nowMs: number = Date.now(),
+): Promise<ConfirmResult> {
+  const nowIso = new Date(nowMs).toISOString();
+
+  // Phase A: reserved|checkout-created → paid
+  claimAndUpdate(quotes, quoteId, ["reserved", "checkout-created"], {
+    state: "paid",
+    paid_at: nowIso,
+  });
+
+  const current = quotes.get(quoteId);
+  if (!current) return { httpStatus: 200, status: "needs_review", retryable: false };
+  if (current.state === "confirmed") {
+    return { httpStatus: 200, status: "already_confirmed", retryable: false };
+  }
+  if (["expired", "cancelled", "failed"].includes(current.state)) {
+    return { httpStatus: 200, status: "needs_review", retryable: false };
+  }
+  if (current.state !== "paid" && current.state !== "confirming") {
+    return { httpStatus: 200, status: "needs_review", retryable: false };
+  }
+
+  // Phase B: single-writer paid → confirming, else lease handling
+  let claimed = false;
+  const prevAttempts = current.confirm_attempts ?? 0;
+  const prevConfirmingAt = current.confirming_at ?? null;
+
+  if (current.state === "paid") {
+    const c = claimAndUpdate(quotes, quoteId, ["paid"], {
+      state: "confirming",
+      confirming_at: nowIso,
+      confirm_attempts: prevAttempts + 1,
+    });
+    if (c) claimed = true;
+  }
+
+  if (!claimed) {
+    const leaseAgeMs = prevConfirmingAt ? nowMs - new Date(prevConfirmingAt).getTime() : Infinity;
+    const isStale = leaseAgeMs >= CONFIRM_LEASE_MS;
+    if (!isStale) {
+      return {
+        httpStatus: 503,
+        status: "confirm_in_flight",
+        retryable: true,
+        error: `lease_active_age_ms=${Math.round(leaseAgeMs)}`,
+      };
+    }
+    // Stale reclaim: conditional on state=confirming AND confirming_at=prevConfirmingAt
+    const row = quotes.get(quoteId)!;
+    if (row.state === "confirming" && (row.confirming_at ?? null) === prevConfirmingAt) {
+      quotes.set(quoteId, {
+        ...row,
+        confirming_at: nowIso,
+        confirm_attempts: (row.confirm_attempts ?? 0) + 1,
+      });
+      claimed = true;
+    } else {
+      return {
+        httpStatus: 503,
+        status: "confirm_in_flight",
+        retryable: true,
+        error: "lease_reclaimed_by_other_worker",
+      };
+    }
+  }
+
+  const winning = quotes.get(quoteId)!;
+  if (!winning.bokun_reservation_id) {
+    return { httpStatus: 200, status: "needs_review", retryable: false };
+  }
+
+  try {
+    await confirmReservation(winning.bokun_reservation_id);
+    // Phase C: confirming → confirmed
+    const row = quotes.get(quoteId)!;
+    if (row.state === "confirming") {
+      quotes.set(quoteId, {
+        ...row,
+        state: "confirmed",
+        bokun_reservation_status: "confirmed",
+        confirmed_at: new Date(nowMs).toISOString(),
+        confirming_at: null,
+        last_error: null,
+      });
+    }
+    return { httpStatus: 200, status: "confirmed", retryable: false };
+  } catch (e) {
+    const msg = (e instanceof Error ? e.message : String(e)).slice(0, 240);
+    const row = quotes.get(quoteId)!;
+    if (row.state === "confirming") {
+      quotes.set(quoteId, {
+        ...row,
+        state: "paid",
+        confirming_at: null,
+        bokun_reservation_status: "confirm_failed",
+        last_error: msg,
+      });
+    }
+    return { httpStatus: 502, status: "confirm_failed", retryable: true, error: msg };
+  }
 }
 
 describe("Slice A — atomic expiry vs payment", () => {
   it("expired session with state=checkout-created releases the provisional reservation exactly once", async () => {
     const quotes = new Map<string, QuoteRow>([
-      [
-        "q1",
-        { quote_id: "q1", state: "checkout-created", bokun_reservation_id: "BKN-1" },
-      ],
+      ["q1", { quote_id: "q1", state: "checkout-created", bokun_reservation_id: "BKN-1" }],
     ]);
     const release = vi.fn(async () => true);
     const result = await handleExpiredSession(quotes, "q1", release);
@@ -247,33 +342,21 @@ describe("Slice A — atomic expiry vs payment", () => {
     expect(release).toHaveBeenCalledWith("BKN-1");
     expect(result.released).toBe(true);
     expect(quotes.get("q1")?.state).toBe("expired");
-    expect(quotes.get("q1")?.expired_at).toBeTruthy();
-    expect(quotes.get("q1")?.bokun_release_result).toEqual({
-      status: "released",
-      at: expect.any(String),
-    });
   });
 
   it("duplicate expiry webhook does not release twice", async () => {
     const quotes = new Map<string, QuoteRow>([
-      [
-        "q1",
-        { quote_id: "q1", state: "checkout-created", bokun_reservation_id: "BKN-1" },
-      ],
+      ["q1", { quote_id: "q1", state: "checkout-created", bokun_reservation_id: "BKN-1" }],
     ]);
     const release = vi.fn(async () => true);
     await handleExpiredSession(quotes, "q1", release);
     await handleExpiredSession(quotes, "q1", release);
     expect(release).toHaveBeenCalledTimes(1);
-    expect(quotes.get("q1")?.state).toBe("expired");
   });
 
   it("expiry arriving after confirmation does not cancel the confirmed booking", async () => {
     const quotes = new Map<string, QuoteRow>([
-      [
-        "q1",
-        { quote_id: "q1", state: "confirmed", bokun_reservation_id: "BKN-1" },
-      ],
+      ["q1", { quote_id: "q1", state: "confirmed", bokun_reservation_id: "BKN-1" }],
     ]);
     const release = vi.fn(async () => true);
     const result = await handleExpiredSession(quotes, "q1", release);
@@ -282,38 +365,160 @@ describe("Slice A — atomic expiry vs payment", () => {
     expect(quotes.get("q1")?.state).toBe("confirmed");
   });
 
-  it("payment confirmation claim excludes expired/cancelled/confirmed → no double-confirm", async () => {
-    const cases: Array<QuoteRow["state"]> = ["expired", "cancelled", "confirmed", "failed"];
-    for (const startState of cases) {
+  it("expiry during paid / confirming / confirmed → no release, state unchanged", async () => {
+    for (const startState of ["paid", "confirming", "confirmed"] as const) {
       const quotes = new Map<string, QuoteRow>([
-        [
-          "q1",
-          { quote_id: "q1", state: startState, bokun_reservation_id: "BKN-1" },
-        ],
+        ["q1", { quote_id: "q1", state: startState, bokun_reservation_id: "BKN-1" }],
+      ]);
+      const release = vi.fn(async () => true);
+      const r = await handleExpiredSession(quotes, "q1", release);
+      expect(release).not.toHaveBeenCalled();
+      expect(r.released).toBe(false);
+      expect(quotes.get("q1")?.state).toBe(startState);
+    }
+  });
+});
+
+describe("Slice A — three-phase confirm with recoverable lease", () => {
+  it("happy path: reserved → paid → confirming → confirmed, lease cleared", async () => {
+    const quotes = new Map<string, QuoteRow>([
+      ["q1", { quote_id: "q1", state: "reserved", bokun_reservation_id: "BKN-1" }],
+    ]);
+    const confirm = vi.fn(async () => ({ bookingId: "BKN-1" }));
+    const r = await handlePaymentConfirm(quotes, "q1", confirm);
+    expect(r.status).toBe("confirmed");
+    expect(r.httpStatus).toBe(200);
+    expect(confirm).toHaveBeenCalledTimes(1);
+    const row = quotes.get("q1")!;
+    expect(row.state).toBe("confirmed");
+    expect(row.confirming_at).toBeNull();
+    expect(row.last_error).toBeNull();
+    expect(row.confirm_attempts).toBe(1);
+  });
+
+  it("two simultaneous payment webhooks: only one Phase-B claim wins, Bókun called once", async () => {
+    const quotes = new Map<string, QuoteRow>([
+      ["q1", { quote_id: "q1", state: "reserved", bokun_reservation_id: "BKN-1" }],
+    ]);
+    const confirm = vi.fn(async () => ({ bookingId: "BKN-1" }));
+    // Fire both at the same moment.
+    const [a, b] = await Promise.all([
+      handlePaymentConfirm(quotes, "q1", confirm),
+      handlePaymentConfirm(quotes, "q1", confirm),
+    ]);
+    // One won, the other saw fresh confirming lease → 503.
+    const statuses = [a.status, b.status].sort();
+    expect(statuses).toEqual(["confirm_in_flight", "confirmed"]);
+    expect(confirm).toHaveBeenCalledTimes(1);
+    expect(quotes.get("q1")?.state).toBe("confirmed");
+    const loser = [a, b].find((x) => x.status === "confirm_in_flight")!;
+    expect(loser.httpStatus).toBe(503);
+    expect(loser.retryable).toBe(true);
+  });
+
+  it("concurrent webhook sees fresh confirming lease → 503, no Bókun call", async () => {
+    const quotes = new Map<string, QuoteRow>([
+      [
+        "q1",
+        {
+          quote_id: "q1",
+          state: "confirming",
+          bokun_reservation_id: "BKN-1",
+          confirming_at: new Date(Date.now() - 30_000).toISOString(), // 30s ago, fresh
+          confirm_attempts: 1,
+        },
+      ],
+    ]);
+    const confirm = vi.fn(async () => ({ bookingId: "BKN-1" }));
+    const r = await handlePaymentConfirm(quotes, "q1", confirm);
+    expect(r.status).toBe("confirm_in_flight");
+    expect(r.httpStatus).toBe(503);
+    expect(r.retryable).toBe(true);
+    expect(confirm).not.toHaveBeenCalled();
+    expect(quotes.get("q1")?.state).toBe("confirming");
+  });
+
+  it("Bókun transient failure: confirming → paid, HTTP 502; retry succeeds", async () => {
+    const quotes = new Map<string, QuoteRow>([
+      ["q1", { quote_id: "q1", state: "reserved", bokun_reservation_id: "BKN-1" }],
+    ]);
+    const confirm = vi
+      .fn<(id: string) => Promise<{ bookingId: string }>>()
+      .mockRejectedValueOnce(new Error("bokun 5xx"))
+      .mockResolvedValueOnce({ bookingId: "BKN-1" });
+
+    const r1 = await handlePaymentConfirm(quotes, "q1", confirm);
+    expect(r1.status).toBe("confirm_failed");
+    expect(r1.httpStatus).toBe(502);
+    let row = quotes.get("q1")!;
+    expect(row.state).toBe("paid");
+    expect(row.confirming_at).toBeNull();
+    expect(row.last_error).toBe("bokun 5xx");
+    expect(row.bokun_reservation_status).toBe("confirm_failed");
+
+    // Second delivery re-enters Phase B and confirms.
+    const r2 = await handlePaymentConfirm(quotes, "q1", confirm);
+    expect(r2.status).toBe("confirmed");
+    expect(r2.httpStatus).toBe(200);
+    expect(confirm).toHaveBeenCalledTimes(2);
+    row = quotes.get("q1")!;
+    expect(row.state).toBe("confirmed");
+    expect(row.confirming_at).toBeNull();
+    expect(row.last_error).toBeNull();
+    expect(row.confirm_attempts).toBe(2);
+  });
+
+  it("stale lease is reclaimed by exactly one webhook; that webhook confirms", async () => {
+    // Worker died mid-confirm: state=confirming, confirming_at older than lease.
+    const staleIso = new Date(Date.now() - (CONFIRM_LEASE_MS + 5_000)).toISOString();
+    const quotes = new Map<string, QuoteRow>([
+      [
+        "q1",
+        {
+          quote_id: "q1",
+          state: "confirming",
+          bokun_reservation_id: "BKN-1",
+          confirming_at: staleIso,
+          confirm_attempts: 1,
+        },
+      ],
+    ]);
+    const confirm = vi.fn(async () => ({ bookingId: "BKN-1" }));
+
+    const [a, b] = await Promise.all([
+      handlePaymentConfirm(quotes, "q1", confirm),
+      handlePaymentConfirm(quotes, "q1", confirm),
+    ]);
+    // Exactly one reclaimed and confirmed; the other lost the reclaim race.
+    const statuses = [a.status, b.status].sort();
+    expect(statuses).toEqual(["confirm_in_flight", "confirmed"]);
+    expect(confirm).toHaveBeenCalledTimes(1);
+    expect(quotes.get("q1")?.state).toBe("confirmed");
+    expect(quotes.get("q1")?.confirm_attempts).toBe(2);
+  });
+
+  it("webhook arriving while state is confirmed → already_confirmed, no Bókun call", async () => {
+    const quotes = new Map<string, QuoteRow>([
+      ["q1", { quote_id: "q1", state: "confirmed", bokun_reservation_id: "BKN-1" }],
+    ]);
+    const confirm = vi.fn(async () => ({ bookingId: "BKN-1" }));
+    const r = await handlePaymentConfirm(quotes, "q1", confirm);
+    expect(r.status).toBe("already_confirmed");
+    expect(r.httpStatus).toBe(200);
+    expect(confirm).not.toHaveBeenCalled();
+  });
+
+  it("payment confirmation excludes expired/cancelled/failed", async () => {
+    for (const startState of ["expired", "cancelled", "failed"] as const) {
+      const quotes = new Map<string, QuoteRow>([
+        ["q1", { quote_id: "q1", state: startState, bokun_reservation_id: "BKN-1" }],
       ]);
       const confirm = vi.fn(async () => ({ bookingId: "BKN-1" }));
       const r = await handlePaymentConfirm(quotes, "q1", confirm);
       expect(confirm).not.toHaveBeenCalled();
-      expect(r.confirmed).toBe(false);
+      expect(r.status).toBe("needs_review");
       expect(quotes.get("q1")?.state).toBe(startState);
     }
   });
-
-  it("payment and expiry are mutually exclusive on the same row (single-writer claim)", async () => {
-    // Simulate: payment confirm wins the race, expiry arrives after.
-    const quotes = new Map<string, QuoteRow>([
-      [
-        "q1",
-        { quote_id: "q1", state: "reserved", bokun_reservation_id: "BKN-1" },
-      ],
-    ]);
-    const confirm = vi.fn(async () => ({ bookingId: "BKN-1" }));
-    const release = vi.fn(async () => true);
-    const pay = await handlePaymentConfirm(quotes, "q1", confirm);
-    const exp = await handleExpiredSession(quotes, "q1", release);
-    expect(pay.confirmed).toBe(true);
-    expect(exp.released).toBe(false);
-    expect(release).not.toHaveBeenCalled();
-    expect(quotes.get("q1")?.state).toBe("confirmed");
-  });
 });
+

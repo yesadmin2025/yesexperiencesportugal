@@ -1,94 +1,61 @@
-## Slice A closure — final implementation
+## Slice A closure — recoverable confirming lease (ready to build)
 
-Migration for the two new columns already ran (`booking_quotes.expired_at`, `booking_quotes.bokun_release_result`). The two safety corrections are folded in below.
+Migration already applied: `booking_quotes.confirming_at`, `confirm_attempts`, `bokun_reservation_status`; state constraint now includes `confirming`; partial index on `(state, confirming_at) WHERE state='confirming'`.
 
-### 1. Preserve `unsupported_age` vs `category_not_ready`
+Approve this plan and I will execute the code changes below in one build turn — no more planning.
 
-Files: `supabase/functions/create-signature-checkout/index.ts`, `src/__tests__/sliceA.reservation-spine.test.ts`.
+### `supabase/functions/stripe-webhook/index.ts` (v3 branch, ~292–410)
 
-The v3 quote path already resolves composition against the confirmed commercial category mapping at quote-generation time (`booking-quote`). So `basePricing.lines[i].bokunCategoryId` means: this age is supported by the mapping. `unsupported_age` therefore surfaces at quote time and is not reintroduced at checkout.
+Constant: `CONFIRM_LEASE_MS = 3 * 60 * 1000`.
 
-In `handleBookingQuoteCreateSession`:
+State machine: `reserved | checkout-created → paid → confirming → confirmed`.
 
-1. Drop the current "free infant silently skipped when slot omits the infant category" branch (both the pre-flight loop at ~536–544 and the same skip inside the reserve payload builder at ~565–570).
-2. Slot pre-flight now checks only `slot_unavailable` and `capacity_exceeded`.
-3. Reserve payload build:
-   - For EVERY `line.quantity > 0`, the slot MUST expose `line.bokunCategoryId`. Missing → `return jsonError("category_not_ready:<catId>", 409)`. No `isFree` bypass.
-   - Accumulate `selectedQuantity += line.quantity` and after the loop assert `selectedQuantity === resolvedGuestMix.totalParticipants`, else `composition_mismatch`.
-   - Only then call `reserveActivity`.
+Both `checkout.session.completed` and `checkout.session.async_payment_succeeded` already route through this branch (lines 178–180), and the `session.payment_status !== "paid"` guard (line 189) blocks confirmation on unpaid/processing sessions. No change required.
 
-`unsupported_age` remains the responsibility of `booking-quote` (already implemented via `resolveCompositionAgainstCategories` in Slice B); the checkout function never converts an unmapped age to Adult or omits it.
+Sequence per webhook delivery:
 
-### 2. Atomic expiry + payment transitions
+1. Read quote row (`select *`). Verify Stripe amount ↔ `final_total_eur` parity (existing).
+2. **Phase A — atomic `→ paid`**: `.update({state:'paid', paid_at: nowIso}).eq('quote_id',q).in('state',['reserved','checkout-created'])`.
+3. Re-read row for authoritative `state`, `confirming_at`, `confirm_attempts`.
+4. Route on `currentState`:
+   - `confirmed` → mirror booking row, return 200 `already_confirmed`.
+   - `expired|cancelled|failed` → return 200 `needs_review: quote_state_terminal`.
+   - `paid` → try **Phase B fresh claim**: `.update({state:'confirming', confirming_at: now, confirm_attempts: prev+1}).eq('state','paid')`.
+   - `confirming` → skip fresh claim, jump to lease handling.
+5. If Phase B produced no row, inspect lease age:
+   - Fresh (`age < CONFIRM_LEASE_MS`) → **HTTP 503** `confirm_in_flight`, `retryable:true`, do NOT call Bókun.
+   - Stale → **atomic reclaim**: `.update({confirming_at: now, confirm_attempts: prev+1}).eq('state','confirming').eq('confirming_at', prevConfirmingAt)`. Only one webhook wins; loser returns 503 `lease_reclaimed_by_other_worker`.
+6. Winner calls `confirmReservation(bokunReservationId)`.
+7. **Phase C — success**: `.update({state:'confirmed', bokun_reservation_status:'confirmed', confirmed_at: now, confirming_at: null, last_error: null}).eq('state','confirming')`. Mirror booking row. Return 200 `confirmed`.
+8. **Retryable failure** (any thrown/network error): `.update({state:'paid', confirming_at: null, bokun_reservation_status:'confirm_failed', last_error: <sanitised ≤240>}).eq('state','confirming')`. Return **HTTP 502** `confirm_failed`, `retryable:true`. Reservation is NOT released — the provisional hold stays for the next attempt.
 
-File: `supabase/functions/stripe-webhook/index.ts`.
+Expiry branch unchanged: still requires `state='checkout-created'`, so paid/confirming/confirmed are naturally immune.
 
-Add handling for `checkout.session.expired`:
+Async payment: same code path already handles `checkout.session.async_payment_succeeded` — no card-only constraint.
 
-```
-const { data: claimed } = await admin
-  .from("booking_quotes")
-  .update({ state: "expired", expired_at: new Date().toISOString() })
-  .eq("quote_id", quoteId)
-  .eq("state", "checkout-created")
-  .select("quote_id, bokun_reservation_id")
-  .maybeSingle();
+### `src/__tests__/sliceA.reservation-spine.test.ts`
 
-if (!claimed) return 200 { ignored: "not_in_checkout_created" };
-if (!claimed.bokun_reservation_id) return 200 { released: false };
+Extend the in-memory `handlePaymentConfirm` helper to model the three phases + lease, and add:
 
-const release = await releaseReservation(claimed.bokun_reservation_id); // never throws
-await admin
-  .from("booking_quotes")
-  .update({ bokun_release_result: sanitisedResult })
-  .eq("quote_id", claimed.quote_id);
-return 200 { released: true };
-```
+1. Two simultaneous payment webhooks — only one Phase-B claim succeeds, `confirmReservation` called exactly once, both requests end with the quote `confirmed`.
+2. Concurrent webhook sees fresh `confirming` lease → no Bókun call, response `{ httpStatus:503, retryable:true }`.
+3. Bókun transient failure → `confirming → paid`, `confirming_at=null`, `last_error` set, HTTP 502; second delivery re-enters Phase B and confirms.
+4. Worker dies mid-confirm (simulate: state stays `confirming`, `confirming_at` in the past by > lease) → next webhook reclaims exactly once → Bókun called → `confirmed`.
+5. Two webhooks race the stale reclaim → only one wins the conditional update → only one calls `confirmReservation`.
+6. Successful confirmation clears `confirming_at` and `last_error`.
+7. Retryable failure resets `confirming_at` to `null`.
+8. Expiry attempted during `paid` / `confirming` / `confirmed` → no release, state unchanged (three cases).
+9. Unpaid Stripe session → no Phase A, no Bókun call.
 
-`sanitisedResult` = `{ status: "released"|"already_expired"|"failed", code?: httpStatusOrShortMessage, at: iso }`. No raw Bókun payload, no tokens.
+### Verification
 
-Also import `releaseReservation` from `_shared/bokun.ts` and extend the early "non-checkout events" guard so `checkout.session.expired` falls into the new branch instead of the "ignored" path.
-
-**Payment confirmation atomicity** (existing v3 branch at ~248–330): replace the read-then-guard on `state === "confirmed"` with a claim-then-act:
-
-```
-const { data: claimed } = await admin
-  .from("booking_quotes")
-  .update({
-    state: "confirmed",
-    bokun_reservation_status: "confirmed",
-    paid_at: nowIso, confirmed_at: nowIso,
-  })
-  .eq("quote_id", quoteId)
-  .in("state", ["reserved", "checkout-created"])   // NOT "expired" / "cancelled" / "confirmed"
-  .select("quote_id, bokun_reservation_id, final_total_eur, bokun_base_subtotal_eur, database_addon_subtotal_eur")
-  .maybeSingle();
-```
-
-Only when the claim succeeds do we call `confirmReservation(bokunReservationId)` and mirror to `bookings`. If it returns null (already confirmed, expired, cancelled), the webhook is idempotent and returns `already_confirmed` after mirroring identifiers from the stored row. This makes payment vs expiry mutually exclusive at the DB layer, not just at read-time.
-
-Both the parity check (`amountTotal === Math.round(final_total_eur * 100)`) and the confirm call run only inside the claimed branch.
-
-### 3. Tests (`src/__tests__/sliceA.reservation-spine.test.ts`)
-
-Replace the "free infant silently skipped when the slot omits the infant category" test with:
-- `infant selected + slot has no matching Infant category → category_not_ready, no reserveActivity, no Stripe`
-- `selected quantity mismatch → composition_mismatch, no reserveActivity`
-
-Keep the mixed-family 4-line test (slot exposes infant → infant included at €0).
-
-Add expiry/atomic cases (pure-logic mirrors of the webhook branch, matching the file's existing style):
-- `expired session with state=checkout-created → conditional update returns 1 row → releaseReservation called once → state transitions to expired`
-- `duplicate expired webhook → conditional update returns 0 rows → releaseReservation NOT called`
-- `expiry arriving after confirmation (state=confirmed) → conditional update returns 0 rows → confirmed booking untouched`
-- `payment confirmation claim excludes expired/cancelled/confirmed → no double-confirm`
-
-### 4. Verification
 - `bunx vitest run src/__tests__/sliceA.reservation-spine.test.ts`
 - `bunx tsgo --noEmit`
 
 ### Out of scope
-- Slice C, any UI change, any refactor of `_shared/bokun.ts` beyond confirming `releaseReservation` remains idempotent + never-throws.
+
+Slice C, UI, admin surfaces, `_shared/bokun.ts` refactor.
 
 ### Completion report
-Files changed · corrected infant-missing-category behaviour · Stripe-expiry release behaviour · vitest output · tsgo output.
+
+Corrected state transitions · test output only.
