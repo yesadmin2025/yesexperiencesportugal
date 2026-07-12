@@ -101,6 +101,7 @@ export type Database = {
           bokun_option_id: string | null
           bokun_product_id: string
           bokun_rate_id: string | null
+          bokun_release_result: Json | null
           bokun_reservation_id: string | null
           bokun_reservation_status: string | null
           checkout_created_at: string | null
@@ -112,6 +113,7 @@ export type Database = {
           currency: string
           database_addon_subtotal_eur: number | null
           date: string
+          expired_at: string | null
           expires_at: string
           final_total_eur: number
           flow: string
@@ -137,6 +139,7 @@ export type Database = {
           bokun_option_id?: string | null
           bokun_product_id: string
           bokun_rate_id?: string | null
+          bokun_release_result?: Json | null
           bokun_reservation_id?: string | null
           bokun_reservation_status?: string | null
           checkout_created_at?: string | null
@@ -148,6 +151,7 @@ export type Database = {
           currency?: string
           database_addon_subtotal_eur?: number | null
           date: string
+          expired_at?: string | null
           expires_at: string
           final_total_eur: number
           flow: string
@@ -173,6 +177,7 @@ export type Database = {
           bokun_option_id?: string | null
           bokun_product_id?: string
           bokun_rate_id?: string | null
+          bokun_release_result?: Json | null
           bokun_reservation_id?: string | null
           bokun_reservation_status?: string | null
           checkout_created_at?: string | null
@@ -184,6 +189,7 @@ export type Database = {
           currency?: string
           database_addon_subtotal_eur?: number | null
           date?: string
+          expired_at?: string | null
           expires_at?: string
           final_total_eur?: number
           flow?: string
