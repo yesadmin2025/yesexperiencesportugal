@@ -14,6 +14,7 @@ import {
 } from "../_shared/quoteSnapshotSchema.ts";
 import { resolveQuote } from "../_shared/resolveQuote.ts";
 import { signQuoteToken, verifyQuoteToken, sha256Hex } from "../_shared/quoteToken.ts";
+import { revalidateBokunQuote } from "../_shared/bokunQuoteRevalidate.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
