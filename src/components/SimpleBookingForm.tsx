@@ -39,9 +39,14 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   // Phase C rollout: when admin has enabled banded pricing for this tour AND
   // at least one Bókun category is confirmed, hand off to the live-quote flow.
   const { readiness } = useTourBokunReadinessFor(tour.id);
+  // Slice B closure: any tour with a confirmed Bókun category MUST use the
+  // composition-aware BandedSignatureBookingForm — the legacy path has no
+  // minor UI and no per-age resolution, so a mixed-family booking must
+  // never reach it. `bandedPricingEnabled` is a rollout knob, not a safety
+  // gate; safety is the presence of at least one confirmed category.
   const hasConfirmedCategory =
     readiness?.bokunCategories?.some((c) => c.mappingStatus === "confirmed") ?? false;
-  if (readiness?.bandedPricingEnabled && hasConfirmedCategory) {
+  if (hasConfirmedCategory && readiness) {
     return <BandedSignatureBookingForm tour={tour} readiness={readiness} />;
   }
   return (
