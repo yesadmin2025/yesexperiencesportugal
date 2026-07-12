@@ -1987,6 +1987,8 @@ export function resolveStudioV3Route(input: {
     refinements: finalRefinements,
     whatToConfirm: "Availability and final details are confirmed before your experience.",
     confidence,
+    ageFilterStatus: ageFilter?.status === "resolved" ? "resolved" : "not-checked",
+    excludedTourIds: ageFilter?.excludedTourIds ?? [],
   };
 }
 
