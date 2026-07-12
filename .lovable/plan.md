@@ -1,64 +1,74 @@
-## Goal
-Execute the full Playwright end-to-end checkout walkthrough against the running app and report results for both Studio V3 and legacy Signature/Tailored flows. No source code changes.
+## Pass 1B — full visible-surface convergence (executable roadmap)
 
-## Scope — which specs run
-Three groups, all under `e2e/`:
+Executes steps 1–14 of the directive in one continuous build pass. No slicing across turns for surfaces 1–8; tests and Playwright follow in the same pass.
 
-1. **Legacy Signature / Tailored + Bókun wiring** (deployed edge fn)
-   - `instant-booking-checkout.spec.ts` (4 tests — includes the 2 legacy body cases just added)
-   - `instant-booking-checkout-negative.spec.ts`
-   - `bokun-checkout-coverage.spec.ts`
+### File-by-file changes
 
-2. **Studio V3 reveal → quote → checkout golden walkthrough**
-   - `studio-v3-reveal-walkthrough.spec.ts`
-   - `studio-v3-final-investment-live.spec.ts`
-   - `studio-v3-intro-to-investment.spec.ts`
-   - `studio-v3-cta-labels-live.spec.ts`
-   - `studio-v3-add-ons-total.spec.ts`
-   - `studio-v3-add-ons-round-trip.spec.ts`
-   - `studio-v3-add-ons-disabled-vs-enabled.spec.ts`
-   - `studio-v3-add-ons-disabled-never-affect-total.spec.ts`
+**1. `StudioV3.tsx` (hoist + thread)**
+- Keep existing `useResolvedSignature` call at parent scope; expand its consumers.
+- Build a single `resolvedSignature` prop from the hook: `{ pricing, confirmedStops, selectedAddOns, routeStatus, availabilityStatus, title, destinationRegion, inclusions, revision, quoteToken, expiresAt, status }`.
+- Thread `resolvedSignature` into: `SignaturePriceCard`, `FinalRevealStory`, `LivingJourneyPanel`, `GuestDetailsStep`, `CheckoutSummary`, `handleStripeCheckout`.
+- Delete every child-level quote query and every prop that fed legacy price/itinerary (`previewTiers`, `pricePctOfBase`, `resolvePerPaxEur`, `tour.priceFrom`, `tour.stops` re-derivations after Storyboard).
+- Quote invalidation: in the state reducer for Refine mutations (stops order/replace/remove, add-on toggles, guests, date, pickup, language, title), clear `quoteToken`, mark `pricing.status = "stale"`, disable checkout until next Final entry. Do not auto-refetch during editing.
+- Checkout gating: CTA disabled unless `pricing.status === "quoted" && quoteToken && !expired && revisionMatches && routeStatus !== "unavailable" && availabilityStatus !== "unavailable"`.
+- Remove legacy checkout fallback in `handleStripeCheckout` — Studio V3 always uses `create-session` quote-first path.
 
-3. **CTA / navigation smoke around the reveal**
-   - `studio-v3-reveal-and-guest-details-mobile.spec.ts`
-   - `studio-v3-p0-guest-details-footer-mobile.spec.ts`
+**2. `SignaturePriceCard.tsx`**
+- Replace internal price logic with `serverPricing` (already added). Extend for full loading/quoted/stale/unsupported states.
+- Loading + in final: "Calculating live price…". Pre-final: "Price confirmed in your final review". Quoted: full breakdown block (BASE €unitEur × guests = baseSubtotalEur; per add-on line with `Pending review` chip when routeIntegration === "pending-review"; TOTAL €totalEur). Unsupported: designer-handoff copy + disabled CTA. Delete `previewTiers`, `resolvePerPaxEur`, `tour.priceFrom` reads.
+- Strip "ADDITIONS €X / PP" combined label.
 
-Excluded (not checkout-related): hero, homepage, typography, map-visual specs.
+**3. `FinalRevealStory.tsx`**
+- Numbered stops from `resolvedSignature.confirmedStops` only. Delete `tour.stops` / `alternativeStops` reads for the numbered list.
+- Optional "Other possibilities" section renders unnumbered alternatives.
+- Apply `confirmationCopy(routeStatus)`.
 
-## Execution
-Run against the local dev server (`playwright.local.config.ts`) using Chromium:
+**4. `LivingJourneyPanel.tsx`**
+- Route/stops/pricing from `resolvedSignature`. Delete independent route recompute.
+- Apply `confirmationCopy(routeStatus)`.
 
-```bash
-bunx playwright test --config playwright.local.config.ts \
-  e2e/instant-booking-checkout.spec.ts \
-  e2e/instant-booking-checkout-negative.spec.ts \
-  e2e/bokun-checkout-coverage.spec.ts \
-  e2e/studio-v3-reveal-walkthrough.spec.ts \
-  e2e/studio-v3-final-investment-live.spec.ts \
-  e2e/studio-v3-intro-to-investment.spec.ts \
-  e2e/studio-v3-cta-labels-live.spec.ts \
-  e2e/studio-v3-add-ons-total.spec.ts \
-  e2e/studio-v3-add-ons-round-trip.spec.ts \
-  e2e/studio-v3-add-ons-disabled-vs-enabled.spec.ts \
-  e2e/studio-v3-add-ons-disabled-never-affect-total.spec.ts \
-  e2e/studio-v3-reveal-and-guest-details-mobile.spec.ts \
-  e2e/studio-v3-p0-guest-details-footer-mobile.spec.ts \
-  --reporter=list 2>&1 | tee /tmp/e2e-golden.log
-```
+**5. `GuestDetailsStep.tsx`**
+- Collapsed Signature summary: title, destination, date, guests, server total, selected add-ons, pending-review chip — all from `resolvedSignature`. No pricing/inclusion reconstruction.
+- Preserve typed guest fields across nav (lift form state into StudioV3 reducer if not already).
 
-Timeout budget: up to 10 minutes total (the harness caps each shell call). If a single group exceeds the cap, split into three sequential runs (group 1, then 2, then 3) and concatenate logs.
+**6. `CheckoutSummary.tsx`**
+- Extend existing `serverPricing` wiring to consume the full `resolvedSignature`: title, destinationRegion, four confirmed stops, add-ons, inclusions, total, pending-review status.
+- Remove `tour.stops`, `tour.priceFrom`, `tour.included`, `VIATOR_META` reads. Retain `tour.img` fallback only for hero image (does not affect metadata).
 
-## Reporting
-After each run:
-- Summarise `passed / failed / flaky / skipped` counts per group.
-- For any failure: file path, test name, first 20 lines of the error, and (if produced) the trace or screenshot path.
-- Call out any pre-existing failures unrelated to the checkout fix so they aren't blamed on it.
-- Confirm the two new legacy-body tests (`Signature legacy body …`, `Tailored legacy body …`) pass.
+**7. Confirmation copy source**
+- Reuse existing `confirmationCopy(routeStatus)` helper. Wire into all five surfaces + payment reassurance area.
+- Add `src/components/studio-v3/__tests__/no-instant-confirmation-in-studio.test.ts` — source-level `rg` assertion that "Instant confirmation", "Reserve instantly", "Your date is held the moment you reserve" do not appear in Studio V3 booking-flow modules outside `confirmationCopy`.
 
-## What this will NOT do
-- No code edits, no deploys, no migrations.
-- Will not open real Stripe checkout — legacy tests stop at the returned `cs_test_...` session URL, matching current suite behaviour.
-- Live billing is untouched (`environment: "sandbox"` throughout).
+### New Vitest suites (5)
 
-## Rollback
-None needed — this is a read-only test run.
+1. `visible-price-convergence.test.ts` — extend existing golden fixture to render all five surfaces and assert every displayed total === €525 (already covers SignaturePriceCard + CheckoutSummary; add FinalRevealStory, LivingJourneyPanel, GuestDetailsStep).
+2. `visible-itinerary-convergence.test.ts` — fixture with `tour.stops` deliberately different from `confirmedStops`; assert FinalRevealStory, LivingJourneyPanel, CheckoutSummary render identical 4-stop list; Stripe metadata `stop_ids` from server response matches.
+3. `no-instant-confirmation-in-studio.test.ts` — source scan (above).
+4. `unsupported-guests.test.tsx` — render with guests=13; assert no numeric total, no `create-session` call, CTA disabled, designer-handoff copy visible.
+5. `quote-invalidation-on-refine.test.tsx` — mount full StudioV3 with mocked quoteClient; go Final → Refine → toggle boat off → Final; assert `quoteToken` cleared between edits, new revision issued, old token rejected by mocked server (409 stale).
+
+### Playwright golden walkthrough
+- New file `e2e/studio-v3-golden-walkthrough.spec.ts`, run against local dev server, mobile-chromium project.
+- Flow: `/studio-v3` → seed golden state via `window.__STUDIO_V3_SEED__` (add hatch behind `?goldenSeed=1`) → walk Storyboard → Refine → Final → GuestDetails → Checkout intent.
+- Assertions: on Final, SignaturePriceCard shows `€435` base, `€90` add-on, `€525` total, "Pending review", four stops (Livramento, Azulejos, Bacalhôa, Sesimbra Castle), no José Maria in numbered list. GuestDetails collapsed summary shows same total. CheckoutSummary shows same total + stops. `create-signature-checkout` request body inspected via `page.on("request")` — asserts `mode: "create-session"` with matching revision and total.
+- Screenshots: `final-reveal.png`, `guest-details.png`, `checkout-summary.png`, plus network-captured Stripe session response asserted to contain `total_eur: "525"` in metadata.
+- Since real Stripe checkout page isn't navigated, verify €525 via the `pricing.totalEur` field returned in the create-session JSON response — matches existing e2e pattern.
+
+### Execution order in build mode
+1. Extend `useResolvedSignature.ts` return shape if needed.
+2. Refactor `StudioV3.tsx` (hoist + thread + invalidation + gating + remove legacy fallback).
+3. Rewire `FinalRevealStory.tsx`, `LivingJourneyPanel.tsx`, `GuestDetailsStep.tsx` in parallel.
+4. Extend `SignaturePriceCard.tsx` + `CheckoutSummary.tsx` (already partly done).
+5. Add `confirmationCopy` everywhere + source-scan test.
+6. Write 5 Vitest suites; run `bunx vitest run src/components/studio-v3` and iterate until green.
+7. Run `bunx tsgo --noEmit`.
+8. Add seed hatch + Playwright golden walkthrough; run via `playwright.local.config.ts`; capture screenshots to `/tmp/browser/golden/`.
+9. Final report: files changed, Vitest output, Playwright output, screenshot paths, verified €525 chain, list of any deferred mechanical enum-rename items.
+
+### Non-goals this pass
+- Internal `ConfirmationPause` → final-presentation enum rename (mechanical, tracked separately).
+- PDF export layout.
+- Non-Studio mobile rework.
+
+### Risk / scope acknowledgement
+This pass touches ~9k lines across 7 components, adds 5 test suites, and one Playwright walkthrough. Credit spend will be substantial (many parallel edits + several test iterations + Playwright runs). Proceeding as one continuous build.
