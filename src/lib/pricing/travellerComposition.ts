@@ -130,3 +130,141 @@ export function resolveComposition(
     unresolvedAges,
   };
 }
+
+// -----------------------------------------------------------------------------
+// SLICE B — strict category resolution
+// -----------------------------------------------------------------------------
+//
+// resolveCompositionAgainstCategories() is the ONLY resolver checkout should
+// use. Unlike resolveComposition() (kept for legacy adults-only quote paths)
+// it enforces the launch contract:
+//   • Only `confirmed` categories are considered.
+//   • Zero OR multiple matches for a minor age → unsupported_age (no narrowest-
+//     range tiebreak, no Adult fallback, no first-category fallback).
+//   • Adults resolve against the single confirmed adult category; absence =
+//     unsupported.
+//   • Infants (age 0) count toward totalParticipants like every other guest.
+
+export interface CategoryBooking {
+  bokunCategoryId: string;
+  label: string;
+  minAge: number | null;
+  maxAge: number | null;
+  quantity: number;
+}
+
+export interface ResolvedCompositionAgainstCategories {
+  travellerComposition: TravellerComposition;
+  resolvedGuestMix: {
+    adults: number;
+    youths: number;
+    children: number;
+    infants: number;
+    totalParticipants: number;
+  };
+  categoryBookings: CategoryBooking[];
+  unsupportedAges: number[];
+}
+
+function confirmedMatchesForAge(
+  age: number,
+  categories: MappedBokunPricingCategory[],
+): MappedBokunPricingCategory[] {
+  return categories.filter((c) => {
+    if (c.mappingStatus !== "confirmed") return false;
+    const min = typeof c.minAge === "number" ? c.minAge : 0;
+    const max = typeof c.maxAge === "number" ? c.maxAge : 17;
+    return age >= min && age <= max;
+  });
+}
+
+export function resolveCompositionAgainstCategories(
+  composition: TravellerComposition,
+  categories: MappedBokunPricingCategory[],
+): ResolvedCompositionAgainstCategories {
+  const bookings = new Map<string, CategoryBooking & { uiBand: string }>();
+  const mix = { adults: 0, youths: 0, children: 0, infants: 0 };
+  const unsupportedAges: number[] = [];
+
+  const bump = (c: MappedBokunPricingCategory, qty: number) => {
+    const cur = bookings.get(c.bokunCategoryId);
+    if (cur) cur.quantity += qty;
+    else bookings.set(c.bokunCategoryId, {
+      bokunCategoryId: c.bokunCategoryId,
+      label: c.bokunTitle,
+      minAge: typeof c.minAge === "number" ? c.minAge : null,
+      maxAge: typeof c.maxAge === "number" ? c.maxAge : null,
+      quantity: qty,
+      uiBand: c.uiBand,
+    });
+    if (c.uiBand === "adult") mix.adults += qty;
+    else if (c.uiBand === "youth") mix.youths += qty;
+    else if (c.uiBand === "child") mix.children += qty;
+    else if (c.uiBand === "infant") mix.infants += qty;
+  };
+
+  if (composition.adults > 0) {
+    const adultCats = categories.filter(
+      (c) => c.mappingStatus === "confirmed" && c.uiBand === "adult",
+    );
+    if (adultCats.length !== 1) unsupportedAges.push(-1);
+    else bump(adultCats[0], composition.adults);
+  }
+
+  for (const age of composition.minorAges) {
+    const matches = confirmedMatchesForAge(age, categories);
+    if (matches.length !== 1) { unsupportedAges.push(age); continue; }
+    bump(matches[0], 1);
+  }
+
+  const totalParticipants = composition.adults + composition.minorAges.length;
+  return {
+    travellerComposition: composition,
+    resolvedGuestMix: { ...mix, totalParticipants },
+    categoryBookings: [...bookings.values()].map(({ uiBand: _u, ...rest }) => rest),
+    unsupportedAges,
+  };
+}
+
+// -----------------------------------------------------------------------------
+// SLICE B — Studio candidate fallback
+// -----------------------------------------------------------------------------
+//
+// Given a set of Studio itinerary candidates (each carrying its own resolved
+// Bókun categories for pricing purposes) plus the guest composition, exclude
+// candidates that cannot support every selected age and return the survivors
+// in original order. The caller (Studio orchestrator) picks the first survivor
+// and only returns `unsupported_age` when the survivor list is empty.
+//
+// Note: Studio's *commercial* identity is separate (studio-v3-private-full-day)
+// and is NOT swapped by this filter — this only affects which itinerary
+// template feeds the reveal.
+
+export interface StudioCandidate<T = unknown> {
+  key: string;
+  categories: MappedBokunPricingCategory[];
+  payload?: T;
+}
+
+export interface StudioCandidateFilterResult<T = unknown> {
+  compatible: StudioCandidate<T>[];
+  excluded: Array<{ key: string; unsupportedAges: number[] }>;
+}
+
+export function filterStudioCandidatesByAges<T>(
+  composition: TravellerComposition,
+  candidates: StudioCandidate<T>[],
+): StudioCandidateFilterResult<T> {
+  const compatible: StudioCandidate<T>[] = [];
+  const excluded: Array<{ key: string; unsupportedAges: number[] }> = [];
+  for (const cand of candidates) {
+    const r = resolveCompositionAgainstCategories(composition, cand.categories);
+    if (r.unsupportedAges.length === 0) compatible.push(cand);
+    else excluded.push({ key: cand.key, unsupportedAges: r.unsupportedAges });
+  }
+  return { compatible, excluded };
+}
+
+export function hasMinors(c: TravellerComposition): boolean {
+  return c.minorAges.length > 0;
+}
