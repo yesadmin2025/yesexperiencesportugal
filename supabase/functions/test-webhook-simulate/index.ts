@@ -281,6 +281,7 @@ Deno.serve(async (req) => {
             };
           }
         }
+      }
     } catch (e) {
       bokunResult = { status: "failed", error: e instanceof Error ? e.message : String(e) };
     }
