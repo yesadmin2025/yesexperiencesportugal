@@ -1378,6 +1378,8 @@ export function curateJourney(
      *  when several fit + gentle per-stop jitter so the day re-arranges
      *  without breaking any cap or inventing stops. */
     seed?: number | string;
+    /** Slice B: compatible tour ids after age filtering. Empty/undefined = no filter. */
+    restrictToTourIds?: ReadonlySet<string> | null;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
@@ -1395,6 +1397,8 @@ export function curateJourney(
     pickup,
     destinationIntent,
     seedNum,
+    null,
+    options?.restrictToTourIds ?? null,
   );
 
   // STRICT containment: pool = primary tour's own stops only.
