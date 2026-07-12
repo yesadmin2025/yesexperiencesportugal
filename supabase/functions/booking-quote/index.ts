@@ -420,5 +420,6 @@ Deno.serve(async (req) => {
     availabilityStatus: "available",
   };
 
+  logDiag("available", { finalTotalEur, availabilityId: String(slot.id) });
   return json(200, response satisfies BookingQuoteResponse);
 });
