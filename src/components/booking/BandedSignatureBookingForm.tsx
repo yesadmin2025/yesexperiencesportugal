@@ -158,6 +158,10 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
       <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
         Live availability and pricing — categories and rates confirmed against Bókun in real time.
       </p>
+      <div className="mt-3">
+        <BokunRolloutBadge readiness={readiness} tourId={tour.id} />
+      </div>
+
 
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Field label="Date" icon={<Calendar size={14} />}>
