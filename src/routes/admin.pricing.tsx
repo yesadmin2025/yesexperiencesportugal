@@ -750,8 +750,3 @@ function SyncDiffRow({ result, tourTitle }: { result: SyncOneResult; tourTitle: 
     </article>
   );
 }
-        </div>
-      ) : null}
-    </article>
-  );
-}
