@@ -2370,6 +2370,25 @@ export function StudioV3() {
             inferred={state.guestsInferred}
             onChange={onGuestsChange}
           />
+          {/* Slice B — travellers with ages (Bókun category resolution). */}
+          <div className="mt-4" data-testid="studio-v3-traveller-composition">
+            <TravellerCompositionPicker
+              value={{
+                adults: Math.max(1, (state.guests ?? 2) - state.minorAges.length),
+                minorAges: state.minorAges,
+              }}
+              onChange={(next) => {
+                patch({
+                  guests: next.adults + next.minorAges.length,
+                  minorAges: next.minorAges,
+                  guestsInferred: false,
+                  guestsPrivateEvent: next.adults + next.minorAges.length >= 11,
+                });
+              }}
+              minAdults={1}
+              maxCapacity={14}
+            />
+          </div>
           {state.guests != null ? (
             <NextTeaser>{contextualTeaser("guests", state)}</NextTeaser>
           ) : (
