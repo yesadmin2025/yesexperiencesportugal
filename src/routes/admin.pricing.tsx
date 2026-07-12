@@ -214,6 +214,15 @@ function AdminPricingPage() {
             </div>
           </header>
 
+          <SyncFromBokunPanel
+            tours={tours}
+            onApplied={async () => {
+              await queryClient.invalidateQueries({ queryKey: TOUR_PRICE_TIERS_QUERY_KEY });
+              await queryClient.invalidateQueries({ queryKey: TOUR_BANDED_TIERS_QUERY_KEY });
+              await refetch();
+            }}
+          />
+
           <div className="mt-8 space-y-5">
             {tours.map((tour) => (
               <TourRow
