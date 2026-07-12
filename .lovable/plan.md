@@ -1,74 +1,118 @@
-## Pass 1B — full visible-surface convergence (executable roadmap)
+## Goal
 
-Executes steps 1–14 of the directive in one continuous build pass. No slicing across turns for surfaces 1–8; tests and Playwright follow in the same pass.
+Reuse the existing Bókun client, authentication, product mappings and API infrastructure. Do not create a new Bókun integration. Extend the current calls to retrieve and persist the actual option, rate, pricing-category and category-price data already available through the connected Bókun account.
 
-### File-by-file changes
+&nbsp;
 
-**1. `StudioV3.tsx` (hoist + thread)**
-- Keep existing `useResolvedSignature` call at parent scope; expand its consumers.
-- Build a single `resolvedSignature` prop from the hook: `{ pricing, confirmedStops, selectedAddOns, routeStatus, availabilityStatus, title, destinationRegion, inclusions, revision, quoteToken, expiresAt, status }`.
-- Thread `resolvedSignature` into: `SignaturePriceCard`, `FinalRevealStory`, `LivingJourneyPanel`, `GuestDetailsStep`, `CheckoutSummary`, `handleStripeCheckout`.
-- Delete every child-level quote query and every prop that fed legacy price/itinerary (`previewTiers`, `pricePctOfBase`, `resolvePerPaxEur`, `tour.priceFrom`, `tour.stops` re-derivations after Storyboard).
-- Quote invalidation: in the state reducer for Refine mutations (stops order/replace/remove, add-on toggles, guests, date, pickup, language, title), clear `quoteToken`, mark `pricing.status = "stale"`, disable checkout until next Final entry. Do not auto-refetch during editing.
-- Checkout gating: CTA disabled unless `pricing.status === "quoted" && quoteToken && !expired && revisionMatches && routeStatus !== "unavailable" && availabilityStatus !== "unavailable"`.
-- Remove legacy checkout fallback in `handleStripeCheckout` — Studio V3 always uses `create-session` quote-first path.
+Extend pricing so every visible surface, quote, and Stripe checkout supports **Adult / Youth / Child** (with Infant = free where Bokun defines it) — and treat **Bokun `pricingCategories**` as the single source of truth. `tour_price_tiers` becomes a mirror of Bokun, not a hand-maintained anchor.
 
-**2. `SignaturePriceCard.tsx`**
-- Replace internal price logic with `serverPricing` (already added). Extend for full loading/quoted/stale/unsupported states.
-- Loading + in final: "Calculating live price…". Pre-final: "Price confirmed in your final review". Quoted: full breakdown block (BASE €unitEur × guests = baseSubtotalEur; per add-on line with `Pending review` chip when routeIntegration === "pending-review"; TOTAL €totalEur). Unsupported: designer-handoff copy + disabled CTA. Delete `previewTiers`, `resolvePerPaxEur`, `tour.priceFrom` reads.
-- Strip "ADDITIONS €X / PP" combined label.
+Today `tour_price_tiers.tiers` is a flat `{ "1".."8": eurPerPax }` map (adults only). `stripe-webhook` and `test-webhook-simulate` blindly pick `slot.pricingCategories?.[0]` and send all guests as that one category. Nothing on the site collects or prices children/youth.
 
-**3. `FinalRevealStory.tsx`**
-- Numbered stops from `resolvedSignature.confirmedStops` only. Delete `tour.stops` / `alternativeStops` reads for the numbered list.
-- Optional "Other possibilities" section renders unnumbered alternatives.
-- Apply `confirmationCopy(routeStatus)`.
+## Scope (this pass)
 
-**4. `LivingJourneyPanel.tsx`**
-- Route/stops/pricing from `resolvedSignature`. Delete independent route recompute.
-- Apply `confirmationCopy(routeStatus)`.
+Signature + Tailored flows only. Studio V3 commercial pricing (separate catalogue in `_shared/studioCommercialPricing.ts`) is out of scope — noted as follow-up.
 
-**5. `GuestDetailsStep.tsx`**
-- Collapsed Signature summary: title, destination, date, guests, server total, selected add-ons, pending-review chip — all from `resolvedSignature`. No pricing/inclusion reconstruction.
-- Preserve typed guest fields across nav (lift form state into StudioV3 reducer if not already).
+## Technical plan
 
-**6. `CheckoutSummary.tsx`**
-- Extend existing `serverPricing` wiring to consume the full `resolvedSignature`: title, destinationRegion, four confirmed stops, add-ons, inclusions, total, pending-review status.
-- Remove `tour.stops`, `tour.priceFrom`, `tour.included`, `VIATOR_META` reads. Retain `tour.img` fallback only for hero image (does not affect metadata).
+### 1. Data model — tiers keyed by age band
 
-**7. Confirmation copy source**
-- Reuse existing `confirmationCopy(routeStatus)` helper. Wire into all five surfaces + payment reassurance area.
-- Add `src/components/studio-v3/__tests__/no-instant-confirmation-in-studio.test.ts` — source-level `rg` assertion that "Instant confirmation", "Reserve instantly", "Your date is held the moment you reserve" do not appear in Studio V3 booking-flow modules outside `confirmationCopy`.
+Migration: reshape `tour_price_tiers.tiers` from `{guests: eur}` to:
 
-### New Vitest suites (5)
+```json
+{
+  "adult":  { "1": 279, "2": 215, ..., "8": 159 },
+  "youth":  { "1": 200, ... },     // optional; omit if Bokun has no youth cat
+  "child":  { "1": 140, ... },     // optional
+  "infant": 0                       // scalar or omit
+}
+```
 
-1. `visible-price-convergence.test.ts` — extend existing golden fixture to render all five surfaces and assert every displayed total === €525 (already covers SignaturePriceCard + CheckoutSummary; add FinalRevealStory, LivingJourneyPanel, GuestDetailsStep).
-2. `visible-itinerary-convergence.test.ts` — fixture with `tour.stops` deliberately different from `confirmedStops`; assert FinalRevealStory, LivingJourneyPanel, CheckoutSummary render identical 4-stop list; Stripe metadata `stop_ids` from server response matches.
-3. `no-instant-confirmation-in-studio.test.ts` — source scan (above).
-4. `unsupported-guests.test.tsx` — render with guests=13; assert no numeric total, no `create-session` call, CTA disabled, designer-handoff copy visible.
-5. `quote-invalidation-on-refine.test.tsx` — mount full StudioV3 with mocked quoteClient; go Final → Refine → toggle boat off → Final; assert `quoteToken` cleared between edits, new revision issued, old token rejected by mocked server (409 stale).
+Plus new columns:
 
-### Playwright golden walkthrough
-- New file `e2e/studio-v3-golden-walkthrough.spec.ts`, run against local dev server, mobile-chromium project.
-- Flow: `/studio-v3` → seed golden state via `window.__STUDIO_V3_SEED__` (add hatch behind `?goldenSeed=1`) → walk Storyboard → Refine → Final → GuestDetails → Checkout intent.
-- Assertions: on Final, SignaturePriceCard shows `€435` base, `€90` add-on, `€525` total, "Pending review", four stops (Livramento, Azulejos, Bacalhôa, Sesimbra Castle), no José Maria in numbered list. GuestDetails collapsed summary shows same total. CheckoutSummary shows same total + stops. `create-signature-checkout` request body inspected via `page.on("request")` — asserts `mode: "create-session"` with matching revision and total.
-- Screenshots: `final-reveal.png`, `guest-details.png`, `checkout-summary.png`, plus network-captured Stripe session response asserted to contain `total_eur: "525"` in metadata.
-- Since real Stripe checkout page isn't navigated, verify €525 via the `pricing.totalEur` field returned in the create-session JSON response — matches existing e2e pattern.
+- `bokun_categories jsonb` — `{ adult: {id, title}, youth?: {...}, child?: {...}, infant?: {...} }` captured from Bokun.
+- `synced_from_bokun_at timestamptz`.
 
-### Execution order in build mode
-1. Extend `useResolvedSignature.ts` return shape if needed.
-2. Refactor `StudioV3.tsx` (hoist + thread + invalidation + gating + remove legacy fallback).
-3. Rewire `FinalRevealStory.tsx`, `LivingJourneyPanel.tsx`, `GuestDetailsStep.tsx` in parallel.
-4. Extend `SignaturePriceCard.tsx` + `CheckoutSummary.tsx` (already partly done).
-5. Add `confirmationCopy` everywhere + source-scan test.
-6. Write 5 Vitest suites; run `bunx vitest run src/components/studio-v3` and iterate until green.
-7. Run `bunx tsgo --noEmit`.
-8. Add seed hatch + Playwright golden walkthrough; run via `playwright.local.config.ts`; capture screenshots to `/tmp/browser/golden/`.
-9. Final report: files changed, Vitest output, Playwright output, screenshot paths, verified €525 chain, list of any deferred mechanical enum-rename items.
+Backfill: wrap existing tier maps under `adult`. Keep GRANTs and policies.
 
-### Non-goals this pass
-- Internal `ConfirmationPause` → final-presentation enum rename (mechanical, tracked separately).
-- PDF export layout.
-- Non-Studio mobile rework.
+### 2. Bokun sync as source of truth
 
-### Risk / scope acknowledgement
-This pass touches ~9k lines across 7 components, adds 5 test suites, and one Playwright walkthrough. Credit spend will be substantial (many parallel edits + several test iterations + Playwright runs). Proceeding as one continuous build.
+New Edge Function `sync-bokun-pricing` (admin-only, callable from `/admin/pricing`, and idempotent so it can run on a cron):
+
+- For each row in `tour_bokun_mapping`, call Bokun activity + a probe availability to read `pricingCategories` (id, title, minAge, maxAge).
+- Classify each category into `adult | youth | child | infant` by title + age band (`Adult`, `Youth`/`Teen` 12–17, `Child` 3–11, `Infant` 0–2 — configurable table `bokun_category_aliases`).
+- Read per-tier EUR per pax from Bokun's pricing schedule (or from category default price where schedules are per-category-flat) and upsert into `tour_price_tiers` under the new shape. Persist `bokun_categories`.
+- Return a diff report for admin review.
+
+Manual override still allowed via `/admin/pricing`, but the editor shows Bokun value alongside override and flags drift.
+
+### 3. Shared pricing helper
+
+New `src/lib/pricing/ageBandPricing.ts` + `supabase/functions/_shared/ageBandPricing.ts` (mirror) exporting:
+
+```ts
+type GuestMix = { adults: number; youths: number; children: number; infants: number };
+type PriceBreakdown = {
+  lines: Array<{ band: 'adult'|'youth'|'child'|'infant'; qty: number; unitEur: number; subtotalEur: number }>;
+  totalEur: number;
+  billableGuests: number; // adults+youths+children (infants excluded)
+};
+resolveBandedPrice(tiers, mix): PriceBreakdown
+```
+
+Tier lookup per band uses `billableGuests` bucket (same 1..8 scheme). Missing band falls back to adult tier * band multiplier only if configured; otherwise the band is disallowed and UI hides it.
+
+### 4. Quote endpoint + `useResolvedSignature`
+
+- Extend the resolved-signature contract: `guestMix` replaces raw `guests`; `pricing.breakdown` uses `PriceBreakdown`.
+- Backward compat: if caller sends only `guests`, treat as `adults`.
+- `create-signature-checkout`:
+  - Accept `guestMix` in body (validated, sums must be ≥1 and match Bokun's min/max).
+  - Resolve `eurPerPax` per band from `tour_price_tiers`; compute `total_eur` server-side.
+  - Emit one Stripe line item per non-empty band with `unit_amount`, `quantity`, and `product_data.name = "<Tour> — <Adult|Youth|Child>"`. Infant line only if `unit_amount > 0`.
+  - Stripe metadata: `adults, youths, children, infants, total_eur, bands_json`.
+
+### 5. Bokun reserve — one `pricingCategoryBookings` entry per band
+
+In `stripe-webhook` and `test-webhook-simulate`:
+
+- Read `mapping.bokun_categories` (or the fresh slot's `pricingCategories`) and build one `pricingCategoryBookings` entry per band using the ids captured during sync, quantities from Stripe metadata.
+- Remove the "first pricing category" shortcut. If a required band's category is missing on the slot → `needs_review` with explicit reason.
+
+### 6. UI — collect and show the mix
+
+- `GuestPicker` (used by Signature detail, Tailored, Guest details step): add Youth and Child steppers, with age-range helper text sourced from `bokun_categories`. Hide bands the tour does not offer.
+- `SignaturePriceCard`, `CheckoutSummary`, `GuestDetailsStep` summary, `FinalRevealStory` price line: render the `PriceBreakdown` lines + total from `useResolvedSignature`. Kill any remaining `eurPerPax * guests` client math.
+- Empty-band lines are omitted; infant line shows "Infants (0–2) — free" when applicable.
+
+### 7. Admin `/admin/pricing`
+
+- Tier editor grid becomes 3 rows (Adult/Youth/Child) × 8 columns, plus Infant scalar.
+- "Sync from Bokun" button → calls `sync-bokun-pricing`, shows diff, requires confirm.
+- Displays `synced_from_bokun_at` and any drift badges.
+
+### 8. Tests
+
+- Vitest: `ageBandPricing.test.ts` (band math, empty bands, infant free, missing-band guard).
+- Vitest: `useResolvedSignature.banded.test.ts`.
+- Edge test: `create-signature-checkout` returns correct `line_items` for mixed groups; rejects invalid mixes.
+- Edge test: `sync-bokun-pricing` classifies canonical Bokun payloads (fixtures for arrabida-wine, wild-beaches, fatima-nazare).
+- Playwright: extend the golden Signature/Tailored walkthrough to book 2 adults + 1 youth + 1 child; assert Stripe session `line_items` count and metadata.
+
+### 9. Rollout
+
+1. Migration + backfill (no behaviour change; adult-only rows still work).
+2. Ship helper + resolved-signature contract with back-compat.
+3. Ship sync function; run once against production; review diff; apply.
+4. Ship checkout + webhook changes behind a per-tour `banded_pricing_enabled` flag on `tour_bokun_mapping` (default false).
+5. Enable per tour after Bokun categories confirmed.
+6. Flip UI steppers on for enabled tours.
+
+## Non-goals
+
+- Studio V3 commercial catalogue (separate follow-up).
+- Bokun availability-level dynamic pricing (season/day-of-week) — captured as future work; current tiers stay group-size based.
+- Currency other than EUR.
+
+## Deliverables
+
+Migration, `sync-bokun-pricing` function, shared `ageBandPricing`, updated `useResolvedSignature` + `create-signature-checkout` + `stripe-webhook` + `test-webhook-simulate`, updated `GuestPicker` and 5 visible price surfaces, updated `/admin/pricing`, Vitest + Playwright suites, plan.md entry.
