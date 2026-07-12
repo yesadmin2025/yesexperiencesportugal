@@ -776,14 +776,25 @@ Deno.serve(async (req) => {
 
   try {
     const body = (await req.json()) as Body & {
-      mode?: "quote" | "create-session" | "bokun-signature-create-session";
+      mode?:
+        | "quote"
+        | "create-session"
+        | "bokun-signature-create-session"
+        | "booking-quote-create-session";
       snapshot?: RawQuoteSnapshot;
       quoteToken?: string;
       currentRevision?: string;
     };
     if (!body || typeof body !== "object") return jsonError("Invalid body", 400);
 
-    // Studio V3 authoritative-quote paths.
+    // Launch-spec v3 unified BookingQuote path (Signature / Tailored / Studio).
+    if (body.mode === "booking-quote-create-session") {
+      if (!body.quoteToken) return jsonError("Missing quoteToken", 400);
+      return await handleBookingQuoteCreateSession(
+        body as unknown as BookingQuoteCreateSessionBody,
+      );
+    }
+    // Studio V3 authoritative-quote paths (legacy — kept for existing callers).
     if (body.mode === "quote") {
       if (!body.snapshot) return jsonError("Missing snapshot", 400);
       return await handleStudioQuote(body.snapshot);
