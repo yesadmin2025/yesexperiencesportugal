@@ -76,6 +76,12 @@ import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { supabase } from "@/integrations/supabase/client";
 import {
+  createBookingQuoteSession,
+  fetchBookingQuote,
+} from "@/lib/pricing/bookingQuoteCheckout";
+import { compositionFromLegacyGuests } from "@/lib/pricing/travellerComposition";
+import { computePricingRevision, isQuoteAvailable } from "@/lib/pricing/bookingQuote";
+import {
   fetchStudioQuote,
   createStudioSession,
   type StudioQuoteSnapshot,
