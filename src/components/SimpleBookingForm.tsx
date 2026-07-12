@@ -42,7 +42,10 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   if (readiness?.bandedPricingEnabled && hasConfirmedCategory) {
     return <BandedSignatureBookingForm tour={tour} readiness={readiness} />;
   }
+  return <LegacySimpleBookingForm tour={tour} />;
+}
 
+function LegacySimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const navigate = useNavigate();
   const [date, setDate] = useState("");
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
