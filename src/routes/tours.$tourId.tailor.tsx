@@ -191,7 +191,7 @@ function TailorPage() {
   const guests = totalParticipants(composition);
   const setGuests = (n: number) =>
     setComposition((c) => ({ ...c, adults: Math.max(1, n - c.minorAges.length) }));
-  const categoryReady = useCategoryAwareCheckoutReadyFor(tour.id);
+  const categoryReady = useCategoryAwareCheckoutReadyFor(tour.id, composition);
   const mixedFamilyBlocked = hasMinors(composition) && !categoryReady.ready;
   const [language, setLanguage] = useState<"en" | "pt">("en");
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
