@@ -242,24 +242,32 @@ Deno.serve(async (req) => {
   } = { status: "skipped" };
 
   try {
-    const { data: mapping } = await admin
-      .from("tour_bokun_mapping")
-      .select("bokun_product_id")
-      .eq("tour_id", tourId)
-      .maybeSingle();
+    // v3 metadata already carries a resolved Bokun product id (Signature,
+    // Tailored, and Studio all go through booking-quote). Fall back to the
+    // legacy tour_bokun_mapping lookup only for pre-v3 sessions.
+    let bokunProductId: string | null = isV3 ? (meta.bokun_product_id ?? null) : null;
+    if (!bokunProductId) {
+      const { data: mapping } = await admin
+        .from("tour_bokun_mapping")
+        .select("bokun_product_id")
+        .eq("tour_id", tourId)
+        .maybeSingle();
+      bokunProductId = mapping?.bokun_product_id ?? null;
+    }
 
-    if (!mapping?.bokun_product_id) {
+    if (!bokunProductId) {
       bokunResult = { status: "needs_review", error: "No Bokun mapping for this tour" };
     } else if (!dateExact) {
       bokunResult = { status: "needs_review", error: "Customer did not select an exact date" };
     } else {
       const slots = (await getActivityAvailabilities(
-        mapping.bokun_product_id,
+        bokunProductId,
         dateExact,
       )) as AvailabilitySlot[];
       const usable = slots.filter((s) => (s.availabilityCount ?? 1) >= guests);
 
-      // If the customer picked a specific slot in FinalDetailsDialog, lock to it.
+      // If the customer picked a specific slot (v2 FinalDetailsDialog or v3
+      // booking-quote), lock to it — v3 always writes bokun_availability_id.
       const lockedId = Number(meta.bokun_availability_id ?? 0);
       const lockedSlot =
         lockedId > 0 ? (usable.find((s) => Number(s.id) === lockedId) ?? null) : null;
@@ -282,11 +290,12 @@ Deno.serve(async (req) => {
       } else {
         const slot = chosen;
 
-        // Phase B: prefer multi-category metadata written by the new
-        // bokun-signature-create-session path. Fall back to single-category
-        // for legacy Signature/Tailor sessions that still use tier pricing.
+        // Category payloads:
+        //   • v3 booking-quote  → { c, q, u, f }  (u=cents, f=1 => free line)
+        //   • v2 signature/tailor → { c, q, b, u } (u=cents, u=0 => free line)
+        //   • legacy pre-Phase-B → single-category fallback
         const categoriesJson = meta.pricing_categories_json ?? "";
-        type PricedCategory = { c: string; q: number; b?: string; u?: number };
+        type PricedCategory = { c: string; q: number; b?: string; u?: number; f?: number };
         let requested: PricedCategory[] = [];
         if (categoriesJson) {
           try {
@@ -297,7 +306,7 @@ Deno.serve(async (req) => {
                   p && typeof p.c === "string" && Number.isFinite(p.q),
               );
             }
-          } catch { /* fall through to legacy */ }
+          } catch { /* fall through to single-category */ }
         }
 
         const slotCatById = new Map<string, { id: number; title: string }>();
@@ -310,9 +319,9 @@ Deno.serve(async (req) => {
           for (const r of requested) {
             if (r.q <= 0) continue;
             const slotCat = slotCatById.get(r.c);
-            const paid = (r.u ?? 1) > 0;
+            const isFree = r.f === 1 || (r.u ?? 1) === 0;
             if (!slotCat) {
-              if (paid) { missingCategory = r.b ?? r.c; break; }
+              if (!isFree) { missingCategory = r.b ?? r.c; break; }
               // Free line (infant) absent on slot → skip from Bokun call.
               continue;
             }
@@ -337,11 +346,33 @@ Deno.serve(async (req) => {
         } else {
           const [firstName, ...rest] = (customerName ?? "Guest Guest").split(" ");
           const lastName = rest.join(" ") || "—";
-          const isTailored = meta.tailored === "1";
+          const isTailored =
+            meta.tailored === "1" || flow === "tailored" || flow === "tailor";
           const stopsLine = meta.stops ? ` · Stops: ${meta.stops.replace(/\|/g, ", ")}` : "";
           const tailorPrefix = isTailored ? "[TAILORED — operator to verify stop changes] " : "";
+
+          // Surface database add-ons on the operator note so the fulfilment
+          // team can prep them — Bokun doesn't model our add-on catalogue.
+          let addOnsLine = "";
+          const addOnsJson = meta.add_ons_json ?? "";
+          if (addOnsJson) {
+            try {
+              const parsed = JSON.parse(addOnsJson);
+              if (Array.isArray(parsed) && parsed.length) {
+                addOnsLine =
+                  " · Add-ons: " +
+                  parsed
+                    .map(
+                      (a: { id?: string; q?: number }) =>
+                        `${a.id ?? "?"}×${a.q ?? 1}`,
+                    )
+                    .join(", ");
+              }
+            } catch { /* ignore malformed add-ons meta */ }
+          }
+
           const r = await reserveAndConfirm({
-            productId: mapping.bokun_product_id,
+            productId: bokunProductId,
             availabilityId: slot.id,
             startTime: slot.startTime,
             date: slot.date,
@@ -355,7 +386,7 @@ Deno.serve(async (req) => {
             },
             externalBookingReference: session.id,
             notes:
-              `${tailorPrefix}YES booking · ${meta.pickup ?? ""} · ${meta.journey_title ?? ""}${stopsLine}`.slice(
+              `${tailorPrefix}YES booking · ${meta.pickup ?? ""} · ${meta.journey_title ?? ""}${stopsLine}${addOnsLine}`.slice(
                 0,
                 500,
               ),
