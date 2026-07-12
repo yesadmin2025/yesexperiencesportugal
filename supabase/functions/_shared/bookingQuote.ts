@@ -102,6 +102,25 @@ export interface BookingQuoteUnavailable {
   /** Ages the server could not resolve, if reason === "age_unsupported". */
   unresolvedAges?: number[];
   message: string;
+  /** Optional diagnostics — surfaced for admin/debug flows, safe to expose. */
+  diagnostics?: BookingQuoteDiagnostics;
+}
+
+export interface BookingQuoteDiagnostics {
+  tourId: string;
+  bokunProductId?: string;
+  bokunOptionId?: string | null;
+  bokunRateId?: string | null;
+  mirrorHadCategories: boolean;
+  autoSyncTriggered: boolean;
+  autoSyncOk?: boolean;
+  autoSyncReason?: string;
+  autoSyncWarnings?: string[];
+  categoryCountAfter?: number;
+  suggestedCount?: number;
+  unmappedCount?: number;
+  confirmedCount?: number;
+  durationMs?: number;
 }
 
 export type BookingQuoteResponse = BookingQuote | BookingQuoteUnavailable;
