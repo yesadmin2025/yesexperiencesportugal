@@ -9,13 +9,18 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Save, RefreshCw, AlertTriangle, Check, Eye, EyeOff } from "lucide-react";
+import { Save, RefreshCw, AlertTriangle, Check, Eye, EyeOff, CloudDownload, Loader2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
-import { TOUR_PRICE_TIERS_QUERY_KEY, useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
+import {
+  TOUR_PRICE_TIERS_QUERY_KEY,
+  TOUR_BANDED_TIERS_QUERY_KEY,
+  useTourPriceTiers,
+} from "@/hooks/use-tour-price-tiers";
 import type { PriceTiersEUR } from "@/data/signatureToursViator";
 import { SignaturePriceCard } from "@/components/studio-v3/SignaturePriceCard";
+import type { AgeBand, BandedTiers } from "@/lib/pricing/ageBandPricing";
 
 function AdminPricingErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
@@ -209,6 +214,15 @@ function AdminPricingPage() {
             </div>
           </header>
 
+          <SyncFromBokunPanel
+            tours={tours}
+            onApplied={async () => {
+              await queryClient.invalidateQueries({ queryKey: TOUR_PRICE_TIERS_QUERY_KEY });
+              await queryClient.invalidateQueries({ queryKey: TOUR_BANDED_TIERS_QUERY_KEY });
+              await refetch();
+            }}
+          />
+
           <div className="mt-8 space-y-5">
             {tours.map((tour) => (
               <TourRow
@@ -378,6 +392,306 @@ function TourRow({
               previewTiers={parsed}
             />
           </div>
+        </div>
+      ) : null}
+    </article>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Sync from Bókun panel
+// ─────────────────────────────────────────────────────────────────────────
+
+type BokunCatSummary = {
+  id: number;
+  title: string;
+  minAge?: number;
+  maxAge?: number;
+} | null;
+
+type SyncOneResult = {
+  tourId: string;
+  productId: string;
+  ok: boolean;
+  before: BandedTiers | null;
+  after: BandedTiers | null;
+  bokunCategories: Record<AgeBand, BokunCatSummary> | null;
+  reason?: string;
+};
+
+type SyncResponse = {
+  dryRun: boolean;
+  count: number;
+  okCount: number;
+  results: SyncOneResult[];
+};
+
+const BANDS: AgeBand[] = ["adult", "youth", "child"];
+const BUCKETS = [1, 2, 3, 4, 5, 6, 7, 8] as const;
+
+function tierVal(t: BandedTiers | null | undefined, band: AgeBand, b: number): number | null {
+  if (!t) return null;
+  const map = (t as unknown as Record<string, Record<string, number> | undefined>)[band];
+  const v = map?.[String(b)];
+  return typeof v === "number" && v > 0 ? v : null;
+}
+
+function bandChanged(before: BandedTiers | null, after: BandedTiers | null, band: AgeBand): boolean {
+  for (const b of BUCKETS) if (tierVal(before, band, b) !== tierVal(after, band, b)) return true;
+  return false;
+}
+
+function infantChanged(before: BandedTiers | null, after: BandedTiers | null): boolean {
+  return (before?.infant ?? null) !== (after?.infant ?? null);
+}
+
+function resultChanged(r: SyncOneResult): boolean {
+  if (!r.ok) return false;
+  if (BANDS.some((b) => bandChanged(r.before, r.after, b))) return true;
+  if (infantChanged(r.before, r.after)) return true;
+  return false;
+}
+
+function SyncFromBokunPanel({
+  tours,
+  onApplied,
+}: {
+  tours: SignatureTour[];
+  onApplied: () => Promise<void> | void;
+}) {
+  const [scope, setScope] = useState<string>("all"); // "all" or tourId
+  const [preview, setPreview] = useState<SyncResponse | null>(null);
+  const [previewScope, setPreviewScope] = useState<string | null>(null);
+  const [fetching, setFetching] = useState(false);
+  const [applying, setApplying] = useState(false);
+
+  async function invokeSync(dryRun: boolean): Promise<SyncResponse | null> {
+    const body: Record<string, unknown> = { dryRun };
+    if (scope !== "all") body.tourId = scope;
+    const { data, error } = await supabase.functions.invoke("sync-bokun-pricing", { body });
+    if (error) {
+      toast.error(`Bókun sync failed: ${error.message}`);
+      return null;
+    }
+    return data as SyncResponse;
+  }
+
+  async function doPreview() {
+    setFetching(true);
+    setPreview(null);
+    try {
+      const res = await invokeSync(true);
+      if (res) {
+        setPreview(res);
+        setPreviewScope(scope);
+      }
+    } finally {
+      setFetching(false);
+    }
+  }
+
+  async function doApply() {
+    if (!preview) return;
+    const changed = preview.results.filter(resultChanged).length;
+    if (!changed) return;
+    if (!window.confirm(`Overwrite pricing for ${changed} tour(s) with Bókun values?`)) return;
+    setApplying(true);
+    try {
+      const res = await invokeSync(false);
+      if (res) {
+        toast.success(`Applied Bókun sync to ${res.okCount}/${res.count} tour(s)`);
+        setPreview(null);
+        setPreviewScope(null);
+        await onApplied();
+      }
+    } finally {
+      setApplying(false);
+    }
+  }
+
+  const changedCount = preview?.results.filter(resultChanged).length ?? 0;
+  const failed = preview?.results.filter((r) => !r.ok) ?? [];
+  const staleScope = preview != null && previewScope !== scope;
+
+  return (
+    <section className="mt-8 border border-[color:var(--border)] bg-[color:var(--sand)]/40 p-5">
+      <header className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <CloudDownload size={16} /> Sync from Bókun
+          </h2>
+          <p className="mt-1 text-xs text-[color:var(--charcoal-soft)] max-w-xl">
+            Preview shows the per-tour diff (adult/youth/child/infant, buckets 1–8, and category
+            mapping). Nothing is written until you apply.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <select
+            value={scope}
+            onChange={(e) => {
+              setScope(e.target.value);
+            }}
+            className="border border-[color:var(--border)] bg-white px-2 py-2 text-sm"
+            disabled={fetching || applying}
+          >
+            <option value="all">All tours</option>
+            {tours.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.title}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={doPreview}
+            disabled={fetching || applying}
+            className="inline-flex items-center gap-2 border border-[color:var(--charcoal)] px-4 py-2 text-xs uppercase tracking-[0.18em] hover:bg-[color:var(--charcoal)] hover:text-[color:var(--ivory)] disabled:opacity-40"
+          >
+            {fetching ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
+            {fetching ? "Fetching…" : "Preview sync"}
+          </button>
+        </div>
+      </header>
+
+      {preview ? (
+        <div className="mt-5">
+          <div className="flex items-center justify-between gap-3 flex-wrap text-xs text-[color:var(--charcoal-soft)]">
+            <span>
+              Preview: {preview.count} tour(s) · {changedCount} changed ·{" "}
+              {preview.okCount} ok · {failed.length} failed
+              {staleScope ? " · scope changed, re-preview" : ""}
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setPreview(null);
+                  setPreviewScope(null);
+                }}
+                className="border border-[color:var(--border)] px-3 py-1.5 hover:border-[color:var(--gold)]"
+              >
+                Discard
+              </button>
+              <button
+                type="button"
+                onClick={doApply}
+                disabled={applying || changedCount === 0 || staleScope}
+                className="inline-flex items-center gap-2 bg-[color:var(--charcoal)] text-[color:var(--ivory)] px-4 py-1.5 uppercase tracking-[0.18em] hover:bg-black disabled:opacity-40"
+              >
+                {applying ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                Apply {changedCount} change{changedCount === 1 ? "" : "s"}
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            {preview.results.map((r) => (
+              <SyncDiffRow key={r.tourId} result={r} tourTitle={tours.find((t) => t.id === r.tourId)?.title ?? r.tourId} />
+            ))}
+            {preview.results.length === 0 ? (
+              <p className="text-xs text-[color:var(--charcoal-soft)]">
+                No Bókun mappings found. Add rows to <code>tour_bokun_mapping</code> first.
+              </p>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function SyncDiffRow({ result, tourTitle }: { result: SyncOneResult; tourTitle: string }) {
+  const changed = resultChanged(result);
+  const status = !result.ok ? "failed" : changed ? "changed" : "unchanged";
+  const statusColor =
+    status === "failed"
+      ? "text-red-700 bg-red-50 border-red-200"
+      : status === "changed"
+      ? "text-amber-800 bg-amber-50 border-amber-200"
+      : "text-[color:var(--charcoal-soft)] bg-white border-[color:var(--border)]";
+
+  return (
+    <article className="border border-[color:var(--border)] bg-white p-3">
+      <header className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="text-sm font-medium">{tourTitle}</div>
+        <span className={`text-[10px] uppercase tracking-[0.18em] border px-2 py-0.5 ${statusColor}`}>
+          {status}
+          {result.reason ? ` · ${result.reason}` : ""}
+        </span>
+      </header>
+
+      {result.ok && changed ? (
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full text-xs tabular-nums">
+            <thead>
+              <tr className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                <th className="text-left font-normal py-1 pr-3">Band</th>
+                {BUCKETS.map((b) => (
+                  <th key={b} className="text-right font-normal py-1 px-1">
+                    {b}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {BANDS.map((band) => (
+                <tr key={band} className="border-t border-[color:var(--border)]">
+                  <td className="py-1 pr-3 capitalize">{band}</td>
+                  {BUCKETS.map((b) => {
+                    const before = tierVal(result.before, band, b);
+                    const after = tierVal(result.after, band, b);
+                    const diff = before !== after;
+                    const cls = !diff
+                      ? "text-[color:var(--charcoal-soft)]"
+                      : before == null
+                      ? "text-green-700"
+                      : after == null
+                      ? "text-red-700 line-through"
+                      : "text-amber-800 font-medium";
+                    return (
+                      <td key={b} className={`text-right py-1 px-1 ${cls}`}>
+                        {before == null && after == null
+                          ? "—"
+                          : diff
+                          ? `${before ?? "–"}→${after ?? "–"}`
+                          : after}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+              {infantChanged(result.before, result.after) ? (
+                <tr className="border-t border-[color:var(--border)]">
+                  <td className="py-1 pr-3">Infant</td>
+                  <td colSpan={8} className="text-right py-1 px-1 text-amber-800">
+                    {result.before?.infant ?? "–"} → {result.after?.infant ?? "–"}
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+
+          {result.bokunCategories ? (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {BANDS.concat(["infant"]).map((band) => {
+                const c = result.bokunCategories?.[band];
+                if (!c) return null;
+                const range =
+                  c.minAge != null || c.maxAge != null
+                    ? ` · ${c.minAge ?? 0}${c.maxAge != null ? `–${c.maxAge}` : "+"}`
+                    : "";
+                return (
+                  <span
+                    key={band}
+                    className="text-[10px] uppercase tracking-[0.14em] border border-[color:var(--border)] bg-[color:var(--sand)]/40 px-2 py-0.5"
+                  >
+                    <span className="capitalize">{band}</span> · #{c.id} · {c.title}
+                    {range}
+                  </span>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
       ) : null}
     </article>
