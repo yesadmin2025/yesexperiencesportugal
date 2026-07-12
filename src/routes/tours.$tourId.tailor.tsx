@@ -763,19 +763,6 @@ function TailorPage() {
                     </Field>
                   </div>
                 </div>
-                    <Segmented
-                      value={language}
-                      onChange={setLanguage}
-                      options={[
-                        { v: "en", l: "EN" },
-                        { v: "pt", l: "PT" },
-                      ]}
-                    />
-                    <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
-                      Spanish available on request — subject to guide availability.
-                    </p>
-                  </Field>
-                </div>
               </Group>
 
               {/* Truthful Blueprint — replaces the legacy "Stop variations"
