@@ -468,11 +468,7 @@ function TailorPage() {
     }
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
-      // Slice B: use live composition (adults + minorAges) instead of the
-      // legacy adults-only fallback. Backward compat still guaranteed by
-      // `EMPTY_COMPOSITION` when no minors are selected.
-      const _ = compositionFromLegacyGuests; // preserve import for tests
-      void _;
+      // Slice B: live composition (adults + minorAges) from state.
       const pricingRevision = computePricingRevision({
         commercialProductKey: tour.id,
         date: details.tourDate ?? "",
