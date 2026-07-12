@@ -280,8 +280,11 @@ Deno.serve(async (req) => {
             availabilityId: slot.id,
             startTime: slot.startTime,
             date: slot.date,
-            guests,
-            pricingCategoryId: cat.id,
+            // Phase A shim: still single-category. Phase B replaces this by
+            // reading pricing_categories from Stripe metadata.
+            pricingCategoryBookings: [
+              { pricingCategoryId: Number(cat.id), quantity: guests },
+            ],
             customer: {
               firstName,
               lastName,
