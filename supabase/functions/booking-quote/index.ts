@@ -36,6 +36,7 @@ import {
   type BookingQuoteUnavailable,
 } from "../_shared/bookingQuote.ts";
 import { signBookingQuoteToken } from "../_shared/bookingQuoteToken.ts";
+import { syncOneBokunPricing } from "../_shared/syncBokunPricing.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
