@@ -109,9 +109,9 @@ export function useBookingQuote(args: UseBookingQuoteArgs): UseBookingQuoteState
         if (error) throw error;
         const resp = data as BookingQuoteResponse;
         if (resp.availabilityStatus === "available") {
-          setState({ loading: false, quote: resp, unavailable: null, error: null, pricingRevision });
+          setState({ loading: false, quote: resp as BookingQuote, unavailable: null, error: null, pricingRevision });
         } else {
-          setState({ loading: false, quote: null, unavailable: resp, error: null, pricingRevision });
+          setState({ loading: false, quote: null, unavailable: resp as BookingQuoteUnavailable, error: null, pricingRevision });
         }
       } catch (e) {
         if (ac.signal.aborted) return;
