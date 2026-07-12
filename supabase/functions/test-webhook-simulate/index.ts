@@ -213,48 +213,72 @@ Deno.serve(async (req) => {
         }
         if (chosen) {
           const slot = chosen;
-          const requestedCatId =
-            body.pricing_category_id != null ? Number(body.pricing_category_id) : null;
-          const cat =
-            (requestedCatId != null
-              ? slot.pricingCategories?.find((c) => c.id === requestedCatId)
-              : undefined) ?? slot.pricingCategories?.[0];
-          if (!cat) {
-            bokunResult = { status: "needs_review", error: "Bokun slot has no pricing category" };
-          } else {
-            // SAFETY: simulation should not create a live Bokun booking unless
-            // the caller explicitly asks. Default = dry run.
-            if (body.really_book_bokun === true) {
-              const [firstName, ...rest] = customerName.split(" ");
-              const lastName = rest.join(" ") || "—";
-              const r = await reserveAndConfirm({
-                productId: mapping.bokun_product_id,
-                availabilityId: slot.id,
-                startTime: slot.startTime,
-                date: slot.date,
-                pricingCategoryBookings: [
-                  { pricingCategoryId: Number(cat.id), quantity: guests },
-                ],
-                customer: {
-                  firstName,
-                  lastName,
-                  email: customerEmail,
-                  language: "EN",
-                },
-                externalBookingReference: fakeSessionId,
-                notes: "YES Studio · SIMULATION via /admin/bookings",
-              });
-              bokunResult = {
-                status: "confirmed",
-                booking_id: r.bookingId,
-                confirmation: r.confirmationCode,
-              };
-            } else {
-              bokunResult = {
-                status: "needs_review",
-                error: `DRY RUN — slot OK (id=${slot.id}, ${slot.availabilityCount} seats). Pass really_book_bokun:true to actually reserve.`,
-              };
+
+          // Phase B: accept explicit multi-category input.
+          // Body shape: { pricing_categories: [{ pricingCategoryId, quantity }, ...] }
+          // or legacy single { pricing_category_id }.
+          const raw = Array.isArray(body.pricing_categories)
+            ? (body.pricing_categories as Array<Record<string, unknown>>)
+            : [];
+          const slotCatIds = new Set<number>((slot.pricingCategories ?? []).map((c) => c.id));
+          let pricingCategoryBookings: Array<{ pricingCategoryId: number; quantity: number }> = [];
+          let missing: string | null = null;
+          if (raw.length) {
+            for (const r of raw) {
+              const id = Number(r.pricingCategoryId);
+              const qty = Number(r.quantity);
+              if (!Number.isFinite(id) || !Number.isFinite(qty) || qty <= 0) continue;
+              if (!slotCatIds.has(id)) { missing = String(id); break; }
+              pricingCategoryBookings.push({ pricingCategoryId: id, quantity: qty });
             }
+          } else {
+            const requestedCatId =
+              body.pricing_category_id != null ? Number(body.pricing_category_id) : null;
+            const cat =
+              (requestedCatId != null
+                ? slot.pricingCategories?.find((c) => c.id === requestedCatId)
+                : undefined) ?? slot.pricingCategories?.[0];
+            if (!cat) missing = "any";
+            else pricingCategoryBookings = [{ pricingCategoryId: Number(cat.id), quantity: guests }];
+          }
+
+          if (missing) {
+            bokunResult = {
+              status: "needs_review",
+              error: `Slot missing pricing category ${missing} — no Adult substitution`,
+            };
+          } else if (!pricingCategoryBookings.length) {
+            bokunResult = { status: "needs_review", error: "No pricing category bookings" };
+          } else if (body.really_book_bokun === true) {
+            const [firstName, ...rest] = customerName.split(" ");
+            const lastName = rest.join(" ") || "—";
+            const r = await reserveAndConfirm({
+              productId: mapping.bokun_product_id,
+              availabilityId: slot.id,
+              startTime: slot.startTime,
+              date: slot.date,
+              pricingCategoryBookings,
+              customer: {
+                firstName,
+                lastName,
+                email: customerEmail,
+                language: "EN",
+              },
+              externalBookingReference: fakeSessionId,
+              notes: "YES Studio · SIMULATION via /admin/bookings",
+            });
+            bokunResult = {
+              status: "confirmed",
+              booking_id: r.bookingId,
+              confirmation: r.confirmationCode,
+            };
+          } else {
+            const summary = pricingCategoryBookings
+              .map((b) => `${b.pricingCategoryId}×${b.quantity}`).join(", ");
+            bokunResult = {
+              status: "needs_review",
+              error: `DRY RUN — slot OK (id=${slot.id}, ${slot.availabilityCount} seats), categories [${summary}]. Pass really_book_bokun:true to actually reserve.`,
+            };
           }
         }
       }

@@ -14,6 +14,7 @@ import {
 } from "../_shared/quoteSnapshotSchema.ts";
 import { resolveQuote } from "../_shared/resolveQuote.ts";
 import { signQuoteToken, verifyQuoteToken, sha256Hex } from "../_shared/quoteToken.ts";
+import { revalidateBokunQuote } from "../_shared/bokunQuoteRevalidate.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -272,6 +273,174 @@ async function handleStudioCreateSession(body: StudioCreateSessionBody) {
   );
 }
 
+// -------- Bókun-authoritative Signature/Tailored checkout (Phase B) --------
+
+interface BokunCreateSessionBody {
+  mode: "bokun-signature-create-session";
+  quoteToken: string;
+  currentRevision: string;
+  environment: StripeEnv;
+  returnUrl: string;
+  cancelUrl?: string;
+  uiMode?: "hosted" | "embedded";
+  customerEmail?: string;
+  guestDetails?: Record<string, unknown>;
+  tourTitle?: string;
+  pickupLabel?: string;
+  journeyTitle?: string;
+  tailored?: boolean;
+  includedItems?: string[];
+}
+
+async function handleBokunSignatureCreateSession(body: BokunCreateSessionBody) {
+  const secret = Deno.env.get("STUDIO_QUOTE_SIGNING_SECRET");
+  if (!secret) return jsonError("Quote signing secret not configured", 500);
+  if (body.environment !== "sandbox" && body.environment !== "live") {
+    return jsonError("Invalid environment", 400);
+  }
+  if (!validateReturnOrigin(body.returnUrl)) return jsonError("Return URL not allowed", 400);
+
+  // 1. Verify signature + expiry + revalidate live Bókun.
+  const revalidated = await revalidateBokunQuote(body.quoteToken, secret);
+  if (!revalidated.ok || !revalidated.payload || !revalidated.slot) {
+    return jsonError(`quote_stale:${revalidated.reason ?? "unknown"}`, 409);
+  }
+  const payload = revalidated.payload;
+  if (body.currentRevision !== payload.revision) {
+    return jsonError("Quote is stale — please refresh", 409);
+  }
+  if (revalidated.finalTotalEur < 50) return jsonError("Computed amount below minimum", 400);
+
+  const flow: Flow = body.tailored ? "tailor" : "signature";
+  const copy = FLOW_COPY[flow];
+  const uiMode: "hosted" | "embedded" = body.uiMode === "embedded" ? "embedded" : "hosted";
+  const tourTitle = (body.tourTitle ?? payload.internalProductKey).slice(0, 160);
+  const productName = `${copy.label} — ${tourTitle}${flow === "tailor" ? " (tailored)" : ""}`.slice(0, 180);
+
+  // 2. One Stripe line item per non-zero paid category. Free lines (infants)
+  //    skipped from Stripe but preserved in metadata for the webhook.
+  const paidLines = revalidated.lines.filter((l) => l.unitEur > 0 && l.quantity > 0);
+  if (!paidLines.length) return jsonError("No billable line items", 400);
+
+  const lineItems = paidLines.map((l) => {
+    const label = `${tourTitle} — ${l.label} × ${l.quantity}`.slice(0, 180);
+    return {
+      price_data: {
+        currency: "eur",
+        product_data: {
+          name: label,
+          ...(l === paidLines[0]
+            ? { images: ["https://yesexperiencesportugal.com/og-cover.jpg"] }
+            : {}),
+        },
+        unit_amount: Math.round(l.unitEur * 100),
+      },
+      quantity: l.quantity,
+    };
+  });
+
+  // 3. Compact metadata for webhook to rebuild exact reservation call.
+  //    Stripe limits each value to 500 chars; keep this comfortably under.
+  const categoriesJson = JSON.stringify(
+    revalidated.lines.map((l) => ({
+      c: l.bokunCategoryId,
+      q: l.quantity,
+      b: l.uiBand,
+      u: Math.round(l.unitEur * 100),
+    })),
+  ).slice(0, 480);
+
+  const stripe = createStripeClient(body.environment);
+  const submitMessage = copy.submit;
+  const pendingReviewNote = flow === "tailor" ? copy.submit : "Instant confirmation by email.";
+
+  const sessionParams: Record<string, unknown> = {
+    line_items: lineItems,
+    mode: "payment",
+    locale: "auto",
+    submit_type: "book",
+    billing_address_collection: "auto",
+    phone_number_collection: { enabled: true },
+    allow_promotion_codes: true,
+    custom_text: {
+      submit: { message: submitMessage.slice(0, 1200) },
+      terms_of_service_acceptance: {
+        message:
+          "By booking you accept the [YES Experiences Portugal terms](https://yesexperiencesportugal.com/terms) and [privacy policy](https://yesexperiencesportugal.com/privacy).",
+      },
+    },
+    consent_collection: { terms_of_service: "required" },
+    payment_intent_data: {
+      statement_descriptor_suffix: "YES EXPERIENCES",
+      description: `${productName} · ${payload.date}${payload.startTime ? ` ${payload.startTime}` : ""}`.slice(0, 1000),
+    },
+    ...(body.customerEmail && { customer_email: body.customerEmail }),
+    metadata: {
+      booking_type: "signature",
+      flow,
+      pricing_model: "bokun-banded",
+      tour_id: payload.internalProductKey,
+      guests: String(payload.totalParticipants),
+      adults: String(payload.guestMix.adults),
+      youths: String(payload.guestMix.youths),
+      children: String(payload.guestMix.children),
+      infants: String(payload.guestMix.infants),
+      total_eur: String(revalidated.finalTotalEur),
+      quote_revision: payload.revision,
+      quote_source: payload.source,
+      pricing_categories_json: categoriesJson,
+      bokun_product_id: payload.bokunProductId,
+      ...(payload.bokunOptionId ? { bokun_option_id: payload.bokunOptionId } : {}),
+      ...(payload.bokunRateId ? { bokun_rate_id: payload.bokunRateId } : {}),
+      bokun_availability_id: String(payload.availabilityId ?? ""),
+      start_time: (payload.startTime ?? "").slice(0, 16),
+      date_exact: payload.date,
+      pickup: (body.pickupLabel ?? "").slice(0, 120),
+      journey_title: (body.journeyTitle ?? tourTitle).slice(0, 160),
+      tailored: body.tailored ? "1" : "0",
+      ui_mode: uiMode,
+    },
+  };
+
+  if (uiMode === "embedded") {
+    sessionParams.ui_mode = "embedded_page";
+    sessionParams.return_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
+  } else {
+    sessionParams.success_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
+    if (body.cancelUrl) sessionParams.cancel_url = body.cancelUrl;
+  }
+
+  const tokenHash = await sha256Hex(body.quoteToken);
+  const idempotencyKey = `bokun-signature:${tokenHash}`;
+  const session = await stripe.checkout.sessions.create(sessionParams, { idempotencyKey });
+
+  const rawPublishable =
+    body.environment === "live"
+      ? (Deno.env.get("STRIPE_LIVE_PUBLISHABLE_KEY") ?? "")
+      : (Deno.env.get("STRIPE_SANDBOX_PUBLISHABLE_KEY") ?? "");
+  const publishableKey = rawPublishable.startsWith("pk_") ? rawPublishable : "";
+
+  return new Response(
+    JSON.stringify({
+      url: (session as { url?: string }).url ?? null,
+      clientSecret: (session as { client_secret?: string }).client_secret ?? null,
+      sessionId: session.id,
+      publishableKey,
+      flow,
+      productName,
+      submitMessage: pendingReviewNote,
+      uiMode,
+      pricing: {
+        lines: revalidated.lines,
+        finalTotalEur: revalidated.finalTotalEur,
+        source: payload.source,
+      },
+      idempotencyKey,
+    }),
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+  );
+}
+
 interface Body {
   tourId: string;
   tourTitle: string;
@@ -368,7 +537,7 @@ Deno.serve(async (req) => {
 
   try {
     const body = (await req.json()) as Body & {
-      mode?: "quote" | "create-session";
+      mode?: "quote" | "create-session" | "bokun-signature-create-session";
       snapshot?: RawQuoteSnapshot;
       quoteToken?: string;
       currentRevision?: string;
@@ -386,6 +555,13 @@ Deno.serve(async (req) => {
       }
       return await handleStudioCreateSession(body as unknown as StudioCreateSessionBody);
     }
+    // Phase B: Bókun-authoritative Signature/Tailored checkout via signed quote.
+    if (body.mode === "bokun-signature-create-session") {
+      if (!body.quoteToken || !body.currentRevision) {
+        return jsonError("Missing quote fields", 400);
+      }
+      return await handleBokunSignatureCreateSession(body as unknown as BokunCreateSessionBody);
+    }
 
     // Legacy Signature/Tailor path below.
     if (!body.tourId || typeof body.tourId !== "string" || body.tourId.length > 80)
@@ -394,7 +570,14 @@ Deno.serve(async (req) => {
     // §7 — Studio V3 commercial keys MUST use the authoritative quote path.
     // Block any attempt to reach the legacy tier-based checkout under a
     // Studio V3 commercial identity.
-    if (body.tourId === "studio-v3-private-full-day") {
+    // §7 — Studio V3 commercial keys MUST use the authoritative quote path.
+    // Block any attempt to reach the legacy tier-based checkout under a
+    // Studio V3 commercial identity.
+    if (
+      body.tourId === "studio-v3-private-full-day" ||
+      body.tourId === "studio-v3-half-day" ||
+      body.tourId === "studio-v3-multi-day"
+    ) {
       return jsonError("studio_quote_required", 409);
     }
 
