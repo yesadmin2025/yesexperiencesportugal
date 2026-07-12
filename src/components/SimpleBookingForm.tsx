@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Calendar, Users, Sparkles, Lock, Loader2 } from "lucide-react";
+import { useTourBokunReadinessFor } from "@/hooks/use-tour-bokun-readiness";
+import { BandedSignatureBookingForm } from "@/components/booking/BandedSignatureBookingForm";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { SignatureTour } from "@/data/signatureTours";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -32,6 +34,18 @@ import {
  * lives on a separate page (`/tours/$tourId/tailor`).
  */
 export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
+  // Phase C rollout: when admin has enabled banded pricing for this tour AND
+  // at least one Bókun category is confirmed, hand off to the live-quote flow.
+  const { readiness } = useTourBokunReadinessFor(tour.id);
+  const hasConfirmedCategory =
+    readiness?.bokunCategories?.some((c) => c.mappingStatus === "confirmed") ?? false;
+  if (readiness?.bandedPricingEnabled && hasConfirmedCategory) {
+    return <BandedSignatureBookingForm tour={tour} readiness={readiness} />;
+  }
+  return <LegacySimpleBookingForm tour={tour} />;
+}
+
+function LegacySimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const navigate = useNavigate();
   const [date, setDate] = useState("");
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
