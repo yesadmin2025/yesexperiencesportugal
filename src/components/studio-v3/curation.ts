@@ -1247,6 +1247,7 @@ export function pickPrimaryTourWithFit(
   destinationIntent: DestinationIntent | null,
   seed: number = 0,
   rhythm: Rhythm | null = null,
+  restrictToTourIds?: ReadonlySet<string> | null,
 ): {
   tour: SignatureTour;
   alternates: SignatureTour[];
@@ -1268,9 +1269,19 @@ export function pickPrimaryTourWithFit(
   const mergedIds = Array.from(
     new Set([...candidateIds, ...intentTargets, ...interestTargets, ...discoveryTargets]),
   );
-  const candidates = mergedIds
+  let candidates = mergedIds
     .map((id) => signatureTours.find((t) => t.id === id))
     .filter((t): t is SignatureTour => Boolean(t));
+
+  // Slice B closure — age-composition filter (applied BEFORE ranking).
+  // Callers pass a pre-computed compatible-tour-id set (composition already
+  // resolved against confirmed Bókun categories). Excluded candidates never
+  // reach scoring. If the filter empties the pool we still fall through to
+  // the default fallback so the caller can decide what to render — the
+  // unsupported-age signal is enforced upstream in `resolveStudioV3Route`.
+  if (restrictToTourIds && restrictToTourIds.size > 0) {
+    candidates = candidates.filter((t) => restrictToTourIds.has(t.id));
+  }
 
   if (candidates.length === 0) {
     const fallbackId = FEELING_FALLBACK[feeling];
