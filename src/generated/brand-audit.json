@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-12T16:58:47.944Z",
-  "filesScanned": 632,
+  "generatedAt": "2026-07-12T17:43:14.532Z",
+  "filesScanned": 633,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 369,
+    "total": 375,
     "approved": 90,
     "allowlisted": 64,
-    "mismatch": 215
+    "mismatch": 221
   },
   "findings": [
     {
@@ -949,6 +949,60 @@
       "raw": "#94a3b8",
       "normalized": "#94a3b8",
       "snippet": "const dnsFill = p.pointsToLovable ? \"#10b981\" : \"#94a3b8\";",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/booking/BokunRolloutBadge.tsx",
+      "line": 129,
+      "col": 51,
+      "raw": "#B45309",
+      "normalized": "#b45309",
+      "snippet": "<AlertTriangle size={13} style={{ color: \"#B45309\" }} aria-hidden />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/booking/BokunRolloutBadge.tsx",
+      "line": 130,
+      "col": 53,
+      "raw": "#92400E",
+      "normalized": "#92400e",
+      "snippet": "<span className={labelCls} style={{ color: \"#92400E\" }}>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/booking/BokunRolloutBadge.tsx",
+      "line": 143,
+      "col": 50,
+      "raw": "#B45309",
+      "normalized": "#b45309",
+      "snippet": "border: \"1px solid color-mix(in oklab, #B45309 40%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/booking/BokunRolloutBadge.tsx",
+      "line": 144,
+      "col": 44,
+      "raw": "#FEF3C7",
+      "normalized": "#fef3c7",
+      "snippet": "background: \"color-mix(in oklab, #FEF3C7 60%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/booking/BokunRolloutBadge.tsx",
+      "line": 156,
+      "col": 50,
+      "raw": "#B45309",
+      "normalized": "#b45309",
+      "snippet": "border: \"1px solid color-mix(in oklab, #B45309 40%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/booking/BokunRolloutBadge.tsx",
+      "line": 157,
+      "col": 44,
+      "raw": "#FEF3C7",
+      "normalized": "#fef3c7",
+      "snippet": "background: \"color-mix(in oklab, #FEF3C7 60%, transparent)\",",
       "status": "mismatch"
     },
     {
