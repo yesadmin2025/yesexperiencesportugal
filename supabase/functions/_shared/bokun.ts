@@ -276,16 +276,17 @@ export interface ReserveInput {
 }
 
 /**
- * Reserve + confirm an activity booking with one bookings entry per non-empty
- * category. Never collapse mixed-band parties into a single line.
+ * Provisional reserve only — Bókun holds inventory but does NOT charge or
+ * mark the booking as confirmed. Follow with `confirmReservation()` after
+ * successful payment. Never collapses mixed-band parties into one line.
  */
-export async function reserveAndConfirm(input: ReserveInput): Promise<{
-  bookingId: string;
+export async function reserveActivity(input: ReserveInput): Promise<{
+  reservationId: string;
   confirmationCode?: string;
   raw: unknown;
 }> {
   if (!input.pricingCategoryBookings.length) {
-    throw new Error("reserveAndConfirm requires at least one pricingCategoryBookings entry");
+    throw new Error("reserveActivity requires at least one pricingCategoryBookings entry");
   }
   const reserveBody = {
     activityBookings: [
@@ -326,20 +327,80 @@ export async function reserveAndConfirm(input: ReserveInput): Promise<{
     reserveBody,
   )) as { confirmationCode?: string; id?: number | string; bookingId?: number | string } | null;
 
-  const bookingId = String(reserved?.id ?? reserved?.bookingId ?? "");
-  if (!bookingId) throw new Error("Bokun reserve returned no booking id");
-
-  try {
-    await bokunFetch(`/booking.json/${bookingId}/confirm`, "POST", {});
-  } catch (e) {
-    throw new Error(
-      `Reserved ${bookingId} but confirm failed: ${e instanceof Error ? e.message : String(e)}`,
-    );
-  }
+  const reservationId = String(reserved?.id ?? reserved?.bookingId ?? "");
+  if (!reservationId) throw new Error("Bokun reserve returned no booking id");
 
   return {
-    bookingId,
+    reservationId,
     confirmationCode: reserved?.confirmationCode,
     raw: reserved,
   };
+}
+
+/**
+ * Confirm a previously-reserved Bókun booking. Idempotent server-side —
+ * repeated calls against an already-confirmed booking return the current
+ * state without creating a second booking.
+ */
+export async function confirmReservation(reservationId: string): Promise<{
+  bookingId: string;
+  confirmationCode?: string;
+  raw: unknown;
+}> {
+  if (!reservationId) throw new Error("confirmReservation requires reservationId");
+  const raw = (await bokunFetch(
+    `/booking.json/${reservationId}/confirm`,
+    "POST",
+    {},
+  )) as { confirmationCode?: string } | null;
+  return {
+    bookingId: reservationId,
+    confirmationCode: raw?.confirmationCode,
+    raw,
+  };
+}
+
+/**
+ * Best-effort release of a provisional reservation (used when Stripe
+ * session creation fails after Bókun reserve succeeded). Never throws —
+ * Bókun typically expires unclaimed provisional holds automatically.
+ */
+export async function releaseReservation(reservationId: string): Promise<boolean> {
+  if (!reservationId) return false;
+  try {
+    await bokunFetch(`/booking.json/${reservationId}/cancel`, "POST", { reason: "abandoned" });
+    return true;
+  } catch (e) {
+    console.warn(
+      "releaseReservation failed (letting hold expire):",
+      e instanceof Error ? e.message : e,
+    );
+    return false;
+  }
+}
+
+/**
+ * Legacy combined reserve+confirm. Kept for the pre-reservation-spine webhook
+ * fallback (non-v3 bookings) and any external caller still on the old contract.
+ * New v3 flow uses `reserveActivity` (pre-Stripe) + `confirmReservation`
+ * (webhook) so the webhook never creates a second Bókun booking.
+ */
+export async function reserveAndConfirm(input: ReserveInput): Promise<{
+  bookingId: string;
+  confirmationCode?: string;
+  raw: unknown;
+}> {
+  const reserved = await reserveActivity(input);
+  try {
+    const confirmed = await confirmReservation(reserved.reservationId);
+    return {
+      bookingId: reserved.reservationId,
+      confirmationCode: confirmed.confirmationCode ?? reserved.confirmationCode,
+      raw: reserved.raw,
+    };
+  } catch (e) {
+    throw new Error(
+      `Reserved ${reserved.reservationId} but confirm failed: ${e instanceof Error ? e.message : String(e)}`,
+    );
+  }
 }
