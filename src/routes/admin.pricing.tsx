@@ -21,6 +21,7 @@ import {
 import type { PriceTiersEUR } from "@/data/signatureToursViator";
 import { SignaturePriceCard } from "@/components/studio-v3/SignaturePriceCard";
 import type { AgeBand, BandedTiers } from "@/lib/pricing/ageBandPricing";
+import { BokunCategoryMappingPanel } from "@/components/admin/BokunCategoryMappingPanel";
 
 function AdminPricingErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
