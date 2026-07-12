@@ -1,163 +1,94 @@
-## Slice B closure — low-credit patch
+## Slice A closure — final implementation
 
-Fix four Slice B gaps discovered during review, add three targeted tests, run typecheck + full suite. No Slice A work.
+Migration for the two new columns already ran (`booking_quotes.expired_at`, `booking_quotes.bokun_release_result`). The two safety corrections are folded in below.
 
-### 1. Composition-aware readiness (`src/hooks/use-category-aware-checkout-ready.ts`)
+### 1. Preserve `unsupported_age` vs `category_not_ready`
 
-Replace the "≥1 confirmed category" check with a composition-driven rule that reuses the existing strict resolver.
+Files: `supabase/functions/create-signature-checkout/index.ts`, `src/__tests__/sliceA.reservation-spine.test.ts`.
 
-- Change hook signature to `useCategoryAwareCheckoutReadyFor(tourId, composition)`.
-- Compute `const r = resolveCompositionAgainstCategories(composition, readiness.bokunCategories)`.
-- `ready` = `r.unsupportedAges.length === 0` AND `r.categoryBookings.length > 0` AND every booked category has `mappingStatus === "confirmed"` (guaranteed by the resolver, re-asserted for defense).
-- Return `{ ready, loading, reason, unsupportedAges, categoryBookings }` with `reason ∈ "not-ready" | "unsupported-age" | "no-categories"`.
-- Update the three call sites (`routes/tours.$tourId.tailor.tsx`, `StudioV3.tsx`, and the new Signature guard below) to pass composition and to render the "unsupported age" block when `reason === "unsupported-age"`.
+The v3 quote path already resolves composition against the confirmed commercial category mapping at quote-generation time (`booking-quote`). So `basePricing.lines[i].bokunCategoryId` means: this age is supported by the mapping. `unsupported_age` therefore surfaces at quote time and is not reintroduced at checkout.
 
-Concrete example: `{ adults: 2, minorAges: [0] }` on a tour with only a confirmed Adult category → `unsupportedAges: [0]` → `ready = false`, no Stripe.
+In `handleBookingQuoteCreateSession`:
 
-### 2. Public Signature flow — block legacy checkout for minors
+1. Drop the current "free infant silently skipped when slot omits the infant category" branch (both the pre-flight loop at ~536–544 and the same skip inside the reserve payload builder at ~565–570).
+2. Slot pre-flight now checks only `slot_unavailable` and `capacity_exceeded`.
+3. Reserve payload build:
+   - For EVERY `line.quantity > 0`, the slot MUST expose `line.bokunCategoryId`. Missing → `return jsonError("category_not_ready:<catId>", 409)`. No `isFree` bypass.
+   - Accumulate `selectedQuantity += line.quantity` and after the loop assert `selectedQuantity === resolvedGuestMix.totalParticipants`, else `composition_mismatch`.
+   - Only then call `reserveActivity`.
 
-`BandedSignatureBookingForm.tsx` already uses composition + server quote + `unavailable.unresolvedAges`, so the flow is correct there. The gap is the legacy adult-only `SimpleBookingForm.tsx` still used elsewhere.
+`unsupported_age` remains the responsibility of `booking-quote` (already implemented via `resolveCompositionAgainstCategories` in Slice B); the checkout function never converts an unmapped age to Adult or omits it.
 
-- In `SimpleBookingForm.tsx`, import the new hook and if `composition.minorAges.length > 0` (or route arrives with any minor state), call `useCategoryAwareCheckoutReadyFor(tourId, composition)`; when not ready, disable the Reserve button and render the `unsupported-age` / `no-categories` message. Adult-only bookings keep the legacy path unchanged.
-- Confirm `tours.$tourId.tsx` chooses `BandedSignatureBookingForm` whenever readiness has any confirmed category (already the case) and only falls back to `SimpleBookingForm` for pure adult-only legacy tours — add the same minor-guard fallback there so mixed-family compositions can never reach the legacy Stripe path.
+### 2. Atomic expiry + payment transitions
 
-### 3. Wire `filterSignatureCandidatesForAges` into real Studio generation
+File: `supabase/functions/stripe-webhook/index.ts`.
 
-Studio's itinerary comes from `resolveStudioV3Route()` → `pickPrimaryTour()` inside `src/components/studio-v3/curation.ts`. The filter must run before ranking.
+Add handling for `checkout.session.expired`:
 
-- Extend `resolveStudioV3Route` input with optional `composition?: TravellerComposition` and `readinessMap?: Record<string, TourBokunReadiness>`.
-- Extend `pickPrimaryTour` / `pickPrimaryTourWithFit` with an optional `ageFilter?: (candidates: SignatureTour[]) => { compatible, excluded }` param and apply it right after the merged candidate pool is built, before scoring. When `compatible.length === 0`, propagate an `unsupportedAges` signal in the return value (new field `unsupportedAges: number[]`) and skip picking a tour.
-- In `StudioV3.tsx`, call `useTourBokunReadiness()` at the top of the component, pass `state.composition` (adults + minorAges) and the readiness map into the `resolveStudioV3Route` useMemo, and:
-  - if `resolved.unsupportedAges?.length`, short-circuit — do NOT compose route points, do NOT call the quote hook, render the same `unsupported-age` block used by the checkout guard, and disable "Continue" in the guests phase.
-- Commercial identity stays `studio-v3-private-full-day` — no change to the pricing key.
+```
+const { data: claimed } = await admin
+  .from("booking_quotes")
+  .update({ state: "expired", expired_at: new Date().toISOString() })
+  .eq("quote_id", quoteId)
+  .eq("state", "checkout-created")
+  .select("quote_id, bokun_reservation_id")
+  .maybeSingle();
 
-### 4. Server-resolved band labels in the picker
+if (!claimed) return 200 { ignored: "not_in_checkout_created" };
+if (!claimed.bokun_reservation_id) return 200 { released: false };
 
-`BandedSignatureBookingForm` already builds `resolvedMinors` from `quote.quote.basePricing.lines[].label`. Do the same in:
+const release = await releaseReservation(claimed.bokun_reservation_id); // never throws
+await admin
+  .from("booking_quotes")
+  .update({ bokun_release_result: sanitisedResult })
+  .eq("quote_id", claimed.quote_id);
+return 200 { released: true };
+```
 
-- `SimpleTailorForm.tsx` — pipe the server quote already used for pricing into a `resolvedMinors` array, pass to the picker.
-- `routes/tours.$tourId.tailor.tsx` inline picker — same.
-- `StudioV3.tsx` guests picker — feed from `resolved.quote.basePricing` when available; otherwise leave undefined so the picker just shows "Age N" (never a client-guessed band).
+`sanitisedResult` = `{ status: "released"|"already_expired"|"failed", code?: httpStatusOrShortMessage, at: iso }`. No raw Bókun payload, no tokens.
 
-Delete any client-side Youth/Child/Infant inference if found during the edit (grep confirms none remains outside the resolver).
+Also import `releaseReservation` from `_shared/bokun.ts` and extend the early "non-checkout events" guard so `checkout.session.expired` falls into the new branch instead of the "ignored" path.
 
-### 5. Tests (append only; keep existing suite intact)
+**Payment confirmation atomicity** (existing v3 branch at ~248–330): replace the read-then-guard on `state === "confirmed"` with a claim-then-act:
 
-New file `src/__tests__/sliceB.closure.test.tsx`:
+```
+const { data: claimed } = await admin
+  .from("booking_quotes")
+  .update({
+    state: "confirmed",
+    bokun_reservation_status: "confirmed",
+    paid_at: nowIso, confirmed_at: nowIso,
+  })
+  .eq("quote_id", quoteId)
+  .in("state", ["reserved", "checkout-created"])   // NOT "expired" / "cancelled" / "confirmed"
+  .select("quote_id, bokun_reservation_id, final_total_eur, bokun_base_subtotal_eur, database_addon_subtotal_eur")
+  .maybeSingle();
+```
 
-1. Adult confirmed + no Infant category: `{ adults: 2, minorAges: [0] }` against `[adult confirmed]` → hook returns `ready=false, reason="unsupported-age", unsupportedAges=[0]`; a rendered `<button data-testid="reserve">` stays `disabled`.
-2. Public Signature with a minor cannot use legacy checkout: render `SimpleBookingForm` with composition `{ adults: 1, minorAges: [8] }` and a readiness that has no matching confirmed child category — assert Reserve is disabled and the unsupported-age block renders; assert no `fetch`/`createBookingQuoteSession` call is made on click.
-3. Studio integration — candidate filtering feeds real generation: stub `useTourBokunReadiness` so tour A has no infant category and tour B does; drive `resolveStudioV3Route` with a composition including age 0 whose feeling maps to `[A, B]`. Assert the returned `tour.id === B` and `filtered` contains A with reason `unsupported-age-composition`.
-4. Studio — no compatible candidate: same setup where BOTH A and B lack infant category → `resolved.unsupportedAges` includes `0`, `tour` is null / skeleton unset, and StudioV3 does not call the quote hook (spy on `fetchStudioQuote`).
+Only when the claim succeeds do we call `confirmReservation(bokunReservationId)` and mirror to `bookings`. If it returns null (already confirmed, expired, cancelled), the webhook is idempotent and returns `already_confirmed` after mirroring identifiers from the stored row. This makes payment vs expiry mutually exclusive at the DB layer, not just at read-time.
 
-Then run the whole existing suite (`bunx vitest run`) and `tsgo` typecheck.
+Both the parity check (`amountTotal === Math.round(final_total_eur * 100)`) and the confirm call run only inside the claimed branch.
 
-### Technical notes
+### 3. Tests (`src/__tests__/sliceA.reservation-spine.test.ts`)
 
-- Do NOT touch the server resolver `supabase/functions/_shared/travellerComposition.ts` — the client mirror in `src/lib/pricing/travellerComposition.ts` already matches.
-- No refactor of `curation.ts` scoring, no changes to Studio commercial pricing key, no visual redesign.
-- No new UI copy strings other than the existing unsupported-age block already introduced in Slice B (reuse it).
+Replace the "free infant silently skipped when the slot omits the infant category" test with:
+- `infant selected + slot has no matching Infant category → category_not_ready, no reserveActivity, no Stripe`
+- `selected quantity mismatch → composition_mismatch, no reserveActivity`
 
-### Deliverable / completion report
+Keep the mixed-family 4-line test (slot exposes infant → infant included at €0).
 
-After implementation the response will include only: files changed; corrected readiness rule; Signature wiring result; actual Studio-generation fallback result (with the filtered tour ids from the test log); full `vitest` output; `tsgo` output; and one 393px screenshot only if the picker/error block UI changed.
+Add expiry/atomic cases (pure-logic mirrors of the webhook branch, matching the file's existing style):
+- `expired session with state=checkout-created → conditional update returns 1 row → releaseReservation called once → state transitions to expired`
+- `duplicate expired webhook → conditional update returns 0 rows → releaseReservation NOT called`
+- `expiry arriving after confirmation (state=confirmed) → conditional update returns 0 rows → confirmed booking untouched`
+- `payment confirmation claim excludes expired/cancelled/confirmed → no double-confirm`
 
-**APPROVED — APPLY THREE SMALL CORRECTIONS AND BUILD**
+### 4. Verification
+- `bunx vitest run src/__tests__/sliceA.reservation-spine.test.ts`
+- `bunx tsgo --noEmit`
 
-Proceed with the Slice B closure now. Do not return another plan.
+### Out of scope
+- Slice C, any UI change, any refactor of `_shared/bokun.ts` beyond confirming `releaseReservation` remains idempotent + never-throws.
 
-**1. Readiness must cover every traveller exactly once**
-
-Do not use only:
-
-categoryBookings.length > 0
-
-Use:
-
-const totalParticipants =
-
-  composition.adults + composition.minorAges.length;
-
-&nbsp;
-
-const resolvedQuantity =
-
-  result.categoryBookings.reduce(
-
-    (sum, line) => sum + line.quantity,
-
-    0
-
-  );
-
-&nbsp;
-
-const adultQuantity =
-
-  result.categoryBookings
-
-    .filter(line => line.uiBand === "adult")
-
-    .reduce((sum, line) => sum + line.quantity, 0);
-
-&nbsp;
-
-ready =
-
-  result.unsupportedAges.length === 0 &&
-
-  resolvedQuantity === totalParticipants &&
-
-  adultQuantity === composition.adults &&
-
-  result.categoryBookings.every(
-
-    line => line.mappingStatus === "confirmed"
-
-  );
-
-Use equivalent fields if the existing resolver returns different property names.
-
-No traveller may be missing or counted twice.
-
-**2. Do not call hooks conditionally**
-
-In SimpleBookingForm, call:
-
-useCategoryAwareCheckoutReadyFor(...)
-
-unconditionally.
-
-Use an enabled option or ignore its result for adult-only legacy checkout.
-
-Do not place the hook inside:
-
-if (composition.minorAges.length > 0)
-
-**3. Separate loading from unsupported ages in Studio**
-
-When the readiness map is still loading or a candidate has no loaded readiness record:
-
-category readiness loading
-
-→ do not generate yet
-
-→ do not label unsupported_age
-
-Only return unsupported_age after the readiness data has loaded and confirmed that no candidate supports the selected ages.
-
-Use:
-
-loading / category_not_ready
-
-for missing data, and:
-
-unsupported_age
-
-only for an actual age incompatibility.
-
-Implement the rest of the proposed plan unchanged, run the full test suite and typecheck, then return the concise completion report.
-
-&nbsp;
-
-Com isto, sim, aprova. O plano fecha a Slice B sem começar outra obra pública, e impede que “temos uma categoria qualquer” seja confundido com “todos os seres humanos desta reserva foram corretamente classificados”.
+### Completion report
+Files changed · corrected infant-missing-category behaviour · Stripe-expiry release behaviour · vitest output · tsgo output.

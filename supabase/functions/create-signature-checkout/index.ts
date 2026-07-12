@@ -524,7 +524,11 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
     (stored.resolved_guest_mix as { totalParticipants?: number }) ?? {};
   const totalParticipants = resolvedGuestMix.totalParticipants ?? 0;
 
-  // 3. Revalidate live Bókun slot + verify every category still exists there.
+  // 3. Revalidate live Bókun slot. Category-existence is checked in step 4
+  //    below (single source of truth), where the missing-category is reported
+  //    as `category_not_ready` — the composition-to-category mapping ran at
+  //    quote time, so `unsupported_age` (no mapping at all) surfaces there,
+  //    never here.
   let slot: import("../_shared/bokun.ts").AvailabilitySlot | null = null;
   try {
     const slots = await getActivityAvailabilities(stored.bokun_product_id, stored.date);
@@ -532,15 +536,6 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
     if (!slot) return jsonError("slot_unavailable:slot_no_longer_offered", 409);
     if ((slot.availabilityCount ?? 0) < totalParticipants) {
       return jsonError("capacity_exceeded:slot_capacity_lost", 409);
-    }
-    const slotCatIds = new Set((slot.pricingCategories ?? []).map((c) => String(c.id)));
-    for (const line of basePricing.lines) {
-      if (line.quantity <= 0) continue;
-      // Free lines (infants) may be absent on slot per Bókun policy — allow.
-      if (line.isFree || line.unitEur === 0) continue;
-      if (!slotCatIds.has(line.bokunCategoryId)) {
-        return jsonError(`mapping_mismatch:missing_category_${line.bokunCategoryId}`, 409);
-      }
     }
   } catch (e) {
     return jsonError(`bokun_unreachable:${e instanceof Error ? e.message : String(e)}`, 502);
@@ -553,20 +548,21 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
   let reservationConfirmationCode: string | null = null;
 
   if (!reservationId) {
-    // Build Bókun pricingCategoryBookings from the STORED quote lines directly.
-    // No re-classification of ages, no substitution of Adult, infants included
-    // even at €0 provided the category exists on this slot.
+    // Every selected traveller (including free infants/minors) MUST resolve to
+    // a category present on this exact slot — no silent skips, no Adult
+    // substitution. Ages that reach here already have a confirmed commercial
+    // mapping (unsupported_age is caught at quote time), so a missing slot
+    // category is category_not_ready, not unsupported_age.
     const pricingCategoryBookings: Array<{ pricingCategoryId: number; quantity: number }> = [];
+    let selectedQuantity = 0;
     for (const line of basePricing.lines) {
       if (line.quantity <= 0) continue;
+      selectedQuantity += line.quantity;
       const slotCat = slot.pricingCategories?.find(
         (c) => String(c.id) === line.bokunCategoryId,
       );
       if (!slotCat) {
-        // Free line whose category the slot doesn't expose — skip from Bókun
-        // call per Bókun policy, still counted in participant totals.
-        if (line.isFree || line.unitEur === 0) continue;
-        return jsonError(`mapping_mismatch:missing_category_${line.bokunCategoryId}`, 409);
+        return jsonError(`category_not_ready:${line.bokunCategoryId}`, 409);
       }
       pricingCategoryBookings.push({
         pricingCategoryId: Number(slotCat.id),
@@ -574,7 +570,15 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
       });
     }
     if (!pricingCategoryBookings.length) {
-      return jsonError("mapping_mismatch:no_billable_categories", 409);
+      return jsonError("category_not_ready:no_billable_categories", 409);
+    }
+    // Composition-parity guard: every selected traveller must appear in the
+    // Bókun payload — no omissions, no collapsing into fewer lines.
+    if (totalParticipants > 0 && selectedQuantity !== totalParticipants) {
+      return jsonError(
+        `composition_mismatch:selected=${selectedQuantity}_expected=${totalParticipants}`,
+        409,
+      );
     }
 
     const [firstName, ...rest] = (body.customerEmail ?? "guest@yesexperiencesportugal.com")
