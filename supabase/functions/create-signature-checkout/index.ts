@@ -444,7 +444,242 @@ async function handleBokunSignatureCreateSession(body: BokunCreateSessionBody) {
   );
 }
 
-interface Body {
+// -------- Launch-spec v3 BookingQuote consume path (Signature / Tailored / Studio) --------
+// Verifies signed v3 token, re-reads the persisted quote from booking_quotes,
+// enforces expiry + consumed_at, revalidates live Bókun slot capacity, and
+// creates a Stripe session with one line item per non-zero base category
+// plus one per add-on. finalTotalEur is authoritative and equals
+// baseSubtotal + addOnSubtotal from the stored quote.
+
+interface BookingQuoteCreateSessionBody {
+  mode: "booking-quote-create-session";
+  quoteToken: string;
+  environment: StripeEnv;
+  returnUrl: string;
+  cancelUrl?: string;
+  uiMode?: "hosted" | "embedded";
+  customerEmail?: string;
+  tourTitle?: string;
+  pickupLabel?: string;
+  journeyTitle?: string;
+}
+
+async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBody) {
+  const secret = Deno.env.get("STUDIO_QUOTE_SIGNING_SECRET");
+  if (!secret) return jsonError("Quote signing secret not configured", 500);
+  if (body.environment !== "sandbox" && body.environment !== "live") {
+    return jsonError("Invalid environment", 400);
+  }
+  if (!validateReturnOrigin(body.returnUrl)) return jsonError("Return URL not allowed", 400);
+  if (body.cancelUrl && !validateReturnOrigin(body.cancelUrl)) {
+    return jsonError("Cancel URL not allowed", 400);
+  }
+
+  // 1. Verify HMAC + expiry on the token.
+  let tokenPayload;
+  try {
+    tokenPayload = await verifyBookingQuoteToken(body.quoteToken, secret);
+  } catch (e) {
+    return jsonError(`quote_token_invalid:${(e as Error).message}`, 400);
+  }
+
+  // 2. Re-read the persisted quote — DB is truth.
+  const admin = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    { auth: { persistSession: false, autoRefreshToken: false } },
+  );
+  const { data: stored, error: storedErr } = await admin
+    .from("booking_quotes")
+    .select("*")
+    .eq("quote_id", tokenPayload.quoteId)
+    .maybeSingle();
+  if (storedErr) return jsonError(`quote_lookup_failed:${storedErr.message}`, 500);
+  if (!stored) return jsonError("quote_not_found", 404);
+  if (stored.consumed_at) return jsonError("quote_already_consumed", 409);
+  if (new Date(stored.expires_at).getTime() < Date.now()) {
+    return jsonError("quote_expired", 409);
+  }
+  if (stored.quote_token !== body.quoteToken) return jsonError("quote_token_mismatch", 400);
+
+  const basePricing = stored.base_pricing as BookingQuote["basePricing"];
+  const addOnPricing = stored.add_on_pricing as BookingQuote["addOnPricing"];
+  const finalTotalEur = Number(stored.final_total_eur);
+  const recomputed =
+    Math.round((basePricing.subtotalEur + addOnPricing.subtotalEur) * 100) / 100;
+  if (Math.abs(recomputed - finalTotalEur) > 0.01) {
+    return jsonError("quote_total_mismatch", 500);
+  }
+  if (finalTotalEur < 50) return jsonError("Computed amount below minimum", 400);
+
+  // 3. Revalidate live Bókun slot for exact date + capacity.
+  const totalParticipants =
+    (stored.resolved_guest_mix as { totalParticipants?: number })?.totalParticipants ?? 0;
+  try {
+    const slots = await getActivityAvailabilities(stored.bokun_product_id, stored.date);
+    const slot = slots.find((s) => String(s.id) === String(stored.availability_id));
+    if (!slot) return jsonError("slot_no_longer_offered", 409);
+    if ((slot.availabilityCount ?? 0) < totalParticipants) {
+      return jsonError("slot_capacity_lost", 409);
+    }
+  } catch (e) {
+    return jsonError(`bokun_unreachable:${e instanceof Error ? e.message : String(e)}`, 502);
+  }
+
+  // 4. Stripe line items — one per non-zero base category, one per add-on.
+  //    Free lines (e.g. infants) preserved in metadata but omitted from Stripe.
+  const flow = stored.flow as Flow;
+  const copy = FLOW_COPY[flow];
+  const tourTitle = (body.tourTitle ?? stored.commercial_product_key).slice(0, 160);
+  const productName = `${copy.label} — ${tourTitle}`.slice(0, 180);
+
+  const paidBaseLines = basePricing.lines.filter((l) => l.unitEur > 0 && l.quantity > 0);
+  if (!paidBaseLines.length) return jsonError("no_billable_lines", 400);
+
+  const lineItems: Array<Record<string, unknown>> = paidBaseLines.map((l, idx) => ({
+    price_data: {
+      currency: "eur",
+      product_data: {
+        name: `${tourTitle} — ${l.label}`.slice(0, 180),
+        ...(idx === 0
+          ? { images: ["https://yesexperiencesportugal.com/og-cover.jpg"] }
+          : {}),
+      },
+      unit_amount: Math.round(l.unitEur * 100),
+    },
+    quantity: l.quantity,
+  }));
+  for (const a of addOnPricing.lines) {
+    if (a.unitEur <= 0 || a.quantity <= 0) continue;
+    lineItems.push({
+      price_data: {
+        currency: "eur",
+        product_data: { name: `Add-on — ${a.label}`.slice(0, 180) },
+        unit_amount: Math.round(a.unitEur * 100),
+      },
+      quantity: a.quantity,
+    });
+  }
+
+  const uiMode: "hosted" | "embedded" = body.uiMode === "embedded" ? "embedded" : "hosted";
+  const stripe = createStripeClient(body.environment);
+  const submitMessage = copy.submit;
+
+  // Compact category payload the webhook uses to rebuild the Bókun reservation.
+  const categoriesJson = JSON.stringify(
+    basePricing.lines.map((l) => ({
+      c: l.bokunCategoryId,
+      q: l.quantity,
+      u: Math.round(l.unitEur * 100),
+      f: l.isFree ? 1 : 0,
+    })),
+  ).slice(0, 480);
+  const addOnsJson = JSON.stringify(
+    addOnPricing.lines.map((a) => ({
+      id: a.id,
+      q: a.quantity,
+      u: Math.round(a.unitEur * 100),
+      unit: a.pricingUnit,
+    })),
+  ).slice(0, 480);
+
+  const sessionParams: Record<string, unknown> = {
+    line_items: lineItems,
+    mode: "payment",
+    locale: "auto",
+    submit_type: "book",
+    billing_address_collection: "auto",
+    phone_number_collection: { enabled: true },
+    allow_promotion_codes: true,
+    custom_text: {
+      submit: { message: submitMessage.slice(0, 1200) },
+      terms_of_service_acceptance: {
+        message:
+          "By booking you accept the [YES Experiences Portugal terms](https://yesexperiencesportugal.com/terms) and [privacy policy](https://yesexperiencesportugal.com/privacy).",
+      },
+    },
+    consent_collection: { terms_of_service: "required" },
+    payment_intent_data: {
+      statement_descriptor_suffix: "YES EXPERIENCES",
+      description: `${productName} · ${stored.date}${stored.start_time ? ` ${stored.start_time}` : ""}`.slice(0, 1000),
+    },
+    ...(body.customerEmail && { customer_email: body.customerEmail }),
+    metadata: {
+      booking_type: "booking-quote-v3",
+      flow,
+      quote_id: stored.quote_id,
+      commercial_product_key: stored.commercial_product_key,
+      commercial_mapping_id: stored.commercial_mapping_id,
+      pricing_revision: stored.pricing_revision,
+      ...(stored.itinerary_revision
+        ? { itinerary_revision: String(stored.itinerary_revision) }
+        : {}),
+      bokun_product_id: stored.bokun_product_id,
+      ...(stored.bokun_option_id ? { bokun_option_id: String(stored.bokun_option_id) } : {}),
+      ...(stored.bokun_rate_id ? { bokun_rate_id: String(stored.bokun_rate_id) } : {}),
+      bokun_availability_id: String(stored.availability_id),
+      date_exact: stored.date,
+      start_time: (stored.start_time ?? "").slice(0, 16),
+      total_eur: String(finalTotalEur),
+      base_subtotal_eur: String(basePricing.subtotalEur),
+      add_on_subtotal_eur: String(addOnPricing.subtotalEur),
+      guests_total: String(totalParticipants),
+      pricing_categories_json: categoriesJson,
+      add_ons_json: addOnsJson,
+      pickup: (body.pickupLabel ?? "").slice(0, 120),
+      journey_title: (body.journeyTitle ?? tourTitle).slice(0, 160),
+      ui_mode: uiMode,
+    },
+  };
+
+  if (uiMode === "embedded") {
+    sessionParams.ui_mode = "embedded_page";
+    sessionParams.return_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
+  } else {
+    sessionParams.success_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
+    if (body.cancelUrl) sessionParams.cancel_url = body.cancelUrl;
+  }
+
+  const tokenHash = await sha256Hex(body.quoteToken);
+  const idempotencyKey = `booking-quote-v3:${tokenHash}`;
+  const session = await stripe.checkout.sessions.create(sessionParams, { idempotencyKey });
+
+  // Mark the quote consumed only after Stripe accepts the session.
+  await admin
+    .from("booking_quotes")
+    .update({ consumed_at: new Date().toISOString() })
+    .eq("quote_id", stored.quote_id)
+    .is("consumed_at", null);
+
+  const rawPublishable =
+    body.environment === "live"
+      ? (Deno.env.get("STRIPE_LIVE_PUBLISHABLE_KEY") ?? "")
+      : (Deno.env.get("STRIPE_SANDBOX_PUBLISHABLE_KEY") ?? "");
+  const publishableKey = rawPublishable.startsWith("pk_") ? rawPublishable : "";
+
+  return new Response(
+    JSON.stringify({
+      url: (session as { url?: string }).url ?? null,
+      clientSecret: (session as { client_secret?: string }).client_secret ?? null,
+      sessionId: session.id,
+      publishableKey,
+      flow,
+      productName,
+      submitMessage,
+      uiMode,
+      pricing: {
+        baseLines: basePricing.lines,
+        baseSubtotalEur: basePricing.subtotalEur,
+        addOnLines: addOnPricing.lines,
+        addOnSubtotalEur: addOnPricing.subtotalEur,
+        finalTotalEur,
+      },
+      idempotencyKey,
+    }),
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+  );
+}
+
   tourId: string;
   tourTitle: string;
   guests: number;
