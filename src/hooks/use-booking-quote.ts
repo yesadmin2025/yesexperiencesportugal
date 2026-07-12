@@ -91,7 +91,7 @@ export function useBookingQuote(args: UseBookingQuoteArgs): UseBookingQuoteState
       abortRef.current = ac;
       setState((s) => ({ ...s, loading: true, error: null, pricingRevision }));
       try {
-        const { data, error } = await supabase.functions.invoke("bokun-quote", {
+        const { data, error } = await supabase.functions.invoke("booking-quote", {
           body: {
             flow,
             commercialProductKey,
