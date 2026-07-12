@@ -97,75 +97,108 @@ export type Database = {
           add_on_pricing: Json
           availability_id: string
           base_pricing: Json
+          bokun_base_subtotal_eur: number | null
           bokun_option_id: string | null
           bokun_product_id: string
           bokun_rate_id: string | null
+          bokun_reservation_id: string | null
+          bokun_reservation_status: string | null
+          checkout_created_at: string | null
           commercial_mapping_id: string
           commercial_product_key: string
+          confirmed_at: string | null
           consumed_at: string | null
           created_at: string
           currency: string
+          database_addon_subtotal_eur: number | null
           date: string
           expires_at: string
           final_total_eur: number
           flow: string
           itinerary_revision: string | null
           itinerary_snapshot: Json | null
+          last_error: string | null
+          paid_at: string | null
           pricing_revision: string
           quote_id: string
           quote_token: string
+          reserved_at: string | null
           resolved_guest_mix: Json
           start_time: string | null
+          state: string
+          stripe_session_id: string | null
           traveller_composition: Json
         }
         Insert: {
           add_on_pricing: Json
           availability_id: string
           base_pricing: Json
+          bokun_base_subtotal_eur?: number | null
           bokun_option_id?: string | null
           bokun_product_id: string
           bokun_rate_id?: string | null
+          bokun_reservation_id?: string | null
+          bokun_reservation_status?: string | null
+          checkout_created_at?: string | null
           commercial_mapping_id: string
           commercial_product_key: string
+          confirmed_at?: string | null
           consumed_at?: string | null
           created_at?: string
           currency?: string
+          database_addon_subtotal_eur?: number | null
           date: string
           expires_at: string
           final_total_eur: number
           flow: string
           itinerary_revision?: string | null
           itinerary_snapshot?: Json | null
+          last_error?: string | null
+          paid_at?: string | null
           pricing_revision: string
           quote_id?: string
           quote_token: string
+          reserved_at?: string | null
           resolved_guest_mix: Json
           start_time?: string | null
+          state?: string
+          stripe_session_id?: string | null
           traveller_composition: Json
         }
         Update: {
           add_on_pricing?: Json
           availability_id?: string
           base_pricing?: Json
+          bokun_base_subtotal_eur?: number | null
           bokun_option_id?: string | null
           bokun_product_id?: string
           bokun_rate_id?: string | null
+          bokun_reservation_id?: string | null
+          bokun_reservation_status?: string | null
+          checkout_created_at?: string | null
           commercial_mapping_id?: string
           commercial_product_key?: string
+          confirmed_at?: string | null
           consumed_at?: string | null
           created_at?: string
           currency?: string
+          database_addon_subtotal_eur?: number | null
           date?: string
           expires_at?: string
           final_total_eur?: number
           flow?: string
           itinerary_revision?: string | null
           itinerary_snapshot?: Json | null
+          last_error?: string | null
+          paid_at?: string | null
           pricing_revision?: string
           quote_id?: string
           quote_token?: string
+          reserved_at?: string | null
           resolved_guest_mix?: Json
           start_time?: string | null
+          state?: string
+          stripe_session_id?: string | null
           traveller_composition?: Json
         }
         Relationships: []
@@ -173,10 +206,12 @@ export type Database = {
       bookings: {
         Row: {
           amount_total: number
+          bokun_base_subtotal_eur: number | null
           bokun_booking_id: string | null
           bokun_confirmation_code: string | null
           bokun_error: string | null
           bokun_last_attempt_at: string | null
+          bokun_reservation_id: string | null
           bokun_status: string | null
           booking_details: Json | null
           booking_details_completed_at: string | null
@@ -186,11 +221,14 @@ export type Database = {
           customer_email: string
           customer_name: string | null
           customer_phone: string | null
+          database_addon_subtotal_eur: number | null
+          final_total_eur: number | null
           guests: number
           id: string
           metadata: Json
           notes: string | null
           preferred_date: string | null
+          quote_id: string | null
           source_journey_id: string | null
           source_tour_id: string | null
           status: Database["public"]["Enums"]["booking_status"]
@@ -200,10 +238,12 @@ export type Database = {
         }
         Insert: {
           amount_total: number
+          bokun_base_subtotal_eur?: number | null
           bokun_booking_id?: string | null
           bokun_confirmation_code?: string | null
           bokun_error?: string | null
           bokun_last_attempt_at?: string | null
+          bokun_reservation_id?: string | null
           bokun_status?: string | null
           booking_details?: Json | null
           booking_details_completed_at?: string | null
@@ -213,11 +253,14 @@ export type Database = {
           customer_email: string
           customer_name?: string | null
           customer_phone?: string | null
+          database_addon_subtotal_eur?: number | null
+          final_total_eur?: number | null
           guests?: number
           id?: string
           metadata?: Json
           notes?: string | null
           preferred_date?: string | null
+          quote_id?: string | null
           source_journey_id?: string | null
           source_tour_id?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
@@ -227,10 +270,12 @@ export type Database = {
         }
         Update: {
           amount_total?: number
+          bokun_base_subtotal_eur?: number | null
           bokun_booking_id?: string | null
           bokun_confirmation_code?: string | null
           bokun_error?: string | null
           bokun_last_attempt_at?: string | null
+          bokun_reservation_id?: string | null
           bokun_status?: string | null
           booking_details?: Json | null
           booking_details_completed_at?: string | null
@@ -240,11 +285,14 @@ export type Database = {
           customer_email?: string
           customer_name?: string | null
           customer_phone?: string | null
+          database_addon_subtotal_eur?: number | null
+          final_total_eur?: number | null
           guests?: number
           id?: string
           metadata?: Json
           notes?: string | null
           preferred_date?: string | null
+          quote_id?: string | null
           source_journey_id?: string | null
           source_tour_id?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
