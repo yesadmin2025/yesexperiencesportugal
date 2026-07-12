@@ -537,7 +537,7 @@ Deno.serve(async (req) => {
 
   try {
     const body = (await req.json()) as Body & {
-      mode?: "quote" | "create-session";
+      mode?: "quote" | "create-session" | "bokun-signature-create-session";
       snapshot?: RawQuoteSnapshot;
       quoteToken?: string;
       currentRevision?: string;
@@ -554,6 +554,13 @@ Deno.serve(async (req) => {
         return jsonError("Missing quote fields", 400);
       }
       return await handleStudioCreateSession(body as unknown as StudioCreateSessionBody);
+    }
+    // Phase B: Bókun-authoritative Signature/Tailored checkout via signed quote.
+    if (body.mode === "bokun-signature-create-session") {
+      if (!body.quoteToken || !body.currentRevision) {
+        return jsonError("Missing quote fields", 400);
+      }
+      return await handleBokunSignatureCreateSession(body as unknown as BokunCreateSessionBody);
     }
 
     // Legacy Signature/Tailor path below.
