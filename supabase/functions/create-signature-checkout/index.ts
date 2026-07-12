@@ -108,36 +108,6 @@ interface StudioCreateSessionBody {
   mode: "create-session";
   quoteToken: string;
   currentRevision: string;
-  snapshot: RawQuoteSnapshot;
-  environment: StripeEnv;
-  returnUrl: string;
-  cancelUrl?: string;
-  uiMode?: "hosted" | "embedded";
-  customerEmail?: string;
-  guestDetails?: Record<string, unknown>;
-}
-
-async function handleStudioCreateSession(body: StudioCreateSessionBody) {
-  const secret = Deno.env.get("STUDIO_QUOTE_SIGNING_SECRET");
-  if (!secret) return jsonError("Quote signing secret not configured", 500);
-  if (body.environment !== "sandbox" && body.environment !== "live") {
-    return jsonError("Invalid environment", 400);
-  }
-  if (!validateReturnOrigin(body.returnUrl)) return jsonError("Return URL not allowed", 400);
-
-  let payload;
-  try {
-    payload = await verifyQuoteToken(body.quoteToken, secret);
-  } catch (e) {
-    return jsonError(`Quote token invalid: ${(e as Error).message}`, 400);
-  }
-  if (body.currentRevision !== payload.revision) {
-    return jsonError("Quote is stale — please refresh", 409);
-  }
-interface StudioCreateSessionBody {
-  mode: "create-session";
-  quoteToken: string;
-  currentRevision: string;
   /** Optional — server ignores it for pricing/metadata; token is authoritative. */
   snapshot?: RawQuoteSnapshot;
   environment: StripeEnv;
