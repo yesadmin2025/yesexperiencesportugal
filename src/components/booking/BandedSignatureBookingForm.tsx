@@ -32,6 +32,8 @@ import {
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
 import type { GuestMix } from "@/lib/pricing/ageBandPricing";
+import { BokunRolloutBadge } from "@/components/booking/BokunRolloutBadge";
+
 
 type Props = {
   tour: SignatureTour;
