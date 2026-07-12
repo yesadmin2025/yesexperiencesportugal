@@ -232,8 +232,9 @@ Deno.serve(async (req) => {
                 availabilityId: slot.id,
                 startTime: slot.startTime,
                 date: slot.date,
-                guests,
-                pricingCategoryId: cat.id,
+                pricingCategoryBookings: [
+                  { pricingCategoryId: Number(cat.id), quantity: guests },
+                ],
                 customer: {
                   firstName,
                   lastName,
