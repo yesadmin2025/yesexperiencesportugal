@@ -297,12 +297,20 @@ Deno.serve(async (req) => {
     error?: string;
   } = { status: "skipped" };
 
+  // Non-2xx override for retryable Bókun-confirm failures: Stripe's redelivery
+  // is our durable retry, so we must NOT ack 200 when confirmation failed.
+  let retryHttpStatus: number | null = null;
+
   try {
-    // v3 booking-quote flow: we ALREADY have a provisional Bókun reservation
-    // from the checkout step. Confirm it — never create a second booking.
+    // v3 booking-quote flow: three-phase state machine with recoverable lease.
+    //   reserved | checkout-created  →  paid  →  confirming  →  confirmed
+    // Only the webhook winning the atomic paid→confirming claim calls Bókun.
+    // Concurrent duplicates return 503 so Stripe redelivers if the active
+    // worker crashes; a stale `confirming` lease may be reclaimed exactly
+    // once by a conditional atomic update.
     if (isV3) {
+      const CONFIRM_LEASE_MS = 3 * 60 * 1000; // 3 minutes
       const quoteId = meta.quote_id ?? null;
-      let bokunReservationId = meta.bokun_reservation_id ?? null;
       let expectedTotalEur: number | null = null;
       let storedQuoteRow: Record<string, unknown> | null = null;
 
@@ -313,7 +321,6 @@ Deno.serve(async (req) => {
           .eq("quote_id", quoteId)
           .maybeSingle();
         storedQuoteRow = q ?? null;
-        if (q?.bokun_reservation_id) bokunReservationId = String(q.bokun_reservation_id);
         if (q?.final_total_eur != null) expectedTotalEur = Number(q.final_total_eur);
       }
 
@@ -329,82 +336,200 @@ Deno.serve(async (req) => {
         }
       }
 
+      const bokunReservationId =
+        (storedQuoteRow?.bokun_reservation_id as string | null) ??
+        meta.bokun_reservation_id ??
+        null;
+
+      const mirrorAlreadyConfirmed = async () => {
+        if (!storedQuoteRow?.bokun_reservation_id) return;
+        await admin
+          .from("bookings")
+          .update({
+            bokun_status: "confirmed",
+            bokun_booking_id: String(storedQuoteRow.bokun_reservation_id),
+            bokun_reservation_id: String(storedQuoteRow.bokun_reservation_id),
+            quote_id: String(storedQuoteRow.quote_id),
+            final_total_eur: Number(storedQuoteRow.final_total_eur),
+            bokun_base_subtotal_eur:
+              (storedQuoteRow.bokun_base_subtotal_eur as number | null) ?? null,
+            database_addon_subtotal_eur:
+              (storedQuoteRow.database_addon_subtotal_eur as number | null) ?? null,
+          })
+          .eq("id", bookingId);
+      };
+
       if (!quoteId) {
         bokunResult = { status: "needs_review", error: "no_quote_id_in_metadata" };
       } else if (!bokunReservationId) {
         bokunResult = { status: "needs_review", error: "no_reservation_id_on_quote" };
       } else {
-        // Atomic single-writer claim: only one of {payment-confirm, expiry-release}
-        // can transition the row. Excludes expired/cancelled/confirmed/failed so
-        // an expiry that already released the reservation cannot be overwritten.
         const nowIso = new Date().toISOString();
-        const { data: claimed } = await admin
+
+        // ── Phase A: atomic reserved|checkout-created → paid.
+        await admin
           .from("booking_quotes")
-          .update({
-            state: "confirmed",
-            bokun_reservation_status: "confirmed",
-            paid_at: nowIso,
-            confirmed_at: nowIso,
-          })
+          .update({ state: "paid", paid_at: nowIso })
           .eq("quote_id", quoteId)
           .in("state", ["reserved", "checkout-created"])
-          .select(
-            "quote_id, bokun_reservation_id, final_total_eur, bokun_base_subtotal_eur, database_addon_subtotal_eur",
-          )
+          .select("quote_id")
           .maybeSingle();
 
-        if (!claimed) {
-          // Row is already confirmed, or was expired/cancelled by another writer.
-          // Idempotent replay: mirror whatever we have on the stored row.
-          if (storedQuoteRow?.state === "confirmed" && storedQuoteRow?.bokun_reservation_id) {
-            await admin
-              .from("bookings")
-              .update({
-                bokun_status: "confirmed",
-                bokun_booking_id: String(storedQuoteRow.bokun_reservation_id),
-                bokun_reservation_id: String(storedQuoteRow.bokun_reservation_id),
-                quote_id: String(storedQuoteRow.quote_id),
-                final_total_eur: Number(storedQuoteRow.final_total_eur),
-                bokun_base_subtotal_eur:
-                  (storedQuoteRow.bokun_base_subtotal_eur as number | null) ?? null,
-                database_addon_subtotal_eur:
-                  (storedQuoteRow.database_addon_subtotal_eur as number | null) ?? null,
-              })
-              .eq("id", bookingId);
-            return new Response(
-              JSON.stringify({
-                ok: true,
-                bookingId,
-                bokun: "already_confirmed",
-                idempotent: true,
-              }),
-              { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-            );
-          }
+        // Re-read authoritative state after Phase A.
+        const { data: current } = await admin
+          .from("booking_quotes")
+          .select(
+            "quote_id, state, bokun_reservation_id, final_total_eur, bokun_base_subtotal_eur, database_addon_subtotal_eur, confirming_at, confirm_attempts",
+          )
+          .eq("quote_id", quoteId)
+          .maybeSingle();
+
+        const currentState = current?.state as string | undefined;
+
+        if (currentState === "confirmed") {
+          await mirrorAlreadyConfirmed();
+          return new Response(
+            JSON.stringify({ ok: true, bookingId, bokun: "already_confirmed", idempotent: true }),
+            { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+          );
+        }
+
+        if (
+          currentState === "expired" ||
+          currentState === "cancelled" ||
+          currentState === "failed"
+        ) {
           bokunResult = {
             status: "needs_review",
-            error: `quote_claim_lost:state=${String(storedQuoteRow?.state ?? "unknown")}`,
+            error: `quote_state_terminal:${currentState}`,
+          };
+        } else if (currentState !== "paid" && currentState !== "confirming") {
+          bokunResult = {
+            status: "needs_review",
+            error: `quote_state_unexpected:${String(currentState)}`,
           };
         } else {
-          const confirmed = await confirmReservation(String(claimed.bokun_reservation_id));
-          bokunResult = {
-            status: "confirmed",
-            booking_id: confirmed.bookingId,
-            confirmation: confirmed.confirmationCode,
+          // ── Phase B: single-writer claim paid → confirming.
+          type ClaimRow = {
+            bokun_reservation_id: string;
+            final_total_eur: number | null;
+            bokun_base_subtotal_eur: number | null;
+            database_addon_subtotal_eur: number | null;
           };
-          // Mirror reservation identifiers + parity fields onto bookings row.
-          await admin
-            .from("bookings")
-            .update({
-              quote_id: quoteId,
-              bokun_reservation_id: String(claimed.bokun_reservation_id),
-              final_total_eur: expectedTotalEur,
-              bokun_base_subtotal_eur:
-                (claimed.bokun_base_subtotal_eur as number | null) ?? null,
-              database_addon_subtotal_eur:
-                (claimed.database_addon_subtotal_eur as number | null) ?? null,
-            })
-            .eq("id", bookingId);
+          let claimed: ClaimRow | null = null;
+
+          if (currentState === "paid") {
+            const { data } = await admin
+              .from("booking_quotes")
+              .update({
+                state: "confirming",
+                confirming_at: new Date().toISOString(),
+                confirm_attempts: (current?.confirm_attempts ?? 0) + 1,
+              })
+              .eq("quote_id", quoteId)
+              .eq("state", "paid")
+              .select(
+                "bokun_reservation_id, final_total_eur, bokun_base_subtotal_eur, database_addon_subtotal_eur",
+              )
+              .maybeSingle();
+            claimed = (data as ClaimRow | null) ?? null;
+          }
+
+          if (!claimed) {
+            const leaseAgeMs = current?.confirming_at
+              ? Date.now() - new Date(current.confirming_at as string).getTime()
+              : Infinity;
+            const isStale = leaseAgeMs >= CONFIRM_LEASE_MS;
+
+            if (!isStale) {
+              retryHttpStatus = 503;
+              bokunResult = {
+                status: "confirm_in_flight",
+                error: `lease_active_age_ms=${Math.round(leaseAgeMs)}`,
+              };
+            } else {
+              // Stale lease: exactly one webhook wins this conditional update.
+              const { data: reclaimed } = await admin
+                .from("booking_quotes")
+                .update({
+                  confirming_at: new Date().toISOString(),
+                  confirm_attempts: (current?.confirm_attempts ?? 0) + 1,
+                })
+                .eq("quote_id", quoteId)
+                .eq("state", "confirming")
+                .eq("confirming_at", current!.confirming_at as string)
+                .select(
+                  "bokun_reservation_id, final_total_eur, bokun_base_subtotal_eur, database_addon_subtotal_eur",
+                )
+                .maybeSingle();
+              if (reclaimed) {
+                claimed = reclaimed as ClaimRow;
+              } else {
+                retryHttpStatus = 503;
+                bokunResult = {
+                  status: "confirm_in_flight",
+                  error: "lease_reclaimed_by_other_worker",
+                };
+              }
+            }
+          }
+
+          if (claimed) {
+            try {
+              const confirmed = await confirmReservation(String(claimed.bokun_reservation_id));
+
+              // ── Phase C: confirming → confirmed. Conditional so we only
+              // clear the lease we own.
+              await admin
+                .from("booking_quotes")
+                .update({
+                  state: "confirmed",
+                  bokun_reservation_status: "confirmed",
+                  confirmed_at: new Date().toISOString(),
+                  confirming_at: null,
+                  last_error: null,
+                })
+                .eq("quote_id", quoteId)
+                .eq("state", "confirming");
+
+              bokunResult = {
+                status: "confirmed",
+                booking_id: confirmed.bookingId,
+                confirmation: confirmed.confirmationCode,
+              };
+
+              await admin
+                .from("bookings")
+                .update({
+                  quote_id: quoteId,
+                  bokun_reservation_id: String(claimed.bokun_reservation_id),
+                  final_total_eur: expectedTotalEur,
+                  bokun_base_subtotal_eur:
+                    (claimed.bokun_base_subtotal_eur as number | null) ?? null,
+                  database_addon_subtotal_eur:
+                    (claimed.database_addon_subtotal_eur as number | null) ?? null,
+                })
+                .eq("id", bookingId);
+            } catch (e) {
+              // Retryable failure: revert confirming → paid, clear lease,
+              // record sanitised error, return non-2xx so Stripe retries.
+              // We never release the Bókun reservation here.
+              const rawMsg = e instanceof Error ? e.message : String(e);
+              const sanitised = rawMsg.slice(0, 240);
+              await admin
+                .from("booking_quotes")
+                .update({
+                  state: "paid",
+                  confirming_at: null,
+                  bokun_reservation_status: "confirm_failed",
+                  last_error: sanitised,
+                })
+                .eq("quote_id", quoteId)
+                .eq("state", "confirming");
+              retryHttpStatus = 502;
+              bokunResult = { status: "confirm_failed", error: sanitised };
+            }
+          }
         }
       }
 
