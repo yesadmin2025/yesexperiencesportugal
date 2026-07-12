@@ -1,128 +1,62 @@
-Implement the one-model instant checkout for Signature, Tailored and Studio V3. No dashboard, no phased rollout, no human-review path.
+# Launch: full Bókun mapping, family pricing, Studio eligibility (v2 — approved)
 
-## Commercial model (locked)
+Same contract as the previous plan, with the four final execution rules integrated. Approving this switches me to build mode and I'll execute end-to-end.
 
-`finalTotalEur = liveBokunBaseSubtotal + serverAddOnSubtotal`. Bókun is authoritative for base (product/option/rate/slot/categories/prices/capacity/availability). The database is authoritative for add-ons. Browser is never authoritative for anything.
+## Four final rules (override previous plan where conflicting)
 
-Runtime precedence: live Bókun quote → active DB add-ons → synced mirror (preview only) → code defaults (placeholder only). A synced/default price never becomes the Stripe amount.
+**R1 — Readiness is per-composition, not per-age-range.** Drop the "0–17 coverage" gate. A tour is bookable when: every returned Bókun category on the mapped option/rate is `confirmed` or explicitly classified (`unsupported`, `unmapped`, `ambiguous`), AND every selected traveller age resolves to exactly one valid category OR to a structured `unsupported_age`. Adults-only, child-from-6, no-infants, single-child-band, no-youth — all valid. Adult bookings must never be blocked by missing Youth/Child/Infant.
 
-## 1. Universal traveller composition
+**R2 — Pre-Stripe hard blocks; `needs_review` only for post-payment surprises.** Before creating the Stripe session, block with structured errors: `unsupported_age`, `category_not_ready`, `slot_unavailable`, `capacity_exceeded`, `quote_stale`, `add_on_invalid`, `mapping_mismatch`. `needs_review` is reserved for post-payment races/external failures only — never a normal public-checkout outcome.
 
-- Type `TravellerComposition = { adults: number; minorAges: number[] }` in `src/lib/pricing/travellerComposition.ts`. Legacy `guests: N` normalises to `{ adults: N, minorAges: [] }`.
-- Server resolves each `minorAges[i]` against the SELECTED product+option+rate+slot's real Bókun categories (adult/youth/child/infant ranges vary per product). Never hard-coded.
-- Capacity always uses `adults + minorAges.length`. Infants count.
+**R3 — Provisional Bókun reserve/hold before Stripe.** Flow: live quote → revalidate exact slot → provisional Bókun reserve/hold → create Stripe session (store `bokunReservationId` on the quote) → on payment success, confirm THAT reservation (idempotent). Webhook never creates a second booking. Abandoned payments: allow hold to expire or release. Idempotency on: repeat checkout clicks, repeat Stripe webhooks, repeat Bókun confirm. Products that cannot support reserve/hold are reported explicitly and NOT marked instant-confirm-ready.
 
-## 2. Shared "Who is travelling?" component
+**R4 — Instant-confirmation copy is server-gated.** Show instant-confirm wording only after the server has verified mapping, option, rate, slot, categories, capacity, live Bókun base, DB add-ons, and provisional reserve. Before that: neutral "Checking live price and availability…". On any failure: matching unavailable state + Stripe blocked. Launch readiness requires a real Bókun reserve/confirm (or sandbox equivalent), not a mocked webhook.
 
-New `src/components/booking/TravellerCompositionPicker.tsx`:
+## Everything else from the approved plan stands
 
-- Adults stepper (min 1 unless product allows 0), Minors (0–17) stepper, one age field per minor.
-- Preserves entered ages when minor count changes.
-- Once a live quote resolves, shows `Age 15 · Youth` next to each minor from the server's resolved category.
-- Mobile-first at 393px. Replaces `GuestCompositionPicker` on public flows.
+- Canonical 12-tour Signature registry (`src/lib/tours/signatureRegistry.ts`), including explicit `southwest-vicentine-coast`.
+- `sync-all-bokun-pricing` iterates the registry, returns `{tourId, ok, productId, optionId, rateId, warnings, categoryCount, confirmedCount, suggestedCount, unsupportedCount, unmappedCount, categories}` per tour.
+- Category states: `confirmed | suggested | unsupported | unmapped | ambiguous`. No €0 fallback for missing bands.
+- Shared `TravellerComposition` (already scaffolded) + universal `<TravellerCompositionPicker />` wired into Signature, Tailored, Studio V3. Browser never classifies.
+- Any minor → live category-aware quote or explicit `unsupported_age`. No adult-priced mixed families.
+- Studio V3 order: basic details → Who is travelling → preferences → eligibility filter → itinerary gen → refine → date/slot → live base quote → DB add-ons → Final Signature → checkout.
+- Studio pricing always uses `commercialProductKey = 'studio-v3-private-full-day'`. Code guard rejects any Studio quote resolving to a Signature mapping. Skeleton is synced/reported like Signature.
+- Hard eligibility filter (not ranking): `allAgesSupported && capacityAvailable && operationallyCompatible && requiredEquipmentAvailable`.
+- `TravellerSuitability` metadata (min/max age, infantsAllowed, childSeat, stroller, longWalking, capacityCountsAll, incompatibilityReasons) on Signature templates, activities, stops, workshops, add-ons.
+- Compatible itinerary swap preserves the Bókun base quote and price.
+- Add-ons filtered by suitability + capacity + equipment + active + has DB price. `create-signature-checkout` re-reads add-on prices from DB immediately before Stripe.
+- `pricingRevision` vs `itineraryRevision` split — itinerary-only changes preserve base quote, add-on prices, checkout availability; only signed itinerary snapshot updates.
+- Single server-authoritative signed quote across Signature summary, Tailored summary, Studio Final Signature, Guest Details, Checkout Summary, Stripe, booking record. Enforced equality: `visible = stored = Stripe = booking = live Bókun base + DB add-ons`. Traveller picker qty = stored category qty = Bókun reservation qty.
+- Reservation parity: every `slot.pricingCategories?.[0]` shortcut removed; `pricingCategoryBookings` built from resolved categories, Infant included at qty>0 even when €0.
+- Pre-reserve checks (per R2) run before Stripe: age→category, category on slot, qty matches quote, capacity incl. infants, product/option/rate/availability match, Stripe = quote, add-ons use current DB prices.
 
-## 3. Provider-neutral quote contract + hook + breakdown
+## Tests (must pass before completion report)
 
-- Contract `BookingQuote` (exact shape from spec) in `src/lib/pricing/bookingQuote.ts`, shared by browser and edge.
-- Server endpoint: extend `supabase/functions/bokun-quote` to accept `{ flow, commercialProductKey, date, startTime?, availabilityId?, travellerComposition, selectedAddOns, pricingRevision, itineraryRevision?, itinerarySnapshot? }` and return `BookingQuote` (no pending-review; only `available` or `unavailable`). Persist the authoritative snapshot server-side in a new `booking_quotes` row keyed by `quoteId`, signed via existing `STUDIO_QUOTE_SIGNING_SECRET` (reuse `bokunQuoteToken.ts`).
-- New hook `src/hooks/use-booking-quote.ts` — one hook for all three flows, replaces per-flow pricing hooks on public surfaces.
-- New component `src/components/booking/LivePriceBreakdown.tsx` — one line per non-zero paid Bókun category plus each add-on line, always includes free infants as `Free`. Used in Signature summary, Tailored summary, Studio Final Signature, Guest Details, Checkout Summary.
+1. Registry vs mappings vs mirrors comparison; explicit assertion on `southwest-vicentine-coast`.
+2. Adults-only tour (e.g. Adult-only product): 2A checkout allowed; 2A + child → `unsupported_age`.
+3. Child-from-6 tour: 2A + child(8) checkout allowed; 2A + infant(0) → `unsupported_age`.
+4. Mixed family per public tour (2A + [15,8,0]): correct categories, capacity=5, infant free only when Bókun returns €0, visible=Stripe.
+5. Every public Signature: live category-aware quote, product/option/rate verified, age mapping verified, total parity, provisional reserve returns an ID.
+6. Studio infant filter: incompatible activities excluded pre-generation.
+7. Studio compatible replacement: base price unchanged.
+8. No late failure: every displayed Studio itinerary supports all selected ages.
+9. No Signature leakage: Studio quotes never resolve to a Signature `tour_bokun_mapping` row.
+10. Add-on tamper: server uses DB price.
+11. Stripe parity: base + add-ons = visible = Stripe = confirmed reservation total.
+12. Idempotency: duplicate checkout POST → single reservation; duplicate Stripe webhook → single confirm; duplicate Bókun confirm → same booking.
+13. Instant-confirm copy: hidden until full server verification; unavailable states render on each failure code.
 
-## 4. Commercial identity by flow
+## Completion report (section O)
 
-- Signature/Tailored: existing `tour_bokun_option_mapping` (product+option+rate). Tailored itinerary edits DO NOT change base mapping.
-- Studio V3: dedicated commercial skeleton `commercialProductKey = "studio-v3-private-full-day"`. Add a `studio_commercial_bokun_mapping` row (single row) with real Bókun product/option/rate for the private full-day skeleton. **Studio must never resolve to any Signature tour's Bókun mapping** — enforced with an explicit deny path in `resolveCommercialMapping()`.
+Return: canonical registry, `southwest-vicentine-coast` result, per-tour product/option/rate, category IDs + age ranges, mapping status, unsupported-age gaps (as valid config, not failures), sync-all result per tour, Studio skeleton mapping, files changed, actual test results, browser screenshots, visible totals, Stripe test totals, Bókun reservation category payloads, and any mapping still blocking launch.
 
-## 5. Revisions
+## Execution order
 
-- `pricingRevision` bumps on: date, slot, adults, minor count, any minor age, commercial product, duration, vehicle class, operating-zone product, add-on selection, add-on quantity.
-- `itineraryRevision` bumps on: stops, order, narrative, standard itinerary content.
-- Itinerary-only edits keep the base quote valid; only the signed itinerary snapshot updates.
-
-## 6. Add-on catalogue (server-owned)
-
-- New table `booking_add_ons` (id text pk, label text, pricing_unit text check `per_person|per_group|per_vehicle|fixed`, unit_eur numeric, active bool, created_at, updated_at). GRANTs + RLS: `SELECT` to anon for `active = true`, `ALL` to service_role.
-- Junction `tour_available_add_ons(tour_id, add_on_id)` for which tours expose which add-ons (Signature/Tailored) plus a `studio` scope flag.
-- Seed with the current approved add-ons from `signatureAddOnCatalogue.ts` (migrated once, then that file becomes deprecated for pricing).
-- Server resolves add-on subtotal from IDs+quantities only. Browser-sent unit prices are ignored/rejected.
-
-## 7. Stripe checkout — parity enforced
-
-Browser sends only `{ quoteToken, currentPricingRevision, currentItineraryRevision, guestDetails }`.
-
-`create-signature-checkout` (rename responsibilities, keep the function name so URLs don't break):
-
-1. Verify signature + expiry, load stored quote from `booking_quotes`.
-2. Confirm current `pricingRevision` matches stored.
-3. Revalidate Bókun slot + categories + capacity (reuse `bokunQuoteRevalidate.ts`, extend to full multi-category).
-4. Re-resolve add-ons from DB.
-5. Reject on any drift/change/expiry (`quote_stale`, `slot_unavailable`, `add_on_invalid`).
-6. Create one Stripe line item per non-zero paid Bókun category + one per add-on. Free infant stays in stored quote + Stripe metadata + booking record + Bókun reservation payload, omitted from paid lines.
-
-## 8. Webhook — real category bookings
-
-`stripe-webhook/index.ts`: build Bókun `pricingCategoryBookings` from the stored verified quote (adult/youth/child/infant with real `pricingCategoryId`s + quantities, omitting zeros). Remove every `slot.pricingCategories?.[0]` shortcut.
-
-## 9. Flow wiring
-
-- `SimpleBookingForm` (Signature) and `BandedSignatureBookingForm` → replaced by one `InstantBookingForm` using `TravellerCompositionPicker` + `useBookingQuote` + `LivePriceBreakdown`.
-- Tailored surface consumes the same `InstantBookingForm` with `flow: "tailor"` and passes `itinerarySnapshot` on refresh.
-- Studio V3 Guest Details + Final Signature + Checkout Summary consume the same hook + breakdown with `flow: "studio"`, `commercialProductKey: "studio-v3-private-full-day"`. Ask "Who is travelling?" early (before itinerary creation) per spec §6.
-- Checkout drawer submits only `{ quoteToken, pricingRevision, itineraryRevision, guestDetails }`.
-
-## 10. Copy hygiene
-
-Remove "Pending human review / Pending itinerary validation / Subject to pricing confirmation / Supplier confirmation required" from public supported selections. "Instant confirmation" copy only renders after the server-verified quote is present. Unavailable states show the exact strings from spec §19.
-
-## 11. Launch tests (Playwright, gate build)
-
-New `e2e/instant-checkout-launch.spec.ts` with the exact 9 cases from spec §21:
-
-1. Signature adult-only (2 adults) — visible total = Stripe total, Bókun categories correct.
-2. Signature mixed family (2 adults, ages 15/8/1) — infant free, total participants 5, category quantities correct.
-3. Tailored itinerary edit — `itineraryRevision` bumps, `pricingRevision` unchanged, base price valid, checkout available.
-4. Tailored add-on toggle — base unchanged, add-on subtotal + Stripe total change correctly.
-5. Studio itinerary edit — stays mapped to `studio-v3-private-full-day`, pricing unchanged.
-6. Studio guest change — pricing revision bumps, old quote invalid, new resolution runs.
-7. Slot change — old quote invalid, checkout blocked until new quote ready.
-8. Add-on tampering — browser-sent unit price ignored, DB value used.
-9. No Signature leakage — Studio quote's `commercialMappingId` is never a Signature mapping.
-10. Mobile 393px picker — a11y + hit targets.
-
-Run against localhost via existing Playwright infra. Real browser walkthroughs for Signature/Tailored/Studio also executed at completion, returning: files changed, Bókun product/option/rate, categories+ranges, composition, base + add-on breakdown, visible total, Stripe total, Bókun booking payload, screenshots.
-
-## Files to create
-
-- `src/lib/pricing/travellerComposition.ts`
-- `src/lib/pricing/bookingQuote.ts`
-- `src/components/booking/TravellerCompositionPicker.tsx`
-- `src/components/booking/LivePriceBreakdown.tsx`
-- `src/components/booking/InstantBookingForm.tsx`
-- `src/hooks/use-booking-quote.ts`
-- `supabase/functions/_shared/resolveCommercialMapping.ts`
-- `supabase/functions/_shared/resolveAddOnsFromDb.ts`
-- Migration: `booking_add_ons`, `tour_available_add_ons`, `studio_commercial_bokun_mapping`, `booking_quotes` (all with GRANTs + RLS).
-- `e2e/instant-checkout-launch.spec.ts`
-
-## Files to edit
-
-- `supabase/functions/bokun-quote/index.ts` — new input/output contract, persist stored quote.
-- `supabase/functions/_shared/bokunQuoteToken.ts` + `bokunQuoteRevalidate.ts` — multi-category revalidation.
-- `supabase/functions/create-signature-checkout/index.ts` — quote-token-only input, real category+add-on Stripe lines.
-- `supabase/functions/stripe-webhook/index.ts` — real `pricingCategoryBookings` from stored quote.
-- `src/components/SimpleBookingForm.tsx`, `src/components/booking/BandedSignatureBookingForm.tsx` — replaced by `InstantBookingForm` on public surfaces (files kept only as thin adapters if still referenced).
-- `src/components/checkout/BrandedCheckoutDrawer.tsx` — send only `{quoteToken, ...}`.
-- Studio V3 Guest Details / Final Signature / Checkout Summary — wire `useBookingQuote` + `LivePriceBreakdown`.
-- Remove pending-review copy in Studio V3 status surfaces.
-
-## Files to delete/deprecate
-
-- `src/components/booking/GuestCompositionPicker.tsx` (superseded by TravellerCompositionPicker).
-- `src/components/booking/BokunRolloutBadge.tsx` (rollout is no longer a public concept in the one-model world; kept only if admin surfaces still reference it).
-- Pricing logic inside `signatureAddOnCatalogue.ts` collapses to seed data only.
-
-## Prerequisite you'll need to confirm during build
-
-**Studio commercial Bókun mapping**: I need the real Bókun `productId` + `optionId` + `rateId` for the `studio-v3-private-full-day` skeleton. If you already have one, paste it once when build starts; otherwise I'll seed the row disabled and every Studio walkthrough will fail loudly on that missing mapping (per spec §18: block, don't invent).
-
-Approve to start building — I'll ask for the Studio mapping in the first build turn and then execute end-to-end.
+1. Registry + audit + `sync-all-bokun-pricing`; capture the report.
+2. Category state model + composition-based readiness (R1); wire picker across surfaces.
+3. Single server quote + add-on authority + reservation parity + pre-Stripe hard blocks (R2).
+4. Provisional reserve/hold before Stripe + idempotent confirm (R3).
+5. Studio skeleton + sequence + eligibility filter + suitability metadata + compatible replacement.
+6. Revision split.
+7. Server-gated instant-confirm copy + unavailable states (R4).
+8. All tests, then completion report.
