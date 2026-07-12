@@ -1072,31 +1072,55 @@ export function StudioV3() {
       }
       try {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
-        const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
-          body: {
-            tourId: tour.id,
-            tourTitle: tour.title ?? tour.id,
-            guests: details.guests,
-            stopLabels,
-            includedItems: (() => {
-              const m = getViatorMeta(tour.id);
-              if (m?.included && m.included.length > 0) return m.included;
-              return tour.included ?? [];
-            })(),
-            pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
-            dateExact: details.tourDate || currentState.dateExact || null,
-            journeyTitle: currentState.journeyTitle ?? null,
-            priceFromEur: tour.priceFrom ?? 180,
-            returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-            environment: getStripeEnvironment(),
-            flow: "studio",
-            uiMode: "embedded",
-            guestDetails: { ...details, hotelPickupIncluded: true },
-            addOns: addOnsForCheckout,
+        // Launch-spec v3: one-shot server quote → signed token → checkout.
+        // Studio resolves against `studio_commercial_bokun_mapping` server-side.
+        const composition = compositionFromLegacyGuests(details.guests);
+        const commercialProductKey = "studio-v3-private-full-day";
+        const selectedAddOnsForQuote = addOnsForCheckout.map((a) => ({
+          id: a.id,
+          quantity: 1,
+        }));
+        const dateExact = details.tourDate || currentState.dateExact || "";
+        const pricingRevision = computePricingRevision({
+          commercialProductKey,
+          date: dateExact,
+          startTime: details.startTime ?? null,
+          availabilityId: null,
+          adults: composition.adults,
+          minorAges: composition.minorAges,
+          addOns: selectedAddOnsForQuote,
+        });
+        const itineraryRevision = `studio:${tour.id}:${stopLabels.join("|").slice(0, 200)}`;
+        const quoteResp = await fetchBookingQuote({
+          flow: "studio",
+          commercialProductKey,
+          date: dateExact,
+          startTime: details.startTime ?? undefined,
+          composition,
+          selectedAddOns: selectedAddOnsForQuote,
+          pricingRevision,
+          itineraryRevision,
+          itinerarySnapshot: {
+            title: currentState.journeyTitle ?? tour.title ?? tour.id,
+            routeStops: stopLabels.map((label: string, i: number) => ({
+              id: `s${i}`,
+              label,
+            })),
           },
         });
-        if (error) throw error;
-        const resp = (data ?? {}) as { clientSecret?: string; publishableKey?: string };
+        if (!isQuoteAvailable(quoteResp)) {
+          throw new Error(quoteResp.message || `quote_unavailable:${quoteResp.reason}`);
+        }
+        const resp = await createBookingQuoteSession({
+          quoteToken: quoteResp.quoteToken,
+          environment: getStripeEnvironment(),
+          returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
+          uiMode: "embedded",
+          tourTitle: tour.title ?? tour.id,
+          pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
+          journeyTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
+          customerEmail: details.email,
+        });
         if (!resp.clientSecret || !resp.publishableKey) {
           throw new Error("Embedded checkout unavailable");
         }
