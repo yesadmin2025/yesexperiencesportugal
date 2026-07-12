@@ -82,3 +82,38 @@ export async function createBookingQuoteSession(
   }
   return resp;
 }
+
+export type FetchBookingQuoteInput = {
+  flow: BookingFlow;
+  commercialProductKey: string;
+  date: string;
+  startTime?: string;
+  availabilityId?: string;
+  composition: TravellerComposition;
+  selectedAddOns?: Array<{ id: string; quantity: number }>;
+  pricingRevision: string;
+  itineraryRevision?: string;
+  itinerarySnapshot?: { title: string; routeStops: Array<{ id: string; label: string }> };
+};
+
+export async function fetchBookingQuote(
+  input: FetchBookingQuoteInput,
+): Promise<BookingQuoteResponse> {
+  const { data, error } = await supabase.functions.invoke("booking-quote", {
+    body: {
+      flow: input.flow,
+      commercialProductKey: input.commercialProductKey,
+      date: input.date,
+      startTime: input.startTime,
+      availabilityId: input.availabilityId,
+      travellerComposition: input.composition,
+      selectedAddOns: (input.selectedAddOns ?? []).filter((a) => a.quantity > 0),
+      pricingRevision: input.pricingRevision,
+      itineraryRevision: input.itineraryRevision,
+      itinerarySnapshot: input.itinerarySnapshot,
+    },
+  });
+  if (error) throw error;
+  return data as BookingQuoteResponse;
+}
+
