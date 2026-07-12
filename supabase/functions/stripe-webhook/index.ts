@@ -145,10 +145,22 @@ Deno.serve(async (req) => {
   await logEvent({ ...baseLog, status_code: 200 });
 
   const meta = (session.metadata ?? {}) as Record<string, string>;
-  const bookingType = (meta.booking_type ?? "builder") as "signature" | "builder" | "moment";
-  const guests = Math.max(1, Number(meta.guests ?? 1));
+  const rawBookingType = meta.booking_type ?? "builder";
+  const isV3 = rawBookingType === "booking-quote-v3";
+  const flow = (meta.flow ?? "").toLowerCase(); // signature | tailored | tailor | studio
+  const bookingType = (isV3 ? (flow === "studio" ? "studio" : "signature") : rawBookingType) as
+    | "signature"
+    | "builder"
+    | "moment"
+    | "studio";
+
+  const guests = isV3
+    ? Math.max(1, Number(meta.guests_total ?? 1))
+    : Math.max(1, Number(meta.guests ?? 1));
   const dateExact = (meta.date_exact ?? "").trim() || null;
-  const tourId = meta.tour_id ?? null;
+  const tourId = isV3
+    ? (meta.commercial_product_key ?? meta.tour_id ?? null)
+    : (meta.tour_id ?? null);
   const customerEmail = session.customer_details?.email ?? session.customer_email ?? null;
   const customerName = session.customer_details?.name ?? null;
   const customerPhone = session.customer_details?.phone ?? null;
@@ -178,7 +190,12 @@ Deno.serve(async (req) => {
     stripe_session_id: session.id,
     stripe_payment_intent_id:
       typeof session.payment_intent === "string" ? session.payment_intent : null,
-    metadata: { ...meta, stripe_env: stripeEnv, event_id: event.id },
+    metadata: {
+      ...meta,
+      stripe_env: stripeEnv,
+      event_id: event.id,
+      quote_contract: isV3 ? "booking-quote-v3" : "legacy",
+    },
   } as const;
 
   if (!bookingId) {
@@ -199,8 +216,9 @@ Deno.serve(async (req) => {
     await admin.from("bookings").update(baseRow).eq("id", bookingId);
   }
 
-  // Only Signature bookings push to Bokun. Builder/Moments are Stripe-only by design.
-  if (bookingType !== "signature" || !tourId) {
+  // v3 unified flows (signature / tailored / studio) all push to Bokun.
+  // Legacy builder/moment paths remain Stripe-only.
+  if (!isV3 && (bookingType !== "signature" || !tourId)) {
     return new Response(JSON.stringify({ ok: true, bookingId, bokun: "skipped" }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
