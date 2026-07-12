@@ -1214,6 +1214,7 @@ export function pickPrimaryTour(
   destinationIntent: DestinationIntent | null,
   seed: number = 0,
   rhythm: Rhythm | null = null,
+  restrictToTourIds?: ReadonlySet<string> | null,
 ): { tour: SignatureTour; alternates: SignatureTour[] } {
   const { tour, alternates } = pickPrimaryTourWithFit(
     feeling,
@@ -1223,6 +1224,7 @@ export function pickPrimaryTour(
     destinationIntent,
     seed,
     rhythm,
+    restrictToTourIds,
   );
   return { tour, alternates };
 }
