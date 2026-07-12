@@ -119,6 +119,60 @@ Deno.serve(async (req) => {
     metadata: sessionPreview?.metadata ?? null,
   };
 
+  // Expired Stripe Checkout Session: atomically release any provisional Bókun
+  // reservation for this quote. The conditional UPDATE (state = 'checkout-created')
+  // acts as a single-writer claim — duplicate expiry deliveries update 0 rows and
+  // never call releaseReservation twice, and an expiry that arrives after a
+  // successful confirmation (state = 'confirmed') is a no-op.
+  if (event.type === "checkout.session.expired") {
+    const expiredSession = event.data.object as Stripe.Checkout.Session;
+    const quoteId = (expiredSession.metadata as Record<string, string> | null)?.quote_id ?? null;
+    await logEvent({ ...baseLog, status_code: 200, error_message: "checkout.session.expired" });
+    if (!quoteId) {
+      return new Response(
+        JSON.stringify({ received: true, ignored: "expired_no_quote_id" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    const nowIso = new Date().toISOString();
+    const { data: claimed } = await admin
+      .from("booking_quotes")
+      .update({ state: "expired", expired_at: nowIso })
+      .eq("quote_id", quoteId)
+      .eq("state", "checkout-created")
+      .select("quote_id, bokun_reservation_id")
+      .maybeSingle();
+    if (!claimed) {
+      return new Response(
+        JSON.stringify({ received: true, released: false, reason: "not_in_checkout_created" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    if (!claimed.bokun_reservation_id) {
+      return new Response(
+        JSON.stringify({ received: true, released: false, reason: "no_reservation_id" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    let releaseResult: { status: string; code?: string; at: string };
+    try {
+      const ok = await releaseReservation(String(claimed.bokun_reservation_id));
+      releaseResult = { status: ok ? "released" : "already_expired", at: nowIso };
+    } catch (e) {
+      // releaseReservation is best-effort/never-throws; guard for safety.
+      const msg = e instanceof Error ? e.message : String(e);
+      releaseResult = { status: "failed", code: msg.slice(0, 120), at: nowIso };
+    }
+    await admin
+      .from("booking_quotes")
+      .update({ bokun_release_result: releaseResult })
+      .eq("quote_id", claimed.quote_id);
+    return new Response(
+      JSON.stringify({ received: true, released: true, result: releaseResult }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
+  }
+
   // Idempotency: ignore non-checkout events quickly.
   if (
     event.type !== "checkout.session.completed" &&
