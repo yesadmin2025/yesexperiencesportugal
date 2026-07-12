@@ -1,13 +1,10 @@
 // BandedSignatureBookingForm
 //
-// Phase C replacement for SimpleBookingForm on tours where
-// `banded_pricing_enabled = true` in `tour_price_tiers`. Live pricing is
-// served by the `bokun-quote` edge function; checkout goes through
-// `create-signature-checkout` in `bokun-signature-create-session` mode,
-// which re-verifies the signed quoteToken server-side before Stripe.
-//
-// Nothing in this component computes a price locally — the only source of
-// truth is the quote response.
+// Launch-spec v3 Signature booking form. Uses the provider-neutral
+// `useBookingQuote` hook (→ `booking-quote` edge function) for live pricing,
+// and `createBookingQuoteSession` (→ `create-signature-checkout` in
+// `mode: "booking-quote-create-session"`) for checkout. Server is the sole
+// price authority — nothing in this component computes a price locally.
 
 import { useMemo, useState } from "react";
 import { Calendar, Sparkles, Lock, Loader2, AlertTriangle } from "lucide-react";
@@ -16,13 +13,11 @@ import { toast } from "sonner";
 import type { SignatureTour } from "@/data/signatureTours";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { supabase } from "@/integrations/supabase/client";
-import { GuestCompositionPicker } from "@/components/booking/GuestCompositionPicker";
-import { useBokunQuote } from "@/hooks/use-bokun-quote";
+import { TravellerCompositionPicker } from "@/components/booking/TravellerCompositionPicker";
+import { useBookingQuote } from "@/hooks/use-booking-quote";
 import type { TourBokunReadiness } from "@/hooks/use-tour-bokun-readiness";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getViatorMeta } from "@/data/signatureToursViator";
-import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
 import {
   FinalDetailsDialog,
   type GuestDetails,
@@ -31,9 +26,13 @@ import {
   BrandedCheckoutDrawer,
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
-import type { GuestMix } from "@/lib/pricing/ageBandPricing";
+import {
+  EMPTY_COMPOSITION,
+  totalParticipants,
+  type TravellerComposition,
+} from "@/lib/pricing/travellerComposition";
+import { createBookingQuoteSession } from "@/lib/pricing/bookingQuoteCheckout";
 import { BokunRolloutBadge } from "@/components/booking/BokunRolloutBadge";
-
 
 type Props = {
   tour: SignatureTour;
@@ -44,20 +43,19 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
   const navigate = useNavigate();
   const [date, setDate] = useState("");
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
-  const [guestMix, setGuestMix] = useState<GuestMix>({
+  const [composition, setComposition] = useState<TravellerComposition>({
+    ...EMPTY_COMPOSITION,
     adults: 2,
-    youths: 0,
-    children: 0,
-    infants: 0,
   });
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [pending, setPending] = useState(false);
 
-  const quote = useBokunQuote({
-    internalProductKey: tour.id,
+  const quote = useBookingQuote({
+    flow: "signature",
+    commercialProductKey: tour.id,
     date: date || null,
     startTime: pickup,
-    guestMix,
+    composition,
     enabled: true,
   });
 
@@ -66,28 +64,39 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
   const [publishableKey, setPublishableKey] = useState<string | null>(null);
   const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
 
-  const totalGuests =
-    guestMix.adults + guestMix.youths + guestMix.children + guestMix.infants;
-
+  const totalGuests = totalParticipants(composition);
+  const available = !!quote.quote;
   const canReserve = useMemo(
     () =>
       !!date &&
       totalGuests > 0 &&
-      !!quote.data?.ok &&
-      !!quote.data?.quoteToken &&
-      quote.data.finalTotalEur > 0,
-    [date, totalGuests, quote.data],
+      available &&
+      !!quote.quote?.quoteToken &&
+      (quote.quote?.finalTotalEur ?? 0) > 0,
+    [date, totalGuests, available, quote.quote],
   );
+
+  const resolvedMinors = useMemo(() => {
+    if (!quote.quote) return undefined;
+    const minorLines = quote.quote.basePricing.lines.filter(
+      (l) => Array.isArray(l.ages) && l.ages.length > 0,
+    );
+    return composition.minorAges.map((age) => {
+      const line = minorLines.find((l) => (l.ages ?? []).includes(age));
+      return line ? { age, bandLabel: line.label } : null;
+    });
+  }, [quote.quote, composition.minorAges]);
 
   async function handleReserve(details: GuestDetails) {
     if (pending) return;
-    if (!quote.data?.quoteToken) {
+    const q = quote.quote;
+    if (!q?.quoteToken) {
       toast.error("Live quote unavailable — please refresh and try again.");
       return;
     }
     setPending(true);
     const meta = getViatorMeta(tour.id);
-    const finalTotal = quote.data.finalTotalEur;
+    const finalTotal = q.finalTotalEur;
     const perPax = Math.round(finalTotal / Math.max(1, totalGuests));
     setCheckoutSummary({
       tourTitle: tour.title,
@@ -108,35 +117,31 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
     setCheckoutOpen(true);
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
-      const includedItems = resolveClientIncludedItems(meta, tour);
-      const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
-        body: {
-          mode: "bokun-signature-create-session",
-          quoteToken: quote.data.quoteToken,
-          currentRevision: "r0",
-          environment: getStripeEnvironment(),
-          returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-          uiMode: "embedded",
-          tourTitle: tour.title,
-          pickupLabel: details.pickupAddress || pickup,
-          journeyTitle: tour.title.split("—")[0].trim(),
-          tailored: false,
-          includedItems,
-          guestDetails: { ...details, hotelPickupIncluded: true },
-        },
+      const resp = await createBookingQuoteSession({
+        quoteToken: q.quoteToken,
+        environment: getStripeEnvironment(),
+        returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
+        uiMode: "embedded",
+        tourTitle: tour.title,
+        pickupLabel: details.pickupAddress || pickup,
+        journeyTitle: tour.title.split("—")[0].trim(),
+        customerEmail: details.email,
       });
-      if (error) throw error;
-      const resp = (data ?? {}) as { clientSecret?: string; publishableKey?: string };
       if (!resp.clientSecret || !resp.publishableKey) {
         throw new Error("Embedded checkout unavailable");
       }
       setClientSecret(resp.clientSecret);
       setPublishableKey(resp.publishableKey);
     } catch (e) {
-      console.error("Bókun-authoritative checkout failed", e);
+      console.error("v3 signature checkout failed", e);
       const msg = e instanceof Error ? e.message : String(e);
+      const stale =
+        msg.includes("quote_stale") ||
+        msg.includes("quote_expired") ||
+        msg.includes("slot_capacity_lost") ||
+        msg.includes("slot_no_longer_offered");
       toast.error(
-        msg.includes("quote_stale")
+        stale
           ? "Availability changed — please review your selection and try again."
           : "Checkout unavailable right now. Please try again in a moment.",
       );
@@ -148,7 +153,7 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
   }
 
   const quotePending = quote.loading;
-  const quoteError = !quote.loading && !quote.data?.ok && (quote.error || quote.data?.reason);
+  const unavailableMsg = quote.unavailable?.message ?? quote.error;
 
   return (
     <div className="border border-[color:var(--border)] bg-[color:var(--card)] p-5 sm:p-7">
@@ -162,7 +167,6 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
       <div className="mt-3">
         <BokunRolloutBadge readiness={readiness} tourId={tour.id} />
       </div>
-
 
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Field label="Date" icon={<Calendar size={14} />}>
@@ -197,10 +201,11 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
       </div>
 
       <div className="mt-4">
-        <GuestCompositionPicker
-          categories={readiness.bokunCategories}
-          guestMix={guestMix}
-          onChange={setGuestMix}
+        <TravellerCompositionPicker
+          value={composition}
+          onChange={setComposition}
+          resolvedMinors={resolvedMinors}
+          unresolvedAges={quote.unavailable?.unresolvedAges}
         />
       </div>
 
@@ -214,20 +219,31 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
           <p className="inline-flex items-center gap-2 text-[11px] text-[color:var(--charcoal-soft)]">
             <Loader2 size={12} className="animate-spin" /> Fetching live quote…
           </p>
-        ) : quoteError ? (
+        ) : quote.unavailable || quote.error ? (
           <p className="inline-flex items-center gap-2 text-[11px] text-amber-800">
-            <AlertTriangle size={12} /> {quote.data?.reason ?? quote.error ?? "Unavailable"}
+            <AlertTriangle size={12} /> {unavailableMsg ?? "Unavailable"}
           </p>
-        ) : quote.data?.ok ? (
+        ) : quote.quote ? (
           <div className="space-y-2">
             <ul className="space-y-1 text-[12px]">
-              {quote.data.lines.map((l) => (
+              {quote.quote.basePricing.lines.map((l) => (
                 <li key={l.bokunCategoryId} className="flex items-baseline justify-between gap-3">
                   <span className="text-[color:var(--charcoal-soft)] capitalize">
-                    {l.uiBand} · {l.label} × {l.quantity}
+                    {l.label} × {l.quantity}
+                    {l.isFree ? " · included" : ""}
                   </span>
                   <span className="tabular-nums">
                     €{l.subtotalEur.toLocaleString("en-GB")}
+                  </span>
+                </li>
+              ))}
+              {quote.quote.addOnPricing.lines.map((a) => (
+                <li key={a.id} className="flex items-baseline justify-between gap-3">
+                  <span className="text-[color:var(--charcoal-soft)]">
+                    {a.label} × {a.quantity}
+                  </span>
+                  <span className="tabular-nums">
+                    €{a.subtotalEur.toLocaleString("en-GB")}
                   </span>
                 </li>
               ))}
@@ -237,16 +253,9 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
                 Total
               </span>
               <span className="serif text-[1.4rem]">
-                €{Math.round(quote.data.finalTotalEur).toLocaleString("en-GB")}
+                €{Math.round(quote.quote.finalTotalEur).toLocaleString("en-GB")}
               </span>
             </div>
-            {quote.data.warnings.length ? (
-              <ul className="text-[10.5px] text-amber-800 list-disc list-inside">
-                {quote.data.warnings.map((w, i) => (
-                  <li key={i}>{w}</li>
-                ))}
-              </ul>
-            ) : null}
           </div>
         ) : null}
       </div>
@@ -315,10 +324,10 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
           checkoutSummary ?? {
             tourTitle: tour.title,
             guests: totalGuests,
-            pricePerPaxEur: quote.data?.finalTotalEur
-              ? Math.round(quote.data.finalTotalEur / Math.max(1, totalGuests))
+            pricePerPaxEur: quote.quote?.finalTotalEur
+              ? Math.round(quote.quote.finalTotalEur / Math.max(1, totalGuests))
               : tour.priceFrom,
-            totalEur: Math.round(quote.data?.finalTotalEur ?? 0),
+            totalEur: Math.round(quote.quote?.finalTotalEur ?? 0),
             flowLabel: "Signature",
           }
         }

@@ -1,9 +1,9 @@
 // Provider-neutral quote hook — one for Signature, Tailored, Studio.
 //
-// Debounces price-affecting inputs, invokes `bokun-quote`, and returns the
-// signed BookingQuote (available) or the reason it's unavailable. Never
-// exposes prices as authoritative to the browser: the returned quoteToken
-// is the only artefact checkout can trust.
+// Debounces price-affecting inputs, invokes the launch-spec `booking-quote`
+// edge function, and returns the signed BookingQuote (available) or the
+// reason it's unavailable. Never exposes prices as authoritative to the
+// browser: the returned quoteToken is the only artefact checkout can trust.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -91,7 +91,7 @@ export function useBookingQuote(args: UseBookingQuoteArgs): UseBookingQuoteState
       abortRef.current = ac;
       setState((s) => ({ ...s, loading: true, error: null, pricingRevision }));
       try {
-        const { data, error } = await supabase.functions.invoke("bokun-quote", {
+        const { data, error } = await supabase.functions.invoke("booking-quote", {
           body: {
             flow,
             commercialProductKey,

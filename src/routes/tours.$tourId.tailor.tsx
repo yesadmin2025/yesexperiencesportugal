@@ -22,6 +22,12 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getStripeEnvironment } from "@/lib/stripe";
+import {
+  createBookingQuoteSession,
+  fetchBookingQuote,
+} from "@/lib/pricing/bookingQuoteCheckout";
+import { compositionFromLegacyGuests } from "@/lib/pricing/travellerComposition";
+import { computePricingRevision, isQuoteAvailable } from "@/lib/pricing/bookingQuote";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
   BrandedCheckoutDrawer,
@@ -441,38 +447,43 @@ function TailorPage() {
     }
     try {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
-      const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
-        body: {
-          tourId: tour.id,
-          tourTitle: tour.title,
-          guests: details.guests,
-          stopLabels: stopLabels.slice(0, 8),
-          includedItems: resolveClientIncludedItems(metaForSummary, tour),
-          pickupLabel: details.pickupAddress || pickup,
-          dateExact: details.tourDate || null,
-          journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
-          priceFromEur: estimatedPrice,
-          returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-          environment: getStripeEnvironment(),
-          tailored: true,
-          flow: "tailor",
-          uiMode: "embedded",
-          guestDetails: {
-            ...details,
-            hotelPickupIncluded: true,
-            pace,
-            addons: [...addons],
-            lunch,
-            accessibility: [...accessibility],
-            notes,
-            skippedCoreStops: blueprint
-              ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.label)
-              : [],
-          },
+      const composition = compositionFromLegacyGuests(details.guests);
+      const pricingRevision = computePricingRevision({
+        commercialProductKey: tour.id,
+        date: details.tourDate ?? "",
+        startTime: details.startTime ?? null,
+        availabilityId: null,
+        adults: composition.adults,
+        minorAges: composition.minorAges,
+        addOns: [],
+      });
+      const itineraryRevision = `tailor:${stopLabels.join("|").slice(0, 200)}`;
+      const quoteResp = await fetchBookingQuote({
+        flow: "tailor",
+        commercialProductKey: tour.id,
+        date: details.tourDate ?? "",
+        startTime: details.startTime ?? undefined,
+        composition,
+        pricingRevision,
+        itineraryRevision,
+        itinerarySnapshot: {
+          title: `Tailored — ${tour.title.split("—")[0].trim()}`,
+          routeStops: stopLabels.map((label: string, i: number) => ({ id: `s${i}`, label })),
         },
       });
-      if (error) throw error;
-      const resp = (data ?? {}) as { clientSecret?: string; publishableKey?: string };
+      if (!isQuoteAvailable(quoteResp)) {
+        throw new Error(quoteResp.message || `quote_unavailable:${quoteResp.reason}`);
+      }
+      const resp = await createBookingQuoteSession({
+        quoteToken: quoteResp.quoteToken,
+        environment: getStripeEnvironment(),
+        returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
+        uiMode: "embedded",
+        tourTitle: tour.title,
+        pickupLabel: details.pickupAddress || pickup,
+        journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
+        customerEmail: details.email,
+      });
       if (!resp.clientSecret || !resp.publishableKey) {
         throw new Error("Embedded checkout unavailable");
       }
