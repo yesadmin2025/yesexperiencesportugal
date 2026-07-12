@@ -74,7 +74,7 @@ export function BokunCategoryMappingPanel({ tours = signatureTours }: { tours?: 
       .from("tour_price_tiers")
       .update({
         ...(patch.bokun_categories !== undefined
-          ? { bokun_categories: patch.bokun_categories as unknown as Record<string, unknown> }
+          ? { bokun_categories: patch.bokun_categories as unknown as import("@/integrations/supabase/types").Json }
           : {}),
         ...(patch.banded_pricing_enabled !== undefined
           ? { banded_pricing_enabled: patch.banded_pricing_enabled }
