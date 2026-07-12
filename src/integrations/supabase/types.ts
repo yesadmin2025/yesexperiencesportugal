@@ -1989,18 +1989,24 @@ export type Database = {
       }
       tour_price_tiers: {
         Row: {
+          bokun_categories: Json | null
+          synced_from_bokun_at: string | null
           tiers: Json
           tour_id: string
           updated_at: string
           updated_by: string | null
         }
         Insert: {
+          bokun_categories?: Json | null
+          synced_from_bokun_at?: string | null
           tiers?: Json
           tour_id: string
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
+          bokun_categories?: Json | null
+          synced_from_bokun_at?: string | null
           tiers?: Json
           tour_id?: string
           updated_at?: string
