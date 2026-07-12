@@ -570,7 +570,14 @@ Deno.serve(async (req) => {
     // §7 — Studio V3 commercial keys MUST use the authoritative quote path.
     // Block any attempt to reach the legacy tier-based checkout under a
     // Studio V3 commercial identity.
-    if (body.tourId === "studio-v3-private-full-day") {
+    // §7 — Studio V3 commercial keys MUST use the authoritative quote path.
+    // Block any attempt to reach the legacy tier-based checkout under a
+    // Studio V3 commercial identity.
+    if (
+      body.tourId === "studio-v3-private-full-day" ||
+      body.tourId === "studio-v3-half-day" ||
+      body.tourId === "studio-v3-multi-day"
+    ) {
       return jsonError("studio_quote_required", 409);
     }
 
