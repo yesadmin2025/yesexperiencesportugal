@@ -15,6 +15,7 @@ import {
   getActivityAvailabilities,
   reserveAndConfirm,
   confirmReservation,
+  releaseReservation,
   type AvailabilitySlot,
 } from "../_shared/bokun.ts";
 
