@@ -243,168 +243,211 @@ Deno.serve(async (req) => {
   } = { status: "skipped" };
 
   try {
-    // v3 metadata already carries a resolved Bokun product id (Signature,
-    // Tailored, and Studio all go through booking-quote). Fall back to the
-    // legacy tour_bokun_mapping lookup only for pre-v3 sessions.
-    let bokunProductId: string | null = isV3 ? (meta.bokun_product_id ?? null) : null;
-    if (!bokunProductId) {
+    // v3 booking-quote flow: we ALREADY have a provisional Bókun reservation
+    // from the checkout step. Confirm it — never create a second booking.
+    if (isV3) {
+      const quoteId = meta.quote_id ?? null;
+      let bokunReservationId = meta.bokun_reservation_id ?? null;
+      let expectedTotalEur: number | null = null;
+      let storedQuoteRow: Record<string, unknown> | null = null;
+
+      if (quoteId) {
+        const { data: q } = await admin
+          .from("booking_quotes")
+          .select("*")
+          .eq("quote_id", quoteId)
+          .maybeSingle();
+        storedQuoteRow = q ?? null;
+        if (q?.bokun_reservation_id) bokunReservationId = String(q.bokun_reservation_id);
+        if (q?.final_total_eur != null) expectedTotalEur = Number(q.final_total_eur);
+
+        // Idempotent replay of a webhook we've already confirmed.
+        if (q?.state === "confirmed" && q?.bokun_reservation_id) {
+          await admin
+            .from("bookings")
+            .update({
+              bokun_status: "confirmed",
+              bokun_booking_id: String(q.bokun_reservation_id),
+              bokun_reservation_id: String(q.bokun_reservation_id),
+              quote_id: q.quote_id as string,
+              final_total_eur: Number(q.final_total_eur),
+              bokun_base_subtotal_eur: q.bokun_base_subtotal_eur ?? null,
+              database_addon_subtotal_eur: q.database_addon_subtotal_eur ?? null,
+            })
+            .eq("id", bookingId);
+          return new Response(
+            JSON.stringify({ ok: true, bookingId, bokun: "already_confirmed", idempotent: true }),
+            { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+          );
+        }
+      }
+
+      // Parity: Stripe amount (in cents) must equal final_total_eur.
+      if (expectedTotalEur != null && amountTotal != null) {
+        const expectedCents = Math.round(expectedTotalEur * 100);
+        if (amountTotal !== expectedCents) {
+          bokunResult = {
+            status: "needs_review",
+            error: `amount_parity_mismatch:stripe=${amountTotal}c expected=${expectedCents}c`,
+          };
+          throw new Error(bokunResult.error);
+        }
+      }
+
+      if (!bokunReservationId) {
+        bokunResult = { status: "needs_review", error: "no_reservation_id_on_quote" };
+      } else {
+        const confirmed = await confirmReservation(bokunReservationId);
+        bokunResult = {
+          status: "confirmed",
+          booking_id: confirmed.bookingId,
+          confirmation: confirmed.confirmationCode,
+        };
+        if (quoteId) {
+          await admin
+            .from("booking_quotes")
+            .update({
+              state: "confirmed",
+              bokun_reservation_status: "confirmed",
+              paid_at: new Date().toISOString(),
+              confirmed_at: new Date().toISOString(),
+            })
+            .eq("quote_id", quoteId);
+        }
+        // Mirror reservation identifiers + parity fields onto bookings row.
+        await admin
+          .from("bookings")
+          .update({
+            quote_id: quoteId,
+            bokun_reservation_id: bokunReservationId,
+            final_total_eur: expectedTotalEur,
+            bokun_base_subtotal_eur:
+              (storedQuoteRow?.bokun_base_subtotal_eur as number | null) ?? null,
+            database_addon_subtotal_eur:
+              (storedQuoteRow?.database_addon_subtotal_eur as number | null) ?? null,
+          })
+          .eq("id", bookingId);
+      }
+    } else {
+      // Legacy path (pre-reservation-spine): reserve+confirm at webhook time.
+      // Retained for older Stripe sessions still in flight.
+      let bokunProductId: string | null = null;
       const { data: mapping } = await admin
         .from("tour_bokun_mapping")
         .select("bokun_product_id")
         .eq("tour_id", tourId)
         .maybeSingle();
       bokunProductId = mapping?.bokun_product_id ?? null;
-    }
 
-    if (!bokunProductId) {
-      bokunResult = { status: "needs_review", error: "No Bokun mapping for this tour" };
-    } else if (!dateExact) {
-      bokunResult = { status: "needs_review", error: "Customer did not select an exact date" };
-    } else {
-      const slots = (await getActivityAvailabilities(
-        bokunProductId,
-        dateExact,
-      )) as AvailabilitySlot[];
-      const usable = slots.filter((s) => (s.availabilityCount ?? 1) >= guests);
-
-      // If the customer picked a specific slot (v2 FinalDetailsDialog or v3
-      // booking-quote), lock to it — v3 always writes bokun_availability_id.
-      const lockedId = Number(meta.bokun_availability_id ?? 0);
-      const lockedSlot =
-        lockedId > 0 ? (usable.find((s) => Number(s.id) === lockedId) ?? null) : null;
-
-      let chosen: AvailabilitySlot | null = lockedSlot;
-      let ambiguousReason: string | null = null;
-
-      if (!chosen) {
-        if (usable.length === 0) {
-          ambiguousReason = `No Bokun availability on ${dateExact} for ${guests} guests`;
-        } else if (usable.length === 1) {
-          chosen = usable[0];
-        } else {
-          ambiguousReason = `Multiple Bokun slots on ${dateExact} (${usable.length}) — pick one manually`;
-        }
-      }
-
-      if (!chosen) {
-        bokunResult = { status: "needs_review", error: ambiguousReason ?? "No slot resolved" };
+      if (!bokunProductId) {
+        bokunResult = { status: "needs_review", error: "No Bokun mapping for this tour" };
+      } else if (!dateExact) {
+        bokunResult = { status: "needs_review", error: "Customer did not select an exact date" };
       } else {
-        const slot = chosen;
-
-        // Category payloads:
-        //   • v3 booking-quote  → { c, q, u, f }  (u=cents, f=1 => free line)
-        //   • v2 signature/tailor → { c, q, b, u } (u=cents, u=0 => free line)
-        //   • legacy pre-Phase-B → single-category fallback
-        const categoriesJson = meta.pricing_categories_json ?? "";
-        type PricedCategory = { c: string; q: number; b?: string; u?: number; f?: number };
-        let requested: PricedCategory[] = [];
-        if (categoriesJson) {
-          try {
-            const parsed = JSON.parse(categoriesJson);
-            if (Array.isArray(parsed)) {
-              requested = parsed.filter(
-                (p): p is PricedCategory =>
-                  p && typeof p.c === "string" && Number.isFinite(p.q),
-              );
-            }
-          } catch { /* fall through to single-category */ }
-        }
-
-        const slotCatById = new Map<string, { id: number; title: string }>();
-        for (const c of slot.pricingCategories ?? []) slotCatById.set(String(c.id), c);
-
-        let pricingCategoryBookings: Array<{ pricingCategoryId: number; quantity: number }> = [];
-        let missingCategory: string | null = null;
-
-        if (requested.length) {
-          for (const r of requested) {
-            if (r.q <= 0) continue;
-            const slotCat = slotCatById.get(r.c);
-            const isFree = r.f === 1 || (r.u ?? 1) === 0;
-            if (!slotCat) {
-              if (!isFree) { missingCategory = r.b ?? r.c; break; }
-              // Free line (infant) absent on slot → skip from Bokun call.
-              continue;
-            }
-            pricingCategoryBookings.push({
-              pricingCategoryId: Number(slotCat.id),
-              quantity: r.q,
-            });
+        const slots = (await getActivityAvailabilities(
+          bokunProductId,
+          dateExact,
+        )) as AvailabilitySlot[];
+        const usable = slots.filter((s) => (s.availabilityCount ?? 1) >= guests);
+        const lockedId = Number(meta.bokun_availability_id ?? 0);
+        const lockedSlot =
+          lockedId > 0 ? (usable.find((s) => Number(s.id) === lockedId) ?? null) : null;
+        let chosen: AvailabilitySlot | null = lockedSlot;
+        let ambiguousReason: string | null = null;
+        if (!chosen) {
+          if (usable.length === 0) {
+            ambiguousReason = `No Bokun availability on ${dateExact} for ${guests} guests`;
+          } else if (usable.length === 1) {
+            chosen = usable[0];
+          } else {
+            ambiguousReason = `Multiple Bokun slots on ${dateExact} (${usable.length}) — pick one manually`;
           }
-        } else {
-          const cat = slot.pricingCategories?.[0];
-          if (!cat) missingCategory = "any";
-          else pricingCategoryBookings = [{ pricingCategoryId: Number(cat.id), quantity: guests }];
         }
-
-        if (missingCategory) {
-          bokunResult = {
-            status: "needs_review",
-            error: `Slot missing required pricing category (${missingCategory}) — no Adult substitution`,
-          };
-        } else if (!pricingCategoryBookings.length) {
-          bokunResult = { status: "needs_review", error: "No pricing category bookings resolved" };
+        if (!chosen) {
+          bokunResult = { status: "needs_review", error: ambiguousReason ?? "No slot resolved" };
         } else {
-          const [firstName, ...rest] = (customerName ?? "Guest Guest").split(" ");
-          const lastName = rest.join(" ") || "—";
-          const isTailored =
-            meta.tailored === "1" || flow === "tailored" || flow === "tailor";
-          const stopsLine = meta.stops ? ` · Stops: ${meta.stops.replace(/\|/g, ", ")}` : "";
-          const tailorPrefix = isTailored ? "[TAILORED — operator to verify stop changes] " : "";
-
-          // Surface database add-ons on the operator note so the fulfilment
-          // team can prep them — Bokun doesn't model our add-on catalogue.
-          let addOnsLine = "";
-          const addOnsJson = meta.add_ons_json ?? "";
-          if (addOnsJson) {
+          const slot = chosen;
+          const categoriesJson = meta.pricing_categories_json ?? "";
+          type PricedCategory = { c: string; q: number; b?: string; u?: number; f?: number };
+          let requested: PricedCategory[] = [];
+          if (categoriesJson) {
             try {
-              const parsed = JSON.parse(addOnsJson);
-              if (Array.isArray(parsed) && parsed.length) {
-                addOnsLine =
-                  " · Add-ons: " +
-                  parsed
-                    .map(
-                      (a: { id?: string; q?: number }) =>
-                        `${a.id ?? "?"}×${a.q ?? 1}`,
-                    )
-                    .join(", ");
+              const parsed = JSON.parse(categoriesJson);
+              if (Array.isArray(parsed)) {
+                requested = parsed.filter(
+                  (p): p is PricedCategory =>
+                    p && typeof p.c === "string" && Number.isFinite(p.q),
+                );
               }
-            } catch { /* ignore malformed add-ons meta */ }
+            } catch { /* fall through */ }
           }
-
-          const r = await reserveAndConfirm({
-            productId: bokunProductId,
-            availabilityId: slot.id,
-            startTime: slot.startTime,
-            date: slot.date,
-            pricingCategoryBookings,
-            customer: {
-              firstName,
-              lastName,
-              email: customerEmail ?? "noreply@yesexperiencesportugal.com",
-              phoneNumber: customerPhone ?? undefined,
-              language: "EN",
-            },
-            externalBookingReference: session.id,
-            notes:
-              `${tailorPrefix}YES booking · ${meta.pickup ?? ""} · ${meta.journey_title ?? ""}${stopsLine}${addOnsLine}`.slice(
-                0,
-                500,
-              ),
-          });
-          bokunResult = {
-            status: isTailored ? "needs_review" : "confirmed",
-            booking_id: r.bookingId,
-            confirmation: r.confirmationCode,
-            error: isTailored ? "Tailored itinerary — verify stop changes in Bokun" : undefined,
-          };
+          const slotCatById = new Map<string, { id: number; title: string }>();
+          for (const c of slot.pricingCategories ?? []) slotCatById.set(String(c.id), c);
+          let pricingCategoryBookings: Array<{ pricingCategoryId: number; quantity: number }> = [];
+          let missingCategory: string | null = null;
+          if (requested.length) {
+            for (const r of requested) {
+              if (r.q <= 0) continue;
+              const slotCat = slotCatById.get(r.c);
+              const isFree = r.f === 1 || (r.u ?? 1) === 0;
+              if (!slotCat) {
+                if (!isFree) { missingCategory = r.b ?? r.c; break; }
+                continue;
+              }
+              pricingCategoryBookings.push({
+                pricingCategoryId: Number(slotCat.id),
+                quantity: r.q,
+              });
+            }
+          } else {
+            const cat = slot.pricingCategories?.[0];
+            if (!cat) missingCategory = "any";
+            else pricingCategoryBookings = [{ pricingCategoryId: Number(cat.id), quantity: guests }];
+          }
+          if (missingCategory) {
+            bokunResult = {
+              status: "needs_review",
+              error: `Slot missing required pricing category (${missingCategory}) — no Adult substitution`,
+            };
+          } else if (!pricingCategoryBookings.length) {
+            bokunResult = { status: "needs_review", error: "No pricing category bookings resolved" };
+          } else {
+            const [firstName, ...rest] = (customerName ?? "Guest Guest").split(" ");
+            const lastName = rest.join(" ") || "—";
+            const isTailored =
+              meta.tailored === "1" || flow === "tailored" || flow === "tailor";
+            const stopsLine = meta.stops ? ` · Stops: ${meta.stops.replace(/\|/g, ", ")}` : "";
+            const tailorPrefix = isTailored ? "[TAILORED — operator to verify stop changes] " : "";
+            const r = await reserveAndConfirm({
+              productId: bokunProductId,
+              availabilityId: slot.id,
+              startTime: slot.startTime,
+              date: slot.date,
+              pricingCategoryBookings,
+              customer: {
+                firstName,
+                lastName,
+                email: customerEmail ?? "noreply@yesexperiencesportugal.com",
+                phoneNumber: customerPhone ?? undefined,
+                language: "EN",
+              },
+              externalBookingReference: session.id,
+              notes: `${tailorPrefix}YES booking · ${meta.pickup ?? ""} · ${meta.journey_title ?? ""}${stopsLine}`.slice(0, 500),
+            });
+            bokunResult = {
+              status: isTailored ? "needs_review" : "confirmed",
+              booking_id: r.bookingId,
+              confirmation: r.confirmationCode,
+              error: isTailored ? "Tailored itinerary — verify stop changes in Bokun" : undefined,
+            };
+          }
         }
       }
     }
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error("Bokun push failed:", msg);
-    bokunResult = { status: "failed", error: msg };
+    if (bokunResult.status === "skipped") bokunResult = { status: "failed", error: msg };
   }
 
   await admin
