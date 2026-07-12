@@ -402,20 +402,38 @@ function TourRow({
 // Sync from Bókun panel
 // ─────────────────────────────────────────────────────────────────────────
 
-type BokunCatSummary = {
-  id: number;
-  title: string;
+type MappedBokunPricingCategory = {
+  bokunCategoryId: string;
+  bokunTitle: string;
   minAge?: number;
   maxAge?: number;
+  uiBand: AgeBand | "other";
+  countsTowardCapacity: boolean;
+  normallyFree: boolean;
+  mappingStatus: "confirmed" | "suggested" | "unmapped";
+};
+
+type SyncBefore = {
+  syncedTiers: BandedTiers | null;
+  overrideTiers: BandedTiers | null;
+  bokunCategories: MappedBokunPricingCategory[] | null;
+  pricingMode: string | null;
+  syncedAt: string | null;
+} | null;
+
+type SyncAfter = {
+  syncedTiers: BandedTiers | null;
+  bokunCategories: MappedBokunPricingCategory[];
+  pricingMode: string;
 } | null;
 
 type SyncOneResult = {
   tourId: string;
   productId: string;
   ok: boolean;
-  before: BandedTiers | null;
-  after: BandedTiers | null;
-  bokunCategories: Record<AgeBand, BokunCatSummary> | null;
+  before: SyncBefore;
+  after: SyncAfter;
+  warnings?: string[];
   reason?: string;
 };
 
@@ -428,6 +446,14 @@ type SyncResponse = {
 
 const BANDS: AgeBand[] = ["adult", "youth", "child"];
 const BUCKETS = [1, 2, 3, 4, 5, 6, 7, 8] as const;
+
+// Adapt the new richer response into the flat BandedTiers the diff view uses.
+function beforeTiers(r: SyncOneResult): BandedTiers | null {
+  return r.before?.syncedTiers ?? null;
+}
+function afterTiers(r: SyncOneResult): BandedTiers | null {
+  return r.after?.syncedTiers ?? null;
+}
 
 function tierVal(t: BandedTiers | null | undefined, band: AgeBand, b: number): number | null {
   if (!t) return null;
@@ -447,8 +473,10 @@ function infantChanged(before: BandedTiers | null, after: BandedTiers | null): b
 
 function resultChanged(r: SyncOneResult): boolean {
   if (!r.ok) return false;
-  if (BANDS.some((b) => bandChanged(r.before, r.after, b))) return true;
-  if (infantChanged(r.before, r.after)) return true;
+  const b = beforeTiers(r);
+  const a = afterTiers(r);
+  if (BANDS.some((band) => bandChanged(b, a, band))) return true;
+  if (infantChanged(b, a)) return true;
   return false;
 }
 
