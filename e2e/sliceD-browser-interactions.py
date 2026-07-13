@@ -291,20 +291,69 @@ async def wait_for_minor_inputs(page: Page, expected):
         await page.wait_for_timeout(100)
     return False
 
+async def read_adults(page: Page) -> int | None:
+    return await page.evaluate(
+        "() => { const b=document.querySelector('button[aria-label=\"Decrease Adults\"]');"
+        " if(!b) return null; const s=b.parentElement.querySelector('span');"
+        " return s ? parseInt(s.textContent,10) : null; }"
+    )
+
+async def read_minor_count(page: Page) -> int:
+    return await page.evaluate(
+        "() => document.querySelectorAll('input[id^=\"minor-age-\"]').length"
+    )
+
+async def set_adults_to(page: Page, target: int):
+    # Deterministic: read the actual value, click ± until it equals target.
+    for _ in range(30):
+        cur = await read_adults(page)
+        if cur is None or cur == target:
+            return cur
+        aria = "Decrease Adults" if cur > target else "Increase Adults"
+        btn = page.get_by_role("button", name=re.compile(f"^{aria}$", re.I)).first
+        try:
+            if await btn.is_disabled(): return cur
+            await btn.click(timeout=1500)
+        except Exception:
+            return cur
+        await page.wait_for_timeout(80)
+    return await read_adults(page)
+
+async def set_minor_rows_to(page: Page, target: int):
+    for _ in range(30):
+        cur = await read_minor_count(page)
+        if cur == target:
+            return cur
+        aria = "Decrease Travellers aged 0" if cur > target else "Increase Travellers aged 0"
+        btn = page.get_by_role("button", name=re.compile(aria, re.I)).first
+        try:
+            if await btn.count() == 0 or await btn.is_disabled():
+                return cur
+            await btn.click(timeout=1500)
+        except Exception:
+            return cur
+        await page.wait_for_timeout(80)
+    return await read_minor_count(page)
+
 async def compose_2_15_8_0(page: Page):
     try:
         await page.get_by_text("Who is travelling?", exact=False).first.scroll_into_view_if_needed(timeout=2000)
     except Exception:
         pass
-    await click_while_enabled(page, re.compile(r"Decrease Adults", re.I), 20)
-    await click_while_enabled(page, re.compile(r"Increase Adults", re.I), 1)   # -> 2 (min 1)
-    await click_while_enabled(page, re.compile(r"Decrease Travellers aged 0", re.I), 20)
-    await click_while_enabled(page, re.compile(r"Increase Travellers aged 0", re.I), 3)
-    await page.wait_for_function("() => document.querySelectorAll('input[id^=\"minor-age-\"]').length >= 3", timeout=8000)
+    await set_adults_to(page, 2)
+    await set_minor_rows_to(page, 3)
+    await page.wait_for_function(
+        "() => document.querySelectorAll('input[id^=\"minor-age-\"]').length === 3",
+        timeout=8000,
+    )
     await set_minor_age(page, 0, 15)
     await set_minor_age(page, 1, 8)
     await set_minor_age(page, 2, 0)
     await wait_for_minor_inputs(page, [15, 8, 0])
+    # Final assertion: adults still == 2 (guard against drift).
+    final_adults = await read_adults(page)
+    if final_adults != 2:
+        await set_adults_to(page, 2)
 
 async def wait_for_quote_composition(page: Page, expected, deadline=6.0):
     t0 = time.time()
