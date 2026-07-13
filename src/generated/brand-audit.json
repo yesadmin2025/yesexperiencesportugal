@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-13T18:07:55.329Z",
-  "filesScanned": 656,
+  "generatedAt": "2026-07-13T19:10:18.291Z",
+  "filesScanned": 658,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1601,7 +1601,7 @@
     },
     {
       "file": "src/components/studio-v3/SignaturePriceCard.tsx",
-      "line": 664,
+      "line": 671,
       "col": 44,
       "raw": "#b8541a",
       "normalized": "#b8541a",
@@ -1610,7 +1610,7 @@
     },
     {
       "file": "src/components/studio-v3/SignaturePriceCard.tsx",
-      "line": 686,
+      "line": 693,
       "col": 51,
       "raw": "#b8541a",
       "normalized": "#b8541a",
@@ -3284,7 +3284,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 729,
+      "line": 750,
       "col": 33,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -3293,7 +3293,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 730,
+      "line": 751,
       "col": 21,
       "raw": "#B89452",
       "normalized": "#b89452",
@@ -3302,7 +3302,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 965,
+      "line": 986,
       "col": 37,
       "raw": "#b3261e",
       "normalized": "#b3261e",
@@ -3311,7 +3311,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 966,
+      "line": 987,
       "col": 37,
       "raw": "#b3261e",
       "normalized": "#b3261e",
@@ -3320,7 +3320,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 1109,
+      "line": 1130,
       "col": 12,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -3329,7 +3329,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 1296,
+      "line": 1317,
       "col": 12,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -3338,7 +3338,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 1580,
+      "line": 1601,
       "col": 12,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -3347,7 +3347,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 3585,
+      "line": 3606,
       "col": 23,
       "raw": "#000",
       "normalized": "#000000",
@@ -3356,7 +3356,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 4110,
+      "line": 4131,
       "col": 41,
       "raw": "#000",
       "normalized": "#000000",
@@ -3365,7 +3365,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 4110,
+      "line": 4131,
       "col": 47,
       "raw": "#000",
       "normalized": "#000000",
@@ -3374,7 +3374,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 4767,
+      "line": 4788,
       "col": 7,
       "raw": "#555",
       "normalized": "#555555",
@@ -3383,7 +3383,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 5712,
+      "line": 5733,
       "col": 47,
       "raw": "#8a6f2e",
       "normalized": "#8a6f2e",
@@ -3392,7 +3392,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 5748,
+      "line": 5769,
       "col": 47,
       "raw": "#d8b97a",
       "normalized": "#d8b97a",
