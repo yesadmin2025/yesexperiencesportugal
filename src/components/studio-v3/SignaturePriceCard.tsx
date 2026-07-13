@@ -661,6 +661,18 @@ export function SignaturePriceCard({
             >
               <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
             </legend>
+            {allowAddOnsWithoutPrice && !hasPrice ? (
+              <p
+                data-testid="studio-v3-add-ons-bespoke-notice"
+                className="mb-3 text-center text-[11px] leading-[1.5] italic"
+                style={{
+                  color: "color-mix(in oklab, var(--teal) 85%, transparent)",
+                  fontFamily: "var(--font-serif)",
+                }}
+              >
+                Add-ons priced from the tour catalog · base investment confirmed by a curator.
+              </p>
+            ) : null}
             {remainingMinutes != null && remainingMinutes > 0
               ? (() => {
                   const totalBudget = remainingMinutes; // free minutes on the base day
@@ -796,17 +808,33 @@ export function SignaturePriceCard({
                         >
                           {a.blurb}
                         </span>
-                        {!fits ? (
-                          <span
-                            className="mt-1 inline-block text-[9.5px] uppercase tracking-[0.2em] font-semibold"
-                            style={{
-                              color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-                            }}
-                            data-testid="addon-budget-locked"
-                          >
-                            Won't fit this day ({a.durationMinutes}m)
-                          </span>
-                        ) : null}
+                        {(() => {
+                          // Availability reason — surfaced whenever a chip
+                          // is disabled so the traveller understands why it
+                          // can't be selected right now. Time-fit wins over
+                          // cap because it's more actionable.
+                          let reason: string | null = null;
+                          if (!selected && !fits) {
+                            const deficit =
+                              remainingMinutes != null
+                                ? Math.max(1, a.durationMinutes - Math.max(0, remainingMinutes))
+                                : a.durationMinutes;
+                            reason = `Needs ${deficit} min more than the day allows`;
+                          } else if (!selected && atCap) {
+                            reason = `Max ${MAX_ADDONS} add-ons — deselect one to swap`;
+                          }
+                          return reason ? (
+                            <span
+                              className="mt-1 inline-block text-[9.5px] uppercase tracking-[0.2em] font-semibold"
+                              style={{
+                                color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                              }}
+                              data-testid="addon-availability-reason"
+                            >
+                              {reason}
+                            </span>
+                          ) : null;
+                        })()}
                       </span>
                       <span
                         className="shrink-0 flex flex-col items-end text-[12px] font-semibold tabular-nums whitespace-nowrap"
@@ -834,12 +862,24 @@ export function SignaturePriceCard({
                 );
               })}
             </ul>
-            <p
-              className="mt-2 text-center text-[10.5px] uppercase tracking-[0.22em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
-            >
-              Up to {MAX_ADDONS} add-ons
-            </p>
+            {(() => {
+              const anyLocked = availableAddOns.some((a) => {
+                const isSelected = selectedAddOnIds.includes(a.id);
+                const fits = fitsBudgetById[a.id] !== false;
+                return !isSelected && (atCap || !fits);
+              });
+              return (
+                <p
+                  data-testid="studio-v3-add-ons-legend"
+                  className="mt-2 text-center text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+                >
+                  {anyLocked
+                    ? `Locked options don't fit the day's rhythm or the ${MAX_ADDONS}-item limit`
+                    : `Up to ${MAX_ADDONS} add-ons`}
+                </p>
+              );
+            })()}
             <output
               data-testid="studio-v3-add-ons-total"
               aria-live="polite"
@@ -855,15 +895,16 @@ export function SignaturePriceCard({
                 <span className="sr-only">No add-ons selected</span>
               )}
             </output>
-            {/* Final estimated total — the single figure that matches the
-                Reserve CTA and, on booking, the checkout payload. Unit-aware:
-                base × guests + Σ(add-on line totals). */}
-            {selectedAddOnIds.length > 0 &&
-            partyTotalEur != null &&
-            partyCount != null ? (
+            {/* Live breakdown + total — always visible when we have a base
+                price, so changing guests, stops, or add-ons updates a
+                visible figure in real time. */}
+            {hasPrice && partyTotalEur != null && partyCount != null ? (
               <div
                 data-testid="studio-v3-final-total"
                 data-final-eur={partyTotalEur}
+                data-status={serverLoading ? "loading" : "ready"}
+                aria-live="polite"
+                aria-busy={serverLoading || undefined}
                 className="mt-3 rounded-[4px] px-3 py-2.5 text-center"
                 style={{
                   background: "color-mix(in oklab, var(--gold) 10%, var(--ivory))",
@@ -874,25 +915,59 @@ export function SignaturePriceCard({
                   className="text-[10px] uppercase tracking-[0.24em] font-bold"
                   style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
                 >
-                  Final estimated total
+                  {selectedAddOnIds.length > 0 ? "Final estimated total" : "Live total"}
                 </p>
                 <p
                   className="mt-1 text-[22px] font-bold tabular-nums leading-none"
-                  style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: "var(--charcoal)",
+                    opacity: serverLoading ? 0.6 : 1,
+                    transition: "opacity 160ms ease-out",
+                  }}
                 >
                   €{partyTotalEur}
                 </p>
+                {/* Two-line breakdown — reactive to guests / stops / add-ons. */}
                 <p
-                  className="mt-1 text-[10.5px]"
+                  data-testid="studio-v3-total-breakdown"
+                  className="mt-1.5 text-[10.5px] tabular-nums"
                   style={{
                     color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
                   }}
                 >
-                  {partyCount} guests · additions priced by their own unit
+                  Base €{displayPerPaxEur} × {partyCount} guests
+                  {partyBaseEur != null ? <> = €{partyBaseEur}</> : null}
+                  {selectedAddOnIds.length > 0 ? (
+                    <>
+                      {" · "}
+                      Additions €{addOnsDisplayPartyEur}
+                    </>
+                  ) : null}
                 </p>
+                {serverLoading ? (
+                  <p
+                    data-testid="studio-v3-total-recalculating"
+                    className="mt-1 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+                    style={{ color: "color-mix(in oklab, var(--gold) 90%, transparent)" }}
+                  >
+                    Recalculating…
+                  </p>
+                ) : null}
               </div>
             ) : null}
           </fieldset>
+        ) : showAddOns && (hasPrice || allowAddOnsWithoutPrice) && availableAddOns.length === 0 ? (
+          <p
+            data-testid="studio-v3-add-ons-empty"
+            className="mt-6 mx-auto max-w-[380px] text-center text-[11.5px] italic leading-[1.5]"
+            style={{
+              color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+              fontFamily: "var(--font-serif)",
+            }}
+          >
+            No add-ons for this Signature — the day already includes everything.
+          </p>
         ) : null}
 
         {/* Itinerary spine and blueprint optionals removed — the storytelling
