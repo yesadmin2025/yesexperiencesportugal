@@ -885,12 +885,18 @@ async def main():
                 attach_page_listeners(page)
 
                 bucket = report["scenarios"].setdefault(label, {})
-                bucket["signature"] = await run_signature(page, label)
-                bucket["tailored"]  = await run_tailored(page, label)
-                bucket["studio"]    = await run_studio(page, label)
+                async def safe(name, coro):
+                    try: return await coro
+                    except Exception as e:
+                        try: await page.screenshot(path=str(SHOTS/f"{name}-{label}-CRASH.png"))
+                        except Exception: pass
+                        return {"error": f"scenario crashed: {e}"[:400]}
+                bucket["signature"] = await safe("signature", run_signature(page, label))
+                bucket["tailored"]  = await safe("tailored",  run_tailored(page, label))
+                bucket["studio"]    = await safe("studio",    run_studio(page, label))
                 if label == "393":
-                    bucket["unsupportedAge"] = await run_unsupported(page)
-                    bucket["mobileBounds"]   = await check_mobile_bounds(page)
+                    bucket["unsupportedAge"] = await safe("unsupported", run_unsupported(page))
+                    bucket["mobileBounds"]   = await safe("bounds", check_mobile_bounds(page))
                 await ctx.close()
         finally:
             await browser.close()
