@@ -957,6 +957,17 @@ export function SignaturePriceCard({
               </div>
             ) : null}
           </fieldset>
+        ) : showAddOns && (hasPrice || allowAddOnsWithoutPrice) && availableAddOns.length === 0 ? (
+          <p
+            data-testid="studio-v3-add-ons-empty"
+            className="mt-6 mx-auto max-w-[380px] text-center text-[11.5px] italic leading-[1.5]"
+            style={{
+              color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+              fontFamily: "var(--font-serif)",
+            }}
+          >
+            No add-ons for this Signature — the day already includes everything.
+          </p>
         ) : null}
 
         {/* Itinerary spine and blueprint optionals removed — the storytelling
