@@ -214,9 +214,17 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             min={new Date().toISOString().split("T")[0]}
-            className="w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-sm focus:border-[color:var(--gold)] focus:outline-none"
+            aria-label="Tour date"
+            data-testid="booking-date-input"
+            className="w-full min-h-[44px] border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-sm focus:border-[color:var(--gold)] focus:outline-none"
           />
+          {!date ? (
+            <p className="mt-1 text-[11px] text-[color:var(--charcoal-soft)]">
+              Tap to pick a date
+            </p>
+          ) : null}
         </Field>
+
         <Field label="Pickup time">
           <div className="grid grid-cols-3 border border-[color:var(--border)]">
             {(["08:00", "09:00", "10:00"] as const).map((t) => (
