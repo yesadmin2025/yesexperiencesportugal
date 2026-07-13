@@ -3171,10 +3171,17 @@ export function StoryboardHandoff({
     if (readinessQuery.isLoading || !readinessQuery.data) {
       return { status: "loading" };
     }
-    const { compatible, excluded } = filterSignatureCandidatesForAges(
+    const requirements = requirementsFromComposition(composition, {
+      requiresChildSeat: false,
+      requiresStroller: (state.considerations ?? []).some((c) =>
+        /stroller|pram/i.test(c),
+      ),
+    });
+    const { compatible, excluded } = filterStudioCandidatesBySuitability(
       composition,
       signatureTours,
       readinessQuery.data,
+      requirements,
     );
     const unsupportedAges = Array.from(
       new Set(excluded.flatMap((e) => e.unsupportedAges).filter((a) => a >= 0)),
@@ -3185,7 +3192,7 @@ export function StoryboardHandoff({
       unsupportedAges,
       excludedTourIds: excluded.map((e) => e.tourId),
     };
-  }, [state.guests, state.minorAges, readinessQuery.isLoading, readinessQuery.data]);
+  }, [state.guests, state.minorAges, state.considerations, readinessQuery.isLoading, readinessQuery.data]);
 
   const resolved = useMemo(
     () =>
