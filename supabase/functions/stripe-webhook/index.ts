@@ -156,8 +156,12 @@ Deno.serve(async (req) => {
     }
     let releaseResult: { status: string; code?: string; at: string };
     try {
-      const ok = await releaseReservation(String(claimed.bokun_reservation_id));
-      releaseResult = { status: ok ? "released" : "already_expired", at: nowIso };
+      if (String(claimed.bokun_reservation_id).startsWith("manual:")) {
+        releaseResult = { status: "manual_skipped", at: nowIso };
+      } else {
+        const ok = await releaseReservation(String(claimed.bokun_reservation_id));
+        releaseResult = { status: ok ? "released" : "already_expired", at: nowIso };
+      }
     } catch (e) {
       // releaseReservation is best-effort/never-throws; guard for safety.
       const msg = e instanceof Error ? e.message : String(e);
