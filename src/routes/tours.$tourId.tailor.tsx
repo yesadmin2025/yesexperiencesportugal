@@ -736,16 +736,6 @@ function TailorPage() {
                     maxCapacity={12}
                     minAdults={1}
                   />
-                  {mixedFamilyBlocked ? (
-                    <div
-                      role="alert"
-                      data-testid="tailor-mixed-family-block"
-                      className="mt-3 border border-red-600/40 bg-red-50/60 px-3 py-2 text-[12px] text-red-800"
-                    >
-                      This tour isn't yet configured for family pricing.
-                      Please contact us so we can confirm ages and rates.
-                    </div>
-                  ) : null}
                   <div className="mt-3 grid grid-cols-1 gap-3">
                     <Field label="Guide language">
                       <Segmented
