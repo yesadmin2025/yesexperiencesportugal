@@ -31,6 +31,8 @@ export function StudioV3Intro({ onComplete }: Props) {
   const [step, setStep] = useState<IntroStep>("welcome");
   const [value, setValue] = useState("");
   const [pendingName, setPendingName] = useState<string | null>(null);
+  const [clientReady, setClientReady] = useState(false);
+  useEffect(() => { setClientReady(true); }, []);
 
   const handleNameSubmit = (e: FormEvent) => {
     e.preventDefault();
