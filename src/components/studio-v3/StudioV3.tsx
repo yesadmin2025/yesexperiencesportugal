@@ -2196,7 +2196,7 @@ export function StudioV3() {
   })();
 
   return (
-    <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase={state.phase}>
+    <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase={state.phase} data-client-ready={clientReady ? "true" : "false"}>
       <StudioV3DebugOverlay
         state={state}
         composerHidden={composerHidden}
