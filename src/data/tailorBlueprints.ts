@@ -108,10 +108,11 @@ const wineHeritage: TailorBlueprint = {
       id: "lunch-azeitao",
       label: "Long lunch in Azeitão",
       blurb:
-        "Regional plates and paired wines in the wine village — unhurried, the way locals eat.",
+        "Included on this Signature. Skip to free ~90 min for a 4th winery — everything else is optional add-on.",
       category: "lunch",
-      skippable: false,
+      skippable: true,
     },
+
   ],
   choice: {
     pickCount: 2,
