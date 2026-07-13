@@ -127,7 +127,10 @@ Deno.serve(async (req) => {
         500,
       );
 
-    const session = await stripe.checkout.sessions.create({
+    const uiMode: "embedded" | "hosted" = body.uiMode === "hosted" ? "hosted" : "embedded";
+    const returnWithSession = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
+
+    const sessionParams: Record<string, unknown> = {
       line_items: [
         {
           price_data: {
@@ -142,8 +145,6 @@ Deno.serve(async (req) => {
         },
       ],
       mode: "payment",
-      ui_mode: "embedded_page",
-      return_url: body.returnUrl,
       ...(body.customerEmail && { customer_email: body.customerEmail }),
       metadata: {
         booking_type: "builder",
@@ -153,12 +154,29 @@ Deno.serve(async (req) => {
         stops: body.stopLabels.slice(0, 8).join("|").slice(0, 480),
         ...(elements.length > 0 && { elements: elements.join("|").slice(0, 200) }),
       },
-    });
+    };
 
-    return new Response(JSON.stringify({ clientSecret: session.client_secret }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    if (uiMode === "embedded") {
+      sessionParams.ui_mode = "embedded_page";
+      sessionParams.return_url = returnWithSession;
+    } else {
+      sessionParams.success_url = returnWithSession;
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams);
+
+    return new Response(
+      JSON.stringify(
+        uiMode === "embedded"
+          ? { clientSecret: session.client_secret, uiMode }
+          : { url: session.url, uiMode },
+      ),
+      {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
+
   } catch (e) {
     console.error("create-builder-checkout error:", e);
     return jsonError(e instanceof Error ? e.message : "Unknown error", 500);
