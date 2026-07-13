@@ -1,26 +1,41 @@
-// Slice C — Traveller suitability metadata.
+// Slice C (closure) — Traveller suitability metadata with explicit status.
 //
-// Server-owned suitability facts for Studio candidates (tours) and itinerary
-// components (stops). Safe defaults are UNRESTRICTED — missing fields never
-// imply a restriction. Restrictions are only added when a real operational
-// fact is known. Marketing text is NEVER used to infer suitability.
+// Records now carry an explicit `status`:
+//  - "confirmed"              → author has attested to every rule listed
+//                               (missing field = no restriction on that axis).
+//  - "explicitly-unrestricted" → author has attested there is no operational
+//                               restriction; safety-dependent fields are NOT
+//                               silently inferred (see below).
+//  - "unknown"                → no operational information available. Any
+//                               request that includes a minor is BLOCKED with
+//                               `suitability_not_ready`. Adult-only groups
+//                               pass for backward compatibility.
+//
+// Safety-dependent fields that MUST NEVER silently default when a minor is
+// present: `infantsAllowed`, `childSeatSupported`, `capacityCountsAllTravellers`.
+// These are guarded by the unknown-blocker below.
+//
+// Marketing text is NEVER used to infer suitability.
+
+export type SuitabilityStatus = "confirmed" | "explicitly-unrestricted" | "unknown";
 
 export type TravellerSuitability = {
   minimumAge?: number;
   maximumAge?: number;
-  /** false = age 0 not permitted. undefined = permitted. */
+  /** false = age 0 not permitted. undefined on a confirmed record = permitted. */
   infantsAllowed?: boolean;
   /** false = supplier cannot provide/support a child seat. */
   childSeatSupported?: boolean;
   /** false = terrain/vehicle not stroller-suitable. */
   strollerSuitable?: boolean;
   /**
-   * When false, capacity checks ignore infants/lap-children. Default: true
-   * (infants count toward capacity, matching Bokun's default participant
-   * counting).
+   * When false, capacity checks ignore infants/lap-children. Default (on a
+   * confirmed record) is true — infants count toward capacity.
    */
   capacityCountsAllTravellers?: boolean;
 };
+
+export type SuitabilityRecord = TravellerSuitability & { status: SuitabilityStatus };
 
 export type SuitabilityRequirements = {
   /** ALL selected ages (adults contribute as adult age, e.g. 30). */
@@ -36,7 +51,8 @@ export type SuitabilityReason =
   | "infant_not_allowed"
   | "child_seat_missing"
   | "stroller_unsupported"
-  | "capacity_exceeded";
+  | "capacity_exceeded"
+  | "suitability_not_ready";
 
 export type SuitabilityCheck =
   | { ok: true }
@@ -46,19 +62,40 @@ export type SuitabilityCheck =
       unsupportedAges: number[];
     };
 
+function hasMinors(req: SuitabilityRequirements): boolean {
+  return req.ages.some((a) => a < 18);
+}
+
 /**
  * Check a resource's suitability metadata against the current traveller
- * requirements. `capacity` is optional; when omitted, capacity is not checked.
+ * requirements. Accepts either the new `SuitabilityRecord` (with `status`)
+ * or the legacy `TravellerSuitability` (treated as an unknown record).
+ *
+ * `capacity` is optional; when omitted, capacity is not checked.
  */
 export function checkTravellerSuitability(
-  s: TravellerSuitability | undefined,
+  record: SuitabilityRecord | TravellerSuitability | undefined,
   req: SuitabilityRequirements,
   capacity?: number,
 ): SuitabilityCheck {
+  // Normalise: legacy plain metadata (no status) is treated as "unknown".
+  const status: SuitabilityStatus =
+    record && typeof (record as SuitabilityRecord).status === "string"
+      ? (record as SuitabilityRecord).status
+      : "unknown";
+  const meta: TravellerSuitability = record ?? {};
+
+  // Unknown blocker — only for minor-carrying requests. Adult-only groups
+  // pass with no metadata for backward compatibility.
+  if (!record || status === "unknown") {
+    if (hasMinors(req)) {
+      return { ok: false, reasons: ["suitability_not_ready"], unsupportedAges: [] };
+    }
+    return { ok: true };
+  }
+
   const reasons = new Set<SuitabilityReason>();
   const unsupportedAges = new Set<number>();
-
-  const meta = s ?? {};
 
   for (const age of req.ages) {
     if (typeof meta.minimumAge === "number" && age < meta.minimumAge) {
@@ -83,10 +120,12 @@ export function checkTravellerSuitability(
   }
 
   if (typeof capacity === "number") {
+    // Confirmed records may opt out of counting infants; explicitly-unrestricted
+    // records fall back to the safe default (count all).
     const countsAll = meta.capacityCountsAllTravellers !== false;
     const effective = countsAll
       ? req.totalTravellers
-      : req.ages.filter((a) => a >= 2).length; // infants (0-1) excluded when opted out
+      : req.ages.filter((a) => a >= 2).length;
     if (effective > capacity) reasons.add("capacity_exceeded");
   }
 
