@@ -362,49 +362,69 @@ export function FinalDetailsDialog({
           </Section>
 
 
-          <Section title="Anything we should know" optional>
-            <Row>
-              <Field label="Dietary restrictions">
+          <details className="group border-t border-[color:var(--border)] pt-4">
+            <summary
+              className="flex cursor-pointer list-none items-center justify-between text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)] transition-colors"
+              data-testid="final-details-optional-summary"
+            >
+              <span>Add a note for your host (optional)</span>
+              <span className="text-[color:var(--gold)] group-open:rotate-180 transition-transform" aria-hidden>
+                ⌄
+              </span>
+            </summary>
+            <div className="mt-4 space-y-3">
+              <Field label="Main contact person" hint="If different from full name">
                 <input
-                  value={dietary}
-                  onChange={(e) => setDietary(e.target.value)}
+                  value={mainContact}
+                  onChange={(e) => setMainContact(e.target.value)}
+                  placeholder={fullName || "Same as above"}
                   className={inputClass}
                 />
               </Field>
-              <Field label="Mobility notes">
-                <input
-                  value={mobility}
-                  onChange={(e) => setMobility(e.target.value)}
-                  className={inputClass}
+              <Row>
+                <Field label="Dietary restrictions">
+                  <input
+                    value={dietary}
+                    onChange={(e) => setDietary(e.target.value)}
+                    className={inputClass}
+                  />
+                </Field>
+                <Field label="Mobility notes">
+                  <input
+                    value={mobility}
+                    onChange={(e) => setMobility(e.target.value)}
+                    className={inputClass}
+                  />
+                </Field>
+              </Row>
+              <Row>
+                <Field label="Children / child seats">
+                  <input
+                    value={children}
+                    onChange={(e) => setChildren(e.target.value)}
+                    className={inputClass}
+                  />
+                </Field>
+                <Field label="Special occasion">
+                  <input
+                    value={occasion}
+                    onChange={(e) => setOccasion(e.target.value)}
+                    placeholder="Anniversary, birthday…"
+                    className={inputClass}
+                  />
+                </Field>
+              </Row>
+              <Field label="Notes for the guide">
+                <textarea
+                  value={guideNotes}
+                  onChange={(e) => setGuideNotes(e.target.value)}
+                  rows={3}
+                  className={`${inputClass} resize-none`}
                 />
               </Field>
-            </Row>
-            <Row>
-              <Field label="Children / child seats">
-                <input
-                  value={children}
-                  onChange={(e) => setChildren(e.target.value)}
-                  className={inputClass}
-                />
-              </Field>
-              <Field label="Special occasion">
-                <input
-                  value={occasion}
-                  onChange={(e) => setOccasion(e.target.value)}
-                  placeholder="Anniversary, birthday…"
-                  className={inputClass}
-                />
-              </Field>
-            </Row>
-            <Field label="Notes for the guide">
-              <textarea
-                value={guideNotes}
-                onChange={(e) => setGuideNotes(e.target.value)}
-                rows={3}
-                className={`${inputClass} resize-none`}
-              />
-            </Field>
-          </Section>
+            </div>
+          </details>
+
         </div>
 
         <DialogFooter className="px-5 sm:px-7 py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 sm:flex-col sm:items-stretch sm:space-x-0 gap-2">
