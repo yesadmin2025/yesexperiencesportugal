@@ -3801,7 +3801,7 @@ export function StoryboardHandoff({
       {/* ---------- Unified "Your Signature" card (map · story · edit · DNA · price · add-ons) ---------- */}
       <section
         data-testid="studio-v3-signature-card"
-        className="mt-8 mx-auto w-full max-w-[560px] rounded-[14px] px-4 py-6 sm:px-6 sm:py-8"
+        className="mt-8 mx-auto w-full max-w-[560px] rounded-[14px] px-4 py-6 sm:px-6 sm:py-8 flex flex-col"
         style={{
           background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
           border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
