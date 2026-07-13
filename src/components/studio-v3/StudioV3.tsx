@@ -3897,40 +3897,17 @@ export function StoryboardHandoff({
           </section>
         ) : null}
 
-        {/* ---------- 3. Story of the day ---------- */}
+        {/* ---------- 3. Story of the day — moved to the confirmation phase
+             (FinalRevealStory). The storyboard is a skeleton + refine surface;
+             cinematic storytelling belongs on the next screen. ---------- */}
 
-        <section className="mt-10 max-w-[520px] mx-auto" data-testid="studio-v3-story-of-day">
-          <p
-            className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-          >
-            <span style={{ color: "var(--gold)" }}>—</span> How the day unfolds
-          </p>
-          <div className="mt-5 space-y-5">
-            {storyChapters.map((c) => (
-              <div key={c.eyebrow}>
-                <p
-                  className="text-[10.5px] uppercase tracking-[0.24em] font-semibold"
-                  style={{ color: "var(--gold)" }}
-                >
-                  {c.eyebrow}
-                </p>
-                <p
-                  className="mt-1.5 text-[14px] leading-[1.6] [text-wrap:pretty] [hyphens:auto]"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
-                >
-                  {c.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ---------- 4. Fine-tune your Signature (editable stops) ---------- */}
+        {/* ---------- 4. Refine your Signature (editable stops) ----------
+             Promoted with `-order-1` so Remove (✕) and Swap (⇄) sit directly
+             under the hero — the storyboard's primary job. */}
         {editedStops.length > 0 ? (
           <div
             data-testid="studio-v3-stops-editor"
-            className="mt-10 sm:mt-12 max-w-[520px] mx-auto px-3 sm:px-1"
+            className="-order-1 mt-6 sm:mt-8 max-w-[520px] mx-auto px-3 sm:px-1"
           >
             <p
               className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
