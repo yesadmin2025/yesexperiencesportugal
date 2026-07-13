@@ -2255,7 +2255,7 @@ export function StudioV3() {
       <ComposerMap state={state} hidden={composerHidden} />
       <CloseStudio hasProgress={state.phase !== "who"} />
       <StudioDraftControls
-        visible={state.phase !== "who" && state.phase !== "intro"}
+        visible={state.phase !== "who" && state.phase !== "feeling"}
         onSave={handleSaveDraft}
         onClear={handleClearDraft}
       />
