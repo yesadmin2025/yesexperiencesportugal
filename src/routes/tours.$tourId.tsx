@@ -286,14 +286,15 @@ function TourHero({
               so the cinematic image reads as a single quiet frame. */}
           <div className="mt-5 sm:mt-8">
             <Eyebrow>Signature Experience</Eyebrow>
-            <h1 className="serif mt-3 text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.08] sm:leading-[1.02] tracking-[-0.015em] max-w-3xl text-[color:var(--charcoal)]">
+            <h1 className="serif mt-2.5 sm:mt-3 text-[1.75rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.1] sm:leading-[1.02] tracking-[-0.015em] max-w-3xl text-[color:var(--charcoal)]">
               {tour.title}
             </h1>
-            <p className="serif italic font-normal mt-4 text-[15px] sm:text-lg md:text-xl text-[color:var(--charcoal-soft)] max-w-2xl leading-snug">
+            <p className="serif italic font-normal mt-3 sm:mt-4 text-[14.5px] sm:text-lg md:text-xl text-[color:var(--charcoal-soft)] max-w-2xl leading-snug">
               {tour.blurb}
             </p>
 
-            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+            <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-2 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-2 text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+
               <span className="flex items-center gap-2">
                 <MapPin size={12} className="text-[color:var(--gold)]" /> {tour.region}
               </span>
