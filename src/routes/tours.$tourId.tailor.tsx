@@ -906,6 +906,12 @@ function TailorPage() {
                       <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
                         {blueprint.choice.note}
                       </p>
+                      <p className="mb-3 text-[11px] leading-snug text-[color:var(--teal)]">
+                        {choiceSelected.size <= 2
+                          ? `Selected ${choiceSelected.size} — fits as-is.`
+                          : `Selected ${choiceSelected.size} — ${skippedCore.size} of ${choiceSelected.size - 2} needed skip${choiceSelected.size - 2 === 1 ? "" : "s"} applied${blueprintFeasibility?.feasible ? " · day fits" : " · skip a core stop above"}.`}
+                      </p>
+
                       <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
                         {blueprint.choice.options.map((o) => {
                           const on = choiceSelected.has(o.id);
