@@ -19,7 +19,6 @@ import { useEffect } from "react";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getStripeEnvironment } from "@/lib/stripe";
 import {
@@ -40,10 +39,8 @@ import {
 import { getTailorBlueprint, type BlueprintStop } from "@/data/tailorBlueprints";
 import { evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
-import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION_SHORT } from "@/config/business-nap";
-import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
 import {
   gaAddPaymentInfo,
   gaAddToCartSignature,
@@ -51,6 +48,8 @@ import {
   gaGenerateLead,
   buildTourItem,
 } from "@/lib/analytics-ga4";
+import { useBookingQuote } from "@/hooks/use-booking-quote";
+import { buildManualQuotePreview } from "@/lib/pricing/manualQuotePreview";
 
 /* ════════════════════════════════════════════════════════════════
  * /tours/$tourId/tailor — Tailor a Signature
@@ -187,8 +186,6 @@ function TailorPage() {
     minorAges: [],
   });
   const guests = totalParticipants(composition);
-  const setGuests = (n: number) =>
-    setComposition((c) => ({ ...c, adults: Math.max(1, n - c.minorAges.length) }));
   // Family bookings now price via the manual (age-band) path in booking-quote;
   // no Bókun category readiness gate is required for Tailored anymore.
 
@@ -381,36 +378,35 @@ function TailorPage() {
     [pickup, estimatedHours],
   );
 
-  // Per-stop deltas — added optional stops add a modest premium,
-  // removing a stop returns a small credit. Anchor never drops below
-  // the base "from" by more than 15% so the math stays honest.
-  const ADD_STOP_DELTA = 20;
-  const REMOVE_STOP_DELTA = 10;
   const { data: tierOverrides } = useTourPriceTiers();
-  const basePerPax = useMemo(() => {
-    const r = resolvePerPaxEur(tour, guests, tierOverrides);
-    return r?.eurPerPax ?? tour.priceFrom;
-  }, [tour, guests, tierOverrides]);
+  const previewPricing = useMemo(
+    () => buildManualQuotePreview(composition, tierOverrides?.[tour.id]),
+    [composition, tierOverrides, tour.id],
+  );
 
-  const estimatedPrice = useMemo(() => {
-    let p = basePerPax;
-    if (blueprint) {
-      // Blueprint tours: price reacts to the real selection state.
-      // Chosen `pickCount` is baseline; skipped-core credits, extra
-      // optionals cost extra.
-      p += optionalSelected.size * ADD_STOP_DELTA;
-      p -= skippedCore.size * REMOVE_STOP_DELTA;
-    } else {
-      // Non-blueprint tours keep legacy add/skip deltas.
-      p += added.size * ADD_STOP_DELTA;
-      p -= skipped.size * REMOVE_STOP_DELTA;
-    }
-    if (addons.has("photographer")) p += 75;
-    if (addons.has("wine")) p += 25;
-    if (lunch === "premium") p += 35;
-    const floor = Math.round(basePerPax * 0.85);
-    return Math.max(floor, Math.round(p));
-  }, [basePerPax, blueprint, added, skipped, skippedCore, optionalSelected, addons, lunch]);
+  const itineraryRevision = useMemo(
+    () => `tailor:${summaryStops.map((stop) => stop.label).join("|").slice(0, 200)}`,
+    [summaryStops],
+  );
+  const liveQuote = useBookingQuote({
+    flow: "tailor",
+    commercialProductKey: tour.id,
+    date: date || null,
+    startTime: pickup,
+    composition,
+    itineraryRevision,
+    itinerarySnapshot: {
+      title: `Tailored — ${tour.title.split("—")[0].trim()}`,
+      routeStops: summaryStops.map((stop, index) => ({ id: `s${index}`, label: stop.label })),
+    },
+  });
+  const visiblePricing = liveQuote.quote?.basePricing ??
+    (previewPricing
+      ? { lines: previewPricing.lines, subtotalEur: previewPricing.subtotalEur }
+      : null);
+  const visibleTotal = liveQuote.quote?.finalTotalEur ?? previewPricing?.subtotalEur ?? null;
+  const quoteReadyForCurrentSelection =
+    !!liveQuote.quote && liveQuote.quote.itineraryRevision === itineraryRevision;
 
 
   // ─── Helpers ────────────────────────────────────────────────
@@ -422,10 +418,8 @@ function TailorPage() {
   };
 
   // ─── Instant booking — Stripe checkout ──────────────────────
-  // Tailored selection is sent to the same `create-signature-checkout`
-  // edge function as the Studio reveal. Server resolves the per-pax
-  // price; we pass `estimatedPrice` as the anchor so add-on / stop
-  // deltas flow through when no tier row exists.
+  // Tailored selection is sent to the same server-authoritative quote path
+  // as Signature. Client-side stop preferences never decide the amount.
   const [checkoutPending, setCheckoutPending] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -443,18 +437,18 @@ function TailorPage() {
     // price flash before Stripe corrects it.
     setDetailsOpen(false);
     const metaForSummary = getViatorMeta(tour.id);
-    const stopLabels = keptStops.map((s: TourStop) => s.label);
-    [...added].forEach((label) => stopLabels.push(label));
+    const stopLabels = summaryStops.map((stop) => stop.label);
+    const analyticsPerPax = visibleTotal != null ? visibleTotal / Math.max(1, guests) : tour.priceFrom;
     // GA4 add_to_cart + begin_checkout — Tailored reserve intent.
     try {
-      gaAddToCartSignature({ tour, guests: details.guests, perPaxEur: estimatedPrice });
+      gaAddToCartSignature({ tour, guests, perPaxEur: analyticsPerPax });
       const item = buildTourItem(tour, {
-        quantity: details.guests,
+        quantity: guests,
         tier: "tailored",
         itemCategory: "Signature",
       });
-      item.price = estimatedPrice;
-      gaBeginCheckout({ items: [item], valueEur: Math.round(estimatedPrice * details.guests) });
+      item.price = analyticsPerPax;
+      gaBeginCheckout({ items: [item], valueEur: visibleTotal ?? analyticsPerPax * guests });
     } catch {
       /* silent */
     }
@@ -470,7 +464,6 @@ function TailorPage() {
         minorAges: composition.minorAges,
         addOns: [],
       });
-      const itineraryRevision = `tailor:${stopLabels.join("|").slice(0, 200)}`;
       const quoteResp = await fetchBookingQuote({
         flow: "tailor",
         commercialProductKey: tour.id,
@@ -489,21 +482,16 @@ function TailorPage() {
       }
       // Truthful summary derived from the server quote — this is what
       // Stripe will charge, so the drawer total must match to the cent.
-      const totalParticipantsFromQuote =
-        quoteResp.resolvedGuestMix?.totalParticipants ?? details.guests;
-      const truePerPax =
-        totalParticipantsFromQuote > 0
-          ? Math.round(quoteResp.finalTotalEur / totalParticipantsFromQuote)
-          : estimatedPrice;
       setCheckoutSummary({
         tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
         region: tour.region,
         durationHours: tour.durationHours,
-        guests: details.guests,
+        guests,
         dateExact: details.tourDate || null,
         startTime: details.startTime ?? null,
         pickupLabel: details.pickupAddress || pickup,
-        pricePerPaxEur: truePerPax,
+        basePriceLines: quoteResp.basePricing.lines,
+        addOnPriceLines: quoteResp.addOnPricing.lines,
         totalEur: quoteResp.finalTotalEur,
         heroSrc:
           metaForSummary?.localGallery?.[0]?.src ?? metaForSummary?.gallery?.[0] ?? tour.img,
@@ -529,11 +517,11 @@ function TailorPage() {
       // GA4 add_payment_info — payment surface ready.
       try {
         const item = buildTourItem(tour, {
-          quantity: details.guests,
+          quantity: guests,
           tier: "tailored",
           itemCategory: "Signature",
         });
-        item.price = truePerPax;
+        item.price = quoteResp.finalTotalEur / Math.max(1, guests);
         gaAddPaymentInfo({
           paymentType: "stripe",
           items: [item],
@@ -1155,11 +1143,6 @@ function TailorPage() {
                           ].join(" ")}
                         >
                           {a.label}
-                          {a.priceDelta ? (
-                            <span className="ml-1.5 text-[color:var(--teal)] tracking-normal">
-                              +€{a.priceDelta}
-                            </span>
-                          ) : null}
                         </button>
                       );
                     })}
@@ -1338,20 +1321,40 @@ function TailorPage() {
                     </div>
                   )}
 
-                  <div className="pt-3 border-t border-[color:var(--border)] flex items-baseline justify-between">
-                    <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-                      Indicative total
-                    </span>
-                    <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
-                      €{estimatedPrice}
-                      <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-                        / pp
+                  <div className="pt-3 border-t border-[color:var(--border)]">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                        {quoteReadyForCurrentSelection ? "Confirmed total" : "Estimated party total"}
                       </span>
-                    </span>
+                      <span className="serif text-[1.4rem] text-[color:var(--charcoal)] tabular-nums">
+                        {visibleTotal != null ? formatEur(visibleTotal) : "Select a date"}
+                      </span>
+                    </div>
+                    {visiblePricing ? (
+                      <ul className="mt-2 space-y-1.5">
+                        {visiblePricing.lines.map((line) => (
+                          <li
+                            key={line.bokunCategoryId}
+                            className="flex items-baseline justify-between gap-3 text-[11.5px] text-[color:var(--charcoal-soft)]"
+                          >
+                            <span>
+                              {line.label} × {line.quantity}
+                              {line.ages?.length ? ` · age${line.ages.length > 1 ? "s" : ""} ${line.ages.join(", ")}` : ""}
+                            </span>
+                            <span className="tabular-nums shrink-0">{formatEur(line.subtotalEur)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                    {date && liveQuote.loading ? (
+                      <p className="mt-2 inline-flex items-center gap-1.5 text-[11px] text-[color:var(--charcoal-soft)]">
+                        <Loader2 size={11} className="animate-spin" /> Confirming exact price…
+                      </p>
+                    ) : null}
                   </div>
 
                   <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] inline-flex items-center gap-1.5">
-                    <Check size={12} /> Confirmation status: ready
+                    <Check size={12} /> Confirmation status: {date ? "ready" : "choose a date"}
                   </p>
                 </div>
 
@@ -1360,7 +1363,13 @@ function TailorPage() {
                   <button
                     type="button"
                     onClick={() => setDetailsOpen(true)}
-                    disabled={checkoutPending || summaryStops.length === 0}
+                    disabled={
+                      checkoutPending ||
+                      !date ||
+                      summaryStops.length === 0 ||
+                      !quoteReadyForCurrentSelection ||
+                      liveQuote.loading
+                    }
                     className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
                   >
                     {checkoutPending ? (
@@ -1406,6 +1415,7 @@ function TailorPage() {
         submitting={checkoutPending}
         tourId={tour.id}
         initial={{ tourDate: date, guests, language, pickupAddress: pickup }}
+        lockGuestCount
         onConfirm={async (d) => {
           await handleReserve(d);
         }}
@@ -1423,8 +1433,8 @@ function TailorPage() {
           checkoutSummary ?? {
             tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
             guests,
-            pricePerPaxEur: estimatedPrice,
-            totalEur: Math.round(estimatedPrice * guests),
+            basePriceLines: visiblePricing?.lines,
+            totalEur: visibleTotal,
             flowLabel: "Tailored",
           }
         }
@@ -1443,18 +1453,18 @@ function TailorPage() {
 /* ────────────────────────────────────────────────────────────────
  * Per-tour option builders (tour-aware, never global)
  * ──────────────────────────────────────────────────────────── */
-function buildAddons(tour: SignatureTour): { id: string; label: string; priceDelta?: number }[] {
+function buildAddons(tour: SignatureTour): { id: string; label: string }[] {
   // Hotel pickup is always included on every Signature — never a toggleable
   // add-on. It's surfaced as a static "Included" note in the UI instead.
-  const out: { id: string; label: string; priceDelta?: number }[] = [];
+  const out: { id: string; label: string }[] = [];
   const styles = tour.seed.styles ?? [];
   const text = (tour.title + " " + tour.blurb + " " + tour.intro).toLowerCase();
 
   if (styles.includes("wine") || /wine|tasting|winery/.test(text)) {
-    out.push({ id: "wine", label: "Extra wine pairing", priceDelta: 25 });
+    out.push({ id: "wine", label: "Extra wine pairing request" });
   }
   if (/photo|memorable|anniversary|propos/.test(text) || styles.includes("celebration")) {
-    out.push({ id: "photographer", label: "Photographer (1h)", priceDelta: 75 });
+    out.push({ id: "photographer", label: "Photographer request" });
   }
   if (/family|kids|children/.test(text)) {
     out.push({ id: "kids", label: "Kids' activity kit" });
@@ -1478,6 +1488,15 @@ function buildLunch(
     { id: "premium", label: "Premium tasting menu" },
     { id: "skip", label: "Skip — light snack only" },
   ];
+}
+
+function formatEur(value: number): string {
+  return new Intl.NumberFormat("en-IE", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(value);
 }
 
 /* ────────────────────────────────────────────────────────────────

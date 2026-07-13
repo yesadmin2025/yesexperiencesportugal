@@ -9,11 +9,19 @@ type Props = {
   compact?: boolean;
 };
 
-const EUR = new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
 const EUR_ZERO = "Free";
 
 function fmt(eur: number): string {
-  return eur === 0 ? EUR_ZERO : EUR.format(eur);
+  return eur === 0 ? EUR_ZERO : formatEur(eur);
+}
+
+function formatEur(eur: number): string {
+  return new Intl.NumberFormat("en-IE", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: Number.isInteger(eur) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(eur);
 }
 
 export function LivePriceBreakdown({ quote, compact = false }: Props) {
@@ -40,7 +48,7 @@ export function LivePriceBreakdown({ quote, compact = false }: Props) {
                 ) : null}
               </div>
               <div className="text-[11px] text-[color:var(--charcoal-soft)]">
-                {l.quantity} × {l.unitEur === 0 ? EUR_ZERO : EUR.format(l.unitEur)}
+                 {l.quantity} × {l.unitEur === 0 ? EUR_ZERO : formatEur(l.unitEur)}
                 {typeof l.minAge === "number" || typeof l.maxAge === "number" ? (
                   <>
                     {" · "}
@@ -63,7 +71,7 @@ export function LivePriceBreakdown({ quote, compact = false }: Props) {
       <div className="mt-2 flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
         <span>Base subtotal</span>
         <span className="tabular-nums" data-testid="base-subtotal">
-          {EUR.format(basePricing.subtotalEur)}
+           {formatEur(basePricing.subtotalEur)}
         </span>
       </div>
 
@@ -80,11 +88,11 @@ export function LivePriceBreakdown({ quote, compact = false }: Props) {
                 <div className="min-w-0">
                   <div className="text-sm">{l.label}</div>
                   <div className="text-[11px] text-[color:var(--charcoal-soft)]">
-                    {l.quantity} × {EUR.format(l.unitEur)} · {humanUnit(l.pricingUnit)}
+                     {l.quantity} × {formatEur(l.unitEur)} · {humanUnit(l.pricingUnit)}
                   </div>
                 </div>
                 <div className="tabular-nums text-sm" data-testid={`addon-${l.id}`}>
-                  {EUR.format(l.subtotalEur)}
+                  {formatEur(l.subtotalEur)}
                 </div>
               </li>
             ))}
@@ -92,7 +100,7 @@ export function LivePriceBreakdown({ quote, compact = false }: Props) {
           <div className="mt-2 flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
             <span>Add-ons subtotal</span>
             <span className="tabular-nums" data-testid="addon-subtotal">
-              {EUR.format(addOnPricing.subtotalEur)}
+               {formatEur(addOnPricing.subtotalEur)}
             </span>
           </div>
         </>
@@ -101,7 +109,7 @@ export function LivePriceBreakdown({ quote, compact = false }: Props) {
       <div className="mt-4 border-t border-[color:var(--charcoal)] pt-3 flex items-center justify-between">
         <span className="text-[11px] uppercase tracking-[0.22em]">Total</span>
         <span className="text-lg tabular-nums font-medium" data-testid="final-total">
-          {EUR.format(finalTotalEur)}
+           {formatEur(finalTotalEur)}
         </span>
       </div>
     </div>

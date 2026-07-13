@@ -106,7 +106,6 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
     setPending(true);
     const meta = getViatorMeta(tour.id);
     const finalTotal = q.finalTotalEur;
-    const perPax = Math.round(finalTotal / Math.max(1, totalGuests));
     setCheckoutSummary({
       tourTitle: tour.title,
       region: tour.region,
@@ -115,8 +114,9 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
       dateExact: details.tourDate || date,
       startTime: details.startTime ?? pickup,
       pickupLabel: details.pickupAddress || pickup,
-      pricePerPaxEur: perPax,
-      totalEur: Math.round(finalTotal),
+      basePriceLines: q.basePricing.lines,
+      addOnPriceLines: q.addOnPricing.lines,
+      totalEur: finalTotal,
       heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
       beats: meta?.included?.length ? meta.included : (tour.highlights ?? []),
       flowLabel: "Signature",
@@ -356,6 +356,7 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
         onOpenChange={setDetailsOpen}
         submitting={pending}
         tourId={tour.id}
+        lockGuestCount
         initial={{
           tourDate: date,
           guests: totalGuests,
@@ -379,11 +380,9 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
           checkoutSummary ?? {
             tourTitle: tour.title,
             guests: totalGuests,
-            pricePerPaxEur: quote.quote?.finalTotalEur
-              ? Math.round(quote.quote.finalTotalEur / Math.max(1, totalGuests))
-              : 0,
-
-            totalEur: Math.round(quote.quote?.finalTotalEur ?? 0),
+            basePriceLines: quote.quote?.basePricing.lines,
+            addOnPriceLines: quote.quote?.addOnPricing.lines,
+            totalEur: quote.quote?.finalTotalEur ?? 0,
             flowLabel: "Signature",
           }
         }
