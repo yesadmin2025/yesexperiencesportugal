@@ -19,7 +19,6 @@ import { useEffect } from "react";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getStripeEnvironment } from "@/lib/stripe";
 import {
@@ -42,7 +41,6 @@ import { evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION_SHORT } from "@/config/business-nap";
-import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
 import {
   gaAddPaymentInfo,
   gaAddToCartSignature,
@@ -188,8 +186,6 @@ function TailorPage() {
     minorAges: [],
   });
   const guests = totalParticipants(composition);
-  const setGuests = (n: number) =>
-    setComposition((c) => ({ ...c, adults: Math.max(1, n - c.minorAges.length) }));
   // Family bookings now price via the manual (age-band) path in booking-quote;
   // no Bókun category readiness gate is required for Tailored anymore.
 
@@ -1145,11 +1141,6 @@ function TailorPage() {
                           ].join(" ")}
                         >
                           {a.label}
-                          {a.priceDelta ? (
-                            <span className="ml-1.5 text-[color:var(--teal)] tracking-normal">
-                              +€{a.priceDelta}
-                            </span>
-                          ) : null}
                         </button>
                       );
                     })}
@@ -1454,18 +1445,18 @@ function TailorPage() {
 /* ────────────────────────────────────────────────────────────────
  * Per-tour option builders (tour-aware, never global)
  * ──────────────────────────────────────────────────────────── */
-function buildAddons(tour: SignatureTour): { id: string; label: string; priceDelta?: number }[] {
+function buildAddons(tour: SignatureTour): { id: string; label: string }[] {
   // Hotel pickup is always included on every Signature — never a toggleable
   // add-on. It's surfaced as a static "Included" note in the UI instead.
-  const out: { id: string; label: string; priceDelta?: number }[] = [];
+  const out: { id: string; label: string }[] = [];
   const styles = tour.seed.styles ?? [];
   const text = (tour.title + " " + tour.blurb + " " + tour.intro).toLowerCase();
 
   if (styles.includes("wine") || /wine|tasting|winery/.test(text)) {
-    out.push({ id: "wine", label: "Extra wine pairing", priceDelta: 25 });
+    out.push({ id: "wine", label: "Extra wine pairing request" });
   }
   if (/photo|memorable|anniversary|propos/.test(text) || styles.includes("celebration")) {
-    out.push({ id: "photographer", label: "Photographer (1h)", priceDelta: 75 });
+    out.push({ id: "photographer", label: "Photographer request" });
   }
   if (/family|kids|children/.test(text)) {
     out.push({ id: "kids", label: "Kids' activity kit" });
