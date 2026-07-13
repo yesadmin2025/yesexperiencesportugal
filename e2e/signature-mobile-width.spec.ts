@@ -53,6 +53,7 @@ test("collection to Signature detail remains left-aligned at 393px", async ({ pa
   const firstCard = page.getByTestId("signature-tour-card").first();
   await firstCard.locator("a").first().click();
   await expect(page).toHaveURL(/\/tours\/arrabida-wine-allinclusive$/);
+  await expect(page.locator("h1")).toBeVisible();
 
   const layout = await page.evaluate(() => ({
     scrollX: window.scrollX,
