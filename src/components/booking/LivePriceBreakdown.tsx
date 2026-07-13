@@ -9,7 +9,12 @@ type Props = {
   compact?: boolean;
 };
 
-const EUR = new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+const EUR = new Intl.NumberFormat("en-IE", {
+  style: "currency",
+  currency: "EUR",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+});
 const EUR_ZERO = "Free";
 
 function fmt(eur: number): string {

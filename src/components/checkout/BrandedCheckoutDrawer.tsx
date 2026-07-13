@@ -8,6 +8,10 @@ import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BokunRolloutBadge } from "@/components/booking/BokunRolloutBadge";
 import type { TourBokunReadiness } from "@/hooks/use-tour-bokun-readiness";
+import type {
+  BookingQuoteAddOnLine,
+  BookingQuoteBaseLine,
+} from "@/lib/pricing/bookingQuote";
 
 /**
  * BrandedCheckoutDrawer
@@ -27,6 +31,10 @@ export interface CheckoutSummary {
   startTime?: string | null;
   pickupLabel?: string | null;
   pricePerPaxEur?: number | null;
+  /** Exact server-resolved category lines. When present, these replace the
+   *  misleading averaged per-person multiplier for mixed-age groups. */
+  basePriceLines?: BookingQuoteBaseLine[];
+  addOnPriceLines?: BookingQuoteAddOnLine[];
   /** Total in EUR (per Stripe). Optional — we'll compute from pricePerPaxEur*guests + addOnsTotalEur if missing. */
   totalEur?: number | null;
   /** Optional hero image (locally uploaded YES photo when available). */
@@ -296,14 +304,51 @@ function ExperienceSummaryCard({
         </div>
       ) : null}
 
+      {summary.basePriceLines && summary.basePriceLines.length > 0 ? (
+        <div className="mt-4 pt-3 border-t border-[color:var(--border)]">
+          <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
+            Price breakdown
+          </p>
+          <ul className="mt-2 space-y-1.5">
+            {summary.basePriceLines.map((line) => (
+              <li
+                key={line.bokunCategoryId}
+                className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]"
+              >
+                <span className="min-w-0">
+                  {line.label} × {line.quantity}
+                  {line.ages?.length ? (
+                    <span className="ml-1 text-[color:var(--charcoal-soft)]">
+                      · age{line.ages.length > 1 ? "s" : ""} {line.ages.join(", ")}
+                    </span>
+                  ) : null}
+                </span>
+                <span className="tabular-nums shrink-0">
+                  {formatEur(line.subtotalEur)}
+                </span>
+              </li>
+            ))}
+            {(summary.addOnPriceLines ?? []).map((line) => (
+              <li
+                key={line.id}
+                className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]"
+              >
+                <span className="min-w-0">{line.label} × {line.quantity}</span>
+                <span className="tabular-nums shrink-0">{formatEur(line.subtotalEur)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
       {total != null ? (
         <div className="mt-4 pt-3 border-t border-[color:var(--border)] flex items-baseline justify-between">
           <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
             Total
           </span>
           <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
-            €{total.toLocaleString("en-GB")}
-            {summary.pricePerPaxEur != null && summary.guests > 1 ? (
+            {formatEur(total)}
+            {!summary.basePriceLines && summary.pricePerPaxEur != null && summary.guests > 1 ? (
               <span className="ml-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans">
                 €{Math.round(summary.pricePerPaxEur).toLocaleString("en-GB")} × {summary.guests}
               </span>
@@ -313,6 +358,15 @@ function ExperienceSummaryCard({
       ) : null}
     </div>
   );
+}
+
+function formatEur(value: number): string {
+  return new Intl.NumberFormat("en-IE", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(value);
 }
 
 function Meta({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {

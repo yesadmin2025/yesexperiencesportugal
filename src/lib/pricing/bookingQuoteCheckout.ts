@@ -122,7 +122,7 @@ export async function fetchBookingQuote(
       startTime: input.startTime,
       availabilityId: input.availabilityId,
       travellerComposition: input.composition,
-      selectedAddOns: (input.selectedAddOns ?? []).filter((a) => a.quantity > 0),
+      addOns: (input.selectedAddOns ?? []).filter((a) => a.quantity > 0),
       pricingRevision: input.pricingRevision,
       itineraryRevision: input.itineraryRevision,
       itinerarySnapshot: input.itinerarySnapshot,
