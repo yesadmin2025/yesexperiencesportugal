@@ -20,7 +20,10 @@ interface BuilderCheckoutBody {
   customerEmail?: string;
   returnUrl: string;
   environment: StripeEnv;
+  /** "embedded" (default) returns a clientSecret; "hosted" returns a redirect url. */
+  uiMode?: "embedded" | "hosted";
 }
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
