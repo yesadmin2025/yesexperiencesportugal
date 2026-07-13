@@ -997,9 +997,8 @@ export function StudioV3() {
           return;
         } catch (e) {
           console.error("[studio-v3 quote-checkout] failed", e);
-          toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
-          setCheckoutOpen(false);
-          openLeadSheet("book");
+          const msg = e instanceof Error && e.message ? e.message : "Checkout unavailable right now — please try again.";
+          toast.error(msg);
           return;
         } finally {
           setCheckoutPending(false);
