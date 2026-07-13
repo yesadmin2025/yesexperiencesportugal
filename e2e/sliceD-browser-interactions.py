@@ -336,8 +336,10 @@ async def run_signature(page: Page, viewport: str):
     await picker.scroll_into_view_if_needed()
     await fill_date(page)
     await compose_2_15_8_0(page)
-    await wait_for(lambda: bool(fx.quote_calls), 6.0)
-    await page.wait_for_timeout(1200)
+    # Wait for the debounced quote to carry the fully committed composition.
+    composition_committed = await wait_for_quote_composition(
+        page, {"adults": 2, "minorAges": [15, 8, 0]}, deadline=8.0
+    )
     labels = {
         "Youth":  await page.get_by_text(LBL_YOUTH,  exact=False).count() > 0,
         "Child":  await page.get_by_text(LBL_CHILD,  exact=False).count() > 0,
@@ -347,6 +349,10 @@ async def run_signature(page: Page, viewport: str):
 
     reserve = page.get_by_role("button", name=re.compile(r"Reserve securely", re.I)).first
     await reserve.scroll_into_view_if_needed()
+    # Wait until Reserve is enabled (readiness resolved).
+    for _ in range(60):
+        if not await reserve.is_disabled(): break
+        await page.wait_for_timeout(100)
     await reserve.click()
     try:
         await page.wait_for_selector("text=Final details before payment", timeout=5000)
