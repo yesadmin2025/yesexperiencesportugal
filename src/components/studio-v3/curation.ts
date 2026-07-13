@@ -1028,8 +1028,8 @@ export function scoreTourFit(
 ): FitReport {
   assertStopIntentSchema();
   const {
-    feeling: safeFeeling,
-    companions: safeCompanions,
+    feeling,
+    companions,
     interests,
     pickup,
     rhythm = null,
