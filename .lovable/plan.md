@@ -1,78 +1,89 @@
-## Slice D closure — Tailored + Studio V3 browser interaction pass
+## Scope
 
-Scope: extend the existing versioned test `e2e/sliceD-browser-interactions.py` so it drives the real Tailored and Studio V3 UI end-to-end at both viewports. **No production code changes** (no edits to `src/`, `supabase/`, styles, routes, or pricing). Evidence lands in `/tmp/browser/sliceD-interactions/`.
+Fix only the three proven browser failures in `e2e/sliceD-browser-interactions.py`. No production code changes. Re-run the script; return the completion report.
 
-### 1. Fixture hardening (shared)
+## 1. Signature mobile — commit minor ages before Reserve
 
-- Extend `install_routes` to also match the `create-builder-checkout` and `create-tailored-checkout` (whichever the Tailored + Studio paths hit — will be confirmed at run time via the catch-all `unexpected` logger, then wired) with the same shape as `create-signature-checkout`.
-- Rewrite `build_checkout_response()` so `url` points to a **same-origin controlled endpoint** the browser can navigate to without Stripe: `${BASE}/?checkout=stub&session=cs_test_slicedtest`. Drop `clientSecret`/`publishableKey` fields entirely so the embedded Stripe drawer never mounts (prevents the "Invalid Checkout session" runtime error the last pass produced). Set `uiMode: "hosted"` when the flow supports it; otherwise stub a `window.__lovableCheckoutStub` sentinel via `page.add_init_script` and detect navigation to the stub URL instead of asserting Stripe state.
-- Keep the catch-all Supabase handler that fails scenarios on unexpected function calls.
+Symptom: 393px scenario sent `{adults:2, minorAges:[]}` because Reserve fired before the three minor-age `<input>` values debounced up into `TravellerCompositionPicker`'s `onChange`.
 
-### 2. Tailored flow (desktop + 393)
+Fix in `compose_2_15_8_0()`:
+- After the third `Increase Travellers aged 0-17`, wait for `input[id^="minor-age-"]` count === 3 (already done).
+- For each of the 3 inputs: `focus → fill → dispatch input+change → Tab` (blur) so the controlled `onChange({adults, minorAges})` fires. Current `el.fill(); el.blur()` in `set_minor_age` is not always enough on mobile — add `page.keyboard.press("Tab")` after fill.
+- Poll `page.evaluate` reading the actual `input[id^="minor-age-"]` values until they equal `["15","8","0"]`, deadline 5s.
+- Before clicking Reserve, poll `fx.quote_calls[-1].body.travellerComposition` until it equals `{adults:2, minorAges:[15,8,0]}` (that proves the quote debounced with the committed composition). Only then click Reserve.
+- Assertion `outgoingCompositionMatchesExpected` becomes a pass gate for both viewports.
 
-Replace the shallow `run_tailored`:
+## 2. Tailored — align readiness fixture with production contract + wait for readiness
 
-1. Navigate `/tours/sintra-cascais/tailor`.
-2. Fill date + `compose_2_15_8_0` (adults=2, minorAges=[15,8,0]).
-3. Wait for booking-quote to fire.
-4. Drive the blueprint stop selection UI until at least one stop is selected (`summaryStops.length > 0`). Read the tailor page's stop-toggle controls (`getByRole("button" | "checkbox", name=/…/)` — resolved by inspecting `tours.$tourId.tailor.tsx` blueprint section) and click the first non-mandatory stop; retry once if pricing hasn't recomputed.
-5. Screenshot `tailored-picker-<vp>.png`.
-6. Click the visible Reserve/Continue CTA, open `FinalDetailsDialog`, fill name/email/phone/pickup, submit; screenshot `tailored-final-details-<vp>.png`.
-7. Wait up to 8s for checkout call. Screenshot `tailored-checkout-<vp>.png` **after** navigation to the same-origin stub URL.
-8. Assert and record:
-   - `checkoutCalls === 1`
-   - `checkout.body.quoteToken === QUOTE_TOKEN`
-   - `quote.body.travellerComposition === {adults:2, minorAges:[15,8,0]}`
-   - `resolvedGuestMix.totalParticipants === 5`
-   - server labels `Youth 14-17` / `Child 6-13` / `Infant 0-5` visible in DOM
+Two proven issues:
 
-### 3. Studio V3 flow (desktop + 393)
+(a) Fixture shape drift. The resolver reads `MappedBokunPricingCategory` fields:
+`bokunCategoryId`, `bokunTitle`, `minAge`, `maxAge`, `uiBand`, `mappingStatus`, `countsTowardCapacity`, `normallyFree`. Current fixture emits `label` instead of `bokunTitle` and omits `countsTowardCapacity`. Rewrite `readiness_row()` to emit the exact production names:
 
-Replace static-file assertion with a real drive:
-
-1. Navigate `/studio-v3`.
-2. Walk the phases via accessible controls: travellers picker → preferences (select first offered option in each required group) → generate → Storyboard.
-3. On **Storyboard**, evaluate a DOM snapshot from the rendered itinerary panel:
-   ```
-   { commercialProductKey, travellerComposition, orderedStops: [{id,label,sequence}] }
-   ```
-   using `data-*` attributes already present, or (fallback) reading `window.__studioV3State` if exposed; otherwise parse the visible stop list DOM in order. Screenshot `studio-storyboard-<vp>.png`.
-4. Advance to **Final Itinerary**; capture the same snapshot from that view. Screenshot `studio-final-<vp>.png`.
-5. Advance to **Checkout Summary**; capture the same snapshot. Click the checkout CTA, wait for `create-*-checkout` call, allow navigation to the same-origin stub. Screenshot `studio-checkout-<vp>.png`.
-6. Assert:
-   - three snapshots deep-equal
-   - `commercialProductKey === "studio-v3-private-full-day"`
-   - `checkoutCalls === 1`
-
-If the actual Studio phase names/selectors differ from the initial guess, the script will attempt discovery via `page.get_by_role("heading")` and log the encountered phase sequence to `report.json` before failing loudly (so we can adjust selectors in-place; no production edits).
-
-### 4. Keep the passing Signature + unsupported-age + mobile-bounds scenarios exactly as they are.
-
-### 5. `report.json` (only fields the user asked for)
-
-```json
+```
 {
-  "tailored":   { "desktop": {...}, "393": {...} },
-  "studio":     {
-     "phaseSequence": ["travellers","preferences","itinerary","storyboard","final","checkout"],
-     "desktop": { "snapshots": {"storyboard":..,"final":..,"checkout":..},
-                  "equal": true, "commercialProductKey": "...", "checkoutCalls": 1 },
-     "393":     { ... }
-  },
-  "checkoutCallCounts": { ... },
-  "outgoingCompositions": { ... },
-  "screenshots": [ ... paths ... ],
-  "pageErrors": [], "consoleErrors": [...], "failedRequests": [...],
-  "remainingLaunchBlocker": "real Stripe sandbox + Bókun test-channel smoke not executed"
+  "bokunCategoryId": "adult",
+  "bokunTitle": "Adult",
+  "minAge": 18, "maxAge": 99,
+  "uiBand": "adult",
+  "countsTowardCapacity": true,
+  "normallyFree": false,
+  "mappingStatus": "confirmed"
 }
 ```
 
-`pageErrors` must be `[]`. Console-error allowlist: only the pre-baselined hydration warnings (regex kept next to the filter, one line). Runtime checkout errors from the fixture itself are NOT filtered — they fail the run.
+Repeat for youth (14-17, `bokunTitle: "Youth 14-17"`), child (6-13, `"Child 6-13"`), infant (0-5, `"Infant 0-5"`, `normallyFree: true`). Keep the outer row keys (`tour_id`, `bokun_categories`, `pricing_mode`, `banded_pricing_enabled`, `synced_from_bokun_at`) that `fetchTourBokunReadiness` selects.
 
-### 6. Execution
+(b) Timing gate. `useCategoryAwareCheckoutReadyFor` returns `ready:false` while the react-query is loading. Tailored clicks Reserve before the query resolves → `mixedFamilyBlocked`. In `run_tailored()`, before clicking Reserve, poll a `page.evaluate` diagnostic that reads:
 
-Run: `python e2e/sliceD-browser-interactions.py`. Iterate selector-only fixes (no production code) until Tailored + Studio scenarios pass at both viewports; then return the completion report.
+```js
+window.__yesTailoredDiagnostic  // set only if instrumentation exists
+```
 
-### Out of scope
+Since no such window hook exists in production, use a DOM-shaped diagnostic instead: poll until `Reserve securely` button is enabled (its disabled attribute reflects `!mixedFamilyBlocked`). Cap at 6s. Also assert the "unresolvedAges" inline error is NOT present on any minor row.
 
-No changes to `src/**`, `supabase/**`, other `e2e/**` specs, styles, routes, pricing, Bókun, Stripe, or Studio generation. Real Bókun/Stripe smoke remains the sole remaining launch blocker.
+If the button never enables inside 6s, capture and log the full readiness state through the visible UI (each minor-row hint shows `Age N · <bandLabel>` when resolved, or `not supported` when unsupported) and screenshot; treat that as a production defect only if fixture is correct and Reserve still won't enable.
+
+Complete the flow in both viewports:
+- date → composition (via §1 fixed helper) → wait Reserve enabled → click Reserve → fill FinalDetailsDialog → Continue to secure checkout → assert `quoteCalls>=1`, `checkoutCalls===1`, `checkout.body.quoteToken===QUOTE_TOKEN`, `outgoingComposition==={adults:2,minorAges:[15,8,0]}`.
+
+## 3. Studio V3 — real route + real intro drive + real phase snapshots
+
+Symptom: `[data-testid="studio-v3-root"]` never mounted because the driver never cleared `StudioV3Intro`. The route `/studio-v3` is correct (confirmed from `src/routes/studio-v3.tsx`). The intro is rendered from inside `StudioV3` when `state.phase === "intro"`; only after `onComplete` fires (name + pathMode) does `studio-v3-root` mount.
+
+Fix `run_studio()`:
+- `page.goto("/studio-v3")`. Assert current URL contains `/studio-v3` and no redirect.
+- Intro step 1: wait for the intro name input (`input[autocomplete="given-name"]` or the first visible text input inside the intro region), fill "Test", click the Intro `Continue` button.
+- Intro step 2: click the "Compose it quickly" (fast path) card. Use `get_by_role("button")` with accessible-name match; if it's a `div[role=button]`, fall back to `page.locator('text=Compose it quickly').first.click()`.
+- Wait up to 8s for `[data-testid="studio-v3-root"]` to exist. If it doesn't mount, capture: current URL, page title, all `h1/h2/h3` texts, body excerpt (first 500 chars), console errors, failed requests, DOM screenshot; return `{error:"root-mount-failed", diagnostics:{...}}`.
+- Once mounted, read `data-phase` and drive using the real controls:
+  1. `who` → composition (reuse §1 helper) → Continue
+  2. `rhythm`/`preferences` phases → pick first visible ChoiceGrid tile → Continue
+  3. Loop until `data-phase === "storyboard"` (cap 15 iterations)
+  4. Snapshot Storyboard: read `commercialProductKey` from `window.__studioV3State?.commercialProductKey` if exposed, otherwise from `[data-testid="studio-v3-signature-card"] [data-commercial-key]` fallback; enumerate `[data-testid="studio-v3-stop-row"][data-stop-id]` (id + label + sequence)
+  5. Advance to `confirmation` (Final) → snapshot from `[data-testid="studio-v3-final-reveal-timeline"] [data-stop-id]`
+  6. Advance to `checkoutSummary` → snapshot from checkout summary stops → click `[data-testid="studio-v3-checkout-summary-reserve"]`
+  7. Await `checkoutCalls===1`
+- Assert `snapshots.storyboard.orderedStops`, `.final.orderedStops`, `.checkout.orderedStops` deep-equal, and `commercialProductKey === "studio-v3-private-full-day"`.
+
+If Studio phases beyond `who` require additional selection (region, feeling), pick the first visible tile and log the phase path. Never fabricate a "?" phase — record the actual `data-phase` string.
+
+## 4. Report
+
+Extend the existing `report.json` writer to record, per scenario:
+- Signature desktop + mobile: `outgoingComposition`, `checkoutCalls`, `checkoutHasQuoteToken`, screenshot paths
+- Tailored desktop + mobile: same + `summaryPopulated`, `reserveEnabledAfterMs`
+- Studio desktop + mobile: route used, `rootMounted`, `phaseSequence`, three snapshots, `equal`, `commercialProductKey`, `checkoutCalls`
+- Unsupported-age mobile: `errorVisible`, `ctaDisabled`, `checkoutCalls===0`
+- Aggregated `pageErrors`, `consoleErrors`, `failedRequests`
+- `remainingLaunchBlocker: "real Stripe sandbox + Bókun test-channel smoke not executed"`
+
+Pass criteria: all 7 scenarios succeed as defined by the user.
+
+## Files touched
+
+Only `e2e/sliceD-browser-interactions.py`. No `src/**`, `supabase/**`, or workflow changes.
+
+## Out of scope
+
+Real Bókun/Stripe smoke — remains the sole remaining launch blocker.

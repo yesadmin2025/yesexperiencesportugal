@@ -126,15 +126,26 @@ def build_checkout_response():
 BOKUN_AVAIL = {"slots":[],"mapped":False}
 
 def readiness_row(tour_id):
+    # MappedBokunPricingCategory contract (src/lib/pricing/bokunCategories.ts):
+    # bokunCategoryId, bokunTitle, minAge, maxAge, uiBand, countsTowardCapacity,
+    # normallyFree, mappingStatus.
     return {
         "tour_id": tour_id, "pricing_mode":"banded",
         "banded_pricing_enabled": True,
         "synced_from_bokun_at":"2099-01-01T00:00:00Z",
         "bokun_categories":[
-            {"bokunCategoryId":"adult","label":"Adult","uiBand":"adult","minAge":18,"maxAge":99,"mappingStatus":"confirmed"},
-            {"bokunCategoryId":"youth","label":LBL_YOUTH,"uiBand":"youth","minAge":14,"maxAge":17,"mappingStatus":"confirmed"},
-            {"bokunCategoryId":"child","label":LBL_CHILD,"uiBand":"child","minAge":6,"maxAge":13,"mappingStatus":"confirmed"},
-            {"bokunCategoryId":"infant","label":LBL_INFANT,"uiBand":"infant","minAge":0,"maxAge":5,"mappingStatus":"confirmed","normallyFree":True,"isFree":True},
+            {"bokunCategoryId":"adult","bokunTitle":"Adult","uiBand":"adult",
+             "minAge":18,"maxAge":99,"countsTowardCapacity":True,
+             "normallyFree":False,"mappingStatus":"confirmed"},
+            {"bokunCategoryId":"youth","bokunTitle":LBL_YOUTH,"uiBand":"youth",
+             "minAge":14,"maxAge":17,"countsTowardCapacity":True,
+             "normallyFree":False,"mappingStatus":"confirmed"},
+            {"bokunCategoryId":"child","bokunTitle":LBL_CHILD,"uiBand":"child",
+             "minAge":6,"maxAge":13,"countsTowardCapacity":True,
+             "normallyFree":False,"mappingStatus":"confirmed"},
+            {"bokunCategoryId":"infant","bokunTitle":LBL_INFANT,"uiBand":"infant",
+             "minAge":0,"maxAge":5,"countsTowardCapacity":True,
+             "normallyFree":True,"mappingStatus":"confirmed"},
         ],
     }
 
@@ -254,9 +265,13 @@ async def set_minor_age(page: Page, idx: int, age: int):
     el = page.locator(f"#minor-age-{idx}").first
     await el.wait_for(state="visible", timeout=8000)
     await el.scroll_into_view_if_needed(timeout=1000)
-    await el.fill(str(age))
-    try: await el.blur()
-    except Exception: pass
+    # Clear then type; blur via Tab so React's controlled onChange commits.
+    await el.click()
+    await page.keyboard.press("Control+A")
+    await page.keyboard.press("Delete")
+    await el.type(str(age), delay=20)
+    await page.keyboard.press("Tab")
+    await page.wait_for_timeout(80)
 
 async def fill_date(page: Page):
     d = page.locator('input[type="date"]').first
@@ -264,8 +279,19 @@ async def fill_date(page: Page):
     try: await d.blur()
     except Exception: pass
 
+async def wait_for_minor_inputs(page: Page, expected):
+    """Poll until visible age inputs equal `expected` (list of ints)."""
+    exp = [str(a) for a in expected]
+    for _ in range(60):
+        vals = await page.evaluate(
+            "() => Array.from(document.querySelectorAll('input[id^=\"minor-age-\"]')).map(i => i.value)"
+        )
+        if vals == exp:
+            return True
+        await page.wait_for_timeout(100)
+    return False
+
 async def compose_2_15_8_0(page: Page):
-    # Ensure picker in view (Tailored has a long page; picker is deep).
     try:
         await page.get_by_text("Who is travelling?", exact=False).first.scroll_into_view_if_needed(timeout=2000)
     except Exception:
@@ -274,11 +300,21 @@ async def compose_2_15_8_0(page: Page):
     await click_while_enabled(page, re.compile(r"Increase Adults", re.I), 1)   # -> 2 (min 1)
     await click_while_enabled(page, re.compile(r"Decrease Travellers aged 0", re.I), 20)
     await click_while_enabled(page, re.compile(r"Increase Travellers aged 0", re.I), 3)
-    # Wait for all 3 minor-age fields to be present before typing.
     await page.wait_for_function("() => document.querySelectorAll('input[id^=\"minor-age-\"]').length >= 3", timeout=8000)
     await set_minor_age(page, 0, 15)
     await set_minor_age(page, 1, 8)
     await set_minor_age(page, 2, 0)
+    await wait_for_minor_inputs(page, [15, 8, 0])
+
+async def wait_for_quote_composition(page: Page, expected, deadline=6.0):
+    t0 = time.time()
+    while time.time() - t0 < deadline:
+        if fx.quote_calls:
+            last = fx.quote_calls[-1]["body"].get("travellerComposition")
+            if last == expected:
+                return True
+        await asyncio.sleep(0.1)
+    return False
 
 async def wait_for(cond, deadline=6.0, step=0.1):
     t0 = time.time()
@@ -291,17 +327,21 @@ async def wait_for(cond, deadline=6.0, step=0.1):
 
 async def run_signature(page: Page, viewport: str):
     fx.mode = "available"; fx.quote_calls.clear(); fx.checkout_calls.clear()
-    await page.goto(f"{BASE}/tours/sintra-cascais", wait_until="domcontentloaded")
+    await page.goto(f"{BASE}/tours/sintra-cascais#book", wait_until="domcontentloaded")
     picker = page.get_by_text("Who is travelling?", exact=False).first
-    try: await picker.wait_for(timeout=10000)
-    except Exception:
+    try:
+        await picker.wait_for(state="attached", timeout=20000)
+        await picker.scroll_into_view_if_needed(timeout=3000)
+        await picker.wait_for(state="visible", timeout=5000)
+    except Exception as e:
         await page.screenshot(path=str(SHOTS/f"signature-picker-{viewport}-MISSING.png"))
-        return {"error":"picker not present","viewport":viewport}
-    await picker.scroll_into_view_if_needed()
+        return {"error":f"picker not present: {e}","viewport":viewport}
     await fill_date(page)
     await compose_2_15_8_0(page)
-    await wait_for(lambda: bool(fx.quote_calls), 6.0)
-    await page.wait_for_timeout(1200)
+    # Wait for the debounced quote to carry the fully committed composition.
+    composition_committed = await wait_for_quote_composition(
+        page, {"adults": 2, "minorAges": [15, 8, 0]}, deadline=8.0
+    )
     labels = {
         "Youth":  await page.get_by_text(LBL_YOUTH,  exact=False).count() > 0,
         "Child":  await page.get_by_text(LBL_CHILD,  exact=False).count() > 0,
@@ -311,6 +351,10 @@ async def run_signature(page: Page, viewport: str):
 
     reserve = page.get_by_role("button", name=re.compile(r"Reserve securely", re.I)).first
     await reserve.scroll_into_view_if_needed()
+    # Wait until Reserve is enabled (readiness resolved).
+    for _ in range(60):
+        if not await reserve.is_disabled(): break
+        await page.wait_for_timeout(100)
     await reserve.click()
     try:
         await page.wait_for_selector("text=Final details before payment", timeout=5000)
@@ -328,11 +372,17 @@ async def run_signature(page: Page, viewport: str):
     await page.wait_for_timeout(1200)
     await page.screenshot(path=str(SHOTS/f"signature-checkout-{viewport}.png"))
 
-    outgoing = fx.quote_calls[0]["body"] if fx.quote_calls else None
+    # Use LAST quote (fully-committed composition), not first (may be stale).
+    outgoing = fx.quote_calls[-1]["body"] if fx.quote_calls else None
     cbody = fx.checkout_calls[0]["body"] if fx.checkout_calls else None
+    expected = {"adults": 2, "minorAges": [15, 8, 0]}
     return {
         "outgoingComposition": (outgoing or {}).get("travellerComposition"),
+        "outgoingCompositionMatchesExpected":
+            (outgoing or {}).get("travellerComposition") == expected,
+        "compositionCommittedBeforeReserve": composition_committed,
         "labelsVisible": labels,
+        "quoteCalls": len(fx.quote_calls),
         "checkoutCalls": len(fx.checkout_calls),
         "checkoutHasQuoteToken": bool(cbody and cbody.get("quoteToken") == QUOTE_TOKEN),
     }
@@ -343,18 +393,20 @@ async def run_tailored(page: Page, viewport: str):
     fx.mode = "available"; fx.quote_calls.clear(); fx.checkout_calls.clear()
     fx.page_errors.clear()
     await page.goto(f"{BASE}/tours/sintra-cascais/tailor", wait_until="domcontentloaded")
+    picker = page.get_by_text("Who is travelling?", exact=False).first
     try:
-        await page.get_by_text("Who is travelling?", exact=False).first.wait_for(timeout=10000)
+        await picker.wait_for(state="attached", timeout=20000)
+        await picker.scroll_into_view_if_needed(timeout=3000)
+        await picker.wait_for(state="visible", timeout=5000)
     except Exception:
         await page.screenshot(path=str(SHOTS/f"tailored-picker-{viewport}-MISSING.png"))
         return {"note":"tailor picker not present","viewport":viewport}
     await fill_date(page)
     await compose_2_15_8_0(page)
-    await wait_for(lambda: bool(fx.quote_calls), 6.0)
-    await page.wait_for_timeout(1200)
+    composition_committed = await wait_for_quote_composition(
+        page, {"adults": 2, "minorAges": [15, 8, 0]}, deadline=8.0
+    )
 
-    # summaryStops is populated by default from blueprint.core (all kept) —
-    # verify the summary row shows a non-zero count before clicking Reserve.
     summary_ok = False
     try:
         summary_text = await page.get_by_text(re.compile(r"Itinerary \(\d+ of \d+\)"), exact=False).first.inner_text(timeout=3000)
@@ -369,12 +421,40 @@ async def run_tailored(page: Page, viewport: str):
     if await reserve.count() == 0:
         return {"note":"no reserve button","viewport":viewport,"summaryPopulated":summary_ok}
     await reserve.scroll_into_view_if_needed()
+    # Wait for readiness to enable Reserve (mixedFamilyBlocked gate).
+    t0 = time.time()
+    reserve_enabled = False
+    for _ in range(80):
+        if not await reserve.is_disabled():
+            reserve_enabled = True
+            break
+        await page.wait_for_timeout(100)
+    reserve_enabled_after_ms = int((time.time() - t0) * 1000)
+    if not reserve_enabled:
+        # Capture readiness diagnostic via visible minor-row hints.
+        hints = await page.evaluate(
+            "() => Array.from(document.querySelectorAll('[id^=\"minor-age-\"]')).map(i => (i.parentElement?.parentElement?.innerText || '').trim())"
+        )
+        await page.screenshot(path=str(SHOTS/f"tailored-reserve-BLOCKED-{viewport}.png"))
+        return {"error":"reserve never enabled (mixedFamilyBlocked?)",
+                "viewport":viewport,
+                "summaryPopulated": summary_ok,
+                "compositionCommittedBeforeReserve": composition_committed,
+                "minorRowHints": hints,
+                "reserveEnabledAfterMs": reserve_enabled_after_ms}
     await reserve.click()
     try:
         await page.wait_for_selector("text=Final details before payment", timeout=5000)
+        # Fill required dialog fields (dialog has its own date input distinct from outer picker).
+        dlg = page.locator('[role="dialog"], form').last
         await page.locator('input[autocomplete="name"]').fill("Test User")
         await page.locator('input[autocomplete="email"]').fill("test@example.com")
         await page.locator('input[autocomplete="tel"]').fill("+351 900 000 000")
+        # Fill any date input inside the dialog (Tailored requires it).
+        date_inputs = page.locator('input[type="date"]')
+        for i in range(await date_inputs.count()):
+            try: await date_inputs.nth(i).fill("2099-06-01")
+            except Exception: pass
         pickup = page.locator('input[placeholder*="Hotel"]')
         if await pickup.count() > 0: await pickup.fill("Test Hotel, Lisbon")
         await page.screenshot(path=str(SHOTS/f"tailored-final-details-{viewport}.png"))
@@ -388,7 +468,7 @@ async def run_tailored(page: Page, viewport: str):
     await page.wait_for_timeout(1500)
     await page.screenshot(path=str(SHOTS/f"tailored-checkout-{viewport}.png"))
 
-    quote_body    = fx.quote_calls[0]["body"] if fx.quote_calls else None
+    quote_body    = fx.quote_calls[-1]["body"] if fx.quote_calls else None
     checkout_body = fx.checkout_calls[0]["body"] if fx.checkout_calls else None
     quote_resp_mix = build_quote_available((quote_body or {}).get("travellerComposition") or {"adults":2,"minorAges":[15,8,0]})["resolvedGuestMix"]
     labels_visible = {
@@ -398,11 +478,14 @@ async def run_tailored(page: Page, viewport: str):
     }
     return {
         "summaryPopulated": summary_ok,
+        "compositionCommittedBeforeReserve": composition_committed,
+        "reserveEnabledAfterMs": reserve_enabled_after_ms,
         "outgoingComposition": (quote_body or {}).get("travellerComposition"),
         "outgoingCompositionMatchesExpected":
             (quote_body or {}).get("travellerComposition") == {"adults":2,"minorAges":[15,8,0]},
         "labelsVisible": labels_visible,
         "totalParticipants": quote_resp_mix["totalParticipants"],
+        "quoteCalls": len(fx.quote_calls),
         "checkoutCalls": len(fx.checkout_calls),
         "checkoutHasQuoteToken": bool(checkout_body and checkout_body.get("quoteToken") == QUOTE_TOKEN),
     }
@@ -491,36 +574,134 @@ async def studio_pick_first_visible_choice(page: Page):
 
 async def run_studio(page: Page, viewport: str):
     fx.mode = "available"; fx.quote_calls.clear(); fx.checkout_calls.clear()
-    await page.goto(f"{BASE}/studio-v3", wait_until="domcontentloaded")
-    await page.wait_for_timeout(1200)
+    route = "/studio-v3"
+    await page.goto(f"{BASE}{route}", wait_until="domcontentloaded")
+    await page.wait_for_timeout(600)
 
-    # Intro (StudioV3Intro is a separate component before studio-v3-root exists).
-    # Step 1: name form → submit "Continue". Step 2: path cards → click Fast.
+    landed_url = page.url
+    if route not in landed_url:
+        await page.screenshot(path=str(SHOTS/f"studio-redirect-{viewport}.png"))
+        return {"error":"unexpected redirect","route":route,"landedUrl":landed_url}
+
+    # StudioV3Intro is rendered inside StudioV3 with data-testid="studio-v3-root"
+    # and data-phase="intro". Walk through: Begin -> Skip -> "Compose it quickly".
+    async def click_by_text(pat, timeout=2000):
+        try:
+            btn = page.get_by_role("button", name=re.compile(pat, re.I)).first
+            if await btn.count() and await btn.is_visible():
+                await btn.click(timeout=timeout)
+                return True
+        except Exception: pass
+        try:
+            el = page.get_by_text(re.compile(pat, re.I)).first
+            if await el.count() and await el.is_visible():
+                await el.click(timeout=timeout)
+                return True
+        except Exception: pass
+        return False
+
+    async def click_cta(sel, fallback_pat=None):
+        # Try native click first; if the page rejects (overlay/hydration race),
+        # fall back to force + JS dispatch. Studio intro sometimes needs a
+        # bare-metal click to bypass a transient parallax overlay.
+        try:
+            loc = page.locator(sel).first
+            if await loc.count():
+                try:
+                    await loc.click(timeout=2500)
+                except Exception:
+                    await loc.click(timeout=2500, force=True)
+                return True
+        except Exception: pass
+        try:
+            ok = await page.evaluate(
+                "(s) => { const el=document.querySelector(s); if(!el) return false; el.click(); return true; }",
+                sel,
+            )
+            if ok:
+                return True
+        except Exception: pass
+        if fallback_pat:
+            return await click_by_text(fallback_pat)
+        return False
+
+    intro_steps = []
+
+    # Step 1: Begin — target the data attribute directly.
+    clicked_begin = await click_cta('[data-phase-cta="intro-begin"]', r"^Begin$")
     try:
-        cont = page.get_by_role("button", name=re.compile(r"^Continue$", re.I)).first
-        if await cont.count() and await cont.is_visible():
-            await cont.click(timeout=1500)
-            await page.wait_for_timeout(400)
-    except Exception: pass
+        await page.locator('input[autocomplete="given-name"]').first.wait_for(
+            state="visible", timeout=5000
+        )
+    except Exception:
+        pass
+    intro_steps.append({"step":"begin","clicked":clicked_begin})
+
+    # Step 2: Skip the name form (there's no data-cta on Skip; text is stable).
+    clicked_skip = await click_by_text(r"^Skip$")
     try:
-        fast = page.get_by_text(re.compile(r"Compose it quickly", re.I)).first
-        if await fast.count() and await fast.is_visible():
-            await fast.click(timeout=1500)
-            await page.wait_for_timeout(600)
-    except Exception: pass
+        await page.locator('[data-testid="studio-v3-intro-path"]').first.wait_for(
+            state="visible", timeout=5000
+        )
+    except Exception:
+        pass
+    intro_steps.append({"step":"skip","clicked":clicked_skip})
 
+    # Step 3: Choose the fast path card ("Compose it quickly").
+    clicked_fast = False
+    try:
+        card = page.locator('[data-phase-cta="intro-path"]').filter(
+            has_text=re.compile(r"Compose it quickly", re.I)
+        ).first
+        if await card.count():
+            await card.click(timeout=2500)
+            clicked_fast = True
+    except Exception:
+        pass
+    if not clicked_fast:
+        clicked_fast = await click_by_text(r"Compose it quickly")
+    intro_steps.append({"step":"fast","clicked":clicked_fast})
+    await page.wait_for_timeout(700)
 
-    phase_sequence = []
-    snapshots = {"storyboard": None, "final": None, "checkout": None}
-
-    # Walk up to N phases; at each phase, capture snapshot if we're on
-    # storyboard / confirmation / checkoutSummary, otherwise pick a first
-    # visible choice + advance. Bail after 40 iterations.
-    for i in range(40):
+    # Wait for phase to leave "intro". studio-v3-root exists during intro too,
+    # so gate on data-phase not being "intro".
+    phase = "intro"
+    for _ in range(80):
         phase = await page.evaluate(
             "() => { const r=document.querySelector('[data-testid=\"studio-v3-root\"]'); return r?r.getAttribute('data-phase'):null; }"
         )
-        phase_sequence.append(phase or "?")
+        if phase and phase != "intro":
+            break
+        await page.wait_for_timeout(100)
+
+    root_mounted = phase not in (None, "intro")
+    if not root_mounted:
+        headings = await page.evaluate(
+            "() => Array.from(document.querySelectorAll('h1,h2,h3')).slice(0,10).map(e => (e.innerText||'').trim())"
+        )
+        body_excerpt = await page.evaluate(
+            "() => (document.body.innerText||'').slice(0, 500)"
+        )
+        title = await page.title()
+        await page.screenshot(path=str(SHOTS/f"studio-root-MISSING-{viewport}.png"))
+        return {
+            "error":"root-mount-failed (still on intro)",
+            "route":route,"landedUrl":landed_url,"phase":phase,
+            "introSteps":intro_steps,
+            "title":title,"headings":headings,"bodyExcerpt":body_excerpt,
+        }
+
+    phase_sequence = [phase]
+    snapshots = {"storyboard": None, "final": None, "checkout": None}
+
+    for i in range(40):
+        cur_phase = await page.evaluate(
+            "() => { const r=document.querySelector('[data-testid=\"studio-v3-root\"]'); return r?r.getAttribute('data-phase'):null; }"
+        )
+        if cur_phase != phase_sequence[-1]:
+            phase_sequence.append(cur_phase or "?")
+        phase = cur_phase
+
         if phase == "storyboard" and not snapshots["storyboard"]:
             snapshots["storyboard"] = await studio_snapshot(page, "storyboard")
             await page.screenshot(path=str(SHOTS/f"studio-storyboard-{viewport}.png"))
@@ -530,7 +711,6 @@ async def run_studio(page: Page, viewport: str):
         elif phase == "checkoutSummary" and not snapshots["checkout"]:
             snapshots["checkout"] = await studio_snapshot(page, "checkout")
             await page.screenshot(path=str(SHOTS/f"studio-checkout-{viewport}.png"))
-            # Trigger Reserve
             try:
                 reserve = page.locator('[data-testid="studio-v3-checkout-summary-reserve"]').first
                 if await reserve.count() and not await reserve.is_disabled():
@@ -540,15 +720,12 @@ async def run_studio(page: Page, viewport: str):
                 pass
             break
 
-        # Try to advance
         advanced = await studio_advance_once(page)
         if not advanced or advanced == phase:
-            # Need to pick a choice first, then re-try advance
             picked = await studio_pick_first_visible_choice(page)
             if picked:
                 await studio_advance_once(page)
             else:
-                # Nothing to click — dead end. Screenshot and break.
                 await page.screenshot(path=str(SHOTS/f"studio-deadend-{viewport}-phase-{phase or 'unknown'}.png"))
                 break
 
@@ -557,6 +734,10 @@ async def run_studio(page: Page, viewport: str):
         and snapshots["storyboard"] == snapshots["final"] == snapshots["checkout"]
     )
     return {
+        "route":route,
+        "landedUrl":landed_url,
+        "rootMounted":root_mounted,
+        "introSteps":intro_steps,
         "phaseSequence": phase_sequence,
         "snapshots": snapshots,
         "equal": equal,
