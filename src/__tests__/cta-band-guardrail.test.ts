@@ -91,6 +91,12 @@ const DUPLICATE_BAND_EXEMPTIONS: { route: string; label: string; reason: string 
       "Proposals is human-only and the hero CTA + closing CTA are both Talk to a Local by design (no self-serve path). Tracked: align with corporate consolidation.",
   },
   {
+    route: "proposal-in-portugal.tsx",
+    label: "Talk to a Local",
+    reason:
+      "Proposal-in-Portugal is human-only (no Studio path) — the hero + closing bands both surface Talk to a Local so the primary conversion action is always in reach on this long-form intent page. Tracked: align with corporate/proposals consolidation.",
+  },
+  {
     route: "tours.$tourId.tsx",
     label: "Reserve instantly",
     reason:
