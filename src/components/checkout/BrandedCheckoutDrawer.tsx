@@ -133,11 +133,17 @@ export function BrandedCheckoutDrawer({
     if (open) prewarmStripeScript();
   }, [open]);
 
+  const isMobile = useIsMobile();
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
-        side="right"
-        className="w-full sm:max-w-[560px] p-0 bg-[color:var(--ivory)] border-l border-[color:var(--border)] flex flex-col gap-0 [&>button.absolute]:hidden"
+        side={isMobile ? "bottom" : "right"}
+        className={
+          isMobile
+            ? "w-full h-[94dvh] max-h-[94dvh] p-0 bg-[color:var(--ivory)] border-t border-[color:var(--border)] flex flex-col gap-0 rounded-t-2xl [&>button.absolute]:hidden"
+            : "w-full sm:max-w-[560px] p-0 bg-[color:var(--ivory)] border-l border-[color:var(--border)] flex flex-col gap-0 [&>button.absolute]:hidden"
+        }
         data-checkout="embedded"
       >
         {/* Header */}
