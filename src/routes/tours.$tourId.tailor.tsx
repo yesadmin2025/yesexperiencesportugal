@@ -1354,7 +1354,7 @@ function TailorPage() {
                   </div>
 
                   <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] inline-flex items-center gap-1.5">
-                    <Check size={12} /> Confirmation status: ready
+                    <Check size={12} /> Confirmation status: {date ? "ready" : "choose a date"}
                   </p>
                 </div>
 
@@ -1365,8 +1365,10 @@ function TailorPage() {
                     onClick={() => setDetailsOpen(true)}
                     disabled={
                       checkoutPending ||
+                      !date ||
                       summaryStops.length === 0 ||
-                      (!!date && (!quoteReadyForCurrentSelection || liveQuote.loading))
+                      !quoteReadyForCurrentSelection ||
+                      liveQuote.loading
                     }
                     className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
                   >
