@@ -475,11 +475,16 @@
 }
 
 @layer components {
-  /* Native mobile gutters: 20px edge padding, full width.
-     Tablet/desktop reintroduce a centered max width. */
+  /* Native mobile gutters: 16px on tiny phones, 20px default,
+     tablet/desktop reintroduce a centered max width. */
   .container-x {
     @apply w-full max-w-full mx-auto;
-    padding-inline: 20px;
+    padding-inline: 16px;
+  }
+  @media (min-width: 400px) {
+    .container-x {
+      padding-inline: 20px;
+    }
   }
   @media (min-width: 640px) {
     .container-x {
@@ -492,6 +497,19 @@
       max-width: 1240px;
     }
   }
+  /* Global horizontal-overflow guard — no descendant may widen the viewport. */
+  html,
+  body {
+    overflow-x: clip;
+  }
+  /* CTA row: stack full-width on mobile, inline on ≥sm. Children get w-full sm:w-auto. */
+  .cta-stack {
+    @apply grid grid-cols-1 gap-2.5 sm:flex sm:flex-wrap sm:items-center;
+  }
+  .cta-stack > * {
+    @apply w-full sm:w-auto min-w-0;
+  }
+
   /* Prevent word-by-word breaks on narrow mobile columns. */
   .container-x h1,
   .container-x h2,
