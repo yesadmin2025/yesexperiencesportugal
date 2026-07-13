@@ -365,9 +365,9 @@ function TailorPage() {
   const summaryTotal = useMemo(() => {
     if (!blueprint) return (tour.stops ?? []).length;
     const coreKept = blueprint.core.filter((s) => !skippedCore.has(s.id)).length;
-    const choiceTarget = blueprint.choice?.pickCount ?? 0;
+    const choiceTarget = Math.max(blueprint.choice?.pickCount ?? 0, choiceSelected.size);
     return coreKept + choiceTarget + optionalSelected.size;
-  }, [blueprint, tour.stops, skippedCore, optionalSelected]);
+  }, [blueprint, tour.stops, skippedCore, choiceSelected, optionalSelected]);
 
   const estimatedHours = useMemo(() => {
     const base = parseHours(tour.durationHours);
