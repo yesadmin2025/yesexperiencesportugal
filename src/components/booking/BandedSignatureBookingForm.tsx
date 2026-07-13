@@ -164,6 +164,36 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
   const quotePending = quote.loading;
   const unavailableMsg = quote.unavailable?.message ?? quote.error;
 
+  // Hide the site-wide WhatsApp FAB while the Reserve CTA is on screen so
+  // the floating button never overlaps the primary action. Uses the existing
+  // `whatsapp-support:set-hidden` event contract. ALWAYS re-shows on cleanup
+  // (element leaves viewport, component unmounts, observer disconnected) so
+  // the button never stays hidden after navigating away.
+  const reserveCtaRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = reserveCtaRef.current;
+    if (!el || typeof window === "undefined" || typeof IntersectionObserver === "undefined") {
+      return;
+    }
+    const setHidden = (hidden: boolean) => {
+      window.dispatchEvent(
+        new CustomEvent("whatsapp-support:set-hidden", { detail: { hidden } }),
+      );
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) setHidden(entry.isIntersecting);
+      },
+      { threshold: 0.01 },
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      setHidden(false);
+    };
+  }, []);
+
+
   return (
     <div className="border border-[color:var(--border)] bg-[color:var(--card)] p-5 sm:p-7">
       <Eyebrow>Reserve this day</Eyebrow>
