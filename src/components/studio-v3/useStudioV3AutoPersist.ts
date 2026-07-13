@@ -182,5 +182,14 @@ export function useStudioV3AutoPersist({
     return () => window.clearTimeout(timer);
   }, [state, selectedAddOnIds, selectedAddOnItems, selectedAddOnsTotalEur]);
 
-  return { restored, clearDraft: clearStudioV3Draft };
+  const saveNow = () =>
+    saveStudioV3DraftNow({
+      state,
+      tourId: state.tourId ?? null,
+      addOnIds: selectedAddOnIds,
+      addOnItems: selectedAddOnItems,
+      addOnsTotalEur: selectedAddOnsTotalEur,
+    });
+
+  return { restored, clearDraft: clearStudioV3Draft, saveNow };
 }
