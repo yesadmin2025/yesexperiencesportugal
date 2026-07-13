@@ -893,6 +893,9 @@ export function StudioV3() {
         },
       });
       toast.success("Signature saved to your journey.");
+      // Server-side save is now the source of truth — clear the local draft
+      // so returning via a fresh URL doesn't compete with the saved copy.
+      clearStudioV3Draft();
     } catch (e) {
       console.error("[studio-v3 save-signature]", e);
       toast.error("Could not save right now — please try again.");
