@@ -1,51 +1,83 @@
-## What's wrong
+## Goal
 
-1. **Southwest Vicentine Coast is missing from the backend.** It exists in code (`signatureTours.ts`, `signatureRegistry.ts`, `signatureToursViator.ts`) but there is **no row** in `imported_tours` and **no row** in `tour_price_tiers`. Result: `booking-quote` cannot produce a manual quote for it → the booking widget on `/tours/southwest-vicentine-coast` returns `unavailable` and the checkout button never lights up. Nine of the ten Signature tours are backed; this one slipped through.
+Prove — and where needed fix — that a mobile guest (393×588, DPR 3) can complete a Stripe sandbox checkout on all three surfaces without dead ends, layout breaks, or stale spinners:
 
-2. **Checkout smoothness across Studio / Signature / Tailor.** All three surfaces already funnel through the same edge function (`create-signature-checkout`) — that half is unified. But because Southwest has no tiers row, the manual short-circuit in `booking-quote` never fires for it, so Studio recommendations and Tailor adjustments that resolve to Southwest also fail silently. Same failure mode, three entry points.
+- **Signature** — `/tours/:tourId` → `BandedSignatureBookingForm` → `BrandedCheckoutDrawer`
+- **Tailored** — `/tours/:tourId/tailor` → `create-signature-checkout`
+- **Builder / Studio** — `/studio-v3` (`GuestDetailsStep` → `create-signature-checkout` in booking-quote mode)
 
-## Fix
+Manual pricing is already in the database for all 11 Signature tours, so this pass is about the *surface*, not the pricing engine.
 
-### 1. Add Southwest to the database (insert, no schema change)
+## Method (one shared harness, three runs)
 
-Use the Viator tiers already documented in `src/data/signatureToursViator.ts` (line 1067–1068):
+For each surface, a Playwright script on mobile viewport 393×852 executes the same 7-step arc and screenshots each step:
 
-```
-Per-pax EUR by group size: 2-3 → €359, 4-6 → €299, 7-8 → €239. Min 2 pax.
-```
+1. Land on the entry route.
+2. Pick a future date + 2 adults + 1 child (age 8).
+3. Confirm the price line matches the quote (adult ×2 + child at 50%).
+4. Fill guest details (name, email, phone, pickup).
+5. Click the primary CTA → drawer opens with Stripe Embedded Checkout.
+6. Fill Stripe test card `4242 4242 4242 4242` inside the drawer.
+7. Assert redirect to `/booking-confirmed` with a `session_id`.
 
-Two inserts:
+At each step the script captures: screenshot, console errors, failed network requests, and CTA `disabled` state. Anything red → logged into the findings table below.
 
-- **`imported_tours`** — one row mirroring the shape of the other 10 (id `southwest-vicentine-coast`, title, region `alentejo`, region_label `Southwest Alentejo · Costa Vicentina`, duration `fullday`, duration_hours `9–10`, price_from `239`, theme `Coastal`, blurb/stops/highlights copied from `signatureTours.ts`, `image_url` = the first gallery entry). Booking-quote reads adult tiers from `tour_price_tiers`; `imported_tours` is what unlocks visibility in admin/reporting and keeps the tour count consistent (10 → 11, matching the copy in the previous work).
-- **`tour_price_tiers`** — `tour_id = 'southwest-vicentine-coast'`, `tiers = {"2":359,"3":359,"4":299,"5":299,"6":299,"7":239,"8":239}`, `banded_pricing_enabled = false`, `pricing_mode = NULL` (same shape as `arrabida-boat`).
+## What we're specifically checking (mobile-first)
 
-The existing manual-pricing branch in `booking-quote` (Adult 100 / Youth 80 / Child 50 / Infant 0) will then work for Southwest with no code change. `create-signature-checkout` also needs no change — it already trusts the signed quote token.
+### Shared across all three
+- CTA is reachable without horizontal scroll and stays ≥44px tall.
+- CTA enables the moment `booking-quote` returns `available` (no stuck spinner tied to a stale `readiness` gate).
+- `BrandedCheckoutDrawer` opens as a bottom-anchored sheet on mobile (currently `side="right"` + `sm:max-w-[560px]` — verify it doesn't clip on 393px width).
+- The summary card (image + tour + date + guests + total) stays legible and doesn't push Stripe's iframe below the fold before the guest sees the total.
+- Stripe iframe scrolls independently of the summary; no double scrollbars.
+- Error copy on `booking-quote` failure reads "This date isn't available — try another" (not generic "Something went wrong").
+- Close (X) button is inside the safe area on iOS notch devices.
 
-### 2. Checkout smoothness pass (all three surfaces)
+### Signature-specific
+- Date + pax pickers don't overflow the card on 393px.
+- Add-on chips wrap cleanly (no horizontal scroll).
+- "Instant confirmation" copy present, no Bókun readiness gate visible.
 
-Single-surface audit and light fixes only — no re-architecture:
+### Tailored-specific
+- Adjustments panel scrolls independently; sticky price bar stays visible.
+- Tailored `guestDetails` payload reaches `create-signature-checkout` with the adjustments applied to the total.
 
-- **Signature** (`/tours/:id#book`, `BandedSignatureBookingForm`):
-  - Confirm the "Instant confirmation" copy + no Bókun readiness gate is live for all 11 tours.
-  - Verify the CTA is enabled the moment a valid quote returns (no spinner stuck on stale `readiness`).
-- **Tailor** (`/tours/:id/tailor`, sends to `create-signature-checkout`):
-  - Same quote path; confirm the tailored add-ons/adjustments pass through `guestDetails` cleanly and the price line matches the quote token.
-- **Studio v3** (`/studio` → recommendation → checkout, uses `create-signature-checkout` in `mode: "quote"` then `mode: "create-session"`):
-  - Confirm the recommended tour resolves through `signatureRegistry` (Southwest now included) and the quote → session hop shows no intermediate error toast.
-- **One shared polish item** if any surface shows it: replace any generic "Something went wrong" on a `booking-quote` failure with a specific "This date isn't available — try another" (manual mode: any future date is available, so this should now be near-zero occurrence).
+### Builder / Studio v3-specific
+- `GuestDetailsStep` footer CTA is above the mobile home indicator, not hidden behind it.
+- Quote → session hop shows no intermediate error toast between the two edge-function calls.
+- Selected Studio moments are reflected in the drawer's summary.
 
-Builder checkout (`create-builder-checkout`) is a different product (custom-built itineraries) and is **out of scope** for this pass — say so explicitly in the response so you know we didn't touch it.
+## Findings & fixes
 
-### 3. Verification (browser + edge)
+The plan is: **run the harness first**, then apply only the fixes the harness proves necessary. Likely candidates (based on the code already in context) that I'll confirm or dismiss during the run:
 
-- `curl` `booking-quote` for `southwest-vicentine-coast` with `{ adults: 2, minorAges: [] }` → expect €718 total, `available`, `pricing_source: "manual_viator_tiers"`, zero Bókun HTTP calls.
-- Same for `{ adults: 2, minorAges: [8, 0] }` → expect €359 + €359 + €179.50 + €0 = €897.50.
-- Playwright: load `/tours/southwest-vicentine-coast#book`, pick 2 adults + a future date, click through to Stripe sandbox → confirm PaymentIntent id + `pricing_source` metadata.
-- Playwright: `/tours/arrabida-boat/tailor` → quote → Stripe.
-- Playwright: `/studio` → complete a short session that resolves to Southwest → quote → Stripe.
-- Confirm no `no_commercial_mapping` errors in edge logs across the three runs.
+1. **Drawer form factor on mobile.** `BrandedCheckoutDrawer` uses `side="right"` on every breakpoint. On 393px this covers the full width but animates from the right, which is jarring vs. a bottom sheet. If the harness shows the animation or the close button placement fails, switch to `side="bottom"` at `<sm` with `h-[92dvh]` and keep `side="right"` from `sm:` up.
+2. **Summary card height eating the Stripe iframe.** If the total sits below the fold on 393×588, collapse the beats/add-ons into an accordion on `<sm` so the total + Stripe iframe are visible without scroll.
+3. **CTA enable timing.** If any surface shows a spinner after `booking-quote` returns `available`, remove the stale readiness gate on that surface (Signature already lists this as done; Tailored/Studio are the risk).
+4. **Generic error copy.** Replace any "Something went wrong" toast on `booking-quote` failure with the specific "This date isn't available — try another" copy.
+5. **iOS safe-area.** Add `pb-[env(safe-area-inset-bottom)]` to the drawer trust footer and Studio guest-details footer if the harness shows either clipped.
 
-## Files touched
+Anything unexpected the harness surfaces (broken selectors, missing fields, network 4xx/5xx) becomes an additional item in the report before I touch code.
 
-- **DB inserts** (via `supabase--insert`): `public.imported_tours`, `public.tour_price_tiers` — one row each.
-- **Code**: none expected. Any polish item found during the smoothness pass is a small copy/state edit in the specific surface's component and will be listed in the final report.
+## Out of scope
+
+- `create-builder-checkout` (custom-built multi-day itineraries) — different product, not one of the three surfaces the user named.
+- Corporate / Proposals — human-handled, not Stripe.
+- Live-mode Stripe. Sandbox only.
+- Any pricing-engine changes; manual pricing is already correct in the DB.
+
+## Deliverable
+
+A single report with:
+- Per-surface screenshot strip (7 steps × 3 surfaces).
+- Pass/fail table for each check above.
+- The exact list of code edits applied (files + reason), or "no fix needed" per item.
+- A final Stripe sandbox `session_id` proving end-to-end completion on each surface.
+
+Files likely touched (only if the harness proves it):
+- `src/components/checkout/BrandedCheckoutDrawer.tsx` (mobile sheet + safe area).
+- `src/components/booking/BandedSignatureBookingForm.tsx` (error copy).
+- `src/routes/tours.$tourId.tailor.tsx` (error copy, sticky bar).
+- `src/components/studio-v3/GuestDetailsStep.tsx` (footer safe area, error copy).
+
+No DB migrations. No edge-function changes expected.
