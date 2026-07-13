@@ -201,7 +201,7 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
         Book the Signature, <SectionTitle.Em>as designed</SectionTitle.Em>
       </SectionTitle>
       <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
-        Live availability and pricing — categories and rates confirmed against Bókun in real time.
+        Instant confirmation — final price locked at reservation.
       </p>
       <div className="mt-3">
         <BokunRolloutBadge readiness={readiness} tourId={tour.id} />
