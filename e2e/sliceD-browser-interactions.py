@@ -265,9 +265,13 @@ async def set_minor_age(page: Page, idx: int, age: int):
     el = page.locator(f"#minor-age-{idx}").first
     await el.wait_for(state="visible", timeout=8000)
     await el.scroll_into_view_if_needed(timeout=1000)
-    await el.fill(str(age))
-    try: await el.blur()
-    except Exception: pass
+    # Clear then type; blur via Tab so React's controlled onChange commits.
+    await el.click()
+    await page.keyboard.press("Control+A")
+    await page.keyboard.press("Delete")
+    await el.type(str(age), delay=20)
+    await page.keyboard.press("Tab")
+    await page.wait_for_timeout(80)
 
 async def fill_date(page: Page):
     d = page.locator('input[type="date"]').first
@@ -275,8 +279,19 @@ async def fill_date(page: Page):
     try: await d.blur()
     except Exception: pass
 
+async def wait_for_minor_inputs(page: Page, expected):
+    """Poll until visible age inputs equal `expected` (list of ints)."""
+    exp = [str(a) for a in expected]
+    for _ in range(60):
+        vals = await page.evaluate(
+            "() => Array.from(document.querySelectorAll('input[id^=\"minor-age-\"]')).map(i => i.value)"
+        )
+        if vals == exp:
+            return True
+        await page.wait_for_timeout(100)
+    return False
+
 async def compose_2_15_8_0(page: Page):
-    # Ensure picker in view (Tailored has a long page; picker is deep).
     try:
         await page.get_by_text("Who is travelling?", exact=False).first.scroll_into_view_if_needed(timeout=2000)
     except Exception:
@@ -285,11 +300,21 @@ async def compose_2_15_8_0(page: Page):
     await click_while_enabled(page, re.compile(r"Increase Adults", re.I), 1)   # -> 2 (min 1)
     await click_while_enabled(page, re.compile(r"Decrease Travellers aged 0", re.I), 20)
     await click_while_enabled(page, re.compile(r"Increase Travellers aged 0", re.I), 3)
-    # Wait for all 3 minor-age fields to be present before typing.
     await page.wait_for_function("() => document.querySelectorAll('input[id^=\"minor-age-\"]').length >= 3", timeout=8000)
     await set_minor_age(page, 0, 15)
     await set_minor_age(page, 1, 8)
     await set_minor_age(page, 2, 0)
+    await wait_for_minor_inputs(page, [15, 8, 0])
+
+async def wait_for_quote_composition(page: Page, expected, deadline=6.0):
+    t0 = time.time()
+    while time.time() - t0 < deadline:
+        if fx.quote_calls:
+            last = fx.quote_calls[-1]["body"].get("travellerComposition")
+            if last == expected:
+                return True
+        await asyncio.sleep(0.1)
+    return False
 
 async def wait_for(cond, deadline=6.0, step=0.1):
     t0 = time.time()
