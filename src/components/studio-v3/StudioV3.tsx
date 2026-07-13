@@ -242,7 +242,7 @@ import {
   type StudioV3Phase,
   type StudioV3State,
 } from "./types";
-import { useStudioV3AutoPersist, clearStudioV3Draft, saveStudioV3DraftNow } from "./useStudioV3AutoPersist";
+import { useStudioV3AutoPersist, clearStudioV3Draft } from "./useStudioV3AutoPersist";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
