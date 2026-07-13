@@ -73,9 +73,9 @@ describe("StudioV3ProgressStepper — visual contract", () => {
     const labelNodes = nav.querySelectorAll<HTMLSpanElement>("span:not([aria-hidden])");
     for (const node of Array.from(labelNodes)) {
       expect(node.className).toContain("uppercase");
-      expect(node.className).toContain("tracking-[0.22em]");
+      expect(node.className).toContain("tracking-[0.16em]");
       expect(node.className).toContain("font-semibold");
-      expect(node.style.fontFamily).toBe("var(--font-display)");
+      expect(node.style.fontFamily).toBe("var(--font-editorial)");
     }
   });
 
