@@ -425,27 +425,13 @@ function TailorPage() {
     if (checkoutPending) return;
 
     setCheckoutPending(true);
-    // Open the drawer immediately so a branded skeleton appears while
-    // the edge function is in flight — avoids "blank screen" feel.
+    // Close the details dialog immediately; the drawer only opens once we
+    // have a truthful server-side total, so the guest never sees a stale
+    // price flash before Stripe corrects it.
+    setDetailsOpen(false);
     const metaForSummary = getViatorMeta(tour.id);
     const stopLabels = keptStops.map((s: TourStop) => s.label);
     [...added].forEach((label) => stopLabels.push(label));
-    setCheckoutSummary({
-      tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
-      region: tour.region,
-      durationHours: tour.durationHours,
-      guests: details.guests,
-      dateExact: details.tourDate || null,
-      startTime: details.startTime ?? null,
-      pickupLabel: details.pickupAddress || pickup,
-      pricePerPaxEur: estimatedPrice,
-      totalEur: Math.round(estimatedPrice * details.guests),
-      heroSrc: metaForSummary?.localGallery?.[0]?.src ?? metaForSummary?.gallery?.[0] ?? tour.img,
-      beats: stopLabels.slice(0, 4),
-      flowLabel: "Tailored",
-    });
-    setDetailsOpen(false);
-    setCheckoutOpen(true);
     // GA4 add_to_cart + begin_checkout — Tailored reserve intent.
     try {
       gaAddToCartSignature({ tour, guests: details.guests, perPaxEur: estimatedPrice });
@@ -488,6 +474,30 @@ function TailorPage() {
       if (!isQuoteAvailable(quoteResp)) {
         throw new Error(quoteResp.message || `quote_unavailable:${quoteResp.reason}`);
       }
+      // Truthful summary derived from the server quote — this is what
+      // Stripe will charge, so the drawer total must match to the cent.
+      const totalParticipantsFromQuote =
+        quoteResp.resolvedGuestMix?.totalParticipants ?? details.guests;
+      const truePerPax =
+        totalParticipantsFromQuote > 0
+          ? Math.round(quoteResp.finalTotalEur / totalParticipantsFromQuote)
+          : estimatedPrice;
+      setCheckoutSummary({
+        tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
+        region: tour.region,
+        durationHours: tour.durationHours,
+        guests: details.guests,
+        dateExact: details.tourDate || null,
+        startTime: details.startTime ?? null,
+        pickupLabel: details.pickupAddress || pickup,
+        pricePerPaxEur: truePerPax,
+        totalEur: quoteResp.finalTotalEur,
+        heroSrc:
+          metaForSummary?.localGallery?.[0]?.src ?? metaForSummary?.gallery?.[0] ?? tour.img,
+        beats: stopLabels.slice(0, 4),
+        flowLabel: "Tailored",
+      });
+      setCheckoutOpen(true);
       const resp = await createBookingQuoteSession({
         quoteToken: quoteResp.quoteToken,
         environment: getStripeEnvironment(),
@@ -510,18 +520,22 @@ function TailorPage() {
           tier: "tailored",
           itemCategory: "Signature",
         });
-        item.price = estimatedPrice;
+        item.price = truePerPax;
         gaAddPaymentInfo({
           paymentType: "stripe",
           items: [item],
-          valueEur: Math.round(estimatedPrice * details.guests),
+          valueEur: quoteResp.finalTotalEur,
         });
       } catch {
         /* silent */
       }
     } catch (e) {
       console.error("Tailor checkout failed", e);
-      toast.error("Checkout unavailable right now. Please try again in a moment.");
+      toast.error(
+        e instanceof Error && e.message
+          ? e.message
+          : "Checkout unavailable right now. Please try again in a moment.",
+      );
       setCheckoutOpen(false);
     } finally {
       setCheckoutPending(false);
