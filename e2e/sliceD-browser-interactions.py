@@ -342,15 +342,18 @@ async def compose_2_15_8_0(page: Page):
         pass
     await set_adults_to(page, 2)
     await set_minor_rows_to(page, 3)
-    await page.wait_for_function(
-        "() => document.querySelectorAll('input[id^=\"minor-age-\"]').length === 3",
-        timeout=8000,
-    )
+    got = await read_minor_count(page)
+    if got != 3:
+        # Diagnostic: capture screenshot and log; retry once by nudging.
+        await page.screenshot(path=str(SHOTS/f"compose-minor-rows-DRIFT-{got}-{int(time.time())}.png"))
+        await set_minor_rows_to(page, 3)
+        got = await read_minor_count(page)
+        if got != 3:
+            raise RuntimeError(f"could not reach 3 minor rows, got {got}")
     await set_minor_age(page, 0, 15)
     await set_minor_age(page, 1, 8)
     await set_minor_age(page, 2, 0)
     await wait_for_minor_inputs(page, [15, 8, 0])
-    # Final assertion: adults still == 2 (guard against drift).
     final_adults = await read_adults(page)
     if final_adults != 2:
         await set_adults_to(page, 2)
