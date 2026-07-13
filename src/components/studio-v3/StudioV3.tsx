@@ -3913,13 +3913,13 @@ export function StoryboardHandoff({
               className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
-              <span style={{ color: "var(--gold)" }}>—</span> Refine the moments
+              <span style={{ color: "var(--gold)" }}>—</span> Refine your Signature
             </p>
             <p
-              className="mt-2 mb-6 sm:mb-5 text-center text-[12px] leading-[1.55] max-w-[300px] sm:max-w-[320px] mx-auto"
+              className="mt-2 mb-6 sm:mb-5 text-center text-[12px] leading-[1.55] max-w-[320px] sm:max-w-[340px] mx-auto"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
             >
-              Reorder, swap or remove a moment. The route stays inside the same region.
+              This is your draft. Remove what doesn't fit or swap for another moment in the same region.
             </p>
             <ol className="space-y-3 sm:space-y-3">
               {editedStops.map((s, i) => {
