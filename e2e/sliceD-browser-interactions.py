@@ -492,7 +492,23 @@ async def studio_pick_first_visible_choice(page: Page):
 async def run_studio(page: Page, viewport: str):
     fx.mode = "available"; fx.quote_calls.clear(); fx.checkout_calls.clear()
     await page.goto(f"{BASE}/studio-v3", wait_until="domcontentloaded")
-    await page.wait_for_timeout(1500)
+    await page.wait_for_timeout(1200)
+
+    # Intro (StudioV3Intro is a separate component before studio-v3-root exists).
+    # Step 1: name form → submit "Continue". Step 2: path cards → click Fast.
+    try:
+        cont = page.get_by_role("button", name=re.compile(r"^Continue$", re.I)).first
+        if await cont.count() and await cont.is_visible():
+            await cont.click(timeout=1500)
+            await page.wait_for_timeout(400)
+    except Exception: pass
+    try:
+        fast = page.get_by_text(re.compile(r"Compose it quickly", re.I)).first
+        if await fast.count() and await fast.is_visible():
+            await fast.click(timeout=1500)
+            await page.wait_for_timeout(600)
+    except Exception: pass
+
 
     phase_sequence = []
     snapshots = {"storyboard": None, "final": None, "checkout": None}
