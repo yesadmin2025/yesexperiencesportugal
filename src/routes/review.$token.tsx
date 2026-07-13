@@ -20,15 +20,16 @@ export const Route = createFileRoute("/review/$token")({
   }),
   errorComponent: () => (
     <div className="max-w-xl mx-auto py-20 px-6 text-center text-[color:var(--charcoal)]">
-      <h1 className="text-2xl font-medium">Something went wrong</h1>
+      <h2 className="text-2xl font-medium">Something went wrong</h2>
       <p className="mt-3 text-[color:var(--charcoal)]/70">Please use the link from your email.</p>
     </div>
   ),
   notFoundComponent: () => (
     <div className="max-w-xl mx-auto py-20 px-6 text-center text-[color:var(--charcoal)]">
-      <h1 className="text-2xl font-medium">Link not found</h1>
+      <h2 className="text-2xl font-medium">Link not found</h2>
     </div>
   ),
+
 });
 
 function ReviewSubmissionPage() {
