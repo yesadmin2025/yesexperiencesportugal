@@ -456,7 +456,7 @@ async def run_tailored(page: Page, viewport: str):
     await page.wait_for_timeout(1500)
     await page.screenshot(path=str(SHOTS/f"tailored-checkout-{viewport}.png"))
 
-    quote_body    = fx.quote_calls[0]["body"] if fx.quote_calls else None
+    quote_body    = fx.quote_calls[-1]["body"] if fx.quote_calls else None
     checkout_body = fx.checkout_calls[0]["body"] if fx.checkout_calls else None
     quote_resp_mix = build_quote_available((quote_body or {}).get("travellerComposition") or {"adults":2,"minorAges":[15,8,0]})["resolvedGuestMix"]
     labels_visible = {
@@ -466,11 +466,14 @@ async def run_tailored(page: Page, viewport: str):
     }
     return {
         "summaryPopulated": summary_ok,
+        "compositionCommittedBeforeReserve": composition_committed,
+        "reserveEnabledAfterMs": reserve_enabled_after_ms,
         "outgoingComposition": (quote_body or {}).get("travellerComposition"),
         "outgoingCompositionMatchesExpected":
             (quote_body or {}).get("travellerComposition") == {"adults":2,"minorAges":[15,8,0]},
         "labelsVisible": labels_visible,
         "totalParticipants": quote_resp_mix["totalParticipants"],
+        "quoteCalls": len(fx.quote_calls),
         "checkoutCalls": len(fx.checkout_calls),
         "checkoutHasQuoteToken": bool(checkout_body and checkout_body.get("quoteToken") == QUOTE_TOKEN),
     }
