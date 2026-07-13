@@ -6,7 +6,7 @@
 // `mode: "booking-quote-create-session"`) for checkout. Server is the sole
 // price authority — nothing in this component computes a price locally.
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Calendar, Sparkles, Lock, Loader2, AlertTriangle } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -36,10 +36,19 @@ import { BokunRolloutBadge } from "@/components/booking/BokunRolloutBadge";
 
 type Props = {
   tour: SignatureTour;
-  readiness: TourBokunReadiness;
+  /**
+   * Client-side readiness mirror. `null` = "not synced yet" (first visit,
+   * or a tour whose `tour_price_tiers` row is still empty). The banded form
+   * MUST still call `booking-quote`; the server performs the category
+   * synchronisation and returns the authoritative categories in-response.
+   * Used here only for the informational rollout badge — never as a gate
+   * on the quote request or on rendering the composition picker.
+   */
+  readiness: TourBokunReadiness | null;
 };
 
 export function BandedSignatureBookingForm({ tour, readiness }: Props) {
+
   const navigate = useNavigate();
   const [date, setDate] = useState("");
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
