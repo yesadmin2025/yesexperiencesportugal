@@ -640,13 +640,54 @@ async def run_studio(page: Page, viewport: str):
 
     # Wait for phase to leave "intro". studio-v3-root exists during intro too,
     # so gate on data-phase not being "intro".
-    for _ in range(80):
-        phase = await page.evaluate(
-            "() => { const r=document.querySelector('[data-testid=\"studio-v3-root\"]'); return r?r.getAttribute('data-phase'):null; }"
+    async def click_cta(sel, fallback_pat=None):
+        try:
+            loc = page.locator(sel).first
+            if await loc.count():
+                await loc.click(timeout=2500)
+                return True
+        except Exception: pass
+        if fallback_pat:
+            return await click_by_text(fallback_pat)
+        return False
+
+    intro_steps = []
+
+    # Step 1: Begin — target the data attribute directly.
+    clicked_begin = await click_cta('[data-phase-cta="intro-begin"]', r"^Begin$")
+    try:
+        await page.locator('input[autocomplete="given-name"]').first.wait_for(
+            state="visible", timeout=5000
         )
-        if phase and phase != "intro":
-            break
-        await page.wait_for_timeout(100)
+    except Exception:
+        pass
+    intro_steps.append({"step":"begin","clicked":clicked_begin})
+
+    # Step 2: Skip the name form (there's no data-cta on Skip; text is stable).
+    clicked_skip = await click_by_text(r"^Skip$")
+    try:
+        await page.locator('[data-testid="studio-v3-intro-path"]').first.wait_for(
+            state="visible", timeout=5000
+        )
+    except Exception:
+        pass
+    intro_steps.append({"step":"skip","clicked":clicked_skip})
+
+    # Step 3: Choose the fast path card ("Compose it quickly").
+    clicked_fast = False
+    try:
+        card = page.locator('[data-phase-cta="intro-path"]').filter(
+            has_text=re.compile(r"Compose it quickly", re.I)
+        ).first
+        if await card.count():
+            await card.click(timeout=2500)
+            clicked_fast = True
+    except Exception:
+        pass
+    if not clicked_fast:
+        clicked_fast = await click_by_text(r"Compose it quickly")
+    intro_steps.append({"step":"fast","clicked":clicked_fast})
+    await page.wait_for_timeout(700)
 
     root_mounted = phase not in (None, "intro")
     if not root_mounted:
