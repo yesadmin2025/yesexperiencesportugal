@@ -416,14 +416,10 @@ const HEADLINES: HeadlineSpec[] = [
     page: "multi-day",
     role: "hero subhead",
     file: "src/routes/multi-day.tsx",
-    pattern: /<p className="(mt-6 text-\[1rem\][^"]+)">\s*\n\s*Build Portugal across regions/,
+    pattern: /<p className="(mt-6 text-\[1rem\][^"]+)">\s*\n\s*From a few days to a full journey/,
   },
-  {
-    page: "proposals",
-    role: "hero subhead",
-    file: "src/routes/proposals.tsx",
-    pattern: /<p className="(mt-6 text-\[1rem\][^"]+)">\s*\n\s*A private moment/,
-  },
+  // /proposals is a redirect stub → /proposal-in-portugal. The hero
+  // subhead lock therefore lives on the destination route.
 ];
 
 /* ── 2. Typography token rules from styles.css ──────────────────── */
