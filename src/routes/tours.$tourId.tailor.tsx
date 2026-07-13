@@ -283,10 +283,23 @@ function TailorPage() {
     const next = new Set(choiceSelected);
     if (on) next.delete(id);
     else {
+      const maxPick =
+        blueprint?.choice?.maxPick ?? blueprint?.choice?.pickCount ?? Infinity;
+      if (next.size >= maxPick) {
+        toast.error(`Up to ${maxPick} to choose — swap one instead of adding.`);
+        return;
+      }
       next.add(id);
       const proj = projectFeasibility(skippedCore, next, optionalSelected);
       if (proj && !proj.feasible) {
-        toast.error(proj.warnings[0] ?? "Adding that stop overloads the day.");
+        const hours = Math.round(proj.totalMinutes / 60);
+        const guidance =
+          next.size > (blueprint?.choice?.pickCount ?? 0)
+            ? " Skip the market, viewpoint or tile factory above to fit it."
+            : "";
+        toast.error(
+          (proj.warnings[0] ?? `That would make ~${hours}h on the ground.`) + guidance,
+        );
         return;
       }
     }
@@ -861,7 +874,7 @@ function TailorPage() {
                   {blueprint.choice && (
                     <>
                       <p className="mb-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
-                        Choose {blueprint.choice.pickCount} · {blueprint.choice.label}
+                        {blueprint.choice.label}
                       </p>
                       <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
                         {blueprint.choice.note}
@@ -869,7 +882,9 @@ function TailorPage() {
                       <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
                         {blueprint.choice.options.map((o) => {
                           const on = choiceSelected.has(o.id);
-                          const atLimit = !on && choiceSelected.size >= blueprint.choice!.pickCount;
+                          const maxPick =
+                            blueprint.choice!.maxPick ?? blueprint.choice!.pickCount;
+                          const atLimit = !on && choiceSelected.size >= maxPick;
                           return (
                             <li key={o.id}>
                               <button
