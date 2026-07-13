@@ -95,6 +95,7 @@ const DUPLICATE_BAND_EXEMPTIONS: { route: string; label: string; reason: string 
     label: "Talk to a Local",
     reason:
       "Proposal-in-Portugal is human-only (no Studio path) — the hero + closing bands both surface Talk to a Local so the primary conversion action is always in reach on this long-form intent page. Tracked: align with corporate/proposals consolidation.",
+  },
   {
     route: "tours.$tourId.tsx",
     label: "Reserve instantly",
