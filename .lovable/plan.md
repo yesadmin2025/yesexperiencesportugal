@@ -1,144 +1,70 @@
-## Scope
+# Real Stripe sandbox + Bókun test-channel smoke — /tours/arrabida-boat#book
 
-Close Slice D by fixing only the three remaining browser failures:
+## Current blocker (from live edge logs)
 
-1. Tailored mobile — composition drifts (Adults ends at 3 instead of 2).
-2. Studio V3 — intro click does not advance phase in headless.
-3. Signature mobile- only shows adults when booking 
-
-No changes to booking, pricing, Bókun, Stripe, or Studio itinerary architecture. One minimal, non-visual testability marker added to the Studio root.
-
----
-
-## 1. Studio root — add hydration marker (only production change)
-
-File: the existing Studio V3 root component (the element already tagged `data-testid="studio-v3-root"`).
-
-Add:
-
-```tsx
-const [clientReady, setClientReady] = useState(false);
-useEffect(() => { setClientReady(true); }, []);
-```
-
-Extend the existing root element attributes only:
-
-```tsx
-<div
-  data-testid="studio-v3-root"
-  data-phase={phase}
-  data-client-ready={clientReady ? "true" : "false"}
-  /* all existing className / handlers unchanged */
->
-```
-
-Constraints:
-
-- No visual change, no new wrappers, no conditional rendering gated by `clientReady`.
-- No change to phase logic, navigation, intro CTA, or any hook order beyond the added `useState` + `useEffect`.
-- No new exports.
-
----
-
-## 2. `e2e/sliceD-browser-interactions.py` — Tailored mobile deterministic composition
-
-Rewrite the composition step (both viewports, but the bug is mobile) to be value-driven, not click-count-driven:
+Every `booking-quote` call for `arrabida-boat` on the current Bókun test channel returns:
 
 ```
-adultsTarget = 2
-minorAgesTarget = [15, 8, 0]
-
-read current adults from the stepper's displayed value
-while adults > target: click "-"; re-read
-while adults < target: click "+"; re-read
-assert adults === 2
-
-ensure exactly 3 minor rows exist (add/remove as needed)
-for each minor row i, fill age input with minorAgesTarget[i], Tab to blur
-poll page.evaluate until composition state === {adults:2, minorAges:[15,8,0]}
-  (read from the same source the Reserve button uses; 5s deadline)
-
-assert total participants label === 5
+stage: "unavailable"
+reason: "no_commercial_mapping"
+autoSyncOk: false
+autoSyncReason: "no adult price resolvable from Bókun"
+warnings:
+  - "No resolvable price for band adult (Bókun category 678401)"
+  - "No resolvable price for band youth (Bókun category 1022005)"
+bokunProductId: 885297, optionId: null, rateId: null
 ```
 
-Then and only then click Reserve. Capture the next `booking-quote` request and assert body composition deep-equals `{adults:2, minorAges:[15,8,0]}`. Mobile scenario is not "passed" unless this assertion holds AND `checkoutCalls === 1` with `quoteToken` echoed.
+Meaning: the code path is correct (auto-sync fires, categories resolve, mapping attempted), but the Bókun **test channel** has no price list attached to product `885297` for the resolved adult category. Without a resolvable adult price, `booking-quote` returns `unavailable`, the Reserve CTA stays disabled, and no Stripe PaymentIntent can be created. A real smoke run cannot pass in this state — it would just re-confirm the same `no_commercial_mapping` we already see.
 
-Apply the same value-driven routine to Tailored desktop to keep both paths identical.
+So the smoke run is not "just execute it": it requires unblocking the upstream data first, then running the end-to-end script and capturing evidence.
 
----
+## Plan
 
-## 3. `e2e/sliceD-browser-interactions.py` — Studio driver rewrite
+### 1. Confirm the blocker is upstream, not code
 
-Replace the current intro driver with:
+- Re-run `booking-quote` via `supabase--curl_edge_functions` with `{ tourId: "arrabida-boat", adults: 2, minorAges: [8, 0], date: <next open Sat> }` and capture the exact response + `x-request-id`.
+- Cross-check against one Signature tour that *does* have a working Bókun test mapping (query `tour_price_tiers` for any row where `bokun_categories` has a confirmed adult price). If that one returns a valid `quote`, the code path is proven and the arrabida-boat failure is purely a Bókun test-channel data gap.
 
-```
-await page.goto("/studio-v3", wait_until="domcontentloaded")
-root = page.locator('[data-testid="studio-v3-root"]')
-await root.wait_for(state="attached", timeout=10_000)
-await page.wait_for_function(
-    '() => document.querySelector("[data-testid=studio-v3-root]")?.dataset.clientReady === "true"',
-    timeout=10_000,
-)
-assert await root.get_attribute("data-phase") == "intro"
+### 2. Fix the upstream gap (Bókun test channel), no code change
 
-begin = page.get_by_test_id("intro-begin")
-await begin.wait_for(state="visible")
-await begin.click()   # standard Playwright click only; no evaluate() fallback
+Options, in order of preference:
+- **(a) Ask the user to attach the sandbox price list to product 885297 in Bókun** for the test channel (adult + youth categories 678401 / 1022005). This is a Bókun dashboard action — cannot be done from code.
+- **(b) If (a) is not possible today**, pick a different Signature tour that already has a working test-channel mapping and run the smoke against it instead, clearly labelled as "smoke tour: <id>" rather than arrabida-boat. This still proves Stripe sandbox + Bókun reservation end-to-end.
 
-await page.wait_for_function(
-    '() => document.querySelector("[data-testid=studio-v3-root]")?.dataset.phase !== "intro"',
-    timeout=8_000,
-)
-```
+I will *not* seed fake prices into `tour_price_tiers` to force a quote — that would violate the "no invented prices" rule and would not exercise the real Bókun reservation path anyway.
 
-If the wait_for_function times out AFTER `data-client-ready="true"`, capture diagnostics (do NOT retry with JS click):
+### 3. Execute the smoke run (Playwright, headless Chromium, 393×852)
 
-- `begin.is_disabled()`, `begin.bounding_box()`
-- `page.evaluate` of `document.elementFromPoint(cx, cy)?.outerHTML.slice(0,200)`
-- computed `pointer-events` on button and every ancestor
-- current `data-phase`
-- list of `[data-overlay], [role="dialog"], .fixed.inset-0` visible elements
-- console errors buffered so far
-Fail the scenario with that diagnostic bundle attached to `report.json`.
+Script under `/tmp/browser/stripe-smoke/`:
 
-Continue driving remaining phases (travellers → preferences → generation → Storyboard → Final → Checkout) using existing stable selectors. Enter composition `{adults:2, minorAges:[15,8,0]}` via the same deterministic routine as Tailored.
+1. Restore Supabase session from env vars (per browser-use guidance).
+2. Navigate to `http://localhost:8080/tours/<smoke-tour>#book`.
+3. Assert no legacy Guests stepper; assert `TravellerCompositionPicker` present.
+4. Set adults=2, add minors aged 8 and 0, pick next available date.
+5. Capture the outgoing `booking-quote` request payload + response (`checkoutSummary`, server labels).
+6. Fill contact fields with sandbox test data (name, email `smoke+<ts>@yesexperiences.pt`, phone).
+7. Click Reserve; on Stripe Payment Element, use test card `4242 4242 4242 4242`, any future expiry, any CVC, any ZIP.
+8. Confirm payment. Wait for redirect to success/confirmation route.
+9. Capture:
+    - the single `create-checkout` (or equivalent) request — assert `checkoutCalls === 1` by counting matching network requests
+    - the resulting `payment_intent` id / status via Stripe sandbox lookup (server function or edge log)
+    - the resulting Bókun test reservation id from the edge-function logs
+10. Screenshots at each step (picker filled, Stripe element, success page).
 
-For Storyboard, Final Itinerary, and Checkout Summary, read independently from the DOM (data attributes already emitted by these screens) and build:
+### 4. Deliverables reported back to the user
 
-```
-{ commercialProductKey, travellerComposition, orderedStops: [{id,label,sequence}] }
-```
+- Confirmation the code path is correct (or list of any real code fixes discovered).
+- Which tour the smoke actually ran against and why (if we had to switch off arrabida-boat).
+- Exact `booking-quote` request + response payloads.
+- Network log line proving `checkoutCalls === 1`.
+- Stripe sandbox PaymentIntent id + status.
+- Bókun test reservation id (from edge logs).
+- 393px screenshots: filled picker, Stripe element, confirmation page.
+- If step 2 (a) is required and the user hasn't done it, this plan pauses at step 1's report with a clear one-line ask: "attach sandbox price list to Bókun product 885297 (categories 678401, 1022005) then re-run".
 
-Assert:
+## Out of scope
 
-- `storyboard === final === checkout` (deep equal on the three snapshots)
-- `commercialProductKey === "studio-v3-private-full-day"`
-- `checkoutCalls === 1`
-
-Run at both `1280×1800` and `393×852`.
-
----
-
-## 4. Reporting
-
-Extend `report.json` (no format regression) with:
-
-- `tailored.desktop.composition`, `tailored.mobile.composition` (from captured quote body)
-- `studio.<viewport>.clientReady`, `.introTransitioned`, `.phaseSequence`, `.snapshots.{storyboard,final,checkout}`, `.snapshotsEqual`
-- Global `pageErrors`, `consoleErrors`, `failedRequests` per scenario
-- `remainingLaunchBlocker: "real Stripe sandbox + Bókun test-channel smoke not executed"`
-
-Screenshots per phase saved under `/tmp/browser/sliceD-interactions/screenshots/` and paths listed in the report.
-
----
-
-## Files touched
-
-- Studio V3 root component: add `clientReady` state + `data-client-ready` attribute only (≈4 lines).
-- `e2e/sliceD-browser-interactions.py`: rewrite Tailored composition helper + Studio driver + report shape.
-
-No other production files change. Signature scenarios and unsupported-age gate remain untouched (already passing).
-
-## Pass criteria (must all hold to close Slice D)
-
-Signature desktop/mobile · Tailored desktop/mobile · Studio desktop/mobile · unsupported-age mobile — as enumerated in the request. Remaining launch blocker stays: real Stripe sandbox + Bókun test-channel smoke not executed.
+- Any change to `booking-quote`, `useBookingQuote`, `TravellerComposition`, Signature routing, pricing math, or Studio.
+- Seeding prices in `tour_price_tiers` to bypass Bókun.
+- Live Stripe or production Bókun — sandbox / test channel only.
