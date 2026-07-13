@@ -724,6 +724,8 @@ export function StudioV3() {
     return new URLSearchParams(window.location.search).has("saved");
   });
   const [hydrateError, setHydrateError] = useState<"not-found" | "failed" | null>(null);
+  const [clientReady, setClientReady] = useState(false);
+  useEffect(() => { setClientReady(true); }, []);
 
   const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>({
     open: false,
