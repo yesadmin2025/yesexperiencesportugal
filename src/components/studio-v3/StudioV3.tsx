@@ -19,7 +19,10 @@ import {
   filterStudioCandidatesBySuitability,
 } from "@/lib/pricing/filterSignatureCandidatesForAges";
 import { requirementsFromComposition } from "@/lib/pricing/travellerSuitability";
-import { filterStopsBySuitability } from "@/components/studio-v3/stop-suitability";
+import {
+  filterStopsBySuitability,
+  validateItineraryAfterReplacement,
+} from "@/components/studio-v3/stop-suitability";
 import { assertStudioCommercialIdentity } from "@/lib/pricing/studioCommercialIdentity";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
 import { loadStudioV3Signature } from "@/lib/studio-v3/load-signature.functions";
@@ -3242,6 +3245,11 @@ export function StoryboardHandoff({
     const pool =
       skeletonTour?.stops?.map((s) => ({ label: s.label, story: s.story })) ?? [];
     const outcome = filterStopsBySuitability(rawStops, requirements, pool);
+    // Slice C closure — if the replacement pass leaves no valid substantive
+    // itinerary, return [] so the existing reveal safety fallback triggers
+    // (no quote, no Stripe). Never surface an empty or meaningless itinerary.
+    const validity = validateItineraryAfterReplacement(outcome, requirements);
+    if (validity !== null) return [];
     return outcome.stops;
   }, [resolved.routePoints, state.guests, state.minorAges, state.considerations, skeletonTour]);
 

@@ -1,123 +1,108 @@
-# Slice C — Studio Eligibility & Suitability Filtering
+# Slice C closure — populate & enforce real suitability
 
-Reuses `TravellerComposition`, `filterSignatureCandidatesForAges`, `resolveStudioV3Route`, and the existing itinerary/quote path. No changes to Stripe, Bókun reservation, quote state machine, admin, or visuals.
+Scope: only the production-readiness gap. No checkout / Stripe / Bókun / visual changes.
 
-## 1. Suitability metadata (new, server-owned, additive)
+## 1. Type + semantics: `SuitabilityRecord` with explicit status
 
-New shared module (safe defaults = unrestricted; never inferred from marketing):
-
-```
-src/lib/pricing/travellerSuitability.ts
-```
+Extend `src/lib/pricing/travellerSuitability.ts`:
 
 ```ts
-export type TravellerSuitability = {
-  minimumAge?: number;
-  maximumAge?: number;
-  infantsAllowed?: boolean;          // default: unrestricted (undefined = allowed)
-  childSeatSupported?: boolean;
-  strollerSuitable?: boolean;
-  capacityCountsAllTravellers?: boolean; // default true (infants count)
-};
-
-export type SuitabilityRequirements = {
-  ages: number[];                     // ALL selected ages (adults + minors)
-  totalTravellers: number;
-  requiresChildSeat: boolean;
-  requiresStroller: boolean;
-};
-
-export type SuitabilityCheck =
-  | { ok: true }
-  | { ok: false; reasons: Array<
-        "unsupported_age" | "capacity_exceeded"
-      | "child_seat_missing" | "stroller_unsupported" | "infant_not_allowed">;
-      unsupportedAges: number[]; };
-
-export function checkTravellerSuitability(
-  s: TravellerSuitability | undefined,
-  req: SuitabilityRequirements,
-  capacity?: number,
-): SuitabilityCheck;
+export type SuitabilityStatus = "confirmed" | "explicitly-unrestricted" | "unknown";
+export type SuitabilityRecord = TravellerSuitability & { status: SuitabilityStatus };
 ```
 
-Rules:
-- Age failure: any `age < minimumAge` or `age > maximumAge` → `unsupported_age` with that age listed.
-- `infantsAllowed === false` and any age 0 → `infant_not_allowed` + age 0 in unsupportedAges.
-- `requiresChildSeat && childSeatSupported === false` → `child_seat_missing`.
-- `requiresStroller && strollerSuitable === false` → `stroller_unsupported`.
-- Capacity: when `capacity` is provided, `totalTravellers > capacity` → `capacity_exceeded`. `capacityCountsAllTravellers !== false` means infants count (default true).
-- Missing metadata fields = no restriction (safe default).
+New reason: `"suitability_not_ready"`.
 
-Suitability registries (additive, keyed, no marketing inference):
+Rewrite `checkTravellerSuitability(record, req, capacity)`:
+
+- `record === undefined` OR `record.status === "unknown"`:
+  - If `req` contains ANY minor (`ages` includes an age < 18) → `{ ok: false, reasons: ["suitability_not_ready"], unsupportedAges: [] }`.
+  - Else (adult-only) → `{ ok: true }` (backward compat).
+- `status === "explicitly-unrestricted"`: skip safety-dependent field defaults; only enforce explicit `minimumAge/maximumAge` (both usually undefined here). No implicit `infantsAllowed=true`.
+- `status === "confirmed"`: enforce every listed rule as before; missing fields on a confirmed record mean "no restriction on that axis" (author has attested).
+
+Safety-dependent fields that must NEVER silently default when a minor is present: `infantsAllowed`, `childSeatSupported`, `capacityCountsAllTravellers` — enforced by the unknown-blocker above.
+
+Keep `requirementsFromComposition` unchanged.
+
+## 2. Populate `STUDIO_TOUR_SUITABILITY` for every reachable Signature tour
+
+Reachable = every `id` in `src/data/signatureTours.ts` (currently 12: `arrabida-wine-allinclusive`, `wild-beaches-picnic`, `arrabida-boat`, `tiles-workshop`, `azeitao-cheese`, `sintra-cascais`, `troia-comporta`, `evora-alentejo`, `tomar-coimbra`, `fatima-nazare-obidos`, `roman-heritage-alentejo`, `southwest-vicentine-coast`).
+
+Rewrite `src/data/studioTourSuitability.ts` to export a `SuitabilityRecord` map. Every tour ID present, none `unknown`:
+
+- Tours with a real operational restriction → `status:"confirmed"` + explicit fields:
+  - `arrabida-boat`: `minimumAge:4, infantsAllowed:false, strollerSuitable:false` (boat ride — infants and strollers not carried).
+  - `arrabida-wine-allinclusive`: `status:"confirmed"`, `infantsAllowed:true, strollerSuitable:false` (winery cellars); no minimum age (kids may accompany, tastings adults-only handled by the venue).
+- All other tours (private full-day vehicle experiences visiting towns, viewpoints, workshops, beaches): `status:"explicitly-unrestricted"` (`infantsAllowed:true` implicit only via the "explicitly-unrestricted" status; no capacity override — Bókun categories already gate seats).
+
+Also export `STUDIO_TOUR_CAPACITY` for the ones we know (private vehicle = 7 pax for the standard Mercedes V-class fleet); leave undefined where unknown (capacity is optional).
+
+## 3. Populate `STUDIO_STOP_SUITABILITY` for every reachable stop
+
+Reachable = union of `signatureTours[*].stops[*].label` (~68 unique) and `REGION_STOP_POOL[*].name` (~55). Rewrite `src/data/studioStopSuitability.ts` with lowercase-keyed records; matching helper stays as-is.
+
+Classification rules (operational, not marketing):
+
+| Category | Records | Status | Fields |
+|---|---|---|---|
+| Boat / island transfer | `Ilha do Pessegueiro`, `Marina de Tróia`, `Baía de Setúbal — Sado ferry crossing` | confirmed | `minimumAge:4, infantsAllowed:false, strollerSuitable:false` |
+| Caves / steep-descent | `Lapa de Santa Margarida` | confirmed | `minimumAge:8, infantsAllowed:false, strollerSuitable:false` |
+| Beaches (sand access) | `Comporta Beach`, `Praia do Carvalhal`, `Praia da Nazaré`, `Praia de Galapinhos`, `Praia das Bicas`, `Praia do Meco`, `Portinho da Arrábida` | explicitly-unrestricted | `strollerSuitable:false` |
+| Winery estates / cellars | `Adega Regional de Colares`, `Bacalhôa Vinhos de Portugal`, `Adega Coop. de Palmela`, `Adega do Mestre Daniel · XXVI Talhas`, `Albergaria dos Fusos`, `Centro Interpretativo do Vinho de Talha`, `Enoturismo Cartuxa`, `Ervideira`, `Herdade do Esporão`, `João Portugal Ramos Wines`, `Pêra-Grave · Qta S. José de Peramanca`, `Quinta Velha`, `Quinta do Piloto`, `Quinta de Catralvos` / `Farm Catralvos`, `Quinta da Regaleira`, `House & Museum José Maria da Fonseca` / `José Maria de Fonseca`, `Azeitão — long traditional lunch` | explicitly-unrestricted | `infantsAllowed:true` (visit ok; tastings supplier-gated) |
+| Historic city centres / villages / palaces / museums / squares / lookouts | remaining ~55 town/palace/viewpoint labels (Sintra, Cascais, Sesimbra, Óbidos, Évora, Tomar, Coimbra, Fátima, Nazaré, Setúbal Market, all palácios/castelos/capelas, viewpoints, natural parks) | explicitly-unrestricted | (no per-field restriction) |
+| Coast walks / rugged nature parks where stroller is impractical | `Cabo Espichel`, `Cabo da Roca`, `Parque Natural da Arrábida`, `Parque Natural do Sudoeste Alentejano e Costa Vicentina`, `Odeceixe`, `Aljezur`, `Vila Nova de Milfontes`, `Porto Covo` | explicitly-unrestricted | `strollerSuitable:false` |
+| Anything not in the above categories at time of population | none (registry closed to the reachable set) | — | — |
+
+Every reachable label MUST be present. A completeness test asserts:
+- for each `label` in the reachable set: `getStopSuitability(label)` returns a defined record and `record.status !== "unknown"`.
+
+If a future stop is added and hasn't been classified, its lookup returns `undefined` → treated as `unknown` at runtime → for minors it's blocked; the completeness test fails at CI, forcing an explicit classification.
+
+## 4. Enforce unknown behaviour end-to-end
+
+`filterStudioCandidatesBySuitability` — surface a distinct reason:
+
+- Existing Slice B exclusion → reasons `["category_unresolved"]` (unsupported_age).
+- Unknown record on a minor-carrying request → reasons `["suitability_not_ready"]`.
+- Confirmed with age failure → reasons `["unsupported_age"]` (+ `unsupportedAges`).
+
+Return shape adds `firstBlockingReason: "suitability_not_ready" | "unsupported_age" | null` computed from the final excluded list, so the caller can surface the distinct error.
+
+`filterStopsBySuitability` — same treatment: `removed[i].reasons` already carries the reason list; when `dropped[]` is non-empty AND all replacements from the pool are also blocked, the outer caller must know.
+
+`StudioV3.tsx` — after `filterStopsBySuitability` runs on `baseStops`, add an itinerary validity guard:
 
 ```
-src/data/studioTourSuitability.ts        // per-tour (Signature/Studio candidate) map: tourId -> TravellerSuitability
-src/data/studioStopSuitability.ts        // per-stop map: stopKey -> TravellerSuitability
+validItinerary =
+  outcome.stops.length >= 1
+  && new Set(outcome.stops.map(s => s.label.toLowerCase())).size === outcome.stops.length
+  && outcome.stops.every(s => isCompatible(s.label, requirements))
 ```
 
-Both start EMPTY (undefined = unrestricted). Populating them is a follow-up content task; Slice C just wires the plumbing so anything added takes effect.
+If `!validItinerary`, force the same "unsupported" path that Slice B already uses (`ageFilterStatus:"unsupported"` behaviour) — sets `compatibleTourIds` empty via a new flag `itineraryBlockedReason` threaded into the existing gate. No quote, no Stripe.
 
-`requiresChildSeat` / `requiresStroller` derive from existing `state.considerations` flags already present in `StudioV3State` (already tracked; see `tours.$tourId.tailor.tsx`'s stroller flag pattern). Studio has no per-composition child-seat toggle today, so the flag is `false` unless the state exposes one; we thread it through without inventing UI.
+## 5. Itinerary validation after replacement
 
-## 2. Candidate filter before generation
+`filterStopsBySuitability` gains internal invariants:
+- `used` set already prevents duplicate labels — add a defensive `assert` (throws) if a duplicate slips through.
+- Never returns a stop whose `getStopSuitability(label)` is unknown when minors are present (guaranteed by the compatibility check already there — reasserted via test).
+- `assertStudioCommercialIdentity` stays at quote build (unchanged).
 
-Extend `src/lib/pricing/filterSignatureCandidatesForAges.ts` with a superset wrapper:
+## 6. Tests (added to `src/__tests__/sliceC.suitability.test.ts`)
 
-```ts
-export function filterStudioCandidatesBySuitability(
-  composition, tours, readinessMap, requirements
-): { compatible, excluded: Array<{ tourId, reasons, unsupportedAges }>, hasCompatible }
-```
+Only add, do not remove:
 
-It runs the existing category-age filter AND `checkTravellerSuitability` (using `studioTourSuitability[tour.id]` + tour capacity if present in readiness/registry). A candidate that fails EITHER check is excluded before ranking.
+1. **Registry completeness — tours**: every `signatureTours[*].id` has a `SuitabilityRecord` with `status !== "unknown"`.
+2. **Registry completeness — stops**: every label from `signatureTours[*].stops[*].label ∪ REGION_STOP_POOL[*].name` has a record with `status !== "unknown"`.
+3. **Unknown candidate + minor** → excluded with reason `suitability_not_ready` (uses a mocked tour registry entry with `status:"unknown"`); adult-only same request passes.
+4. **Unknown stop + minor** → `filterStopsBySuitability` removes/replaces it; when the pool has a compatible alternative, it swaps; when it doesn't, the stop is dropped.
+5. **All stops incompatible** → outcome has `stops.length === 0`; caller-side guard returns `hasCompatible:false` equivalent; no quote fetch attempted (spy on `fetchBookingQuote` reference — the pure helper contract already blocks upstream, so this asserts the pure guard boolean rather than mocking the whole StudioV3 component).
+6. **Adult-only backward compat** — unknown record + no minors → `checkTravellerSuitability` returns `ok:true`; wrapper keeps candidate as compatible.
+7. **No duplicate replacements** — pool contains only one compatible alt; two incompatible input stops → first slot swapped, second dropped; result has no duplicated labels.
+8. **No Signature pricing leakage** (existing test unchanged; assertStudioCommercialIdentity still throws for Signature IDs).
 
-Callsite in `StudioV3.tsx` (~line 3168): swap `filterSignatureCandidatesForAges` for the new wrapper. `ageFilter.compatibleTourIds` remains the exact contract handed to `resolveStudioV3Route`, so ranking/generation is unchanged.
-
-## 3. Automatic fallback (already the behaviour)
-
-`resolveStudioV3Route` already picks the first compatible tour and returns the "unsupported" shape only when the compatible set is empty. Slice C just narrows the input set — no engine changes.
-
-Confirmed behaviour:
-- A incompatible, B compatible → A excluded, B selected, itinerary generated normally.
-- Empty compatible set → `ageFilterStatus: "unsupported"` (existing) → checkout gate blocks; no quote, no Stripe call.
-
-## 4. Replace incompatible components (stop-level)
-
-Add a pure helper next to curation:
-
-```
-src/components/studio-v3/stop-suitability.ts
-  filterStopsBySuitability(stops, requirements, registry): {
-    kept: Stop[], removedKeys: string[], swapCandidates: Stop[]
-  }
-```
-
-Wire it in `StudioV3.tsx` right after `baseStops` derivation (~line 3212–3217):
-1. Run `filterStopsBySuitability` on `baseStops`.
-2. If a stop was removed, try to replace it from the SAME skeleton tour's `stops` pool (already the fallback pool at line 3299–3308 — reuse). Never invent stops; never cross tours.
-3. If nothing suitable remains for that slot, drop it (the itinerary is shorter but still the same Studio skeleton).
-4. Base quote is NOT recomputed — Studio commercial pricing is `studio-v3-private-full-day` per guest count, independent of stop composition. `itineraryRevision` (line 1096) already hashes stop labels, so it changes; `commercialProductKey` and pricing revision do not.
-
-## 5. Studio identity guard
-
-Assertion inside the filter/replacement path and in the quote build:
-- `commercialProductKey` stays `"studio-v3-private-full-day"` (already hard-coded at lines 784, 895, 1081).
-- Add a runtime guard in the wrapper: if replacement logic ever tried to substitute a Signature commercial key, throw. Reuse `isStudioCommercialProductKey` from `supabase/functions/_shared/studioCommercialPricing.ts` (mirror the constant to a client-safe helper in `src/lib/pricing/studioCommercialIdentity.ts` — pure re-export of the literal, no server import).
-
-## 6. Tests
-
-New file `src/__tests__/sliceC.suitability.test.ts` (Vitest, mirrors sliceB style):
-
-1. **Infant fallback** — composition `{adults:2, minorAges:[0]}`, candidate A has `infantsAllowed:false`, candidate B unrestricted → wrapper excludes A, keeps B; `resolveStudioV3Route` picks B.
-2. **No compatible candidate** — all candidates fail suitability → `hasCompatible:false`, `ageFilterStatus:"unsupported"`, no quote/checkout side-effects (assert `useBookingQuote`/`useCategoryAwareCheckoutReady` gate = false via pure helper).
-3. **Compatible skeleton, incompatible stop** — `filterStopsBySuitability` removes stop X, replacement drawn from same tour pool; skeleton tour id unchanged; `commercialProductKey` unchanged; `itineraryRevision` changed vs. baseline.
-4. **Capacity includes infants** — capacity 4, composition adults 3 + infant 1 → `capacity_exceeded` when `capacityCountsAllTravellers` unset (default true); passes when explicitly `false`.
-5. **No Signature mapping leakage** — after any filter/replacement path, resulting quote payload's `commercialProductKey === "studio-v3-private-full-day"`; identity guard throws on attempted swap.
-
-Also re-run existing Slice B suite (`sliceB.wiring.test.tsx`, `sliceB.closure.test.tsx`) untouched.
-
-## Verification
+## 7. Verification commands
 
 ```
 bunx vitest run src/__tests__/sliceC.suitability.test.ts src/__tests__/sliceB.wiring.test.tsx src/__tests__/sliceB.closure.test.tsx
@@ -126,24 +111,22 @@ bunx tsgo --noEmit
 
 ## Files touched
 
-New:
-- `src/lib/pricing/travellerSuitability.ts`
-- `src/lib/pricing/studioCommercialIdentity.ts`
-- `src/data/studioTourSuitability.ts` (empty registry + type)
-- `src/data/studioStopSuitability.ts` (empty registry + type)
-- `src/components/studio-v3/stop-suitability.ts`
-- `src/__tests__/sliceC.suitability.test.ts`
+Edited:
+- `src/lib/pricing/travellerSuitability.ts` — add `SuitabilityRecord`/`SuitabilityStatus`, add `suitability_not_ready` reason, rewrite `checkTravellerSuitability` for unknown-minor blocking.
+- `src/lib/pricing/filterSignatureCandidatesForAges.ts` — thread status through excluded reasons; add `firstBlockingReason` to result.
+- `src/components/studio-v3/stop-suitability.ts` — dedupe assertion; ensure returned stops all pass the compatibility check.
+- `src/data/studioTourSuitability.ts` — full 12-tour registry, 0 unknowns.
+- `src/data/studioStopSuitability.ts` — full reachable-stop registry, 0 unknowns.
+- `src/components/studio-v3/StudioV3.tsx` — post-filter itinerary validity guard forces the existing "unsupported" gate when the itinerary would be empty/invalid.
+- `src/__tests__/sliceC.suitability.test.ts` — new tests per §6; existing 12 pass unchanged.
 
-Edited (minimal):
-- `src/lib/pricing/filterSignatureCandidatesForAges.ts` — add `filterStudioCandidatesBySuitability` wrapper.
-- `src/components/studio-v3/StudioV3.tsx` — swap wrapper call; run `filterStopsBySuitability` after `baseStops`; identity-guard assertion at quote build.
+Untouched: Stripe webhook, Bókun functions, checkout, quote state machine, admin, visual/UI.
 
 ## Out of scope
 
-- Populating suitability data for real tours/stops (content task).
-- Any UI copy/visuals; admin tools; Bókun/Stripe/quote state machine.
+- Populating stops added AFTER this migration — the completeness test forces future contributors to classify explicitly.
 - Slice D.
 
 ## Return format after build
 
-Files changed · suitability metadata added · candidate-filter result summary · component-replacement result summary · vitest output · tsgo output.
+Registry coverage counts · unknown records remaining · runtime fallback result summary · vitest output · tsgo output.

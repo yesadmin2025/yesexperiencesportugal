@@ -57,14 +57,36 @@ import {
 } from "@/lib/pricing/travellerSuitability";
 import { getTourSuitability, getTourCapacity } from "@/data/studioTourSuitability";
 
+export type BlockingReason = SuitabilityReason | "category_unresolved";
+
 export interface SuitabilityFilterResult {
   compatible: SignatureTour[];
   excluded: Array<{
     tourId: string;
     unsupportedAges: number[];
-    reasons: Array<SuitabilityReason | "category_unresolved">;
+    reasons: BlockingReason[];
   }>;
   hasCompatible: boolean;
+  /** Priority: unsupported_age > suitability_not_ready > category_unresolved > other > null. */
+  firstBlockingReason: BlockingReason | null;
+}
+
+function pickFirstBlockingReason(
+  excluded: SuitabilityFilterResult["excluded"],
+): BlockingReason | null {
+  const priority: BlockingReason[] = [
+    "unsupported_age",
+    "infant_not_allowed",
+    "suitability_not_ready",
+    "capacity_exceeded",
+    "child_seat_missing",
+    "stroller_unsupported",
+    "category_unresolved",
+  ];
+  for (const p of priority) {
+    if (excluded.some((e) => e.reasons.includes(p))) return p;
+  }
+  return null;
 }
 
 export function filterStudioCandidatesBySuitability(
@@ -77,7 +99,6 @@ export function filterStudioCandidatesBySuitability(
   const ageCompatibleIds = new Set(ageResult.compatible.map((t) => t.id));
   const excluded: SuitabilityFilterResult["excluded"] = [];
 
-  // Carry Slice B exclusions forward (with a distinct reason).
   for (const e of ageResult.excluded) {
     excluded.push({
       tourId: e.tourId,
@@ -105,5 +126,11 @@ export function filterStudioCandidatesBySuitability(
     }
   }
 
-  return { compatible, excluded, hasCompatible: compatible.length > 0 };
+  const hasCompatible = compatible.length > 0;
+  return {
+    compatible,
+    excluded,
+    hasCompatible,
+    firstBlockingReason: hasCompatible ? null : pickFirstBlockingReason(excluded),
+  };
 }
