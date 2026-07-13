@@ -4166,7 +4166,23 @@ export function StoryboardHandoff({
               </div>
             ) : null}
           </div>
-        ) : null}
+        ) : (
+          <div
+            data-testid="studio-v3-stops-editor-empty"
+            className="-order-1 mt-6 max-w-[420px] mx-auto text-center px-4 py-5 rounded-[10px]"
+            style={{
+              background: "color-mix(in oklab, var(--sand) 40%, transparent)",
+              border: "1px dashed color-mix(in oklab, var(--charcoal) 20%, transparent)",
+            }}
+          >
+            <p
+              className="text-[12.5px] leading-[1.55]"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+            >
+              We couldn't compose a draft for this combination. Adjust the earlier answers and we'll rebuild it.
+            </p>
+          </div>
+        )}
 
         {/* ---------- 5. Signature DNA ---------- */}
         {dnaChips.length > 0 ? (
