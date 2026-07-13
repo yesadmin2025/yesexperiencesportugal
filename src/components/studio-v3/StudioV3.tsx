@@ -790,7 +790,7 @@ export function StudioV3() {
     if (typeof window === "undefined") return false;
     return new URLSearchParams(window.location.search).has("saved");
   }, []);
-  useStudioV3AutoPersist({
+  const { saveNow: saveDraftNow } = useStudioV3AutoPersist({
     state,
     setState,
     selectedAddOnIds,
@@ -803,6 +803,24 @@ export function StudioV3() {
     },
     skipHydrate: skipLocalHydrate,
   });
+
+  const handleSaveDraft = useCallback(() => {
+    const ok = saveDraftNow();
+    if (ok) toast.success("Draft saved", { description: "Your Studio journey will be here when you return." });
+    else toast.error("Couldn't save draft", { description: "Browser storage is unavailable." });
+  }, [saveDraftNow]);
+
+  const handleClearDraft = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const ok = window.confirm("Clear your saved Studio draft? Your current answers will reset.");
+    if (!ok) return;
+    clearStudioV3Draft();
+    setSelectedAddOnIds([]);
+    setSelectedAddOnItems([]);
+    setSelectedAddOnsTotalEur(0);
+    setState(INITIAL_STATE);
+    toast.success("Draft cleared");
+  }, [setState]);
 
   // Guest Details snapshot — captured on Guest Details submit, then rendered
   // in CheckoutSummary before we open Stripe. Kept in local state (not the
