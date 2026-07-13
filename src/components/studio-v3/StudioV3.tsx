@@ -3242,6 +3242,11 @@ export function StoryboardHandoff({
     const pool =
       skeletonTour?.stops?.map((s) => ({ label: s.label, story: s.story })) ?? [];
     const outcome = filterStopsBySuitability(rawStops, requirements, pool);
+    // Slice C closure — if the replacement pass leaves no valid substantive
+    // itinerary, return [] so the existing reveal safety fallback triggers
+    // (no quote, no Stripe). Never surface an empty or meaningless itinerary.
+    const validity = validateItineraryAfterReplacement(outcome, requirements);
+    if (validity !== null) return [];
     return outcome.stops;
   }, [resolved.routePoints, state.guests, state.minorAges, state.considerations, skeletonTour]);
 
