@@ -1,70 +1,61 @@
-## What's in place today
 
-- Studio V3 keeps `state` in memory only. It saves to the server on explicit "Save signature" and rehydrates via `?saved=<token>`, but nothing persists across a normal leave/return.
-- `selectedAddOnIds` lives beside `state` and is force-cleared every time `state.tourId` changes (`StudioV3.tsx` L771–775). Even a within-session refine resets add-ons.
-- Add-on chips already have a `disabled` visual state, but the only reason ever surfaced is "Won't fit this day (Nm)". No copy for "max reached", no notice when the tour is in bespoke/no-price mode, no notice when a tour has zero add-ons.
-- Totals already recompute (`useMemo` + `resolvedServerPricing`), but the "Final estimated total" card only appears once add-ons are selected, so changing guests or stops alone gives no visible confirmation.
+## Why nothing feels right
 
-## Fix
+The last few turns stacked features on top of each other without a shared model:
 
-### 1. Persist and restore the in-progress draft
-New hook `src/components/studio-v3/useStudioV3AutoPersist.ts`:
+- Draft persistence writes to `localStorage` on every keystroke AND on Save AND on Clear — three overlapping paths that race each other. Restore fires before the tour is resolved, so add-ons come back "orphaned" or get wiped by the tour-change effect.
+- The Save / Clear pill in the header contradicts the "silent restore" the auto-persist hook was built for. Users see two truths (auto-saved + a manual button that also saves).
+- Add-on chips read from three different sources (catalog availability, day-rhythm minutes, tour bespoke flag) with reasons computed in the card itself — so a chip can be enabled visually while the click handler still rejects it.
+- Price block recomputes on every state change AND on every server quote — "Recalculating…" can stick when the server call is slower than the next local edit.
 
-- Storage key `yes.studio.v3.draft.v1`, SSR-safe.
-- Persists `{ state, tourId, addOnIds, addOnItems, addOnsTotalEur, savedAt }` with a 300 ms debounce.
-- Hydrate on mount only when:
-  - `?saved=<token>` is NOT present (server hydrate wins), and
-  - the persisted state has meaningful progress (phase past `intro` OR any of `feeling`/`rhythm`/`interests`/`companions` set).
-- Add-ons restore only when the persisted `tourId` matches the current `state.tourId` — a fresh Signature naturally starts clean.
-- Clear on: Stripe success return, explicit "Start over", and after a successful `saveStudioV3Signature`.
-- Silent restore (no toast) to preserve the guided-not-asked tone; a small "— Draft restored" chip under `BackLink` is acceptable, mirroring the existing "Your Signature · draft" eyebrow style.
+Result: draft, add-ons, and price are three features fighting for the same state. That's what feels broken.
 
-In `StudioV3.tsx`:
-- Wire the hook right after `useState<StudioV3State>` + the add-on state.
-- Replace the hard reset in the `useEffect` on `state.tourId` (L771–775) with a "reset only when tourId actually changes to a different, non-null tour" guard so hydration doesn't wipe restored add-ons on the same tour.
+## The fix — one model, three thin surfaces
 
-### 2. Clearer add-on availability messaging
-In `src/components/studio-v3/SignaturePriceCard.tsx`, add-on list:
+Rebuild around a single `useStudioDraft` store that owns *everything the user has chosen* (answers, tourId, add-on ids, guest count, date). Draft, add-ons UI, and price block all read from it. No feature writes to `localStorage` directly.
 
-- Compute a `reason` string per chip:
-  - `!fits` → "Needs {a.durationMinutes − remainingMinutes} min more than the day allows"
-  - `atCap && !selected` → "Max {MAX_ADDONS} add-ons — deselect one to swap"
-  - Both → time-fit message wins (more actionable).
-- Render the reason where "Won't fit this day" currently sits, keeping the same 9.5 px uppercase micro-line, `data-testid="addon-availability-reason"`.
-- Under the list, replace "Up to {MAX_ADDONS} add-ons" with:
-  - When any disabled chip exists: "Locked options don't fit the day's rhythm or the {MAX_ADDONS}-item limit."
-  - Otherwise: keep current copy.
-- When `allowAddOnsWithoutPrice && !hasPrice`, render a one-line teal notice above the list: "Add-ons priced from the tour catalog · base investment confirmed by a curator."
-- When the picker would render nothing because the tour truly has no add-ons (`showAddOns && (hasPrice || allowAddOnsWithoutPrice) && availableAddOns.length === 0`), render a quiet ivory notice "No add-ons for this Signature — the day already includes everything." instead of silently hiding.
+### 1. Collapse persistence into one hook
 
-### 3. Always-visible live breakdown + total
-In `SignaturePriceCard.tsx`:
+- Delete `useStudioV3AutoPersist` + `saveStudioV3DraftNow` + the header pill.
+- Replace with `useStudioDraft()` — a single hook that:
+  - Hydrates once on mount (server `?saved=` wins, else localStorage, else empty).
+  - Writes debounced (500ms) on any change. No manual "Save".
+  - Exposes `clearDraft()` only (used by Checkout success + a small "Start over" link in the Studio menu, not a header pill).
+- Restore order guarantee: add-ons are held in a `pendingAddOns` buffer until `state.tourId` matches the persisted tourId, then applied atomically. Fixes the wipe-on-hydrate bug.
 
-- Move the "Final estimated total" block out from under `selectedAddOnIds.length > 0` — show it whenever `partyTotalEur != null`. Retitle to "Live total" when nothing is added and "Final estimated total" when add-ons are selected.
-- Add a two-line breakdown above the total, always visible when `hasPrice`:
-  - Line 1: `Base €{displayPerPaxEur} × {partyCount} guests = €{baseParty}`
-  - Line 2 (only when add-ons selected): `Additions €{addOnsPartyTotal}`
-  - Wrapped in `aria-live="polite"` so changes are announced.
-- When `resolvedServerPricing?.status === "loading"`, replace the numeric total with a subtle "Recalculating…" line for ~1 frame; keep the previous number visible with 0.6 opacity instead of blanking (avoids jitter as the server-signed quote refreshes on guests / stops / add-on toggles).
-- No math changes — the existing `partyTotalEur` / `addOnsPartyTotalEur` values already recompute reactively.
+### 2. Add-ons: one selector, one reason
 
-## Guardrails
+- Move availability logic out of `SignaturePriceCard` into `selectAddOnAvailability(state, catalog)` — pure function returning `{ id, enabled, reason }[]`.
+- The card just renders. The click handler asks the same selector — no more "looks clickable but rejects".
+- Reasons collapse to 3 human strings: *"Fits your day"*, *"Needs more time than the day allows"*, *"Max add-ons reached — swap one"*. Bespoke tours show a single card-level notice instead of per-chip reasons.
 
-- No schema changes, no new server functions, no invented pricing.
-- No configurator vibe: microcopy stays restrained, no modal, no toast spam.
-- Mobile-first: reuses existing chip and total layout at 393 px; only microcopy and one always-on breakdown row are added.
-- Studio philosophy: draft restore is silent and guided; live total is reassurance, not a dashboard; add-on reasons explain rather than nag.
+### 3. Pricing: derive, don't recompute
+
+- One `useStudioQuote(draft)` hook returns `{ total, breakdown, status }` where `status ∈ 'idle' | 'live' | 'stale'`.
+- Local math (base × guests + add-ons) is always shown instantly. The server quote replaces it only when it arrives; if a newer edit lands first, the stale response is dropped (request id guard).
+- "Recalculating…" only appears when `status === 'stale'` for >400ms — no more sticky spinner.
+
+### 4. Header cleanup
+
+- Remove the Save draft / Clear draft pill. Keep the existing Close (X) only.
+- Add a subtle "Draft restored" chip near the phase title for 4s when hydration actually restored something (already spec'd, just wire to the new hook).
+- "Start over" lives inside the Close confirmation sheet ("Close and keep draft" / "Close and start over").
+
+### 5. Verify
+
+- Playwright: (a) pick feeling → refresh → answers + add-ons restored; (b) select add-on that exceeds day rhythm → chip disabled with reason, click is a no-op; (c) change guest count → total updates in the same frame, no sticky spinner; (d) checkout success clears draft.
 
 ## Files touched
 
-- `src/components/studio-v3/useStudioV3AutoPersist.ts` (new)
-- `src/components/studio-v3/StudioV3.tsx` (wire persistence, guard the tourId reset, clear on save/checkout)
-- `src/components/studio-v3/SignaturePriceCard.tsx` (per-chip reasons, empty/bespoke notices, always-visible breakdown + loading affordance)
+- **Delete:** `src/components/studio-v3/useStudioV3AutoPersist.ts`, the `StudioDraftControls` pill in `StudioV3.tsx`.
+- **New:** `src/components/studio-v3/useStudioDraft.ts`, `src/components/studio-v3/selectAddOnAvailability.ts`, `src/components/studio-v3/useStudioQuote.ts`.
+- **Edit:** `StudioV3.tsx` (wire the three hooks, remove ad-hoc effects), `SignaturePriceCard.tsx` (render-only), Close sheet component.
+- **Tests:** 4 Playwright specs above under `e2e/studio-v3-*`.
 
-## Out of scope
+## What this does NOT change
 
-- Signed-in server-side draft sync (existing "Save signature" already covers that).
-- Redesigning the SignaturePriceCard visual layout.
-- Any change to the server quote endpoint or add-on catalog.
+- Studio philosophy, copy, layout, brand tokens, or the mobile 393px card widths.
+- Server quote endpoint, Bókun readiness, or checkout flow.
+- Signature source-of-truth data.
 
-Ready to implement on approval.
+Scope is strictly the three broken behaviours: draft, add-on selectability, live price.

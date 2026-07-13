@@ -242,7 +242,7 @@ import {
   type StudioV3Phase,
   type StudioV3State,
 } from "./types";
-import { useStudioV3AutoPersist, clearStudioV3Draft, saveStudioV3DraftNow } from "./useStudioV3AutoPersist";
+import { useStudioV3AutoPersist, clearStudioV3Draft } from "./useStudioV3AutoPersist";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
@@ -790,7 +790,7 @@ export function StudioV3() {
     if (typeof window === "undefined") return false;
     return new URLSearchParams(window.location.search).has("saved");
   }, []);
-  const { saveNow: saveDraftNow } = useStudioV3AutoPersist({
+  const { restored: draftRestored } = useStudioV3AutoPersist({
     state,
     setState,
     selectedAddOnIds,
@@ -804,23 +804,17 @@ export function StudioV3() {
     skipHydrate: skipLocalHydrate,
   });
 
-  const handleSaveDraft = useCallback(() => {
-    const ok = saveDraftNow();
-    if (ok) toast.success("Draft saved", { description: "Your Studio journey will be here when you return." });
-    else toast.error("Couldn't save draft", { description: "Browser storage is unavailable." });
-  }, [saveDraftNow]);
-
-  const handleClearDraft = useCallback(() => {
-    if (typeof window === "undefined") return;
-    const ok = window.confirm("Clear your saved Studio draft? Your current answers will reset.");
-    if (!ok) return;
-    clearStudioV3Draft();
-    setSelectedAddOnIds([]);
-    setSelectedAddOnItems([]);
-    setSelectedAddOnsTotalEur(0);
-    setState(INITIAL_STATE);
-    toast.success("Draft cleared");
-  }, [setState]);
+  // Silent restore, quiet acknowledgement — a single, once-per-session toast
+  // so the traveller understands why their answers are already in place.
+  const draftRestoredNoticedRef = useRef(false);
+  useEffect(() => {
+    if (!draftRestored || draftRestoredNoticedRef.current) return;
+    draftRestoredNoticedRef.current = true;
+    toast("Draft restored", {
+      description: "We picked up where you left off.",
+      duration: 4000,
+    });
+  }, [draftRestored]);
 
   // Guest Details snapshot — captured on Guest Details submit, then rendered
   // in CheckoutSummary before we open Stripe. Kept in local state (not the
@@ -2254,11 +2248,7 @@ export function StudioV3() {
       <LivingJourneyPanel state={state} hidden={composerHidden} />
       <ComposerMap state={state} hidden={composerHidden} />
       <CloseStudio hasProgress={state.phase !== "who"} />
-      <StudioDraftControls
-        visible={state.phase !== "who" && state.phase !== "feeling"}
-        onSave={handleSaveDraft}
-        onClear={handleClearDraft}
-      />
+
       {chromeReady ? (
         <StudioV3ProgressStepper
           phase={state.phase}
@@ -3148,59 +3138,12 @@ function CloseStudio({ hasProgress }: { hasProgress: boolean }) {
 }
 
 /**
- * StudioDraftControls — small header pill anchored top-left, opposite
- * CloseStudio. Gives travellers an explicit "Save draft" (with success
- * toast) and a "Clear draft" affordance while auto-persist runs silently
- * in the background.
+ * StudioDraftControls removed — silent auto-persist owns the draft.
+ * Manual Save/Clear controls contradicted the "guided, not asked" model
+ * and produced two competing sources of truth. Draft-restored toast lives
+ * in the parent instead.
  */
-function StudioDraftControls({
-  visible,
-  onSave,
-  onClear,
-}: {
-  visible: boolean;
-  onSave: () => void;
-  onClear: () => void;
-}) {
-  if (!visible) return null;
-  const wrapStyle: React.CSSProperties = {
-    background: "color-mix(in oklab, var(--ivory) 88%, transparent)",
-    backdropFilter: "blur(6px)",
-    WebkitBackdropFilter: "blur(6px)",
-    border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
-    color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
-    fontFamily: "var(--font-body)",
-  };
-  return (
-    <div
-      className="fixed left-3 top-3 z-[60] inline-flex items-center gap-1 rounded-full px-1.5 py-1"
-      style={wrapStyle}
-      data-testid="studio-v3-draft-controls"
-    >
-      <button
-        type="button"
-        onClick={onSave}
-        className="inline-flex items-center gap-1.5 min-h-[36px] px-3 rounded-full text-[11px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-        style={{ color: "var(--charcoal)" }}
-        aria-label="Save draft"
-        data-testid="studio-v3-save-draft"
-      >
-        Save draft
-      </button>
-      <span aria-hidden style={{ width: 1, height: 16, background: "color-mix(in oklab, var(--charcoal) 15%, transparent)" }} />
-      <button
-        type="button"
-        onClick={onClear}
-        className="inline-flex items-center min-h-[36px] px-3 rounded-full text-[11px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-        aria-label="Clear saved draft"
-        data-testid="studio-v3-clear-draft"
-      >
-        Clear
-      </button>
-    </div>
-  );
-}
+
 
 /** Dark continue CTA used by the two multi-select screens. Inline styles
  *  intentionally mirror the StoryboardHandoff CTA — no new component. */
