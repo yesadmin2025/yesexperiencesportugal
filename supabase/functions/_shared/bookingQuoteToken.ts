@@ -27,10 +27,18 @@ async function importKey(secret: string): Promise<CryptoKey> {
 }
 
 function canonicalJson(value: unknown): string {
-  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (value === null || typeof value !== "object") {
+    // JSON.stringify(undefined) returns undefined rather than JSON text. At
+    // object level optional properties are omitted below; inside arrays the
+    // JSON-compatible representation is null.
+    return JSON.stringify(value) ?? "null";
+  }
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
-  const keys = Object.keys(value as Record<string, unknown>).sort();
-  return `{${keys.map((k) => `${JSON.stringify(k)}:${canonicalJson((value as Record<string, unknown>)[k])}`).join(",")}}`;
+  const record = value as Record<string, unknown>;
+  const keys = Object.keys(record)
+    .filter((key) => record[key] !== undefined)
+    .sort();
+  return `{${keys.map((k) => `${JSON.stringify(k)}:${canonicalJson(record[k])}`).join(",")}}`;
 }
 
 export interface BookingQuoteTokenPayload {

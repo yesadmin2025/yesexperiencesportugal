@@ -62,6 +62,21 @@ export type BookingQuoteCheckoutResponse = {
   idempotencyKey: string;
 };
 
+async function functionErrorMessage(error: unknown): Promise<string> {
+  const fallback = error instanceof Error ? error.message : String(error);
+  if (!error || typeof error !== "object" || !("context" in error)) return fallback;
+
+  const context = (error as { context?: unknown }).context;
+  if (!(context instanceof Response)) return fallback;
+  try {
+    const payload = (await context.clone().json()) as { error?: unknown };
+    if (payload?.error) return String(payload.error);
+  } catch {
+    // Keep the SDK error when the function did not return JSON.
+  }
+  return fallback;
+}
+
 export async function createBookingQuoteSession(
   input: BookingQuoteCheckoutInput,
 ): Promise<BookingQuoteCheckoutResponse> {
@@ -71,7 +86,7 @@ export async function createBookingQuoteSession(
       ...input,
     },
   });
-  if (error) throw error;
+  if (error) throw new Error(await functionErrorMessage(error));
   const resp = data as BookingQuoteCheckoutResponse | { error?: string } | null;
   if (!resp || typeof resp !== "object" || !("sessionId" in resp)) {
     const msg =
@@ -113,7 +128,7 @@ export async function fetchBookingQuote(
       itinerarySnapshot: input.itinerarySnapshot,
     },
   });
-  if (error) throw error;
+  if (error) throw new Error(await functionErrorMessage(error));
   return data as BookingQuoteResponse;
 }
 
