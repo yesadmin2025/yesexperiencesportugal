@@ -135,32 +135,6 @@ const PROCESS = [
   },
 ];
 
-const FILE_GROUPS: Card[] = [
-  {
-    title: "Route",
-    body: "Day-by-day rhythm, regions, driving times and transfers.",
-  },
-  {
-    title: "Experiences",
-    body: "Private experiences, local partners, meals and timing notes.",
-  },
-  {
-    title: "Stays",
-    body: "Overnight logic, stay suggestions and confirmed reservations where applicable.",
-  },
-  {
-    title: "Support",
-    body: "Local contacts, practical details and adjustments during the journey.",
-  },
-];
-
-const SAMPLE_PAGES = Array.from({ length: TOTAL_SAMPLE_PAGES }, (_, i) => {
-  const n = i + 1;
-  return {
-    src: `/travel-file-sample/page-${String(n).padStart(2, "0")}.jpg`,
-    alt: `Private Portugal travel file — page ${n}`,
-  };
-});
 
 function GroupCard({ title, body }: Card) {
   return (
