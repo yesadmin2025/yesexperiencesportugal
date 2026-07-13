@@ -111,11 +111,9 @@ test.describe("Builder (Studio v3) checkout surface", () => {
     // Studio v3 is a long cinematic scroll — just assert first-fold
     // renders cleanly and at least one primary CTA is available.
     await page.waitForLoadState("networkidle").catch(() => undefined);
-    const anyCta = page
-      .getByRole("button")
-      .filter({ hasText: /Begin|Start|Design|Continue|Reserve/i })
-      .first();
-    await expect(anyCta).toBeVisible({ timeout: 20_000 });
+    const beginCta = page.getByRole("button", { name: /^Begin/i }).first();
+    await expect(beginCta).toBeVisible({ timeout: 20_000 });
+    await expect(beginCta).toBeEnabled();
 
     await expectNoErrorCopy(page);
   });
