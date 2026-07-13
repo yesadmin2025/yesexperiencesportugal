@@ -78,6 +78,30 @@ export function clearStudioV3Draft() {
   }
 }
 
+export function saveStudioV3DraftNow(payload: {
+  state: StudioV3State;
+  tourId: string | null;
+  addOnIds: string[];
+  addOnItems: AddOnItems;
+  addOnsTotalEur: number;
+}): boolean {
+  if (!hasWindow()) return false;
+  try {
+    writePersisted({
+      version: 1,
+      savedAt: Date.now(),
+      state: payload.state,
+      tourId: payload.tourId,
+      addOnIds: payload.addOnIds,
+      addOnItems: payload.addOnItems,
+      addOnsTotalEur: payload.addOnsTotalEur,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 interface Options {
   state: StudioV3State;
   setState: Dispatch<SetStateAction<StudioV3State>>;
@@ -158,5 +182,14 @@ export function useStudioV3AutoPersist({
     return () => window.clearTimeout(timer);
   }, [state, selectedAddOnIds, selectedAddOnItems, selectedAddOnsTotalEur]);
 
-  return { restored, clearDraft: clearStudioV3Draft };
+  const saveNow = () =>
+    saveStudioV3DraftNow({
+      state,
+      tourId: state.tourId ?? null,
+      addOnIds: selectedAddOnIds,
+      addOnItems: selectedAddOnItems,
+      addOnsTotalEur: selectedAddOnsTotalEur,
+    });
+
+  return { restored, clearDraft: clearStudioV3Draft, saveNow };
 }
