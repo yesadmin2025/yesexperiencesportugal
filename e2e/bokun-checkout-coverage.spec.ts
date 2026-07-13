@@ -1,18 +1,18 @@
 import { test, expect } from "@playwright/test";
-// Hardcoded — avoids pulling vite-only image imports into Playwright.
-const SIGNATURE_TOUR_IDS = [
-  "arrabida-boat",
-  "arrabida-wine-allinclusive",
-  "azeitao-cheese",
-  "evora-alentejo",
-  "fatima-nazare-obidos",
-  "roman-heritage-alentejo",
-  "sintra-cascais",
-  "tiles-workshop",
-  "tomar-coimbra",
-  "troia-comporta",
-  "wild-beaches-picnic",
-];
+// Derived from the canonical Signature registry — NEVER hand-maintain a
+// parallel list. When a 13th (or 14th, or …) tour is added to
+// `src/lib/tours/signatureRegistry.ts`, this coverage extends automatically
+// so no tour can silently escape the category-aware checkout gate.
+import { publicSignatureTourIds } from "../src/lib/tours/signatureRegistry";
+
+const SIGNATURE_TOUR_IDS = publicSignatureTourIds();
+
+test("SIGNATURE_TOUR_IDS covers every public Signature tour in the registry", () => {
+  expect(SIGNATURE_TOUR_IDS.length).toBeGreaterThanOrEqual(12);
+  // Guard against accidental duplication.
+  expect(new Set(SIGNATURE_TOUR_IDS).size).toBe(SIGNATURE_TOUR_IDS.length);
+});
+
 
 /**
  * Full tour-by-tour verification:
