@@ -127,9 +127,10 @@ export const Route = createFileRoute("/tours/$tourId")({
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[60vh]">
         <div className="container-x max-w-xl text-center">
-          <h1 className="serif text-4xl" data-mixed-emphasis="exempt">
+          <h2 className="serif text-4xl" data-mixed-emphasis="exempt">
             Experience not found
-          </h1>
+          </h2>
+
           <p className="mt-4 text-[color:var(--charcoal-soft)]">
             That Signature Experience doesn't exist anymore.
           </p>
