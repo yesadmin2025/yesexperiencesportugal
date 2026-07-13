@@ -46,6 +46,7 @@ export function StudioV3Intro({ onComplete }: Props) {
       aria-label="Studio intro"
       data-testid="studio-v3-root"
       data-phase="intro"
+      data-client-ready={clientReady ? "true" : "false"}
       className="relative min-h-[100dvh] w-full overflow-hidden"
       style={{ background: "var(--charcoal)" }}
     >
