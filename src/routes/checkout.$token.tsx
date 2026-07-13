@@ -133,12 +133,13 @@ function CheckoutPage() {
   if (!draft) {
     return (
       <Shell>
-        <h1
+        <h2
           className="text-[24px]"
           style={{ fontFamily: "var(--font-display, Montserrat), sans-serif", fontWeight: 700 }}
         >
           Draft not found.
-        </h1>
+        </h2>
+
         <p
           className="mt-3"
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
