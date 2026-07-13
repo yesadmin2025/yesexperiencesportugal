@@ -405,6 +405,8 @@ function TailorPage() {
       ? { lines: previewPricing.lines, subtotalEur: previewPricing.subtotalEur }
       : null);
   const visibleTotal = liveQuote.quote?.finalTotalEur ?? previewPricing?.subtotalEur ?? null;
+  const quoteReadyForCurrentSelection =
+    !!liveQuote.quote && liveQuote.quote.itineraryRevision === itineraryRevision;
 
 
   // ─── Helpers ────────────────────────────────────────────────
@@ -1322,7 +1324,7 @@ function TailorPage() {
                   <div className="pt-3 border-t border-[color:var(--border)]">
                     <div className="flex items-baseline justify-between gap-3">
                       <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-                        {liveQuote.quote ? "Confirmed total" : "Estimated party total"}
+                        {quoteReadyForCurrentSelection ? "Confirmed total" : "Estimated party total"}
                       </span>
                       <span className="serif text-[1.4rem] text-[color:var(--charcoal)] tabular-nums">
                         {visibleTotal != null ? formatEur(visibleTotal) : "Select a date"}
@@ -1361,7 +1363,11 @@ function TailorPage() {
                   <button
                     type="button"
                     onClick={() => setDetailsOpen(true)}
-                    disabled={checkoutPending || summaryStops.length === 0}
+                    disabled={
+                      checkoutPending ||
+                      summaryStops.length === 0 ||
+                      (!!date && (!quoteReadyForCurrentSelection || liveQuote.loading))
+                    }
                     className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
                   >
                     {checkoutPending ? (
