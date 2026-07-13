@@ -32,7 +32,7 @@ const EXPECTED_ORDER = [
   "studio-v3-hero-price",
   "studio-v3-reveal-map",
   "studio-v3-daypart-timeline",
-  "studio-v3-story-of-day",
+  // (studio-v3-story-of-day section retired — chapter copy now lives inline in the daypart timeline)
   "studio-v3-stops-editor",
   "studio-v3-signature-dna",
   "studio-v3-shaping-direction",
