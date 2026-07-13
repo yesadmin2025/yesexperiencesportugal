@@ -1796,7 +1796,7 @@ export function resolveStudioV3Route(input: {
     });
   }
 
-  const journey = curateJourney(feeling, companions, rhythm, {
+  const journey = curateJourney(safeFeeling, safeCompanions, safeRhythm, {
     interests,
     pickup,
     investment,
