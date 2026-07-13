@@ -254,7 +254,7 @@ function TourHero({
   return (
     <>
       {/* Breadcrumb */}
-      <section className="pt-24 pb-3">
+      <section className="pt-20 sm:pt-24 pb-2 sm:pb-3">
         <div className="container-x max-w-6xl">
           <Link
             to="/experiences"
@@ -265,7 +265,8 @@ function TourHero({
         </div>
       </section>
 
-      <section className="pt-2 sm:pt-4 pb-8">
+      <section className="pt-3 sm:pt-4 pb-6 sm:pb-8">
+
         <div className="container-x max-w-6xl">
           {/* Cinematic hero — 16:9 on mobile (lighter vertical weight,
               title stays inside the fold), 3:2 from md upward. */}
