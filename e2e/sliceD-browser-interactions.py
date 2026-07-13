@@ -370,11 +370,17 @@ async def run_signature(page: Page, viewport: str):
     await page.wait_for_timeout(1200)
     await page.screenshot(path=str(SHOTS/f"signature-checkout-{viewport}.png"))
 
-    outgoing = fx.quote_calls[0]["body"] if fx.quote_calls else None
+    # Use LAST quote (fully-committed composition), not first (may be stale).
+    outgoing = fx.quote_calls[-1]["body"] if fx.quote_calls else None
     cbody = fx.checkout_calls[0]["body"] if fx.checkout_calls else None
+    expected = {"adults": 2, "minorAges": [15, 8, 0]}
     return {
         "outgoingComposition": (outgoing or {}).get("travellerComposition"),
+        "outgoingCompositionMatchesExpected":
+            (outgoing or {}).get("travellerComposition") == expected,
+        "compositionCommittedBeforeReserve": composition_committed,
         "labelsVisible": labels,
+        "quoteCalls": len(fx.quote_calls),
         "checkoutCalls": len(fx.checkout_calls),
         "checkoutHasQuoteToken": bool(cbody and cbody.get("quoteToken") == QUOTE_TOKEN),
     }
