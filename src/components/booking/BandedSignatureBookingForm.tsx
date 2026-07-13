@@ -381,7 +381,8 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
             guests: totalGuests,
             pricePerPaxEur: quote.quote?.finalTotalEur
               ? Math.round(quote.quote.finalTotalEur / Math.max(1, totalGuests))
-              : tour.priceFrom,
+              : 0,
+
             totalEur: Math.round(quote.quote?.finalTotalEur ?? 0),
             flowLabel: "Signature",
           }
