@@ -748,6 +748,7 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
       pickup: (body.pickupLabel ?? "").slice(0, 120),
       journey_title: (body.journeyTitle ?? tourTitle).slice(0, 160),
       ui_mode: uiMode,
+      pricing_source: isManual ? "manual_viator_tiers" : "bokun_live",
     },
   };
 
