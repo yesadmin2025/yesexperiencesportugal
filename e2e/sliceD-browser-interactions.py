@@ -182,6 +182,14 @@ async def click_while_enabled(page: Page, aria_re, max_clicks: int):
         except Exception:
             return
 
+async def set_minor_age(page: Page, idx: int, age: int):
+    el = page.locator(f"#minor-age-{idx}")
+    await el.fill(str(age)); await el.blur()
+
+async def fill_date(page: Page):
+    d = page.locator('input[type="date"]').first
+    await d.fill("2099-06-01"); await d.blur()
+
 async def compose_2_15_8_0(page: Page):
     # Deterministic: squash to min then bump to target so initial-value drift
     # (BandedSignatureBookingForm defaults adults=2, minors=0) can't skew us.
