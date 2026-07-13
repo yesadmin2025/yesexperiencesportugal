@@ -188,7 +188,11 @@ async def fill_date(page: Page):
     await d.fill("2099-06-01"); await d.blur()
 
 async def compose_2_15_8_0(page: Page):
-    await bump(page, re.compile(r"Increase Adults", re.I), 1)
+    # Normalise to exactly adults=2, minors=3 regardless of the picker's
+    # initial state by squashing to the minimum then bumping back up.
+    await bump(page, re.compile(r"Decrease Adults", re.I), 10)
+    await bump(page, re.compile(r"Increase Adults", re.I), 1)   # 1 -> 2
+    await bump(page, re.compile(r"Decrease Travellers aged 0", re.I), 10)
     await bump(page, re.compile(r"Increase Travellers aged 0", re.I), 3)
     await set_minor_age(page, 0, 15)
     await set_minor_age(page, 1, 8)
