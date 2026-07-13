@@ -14,7 +14,13 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { TravellerCompositionPicker } from "@/components/booking/TravellerCompositionPicker";
 import { useTourBokunReadiness } from "@/hooks/use-tour-bokun-readiness";
-import { filterSignatureCandidatesForAges } from "@/lib/pricing/filterSignatureCandidatesForAges";
+import {
+  filterSignatureCandidatesForAges,
+  filterStudioCandidatesBySuitability,
+} from "@/lib/pricing/filterSignatureCandidatesForAges";
+import { requirementsFromComposition } from "@/lib/pricing/travellerSuitability";
+import { filterStopsBySuitability } from "@/components/studio-v3/stop-suitability";
+import { assertStudioCommercialIdentity } from "@/lib/pricing/studioCommercialIdentity";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
 import { loadStudioV3Signature } from "@/lib/studio-v3/load-signature.functions";
 import { ChoiceGrid } from "./ChoiceGrid";
@@ -1079,6 +1085,7 @@ export function StudioV3() {
         // Studio resolves against `studio_commercial_bokun_mapping` server-side.
         const composition = compositionFromLegacyGuests(details.guests);
         const commercialProductKey = "studio-v3-private-full-day";
+        assertStudioCommercialIdentity(commercialProductKey);
         const selectedAddOnsForQuote = addOnsForCheckout.map((a) => ({
           id: a.id,
           quantity: 1,
@@ -3165,10 +3172,17 @@ export function StoryboardHandoff({
     if (readinessQuery.isLoading || !readinessQuery.data) {
       return { status: "loading" };
     }
-    const { compatible, excluded } = filterSignatureCandidatesForAges(
+    const requirements = requirementsFromComposition(composition, {
+      requiresChildSeat: false,
+      requiresStroller: (state.considerations ?? []).some((c) =>
+        /stroller|pram/i.test(c),
+      ),
+    });
+    const { compatible, excluded } = filterStudioCandidatesBySuitability(
       composition,
       signatureTours,
       readinessQuery.data,
+      requirements,
     );
     const unsupportedAges = Array.from(
       new Set(excluded.flatMap((e) => e.unsupportedAges).filter((a) => a >= 0)),
@@ -3179,7 +3193,7 @@ export function StoryboardHandoff({
       unsupportedAges,
       excludedTourIds: excluded.map((e) => e.tourId),
     };
-  }, [state.guests, state.minorAges, readinessQuery.isLoading, readinessQuery.data]);
+  }, [state.guests, state.minorAges, state.considerations, readinessQuery.isLoading, readinessQuery.data]);
 
   const resolved = useMemo(
     () =>
@@ -3209,13 +3223,29 @@ export function StoryboardHandoff({
     ],
   );
 
-  const baseStops = useMemo(
-    () => resolved.routePoints.map((p) => ({ label: p.label, story: p.story })),
-    [resolved.routePoints],
-  );
+  const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
+
+  // Slice C — stop-level suitability filter. Removes incompatible stops and
+  // fills each slot from the SAME skeleton tour's own stops pool. Studio
+  // commercial identity (`studio-v3-private-full-day`) is untouched — only
+  // the itinerary changes; the base quote is not recomputed here.
+  const baseStops = useMemo(() => {
+    const rawStops = resolved.routePoints.map((p) => ({ label: p.label, story: p.story }));
+    const composition = {
+      adults: Math.max(1, (state.guests ?? 2) - state.minorAges.length),
+      minorAges: state.minorAges,
+    };
+    const requirements = requirementsFromComposition(composition, {
+      requiresChildSeat: false,
+      requiresStroller: (state.considerations ?? []).some((c) => /stroller|pram/i.test(c)),
+    });
+    const pool =
+      skeletonTour?.stops?.map((s) => ({ label: s.label, story: s.story })) ?? [];
+    const outcome = filterStopsBySuitability(rawStops, requirements, pool);
+    return outcome.stops;
+  }, [resolved.routePoints, state.guests, state.minorAges, state.considerations, skeletonTour]);
 
   const editedStops = state.editedRoutePoints ?? baseStops;
-  const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
 
   // Real OSRM driving legs — shared with RevealRouteMap via react-query's
   // dedupe on the same routeStops key, so we pay for one fetch and both the
