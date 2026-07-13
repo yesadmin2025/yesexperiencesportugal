@@ -895,15 +895,16 @@ export function SignaturePriceCard({
                 <span className="sr-only">No add-ons selected</span>
               )}
             </output>
-            {/* Final estimated total — the single figure that matches the
-                Reserve CTA and, on booking, the checkout payload. Unit-aware:
-                base × guests + Σ(add-on line totals). */}
-            {selectedAddOnIds.length > 0 &&
-            partyTotalEur != null &&
-            partyCount != null ? (
+            {/* Live breakdown + total — always visible when we have a base
+                price, so changing guests, stops, or add-ons updates a
+                visible figure in real time. */}
+            {hasPrice && partyTotalEur != null && partyCount != null ? (
               <div
                 data-testid="studio-v3-final-total"
                 data-final-eur={partyTotalEur}
+                data-status={serverLoading ? "loading" : "ready"}
+                aria-live="polite"
+                aria-busy={serverLoading || undefined}
                 className="mt-3 rounded-[4px] px-3 py-2.5 text-center"
                 style={{
                   background: "color-mix(in oklab, var(--gold) 10%, var(--ivory))",
@@ -914,22 +915,45 @@ export function SignaturePriceCard({
                   className="text-[10px] uppercase tracking-[0.24em] font-bold"
                   style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
                 >
-                  Final estimated total
+                  {selectedAddOnIds.length > 0 ? "Final estimated total" : "Live total"}
                 </p>
                 <p
                   className="mt-1 text-[22px] font-bold tabular-nums leading-none"
-                  style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: "var(--charcoal)",
+                    opacity: serverLoading ? 0.6 : 1,
+                    transition: "opacity 160ms ease-out",
+                  }}
                 >
                   €{partyTotalEur}
                 </p>
+                {/* Two-line breakdown — reactive to guests / stops / add-ons. */}
                 <p
-                  className="mt-1 text-[10.5px]"
+                  data-testid="studio-v3-total-breakdown"
+                  className="mt-1.5 text-[10.5px] tabular-nums"
                   style={{
                     color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
                   }}
                 >
-                  {partyCount} guests · additions priced by their own unit
+                  Base €{displayPerPaxEur} × {partyCount} guests
+                  {partyBaseEur != null ? <> = €{partyBaseEur}</> : null}
+                  {selectedAddOnIds.length > 0 ? (
+                    <>
+                      {" · "}
+                      Additions €{addOnsDisplayPartyEur}
+                    </>
+                  ) : null}
                 </p>
+                {serverLoading ? (
+                  <p
+                    data-testid="studio-v3-total-recalculating"
+                    className="mt-1 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+                    style={{ color: "color-mix(in oklab, var(--gold) 90%, transparent)" }}
+                  >
+                    Recalculating…
+                  </p>
+                ) : null}
               </div>
             ) : null}
           </fieldset>
