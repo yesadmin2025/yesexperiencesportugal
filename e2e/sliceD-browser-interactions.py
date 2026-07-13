@@ -562,36 +562,80 @@ async def studio_pick_first_visible_choice(page: Page):
 
 async def run_studio(page: Page, viewport: str):
     fx.mode = "available"; fx.quote_calls.clear(); fx.checkout_calls.clear()
-    await page.goto(f"{BASE}/studio-v3", wait_until="domcontentloaded")
-    await page.wait_for_timeout(1200)
+    route = "/studio-v3"
+    await page.goto(f"{BASE}{route}", wait_until="domcontentloaded")
+    await page.wait_for_timeout(600)
 
-    # Intro (StudioV3Intro is a separate component before studio-v3-root exists).
-    # Step 1: name form → submit "Continue". Step 2: path cards → click Fast.
-    try:
-        cont = page.get_by_role("button", name=re.compile(r"^Continue$", re.I)).first
-        if await cont.count() and await cont.is_visible():
-            await cont.click(timeout=1500)
-            await page.wait_for_timeout(400)
-    except Exception: pass
-    try:
-        fast = page.get_by_text(re.compile(r"Compose it quickly", re.I)).first
-        if await fast.count() and await fast.is_visible():
-            await fast.click(timeout=1500)
-            await page.wait_for_timeout(600)
-    except Exception: pass
+    landed_url = page.url
+    if route not in landed_url:
+        await page.screenshot(path=str(SHOTS/f"studio-redirect-{viewport}.png"))
+        return {"error":"unexpected redirect","route":route,"landedUrl":landed_url}
 
+    # StudioV3Intro is rendered inside StudioV3 with data-testid="studio-v3-root"
+    # and data-phase="intro". Walk through: Begin -> Skip -> "Compose it quickly".
+    async def click_by_text(pat, timeout=2000):
+        try:
+            btn = page.get_by_role("button", name=re.compile(pat, re.I)).first
+            if await btn.count() and await btn.is_visible():
+                await btn.click(timeout=timeout)
+                return True
+        except Exception: pass
+        try:
+            el = page.get_by_text(re.compile(pat, re.I)).first
+            if await el.count() and await el.is_visible():
+                await el.click(timeout=timeout)
+                return True
+        except Exception: pass
+        return False
 
-    phase_sequence = []
-    snapshots = {"storyboard": None, "final": None, "checkout": None}
+    intro_steps = []
+    for step_name, pat, wait in (
+        ("begin", r"^Begin$", 500),
+        ("skip",  r"^Skip$",  400),
+        ("fast",  r"Compose it quickly", 900),
+    ):
+        clicked = await click_by_text(pat)
+        intro_steps.append({"step":step_name,"clicked":clicked})
+        await page.wait_for_timeout(wait)
 
-    # Walk up to N phases; at each phase, capture snapshot if we're on
-    # storyboard / confirmation / checkoutSummary, otherwise pick a first
-    # visible choice + advance. Bail after 40 iterations.
-    for i in range(40):
+    # Wait for phase to leave "intro". studio-v3-root exists during intro too,
+    # so gate on data-phase not being "intro".
+    for _ in range(80):
         phase = await page.evaluate(
             "() => { const r=document.querySelector('[data-testid=\"studio-v3-root\"]'); return r?r.getAttribute('data-phase'):null; }"
         )
-        phase_sequence.append(phase or "?")
+        if phase and phase != "intro":
+            break
+        await page.wait_for_timeout(100)
+
+    root_mounted = phase not in (None, "intro")
+    if not root_mounted:
+        headings = await page.evaluate(
+            "() => Array.from(document.querySelectorAll('h1,h2,h3')).slice(0,10).map(e => (e.innerText||'').trim())"
+        )
+        body_excerpt = await page.evaluate(
+            "() => (document.body.innerText||'').slice(0, 500)"
+        )
+        title = await page.title()
+        await page.screenshot(path=str(SHOTS/f"studio-root-MISSING-{viewport}.png"))
+        return {
+            "error":"root-mount-failed (still on intro)",
+            "route":route,"landedUrl":landed_url,"phase":phase,
+            "introSteps":intro_steps,
+            "title":title,"headings":headings,"bodyExcerpt":body_excerpt,
+        }
+
+    phase_sequence = [phase]
+    snapshots = {"storyboard": None, "final": None, "checkout": None}
+
+    for i in range(40):
+        cur_phase = await page.evaluate(
+            "() => { const r=document.querySelector('[data-testid=\"studio-v3-root\"]'); return r?r.getAttribute('data-phase'):null; }"
+        )
+        if cur_phase != phase_sequence[-1]:
+            phase_sequence.append(cur_phase or "?")
+        phase = cur_phase
+
         if phase == "storyboard" and not snapshots["storyboard"]:
             snapshots["storyboard"] = await studio_snapshot(page, "storyboard")
             await page.screenshot(path=str(SHOTS/f"studio-storyboard-{viewport}.png"))
@@ -601,7 +645,6 @@ async def run_studio(page: Page, viewport: str):
         elif phase == "checkoutSummary" and not snapshots["checkout"]:
             snapshots["checkout"] = await studio_snapshot(page, "checkout")
             await page.screenshot(path=str(SHOTS/f"studio-checkout-{viewport}.png"))
-            # Trigger Reserve
             try:
                 reserve = page.locator('[data-testid="studio-v3-checkout-summary-reserve"]').first
                 if await reserve.count() and not await reserve.is_disabled():
@@ -611,15 +654,12 @@ async def run_studio(page: Page, viewport: str):
                 pass
             break
 
-        # Try to advance
         advanced = await studio_advance_once(page)
         if not advanced or advanced == phase:
-            # Need to pick a choice first, then re-try advance
             picked = await studio_pick_first_visible_choice(page)
             if picked:
                 await studio_advance_once(page)
             else:
-                # Nothing to click — dead end. Screenshot and break.
                 await page.screenshot(path=str(SHOTS/f"studio-deadend-{viewport}-phase-{phase or 'unknown'}.png"))
                 break
 
@@ -628,6 +668,10 @@ async def run_studio(page: Page, viewport: str):
         and snapshots["storyboard"] == snapshots["final"] == snapshots["checkout"]
     )
     return {
+        "route":route,
+        "landedUrl":landed_url,
+        "rootMounted":root_mounted,
+        "introSteps":intro_steps,
         "phaseSequence": phase_sequence,
         "snapshots": snapshots,
         "equal": equal,
