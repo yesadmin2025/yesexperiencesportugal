@@ -60,7 +60,7 @@ export function CtaPair({
       className={cn(
         layoutClasses[layout],
         justifyClasses[justify],
-        "gap-y-4 gap-x-4",
+        "min-w-0 max-w-full gap-y-4 gap-x-4 [&>*:not(.sr-only)]:min-w-0 [&>*:not(.sr-only)]:max-w-full",
         className,
       )}
       role={role}

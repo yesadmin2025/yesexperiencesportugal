@@ -255,7 +255,7 @@ function TourHero({
     <>
       {/* Breadcrumb */}
       <section className="pt-20 sm:pt-24 pb-2 sm:pb-3">
-        <div className="container-x max-w-6xl">
+        <div className="container-x min-w-0 max-w-6xl">
           <Link
             to="/experiences"
             className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
@@ -267,7 +267,7 @@ function TourHero({
 
       <section className="pt-3 sm:pt-4 pb-6 sm:pb-8">
 
-        <div className="container-x max-w-6xl">
+        <div className="container-x min-w-0 max-w-6xl">
           {/* Cinematic hero — 16:9 on mobile (lighter vertical weight,
               title stays inside the fold), 3:2 from md upward. */}
           <TourImage
@@ -284,9 +284,9 @@ function TourHero({
 
           {/* Editorial header — title, blurb and meta sit BELOW the hero
               so the cinematic image reads as a single quiet frame. */}
-          <div className="mt-5 sm:mt-8">
+          <div className="mt-5 min-w-0 max-w-full sm:mt-8">
             <Eyebrow>Signature Experience</Eyebrow>
-            <h1 className="serif mt-2.5 sm:mt-3 text-[1.75rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.1] sm:leading-[1.02] tracking-[-0.015em] max-w-3xl text-[color:var(--charcoal)]">
+            <h1 className="serif mt-2.5 min-w-0 max-w-3xl text-[1.75rem] leading-[1.1] tracking-[-0.015em] text-[color:var(--charcoal)] [overflow-wrap:anywhere] sm:mt-3 sm:text-4xl sm:leading-[1.02] md:text-5xl lg:text-6xl">
               {tour.title}
             </h1>
             <p className="serif italic font-normal mt-3 sm:mt-4 text-[14.5px] sm:text-lg md:text-xl text-[color:var(--charcoal-soft)] max-w-2xl leading-snug">
@@ -323,17 +323,17 @@ function TourHero({
             </div>
           </div>
 
-          <CtaPair className="mt-6" layout="stack-then-row" justify="start">
+          <CtaPair className="mt-6 w-full" layout="stack-then-row" justify="start">
             <a
               href="#book"
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-6 py-4 text-sm tracking-wide transition-all min-h-[52px]"
+              className="inline-flex min-w-0 w-full max-w-full flex-1 items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-4 sm:px-6 py-4 text-center text-sm tracking-wide transition-all min-h-[52px] whitespace-normal [overflow-wrap:anywhere] sm:w-auto"
             >
               <Sparkles size={14} /> Check availability & reserve
             </a>
             <Link
               to="/tours/$tourId/tailor"
               params={{ tourId: tour.id }}
-              className="flex-1 inline-flex items-center justify-center gap-2 border border-[color:var(--charcoal)]/25 hover:border-[color:var(--gold)] text-[color:var(--charcoal)] px-6 py-4 text-sm tracking-wide transition-all min-h-[52px]"
+              className="inline-flex min-w-0 w-full max-w-full flex-1 items-center justify-center gap-2 border border-[color:var(--charcoal)]/25 hover:border-[color:var(--gold)] text-[color:var(--charcoal)] px-4 sm:px-6 py-4 text-center text-sm tracking-wide transition-all min-h-[52px] whitespace-normal [overflow-wrap:anywhere] sm:w-auto"
             >
               Tailor this day
             </Link>

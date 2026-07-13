@@ -374,7 +374,7 @@
     scroll-padding-top: 5rem; /* 80px — mobile navbar */
     /* Belt-and-braces: prevent any descendant overflow from creating
        horizontal scroll on mobile. */
-    overflow-x: clip;
+    overflow-x: hidden;
   }
   @media (min-width: 768px) {
     html {
@@ -399,7 +399,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    overflow-x: clip;
+    overflow-x: hidden;
   }
   p {
     color: var(--charcoal);
@@ -497,10 +497,13 @@
       max-width: 1240px;
     }
   }
-  /* Global horizontal-overflow guard — no descendant may widen the viewport. */
+  /* Safari-safe horizontal-overflow guard. Root `clip` is not propagated to
+     the viewport on iOS, while `hidden` is. Layouts must still constrain their
+     own children; this only catches transformed decorative pixels. */
   html,
   body {
-    overflow-x: clip;
+    max-width: 100%;
+    overflow-x: hidden;
   }
   /* CTA row: stack full-width on mobile, inline on ≥sm. Children get w-full sm:w-auto. */
   .cta-stack {
