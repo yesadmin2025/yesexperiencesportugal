@@ -819,11 +819,15 @@ async def run_studio(page: Page, viewport: str):
     return {
         "route":route,
         "landedUrl":landed_url,
+        "clientReady": client_ready,
+        "initialPhase": initial_phase,
+        "introTransitioned": intro_transitioned,
+        "introDiagnostic": intro_diagnostic,
         "rootMounted":root_mounted,
         "introSteps":intro_steps,
         "phaseSequence": phase_sequence,
         "snapshots": snapshots,
-        "equal": equal,
+        "snapshotsEqual": equal,
         "commercialProductKey": (snapshots["storyboard"] or {}).get("commercialProductKey"),
         "checkoutCalls": len(fx.checkout_calls),
     }
