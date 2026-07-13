@@ -398,11 +398,10 @@ async def run_tailored(page: Page, viewport: str):
         return {"note":"tailor picker not present","viewport":viewport}
     await fill_date(page)
     await compose_2_15_8_0(page)
-    await wait_for(lambda: bool(fx.quote_calls), 6.0)
-    await page.wait_for_timeout(1200)
+    composition_committed = await wait_for_quote_composition(
+        page, {"adults": 2, "minorAges": [15, 8, 0]}, deadline=8.0
+    )
 
-    # summaryStops is populated by default from blueprint.core (all kept) —
-    # verify the summary row shows a non-zero count before clicking Reserve.
     summary_ok = False
     try:
         summary_text = await page.get_by_text(re.compile(r"Itinerary \(\d+ of \d+\)"), exact=False).first.inner_text(timeout=3000)
@@ -417,6 +416,27 @@ async def run_tailored(page: Page, viewport: str):
     if await reserve.count() == 0:
         return {"note":"no reserve button","viewport":viewport,"summaryPopulated":summary_ok}
     await reserve.scroll_into_view_if_needed()
+    # Wait for readiness to enable Reserve (mixedFamilyBlocked gate).
+    t0 = time.time()
+    reserve_enabled = False
+    for _ in range(80):
+        if not await reserve.is_disabled():
+            reserve_enabled = True
+            break
+        await page.wait_for_timeout(100)
+    reserve_enabled_after_ms = int((time.time() - t0) * 1000)
+    if not reserve_enabled:
+        # Capture readiness diagnostic via visible minor-row hints.
+        hints = await page.evaluate(
+            "() => Array.from(document.querySelectorAll('[id^=\"minor-age-\"]')).map(i => (i.parentElement?.parentElement?.innerText || '').trim())"
+        )
+        await page.screenshot(path=str(SHOTS/f"tailored-reserve-BLOCKED-{viewport}.png"))
+        return {"error":"reserve never enabled (mixedFamilyBlocked?)",
+                "viewport":viewport,
+                "summaryPopulated": summary_ok,
+                "compositionCommittedBeforeReserve": composition_committed,
+                "minorRowHints": hints,
+                "reserveEnabledAfterMs": reserve_enabled_after_ms}
     await reserve.click()
     try:
         await page.wait_for_selector("text=Final details before payment", timeout=5000)
