@@ -1770,8 +1770,15 @@ export function resolveStudioV3Route(input: {
     ...overrides,
   });
 
-  // Fallback when we don't have enough to safely resolve a Signature.
-  if (!feeling || !companions || !rhythm) return emptyFallback();
+  // Instant-checkout guarantee: Studio must always resolve to a real
+  // Signature so the storytelling reveal + Reserve → embedded Stripe path
+  // is always available. When any of feeling/companions/rhythm are missing
+  // we fall back to safe defaults from the enum and let curateJourney pick
+  // a real tour. No fabricated stops — the downstream pool is still the
+  // resolved tour's own `stops`.
+  const safeFeeling: Feeling = feeling ?? "romance";
+  const safeCompanions: Companions = companions ?? "couple";
+  const safeRhythm: Rhythm = rhythm ?? "balanced";
 
   // Slice B closure — age filter gating BEFORE any generation.
   if (ageFilter?.status === "loading") {
@@ -1789,7 +1796,7 @@ export function resolveStudioV3Route(input: {
     });
   }
 
-  const journey = curateJourney(feeling, companions, rhythm, {
+  const journey = curateJourney(safeFeeling, safeCompanions, safeRhythm, {
     interests,
     pickup,
     investment,
@@ -1807,9 +1814,9 @@ export function resolveStudioV3Route(input: {
       tourId: journey.tour.id,
       tourTitleInternal: journey.tour.title,
       region: journey.tour.region ?? null,
-      feeling,
-      companions,
-      rhythm,
+      feeling: safeFeeling,
+      companions: safeCompanions,
+      rhythm: safeRhythm,
       dateExact,
       destinationIntent,
       investment,
@@ -1852,8 +1859,8 @@ export function resolveStudioV3Route(input: {
       const safe = applyMobilitySafety(routePoints, {
         skeletonTourId: journey.tour.id,
         interests,
-        rhythm,
-        companions,
+        rhythm: safeRhythm,
+        companions: safeCompanions,
         investment,
         considerations: input.considerations ?? [],
       });
@@ -1864,8 +1871,8 @@ export function resolveStudioV3Route(input: {
     const composed = applyReplacementCandidates(routePoints, {
       skeletonTourId: journey.tour.id,
       interests,
-      rhythm,
-      companions,
+      rhythm: safeRhythm,
+      companions: safeCompanions,
       investment,
       considerations: input.considerations ?? [],
     });
@@ -1876,8 +1883,8 @@ export function resolveStudioV3Route(input: {
     const withExtra = applyExtraMoment(routePoints, {
       skeletonTourId: journey.tour.id,
       interests,
-      rhythm,
-      companions,
+      rhythm: safeRhythm,
+      companions: safeCompanions,
       investment,
       considerations: input.considerations ?? [],
     });
@@ -1902,27 +1909,27 @@ export function resolveStudioV3Route(input: {
       : `${origin} → your chosen region → ${origin}`;
 
   const journeyTitle = composeJourneyTitle({
-    feeling,
-    companions,
+    feeling: safeFeeling,
+    companions: safeCompanions,
     occasion: occasion ?? null,
     pickup,
     interests,
-    rhythm,
+    rhythm: safeRhythm,
     region: journey.tour.region,
   });
 
   const whyItFits = composeJourneyReasons({
-    feeling,
-    companions,
-    rhythm,
+    feeling: safeFeeling,
+    companions: safeCompanions,
+    rhythm: safeRhythm,
     interests,
     pickup,
     occasion: occasion ?? null,
   });
 
   const refinements = composePersonalizedMoments({
-    feeling,
-    rhythm,
+    feeling: safeFeeling,
+    rhythm: safeRhythm,
     interests,
     considerations: input.considerations ?? [],
   });
@@ -1965,8 +1972,8 @@ export function resolveStudioV3Route(input: {
     const optional = selectOptionalRefinements({
       skeletonTourId: journey.tour.id,
       interests,
-      rhythm,
-      companions,
+      rhythm: safeRhythm,
+      companions: safeCompanions,
       investment,
       considerations: input.considerations ?? [],
       existingRoutePointLabels: routePoints.map((p) => p.label),
