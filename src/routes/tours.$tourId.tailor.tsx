@@ -289,19 +289,58 @@ function TailorPage() {
       next.add(id);
       const proj = projectFeasibility(skippedCore, next, optionalSelected);
       if (proj && !proj.feasible) {
+        const opt = blueprint?.choice?.options.find((o) => o.id === id);
+        const isWinery = opt?.category === "winery";
+        // Smart suggestion: find the smallest single core skip that makes the
+        // day feasible again. Priority: market → viewpoint → workshop → lunch
+        // (lunch last — it's the meal on this Signature).
+        const priority: Record<string, number> = {
+          market: 0,
+          viewpoint: 1,
+          workshop: 2,
+          lunch: 3,
+        };
+        const skipCandidates =
+          blueprint?.core
+            .filter((s) => s.skippable !== false && !skippedCore.has(s.id))
+            .sort(
+              (a, b) => (priority[a.category] ?? 9) - (priority[b.category] ?? 9),
+            ) ?? [];
+        const suggestion = skipCandidates.find((cand) => {
+          const trial = new Set(skippedCore);
+          trial.add(cand.id);
+          const p = projectFeasibility(trial, next, optionalSelected);
+          return p?.feasible;
+        });
+        if (isWinery && suggestion) {
+          toast.error(
+            `Skip ${suggestion.label} to add ${opt?.label ?? "this winery"}`,
+            {
+              action: {
+                label: "Skip it",
+                onClick: () => {
+                  const nextSkip = new Set(skippedCore);
+                  nextSkip.add(suggestion.id);
+                  setSkippedCore(nextSkip);
+                  setChoiceSelected(next);
+                },
+              },
+              duration: 6000,
+            },
+          );
+          return;
+        }
         const hours = Math.round(proj.totalMinutes / 60);
-        const guidance =
-          next.size > (blueprint?.choice?.pickCount ?? 0)
-            ? " Skip the market, viewpoint or tile factory above to fit it."
-            : "";
         toast.error(
-          (proj.warnings[0] ?? `That would make ~${hours}h on the ground.`) + guidance,
+          proj.warnings[0] ??
+            `That would make ~${hours}h on the ground — trim one stop first.`,
         );
         return;
       }
     }
     setChoiceSelected(next);
   };
+
 
   const tryToggleOptional = (id: string) => {
     const on = optionalSelected.has(id);
@@ -867,6 +906,12 @@ function TailorPage() {
                       <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
                         {blueprint.choice.note}
                       </p>
+                      <p className="mb-3 text-[11px] leading-snug text-[color:var(--teal)]">
+                        {choiceSelected.size <= 2
+                          ? `Selected ${choiceSelected.size} — fits as-is.`
+                          : `Selected ${choiceSelected.size} — ${skippedCore.size} of ${choiceSelected.size - 2} needed skip${choiceSelected.size - 2 === 1 ? "" : "s"} applied${blueprintFeasibility?.feasible ? " · day fits" : " · skip a core stop above"}.`}
+                      </p>
+
                       <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
                         {blueprint.choice.options.map((o) => {
                           const on = choiceSelected.has(o.id);
