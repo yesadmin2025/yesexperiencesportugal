@@ -5,6 +5,7 @@ import { Lock, X, MapPin, Clock, Users, Calendar } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { BokunRolloutBadge } from "@/components/booking/BokunRolloutBadge";
 import type { TourBokunReadiness } from "@/hooks/use-tour-bokun-readiness";
 
@@ -132,11 +133,17 @@ export function BrandedCheckoutDrawer({
     if (open) prewarmStripeScript();
   }, [open]);
 
+  const isMobile = useIsMobile();
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
-        side="right"
-        className="w-full sm:max-w-[560px] p-0 bg-[color:var(--ivory)] border-l border-[color:var(--border)] flex flex-col gap-0 [&>button.absolute]:hidden"
+        side={isMobile ? "bottom" : "right"}
+        className={
+          isMobile
+            ? "w-full h-[94dvh] max-h-[94dvh] p-0 bg-[color:var(--ivory)] border-t border-[color:var(--border)] flex flex-col gap-0 rounded-t-2xl [&>button.absolute]:hidden"
+            : "w-full sm:max-w-[560px] p-0 bg-[color:var(--ivory)] border-l border-[color:var(--border)] flex flex-col gap-0 [&>button.absolute]:hidden"
+        }
         data-checkout="embedded"
       >
         {/* Header */}
@@ -183,7 +190,7 @@ export function BrandedCheckoutDrawer({
         </div>
 
         {/* Trust footer */}
-        <div className="px-5 sm:px-7 py-3 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40">
+        <div className="px-5 sm:px-7 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] border-t border-[color:var(--border)] bg-[color:var(--sand)]/40">
           <p className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
             <Lock size={11} /> Secure checkout · 256-bit encrypted
           </p>
