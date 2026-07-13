@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { INITIAL_STATE, type StudioV3State } from "./types";
-import type { SelectedAddOnSummary } from "@/lib/studio-v3-add-ons";
+import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 
 /**
  * Auto-persist the in-progress Studio V3 draft so a traveller who leaves and
