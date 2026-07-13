@@ -766,9 +766,11 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
   try {
     session = await stripe.checkout.sessions.create(sessionParams, { idempotencyKey });
   } catch (e) {
-    // Stripe failed AFTER we reserved — best-effort release, then surface error.
-    const { releaseReservation } = await import("../_shared/bokun.ts");
-    await releaseReservation(String(reservationId));
+    // Stripe failed AFTER we reserved — best-effort release (Bókun only), then surface error.
+    if (!isManual) {
+      const { releaseReservation } = await import("../_shared/bokun.ts");
+      await releaseReservation(String(reservationId));
+    }
     await admin
       .from("booking_quotes")
       .update({
