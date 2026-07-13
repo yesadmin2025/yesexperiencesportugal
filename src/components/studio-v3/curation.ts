@@ -1859,8 +1859,8 @@ export function resolveStudioV3Route(input: {
       const safe = applyMobilitySafety(routePoints, {
         skeletonTourId: journey.tour.id,
         interests,
-        rhythm,
-        companions,
+        rhythm: safeRhythm,
+        companions: safeCompanions,
         investment,
         considerations: input.considerations ?? [],
       });
