@@ -600,46 +600,6 @@ async def run_studio(page: Page, viewport: str):
         except Exception: pass
         return False
 
-    intro_steps = []
-
-    # Step 1: click Begin, wait for name input to appear.
-    clicked_begin = await click_by_text(r"^Begin$")
-    try:
-        await page.locator('input[autocomplete="given-name"]').first.wait_for(
-            state="visible", timeout=4000
-        )
-    except Exception:
-        pass
-    intro_steps.append({"step":"begin","clicked":clicked_begin})
-
-    # Step 2: click Skip, wait for path panel to appear.
-    clicked_skip = await click_by_text(r"^Skip$")
-    try:
-        await page.locator('[data-testid="studio-v3-intro-path"]').first.wait_for(
-            state="visible", timeout=4000
-        )
-    except Exception:
-        pass
-    intro_steps.append({"step":"skip","clicked":clicked_skip})
-
-    # Step 3: click the "Compose it quickly" path card (fast path).
-    clicked_fast = False
-    try:
-        card = page.locator('[data-phase-cta="intro-path"]').filter(
-            has_text=re.compile(r"Compose it quickly", re.I)
-        ).first
-        if await card.count():
-            await card.click(timeout=2000)
-            clicked_fast = True
-    except Exception:
-        pass
-    if not clicked_fast:
-        clicked_fast = await click_by_text(r"Compose it quickly")
-    intro_steps.append({"step":"fast","clicked":clicked_fast})
-    await page.wait_for_timeout(600)
-
-    # Wait for phase to leave "intro". studio-v3-root exists during intro too,
-    # so gate on data-phase not being "intro".
     async def click_cta(sel, fallback_pat=None):
         try:
             loc = page.locator(sel).first
@@ -688,6 +648,17 @@ async def run_studio(page: Page, viewport: str):
         clicked_fast = await click_by_text(r"Compose it quickly")
     intro_steps.append({"step":"fast","clicked":clicked_fast})
     await page.wait_for_timeout(700)
+
+    # Wait for phase to leave "intro". studio-v3-root exists during intro too,
+    # so gate on data-phase not being "intro".
+    phase = "intro"
+    for _ in range(80):
+        phase = await page.evaluate(
+            "() => { const r=document.querySelector('[data-testid=\"studio-v3-root\"]'); return r?r.getAttribute('data-phase'):null; }"
+        )
+        if phase and phase != "intro":
+            break
+        await page.wait_for_timeout(100)
 
     root_mounted = phase not in (None, "intro")
     if not root_mounted:
