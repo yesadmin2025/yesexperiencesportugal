@@ -56,18 +56,21 @@ test.describe("Signature checkout surface", () => {
 
     const dateInput = page.getByTestId("booking-date-input");
     await expect(dateInput).toBeVisible({ timeout: 15_000 });
-    // React-controlled <input type="date"> — Playwright's fill() can no-op
-    // in some Chromium builds, so set the value via the native property
-    // setter and dispatch the input event React listens for.
     const iso = tomorrowISO();
+    // Belt-and-braces: fill() covers most cases, and the native-setter
+    // + input/change dispatch handles React-controlled date inputs where
+    // fill()'s synthetic event is swallowed by the value tracker.
+    await dateInput.fill(iso);
     await dateInput.evaluate((el, value) => {
+      const input = el as HTMLInputElement;
       const setter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
         "value",
       )?.set;
-      setter?.call(el, value);
-      el.dispatchEvent(new Event("input", { bubbles: true }));
-      el.dispatchEvent(new Event("change", { bubbles: true }));
+      setter?.call(input, value);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      input.blur();
     }, iso);
 
     // Wait for the live-quote panel to resolve to a € total (proves
