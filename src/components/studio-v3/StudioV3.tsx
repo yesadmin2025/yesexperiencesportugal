@@ -768,12 +768,40 @@ export function StudioV3() {
     setSelectedAddOnItems(summary.items);
     setSelectedAddOnsTotalEur(summary.totalEur);
   }, []);
-  // Reset add-ons when the resolved tour changes (fresh reveal ⇒ clean slate).
+  // Reset add-ons ONLY when the resolved tour truly changes to a different
+  // non-null tour. Guarded so the persistence hook's rehydrate (which sets
+  // tourId back to the same value) doesn't wipe restored add-ons.
+  const prevTourIdRef = useRef<string | null>(null);
   useEffect(() => {
-    setSelectedAddOnIds([]);
-    setSelectedAddOnItems([]);
-    setSelectedAddOnsTotalEur(0);
+    const prev = prevTourIdRef.current;
+    const next = state.tourId ?? null;
+    if (prev != null && next != null && prev !== next) {
+      setSelectedAddOnIds([]);
+      setSelectedAddOnItems([]);
+      setSelectedAddOnsTotalEur(0);
+    }
+    prevTourIdRef.current = next;
   }, [state.tourId]);
+
+  // ── Auto-persist the in-progress draft (state + add-ons) ──────────────
+  // Silent restore on return. `?saved=<token>` server hydrate always wins.
+  const skipLocalHydrate = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    return new URLSearchParams(window.location.search).has("saved");
+  }, []);
+  useStudioV3AutoPersist({
+    state,
+    setState,
+    selectedAddOnIds,
+    selectedAddOnItems,
+    selectedAddOnsTotalEur,
+    restoreAddOns: ({ ids, items, totalEur }) => {
+      setSelectedAddOnIds(ids);
+      setSelectedAddOnItems(items);
+      setSelectedAddOnsTotalEur(totalEur);
+    },
+    skipHydrate: skipLocalHydrate,
+  });
 
   // Guest Details snapshot — captured on Guest Details submit, then rendered
   // in CheckoutSummary before we open Stripe. Kept in local state (not the
