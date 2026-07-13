@@ -40,6 +40,8 @@ export function filterStopsBySuitability<S extends StopLike>(
   const removed: StopFilterOutcome<S>["removed"] = [];
   const replacements: StopFilterOutcome<S>["replacements"] = [];
   const dropped: StopFilterOutcome<S>["dropped"] = [];
+  // Track labels currently placed in the output plus originally-present incompatible
+  // labels, so a swap can never land on a duplicate.
   const used = new Set(input.map((s) => s.label.toLowerCase()));
 
   const out: S[] = [];
@@ -51,7 +53,6 @@ export function filterStopsBySuitability<S extends StopLike>(
     }
     removed.push({ index, label: stop.label, reasons: check.reasons });
 
-    // Look for a same-skeleton replacement not already in use.
     const swap = skeletonPool.find(
       (cand) =>
         !used.has(cand.label.toLowerCase()) &&
@@ -66,5 +67,35 @@ export function filterStopsBySuitability<S extends StopLike>(
     }
   });
 
+  // Invariants — defensive, cheap. If any of these trip we have a logic bug
+  // upstream; failing loudly is better than shipping a broken itinerary.
+  const outLabels = out.map((s) => s.label.toLowerCase());
+  if (new Set(outLabels).size !== outLabels.length) {
+    throw new Error("[stop-suitability] duplicate replacement stop produced");
+  }
+  for (const s of out) {
+    if (!isCompatible(s.label, requirements)) {
+      throw new Error(`[stop-suitability] returned incompatible stop: ${s.label}`);
+    }
+  }
+
   return { stops: out, removed, replacements, dropped };
+}
+
+/**
+ * Post-replacement itinerary validity check. Returns null on success or a
+ * short reason string on failure. Callers force the existing "unsupported"
+ * gate (no quote, no Stripe) when this returns non-null.
+ */
+export function validateItineraryAfterReplacement<S extends StopLike>(
+  outcome: StopFilterOutcome<S>,
+  requirements: SuitabilityRequirements,
+): "empty" | "duplicate" | "incompatible" | null {
+  if (outcome.stops.length < 1) return "empty";
+  const labels = outcome.stops.map((s) => s.label.toLowerCase());
+  if (new Set(labels).size !== labels.length) return "duplicate";
+  for (const s of outcome.stops) {
+    if (!isCompatible(s.label, requirements)) return "incompatible";
+  }
+  return null;
 }
