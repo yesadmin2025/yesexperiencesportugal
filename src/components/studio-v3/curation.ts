@@ -1770,8 +1770,15 @@ export function resolveStudioV3Route(input: {
     ...overrides,
   });
 
-  // Fallback when we don't have enough to safely resolve a Signature.
-  if (!feeling || !companions || !rhythm) return emptyFallback();
+  // Instant-checkout guarantee: Studio must always resolve to a real
+  // Signature so the storytelling reveal + Reserve → embedded Stripe path
+  // is always available. When any of feeling/companions/rhythm are missing
+  // we fall back to safe defaults from the enum and let curateJourney pick
+  // a real tour. No fabricated stops — the downstream pool is still the
+  // resolved tour's own `stops`.
+  const safeFeeling: Feeling = feeling ?? "romance";
+  const safeCompanions: Companions = companions ?? "couple";
+  const safeRhythm: Rhythm = rhythm ?? "balanced";
 
   // Slice B closure — age filter gating BEFORE any generation.
   if (ageFilter?.status === "loading") {
