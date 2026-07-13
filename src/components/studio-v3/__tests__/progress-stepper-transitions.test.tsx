@@ -48,7 +48,7 @@ describe("StudioV3ProgressStepper — out-of-order & rapid transitions", () => {
     const nav = screen.getByTestId("studio-v3-progress-stepper");
     const current = nav.querySelectorAll('[aria-current="step"]');
     expect(current.length).toBe(1);
-    expect(current[0].textContent).toContain("Dates");
+    expect(current[0].textContent).toContain("Time");
   });
 
   it("survives rapid synchronous phase swaps and lands on the final phase", () => {
