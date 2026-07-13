@@ -75,7 +75,9 @@ function unavailable(
     reason,
     message,
     ...extra,
-  };
+  return json(200, body satisfies BookingQuoteResponse);
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") return json(405, { error: "Method not allowed" });
