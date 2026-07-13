@@ -1,61 +1,149 @@
-## Slice A closure — recoverable confirming lease (ready to build)
+# Slice C — Studio Eligibility & Suitability Filtering
 
-Migration already applied: `booking_quotes.confirming_at`, `confirm_attempts`, `bokun_reservation_status`; state constraint now includes `confirming`; partial index on `(state, confirming_at) WHERE state='confirming'`.
+Reuses `TravellerComposition`, `filterSignatureCandidatesForAges`, `resolveStudioV3Route`, and the existing itinerary/quote path. No changes to Stripe, Bókun reservation, quote state machine, admin, or visuals.
 
-Approve this plan and I will execute the code changes below in one build turn — no more planning.
+## 1. Suitability metadata (new, server-owned, additive)
 
-### `supabase/functions/stripe-webhook/index.ts` (v3 branch, ~292–410)
+New shared module (safe defaults = unrestricted; never inferred from marketing):
 
-Constant: `CONFIRM_LEASE_MS = 3 * 60 * 1000`.
+```
+src/lib/pricing/travellerSuitability.ts
+```
 
-State machine: `reserved | checkout-created → paid → confirming → confirmed`.
+```ts
+export type TravellerSuitability = {
+  minimumAge?: number;
+  maximumAge?: number;
+  infantsAllowed?: boolean;          // default: unrestricted (undefined = allowed)
+  childSeatSupported?: boolean;
+  strollerSuitable?: boolean;
+  capacityCountsAllTravellers?: boolean; // default true (infants count)
+};
 
-Both `checkout.session.completed` and `checkout.session.async_payment_succeeded` already route through this branch (lines 178–180), and the `session.payment_status !== "paid"` guard (line 189) blocks confirmation on unpaid/processing sessions. No change required.
+export type SuitabilityRequirements = {
+  ages: number[];                     // ALL selected ages (adults + minors)
+  totalTravellers: number;
+  requiresChildSeat: boolean;
+  requiresStroller: boolean;
+};
 
-Sequence per webhook delivery:
+export type SuitabilityCheck =
+  | { ok: true }
+  | { ok: false; reasons: Array<
+        "unsupported_age" | "capacity_exceeded"
+      | "child_seat_missing" | "stroller_unsupported" | "infant_not_allowed">;
+      unsupportedAges: number[]; };
 
-1. Read quote row (`select *`). Verify Stripe amount ↔ `final_total_eur` parity (existing).
-2. **Phase A — atomic `→ paid`**: `.update({state:'paid', paid_at: nowIso}).eq('quote_id',q).in('state',['reserved','checkout-created'])`.
-3. Re-read row for authoritative `state`, `confirming_at`, `confirm_attempts`.
-4. Route on `currentState`:
-   - `confirmed` → mirror booking row, return 200 `already_confirmed`.
-   - `expired|cancelled|failed` → return 200 `needs_review: quote_state_terminal`.
-   - `paid` → try **Phase B fresh claim**: `.update({state:'confirming', confirming_at: now, confirm_attempts: prev+1}).eq('state','paid')`.
-   - `confirming` → skip fresh claim, jump to lease handling.
-5. If Phase B produced no row, inspect lease age:
-   - Fresh (`age < CONFIRM_LEASE_MS`) → **HTTP 503** `confirm_in_flight`, `retryable:true`, do NOT call Bókun.
-   - Stale → **atomic reclaim**: `.update({confirming_at: now, confirm_attempts: prev+1}).eq('state','confirming').eq('confirming_at', prevConfirmingAt)`. Only one webhook wins; loser returns 503 `lease_reclaimed_by_other_worker`.
-6. Winner calls `confirmReservation(bokunReservationId)`.
-7. **Phase C — success**: `.update({state:'confirmed', bokun_reservation_status:'confirmed', confirmed_at: now, confirming_at: null, last_error: null}).eq('state','confirming')`. Mirror booking row. Return 200 `confirmed`.
-8. **Retryable failure** (any thrown/network error): `.update({state:'paid', confirming_at: null, bokun_reservation_status:'confirm_failed', last_error: <sanitised ≤240>}).eq('state','confirming')`. Return **HTTP 502** `confirm_failed`, `retryable:true`. Reservation is NOT released — the provisional hold stays for the next attempt.
+export function checkTravellerSuitability(
+  s: TravellerSuitability | undefined,
+  req: SuitabilityRequirements,
+  capacity?: number,
+): SuitabilityCheck;
+```
 
-Expiry branch unchanged: still requires `state='checkout-created'`, so paid/confirming/confirmed are naturally immune.
+Rules:
+- Age failure: any `age < minimumAge` or `age > maximumAge` → `unsupported_age` with that age listed.
+- `infantsAllowed === false` and any age 0 → `infant_not_allowed` + age 0 in unsupportedAges.
+- `requiresChildSeat && childSeatSupported === false` → `child_seat_missing`.
+- `requiresStroller && strollerSuitable === false` → `stroller_unsupported`.
+- Capacity: when `capacity` is provided, `totalTravellers > capacity` → `capacity_exceeded`. `capacityCountsAllTravellers !== false` means infants count (default true).
+- Missing metadata fields = no restriction (safe default).
 
-Async payment: same code path already handles `checkout.session.async_payment_succeeded` — no card-only constraint.
+Suitability registries (additive, keyed, no marketing inference):
 
-### `src/__tests__/sliceA.reservation-spine.test.ts`
+```
+src/data/studioTourSuitability.ts        // per-tour (Signature/Studio candidate) map: tourId -> TravellerSuitability
+src/data/studioStopSuitability.ts        // per-stop map: stopKey -> TravellerSuitability
+```
 
-Extend the in-memory `handlePaymentConfirm` helper to model the three phases + lease, and add:
+Both start EMPTY (undefined = unrestricted). Populating them is a follow-up content task; Slice C just wires the plumbing so anything added takes effect.
 
-1. Two simultaneous payment webhooks — only one Phase-B claim succeeds, `confirmReservation` called exactly once, both requests end with the quote `confirmed`.
-2. Concurrent webhook sees fresh `confirming` lease → no Bókun call, response `{ httpStatus:503, retryable:true }`.
-3. Bókun transient failure → `confirming → paid`, `confirming_at=null`, `last_error` set, HTTP 502; second delivery re-enters Phase B and confirms.
-4. Worker dies mid-confirm (simulate: state stays `confirming`, `confirming_at` in the past by > lease) → next webhook reclaims exactly once → Bókun called → `confirmed`.
-5. Two webhooks race the stale reclaim → only one wins the conditional update → only one calls `confirmReservation`.
-6. Successful confirmation clears `confirming_at` and `last_error`.
-7. Retryable failure resets `confirming_at` to `null`.
-8. Expiry attempted during `paid` / `confirming` / `confirmed` → no release, state unchanged (three cases).
-9. Unpaid Stripe session → no Phase A, no Bókun call.
+`requiresChildSeat` / `requiresStroller` derive from existing `state.considerations` flags already present in `StudioV3State` (already tracked; see `tours.$tourId.tailor.tsx`'s stroller flag pattern). Studio has no per-composition child-seat toggle today, so the flag is `false` unless the state exposes one; we thread it through without inventing UI.
 
-### Verification
+## 2. Candidate filter before generation
 
-- `bunx vitest run src/__tests__/sliceA.reservation-spine.test.ts`
-- `bunx tsgo --noEmit`
+Extend `src/lib/pricing/filterSignatureCandidatesForAges.ts` with a superset wrapper:
 
-### Out of scope
+```ts
+export function filterStudioCandidatesBySuitability(
+  composition, tours, readinessMap, requirements
+): { compatible, excluded: Array<{ tourId, reasons, unsupportedAges }>, hasCompatible }
+```
 
-Slice C, UI, admin surfaces, `_shared/bokun.ts` refactor.
+It runs the existing category-age filter AND `checkTravellerSuitability` (using `studioTourSuitability[tour.id]` + tour capacity if present in readiness/registry). A candidate that fails EITHER check is excluded before ranking.
 
-### Completion report
+Callsite in `StudioV3.tsx` (~line 3168): swap `filterSignatureCandidatesForAges` for the new wrapper. `ageFilter.compatibleTourIds` remains the exact contract handed to `resolveStudioV3Route`, so ranking/generation is unchanged.
 
-Corrected state transitions · test output only.
+## 3. Automatic fallback (already the behaviour)
+
+`resolveStudioV3Route` already picks the first compatible tour and returns the "unsupported" shape only when the compatible set is empty. Slice C just narrows the input set — no engine changes.
+
+Confirmed behaviour:
+- A incompatible, B compatible → A excluded, B selected, itinerary generated normally.
+- Empty compatible set → `ageFilterStatus: "unsupported"` (existing) → checkout gate blocks; no quote, no Stripe call.
+
+## 4. Replace incompatible components (stop-level)
+
+Add a pure helper next to curation:
+
+```
+src/components/studio-v3/stop-suitability.ts
+  filterStopsBySuitability(stops, requirements, registry): {
+    kept: Stop[], removedKeys: string[], swapCandidates: Stop[]
+  }
+```
+
+Wire it in `StudioV3.tsx` right after `baseStops` derivation (~line 3212–3217):
+1. Run `filterStopsBySuitability` on `baseStops`.
+2. If a stop was removed, try to replace it from the SAME skeleton tour's `stops` pool (already the fallback pool at line 3299–3308 — reuse). Never invent stops; never cross tours.
+3. If nothing suitable remains for that slot, drop it (the itinerary is shorter but still the same Studio skeleton).
+4. Base quote is NOT recomputed — Studio commercial pricing is `studio-v3-private-full-day` per guest count, independent of stop composition. `itineraryRevision` (line 1096) already hashes stop labels, so it changes; `commercialProductKey` and pricing revision do not.
+
+## 5. Studio identity guard
+
+Assertion inside the filter/replacement path and in the quote build:
+- `commercialProductKey` stays `"studio-v3-private-full-day"` (already hard-coded at lines 784, 895, 1081).
+- Add a runtime guard in the wrapper: if replacement logic ever tried to substitute a Signature commercial key, throw. Reuse `isStudioCommercialProductKey` from `supabase/functions/_shared/studioCommercialPricing.ts` (mirror the constant to a client-safe helper in `src/lib/pricing/studioCommercialIdentity.ts` — pure re-export of the literal, no server import).
+
+## 6. Tests
+
+New file `src/__tests__/sliceC.suitability.test.ts` (Vitest, mirrors sliceB style):
+
+1. **Infant fallback** — composition `{adults:2, minorAges:[0]}`, candidate A has `infantsAllowed:false`, candidate B unrestricted → wrapper excludes A, keeps B; `resolveStudioV3Route` picks B.
+2. **No compatible candidate** — all candidates fail suitability → `hasCompatible:false`, `ageFilterStatus:"unsupported"`, no quote/checkout side-effects (assert `useBookingQuote`/`useCategoryAwareCheckoutReady` gate = false via pure helper).
+3. **Compatible skeleton, incompatible stop** — `filterStopsBySuitability` removes stop X, replacement drawn from same tour pool; skeleton tour id unchanged; `commercialProductKey` unchanged; `itineraryRevision` changed vs. baseline.
+4. **Capacity includes infants** — capacity 4, composition adults 3 + infant 1 → `capacity_exceeded` when `capacityCountsAllTravellers` unset (default true); passes when explicitly `false`.
+5. **No Signature mapping leakage** — after any filter/replacement path, resulting quote payload's `commercialProductKey === "studio-v3-private-full-day"`; identity guard throws on attempted swap.
+
+Also re-run existing Slice B suite (`sliceB.wiring.test.tsx`, `sliceB.closure.test.tsx`) untouched.
+
+## Verification
+
+```
+bunx vitest run src/__tests__/sliceC.suitability.test.ts src/__tests__/sliceB.wiring.test.tsx src/__tests__/sliceB.closure.test.tsx
+bunx tsgo --noEmit
+```
+
+## Files touched
+
+New:
+- `src/lib/pricing/travellerSuitability.ts`
+- `src/lib/pricing/studioCommercialIdentity.ts`
+- `src/data/studioTourSuitability.ts` (empty registry + type)
+- `src/data/studioStopSuitability.ts` (empty registry + type)
+- `src/components/studio-v3/stop-suitability.ts`
+- `src/__tests__/sliceC.suitability.test.ts`
+
+Edited (minimal):
+- `src/lib/pricing/filterSignatureCandidatesForAges.ts` — add `filterStudioCandidatesBySuitability` wrapper.
+- `src/components/studio-v3/StudioV3.tsx` — swap wrapper call; run `filterStopsBySuitability` after `baseStops`; identity-guard assertion at quote build.
+
+## Out of scope
+
+- Populating suitability data for real tours/stops (content task).
+- Any UI copy/visuals; admin tools; Bókun/Stripe/quote state machine.
+- Slice D.
+
+## Return format after build
+
+Files changed · suitability metadata added · candidate-filter result summary · component-replacement result summary · vitest output · tsgo output.
