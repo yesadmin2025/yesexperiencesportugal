@@ -50,6 +50,7 @@ describe("validateResolvedSignature — baseline", () => {
     const r = validateResolvedSignature(baseResolved, baseTour);
     expect(r.ok).toBe(true);
     expect(r.missing).toEqual([]);
+    expect(r.warnings).toEqual([]);
     expect(r.tourId).toBe("arrabida-private");
   });
 
@@ -65,7 +66,50 @@ describe("validateResolvedSignature — baseline", () => {
   });
 });
 
-// ---------- Per-field mutators ----------
+// ---------- Soft (warning) rules: reveal still passes ----------
+describe("validateResolvedSignature — warnings do not block reveal", () => {
+  it("missing story on one stop → ok=true, warns some-stops-missing-story", () => {
+    const r = validateResolvedSignature(
+      {
+        ...baseResolved,
+        routePoints: baseResolved.routePoints.map((p, i) =>
+          i === 1 ? { ...p, story: "" } : p,
+        ),
+      },
+      baseTour,
+    );
+    expect(r.ok).toBe(true);
+    expect(r.warnings).toContain("some-stops-missing-story");
+  });
+
+  it("missing label on some (but not all) stops → ok=true, warns", () => {
+    const r = validateResolvedSignature(
+      {
+        ...baseResolved,
+        routePoints: baseResolved.routePoints.map((p, i) =>
+          i === 0 ? { ...p, label: "" } : p,
+        ),
+      },
+      baseTour,
+    );
+    expect(r.ok).toBe(true);
+    expect(r.warnings).toContain("some-stops-missing-label");
+  });
+
+  it("no labelled stops at all → hard-fails with no-labelled-stops", () => {
+    const r = validateResolvedSignature(
+      {
+        ...baseResolved,
+        routePoints: baseResolved.routePoints.map((p) => ({ ...p, label: "" })),
+      },
+      baseTour,
+    );
+    expect(r.ok).toBe(false);
+    expect(r.missing).toContain("no-labelled-stops");
+  });
+});
+
+// ---------- Per-field mutators (hard fails only) ----------
 type Mutator = {
   key: string;
   apply: (
@@ -95,48 +139,15 @@ const MUTATORS: Mutator[] = [
     expected: ["no-stops"],
   },
   {
-    key: "stop-label-empty",
+    key: "all-labels-empty",
     apply: (r, t) => ({
       resolved: {
         ...r,
-        routePoints: r.routePoints.map((p, i) => (i === 0 ? { ...p, label: "" } : p)),
+        routePoints: r.routePoints.map((p) => ({ ...p, label: "" })),
       },
       tour: t,
     }),
-    expected: ["stop-missing-label"],
-  },
-  {
-    key: "stop-label-whitespace",
-    apply: (r, t) => ({
-      resolved: {
-        ...r,
-        routePoints: r.routePoints.map((p, i) => (i === 0 ? { ...p, label: "   " } : p)),
-      },
-      tour: t,
-    }),
-    expected: ["stop-missing-label"],
-  },
-  {
-    key: "stop-story-empty",
-    apply: (r, t) => ({
-      resolved: {
-        ...r,
-        routePoints: r.routePoints.map((p, i) => (i === 1 ? { ...p, story: "" } : p)),
-      },
-      tour: t,
-    }),
-    expected: ["stop-missing-story"],
-  },
-  {
-    key: "stop-story-whitespace",
-    apply: (r, t) => ({
-      resolved: {
-        ...r,
-        routePoints: r.routePoints.map((p, i) => (i === 1 ? { ...p, story: "  \t " } : p)),
-      },
-      tour: t,
-    }),
-    expected: ["stop-missing-story"],
+    expected: ["no-labelled-stops"],
   },
   {
     key: "tour-null",
@@ -197,7 +208,6 @@ describe("validateResolvedSignature — randomized permutations (seeded)", () =>
   for (const seed of SEEDS) {
     it(`seed=${seed}: any mutation set yields ok=false; empty set yields ok=true`, () => {
       const rng = mulberry32(seed);
-      // Run 60 random subsets per seed
       for (let trial = 0; trial < 60; trial += 1) {
         const subset = MUTATORS.filter(() => rng() < 0.45);
         let resolved: ResolvedSlice = {
@@ -221,8 +231,7 @@ describe("validateResolvedSignature — randomized permutations (seeded)", () =>
         }
         // If no-stops cleared the routePoints, per-stop checks can't fire.
         if (expected.has("no-stops")) {
-          expected.delete("stop-missing-label");
-          expected.delete("stop-missing-story");
+          expected.delete("no-labelled-stops");
         }
         // If the tour itself is null, image/title sub-flags can't fire.
         if (tour === null && resolved.skeletonTourKey) {
@@ -244,7 +253,6 @@ describe("validateResolvedSignature — randomized permutations (seeded)", () =>
               f,
             );
           }
-          // Each entry in missing should be unique (no duplicate flags).
           expect(new Set(r.missing).size).toBe(r.missing.length);
         }
       }
@@ -326,8 +334,6 @@ describe("validateResolvedSignature → telemetry payload", () => {
   });
 
   it("recordStudioV3RevealValidation buffers when not under VITEST guard", () => {
-    // Telemetry helper short-circuits under process.env.VITEST. Temporarily
-    // unset it so we can prove the buffer contract end-to-end.
     vi.stubEnv("VITEST", "");
     const r = validateResolvedSignature(baseResolved, null);
     recordStudioV3RevealValidation({
@@ -345,7 +351,6 @@ describe("validateResolvedSignature → telemetry payload", () => {
   });
 
   it("does not buffer telemetry while VITEST guard is active", () => {
-    // Default test env has VITEST set — recording must be a no-op.
     expect(process.env.VITEST).toBeTruthy();
     recordStudioV3RevealValidation({
       ok: false,
