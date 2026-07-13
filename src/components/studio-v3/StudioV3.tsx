@@ -3245,11 +3245,19 @@ export function StoryboardHandoff({
     const pool =
       skeletonTour?.stops?.map((s) => ({ label: s.label, story: s.story })) ?? [];
     const outcome = filterStopsBySuitability(rawStops, requirements, pool);
-    // Slice C closure — if the replacement pass leaves no valid substantive
-    // itinerary, return [] so the existing reveal safety fallback triggers
-    // (no quote, no Stripe). Never surface an empty or meaningless itinerary.
+    // Recoverable draft — if replacement leaves the itinerary "thin" but we
+    // still have at least one safe stop, surface it so the traveller can
+    // shape the day from real Signature moments (Add / Swap / Remove) rather
+    // than hitting a dead-end bespoke fallback. Server-side quote + Stripe
+    // stay gated on validation elsewhere; this only widens the editor.
     const validity = validateItineraryAfterReplacement(outcome, requirements);
-    if (validity !== null) return [];
+    if (validity !== null) {
+      if (outcome.stops.length > 0) return outcome.stops;
+      // Nothing safe from the filter — seed 1–2 stops directly from the
+      // same skeleton's own pool so the user can add more from swapPool.
+      if (pool.length > 0) return pool.slice(0, Math.min(2, pool.length));
+      return [];
+    }
     return outcome.stops;
   }, [resolved.routePoints, state.guests, state.minorAges, state.considerations, skeletonTour]);
 
