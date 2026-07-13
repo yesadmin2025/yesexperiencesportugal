@@ -995,7 +995,7 @@ export function SignaturePriceCard({
                     "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 }}
               >
-                See my signature story
+                Continue to your story
                 <ArrowRight
                   size={14}
                   aria-hidden
