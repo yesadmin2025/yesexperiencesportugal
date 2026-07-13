@@ -1770,12 +1770,14 @@ export function resolveStudioV3Route(input: {
     ...overrides,
   });
 
-  // Instant-checkout guarantee: Studio must always resolve to a real
-  // Signature so the storytelling reveal + Reserve → embedded Stripe path
-  // is always available. When any of feeling/companions/rhythm are missing
-  // we fall back to safe defaults from the enum and let curateJourney pick
-  // a real tour. No fabricated stops — the downstream pool is still the
-  // resolved tour's own `stops`.
+  // Route-containment contract (mem://constraints/studio-v3-no-invented-stops):
+  // when NONE of the three core answers are present, Studio has no signal
+  // to ground a Signature — return an empty fallback rather than invent
+  // a default journey. Once ANY core answer exists we fill the remaining
+  // with safe enum defaults so curateJourney can pick a real tour.
+  if (feeling == null && companions == null && rhythm == null) {
+    return emptyFallback();
+  }
   const safeFeeling: Feeling = feeling ?? "romance";
   const safeCompanions: Companions = companions ?? "couple";
   const safeRhythm: Rhythm = rhythm ?? "balanced";
