@@ -6,7 +6,7 @@
 // `mode: "booking-quote-create-session"`) for checkout. Server is the sole
 // price authority — nothing in this component computes a price locally.
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Calendar, Sparkles, Lock, Loader2, AlertTriangle } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -36,10 +36,19 @@ import { BokunRolloutBadge } from "@/components/booking/BokunRolloutBadge";
 
 type Props = {
   tour: SignatureTour;
-  readiness: TourBokunReadiness;
+  /**
+   * Client-side readiness mirror. `null` = "not synced yet" (first visit,
+   * or a tour whose `tour_price_tiers` row is still empty). The banded form
+   * MUST still call `booking-quote`; the server performs the category
+   * synchronisation and returns the authoritative categories in-response.
+   * Used here only for the informational rollout badge — never as a gate
+   * on the quote request or on rendering the composition picker.
+   */
+  readiness: TourBokunReadiness | null;
 };
 
 export function BandedSignatureBookingForm({ tour, readiness }: Props) {
+
   const navigate = useNavigate();
   const [date, setDate] = useState("");
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
@@ -155,6 +164,36 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
   const quotePending = quote.loading;
   const unavailableMsg = quote.unavailable?.message ?? quote.error;
 
+  // Hide the site-wide WhatsApp FAB while the Reserve CTA is on screen so
+  // the floating button never overlaps the primary action. Uses the existing
+  // `whatsapp-support:set-hidden` event contract. ALWAYS re-shows on cleanup
+  // (element leaves viewport, component unmounts, observer disconnected) so
+  // the button never stays hidden after navigating away.
+  const reserveCtaRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = reserveCtaRef.current;
+    if (!el || typeof window === "undefined" || typeof IntersectionObserver === "undefined") {
+      return;
+    }
+    const setHidden = (hidden: boolean) => {
+      window.dispatchEvent(
+        new CustomEvent("whatsapp-support:set-hidden", { detail: { hidden } }),
+      );
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) setHidden(entry.isIntersecting);
+      },
+      { threshold: 0.01 },
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      setHidden(false);
+    };
+  }, []);
+
+
   return (
     <div className="border border-[color:var(--border)] bg-[color:var(--card)] p-5 sm:p-7">
       <Eyebrow>Reserve this day</Eyebrow>
@@ -175,9 +214,17 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             min={new Date().toISOString().split("T")[0]}
-            className="w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-sm focus:border-[color:var(--gold)] focus:outline-none"
+            aria-label="Tour date"
+            data-testid="booking-date-input"
+            className="w-full min-h-[44px] border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-sm focus:border-[color:var(--gold)] focus:outline-none"
           />
+          {!date ? (
+            <p className="mt-1 text-[11px] text-[color:var(--charcoal-soft)]">
+              Tap to pick a date
+            </p>
+          ) : null}
         </Field>
+
         <Field label="Pickup time">
           <div className="grid grid-cols-3 border border-[color:var(--border)]">
             {(["08:00", "09:00", "10:00"] as const).map((t) => (
@@ -210,7 +257,11 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
       </div>
 
       {/* Live price panel — driven ONLY by the quote response */}
-      <div className="mt-6 border-t border-[color:var(--border)] pt-4">
+      <div
+        data-testid="booking-summary"
+        className="mt-6 border-t border-[color:var(--border)] pt-4"
+      >
+
         {!date ? (
           <p className="text-[11px] text-[color:var(--charcoal-soft)]">
             Choose a date to see live availability and pricing.
@@ -260,25 +311,29 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
         ) : null}
       </div>
 
-      <button
-        type="button"
-        onClick={() => setDetailsOpen(true)}
-        disabled={pending || !canReserve}
-        className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
-      >
-        {pending ? (
-          <>
-            <Loader2 size={15} className="animate-spin" /> Opening checkout…
-          </>
-        ) : (
-          <>
-            <Sparkles size={15} /> Reserve securely
-          </>
-        )}
-      </button>
-      <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-        Instant confirmation
-      </p>
+      <div ref={reserveCtaRef} className="pb-24 sm:pb-4">
+        <button
+          type="button"
+          onClick={() => setDetailsOpen(true)}
+          disabled={pending || !canReserve}
+          data-testid="reserve-cta"
+          className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
+        >
+          {pending ? (
+            <>
+              <Loader2 size={15} className="animate-spin" /> Opening checkout…
+            </>
+          ) : (
+            <>
+              <Sparkles size={15} /> Reserve securely
+            </>
+          )}
+        </button>
+        <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
+          Instant confirmation
+        </p>
+      </div>
+
       <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
         <Lock size={10} /> Secure checkout · price re-verified with Bókun
       </p>
@@ -326,7 +381,8 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
             guests: totalGuests,
             pricePerPaxEur: quote.quote?.finalTotalEur
               ? Math.round(quote.quote.finalTotalEur / Math.max(1, totalGuests))
-              : tour.priceFrom,
+              : 0,
+
             totalEur: Math.round(quote.quote?.finalTotalEur ?? 0),
             flowLabel: "Signature",
           }
