@@ -3735,7 +3735,7 @@ export function StoryboardHandoff({
           className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
-          <span style={{ color: "var(--gold)" }}>—</span> Your Signature
+          <span style={{ color: "var(--gold)" }}>—</span> Your Signature · draft
         </p>
         <h2
           className="mt-4 text-[26px] sm:text-[32px] leading-[1.1] tracking-[-0.012em] font-bold text-balance"
@@ -3801,7 +3801,7 @@ export function StoryboardHandoff({
       {/* ---------- Unified "Your Signature" card (map · story · edit · DNA · price · add-ons) ---------- */}
       <section
         data-testid="studio-v3-signature-card"
-        className="mt-8 mx-auto w-full max-w-[560px] rounded-[14px] px-4 py-6 sm:px-6 sm:py-8"
+        className="mt-8 mx-auto w-full max-w-[560px] rounded-[14px] px-4 py-6 sm:px-6 sm:py-8 flex flex-col"
         style={{
           background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
           border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
@@ -3897,52 +3897,29 @@ export function StoryboardHandoff({
           </section>
         ) : null}
 
-        {/* ---------- 3. Story of the day ---------- */}
+        {/* ---------- 3. Story of the day — moved to the confirmation phase
+             (FinalRevealStory). The storyboard is a skeleton + refine surface;
+             cinematic storytelling belongs on the next screen. ---------- */}
 
-        <section className="mt-10 max-w-[520px] mx-auto" data-testid="studio-v3-story-of-day">
-          <p
-            className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-          >
-            <span style={{ color: "var(--gold)" }}>—</span> How the day unfolds
-          </p>
-          <div className="mt-5 space-y-5">
-            {storyChapters.map((c) => (
-              <div key={c.eyebrow}>
-                <p
-                  className="text-[10.5px] uppercase tracking-[0.24em] font-semibold"
-                  style={{ color: "var(--gold)" }}
-                >
-                  {c.eyebrow}
-                </p>
-                <p
-                  className="mt-1.5 text-[14px] leading-[1.6] [text-wrap:pretty] [hyphens:auto]"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
-                >
-                  {c.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ---------- 4. Fine-tune your Signature (editable stops) ---------- */}
+        {/* ---------- 4. Refine your Signature (editable stops) ----------
+             Promoted with `-order-1` so Remove (✕) and Swap (⇄) sit directly
+             under the hero — the storyboard's primary job. */}
         {editedStops.length > 0 ? (
           <div
             data-testid="studio-v3-stops-editor"
-            className="mt-10 sm:mt-12 max-w-[520px] mx-auto px-3 sm:px-1"
+            className="-order-1 mt-6 sm:mt-8 max-w-[520px] mx-auto px-3 sm:px-1"
           >
             <p
               className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
-              <span style={{ color: "var(--gold)" }}>—</span> Refine the moments
+              <span style={{ color: "var(--gold)" }}>—</span> Refine your Signature
             </p>
             <p
-              className="mt-2 mb-6 sm:mb-5 text-center text-[12px] leading-[1.55] max-w-[300px] sm:max-w-[320px] mx-auto"
+              className="mt-2 mb-6 sm:mb-5 text-center text-[12px] leading-[1.55] max-w-[320px] sm:max-w-[340px] mx-auto"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
             >
-              Reorder, swap or remove a moment. The route stays inside the same region.
+              This is your draft. Remove what doesn't fit or swap for another moment in the same region.
             </p>
             <ol className="space-y-3 sm:space-y-3">
               {editedStops.map((s, i) => {
@@ -4189,7 +4166,23 @@ export function StoryboardHandoff({
               </div>
             ) : null}
           </div>
-        ) : null}
+        ) : (
+          <div
+            data-testid="studio-v3-stops-editor-empty"
+            className="-order-1 mt-6 max-w-[420px] mx-auto text-center px-4 py-5 rounded-[10px]"
+            style={{
+              background: "color-mix(in oklab, var(--sand) 40%, transparent)",
+              border: "1px dashed color-mix(in oklab, var(--charcoal) 20%, transparent)",
+            }}
+          >
+            <p
+              className="text-[12.5px] leading-[1.55]"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+            >
+              We couldn't compose a draft for this combination. Adjust the earlier answers and we'll rebuild it.
+            </p>
+          </div>
+        )}
 
         {/* ---------- 5. Signature DNA ---------- */}
         {dnaChips.length > 0 ? (
