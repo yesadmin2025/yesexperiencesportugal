@@ -3222,13 +3222,29 @@ export function StoryboardHandoff({
     ],
   );
 
-  const baseStops = useMemo(
-    () => resolved.routePoints.map((p) => ({ label: p.label, story: p.story })),
-    [resolved.routePoints],
-  );
+  const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
+
+  // Slice C — stop-level suitability filter. Removes incompatible stops and
+  // fills each slot from the SAME skeleton tour's own stops pool. Studio
+  // commercial identity (`studio-v3-private-full-day`) is untouched — only
+  // the itinerary changes; the base quote is not recomputed here.
+  const baseStops = useMemo(() => {
+    const rawStops = resolved.routePoints.map((p) => ({ label: p.label, story: p.story }));
+    const composition = {
+      adults: Math.max(1, (state.guests ?? 2) - state.minorAges.length),
+      minorAges: state.minorAges,
+    };
+    const requirements = requirementsFromComposition(composition, {
+      requiresChildSeat: false,
+      requiresStroller: (state.considerations ?? []).some((c) => /stroller|pram/i.test(c)),
+    });
+    const pool =
+      skeletonTour?.stops?.map((s) => ({ label: s.label, story: s.story })) ?? [];
+    const outcome = filterStopsBySuitability(rawStops, requirements, pool);
+    return outcome.stops;
+  }, [resolved.routePoints, state.guests, state.minorAges, state.considerations, skeletonTour]);
 
   const editedStops = state.editedRoutePoints ?? baseStops;
-  const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
 
   // Real OSRM driving legs — shared with RevealRouteMap via react-query's
   // dedupe on the same routeStops key, so we pay for one fetch and both the
