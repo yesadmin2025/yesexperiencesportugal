@@ -9,7 +9,7 @@
 // is stored in state and used lightly later (when present) to address the
 // traveller — it never blocks the flow and never reaches the backend.
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ArrowRight } from "lucide-react";
 
 import atmCoastal from "@/assets/studio/atm-coastal-cinematic.jpg";
@@ -31,6 +31,8 @@ export function StudioV3Intro({ onComplete }: Props) {
   const [step, setStep] = useState<IntroStep>("welcome");
   const [value, setValue] = useState("");
   const [pendingName, setPendingName] = useState<string | null>(null);
+  const [clientReady, setClientReady] = useState(false);
+  useEffect(() => { setClientReady(true); }, []);
 
   const handleNameSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -44,6 +46,7 @@ export function StudioV3Intro({ onComplete }: Props) {
       aria-label="Studio intro"
       data-testid="studio-v3-root"
       data-phase="intro"
+      data-client-ready={clientReady ? "true" : "false"}
       className="relative min-h-[100dvh] w-full overflow-hidden"
       style={{ background: "var(--charcoal)" }}
     >

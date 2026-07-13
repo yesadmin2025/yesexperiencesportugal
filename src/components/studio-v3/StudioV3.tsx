@@ -724,6 +724,8 @@ export function StudioV3() {
     return new URLSearchParams(window.location.search).has("saved");
   });
   const [hydrateError, setHydrateError] = useState<"not-found" | "failed" | null>(null);
+  const [clientReady, setClientReady] = useState(false);
+  useEffect(() => { setClientReady(true); }, []);
 
   const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>({
     open: false,
@@ -2194,7 +2196,7 @@ export function StudioV3() {
   })();
 
   return (
-    <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase={state.phase}>
+    <main aria-label="YES Studio" data-testid="studio-v3-root" data-phase={state.phase} data-client-ready={clientReady ? "true" : "false"}>
       <StudioV3DebugOverlay
         state={state}
         composerHidden={composerHidden}
