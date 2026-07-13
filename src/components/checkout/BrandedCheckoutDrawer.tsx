@@ -190,7 +190,7 @@ export function BrandedCheckoutDrawer({
         </div>
 
         {/* Trust footer */}
-        <div className="px-5 sm:px-7 py-3 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40">
+        <div className="px-5 sm:px-7 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] border-t border-[color:var(--border)] bg-[color:var(--sand)]/40">
           <p className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
             <Lock size={11} /> Secure checkout · 256-bit encrypted
           </p>
