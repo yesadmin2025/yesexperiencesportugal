@@ -4177,18 +4177,90 @@ export function StoryboardHandoff({
         ) : (
           <div
             data-testid="studio-v3-stops-editor-empty"
-            className="-order-1 mt-6 max-w-[420px] mx-auto text-center px-4 py-5 rounded-[10px]"
+            className="-order-1 mt-6 max-w-[440px] mx-auto text-center px-4 py-6 rounded-[10px]"
             style={{
               background: "color-mix(in oklab, var(--sand) 40%, transparent)",
               border: "1px dashed color-mix(in oklab, var(--charcoal) 20%, transparent)",
             }}
           >
             <p
-              className="text-[12.5px] leading-[1.55]"
+              className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span> Refine your Signature
+            </p>
+            <p
+              className="mt-3 text-[12.5px] leading-[1.55]"
               style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
             >
-              We couldn't compose a draft for this combination. Adjust the earlier answers and we'll rebuild it.
+              {skeletonTour && swapPool.length > 0
+                ? "We softened the draft for your answers. Add the moments that call you — you're still shaping the day."
+                : "We couldn't compose a draft for this combination. Adjust the earlier answers and we'll rebuild it."}
             </p>
+            {skeletonTour && swapPool.length > 0 ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setAddOpen((v) => !v)}
+                  aria-expanded={addOpen}
+                  className="mt-4 inline-flex items-center justify-center rounded-[8px] px-4 py-2.5 text-[12.5px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                  style={{
+                    border: "1px dashed color-mix(in oklab, var(--gold) 55%, transparent)",
+                    color: "var(--charcoal)",
+                    background: "transparent",
+                  }}
+                >
+                  {addOpen ? "Close" : "+ Add a moment"}
+                </button>
+                {addOpen ? (
+                  <ul
+                    data-testid="studio-v3-add-pool-empty"
+                    className="mt-3 space-y-1 rounded-[8px] p-2 text-left"
+                    style={{
+                      background: "color-mix(in oklab, var(--sand) 35%, transparent)",
+                      border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                    }}
+                  >
+                    {swapPool.slice(0, 6).map((cand) => (
+                      <li key={cand.label}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEdited((prev) => [
+                              ...prev,
+                              { label: cand.label, story: cand.story },
+                            ]);
+                            setAddOpen(false);
+                          }}
+                          className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          style={{ color: "var(--charcoal)" }}
+                        >
+                          <span className="font-semibold">+ {cand.label}</span>
+                          {cand.story ? (
+                            <span
+                              className="block text-[11.5px]"
+                              style={{
+                                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                              }}
+                            >
+                              {cand.story}
+                            </span>
+                          ) : null}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+                <button
+                  type="button"
+                  onClick={onBack}
+                  className="mt-3 block mx-auto text-[11px] uppercase tracking-[0.22em] font-semibold underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+                >
+                  Adjust earlier answers
+                </button>
+              </>
+            ) : null}
           </div>
         )}
 
