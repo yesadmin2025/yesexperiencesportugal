@@ -265,13 +265,15 @@ function TourHero({
         </div>
       </section>
 
-      <section className="pb-8">
+      <section className="pt-2 sm:pt-4 pb-8">
         <div className="container-x max-w-6xl">
-          {/* Cinematic hero — unified 3:2 frame, blur-up on load. */}
+          {/* Cinematic hero — 16:9 on mobile (lighter vertical weight,
+              title stays inside the fold), 3:2 from md upward. */}
           <TourImage
             src={heroSrc}
             alt={heroAlt}
-            ratio="3/2"
+            ratio="16/9"
+            ratioMd="3/2"
             priority
             focal={tour.focal ?? "50% 50%"}
             sizes="(min-width: 1024px) 1152px, 100vw"
@@ -281,7 +283,7 @@ function TourHero({
 
           {/* Editorial header — title, blurb and meta sit BELOW the hero
               so the cinematic image reads as a single quiet frame. */}
-          <div className="mt-6 sm:mt-8">
+          <div className="mt-5 sm:mt-8">
             <Eyebrow>Signature Experience</Eyebrow>
             <h1 className="serif mt-3 text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.08] sm:leading-[1.02] tracking-[-0.015em] max-w-3xl text-[color:var(--charcoal)]">
               {tour.title}
