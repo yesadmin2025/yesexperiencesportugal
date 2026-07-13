@@ -9,7 +9,7 @@
 // is stored in state and used lightly later (when present) to address the
 // traveller — it never blocks the flow and never reaches the backend.
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ArrowRight } from "lucide-react";
 
 import atmCoastal from "@/assets/studio/atm-coastal-cinematic.jpg";
