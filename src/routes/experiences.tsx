@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
-import { Clock, MapPin } from "lucide-react";
+import { Clock, MapPin, Star } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
@@ -85,17 +85,11 @@ function ExperiencesPage() {
           <h2 className="sr-only">Our Signature Collection</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {signatureTours.map((t) => {
-              // Real bullets sourced from the matching Viator product page
-              // (bookable stops, pass-bys excluded). Falls back to the
-              // tour's highlights only when no Viator meta exists. Never
-              // invented marketing copy.
+              // Rating + review count come from the matching Viator product.
+              // When absent, the chip is simply not shown — never invented.
               const meta = VIATOR_META[t.id];
-              const realStopBullets = meta?.stops
-                ? meta.stops.filter((s) => !s.passBy).map((s) => s.name)
-                : [];
-              const topHighlights = (
-                realStopBullets.length > 0 ? realStopBullets : t.highlights
-              ).slice(0, 3);
+              const showRating =
+                !!meta && meta.reviewCount > 0 && typeof meta.rating === "number";
               return (
                 <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
                   {/* Cover — clickable to source-of-truth detail page */}
@@ -125,54 +119,50 @@ function ExperiencesPage() {
                   >
                     {t.title}
                   </Link>
-                  {/* Teaser — emotional lead BEFORE meta/price.
-                      Hierarchy: title → story → highlights → fit →
-                      duration/price (subdued) → CTAs. Price is
-                      preserved for conversion but no longer dominates
-                      the read. */}
-                  <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed">
+
+                  {/* Rating chip — sourced from Viator meta only. */}
+                  {showRating && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 text-[12.5px] text-[color:var(--charcoal)]">
+                      <Star
+                        size={12}
+                        fill="currentColor"
+                        strokeWidth={0}
+                        className="text-[color:var(--gold)]"
+                        aria-hidden="true"
+                      />
+                      <span className="font-semibold">{meta!.rating.toFixed(1)}</span>
+                      <span className="text-[color:var(--charcoal-soft)]">
+                        · {meta!.reviewCount} reviews
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Two-line teaser only — highlight bullets removed to
+                      declutter the card; full bullets live on the detail
+                      page. */}
+                  <p
+                    className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed line-clamp-2"
+                  >
                     {t.blurb}
                   </p>
 
-                  {/* Real highlights from `signatureTours[].highlights` —
-                      sourced from the matching Viator product page.
-                      Never invented. */}
-                  {topHighlights.length > 0 && (
-                    <ul className="mt-4 flex flex-col gap-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
-                      {topHighlights.map((h) => (
-                        <li key={h} className="flex items-start gap-2">
-                          <span
-                            aria-hidden="true"
-                            className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[color:var(--gold)]"
-                          />
-                          <span>{h}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {/* `fitsBest` removed — internal copy, not a Viator/Bókun
-                      field. Card now exposes only data verifiable against
-                      the live product page. */}
-
-                  {/* Subdued meta strip — region · duration · from €X.
-                      Price kept (conversion) but reduced to body weight
-                      so it stops dominating the card read. */}
-                  <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-                    <span className="flex items-center gap-1.5">
-                      <MapPin size={11} /> {t.region}
+                  {/* Compact one-line meta strip — region · duration · from €X.
+                      Uses middot separators so it stays on one line at 360px+. */}
+                  <div className="mt-3 flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)] whitespace-nowrap overflow-hidden">
+                    <MapPin size={11} className="shrink-0" aria-hidden="true" />
+                    <span className="truncate">{t.region}</span>
+                    <span aria-hidden="true">·</span>
+                    <Clock size={11} className="shrink-0" aria-hidden="true" />
+                    <span className="shrink-0">{t.durationHours}</span>
+                    <span aria-hidden="true">·</span>
+                    <span className="shrink-0 text-[color:var(--charcoal)]">
+                      From €{t.priceFrom}
                     </span>
-                    <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
-                    <span className="flex items-center gap-1.5">
-                      <Clock size={11} /> {t.durationHours}
-                    </span>
-                    <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
-                    <span className="text-[color:var(--charcoal)]">From €{t.priceFrom}</span>
                   </div>
 
                   {/* Dual CTAs — Reserve (confirm as designed) +
-                      Make it yours (adjust details inside this same
-                      Signature, never a different tour). */}
+                      Tailor (adjust details inside this same Signature,
+                      never a different tour). */}
                   <div className="mt-5 flex flex-col xs:flex-row gap-2.5">
                     <CtaButton
                       to="/tours/$tourId"
@@ -190,9 +180,9 @@ function ExperiencesPage() {
                       variant="ghost"
                       size="sm"
                       className="flex-1"
-                      aria-label={`Make ${t.title} yours`}
+                      aria-label={`Tailor ${t.title}`}
                     >
-                      Make it yours
+                      Tailor this day
                     </CtaButton>
                   </div>
                 </article>
