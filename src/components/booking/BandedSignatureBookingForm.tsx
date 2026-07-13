@@ -335,7 +335,7 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
       </div>
 
       <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
-        <Lock size={10} /> Secure checkout · price re-verified with Bókun
+        <Lock size={10} /> Secure checkout · instant confirmation by email
       </p>
 
       <div className="mt-5 pt-4 border-t border-[color:var(--border)] text-center">
