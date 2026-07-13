@@ -164,7 +164,7 @@ function ExperiencesPage() {
                     <span className="text-[color:var(--charcoal)]">A partir de €{t.priceFrom}</span>
                   </div>
 
-                  <div className="mt-5 flex flex-col xs:flex-row gap-2.5">
+                  <div className="mt-5 flex flex-col sm:flex-row gap-2.5">
                     <CtaButton
                       to="/tours/$tourId"
                       params={{ tourId: t.id }}
