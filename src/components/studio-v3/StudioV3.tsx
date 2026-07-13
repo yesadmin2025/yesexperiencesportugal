@@ -934,8 +934,7 @@ export function StudioV3() {
 
           const quote = await fetchStudioQuote(snapshot);
           if (quote.pricing.status !== "quoted") {
-            toast.error("Live pricing for this group size requires a tailored quote.");
-            openLeadSheet("book");
+            toast.error("Live pricing for this group size isn't available right now. Adjust the date or party size and try again.");
             return;
           }
 
