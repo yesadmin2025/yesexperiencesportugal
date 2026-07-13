@@ -1217,13 +1217,13 @@ export function pickPrimaryTour(
   restrictToTourIds?: ReadonlySet<string> | null,
 ): { tour: SignatureTour; alternates: SignatureTour[] } {
   const { tour, alternates } = pickPrimaryTourWithFit(
-    feeling: safeFeeling,
-    companions: safeCompanions,
+    feeling,
+    companions,
     interests,
     pickup,
     destinationIntent,
     seed,
-    rhythm: safeRhythm,
+    rhythm,
     restrictToTourIds,
   );
   return { tour, alternates };
