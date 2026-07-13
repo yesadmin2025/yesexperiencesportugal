@@ -309,5 +309,4 @@ Deno.serve(async (req) => {
   logDiag("available", { finalTotalEur, availabilityId, adultUnitEur: manual.adultUnitEur });
   return json(200, response satisfies BookingQuoteResponse);
 });
-  return json(200, response satisfies BookingQuoteResponse);
-});
+
