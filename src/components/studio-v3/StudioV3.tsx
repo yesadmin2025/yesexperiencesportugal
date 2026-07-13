@@ -1085,6 +1085,7 @@ export function StudioV3() {
         // Studio resolves against `studio_commercial_bokun_mapping` server-side.
         const composition = compositionFromLegacyGuests(details.guests);
         const commercialProductKey = "studio-v3-private-full-day";
+        assertStudioCommercialIdentity(commercialProductKey);
         const selectedAddOnsForQuote = addOnsForCheckout.map((a) => ({
           id: a.id,
           quantity: 1,
