@@ -625,15 +625,103 @@ async def run_studio(page: Page, viewport: str):
     fx.mode = "available"; fx.quote_calls.clear(); fx.checkout_calls.clear()
     route = "/studio-v3"
     await page.goto(f"{BASE}{route}", wait_until="domcontentloaded")
-    await page.wait_for_timeout(600)
 
     landed_url = page.url
     if route not in landed_url:
         await page.screenshot(path=str(SHOTS/f"studio-redirect-{viewport}.png"))
         return {"error":"unexpected redirect","route":route,"landedUrl":landed_url}
 
-    # StudioV3Intro is rendered inside StudioV3 with data-testid="studio-v3-root"
-    # and data-phase="intro". Walk through: Begin -> Skip -> "Compose it quickly".
+    # 1. Wait for the intro root to attach and become client-ready.
+    root = page.locator('[data-testid="studio-v3-root"]').first
+    try:
+        await root.wait_for(state="attached", timeout=10000)
+    except Exception:
+        await page.screenshot(path=str(SHOTS/f"studio-root-MISSING-{viewport}.png"))
+        return {"error":"studio-v3-root never attached","route":route,"landedUrl":landed_url}
+
+    client_ready = False
+    try:
+        await page.wait_for_function(
+            "() => document.querySelector('[data-testid=\"studio-v3-root\"]')?.dataset.clientReady === 'true'",
+            timeout=10000,
+        )
+        client_ready = True
+    except Exception:
+        pass
+
+    initial_phase = await root.get_attribute("data-phase")
+    if initial_phase != "intro":
+        # Not the intro root — Studio is already past intro (unexpected).
+        pass
+
+    # 2. Click intro-begin exactly once (standard Playwright click, no fallback).
+    begin = page.locator('[data-phase-cta="intro-begin"]').first
+    intro_clicked = False
+    intro_diagnostic = None
+    try:
+        await begin.wait_for(state="visible", timeout=5000)
+        await begin.click(timeout=3000)
+        intro_clicked = True
+    except Exception as e:
+        intro_diagnostic = {"error": f"begin click failed: {e}"[:300]}
+
+    # 3. Require a real state transition: welcome -> name (input visible)
+    # OR data-phase leaves 'intro' entirely (if user chose fast path elsewhere).
+    intro_transitioned = False
+    try:
+        await page.wait_for_function(
+            """() => {
+              const inp = document.querySelector('input[autocomplete=\"given-name\"]');
+              const r   = document.querySelector('[data-testid=\"studio-v3-root\"]');
+              const ph  = r ? r.getAttribute('data-phase') : null;
+              return (inp && inp.offsetParent !== null) || (ph && ph !== 'intro');
+            }""",
+            timeout=6000,
+        )
+        intro_transitioned = True
+    except Exception:
+        pass
+
+    if not intro_transitioned and intro_clicked:
+        # Genuine interaction failure — capture rich diagnostic (no retry).
+        try:
+            bb = await begin.bounding_box()
+            disabled = await begin.is_disabled()
+            diag = await page.evaluate(
+                """(bb) => {
+                  const cx = bb ? bb.x + bb.width/2 : 0;
+                  const cy = bb ? bb.y + bb.height/2 : 0;
+                  const at = document.elementFromPoint(cx, cy);
+                  const pe = [];
+                  let node = at;
+                  while (node && node !== document.body) {
+                    pe.push({tag: node.tagName, pointerEvents: getComputedStyle(node).pointerEvents});
+                    node = node.parentElement;
+                  }
+                  const overlays = Array.from(document.querySelectorAll('[role=\"dialog\"], .fixed.inset-0, [data-overlay]'))
+                    .filter(el => el.offsetParent !== null)
+                    .map(el => (el.getAttribute('data-testid') || el.className || el.tagName).slice(0,120));
+                  const r = document.querySelector('[data-testid=\"studio-v3-root\"]');
+                  return {
+                    elementAtCenter: at ? at.outerHTML.slice(0,240) : null,
+                    pointerEventsChain: pe.slice(0,10),
+                    overlaysVisible: overlays,
+                    dataPhase: r ? r.getAttribute('data-phase') : null,
+                    clientReady: r ? r.getAttribute('data-client-ready') : null,
+                  };
+                }""",
+                bb,
+            )
+            intro_diagnostic = {
+                "boundingBox": bb, "disabled": disabled, **diag,
+                "consoleErrors": fx.console_errors[-10:],
+            }
+        except Exception as e:
+            intro_diagnostic = {"diagnosticError": str(e)[:200]}
+
+    intro_steps = [{"step":"begin","clicked":intro_clicked,"transitioned":intro_transitioned}]
+
+    # 4. Best-effort: skip the name form and pick fast path (no JS fallbacks).
     async def click_by_text(pat, timeout=2000):
         try:
             btn = page.get_by_role("button", name=re.compile(pat, re.I)).first
@@ -641,104 +729,50 @@ async def run_studio(page: Page, viewport: str):
                 await btn.click(timeout=timeout)
                 return True
         except Exception: pass
-        try:
-            el = page.get_by_text(re.compile(pat, re.I)).first
-            if await el.count() and await el.is_visible():
-                await el.click(timeout=timeout)
-                return True
-        except Exception: pass
         return False
 
-    async def click_cta(sel, fallback_pat=None):
-        # Try native click first; if the page rejects (overlay/hydration race),
-        # fall back to force + JS dispatch. Studio intro sometimes needs a
-        # bare-metal click to bypass a transient parallax overlay.
+    if intro_transitioned:
+        clicked_skip = await click_by_text(r"^Skip$")
         try:
-            loc = page.locator(sel).first
-            if await loc.count():
-                try:
-                    await loc.click(timeout=2500)
-                except Exception:
-                    await loc.click(timeout=2500, force=True)
-                return True
-        except Exception: pass
+            await page.locator('[data-testid="studio-v3-intro-path"]').first.wait_for(state="visible", timeout=5000)
+        except Exception:
+            pass
+        intro_steps.append({"step":"skip","clicked":clicked_skip})
+
+        clicked_fast = False
         try:
-            ok = await page.evaluate(
-                "(s) => { const el=document.querySelector(s); if(!el) return false; el.click(); return true; }",
-                sel,
-            )
-            if ok:
-                return True
-        except Exception: pass
-        if fallback_pat:
-            return await click_by_text(fallback_pat)
-        return False
+            card = page.locator('[data-phase-cta="intro-path"]').filter(
+                has_text=re.compile(r"Compose it quickly", re.I)
+            ).first
+            if await card.count():
+                await card.click(timeout=2500)
+                clicked_fast = True
+        except Exception:
+            pass
+        intro_steps.append({"step":"fast","clicked":clicked_fast})
+        await page.wait_for_timeout(500)
 
-    intro_steps = []
-
-    # Step 1: Begin — target the data attribute directly.
-    clicked_begin = await click_cta('[data-phase-cta="intro-begin"]', r"^Begin$")
-    try:
-        await page.locator('input[autocomplete="given-name"]').first.wait_for(
-            state="visible", timeout=5000
-        )
-    except Exception:
-        pass
-    intro_steps.append({"step":"begin","clicked":clicked_begin})
-
-    # Step 2: Skip the name form (there's no data-cta on Skip; text is stable).
-    clicked_skip = await click_by_text(r"^Skip$")
-    try:
-        await page.locator('[data-testid="studio-v3-intro-path"]').first.wait_for(
-            state="visible", timeout=5000
-        )
-    except Exception:
-        pass
-    intro_steps.append({"step":"skip","clicked":clicked_skip})
-
-    # Step 3: Choose the fast path card ("Compose it quickly").
-    clicked_fast = False
-    try:
-        card = page.locator('[data-phase-cta="intro-path"]').filter(
-            has_text=re.compile(r"Compose it quickly", re.I)
-        ).first
-        if await card.count():
-            await card.click(timeout=2500)
-            clicked_fast = True
-    except Exception:
-        pass
-    if not clicked_fast:
-        clicked_fast = await click_by_text(r"Compose it quickly")
-    intro_steps.append({"step":"fast","clicked":clicked_fast})
-    await page.wait_for_timeout(700)
-
-    # Wait for phase to leave "intro". studio-v3-root exists during intro too,
-    # so gate on data-phase not being "intro".
-    phase = "intro"
-    for _ in range(80):
-        phase = await page.evaluate(
-            "() => { const r=document.querySelector('[data-testid=\"studio-v3-root\"]'); return r?r.getAttribute('data-phase'):null; }"
-        )
-        if phase and phase != "intro":
-            break
-        await page.wait_for_timeout(100)
-
+    phase = await page.evaluate(
+        "() => { const r=document.querySelector('[data-testid=\"studio-v3-root\"]'); return r?r.getAttribute('data-phase'):null; }"
+    )
     root_mounted = phase not in (None, "intro")
     if not root_mounted:
         headings = await page.evaluate(
             "() => Array.from(document.querySelectorAll('h1,h2,h3')).slice(0,10).map(e => (e.innerText||'').trim())"
-        )
-        body_excerpt = await page.evaluate(
-            "() => (document.body.innerText||'').slice(0, 500)"
         )
         title = await page.title()
         await page.screenshot(path=str(SHOTS/f"studio-root-MISSING-{viewport}.png"))
         return {
             "error":"root-mount-failed (still on intro)",
             "route":route,"landedUrl":landed_url,"phase":phase,
+            "clientReady": client_ready,
+            "initialPhase": initial_phase,
+            "introTransitioned": intro_transitioned,
+            "introDiagnostic": intro_diagnostic,
             "introSteps":intro_steps,
-            "title":title,"headings":headings,"bodyExcerpt":body_excerpt,
+            "title":title,"headings":headings,
         }
+
 
     phase_sequence = [phase]
     snapshots = {"storyboard": None, "final": None, "checkout": None}
