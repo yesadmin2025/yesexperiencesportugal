@@ -1287,11 +1287,11 @@ export function pickPrimaryTourWithFit(
     const fallbackId = FEELING_FALLBACK[feeling];
     const fallback = signatureTours.find((t) => t.id === fallbackId) ?? signatureTours[0];
     const fit = scoreTourFit(fallback, {
-      feeling: safeFeeling,
-      companions: safeCompanions,
+      feeling,
+      companions,
       interests,
       pickup,
-      rhythm: safeRhythm,
+      rhythm,
       destinationIntent,
     });
     return {
