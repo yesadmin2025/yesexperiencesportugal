@@ -1,51 +1,51 @@
-## Goal
+## What's wrong
 
-Ship a live public Signature booking flow that quotes prices from the existing `tour_price_tiers` adult data (Viator) with server-computed underage bands, WITHOUT any Bókun call. All 12 Signature tours become bookable today; Bókun availability + category mapping stay untouched for a later phase.
+1. **Southwest Vicentine Coast is missing from the backend.** It exists in code (`signatureTours.ts`, `signatureRegistry.ts`, `signatureToursViator.ts`) but there is **no row** in `imported_tours` and **no row** in `tour_price_tiers`. Result: `booking-quote` cannot produce a manual quote for it → the booking widget on `/tours/southwest-vicentine-coast` returns `unavailable` and the checkout button never lights up. Nine of the ten Signature tours are backed; this one slipped through.
 
-## Age-band rule (locked)
+2. **Checkout smoothness across Studio / Signature / Tailor.** All three surfaces already funnel through the same edge function (`create-signature-checkout`) — that half is unified. But because Southwest has no tiers row, the manual short-circuit in `booking-quote` never fires for it, so Studio recommendations and Tailor adjustments that resolve to Southwest also fail silently. Same failure mode, three entry points.
 
-Applied uniformly to all 11 tours, computed server-side from the adult per-pax tier:
+## Fix
 
-- Adult (18+) = 100% of the adult per-pax tier for the party size
-- Youth (13–17) = 80% of adult
-- Child (3–12) = 50% of adult
-- Infant (0–2) = free (€0)
+### 1. Add Southwest to the database (insert, no schema change)
 
-Party size for the tier lookup = adults + youth + children (infants excluded). Per-pax adult tier is the existing `tiers` map (1..8, clamped).
+Use the Viator tiers already documented in `src/data/signatureToursViator.ts` (line 1067–1068):
 
-## Files changed
+```
+Per-pax EUR by group size: 2-3 → €359, 4-6 → €299, 7-8 → €239. Min 2 pax.
+```
 
-1. `supabase/functions/_shared/bookingQuote.ts`
-  - Add a `manual` pricing branch: given a tour with adult tiers in DB, compute per-pax + total from the composition using the 100/80/50/0 rule.
-  - Return a normal `available` envelope with server labels ("Adult", "Youth (13–17)", "Child (3–12)", "Infant (0–2, free)"), unit price per band, line subtotals, and grand total in EUR.
-2. `supabase/functions/booking-quote/index.ts`
-  - Short-circuit BEFORE `resolveCommercialMapping` / Bókun: if the tour row has adult tiers (all 11 do), take the manual path. No `no_commercial_mapping`, no `bokun_unreachable`, no availability lookup.
-  - Treat every future date as available (reject only past dates and dates > 18 months out).
-  - Keep the existing signed-quote token pipeline so Stripe checkout still validates the snapshot server-side.
-3. `supabase/functions/create-signature-checkout/*`
-  - Accept the manual-mode quote token unchanged (it's already signed by `bookingQuoteToken`). No Bókun reservation call; PaymentIntent metadata gets `pricing_source: "manual_viator_tiers"` so ops can reconcile with Bókun by hand after payment.
-4. `src/components/booking/BandedSignatureBookingForm.tsx`
-  - Remove any client-side gate that waits on `readiness.bokunCategories` — the manual quote does not need them. Empty readiness = fetch quote anyway (already done in the last pass, verify).
-  - Display the four server labels + prices exactly as returned; no client math.
-5. `src/generated/brand-audit.json`
-  - Log the manual-mode toggle for the audit trail.
+Two inserts:
 
-No DB migration needed — the existing `tour_price_tiers.tiers` (adult map) is the single input. `pricing_mode`, `banded_pricing_enabled`, `bokun_categories` stay as-is and unused by this path.
+- **`imported_tours`** — one row mirroring the shape of the other 10 (id `southwest-vicentine-coast`, title, region `alentejo`, region_label `Southwest Alentejo · Costa Vicentina`, duration `fullday`, duration_hours `9–10`, price_from `239`, theme `Coastal`, blurb/stops/highlights copied from `signatureTours.ts`, `image_url` = the first gallery entry). Booking-quote reads adult tiers from `tour_price_tiers`; `imported_tours` is what unlocks visibility in admin/reporting and keeps the tour count consistent (10 → 11, matching the copy in the previous work).
+- **`tour_price_tiers`** — `tour_id = 'southwest-vicentine-coast'`, `tiers = {"2":359,"3":359,"4":299,"5":299,"6":299,"7":239,"8":239}`, `banded_pricing_enabled = false`, `pricing_mode = NULL` (same shape as `arrabida-boat`).
 
-## Verification (before returning)
+The existing manual-pricing branch in `booking-quote` (Adult 100 / Youth 80 / Child 50 / Infant 0) will then work for Southwest with no code change. `create-signature-checkout` also needs no change — it already trusts the signed quote token.
 
-- Call `booking-quote` for all 11 Signature tours with composition `{ adults: 2, minorAges: [8, 0] }` and a future date. Expect `available`, 4 lines (or 3 when no youth), Adult €×tier, Child = 50%, Infant €0.
-- Confirm no Bókun HTTP call fires (check edge logs).
-- Full Stripe sandbox smoke on `/tours/arrabida-boat#book`: quote → Reserve → PaymentIntent created → `checkoutCalls = 1` → 393px screenshot of the paid confirmation.
-- Confirm no public Signature route can render the legacy adults-only fallback (grep + the existing routing test).
+### 2. Checkout smoothness pass (all three surfaces)
 
-## Return payload (to user, after build)
+Single-surface audit and light fixes only — no re-architecture:
 
-- Root cause (Bókun channel empty, but pricing was already in DB — no reason to block launch on the sync)
-- Files changed
-- Signature route coverage: 11/11
-- Exact outgoing `booking-quote` payload for `arrabida-boat` + `{2 adults, 1 child 8, 1 infant 0}`
-- Server-resolved labels rendered
-- 393px screenshot of quote + reserve + Stripe confirmation
-- Stripe PaymentIntent id, `checkoutCalls` count
-- Confirmation that no Bókun call fires anywhere in the manual path
+- **Signature** (`/tours/:id#book`, `BandedSignatureBookingForm`):
+  - Confirm the "Instant confirmation" copy + no Bókun readiness gate is live for all 11 tours.
+  - Verify the CTA is enabled the moment a valid quote returns (no spinner stuck on stale `readiness`).
+- **Tailor** (`/tours/:id/tailor`, sends to `create-signature-checkout`):
+  - Same quote path; confirm the tailored add-ons/adjustments pass through `guestDetails` cleanly and the price line matches the quote token.
+- **Studio v3** (`/studio` → recommendation → checkout, uses `create-signature-checkout` in `mode: "quote"` then `mode: "create-session"`):
+  - Confirm the recommended tour resolves through `signatureRegistry` (Southwest now included) and the quote → session hop shows no intermediate error toast.
+- **One shared polish item** if any surface shows it: replace any generic "Something went wrong" on a `booking-quote` failure with a specific "This date isn't available — try another" (manual mode: any future date is available, so this should now be near-zero occurrence).
+
+Builder checkout (`create-builder-checkout`) is a different product (custom-built itineraries) and is **out of scope** for this pass — say so explicitly in the response so you know we didn't touch it.
+
+### 3. Verification (browser + edge)
+
+- `curl` `booking-quote` for `southwest-vicentine-coast` with `{ adults: 2, minorAges: [] }` → expect €718 total, `available`, `pricing_source: "manual_viator_tiers"`, zero Bókun HTTP calls.
+- Same for `{ adults: 2, minorAges: [8, 0] }` → expect €359 + €359 + €179.50 + €0 = €897.50.
+- Playwright: load `/tours/southwest-vicentine-coast#book`, pick 2 adults + a future date, click through to Stripe sandbox → confirm PaymentIntent id + `pricing_source` metadata.
+- Playwright: `/tours/arrabida-boat/tailor` → quote → Stripe.
+- Playwright: `/studio` → complete a short session that resolves to Southwest → quote → Stripe.
+- Confirm no `no_commercial_mapping` errors in edge logs across the three runs.
+
+## Files touched
+
+- **DB inserts** (via `supabase--insert`): `public.imported_tours`, `public.tour_price_tiers` — one row each.
+- **Code**: none expected. Any polish item found during the smoothness pass is a small copy/state edit in the specific surface's component and will be listed in the final report.
