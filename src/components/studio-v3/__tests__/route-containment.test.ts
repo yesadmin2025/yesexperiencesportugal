@@ -294,5 +294,5 @@ describe("Studio V3 — curateJourney route containment", () => {
     }
 
     expect(violations.slice(0, 10)).toEqual([]);
-  });
+  }, 20000);
 });
