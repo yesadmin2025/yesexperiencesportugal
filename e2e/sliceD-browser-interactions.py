@@ -238,28 +238,44 @@ def attach_page_listeners(page: Page):
     page.on("requestfailed", on_reqfail)
 
 async def click_while_enabled(page: Page, aria_re, max_clicks: int):
-    btn = page.get_by_role("button", name=aria_re).first
+    # Re-query on every iteration — DOM may re-render between clicks.
     for _ in range(max_clicks):
         try:
+            btn = page.get_by_role("button", name=aria_re).first
+            if await btn.count() == 0: return
+            await btn.scroll_into_view_if_needed(timeout=1000)
             if await btn.is_disabled(): return
             await btn.click(timeout=1500)
-            await page.wait_for_timeout(90)
+            await page.wait_for_timeout(120)
         except Exception:
             return
 
 async def set_minor_age(page: Page, idx: int, age: int):
-    el = page.locator(f"#minor-age-{idx}")
-    await el.fill(str(age)); await el.blur()
+    el = page.locator(f"#minor-age-{idx}").first
+    await el.wait_for(state="visible", timeout=8000)
+    await el.scroll_into_view_if_needed(timeout=1000)
+    await el.fill(str(age))
+    try: await el.blur()
+    except Exception: pass
 
 async def fill_date(page: Page):
     d = page.locator('input[type="date"]').first
-    await d.fill("2099-06-01"); await d.blur()
+    await d.fill("2099-06-01")
+    try: await d.blur()
+    except Exception: pass
 
 async def compose_2_15_8_0(page: Page):
+    # Ensure picker in view (Tailored has a long page; picker is deep).
+    try:
+        await page.get_by_text("Who is travelling?", exact=False).first.scroll_into_view_if_needed(timeout=2000)
+    except Exception:
+        pass
     await click_while_enabled(page, re.compile(r"Decrease Adults", re.I), 20)
     await click_while_enabled(page, re.compile(r"Increase Adults", re.I), 1)   # -> 2 (min 1)
     await click_while_enabled(page, re.compile(r"Decrease Travellers aged 0", re.I), 20)
     await click_while_enabled(page, re.compile(r"Increase Travellers aged 0", re.I), 3)
+    # Wait for all 3 minor-age fields to be present before typing.
+    await page.wait_for_function("() => document.querySelectorAll('input[id^=\"minor-age-\"]').length >= 3", timeout=8000)
     await set_minor_age(page, 0, 15)
     await set_minor_age(page, 1, 8)
     await set_minor_age(page, 2, 0)
