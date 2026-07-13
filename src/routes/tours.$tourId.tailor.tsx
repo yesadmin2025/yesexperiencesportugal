@@ -1491,6 +1491,15 @@ function buildLunch(
   ];
 }
 
+function formatEur(value: number): string {
+  return new Intl.NumberFormat("en-IE", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
 /* ────────────────────────────────────────────────────────────────
  * Small UI primitives
  * ──────────────────────────────────────────────────────────── */
