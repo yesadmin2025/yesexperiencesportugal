@@ -92,6 +92,12 @@ export interface SignaturePriceCardProps {
   /** Public Studio keeps pricing clean; legacy/tests can still exercise add-ons. */
   showAddOns?: boolean;
   /**
+   * When true, add-ons render even when the base price collapses to the
+   * bespoke "Price shaped with you" branch — so a traveller on a thin draft
+   * can still enrich the day from the tour's real add-on catalog.
+   */
+  allowAddOnsWithoutPrice?: boolean;
+  /**
    * Controlled add-on selection. When provided, the parent owns the ids and
    * receives `onAddOnsChange` callbacks with the fresh summary (labels, euro
    * total, minutes) so the checkout drawer and Stripe session stay in sync
@@ -162,6 +168,7 @@ export function SignaturePriceCard({
   guests,
   included,
   showAddOns = true,
+  allowAddOnsWithoutPrice = false,
   selectedAddOnIds: controlledAddOnIds,
   onAddOnsChange,
   onGuestsChange,
@@ -642,7 +649,7 @@ export function SignaturePriceCard({
             The same item is already in the chip list, so the suggestion
             was pure duplication. Selection state on the chip is enough. */}
 
-        {showAddOns && hasPrice && availableAddOns.length > 0 ? (
+        {showAddOns && (hasPrice || allowAddOnsWithoutPrice) && availableAddOns.length > 0 ? (
           <fieldset
             data-testid="studio-v3-add-ons"
             data-count={availableAddOns.length}

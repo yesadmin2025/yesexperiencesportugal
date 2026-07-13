@@ -3245,11 +3245,19 @@ export function StoryboardHandoff({
     const pool =
       skeletonTour?.stops?.map((s) => ({ label: s.label, story: s.story })) ?? [];
     const outcome = filterStopsBySuitability(rawStops, requirements, pool);
-    // Slice C closure — if the replacement pass leaves no valid substantive
-    // itinerary, return [] so the existing reveal safety fallback triggers
-    // (no quote, no Stripe). Never surface an empty or meaningless itinerary.
+    // Recoverable draft — if replacement leaves the itinerary "thin" but we
+    // still have at least one safe stop, surface it so the traveller can
+    // shape the day from real Signature moments (Add / Swap / Remove) rather
+    // than hitting a dead-end bespoke fallback. Server-side quote + Stripe
+    // stay gated on validation elsewhere; this only widens the editor.
     const validity = validateItineraryAfterReplacement(outcome, requirements);
-    if (validity !== null) return [];
+    if (validity !== null) {
+      if (outcome.stops.length > 0) return outcome.stops;
+      // Nothing safe from the filter — seed 1–2 stops directly from the
+      // same skeleton's own pool so the user can add more from swapPool.
+      if (pool.length > 0) return pool.slice(0, Math.min(2, pool.length));
+      return [];
+    }
     return outcome.stops;
   }, [resolved.routePoints, state.guests, state.minorAges, state.considerations, skeletonTour]);
 
@@ -4169,18 +4177,90 @@ export function StoryboardHandoff({
         ) : (
           <div
             data-testid="studio-v3-stops-editor-empty"
-            className="-order-1 mt-6 max-w-[420px] mx-auto text-center px-4 py-5 rounded-[10px]"
+            className="-order-1 mt-6 max-w-[440px] mx-auto text-center px-4 py-6 rounded-[10px]"
             style={{
               background: "color-mix(in oklab, var(--sand) 40%, transparent)",
               border: "1px dashed color-mix(in oklab, var(--charcoal) 20%, transparent)",
             }}
           >
             <p
-              className="text-[12.5px] leading-[1.55]"
+              className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span> Refine your Signature
+            </p>
+            <p
+              className="mt-3 text-[12.5px] leading-[1.55]"
               style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
             >
-              We couldn't compose a draft for this combination. Adjust the earlier answers and we'll rebuild it.
+              {skeletonTour && swapPool.length > 0
+                ? "We softened the draft for your answers. Add the moments that call you — you're still shaping the day."
+                : "We couldn't compose a draft for this combination. Adjust the earlier answers and we'll rebuild it."}
             </p>
+            {skeletonTour && swapPool.length > 0 ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setAddOpen((v) => !v)}
+                  aria-expanded={addOpen}
+                  className="mt-4 inline-flex items-center justify-center rounded-[8px] px-4 py-2.5 text-[12.5px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                  style={{
+                    border: "1px dashed color-mix(in oklab, var(--gold) 55%, transparent)",
+                    color: "var(--charcoal)",
+                    background: "transparent",
+                  }}
+                >
+                  {addOpen ? "Close" : "+ Add a moment"}
+                </button>
+                {addOpen ? (
+                  <ul
+                    data-testid="studio-v3-add-pool-empty"
+                    className="mt-3 space-y-1 rounded-[8px] p-2 text-left"
+                    style={{
+                      background: "color-mix(in oklab, var(--sand) 35%, transparent)",
+                      border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                    }}
+                  >
+                    {swapPool.slice(0, 6).map((cand) => (
+                      <li key={cand.label}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEdited((prev) => [
+                              ...prev,
+                              { label: cand.label, story: cand.story },
+                            ]);
+                            setAddOpen(false);
+                          }}
+                          className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          style={{ color: "var(--charcoal)" }}
+                        >
+                          <span className="font-semibold">+ {cand.label}</span>
+                          {cand.story ? (
+                            <span
+                              className="block text-[11.5px]"
+                              style={{
+                                color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                              }}
+                            >
+                              {cand.story}
+                            </span>
+                          ) : null}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+                <button
+                  type="button"
+                  onClick={onBack}
+                  className="mt-3 block mx-auto text-[11px] uppercase tracking-[0.22em] font-semibold underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+                >
+                  Adjust earlier answers
+                </button>
+              </>
+            ) : null}
           </div>
         )}
 
@@ -4263,6 +4343,7 @@ export function StoryboardHandoff({
           guests={state.guests}
           included={skeletonTour?.included ?? []}
           showAddOns={true}
+          allowAddOnsWithoutPrice={!!skeletonTour}
           selectedAddOnIds={selectedAddOnIds}
           onAddOnsChange={onAddOnsChange}
           serverPricing={serverPricing ?? null}

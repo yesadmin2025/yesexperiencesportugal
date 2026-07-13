@@ -1,29 +1,62 @@
-## Root cause
 
-The screenshots are from the published custom domain, while the latest preview already has the corrected 16:9 Signature hero. One overflow remains in the collection itself: the mobile tour grid has no explicit shrinkable column. CSS Grid therefore sizes its implicit column to the longest CTA/title (`~520px`) inside a `361px` content area, making every card, image, title, and CTA extend off-screen. The previous `overflow-x: clip` rule only masked that oversized layout and is not reliably propagated by iOS Safari.
+## What's happening
+
+In your screenshot, the Studio draft collapses into a dead end:
+- "We couldn't compose a draft for this combination…" (no way to adjust)
+- "Price shaped with you" bespoke card (no add‑ons, only "Request the investment")
+
+Reason (in `src/components/studio-v3/StudioV3.tsx`):
+
+`baseStops` runs `filterStopsBySuitability` + `validateItineraryAfterReplacement`. When validation isn't `null`, it returns `[]`. Then:
+1. The Refine editor is gated on `editedStops.length > 0`, so all Remove / Swap / Add controls disappear.
+2. `SignaturePriceCard` receives `stopCount = 0` → `hasPrice = false` → bespoke branch renders, and add‑ons are hidden by `showAddOns && hasPrice && availableAddOns.length > 0`.
+
+So even when the swap pool has valid moments AND the tour has priced add‑ons, the user is shown a locked "adjust earlier answers" screen. That's the bug.
 
 ## Fix
 
-1. **Constrain the Signature collection grid at its source**
-   - Give the mobile collection an explicit `minmax(0, 1fr)` column.
-   - Add `min-w-0`, `w-full`, and `max-w-full` to card/article and relevant link/content wrappers so long titles and CTA labels wrap within the viewport instead of defining the column width.
-   - Apply the same correction to English and Portuguese collection routes.
+Recover gracefully instead of collapsing. When base composition fails but the skeleton tour + swap pool exist, offer the user an editable starting point and keep add‑ons available.
 
-2. **Make shared Signature CTAs intrinsically mobile-safe**
-   - Update the shared CTA primitive/pair so labels can wrap, arrows stay fixed-size, and full-width stacked buttons never impose a content-based minimum width.
-   - Preserve the current desktop layout and visual design.
+### 1. Never surface an empty editor without an escape hatch
+File: `src/components/studio-v3/StudioV3.tsx`
 
-3. **Use an iOS-safe document overflow guard**
-   - Replace the root-level `overflow-x: clip` safeguard with the Safari-compatible guard while retaining clipping on internal decorative/image frames.
-   - This is secondary protection; the actual oversized grid will still be fixed rather than hidden.
+- Introduce `hasSkeletonFallback = !!skeletonTour && swapPool.length > 0`.
+- Replace the current empty branch (~line 4173–4188) with a **recoverable** empty state that renders inside the editor container:
+  - Keeps the "— Refine your Signature" eyebrow.
+  - Short line: "We softened the draft for your answers. Add the moments that call you — you're still in control."
+  - Primary action: "Add a moment" (opens the existing `swapPool` picker, same UI already used at line 4100).
+  - Secondary link: "Adjust earlier answers" → `onBack`.
+- Keep the true dead end (no skeleton AND no swap pool) as today's copy, since nothing can be added.
 
-4. **Lock the Signature detail hero alignment**
-   - Keep the corrected mobile 16:9 hero, 16px gutters, title spacing, meta grid, and stacked full-width CTAs.
-   - Add explicit shrink constraints to the hero content so navigation from the collection cannot carry any oversized layout into the detail page.
+### 2. Seed a minimal editable draft when composition returns empty
+File: `src/components/studio-v3/StudioV3.tsx`, `baseStops` memo (~line 3236–3254).
 
-5. **Regression validation at real phone widths**
-   - Add mobile tests for 320px, 360px, and 393px covering `/experiences`, `/pt/experiences`, and the Arrábida Signature detail.
-   - Assert `scrollWidth <= clientWidth`, every card/title/CTA remains within the viewport, and collection → detail navigation resets at the left edge.
-   - Verify the 393×588 rendered screenshot against the supplied iPhone examples.
+Currently `validateItineraryAfterReplacement` failure returns `[]`. Change to:
+- Prefer the filtered `outcome.stops` when it has ≥1 stop, even if `validateItineraryAfterReplacement` flags "thin" — the user can complete it themselves via the swap pool.
+- Only return `[]` when there is literally nothing safe to show (no skeleton stops at all).
 
-Publishing to the custom domain is a separate final step; after the fix is verified in preview, it must be published before `yesexperiencesportugal.com` will show it.
+This keeps composition conservative (we still don't auto‑publish a thin day) while giving the user something to shape.
+
+### 3. Keep add‑ons visible on recovered drafts
+File: `src/components/studio-v3/SignaturePriceCard.tsx` (~line 645).
+
+Relax the add‑ons gate to `showAddOns && availableAddOns.length > 0 && (hasPrice || allowAddOnsWithoutPrice)`. Pass a new `allowAddOnsWithoutPrice` prop from `StudioV3` when `skeletonTour` exists, so add‑ons render even in bespoke mode. The add‑ons still price per tour's real catalog; only the base line stays "Price shaped with you".
+
+If we don't want a new prop, alternative: derive `hasPrice` from `skeletonTour && (priceFrom || tier)` so a valid tour with `priceFrom` no longer falls into bespoke — which also restores add‑ons.
+
+### 4. Guardrails
+- No invented stops, no invented prices — swap pool already draws only from the same Signature skeleton / region pool.
+- Studio philosophy check: still guided, restraint intact, no configurator vibe — we're just not slamming the door on a recoverable state.
+- Mobile‑first: reuses existing 393px editor + add‑ons layout; no new components.
+
+## Files touched
+
+- `src/components/studio-v3/StudioV3.tsx` — recoverable empty state, `baseStops` fallback, prop wiring.
+- `src/components/studio-v3/SignaturePriceCard.tsx` — add‑ons gate.
+
+## Out of scope
+
+- Rewriting `resolveStudioV3Route` composition logic.
+- Any change to Signature source of truth, pricing tiers, or Viator data.
+
+Ready to implement on approval.
