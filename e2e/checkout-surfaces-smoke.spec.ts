@@ -65,8 +65,15 @@ test.describe("Signature checkout surface", () => {
     // Small settle to guarantee event listeners are attached.
     await page.waitForTimeout(250);
 
-    const iso = tomorrowISO();
-    await dateInput.fill(iso);
+    const iso = tomorrowISO(); // YYYY-MM-DD
+    const [y, m, d] = iso.split("-");
+    // Chromium <input type="date"> in en-US locale reads MM DD YYYY when
+    // typed via the keyboard. Using keyboard events (vs. .fill()) fires
+    // real input events that React's synthetic event system observes,
+    // reliably updating state — unlike .fill()'s value-property write
+    // which can be swallowed by React's value tracker under SSR hydration.
+    await dateInput.click();
+    await page.keyboard.type(`${m}${d}${y}`);
     await expect(dateInput).toHaveValue(iso);
 
     // Wait for the live-quote panel to resolve to a € total (proves
