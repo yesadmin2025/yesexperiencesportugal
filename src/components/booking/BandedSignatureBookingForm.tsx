@@ -311,25 +311,29 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
         ) : null}
       </div>
 
-      <button
-        type="button"
-        onClick={() => setDetailsOpen(true)}
-        disabled={pending || !canReserve}
-        className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
-      >
-        {pending ? (
-          <>
-            <Loader2 size={15} className="animate-spin" /> Opening checkout…
-          </>
-        ) : (
-          <>
-            <Sparkles size={15} /> Reserve securely
-          </>
-        )}
-      </button>
-      <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-        Instant confirmation
-      </p>
+      <div ref={reserveCtaRef} className="pb-24 sm:pb-4">
+        <button
+          type="button"
+          onClick={() => setDetailsOpen(true)}
+          disabled={pending || !canReserve}
+          data-testid="reserve-cta"
+          className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
+        >
+          {pending ? (
+            <>
+              <Loader2 size={15} className="animate-spin" /> Opening checkout…
+            </>
+          ) : (
+            <>
+              <Sparkles size={15} /> Reserve securely
+            </>
+          )}
+        </button>
+        <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
+          Instant confirmation
+        </p>
+      </div>
+
       <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
         <Lock size={10} /> Secure checkout · price re-verified with Bókun
       </p>
