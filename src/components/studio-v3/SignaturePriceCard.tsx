@@ -661,6 +661,18 @@ export function SignaturePriceCard({
             >
               <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
             </legend>
+            {allowAddOnsWithoutPrice && !hasPrice ? (
+              <p
+                data-testid="studio-v3-add-ons-bespoke-notice"
+                className="mb-3 text-center text-[11px] leading-[1.5] italic"
+                style={{
+                  color: "color-mix(in oklab, var(--teal) 85%, transparent)",
+                  fontFamily: "var(--font-serif)",
+                }}
+              >
+                Add-ons priced from the tour catalog · base investment confirmed by a curator.
+              </p>
+            ) : null}
             {remainingMinutes != null && remainingMinutes > 0
               ? (() => {
                   const totalBudget = remainingMinutes; // free minutes on the base day
