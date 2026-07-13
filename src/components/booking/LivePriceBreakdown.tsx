@@ -92,7 +92,7 @@ export function LivePriceBreakdown({ quote, compact = false }: Props) {
                   </div>
                 </div>
                 <div className="tabular-nums text-sm" data-testid={`addon-${l.id}`}>
-                  {EUR.format(l.subtotalEur)}
+                  {formatEur(l.subtotalEur)}
                 </div>
               </li>
             ))}
