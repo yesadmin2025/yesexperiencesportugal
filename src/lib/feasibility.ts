@@ -151,9 +151,11 @@ export function evaluateDay(plan: DayPlan): FeasibilityResult {
 
   // ── Wine rule ───────────────────────────────────────────────
   const wineries = plan.stops.filter((s) => s.category === "winery");
-  if (wineries.length > 3) {
+  if (wineries.length > 4) {
     feasible = false;
-    warnings.push(`Three wineries is the safe maximum — palate fatigue past that point.`);
+    warnings.push(`Four wineries is the absolute maximum — palate fatigue past that point.`);
+  } else if (wineries.length === 4) {
+    warnings.push(`Four wineries is intense — plan a long lunch and a light dinner.`);
   }
   if (wineries.length >= 2) {
     const hasLunch = plan.stops.some((s) => s.category === "lunch");

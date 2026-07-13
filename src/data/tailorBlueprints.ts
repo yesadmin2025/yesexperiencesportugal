@@ -51,7 +51,12 @@ export interface TailorBlueprint {
   core: BlueprintStop[];
   /** "Pick N from the pool" — Viator's "2 or 3 wineries" rule. */
   choice?: {
+    /** Default number of stops to pre-select from the pool. */
     pickCount: number;
+    /** Upper bound guests may select. Defaults to `pickCount` when omitted
+     *  (fixed count). Set higher than `pickCount` to allow guests to add
+     *  more from the pool — feasibility rules still gate the total day. */
+    maxPick?: number;
     /** UI section header, e.g. "Choose 2 wineries from this pool". */
     label: string;
     /** Plain note shown verbatim to the guest. */
@@ -105,12 +110,14 @@ const wineHeritage: TailorBlueprint = {
       blurb:
         "Regional plates and paired wines in the wine village — unhurried, the way locals eat.",
       category: "lunch",
+      skippable: false,
     },
   ],
   choice: {
     pickCount: 2,
-    label: "Choose 2 wineries from this pool",
-    note: "Your guide confirms the final pair the day before based on each winery's availability.",
+    maxPick: 4,
+    label: "Choose 2–4 wineries from this pool",
+    note: "Two wineries fit comfortably; a 3rd or 4th needs time from somewhere — skip the market, viewpoint or tile factory above to make room. Your guide confirms the final pair the day before based on availability.",
     options: [
       {
         id: "jmf",
