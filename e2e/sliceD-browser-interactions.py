@@ -393,8 +393,11 @@ async def run_tailored(page: Page, viewport: str):
     fx.mode = "available"; fx.quote_calls.clear(); fx.checkout_calls.clear()
     fx.page_errors.clear()
     await page.goto(f"{BASE}/tours/sintra-cascais/tailor", wait_until="domcontentloaded")
+    picker = page.get_by_text("Who is travelling?", exact=False).first
     try:
-        await page.get_by_text("Who is travelling?", exact=False).first.wait_for(timeout=10000)
+        await picker.wait_for(state="attached", timeout=20000)
+        await picker.scroll_into_view_if_needed(timeout=3000)
+        await picker.wait_for(state="visible", timeout=5000)
     except Exception:
         await page.screenshot(path=str(SHOTS/f"tailored-picker-{viewport}-MISSING.png"))
         return {"note":"tailor picker not present","viewport":viewport}
