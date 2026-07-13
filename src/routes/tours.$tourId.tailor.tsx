@@ -189,8 +189,9 @@ function TailorPage() {
   const guests = totalParticipants(composition);
   const setGuests = (n: number) =>
     setComposition((c) => ({ ...c, adults: Math.max(1, n - c.minorAges.length) }));
-  const categoryReady = useCategoryAwareCheckoutReadyFor(tour.id, composition);
-  const mixedFamilyBlocked = hasMinors(composition) && !categoryReady.ready;
+  // Family bookings now price via the manual (age-band) path in booking-quote;
+  // no Bókun category readiness gate is required for Tailored anymore.
+
   const [language, setLanguage] = useState<"en" | "pt">("en");
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
   const [added, setAdded] = useState<Set<string>>(new Set());
