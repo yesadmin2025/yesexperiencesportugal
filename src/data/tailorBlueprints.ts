@@ -118,7 +118,8 @@ const wineHeritage: TailorBlueprint = {
     pickCount: 2,
     maxPick: 4,
     label: "Choose 2–4 wineries from this pool",
-    note: "Two wineries fit comfortably; a 3rd or 4th needs time from somewhere — skip the market, viewpoint or tile factory above to make room. Your guide confirms the final pair the day before based on availability.",
+    note: "Two wineries fit as-is · a 3rd needs one skip (market, viewpoint or tile factory) · a 4th needs two skips (lunch can be skipped too). Your guide confirms the final pair the day before based on availability.",
+
     options: [
       {
         id: "jmf",
