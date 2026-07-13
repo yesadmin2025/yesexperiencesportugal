@@ -1391,8 +1391,8 @@ export function curateJourney(
   const rand = seedNum > 0 ? mulberry32(seedNum) : null;
 
   const { tour: primary, alternates } = pickPrimaryTour(
-    feeling: safeFeeling,
-    companions: safeCompanions,
+    feeling,
+    companions,
     interests,
     pickup,
     destinationIntent,
