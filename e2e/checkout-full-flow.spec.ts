@@ -18,6 +18,9 @@
  *   3. Stripe redirects to `${BASE}/booking-confirmed?session_id=cs_test_…`.
  *   4. Assert the "Confirmed" eyebrow + "Your day in Portugal is reserved"
  *      title + Reference tail render.
+ *
+ * Child pricing/session creation is covered by bokun-checkout-coverage.spec.ts,
+ * before this payment-completion suite reaches Stripe's hosted page.
  */
 
 import { test, expect, type Page } from "@playwright/test";

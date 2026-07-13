@@ -255,13 +255,13 @@ Deno.serve(async (req) => {
       commercialProductKey: input.commercialProductKey,
       commercialMappingId,
       bokunProductId: MANUAL_BOKUN_PRODUCT_ID,
-      bokunOptionId: undefined,
-      bokunRateId: undefined,
       availabilityId,
       date: input.date,
       startTime,
       pricingRevision,
-      itineraryRevision: input.itineraryRevision,
+      ...(input.itineraryRevision
+        ? { itineraryRevision: input.itineraryRevision }
+        : {}),
       finalTotalEur,
       iat,
       exp,
