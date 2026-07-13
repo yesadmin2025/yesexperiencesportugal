@@ -21,7 +21,7 @@ const PHASE_TO_BEAT: Record<StudioV3Phase, number | null> = {
   feeling: 0,
   destination: 0,
   who: 0,
-  occasion: 0,
+  occasion: 1,
   pickup: 0,
   guests: 0,
   interests: 1,
