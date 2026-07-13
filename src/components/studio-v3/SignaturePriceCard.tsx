@@ -862,12 +862,24 @@ export function SignaturePriceCard({
                 );
               })}
             </ul>
-            <p
-              className="mt-2 text-center text-[10.5px] uppercase tracking-[0.22em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
-            >
-              Up to {MAX_ADDONS} add-ons
-            </p>
+            {(() => {
+              const anyLocked = availableAddOns.some((a) => {
+                const isSelected = selectedAddOnIds.includes(a.id);
+                const fits = fitsBudgetById[a.id] !== false;
+                return !isSelected && (atCap || !fits);
+              });
+              return (
+                <p
+                  data-testid="studio-v3-add-ons-legend"
+                  className="mt-2 text-center text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+                >
+                  {anyLocked
+                    ? `Locked options don't fit the day's rhythm or the ${MAX_ADDONS}-item limit`
+                    : `Up to ${MAX_ADDONS} add-ons`}
+                </p>
+              );
+            })()}
             <output
               data-testid="studio-v3-add-ons-total"
               aria-live="polite"
