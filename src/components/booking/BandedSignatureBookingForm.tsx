@@ -257,7 +257,11 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
       </div>
 
       {/* Live price panel — driven ONLY by the quote response */}
-      <div className="mt-6 border-t border-[color:var(--border)] pt-4">
+      <div
+        data-testid="booking-summary"
+        className="mt-6 border-t border-[color:var(--border)] pt-4"
+      >
+
         {!date ? (
           <p className="text-[11px] text-[color:var(--charcoal-soft)]">
             Choose a date to see live availability and pricing.
