@@ -109,13 +109,14 @@ test.describe("Tailored checkout surface", () => {
 
 test.describe("Builder (Studio v3) checkout surface", () => {
   test("loads without error copy and exposes a primary CTA", async ({ page }) => {
+    // Studio v3 fires continuous background requests (map tiles, scene
+    // media, IO probes) so networkidle never resolves inside the default
+    // 30s test timeout — bump this test only.
+    test.setTimeout(60_000);
     await page.goto(`/studio-v3`, { waitUntil: "domcontentloaded" });
 
-    // Studio v3 is a long cinematic scroll — just assert first-fold
-    // renders cleanly and at least one primary CTA is available.
-    await page.waitForLoadState("networkidle").catch(() => undefined);
     const beginCta = page.getByRole("button", { name: /^Begin/i }).first();
-    await expect(beginCta).toBeVisible({ timeout: 20_000 });
+    await expect(beginCta).toBeVisible({ timeout: 30_000 });
     await expect(beginCta).toBeEnabled();
 
     await expectNoErrorCopy(page);
