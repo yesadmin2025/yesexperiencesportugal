@@ -445,9 +445,16 @@ async def run_tailored(page: Page, viewport: str):
     await reserve.click()
     try:
         await page.wait_for_selector("text=Final details before payment", timeout=5000)
+        # Fill required dialog fields (dialog has its own date input distinct from outer picker).
+        dlg = page.locator('[role="dialog"], form').last
         await page.locator('input[autocomplete="name"]').fill("Test User")
         await page.locator('input[autocomplete="email"]').fill("test@example.com")
         await page.locator('input[autocomplete="tel"]').fill("+351 900 000 000")
+        # Fill any date input inside the dialog (Tailored requires it).
+        date_inputs = page.locator('input[type="date"]')
+        for i in range(await date_inputs.count()):
+            try: await date_inputs.nth(i).fill("2099-06-01")
+            except Exception: pass
         pickup = page.locator('input[placeholder*="Hotel"]')
         if await pickup.count() > 0: await pickup.fill("Test Hotel, Lisbon")
         await page.screenshot(path=str(SHOTS/f"tailored-final-details-{viewport}.png"))
