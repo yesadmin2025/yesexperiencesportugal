@@ -327,13 +327,15 @@ async def wait_for(cond, deadline=6.0, step=0.1):
 
 async def run_signature(page: Page, viewport: str):
     fx.mode = "available"; fx.quote_calls.clear(); fx.checkout_calls.clear()
-    await page.goto(f"{BASE}/tours/sintra-cascais", wait_until="domcontentloaded")
+    await page.goto(f"{BASE}/tours/sintra-cascais#book", wait_until="domcontentloaded")
     picker = page.get_by_text("Who is travelling?", exact=False).first
-    try: await picker.wait_for(timeout=10000)
-    except Exception:
+    try:
+        await picker.wait_for(state="attached", timeout=20000)
+        await picker.scroll_into_view_if_needed(timeout=3000)
+        await picker.wait_for(state="visible", timeout=5000)
+    except Exception as e:
         await page.screenshot(path=str(SHOTS/f"signature-picker-{viewport}-MISSING.png"))
-        return {"error":"picker not present","viewport":viewport}
-    await picker.scroll_into_view_if_needed()
+        return {"error":f"picker not present: {e}","viewport":viewport}
     await fill_date(page)
     await compose_2_15_8_0(page)
     # Wait for the debounced quote to carry the fully committed composition.
