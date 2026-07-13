@@ -793,13 +793,23 @@ async def run_studio(page: Page, viewport: str):
     phase_sequence = [phase]
     snapshots = {"storyboard": None, "final": None, "checkout": None}
 
-    for i in range(40):
+    entered_composition = False
+    for i in range(60):
         cur_phase = await page.evaluate(
             "() => { const r=document.querySelector('[data-testid=\"studio-v3-root\"]'); return r?r.getAttribute('data-phase'):null; }"
         )
         if cur_phase != phase_sequence[-1]:
             phase_sequence.append(cur_phase or "?")
         phase = cur_phase
+
+        # On "who" phase, enter the canonical composition once.
+        if phase == "who" and not entered_composition:
+            try:
+                await page.locator('[data-testid="studio-v3-traveller-composition"]').first.scroll_into_view_if_needed(timeout=2000)
+                await compose_2_15_8_0(page)
+                entered_composition = True
+            except Exception as e:
+                await page.screenshot(path=str(SHOTS/f"studio-who-COMPOSE-FAIL-{viewport}.png"))
 
         if phase == "storyboard" and not snapshots["storyboard"]:
             snapshots["storyboard"] = await studio_snapshot(page, "storyboard")
