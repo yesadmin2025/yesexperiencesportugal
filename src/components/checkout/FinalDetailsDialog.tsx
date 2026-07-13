@@ -215,24 +215,14 @@ export function FinalDetailsDialog({
 
         <div className="overflow-y-auto px-5 sm:px-7 py-5 space-y-5">
           <Section title="Who's coming">
-            <Row>
-              <Field label="Full name" required>
-                <input
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className={inputClass}
-                  autoComplete="name"
-                />
-              </Field>
-              <Field label="Main contact person" hint="If different">
-                <input
-                  value={mainContact}
-                  onChange={(e) => setMainContact(e.target.value)}
-                  placeholder={fullName || "Same as above"}
-                  className={inputClass}
-                />
-              </Field>
-            </Row>
+            <Field label="Full name" required>
+              <input
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className={inputClass}
+                autoComplete="name"
+              />
+            </Field>
             <Row>
               <Field label="Email" required>
                 <input
@@ -258,7 +248,7 @@ export function FinalDetailsDialog({
 
           <Section title="Your day">
             <Row>
-              <Field label="Tour date" required>
+              <Field label="Tour date">
                 <input
                   type="date"
                   value={tourDate}
@@ -267,7 +257,7 @@ export function FinalDetailsDialog({
                   className={inputClass}
                 />
               </Field>
-              <Field label="Guests" required>
+              <Field label="Guests">
                 <div className="flex items-center border border-[color:var(--border)] bg-[color:var(--ivory)]">
                   <button
                     type="button"
@@ -346,7 +336,7 @@ export function FinalDetailsDialog({
                 className={inputClass}
               />
             </Field>
-            <Field label="Preferred tour language" required>
+            <Field label="Preferred tour language">
               <div className="grid grid-cols-2 border border-[color:var(--border)]">
                 {(["en", "pt"] as const).map((l) => (
                   <button
@@ -370,6 +360,7 @@ export function FinalDetailsDialog({
               </p>
             </Field>
           </Section>
+
 
           <Section title="Anything we should know" optional>
             <Row>
