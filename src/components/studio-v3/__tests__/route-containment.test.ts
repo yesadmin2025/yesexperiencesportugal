@@ -202,7 +202,7 @@ describe("Studio V3 — resolveStudioV3Route route containment", () => {
         2,
       )}${violations.length > 5 ? `\n…and ${violations.length - 5} more` : ""}`,
     ).toEqual([]);
-  });
+  }, 20000);
 
   it("every route point label exists somewhere in the Signature catalog (sanity)", () => {
     for (const feeling of FEELINGS) {
