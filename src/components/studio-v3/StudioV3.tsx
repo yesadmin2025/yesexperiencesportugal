@@ -4343,6 +4343,7 @@ export function StoryboardHandoff({
           guests={state.guests}
           included={skeletonTour?.included ?? []}
           showAddOns={true}
+          allowAddOnsWithoutPrice={!!skeletonTour}
           selectedAddOnIds={selectedAddOnIds}
           onAddOnsChange={onAddOnsChange}
           serverPricing={serverPricing ?? null}
