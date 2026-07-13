@@ -327,12 +327,15 @@ async def set_minor_rows_to(page: Page, target: int):
         aria = "Decrease Travellers aged 0" if cur > target else "Increase Travellers aged 0"
         btn = page.get_by_role("button", name=re.compile(aria, re.I)).first
         try:
-            if await btn.count() == 0 or await btn.is_disabled():
+            if await btn.count() == 0:
                 return cur
+            try: await btn.scroll_into_view_if_needed(timeout=800)
+            except Exception: pass
+            if await btn.is_disabled(): return cur
             await btn.click(timeout=1500)
         except Exception:
             return cur
-        await page.wait_for_timeout(80)
+        await page.wait_for_timeout(180)
     return await read_minor_count(page)
 
 async def compose_2_15_8_0(page: Page):
