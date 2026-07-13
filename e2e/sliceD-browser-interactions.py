@@ -601,10 +601,24 @@ async def run_studio(page: Page, viewport: str):
         return False
 
     async def click_cta(sel, fallback_pat=None):
+        # Try native click first; if the page rejects (overlay/hydration race),
+        # fall back to force + JS dispatch. Studio intro sometimes needs a
+        # bare-metal click to bypass a transient parallax overlay.
         try:
             loc = page.locator(sel).first
             if await loc.count():
-                await loc.click(timeout=2500)
+                try:
+                    await loc.click(timeout=2500)
+                except Exception:
+                    await loc.click(timeout=2500, force=True)
+                return True
+        except Exception: pass
+        try:
+            ok = await page.evaluate(
+                "(s) => { const el=document.querySelector(s); if(!el) return false; el.click(); return true; }",
+                sel,
+            )
+            if ok:
                 return True
         except Exception: pass
         if fallback_pat:
