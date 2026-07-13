@@ -65,6 +65,8 @@ interface Props {
   tourId?: string;
   /** Optional explicit Bókun product id (Studio custom paths). */
   bokunProductId?: string | number;
+  /** Keep the traveller composition chosen on the previous screen intact. */
+  lockGuestCount?: boolean;
 }
 
 interface SlotOption {
@@ -83,6 +85,7 @@ export function FinalDetailsDialog({
   submitting = false,
   tourId,
   bokunProductId,
+  lockGuestCount = false,
 }: Props) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -258,25 +261,31 @@ export function FinalDetailsDialog({
                 />
               </Field>
               <Field label="Guests">
-                <div className="flex items-center border border-[color:var(--border)] bg-[color:var(--ivory)]">
-                  <button
-                    type="button"
-                    onClick={() => setGuests((g) => Math.max(1, g - 1))}
-                    className="px-3 py-2.5 text-sm hover:bg-[color:var(--sand)]"
-                    aria-label="Decrease guests"
-                  >
-                    −
-                  </button>
-                  <span className="flex-1 text-center text-sm">{guests}</span>
-                  <button
-                    type="button"
-                    onClick={() => setGuests((g) => Math.min(24, g + 1))}
-                    className="px-3 py-2.5 text-sm hover:bg-[color:var(--sand)]"
-                    aria-label="Increase guests"
-                  >
-                    +
-                  </button>
-                </div>
+                {lockGuestCount ? (
+                  <div className="flex min-h-[44px] items-center justify-center border border-[color:var(--border)] bg-[color:var(--sand)]/40 px-3 text-sm tabular-nums">
+                    {guests}
+                  </div>
+                ) : (
+                  <div className="flex items-center border border-[color:var(--border)] bg-[color:var(--ivory)]">
+                    <button
+                      type="button"
+                      onClick={() => setGuests((g) => Math.max(1, g - 1))}
+                      className="px-3 py-2.5 text-sm hover:bg-[color:var(--sand)]"
+                      aria-label="Decrease guests"
+                    >
+                      −
+                    </button>
+                    <span className="flex-1 text-center text-sm">{guests}</span>
+                    <button
+                      type="button"
+                      onClick={() => setGuests((g) => Math.min(24, g + 1))}
+                      className="px-3 py-2.5 text-sm hover:bg-[color:var(--sand)]"
+                      aria-label="Increase guests"
+                    >
+                      +
+                    </button>
+                  </div>
+                )}
               </Field>
             </Row>
             {(tourId || bokunProductId) && tourDate ? (
