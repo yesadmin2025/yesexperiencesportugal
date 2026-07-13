@@ -11,33 +11,28 @@
 // No client-supplied prices, no client-decided age bands, no add-on trust.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import {
-  getActivityAvailabilities,
-  pickSlotUnitPrice,
-  bokunFetch,
-  extractActivityCategories,
-  type AvailabilitySlot,
-  type BokunRawCategory,
-} from "../_shared/bokun.ts";
-import type { MappedBokunPricingCategory } from "../_shared/bokunCategories.ts";
-import { resolveCommercialMapping } from "../_shared/resolveCommercialMapping.ts";
 import { resolveAddOnsFromDb } from "../_shared/resolveAddOnsFromDb.ts";
 import {
   coerceComposition,
-  resolveComposition,
   type TravellerComposition,
 } from "../_shared/travellerComposition.ts";
 import {
   computePricingRevision,
   type BookingFlow,
   type BookingQuote,
-  type BookingQuoteBaseLine,
   type BookingQuoteResponse,
   type BookingQuoteUnavailable,
   type BookingQuoteDiagnostics,
 } from "../_shared/bookingQuote.ts";
 import { signBookingQuoteToken } from "../_shared/bookingQuoteToken.ts";
-import { syncOneBokunPricing } from "../_shared/syncBokunPricing.ts";
+import {
+  buildManualQuote,
+  coerceAdultTiers,
+  isManualBokunProductId as _isManualBokunProductId,
+  MANUAL_BOKUN_PRODUCT_ID,
+  manualAvailabilityId,
+  manualCommercialMappingId,
+} from "../_shared/manualPricing.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
