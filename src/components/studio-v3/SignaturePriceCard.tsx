@@ -808,17 +808,33 @@ export function SignaturePriceCard({
                         >
                           {a.blurb}
                         </span>
-                        {!fits ? (
-                          <span
-                            className="mt-1 inline-block text-[9.5px] uppercase tracking-[0.2em] font-semibold"
-                            style={{
-                              color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-                            }}
-                            data-testid="addon-budget-locked"
-                          >
-                            Won't fit this day ({a.durationMinutes}m)
-                          </span>
-                        ) : null}
+                        {(() => {
+                          // Availability reason — surfaced whenever a chip
+                          // is disabled so the traveller understands why it
+                          // can't be selected right now. Time-fit wins over
+                          // cap because it's more actionable.
+                          let reason: string | null = null;
+                          if (!selected && !fits) {
+                            const deficit =
+                              remainingMinutes != null
+                                ? Math.max(1, a.durationMinutes - Math.max(0, remainingMinutes))
+                                : a.durationMinutes;
+                            reason = `Needs ${deficit} min more than the day allows`;
+                          } else if (!selected && atCap) {
+                            reason = `Max ${MAX_ADDONS} add-ons — deselect one to swap`;
+                          }
+                          return reason ? (
+                            <span
+                              className="mt-1 inline-block text-[9.5px] uppercase tracking-[0.2em] font-semibold"
+                              style={{
+                                color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                              }}
+                              data-testid="addon-availability-reason"
+                            >
+                              {reason}
+                            </span>
+                          ) : null;
+                        })()}
                       </span>
                       <span
                         className="shrink-0 flex flex-col items-end text-[12px] font-semibold tabular-nums whitespace-nowrap"
