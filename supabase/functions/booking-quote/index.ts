@@ -11,33 +11,28 @@
 // No client-supplied prices, no client-decided age bands, no add-on trust.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import {
-  getActivityAvailabilities,
-  pickSlotUnitPrice,
-  bokunFetch,
-  extractActivityCategories,
-  type AvailabilitySlot,
-  type BokunRawCategory,
-} from "../_shared/bokun.ts";
-import type { MappedBokunPricingCategory } from "../_shared/bokunCategories.ts";
-import { resolveCommercialMapping } from "../_shared/resolveCommercialMapping.ts";
 import { resolveAddOnsFromDb } from "../_shared/resolveAddOnsFromDb.ts";
 import {
   coerceComposition,
-  resolveComposition,
   type TravellerComposition,
 } from "../_shared/travellerComposition.ts";
 import {
   computePricingRevision,
   type BookingFlow,
   type BookingQuote,
-  type BookingQuoteBaseLine,
   type BookingQuoteResponse,
   type BookingQuoteUnavailable,
   type BookingQuoteDiagnostics,
 } from "../_shared/bookingQuote.ts";
 import { signBookingQuoteToken } from "../_shared/bookingQuoteToken.ts";
-import { syncOneBokunPricing } from "../_shared/syncBokunPricing.ts";
+import {
+  buildManualQuote,
+  coerceAdultTiers,
+  isManualBokunProductId as _isManualBokunProductId,
+  MANUAL_BOKUN_PRODUCT_ID,
+  manualAvailabilityId,
+  manualCommercialMappingId,
+} from "../_shared/manualPricing.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -84,6 +79,7 @@ function unavailable(
   return json(200, body satisfies BookingQuoteResponse);
 }
 
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") return json(405, { error: "Method not allowed" });
@@ -115,8 +111,6 @@ Deno.serve(async (req) => {
   const composition = coerceComposition(input.travellerComposition);
   const t0 = Date.now();
 
-  // Diagnostics accumulate across the request so we can surface them
-  // on any unavailable envelope AND emit a single structured log line.
   const diag: BookingQuoteDiagnostics = {
     tourId: input.commercialProductKey,
     mirrorHadCategories: false,
@@ -128,6 +122,7 @@ Deno.serve(async (req) => {
       stage,
       flow: input.flow,
       durationMs: Date.now() - t0,
+      pricingMode: "manual",
       ...diag,
       ...extra,
     }));
@@ -145,181 +140,73 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 1. Resolve commercial mapping (Studio isolated from Signature by helper).
-  const mappingResult = await resolveCommercialMapping(admin, input.flow, input.commercialProductKey);
-  if (!mappingResult.ok) {
-    return unavailableWithDiag(mappingResult.error.reason, mappingResult.error.message);
+  // Reject past dates and dates > 18 months out. Every future date is
+  // treated as available under the manual (Bókun-free) launch path.
+  const todayIso = new Date().toISOString().slice(0, 10);
+  if (input.date < todayIso) {
+    return unavailableWithDiag("no_slots", "Date is in the past.");
   }
-  const mapping = mappingResult.mapping;
-  diag.bokunProductId = String(mapping.bokunProductId);
-  diag.bokunOptionId = mapping.bokunOptionId ?? null;
-  diag.bokunRateId = mapping.bokunRateId ?? null;
-
-  // 2. Load the Bókun category mirror (age ranges live here).
-  //    Auto-heal: if empty, trigger a live sync for this product and re-read once.
-  async function loadMirror() {
-    const { data } = await admin
-      .from("tour_price_tiers")
-      .select("bokun_categories")
-      .eq("tour_id", input.commercialProductKey)
-      .maybeSingle();
-    return (data?.bokun_categories ?? []) as MappedBokunPricingCategory[];
+  const maxDate = new Date();
+  maxDate.setMonth(maxDate.getMonth() + 18);
+  if (input.date > maxDate.toISOString().slice(0, 10)) {
+    return unavailableWithDiag("no_slots", "Date is too far in the future.");
   }
 
-  function summariseCategories(cats: MappedBokunPricingCategory[]) {
-    diag.categoryCountAfter = cats.length;
-    diag.confirmedCount = cats.filter((c) => c.mappingStatus === "confirmed").length;
-    diag.suggestedCount = cats.filter((c) => c.mappingStatus === "suggested").length;
-    diag.unmappedCount = cats.filter((c) => c.mappingStatus === "unmapped").length;
+  // 1. Load the adult per-pax tiers from tour_price_tiers (Viator data, single source of truth).
+  const { data: tierRow, error: tierErr } = await admin
+    .from("tour_price_tiers")
+    .select("tiers")
+    .eq("tour_id", input.commercialProductKey)
+    .maybeSingle();
+  if (tierErr) {
+    return unavailableWithDiag("unknown", `Pricing lookup failed: ${tierErr.message}`);
   }
-
-  let bokunCategories = await loadMirror();
-  diag.mirrorHadCategories = bokunCategories.length > 0;
-  if (!bokunCategories.length) {
-    diag.autoSyncTriggered = true;
-    logDiag("auto-sync-start");
-    try {
-      const syncResult = await syncOneBokunPricing(
-        admin,
-        input.commercialProductKey,
-        String(mapping.bokunProductId),
-        false,
-      );
-      diag.autoSyncOk = syncResult.ok;
-      diag.autoSyncReason = syncResult.reason;
-      diag.autoSyncWarnings = syncResult.warnings;
-      if (!syncResult.ok) {
-        return unavailableWithDiag("no_commercial_mapping",
-          `Auto-sync failed: ${syncResult.reason ?? "unknown"}`);
-      }
-      bokunCategories = await loadMirror();
-    } catch (e) {
-      diag.autoSyncOk = false;
-      diag.autoSyncReason = e instanceof Error ? e.message : String(e);
-      return unavailableWithDiag("no_commercial_mapping",
-        `Auto-sync error: ${diag.autoSyncReason}`);
-    }
-  }
-  summariseCategories(bokunCategories);
-  if (!bokunCategories.length) {
-    return unavailableWithDiag("no_commercial_mapping",
-      "No Bókun pricing categories mirrored for this product after auto-sync.");
-  }
-
-  // 3. Resolve traveller composition → confirmed Bókun categories.
-  const resolved = resolveComposition(composition, bokunCategories);
-  if (resolved.unresolvedAges.includes(-1)) {
-    return unavailableWithDiag("no_adult_category",
-      "This product has no adult pricing category configured.");
-  }
-  if (resolved.unresolvedAges.length) {
-    return unavailableWithDiag("age_unsupported",
-      `Ages not accepted by this product: ${resolved.unresolvedAges.join(", ")}`,
-      { unresolvedAges: resolved.unresolvedAges });
-  }
-
-  // 4. Availability revalidation against Bókun.
-  let slots: AvailabilitySlot[] = [];
-  try {
-    slots = await getActivityAvailabilities(mapping.bokunProductId, input.date);
-  } catch (e) {
-    return unavailableWithDiag("bokun_unreachable",
-      `Bókun availability fetch failed: ${e instanceof Error ? e.message : String(e)}`);
-  }
-  if (!slots.length) {
-    return unavailableWithDiag("no_slots",
-      "No slots available on the requested date.");
-  }
-
-  const usable = slots.filter((s) => (s.availabilityCount ?? 0) >= resolved.totalParticipants);
-  let slot: AvailabilitySlot | null = null;
-  if (input.availabilityId) {
-    const wanted = String(input.availabilityId);
-    slot = usable.find((s) => String(s.id) === wanted) ?? null;
-    if (!slot) {
-      return unavailableWithDiag("slot_capacity_lost",
-        `Slot ${wanted} no longer has capacity for ${resolved.totalParticipants} participants.`);
-    }
-  } else if (input.startTime) {
-    slot = usable.find((s) => s.startTime === input.startTime) ?? null;
-  } else if (usable.length === 1) {
-    slot = usable[0];
-  }
-  if (!slot) {
-    return unavailableWithDiag("slot_unavailable",
-      "Requested slot is unavailable.");
-  }
-
-  // 5. Category price defaults from the activity (some slots omit infant prices).
-  let activityCats: BokunRawCategory[] = [];
-  try {
-    const activity = await bokunFetch(
-      `/activity.json/${mapping.bokunProductId}?lang=EN&currency=EUR`,
-      "GET",
+  const adultTiers = coerceAdultTiers(tierRow?.tiers ?? null);
+  if (!adultTiers) {
+    return unavailableWithDiag(
+      "no_commercial_mapping",
+      "No manual pricing tiers configured for this tour.",
     );
-    activityCats = extractActivityCategories(activity);
-  } catch {
-    /* non-fatal — slot prices win when present */
   }
 
-  const slotCatById = new Map<string, Record<string, unknown>>();
-  for (const c of slot.pricingCategories ?? []) {
-    slotCatById.set(String(c.id), c as unknown as Record<string, unknown>);
-  }
-
-  // 6. Build base pricing lines from resolvedComposition + Bókun unit prices.
-  const baseLines: BookingQuoteBaseLine[] = [];
-  for (const entry of resolved.categoryQuantities) {
-    const { category, quantity, ages } = entry;
-    const slotCat = slotCatById.get(category.bokunCategoryId);
-    const activityCat = activityCats.find((c) => String(c.id) === category.bokunCategoryId);
-    let unit = pickSlotUnitPrice(slotCat, activityCat);
-    if (unit == null) {
-      if (category.uiBand === "infant" && category.normallyFree) unit = 0;
-      else {
-        return unavailableWithDiag("price_missing",
-          `No live unit price for category ${category.bokunTitle} (${category.bokunCategoryId}).`);
-      }
+  // 2. Build the manual quote.
+  const manual = buildManualQuote(composition, adultTiers);
+  if ("error" in manual) {
+    if (manual.error === "no_adults") {
+      return unavailableWithDiag("no_adult_category", "At least one adult is required.");
     }
-    const subtotal = Math.round(unit * quantity * 100) / 100;
-    baseLines.push({
-      bokunCategoryId: category.bokunCategoryId,
-      label: category.bokunTitle,
-      minAge: typeof category.minAge === "number" ? category.minAge : undefined,
-      maxAge: typeof category.maxAge === "number" ? category.maxAge : undefined,
-      ages: ages.length ? ages : undefined,
-      quantity,
-      unitEur: unit,
-      subtotalEur: subtotal,
-      isFree: unit === 0 ? true : undefined,
-    });
+    return unavailableWithDiag("price_missing", "No adult tier resolves for this party size.");
   }
-  if (!baseLines.length) {
-    return unavailableWithDiag("no_adult_category",
-      "No billable travellers resolved.");
-  }
-  const baseSubtotal = Math.round(baseLines.reduce((s, l) => s + l.subtotalEur, 0) * 100) / 100;
 
-  // 7. Server-authoritative add-ons.
+  const startTime = input.startTime ?? "09:00";
+  const availabilityId = manualAvailabilityId(input.date, startTime);
+  const commercialMappingId = manualCommercialMappingId(
+    input.flow,
+    input.commercialProductKey,
+  );
+
+  // 3. Server-authoritative add-ons (still DB-driven, safe under manual mode).
   const addOns = await resolveAddOnsFromDb(admin, {
     flow: input.flow,
     commercialProductKey: input.commercialProductKey,
     requested: input.addOns ?? [],
-    totalParticipants: resolved.totalParticipants,
+    totalParticipants: manual.guestMix.totalParticipants,
   });
   if (!addOns.ok) {
-    return unavailableWithDiag("add_on_invalid",
-      `Rejected add-ons: ${(addOns.invalidIds ?? []).join(", ") || "unknown"}`);
+    return unavailableWithDiag(
+      "add_on_invalid",
+      `Rejected add-ons: ${(addOns.invalidIds ?? []).join(", ") || "unknown"}`,
+    );
   }
 
-  const finalTotalEur = Math.round((baseSubtotal + addOns.subtotalEur) * 100) / 100;
+  const finalTotalEur =
+    Math.round((manual.subtotalEur + addOns.subtotalEur) * 100) / 100;
 
-  // 8. Compute pricingRevision + persist quote snapshot.
   const pricingRevision = computePricingRevision({
     commercialProductKey: input.commercialProductKey,
     date: input.date,
-    startTime: slot.startTime,
-    availabilityId: String(slot.id),
+    startTime,
+    availabilityId,
     adults: composition.adults,
     minorAges: composition.minorAges,
     addOns: (input.addOns ?? []).map((a) => ({ id: a.id, quantity: a.quantity })),
@@ -334,46 +221,45 @@ Deno.serve(async (req) => {
     quote_id: quoteId,
     flow: input.flow,
     commercial_product_key: input.commercialProductKey,
-    commercial_mapping_id: mapping.commercialMappingId,
-    bokun_product_id: mapping.bokunProductId,
-    bokun_option_id: mapping.bokunOptionId,
-    bokun_rate_id: mapping.bokunRateId,
-    availability_id: String(slot.id),
+    commercial_mapping_id: commercialMappingId,
+    bokun_product_id: MANUAL_BOKUN_PRODUCT_ID,
+    bokun_option_id: null,
+    bokun_rate_id: null,
+    availability_id: availabilityId,
     date: input.date,
-    start_time: slot.startTime,
+    start_time: startTime,
     traveller_composition: composition as unknown as Record<string, unknown>,
     resolved_guest_mix: {
-      adults: resolved.guestMix.adults,
-      youths: resolved.guestMix.youths,
-      children: resolved.guestMix.children,
-      infants: resolved.guestMix.infants,
-      totalParticipants: resolved.totalParticipants,
+      adults: manual.guestMix.adults,
+      youths: manual.guestMix.youths,
+      children: manual.guestMix.children,
+      infants: manual.guestMix.infants,
+      totalParticipants: manual.guestMix.totalParticipants,
     },
     pricing_revision: pricingRevision,
     itinerary_revision: input.itineraryRevision ?? null,
     itinerary_snapshot: input.itinerarySnapshot ?? null,
-    base_pricing: { lines: baseLines, subtotalEur: baseSubtotal },
+    base_pricing: { lines: manual.lines, subtotalEur: manual.subtotalEur },
     add_on_pricing: { lines: addOns.lines, subtotalEur: addOns.subtotalEur },
     final_total_eur: finalTotalEur,
     currency: "EUR",
-    quote_token: "",           // filled after we sign
+    quote_token: "",
     expires_at: expiresAtIso,
   };
 
-  // Sign the token bound to the quote id + pricing revision.
   const quoteToken = await signBookingQuoteToken(
     {
       v: 3,
       quoteId,
       flow: input.flow,
       commercialProductKey: input.commercialProductKey,
-      commercialMappingId: mapping.commercialMappingId,
-      bokunProductId: mapping.bokunProductId,
-      bokunOptionId: mapping.bokunOptionId ?? undefined,
-      bokunRateId: mapping.bokunRateId ?? undefined,
-      availabilityId: String(slot.id),
+      commercialMappingId,
+      bokunProductId: MANUAL_BOKUN_PRODUCT_ID,
+      bokunOptionId: undefined,
+      bokunRateId: undefined,
+      availabilityId,
       date: input.date,
-      startTime: slot.startTime,
+      startTime,
       pricingRevision,
       itineraryRevision: input.itineraryRevision,
       finalTotalEur,
@@ -396,30 +282,31 @@ Deno.serve(async (req) => {
     flow: input.flow,
     source: "bokun-live",
     commercialProductKey: input.commercialProductKey,
-    commercialMappingId: mapping.commercialMappingId,
-    productId: mapping.bokunProductId,
-    optionId: mapping.bokunOptionId ?? "",
-    rateId: mapping.bokunRateId ?? undefined,
-    availabilityId: String(slot.id),
+    commercialMappingId,
+    productId: MANUAL_BOKUN_PRODUCT_ID,
+    optionId: "",
+    rateId: undefined,
+    availabilityId,
     date: input.date,
-    startTime: slot.startTime,
+    startTime,
     pricingRevision,
     itineraryRevision: input.itineraryRevision,
     travellerComposition: composition,
     resolvedGuestMix: {
-      adults: resolved.guestMix.adults,
-      youths: resolved.guestMix.youths,
-      children: resolved.guestMix.children,
-      infants: resolved.guestMix.infants,
-      totalParticipants: resolved.totalParticipants,
+      adults: manual.guestMix.adults,
+      youths: manual.guestMix.youths,
+      children: manual.guestMix.children,
+      infants: manual.guestMix.infants,
+      totalParticipants: manual.guestMix.totalParticipants,
     },
-    basePricing: { lines: baseLines, subtotalEur: baseSubtotal },
+    basePricing: { lines: manual.lines, subtotalEur: manual.subtotalEur },
     addOnPricing: { lines: addOns.lines, subtotalEur: addOns.subtotalEur },
     finalTotalEur,
     currency: "EUR",
     availabilityStatus: "available",
   };
 
-  logDiag("available", { finalTotalEur, availabilityId: String(slot.id) });
+  logDiag("available", { finalTotalEur, availabilityId, adultUnitEur: manual.adultUnitEur });
   return json(200, response satisfies BookingQuoteResponse);
 });
+

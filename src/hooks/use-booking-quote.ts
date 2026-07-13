@@ -99,7 +99,7 @@ export function useBookingQuote(args: UseBookingQuoteArgs): UseBookingQuoteState
             startTime: startTime ?? undefined,
             availabilityId: availabilityId ?? undefined,
             travellerComposition: composition,
-            selectedAddOns: selectedAddOns.filter((a) => a.quantity > 0),
+            addOns: selectedAddOns.filter((a) => a.quantity > 0),
             pricingRevision,
             itineraryRevision,
             itinerarySnapshot,

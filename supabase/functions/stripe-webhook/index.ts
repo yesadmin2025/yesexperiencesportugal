@@ -156,8 +156,12 @@ Deno.serve(async (req) => {
     }
     let releaseResult: { status: string; code?: string; at: string };
     try {
-      const ok = await releaseReservation(String(claimed.bokun_reservation_id));
-      releaseResult = { status: ok ? "released" : "already_expired", at: nowIso };
+      if (String(claimed.bokun_reservation_id).startsWith("manual:")) {
+        releaseResult = { status: "manual_skipped", at: nowIso };
+      } else {
+        const ok = await releaseReservation(String(claimed.bokun_reservation_id));
+        releaseResult = { status: ok ? "released" : "already_expired", at: nowIso };
+      }
     } catch (e) {
       // releaseReservation is best-effort/never-throws; guard for safety.
       const msg = e instanceof Error ? e.message : String(e);
@@ -475,8 +479,11 @@ Deno.serve(async (req) => {
           }
 
           if (claimed) {
+            const isManualReservation = String(claimed.bokun_reservation_id).startsWith("manual:");
             try {
-              const confirmed = await confirmReservation(String(claimed.bokun_reservation_id));
+              const confirmed = isManualReservation
+                ? { bookingId: String(claimed.bokun_reservation_id), confirmationCode: null as string | null }
+                : await confirmReservation(String(claimed.bokun_reservation_id));
 
               // ── Phase C: confirming → confirmed. Conditional so we only
               // clear the lease we own.
