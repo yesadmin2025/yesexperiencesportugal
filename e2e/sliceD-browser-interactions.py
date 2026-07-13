@@ -172,28 +172,23 @@ def attach_page_listeners(page: Page):
         fx.failed_requests.append({"url":req.url,"failure":str(req.failure)[:200]})
     page.on("requestfailed", on_reqfail)
 
-async def bump(page: Page, aria_re, times: int):
+async def click_while_enabled(page: Page, aria_re, max_clicks: int):
     btn = page.get_by_role("button", name=aria_re).first
-    for _ in range(times):
-        await btn.click()
-        await page.wait_for_timeout(80)
-
-async def set_minor_age(page: Page, idx: int, age: int):
-    el = page.locator(f"#minor-age-{idx}")
-    await el.fill(str(age))
-    await el.blur()
-
-async def fill_date(page: Page):
-    d = page.locator('input[type="date"]').first
-    await d.fill("2099-06-01"); await d.blur()
+    for _ in range(max_clicks):
+        try:
+            if await btn.is_disabled(): return
+            await btn.click(timeout=1500)
+            await page.wait_for_timeout(90)
+        except Exception:
+            return
 
 async def compose_2_15_8_0(page: Page):
-    # Normalise to exactly adults=2, minors=3 regardless of the picker's
-    # initial state by squashing to the minimum then bumping back up.
-    await bump(page, re.compile(r"Decrease Adults", re.I), 10)
-    await bump(page, re.compile(r"Increase Adults", re.I), 1)   # 1 -> 2
-    await bump(page, re.compile(r"Decrease Travellers aged 0", re.I), 10)
-    await bump(page, re.compile(r"Increase Travellers aged 0", re.I), 3)
+    # Deterministic: squash to min then bump to target so initial-value drift
+    # (BandedSignatureBookingForm defaults adults=2, minors=0) can't skew us.
+    await click_while_enabled(page, re.compile(r"Decrease Adults", re.I), 20)
+    await click_while_enabled(page, re.compile(r"Increase Adults", re.I), 1)   # -> 2 (min is 1)
+    await click_while_enabled(page, re.compile(r"Decrease Travellers aged 0", re.I), 20)
+    await click_while_enabled(page, re.compile(r"Increase Travellers aged 0", re.I), 3)
     await set_minor_age(page, 0, 15)
     await set_minor_age(page, 1, 8)
     await set_minor_age(page, 2, 0)
