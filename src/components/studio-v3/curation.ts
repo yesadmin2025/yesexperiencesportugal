@@ -1028,8 +1028,8 @@ export function scoreTourFit(
 ): FitReport {
   assertStopIntentSchema();
   const {
-    feeling,
-    companions,
+    feeling: safeFeeling,
+    companions: safeCompanions,
     interests,
     pickup,
     rhythm = null,
@@ -1217,13 +1217,13 @@ export function pickPrimaryTour(
   restrictToTourIds?: ReadonlySet<string> | null,
 ): { tour: SignatureTour; alternates: SignatureTour[] } {
   const { tour, alternates } = pickPrimaryTourWithFit(
-    feeling,
-    companions,
+    feeling: safeFeeling,
+    companions: safeCompanions,
     interests,
     pickup,
     destinationIntent,
     seed,
-    rhythm,
+    rhythm: safeRhythm,
     restrictToTourIds,
   );
   return { tour, alternates };
@@ -1287,11 +1287,11 @@ export function pickPrimaryTourWithFit(
     const fallbackId = FEELING_FALLBACK[feeling];
     const fallback = signatureTours.find((t) => t.id === fallbackId) ?? signatureTours[0];
     const fit = scoreTourFit(fallback, {
-      feeling,
-      companions,
+      feeling: safeFeeling,
+      companions: safeCompanions,
       interests,
       pickup,
-      rhythm,
+      rhythm: safeRhythm,
       destinationIntent,
     });
     return {
@@ -1391,8 +1391,8 @@ export function curateJourney(
   const rand = seedNum > 0 ? mulberry32(seedNum) : null;
 
   const { tour: primary, alternates } = pickPrimaryTour(
-    feeling,
-    companions,
+    feeling: safeFeeling,
+    companions: safeCompanions,
     interests,
     pickup,
     destinationIntent,
@@ -1871,8 +1871,8 @@ export function resolveStudioV3Route(input: {
     const composed = applyReplacementCandidates(routePoints, {
       skeletonTourId: journey.tour.id,
       interests,
-      rhythm,
-      companions,
+      rhythm: safeRhythm,
+      companions: safeCompanions,
       investment,
       considerations: input.considerations ?? [],
     });
@@ -1883,8 +1883,8 @@ export function resolveStudioV3Route(input: {
     const withExtra = applyExtraMoment(routePoints, {
       skeletonTourId: journey.tour.id,
       interests,
-      rhythm,
-      companions,
+      rhythm: safeRhythm,
+      companions: safeCompanions,
       investment,
       considerations: input.considerations ?? [],
     });
@@ -1909,27 +1909,27 @@ export function resolveStudioV3Route(input: {
       : `${origin} → your chosen region → ${origin}`;
 
   const journeyTitle = composeJourneyTitle({
-    feeling,
-    companions,
+    feeling: safeFeeling,
+    companions: safeCompanions,
     occasion: occasion ?? null,
     pickup,
     interests,
-    rhythm,
+    rhythm: safeRhythm,
     region: journey.tour.region,
   });
 
   const whyItFits = composeJourneyReasons({
-    feeling,
-    companions,
-    rhythm,
+    feeling: safeFeeling,
+    companions: safeCompanions,
+    rhythm: safeRhythm,
     interests,
     pickup,
     occasion: occasion ?? null,
   });
 
   const refinements = composePersonalizedMoments({
-    feeling,
-    rhythm,
+    feeling: safeFeeling,
+    rhythm: safeRhythm,
     interests,
     considerations: input.considerations ?? [],
   });
@@ -1972,8 +1972,8 @@ export function resolveStudioV3Route(input: {
     const optional = selectOptionalRefinements({
       skeletonTourId: journey.tour.id,
       interests,
-      rhythm,
-      companions,
+      rhythm: safeRhythm,
+      companions: safeCompanions,
       investment,
       considerations: input.considerations ?? [],
       existingRoutePointLabels: routePoints.map((p) => p.label),
