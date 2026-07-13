@@ -309,84 +309,8 @@ function MultiDayPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-start">
-            {/* Lead spread — cover, tappable to open full-size */}
-            <div className="md:col-span-7">
-              <a
-                href={SAMPLE_PAGES[0].src}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Open the cover page full size"
-                className="block overflow-hidden border border-[color:var(--border)] shadow-[0_24px_60px_-24px_rgba(46,46,46,0.32)] bg-white cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
-              >
-                <img
-                  src={SAMPLE_PAGES[0].src}
-                  alt={SAMPLE_PAGES[0].alt}
-                  loading="lazy"
-                  className="w-full h-auto object-contain"
-                />
-              </a>
-            </div>
+          <RecentJourney />
 
-            {/* What's inside — grouped cards */}
-            <div className="md:col-span-5">
-              <h3 className="serif text-[1.25rem] md:text-[1.45rem] text-[color:var(--charcoal)] leading-tight">
-                What&rsquo;s inside your file
-              </h3>
-              <span className="gold-rule mt-4 max-w-[48px]" aria-hidden="true" />
-              <div className="mt-5 grid sm:grid-cols-2 md:grid-cols-1 gap-3 md:gap-4">
-                {FILE_GROUPS.map((c) => (
-                  <div
-                    key={c.title}
-                    className="bg-white border border-[color:var(--border)] p-4 md:p-5"
-                  >
-                    <div className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
-                      {c.title}
-                    </div>
-                    <p className="mt-2 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
-                      {c.body}
-                    </p>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-6 font-serif italic text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
-                An example of a real, anonymised file — every page shown below. Tap any page to
-                read it full size.
-              </p>
-            </div>
-          </div>
-
-          {/* All 23 pages — tap any thumbnail to open the page full size */}
-          <div className="mt-10 md:mt-14">
-            <p className="text-center font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)]">
-              Every page of the file
-            </p>
-            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
-              {SAMPLE_PAGES.slice(1).map((p, i) => (
-                <a
-                  key={p.src}
-                  href={p.src}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Open page ${i + 2} full size`}
-                  className="group relative block overflow-hidden border border-[color:var(--border)] shadow-[0_12px_30px_-16px_rgba(46,46,46,0.28)] bg-white cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
-                >
-                  <img
-                    src={p.src}
-                    alt={p.alt}
-                    loading="lazy"
-                    className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-[1.02]"
-                  />
-                  <span
-                    aria-hidden="true"
-                    className="absolute bottom-2 right-2 font-[family-name:var(--font-display)] text-[10px] uppercase tracking-[0.2em] font-semibold text-[color:var(--charcoal)] bg-[color:var(--ivory)]/90 px-1.5 py-0.5 rounded-sm"
-                  >
-                    {String(i + 2).padStart(2, "0")}
-                  </span>
-                </a>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
