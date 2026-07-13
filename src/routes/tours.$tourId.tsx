@@ -298,13 +298,14 @@ function TourHero({
               <span className="flex items-center gap-2">
                 <MapPin size={12} className="text-[color:var(--gold)]" /> {tour.region}
               </span>
-              <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
+              <span aria-hidden className="hidden sm:block h-3 w-px bg-[color:var(--border)]" />
               <span className="flex items-center gap-2">
                 <Clock size={12} className="text-[color:var(--gold)]" /> {tour.durationHours}
               </span>
               {meta && meta.reviewCount > 0 && (
                 <>
-                  <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
+                  <span aria-hidden className="hidden sm:block h-3 w-px bg-[color:var(--border)]" />
+
                   <span className="flex items-center gap-1.5 normal-case tracking-normal text-[12px] text-[color:var(--charcoal)]">
                     <Star
                       size={11}
