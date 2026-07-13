@@ -2248,11 +2248,7 @@ export function StudioV3() {
       <LivingJourneyPanel state={state} hidden={composerHidden} />
       <ComposerMap state={state} hidden={composerHidden} />
       <CloseStudio hasProgress={state.phase !== "who"} />
-      <StudioDraftControls
-        visible={state.phase !== "who" && state.phase !== "feeling"}
-        onSave={handleSaveDraft}
-        onClear={handleClearDraft}
-      />
+
       {chromeReady ? (
         <StudioV3ProgressStepper
           phase={state.phase}
