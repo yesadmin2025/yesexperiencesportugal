@@ -649,7 +649,7 @@ export function SignaturePriceCard({
             The same item is already in the chip list, so the suggestion
             was pure duplication. Selection state on the chip is enough. */}
 
-        {showAddOns && hasPrice && availableAddOns.length > 0 ? (
+        {showAddOns && (hasPrice || allowAddOnsWithoutPrice) && availableAddOns.length > 0 ? (
           <fieldset
             data-testid="studio-v3-add-ons"
             data-count={availableAddOns.length}
