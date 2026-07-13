@@ -524,108 +524,124 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
     (stored.resolved_guest_mix as { totalParticipants?: number }) ?? {};
   const totalParticipants = resolvedGuestMix.totalParticipants ?? 0;
 
-  // 3. Revalidate live Bókun slot. Category-existence is checked in step 4
-  //    below (single source of truth), where the missing-category is reported
-  //    as `category_not_ready` — the composition-to-category mapping ran at
-  //    quote time, so `unsupported_age` (no mapping at all) surfaces there,
-  //    never here.
-  let slot: import("../_shared/bokun.ts").AvailabilitySlot | null = null;
-  try {
-    const slots = await getActivityAvailabilities(stored.bokun_product_id, stored.date);
-    slot = slots.find((s) => String(s.id) === String(stored.availability_id)) ?? null;
-    if (!slot) return jsonError("slot_unavailable:slot_no_longer_offered", 409);
-    if ((slot.availabilityCount ?? 0) < totalParticipants) {
-      return jsonError("capacity_exceeded:slot_capacity_lost", 409);
-    }
-  } catch (e) {
-    return jsonError(`bokun_unreachable:${e instanceof Error ? e.message : String(e)}`, 502);
-  }
+  // 3. Manual (Bókun-free) short-circuit — skip availability + reservation.
+  //    Detected by the sentinel bokun_product_id === "manual" set at quote time.
+  const isManual = String(stored.bokun_product_id) === "manual";
 
-  // 4. Provisional Bókun reserve BEFORE Stripe. If this fails, no session created.
-  //    Idempotency: if we already reserved for this quote (paid was interrupted
-  //    before checkout-created), reuse it — never create a second reservation.
+  let slot: import("../_shared/bokun.ts").AvailabilitySlot | null = null;
   let reservationId: string | null = stored.bokun_reservation_id ?? null;
   let reservationConfirmationCode: string | null = null;
 
-  if (!reservationId) {
-    // Every selected traveller (including free infants/minors) MUST resolve to
-    // a category present on this exact slot — no silent skips, no Adult
-    // substitution. Ages that reach here already have a confirmed commercial
-    // mapping (unsupported_age is caught at quote time), so a missing slot
-    // category is category_not_ready, not unsupported_age.
-    const pricingCategoryBookings: Array<{ pricingCategoryId: number; quantity: number }> = [];
-    let selectedQuantity = 0;
-    for (const line of basePricing.lines) {
-      if (line.quantity <= 0) continue;
-      selectedQuantity += line.quantity;
-      const slotCat = slot.pricingCategories?.find(
-        (c) => String(c.id) === line.bokunCategoryId,
-      );
-      if (!slotCat) {
-        return jsonError(`category_not_ready:${line.bokunCategoryId}`, 409);
+  if (!isManual) {
+    // 3a. Revalidate live Bókun slot. Category-existence is checked in step 4
+    //     below (single source of truth), where the missing-category is reported
+    //     as `category_not_ready` — the composition-to-category mapping ran at
+    //     quote time, so `unsupported_age` (no mapping at all) surfaces there,
+    //     never here.
+    try {
+      const slots = await getActivityAvailabilities(stored.bokun_product_id, stored.date);
+      slot = slots.find((s) => String(s.id) === String(stored.availability_id)) ?? null;
+      if (!slot) return jsonError("slot_unavailable:slot_no_longer_offered", 409);
+      if ((slot.availabilityCount ?? 0) < totalParticipants) {
+        return jsonError("capacity_exceeded:slot_capacity_lost", 409);
       }
-      pricingCategoryBookings.push({
-        pricingCategoryId: Number(slotCat.id),
-        quantity: line.quantity,
-      });
-    }
-    if (!pricingCategoryBookings.length) {
-      return jsonError("category_not_ready:no_billable_categories", 409);
-    }
-    // Composition-parity guard: every selected traveller must appear in the
-    // Bókun payload — no omissions, no collapsing into fewer lines.
-    if (totalParticipants > 0 && selectedQuantity !== totalParticipants) {
-      return jsonError(
-        `composition_mismatch:selected=${selectedQuantity}_expected=${totalParticipants}`,
-        409,
-      );
+    } catch (e) {
+      return jsonError(`bokun_unreachable:${e instanceof Error ? e.message : String(e)}`, 502);
     }
 
-    const [firstName, ...rest] = (body.customerEmail ?? "guest@yesexperiencesportugal.com")
-      .split("@")[0]
-      .replace(/[^A-Za-z0-9]/g, " ")
-      .trim()
-      .split(/\s+/);
-    try {
-      const { reserveActivity } = await import("../_shared/bokun.ts");
-      const reserved = await reserveActivity({
-        productId: stored.bokun_product_id,
-        availabilityId: Number(stored.availability_id),
-        startTime: stored.start_time ?? slot.startTime,
-        date: stored.date,
-        pricingCategoryBookings,
-        customer: {
-          firstName: firstName || "Guest",
-          lastName: rest.join(" ") || "Pending",
-          email: body.customerEmail ?? "noreply@yesexperiencesportugal.com",
-          language: "EN",
-        },
-        externalBookingReference: `quote:${stored.quote_id}`,
-        notes: `YES provisional reserve · quote ${stored.quote_id}`,
-      });
-      reservationId = reserved.reservationId;
-      reservationConfirmationCode = reserved.confirmationCode ?? null;
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e);
+    // 4a. Provisional Bókun reserve BEFORE Stripe.
+    if (!reservationId) {
+      const pricingCategoryBookings: Array<{ pricingCategoryId: number; quantity: number }> = [];
+      let selectedQuantity = 0;
+      for (const line of basePricing.lines) {
+        if (line.quantity <= 0) continue;
+        selectedQuantity += line.quantity;
+        const slotCat = slot.pricingCategories?.find(
+          (c) => String(c.id) === line.bokunCategoryId,
+        );
+        if (!slotCat) {
+          return jsonError(`category_not_ready:${line.bokunCategoryId}`, 409);
+        }
+        pricingCategoryBookings.push({
+          pricingCategoryId: Number(slotCat.id),
+          quantity: line.quantity,
+        });
+      }
+      if (!pricingCategoryBookings.length) {
+        return jsonError("category_not_ready:no_billable_categories", 409);
+      }
+      if (totalParticipants > 0 && selectedQuantity !== totalParticipants) {
+        return jsonError(
+          `composition_mismatch:selected=${selectedQuantity}_expected=${totalParticipants}`,
+          409,
+        );
+      }
+
+      const [firstName, ...rest] = (body.customerEmail ?? "guest@yesexperiencesportugal.com")
+        .split("@")[0]
+        .replace(/[^A-Za-z0-9]/g, " ")
+        .trim()
+        .split(/\s+/);
+      try {
+        const { reserveActivity } = await import("../_shared/bokun.ts");
+        const reserved = await reserveActivity({
+          productId: stored.bokun_product_id,
+          availabilityId: Number(stored.availability_id),
+          startTime: stored.start_time ?? slot.startTime,
+          date: stored.date,
+          pricingCategoryBookings,
+          customer: {
+            firstName: firstName || "Guest",
+            lastName: rest.join(" ") || "Pending",
+            email: body.customerEmail ?? "noreply@yesexperiencesportugal.com",
+            language: "EN",
+          },
+          externalBookingReference: `quote:${stored.quote_id}`,
+          notes: `YES provisional reserve · quote ${stored.quote_id}`,
+        });
+        reservationId = reserved.reservationId;
+        reservationConfirmationCode = reserved.confirmationCode ?? null;
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        await admin
+          .from("booking_quotes")
+          .update({ state: "failed", last_error: `reservation_failed:${msg}`.slice(0, 500) })
+          .eq("quote_id", stored.quote_id);
+        return jsonError(`reservation_failed:${msg}`, 502);
+      }
+
       await admin
         .from("booking_quotes")
-        .update({ state: "failed", last_error: `reservation_failed:${msg}`.slice(0, 500) })
+        .update({
+          state: "reserved",
+          bokun_reservation_id: reservationId,
+          bokun_reservation_status: "reserved",
+          reserved_at: new Date().toISOString(),
+          bokun_base_subtotal_eur: basePricing.subtotalEur,
+          database_addon_subtotal_eur: addOnPricing.subtotalEur,
+        })
         .eq("quote_id", stored.quote_id);
-      return jsonError(`reservation_failed:${msg}`, 502);
     }
-
-    await admin
-      .from("booking_quotes")
-      .update({
-        state: "reserved",
-        bokun_reservation_id: reservationId,
-        bokun_reservation_status: "reserved",
-        reserved_at: new Date().toISOString(),
-        bokun_base_subtotal_eur: basePricing.subtotalEur,
-        database_addon_subtotal_eur: addOnPricing.subtotalEur,
-      })
-      .eq("quote_id", stored.quote_id);
+  } else {
+    // Manual path — no Bókun call. Mark the quote as "reserved" with a
+    // manual sentinel so downstream state machinery is unchanged and ops
+    // can reconcile with Bókun by hand after payment.
+    if (!reservationId) {
+      reservationId = `manual:${stored.quote_id}`;
+      await admin
+        .from("booking_quotes")
+        .update({
+          state: "reserved",
+          bokun_reservation_id: reservationId,
+          bokun_reservation_status: "manual",
+          reserved_at: new Date().toISOString(),
+          bokun_base_subtotal_eur: basePricing.subtotalEur,
+          database_addon_subtotal_eur: addOnPricing.subtotalEur,
+        })
+        .eq("quote_id", stored.quote_id);
+    }
   }
+
 
   // 5. Stripe line items — one per non-zero base category, one per add-on.
   //    Free lines (e.g. infants) preserved in metadata but omitted from Stripe.
