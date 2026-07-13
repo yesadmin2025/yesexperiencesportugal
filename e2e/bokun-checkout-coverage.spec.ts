@@ -88,32 +88,36 @@ for (const tourId of SIGNATURE_TOUR_IDS) {
   });
 }
 
-test("adult + child quote opens embedded checkout immediately", async () => {
-  const quote = await callFunction("booking-quote", {
-    flow: "signature",
-    commercialProductKey: "arrabida-wine-allinclusive",
-    date: futureDate(),
-    startTime: "09:00",
-    travellerComposition: { adults: 2, minorAges: [8] },
-    addOns: [],
-  });
-  expect(quote.status, JSON.stringify(quote.body)).toBe(200);
-  expect(quote.body.availabilityStatus).toBe("available");
-  expect(quote.body.quoteToken).toMatch(/^bq3\./);
+for (const flow of ["signature", "tailor"] as const) {
+  test(`${flow} adult + child quote opens embedded checkout immediately`, async () => {
+    const quote = await callFunction("booking-quote", {
+      flow,
+      commercialProductKey: "arrabida-wine-allinclusive",
+      date: futureDate(),
+      startTime: "09:00",
+      travellerComposition: { adults: 2, minorAges: [8] },
+      addOns: [],
+      ...(flow === "tailor" ? { itineraryRevision: "child-checkout-regression" } : {}),
+    });
+    expect(quote.status, JSON.stringify(quote.body)).toBe(200);
+    expect(quote.body.availabilityStatus).toBe("available");
+    expect(quote.body.quoteToken).toMatch(/^bq3\./);
 
-  const checkout = await callFunction("create-signature-checkout", {
-    mode: "booking-quote-create-session",
-    quoteToken: quote.body.quoteToken,
-    environment: "sandbox",
-    returnUrl: "https://yesexperiencesportugal.com/booking-confirmed?tour=arrabida-wine-allinclusive",
-    uiMode: "embedded",
-    tourTitle: "Arrábida Wine — All Inclusive",
-    pickupLabel: "Hotel pickup",
-    journeyTitle: "Arrábida Wine",
-    customerEmail: "checkout-regression@yesexperiencesportugal.com",
+    const checkout = await callFunction("create-signature-checkout", {
+      mode: "booking-quote-create-session",
+      quoteToken: quote.body.quoteToken,
+      environment: "sandbox",
+      returnUrl: "https://yesexperiencesportugal.com/booking-confirmed?tour=arrabida-wine-allinclusive",
+      uiMode: "embedded",
+      tourTitle: "Arrábida Wine — All Inclusive",
+      pickupLabel: "Hotel pickup",
+      journeyTitle: "Arrábida Wine",
+      customerEmail: `${flow}-child-checkout@yesexperiencesportugal.com`,
+    });
+    expect(checkout.status, JSON.stringify(checkout.body)).toBe(200);
+    expect(checkout.body.flow).toBe(flow);
+    expect(checkout.body.sessionId).toMatch(/^cs_test_/);
+    expect(checkout.body.clientSecret).toBeTruthy();
+    expect(checkout.body.publishableKey).toMatch(/^pk_test_/);
   });
-  expect(checkout.status, JSON.stringify(checkout.body)).toBe(200);
-  expect(checkout.body.sessionId).toMatch(/^cs_test_/);
-  expect(checkout.body.clientSecret).toBeTruthy();
-  expect(checkout.body.publishableKey).toMatch(/^pk_test_/);
-});
+}
