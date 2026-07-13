@@ -27,12 +27,10 @@ import {
   fetchBookingQuote,
 } from "@/lib/pricing/bookingQuoteCheckout";
 import {
-  hasMinors,
   totalParticipants,
   type TravellerComposition,
 } from "@/lib/pricing/travellerComposition";
 import { TravellerCompositionPicker } from "@/components/booking/TravellerCompositionPicker";
-import { useCategoryAwareCheckoutReadyFor } from "@/hooks/use-category-aware-checkout-ready";
 import { computePricingRevision, isQuoteAvailable } from "@/lib/pricing/bookingQuote";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
@@ -191,8 +189,9 @@ function TailorPage() {
   const guests = totalParticipants(composition);
   const setGuests = (n: number) =>
     setComposition((c) => ({ ...c, adults: Math.max(1, n - c.minorAges.length) }));
-  const categoryReady = useCategoryAwareCheckoutReadyFor(tour.id, composition);
-  const mixedFamilyBlocked = hasMinors(composition) && !categoryReady.ready;
+  // Family bookings now price via the manual (age-band) path in booking-quote;
+  // no Bókun category readiness gate is required for Tailored anymore.
+
   const [language, setLanguage] = useState<"en" | "pt">("en");
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
   const [added, setAdded] = useState<Set<string>>(new Set());
@@ -424,12 +423,7 @@ function TailorPage() {
 
   const handleReserve = async (details: GuestDetails) => {
     if (checkoutPending) return;
-    if (mixedFamilyBlocked) {
-      toast.error(
-        "This tour isn't yet set up for family pricing. Please contact us to confirm ages.",
-      );
-      return;
-    }
+
     setCheckoutPending(true);
     // Open the drawer immediately so a branded skeleton appears while
     // the edge function is in flight — avoids "blank screen" feel.
@@ -742,16 +736,6 @@ function TailorPage() {
                     maxCapacity={12}
                     minAdults={1}
                   />
-                  {mixedFamilyBlocked ? (
-                    <div
-                      role="alert"
-                      data-testid="tailor-mixed-family-block"
-                      className="mt-3 border border-red-600/40 bg-red-50/60 px-3 py-2 text-[12px] text-red-800"
-                    >
-                      This tour isn't yet configured for family pricing.
-                      Please contact us so we can confirm ages and rates.
-                    </div>
-                  ) : null}
                   <div className="mt-3 grid grid-cols-1 gap-3">
                     <Field label="Guide language">
                       <Segmented
