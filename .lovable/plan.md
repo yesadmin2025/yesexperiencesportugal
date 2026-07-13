@@ -1,68 +1,69 @@
+## Slice D Closure — Browser Interaction Pass
 
-# Slice D closure — execute the missing verification only
+Ready to execute. I'm still in plan mode — approving this plan will let me write the test file and run it.
 
-No new features. No production code changes. Add only test scaffolding and run commands.
+### Deliverable
 
-## 1. Mocked browser flows (Playwright)
+One versioned Playwright script: `e2e/sliceD-browser-interactions.py` (reproducible after sandbox destruction). Evidence goes to `/tmp/browser/sliceD-interactions/{screenshots,logs,report.json}`.
 
-Create `e2e/sliceD.launch-verification.spec.ts`. All external calls stubbed via `page.route()` — clearly labelled at top of file as **mocked browser flows, not real external smoke**.
+### Endpoints actually mocked (verified against source)
 
-Fixture module `e2e/fixtures/sliceD-mocks.ts` returns deterministic JSON for:
-- `POST **/functions/v1/booking-quote` → mixed-family `{adults:2, minorAges:[15,8,0]}` → 4 category lines (Adult ×2, Youth ×1, Child ×1, Infant ×1), `totalPriceEur:745`
-- `POST **/functions/v1/bokun-quote` / `bokun-availability` → single slot with 4 matching categories
-- `POST **/functions/v1/create-signature-checkout` → `{ url: "about:blank#stub-checkout", sessionId: "cs_test_stub" }`
-- `POST **/functions/v1/create-builder-checkout` (Studio) → same stub session
-- `GET **/functions/v1/stripe-session-status` → `{ status: "complete", bookingRef: "TEST-1" }`
-- Studio suitability + resolved route snapshot: canonical `orderedStops: [{id,label,sequence}]` × 3 stops
-- Unsupported-age variant: `POST booking-quote` returns `{ unavailable: "unsupported_age" }`
+Static scan of `src/hooks/use-booking-quote.ts`, `src/lib/pricing/bookingQuoteCheckout.ts`, `src/components/SimpleBookingForm.tsx`, `src/components/checkout/FinalDetailsDialog.tsx`, `src/routes/tours.$tourId.tailor.tsx`, `src/components/studio-v3/StudioV3.tsx` confirms the app only calls these Supabase functions in these flows:
 
-Two viewports run in the same spec via `test.use({ viewport })`:
-- Desktop 1280×1800
-- Mobile 393×852
+- `POST /functions/v1/booking-quote`
+- `POST /functions/v1/create-signature-checkout` (used by Signature, Tailored, and Studio; mode field disambiguates)
+- `POST /functions/v1/bokun-availability` (fired by `FinalDetailsDialog` when a date is set)
 
-Scenarios per viewport (3 flows × 2 sizes = 6 baseline + 1 unsupported gate = 7):
-1. **Signature** — open a Signature tour route (discover from `signatureTours` map), open composition picker, set `{2, [15,8,0]}`, wait for quote, assert:
-   - DOM shows labels "Adult", "Youth", "Child", "Infant" from server payload
-   - total participants text = 5
-   - price = €745 (or the mocked value) matches across itinerary / checkout summary
-   - "Reserve" / "Continue" CTA enabled
-2. **Tailored** — same picker + summary assertions on the Tailored route
-3. **Studio V3** — same composition, then assert Storyboard / Final / Checkout render the same normalised `orderedStops` (compare DOM `data-stop-id` list or visible labels)
-4. **Unsupported-age gate** — mock returns `unsupported_age`; assert CTA disabled, error surface shown, `waitForRequest` for Stripe URL times out → prove no checkout call
-5. **Horizontal-overflow check** at 393px — `document.documentElement.scrollWidth === clientWidth` on every screenshot
+No `bokun-quote`, `bokun-availability` (as a picker call), or `studio-*` endpoints are invented. A catch-all fulfills any other `/functions/v1/*` with `599` and records URL/method/body into `report.unexpectedSupabaseCalls` — the run fails the scenario if the list is non-empty.
 
-Screenshots to `/tmp/browser/sliceD/<flow>-<viewport>-<step>.png`.
+The `tour_price_tiers` Data-API read is also intercepted with a fixture row that carries `banded_pricing_enabled: true` and one confirmed Bókun category per band. This is required to force `SimpleBookingForm` to route to `BandedSignatureBookingForm` (the only Signature form hosting `TravellerCompositionPicker`).
 
-## 2. Production build
+### Response-contract fidelity
 
-Run `bun run build`. Capture exit code and tail. Report actual result — no forward-dated claims.
+Quote response matches `BookingQuoteResponse` exactly (from `src/lib/pricing/bookingQuote.ts`) — including `travellerComposition`, `resolvedGuestMix`, `basePricing.lines[]` with distinctive labels `Youth 14-17`, `Child 6-13`, `Infant 0-5`, plus `quoteToken`.
 
-## 3. Regression baseline
+Unsupported-age fixture uses the exact production shape:
+```json
+{"availabilityStatus":"unavailable","reason":"age_unsupported","unresolvedAges":[0],"message":"…"}
+```
+No invented `{"mode":"unsupported_age"}` or `{"unavailable":"…"}` shape.
 
-- Baseline attempt: `git stash` the three new Slice D test files, run `bunx vitest run`, capture failing test names + assertion lines to `/tmp/sliceD/baseline-failures.txt`. Restore files, re-run, diff.
-- If `git` is unavailable in this sandbox for stash, run vitest with `--exclude src/__tests__/sliceD.*` first, then unrestricted, and diff failure lists by name.
-- Report either:
-  - `new failures introduced by Slice D: 0` (only if names + line numbers match), or
-  - `31 pre-existing failures claimed but not independently baselined` if diff cannot be produced reliably.
+Checkout response matches `BookingQuoteCheckoutResponse`.
 
-## 4. External smoke
+### Quote-token checkout assertion
 
-Not executed. Report unchanged:
-`remaining launch blocker: real Stripe sandbox + Bókun test-channel smoke not executed`.
-No mock is substituted for the real flow.
+- Assert `bookingQuote` request body contains `travellerComposition:{adults:2,minorAges:[15,8,0]}`. Fail if it uses `guests:5` only.
+- Assert `create-signature-checkout` request body contains `quoteToken === QUOTE_TOKEN`. Do NOT re-assert composition on the checkout body (production is token-based).
 
-## Completion report shape
-- mocked browser scenarios executed (list of 7)
-- desktop + 393px screenshot paths (grouped)
-- DOM composition + Studio route-convergence result (equal / not equal)
-- full-suite baseline comparison (with method + result)
-- `bun run build` exit code + tail
-- real external smoke status: not executed
-- remaining launch blocker: as above
+### Scenarios (per viewport unless noted)
 
-## Files added (test-only)
-- `e2e/sliceD.launch-verification.spec.ts`
-- `e2e/fixtures/sliceD-mocks.ts`
+Viewports: 1280×1800 and 393×852.
 
-## Files NOT touched
-Slice A/B/C tests and helpers, production edge functions, `useBookingQuote`, `TravellerCompositionPicker`, `StudioV3.tsx`, styles, routes.
+1. **Signature** — nav `/tours/sintra-cascais`, fill date, adults +1 → 2, minors +3 → set ages [15,8,0]. Assert distinctive labels rendered. Click "Reserve securely" → fill `FinalDetailsDialog` (name/email/phone/pickup) → "Continue to secure checkout". Assert `checkoutCalls===1`, `quoteToken` present. Screenshots: `signature-picker-*`, `signature-checkout-*`.
+2. **Tailored** — nav `/tours/sintra-cascais/tailor`, same composition, follow same reserve flow. Screenshots: `tailored-picker-*`, `tailored-checkout-*`.
+3. **Studio V3** — nav `/studio-v3`; capture initial phase screenshot. Full 19-phase drive-through (`PHASE_ORDER` in `StudioV3.tsx`, lines 276–292) is out of scope for one browser pass; report explicitly notes that Storyboard/Final/Checkout DOM triple-snapshot convergence is covered by the existing `sliceD.studio-convergence.test.ts` (17/17 vitest passing). Static invariant: `commercialProductKey: "studio-v3-private-full-day"` is grep-confirmed as the sole route-resolution target. Screenshot: `studio-storyboard-*`.
+4. **Unsupported age (393px only)** — same flow, single minor age 0, quote mock returns `age_unsupported`. Assert error text visible, Reserve button `is_disabled()` true, `checkoutCalls===0`. Report does NOT claim browser proof of `reserveActivity===0` — that stays with the existing Slice D vitest. Screenshot: `signature-unsupported-393`.
+5. **Mobile bounds (393px only)** — picker + Reserve CTA bounding boxes fully inside 393px viewport; `documentElement.scrollWidth <= clientWidth + 1`.
+
+### Recorded per run
+
+`pageerror` events, `console` error events, `requestfailed` non-asset events, and every unexpected Supabase call. All folded into `report.json`.
+
+### Completion report
+
+Printed to stdout and written to `/tmp/browser/sliceD-interactions/report.json`:
+
+- browser interactions executed (per viewport)
+- actual outgoing `travellerComposition` payload from the intercepted `booking-quote` request
+- server labels rendered (from DOM `getByText` counts)
+- Signature checkout call result `{calls, hasQuoteToken}`
+- Tailored checkout call result `{calls, hasQuoteToken}`
+- Studio DOM snapshot: static-invariant `commercialProductKey`, note pointing to vitest for triple-surface convergence
+- Unsupported-age gate: `{errorVisible, ctaDisabled, checkoutCalls}`
+- screenshot paths
+- pageErrors / consoleErrors / failedRequests / unexpectedSupabaseCalls
+- `remaining launch blocker: real Stripe sandbox + Bókun test-channel smoke not executed`
+
+### Not modified
+
+No changes to `src/**`, `supabase/**`, existing `e2e/*.spec.ts`, styles, routes, pricing, Bókun, Stripe, Studio generation, or visuals. No new vitest tests.
