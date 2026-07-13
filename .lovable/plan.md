@@ -1,61 +1,109 @@
+# Studio draft hydration reset
 
-## Why nothing feels right
+## What is failing now
 
-The last few turns stacked features on top of each other without a shared model:
+- `useStudioV3AutoPersist` marks hydration only with a component `useRef` (`useStudioV3AutoPersist.ts:133–165`). That protects rerenders, but not route remounts, HMR, or a fresh React tree.
+- The toast has a second component-local ref (`StudioV3.tsx:807–817`), so every remount can announce **Draft restored** again.
+- Local draft hydration, saved-link hydration, and debounced persistence are separate effects (`StudioV3.tsx:787–817`, `1216–1258`; `useStudioV3AutoPersist.ts:167–183`) rather than one ordered lifecycle.
+- Saved-link detection reads `window.location` during render (`StudioV3.tsx:724–727`, `789–792`), creating an SSR/client timing split.
+- Restored add-ons are applied immediately even though the comments promise a tour match (`useStudioV3AutoPersist.ts:152–161`); persisted computed items and totals can also be stale.
+- Existing hydration tests cover only merging a saved-link payload. They do not render the hook, exercise local storage, verify effect counts, or inspect toast replay.
 
-- Draft persistence writes to `localStorage` on every keystroke AND on Save AND on Clear — three overlapping paths that race each other. Restore fires before the tour is resolved, so add-ons come back "orphaned" or get wiped by the tour-change effect.
-- The Save / Clear pill in the header contradicts the "silent restore" the auto-persist hook was built for. Users see two truths (auto-saved + a manual button that also saves).
-- Add-on chips read from three different sources (catalog availability, day-rhythm minutes, tour bespoke flag) with reasons computed in the card itself — so a chip can be enabled visually while the click handler still rejects it.
-- Price block recomputes on every state change AND on every server quote — "Recalculating…" can stick when the server call is slower than the next local edit.
+## Implementation
 
-Result: draft, add-ons, and price are three features fighting for the same state. That's what feels broken.
+### 1. Define one hydration contract
 
-## The fix — one model, three thin surfaces
+Replace `useStudioV3AutoPersist` with a single `useStudioDraft` controller whose lifecycle is explicit:
 
-Rebuild around a single `useStudioDraft` store that owns *everything the user has chosen* (answers, tourId, add-on ids, guest count, date). Draft, add-ons UI, and price block all read from it. No feature writes to `localStorage` directly.
+```text
+checking source
+  ├─ saved token → loading saved signature → commit once
+  ├─ local draft → validate → commit once
+  └─ no valid draft → ready empty
 
-### 1. Collapse persistence into one hook
+ready → debounced persistence may begin
+cleared/finalized → cancel pending write and invalidate current draft
+```
 
-- Delete `useStudioV3AutoPersist` + `saveStudioV3DraftNow` + the header pill.
-- Replace with `useStudioDraft()` — a single hook that:
-  - Hydrates once on mount (server `?saved=` wins, else localStorage, else empty).
-  - Writes debounced (500ms) on any change. No manual "Save".
-  - Exposes `clearDraft()` only (used by Checkout success + a small "Start over" link in the Studio menu, not a header pill).
-- Restore order guarantee: add-ons are held in a `pendingAddOns` buffer until `state.tourId` matches the persisted tourId, then applied atomically. Fixes the wipe-on-hydrate bug.
+The controller will enforce these invariants:
 
-### 2. Add-ons: one selector, one reason
+- A mounted Studio runtime can commit hydration only once.
+- A saved-link payload always wins; local storage is never applied while it is loading.
+- Persistence cannot write until hydration reaches `ready`, preventing an empty/default render from overwriting a real draft.
+- Async saved-link responses use a run/request guard, so stale or cancelled responses cannot commit.
+- State and add-on IDs are committed as one hydration transaction.
 
-- Move availability logic out of `SignaturePriceCard` into `selectAddOnAvailability(state, catalog)` — pure function returning `{ id, enabled, reason }[]`.
-- The card just renders. The click handler asks the same selector — no more "looks clickable but rejects".
-- Reasons collapse to 3 human strings: *"Fits your day"*, *"Needs more time than the day allows"*, *"Max add-ons reached — swap one"*. Bespoke tours show a single card-level notice instead of per-chip reasons.
+A full page reload necessarily reconstructs React state from storage; “once per session” will therefore mean **one hydration commit per mounted runtime**, while the acknowledgement toast is **once per browser-tab session per draft**.
 
-### 3. Pricing: derive, don't recompute
+### 2. Make the persisted draft stable and derivable
 
-- One `useStudioQuote(draft)` hook returns `{ total, breakdown, status }` where `status ∈ 'idle' | 'live' | 'stale'`.
-- Local math (base × guests + add-ons) is always shown instantly. The server quote replaces it only when it arrives; if a newer edit lands first, the stale response is dropped (request id guard).
-- "Recalculating…" only appears when `status === 'stale'` for >400ms — no more sticky spinner.
+Create a small pure storage module with a versioned envelope:
 
-### 4. Header cleanup
+- Stable `draftId` generated once and retained through edits.
+- `savedAt`, normalized `StudioV3State`, persisted `tourId`, and selected add-on IDs only.
+- Do not persist computed add-on labels, prices, or totals; derive them again from the current catalog and pricing source after restore.
+- Validate version, structure, meaningful progress, and known IDs before use. Corrupt/unsupported payloads are removed safely instead of partially applied.
+- Migrate the current v1 payload once so existing traveller drafts are not silently lost.
 
-- Remove the Save draft / Clear draft pill. Keep the existing Close (X) only.
-- Add a subtle "Draft restored" chip near the phase title for 4s when hydration actually restored something (already spec'd, just wire to the new hook).
-- "Start over" lives inside the Close confirmation sheet ("Close and keep draft" / "Close and start over").
+### 3. Make add-on restoration deterministic
 
-### 5. Verify
+- Hold restored add-on IDs as pending until the hydrated `state.tourId` is committed.
+- Apply only IDs belonging to that same tour’s current eligible catalog; discard orphaned or unavailable IDs.
+- Let `SignaturePriceCard` rebuild the summary and totals from current data, then publish the canonical summary to the parent.
+- Ensure the existing “tour changed” cleanup cannot erase selections during the hydration transaction.
 
-- Playwright: (a) pick feeling → refresh → answers + add-ons restored; (b) select add-on that exceeds day rhythm → chip disabled with reason, click is a no-op; (c) change guest count → total updates in the same frame, no sticky spinner; (d) checkout success clears draft.
+### 4. Make toast acknowledgement session-scoped
 
-## Files touched
+- Add a session-storage acknowledgement keyed by stable `draftId`.
+- Claim the acknowledgement atomically before calling Sonner.
+- Give Sonner a fixed toast ID as a second deduplication layer.
+- Local restoration may show **Draft restored** once in a browser tab; rerenders, Strict Mode effect replay, route away/back, HMR remounts, and refreshes in that tab cannot replay it.
+- A genuinely new browser session may show it once again.
+- Saved-link hydration will not show the local-draft toast because its loading UI already explains what is happening.
 
-- **Delete:** `src/components/studio-v3/useStudioV3AutoPersist.ts`, the `StudioDraftControls` pill in `StudioV3.tsx`.
-- **New:** `src/components/studio-v3/useStudioDraft.ts`, `src/components/studio-v3/selectAddOnAvailability.ts`, `src/components/studio-v3/useStudioQuote.ts`.
-- **Edit:** `StudioV3.tsx` (wire the three hooks, remove ad-hoc effects), `SignaturePriceCard.tsx` (render-only), Close sheet component.
-- **Tests:** 4 Playwright specs above under `e2e/studio-v3-*`.
+### 5. Remove competing ownership from `StudioV3`
 
-## What this does NOT change
+- Parse `saved` through the `/studio-v3` route search contract and pass it into `StudioV3`; remove render-time `window.location` checks.
+- Move both local and saved-link hydration under `useStudioDraft`.
+- Render the existing restrained hydration surface while the controller is checking/loading, preventing an interactive intro flash before restore.
+- Route all clear/finalize actions through the controller so pending timers are cancelled and a cleared draft cannot be recreated by a late write.
+- Keep silent auto-persist as the only persistence model; do not restore the removed Save/Clear header controls.
 
-- Studio philosophy, copy, layout, brand tokens, or the mobile 393px card widths.
-- Server quote endpoint, Bókun readiness, or checkout flow.
-- Signature source-of-truth data.
+## Verification
 
-Scope is strictly the three broken behaviours: draft, add-on selectability, live price.
+### Hook/unit tests
+
+Add focused tests proving:
+
+1. Local payload commits state exactly once under React Strict Mode.
+2. Rerendering cannot rehydrate or call add-on restoration again.
+3. No local-storage write occurs before hydration is ready.
+4. Saved token ignores local draft and commits only the latest valid response.
+5. Matching add-ons restore; mismatched, stale, and unknown IDs do not.
+6. v1 migration preserves valid state but drops stale computed totals.
+7. Clear cancels a pending debounce and storage remains empty.
+8. Toast claim succeeds once across unmount/remount in the same session and resets only with a new session.
+
+### Mobile-first Playwright contract
+
+Add one deterministic Studio hydration spec that seeds a real local draft and verifies at the 393px viewport:
+
+- The restored phase, answers, tour, and valid add-on selection appear after opening Studio.
+- The toast appears once on the first restore.
+- Rerender/navigation away and back do not replay it.
+- Reload restores the visible draft without replaying the toast in the same tab session.
+- A new browser context restores the draft and may acknowledge it once.
+- No console errors, duplicate hydration calls, or default-state overwrite occur.
+
+## Files
+
+- Replace `src/components/studio-v3/useStudioV3AutoPersist.ts` with `useStudioDraft.ts`.
+- Add a pure Studio draft storage/normalization module beside the hook.
+- Edit `src/components/studio-v3/StudioV3.tsx` to use the unified controller.
+- Edit `src/routes/studio-v3.tsx` to provide typed saved-token search state.
+- Add hook/storage tests under `src/components/studio-v3/__tests__/`.
+- Add a dedicated hydration/toast Playwright spec under `e2e/`.
+
+## Done when
+
+Draft state never receives two hydration commits in one mounted Studio runtime; saved links have strict precedence; add-ons and totals restore from current truth; and **Draft restored** cannot replay unexpectedly within the same browser-tab session.

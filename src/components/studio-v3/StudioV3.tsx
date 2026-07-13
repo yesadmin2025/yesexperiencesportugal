@@ -242,7 +242,7 @@ import {
   type StudioV3Phase,
   type StudioV3State,
 } from "./types";
-import { useStudioV3AutoPersist, clearStudioV3Draft } from "./useStudioV3AutoPersist";
+import { useStudioDraft } from "./useStudioDraft";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
@@ -712,7 +712,7 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-export function StudioV3() {
+export function StudioV3({ savedToken }: { savedToken?: string }) {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
   const isMobile = useIsMobile();
   const { data: tourPriceTiers } = useTourPriceTiers();
@@ -721,11 +721,6 @@ export function StudioV3() {
   const [mobileReveal, setMobileReveal] = useState<{ beat: StudioV3BeatId; index: number } | null>(
     null,
   );
-  const [hydrating, setHydrating] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return new URLSearchParams(window.location.search).has("saved");
-  });
-  const [hydrateError, setHydrateError] = useState<"not-found" | "failed" | null>(null);
   const [clientReady, setClientReady] = useState(false);
   useEffect(() => { setClientReady(true); }, []);
 
@@ -784,37 +779,44 @@ export function StudioV3() {
     prevTourIdRef.current = next;
   }, [state.tourId]);
 
-  // ── Auto-persist the in-progress draft (state + add-ons) ──────────────
-  // Silent restore on return. `?saved=<token>` server hydrate always wins.
-  const skipLocalHydrate = useMemo(() => {
-    if (typeof window === "undefined") return false;
-    return new URLSearchParams(window.location.search).has("saved");
+  // ── Deterministic draft hydration + persistence ───────────────────────
+  // One controller owns local restore, saved-link precedence and writes.
+  const load = useServerFn(loadStudioV3Signature);
+  const loadSavedSignature = useCallback(
+    (token: string) => load({ data: { token } }),
+    [load],
+  );
+  const restoreAddOnIds = useCallback((ids: string[]) => {
+    setSelectedAddOnIds(ids);
+    if (ids.length === 0) {
+      setSelectedAddOnItems([]);
+      setSelectedAddOnsTotalEur(0);
+    }
   }, []);
-  const { restored: draftRestored } = useStudioV3AutoPersist({
+  const {
+    status: draftStatus,
+    error: hydrateError,
+    restoreNoticeId,
+    clearDraft,
+  } = useStudioDraft({
     state,
     setState,
     selectedAddOnIds,
-    selectedAddOnItems,
-    selectedAddOnsTotalEur,
-    restoreAddOns: ({ ids, items, totalEur }) => {
-      setSelectedAddOnIds(ids);
-      setSelectedAddOnItems(items);
-      setSelectedAddOnsTotalEur(totalEur);
-    },
-    skipHydrate: skipLocalHydrate,
+    restoreAddOnIds,
+    savedToken,
+    loadSavedSignature,
   });
 
-  // Silent restore, quiet acknowledgement — a single, once-per-session toast
-  // so the traveller understands why their answers are already in place.
-  const draftRestoredNoticedRef = useRef(false);
+  // The controller atomically claims this draft in sessionStorage before
+  // exposing its notice id. Sonner's fixed id is a second dedupe guard.
   useEffect(() => {
-    if (!draftRestored || draftRestoredNoticedRef.current) return;
-    draftRestoredNoticedRef.current = true;
+    if (!restoreNoticeId) return;
     toast("Draft restored", {
+      id: `studio-draft-restored-${restoreNoticeId}`,
       description: "We picked up where you left off.",
       duration: 4000,
     });
-  }, [draftRestored]);
+  }, [restoreNoticeId]);
 
   // Guest Details snapshot — captured on Guest Details submit, then rendered
   // in CheckoutSummary before we open Stripe. Kept in local state (not the
@@ -907,14 +909,14 @@ export function StudioV3() {
       toast.success("Signature saved to your journey.");
       // Server-side save is now the source of truth — clear the local draft
       // so returning via a fresh URL doesn't compete with the saved copy.
-      clearStudioV3Draft();
+      clearDraft();
     } catch (e) {
       console.error("[studio-v3 save-signature]", e);
       toast.error("Could not save right now — please try again.");
     } finally {
       setSavingSignature(false);
     }
-  }, [savingSignature, saveSig, state]);
+  }, [savingSignature, saveSig, state, clearDraft]);
 
 
 
@@ -1212,50 +1214,6 @@ export function StudioV3() {
     ],
   );
 
-
-  // Phase 7D — hydrate a saved Signature directly into the final reveal.
-  // Reads ?saved=<token> once on mount, fetches the persisted state, then
-  // jumps straight to the storyboard phase (skips intro + all questions).
-  // Preserves editedRoutePoints from the saved payload via spread over
-  // INITIAL_STATE. Invalid/missing tokens surface a graceful card.
-  const load = useServerFn(loadStudioV3Signature);
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("saved");
-    if (!token) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await load({ data: { token } });
-        if (cancelled) return;
-        if (res.found && res.state && typeof res.state === "object") {
-          const raw = res.state as Partial<StudioV3State>;
-          const restored: StudioV3State = {
-            ...INITIAL_STATE,
-            ...raw,
-            phase: "storyboard" as StudioV3Phase,
-            destinationIntent:
-              raw.destinationIntent === "anywhere-special"
-                ? "no-preference"
-                : (raw.destinationIntent ?? INITIAL_STATE.destinationIntent),
-          };
-          setState(restored);
-          setHydrateError(null);
-        } else {
-          setHydrateError("not-found");
-        }
-      } catch (e) {
-        console.error("[studio-v3 hydrate]", e);
-        if (!cancelled) setHydrateError("failed");
-      } finally {
-        if (!cancelled) setHydrating(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [load]);
 
   // Funnel analytics: emit `enter` whenever the active phase changes, and
   // `abandon` if the tab is hidden / page is unloaded mid-flow. Reveal
@@ -2102,7 +2060,7 @@ export function StudioV3() {
   // Phase 7D — saved-link hydration overlays. Loading spinner while we
   // fetch a `?saved=<token>` Signature; graceful card if it's missing or
   // failed. Both short-circuit before the intro/Studio chrome.
-  if (hydrating && !hydrateError) {
+  if ((draftStatus === "checking" || draftStatus === "loading-saved") && !hydrateError) {
     return (
       <main
         aria-label="Opening your Signature"
@@ -2187,11 +2145,10 @@ export function StudioV3() {
           <button
             type="button"
             onClick={() => {
+              clearDraft();
               if (typeof window !== "undefined") {
-                window.history.replaceState({}, "", window.location.pathname);
+                window.location.assign(window.location.pathname);
               }
-              setHydrateError(null);
-              setState({ ...INITIAL_STATE });
             }}
             className="mt-6 inline-flex items-center gap-2 px-5 py-3 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{

@@ -15,7 +15,13 @@ import ogImg from "@/assets/decision-studio.jpg";
 
 const CANONICAL_URL = "https://yesexperiencesportugal.com/studio-v3";
 
+type StudioV3Search = Record<string, unknown> & { saved?: string };
+
 export const Route = createFileRoute("/studio-v3")({
+  validateSearch: (search: Record<string, unknown>): StudioV3Search => ({
+    ...search,
+    saved: typeof search.saved === "string" && search.saved.trim() ? search.saved.trim() : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Design Your Private Portugal Day — YES Studio" },
@@ -60,6 +66,7 @@ export const Route = createFileRoute("/studio-v3")({
 });
 
 function StudioV3Page() {
+  const { saved } = Route.useSearch();
   return (
     <>
       {/* SSR-visible intent for crawlers and no-JS users. */}
@@ -74,7 +81,7 @@ function StudioV3Page() {
           <a href="/multi-day">work with our Travel Designer</a>.
         </p>
       </header>
-      <StudioV3 />
+      <StudioV3 key={saved ?? "local-draft"} savedToken={saved} />
       <aside
         aria-label="Beyond a single day"
         className="bg-[color:var(--ivory)] border-t border-[color:var(--border)] py-10 text-center"
