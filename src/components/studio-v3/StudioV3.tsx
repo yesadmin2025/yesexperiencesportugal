@@ -19,7 +19,10 @@ import {
   filterStudioCandidatesBySuitability,
 } from "@/lib/pricing/filterSignatureCandidatesForAges";
 import { requirementsFromComposition } from "@/lib/pricing/travellerSuitability";
-import { filterStopsBySuitability } from "@/components/studio-v3/stop-suitability";
+import {
+  filterStopsBySuitability,
+  validateItineraryAfterReplacement,
+} from "@/components/studio-v3/stop-suitability";
 import { assertStudioCommercialIdentity } from "@/lib/pricing/studioCommercialIdentity";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
 import { loadStudioV3Signature } from "@/lib/studio-v3/load-signature.functions";
