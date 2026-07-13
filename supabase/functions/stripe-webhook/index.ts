@@ -475,8 +475,11 @@ Deno.serve(async (req) => {
           }
 
           if (claimed) {
+            const isManualReservation = String(claimed.bokun_reservation_id).startsWith("manual:");
             try {
-              const confirmed = await confirmReservation(String(claimed.bokun_reservation_id));
+              const confirmed = isManualReservation
+                ? { bookingId: String(claimed.bokun_reservation_id), confirmationCode: null as string | null }
+                : await confirmReservation(String(claimed.bokun_reservation_id));
 
               // ── Phase C: confirming → confirmed. Conditional so we only
               // clear the lease we own.
