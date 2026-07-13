@@ -131,10 +131,10 @@ def readiness_row(tour_id):
         "banded_pricing_enabled": True,
         "synced_from_bokun_at":"2099-01-01T00:00:00Z",
         "bokun_categories":[
-            {"bokunCategoryId":"adult","label":"Adult","minAge":18,"maxAge":99,"mappingStatus":"confirmed"},
-            {"bokunCategoryId":"youth","label":LBL_YOUTH,"minAge":14,"maxAge":17,"mappingStatus":"confirmed"},
-            {"bokunCategoryId":"child","label":LBL_CHILD,"minAge":6,"maxAge":13,"mappingStatus":"confirmed"},
-            {"bokunCategoryId":"infant","label":LBL_INFANT,"minAge":0,"maxAge":5,"mappingStatus":"confirmed","isFree":True},
+            {"bokunCategoryId":"adult","label":"Adult","uiBand":"adult","minAge":18,"maxAge":99,"mappingStatus":"confirmed"},
+            {"bokunCategoryId":"youth","label":LBL_YOUTH,"uiBand":"youth","minAge":14,"maxAge":17,"mappingStatus":"confirmed"},
+            {"bokunCategoryId":"child","label":LBL_CHILD,"uiBand":"child","minAge":6,"maxAge":13,"mappingStatus":"confirmed"},
+            {"bokunCategoryId":"infant","label":LBL_INFANT,"uiBand":"infant","minAge":0,"maxAge":5,"mappingStatus":"confirmed","normallyFree":True,"isFree":True},
         ],
     }
 
