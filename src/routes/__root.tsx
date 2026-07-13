@@ -222,7 +222,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { locale } = parseLocaleFromPath(pathname);
   return (
-    <html lang={LOCALE_BCP47[locale]}>
+    <html lang={LOCALE_BCP47[locale] ?? "en"}>
       <head>
         <HeadContent />
       </head>

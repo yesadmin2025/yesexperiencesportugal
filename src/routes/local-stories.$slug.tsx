@@ -573,9 +573,10 @@ function NotFoundView() {
     <SiteLayout>
       <section className="py-32 text-center bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-xl">
-          <h1 className="font-display text-[1.8rem] text-[color:var(--charcoal)] mb-4">
+          <h2 className="font-display text-[1.8rem] text-[color:var(--charcoal)] mb-4">
             Story not found
-          </h1>
+          </h2>
+
           <p className="text-[color:var(--charcoal-soft)] mb-8">
             This story may have moved or is being written.
           </p>
@@ -594,9 +595,10 @@ function ErrorView({ error, reset }: { error: Error; reset: () => void }) {
     <SiteLayout>
       <section className="py-32 text-center bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-xl">
-          <h1 className="font-display text-[1.6rem] text-[color:var(--charcoal)] mb-4">
+          <h2 className="font-display text-[1.6rem] text-[color:var(--charcoal)] mb-4">
             Something went off route
-          </h1>
+          </h2>
+
           <p className="text-[color:var(--charcoal-soft)] mb-8">{error.message}</p>
           <button
             onClick={() => {
