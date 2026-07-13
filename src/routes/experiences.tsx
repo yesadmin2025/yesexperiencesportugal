@@ -83,7 +83,10 @@ function ExperiencesPage() {
       <section className="reveal section-y">
         <div className="container-x">
           <h2 className="sr-only">Our Signature Collection</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            className="grid grid-cols-[minmax(0,1fr)] sm:grid-cols-2 lg:grid-cols-3 gap-8"
+            data-testid="signature-collection-grid"
+          >
             {signatureTours.map((t) => {
               // Rating + review count come from the matching Viator product.
               // When absent, the chip is simply not shown — never invented.
@@ -91,12 +94,17 @@ function ExperiencesPage() {
               const showRating =
                 !!meta && meta.reviewCount > 0 && typeof meta.rating === "number";
               return (
-                <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
+                <article
+                  key={t.id}
+                  className="group flex min-w-0 w-full max-w-full flex-col text-left"
+                  aria-label={t.title}
+                  data-testid="signature-tour-card"
+                >
                   {/* Cover — clickable to source-of-truth detail page */}
                   <Link
                     to="/tours/$tourId"
                     params={{ tourId: t.id }}
-                    className="lift-layer-sm relative block mb-5 shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+                    className="lift-layer-sm relative block min-w-0 w-full max-w-full mb-5 shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
                     aria-label={`Open ${t.title}`}
                   >
                     <TourImage
@@ -115,7 +123,7 @@ function ExperiencesPage() {
                   <Link
                     to="/tours/$tourId"
                     params={{ tourId: t.id }}
-                    className="serif text-2xl text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
+                    className="serif block min-w-0 max-w-full text-2xl text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
                   >
                     {t.title}
                   </Link>
@@ -163,13 +171,13 @@ function ExperiencesPage() {
                   {/* Dual CTAs — Reserve (confirm as designed) +
                       Tailor (adjust details inside this same Signature,
                       never a different tour). */}
-                  <div className="mt-5 flex flex-col sm:flex-row gap-2.5">
+                  <div className="mt-5 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-2.5 sm:flex sm:flex-row">
                     <CtaButton
                       to="/tours/$tourId"
                       params={{ tourId: t.id }}
                       variant="primary"
                       size="sm"
-                      className="flex-1"
+                      className="min-w-0 w-full max-w-full flex-1 sm:w-auto"
                       aria-label={`Reserve ${t.title}`}
                     >
                       Check availability & reserve
@@ -179,7 +187,7 @@ function ExperiencesPage() {
                       params={{ tourId: t.id }}
                       variant="ghost"
                       size="sm"
-                      className="flex-1"
+                      className="min-w-0 w-full max-w-full flex-1 sm:w-auto"
                       aria-label={`Tailor ${t.title}`}
                     >
                       Tailor this day
