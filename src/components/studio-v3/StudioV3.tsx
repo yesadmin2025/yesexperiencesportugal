@@ -3735,7 +3735,7 @@ export function StoryboardHandoff({
           className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
         >
-          <span style={{ color: "var(--gold)" }}>—</span> Your Signature
+          <span style={{ color: "var(--gold)" }}>—</span> Your Signature · draft
         </p>
         <h2
           className="mt-4 text-[26px] sm:text-[32px] leading-[1.1] tracking-[-0.012em] font-bold text-balance"
