@@ -3147,6 +3147,61 @@ function CloseStudio({ hasProgress }: { hasProgress: boolean }) {
   );
 }
 
+/**
+ * StudioDraftControls — small header pill anchored top-left, opposite
+ * CloseStudio. Gives travellers an explicit "Save draft" (with success
+ * toast) and a "Clear draft" affordance while auto-persist runs silently
+ * in the background.
+ */
+function StudioDraftControls({
+  visible,
+  onSave,
+  onClear,
+}: {
+  visible: boolean;
+  onSave: () => void;
+  onClear: () => void;
+}) {
+  if (!visible) return null;
+  const wrapStyle: React.CSSProperties = {
+    background: "color-mix(in oklab, var(--ivory) 88%, transparent)",
+    backdropFilter: "blur(6px)",
+    WebkitBackdropFilter: "blur(6px)",
+    border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+    color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+    fontFamily: "var(--font-body)",
+  };
+  return (
+    <div
+      className="fixed left-3 top-3 z-[60] inline-flex items-center gap-1 rounded-full px-1.5 py-1"
+      style={wrapStyle}
+      data-testid="studio-v3-draft-controls"
+    >
+      <button
+        type="button"
+        onClick={onSave}
+        className="inline-flex items-center gap-1.5 min-h-[36px] px-3 rounded-full text-[11px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+        style={{ color: "var(--charcoal)" }}
+        aria-label="Save draft"
+        data-testid="studio-v3-save-draft"
+      >
+        Save draft
+      </button>
+      <span aria-hidden style={{ width: 1, height: 16, background: "color-mix(in oklab, var(--charcoal) 15%, transparent)" }} />
+      <button
+        type="button"
+        onClick={onClear}
+        className="inline-flex items-center min-h-[36px] px-3 rounded-full text-[11px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+        aria-label="Clear saved draft"
+        data-testid="studio-v3-clear-draft"
+      >
+        Clear
+      </button>
+    </div>
+  );
+}
+
 /** Dark continue CTA used by the two multi-select screens. Inline styles
  *  intentionally mirror the StoryboardHandoff CTA — no new component. */
 function ContinueCta({
