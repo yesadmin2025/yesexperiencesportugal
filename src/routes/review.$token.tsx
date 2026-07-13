@@ -71,7 +71,7 @@ function ReviewSubmissionPage() {
   if (done) {
     return (
       <div className="max-w-xl mx-auto py-20 px-6 text-center text-[color:var(--charcoal)]">
-        <h1 className="text-3xl font-medium">Thank you</h1>
+        <h2 className="text-3xl font-medium">Thank you</h2>
         <p className="mt-4 text-[color:var(--charcoal)]/75">
           Your review is saved. We're grateful you travelled with us.
         </p>
