@@ -579,7 +579,21 @@ async def studio_snapshot(page: Page, surface: str):
         return {"error": str(e)[:200]}
 
 async def studio_advance_once(page: Page) -> str | None:
-    """Click a plausible advance control; return the resulting phase or None."""
+    """Click the canonical Studio phase-continue CTA when present."""
+    # 1. Canonical continue button (data-phase-cta="continue").
+    try:
+        loc = page.locator('[data-phase-cta="continue"]').first
+        if await loc.count():
+            disabled = await loc.get_attribute("data-phase-cta-disabled")
+            if disabled != "true" and await loc.is_visible():
+                await loc.click(timeout=1500)
+                await page.wait_for_timeout(400)
+                return await page.evaluate(
+                    "() => { const r=document.querySelector('[data-testid=\"studio-v3-root\"]'); return r?r.getAttribute('data-phase'):null; }"
+                )
+    except Exception:
+        pass
+    # 2. Named-fallback buttons for phases whose CTA lives outside PhaseShell.
     candidates = [
         r"^Continue$", r"^Next$", r"^Generate", r"^See my Signature", r"^Reveal",
         r"Reserve securely", r"Confirm", r"Proceed", r"Continue to",
@@ -591,10 +605,9 @@ async def studio_advance_once(page: Page) -> str | None:
             if await btn.count() and await btn.is_visible() and not await btn.is_disabled():
                 await btn.click(timeout=1500)
                 await page.wait_for_timeout(400)
-                phase = await page.evaluate(
+                return await page.evaluate(
                     "() => { const r=document.querySelector('[data-testid=\"studio-v3-root\"]'); return r?r.getAttribute('data-phase'):null; }"
                 )
-                return phase
         except Exception:
             continue
     return None
