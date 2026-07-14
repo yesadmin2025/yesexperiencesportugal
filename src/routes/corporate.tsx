@@ -6,11 +6,12 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
-import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
-
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 import guestQuintaGroup from "@/assets/guests/quinta-group.jpg.asset.json";
+import guestArrabidaViewpoint from "@/assets/guests/arrabida-viewpoint-group.jpg.asset.json";
 const imgCorporateGroup = guestQuintaGroup.url;
+const imgDiscreetViewpoint = guestArrabidaViewpoint.url;
+
 
 const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
@@ -24,10 +25,10 @@ export const Route = createFileRoute("/corporate")({
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
-      { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${imgDiscreetViewpoint}` },
       {
         property: "twitter:image",
-        content: `https://yesexperiencesportugal.com${imgFatimaNazare}`,
+        content: `https://yesexperiencesportugal.com${imgDiscreetViewpoint}`,
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/corporate" },
     ],
@@ -75,7 +76,7 @@ const BLOCKS = [
     emotional: "When it matters who's in the room and how the day feels — we shape it accordingly.",
     practical: "Small groups · private settings · careful pacing · NDAs welcome.",
     local: "Planned end to end with our local team — every detail confirmed before the day.",
-    image: imgFatimaNazare,
+    image: imgDiscreetViewpoint,
     icon: ClipboardCheck,
   },
 ];

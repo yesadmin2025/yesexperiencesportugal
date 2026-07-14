@@ -6423,3 +6423,24 @@ html {
   }
 }
 
+/* Editorial hover-zoom — apply to any <figure> that wraps an editorial <img>.
+   Self-scoped (no `group` needed). Reduced-motion safe. */
+@utility editorial-zoom {
+  overflow: hidden;
+  & img {
+    transition: transform 640ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    transform-origin: center;
+    will-change: transform;
+  }
+  &:hover img,
+  &:focus-within img {
+    transform: scale(1.03);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .editorial-zoom img {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+

@@ -22,7 +22,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { whatsappHref } from "@/components/WhatsAppFab";
-import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
+import imgMultiDay from "@/assets/multi-day.jpg";
 import { RecentJourney } from "@/components/home/RecentJourney";
 
 
@@ -42,10 +42,10 @@ export const Route = createFileRoute("/multi-day")({
           "Full private Portugal journeys, designed with a local travel designer — shaped around your time, rhythm and interests. Delivered as a complete travel file.",
       },
 
-      { property: "og:image", content: `https://yesexperiencesportugal.com${imgSintraEstates}` },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${imgMultiDay}` },
       {
         property: "twitter:image",
-        content: `https://yesexperiencesportugal.com${imgSintraEstates}`,
+        content: `https://yesexperiencesportugal.com${imgMultiDay}`,
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/multi-day" },
     ],
@@ -292,7 +292,7 @@ function MultiDayPage() {
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center">
           <div className="overflow-hidden">
             <img
-              src={imgSintraEstates}
+              src={imgMultiDay}
               alt="Private Portugal journey designed by YES Experiences Portugal"
               loading="lazy"
               className="w-full aspect-[4/5] md:aspect-[5/6] object-cover"

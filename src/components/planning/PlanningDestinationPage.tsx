@@ -11,10 +11,12 @@ import {
   type LocalStoryArticle,
 } from "@/content/local-stories-articles";
 import type { PlanningDestination } from "@/content/planning/destinations";
+import { PlanDestinationMap } from "@/components/planning/PlanDestinationMap";
 
 interface Props {
   destination: PlanningDestination;
 }
+
 
 export function PlanningDestinationPage({ destination }: Props) {
   const featured = destination.signatureIds
@@ -65,7 +67,7 @@ export function PlanningDestinationPage({ destination }: Props) {
       {/* Hero image — real, region-specific, never stock */}
       <section className="bg-[color:var(--sand)] pb-14 md:pb-20">
         <div className="container-x max-w-5xl">
-          <figure className="overflow-hidden rounded-sm">
+          <figure className="editorial-zoom overflow-hidden rounded-sm">
             <img
               src={destination.hero.src}
               alt={destination.hero.alt}
@@ -99,7 +101,7 @@ export function PlanningDestinationPage({ destination }: Props) {
           <div className="container-x">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
               {destination.gallery.slice(0, 3).map((p) => (
-                <figure key={p.src} className="overflow-hidden rounded-sm">
+                <figure key={p.src} className="editorial-zoom overflow-hidden rounded-sm">
                   <img
                     src={p.src}
                     alt={p.alt}
@@ -114,8 +116,32 @@ export function PlanningDestinationPage({ destination }: Props) {
         </section>
       )}
 
+      {/* Route map — real geography from the primary Signature tour's stops. */}
+      {tours[0] && (
+        <section className="reveal py-14 md:py-20 bg-[color:var(--sand)]">
+          <div className="container-x max-w-5xl">
+            <div className="text-center max-w-2xl mx-auto mb-8 md:mb-10">
+              <Eyebrow flank>The route</Eyebrow>
+              <SectionTitle as="h2" size="compact" spacing="loose">
+                Where a private day here{" "}
+                <SectionTitle.Em>actually goes</SectionTitle.Em>
+              </SectionTitle>
+              <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
+                Real stops, real driving times — the shape of a day we already run.
+              </p>
+            </div>
+            <div className="mx-auto max-w-md">
+              <PlanDestinationMap
+                tour={tours[0]}
+                regionLabel={destination.h1.replace(/^Planning a Private Trip to /, "")}
+              />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Featured Signature tours */}
+
       <RelatedExperiencesRail
         tours={tours}
         stories={stories}

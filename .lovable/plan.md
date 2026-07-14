@@ -1,81 +1,81 @@
-# Launch Polish Plan
+## Launch Polish — Batch 2
 
-Six focused workstreams, sequenced so the highest-risk items (money math, mobile checkout) land first and the cosmetic passes ride on top.
+Four workstreams, sequenced for minimum risk. Approved image swaps land first (smallest diff, easiest to verify), motion/reveal work follows, map animation last (largest scope).
 
-## 1. Image context audit (page-by-page)
+---
 
-Goal: every image belongs to the page it sits on — no duplicates across Moments / Corporate / Travel Designer / Proposals, no generic swaps.
+### 1. Approved image swaps
 
-- Sweep the image imports on: `moments.tsx`, `corporate.tsx`, `portugal-travel-designer.tsx`, `proposals.tsx`, `proposal-in-portugal.tsx`, `experiences.tsx`, `about.tsx`, `contact.tsx`, plus the PT mirrors.
-- Build a duplicate map (same `.jpg` used on ≥2 unrelated pages) and flag mismatches (e.g. wine photo on Corporate hero).
-- Replace mismatches with the correct real photo from `src/assets/guests/*` or Viator gallery for that context — no stock, no invented imagery (per brand guardrails).
-- Report the swap list back before executing so you can veto individual choices.
+**Corporate (`src/routes/corporate.tsx`)**
+- Card 3 ("quiet, considered, fully discreet") → `guests/arrabida-viewpoint-group.jpg`, alt rewritten to match (private viewpoint, small group, discreet)
+- `og:image` → same `arrabida-viewpoint-group.jpg` (absolute URL) so social share matches the page's own hero character
+- Confirm no lingering `estates.jpg` reference on this page (was the mismatch anchor)
 
-Out of scope: Signature tour pages (already source-of-truth to Viator) and homepage hero (locked).
+**Multi-day (`src/routes/multi-day.tsx`)**
+- Editorial hero-side image → `src/assets/multi-day.jpg` (primary) with `edit-coastal-road.jpg` as the mid-page editorial break
+- Removes the triple-duplication of `estates.jpg` across Corporate / Proposal / Multi-day
 
-## 2. Checkout & pricing math verification
+**Out of scope this batch:** Proposal card 2 swap (`vineyard-couple.jpg`). Hold for a follow-up so we don't touch the proposal page in the same pass as everything else. PT mirrors updated only where the same import is reused.
 
-Goal: prove the total on every price surface (SignaturePriceCard, sticky CTA, CheckoutSummary, Tailored, Studio V3 reveal) is byte-identical and correct per pax + add-ons + guest count.
+Verification: read each file after edit, confirm imports resolve, screenshot Corporate + Multi-day at 393px.
 
-- Run the existing matrix specs: `studio-v3-price-recompute-matrix`, `studio-v3-add-ons-total`, `studio-v3-add-ons-disabled-never-affect-total`, `checkout-full-flow`, `checkout-surfaces-smoke`, `bokun-checkout-coverage`, `instant-booking-checkout`.
-- For any failure: diagnose in `signatureTourPricing.ts` / `SignaturePriceCard` / `BandedSignatureBookingForm` / `booking-quote` edge fn and fix at the source, not per surface.
-- Manual mobile pass (393×588) through Signature reserve + Tailored + Studio V3 reveal → guest details, confirming totals match at each step.
-- Report: green matrix + screenshots of the 3 checkouts on mobile.
+---
 
-## 3. Mobile polish across checkouts + storytelling
+### 2. Editorial card hover zoom (site-wide)
 
-Goal: 393px is perfect — no overflow, hit targets ≥44px, sticky CTA never covers total, storytelling copy readable.
+Currently only homepage editorial cards have the 1.02–1.04 hover zoom. Extend via the canonical primitive, not per-page CSS.
 
-- Sweep Studio V3 phases, Signature reserve modal, Tailored form, checkout summary, guest-details footer on mobile.
-- Fix any wrap/clip using the responsive-layout pattern (grid + min-w-0 + shrink-0), not ad-hoc.
-- Verify Studio storytelling cadence on small viewport — no jank between phases, reveal fits above the fold.
+- Add a `hoverZoom` behavior to `<EditorialCard>` (default **on**) — wraps the image in `overflow-hidden` and applies `group-hover:scale-[1.03] transition-transform duration-[420ms] ease-out motion-reduce:transform-none` to the `<img>`
+- Add the same treatment to `RelatedExperiencesRail` tour cards and any raw `<figure>` used as an editorial card on: About, Experiences, Corporate, Multi-day, Proposal-in-Portugal, Local Stories, Plan hub + destination pages
+- Introduce a shared utility class `.editorial-zoom` in `styles.css` so one-off figures can opt in without prop drilling
+- Reduced-motion respected via `motion-reduce`
 
-## 4. Dynamic CTAs site-wide
+Verification: Playwright hover on one card per page, screenshot before/after transform.
 
-Goal: every CTA visibly alive; homepage arrow CTAs animate on hover + subtle idle motion; no dead-looking buttons.
+---
 
-- Audit CTAs via canonical `<CtaButton>` primitive — anything hand-rolled gets migrated.
-- Homepage arrows (`.home-energy` scope): keep existing gold sheen sweep + hover lift, add a gentle idle arrow-nudge (translate 2–3px, 1.8s ease-in-out, respects `prefers-reduced-motion`).
-- Non-homepage CTAs stay in the strict motion budget (hover lift -2px, ≤220ms) — no bounce/spring.
-- Verify with `cta-vocabulary-lock`, `final-cta-arrow-colors`, `sticky-cta-copy` specs.
+### 3. `.reveal` coverage audit
 
-## 5. Premium motion pass (site-wide, restraint-first)
+Confirm every section on Moments, Corporate, Travel Designer (`/multi-day`), Proposals uses `.reveal` (fade + translateY entry) on:
+- Each `<section>` that is not the hero
+- Editorial two-column blocks
+- FAQ dl
+- Related-experiences rail wrapper
 
-Goal: the site "moves, speaks, leads" — but stays editorial. No blobs, no shimmer, no parallax outside `.home-energy`.
+Any missing section gets `className="reveal ..."` appended. No new keyframes — utility already exists in `styles.css`. Deliverable: 1-line diff per file + Playwright screenshot at scroll mid-page confirming staggered entry.
 
-- Add entry reveals (fade + translateY 12–16px, ≤220ms, staggered ~60ms) to editorial sections on: About, Moments, Corporate, Travel Designer, Proposals, Local Stories index, Plan hub, Plan destination pages and homepage 
-- Image zoom 1.02–1.04 on hover for editorial cards (already in `EditorialCard` primitive — verify it's used, don't hand-roll).
-- Section eyebrow + gold rule fade-in on scroll into view.
-- Route/link draw on the plan pages that show a map, if not already animated.
-- All reduced-motion safe. Nothing on Studio V3 storytelling (its cinematic pacing is already tuned).
+Out of scope: touching the hero (approved copy locked), the sticky CTA, or introducing per-child stagger beyond what `.reveal` already provides.
 
-## 6. Homepage copy tweak
+---
 
-- `src/routes/index.tsx:977` — replace "A local usually replies within a few hours." with **"A local will reply as soon as possible."**
-- Mirror the change in `pt.index.tsx` if the same line exists there.
+### 4. Plan destination map — route/link draw
 
-## Sequencing
+`PlanningDestinationPage` currently has **no map**. Add one, in the spirit of `LiveMapPreview` / `EditorialMap`, so travellers see the geography of what they're planning.
 
-1. Copy tweak (§6) — 1 line, ship immediately.
-2. Checkout math (§2) — highest risk, blocks launch.
-3. Mobile polish (§3) — piggybacks on §2 pass.
-4. Image audit (§1) — reversible, do while §2/§3 tests run.
-5. Dynamic CTAs (§4).
-6. Motion pass (§5) — last, cosmetic.
+**Placement:** new section between the editorial gallery strip and the featured Signature tours rail.
 
-## Out of scope (explicit)
+**Data model:** extend `PlanningDestination` with an optional `mapStops: { label: string; lat: number; lng: number }[]` field. Coordinates sourced from the existing `REGION_STOPS` catalog via `lookupStopGeo()` — **never invented**. If a destination has fewer than 2 resolvable stops, the section renders nothing (no map, no placeholder).
 
-- No changes to hero copy, brand palette, typography, Studio V3 storytelling structure, Signature tour facts, invented content, or homepage layout.
-- No new pages (Tier 3 SEO drafting paused until launch polish ships).
-- No competitor comparisons or invented superlatives.
+**Component:** new `PlanDestinationMap` built on `EditorialMap` (already handles real geo projection + editorial framing), with:
+- Route polyline drawn between stops using the existing OSRM path from `useRouteLegMinutes` — real driving geometry, not a schematic S-curve
+- Stroke-dashoffset animation on first reveal (2400ms, matches `LiveMapPreview` cadence)
+- Per-leg distance label (km) + drive time (min) from `legDistancesKm` / `legMinutes` — realistic, source-of-truth
+- Pins staggered 600ms apart, matching cadence in `LiveMapPreview`
+- Reduced-motion: skip the draw, show the finished route
 
-## Deliverables per workstream
+**No new dependencies.** Reuses `EditorialMap`, `useRouteLegMinutes`, `lookupStopGeo`, `REGION_STOPS`. Mapbox stays untouched.
 
-- §1: swap-list report + diffs.
-- §2: green Playwright matrix + mobile screenshots of 3 checkouts.
-- §3: before/after mobile screenshots at 393px.
-- §4: CTA inventory + verified specs.
-- §5: list of sections touched + motion spec used.
-- §6: 1-line diff.
+Out of scope: interactive pan/zoom, Mapbox tiles on plan pages (would break the editorial rhythm), coordinates for destinations not in `REGION_STOPS` (those pages simply won't show a map until real stops are catalogued).
 
-Approve and I'll start with §6 + §2 in parallel.
+Verification: load one plan destination that has ≥2 catalogued stops, screenshot before/after draw, confirm leg minutes/km match the OSRM response.
+
+---
+
+### Sequencing & deliverables
+
+1. §1 image swaps (fastest, isolates risk)
+2. §3 `.reveal` sweep (mechanical, low-risk)
+3. §2 hover-zoom primitive (design-system change, medium blast radius)
+4. §4 Plan map (largest, most net-new code)
+
+Between steps I'll stop, share screenshots + file diffs, and wait for approval before the next. Typecheck runs after each step.
