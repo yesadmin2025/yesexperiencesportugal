@@ -143,6 +143,38 @@ async function assertEditorSnapshotWithAnnotation(
   }
 }
 
+/**
+ * Read the visible stop labels (h3 in each RefineStopCard) in DOM order.
+ * The editor renders one h3 per stop row, so the returned array mirrors
+ * the storyboard order the guest sees.
+ */
+async function readRenderedLabels(page: Page): Promise<string[]> {
+  return page.getByTestId("studio-v3-stop-row").locator("h3").allInnerTexts();
+}
+
+/**
+ * Persisted non-editor metadata that MUST survive stops-editor recovery
+ * unchanged. If recovery ever touched these, the fix would be leaking out
+ * of the stops editor scope. Values here match the envelope in `envelopeWith`.
+ */
+const EXPECTED_PERSISTED_METADATA = {
+  journeyTitle: "Sintra & Cascais — private day",
+  firstName: "Alex",
+};
+
+async function assertPersistedMetadataIntact(page: Page) {
+  // journeyTitle round-trip — rendered inside SaveSignatureButton's
+  // accessible label and typically visible in the storyboard header.
+  await expect(
+    page.getByText(EXPECTED_PERSISTED_METADATA.journeyTitle, { exact: false }).first(),
+  ).toBeVisible();
+  // firstName round-trip — the storyboard greets the guest by first name;
+  // if this disappears, hydration corrupted more than the stops list.
+  await expect(
+    page.getByText(EXPECTED_PERSISTED_METADATA.firstName, { exact: false }).first(),
+  ).toBeVisible();
+}
+
 test.use({ viewport: { width: 393, height: 852 } });
 
 test.describe("Studio V3 storyboard recovery", () => {
@@ -159,6 +191,19 @@ test.describe("Studio V3 storyboard recovery", () => {
     await expect(
       page.getByText("We couldn't compose a draft for this combination.", { exact: false }),
     ).toHaveCount(0);
+
+    // Recovery seeded from the Signature pool — labels must be real,
+    // non-empty strings, not placeholders. Persisted metadata (title,
+    // firstName) must survive untouched.
+    const labels = await readRenderedLabels(page);
+    testInfo.annotations.push({
+      type: "recovered-labels",
+      description: JSON.stringify(labels),
+    });
+    expect(labels.length).toBeGreaterThan(0);
+    for (const l of labels) expect(l.trim().length).toBeGreaterThan(0);
+    await assertPersistedMetadataIntact(page);
+
 
     const editorShot = await editor.screenshot({
       path: path.join(ARTIFACT_DIR, "empty-editedRoutePoints-editor.png"),
@@ -196,6 +241,16 @@ test.describe("Studio V3 storyboard recovery", () => {
       timeout: 15_000,
     });
     await expect(page.getByTestId("studio-v3-stops-editor-empty")).toHaveCount(0);
+
+    const labels = await readRenderedLabels(page);
+    testInfo.annotations.push({
+      type: "recovered-labels",
+      description: JSON.stringify(labels),
+    });
+    expect(labels.length).toBeGreaterThan(0);
+    for (const l of labels) expect(l.trim().length).toBeGreaterThan(0);
+    await assertPersistedMetadataIntact(page);
+
 
     const editorShot = await editor.screenshot({
       path: path.join(ARTIFACT_DIR, "null-editedRoutePoints-editor.png"),
@@ -331,6 +386,27 @@ test.describe("Studio V3 storyboard recovery — extra persisted states", () => 
         stopCount,
         `${scenario.name}: recovered ${stopCount} stop(s), expected ≥ ${scenario.expectMinRows}`,
       ).toBeGreaterThanOrEqual(scenario.expectMinRows);
+
+      // Route metadata parity — every persisted stop MUST render, in the
+      // persisted order, with its label unchanged. Whitespace-only /
+      // empty labels are preserved verbatim; duplicates stay duplicated;
+      // extras beyond any capping are still on-screen. If this fails,
+      // recovery reordered / deduped / trimmed something it shouldn't.
+      const renderedLabels = await readRenderedLabels(page);
+      const persistedLabels = scenario.editedRoutePoints.map((p) => p.label);
+      testInfo.annotations.push(
+        { type: "persisted-labels", description: JSON.stringify(persistedLabels) },
+        { type: "recovered-labels", description: JSON.stringify(renderedLabels) },
+      );
+      expect(
+        renderedLabels.map((l) => l.trim()),
+        `${scenario.name}: rendered labels must match persisted order`,
+      ).toEqual(persistedLabels.map((l) => l.trim()));
+
+      // Non-editor persisted metadata (title, firstName) must be intact —
+      // the fix only widens the stops editor; nothing else should shift.
+      await assertPersistedMetadataIntact(page);
+
 
       const editorShot = await editor.screenshot({
         path: path.join(ARTIFACT_DIR, `${scenario.slug}-editor.png`),
