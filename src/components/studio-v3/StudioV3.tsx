@@ -2591,6 +2591,8 @@ export function StudioV3() {
             state={state}
             guestDetails={pendingGuestDetails}
             selectedAddOns={selectedAddOnItems}
+            adults={state.adults ?? null}
+            minorAges={state.minorAges ?? []}
             perPaxEur={(() => {
               const tour = state.tourId ? findTour(state.tourId) : null;
               if (!tour) return null;
@@ -2603,13 +2605,27 @@ export function StudioV3() {
             totalEur={(() => {
               const tour = state.tourId ? findTour(state.tourId) : null;
               if (!tour) return null;
+              const g = pendingGuestDetails.guests;
+              const minors = state.minorAges ?? [];
+              const adultsN = state.adults ?? null;
+              // When composition is supplied, honor age-band pricing so
+              // the summary total matches what Stripe will charge server-side.
+              if (typeof adultsN === "number" && adultsN >= 1 && minors.length > 0) {
+                const journey = resolveJourneyPricing(tour, adultsN, minors, tourPriceTiers);
+                if (journey) {
+                  return Math.round(journey.totalEur + selectedAddOnsTotalEur * g);
+                }
+              }
               const perPax =
-                resolvePerPaxEur(tour, pendingGuestDetails.guests, tourPriceTiers)?.eurPerPax ??
+                resolvePerPaxEur(tour, g, tourPriceTiers)?.eurPerPax ??
                 tour.priceFrom ??
                 0;
-              const g = pendingGuestDetails.guests;
               return Math.round(perPax * g + selectedAddOnsTotalEur * g);
             })()}
+            submitting={checkoutPending}
+            onBack={() => back("guestDetails")}
+            onEditGuestDetails={() => back("guestDetails")}
+
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}
