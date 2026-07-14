@@ -17,12 +17,23 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        // NOTE: internal / utility / auth / QA routes are intentionally excluded from the sitemap
-        // because they are blocked by robots.txt and should not be indexed. These include:
-        // /admin/*, /auth, /booking-confirmed, /brand-qa, /builder, /checkout, /e2e, /email,
-        // /hero-verify, /lovable, /preview-check, /qa, /s/, /i/, /studio-drift, /studio-v2,
-        // /typography-audit, /unsubscribe. /reviews (thin widget) and
-        // /portugal-travel-designer (301 → /multi-day) are also excluded.
+        // NOTE: internal / utility / auth / QA / redirect routes are intentionally
+        // excluded from the sitemap because they are either noindex, blocked by
+        // robots.txt, or 301-redirect to a canonical URL that IS listed.
+        //
+        // Excluded routes and reasons:
+        // - /admin/*            : admin UI, robots.txt Disallow
+        // - /auth               : auth gate, robots noindex + robots.txt Disallow
+        // - /booking-confirmed  : post-booking page, robots noindex + robots.txt Disallow
+        // - /brand-qa           : internal QA page, robots noindex + robots.txt Disallow
+        // - /builder            : 301 → /studio-v3 (canonical entry present) + robots noindex
+        // - /checkout           : checkout flow, robots.txt Disallow
+        // - /day-trips-from-lisbon : 301 → /local-stories/best-day-trips-from-lisbon (entry present)
+        // - /e2e, /email, /hero-verify, /lovable, /preview-check, /qa, /s/, /i/
+        // - /studio-drift, /studio-v2, /typography-audit, /unsubscribe
+        // - /reviews            : thin widget page, intentionally excluded
+        // - /portugal-travel-designer : 301 → /multi-day (entry present)
+        //
         // Static entries omit <lastmod> on purpose — a rolling "today" trains
         // crawlers to ignore the field. Dynamic DB posts keep their real
         // published_at.
