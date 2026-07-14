@@ -110,6 +110,9 @@ export function BrandedCheckoutDrawer({
   );
 
   const completeFiredRef = useRef(false);
+  // Timeout: if clientSecret hasn't arrived within 12s after opening, show
+  // an actionable error state instead of an infinite skeleton.
+  const [timedOut, setTimedOut] = useState(false);
 
   const options = useMemo(() => {
     if (!clientSecret) return null;
@@ -127,6 +130,19 @@ export function BrandedCheckoutDrawer({
   useEffect(() => {
     if (open) completeFiredRef.current = false;
   }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      setTimedOut(false);
+      return;
+    }
+    if (clientSecret) {
+      setTimedOut(false);
+      return;
+    }
+    const t = window.setTimeout(() => setTimedOut(true), 12_000);
+    return () => window.clearTimeout(t);
+  }, [open, clientSecret]);
 
   const addOnsTotal = summary.addOnsTotalEur ?? 0;
   const total =
