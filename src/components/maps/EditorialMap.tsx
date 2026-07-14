@@ -284,7 +284,16 @@ export function EditorialMap({
         ) : null}
         {shown.map((p, i) => {
           const isLast = i === shown.length - 1;
+          const isFocused = i === focused;
           const delay = i * 320;
+          // Focused pin overrides the "last pin" ivory core + pulse and
+          // is drawn slightly larger so a shareable ?stop=N link is
+          // instantly readable at a glance.
+          const showPulse = active && (isFocused || (focused === -1 && isLast));
+          const showCore = isFocused || (focused === -1 && isLast);
+          const outerR = isFocused ? 8 : 6;
+          const innerR = isFocused ? 3.4 : 2.6;
+          const coreR = isFocused ? 1.9 : 1.4;
           return (
             <g
               key={`${p.label}-${i}`}
@@ -299,19 +308,19 @@ export function EditorialMap({
               <circle
                 cx={p.x}
                 cy={p.y}
-                r="6"
+                r={outerR}
                 fill="var(--gold)"
-                opacity="0.18"
-                className={active && isLast ? "em-pulse" : ""}
+                opacity={isFocused ? 0.28 : 0.18}
+                className={showPulse ? "em-pulse" : ""}
                 style={{
                   animationDelay: `${delay + 600}ms`,
                   transformOrigin: `${p.x}px ${p.y}px`,
                   transformBox: "fill-box",
                 }}
               />
-              <circle cx={p.x} cy={p.y} r="2.6" fill="var(--gold)" />
-              {isLast ? (
-                <circle cx={p.x} cy={p.y} r="1.4" fill="var(--ivory)" opacity="0.95" />
+              <circle cx={p.x} cy={p.y} r={innerR} fill="var(--gold)" />
+              {showCore ? (
+                <circle cx={p.x} cy={p.y} r={coreR} fill="var(--ivory)" opacity="0.95" />
               ) : null}
             </g>
           );
