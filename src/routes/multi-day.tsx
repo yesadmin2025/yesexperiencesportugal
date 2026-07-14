@@ -293,7 +293,7 @@ function MultiDayPage() {
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center">
           <div className="overflow-hidden">
             <img
-              src={imgSintraEstates}
+              src={imgMultiDay}
               alt="Private Portugal journey designed by YES Experiences Portugal"
               loading="lazy"
               className="w-full aspect-[4/5] md:aspect-[5/6] object-cover"
