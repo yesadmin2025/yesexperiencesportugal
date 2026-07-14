@@ -60,8 +60,6 @@ function StopList({
   );
 }
 
-// React is imported below the component so JSX above compiles.
-import * as React from "react";
 
 const STOPS: Stop[] = [
   { label: "Cabo da Roca", story: "Where the mainland ends." },
