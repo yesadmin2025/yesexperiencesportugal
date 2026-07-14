@@ -130,8 +130,9 @@ function Page() {
                   <Link
                     to="/local-stories/$slug"
                     params={{ slug: a.slug }}
-                    className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+                    className="editorial-card-link"
                   >
+
                     <div>
                       <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-3">
                         {a.eyebrow}
