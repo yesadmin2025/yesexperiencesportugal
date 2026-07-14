@@ -117,13 +117,23 @@ export const Route = createFileRoute("/tours/$tourId")({
               img: t.img,
               priceFrom: (t as { priceFrom?: number }).priceFrom,
               currency: "EUR",
-              rating: getViatorMeta(params.tourId)?.rating ?? null,
-              reviewCount: getViatorMeta(params.tourId)?.reviewCount ?? null,
+              rating:
+                loaderData?.reviewStats?.average_rating ??
+                getViatorMeta(params.tourId)?.rating ??
+                null,
+              reviewCount:
+                loaderData?.reviewStats?.total_reviews ??
+                getViatorMeta(params.tourId)?.reviewCount ??
+                null,
               region: (t as { region?: string }).region ?? null,
               durationHours: (t as { durationHours?: string }).durationHours ?? null,
               stops: (t.stops ?? []).map((s) => ({ label: s.label, story: s.story })),
             }),
             params.tourId,
+            {
+              stats: loaderData?.reviewStats ?? null,
+              reviews: loaderData?.reviewList ?? null,
+            },
           ),
         ),
         jsonLdScript(faqPageLd(SIGNATURE_FAQ)),
