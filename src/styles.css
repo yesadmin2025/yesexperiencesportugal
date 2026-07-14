@@ -3177,10 +3177,10 @@ svg.lucide {
    ───────────────────────────────────────────────────────────── */
 html.motion-ready [data-motion] {
   opacity: 0;
-  transform: translateY(22px);
+  transform: translateY(14px);
   transition:
-    opacity 620ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 700ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 700ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: opacity, transform;
 }
 html.motion-ready [data-motion].motion-in {
@@ -3200,10 +3200,10 @@ html.motion-ready [data-motion="fade"] {
   transform: none;
 }
 html.motion-ready [data-motion="fade-up"] {
-  transform: translateY(22px);
+  transform: translateY(14px);
 }
 html.motion-ready [data-motion="fade-up-sm"] {
-  transform: translateY(14px);
+  transform: translateY(8px);
 }
 html.motion-ready [data-motion].motion-in {
   transform: translateY(0);
@@ -6518,22 +6518,17 @@ html {
 }
 
 
-/* Page-level transition — subtle editorial fade + upward slide on route
-   change. Wraps the router <Outlet /> keyed by pathname so each new
-   page enters cleanly. Reduced-motion falls back to instant. */
+/* Page-level transition — pure editorial fade on route change. No
+   vertical translate: page titles must never slide or bounce; the
+   on-page cascade handles hierarchical entrance. Longer, gentler
+   easing keeps the handoff soft. Reduced-motion falls back to instant. */
 @keyframes pageEnter {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 8px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 .page-transition {
-  animation: pageEnter 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
-  will-change: opacity, transform;
+  animation: pageEnter 560ms ease-out both;
+  will-change: opacity;
 }
 @media (prefers-reduced-motion: reduce) {
   .page-transition {
