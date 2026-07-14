@@ -29,6 +29,7 @@ import { Route as PortugalToursRouteImport } from './routes/portugal-tours'
 import { Route as PlanRouteImport } from './routes/plan'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
 import { Route as MomentsRouteImport } from './routes/moments'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LuxuryToursPortugalRouteImport } from './routes/luxury-tours-portugal'
 import { Route as LocalStoriesRouteImport } from './routes/local-stories'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
@@ -92,8 +93,12 @@ import { Route as AdminDomainsHealthRouteImport } from './routes/admin.domains-h
 import { Route as AdminDnsWatchRouteImport } from './routes/admin.dns-watch'
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -202,6 +207,11 @@ const MultiDayRoute = MultiDayRouteImport.update({
 const MomentsRoute = MomentsRouteImport.update({
   id: '/moments',
   path: '/moments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LuxuryToursPortugalRoute = LuxuryToursPortugalRouteImport.update({
@@ -524,6 +534,18 @@ const AdminAiAuditRoute = AdminAiAuditRouteImport.update({
   path: '/admin/ai-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   id: '/lovable/email/suppression',
   path: '/lovable/email/suppression',
@@ -532,6 +554,17 @@ const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
 const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   id: '/api/public/contact',
   path: '/api/public/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LovableEmailTransactionalSendRoute =
@@ -607,6 +640,7 @@ export interface FileRoutesByFullPath {
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
+  '/mcp': typeof McpRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
   '/plan': typeof PlanRoute
@@ -627,6 +661,8 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
@@ -670,6 +706,8 @@ export interface FileRoutesByFullPath {
   '/tours/$tourId': typeof ToursTourIdRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
@@ -702,6 +740,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
+  '/mcp': typeof McpRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
   '/plan': typeof PlanRoute
@@ -721,6 +760,8 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
@@ -764,6 +805,8 @@ export interface FileRoutesByTo {
   '/tours/$tourId': typeof ToursTourIdRoute
   '/local-stories': typeof LocalStoriesIndexRoute
   '/pt': typeof PtIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
@@ -798,6 +841,7 @@ export interface FileRoutesById {
   '/hero-verify': typeof HeroVerifyRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
+  '/mcp': typeof McpRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
   '/plan': typeof PlanRoute
@@ -818,6 +862,8 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
@@ -861,6 +907,8 @@ export interface FileRoutesById {
   '/tours/$tourId': typeof ToursTourIdRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
@@ -896,6 +944,7 @@ export interface FileRouteTypes {
     | '/hero-verify'
     | '/local-stories'
     | '/luxury-tours-portugal'
+    | '/mcp'
     | '/moments'
     | '/multi-day'
     | '/plan'
@@ -916,6 +965,8 @@ export interface FileRouteTypes {
     | '/terms'
     | '/unsubscribe'
     | '/wine-tours-lisbon'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin/ai-audit'
     | '/admin/builder-images'
     | '/admin/dns-watch'
@@ -959,6 +1010,8 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/local-stories/'
     | '/pt/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/api/public/hooks/checkout-email'
@@ -991,6 +1044,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/hero-verify'
     | '/luxury-tours-portugal'
+    | '/mcp'
     | '/moments'
     | '/multi-day'
     | '/plan'
@@ -1010,6 +1064,8 @@ export interface FileRouteTypes {
     | '/terms'
     | '/unsubscribe'
     | '/wine-tours-lisbon'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin/ai-audit'
     | '/admin/builder-images'
     | '/admin/dns-watch'
@@ -1053,6 +1109,8 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/local-stories'
     | '/pt'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/api/public/hooks/checkout-email'
@@ -1086,6 +1144,7 @@ export interface FileRouteTypes {
     | '/hero-verify'
     | '/local-stories'
     | '/luxury-tours-portugal'
+    | '/mcp'
     | '/moments'
     | '/multi-day'
     | '/plan'
@@ -1106,6 +1165,8 @@ export interface FileRouteTypes {
     | '/terms'
     | '/unsubscribe'
     | '/wine-tours-lisbon'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/admin/ai-audit'
     | '/admin/builder-images'
     | '/admin/dns-watch'
@@ -1149,6 +1210,8 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/local-stories/'
     | '/pt/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/api/public/hooks/checkout-email'
@@ -1183,6 +1246,7 @@ export interface RootRouteChildren {
   HeroVerifyRoute: typeof HeroVerifyRoute
   LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
   LuxuryToursPortugalRoute: typeof LuxuryToursPortugalRoute
+  McpRoute: typeof McpRoute
   MomentsRoute: typeof MomentsRoute
   MultiDayRoute: typeof MultiDayRoute
   PlanRoute: typeof PlanRoute
@@ -1203,6 +1267,8 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   WineToursLisbonRoute: typeof WineToursLisbonRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
   AdminDnsWatchRoute: typeof AdminDnsWatchRoute
@@ -1230,6 +1296,8 @@ export interface RootRouteChildren {
   QaMobileRoute: typeof QaMobileRoute
   ReviewTokenRoute: typeof ReviewTokenRoute
   ToursTourIdRoute: typeof ToursTourIdRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
@@ -1383,6 +1451,13 @@ declare module '@tanstack/react-router' {
       path: '/moments'
       fullPath: '/moments'
       preLoaderRoute: typeof MomentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/luxury-tours-portugal': {
@@ -1826,6 +1901,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAiAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/suppression': {
       id: '/lovable/email/suppression'
       path: '/lovable/email/suppression'
@@ -1838,6 +1927,20 @@ declare module '@tanstack/react-router' {
       path: '/api/public/contact'
       fullPath: '/api/public/contact'
       preLoaderRoute: typeof ApiPublicContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lovable/email/transactional/send': {
@@ -1977,6 +2080,7 @@ const rootRouteChildren: RootRouteChildren = {
   HeroVerifyRoute: HeroVerifyRoute,
   LocalStoriesRoute: LocalStoriesRouteWithChildren,
   LuxuryToursPortugalRoute: LuxuryToursPortugalRoute,
+  McpRoute: McpRoute,
   MomentsRoute: MomentsRoute,
   MultiDayRoute: MultiDayRoute,
   PlanRoute: PlanRoute,
@@ -1997,6 +2101,9 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   WineToursLisbonRoute: WineToursLisbonRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
   AdminDnsWatchRoute: AdminDnsWatchRoute,
@@ -2025,6 +2132,8 @@ const rootRouteChildren: RootRouteChildren = {
   QaMobileRoute: QaMobileRoute,
   ReviewTokenRoute: ReviewTokenRoute,
   ToursTourIdRoute: ToursTourIdRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,

@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "sdk_version": "0.22.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://kqygnqetygcvkaauwbji.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "yes-experiences-mcp",
+      "version": "0.1.0",
+      "title": "YES Experiences MCP"
+    },
+    "tools": [
+      {
+        "name": "whoami",
+        "title": "Who am I",
+        "description": "Return the authenticated user's id and email — useful to verify the connection.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_tours",
+        "title": "List signature tours",
+        "description": "List YES Experiences signature tours with slug, title, region and base price.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "region": {
+              "description": "Optional region filter (e.g. 'Lisbon', 'Alentejo').",
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_bookings",
+        "title": "List recent bookings",
+        "description": "List the most recent bookings visible to the signed-in user (admin required for full visibility).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "description": "Max rows to return. Default 20.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
