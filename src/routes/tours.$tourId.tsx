@@ -28,6 +28,7 @@ import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { getTourReviewStats, getTourReviews } from "@/lib/reviews.functions";
 import { SIGNATURE_FAQ } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
+import { matchStopPhotos } from "@/lib/stopPhotoMatch";
 import { TourReviews } from "@/components/TourReviews";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
@@ -110,25 +111,31 @@ export const Route = createFileRoute("/tours/$tourId")({
         ),
         jsonLdScript(
           withAggregateAndReviews(
-            tourProductLd({
-              id: params.tourId,
-              title: t.title,
-              blurb: t.blurb,
-              img: t.img,
-              priceFrom: (t as { priceFrom?: number }).priceFrom,
-              currency: "EUR",
-              rating:
-                loaderData?.reviewStats?.average_rating ??
-                getViatorMeta(params.tourId)?.rating ??
-                null,
-              reviewCount:
-                loaderData?.reviewStats?.total_reviews ??
-                getViatorMeta(params.tourId)?.reviewCount ??
-                null,
-              region: (t as { region?: string }).region ?? null,
-              durationHours: (t as { durationHours?: string }).durationHours ?? null,
-              stops: (t.stops ?? []).map((s) => ({ label: s.label, story: s.story })),
-            }),
+            (() => {
+              const meta = getViatorMeta(params.tourId);
+              const gallery = getTourGallery(t, meta);
+              const stopPhotos = matchStopPhotos(t, meta);
+              return tourProductLd({
+                id: params.tourId,
+                title: t.title,
+                blurb: t.blurb,
+                img: t.img,
+                priceFrom: (t as { priceFrom?: number }).priceFrom,
+                currency: "EUR",
+                rating:
+                  loaderData?.reviewStats?.average_rating ?? meta?.rating ?? null,
+                reviewCount:
+                  loaderData?.reviewStats?.total_reviews ?? meta?.reviewCount ?? null,
+                region: (t as { region?: string }).region ?? null,
+                durationHours: (t as { durationHours?: string }).durationHours ?? null,
+                stops: (t.stops ?? []).map((s, i) => ({
+                  label: s.label,
+                  story: s.story,
+                  image: stopPhotos[i]?.src,
+                })),
+                gallery,
+              });
+            })(),
             params.tourId,
             {
               stats: loaderData?.reviewStats ?? null,
@@ -136,7 +143,31 @@ export const Route = createFileRoute("/tours/$tourId")({
             },
           ),
         ),
+        // Standalone ImageGallery node when we have ≥3 real gallery photos.
+        ...(() => {
+          const meta = getViatorMeta(params.tourId);
+          const gallery = getTourGallery(t, meta);
+          if (gallery.length < 3) return [];
+          return [
+            jsonLdScript({
+              "@context": "https://schema.org",
+              "@type": "ImageGallery",
+              "@id": `${url}#gallery`,
+              name: `${t.title} — photo gallery`,
+              isPartOf: { "@id": url },
+              numberOfItems: gallery.length,
+              image: gallery.map((p) => ({
+                "@type": "ImageObject",
+                url: p.src.startsWith("http") ? p.src : `https://yesexperiencesportugal.com${p.src}`,
+                contentUrl: p.src.startsWith("http") ? p.src : `https://yesexperiencesportugal.com${p.src}`,
+                caption: p.alt,
+                creditText: "YES Experiences Portugal",
+              })),
+            }),
+          ];
+        })(),
         jsonLdScript(faqPageLd(SIGNATURE_FAQ)),
+
       ],
     };
   },

@@ -1,11 +1,37 @@
 import type { PlanningItinerary } from "@/content/planning/itineraries";
 import type { PlanningDestination } from "@/content/planning/destinations";
-import { jsonLdScript, breadcrumbLd, faqPageLd, SITE_URL } from "@/lib/jsonld";
+import {
+  jsonLdScript,
+  breadcrumbLd,
+  faqPageLd,
+  imageGalleryLd,
+  touristDestinationLd,
+  absUrl,
+  SITE_URL,
+} from "@/lib/jsonld";
 import { findTour } from "@/data/signatureTours";
 
 /** Builds the head() config for an itinerary page. */
 export function itineraryHead(itinerary: PlanningItinerary) {
   const url = `${SITE_URL}${itinerary.path}`;
+
+  // For each day, pull the hero image from the first mapped Signature tour
+  // so crawlers get a per-stop visual anchor alongside the description.
+  const dayItems = itinerary.days.map((d, i) => {
+    const firstTour = (d.signatureIds ?? []).map((id) => findTour(id)).find(Boolean);
+    const image = firstTour?.img ? absUrl(firstTour.img) : undefined;
+    return {
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "TouristDestination",
+        name: `${d.span} — ${d.eyebrow}`,
+        description: d.body,
+        ...(image ? { image } : {}),
+      },
+    };
+  });
+
   const tripLd = {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
@@ -20,15 +46,7 @@ export function itineraryHead(itinerary: PlanningItinerary) {
     itinerary: {
       "@type": "ItemList",
       numberOfItems: itinerary.days.length,
-      itemListElement: itinerary.days.map((d, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        item: {
-          "@type": "TouristDestination",
-          name: `${d.span} — ${d.eyebrow}`,
-          description: d.body,
-        },
-      })),
+      itemListElement: dayItems,
     },
   };
 
@@ -59,32 +77,35 @@ export function itineraryHead(itinerary: PlanningItinerary) {
 /** Builds the head() config for a destination page. */
 export function destinationHead(destination: PlanningDestination) {
   const url = `${SITE_URL}${destination.path}`;
-  // Pull an og:image from the first featured Signature tour so shares
-  // carry a real photo rather than a placeholder.
-  const firstTour = destination.signatureIds.map((id) => findTour(id)).find(Boolean);
-  const image = firstTour?.img
-    ? firstTour.img.startsWith("http")
-      ? firstTour.img
-      : `${SITE_URL}${firstTour.img.startsWith("/") ? "" : "/"}${firstTour.img}`
-    : undefined;
+  const shortName = destination.h1.replace(/^Planning a Private Trip to /, "");
+  const heroAbs = absUrl(destination.hero.src);
 
-  const destinationLd = {
-    "@context": "https://schema.org",
-    "@type": "TouristDestination",
-    "@id": `${url}#destination`,
-    name: destination.h1.replace(/^Planning a Private Trip to /, ""),
+  const attractions = destination.signatureIds
+    .map((id) => findTour(id))
+    .filter((t): t is NonNullable<ReturnType<typeof findTour>> => Boolean(t))
+    .map((t) => ({
+      name: t.title,
+      url: `${SITE_URL}/tours/${t.id}`,
+      image: t.img,
+    }));
+
+  const destinationLd = touristDestinationLd({
+    path: destination.path,
+    name: shortName,
     description: destination.metaDescription,
-    url,
-    ...(image ? { image } : {}),
-    includesAttraction: destination.signatureIds
-      .map((id) => findTour(id))
-      .filter((t): t is NonNullable<ReturnType<typeof findTour>> => Boolean(t))
-      .map((t) => ({
-        "@type": "TouristAttraction",
-        name: t.title,
-        url: `${SITE_URL}/tours/${t.id}`,
-      })),
-  };
+    hero: destination.hero,
+    gallery: destination.gallery,
+    includedAttractions: attractions,
+  });
+
+  const galleryLd =
+    destination.gallery.length >= 2
+      ? imageGalleryLd({
+          pageUrl: url,
+          name: `${shortName} — real photos from our private days`,
+          photos: [destination.hero, ...destination.gallery],
+        })
+      : null;
 
   return {
     meta: [
@@ -94,16 +115,18 @@ export function destinationHead(destination: PlanningDestination) {
       { property: "og:description", content: destination.metaDescription },
       { property: "og:type", content: "article" },
       { property: "og:url", content: url },
-      ...(image ? [{ property: "og:image", content: image }] : []),
+      { property: "og:image", content: heroAbs },
+      { property: "twitter:image", content: heroAbs },
     ],
     links: [{ rel: "canonical", href: url }],
     scripts: [
       jsonLdScript(destinationLd),
+      ...(galleryLd ? [jsonLdScript(galleryLd)] : []),
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },
           { name: "Trip planning", path: "/plan" },
-          { name: destination.h1.replace(/^Planning a Private Trip to /, ""), path: destination.path },
+          { name: shortName, path: destination.path },
         ]),
       ),
       ...(destination.faq.length > 0 ? [jsonLdScript(faqPageLd(destination.faq))] : []),

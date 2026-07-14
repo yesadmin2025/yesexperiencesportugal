@@ -7,8 +7,10 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
-import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
+
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
+import guestQuintaGroup from "@/assets/guests/quinta-group.jpg.asset.json";
+const imgCorporateGroup = guestQuintaGroup.url;
 
 const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
@@ -53,7 +55,7 @@ const BLOCKS = [
       "Private groups of any size, scoped around the right transport, guides, suppliers and timing · invoice & DMC support · designed around your goals.",
     local:
       "We handle the moving parts on the ground — real driving times, real venues, real partners.",
-    image: imgArrabidaWineLunch,
+    image: imgCorporateGroup,
     icon: Users,
   },
   {

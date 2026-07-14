@@ -8,11 +8,21 @@ import {
   jsonLdScript,
   breadcrumbLd,
   faqPageLd,
+  touristDestinationLd,
+  imageGalleryLd,
+  absUrl,
   SITE_URL,
 } from "@/lib/jsonld";
 import { RelatedExperiencesRail } from "@/components/RelatedExperiencesRail";
 import { rankRelatedTours } from "@/lib/related-experiences";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
+
+import guestVineyardCouple from "@/assets/guests/vineyard-couple.jpg.asset.json";
+import guestBubblingTasting from "@/assets/guests/bubbling-wine-tasting.jpg.asset.json";
+import guestChocolateCake from "@/assets/guests/chocolate-cake-tasting.jpg.asset.json";
+import imgArrabidaLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
+import imgArrabidaWinery from "@/assets/tours/arrabida-wine-allinclusive/winery.jpg";
+import imgEvoraWinery from "@/assets/tours/evora-alentejo/winery.jpg";
 
 /**
  * /plan/portugal-wine-and-gastronomy
@@ -28,6 +38,19 @@ const URL = `${SITE_URL}${PATH}`;
 const TITLE = "Portugal Wine & Gastronomy Trip Planning — Private Journeys";
 const DESCRIPTION =
   "A local operator's guide to planning a private wine and gastronomy trip in Portugal — Arrábida, Alentejo, vinho de talha, and the family tables our team eats at.";
+
+const HERO = {
+  src: guestVineyardCouple.url,
+  alt: "A couple embracing between the vine rows of an Arrábida family winery in early spring",
+};
+
+const GALLERY = [
+  { src: guestBubblingTasting.url, alt: "Guests toasting a Catralvos Bubbling sparkling wine at a Setúbal quinta" },
+  { src: imgArrabidaLunch, alt: "A private wine-country lunch table on the Arrábida coast" },
+  { src: guestChocolateCake.url, alt: "Chocolate cake and empty tasting glasses at a private wine table" },
+  { src: imgEvoraWinery, alt: "A family Alentejo cellar with vinho de talha clay amphorae" },
+  { src: imgArrabidaWinery, alt: "Barrels inside a small Arrábida family winery" },
+];
 
 const FAQ = [
   {
@@ -53,9 +76,27 @@ export const Route = createFileRoute("/plan/portugal-wine-and-gastronomy")({
       { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "article" },
       { property: "og:url", content: URL },
+      { property: "og:image", content: absUrl(HERO.src) },
+      { property: "twitter:image", content: absUrl(HERO.src) },
     ],
     links: [{ rel: "canonical", href: URL }],
     scripts: [
+      jsonLdScript(
+        touristDestinationLd({
+          path: PATH,
+          name: "Portugal wine and gastronomy",
+          description: DESCRIPTION,
+          hero: HERO,
+          gallery: GALLERY,
+        }),
+      ),
+      jsonLdScript(
+        imageGalleryLd({
+          pageUrl: URL,
+          name: "Portugal wine and gastronomy — real photos from our tables",
+          photos: [HERO, ...GALLERY],
+        }),
+      ),
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },
@@ -68,6 +109,7 @@ export const Route = createFileRoute("/plan/portugal-wine-and-gastronomy")({
   }),
   component: PillarPage,
 });
+
 
 function PillarPage() {
   const tours = rankRelatedTours(
@@ -107,6 +149,23 @@ function PillarPage() {
           </div>
         </div>
       </header>
+
+      {/* Hero image — real, wine-country, never stock */}
+      <section className="bg-[color:var(--sand)] pb-14 md:pb-20">
+        <div className="container-x max-w-5xl">
+          <figure className="overflow-hidden rounded-sm">
+            <img
+              src={HERO.src}
+              alt={HERO.alt}
+              loading="eager"
+              decoding="async"
+              className="w-full aspect-[16/9] object-cover"
+            />
+          </figure>
+        </div>
+      </section>
+
+
 
       <section className="reveal py-20 md:py-24 bg-[color:var(--ivory)]">
         <div className="container-x max-w-2xl space-y-12">
@@ -151,6 +210,27 @@ function PillarPage() {
           </div>
         </div>
       </section>
+
+      {/* Editorial gallery strip — real photos from real days */}
+      <section className="reveal py-14 md:py-20 bg-[color:var(--ivory)] border-t border-[color:var(--border)]">
+        <div className="container-x">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
+            {GALLERY.slice(0, 3).map((p) => (
+              <figure key={p.src} className="overflow-hidden rounded-sm">
+                <img
+                  src={p.src}
+                  alt={p.alt}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full aspect-[4/5] md:aspect-[3/4] object-cover"
+                />
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
 
       <RelatedExperiencesRail
         tours={tours}
