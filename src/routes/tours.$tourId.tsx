@@ -23,7 +23,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CtaPair } from "@/components/ui/CtaPair";
-import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript, pageGalleryLd, stopMediaLd } from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { getTourReviewStats, getTourReviews } from "@/lib/reviews.functions";
 import { SIGNATURE_FAQ } from "@/content/seo-faq";
