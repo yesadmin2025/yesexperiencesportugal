@@ -418,3 +418,25 @@ function CheckoutSkeleton() {
     </div>
   );
 }
+
+function CheckoutTimeout({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div
+      role="alert"
+      className="px-4 py-8 mx-2 my-4 flex flex-col items-center text-center gap-3 border border-[color:var(--border)] bg-[color:var(--ivory)]"
+    >
+      <AlertCircle size={22} className="text-[color:var(--charcoal)]" aria-hidden />
+      <p className="text-[13px] leading-relaxed text-[color:var(--charcoal)] max-w-[36ch]">
+        Checkout is taking longer than usual. Close this and try again — no card
+        was charged.
+      </p>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="mt-2 inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 text-[11.5px] uppercase tracking-[0.22em] font-semibold rounded-[2px] bg-[color:var(--teal)] text-[color:var(--ivory)] hover:bg-[color:var(--charcoal)] transition-colors"
+      >
+        Close and retry
+      </button>
+    </div>
+  );
+}
