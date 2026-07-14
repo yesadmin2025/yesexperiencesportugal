@@ -9,6 +9,8 @@
 import * as React from "react";
 import { ArrowLeft, Download, Loader2, Lock } from "lucide-react";
 import { toast } from "sonner";
+import { loadStripe, type Stripe } from "@stripe/stripe-js";
+import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
@@ -24,6 +26,18 @@ import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { cn } from "@/lib/utils";
 import { resolveJourneyPricing } from "@/data/signatureTourPricing";
+
+// One Stripe instance per publishable key, memoized across renders. Mirrors
+// BrandedCheckoutDrawer so we don't re-download stripe.js for the same key.
+const stripeCache = new Map<string, Promise<Stripe | null>>();
+function getStripePromise(pk: string): Promise<Stripe | null> {
+  if (!pk) return Promise.resolve(null);
+  const cached = stripeCache.get(pk);
+  if (cached) return cached;
+  const p = loadStripe(pk);
+  stripeCache.set(pk, p);
+  return p;
+}
 
 export interface CheckoutSummaryProps {
   readonly state: StudioV3State;
