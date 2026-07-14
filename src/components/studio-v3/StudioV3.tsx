@@ -2472,18 +2472,24 @@ export function StudioV3() {
               guideNotes: state.guestDraft?.guideNotes ?? null,
             }}
             onBack={() => back("confirmation")}
-            onEmailBlur={async (email) => {
+            onStorySubmit={async (email: string) => {
               try {
                 const snapshot = buildSignatureStorySnapshot(state, {
                   guests: state.guests ?? undefined,
                   pickupAddress: state.guestDraft?.pickupAddress,
                   dateIso: state.dateExact ?? undefined,
                 });
+                const { buildJourneyRevision } = await import("./signatureStorySnapshot");
+                const journeyRevision = buildJourneyRevision(state, {
+                  adults: state.guests ?? undefined,
+                  minorAges: [],
+                });
                 await sendSignatureStoryEmail({
                   data: {
                     email,
                     tourId: state.tourId ?? null,
                     dateIso: state.dateExact ?? null,
+                    journeyRevision,
                     snapshot,
                   },
                 });
