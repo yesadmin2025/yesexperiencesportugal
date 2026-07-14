@@ -81,6 +81,7 @@ import { Route as PlanPortugalWineAndGastronomyRouteImport } from './routes/plan
 import { Route as PlanLisbonRouteImport } from './routes/plan.lisbon'
 import { Route as PlanCostaVicentinaRouteImport } from './routes/plan.costa-vicentina'
 import { Route as PlanComportaRouteImport } from './routes/plan.comporta'
+import { Route as PlanBestTimeToVisitPortugalRouteImport } from './routes/plan.best-time-to-visit-portugal'
 import { Route as PlanArrabidaRouteImport } from './routes/plan.arrabida'
 import { Route as PlanAlentejoRouteImport } from './routes/plan.alentejo'
 import { Route as Plan7DayPortugalItineraryRouteImport } from './routes/plan.7-day-portugal-itinerary'
@@ -499,6 +500,12 @@ const PlanComportaRoute = PlanComportaRouteImport.update({
   path: '/comporta',
   getParentRoute: () => PlanRoute,
 } as any)
+const PlanBestTimeToVisitPortugalRoute =
+  PlanBestTimeToVisitPortugalRouteImport.update({
+    id: '/best-time-to-visit-portugal',
+    path: '/best-time-to-visit-portugal',
+    getParentRoute: () => PlanRoute,
+  } as any)
 const PlanArrabidaRoute = PlanArrabidaRouteImport.update({
   id: '/arrabida',
   path: '/arrabida',
@@ -862,6 +869,7 @@ export interface FileRoutesByFullPath {
   '/plan/7-day-portugal-itinerary': typeof Plan7DayPortugalItineraryRoute
   '/plan/alentejo': typeof PlanAlentejoRoute
   '/plan/arrabida': typeof PlanArrabidaRoute
+  '/plan/best-time-to-visit-portugal': typeof PlanBestTimeToVisitPortugalRoute
   '/plan/comporta': typeof PlanComportaRoute
   '/plan/costa-vicentina': typeof PlanCostaVicentinaRoute
   '/plan/lisbon': typeof PlanLisbonRoute
@@ -986,6 +994,7 @@ export interface FileRoutesByTo {
   '/plan/7-day-portugal-itinerary': typeof Plan7DayPortugalItineraryRoute
   '/plan/alentejo': typeof PlanAlentejoRoute
   '/plan/arrabida': typeof PlanArrabidaRoute
+  '/plan/best-time-to-visit-portugal': typeof PlanBestTimeToVisitPortugalRoute
   '/plan/comporta': typeof PlanComportaRoute
   '/plan/costa-vicentina': typeof PlanCostaVicentinaRoute
   '/plan/lisbon': typeof PlanLisbonRoute
@@ -1114,6 +1123,7 @@ export interface FileRoutesById {
   '/plan/7-day-portugal-itinerary': typeof Plan7DayPortugalItineraryRoute
   '/plan/alentejo': typeof PlanAlentejoRoute
   '/plan/arrabida': typeof PlanArrabidaRoute
+  '/plan/best-time-to-visit-portugal': typeof PlanBestTimeToVisitPortugalRoute
   '/plan/comporta': typeof PlanComportaRoute
   '/plan/costa-vicentina': typeof PlanCostaVicentinaRoute
   '/plan/lisbon': typeof PlanLisbonRoute
@@ -1243,6 +1253,7 @@ export interface FileRouteTypes {
     | '/plan/7-day-portugal-itinerary'
     | '/plan/alentejo'
     | '/plan/arrabida'
+    | '/plan/best-time-to-visit-portugal'
     | '/plan/comporta'
     | '/plan/costa-vicentina'
     | '/plan/lisbon'
@@ -1367,6 +1378,7 @@ export interface FileRouteTypes {
     | '/plan/7-day-portugal-itinerary'
     | '/plan/alentejo'
     | '/plan/arrabida'
+    | '/plan/best-time-to-visit-portugal'
     | '/plan/comporta'
     | '/plan/costa-vicentina'
     | '/plan/lisbon'
@@ -1494,6 +1506,7 @@ export interface FileRouteTypes {
     | '/plan/7-day-portugal-itinerary'
     | '/plan/alentejo'
     | '/plan/arrabida'
+    | '/plan/best-time-to-visit-portugal'
     | '/plan/comporta'
     | '/plan/costa-vicentina'
     | '/plan/lisbon'
@@ -2141,6 +2154,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlanComportaRouteImport
       parentRoute: typeof PlanRoute
     }
+    '/plan/best-time-to-visit-portugal': {
+      id: '/plan/best-time-to-visit-portugal'
+      path: '/best-time-to-visit-portugal'
+      fullPath: '/plan/best-time-to-visit-portugal'
+      preLoaderRoute: typeof PlanBestTimeToVisitPortugalRouteImport
+      parentRoute: typeof PlanRoute
+    }
     '/plan/arrabida': {
       id: '/plan/arrabida'
       path: '/arrabida'
@@ -2535,6 +2555,7 @@ interface PlanRouteChildren {
   Plan7DayPortugalItineraryRoute: typeof Plan7DayPortugalItineraryRoute
   PlanAlentejoRoute: typeof PlanAlentejoRoute
   PlanArrabidaRoute: typeof PlanArrabidaRoute
+  PlanBestTimeToVisitPortugalRoute: typeof PlanBestTimeToVisitPortugalRoute
   PlanComportaRoute: typeof PlanComportaRoute
   PlanCostaVicentinaRoute: typeof PlanCostaVicentinaRoute
   PlanLisbonRoute: typeof PlanLisbonRoute
@@ -2549,6 +2570,7 @@ const PlanRouteChildren: PlanRouteChildren = {
   Plan7DayPortugalItineraryRoute: Plan7DayPortugalItineraryRoute,
   PlanAlentejoRoute: PlanAlentejoRoute,
   PlanArrabidaRoute: PlanArrabidaRoute,
+  PlanBestTimeToVisitPortugalRoute: PlanBestTimeToVisitPortugalRoute,
   PlanComportaRoute: PlanComportaRoute,
   PlanCostaVicentinaRoute: PlanCostaVicentinaRoute,
   PlanLisbonRoute: PlanLisbonRoute,
