@@ -271,10 +271,13 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LocaleProvider locale={locale}>
-        <Outlet />
+        <div key={pathname} className="page-transition">
+          <Outlet />
+        </div>
         <WhatsAppSupportButton />
         <Toaster position="bottom-left" richColors closeButton />
       </LocaleProvider>
     </QueryClientProvider>
   );
 }
+
