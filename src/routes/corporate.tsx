@@ -55,7 +55,7 @@ const BLOCKS = [
       "Private groups of any size, scoped around the right transport, guides, suppliers and timing · invoice & DMC support · designed around your goals.",
     local:
       "We handle the moving parts on the ground — real driving times, real venues, real partners.",
-    image: imgArrabidaWineLunch,
+    image: imgCorporateGroup,
     icon: Users,
   },
   {
