@@ -20,8 +20,8 @@ export const Route = createFileRoute("/pt/corporate")({
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
-      { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
-      { property: "twitter:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${guestArrabidaViewpoint.url}` },
+      { property: "twitter:image", content: `https://yesexperiencesportugal.com${guestArrabidaViewpoint.url}` },
       { property: "og:url", content: "https://yesexperiencesportugal.com/pt/corporate" },
       { property: "og:locale", content: "pt_PT" },
     ],
@@ -52,7 +52,7 @@ const BLOCKS = [
       "Grupos privados de qualquer dimensão, com o transporte, guias, parceiros e ritmo certos · faturação e apoio DMC · desenhado em torno dos vossos objetivos.",
     local:
       "Tratamos das peças em movimento no terreno — tempos de viagem reais, locais reais, parceiros reais.",
-    image: imgArrabidaWineLunch,
+    image: imgAzeitaoWorkshop,
     icon: Users,
   },
   {
@@ -63,7 +63,7 @@ const BLOCKS = [
     practical:
       "Fluxo de vários dias, logística regional, locais adequados a reuniões, momentos culturais integrados no ritmo.",
     local: "Coordenado por um anfitrião local que sabe como cada peça do dia se liga.",
-    image: imgSintraEstates,
+    image: imgEvoraTemple,
     icon: Compass,
   },
   {
@@ -73,7 +73,7 @@ const BLOCKS = [
       "Quando importa quem está na sala e como o dia se sente — é assim que o desenhamos.",
     practical: "Grupos pequenos · ambientes privados · ritmo cuidado · NDAs bem-vindos.",
     local: "Planeado de ponta a ponta com a nossa equipa local — cada detalhe confirmado antes do dia.",
-    image: imgFatimaNazare,
+    image: guestArrabidaViewpoint.url,
     icon: ClipboardCheck,
   },
 ];
