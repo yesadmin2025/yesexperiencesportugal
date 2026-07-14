@@ -64,7 +64,6 @@ function tomorrowISO() {
 type CheckoutResponse = {
   url?: string;
   sessionId?: string;
-  sessionId?: string;
   flow?: Flow;
   productName?: string;
   lineItemDescription?: string;
