@@ -37,6 +37,8 @@ export interface StudioQuoteAddOnLine {
   inclusionIds: string[];
 }
 
+export type CheckoutEligibility = "instant" | "enquiry_only";
+
 export interface StudioQuoteResponse {
   quoteToken: string;
   revision: string;
@@ -62,6 +64,10 @@ export interface StudioQuoteResponse {
   inclusions: Array<{ id: string; label: string }>;
   routeStatus: ConvergenceStatus;
   availabilityStatus: ConvergenceStatus;
+  /** Server-owned. `instant` only when the resolved quote can back a real
+   *  Bókun reservation. When `enquiry_only` the browser MUST NOT call
+   *  create-session (the endpoint fails closed anyway). */
+  checkoutEligibility: CheckoutEligibility;
   itinerary: {
     title: string;
     destinationRegion: string;

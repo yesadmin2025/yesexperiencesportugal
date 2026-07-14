@@ -88,6 +88,11 @@ const CODE_MAP: Record<CheckoutErrorCode, CodeMeta> = {
     message: "That action isn't supported here.",
     retryable: false,
   },
+  enquiry_only_required: {
+    message:
+      "This journey needs a quick human review before we can hold your date. Send us a message and we'll confirm within a few hours.",
+    retryable: false,
+  },
   internal_error: {
     message: "Something went wrong on our side. Please try again in a moment.",
     retryable: true,
@@ -114,6 +119,12 @@ export function codeFromLegacy(raw: string): CheckoutErrorCode {
   if (m.includes("pricing unavailable")) return "pricing_unavailable";
   if (m.includes("not configured") || m.includes("invalid environment")) return "config_missing";
   if (m.includes("method not allowed")) return "method_not_allowed";
+  if (
+    m.startsWith("enquiry_only_required") ||
+    m.startsWith("manual_pricing_forbidden_in_production") ||
+    m.startsWith("manual_source_forbidden")
+  )
+    return "enquiry_only_required";
   if (
     m.startsWith("invalid ") ||
     m.includes("guests must be") ||
