@@ -207,6 +207,8 @@ export function BrandedCheckoutDrawer({
                   <EmbeddedCheckout />
                 </EmbeddedCheckoutProvider>
               </div>
+            ) : timedOut ? (
+              <CheckoutTimeout onRetry={() => onOpenChange(false)} />
             ) : (
               <CheckoutSkeleton />
             )}
