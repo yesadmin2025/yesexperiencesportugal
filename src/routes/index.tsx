@@ -16,8 +16,8 @@ import heroImg from "@/assets/hero-coast.jpg";
 // `src/content/hero-scenes-manifest.ts` (single source of truth, feeds
 // both the route and the credits modal).
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
-import imgProposalsRomantic from "@/assets/exp-romantic.jpg";
-import imgCorporate from "@/assets/cat-corporate.jpg";
+import imgProposalsRomantic from "@/assets/guests/vineyard-couple.jpg.asset.json";
+import imgCorporate from "@/assets/guests/quinta-group.jpg.asset.json";
 
 import { Star, MessageCircle } from "lucide-react";
 
