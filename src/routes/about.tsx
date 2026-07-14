@@ -148,7 +148,7 @@ function Page() {
             </div>
           </div>
 
-          <figure className="hidden lg:block lg:sticky lg:top-28">
+          <figure className="editorial-zoom hidden lg:block lg:sticky lg:top-28">
             <img
               src={founderAsset.url}
               alt="Founder Nídia Almeida pouring wine for guests during a private tasting in the Alentejo."
