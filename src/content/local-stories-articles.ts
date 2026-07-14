@@ -615,7 +615,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "sintra-day-tour-from-lisbon",
     title: "Sintra Day Tour from Lisbon — Private & Cabo da Roca",
     metaDescription:
-      "Private Sintra day tour from Lisbon — quieter palaces, Cabo da Roca, Cascais and a small wine tasting. Door-to-door from your hotel.",
+      "Private Sintra day tour from Lisbon — quieter palaces, Cabo da Roca, Cascais and a small wine tasting. Hotel pickup, English-speaking guide, instant confirmation.",
     h1: "Private Sintra Day Tour from Lisbon — without the queues",
     eyebrow: "Lisbon · Private Sintra Day",
     standfirst:
