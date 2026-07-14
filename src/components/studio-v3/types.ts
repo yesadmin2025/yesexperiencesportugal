@@ -229,8 +229,25 @@ export interface StudioV3State {
   /** ISO yyyy-mm-dd when dateMode === "exact"; null otherwise. */
   dateExact: string | null;
   pickup: Pickup | null;
-  /** Exact guest count (1–14). Null until resolved (explicit or inferred). */
+  /**
+   * Total headcount (adults + minorAges.length), 1–14. Kept as source-of-truth
+   * for tier lookup (owner-approved: tier uses total headcount, incl. infants),
+   * vehicle sizing and legacy code paths. Derived from `adults` + `minorAges`
+   * whenever composition is set. Null until resolved (explicit or inferred).
+   */
   guests: number | null;
+  /**
+   * Adult count (18+). When set with `minorAges`, enables server-side age-band
+   * pricing. When null, checkout falls back to legacy adults-only pricing
+   * where `guests` is treated as adults.
+   */
+  adults: number | null;
+  /**
+   * Ordered ages (0–17) for every minor traveller. Empty when adults-only.
+   * Each age is priced with its band % (18+ adult 100 / 11–17 youth 75 /
+   * 3–10 child 50 / 0–2 infant free) — no silent adult fallback.
+   */
+  minorAges: number[];
   interests: Interest[];
   rhythm: Rhythm | null;
   considerations: Consideration[];
@@ -301,6 +318,8 @@ export const INITIAL_STATE: StudioV3State = {
   dateExact: null,
   pickup: null,
   guests: null,
+  adults: null,
+  minorAges: [],
   interests: [],
   rhythm: null,
   considerations: [],

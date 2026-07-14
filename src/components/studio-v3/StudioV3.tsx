@@ -71,7 +71,7 @@ import {
 } from "./curation";
 import { findTour, signatureTours } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
-import { resolvePerPaxEur } from "@/data/signatureTourPricing";
+import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { supabase } from "@/integrations/supabase/client";
@@ -218,6 +218,7 @@ import {
 } from "./types";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
+import { Composition } from "./Composition";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { FinalRevealStory } from "./FinalRevealStory";
 import { CheckoutSummary as CheckoutSummaryStep } from "./CheckoutSummary";
@@ -877,11 +878,24 @@ export function StudioV3() {
       }
       try {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
+        // Composition supplied only when the traveller went through the
+        // Composition control and at least one minor was recorded — otherwise
+        // fall through to legacy adults-only pricing so nothing regresses
+        // for guests who never touched the minors editor.
+        const currentMinors = currentState.minorAges ?? [];
+        const currentAdults = currentState.adults;
+        const compositionSupplied =
+          typeof currentAdults === "number" &&
+          currentAdults >= 1 &&
+          currentMinors.length > 0;
         const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
           body: {
             tourId: tour.id,
             tourTitle: tour.title ?? tour.id,
             guests: details.guests,
+            ...(compositionSupplied
+              ? { adults: currentAdults, minorAges: currentMinors }
+              : {}),
             stopLabels,
             includedItems: (() => {
               const m = getViatorMeta(tour.id);
@@ -900,6 +914,7 @@ export function StudioV3() {
             addOns: addOnsForCheckout,
           },
         });
+
         if (error) throw error;
         const resp = (data ?? {}) as { clientSecret?: string; publishableKey?: string };
         if (!resp.clientSecret || !resp.publishableKey) {
@@ -1394,17 +1409,61 @@ export function StudioV3() {
       bgVideo: videoForFeeling(state.feeling),
     });
   };
-  /** Phase 3 — exact guest count from the stepper (1–14). Manual change
-   *  always clears the inferred flag and refreshes the private-event flag. */
+  /** Phase 3 — adult count from the stepper (1–14). Manual change always
+   *  clears the inferred flag and refreshes the private-event flag. Keeps
+   *  `state.guests` (total headcount) in sync = adults + minorAges.length,
+   *  so downstream tier lookup, vehicle sizing and legacy paths stay
+   *  correct while age-band pricing is layered on top server-side. */
   const onGuestsChange = (n: number) => {
-    const next = Math.max(1, Math.min(14, Math.trunc(n)));
-    setState((s) => ({
-      ...s,
-      guests: next,
-      guestsInferred: false,
-      guestsPrivateEvent: next >= 11,
-    }));
+    const nextAdults = Math.max(1, Math.min(14, Math.trunc(n)));
+    setState((s) => {
+      const minors = s.minorAges ?? [];
+      const total = Math.min(14, nextAdults + minors.length);
+      return {
+        ...s,
+        adults: nextAdults,
+        guests: total,
+        guestsInferred: false,
+        guestsPrivateEvent: total >= 11,
+      };
+    });
   };
+  const onAddMinor = () => {
+    setState((s) => {
+      const minors = [...(s.minorAges ?? []), 8]; // sensible default: child band
+      const adultsCount = s.adults ?? s.guests ?? 2;
+      const total = Math.min(14, adultsCount + minors.length);
+      return {
+        ...s,
+        adults: adultsCount,
+        minorAges: minors,
+        guests: total,
+        guestsInferred: false,
+        guestsPrivateEvent: total >= 11,
+      };
+    });
+  };
+  const onRemoveMinor = (index: number) => {
+    setState((s) => {
+      const minors = (s.minorAges ?? []).filter((_, i) => i !== index);
+      const adultsCount = s.adults ?? s.guests ?? 2;
+      const total = adultsCount + minors.length;
+      return {
+        ...s,
+        minorAges: minors,
+        guests: total,
+        guestsPrivateEvent: total >= 11,
+      };
+    });
+  };
+  const onMinorAgeChange = (index: number, age: number) => {
+    setState((s) => {
+      const minors = (s.minorAges ?? []).slice();
+      minors[index] = Math.max(0, Math.min(17, Math.trunc(age)));
+      return { ...s, minorAges: minors };
+    });
+  };
+
   const onRhythm = (id: Rhythm) => {
     const name = state.firstName?.trim() || null;
     const baseHint =
@@ -2146,10 +2205,14 @@ export function StudioV3() {
         >
           <BackLink onClick={() => back("pickup")} />
           <PhaseHeader eyebrow="The party" title="How many" titleAccent="guests?" />
-          <GuestStepper
-            value={state.guests}
-            inferred={state.guestsInferred}
-            onChange={onGuestsChange}
+          <Composition
+            adults={state.adults ?? state.guests}
+            adultsInferred={state.guestsInferred}
+            minorAges={state.minorAges ?? []}
+            onAdultsChange={onGuestsChange}
+            onAddMinor={onAddMinor}
+            onRemoveMinor={onRemoveMinor}
+            onMinorAgeChange={onMinorAgeChange}
           />
           {state.guests != null ? (
             <NextTeaser>{contextualTeaser("guests", state)}</NextTeaser>
@@ -2160,18 +2223,24 @@ export function StudioV3() {
             disabled={false}
             onClick={() => {
               // If the user never touched the stepper, commit the displayed
-              // default (2) before advancing so the count is always real.
-              const committedGuests = state.guests ?? 2;
-              if (state.guests == null) onGuestsChange(2);
+              // default (2 adults, 0 minors) before advancing so the count
+              // is always real.
+              const committedAdults = state.adults ?? state.guests ?? 2;
+              const committedMinors = state.minorAges ?? [];
+              const committedTotal = committedAdults + committedMinors.length;
+              if (state.adults == null && state.guests == null) onGuestsChange(2);
               const forward: StudioV3State = {
                 ...state,
-                guests: committedGuests,
-                guestsPrivateEvent: committedGuests >= 11,
+                adults: committedAdults,
+                minorAges: committedMinors,
+                guests: committedTotal,
+                guestsPrivateEvent: committedTotal >= 11,
               };
               advance(getNextPhase(forward, "guests"));
             }}
             label="Continue"
           />
+
         </PhaseShell>
       ) : null}
 
@@ -2481,9 +2550,10 @@ export function StudioV3() {
                 });
                 const { buildJourneyRevision } = await import("./signatureStorySnapshot");
                 const journeyRevision = buildJourneyRevision(state, {
-                  adults: state.guests ?? undefined,
-                  minorAges: [],
+                  adults: state.adults ?? state.guests ?? undefined,
+                  minorAges: state.minorAges ?? [],
                 });
+
                 await sendSignatureStoryEmail({
                   data: {
                     email,
@@ -2521,6 +2591,8 @@ export function StudioV3() {
             state={state}
             guestDetails={pendingGuestDetails}
             selectedAddOns={selectedAddOnItems}
+            adults={state.adults ?? null}
+            minorAges={state.minorAges ?? []}
             perPaxEur={(() => {
               const tour = state.tourId ? findTour(state.tourId) : null;
               if (!tour) return null;
@@ -2533,16 +2605,27 @@ export function StudioV3() {
             totalEur={(() => {
               const tour = state.tourId ? findTour(state.tourId) : null;
               if (!tour) return null;
+              const g = pendingGuestDetails.guests;
+              const minors = state.minorAges ?? [];
+              const adultsN = state.adults ?? null;
+              // When composition is supplied, honor age-band pricing so
+              // the summary total matches what Stripe will charge server-side.
+              if (typeof adultsN === "number" && adultsN >= 1 && minors.length > 0) {
+                const journey = resolveJourneyPricing(tour, adultsN, minors, tourPriceTiers);
+                if (journey) {
+                  return Math.round(journey.totalEur + selectedAddOnsTotalEur * g);
+                }
+              }
               const perPax =
-                resolvePerPaxEur(tour, pendingGuestDetails.guests, tourPriceTiers)?.eurPerPax ??
+                resolvePerPaxEur(tour, g, tourPriceTiers)?.eurPerPax ??
                 tour.priceFrom ??
                 0;
-              const g = pendingGuestDetails.guests;
               return Math.round(perPax * g + selectedAddOnsTotalEur * g);
             })()}
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}
+
             onReserve={() => {
               void handleStripeCheckout(state, pendingGuestDetails);
             }}

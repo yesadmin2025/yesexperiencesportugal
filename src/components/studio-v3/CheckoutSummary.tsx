@@ -23,6 +23,7 @@ import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { cn } from "@/lib/utils";
+import { resolveJourneyPricing } from "@/data/signatureTourPricing";
 
 export interface CheckoutSummaryProps {
   readonly state: StudioV3State;
@@ -30,6 +31,13 @@ export interface CheckoutSummaryProps {
   readonly selectedAddOns: SelectedAddOnSummary["items"];
   readonly perPaxEur: number | null;
   readonly totalEur: number | null;
+  /**
+   * Optional adults + minorAges — when both are set (adults ≥ 1 and at least
+   * one minor), the summary itemises each traveller with their age-band %,
+   * matching the server-side pricing used at Stripe checkout.
+   */
+  readonly adults?: number | null;
+  readonly minorAges?: readonly number[];
   readonly submitting?: boolean;
   readonly onEditGuestDetails: () => void;
   readonly onBack: () => void;
@@ -37,6 +45,7 @@ export interface CheckoutSummaryProps {
   readonly className?: string;
   readonly testId?: string;
 }
+
 
 function formatEur(n: number | null): string {
   if (n == null || !Number.isFinite(n)) return "—";
@@ -67,6 +76,8 @@ export function CheckoutSummary({
   selectedAddOns,
   perPaxEur,
   totalEur,
+  adults = null,
+  minorAges = [],
   submitting = false,
   onEditGuestDetails,
   onBack,
@@ -197,6 +208,64 @@ export function CheckoutSummary({
           value={guestDetails.language === "pt" ? "Portuguese" : "English"}
         />
         {guestDetails.startTime ? <Row label="Start time" value={guestDetails.startTime} /> : null}
+
+        {(() => {
+          // Age-band itemisation — shown when the traveller went through
+          // the Composition control and captured minors. Mirrors what the
+          // Stripe edge function priced server-side.
+          const hasComposition =
+            typeof adults === "number" && adults >= 1 && (minorAges?.length ?? 0) > 0;
+          if (!hasComposition || !tour) return null;
+          const journey = resolveJourneyPricing(tour, adults!, minorAges ?? []);
+          if (!journey) return null;
+          return (
+            <div
+              className="pt-3 border-t"
+              style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
+              data-testid="studio-v3-checkout-summary-travellers"
+            >
+              <p
+                className="text-[10px] uppercase tracking-[0.22em] mb-2"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+              >
+                Travellers
+              </p>
+              <ul className="space-y-1 text-[13px]" style={{ color: "var(--charcoal)" }}>
+                {journey.lines.map((l, i) => {
+                  const label =
+                    l.kind === "adult"
+                      ? "Adult · 100%"
+                      : l.band === "youth"
+                        ? `Youth · age ${l.age} · 75%`
+                        : l.band === "child"
+                          ? `Child · age ${l.age} · 50%`
+                          : `Infant · age ${l.age} · free`;
+                  return (
+                    <li key={i} className="flex justify-between gap-3">
+                      <span>· {label}</span>
+                      <span
+                        className="tabular-nums"
+                        style={{ color: l.unitEur === 0 ? "var(--teal)" : "var(--charcoal)" }}
+                      >
+                        {l.unitEur === 0 ? "Free" : formatEur(l.unitEur)}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+              <p
+                className="mt-2 text-[11px] italic"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                }}
+              >
+                Priced honestly by age — no adult fallback for minors.
+              </p>
+            </div>
+          );
+        })()}
+
 
         <div className="pt-3 border-t" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
           <p className="text-[10px] uppercase tracking-[0.22em] mb-2" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
