@@ -178,8 +178,9 @@ export function SignaturePriceCard({
         stopCount,
         durationLabel,
         remainingMinutes: remainingMinutes ?? undefined,
+        guests: guests ?? undefined,
       }),
-    [tour, stopCount, durationLabel, remainingMinutes],
+    [tour, stopCount, durationLabel, remainingMinutes, guests],
   );
   const availableAddOns = useMemo<SignatureAddOn[]>(
     () => addOnPool.map((e) => e.addOn),
