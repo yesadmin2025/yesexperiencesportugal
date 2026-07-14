@@ -96,3 +96,61 @@ export function buildSignatureStorySnapshot(
     inclusions,
   };
 }
+
+/**
+ * buildJourneyRevision — stable, deterministic hash of everything that
+ * defines the composed journey. Used as the idempotency key seed for the
+ * Signature Story email:
+ *
+ *   - identical revision  → email deduplicates (guest never sees a repeat)
+ *   - refined journey     → new revision → one fresh email allowed
+ *
+ * Inputs are the same facts the Storytelling, Guest Details recap,
+ * Summary and Stripe payload all read from — so the email a guest
+ * receives always matches the journey they just approved.
+ *
+ * Pure sync string builder (no crypto). The hash is a djb2-style
+ * fingerprint — collision-resistant enough for per-email dedupe within
+ * a single traveller's session; the real cryptographic hash happens
+ * server-side inside sendSignatureStoryEmail using this value as input.
+ */
+export function buildJourneyRevision(
+  state: StudioV3State,
+  extras?: { addOnIds?: readonly string[]; adults?: number; minorAges?: readonly number[] },
+): string {
+  const routeLabels =
+    state.editedRoutePoints && state.editedRoutePoints.length > 0
+      ? state.editedRoutePoints.map((p) => p.label)
+      : resolveStudioV3Route({
+          feeling: state.feeling,
+          companions: state.companions,
+          rhythm: state.rhythm,
+          interests: state.interests,
+          pickup: state.pickup,
+          occasion: state.occasion,
+          considerations: state.considerations,
+          investment: state.investment,
+          destinationIntent: state.destinationIntent,
+        }).routePoints.map((p) => p.label);
+
+  const addOnPart = (extras?.addOnIds ?? []).slice().sort().join(",");
+  const minorPart = (extras?.minorAges ?? []).slice().sort((a, b) => a - b).join(",");
+  const adults = extras?.adults ?? state.guests ?? 0;
+
+  const parts = [
+    state.tourId ?? "",
+    routeLabels.join("|"),
+    addOnPart,
+    state.dateExact ?? "",
+    state.pickup ?? "",
+    String(adults),
+    minorPart,
+  ].join("§");
+
+  // djb2 → base36 → 12 chars max (compact, stable across runs, no deps).
+  let h = 5381;
+  for (let i = 0; i < parts.length; i++) {
+    h = ((h << 5) + h + parts.charCodeAt(i)) | 0;
+  }
+  return (h >>> 0).toString(36).slice(0, 12);
+}
