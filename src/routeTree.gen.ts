@@ -94,6 +94,7 @@ import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-i
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -534,6 +535,11 @@ const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   path: '/api/public/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailTransactionalSendRoute =
   LovableEmailTransactionalSendRouteImport.update({
     id: '/lovable/email/transactional/send',
@@ -670,6 +676,7 @@ export interface FileRoutesByFullPath {
   '/tours/$tourId': typeof ToursTourIdRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
@@ -764,6 +771,7 @@ export interface FileRoutesByTo {
   '/tours/$tourId': typeof ToursTourIdRoute
   '/local-stories': typeof LocalStoriesIndexRoute
   '/pt': typeof PtIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
@@ -861,6 +869,7 @@ export interface FileRoutesById {
   '/tours/$tourId': typeof ToursTourIdRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
@@ -959,6 +968,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/local-stories/'
     | '/pt/'
+    | '/.lovable/oauth/consent'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/api/public/hooks/checkout-email'
@@ -1053,6 +1063,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/local-stories'
     | '/pt'
+    | '/.lovable/oauth/consent'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/api/public/hooks/checkout-email'
@@ -1149,6 +1160,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/local-stories/'
     | '/pt/'
+    | '/.lovable/oauth/consent'
     | '/api/public/contact'
     | '/lovable/email/suppression'
     | '/api/public/hooks/checkout-email'
@@ -1230,6 +1242,7 @@ export interface RootRouteChildren {
   QaMobileRoute: typeof QaMobileRoute
   ReviewTokenRoute: typeof ReviewTokenRoute
   ToursTourIdRoute: typeof ToursTourIdRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
@@ -1840,6 +1853,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/transactional/send': {
       id: '/lovable/email/transactional/send'
       path: '/lovable/email/transactional/send'
@@ -2025,6 +2045,7 @@ const rootRouteChildren: RootRouteChildren = {
   QaMobileRoute: QaMobileRoute,
   ReviewTokenRoute: ReviewTokenRoute,
   ToursTourIdRoute: ToursTourIdRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
