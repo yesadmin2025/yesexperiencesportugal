@@ -2793,7 +2793,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
                 tour.priceFrom ??
                 0;
               const g = pendingGuestDetails.guests;
-              return Math.round(perPax * g + selectedAddOnsTotalEur * g);
+              return Math.round(perPax * g + selectedAddOnsPartyTotalEur);
             })()}
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
