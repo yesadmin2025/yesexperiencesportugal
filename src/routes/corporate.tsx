@@ -6,11 +6,12 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
-import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
-
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 import guestQuintaGroup from "@/assets/guests/quinta-group.jpg.asset.json";
+import guestArrabidaViewpoint from "@/assets/guests/arrabida-viewpoint-group.jpg.asset.json";
 const imgCorporateGroup = guestQuintaGroup.url;
+const imgDiscreetViewpoint = guestArrabidaViewpoint.url;
+
 
 const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
