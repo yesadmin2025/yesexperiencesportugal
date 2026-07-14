@@ -124,6 +124,29 @@ export function destinationHead(destination: PlanningDestination) {
     scripts: [
       jsonLdScript(destinationLd),
       ...(galleryLd ? [jsonLdScript(galleryLd)] : []),
+      // Per-stop ItemList — one TouristAttraction per Signature tour bound
+      // to the destination, each with its real hero image + caption.
+      ...(() => {
+        const stopLd = stopMediaLd({
+          pageUrl: url,
+          name: `${shortName} — featured experiences`,
+          stops: attractions.map((a) => ({
+            label: a.name,
+            image: a.image,
+            alt: `${a.name} — ${shortName}`,
+          })),
+        });
+        return stopLd ? [jsonLdScript(stopLd)] : [];
+      })(),
+      // Standalone dedup'd gallery — hero + destination gallery.
+      ...(() => {
+        const gLd = pageGalleryLd({
+          pageUrl: url,
+          name: `${shortName} — photo gallery`,
+          photos: [destination.hero, ...destination.gallery],
+        });
+        return gLd ? [jsonLdScript(gLd)] : [];
+      })(),
       jsonLdScript(
         breadcrumbLd([
           { name: "Home", path: "/" },
