@@ -7,6 +7,7 @@ import type { PriceTiersEUR } from "@/data/signatureToursViator";
 import { AGE_BANDS, bandForAge, type AgeBand } from "./ageBands";
 import {
   billableParticipants,
+  totalParticipants,
   type TravellerComposition,
 } from "./travellerComposition";
 
@@ -40,6 +41,8 @@ export interface InternalQuote {
   baseSubtotalEur: number;
   addOnSubtotalEur: number;
   finalTotalEur: number;
+  billableGuests: number;
+  totalGuests: number;
 }
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
@@ -55,7 +58,6 @@ export function resolveInternalQuote(input: {
   if (!resolution) return null;
   const perPaxAdultEur = resolution.eurPerPax;
 
-  // Group minors into bands so the breakdown reads like a single row per band.
   const bandCounts: Record<AgeBand, number> = { adult: input.composition.adults, youth: 0, child: 0, infant: 0 };
   for (const age of input.composition.minorAges) {
     const b = bandForAge(age).band;
@@ -96,5 +98,7 @@ export function resolveInternalQuote(input: {
     baseSubtotalEur,
     addOnSubtotalEur,
     finalTotalEur,
+    billableGuests: billableParticipants(input.composition),
+    totalGuests: totalParticipants(input.composition),
   };
 }
