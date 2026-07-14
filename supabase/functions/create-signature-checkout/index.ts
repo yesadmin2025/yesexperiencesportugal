@@ -147,8 +147,18 @@ async function handleStudioCreateSession(body: StudioCreateSessionBody) {
   if (body.currentRevision !== payload.revision) {
     return jsonError("Quote is stale — please refresh", 409);
   }
-  if (payload.routeStatus === "unavailable" || payload.availabilityStatus === "unavailable") {
-    return jsonError("This journey is unavailable", 409);
+  // Fail closed. Manual/pending quotes cannot back a real Bókun reservation.
+  // The browser is expected to route these to the enquiry CTA; if a stale or
+  // malicious client still submits a create-session request, refuse before
+  // Stripe is touched. The only production bypass is a demonstrably
+  // non-production deployment with an explicit test-only flag.
+  const isInstant =
+    payload.routeStatus === "validated" && payload.availabilityStatus === "validated";
+  const manualTestBypass =
+    Deno.env.get("MANUAL_CHECKOUT_TEST_MODE") === "yes-i-know-this-is-test" &&
+    body.environment === "sandbox";
+  if (!isInstant && !manualTestBypass) {
+    return jsonError("enquiry_only_required", 409);
   }
   if (payload.totalEur < 50) return jsonError("Computed amount below minimum", 400);
 
@@ -518,6 +528,33 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
   }
   if (stored.quote_token !== body.quoteToken) return jsonError("quote_token_mismatch", 400);
 
+  // ── P0 payment-integrity gate ───────────────────────────────────────────
+  // Manual (Viator-tier) pricing has NO live Bókun provisional reservation
+  // and MUST NOT create a Stripe session. Detection is server-side and
+  // cannot be spoofed by the client: the sentinel bokun_product_id ===
+  // "manual" is set at quote-write time in booking-quote/index.ts.
+  //
+  // Production always refuses. The only bypass requires BOTH a
+  // demonstrably non-production Stripe deployment (`environment: "sandbox"`)
+  // AND an explicit, deliberately verbose env var. No per-product
+  // allow-list. No loose LAUNCH_MODE value.
+  const isManual = String(stored.bokun_product_id) === "manual";
+  const storedSource = String(
+    (stored as { pricing_source?: string; source?: string }).pricing_source ??
+      (stored as { pricing_source?: string; source?: string }).source ??
+      "",
+  );
+  const isManualSource = storedSource === "manual-viator-tiers";
+  const manualTestBypass =
+    Deno.env.get("MANUAL_CHECKOUT_TEST_MODE") === "yes-i-know-this-is-test" &&
+    body.environment === "sandbox";
+  if ((isManual || isManualSource) && !manualTestBypass) {
+    console.warn(
+      `[checkout-guard] refusing manual→instant checkout · quote=${stored.quote_id} env=${body.environment}`,
+    );
+    return jsonError("enquiry_only_required", 409);
+  }
+
   const basePricing = stored.base_pricing as BookingQuote["basePricing"];
   const addOnPricing = stored.add_on_pricing as BookingQuote["addOnPricing"];
   const finalTotalEur = Number(stored.final_total_eur);
@@ -532,9 +569,10 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
     (stored.resolved_guest_mix as { totalParticipants?: number }) ?? {};
   const totalParticipants = resolvedGuestMix.totalParticipants ?? 0;
 
-  // 3. Manual (Bókun-free) short-circuit — skip availability + reservation.
-  //    Detected by the sentinel bokun_product_id === "manual" set at quote time.
-  const isManual = String(stored.bokun_product_id) === "manual";
+  // 3. Manual (Bókun-free) short-circuit — only reachable when the
+  //    production-refusal gate above was bypassed (test-mode env). In
+  //    normal deployments the code below is dead for isManual.
+  const isManualPath = isManual || isManualSource;
 
   let slot: import("../_shared/bokun.ts").AvailabilitySlot | null = null;
   let reservationId: string | null = stored.bokun_reservation_id ?? null;
