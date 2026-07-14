@@ -50,6 +50,7 @@ function goldenSnapshot(): RawQuoteSnapshot {
     startTime: "09:00",
     language: "en",
     guests: 3,
+    travellerComposition: { adults: 3, minorAges: [] },
     routeStops: [
       { id: "mercado-livramento", label: "Mercado do Livramento" },
       { id: "azulejos-azeitao", label: "Azulejos de Azeitão" },
@@ -89,6 +90,7 @@ async function signGolden() {
         startTime: snap.startTime,
         language: snap.language,
         guests: snap.guests,
+        travellerComposition: snap.travellerComposition,
         routeStatus: snap.routeStatus,
         routeStops: snap.routeStops,
         selectedAddOns: snap.selectedAddOns,
@@ -97,6 +99,12 @@ async function signGolden() {
       pricing: {
         unitEur: resolved.pricing.unitEur!,
         baseSubtotalEur: resolved.pricing.baseSubtotalEur!,
+        baseLineItems: resolved.pricing.baseLines.map((line) => ({
+          label: line.label,
+          unitEur: line.unitEur,
+          quantity: line.quantity,
+          lineSubtotalEur: line.subtotalEur,
+        })),
         addOnLineItems: resolved.addOns.map((a) => ({
           id: a.id,
           label: a.label,
@@ -171,7 +179,11 @@ describe("§12 quote token + snapshot integrity", () => {
 
   it("modified guest count changes snapshotHash", async () => {
     const { hash } = await signGolden();
-    const norm = validateAndNormaliseSnapshot({ ...goldenSnapshot(), guests: 4 });
+    const norm = validateAndNormaliseSnapshot({
+      ...goldenSnapshot(),
+      guests: 4,
+      travellerComposition: { adults: 4, minorAges: [] },
+    });
     const rehash = await sha256Hex(canonicalJson(norm));
     expect(rehash).not.toBe(hash);
   });
@@ -215,10 +227,20 @@ describe("§12 server-authority validator rules", () => {
     ).toThrow(SnapshotValidationError);
   });
 
-  it("unsupported guest count returns pricing_unavailable", () => {
-    const norm = validateAndNormaliseSnapshot({ ...goldenSnapshot(), guests: 7 });
+  it("a child is priced by the manual child band and add-on remains in total", () => {
+    const norm = validateAndNormaliseSnapshot({
+      ...goldenSnapshot(),
+      travellerComposition: { adults: 2, minorAges: [8] },
+    });
     const resolved = resolveQuote(norm);
-    expect(resolved.pricing.status).toBe("unavailable");
+    expect(resolved.pricing.status).toBe("quoted");
+    expect(resolved.pricing.baseSubtotalEur).toBe(537.5);
+    expect(resolved.pricing.addOnsSubtotalEur).toBe(90);
+    expect(resolved.pricing.totalEur).toBe(627.5);
+    expect(resolved.pricing.baseLines.map((line) => line.label)).toEqual([
+      "Adult (18+)",
+      "Child (3–12)",
+    ]);
   });
 
   it("client-sent price fields have no place in the schema (silently ignored)", () => {

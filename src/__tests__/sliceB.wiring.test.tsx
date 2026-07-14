@@ -16,6 +16,9 @@ import {
   type TravellerComposition,
 } from "@/lib/pricing/travellerComposition";
 import { filterSignatureCandidatesForAges } from "@/lib/pricing/filterSignatureCandidatesForAges";
+import { filterStudioCandidatesBySuitability } from "@/lib/pricing/filterSignatureCandidatesForAges";
+import { requirementsFromComposition } from "@/lib/pricing/travellerSuitability";
+import { signatureTours } from "@/data/signatureTours";
 import type { MappedBokunPricingCategory } from "@/lib/pricing/bokunCategories";
 import type { SignatureTour } from "@/data/signatureTours";
 import type { TourBokunReadiness } from "@/hooks/use-tour-bokun-readiness";
@@ -134,6 +137,20 @@ describe("Slice B — traveller composition wiring", () => {
     );
     expect(r.hasCompatible).toBe(false);
     expect(r.compatible).toEqual([]);
+  });
+
+  it("manual Studio pricing does not block a child when the Bókun mirror is empty", () => {
+    const composition: TravellerComposition = { adults: 1, minorAges: [8] };
+    const r = filterStudioCandidatesBySuitability(
+      composition,
+      signatureTours,
+      {},
+      requirementsFromComposition(composition),
+      { requireCategoryReadiness: false },
+    );
+    expect(r.hasCompatible).toBe(true);
+    expect(r.compatible.length).toBeGreaterThan(0);
+    expect(r.compatible.map((tour) => tour.id)).not.toContain("arrabida-boat");
   });
 
   it("mixed-family safety guard: hasMinors + !categoryAwareCheckoutReady blocks payment", () => {
