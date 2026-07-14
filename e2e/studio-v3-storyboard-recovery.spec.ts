@@ -242,6 +242,16 @@ test.describe("Studio V3 storyboard recovery", () => {
     });
     await expect(page.getByTestId("studio-v3-stops-editor-empty")).toHaveCount(0);
 
+    const labels = await readRenderedLabels(page);
+    testInfo.annotations.push({
+      type: "recovered-labels",
+      description: JSON.stringify(labels),
+    });
+    expect(labels.length).toBeGreaterThan(0);
+    for (const l of labels) expect(l.trim().length).toBeGreaterThan(0);
+    await assertPersistedMetadataIntact(page);
+
+
     const editorShot = await editor.screenshot({
       path: path.join(ARTIFACT_DIR, "null-editedRoutePoints-editor.png"),
     });
