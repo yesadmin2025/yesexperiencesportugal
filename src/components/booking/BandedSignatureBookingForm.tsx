@@ -75,14 +75,17 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
 
   const totalGuests = totalParticipants(composition);
   const available = !!quote.quote;
+  const isInstant = quote.quote?.checkoutEligibility === "instant";
+  const isEnquiryOnly = !!quote.quote && !isInstant;
   const canReserve = useMemo(
     () =>
       !!date &&
       totalGuests > 0 &&
       available &&
+      isInstant &&
       !!quote.quote?.quoteToken &&
       (quote.quote?.finalTotalEur ?? 0) > 0,
-    [date, totalGuests, available, quote.quote],
+    [date, totalGuests, available, isInstant, quote.quote],
   );
 
   const resolvedMinors = useMemo(() => {
