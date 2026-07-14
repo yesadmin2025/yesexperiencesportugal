@@ -10,6 +10,16 @@ import { render, screen, fireEvent, within } from "@testing-library/react";
 import { RefineStopCard } from "../RefineStopCard";
 import { RefineAccordion } from "../RefineAccordion";
 
+// jsdom lacks ResizeObserver, which RefineAccordion uses to measure content
+// height for its transition. Stub with a no-op class so mount doesn't throw.
+class MockResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+(globalThis as unknown as { ResizeObserver: typeof MockResizeObserver }).ResizeObserver =
+  MockResizeObserver;
+
 interface Stop {
   label: string;
   story: string;
