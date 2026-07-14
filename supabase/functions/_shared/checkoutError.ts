@@ -19,6 +19,7 @@ export type CheckoutErrorCode =
   | "config_missing"
   | "validation_failed"
   | "method_not_allowed"
+  | "enquiry_only_required"
   | "internal_error";
 
 interface CodeMeta {
