@@ -86,21 +86,27 @@ function CorporatePage() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
-        <div className="container-x max-w-3xl text-center">
-          <Eyebrow flank>Corporate Retreats</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Team building in Portugal, <SectionTitle.Em>designed by locals.</SectionTitle.Em>
-          </SectionTitle>
-          <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
-          <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
+      <section className="pt-28 pb-14 bg-[color:var(--sand)]">
+        <div className="container-x max-w-3xl text-center reveal editorial-cascade">
+          <div className="reveal-stagger">
+            <Eyebrow flank>Corporate Retreats</Eyebrow>
+          </div>
+          <div className="reveal-stagger">
+            <SectionTitle as="h1" size="anchor" spacing="loose">
+              Team building in Portugal, <SectionTitle.Em>designed by locals.</SectionTitle.Em>
+            </SectionTitle>
+          </div>
+          <div className="reveal-stagger">
+            <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
+          </div>
+          <p className="reveal-stagger mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             Private corporate retreats, team building days, incentives and executive off-sites
             across Portugal — from Lisbon and Sintra to the Arrábida coast, the Alentejo, the Douro
             and beyond, with transport, guides and venues coordinated end to end so the day feels{" "}
             <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong>, not
             arranged.
           </p>
-          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="reveal-stagger mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
               Plan a Group Experience
             </CtaButton>
@@ -115,6 +121,7 @@ function CorporatePage() {
           </div>
         </div>
       </section>
+
 
       {/* Service blocks */}
       <section className="py-16 md:py-24">
