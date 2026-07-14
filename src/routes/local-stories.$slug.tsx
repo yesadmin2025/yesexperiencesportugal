@@ -5,6 +5,7 @@ import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-rout
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   jsonLdScript,
   breadcrumbLd,
@@ -21,7 +22,6 @@ import {
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
-import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 type JournalPostFull = {
   slug: string;

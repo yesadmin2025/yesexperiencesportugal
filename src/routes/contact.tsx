@@ -8,8 +8,8 @@ import ogImg from "@/assets/why-image.jpg";
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import {
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import {
   BUSINESS_LEGAL_NAME,
   CITY,
   COUNTRY_CODE,

@@ -16,6 +16,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   getGlobalReviewStats,
   getTourReviewStats,
@@ -27,7 +28,6 @@ import {
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { findTour } from "@/data/signatureTours";
 import { SITE_URL } from "@/lib/seo";
-import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 const SOURCE_LABEL: Record<string, string> = {
   viator: "Viator",
