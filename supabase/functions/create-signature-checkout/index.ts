@@ -538,17 +538,18 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
   // demonstrably non-production Stripe deployment (`environment: "sandbox"`)
   // AND an explicit, deliberately verbose env var. No per-product
   // allow-list. No loose LAUNCH_MODE value.
-  const isManual = String(stored.bokun_product_id) === "manual";
+  const isManualByProductId = String(stored.bokun_product_id) === "manual";
   const storedSource = String(
     (stored as { pricing_source?: string; source?: string }).pricing_source ??
       (stored as { pricing_source?: string; source?: string }).source ??
       "",
   );
   const isManualSource = storedSource === "manual-viator-tiers";
+  const isManual = isManualByProductId || isManualSource;
   const manualTestBypass =
     Deno.env.get("MANUAL_CHECKOUT_TEST_MODE") === "yes-i-know-this-is-test" &&
     body.environment === "sandbox";
-  if ((isManual || isManualSource) && !manualTestBypass) {
+  if (isManual && !manualTestBypass) {
     console.warn(
       `[checkout-guard] refusing manual→instant checkout · quote=${stored.quote_id} env=${body.environment}`,
     );
@@ -569,10 +570,10 @@ async function handleBookingQuoteCreateSession(body: BookingQuoteCreateSessionBo
     (stored.resolved_guest_mix as { totalParticipants?: number }) ?? {};
   const totalParticipants = resolvedGuestMix.totalParticipants ?? 0;
 
-  // 3. Manual (Bókun-free) short-circuit — only reachable when the
-  //    production-refusal gate above was bypassed (test-mode env). In
-  //    normal deployments the code below is dead for isManual.
-  const isManualPath = isManual || isManualSource;
+  // Manual short-circuit only reachable when the production-refusal gate
+  // above was explicitly bypassed (test-mode env + sandbox Stripe). In
+  // normal deployments `isManual === false` here and the code below is dead
+  // for any manual quote.
 
   let slot: import("../_shared/bokun.ts").AvailabilitySlot | null = null;
   let reservationId: string | null = stored.bokun_reservation_id ?? null;
