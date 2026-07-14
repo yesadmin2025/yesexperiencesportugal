@@ -20,6 +20,8 @@ export type QuoteStatus = "quoted" | "unavailable" | "loading";
 export type AvailabilityStatus = "validated" | "pending-review" | "unavailable";
 export type RouteStatus = "validated" | "pending-review" | "unavailable";
 
+export type CheckoutEligibility = "instant" | "enquiry_only";
+
 export interface ResolvedQuote {
   pricing: {
     status: QuoteStatus;
@@ -36,6 +38,12 @@ export interface ResolvedQuote {
   inclusions: ResolvedInclusion[];
   routeStatus: RouteStatus;
   availabilityStatus: AvailabilityStatus;
+  /** Server-owned. `instant` only when pricing is quoted AND route +
+   *  availability are both validated by a real live-Bókun path. Anything
+   *  short of that (studio commercial mapping missing, availability still
+   *  pending-review, route pending-review) resolves to `enquiry_only` and
+   *  the checkout endpoint fails closed. */
+  checkoutEligibility: CheckoutEligibility;
 }
 
 /**
@@ -91,10 +99,20 @@ export function resolveQuote(snapshot: NormalisedSnapshot): ResolvedQuote {
       inclusions,
       routeStatus,
       availabilityStatus,
+      checkoutEligibility: "enquiry_only",
     };
   }
 
   const c = commercial as Extract<CommercialPricingResult, { status: "quoted" }>;
+  // Cast through the wider union — the Pass-1 policy above pins both values
+  // to "pending-review", so TS narrows them to literals and would refuse the
+  // comparison. The rule stays future-proof: as soon as a real live-Bókun
+  // path can produce "validated" for both, eligibility flips to instant.
+  type ConvergenceUnion = "validated" | "pending-review" | "unavailable";
+  const _rs = routeStatus as ConvergenceUnion;
+  const _as = availabilityStatus as ConvergenceUnion;
+  const checkoutEligibility: CheckoutEligibility =
+    _rs === "validated" && _as === "validated" ? "instant" : "enquiry_only";
   return {
     pricing: {
       status: "quoted",
@@ -116,5 +134,6 @@ export function resolveQuote(snapshot: NormalisedSnapshot): ResolvedQuote {
     inclusions,
     routeStatus,
     availabilityStatus,
+    checkoutEligibility,
   };
 }

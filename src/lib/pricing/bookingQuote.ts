@@ -4,7 +4,11 @@
 // stripe-webhook (consume), useBookingQuote (subscribe).
 
 export type BookingFlow = "signature" | "tailor" | "studio";
-export type QuoteSource = "bokun-live";
+export type QuoteSource = "bokun-live" | "manual-viator-tiers";
+/** Mirrors the server-owned checkout eligibility (see edge/_shared/bookingQuote.ts).
+ *  When `enquiry_only` the browser MUST render an enquiry CTA instead of
+ *  Stripe checkout; the checkout endpoint also fails closed. */
+export type CheckoutEligibility = "instant" | "enquiry_only";
 export type BookingAvailability = "available" | "unavailable";
 export type BookingAddOnPricingUnit = "per_person" | "per_group" | "per_vehicle" | "fixed";
 
@@ -38,6 +42,7 @@ export interface BookingQuote {
 
   flow: BookingFlow;
   source: QuoteSource;
+  checkoutEligibility: CheckoutEligibility;
 
   commercialProductKey: string;
   commercialMappingId: string;

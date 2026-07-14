@@ -149,7 +149,11 @@ describe("Step 7 · RefineStopCard", () => {
 });
 
 describe("Step 7 · RefineAccordion", () => {
-  it("is collapsed by default and children are not rendered", () => {
+  it("is collapsed by default: aria-hidden region, aria-expanded=false, count visible", () => {
+    // RefineAccordion intentionally keeps children mounted so the
+    // max-height + opacity CSS transition can play both ways. Collapse is
+    // asserted via section[data-open], button[aria-expanded] and the
+    // region's aria-hidden — NOT by child absence from the DOM.
     render(
       <RefineAccordion open={false} onOpenChange={() => {}} count={5}>
         <div data-testid="hidden-child">payload</div>
@@ -157,11 +161,15 @@ describe("Step 7 · RefineAccordion", () => {
     );
     const section = screen.getByTestId("studio-v3-refine-accordion");
     expect(section.getAttribute("data-open")).toBe("false");
-    expect(screen.queryByTestId("hidden-child")).toBeNull();
     const btn = within(section).getByRole("button");
     expect(btn.getAttribute("aria-expanded")).toBe("false");
+    const regionId = btn.getAttribute("aria-controls");
+    expect(regionId).toBeTruthy();
+    const region = section.querySelector(`#${regionId}`);
+    expect(region?.getAttribute("aria-hidden")).toBe("true");
     expect(within(section).getByText("· 5 moments")).toBeInTheDocument();
   });
+
 
   it("renders children when open and reports via onOpenChange on toggle", () => {
     const onOpen = vi.fn();

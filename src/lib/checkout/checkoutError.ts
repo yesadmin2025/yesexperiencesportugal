@@ -27,6 +27,7 @@ export type CheckoutErrorCode =
   | "validation_failed"
   | "method_not_allowed"
   | "network_error"
+  | "enquiry_only_required"
   | "internal_error";
 
 export interface ParsedCheckoutError {
@@ -101,6 +102,11 @@ const COPY: Record<CheckoutErrorCode, { message: string; retryable: boolean }> =
     message: "Your connection dropped for a moment. Try again — nothing has been charged.",
     retryable: true,
   },
+  enquiry_only_required: {
+    message:
+      "This journey needs a quick human review before we can hold your date. Send us a message and we'll confirm within a few hours.",
+    retryable: false,
+  },
   internal_error: {
     message: "Something went wrong on our side. Please try again in a moment.",
     retryable: true,
@@ -127,6 +133,12 @@ function codeFromLegacyString(raw: string): CheckoutErrorCode {
   if (m.includes("not configured") || m.includes("invalid environment")) return "config_missing";
   if (m.includes("network") || m.includes("failed to fetch") || m.includes("load failed"))
     return "network_error";
+  if (
+    m.startsWith("enquiry_only_required") ||
+    m.startsWith("manual_pricing_forbidden_in_production") ||
+    m.startsWith("manual_source_forbidden")
+  )
+    return "enquiry_only_required";
   if (
     m.startsWith("invalid ") ||
     m.includes("guests must be") ||
