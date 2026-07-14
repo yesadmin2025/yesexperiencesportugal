@@ -82,7 +82,7 @@ function Consent() {
         maxWidth: 560,
         margin: "0 auto",
         fontFamily: "Inter, system-ui",
-        color: "#2E2E2E",
+        color: "var(--charcoal)",
       }}
     >
       <p
@@ -90,7 +90,7 @@ function Consent() {
           fontSize: 11,
           letterSpacing: "0.22em",
           textTransform: "uppercase",
-          color: "#C9A96A",
+          color: "var(--gold)",
           marginBottom: 16,
         }}
       >
@@ -116,8 +116,8 @@ function Consent() {
           disabled={busy}
           onClick={() => decide(true)}
           style={{
-            background: "#295B61",
-            color: "#FAF8F3",
+            background: "var(--teal)",
+            color: "var(--ivory)",
             border: 0,
             padding: "12px 20px",
             borderRadius: 4,
@@ -133,8 +133,8 @@ function Consent() {
           onClick={() => decide(false)}
           style={{
             background: "transparent",
-            color: "#2E2E2E",
-            border: "1px solid #2E2E2E",
+            color: "var(--charcoal)",
+            border: "1px solid var(--charcoal)",
             padding: "12px 20px",
             borderRadius: 4,
             cursor: busy ? "not-allowed" : "pointer",

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-14T18:47:36.366Z",
-  "filesScanned": 362,
+  "generatedAt": "2026-07-14T18:51:30.422Z",
+  "filesScanned": 371,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 297,
+    "total": 299,
     "approved": 69,
     "allowlisted": 61,
-    "mismatch": 167
+    "mismatch": 169
   },
   "findings": [
     {
@@ -2227,6 +2227,24 @@
       "raw": "#999",
       "normalized": "#999999",
       "snippet": ".footnote { margin-top: 24px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #999; }",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/routes/[.]lovable.oauth.consent.tsx",
+      "line": 103,
+      "col": 45,
+      "raw": "#555",
+      "normalized": "#555555",
+      "snippet": "<p style={{ marginBottom: 24, color: \"#555\" }}>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/routes/[.]lovable.oauth.consent.tsx",
+      "line": 108,
+      "col": 42,
+      "raw": "#b00020",
+      "normalized": "#b00020",
+      "snippet": "<p role=\"alert\" style={{ color: \"#b00020\", marginBottom: 16 }}>",
       "status": "mismatch"
     },
     {
