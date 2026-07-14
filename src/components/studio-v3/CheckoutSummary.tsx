@@ -23,6 +23,7 @@ import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { cn } from "@/lib/utils";
+import { resolveJourneyPricing, ageBand } from "@/data/signatureTourPricing";
 
 export interface CheckoutSummaryProps {
   readonly state: StudioV3State;
@@ -30,6 +31,13 @@ export interface CheckoutSummaryProps {
   readonly selectedAddOns: SelectedAddOnSummary["items"];
   readonly perPaxEur: number | null;
   readonly totalEur: number | null;
+  /**
+   * Optional adults + minorAges — when both are set (adults ≥ 1 and at least
+   * one minor), the summary itemises each traveller with their age-band %,
+   * matching the server-side pricing used at Stripe checkout.
+   */
+  readonly adults?: number | null;
+  readonly minorAges?: readonly number[];
   readonly submitting?: boolean;
   readonly onEditGuestDetails: () => void;
   readonly onBack: () => void;
@@ -37,6 +45,7 @@ export interface CheckoutSummaryProps {
   readonly className?: string;
   readonly testId?: string;
 }
+
 
 function formatEur(n: number | null): string {
   if (n == null || !Number.isFinite(n)) return "—";
