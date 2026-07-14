@@ -755,6 +755,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
     SelectedAddOnSummary["items"]
   >([]);
   const [selectedAddOnsTotalEur, setSelectedAddOnsTotalEur] = useState(0);
+  const [selectedAddOnsPartyTotalEur, setSelectedAddOnsPartyTotalEur] = useState(0);
   const handleAddOnsChange = useCallback((summary: SelectedAddOnSummary) => {
     setSelectedAddOnIds((prev) => {
       const same =
@@ -763,6 +764,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
     });
     setSelectedAddOnItems(summary.items);
     setSelectedAddOnsTotalEur(summary.totalEur);
+    setSelectedAddOnsPartyTotalEur(summary.partyTotalEur ?? summary.totalEur);
   }, []);
   // Reset add-ons ONLY when the resolved tour truly changes to a different
   // non-null tour. Guarded so the persistence hook's rehydrate (which sets
@@ -775,6 +777,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
       setSelectedAddOnIds([]);
       setSelectedAddOnItems([]);
       setSelectedAddOnsTotalEur(0);
+      setSelectedAddOnsPartyTotalEur(0);
     }
     prevTourIdRef.current = next;
   }, [state.tourId]);
@@ -791,6 +794,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
     if (ids.length === 0) {
       setSelectedAddOnItems([]);
       setSelectedAddOnsTotalEur(0);
+      setSelectedAddOnsPartyTotalEur(0);
     }
   }, []);
   const {
@@ -2699,7 +2703,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
                 resolvePerPaxEur(tour, g, tourPriceTiers)?.eurPerPax ??
                 tour.priceFrom ??
                 0;
-              return Math.round(perPax * g + selectedAddOnsTotalEur * g);
+              return Math.round(perPax * g + selectedAddOnsPartyTotalEur);
             })()}
             saving={savingSignature}
             onContinue={() => advance("guestDetails")}
@@ -2789,7 +2793,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
                 tour.priceFrom ??
                 0;
               const g = pendingGuestDetails.guests;
-              return Math.round(perPax * g + selectedAddOnsTotalEur * g);
+              return Math.round(perPax * g + selectedAddOnsPartyTotalEur);
             })()}
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
