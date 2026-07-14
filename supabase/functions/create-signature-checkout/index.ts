@@ -100,6 +100,7 @@ async function handleStudioQuote(snapshotRaw: RawQuoteSnapshot) {
       inclusions: resolved.inclusions,
       routeStatus: resolved.routeStatus,
       availabilityStatus: resolved.availabilityStatus,
+      checkoutEligibility: resolved.checkoutEligibility,
       itinerary: {
         title: snapshot.title,
         destinationRegion: snapshot.destinationRegion,
