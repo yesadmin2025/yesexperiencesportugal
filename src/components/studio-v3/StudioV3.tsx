@@ -1394,17 +1394,61 @@ export function StudioV3() {
       bgVideo: videoForFeeling(state.feeling),
     });
   };
-  /** Phase 3 — exact guest count from the stepper (1–14). Manual change
-   *  always clears the inferred flag and refreshes the private-event flag. */
+  /** Phase 3 — adult count from the stepper (1–14). Manual change always
+   *  clears the inferred flag and refreshes the private-event flag. Keeps
+   *  `state.guests` (total headcount) in sync = adults + minorAges.length,
+   *  so downstream tier lookup, vehicle sizing and legacy paths stay
+   *  correct while age-band pricing is layered on top server-side. */
   const onGuestsChange = (n: number) => {
-    const next = Math.max(1, Math.min(14, Math.trunc(n)));
-    setState((s) => ({
-      ...s,
-      guests: next,
-      guestsInferred: false,
-      guestsPrivateEvent: next >= 11,
-    }));
+    const nextAdults = Math.max(1, Math.min(14, Math.trunc(n)));
+    setState((s) => {
+      const minors = s.minorAges ?? [];
+      const total = Math.min(14, nextAdults + minors.length);
+      return {
+        ...s,
+        adults: nextAdults,
+        guests: total,
+        guestsInferred: false,
+        guestsPrivateEvent: total >= 11,
+      };
+    });
   };
+  const onAddMinor = () => {
+    setState((s) => {
+      const minors = [...(s.minorAges ?? []), 8]; // sensible default: child band
+      const adultsCount = s.adults ?? s.guests ?? 2;
+      const total = Math.min(14, adultsCount + minors.length);
+      return {
+        ...s,
+        adults: adultsCount,
+        minorAges: minors,
+        guests: total,
+        guestsInferred: false,
+        guestsPrivateEvent: total >= 11,
+      };
+    });
+  };
+  const onRemoveMinor = (index: number) => {
+    setState((s) => {
+      const minors = (s.minorAges ?? []).filter((_, i) => i !== index);
+      const adultsCount = s.adults ?? s.guests ?? 2;
+      const total = adultsCount + minors.length;
+      return {
+        ...s,
+        minorAges: minors,
+        guests: total,
+        guestsPrivateEvent: total >= 11,
+      };
+    });
+  };
+  const onMinorAgeChange = (index: number, age: number) => {
+    setState((s) => {
+      const minors = (s.minorAges ?? []).slice();
+      minors[index] = Math.max(0, Math.min(17, Math.trunc(age)));
+      return { ...s, minorAges: minors };
+    });
+  };
+
   const onRhythm = (id: Rhythm) => {
     const name = state.firstName?.trim() || null;
     const baseHint =
