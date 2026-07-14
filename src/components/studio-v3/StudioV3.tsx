@@ -3952,152 +3952,50 @@ export function StoryboardHandoff({
             </p>
             <ol className="space-y-3 sm:space-y-3">
               {editedStops.map((s, i) => {
-                const isFirst = i === 0;
-                const isLast = i === editedStops.length - 1;
                 const swapOpen = swapOpenIdx === i;
                 return (
-                  <li
+                  <RefineStopCard
                     key={`${s.label}-${i}`}
-                    data-testid="studio-v3-stop-row"
-                    className="rounded-[10px] px-4 py-3.5 sm:px-4 sm:py-3.5"
-                    style={{
-                      background: "color-mix(in oklab, var(--sand) 45%, transparent)",
-                      border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                    index={i}
+                    total={editedStops.length}
+                    label={s.label}
+                    story={s.story}
+                    minStops={1}
+                    canSwap={swapPool.length > 0}
+                    swapPool={swapPool}
+                    swapOpen={swapOpen}
+                    onMoveEarlier={() =>
+                      setEdited((prev) => {
+                        const n = [...prev];
+                        [n[i - 1], n[i]] = [n[i], n[i - 1]];
+                        return n;
+                      })
+                    }
+                    onMoveLater={() =>
+                      setEdited((prev) => {
+                        const n = [...prev];
+                        [n[i], n[i + 1]] = [n[i + 1], n[i]];
+                        return n;
+                      })
+                    }
+                    onToggleSwap={() => setSwapOpenIdx(swapOpen ? null : i)}
+                    onPickSwap={(cand) => {
+                      setEdited((prev) =>
+                        prev.map((p, j) =>
+                          j === i ? { label: cand.label, story: cand.story } : p,
+                        ),
+                      );
+                      setSwapOpenIdx(null);
                     }}
-                  >
-                    <div className="flex items-start gap-3">
-                      <span
-                        aria-hidden
-                        className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
-                        style={{
-                          background: "color-mix(in oklab, var(--gold) 25%, transparent)",
-                          color: "var(--charcoal)",
-                        }}
-                      >
-                        {i + 1}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <p
-                          className="text-[13.5px] font-semibold leading-[1.3]"
-                          style={{
-                            fontFamily: "var(--font-display)",
-                            color: "var(--charcoal)",
-                          }}
-                        >
-                          {s.label}
-                        </p>
-                        {s.story ? (
-                          <p
-                            className="mt-0.5 text-[12px] leading-[1.45]"
-                            style={{
-                              color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
-                            }}
-                          >
-                            {s.story}
-                          </p>
-                        ) : null}
-                      </div>
-                      <div className="flex shrink-0 items-center gap-1">
-                        <button
-                          type="button"
-                          aria-label={`Move ${s.label} earlier`}
-                          disabled={isFirst}
-                          onClick={() =>
-                            setEdited((prev) => {
-                              const n = [...prev];
-                              [n[i - 1], n[i]] = [n[i], n[i - 1]];
-                              return n;
-                            })
-                          }
-                          className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                          style={{ color: "var(--charcoal)" }}
-                        >
-                          ↑
-                        </button>
-                        <button
-                          type="button"
-                          aria-label={`Move ${s.label} later`}
-                          disabled={isLast}
-                          onClick={() =>
-                            setEdited((prev) => {
-                              const n = [...prev];
-                              [n[i], n[i + 1]] = [n[i + 1], n[i]];
-                              return n;
-                            })
-                          }
-                          className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                          style={{ color: "var(--charcoal)" }}
-                        >
-                          ↓
-                        </button>
-                        {swapPool.length > 0 ? (
-                          <button
-                            type="button"
-                            aria-label={`Swap ${s.label}`}
-                            aria-expanded={swapOpen}
-                            onClick={() => setSwapOpenIdx(swapOpen ? null : i)}
-                            className="grid h-8 w-8 place-items-center rounded-full text-[13px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                            style={{ color: "var(--charcoal)" }}
-                          >
-                            ⇄
-                          </button>
-                        ) : null}
-                        <button
-                          type="button"
-                          aria-label={`Remove ${s.label}`}
-                          disabled={editedStops.length <= 1}
-                          onClick={() => setEdited((prev) => prev.filter((_, j) => j !== i))}
-                          className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                          style={{ color: "var(--charcoal)" }}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </div>
-
-                    {swapOpen ? (
-                      <ul
-                        data-testid="studio-v3-swap-pool"
-                        className="mt-2.5 space-y-1 border-t pt-2"
-                        style={{
-                          borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
-                        }}
-                      >
-                        {swapPool.map((cand) => (
-                          <li key={cand.label}>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setEdited((prev) =>
-                                  prev.map((p, j) =>
-                                    j === i ? { label: cand.label, story: cand.story } : p,
-                                  ),
-                                );
-                                setSwapOpenIdx(null);
-                              }}
-                              className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                              style={{ color: "var(--charcoal)" }}
-                            >
-                              <span className="font-semibold">{cand.label}</span>
-                              {cand.story ? (
-                                <span
-                                  className="block text-[11.5px]"
-                                  style={{
-                                    color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-                                  }}
-                                >
-                                  {cand.story}
-                                </span>
-                              ) : null}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </li>
+                    onRemove={() =>
+                      setEdited((prev) => prev.filter((_, j) => j !== i))
+                    }
+                    testId="studio-v3-stop-row"
+                  />
                 );
               })}
             </ol>
+
 
             {/* Add a moment — capped by rhythm; pool stays inside the same Signature. */}
             {canAddMoment ? (
