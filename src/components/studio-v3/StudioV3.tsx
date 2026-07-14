@@ -2809,7 +2809,12 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
         open={checkoutOpen}
         onOpenChange={(o) => {
           setCheckoutOpen(o);
-          if (!o) setClientSecret(null);
+          if (!o) {
+            setClientSecret(null);
+            // Guarantee the reserve CTA is re-enabled if the guest closes
+            // the drawer mid-flight — otherwise a subsequent tap no-ops.
+            setCheckoutPending(false);
+          }
         }}
         clientSecret={clientSecret}
         publishableKey={publishableKey}

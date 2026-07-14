@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { loadStripe, type Stripe } from "@stripe/stripe-js";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
-import { Lock, X, MapPin, Clock, Users, Calendar } from "lucide-react";
+import { Lock, X, MapPin, Clock, Users, Calendar, AlertCircle } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
@@ -110,6 +110,9 @@ export function BrandedCheckoutDrawer({
   );
 
   const completeFiredRef = useRef(false);
+  // Timeout: if clientSecret hasn't arrived within 12s after opening, show
+  // an actionable error state instead of an infinite skeleton.
+  const [timedOut, setTimedOut] = useState(false);
 
   const options = useMemo(() => {
     if (!clientSecret) return null;
@@ -127,6 +130,19 @@ export function BrandedCheckoutDrawer({
   useEffect(() => {
     if (open) completeFiredRef.current = false;
   }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      setTimedOut(false);
+      return;
+    }
+    if (clientSecret) {
+      setTimedOut(false);
+      return;
+    }
+    const t = window.setTimeout(() => setTimedOut(true), 12_000);
+    return () => window.clearTimeout(t);
+  }, [open, clientSecret]);
 
   const addOnsTotal = summary.addOnsTotalEur ?? 0;
   const total =
@@ -191,6 +207,8 @@ export function BrandedCheckoutDrawer({
                   <EmbeddedCheckout />
                 </EmbeddedCheckoutProvider>
               </div>
+            ) : timedOut ? (
+              <CheckoutTimeout onRetry={() => onOpenChange(false)} />
             ) : (
               <CheckoutSkeleton />
             )}
@@ -397,6 +415,28 @@ function CheckoutSkeleton() {
       <p className="text-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] pt-2">
         Preparing secure checkout…
       </p>
+    </div>
+  );
+}
+
+function CheckoutTimeout({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div
+      role="alert"
+      className="px-4 py-8 mx-2 my-4 flex flex-col items-center text-center gap-3 border border-[color:var(--border)] bg-[color:var(--ivory)]"
+    >
+      <AlertCircle size={22} className="text-[color:var(--charcoal)]" aria-hidden />
+      <p className="text-[13px] leading-relaxed text-[color:var(--charcoal)] max-w-[36ch]">
+        Checkout is taking longer than usual. Close this and try again — no card
+        was charged.
+      </p>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="mt-2 inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 text-[11.5px] uppercase tracking-[0.22em] font-semibold rounded-[2px] bg-[color:var(--teal)] text-[color:var(--ivory)] hover:bg-[color:var(--charcoal)] transition-colors"
+      >
+        Close and retry
+      </button>
     </div>
   );
 }

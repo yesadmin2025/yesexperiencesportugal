@@ -16,6 +16,7 @@
 import * as React from "react";
 import { useEffect } from "react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { CtaButton } from "@/components/ui/CtaButton";
 import { findTour } from "@/data/signatureTours";
 import { pickupCityLabel } from "./curation";
 import {
@@ -130,6 +131,7 @@ export function FinalRevealStory({
     kind: "addition" as const,
   }));
   const timeline = [...stops, ...addOnBeats];
+  const hasTimeline = timeline.length > 0;
 
   const dateLabel = formatDate(state.dateExact);
   const pickupLabel = pickupCityLabel(state.pickup);
@@ -240,56 +242,71 @@ export function FinalRevealStory({
           </header>
 
           {/* Chaptered story — book paragraphs */}
-          <ol
-            className="mt-8 space-y-7"
-            data-testid="studio-v3-final-reveal-timeline"
-          >
-            {timeline.map((beat, i) => (
-              <li key={`${beat.kind}-${i}-${beat.label}`} className="relative pl-8">
-                <span
-                  aria-hidden
-                  className="absolute left-0 top-[2px] w-6 text-[12px] tracking-[0.12em] tabular-nums"
-                  style={{
-                    fontFamily: "var(--font-editorial)",
-                    color: "var(--gold)",
-                    fontWeight: 600,
-                    fontStyle: "italic",
-                  }}
-                >
-                  {romanFor(i)}.
-                </span>
-                <h3
-                  className="text-[17px] leading-[1.3]"
-                  style={{
-                    fontFamily: "var(--font-editorial)",
-                    color: "var(--charcoal)",
-                    fontWeight: 500,
-                  }}
-                >
-                  {beat.label}
-                  {beat.kind === "addition" ? (
-                    <span
-                      className="ml-2 text-[10px] uppercase tracking-[0.22em] align-middle"
-                      style={{ color: "var(--teal)" }}
-                    >
-                      · your addition
-                    </span>
-                  ) : null}
-                </h3>
-                {beat.story ? (
-                  <p
-                    className="mt-2 max-w-[52ch] text-[14.5px] leading-[1.7] [text-wrap:pretty]"
+          {hasTimeline ? (
+            <ol
+              className="mt-8 space-y-7"
+              data-testid="studio-v3-final-reveal-timeline"
+            >
+              {timeline.map((beat, i) => (
+                <li key={`${beat.kind}-${i}-${beat.label}`} className="relative pl-8">
+                  <span
+                    aria-hidden
+                    className="absolute left-0 top-[2px] w-6 text-[12px] tracking-[0.12em] tabular-nums"
                     style={{
                       fontFamily: "var(--font-editorial)",
-                      color: "color-mix(in oklab, var(--charcoal) 76%, transparent)",
+                      color: "var(--gold)",
+                      fontWeight: 600,
+                      fontStyle: "italic",
                     }}
                   >
-                    {beat.story}
-                  </p>
-                ) : null}
-              </li>
-            ))}
-          </ol>
+                    {romanFor(i)}.
+                  </span>
+                  <h3
+                    className="text-[17px] leading-[1.3]"
+                    style={{
+                      fontFamily: "var(--font-editorial)",
+                      color: "var(--charcoal)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {beat.label}
+                    {beat.kind === "addition" ? (
+                      <span
+                        className="ml-2 text-[10px] uppercase tracking-[0.22em] align-middle"
+                        style={{ color: "var(--teal)" }}
+                      >
+                        · your addition
+                      </span>
+                    ) : null}
+                  </h3>
+                  {beat.story ? (
+                    <p
+                      className="mt-2 max-w-[52ch] text-[14.5px] leading-[1.7] [text-wrap:pretty]"
+                      style={{
+                        fontFamily: "var(--font-editorial)",
+                        color: "color-mix(in oklab, var(--charcoal) 76%, transparent)",
+                      }}
+                    >
+                      {beat.story}
+                    </p>
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p
+              className="mt-8 text-center text-[14px] leading-[1.6] px-4 py-6 rounded-[6px]"
+              style={{
+                fontFamily: "var(--font-editorial)",
+                color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+                background: "color-mix(in oklab, var(--sand) 35%, transparent)",
+              }}
+              data-testid="studio-v3-final-reveal-empty"
+            >
+              Your day is being composed. Refresh in a moment — or step back to
+              refine your Signature.
+            </p>
+          )}
         </div>
       </article>
 
@@ -380,36 +397,32 @@ export function FinalRevealStory({
           voice reads first). Back stays tertiary. */}
       <div className="mt-8 flex flex-col items-stretch gap-3">
         <div className="flex flex-col sm:flex-row gap-3">
-          <button
-            type="button"
+          <CtaButton
+            variant="primary"
             onClick={onContinue}
             data-testid="studio-v3-final-reveal-continue"
-            className="flex-1 min-h-[52px] inline-flex items-center justify-center gap-2 rounded-full px-6 text-[13px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] transition-colors"
-            style={{ background: "var(--gold)", color: "var(--charcoal)" }}
+            className="flex-1"
           >
             {CTA_CONTINUE_TO_GUEST_DETAILS}
-            <span aria-hidden>→</span>
-          </button>
-          <button
-            type="button"
+          </CtaButton>
+          <CtaButton
+            variant="ghost"
             onClick={onSaveSignature}
             disabled={saving}
+            loading={saving}
+            loadingLabel="Saving…"
             data-testid="studio-v3-final-reveal-save"
-            className="sm:flex-none min-h-[52px] inline-flex items-center justify-center rounded-full border px-6 text-[12px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-60 transition-colors"
-            style={{
-              color: "var(--teal)",
-              borderColor: "color-mix(in oklab, var(--teal) 45%, transparent)",
-              background: "transparent",
-            }}
+            className="sm:flex-none"
+            icon={null}
           >
-            {saving ? "Saving…" : CTA_SAVE_SIGNATURE}
-          </button>
+            {CTA_SAVE_SIGNATURE}
+          </CtaButton>
         </div>
         <button
           type="button"
           onClick={onBack}
           data-testid="studio-v3-final-reveal-back"
-          className="w-full min-h-[44px] inline-flex items-center justify-center text-[12.5px] tracking-[0.02em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          className="w-full min-h-[44px] inline-flex items-center justify-center text-[12.5px] tracking-[0.02em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] transition-colors hover:text-[color:var(--charcoal)]"
           style={{
             color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
           }}
