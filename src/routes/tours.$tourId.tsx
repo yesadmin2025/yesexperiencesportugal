@@ -25,6 +25,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { CtaPair } from "@/components/ui/CtaPair";
 import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
+import { getTourReviewStats, getTourReviews } from "@/lib/reviews.functions";
 import { SIGNATURE_FAQ } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { TourReviews } from "@/components/TourReviews";
