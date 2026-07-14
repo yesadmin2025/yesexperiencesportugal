@@ -17,6 +17,20 @@ interface Body {
   tourId: string;
   tourTitle: string;
   guests: number;
+  /**
+   * Optional traveller composition. When BOTH `adults` and `minorAges`
+   * are supplied, the server prices the booking with the owner-approved
+   * uniform age bands (adult 18+ 100%, youth 11–17 75%, child 3–10 50%,
+   * infant 0–2 free) and IGNORES `priceFromEur` except as the anchor
+   * fallback when no tier row exists. When absent, legacy adult-only
+   * pricing is used (`guests * per_pax`) — this keeps existing call
+   * sites working until the Studio UI captures composition.
+   *
+   * Any minor age outside 0..17 (or non-integer) triggers a 400 —
+   * there is NO fallback that silently prices a minor as an adult.
+   */
+  adults?: number;
+  minorAges?: number[];
   stopLabels?: string[];
   /** Real included items from VIATOR_META[tourId].included — used as the
    *  truthful description source. Client-owned so the edge fn stays
@@ -37,6 +51,10 @@ interface Body {
   flow?: "studio" | "signature" | "tailor";
   /** Stripe Checkout UI mode. Defaults to "hosted" (full-page redirect). */
   uiMode?: "hosted" | "embedded";
+  /** Stable client-side hash of the composed journey — mirrored into
+   *  Stripe metadata so the confirmation trail and the story email can
+   *  be reconciled against the exact revision the guest approved. */
+  journeyRevision?: string;
   /** Forwarded from FinalDetailsDialog. */
   guestDetails?: {
     startTime?: string | null;
@@ -49,6 +67,20 @@ interface Body {
     priceEur: number;
     durationMinutes?: number;
   }>;
+}
+
+type AgeBand = "adult" | "youth" | "child" | "infant";
+const AGE_BAND_PCT: Record<AgeBand, number> = {
+  adult: 1.0,
+  youth: 0.75,
+  child: 0.5,
+  infant: 0,
+};
+function ageBand(age: number): AgeBand | null {
+  if (!Number.isFinite(age) || age < 0 || age > 17 || !Number.isInteger(age)) return null;
+  if (age >= 11) return "youth";
+  if (age >= 3) return "child";
+  return "infant";
 }
 
 
