@@ -280,7 +280,14 @@ Deno.serve(async (req) => {
     quoteToken,
     expiresAt: expiresAtIso,
     flow: input.flow,
-    source: "bokun-live",
+    // Manual (Viator per-pax tier) pricing. NEVER report as bokun-live —
+    // no live Bókun commercial pricing was queried. Internal identifier;
+    // never rendered to the customer.
+    source: "manual-viator-tiers",
+    // Manual quotes have no real Bókun provisional reservation, so instant
+    // card checkout is refused. Both the browser and the checkout endpoint
+    // (create-signature-checkout, fail-closed) enforce this.
+    checkoutEligibility: "enquiry_only",
     commercialProductKey: input.commercialProductKey,
     commercialMappingId,
     productId: MANUAL_BOKUN_PRODUCT_ID,
