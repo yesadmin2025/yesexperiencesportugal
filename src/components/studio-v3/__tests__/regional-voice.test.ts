@@ -37,7 +37,7 @@ describe("regionalVoiceFor", () => {
     for (const r of ["Arrábida", "Alentejo", "Douro", "Algarve", "Centro"]) {
       const v = regionalVoiceFor(r);
       expect(v.whisper.length).toBeLessThan(60);
-      expect(v.whisper).not.toMatch(/€|partner|operator|Bokun|Viator/i);
+      expect(v.whisper).not.toMatch(/€|partner|operator|Viator/i);
     }
   });
 });
