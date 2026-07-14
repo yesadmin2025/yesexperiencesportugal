@@ -1,84 +1,67 @@
-# Studio Checkout Retry + Extra Failure Modes E2E
 
-Two additions layered on top of the existing `e2e/structured-data-rendered.spec.ts` + `create-signature-checkout-error-envelope.spec.ts` from the previous turn. Both live in a single new spec so they share Studio-drive-through helpers.
+## Problem
 
-## Retry model recap (verified in `StudioV3.tsx`)
+On the Studio V3 storyboard (`/studio-v3`), the "Refine your Signature" card is showing the dead-end empty state — *"We couldn't compose a draft for this combination. Adjust the earlier answers and we'll rebuild it."* — even when the resolver has clearly picked a Signature (the hero above shows a real skeleton subtitle like *"A private day, shaped around coast and heritage…"*, the "YES Approved" badge is on, and the Signature DNA chips are populated with valid combos such as *Coastal escape · Friends · Heritage · Photography · Full · Open to guidance · From Lisbon* and *Hidden Portugal · Friends · Nature · Coast · Photography · Balanced · From Lisbon*).
 
-- CTA fires `handleStripeCheckout(state, pendingGuestDetails)` → sets `checkoutPending = true`.
-- On any thrown error: `toast.error(userMessage)` fires, `finally { setCheckoutPending(false) }` restores the CTA.
-- There is no separate "Retry" button — retry = re-tapping the primary Reserve CTA after the toast surfaces. That is the behaviour to lock in.
+The user can't proceed to price/reserve from these otherwise valid combos.
 
-## New file: `e2e/studio-v3-checkout-retry-and-failures.spec.ts`
+## Root cause
 
-Playwright spec, `mobile-chromium` project (matches Studio's mobile-first surface).
+`baseStops` in `src/components/studio-v3/StudioV3.tsx` (lines 3256–3283) has one branch that returns `[]` even though a skeleton tour exists:
 
-### Shared harness
+```ts
+const outcome = filterStopsBySuitability(rawStops, requirements, pool);
+const validity = validateItineraryAfterReplacement(outcome, requirements);
+if (validity !== null) {
+  if (outcome.stops.length > 0) return outcome.stops;
+  if (pool.length > 0) return pool.slice(0, Math.min(2, pool.length));
+  return [];
+}
+return outcome.stops;   // ← can be [] when validity === null and rawStops was already []
+```
 
-- `openStudioReserve(page)` helper: hydrates `sessionStorage` with a completed Studio V3 draft (tour id `sintra-cascais`, guests: 2, valid guest details) so the phase advances straight to `confirmation`, then waits for the Reserve CTA.
-- `stubCheckout(page, handler)` helper: `page.route('**/functions/v1/create-signature-checkout*', handler)` with per-test counters for call count, method, and body assertions.
-- `readToast(page)` helper: reads the latest `[data-sonner-toast]` node.
+Two ways this yields `[]` while `skeletonTour` is a real Signature:
 
-### Test 1 — Retry re-fires the correct request and clears prior error
+1. `curateJourney` returns `journey.moments = []` after coherence + closure filtering, so `rawStops` is `[]`. `filterStopsBySuitability` then returns `outcome.stops = []` with `validity === null`, falling into the last `return outcome.stops` and skipping the pool fallback.
+2. Every stop is filtered by suitability, `validity` is `null` (validator treats empty as valid), same path.
 
-Steps:
+`editedStops = state.editedRoutePoints ?? baseStops` → `[]` → the refine editor renders the empty-state dead end even though `skeletonTour.stops` is full of safe candidates. The "swap pool empty" branch is what surfaces the dead-end copy.
 
-1. First stub returns `500 { error: "internal_error", code: "internal_error", message: "…", retryable: true, requestId: "req_1" }`.
-2. Tap Reserve → assert `checkoutPending` visible (CTA disabled / spinner), toast appears with the guest-safe "Something went wrong on our side" copy, CTA re-enables.
-3. Swap stub to `200` success envelope (mocked Stripe session URL + sessionId).
-4. Tap Reserve again → assert:
-  - Exactly one additional POST to `create-signature-checkout` (call counter = 2).
-  - Second request body matches the first (same `quoteToken`, `guests`, `returnUrl`) — proves retry re-fires the *same* checkout intent, not a stale/wrong payload.
-  - Prior error toast is dismissed (no visible error toast at moment of retry).
-  - CTA transitions to pending, then navigation to Stripe URL is intercepted.
-5. After success: assert `checkoutPending` is false (spinner gone), no lingering error state, and no orphaned toast.
+## Fix (frontend only, presentation layer)
 
-### Test 2 — Timeout keeps CTA retryable, no stuck pending
+Single, narrowly scoped change to `baseStops` in `src/components/studio-v3/StudioV3.tsx`:
 
-- Stub: `route.fulfill` after a delay that exceeds Studio's per-call timeout OR use `route.abort('timedout')`.
-- Tap Reserve → wait for `toast.error` with network / timeout copy (`network_error` mapping).
-- Assert CTA re-enables (button not `disabled`) within a bounded window.
-- Tap again with a normal 200 stub → second request fires, spinner clears, no double-request race.
+- Whenever `baseStops` would otherwise be `[]` **and** `skeletonTour` exists **and** `pool.length > 0`, seed from `pool` (the same Signature's own stops) — never leave the editor empty. This matches the existing recoverable-draft comment and the intent of the `validity !== null` branch; the current code just doesn't reach the seed in the `validity === null` path.
 
-### Test 3 — Malformed payload (non-JSON body) → generic guest copy, retryable
+New shape:
 
-- Stub: `status 200, body: "<html>gateway</html>"`.
-- Assert: toast surfaces generic guest copy (not raw HTML), CTA re-enabled, `checkoutPending` reset.
-- Retry with valid stub → success path fires.
+```ts
+const seedFromPool = () =>
+  pool.length > 0 ? pool.slice(0, Math.min(3, pool.length)) : [];
 
-### Test 4 — 5xx upstream (`502 bokun_unreachable`) marks retryable and honours retry
+if (validity !== null) {
+  if (outcome.stops.length > 0) return outcome.stops;
+  return seedFromPool();
+}
+return outcome.stops.length > 0 ? outcome.stops : seedFromPool();
+```
 
-- Stub: `502 { error: "bokun_unreachable:…", code: "bokun_unreachable", retryable: true, requestId: "req_x" }`.
-- Assert guest copy: "Our booking partner is briefly unreachable…".
-- CTA stays enabled after toast; second tap re-fires; success stub resolves the flow.
+Notes:
+- Uses `min(3, pool.length)` (up to 3 stops) so the seeded draft feels like a real Signature arc, not a stub. The user then adds/removes via the existing swap pool.
+- Only touches the presentation editor. Server-side booking-quote validation is unchanged — an empty or thin route still gets blocked at reserve time by the existing gate.
+- No change to `resolveStudioV3Route` or `curateJourney`. This is a UI recovery only, consistent with the philosophy that the storyboard is a "skeleton + refine" surface.
 
-### Test 5 — 5xx non-retryable (`config_missing`) disables silent retry loop
+## Verification
 
-- Stub: `500 { code: "config_missing", retryable: false, requestId: "req_y" }`.
-- Assert toast copy matches the `config_missing` line.
-- CTA re-enables (guest can *choose* to retry), but the second tap MUST still fire only when the guest asks — assert we do NOT auto-retry (call counter stays at 1 until a second explicit tap).
-
-### Test 6 — `checkoutPending` never leaks across failure→success
-
-Covers the memory the plan calls out ("no stale checkoutPending"):
-
-- Force `page.route` to `route.abort('failed')` on first tap → toast, CTA re-enabled.
-- Immediately swap to success stub → tap Reserve → assert only one in-flight request at a time (`page.waitForRequest` count = 1 for this tap), spinner clears once resolved.
-
-## Assertions shared across all tests
-
-- Call counter is asserted per test (no duplicate concurrent requests during pending).
-- After every failure, `await expect(reserveCta).toBeEnabled()` within 2s.
-- After every success stub, navigation intercept confirms the Stripe URL was requested (page.route on Stripe host or window.location assign spy).
-- Toast text is asserted against the guest-safe copy from `src/lib/checkout/checkoutError.ts` (imported from the same COPY dictionary to keep tests aligned with source of truth).
-
-## Package.json script
-
-Add `"test:e2e:checkout-retry": "playwright test e2e/studio-v3-checkout-retry-and-failures.spec.ts --project=mobile-chromium"`.
+1. Reproduce with the two combos from the user's screenshots on mobile viewport 393×588:
+   - Coastal escape · Friends · Heritage · Photography · Full · Open to guidance · From Lisbon
+   - Hidden Portugal · Friends · Nature · Coast · Photography · Balanced · Open to guidance · From Lisbon
+2. Confirm the Refine card now renders real stops with Remove / Swap / Add controls (no dead-end copy), and the "+ Add a moment" button surfaces the same-Signature swap pool.
+3. Existing tests to run: `refine-stop-card-integration.test.tsx`, `studio-v3-a11y-axe-sweep.spec.ts`, `studio-v3-full-happy-path.spec.ts`.
+4. Add one focused unit test in `src/components/studio-v3/__tests__/base-stops-recovery.test.ts` that asserts: given a resolved skeleton with a non-empty `stops` pool but `resolved.routePoints = []`, the memo returns a non-empty seed slice (1–3 stops) drawn from the skeleton — locking the regression.
 
 ## Out of scope
 
-- No changes to `handleStripeCheckout` or `StudioV3.tsx` — this is pure test coverage.
-- No new UI "Retry" button; the plan honours the existing tap-CTA-again retry model.
-- Builder checkout (`create-builder-checkout`) is intentionally deferred — Studio V3 always routes through signature checkout; a Builder retry spec would need a separate driver and is not what the user asked for.
-
-After testing fix issues
+- Rebalancing `curateJourney` scoring so it never returns zero moments — deeper change, separate turn.
+- Touching the "swap pool empty" copy — the empty branch will no longer be reachable via valid combos once the seed lands, so the copy stays as a genuine last-resort message.
+- Any change to checkout, pricing, or the booking-quote edge function.

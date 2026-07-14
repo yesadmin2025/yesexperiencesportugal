@@ -3272,17 +3272,26 @@ export function StoryboardHandoff({
     // than hitting a dead-end bespoke fallback. Server-side quote + Stripe
     // stay gated on validation elsewhere; this only widens the editor.
     const validity = validateItineraryAfterReplacement(outcome, requirements);
+    // Seed helper — never let the editor render empty while a real Signature
+    // skeleton exists. The storyboard is a "skeleton + refine" surface: an
+    // empty draft would strand valid answer combos on the dead-end copy even
+    // though `skeletonTour.stops` has safe candidates the guest can shape.
+    const seedFromPool = () =>
+      pool.length > 0 ? pool.slice(0, Math.min(3, pool.length)) : [];
     if (validity !== null) {
       if (outcome.stops.length > 0) return outcome.stops;
-      // Nothing safe from the filter — seed 1–2 stops directly from the
-      // same skeleton's own pool so the user can add more from swapPool.
-      if (pool.length > 0) return pool.slice(0, Math.min(2, pool.length));
-      return [];
+      return seedFromPool();
     }
-    return outcome.stops;
+    return outcome.stops.length > 0 ? outcome.stops : seedFromPool();
   }, [resolved.routePoints, state.guests, state.minorAges, state.considerations, skeletonTour]);
 
-  const editedStops = state.editedRoutePoints ?? baseStops;
+  // Treat a persisted-but-empty `editedRoutePoints` as "no override" so a
+  // stale/hydrated `[]` (or an old draft) can never strand the storyboard on
+  // the dead-end empty state while a real skeleton is available.
+  const editedStops =
+    state.editedRoutePoints && state.editedRoutePoints.length > 0
+      ? state.editedRoutePoints
+      : baseStops;
 
   // Real OSRM driving legs — shared with RevealRouteMap via react-query's
   // dedupe on the same routeStops key, so we pay for one fetch and both the
