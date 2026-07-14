@@ -42,13 +42,12 @@ export const Route = createFileRoute("/local-stories/")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],
-    // NOTE: canonical intentionally omitted here. This route is a parent of
-    // `/local-stories/$slug` in TanStack's flat routing, and `links` from
-    // parents concatenate into every child — emitting a canonical here
-    // produced duplicate <link rel="canonical"> tags on article pages
-    // (one pointing at the listing, one at the article). The listing page
-    // is self-canonical by default; leaf article routes set their own.
-    links: [],
+    // Self-referencing canonical for the listing page only. This `index` head
+    // applies only to `/local-stories/`; leaf article routes define their own
+    // canonicals in `local-stories.$slug.tsx`, so no duplicate is emitted.
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/local-stories" },
+    ],
     scripts: [
       jsonLdScript(
         breadcrumbLd([

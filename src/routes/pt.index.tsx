@@ -19,22 +19,21 @@ export const Route = createFileRoute("/pt/")({
   head: () => ({
     meta: [
       {
-        title:
-          "YES Experiences Portugal — Portugal privado, como um local mostra a um amigo",
+        title: "YES Experiences Portugal — Portugal privado, ao seu ritmo",
       },
       {
         name: "description",
         content:
-          "Experiências privadas por Portugal com guias locais — da Arrábida ao Douro, de Sintra ao Alentejo. Dias Signature prontos a partir ou jornadas à medida, ao seu ritmo e sem grupos.",
+          "Experiências privadas em Portugal com guias locais. Dias Signature ou roteiros à medida, ao seu ritmo.",
       },
       {
         property: "og:title",
-        content: "YES Experiences Portugal — Portugal privado, como um local mostra a um amigo",
+        content: "YES Experiences Portugal — Portugal privado, ao seu ritmo",
       },
       {
         property: "og:description",
         content:
-          "Experiências privadas por Portugal com guias locais. Dias Signature prontos a partir ou jornadas à medida, ao seu ritmo e sem grupos.",
+          "Experiências privadas em Portugal com guias locais. Dias Signature ou roteiros à medida, ao seu ritmo.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_PT" },
