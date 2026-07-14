@@ -349,15 +349,15 @@ function StaticArticleView({
     <SiteLayout>
       <article>
         <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)] reveal">
-          <div className="container-x max-w-3xl text-center">
-            <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5">
+          <div className="container-x max-w-3xl text-center editorial-cascade">
+            <span className="reveal-stagger block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5">
               {article.eyebrow}
             </span>
-            <h1 className="font-display font-bold text-[2rem] md:text-[2.6rem] leading-[1.15] tracking-[-0.01em] text-[color:var(--charcoal)]">
+            <h1 className="reveal-stagger font-display font-bold text-[2rem] md:text-[2.6rem] leading-[1.15] tracking-[-0.01em] text-[color:var(--charcoal)]">
               {article.h1}
             </h1>
             {article.standfirst && (
-              <p className="mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)] max-w-2xl mx-auto">
+              <p className="reveal-stagger mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)] max-w-2xl mx-auto">
                 {article.standfirst}
               </p>
             )}
