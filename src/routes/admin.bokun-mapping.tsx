@@ -145,7 +145,7 @@ function AdminBokunMappingPage() {
     (supabase as any)
       .from("tour_bokun_mapping")
       .select("tour_id, bokun_product_id, bokun_title, bokun_product_code, notes")
-      .then(({ data, error }) => {
+      .then(({ data, error }: { data: any; error: any }) => {
         if (error) {
           toast.error("Failed to load mappings: " + error.message);
           return;
