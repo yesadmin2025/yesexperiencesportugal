@@ -1,83 +1,81 @@
 ## Goal
-Get yesexperiencesportugal.com discoverable on Google **for American travelers** as fast as possible. Authority Score is 0 today with ~11 estimated organic visits/month, so the strategy is US-intent long-tail keywords, US market signals, and content Americans actually search when planning a Portugal trip — not head terms.
+Get yesexperiencesportugal.com discoverable on Google **for American travelers** planning a Portugal trip. Strategy remains US-intent long-tail keywords + US market signals + editorial content Americans actually search — not head terms.
 
-## Why "quaint" long-tail wins here
-American Portugal searches skew emotional and discovery-mode: "best wine tours from Lisbon", "small-group day trip Sintra", "private tour Douro from Porto". Lower volume, low KDI, reachable from AS 0, and they match YES's positioning (curated, small-group, authentic). Head terms ("Portugal tours") wait until authority grows.
+**Positioning to reinforce in every rewrite:** local & hidden Portugal · personalized private · Travel Designer · real-time itinerary builder · instant confirmation · unique and only in Portugal.
 
 ---
 
-## Phase 1 — Foundation (week 1, no new content)
+## Status snapshot (July 2026)
 
-1. **Switch SEO targeting to US market**
-   - Add `hreflang="en-us"` alongside existing `en` on English routes.
-   - Set Search Console international targeting to United States.
-   - Add `TouristTrip`, `TouristAttraction`, `Offer` schema with `priceCurrency: "USD"` displayed alongside EUR on tour pages (US visitors convert better seeing USD).
+### ✅ Phase 1 — Foundation (COMPLETE)
+- US-oriented metadata rewritten on the 10 core pages (Home, /experiences, /studio-v3, /about, /contact, tour pages, /proposal-in-portugal, /pt).
+- USD alongside EUR + real `AggregateRating` (Viator counts, no invention) on tour pages.
+- Organization / TouristTrip / Offer / BreadcrumbList JSON-LD in place. `sameAs` → real Viator, TripAdvisor, Instagram.
+- `hreflang="en-us"` on English routes; Search Console targeting US.
+- Robots + sitemap.xml audited; internal 301s consolidated onto canonical URLs (see `src/routes/*.tsx` redirects).
+- Alt text + h1→h2→h3 chain fixed on Home, About, tour pages.
+- Last SEO scan: **0 failing findings** (previous three marked fixed, awaiting rescan).
 
-2. **US-oriented metadata rewrite on the 10 real pages**
-   Home, /experiences, /studio-v3, /about, /contact, /tours/arrabida-wine-allinclusive, /tours/sintra-cascais, /tours/arrabida-boat, /proposal-in-portugal, /pt.
-   - Titles built around US intent, e.g. `Private Sintra & Cascais Tour from Lisbon — Small Group | YES Experiences`.
-   - Descriptions include "from Lisbon", "small-group", "English-speaking guide", "hotel pickup" — the phrases US travelers filter on.
-
-3. **Trust signals Google + Americans both weigh**
-   - Real Viator / TripAdvisor review counts + star rating in `AggregateRating` on tour pages (no invention — pulled from the tour's actual Viator listing).
-   - `sameAs` in Organization JSON-LD → real Viator, TripAdvisor, Instagram profiles.
-
-## Phase 2 — Content hub for US long-tail (weeks 2–6)
-
-Published under `/plan/*` and `/guides/*`. Each targets a real US phrase validated via `semrush--keyword_research` before writing. The three "from Lisbon" pillars you flagged are now Tier 1 — they map directly to existing Signature tours, so they'll rank AND convert.
-
-### Tier 1 — Lisbon pillar pages (your call-outs, highest ROI)
-
-| Page | Target phrase | Feeds |
-|---|---|---|
-| `/plan/best-wine-tours-from-lisbon` | "best wine tours from lisbon" | Arrábida wine (your #1 tour) + Douro day |
-| `/plan/best-day-trips-from-lisbon` | "best day trips from lisbon" | Sintra & Cascais, Arrábida, Évora — hub page linking all Signature tours |
-| `/plan/private-tours-from-lisbon` | "private tours from lisbon" | Every Signature (private = YES core positioning) |
-
-Each pillar = 1,400–1,800 words, ranks 5–8 tours as a comparison table with real Viator ratings, hero image, FAQ schema, strong internal links into each `/tours/*` page. These three are the biggest single unlock — they map "American searches Google" → "American books a YES tour" in the shortest path.
-
-### Tier 2 — Planner + intent guides
-
-| Page | Target phrase |
+### ✅ Phase 2 Tier 1 — Lisbon pillars (LIVE)
+| Page | Route |
 |---|---|
-| `/plan/portugal-itinerary-7-days` | "7 day portugal itinerary" |
-| `/plan/lisbon-to-sintra-day-trip` | "day trip to sintra from lisbon" |
-| `/plan/douro-valley-wine-tour-from-porto` | "douro valley wine tour" |
-| `/plan/best-time-to-visit-portugal` | "best time to visit portugal" |
-| `/plan/portugal-honeymoon` | "portugal honeymoon" |
-| `/guides/arrabida-vs-douro` | "arrabida vs douro wine region" |
-| `/guides/is-portugal-safe-for-americans` | "is portugal safe for tourists" |
+| Best day trips from Lisbon | `/local-stories/best-day-trips-from-lisbon` |
+| Best wine tours from Lisbon | `/local-stories/portugal-wine-tours` + `/local-stories/arrabida-wine-tour` |
+| Private tours from Lisbon | `/local-stories/private-wine-tour-lisbon` + region private-tour stories |
 
-Each: 900–1,400 words, one real hero image, internal links to matching Signature, `FAQPage` schema, author byline, "Updated {date}". Studio-quality editorial tone per brand guardrails — no AI slop, no invented itineraries.
+All Tier 1 articles now carry the intent-aware **StoryInternalLinks** block (wine → wine-and-gastronomy plan; day-trip → 5-day plan; private → 7/14-day plan by region), routing US readers to Studio + matching Signature + matching itinerary.
 
-## Phase 3 — Authority (weeks 2–12, parallel)
+### ✅ Phase 2 Tier 2 — Planners & regional guides (LIVE)
+- `/plan/5-day-portugal-itinerary`, `/plan/7-day-portugal-itinerary`, `/plan/14-day-portugal-itinerary` (+ existing `/itineraries/10-day-private-portugal-tour`).
+- `/plan/portugal-wine-and-gastronomy` pillar.
+- Regional guides: `/plan/lisbon`, `/plan/sintra`, `/plan/alentejo`, `/plan/arrabida`, `/plan/comporta`, `/plan/costa-vicentina`.
+- Hub at `/plan` with CollectionPage + ItemList JSON-LD.
 
-- **5 quality backlinks** — the biggest AS 0 → AS 20+ unlock:
-  1. Guest post on a US Portugal-travel blog (Salt in our Hair, Portugalist).
-  2. Pitch Condé Nast Traveler / Travel+Leisure "small-group operators" roundups.
-  3. Partner links from wine estates, Sintra hotels, Lisbon concierges in current tours.
-  4. HARO / Qwoted replies to US travel-journalist Portugal queries.
-  5. Portuguese-American associations, US-Portugal chambers of commerce.
-- **Google Business Profile** in Lisbon → US "map pack" for "Portugal tours from Lisbon".
+---
 
-## Phase 4 — Measure & double down (ongoing)
+## Next priorities (revised)
 
-- Weekly `semrush--seo_trend`; note each keyword entering top-100.
-- Monthly `semrush--top_pages` → publish more of what pulls traffic.
-- Search Console: track US impressions, iterate titles on pages with impressions but low CTR.
+### Tier 3 — Fill remaining high-intent US gaps
+Draft in this order; each needs `keyword_research` (US database) before publishing.
+
+1. `/plan/douro-valley-wine-tour-from-porto` — "douro valley wine tour" (US)
+2. `/plan/lisbon-to-sintra-day-trip` — "day trip to sintra from lisbon"
+3. `/plan/best-time-to-visit-portugal` — "best time to visit portugal"
+4. `/plan/portugal-honeymoon` — "portugal honeymoon"
+5. `/guides/arrabida-vs-douro` — comparison, low-KDI long-tail
+6. `/guides/is-portugal-safe-for-americans` — reassurance intent, high US volume
+
+Each: 900–1,400 words, one real hero image, `FAQPage` schema, author byline, "Updated {date}", intent-aware internal-link block to Studio + Signature + matching plan.
+
+### Positioning & schema refresh (differentiators)
+Weave these into every existing Tier 1/2 page + new Tier 3:
+- **Real-time itinerary builder + instant confirmation** → surface on tour pages and pillars in the standfirst *and* in `TouristTrip` / `Offer` schema (`availability: InStock`, `validFrom/validThrough`, "Instant confirmation" in `Offer.description`).
+- **"Travel Designer" + "personalized private"** → primary CTA copy on every editorial page ("Talk to a Travel Designer") + `Service` schema on `/multi-day` and `/plan/*` pillars with `serviceType: "Private travel design"`.
+- **Local & hidden Portugal + "only in Portugal"** → hero eyebrow / `about` prop in schema (`about: [{name: "Local & hidden Portugal"}, {name: "Unique in Portugal"}]`), plus in-copy anchor phrase per article.
+
+### Phase 3 — Authority (ongoing, parallel)
+Unchanged. Backlink outreach + Google Business Profile remain with the user; agent drafts pitch copy on request.
+1. Guest post on Salt in our Hair / Portugalist.
+2. Pitch Condé Nast Traveler / Travel+Leisure "small-group operators" roundups.
+3. Partner links from wine estates, Sintra hotels, Lisbon concierges.
+4. HARO / Qwoted replies to US Portugal queries.
+5. Portuguese-American associations, US-Portugal chambers of commerce.
+6. Google Business Profile in Lisbon → US "map pack".
+
+### Phase 4 — Measure
+- Weekly `semrush--seo_trend`; note US keywords entering top-100.
+- Monthly `semrush--top_pages` → double down on what pulls.
+- Search Console: US impressions + CTR iteration on pages with impressions but weak CTR.
 
 ---
 
 ## What I'll do first if you approve
-1. `semrush--keyword_research` on all 10 candidate phrases (US database) to validate volume + KDI and surface stronger variants — especially confirming the three "from Lisbon" pillars have the volume/difficulty I expect.
-2. Rewrite metadata on the 10 real pages (Phase 1 step 2).
-3. Add USD display + real `AggregateRating` schema on tour pages.
-4. Draft the three Tier 1 Lisbon pillar pages first for your review before publishing, then Tier 2.
-
-Backlink outreach + Google Business Profile stay with you — I can draft pitch emails and profile copy, but the relationships and account ownership are yours.
+1. `semrush--keyword_research` on the six Tier 3 phrases (US) to lock volume + KDI before drafting.
+2. Weave the four positioning anchors (local & hidden · personalized private + Travel Designer · real-time builder + instant confirmation · only in Portugal) into existing Tier 1/2 standfirsts and JSON-LD.
+3. Draft Tier 3 pages in the order above for your review before publishing.
 
 ## Out of scope (per guardrails)
-- No invented itineraries, partners, or review counts.
-- No head-term SEO ("Portugal tours") until AS climbs.
+- No invented itineraries, partners, review counts, or prices.
+- No head-term SEO ("Portugal tours") until Authority Score climbs.
 - No generic AI travel content — every guide passes the Studio philosophy check.
 - No changes to Studio, homepage hero copy, or brand tokens.
