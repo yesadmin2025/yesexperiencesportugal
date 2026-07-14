@@ -6,10 +6,11 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
-import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
-import guestQuintaGroup from "@/assets/guests/quinta-group.jpg.asset.json";
+import imgAzeitaoWorkshop from "@/assets/tours/azeitao-cheese/workshop.jpg";
+import imgEvoraTemple from "@/assets/tours/evora-alentejo/temple.jpg";
 import guestArrabidaViewpoint from "@/assets/guests/arrabida-viewpoint-group.jpg.asset.json";
-const imgCorporateGroup = guestQuintaGroup.url;
+const imgCorporateGroup = imgAzeitaoWorkshop;
+const imgOffsiteRetreat = imgEvoraTemple;
 const imgDiscreetViewpoint = guestArrabidaViewpoint.url;
 
 
