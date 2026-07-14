@@ -318,6 +318,8 @@ export const INITIAL_STATE: StudioV3State = {
   dateExact: null,
   pickup: null,
   guests: null,
+  adults: null,
+  minorAges: [],
   interests: [],
   rhythm: null,
   considerations: [],
