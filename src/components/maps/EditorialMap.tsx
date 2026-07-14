@@ -200,6 +200,7 @@ export function EditorialMap({
       ref={ref}
       role="img"
       aria-label={a11y}
+      data-motion-surface="editorial-map"
       className={`relative overflow-hidden border ${className ?? ""}`}
       style={{
         aspectRatio,
