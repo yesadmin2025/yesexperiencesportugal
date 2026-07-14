@@ -107,7 +107,7 @@ test.describe("motion perf @perf", () => {
     ).toBeLessThanOrEqual(MAX_MEDIAN_FRAME_MS);
 
     // Editorial hover-zoom: hover a gallery figure and re-measure frames.
-    const zoomFig = page.locator('[data-motion-surface="editorial-zoom"]').first();
+    const zoomFig = page.locator(".editorial-zoom").first();
     if (await zoomFig.count()) {
       await zoomFig.scrollIntoViewIfNeeded();
       const boundingBox = await zoomFig.boundingBox();

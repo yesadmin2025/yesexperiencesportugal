@@ -17,6 +17,7 @@ import { installResetBlankCheckFilter } from "@/lib/silence-reset-blank-check";
 import { installIframeFooterGuard } from "@/lib/iframe-footer-guard";
 import { installClientErrorLogger } from "@/lib/client-error-logger";
 import { installDevHardReload } from "@/lib/dev-hard-reload";
+import { installMotionPerfDetector } from "@/lib/motion-perf-detector";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
 import { installAnalyticsAttrs } from "@/lib/analytics";
@@ -257,6 +258,7 @@ function RootComponent() {
   useIframeFooterGuard();
   useEffect(() => installClientErrorLogger(), []);
   useEffect(() => installDevHardReload(), []);
+  useEffect(() => installMotionPerfDetector(), []);
   useEffect(() => installAnalyticsAttrs(), []);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { locale } = parseLocaleFromPath(pathname);
