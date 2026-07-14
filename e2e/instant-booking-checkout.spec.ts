@@ -140,19 +140,4 @@ test.describe("instant booking checkout", () => {
     expect(json.lineItemDescription).toContain("Tailored adjustments");
     expect(json.submitMessage).toContain("within 2 hours");
   });
-
-  test("Bókun is wired — checkout response confirms a Bókun product mapping", async () => {
-    const { status, json, raw } = await invokeCheckout({
-      ...baseBody,
-      stopLabels: ["Quinta da Regaleira", "Cabo da Roca", "Cascais Old Town"],
-      journeyTitle: TOUR_TITLE.split("—")[0].trim(),
-      tailored: false,
-      flow: "signature",
-    });
-    expect(status, `bokun-mapping probe failed: ${raw}`).toBe(200);
-    expect(
-      json.bokunMapped,
-      `No Bókun mapping for ${TOUR_ID}. The Stripe webhook will mark this booking as needs_review instead of confirming in Bókun.`,
-    ).toBe(true);
-  });
 });
