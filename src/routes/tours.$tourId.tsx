@@ -36,10 +36,16 @@ import { RelatedExperiencesRail } from "@/components/RelatedExperiencesRail";
 import { rankRelatedTours, relatedStoriesForTour, seedFromTour } from "@/lib/related-experiences";
 
 export const Route = createFileRoute("/tours/$tourId")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const tour = findTour(params.tourId);
     if (!tour) throw notFound();
-    return { tour };
+    // Fetch real review data server-side so AggregateRating ships in initial
+    // HTML (crawler-visible). Failures fall back to Viator meta in head().
+    const [stats, reviews] = await Promise.all([
+      getTourReviewStats({ data: { tourId: params.tourId } }).catch(() => null),
+      getTourReviews({ data: { tourId: params.tourId, limit: 8 } }).catch(() => []),
+    ]);
+    return { tour, reviewStats: stats, reviewList: reviews };
   },
   head: ({ params, loaderData }) => {
     const url = `https://yesexperiencesportugal.com/tours/${params.tourId}`;
