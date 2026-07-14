@@ -133,6 +133,7 @@ function CorporatePage() {
               <article
                 key={b.eyebrow}
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
+                style={{ transitionDelay: `${i * 90}ms`, animationDelay: `${i * 90}ms` }}
               >
                 <figure className="editorial-zoom">
                   <img
@@ -142,23 +143,30 @@ function CorporatePage() {
                     className="w-full aspect-[4/5] md:aspect-[5/6] object-cover"
                   />
                 </figure>
-                <div>
-                  <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
-                  <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
-                  <SectionTitle size="compact" spacing="loose">
-                    {b.title}
-                  </SectionTitle>
-                  <p className="mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
+                <div className="reveal editorial-cascade">
+                  <div className="reveal-stagger">
+                    <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
+                  </div>
+                  <div className="reveal-stagger">
+                    <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
+                  </div>
+                  <div className="reveal-stagger">
+                    <SectionTitle size="compact" spacing="loose">
+                      {b.title}
+                    </SectionTitle>
+                  </div>
+                  <p className="reveal-stagger mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
                     {b.emotional}
                   </p>
-                  <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
+                  <p className="reveal-stagger mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
                     {b.practical}
                   </p>
-                  <div className="mt-5 pl-4 border-l-2 border-[color:var(--gold)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
+                  <div className="reveal-stagger mt-5 pl-4 border-l-2 border-[color:var(--gold)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
                     {b.local}
                   </div>
                 </div>
               </article>
+
             );
           })}
         </div>
