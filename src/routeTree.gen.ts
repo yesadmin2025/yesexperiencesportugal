@@ -55,6 +55,7 @@ import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentej
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PtIndexRouteImport } from './routes/pt.index'
+import { Route as PlanIndexRouteImport } from './routes/plan.index'
 import { Route as LocalStoriesIndexRouteImport } from './routes/local-stories.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
@@ -356,6 +357,11 @@ const PtIndexRoute = PtIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PtRoute,
+} as any)
+const PlanIndexRoute = PlanIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PlanRoute,
 } as any)
 const LocalStoriesIndexRoute = LocalStoriesIndexRouteImport.update({
   id: '/',
@@ -730,7 +736,7 @@ export interface FileRoutesByFullPath {
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
-  '/plan': typeof PlanRoute
+  '/plan': typeof PlanRouteWithChildren
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -807,6 +813,7 @@ export interface FileRoutesByFullPath {
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
+  '/plan/': typeof PlanIndexRoute
   '/pt/': typeof PtIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -845,7 +852,6 @@ export interface FileRoutesByTo {
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
-  '/plan': typeof PlanRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -921,6 +927,7 @@ export interface FileRoutesByTo {
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/local-stories': typeof LocalStoriesIndexRoute
+  '/plan': typeof PlanIndexRoute
   '/pt': typeof PtIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -961,7 +968,7 @@ export interface FileRoutesById {
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
-  '/plan': typeof PlanRoute
+  '/plan': typeof PlanRouteWithChildren
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -1038,6 +1045,7 @@ export interface FileRoutesById {
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
+  '/plan/': typeof PlanIndexRoute
   '/pt/': typeof PtIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -1156,6 +1164,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/admin/'
     | '/local-stories/'
+    | '/plan/'
     | '/pt/'
     | '/api/public/contact'
     | '/lovable/email/suppression'
@@ -1194,7 +1203,6 @@ export interface FileRouteTypes {
     | '/luxury-tours-portugal'
     | '/moments'
     | '/multi-day'
-    | '/plan'
     | '/portugal-tours'
     | '/portugal-travel-designer'
     | '/portugal-wine-tours'
@@ -1270,6 +1278,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/admin'
     | '/local-stories'
+    | '/plan'
     | '/pt'
     | '/api/public/contact'
     | '/lovable/email/suppression'
@@ -1386,6 +1395,7 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/admin/'
     | '/local-stories/'
+    | '/plan/'
     | '/pt/'
     | '/api/public/contact'
     | '/lovable/email/suppression'
@@ -1426,7 +1436,7 @@ export interface RootRouteChildren {
   LuxuryToursPortugalRoute: typeof LuxuryToursPortugalRoute
   MomentsRoute: typeof MomentsRoute
   MultiDayRoute: typeof MultiDayRoute
-  PlanRoute: typeof PlanRoute
+  PlanRoute: typeof PlanRouteWithChildren
   PortugalToursRoute: typeof PortugalToursRoute
   PortugalTravelDesignerRoute: typeof PortugalTravelDesignerRoute
   PortugalWineToursRoute: typeof PortugalWineToursRoute
@@ -1824,6 +1834,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/pt/'
       preLoaderRoute: typeof PtIndexRouteImport
       parentRoute: typeof PtRoute
+    }
+    '/plan/': {
+      id: '/plan/'
+      path: '/'
+      fullPath: '/plan/'
+      preLoaderRoute: typeof PlanIndexRouteImport
+      parentRoute: typeof PlanRoute
     }
     '/local-stories/': {
       id: '/local-stories/'
@@ -2318,6 +2335,16 @@ const LocalStoriesRouteWithChildren = LocalStoriesRoute._addFileChildren(
   LocalStoriesRouteChildren,
 )
 
+interface PlanRouteChildren {
+  PlanIndexRoute: typeof PlanIndexRoute
+}
+
+const PlanRouteChildren: PlanRouteChildren = {
+  PlanIndexRoute: PlanIndexRoute,
+}
+
+const PlanRouteWithChildren = PlanRoute._addFileChildren(PlanRouteChildren)
+
 interface PtRouteChildren {
   PtSplatRoute: typeof PtSplatRoute
   PtAboutRoute: typeof PtAboutRoute
@@ -2402,7 +2429,7 @@ const rootRouteChildren: RootRouteChildren = {
   LuxuryToursPortugalRoute: LuxuryToursPortugalRoute,
   MomentsRoute: MomentsRoute,
   MultiDayRoute: MultiDayRoute,
-  PlanRoute: PlanRoute,
+  PlanRoute: PlanRouteWithChildren,
   PortugalToursRoute: PortugalToursRoute,
   PortugalTravelDesignerRoute: PortugalTravelDesignerRoute,
   PortugalWineToursRoute: PortugalWineToursRoute,
