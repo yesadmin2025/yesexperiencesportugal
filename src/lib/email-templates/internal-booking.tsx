@@ -20,7 +20,7 @@ export interface InternalBookingProps {
   guests?: number | null;
   amountFormatted?: string | null;
   bookingRef?: string | null;
-  bokunConfirmation?: string | null;
+  
   pickup?: string | null;
 }
 
@@ -62,7 +62,7 @@ const InternalBooking: React.FC<InternalBookingProps> = (p) => (
     <Body style={main}>
       <Container style={container}>
         <Heading style={h1}>New booking confirmed</Heading>
-        <Text style={sub}>Stripe payment · Bókun mapped</Text>
+        <Text style={sub}>Stripe payment confirmed</Text>
 
         <Field label="Guest" value={p.customerName} />
         <Field label="Email" value={p.customerEmail} />
@@ -73,11 +73,10 @@ const InternalBooking: React.FC<InternalBookingProps> = (p) => (
         <Field label="Amount" value={p.amountFormatted} />
         <Field label="Pickup" value={p.pickup} />
         <Field label="Stripe session" value={p.bookingRef} />
-        <Field label="Bókun confirmation" value={p.bokunConfirmation} />
 
         <Text style={{ ...value, color: "#666", fontSize: 12, marginTop: 22 }}>
-          The guest has already received the branded receipt. Bókun should have notified you
-          separately — cross-check the confirmation code above.
+          The guest has already received the branded receipt. Reach out to confirm the final
+          logistics with the local host.
         </Text>
       </Container>
     </Body>
@@ -100,6 +99,5 @@ export const template = {
     guests: 2,
     amountFormatted: "€ 690,00",
     bookingRef: "cs_live_a1b2c3",
-    bokunConfirmation: "BK-000123",
   },
 } satisfies TemplateEntry;

@@ -45,7 +45,7 @@ const ROUTE_D = "M 70 60 C 78 92, 90 116, 110 138 S 138 178, 154 206";
 const FALLBACK_LEN = 260;
 
 // Preview-only figures. Marked as a draft on screen so we never imply a
-// final, payable quote — actual pricing lands at /builder + Bokun.
+// final, payable quote — actual pricing lands at /builder + Stripe.
 const DRAFT_STEP = 2;
 const DRAFT_STEPS_TOTAL = 3;
 const DRAFT_INVESTMENT_EUR = 145;

@@ -1,4 +1,4 @@
-// Stripe webhook → records the booking in Supabase, attempts Bokun push for Signatures.
+// Stripe webhook → records the booking in Supabase.
 // One endpoint serves BOTH sandbox and live; both webhook secrets are tried so Stripe
 // can post from either mode to the same URL.
 //
@@ -6,16 +6,10 @@
 //   STRIPE_LIVE_API_KEY, STRIPE_SANDBOX_API_KEY        (already set)
 //   STRIPE_WEBHOOK_SECRET_LIVE                          (whsec_… from live endpoint)
 //   STRIPE_WEBHOOK_SECRET_SANDBOX                       (whsec_… from sandbox endpoint)
-//   BOKUN_ACCESS_KEY, BOKUN_SECRET_KEY                  (already set)
 
 import Stripe from "https://esm.sh/stripe@22.0.2";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { createStripeClient, type StripeEnv } from "../_shared/stripe.ts";
-import {
-  getActivityAvailabilities,
-  reserveAndConfirm,
-  type AvailabilitySlot,
-} from "../_shared/bokun.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -158,7 +152,7 @@ Deno.serve(async (req) => {
   // Upsert booking — unique on stripe_session_id.
   const { data: existing } = await admin
     .from("bookings")
-    .select("id, bokun_status")
+    .select("id")
     .eq("stripe_session_id", session.id)
     .maybeSingle();
 
@@ -198,131 +192,6 @@ Deno.serve(async (req) => {
   } else {
     await admin.from("bookings").update(baseRow).eq("id", bookingId);
   }
-
-  // Only Signature bookings push to Bokun. Builder/Moments are Stripe-only by design.
-  if (bookingType !== "signature" || !tourId) {
-    return new Response(JSON.stringify({ ok: true, bookingId, bokun: "skipped" }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  // Avoid double-push if a previous attempt already succeeded.
-  if (existing?.bokun_status === "confirmed") {
-    return new Response(JSON.stringify({ ok: true, bookingId, bokun: "already_confirmed" }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-
-  // Attempt Bokun push (non-blocking for Stripe — we always 200 after recording).
-  let bokunResult: {
-    status: string;
-    booking_id?: string;
-    confirmation?: string;
-    error?: string;
-  } = { status: "skipped" };
-
-  try {
-    const { data: mapping } = await admin
-      .from("tour_bokun_mapping")
-      .select("bokun_product_id")
-      .eq("tour_id", tourId)
-      .maybeSingle();
-
-    if (!mapping?.bokun_product_id) {
-      bokunResult = { status: "needs_review", error: "No Bokun mapping for this tour" };
-    } else if (!dateExact) {
-      bokunResult = { status: "needs_review", error: "Customer did not select an exact date" };
-    } else {
-      const slots = (await getActivityAvailabilities(
-        mapping.bokun_product_id,
-        dateExact,
-      )) as AvailabilitySlot[];
-      const usable = slots.filter((s) => (s.availabilityCount ?? 1) >= guests);
-
-      // If the customer picked a specific slot in FinalDetailsDialog, lock to it.
-      const lockedId = Number(meta.bokun_availability_id ?? 0);
-      const lockedSlot =
-        lockedId > 0 ? (usable.find((s) => Number(s.id) === lockedId) ?? null) : null;
-
-      let chosen: AvailabilitySlot | null = lockedSlot;
-      let ambiguousReason: string | null = null;
-
-      if (!chosen) {
-        if (usable.length === 0) {
-          ambiguousReason = `No Bokun availability on ${dateExact} for ${guests} guests`;
-        } else if (usable.length === 1) {
-          chosen = usable[0];
-        } else {
-          ambiguousReason = `Multiple Bokun slots on ${dateExact} (${usable.length}) — pick one manually`;
-        }
-      }
-
-      if (!chosen) {
-        bokunResult = { status: "needs_review", error: ambiguousReason ?? "No slot resolved" };
-      } else {
-        const slot = chosen;
-        const cat = slot.pricingCategories?.[0];
-        if (!cat) {
-          bokunResult = {
-            status: "needs_review",
-            error: "Bokun slot has no pricing category",
-          };
-        } else {
-          const [firstName, ...rest] = (customerName ?? "Guest Guest").split(" ");
-          const lastName = rest.join(" ") || "—";
-          const isTailored = meta.tailored === "1";
-          const stopsLine = meta.stops ? ` · Stops: ${meta.stops.replace(/\|/g, ", ")}` : "";
-          const tailorPrefix = isTailored ? "[TAILORED — operator to verify stop changes] " : "";
-          const r = await reserveAndConfirm({
-            productId: mapping.bokun_product_id,
-            availabilityId: slot.id,
-            startTime: slot.startTime,
-            date: slot.date,
-            guests,
-            pricingCategoryId: cat.id,
-            customer: {
-              firstName,
-              lastName,
-              email: customerEmail ?? "noreply@yesexperiencesportugal.com",
-              phoneNumber: customerPhone ?? undefined,
-              language: "EN",
-            },
-            externalBookingReference: session.id,
-            notes:
-              `${tailorPrefix}YES booking · ${meta.pickup ?? ""} · ${meta.journey_title ?? ""}${stopsLine}`.slice(
-                0,
-                500,
-              ),
-          });
-          bokunResult = {
-            // Tailored bookings always land in needs_review so the operator
-            // reconciles the stop changes against the base Bokun product.
-            status: isTailored ? "needs_review" : "confirmed",
-            booking_id: r.bookingId,
-            confirmation: r.confirmationCode,
-            error: isTailored ? "Tailored itinerary — verify stop changes in Bokun" : undefined,
-          };
-        }
-      }
-    }
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    console.error("Bokun push failed:", msg);
-    bokunResult = { status: "failed", error: msg };
-  }
-
-  await admin
-    .from("bookings")
-    .update({
-      bokun_status: bokunResult.status,
-      bokun_booking_id: bokunResult.booking_id ?? null,
-      bokun_confirmation_code: bokunResult.confirmation ?? null,
-      bokun_error: bokunResult.error ?? null,
-      bokun_last_attempt_at: new Date().toISOString(),
-    })
-    .eq("id", bookingId);
 
   // Fire-and-forget: send branded checkout confirmation email with receipt link.
   // Non-blocking so a failure here never breaks Stripe delivery.
@@ -367,7 +236,7 @@ Deno.serve(async (req) => {
           guests,
           amountFormatted,
           bookingRef: session.id,
-          bokunConfirmation: bokunResult.confirmation ?? null,
+          
           receiptUrl,
           bookingStatusUrl: `${siteUrl}/booking-confirmed?session_id=${encodeURIComponent(session.id)}`,
           pickup: meta.pickup || null,
@@ -395,7 +264,7 @@ Deno.serve(async (req) => {
     console.error("send checkout email failed:", e instanceof Error ? e.message : e);
   }
 
-  return new Response(JSON.stringify({ ok: true, bookingId, bokun: bokunResult }), {
+  return new Response(JSON.stringify({ ok: true, bookingId }), {
     status: 200,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });

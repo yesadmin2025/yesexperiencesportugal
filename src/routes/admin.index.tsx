@@ -4,7 +4,7 @@
 
 import { createFileRoute, Link, useRouter, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { RefreshCw, Mail, Sparkles, CalendarCheck2, ExternalLink } from "lucide-react";
+import { RefreshCw, Mail, Sparkles, CalendarCheck2 } from "lucide-react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +21,7 @@ type BookingRow = {
   amount_total: number | null;
   currency: string | null;
   status: string | null;
-  bokun_status: string | null;
+  
 };
 
 type ContactRow = {
@@ -162,7 +162,7 @@ function AdminOverviewPage() {
       supabase
         .from("bookings")
         .select(
-          "id, created_at, customer_name, customer_email, customer_phone, guests, preferred_date, source_tour_id, amount_total, currency, status, bokun_status",
+          "id, created_at, customer_name, customer_email, customer_phone, guests, preferred_date, source_tour_id, amount_total, currency, status",
         )
         .order("created_at", { ascending: false })
         .limit(20),
@@ -315,15 +315,7 @@ function AdminOverviewPage() {
         {/* Bookings */}
         <Panel
           title="Últimas reservas"
-          hint="Cada linha é um pagamento/pedido em bookings. Para gestão detalhada abre a review completa."
-          action={
-            <Link
-              to="/admin/bookings"
-              className="text-xs inline-flex items-center gap-1 text-[color:var(--teal)] hover:underline"
-            >
-              Ver todas <ExternalLink size={11} />
-            </Link>
-          }
+          hint="Cada linha é um pagamento/pedido em bookings."
         >
           {bookings && bookings.length > 0 ? (
             <div className="overflow-x-auto">
@@ -359,11 +351,6 @@ function AdminOverviewPage() {
                       <Td>{formatMoney(b.amount_total, b.currency)}</Td>
                       <Td>
                         <StatusBadge value={b.status} />
-                        {b.bokun_status && (
-                          <div className="mt-1 text-[10px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
-                            bokun: {b.bokun_status}
-                          </div>
-                        )}
                       </Td>
                     </tr>
                   ))}

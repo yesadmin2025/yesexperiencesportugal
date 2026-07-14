@@ -17,21 +17,18 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Clock, Loader2, Lock } from "lucide-react";
+import { ArrowLeft, Lock } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
-import { supabase } from "@/integrations/supabase/client";
 import type { GuestDetails, FinalDetailsInitial } from "@/components/checkout/FinalDetailsDialog";
 import { prewarmStripeScript } from "@/components/checkout/BrandedCheckoutDrawer";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export interface GuestDetailsStepProps {
-  /** Signature tour id used to resolve the Bókun product → time slots. */
+  /** Signature tour id — recorded on the checkout session for the host. */
   readonly tourId?: string;
-  /** Optional explicit Bókun product id (Studio custom paths). */
-  readonly bokunProductId?: string | number;
   readonly initial?: FinalDetailsInitial;
   readonly journeyTitle?: string;
   readonly submitting?: boolean;
@@ -48,17 +45,9 @@ export interface GuestDetailsStepProps {
   readonly testId?: string;
 }
 
-interface SlotOption {
-  availabilityId: number;
-  startTime: string;
-  availabilityCount: number | null;
-}
-
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
 export function GuestDetailsStep({
-  tourId,
-  bokunProductId,
   initial,
   journeyTitle,
   submitting = false,
@@ -82,13 +71,6 @@ export function GuestDetailsStep({
   const [occasion, setOccasion] = useState("");
   const [guideNotes, setGuideNotes] = useState(initial?.guideNotes ?? "");
 
-  const [slots, setSlots] = useState<SlotOption[]>([]);
-  const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);
-  const [slotsLoading, setSlotsLoading] = useState(false);
-  const [slotsError, setSlotsError] = useState<string | null>(null);
-  const [slotsMapped, setSlotsMapped] = useState(false);
-  const slotsFetchToken = useRef(0);
-
   const [storySent, setStorySent] = useState(false);
   const sentEmailRef = useRef<string | null>(null);
   const blurTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -98,9 +80,7 @@ export function GuestDetailsStep({
   }, []);
 
   // P2 #16 — reset scroll to top on mount so travellers land on the
-  // "Almost there" header, not mid-form (previous phase's scroll position
-  // otherwise leaks into this step because the composer + guest-details
-  // share the same scroll container).
+  // "Almost there" header, not mid-form.
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "auto" });
@@ -126,47 +106,6 @@ export function GuestDetailsStep({
     }, 400);
   };
 
-  // Fetch availability whenever date or tour changes.
-  useEffect(() => {
-    if (!tourDate || (!tourId && !bokunProductId)) {
-      setSlots([]);
-      setSelectedSlot(null);
-      setSlotsMapped(false);
-      setSlotsError(null);
-      return;
-    }
-    const token = ++slotsFetchToken.current;
-    setSlotsLoading(true);
-    setSlotsError(null);
-    setSelectedSlot(null);
-    void (async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke("bokun-availability", {
-          body: { tourId, bokunProductId, date: tourDate },
-        });
-        if (token !== slotsFetchToken.current) return;
-        if (error) throw error;
-        const result = (data ?? {}) as {
-          slots?: SlotOption[];
-          mapped?: boolean;
-          error?: string;
-        };
-        setSlotsMapped(Boolean(result.mapped));
-        setSlots(Array.isArray(result.slots) ? result.slots : []);
-        if (result.error === "availability_unavailable") {
-          setSlotsError("Live availability unavailable — your host will confirm a time.");
-        }
-      } catch (e) {
-        if (token !== slotsFetchToken.current) return;
-        console.error("[GuestDetailsStep] availability fetch failed", e);
-        setSlots([]);
-        setSlotsError("Live availability unavailable — your host will confirm a time.");
-      } finally {
-        if (token === slotsFetchToken.current) setSlotsLoading(false);
-      }
-    })();
-  }, [tourDate, tourId, bokunProductId]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
@@ -177,7 +116,6 @@ export function GuestDetailsStep({
     if (!tourDate) missing.push("tour date");
     if (!guests || guests < 1) missing.push("number of guests");
     if (!pickupAddress.trim()) missing.push("pickup address");
-    if (slotsMapped && slots.length > 0 && !selectedSlot) missing.push("start time");
     if (missing.length) {
       toast.error(`Please complete: ${missing.join(", ")}`);
       return;
@@ -187,8 +125,6 @@ export function GuestDetailsStep({
       email: email.trim(),
       phone: phone.trim(),
       tourDate,
-      startTime: selectedSlot?.startTime,
-      bokunAvailabilityId: selectedSlot?.availabilityId,
       guests,
       pickupAddress: pickupAddress.trim(),
       language,
@@ -329,55 +265,6 @@ export function GuestDetailsStep({
               </button>
             </div>
           </Field>
-          {(tourId || bokunProductId) && tourDate ? (
-            <Field
-              label="Start time"
-              required={slotsMapped && slots.length > 0}
-              hint={
-                slotsLoading
-                  ? "Checking…"
-                  : slots.length > 0
-                    ? `${slots.length} time${slots.length > 1 ? "s" : ""} available`
-                    : undefined
-              }
-            >
-              {slotsLoading ? (
-                <div className="flex items-center gap-2 border border-[color:var(--border)] px-3 py-2.5 text-sm text-[color:var(--charcoal-soft)]">
-                  <Loader2 size={14} className="animate-spin" />
-                  Checking live availability…
-                </div>
-              ) : slots.length > 0 ? (
-                <div className="grid grid-cols-3 gap-2">
-                  {slots.map((s) => {
-                    const active = selectedSlot?.availabilityId === s.availabilityId;
-                    return (
-                      <button
-                        key={s.availabilityId}
-                        type="button"
-                        onClick={() => setSelectedSlot(s)}
-                        aria-pressed={active}
-                        className={[
-                          "flex items-center justify-center gap-1.5 border px-2.5 py-2.5 text-sm transition-colors min-h-[44px]",
-                          active
-                            ? "border-[color:var(--teal)] bg-[color:var(--teal)] text-[color:var(--ivory)]"
-                            : "border-[color:var(--border)] bg-[color:var(--ivory)] text-[color:var(--charcoal)] hover:border-[color:var(--gold)]",
-                        ].join(" ")}
-                      >
-                        <Clock size={12} aria-hidden /> {s.startTime}
-                      </button>
-                    );
-                  })}
-                </div>
-              ) : (
-                <p className="text-[12px] text-[color:var(--charcoal-soft)] border border-dashed border-[color:var(--border)] px-3 py-2.5">
-                  {slotsError ??
-                    (slotsMapped
-                      ? "No live slots for this date — your host will confirm a start time after booking."
-                      : "Your host will confirm a start time after booking.")}
-                </p>
-              )}
-            </Field>
-          ) : null}
           <Field label="Pickup address / hotel" required>
             <input
               value={pickupAddress}
@@ -456,8 +343,7 @@ export function GuestDetailsStep({
         </FieldGroup>
 
         {/* Sticky CTA — sits above the virtual keyboard via safe-area padding
-            on the wrapper. Uses fixed positioning so it stays reachable in
-            the ≤ 6-viewport budget from Step 8. */}
+            on the wrapper. */}
         <div
           className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--border)] bg-[color:var(--ivory)]/95 backdrop-blur-sm px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]"
           data-testid="studio-v3-guest-details-cta-bar"
