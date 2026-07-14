@@ -211,6 +211,27 @@ function PillarPage() {
         </div>
       </section>
 
+      {/* Editorial gallery strip — real photos from real days */}
+      <section className="reveal py-14 md:py-20 bg-[color:var(--ivory)] border-t border-[color:var(--border)]">
+        <div className="container-x">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
+            {GALLERY.slice(0, 3).map((p) => (
+              <figure key={p.src} className="overflow-hidden rounded-sm">
+                <img
+                  src={p.src}
+                  alt={p.alt}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full aspect-[4/5] md:aspect-[3/4] object-cover"
+                />
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+
       <RelatedExperiencesRail
         tours={tours}
         stories={stories}
