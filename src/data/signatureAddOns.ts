@@ -457,6 +457,39 @@ export function parseDurationLowerHours(label: string | null | undefined): numbe
 }
 
 /**
+ * Derive a `TimeOfDaySlot` for an add-on. Uses the explicit `timeOfDay`
+ * field when set (owner-approved), else a keyword heuristic on
+ * label + blurb. Conservative — falls back to `"flexible"` when the
+ * signal is ambiguous, so the compatibility filter never drops an
+ * add-on on a guess.
+ */
+export function deriveTimeOfDay(addOn: SignatureAddOn): TimeOfDaySlot {
+  if (addOn.timeOfDay) return addOn.timeOfDay;
+  const t = `${addOn.label} ${addOn.blurb}`.toLowerCase();
+  if (/picnic|lunch|tasting|cheese|boat|kayak|sail/.test(t)) return "midday";
+  if (/cliffs|walls|detour|nazaré|nazare|óbidos|obidos|sintra|cabo da roca/.test(t))
+    return "afternoon";
+  if (/chapel|convent|templar|roman|ruin|morning/.test(t)) return "morning";
+  if (/sunset|dinner|evening|night/.test(t)) return "evening";
+  return "flexible";
+}
+
+/**
+ * Derive the anchor stop reference for an add-on. Returns the explicit
+ * `anchorStopKey` when set, else the sibling `sourceTourId` (which every
+ * add-on already declares). Never fabricates a stop key.
+ */
+export function deriveAnchorStop(addOn: SignatureAddOn): {
+  stopKey: string | null;
+  sourceTourId: string;
+} {
+  return {
+    stopKey: addOn.anchorStopKey ?? null,
+    sourceTourId: addOn.sourceTourId,
+  };
+}
+
+/**
  * Pick up to 3 add-ons appropriate for the resolved itinerary.
  *
  * Filters applied (in order):
@@ -469,7 +502,11 @@ export function parseDurationLowerHours(label: string | null | undefined): numbe
  *      tags derived from the tour's own `included[]` (e.g. a picnic
  *      add-on on a tour that already includes lunch)
  *   4. enforce `minStops` / `minHours` thresholds against the resolved day
- *   5. cap at 3
+ *   5. capacity: drop add-ons whose owner-declared `maxGuests` is below
+ *      the current party size (undefined = no declared cap, keeps it)
+ *   6. time-of-day: after (5), drop later add-ons that would double-book
+ *      the same derived slot ("flexible" never conflicts)
+ *   7. cap at 3
  */
 export function selectSignatureAddOns(opts: {
   resolvedTour:
@@ -478,6 +515,7 @@ export function selectSignatureAddOns(opts: {
     | undefined;
   stopCount: number;
   durationLabel: string | null | undefined;
+  guests?: number;
 }): SignatureAddOn[] {
   if (!opts.resolvedTour) return [];
   const bucket = regionBucket(opts.resolvedTour.region);
@@ -489,7 +527,8 @@ export function selectSignatureAddOns(opts: {
     id: opts.resolvedTour.id,
     included: opts.resolvedTour.included ?? null,
   });
-  return pool
+  const guests = Math.max(1, Math.floor(opts.guests ?? 1));
+  const filtered = pool
     .filter((a) => a.sourceTourId !== opts.resolvedTour!.id)
     .filter((a) => {
       if (bucket !== "lisbon-arrabida") return true;
@@ -502,7 +541,17 @@ export function selectSignatureAddOns(opts: {
     })
     .filter((a) => (a.minStops ? opts.stopCount >= a.minStops : true))
     .filter((a) => (a.minHours ? hours >= a.minHours : true))
-    .slice(0, 3);
+    .filter((a) => (a.maxGuests == null ? true : guests <= a.maxGuests));
+  // Time-of-day de-duplication: keep the first add-on per non-flexible slot.
+  const usedSlots = new Set<TimeOfDaySlot>();
+  const slotFiltered: SignatureAddOn[] = [];
+  for (const a of filtered) {
+    const slot = deriveTimeOfDay(a);
+    if (slot !== "flexible" && usedSlots.has(slot)) continue;
+    if (slot !== "flexible") usedSlots.add(slot);
+    slotFiltered.push(a);
+  }
+  return slotFiltered.slice(0, 3);
 }
 
 /**
@@ -522,11 +571,13 @@ export function selectSignatureAddOnsWithBudget(opts: {
   stopCount: number;
   durationLabel: string | null | undefined;
   remainingMinutes?: number;
+  guests?: number;
 }): Array<{ addOn: SignatureAddOn; fitsBudget: boolean }> {
   const list = selectSignatureAddOns({
     resolvedTour: opts.resolvedTour,
     stopCount: opts.stopCount,
     durationLabel: opts.durationLabel,
+    guests: opts.guests,
   });
   const budget = opts.remainingMinutes;
   return list.map((addOn) => ({
