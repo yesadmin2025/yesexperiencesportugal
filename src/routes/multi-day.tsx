@@ -23,7 +23,6 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import imgMultiDay from "@/assets/multi-day.jpg";
-import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 import { RecentJourney } from "@/components/home/RecentJourney";
 
 
