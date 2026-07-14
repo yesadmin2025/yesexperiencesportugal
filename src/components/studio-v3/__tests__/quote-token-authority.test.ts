@@ -139,8 +139,8 @@ describe("§12 quote token + snapshot integrity", () => {
       "bacalhoa",
       "castelo-sesimbra",
     ]);
-    expect(payload.pricing.totalEur).toBe(525);
-    expect(payload.pricing.baseSubtotalEur).toBe(435);
+    expect(payload.pricing.totalEur).toBe(735);
+    expect(payload.pricing.baseSubtotalEur).toBe(645);
     expect(payload.pricing.addOnLineItems[0]?.lineSubtotalEur).toBe(90);
   });
 

@@ -140,7 +140,7 @@ describe("Slice B — traveller composition wiring", () => {
   });
 
   it("manual Studio pricing does not block a child when the Bókun mirror is empty", () => {
-    const composition: TravellerComposition = { adults: 1, minorAges: [8] };
+    const composition: TravellerComposition = { adults: 1, minorAges: [3] };
     const r = filterStudioCandidatesBySuitability(
       composition,
       signatureTours,

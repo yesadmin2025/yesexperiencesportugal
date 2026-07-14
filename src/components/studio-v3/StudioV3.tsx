@@ -14,9 +14,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { TravellerCompositionPicker } from "@/components/booking/TravellerCompositionPicker";
-import { useTourBokunReadiness } from "@/hooks/use-tour-bokun-readiness";
 import {
-  filterSignatureCandidatesForAges,
   filterStudioCandidatesBySuitability,
 } from "@/lib/pricing/filterSignatureCandidatesForAges";
 import { requirementsFromComposition } from "@/lib/pricing/travellerSuitability";
@@ -3194,7 +3192,6 @@ export function StoryboardHandoff({
   // compatible id set into `resolveStudioV3Route` BEFORE any generation.
   // Loading vs unsupported are kept strictly separate (loading never
   // labels an age as unsupported).
-  const readinessQuery = useTourBokunReadiness();
   const ageFilter = useMemo<
     Parameters<typeof resolveStudioV3Route>[0]["ageFilter"]
   >(() => {
@@ -3203,9 +3200,6 @@ export function StoryboardHandoff({
       minorAges: state.minorAges,
     };
     if (composition.minorAges.length === 0) return null; // adult-only → no filter
-    if (readinessQuery.isLoading || !readinessQuery.data) {
-      return { status: "loading" };
-    }
     const requirements = requirementsFromComposition(composition, {
       requiresChildSeat: false,
       requiresStroller: (state.considerations ?? []).some((c) =>
@@ -3215,7 +3209,7 @@ export function StoryboardHandoff({
     const { compatible, excluded } = filterStudioCandidatesBySuitability(
       composition,
       signatureTours,
-      readinessQuery.data,
+      undefined,
       requirements,
       { requireCategoryReadiness: false },
     );
@@ -3228,7 +3222,7 @@ export function StoryboardHandoff({
       unsupportedAges,
       excludedTourIds: excluded.map((e) => e.tourId),
     };
-  }, [state.guests, state.minorAges, state.considerations, readinessQuery.isLoading, readinessQuery.data]);
+  }, [state.guests, state.minorAges, state.considerations]);
 
   const resolved = useMemo(
     () =>
