@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { Clock, Loader2, Lock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Clock, Lock } from "lucide-react";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import {
   Dialog,
   DialogContent,
@@ -12,27 +11,19 @@ import {
 } from "@/components/ui/dialog";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { prewarmStripeScript } from "@/components/checkout/BrandedCheckoutDrawer";
 
 /**
- * Final details before payment — the last step before Stripe checkout
- * in every instant-book path (Signature, Tailored Signature, Studio).
- *
- * This is *checkout*, not an enquiry: required fields ensure the local
- * host has everything ready; optional fields flow through to Bókun
- * unchanged. The collected payload is passed verbatim into the existing
- * `create-signature-checkout` body under `guestDetails`.
+ * Final details before payment — the last step before Stripe checkout.
+ * Purely internal: date + guest details + optional pickup notes. No
+ * external availability lookup.
  */
 export interface GuestDetails {
   fullName: string;
   email: string;
   phone: string;
   tourDate: string;
-  /** "HH:mm" — present when a Bókun availability slot was selected. */
   startTime?: string;
-  /** Bókun availability slot id, when one was selected. */
-  bokunAvailabilityId?: number;
   guests: number;
   pickupAddress: string;
   language: "en" | "pt";
@@ -61,18 +52,10 @@ interface Props {
   onConfirm: (details: GuestDetails) => Promise<void> | void;
   initial?: FinalDetailsInitial;
   submitting?: boolean;
-  /** Signature tour id used to resolve the Bókun product → time slots. */
+  /** Signature tour id — passed through to the checkout endpoint. */
   tourId?: string;
-  /** Optional explicit Bókun product id (Studio custom paths). */
-  bokunProductId?: string | number;
   /** Keep the traveller composition chosen on the previous screen intact. */
   lockGuestCount?: boolean;
-}
-
-interface SlotOption {
-  availabilityId: number;
-  startTime: string;
-  availabilityCount: number | null;
 }
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -83,8 +66,7 @@ export function FinalDetailsDialog({
   onConfirm,
   initial,
   submitting = false,
-  tourId,
-  bokunProductId,
+  tourId: _tourId,
   lockGuestCount = false,
 }: Props) {
   const [fullName, setFullName] = useState("");
@@ -101,14 +83,6 @@ export function FinalDetailsDialog({
   const [occasion, setOccasion] = useState("");
   const [guideNotes, setGuideNotes] = useState("");
 
-  // Bókun time-slot state
-  const [slots, setSlots] = useState<SlotOption[]>([]);
-  const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);
-  const [slotsLoading, setSlotsLoading] = useState(false);
-  const [slotsError, setSlotsError] = useState<string | null>(null);
-  const [slotsMapped, setSlotsMapped] = useState(false);
-  const slotsFetchToken = useRef(0);
-
   useEffect(() => {
     if (!open) return;
     prewarmStripeScript();
@@ -116,50 +90,7 @@ export function FinalDetailsDialog({
     if (initial?.guests) setGuests(initial.guests);
     if (initial?.pickupAddress) setPickupAddress(initial.pickupAddress);
     if (initial?.language) setLanguage(initial.language);
-    // mainContact defaults to fullName if left blank — keeps the form short.
   }, [open, initial?.tourDate, initial?.guests, initial?.pickupAddress, initial?.language]);
-
-  // Fetch availability whenever date or tour changes.
-  useEffect(() => {
-    if (!open) return;
-    if (!tourDate || (!tourId && !bokunProductId)) {
-      setSlots([]);
-      setSelectedSlot(null);
-      setSlotsMapped(false);
-      setSlotsError(null);
-      return;
-    }
-    const token = ++slotsFetchToken.current;
-    setSlotsLoading(true);
-    setSlotsError(null);
-    setSelectedSlot(null);
-    void (async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke("bokun-availability", {
-          body: { tourId, bokunProductId, date: tourDate },
-        });
-        if (token !== slotsFetchToken.current) return;
-        if (error) throw error;
-        const result = (data ?? {}) as {
-          slots?: SlotOption[];
-          mapped?: boolean;
-          error?: string;
-        };
-        setSlotsMapped(Boolean(result.mapped));
-        setSlots(Array.isArray(result.slots) ? result.slots : []);
-        if (result.error === "availability_unavailable") {
-          setSlotsError("Live availability unavailable — your host will confirm a time.");
-        }
-      } catch (e) {
-        if (token !== slotsFetchToken.current) return;
-        console.error("[FinalDetailsDialog] availability fetch failed", e);
-        setSlots([]);
-        setSlotsError("Live availability unavailable — your host will confirm a time.");
-      } finally {
-        if (token === slotsFetchToken.current) setSlotsLoading(false);
-      }
-    })();
-  }, [open, tourDate, tourId, bokunProductId]);
 
   const handleSubmit = async () => {
     if (submitting) return;
@@ -170,8 +101,6 @@ export function FinalDetailsDialog({
     if (!tourDate) missing.push("tour date");
     if (!guests || guests < 1) missing.push("number of guests");
     if (!pickupAddress.trim()) missing.push("pickup address");
-    // Time slot is only required when Bókun returned slots for this date.
-    if (slotsMapped && slots.length > 0 && !selectedSlot) missing.push("start time");
     if (missing.length) {
       toast.error(`Please complete: ${missing.join(", ")}`);
       return;
@@ -181,8 +110,6 @@ export function FinalDetailsDialog({
       email: email.trim(),
       phone: phone.trim(),
       tourDate,
-      startTime: selectedSlot?.startTime,
-      bokunAvailabilityId: selectedSlot?.availabilityId,
       guests,
       pickupAddress: pickupAddress.trim(),
       language,
@@ -208,6 +135,7 @@ export function FinalDetailsDialog({
         >
         <DialogHeader className="px-5 sm:px-7 pt-6 pb-3 border-b border-[color:var(--border)]">
           <Eyebrow>Almost there</Eyebrow>
+
           <DialogTitle className="serif text-[1.35rem] leading-tight text-[color:var(--charcoal)] mt-2">
             Final details before payment
           </DialogTitle>
