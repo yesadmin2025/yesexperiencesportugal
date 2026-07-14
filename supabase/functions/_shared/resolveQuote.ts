@@ -104,10 +104,14 @@ export function resolveQuote(snapshot: NormalisedSnapshot): ResolvedQuote {
   }
 
   const c = commercial as Extract<CommercialPricingResult, { status: "quoted" }>;
+  // Cast to the wider union — the Pass-1 policy above pins both values to
+  // "pending-review", so TS narrows them to literals and would refuse the
+  // comparison. The eligibility rule is future-proof: as soon as a real
+  // live-Bókun path lands and can produce "validated", this flips to instant.
+  const _rs: ConvergenceStatusUnion = routeStatus;
+  const _as: ConvergenceStatusUnion = availabilityStatus;
   const checkoutEligibility: CheckoutEligibility =
-    routeStatus === "validated" && availabilityStatus === "validated"
-      ? "instant"
-      : "enquiry_only";
+    _rs === "validated" && _as === "validated" ? "instant" : "enquiry_only";
   return {
     pricing: {
       status: "quoted",
