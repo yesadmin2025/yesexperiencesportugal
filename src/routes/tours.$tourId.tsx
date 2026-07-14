@@ -4,7 +4,6 @@ import { Clock, MapPin, ArrowLeft, Check, Sparkles, Info, Heart, Shield, Star } 
 import {
   signatureTours,
   findTour,
-  isValidTourId,
   type SignatureTour,
   type TourStop,
 } from "@/data/signatureTours";
@@ -32,6 +31,8 @@ import { TourReviews } from "@/components/TourReviews";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { TourImage } from "@/components/tours/TourImage";
+import { RelatedExperiencesRail } from "@/components/RelatedExperiencesRail";
+import { rankRelatedTours, relatedStoriesForTour, seedFromTour } from "@/lib/related-experiences";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
@@ -979,42 +980,20 @@ function Block({
 }
 
 function RelatedTours({ currentId }: { currentId: string }) {
-  const others = signatureTours
-    .filter((t) => t.id !== currentId && isValidTourId(t.id))
-    .slice(0, 3);
-  const { resolveImg } = useImportedTourImages();
-  if (others.length === 0) return null;
+  const current = findTour(currentId);
+  if (!current) return null;
+  const tours = rankRelatedTours(seedFromTour(current), 3);
+  const stories = relatedStoriesForTour(current, 3);
+  if (tours.length === 0 && stories.length === 0) return null;
   return (
-    <section className="py-16 bg-[color:var(--ivory)] border-t border-[color:var(--border)] reveal">
-      <div className="container-x max-w-5xl">
-        <Eyebrow>More like this</Eyebrow>
-        <SectionTitle size="compact">
+    <RelatedExperiencesRail
+      tours={tours}
+      stories={stories}
+      toursTitle={
+        <>
           Other <SectionTitle.Em>Signature Experiences</SectionTitle.Em>
-        </SectionTitle>
-        <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {others.map((t) => (
-            <Link
-              key={t.id}
-              to="/tours/$tourId"
-              params={{ tourId: t.id }}
-              className="group flex flex-col"
-            >
-              <TourImage
-                {...resolveImg(t, "md")}
-                alt={t.title}
-                ratio="3/2"
-                focal={t.focal ?? "50% 50%"}
-                className="mb-3"
-                imgClassName="transition-transform duration-700 group-hover:scale-105"
-              />
-              <h3 className="serif text-lg">{t.title}</h3>
-              <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
-                {t.region}
-              </p>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
+        </>
+      }
+    />
   );
 }
