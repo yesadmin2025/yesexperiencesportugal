@@ -105,6 +105,9 @@ export function CheckoutSummary({
   onEditGuestDetails,
   onBack,
   onReserve,
+  clientSecret = null,
+  publishableKey = null,
+  onPaymentComplete,
   className,
   testId,
 }: CheckoutSummaryProps) {
