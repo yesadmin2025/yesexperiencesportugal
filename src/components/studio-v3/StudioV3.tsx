@@ -1003,7 +1003,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
             toast.info(
               "This journey needs a quick human review. We'll confirm your date within a few hours.",
             );
-            navigate({ to: "/contact" });
+            if (typeof window !== "undefined") window.location.assign("/contact");
             return;
           }
 
