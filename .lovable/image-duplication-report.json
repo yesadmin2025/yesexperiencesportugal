@@ -1,63 +1,8 @@
 {
   "scannedFiles": 449,
-  "totalAssets": 61,
-  "duplicatedAssets": 19,
+  "totalAssets": 62,
+  "duplicatedAssets": 20,
   "duplicates": [
-    {
-      "asset": "@/assets/hero-coast.jpg",
-      "uses": [
-        {
-          "file": "src/routes/experiences.tsx",
-          "line": 9,
-          "ident": "ogImg",
-          "roles": [
-            "og:image",
-            "og:image",
-            "og:image"
-          ]
-        },
-        {
-          "file": "src/routes/index.tsx",
-          "line": 12,
-          "ident": "heroImg",
-          "roles": [
-            "hero",
-            "og:image",
-            "usage"
-          ]
-        },
-        {
-          "file": "src/routes/pt.experiences.tsx",
-          "line": 9,
-          "ident": "ogImg",
-          "roles": [
-            "og:image",
-            "og:image",
-            "og:image"
-          ]
-        },
-        {
-          "file": "src/routes/pt.terms.tsx",
-          "line": 9,
-          "ident": "ogImg",
-          "roles": [
-            "og:image",
-            "og:image",
-            "og:image"
-          ]
-        },
-        {
-          "file": "src/routes/terms.tsx",
-          "line": 9,
-          "ident": "ogImg",
-          "roles": [
-            "og:image",
-            "og:image",
-            "og:image"
-          ]
-        }
-      ]
-    },
     {
       "asset": "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg",
       "uses": [
@@ -261,6 +206,41 @@
           "roles": [
             "usage",
             "hero"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/hero-coast.jpg",
+      "uses": [
+        {
+          "file": "src/routes/experiences.tsx",
+          "line": 9,
+          "ident": "ogImg",
+          "roles": [
+            "og:image",
+            "og:image",
+            "og:image"
+          ]
+        },
+        {
+          "file": "src/routes/index.tsx",
+          "line": 12,
+          "ident": "heroImg",
+          "roles": [
+            "hero",
+            "og:image",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/pt.experiences.tsx",
+          "line": 9,
+          "ident": "ogImg",
+          "roles": [
+            "og:image",
+            "og:image",
+            "og:image"
           ]
         }
       ]
@@ -602,6 +582,31 @@
           "roles": [
             "usage",
             "hero"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/edit-coastal-road.jpg",
+      "uses": [
+        {
+          "file": "src/routes/pt.terms.tsx",
+          "line": 9,
+          "ident": "ogImg",
+          "roles": [
+            "og:image",
+            "og:image",
+            "og:image"
+          ]
+        },
+        {
+          "file": "src/routes/terms.tsx",
+          "line": 9,
+          "ident": "ogImg",
+          "roles": [
+            "og:image",
+            "og:image",
+            "og:image"
           ]
         }
       ]
