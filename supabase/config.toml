@@ -1,32 +1,13 @@
 project_id = "kqygnqetygcvkaauwbji"
 
-[functions.create-builder-checkout]
-verify_jwt = false
-
 [functions.create-signature-checkout]
-verify_jwt = false
-
-[functions.analyze-builder-references]
 verify_jwt = false
 
 [functions.stripe-webhook]
 verify_jwt = false
 
-[functions.bokun-list-products]
+[functions.stripe-session-status]
 verify_jwt = false
 
 [functions.test-webhook-simulate]
 verify_jwt = false
-
-[functions.bokun-availability]
-verify_jwt = false
-
-[functions.stripe-session-status]
-verify_jwt = false
-
-[functions.audit-bokun-mapping]
-verify_jwt = false
-
-[functions.sync-all-bokun-pricing]
-verify_jwt = false
-

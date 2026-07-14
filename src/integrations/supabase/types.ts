@@ -1822,42 +1822,6 @@ export type Database = {
         }
         Relationships: []
       }
-      studio_commercial_bokun_mapping: {
-        Row: {
-          active: boolean
-          bokun_option_id: string | null
-          bokun_product_id: string | null
-          bokun_rate_id: string | null
-          commercial_product_key: string
-          created_at: string
-          notes: string | null
-          pricing_party_size_rule: string
-          updated_at: string
-        }
-        Insert: {
-          active?: boolean
-          bokun_option_id?: string | null
-          bokun_product_id?: string | null
-          bokun_rate_id?: string | null
-          commercial_product_key: string
-          created_at?: string
-          notes?: string | null
-          pricing_party_size_rule?: string
-          updated_at?: string
-        }
-        Update: {
-          active?: boolean
-          bokun_option_id?: string | null
-          bokun_product_id?: string | null
-          bokun_rate_id?: string | null
-          commercial_product_key?: string
-          created_at?: string
-          notes?: string | null
-          pricing_party_size_rule?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       studio_drafts: {
         Row: {
           created_at: string
@@ -2166,69 +2130,6 @@ export type Database = {
           },
         ]
       }
-      tour_bokun_mapping: {
-        Row: {
-          bokun_product_code: string | null
-          bokun_product_id: string
-          bokun_title: string | null
-          created_at: string
-          currency: string | null
-          notes: string | null
-          tour_id: string
-          updated_at: string
-        }
-        Insert: {
-          bokun_product_code?: string | null
-          bokun_product_id: string
-          bokun_title?: string | null
-          created_at?: string
-          currency?: string | null
-          notes?: string | null
-          tour_id: string
-          updated_at?: string
-        }
-        Update: {
-          bokun_product_code?: string | null
-          bokun_product_id?: string
-          bokun_title?: string | null
-          created_at?: string
-          currency?: string | null
-          notes?: string | null
-          tour_id?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      tour_bokun_option_mapping: {
-        Row: {
-          bokun_option_id: string | null
-          bokun_product_id: string
-          bokun_rate_id: string | null
-          pricing_party_size_rule: string
-          tour_id: string
-          updated_at: string
-          updated_by: string | null
-        }
-        Insert: {
-          bokun_option_id?: string | null
-          bokun_product_id: string
-          bokun_rate_id?: string | null
-          pricing_party_size_rule?: string
-          tour_id: string
-          updated_at?: string
-          updated_by?: string | null
-        }
-        Update: {
-          bokun_option_id?: string | null
-          bokun_product_id?: string
-          bokun_rate_id?: string | null
-          pricing_party_size_rule?: string
-          tour_id?: string
-          updated_at?: string
-          updated_by?: string | null
-        }
-        Relationships: []
-      }
       tour_external_ratings: {
         Row: {
           created_at: string
@@ -2267,42 +2168,18 @@ export type Database = {
       }
       tour_price_tiers: {
         Row: {
-          banded_pricing_enabled: boolean
-          bokun_categories: Json | null
-          override_metadata: Json | null
-          override_tiers: Json | null
-          pricing_mode: string | null
-          source_version: string | null
-          synced_from_bokun_at: string | null
-          synced_tiers: Json | null
           tiers: Json
           tour_id: string
           updated_at: string
           updated_by: string | null
         }
         Insert: {
-          banded_pricing_enabled?: boolean
-          bokun_categories?: Json | null
-          override_metadata?: Json | null
-          override_tiers?: Json | null
-          pricing_mode?: string | null
-          source_version?: string | null
-          synced_from_bokun_at?: string | null
-          synced_tiers?: Json | null
           tiers?: Json
           tour_id: string
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
-          banded_pricing_enabled?: boolean
-          bokun_categories?: Json | null
-          override_metadata?: Json | null
-          override_tiers?: Json | null
-          pricing_mode?: string | null
-          source_version?: string | null
-          synced_from_bokun_at?: string | null
-          synced_tiers?: Json | null
           tiers?: Json
           tour_id?: string
           updated_at?: string

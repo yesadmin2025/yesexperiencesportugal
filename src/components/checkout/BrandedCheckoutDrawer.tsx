@@ -6,20 +6,11 @@ import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { BokunRolloutBadge } from "@/components/booking/BokunRolloutBadge";
-import type { TourBokunReadiness } from "@/hooks/use-tour-bokun-readiness";
-import type {
-  BookingQuoteAddOnLine,
-  BookingQuoteBaseLine,
-} from "@/lib/pricing/bookingQuote";
+import type { QuoteLine, QuoteAddOnLine } from "@/lib/pricing/resolveInternalQuote";
 
 /**
- * BrandedCheckoutDrawer
- *
- * Renders Stripe Embedded Checkout inside an ivory, brand-styled drawer
- * (right side on desktop / bottom sheet on mobile). A premium experience
- * summary sits above the iframe so the guest always sees what they're
- * paying for. No full-page redirect — checkout happens on our domain.
+ * BrandedCheckoutDrawer — Stripe Embedded Checkout inside an ivory,
+ * brand-styled drawer. Consumes internal QuoteLines only.
  */
 
 export interface CheckoutSummary {
@@ -30,27 +21,13 @@ export interface CheckoutSummary {
   dateExact?: string | null;
   startTime?: string | null;
   pickupLabel?: string | null;
-  pricePerPaxEur?: number | null;
-  /** Exact server-resolved category lines. When present, these replace the
-   *  misleading averaged per-person multiplier for mixed-age groups. */
-  basePriceLines?: BookingQuoteBaseLine[];
-  addOnPriceLines?: BookingQuoteAddOnLine[];
-  /** Total in EUR (per Stripe). Optional — we'll compute from pricePerPaxEur*guests + addOnsTotalEur if missing. */
+  priceLines?: QuoteLine[];
+  addOnLines?: QuoteAddOnLine[];
   totalEur?: number | null;
-  /** Optional hero image (locally uploaded YES photo when available). */
   heroSrc?: string | null;
-  /** Short list (max 4) of inclusions / signature beats. */
   beats?: string[];
   flowLabel?: "Signature" | "Tailored" | "Studio";
-  /** Selected reveal add-ons, kept in sync with SignaturePriceCard so the drawer
-   *  and the Stripe session never drift from what the traveller picked. */
-  addOns?: Array<{ id: string; label: string; priceEur: number; durationMinutes: number }>;
-  /** Sum of add-on EUR (flat per booking). */
-  addOnsTotalEur?: number;
-  /** Bókun banded-pricing rollout state for the selected tour. */
-  bokunReadiness?: TourBokunReadiness | null;
 }
-
 
 interface Props {
   open: boolean;
@@ -58,11 +35,9 @@ interface Props {
   clientSecret: string | null;
   publishableKey: string | null;
   summary: CheckoutSummary;
-  /** Called when Stripe reports the session as complete. */
   onComplete?: (sessionId: string | null) => void;
 }
 
-// One Stripe instance per publishable key (memoized across drawer opens).
 const stripeCache = new Map<string, Promise<Stripe | null>>();
 function getStripePromise(pk: string): Promise<Stripe | null> {
   if (!pk) return Promise.resolve(null);
@@ -73,15 +48,10 @@ function getStripePromise(pk: string): Promise<Stripe | null> {
   return p;
 }
 
-/** Eager-prewarm Stripe.js so the drawer opens instantly. Call this on
- * intent (e.g. when FinalDetailsDialog opens). */
 export function prewarmStripe(publishableKey: string | undefined | null) {
   if (publishableKey) void getStripePromise(publishableKey);
 }
 
-/** Inject the Stripe.js script tag once so the network/parse cost is
- * paid in parallel with the edge-function round-trip. Safe to call
- * repeatedly. */
 let stripeScriptInjected = false;
 export function prewarmStripeScript() {
   if (stripeScriptInjected || typeof document === "undefined") return;
@@ -110,8 +80,6 @@ export function BrandedCheckoutDrawer({
   );
 
   const completeFiredRef = useRef(false);
-  // Timeout: if clientSecret hasn't arrived within 12s after opening, show
-  // an actionable error state instead of an infinite skeleton.
   const [timedOut, setTimedOut] = useState(false);
 
   const options = useMemo(() => {
@@ -144,14 +112,7 @@ export function BrandedCheckoutDrawer({
     return () => window.clearTimeout(t);
   }, [open, clientSecret]);
 
-  const addOnsTotal = summary.addOnsTotalEur ?? 0;
-  const total =
-    summary.totalEur != null
-      ? summary.totalEur
-      : summary.pricePerPaxEur != null
-        ? Math.round(summary.pricePerPaxEur * summary.guests + addOnsTotal)
-        : null;
-
+  const total = summary.totalEur ?? null;
 
   useEffect(() => {
     if (open) prewarmStripeScript();
@@ -170,7 +131,6 @@ export function BrandedCheckoutDrawer({
         }
         data-checkout="embedded"
       >
-        {/* Header */}
         <div className="relative px-5 sm:px-7 pt-6 pb-4 border-b border-[color:var(--border)] bg-[color:var(--ivory)]">
           <button
             type="button"
@@ -189,17 +149,13 @@ export function BrandedCheckoutDrawer({
           </SheetDescription>
         </div>
 
-        {/* Credential microstrip — operator legitimacy above the summary,
-             lands before doubt. Reviews/popularity are covered elsewhere. */}
         <div className="px-5 sm:px-7 py-2.5 border-b border-[color:var(--border)] bg-[color:var(--ivory)]">
           <CredentialStrip variant="light" compact />
         </div>
 
         <div className="overflow-y-auto flex-1">
-          {/* Premium experience summary card */}
           <ExperienceSummaryCard summary={summary} total={total} />
 
-          {/* Stripe Embedded Checkout */}
           <div className="px-2 sm:px-3 pb-6">
             {clientSecret && publishableKey && stripePromise && options ? (
               <div className="relative bg-white">
@@ -215,7 +171,6 @@ export function BrandedCheckoutDrawer({
           </div>
         </div>
 
-        {/* Trust footer */}
         <div className="px-5 sm:px-7 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] border-t border-[color:var(--border)] bg-[color:var(--sand)]/40">
           <p className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
             <Lock size={11} /> Secure checkout · 256-bit encrypted
@@ -277,10 +232,7 @@ function ExperienceSummaryCard({
       {summary.beats && summary.beats.length > 0 ? (
         <ul className="mt-4 grid grid-cols-1 gap-1.5">
           {summary.beats.map((b) => (
-            <li
-              key={b}
-              className="flex gap-2 text-[12.5px] leading-snug text-[color:var(--charcoal)]"
-            >
+            <li key={b} className="flex gap-2 text-[12.5px] leading-snug text-[color:var(--charcoal)]">
               <span className="mt-1.5 w-1 h-1 rounded-full bg-[color:var(--gold)] shrink-0" />
               <span>{b}</span>
             </li>
@@ -288,69 +240,20 @@ function ExperienceSummaryCard({
         </ul>
       ) : null}
 
-      {summary.addOns && summary.addOns.length > 0 ? (
-        <div className="mt-4 pt-3 border-t border-[color:var(--border)]">
-          <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
-            Add-ons
-          </p>
-          <ul className="mt-2 space-y-1">
-            {summary.addOns.map((a) => (
-              <li
-                key={a.id}
-                className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]/80 font-sans"
-              >
-                <span className="truncate">
-                  • {a.label}
-                  {summary.guests > 1 ? (
-                    <span className="ml-1 text-[color:var(--charcoal-soft)]">
-                      (€{Math.round(a.priceEur).toLocaleString("en-GB")} × {summary.guests})
-                    </span>
-                  ) : null}
-                </span>
-                <span className="tabular-nums text-[color:var(--charcoal-soft)]">
-                  €{Math.round(a.priceEur * summary.guests).toLocaleString("en-GB")}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-
-      {summary.bokunReadiness ? (
-        <div className="mt-3">
-          <BokunRolloutBadge readiness={summary.bokunReadiness} />
-        </div>
-      ) : null}
-
-      {summary.basePriceLines && summary.basePriceLines.length > 0 ? (
+      {summary.priceLines && summary.priceLines.length > 0 ? (
         <div className="mt-4 pt-3 border-t border-[color:var(--border)]">
           <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
             Price breakdown
           </p>
           <ul className="mt-2 space-y-1.5">
-            {summary.basePriceLines.map((line) => (
-              <li
-                key={line.bokunCategoryId}
-                className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]"
-              >
-                <span className="min-w-0">
-                  {line.label} × {line.quantity}
-                  {line.ages?.length ? (
-                    <span className="ml-1 text-[color:var(--charcoal-soft)]">
-                      · age{line.ages.length > 1 ? "s" : ""} {line.ages.join(", ")}
-                    </span>
-                  ) : null}
-                </span>
-                <span className="tabular-nums shrink-0">
-                  {formatEur(line.subtotalEur)}
-                </span>
+            {summary.priceLines.map((line) => (
+              <li key={line.band} className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]">
+                <span className="min-w-0">{line.label} × {line.quantity}</span>
+                <span className="tabular-nums shrink-0">{formatEur(line.subtotalEur)}</span>
               </li>
             ))}
-            {(summary.addOnPriceLines ?? []).map((line) => (
-              <li
-                key={line.id}
-                className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]"
-              >
+            {(summary.addOnLines ?? []).map((line) => (
+              <li key={line.id} className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]">
                 <span className="min-w-0">{line.label} × {line.quantity}</span>
                 <span className="tabular-nums shrink-0">{formatEur(line.subtotalEur)}</span>
               </li>
@@ -364,14 +267,7 @@ function ExperienceSummaryCard({
           <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
             Total
           </span>
-          <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
-            {formatEur(total)}
-            {!summary.basePriceLines && summary.pricePerPaxEur != null && summary.guests > 1 ? (
-              <span className="ml-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans">
-                €{Math.round(summary.pricePerPaxEur).toLocaleString("en-GB")} × {summary.guests}
-              </span>
-            ) : null}
-          </span>
+          <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">{formatEur(total)}</span>
         </div>
       ) : null}
     </div>
@@ -427,8 +323,7 @@ function CheckoutTimeout({ onRetry }: { onRetry: () => void }) {
     >
       <AlertCircle size={22} className="text-[color:var(--charcoal)]" aria-hidden />
       <p className="text-[13px] leading-relaxed text-[color:var(--charcoal)] max-w-[36ch]">
-        Checkout is taking longer than usual. Close this and try again — no card
-        was charged.
+        Checkout is taking longer than usual. Close this and try again — no card was charged.
       </p>
       <button
         type="button"
