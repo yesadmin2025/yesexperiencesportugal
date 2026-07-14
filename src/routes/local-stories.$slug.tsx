@@ -421,11 +421,12 @@ function StaticArticleView({
                 Or{" "}
                 <Link
                   to="/studio-v3"
-                  className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
+                  className="editorial-inline-link"
                 >
                   design your own private Portugal day in the Studio
                 </Link>
                 .
+
               </p>
 
               {article.relatedSignatures && article.relatedSignatures.length > 0 && (
@@ -435,10 +436,11 @@ function StaticArticleView({
                       <Link
                         to="/tours/$tourId"
                         params={{ tourId: r.slug }}
-                        className="hover:text-[color:var(--teal)] transition-colors"
+                        className="editorial-inline-link"
                       >
                         {r.label} →
                       </Link>
+
                     </li>
                   ))}
                 </ul>
@@ -501,10 +503,11 @@ function StaticArticleView({
             <nav className="mt-16 text-center">
               <Link
                 to="/local-stories"
-                className="font-sans text-[13px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors"
+                className="editorial-inline-link font-sans text-[13px] uppercase tracking-[0.24em]"
               >
                 ← All Local Stories
               </Link>
+
             </nav>
           </div>
         </section>
@@ -593,10 +596,11 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
             <nav className="mt-16 text-center">
               <Link
                 to="/local-stories"
-                className="font-sans text-[13px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors"
+                className="editorial-inline-link font-sans text-[13px] uppercase tracking-[0.24em]"
               >
                 ← All Local Stories
               </Link>
+
             </nav>
           </div>
         </section>

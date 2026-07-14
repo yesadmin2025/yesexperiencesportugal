@@ -3066,6 +3066,60 @@ svg.lucide {
 }
 
 
+/* Editorial interactive states — canonical hover/focus-visible for
+   raw <Link>/<a> and card wrappers so Corporate, Moments and Local
+   Stories match the CtaButton primitive from the homepage. */
+.editorial-inline-link {
+  position: relative;
+  color: color-mix(in oklab, var(--charcoal) 82%, transparent);
+  transition:
+    color var(--dur-quick) cubic-bezier(0.22, 0.61, 0.36, 1),
+    background-size 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+}
+.editorial-inline-link:hover,
+.editorial-inline-link:focus-visible {
+  color: var(--teal);
+  background-size: 100% 1px;
+}
+.editorial-inline-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--gold), 0 0 0 4px var(--ivory);
+  border-radius: 2px;
+}
+
+.editorial-card-link {
+  display: block;
+  transition:
+    transform var(--dur-quick) cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow var(--dur-base) cubic-bezier(0.22, 0.61, 0.36, 1);
+  border-radius: 2px;
+}
+@media (hover: hover) {
+  .editorial-card-link:hover {
+    transform: translateY(-2px);
+  }
+}
+.editorial-card-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--gold), 0 0 0 4px var(--ivory);
+}
+@media (prefers-reduced-motion: reduce) {
+  .editorial-card-link,
+  .editorial-inline-link {
+    transition: none;
+  }
+  .editorial-card-link:hover {
+    transform: none;
+  }
+}
+
+
+
+
 
 /* Layered lift — keep the reveal transform and the hover transform on
    different elements so they never fight. The outer node (.reveal /
