@@ -3048,6 +3048,25 @@ svg.lucide {
   }
 }
 
+/* Editorial cascade — direct .reveal-stagger children fade in one after
+   another (≤6 steps, 70ms each). Non-homepage safe: pure delay on the
+   existing reveal-stagger transition + animation. Reduced-motion falls
+   back to instant. */
+.editorial-cascade > .reveal-stagger:nth-child(1) { transition-delay: 0ms; animation-delay: 0ms; }
+.editorial-cascade > .reveal-stagger:nth-child(2) { transition-delay: 70ms; animation-delay: 70ms; }
+.editorial-cascade > .reveal-stagger:nth-child(3) { transition-delay: 140ms; animation-delay: 140ms; }
+.editorial-cascade > .reveal-stagger:nth-child(4) { transition-delay: 210ms; animation-delay: 210ms; }
+.editorial-cascade > .reveal-stagger:nth-child(5) { transition-delay: 280ms; animation-delay: 280ms; }
+.editorial-cascade > .reveal-stagger:nth-child(6) { transition-delay: 350ms; animation-delay: 350ms; }
+@media (prefers-reduced-motion: reduce) {
+  .editorial-cascade > .reveal-stagger {
+    transition-delay: 0ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+
+
+
 /* Layered lift — keep the reveal transform and the hover transform on
    different elements so they never fight. The outer node (.reveal /
    .reveal-stagger) owns the entrance transform + opacity. The inner

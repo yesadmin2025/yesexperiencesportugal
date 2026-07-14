@@ -90,18 +90,24 @@ function ProposalInPortugalPage() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
-        <div className="container-x max-w-3xl text-center">
-          <Eyebrow flank>Proposal in Portugal</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
-          </SectionTitle>
-          <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
-          <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
+      <section className="pt-28 pb-14 bg-[color:var(--sand)]">
+        <div className="container-x max-w-3xl text-center reveal editorial-cascade">
+          <div className="reveal-stagger">
+            <Eyebrow flank>Proposal in Portugal</Eyebrow>
+          </div>
+          <div className="reveal-stagger">
+            <SectionTitle as="h1" size="anchor" spacing="loose">
+              A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
+            </SectionTitle>
+          </div>
+          <div className="reveal-stagger">
+            <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
+          </div>
+          <p className="reveal-stagger mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             A private moment, shaped end to end by a local team — with the setting, timing and
             surprise handled quietly on your behalf.
           </p>
-          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="reveal-stagger mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
               Plan a Proposal
             </CtaButton>
@@ -127,6 +133,7 @@ function ProposalInPortugalPage() {
               <article
                 key={b.eyebrow}
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
+                style={{ transitionDelay: `${i * 90}ms`, animationDelay: `${i * 90}ms` }}
               >
                 <figure className="editorial-zoom">
                   <img
@@ -136,30 +143,39 @@ function ProposalInPortugalPage() {
                     className="w-full aspect-[4/5] md:aspect-[5/6] object-cover"
                   />
                 </figure>
-                <div>
-                  <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
-                  <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
-                  <SectionTitle size="compact" spacing="loose">
-                    {b.title}
-                  </SectionTitle>
-                  <p className="mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
+                <div className="reveal editorial-cascade">
+                  <div className="reveal-stagger">
+                    <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
+                  </div>
+                  <div className="reveal-stagger">
+                    <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
+                  </div>
+                  <div className="reveal-stagger">
+                    <SectionTitle size="compact" spacing="loose">
+                      {b.title}
+                    </SectionTitle>
+                  </div>
+                  <p className="reveal-stagger mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
                     {b.emotional}
                   </p>
-                  <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
+                  <p className="reveal-stagger mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
                     {b.practical}
                   </p>
-                  <div className="mt-5 pl-4 border-l-2 border-[color:var(--gold)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
+                  <div className="reveal-stagger mt-5 pl-4 border-l-2 border-[color:var(--gold)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
                     {b.local}
                   </div>
-                  <CtaButton to="/contact" variant="ghost" size="sm" className="mt-6">
-                    {b.cta}
-                  </CtaButton>
+                  <div className="reveal-stagger">
+                    <CtaButton to="/contact" variant="ghost" size="sm" className="mt-6">
+                      {b.cta}
+                    </CtaButton>
+                  </div>
                 </div>
               </article>
             );
           })}
         </div>
       </section>
+
 
       {/* FAQ */}
       <section className="py-16 md:py-20 bg-[color:var(--ivory)] reveal">
