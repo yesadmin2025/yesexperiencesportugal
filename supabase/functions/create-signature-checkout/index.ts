@@ -175,12 +175,59 @@ Deno.serve(async (req) => {
       .eq("tour_id", body.tourId)
       .maybeSingle();
 
-    const tier = Math.min(8, Math.max(1, body.guests));
+    // Tier lookup uses TOTAL headcount (adults + minors, incl. infants),
+    // matching the owner-approved rule (D3). When composition is absent
+    // we fall back to `body.guests` — legacy adult-only path.
+    const compositionSupplied =
+      Number.isInteger(body.adults) &&
+      (body as { adults?: number }).adults! >= 1 &&
+      Array.isArray(body.minorAges);
+
+    let adultsCount = compositionSupplied ? (body.adults as number) : body.guests;
+    const minorAges = compositionSupplied ? (body.minorAges as number[]) : [];
+    if (compositionSupplied) {
+      if (adultsCount < 1 || adultsCount > 12)
+        return jsonError("Adults must be between 1 and 12", 400);
+      if (minorAges.length > 11) return jsonError("Too many minors", 400);
+      for (const age of minorAges) {
+        if (!Number.isInteger(age) || age < 0 || age > 17)
+          return jsonError(
+            "Every minor age must be an integer between 0 and 17 — no fallback to adult price",
+            400,
+          );
+      }
+    }
+
+    const headcount = adultsCount + minorAges.length;
+    if (headcount < 1 || headcount > 12)
+      return jsonError("Total travellers must be between 1 and 12", 400);
+    // Keep legacy `body.guests` in sync with headcount for downstream copy/metadata.
+    (body as { guests: number }).guests = headcount;
+
+    const tier = Math.min(8, Math.max(1, headcount));
     const tiers = (tierRow?.tiers ?? null) as Record<string, number> | null;
     const real = tiers && typeof tiers[String(tier)] === "number" ? tiers[String(tier)] : null;
     const eurPerPax = real ?? body.priceFromEur;
-    const amountInCents = Math.round(eurPerPax * 100) * body.guests;
-    if (amountInCents < 5000) return jsonError("Computed amount below minimum", 400);
+
+    // Build itemised age-band lines (server-authoritative). When
+    // composition is absent, this collapses to `headcount × adult`.
+    type PriceLine = { band: AgeBand; age: number | null; unitEur: number };
+    const priceLines: PriceLine[] = [];
+    for (let i = 0; i < adultsCount; i++) {
+      priceLines.push({ band: "adult", age: null, unitEur: eurPerPax });
+    }
+    for (const age of minorAges) {
+      const band = ageBand(age);
+      if (!band) return jsonError("Invalid minor age", 400); // defensive; already validated
+      priceLines.push({
+        band,
+        age,
+        unitEur: Math.round(eurPerPax * AGE_BAND_PCT[band]),
+      });
+    }
+
+    const tourSubtotalCents = priceLines.reduce((s, l) => s + Math.round(l.unitEur * 100), 0);
+    if (tourSubtotalCents < 5000) return jsonError("Computed amount below minimum", 400);
 
     const stripe = createStripeClient(body.environment);
 
