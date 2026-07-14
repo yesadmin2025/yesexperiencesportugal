@@ -42,7 +42,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "best-day-trips-from-lisbon",
     title: "Best Day Trips from Lisbon (by a Local) — Wine, Coast & Arrábida",
     metaDescription:
-      "A local's guide to the best day trips from Lisbon — Arrábida wine country, the wild south coast, Sintra and Sesimbra. Written by the team that designs them.",
+      "A local's guide to the best private day trips from Lisbon — Arrábida wine country, Sintra, Sesimbra and the wild south coast. Hotel pickup, instant confirmation.",
     h1: "Best Day Trips from Lisbon — by a Local",
     eyebrow: "Lisbon · Day Trips",
     standfirst:
