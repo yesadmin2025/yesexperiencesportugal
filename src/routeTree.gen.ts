@@ -42,6 +42,7 @@ import { Route as DayToursRouteImport } from './routes/day-tours'
 import { Route as CorporateRouteImport } from './routes/corporate'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ConnectRouteImport } from './routes/connect'
 import { Route as BrandQaRouteImport } from './routes/brand-qa'
 import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -273,6 +274,11 @@ const CookiesRoute = CookiesRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnectRoute = ConnectRouteImport.update({
+  id: '/connect',
+  path: '/connect',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BrandQaRoute = BrandQaRouteImport.update({
@@ -628,6 +634,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
+  '/connect': typeof ConnectRoute
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/corporate': typeof CorporateRoute
@@ -729,6 +736,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
+  '/connect': typeof ConnectRoute
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/corporate': typeof CorporateRoute
@@ -829,6 +837,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
+  '/connect': typeof ConnectRoute
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/corporate': typeof CorporateRoute
@@ -932,6 +941,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
+    | '/connect'
     | '/contact'
     | '/cookies'
     | '/corporate'
@@ -1033,6 +1043,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
+    | '/connect'
     | '/contact'
     | '/cookies'
     | '/corporate'
@@ -1132,6 +1143,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
+    | '/connect'
     | '/contact'
     | '/cookies'
     | '/corporate'
@@ -1234,6 +1246,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BookingConfirmedRoute: typeof BookingConfirmedRoute
   BrandQaRoute: typeof BrandQaRoute
+  ConnectRoute: typeof ConnectRoute
   ContactRoute: typeof ContactRoute
   CookiesRoute: typeof CookiesRoute
   CorporateRoute: typeof CorporateRoute
@@ -1542,6 +1555,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connect': {
+      id: '/connect'
+      path: '/connect'
+      fullPath: '/connect'
+      preLoaderRoute: typeof ConnectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/brand-qa': {
@@ -2068,6 +2088,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BookingConfirmedRoute: BookingConfirmedRoute,
   BrandQaRoute: BrandQaRoute,
+  ConnectRoute: ConnectRoute,
   ContactRoute: ContactRoute,
   CookiesRoute: CookiesRoute,
   CorporateRoute: CorporateRoute,
