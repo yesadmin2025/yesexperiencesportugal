@@ -169,6 +169,65 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     datePublished: "2026-06-05",
   },
   {
+    slug: "private-driver-vs-self-driving-portugal",
+    title: "Private Driver vs Self-Driving in Portugal — A Local's Take",
+    metaDescription:
+      "Hiring a private driver in Portugal vs renting a car — a Lisbon-based founder compares safety, local insight, cost, and the experience of each.",
+    h1: "Private Driver vs Self-Driving in Portugal — A Local's Take",
+    eyebrow: "Portugal · How to Travel",
+    standfirst:
+      "The question we hear most from planning travellers. Here is how we think about it.",
+    sections: [
+      {
+        heading: "The decision is not really about the car.",
+        body: "Most travellers frame it as a cost question: driver or rental. After ten years of designing private days across Portugal, we think it is a question of what kind of day you want to have. A rental car gives you control of the wheel. A private driver gives you control of the day — your attention, your timing, and the ability to be somewhere fully rather than navigating to it.",
+      },
+      {
+        heading: "What a private driver gives you that a rental cannot.",
+        body: "A good driver here is also a host. They know which winery is worth the detour, which coastal road is closed in winter, and where to stop for coffee that is not on any itinerary. They handle parking in Sintra, narrow village streets in Alentejo, and the sudden tolls that catch first-time visitors. More importantly, they free you to look out the window. Portugal is a country best seen, not navigated.",
+      },
+      {
+        heading: "The self-drive case — and where it works.",
+        body: "Renting a car makes sense when the route is simple, the pace is slow, and you genuinely enjoy driving. The Algarve coast between Tavira and Lagos, the flat roads of the Alentejo plains, or a single hop to Óbidos are all pleasant behind the wheel. If your plan is one town, a beach, and a relaxed schedule, a rental can be the right tool. The problems start when the day becomes ambitious.",
+      },
+      {
+        heading: "Safety, parking, and the things maps do not show.",
+        body: "Portuguese drivers are fast on motorways and patient in villages, but the roads change character quickly. GPS will send you down cobblestone lanes built for carts. It will suggest parking that does not exist in August. It will miss the sign for a closed pass in the Serra da Estrela. A local driver reads the road in real time and adjusts without stress.",
+      },
+      {
+        heading: "Cost is closer than it looks.",
+        body: "A rental rate is only the beginning. Add fuel, tolls, parking, insurance excess, and the occasional fine, then factor in the time spent navigating. A private day with YES includes the car, fuel, tolls, and a licensed local host. The difference is smaller than it appears, and the value shifts dramatically once you want to visit more than one place.",
+      },
+      {
+        heading: "The YES way of doing it.",
+        body: "We do not run a transfer service. Every private day is designed around the guest — the route, the stops, the rhythm, and the conversations along the way. Our hosts are licensed, insured, and chosen because they love this country and know how to share it. The car is simply the frame. The experience is the point.",
+      },
+    ],
+    ctaLead:
+      "If you would rather look out the window than at the GPS, our Signature experiences are fully private — one car, one host, one day shaped to you.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "sintra-cascais", label: "Sintra & Cascais Signature" },
+      { slug: "troia-comporta", label: "Tróia & Comporta Signature" },
+    ],
+    datePublished: "2026-07-14",
+    faq: [
+      {
+        q: "Is it worth hiring a private driver in Portugal?",
+        a: "Yes, if your day involves more than one stop, rural roads, wine tasting, or any route where navigation would distract you from the landscape. The value is highest when the journey itself is part of the experience.",
+      },
+      {
+        q: "Can I self-drive in Portugal as a foreigner?",
+        a: "Yes. A valid licence from most countries is accepted for short visits. Roads are generally good, but narrow village streets, toll systems, and summer parking can be challenging for first-time visitors.",
+      },
+      {
+        q: "Is a private driver more expensive than a rental car?",
+        a: "The headline rate is higher, but once you include fuel, tolls, parking, and the time you spend navigating, the gap narrows. For multi-stop days, a private driver often delivers more value per hour.",
+      },
+    ],
+  },
+  {
     slug: "troia-comporta-guide",
     title: "Tróia & Comporta from Lisbon — A Local's Slow Alentejo Day",
     metaDescription:
