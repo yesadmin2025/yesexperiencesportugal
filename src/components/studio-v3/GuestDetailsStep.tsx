@@ -210,22 +210,11 @@ export function GuestDetailsStep({
             <input
               type="email"
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (storySent && e.target.value.trim().toLowerCase() !== sentEmailRef.current) {
-                  setStorySent(false);
-                }
-              }}
-              onBlur={(e) => triggerEmailBlur(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               className={inputClass}
               autoComplete="email"
               inputMode="email"
             />
-            {storySent ? (
-              <p className="mt-1.5 text-[11px] italic text-[color:var(--teal)]">
-                Your Signature Story is on its way to your inbox.
-              </p>
-            ) : null}
           </Field>
           <Field label="Phone / WhatsApp" required>
             <input
