@@ -994,6 +994,18 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
             toast.error("Live pricing for this group size isn't available right now. Adjust the date or party size and try again.");
             return;
           }
+          // P0 payment-integrity gate — mirrors the server's fail-closed
+          // check. Manual / pending-review quotes cannot back a real Bókun
+          // reservation, so we do NOT open Stripe. Route the guest to the
+          // enquiry surface with the tour context preserved.
+          if (quote.checkoutEligibility !== "instant") {
+            setCheckoutOpen(false);
+            toast.info(
+              "This journey needs a quick human review. We'll confirm your date within a few hours.",
+            );
+            navigate({ to: "/contact" });
+            return;
+          }
 
           // Populate the visible summary from the AUTHORITATIVE server pricing.
           setCheckoutSummary({
