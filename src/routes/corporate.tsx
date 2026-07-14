@@ -25,10 +25,10 @@ export const Route = createFileRoute("/corporate")({
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
-      { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${imgDiscreetViewpoint}` },
       {
         property: "twitter:image",
-        content: `https://yesexperiencesportugal.com${imgFatimaNazare}`,
+        content: `https://yesexperiencesportugal.com${imgDiscreetViewpoint}`,
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/corporate" },
     ],
