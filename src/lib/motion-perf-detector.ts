@@ -139,7 +139,7 @@ export function installMotionPerfDetector(): () => void {
   //    Selectors match the canonical animated surfaces.
   const SURFACE_SELECTOR = [
     '[data-motion-surface="editorial-map"]',
-    '[data-motion-surface="editorial-zoom"]',
+    ".editorial-zoom",
     ".reveal",
   ].join(",");
 
