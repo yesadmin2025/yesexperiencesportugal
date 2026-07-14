@@ -1,7 +1,7 @@
 {
   "scannedFiles": 449,
-  "totalAssets": 62,
-  "duplicatedAssets": 20,
+  "totalAssets": 65,
+  "duplicatedAssets": 21,
   "duplicates": [
     {
       "asset": "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg",
@@ -17,7 +17,7 @@
         },
         {
           "file": "src/routes/plan.best-time-to-visit-portugal.tsx",
-          "line": 24,
+          "line": 23,
           "ident": "imgArrabidaLunch",
           "roles": [
             "usage",
@@ -34,15 +34,6 @@
           ]
         },
         {
-          "file": "src/routes/pt.corporate.tsx",
-          "line": 9,
-          "ident": "imgArrabidaWineLunch",
-          "roles": [
-            "usage",
-            "usage"
-          ]
-        },
-        {
           "file": "src/content/planning/destinations.ts",
           "line": 21,
           "ident": "imgArrabidaLunch",
@@ -50,89 +41,6 @@
             "usage",
             "usage",
             "usage"
-          ]
-        }
-      ]
-    },
-    {
-      "asset": "@/assets/tours/sintra-cascais/estates.jpg",
-      "uses": [
-        {
-          "file": "src/routes/corporate.tsx",
-          "line": 9,
-          "ident": "imgSintraEstates",
-          "roles": [
-            "usage",
-            "usage"
-          ]
-        },
-        {
-          "file": "src/routes/proposal-in-portugal.tsx",
-          "line": 10,
-          "ident": "imgSintraEstates",
-          "roles": [
-            "usage",
-            "usage"
-          ]
-        },
-        {
-          "file": "src/routes/pt.corporate.tsx",
-          "line": 10,
-          "ident": "imgSintraEstates",
-          "roles": [
-            "usage",
-            "usage"
-          ]
-        },
-        {
-          "file": "src/content/planning/destinations.ts",
-          "line": 24,
-          "ident": "imgSintraEstates",
-          "roles": [
-            "usage",
-            "usage",
-            "hero"
-          ]
-        }
-      ]
-    },
-    {
-      "asset": "@/assets/guests/quinta-group.jpg",
-      "uses": [
-        {
-          "file": "src/routes/corporate.tsx",
-          "line": 10,
-          "ident": "guestQuintaGroup",
-          "roles": [
-            "usage",
-            "usage"
-          ]
-        },
-        {
-          "file": "src/routes/index.tsx",
-          "line": 20,
-          "ident": "guestQuintaGroup",
-          "roles": [
-            "usage",
-            "usage"
-          ]
-        },
-        {
-          "file": "src/routes/plan.best-time-to-visit-portugal.tsx",
-          "line": 22,
-          "ident": "guestQuintaGroup",
-          "roles": [
-            "usage",
-            "usage"
-          ]
-        },
-        {
-          "file": "src/content/planning/destinations.ts",
-          "line": 18,
-          "ident": "guestQuintaGroup",
-          "roles": [
-            "usage",
-            "gallery"
           ]
         }
       ]
@@ -151,7 +59,7 @@
         },
         {
           "file": "src/routes/plan.best-time-to-visit-portugal.tsx",
-          "line": 21,
+          "line": 20,
           "ident": "guestVineyardCouple",
           "roles": [
             "usage",
@@ -191,12 +99,14 @@
           ]
         },
         {
-          "file": "src/routes/plan.best-time-to-visit-portugal.tsx",
-          "line": 20,
+          "file": "src/routes/pt.corporate.tsx",
+          "line": 10,
           "ident": "guestArrabidaViewpoint",
           "roles": [
             "usage",
-            "hero"
+            "og:image",
+            "usage",
+            "usage"
           ]
         },
         {
@@ -246,11 +156,43 @@
       ]
     },
     {
+      "asset": "@/assets/guests/quinta-group.jpg",
+      "uses": [
+        {
+          "file": "src/routes/index.tsx",
+          "line": 20,
+          "ident": "guestQuintaGroup",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/plan.best-time-to-visit-portugal.tsx",
+          "line": 21,
+          "ident": "guestQuintaGroup",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/content/planning/destinations.ts",
+          "line": 18,
+          "ident": "guestQuintaGroup",
+          "roles": [
+            "usage",
+            "gallery"
+          ]
+        }
+      ]
+    },
+    {
       "asset": "@/assets/guests/bubbling-wine-tasting.jpg",
       "uses": [
         {
           "file": "src/routes/plan.best-time-to-visit-portugal.tsx",
-          "line": 23,
+          "line": 22,
           "ident": "guestBubblingTasting",
           "roles": [
             "usage",
@@ -472,6 +414,52 @@
       ]
     },
     {
+      "asset": "@/assets/tours/azeitao-cheese/workshop.jpg",
+      "uses": [
+        {
+          "file": "src/routes/corporate.tsx",
+          "line": 9,
+          "ident": "imgAzeitaoWorkshop",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/pt.corporate.tsx",
+          "line": 8,
+          "ident": "imgAzeitaoWorkshop",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/tours/evora-alentejo/temple.jpg",
+      "uses": [
+        {
+          "file": "src/routes/corporate.tsx",
+          "line": 10,
+          "ident": "imgEvoraTemple",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/pt.corporate.tsx",
+          "line": 9,
+          "ident": "imgEvoraTemple",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
       "asset": "@/assets/edit-viewpoint.jpg",
       "uses": [
         {
@@ -488,29 +476,6 @@
           "file": "src/components/studio-v3/StudioV3.tsx",
           "line": 184,
           "ident": "editViewpoint",
-          "roles": [
-            "usage",
-            "usage"
-          ]
-        }
-      ]
-    },
-    {
-      "asset": "@/assets/guests/chocolate-cake-tasting.jpg",
-      "uses": [
-        {
-          "file": "src/routes/plan.portugal-wine-and-gastronomy.tsx",
-          "line": 22,
-          "ident": "guestChocolateCake",
-          "roles": [
-            "usage",
-            "usage"
-          ]
-        },
-        {
-          "file": "src/content/planning/destinations.ts",
-          "line": 17,
-          "ident": "guestChocolateCake",
           "roles": [
             "usage",
             "usage"
@@ -564,12 +529,12 @@
       ]
     },
     {
-      "asset": "@/assets/tours/troia-comporta/beach.jpg",
+      "asset": "@/assets/guests/chocolate-cake-tasting.jpg",
       "uses": [
         {
           "file": "src/routes/proposal-in-portugal.tsx",
-          "line": 11,
-          "ident": "imgTroiaBeach",
+          "line": 10,
+          "ident": "imgChocolateCake",
           "roles": [
             "usage",
             "usage"
@@ -577,11 +542,34 @@
         },
         {
           "file": "src/content/planning/destinations.ts",
-          "line": 31,
-          "ident": "imgComportaBeach",
+          "line": 17,
+          "ident": "guestChocolateCake",
           "roles": [
             "usage",
-            "hero"
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/tours/wild-beaches-picnic/picnic.jpg",
+      "uses": [
+        {
+          "file": "src/routes/proposal-in-portugal.tsx",
+          "line": 11,
+          "ident": "imgPicnic",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/content/planning/destinations.ts",
+          "line": 35,
+          "ident": "imgWildPicnic",
+          "roles": [
+            "usage",
+            "gallery"
           ]
         }
       ]

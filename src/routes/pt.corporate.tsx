@@ -5,9 +5,9 @@ import { MessageCircle, Users, Compass, ClipboardCheck } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
-import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
-import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
+import imgAzeitaoWorkshop from "@/assets/tours/azeitao-cheese/workshop.jpg";
+import imgEvoraTemple from "@/assets/tours/evora-alentejo/temple.jpg";
+import guestArrabidaViewpoint from "@/assets/guests/arrabida-viewpoint-group.jpg.asset.json";
 
 const TITLE = "Experiências corporativas e para grupos privados em Portugal | YES";
 const DESCRIPTION =
@@ -20,8 +20,8 @@ export const Route = createFileRoute("/pt/corporate")({
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
-      { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
-      { property: "twitter:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${guestArrabidaViewpoint.url}` },
+      { property: "twitter:image", content: `https://yesexperiencesportugal.com${guestArrabidaViewpoint.url}` },
       { property: "og:url", content: "https://yesexperiencesportugal.com/pt/corporate" },
       { property: "og:locale", content: "pt_PT" },
     ],
@@ -52,7 +52,7 @@ const BLOCKS = [
       "Grupos privados de qualquer dimensão, com o transporte, guias, parceiros e ritmo certos · faturação e apoio DMC · desenhado em torno dos vossos objetivos.",
     local:
       "Tratamos das peças em movimento no terreno — tempos de viagem reais, locais reais, parceiros reais.",
-    image: imgArrabidaWineLunch,
+    image: imgAzeitaoWorkshop,
     icon: Users,
   },
   {
@@ -63,7 +63,7 @@ const BLOCKS = [
     practical:
       "Fluxo de vários dias, logística regional, locais adequados a reuniões, momentos culturais integrados no ritmo.",
     local: "Coordenado por um anfitrião local que sabe como cada peça do dia se liga.",
-    image: imgSintraEstates,
+    image: imgEvoraTemple,
     icon: Compass,
   },
   {
@@ -73,7 +73,7 @@ const BLOCKS = [
       "Quando importa quem está na sala e como o dia se sente — é assim que o desenhamos.",
     practical: "Grupos pequenos · ambientes privados · ritmo cuidado · NDAs bem-vindos.",
     local: "Planeado de ponta a ponta com a nossa equipa local — cada detalhe confirmado antes do dia.",
-    image: imgFatimaNazare,
+    image: guestArrabidaViewpoint.url,
     icon: ClipboardCheck,
   },
 ];
@@ -140,14 +140,14 @@ function CorporatePage() {
                 key={b.eyebrow}
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
               >
-                <div className="overflow-hidden">
+                <figure className="editorial-zoom">
                   <img
                     src={b.image}
                     alt={b.title}
                     loading="lazy"
-                    className="w-full aspect-[4/5] md:aspect-[5/6] object-cover transition-transform duration-700 hover:scale-[1.03]"
+                    className="w-full aspect-[4/5] md:aspect-[5/6] object-cover"
                   />
-                </div>
+                </figure>
                 <div>
                   <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
                   <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />

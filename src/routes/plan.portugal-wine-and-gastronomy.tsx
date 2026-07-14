@@ -19,7 +19,7 @@ import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 
 import guestVineyardCouple from "@/assets/guests/vineyard-couple.jpg.asset.json";
 import guestBubblingTasting from "@/assets/guests/bubbling-wine-tasting.jpg.asset.json";
-import guestChocolateCake from "@/assets/guests/chocolate-cake-tasting.jpg.asset.json";
+import imgEditWinery from "@/assets/edit-winery.jpg";
 import imgArrabidaLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
 import imgArrabidaWinery from "@/assets/tours/arrabida-wine-allinclusive/winery.jpg";
 import imgEvoraWinery from "@/assets/tours/evora-alentejo/winery.jpg";
@@ -47,7 +47,7 @@ const HERO = {
 const GALLERY = [
   { src: guestBubblingTasting.url, alt: "Guests toasting a Catralvos Bubbling sparkling wine at a Setúbal quinta" },
   { src: imgArrabidaLunch, alt: "A private wine-country lunch table on the Arrábida coast" },
-  { src: guestChocolateCake.url, alt: "Chocolate cake and empty tasting glasses at a private wine table" },
+  { src: imgEditWinery, alt: "A quiet cellar visit in a small Portuguese family winery" },
   { src: imgEvoraWinery, alt: "A family Alentejo cellar with vinho de talha clay amphorae" },
   { src: imgArrabidaWinery, alt: "Barrels inside a small Arrábida family winery" },
 ];

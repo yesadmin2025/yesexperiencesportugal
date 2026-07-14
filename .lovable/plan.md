@@ -1,81 +1,68 @@
-## Launch Polish — Batch 2
+# Bring the site alive — image fixes + motion pass
 
-Four workstreams, sequenced for minimum risk. Approved image swaps land first (smallest diff, easiest to verify), motion/reveal work follows, map animation last (largest scope).
+Two things are broken:
 
----
+1. **Duplicates & wrong images** — Corporate and Moments (`/proposal-in-portugal`) still share hero/card photos with the homepage and with each other, and Moments uses `sintra-cascais/estates.jpg` + `troia-comporta/beach.jpg` — neither reads as "proposal / celebration / family moment".
+2. **Motion feels dead** — outside the homepage, most sections have no reveal, no hover zoom, no route-draw. Local Stories, Corporate, Moments, Proposals, About all feel static.
 
-### 1. Approved image swaps
+## 1. Image swaps — Corporate & Moments (Proposals)
 
-**Corporate (`src/routes/corporate.tsx`)**
-- Card 3 ("quiet, considered, fully discreet") → `guests/arrabida-viewpoint-group.jpg`, alt rewritten to match (private viewpoint, small group, discreet)
-- `og:image` → same `arrabida-viewpoint-group.jpg` (absolute URL) so social share matches the page's own hero character
-- Confirm no lingering `estates.jpg` reference on this page (was the mismatch anchor)
+Deterministic rule: **the homepage keeps first claim** on any shared photo. Every other page uses a different asset from the approved bank. No stock, no invention — only assets already in `src/assets/`.
 
-**Multi-day (`src/routes/multi-day.tsx`)**
-- Editorial hero-side image → `src/assets/multi-day.jpg` (primary) with `edit-coastal-road.jpg` as the mid-page editorial break
-- Removes the triple-duplication of `estates.jpg` across Corporate / Proposal / Multi-day
+### Corporate (`src/routes/corporate.tsx` + `src/routes/pt.corporate.tsx`)
+Currently: card 1 = `quinta-group` (also on homepage), card 2 = `sintra-cascais/estates` (also on Moments + planning), card 3 = `arrabida-viewpoint-group` (also on planning). All three collide.
 
-**Out of scope this batch:** Proposal card 2 swap (`vineyard-couple.jpg`). Hold for a follow-up so we don't touch the proposal page in the same pass as everything else. PT mirrors updated only where the same import is reused.
+- Card 1 "Executive & Incentive" → `@/assets/tours/azeitao-cheese/…` team-table image (Corporate-exclusive, feels like a working group at a table).
+- Card 2 "Off-sites & Retreats" → `@/assets/tours/evora-alentejo/…` (Alentejo landscape reads as retreat, not shared with Moments).
+- Card 3 "Client Hosting & VIP" → keep `arrabida-viewpoint-group.jpg` (discreet group) — release it from planning instead (see §Planning below).
+- `og:image` for both EN + PT corporate → the new card 3 photo (kept discreet framing).
+- PT corporate currently uses `arrabida-wine-allinclusive/lunch.jpg` (shared with homepage) and `fatima-nazare-obidos/nazare.jpg` — realign to match the EN swap set for parity.
 
-Verification: read each file after edit, confirm imports resolve, screenshot Corporate + Multi-day at 393px.
+### Moments / Proposals (`src/routes/proposal-in-portugal.tsx`)
+Currently: `exp-romantic` + `sintra-cascais/estates` + `troia-comporta/beach`. The last two are generic and shared elsewhere.
 
----
+- Card 1 "Proposals" → keep `exp-romantic.jpg` (approved, thematic).
+- Card 2 "Celebrations" → `@/assets/guests/chocolate-cake-tasting.jpg` (celebration moment, currently only used in planning — swap planning to a different guest photo).
+- Card 3 "Family & Friends" → `@/assets/guests/vineyard-couple.jpg` released to Moments; homepage keeps first claim so we'll use `@/assets/tours/wild-beaches-picnic/…` instead (picnic reads as family/friends day).
+- `og:image` → `exp-romantic.jpg` (unchanged; on-theme).
 
-### 2. Editorial card hover zoom (site-wide)
+### Planning fallout (to keep the "first claim" rule honest)
+- `plan.best-time-to-visit-portugal` → swap the freed `arrabida-viewpoint-group` slot to `tomar-coimbra` or `arrabida-boat` hero.
+- `plan.portugal-wine-and-gastronomy` → swap the freed `chocolate-cake-tasting` slot to `edit-winery.jpg`.
+- Update `.lovable/image-duplication-report.json` after the swap and re-run `scripts/scan-image-duplicates.mjs` to confirm Corporate + Moments no longer appear in the duplicate list.
 
-Currently only homepage editorial cards have the 1.02–1.04 hover zoom. Extend via the canonical primitive, not per-page CSS.
+Nothing on the homepage moves.
 
-- Add a `hoverZoom` behavior to `<EditorialCard>` (default **on**) — wraps the image in `overflow-hidden` and applies `group-hover:scale-[1.03] transition-transform duration-[420ms] ease-out motion-reduce:transform-none` to the `<img>`
-- Add the same treatment to `RelatedExperiencesRail` tour cards and any raw `<figure>` used as an editorial card on: About, Experiences, Corporate, Multi-day, Proposal-in-Portugal, Local Stories, Plan hub + destination pages
-- Introduce a shared utility class `.editorial-zoom` in `styles.css` so one-off figures can opt in without prop drilling
-- Reduced-motion respected via `motion-reduce`
+## 2. Site-wide motion pass ("feel alive, even in Local Stories")
 
-Verification: Playwright hover on one card per page, screenshot before/after transform.
+Homepage motion stays scoped to `.home-energy` (memory rule). For the rest of the site, extend the **existing** editorial motion vocabulary — no new libraries, no parallax, no bounce — so every section breathes.
 
----
+Coverage sweep across: `local-stories.index.tsx`, `local-stories.$slug.tsx`, `corporate.tsx` + `pt.corporate.tsx`, `proposal-in-portugal.tsx`, `about.tsx` + `pt.about.tsx`, `experiences.tsx`, `multi-day.tsx`, all `plan.*.tsx`, `travel-designer.tsx`.
 
-### 3. `.reveal` coverage audit
+For each page, verify and add where missing:
 
-Confirm every section on Moments, Corporate, Travel Designer (`/multi-day`), Proposals uses `.reveal` (fade + translateY entry) on:
-- Each `<section>` that is not the hero
-- Editorial two-column blocks
-- FAQ dl
-- Related-experiences rail wrapper
+- **`.reveal` / `.reveal-stagger`** on every top-level `<section>` and every `<article>` inside grids (fade + 12–16px rise ≤220ms, IntersectionObserver already wired).
+- **`.editorial-zoom`** utility on every editorial `<figure>`/image wrapper (scale 1.03, 700ms, reduced-motion safe). Currently only on `EditorialCard`, `RelatedExperiencesRail`, PlanningDestination hero, About founder. Extend to:
+  - Local Stories index cards + article hero + inline figures
+  - Corporate + PT Corporate block images (currently hand-rolled `hover:scale-[1.03]` — swap to `.editorial-zoom` for consistency)
+  - Moments/Proposals block images
+  - Experiences / Multi-day inline figures
+  - Travel Designer figures
+- **Gold-rule + eyebrow reveal cadence** — where a section has `Eyebrow → SectionTitle → gold-rule`, wrap in `.reveal-stagger` so the three land in sequence.
+- **CTA micro-motion** — `CtaButton` already has hover ramp; audit that every page uses `<CtaButton>` (not raw `<a>`). Fix any strays in Local Stories and plan pages.
+- **Long-form paragraphs** on Local Stories article body → apply `.reveal` per paragraph block so scrolling feels alive without becoming showy.
 
-Any missing section gets `className="reveal ..."` appended. No new keyframes — utility already exists in `styles.css`. Deliverable: 1-line diff per file + Playwright screenshot at scroll mid-page confirming staggered entry.
+All additions respect `prefers-reduced-motion`.
 
-Out of scope: touching the hero (approved copy locked), the sticky CTA, or introducing per-child stagger beyond what `.reveal` already provides.
+## 3. Verification
 
----
+- Re-run `node scripts/scan-image-duplicates.mjs` and confirm Corporate + Moments are no longer in the duplicate list; commit the new report.
+- Add one Playwright assertion to `e2e/motion-perf.spec.ts` (or a small new spec) that visits `/local-stories`, `/corporate`, `/proposal-in-portugal` and asserts at least N `.reveal`/`.editorial-zoom` nodes are present (guards against future regression).
+- `bunx tsgo --noEmit` must pass.
 
-### 4. Plan destination map — route/link draw
+## Out of scope
 
-`PlanningDestinationPage` currently has **no map**. Add one, in the spirit of `LiveMapPreview` / `EditorialMap`, so travellers see the geography of what they're planning.
-
-**Placement:** new section between the editorial gallery strip and the featured Signature tours rail.
-
-**Data model:** extend `PlanningDestination` with an optional `mapStops: { label: string; lat: number; lng: number }[]` field. Coordinates sourced from the existing `REGION_STOPS` catalog via `lookupStopGeo()` — **never invented**. If a destination has fewer than 2 resolvable stops, the section renders nothing (no map, no placeholder).
-
-**Component:** new `PlanDestinationMap` built on `EditorialMap` (already handles real geo projection + editorial framing), with:
-- Route polyline drawn between stops using the existing OSRM path from `useRouteLegMinutes` — real driving geometry, not a schematic S-curve
-- Stroke-dashoffset animation on first reveal (2400ms, matches `LiveMapPreview` cadence)
-- Per-leg distance label (km) + drive time (min) from `legDistancesKm` / `legMinutes` — realistic, source-of-truth
-- Pins staggered 600ms apart, matching cadence in `LiveMapPreview`
-- Reduced-motion: skip the draw, show the finished route
-
-**No new dependencies.** Reuses `EditorialMap`, `useRouteLegMinutes`, `lookupStopGeo`, `REGION_STOPS`. Mapbox stays untouched.
-
-Out of scope: interactive pan/zoom, Mapbox tiles on plan pages (would break the editorial rhythm), coordinates for destinations not in `REGION_STOPS` (those pages simply won't show a map until real stops are catalogued).
-
-Verification: load one plan destination that has ≥2 catalogued stops, screenshot before/after draw, confirm leg minutes/km match the OSRM response.
-
----
-
-### Sequencing & deliverables
-
-1. §1 image swaps (fastest, isolates risk)
-2. §3 `.reveal` sweep (mechanical, low-risk)
-3. §2 hover-zoom primitive (design-system change, medium blast radius)
-4. §4 Plan map (largest, most net-new code)
-
-Between steps I'll stop, share screenshots + file diffs, and wait for approval before the next. Typecheck runs after each step.
+- No homepage changes.
+- No new photography, no stock, no AI-generated images.
+- No new motion primitives beyond `.reveal`, `.reveal-stagger`, `.editorial-zoom`, `CtaButton` ramp, `EditorialMap` route-draw.
+- No copy changes (only alt text where the image swaps).

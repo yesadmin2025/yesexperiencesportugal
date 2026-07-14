@@ -6,10 +6,11 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
-import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
-import guestQuintaGroup from "@/assets/guests/quinta-group.jpg.asset.json";
+import imgAzeitaoWorkshop from "@/assets/tours/azeitao-cheese/workshop.jpg";
+import imgEvoraTemple from "@/assets/tours/evora-alentejo/temple.jpg";
 import guestArrabidaViewpoint from "@/assets/guests/arrabida-viewpoint-group.jpg.asset.json";
-const imgCorporateGroup = guestQuintaGroup.url;
+const imgCorporateGroup = imgAzeitaoWorkshop;
+const imgOffsiteRetreat = imgEvoraTemple;
 const imgDiscreetViewpoint = guestArrabidaViewpoint.url;
 
 
@@ -67,7 +68,7 @@ const BLOCKS = [
     practical:
       "Multi-day flow, regional logistics, meeting-friendly venues, cultural moments built into the rhythm.",
     local: "Coordinated by a local host who knows how each piece of the day connects.",
-    image: imgSintraEstates,
+    image: imgOffsiteRetreat,
     icon: Compass,
   },
   {
@@ -126,14 +127,14 @@ function CorporatePage() {
                 key={b.eyebrow}
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
               >
-                <div className="overflow-hidden">
+                <figure className="editorial-zoom">
                   <img
                     src={b.image}
                     alt={b.title}
                     loading="lazy"
-                    className="w-full aspect-[4/5] md:aspect-[5/6] object-cover transition-transform duration-700 hover:scale-[1.03]"
+                    className="w-full aspect-[4/5] md:aspect-[5/6] object-cover"
                   />
-                </div>
+                </figure>
                 <div>
                   <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
                   <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />

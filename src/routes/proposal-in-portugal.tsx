@@ -7,8 +7,8 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { PROPOSAL_FAQ } from "@/content/seo-faq";
 import imgRomantic from "@/assets/exp-romantic.jpg";
-import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
-import imgTroiaBeach from "@/assets/tours/troia-comporta/beach.jpg";
+import imgChocolateCake from "@/assets/guests/chocolate-cake-tasting.jpg.asset.json";
+import imgPicnic from "@/assets/tours/wild-beaches-picnic/picnic.jpg";
 
 const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/proposal-in-portugal";
@@ -68,7 +68,7 @@ const BLOCKS = [
       "Birthdays, anniversaries, honeymoons or family moments — shaped around your rhythm, your people and the way you want to feel Portugal.",
     practical: "Private host · any group size · multi-activity planning · flexible scheduling.",
     local: "Coordinated by a local host who knows how each piece of the day connects.",
-    image: imgSintraEstates,
+    image: imgChocolateCake.url,
     icon: Sparkles,
     cta: "Plan a Celebration",
   },
@@ -80,7 +80,7 @@ const BLOCKS = [
     practical: "Small group days · private transport · personal touches · adjusted to your rhythm.",
     local:
       "We work with people we trust on the ground — places that welcome you as guests, not bookings.",
-    image: imgTroiaBeach,
+    image: imgPicnic,
     icon: Users,
     cta: "Plan a Private Day",
   },
@@ -128,14 +128,14 @@ function ProposalInPortugalPage() {
                 key={b.eyebrow}
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
               >
-                <div className="overflow-hidden">
+                <figure className="editorial-zoom">
                   <img
                     src={b.image}
                     alt={b.title}
                     loading="lazy"
-                    className="w-full aspect-[4/5] md:aspect-[5/6] object-cover transition-transform duration-700 hover:scale-[1.03]"
+                    className="w-full aspect-[4/5] md:aspect-[5/6] object-cover"
                   />
-                </div>
+                </figure>
                 <div>
                   <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
                   <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
