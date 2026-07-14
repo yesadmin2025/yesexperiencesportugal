@@ -99,7 +99,7 @@ export function PlanningDestinationPage({ destination }: Props) {
           <div className="container-x">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
               {destination.gallery.slice(0, 3).map((p) => (
-                <figure key={p.src} className="overflow-hidden rounded-sm">
+                <figure key={p.src} className="editorial-zoom overflow-hidden rounded-sm">
                   <img
                     src={p.src}
                     alt={p.alt}
