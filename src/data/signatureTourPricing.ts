@@ -67,3 +67,101 @@ function clampTier(guests: number | null | undefined): number {
   if (guests >= 8) return 8;
   return Math.round(guests);
 }
+
+/* ---------------------------------------------------------------- *
+ * Age-band pricing (owner-approved, uniform across all Signatures) *
+ * ---------------------------------------------------------------- *
+ *
+ * Decision recorded 2026-07-14 by owner:
+ *   - Adult (18+)         → 100% of resolved per-pax tier
+ *   - Youth (11–17)       →  75%
+ *   - Child (3–10)        →  50%
+ *   - Infant (0–2)        →   0% (free)
+ *   - Tier lookup uses TOTAL headcount (adults + all minors, incl. infants)
+ *   - No adults-only tours today (composition step blocks nothing)
+ *
+ * There is NO fallback that silently prices a minor as an adult. When
+ * an age falls outside the four bands the resolver returns null for
+ * that line and the server checkout must reject the request.
+ */
+
+export type AgeBand = "adult" | "youth" | "child" | "infant";
+
+export const AGE_BAND_PCT: Record<AgeBand, number> = {
+  adult: 1.0,
+  youth: 0.75,
+  child: 0.5,
+  infant: 0,
+};
+
+/** Return the age band an integer age belongs to, or null if out of range. */
+export function ageBand(age: number): AgeBand | null {
+  if (!Number.isFinite(age) || age < 0 || age > 120) return null;
+  const a = Math.floor(age);
+  if (a >= 18) return "adult";
+  if (a >= 11) return "youth";
+  if (a >= 3) return "child";
+  if (a >= 0) return "infant";
+  return null;
+}
+
+export interface JourneyPriceLine {
+  readonly kind: "adult" | "minor";
+  readonly band: AgeBand;
+  readonly age: number | null; // null for adults (no age captured)
+  readonly unitEur: number; // per-person EUR after band %
+  readonly qty: 1;
+}
+
+export interface JourneyPricing {
+  readonly perPaxAdultEur: number; // resolved from tier
+  readonly tier: number; // tier used (1..8)
+  readonly real: boolean; // true when tier came from real data
+  readonly lines: readonly JourneyPriceLine[];
+  readonly totalEur: number; // sum of every line
+  readonly headcount: number; // adults + minorAges.length
+}
+
+/**
+ * Resolve full itemised pricing for a Signature tour with mixed traveller
+ * ages. Returns null if:
+ *   - the tour has no anchor price, OR
+ *   - any minor age is not a valid band (server MUST reject checkout).
+ *
+ * `minorAges` is a list of integer ages (0..17) for every non-adult on
+ * the booking. The caller is responsible for validating counts (>=1 adult).
+ */
+export function resolveJourneyPricing(
+  tour: Pick<SignatureTour, "id" | "priceFrom"> | null | undefined,
+  adults: number,
+  minorAges: readonly number[],
+  overrides?: Record<string, PriceTiersEUR | undefined> | null,
+): JourneyPricing | null {
+  if (!tour) return null;
+  if (!Number.isInteger(adults) || adults < 1) return null;
+  const headcount = adults + minorAges.length;
+
+  const per = resolvePerPaxEur(tour, headcount, overrides);
+  if (!per) return null;
+  const adultEur = per.eurPerPax;
+
+  const lines: JourneyPriceLine[] = [];
+  for (let i = 0; i < adults; i++) {
+    lines.push({ kind: "adult", band: "adult", age: null, unitEur: adultEur, qty: 1 });
+  }
+  for (const age of minorAges) {
+    const band = ageBand(age);
+    if (!band) return null; // caller must reject
+    const unitEur = Math.round(adultEur * AGE_BAND_PCT[band]);
+    lines.push({ kind: "minor", band, age: Math.floor(age), unitEur, qty: 1 });
+  }
+  const totalEur = lines.reduce((s, l) => s + l.unitEur, 0);
+  return {
+    perPaxAdultEur: adultEur,
+    tier: per.tier,
+    real: per.real,
+    lines,
+    totalEur,
+    headcount,
+  };
+}

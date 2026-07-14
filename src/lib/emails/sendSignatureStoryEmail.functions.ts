@@ -25,6 +25,15 @@ const inputSchema = z.object({
   email: z.string().email().max(200),
   tourId: z.string().max(120).nullable().optional(),
   dateIso: z.string().max(20).nullable().optional(),
+  /**
+   * Stable hash of the full journey composition (tour + ordered stops +
+   * add-ons + date + pickup + adults + minor ages). Included in the
+   * idempotency key so:
+   *   - repeated submissions of the SAME journey never re-send;
+   *   - a genuinely refined journey (different revision) sends once more.
+   * Optional for backward compatibility with older call sites.
+   */
+  journeyRevision: z.string().min(1).max(80).nullable().optional(),
   snapshot: snapshotSchema,
 });
 
@@ -41,8 +50,12 @@ export const sendSignatureStoryEmail = createServerFn({ method: "POST" })
       const { sendTransactionalInternal } = await import(
         "@/lib/email/send-internal.server"
       );
+      // Revision-scoped idempotency: repeated submits of the same journey
+      // dedupe at the email_send_log layer; a refined journey (new revision)
+      // sends a fresh copy.
+      const revision = data.journeyRevision ?? data.dateIso ?? "";
       const key = await sha1Hex(
-        `${data.email.toLowerCase()}|${data.tourId ?? ""}|${data.dateIso ?? ""}`,
+        `${data.email.toLowerCase()}|${data.tourId ?? ""}|${revision}`,
       );
       await sendTransactionalInternal({
         templateName: "signature-story",

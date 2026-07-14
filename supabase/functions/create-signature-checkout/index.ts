@@ -17,6 +17,20 @@ interface Body {
   tourId: string;
   tourTitle: string;
   guests: number;
+  /**
+   * Optional traveller composition. When BOTH `adults` and `minorAges`
+   * are supplied, the server prices the booking with the owner-approved
+   * uniform age bands (adult 18+ 100%, youth 11–17 75%, child 3–10 50%,
+   * infant 0–2 free) and IGNORES `priceFromEur` except as the anchor
+   * fallback when no tier row exists. When absent, legacy adult-only
+   * pricing is used (`guests * per_pax`) — this keeps existing call
+   * sites working until the Studio UI captures composition.
+   *
+   * Any minor age outside 0..17 (or non-integer) triggers a 400 —
+   * there is NO fallback that silently prices a minor as an adult.
+   */
+  adults?: number;
+  minorAges?: number[];
   stopLabels?: string[];
   /** Real included items from VIATOR_META[tourId].included — used as the
    *  truthful description source. Client-owned so the edge fn stays
@@ -37,6 +51,10 @@ interface Body {
   flow?: "studio" | "signature" | "tailor";
   /** Stripe Checkout UI mode. Defaults to "hosted" (full-page redirect). */
   uiMode?: "hosted" | "embedded";
+  /** Stable client-side hash of the composed journey — mirrored into
+   *  Stripe metadata so the confirmation trail and the story email can
+   *  be reconciled against the exact revision the guest approved. */
+  journeyRevision?: string;
   /** Forwarded from FinalDetailsDialog. */
   guestDetails?: {
     startTime?: string | null;
@@ -49,6 +67,20 @@ interface Body {
     priceEur: number;
     durationMinutes?: number;
   }>;
+}
+
+type AgeBand = "adult" | "youth" | "child" | "infant";
+const AGE_BAND_PCT: Record<AgeBand, number> = {
+  adult: 1.0,
+  youth: 0.75,
+  child: 0.5,
+  infant: 0,
+};
+function ageBand(age: number): AgeBand | null {
+  if (!Number.isFinite(age) || age < 0 || age > 17 || !Number.isInteger(age)) return null;
+  if (age >= 11) return "youth";
+  if (age >= 3) return "child";
+  return "infant";
 }
 
 
@@ -143,12 +175,59 @@ Deno.serve(async (req) => {
       .eq("tour_id", body.tourId)
       .maybeSingle();
 
-    const tier = Math.min(8, Math.max(1, body.guests));
+    // Tier lookup uses TOTAL headcount (adults + minors, incl. infants),
+    // matching the owner-approved rule (D3). When composition is absent
+    // we fall back to `body.guests` — legacy adult-only path.
+    const compositionSupplied =
+      Number.isInteger(body.adults) &&
+      (body as { adults?: number }).adults! >= 1 &&
+      Array.isArray(body.minorAges);
+
+    let adultsCount = compositionSupplied ? (body.adults as number) : body.guests;
+    const minorAges = compositionSupplied ? (body.minorAges as number[]) : [];
+    if (compositionSupplied) {
+      if (adultsCount < 1 || adultsCount > 12)
+        return jsonError("Adults must be between 1 and 12", 400);
+      if (minorAges.length > 11) return jsonError("Too many minors", 400);
+      for (const age of minorAges) {
+        if (!Number.isInteger(age) || age < 0 || age > 17)
+          return jsonError(
+            "Every minor age must be an integer between 0 and 17 — no fallback to adult price",
+            400,
+          );
+      }
+    }
+
+    const headcount = adultsCount + minorAges.length;
+    if (headcount < 1 || headcount > 12)
+      return jsonError("Total travellers must be between 1 and 12", 400);
+    // Keep legacy `body.guests` in sync with headcount for downstream copy/metadata.
+    (body as { guests: number }).guests = headcount;
+
+    const tier = Math.min(8, Math.max(1, headcount));
     const tiers = (tierRow?.tiers ?? null) as Record<string, number> | null;
     const real = tiers && typeof tiers[String(tier)] === "number" ? tiers[String(tier)] : null;
     const eurPerPax = real ?? body.priceFromEur;
-    const amountInCents = Math.round(eurPerPax * 100) * body.guests;
-    if (amountInCents < 5000) return jsonError("Computed amount below minimum", 400);
+
+    // Build itemised age-band lines (server-authoritative). When
+    // composition is absent, this collapses to `headcount × adult`.
+    type PriceLine = { band: AgeBand; age: number | null; unitEur: number };
+    const priceLines: PriceLine[] = [];
+    for (let i = 0; i < adultsCount; i++) {
+      priceLines.push({ band: "adult", age: null, unitEur: eurPerPax });
+    }
+    for (const age of minorAges) {
+      const band = ageBand(age);
+      if (!band) return jsonError("Invalid minor age", 400); // defensive; already validated
+      priceLines.push({
+        band,
+        age,
+        unitEur: Math.round(eurPerPax * AGE_BAND_PCT[band]),
+      });
+    }
+
+    const tourSubtotalCents = priceLines.reduce((s, l) => s + Math.round(l.unitEur * 100), 0);
+    if (tourSubtotalCents < 5000) return jsonError("Computed amount below minimum", 400);
 
     const stripe = createStripeClient(body.environment);
 
@@ -232,22 +311,54 @@ Deno.serve(async (req) => {
         quantity: body.guests,
       }));
 
-    const sessionParams: Record<string, unknown> = {
-      line_items: [
-        {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: productName,
-              description,
-              images: ["https://yesexperiencesportugal.com/og-cover.jpg"],
-            },
-            unit_amount: Math.round(eurPerPax * 100),
+    // Build a Stripe line item per age band (grouped) so the guest sees
+    // "Adult × 2 · €279", "Youth × 1 · €209", etc. — never a single
+    // opaque total. Adult-only bookings collapse into one line.
+    const byBand: Record<AgeBand, { unitEur: number; qty: number }> = {
+      adult: { unitEur: 0, qty: 0 },
+      youth: { unitEur: 0, qty: 0 },
+      child: { unitEur: 0, qty: 0 },
+      infant: { unitEur: 0, qty: 0 },
+    };
+    for (const l of priceLines) {
+      byBand[l.band].unitEur = l.unitEur;
+      byBand[l.band].qty += 1;
+    }
+    const bandLabel: Record<AgeBand, string> = {
+      adult: "Adult (18+)",
+      youth: "Youth (11–17)",
+      child: "Child (3–10)",
+      infant: "Infant (0–2, free)",
+    };
+    const tourLineItems = (["adult", "youth", "child", "infant"] as const)
+      .filter((b) => byBand[b].qty > 0)
+      .map((b, idx) => ({
+        price_data: {
+          currency: "eur",
+          product_data: {
+            // Only the first (adult) line carries the full product name +
+            // hero image; subsequent bands stay short so the checkout
+            // page reads cleanly.
+            name:
+              idx === 0
+                ? productName
+                : `${productName} — ${bandLabel[b]}`.slice(0, 180),
+            ...(idx === 0
+              ? {
+                  description,
+                  images: ["https://yesexperiencesportugal.com/og-cover.jpg"],
+                }
+              : {}),
           },
-          quantity: body.guests,
+          // Infants (free) still appear as a €0 line so the party
+          // composition is legible on the Stripe receipt.
+          unit_amount: Math.round(byBand[b].unitEur * 100),
         },
-        ...addOnLineItems,
-      ],
+        quantity: byBand[b].qty,
+      }));
+
+    const sessionParams: Record<string, unknown> = {
+      line_items: [...tourLineItems, ...addOnLineItems],
 
       mode: "payment",
       locale: "auto",
@@ -272,14 +383,19 @@ Deno.serve(async (req) => {
         booking_type: "signature",
         flow,
         tour_id: body.tourId,
-        guests: String(body.guests),
+        guests: String(headcount),
+        adults: String(adultsCount),
+        minor_ages: minorAges.length > 0 ? minorAges.join(",") : "",
+        pricing_mode: compositionSupplied ? "age_bands" : "legacy_adults_only",
         per_pax_eur: String(eurPerPax),
+        tour_subtotal_eur: String(Math.round(tourSubtotalCents / 100)),
         price_source: real != null ? "tier" : "anchor",
         date_exact: body.dateExact ?? "",
         pickup: (body.pickupLabel ?? "").slice(0, 120),
         hotel_pickup_included: "1",
-        
+
         journey_title: (body.journeyTitle ?? "").slice(0, 160),
+        journey_revision: (body.journeyRevision ?? "").slice(0, 80),
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
         tailored: body.tailored ? "1" : "0",
         add_ons: JSON.stringify(

@@ -35,12 +35,16 @@ export interface GuestDetailsStepProps {
   readonly onBack: () => void;
   readonly onSubmit: (details: GuestDetails) => Promise<void> | void;
   /**
-   * Called once the traveller blurs a valid email. Parent owns the
-   * snapshot + email dispatch — this component only forwards the address.
-   * Debounced + deduped internally so repeated blurs of the same address
-   * never fire twice.
+   * Fires ONCE per explicit submit, in parallel with `onSubmit`, when the
+   * guest chooses to send their Signature Story to their inbox. Parent
+   * owns the snapshot + revision hash + dispatch — this component only
+   * forwards the address. Never blocks advancing to checkout; failures
+   * are swallowed by the parent (email is never a checkout gate).
+   *
+   * Replaces the old `onEmailBlur` behaviour — the email is no longer
+   * sent on blur. Only the explicit "Continue and email…" action fires.
    */
-  readonly onEmailBlur?: (email: string) => Promise<void> | void;
+  readonly onStorySubmit?: (email: string) => Promise<void> | void;
   readonly className?: string;
   readonly testId?: string;
 }
@@ -53,7 +57,7 @@ export function GuestDetailsStep({
   submitting = false,
   onBack,
   onSubmit,
-  onEmailBlur,
+  onStorySubmit,
   className,
   testId,
 }: GuestDetailsStepProps) {
@@ -71,9 +75,11 @@ export function GuestDetailsStep({
   const [occasion, setOccasion] = useState("");
   const [guideNotes, setGuideNotes] = useState(initial?.guideNotes ?? "");
 
-  const [storySent, setStorySent] = useState(false);
-  const sentEmailRef = useRef<string | null>(null);
-  const blurTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Track whether the story email dispatch has already fired for this
+  // exact email address on this session — a rapid double-tap of Submit
+  // must never enqueue two emails. Server also dedupes via
+  // journeyRevision-scoped idempotency key, but this guards the UI.
+  const storyDispatchedForRef = useRef<string | null>(null);
 
   useEffect(() => {
     prewarmStripeScript();
@@ -86,25 +92,6 @@ export function GuestDetailsStep({
       window.scrollTo({ top: 0, behavior: "auto" });
     }
   }, []);
-
-  useEffect(() => () => {
-    if (blurTimerRef.current) clearTimeout(blurTimerRef.current);
-  }, []);
-
-  const triggerEmailBlur = (raw: string) => {
-    const value = raw.trim().toLowerCase();
-    if (!onEmailBlur || !isEmail(value)) return;
-    if (sentEmailRef.current === value) return;
-    if (blurTimerRef.current) clearTimeout(blurTimerRef.current);
-    blurTimerRef.current = setTimeout(() => {
-      sentEmailRef.current = value;
-      Promise.resolve(onEmailBlur(value))
-        .then(() => setStorySent(true))
-        .catch(() => {
-          // silent — email dispatch never blocks reservation flow
-        });
-    }, 400);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,6 +107,25 @@ export function GuestDetailsStep({
       toast.error(`Please complete: ${missing.join(", ")}`);
       return;
     }
+
+    // Fire the Signature Story email exactly once for this address per
+    // submit action. Fire-and-forget: NEVER blocks advancing to checkout.
+    const emailNormalised = email.trim().toLowerCase();
+    if (
+      onStorySubmit &&
+      isEmail(emailNormalised) &&
+      storyDispatchedForRef.current !== emailNormalised
+    ) {
+      storyDispatchedForRef.current = emailNormalised;
+      // Intentionally not awaited — checkout continues regardless.
+      Promise.resolve(onStorySubmit(emailNormalised)).catch((err) => {
+        // Reset so a manual retry (if surfaced later) is possible; server
+        // idempotency prevents duplicate delivery on genuine success.
+        storyDispatchedForRef.current = null;
+        console.warn("[GuestDetailsStep] story email dispatch failed", err);
+      });
+    }
+
     await onSubmit({
       fullName: fullName.trim(),
       email: email.trim(),
@@ -204,22 +210,11 @@ export function GuestDetailsStep({
             <input
               type="email"
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (storySent && e.target.value.trim().toLowerCase() !== sentEmailRef.current) {
-                  setStorySent(false);
-                }
-              }}
-              onBlur={(e) => triggerEmailBlur(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               className={inputClass}
               autoComplete="email"
               inputMode="email"
             />
-            {storySent ? (
-              <p className="mt-1.5 text-[11px] italic text-[color:var(--teal)]">
-                Your Signature Story is on its way to your inbox.
-              </p>
-            ) : null}
           </Field>
           <Field label="Phone / WhatsApp" required>
             <input
@@ -360,7 +355,7 @@ export function GuestDetailsStep({
                 iconLeading={<Lock size={14} aria-hidden />}
                 data-testid="studio-v3-guest-details-submit"
               >
-                Continue to summary
+                Continue and email my Signature story
               </CtaButton>
             )}
             <p className="mt-2 text-center text-[10px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]/80">
