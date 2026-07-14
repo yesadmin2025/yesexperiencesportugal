@@ -53,9 +53,8 @@ function DayToursPage() {
         <div className="container-x">
           <Eyebrow flank>Half &amp; Full Day</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            Private Day <SectionTitle.Em>Tours in Portugal</SectionTitle.Em>
+            Day <SectionTitle.Em>Tours</SectionTitle.Em>
           </SectionTitle>
-
           <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
             Private guides, refined pace, and the parts of Portugal you'll remember most. Reserve
             instantly — or adjust a few details within the experience to match your rhythm.

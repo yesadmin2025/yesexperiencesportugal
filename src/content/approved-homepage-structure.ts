@@ -72,17 +72,17 @@ export interface ApprovedSection {
 }
 
 /**
- * The approved 8-block structure (v5 — Jul 2026 refinement).
+ * The approved 8-block structure (v4 — Builder-dominance rework).
  *
  * Order:
- *   1.  Hero (<CinematicHero />)
- *   2.  Trust strip — GuestQuotes reviews block (id="reviews")
- *   3.  Four ways in — Signature / Studio / Moments / Corporate / Travel Designer primer
- *   4.  Experience Studio (promoted, aria-labelledby="studio-title")
- *   5.  Signature experiences preview (aria-labelledby="signatures-title")
- *   6.  Occasions band — Proposals + Celebrations + Corporate (aria-labelledby="groups-title")
- *   7.  FAQ — visible helpful answers (aria-labelledby="faq-title")
- *   8.  Final CTA — talk to a local (aria-labelledby="final-cta-title")
+ *   1.  Hero
+ *   2.  Trust strip (reviews + private guide line)
+ *   3.  Three paths (Day / Bespoke / Occasions cards)
+ *   4.  Experience Studio (promoted)
+ *   5.  Signature experiences preview
+ *   6.  Occasions band (Proposals + Celebrations + Corporate)
+ *   7.  FAQ
+ *   8.  Final CTA — talk to a local
  */
 export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   {
@@ -94,46 +94,47 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 2,
-    name: "Trust strip — reviews (GuestQuotes)",
-    marker: "2 — TRUST STRIP",
+    name: "Trust strip — reviews + private guide line",
+    ariaLabelledBy: "trust-bar-title",
     requiredSpacing: { kind: "py", minScale: 12 },
   },
   {
     order: 3,
-    name: "Four ways in — Signature / Studio / Moments / Corporate / Travel Designer",
-    componentTag: "FourWaysIn",
+    name: "Three paths — Day / Bespoke / Occasions",
+    componentTag: "ThreePathsSection",
     inComponent: true,
-    requiredSpacing: null,
+    ariaLabelledBy: "three-paths-title",
+    requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
     order: 4,
     name: "Experience Studio (promoted)",
     ariaLabelledBy: "studio-title",
-    requiredSpacing: { kind: "py", minScale: 14 },
+    requiredSpacing: { kind: "py", minScale: 20 },
   },
   {
     order: 5,
     name: "Signature experiences preview",
     ariaLabelledBy: "signatures-title",
-    requiredSpacing: { kind: "py", minScale: 14 },
+    requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
     order: 6,
     name: "Occasions band — proposals + celebrations + corporate",
     ariaLabelledBy: "groups-title",
-    requiredSpacing: { kind: "py", minScale: 14 },
+    requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
     order: 7,
     name: "FAQ — visible helpful answers",
     ariaLabelledBy: "faq-title",
-    requiredSpacing: { kind: "py", minScale: 12 },
+    requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
     order: 8,
     name: "Final CTA — talk to a local",
-    ariaLabelledBy: "final-cta-title",
-    requiredSpacing: { kind: "py", minScale: 14 },
+    marker: "FINAL CTA",
+    requiredSpacing: { kind: "pb", minScale: 16 },
   },
 ] as const;
 

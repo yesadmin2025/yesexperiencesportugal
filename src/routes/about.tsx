@@ -54,19 +54,17 @@ function Page() {
     <SiteLayout>
       {/* Hero */}
       <section className="reveal pt-32 pb-14 bg-[color:var(--sand)] text-center">
-        <div className="container-x editorial-cascade">
-          <div className="reveal-stagger"><Eyebrow flank>About YES</Eyebrow></div>
-          <div className="reveal-stagger">
-            <SectionTitle as="h1" size="anchor" spacing="loose">
-              We design <SectionTitle.Em>meaningful Portugal</SectionTitle.Em>.
-            </SectionTitle>
-          </div>
-          <p className="reveal-stagger mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
+        <div className="container-x">
+          <Eyebrow flank>About YES</Eyebrow>
+          <SectionTitle as="h1" size="anchor" spacing="loose">
+            We design <SectionTitle.Em>meaningful Portugal</SectionTitle.Em>.
+          </SectionTitle>
+          <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
             YES Experiences Portugal is a licensed Portuguese private tour operator, founder-led
             since 2022 and built around one idea: Portugal should feel personal, local and genuinely
             yours.
           </p>
-          <p className="reveal-stagger mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
+          <p className="mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
             Private days, live-designed experiences and full journeys, created from real routes,
             real guests and real local knowledge.
           </p>
@@ -118,10 +116,10 @@ function Page() {
               <p>The idea was too specific to hand over as a standard agency brief.</p>
             </div>
 
-            <figure className="editorial-zoom mt-10 lg:hidden">
+            <figure className="mt-10 lg:hidden">
               <img
                 src={founderAsset.url}
-                alt="Founder Nídia Almeida hosting a private wine tasting for guests in Portugal."
+                alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
                 loading="lazy"
                 className="w-full aspect-[4/3] object-cover"
               />
@@ -150,10 +148,10 @@ function Page() {
             </div>
           </div>
 
-          <figure className="editorial-zoom hidden lg:block lg:sticky lg:top-28">
+          <figure className="hidden lg:block lg:sticky lg:top-28">
             <img
               src={founderAsset.url}
-              alt="Founder Nídia Almeida pouring wine for guests during a private tasting in the Alentejo."
+              alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
               loading="lazy"
               className="w-full aspect-[4/3] object-cover"
             />

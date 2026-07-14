@@ -72,8 +72,8 @@ describe("FAQ #faq-title — locked typography (order-independent)", () => {
     expectAllTokens(
       FAQ_TITLE,
       [
-        "text-[1.9rem]",
-        "sm:text-[2.2rem]",
+        "text-[1.8rem]",
+        "sm:text-[2.1rem]",
         "md:text-[2.6rem]",
         "leading-[1.1]",
         "md:leading-[1.02]",

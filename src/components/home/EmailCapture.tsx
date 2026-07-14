@@ -27,7 +27,9 @@ const EXIT_INTENT_DISMISSED_KEY = "yes:lead-capture:exit-dismissed";
 const leadSchema = z.object({
   firstName: z.string().trim().min(1, "Please enter your first name").max(80),
   email: z.string().trim().toLowerCase().email("Enter a valid email").max(254),
-  consent: z.literal(true, { message: "Please tick the consent box to continue." }),
+  consent: z.literal(true, {
+    errorMap: () => ({ message: "Please tick the consent box to continue." }),
+  }),
 });
 
 type Status = "idle" | "submitting" | "success" | "error";

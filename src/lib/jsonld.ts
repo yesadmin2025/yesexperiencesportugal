@@ -368,130 +368,7 @@ export function durationToIso8601(durationHours?: string | null): string | null 
 interface StopForLd {
   label: string;
   story?: string;
-  /** Optional absolute URL for a photo of this stop. Emitted on the TouristAttraction. */
-  image?: string;
 }
-
-/** Turn a root-relative URL into an absolute site URL. Pass through when already absolute. */
-export function absUrl(u: string): string {
-  if (!u) return u;
-  if (u.startsWith("http")) return u;
-  return `${SITE_URL}${u.startsWith("/") ? "" : "/"}${u}`;
-}
-
-/**
- * Build a schema.org ImageObject with caption + credit. Every gallery
- * photo we emit uses this shape so search crawlers see consistent metadata.
- */
-export function imageObjectLd(args: {
-  url: string;
-  caption: string;
-  credit?: string;
-  width?: number;
-  height?: number;
-}) {
-  const url = absUrl(args.url);
-  return {
-    "@type": "ImageObject" as const,
-    url,
-    contentUrl: url,
-    caption: args.caption,
-    creditText: args.credit ?? "YES Experiences Portugal",
-    ...(args.width ? { width: args.width } : {}),
-    ...(args.height ? { height: args.height } : {}),
-  };
-}
-
-/**
- * Standalone ImageGallery node — emitted alongside a Product/TouristTrip
- * when we have ≥3 gallery photos. Gives Google an explicit visual media
- * container tied to the page URL.
- */
-export function imageGalleryLd(args: {
-  pageUrl: string;
-  name: string;
-  photos: { src: string; alt: string }[];
-}) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "ImageGallery",
-    "@id": `${args.pageUrl}#gallery`,
-    name: args.name,
-    isPartOf: { "@id": args.pageUrl },
-    numberOfItems: args.photos.length,
-    image: args.photos.map((p) => imageObjectLd({ url: p.src, caption: p.alt })),
-  };
-}
-
-/**
- * pageGalleryLd — dedupes photos by absolute URL, skips when fewer than 3
- * remain. Returns `null` when the gallery shouldn't be emitted so callers
- * can spread with `?? []`.
- */
-export function pageGalleryLd(args: {
-  pageUrl: string;
-  name: string;
-  photos: { src: string; alt: string }[];
-}): ReturnType<typeof imageGalleryLd> | null {
-  const seen = new Set<string>();
-  const deduped = args.photos
-    .filter((p) => !!p?.src)
-    .map((p) => ({ ...p, src: absUrl(p.src) }))
-    .filter((p) => {
-      if (seen.has(p.src)) return false;
-      seen.add(p.src);
-      return true;
-    });
-  if (deduped.length < 3) return null;
-  return imageGalleryLd({ pageUrl: args.pageUrl, name: args.name, photos: deduped });
-}
-
-/**
- * stopMediaLd — ItemList of per-stop TouristAttractions, each carrying an
- * ImageObject when a photo is available. Emits alongside tourProductLd on
- * signature/itinerary/plan-hub pages so Google associates each stop with
- * its own image and caption, not just the page hero.
- *
- * Returns `null` when the stop list is empty.
- */
-export function stopMediaLd(args: {
-  pageUrl: string;
-  name: string;
-  stops: Array<{ label: string; story?: string; image?: string; alt?: string }>;
-}) {
-  const items = (args.stops ?? []).filter((s) => !!s?.label);
-  if (items.length === 0) return null;
-  return {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "@id": `${args.pageUrl}#stops`,
-    name: args.name,
-    isPartOf: { "@id": args.pageUrl },
-    numberOfItems: items.length,
-    itemListOrder: "https://schema.org/ItemListOrderAscending",
-    itemListElement: items.map((s, i) => {
-      const attraction: Record<string, unknown> = {
-        "@type": "TouristAttraction",
-        name: s.label,
-        ...(s.story ? { description: s.story.slice(0, 300) } : {}),
-        ...(s.image
-          ? {
-              image: imageObjectLd({
-                url: s.image,
-                caption: s.alt || `${s.label} — ${args.name}`,
-              }),
-            }
-          : {}),
-      };
-      return {
-        "@type": "ListItem",
-        position: i + 1,
-        item: attraction,
-      };
-    }),
-  };
-}
-
 
 /**
  * Product node for a Signature tour detail page.
@@ -501,11 +378,6 @@ export function stopMediaLd(args: {
  * AggregateRating when rating data is provided, ISO 8601 duration, and
  * an itinerary ItemList when stops are supplied — these are the fields
  * that drive richer experience cards on Google.
- *
- * When a `gallery` is passed:
- *  - `image` becomes an array (hero + gallery URLs), which is the field
- *    Google actually reads for tour rich results.
- *  - `associatedMedia` emits full ImageObject nodes with caption/credit.
  */
 export function tourProductLd(args: {
   id: string;
@@ -519,16 +391,10 @@ export function tourProductLd(args: {
   region?: string | null;
   durationHours?: string | null;
   stops?: StopForLd[];
-  gallery?: { src: string; alt: string }[];
 }) {
   const url = `${SITE_URL}/tours/${args.id}`;
 
-  const heroImage = absUrl(args.img);
-  const galleryPhotos = (args.gallery ?? []).map((p) => ({ ...p, src: absUrl(p.src) }));
-  // Dedupe hero + gallery URLs so we don't ship the same URL twice.
-  const uniqueImageUrls = Array.from(
-    new Set<string>([heroImage, ...galleryPhotos.map((p) => p.src)]),
-  );
+  const image = args.img.startsWith("http") ? args.img : `${SITE_URL}${args.img}`;
   const currency = args.currency ?? "EUR";
   const iso = durationToIso8601(args.durationHours ?? null);
   const stops = (args.stops ?? []).filter((s) => s && s.label);
@@ -538,20 +404,13 @@ export function tourProductLd(args: {
     "@id": `${url}#product`,
     name: args.title,
     description: args.blurb,
-    image: uniqueImageUrls,
+    image,
     url,
     brand: { "@id": `${SITE_URL}/#organization` },
     provider: { "@id": `${SITE_URL}/#organization` },
     category: "Private day tour",
     ...(args.region ? { touristType: args.region } : {}),
     ...(iso ? { duration: iso } : {}),
-    ...(galleryPhotos.length
-      ? {
-          associatedMedia: galleryPhotos.map((p) =>
-            imageObjectLd({ url: p.src, caption: p.alt }),
-          ),
-        }
-      : {}),
     ...(stops.length
       ? {
           itinerary: {
@@ -565,7 +424,6 @@ export function tourProductLd(args: {
                 "@type": "TouristAttraction",
                 name: s.label,
                 ...(s.story ? { description: s.story } : {}),
-                ...(s.image ? { image: absUrl(s.image) } : {}),
               },
             })),
           },
@@ -606,53 +464,6 @@ export function tourProductLd(args: {
       },
       result: { "@type": "Reservation", name: `${args.title} reservation` },
     },
-  };
-}
-
-/**
- * TouristDestination node for a plan destination page (Arrábida, Sintra…).
- * Includes hero + gallery so crawlers see the visual identity of the region.
- */
-export function touristDestinationLd(args: {
-  path: string;
-  name: string;
-  description: string;
-  hero?: { src: string; alt: string };
-  gallery?: { src: string; alt: string }[];
-  includedAttractions?: { name: string; url: string; image?: string }[];
-}) {
-  const url = `${SITE_URL}${args.path}`;
-  const gallery = (args.gallery ?? []).map((p) => ({ ...p, src: absUrl(p.src) }));
-  const hero = args.hero ? { ...args.hero, src: absUrl(args.hero.src) } : undefined;
-  const imageUrls = Array.from(
-    new Set<string>([...(hero ? [hero.src] : []), ...gallery.map((p) => p.src)]),
-  );
-  return {
-    "@context": "https://schema.org",
-    "@type": "TouristDestination",
-    "@id": `${url}#destination`,
-    name: args.name,
-    description: args.description,
-    url,
-    ...(imageUrls.length ? { image: imageUrls } : {}),
-    ...(gallery.length || hero
-      ? {
-          associatedMedia: [
-            ...(hero ? [imageObjectLd({ url: hero.src, caption: hero.alt })] : []),
-            ...gallery.map((p) => imageObjectLd({ url: p.src, caption: p.alt })),
-          ],
-        }
-      : {}),
-    ...(args.includedAttractions?.length
-      ? {
-          includesAttraction: args.includedAttractions.map((a) => ({
-            "@type": "TouristAttraction",
-            name: a.name,
-            url: a.url,
-            ...(a.image ? { image: absUrl(a.image) } : {}),
-          })),
-        }
-      : {}),
   };
 }
 

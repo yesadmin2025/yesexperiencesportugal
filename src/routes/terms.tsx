@@ -6,7 +6,7 @@ import {
   CANCELLATION_SIGNATURE,
   CANCELLATION_STUDIO,
 } from "@/config/business-nap";
-import ogImg from "@/assets/edit-coastal-road.jpg";
+import ogImg from "@/assets/hero-coast.jpg";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({

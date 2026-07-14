@@ -16,15 +16,13 @@ import heroImg from "@/assets/hero-coast.jpg";
 // `src/content/hero-scenes-manifest.ts` (single source of truth, feeds
 // both the route and the credits modal).
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
-import guestVineyardCouple from "@/assets/guests/vineyard-couple.jpg.asset.json";
-import guestQuintaGroup from "@/assets/guests/quinta-group.jpg.asset.json";
-const imgProposalsRomantic = guestVineyardCouple.url;
-const imgCorporate = guestQuintaGroup.url;
+import imgProposalsRomantic from "@/assets/exp-romantic.jpg";
+import imgCorporate from "@/assets/cat-corporate.jpg";
 
 import { Star, MessageCircle } from "lucide-react";
 
 import { GuestQuotes } from "@/components/home/GuestQuotes";
-const StudioLivePreview = () => null;
+import { StudioLivePreview } from "@/components/home/StudioLivePreview";
 import { CinematicHero } from "@/components/home/CinematicHero";
 import { RecentJourney } from "@/components/home/RecentJourney";
 import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
@@ -319,10 +317,15 @@ function HomePage() {
   // Auto-tags legacy `.reveal` / `.reveal-stagger` / `.section-enter`
   // elements with `data-motion`, so this controller wins on the
   // homepage without per-component edits.
-  // Homepage motion controller now mounts site-wide from SiteLayout
-  // (`src/components/SiteLayout.tsx`) so every page shares the same
-  // `[data-motion]` / `.motion-in` cadence as the homepage.
-
+  useEffect(() => {
+    let dispose: (() => void) | undefined;
+    import("@/lib/home-motion").then(({ startHomeMotion }) => {
+      dispose = startHomeMotion();
+    });
+    return () => {
+      dispose?.();
+    };
+  }, []);
 
   // ── Hash navigation ────────────────────────────────────────────────
   // Two cooperating effects:
@@ -671,7 +674,7 @@ function HomePage() {
                       >
                         <img
                           src={t.img}
-                          alt={`${t.title} — private ${t.region ?? "Portugal"} tour by YES Experiences`}
+                          alt={t.title}
                           loading="lazy"
                           decoding="async"
                           className="relative z-[1] w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.05]"
@@ -969,7 +972,7 @@ function HomePage() {
                     </CtaButton>
                   </CtaPair>
                   <p className="mt-6 text-center text-[12.5px] leading-[1.6] text-[color:var(--charcoal-soft)]">
-                    A local will reply as soon as possible.
+                    A local usually replies within a few hours.
                   </p>
                 </div>
               </div>

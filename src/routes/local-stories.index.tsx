@@ -42,12 +42,13 @@ export const Route = createFileRoute("/local-stories/")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],
-    // Self-referencing canonical for the listing page only. This `index` head
-    // applies only to `/local-stories/`; leaf article routes define their own
-    // canonicals in `local-stories.$slug.tsx`, so no duplicate is emitted.
-    links: [
-      { rel: "canonical", href: "https://yesexperiencesportugal.com/local-stories" },
-    ],
+    // NOTE: canonical intentionally omitted here. This route is a parent of
+    // `/local-stories/$slug` in TanStack's flat routing, and `links` from
+    // parents concatenate into every child — emitting a canonical here
+    // produced duplicate <link rel="canonical"> tags on article pages
+    // (one pointing at the listing, one at the article). The listing page
+    // is self-canonical by default; leaf article routes set their own.
+    links: [],
     scripts: [
       jsonLdScript(
         breadcrumbLd([
@@ -106,15 +107,13 @@ function Page() {
   return (
     <SiteLayout>
       {/* Header */}
-      <section className="pt-40 pb-16 md:pt-48 md:pb-20 bg-[color:var(--sand)] text-center reveal">
-        <div className="container-x editorial-cascade">
-          <div className="reveal-stagger"><Eyebrow flank>Local Stories</Eyebrow></div>
-          <div className="reveal-stagger">
-            <SectionTitle as="h1" size="anchor" spacing="loose">
-              The Portugal <SectionTitle.Em>we travel ourselves</SectionTitle.Em>
-            </SectionTitle>
-          </div>
-          <p className="reveal-stagger mt-6 max-w-xl mx-auto text-[15px] md:text-[17px] text-[color:var(--charcoal-soft)] leading-[1.75]">
+      <section className="pt-40 pb-16 md:pt-48 md:pb-20 bg-[color:var(--sand)] text-center">
+        <div className="container-x">
+          <Eyebrow flank>Local Stories</Eyebrow>
+          <SectionTitle as="h1" size="anchor" spacing="loose">
+            The Portugal <SectionTitle.Em>we travel ourselves</SectionTitle.Em>
+          </SectionTitle>
+          <p className="mt-6 max-w-xl mx-auto text-[15px] md:text-[17px] text-[color:var(--charcoal-soft)] leading-[1.75]">
             Notes from the road — written by the locals who design our private experiences.
           </p>
         </div>
@@ -130,9 +129,8 @@ function Page() {
                   <Link
                     to="/local-stories/$slug"
                     params={{ slug: a.slug }}
-                    className="editorial-card-link"
+                    className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
                   >
-
                     <div>
                       <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-3">
                         {a.eyebrow}
@@ -158,20 +156,19 @@ function Page() {
                     <Link
                       to="/local-stories/$slug"
                       params={{ slug: p.slug }}
-                      className="editorial-card-link"
+                      className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
                     >
-
                       {p.hero_image_url ? (
-                        <figure className="editorial-zoom relative aspect-[3/2] mb-6 shadow-[0_10px_30px_-22px_rgba(46,46,46,0.35)] group-hover:shadow-[0_24px_50px_-22px_rgba(41,91,97,0.28)] transition-shadow duration-700">
+                        <div className="relative overflow-hidden aspect-[3/2] mb-6 shadow-[0_10px_30px_-22px_rgba(46,46,46,0.35)] group-hover:shadow-[0_24px_50px_-22px_rgba(41,91,97,0.28)] transition-shadow duration-700">
                           <img
                             src={p.hero_image_url}
                             alt={p.hero_image_alt ?? p.title}
                             loading="lazy"
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal)]/55 via-transparent to-transparent pointer-events-none" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal)]/55 via-transparent to-transparent" />
                           <span className="absolute left-5 bottom-5 block h-px w-8 bg-[color:var(--gold)] opacity-90" />
-                        </figure>
+                        </div>
                       ) : (
                         <div className="aspect-[3/2] mb-6 bg-[color:var(--sand)]" />
                       )}

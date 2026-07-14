@@ -6,13 +6,9 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
-import imgAzeitaoWorkshop from "@/assets/tours/azeitao-cheese/workshop.jpg";
-import imgEvoraTemple from "@/assets/tours/evora-alentejo/temple.jpg";
-import guestArrabidaViewpoint from "@/assets/guests/arrabida-viewpoint-group.jpg.asset.json";
-const imgCorporateGroup = imgAzeitaoWorkshop;
-const imgOffsiteRetreat = imgEvoraTemple;
-const imgDiscreetViewpoint = guestArrabidaViewpoint.url;
-
+import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
+import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
+import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 
 const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
@@ -26,10 +22,10 @@ export const Route = createFileRoute("/corporate")({
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
-      { property: "og:image", content: `https://yesexperiencesportugal.com${imgDiscreetViewpoint}` },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
       {
         property: "twitter:image",
-        content: `https://yesexperiencesportugal.com${imgDiscreetViewpoint}`,
+        content: `https://yesexperiencesportugal.com${imgFatimaNazare}`,
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/corporate" },
     ],
@@ -57,7 +53,7 @@ const BLOCKS = [
       "Private groups of any size, scoped around the right transport, guides, suppliers and timing · invoice & DMC support · designed around your goals.",
     local:
       "We handle the moving parts on the ground — real driving times, real venues, real partners.",
-    image: imgCorporateGroup,
+    image: imgArrabidaWineLunch,
     icon: Users,
   },
   {
@@ -68,7 +64,7 @@ const BLOCKS = [
     practical:
       "Multi-day flow, regional logistics, meeting-friendly venues, cultural moments built into the rhythm.",
     local: "Coordinated by a local host who knows how each piece of the day connects.",
-    image: imgOffsiteRetreat,
+    image: imgSintraEstates,
     icon: Compass,
   },
   {
@@ -77,7 +73,7 @@ const BLOCKS = [
     emotional: "When it matters who's in the room and how the day feels — we shape it accordingly.",
     practical: "Small groups · private settings · careful pacing · NDAs welcome.",
     local: "Planned end to end with our local team — every detail confirmed before the day.",
-    image: imgDiscreetViewpoint,
+    image: imgFatimaNazare,
     icon: ClipboardCheck,
   },
 ];
@@ -86,27 +82,21 @@ function CorporatePage() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="pt-28 pb-14 bg-[color:var(--sand)]">
-        <div className="container-x max-w-3xl text-center reveal editorial-cascade">
-          <div className="reveal-stagger">
-            <Eyebrow flank>Corporate Retreats</Eyebrow>
-          </div>
-          <div className="reveal-stagger">
-            <SectionTitle as="h1" size="anchor" spacing="loose">
-              Team building in Portugal, <SectionTitle.Em>designed by locals.</SectionTitle.Em>
-            </SectionTitle>
-          </div>
-          <div className="reveal-stagger">
-            <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
-          </div>
-          <p className="reveal-stagger mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
+      <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
+        <div className="container-x max-w-3xl text-center">
+          <Eyebrow flank>Corporate Retreats</Eyebrow>
+          <SectionTitle as="h1" size="anchor" spacing="loose">
+            Team building in Portugal, <SectionTitle.Em>designed by locals.</SectionTitle.Em>
+          </SectionTitle>
+          <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
+          <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             Private corporate retreats, team building days, incentives and executive off-sites
             across Portugal — from Lisbon and Sintra to the Arrábida coast, the Alentejo, the Douro
             and beyond, with transport, guides and venues coordinated end to end so the day feels{" "}
             <strong className="font-medium text-[color:var(--charcoal)]">effortless</strong>, not
             arranged.
           </p>
-          <div className="reveal-stagger mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
               Plan a Group Experience
             </CtaButton>
@@ -122,7 +112,6 @@ function CorporatePage() {
         </div>
       </section>
 
-
       {/* Service blocks */}
       <section className="py-16 md:py-24">
         <div className="container-x space-y-16 md:space-y-24">
@@ -133,40 +122,32 @@ function CorporatePage() {
               <article
                 key={b.eyebrow}
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
-                style={{ transitionDelay: `${i * 70}ms`, animationDelay: `${i * 70}ms` }}
               >
-                <figure className="editorial-zoom">
+                <div className="overflow-hidden">
                   <img
                     src={b.image}
                     alt={b.title}
                     loading="lazy"
-                    className="w-full aspect-[4/5] md:aspect-[5/6] object-cover"
+                    className="w-full aspect-[4/5] md:aspect-[5/6] object-cover transition-transform duration-700 hover:scale-[1.03]"
                   />
-                </figure>
-                <div className="reveal editorial-cascade">
-                  <div className="reveal-stagger">
-                    <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
-                  </div>
-                  <div className="reveal-stagger">
-                    <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
-                  </div>
-                  <div className="reveal-stagger">
-                    <SectionTitle size="compact" spacing="loose">
-                      {b.title}
-                    </SectionTitle>
-                  </div>
-                  <p className="reveal-stagger mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
+                </div>
+                <div>
+                  <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
+                  <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
+                  <SectionTitle size="compact" spacing="loose">
+                    {b.title}
+                  </SectionTitle>
+                  <p className="mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
                     {b.emotional}
                   </p>
-                  <p className="reveal-stagger mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
+                  <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
                     {b.practical}
                   </p>
-                  <div className="reveal-stagger mt-5 pl-4 border-l-2 border-[color:var(--gold)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
+                  <div className="mt-5 pl-4 border-l-2 border-[color:var(--gold)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
                     {b.local}
                   </div>
                 </div>
               </article>
-
             );
           })}
         </div>

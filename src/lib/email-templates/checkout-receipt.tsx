@@ -21,7 +21,7 @@ export interface CheckoutReceiptProps {
   guests?: number | null;
   amountFormatted?: string | null;
   bookingRef?: string | null;
-  reservationConfirmation?: string | null;
+  bokunConfirmation?: string | null;
   receiptUrl?: string | null;
   bookingStatusUrl?: string | null;
   pickup?: string | null;
@@ -61,7 +61,7 @@ const CheckoutReceipt = ({
   guests,
   amountFormatted,
   bookingRef,
-  reservationConfirmation,
+  bokunConfirmation,
   receiptUrl,
   bookingStatusUrl,
   pickup,
@@ -116,11 +116,11 @@ const CheckoutReceipt = ({
                 <Text style={mono}>{bookingRef}</Text>
               </>
             ) : null}
-            {reservationConfirmation ? (
+            {bokunConfirmation ? (
               <>
                 <Hr style={hr} />
                 <Text style={cardLabel}>Operator confirmation</Text>
-                <Text style={mono}>{reservationConfirmation}</Text>
+                <Text style={mono}>{bokunConfirmation}</Text>
               </>
             ) : null}
           </Section>
@@ -181,7 +181,7 @@ export const template = {
     guests: 2,
     amountFormatted: "€ 690,00",
     bookingRef: "cs_live_a1b2c3",
-    reservationConfirmation: "YES-12345",
+    bokunConfirmation: "YES-12345",
     receiptUrl: "https://pay.stripe.com/receipts/example",
     bookingStatusUrl:
       "https://yesexperiencesportugal.com/booking-confirmed?session_id=cs_live_a1b2c3",

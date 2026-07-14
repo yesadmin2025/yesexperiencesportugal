@@ -97,10 +97,7 @@ function ExperiencesPage() {
       <section className="reveal section-y">
         <div className="container-x">
           <h2 className="sr-only">A nossa coleção Signature</h2>
-          <div
-            className="grid grid-cols-[minmax(0,1fr)] sm:grid-cols-2 lg:grid-cols-3 gap-8"
-            data-testid="signature-collection-grid"
-          >
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {signatureTours.map((t) => {
               const meta = VIATOR_META[t.id];
               const realStopBullets = meta?.stops
@@ -110,16 +107,11 @@ function ExperiencesPage() {
                 realStopBullets.length > 0 ? realStopBullets : t.highlights
               ).slice(0, 3);
               return (
-                <article
-                  key={t.id}
-                  className="group flex min-w-0 w-full max-w-full flex-col text-left"
-                  aria-label={t.title}
-                  data-testid="signature-tour-card"
-                >
+                <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
                   <Link
                     to="/tours/$tourId"
                     params={{ tourId: t.id }}
-                    className="lift-layer-sm relative block min-w-0 w-full max-w-full mb-5 shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+                    className="lift-layer-sm relative block mb-5 shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
                     aria-label={`Abrir ${t.title}`}
                   >
                     <TourImage
@@ -138,7 +130,7 @@ function ExperiencesPage() {
                   <Link
                     to="/tours/$tourId"
                     params={{ tourId: t.id }}
-                    className="serif block min-w-0 max-w-full text-2xl text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
+                    className="serif text-2xl text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
                   >
                     {t.title}
                   </Link>
@@ -172,13 +164,13 @@ function ExperiencesPage() {
                     <span className="text-[color:var(--charcoal)]">A partir de €{t.priceFrom}</span>
                   </div>
 
-                  <div className="mt-5 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-2.5 sm:flex sm:flex-row">
+                  <div className="mt-5 flex flex-col xs:flex-row gap-2.5">
                     <CtaButton
                       to="/tours/$tourId"
                       params={{ tourId: t.id }}
                       variant="primary"
                       size="sm"
-                      className="min-w-0 w-full max-w-full flex-1 sm:w-auto"
+                      className="flex-1"
                       aria-label={`Reservar ${t.title}`}
                     >
                       Ver disponibilidade e reservar
@@ -188,7 +180,7 @@ function ExperiencesPage() {
                       params={{ tourId: t.id }}
                       variant="ghost"
                       size="sm"
-                      className="min-w-0 w-full max-w-full flex-1 sm:w-auto"
+                      className="flex-1"
                       aria-label={`Personalizar ${t.title}`}
                     >
                       Personalizar

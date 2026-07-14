@@ -4,6 +4,7 @@ import { Clock, MapPin, ArrowLeft, Check, Sparkles, Info, Heart, Shield, Star } 
 import {
   signatureTours,
   findTour,
+  isValidTourId,
   type SignatureTour,
   type TourStop,
 } from "@/data/signatureTours";
@@ -23,30 +24,20 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CtaPair } from "@/components/ui/CtaPair";
-import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript, pageGalleryLd, stopMediaLd } from "@/lib/jsonld";
+import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
-import { getTourReviewStats, getTourReviews } from "@/lib/reviews.functions";
 import { SIGNATURE_FAQ } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
-import { matchStopPhotos } from "@/lib/stopPhotoMatch";
 import { TourReviews } from "@/components/TourReviews";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { TourImage } from "@/components/tours/TourImage";
-import { RelatedExperiencesRail } from "@/components/RelatedExperiencesRail";
-import { rankRelatedTours, relatedStoriesForTour, seedFromTour } from "@/lib/related-experiences";
 
 export const Route = createFileRoute("/tours/$tourId")({
-  loader: async ({ params }) => {
+  loader: ({ params }) => {
     const tour = findTour(params.tourId);
     if (!tour) throw notFound();
-    // Fetch real review data server-side so AggregateRating ships in initial
-    // HTML (crawler-visible). Failures fall back to Viator meta in head().
-    const [stats, reviews] = await Promise.all([
-      getTourReviewStats({ data: { tourId: params.tourId } }).catch(() => null),
-      getTourReviews({ data: { tourId: params.tourId, limit: 8 } }).catch(() => []),
-    ]);
-    return { tour, reviewStats: stats, reviewList: reviews };
+    return { tour };
   },
   head: ({ params, loaderData }) => {
     const url = `https://yesexperiencesportugal.com/tours/${params.tourId}`;
@@ -111,68 +102,23 @@ export const Route = createFileRoute("/tours/$tourId")({
         ),
         jsonLdScript(
           withAggregateAndReviews(
-            (() => {
-              const meta = getViatorMeta(params.tourId);
-              const gallery = getTourGallery(t, meta);
-              const stopPhotos = matchStopPhotos(t, meta);
-              return tourProductLd({
-                id: params.tourId,
-                title: t.title,
-                blurb: t.blurb,
-                img: t.img,
-                priceFrom: (t as { priceFrom?: number }).priceFrom,
-                currency: "EUR",
-                rating:
-                  loaderData?.reviewStats?.average_rating ?? meta?.rating ?? null,
-                reviewCount:
-                  loaderData?.reviewStats?.total_reviews ?? meta?.reviewCount ?? null,
-                region: (t as { region?: string }).region ?? null,
-                durationHours: (t as { durationHours?: string }).durationHours ?? null,
-                stops: (t.stops ?? []).map((s, i) => ({
-                  label: s.label,
-                  story: s.story,
-                  image: stopPhotos[i]?.src,
-                })),
-                gallery,
-              });
-            })(),
+            tourProductLd({
+              id: params.tourId,
+              title: t.title,
+              blurb: t.blurb,
+              img: t.img,
+              priceFrom: (t as { priceFrom?: number }).priceFrom,
+              currency: "EUR",
+              rating: getViatorMeta(params.tourId)?.rating ?? null,
+              reviewCount: getViatorMeta(params.tourId)?.reviewCount ?? null,
+              region: (t as { region?: string }).region ?? null,
+              durationHours: (t as { durationHours?: string }).durationHours ?? null,
+              stops: (t.stops ?? []).map((s) => ({ label: s.label, story: s.story })),
+            }),
             params.tourId,
-            {
-              stats: loaderData?.reviewStats ?? null,
-              reviews: loaderData?.reviewList ?? null,
-            },
           ),
         ),
-        // Standalone ImageGallery node when we have ≥3 real gallery photos.
-        ...(() => {
-          const meta = getViatorMeta(params.tourId);
-          const gallery = getTourGallery(t, meta);
-          const gLd = pageGalleryLd({
-            pageUrl: url,
-            name: `${t.title} — photo gallery`,
-            photos: gallery,
-          });
-          return gLd ? [jsonLdScript(gLd)] : [];
-        })(),
-        // Per-stop ItemList so each stop gets its own image + caption.
-        ...(() => {
-          const meta = getViatorMeta(params.tourId);
-          const stopPhotos = matchStopPhotos(t, meta);
-          const stops = (t.stops ?? []).map((s, i) => ({
-            label: s.label,
-            story: s.story,
-            image: stopPhotos[i]?.src,
-            alt: stopPhotos[i]?.alt,
-          }));
-          const sLd = stopMediaLd({
-            pageUrl: url,
-            name: `${t.title} — itinerary stops`,
-            stops,
-          });
-          return sLd ? [jsonLdScript(sLd)] : [];
-        })(),
         jsonLdScript(faqPageLd(SIGNATURE_FAQ)),
-
       ],
     };
   },
@@ -181,10 +127,9 @@ export const Route = createFileRoute("/tours/$tourId")({
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[60vh]">
         <div className="container-x max-w-xl text-center">
-          <h2 className="serif text-4xl" data-mixed-emphasis="exempt">
+          <h1 className="serif text-4xl" data-mixed-emphasis="exempt">
             Experience not found
-          </h2>
-
+          </h1>
           <p className="mt-4 text-[color:var(--charcoal-soft)]">
             That Signature Experience doesn't exist anymore.
           </p>
@@ -202,10 +147,9 @@ export const Route = createFileRoute("/tours/$tourId")({
     <SiteLayout>
       <section className="pt-32 pb-20 min-h-[60vh]">
         <div className="container-x max-w-xl text-center">
-          <h2 className="serif text-3xl" data-mixed-emphasis="exempt">
+          <h1 className="serif text-3xl" data-mixed-emphasis="exempt">
             Something went sideways
-          </h2>
-
+          </h1>
           <p className="mt-3 text-[color:var(--charcoal-soft)] text-sm">{error.message}</p>
           <Link
             to="/experiences"
@@ -308,8 +252,8 @@ function TourHero({
   return (
     <>
       {/* Breadcrumb */}
-      <section className="pt-20 sm:pt-24 pb-2 sm:pb-3">
-        <div className="container-x min-w-0 max-w-6xl">
+      <section className="pt-24 pb-3">
+        <div className="container-x max-w-6xl">
           <Link
             to="/experiences"
             className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
@@ -319,16 +263,13 @@ function TourHero({
         </div>
       </section>
 
-      <section className="pt-3 sm:pt-4 pb-6 sm:pb-8">
-
-        <div className="container-x min-w-0 max-w-6xl">
-          {/* Cinematic hero — 16:9 on mobile (lighter vertical weight,
-              title stays inside the fold), 3:2 from md upward. */}
+      <section className="pb-8">
+        <div className="container-x max-w-6xl">
+          {/* Cinematic hero — unified 3:2 frame, blur-up on load. */}
           <TourImage
             src={heroSrc}
             alt={heroAlt}
-            ratio="16/9"
-            ratioMd="3/2"
+            ratio="3/2"
             priority
             focal={tour.focal ?? "50% 50%"}
             sizes="(min-width: 1024px) 1152px, 100vw"
@@ -338,28 +279,26 @@ function TourHero({
 
           {/* Editorial header — title, blurb and meta sit BELOW the hero
               so the cinematic image reads as a single quiet frame. */}
-          <div className="mt-5 min-w-0 max-w-full sm:mt-8">
+          <div className="mt-6 sm:mt-8">
             <Eyebrow>Signature Experience</Eyebrow>
-            <h1 className="serif mt-2.5 min-w-0 max-w-3xl text-[1.75rem] leading-[1.1] tracking-[-0.015em] text-[color:var(--charcoal)] [overflow-wrap:anywhere] sm:mt-3 sm:text-4xl sm:leading-[1.02] md:text-5xl lg:text-6xl">
+            <h1 className="serif mt-3 text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.08] sm:leading-[1.02] tracking-[-0.015em] max-w-3xl text-[color:var(--charcoal)]">
               {tour.title}
             </h1>
-            <p className="serif italic font-normal mt-3 sm:mt-4 text-[14.5px] sm:text-lg md:text-xl text-[color:var(--charcoal-soft)] max-w-2xl leading-snug">
+            <p className="serif italic font-normal mt-4 text-[15px] sm:text-lg md:text-xl text-[color:var(--charcoal-soft)] max-w-2xl leading-snug">
               {tour.blurb}
             </p>
 
-            <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-2 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:gap-y-2 text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
               <span className="flex items-center gap-2">
                 <MapPin size={12} className="text-[color:var(--gold)]" /> {tour.region}
               </span>
-              <span aria-hidden className="hidden sm:block h-3 w-px bg-[color:var(--border)]" />
+              <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
               <span className="flex items-center gap-2">
                 <Clock size={12} className="text-[color:var(--gold)]" /> {tour.durationHours}
               </span>
               {meta && meta.reviewCount > 0 && (
                 <>
-                  <span aria-hidden className="hidden sm:block h-3 w-px bg-[color:var(--border)]" />
-
+                  <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
                   <span className="flex items-center gap-1.5 normal-case tracking-normal text-[12px] text-[color:var(--charcoal)]">
                     <Star
                       size={11}
@@ -377,17 +316,17 @@ function TourHero({
             </div>
           </div>
 
-          <CtaPair className="mt-6 w-full" layout="stack-then-row" justify="start">
+          <CtaPair className="mt-6" layout="stack-then-row" justify="start">
             <a
               href="#book"
-              className="inline-flex min-w-0 w-full max-w-full flex-1 items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-4 sm:px-6 py-4 text-center text-sm tracking-wide transition-all min-h-[52px] whitespace-normal [overflow-wrap:anywhere] sm:w-auto"
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-6 py-4 text-sm tracking-wide transition-all min-h-[52px]"
             >
               <Sparkles size={14} /> Check availability & reserve
             </a>
             <Link
               to="/tours/$tourId/tailor"
               params={{ tourId: tour.id }}
-              className="inline-flex min-w-0 w-full max-w-full flex-1 items-center justify-center gap-2 border border-[color:var(--charcoal)]/25 hover:border-[color:var(--gold)] text-[color:var(--charcoal)] px-4 sm:px-6 py-4 text-center text-sm tracking-wide transition-all min-h-[52px] whitespace-normal [overflow-wrap:anywhere] sm:w-auto"
+              className="flex-1 inline-flex items-center justify-center gap-2 border border-[color:var(--charcoal)]/25 hover:border-[color:var(--gold)] text-[color:var(--charcoal)] px-6 py-4 text-sm tracking-wide transition-all min-h-[52px]"
             >
               Tailor this day
             </Link>
@@ -1033,20 +972,42 @@ function Block({
 }
 
 function RelatedTours({ currentId }: { currentId: string }) {
-  const current = findTour(currentId);
-  if (!current) return null;
-  const tours = rankRelatedTours(seedFromTour(current), 3);
-  const stories = relatedStoriesForTour(current, 3);
-  if (tours.length === 0 && stories.length === 0) return null;
+  const others = signatureTours
+    .filter((t) => t.id !== currentId && isValidTourId(t.id))
+    .slice(0, 3);
+  const { resolveImg } = useImportedTourImages();
+  if (others.length === 0) return null;
   return (
-    <RelatedExperiencesRail
-      tours={tours}
-      stories={stories}
-      toursTitle={
-        <>
+    <section className="py-16 bg-[color:var(--ivory)] border-t border-[color:var(--border)] reveal">
+      <div className="container-x max-w-5xl">
+        <Eyebrow>More like this</Eyebrow>
+        <SectionTitle size="compact">
           Other <SectionTitle.Em>Signature Experiences</SectionTitle.Em>
-        </>
-      }
-    />
+        </SectionTitle>
+        <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {others.map((t) => (
+            <Link
+              key={t.id}
+              to="/tours/$tourId"
+              params={{ tourId: t.id }}
+              className="group flex flex-col"
+            >
+              <TourImage
+                {...resolveImg(t, "md")}
+                alt={t.title}
+                ratio="3/2"
+                focal={t.focal ?? "50% 50%"}
+                className="mb-3"
+                imgClassName="transition-transform duration-700 group-hover:scale-105"
+              />
+              <h3 className="serif text-lg">{t.title}</h3>
+              <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
+                {t.region}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

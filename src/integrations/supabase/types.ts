@@ -56,174 +56,13 @@ export type Database = {
         }
         Relationships: []
       }
-      booking_add_ons: {
-        Row: {
-          active: boolean
-          created_at: string
-          description: string | null
-          id: string
-          inclusion_ids: Json
-          label: string
-          pricing_unit: string
-          unit_eur: number
-          updated_at: string
-        }
-        Insert: {
-          active?: boolean
-          created_at?: string
-          description?: string | null
-          id: string
-          inclusion_ids?: Json
-          label: string
-          pricing_unit: string
-          unit_eur: number
-          updated_at?: string
-        }
-        Update: {
-          active?: boolean
-          created_at?: string
-          description?: string | null
-          id?: string
-          inclusion_ids?: Json
-          label?: string
-          pricing_unit?: string
-          unit_eur?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      booking_quotes: {
-        Row: {
-          add_on_pricing: Json
-          availability_id: string
-          base_pricing: Json
-          bokun_base_subtotal_eur: number | null
-          bokun_option_id: string | null
-          bokun_product_id: string
-          bokun_rate_id: string | null
-          bokun_release_result: Json | null
-          bokun_reservation_id: string | null
-          bokun_reservation_status: string | null
-          checkout_created_at: string | null
-          commercial_mapping_id: string
-          commercial_product_key: string
-          confirm_attempts: number
-          confirmed_at: string | null
-          confirming_at: string | null
-          consumed_at: string | null
-          created_at: string
-          currency: string
-          database_addon_subtotal_eur: number | null
-          date: string
-          expired_at: string | null
-          expires_at: string
-          final_total_eur: number
-          flow: string
-          itinerary_revision: string | null
-          itinerary_snapshot: Json | null
-          last_error: string | null
-          paid_at: string | null
-          pricing_revision: string
-          quote_id: string
-          quote_token: string
-          reserved_at: string | null
-          resolved_guest_mix: Json
-          start_time: string | null
-          state: string
-          stripe_session_id: string | null
-          traveller_composition: Json
-        }
-        Insert: {
-          add_on_pricing: Json
-          availability_id: string
-          base_pricing: Json
-          bokun_base_subtotal_eur?: number | null
-          bokun_option_id?: string | null
-          bokun_product_id: string
-          bokun_rate_id?: string | null
-          bokun_release_result?: Json | null
-          bokun_reservation_id?: string | null
-          bokun_reservation_status?: string | null
-          checkout_created_at?: string | null
-          commercial_mapping_id: string
-          commercial_product_key: string
-          confirm_attempts?: number
-          confirmed_at?: string | null
-          confirming_at?: string | null
-          consumed_at?: string | null
-          created_at?: string
-          currency?: string
-          database_addon_subtotal_eur?: number | null
-          date: string
-          expired_at?: string | null
-          expires_at: string
-          final_total_eur: number
-          flow: string
-          itinerary_revision?: string | null
-          itinerary_snapshot?: Json | null
-          last_error?: string | null
-          paid_at?: string | null
-          pricing_revision: string
-          quote_id?: string
-          quote_token: string
-          reserved_at?: string | null
-          resolved_guest_mix: Json
-          start_time?: string | null
-          state?: string
-          stripe_session_id?: string | null
-          traveller_composition: Json
-        }
-        Update: {
-          add_on_pricing?: Json
-          availability_id?: string
-          base_pricing?: Json
-          bokun_base_subtotal_eur?: number | null
-          bokun_option_id?: string | null
-          bokun_product_id?: string
-          bokun_rate_id?: string | null
-          bokun_release_result?: Json | null
-          bokun_reservation_id?: string | null
-          bokun_reservation_status?: string | null
-          checkout_created_at?: string | null
-          commercial_mapping_id?: string
-          commercial_product_key?: string
-          confirm_attempts?: number
-          confirmed_at?: string | null
-          confirming_at?: string | null
-          consumed_at?: string | null
-          created_at?: string
-          currency?: string
-          database_addon_subtotal_eur?: number | null
-          date?: string
-          expired_at?: string | null
-          expires_at?: string
-          final_total_eur?: number
-          flow?: string
-          itinerary_revision?: string | null
-          itinerary_snapshot?: Json | null
-          last_error?: string | null
-          paid_at?: string | null
-          pricing_revision?: string
-          quote_id?: string
-          quote_token?: string
-          reserved_at?: string | null
-          resolved_guest_mix?: Json
-          start_time?: string | null
-          state?: string
-          stripe_session_id?: string | null
-          traveller_composition?: Json
-        }
-        Relationships: []
-      }
       bookings: {
         Row: {
           amount_total: number
-          bokun_base_subtotal_eur: number | null
           bokun_booking_id: string | null
           bokun_confirmation_code: string | null
           bokun_error: string | null
           bokun_last_attempt_at: string | null
-          bokun_reservation_id: string | null
           bokun_status: string | null
           booking_details: Json | null
           booking_details_completed_at: string | null
@@ -233,14 +72,11 @@ export type Database = {
           customer_email: string
           customer_name: string | null
           customer_phone: string | null
-          database_addon_subtotal_eur: number | null
-          final_total_eur: number | null
           guests: number
           id: string
           metadata: Json
           notes: string | null
           preferred_date: string | null
-          quote_id: string | null
           source_journey_id: string | null
           source_tour_id: string | null
           status: Database["public"]["Enums"]["booking_status"]
@@ -250,12 +86,10 @@ export type Database = {
         }
         Insert: {
           amount_total: number
-          bokun_base_subtotal_eur?: number | null
           bokun_booking_id?: string | null
           bokun_confirmation_code?: string | null
           bokun_error?: string | null
           bokun_last_attempt_at?: string | null
-          bokun_reservation_id?: string | null
           bokun_status?: string | null
           booking_details?: Json | null
           booking_details_completed_at?: string | null
@@ -265,14 +99,11 @@ export type Database = {
           customer_email: string
           customer_name?: string | null
           customer_phone?: string | null
-          database_addon_subtotal_eur?: number | null
-          final_total_eur?: number | null
           guests?: number
           id?: string
           metadata?: Json
           notes?: string | null
           preferred_date?: string | null
-          quote_id?: string | null
           source_journey_id?: string | null
           source_tour_id?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
@@ -282,12 +113,10 @@ export type Database = {
         }
         Update: {
           amount_total?: number
-          bokun_base_subtotal_eur?: number | null
           bokun_booking_id?: string | null
           bokun_confirmation_code?: string | null
           bokun_error?: string | null
           bokun_last_attempt_at?: string | null
-          bokun_reservation_id?: string | null
           bokun_status?: string | null
           booking_details?: Json | null
           booking_details_completed_at?: string | null
@@ -297,14 +126,11 @@ export type Database = {
           customer_email?: string
           customer_name?: string | null
           customer_phone?: string | null
-          database_addon_subtotal_eur?: number | null
-          final_total_eur?: number | null
           guests?: number
           id?: string
           metadata?: Json
           notes?: string | null
           preferred_date?: string | null
-          quote_id?: string | null
           source_journey_id?: string | null
           source_tour_id?: string | null
           status?: Database["public"]["Enums"]["booking_status"]
@@ -2092,43 +1918,68 @@ export type Database = {
         }
         Relationships: []
       }
-      tour_available_add_ons: {
+      tour_bokun_mapping: {
         Row: {
-          active: boolean
-          add_on_id: string
+          bokun_product_code: string | null
+          bokun_product_id: string
+          bokun_title: string | null
           created_at: string
-          scope: string
-          sort_order: number
+          currency: string | null
+          notes: string | null
           tour_id: string
           updated_at: string
         }
         Insert: {
-          active?: boolean
-          add_on_id: string
+          bokun_product_code?: string | null
+          bokun_product_id: string
+          bokun_title?: string | null
           created_at?: string
-          scope: string
-          sort_order?: number
+          currency?: string | null
+          notes?: string | null
           tour_id: string
           updated_at?: string
         }
         Update: {
-          active?: boolean
-          add_on_id?: string
+          bokun_product_code?: string | null
+          bokun_product_id?: string
+          bokun_title?: string | null
           created_at?: string
-          scope?: string
-          sort_order?: number
+          currency?: string | null
+          notes?: string | null
           tour_id?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "tour_available_add_ons_add_on_id_fkey"
-            columns: ["add_on_id"]
-            isOneToOne: false
-            referencedRelation: "booking_add_ons"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
+      }
+      tour_bokun_option_mapping: {
+        Row: {
+          bokun_option_id: string | null
+          bokun_product_id: string
+          bokun_rate_id: string | null
+          pricing_party_size_rule: string
+          tour_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          bokun_option_id?: string | null
+          bokun_product_id: string
+          bokun_rate_id?: string | null
+          pricing_party_size_rule?: string
+          tour_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          bokun_option_id?: string | null
+          bokun_product_id?: string
+          bokun_rate_id?: string | null
+          pricing_party_size_rule?: string
+          tour_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       tour_external_ratings: {
         Row: {
@@ -2168,18 +2019,42 @@ export type Database = {
       }
       tour_price_tiers: {
         Row: {
+          banded_pricing_enabled: boolean
+          bokun_categories: Json | null
+          override_metadata: Json | null
+          override_tiers: Json | null
+          pricing_mode: string | null
+          source_version: string | null
+          synced_from_bokun_at: string | null
+          synced_tiers: Json | null
           tiers: Json
           tour_id: string
           updated_at: string
           updated_by: string | null
         }
         Insert: {
+          banded_pricing_enabled?: boolean
+          bokun_categories?: Json | null
+          override_metadata?: Json | null
+          override_tiers?: Json | null
+          pricing_mode?: string | null
+          source_version?: string | null
+          synced_from_bokun_at?: string | null
+          synced_tiers?: Json | null
           tiers?: Json
           tour_id: string
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
+          banded_pricing_enabled?: boolean
+          bokun_categories?: Json | null
+          override_metadata?: Json | null
+          override_tiers?: Json | null
+          pricing_mode?: string | null
+          source_version?: string | null
+          synced_from_bokun_at?: string | null
+          synced_tiers?: Json | null
           tiers?: Json
           tour_id?: string
           updated_at?: string

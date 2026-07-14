@@ -19,9 +19,6 @@ interface Props {
   alt: string;
   /** Ratio of the outer frame. Defaults to 3:2 — the Signature standard. */
   ratio?: Ratio;
-  /** Optional ratio applied from the `md` breakpoint upward. When set,
-   *  mobile uses `ratio` and tablet/desktop use `ratioMd`. */
-  ratioMd?: Ratio;
   /** Eager-load + fetchpriority=high for above-the-fold hero images. */
   priority?: boolean;
   /** object-position value (e.g. "50% 30%") — mirrors <img style>. */
@@ -38,19 +35,12 @@ const ratioClass: Record<Ratio, string> = {
   "4/5": "aspect-[4/5]",
 };
 
-const ratioMdClass: Record<Ratio, string> = {
-  "3/2": "md:aspect-[3/2]",
-  "16/9": "md:aspect-[16/9]",
-  "4/5": "md:aspect-[4/5]",
-};
-
 export function TourImage({
   src,
   srcSet,
   sizes,
   alt,
   ratio = "3/2",
-  ratioMd,
   priority = false,
   focal,
   className = "",
@@ -70,7 +60,6 @@ export function TourImage({
       className={[
         "relative overflow-hidden",
         ratioClass[ratio],
-        ratioMd ? ratioMdClass[ratioMd] : "",
         // Sand → soft charcoal placeholder gradient (brand tokens only)
         "bg-[linear-gradient(135deg,color-mix(in_oklab,var(--sand)_88%,transparent)_0%,color-mix(in_oklab,var(--charcoal)_10%,transparent)_100%)]",
         className,

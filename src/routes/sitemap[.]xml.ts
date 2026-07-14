@@ -17,23 +17,12 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        // NOTE: internal / utility / auth / QA / redirect routes are intentionally
-        // excluded from the sitemap because they are either noindex, blocked by
-        // robots.txt, or 301-redirect to a canonical URL that IS listed.
-        //
-        // Excluded routes and reasons:
-        // - /admin/*            : admin UI, robots.txt Disallow
-        // - /auth               : auth gate, robots noindex + robots.txt Disallow
-        // - /booking-confirmed  : post-booking page, robots noindex + robots.txt Disallow
-        // - /brand-qa           : internal QA page, robots noindex + robots.txt Disallow
-        // - /builder            : 301 → /studio-v3 (canonical entry present) + robots noindex
-        // - /checkout           : checkout flow, robots.txt Disallow
-        // - /day-trips-from-lisbon : 301 → /local-stories/best-day-trips-from-lisbon (entry present)
-        // - /e2e, /email, /hero-verify, /lovable, /preview-check, /qa, /s/, /i/
-        // - /studio-drift, /studio-v2, /typography-audit, /unsubscribe
-        // - /reviews            : thin widget page, intentionally excluded
-        // - /portugal-travel-designer : 301 → /multi-day (entry present)
-        //
+        // NOTE: internal / utility / auth / QA routes are intentionally excluded from the sitemap
+        // because they are blocked by robots.txt and should not be indexed. These include:
+        // /admin/*, /auth, /booking-confirmed, /brand-qa, /builder, /checkout, /e2e, /email,
+        // /hero-verify, /lovable, /preview-check, /qa, /s/, /i/, /studio-drift, /studio-v2,
+        // /typography-audit, /unsubscribe. /reviews (thin widget) and
+        // /portugal-travel-designer (301 → /multi-day) are also excluded.
         // Static entries omit <lastmod> on purpose — a rolling "today" trains
         // crawlers to ignore the field. Dynamic DB posts keep their real
         // published_at.
@@ -51,34 +40,14 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/proposal-in-portugal", changefreq: "monthly", priority: "0.8" },
           { path: "/corporate", changefreq: "monthly", priority: "0.7" },
           { path: "/local-stories", changefreq: "weekly", priority: "0.7" },
-          // Trip-planning content hub
-          { path: "/plan", changefreq: "weekly", priority: "0.9" },
-          { path: "/plan/5-day-portugal-itinerary", changefreq: "monthly", priority: "0.85" },
-          { path: "/plan/7-day-portugal-itinerary", changefreq: "monthly", priority: "0.85" },
           {
             path: "/itineraries/10-day-private-portugal-tour",
             changefreq: "monthly",
-            priority: "0.85",
-          },
-          { path: "/plan/14-day-portugal-itinerary", changefreq: "monthly", priority: "0.85" },
-          {
-            path: "/plan/portugal-wine-and-gastronomy",
-            changefreq: "monthly",
             priority: "0.8",
           },
-          { path: "/plan/lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/plan/sintra", changefreq: "monthly", priority: "0.8" },
-          { path: "/plan/arrabida", changefreq: "monthly", priority: "0.8" },
-          { path: "/plan/alentejo", changefreq: "monthly", priority: "0.8" },
-          { path: "/plan/comporta", changefreq: "monthly", priority: "0.8" },
-          { path: "/plan/costa-vicentina", changefreq: "monthly", priority: "0.8" },
           { path: "/portugal-tours", changefreq: "monthly", priority: "0.9" },
           { path: "/luxury-tours-portugal", changefreq: "monthly", priority: "0.85" },
           { path: "/private-tours-portugal", changefreq: "monthly", priority: "0.85" },
-          { path: "/arrabida-wine-tour", changefreq: "monthly", priority: "0.85" },
-          { path: "/arrabida-day-trip-from-lisbon", changefreq: "monthly", priority: "0.85" },
-          { path: "/alentejo-wine-tour-from-lisbon", changefreq: "monthly", priority: "0.85" },
-
 
 
 

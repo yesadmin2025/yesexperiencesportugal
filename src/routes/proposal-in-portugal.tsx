@@ -7,8 +7,8 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { PROPOSAL_FAQ } from "@/content/seo-faq";
 import imgRomantic from "@/assets/exp-romantic.jpg";
-import imgChocolateCake from "@/assets/guests/chocolate-cake-tasting.jpg.asset.json";
-import imgPicnic from "@/assets/tours/wild-beaches-picnic/picnic.jpg";
+import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
+import imgTroiaBeach from "@/assets/tours/troia-comporta/beach.jpg";
 
 const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/proposal-in-portugal";
@@ -68,7 +68,7 @@ const BLOCKS = [
       "Birthdays, anniversaries, honeymoons or family moments — shaped around your rhythm, your people and the way you want to feel Portugal.",
     practical: "Private host · any group size · multi-activity planning · flexible scheduling.",
     local: "Coordinated by a local host who knows how each piece of the day connects.",
-    image: imgChocolateCake.url,
+    image: imgSintraEstates,
     icon: Sparkles,
     cta: "Plan a Celebration",
   },
@@ -80,7 +80,7 @@ const BLOCKS = [
     practical: "Small group days · private transport · personal touches · adjusted to your rhythm.",
     local:
       "We work with people we trust on the ground — places that welcome you as guests, not bookings.",
-    image: imgPicnic,
+    image: imgTroiaBeach,
     icon: Users,
     cta: "Plan a Private Day",
   },
@@ -90,24 +90,18 @@ function ProposalInPortugalPage() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="pt-28 pb-14 bg-[color:var(--sand)]">
-        <div className="container-x max-w-3xl text-center reveal editorial-cascade">
-          <div className="reveal-stagger">
-            <Eyebrow flank>Proposal in Portugal</Eyebrow>
-          </div>
-          <div className="reveal-stagger">
-            <SectionTitle as="h1" size="anchor" spacing="loose">
-              A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
-            </SectionTitle>
-          </div>
-          <div className="reveal-stagger">
-            <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
-          </div>
-          <p className="reveal-stagger mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
+      <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
+        <div className="container-x max-w-3xl text-center">
+          <Eyebrow flank>Proposal in Portugal</Eyebrow>
+          <SectionTitle as="h1" size="anchor" spacing="loose">
+            A proposal in Portugal, <SectionTitle.Em>planned discreetly.</SectionTitle.Em>
+          </SectionTitle>
+          <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
+          <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             A private moment, shaped end to end by a local team — with the setting, timing and
             surprise handled quietly on your behalf.
           </p>
-          <div className="reveal-stagger mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
               Plan a Proposal
             </CtaButton>
@@ -133,49 +127,39 @@ function ProposalInPortugalPage() {
               <article
                 key={b.eyebrow}
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
-                style={{ transitionDelay: `${i * 70}ms`, animationDelay: `${i * 70}ms` }}
               >
-                <figure className="editorial-zoom">
+                <div className="overflow-hidden">
                   <img
                     src={b.image}
                     alt={b.title}
                     loading="lazy"
-                    className="w-full aspect-[4/5] md:aspect-[5/6] object-cover"
+                    className="w-full aspect-[4/5] md:aspect-[5/6] object-cover transition-transform duration-700 hover:scale-[1.03]"
                   />
-                </figure>
-                <div className="reveal editorial-cascade">
-                  <div className="reveal-stagger">
-                    <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
-                  </div>
-                  <div className="reveal-stagger">
-                    <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
-                  </div>
-                  <div className="reveal-stagger">
-                    <SectionTitle size="compact" spacing="loose">
-                      {b.title}
-                    </SectionTitle>
-                  </div>
-                  <p className="reveal-stagger mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
+                </div>
+                <div>
+                  <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
+                  <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
+                  <SectionTitle size="compact" spacing="loose">
+                    {b.title}
+                  </SectionTitle>
+                  <p className="mt-4 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
                     {b.emotional}
                   </p>
-                  <p className="reveal-stagger mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
+                  <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
                     {b.practical}
                   </p>
-                  <div className="reveal-stagger mt-5 pl-4 border-l-2 border-[color:var(--gold)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
+                  <div className="mt-5 pl-4 border-l-2 border-[color:var(--gold)] text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
                     {b.local}
                   </div>
-                  <div className="reveal-stagger">
-                    <CtaButton to="/contact" variant="ghost" size="sm" className="mt-6">
-                      {b.cta}
-                    </CtaButton>
-                  </div>
+                  <CtaButton to="/contact" variant="ghost" size="sm" className="mt-6">
+                    {b.cta}
+                  </CtaButton>
                 </div>
               </article>
             );
           })}
         </div>
       </section>
-
 
       {/* FAQ */}
       <section className="py-16 md:py-20 bg-[color:var(--ivory)] reveal">

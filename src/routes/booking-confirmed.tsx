@@ -61,48 +61,28 @@ function BookingConfirmedPage() {
   useEffect(() => {
     if (!session_id) return;
     let cancelled = false;
-    // Poll stripe-session-status up to 8x at ~750ms so the confirmation
-    // page waits for the webhook to mark the session `paid` instead of
-    // flashing a "not found" state during the last 1-2s of processing.
-    const MAX_ATTEMPTS = 8;
-    const RETRY_MS = 750;
-
     (async () => {
-      for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/functions/v1/stripe-session-status?session_id=${encodeURIComponent(session_id)}`,
+          { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } },
+        );
+        const body = (await res.json()) as SessionStatus | { error: string };
         if (cancelled) return;
-        try {
-          const res = await fetch(
-            `${SUPABASE_URL}/functions/v1/stripe-session-status?session_id=${encodeURIComponent(session_id)}`,
-            { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } },
-          );
-          const body = (await res.json()) as SessionStatus | { error: string };
-          if (cancelled) return;
-          if (!res.ok || "error" in body) {
-            // Non-fatal until the last attempt — keep polling.
-            if (attempt === MAX_ATTEMPTS - 1) {
-              setState({
-                kind: "error",
-                message: "error" in body ? body.error : "Could not verify your booking.",
-              });
-            }
-          } else {
-            // If Stripe reports the session complete + paid, we're done.
-            if (body.paymentStatus === "paid" || attempt === MAX_ATTEMPTS - 1) {
-              setState({ kind: "ok", data: body });
-              return;
-            }
-          }
-        } catch (e) {
-          if (cancelled) return;
-          if (attempt === MAX_ATTEMPTS - 1) {
-            setState({
-              kind: "error",
-              message: e instanceof Error ? e.message : "Could not verify your booking.",
-            });
-          }
+        if (!res.ok || "error" in body) {
+          setState({
+            kind: "error",
+            message: "error" in body ? body.error : "Could not verify your booking.",
+          });
+          return;
         }
-        // Wait before next attempt.
-        await new Promise((r) => window.setTimeout(r, RETRY_MS));
+        setState({ kind: "ok", data: body });
+      } catch (e) {
+        if (cancelled) return;
+        setState({
+          kind: "error",
+          message: e instanceof Error ? e.message : "Could not verify your booking.",
+        });
       }
     })();
     return () => {

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-14T19:20:49.884Z",
-  "filesScanned": 372,
+  "generatedAt": "2026-07-12T18:17:22.559Z",
+  "filesScanned": 633,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 299,
-    "approved": 69,
-    "allowlisted": 61,
-    "mismatch": 169
+    "total": 375,
+    "approved": 90,
+    "allowlisted": 64,
+    "mismatch": 221
   },
   "findings": [
     {
@@ -736,6 +736,96 @@
       "status": "approved"
     },
     {
+      "file": "src/components/RealLeafletMap.tsx",
+      "line": 20,
+      "col": 12,
+      "raw": "#0c5b66",
+      "normalized": "#0c5b66",
+      "snippet": "lisbon: \"#0c5b66\", // teal",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/RealLeafletMap.tsx",
+      "line": 21,
+      "col": 11,
+      "raw": "#b3893f",
+      "normalized": "#b3893f",
+      "snippet": "porto: \"#b3893f\", // gold",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/RealLeafletMap.tsx",
+      "line": 22,
+      "col": 14,
+      "raw": "#7a4d3a",
+      "normalized": "#7a4d3a",
+      "snippet": "alentejo: \"#7a4d3a\", // earth",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/RealLeafletMap.tsx",
+      "line": 23,
+      "col": 13,
+      "raw": "#2c7da0",
+      "normalized": "#2c7da0",
+      "snippet": "algarve: \"#2c7da0\", // ocean",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/RealLeafletMap.tsx",
+      "line": 53,
+      "col": 24,
+      "raw": "#f5efdf",
+      "normalized": "#f5efdf",
+      "snippet": "border:2px solid #f5efdf;box-shadow:0 2px 6px rgba(0,0,0,0.3);",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/RealLeafletMap.tsx",
+      "line": 55,
+      "col": 50,
+      "raw": "#f5efdf",
+      "normalized": "#f5efdf",
+      "snippet": "<span style=\"transform:rotate(45deg);color:#f5efdf;font-weight:700;font-size:11px;font-family:ui-sans-serif,system-ui;\">${inner}</span>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/RealLeafletMap.tsx",
+      "line": 208,
+      "col": 29,
+      "raw": "#0c5b66",
+      "normalized": "#0c5b66",
+      "snippet": "return makeDivIcon(\"#0c5b66\", n);",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/RealLeafletMap.tsx",
+      "line": 216,
+      "col": 60,
+      "raw": "#555",
+      "normalized": "#555555",
+      "snippet": "? `<div style=\"margin-top:6px;font-size:11px;color:#555;\">",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/RealLeafletMap.tsx",
+      "line": 226,
+      "col": 60,
+      "raw": "#888",
+      "normalized": "#888888",
+      "snippet": ": `<div style=\"margin-top:6px;font-size:11px;color:#888;font-style:italic;\">No imported tours yet</div>`;",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/RealLeafletMap.tsx",
+      "line": 229,
+      "col": 45,
+      "raw": "#1a1a1a",
+      "normalized": "#1a1a1a",
+      "snippet": "<div style=\"font-weight:700;color:#1a1a1a;\">${escapeHtml(m.label)}</div>",
+      "status": "mismatch"
+    },
+    {
       "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",
       "line": 8,
       "col": 32,
@@ -862,6 +952,87 @@
       "status": "mismatch"
     },
     {
+      "file": "src/components/booking/BokunRolloutBadge.tsx",
+      "line": 129,
+      "col": 51,
+      "raw": "#B45309",
+      "normalized": "#b45309",
+      "snippet": "<AlertTriangle size={13} style={{ color: \"#B45309\" }} aria-hidden />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/booking/BokunRolloutBadge.tsx",
+      "line": 130,
+      "col": 53,
+      "raw": "#92400E",
+      "normalized": "#92400e",
+      "snippet": "<span className={labelCls} style={{ color: \"#92400E\" }}>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/booking/BokunRolloutBadge.tsx",
+      "line": 143,
+      "col": 50,
+      "raw": "#B45309",
+      "normalized": "#b45309",
+      "snippet": "border: \"1px solid color-mix(in oklab, #B45309 40%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/booking/BokunRolloutBadge.tsx",
+      "line": 144,
+      "col": 44,
+      "raw": "#FEF3C7",
+      "normalized": "#fef3c7",
+      "snippet": "background: \"color-mix(in oklab, #FEF3C7 60%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/booking/BokunRolloutBadge.tsx",
+      "line": 156,
+      "col": 50,
+      "raw": "#B45309",
+      "normalized": "#b45309",
+      "snippet": "border: \"1px solid color-mix(in oklab, #B45309 40%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/booking/BokunRolloutBadge.tsx",
+      "line": 157,
+      "col": 44,
+      "raw": "#FEF3C7",
+      "normalized": "#fef3c7",
+      "snippet": "background: \"color-mix(in oklab, #FEF3C7 60%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/builder/BuilderMap.tsx",
+      "line": 175,
+      "col": 106,
+      "raw": "#9a8f80",
+      "normalized": "#9a8f80",
+      "snippet": "html: `<div style=\"width:18px;height:18px;border-radius:50%;background:${eligible ? gold0 : \"#9a8f80\"};border:2px solid ${ivory0};opacity:${eligible ? 1 : 0.55}",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/builder/BuilderMap.tsx",
+      "line": 277,
+      "col": 45,
+      "raw": "#9a8f80",
+      "normalized": "#9a8f80",
+      "snippet": "background:${eligible ? gold : \"#9a8f80\"};",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/builder/MultiDayBuilder.tsx",
+      "line": 743,
+      "col": 76,
+      "raw": "#9a8f80",
+      "normalized": "#9a8f80",
+      "snippet": "<span className=\"inline-block h-2.5 w-2.5 rounded-full bg-[#9a8f80] opacity-60\" />{\" \"}",
+      "status": "mismatch"
+    },
+    {
       "file": "src/components/dev/ContrastAudit.tsx",
       "line": 214,
       "col": 18,
@@ -980,7 +1151,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 459,
+      "line": 457,
       "col": 13,
       "raw": "#B8985A",
       "normalized": "#b8985a",
@@ -989,7 +1160,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 460,
+      "line": 458,
       "col": 25,
       "raw": "#B8985A",
       "normalized": "#b8985a",
@@ -1174,6 +1345,474 @@
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
       "snippet": "className=\"reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-7 shadow-[0_1px_2px_r",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/maps/EditorialMap.tsx",
+      "line": 171,
+      "col": 29,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "? \"var(--charcoal-deep, #14181a)\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/maps/EditorialMap.tsx",
+      "line": 403,
+      "col": 65,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "? \"color-mix(in oklab, var(--charcoal-deep, #14181a) 82%, transparent)\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v2/DraftMapPreview.tsx",
+      "line": 115,
+      "col": 43,
+      "raw": "#1a1a1a",
+      "normalized": "#1a1a1a",
+      "snippet": "background: \"var(--charcoal-deep, #1a1a1a)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v2/DraftMapPreview.tsx",
+      "line": 286,
+      "col": 78,
+      "raw": "#1a1a1a",
+      "normalized": "#1a1a1a",
+      "snippet": "<circle cx={s.x} cy={s.y} r=\"3.4\" fill=\"var(--charcoal-deep, #1a1a1a)\" />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v2/StudioBuilderChrome.tsx",
+      "line": 316,
+      "col": 59,
+      "raw": "#b3261e",
+      "normalized": "#b3261e",
+      "snippet": "<p className=\"text-[12px]\" style={{ color: \"#b3261e\" }}>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
+      "line": 42,
+      "col": 95,
+      "raw": "#6b6b6b",
+      "normalized": "#6b6b6b",
+      "snippet": "\"mb-6 text-center text-[11px] uppercase tracking-[0.32em] text-[var(--charcoal-soft,#6b6b6b)]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
+      "line": 51,
+      "col": 114,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "\"mb-8 text-center font-display text-[24px] font-bold leading-tight tracking-tight text-[var(--charcoal,#2E2E2E)] sm:text-[30px]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
+      "line": 72,
+      "col": 48,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "\"ring-1 ring-[var(--charcoal,#2E2E2E)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#C9A96A)]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
+      "line": 72,
+      "col": 140,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "\"ring-1 ring-[var(--charcoal,#2E2E2E)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#C9A96A)]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
+      "line": 76,
+      "col": 55,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "isPicked ? \"ring-2 ring-[var(--gold,#C9A96A)]\" : \"\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/FeelingScene.tsx",
+      "line": 90,
+      "col": 154,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "<span className=\"absolute inset-x-4 bottom-4 block font-display text-[17px] font-semibold leading-tight tracking-tight text-[var(--ivory,#FAF8F3)] sm:text-[19px",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/PrologueScene.tsx",
+      "line": 39,
+      "col": 96,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "className=\"fixed inset-0 z-30 block h-[100dvh] w-full overflow-hidden bg-[var(--charcoal,#2E2E2E)] text-[var(--ivory,#FAF8F3)] focus:outline-none\"",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/PrologueScene.tsx",
+      "line": 39,
+      "col": 124,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"fixed inset-0 z-30 block h-[100dvh] w-full overflow-hidden bg-[var(--charcoal,#2E2E2E)] text-[var(--ivory,#FAF8F3)] focus:outline-none\"",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/PrologueScene.tsx",
+      "line": 58,
+      "col": 32,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "\"text-[var(--ivory,#FAF8F3)]/85 transition-all duration-[1100ms] ease-out\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/WhoRhythmScene.tsx",
+      "line": 172,
+      "col": 95,
+      "raw": "#6b6b6b",
+      "normalized": "#6b6b6b",
+      "snippet": "\"mb-6 text-center text-[11px] uppercase tracking-[0.32em] text-[var(--charcoal-soft,#6b6b6b)]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/WhoRhythmScene.tsx",
+      "line": 181,
+      "col": 114,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "\"mb-8 text-center font-display text-[24px] font-bold leading-tight tracking-tight text-[var(--charcoal,#2E2E2E)] sm:text-[30px]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/WhoRhythmScene.tsx",
+      "line": 206,
+      "col": 48,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "\"ring-1 ring-[var(--charcoal,#2E2E2E)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#C9A96A)]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/WhoRhythmScene.tsx",
+      "line": 206,
+      "col": 140,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "\"ring-1 ring-[var(--charcoal,#2E2E2E)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#C9A96A)]\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/WhoRhythmScene.tsx",
+      "line": 210,
+      "col": 55,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "isPicked ? \"ring-2 ring-[var(--gold,#C9A96A)]\" : \"\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v2/scenes/WhoRhythmScene.tsx",
+      "line": 225,
+      "col": 128,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "<span className=\"block font-display text-[18px] font-semibold leading-tight tracking-tight text-[var(--ivory,#FAF8F3)] sm:text-[20px]\">",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 146,
+      "col": 45,
+      "raw": "#1a1a1a",
+      "normalized": "#1a1a1a",
+      "snippet": "background: \"var(--charcoal-deep, #1a1a1a)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 175,
+      "col": 46,
+      "raw": "#0d0d0d",
+      "normalized": "#0d0d0d",
+      "snippet": "background: \"color-mix(in oklab, #0d0d0d 70%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 204,
+      "col": 46,
+      "raw": "#0d0d0d",
+      "normalized": "#0d0d0d",
+      "snippet": "background: \"color-mix(in oklab, #0d0d0d 80%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 264,
+      "col": 48,
+      "raw": "#0d0d0d",
+      "normalized": "#0d0d0d",
+      "snippet": "background: \"color-mix(in oklab, #0d0d0d 70%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 295,
+      "col": 48,
+      "raw": "#0d0d0d",
+      "normalized": "#0d0d0d",
+      "snippet": "background: \"color-mix(in oklab, #0d0d0d 80%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 382,
+      "col": 86,
+      "raw": "#0c1a1d",
+      "normalized": "#0c1a1d",
+      "snippet": "\"radial-gradient(120% 80% at 18% 22%, color-mix(in oklab, var(--teal) 45%, #0c1a1d) 0%, #0c1a1d 70%)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/ComposerMap.tsx",
+      "line": 382,
+      "col": 99,
+      "raw": "#0c1a1d",
+      "normalized": "#0c1a1d",
+      "snippet": "\"radial-gradient(120% 80% at 18% 22%, color-mix(in oklab, var(--teal) 45%, #0c1a1d) 0%, #0c1a1d 70%)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LeadCaptureSheet.tsx",
+      "line": 548,
+      "col": 38,
+      "raw": "#b3261e",
+      "normalized": "#b3261e",
+      "snippet": "style={{ color: \"#b3261e\" }}",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/SignaturePriceCard.tsx",
+      "line": 664,
+      "col": 44,
+      "raw": "#b8541a",
+      "normalized": "#b8541a",
+      "snippet": "? \"color-mix(in oklab, #b8541a 75%, transparent)\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/SignaturePriceCard.tsx",
+      "line": 686,
+      "col": 51,
+      "raw": "#b8541a",
+      "normalized": "#b8541a",
+      "snippet": "style={{ color: over ? \"#b8541a\" : \"var(--charcoal)\" }}",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
+      "line": 240,
+      "col": 70,
+      "raw": "#FF8A8A",
+      "normalized": "#ff8a8a",
+      "snippet": "color: k === \"composerHidden\" && v === \"true\" ? \"#FF8A8A\" : \"var(--ivory)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
+      "line": 273,
+      "col": 24,
+      "raw": "#7FE3A1",
+      "normalized": "#7fe3a1",
+      "snippet": "color = \"#7FE3A1\";",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
+      "line": 277,
+      "col": 24,
+      "raw": "#FF8A8A",
+      "normalized": "#ff8a8a",
+      "snippet": "color = \"#FF8A8A\";",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
+      "line": 362,
+      "col": 24,
+      "raw": "#F4E1B5",
+      "normalized": "#f4e1b5",
+      "snippet": "? \"#F4E1B5\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
+      "line": 365,
+      "col": 26,
+      "raw": "#FF8A8A",
+      "normalized": "#ff8a8a",
+      "snippet": ": \"#FF8A8A\";",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3DebugOverlay.tsx",
+      "line": 425,
+      "col": 42,
+      "raw": "#FF8A8A",
+      "normalized": "#ff8a8a",
+      "snippet": "<span style={{ color: \"#FF8A8A\" }}>✕</span> {t.id} · {reason}",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 413,
+      "col": 45,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "background: \"var(--charcoal-deep, #14181a)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 530,
+      "col": 56,
+      "raw": "#050d0f",
+      "normalized": "#050d0f",
+      "snippet": "background: \"color-mix(in oklab, #050d0f 78%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 584,
+      "col": 84,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "<circle cx={origin.x} cy={origin.y} r=\"3.6\" fill=\"var(--charcoal-deep, #14181a)\" />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 706,
+      "col": 78,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "<circle cx={p.x} cy={p.y} r=\"5.2\" fill=\"var(--charcoal-deep, #14181a)\" />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 716,
+      "col": 49,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "fill: \"var(--charcoal-deep, #14181a)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 758,
+      "col": 224,
+      "raw": "#14181a",
+      "normalized": "#14181a",
+      "snippet": "className=\"pointer-events-auto absolute rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] focus-visible:ring-offset-2 focus-",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 836,
+      "col": 46,
+      "raw": "#050d0f",
+      "normalized": "#050d0f",
+      "snippet": ": \"color-mix(in oklab, #050d0f 80%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/StudioV3SignatureMap.tsx",
+      "line": 930,
+      "col": 76,
+      "raw": "#050d0f",
+      "normalized": "#050d0f",
+      "snippet": "\"linear-gradient(180deg, transparent 0%, color-mix(in oklab, #050d0f 88%, transparent) 100%)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/__tests__/add-ons-gating-total.test.tsx",
+      "line": 68,
+      "col": 72,
+      "raw": "#111",
+      "normalized": "#111111",
+      "snippet": "<div data-theme={theme} style={{ background: theme === \"dark\" ? \"#111\" : \"#fff\" }}>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/__tests__/add-ons-gating-total.test.tsx",
+      "line": 68,
+      "col": 81,
+      "raw": "#fff",
+      "normalized": "#ffffff",
+      "snippet": "<div data-theme={theme} style={{ background: theme === \"dark\" ? \"#111\" : \"#fff\" }}>",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/components/studio-v3/__tests__/progress-stepper-a11y.test.tsx",
+      "line": 20,
+      "col": 48,
+      "raw": "#111",
+      "normalized": "#111111",
+      "snippet": "style={theme === \"dark\" ? { background: \"#111\" } : { background: \"#fff\" }}",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/__tests__/progress-stepper-a11y.test.tsx",
+      "line": 20,
+      "col": 73,
+      "raw": "#fff",
+      "normalized": "#ffffff",
+      "snippet": "style={theme === \"dark\" ? { background: \"#111\" } : { background: \"#fff\" }}",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/components/studio-v3/signatureOnePagerPdf.tsx",
+      "line": 16,
+      "col": 15,
+      "raw": "#F4EEE2",
+      "normalized": "#f4eee2",
+      "snippet": "const SAND = \"#F4EEE2\";",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/signatureOnePagerPdf.tsx",
+      "line": 57,
+      "col": 13,
+      "raw": "#4a4a4a",
+      "normalized": "#4a4a4a",
+      "snippet": "color: \"#4a4a4a\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/signatureOnePagerPdf.tsx",
+      "line": 140,
+      "col": 13,
+      "raw": "#4a4a4a",
+      "normalized": "#4a4a4a",
+      "snippet": "color: \"#4a4a4a\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/useStudioDebug.tsx",
+      "line": 103,
+      "col": 37,
+      "raw": "#FFB060",
+      "normalized": "#ffb060",
+      "snippet": "const accent = tone === \"warn\" ? \"#FFB060\" : \"var(--gold)\";",
       "status": "mismatch"
     },
     {
@@ -2230,22 +2869,58 @@
       "status": "mismatch"
     },
     {
-      "file": "src/routes/[.]lovable.oauth.consent.tsx",
-      "line": 103,
-      "col": 45,
-      "raw": "#555",
-      "normalized": "#555555",
-      "snippet": "<p style={{ marginBottom: 24, color: \"#555\" }}>",
-      "status": "mismatch"
+      "file": "src/lib/studio-v2/mood-tint.ts",
+      "line": 25,
+      "col": 15,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "tintHex: \"#C9A96A\", // warm gold",
+      "status": "approved"
     },
     {
-      "file": "src/routes/[.]lovable.oauth.consent.tsx",
-      "line": 108,
-      "col": 42,
-      "raw": "#b00020",
-      "normalized": "#b00020",
-      "snippet": "<p role=\"alert\" style={{ color: \"#b00020\", marginBottom: 16 }}>",
-      "status": "mismatch"
+      "file": "src/lib/studio-v2/mood-tint.ts",
+      "line": 32,
+      "col": 15,
+      "raw": "#295B61",
+      "normalized": "#295b61",
+      "snippet": "tintHex: \"#295B61\", // teal",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/studio-v2/mood-tint.ts",
+      "line": 39,
+      "col": 15,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "tintHex: \"#C9A96A\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/studio-v2/mood-tint.ts",
+      "line": 46,
+      "col": 15,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "tintHex: \"#2E2E2E\", // charcoal — quiet stone",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/studio-v2/mood-tint.ts",
+      "line": 53,
+      "col": 15,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "tintHex: \"#C9A96A\",",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/studio-v2/mood-tint.ts",
+      "line": 60,
+      "col": 15,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "tintHex: \"#C9A96A\",",
+      "status": "approved"
     },
     {
       "file": "src/routes/auth.tsx",
@@ -2437,84 +3112,93 @@
       "status": "mismatch"
     },
     {
+      "file": "src/routes/i.$token.tsx",
+      "line": 318,
+      "col": 34,
+      "raw": "#fff",
+      "normalized": "#ffffff",
+      "snippet": "html, body { background: #fff !important; }",
+      "status": "allowlisted"
+    },
+    {
       "file": "src/styles.css",
       "line": 87,
       "col": 11,
-      "raw": "#295B61",
+      "raw": "#295b61",
       "normalized": "#295b61",
-      "snippet": "--teal: #295B61;",
+      "snippet": "--teal: #295b61;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 88,
       "col": 13,
-      "raw": "#2A7C82",
+      "raw": "#2a7c82",
       "normalized": "#2a7c82",
-      "snippet": "--teal-2: #2A7C82;",
+      "snippet": "--teal-2: #2a7c82;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 89,
       "col": 11,
-      "raw": "#C9A96A",
+      "raw": "#c9a96a",
       "normalized": "#c9a96a",
-      "snippet": "--gold: #C9A96A;",
+      "snippet": "--gold: #c9a96a;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 90,
       "col": 16,
-      "raw": "#E1CFA6",
+      "raw": "#e1cfa6",
       "normalized": "#e1cfa6",
-      "snippet": "--gold-soft: #E1CFA6;",
+      "snippet": "--gold-soft: #e1cfa6;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 95,
       "col": 16,
-      "raw": "#D8BE82",
+      "raw": "#d8be82",
       "normalized": "#d8be82",
-      "snippet": "--gold-warm: #D8BE82;",
+      "snippet": "--gold-warm: #d8be82;",
       "status": "mismatch"
     },
     {
       "file": "src/styles.css",
       "line": 96,
       "col": 16,
-      "raw": "#B89452",
+      "raw": "#b89452",
       "normalized": "#b89452",
-      "snippet": "--gold-deep: #B89452;",
+      "snippet": "--gold-deep: #b89452;",
       "status": "mismatch"
     },
     {
       "file": "src/styles.css",
       "line": 97,
       "col": 12,
-      "raw": "#FAF8F3",
+      "raw": "#faf8f3",
       "normalized": "#faf8f3",
-      "snippet": "--ivory: #FAF8F3;",
+      "snippet": "--ivory: #faf8f3;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 98,
       "col": 11,
-      "raw": "#F4EFE7",
+      "raw": "#f4efe7",
       "normalized": "#f4efe7",
-      "snippet": "--sand: #F4EFE7;",
+      "snippet": "--sand: #f4efe7;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 99,
       "col": 15,
-      "raw": "#2E2E2E",
+      "raw": "#2e2e2e",
       "normalized": "#2e2e2e",
-      "snippet": "--charcoal: #2E2E2E;",
+      "snippet": "--charcoal: #2e2e2e;",
       "status": "approved"
     },
     {
@@ -2548,9 +3232,9 @@
       "file": "src/styles.css",
       "line": 103,
       "col": 20,
-      "raw": "#1F1F1F",
+      "raw": "#1f1f1f",
       "normalized": "#1f1f1f",
-      "snippet": "--charcoal-deep: #1F1F1F;",
+      "snippet": "--charcoal-deep: #1f1f1f;",
       "status": "allowlisted"
     },
     {
@@ -2600,7 +3284,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 750,
+      "line": 729,
       "col": 33,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -2609,7 +3293,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 751,
+      "line": 730,
       "col": 21,
       "raw": "#B89452",
       "normalized": "#b89452",
@@ -2618,7 +3302,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 986,
+      "line": 965,
       "col": 37,
       "raw": "#b3261e",
       "normalized": "#b3261e",
@@ -2627,7 +3311,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 987,
+      "line": 966,
       "col": 37,
       "raw": "#b3261e",
       "normalized": "#b3261e",
@@ -2636,7 +3320,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 1130,
+      "line": 1109,
       "col": 12,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2645,7 +3329,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 1317,
+      "line": 1296,
       "col": 12,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2654,7 +3338,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 1601,
+      "line": 1580,
       "col": 12,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2663,7 +3347,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 3692,
+      "line": 3585,
       "col": 23,
       "raw": "#000",
       "normalized": "#000000",
@@ -2672,7 +3356,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 4232,
+      "line": 4110,
       "col": 41,
       "raw": "#000",
       "normalized": "#000000",
@@ -2681,7 +3365,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 4232,
+      "line": 4110,
       "col": 47,
       "raw": "#000",
       "normalized": "#000000",
@@ -2690,7 +3374,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 4889,
+      "line": 4767,
       "col": 7,
       "raw": "#555",
       "normalized": "#555555",
@@ -2699,7 +3383,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 5834,
+      "line": 5712,
       "col": 47,
       "raw": "#8a6f2e",
       "normalized": "#8a6f2e",
@@ -2708,7 +3392,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 5870,
+      "line": 5748,
       "col": 47,
       "raw": "#d8b97a",
       "normalized": "#d8b97a",

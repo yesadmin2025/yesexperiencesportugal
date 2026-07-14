@@ -84,23 +84,23 @@
   --ease-snap: cubic-bezier(0.34, 1.2, 0.64, 1); /* muted tap release */
 
   /* Brand — locked palette, used site-wide. */
-  --teal: #295B61;
-  --teal-2: #2A7C82;
-  --gold: #C9A96A;
-  --gold-soft: #E1CFA6;
+  --teal: #295b61;
+  --teal-2: #2a7c82;
+  --gold: #c9a96a;
+  --gold-soft: #e1cfa6;
   /* Refined champagne accents — additive, do NOT replace --gold/--gold-soft.
      --gold-warm: a touch warmer, used for hover/active sheen so the accent
      doesn't read grey on ivory. --gold-deep: deeper rim for thin rules and
      button hairlines so gold remains visible without going yellow. */
-  --gold-warm: #D8BE82;
-  --gold-deep: #B89452;
-  --ivory: #FAF8F3;
-  --sand: #F4EFE7;
-  --charcoal: #2E2E2E;
+  --gold-warm: #d8be82;
+  --gold-deep: #b89452;
+  --ivory: #faf8f3;
+  --sand: #f4efe7;
+  --charcoal: #2e2e2e;
   /* Secondary text — was #5A5A5A, deepened to #555555 so secondary copy on
      mobile clears 7:1 contrast on ivory and never reads as washed grey. */
   --charcoal-soft: #555555;
-  --charcoal-deep: #1F1F1F;
+  --charcoal-deep: #1f1f1f;
 
   /* ─────────────────────────────────────────────────────────────
      HERO SCRIM TOKENS — single source of truth for the dark
@@ -374,7 +374,7 @@
     scroll-padding-top: 5rem; /* 80px — mobile navbar */
     /* Belt-and-braces: prevent any descendant overflow from creating
        horizontal scroll on mobile. */
-    overflow-x: hidden;
+    overflow-x: clip;
   }
   @media (min-width: 768px) {
     html {
@@ -399,7 +399,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
   p {
     color: var(--charcoal);
@@ -475,16 +475,11 @@
 }
 
 @layer components {
-  /* Native mobile gutters: 16px on tiny phones, 20px default,
-     tablet/desktop reintroduce a centered max width. */
+  /* Native mobile gutters: 20px edge padding, full width.
+     Tablet/desktop reintroduce a centered max width. */
   .container-x {
     @apply w-full max-w-full mx-auto;
-    padding-inline: 16px;
-  }
-  @media (min-width: 400px) {
-    .container-x {
-      padding-inline: 20px;
-    }
+    padding-inline: 20px;
   }
   @media (min-width: 640px) {
     .container-x {
@@ -497,22 +492,6 @@
       max-width: 1240px;
     }
   }
-  /* Safari-safe horizontal-overflow guard. Root `clip` is not propagated to
-     the viewport on iOS, while `hidden` is. Layouts must still constrain their
-     own children; this only catches transformed decorative pixels. */
-  html,
-  body {
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-  /* CTA row: stack full-width on mobile, inline on ≥sm. Children get w-full sm:w-auto. */
-  .cta-stack {
-    @apply grid grid-cols-1 gap-2.5 sm:flex sm:flex-wrap sm:items-center;
-  }
-  .cta-stack > * {
-    @apply w-full sm:w-auto min-w-0;
-  }
-
   /* Prevent word-by-word breaks on narrow mobile columns. */
   .container-x h1,
   .container-x h2,
@@ -3007,50 +2986,35 @@ svg.lucide {
 
 /* Reveal-on-scroll utility (IntersectionObserver toggles .is-visible) */
 /* Soft, slow, consistent — sections lift gently into place */
-/* ─────────────────────────────────────────────────────────────
-   EDITORIAL CADENCE — single source of truth for text entrances.
-   Titles, subtitles and paragraphs share ONE curve, ONE duration
-   and ONE lift so navigation rhythm feels identical everywhere.
-
-   Tokens (also consumed by [data-motion] below):
-     --editorial-ease  · soft ease-out, no overshoot
-     --editorial-dur   · 640ms base
-     --editorial-lift  · 10px translateY start
-     --editorial-step  · 80ms stagger between siblings
-   ───────────────────────────────────────────────────────────── */
-:root {
-  --editorial-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --editorial-dur: 640ms;
-  --editorial-lift: 10px;
-  --editorial-step: 80ms;
-}
-
 .reveal {
   opacity: 0;
-  transform: translateY(var(--editorial-lift));
+  transform: translateY(12px);
   transition:
-    opacity var(--editorial-dur) var(--editorial-ease),
-    transform var(--editorial-dur) var(--editorial-ease);
+    opacity 360ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 360ms cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: opacity, transform;
 }
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+  animation: siteRevealIn 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
-/* Stagger child — same curve/duration/lift as .reveal so a title,
-   its subtitle and the paragraph that follows enter on the same beat. */
+/* Stagger child — opt-in reveal for individual items inside a parent.
+   Slightly softer lift than .reveal so cards feel like they "float" up
+   one after another in a calm, consistent rhythm. */
 .reveal-stagger {
   opacity: 0;
-  transform: translateY(var(--editorial-lift));
+  transform: translateY(10px);
   transition:
-    opacity var(--editorial-dur) var(--editorial-ease),
-    transform var(--editorial-dur) var(--editorial-ease);
+    opacity 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: opacity, transform;
 }
 .reveal-stagger.is-visible {
   opacity: 1;
   transform: translateY(0);
+  animation: siteRevealStaggerIn 380ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 @media (max-width: 767.98px) {
@@ -3062,77 +3026,6 @@ svg.lucide {
     will-change: auto !important;
   }
 }
-
-/* Editorial cascade — direct .reveal-stagger children fade in one after
-   another using the shared --editorial-step (80ms). Non-homepage safe:
-   pure delay on the existing reveal-stagger transition. */
-.editorial-cascade > .reveal-stagger:nth-child(1) { transition-delay: 0ms; }
-.editorial-cascade > .reveal-stagger:nth-child(2) { transition-delay: calc(var(--editorial-step) * 1); }
-.editorial-cascade > .reveal-stagger:nth-child(3) { transition-delay: calc(var(--editorial-step) * 2); }
-.editorial-cascade > .reveal-stagger:nth-child(4) { transition-delay: calc(var(--editorial-step) * 3); }
-.editorial-cascade > .reveal-stagger:nth-child(5) { transition-delay: calc(var(--editorial-step) * 4); }
-.editorial-cascade > .reveal-stagger:nth-child(6) { transition-delay: calc(var(--editorial-step) * 5); }
-@media (prefers-reduced-motion: reduce) {
-  .editorial-cascade > .reveal-stagger {
-    transition-delay: 0ms !important;
-  }
-}
-
-
-/* Editorial interactive states — canonical hover/focus-visible for
-   raw <Link>/<a> and card wrappers so Corporate, Moments and Local
-   Stories match the CtaButton primitive from the homepage. */
-.editorial-inline-link {
-  position: relative;
-  color: color-mix(in oklab, var(--charcoal) 82%, transparent);
-  transition:
-    color var(--dur-quick) cubic-bezier(0.22, 0.61, 0.36, 1),
-    background-size 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
-  background-image: linear-gradient(currentColor, currentColor);
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 0% 1px;
-}
-.editorial-inline-link:hover,
-.editorial-inline-link:focus-visible {
-  color: var(--teal);
-  background-size: 100% 1px;
-}
-.editorial-inline-link:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--gold), 0 0 0 4px var(--ivory);
-  border-radius: 2px;
-}
-
-.editorial-card-link {
-  display: block;
-  transition:
-    transform var(--dur-quick) cubic-bezier(0.22, 0.61, 0.36, 1),
-    box-shadow var(--dur-base) cubic-bezier(0.22, 0.61, 0.36, 1);
-  border-radius: 2px;
-}
-@media (hover: hover) {
-  .editorial-card-link:hover {
-    transform: translateY(-2px);
-  }
-}
-.editorial-card-link:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--gold), 0 0 0 4px var(--ivory);
-}
-@media (prefers-reduced-motion: reduce) {
-  .editorial-card-link,
-  .editorial-inline-link {
-    transition: none;
-  }
-  .editorial-card-link:hover {
-    transform: none;
-  }
-}
-
-
-
-
 
 /* Layered lift — keep the reveal transform and the hover transform on
    different elements so they never fight. The outer node (.reveal /
@@ -3190,10 +3083,10 @@ svg.lucide {
    ───────────────────────────────────────────────────────────── */
 html.motion-ready [data-motion] {
   opacity: 0;
-  transform: translateY(var(--editorial-lift));
+  transform: translateY(22px);
   transition:
-    opacity var(--editorial-dur) var(--editorial-ease),
-    transform var(--editorial-dur) var(--editorial-ease);
+    opacity 620ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
 html.motion-ready [data-motion].motion-in {
@@ -3213,10 +3106,10 @@ html.motion-ready [data-motion="fade"] {
   transform: none;
 }
 html.motion-ready [data-motion="fade-up"] {
-  transform: translateY(var(--editorial-lift));
+  transform: translateY(22px);
 }
 html.motion-ready [data-motion="fade-up-sm"] {
-  transform: translateY(6px);
+  transform: translateY(14px);
 }
 html.motion-ready [data-motion].motion-in {
   transform: translateY(0);
@@ -3994,21 +3887,6 @@ html.motion-ready [data-motion].motion-in {
   .home-energy .he-sheen > * {
     position: relative;
     z-index: 2;
-  }
-
-  /* Idle arrow nudge — homepage CTAs feel alive at rest. Runs only when
-     the button isn't being hovered/focused so the existing hover
-     translate-x-2 still wins. Reduced-motion disables it entirely. */
-  @keyframes heCtaArrowNudge {
-    0%, 70%, 100% { transform: translateX(0); }
-    82% { transform: translateX(4px); }
-    92% { transform: translateX(2px); }
-  }
-  .home-energy .group:not(:hover):not(:focus-visible):not(:focus-within) [data-cta-arrow] {
-    animation: heCtaArrowNudge 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .home-energy [data-cta-arrow] { animation: none !important; }
   }
 
   /* Soft gold glow on hover — premium, not neon. Bumped softly. */
@@ -6509,42 +6387,3 @@ html {
   }
 }
 
-/* Editorial hover-zoom — apply to any <figure> that wraps an editorial <img>.
-   Self-scoped (no `group` needed). Reduced-motion safe. */
-@utility editorial-zoom {
-  overflow: hidden;
-  & img {
-    transition: transform 640ms cubic-bezier(0.22, 0.61, 0.36, 1);
-    transform-origin: center;
-    will-change: transform;
-  }
-  &:hover img,
-  &:focus-within img {
-    transform: scale(1.03);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .editorial-zoom img {
-    transition: none !important;
-    transform: none !important;
-  }
-}
-
-
-/* Page-level transition — pure editorial fade on route change. No
-   vertical translate: page titles must never slide or bounce; the
-   on-page cascade handles hierarchical entrance. Longer, gentler
-   easing keeps the handoff soft. Reduced-motion falls back to instant. */
-@keyframes pageEnter {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-.page-transition {
-  animation: pageEnter 560ms ease-out both;
-  will-change: opacity;
-}
-@media (prefers-reduced-motion: reduce) {
-  .page-transition {
-    animation: none;
-  }
-}

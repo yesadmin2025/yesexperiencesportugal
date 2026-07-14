@@ -42,7 +42,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "best-day-trips-from-lisbon",
     title: "Best Day Trips from Lisbon (by a Local) — Wine, Coast & Arrábida",
     metaDescription:
-      "A local's guide to the best private day trips from Lisbon — Arrábida wine country, Sintra, Sesimbra and the wild south coast. Hotel pickup, instant confirmation.",
+      "A local's guide to the best day trips from Lisbon — Arrábida wine country, the wild south coast, Sintra and Sesimbra. Written by the team that designs them.",
     h1: "Best Day Trips from Lisbon — by a Local",
     eyebrow: "Lisbon · Day Trips",
     standfirst:
@@ -167,65 +167,6 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "See our Signature experiences",
     signatureSlug: "arrabida-wine-allinclusive",
     datePublished: "2026-06-05",
-  },
-  {
-    slug: "private-driver-vs-self-driving-portugal",
-    title: "Private Driver vs Self-Driving in Portugal — A Local's Take",
-    metaDescription:
-      "Hiring a private driver in Portugal vs renting a car — a Lisbon-based founder compares safety, local insight, cost, and the experience of each.",
-    h1: "Private Driver vs Self-Driving in Portugal — A Local's Take",
-    eyebrow: "Portugal · How to Travel",
-    standfirst:
-      "The question we hear most from planning travellers. Here is how we think about it.",
-    sections: [
-      {
-        heading: "The decision is not really about the car.",
-        body: "Most travellers frame it as a cost question: driver or rental. After ten years of designing private days across Portugal, we think it is a question of what kind of day you want to have. A rental car gives you control of the wheel. A private driver gives you control of the day — your attention, your timing, and the ability to be somewhere fully rather than navigating to it.",
-      },
-      {
-        heading: "What a private driver gives you that a rental cannot.",
-        body: "A good driver here is also a host. They know which winery is worth the detour, which coastal road is closed in winter, and where to stop for coffee that is not on any itinerary. They handle parking in Sintra, narrow village streets in Alentejo, and the sudden tolls that catch first-time visitors. More importantly, they free you to look out the window. Portugal is a country best seen, not navigated.",
-      },
-      {
-        heading: "The self-drive case — and where it works.",
-        body: "Renting a car makes sense when the route is simple, the pace is slow, and you genuinely enjoy driving. The Algarve coast between Tavira and Lagos, the flat roads of the Alentejo plains, or a single hop to Óbidos are all pleasant behind the wheel. If your plan is one town, a beach, and a relaxed schedule, a rental can be the right tool. The problems start when the day becomes ambitious.",
-      },
-      {
-        heading: "Safety, parking, and the things maps do not show.",
-        body: "Portuguese drivers are fast on motorways and patient in villages, but the roads change character quickly. GPS will send you down cobblestone lanes built for carts. It will suggest parking that does not exist in August. It will miss the sign for a closed pass in the Serra da Estrela. A local driver reads the road in real time and adjusts without stress.",
-      },
-      {
-        heading: "Cost is closer than it looks.",
-        body: "A rental rate is only the beginning. Add fuel, tolls, parking, insurance excess, and the occasional fine, then factor in the time spent navigating. A private day with YES includes the car, fuel, tolls, and a licensed local host. The difference is smaller than it appears, and the value shifts dramatically once you want to visit more than one place.",
-      },
-      {
-        heading: "The YES way of doing it.",
-        body: "We do not run a transfer service. Every private day is designed around the guest — the route, the stops, the rhythm, and the conversations along the way. Our hosts are licensed, insured, and chosen because they love this country and know how to share it. The car is simply the frame. The experience is the point.",
-      },
-    ],
-    ctaLead:
-      "If you would rather look out the window than at the GPS, our Signature experiences are fully private — one car, one host, one day shaped to you.",
-    ctaLabel: "See the Arrábida Wine Signature",
-    signatureSlug: "arrabida-wine-allinclusive",
-    relatedSignatures: [
-      { slug: "sintra-cascais", label: "Sintra & Cascais Signature" },
-      { slug: "troia-comporta", label: "Tróia & Comporta Signature" },
-    ],
-    datePublished: "2026-07-14",
-    faq: [
-      {
-        q: "Is it worth hiring a private driver in Portugal?",
-        a: "Yes, if your day involves more than one stop, rural roads, wine tasting, or any route where navigation would distract you from the landscape. The value is highest when the journey itself is part of the experience.",
-      },
-      {
-        q: "Can I self-drive in Portugal as a foreigner?",
-        a: "Yes. A valid licence from most countries is accepted for short visits. Roads are generally good, but narrow village streets, toll systems, and summer parking can be challenging for first-time visitors.",
-      },
-      {
-        q: "Is a private driver more expensive than a rental car?",
-        a: "The headline rate is higher, but once you include fuel, tolls, parking, and the time you spend navigating, the gap narrows. For multi-stop days, a private driver often delivers more value per hour.",
-      },
-    ],
   },
   {
     slug: "troia-comporta-guide",
@@ -547,7 +488,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "arrabida-day-trip-from-lisbon",
     title: "Arrábida Day Trip from Lisbon — Private Wine & Beaches",
     metaDescription:
-      "Private Arrábida day trip from Lisbon — Setúbal market, family wineries in Azeitão and a long Portuguese lunch. Hotel pickup, English-speaking guide, instant confirmation.",
+      "Private Arrábida day trip from Lisbon — Setúbal market, family wineries in Azeitão and a long Portuguese lunch. Door-to-door driving.",
     h1: "Arrábida Day Trip from Lisbon — wine, hills & sea",
     eyebrow: "Lisbon · Arrábida Day",
     standfirst:
@@ -581,7 +522,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "arrabida-wine-tour",
     title: "Arrábida Wine Tour from Lisbon | Private Azeitão Day",
     metaDescription:
-      "Private Arrábida wine day from Lisbon — three family cellars in Azeitão, Moscatel tasting, slow lunch. Hotel pickup, English-speaking guide, instant confirmation.",
+      "Private Arrábida wine day from Lisbon — three family cellars in Azeitão, Moscatel tasting and a slow lunch. Licensed local operator, instant confirmation.",
     h1: "Arrábida Wine Tour — Azeitão & Setúbal, from Lisbon",
     eyebrow: "Arrábida · Private Wine Day",
     standfirst:
@@ -615,7 +556,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "sintra-day-tour-from-lisbon",
     title: "Sintra Day Tour from Lisbon — Private & Cabo da Roca",
     metaDescription:
-      "Private Sintra day tour from Lisbon — quieter palaces, Cabo da Roca, Cascais and a small wine tasting. Hotel pickup, English-speaking guide, instant confirmation.",
+      "Private Sintra day tour from Lisbon — quieter palaces, Cabo da Roca, Cascais and a small wine tasting. Door-to-door from your hotel.",
     h1: "Private Sintra Day Tour from Lisbon — without the queues",
     eyebrow: "Lisbon · Private Sintra Day",
     standfirst:
@@ -671,7 +612,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "portugal-wine-tours",
     title: "Portugal Wine Tours | Private Wine Days by YES Experiences",
     metaDescription:
-      "Private wine days across Arrábida, Setúbal, Azeitão and Alentejo — small family cellars and slow lunches, designed with you. Hotel pickup from Lisbon, instant confirmation.",
+      "Private wine days across Arrábida, Setúbal, Azeitão and Alentejo — small family cellars, slow lunches and real winemakers, all-inclusive from Lisbon.",
     h1: "Portugal wine tours, poured properly.",
     eyebrow: "Portugal · Wine Tours",
     standfirst:
@@ -712,7 +653,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "wine-tours-lisbon",
     title: "Private Wine Tours from Lisbon | Arrábida and Alentejo by YES",
     metaDescription:
-      "Private wine tours from Lisbon — Arrábida, Setúbal, Comporta and Alentejo. Real family cellars, no group buses. Hotel pickup, English-speaking guide, instant confirmation.",
+      "Private wine tours from Lisbon — Arrábida, Setúbal, Comporta and Alentejo. Real family cellars, no group buses. Booked with a licensed local operator.",
     h1: "The Best Wine Tours from Lisbon — Arrábida, Comporta & Alentejo",
     eyebrow: "Lisbon · Private Wine Days",
     standfirst:
@@ -745,7 +686,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "private-wine-tour-lisbon",
     title: "Private Wine Tour from Lisbon — Arrábida, Azeitão & Setúbal",
     metaDescription:
-      "Private wine tour from Lisbon to Arrábida and Azeitão — two or three family wineries and a long Portuguese lunch. Hotel pickup, English-speaking guide, instant confirmation.",
+      "Private wine tour from Lisbon to Arrábida and Azeitão — two or three family wineries, a long Portuguese lunch and door-to-door driving.",
     h1: "Private Wine Tour from Lisbon — Arrábida & Azeitão",
     eyebrow: "Lisbon · Private Wine Day",
     standfirst:
@@ -779,7 +720,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "alentejo-wine-tour-from-lisbon",
     title: "Alentejo Wine Tour from Lisbon | Private Évora & Cork",
     metaDescription:
-      "Private Alentejo wine tour from Lisbon — Évora's UNESCO old town, two family wineries and a cork stop, with a long Alentejo lunch. Hotel pickup, instant confirmation.",
+      "Private Alentejo wine tour from Lisbon — Évora's UNESCO old town, two family wineries and a cork stop, with a long Alentejo lunch. Door-to-door.",
     h1: "Alentejo Wine Tour from Lisbon — wine, cork & Évora",
     eyebrow: "Lisbon · Alentejo wine country",
     standfirst:
@@ -812,7 +753,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "evora-alentejo-wine-tour",
     title: "Évora & Alentejo Wine Tour | Private Full-Day from Lisbon",
     metaDescription:
-      "Private full day from Lisbon — Évora's UNESCO old town, two Alentejo family wineries and a cork tradition stop. Designed with you, hotel pickup, instant confirmation.",
+      "A private full day from Lisbon combining Évora's UNESCO old town, two family Alentejo wineries and a cork tradition stop — unhurried, door-to-door.",
     h1: "Évora & Alentejo Wine Tour — one private full day",
     eyebrow: "Lisbon · Évora & Alentejo",
     standfirst:
@@ -845,7 +786,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "evora-private-tour-from-lisbon",
     title: "Private Évora Day Tour from Lisbon — UNESCO & Alentejo",
     metaDescription:
-      "Private Évora tour from Lisbon — Roman Temple, Chapel of Bones, two family wineries and an unhurried Alentejo lunch. Hotel pickup, English-speaking guide, instant confirmation.",
+      "Private Évora tour from Lisbon — the Roman Temple, Chapel of Bones, two family wineries and a cork tradition stop, with an unhurried Alentejo lunch.",
     h1: "Private Évora Tour from Lisbon — heritage, wine & cork",
     eyebrow: "Lisbon · Évora private day",
     standfirst:

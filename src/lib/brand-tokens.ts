@@ -152,8 +152,4 @@ export const BRAND_HEX_EXEMPT_PATH_PREFIXES = [
   // (a lookup map of mood → tint). Studio v2 is deprecated; do not
   // refactor unless the file is removed.
   "src/lib/studio-v2/",
-  // Transactional email templates — Gmail/Outlook strip <style> and
-  // reject CSS custom properties, so inline hex is mandatory. Keep the
-  // palette here in sync with BRAND_COLORS by hand at review time.
-  "src/lib/email-templates/",
 ] as const;

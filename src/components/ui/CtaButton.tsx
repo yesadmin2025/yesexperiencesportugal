@@ -70,7 +70,7 @@ const sizeClasses: Record<Size, string> = {
 };
 
 const baseClasses =
-  "group relative inline-flex min-w-0 max-w-full items-center font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-[background-color,color,border-color,transform,box-shadow] duration-[var(--dur-quick)] ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] [@media(hover:hover)]:hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
+  "group relative inline-flex items-center font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-[background-color,color,border-color,transform,box-shadow] duration-[var(--dur-quick)] ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] [@media(hover:hover)]:hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
 const baseLayoutWithTrailing = "justify-between gap-6";
 const baseLayoutNoTrailing = "justify-center gap-2.5";
 
@@ -108,7 +108,7 @@ const variantStyle: Record<Variant, React.CSSProperties | undefined> = {
 function KineticArrow({ tone = "gold" }: { tone?: "gold" | "goldSoft" }) {
   const color = tone === "goldSoft" ? "var(--gold-soft)" : "var(--gold)";
   return (
-      <span aria-hidden="true" className="relative flex shrink-0 items-center">
+    <span aria-hidden="true" className="relative flex items-center">
       <span
         className="pointer-events-none absolute right-[-14px] h-8 w-14 rounded-full opacity-0 blur-[6px] transition-opacity duration-[var(--dur-base)] group-hover:opacity-100 group-focus-visible:opacity-100 group-active:opacity-100 motion-reduce:hidden"
         style={{
@@ -117,7 +117,6 @@ function KineticArrow({ tone = "gold" }: { tone?: "gold" | "goldSoft" }) {
         }}
       />
       <ArrowRight
-        data-cta-arrow=""
         size={18}
         strokeWidth={1.5}
         className="relative transition-transform duration-[var(--dur-base)] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-x-2 group-focus-visible:translate-x-2 group-active:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
@@ -203,9 +202,7 @@ export function CtaButton(props: CtaButtonProps) {
       ) : (
         iconLeading
       )}
-      <span className="cta-label relative min-w-0 text-center leading-[1.35] whitespace-normal [overflow-wrap:anywhere]">
-        {labelNode}
-      </span>
+      <span className="cta-label relative">{labelNode}</span>
       {trailing}
       {isKinetic ? <GoldSweep /> : null}
     </>

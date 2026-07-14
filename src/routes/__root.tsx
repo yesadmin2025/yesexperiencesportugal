@@ -16,8 +16,7 @@ import appCss from "../styles.css?url";
 import { installResetBlankCheckFilter } from "@/lib/silence-reset-blank-check";
 import { installIframeFooterGuard } from "@/lib/iframe-footer-guard";
 import { installClientErrorLogger } from "@/lib/client-error-logger";
-const installDevHardReload = () => undefined as unknown as void;
-import { installMotionPerfDetector } from "@/lib/motion-perf-detector";
+import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
 import { installAnalyticsAttrs } from "@/lib/analytics";
@@ -223,7 +222,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { locale } = parseLocaleFromPath(pathname);
   return (
-    <html lang={LOCALE_BCP47[locale] ?? "en"}>
+    <html lang={LOCALE_BCP47[locale]}>
       <head>
         <HeadContent />
       </head>
@@ -258,35 +257,11 @@ function RootComponent() {
   useIframeFooterGuard();
   useEffect(() => installClientErrorLogger(), []);
   useEffect(() => installDevHardReload(), []);
-  useEffect(() => installMotionPerfDetector(), []);
   useEffect(() => installAnalyticsAttrs(), []);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { locale } = parseLocaleFromPath(pathname);
-
-  // Site-wide editorial motion controller — same `[data-motion]` /
-  // `.motion-in` system that powers the homepage. Mounted here (not in
-  // SiteLayout) so EVERY route inherits the premium cadence, including
-  // pages that use their own wrappers (moments, plan.*, Signature
-  // templates, etc.). Re-inits on route change so newly-mounted DOM
-  // gets tagged and observed.
-  useEffect(() => {
-    let dispose: (() => void) | undefined;
-    let cancelled = false;
-    // Defer one frame so the new route's DOM is in the tree before we scan.
-    const raf = requestAnimationFrame(() => {
-      import("@/lib/home-motion").then(({ startHomeMotion }) => {
-        if (cancelled) return;
-        dispose = startHomeMotion();
-      });
-    });
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(raf);
-      dispose?.();
-    };
-  }, [pathname]);
-
   // Single QueryClient per browser session — keeps SignaturePriceCard and
+
   // any future useQuery hook resolvable without each route wiring its own.
   const [queryClient] = useState(
     () => new QueryClient({ defaultOptions: { queries: { staleTime: 60_000, retry: 1 } } }),
@@ -294,13 +269,10 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LocaleProvider locale={locale}>
-        <div key={pathname} className="page-transition">
-          <Outlet />
-        </div>
+        <Outlet />
         <WhatsAppSupportButton />
         <Toaster position="bottom-left" richColors closeButton />
       </LocaleProvider>
     </QueryClientProvider>
   );
 }
-

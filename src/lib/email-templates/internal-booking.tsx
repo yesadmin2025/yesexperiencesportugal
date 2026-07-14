@@ -20,7 +20,7 @@ export interface InternalBookingProps {
   guests?: number | null;
   amountFormatted?: string | null;
   bookingRef?: string | null;
-  reservationConfirmation?: string | null;
+  bokunConfirmation?: string | null;
   pickup?: string | null;
 }
 
@@ -73,7 +73,7 @@ const InternalBooking: React.FC<InternalBookingProps> = (p) => (
         <Field label="Amount" value={p.amountFormatted} />
         <Field label="Pickup" value={p.pickup} />
         <Field label="Stripe session" value={p.bookingRef} />
-        <Field label="Reservation confirmation" value={p.reservationConfirmation} />
+        <Field label="Bókun confirmation" value={p.bokunConfirmation} />
 
         <Text style={{ ...value, color: "#666", fontSize: 12, marginTop: 22 }}>
           The guest has already received the branded receipt. Bókun should have notified you
@@ -100,6 +100,6 @@ export const template = {
     guests: 2,
     amountFormatted: "€ 690,00",
     bookingRef: "cs_live_a1b2c3",
-    reservationConfirmation: "BK-000123",
+    bokunConfirmation: "BK-000123",
   },
 } satisfies TemplateEntry;

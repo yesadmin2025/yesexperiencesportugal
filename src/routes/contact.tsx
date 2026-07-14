@@ -31,8 +31,8 @@ const contactSchema = z.object({
   first: z.string().trim().min(1, "Please enter your first name").max(80),
   last: z.string().trim().min(1, "Please enter your last name").max(80),
   email: z.string().trim().toLowerCase().email("Enter a valid email").max(254),
-  requestType: z.enum(Object.fromEntries(requestTypeValues.map((v) => [v, v])) as Record<string, string>, {
-    message: "Please choose what we can help you plan",
+  requestType: z.enum(requestTypeValues as [string, ...string[]], {
+    errorMap: () => ({ message: "Please choose what we can help you plan" }),
   }),
   travelDate: z
     .string()
@@ -126,14 +126,12 @@ function Page() {
   return (
     <SiteLayout>
       <section className="reveal pt-32 pb-12 bg-[color:var(--sand)]">
-        <div className="container-x text-center editorial-cascade">
-          <div className="reveal-stagger"><Eyebrow flank>Talk to a Designer</Eyebrow></div>
-          <div className="reveal-stagger">
-            <SectionTitle as="h1" size="anchor" spacing="loose">
-              Begin Your <SectionTitle.Em>Portugal Story</SectionTitle.Em>
-            </SectionTitle>
-          </div>
-          <p className="reveal-stagger mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+        <div className="container-x text-center">
+          <Eyebrow flank>Talk to a Designer</Eyebrow>
+          <SectionTitle as="h1" size="anchor" spacing="loose">
+            Begin Your <SectionTitle.Em>Portugal Story</SectionTitle.Em>
+          </SectionTitle>
+          <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
             Tell us a little about who you are and what you'd love to experience. A local usually
             replies within a few hours.
           </p>

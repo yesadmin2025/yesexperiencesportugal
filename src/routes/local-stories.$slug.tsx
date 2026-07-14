@@ -8,26 +8,19 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import {
   jsonLdScript,
   breadcrumbLd,
+  
   personFounderLd,
   localStoryReviewsLd,
   localStoryArticleLd,
   normalizeLocalStoryReviews,
   faqPageLd,
-  tourProductLd,
-  hreflangUsCaLinks,
-  organizationUsCaAudienceLd,
   type NormalizedLocalStoryReview,
 } from "@/lib/jsonld";
-import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
-import { getViatorMeta } from "@/data/signatureToursViator";
-import LandingTourCredibility from "@/components/LandingTourCredibility";
+
 
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
-import { RelatedExperiencesRail } from "@/components/RelatedExperiencesRail";
-import StoryInternalLinks from "@/components/story/StoryInternalLinks";
-import { rankRelatedTours, relatedStoriesForStory } from "@/lib/related-experiences";
 
 type JournalPostFull = {
   slug: string;
@@ -166,28 +159,6 @@ export const Route = createFileRoute("/local-stories/$slug")({
             }).map((node) => jsonLdScript(node))
           : [];
       const imageUrl = articleImageUrl(article);
-      const tour = findTour(article.signatureSlug);
-      const viator = getViatorMeta(article.signatureSlug);
-      const productScript =
-        tour && viator && viator.reviewCount > 0
-          ? [
-              jsonLdScript(
-                withAggregateAndReviews(
-                  tourProductLd({
-                    id: tour.id,
-                    title: tour.title,
-                    blurb: tour.blurb,
-                    img: imageUrl ?? tour.img,
-                    priceFrom: tour.priceFrom,
-                    currency: "EUR",
-                    region: tour.region,
-                    durationHours: tour.durationHours,
-                  }),
-                  article.signatureSlug,
-                ),
-              ),
-            ]
-          : [];
       return {
         meta: [
           { title: article.title },
@@ -203,10 +174,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
             ? [{ property: "article:modified_time", content: article.dateModified }]
             : []),
         ],
-        links: [
-          { rel: "canonical", href: url },
-          ...hreflangUsCaLinks(`/local-stories/${params.slug}`),
-        ],
+        links: [{ rel: "canonical", href: url }],
         scripts: [
           jsonLdScript(
             localStoryArticleLd({
@@ -220,7 +188,6 @@ export const Route = createFileRoute("/local-stories/$slug")({
             }),
           ),
           jsonLdScript(personFounderLd()),
-          jsonLdScript(organizationUsCaAudienceLd()),
           jsonLdScript(
             breadcrumbLd([
               { name: "Home", path: "/" },
@@ -229,7 +196,6 @@ export const Route = createFileRoute("/local-stories/$slug")({
             ]),
           ),
           ...(article.faq && article.faq.length > 0 ? [jsonLdScript(faqPageLd(article.faq))] : []),
-          ...productScript,
           ...reviewScripts,
         ],
       };
@@ -348,16 +314,16 @@ function StaticArticleView({
   return (
     <SiteLayout>
       <article>
-        <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)] reveal">
-          <div className="container-x max-w-3xl text-center editorial-cascade">
-            <span className="reveal-stagger block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5">
+        <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)]">
+          <div className="container-x max-w-3xl text-center">
+            <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5">
               {article.eyebrow}
             </span>
-            <h1 className="reveal-stagger font-display font-bold text-[2rem] md:text-[2.6rem] leading-[1.15] tracking-[-0.01em] text-[color:var(--charcoal)]">
+            <h1 className="font-display font-bold text-[2rem] md:text-[2.6rem] leading-[1.15] tracking-[-0.01em] text-[color:var(--charcoal)]">
               {article.h1}
             </h1>
             {article.standfirst && (
-              <p className="reveal-stagger mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)] max-w-2xl mx-auto">
+              <p className="mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)] max-w-2xl mx-auto">
                 {article.standfirst}
               </p>
             )}
@@ -368,7 +334,7 @@ function StaticArticleView({
           <div className="container-x max-w-2xl">
             <div className="prose-yes">
               {article.sections.map((s, i) => (
-                <div key={i} className="mb-12 reveal-stagger">
+                <div key={i} className="mb-12">
                   <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.6rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                     {s.heading}
                   </h2>
@@ -421,12 +387,11 @@ function StaticArticleView({
                 Or{" "}
                 <Link
                   to="/studio-v3"
-                  className="editorial-inline-link"
+                  className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
                 >
                   design your own private Portugal day in the Studio
                 </Link>
                 .
-
               </p>
 
               {article.relatedSignatures && article.relatedSignatures.length > 0 && (
@@ -436,11 +401,10 @@ function StaticArticleView({
                       <Link
                         to="/tours/$tourId"
                         params={{ tourId: r.slug }}
-                        className="editorial-inline-link"
+                        className="hover:text-[color:var(--teal)] transition-colors"
                       >
                         {r.label} →
                       </Link>
-
                     </li>
                   ))}
                 </ul>
@@ -503,18 +467,14 @@ function StaticArticleView({
             <nav className="mt-16 text-center">
               <Link
                 to="/local-stories"
-                className="editorial-inline-link font-sans text-[13px] uppercase tracking-[0.24em]"
+                className="font-sans text-[13px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors"
               >
                 ← All Local Stories
               </Link>
-
             </nav>
           </div>
         </section>
       </article>
-      <LandingTourCredibility parentTourId={article.signatureSlug} />
-      <StoryInternalLinks article={article} />
-      <StoryRelated article={article} />
     </SiteLayout>
   );
 }
@@ -596,50 +556,16 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
             <nav className="mt-16 text-center">
               <Link
                 to="/local-stories"
-                className="editorial-inline-link font-sans text-[13px] uppercase tracking-[0.24em]"
+                className="font-sans text-[13px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors"
               >
                 ← All Local Stories
               </Link>
-
             </nav>
           </div>
         </section>
       </article>
-      {post.signatureSlug && <DbPostRelated signatureSlug={post.signatureSlug} />}
     </SiteLayout>
   );
-}
-
-function StoryRelated({ article }: { article: LocalStoryArticle }) {
-  const primary = findTour(article.signatureSlug);
-  const tours = primary
-    ? rankRelatedTours(
-        {
-          excludeTourId: primary.id,
-          region: primary.region,
-          styles: primary.seed?.styles,
-          highlights: primary.seed?.highlights,
-        },
-        3,
-      )
-    : [];
-  const stories = relatedStoriesForStory(article, 3);
-  return <RelatedExperiencesRail tours={tours} stories={stories} background="ivory" />;
-}
-
-function DbPostRelated({ signatureSlug }: { signatureSlug: string }) {
-  const primary = findTour(signatureSlug);
-  if (!primary) return null;
-  const tours = rankRelatedTours(
-    {
-      excludeTourId: primary.id,
-      region: primary.region,
-      styles: primary.seed?.styles,
-      highlights: primary.seed?.highlights,
-    },
-    3,
-  );
-  return <RelatedExperiencesRail tours={tours} background="ivory" />;
 }
 
 function NotFoundView() {
@@ -647,10 +573,9 @@ function NotFoundView() {
     <SiteLayout>
       <section className="py-32 text-center bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-xl">
-          <h2 className="font-display text-[1.8rem] text-[color:var(--charcoal)] mb-4">
+          <h1 className="font-display text-[1.8rem] text-[color:var(--charcoal)] mb-4">
             Story not found
-          </h2>
-
+          </h1>
           <p className="text-[color:var(--charcoal-soft)] mb-8">
             This story may have moved or is being written.
           </p>
@@ -669,10 +594,9 @@ function ErrorView({ error, reset }: { error: Error; reset: () => void }) {
     <SiteLayout>
       <section className="py-32 text-center bg-[color:var(--ivory)] reveal">
         <div className="container-x max-w-xl">
-          <h2 className="font-display text-[1.6rem] text-[color:var(--charcoal)] mb-4">
+          <h1 className="font-display text-[1.6rem] text-[color:var(--charcoal)] mb-4">
             Something went off route
-          </h2>
-
+          </h1>
           <p className="text-[color:var(--charcoal-soft)] mb-8">{error.message}</p>
           <button
             onClick={() => {

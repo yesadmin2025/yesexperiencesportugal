@@ -7,7 +7,9 @@ export function whatsappHref(message: string): string {
   return whatsappUrl(message);
 }
 
-const DEFAULT_TEXT = "Hi YES team, I'd love to learn more about your Portugal experiences.";
+import { waGeneric } from "@/lib/whatsapp-messages";
+
+const DEFAULT_TEXT = waGeneric();
 
 export function WhatsAppFab() {
   // Hidden on mobile: the MobileStickyCTA bar already exposes the

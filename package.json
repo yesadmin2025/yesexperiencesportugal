@@ -24,11 +24,6 @@
     "test:e2e:install": "playwright install chromium",
     "test:e2e:homepage-structure": "playwright test e2e/homepage-structure.spec.ts",
     "test:e2e:grep:homepage-structure": "playwright test --grep \"homepage structure\"",
-    "test:e2e:structured-data": "playwright test e2e/structured-data-rendered.spec.ts",
-    "test:e2e:checkout-envelope": "playwright test e2e/create-signature-checkout-error-envelope.spec.ts",
-    "test:e2e:checkout-retry": "playwright test e2e/studio-v3-checkout-retry-and-failures.spec.ts --project=mobile-chromium",
-    "test:e2e:storyboard-recovery": "playwright test e2e/studio-v3-storyboard-recovery.spec.ts --project=mobile-chromium",
-    "test:checkout-errors": "vitest run src/lib/checkout/__tests__/checkoutError.envelope.test.ts src/lib/checkout/__tests__/checkoutError.test.ts src/lib/pricing/__tests__/bookingQuoteCheckout.retry.test.ts src/lib/studio-v3/__tests__/quoteClient.retry.test.ts",
     "qa:hero-copy": "node scripts/hero-copy-qa.mjs",
     "qa:hero-copy:watch": "node scripts/hero-copy-qa.mjs --watch"
   },
@@ -37,7 +32,6 @@
     "@hookform/resolvers": "^5.2.2",
     "@lovable.dev/cloud-auth-js": "^1.1.2",
     "@lovable.dev/email-js": "^0.0.4",
-    "@lovable.dev/mcp-js": "^0.22.0",
     "@lovable.dev/webhooks-js": "^0.0.1",
     "@mendable/firecrawl-js": "^4.28.3",
     "@radix-ui/react-accordion": "^1.2.12",
@@ -106,7 +100,7 @@
     "tw-animate-css": "^1.3.4",
     "vaul": "^1.1.2",
     "vite-tsconfig-paths": "^6.0.2",
-    "zod": "^4.4.3"
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",

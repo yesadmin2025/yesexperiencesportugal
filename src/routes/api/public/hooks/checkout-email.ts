@@ -46,7 +46,7 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
           guests: typeof body.guests === "number" ? body.guests : Number(body.guests) || null,
           amountFormatted: body.amountFormatted ?? null,
           bookingRef: body.bookingRef ?? sessionId,
-          reservationConfirmation: body.reservationConfirmation ?? null,
+          bokunConfirmation: body.bokunConfirmation ?? null,
           receiptUrl: body.receiptUrl ?? null,
           bookingStatusUrl: body.bookingStatusUrl ?? null,
           pickup: body.pickup ?? null,
