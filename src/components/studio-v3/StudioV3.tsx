@@ -865,7 +865,8 @@ export function StudioV3() {
       });
       setCheckoutTourId(tour.id);
       setDetailsOpen(false);
-      setCheckoutOpen(true);
+      // Studio V3 renders Stripe Embedded Checkout INLINE below the
+      // summary on the same page (plan §E4). Do not open the drawer.
       // GA4 begin_checkout — user reached Stripe surface.
       try {
         const item = buildTourItem(
@@ -935,7 +936,7 @@ export function StudioV3() {
       } catch (e) {
         console.error("Stripe checkout failed", e);
         toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
-        setCheckoutOpen(false);
+        setClientSecret(null);
         openLeadSheet("book");
       } finally {
         setCheckoutPending(false);
@@ -1057,6 +1058,20 @@ export function StudioV3() {
       STUDIO_SCENE_CLIPS.celebration,
     ]);
   }, [state.phase]);
+
+  // Auto-request the Stripe embedded session when the traveller reaches the
+  // single-page checkoutSummary phase. Summary + payment share this same
+  // clientSecret so the two surfaces cannot drift.
+  useEffect(() => {
+    if (state.phase !== "checkoutSummary") return;
+    if (!pendingGuestDetails) return;
+    if (clientSecret || checkoutPending) return;
+    void handleStripeCheckout(state, pendingGuestDetails);
+    // Intentionally omit handleStripeCheckout/state from deps — the latter
+    // would re-fire on every state tick and the former is stable via
+    // useCallback. Guard above prevents duplicate sessions.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.phase, pendingGuestDetails, clientSecret, checkoutPending]);
 
   const advance = useCallback((next: StudioV3Phase) => {
     // If a previous cinematic beat is still dissolving, remove it before any
@@ -2625,7 +2640,15 @@ export function StudioV3() {
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}
-
+            clientSecret={clientSecret}
+            publishableKey={publishableKey}
+            onPaymentComplete={(sid) => {
+              const tid = checkoutTourId ?? state.tourId ?? "";
+              const qs = new URLSearchParams();
+              if (sid) qs.set("session_id", sid);
+              if (tid) qs.set("tour", tid);
+              window.location.assign(`/booking-confirmed?${qs.toString()}`);
+            }}
             onReserve={() => {
               void handleStripeCheckout(state, pendingGuestDetails);
             }}
