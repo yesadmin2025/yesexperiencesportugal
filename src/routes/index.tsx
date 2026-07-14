@@ -676,7 +676,7 @@ function HomePage() {
                       >
                         <img
                           src={t.img}
-                          alt={t.title}
+                          alt={`${t.title} — private ${t.region ?? "Portugal"} tour by YES Experiences`}
                           loading="lazy"
                           decoding="async"
                           className="relative z-[1] w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.05]"

@@ -119,7 +119,7 @@ function Page() {
             <figure className="mt-10 lg:hidden">
               <img
                 src={founderAsset.url}
-                alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
+                alt="Founder Nídia Almeida hosting a private wine tasting for guests in Portugal."
                 loading="lazy"
                 className="w-full aspect-[4/3] object-cover"
               />
@@ -151,7 +151,7 @@ function Page() {
           <figure className="hidden lg:block lg:sticky lg:top-28">
             <img
               src={founderAsset.url}
-              alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
+              alt="Founder Nídia Almeida pouring wine for guests during a private tasting in the Alentejo."
               loading="lazy"
               className="w-full aspect-[4/3] object-cover"
             />
