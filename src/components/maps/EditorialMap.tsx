@@ -138,11 +138,16 @@ export function EditorialMap({
   showLabels = true,
   ariaLabel,
   legMinutes,
+  focusedIndex,
 }: EditorialMapProps) {
   const points = useMemo(() => resolveStopPoints(stops), [stops]);
   const visible = Math.max(0, Math.min(points.length, activeCount ?? points.length));
   const shown = points.slice(0, visible);
   const routeD = useMemo(() => buildRouteD(shown), [shown]);
+  const focused =
+    typeof focusedIndex === "number" && focusedIndex >= 0 && focusedIndex < shown.length
+      ? focusedIndex
+      : -1;
 
   const ref = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
