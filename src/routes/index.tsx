@@ -319,15 +319,10 @@ function HomePage() {
   // Auto-tags legacy `.reveal` / `.reveal-stagger` / `.section-enter`
   // elements with `data-motion`, so this controller wins on the
   // homepage without per-component edits.
-  useEffect(() => {
-    let dispose: (() => void) | undefined;
-    import("@/lib/home-motion").then(({ startHomeMotion }) => {
-      dispose = startHomeMotion();
-    });
-    return () => {
-      dispose?.();
-    };
-  }, []);
+  // Homepage motion controller now mounts site-wide from SiteLayout
+  // (`src/components/SiteLayout.tsx`) so every page shares the same
+  // `[data-motion]` / `.motion-in` cadence as the homepage.
+
 
   // ── Hash navigation ────────────────────────────────────────────────
   // Two cooperating effects:

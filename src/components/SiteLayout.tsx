@@ -418,6 +418,25 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   // than getting clipped under it. Reduced-motion safe.
   useEffect(() => installSmoothAnchorScroll(), []);
 
+  // Site-wide motion controller — same `[data-motion]` / `.motion-in`
+  // system that runs on the homepage. Mounting it from SiteLayout means
+  // every route (Corporate, Moments, About, Contact, Local Stories, plan
+  // pages, etc.) inherits the same cadence, low-power tuning and
+  // reduced-motion behaviour. Reveal legacy classes (.reveal /
+  // .reveal-stagger) are auto-tagged inside the controller.
+  useEffect(() => {
+    let dispose: (() => void) | undefined;
+    let cancelled = false;
+    import("@/lib/home-motion").then(({ startHomeMotion }) => {
+      if (cancelled) return;
+      dispose = startHomeMotion();
+    });
+    return () => {
+      cancelled = true;
+      dispose?.();
+    };
+  }, []);
+
   // Manual replay hook: visit any URL with `#replay-reveals` (or call
   // `window.replayReveals()` from the console) to clear `.is-visible`
   // on every reveal element and let the IntersectionObserver re-fire
