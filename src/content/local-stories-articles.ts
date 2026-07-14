@@ -712,7 +712,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "wine-tours-lisbon",
     title: "Private Wine Tours from Lisbon | Arrábida and Alentejo by YES",
     metaDescription:
-      "Private wine tours from Lisbon — Arrábida, Setúbal, Comporta and Alentejo. Real family cellars, no group buses. Booked with a licensed local operator.",
+      "Private wine tours from Lisbon — Arrábida, Setúbal, Comporta and Alentejo. Real family cellars, no group buses. Hotel pickup, English-speaking guide, instant confirmation.",
     h1: "The Best Wine Tours from Lisbon — Arrábida, Comporta & Alentejo",
     eyebrow: "Lisbon · Private Wine Days",
     standfirst:
