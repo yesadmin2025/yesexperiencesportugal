@@ -397,36 +397,32 @@ export function FinalRevealStory({
           voice reads first). Back stays tertiary. */}
       <div className="mt-8 flex flex-col items-stretch gap-3">
         <div className="flex flex-col sm:flex-row gap-3">
-          <button
-            type="button"
+          <CtaButton
+            variant="primary"
             onClick={onContinue}
             data-testid="studio-v3-final-reveal-continue"
-            className="flex-1 min-h-[52px] inline-flex items-center justify-center gap-2 rounded-full px-6 text-[13px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] transition-colors"
-            style={{ background: "var(--gold)", color: "var(--charcoal)" }}
+            className="flex-1"
           >
             {CTA_CONTINUE_TO_GUEST_DETAILS}
-            <span aria-hidden>→</span>
-          </button>
-          <button
-            type="button"
+          </CtaButton>
+          <CtaButton
+            variant="ghost"
             onClick={onSaveSignature}
             disabled={saving}
+            loading={saving}
+            loadingLabel="Saving…"
             data-testid="studio-v3-final-reveal-save"
-            className="sm:flex-none min-h-[52px] inline-flex items-center justify-center rounded-full border px-6 text-[12px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:opacity-60 transition-colors"
-            style={{
-              color: "var(--teal)",
-              borderColor: "color-mix(in oklab, var(--teal) 45%, transparent)",
-              background: "transparent",
-            }}
+            className="sm:flex-none"
+            icon={null}
           >
-            {saving ? "Saving…" : CTA_SAVE_SIGNATURE}
-          </button>
+            {CTA_SAVE_SIGNATURE}
+          </CtaButton>
         </div>
         <button
           type="button"
           onClick={onBack}
           data-testid="studio-v3-final-reveal-back"
-          className="w-full min-h-[44px] inline-flex items-center justify-center text-[12.5px] tracking-[0.02em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+          className="w-full min-h-[44px] inline-flex items-center justify-center text-[12.5px] tracking-[0.02em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] transition-colors hover:text-[color:var(--charcoal)]"
           style={{
             color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
           }}
