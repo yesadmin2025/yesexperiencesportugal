@@ -6,6 +6,8 @@
 // Pass 1: only 3-guest tier for `studio-v3-private-full-day` is approved.
 // Any other guest count → `pricing_unavailable` (guest is routed to designer).
 // No borrowed tiers, no invented values.
+import { buildManualQuote, type ManualPriceTiers } from "./manualPricing.ts";
+import type { TravellerComposition } from "./travellerComposition.ts";
 
 export type StudioCommercialProductKey = "studio-v3-private-full-day";
 
@@ -47,6 +49,9 @@ export type CommercialPricingResult =
       guests: number;
       unitEur: number;
       baseSubtotalEur: number;
+      baseLines: ReturnType<typeof buildManualQuote> extends infer R
+        ? Exclude<R, { error: string }> extends { lines: infer L } ? L : never
+        : never;
       currency: "EUR";
     }
   | { status: "unavailable"; commercialProductKey: StudioCommercialProductKey; guests: number };
@@ -63,6 +68,38 @@ export function resolveStudioCommercialPrice(
     guests,
     unitEur: tier.unitEur,
     baseSubtotalEur: tier.unitEur * guests,
+    baseLines: [{
+      bokunCategoryId: "manual:adult",
+      label: "Adult (18+)",
+      minAge: 18,
+      maxAge: 99,
+      quantity: guests,
+      unitEur: tier.unitEur,
+      subtotalEur: tier.unitEur * guests,
+    }],
+    currency: "EUR",
+  };
+}
+
+export function resolveStudioCommercialPriceForComposition(
+  key: StudioCommercialProductKey,
+  composition: TravellerComposition,
+): CommercialPricingResult {
+  const tiers = Object.fromEntries(
+    CATALOGUE[key].map((tier) => [tier.guests, tier.unitEur]),
+  ) as ManualPriceTiers;
+  const quote = buildManualQuote(composition, tiers);
+  const guests = composition.adults + composition.minorAges.length;
+  if ("error" in quote || guests < 1 || guests > 8) {
+    return { status: "unavailable", commercialProductKey: key, guests };
+  }
+  return {
+    status: "quoted",
+    commercialProductKey: key,
+    guests,
+    unitEur: quote.adultUnitEur,
+    baseSubtotalEur: quote.subtotalEur,
+    baseLines: quote.lines,
     currency: "EUR",
   };
 }

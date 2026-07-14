@@ -27,6 +27,8 @@ import {
 } from "@/data/signatureAddOns";
 import type { SignatureTour } from "@/data/signatureTours";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
+import { buildManualQuotePreview } from "@/lib/pricing/manualQuotePreview";
+import type { TravellerComposition } from "@/lib/pricing/travellerComposition";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { getSignatureOptionalAddOns } from "@/lib/tailor-chapters";
 import { MountBadge } from "./useStudioDebug";
@@ -87,6 +89,8 @@ export interface SignaturePriceCardProps {
   journeyTitle?: string | null;
   /** Number of travellers — when ≥2, party total is shown alongside per-pp. */
   guests?: number | null;
+  /** Exact adult/minor mix used by the manual Studio quote. */
+  travellerComposition?: TravellerComposition;
   /** Real `included[]` from the resolved Signature — drives the footnote. */
   included?: ReadonlyArray<string>;
   /** Public Studio keeps pricing clean; legacy/tests can still exercise add-ons. */
@@ -166,6 +170,7 @@ export function SignaturePriceCard({
   onRefine,
   journeyTitle,
   guests,
+  travellerComposition,
   included,
   showAddOns = true,
   allowAddOnsWithoutPrice = false,
@@ -395,8 +400,13 @@ export function SignaturePriceCard({
     );
   }, [selectedAddOns, hasPrice, priceEur, displayGuests]);
   const clientTotalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
-  const partyBaseEur =
-    displayPerPaxEur != null && partyCount != null ? displayPerPaxEur * partyCount : null;
+  const manualBasePreview = useMemo(() => {
+    if (!travellerComposition || !tour || !partyCount) return null;
+    const tiers = effectiveOverrides?.[tour.id] ?? VIATOR_META[tour.id]?.priceTiersEUR;
+    return buildManualQuotePreview(travellerComposition, tiers)?.subtotalEur ?? null;
+  }, [travellerComposition, tour, partyCount, effectiveOverrides]);
+  const partyBaseEur = manualBasePreview ??
+    (displayPerPaxEur != null && partyCount != null ? displayPerPaxEur * partyCount : null);
   const clientPartyTotalEur =
     partyBaseEur != null ? partyBaseEur + addOnsDisplayPartyEur : null;
 

@@ -5,6 +5,7 @@
 // authoritative total; the CTA stays disabled until the server responds.
 
 import { supabase } from "@/integrations/supabase/client";
+import type { TravellerComposition } from "@/lib/pricing/travellerComposition";
 
 export type QuoteStatus = "quoted" | "unavailable" | "loading";
 export type ConvergenceStatus = "validated" | "pending-review" | "unavailable";
@@ -19,6 +20,7 @@ export interface StudioQuoteSnapshot {
   startTime: string; // HH:MM
   language: "en" | "pt" | "es" | "other";
   guests: number;
+  travellerComposition: TravellerComposition;
   routeStops: Array<{ id: string; label: string }>;
   selectedAddOns: Array<{ id: string; quantity: number }>;
   routeStatus: ConvergenceStatus;
@@ -46,6 +48,12 @@ export interface StudioQuoteResponse {
     guests: number;
     unitEur: number;
     baseSubtotalEur: number;
+    baseLines: Array<{
+      label: string;
+      quantity: number;
+      unitEur: number;
+      subtotalEur: number;
+    }>;
     addOnsSubtotalEur: number;
     totalEur: number;
     currency: "EUR";

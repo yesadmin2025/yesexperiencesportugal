@@ -94,8 +94,14 @@ export function filterStudioCandidatesBySuitability(
   tours: SignatureTour[],
   readinessMap: Record<string, TourBokunReadiness> | undefined,
   requirements: SuitabilityRequirements,
+  options: { requireCategoryReadiness?: boolean } = {},
 ): SuitabilityFilterResult {
-  const ageResult = filterSignatureCandidatesForAges(composition, tours, readinessMap);
+  // Studio's commercial product currently uses the manual Viator age-band
+  // quote, not per-Signature Bókun categories. In that mode an empty Bókun
+  // mirror must not erase every family-compatible itinerary candidate.
+  const ageResult = options.requireCategoryReadiness === false
+    ? { compatible: tours, excluded: [], hasCompatible: tours.length > 0 }
+    : filterSignatureCandidatesForAges(composition, tours, readinessMap);
   const ageCompatibleIds = new Set(ageResult.compatible.map((t) => t.id));
   const excluded: SuitabilityFilterResult["excluded"] = [];
 
