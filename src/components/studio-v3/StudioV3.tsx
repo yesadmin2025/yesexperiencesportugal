@@ -878,11 +878,24 @@ export function StudioV3() {
       }
       try {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
+        // Composition supplied only when the traveller went through the
+        // Composition control and at least one minor was recorded — otherwise
+        // fall through to legacy adults-only pricing so nothing regresses
+        // for guests who never touched the minors editor.
+        const currentMinors = currentState.minorAges ?? [];
+        const currentAdults = currentState.adults;
+        const compositionSupplied =
+          typeof currentAdults === "number" &&
+          currentAdults >= 1 &&
+          currentMinors.length > 0;
         const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
           body: {
             tourId: tour.id,
             tourTitle: tour.title ?? tour.id,
             guests: details.guests,
+            ...(compositionSupplied
+              ? { adults: currentAdults, minorAges: currentMinors }
+              : {}),
             stopLabels,
             includedItems: (() => {
               const m = getViatorMeta(tour.id);
@@ -901,6 +914,7 @@ export function StudioV3() {
             addOns: addOnsForCheckout,
           },
         });
+
         if (error) throw error;
         const resp = (data ?? {}) as { clientSecret?: string; publishableKey?: string };
         if (!resp.clientSecret || !resp.publishableKey) {
