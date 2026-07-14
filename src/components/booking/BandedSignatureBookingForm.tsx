@@ -204,7 +204,9 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
         Book the Signature, <SectionTitle.Em>as designed</SectionTitle.Em>
       </SectionTitle>
       <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
-        Instant confirmation — final price locked at reservation.
+        {isEnquiryOnly
+          ? "Live pricing shown below. A designer confirms availability by hand for this journey."
+          : "Instant confirmation — final price locked at reservation."}
       </p>
       <div className="mt-3">
         <BokunRolloutBadge readiness={readiness} tourId={tour.id} />
@@ -315,31 +317,54 @@ export function BandedSignatureBookingForm({ tour, readiness }: Props) {
       </div>
 
       <div ref={reserveCtaRef} className="pb-24 sm:pb-4">
-        <button
-          type="button"
-          onClick={() => setDetailsOpen(true)}
-          disabled={pending || !canReserve}
-          data-testid="reserve-cta"
-          className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
-        >
-          {pending ? (
-            <>
-              <Loader2 size={15} className="animate-spin" /> Opening checkout…
-            </>
-          ) : (
-            <>
-              <Sparkles size={15} /> Reserve securely
-            </>
-          )}
-        </button>
-        <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-          Instant confirmation
-        </p>
+        {isEnquiryOnly ? (
+          <>
+            <p className="mt-4 text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
+              This journey needs a quick human review before we can hold your date.
+              Send a short enquiry and we'll confirm within a few hours.
+            </p>
+            <Link
+              to="/contact"
+              data-testid="enquire-cta"
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
+            >
+              <Sparkles size={15} /> Send an enquiry
+            </Link>
+            <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
+              Confirmed by a designer, usually within a few hours.
+            </p>
+          </>
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={() => setDetailsOpen(true)}
+              disabled={pending || !canReserve}
+              data-testid="reserve-cta"
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
+            >
+              {pending ? (
+                <>
+                  <Loader2 size={15} className="animate-spin" /> Opening checkout…
+                </>
+              ) : (
+                <>
+                  <Sparkles size={15} /> Reserve securely
+                </>
+              )}
+            </button>
+            <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
+              Instant confirmation
+            </p>
+          </>
+        )}
       </div>
 
-      <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
-        <Lock size={10} /> Secure checkout · instant confirmation by email
-      </p>
+      {isEnquiryOnly ? null : (
+        <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
+          <Lock size={10} /> Secure checkout · instant confirmation by email
+        </p>
+      )}
 
       <div className="mt-5 pt-4 border-t border-[color:var(--border)] text-center">
         <p className="text-[12px] text-[color:var(--charcoal-soft)]">

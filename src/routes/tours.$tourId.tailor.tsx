@@ -1403,39 +1403,62 @@ function TailorPage() {
                   </p>
                 </div>
 
-                {/* 6 · CTA — instant Stripe checkout */}
+                {/* 6 · CTA — instant Stripe checkout OR enquiry when live-Bókun path unavailable */}
                 <div className="p-5 pt-0">
-                  <button
-                    type="button"
-                    onClick={() => setDetailsOpen(true)}
-                    disabled={
-                      checkoutPending ||
-                      !date ||
-                      summaryStops.length === 0 ||
-                      !quoteReadyForCurrentSelection ||
-                      liveQuote.loading
-                    }
-                    className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
-                  >
-                    {checkoutPending ? (
-                      <>
-                        <Loader2 size={15} className="animate-spin" /> Opening checkout…
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles size={15} /> Reserve securely
-                      </>
-                    )}
-                  </button>
-                  <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-                    Instant confirmation
-                  </p>
-                  <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
-                    <Lock size={10} /> Secure checkout
-                  </p>
-                  <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center leading-relaxed">
-                    {CANCELLATION_SHORT}
-                  </p>
+                  {liveQuote.quote && liveQuote.quote.checkoutEligibility !== "instant" ? (
+                    <>
+                      <p className="text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
+                        This tailored day needs a quick human review before we can hold
+                        your date. Send us a short enquiry and we'll confirm within a
+                        few hours.
+                      </p>
+                      <Link
+                        to="/contact"
+                        data-testid="tailor-enquire-cta"
+                        className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
+                      >
+                        <Sparkles size={15} /> Send an enquiry
+                      </Link>
+                      <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
+                        Confirmed by a designer, usually within a few hours.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setDetailsOpen(true)}
+                        disabled={
+                          checkoutPending ||
+                          !date ||
+                          summaryStops.length === 0 ||
+                          !quoteReadyForCurrentSelection ||
+                          liveQuote.loading ||
+                          (liveQuote.quote?.checkoutEligibility === "enquiry_only")
+                        }
+                        className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
+                      >
+                        {checkoutPending ? (
+                          <>
+                            <Loader2 size={15} className="animate-spin" /> Opening checkout…
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles size={15} /> Reserve securely
+                          </>
+                        )}
+                      </button>
+                      <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
+                        Instant confirmation
+                      </p>
+                      <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
+                        <Lock size={10} /> Secure checkout
+                      </p>
+                      <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center leading-relaxed">
+                        {CANCELLATION_SHORT}
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
 
