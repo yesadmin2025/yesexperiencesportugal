@@ -221,4 +221,127 @@ test.describe("Studio V3 storyboard recovery", () => {
   });
 });
 
+/**
+ * Extra persisted-route-state scenarios.
+ *
+ * These lock in editor recovery for shapes that *aren't* the two
+ * bugs the original fix targeted, but that a stale localStorage
+ * envelope from an older build could realistically hand us:
+ *   • single-stop partial edit (guest deleted all but one)
+ *   • long override (more stops than the Signature pool)
+ *   • whitespace / empty-label rows (malformed persisted data)
+ *   • duplicate labels (legacy duplication bug artefact)
+ *
+ * Assertions are structural only (no snapshot baselines) — visual
+ * regression stays on the two canonical scenarios above. We DO
+ * annotate the recovered stop count on every case so a CI failure
+ * tells you exactly which shape stranded the editor.
+ */
+type ExtraScenario = {
+  name: string;
+  slug: string;
+  editedRoutePoints: NonNullable<EditedRoutePoints>;
+  expectMinRows: number;
+};
+
+const EXTRA_SCENARIOS: ExtraScenario[] = [
+  {
+    name: "partial edit — single custom stop",
+    slug: "partial-single",
+    editedRoutePoints: [
+      { label: "Cabo da Roca cliffs", story: "Sunset at the westernmost point of Europe." },
+    ],
+    expectMinRows: 1,
+  },
+  {
+    name: "override longer than Signature pool",
+    slug: "over-long",
+    editedRoutePoints: Array.from({ length: 8 }).map((_, i) => ({
+      label: `Custom stop ${i + 1}`,
+      story: `Guest-added moment number ${i + 1}.`,
+    })),
+    expectMinRows: 6,
+  },
+  {
+    name: "malformed rows — whitespace labels + empty stories",
+    slug: "malformed",
+    editedRoutePoints: [
+      { label: "   ", story: "" },
+      { label: "Sintra centro", story: "Old town wander." },
+      { label: "", story: "   " },
+    ],
+    expectMinRows: 1,
+  },
+  {
+    name: "duplicate labels — legacy duplication artefact",
+    slug: "duplicates",
+    editedRoutePoints: [
+      { label: "Quinta da Regaleira", story: "Initiation well." },
+      { label: "Quinta da Regaleira", story: "Initiation well." },
+      { label: "Praia da Ursa", story: "Hidden cove hike." },
+    ],
+    expectMinRows: 2,
+  },
+];
+
+test.describe("Studio V3 storyboard recovery — extra persisted states", () => {
+  for (const scenario of EXTRA_SCENARIOS) {
+    test(scenario.name, async ({ page }, testInfo) => {
+      await hydrateDraft(page, scenario.editedRoutePoints);
+      await page.goto("/studio-v3");
+      await ensureStoryboardOrSkip(page);
+
+      const editor = page.getByTestId("studio-v3-stops-editor");
+      await expect(page.getByTestId("studio-v3-stops-editor-empty")).toHaveCount(0);
+      await expect(editor).toBeVisible();
+      await expect(
+        page.getByText("We couldn't compose a draft for this combination.", { exact: false }),
+      ).toHaveCount(0);
+
+      const stopRows = page.getByTestId("studio-v3-stop-row");
+      await expect(stopRows.first()).toBeVisible();
+      const stopCount = await stopRows.count();
+
+      testInfo.annotations.push(
+        { type: "scenario", description: scenario.name },
+        { type: "persisted-stop-count", description: String(scenario.editedRoutePoints.length) },
+        { type: "recovered-stop-count", description: String(stopCount) },
+      );
+
+      if (stopCount < scenario.expectMinRows) {
+        const banner = [
+          "",
+          "──────────────────────────────────────────────────────────────",
+          "[storyboard-recovery] RECOVERY UNDER-COUNT",
+          `  scenario:             ${scenario.name}`,
+          `  persisted stop count: ${scenario.editedRoutePoints.length}`,
+          `  recovered stop count: ${stopCount}`,
+          `  minimum expected:     ${scenario.expectMinRows}`,
+          "──────────────────────────────────────────────────────────────",
+          "",
+        ].join("\n");
+        process.stderr.write(banner);
+        if (process.env.GITHUB_ACTIONS) {
+          process.stdout.write(
+            `::error title=Storyboard recovery under-count::${scenario.name} — recovered ${stopCount} of ${scenario.expectMinRows}+ expected\n`,
+          );
+        }
+      }
+      expect(
+        stopCount,
+        `${scenario.name}: recovered ${stopCount} stop(s), expected ≥ ${scenario.expectMinRows}`,
+      ).toBeGreaterThanOrEqual(scenario.expectMinRows);
+
+      const editorShot = await editor.screenshot({
+        path: path.join(ARTIFACT_DIR, `${scenario.slug}-editor.png`),
+      });
+      await testInfo.attach(`stops-editor (${scenario.slug})`, {
+        body: editorShot,
+        contentType: "image/png",
+      });
+    });
+  }
+});
+
+
 
