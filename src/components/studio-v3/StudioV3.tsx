@@ -218,6 +218,7 @@ import {
 } from "./types";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
+import { Composition } from "./Composition";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { FinalRevealStory } from "./FinalRevealStory";
 import { CheckoutSummary as CheckoutSummaryStep } from "./CheckoutSummary";
