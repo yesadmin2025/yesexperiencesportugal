@@ -147,24 +147,29 @@ export const Route = createFileRoute("/tours/$tourId")({
         ...(() => {
           const meta = getViatorMeta(params.tourId);
           const gallery = getTourGallery(t, meta);
-          if (gallery.length < 3) return [];
-          return [
-            jsonLdScript({
-              "@context": "https://schema.org",
-              "@type": "ImageGallery",
-              "@id": `${url}#gallery`,
-              name: `${t.title} — photo gallery`,
-              isPartOf: { "@id": url },
-              numberOfItems: gallery.length,
-              image: gallery.map((p) => ({
-                "@type": "ImageObject",
-                url: p.src.startsWith("http") ? p.src : `https://yesexperiencesportugal.com${p.src}`,
-                contentUrl: p.src.startsWith("http") ? p.src : `https://yesexperiencesportugal.com${p.src}`,
-                caption: p.alt,
-                creditText: "YES Experiences Portugal",
-              })),
-            }),
-          ];
+          const gLd = pageGalleryLd({
+            pageUrl: url,
+            name: `${t.title} — photo gallery`,
+            photos: gallery,
+          });
+          return gLd ? [jsonLdScript(gLd)] : [];
+        })(),
+        // Per-stop ItemList so each stop gets its own image + caption.
+        ...(() => {
+          const meta = getViatorMeta(params.tourId);
+          const stopPhotos = matchStopPhotos(t, meta);
+          const stops = (t.stops ?? []).map((s, i) => ({
+            label: s.label,
+            story: s.story,
+            image: stopPhotos[i]?.src,
+            alt: stopPhotos[i]?.alt,
+          }));
+          const sLd = stopMediaLd({
+            pageUrl: url,
+            name: `${t.title} — itinerary stops`,
+            stops,
+          });
+          return sLd ? [jsonLdScript(sLd)] : [];
         })(),
         jsonLdScript(faqPageLd(SIGNATURE_FAQ)),
 
