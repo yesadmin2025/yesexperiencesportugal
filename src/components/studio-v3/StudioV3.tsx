@@ -2190,10 +2190,14 @@ export function StudioV3() {
         >
           <BackLink onClick={() => back("pickup")} />
           <PhaseHeader eyebrow="The party" title="How many" titleAccent="guests?" />
-          <GuestStepper
-            value={state.guests}
-            inferred={state.guestsInferred}
-            onChange={onGuestsChange}
+          <Composition
+            adults={state.adults ?? state.guests}
+            adultsInferred={state.guestsInferred}
+            minorAges={state.minorAges ?? []}
+            onAdultsChange={onGuestsChange}
+            onAddMinor={onAddMinor}
+            onRemoveMinor={onRemoveMinor}
+            onMinorAgeChange={onMinorAgeChange}
           />
           {state.guests != null ? (
             <NextTeaser>{contextualTeaser("guests", state)}</NextTeaser>
@@ -2204,18 +2208,24 @@ export function StudioV3() {
             disabled={false}
             onClick={() => {
               // If the user never touched the stepper, commit the displayed
-              // default (2) before advancing so the count is always real.
-              const committedGuests = state.guests ?? 2;
-              if (state.guests == null) onGuestsChange(2);
+              // default (2 adults, 0 minors) before advancing so the count
+              // is always real.
+              const committedAdults = state.adults ?? state.guests ?? 2;
+              const committedMinors = state.minorAges ?? [];
+              const committedTotal = committedAdults + committedMinors.length;
+              if (state.adults == null && state.guests == null) onGuestsChange(2);
               const forward: StudioV3State = {
                 ...state,
-                guests: committedGuests,
-                guestsPrivateEvent: committedGuests >= 11,
+                adults: committedAdults,
+                minorAges: committedMinors,
+                guests: committedTotal,
+                guestsPrivateEvent: committedTotal >= 11,
               };
               advance(getNextPhase(forward, "guests"));
             }}
             label="Continue"
           />
+
         </PhaseShell>
       ) : null}
 
