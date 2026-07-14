@@ -133,7 +133,7 @@ function ProposalInPortugalPage() {
               <article
                 key={b.eyebrow}
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
-                style={{ transitionDelay: `${i * 90}ms`, animationDelay: `${i * 90}ms` }}
+                style={{ transitionDelay: `${i * 70}ms`, animationDelay: `${i * 70}ms` }}
               >
                 <figure className="editorial-zoom">
                   <img

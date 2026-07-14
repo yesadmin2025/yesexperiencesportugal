@@ -126,12 +126,14 @@ function Page() {
   return (
     <SiteLayout>
       <section className="reveal pt-32 pb-12 bg-[color:var(--sand)]">
-        <div className="container-x text-center">
-          <Eyebrow flank>Talk to a Designer</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Begin Your <SectionTitle.Em>Portugal Story</SectionTitle.Em>
-          </SectionTitle>
-          <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+        <div className="container-x text-center editorial-cascade">
+          <div className="reveal-stagger"><Eyebrow flank>Talk to a Designer</Eyebrow></div>
+          <div className="reveal-stagger">
+            <SectionTitle as="h1" size="anchor" spacing="loose">
+              Begin Your <SectionTitle.Em>Portugal Story</SectionTitle.Em>
+            </SectionTitle>
+          </div>
+          <p className="reveal-stagger mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
             Tell us a little about who you are and what you'd love to experience. A local usually
             replies within a few hours.
           </p>
