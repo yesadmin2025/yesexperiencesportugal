@@ -519,6 +519,17 @@ function TailorPage() {
       if (!isQuoteAvailable(quoteResp)) {
         throw new Error(quoteResp.message || `quote_unavailable:${quoteResp.reason}`);
       }
+      // P0 payment-integrity gate — mirrors the server's fail-closed check.
+      // Never open the Stripe drawer for an enquiry-only quote; route the
+      // guest to the contact form so a designer confirms availability.
+      if (quoteResp.checkoutEligibility !== "instant") {
+        setCheckoutOpen(false);
+        toast.info(
+          "This tailored day needs a quick human review. We'll confirm your date by email within a few hours.",
+        );
+        navigate({ to: "/contact" });
+        return;
+      }
       // Truthful summary derived from the server quote — this is what
       // Stripe will charge, so the drawer total must match to the cent.
       setCheckoutSummary({
