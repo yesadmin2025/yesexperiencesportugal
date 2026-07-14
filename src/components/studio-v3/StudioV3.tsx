@@ -2550,9 +2550,10 @@ export function StudioV3() {
                 });
                 const { buildJourneyRevision } = await import("./signatureStorySnapshot");
                 const journeyRevision = buildJourneyRevision(state, {
-                  adults: state.guests ?? undefined,
-                  minorAges: [],
+                  adults: state.adults ?? state.guests ?? undefined,
+                  minorAges: state.minorAges ?? [],
                 });
+
                 await sendSignatureStoryEmail({
                   data: {
                     email,
