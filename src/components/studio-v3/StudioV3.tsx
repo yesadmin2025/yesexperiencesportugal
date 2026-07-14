@@ -777,6 +777,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
       setSelectedAddOnIds([]);
       setSelectedAddOnItems([]);
       setSelectedAddOnsTotalEur(0);
+      setSelectedAddOnsPartyTotalEur(0);
     }
     prevTourIdRef.current = next;
   }, [state.tourId]);
@@ -793,6 +794,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
     if (ids.length === 0) {
       setSelectedAddOnItems([]);
       setSelectedAddOnsTotalEur(0);
+      setSelectedAddOnsPartyTotalEur(0);
     }
   }, []);
   const {
