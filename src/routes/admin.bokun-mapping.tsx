@@ -142,7 +142,7 @@ function AdminBokunMappingPage() {
   // Load existing mappings
   useEffect(() => {
     if (!isAdmin) return;
-    supabase
+    (supabase as any)
       .from("tour_bokun_mapping")
       .select("tour_id, bokun_product_id, bokun_title, bokun_product_code, notes")
       .then(({ data, error }) => {
@@ -428,7 +428,7 @@ function TourMappingRow({
       currency: item?.currency ?? "EUR",
       notes: notes.trim() || null,
     };
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("tour_bokun_mapping")
       .upsert(payload, { onConflict: "tour_id" });
     setBusy(false);
@@ -452,7 +452,7 @@ function TourMappingRow({
     if (!existing) return;
     if (!confirm(`Clear Bokun mapping for "${tour.title}"?`)) return;
     setBusy(true);
-    const { error } = await supabase.from("tour_bokun_mapping").delete().eq("tour_id", tour.id);
+    const { error } = await (supabase as any).from("tour_bokun_mapping").delete().eq("tour_id", tour.id);
     setBusy(false);
     if (error) {
       toast.error("Clear failed: " + error.message);
@@ -714,8 +714,8 @@ async function importMappingsCsv(
 
     let ok = 0;
     if (upserts.length) {
-      const { error } = await supabase
-        .from("tour_bokun_mapping")
+      const { error } = await (supabase as any)
+      .from("tour_bokun_mapping")
         .upsert(upserts, { onConflict: "tour_id" });
       if (error) {
         toast.error("Import failed: " + error.message);
@@ -724,7 +724,7 @@ async function importMappingsCsv(
       ok = upserts.length;
     }
     if (toDelete.length) {
-      await supabase.from("tour_bokun_mapping").delete().in("tour_id", toDelete);
+      await (supabase as any).from("tour_bokun_mapping").delete().in("tour_id", toDelete);
     }
 
     setMappings((prev) => {
