@@ -865,7 +865,8 @@ export function StudioV3() {
       });
       setCheckoutTourId(tour.id);
       setDetailsOpen(false);
-      setCheckoutOpen(true);
+      // Studio V3 renders Stripe Embedded Checkout INLINE below the
+      // summary on the same page (plan §E4). Do not open the drawer.
       // GA4 begin_checkout — user reached Stripe surface.
       try {
         const item = buildTourItem(
