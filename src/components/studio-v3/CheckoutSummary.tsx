@@ -397,32 +397,64 @@ export function CheckoutSummary({
         {INSTANT_CONFIRMATION}
       </p>
 
-      {/* Sticky CTA bar */}
-      <div
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--border)] bg-[color:var(--ivory)]/95 backdrop-blur-sm px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]"
-        data-testid="studio-v3-checkout-summary-cta-bar"
-      >
-        <div className="max-w-[560px] mx-auto">
-          {submitting ? (
-            <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
-          ) : (
-            <CtaButton
-              type="button"
-              variant="primary"
-              size="md"
-              className="w-full"
-              iconLeading={<Lock size={14} aria-hidden />}
-              onClick={onReserve}
-              data-testid="studio-v3-checkout-summary-reserve"
-            >
-              {CTA_RESERVE_AND_PAY}
-            </CtaButton>
-          )}
-          <p className="mt-2 text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
-            Secure checkout · Final price shown before payment
-          </p>
+      {/* Inline Stripe Embedded Checkout — same page as the summary.
+          Renders only when we have a live session; otherwise the sticky
+          Reserve CTA below opens one. Same journey revision as summary. */}
+      {clientSecret && publishableKey ? (
+        <div
+          className="mt-8 border p-4"
+          style={{
+            borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
+            background: "var(--ivory)",
+          }}
+          data-testid="studio-v3-checkout-summary-stripe-inline"
+        >
+          <div className="flex items-center gap-2 mb-3 text-[11px] uppercase tracking-[0.22em]"
+               style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}>
+            <Lock size={12} aria-hidden /> Secure payment · Powered by Stripe
+          </div>
+          <EmbeddedCheckoutProvider
+            stripe={getStripePromise(publishableKey)}
+            options={{
+              clientSecret,
+              onComplete: () => {
+                // Stripe fires onComplete when payment succeeds; we then
+                // navigate. `session_id` is embedded in the returnUrl by
+                // the checkout session; we forward what we have.
+                onPaymentComplete?.(null);
+              },
+            }}
+          >
+            <EmbeddedCheckout />
+          </EmbeddedCheckoutProvider>
         </div>
-      </div>
+      ) : (
+        <div
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--border)] bg-[color:var(--ivory)]/95 backdrop-blur-sm px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]"
+          data-testid="studio-v3-checkout-summary-cta-bar"
+        >
+          <div className="max-w-[560px] mx-auto">
+            {submitting ? (
+              <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
+            ) : (
+              <CtaButton
+                type="button"
+                variant="primary"
+                size="md"
+                className="w-full"
+                iconLeading={<Lock size={14} aria-hidden />}
+                onClick={onReserve}
+                data-testid="studio-v3-checkout-summary-reserve"
+              >
+                {CTA_RESERVE_AND_PAY}
+              </CtaButton>
+            )}
+            <p className="mt-2 text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
+              Secure checkout · Final price shown before payment
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
