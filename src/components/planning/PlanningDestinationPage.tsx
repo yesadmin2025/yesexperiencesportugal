@@ -62,6 +62,21 @@ export function PlanningDestinationPage({ destination }: Props) {
         </div>
       </header>
 
+      {/* Hero image — real, region-specific, never stock */}
+      <section className="bg-[color:var(--sand)] pb-14 md:pb-20">
+        <div className="container-x max-w-5xl">
+          <figure className="overflow-hidden rounded-sm">
+            <img
+              src={destination.hero.src}
+              alt={destination.hero.alt}
+              loading="eager"
+              decoding="async"
+              className="w-full aspect-[16/9] object-cover"
+            />
+          </figure>
+        </div>
+      </section>
+
       {/* Editorial sections */}
       <section className="reveal py-20 md:py-24 bg-[color:var(--ivory)]">
         <div className="container-x max-w-2xl">
@@ -77,6 +92,28 @@ export function PlanningDestinationPage({ destination }: Props) {
           </div>
         </div>
       </section>
+
+      {/* Editorial gallery strip */}
+      {destination.gallery.length > 0 && (
+        <section className="reveal py-14 md:py-20 bg-[color:var(--ivory)] border-t border-[color:var(--border)]">
+          <div className="container-x">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
+              {destination.gallery.slice(0, 3).map((p) => (
+                <figure key={p.src} className="overflow-hidden rounded-sm">
+                  <img
+                    src={p.src}
+                    alt={p.alt}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full aspect-[4/5] md:aspect-[3/4] object-cover"
+                  />
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
 
       {/* Featured Signature tours */}
       <RelatedExperiencesRail
