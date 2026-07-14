@@ -1,127 +1,48 @@
-// Shared visible price breakdown — Signature summary, Tailored summary,
-// Studio Final Signature, Guest Details, Checkout Summary all render this.
-// The total shown here MUST equal the Stripe total (enforced server-side).
+// LivePriceBreakdown — renders an InternalQuote row-by-row.
+// No network. No external pricing dependency.
 
-import type { BookingQuote } from "@/lib/pricing/bookingQuote";
+import type { InternalQuote } from "@/lib/pricing/resolveInternalQuote";
 
-type Props = {
-  quote: BookingQuote;
+export function LivePriceBreakdown({
+  quote,
+  compact = false,
+}: {
+  quote: InternalQuote | null;
   compact?: boolean;
-};
-
-const EUR_ZERO = "Free";
-
-function fmt(eur: number): string {
-  return eur === 0 ? EUR_ZERO : formatEur(eur);
-}
-
-function formatEur(eur: number): string {
-  return new Intl.NumberFormat("en-IE", {
-    style: "currency",
-    currency: "EUR",
-    minimumFractionDigits: Number.isInteger(eur) ? 0 : 2,
-    maximumFractionDigits: 2,
-  }).format(eur);
-}
-
-export function LivePriceBreakdown({ quote, compact = false }: Props) {
-  const { basePricing, addOnPricing, finalTotalEur } = quote;
-
+}) {
+  if (!quote || quote.lines.length === 0) return null;
+  const size = compact ? "text-[11.5px]" : "text-[12px]";
   return (
-    <div className="text-[color:var(--charcoal)]">
-      {!compact ? (
-        <div className="mb-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-          Base private day
-        </div>
-      ) : null}
-
-      <ul className="divide-y divide-[color:var(--border)]">
-        {basePricing.lines.map((l) => (
-          <li key={l.bokunCategoryId} className="flex items-center justify-between gap-3 py-2">
-            <div className="min-w-0">
-              <div className="text-sm">
-                {l.label}
-                {l.ages && l.ages.length ? (
-                  <span className="ml-2 text-[11px] text-[color:var(--charcoal-soft)]">
-                    age{l.ages.length > 1 ? "s" : ""} {l.ages.join(", ")}
-                  </span>
-                ) : null}
-              </div>
-              <div className="text-[11px] text-[color:var(--charcoal-soft)]">
-                 {l.quantity} × {l.unitEur === 0 ? EUR_ZERO : formatEur(l.unitEur)}
-                {typeof l.minAge === "number" || typeof l.maxAge === "number" ? (
-                  <>
-                    {" · "}
-                    {typeof l.minAge === "number" && typeof l.maxAge === "number"
-                      ? `${l.minAge}–${l.maxAge}`
-                      : typeof l.minAge === "number"
-                        ? `${l.minAge}+`
-                        : `≤${l.maxAge}`}
-                  </>
-                ) : null}
-              </div>
-            </div>
-            <div className="tabular-nums text-sm" data-testid={`line-${l.bokunCategoryId}`}>
-              {fmt(l.subtotalEur)}
-            </div>
+    <div className="space-y-2">
+      <ul className={`space-y-1 ${size}`}>
+        {quote.lines.map((l) => (
+          <li key={l.band} className="flex items-baseline justify-between gap-3">
+            <span className="text-[color:var(--charcoal-soft)]">
+              {l.label} × {l.quantity}
+              {l.isFree ? " · included" : ""}
+            </span>
+            <span className="tabular-nums">
+              {l.isFree ? "Free" : `€${l.subtotalEur.toLocaleString("en-GB")}`}
+            </span>
+          </li>
+        ))}
+        {quote.addOnLines.map((a) => (
+          <li key={a.id} className="flex items-baseline justify-between gap-3">
+            <span className="text-[color:var(--charcoal-soft)]">
+              {a.label} × {a.quantity}
+            </span>
+            <span className="tabular-nums">€{a.subtotalEur.toLocaleString("en-GB")}</span>
           </li>
         ))}
       </ul>
-
-      <div className="mt-2 flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-        <span>Base subtotal</span>
-        <span className="tabular-nums" data-testid="base-subtotal">
-           {formatEur(basePricing.subtotalEur)}
+      <div className="flex items-baseline justify-between pt-2 border-t border-[color:var(--border)]">
+        <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+          Total
         </span>
-      </div>
-
-      {addOnPricing.lines.length ? (
-        <>
-          {!compact ? (
-            <div className="mt-4 mb-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-              Selected add-ons
-            </div>
-          ) : null}
-          <ul className="divide-y divide-[color:var(--border)]">
-            {addOnPricing.lines.map((l) => (
-              <li key={l.id} className="flex items-center justify-between gap-3 py-2">
-                <div className="min-w-0">
-                  <div className="text-sm">{l.label}</div>
-                  <div className="text-[11px] text-[color:var(--charcoal-soft)]">
-                     {l.quantity} × {formatEur(l.unitEur)} · {humanUnit(l.pricingUnit)}
-                  </div>
-                </div>
-                <div className="tabular-nums text-sm" data-testid={`addon-${l.id}`}>
-                  {formatEur(l.subtotalEur)}
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-2 flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-            <span>Add-ons subtotal</span>
-            <span className="tabular-nums" data-testid="addon-subtotal">
-               {formatEur(addOnPricing.subtotalEur)}
-            </span>
-          </div>
-        </>
-      ) : null}
-
-      <div className="mt-4 border-t border-[color:var(--charcoal)] pt-3 flex items-center justify-between">
-        <span className="text-[11px] uppercase tracking-[0.22em]">Total</span>
-        <span className="text-lg tabular-nums font-medium" data-testid="final-total">
-           {formatEur(finalTotalEur)}
+        <span className="serif text-[1.4rem]">
+          €{Math.round(quote.finalTotalEur).toLocaleString("en-GB")}
         </span>
       </div>
     </div>
   );
-}
-
-function humanUnit(u: string): string {
-  switch (u) {
-    case "per_person": return "per traveller";
-    case "per_vehicle": return "per vehicle";
-    case "per_group": return "per group";
-    case "fixed": return "fixed";
-    default: return u;
-  }
 }

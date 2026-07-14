@@ -11,11 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WineToursLisbonRouteImport } from './routes/wine-tours-lisbon'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
-import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as StudioV3RouteImport } from './routes/studio-v3'
-import { Route as StudioV2RouteImport } from './routes/studio-v2'
-import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
 import { Route as ReviewsRouteImport } from './routes/reviews'
@@ -45,7 +41,6 @@ import { Route as DayToursRouteImport } from './routes/day-tours'
 import { Route as CorporateRouteImport } from './routes/corporate'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as BrandQaRouteImport } from './routes/brand-qa'
 import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -55,11 +50,8 @@ import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentej
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PtIndexRouteImport } from './routes/pt.index'
-import { Route as PlanIndexRouteImport } from './routes/plan.index'
 import { Route as LocalStoriesIndexRouteImport } from './routes/local-stories.index'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
-import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as QaHeroRouteImport } from './routes/qa.hero'
@@ -76,40 +68,21 @@ import { Route as PtCookiesRouteImport } from './routes/pt.cookies'
 import { Route as PtContactRouteImport } from './routes/pt.contact'
 import { Route as PtAboutRouteImport } from './routes/pt.about'
 import { Route as PtSplatRouteImport } from './routes/pt.$'
-import { Route as PlanSintraRouteImport } from './routes/plan.sintra'
-import { Route as PlanPortugalWineAndGastronomyRouteImport } from './routes/plan.portugal-wine-and-gastronomy'
-import { Route as PlanLisbonRouteImport } from './routes/plan.lisbon'
-import { Route as PlanCostaVicentinaRouteImport } from './routes/plan.costa-vicentina'
-import { Route as PlanComportaRouteImport } from './routes/plan.comporta'
-import { Route as PlanBestTimeToVisitPortugalRouteImport } from './routes/plan.best-time-to-visit-portugal'
-import { Route as PlanArrabidaRouteImport } from './routes/plan.arrabida'
-import { Route as PlanAlentejoRouteImport } from './routes/plan.alentejo'
-import { Route as Plan7DayPortugalItineraryRouteImport } from './routes/plan.7-day-portugal-itinerary'
-import { Route as Plan5DayPortugalItineraryRouteImport } from './routes/plan.5-day-portugal-itinerary'
-import { Route as Plan14DayPortugalItineraryRouteImport } from './routes/plan.14-day-portugal-itinerary'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
 import { Route as Itineraries10DayPrivatePortugalTourRouteImport } from './routes/itineraries.10-day-private-portugal-tour'
-import { Route as ITokenRouteImport } from './routes/i.$token'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as E2ePostmessageProbeRouteImport } from './routes/e2e.postmessage-probe'
-import { Route as CheckoutTokenRouteImport } from './routes/checkout.$token'
-import { Route as ApiVerifyHeroRouteImport } from './routes/api/verify-hero'
 import { Route as ApiImgRouteImport } from './routes/api/img'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as AdminWebhookEventsRouteImport } from './routes/admin.webhook-events'
 import { Route as AdminViatorValidationRouteImport } from './routes/admin.viator-validation'
 import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
-import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
-import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
-import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
 import { Route as AdminSeoJsonldRouteImport } from './routes/admin.seo-jsonld'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminRedirectsMonitorRouteImport } from './routes/admin.redirects-monitor'
-import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
 import { Route as AdminPaymentsEnvRouteImport } from './routes/admin.payments-env'
 import { Route as AdminLegacyDomainsMonitorRouteImport } from './routes/admin.legacy-domains-monitor'
 import { Route as AdminLegacyDomainUnlinkRouteImport } from './routes/admin.legacy-domain-unlink'
-import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
 import { Route as AdminGscRouteImport } from './routes/admin.gsc'
 import { Route as AdminGbpLegacyRemovalRouteImport } from './routes/admin.gbp-legacy-removal'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
@@ -117,13 +90,8 @@ import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
 import { Route as AdminDriftBehaviorRouteImport } from './routes/admin.drift-behavior'
 import { Route as AdminDomainsHealthRouteImport } from './routes/admin.domains-health'
 import { Route as AdminDnsWatchRouteImport } from './routes/admin.dns-watch'
-import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
-import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
-import { Route as AdminBokunMappingRouteImport } from './routes/admin.bokun-mapping'
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
-import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.tailor'
-import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
@@ -146,29 +114,9 @@ const UnsubscribeRoute = UnsubscribeRouteImport.update({
   path: '/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TypographyAuditRoute = TypographyAuditRouteImport.update({
-  id: '/typography-audit',
-  path: '/typography-audit',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StudioV3Route = StudioV3RouteImport.update({
-  id: '/studio-v3',
-  path: '/studio-v3',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StudioV2Route = StudioV2RouteImport.update({
-  id: '/studio-v2',
-  path: '/studio-v2',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StudioDriftRoute = StudioDriftRouteImport.update({
-  id: '/studio-drift',
-  path: '/studio-drift',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -317,11 +265,6 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BuilderRoute = BuilderRouteImport.update({
-  id: '/builder',
-  path: '/builder',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BrandQaRoute = BrandQaRouteImport.update({
   id: '/brand-qa',
   path: '/brand-qa',
@@ -369,29 +312,14 @@ const PtIndexRoute = PtIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PtRoute,
 } as any)
-const PlanIndexRoute = PlanIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PlanRoute,
-} as any)
 const LocalStoriesIndexRoute = LocalStoriesIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LocalStoriesRoute,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ToursTourIdRoute = ToursTourIdRouteImport.update({
   id: '/tours/$tourId',
   path: '/tours/$tourId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const STokenRoute = STokenRouteImport.update({
-  id: '/s/$token',
-  path: '/s/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReviewTokenRoute = ReviewTokenRouteImport.update({
@@ -474,66 +402,6 @@ const PtSplatRoute = PtSplatRouteImport.update({
   path: '/$',
   getParentRoute: () => PtRoute,
 } as any)
-const PlanSintraRoute = PlanSintraRouteImport.update({
-  id: '/sintra',
-  path: '/sintra',
-  getParentRoute: () => PlanRoute,
-} as any)
-const PlanPortugalWineAndGastronomyRoute =
-  PlanPortugalWineAndGastronomyRouteImport.update({
-    id: '/portugal-wine-and-gastronomy',
-    path: '/portugal-wine-and-gastronomy',
-    getParentRoute: () => PlanRoute,
-  } as any)
-const PlanLisbonRoute = PlanLisbonRouteImport.update({
-  id: '/lisbon',
-  path: '/lisbon',
-  getParentRoute: () => PlanRoute,
-} as any)
-const PlanCostaVicentinaRoute = PlanCostaVicentinaRouteImport.update({
-  id: '/costa-vicentina',
-  path: '/costa-vicentina',
-  getParentRoute: () => PlanRoute,
-} as any)
-const PlanComportaRoute = PlanComportaRouteImport.update({
-  id: '/comporta',
-  path: '/comporta',
-  getParentRoute: () => PlanRoute,
-} as any)
-const PlanBestTimeToVisitPortugalRoute =
-  PlanBestTimeToVisitPortugalRouteImport.update({
-    id: '/best-time-to-visit-portugal',
-    path: '/best-time-to-visit-portugal',
-    getParentRoute: () => PlanRoute,
-  } as any)
-const PlanArrabidaRoute = PlanArrabidaRouteImport.update({
-  id: '/arrabida',
-  path: '/arrabida',
-  getParentRoute: () => PlanRoute,
-} as any)
-const PlanAlentejoRoute = PlanAlentejoRouteImport.update({
-  id: '/alentejo',
-  path: '/alentejo',
-  getParentRoute: () => PlanRoute,
-} as any)
-const Plan7DayPortugalItineraryRoute =
-  Plan7DayPortugalItineraryRouteImport.update({
-    id: '/7-day-portugal-itinerary',
-    path: '/7-day-portugal-itinerary',
-    getParentRoute: () => PlanRoute,
-  } as any)
-const Plan5DayPortugalItineraryRoute =
-  Plan5DayPortugalItineraryRouteImport.update({
-    id: '/5-day-portugal-itinerary',
-    path: '/5-day-portugal-itinerary',
-    getParentRoute: () => PlanRoute,
-  } as any)
-const Plan14DayPortugalItineraryRoute =
-  Plan14DayPortugalItineraryRouteImport.update({
-    id: '/14-day-portugal-itinerary',
-    path: '/14-day-portugal-itinerary',
-    getParentRoute: () => PlanRoute,
-  } as any)
 const LocalStoriesSlugRoute = LocalStoriesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -545,11 +413,6 @@ const Itineraries10DayPrivatePortugalTourRoute =
     path: '/itineraries/10-day-private-portugal-tour',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ITokenRoute = ITokenRouteImport.update({
-  id: '/i/$token',
-  path: '/i/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
   id: '/email/unsubscribe',
   path: '/email/unsubscribe',
@@ -558,16 +421,6 @@ const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
 const E2ePostmessageProbeRoute = E2ePostmessageProbeRouteImport.update({
   id: '/e2e/postmessage-probe',
   path: '/e2e/postmessage-probe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CheckoutTokenRoute = CheckoutTokenRouteImport.update({
-  id: '/checkout/$token',
-  path: '/checkout/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiVerifyHeroRoute = ApiVerifyHeroRouteImport.update({
-  id: '/api/verify-hero',
-  path: '/api/verify-hero',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiImgRoute = ApiImgRouteImport.update({
@@ -595,21 +448,6 @@ const AdminTourLinkAuditRoute = AdminTourLinkAuditRouteImport.update({
   path: '/admin/tour-link-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminStudioV3FunnelRoute = AdminStudioV3FunnelRouteImport.update({
-  id: '/admin/studio-v3-funnel',
-  path: '/admin/studio-v3-funnel',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminStudioV3AuditRoute = AdminStudioV3AuditRouteImport.update({
-  id: '/admin/studio-v3-audit',
-  path: '/admin/studio-v3-audit',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminSeoMonitorRoute = AdminSeoMonitorRouteImport.update({
-  id: '/admin/seo-monitor',
-  path: '/admin/seo-monitor',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminSeoJsonldRoute = AdminSeoJsonldRouteImport.update({
   id: '/admin/seo-jsonld',
   path: '/admin/seo-jsonld',
@@ -623,11 +461,6 @@ const AdminReviewsRoute = AdminReviewsRouteImport.update({
 const AdminRedirectsMonitorRoute = AdminRedirectsMonitorRouteImport.update({
   id: '/admin/redirects-monitor',
   path: '/admin/redirects-monitor',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminPricingRoute = AdminPricingRouteImport.update({
-  id: '/admin/pricing',
-  path: '/admin/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminPaymentsEnvRoute = AdminPaymentsEnvRouteImport.update({
@@ -644,11 +477,6 @@ const AdminLegacyDomainsMonitorRoute =
 const AdminLegacyDomainUnlinkRoute = AdminLegacyDomainUnlinkRouteImport.update({
   id: '/admin/legacy-domain-unlink',
   path: '/admin/legacy-domain-unlink',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminImportToursRoute = AdminImportToursRouteImport.update({
-  id: '/admin/import-tours',
-  path: '/admin/import-tours',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminGscRoute = AdminGscRouteImport.update({
@@ -686,40 +514,15 @@ const AdminDnsWatchRoute = AdminDnsWatchRouteImport.update({
   path: '/admin/dns-watch',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminBuilderImagesQaRoute = AdminBuilderImagesQaRouteImport.update({
-  id: '/admin/builder-images-qa',
-  path: '/admin/builder-images-qa',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminBuilderImagesRoute = AdminBuilderImagesRouteImport.update({
   id: '/admin/builder-images',
   path: '/admin/builder-images',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminBookingsRoute = AdminBookingsRouteImport.update({
-  id: '/admin/bookings',
-  path: '/admin/bookings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminBokunMappingRoute = AdminBokunMappingRouteImport.update({
-  id: '/admin/bokun-mapping',
-  path: '/admin/bokun-mapping',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminAiAuditRoute = AdminAiAuditRouteImport.update({
   id: '/admin/ai-audit',
   path: '/admin/ai-audit',
   getParentRoute: () => rootRouteImport,
-} as any)
-const ToursTourIdTailorRoute = ToursTourIdTailorRouteImport.update({
-  id: '/tailor',
-  path: '/tailor',
-  getParentRoute: () => ToursTourIdRoute,
-} as any)
-const StudioV2ITokenRoute = StudioV2ITokenRouteImport.update({
-  id: '/i/$token',
-  path: '/i/$token',
-  getParentRoute: () => StudioV2Route,
 } as any)
 const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   id: '/lovable/email/suppression',
@@ -792,7 +595,6 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
-  '/builder': typeof BuilderRoute
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/corporate': typeof CorporateRoute
@@ -807,7 +609,7 @@ export interface FileRoutesByFullPath {
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
-  '/plan': typeof PlanRouteWithChildren
+  '/plan': typeof PlanRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -822,18 +624,11 @@ export interface FileRoutesByFullPath {
   '/reviews': typeof ReviewsRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/studio-drift': typeof StudioDriftRoute
-  '/studio-v2': typeof StudioV2RouteWithChildren
-  '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
-  '/typography-audit': typeof TypographyAuditRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
-  '/admin/bokun-mapping': typeof AdminBokunMappingRoute
-  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
-  '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -841,40 +636,21 @@ export interface FileRoutesByFullPath {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
-  '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
-  '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
-  '/admin/seo-monitor': typeof AdminSeoMonitorRoute
-  '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
-  '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/admin/webhook-events': typeof AdminWebhookEventsRoute
   '/api/health': typeof ApiHealthRoute
   '/api/img': typeof ApiImgRoute
-  '/api/verify-hero': typeof ApiVerifyHeroRoute
-  '/checkout/$token': typeof CheckoutTokenRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
-  '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
-  '/plan/14-day-portugal-itinerary': typeof Plan14DayPortugalItineraryRoute
-  '/plan/5-day-portugal-itinerary': typeof Plan5DayPortugalItineraryRoute
-  '/plan/7-day-portugal-itinerary': typeof Plan7DayPortugalItineraryRoute
-  '/plan/alentejo': typeof PlanAlentejoRoute
-  '/plan/arrabida': typeof PlanArrabidaRoute
-  '/plan/best-time-to-visit-portugal': typeof PlanBestTimeToVisitPortugalRoute
-  '/plan/comporta': typeof PlanComportaRoute
-  '/plan/costa-vicentina': typeof PlanCostaVicentinaRoute
-  '/plan/lisbon': typeof PlanLisbonRoute
-  '/plan/portugal-wine-and-gastronomy': typeof PlanPortugalWineAndGastronomyRoute
-  '/plan/sintra': typeof PlanSintraRoute
   '/pt/$': typeof PtSplatRoute
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
@@ -891,16 +667,11 @@ export interface FileRoutesByFullPath {
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
-  '/s/$token': typeof STokenRoute
-  '/tours/$tourId': typeof ToursTourIdRouteWithChildren
-  '/admin/': typeof AdminIndexRoute
+  '/tours/$tourId': typeof ToursTourIdRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
-  '/plan/': typeof PlanIndexRoute
   '/pt/': typeof PtIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
-  '/studio-v2/i/$token': typeof StudioV2ITokenRoute
-  '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
@@ -920,7 +691,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
-  '/builder': typeof BuilderRoute
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/corporate': typeof CorporateRoute
@@ -934,6 +704,7 @@ export interface FileRoutesByTo {
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
+  '/plan': typeof PlanRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -947,18 +718,11 @@ export interface FileRoutesByTo {
   '/reviews': typeof ReviewsRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/studio-drift': typeof StudioDriftRoute
-  '/studio-v2': typeof StudioV2RouteWithChildren
-  '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
-  '/typography-audit': typeof TypographyAuditRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
-  '/admin/bokun-mapping': typeof AdminBokunMappingRoute
-  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
-  '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -966,40 +730,21 @@ export interface FileRoutesByTo {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
-  '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
-  '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
-  '/admin/seo-monitor': typeof AdminSeoMonitorRoute
-  '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
-  '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/admin/webhook-events': typeof AdminWebhookEventsRoute
   '/api/health': typeof ApiHealthRoute
   '/api/img': typeof ApiImgRoute
-  '/api/verify-hero': typeof ApiVerifyHeroRoute
-  '/checkout/$token': typeof CheckoutTokenRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
-  '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
-  '/plan/14-day-portugal-itinerary': typeof Plan14DayPortugalItineraryRoute
-  '/plan/5-day-portugal-itinerary': typeof Plan5DayPortugalItineraryRoute
-  '/plan/7-day-portugal-itinerary': typeof Plan7DayPortugalItineraryRoute
-  '/plan/alentejo': typeof PlanAlentejoRoute
-  '/plan/arrabida': typeof PlanArrabidaRoute
-  '/plan/best-time-to-visit-portugal': typeof PlanBestTimeToVisitPortugalRoute
-  '/plan/comporta': typeof PlanComportaRoute
-  '/plan/costa-vicentina': typeof PlanCostaVicentinaRoute
-  '/plan/lisbon': typeof PlanLisbonRoute
-  '/plan/portugal-wine-and-gastronomy': typeof PlanPortugalWineAndGastronomyRoute
-  '/plan/sintra': typeof PlanSintraRoute
   '/pt/$': typeof PtSplatRoute
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
@@ -1016,16 +761,11 @@ export interface FileRoutesByTo {
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
-  '/s/$token': typeof STokenRoute
-  '/tours/$tourId': typeof ToursTourIdRouteWithChildren
-  '/admin': typeof AdminIndexRoute
+  '/tours/$tourId': typeof ToursTourIdRoute
   '/local-stories': typeof LocalStoriesIndexRoute
-  '/plan': typeof PlanIndexRoute
   '/pt': typeof PtIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
-  '/studio-v2/i/$token': typeof StudioV2ITokenRoute
-  '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
@@ -1046,7 +786,6 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
-  '/builder': typeof BuilderRoute
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/corporate': typeof CorporateRoute
@@ -1061,7 +800,7 @@ export interface FileRoutesById {
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
-  '/plan': typeof PlanRouteWithChildren
+  '/plan': typeof PlanRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -1076,18 +815,11 @@ export interface FileRoutesById {
   '/reviews': typeof ReviewsRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/studio-drift': typeof StudioDriftRoute
-  '/studio-v2': typeof StudioV2RouteWithChildren
-  '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
-  '/typography-audit': typeof TypographyAuditRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
-  '/admin/bokun-mapping': typeof AdminBokunMappingRoute
-  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
-  '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -1095,40 +827,21 @@ export interface FileRoutesById {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
-  '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
   '/admin/payments-env': typeof AdminPaymentsEnvRoute
-  '/admin/pricing': typeof AdminPricingRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
-  '/admin/seo-monitor': typeof AdminSeoMonitorRoute
-  '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
-  '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
   '/admin/viator-validation': typeof AdminViatorValidationRoute
   '/admin/webhook-events': typeof AdminWebhookEventsRoute
   '/api/health': typeof ApiHealthRoute
   '/api/img': typeof ApiImgRoute
-  '/api/verify-hero': typeof ApiVerifyHeroRoute
-  '/checkout/$token': typeof CheckoutTokenRoute
   '/e2e/postmessage-probe': typeof E2ePostmessageProbeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
-  '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
-  '/plan/14-day-portugal-itinerary': typeof Plan14DayPortugalItineraryRoute
-  '/plan/5-day-portugal-itinerary': typeof Plan5DayPortugalItineraryRoute
-  '/plan/7-day-portugal-itinerary': typeof Plan7DayPortugalItineraryRoute
-  '/plan/alentejo': typeof PlanAlentejoRoute
-  '/plan/arrabida': typeof PlanArrabidaRoute
-  '/plan/best-time-to-visit-portugal': typeof PlanBestTimeToVisitPortugalRoute
-  '/plan/comporta': typeof PlanComportaRoute
-  '/plan/costa-vicentina': typeof PlanCostaVicentinaRoute
-  '/plan/lisbon': typeof PlanLisbonRoute
-  '/plan/portugal-wine-and-gastronomy': typeof PlanPortugalWineAndGastronomyRoute
-  '/plan/sintra': typeof PlanSintraRoute
   '/pt/$': typeof PtSplatRoute
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
@@ -1145,16 +858,11 @@ export interface FileRoutesById {
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
-  '/s/$token': typeof STokenRoute
-  '/tours/$tourId': typeof ToursTourIdRouteWithChildren
-  '/admin/': typeof AdminIndexRoute
+  '/tours/$tourId': typeof ToursTourIdRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
-  '/plan/': typeof PlanIndexRoute
   '/pt/': typeof PtIndexRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
-  '/studio-v2/i/$token': typeof StudioV2ITokenRoute
-  '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
@@ -1176,7 +884,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
-    | '/builder'
     | '/contact'
     | '/cookies'
     | '/corporate'
@@ -1206,18 +913,11 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
-    | '/studio-drift'
-    | '/studio-v2'
-    | '/studio-v3'
     | '/terms'
-    | '/typography-audit'
     | '/unsubscribe'
     | '/wine-tours-lisbon'
     | '/admin/ai-audit'
-    | '/admin/bokun-mapping'
-    | '/admin/bookings'
     | '/admin/builder-images'
-    | '/admin/builder-images-qa'
     | '/admin/dns-watch'
     | '/admin/domains-health'
     | '/admin/drift-behavior'
@@ -1225,40 +925,21 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
-    | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/payments-env'
-    | '/admin/pricing'
     | '/admin/redirects-monitor'
     | '/admin/reviews'
     | '/admin/seo-jsonld'
-    | '/admin/seo-monitor'
-    | '/admin/studio-v3-audit'
-    | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
     | '/admin/webhook-events'
     | '/api/health'
     | '/api/img'
-    | '/api/verify-hero'
-    | '/checkout/$token'
     | '/e2e/postmessage-probe'
     | '/email/unsubscribe'
-    | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
-    | '/plan/14-day-portugal-itinerary'
-    | '/plan/5-day-portugal-itinerary'
-    | '/plan/7-day-portugal-itinerary'
-    | '/plan/alentejo'
-    | '/plan/arrabida'
-    | '/plan/best-time-to-visit-portugal'
-    | '/plan/comporta'
-    | '/plan/costa-vicentina'
-    | '/plan/lisbon'
-    | '/plan/portugal-wine-and-gastronomy'
-    | '/plan/sintra'
     | '/pt/$'
     | '/pt/about'
     | '/pt/contact'
@@ -1275,16 +956,11 @@ export interface FileRouteTypes {
     | '/qa/hero'
     | '/qa/mobile'
     | '/review/$token'
-    | '/s/$token'
     | '/tours/$tourId'
-    | '/admin/'
     | '/local-stories/'
-    | '/plan/'
     | '/pt/'
     | '/api/public/contact'
     | '/lovable/email/suppression'
-    | '/studio-v2/i/$token'
-    | '/tours/$tourId/tailor'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/import-tripadvisor-reviews'
@@ -1304,7 +980,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
-    | '/builder'
     | '/contact'
     | '/cookies'
     | '/corporate'
@@ -1318,6 +993,7 @@ export interface FileRouteTypes {
     | '/luxury-tours-portugal'
     | '/moments'
     | '/multi-day'
+    | '/plan'
     | '/portugal-tours'
     | '/portugal-travel-designer'
     | '/portugal-wine-tours'
@@ -1331,18 +1007,11 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
-    | '/studio-drift'
-    | '/studio-v2'
-    | '/studio-v3'
     | '/terms'
-    | '/typography-audit'
     | '/unsubscribe'
     | '/wine-tours-lisbon'
     | '/admin/ai-audit'
-    | '/admin/bokun-mapping'
-    | '/admin/bookings'
     | '/admin/builder-images'
-    | '/admin/builder-images-qa'
     | '/admin/dns-watch'
     | '/admin/domains-health'
     | '/admin/drift-behavior'
@@ -1350,40 +1019,21 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
-    | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/payments-env'
-    | '/admin/pricing'
     | '/admin/redirects-monitor'
     | '/admin/reviews'
     | '/admin/seo-jsonld'
-    | '/admin/seo-monitor'
-    | '/admin/studio-v3-audit'
-    | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
     | '/admin/webhook-events'
     | '/api/health'
     | '/api/img'
-    | '/api/verify-hero'
-    | '/checkout/$token'
     | '/e2e/postmessage-probe'
     | '/email/unsubscribe'
-    | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
-    | '/plan/14-day-portugal-itinerary'
-    | '/plan/5-day-portugal-itinerary'
-    | '/plan/7-day-portugal-itinerary'
-    | '/plan/alentejo'
-    | '/plan/arrabida'
-    | '/plan/best-time-to-visit-portugal'
-    | '/plan/comporta'
-    | '/plan/costa-vicentina'
-    | '/plan/lisbon'
-    | '/plan/portugal-wine-and-gastronomy'
-    | '/plan/sintra'
     | '/pt/$'
     | '/pt/about'
     | '/pt/contact'
@@ -1400,16 +1050,11 @@ export interface FileRouteTypes {
     | '/qa/hero'
     | '/qa/mobile'
     | '/review/$token'
-    | '/s/$token'
     | '/tours/$tourId'
-    | '/admin'
     | '/local-stories'
-    | '/plan'
     | '/pt'
     | '/api/public/contact'
     | '/lovable/email/suppression'
-    | '/studio-v2/i/$token'
-    | '/tours/$tourId/tailor'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/import-tripadvisor-reviews'
@@ -1429,7 +1074,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/booking-confirmed'
     | '/brand-qa'
-    | '/builder'
     | '/contact'
     | '/cookies'
     | '/corporate'
@@ -1459,18 +1103,11 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
-    | '/studio-drift'
-    | '/studio-v2'
-    | '/studio-v3'
     | '/terms'
-    | '/typography-audit'
     | '/unsubscribe'
     | '/wine-tours-lisbon'
     | '/admin/ai-audit'
-    | '/admin/bokun-mapping'
-    | '/admin/bookings'
     | '/admin/builder-images'
-    | '/admin/builder-images-qa'
     | '/admin/dns-watch'
     | '/admin/domains-health'
     | '/admin/drift-behavior'
@@ -1478,40 +1115,21 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
-    | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
     | '/admin/payments-env'
-    | '/admin/pricing'
     | '/admin/redirects-monitor'
     | '/admin/reviews'
     | '/admin/seo-jsonld'
-    | '/admin/seo-monitor'
-    | '/admin/studio-v3-audit'
-    | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
     | '/admin/viator-validation'
     | '/admin/webhook-events'
     | '/api/health'
     | '/api/img'
-    | '/api/verify-hero'
-    | '/checkout/$token'
     | '/e2e/postmessage-probe'
     | '/email/unsubscribe'
-    | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
-    | '/plan/14-day-portugal-itinerary'
-    | '/plan/5-day-portugal-itinerary'
-    | '/plan/7-day-portugal-itinerary'
-    | '/plan/alentejo'
-    | '/plan/arrabida'
-    | '/plan/best-time-to-visit-portugal'
-    | '/plan/comporta'
-    | '/plan/costa-vicentina'
-    | '/plan/lisbon'
-    | '/plan/portugal-wine-and-gastronomy'
-    | '/plan/sintra'
     | '/pt/$'
     | '/pt/about'
     | '/pt/contact'
@@ -1528,16 +1146,11 @@ export interface FileRouteTypes {
     | '/qa/hero'
     | '/qa/mobile'
     | '/review/$token'
-    | '/s/$token'
     | '/tours/$tourId'
-    | '/admin/'
     | '/local-stories/'
-    | '/plan/'
     | '/pt/'
     | '/api/public/contact'
     | '/lovable/email/suppression'
-    | '/studio-v2/i/$token'
-    | '/tours/$tourId/tailor'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/import-tripadvisor-reviews'
@@ -1558,7 +1171,6 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BookingConfirmedRoute: typeof BookingConfirmedRoute
   BrandQaRoute: typeof BrandQaRoute
-  BuilderRoute: typeof BuilderRoute
   ContactRoute: typeof ContactRoute
   CookiesRoute: typeof CookiesRoute
   CorporateRoute: typeof CorporateRoute
@@ -1573,7 +1185,7 @@ export interface RootRouteChildren {
   LuxuryToursPortugalRoute: typeof LuxuryToursPortugalRoute
   MomentsRoute: typeof MomentsRoute
   MultiDayRoute: typeof MultiDayRoute
-  PlanRoute: typeof PlanRouteWithChildren
+  PlanRoute: typeof PlanRoute
   PortugalToursRoute: typeof PortugalToursRoute
   PortugalTravelDesignerRoute: typeof PortugalTravelDesignerRoute
   PortugalWineToursRoute: typeof PortugalWineToursRoute
@@ -1588,18 +1200,11 @@ export interface RootRouteChildren {
   ReviewsRoute: typeof ReviewsRoute
   SintraDayTourFromLisbonRoute: typeof SintraDayTourFromLisbonRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  StudioDriftRoute: typeof StudioDriftRoute
-  StudioV2Route: typeof StudioV2RouteWithChildren
-  StudioV3Route: typeof StudioV3Route
   TermsRoute: typeof TermsRoute
-  TypographyAuditRoute: typeof TypographyAuditRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   WineToursLisbonRoute: typeof WineToursLisbonRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
-  AdminBokunMappingRoute: typeof AdminBokunMappingRoute
-  AdminBookingsRoute: typeof AdminBookingsRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
-  AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
   AdminDnsWatchRoute: typeof AdminDnsWatchRoute
   AdminDomainsHealthRoute: typeof AdminDomainsHealthRoute
   AdminDriftBehaviorRoute: typeof AdminDriftBehaviorRoute
@@ -1607,34 +1212,24 @@ export interface RootRouteChildren {
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
   AdminGscRoute: typeof AdminGscRoute
-  AdminImportToursRoute: typeof AdminImportToursRoute
   AdminLegacyDomainUnlinkRoute: typeof AdminLegacyDomainUnlinkRoute
   AdminLegacyDomainsMonitorRoute: typeof AdminLegacyDomainsMonitorRoute
   AdminPaymentsEnvRoute: typeof AdminPaymentsEnvRoute
-  AdminPricingRoute: typeof AdminPricingRoute
   AdminRedirectsMonitorRoute: typeof AdminRedirectsMonitorRoute
   AdminReviewsRoute: typeof AdminReviewsRoute
   AdminSeoJsonldRoute: typeof AdminSeoJsonldRoute
-  AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
-  AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
-  AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
   AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
   AdminViatorValidationRoute: typeof AdminViatorValidationRoute
   AdminWebhookEventsRoute: typeof AdminWebhookEventsRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiImgRoute: typeof ApiImgRoute
-  ApiVerifyHeroRoute: typeof ApiVerifyHeroRoute
-  CheckoutTokenRoute: typeof CheckoutTokenRoute
   E2ePostmessageProbeRoute: typeof E2ePostmessageProbeRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
-  ITokenRoute: typeof ITokenRoute
   Itineraries10DayPrivatePortugalTourRoute: typeof Itineraries10DayPrivatePortugalTourRoute
   QaHeroRoute: typeof QaHeroRoute
   QaMobileRoute: typeof QaMobileRoute
   ReviewTokenRoute: typeof ReviewTokenRoute
-  STokenRoute: typeof STokenRoute
-  ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
-  AdminIndexRoute: typeof AdminIndexRoute
+  ToursTourIdRoute: typeof ToursTourIdRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
@@ -1664,39 +1259,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/typography-audit': {
-      id: '/typography-audit'
-      path: '/typography-audit'
-      fullPath: '/typography-audit'
-      preLoaderRoute: typeof TypographyAuditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/terms': {
       id: '/terms'
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/studio-v3': {
-      id: '/studio-v3'
-      path: '/studio-v3'
-      fullPath: '/studio-v3'
-      preLoaderRoute: typeof StudioV3RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/studio-v2': {
-      id: '/studio-v2'
-      path: '/studio-v2'
-      fullPath: '/studio-v2'
-      preLoaderRoute: typeof StudioV2RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/studio-drift': {
-      id: '/studio-drift'
-      path: '/studio-drift'
-      fullPath: '/studio-drift'
-      preLoaderRoute: typeof StudioDriftRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -1902,13 +1469,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/builder': {
-      id: '/builder'
-      path: '/builder'
-      fullPath: '/builder'
-      preLoaderRoute: typeof BuilderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/brand-qa': {
       id: '/brand-qa'
       path: '/brand-qa'
@@ -1972,13 +1532,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PtIndexRouteImport
       parentRoute: typeof PtRoute
     }
-    '/plan/': {
-      id: '/plan/'
-      path: '/'
-      fullPath: '/plan/'
-      preLoaderRoute: typeof PlanIndexRouteImport
-      parentRoute: typeof PlanRoute
-    }
     '/local-stories/': {
       id: '/local-stories/'
       path: '/'
@@ -1986,25 +1539,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocalStoriesIndexRouteImport
       parentRoute: typeof LocalStoriesRoute
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/admin'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/tours/$tourId': {
       id: '/tours/$tourId'
       path: '/tours/$tourId'
       fullPath: '/tours/$tourId'
       preLoaderRoute: typeof ToursTourIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/s/$token': {
-      id: '/s/$token'
-      path: '/s/$token'
-      fullPath: '/s/$token'
-      preLoaderRoute: typeof STokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/review/$token': {
@@ -2119,83 +1658,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PtSplatRouteImport
       parentRoute: typeof PtRoute
     }
-    '/plan/sintra': {
-      id: '/plan/sintra'
-      path: '/sintra'
-      fullPath: '/plan/sintra'
-      preLoaderRoute: typeof PlanSintraRouteImport
-      parentRoute: typeof PlanRoute
-    }
-    '/plan/portugal-wine-and-gastronomy': {
-      id: '/plan/portugal-wine-and-gastronomy'
-      path: '/portugal-wine-and-gastronomy'
-      fullPath: '/plan/portugal-wine-and-gastronomy'
-      preLoaderRoute: typeof PlanPortugalWineAndGastronomyRouteImport
-      parentRoute: typeof PlanRoute
-    }
-    '/plan/lisbon': {
-      id: '/plan/lisbon'
-      path: '/lisbon'
-      fullPath: '/plan/lisbon'
-      preLoaderRoute: typeof PlanLisbonRouteImport
-      parentRoute: typeof PlanRoute
-    }
-    '/plan/costa-vicentina': {
-      id: '/plan/costa-vicentina'
-      path: '/costa-vicentina'
-      fullPath: '/plan/costa-vicentina'
-      preLoaderRoute: typeof PlanCostaVicentinaRouteImport
-      parentRoute: typeof PlanRoute
-    }
-    '/plan/comporta': {
-      id: '/plan/comporta'
-      path: '/comporta'
-      fullPath: '/plan/comporta'
-      preLoaderRoute: typeof PlanComportaRouteImport
-      parentRoute: typeof PlanRoute
-    }
-    '/plan/best-time-to-visit-portugal': {
-      id: '/plan/best-time-to-visit-portugal'
-      path: '/best-time-to-visit-portugal'
-      fullPath: '/plan/best-time-to-visit-portugal'
-      preLoaderRoute: typeof PlanBestTimeToVisitPortugalRouteImport
-      parentRoute: typeof PlanRoute
-    }
-    '/plan/arrabida': {
-      id: '/plan/arrabida'
-      path: '/arrabida'
-      fullPath: '/plan/arrabida'
-      preLoaderRoute: typeof PlanArrabidaRouteImport
-      parentRoute: typeof PlanRoute
-    }
-    '/plan/alentejo': {
-      id: '/plan/alentejo'
-      path: '/alentejo'
-      fullPath: '/plan/alentejo'
-      preLoaderRoute: typeof PlanAlentejoRouteImport
-      parentRoute: typeof PlanRoute
-    }
-    '/plan/7-day-portugal-itinerary': {
-      id: '/plan/7-day-portugal-itinerary'
-      path: '/7-day-portugal-itinerary'
-      fullPath: '/plan/7-day-portugal-itinerary'
-      preLoaderRoute: typeof Plan7DayPortugalItineraryRouteImport
-      parentRoute: typeof PlanRoute
-    }
-    '/plan/5-day-portugal-itinerary': {
-      id: '/plan/5-day-portugal-itinerary'
-      path: '/5-day-portugal-itinerary'
-      fullPath: '/plan/5-day-portugal-itinerary'
-      preLoaderRoute: typeof Plan5DayPortugalItineraryRouteImport
-      parentRoute: typeof PlanRoute
-    }
-    '/plan/14-day-portugal-itinerary': {
-      id: '/plan/14-day-portugal-itinerary'
-      path: '/14-day-portugal-itinerary'
-      fullPath: '/plan/14-day-portugal-itinerary'
-      preLoaderRoute: typeof Plan14DayPortugalItineraryRouteImport
-      parentRoute: typeof PlanRoute
-    }
     '/local-stories/$slug': {
       id: '/local-stories/$slug'
       path: '/$slug'
@@ -2210,13 +1672,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Itineraries10DayPrivatePortugalTourRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/i/$token': {
-      id: '/i/$token'
-      path: '/i/$token'
-      fullPath: '/i/$token'
-      preLoaderRoute: typeof ITokenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/email/unsubscribe': {
       id: '/email/unsubscribe'
       path: '/email/unsubscribe'
@@ -2229,20 +1684,6 @@ declare module '@tanstack/react-router' {
       path: '/e2e/postmessage-probe'
       fullPath: '/e2e/postmessage-probe'
       preLoaderRoute: typeof E2ePostmessageProbeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/checkout/$token': {
-      id: '/checkout/$token'
-      path: '/checkout/$token'
-      fullPath: '/checkout/$token'
-      preLoaderRoute: typeof CheckoutTokenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/verify-hero': {
-      id: '/api/verify-hero'
-      path: '/api/verify-hero'
-      fullPath: '/api/verify-hero'
-      preLoaderRoute: typeof ApiVerifyHeroRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/img': {
@@ -2280,27 +1721,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTourLinkAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/studio-v3-funnel': {
-      id: '/admin/studio-v3-funnel'
-      path: '/admin/studio-v3-funnel'
-      fullPath: '/admin/studio-v3-funnel'
-      preLoaderRoute: typeof AdminStudioV3FunnelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/studio-v3-audit': {
-      id: '/admin/studio-v3-audit'
-      path: '/admin/studio-v3-audit'
-      fullPath: '/admin/studio-v3-audit'
-      preLoaderRoute: typeof AdminStudioV3AuditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/seo-monitor': {
-      id: '/admin/seo-monitor'
-      path: '/admin/seo-monitor'
-      fullPath: '/admin/seo-monitor'
-      preLoaderRoute: typeof AdminSeoMonitorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/seo-jsonld': {
       id: '/admin/seo-jsonld'
       path: '/admin/seo-jsonld'
@@ -2322,13 +1742,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRedirectsMonitorRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/pricing': {
-      id: '/admin/pricing'
-      path: '/admin/pricing'
-      fullPath: '/admin/pricing'
-      preLoaderRoute: typeof AdminPricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/payments-env': {
       id: '/admin/payments-env'
       path: '/admin/payments-env'
@@ -2348,13 +1761,6 @@ declare module '@tanstack/react-router' {
       path: '/admin/legacy-domain-unlink'
       fullPath: '/admin/legacy-domain-unlink'
       preLoaderRoute: typeof AdminLegacyDomainUnlinkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/import-tours': {
-      id: '/admin/import-tours'
-      path: '/admin/import-tours'
-      fullPath: '/admin/import-tours'
-      preLoaderRoute: typeof AdminImportToursRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/gsc': {
@@ -2406,32 +1812,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDnsWatchRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/builder-images-qa': {
-      id: '/admin/builder-images-qa'
-      path: '/admin/builder-images-qa'
-      fullPath: '/admin/builder-images-qa'
-      preLoaderRoute: typeof AdminBuilderImagesQaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/builder-images': {
       id: '/admin/builder-images'
       path: '/admin/builder-images'
       fullPath: '/admin/builder-images'
       preLoaderRoute: typeof AdminBuilderImagesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/bookings': {
-      id: '/admin/bookings'
-      path: '/admin/bookings'
-      fullPath: '/admin/bookings'
-      preLoaderRoute: typeof AdminBookingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/bokun-mapping': {
-      id: '/admin/bokun-mapping'
-      path: '/admin/bokun-mapping'
-      fullPath: '/admin/bokun-mapping'
-      preLoaderRoute: typeof AdminBokunMappingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/ai-audit': {
@@ -2440,20 +1825,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/ai-audit'
       preLoaderRoute: typeof AdminAiAuditRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/tours/$tourId/tailor': {
-      id: '/tours/$tourId/tailor'
-      path: '/tailor'
-      fullPath: '/tours/$tourId/tailor'
-      preLoaderRoute: typeof ToursTourIdTailorRouteImport
-      parentRoute: typeof ToursTourIdRoute
-    }
-    '/studio-v2/i/$token': {
-      id: '/studio-v2/i/$token'
-      path: '/i/$token'
-      fullPath: '/studio-v2/i/$token'
-      preLoaderRoute: typeof StudioV2ITokenRouteImport
-      parentRoute: typeof StudioV2Route
     }
     '/lovable/email/suppression': {
       id: '/lovable/email/suppression'
@@ -2549,38 +1920,6 @@ const LocalStoriesRouteWithChildren = LocalStoriesRoute._addFileChildren(
   LocalStoriesRouteChildren,
 )
 
-interface PlanRouteChildren {
-  Plan14DayPortugalItineraryRoute: typeof Plan14DayPortugalItineraryRoute
-  Plan5DayPortugalItineraryRoute: typeof Plan5DayPortugalItineraryRoute
-  Plan7DayPortugalItineraryRoute: typeof Plan7DayPortugalItineraryRoute
-  PlanAlentejoRoute: typeof PlanAlentejoRoute
-  PlanArrabidaRoute: typeof PlanArrabidaRoute
-  PlanBestTimeToVisitPortugalRoute: typeof PlanBestTimeToVisitPortugalRoute
-  PlanComportaRoute: typeof PlanComportaRoute
-  PlanCostaVicentinaRoute: typeof PlanCostaVicentinaRoute
-  PlanLisbonRoute: typeof PlanLisbonRoute
-  PlanPortugalWineAndGastronomyRoute: typeof PlanPortugalWineAndGastronomyRoute
-  PlanSintraRoute: typeof PlanSintraRoute
-  PlanIndexRoute: typeof PlanIndexRoute
-}
-
-const PlanRouteChildren: PlanRouteChildren = {
-  Plan14DayPortugalItineraryRoute: Plan14DayPortugalItineraryRoute,
-  Plan5DayPortugalItineraryRoute: Plan5DayPortugalItineraryRoute,
-  Plan7DayPortugalItineraryRoute: Plan7DayPortugalItineraryRoute,
-  PlanAlentejoRoute: PlanAlentejoRoute,
-  PlanArrabidaRoute: PlanArrabidaRoute,
-  PlanBestTimeToVisitPortugalRoute: PlanBestTimeToVisitPortugalRoute,
-  PlanComportaRoute: PlanComportaRoute,
-  PlanCostaVicentinaRoute: PlanCostaVicentinaRoute,
-  PlanLisbonRoute: PlanLisbonRoute,
-  PlanPortugalWineAndGastronomyRoute: PlanPortugalWineAndGastronomyRoute,
-  PlanSintraRoute: PlanSintraRoute,
-  PlanIndexRoute: PlanIndexRoute,
-}
-
-const PlanRouteWithChildren = PlanRoute._addFileChildren(PlanRouteChildren)
-
 interface PtRouteChildren {
   PtSplatRoute: typeof PtSplatRoute
   PtAboutRoute: typeof PtAboutRoute
@@ -2617,30 +1956,6 @@ const PtRouteChildren: PtRouteChildren = {
 
 const PtRouteWithChildren = PtRoute._addFileChildren(PtRouteChildren)
 
-interface StudioV2RouteChildren {
-  StudioV2ITokenRoute: typeof StudioV2ITokenRoute
-}
-
-const StudioV2RouteChildren: StudioV2RouteChildren = {
-  StudioV2ITokenRoute: StudioV2ITokenRoute,
-}
-
-const StudioV2RouteWithChildren = StudioV2Route._addFileChildren(
-  StudioV2RouteChildren,
-)
-
-interface ToursTourIdRouteChildren {
-  ToursTourIdTailorRoute: typeof ToursTourIdTailorRoute
-}
-
-const ToursTourIdRouteChildren: ToursTourIdRouteChildren = {
-  ToursTourIdTailorRoute: ToursTourIdTailorRoute,
-}
-
-const ToursTourIdRouteWithChildren = ToursTourIdRoute._addFileChildren(
-  ToursTourIdRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -2650,7 +1965,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BookingConfirmedRoute: BookingConfirmedRoute,
   BrandQaRoute: BrandQaRoute,
-  BuilderRoute: BuilderRoute,
   ContactRoute: ContactRoute,
   CookiesRoute: CookiesRoute,
   CorporateRoute: CorporateRoute,
@@ -2665,7 +1979,7 @@ const rootRouteChildren: RootRouteChildren = {
   LuxuryToursPortugalRoute: LuxuryToursPortugalRoute,
   MomentsRoute: MomentsRoute,
   MultiDayRoute: MultiDayRoute,
-  PlanRoute: PlanRouteWithChildren,
+  PlanRoute: PlanRoute,
   PortugalToursRoute: PortugalToursRoute,
   PortugalTravelDesignerRoute: PortugalTravelDesignerRoute,
   PortugalWineToursRoute: PortugalWineToursRoute,
@@ -2680,18 +1994,11 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewsRoute: ReviewsRoute,
   SintraDayTourFromLisbonRoute: SintraDayTourFromLisbonRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  StudioDriftRoute: StudioDriftRoute,
-  StudioV2Route: StudioV2RouteWithChildren,
-  StudioV3Route: StudioV3Route,
   TermsRoute: TermsRoute,
-  TypographyAuditRoute: TypographyAuditRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   WineToursLisbonRoute: WineToursLisbonRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
-  AdminBokunMappingRoute: AdminBokunMappingRoute,
-  AdminBookingsRoute: AdminBookingsRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
-  AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,
   AdminDnsWatchRoute: AdminDnsWatchRoute,
   AdminDomainsHealthRoute: AdminDomainsHealthRoute,
   AdminDriftBehaviorRoute: AdminDriftBehaviorRoute,
@@ -2699,35 +2006,25 @@ const rootRouteChildren: RootRouteChildren = {
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
   AdminGscRoute: AdminGscRoute,
-  AdminImportToursRoute: AdminImportToursRoute,
   AdminLegacyDomainUnlinkRoute: AdminLegacyDomainUnlinkRoute,
   AdminLegacyDomainsMonitorRoute: AdminLegacyDomainsMonitorRoute,
   AdminPaymentsEnvRoute: AdminPaymentsEnvRoute,
-  AdminPricingRoute: AdminPricingRoute,
   AdminRedirectsMonitorRoute: AdminRedirectsMonitorRoute,
   AdminReviewsRoute: AdminReviewsRoute,
   AdminSeoJsonldRoute: AdminSeoJsonldRoute,
-  AdminSeoMonitorRoute: AdminSeoMonitorRoute,
-  AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
-  AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
   AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,
   AdminViatorValidationRoute: AdminViatorValidationRoute,
   AdminWebhookEventsRoute: AdminWebhookEventsRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiImgRoute: ApiImgRoute,
-  ApiVerifyHeroRoute: ApiVerifyHeroRoute,
-  CheckoutTokenRoute: CheckoutTokenRoute,
   E2ePostmessageProbeRoute: E2ePostmessageProbeRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
-  ITokenRoute: ITokenRoute,
   Itineraries10DayPrivatePortugalTourRoute:
     Itineraries10DayPrivatePortugalTourRoute,
   QaHeroRoute: QaHeroRoute,
   QaMobileRoute: QaMobileRoute,
   ReviewTokenRoute: ReviewTokenRoute,
-  STokenRoute: STokenRoute,
-  ToursTourIdRoute: ToursTourIdRouteWithChildren,
-  AdminIndexRoute: AdminIndexRoute,
+  ToursTourIdRoute: ToursTourIdRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
@@ -2745,13 +2042,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
