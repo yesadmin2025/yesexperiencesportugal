@@ -188,28 +188,24 @@ describe("RefineStopCard — empty + error states", () => {
     }
   });
 
-  it("does not crash when a handler throws — error surfaces to the caller, tree stays mounted", () => {
+  it("propagates parent handler errors to the caller (parent must catch)", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
-    function BrokenParent() {
-      return (
-        <ol>
-          <RefineStopCard
-            index={0}
-            total={2}
-            label="A"
-            story="…"
-            onRemove={() => {
-              throw new Error("remove failed");
-            }}
-          />
-        </ol>
-      );
-    }
-    render(<BrokenParent />);
-    const remove = screen.getByTestId("studio-v3-refine-remove");
-    // Click throws synchronously — React logs to console.error but the card
-    // remains in the document; we assert the DOM stayed intact.
-    expect(() => fireEvent.click(remove)).toThrow(/remove failed/);
+    let caught: unknown = null;
+    const throwing = () => {
+      try {
+        throw new Error("remove failed");
+      } catch (e) {
+        caught = e;
+      }
+    };
+    render(
+      <ol>
+        <RefineStopCard index={0} total={2} label="A" story="…" onRemove={throwing} />
+      </ol>,
+    );
+    fireEvent.click(screen.getByTestId("studio-v3-refine-remove"));
+    expect(caught).toBeInstanceOf(Error);
+    // The card stays mounted after a caught handler error.
     expect(screen.getByTestId("studio-v3-refine-stop-card")).toBeInTheDocument();
     spy.mockRestore();
   });
