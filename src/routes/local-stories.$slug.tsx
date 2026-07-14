@@ -8,15 +8,19 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import {
   jsonLdScript,
   breadcrumbLd,
-  
   personFounderLd,
   localStoryReviewsLd,
   localStoryArticleLd,
   normalizeLocalStoryReviews,
   faqPageLd,
+  tourProductLd,
+  hreflangUsCaLinks,
+  organizationUsCaAudienceLd,
   type NormalizedLocalStoryReview,
 } from "@/lib/jsonld";
-
+import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
+import { getViatorMeta } from "@/data/signatureToursViator";
+import LandingTourCredibility from "@/components/LandingTourCredibility";
 
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
@@ -161,6 +165,28 @@ export const Route = createFileRoute("/local-stories/$slug")({
             }).map((node) => jsonLdScript(node))
           : [];
       const imageUrl = articleImageUrl(article);
+      const tour = findTour(article.signatureSlug);
+      const viator = getViatorMeta(article.signatureSlug);
+      const productScript =
+        tour && viator && viator.reviewCount > 0
+          ? [
+              jsonLdScript(
+                withAggregateAndReviews(
+                  tourProductLd({
+                    id: tour.id,
+                    title: tour.title,
+                    blurb: tour.blurb,
+                    img: imageUrl ?? tour.img,
+                    priceFrom: tour.priceFrom,
+                    currency: "EUR",
+                    region: tour.region,
+                    durationHours: tour.durationHours,
+                  }),
+                  article.signatureSlug,
+                ),
+              ),
+            ]
+          : [];
       return {
         meta: [
           { title: article.title },
@@ -176,7 +202,10 @@ export const Route = createFileRoute("/local-stories/$slug")({
             ? [{ property: "article:modified_time", content: article.dateModified }]
             : []),
         ],
-        links: [{ rel: "canonical", href: url }],
+        links: [
+          { rel: "canonical", href: url },
+          ...hreflangUsCaLinks(`/local-stories/${params.slug}`),
+        ],
         scripts: [
           jsonLdScript(
             localStoryArticleLd({
@@ -190,6 +219,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
             }),
           ),
           jsonLdScript(personFounderLd()),
+          jsonLdScript(organizationUsCaAudienceLd()),
           jsonLdScript(
             breadcrumbLd([
               { name: "Home", path: "/" },
@@ -198,6 +228,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
             ]),
           ),
           ...(article.faq && article.faq.length > 0 ? [jsonLdScript(faqPageLd(article.faq))] : []),
+          ...productScript,
           ...reviewScripts,
         ],
       };
@@ -477,6 +508,7 @@ function StaticArticleView({
           </div>
         </section>
       </article>
+      <LandingTourCredibility parentTourId={article.signatureSlug} />
       <StoryRelated article={article} />
     </SiteLayout>
   );
