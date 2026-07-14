@@ -88,10 +88,66 @@ async function ensureStoryboardOrSkip(page: Page) {
   }
 }
 
+/**
+ * Wraps a `toHaveScreenshot` assertion so that CI logs receive a
+ * loud, greppable annotation with the scenario name and the last
+ * observed stop count when the pixel diff fails. Without this,
+ * a snapshot mismatch just shows a generic Playwright diff and
+ * you have to open the HTML report to figure out which scenario
+ * broke and how many stops actually rendered.
+ */
+async function assertEditorSnapshotWithAnnotation(
+  page: Page,
+  testInfo: import("@playwright/test").TestInfo,
+  scenario: string,
+  snapshotName: string,
+) {
+  const editor = page.getByTestId("studio-v3-stops-editor");
+  const stopCount = await page.getByTestId("studio-v3-stop-row").count();
+
+  testInfo.annotations.push(
+    { type: "scenario", description: scenario },
+    { type: "recovered-stop-count", description: String(stopCount) },
+  );
+
+  try {
+    await expect(editor).toHaveScreenshot(snapshotName);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const banner = [
+      "",
+      "──────────────────────────────────────────────────────────────",
+      `[storyboard-recovery] SCREENSHOT MISMATCH`,
+      `  scenario:            ${scenario}`,
+      `  snapshot:            ${snapshotName}`,
+      `  recovered stop count: ${stopCount}`,
+      `  spec:                ${testInfo.titlePath.join(" › ")}`,
+      "──────────────────────────────────────────────────────────────",
+      "",
+    ].join("\n");
+    // stderr so GitHub Actions surfaces it in the failing step log.
+    process.stderr.write(banner);
+    // GitHub Actions workflow-command so the annotation shows up
+    // inline on the failing spec in the Checks UI.
+    if (process.env.GITHUB_ACTIONS) {
+      const oneLine = `storyboard-recovery: ${scenario} — recovered ${stopCount} stop(s); snapshot ${snapshotName} mismatched`;
+      process.stdout.write(`::error title=Storyboard recovery snapshot mismatch::${oneLine}\n`);
+    }
+    testInfo.annotations.push({
+      type: "screenshot-mismatch",
+      description: `${scenario} — recovered ${stopCount} stop(s) — ${snapshotName}`,
+    });
+    throw new Error(
+      `[storyboard-recovery] ${scenario} — recovered ${stopCount} stop(s) — snapshot ${snapshotName} mismatched\n${message}`,
+    );
+  }
+}
+
 test.use({ viewport: { width: 393, height: 852 } });
 
 test.describe("Studio V3 storyboard recovery", () => {
   test("persisted empty editedRoutePoints does not strand the editor", async ({ page }, testInfo) => {
+    const scenario = "persisted empty editedRoutePoints";
     await hydrateDraft(page, []);
     await page.goto("/studio-v3");
     await ensureStoryboardOrSkip(page);
@@ -104,10 +160,6 @@ test.describe("Studio V3 storyboard recovery", () => {
       page.getByText("We couldn't compose a draft for this combination.", { exact: false }),
     ).toHaveCount(0);
 
-    // Always-attached artifact so CI logs surface the rendered editor
-    // whether the test passed or failed. Full-page screenshot on failure
-    // is captured automatically via `screenshot: 'only-on-failure'`
-    // fallback below.
     const editorShot = await editor.screenshot({
       path: path.join(ARTIFACT_DIR, "empty-editedRoutePoints-editor.png"),
     });
@@ -123,13 +175,18 @@ test.describe("Studio V3 storyboard recovery", () => {
       contentType: "image/png",
     });
 
-    // Basic visual regression on the stops editor itself. Baselines
-    // live next to the spec at `*-snapshots/`. Update with
+    // Baselines live next to the spec at `*-snapshots/`. Update with
     // `bunx playwright test e2e/studio-v3-storyboard-recovery.spec.ts --update-snapshots`.
-    await expect(editor).toHaveScreenshot("stops-editor-empty-editedRoutePoints.png");
+    await assertEditorSnapshotWithAnnotation(
+      page,
+      testInfo,
+      scenario,
+      "stops-editor-empty-editedRoutePoints.png",
+    );
   });
 
   test("null editedRoutePoints seeds real Signature stops", async ({ page }, testInfo) => {
+    const scenario = "null editedRoutePoints (seedFromPool)";
     await hydrateDraft(page, null);
     await page.goto("/studio-v3");
     await ensureStoryboardOrSkip(page);
@@ -155,7 +212,13 @@ test.describe("Studio V3 storyboard recovery", () => {
       contentType: "image/png",
     });
 
-    await expect(editor).toHaveScreenshot("stops-editor-null-editedRoutePoints.png");
+    await assertEditorSnapshotWithAnnotation(
+      page,
+      testInfo,
+      scenario,
+      "stops-editor-null-editedRoutePoints.png",
+    );
   });
 });
+
 
