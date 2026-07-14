@@ -6,7 +6,7 @@ import {
   CANCELLATION_SIGNATURE,
   CANCELLATION_STUDIO,
 } from "@/config/business-nap";
-import ogImg from "@/assets/hero-coast.jpg";
+import ogImg from "@/assets/edit-coastal-road.jpg";
 import { buildLocaleUrl } from "@/i18n/config";
 
 export const Route = createFileRoute("/pt/terms")({

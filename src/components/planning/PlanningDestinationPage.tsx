@@ -116,7 +116,8 @@ export function PlanningDestinationPage({ destination }: Props) {
         </section>
       )}
 
-      {/* Route map — real geography from the primary Signature tour's stops. */}
+      {/* Route map — real geography from the featured Signature tour(s).
+          Shareable URL state (?tour=&stop=) lives inside the map. */}
       {tours[0] && (
         <section className="reveal py-14 md:py-20 bg-[color:var(--sand)]">
           <div className="container-x max-w-5xl">
@@ -128,11 +129,12 @@ export function PlanningDestinationPage({ destination }: Props) {
               </SectionTitle>
               <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
                 Real stops, real driving times — the shape of a day we already run.
+                Tap a stop to focus it, then copy the link to share the exact view.
               </p>
             </div>
             <div className="mx-auto max-w-md">
               <PlanDestinationMap
-                tour={tours[0]}
+                tours={tours}
                 regionLabel={destination.h1.replace(/^Planning a Private Trip to /, "")}
               />
             </div>
