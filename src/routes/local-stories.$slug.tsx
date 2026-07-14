@@ -21,6 +21,8 @@ import {
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
+import { RelatedExperiencesRail } from "@/components/RelatedExperiencesRail";
+import { rankRelatedTours, relatedStoriesForStory } from "@/lib/related-experiences";
 
 type JournalPostFull = {
   slug: string;
