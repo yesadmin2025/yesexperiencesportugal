@@ -3007,35 +3007,35 @@ svg.lucide {
 
 /* Reveal-on-scroll utility (IntersectionObserver toggles .is-visible) */
 /* Soft, slow, consistent — sections lift gently into place */
+/* Editorial reveal — soft ease-out, no overshoot/bounce. Duration and
+   easing match `[data-motion]` and title cascade so H1/H2 titles and
+   section blocks share one entrance curve site-wide. */
 .reveal {
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(10px);
   transition:
-    opacity 360ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 360ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    opacity 640ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 640ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: opacity, transform;
 }
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
-  animation: siteRevealIn 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
-/* Stagger child — opt-in reveal for individual items inside a parent.
-   Slightly softer lift than .reveal so cards feel like they "float" up
-   one after another in a calm, consistent rhythm. */
+/* Stagger child — same editorial curve, slightly shorter lift so cards
+   feel like they "float" up one after another. */
 .reveal-stagger {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(8px);
   transition:
-    opacity 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    opacity 560ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 560ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: opacity, transform;
 }
 .reveal-stagger.is-visible {
   opacity: 1;
   transform: translateY(0);
-  animation: siteRevealStaggerIn 380ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 @media (max-width: 767.98px) {
