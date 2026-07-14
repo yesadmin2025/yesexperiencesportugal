@@ -7,7 +7,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
-import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
+
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 import guestQuintaGroup from "@/assets/guests/quinta-group.jpg.asset.json";
 const imgCorporateGroup = guestQuintaGroup.url;
