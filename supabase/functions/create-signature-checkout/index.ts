@@ -311,22 +311,54 @@ Deno.serve(async (req) => {
         quantity: body.guests,
       }));
 
-    const sessionParams: Record<string, unknown> = {
-      line_items: [
-        {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: productName,
-              description,
-              images: ["https://yesexperiencesportugal.com/og-cover.jpg"],
-            },
-            unit_amount: Math.round(eurPerPax * 100),
+    // Build a Stripe line item per age band (grouped) so the guest sees
+    // "Adult × 2 · €279", "Youth × 1 · €209", etc. — never a single
+    // opaque total. Adult-only bookings collapse into one line.
+    const byBand: Record<AgeBand, { unitEur: number; qty: number }> = {
+      adult: { unitEur: 0, qty: 0 },
+      youth: { unitEur: 0, qty: 0 },
+      child: { unitEur: 0, qty: 0 },
+      infant: { unitEur: 0, qty: 0 },
+    };
+    for (const l of priceLines) {
+      byBand[l.band].unitEur = l.unitEur;
+      byBand[l.band].qty += 1;
+    }
+    const bandLabel: Record<AgeBand, string> = {
+      adult: "Adult (18+)",
+      youth: "Youth (11–17)",
+      child: "Child (3–10)",
+      infant: "Infant (0–2, free)",
+    };
+    const tourLineItems = (["adult", "youth", "child", "infant"] as const)
+      .filter((b) => byBand[b].qty > 0)
+      .map((b, idx) => ({
+        price_data: {
+          currency: "eur",
+          product_data: {
+            // Only the first (adult) line carries the full product name +
+            // hero image; subsequent bands stay short so the checkout
+            // page reads cleanly.
+            name:
+              idx === 0
+                ? productName
+                : `${productName} — ${bandLabel[b]}`.slice(0, 180),
+            ...(idx === 0
+              ? {
+                  description,
+                  images: ["https://yesexperiencesportugal.com/og-cover.jpg"],
+                }
+              : {}),
           },
-          quantity: body.guests,
+          // Infants (free) still appear as a €0 line so the party
+          // composition is legible on the Stripe receipt.
+          unit_amount: Math.round(byBand[b].unitEur * 100),
         },
-        ...addOnLineItems,
-      ],
+        quantity: byBand[b].qty,
+      }));
+
+    const sessionParams: Record<string, unknown> = {
+      line_items: [...tourLineItems, ...addOnLineItems],
 
       mode: "payment",
       locale: "auto",
@@ -351,14 +383,19 @@ Deno.serve(async (req) => {
         booking_type: "signature",
         flow,
         tour_id: body.tourId,
-        guests: String(body.guests),
+        guests: String(headcount),
+        adults: String(adultsCount),
+        minor_ages: minorAges.length > 0 ? minorAges.join(",") : "",
+        pricing_mode: compositionSupplied ? "age_bands" : "legacy_adults_only",
         per_pax_eur: String(eurPerPax),
+        tour_subtotal_eur: String(Math.round(tourSubtotalCents / 100)),
         price_source: real != null ? "tier" : "anchor",
         date_exact: body.dateExact ?? "",
         pickup: (body.pickupLabel ?? "").slice(0, 120),
         hotel_pickup_included: "1",
-        
+
         journey_title: (body.journeyTitle ?? "").slice(0, 160),
+        journey_revision: (body.journeyRevision ?? "").slice(0, 80),
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
         tailored: body.tailored ? "1" : "0",
         add_ons: JSON.stringify(
