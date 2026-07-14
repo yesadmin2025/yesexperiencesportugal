@@ -1059,6 +1059,20 @@ export function StudioV3() {
     ]);
   }, [state.phase]);
 
+  // Auto-request the Stripe embedded session when the traveller reaches the
+  // single-page checkoutSummary phase. Summary + payment share this same
+  // clientSecret so the two surfaces cannot drift.
+  useEffect(() => {
+    if (state.phase !== "checkoutSummary") return;
+    if (!pendingGuestDetails) return;
+    if (clientSecret || checkoutPending) return;
+    void handleStripeCheckout(state, pendingGuestDetails);
+    // Intentionally omit handleStripeCheckout/state from deps — the latter
+    // would re-fire on every state tick and the former is stable via
+    // useCallback. Guard above prevents duplicate sessions.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.phase, pendingGuestDetails, clientSecret, checkoutPending]);
+
   const advance = useCallback((next: StudioV3Phase) => {
     // If a previous cinematic beat is still dissolving, remove it before any
     // explicit CTA transition. Otherwise mobile users can see the next screen
