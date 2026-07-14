@@ -1,93 +1,84 @@
-# Structured Data Validation + Checkout Error E2E
+# Studio Checkout Retry + Extra Failure Modes E2E
 
-Three coordinated workstreams that lock in the recent JSON-LD and error-envelope work with automated checks.
+Two additions layered on top of the existing `e2e/structured-data-rendered.spec.ts` + `create-signature-checkout-error-envelope.spec.ts` from the previous turn. Both live in a single new spec so they share Studio-drive-through helpers.
 
----
+## Retry model recap (verified in `StudioV3.tsx`)
 
-## 1. Structured Data Validation Crawler
+- CTA fires `handleStripeCheckout(state, pendingGuestDetails)` → sets `checkoutPending = true`.
+- On any thrown error: `toast.error(userMessage)` fires, `finally { setCheckoutPending(false) }` restores the CTA.
+- There is no separate "Retry" button — retry = re-tapping the primary Reserve CTA after the toast surfaces. That is the behaviour to lock in.
 
-**Goal:** parseable ImageObject / ImageGallery / TouristAttraction / ItemList markup on every tour and itinerary page.
+## New file: `e2e/studio-v3-checkout-retry-and-failures.spec.ts`
 
-New files:
-- `scripts/validate-structured-data.mjs` — Node script driven by Playwright (already installed for E2E).
-  - Boots the app against `http://localhost:8080` (assumes `bun run dev` or CI-started server; script accepts `--base-url`).
-  - Route list sourced from `src/lib/planning-head.ts` destination map + a filesystem scan of `src/routes/tours.$tourId.tsx` fixtures + `src/routes/itineraries.*.tsx`.
-  - For each URL: `page.goto`, then extract every `<script type="application/ld+json">`, `JSON.parse`, and run validators.
-  - Validators (pure functions in `scripts/lib/jsonld-validators.mjs`):
-    - `assertImageObject(node)` — requires `@type: "ImageObject"`, absolute `contentUrl`/`url`, `caption`, `width`/`height` when present are numeric.
-    - `assertImageGallery(node)` — requires `@type: "ImageGallery"`, `name`, `image[]` with ≥3 valid `ImageObject`.
-    - `assertTouristAttraction(node)` — requires `@type: "TouristAttraction"`, `name`, `image` (ImageObject or absolute URL string).
-    - `assertItemListOfStops(node)` — `@type: "ItemList"`, `itemListElement[]` with `position` + `item` that passes `assertTouristAttraction`.
-  - Fails the process with a summary table (URL, missing field, node index) and exit code 1.
-- `scripts/lib/route-inventory.mjs` — resolves the concrete URL list (tours + itineraries + planning destinations) so both this script and the vitest suite share one source.
+Playwright spec, `mobile-chromium` project (matches Studio's mobile-first surface).
 
-No new deps: reuses installed `playwright`.
+### Shared harness
 
----
+- `openStudioReserve(page)` helper: hydrates `sessionStorage` with a completed Studio V3 draft (tour id `sintra-cascais`, guests: 2, valid guest details) so the phase advances straight to `confirmation`, then waits for the Reserve CTA.
+- `stubCheckout(page, handler)` helper: `page.route('**/functions/v1/create-signature-checkout*', handler)` with per-test counters for call count, method, and body assertions.
+- `readToast(page)` helper: reads the latest `[data-sonner-toast]` node.
 
-## 2. CI Check: Rendered JSON-LD Assertions (unit-level)
+### Test 1 — Retry re-fires the correct request and clears prior error
 
-**Goal:** fast, in-band vitest that renders tour + itinerary routes and asserts `stopMediaLd` / `pageGalleryLd` shape without needing a running browser. Complements #1 (which catches SSR/runtime regressions).
+Steps:
 
-New file:
-- `src/routes/__tests__/structured-data.render.test.tsx`
-  - Uses `@tanstack/react-router` memory history + `createRouter` to render `/tours/:tourId` and each itinerary route with the existing test loader fixtures.
-  - Uses `@testing-library/react`'s `renderToStaticMarkup`-style helper already used in other route tests.
-  - Parses emitted `<script type="application/ld+json">` from the head via the same helper the app uses (`extractHeadLd` — new tiny util in `src/lib/__tests__/helpers/extractHeadLd.ts`).
-  - Asserts per stop:
-    - `stopMediaLd` present, `itemListElement.length === stops.length`.
-    - Each `item.image.contentUrl` is `https://…`, `caption` non-empty, matches the stop label prefix.
-  - Asserts per gallery block:
-    - `pageGalleryLd` present with `image.length ≥ 3`, deduped URLs, all absolute.
-- New CI script entry in `package.json`:
-  - `"test:structured-data": "vitest run src/routes/__tests__/structured-data.render.test.tsx src/lib/__tests__/jsonld-stop-media.test.ts"`
-  - `"validate:structured-data": "node scripts/validate-structured-data.mjs"`
-- `.github/workflows/structured-data.yml` (only if repo already uses GH Actions — otherwise document invocation in `docs/ci-structured-data.md`):
-  - Job A: `bun install && bun run test:structured-data` (fast, always).
-  - Job B: `bun install && bun run build && bun run preview & wait-on http://localhost:8080 && bun run validate:structured-data` (SSR-truth check).
+1. First stub returns `500 { error: "internal_error", code: "internal_error", message: "…", retryable: true, requestId: "req_1" }`.
+2. Tap Reserve → assert `checkoutPending` visible (CTA disabled / spinner), toast appears with the guest-safe "Something went wrong on our side" copy, CTA re-enables.
+3. Swap stub to `200` success envelope (mocked Stripe session URL + sessionId).
+4. Tap Reserve again → assert:
+  - Exactly one additional POST to `create-signature-checkout` (call counter = 2).
+  - Second request body matches the first (same `quoteToken`, `guests`, `returnUrl`) — proves retry re-fires the *same* checkout intent, not a stale/wrong payload.
+  - Prior error toast is dismissed (no visible error toast at moment of retry).
+  - CTA transitions to pending, then navigation to Stripe URL is intercepted.
+5. After success: assert `checkoutPending` is false (spinner gone), no lingering error state, and no orphaned toast.
 
----
+### Test 2 — Timeout keeps CTA retryable, no stuck pending
 
-## 3. E2E: Checkout Edge-Function Failure Modes
+- Stub: `route.fulfill` after a delay that exceeds Studio's per-call timeout OR use `route.abort('timedout')`.
+- Tap Reserve → wait for `toast.error` with network / timeout copy (`network_error` mapping).
+- Assert CTA re-enables (button not `disabled`) within a bounded window.
+- Tap again with a normal 200 stub → second request fires, spinner clears, no double-request race.
 
-**Goal:** for every `checkoutError` code, Studio surfaces the correct guest-safe message and honors retryable behavior.
+### Test 3 — Malformed payload (non-JSON body) → generic guest copy, retryable
 
-New file:
-- `tests/e2e/studio-checkout-errors.spec.ts` (Playwright).
-  - Uses `page.route('**/functions/v1/create-signature-checkout', …)` and `**/create-builder-checkout` to stub responses per test case.
-  - Cases (one `test()` each), driven by a table of `{ code, status, retryable, expectedCopy }` imported from `src/content/checkout-errors.ts` (single source of truth — matches unit tests):
-    - `validation_failed` (400) → shows validation copy, CTA stays enabled, no retry spinner loop.
-    - `unauthenticated` (401) → shows sign-in prompt, CTA disabled until auth.
-    - `rate_limited` (429) → shows "try again in a moment" copy, CTA re-enabled after cooldown.
-    - `stripe_unavailable` (502) → retryable copy, CTA remains enabled, breadcrumb logged.
-    - `internal_error` (500) → generic guest-safe copy + supportId visible.
-    - Legacy string payload → parseCheckoutError fallback path renders generic copy.
-    - Network failure (`page.route` → `route.abort('failed')`) → offline copy, CTA enabled.
-  - Shared helper `tests/e2e/helpers/openStudioCheckout.ts`: navigates to Studio V3, seeds `editedStops` via `page.evaluate` (localStorage), advances to the final reveal, clicks primary CTA.
-  - Assertions per case:
-    - `expect(page.getByRole('alert')).toContainText(expectedCopy)`.
-    - CTA enabled/disabled state via `toBeEnabled()` / `toBeDisabled()`.
-    - `retryable === true` → clicking CTA again fires a second network call (verify via `page.waitForRequest`).
-  - Both Signature and Builder flows covered (parameterized).
+- Stub: `status 200, body: "<html>gateway</html>"`.
+- Assert: toast surfaces generic guest copy (not raw HTML), CTA re-enabled, `checkoutPending` reset.
+- Retry with valid stub → success path fires.
 
-Config:
-- Add `playwright.config.ts` if absent (headless chromium, viewport 393×852 mobile-first per project memory, plus a desktop project).
-- New scripts:
-  - `"test:e2e": "playwright test"`
-  - `"test:e2e:checkout": "playwright test tests/e2e/studio-checkout-errors.spec.ts"`
+### Test 4 — 5xx upstream (`502 bokun_unreachable`) marks retryable and honours retry
 
-No new runtime deps. Adds dev dep `@playwright/test` if not already present (project uses raw `playwright` today).
+- Stub: `502 { error: "bokun_unreachable:…", code: "bokun_unreachable", retryable: true, requestId: "req_x" }`.
+- Assert guest copy: "Our booking partner is briefly unreachable…".
+- CTA stays enabled after toast; second tap re-fires; success stub resolves the flow.
 
----
+### Test 5 — 5xx non-retryable (`config_missing`) disables silent retry loop
 
-## Order of execution
+- Stub: `500 { code: "config_missing", retryable: false, requestId: "req_y" }`.
+- Assert toast copy matches the `config_missing` line.
+- CTA re-enables (guest can *choose* to retry), but the second tap MUST still fire only when the guest asks — assert we do NOT auto-retry (call counter stays at 1 until a second explicit tap).
 
-1. Shared inventory + validators (`scripts/lib/*`) — needed by #1 and #2.
-2. Vitest render assertions (#2) — fastest feedback.
-3. Playwright crawler (#1).
-4. Checkout error E2E (#3), reusing checkout-errors content module.
+### Test 6 — `checkoutPending` never leaks across failure→success
+
+Covers the memory the plan calls out ("no stale checkoutPending"):
+
+- Force `page.route` to `route.abort('failed')` on first tap → toast, CTA re-enabled.
+- Immediately swap to success stub → tap Reserve → assert only one in-flight request at a time (`page.waitForRequest` count = 1 for this tap), spinner clears once resolved.
+
+## Assertions shared across all tests
+
+- Call counter is asserted per test (no duplicate concurrent requests during pending).
+- After every failure, `await expect(reserveCta).toBeEnabled()` within 2s.
+- After every success stub, navigation intercept confirms the Stripe URL was requested (page.route on Stripe host or window.location assign spy).
+- Toast text is asserted against the guest-safe copy from `src/lib/checkout/checkoutError.ts` (imported from the same COPY dictionary to keep tests aligned with source of truth).
+
+## Package.json script
+
+Add `"test:e2e:checkout-retry": "playwright test e2e/studio-v3-checkout-retry-and-failures.spec.ts --project=mobile-chromium"`.
 
 ## Out of scope
-- No changes to runtime JSON-LD emitters (already hardened last turn).
-- No changes to edge-function error envelopes (already stable).
-- No new visual/UX changes.
+
+- No changes to `handleStripeCheckout` or `StudioV3.tsx` — this is pure test coverage.
+- No new UI "Retry" button; the plan honours the existing tap-CTA-again retry model.
+- Builder checkout (`create-builder-checkout`) is intentionally deferred — Studio V3 always routes through signature checkout; a Builder retry spec would need a separate driver and is not what the user asked for.
+
+After testing fix issues
