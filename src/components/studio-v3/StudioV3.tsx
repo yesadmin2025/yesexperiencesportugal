@@ -936,7 +936,7 @@ export function StudioV3() {
       } catch (e) {
         console.error("Stripe checkout failed", e);
         toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
-        setCheckoutOpen(false);
+        setClientSecret(null);
         openLeadSheet("book");
       } finally {
         setCheckoutPending(false);
