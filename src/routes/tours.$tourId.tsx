@@ -4,7 +4,6 @@ import { Clock, MapPin, ArrowLeft, Check, Sparkles, Info, Heart, Shield, Star } 
 import {
   signatureTours,
   findTour,
-  isValidTourId,
   type SignatureTour,
   type TourStop,
 } from "@/data/signatureTours";
