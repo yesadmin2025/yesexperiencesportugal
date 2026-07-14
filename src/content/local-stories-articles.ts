@@ -845,7 +845,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "evora-private-tour-from-lisbon",
     title: "Private Évora Day Tour from Lisbon — UNESCO & Alentejo",
     metaDescription:
-      "Private Évora tour from Lisbon — the Roman Temple, Chapel of Bones, two family wineries and a cork tradition stop, with an unhurried Alentejo lunch.",
+      "Private Évora tour from Lisbon — Roman Temple, Chapel of Bones, two family wineries and an unhurried Alentejo lunch. Hotel pickup, English-speaking guide, instant confirmation.",
     h1: "Private Évora Tour from Lisbon — heritage, wine & cork",
     eyebrow: "Lisbon · Évora private day",
     standfirst:
