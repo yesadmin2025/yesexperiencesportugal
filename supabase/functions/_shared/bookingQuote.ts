@@ -43,6 +43,11 @@ export interface BookingQuote {
 
   flow: BookingFlow;
   source: QuoteSource;
+  /** Server-owned. `enquiry_only` when the underlying pricing is not
+   *  reservable via Bókun (e.g. manual Viator tiers, missing category
+   *  parity). Clients MUST NOT open Stripe for a non-instant quote and
+   *  the checkout endpoint fails closed independently of the client. */
+  checkoutEligibility: CheckoutEligibility;
 
   commercialProductKey: string;
   commercialMappingId: string;
