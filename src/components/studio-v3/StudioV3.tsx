@@ -4037,7 +4037,7 @@ export function StoryboardHandoff({
                           onClick={() => {
                             setEdited((prev) => [
                               ...prev,
-                              { label: cand.label, story: cand.story },
+                              { label: cand.label, story: cand.story ?? "" },
                             ]);
                             setAddOpen(false);
                           }}
