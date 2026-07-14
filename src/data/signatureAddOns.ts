@@ -76,6 +76,15 @@ export type InclusionTag =
  */
 export type AddOnPricingUnit = "per_person" | "per_group" | "per_vehicle" | "fixed";
 
+/**
+ * Time-of-day slot the add-on naturally occupies in the day. Derived from
+ * the add-on's own label/blurb when not explicitly set (see
+ * `deriveTimeOfDay`). Used by the selector to drop combinations that would
+ * overlap the same slot (e.g. two "midday" add-ons on the same day).
+ * `"flexible"` is a wildcard — never conflicts.
+ */
+export type TimeOfDaySlot = "morning" | "midday" | "afternoon" | "evening" | "flexible";
+
 export interface SignatureAddOn {
   id: string;
   label: string;
@@ -112,6 +121,25 @@ export interface SignatureAddOn {
    * a tour that already includes lunch). The selector drops these.
    */
   conflictsWith?: InclusionTag[];
+  /**
+   * Anchor stop key inside the resolved Signature this add-on attaches
+   * to. Optional — when null, `deriveAnchorStop` falls back to
+   * `sourceTourId` (the sibling Signature that owns this experience).
+   * NEVER invent a stop key; only set when it exists in signatureTours.
+   */
+  anchorStopKey?: string;
+  /**
+   * Maximum party size this add-on can serve (owner-set, e.g. small
+   * workshop capacity). Optional — undefined means "no cap declared".
+   * The selector drops add-ons whose cap is below current guest count.
+   */
+  maxGuests?: number;
+  /**
+   * Time-of-day slot this add-on occupies. Optional — when omitted, the
+   * selector derives one from label/blurb via `deriveTimeOfDay`. The
+   * selector drops later add-ons that would double-book the same slot.
+   */
+  timeOfDay?: TimeOfDaySlot;
 }
 
 /**
