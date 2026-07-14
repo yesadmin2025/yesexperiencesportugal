@@ -75,13 +75,6 @@ import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  fetchStudioQuote,
-  createStudioSession,
-  type StudioQuoteSnapshot,
-} from "@/lib/studio-v3/quoteClient";
-import { useResolvedSignature } from "./useResolvedSignature";
-import { canonicalConfirmedStops } from "@/lib/studio-v3/canonicalRouteStops";
 import { toast } from "sonner";
 
 /** Real minimum priceFrom across every Signature in the catalogue. Used as
@@ -759,75 +752,6 @@ export function StudioV3() {
   // persisted signature) since it holds personal info.
   const [pendingGuestDetails, setPendingGuestDetails] = useState<GuestDetails | null>(null);
 
-  // ── Pass 1B Slice A — hoisted server-authoritative quote ──────────────
-  // One `useResolvedSignature` for the whole Studio V3 tree. The hook only
-  // fetches when phase enters the final-presentation family (see §1). All
-  // downstream visible surfaces (SignaturePriceCard, CheckoutSummary, and
-  // eventually FinalRevealStory / LivingJourneyPanel / GuestDetailsStep)
-  // must render the SAME €{totalEur} sourced from `resolved.pricing`.
-  const hoistedTour = state.tourId ? findTour(state.tourId) : null;
-  const hoistedSnapshot = useMemo<StudioQuoteSnapshot | null>(() => {
-    if (!hoistedTour) return null;
-    const routeStops = canonicalConfirmedStops(state);
-    if (routeStops.length === 0) return null;
-    const guests = pendingGuestDetails?.guests ?? state.guests ?? 2;
-    return {
-      commercialProductKey: "studio-v3-private-full-day",
-      signatureId: hoistedTour.id,
-      title: state.journeyTitle ?? hoistedTour.title ?? hoistedTour.id,
-      destinationRegion: hoistedTour.region ?? "Setúbal",
-      pickupCity: pickupCityLabel(state.pickup) ?? "Lisbon",
-      date: (pendingGuestDetails?.tourDate || state.dateExact || "").slice(0, 10) || "2099-01-01",
-      startTime: /^\d{2}:\d{2}$/.test(pendingGuestDetails?.startTime ?? "")
-        ? (pendingGuestDetails!.startTime as string)
-        : "09:00",
-      language: pendingGuestDetails?.language === "pt" ? "pt" : "en",
-      guests,
-      routeStops,
-      selectedAddOns: selectedAddOnItems.map((i) => ({ id: i.id, quantity: 1 })),
-      routeStatus: "pending-review",
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    hoistedTour?.id,
-    state.journeyTitle,
-    state.pickup,
-    state.dateExact,
-    state.guests,
-    state.editedRoutePoints,
-    pendingGuestDetails?.guests,
-    pendingGuestDetails?.tourDate,
-    pendingGuestDetails?.startTime,
-    pendingGuestDetails?.language,
-    selectedAddOnItems,
-  ]);
-  const resolved = useResolvedSignature({
-    phase: state.phase as unknown as string,
-    snapshot: hoistedSnapshot,
-  });
-  const resolvedServerPricing = useMemo(() => {
-    if (!resolved.quote) {
-      return resolved.isLoading
-        ? { status: "loading" as const, unitEur: 0, baseSubtotalEur: 0, addOnsSubtotalEur: 0, totalEur: 0, routeStatus: "loading" as const, addOnLines: [] }
-        : null;
-    }
-    const q = resolved.quote;
-    return {
-      status: q.pricing.status,
-      unitEur: q.pricing.unitEur,
-      baseSubtotalEur: q.pricing.baseSubtotalEur,
-      addOnsSubtotalEur: q.pricing.addOnsSubtotalEur,
-      totalEur: q.pricing.totalEur,
-      routeStatus: q.routeStatus,
-      addOnLines: q.addOns.map((a) => ({
-        id: a.id,
-        label: a.label,
-        lineSubtotalEur: a.lineSubtotalEur,
-        routeIntegration: a.routeIntegration,
-      })),
-    };
-  }, [resolved.quote, resolved.isLoading]);
-
   // Save-my-signature handler for the Final Reveal secondary CTA.
   const [savingSignature, setSavingSignature] = useState(false);
   const saveSig = useServerFn(saveStudioV3Signature);
@@ -875,119 +799,6 @@ export function StudioV3() {
         openLeadSheet("book");
         return;
       }
-
-      // ── Studio V3 authoritative quote path (Pass 1B §1a, §1b, §5, §6, §7) ─
-      // GATE: every Studio V3 itinerary uses the server-signed quote path,
-      // regardless of which Signature tour the curation currently resembles.
-      // The commercial identity is `studio-v3-private-full-day` — the
-      // resolved tour id is only editorial/itinerary context and MUST NOT
-      // decide pricing authority. Legacy tier checkout remains only for
-      // genuinely non-Studio product flows (which do not enter this branch).
-      const STUDIO_COMMERCIAL_KEY = "studio-v3-private-full-day" as const;
-      const useQuotePath = true; // Studio V3 is always quote-first
-      if (useQuotePath) {
-        setCheckoutPending(true);
-        try {
-          // Refined route (§1b): stops come from the guest's actually-refined
-          // day (resolveStudioV3Route + editedRoutePoints override), NEVER
-          // from the static Signature catalogue `tour.stops`.
-          const { canonicalConfirmedStops } = await import(
-            "@/lib/studio-v3/canonicalRouteStops"
-          );
-          const routeStops = canonicalConfirmedStops(currentState);
-          const snapshot: StudioQuoteSnapshot = {
-            commercialProductKey: STUDIO_COMMERCIAL_KEY,
-            signatureId: tour.id,
-            title: currentState.journeyTitle ?? tour.title ?? tour.id,
-            destinationRegion: tour.region ?? "Setúbal",
-            pickupCity: pickupCityLabel(currentState.pickup) ?? "Lisbon",
-            date: (details.tourDate || currentState.dateExact || "").slice(0, 10),
-            startTime: (details.startTime && /^\d{2}:\d{2}$/.test(details.startTime))
-              ? details.startTime
-              : "09:00",
-            language: (details.language === "pt" ? "pt" : "en"),
-            guests: details.guests,
-            routeStops,
-            selectedAddOns: selectedAddOnItems.map((i) => ({ id: i.id, quantity: 1 })),
-            routeStatus: "pending-review",
-          };
-
-          const quote = await fetchStudioQuote(snapshot);
-          if (quote.pricing.status !== "quoted") {
-            toast.error("Live pricing for this group size requires a tailored quote.");
-            openLeadSheet("book");
-            return;
-          }
-
-          // Populate the visible summary from the AUTHORITATIVE server pricing.
-          setCheckoutSummary({
-            tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
-            region: tour.region,
-            durationHours: tour.durationHours,
-            guests: details.guests,
-            dateExact: details.tourDate || currentState.dateExact || null,
-            startTime: details.startTime ?? null,
-            pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
-            pricePerPaxEur: quote.pricing.unitEur,
-            totalEur: quote.pricing.totalEur,
-            heroSrc: tour.img ?? null,
-            beats: quote.itinerary.routeStops.map((s) => s.label).slice(0, 4),
-            flowLabel: "Studio",
-            addOns: quote.addOns.map((a) => ({
-              id: a.id,
-              label: a.label,
-              priceEur: Math.round(a.lineSubtotalEur),
-              durationMinutes: 0,
-            })),
-            addOnsTotalEur: Math.round(quote.pricing.addOnsSubtotalEur),
-          });
-          setCheckoutTourId(tour.id);
-          setDetailsOpen(false);
-          setCheckoutOpen(true);
-          try {
-            const item = buildTourItem(
-              { id: tour.id, title: tour.title ?? tour.id, priceFrom: quote.pricing.unitEur },
-              { quantity: details.guests, tier: "studio", itemCategory: "Studio" },
-            );
-            gaBeginCheckout({ items: [item], valueEur: quote.pricing.totalEur });
-          } catch { /* silent */ }
-
-          const origin = typeof window !== "undefined" ? window.location.origin : "";
-          const session = await createStudioSession({
-            quoteToken: quote.quoteToken,
-            currentRevision: quote.revision,
-            snapshot,
-            environment: getStripeEnvironment(),
-            returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-            uiMode: "embedded",
-            customerEmail: details.email,
-            guestDetails: { ...details, hotelPickupIncluded: true },
-          });
-          if (!session.clientSecret || !session.publishableKey) {
-            throw new Error("Embedded checkout unavailable");
-          }
-          setClientSecret(session.clientSecret);
-          setPublishableKey(session.publishableKey);
-          try {
-            const item = buildTourItem(
-              { id: tour.id, title: tour.title ?? tour.id, priceFrom: quote.pricing.unitEur },
-              { quantity: details.guests, tier: "studio", itemCategory: "Studio" },
-            );
-            gaAddPaymentInfo({ paymentType: "stripe", items: [item], valueEur: quote.pricing.totalEur });
-          } catch { /* silent */ }
-          return;
-        } catch (e) {
-          console.error("[studio-v3 quote-checkout] failed", e);
-          toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
-          setCheckoutOpen(false);
-          openLeadSheet("book");
-          return;
-        } finally {
-          setCheckoutPending(false);
-        }
-      }
-
-      // ── Legacy path (unchanged) for tours not yet on the server catalogue ─
       setCheckoutPending(true);
       // Open the drawer immediately with a branded skeleton.
       const stopLabels = (tour.stops ?? []).map((s) => s.label).slice(0, 6);
@@ -2582,7 +2393,6 @@ export function StudioV3() {
               tourPriceTiers={tourPriceTiers}
               selectedAddOnIds={selectedAddOnIds}
               onAddOnsChange={handleAddOnsChange}
-              serverPricing={resolvedServerPricing}
             />
 
           </PhaseShell>
@@ -2730,7 +2540,6 @@ export function StudioV3() {
             onReserve={() => {
               void handleStripeCheckout(state, pendingGuestDetails);
             }}
-            serverPricing={resolvedServerPricing}
           />
         </PhaseShell>
       ) : null}
@@ -3069,7 +2878,6 @@ export function StoryboardHandoff({
   tourPriceTiers,
   selectedAddOnIds,
   onAddOnsChange,
-  serverPricing,
 }: {
   state: StudioV3State;
   onStateChange: Dispatch<SetStateAction<StudioV3State>>;
@@ -3080,7 +2888,6 @@ export function StoryboardHandoff({
   tourPriceTiers?: import("@/hooks/use-tour-price-tiers").TourPriceTiersMap;
   selectedAddOnIds?: ReadonlyArray<string>;
   onAddOnsChange?: (summary: SelectedAddOnSummary) => void;
-  serverPricing?: React.ComponentProps<typeof SignaturePriceCard>["serverPricing"];
 }) {
 
   const pickupCity = pickupCityLabel(state.pickup);
@@ -4185,7 +3992,6 @@ export function StoryboardHandoff({
           showAddOns={true}
           selectedAddOnIds={selectedAddOnIds}
           onAddOnsChange={onAddOnsChange}
-          serverPricing={serverPricing ?? null}
 
           remainingMinutes={
             revealLegsLoading

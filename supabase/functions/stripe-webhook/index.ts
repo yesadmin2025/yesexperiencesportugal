@@ -263,59 +263,12 @@ Deno.serve(async (req) => {
         bokunResult = { status: "needs_review", error: ambiguousReason ?? "No slot resolved" };
       } else {
         const slot = chosen;
-
-        // Phase B: prefer multi-category metadata written by the new
-        // bokun-signature-create-session path. Fall back to single-category
-        // for legacy Signature/Tailor sessions that still use tier pricing.
-        const categoriesJson = meta.pricing_categories_json ?? "";
-        type PricedCategory = { c: string; q: number; b?: string; u?: number };
-        let requested: PricedCategory[] = [];
-        if (categoriesJson) {
-          try {
-            const parsed = JSON.parse(categoriesJson);
-            if (Array.isArray(parsed)) {
-              requested = parsed.filter(
-                (p): p is PricedCategory =>
-                  p && typeof p.c === "string" && Number.isFinite(p.q),
-              );
-            }
-          } catch { /* fall through to legacy */ }
-        }
-
-        const slotCatById = new Map<string, { id: number; title: string }>();
-        for (const c of slot.pricingCategories ?? []) slotCatById.set(String(c.id), c);
-
-        let pricingCategoryBookings: Array<{ pricingCategoryId: number; quantity: number }> = [];
-        let missingCategory: string | null = null;
-
-        if (requested.length) {
-          for (const r of requested) {
-            if (r.q <= 0) continue;
-            const slotCat = slotCatById.get(r.c);
-            const paid = (r.u ?? 1) > 0;
-            if (!slotCat) {
-              if (paid) { missingCategory = r.b ?? r.c; break; }
-              // Free line (infant) absent on slot → skip from Bokun call.
-              continue;
-            }
-            pricingCategoryBookings.push({
-              pricingCategoryId: Number(slotCat.id),
-              quantity: r.q,
-            });
-          }
-        } else {
-          const cat = slot.pricingCategories?.[0];
-          if (!cat) missingCategory = "any";
-          else pricingCategoryBookings = [{ pricingCategoryId: Number(cat.id), quantity: guests }];
-        }
-
-        if (missingCategory) {
+        const cat = slot.pricingCategories?.[0];
+        if (!cat) {
           bokunResult = {
             status: "needs_review",
-            error: `Slot missing required pricing category (${missingCategory}) — no Adult substitution`,
+            error: "Bokun slot has no pricing category",
           };
-        } else if (!pricingCategoryBookings.length) {
-          bokunResult = { status: "needs_review", error: "No pricing category bookings resolved" };
         } else {
           const [firstName, ...rest] = (customerName ?? "Guest Guest").split(" ");
           const lastName = rest.join(" ") || "—";
@@ -327,7 +280,8 @@ Deno.serve(async (req) => {
             availabilityId: slot.id,
             startTime: slot.startTime,
             date: slot.date,
-            pricingCategoryBookings,
+            guests,
+            pricingCategoryId: cat.id,
             customer: {
               firstName,
               lastName,
@@ -343,6 +297,8 @@ Deno.serve(async (req) => {
               ),
           });
           bokunResult = {
+            // Tailored bookings always land in needs_review so the operator
+            // reconciles the stop changes against the base Bokun product.
             status: isTailored ? "needs_review" : "confirmed",
             booking_id: r.bookingId,
             confirmation: r.confirmationCode,

@@ -70,34 +70,6 @@ export const CTA_RESERVE_AND_PAY = "Reserve and pay" as const;
 export const INSTANT_CONFIRMATION =
   "Instant confirmation. Your date is held the moment you reserve." as const;
 
-// Pass 1 convergence: single source of truth for confirmation-status copy.
-// Studio V3 surfaces (reveal / refine / final / guest details / checkout /
-// Stripe custom_text) MUST route through confirmationCopy(status) — never
-// hard-code "Instant confirmation" or "Reserve instantly" without checking
-// the resolved quote's routeStatus + availabilityStatus.
-export type ConfirmationStatus = "validated" | "pending-review" | "unavailable" | "loading";
-
-export const CONFIRMATION_PENDING_REVIEW =
-  "Your request is received after payment and remains subject to final route and availability confirmation." as const;
-
-export const CONFIRMATION_UNAVAILABLE =
-  "Live pricing for this group size requires a tailored quote. Send this Signature to our travel designer." as const;
-
-export const CONFIRMATION_LOADING = "Calculating live price…" as const;
-
-export function confirmationCopy(status: ConfirmationStatus): string {
-  switch (status) {
-    case "validated":
-      return INSTANT_CONFIRMATION;
-    case "pending-review":
-      return CONFIRMATION_PENDING_REVIEW;
-    case "unavailable":
-      return CONFIRMATION_UNAVAILABLE;
-    case "loading":
-      return CONFIRMATION_LOADING;
-  }
-}
-
 export const REASSURANCE_DEFAULT: ReadonlyArray<{
   readonly key: string;
   readonly label: string;

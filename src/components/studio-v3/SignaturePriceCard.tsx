@@ -130,25 +130,6 @@ export interface SignaturePriceCardProps {
   itineraryStops?: ReadonlyArray<string>;
   /** Approximate total day length in hours (drive + dwell), used in the spine summary. */
   dwellHours?: number | null;
-  /**
-   * Pass 1B Slice A — server-authoritative quote. When present + status ===
-   * "quoted", replaces the visible per-pax price, additions rows and party
-   * total. Legacy client math becomes a pre-quote placeholder only.
-   */
-  serverPricing?: {
-    status: "quoted" | "loading" | "unavailable";
-    unitEur: number;
-    baseSubtotalEur: number;
-    addOnsSubtotalEur: number;
-    totalEur: number;
-    routeStatus: "validated" | "pending-review" | "unavailable" | "loading";
-    addOnLines: ReadonlyArray<{
-      id: string;
-      label: string;
-      lineSubtotalEur: number;
-      routeIntegration: "validated" | "pending-review" | "unavailable";
-    }>;
-  } | null;
 }
 
 
@@ -169,7 +150,6 @@ export function SignaturePriceCard({
   remainingMinutes = null,
   itineraryStops = [],
   dwellHours = null,
-  serverPricing = null,
 }: SignaturePriceCardProps) {
 
   const meta = tour ? VIATOR_META[tour.id] : null;
@@ -387,20 +367,11 @@ export function SignaturePriceCard({
       0,
     );
   }, [selectedAddOns, hasPrice, priceEur, displayGuests]);
-  const clientTotalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
+  const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
   const partyBaseEur =
     displayPerPaxEur != null && partyCount != null ? displayPerPaxEur * partyCount : null;
-  const clientPartyTotalEur =
+  const partyTotalEur =
     partyBaseEur != null ? partyBaseEur + addOnsDisplayPartyEur : null;
-
-  // Pass 1B Slice A — server-authoritative overrides. When quoted, these
-  // REPLACE the client-computed totals in every visible surface below
-  // (final-total card, CTA data-total-eur, sticky bar). Loading state shows
-  // "Calculating live price…" and disables the price number.
-  const serverQuoted = serverPricing?.status === "quoted";
-  const serverLoading = serverPricing?.status === "loading";
-  const totalEur = serverQuoted ? serverPricing!.totalEur : clientTotalEur;
-  const partyTotalEur = serverQuoted ? serverPricing!.totalEur : clientPartyTotalEur;
 
   // Tier rows for the picker — real per-pax when available, "from" anchor otherwise.
   const tierRows = useMemo(() => {

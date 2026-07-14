@@ -1,9 +1,5 @@
 import { useState } from "react";
 import { Calendar, Users, Sparkles, Lock, Loader2 } from "lucide-react";
-import { useTourBokunReadinessFor } from "@/hooks/use-tour-bokun-readiness";
-import { BandedSignatureBookingForm } from "@/components/booking/BandedSignatureBookingForm";
-import { BokunRolloutBadge } from "@/components/booking/BokunRolloutBadge";
-
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { SignatureTour } from "@/data/signatureTours";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -36,30 +32,6 @@ import {
  * lives on a separate page (`/tours/$tourId/tailor`).
  */
 export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
-  // Phase C rollout: when admin has enabled banded pricing for this tour AND
-  // at least one Bókun category is confirmed, hand off to the live-quote flow.
-  const { readiness } = useTourBokunReadinessFor(tour.id);
-  const hasConfirmedCategory =
-    readiness?.bokunCategories?.some((c) => c.mappingStatus === "confirmed") ?? false;
-  if (readiness?.bandedPricingEnabled && hasConfirmedCategory) {
-    return <BandedSignatureBookingForm tour={tour} readiness={readiness} />;
-  }
-  return (
-    <div className="space-y-3">
-      <BokunRolloutBadge readiness={readiness} tourId={tour.id} />
-      <LegacySimpleBookingForm tour={tour} readiness={readiness} />
-    </div>
-  );
-}
-
-
-function LegacySimpleBookingForm({
-  tour,
-  readiness,
-}: {
-  tour: SignatureTour;
-  readiness: import("@/hooks/use-tour-bokun-readiness").TourBokunReadiness | null | undefined;
-}) {
   const navigate = useNavigate();
   const [date, setDate] = useState("");
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
@@ -107,7 +79,6 @@ function LegacySimpleBookingForm({
       heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
       beats: meta?.included && meta.included.length > 0 ? meta.included : (tour.highlights ?? []),
       flowLabel: "Signature",
-      bokunReadiness: readiness,
     });
     setDetailsOpen(false);
     setCheckoutOpen(true);

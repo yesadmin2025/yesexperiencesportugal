@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-12T18:17:22.559Z",
-  "filesScanned": 633,
+  "generatedAt": "2026-07-11T03:36:18.787Z",
+  "filesScanned": 613,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 375,
+    "total": 369,
     "approved": 90,
     "allowlisted": 64,
-    "mismatch": 221
+    "mismatch": 215
   },
   "findings": [
     {
@@ -952,60 +952,6 @@
       "status": "mismatch"
     },
     {
-      "file": "src/components/booking/BokunRolloutBadge.tsx",
-      "line": 129,
-      "col": 51,
-      "raw": "#B45309",
-      "normalized": "#b45309",
-      "snippet": "<AlertTriangle size={13} style={{ color: \"#B45309\" }} aria-hidden />",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/components/booking/BokunRolloutBadge.tsx",
-      "line": 130,
-      "col": 53,
-      "raw": "#92400E",
-      "normalized": "#92400e",
-      "snippet": "<span className={labelCls} style={{ color: \"#92400E\" }}>",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/components/booking/BokunRolloutBadge.tsx",
-      "line": 143,
-      "col": 50,
-      "raw": "#B45309",
-      "normalized": "#b45309",
-      "snippet": "border: \"1px solid color-mix(in oklab, #B45309 40%, transparent)\",",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/components/booking/BokunRolloutBadge.tsx",
-      "line": 144,
-      "col": 44,
-      "raw": "#FEF3C7",
-      "normalized": "#fef3c7",
-      "snippet": "background: \"color-mix(in oklab, #FEF3C7 60%, transparent)\",",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/components/booking/BokunRolloutBadge.tsx",
-      "line": 156,
-      "col": 50,
-      "raw": "#B45309",
-      "normalized": "#b45309",
-      "snippet": "border: \"1px solid color-mix(in oklab, #B45309 40%, transparent)\",",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/components/booking/BokunRolloutBadge.tsx",
-      "line": 157,
-      "col": 44,
-      "raw": "#FEF3C7",
-      "normalized": "#fef3c7",
-      "snippet": "background: \"color-mix(in oklab, #FEF3C7 60%, transparent)\",",
-      "status": "mismatch"
-    },
-    {
       "file": "src/components/builder/BuilderMap.tsx",
       "line": 175,
       "col": 106,
@@ -1601,7 +1547,7 @@
     },
     {
       "file": "src/components/studio-v3/SignaturePriceCard.tsx",
-      "line": 664,
+      "line": 635,
       "col": 44,
       "raw": "#b8541a",
       "normalized": "#b8541a",
@@ -1610,7 +1556,7 @@
     },
     {
       "file": "src/components/studio-v3/SignaturePriceCard.tsx",
-      "line": 686,
+      "line": 657,
       "col": 51,
       "raw": "#b8541a",
       "normalized": "#b8541a",
