@@ -158,8 +158,9 @@ function Page() {
                     <Link
                       to="/local-stories/$slug"
                       params={{ slug: p.slug }}
-                      className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+                      className="editorial-card-link"
                     >
+
                       {p.hero_image_url ? (
                         <figure className="editorial-zoom relative aspect-[3/2] mb-6 shadow-[0_10px_30px_-22px_rgba(46,46,46,0.35)] group-hover:shadow-[0_24px_50px_-22px_rgba(41,91,97,0.28)] transition-shadow duration-700">
                           <img
