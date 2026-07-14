@@ -755,6 +755,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
     SelectedAddOnSummary["items"]
   >([]);
   const [selectedAddOnsTotalEur, setSelectedAddOnsTotalEur] = useState(0);
+  const [selectedAddOnsPartyTotalEur, setSelectedAddOnsPartyTotalEur] = useState(0);
   const handleAddOnsChange = useCallback((summary: SelectedAddOnSummary) => {
     setSelectedAddOnIds((prev) => {
       const same =
@@ -763,6 +764,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
     });
     setSelectedAddOnItems(summary.items);
     setSelectedAddOnsTotalEur(summary.totalEur);
+    setSelectedAddOnsPartyTotalEur(summary.partyTotalEur ?? summary.totalEur);
   }, []);
   // Reset add-ons ONLY when the resolved tour truly changes to a different
   // non-null tour. Guarded so the persistence hook's rehydrate (which sets
