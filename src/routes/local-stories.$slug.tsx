@@ -368,7 +368,7 @@ function StaticArticleView({
           <div className="container-x max-w-2xl">
             <div className="prose-yes">
               {article.sections.map((s, i) => (
-                <div key={i} className="mb-12">
+                <div key={i} className="mb-12 reveal-stagger">
                   <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.6rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                     {s.heading}
                   </h2>
