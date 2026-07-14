@@ -11,23 +11,25 @@ function supabaseForUser(ctx: ToolContext) {
 
 export default defineTool({
   name: "list_tours",
-  title: "List signature tours",
-  description: "List YES Experiences signature tours with slug, title, region and base price.",
+  title: "List imported tours",
+  description: "List YES Experiences tours (title, region, duration, starting price).",
   inputSchema: {
     region: z.string().trim().min(1).optional().describe("Optional region filter (e.g. 'Lisbon', 'Alentejo')."),
+    limit: z.number().int().min(1).max(200).optional().describe("Max rows to return. Default 50."),
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: async ({ region }, ctx) => {
+  handler: async ({ region, limit }, ctx) => {
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
     const client = supabaseForUser(ctx);
     let query = client
-      .from("tours")
-      .select("slug, title, region, base_price, duration_hours, status")
-      .order("title", { ascending: true });
-    if (region) query = query.ilike("region", `%${region}%`);
-    const { data, error } = await query.limit(200);
+      .from("imported_tours")
+      .select("id, title, region, region_label, duration_label, duration_hours, price_from, tier, theme, source_url")
+      .order("title", { ascending: true })
+      .limit(limit ?? 50);
+    if (region) query = query.or(`region.ilike.%${region}%,region_label.ilike.%${region}%`);
+    const { data, error } = await query;
     if (error) {
       return { content: [{ type: "text", text: error.message }], isError: true };
     }

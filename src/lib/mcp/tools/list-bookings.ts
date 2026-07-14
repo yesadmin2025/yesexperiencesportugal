@@ -12,22 +12,26 @@ function supabaseForUser(ctx: ToolContext) {
 export default defineTool({
   name: "list_bookings",
   title: "List recent bookings",
-  description: "List the most recent bookings visible to the signed-in user (admin required for full visibility).",
+  description: "List the most recent bookings visible to the signed-in user (admin visibility via RLS).",
   inputSchema: {
     limit: z.number().int().min(1).max(100).optional().describe("Max rows to return. Default 20."),
+    status: z.string().trim().min(1).optional().describe("Optional status filter (e.g. 'paid', 'pending')."),
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: async ({ limit }, ctx) => {
+  handler: async ({ limit, status }, ctx) => {
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
     const client = supabaseForUser(ctx);
-    const { data, error } = await client
+    let query = client
       .from("bookings")
-      .select("id, created_at, tour_slug, status, customer_name, customer_email, total_amount, currency, travel_date")
+      .select(
+        "id, created_at, booking_type, customer_name, customer_email, guests, preferred_date, status, currency, amount_total, final_total_eur",
+      )
       .order("created_at", { ascending: false })
       .limit(limit ?? 20);
-
+    if (status) query = query.eq("status", status);
+    const { data, error } = await query;
     if (error) {
       return { content: [{ type: "text", text: error.message }], isError: true };
     }
