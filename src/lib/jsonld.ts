@@ -424,6 +424,76 @@ export function imageGalleryLd(args: {
 }
 
 /**
+ * pageGalleryLd — dedupes photos by absolute URL, skips when fewer than 3
+ * remain. Returns `null` when the gallery shouldn't be emitted so callers
+ * can spread with `?? []`.
+ */
+export function pageGalleryLd(args: {
+  pageUrl: string;
+  name: string;
+  photos: { src: string; alt: string }[];
+}): ReturnType<typeof imageGalleryLd> | null {
+  const seen = new Set<string>();
+  const deduped = args.photos
+    .filter((p) => !!p?.src)
+    .map((p) => ({ ...p, src: absUrl(p.src) }))
+    .filter((p) => {
+      if (seen.has(p.src)) return false;
+      seen.add(p.src);
+      return true;
+    });
+  if (deduped.length < 3) return null;
+  return imageGalleryLd({ pageUrl: args.pageUrl, name: args.name, photos: deduped });
+}
+
+/**
+ * stopMediaLd — ItemList of per-stop TouristAttractions, each carrying an
+ * ImageObject when a photo is available. Emits alongside tourProductLd on
+ * signature/itinerary/plan-hub pages so Google associates each stop with
+ * its own image and caption, not just the page hero.
+ *
+ * Returns `null` when the stop list is empty.
+ */
+export function stopMediaLd(args: {
+  pageUrl: string;
+  name: string;
+  stops: Array<{ label: string; story?: string; image?: string; alt?: string }>;
+}) {
+  const items = (args.stops ?? []).filter((s) => !!s?.label);
+  if (items.length === 0) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${args.pageUrl}#stops`,
+    name: args.name,
+    isPartOf: { "@id": args.pageUrl },
+    numberOfItems: items.length,
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    itemListElement: items.map((s, i) => {
+      const attraction: Record<string, unknown> = {
+        "@type": "TouristAttraction",
+        name: s.label,
+        ...(s.story ? { description: s.story.slice(0, 300) } : {}),
+        ...(s.image
+          ? {
+              image: imageObjectLd({
+                url: s.image,
+                caption: s.alt || `${s.label} — ${args.name}`,
+              }),
+            }
+          : {}),
+      };
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        item: attraction,
+      };
+    }),
+  };
+}
+
+
+/**
  * Product node for a Signature tour detail page.
  *
  * Emits a combined Product + TouristTrip so the same payload satisfies

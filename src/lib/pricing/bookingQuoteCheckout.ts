@@ -63,18 +63,11 @@ export type BookingQuoteCheckoutResponse = {
 };
 
 async function functionErrorMessage(error: unknown): Promise<string> {
-  const fallback = error instanceof Error ? error.message : String(error);
-  if (!error || typeof error !== "object" || !("context" in error)) return fallback;
-
-  const context = (error as { context?: unknown }).context;
-  if (!(context instanceof Response)) return fallback;
-  try {
-    const payload = (await context.clone().json()) as { error?: unknown };
-    if (payload?.error) return String(payload.error);
-  } catch {
-    // Keep the SDK error when the function did not return JSON.
-  }
-  return fallback;
+  // Route through the shared parser so callers see the guest-safe copy
+  // for every known error code, regardless of envelope shape.
+  const { parseCheckoutError } = await import("@/lib/checkout/checkoutError");
+  const parsed = await parseCheckoutError(error);
+  return parsed.userMessage;
 }
 
 export async function createBookingQuoteSession(
@@ -87,13 +80,9 @@ export async function createBookingQuoteSession(
     },
   });
   if (error) throw new Error(await functionErrorMessage(error));
-  const resp = data as BookingQuoteCheckoutResponse | { error?: string } | null;
+  const resp = data as BookingQuoteCheckoutResponse | { error?: string; code?: string } | null;
   if (!resp || typeof resp !== "object" || !("sessionId" in resp)) {
-    const msg =
-      resp && typeof resp === "object" && "error" in resp && resp.error
-        ? String(resp.error)
-        : "Checkout session unavailable";
-    throw new Error(msg);
+    throw new Error(await functionErrorMessage(resp));
   }
   return resp;
 }

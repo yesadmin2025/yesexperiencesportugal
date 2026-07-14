@@ -1301,9 +1301,10 @@ function validateReturnOrigin(url: string): boolean {
   }
 }
 
+// Delegates to the shared checkout error builder so Signature + Builder
+// share one { code, message, retryable, requestId } envelope. Legacy string
+// slugs are mapped to a canonical code via codeFromLegacy().
+import { buildCheckoutError } from "../_shared/checkoutError.ts";
 function jsonError(message: string, status: number) {
-  return new Response(JSON.stringify({ error: message }), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+  return buildCheckoutError(message, status, corsHeaders, { detail: message });
 }
