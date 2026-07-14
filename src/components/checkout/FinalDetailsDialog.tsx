@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Clock, Loader2, Lock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Lock } from "lucide-react";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import {
@@ -12,27 +12,24 @@ import {
 } from "@/components/ui/dialog";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { prewarmStripeScript } from "@/components/checkout/BrandedCheckoutDrawer";
 
 /**
  * Final details before payment — the last step before Stripe checkout
  * in every instant-book path (Signature, Tailored Signature, Studio).
  *
- * This is *checkout*, not an enquiry: required fields ensure the local
- * host has everything ready; optional fields flow through to Bókun
- * unchanged. The collected payload is passed verbatim into the existing
- * `create-signature-checkout` body under `guestDetails`.
+ * Required fields ensure the local host has everything ready; optional
+ * fields flow through to the host unchanged. The collected payload is
+ * passed verbatim into the `create-signature-checkout` body under
+ * `guestDetails`.
  */
 export interface GuestDetails {
   fullName: string;
   email: string;
   phone: string;
   tourDate: string;
-  /** "HH:mm" — present when a Bókun availability slot was selected. */
+  /** "HH:mm" — optional preferred start time. */
   startTime?: string;
-  /** Bókun availability slot id, when one was selected. */
-  bokunAvailabilityId?: number;
   guests: number;
   pickupAddress: string;
   language: "en" | "pt";
@@ -61,16 +58,8 @@ interface Props {
   onConfirm: (details: GuestDetails) => Promise<void> | void;
   initial?: FinalDetailsInitial;
   submitting?: boolean;
-  /** Signature tour id used to resolve the Bókun product → time slots. */
+  /** Signature tour id — recorded on the checkout session for the host. */
   tourId?: string;
-  /** Optional explicit Bókun product id (Studio custom paths). */
-  bokunProductId?: string | number;
-}
-
-interface SlotOption {
-  availabilityId: number;
-  startTime: string;
-  availabilityCount: number | null;
 }
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -81,8 +70,6 @@ export function FinalDetailsDialog({
   onConfirm,
   initial,
   submitting = false,
-  tourId,
-  bokunProductId,
 }: Props) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -98,14 +85,6 @@ export function FinalDetailsDialog({
   const [occasion, setOccasion] = useState("");
   const [guideNotes, setGuideNotes] = useState("");
 
-  // Bókun time-slot state
-  const [slots, setSlots] = useState<SlotOption[]>([]);
-  const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);
-  const [slotsLoading, setSlotsLoading] = useState(false);
-  const [slotsError, setSlotsError] = useState<string | null>(null);
-  const [slotsMapped, setSlotsMapped] = useState(false);
-  const slotsFetchToken = useRef(0);
-
   useEffect(() => {
     if (!open) return;
     prewarmStripeScript();
@@ -113,50 +92,7 @@ export function FinalDetailsDialog({
     if (initial?.guests) setGuests(initial.guests);
     if (initial?.pickupAddress) setPickupAddress(initial.pickupAddress);
     if (initial?.language) setLanguage(initial.language);
-    // mainContact defaults to fullName if left blank — keeps the form short.
   }, [open, initial?.tourDate, initial?.guests, initial?.pickupAddress, initial?.language]);
-
-  // Fetch availability whenever date or tour changes.
-  useEffect(() => {
-    if (!open) return;
-    if (!tourDate || (!tourId && !bokunProductId)) {
-      setSlots([]);
-      setSelectedSlot(null);
-      setSlotsMapped(false);
-      setSlotsError(null);
-      return;
-    }
-    const token = ++slotsFetchToken.current;
-    setSlotsLoading(true);
-    setSlotsError(null);
-    setSelectedSlot(null);
-    void (async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke("bokun-availability", {
-          body: { tourId, bokunProductId, date: tourDate },
-        });
-        if (token !== slotsFetchToken.current) return;
-        if (error) throw error;
-        const result = (data ?? {}) as {
-          slots?: SlotOption[];
-          mapped?: boolean;
-          error?: string;
-        };
-        setSlotsMapped(Boolean(result.mapped));
-        setSlots(Array.isArray(result.slots) ? result.slots : []);
-        if (result.error === "availability_unavailable") {
-          setSlotsError("Live availability unavailable — your host will confirm a time.");
-        }
-      } catch (e) {
-        if (token !== slotsFetchToken.current) return;
-        console.error("[FinalDetailsDialog] availability fetch failed", e);
-        setSlots([]);
-        setSlotsError("Live availability unavailable — your host will confirm a time.");
-      } finally {
-        if (token === slotsFetchToken.current) setSlotsLoading(false);
-      }
-    })();
-  }, [open, tourDate, tourId, bokunProductId]);
 
   const handleSubmit = async () => {
     if (submitting) return;
@@ -167,8 +103,6 @@ export function FinalDetailsDialog({
     if (!tourDate) missing.push("tour date");
     if (!guests || guests < 1) missing.push("number of guests");
     if (!pickupAddress.trim()) missing.push("pickup address");
-    // Time slot is only required when Bókun returned slots for this date.
-    if (slotsMapped && slots.length > 0 && !selectedSlot) missing.push("start time");
     if (missing.length) {
       toast.error(`Please complete: ${missing.join(", ")}`);
       return;
@@ -178,8 +112,6 @@ export function FinalDetailsDialog({
       email: email.trim(),
       phone: phone.trim(),
       tourDate,
-      startTime: selectedSlot?.startTime,
-      bokunAvailabilityId: selectedSlot?.availabilityId,
       guests,
       pickupAddress: pickupAddress.trim(),
       language,
@@ -289,55 +221,6 @@ export function FinalDetailsDialog({
                 </div>
               </Field>
             </Row>
-            {(tourId || bokunProductId) && tourDate ? (
-              <Field
-                label="Start time"
-                required={slotsMapped && slots.length > 0}
-                hint={
-                  slotsLoading
-                    ? "Checking live availability…"
-                    : slots.length > 0
-                      ? `${slots.length} time${slots.length > 1 ? "s" : ""} available`
-                      : undefined
-                }
-              >
-                {slotsLoading ? (
-                  <div className="flex items-center gap-2 border border-[color:var(--border)] px-3 py-2.5 text-sm text-[color:var(--charcoal-soft)]">
-                    <Loader2 size={14} className="animate-spin" />
-                    Checking live availability…
-                  </div>
-                ) : slots.length > 0 ? (
-                  <div className="grid grid-cols-3 gap-2">
-                    {slots.map((s) => {
-                      const active = selectedSlot?.availabilityId === s.availabilityId;
-                      return (
-                        <button
-                          key={s.availabilityId}
-                          type="button"
-                          onClick={() => setSelectedSlot(s)}
-                          aria-pressed={active}
-                          className={[
-                            "flex items-center justify-center gap-1.5 border px-2.5 py-2.5 text-sm transition-colors min-h-[44px]",
-                            active
-                              ? "border-[color:var(--teal)] bg-[color:var(--teal)] text-[color:var(--ivory)]"
-                              : "border-[color:var(--border)] bg-[color:var(--ivory)] text-[color:var(--charcoal)] hover:border-[color:var(--gold)]",
-                          ].join(" ")}
-                        >
-                          <Clock size={12} aria-hidden /> {s.startTime}
-                        </button>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p className="text-[12px] text-[color:var(--charcoal-soft)] border border-dashed border-[color:var(--border)] px-3 py-2.5">
-                    {slotsError ??
-                      (slotsMapped
-                        ? "No live slots for this date — your host will confirm a start time after booking."
-                        : "Your host will confirm a start time after booking.")}
-                  </p>
-                )}
-              </Field>
-            ) : null}
             <Field label="Pickup address / hotel" required>
               <input
                 value={pickupAddress}

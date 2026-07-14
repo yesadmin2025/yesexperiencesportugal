@@ -6,8 +6,8 @@ import { Camera, Car, Clock, Flower2, Sparkles, Wine } from "lucide-react";
  * Per booking-truth-model: TEST MODE. No invented prices for add-ons.
  * Each element is selectable but always marked "Concierge confirms" so
  * the user knows the cost / availability is finalised by a human before
- * Bokun-backed pricing goes live. The Stripe metadata records the
- * selected element keys so ops can see the request after checkout.
+ * pricing goes live. The Stripe metadata records the selected element
+ * keys so ops can see the request after checkout.
  */
 export type ElementKey =
   | "sunset-setup"

@@ -3,7 +3,7 @@
 // source the admin editor writes to). The client cannot influence price.
 
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
-import { getActivity } from "../_shared/bokun.ts";
+
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
@@ -19,8 +19,8 @@ interface Body {
   guests: number;
   stopLabels?: string[];
   /** Real included items from VIATOR_META[tourId].included — used as the
-   *  truthful fallback when Bókun returns no inclusions. Client-owned so
-   *  the edge fn stays decoupled from src/ data files. */
+   *  truthful description source. Client-owned so the edge fn stays
+   *  decoupled from src/ data files. */
   includedItems?: string[];
   pickupLabel?: string;
   dateExact?: string | null;
@@ -37,9 +37,8 @@ interface Body {
   flow?: "studio" | "signature" | "tailor";
   /** Stripe Checkout UI mode. Defaults to "hosted" (full-page redirect). */
   uiMode?: "hosted" | "embedded";
-  /** Forwarded from FinalDetailsDialog — used to lock the Bókun slot the customer chose. */
+  /** Forwarded from FinalDetailsDialog. */
   guestDetails?: {
-    bokunAvailabilityId?: number | string | null;
     startTime?: string | null;
     [key: string]: unknown;
   };
@@ -138,15 +137,11 @@ Deno.serve(async (req) => {
       auth: { persistSession: false },
     });
 
-    const [{ data: tierRow }, { data: bokunRow }] = await Promise.all([
-      admin.from("tour_price_tiers").select("tiers").eq("tour_id", body.tourId).maybeSingle(),
-      admin
-        .from("tour_bokun_mapping")
-        .select("bokun_product_id")
-        .eq("tour_id", body.tourId)
-        .maybeSingle(),
-    ]);
-    const bokunMapped = Boolean(bokunRow?.bokun_product_id);
+    const { data: tierRow } = await admin
+      .from("tour_price_tiers")
+      .select("tiers")
+      .eq("tour_id", body.tourId)
+      .maybeSingle();
 
     const tier = Math.min(8, Math.max(1, body.guests));
     const tiers = (tierRow?.tiers ?? null) as Record<string, number> | null;
@@ -160,38 +155,25 @@ Deno.serve(async (req) => {
     const flow = resolveFlow(body);
     const copy = FLOW_COPY[flow];
 
-    // Ground the Stripe line item in real Bokun product data when we have a mapping.
-    // This avoids inventing inclusions/descriptions: title and any "includes" line
-    // come straight from the operator's Bokun product. Client-passed stopLabels are
-    // intentionally NOT shown in the line-item description for tailored bookings —
-    // those are pending operator review and could mislead the customer.
-    const bokunProductId = bokunRow?.bokun_product_id ?? null;
-    const bokunActivity = bokunProductId ? await getActivity(bokunProductId) : null;
-
+    // Build the Stripe line item from client-supplied tour data. Client-passed
+    // stopLabels are intentionally NOT shown in the line-item description for
+    // tailored bookings — those are pending operator review and could mislead
+    // the customer.
     const isTailored = flow === "tailor";
-    const realTitle = bokunActivity?.title?.trim() || body.tourTitle;
-    const productName = `${copy.label} — ${realTitle}${isTailored ? " (tailored)" : ""}`.slice(
+    const productName = `${copy.label} — ${body.tourTitle}${isTailored ? " (tailored)" : ""}`.slice(
       0,
       180,
     );
 
-    // Build a truthful description. Priority:
-    //   1. Bókun inclusions (operator source of truth)
-    //   2. Real VIATOR_META.included forwarded by the client
-    //   3. Nothing — never invent marketing prose in the fallback.
+    // Build a truthful description from client-forwarded VIATOR_META.included.
+    // Never invent marketing prose in the fallback.
     const guestsLine = `${body.guests} guest${body.guests > 1 ? "s" : ""}`;
-    const durationLine = bokunActivity?.durationText
-      ? `Duration ${bokunActivity.durationText}`
-      : null;
-    const bokunInclusions =
-      bokunActivity && bokunActivity.inclusions.length > 0 ? bokunActivity.inclusions : null;
     const clientIncluded =
       Array.isArray(body.includedItems) && body.includedItems.length > 0
         ? body.includedItems.filter((s) => typeof s === "string" && s.trim().length > 0)
         : null;
-    const inclusionSource = bokunInclusions ?? clientIncluded ?? null;
-    const includesLine = inclusionSource
-      ? `Includes: ${inclusionSource.slice(0, 4).join(", ")}`
+    const includesLine = clientIncluded
+      ? `Includes: ${clientIncluded.slice(0, 4).join(", ")}`
       : null;
     const tailoredNote = isTailored
       ? "Tailored adjustments confirmed by our team within 2 hours after payment."
@@ -199,7 +181,6 @@ Deno.serve(async (req) => {
 
     const description = [
       guestsLine + " · Hotel pickup included",
-      durationLine,
       includesLine,
       tailoredNote,
     ]
@@ -297,7 +278,7 @@ Deno.serve(async (req) => {
         date_exact: body.dateExact ?? "",
         pickup: (body.pickupLabel ?? "").slice(0, 120),
         hotel_pickup_included: "1",
-        ...(bokunActivity?.title ? { bokun_title: bokunActivity.title.slice(0, 160) } : {}),
+        
         journey_title: (body.journeyTitle ?? "").slice(0, 160),
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
         tailored: body.tailored ? "1" : "0",
@@ -309,9 +290,6 @@ Deno.serve(async (req) => {
         ),
 
         ui_mode: uiMode,
-        ...(body.guestDetails?.bokunAvailabilityId
-          ? { bokun_availability_id: String(body.guestDetails.bokunAvailabilityId) }
-          : {}),
         ...(body.guestDetails?.startTime
           ? { start_time: String(body.guestDetails.startTime).slice(0, 16) }
           : {}),
@@ -348,7 +326,6 @@ Deno.serve(async (req) => {
         clientSecret: (session as { client_secret?: string }).client_secret ?? null,
         sessionId: session.id,
         publishableKey,
-        bokunMapped,
         flow,
         productName,
         lineItemDescription: description,

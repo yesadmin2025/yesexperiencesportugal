@@ -106,8 +106,6 @@ import { Route as AdminDomainsHealthRouteImport } from './routes/admin.domains-h
 import { Route as AdminDnsWatchRouteImport } from './routes/admin.dns-watch'
 import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
-import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
-import { Route as AdminBokunMappingRouteImport } from './routes/admin.bokun-mapping'
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.tailor'
 import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
@@ -613,16 +611,6 @@ const AdminBuilderImagesRoute = AdminBuilderImagesRouteImport.update({
   path: '/admin/builder-images',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminBookingsRoute = AdminBookingsRouteImport.update({
-  id: '/admin/bookings',
-  path: '/admin/bookings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminBokunMappingRoute = AdminBokunMappingRouteImport.update({
-  id: '/admin/bokun-mapping',
-  path: '/admin/bokun-mapping',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminAiAuditRoute = AdminAiAuditRouteImport.update({
   id: '/admin/ai-audit',
   path: '/admin/ai-audit',
@@ -746,8 +734,6 @@ export interface FileRoutesByFullPath {
   '/unsubscribe': typeof UnsubscribeRoute
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
-  '/admin/bokun-mapping': typeof AdminBokunMappingRoute
-  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
@@ -859,8 +845,6 @@ export interface FileRoutesByTo {
   '/unsubscribe': typeof UnsubscribeRoute
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
-  '/admin/bokun-mapping': typeof AdminBokunMappingRoute
-  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
@@ -975,8 +959,6 @@ export interface FileRoutesById {
   '/unsubscribe': typeof UnsubscribeRoute
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
-  '/admin/bokun-mapping': typeof AdminBokunMappingRoute
-  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
@@ -1092,8 +1074,6 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/wine-tours-lisbon'
     | '/admin/ai-audit'
-    | '/admin/bokun-mapping'
-    | '/admin/bookings'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/dns-watch'
@@ -1205,8 +1185,6 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/wine-tours-lisbon'
     | '/admin/ai-audit'
-    | '/admin/bokun-mapping'
-    | '/admin/bookings'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/dns-watch'
@@ -1320,8 +1298,6 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/wine-tours-lisbon'
     | '/admin/ai-audit'
-    | '/admin/bokun-mapping'
-    | '/admin/bookings'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
     | '/admin/dns-watch'
@@ -1436,8 +1412,6 @@ export interface RootRouteChildren {
   UnsubscribeRoute: typeof UnsubscribeRoute
   WineToursLisbonRoute: typeof WineToursLisbonRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
-  AdminBokunMappingRoute: typeof AdminBokunMappingRoute
-  AdminBookingsRoute: typeof AdminBookingsRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
   AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
   AdminDnsWatchRoute: typeof AdminDnsWatchRoute
@@ -2169,20 +2143,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBuilderImagesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/bookings': {
-      id: '/admin/bookings'
-      path: '/admin/bookings'
-      fullPath: '/admin/bookings'
-      preLoaderRoute: typeof AdminBookingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/bokun-mapping': {
-      id: '/admin/bokun-mapping'
-      path: '/admin/bokun-mapping'
-      fullPath: '/admin/bokun-mapping'
-      preLoaderRoute: typeof AdminBokunMappingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/ai-audit': {
       id: '/admin/ai-audit'
       path: '/admin/ai-audit'
@@ -2404,8 +2364,6 @@ const rootRouteChildren: RootRouteChildren = {
   UnsubscribeRoute: UnsubscribeRoute,
   WineToursLisbonRoute: WineToursLisbonRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
-  AdminBokunMappingRoute: AdminBokunMappingRoute,
-  AdminBookingsRoute: AdminBookingsRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
   AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,
   AdminDnsWatchRoute: AdminDnsWatchRoute,

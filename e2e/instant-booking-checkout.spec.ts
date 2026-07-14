@@ -1,19 +1,13 @@
 /**
- * Instant booking — Studio / Signature / Tailor → Stripe + Bókun wiring.
+ * Instant booking — Studio / Signature / Tailor → Stripe wiring.
  *
- * Verifies, without opening the Stripe checkout window, that:
+ * Verifies, without opening the Stripe checkout window, that each of the
+ * three instant-booking surfaces (Studio reveal, Signature "as designed",
+ * and Tailor) successfully calls the `create-signature-checkout` edge
+ * function and receives a real `https://checkout.stripe.com/...` session URL.
  *
- *   1. Each of the three instant-booking surfaces (Studio reveal, Signature
- *      "as designed", and Tailor) successfully calls the
- *      `create-signature-checkout` edge function and receives a real
- *      `https://checkout.stripe.com/...` session URL.
- *   2. The Signature tour used in the test is mapped to a Bókun product via
- *      the `tour_bokun_mapping` table — i.e. the webhook will push the
- *      booking to Bókun after Stripe confirms payment.
- *
- * The test talks to the deployed edge function and the public Supabase
- * REST endpoint directly. It never navigates to Stripe — which is exactly
- * what we want in CI.
+ * The test talks to the deployed edge function directly and never navigates
+ * to Stripe — which is exactly what we want in CI.
  */
 import { expect, test } from "@playwright/test";
 
@@ -26,7 +20,7 @@ const SUPABASE_ANON_KEY =
   process.env.SUPABASE_PUBLISHABLE_KEY ??
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxeWducWV0eWdjdmthYXV3YmppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyNzc1NzUsImV4cCI6MjA5Mjg1MzU3NX0.1ilgY0HVPZUntxjNke4Ii3BXOSu1DJ_AlhE2zaHR_Tg";
 
-// A real Signature with a Bókun mapping and tier pricing.
+// A real Signature tour with tier pricing.
 const TOUR_ID = "sintra-cascais";
 const TOUR_TITLE = "Sintra & Cascais — Palaces and Coast";
 const ORIGIN = "https://yesexperiencesportugal.com";
@@ -70,7 +64,7 @@ function tomorrowISO() {
 type CheckoutResponse = {
   url?: string;
   sessionId?: string;
-  bokunMapped?: boolean;
+  sessionId?: string;
   flow?: Flow;
   productName?: string;
   lineItemDescription?: string;

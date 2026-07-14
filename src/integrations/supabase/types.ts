@@ -97,13 +97,6 @@ export type Database = {
           add_on_pricing: Json
           availability_id: string
           base_pricing: Json
-          bokun_base_subtotal_eur: number | null
-          bokun_option_id: string | null
-          bokun_product_id: string
-          bokun_rate_id: string | null
-          bokun_release_result: Json | null
-          bokun_reservation_id: string | null
-          bokun_reservation_status: string | null
           checkout_created_at: string | null
           commercial_mapping_id: string
           commercial_product_key: string
@@ -137,13 +130,6 @@ export type Database = {
           add_on_pricing: Json
           availability_id: string
           base_pricing: Json
-          bokun_base_subtotal_eur?: number | null
-          bokun_option_id?: string | null
-          bokun_product_id: string
-          bokun_rate_id?: string | null
-          bokun_release_result?: Json | null
-          bokun_reservation_id?: string | null
-          bokun_reservation_status?: string | null
           checkout_created_at?: string | null
           commercial_mapping_id: string
           commercial_product_key: string
@@ -177,13 +163,6 @@ export type Database = {
           add_on_pricing?: Json
           availability_id?: string
           base_pricing?: Json
-          bokun_base_subtotal_eur?: number | null
-          bokun_option_id?: string | null
-          bokun_product_id?: string
-          bokun_rate_id?: string | null
-          bokun_release_result?: Json | null
-          bokun_reservation_id?: string | null
-          bokun_reservation_status?: string | null
           checkout_created_at?: string | null
           commercial_mapping_id?: string
           commercial_product_key?: string
@@ -218,13 +197,6 @@ export type Database = {
       bookings: {
         Row: {
           amount_total: number
-          bokun_base_subtotal_eur: number | null
-          bokun_booking_id: string | null
-          bokun_confirmation_code: string | null
-          bokun_error: string | null
-          bokun_last_attempt_at: string | null
-          bokun_reservation_id: string | null
-          bokun_status: string | null
           booking_details: Json | null
           booking_details_completed_at: string | null
           booking_type: Database["public"]["Enums"]["booking_type"]
@@ -250,13 +222,6 @@ export type Database = {
         }
         Insert: {
           amount_total: number
-          bokun_base_subtotal_eur?: number | null
-          bokun_booking_id?: string | null
-          bokun_confirmation_code?: string | null
-          bokun_error?: string | null
-          bokun_last_attempt_at?: string | null
-          bokun_reservation_id?: string | null
-          bokun_status?: string | null
           booking_details?: Json | null
           booking_details_completed_at?: string | null
           booking_type: Database["public"]["Enums"]["booking_type"]
@@ -282,13 +247,6 @@ export type Database = {
         }
         Update: {
           amount_total?: number
-          bokun_base_subtotal_eur?: number | null
-          bokun_booking_id?: string | null
-          bokun_confirmation_code?: string | null
-          bokun_error?: string | null
-          bokun_last_attempt_at?: string | null
-          bokun_reservation_id?: string | null
-          bokun_status?: string | null
           booking_details?: Json | null
           booking_details_completed_at?: string | null
           booking_type?: Database["public"]["Enums"]["booking_type"]

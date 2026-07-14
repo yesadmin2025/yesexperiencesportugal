@@ -8,7 +8,7 @@ import { type DriftLocale } from "@/lib/drift/i18n";
  *
  * Shows an indicative per-guest range only — never a fabricated total,
  * never a precise quote. Real pricing lives at the Signature page
- * and the Bokun checkout. This is a confidence-building whisper, not
+ * and Stripe checkout. This is a confidence-building whisper, not
  * a configurator number.
  *
  * Hidden during convergence (the reveal carries its own pricing band)
