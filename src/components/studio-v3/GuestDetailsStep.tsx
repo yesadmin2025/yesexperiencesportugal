@@ -35,12 +35,16 @@ export interface GuestDetailsStepProps {
   readonly onBack: () => void;
   readonly onSubmit: (details: GuestDetails) => Promise<void> | void;
   /**
-   * Called once the traveller blurs a valid email. Parent owns the
-   * snapshot + email dispatch — this component only forwards the address.
-   * Debounced + deduped internally so repeated blurs of the same address
-   * never fire twice.
+   * Fires ONCE per explicit submit, in parallel with `onSubmit`, when the
+   * guest chooses to send their Signature Story to their inbox. Parent
+   * owns the snapshot + revision hash + dispatch — this component only
+   * forwards the address. Never blocks advancing to checkout; failures
+   * are swallowed by the parent (email is never a checkout gate).
+   *
+   * Replaces the old `onEmailBlur` behaviour — the email is no longer
+   * sent on blur. Only the explicit "Continue and email…" action fires.
    */
-  readonly onEmailBlur?: (email: string) => Promise<void> | void;
+  readonly onStorySubmit?: (email: string) => Promise<void> | void;
   readonly className?: string;
   readonly testId?: string;
 }
