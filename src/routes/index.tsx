@@ -974,7 +974,7 @@ function HomePage() {
                     </CtaButton>
                   </CtaPair>
                   <p className="mt-6 text-center text-[12.5px] leading-[1.6] text-[color:var(--charcoal-soft)]">
-                    A local usually replies within a few hours.
+                    A local will reply as soon as possible.
                   </p>
                 </div>
               </div>
