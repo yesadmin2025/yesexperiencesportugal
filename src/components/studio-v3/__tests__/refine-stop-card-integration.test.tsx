@@ -4,6 +4,7 @@
  * primitive test in `refine-stop-card.test.tsx`.
  */
 
+import * as React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import { RefineStopCard } from "../RefineStopCard";
