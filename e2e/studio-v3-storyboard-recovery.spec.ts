@@ -387,6 +387,27 @@ test.describe("Studio V3 storyboard recovery — extra persisted states", () => 
         `${scenario.name}: recovered ${stopCount} stop(s), expected ≥ ${scenario.expectMinRows}`,
       ).toBeGreaterThanOrEqual(scenario.expectMinRows);
 
+      // Route metadata parity — every persisted stop MUST render, in the
+      // persisted order, with its label unchanged. Whitespace-only /
+      // empty labels are preserved verbatim; duplicates stay duplicated;
+      // extras beyond any capping are still on-screen. If this fails,
+      // recovery reordered / deduped / trimmed something it shouldn't.
+      const renderedLabels = await readRenderedLabels(page);
+      const persistedLabels = scenario.editedRoutePoints.map((p) => p.label);
+      testInfo.annotations.push(
+        { type: "persisted-labels", description: JSON.stringify(persistedLabels) },
+        { type: "recovered-labels", description: JSON.stringify(renderedLabels) },
+      );
+      expect(
+        renderedLabels.map((l) => l.trim()),
+        `${scenario.name}: rendered labels must match persisted order`,
+      ).toEqual(persistedLabels.map((l) => l.trim()));
+
+      // Non-editor persisted metadata (title, firstName) must be intact —
+      // the fix only widens the stops editor; nothing else should shift.
+      await assertPersistedMetadataIntact(page);
+
+
       const editorShot = await editor.screenshot({
         path: path.join(ARTIFACT_DIR, `${scenario.slug}-editor.png`),
       });
