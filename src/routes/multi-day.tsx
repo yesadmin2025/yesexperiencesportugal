@@ -43,10 +43,10 @@ export const Route = createFileRoute("/multi-day")({
           "Full private Portugal journeys, designed with a local travel designer — shaped around your time, rhythm and interests. Delivered as a complete travel file.",
       },
 
-      { property: "og:image", content: `https://yesexperiencesportugal.com${imgSintraEstates}` },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${imgMultiDay}` },
       {
         property: "twitter:image",
-        content: `https://yesexperiencesportugal.com${imgSintraEstates}`,
+        content: `https://yesexperiencesportugal.com${imgMultiDay}`,
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/multi-day" },
     ],
