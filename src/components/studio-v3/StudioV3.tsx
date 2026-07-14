@@ -2626,9 +2626,6 @@ export function StudioV3() {
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}
 
-            submitting={checkoutPending}
-            onBack={() => back("guestDetails")}
-            onEditGuestDetails={() => back("guestDetails")}
             onReserve={() => {
               void handleStripeCheckout(state, pendingGuestDetails);
             }}
