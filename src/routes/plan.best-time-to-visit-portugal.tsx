@@ -17,12 +17,12 @@ import { RelatedExperiencesRail } from "@/components/RelatedExperiencesRail";
 import { rankRelatedTours } from "@/lib/related-experiences";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 
-import guestArrabidaViewpoint from "@/assets/guests/arrabida-viewpoint-group.jpg.asset.json";
 import guestVineyardCouple from "@/assets/guests/vineyard-couple.jpg.asset.json";
 import guestQuintaGroup from "@/assets/guests/quinta-group.jpg.asset.json";
 import guestBubblingTasting from "@/assets/guests/bubbling-wine-tasting.jpg.asset.json";
 import imgArrabidaLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
 import imgSintraCascais from "@/assets/tours/sintra-cascais.jpg";
+import imgArrabidaBoatHero from "@/assets/tours/arrabida-boat/hero.jpg";
 
 /**
  * /plan/best-time-to-visit-portugal
@@ -45,8 +45,8 @@ const DESCRIPTION =
   "When to visit Portugal, by a Sesimbra-based private tour team — the real trade-offs of spring, summer, harvest and winter, plus the private days that work best in each season.";
 
 const HERO = {
-  src: guestArrabidaViewpoint.url,
-  alt: "American travelers at the Arrábida coastal viewpoint on a clear late-spring afternoon, south of Lisbon",
+  src: imgArrabidaBoatHero,
+  alt: "The Arrábida coast seen from a small private boat on a calm late-spring morning, south of Lisbon",
 };
 
 const GALLERY = [
