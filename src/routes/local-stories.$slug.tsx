@@ -508,6 +508,7 @@ function StaticArticleView({
           </div>
         </section>
       </article>
+      <LandingTourCredibility parentTourId={article.signatureSlug} />
       <StoryRelated article={article} />
     </SiteLayout>
   );
