@@ -262,8 +262,31 @@ function RootComponent() {
   useEffect(() => installAnalyticsAttrs(), []);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { locale } = parseLocaleFromPath(pathname);
-  // Single QueryClient per browser session — keeps SignaturePriceCard and
 
+  // Site-wide editorial motion controller — same `[data-motion]` /
+  // `.motion-in` system that powers the homepage. Mounted here (not in
+  // SiteLayout) so EVERY route inherits the premium cadence, including
+  // pages that use their own wrappers (moments, plan.*, Signature
+  // templates, etc.). Re-inits on route change so newly-mounted DOM
+  // gets tagged and observed.
+  useEffect(() => {
+    let dispose: (() => void) | undefined;
+    let cancelled = false;
+    // Defer one frame so the new route's DOM is in the tree before we scan.
+    const raf = requestAnimationFrame(() => {
+      import("@/lib/home-motion").then(({ startHomeMotion }) => {
+        if (cancelled) return;
+        dispose = startHomeMotion();
+      });
+    });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf);
+      dispose?.();
+    };
+  }, [pathname]);
+
+  // Single QueryClient per browser session — keeps SignaturePriceCard and
   // any future useQuery hook resolvable without each route wiring its own.
   const [queryClient] = useState(
     () => new QueryClient({ defaultOptions: { queries: { staleTime: 60_000, retry: 1 } } }),
