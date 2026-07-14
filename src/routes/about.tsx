@@ -5,6 +5,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   BASED_IN_SHORT,
   EMAIL,
@@ -50,6 +51,7 @@ export const Route = createFileRoute("/about")({
 });
 
 function Page() {
+  useMarketingMotion();
   return (
     <SiteLayout>
       {/* Hero */}

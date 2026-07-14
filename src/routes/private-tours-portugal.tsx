@@ -4,6 +4,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { jsonLdScript, breadcrumbLd } from "@/lib/jsonld";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/private-tours-portugal";
@@ -90,6 +91,7 @@ const ITEMS: {
 ];
 
 function Page() {
+  useMarketingMotion();
   return (
     <SiteLayout>
       <article>

@@ -3115,6 +3115,22 @@ html.motion-ready [data-motion].motion-in {
   transform: translateY(0);
 }
 
+/* Marketing-scoped override — public marketing pages boot the same
+   `[data-motion]` controller via `useMarketingMotion`, which sets
+   `data-motion-scope="marketing"` on <html>. Values are tightened to
+   the approved bounded plan: max translateY 8px, max duration 220ms,
+   runs once, no layout shift. Homepage (no scope attribute) is
+   unaffected. */
+html.motion-ready[data-motion-scope="marketing"] [data-motion] {
+  transform: translateY(8px);
+  transition:
+    opacity 220ms var(--ease-premium, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 220ms var(--ease-premium, cubic-bezier(0.22, 1, 0.36, 1));
+}
+html.motion-ready[data-motion-scope="marketing"] [data-motion].motion-in {
+  transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html.motion-ready [data-motion],
   html.motion-ready [data-motion].motion-in {
@@ -3123,6 +3139,7 @@ html.motion-ready [data-motion].motion-in {
     transition: none !important;
   }
 }
+
 
 /* ─────────────────────────────────────────────────────────────
    EDITORIAL CARD — unified premium hover for every card on the

@@ -8,6 +8,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import ogImg from "@/assets/edit-viewpoint.jpg";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 type JournalPost = {
   slug: string;
@@ -95,6 +96,7 @@ async function fetchPosts(): Promise<JournalPost[]> {
 }
 
 function Page() {
+  useMarketingMotion();
   const { data: posts, isLoading } = useQuery({
     queryKey: ["journal_posts", "published"],
     queryFn: fetchPosts,

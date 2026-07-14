@@ -8,6 +8,7 @@ import ogImg from "@/assets/why-image.jpg";
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   BUSINESS_LEGAL_NAME,
   CITY,
@@ -119,6 +120,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Page() {
+  useMarketingMotion();
   const [sent, setSent] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);

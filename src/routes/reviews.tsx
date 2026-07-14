@@ -16,6 +16,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   getGlobalReviewStats,
   getTourReviewStats,
@@ -149,6 +150,7 @@ function Stars({ rating }: { rating: number }) {
 type Bundle = { stats: TourStats; reviews: PublicReview[] };
 
 function ReviewsPage() {
+  useMarketingMotion();
   const { stats: initialStats } = Route.useLoaderData();
   const globalFn = useServerFn(getGlobalReviewStats);
   const statsFn = useServerFn(getTourReviewStats);

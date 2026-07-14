@@ -11,6 +11,7 @@ import ogImg from "@/assets/hero-coast.jpg";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 export const Route = createFileRoute("/experiences")({
   head: () => ({
@@ -62,6 +63,7 @@ export const Route = createFileRoute("/experiences")({
 });
 
 function ExperiencesPage() {
+  useMarketingMotion();
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>

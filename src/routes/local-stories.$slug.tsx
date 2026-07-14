@@ -5,6 +5,7 @@ import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-rout
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   jsonLdScript,
   breadcrumbLd,
@@ -284,6 +285,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
 });
 
 function Page() {
+  useMarketingMotion();
   const { slug } = Route.useParams();
   const article = getLocalStoryArticle(slug);
   const loaderData = Route.useLoaderData();
