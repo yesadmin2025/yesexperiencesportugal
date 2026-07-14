@@ -4,7 +4,12 @@
 // stripe-webhook (consume), useBookingQuote (subscribe).
 
 export type BookingFlow = "signature" | "tailor" | "studio";
-export type QuoteSource = "bokun-live";
+export type QuoteSource = "bokun-live" | "manual-viator-tiers";
+/** Server-owned checkout eligibility. `instant` = a real Bókun provisional
+ *  reservation can be created and Stripe may be charged. `enquiry_only` =
+ *  the quote exists but no live Bókun reservation is possible; the browser
+ *  MUST NOT open a Stripe session and the server MUST refuse to create one. */
+export type CheckoutEligibility = "instant" | "enquiry_only";
 export type BookingAvailability = "available" | "unavailable";
 export type BookingAddOnPricingUnit = "per_person" | "per_group" | "per_vehicle" | "fixed";
 
