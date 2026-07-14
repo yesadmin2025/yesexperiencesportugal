@@ -23,7 +23,7 @@ import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { cn } from "@/lib/utils";
-import { resolveJourneyPricing, ageBand } from "@/data/signatureTourPricing";
+import { resolveJourneyPricing } from "@/data/signatureTourPricing";
 
 export interface CheckoutSummaryProps {
   readonly state: StudioV3State;
