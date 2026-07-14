@@ -19,7 +19,10 @@
  * don't red-line CI.
  */
 import { test, expect, type Page } from "@playwright/test";
+import path from "node:path";
 import { STUDIO_DRAFT_STORAGE_KEY } from "../src/components/studio-v3/studioDraftStorage";
+
+const ARTIFACT_DIR = path.resolve(process.cwd(), "playwright-report/storyboard-recovery");
 
 type EditedRoutePoints = Array<{ label: string; story: string }> | null;
 
