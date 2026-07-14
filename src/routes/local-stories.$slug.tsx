@@ -26,6 +26,7 @@ import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
 import { RelatedExperiencesRail } from "@/components/RelatedExperiencesRail";
+import StoryInternalLinks from "@/components/story/StoryInternalLinks";
 import { rankRelatedTours, relatedStoriesForStory } from "@/lib/related-experiences";
 
 type JournalPostFull = {
@@ -509,6 +510,7 @@ function StaticArticleView({
         </section>
       </article>
       <LandingTourCredibility parentTourId={article.signatureSlug} />
+      <StoryInternalLinks article={article} />
       <StoryRelated article={article} />
     </SiteLayout>
   );
