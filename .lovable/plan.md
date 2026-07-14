@@ -1,34 +1,35 @@
-## Problema
+## Do I know what the issue is?
 
-No ecrã **Refine** (`data-studio-v3-screen="refine"`, phase `"storyboard"`, antes do storytelling/FinalReveal), quando o utilizador adiciona/remove add-ons:
+Sim. O erro do screenshot não vem do cálculo do preço: o Studio bloqueia a composição antes de criar o draft.
 
-- o **total do grupo** actualiza (linha "€X total for your group") ✓
-- o **preço por convidado** (`€215 / guest`) **fica fixo** ✗
+**Problema exato:** quando existe uma criança, `StudioV3.tsx` tenta validar todos os tours pelas categorias Bókun guardadas em `tour_price_tiers.bokun_categories`. Na base de dados, os 12 tours têm esse campo vazio; por isso, `filterStudioCandidatesByAges()` exclui todos, `resolveStudioV3Route()` devolve `skeletonTourKey: null` e aparece “We couldn't compose a draft…”. Isto contradiz o checkout atual, que já usa pricing manual Viator e suporta Adult/Youth/Child/Infant no servidor.
 
-Causa: no `SignaturePriceCard` o número grande `€ / guest` é `displayPerPaxEur`, que resolve apenas a tier base do Viator (ex.: €215 para 2-3 guests). Os add-ons entram só no `partyTotalEur`. E o `useResolvedSignature` também não corre em `"storyboard"` (só a partir de `"confirmation"`), portanto não há server pricing a preencher esse gap.
+## Plano de correção
 
-## Recomendação
+1. **Desbloquear o draft para famílias**
+   - Em `StudioV3.tsx`, deixar de usar o espelho vazio de categorias Bókun como gate para o matching do Studio enquanto o produto comercial `studio-v3-private-full-day` está no modo manual.
+   - Manter os gates reais de segurança existentes: idade mínima, infant permitido, stroller, capacidade e suitability por tour/stop.
+   - Assim, crianças continuam a excluir apenas tours realmente incompatíveis (ex.: barco para menores de 4), sem eliminar todo o catálogo.
 
-Passar o preço grande a ser o **all-in por convidado do dia composto** — igual à forma como qualquer traveller lê "quanto vou pagar cada um": `(base_group_total + add_ons_group_total) / guests`.
+2. **Manter a composição no checkout**
+   - Preservar `adults + minorAges` no pedido de quote.
+   - Confirmar que a quote autoritativa aplica as bandas já existentes: adulto 100%, jovem 80%, criança 50%, bebé €0, mais add-ons calculados pelo servidor.
+   - O frontend não enviará valores monetários confiáveis; o checkout continua a recalcular tudo no servidor.
 
-- Mantém-se uma linha secundária pequena com a base tier ("de €215/guest base · +€X em adições") para transparência.
-- O número total do grupo continua igual.
-- Sem inventar preços: usa exactamente as tiers Viator + os preços dos add-ons já existentes.
-- Reduced-motion safe, nenhum motion novo.
+3. **Uniformizar preço pp e total**
+   - No `SignaturePriceCard`, manter o recálculo imediato do all-in pp após add/remove: `total do grupo / número de convidados`.
+   - No `CheckoutSummary`, mostrar o mesmo all-in pp calculado a partir da quote autoritativa, preservando a tier base numa linha secundária quando houver add-ons ou bandas infantis.
+   - O total apresentado no Refine e o `finalTotalEur` enviado ao Stripe terão a mesma fonte de verdade.
 
-## Onde mexer (técnico)
+4. **Cobertura de regressão**
+   - Adicionar teste de matching com 1 adulto + 1 criança, comprovando que existe draft e que tours incompatíveis continuam excluídos.
+   - Adicionar teste de quote/checkout com criança + add-on, validando pp, total e linhas por banda.
+   - Executar os testes focados do Studio e validar o fluxo mobile até ao checkout.
 
-`src/components/studio-v3/SignaturePriceCard.tsx`:
-- Introduzir `allInPerPaxEur = partyTotalEur && partyCount ? Math.round(partyTotalEur / partyCount) : displayPerPaxEur`.
-- Trocar o número grande `€{displayPerPaxEur} / guest` (linhas ~586-601) por `€{allInPerPaxEur} / guest`.
-- Debaixo do número, quando houver add-ons seleccionados, uma micro-linha: `"base €{displayPerPaxEur}/guest · +€{addOnsPartyEur} additions"` (tokens brand, 10.5px, tracking `.24em`, cor `charcoal 55%`).
-- Preservar `data-per-pax-eur` no elemento para não partir testes (`price-source-of-truth`, `visible-price-convergence`); manter o valor base tier lá — é o que os testes assertam.
-- Manter fallback intacto quando `partyCount` ainda é `null` (grupo de 1 ou sem guests): mostra o base como hoje.
+<presentation-actions>
+  <presentation-open-history>View History</presentation-open-history>
+</presentation-actions>
 
-`src/components/studio-v3/useResolvedSignature.ts`: **não** alargar aos phases anteriores — nesta fase o server não muda o `unitEur` (só o total), portanto não resolve o problema e desperdiça quotes. Fica só a partir de `confirmation`.
-
-## Fora do âmbito
-
-- Não altera Storytelling/FinalReveal nem CheckoutSummary (esses já usam `serverPricing` autoritativo).
-- Não altera regras de negócio nem tiers.
-- Nenhuma alteração de copy fora da micro-linha explicativa.
+<presentation-actions>
+<presentation-link url="https://docs.lovable.dev/tips-tricks/troubleshooting">Troubleshooting docs</presentation-link>
+</presentation-actions>

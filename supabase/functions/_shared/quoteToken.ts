@@ -62,6 +62,7 @@ export interface EmbeddedSnapshot {
   startTime: string;
   language: string;
   guests: number;
+  travellerComposition: { adults: number; minorAges: number[] };
   routeStatus: "validated" | "pending-review" | "unavailable";
   routeStops: Array<{ id: string; label: string }>;
   selectedAddOns: Array<{ id: string; quantity: number }>;
@@ -70,6 +71,7 @@ export interface EmbeddedSnapshot {
 export interface EmbeddedPricing {
   unitEur: number;
   baseSubtotalEur: number;
+  baseLineItems: Array<{ label: string; unitEur: number; quantity: number; lineSubtotalEur: number }>;
   addOnLineItems: Array<{ id: string; label: string; unitEur: number; quantity: number; lineSubtotalEur: number }>;
   totalEur: number;
   currency: "EUR";

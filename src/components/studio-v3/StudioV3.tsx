@@ -14,9 +14,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { TravellerCompositionPicker } from "@/components/booking/TravellerCompositionPicker";
-import { useTourBokunReadiness } from "@/hooks/use-tour-bokun-readiness";
 import {
-  filterSignatureCandidatesForAges,
   filterStudioCandidatesBySuitability,
 } from "@/lib/pricing/filterSignatureCandidatesForAges";
 import { requirementsFromComposition } from "@/lib/pricing/travellerSuitability";
@@ -93,7 +91,6 @@ import {
   createBookingQuoteSession,
   fetchBookingQuote,
 } from "@/lib/pricing/bookingQuoteCheckout";
-import { compositionFromLegacyGuests } from "@/lib/pricing/travellerComposition";
 import { computePricingRevision, isQuoteAvailable } from "@/lib/pricing/bookingQuote";
 import {
   fetchStudioQuote,
@@ -855,6 +852,10 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
       routeStops,
       selectedAddOns: selectedAddOnItems.map((i) => ({ id: i.id, quantity: 1 })),
       routeStatus: "pending-review",
+      travellerComposition: {
+        adults: Math.max(1, guests - state.minorAges.length),
+        minorAges: state.minorAges,
+      },
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -979,6 +980,10 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
               : "09:00",
             language: (details.language === "pt" ? "pt" : "en"),
             guests: details.guests,
+            travellerComposition: {
+              adults: Math.max(1, details.guests - currentState.minorAges.length),
+              minorAges: currentState.minorAges,
+            },
             routeStops,
             selectedAddOns: selectedAddOnItems.map((i) => ({ id: i.id, quantity: 1 })),
             routeStatus: "pending-review",
@@ -1138,7 +1143,10 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
         // Launch-spec v3: one-shot server quote → signed token → checkout.
         // Studio resolves against `studio_commercial_bokun_mapping` server-side.
-        const composition = compositionFromLegacyGuests(details.guests);
+        const composition = {
+          adults: Math.max(1, details.guests - currentState.minorAges.length),
+          minorAges: currentState.minorAges,
+        };
         const commercialProductKey = "studio-v3-private-full-day";
         assertStudioCommercialIdentity(commercialProductKey);
         const selectedAddOnsForQuote = addOnsForCheckout.map((a) => ({
@@ -3184,7 +3192,6 @@ export function StoryboardHandoff({
   // compatible id set into `resolveStudioV3Route` BEFORE any generation.
   // Loading vs unsupported are kept strictly separate (loading never
   // labels an age as unsupported).
-  const readinessQuery = useTourBokunReadiness();
   const ageFilter = useMemo<
     Parameters<typeof resolveStudioV3Route>[0]["ageFilter"]
   >(() => {
@@ -3193,9 +3200,6 @@ export function StoryboardHandoff({
       minorAges: state.minorAges,
     };
     if (composition.minorAges.length === 0) return null; // adult-only → no filter
-    if (readinessQuery.isLoading || !readinessQuery.data) {
-      return { status: "loading" };
-    }
     const requirements = requirementsFromComposition(composition, {
       requiresChildSeat: false,
       requiresStroller: (state.considerations ?? []).some((c) =>
@@ -3205,8 +3209,9 @@ export function StoryboardHandoff({
     const { compatible, excluded } = filterStudioCandidatesBySuitability(
       composition,
       signatureTours,
-      readinessQuery.data,
+      undefined,
       requirements,
+      { requireCategoryReadiness: false },
     );
     const unsupportedAges = Array.from(
       new Set(excluded.flatMap((e) => e.unsupportedAges).filter((a) => a >= 0)),
@@ -3217,7 +3222,7 @@ export function StoryboardHandoff({
       unsupportedAges,
       excludedTourIds: excluded.map((e) => e.tourId),
     };
-  }, [state.guests, state.minorAges, state.considerations, readinessQuery.isLoading, readinessQuery.data]);
+  }, [state.guests, state.minorAges, state.considerations]);
 
   const resolved = useMemo(
     () =>
@@ -4269,6 +4274,10 @@ export function StoryboardHandoff({
           onRefine={onRefine}
           journeyTitle={state.journeyTitle}
           guests={state.guests}
+          travellerComposition={{
+            adults: Math.max(1, (state.guests ?? 2) - state.minorAges.length),
+            minorAges: state.minorAges,
+          }}
           included={skeletonTour?.included ?? []}
           showAddOns={true}
           allowAddOnsWithoutPrice={!!skeletonTour}

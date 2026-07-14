@@ -59,6 +59,7 @@ async function handleStudioQuote(snapshotRaw: RawQuoteSnapshot) {
         startTime: snapshot.startTime,
         language: snapshot.language,
         guests: snapshot.guests,
+        travellerComposition: snapshot.travellerComposition,
         routeStatus: snapshot.routeStatus,
         routeStops: snapshot.routeStops,
         selectedAddOns: snapshot.selectedAddOns,
@@ -67,6 +68,12 @@ async function handleStudioQuote(snapshotRaw: RawQuoteSnapshot) {
       pricing: {
         unitEur: resolved.pricing.unitEur,
         baseSubtotalEur: resolved.pricing.baseSubtotalEur,
+        baseLineItems: resolved.pricing.baseLines.map((line) => ({
+          label: line.label,
+          unitEur: line.unitEur,
+          quantity: line.quantity,
+          lineSubtotalEur: line.subtotalEur,
+        })),
         addOnLineItems: resolved.addOns.map((a) => ({
           id: a.id,
           label: a.label,
@@ -169,18 +176,18 @@ async function handleStudioCreateSession(body: StudioCreateSessionBody) {
     .slice(0, 500);
 
   const lineItems: Array<Record<string, unknown>> = [
-    {
+    ...pricing.baseLineItems.map((line) => ({
       price_data: {
         currency: "eur",
         product_data: {
-          name: productName,
+          name: `${productName} — ${line.label}`.slice(0, 180),
           description,
           images: ["https://yesexperiencesportugal.com/og-cover.jpg"],
         },
-        unit_amount: Math.round(pricing.unitEur * 100),
+        unit_amount: Math.round(line.unitEur * 100),
       },
-      quantity: snap.guests,
-    },
+      quantity: line.quantity,
+    })),
     ...pricing.addOnLineItems.map((a) => ({
       price_data: {
         currency: "eur",

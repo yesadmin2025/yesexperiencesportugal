@@ -24,6 +24,7 @@ export interface RawQuoteSnapshot {
   startTime?: unknown;
   language?: unknown;
   guests?: unknown;
+  travellerComposition?: unknown;
   routeStops?: unknown;
   selectedAddOns?: unknown;
   routeStatus?: unknown;
@@ -41,6 +42,7 @@ export interface NormalisedSnapshot {
   startTime: string; // HH:MM
   language: SupportedLanguage;
   guests: number;
+  travellerComposition: { adults: number; minorAges: number[] };
   routeStops: Array<{ id: string; label: string }>;
   selectedAddOns: Array<{ id: string; quantity: number }>;
   routeStatus: RouteStatus;
@@ -112,6 +114,21 @@ export function validateAndNormaliseSnapshot(raw: RawQuoteSnapshot): NormalisedS
   if (!Number.isInteger(guests) || (guests as number) < 1 || (guests as number) > 20) {
     throw new SnapshotValidationError("guests out of range");
   }
+  const rawComposition = raw.travellerComposition as
+    | { adults?: unknown; minorAges?: unknown }
+    | undefined;
+  const minorAges = Array.isArray(rawComposition?.minorAges)
+    ? rawComposition.minorAges.filter(
+        (age): age is number => Number.isInteger(age) && (age as number) >= 0 && (age as number) <= 17,
+      )
+    : [];
+  const adults = Number.isInteger(rawComposition?.adults)
+    ? (rawComposition!.adults as number)
+    : (guests as number) - minorAges.length;
+  if (adults < 1 || adults + minorAges.length !== guests) {
+    throw new SnapshotValidationError("travellerComposition does not match guests");
+  }
+  const travellerComposition = { adults, minorAges };
 
   if (!Array.isArray(raw.routeStops) || raw.routeStops.length < 1 || raw.routeStops.length > 12) {
     throw new SnapshotValidationError("routeStops out of range");
@@ -157,6 +174,7 @@ export function validateAndNormaliseSnapshot(raw: RawQuoteSnapshot): NormalisedS
     startTime,
     language,
     guests: guests as number,
+    travellerComposition,
     routeStops,
     selectedAddOns,
     routeStatus: routeStatus as RouteStatus,

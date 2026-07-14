@@ -110,7 +110,11 @@ export function CheckoutSummary({
   // so no client add-on arithmetic can reach a visible amount.
   const useServer = serverPricing?.status === "quoted";
   const displayTotalEur = useServer ? serverPricing!.totalEur : totalEur;
-  const displayPerPaxEur = useServer ? serverPricing!.unitEur : perPaxEur;
+  const guestCount = typeof guestDetails.guests === "number" ? guestDetails.guests : state.guests;
+  const displayPerPaxEur =
+    useServer && displayTotalEur != null && guestCount != null && guestCount > 0
+      ? Math.round(displayTotalEur / guestCount)
+      : perPaxEur;
   const displayAddOns = useServer
     ? serverPricing!.addOnLines.map((a) => ({
         id: a.id,
@@ -287,6 +291,7 @@ export function CheckoutSummary({
           data-testid="studio-v3-checkout-total-row"
           data-total-eur={displayTotalEur ?? ""}
           data-pricing-source={useServer ? "server" : "legacy"}
+          data-per-pax-all-in-eur={displayPerPaxEur ?? ""}
         >
           <span className="text-[11px] uppercase tracking-[0.22em]" style={{ color: "var(--charcoal)" }}>
             Total

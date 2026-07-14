@@ -107,6 +107,8 @@ describe("Pass 1B Slice A — visible price convergence", () => {
     expect(totalRow.getAttribute("data-total-eur")).toBe("525");
     expect(totalRow.getAttribute("data-pricing-source")).toBe("server");
     expect(within(totalRow).getByText(/€525/)).toBeTruthy();
+    expect(totalRow.getAttribute("data-per-pax-all-in-eur")).toBe("175");
+    expect(within(totalRow).getByText(/€175 \/ guest/)).toBeTruthy();
     // legacy wrong values must not appear
     expect(within(totalRow).queryByText(/€999/)).toBeNull();
 

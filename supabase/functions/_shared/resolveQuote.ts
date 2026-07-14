@@ -5,7 +5,7 @@
 // for re-verification just before Stripe session creation.
 
 import {
-  resolveStudioCommercialPrice,
+  resolveStudioCommercialPriceForComposition,
   type CommercialPricingResult,
 } from "./studioCommercialPricing.ts";
 import {
@@ -27,6 +27,7 @@ export interface ResolvedQuote {
     guests: number;
     unitEur: number;
     baseSubtotalEur: number;
+    baseLines: Array<{ label: string; quantity: number; unitEur: number; subtotalEur: number }>;
     addOnsSubtotalEur: number;
     totalEur: number;
     currency: "EUR";
@@ -43,9 +44,9 @@ export interface ResolvedQuote {
  * validated only when every selected add-on is validated too (none are today).
  */
 export function resolveQuote(snapshot: NormalisedSnapshot): ResolvedQuote {
-  const commercial = resolveStudioCommercialPrice(
+  const commercial = resolveStudioCommercialPriceForComposition(
     snapshot.commercialProductKey,
-    snapshot.guests,
+    snapshot.travellerComposition,
   );
 
   const addOnLines: AddOnLineItem[] = [];
@@ -81,6 +82,7 @@ export function resolveQuote(snapshot: NormalisedSnapshot): ResolvedQuote {
         guests: commercial.guests,
         unitEur: 0,
         baseSubtotalEur: 0,
+        baseLines: [],
         addOnsSubtotalEur,
         totalEur: 0,
         currency: "EUR",
@@ -100,6 +102,12 @@ export function resolveQuote(snapshot: NormalisedSnapshot): ResolvedQuote {
       guests: c.guests,
       unitEur: c.unitEur,
       baseSubtotalEur: c.baseSubtotalEur,
+      baseLines: c.baseLines.map((line) => ({
+        label: line.label,
+        quantity: line.quantity,
+        unitEur: line.unitEur,
+        subtotalEur: line.subtotalEur,
+      })),
       addOnsSubtotalEur,
       totalEur: c.baseSubtotalEur + addOnsSubtotalEur,
       currency: "EUR",
