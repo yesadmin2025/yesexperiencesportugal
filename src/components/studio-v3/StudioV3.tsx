@@ -3285,7 +3285,13 @@ export function StoryboardHandoff({
     return outcome.stops.length > 0 ? outcome.stops : seedFromPool();
   }, [resolved.routePoints, state.guests, state.minorAges, state.considerations, skeletonTour]);
 
-  const editedStops = state.editedRoutePoints ?? baseStops;
+  // Treat a persisted-but-empty `editedRoutePoints` as "no override" so a
+  // stale/hydrated `[]` (or an old draft) can never strand the storyboard on
+  // the dead-end empty state while a real skeleton is available.
+  const editedStops =
+    state.editedRoutePoints && state.editedRoutePoints.length > 0
+      ? state.editedRoutePoints
+      : baseStops;
 
   // Real OSRM driving legs — shared with RevealRouteMap via react-query's
   // dedupe on the same routeStops key, so we pay for one fetch and both the
