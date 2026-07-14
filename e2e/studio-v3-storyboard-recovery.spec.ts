@@ -143,6 +143,38 @@ async function assertEditorSnapshotWithAnnotation(
   }
 }
 
+/**
+ * Read the visible stop labels (h3 in each RefineStopCard) in DOM order.
+ * The editor renders one h3 per stop row, so the returned array mirrors
+ * the storyboard order the guest sees.
+ */
+async function readRenderedLabels(page: Page): Promise<string[]> {
+  return page.getByTestId("studio-v3-stop-row").locator("h3").allInnerTexts();
+}
+
+/**
+ * Persisted non-editor metadata that MUST survive stops-editor recovery
+ * unchanged. If recovery ever touched these, the fix would be leaking out
+ * of the stops editor scope. Values here match the envelope in `envelopeWith`.
+ */
+const EXPECTED_PERSISTED_METADATA = {
+  journeyTitle: "Sintra & Cascais — private day",
+  firstName: "Alex",
+};
+
+async function assertPersistedMetadataIntact(page: Page) {
+  // journeyTitle round-trip — rendered inside SaveSignatureButton's
+  // accessible label and typically visible in the storyboard header.
+  await expect(
+    page.getByText(EXPECTED_PERSISTED_METADATA.journeyTitle, { exact: false }).first(),
+  ).toBeVisible();
+  // firstName round-trip — the storyboard greets the guest by first name;
+  // if this disappears, hydration corrupted more than the stops list.
+  await expect(
+    page.getByText(EXPECTED_PERSISTED_METADATA.firstName, { exact: false }).first(),
+  ).toBeVisible();
+}
+
 test.use({ viewport: { width: 393, height: 852 } });
 
 test.describe("Studio V3 storyboard recovery", () => {
