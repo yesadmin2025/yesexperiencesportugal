@@ -116,8 +116,32 @@ export function PlanningDestinationPage({ destination }: Props) {
         </section>
       )}
 
+      {/* Route map — real geography from the primary Signature tour's stops. */}
+      {tours[0] && (
+        <section className="reveal py-14 md:py-20 bg-[color:var(--sand)]">
+          <div className="container-x max-w-5xl">
+            <div className="text-center max-w-2xl mx-auto mb-8 md:mb-10">
+              <Eyebrow flank>The route</Eyebrow>
+              <SectionTitle as="h2" size="compact" spacing="loose">
+                Where a private day here{" "}
+                <SectionTitle.Em>actually goes</SectionTitle.Em>
+              </SectionTitle>
+              <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
+                Real stops, real driving times — the shape of a day we already run.
+              </p>
+            </div>
+            <div className="mx-auto max-w-md">
+              <PlanDestinationMap
+                tour={tours[0]}
+                regionLabel={destination.h1.replace(/^Planning a Private Trip to /, "")}
+              />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Featured Signature tours */}
+
       <RelatedExperiencesRail
         tours={tours}
         stories={stories}
