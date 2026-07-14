@@ -8,15 +8,19 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import {
   jsonLdScript,
   breadcrumbLd,
-  
   personFounderLd,
   localStoryReviewsLd,
   localStoryArticleLd,
   normalizeLocalStoryReviews,
   faqPageLd,
+  tourProductLd,
+  hreflangUsCaLinks,
+  organizationUsCaAudienceLd,
   type NormalizedLocalStoryReview,
 } from "@/lib/jsonld";
-
+import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
+import { getViatorMeta } from "@/data/signatureToursViator";
+import LandingTourCredibility from "@/components/LandingTourCredibility";
 
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
