@@ -812,7 +812,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "evora-alentejo-wine-tour",
     title: "Évora & Alentejo Wine Tour | Private Full-Day from Lisbon",
     metaDescription:
-      "A private full day from Lisbon combining Évora's UNESCO old town, two family Alentejo wineries and a cork tradition stop — unhurried, door-to-door.",
+      "Private full day from Lisbon — Évora's UNESCO old town, two Alentejo family wineries and a cork tradition stop. Designed with you, hotel pickup, instant confirmation.",
     h1: "Évora & Alentejo Wine Tour — one private full day",
     eyebrow: "Lisbon · Évora & Alentejo",
     standfirst:
