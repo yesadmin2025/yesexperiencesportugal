@@ -31,8 +31,8 @@ const contactSchema = z.object({
   first: z.string().trim().min(1, "Please enter your first name").max(80),
   last: z.string().trim().min(1, "Please enter your last name").max(80),
   email: z.string().trim().toLowerCase().email("Enter a valid email").max(254),
-  requestType: z.enum(requestTypeValues as [string, ...string[]], {
-    errorMap: () => ({ message: "Please choose what we can help you plan" }),
+  requestType: z.enum(Object.fromEntries(requestTypeValues.map((v) => [v, v])) as Record<string, string>, {
+    message: "Please choose what we can help you plan",
   }),
   travelDate: z
     .string()
