@@ -3910,6 +3910,21 @@ html.motion-ready [data-motion].motion-in {
     z-index: 2;
   }
 
+  /* Idle arrow nudge — homepage CTAs feel alive at rest. Runs only when
+     the button isn't being hovered/focused so the existing hover
+     translate-x-2 still wins. Reduced-motion disables it entirely. */
+  @keyframes heCtaArrowNudge {
+    0%, 70%, 100% { transform: translateX(0); }
+    82% { transform: translateX(4px); }
+    92% { transform: translateX(2px); }
+  }
+  .home-energy .group:not(:hover):not(:focus-visible):not(:focus-within) [data-cta-arrow] {
+    animation: heCtaArrowNudge 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home-energy [data-cta-arrow] { animation: none !important; }
+  }
+
   /* Soft gold glow on hover — premium, not neon. Bumped softly. */
   .home-energy .he-glow {
     transition:
