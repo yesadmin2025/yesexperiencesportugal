@@ -57,6 +57,12 @@ export interface EditorialMapProps {
    * chip is rendered near the midpoint of each visible leg, e.g. "35 min".
    */
   legMinutes?: ReadonlyArray<number | null | undefined>;
+  /**
+   * When set, the pin at this index is drawn larger with a stronger
+   * ivory core + persistent pulse — used to represent a shareable
+   * "focused stop" URL state (e.g. `?stop=2`). Ignored if out of range.
+   */
+  focusedIndex?: number;
 }
 
 const VB_W = 200;
