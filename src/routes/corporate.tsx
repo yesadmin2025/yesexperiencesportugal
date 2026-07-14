@@ -76,7 +76,7 @@ const BLOCKS = [
     emotional: "When it matters who's in the room and how the day feels — we shape it accordingly.",
     practical: "Small groups · private settings · careful pacing · NDAs welcome.",
     local: "Planned end to end with our local team — every detail confirmed before the day.",
-    image: imgFatimaNazare,
+    image: imgDiscreetViewpoint,
     icon: ClipboardCheck,
   },
 ];
