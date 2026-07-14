@@ -671,7 +671,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "portugal-wine-tours",
     title: "Portugal Wine Tours | Private Wine Days by YES Experiences",
     metaDescription:
-      "Private wine days across Arrábida, Setúbal, Azeitão and Alentejo — small family cellars, slow lunches and real winemakers, all-inclusive from Lisbon.",
+      "Private wine days across Arrábida, Setúbal, Azeitão and Alentejo — small family cellars and slow lunches, designed with you. Hotel pickup from Lisbon, instant confirmation.",
     h1: "Portugal wine tours, poured properly.",
     eyebrow: "Portugal · Wine Tours",
     standfirst:
