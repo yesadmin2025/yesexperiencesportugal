@@ -24,8 +24,20 @@ export function isStudioCommercialProductKey(
 
 type Tier = { guests: number; unitEur: number };
 
+// Approved tiers (Viator mirror, aligned with Setúbal Wine Discovery):
+//   1 → €279 / 2-3 → €215 / 4-6 → €189 / 7-8 → €159 per guest.
+// Groups outside 1–8 continue to route to the travel designer.
 const CATALOGUE: Record<StudioCommercialProductKey, Tier[]> = {
-  "studio-v3-private-full-day": [{ guests: 3, unitEur: 145 }],
+  "studio-v3-private-full-day": [
+    { guests: 1, unitEur: 279 },
+    { guests: 2, unitEur: 215 },
+    { guests: 3, unitEur: 215 },
+    { guests: 4, unitEur: 189 },
+    { guests: 5, unitEur: 189 },
+    { guests: 6, unitEur: 189 },
+    { guests: 7, unitEur: 159 },
+    { guests: 8, unitEur: 159 },
+  ],
 };
 
 export type CommercialPricingResult =
