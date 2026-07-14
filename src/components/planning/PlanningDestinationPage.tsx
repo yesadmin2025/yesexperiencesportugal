@@ -11,10 +11,12 @@ import {
   type LocalStoryArticle,
 } from "@/content/local-stories-articles";
 import type { PlanningDestination } from "@/content/planning/destinations";
+import { PlanDestinationMap } from "@/components/planning/PlanDestinationMap";
 
 interface Props {
   destination: PlanningDestination;
 }
+
 
 export function PlanningDestinationPage({ destination }: Props) {
   const featured = destination.signatureIds
