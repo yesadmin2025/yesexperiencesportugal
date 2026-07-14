@@ -131,6 +131,7 @@ export function FinalRevealStory({
     kind: "addition" as const,
   }));
   const timeline = [...stops, ...addOnBeats];
+  const hasTimeline = timeline.length > 0;
 
   const dateLabel = formatDate(state.dateExact);
   const pickupLabel = pickupCityLabel(state.pickup);
