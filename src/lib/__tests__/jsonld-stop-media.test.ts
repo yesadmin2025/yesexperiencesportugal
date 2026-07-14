@@ -38,7 +38,7 @@ describe("stopMediaLd", () => {
       name: "n",
       stops: [{ label: "A", story: long }],
     })!;
-    const item = (ld.itemListElement[0] as { item: { description: string } }).item;
+    const item = (ld.itemListElement[0] as unknown as { item: { description: string } }).item;
     expect(item.description.length).toBe(300);
   });
 });
