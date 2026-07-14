@@ -66,13 +66,28 @@ export interface StudioQuoteResponse {
   };
 }
 
+async function friendlyError(err: unknown): Promise<Error> {
+  // Studio checkout surfaces `error.message` directly in the toast, so every
+  // transport failure must arrive as guest-safe copy — never a raw
+  // "Failed to fetch" or "Edge Function returned a non-2xx status code".
+  const { parseCheckoutError } = await import("@/lib/checkout/checkoutError");
+  const parsed = await parseCheckoutError(err);
+  return new Error(parsed.userMessage);
+}
+
 export async function fetchStudioQuote(
   snapshot: StudioQuoteSnapshot,
 ): Promise<StudioQuoteResponse> {
-  const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
-    body: { mode: "quote", snapshot },
-  });
-  if (error) throw error;
+  let data: unknown;
+  let error: unknown;
+  try {
+    ({ data, error } = await supabase.functions.invoke("create-signature-checkout", {
+      body: { mode: "quote", snapshot },
+    }));
+  } catch (thrown) {
+    throw await friendlyError(thrown);
+  }
+  if (error) throw await friendlyError(error);
   return data as StudioQuoteResponse;
 }
 
@@ -101,9 +116,15 @@ export interface CreateSessionResponse {
 }
 
 export async function createStudioSession(input: CreateSessionInput): Promise<CreateSessionResponse> {
-  const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
-    body: { mode: "create-session", ...input },
-  });
-  if (error) throw error;
+  let data: unknown;
+  let error: unknown;
+  try {
+    ({ data, error } = await supabase.functions.invoke("create-signature-checkout", {
+      body: { mode: "create-session", ...input },
+    }));
+  } catch (thrown) {
+    throw await friendlyError(thrown);
+  }
+  if (error) throw await friendlyError(error);
   return data as CreateSessionResponse;
 }

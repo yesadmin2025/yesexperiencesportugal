@@ -26,7 +26,8 @@
     "test:e2e:grep:homepage-structure": "playwright test --grep \"homepage structure\"",
     "test:e2e:structured-data": "playwright test e2e/structured-data-rendered.spec.ts",
     "test:e2e:checkout-envelope": "playwright test e2e/create-signature-checkout-error-envelope.spec.ts",
-    "test:checkout-errors": "vitest run src/lib/checkout/__tests__/checkoutError.envelope.test.ts src/lib/checkout/__tests__/checkoutError.test.ts",
+    "test:e2e:checkout-retry": "playwright test e2e/studio-v3-checkout-retry-and-failures.spec.ts --project=mobile-chromium",
+    "test:checkout-errors": "vitest run src/lib/checkout/__tests__/checkoutError.envelope.test.ts src/lib/checkout/__tests__/checkoutError.test.ts src/lib/pricing/__tests__/bookingQuoteCheckout.retry.test.ts src/lib/studio-v3/__tests__/quoteClient.retry.test.ts",
     "qa:hero-copy": "node scripts/hero-copy-qa.mjs",
     "qa:hero-copy:watch": "node scripts/hero-copy-qa.mjs --watch"
   },

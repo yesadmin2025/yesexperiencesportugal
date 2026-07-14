@@ -73,12 +73,20 @@ async function functionErrorMessage(error: unknown): Promise<string> {
 export async function createBookingQuoteSession(
   input: BookingQuoteCheckoutInput,
 ): Promise<BookingQuoteCheckoutResponse> {
-  const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
-    body: {
-      mode: "booking-quote-create-session",
-      ...input,
-    },
-  });
+  let data: unknown;
+  let error: unknown;
+  try {
+    ({ data, error } = await supabase.functions.invoke("create-signature-checkout", {
+      body: {
+        mode: "booking-quote-create-session",
+        ...input,
+      },
+    }));
+  } catch (thrown) {
+    // Transport failures (network TypeError, AbortError, unexpected SDK throws)
+    // must reach the guest as friendly copy, not a raw "Failed to fetch".
+    throw new Error(await functionErrorMessage(thrown));
+  }
   if (error) throw new Error(await functionErrorMessage(error));
   const resp = data as BookingQuoteCheckoutResponse | { error?: string; code?: string } | null;
   if (!resp || typeof resp !== "object" || !("sessionId" in resp)) {
