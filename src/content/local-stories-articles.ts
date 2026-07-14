@@ -547,7 +547,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "arrabida-day-trip-from-lisbon",
     title: "Arrábida Day Trip from Lisbon — Private Wine & Beaches",
     metaDescription:
-      "Private Arrábida day trip from Lisbon — Setúbal market, family wineries in Azeitão and a long Portuguese lunch. Door-to-door driving.",
+      "Private Arrábida day trip from Lisbon — Setúbal market, family wineries in Azeitão and a long Portuguese lunch. Hotel pickup, English-speaking guide, instant confirmation.",
     h1: "Arrábida Day Trip from Lisbon — wine, hills & sea",
     eyebrow: "Lisbon · Arrábida Day",
     standfirst:
