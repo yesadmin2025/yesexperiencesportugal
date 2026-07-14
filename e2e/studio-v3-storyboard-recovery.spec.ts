@@ -91,27 +91,71 @@ async function ensureStoryboardOrSkip(page: Page) {
 test.use({ viewport: { width: 393, height: 852 } });
 
 test.describe("Studio V3 storyboard recovery", () => {
-  test("persisted empty editedRoutePoints does not strand the editor", async ({ page }) => {
+  test("persisted empty editedRoutePoints does not strand the editor", async ({ page }, testInfo) => {
     await hydrateDraft(page, []);
     await page.goto("/studio-v3");
     await ensureStoryboardOrSkip(page);
 
+    const editor = page.getByTestId("studio-v3-stops-editor");
     await expect(page.getByTestId("studio-v3-stops-editor-empty")).toHaveCount(0);
-    await expect(page.getByTestId("studio-v3-stops-editor")).toBeVisible();
+    await expect(editor).toBeVisible();
     await expect(page.getByTestId("studio-v3-stop-row").first()).toBeVisible();
     await expect(
       page.getByText("We couldn't compose a draft for this combination.", { exact: false }),
     ).toHaveCount(0);
+
+    // Always-attached artifact so CI logs surface the rendered editor
+    // whether the test passed or failed. Full-page screenshot on failure
+    // is captured automatically via `screenshot: 'only-on-failure'`
+    // fallback below.
+    const editorShot = await editor.screenshot({
+      path: path.join(ARTIFACT_DIR, "empty-editedRoutePoints-editor.png"),
+    });
+    await testInfo.attach("stops-editor (empty editedRoutePoints)", {
+      body: editorShot,
+      contentType: "image/png",
+    });
+    const pageShot = await page.screenshot({
+      path: path.join(ARTIFACT_DIR, "empty-editedRoutePoints-page.png"),
+    });
+    await testInfo.attach("storyboard viewport (empty editedRoutePoints)", {
+      body: pageShot,
+      contentType: "image/png",
+    });
+
+    // Basic visual regression on the stops editor itself. Baselines
+    // live next to the spec at `*-snapshots/`. Update with
+    // `bunx playwright test e2e/studio-v3-storyboard-recovery.spec.ts --update-snapshots`.
+    await expect(editor).toHaveScreenshot("stops-editor-empty-editedRoutePoints.png");
   });
 
-  test("null editedRoutePoints seeds real Signature stops", async ({ page }) => {
+  test("null editedRoutePoints seeds real Signature stops", async ({ page }, testInfo) => {
     await hydrateDraft(page, null);
     await page.goto("/studio-v3");
     await ensureStoryboardOrSkip(page);
 
+    const editor = page.getByTestId("studio-v3-stops-editor");
     await expect(page.getByTestId("studio-v3-stop-row").first()).toBeVisible({
       timeout: 15_000,
     });
     await expect(page.getByTestId("studio-v3-stops-editor-empty")).toHaveCount(0);
+
+    const editorShot = await editor.screenshot({
+      path: path.join(ARTIFACT_DIR, "null-editedRoutePoints-editor.png"),
+    });
+    await testInfo.attach("stops-editor (null editedRoutePoints)", {
+      body: editorShot,
+      contentType: "image/png",
+    });
+    const pageShot = await page.screenshot({
+      path: path.join(ARTIFACT_DIR, "null-editedRoutePoints-page.png"),
+    });
+    await testInfo.attach("storyboard viewport (null editedRoutePoints)", {
+      body: pageShot,
+      contentType: "image/png",
+    });
+
+    await expect(editor).toHaveScreenshot("stops-editor-null-editedRoutePoints.png");
   });
 });
+
