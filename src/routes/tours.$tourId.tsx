@@ -25,6 +25,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { CtaPair } from "@/components/ui/CtaPair";
 import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
+import { getTourReviewStats, getTourReviews } from "@/lib/reviews.functions";
 import { SIGNATURE_FAQ } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { TourReviews } from "@/components/TourReviews";
@@ -35,10 +36,16 @@ import { RelatedExperiencesRail } from "@/components/RelatedExperiencesRail";
 import { rankRelatedTours, relatedStoriesForTour, seedFromTour } from "@/lib/related-experiences";
 
 export const Route = createFileRoute("/tours/$tourId")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const tour = findTour(params.tourId);
     if (!tour) throw notFound();
-    return { tour };
+    // Fetch real review data server-side so AggregateRating ships in initial
+    // HTML (crawler-visible). Failures fall back to Viator meta in head().
+    const [stats, reviews] = await Promise.all([
+      getTourReviewStats({ data: { tourId: params.tourId } }).catch(() => null),
+      getTourReviews({ data: { tourId: params.tourId, limit: 8 } }).catch(() => []),
+    ]);
+    return { tour, reviewStats: stats, reviewList: reviews };
   },
   head: ({ params, loaderData }) => {
     const url = `https://yesexperiencesportugal.com/tours/${params.tourId}`;
@@ -110,13 +117,23 @@ export const Route = createFileRoute("/tours/$tourId")({
               img: t.img,
               priceFrom: (t as { priceFrom?: number }).priceFrom,
               currency: "EUR",
-              rating: getViatorMeta(params.tourId)?.rating ?? null,
-              reviewCount: getViatorMeta(params.tourId)?.reviewCount ?? null,
+              rating:
+                loaderData?.reviewStats?.average_rating ??
+                getViatorMeta(params.tourId)?.rating ??
+                null,
+              reviewCount:
+                loaderData?.reviewStats?.total_reviews ??
+                getViatorMeta(params.tourId)?.reviewCount ??
+                null,
               region: (t as { region?: string }).region ?? null,
               durationHours: (t as { durationHours?: string }).durationHours ?? null,
               stops: (t.stops ?? []).map((s) => ({ label: s.label, story: s.story })),
             }),
             params.tourId,
+            {
+              stats: loaderData?.reviewStats ?? null,
+              reviews: loaderData?.reviewList ?? null,
+            },
           ),
         ),
         jsonLdScript(faqPageLd(SIGNATURE_FAQ)),
