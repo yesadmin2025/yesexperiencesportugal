@@ -583,37 +583,61 @@ export function SignaturePriceCard({
                 ? `For ${partyCount} ${partyCount === 1 ? "guest" : "guests"}`
                 : "Per guest"}
             </p>
-            <p
-              data-testid="studio-v3-base-price"
-              data-eur={priceEur ?? ""}
-              data-per-pax-eur={displayPerPaxEur ?? ""}
-              data-per-pax-real={realPerPax?.real ? "true" : "false"}
-              className="mt-1 text-[40px] leading-none font-bold tabular-nums"
-              style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
-            >
-              €{displayPerPaxEur ?? priceEur}
-              <span
-                className="ml-1.5 align-middle text-[13px] font-semibold uppercase tracking-[0.18em]"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
-              >
-                / guest
-              </span>
-            </p>
-            {partyTotalEur != null && partyCount != null ? (
-              <p
-                data-testid="studio-v3-party-total"
-                className="mt-3 text-[13.5px] font-semibold tabular-nums"
-                style={{ color: "var(--charcoal)" }}
-              >
-                €{partyTotalEur}{" "}
-                <span
-                  className="text-[10.5px] uppercase tracking-[0.22em] font-semibold ml-0.5"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-                >
-                  total for your group
-                </span>
-              </p>
-            ) : null}
+            {(() => {
+              const basePerPax = displayPerPaxEur ?? priceEur ?? null;
+              const allInPerPax =
+                partyTotalEur != null && partyCount != null && partyCount > 0
+                  ? Math.round(partyTotalEur / partyCount)
+                  : basePerPax;
+              const addOnsPartyEur = Math.round(addOnsDisplayPartyEur);
+              const hasAddOns = selectedAddOns.length > 0 && addOnsPartyEur > 0;
+              return (
+                <>
+                  <p
+                    data-testid="studio-v3-base-price"
+                    data-eur={priceEur ?? ""}
+                    data-per-pax-eur={basePerPax ?? ""}
+                    data-per-pax-all-in-eur={allInPerPax ?? ""}
+                    data-per-pax-real={realPerPax?.real ? "true" : "false"}
+                    className="mt-1 text-[40px] leading-none font-bold tabular-nums"
+                    style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+                  >
+                    €{allInPerPax ?? basePerPax}
+                    <span
+                      className="ml-1.5 align-middle text-[13px] font-semibold uppercase tracking-[0.18em]"
+                      style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+                    >
+                      / guest
+                    </span>
+                  </p>
+                  {hasAddOns && basePerPax != null ? (
+                    <p
+                      data-testid="studio-v3-per-pax-breakdown"
+                      className="mt-1.5 text-[10.5px] uppercase tracking-[0.24em] font-semibold tabular-nums"
+                      style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                    >
+                      base €{basePerPax}/guest{" "}
+                      <span style={{ color: "var(--gold)" }}>·</span> +€{addOnsPartyEur} additions
+                    </p>
+                  ) : null}
+                  {partyTotalEur != null && partyCount != null ? (
+                    <p
+                      data-testid="studio-v3-party-total"
+                      className="mt-3 text-[13.5px] font-semibold tabular-nums"
+                      style={{ color: "var(--charcoal)" }}
+                    >
+                      €{partyTotalEur}{" "}
+                      <span
+                        className="text-[10.5px] uppercase tracking-[0.22em] font-semibold ml-0.5"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                      >
+                        total for your group
+                      </span>
+                    </p>
+                  ) : null}
+                </>
+              );
+            })()}
           </>
         ) : (
           <>
