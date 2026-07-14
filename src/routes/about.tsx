@@ -116,7 +116,7 @@ function Page() {
               <p>The idea was too specific to hand over as a standard agency brief.</p>
             </div>
 
-            <figure className="mt-10 lg:hidden">
+            <figure className="editorial-zoom mt-10 lg:hidden">
               <img
                 src={founderAsset.url}
                 alt="Founder Nídia Almeida hosting a private wine tasting for guests in Portugal."
