@@ -192,6 +192,19 @@ test.describe("Studio V3 storyboard recovery", () => {
       page.getByText("We couldn't compose a draft for this combination.", { exact: false }),
     ).toHaveCount(0);
 
+    // Recovery seeded from the Signature pool — labels must be real,
+    // non-empty strings, not placeholders. Persisted metadata (title,
+    // firstName) must survive untouched.
+    const labels = await readRenderedLabels(page);
+    testInfo.annotations.push({
+      type: "recovered-labels",
+      description: JSON.stringify(labels),
+    });
+    expect(labels.length).toBeGreaterThan(0);
+    for (const l of labels) expect(l.trim().length).toBeGreaterThan(0);
+    await assertPersistedMetadataIntact(page);
+
+
     const editorShot = await editor.screenshot({
       path: path.join(ARTIFACT_DIR, "empty-editedRoutePoints-editor.png"),
     });
