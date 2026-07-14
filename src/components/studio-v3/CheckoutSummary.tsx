@@ -56,6 +56,15 @@ export interface CheckoutSummaryProps {
   readonly onEditGuestDetails: () => void;
   readonly onBack: () => void;
   readonly onReserve: () => void;
+  /**
+   * When both are provided the summary renders Stripe Embedded Checkout
+   * inline directly below the recap — single-page: summary above, payment
+   * below. Both must point at the SAME journey revision as the summary.
+   */
+  readonly clientSecret?: string | null;
+  readonly publishableKey?: string | null;
+  /** Called when Stripe reports the embedded session as complete. */
+  readonly onPaymentComplete?: (sessionId: string | null) => void;
   readonly className?: string;
   readonly testId?: string;
 }
