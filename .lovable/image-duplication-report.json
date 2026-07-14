@@ -1,0 +1,634 @@
+{
+  "scannedFiles": 449,
+  "totalAssets": 61,
+  "duplicatedAssets": 19,
+  "duplicates": [
+    {
+      "asset": "@/assets/hero-coast.jpg",
+      "uses": [
+        {
+          "file": "src/routes/experiences.tsx",
+          "line": 9,
+          "ident": "ogImg",
+          "roles": [
+            "og:image",
+            "og:image",
+            "og:image"
+          ]
+        },
+        {
+          "file": "src/routes/index.tsx",
+          "line": 12,
+          "ident": "heroImg",
+          "roles": [
+            "hero",
+            "og:image",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/pt.experiences.tsx",
+          "line": 9,
+          "ident": "ogImg",
+          "roles": [
+            "og:image",
+            "og:image",
+            "og:image"
+          ]
+        },
+        {
+          "file": "src/routes/pt.terms.tsx",
+          "line": 9,
+          "ident": "ogImg",
+          "roles": [
+            "og:image",
+            "og:image",
+            "og:image"
+          ]
+        },
+        {
+          "file": "src/routes/terms.tsx",
+          "line": 9,
+          "ident": "ogImg",
+          "roles": [
+            "og:image",
+            "og:image",
+            "og:image"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg",
+      "uses": [
+        {
+          "file": "src/routes/index.tsx",
+          "line": 18,
+          "ident": "imgArrabidaWineLunch",
+          "roles": [
+            "hero",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/plan.best-time-to-visit-portugal.tsx",
+          "line": 24,
+          "ident": "imgArrabidaLunch",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/plan.portugal-wine-and-gastronomy.tsx",
+          "line": 23,
+          "ident": "imgArrabidaLunch",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/pt.corporate.tsx",
+          "line": 9,
+          "ident": "imgArrabidaWineLunch",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/content/planning/destinations.ts",
+          "line": 21,
+          "ident": "imgArrabidaLunch",
+          "roles": [
+            "usage",
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/tours/sintra-cascais/estates.jpg",
+      "uses": [
+        {
+          "file": "src/routes/corporate.tsx",
+          "line": 9,
+          "ident": "imgSintraEstates",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/proposal-in-portugal.tsx",
+          "line": 10,
+          "ident": "imgSintraEstates",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/pt.corporate.tsx",
+          "line": 10,
+          "ident": "imgSintraEstates",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/content/planning/destinations.ts",
+          "line": 24,
+          "ident": "imgSintraEstates",
+          "roles": [
+            "usage",
+            "usage",
+            "hero"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/guests/quinta-group.jpg",
+      "uses": [
+        {
+          "file": "src/routes/corporate.tsx",
+          "line": 10,
+          "ident": "guestQuintaGroup",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/index.tsx",
+          "line": 20,
+          "ident": "guestQuintaGroup",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/plan.best-time-to-visit-portugal.tsx",
+          "line": 22,
+          "ident": "guestQuintaGroup",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/content/planning/destinations.ts",
+          "line": 18,
+          "ident": "guestQuintaGroup",
+          "roles": [
+            "usage",
+            "gallery"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/guests/vineyard-couple.jpg",
+      "uses": [
+        {
+          "file": "src/routes/index.tsx",
+          "line": 19,
+          "ident": "guestVineyardCouple",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/plan.best-time-to-visit-portugal.tsx",
+          "line": 21,
+          "ident": "guestVineyardCouple",
+          "roles": [
+            "usage",
+            "gallery"
+          ]
+        },
+        {
+          "file": "src/routes/plan.portugal-wine-and-gastronomy.tsx",
+          "line": 20,
+          "ident": "guestVineyardCouple",
+          "roles": [
+            "usage",
+            "hero"
+          ]
+        },
+        {
+          "file": "src/content/planning/destinations.ts",
+          "line": 15,
+          "ident": "guestVineyardCouple",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/guests/arrabida-viewpoint-group.jpg",
+      "uses": [
+        {
+          "file": "src/routes/corporate.tsx",
+          "line": 11,
+          "ident": "guestArrabidaViewpoint",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/plan.best-time-to-visit-portugal.tsx",
+          "line": 20,
+          "ident": "guestArrabidaViewpoint",
+          "roles": [
+            "usage",
+            "hero"
+          ]
+        },
+        {
+          "file": "src/content/planning/destinations.ts",
+          "line": 14,
+          "ident": "guestArrabidaGroup",
+          "roles": [
+            "usage",
+            "hero"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/guests/bubbling-wine-tasting.jpg",
+      "uses": [
+        {
+          "file": "src/routes/plan.best-time-to-visit-portugal.tsx",
+          "line": 23,
+          "ident": "guestBubblingTasting",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/routes/plan.portugal-wine-and-gastronomy.tsx",
+          "line": 21,
+          "ident": "guestBubblingTasting",
+          "roles": [
+            "usage",
+            "gallery"
+          ]
+        },
+        {
+          "file": "src/content/planning/destinations.ts",
+          "line": 16,
+          "ident": "guestBubblingTasting",
+          "roles": [
+            "usage",
+            "gallery"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/exp-romantic.jpg",
+      "uses": [
+        {
+          "file": "src/routes/proposal-in-portugal.tsx",
+          "line": 9,
+          "ident": "imgRomantic",
+          "roles": [
+            "usage",
+            "og:image",
+            "card",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/components/builder/TripTypeEntry.tsx",
+          "line": 17,
+          "ident": "expRomantic",
+          "roles": [
+            "usage",
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/components/builder/catalogue.ts",
+          "line": 24,
+          "ident": "expRomantic",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/exp-coastal.jpg",
+      "uses": [
+        {
+          "file": "src/components/builder/TripTypeEntry.tsx",
+          "line": 15,
+          "ident": "expCoastal",
+          "roles": [
+            "usage",
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/components/builder/catalogue.ts",
+          "line": 21,
+          "ident": "expCoastal",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/components/studio-v3/StudioV3.tsx",
+          "line": 182,
+          "ident": "expCoastal",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/exp-gastronomy.jpg",
+      "uses": [
+        {
+          "file": "src/components/builder/TripTypeEntry.tsx",
+          "line": 16,
+          "ident": "expGastro",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/components/builder/catalogue.ts",
+          "line": 22,
+          "ident": "expGastro",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/components/studio-v3/StudioV3.tsx",
+          "line": 180,
+          "ident": "expGastronomy",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/exp-street.jpg",
+      "uses": [
+        {
+          "file": "src/components/builder/TripTypeEntry.tsx",
+          "line": 18,
+          "ident": "expStreet",
+          "roles": [
+            "usage",
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/components/builder/catalogue.ts",
+          "line": 25,
+          "ident": "expStreet",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/components/studio-v3/StudioV3.tsx",
+          "line": 183,
+          "ident": "expStreet",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/exp-nature.jpg",
+      "uses": [
+        {
+          "file": "src/components/builder/TripTypeEntry.tsx",
+          "line": 19,
+          "ident": "expNature",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/components/builder/catalogue.ts",
+          "line": 23,
+          "ident": "expNature",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/components/studio-v3/StudioV3.tsx",
+          "line": 181,
+          "ident": "expNature",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/about-founder-wine-experience.jpg",
+      "uses": [
+        {
+          "file": "src/routes/about.tsx",
+          "line": 7,
+          "ident": "founderAsset",
+          "roles": [
+            "usage",
+            "og:image",
+            "card",
+            "card",
+            "card"
+          ]
+        },
+        {
+          "file": "src/routes/pt.about.tsx",
+          "line": 7,
+          "ident": "founderAsset",
+          "roles": [
+            "usage",
+            "og:image",
+            "card",
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/edit-viewpoint.jpg",
+      "uses": [
+        {
+          "file": "src/routes/local-stories.index.tsx",
+          "line": 10,
+          "ident": "ogImg",
+          "roles": [
+            "og:image",
+            "og:image",
+            "og:image"
+          ]
+        },
+        {
+          "file": "src/components/studio-v3/StudioV3.tsx",
+          "line": 184,
+          "ident": "editViewpoint",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/guests/chocolate-cake-tasting.jpg",
+      "uses": [
+        {
+          "file": "src/routes/plan.portugal-wine-and-gastronomy.tsx",
+          "line": 22,
+          "ident": "guestChocolateCake",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/content/planning/destinations.ts",
+          "line": 17,
+          "ident": "guestChocolateCake",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/tours/arrabida-wine-allinclusive/winery.jpg",
+      "uses": [
+        {
+          "file": "src/routes/plan.portugal-wine-and-gastronomy.tsx",
+          "line": 24,
+          "ident": "imgArrabidaWinery",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/content/planning/destinations.ts",
+          "line": 23,
+          "ident": "imgArrabidaWinery",
+          "roles": [
+            "usage"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/tours/evora-alentejo/winery.jpg",
+      "uses": [
+        {
+          "file": "src/routes/plan.portugal-wine-and-gastronomy.tsx",
+          "line": 25,
+          "ident": "imgEvoraWinery",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/content/planning/destinations.ts",
+          "line": 30,
+          "ident": "imgEvoraWinery",
+          "roles": [
+            "usage",
+            "gallery"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/tours/troia-comporta/beach.jpg",
+      "uses": [
+        {
+          "file": "src/routes/proposal-in-portugal.tsx",
+          "line": 11,
+          "ident": "imgTroiaBeach",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/content/planning/destinations.ts",
+          "line": 31,
+          "ident": "imgComportaBeach",
+          "roles": [
+            "usage",
+            "hero"
+          ]
+        }
+      ]
+    },
+    {
+      "asset": "@/assets/studio/atm-coastal-cinematic.jpg",
+      "uses": [
+        {
+          "file": "src/components/studio-v3/StudioV3.tsx",
+          "line": 173,
+          "ident": "atmCoastal",
+          "roles": [
+            "usage",
+            "usage",
+            "usage"
+          ]
+        },
+        {
+          "file": "src/components/studio-v3/StudioV3Intro.tsx",
+          "line": 15,
+          "ident": "atmCoastal",
+          "roles": [
+            "usage",
+            "usage"
+          ]
+        }
+      ]
+    }
+  ]
+}
