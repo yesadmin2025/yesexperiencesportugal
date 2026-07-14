@@ -76,6 +76,8 @@ export function CheckoutSummary({
   selectedAddOns,
   perPaxEur,
   totalEur,
+  adults = null,
+  minorAges = [],
   submitting = false,
   onEditGuestDetails,
   onBack,
