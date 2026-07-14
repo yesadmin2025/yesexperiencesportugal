@@ -1,81 +1,81 @@
-## Goal
-Get yesexperiencesportugal.com discoverable on Google **for American travelers** planning a Portugal trip. Strategy remains US-intent long-tail keywords + US market signals + editorial content Americans actually search — not head terms.
+# Launch Polish Plan
 
-**Positioning to reinforce in every rewrite:** local & hidden Portugal · personalized private · Travel Designer · real-time itinerary builder · instant confirmation · unique and only in Portugal.
+Six focused workstreams, sequenced so the highest-risk items (money math, mobile checkout) land first and the cosmetic passes ride on top.
 
----
+## 1. Image context audit (page-by-page)
 
-## Status snapshot (July 2026)
+Goal: every image belongs to the page it sits on — no duplicates across Moments / Corporate / Travel Designer / Proposals, no generic swaps.
 
-### ✅ Phase 1 — Foundation (COMPLETE)
-- US-oriented metadata rewritten on the 10 core pages (Home, /experiences, /studio-v3, /about, /contact, tour pages, /proposal-in-portugal, /pt).
-- USD alongside EUR + real `AggregateRating` (Viator counts, no invention) on tour pages.
-- Organization / TouristTrip / Offer / BreadcrumbList JSON-LD in place. `sameAs` → real Viator, TripAdvisor, Instagram.
-- `hreflang="en-us"` on English routes; Search Console targeting US.
-- Robots + sitemap.xml audited; internal 301s consolidated onto canonical URLs (see `src/routes/*.tsx` redirects).
-- Alt text + h1→h2→h3 chain fixed on Home, About, tour pages.
-- Last SEO scan: **0 failing findings** (previous three marked fixed, awaiting rescan).
+- Sweep the image imports on: `moments.tsx`, `corporate.tsx`, `portugal-travel-designer.tsx`, `proposals.tsx`, `proposal-in-portugal.tsx`, `experiences.tsx`, `about.tsx`, `contact.tsx`, plus the PT mirrors.
+- Build a duplicate map (same `.jpg` used on ≥2 unrelated pages) and flag mismatches (e.g. wine photo on Corporate hero).
+- Replace mismatches with the correct real photo from `src/assets/guests/*` or Viator gallery for that context — no stock, no invented imagery (per brand guardrails).
+- Report the swap list back before executing so you can veto individual choices.
 
-### ✅ Phase 2 Tier 1 — Lisbon pillars (LIVE)
-| Page | Route |
-|---|---|
-| Best day trips from Lisbon | `/local-stories/best-day-trips-from-lisbon` |
-| Best wine tours from Lisbon | `/local-stories/portugal-wine-tours` + `/local-stories/arrabida-wine-tour` |
-| Private tours from Lisbon | `/local-stories/private-wine-tour-lisbon` + region private-tour stories |
+Out of scope: Signature tour pages (already source-of-truth to Viator) and homepage hero (locked).
 
-All Tier 1 articles now carry the intent-aware **StoryInternalLinks** block (wine → wine-and-gastronomy plan; day-trip → 5-day plan; private → 7/14-day plan by region), routing US readers to Studio + matching Signature + matching itinerary.
+## 2. Checkout & pricing math verification
 
-### ✅ Phase 2 Tier 2 — Planners & regional guides (LIVE)
-- `/plan/5-day-portugal-itinerary`, `/plan/7-day-portugal-itinerary`, `/plan/14-day-portugal-itinerary` (+ existing `/itineraries/10-day-private-portugal-tour`).
-- `/plan/portugal-wine-and-gastronomy` pillar.
-- Regional guides: `/plan/lisbon`, `/plan/sintra`, `/plan/alentejo`, `/plan/arrabida`, `/plan/comporta`, `/plan/costa-vicentina`.
-- Hub at `/plan` with CollectionPage + ItemList JSON-LD.
+Goal: prove the total on every price surface (SignaturePriceCard, sticky CTA, CheckoutSummary, Tailored, Studio V3 reveal) is byte-identical and correct per pax + add-ons + guest count.
 
----
+- Run the existing matrix specs: `studio-v3-price-recompute-matrix`, `studio-v3-add-ons-total`, `studio-v3-add-ons-disabled-never-affect-total`, `checkout-full-flow`, `checkout-surfaces-smoke`, `bokun-checkout-coverage`, `instant-booking-checkout`.
+- For any failure: diagnose in `signatureTourPricing.ts` / `SignaturePriceCard` / `BandedSignatureBookingForm` / `booking-quote` edge fn and fix at the source, not per surface.
+- Manual mobile pass (393×588) through Signature reserve + Tailored + Studio V3 reveal → guest details, confirming totals match at each step.
+- Report: green matrix + screenshots of the 3 checkouts on mobile.
 
-## Next priorities (revised)
+## 3. Mobile polish across checkouts + storytelling
 
-### Tier 3 — Fill remaining high-intent US gaps
-Draft in this order; each needs `keyword_research` (US database) before publishing.
+Goal: 393px is perfect — no overflow, hit targets ≥44px, sticky CTA never covers total, storytelling copy readable.
 
-1. `/plan/douro-valley-wine-tour-from-porto` — "douro valley wine tour" (US)
-2. `/plan/lisbon-to-sintra-day-trip` — "day trip to sintra from lisbon"
-3. `/plan/best-time-to-visit-portugal` — "best time to visit portugal"
-4. `/plan/portugal-honeymoon` — "portugal honeymoon"
-5. `/guides/arrabida-vs-douro` — comparison, low-KDI long-tail
-6. `/guides/is-portugal-safe-for-americans` — reassurance intent, high US volume
+- Sweep Studio V3 phases, Signature reserve modal, Tailored form, checkout summary, guest-details footer on mobile.
+- Fix any wrap/clip using the responsive-layout pattern (grid + min-w-0 + shrink-0), not ad-hoc.
+- Verify Studio storytelling cadence on small viewport — no jank between phases, reveal fits above the fold.
 
-Each: 900–1,400 words, one real hero image, `FAQPage` schema, author byline, "Updated {date}", intent-aware internal-link block to Studio + Signature + matching plan.
+## 4. Dynamic CTAs site-wide
 
-### Positioning & schema refresh (differentiators)
-Weave these into every existing Tier 1/2 page + new Tier 3:
-- **Real-time itinerary builder + instant confirmation** → surface on tour pages and pillars in the standfirst *and* in `TouristTrip` / `Offer` schema (`availability: InStock`, `validFrom/validThrough`, "Instant confirmation" in `Offer.description`).
-- **"Travel Designer" + "personalized private"** → primary CTA copy on every editorial page ("Talk to a Travel Designer") + `Service` schema on `/multi-day` and `/plan/*` pillars with `serviceType: "Private travel design"`.
-- **Local & hidden Portugal + "only in Portugal"** → hero eyebrow / `about` prop in schema (`about: [{name: "Local & hidden Portugal"}, {name: "Unique in Portugal"}]`), plus in-copy anchor phrase per article.
+Goal: every CTA visibly alive; homepage arrow CTAs animate on hover + subtle idle motion; no dead-looking buttons.
 
-### Phase 3 — Authority (ongoing, parallel)
-Unchanged. Backlink outreach + Google Business Profile remain with the user; agent drafts pitch copy on request.
-1. Guest post on Salt in our Hair / Portugalist.
-2. Pitch Condé Nast Traveler / Travel+Leisure "small-group operators" roundups.
-3. Partner links from wine estates, Sintra hotels, Lisbon concierges.
-4. HARO / Qwoted replies to US Portugal queries.
-5. Portuguese-American associations, US-Portugal chambers of commerce.
-6. Google Business Profile in Lisbon → US "map pack".
+- Audit CTAs via canonical `<CtaButton>` primitive — anything hand-rolled gets migrated.
+- Homepage arrows (`.home-energy` scope): keep existing gold sheen sweep + hover lift, add a gentle idle arrow-nudge (translate 2–3px, 1.8s ease-in-out, respects `prefers-reduced-motion`).
+- Non-homepage CTAs stay in the strict motion budget (hover lift -2px, ≤220ms) — no bounce/spring.
+- Verify with `cta-vocabulary-lock`, `final-cta-arrow-colors`, `sticky-cta-copy` specs.
 
-### Phase 4 — Measure
-- Weekly `semrush--seo_trend`; note US keywords entering top-100.
-- Monthly `semrush--top_pages` → double down on what pulls.
-- Search Console: US impressions + CTR iteration on pages with impressions but weak CTR.
+## 5. Premium motion pass (site-wide, restraint-first)
 
----
+Goal: the site "moves, speaks, leads" — but stays editorial. No blobs, no shimmer, no parallax outside `.home-energy`.
 
-## What I'll do first if you approve
-1. `semrush--keyword_research` on the six Tier 3 phrases (US) to lock volume + KDI before drafting.
-2. Weave the four positioning anchors (local & hidden · personalized private + Travel Designer · real-time builder + instant confirmation · only in Portugal) into existing Tier 1/2 standfirsts and JSON-LD.
-3. Draft Tier 3 pages in the order above for your review before publishing.
+- Add entry reveals (fade + translateY 12–16px, ≤220ms, staggered ~60ms) to editorial sections on: About, Moments, Corporate, Travel Designer, Proposals, Local Stories index, Plan hub, Plan destination pages and homepage 
+- Image zoom 1.02–1.04 on hover for editorial cards (already in `EditorialCard` primitive — verify it's used, don't hand-roll).
+- Section eyebrow + gold rule fade-in on scroll into view.
+- Route/link draw on the plan pages that show a map, if not already animated.
+- All reduced-motion safe. Nothing on Studio V3 storytelling (its cinematic pacing is already tuned).
 
-## Out of scope (per guardrails)
-- No invented itineraries, partners, review counts, or prices.
-- No head-term SEO ("Portugal tours") until Authority Score climbs.
-- No generic AI travel content — every guide passes the Studio philosophy check.
-- No changes to Studio, homepage hero copy, or brand tokens.
+## 6. Homepage copy tweak
+
+- `src/routes/index.tsx:977` — replace "A local usually replies within a few hours." with **"A local will reply as soon as possible."**
+- Mirror the change in `pt.index.tsx` if the same line exists there.
+
+## Sequencing
+
+1. Copy tweak (§6) — 1 line, ship immediately.
+2. Checkout math (§2) — highest risk, blocks launch.
+3. Mobile polish (§3) — piggybacks on §2 pass.
+4. Image audit (§1) — reversible, do while §2/§3 tests run.
+5. Dynamic CTAs (§4).
+6. Motion pass (§5) — last, cosmetic.
+
+## Out of scope (explicit)
+
+- No changes to hero copy, brand palette, typography, Studio V3 storytelling structure, Signature tour facts, invented content, or homepage layout.
+- No new pages (Tier 3 SEO drafting paused until launch polish ships).
+- No competitor comparisons or invented superlatives.
+
+## Deliverables per workstream
+
+- §1: swap-list report + diffs.
+- §2: green Playwright matrix + mobile screenshots of 3 checkouts.
+- §3: before/after mobile screenshots at 393px.
+- §4: CTA inventory + verified specs.
+- §5: list of sections touched + motion spec used.
+- §6: 1-line diff.
+
+Approve and I'll start with §6 + §2 in parallel.
