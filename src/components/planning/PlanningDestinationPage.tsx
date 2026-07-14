@@ -65,7 +65,7 @@ export function PlanningDestinationPage({ destination }: Props) {
       {/* Hero image — real, region-specific, never stock */}
       <section className="bg-[color:var(--sand)] pb-14 md:pb-20">
         <div className="container-x max-w-5xl">
-          <figure className="overflow-hidden rounded-sm">
+          <figure className="editorial-zoom overflow-hidden rounded-sm">
             <img
               src={destination.hero.src}
               alt={destination.hero.alt}
