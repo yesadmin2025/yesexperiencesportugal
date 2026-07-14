@@ -2703,7 +2703,7 @@ export function StudioV3({ savedToken }: { savedToken?: string }) {
                 resolvePerPaxEur(tour, g, tourPriceTiers)?.eurPerPax ??
                 tour.priceFrom ??
                 0;
-              return Math.round(perPax * g + selectedAddOnsTotalEur * g);
+              return Math.round(perPax * g + selectedAddOnsPartyTotalEur);
             })()}
             saving={savingSignature}
             onContinue={() => advance("guestDetails")}
