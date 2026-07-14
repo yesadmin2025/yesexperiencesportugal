@@ -1,78 +1,83 @@
-
 ## Goal
+Get yesexperiencesportugal.com discoverable on Google **for American travelers** as fast as possible. Authority Score is 0 today with ~11 estimated organic visits/month, so the strategy is US-intent long-tail keywords, US market signals, and content Americans actually search when planning a Portugal trip — not head terms.
 
-Add one focused Playwright spec that reproduces the "Still not working" storyboard dead-end (persisted empty `editedRoutePoints` on a valid Signature draft) and asserts the stops editor recovers — no dead-end copy, real Signature stops render, and the guest can act on them.
+## Why "quaint" long-tail wins here
+American Portugal searches skew emotional and discovery-mode: "best wine tours from Lisbon", "small-group day trip Sintra", "private tour Douro from Porto". Lower volume, low KDI, reachable from AS 0, and they match YES's positioning (curated, small-group, authentic). Head terms ("Portugal tours") wait until authority grows.
 
-## Reproduction shape
+---
 
-1. Mobile viewport 393×588 (matches the user's device).
-2. Pre-hydrate `localStorage[STUDIO_DRAFT_STORAGE_KEY]` (`yes.studio.v3.draft.v1`) with a v2 envelope whose `state.editedRoutePoints = []` and `state.phase = "storyboard"`. Draft fields mirror the reported combos (feeling: `coastal`, companions: `friends`, interests: `heritage`+`coast`+`photography`, rhythm: `full`, pickup: `lisbon`) so we hit the exact path from screenshots 1 & 2. Use `tourId: "sintra-cascais"` as a real Signature id that guarantees a non-empty stops pool.
-3. Navigate to `/studio-v3`. The storyboard renders directly (hydration jumps past intro).
+## Phase 1 — Foundation (week 1, no new content)
 
-## Assertions
+1. **Switch SEO targeting to US market**
+   - Add `hreflang="en-us"` alongside existing `en` on English routes.
+   - Set Search Console international targeting to United States.
+   - Add `TouristTrip`, `TouristAttraction`, `Offer` schema with `priceCurrency: "USD"` displayed alongside EUR on tour pages (US visitors convert better seeing USD).
 
-- The dead-end block `[data-testid="studio-v3-stops-editor-empty"]` is **not present**.
-- The active editor `[data-testid="studio-v3-stops-editor"]` **is** present and contains ≥ 1 `[data-testid="studio-v3-stop-row"]`.
-- The dead-end copy string `"We couldn't compose a draft for this combination."` is not on the page.
-- The "YES Approved" trust mark still renders (recovery didn't downgrade the trust state).
-- Screenshot the storyboard for the visual record under `/tmp/browser/…` — not committed, just for local triage; Playwright captures on failure via config.
+2. **US-oriented metadata rewrite on the 10 real pages**
+   Home, /experiences, /studio-v3, /about, /contact, /tours/arrabida-wine-allinclusive, /tours/sintra-cascais, /tours/arrabida-boat, /proposal-in-portugal, /pt.
+   - Titles built around US intent, e.g. `Private Sintra & Cascais Tour from Lisbon — Small Group | YES Experiences`.
+   - Descriptions include "from Lisbon", "small-group", "English-speaking guide", "hotel pickup" — the phrases US travelers filter on.
 
-## Second scenario in same spec
+3. **Trust signals Google + Americans both weigh**
+   - Real Viator / TripAdvisor review counts + star rating in `AggregateRating` on tour pages (no invention — pulled from the tour's actual Viator listing).
+   - `sameAs` in Organization JSON-LD → real Viator, TripAdvisor, Instagram profiles.
 
-Reproduce the *other* trigger the fix covers: `editedRoutePoints = null` **and** the resolver returns a route with all stops filtered out (simulate by hydrating a draft whose combo is known to yield thin curation in test data). Since this is harder to force deterministically without touching curation, keep it as a *soft* case: hydrate the same draft with `editedRoutePoints: null` and assert the editor still renders ≥ 1 stop row — proving the fix's `seedFromPool()` path.
+## Phase 2 — Content hub for US long-tail (weeks 2–6)
 
-## File
+Published under `/plan/*` and `/guides/*`. Each targets a real US phrase validated via `semrush--keyword_research` before writing. The three "from Lisbon" pillars you flagged are now Tier 1 — they map directly to existing Signature tours, so they'll rank AND convert.
 
-`e2e/studio-v3-storyboard-recovery.spec.ts`
+### Tier 1 — Lisbon pillar pages (your call-outs, highest ROI)
 
-Shape:
+| Page | Target phrase | Feeds |
+|---|---|---|
+| `/plan/best-wine-tours-from-lisbon` | "best wine tours from lisbon" | Arrábida wine (your #1 tour) + Douro day |
+| `/plan/best-day-trips-from-lisbon` | "best day trips from lisbon" | Sintra & Cascais, Arrábida, Évora — hub page linking all Signature tours |
+| `/plan/private-tours-from-lisbon` | "private tours from lisbon" | Every Signature (private = YES core positioning) |
 
-```ts
-import { test, expect } from "@playwright/test";
-import { STUDIO_DRAFT_STORAGE_KEY } from "../src/components/studio-v3/studioDraftStorage";
+Each pillar = 1,400–1,800 words, ranks 5–8 tours as a comparison table with real Viator ratings, hero image, FAQ schema, strong internal links into each `/tours/*` page. These three are the biggest single unlock — they map "American searches Google" → "American books a YES tour" in the shortest path.
 
-const BASE_STATE = { /* coastal / friends / heritage+coast+photography / full / lisbon */ };
+### Tier 2 — Planner + intent guides
 
-async function hydrate(page, editedRoutePoints) {
-  await page.addInitScript(([key, envelope]) => {
-    window.localStorage.setItem(key, JSON.stringify(envelope));
-  }, [STUDIO_DRAFT_STORAGE_KEY, envelopeWith(editedRoutePoints)]);
-}
+| Page | Target phrase |
+|---|---|
+| `/plan/portugal-itinerary-7-days` | "7 day portugal itinerary" |
+| `/plan/lisbon-to-sintra-day-trip` | "day trip to sintra from lisbon" |
+| `/plan/douro-valley-wine-tour-from-porto` | "douro valley wine tour" |
+| `/plan/best-time-to-visit-portugal` | "best time to visit portugal" |
+| `/plan/portugal-honeymoon` | "portugal honeymoon" |
+| `/guides/arrabida-vs-douro` | "arrabida vs douro wine region" |
+| `/guides/is-portugal-safe-for-americans` | "is portugal safe for tourists" |
 
-test.use({ viewport: { width: 393, height: 852 } });
+Each: 900–1,400 words, one real hero image, internal links to matching Signature, `FAQPage` schema, author byline, "Updated {date}". Studio-quality editorial tone per brand guardrails — no AI slop, no invented itineraries.
 
-test.describe("Studio V3 storyboard recovery", () => {
-  test("persisted empty editedRoutePoints does not strand the editor", async ({ page }) => {
-    await hydrate(page, []);
-    await page.goto("/studio-v3");
-    await expect(page.getByTestId("studio-v3-stops-editor")).toBeVisible();
-    await expect(page.getByTestId("studio-v3-stops-editor-empty")).toHaveCount(0);
-    await expect(page.getByText("We couldn't compose a draft for this combination.")).toHaveCount(0);
-    await expect(page.getByTestId("studio-v3-stop-row").first()).toBeVisible();
-  });
+## Phase 3 — Authority (weeks 2–12, parallel)
 
-  test("null editedRoutePoints seeds real Signature stops", async ({ page }) => {
-    await hydrate(page, null);
-    await page.goto("/studio-v3");
-    await expect(page.getByTestId("studio-v3-stop-row").first()).toBeVisible({ timeout: 15_000 });
-    await expect(page.getByTestId("studio-v3-stops-editor-empty")).toHaveCount(0);
-  });
-});
-```
+- **5 quality backlinks** — the biggest AS 0 → AS 20+ unlock:
+  1. Guest post on a US Portugal-travel blog (Salt in our Hair, Portugalist).
+  2. Pitch Condé Nast Traveler / Travel+Leisure "small-group operators" roundups.
+  3. Partner links from wine estates, Sintra hotels, Lisbon concierges in current tours.
+  4. HARO / Qwoted replies to US travel-journalist Portugal queries.
+  5. Portuguese-American associations, US-Portugal chambers of commerce.
+- **Google Business Profile** in Lisbon → US "map pack" for "Portugal tours from Lisbon".
 
-- Soft-skip guard: if `page.getByTestId("studio-v3-stops-editor").isVisible()` never resolves within 15 s (draft hydration path shifted), `test.skip(true, "…")` — same pattern as the existing retry spec so an unrelated storyboard refactor doesn't red-line CI.
+## Phase 4 — Measure & double down (ongoing)
 
-## Package script
+- Weekly `semrush--seo_trend`; note each keyword entering top-100.
+- Monthly `semrush--top_pages` → publish more of what pulls traffic.
+- Search Console: track US impressions, iterate titles on pages with impressions but low CTR.
 
-Add `"test:e2e:storyboard-recovery": "playwright test e2e/studio-v3-storyboard-recovery.spec.ts"` to `package.json` so CI and manual runs are one command.
+---
 
-## Verification
+## What I'll do first if you approve
+1. `semrush--keyword_research` on all 10 candidate phrases (US database) to validate volume + KDI and surface stronger variants — especially confirming the three "from Lisbon" pillars have the volume/difficulty I expect.
+2. Rewrite metadata on the 10 real pages (Phase 1 step 2).
+3. Add USD display + real `AggregateRating` schema on tour pages.
+4. Draft the three Tier 1 Lisbon pillar pages first for your review before publishing, then Tier 2.
 
-1. Run the new spec locally via the new script — must pass.
-2. Temporarily revert the storyboard fix (`baseStops` seed + editedStops guard) locally to confirm the spec fails as expected, then restore.
-3. Confirm no impact on the existing `studio-v3-checkout-retry-and-failures.spec.ts` (uses the same hydration key — verify they don't collide when run together).
+Backlink outreach + Google Business Profile stay with you — I can draft pitch emails and profile copy, but the relationships and account ownership are yours.
 
-## Out of scope
-
-- No changes to `StudioV3.tsx`, curation, or checkout code — this is pure test coverage locking the fix that already shipped.
-- No workflow YAML wiring in this turn; a separate turn can add the new script to `.github/workflows/studio-v3-p0-regression.yml` once the spec is green in CI.
+## Out of scope (per guardrails)
+- No invented itineraries, partners, or review counts.
+- No head-term SEO ("Portugal tours") until AS climbs.
+- No generic AI travel content — every guide passes the Studio philosophy check.
+- No changes to Studio, homepage hero copy, or brand tokens.
