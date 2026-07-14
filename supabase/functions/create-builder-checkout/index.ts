@@ -183,9 +183,7 @@ Deno.serve(async (req) => {
   }
 });
 
+import { buildCheckoutError } from "../_shared/checkoutError.ts";
 function jsonError(message: string, status: number) {
-  return new Response(JSON.stringify({ error: message }), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+  return buildCheckoutError(message, status, corsHeaders, { detail: message });
 }
