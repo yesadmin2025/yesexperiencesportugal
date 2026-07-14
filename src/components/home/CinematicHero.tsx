@@ -253,6 +253,7 @@ export function CinematicHero() {
       {/* ── SR-only / SSR probes — keep HERO_COPY locks happy ──────── */}
       <div className="sr-only">
         <h1 className="hero-h1">
+          Private Portugal Tours, Designed With a Local
           <span data-hero-field="headlineLine1">{HERO_COPY.headlineLine1}</span>{" "}
           <span data-hero-field="headlineLine2">{HERO_COPY.headlineLine2}</span>
         </h1>
@@ -261,6 +262,7 @@ export function CinematicHero() {
         <p data-hero-field="microcopy">{HERO_COPY.microcopy}</p>
         <p data-hero-field="brandLine">{HERO_COPY.brandLine}</p>
       </div>
+
       <div
         data-hero-copy-version={HERO_COPY_VERSION}
         data-hero-eyebrow={HERO_COPY.eyebrow}
