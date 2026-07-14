@@ -242,56 +242,71 @@ export function FinalRevealStory({
           </header>
 
           {/* Chaptered story — book paragraphs */}
-          <ol
-            className="mt-8 space-y-7"
-            data-testid="studio-v3-final-reveal-timeline"
-          >
-            {timeline.map((beat, i) => (
-              <li key={`${beat.kind}-${i}-${beat.label}`} className="relative pl-8">
-                <span
-                  aria-hidden
-                  className="absolute left-0 top-[2px] w-6 text-[12px] tracking-[0.12em] tabular-nums"
-                  style={{
-                    fontFamily: "var(--font-editorial)",
-                    color: "var(--gold)",
-                    fontWeight: 600,
-                    fontStyle: "italic",
-                  }}
-                >
-                  {romanFor(i)}.
-                </span>
-                <h3
-                  className="text-[17px] leading-[1.3]"
-                  style={{
-                    fontFamily: "var(--font-editorial)",
-                    color: "var(--charcoal)",
-                    fontWeight: 500,
-                  }}
-                >
-                  {beat.label}
-                  {beat.kind === "addition" ? (
-                    <span
-                      className="ml-2 text-[10px] uppercase tracking-[0.22em] align-middle"
-                      style={{ color: "var(--teal)" }}
-                    >
-                      · your addition
-                    </span>
-                  ) : null}
-                </h3>
-                {beat.story ? (
-                  <p
-                    className="mt-2 max-w-[52ch] text-[14.5px] leading-[1.7] [text-wrap:pretty]"
+          {hasTimeline ? (
+            <ol
+              className="mt-8 space-y-7"
+              data-testid="studio-v3-final-reveal-timeline"
+            >
+              {timeline.map((beat, i) => (
+                <li key={`${beat.kind}-${i}-${beat.label}`} className="relative pl-8">
+                  <span
+                    aria-hidden
+                    className="absolute left-0 top-[2px] w-6 text-[12px] tracking-[0.12em] tabular-nums"
                     style={{
                       fontFamily: "var(--font-editorial)",
-                      color: "color-mix(in oklab, var(--charcoal) 76%, transparent)",
+                      color: "var(--gold)",
+                      fontWeight: 600,
+                      fontStyle: "italic",
                     }}
                   >
-                    {beat.story}
-                  </p>
-                ) : null}
-              </li>
-            ))}
-          </ol>
+                    {romanFor(i)}.
+                  </span>
+                  <h3
+                    className="text-[17px] leading-[1.3]"
+                    style={{
+                      fontFamily: "var(--font-editorial)",
+                      color: "var(--charcoal)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {beat.label}
+                    {beat.kind === "addition" ? (
+                      <span
+                        className="ml-2 text-[10px] uppercase tracking-[0.22em] align-middle"
+                        style={{ color: "var(--teal)" }}
+                      >
+                        · your addition
+                      </span>
+                    ) : null}
+                  </h3>
+                  {beat.story ? (
+                    <p
+                      className="mt-2 max-w-[52ch] text-[14.5px] leading-[1.7] [text-wrap:pretty]"
+                      style={{
+                        fontFamily: "var(--font-editorial)",
+                        color: "color-mix(in oklab, var(--charcoal) 76%, transparent)",
+                      }}
+                    >
+                      {beat.story}
+                    </p>
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p
+              className="mt-8 text-center text-[14px] leading-[1.6] px-4 py-6 rounded-[6px]"
+              style={{
+                fontFamily: "var(--font-editorial)",
+                color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+                background: "color-mix(in oklab, var(--sand) 35%, transparent)",
+              }}
+              data-testid="studio-v3-final-reveal-empty"
+            >
+              Your day is being composed. Refresh in a moment — or step back to
+              refine your Signature.
+            </p>
+          )}
         </div>
       </article>
 
