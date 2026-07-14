@@ -28,6 +28,7 @@ import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { getTourReviewStats, getTourReviews } from "@/lib/reviews.functions";
 import { SIGNATURE_FAQ } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
+import { matchStopPhotos } from "@/lib/stopPhotoMatch";
 import { TourReviews } from "@/components/TourReviews";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
