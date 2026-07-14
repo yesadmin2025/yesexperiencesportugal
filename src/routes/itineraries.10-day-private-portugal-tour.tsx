@@ -4,6 +4,9 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { jsonLdScript, breadcrumbLd, SITE_URL } from "@/lib/jsonld";
+import { RelatedExperiencesRail } from "@/components/RelatedExperiencesRail";
+import { rankRelatedTours } from "@/lib/related-experiences";
+import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 
 /**
  * /itineraries/10-day-private-portugal-tour
@@ -242,6 +245,41 @@ function Page() {
           </div>
         </div>
       </section>
+
+      <ItineraryRelated />
     </SiteLayout>
+  );
+}
+
+function ItineraryRelated() {
+  // Seed the recommender with the regions the ten-day journey actually
+  // touches — Lisbon coast, Sintra, Arrábida/Sesimbra, Alentejo. Style
+  // and highlight tokens keep the pick coherent with luxury slow travel.
+  const tours = rankRelatedTours(
+    {
+      region: "Setúbal · Arrábida · Alentejo · Sintra",
+      styles: ["wine", "heritage", "coastal", "gastronomy"],
+      highlights: ["tasting", "viewpoint", "sesimbra"],
+    },
+    3,
+  );
+  const stories = LOCAL_STORIES_ARTICLES.filter((s) =>
+    ["best-day-trips-from-lisbon", "portugal-wine-tours", "wine-tours-lisbon"].some(
+      (slug) => s.slug === slug,
+    ),
+  ).slice(0, 3);
+  return (
+    <RelatedExperiencesRail
+      tours={tours}
+      stories={stories}
+      toursEyebrow="Experiences inside this journey"
+      toursTitle={
+        <>
+          Signature days your <SectionTitle.Em>designer draws from</SectionTitle.Em>
+        </>
+      }
+      storiesEyebrow="Read before you plan"
+      background="ivory"
+    />
   );
 }
