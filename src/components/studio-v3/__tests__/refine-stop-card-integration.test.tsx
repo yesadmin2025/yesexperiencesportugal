@@ -212,13 +212,17 @@ describe("RefineStopCard — empty + error states", () => {
 });
 
 describe("RefineAccordion — collapsed + expanded state", () => {
-  it("collapsed accordion hides children from the DOM", () => {
+  it("collapsed accordion hides children via aria-hidden on the region", () => {
     render(
       <RefineAccordion open={false} onOpenChange={() => {}} count={4}>
         <StopList stops={STOPS} />
       </RefineAccordion>,
     );
-    expect(screen.queryByTestId("studio-v3-refine-stop-card")).toBeNull();
+    const section = screen.getByTestId("studio-v3-refine-accordion");
+    expect(section.getAttribute("data-open")).toBe("false");
+    // Children stay mounted for the CSS transition, but the region is aria-hidden.
+    const region = section.querySelector("[role='region'], [aria-hidden]");
+    expect(region?.getAttribute("aria-hidden")).toBe("true");
   });
 
   it("expanded accordion renders the stop list", () => {
