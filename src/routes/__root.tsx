@@ -16,7 +16,7 @@ import appCss from "../styles.css?url";
 import { installResetBlankCheckFilter } from "@/lib/silence-reset-blank-check";
 import { installIframeFooterGuard } from "@/lib/iframe-footer-guard";
 import { installClientErrorLogger } from "@/lib/client-error-logger";
-import { installDevHardReload } from "@/lib/dev-hard-reload";
+const installDevHardReload = () => undefined as unknown as void;
 import { installMotionPerfDetector } from "@/lib/motion-perf-detector";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";

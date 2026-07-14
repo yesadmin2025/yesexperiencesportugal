@@ -24,7 +24,7 @@ const imgCorporate = guestQuintaGroup.url;
 import { Star, MessageCircle } from "lucide-react";
 
 import { GuestQuotes } from "@/components/home/GuestQuotes";
-import { StudioLivePreview } from "@/components/home/StudioLivePreview";
+const StudioLivePreview = () => null;
 import { CinematicHero } from "@/components/home/CinematicHero";
 import { RecentJourney } from "@/components/home/RecentJourney";
 import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
