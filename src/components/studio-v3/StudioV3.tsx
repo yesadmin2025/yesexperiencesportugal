@@ -3982,7 +3982,7 @@ export function StoryboardHandoff({
                     onPickSwap={(cand) => {
                       setEdited((prev) =>
                         prev.map((p, j) =>
-                          j === i ? { label: cand.label, story: cand.story } : p,
+                          j === i ? { label: cand.label, story: cand.story ?? "" } : p,
                         ),
                       );
                       setSwapOpenIdx(null);
