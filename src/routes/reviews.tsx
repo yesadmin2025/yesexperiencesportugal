@@ -27,6 +27,7 @@ import {
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { findTour } from "@/data/signatureTours";
 import { SITE_URL } from "@/lib/seo";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 const SOURCE_LABEL: Record<string, string> = {
   viator: "Viator",
@@ -149,6 +150,7 @@ function Stars({ rating }: { rating: number }) {
 type Bundle = { stats: TourStats; reviews: PublicReview[] };
 
 function ReviewsPage() {
+  useMarketingMotion();
   const { stats: initialStats } = Route.useLoaderData();
   const globalFn = useServerFn(getGlobalReviewStats);
   const statsFn = useServerFn(getTourReviewStats);

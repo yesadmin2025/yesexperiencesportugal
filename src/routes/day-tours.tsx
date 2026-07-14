@@ -9,6 +9,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { TourImage } from "@/components/tours/TourImage";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 export const Route = createFileRoute("/day-tours")({
   head: () => ({
@@ -46,6 +47,7 @@ const dayTours = signatureTours.filter(
 );
 
 function DayToursPage() {
+  useMarketingMotion();
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>

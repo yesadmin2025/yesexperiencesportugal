@@ -5,6 +5,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { EMAIL, LICENSE_LABEL, PHONE_DISPLAY } from "@/config/business-nap";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 const TITLE = "Press & Brand Kit — YES Experiences Portugal";
 const DESCRIPTION =
@@ -269,6 +270,7 @@ function Snippet({ label, code, filename }: { label: string; code: string; filen
 }
 
 function PressPage() {
+  useMarketingMotion();
   return (
     <SiteLayout>
       <article className="mx-auto max-w-3xl px-5 py-16 sm:py-24">

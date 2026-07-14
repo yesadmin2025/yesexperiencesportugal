@@ -21,6 +21,7 @@ import {
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 type JournalPostFull = {
   slug: string;
@@ -284,6 +285,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
 });
 
 function Page() {
+  useMarketingMotion();
   const { slug } = Route.useParams();
   const article = getLocalStoryArticle(slug);
   const loaderData = Route.useLoaderData();
