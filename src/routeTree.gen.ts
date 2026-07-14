@@ -76,6 +76,16 @@ import { Route as PtCookiesRouteImport } from './routes/pt.cookies'
 import { Route as PtContactRouteImport } from './routes/pt.contact'
 import { Route as PtAboutRouteImport } from './routes/pt.about'
 import { Route as PtSplatRouteImport } from './routes/pt.$'
+import { Route as PlanSintraRouteImport } from './routes/plan.sintra'
+import { Route as PlanPortugalWineAndGastronomyRouteImport } from './routes/plan.portugal-wine-and-gastronomy'
+import { Route as PlanLisbonRouteImport } from './routes/plan.lisbon'
+import { Route as PlanCostaVicentinaRouteImport } from './routes/plan.costa-vicentina'
+import { Route as PlanComportaRouteImport } from './routes/plan.comporta'
+import { Route as PlanArrabidaRouteImport } from './routes/plan.arrabida'
+import { Route as PlanAlentejoRouteImport } from './routes/plan.alentejo'
+import { Route as Plan7DayPortugalItineraryRouteImport } from './routes/plan.7-day-portugal-itinerary'
+import { Route as Plan5DayPortugalItineraryRouteImport } from './routes/plan.5-day-portugal-itinerary'
+import { Route as Plan14DayPortugalItineraryRouteImport } from './routes/plan.14-day-portugal-itinerary'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
 import { Route as Itineraries10DayPrivatePortugalTourRouteImport } from './routes/itineraries.10-day-private-portugal-tour'
 import { Route as ITokenRouteImport } from './routes/i.$token'
@@ -463,6 +473,60 @@ const PtSplatRoute = PtSplatRouteImport.update({
   path: '/$',
   getParentRoute: () => PtRoute,
 } as any)
+const PlanSintraRoute = PlanSintraRouteImport.update({
+  id: '/sintra',
+  path: '/sintra',
+  getParentRoute: () => PlanRoute,
+} as any)
+const PlanPortugalWineAndGastronomyRoute =
+  PlanPortugalWineAndGastronomyRouteImport.update({
+    id: '/portugal-wine-and-gastronomy',
+    path: '/portugal-wine-and-gastronomy',
+    getParentRoute: () => PlanRoute,
+  } as any)
+const PlanLisbonRoute = PlanLisbonRouteImport.update({
+  id: '/lisbon',
+  path: '/lisbon',
+  getParentRoute: () => PlanRoute,
+} as any)
+const PlanCostaVicentinaRoute = PlanCostaVicentinaRouteImport.update({
+  id: '/costa-vicentina',
+  path: '/costa-vicentina',
+  getParentRoute: () => PlanRoute,
+} as any)
+const PlanComportaRoute = PlanComportaRouteImport.update({
+  id: '/comporta',
+  path: '/comporta',
+  getParentRoute: () => PlanRoute,
+} as any)
+const PlanArrabidaRoute = PlanArrabidaRouteImport.update({
+  id: '/arrabida',
+  path: '/arrabida',
+  getParentRoute: () => PlanRoute,
+} as any)
+const PlanAlentejoRoute = PlanAlentejoRouteImport.update({
+  id: '/alentejo',
+  path: '/alentejo',
+  getParentRoute: () => PlanRoute,
+} as any)
+const Plan7DayPortugalItineraryRoute =
+  Plan7DayPortugalItineraryRouteImport.update({
+    id: '/7-day-portugal-itinerary',
+    path: '/7-day-portugal-itinerary',
+    getParentRoute: () => PlanRoute,
+  } as any)
+const Plan5DayPortugalItineraryRoute =
+  Plan5DayPortugalItineraryRouteImport.update({
+    id: '/5-day-portugal-itinerary',
+    path: '/5-day-portugal-itinerary',
+    getParentRoute: () => PlanRoute,
+  } as any)
+const Plan14DayPortugalItineraryRoute =
+  Plan14DayPortugalItineraryRouteImport.update({
+    id: '/14-day-portugal-itinerary',
+    path: '/14-day-portugal-itinerary',
+    getParentRoute: () => PlanRoute,
+  } as any)
 const LocalStoriesSlugRoute = LocalStoriesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -793,6 +857,16 @@ export interface FileRoutesByFullPath {
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
+  '/plan/14-day-portugal-itinerary': typeof Plan14DayPortugalItineraryRoute
+  '/plan/5-day-portugal-itinerary': typeof Plan5DayPortugalItineraryRoute
+  '/plan/7-day-portugal-itinerary': typeof Plan7DayPortugalItineraryRoute
+  '/plan/alentejo': typeof PlanAlentejoRoute
+  '/plan/arrabida': typeof PlanArrabidaRoute
+  '/plan/comporta': typeof PlanComportaRoute
+  '/plan/costa-vicentina': typeof PlanCostaVicentinaRoute
+  '/plan/lisbon': typeof PlanLisbonRoute
+  '/plan/portugal-wine-and-gastronomy': typeof PlanPortugalWineAndGastronomyRoute
+  '/plan/sintra': typeof PlanSintraRoute
   '/pt/$': typeof PtSplatRoute
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
@@ -907,6 +981,16 @@ export interface FileRoutesByTo {
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
+  '/plan/14-day-portugal-itinerary': typeof Plan14DayPortugalItineraryRoute
+  '/plan/5-day-portugal-itinerary': typeof Plan5DayPortugalItineraryRoute
+  '/plan/7-day-portugal-itinerary': typeof Plan7DayPortugalItineraryRoute
+  '/plan/alentejo': typeof PlanAlentejoRoute
+  '/plan/arrabida': typeof PlanArrabidaRoute
+  '/plan/comporta': typeof PlanComportaRoute
+  '/plan/costa-vicentina': typeof PlanCostaVicentinaRoute
+  '/plan/lisbon': typeof PlanLisbonRoute
+  '/plan/portugal-wine-and-gastronomy': typeof PlanPortugalWineAndGastronomyRoute
+  '/plan/sintra': typeof PlanSintraRoute
   '/pt/$': typeof PtSplatRoute
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
@@ -1025,6 +1109,16 @@ export interface FileRoutesById {
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
+  '/plan/14-day-portugal-itinerary': typeof Plan14DayPortugalItineraryRoute
+  '/plan/5-day-portugal-itinerary': typeof Plan5DayPortugalItineraryRoute
+  '/plan/7-day-portugal-itinerary': typeof Plan7DayPortugalItineraryRoute
+  '/plan/alentejo': typeof PlanAlentejoRoute
+  '/plan/arrabida': typeof PlanArrabidaRoute
+  '/plan/comporta': typeof PlanComportaRoute
+  '/plan/costa-vicentina': typeof PlanCostaVicentinaRoute
+  '/plan/lisbon': typeof PlanLisbonRoute
+  '/plan/portugal-wine-and-gastronomy': typeof PlanPortugalWineAndGastronomyRoute
+  '/plan/sintra': typeof PlanSintraRoute
   '/pt/$': typeof PtSplatRoute
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
@@ -1144,6 +1238,16 @@ export interface FileRouteTypes {
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
+    | '/plan/14-day-portugal-itinerary'
+    | '/plan/5-day-portugal-itinerary'
+    | '/plan/7-day-portugal-itinerary'
+    | '/plan/alentejo'
+    | '/plan/arrabida'
+    | '/plan/comporta'
+    | '/plan/costa-vicentina'
+    | '/plan/lisbon'
+    | '/plan/portugal-wine-and-gastronomy'
+    | '/plan/sintra'
     | '/pt/$'
     | '/pt/about'
     | '/pt/contact'
@@ -1258,6 +1362,16 @@ export interface FileRouteTypes {
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
+    | '/plan/14-day-portugal-itinerary'
+    | '/plan/5-day-portugal-itinerary'
+    | '/plan/7-day-portugal-itinerary'
+    | '/plan/alentejo'
+    | '/plan/arrabida'
+    | '/plan/comporta'
+    | '/plan/costa-vicentina'
+    | '/plan/lisbon'
+    | '/plan/portugal-wine-and-gastronomy'
+    | '/plan/sintra'
     | '/pt/$'
     | '/pt/about'
     | '/pt/contact'
@@ -1375,6 +1489,16 @@ export interface FileRouteTypes {
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
+    | '/plan/14-day-portugal-itinerary'
+    | '/plan/5-day-portugal-itinerary'
+    | '/plan/7-day-portugal-itinerary'
+    | '/plan/alentejo'
+    | '/plan/arrabida'
+    | '/plan/comporta'
+    | '/plan/costa-vicentina'
+    | '/plan/lisbon'
+    | '/plan/portugal-wine-and-gastronomy'
+    | '/plan/sintra'
     | '/pt/$'
     | '/pt/about'
     | '/pt/contact'
@@ -1982,6 +2106,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PtSplatRouteImport
       parentRoute: typeof PtRoute
     }
+    '/plan/sintra': {
+      id: '/plan/sintra'
+      path: '/sintra'
+      fullPath: '/plan/sintra'
+      preLoaderRoute: typeof PlanSintraRouteImport
+      parentRoute: typeof PlanRoute
+    }
+    '/plan/portugal-wine-and-gastronomy': {
+      id: '/plan/portugal-wine-and-gastronomy'
+      path: '/portugal-wine-and-gastronomy'
+      fullPath: '/plan/portugal-wine-and-gastronomy'
+      preLoaderRoute: typeof PlanPortugalWineAndGastronomyRouteImport
+      parentRoute: typeof PlanRoute
+    }
+    '/plan/lisbon': {
+      id: '/plan/lisbon'
+      path: '/lisbon'
+      fullPath: '/plan/lisbon'
+      preLoaderRoute: typeof PlanLisbonRouteImport
+      parentRoute: typeof PlanRoute
+    }
+    '/plan/costa-vicentina': {
+      id: '/plan/costa-vicentina'
+      path: '/costa-vicentina'
+      fullPath: '/plan/costa-vicentina'
+      preLoaderRoute: typeof PlanCostaVicentinaRouteImport
+      parentRoute: typeof PlanRoute
+    }
+    '/plan/comporta': {
+      id: '/plan/comporta'
+      path: '/comporta'
+      fullPath: '/plan/comporta'
+      preLoaderRoute: typeof PlanComportaRouteImport
+      parentRoute: typeof PlanRoute
+    }
+    '/plan/arrabida': {
+      id: '/plan/arrabida'
+      path: '/arrabida'
+      fullPath: '/plan/arrabida'
+      preLoaderRoute: typeof PlanArrabidaRouteImport
+      parentRoute: typeof PlanRoute
+    }
+    '/plan/alentejo': {
+      id: '/plan/alentejo'
+      path: '/alentejo'
+      fullPath: '/plan/alentejo'
+      preLoaderRoute: typeof PlanAlentejoRouteImport
+      parentRoute: typeof PlanRoute
+    }
+    '/plan/7-day-portugal-itinerary': {
+      id: '/plan/7-day-portugal-itinerary'
+      path: '/7-day-portugal-itinerary'
+      fullPath: '/plan/7-day-portugal-itinerary'
+      preLoaderRoute: typeof Plan7DayPortugalItineraryRouteImport
+      parentRoute: typeof PlanRoute
+    }
+    '/plan/5-day-portugal-itinerary': {
+      id: '/plan/5-day-portugal-itinerary'
+      path: '/5-day-portugal-itinerary'
+      fullPath: '/plan/5-day-portugal-itinerary'
+      preLoaderRoute: typeof Plan5DayPortugalItineraryRouteImport
+      parentRoute: typeof PlanRoute
+    }
+    '/plan/14-day-portugal-itinerary': {
+      id: '/plan/14-day-portugal-itinerary'
+      path: '/14-day-portugal-itinerary'
+      fullPath: '/plan/14-day-portugal-itinerary'
+      preLoaderRoute: typeof Plan14DayPortugalItineraryRouteImport
+      parentRoute: typeof PlanRoute
+    }
     '/local-stories/$slug': {
       id: '/local-stories/$slug'
       path: '/$slug'
@@ -2336,10 +2530,30 @@ const LocalStoriesRouteWithChildren = LocalStoriesRoute._addFileChildren(
 )
 
 interface PlanRouteChildren {
+  Plan14DayPortugalItineraryRoute: typeof Plan14DayPortugalItineraryRoute
+  Plan5DayPortugalItineraryRoute: typeof Plan5DayPortugalItineraryRoute
+  Plan7DayPortugalItineraryRoute: typeof Plan7DayPortugalItineraryRoute
+  PlanAlentejoRoute: typeof PlanAlentejoRoute
+  PlanArrabidaRoute: typeof PlanArrabidaRoute
+  PlanComportaRoute: typeof PlanComportaRoute
+  PlanCostaVicentinaRoute: typeof PlanCostaVicentinaRoute
+  PlanLisbonRoute: typeof PlanLisbonRoute
+  PlanPortugalWineAndGastronomyRoute: typeof PlanPortugalWineAndGastronomyRoute
+  PlanSintraRoute: typeof PlanSintraRoute
   PlanIndexRoute: typeof PlanIndexRoute
 }
 
 const PlanRouteChildren: PlanRouteChildren = {
+  Plan14DayPortugalItineraryRoute: Plan14DayPortugalItineraryRoute,
+  Plan5DayPortugalItineraryRoute: Plan5DayPortugalItineraryRoute,
+  Plan7DayPortugalItineraryRoute: Plan7DayPortugalItineraryRoute,
+  PlanAlentejoRoute: PlanAlentejoRoute,
+  PlanArrabidaRoute: PlanArrabidaRoute,
+  PlanComportaRoute: PlanComportaRoute,
+  PlanCostaVicentinaRoute: PlanCostaVicentinaRoute,
+  PlanLisbonRoute: PlanLisbonRoute,
+  PlanPortugalWineAndGastronomyRoute: PlanPortugalWineAndGastronomyRoute,
+  PlanSintraRoute: PlanSintraRoute,
   PlanIndexRoute: PlanIndexRoute,
 }
 
