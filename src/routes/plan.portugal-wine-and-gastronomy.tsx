@@ -150,6 +150,23 @@ function PillarPage() {
         </div>
       </header>
 
+      {/* Hero image — real, wine-country, never stock */}
+      <section className="bg-[color:var(--sand)] pb-14 md:pb-20">
+        <div className="container-x max-w-5xl">
+          <figure className="overflow-hidden rounded-sm">
+            <img
+              src={HERO.src}
+              alt={HERO.alt}
+              loading="eager"
+              decoding="async"
+              className="w-full aspect-[16/9] object-cover"
+            />
+          </figure>
+        </div>
+      </section>
+
+
+
       <section className="reveal py-20 md:py-24 bg-[color:var(--ivory)]">
         <div className="container-x max-w-2xl space-y-12">
           <div>
