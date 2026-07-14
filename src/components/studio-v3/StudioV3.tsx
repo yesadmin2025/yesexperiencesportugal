@@ -2626,7 +2626,15 @@ export function StudioV3() {
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}
-
+            clientSecret={clientSecret}
+            publishableKey={publishableKey}
+            onPaymentComplete={(sid) => {
+              const tid = checkoutTourId ?? state.tourId ?? "";
+              const qs = new URLSearchParams();
+              if (sid) qs.set("session_id", sid);
+              if (tid) qs.set("tour", tid);
+              window.location.assign(`/booking-confirmed?${qs.toString()}`);
+            }}
             onReserve={() => {
               void handleStripeCheckout(state, pendingGuestDetails);
             }}
