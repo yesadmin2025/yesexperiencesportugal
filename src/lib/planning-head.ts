@@ -5,6 +5,8 @@ import {
   breadcrumbLd,
   faqPageLd,
   imageGalleryLd,
+  pageGalleryLd,
+  stopMediaLd,
   touristDestinationLd,
   absUrl,
   SITE_URL,
