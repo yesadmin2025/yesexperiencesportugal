@@ -475,6 +475,7 @@ function StaticArticleView({
           </div>
         </section>
       </article>
+      <StoryRelated article={article} />
     </SiteLayout>
   );
 }
@@ -564,8 +565,41 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
           </div>
         </section>
       </article>
+      {post.signatureSlug && <DbPostRelated signatureSlug={post.signatureSlug} />}
     </SiteLayout>
   );
+}
+
+function StoryRelated({ article }: { article: LocalStoryArticle }) {
+  const primary = findTour(article.signatureSlug);
+  const tours = primary
+    ? rankRelatedTours(
+        {
+          excludeTourId: primary.id,
+          region: primary.region,
+          styles: primary.seed?.styles,
+          highlights: primary.seed?.highlights,
+        },
+        3,
+      )
+    : [];
+  const stories = relatedStoriesForStory(article, 3);
+  return <RelatedExperiencesRail tours={tours} stories={stories} background="ivory" />;
+}
+
+function DbPostRelated({ signatureSlug }: { signatureSlug: string }) {
+  const primary = findTour(signatureSlug);
+  if (!primary) return null;
+  const tours = rankRelatedTours(
+    {
+      excludeTourId: primary.id,
+      region: primary.region,
+      styles: primary.seed?.styles,
+      highlights: primary.seed?.highlights,
+    },
+    3,
+  );
+  return <RelatedExperiencesRail tours={tours} background="ivory" />;
 }
 
 function NotFoundView() {
