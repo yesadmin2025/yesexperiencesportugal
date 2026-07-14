@@ -30,6 +30,7 @@ import { Route as PressRouteImport } from './routes/press'
 import { Route as PortugalWineToursRouteImport } from './routes/portugal-wine-tours'
 import { Route as PortugalTravelDesignerRouteImport } from './routes/portugal-travel-designer'
 import { Route as PortugalToursRouteImport } from './routes/portugal-tours'
+import { Route as PlanRouteImport } from './routes/plan'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
 import { Route as MomentsRouteImport } from './routes/moments'
 import { Route as LuxuryToursPortugalRouteImport } from './routes/luxury-tours-portugal'
@@ -226,6 +227,11 @@ const PortugalTravelDesignerRoute = PortugalTravelDesignerRouteImport.update({
 const PortugalToursRoute = PortugalToursRouteImport.update({
   id: '/portugal-tours',
   path: '/portugal-tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanRoute = PlanRouteImport.update({
+  id: '/plan',
+  path: '/plan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MultiDayRoute = MultiDayRouteImport.update({
@@ -724,6 +730,7 @@ export interface FileRoutesByFullPath {
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
+  '/plan': typeof PlanRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -838,6 +845,7 @@ export interface FileRoutesByTo {
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
+  '/plan': typeof PlanRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -953,6 +961,7 @@ export interface FileRoutesById {
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
+  '/plan': typeof PlanRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -1070,6 +1079,7 @@ export interface FileRouteTypes {
     | '/luxury-tours-portugal'
     | '/moments'
     | '/multi-day'
+    | '/plan'
     | '/portugal-tours'
     | '/portugal-travel-designer'
     | '/portugal-wine-tours'
@@ -1184,6 +1194,7 @@ export interface FileRouteTypes {
     | '/luxury-tours-portugal'
     | '/moments'
     | '/multi-day'
+    | '/plan'
     | '/portugal-tours'
     | '/portugal-travel-designer'
     | '/portugal-wine-tours'
@@ -1298,6 +1309,7 @@ export interface FileRouteTypes {
     | '/luxury-tours-portugal'
     | '/moments'
     | '/multi-day'
+    | '/plan'
     | '/portugal-tours'
     | '/portugal-travel-designer'
     | '/portugal-wine-tours'
@@ -1414,6 +1426,7 @@ export interface RootRouteChildren {
   LuxuryToursPortugalRoute: typeof LuxuryToursPortugalRoute
   MomentsRoute: typeof MomentsRoute
   MultiDayRoute: typeof MultiDayRoute
+  PlanRoute: typeof PlanRoute
   PortugalToursRoute: typeof PortugalToursRoute
   PortugalTravelDesignerRoute: typeof PortugalTravelDesignerRoute
   PortugalWineToursRoute: typeof PortugalWineToursRoute
@@ -1635,6 +1648,13 @@ declare module '@tanstack/react-router' {
       path: '/portugal-tours'
       fullPath: '/portugal-tours'
       preLoaderRoute: typeof PortugalToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plan': {
+      id: '/plan'
+      path: '/plan'
+      fullPath: '/plan'
+      preLoaderRoute: typeof PlanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/multi-day': {
@@ -2382,6 +2402,7 @@ const rootRouteChildren: RootRouteChildren = {
   LuxuryToursPortugalRoute: LuxuryToursPortugalRoute,
   MomentsRoute: MomentsRoute,
   MultiDayRoute: MultiDayRoute,
+  PlanRoute: PlanRoute,
   PortugalToursRoute: PortugalToursRoute,
   PortugalTravelDesignerRoute: PortugalTravelDesignerRoute,
   PortugalWineToursRoute: PortugalWineToursRoute,
