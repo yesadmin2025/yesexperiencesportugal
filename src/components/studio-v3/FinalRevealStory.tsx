@@ -367,6 +367,40 @@ export function FinalRevealStory({
         {INSTANT_CONFIRMATION}
       </p>
 
+      {/* The investment is a decision-critical fact, so it stays visible.
+          Detailed inclusions remain progressive disclosure below. */}
+      {totalEur != null ? (
+        <div
+          data-testid="studio-v3-final-reveal-investment"
+          className="mt-7 px-4 py-4 text-center rounded-[4px]"
+          style={{
+            background: "color-mix(in oklab, var(--gold) 10%, var(--ivory))",
+            border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+          }}
+        >
+          <p
+            className="text-[10px] uppercase tracking-[0.24em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+          >
+            Final investment
+          </p>
+          <p
+            className="mt-1 text-[25px] leading-none tabular-nums"
+            style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
+          >
+            {formatEur(totalEur)}
+          </p>
+          {perPaxEur != null ? (
+            <p
+              className="mt-1.5 text-[11px] font-semibold tabular-nums"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 66%, transparent)" }}
+            >
+              {formatEur(perPaxEur)} per person
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
       {/* Collapsible inclusions + price */}
       <details
         className="mt-8 border-t border-b py-4"
@@ -406,8 +440,13 @@ export function FinalRevealStory({
                 {selectedAddOns.map((a) => (
                   <li key={a.id} className="flex justify-between gap-3">
                     <span>· {a.label}</span>
-                    <span className="tabular-nums" style={{ color: "var(--teal)" }}>
-                      {formatEur(a.priceEur)}
+                    <span className="text-right tabular-nums" style={{ color: "var(--teal)" }}>
+                      +{formatEur(a.perUnit)} {a.unitLabel}
+                      {a.amount !== a.perUnit ? (
+                        <span className="block text-[10.5px]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+                          {formatEur(a.amount)} for your group
+                        </span>
+                      ) : null}
                     </span>
                   </li>
                 ))}

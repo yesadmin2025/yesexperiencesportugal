@@ -357,7 +357,9 @@ export function SignaturePriceCard({
   useEffect(() => {
     const cb = onAddOnsChangeRef.current;
     if (!cb) return;
-    const key = selectedAddOnIds.join("|");
+    // Re-emit when the party size or base changes as well as the selected ids:
+    // unit-aware item amounts depend on all three inputs.
+    const key = `${selectedAddOnIds.join("|")}::${priceEur ?? "x"}::${summaryGuests}`;
     if (lastEmittedKeyRef.current === key) return;
     lastEmittedKeyRef.current = key;
     cb(buildSummary(selectedAddOnIds));
@@ -371,7 +373,7 @@ export function SignaturePriceCard({
     if (isControlled) {
       const cb = onAddOnsChangeRef.current;
       if (cb) {
-        lastEmittedKeyRef.current = next.join("|");
+        lastEmittedKeyRef.current = `${next.join("|")}::${priceEur ?? "x"}::${summaryGuests}`;
         cb(buildSummary(next));
       }
     }
@@ -676,10 +678,10 @@ export function SignaturePriceCard({
           </>
         )}
 
-        {isRefine ? null : hasPrice ? (
+        {hasPrice ? (
           <>
             <p
-              className="mt-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
+              className={`${isRefine ? "mt-2" : "mt-3"} text-[11px] uppercase tracking-[0.22em] font-semibold`}
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
               data-testid="studio-v3-price-card-guests"
             >
@@ -980,72 +982,72 @@ export function SignaturePriceCard({
                 Up to {MAX_ADDONS} add-ons
               </p>
             )}
-            {isRefine ? null : (
-              <output
-                data-testid="studio-v3-add-ons-total"
-                aria-live="polite"
-                className="mt-3 block text-center text-[11px] uppercase tracking-[0.22em] font-semibold tabular-nums"
-                style={{ color: "var(--charcoal)" }}
-              >
-                {selectedAddOnIds.length > 0 && totalEur != null ? (
-                  <>
-                    Additions <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
-                    <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">/ pp</span>
-                  </>
-                ) : (
-                  <span className="sr-only">No add-ons selected</span>
-                )}
-              </output>
-            )}
-            {/* Final estimated total — the single figure that matches the
-                Reserve CTA and, on booking, the checkout payload. Unit-aware:
-                base × guests + Σ(add-on line totals). On the Refine variant
-                the block ALWAYS renders (even with zero add-ons) so travellers
-                see the same Total + per-person the CTA carries. */}
-            {(() => {
-              const totalForDisplay = partyTotalEur ?? totalEur ?? null;
-              if (totalForDisplay == null) return null;
-              const showAlways = isRefine;
-              const showConditional =
-                selectedAddOnIds.length > 0 && partyTotalEur != null && partyCount != null;
-              if (!showAlways && !showConditional) return null;
-              return (
-                <div
-                  data-testid="studio-v3-final-total"
-                  data-final-eur={totalForDisplay}
-                  className="mt-3 rounded-[4px] px-3 py-2.5 text-center"
-                  style={{
-                    background: "color-mix(in oklab, var(--gold) 10%, var(--ivory))",
-                    border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
-                  }}
-                >
-                  <p
-                    className="text-[10px] uppercase tracking-[0.24em] font-bold"
-                    style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
-                  >
-                    Total
-                  </p>
-                  <p
-                    className="mt-1 text-[22px] font-bold tabular-nums leading-none"
-                    style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
-                  >
-                    €{totalForDisplay}
-                  </p>
-                  {perPersonDerived != null ? (
-                    <p
-                      className="mt-1 text-[10.5px] tabular-nums"
-                      style={{
-                        color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
-                      }}
-                    >
-                      €{perPersonDerived} per person
-                    </p>
-                  ) : null}
-                </div>
-              );
-            })()}
+            <output
+              data-testid="studio-v3-add-ons-total"
+              aria-live="polite"
+              className="mt-3 block text-center text-[11px] uppercase tracking-[0.22em] font-semibold tabular-nums"
+              style={{ color: "var(--charcoal)" }}
+            >
+              {selectedAddOnIds.length > 0 && (isRefine ? perPersonDerived : totalEur) != null ? (
+                <>
+                  {isRefine ? "Updated price" : "Additions"}{" "}
+                  <span style={{ color: "var(--gold)" }}>—</span> €
+                  {isRefine ? perPersonDerived : totalEur}
+                  <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">
+                    {isRefine ? "/ person" : "/ pp"}
+                  </span>
+                </>
+              ) : (
+                <span className="sr-only">No add-ons selected</span>
+              )}
+            </output>
           </fieldset>
         ) : null}
+
+        {/* Always keep the resolved investment visible on Refine, even when
+            this Signature has no compatible add-ons. This block deliberately
+            sits outside the add-on fieldset so an empty pool cannot hide the
+            price the traveller is about to confirm. */}
+        {(() => {
+          const totalForDisplay = partyTotalEur ?? totalEur ?? null;
+          if (totalForDisplay == null) return null;
+          const showAlways = isRefine;
+          const showConditional =
+            selectedAddOnIds.length > 0 && partyTotalEur != null && partyCount != null;
+          if (!showAlways && !showConditional) return null;
+          return (
+            <div
+              data-testid="studio-v3-final-total"
+              data-final-eur={totalForDisplay}
+              className="mt-4 mx-auto max-w-[380px] rounded-[4px] px-3 py-3 text-center"
+              style={{
+                background: "color-mix(in oklab, var(--gold) 10%, var(--ivory))",
+                border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+              }}
+            >
+              <p
+                className="text-[10px] uppercase tracking-[0.24em] font-bold"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+              >
+                Total for your group
+              </p>
+              <p
+                className="mt-1 text-[24px] font-bold tabular-nums leading-none"
+                style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+              >
+                €{totalForDisplay}
+              </p>
+              {perPersonDerived != null ? (
+                <p
+                  className="mt-1.5 text-[11px] font-semibold tabular-nums"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 68%, transparent)" }}
+                >
+                  €{perPersonDerived} per person
+                </p>
+              ) : null}
+            </div>
+          );
+        })()}
 
         {/* Itinerary spine and blueprint optionals removed — the storytelling
             reveal on the next step lists the traveller's kept stops in order,

@@ -40,8 +40,6 @@ export interface ResolvedJourney {
 export function useResolvedJourney(
   state: StudioV3State,
   selectedAddOns: SelectedAddOnSummary["items"],
-  /** Per-person normalized add-on total, already computed by SignaturePriceCard. */
-  selectedAddOnsPerPaxEur: number,
   tourPriceTiers?: TourPriceTiersMap | null,
 ): ResolvedJourney {
   return useMemo(() => {
@@ -89,25 +87,39 @@ export function useResolvedJourney(
     })();
 
     const tiers = tourPriceTiers ?? null;
-    const perPaxEur = tour
+    const basePerPaxEur = tour
       ? (resolvePerPaxEur(tour, guests, tiers)?.eurPerPax ?? tour.priceFrom ?? null)
       : null;
 
-    // Total — age-band branch when composition is set, flat otherwise.
-    let totalEur: number | null = null;
+    // Base total — age-band branch when composition is complete, flat otherwise.
+    let baseTotalEur: number | null = null;
     if (tour) {
       const useAgeBand =
         typeof adults === "number" && adults >= 1 && minorAges.length > 0;
       if (useAgeBand) {
         const journey = resolveJourneyPricing(tour, adults!, minorAges, tiers);
         if (journey) {
-          totalEur = Math.round(journey.totalEur + selectedAddOnsPerPaxEur * guests);
+          baseTotalEur = Math.round(journey.totalEur);
         }
       }
-      if (totalEur == null && perPaxEur != null) {
-        totalEur = Math.round(perPaxEur * guests + selectedAddOnsPerPaxEur * guests);
+      if (baseTotalEur == null && basePerPaxEur != null) {
+        baseTotalEur = Math.round(basePerPaxEur * guests);
       }
     }
+
+    // Add-on items already carry their unit-aware party amount. Summing those
+    // values keeps per-person, per-group, per-vehicle and fixed additions
+    // identical on refine, final reveal and checkout.
+    const addOnsPartyTotalEur = selectedAddOns.reduce(
+      (sum, item) => sum + (Number.isFinite(item.amount) ? item.amount : 0),
+      0,
+    );
+    const totalEur =
+      baseTotalEur != null ? Math.round(baseTotalEur + addOnsPartyTotalEur) : null;
+    // This is the effective average per traveller, including age bands and
+    // additions. The base tier remains available inside the price card for
+    // line-item calculations, while every summary surface shows this number.
+    const perPaxEur = totalEur != null && guests > 0 ? Math.round(totalEur / guests) : null;
 
     // Dev-only guardrails.
     if (import.meta.env.DEV) {
@@ -133,5 +145,5 @@ export function useResolvedJourney(
       perPaxEur,
       totalEur,
     };
-  }, [state, selectedAddOns, selectedAddOnsPerPaxEur, tourPriceTiers]);
+  }, [state, selectedAddOns, tourPriceTiers]);
 }
