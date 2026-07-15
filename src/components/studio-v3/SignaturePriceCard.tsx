@@ -1122,7 +1122,7 @@ export function SignaturePriceCard({
 
 
       {/* Mobile sticky CTA — appears only after the inline CTA scrolls out of view. */}
-      {hasPrice && stickyVisible ? (
+      {!isRefine && hasPrice && stickyVisible ? (
         <div
           data-testid="studio-v3-cta-sticky"
           className="md:hidden fixed inset-x-0 bottom-0 z-40 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] animate-fade-in"
