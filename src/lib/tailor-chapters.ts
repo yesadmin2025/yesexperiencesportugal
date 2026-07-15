@@ -119,7 +119,7 @@ export function toEditorialChapters(tourId: string): EditorialChapter[] | null {
   }
 
   if (bp.choice && bp.choice.options.length > 0) {
-    const n = bp.choice.pickCount;
+    const n = bp.choice.pickMin;
     const cat = bp.choice.options[0].category;
     const categoryLabel =
       cat === "winery"

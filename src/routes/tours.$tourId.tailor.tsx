@@ -28,7 +28,7 @@ import {
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
 import { getTailorBlueprint, type BlueprintStop } from "@/data/tailorBlueprints";
-import { evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
+import { DWELL_MINIMUM_MIN, evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
@@ -198,10 +198,10 @@ function TailorPage() {
   // anchor price actually includes.
   const blueprint = useMemo(() => getTailorBlueprint(tour.id), [tour.id]);
   const [choiceSelected, setChoiceSelected] = useState<Set<string>>(() => {
-    // Pre-select the first N options to match the "pickCount" by default.
+    // Pre-select the minimum required (`pickMin`) by default.
     const bp = getTailorBlueprint(tour.id);
     if (!bp?.choice) return new Set();
-    return new Set(bp.choice.options.slice(0, bp.choice.pickCount).map((o) => o.id));
+    return new Set(bp.choice.options.slice(0, bp.choice.pickMin).map((o) => o.id));
   });
   const [optionalSelected, setOptionalSelected] = useState<Set<string>>(new Set());
   // Skippable core stops — market, viewpoints, generic lunches — can be
@@ -276,13 +276,35 @@ function TailorPage() {
   const tryToggleChoice = (id: string) => {
     const on = choiceSelected.has(id);
     const next = new Set(choiceSelected);
-    if (on) next.delete(id);
-    else {
+    if (on) {
+      // Guard against dropping below the base product's pickMin.
+      if (blueprint?.choice && next.size <= blueprint.choice.pickMin) {
+        toast.error(
+          `This tour needs at least ${blueprint.choice.pickMin} — swap one instead of removing it.`,
+        );
+        return;
+      }
+      next.delete(id);
+    } else {
       next.add(id);
       const proj = projectFeasibility(skippedCore, next, optionalSelected);
       if (proj && !proj.feasible) {
         toast.error(proj.warnings[0] ?? "Adding that stop overloads the day.");
         return;
+      }
+      // Consequence preview — surface the estimated time cost so the
+      // traveller sees WHY the day just changed. Uses approved supplier
+      // visit + tasting minutes when populated, else the category default.
+      const option = blueprint?.choice?.options.find((o) => o.id === id);
+      if (option) {
+        const approved =
+          (option.visitMinutes ?? 0) + (option.tastingMinutes ?? 0);
+        const added = approved > 0 ? approved : DWELL_MINIMUM_MIN[option.category];
+        toast.success(
+          `Adding ${option.label} adds about ${added} min to your day.${
+            approved > 0 ? "" : " Estimated — supplier will confirm timing."
+          }`,
+        );
       }
     }
     setChoiceSelected(next);
@@ -347,9 +369,11 @@ function TailorPage() {
   const summaryTotal = useMemo(() => {
     if (!blueprint) return (tour.stops ?? []).length;
     const coreKept = blueprint.core.filter((s) => !skippedCore.has(s.id)).length;
-    const choiceTarget = blueprint.choice?.pickCount ?? 0;
+    // Use the traveller's current selection count so the summary reflects
+    // reality once they scale a wine-forward tour up to pickMax.
+    const choiceTarget = blueprint.choice ? choiceSelected.size : 0;
     return coreKept + choiceTarget + optionalSelected.size;
-  }, [blueprint, tour.stops, skippedCore, optionalSelected]);
+  }, [blueprint, tour.stops, skippedCore, choiceSelected, optionalSelected]);
 
   const estimatedHours = useMemo(() => {
     const base = parseHours(tour.durationHours);
@@ -393,6 +417,44 @@ function TailorPage() {
     const floor = Math.round(basePerPax * 0.85);
     return Math.max(floor, Math.round(p));
   }, [basePerPax, blueprint, added, skipped, skippedCore, optionalSelected, addons, lunch]);
+
+  // ─── Wine-extension state ───────────────────────────────────
+  // A "wine extension" = the traveller picked MORE wineries than the
+  // Signature's baseline `pickMin`. Because per-winery extension pricing
+  // has not been supplier-approved for every estate, extended selections
+  // fall to the manual-confirmation path — we don't invent a delta.
+  const wineExtension = useMemo(() => {
+    if (!blueprint?.choice) return { extra: 0, hasManualSupplier: false };
+    const extra = Math.max(0, choiceSelected.size - blueprint.choice.pickMin);
+    // Any selected option that explicitly requires manual confirmation.
+    const hasManualSupplier = blueprint.choice.options.some(
+      (o) => choiceSelected.has(o.id) && o.confirmationStatus === "manual",
+    );
+    return { extra, hasManualSupplier };
+  }, [blueprint, choiceSelected]);
+
+  const requiresManualConfirmation =
+    wineExtension.extra > 0 || wineExtension.hasManualSupplier;
+
+  // Blueprint contains a winery selection surface (choice or core).
+  const hasWinerySurface = useMemo(() => {
+    if (!blueprint) return false;
+    if (blueprint.core.some((s) => s.category === "winery")) return true;
+    if (blueprint.choice?.options.some((o) => o.category === "winery")) return true;
+    return false;
+  }, [blueprint]);
+  const hasMinors = composition.minorAges.length > 0;
+  const showMinorsWineAdvisory = hasWinerySurface && hasMinors;
+
+  // Removable-stop suggestions when the day is at capacity — surfaced
+  // as advice only. Never auto-removed; the traveller decides.
+  const removableCoreLabels = useMemo(() => {
+    if (!blueprint) return [] as string[];
+    return blueprint.core
+      .filter((s) => !s.lock && !skippedCore.has(s.id))
+      .map((s) => s.label);
+  }, [blueprint, skippedCore]);
+
 
 
   // ─── Helpers ────────────────────────────────────────────────
@@ -850,7 +912,7 @@ function TailorPage() {
                   {blueprint.choice && (
                     <>
                       <p className="mb-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
-                        Choose {blueprint.choice.pickCount} · {blueprint.choice.label}
+                        {blueprint.choice.label}
                       </p>
                       <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
                         {blueprint.choice.note}
@@ -858,7 +920,11 @@ function TailorPage() {
                       <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
                         {blueprint.choice.options.map((o) => {
                           const on = choiceSelected.has(o.id);
-                          const atLimit = !on && choiceSelected.size >= blueprint.choice!.pickCount;
+                          // Soft cap: only hard-disable at pickMax. Between
+                          // pickMin and pickMax the feasibility engine (via
+                          // tryToggleChoice) decides whether the day absorbs
+                          // the extra winery.
+                          const atLimit = !on && choiceSelected.size >= blueprint.choice!.pickMax;
                           return (
                             <li key={o.id}>
                               <button
@@ -1324,12 +1390,38 @@ function TailorPage() {
                     </span>
                   </div>
 
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] inline-flex items-center gap-1.5">
-                    <Check size={12} /> Confirmation status: ready
-                  </p>
+                  {requiresManualConfirmation ? (
+                    <p
+                      className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)] inline-flex items-center gap-1.5"
+                      data-testid="tailor-manual-confirmation"
+                    >
+                      <Info size={12} /> Confirmation status: manual
+                    </p>
+                  ) : (
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] inline-flex items-center gap-1.5">
+                      <Check size={12} /> Confirmation status: ready
+                    </p>
+                  )}
+
+                  {wineExtension.extra > 0 && removableCoreLabels.length > 0 && (
+                    <p className="mt-2 text-[11.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                      To fit this longer wine day you can remove{" "}
+                      <span className="text-[color:var(--charcoal)]">
+                        {removableCoreLabels.slice(0, 3).join(", ")}
+                      </span>{" "}
+                      — or keep them and we'll confirm timing with your guide.
+                    </p>
+                  )}
+
+                  {showMinorsWineAdvisory && (
+                    <p className="mt-2 text-[11.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                      Wine tasting is offered to adults only — minors visit the estate without tasting.
+                    </p>
+                  )}
                 </div>
 
-                {/* 6 · CTA — instant Stripe checkout */}
+                {/* 6 · CTA — instant Stripe checkout, or request confirmation
+                    when the selection is beyond the Signature baseline. */}
                 <div className="p-5 pt-0">
                   <button
                     type="button"
@@ -1342,6 +1434,10 @@ function TailorPage() {
                       <>
                         <Loader2 size={15} className="animate-spin" /> Opening checkout…
                       </>
+                    ) : requiresManualConfirmation ? (
+                      <>
+                        <Sparkles size={15} /> Request confirmation
+                      </>
                     ) : (
                       <>
                         <Sparkles size={15} /> Reserve securely
@@ -1349,7 +1445,9 @@ function TailorPage() {
                     )}
                   </button>
                   <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-                    Instant confirmation
+                    {requiresManualConfirmation
+                      ? "Your guide replies within one working day with final availability and price."
+                      : "Instant confirmation"}
                   </p>
                   <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
                     <Lock size={10} /> Secure checkout

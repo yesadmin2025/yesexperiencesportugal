@@ -1,83 +1,113 @@
-## Audit result — Tailor locked stops
+## Audit — current Tailor winery limits
 
-The Tailor flow already treats most Signature stops as freely removable. Locks live in exactly one place: `skippable: false` on a `BlueprintStop` in `src/data/tailorBlueprints.ts`. Every other stop is either a Core item the traveller can skip, a Choice pool (pick-N, swappable), or an Optional add-on.
+**Rigid caps found:**
+- `src/data/tailorBlueprints.ts` — every wine-forward tour uses a single fixed `pickCount`:
+  - `arrabida-wine-allinclusive` → `pickCount: 2` (pool of 5: JMF, Bacalhôa, Catralvos, Piloto, Palmela)
+  - `tiles-workshop` → `pickCount: 1` (pool of 3: JMF, Bacalhôa, Catralvos)
+  - `sintra-lisboa-wine` → `pickCount: 1` (pool includes Colares winery)
+  - `alentejo-wine` → `pickCount: 1` (pool of 5 Alentejo wineries)
+  - `azeitao-cheese` → 1 winery in Core, no choice pool
+  - `arrabida-wine-boat` → Comporta winery in Core only
+- `src/routes/tours.$tourId.tailor.tsx` (line 861) — UI hard-blocks selecting more than `pickCount`: `atLimit = !on && choiceSelected.size >= blueprint.choice.pickCount`.
+- `src/lib/feasibility.ts` (line 154) — engine rejects >3 wineries: `if (wineries.length > 3) feasible = false`.
 
-Full inventory of currently locked stops (3 total, across 12 blueprints):
+**Operational data currently in the codebase**
+- ✅ `durationMin: 75` per winery in `regionStopPool.ts` (uniform default, not per-supplier confirmed).
+- ✅ Category-level dwell in `feasibility.ts` (`winery: 90` min).
+- ❌ Real lat/lng — `stopCoords.ts` only holds SVG-viewbox coords, not routable geographies.
+- ❌ Opening hours / windows per winery.
+- ❌ Separate visit vs tasting duration.
+- ❌ Real driving-time cache for winery-to-winery legs (no rows in `builder_route_cache` populated for these pairs; `drivingFromPrevMinutes` is not passed for blueprint stops today).
+- ❌ Approved per-winery price / extension surcharge (blueprint uses generic `upchargePerPaxEUR`, unused for choice pool).
+- ❌ Age-eligibility / adults-only supplier flags.
+- ❌ Manual-vs-instant confirmation status per supplier.
 
-| Tour | Stop | Reason in code | Operationally justified? |
-|---|---|---|---|
-| `tiles-workshop` | `azulejos-workshop` — Private tile-painting workshop | Defines the product (this IS the tile tour); supplier reservation | ✅ Yes — product-defining, fixed supplier booking |
-| `azeitao-cheese` | `quinta-velha` — Cheese-making workshop at Quinta Velha | Defines the product (this IS the cheese tour); supplier reservation | ✅ Yes — product-defining, fixed supplier booking |
-| `azeitao-cheese` | `catralvos` — Quinta de Catralvos winery | Sole winery on the tour; removing it turns "cheese & wine" into "cheese only" | ⚠️ Partially — product-defining because it's the ONLY winery, but the lock reason is not surfaced to the customer |
+## What this plan will and won't do
 
-No other blueprint locks any stop. Markets, viewpoints, lunches, all wineries in multi-winery tours, and every optional are already skippable/removable/swappable. So the "arbitrary locked stops" the user is worried about are limited to those three, and two of them are unambiguously justified.
+The user's guardrail is strict: **"Use only approved supplier and pricing rules. Do not use straight-line distance or AI-generated driving estimates."** Since the per-winery hours, coordinates, tasting split, extension price, and age rules do not yet exist in the codebase, this plan splits the work into two phases:
 
-## What changes
+**Phase 1 — Code changes (ship now):**
 
-Small, targeted correction — no removal of justified locks, but every lock becomes self-explaining and the codebase enforces the "reason required" rule.
+1. **`src/data/tailorBlueprints.ts`**
+   - Replace `choice.pickCount: number` with `choice.pickMin: number` + `choice.pickMax: number`.
+   - Backfill existing wine-forward tours:
+     - `arrabida-wine-allinclusive` → `pickMin: 2, pickMax: 4`
+     - `tiles-workshop` → `pickMin: 1, pickMax: 2` (short day, workshop-anchored — safer max until data confirmed)
+     - `sintra-lisboa-wine` → `pickMin: 1, pickMax: 2`
+     - `alentejo-wine` → `pickMin: 1, pickMax: 4`
+   - Non-wine choice pools keep `pickMin === pickMax` (behaviour unchanged).
+   - Extend `BlueprintStop` with **optional, non-invented** operational fields, unused unless populated:
+     ```ts
+     coords?: { lat: number; lng: number };            // approved supplier lat/lng
+     openingWindow?: { open: string; close: string };  // "HH:mm"
+     visitMinutes?: number;                            // separate visit component
+     tastingMinutes?: number;                          // separate tasting component
+     pricePerPaxEUR?: number;                          // approved supplier price
+     ageEligibility?: { minAge?: number; adultsOnly?: boolean };
+     confirmationStatus?: "instant" | "manual";
+     ```
+     No defaults invented. If a field is absent, the engine skips that check and the UI shows the "manual confirmation required" state for that winery.
 
-### 1. `src/data/tailorBlueprints.ts` — replace `skippable: boolean` with a structured lock
+2. **`src/lib/feasibility.ts`**
+   - Raise the wine cap from 3 → 4 (`if (wineries.length > 4) feasible = false`).
+   - Keep the "3+ wineries needs lunch between them" soft warning (extend from 2+ to keep intent).
+   - Add a new warning at exactly 4 wineries: *"Four wineries is the safe maximum — palate fatigue past that point."*
+   - Driving-time evaluation stays honest: when `drivingFromPrevMinutes` is not supplied for a pair (data gap), the engine keeps its current behaviour (skip the leg) rather than fabricating a haversine estimate. The Tailor UI (see #3) surfaces a "manual confirmation" chip when this happens.
 
-Change the `BlueprintStop.skippable?: boolean` field to:
+3. **`src/routes/tours.$tourId.tailor.tsx`**
+   - Replace the hard `atLimit = choiceSelected.size >= pickCount` block with a soft, feasibility-driven check: allow adding up to `pickMax`; if the resulting `evaluateDay` returns `!feasible`, show the toast with the reason and refuse.
+   - Before applying the change, show an inline consequence line: *"Adding {winery} adds approximately {N} min to your day."* using either (a) the summed `visitMinutes + tastingMinutes` if populated, else (b) the current 90-min winery default from `feasibility.ts` — clearly labelled as "estimated".
+   - When any selected winery has `confirmationStatus === "manual"` (or is missing operational data), show a "manual confirmation" badge next to the live quote and disable "Reserve instantly", surfacing "Request confirmation" instead. Do not invent an extension price.
+   - When a fourth winery is added and any core/optional stop is still active that could be dropped to fit, show a plain-language nudge listing the removable stops (Livramento Market, viewpoints, village walks, tile stops, coastal stops) — **without auto-removing**. Removal remains an explicit user action.
+   - Keep the composition (adults + minors) already resolved by `useResolvedJourney`. Add a wine-specific line under the winery list when any traveller is a minor: *"Wine tasting is offered to adults only — minors visit the estate without tasting."* — no invented "children's menu" price. Age-eligibility gate only fires when `ageEligibility.adultsOnly === true` is present on the supplier (otherwise the copy above is shown, no block).
 
-```ts
-lock?: {
-  reasonCode:
-    | "product_defining"        // this stop IS the tour
-    | "supplier_fixed_package"  // included in a fixed Bókun/Viator package
-    | "addon_anchor"            // removing breaks a selected add-on
-    | "confirmed_reservation"   // slot already booked with supplier
-    | "mandatory_transfer"      // pickup / ferry / transfer node
-    | "route_integrity";        // removing creates an invalid/unsafe route
-  customerFacingReason: string; // shown verbatim in the UI, ≤120 chars
-  source: string;               // e.g. "Viator PDP §Inclusions", "Bókun product 12345"
-};
-```
+4. **`src/components/studio-v3/curation.ts` and `useResolvedJourney.ts`**
+   - Ensure the resolved journey object includes the full ordered winery list (already does via `stops`). Verify checkout summary + confirmation render the wineries in the same order — no changes expected, but a regression test will lock it (see verification).
 
-A stop with no `lock` is removable. There is no generic `locked: true` flag.
+5. **New test — `src/data/__tests__/tailor-winery-selection.test.ts`**
+   Covers the 7 verification scenarios from the brief using existing blueprint data (with hours + coords stubbed via the new optional fields under `__test-fixtures__/`, not committed to real blueprints).
 
-Populate for the three existing locks:
+**Phase 2 — Owner data (documented, NOT invented):**
 
-- `tiles-workshop / azulejos-workshop` → `product_defining`, "The tile-painting workshop is the heart of this tour — removing it would leave nothing to tailor.", source: "Viator PDP · signature inclusion".
-- `azeitao-cheese / quinta-velha` → `product_defining`, "The cheese-making workshop is the heart of this tour — removing it would leave nothing to tailor.", source: "Viator PDP · signature inclusion".
-- `azeitao-cheese / catralvos` → `product_defining`, "This is the tour's only winery — removing it drops the 'wine' half of Cheese & Wine.", source: "Viator PDP · signature inclusion".
+Produce `docs/tailor-winery-operational-data.md` listing every winery currently referenced with the empty fields the owner must fill:
+- coords (lat/lng)
+- opening window
+- visit + tasting split
+- approved per-winery pricePerPaxEUR (and any approved 4-winery extension price)
+- age eligibility
+- confirmation status (instant vs manual)
 
-### 2. `src/routes/tours.$tourId.tailor.tsx` — surface the reason, keep behaviour
+Until Phase 2 is filled per supplier, that winery will:
+- appear in the pool,
+- be selectable up to `pickMax`,
+- surface "manual confirmation required" (no invented extension price shown), and
+- fall back to the category default `visitMinutes = 90` for the day-timing preview only.
 
-- Replace `s.skippable !== false` with `!s.lock`.
-- For a locked stop, render the existing lock chip PLUS the `customerFacingReason` inline (not just the `aria-label` tooltip). Keep the "Signature anchor" eyebrow but append a small info line so mobile users see *why*.
-- No behaviour change for unlocked stops.
+Nothing about the day is booked as "instant" unless every selected winery has approved instant-status data.
 
-### 3. Enforce the rule in tests (`src/components/studio-v3/__tests__/` or new `src/data/__tests__/tailor-blueprints-locks.test.ts`)
+## Files touched (Phase 1)
 
-New test asserting that for every blueprint and every stop, `lock` is either absent OR has a non-empty `reasonCode`, `customerFacingReason`, and `source`. This blocks anyone from re-introducing a bare `locked: true`.
+- `src/data/tailorBlueprints.ts`
+- `src/lib/feasibility.ts`
+- `src/routes/tours.$tourId.tailor.tsx`
+- `src/data/__tests__/tailor-winery-selection.test.ts` (new)
+- `docs/tailor-winery-operational-data.md` (new, ownership handoff)
 
-### 4. Add-on dependency safety net (already partly handled)
+## Verification (aligned to the brief)
 
-Sweep `src/routes/tours.$tourId.tailor.tsx` add-on state: if any current add-on requires a Core stop (today none do — add-ons here are the `optional` list, not cross-referenced), do nothing. Document in code comment that when a future add-on gains an `anchorStopId`, removing that stop must prompt "remove add-on or restore anchor" per the spec. This is defensive documentation, not a live code path today because no such dependency exists in the current blueprints.
+- 2 wineries + market — feasible, warnings clear.
+- 3 wineries after removing viewpoint — feasible.
+- 4 wineries after removing market + one optional — feasible.
+- 4 wineries with (stubbed) closed opening window — engine returns `!feasible` with the reason.
+- 4 wineries with any winery lacking operational data — reserve-instantly disabled, "request confirmation" surfaced, no invented price.
+- Mixed adults + minors — composition renders throughout, "adults only" advisory or supplier-flag block applies where present.
+- Final story, map, timeline, live quote, checkout summary, confirmation all read the same ordered winery list (locked by a snapshot test on the resolved journey).
 
-### 5. What is NOT changing
+## Report I will deliver after Phase 1
 
-- No Signature itinerary page is touched — `/tours/$tourId` still shows the full curated day.
-- No unlocking of the three justified locks (all three define the product purchased).
-- No change to Choice pools (already swappable) or Optional stops (already opt-in).
-- No change to pricing, map, feasibility, or checkout — those already read the live Tailor state.
-
-### Verification
-
-- Typecheck + existing Tailor tests.
-- Playwright smoke on `/tours/tiles-workshop/tailor` and `/tours/arrabida-wine-allinclusive/tailor`: confirm skippable core stops toggle, quote/duration update, locked stops show the customer-facing reason.
-- New unit test ensures no future lock ships without a reason.
-
-### Files touched
-
-- `src/data/tailorBlueprints.ts` (schema + 3 lock entries)
-- `src/routes/tours.$tourId.tailor.tsx` (read `lock` instead of `skippable`, render reason)
-- `src/data/__tests__/tailor-blueprints-locks.test.ts` (new)
-
-### Report I will deliver after implementation
-
-1. Files changed (above).
-2. Locks retained with justification (the 3 above).
-3. Locks removed: none — no unjustified locks were found.
-4. Test results.
+1. Files changed.
+2. Tours supported today: `arrabida-wine-allinclusive`, `tiles-workshop`, `sintra-lisboa-wine`, `alentejo-wine`, `azeitao-cheese`, `arrabida-wine-boat` — with the pickMax set per above.
+3. Wineries in scope: JMF, Quinta da Bacalhôa, Quinta de Catralvos, Quinta do Piloto, Adega Cooperativa de Palmela, Adega Regional de Colares, Herdade da Comporta, and the 5 Alentejo estates in the Alentejo blueprint.
+4. Missing operational data per winery (Phase 2 handoff doc).
+5. Manual-confirmation cases: every winery lacking approved instant-status data will be flagged manual until Phase 2 is filled — I will list them explicitly.
+6. Test results.
