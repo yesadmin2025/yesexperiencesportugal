@@ -3990,46 +3990,8 @@ export function StoryboardHandoff({
       </section>
       {/* ---------- /Unified "Your Signature" card ---------- */}
 
-      {/* ---------- 7b. Before you secure it ---------- */}
-      <div className="mt-8 text-center">
-        <p
-          className="text-[11.5px] leading-[1.6] italic"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-          }}
-        >
-          Availability and final details are confirmed before your experience.
-        </p>
-        {safeDate.demoted ? (
-          <p
-            data-testid="studio-v3-date-demoted"
-            className="mt-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
-            style={{ color: "var(--gold)" }}
-          >
-            — Your saved date has passed. Pick a new one when you're ready.
-          </p>
-        ) : null}
-        {inferredGuestsNote(state) ? (
-          <p
-            className="mt-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 48%, transparent)" }}
-          >
-            <span style={{ color: "var(--gold)" }}>—</span> {inferredGuestsNote(state)}
-          </p>
-        ) : null}
-      </div>
-
-      {/* ---------- 8. CTA stack ---------- */}
+      {/* ---------- CTA stack — Continue + Save my signature ---------- */}
       <div className="mt-10 sm:mt-12 flex flex-col items-center gap-4">
-        <p
-          data-testid="studio-v3-cta-bridge"
-          className="text-[12.5px] leading-[1.55] text-center [text-wrap:pretty] [hyphens:auto] max-w-[320px] sm:max-w-[420px]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
-        >
-          When you're ready — read your day as a story, then reserve on the next step.
-        </p>
-
         {pending ? (
           <BookingCtaSkeleton className="w-full max-w-[380px]" />
         ) : (
@@ -4039,15 +4001,16 @@ export function StoryboardHandoff({
             variant="primary"
             size="md"
             className="w-full max-w-[380px]"
-            aria-label="See my signature story"
+            aria-label="Continue"
             data-testid="studio-v3-handoff-primary"
           >
-            See my signature story
+            Continue
           </CtaButton>
         )}
 
         <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
       </div>
+
 
     </div>
   );
