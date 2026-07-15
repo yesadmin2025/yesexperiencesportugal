@@ -768,7 +768,6 @@ export function StudioV3() {
   const resolvedJourney = useResolvedJourney(
     state,
     selectedAddOnItems,
-    selectedAddOnsTotalEur,
     tourPriceTiers,
   );
 
