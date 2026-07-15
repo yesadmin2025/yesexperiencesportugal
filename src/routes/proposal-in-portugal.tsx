@@ -7,8 +7,12 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { PROPOSAL_FAQ } from "@/content/seo-faq";
 import imgRomantic from "@/assets/exp-romantic.jpg";
-import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
-import imgTroiaBeach from "@/assets/tours/troia-comporta/beach.jpg";
+import coupleVineyardAsset from "@/assets/owner-photos/couple-vineyard.jpeg.asset.json";
+import wineCheersAsset from "@/assets/owner-photos/wine-cheers-arch.jpeg.asset.json";
+import arrabidaGroupAsset from "@/assets/owner-photos/arrabida-viewpoint-group.jpeg.asset.json";
+const imgCoupleVineyard = coupleVineyardAsset.url;
+const imgWineCheers = wineCheersAsset.url;
+const imgArrabidaGroup = arrabidaGroupAsset.url;
 
 const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/proposal-in-portugal";
@@ -57,7 +61,7 @@ const BLOCKS = [
     practical:
       "Discreet location · careful timing · surprise logistics · planned with full discretion.",
     local: "Planned end to end with our local team — every detail confirmed before the day.",
-    image: imgRomantic,
+    image: imgCoupleVineyard,
     icon: Heart,
     cta: "Plan a Proposal",
   },
@@ -68,7 +72,7 @@ const BLOCKS = [
       "Birthdays, anniversaries, honeymoons or family moments — shaped around your rhythm, your people and the way you want to feel Portugal.",
     practical: "Private host · any group size · multi-activity planning · flexible scheduling.",
     local: "Coordinated by a local host who knows how each piece of the day connects.",
-    image: imgSintraEstates,
+    image: imgWineCheers,
     icon: Sparkles,
     cta: "Plan a Celebration",
   },
@@ -80,7 +84,7 @@ const BLOCKS = [
     practical: "Small group days · private transport · personal touches · adjusted to your rhythm.",
     local:
       "We work with people we trust on the ground — places that welcome you as guests, not bookings.",
-    image: imgTroiaBeach,
+    image: imgArrabidaGroup,
     icon: Users,
     cta: "Plan a Private Day",
   },

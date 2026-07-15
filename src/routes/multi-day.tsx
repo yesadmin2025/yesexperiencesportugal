@@ -21,10 +21,10 @@ import {
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { GuestMomentsStrip } from "@/components/ui/GuestMomentsStrip";
-import { MULTI_DAY_MOMENTS } from "@/content/guest-moments";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
+import corkHarvestAsset from "@/assets/owner-photos/cork-harvesters-alentejo.jpeg.asset.json";
+const imgCorkHarvest = corkHarvestAsset.url;
 // All 23 pages of the anonymised private travel file live in public/ so
 // they can be shown inline — no external PDF.
 const TOTAL_SAMPLE_PAGES = 23;
@@ -397,7 +397,7 @@ function MultiDayPage() {
         <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center">
           <div className="overflow-hidden">
             <img
-              src={imgSintraEstates}
+              src={imgCorkHarvest}
               alt="Private Portugal journey designed by YES Experiences Portugal"
               loading="lazy"
               className="w-full aspect-[4/5] md:aspect-[5/6] object-cover"
@@ -457,14 +457,7 @@ function MultiDayPage() {
         </div>
       </section>
 
-      {/* Guest moments — the craft that longer journeys reveal */}
-      <GuestMomentsStrip
-        eyebrow="The Portugal you rarely reach"
-        title="Craft, land,"
-        titleEm="a slower rhythm."
-        photos={MULTI_DAY_MOMENTS}
-        surface="ivory"
-      />
+
 
       {/* ── FAQ ──────────────────────────────────────────── */}
       <section className="py-14 md:py-20 bg-[color:var(--ivory)] reveal" aria-labelledby="td-faq">

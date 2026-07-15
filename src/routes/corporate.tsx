@@ -6,11 +6,14 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
-import { GuestMomentsStrip } from "@/components/ui/GuestMomentsStrip";
-import { CORPORATE_MOMENTS } from "@/content/guest-moments";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
-import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
-import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
+import wineryGroupAsset from "@/assets/owner-photos/winery-group-orange-tree.jpeg.asset.json";
+import wineCheersAsset from "@/assets/owner-photos/wine-cheers-arch.jpeg.asset.json";
+import tastingCakeAsset from "@/assets/owner-photos/tasting-cake-moment.jpeg.asset.json";
+
+const imgWineryGroup = wineryGroupAsset.url;
+const imgWineCheers = wineCheersAsset.url;
+const imgTastingCake = tastingCakeAsset.url;
 
 const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
@@ -55,7 +58,7 @@ const BLOCKS = [
       "Private groups of any size, scoped around the right transport, guides, suppliers and timing · invoice & DMC support · designed around your goals.",
     local:
       "We handle the moving parts on the ground — real driving times, real venues, real partners.",
-    image: imgArrabidaWineLunch,
+    image: imgWineryGroup,
     icon: Users,
   },
   {
@@ -66,7 +69,7 @@ const BLOCKS = [
     practical:
       "Multi-day flow, regional logistics, meeting-friendly venues, cultural moments built into the rhythm.",
     local: "Coordinated by a local host who knows how each piece of the day connects.",
-    image: imgSintraEstates,
+    image: imgWineCheers,
     icon: Compass,
   },
   {
@@ -75,7 +78,7 @@ const BLOCKS = [
     emotional: "When it matters who's in the room and how the day feels — we shape it accordingly.",
     practical: "Small groups · private settings · careful pacing · NDAs welcome.",
     local: "Planned end to end with our local team — every detail confirmed before the day.",
-    image: imgFatimaNazare,
+    image: imgTastingCake,
     icon: ClipboardCheck,
   },
 ];
@@ -155,14 +158,6 @@ function CorporatePage() {
         </div>
       </section>
 
-      {/* Guest moments — real groups, real days */}
-      <GuestMomentsStrip
-        eyebrow="Recent private groups"
-        title="Groups who came,"
-        titleEm="together."
-        photos={CORPORATE_MOMENTS}
-        surface="sand"
-      />
 
       {/* FAQ */}
       <section className="py-16 md:py-20 bg-[color:var(--ivory)] reveal">
