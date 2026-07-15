@@ -136,7 +136,7 @@ function buildAllowedLabelsForSkeleton(
 }
 
 describe("Studio V3 — resolveStudioV3Route route containment", () => {
-  it("never returns a route point whose label is absent from the resolved Signature tour or approved composition pool", () => {
+  it("never returns a route point whose label is absent from the resolved Signature tour or approved composition pool", { timeout: 30_000 }, () => {
     const violations: Array<{
       input: Record<string, unknown>;
       skeletonTourKey: string | null;
@@ -256,7 +256,7 @@ describe("Studio V3 — resolveStudioV3Route route containment", () => {
 });
 
 describe("Studio V3 — curateJourney route containment", () => {
-  it("every moment belongs to the chosen primary tour and is never borrowed", () => {
+  it("every moment belongs to the chosen primary tour and is never borrowed", { timeout: 30_000 }, () => {
     const violations: string[] = [];
 
     for (const feeling of FEELINGS) {

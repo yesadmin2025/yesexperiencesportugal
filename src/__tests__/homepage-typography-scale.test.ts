@@ -76,13 +76,21 @@ describe("Homepage H2 — editorial tier (Signatures, Groups)", () => {
 // re-validated here because this suite scans src/routes/index.tsx.
 
 describe("Homepage eyebrow labels — canonical utility usage", () => {
-  it("every major section intro uses .he-eyebrow-bar", () => {
+  it("every major section intro uses .he-eyebrow-bar (via <Eyebrow> primitive or raw class)", () => {
     const requiredEyebrows = ["Experience Studio", "Signature"];
     for (const label of requiredEyebrows) {
-      const re = new RegExp(
-        `he-eyebrow-bar[^"]*"[^>]*>\\s*(?:<[^>]+>\\s*)?${label.replace(/&/g, "&amp;")}`,
+      const escaped = label.replace(/&/g, "&amp;");
+      // Accept EITHER a raw `.he-eyebrow-bar` wrapper OR the canonical
+      // `<Eyebrow …>Label</Eyebrow>` primitive (which compiles down to
+      // the same DOM — see src/components/ui/Eyebrow.tsx).
+      const rawRe = new RegExp(
+        `he-eyebrow-bar[^"]*"[^>]*>\\s*(?:<[^>]+>\\s*)?${escaped}`,
       );
-      expect(re.test(src), `missing .he-eyebrow-bar wrapper for "${label}"`).toBe(true);
+      const eyebrowRe = new RegExp(`<Eyebrow\\b[^>]*>\\s*${escaped}\\s*</Eyebrow>`);
+      expect(
+        rawRe.test(src) || eyebrowRe.test(src),
+        `missing .he-eyebrow-bar (or <Eyebrow> primitive) wrapper for "${label}"`,
+      ).toBe(true);
     }
   });
 });

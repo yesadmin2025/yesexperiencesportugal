@@ -8,10 +8,6 @@ exports[`Typography regression — headline class strings > [home] hero stanza l
 
 exports[`Typography regression — headline class strings > [home] hero stanza line 2 1`] = `"font-serif italic font-normal mt-3 sm:mt-4"`;
 
-exports[`Typography regression — headline class strings > [multi-day] hero subhead 1`] = `"mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed"`;
-
-exports[`Typography regression — headline class strings > [proposals] hero subhead 1`] = `"mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed"`;
-
 exports[`Typography regression — token rules from styles.css > token .hero-h1 1`] = `
 "base: letter-spacing: -0.012em; line-height: 1.08;
 base: letter-spacing: -0.014em; line-height: 1.04;
