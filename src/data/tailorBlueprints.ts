@@ -158,8 +158,9 @@ const wineHeritage: TailorBlueprint = {
     },
   ],
   choice: {
-    pickCount: 2,
-    label: "Choose 2 wineries from this pool",
+    pickMin: 2,
+    pickMax: 4,
+    label: "Choose 2 to 4 wineries from this pool",
     note: "Your guide confirms the final pair the day before based on each winery's availability.",
     options: [
       {
@@ -378,8 +379,9 @@ const tilesWorkshop: TailorBlueprint = {
     },
   ],
   choice: {
-    pickCount: 1,
-    label: "Choose 1 winery to visit after lunch",
+    pickMin: 1,
+    pickMax: 2,
+    label: "Choose 1 or 2 wineries to visit after lunch",
     note: "Your guide confirms the winery the day before based on availability.",
     options: [
       {
@@ -538,7 +540,8 @@ const sintraCascais: TailorBlueprint = {
     },
   ],
   choice: {
-    pickCount: 1,
+    pickMin: 1,
+    pickMax: 1,
     label: "Choose 1 Sintra palace to visit inside",
     note: "Queues in Sintra are heavy — one full visit lets the rest of the day breathe. Tickets confirmed by your guide.",
     options: [
@@ -676,8 +679,9 @@ const evoraAlentejo: TailorBlueprint = {
     },
   ],
   choice: {
-    pickCount: 1,
-    label: "Choose 1 Alentejo winery to visit",
+    pickMin: 1,
+    pickMax: 4,
+    label: "Choose 1 to 4 Alentejo wineries to visit",
     note: "Your guide confirms the winery the day before based on availability.",
     options: [
       {
