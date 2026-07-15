@@ -22,7 +22,7 @@ import {
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
-import { resolvePerPaxEur } from "@/data/signatureTourPricing";
+import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
 import {
   gaAddPaymentInfo,
@@ -58,7 +58,16 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const perPax = resolvePerPaxEur(tour, guests, tierOverrides);
   const displayPerPaxEur = perPax?.eurPerPax ?? tour.priceFrom;
   const displayIsReal = perPax?.real === true;
-  const partyTotalEur = perPax?.partyTotalEur ?? displayPerPaxEur * Math.max(1, guests);
+  // Age-band aware party total — matches server pricing when minors present.
+  const journeyPricing = resolveJourneyPricing(
+    tour,
+    composition.adults,
+    composition.minorAges,
+    tierOverrides,
+  );
+  const partyTotalEur =
+    journeyPricing?.totalEur ?? perPax?.partyTotalEur ?? displayPerPaxEur * Math.max(1, guests);
+  const hasMinors = composition.minorAges.length > 0;
   // Whether we have real per-pax tier data for this tour (code or DB override).
   const hasTierData = Boolean(
     (tierOverrides?.[tour.id] && Object.keys(tierOverrides[tour.id] as object).length > 0) ||
@@ -80,6 +89,16 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
     const meta = getViatorMeta(tour.id);
     const resolved = resolvePerPaxEur(tour, details.guests, tierOverrides);
     const perPaxForSummary = resolved?.eurPerPax ?? tour.priceFrom;
+    // Age-band aware total — mirrors the server pricing so the summary
+    // and Stripe line items agree for families with minors.
+    const summaryJourney = resolveJourneyPricing(
+      tour,
+      details.adults,
+      details.minorAges,
+      tierOverrides,
+    );
+    const totalForSummary =
+      summaryJourney?.totalEur ?? Math.round(perPaxForSummary * details.guests);
     setCheckoutSummary({
       tourTitle: tour.title,
       region: tour.region,
@@ -91,7 +110,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       startTime: details.startTime ?? null,
       pickupLabel: details.pickupAddress || pickup,
       pricePerPaxEur: perPaxForSummary,
-      totalEur: Math.round(perPaxForSummary * details.guests),
+      totalEur: totalForSummary,
       heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
       beats: meta?.included && meta.included.length > 0 ? meta.included : (tour.highlights ?? []),
       flowLabel: "Signature",
@@ -282,9 +301,15 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             </span>
             <span className="serif text-[1.05rem] text-[color:var(--charcoal)]">
               €{Math.round(partyTotalEur).toLocaleString("en-GB")}
-              <span className="ml-1.5 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans not-italic">
-                €{Math.round(displayPerPaxEur)} × {guests}
-              </span>
+              {!hasMinors ? (
+                <span className="ml-1.5 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans not-italic">
+                  €{Math.round(displayPerPaxEur)} × {guests}
+                </span>
+              ) : (
+                <span className="ml-1.5 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans not-italic">
+                  age-based pricing
+                </span>
+              )}
             </span>
           </div>
         ) : null}
@@ -349,7 +374,6 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           adults: composition.adults,
           minorAges: [...composition.minorAges],
           language,
-          pickupAddress: pickup,
         }}
         onConfirm={async (details) => {
           await handleReserve(details);

@@ -30,7 +30,7 @@ import {
 import { getTailorBlueprint, type BlueprintStop } from "@/data/tailorBlueprints";
 import { DWELL_MINIMUM_MIN, evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
-import { resolvePerPaxEur } from "@/data/signatureTourPricing";
+import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION_SHORT } from "@/config/business-nap";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
@@ -486,6 +486,19 @@ function TailorPage() {
     const metaForSummary = getViatorMeta(tour.id);
     const stopLabels = keptStops.map((s: TourStop) => s.label);
     [...added].forEach((label) => stopLabels.push(label));
+    // Age-band aware total — mirrors the server pricing so summary and
+    // Stripe line items agree for families with minors. Tailored uses
+    // estimatedPrice (adult tier + selection deltas) as the adult unit;
+    // apply band % for minors via a shim tour so resolver keys off it.
+    const summaryJourney = resolveJourneyPricing(
+      { id: tour.id, priceFrom: estimatedPrice },
+      details.adults,
+      details.minorAges,
+      // Pass empty overrides so resolver uses the estimatedPrice anchor.
+      null,
+    );
+    const totalForSummary =
+      summaryJourney?.totalEur ?? Math.round(estimatedPrice * details.guests);
     setCheckoutSummary({
       tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
       region: tour.region,
@@ -497,7 +510,7 @@ function TailorPage() {
       startTime: details.startTime ?? null,
       pickupLabel: details.pickupAddress || pickup,
       pricePerPaxEur: estimatedPrice,
-      totalEur: Math.round(estimatedPrice * details.guests),
+      totalEur: totalForSummary,
       heroSrc: metaForSummary?.localGallery?.[0]?.src ?? metaForSummary?.gallery?.[0] ?? tour.img,
       beats: stopLabels.slice(0, 4),
       flowLabel: "Tailored",
@@ -1483,7 +1496,6 @@ function TailorPage() {
           adults: composition.adults,
           minorAges: [...composition.minorAges],
           language,
-          pickupAddress: pickup,
         }}
         onConfirm={async (d) => {
           await handleReserve(d);
