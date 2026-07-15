@@ -16,6 +16,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { findTour } from "@/data/signatureTours";
 import { pickupCityLabel } from "./curation";
+import { formatGuestComposition } from "./formatGuests";
 import {
   CHECKOUT_HEADER,
   CTA_RESERVE_AND_PAY,
