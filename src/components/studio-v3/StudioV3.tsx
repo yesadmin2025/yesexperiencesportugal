@@ -31,6 +31,7 @@ import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
 import { RunningInvestmentRibbon } from "./RunningInvestmentRibbon";
 import { CurtainRise } from "./CurtainRise";
 import { SignaturePriceCard, type SelectedAddOnSummary } from "./SignaturePriceCard";
+import { useResolvedJourney } from "./useResolvedJourney";
 // QualityScore removed from reveal — now surfaced only in debug overlay.
 import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
 import { safeDateForReveal } from "./dateGuards";
