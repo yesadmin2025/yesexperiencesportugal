@@ -1,90 +1,66 @@
-# Clean Refine page — post-map decision surface
+# Story Output → Narrative Mode
 
-## Goal
-Make the Refine screen (phase `storyboard`) a clear, 3-second-readable decision page: title, map, editable stops, add-ons, total. No cinematic decoration, no technical readouts, no ambient copy. The final cinematic story stays on `FinalRevealStory` (unchanged).
+Turn the Final Reveal (FinalRevealStory.tsx) from a numbered chapter list into a single flowing editorial narrative. Structural change only — no pricing/logic/data changes.
 
-## Target layout (in order)
+## What changes
 
-```text
-[ Back ]
+**File:** `src/components/studio-v3/FinalRevealStory.tsx` (only file touched)
 
-Your day is ready.
-Now you can refine it.
+### 1. Title
+Replace the current `REVEAL_TITLE` italic line + journey subtitle with:
 
-┌───────────────────────────────┐
-│           MAP                 │
-│  (numbered legend below)      │
-└───────────────────────────────┘
+> **Your private day in {region}**
 
-Your stops
-· stop 1   [↑ ↓ ⇄ ✕]
-· stop 2   [↑ ↓ ⇄ ✕]
-· ...
-[ + Add one more moment ]
+Region resolved from `state.destinationIntent` → friendly label (Arrábida, Sintra & the Atlantic Coast, Alentejo, Douro, Lisbon, or a graceful fallback "Portugal" when unknown). Region-label helper added locally to the file (pure, no new module).
 
-Enhance your experience
-◻ Name — short description        €00
-◻ Name — short description        €00
+Keep the small meta line (date · pickup · guests) unchanged directly below the title.
 
-Total                            €000
-                        €00 per person
+### 2. Intro paragraph
+Add one deterministic 2-sentence intro immediately under the title/meta, built from `state.feeling` + companions + region — same restraint rules as `compose-live-story` (no invented places/partners/prices, ≤ 280 chars, no exclamations). Deterministic template, no server call — the AI intro already lives elsewhere in the flow; here we want zero-latency guaranteed copy so the reveal never blanks.
 
-[  Continue  ]
-[  Save my signature  ]
-```
+### 3. Body: narrative, not a list
+Replace the `<ol>` of chapter items with a single `<div>` of `<p>` paragraphs — one paragraph per stop, joined with editorial connectives that rotate by index:
 
-## Scope — Refine screen only (`data-studio-v3-screen="refine"` in `src/components/studio-v3/StudioV3.tsx`, ~line 3466–4200)
+- 1st stop: *"You'll start your day in {label}. {story}"*
+- middle stops: *"Then continue towards {label}…"*, *"Along the way, {label}…"*, *"As the afternoon opens, {label}…"*, *"Later, {label}…"* (rotated, never repeating the same opener twice in a row)
+- last stop: *"To close the day, {label}. {story}"*
 
-### Replace
-- **Hero header** (`pt-10` block, ~3569–3638): eyebrow "— Your Signature", giant `heroLead` display headline, italic `heroSub`, hidden-desktop `heroOrigin`, price eyebrow `studio-v3-hero-price`, gold rule, `<ApprovalBadge>`.
-- New header: single centered H2 "Your day is ready." + line "Now you can refine it." Using Fraunces per typography rules. No eyebrow, no rule, no badge.
+Rules enforced:
+- No `Stop 1 / Chapter I / roman numerals / bullets / <li>`
+- No visible label header — the label is folded into the sentence
+- If a stop has no `story` copy, the connective sentence stands alone (no empty paragraph)
 
-### Keep (unchanged)
-- `<BackLink />`
-- Map block `studio-v3-reveal-map` + numbered legend (~3651–3703).
-- Stops editor `studio-v3-stops-editor` (~3769–4030) — reorder / swap / remove / add-moment / "Edited by you · Reset" all preserved. Retitle heading from "— Refine the moments" to plain **"Your stops"** (no eyebrow dash, no uppercase tracking) and drop the helper "Reorder, swap or remove…" paragraph.
+### 4. Add-ons woven into the story
+Selected add-ons no longer render as pseudo-chapters at the end. Instead, each selected add-on becomes an *italic inline paragraph* inserted after the stop that best matches its theme, falling back to "before the day closes" position when no match. Copy pattern:
 
-### Remove entirely from Refine
-- **Daypart timeline** `studio-v3-daypart-timeline` (~3706–3737) — decorative.
-- **Story of the day** `studio-v3-story-of-day` (~3741–3766) — belongs to final reveal only.
-- **Signature DNA** chips `studio-v3-signature-dna` (~4034–4066) — decorative.
-- **Shaping direction** italic line `studio-v3-shaping-direction` (~4069–4095) — decorative.
-- **"Before you secure it"** block (~4174–4200 area): "Availability and final details…", `studio-v3-date-demoted`, inferred-guests note.
-- The composing overlay Beat 2/3 copy stays as-is (it's a transient pre-render, not part of the resting page).
+> *"Because you've chosen the {addon.label}, this is where your day opens to {themed continuation}."*
 
-### Simplify `<SignaturePriceCard>` usage
-The card currently carries: inclusions list, add-ons toggles with descriptions/prices, day-budget shimmer, "remaining minutes" microcopy, dwellHours, itinerary readout, guest stepper, secure CTA, etc. For Refine we need only **Add-ons + Total** from this card. Two options — pick in implementation:
+Themed continuation is a small deterministic map keyed by add-on id/keyword (boat/sea → "the sea", helicopter → "the coast from above", private chef → "a long, quiet table", photographer → "moments you'll keep", etc.), with a neutral fallback ("something quieter and made just for you"). No invented facts, no prices in the sentence — price stays in the collapsible inclusions block below (unchanged).
 
-1. **Preferred:** add a `variant="refine"` prop to `SignaturePriceCard` that renders only:
-   - Section title "Enhance your experience"
-   - Add-on rows: name · short description · price · toggle (existing toggle behaviour + reactivity already fixed in earlier turn)
-   - Total row: `Total €Y` with `€X per person` subline (single source of truth already wired via `perPerson = round(total/totalGuests)`)
-   - Primary CTA "Continue" + ghost "Save my signature"
-   All of these already exist inside the card — the variant just hides the inclusions block, the day-budget/remaining-minutes shimmer, the drive/dwell/itinerary readouts, and the guest stepper.
-2. Fallback if the card is too coupled: extract a small `<RefineAddOnsAndTotal>` component that consumes the same `useAddOns` hook + total math and render that on Refine, leaving `SignaturePriceCard` for other surfaces.
+If no add-ons are selected: nothing is inserted — the story reads clean.
 
-### Add-ons row contract
-Each row is exactly: `name` · `short description` (one line, muted) · `€price` · `toggle`. Existing chip highlight + ≤180ms feedback preserved. No shimmer, no "free minutes remaining", no "adds ~X min" microcopy on Refine.
+### 5. Removed
+- `ROMAN` array + `romanFor()` helper
+- `<ol>` / `<li>` structure and roman-numeral gutter span
+- `· your addition` micro-label
+- `addOnBeats` array
 
-### Total row contract
-`Total €Y` (large, tabular) with `€X per person` beneath (small, muted). Values come from the same `total` / `perPerson = round(total/totalGuests)` derivation established last turn — no static `priceFrom` or tier price anywhere on Refine.
-
-## Debug / wifi audit
-- No `wifi` / `connectivity` copy exists anywhere in Studio V3 — nothing to remove there.
-- `StudioV3DebugOverlay` is already opt-in (`?debug=studio` / `Shift+D` / localStorage). It never renders for real users, so no change needed. Confirming as part of this pass rather than touching it.
-- Removing the daypart timeline, remaining-minutes shimmer, dwellHours and itinerary readouts covers the "technical info / debug elements" the brief calls out.
-
-## Files touched
-- `src/components/studio-v3/StudioV3.tsx` — replace hero, delete 4 decorative sections, delete "Before you secure it", retitle stops editor, drop helper paragraph, pass `variant="refine"` (or swap in the fallback component) to `SignaturePriceCard`.
-- `src/components/studio-v3/SignaturePriceCard.tsx` — add `variant?: "full" | "refine"` (default `"full"`) and gate inclusions / day-budget shimmer / remaining-minutes / dwellHours / itinerary readout / guest stepper behind `variant === "full"`. No pricing math changes.
-
-## Out of scope
-- `FinalRevealStory` (cinematic reveal after Refine) — untouched.
-- Other Studio phases, other routes, backend, checkout.
-- Pricing logic (already fixed in prior turns; this plan only relocates what's rendered).
+### 6. Preserved unchanged
+- Parchment letter card frame, image, gradient
+- Meta line (date · pickup · guests)
+- `INSTANT_CONFIRMATION` reassurance line
+- Collapsible "See what's included" details block (inclusions list + add-on price rows + total)
+- CTAs (Continue / Save / Back)
+- `data-testid="studio-v3-final-reveal"`, `data-studio-v3-screen="storytelling"`, `data-testid="studio-v3-final-reveal-letter"` — kept so existing e2e specs still resolve
+- `data-testid="studio-v3-final-reveal-timeline"` — kept on the new narrative wrapper (rebound to the `<div>` container) so timeline-count assertions still pass by counting `<p>` children instead of `<li>`
 
 ## Verification
-- Manual walkthrough on 393×588: page shows title → map → stops → add-ons → total → CTAs, nothing else, above and below the fold.
-- Toggling any add-on updates Total and `€X per person` in the same frame (regression check on the reactivity fix).
-- `data-studio-v3-screen="refine"` still present; existing e2e testids `studio-v3-reveal-map`, `studio-v3-stops-editor`, `studio-v3-stop-row`, `studio-v3-swap-pool`, `studio-v3-add-moment`, `studio-v3-add-pool` all still resolve.
-- Existing tests under `src/components/studio-v3/__tests__/` for add-on gating, price source-of-truth and refine stop card still pass; update any snapshot that asserts the removed sections.
+- Build + typecheck pass
+- Manual walkthrough on 393×588: title reads "Your private day in {region}", one flowing block of paragraphs, no numerals, no bullets, add-on sentence italicized inline when toggled
+- Toggle add-ons on/off → paragraphs appear/disappear in place; pricing card unaffected
+- Existing reveal e2e specs (`studio-v3-reveal-*`) still find their testids
+
+## Out of scope
+- No changes to StudioV3 refine surface, pricing card, guest details, checkout
+- No new server functions or AI calls (deterministic copy only)
+- No new files, no dependency changes

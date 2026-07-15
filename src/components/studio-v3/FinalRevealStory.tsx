@@ -25,7 +25,7 @@ import {
   CTA_SEE_INCLUSIONS,
   INCLUSION_HEADER,
   INSTANT_CONFIRMATION,
-  REVEAL_TITLE,
+  
 } from "@/content/signature-day-copy";
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
@@ -33,15 +33,75 @@ import { cn } from "@/lib/utils";
 import { formatGuestComposition } from "./formatGuests";
 import parchmentLetter from "@/assets/studio-v3/reveal-letter-parchment.jpg";
 
-// Roman numerals for chapter markers — the reveal reads like a bound book,
-// not a checklist. Falls back to arabic beyond XII so we never render blank.
-const ROMAN = [
-  "I", "II", "III", "IV", "V", "VI",
-  "VII", "VIII", "IX", "X", "XI", "XII",
-];
-function romanFor(i: number): string {
-  return ROMAN[i] ?? String(i + 1);
+// Friendly region label rendered in the reveal title.
+const REGION_LABELS: Record<string, string> = {
+  arrabida: "the Arrábida",
+  "arrabida-setubal": "the Arrábida",
+  sintra: "Sintra & the Atlantic coast",
+  "lisbon-coast": "Sintra & the Atlantic coast",
+  lisbon: "Lisbon",
+  alentejo: "the Alentejo",
+  douro: "the Douro",
+  centro: "central Portugal",
+};
+function regionLabelFor(intent: string | null | undefined): string {
+  if (!intent) return "Portugal";
+  return REGION_LABELS[intent.toLowerCase()] ?? "Portugal";
 }
+
+// Deterministic intro paragraph — no invented facts, sets tone only.
+function introFor(feeling: string | null | undefined, region: string): string {
+  const opener =
+    feeling === "wine-food"
+      ? `A slower rhythm shapes your day in ${region} — long tables, unhurried afternoons, Portugal felt without hurry.`
+      : feeling === "coastal" || feeling === "adventure"
+        ? `Your day in ${region} follows the Atlantic light — open roads, sea air, room for the country to breathe.`
+        : feeling === "romance"
+          ? `Your day in ${region} is built for two — soft pacing, quiet corners, the country meeting you gently.`
+          : feeling === "hidden"
+            ? `Your day in ${region} keeps to the quieter roads — small doors, unshowy places, nothing that performs.`
+            : feeling === "slow-luxury"
+              ? `Your day in ${region} moves gently — fewer moments, held longer, nothing asked of you.`
+              : `Your day in ${region} unfolds at its own pace — private, unhurried, made only for you.`;
+  return opener + " Every moment below is confirmed and yours the second you say yes.";
+}
+
+// Rotating editorial connectives for middle stops. Kept short and quiet.
+const MIDDLE_OPENERS = [
+  "Then you'll continue towards",
+  "Along the way,",
+  "As the afternoon opens,",
+  "Later,",
+  "From there,",
+];
+
+function stopSentence(
+  index: number,
+  isLast: boolean,
+  label: string,
+  story: string,
+): string {
+  const body = story?.trim() ? ` ${story.trim()}` : "";
+  if (index === 0) return `You'll start your day in ${label}.${body}`;
+  if (isLast) return `To close the day, ${label}.${body}`;
+  const opener = MIDDLE_OPENERS[(index - 1) % MIDDLE_OPENERS.length];
+  const glue = opener.endsWith(",") ? " " : " ";
+  return `${opener}${glue}${label}.${body}`;
+}
+
+// Themed continuation for add-on integration into the narrative.
+function addOnContinuation(label: string): string {
+  const l = label.toLowerCase();
+  if (/(boat|sail|yacht|sea|ocean)/.test(l)) return "the sea";
+  if (/(helicopter|heli|flight|aerial)/.test(l)) return "the coast seen from above";
+  if (/(chef|dinner|tasting|table|lunch|wine)/.test(l)) return "a long, quiet table";
+  if (/(photo|photograph)/.test(l)) return "moments you'll want to keep";
+  if (/(spa|massage|wellness)/.test(l)) return "an hour that belongs only to you";
+  if (/(horse|ride|equestr)/.test(l)) return "the country at a slower pace";
+  if (/(picnic|hamper)/.test(l)) return "a table set under open sky";
+  return "something quieter, made just for you";
+}
+
 
 export interface FinalRevealStoryProps {
   readonly state: StudioV3State;
@@ -120,17 +180,43 @@ export function FinalRevealStory({
       : composedStops && composedStops.length > 0
         ? composedStops
         : (tour?.stops ?? []).map((s) => ({ label: s.label, story: s.story ?? "" }));
-  const stops = keptStops.map((s) => ({
-    label: s.label,
-    story: s.story,
-    kind: "stop" as const,
-  }));
-  const addOnBeats = selectedAddOns.map((a) => ({
-    label: a.label,
-    story: "",
-    kind: "addition" as const,
-  }));
-  const timeline = [...stops, ...addOnBeats];
+  const stops = keptStops.map((s) => ({ label: s.label, story: s.story }));
+
+  const region = regionLabelFor(state.destinationIntent);
+  const intro = introFor(state.feeling, region);
+
+  // Weave add-ons into the narrative. Distribute them evenly across stops
+  // (after which stop each add-on appears). If we have more add-ons than
+  // stops, remaining ones tail the final stop.
+  type Paragraph =
+    | { kind: "stop"; text: string; key: string }
+    | { kind: "addon"; text: string; key: string };
+  const paragraphs: Paragraph[] = [];
+  const addOnQueue = selectedAddOns.map((a, i) => ({ a, i }));
+  const insertionPoints = stops.length > 1
+    ? addOnQueue.map((_, idx) =>
+        Math.min(stops.length - 1, Math.floor((idx + 1) * (stops.length / (addOnQueue.length + 1)))),
+      )
+    : addOnQueue.map(() => 0);
+
+  stops.forEach((s, i) => {
+    const isLast = i === stops.length - 1;
+    paragraphs.push({
+      kind: "stop",
+      text: stopSentence(i, isLast, s.label, s.story),
+      key: `stop-${i}-${s.label}`,
+    });
+    addOnQueue.forEach(({ a, i: ai }, qIdx) => {
+      if (insertionPoints[qIdx] === i) {
+        paragraphs.push({
+          kind: "addon",
+          text: `Because you've chosen the ${a.label}, this is where your day opens to ${addOnContinuation(a.label)}.`,
+          key: `addon-${ai}-${a.id}`,
+        });
+      }
+    });
+  });
+
 
   const dateLabel = formatDate(state.dateExact);
   const pickupLabel = pickupCityLabel(state.pickup);
@@ -148,6 +234,7 @@ export function FinalRevealStory({
       "All confirmed entries listed above",
     ];
   })();
+
 
   return (
     <section
@@ -211,19 +298,11 @@ export function FinalRevealStory({
                 fontWeight: 500,
               }}
             >
+              Your private day in{" "}
               <span className="italic" style={{ color: "var(--teal)" }}>
-                {REVEAL_TITLE}
+                {region}
               </span>
             </h2>
-            <p
-              className="mt-3 mx-auto max-w-[38ch] text-[15px] leading-[1.6] [text-wrap:pretty]"
-              style={{
-                color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
-                fontFamily: "var(--font-editorial)",
-              }}
-            >
-              <span className="italic">{title}</span>
-            </p>
             {(dateLabel || guestsLabel || pickupLabel) ? (
               <p
                 className="mt-3 text-[11px] uppercase tracking-[0.22em]"
@@ -239,57 +318,40 @@ export function FinalRevealStory({
             />
           </header>
 
-          {/* Chaptered story — book paragraphs */}
-          <ol
-            className="mt-8 space-y-7"
+          {/* Narrative — one flowing story, no list, no chapter markers */}
+          <div
+            className="mt-8 space-y-5 mx-auto max-w-[54ch]"
             data-testid="studio-v3-final-reveal-timeline"
           >
-            {timeline.map((beat, i) => (
-              <li key={`${beat.kind}-${i}-${beat.label}`} className="relative pl-8">
-                <span
-                  aria-hidden
-                  className="absolute left-0 top-[2px] w-6 text-[12px] tracking-[0.12em] tabular-nums"
-                  style={{
-                    fontFamily: "var(--font-editorial)",
-                    color: "var(--gold)",
-                    fontWeight: 600,
-                    fontStyle: "italic",
-                  }}
-                >
-                  {romanFor(i)}.
-                </span>
-                <h3
-                  className="text-[17px] leading-[1.3]"
-                  style={{
-                    fontFamily: "var(--font-editorial)",
-                    color: "var(--charcoal)",
-                    fontWeight: 500,
-                  }}
-                >
-                  {beat.label}
-                  {beat.kind === "addition" ? (
-                    <span
-                      className="ml-2 text-[10px] uppercase tracking-[0.22em] align-middle"
-                      style={{ color: "var(--teal)" }}
-                    >
-                      · your addition
-                    </span>
-                  ) : null}
-                </h3>
-                {beat.story ? (
-                  <p
-                    className="mt-2 max-w-[52ch] text-[14.5px] leading-[1.7] [text-wrap:pretty]"
-                    style={{
-                      fontFamily: "var(--font-editorial)",
-                      color: "color-mix(in oklab, var(--charcoal) 76%, transparent)",
-                    }}
-                  >
-                    {beat.story}
-                  </p>
-                ) : null}
-              </li>
+            <p
+              className="text-[15.5px] leading-[1.75] [text-wrap:pretty]"
+              style={{
+                fontFamily: "var(--font-editorial)",
+                color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
+              }}
+            >
+              {intro}
+            </p>
+            {paragraphs.map((p) => (
+              <p
+                key={p.key}
+                className={cn(
+                  "text-[15px] leading-[1.75] [text-wrap:pretty]",
+                  p.kind === "addon" && "italic",
+                )}
+                style={{
+                  fontFamily: "var(--font-editorial)",
+                  color:
+                    p.kind === "addon"
+                      ? "var(--teal)"
+                      : "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                }}
+              >
+                {p.text}
+              </p>
             ))}
-          </ol>
+          </div>
+
         </div>
       </article>
 
