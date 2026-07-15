@@ -15,6 +15,31 @@ import { CredentialStrip } from "@/components/ui/CredentialStrip";
  * paying for. No full-page redirect — checkout happens on our domain.
  */
 
+export type JourneyBand = "adult" | "youth" | "child" | "infant";
+export interface CheckoutJourneyLine {
+  readonly kind: "adult" | "minor";
+  readonly band: JourneyBand;
+  readonly age: number | null;
+  readonly unitEur: number;
+  readonly qty: 1;
+}
+
+export interface CheckoutAddOnLine {
+  id: string;
+  label: string;
+  /** Legacy per-person anchor (back-compat). */
+  priceEur: number;
+  durationMinutes: number;
+  /** Unit-aware per-unit price. */
+  perUnit?: number;
+  /** Unit-aware line total for the current party. */
+  amount?: number;
+  /** How the add-on is billed. */
+  unit?: "per_person" | "per_group" | "per_vehicle" | "fixed";
+  /** Human unit label (e.g. "per guest", "per group"). */
+  unitLabel?: string;
+}
+
 export interface CheckoutSummary {
   tourTitle: string;
   region?: string;
@@ -29,18 +54,27 @@ export interface CheckoutSummary {
   startTime?: string | null;
   pickupLabel?: string | null;
   pricePerPaxEur?: number | null;
-  /** Total in EUR (per Stripe). Optional — we'll compute from pricePerPaxEur*guests + addOnsTotalEur if missing. */
+  /** Total in EUR. Optional — derived from journey/add-ons when missing. */
   totalEur?: number | null;
   /** Optional hero image (locally uploaded YES photo when available). */
   heroSrc?: string | null;
   /** Short list (max 4) of inclusions / signature beats. */
   beats?: string[];
   flowLabel?: "Signature" | "Tailored" | "Studio";
-  /** Selected reveal add-ons, kept in sync with SignaturePriceCard so the drawer
-   *  and the Stripe session never drift from what the traveller picked. */
-  addOns?: Array<{ id: string; label: string; priceEur: number; durationMinutes: number }>;
-  /** Sum of add-on EUR (flat per booking). */
+  /** Selected reveal add-ons, kept in sync with SignaturePriceCard. */
+  addOns?: CheckoutAddOnLine[];
+  /** Legacy per-person sum of add-ons (back-compat). */
   addOnsTotalEur?: number;
+  /** Unit-aware party total for add-ons (preferred when present). */
+  addOnsPartyTotalEur?: number;
+  /**
+   * Canonical age-banded lines from `resolveJourneyPricing`. When present,
+   * the drawer renders one row per traveller and derives the total from
+   * these lines — never from pricePerPaxEur × guests.
+   */
+  journeyLines?: readonly CheckoutJourneyLine[];
+  /** Sum of journeyLines[].unitEur; supplied alongside journeyLines. */
+  journeyTotalEur?: number;
 }
 
 
@@ -121,14 +155,26 @@ export function BrandedCheckoutDrawer({
     if (open) completeFiredRef.current = false;
   }, [open]);
 
-  const addOnsTotal = summary.addOnsTotalEur ?? 0;
-  const total =
-    summary.totalEur != null
-      ? summary.totalEur
-      : summary.pricePerPaxEur != null
-        ? Math.round(summary.pricePerPaxEur * summary.guests + addOnsTotal)
-        : null;
+  const addOnsPartyTotal =
+    summary.addOnsPartyTotalEur ??
+    (summary.addOns
+      ? summary.addOns.reduce((s, a) => {
+          if (a.amount != null) return s + a.amount;
+          // Legacy fallback: per_person default → multiply by guests.
+          return s + a.priceEur * summary.guests;
+        }, 0)
+      : (summary.addOnsTotalEur ?? 0));
 
+  const total = (() => {
+    if (summary.totalEur != null) return summary.totalEur;
+    if (summary.journeyTotalEur != null) {
+      return Math.round(summary.journeyTotalEur + addOnsPartyTotal);
+    }
+    if (summary.pricePerPaxEur != null) {
+      return Math.round(summary.pricePerPaxEur * summary.guests + addOnsPartyTotal);
+    }
+    return null;
+  })();
 
   useEffect(() => {
     if (open) prewarmStripeScript();
@@ -260,27 +306,27 @@ function ExperienceSummaryCard({
         </ul>
       ) : null}
 
-      {summary.addOns && summary.addOns.length > 0 ? (
-        <div className="mt-4 pt-3 border-t border-[color:var(--border)]">
+      {summary.journeyLines && summary.journeyLines.length > 0 ? (
+        <div className="mt-4 pt-3 border-t border-[color:var(--border)]" data-testid="checkout-drawer-journey-lines">
           <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
-            Add-ons
+            Travellers
           </p>
           <ul className="mt-2 space-y-1">
-            {summary.addOns.map((a) => (
+            {summarizeJourneyLines(summary.journeyLines).map((row) => (
               <li
-                key={a.id}
+                key={row.key}
                 className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]/80 font-sans"
               >
                 <span className="truncate">
-                  • {a.label}
-                  {summary.guests > 1 ? (
+                  {row.label}
+                  {row.qty > 1 ? (
                     <span className="ml-1 text-[color:var(--charcoal-soft)]">
-                      (€{Math.round(a.priceEur).toLocaleString("en-GB")} × {summary.guests})
+                      (€{Math.round(row.unitEur).toLocaleString("en-GB")} × {row.qty})
                     </span>
                   ) : null}
                 </span>
                 <span className="tabular-nums text-[color:var(--charcoal-soft)]">
-                  €{Math.round(a.priceEur * summary.guests).toLocaleString("en-GB")}
+                  €{Math.round(row.subtotalEur).toLocaleString("en-GB")}
                 </span>
               </li>
             ))}
@@ -288,17 +334,58 @@ function ExperienceSummaryCard({
         </div>
       ) : null}
 
+      {summary.addOns && summary.addOns.length > 0 ? (
+        <div className="mt-4 pt-3 border-t border-[color:var(--border)]">
+          <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
+            Add-ons
+          </p>
+          <ul className="mt-2 space-y-1">
+            {summary.addOns.map((a) => {
+              const lineAmount =
+                a.amount != null ? a.amount : a.priceEur * summary.guests;
+              const perUnit = a.perUnit != null ? a.perUnit : a.priceEur;
+              const isPerPerson = a.unit == null || a.unit === "per_person";
+              return (
+                <li
+                  key={a.id}
+                  className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]/80 font-sans"
+                >
+                  <span className="truncate">
+                    • {a.label}
+                    {isPerPerson && summary.guests > 1 ? (
+                      <span className="ml-1 text-[color:var(--charcoal-soft)]">
+                        (€{Math.round(perUnit).toLocaleString("en-GB")} × {summary.guests})
+                      </span>
+                    ) : a.unitLabel ? (
+                      <span className="ml-1 text-[color:var(--charcoal-soft)]">
+                        ({a.unitLabel})
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="tabular-nums text-[color:var(--charcoal-soft)]">
+                    €{Math.round(lineAmount).toLocaleString("en-GB")}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : null}
+
 
       {total != null ? (
-        <div className="mt-4 pt-3 border-t border-[color:var(--border)] flex items-baseline justify-between">
+        <div
+          className="mt-4 pt-3 border-t border-[color:var(--border)] flex items-baseline justify-between"
+          data-testid="checkout-drawer-total"
+        >
           <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
             Total
           </span>
           <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
             €{total.toLocaleString("en-GB")}
-            {summary.pricePerPaxEur != null &&
-            summary.guests > 1 &&
-            (summary.minorAges?.length ?? 0) === 0 ? (
+            {summary.journeyLines && summary.journeyLines.length > 0 ? null : summary.pricePerPaxEur != null &&
+              summary.guests > 1 &&
+              (summary.minorAges?.length ?? 0) === 0 ? (
               <span className="ml-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans">
                 €{Math.round(summary.pricePerPaxEur).toLocaleString("en-GB")} × {summary.guests}
               </span>
@@ -356,6 +443,65 @@ function buildCompositionLine(
   return parts.join(" · ");
 }
 
+/** Aggregate journey lines into display rows: adults grouped, each minor
+ *  listed individually with its age. Order: adults → youths → children →
+ *  infants, minors sorted by age descending. */
+interface JourneyDisplayRow {
+  readonly key: string;
+  readonly label: string;
+  readonly unitEur: number;
+  readonly qty: number;
+  readonly subtotalEur: number;
+}
+export function summarizeJourneyLines(
+  lines: readonly CheckoutJourneyLine[],
+): JourneyDisplayRow[] {
+  const adults = lines.filter((l) => l.band === "adult");
+  const minors = lines
+    .filter((l) => l.band !== "adult")
+    .slice()
+    .sort((a, b) => {
+      const order: Record<JourneyBand, number> = {
+        adult: 0,
+        youth: 1,
+        child: 2,
+        infant: 3,
+      };
+      const oa = order[a.band] - order[b.band];
+      if (oa !== 0) return oa;
+      return (b.age ?? 0) - (a.age ?? 0);
+    });
+  const rows: JourneyDisplayRow[] = [];
+  if (adults.length > 0) {
+    const unit = adults[0].unitEur;
+    rows.push({
+      key: "adults",
+      label: `Adult${adults.length === 1 ? "" : "s"}`,
+      unitEur: unit,
+      qty: adults.length,
+      subtotalEur: unit * adults.length,
+    });
+  }
+  const bandLabel: Record<Exclude<JourneyBand, "adult">, string> = {
+    youth: "Youth",
+    child: "Child",
+    infant: "Infant",
+  };
+  for (const m of minors) {
+    const label =
+      m.age != null
+        ? `${bandLabel[m.band as "youth" | "child" | "infant"]} (age ${m.age})`
+        : bandLabel[m.band as "youth" | "child" | "infant"];
+    rows.push({
+      key: `${m.band}-${m.age ?? "x"}-${rows.length}`,
+      label,
+      unitEur: m.unitEur,
+      qty: 1,
+      subtotalEur: m.unitEur,
+    });
+  }
+  return rows;
+}
 
 function CheckoutSkeleton() {
   return (

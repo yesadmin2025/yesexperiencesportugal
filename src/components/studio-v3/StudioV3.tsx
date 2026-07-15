@@ -867,16 +867,39 @@ export function StudioV3() {
         label: i.label,
         priceEur: Math.round(i.priceEur),
         durationMinutes: i.durationMinutes,
+        perUnit: Math.round(i.perUnit),
+        amount: Math.round(partyAmountFor(i)),
+        unit: i.unit,
+        unitLabel: i.unitLabel,
       }));
       const addOnsPartyTotalEur = Math.round(
         selectedAddOnItems.reduce((sum, i) => sum + partyAmountFor(i), 0),
       );
-      const totalEur = Math.round(perPaxBase * details.guests + addOnsPartyTotalEur);
+      // Canonical age-banded lines when composition is present — drives the
+      // drawer's itemised breakdown and total. Falls back to flat pricing.
+      const composedMinors = currentState.minorAges ?? [];
+      const composedAdults =
+        typeof currentState.adults === "number" && currentState.adults >= 1
+          ? currentState.adults
+          : typeof details.adults === "number" && details.adults >= 1
+            ? details.adults
+            : null;
+      const journey =
+        composedAdults != null
+          ? resolveJourneyPricing(tour, composedAdults, composedMinors, tourPriceTiers)
+          : null;
+      const journeyLines = journey ? journey.lines : undefined;
+      const journeyTotalEur = journey ? Math.round(journey.totalEur) : undefined;
+      const totalEur = journey
+        ? Math.round(journey.totalEur + addOnsPartyTotalEur)
+        : Math.round(perPaxBase * details.guests + addOnsPartyTotalEur);
       setCheckoutSummary({
         tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
         region: tour.region,
         durationHours: tour.durationHours,
         guests: details.guests,
+        adults: composedAdults ?? undefined,
+        minorAges: composedMinors,
         dateExact: details.tourDate || currentState.dateExact || null,
         startTime: details.startTime ?? null,
         pickupLabel: details.pickupAddress || pickupCityLabel(currentState.pickup) || "",
@@ -887,6 +910,9 @@ export function StudioV3() {
         flowLabel: "Studio",
         addOns: addOnsForCheckout,
         addOnsTotalEur: addOnsPartyTotalEur,
+        addOnsPartyTotalEur,
+        journeyLines,
+        journeyTotalEur,
       });
       setCheckoutTourId(tour.id);
       setDetailsOpen(false);

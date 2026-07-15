@@ -1,60 +1,54 @@
-## Phase B — composer stops in the reveal, nothing else
+## Problems observed
 
-Goal: the reveal ("Your day, composed") reads its stop list from `composeStudioJourney` when the flag is on. Pricing, checkout, map markers, tour-id resolution stay on `resolveStudioV3Route`. Two travellers with materially different answers see materially different **reveal stops** — the Phase A guarantee, now visible in the UI.
+In `BrandedCheckoutDrawer` (`ExperienceSummaryCard`):
 
-Out of scope this turn (explicitly deferred to Phase D/F):
-- Composer-driven pricing (still needs `signatureTours` + tiers)
-- Checkout payload (still ships Signature `tourId`)
-- Map markers, `LivingJourneyPanel`, `CurtainRise`, `RunningInvestmentRibbon`, `ComposerMap` rewrites
-- Deleting `curation.ts` or `resolveStudioV3Route`
+1. **Total ignores age-band pricing.** `total = pricePerPaxEur * guests + addOnsTotal` multiplies the adult tier by headcount, so a child at 50% (or infant at 0%) is charged as an adult. The Signature card + `resolveJourneyPricing` already produce the correct per-line total; the drawer just doesn't consume it.
+2. **Add-ons don't itemise per pax type.** Each add-on line is rendered as `€X × guests` for the whole party. Nothing distinguishes adults from minors, and the "€ × guests" hint disappears entirely once any minor is present (age-based pricing branch shows only "age-based pricing", no breakdown).
+3. **Add-ons total not always updating pp / party line.** The drawer reads `summary.addOnsTotalEur` but `SignaturePriceCard` emits `partyTotalEur` (unit-aware) via `onAddOnsChange`. When the parent forwards the legacy `totalEur` (per-person sum) into `addOnsTotalEur`, the drawer under-counts; when it forwards `partyTotalEur` while also multiplying `pricePerPaxEur * guests`, the pp line drifts.
 
-### What ships
+## Fix (adapter + drawer only, no pricing-engine change)
 
-1. **`src/lib/studio-v3/composerAdapter.ts`** (new)
-   - `adaptStateToComposeInput(state: StudioV3State): ComposeInput | null` — maps `feeling/companions/rhythm/interests/pickup/occasion/considerations/adults/minorAges` + current month/weekday into the composer's typed input. Returns `null` when required fields are missing.
-   - `pickupToRegion(pickup)` — reuses the same pickup→region logic curation.ts already uses (single import, no duplication).
-   - `interestsToStudioInterests(state.interests)` — vocabulary map (studio "wine/coast/culture/gastronomy/wellness/hidden" → composer's enum, already 1:1).
-   - `investmentToBudgetTier(state.investment)` → `essential | signature | rare`.
+### 1. Extend `CheckoutSummary` with canonical journey lines
+- Add optional `journeyLines?: readonly JourneyPriceLine[]` and `journeyTotalEur?: number` (from `resolveJourneyPricing`) to the `CheckoutSummary` type used by `BrandedCheckoutDrawer`.
+- Populate them wherever the drawer is opened (StudioV3 checkout path — same place that already calls `resolveJourneyPricing` via `useResolvedJourney`).
 
-2. **`src/components/studio-v3/useResolvedJourney.ts`** — extend, don't replace
-   - Add `composedStops` field to `ResolvedJourney`, computed via `composeStudioJourney` when adapter returns non-null and flag is on; else `null`.
-   - `stops` field logic (existing chain: editedRoutePoints → resolveStudioV3Route → tour.stops) is **unchanged**. Pricing math is **unchanged**.
-   - Consumers opt in by reading `composedStops` explicitly.
+### 2. Rewrite drawer total math
+- Prefer `journeyTotalEur + addOnsPartyTotalEur` when `journeyLines` exist.
+- Fall back to the current `pricePerPaxEur * guests + addOnsTotal` only when there are no minors AND no journey lines (legacy callers).
+- Consume `addOnsPartyTotalEur` (unit-aware) instead of `addOnsTotalEur` when available; keep `addOnsTotalEur` as fallback.
 
-3. **Flag**: `STUDIO_V3_COMPOSER_REVEAL` — `import.meta.env.DEV || localStorage.getItem("studio-v3-composer-reveal") === "1"` (same pattern as `STUDIO_V3_OPTIONAL_STOPS_ENABLED` in curation.ts). Off in production, on in dev + QA opt-in. Zero prod-user impact this turn.
+### 3. Itemise pricing in `ExperienceSummaryCard`
+Replace the single "Total" row's inline hint with a compact breakdown block above the Total, rendered only when `journeyLines` is present:
 
-4. **Reveal surface only** — `SignatureDayReveal` (re-exported from `StudioV3.tsx`'s `StoryboardHandoff`)
-   - Find the block that renders the stop list inside the reveal (single JSX map over `resolved.stops`).
-   - When `composedStops` is present, render those instead, using each stop's `name`, `blurb`, `rationale` (rationale becomes a small "Picked for your …" line, matches existing "story" slot visually).
-   - Preserve the existing DOM structure (same wrapper, same test ids) — the only change is the source array. No new snapshot churn.
+```
+Travellers
+  Adult × N              €A × N        €A·N
+  Child (age 8)          €C            €C
+  Infant (age 1)         €0            €0
+Add-ons
+  • Wine flight (× guests)             €…
+Total                                  €T
+```
 
-5. **Test — `src/components/studio-v3/__tests__/reveal-composer-stops.test.ts`** (new, ~80 lines)
-   - Renders `StudioV3` with the flag on and two contrasting fixtures (solo-wine-slow vs family-coast-full).
-   - Asserts the reveal stop labels differ across the two states.
-   - Asserts pricing element renders unchanged (i.e. `€X pp` still present) — protects the "we did not break checkout" invariant.
+- Adults grouped as `Adult × N   €unit × N   €subtotal`.
+- Each minor line: `Child (age X)` / `Youth (age X)` / `Infant (age X)` with its band-adjusted unit price and subtotal.
+- Keep existing add-ons list; when `journeyLines` present, drop the "× guests" fiction on add-ons priced `per_person` and show `€perUnit × headcount` correctly (already available on `SelectedAddOnSummaryItem.perUnit` / `.amount` — pipe those through the summary instead of the legacy `priceEur`).
 
-6. **Guardrails**
-   - No edits to `curation.ts`, `signatureTours`, pricing files, checkout, map components.
-   - No edits to any existing test other than reading them to confirm nothing regresses.
-   - Full `bunx vitest run` must stay green.
+### 4. Extend add-on payload in `CheckoutSummary`
+Add `perUnit`, `amount`, `unit`, `unitLabel` to `summary.addOns[]` (mirror `SelectedAddOnSummaryItem`). Update the StudioV3 adapter to pass these through unchanged. Drawer renders `amount` for the line total and `perUnit`/`unitLabel` for the hint.
 
-### Technical notes
+### 5. Tests
+- New test: drawer total for `2 adults + 1 child (8)` = 2·adult + 0.5·adult (no add-ons), matching `resolveJourneyPricing`.
+- New test: drawer total live-updates when add-on toggles arrive via `summary.addOns` change.
+- New test: itemised block renders one line per traveller band, with age shown for minors.
 
-- The composer needs `weekday` + `month` — use `new Date()` on render (memoized per day) to avoid re-composing on every keystroke.
-- `regionStops.ts` currently has full coverage only for the pickup regions the adapter needs (Lisbon, Sintra, Arrábida). If `pickupToRegion` returns a region with <3 stops in the pool, `composedStops` returns `null` and the reveal falls through to the current `resolveStudioV3Route` output. Documented in the adapter file header.
-- Rationale strings (e.g. "Picked for your wine focus · slow rhythm") are new copy but derive mechanically from the traveller's own inputs — not invented facts about stops. Complies with the "no invented content" memory rule because stop **names/blurbs/coords** still come from the approved `regionStops.ts` pool.
+## Out of scope
+- No changes to `SignaturePriceCard` internals or to the Stripe session builder (server-side line items already use `resolveJourneyPricing`).
+- No changes to the composer preview / Phase E work.
+- No visual redesign — same tokens, same spacing scale as current summary card.
 
-### Deliverables
-
-- 1 new file: `composerAdapter.ts`
-- 1 extended file: `useResolvedJourney.ts` (add field, no behavior change to existing consumers)
-- 1 edited file: `StudioV3.tsx` (reveal stop map only — ~15-line change)
-- 1 new test file
-- Green full suite, flag off by default
-
-### What "Phase B done" looks like
-
-- QA can flip `localStorage.setItem("studio-v3-composer-reveal","1")` and see the reveal stops change per answer profile — proving the Phase A engine is wired to the UI.
-- Zero production behavior change until we flip the default in Phase D alongside the pricing swap.
-
-Approve to proceed, or tell me to widen/narrow the surface.
+## Files touched
+- `src/components/checkout/BrandedCheckoutDrawer.tsx` (total math + itemised block)
+- `src/components/studio-v3/CheckoutSummary.tsx` (extend type + adapter payload)
+- `src/components/studio-v3/StudioV3.tsx` (forward `journeyLines`/`journeyTotalEur` from `useResolvedJourney` into the drawer summary, forward unit-aware add-on fields)
+- `src/components/studio-v3/__tests__/checkout-drawer-itemisation.test.tsx` (new)
