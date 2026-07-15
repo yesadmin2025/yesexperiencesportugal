@@ -85,7 +85,9 @@ const BLOCKS = [
 ];
 
 function CorporatePage() {
+  useMarketingMotion();
   return (
+
     <SiteLayout>
       {/* Hero */}
       <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
