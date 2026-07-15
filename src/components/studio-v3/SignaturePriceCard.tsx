@@ -175,6 +175,8 @@ export function SignaturePriceCard({
   itineraryStops = [],
   dwellHours = null,
   variant = "full",
+  resolvedPerPaxEur = null,
+  resolvedTotalEur = null,
 }: SignaturePriceCardProps) {
   const isRefine = variant === "refine";
 
