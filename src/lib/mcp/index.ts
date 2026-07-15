@@ -14,7 +14,6 @@ import { auth, defineMcp } from "@lovable.dev/mcp-js";
 import echoTool from "./tools/echo";
 import listMySignatureJourneysTool from "./tools/list-my-signature-journeys";
 import getSignatureJourneyTool from "./tools/get-signature-journey";
-import getCurrentMcpIdentityTool from "./tools/owner/get-current-mcp-identity";
 
 
 // The OAuth issuer MUST be the direct supabase.co host; the SUPABASE_URL
@@ -33,5 +32,5 @@ export default defineMcp({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",
   }),
-  tools: [echoTool, listMySignatureJourneysTool, getSignatureJourneyTool, getCurrentMcpIdentityTool],
+  tools: [echoTool, listMySignatureJourneysTool, getSignatureJourneyTool],
 });
