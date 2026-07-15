@@ -7,7 +7,10 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import {
   summarizeJourneyLines as summarizeJourneyLinesShared,
+  hasCompleteJourneyPricing,
   type CheckoutJourneyLine as SharedJourneyLine,
+} from "@/lib/checkout/journeyDisplay";
+
   type JourneyBand as SharedJourneyBand,
 } from "@/lib/checkout/journeyDisplay";
 
