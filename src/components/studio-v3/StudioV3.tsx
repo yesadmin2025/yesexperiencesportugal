@@ -3918,6 +3918,7 @@ export function StoryboardHandoff({
 
         {/* ---------- Add-ons + Total (SignaturePriceCard refine variant) ---------- */}
         <SignaturePriceCard
+          variant="refine"
           tour={skeletonTour ?? null}
           stopCount={editedStops.length}
           dateExact={safeDate.dateExact}
