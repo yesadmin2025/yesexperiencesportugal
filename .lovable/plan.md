@@ -1,56 +1,92 @@
-# Checkout — Summary + Payment
+# Studio V3 — Single Resolved Journey (one source of truth)
 
-Simplify `src/components/studio-v3/CheckoutSummary.tsx` so the summary card shows exactly the five items requested, in order, then Stripe below. Zero price math on this surface.
+Today the same numbers are recomputed independently in three places, with subtly different rules:
 
-## Summary card (top) — exact contents, in order
+- `SignaturePriceCard` — computes its own `perPersonDerived` / `partyTotalEur` from `resolvePerPaxEur` + add-on unit math.
+- `FinalRevealStory` mount in `StudioV3.tsx` — recomputes `perPaxEur` / `totalEur` using flat `perPax × guests + selectedAddOnsTotalEur × guests` (ignores age-band pricing).
+- `CheckoutSummary` mount in `StudioV3.tsx` — recomputes `perPaxEur` / `totalEur`, this time honoring age-band via `resolveJourneyPricing` when `adults + minorAges` are set.
 
-1. **Date** — `guestDetails.tourDate ?? state.dateExact`, formatted
-2. **Guests** — `formatGuestComposition(adults, minorAges, guestDetails.guests)` → "N guests (X adults, Y children)" — same helper the refine page uses
-3. **Stops** — resolved from the same priority chain the reveal uses: `state.editedRoutePoints` → composed stops passed via a new `composedStops` prop → `tour.stops`. Rendered as a compact stacked list of stop labels only (no stories, no numerals). Guarantees the checkout stops match refine exactly.
-4. **Add-ons** — `selectedAddOns` from props, each row `· label ······ €price` using existing `formatEur` (display only, no math)
-5. **Total** — `totalEur` from props, with `perPaxEur` as small subline. **No calculation** — both values come straight from the same props the refine page uses.
+Reveal and checkout can therefore diverge for families with minors. Stops are also resolved twice (reveal + checkout) via inline `resolveStudioV3Route` blocks.
 
-## What is removed from the summary card
+## The fix — one resolver, one shape
 
-To eliminate "checkout confusion" and honor the strict list:
-- Pickup row
-- Language row
-- Start time row
-- Travellers age-band block (`resolveJourneyPricing(...)` → itemized per-traveller %/€) — this is a derived recalculation on the page and is explicitly out per "DO NOT recalculate price here"
-- "Included" list (inclusions) — belongs to the reveal, not the payment step
+Create `src/components/studio-v3/useResolvedJourney.ts` (pure hook, no side effects):
 
-Also removes the "Download one-pager (PDF)" CTA on this surface — not part of the requested layout, adds cognitive load right before payment. PDF stays available on the reveal (unchanged).
+```ts
+export interface ResolvedJourney {
+  readonly adults: number | null;
+  readonly minorAges: readonly number[];
+  readonly guests: number;             // effective party size used for pricing
+  readonly stops: ReadonlyArray<{ label: string; story: string }>;
+  readonly addOns: SelectedAddOnSummary["items"];
+  readonly perPaxEur: number | null;
+  readonly totalEur: number | null;
+}
 
-## What is kept (unchanged behavior)
+export function useResolvedJourney(
+  state: StudioV3State,
+  selectedAddOns: SelectedAddOnSummary["items"],
+  selectedAddOnsTotalEur: number,   // already-computed party-normalized add-on total (per-person basis)
+  tourPriceTiers: TierOverrides | null,
+): ResolvedJourney
+```
 
-- Back button (top-left)
-- Header: eyebrow + `CHECKOUT_HEADER` + italic tour title
-- Guest identity recap (name / email / phone + Edit button) — this is *who is booking*, not pricing, and is required for trust before payment
-- `INSTANT_CONFIRMATION` reassurance line
-- Bottom: Stripe Embedded Checkout when `clientSecret + publishableKey` are set; otherwise sticky "Reserve and pay" CTA that opens the session (existing logic, untouched)
-- All existing testids: `studio-v3-checkout-summary`, `-cta-bar`, `-reserve`, `-stripe-inline`. The removed `-travellers` and `-pdf` testids go with the removed blocks — checked against e2e specs before deletion.
+Rules baked into the hook (canonical, used by every surface):
 
-## Wiring
+1. `adults`, `minorAges`, `guests` — taken straight from `state`; `guests` falls back to `adults + minorAges.length` when unset, then to `2`.
+2. `stops` — priority chain: `state.editedRoutePoints` → `resolveStudioV3Route(...).routePoints` → `tour.stops`. Same chain used everywhere (reveal + checkout + any future surface).
+3. `perPaxEur` — `resolvePerPaxEur(tour, guests, tourPriceTiers)?.eurPerPax ?? tour.priceFrom ?? null`.
+4. `totalEur` — age-band branch first: when `adults ≥ 1 && minorAges.length > 0`, use `resolveJourneyPricing(tour, adults, minorAges, tourPriceTiers).totalEur + selectedAddOnsTotalEur × guests`. Otherwise `perPax × guests + selectedAddOnsTotalEur × guests`. Rounded once, here, and never again downstream.
+5. `addOns` — pass-through of `selectedAddOns` (already the resolved list from `SignaturePriceCard.onSelectionChange`).
 
-**File edited:** `src/components/studio-v3/CheckoutSummary.tsx`
-- Drop imports no longer used: `Download`, `Loader2`, `CtaButton` (still used by sticky bar — keep), `BookingCtaSkeleton` (still used — keep), `resolveJourneyPricing`, `pdf`, `@react-pdf/renderer`, `signatureOnePagerPdf`, PDF state + handler.
-- Add prop `readonly composedStops?: ReadonlyArray<{ label: string }>` (optional; deep-link edge case falls back to `tour.stops`).
-- Resolve `stopsForSummary` using the same chain as FinalRevealStory.
+## Duplicate-source guard (dev-only warning)
 
-**File edited:** `src/components/studio-v3/StudioV3.tsx`
-- At the CheckoutSummary mount, pass `composedStops={resolvedStops}` — reusing the same value already computed for the refine/reveal surfaces (no duplication, single source of truth).
+Inside the hook, when `import.meta.env.DEV`:
+- If the caller passes a `state` where `state.guests` and `(adults + minorAges.length)` disagree by more than 0, `console.warn("[resolvedJourney] guest source mismatch", …)`.
+- If `resolveJourneyPricing` returns a total that would differ from the flat calc by more than `guests` €, `console.warn("[resolvedJourney] age-band ≠ flat", …)` — surfaces cases where a downstream might silently pick the wrong branch.
+
+These are dev-only, non-blocking, and satisfy the "log warning if multiple sources detected" rule without shipping console noise to production.
+
+## Wiring — StudioV3.tsx
+
+- Call `const resolved = useResolvedJourney(state, selectedAddOnItems, selectedAddOnsTotalEur, tourPriceTiers)` once, near the existing `selectedAddOnItems` state.
+- Replace the inline IIFEs at the `FinalRevealStory` mount (lines ~2495–2542) with `perPaxEur={resolved.perPaxEur}`, `totalEur={resolved.totalEur}`, `composedStops={resolved.stops}`.
+- Replace the inline IIFEs at the `CheckoutSummaryStep` mount (lines ~2610–2660) with `perPaxEur={resolved.perPaxEur}`, `totalEur={resolved.totalEur}`, `composedStops={resolved.stops}`, `adults={resolved.adults}`, `minorAges={resolved.minorAges}`.
+- Delete the imports of `resolvePerPaxEur` / `resolveJourneyPricing` from `StudioV3.tsx` after the mounts stop using them directly — they now live only in the hook.
+
+## Wiring — SignaturePriceCard.tsx
+
+The card still owns the preview picker (traveller taps to preview per-pax at 1..8 guests). Keep the picker as a *display-only preview* — it may not become the funnel truth.
+
+- Add optional prop `resolvedTotalEur?: number | null` and `resolvedPerPaxEur?: number | null`.
+- When these are provided AND the picker is inactive (`previewGuests === null`), render `resolvedTotalEur` / `resolvedPerPaxEur` verbatim. Do not recompute.
+- When the picker is active (`previewGuests !== null`), keep the existing local math — clearly labeled as "preview at N guests" (already the current UX). This is a hypothetical, not the funnel truth, so it does not violate the single-source rule.
+- Keep the existing dev-only invariant check (`perPerson × guests ≈ total`) — it now doubles as a guard that the resolved values passed in stay internally consistent.
+- Pass `resolvedTotalEur={resolved.totalEur}` / `resolvedPerPaxEur={resolved.perPaxEur}` from `StudioV3.tsx` at the card mount.
+
+## What does NOT change
+
+- `selectedAddOnsTotalEur` state and `SignaturePriceCard.onSelectionChange` — this stays the reactive source add-on toggles feed into. The hook consumes it, it isn't recomputed.
+- `handleStripeCheckout` in `StudioV3.tsx` (lines ~810–870) — the Stripe edge function payload has its own server-authoritative math that must match Stripe's line items. Refactoring that is out of scope; the hook is for *display* consistency across UI surfaces. A separate future step can rebase the checkout payload on `resolved` too.
+- Pricing data functions in `src/data/signatureTourPricing.ts` — untouched, still the primitive layer the hook composes.
+- No changes to `CheckoutSummary.tsx` or `FinalRevealStory.tsx` internals — they already accept `perPaxEur` / `totalEur` / `composedStops` as props.
+
+## Files touched
+
+- **New:** `src/components/studio-v3/useResolvedJourney.ts`
+- **Edit:** `src/components/studio-v3/StudioV3.tsx` (call hook once, feed both mounts and the price card from it, drop inline IIFEs and the now-unused pricing imports at that file)
+- **Edit:** `src/components/studio-v3/SignaturePriceCard.tsx` (accept + honor `resolvedTotalEur` / `resolvedPerPaxEur` when picker is inactive)
 
 ## Verification
 
-- Typecheck + build pass
-- Grep for `studio-v3-checkout-summary-travellers` and `studio-v3-checkout-summary-pdf` in `e2e/` and `src/` to confirm no test relies on them; if any do, patch those specs in the same turn.
-- Mobile 393×588 walkthrough: exactly five summary rows visible in the card (Date, Guests, Stops, Add-ons, Total) → Stripe below (or sticky Reserve CTA)
-- Toggle add-ons upstream → row list + total update via the same props the refine page uses (proves same source of truth)
-- Regression: existing Stripe embedded flow still mounts, still fires `onPaymentComplete`
+- `bunx tsgo` clean; `bunx vitest run src/data/__tests__/tier-pricing.test.ts src/data/__tests__/age-band-pricing.test.ts` still pass.
+- Manual walkthrough on 393×588: toggle an add-on on refine → price card, reveal, and checkout all show the same total in the same frame.
+- Family scenario (2 adults + 1 child aged 8): all three surfaces show the age-band total (child at 50%). Previously the reveal showed a higher flat number than checkout — this bug goes away.
+- Dev console shows no `[resolvedJourney] …` warnings on the happy path.
 
 ## Out of scope
 
-- No pricing/logic changes (`totalEur`, `perPaxEur`, add-on selection, session creation edge function)
-- No changes to Guest Details step, Reveal, Refine, or PriceCard
-- No copy changes to `INSTANT_CONFIRMATION`, `CHECKOUT_HEADER`, `CTA_RESERVE_AND_PAY`
-- No backend / Supabase / Stripe function changes
+- Server-side checkout payload rebase (separate follow-up)
+- Any UI/copy change
+- `useStudioState` / persistence layer changes
+- Multi-day / builder surfaces

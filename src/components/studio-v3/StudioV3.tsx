@@ -31,6 +31,7 @@ import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
 import { RunningInvestmentRibbon } from "./RunningInvestmentRibbon";
 import { CurtainRise } from "./CurtainRise";
 import { SignaturePriceCard, type SelectedAddOnSummary } from "./SignaturePriceCard";
+import { useResolvedJourney } from "./useResolvedJourney";
 // QualityScore removed from reveal — now surfaced only in debug overlay.
 import { StudioV3DebugOverlay } from "./StudioV3DebugOverlay";
 import { safeDateForReveal } from "./dateGuards";
@@ -754,6 +755,17 @@ export function StudioV3() {
     setSelectedAddOnItems([]);
     setSelectedAddOnsTotalEur(0);
   }, [state.tourId]);
+
+  // Single source of truth for adults/minorAges/stops/addOns/perPax/total.
+  // Every UI surface (price card, reveal, checkout) reads from this — never
+  // recompute pricing or stops downstream.
+  const resolvedJourney = useResolvedJourney(
+    state,
+    selectedAddOnItems,
+    selectedAddOnsTotalEur,
+    tourPriceTiers,
+  );
+
 
   // Guest Details snapshot — captured on Guest Details submit, then rendered
   // in CheckoutSummary before we open Stripe. Kept in local state (not the
@@ -2484,6 +2496,8 @@ export function StudioV3() {
               tourPriceTiers={tourPriceTiers}
               selectedAddOnIds={selectedAddOnIds}
               onAddOnsChange={handleAddOnsChange}
+              resolvedPerPaxEur={resolvedJourney.perPaxEur}
+              resolvedTotalEur={resolvedJourney.totalEur}
             />
 
           </PhaseShell>
@@ -2494,52 +2508,16 @@ export function StudioV3() {
         <PhaseShell accent="ivory" exiting={exiting}>
           <FinalRevealStory
             state={state}
-            selectedAddOns={selectedAddOnItems}
-            composedStops={(() => {
-              // The traveller's kept set fallback — matches the composer's
-              // resolved routePoints so the reveal never widens past what
-              // the Studio actually surfaced pre-refine.
-              const resolved = resolveStudioV3Route({
-                feeling: state.feeling,
-                companions: state.companions,
-                rhythm: state.rhythm,
-                interests: state.interests,
-                pickup: state.pickup,
-                occasion: state.occasion,
-                considerations: state.considerations,
-                investment: state.investment,
-                destinationIntent: state.destinationIntent,
-              });
-              return resolved.routePoints.map((p) => ({
-                label: p.label,
-                story: p.story,
-              }));
-            })()}
-            perPaxEur={(() => {
-              const tour = state.tourId ? findTour(state.tourId) : null;
-              if (!tour) return null;
-              const g = typeof state.guests === "number" ? state.guests : 2;
-              return (
-                resolvePerPaxEur(tour, g, tourPriceTiers)?.eurPerPax ??
-                tour.priceFrom ??
-                null
-              );
-            })()}
-            totalEur={(() => {
-              const tour = state.tourId ? findTour(state.tourId) : null;
-              if (!tour) return null;
-              const g = typeof state.guests === "number" && state.guests > 0 ? state.guests : 2;
-              const perPax =
-                resolvePerPaxEur(tour, g, tourPriceTiers)?.eurPerPax ??
-                tour.priceFrom ??
-                0;
-              return Math.round(perPax * g + selectedAddOnsTotalEur * g);
-            })()}
+            selectedAddOns={resolvedJourney.addOns}
+            composedStops={resolvedJourney.stops}
+            perPaxEur={resolvedJourney.perPaxEur}
+            totalEur={resolvedJourney.totalEur}
             saving={savingSignature}
             onContinue={() => advance("guestDetails")}
             onSaveSignature={handleSaveSignature}
             onBack={() => back("storyboard")}
           />
+
         </PhaseShell>
       ) : null}
 
@@ -2612,53 +2590,13 @@ export function StudioV3() {
           <CheckoutSummaryStep
             state={state}
             guestDetails={pendingGuestDetails}
-            selectedAddOns={selectedAddOnItems}
-            adults={state.adults ?? null}
-            minorAges={state.minorAges ?? []}
-            composedStops={(() => {
-              const resolved = resolveStudioV3Route({
-                feeling: state.feeling,
-                companions: state.companions,
-                rhythm: state.rhythm,
-                interests: state.interests,
-                pickup: state.pickup,
-                occasion: state.occasion,
-                considerations: state.considerations,
-                investment: state.investment,
-                destinationIntent: state.destinationIntent,
-              });
-              return resolved.routePoints.map((p) => ({ label: p.label }));
-            })()}
+            selectedAddOns={resolvedJourney.addOns}
+            adults={resolvedJourney.adults}
+            minorAges={resolvedJourney.minorAges}
+            composedStops={resolvedJourney.stops}
+            perPaxEur={resolvedJourney.perPaxEur}
+            totalEur={resolvedJourney.totalEur}
 
-            perPaxEur={(() => {
-              const tour = state.tourId ? findTour(state.tourId) : null;
-              if (!tour) return null;
-              return (
-                resolvePerPaxEur(tour, pendingGuestDetails.guests, tourPriceTiers)?.eurPerPax ??
-                tour.priceFrom ??
-                null
-              );
-            })()}
-            totalEur={(() => {
-              const tour = state.tourId ? findTour(state.tourId) : null;
-              if (!tour) return null;
-              const g = pendingGuestDetails.guests;
-              const minors = state.minorAges ?? [];
-              const adultsN = state.adults ?? null;
-              // When composition is supplied, honor age-band pricing so
-              // the summary total matches what Stripe will charge server-side.
-              if (typeof adultsN === "number" && adultsN >= 1 && minors.length > 0) {
-                const journey = resolveJourneyPricing(tour, adultsN, minors, tourPriceTiers);
-                if (journey) {
-                  return Math.round(journey.totalEur + selectedAddOnsTotalEur * g);
-                }
-              }
-              const perPax =
-                resolvePerPaxEur(tour, g, tourPriceTiers)?.eurPerPax ??
-                tour.priceFrom ??
-                0;
-              return Math.round(perPax * g + selectedAddOnsTotalEur * g);
-            })()}
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}
@@ -3012,6 +2950,8 @@ export function StoryboardHandoff({
   tourPriceTiers,
   selectedAddOnIds,
   onAddOnsChange,
+  resolvedPerPaxEur = null,
+  resolvedTotalEur = null,
 }: {
   state: StudioV3State;
   onStateChange: Dispatch<SetStateAction<StudioV3State>>;
@@ -3022,6 +2962,8 @@ export function StoryboardHandoff({
   tourPriceTiers?: import("@/hooks/use-tour-price-tiers").TourPriceTiersMap;
   selectedAddOnIds?: ReadonlyArray<string>;
   onAddOnsChange?: (summary: SelectedAddOnSummary) => void;
+  resolvedPerPaxEur?: number | null;
+  resolvedTotalEur?: number | null;
 }) {
 
   const pickupCity = pickupCityLabel(state.pickup);
@@ -3947,6 +3889,8 @@ export function StoryboardHandoff({
           showAddOns={true}
           selectedAddOnIds={selectedAddOnIds}
           onAddOnsChange={onAddOnsChange}
+          resolvedPerPaxEur={resolvedPerPaxEur}
+          resolvedTotalEur={resolvedTotalEur}
 
           remainingMinutes={
             revealLegsLoading
