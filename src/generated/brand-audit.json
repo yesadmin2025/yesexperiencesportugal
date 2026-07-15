@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-14T23:58:40.527Z",
-  "filesScanned": 616,
+  "generatedAt": "2026-07-15T00:20:20.158Z",
+  "filesScanned": 626,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 369,
+    "total": 371,
     "approved": 90,
     "allowlisted": 64,
-    "mismatch": 215
+    "mismatch": 217
   },
   "findings": [
     {
@@ -2869,6 +2869,15 @@
       "status": "approved"
     },
     {
+      "file": "src/routes/[.]lovable.oauth.consent.tsx",
+      "line": 157,
+      "col": 30,
+      "raw": "#B4341E",
+      "normalized": "#b4341e",
+      "snippet": "style={{ color: \"#B4341E\" }}",
+      "status": "mismatch"
+    },
+    {
       "file": "src/routes/auth.tsx",
       "line": 173,
       "col": 56,
@@ -3065,6 +3074,15 @@
       "normalized": "#ffffff",
       "snippet": "html, body { background: #fff !important; }",
       "status": "allowlisted"
+    },
+    {
+      "file": "src/routes/mcp-signin.tsx",
+      "line": 179,
+      "col": 72,
+      "raw": "#B4341E",
+      "normalized": "#b4341e",
+      "snippet": "<p role=\"alert\" className=\"text-[13px]\" style={{ color: \"#B4341E\" }}>",
+      "status": "mismatch"
     },
     {
       "file": "src/styles.css",
