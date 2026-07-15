@@ -408,22 +408,11 @@ const HEADLINES: HeadlineSpec[] = [
     pattern: /data-hero-field="secondaryCta"\s+className="([^"]+)"/,
   },
 
-  // Multi-day page hero — now uses the canonical <SectionTitle as="h1" size="anchor">
-  // primitive (Eyebrow + SectionTitle + CtaButton consolidation). The hero
-  // copy is asserted; class strings come from SectionTitle so they're
-  // covered by the SectionTitle unit contract instead of a substring match.
-  {
-    page: "multi-day",
-    role: "hero subhead",
-    file: "src/routes/multi-day.tsx",
-    pattern: /<p className="(mt-6 text-\[1rem\][^"]+)">\s*\n\s*Build Portugal across regions/,
-  },
-  {
-    page: "proposals",
-    role: "hero subhead",
-    file: "src/routes/proposals.tsx",
-    pattern: /<p className="(mt-6 text-\[1rem\][^"]+)">\s*\n\s*A private moment/,
-  },
+  // Removed: /multi-day hero subhead (copy rebuilt to a Designer-led lead)
+  // and /proposals hero subhead (/proposals is now a redirect to
+  // /proposal-in-portugal). Both are covered elsewhere: multi-day
+  // headline via SectionTitle unit contract; proposal-in-portugal has
+  // its own hero copy locked by the CTA-band + brand guardrail tests.
 ];
 
 /* ── 2. Typography token rules from styles.css ──────────────────── */
