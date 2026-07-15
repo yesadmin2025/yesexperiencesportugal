@@ -6,7 +6,7 @@
  * blocks any future entry from shipping a lock without justification.
  */
 import { describe, expect, it } from "vitest";
-import { getAllTailorBlueprints, type StopLockReasonCode } from "@/data/tailorBlueprints";
+import { TAILOR_BLUEPRINTS, type StopLockReasonCode } from "@/data/tailorBlueprints";
 
 const VALID_CODES: StopLockReasonCode[] = [
   "product_defining",
@@ -18,7 +18,7 @@ const VALID_CODES: StopLockReasonCode[] = [
 ];
 
 describe("Tailor blueprints — locked stops", () => {
-  const blueprints = getAllTailorBlueprints();
+  const blueprints = Object.values(TAILOR_BLUEPRINTS);
 
   it("every blueprint exposes at least one removable/tailorable element", () => {
     for (const bp of blueprints) {
