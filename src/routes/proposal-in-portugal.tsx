@@ -108,17 +108,9 @@ function ProposalInPortugalPage() {
             A private moment, shaped end to end by a local team — with the setting, timing and
             surprise handled quietly on your behalf.
           </p>
-          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="mt-8 flex justify-center">
             <CtaButton to="/contact" variant="primary">
               Plan a Proposal
-            </CtaButton>
-            <CtaButton
-              to="/contact"
-              variant="ghost"
-              icon={null}
-              iconLeading={<MessageCircle size={14} aria-hidden="true" />}
-            >
-              Talk to a Local
             </CtaButton>
           </div>
         </div>
