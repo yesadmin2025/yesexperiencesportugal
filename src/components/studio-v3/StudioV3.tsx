@@ -756,6 +756,17 @@ export function StudioV3() {
     setSelectedAddOnsTotalEur(0);
   }, [state.tourId]);
 
+  // Single source of truth for adults/minorAges/stops/addOns/perPax/total.
+  // Every UI surface (price card, reveal, checkout) reads from this — never
+  // recompute pricing or stops downstream.
+  const resolvedJourney = useResolvedJourney(
+    state,
+    selectedAddOnItems,
+    selectedAddOnsTotalEur,
+    tourPriceTiers,
+  );
+
+
   // Guest Details snapshot — captured on Guest Details submit, then rendered
   // in CheckoutSummary before we open Stripe. Kept in local state (not the
   // persisted signature) since it holds personal info.
