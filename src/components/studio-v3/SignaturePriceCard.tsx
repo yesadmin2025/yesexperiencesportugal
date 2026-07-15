@@ -145,6 +145,8 @@ export function SignaturePriceCard({
   onRefine,
   journeyTitle,
   guests,
+  adults = null,
+  minorAges = null,
   included,
   showAddOns = true,
   selectedAddOnIds: controlledAddOnIds,
