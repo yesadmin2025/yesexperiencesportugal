@@ -95,15 +95,14 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   {
     order: 2,
     name: "Trust strip — reviews + private guide line",
-    ariaLabelledBy: "trust-bar-title",
+    marker: "TRUST STRIP",
     requiredSpacing: { kind: "py", minScale: 12 },
   },
   {
     order: 3,
     name: "Three paths — Day / Bespoke / Occasions",
-    componentTag: "ThreePathsSection",
+    componentTag: "FourWaysIn",
     inComponent: true,
-    ariaLabelledBy: "three-paths-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
