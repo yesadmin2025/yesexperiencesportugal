@@ -1588,6 +1588,51 @@ export type Database = {
         }
         Relationships: []
       }
+      mcp_owner_allowlist: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mcp_owner_audit_log: {
+        Row: {
+          created_at: string
+          id: number
+          outcome: string
+          tool_name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          outcome: string
+          tool_name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          outcome?: string
+          tool_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       review_submission_tokens: {
         Row: {
           booking_id: string | null
