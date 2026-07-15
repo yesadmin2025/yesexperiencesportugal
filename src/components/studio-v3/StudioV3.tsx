@@ -3565,76 +3565,22 @@ export function StoryboardHandoff({
 
       <BackLink onClick={onBack} />
 
-      {/* ---------- 1. Hero — Your Signature ---------- */}
+      {/* ---------- 1. Header — clear decision-page title ---------- */}
       <header
         className="text-center pt-10"
         style={{ animation: "studioV3RiseIn 720ms ease-out both" }}
       >
-        <p
-          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-        >
-          <span style={{ color: "var(--gold)" }}>—</span> Your Signature
-        </p>
         <h2
-          className="mt-4 text-[26px] sm:text-[32px] leading-[1.1] tracking-[-0.012em] font-bold text-balance"
-          style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+          className="text-[26px] sm:text-[32px] leading-[1.15] tracking-[-0.012em] font-medium text-balance"
+          style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
           data-testid="studio-v3-signature-hero"
         >
-          {heroLead}
+          Your day is ready.
+          <br />
+          <span className="italic" style={{ color: "var(--teal)" }}>
+            Now you can refine it.
+          </span>
         </h2>
-        <p
-          className="mt-4 text-[15.5px] sm:text-[18px] leading-[1.5] italic text-balance [text-wrap:pretty] [hyphens:auto] max-w-[360px] sm:max-w-[460px] mx-auto"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
-          }}
-        >
-          {heroSub}
-        </p>
-        <p
-          className="hidden sm:block mt-4 text-[12.5px] leading-[1.55] [text-wrap:pretty] [hyphens:auto] max-w-[340px] sm:max-w-[420px] mx-auto"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-        >
-          {heroOrigin}
-        </p>
-
-        {/* Quiet price eyebrow — real per-pax when tier data exists,
-            otherwise the "from" anchor. Guests fall back to 2 for the
-            indicative line, never invented. */}
-        {(() => {
-          const px = resolvePerPaxEur(skeletonTour, state.guests ?? 2, tourPriceTiers);
-          if (!px) return null;
-          const guestsForLine =
-            typeof state.guests === "number" && state.guests > 0 ? state.guests : 2;
-          return (
-            <p
-              data-testid="studio-v3-hero-price"
-              className="mt-5 text-[10.5px] uppercase tracking-[0.26em] font-semibold"
-              style={{ color: "var(--gold)" }}
-            >
-              <span style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
-                {px.real ? "" : "From "}
-              </span>
-              €{px.eurPerPax} per person
-              <span style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}>
-                {" · "}
-                {guestsForLine} guest{guestsForLine === 1 ? "" : "s"}
-              </span>
-            </p>
-          );
-        })()}
-
-        <span
-          aria-hidden
-          className="mt-6 inline-block h-px w-10"
-          style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
-        />
-        {/* Plan §H approval state machine — never renders "YES Approved"
-            unless validateItinerary() returns "approved". */}
-        <div className="mt-5">
-          <ApprovalBadge state={approvalStatus} />
-        </div>
       </header>
 
       {/* ---------- Unified "Your Signature" card (map · story · edit · DNA · price · add-ons) ---------- */}
@@ -3702,86 +3648,23 @@ export function StoryboardHandoff({
           </div>
         ) : null}
 
-        {/* ---------- 2b. Daypart timeline ---------- */}
-        {dayparts.length > 0 ? (
-          <section
-            data-testid="studio-v3-daypart-timeline"
-            className="mt-8 max-w-[440px] mx-auto px-2"
-            aria-label="How the day unfolds across the day"
-          >
-            <div className="relative">
-              <span
-                aria-hidden
-                className="absolute left-2 right-2 top-[3px] h-px"
-                style={{ background: "color-mix(in oklab, var(--gold) 35%, transparent)" }}
-              />
-              <ol className="relative flex items-start justify-between gap-2">
-                {dayparts.map((label) => (
-                  <li key={label} className="flex flex-col items-center text-center">
-                    <span
-                      aria-hidden
-                      className="block h-[7px] w-[7px] rounded-full"
-                      style={{ background: "var(--gold)" }}
-                    />
-                    <span
-                      className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
-                      style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
-                    >
-                      {label}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </section>
-        ) : null}
+        {/* Daypart timeline, story-of-day intentionally removed on Refine —
+            this is a decision page, not the cinematic reveal. */}
 
-        {/* ---------- 3. Story of the day ---------- */}
-
-        <section className="mt-10 max-w-[520px] mx-auto" data-testid="studio-v3-story-of-day">
-          <p
-            className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-          >
-            <span style={{ color: "var(--gold)" }}>—</span> How the day unfolds
-          </p>
-          <div className="mt-5 space-y-5">
-            {storyChapters.map((c) => (
-              <div key={c.eyebrow}>
-                <p
-                  className="text-[10.5px] uppercase tracking-[0.24em] font-semibold"
-                  style={{ color: "var(--gold)" }}
-                >
-                  {c.eyebrow}
-                </p>
-                <p
-                  className="mt-1.5 text-[14px] leading-[1.6] [text-wrap:pretty] [hyphens:auto]"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
-                >
-                  {c.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ---------- 4. Fine-tune your Signature (editable stops) ---------- */}
+        {/* ---------- Stops list (editable) ---------- */}
         {editedStops.length > 0 ? (
           <div
             data-testid="studio-v3-stops-editor"
-            className="mt-10 sm:mt-12 max-w-[520px] mx-auto px-3 sm:px-1"
+            className="mt-8 sm:mt-10 max-w-[520px] mx-auto px-3 sm:px-1"
           >
             <p
-              className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+              className="text-center text-[13px] font-medium mb-4 sm:mb-5"
+              style={{
+                fontFamily: "var(--font-editorial)",
+                color: "var(--charcoal)",
+              }}
             >
-              <span style={{ color: "var(--gold)" }}>—</span> Refine the moments
-            </p>
-            <p
-              className="mt-2 mb-6 sm:mb-5 text-center text-[12px] leading-[1.55] max-w-[300px] sm:max-w-[320px] mx-auto"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-            >
-              Reorder, swap or remove a moment. The route stays inside the same region.
+              Your stops
             </p>
             <ol className="space-y-3 sm:space-y-3">
               {editedStops.map((s, i) => {
@@ -4030,76 +3913,12 @@ export function StoryboardHandoff({
           </div>
         ) : null}
 
-        {/* ---------- 5. Signature DNA ---------- */}
-        {dnaChips.length > 0 ? (
-          <section
-            data-testid="studio-v3-signature-dna"
-            className="mt-10 max-w-[520px] mx-auto text-center"
-          >
-            <p
-              className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-            >
-              <span style={{ color: "var(--gold)" }}>—</span> Your Signature DNA
-            </p>
-            <ul className="mt-4 flex flex-wrap justify-center gap-1.5">
-              {dnaChips.map((chip) => (
-                <li
-                  key={chip}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 text-[11.5px] leading-[1.3] rounded-full font-semibold"
-                  style={{
-                    background: "transparent",
-                    border: "1px solid color-mix(in oklab, var(--teal) 40%, transparent)",
-                    color: "color-mix(in oklab, var(--charcoal) 88%, transparent)",
-                  }}
-                >
-                  <span
-                    aria-hidden
-                    className="block h-1 w-1 rounded-full"
-                    style={{ background: "var(--gold)" }}
-                  />
-                  {chip}
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
+        {/* Signature DNA + Shaping direction removed on Refine — decorative
+            content belongs to the final reveal, not the decision page. */}
 
-        {/* ---------- 6. Shaping direction (investment) ---------- */}
-        {shapingLine ? (
-          <div
-            data-testid="studio-v3-shaping-direction"
-            className="mt-10 text-center motion-safe:[animation:studioV3RiseIn_720ms_ease-out_220ms_both] motion-reduce:opacity-100"
-          >
-            <span
-              aria-hidden
-              className="mx-auto mb-5 block h-px w-10"
-              style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
-            />
-            <p
-              className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-            >
-              <span style={{ color: "var(--gold)" }}>—</span> Shaping direction
-            </p>
-            <p
-              className="mt-3 text-[15px] sm:text-[16px] leading-[1.55] italic text-balance max-w-[440px] mx-auto"
-              style={{
-                fontFamily: "var(--font-serif)",
-                color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
-              }}
-            >
-              {shapingLine}
-            </p>
-          </div>
-        ) : null}
-
-        {/* Quality Score intentionally omitted from the reveal (kept for debug overlay only) */}
-
-        {/* ---------- 7b. Premium price card ---------- */}
-
-        {/* ---------- 7b. Premium price card ---------- */}
+        {/* ---------- Add-ons + Total (SignaturePriceCard refine variant) ---------- */}
         <SignaturePriceCard
+          variant="refine"
           tour={skeletonTour ?? null}
           stopCount={editedStops.length}
           dateExact={safeDate.dateExact}
@@ -4171,46 +3990,8 @@ export function StoryboardHandoff({
       </section>
       {/* ---------- /Unified "Your Signature" card ---------- */}
 
-      {/* ---------- 7b. Before you secure it ---------- */}
-      <div className="mt-8 text-center">
-        <p
-          className="text-[11.5px] leading-[1.6] italic"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-          }}
-        >
-          Availability and final details are confirmed before your experience.
-        </p>
-        {safeDate.demoted ? (
-          <p
-            data-testid="studio-v3-date-demoted"
-            className="mt-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
-            style={{ color: "var(--gold)" }}
-          >
-            — Your saved date has passed. Pick a new one when you're ready.
-          </p>
-        ) : null}
-        {inferredGuestsNote(state) ? (
-          <p
-            className="mt-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 48%, transparent)" }}
-          >
-            <span style={{ color: "var(--gold)" }}>—</span> {inferredGuestsNote(state)}
-          </p>
-        ) : null}
-      </div>
-
-      {/* ---------- 8. CTA stack ---------- */}
+      {/* ---------- CTA stack — Continue + Save my signature ---------- */}
       <div className="mt-10 sm:mt-12 flex flex-col items-center gap-4">
-        <p
-          data-testid="studio-v3-cta-bridge"
-          className="text-[12.5px] leading-[1.55] text-center [text-wrap:pretty] [hyphens:auto] max-w-[320px] sm:max-w-[420px]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
-        >
-          When you're ready — read your day as a story, then reserve on the next step.
-        </p>
-
         {pending ? (
           <BookingCtaSkeleton className="w-full max-w-[380px]" />
         ) : (
@@ -4220,15 +4001,16 @@ export function StoryboardHandoff({
             variant="primary"
             size="md"
             className="w-full max-w-[380px]"
-            aria-label="See my signature story"
+            aria-label="Continue"
             data-testid="studio-v3-handoff-primary"
           >
-            See my signature story
+            Continue
           </CtaButton>
         )}
 
         <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
       </div>
+
 
     </div>
   );

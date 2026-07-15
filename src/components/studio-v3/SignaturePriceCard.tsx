@@ -135,6 +135,14 @@ export interface SignaturePriceCardProps {
   itineraryStops?: ReadonlyArray<string>;
   /** Approximate total day length in hours (drive + dwell), used in the spine summary. */
   dwellHours?: number | null;
+  /**
+   * Visual variant. `"full"` (default) is the full editorial reveal card.
+   * `"refine"` is the stripped decision-page rendering: no editorial header,
+   * no journey title, no inclusions footer, no day-rhythm bar — just
+   * "Enhance your experience" (add-ons) + Total + Continue. Pricing math
+   * is identical; only the rendered surface changes.
+   */
+  variant?: "full" | "refine";
 }
 
 
@@ -157,7 +165,9 @@ export function SignaturePriceCard({
   remainingMinutes = null,
   itineraryStops = [],
   dwellHours = null,
+  variant = "full",
 }: SignaturePriceCardProps) {
+  const isRefine = variant === "refine";
 
   const meta = tour ? VIATOR_META[tour.id] : null;
   const priceEur = useMemo(() => {
@@ -579,26 +589,30 @@ export function SignaturePriceCard({
           className="absolute left-1/2 top-0 h-[2px] w-12 -translate-x-1/2 rounded-b-full"
           style={{ background: "var(--gold)" }}
         />
-        <p
-          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-        >
-          <span style={{ color: "var(--gold)" }}>—</span>{" "}
-          {journeyTitle ? "Your Signature" : "The journey you composed"}
-        </p>
-        {journeyTitle ? (
-          <p
-            className="mt-2 text-[19px] sm:text-[21px] leading-[1.2] italic text-balance"
-            style={{
-              fontFamily: "var(--font-serif)",
-              color: "var(--charcoal)",
-            }}
-          >
-            “{journeyTitle}”
-          </p>
-        ) : null}
+        {isRefine ? null : (
+          <>
+            <p
+              className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span>{" "}
+              {journeyTitle ? "Your Signature" : "The journey you composed"}
+            </p>
+            {journeyTitle ? (
+              <p
+                className="mt-2 text-[19px] sm:text-[21px] leading-[1.2] italic text-balance"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  color: "var(--charcoal)",
+                }}
+              >
+                “{journeyTitle}”
+              </p>
+            ) : null}
+          </>
+        )}
 
-        {hasPrice ? (
+        {isRefine ? null : hasPrice ? (
           <>
             <p
               className="mt-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
@@ -686,9 +700,15 @@ export function SignaturePriceCard({
               className="mb-2 w-full text-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
             >
-              <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
+              {isRefine ? (
+                "Enhance your experience"
+              ) : (
+                <>
+                  <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
+                </>
+              )}
             </legend>
-            {remainingMinutes != null && remainingMinutes > 0
+            {!isRefine && remainingMinutes != null && remainingMinutes > 0
               ? (() => {
                   const totalBudget = remainingMinutes; // free minutes on the base day
                   const usedPct = Math.min(100, Math.round((addOnsMinutes / totalBudget) * 100));
@@ -861,64 +881,78 @@ export function SignaturePriceCard({
                 );
               })}
             </ul>
-            <p
-              className="mt-2 text-center text-[10.5px] uppercase tracking-[0.22em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
-            >
-              Up to {MAX_ADDONS} add-ons
-            </p>
-            <output
-              data-testid="studio-v3-add-ons-total"
-              aria-live="polite"
-              className="mt-3 block text-center text-[11px] uppercase tracking-[0.22em] font-semibold tabular-nums"
-              style={{ color: "var(--charcoal)" }}
-            >
-              {selectedAddOnIds.length > 0 && totalEur != null ? (
-                <>
-                  Additions <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
-                  <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">/ pp</span>
-                </>
-              ) : (
-                <span className="sr-only">No add-ons selected</span>
-              )}
-            </output>
+            {isRefine ? null : (
+              <p
+                className="mt-2 text-center text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+              >
+                Up to {MAX_ADDONS} add-ons
+              </p>
+            )}
+            {isRefine ? null : (
+              <output
+                data-testid="studio-v3-add-ons-total"
+                aria-live="polite"
+                className="mt-3 block text-center text-[11px] uppercase tracking-[0.22em] font-semibold tabular-nums"
+                style={{ color: "var(--charcoal)" }}
+              >
+                {selectedAddOnIds.length > 0 && totalEur != null ? (
+                  <>
+                    Additions <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
+                    <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">/ pp</span>
+                  </>
+                ) : (
+                  <span className="sr-only">No add-ons selected</span>
+                )}
+              </output>
+            )}
             {/* Final estimated total — the single figure that matches the
                 Reserve CTA and, on booking, the checkout payload. Unit-aware:
-                base × guests + Σ(add-on line totals). */}
-            {selectedAddOnIds.length > 0 &&
-            partyTotalEur != null &&
-            partyCount != null ? (
-              <div
-                data-testid="studio-v3-final-total"
-                data-final-eur={partyTotalEur}
-                className="mt-3 rounded-[4px] px-3 py-2.5 text-center"
-                style={{
-                  background: "color-mix(in oklab, var(--gold) 10%, var(--ivory))",
-                  border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
-                }}
-              >
-                <p
-                  className="text-[10px] uppercase tracking-[0.24em] font-bold"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
-                >
-                  Final estimated total
-                </p>
-                <p
-                  className="mt-1 text-[22px] font-bold tabular-nums leading-none"
-                  style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
-                >
-                  €{partyTotalEur}
-                </p>
-                <p
-                  className="mt-1 text-[10.5px]"
+                base × guests + Σ(add-on line totals). On the Refine variant
+                the block ALWAYS renders (even with zero add-ons) so travellers
+                see the same Total + per-person the CTA carries. */}
+            {(() => {
+              const totalForDisplay = partyTotalEur ?? totalEur ?? null;
+              if (totalForDisplay == null) return null;
+              const showAlways = isRefine;
+              const showConditional =
+                selectedAddOnIds.length > 0 && partyTotalEur != null && partyCount != null;
+              if (!showAlways && !showConditional) return null;
+              return (
+                <div
+                  data-testid="studio-v3-final-total"
+                  data-final-eur={totalForDisplay}
+                  className="mt-3 rounded-[4px] px-3 py-2.5 text-center"
                   style={{
-                    color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+                    background: "color-mix(in oklab, var(--gold) 10%, var(--ivory))",
+                    border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
                   }}
                 >
-                  {partyCount} guests · additions priced by their own unit
-                </p>
-              </div>
-            ) : null}
+                  <p
+                    className="text-[10px] uppercase tracking-[0.24em] font-bold"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+                  >
+                    Total
+                  </p>
+                  <p
+                    className="mt-1 text-[22px] font-bold tabular-nums leading-none"
+                    style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+                  >
+                    €{totalForDisplay}
+                  </p>
+                  {perPersonDerived != null ? (
+                    <p
+                      className="mt-1 text-[10.5px] tabular-nums"
+                      style={{
+                        color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+                      }}
+                    >
+                      €{perPersonDerived} per person
+                    </p>
+                  ) : null}
+                </div>
+              );
+            })()}
           </fieldset>
         ) : null}
 
@@ -931,7 +965,7 @@ export function SignaturePriceCard({
         {/* Included in your day — the single, tight list. Real included[]
             from the resolved Signature (capped) + any add-ons the traveller
             just toggled on, so the block moves with the price above. */}
-        {hasPrice && (inclusionFootnote.length > 0 || selectedAddOns.length > 0) ? (
+        {!isRefine && hasPrice && (inclusionFootnote.length > 0 || selectedAddOns.length > 0) ? (
           <footer
             data-testid="studio-v3-inclusions-footnote"
             className="mt-5 mx-auto max-w-[380px] rounded-[4px] px-3 py-2.5 text-left"
@@ -1012,7 +1046,7 @@ export function SignaturePriceCard({
         {/* Trust strip removed — the reassurance above the CTA + the final
             reveal's own trust cues cover this without duplication. */}
 
-        <div ref={ctaRef} className="mt-6 flex flex-col items-center gap-3">
+        <div ref={ctaRef} className={`${isRefine ? "hidden" : "mt-6 flex flex-col items-center gap-3"}`}>
           {hasPrice ? (
             <>
               <button
@@ -1021,7 +1055,7 @@ export function SignaturePriceCard({
                 data-testid="studio-v3-cta-primary"
                 data-total-eur={partyTotalEur ?? totalEur ?? ""}
                 data-party-total-eur={partyTotalEur ?? ""}
-                className="group hidden md:inline-flex items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                className={`group ${isRefine ? "inline-flex" : "hidden md:inline-flex"} items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]`}
                 style={{
                   background: "var(--charcoal)",
                   color: "var(--ivory)",
@@ -1029,7 +1063,7 @@ export function SignaturePriceCard({
                     "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 }}
               >
-                See my signature story
+                {isRefine ? "Continue" : "See my signature story"}
                 <ArrowRight
                   size={14}
                   aria-hidden
@@ -1088,7 +1122,7 @@ export function SignaturePriceCard({
 
 
       {/* Mobile sticky CTA — appears only after the inline CTA scrolls out of view. */}
-      {hasPrice && stickyVisible ? (
+      {!isRefine && hasPrice && stickyVisible ? (
         <div
           data-testid="studio-v3-cta-sticky"
           className="md:hidden fixed inset-x-0 bottom-0 z-40 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] animate-fade-in"
@@ -1121,7 +1155,7 @@ export function SignaturePriceCard({
           WhatsApp when the traveller is about to leave the reveal. Real save:
           the composed journey title goes into the message body, the YES team
           replies with the confirmed investment. No fabricated urgency. */}
-      {hasPrice ? <ExitIntentSave journeyTitle={journeyTitle ?? null} /> : null}
+      {!isRefine && hasPrice ? <ExitIntentSave journeyTitle={journeyTitle ?? null} /> : null}
     </section>
   );
 }
