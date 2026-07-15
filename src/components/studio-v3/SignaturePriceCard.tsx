@@ -135,6 +135,14 @@ export interface SignaturePriceCardProps {
   itineraryStops?: ReadonlyArray<string>;
   /** Approximate total day length in hours (drive + dwell), used in the spine summary. */
   dwellHours?: number | null;
+  /**
+   * Visual variant. `"full"` (default) is the full editorial reveal card.
+   * `"refine"` is the stripped decision-page rendering: no editorial header,
+   * no journey title, no inclusions footer, no day-rhythm bar — just
+   * "Enhance your experience" (add-ons) + Total + Continue. Pricing math
+   * is identical; only the rendered surface changes.
+   */
+  variant?: "full" | "refine";
 }
 
 
