@@ -37,12 +37,38 @@ export interface BlueprintStop {
    *  anchor price (Core + Choice). Optional stops may carry a real
    *  upcharge from the Bókun product. */
   upchargePerPaxEUR?: number;
-  /** For Core stops: can the guest ask to skip this one? Defaults to
-   *  `true`. Set to `false` only for true operator-locked anchors that
-   *  define the product (a wine tour's winery block, a tile tour's
-   *  workshop, hotel pickup, the boat itself). Markets, viewpoints and
-   *  generic lunches SHOULD be skippable — the guide adjusts the day. */
-  skippable?: boolean;
+  /**
+   *  Structured operational lock. A stop with no `lock` is removable.
+   *  There is NO generic boolean "locked" flag — every lock must carry
+   *  a machine-readable reason code, a customer-facing sentence, and
+   *  the source of truth that justifies it. Markets, viewpoints and
+   *  generic lunches must remain unlocked so the guide can re-shape
+   *  the day.
+   */
+  lock?: StopLock;
+}
+
+/** Why a stop can't be removed from a Tailor journey. */
+export type StopLockReasonCode =
+  /** This stop IS the product purchased (e.g. the tile workshop on the tile tour). */
+  | "product_defining"
+  /** Included in a fixed supplier package that can't be unbundled. */
+  | "supplier_fixed_package"
+  /** A selected add-on depends on this stop; remove the add-on to remove the stop. */
+  | "addon_anchor"
+  /** A confirmed supplier reservation is attached to this slot. */
+  | "confirmed_reservation"
+  /** Mandatory pickup, ferry or transfer node. */
+  | "mandatory_transfer"
+  /** Removing the stop would create an invalid or unsafe route. */
+  | "route_integrity";
+
+export interface StopLock {
+  reasonCode: StopLockReasonCode;
+  /** Shown verbatim to the traveller. Keep ≤120 chars, plain language. */
+  customerFacingReason: string;
+  /** Truth source, e.g. "Viator PDP · signature inclusion" or "Bókun product 12345". */
+  source: string;
 }
 
 export interface TailorBlueprint {
@@ -313,7 +339,12 @@ const tilesWorkshop: TailorBlueprint = {
       blurb: "Hands-on azulejo class at a 19th-century tile factory — take your tile home.",
       category: "workshop",
       dwellMinutesOverride: 90,
-      skippable: false,
+      lock: {
+        reasonCode: "product_defining",
+        customerFacingReason:
+          "The tile-painting workshop is the heart of this tour — removing it would leave nothing to tailor.",
+        source: "Viator PDP · signature inclusion",
+      },
     },
     {
       id: "lunch-azeitao",
@@ -398,7 +429,12 @@ const azeitaoCheese: TailorBlueprint = {
       blurb: "Private workshop at a small family producer — see the Azeitão DOP cheese being made.",
       category: "workshop",
       dwellMinutesOverride: 75,
-      skippable: false,
+      lock: {
+        reasonCode: "product_defining",
+        customerFacingReason:
+          "The cheese-making workshop is the heart of this tour — removing it would leave nothing to tailor.",
+        source: "Viator PDP · signature inclusion",
+      },
     },
     {
       id: "lunch-azeitao",
@@ -411,7 +447,12 @@ const azeitaoCheese: TailorBlueprint = {
       label: "Quinta de Catralvos winery",
       blurb: "Five-wine tasting at the family cellar door.",
       category: "winery",
-      skippable: false,
+      lock: {
+        reasonCode: "product_defining",
+        customerFacingReason:
+          "This is the tour's only winery — removing it drops the 'wine' half of Cheese & Wine.",
+        source: "Viator PDP · signature inclusion",
+      },
     },
   ],
   optional: [

@@ -1,101 +1,83 @@
-# Signature booking — adults + minor ages across the full flow
+## Audit result — Tailor locked stops
 
-## Current state (audit)
+The Tailor flow already treats most Signature stops as freely removable. Locks live in exactly one place: `skippable: false` on a `BlueprintStop` in `src/data/tailorBlueprints.ts`. Every other stop is either a Core item the traveller can skip, a Choice pool (pick-N, swappable), or an Optional add-on.
 
-Already correct:
+Full inventory of currently locked stops (3 total, across 12 blueprints):
 
-- `Composition.tsx` — collects `adults` + per-child ages (Studio V3).
-- `signatureTourPricing.ts` — owner-approved bands (adult 100% / youth 11–17 75% / child 3–10 50% / infant 0–2 free); `ageBand()`; `resolvePerPaxEur()` per real Viator tier via `tour_price_tiers`.
-- `useResolvedJourney` — single source of truth for Studio V3.
-- Edge function `create-signature-checkout` — already accepts `adults` + `minorAges[]`, rejects out-of-band ages, prices from `tour_price_tiers` server-side.
+| Tour | Stop | Reason in code | Operationally justified? |
+|---|---|---|---|
+| `tiles-workshop` | `azulejos-workshop` — Private tile-painting workshop | Defines the product (this IS the tile tour); supplier reservation | ✅ Yes — product-defining, fixed supplier booking |
+| `azeitao-cheese` | `quinta-velha` — Cheese-making workshop at Quinta Velha | Defines the product (this IS the cheese tour); supplier reservation | ✅ Yes — product-defining, fixed supplier booking |
+| `azeitao-cheese` | `catralvos` — Quinta de Catralvos winery | Sole winery on the tour; removing it turns "cheese & wine" into "cheese only" | ⚠️ Partially — product-defining because it's the ONLY winery, but the lock reason is not surfaced to the customer |
 
-Gaps (what this fix closes):
+No other blueprint locks any stop. Markets, viewpoints, lunches, all wineries in multi-winery tours, and every optional are already skippable/removable/swappable. So the "arbitrary locked stops" the user is worried about are limited to those three, and two of them are unambiguously justified.
 
-1. **SimpleBookingForm** (Signature listing + `/tours/$tourId` "reserve as-is") — `guests` stepper only, no minors, sends only `guests` to the edge fn → minors silently billed as adults.
-2. `**/tours/$tourId/tailor**` — `guests` stepper only; same problem.
-3. **FinalDetailsDialog** (used by both flows above) — `guests` field only.
-4. **GuestDetailsStep** (Studio V3 recap) — `guests` re-entry despite upstream Composition already having the truth.
-5. **BrandedCheckoutDrawer** — summary shows `X guest(s)`, no adults/minors breakdown.
-6. `**/checkout/$token**` — legacy resume form still uses `guests` only.
-7. `**booking-confirmed**` — displays `guests` only.
-8. **Edge fn legacy fallback** — when `adults`/`minorAges` absent, treats every seat as adult. Once all clients send composition, tighten to reject requests without it (with a short compat window keyed by a flag from callers).
+## What changes
 
-## Changes
+Small, targeted correction — no removal of justified locks, but every lock becomes self-explaining and the codebase enforces the "reason required" rule.
 
-### Shared traveller-composition primitive
+### 1. `src/data/tailorBlueprints.ts` — replace `skippable: boolean` with a structured lock
 
-New `src/components/booking/CompositionField.tsx` — extract the adults + minor-age UI from `studio-v3/Composition.tsx` into a reusable field:
+Change the `BlueprintStop.skippable?: boolean` field to:
 
-- Adults stepper (min 1, max 12).
-- "Travelling with children?" toggle; per-minor age input (0–17 integer).
-- Emits `{ adults: number; minorAges: number[] }`; `isComplete` false while any minor age is empty.
-- Same brand tokens, 44×44 tap targets, visible focus.
-- `Composition.tsx` re-exports for backwards compatibility.
+```ts
+lock?: {
+  reasonCode:
+    | "product_defining"        // this stop IS the tour
+    | "supplier_fixed_package"  // included in a fixed Bókun/Viator package
+    | "addon_anchor"            // removing breaks a selected add-on
+    | "confirmed_reservation"   // slot already booked with supplier
+    | "mandatory_transfer"      // pickup / ferry / transfer node
+    | "route_integrity";        // removing creates an invalid/unsafe route
+  customerFacingReason: string; // shown verbatim in the UI, ≤120 chars
+  source: string;               // e.g. "Viator PDP §Inclusions", "Bókun product 12345"
+};
+```
 
-### Shared client helper
+A stop with no `lock` is removable. There is no generic `locked: true` flag.
 
-New `src/lib/checkout/composition.ts`:
+Populate for the three existing locks:
 
-- `type TravellerComposition = { adults: number; minorAges: number[] }`
-- `totalGuests(c)` → `adults + minorAges.length`
-- `formatCompositionSummary(c)` → e.g. `"4 guests · 2 adults · children aged 8 and 13"`
-- `hydrateLegacyComposition(saved)` — accepts `{guests}` OR `{adults,minorAges}`; migrates the former to `{adults: n, minorAges: []}` (compat only; not used for new quotes without explicit user confirmation via the field).
+- `tiles-workshop / azulejos-workshop` → `product_defining`, "The tile-painting workshop is the heart of this tour — removing it would leave nothing to tailor.", source: "Viator PDP · signature inclusion".
+- `azeitao-cheese / quinta-velha` → `product_defining`, "The cheese-making workshop is the heart of this tour — removing it would leave nothing to tailor.", source: "Viator PDP · signature inclusion".
+- `azeitao-cheese / catralvos` → `product_defining`, "This is the tour's only winery — removing it drops the 'wine' half of Cheese & Wine.", source: "Viator PDP · signature inclusion".
 
-### Entry points updated
+### 2. `src/routes/tours.$tourId.tailor.tsx` — surface the reason, keep behaviour
 
-`**SimpleBookingForm**` — replace `guests` stepper with `<CompositionField>`; block "Continue" while composition incomplete; on submit send `{adults, minorAges, guests: adults+minorAges.length, priceFromEur}` to `create-signature-checkout`; update GA add-to-cart/begin-checkout `quantity` = total headcount.
+- Replace `s.skippable !== false` with `!s.lock`.
+- For a locked stop, render the existing lock chip PLUS the `customerFacingReason` inline (not just the `aria-label` tooltip). Keep the "Signature anchor" eyebrow but append a small info line so mobile users see *why*.
+- No behaviour change for unlocked stops.
 
-`**/tours/$tourId/tailor**` — same swap; keep add-on pipeline unchanged; propagate composition into the FinalDetailsDialog `initial`.
+### 3. Enforce the rule in tests (`src/components/studio-v3/__tests__/` or new `src/data/__tests__/tailor-blueprints-locks.test.ts`)
 
-`**FinalDetailsDialog**` — accept `initial.adults`/`initial.minorAges`; render `<CompositionField>` (replaces raw `guests` stepper); return `{adults, minorAges, tourDate, language, pickupAddress}`; block submit on missing age. Callers stop passing `guests` in isolation.
+New test asserting that for every blueprint and every stop, `lock` is either absent OR has a non-empty `reasonCode`, `customerFacingReason`, and `source`. This blocks anyone from re-introducing a bare `locked: true`.
 
-**Studio V3 `GuestDetailsStep**` — drop the `guests` re-entry; pre-populate and reuse the upstream `useResolvedJourney` composition, showing a read-only recap ("2 adults · children aged 8, 13 · Edit") with an Edit CTA that scrolls to Composition. No double capture.
+### 4. Add-on dependency safety net (already partly handled)
 
-`**BrandedCheckoutDrawer` summary** — accept `adults`/`minorAges`; show `formatCompositionSummary()` line instead of bare `X guests`. Total math unchanged (per-pax × headcount + add-ons) since server is source of truth, but if `adults`/`minorAges` provided the drawer displays band-priced per-pax breakdown from server response (fallback to current display if absent).
+Sweep `src/routes/tours.$tourId.tailor.tsx` add-on state: if any current add-on requires a Core stop (today none do — add-ons here are the `optional` list, not cross-referenced), do nothing. Document in code comment that when a future add-on gains an `anchorStopId`, removing that stop must prompt "remove add-on or restore anchor" per the spec. This is defensive documentation, not a live code path today because no such dependency exists in the current blueprints.
 
-`**/checkout/$token**` resume flow — hydrate composition via `hydrateLegacyComposition`; if legacy `{guests}` only, force the user through `<CompositionField>` before re-quoting (never silently re-quote adult-priced).
+### 5. What is NOT changing
 
-`**booking-confirmed**` — display composition line from the stored booking record.
-
-### Persistence
-
-- `StudioV3State` already carries `adults`/`minorAges` — no schema change.
-- `studio_v3_leads` / draft rows: no migration needed (JSON payload). Add `adults`/`minorAges` when saving from the new forms.
-- Bookings written by the edge fn already store the composition on the metadata; verify the fields are read in `booking-confirmed`.
-
-### Server-side (edge function)
-
-`supabase/functions/create-signature-checkout/index.ts`:
-
-- Keep age-band pricing exactly as-is (owner-approved on 2026-07-14 — no invention).
-- **Tighten legacy fallback**: require `adults` + `minorAges` when caller sends `X-Composition-Required: 1` header (all updated clients will send it). Missing/incomplete → HTTP 422 with explicit `{error: "composition_required"}`. Old callers without the header keep the current adult-only path for one release only.
-- **Missing tier data**: current fallback uses `priceFromEur` anchor even with minors. Change: when composition contains minors AND `tour_price_tiers` row is absent for the tour, return HTTP 409 `{error: "owner_data_missing", detail: "Child pricing not yet configured for <tourId>"}` — do NOT silently apply anchor. Anchor fallback stays allowed for adults-only bookings.
-- Stripe metadata: add `adults`, `minor_ages` (comma-joined), `headcount`.
+- No Signature itinerary page is touched — `/tours/$tourId` still shows the full curated day.
+- No unlocking of the three justified locks (all three define the product purchased).
+- No change to Choice pools (already swappable) or Optional stops (already opt-in).
+- No change to pricing, map, feasibility, or checkout — those already read the live Tailor state.
 
 ### Verification
 
-Playwright script under `/tmp/browser/booking-composition/`:
+- Typecheck + existing Tailor tests.
+- Playwright smoke on `/tours/tiles-workshop/tailor` and `/tours/arrabida-wine-allinclusive/tailor`: confirm skippable core stops toggle, quote/duration update, locked stops show the customer-facing reason.
+- New unit test ensures no future lock ships without a reason.
 
-1. `/tours/porto-douro-yacht-experience` → SimpleBookingForm: adults=2 only → continue → confirm quote uses adult price × 2.
-2. Same tour: adults=2 + one 8yo → continue → drawer shows composition line + server total reflects 50% child band.
-3. Add multiple minors of different ages; leave one age blank → Continue disabled; screenshot state.
-4. Back/forward navigation preserves composition.
-5. Tailor flow: enter composition on `/tours/.../tailor`, transition into checkout drawer → composition line unchanged, no re-entry.
-6. Studio V3: verify GuestDetailsStep shows recap (not stepper); reveal + summary + Stripe metadata all match.
-7. Missing tier data: temporarily point at a tour with no `tour_price_tiers` row + minor age → expect HTTP 409, no charge.
-8. Contract test on the edge fn: POST `{adults:2, minorAges:[8,13]}` returns headcount 4 and priced 2×adult + 1×child(50%) + 1×youth(75%).
+### Files touched
 
-## Report deliverables (post-implementation)
+- `src/data/tailorBlueprints.ts` (schema + 3 lock entries)
+- `src/routes/tours.$tourId.tailor.tsx` (read `lock` instead of `skippable`, render reason)
+- `src/data/__tests__/tailor-blueprints-locks.test.ts` (new)
 
-1. Files changed.
-2. Signature entry points updated (list).
-3. Pricing source: `public.tour_price_tiers` (server) + `signatureToursViator.priceTiersEUR` (display); age bands from `signatureTourPricing.ts` (owner-approved 2026-07-14).
-4. Tours missing approved minor pricing (query `tour_price_tiers` for signature ids without rows).
-5. Test results from the Playwright + contract runs above.
-6. Confirmation that no new age rule was invented — bands unchanged.
+### Report I will deliver after implementation
 
-On every signature on the signature page should have the rating 
-
-## Out of scope
-
-Studio V3 already-shipped Composition/pricing/useResolvedJourney; Bokun handoff (booking still stops at Stripe today); redesign of any Signature page; email template copy beyond adding composition line to confirmation.
+1. Files changed (above).
+2. Locks retained with justification (the 3 above).
+3. Locks removed: none — no unjustified locks were found.
+4. Test results.

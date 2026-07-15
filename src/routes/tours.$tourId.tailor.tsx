@@ -772,13 +772,15 @@ function TailorPage() {
                   </p>
                   <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
                     {blueprint.core.map((s) => {
-                      const canSkip = s.skippable !== false;
+                      const canSkip = !s.lock;
                       const isSkipped = skippedCore.has(s.id);
-                      if (!canSkip) {
+                      if (!canSkip && s.lock) {
+                        const reason = s.lock.customerFacingReason;
                         return (
                           <li
                             key={s.id}
                             className="flex items-stretch gap-3 border border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5 min-h-[56px]"
+                            data-lock-reason={s.lock.reasonCode}
                           >
                             <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
                               <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
@@ -787,11 +789,14 @@ function TailorPage() {
                               <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
                                 Signature anchor
                               </span>
+                              <span className="text-[11.5px] leading-snug text-[color:var(--charcoal-soft)] mt-1">
+                                {reason}
+                              </span>
                             </span>
                             <span
                               className="w-9 flex items-center justify-center bg-[color:var(--teal)] text-[color:var(--ivory)]"
-                              aria-label="This stop defines the experience and can't be skipped"
-                              title="This stop defines the experience and can't be skipped"
+                              aria-label={reason}
+                              title={reason}
                             >
                               <Lock size={12} />
                             </span>
