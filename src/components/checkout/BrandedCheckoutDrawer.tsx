@@ -19,7 +19,12 @@ export interface CheckoutSummary {
   tourTitle: string;
   region?: string;
   durationHours?: string | number;
+  /** Total headcount (adults + minorAges.length). */
   guests: number;
+  /** Adults 18+ — required when the summary carries a composition breakdown. */
+  adults?: number;
+  /** Exact integer ages per minor (0..17). Empty when adults-only. */
+  minorAges?: readonly number[];
   dateExact?: string | null;
   startTime?: string | null;
   pickupLabel?: string | null;
@@ -37,6 +42,7 @@ export interface CheckoutSummary {
   /** Sum of add-on EUR (flat per booking). */
   addOnsTotalEur?: number;
 }
+
 
 
 interface Props {
@@ -231,8 +237,11 @@ function ExperienceSummaryCard({
               </Meta>
             ) : null}
             <Meta icon={<Users size={11} />}>
-              {summary.guests} guest{summary.guests > 1 ? "s" : ""}
+              {summary.adults != null && summary.minorAges
+                ? buildCompositionLine(summary.adults, summary.minorAges, summary.guests)
+                : `${summary.guests} guest${summary.guests > 1 ? "s" : ""}`}
             </Meta>
+
           </ul>
         </div>
       </div>
@@ -317,6 +326,30 @@ function formatDate(iso: string): string {
     return iso;
   }
 }
+
+/** Format e.g. `4 guests · 2 adults · children aged 8 and 13`. Kept
+ *  local so the drawer doesn't take a dep on `@/lib/checkout/composition`
+ *  when the summary is populated by legacy callers without a composition. */
+function buildCompositionLine(
+  adults: number,
+  minorAges: readonly number[],
+  total: number,
+): string {
+  const parts = [
+    `${total} guest${total === 1 ? "" : "s"}`,
+    `${adults} adult${adults === 1 ? "" : "s"}`,
+  ];
+  if (minorAges.length > 0) {
+    const ages = [...minorAges];
+    let agesLabel: string;
+    if (ages.length === 1) agesLabel = `aged ${ages[0]}`;
+    else if (ages.length === 2) agesLabel = `aged ${ages[0]} and ${ages[1]}`;
+    else agesLabel = `aged ${ages.slice(0, -1).join(", ")} and ${ages[ages.length - 1]}`;
+    parts.push(`${ages.length === 1 ? "child" : "children"} ${agesLabel}`);
+  }
+  return parts.join(" · ");
+}
+
 
 function CheckoutSkeleton() {
   return (

@@ -23,8 +23,17 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import type { GuestDetails, FinalDetailsInitial } from "@/components/checkout/FinalDetailsDialog";
 import { prewarmStripeScript } from "@/components/checkout/BrandedCheckoutDrawer";
+import { CompositionField } from "@/components/booking/CompositionField";
+import {
+  formatCompositionSummary,
+  hydrateLegacyComposition,
+  isCompositionComplete,
+  totalGuests,
+  type TravellerComposition,
+} from "@/lib/checkout/composition";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+
 
 export interface GuestDetailsStepProps {
   /** Signature tour id — recorded on the checkout session for the host. */
@@ -65,7 +74,9 @@ export function GuestDetailsStep({
   const [email, setEmail] = useState(initial?.email ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
   const [tourDate, setTourDate] = useState(initial?.tourDate ?? "");
-  const [guests, setGuests] = useState(initial?.guests ?? 2);
+  const [composition, setComposition] = useState<TravellerComposition>(() =>
+    hydrateLegacyComposition(initial),
+  );
   const [pickupAddress, setPickupAddress] = useState(initial?.pickupAddress ?? "");
   const [language, setLanguage] = useState<GuestDetails["language"]>(initial?.language ?? "en");
   const [mainContact, setMainContact] = useState("");
@@ -74,6 +85,7 @@ export function GuestDetailsStep({
   const [children, setChildren] = useState("");
   const [occasion, setOccasion] = useState("");
   const [guideNotes, setGuideNotes] = useState(initial?.guideNotes ?? "");
+
 
   // Track whether the story email dispatch has already fired for this
   // exact email address on this session — a rapid double-tap of Submit
@@ -101,8 +113,8 @@ export function GuestDetailsStep({
     if (!email.trim() || !isEmail(email)) missing.push("email");
     if (!phone.trim()) missing.push("phone / WhatsApp");
     if (!tourDate) missing.push("tour date");
-    if (!guests || guests < 1) missing.push("number of guests");
     if (!pickupAddress.trim()) missing.push("pickup address");
+    if (!isCompositionComplete(composition)) missing.push("age for every child");
     if (missing.length) {
       toast.error(`Please complete: ${missing.join(", ")}`);
       return;
@@ -131,7 +143,9 @@ export function GuestDetailsStep({
       email: email.trim(),
       phone: phone.trim(),
       tourDate,
-      guests,
+      guests: totalGuests(composition),
+      adults: composition.adults,
+      minorAges: [...composition.minorAges],
       pickupAddress: pickupAddress.trim(),
       language,
       mainContact: mainContact.trim() || fullName.trim(),
@@ -142,6 +156,7 @@ export function GuestDetailsStep({
       guideNotes: guideNotes.trim() || undefined,
     });
   };
+
 
   return (
     <section
@@ -239,27 +254,17 @@ export function GuestDetailsStep({
               className={inputClass}
             />
           </Field>
-          <Field label="Guests" required>
-            <div className="flex items-center border border-[color:var(--border)] bg-[color:var(--ivory)]">
-              <button
-                type="button"
-                onClick={() => setGuests((g) => Math.max(1, g - 1))}
-                className="min-w-[44px] min-h-[44px] px-3 py-2.5 text-sm hover:bg-[color:var(--sand)]"
-                aria-label="Decrease guests"
-              >
-                −
-              </button>
-              <span className="flex-1 text-center text-sm tabular-nums">{guests}</span>
-              <button
-                type="button"
-                onClick={() => setGuests((g) => Math.min(24, g + 1))}
-                className="min-w-[44px] min-h-[44px] px-3 py-2.5 text-sm hover:bg-[color:var(--sand)]"
-                aria-label="Increase guests"
-              >
-                +
-              </button>
+          <Field label="Who's travelling" required>
+            <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
+              <CompositionField value={composition} onChange={setComposition} compact />
             </div>
+            <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+              {isCompositionComplete(composition)
+                ? formatCompositionSummary(composition)
+                : "Add an age for every child so we can price honestly."}
+            </p>
           </Field>
+
           <Field label="Pickup address / hotel" required>
             <input
               value={pickupAddress}

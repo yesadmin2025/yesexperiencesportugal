@@ -903,11 +903,17 @@ export function StudioV3() {
         // fall through to legacy adults-only pricing so nothing regresses
         // for guests who never touched the minors editor.
         const currentMinors = currentState.minorAges ?? [];
-        const currentAdults = currentState.adults;
-        const compositionSupplied =
-          typeof currentAdults === "number" &&
-          currentAdults >= 1 &&
-          currentMinors.length > 0;
+        const currentAdults =
+          typeof currentState.adults === "number" && currentState.adults >= 1
+            ? currentState.adults
+            : typeof details.adults === "number" && details.adults >= 1
+              ? details.adults
+              : null;
+        // Composition is now supplied by the GuestDetailsStep for every
+        // Studio checkout — send it unconditionally so the edge fn prices
+        // via owner-approved age bands (adults-only bookings collapse to
+        // the same math as the legacy `guests` path).
+        const compositionSupplied = typeof currentAdults === "number" && currentAdults >= 1;
         const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
           body: {
             tourId: tour.id,
@@ -915,8 +921,9 @@ export function StudioV3() {
             guests: details.guests,
             ...(compositionSupplied
               ? { adults: currentAdults, minorAges: currentMinors }
-              : {}),
+              : { adults: details.adults, minorAges: details.minorAges }),
             stopLabels,
+
             includedItems: (() => {
               const m = getViatorMeta(tour.id);
               if (m?.included && m.included.length > 0) return m.included;
@@ -2529,10 +2536,13 @@ export function StudioV3() {
             submitting={false}
             initial={{
               tourDate: state.dateExact ?? null,
-              guests:
-                typeof state.guests === "number" && state.guests > 0
-                  ? Math.min(12, Math.max(1, Math.round(state.guests)))
-                  : 2,
+              adults:
+                typeof state.adults === "number" && state.adults >= 1
+                  ? state.adults
+                  : typeof state.guests === "number" && state.guests >= 1
+                    ? state.guests
+                    : 2,
+              minorAges: state.minorAges ? [...state.minorAges] : [],
               pickupAddress:
                 state.guestDraft?.pickupAddress ?? pickupCityLabel(state.pickup) ?? null,
               fullName: state.guestDraft?.fullName ?? null,
@@ -2540,6 +2550,7 @@ export function StudioV3() {
               phone: state.guestDraft?.phone ?? null,
               guideNotes: state.guestDraft?.guideNotes ?? null,
             }}
+
             onBack={() => back("confirmation")}
             onStorySubmit={async (email: string) => {
               try {
@@ -2571,6 +2582,12 @@ export function StudioV3() {
               setPendingGuestDetails(d);
               setState((s) => ({
                 ...s,
+                // Persist the composition the traveller confirmed on this
+                // step so downstream surfaces (reveal, checkout, edge fn)
+                // read the same {adults, minorAges} single source of truth.
+                adults: d.adults,
+                minorAges: [...d.minorAges],
+                guests: d.guests,
                 guestDraft: {
                   fullName: d.fullName,
                   email: d.email,
@@ -2581,6 +2598,7 @@ export function StudioV3() {
               }));
               advance("checkoutSummary");
             }}
+
           />
         </PhaseShell>
       ) : null}
@@ -2631,10 +2649,13 @@ export function StudioV3() {
           checkoutSummary ?? {
             tourTitle: state.journeyTitle ?? "Your Signature",
             guests: typeof state.guests === "number" ? state.guests : 2,
+            adults: typeof state.adults === "number" ? state.adults : undefined,
+            minorAges: state.minorAges ? [...state.minorAges] : undefined,
             pricePerPaxEur: null,
             flowLabel: "Studio",
           }
         }
+
         onComplete={(sid) => {
           setCheckoutOpen(false);
           const tid = checkoutTourId ?? state.tourId ?? "";

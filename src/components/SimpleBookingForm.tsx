@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar, Users, Sparkles, Lock, Loader2 } from "lucide-react";
+import { Calendar, Sparkles, Lock, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { SignatureTour } from "@/data/signatureTours";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -11,6 +11,13 @@ import {
   BrandedCheckoutDrawer,
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
+import { CompositionField } from "@/components/booking/CompositionField";
+import {
+  formatCompositionSummary,
+  isCompositionComplete,
+  totalGuests,
+  type TravellerComposition,
+} from "@/lib/checkout/composition";
 
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getViatorMeta } from "@/data/signatureToursViator";
@@ -24,6 +31,7 @@ import {
   buildTourItem,
 } from "@/lib/analytics-ga4";
 
+
 /**
  * SimpleBookingForm — the *reserve as-is* path.
  *
@@ -35,7 +43,12 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const navigate = useNavigate();
   const [date, setDate] = useState("");
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
-  const [guests, setGuests] = useState(2);
+  const [composition, setComposition] = useState<TravellerComposition>({
+    adults: 2,
+    minorAges: [],
+  });
+  const guests = totalGuests(composition);
+  const compositionReady = isCompositionComplete(composition);
   const [language, setLanguage] = useState<"en" | "pt">("en");
   const [pending, setPending] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -49,7 +62,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   // Whether we have real per-pax tier data for this tour (code or DB override).
   const hasTierData = Boolean(
     (tierOverrides?.[tour.id] && Object.keys(tierOverrides[tour.id] as object).length > 0) ||
-    getViatorMeta(tour.id)?.priceTiersEUR,
+      getViatorMeta(tour.id)?.priceTiersEUR,
   );
 
   // Embedded checkout state
@@ -57,6 +70,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [publishableKey, setPublishableKey] = useState<string | null>(null);
   const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
+
 
   const handleReserve = async (details: GuestDetails) => {
     if (pending) return;
@@ -71,6 +85,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       region: tour.region,
       durationHours: tour.durationHours,
       guests: details.guests,
+      adults: details.adults,
+      minorAges: [...details.minorAges],
       dateExact: details.tourDate || null,
       startTime: details.startTime ?? null,
       pickupLabel: details.pickupAddress || pickup,
@@ -80,6 +96,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       beats: meta?.included && meta.included.length > 0 ? meta.included : (tour.highlights ?? []),
       flowLabel: "Signature",
     });
+
     setDetailsOpen(false);
     setCheckoutOpen(true);
     // GA4 add_to_cart + begin_checkout — Signature Reserve intent.
@@ -104,6 +121,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           tourId: tour.id,
           tourTitle: tour.title,
           guests: details.guests,
+          adults: details.adults,
+          minorAges: details.minorAges,
           stopLabels,
           includedItems,
           pickupLabel: details.pickupAddress || pickup,
@@ -119,6 +138,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         },
       });
       if (error) throw error;
+
       const resp = (data ?? {}) as {
         clientSecret?: string;
         publishableKey?: string;
@@ -196,29 +216,22 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         </Field>
       </div>
 
-      {/* Guests + language */}
-      <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Field label="Guests" icon={<Users size={14} />}>
-          <div className="flex items-center border border-[color:var(--border)]">
-            <button
-              type="button"
-              onClick={() => setGuests((g) => Math.max(1, g - 1))}
-              className="px-3 py-2.5 text-sm hover:bg-[color:var(--sand)]"
-              aria-label="Decrease guests"
-            >
-              −
-            </button>
-            <span className="flex-1 text-center text-sm">{guests}</span>
-            <button
-              type="button"
-              onClick={() => setGuests((g) => Math.min(12, g + 1))}
-              className="px-3 py-2.5 text-sm hover:bg-[color:var(--sand)]"
-              aria-label="Increase guests"
-            >
-              +
-            </button>
+      {/* Who's travelling */}
+      <div className="mt-4">
+        <Field label="Who's travelling">
+          <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
+            <CompositionField value={composition} onChange={setComposition} compact />
           </div>
+          <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+            {compositionReady
+              ? formatCompositionSummary(composition)
+              : "Add an age for every child so we can price honestly."}
+          </p>
         </Field>
+      </div>
+
+      {/* Language */}
+      <div className="mt-3">
         <Field label="Guide language">
           <div className="grid grid-cols-2 border border-[color:var(--border)]">
             {(["en", "pt"] as const).map((l) => (
@@ -243,6 +256,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           </p>
         </Field>
       </div>
+
 
       {/* Price for chosen party — tier-resolved when we have real data. */}
       <div className="mt-6 border-t border-[color:var(--border)] pt-4 space-y-1.5">
@@ -284,7 +298,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       <button
         type="button"
         onClick={() => setDetailsOpen(true)}
-        disabled={pending}
+        disabled={pending || !compositionReady}
         className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
       >
         {pending ? (
@@ -297,6 +311,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           </>
         )}
       </button>
+
       <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
         Instant confirmation
       </p>
@@ -329,7 +344,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         }}
         submitting={pending}
         tourId={tour.id}
-        initial={{ tourDate: date, guests, language, pickupAddress: pickup }}
+        initial={{
+          tourDate: date,
+          adults: composition.adults,
+          minorAges: [...composition.minorAges],
+          language,
+          pickupAddress: pickup,
+        }}
         onConfirm={async (details) => {
           await handleReserve(details);
         }}
@@ -349,6 +370,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           checkoutSummary ?? {
             tourTitle: tour.title,
             guests,
+            adults: composition.adults,
+            minorAges: [...composition.minorAges],
             pricePerPaxEur: displayPerPaxEur,
             totalEur: Math.round(partyTotalEur),
             flowLabel: "Signature",
@@ -362,6 +385,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           });
         }}
       />
+
     </div>
   );
 }

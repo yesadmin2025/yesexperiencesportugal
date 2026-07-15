@@ -34,6 +34,13 @@ import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION_SHORT } from "@/config/business-nap";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
+import { CompositionField } from "@/components/booking/CompositionField";
+import {
+  formatCompositionSummary,
+  isCompositionComplete,
+  totalGuests,
+  type TravellerComposition,
+} from "@/lib/checkout/composition";
 import {
   gaAddPaymentInfo,
   gaAddToCartSignature,
@@ -41,6 +48,7 @@ import {
   gaGenerateLead,
   buildTourItem,
 } from "@/lib/analytics-ga4";
+
 
 /* ════════════════════════════════════════════════════════════════
  * /tours/$tourId/tailor — Tailor a Signature
@@ -172,8 +180,14 @@ function TailorPage() {
   const [date, setDate] = useState("");
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
   const [pace, setPace] = useState<"relaxed" | "balanced" | "full">("balanced");
-  const [guests, setGuests] = useState(2);
+  const [composition, setComposition] = useState<TravellerComposition>({
+    adults: 2,
+    minorAges: [],
+  });
+  const guests = totalGuests(composition);
+  const compositionReady = isCompositionComplete(composition);
   const [language, setLanguage] = useState<"en" | "pt">("en");
+
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
   const [added, setAdded] = useState<Set<string>>(new Set());
 
@@ -415,6 +429,8 @@ function TailorPage() {
       region: tour.region,
       durationHours: tour.durationHours,
       guests: details.guests,
+      adults: details.adults,
+      minorAges: [...details.minorAges],
       dateExact: details.tourDate || null,
       startTime: details.startTime ?? null,
       pickupLabel: details.pickupAddress || pickup,
@@ -424,6 +440,7 @@ function TailorPage() {
       beats: stopLabels.slice(0, 4),
       flowLabel: "Tailored",
     });
+
     setDetailsOpen(false);
     setCheckoutOpen(true);
     // GA4 add_to_cart + begin_checkout — Tailored reserve intent.
@@ -446,8 +463,11 @@ function TailorPage() {
           tourId: tour.id,
           tourTitle: tour.title,
           guests: details.guests,
+          adults: details.adults,
+          minorAges: details.minorAges,
           stopLabels: stopLabels.slice(0, 8),
           includedItems: resolveClientIncludedItems(metaForSummary, tour),
+
           pickupLabel: details.pickupAddress || pickup,
           dateExact: details.tourDate || null,
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
@@ -704,9 +724,16 @@ function TailorPage() {
 
               {/* Group */}
               <Group title="Your group">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Field label="Guests">
-                    <Stepper value={guests} onChange={setGuests} min={1} max={12} />
+                <div className="space-y-4">
+                  <Field label="Who's travelling">
+                    <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
+                      <CompositionField value={composition} onChange={setComposition} compact />
+                    </div>
+                    <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+                      {compositionReady
+                        ? formatCompositionSummary(composition)
+                        : "Add an age for every child so we can price honestly."}
+                    </p>
                   </Field>
                   <Field label="Guide language">
                     <Segmented
@@ -723,6 +750,7 @@ function TailorPage() {
                   </Field>
                 </div>
               </Group>
+
 
               {/* Truthful Blueprint — replaces the legacy "Stop variations"
                   panel when we have an accurate Core / Choice / Optional
@@ -1228,7 +1256,7 @@ function TailorPage() {
                     value={`${pickup} → ~${estimatedReturn} · ~${formatHours(estimatedHours)}`}
                   />
                   <SummaryRow label="Pace" value={cap(pace)} />
-                  <SummaryRow label="Guests" value={`${guests} · ${language.toUpperCase()}`} />
+                  <SummaryRow label="Guests" value={`${formatCompositionSummary(composition)} · ${language.toUpperCase()}`} />
 
                   <div>
                     <p className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
@@ -1301,9 +1329,10 @@ function TailorPage() {
                   <button
                     type="button"
                     onClick={() => setDetailsOpen(true)}
-                    disabled={checkoutPending || summaryStops.length === 0}
+                    disabled={checkoutPending || summaryStops.length === 0 || !compositionReady}
                     className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
                   >
+
                     {checkoutPending ? (
                       <>
                         <Loader2 size={15} className="animate-spin" /> Opening checkout…
@@ -1346,7 +1375,13 @@ function TailorPage() {
         onOpenChange={setDetailsOpen}
         submitting={checkoutPending}
         tourId={tour.id}
-        initial={{ tourDate: date, guests, language, pickupAddress: pickup }}
+        initial={{
+          tourDate: date,
+          adults: composition.adults,
+          minorAges: [...composition.minorAges],
+          language,
+          pickupAddress: pickup,
+        }}
         onConfirm={async (d) => {
           await handleReserve(d);
         }}
@@ -1364,6 +1399,8 @@ function TailorPage() {
           checkoutSummary ?? {
             tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
             guests,
+            adults: composition.adults,
+            minorAges: [...composition.minorAges],
             pricePerPaxEur: estimatedPrice,
             totalEur: Math.round(estimatedPrice * guests),
             flowLabel: "Tailored",
@@ -1377,6 +1414,7 @@ function TailorPage() {
           });
         }}
       />
+
     </SiteLayout>
   );
 }
