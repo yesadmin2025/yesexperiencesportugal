@@ -124,4 +124,82 @@ describe("Studio V3 price card — source-of-truth pricing", () => {
     const total = screen.getByTestId("studio-v3-add-ons-total");
     expect(total.textContent).toContain(`€${tour.priceFrom! + expectedDelta}`);
   });
+
+  it("keeps refine pricing visible when the resolved tour has no compatible add-ons", () => {
+    const tour = signatureTours.find(
+      (candidate) =>
+        candidate.priceFrom &&
+        candidate.priceFrom > 0 &&
+        regionBucket(candidate.region) === "douro",
+    )!;
+
+    render(
+      <SignaturePriceCard
+        variant="refine"
+        tour={tour}
+        stopCount={tour.stops?.length ?? 0}
+        dateExact={null}
+        onSecure={() => {}}
+        onRefine={() => {}}
+        guests={2}
+        resolvedPerPaxEur={tour.priceFrom!}
+        resolvedTotalEur={tour.priceFrom! * 2}
+        showAddOns
+      />,
+    );
+
+    expect(screen.queryByTestId("studio-v3-add-ons")).toBeNull();
+    expect(screen.getByTestId("studio-v3-base-price")).toHaveTextContent(`€${tour.priceFrom}`);
+    expect(screen.getByTestId("studio-v3-final-total")).toHaveTextContent(
+      `€${tour.priceFrom! * 2}`,
+    );
+    expect(screen.getByTestId("studio-v3-final-total")).toHaveTextContent(
+      `€${tour.priceFrom} per person`,
+    );
+  });
+
+  it("updates refine per-person and party totals in the same render as an add-on toggle", () => {
+    const tour = signatureTours.find(
+      (candidate) =>
+        candidate.priceFrom &&
+        candidate.priceFrom > 0 &&
+        regionBucket(candidate.region) === "lisbon-arrabida" &&
+        candidate.id !== "wild-beaches-picnic",
+    )!;
+    const guests = 2;
+    const baseParty = tour.priceFrom! * guests;
+
+    function Harness() {
+      const [ids, setIds] = React.useState<string[]>([]);
+      const [partyTotal, setPartyTotal] = React.useState(baseParty);
+      return (
+        <SignaturePriceCard
+          variant="refine"
+          tour={tour}
+          stopCount={5}
+          dateExact={null}
+          onSecure={() => {}}
+          onRefine={() => {}}
+          guests={guests}
+          selectedAddOnIds={ids}
+          resolvedPerPaxEur={Math.round(partyTotal / guests)}
+          resolvedTotalEur={partyTotal}
+          onAddOnsChange={(summary) => {
+            setIds(summary.ids);
+            setPartyTotal(baseParty + summary.partyTotalEur);
+          }}
+          showAddOns
+        />
+      );
+    }
+
+    render(<Harness />);
+    const first = within(screen.getByTestId("studio-v3-add-ons")).getAllByRole("button")[0];
+    fireEvent.click(first);
+
+    const finalTotal = screen.getByTestId("studio-v3-final-total");
+    expect(Number(finalTotal.getAttribute("data-final-eur"))).toBeGreaterThan(baseParty);
+    expect(screen.getByTestId("studio-v3-add-ons-total")).toHaveTextContent("Updated price");
+    expect(finalTotal).toHaveTextContent("per person");
+  });
 });

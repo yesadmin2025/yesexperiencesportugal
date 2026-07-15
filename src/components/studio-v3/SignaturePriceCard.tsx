@@ -357,7 +357,9 @@ export function SignaturePriceCard({
   useEffect(() => {
     const cb = onAddOnsChangeRef.current;
     if (!cb) return;
-    const key = selectedAddOnIds.join("|");
+    // Re-emit when the party size or base changes as well as the selected ids:
+    // unit-aware item amounts depend on all three inputs.
+    const key = `${selectedAddOnIds.join("|")}::${priceEur ?? "x"}::${summaryGuests}`;
     if (lastEmittedKeyRef.current === key) return;
     lastEmittedKeyRef.current = key;
     cb(buildSummary(selectedAddOnIds));
@@ -371,7 +373,7 @@ export function SignaturePriceCard({
     if (isControlled) {
       const cb = onAddOnsChangeRef.current;
       if (cb) {
-        lastEmittedKeyRef.current = next.join("|");
+        lastEmittedKeyRef.current = `${next.join("|")}::${priceEur ?? "x"}::${summaryGuests}`;
         cb(buildSummary(next));
       }
     }
