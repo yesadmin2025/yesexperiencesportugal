@@ -1,78 +1,74 @@
-# Phase A — Studio composition engine (composer + tests only)
+# Fix 34 pre-existing test failures (10 files, 8 buckets)
 
-Goal: replace the Signature-clone `curateJourney` with a true regional composer that assembles a day from the approved stop inventory, driven by traveller answers. **No UI, pricing, or checkout changes this turn** — those come in Phases B / D / E once the engine is green.
+These failures pre-date the Phase A composer work. Root cause pattern: intentional homepage/Studio/email edits over the last few sessions moved the code past the lock tests without updating (or exempting) those tests. Each bucket needs a small, targeted fix — no architectural changes.
 
-Success = the same 5 traveller profiles produce 5 materially different journeys, none of which are just a reordered Signature template.
+For each bucket below the plan states resolution direction (fix code vs update test) and why. Anything I'm not sure about, I'll investigate at the start of the turn and adjust before editing.
 
-## 1. New file: `src/lib/studio-v3/composeStudioJourney.ts`
+## Bucket 1 — Brand tokens (9 failures) — `src/lib/brand-tokens.test.ts`
 
-Pure function. No I/O, no React. Signature:
+**Cause 1**: `styles.css` uses lowercase hex (`#1f1f1f`) but the lock expects uppercase (`#1F1F1F`) for 8 tokens (`--charcoal`, `--charcoal-deep`, `--gold`, `--gold-soft`, `--ivory`, `--sand`, `--teal`, `--teal-2`).
+→ **Fix code**: normalize the 8 hex values in `src/styles.css` to uppercase. Preserves the lock's purpose (spot repointing) without weakening it.
 
-```ts
-composeStudioJourney(input: {
-  region: RegionKey;
-  rhythm: "slow" | "balanced" | "full";
-  interests: Interest[];       // wine, coast, culture, gastronomy, wellness, hidden
-  who: "solo" | "couple" | "family" | "friends";
-  minorAges: number[];         // gates family-incompatible stops
-  budgetTier: "essential" | "signature" | "rare";
-  weekday: number;             // 1–7, for closedDays
-  month: number;               // 1–12, for seasonalMonths
-}) => ComposedJourney
-```
+**Cause 2**: 21 locked-hex leaks flagged in `src/lib/email-templates/*.tsx`.
+→ **Fix test**: email templates legitimately need inline hex — CSS custom properties don't work in email clients (rule already noted in memory). Add `src/lib/email-templates/` to the test's exempt prefix list. Do NOT convert email templates to `var(--teal)`.
 
-### Pool
-Single union pool from the approved regional inventory (`REGION_STOPS` in `src/data/regionStops.ts`, ~62 stops) filtered by:
-- `region` match
-- `!closedDays.includes(weekday)`
-- in `seasonalMonths` window
-- family-safe when `minorAges.length > 0` (drop `adultOnly` tag + any stop with `minAge` above the youngest child)
-- has valid `coords` (drops the stops missing geo that produced the 187 km ghost leg)
+## Bucket 2 — Studio V3 progress stepper (8 failures)
 
-### Scoring
-Weighted score per stop, no Signature-template bias:
-- interest match: +6 per matched `affinity.style`
-- rhythm match: +3 for energy fit (slow↔slow, full↔vivid)
-- who match: +2 for `affinity.companions`
-- budget tier fit: +2 for `tier <= budgetTier`
-- diversity penalty: −4 per additional stop of the same `kind` already picked (respect `regionRules.kindCaps`)
-- `priority * 0.6` as tiebreaker
+Files: `progress-stepper.test.tsx`, `progress-stepper-a11y.test.tsx`, `progress-stepper-transitions.test.tsx`, `progress-stepper-visual.test.tsx`, `stepper-telemetry.test.tsx`.
 
-### Assembly
-Greedy pick sorted by score, then:
-- enforce `regionRules.maxStops`, `kindCaps`, `dayLengthMinutes[rhythm]`
-- **route sanity guard** on every candidate leg: reject if haversine > 60 km OR estimated drive > `maxHopMinutes`
-- final sort by `timeOfDay` preference (morning → sunset)
-- return `{ stops, drives, totals, rationale, warnings }` where `rationale` is a per-stop reason string ("Picked for your wine focus + slow rhythm") used later by the "Why this fits you" surface
+**Cause**: the stepper's phase→beat map changed — `"occasion"` phase now maps to beat `"rhythm"` (tests expect `"region"`). Visual snapshots + label typography + a11y jump behavior all diverged with the same refactor.
+→ **Investigate first**: read `StudioV3ProgressStepper` + tests to confirm the new order is the intended UX (very likely — Studio bible v6 pushed for the current beat order). If yes: **update tests + refresh snapshot** to match the current documented beat order. If the code drifted accidentally: revert the mapping.
+→ Update `progress-stepper-visual.test.tsx` snapshot with `bunx vitest -u` scoped to that file only after confirming the DOM shape is intentional.
 
-## 2. Test suite: `src/lib/studio-v3/__tests__/composeStudioJourney.test.ts`
+## Bucket 3 — Studio V3 reveal section order (3 failures) — `reveal-section-order.test.ts`
 
-Five scenarios, each asserts (a) valid composition, (b) no leg > 60 km haversine, (c) result is **not** equal to any existing Signature tour's stop id sequence, (d) key interest is reflected in ≥ 40% of picks:
+**Cause**: test expects a section id `studio-v3-hero-price` inside `StudioV3.tsx`; the current source no longer contains that id (returns -1).
+→ **Investigate**: was the price surface renamed / merged into `studio-v3-signature-hero`? If merged intentionally, **update the test**'s expected id list. If accidentally removed, restore the id on the price block in `StudioV3.tsx`.
 
-1. **Wine-focused adult couple** — Arrábida, slow, wine+gastronomy, couple, no minors → wineries/cellars dominate, no adventure stops
-2. **Family with minors (ages 6, 9)** — Sintra-Cascais, balanced, coast+culture, family → zero adultOnly, zero minAge violations
-3. **Coast-focused journey** — Arrábida, balanced, coast, couple → viewpoints/beaches dominate, ≤1 winery
-4. **Culture-focused journey** — Lisbon-coast, balanced, culture+heritage, couple → palaces/heritage dominate, no wineries
-5. **Same region, different preferences** — two Arrábida runs (wine+slow vs coast+full) must produce disjoint stop sets (Jaccard < 0.5)
+## Bucket 4 — Studio V3 route containment (1 failure) — `route-containment.test.ts`
 
-Cross-scenario assertion: the 5 composed stop-id sequences are all pairwise distinct AND none match any Signature tour's canonical stop sequence.
+**Cause**: `resolveStudioV3Route` returns a route point whose label isn't in the approved Signature/composition pool. Likely a stale label after recent composition changes (Phase A composer swap caps in `curation.ts` from earlier).
+→ **Fix code**: find the offending label and either (a) drop that point from the resolver or (b) add its canonical label to the approved pool if it's a real stop that was missing. Test change only if the pool source of truth genuinely moved.
 
-## 3. Route-leg guard shared helper
+## Bucket 5 — Homepage typography scale (5 failures) — `homepage-typography-scale.test.ts`
 
-Extract the haversine/OSRM sanity check already added to `route-legs.functions.ts` into `src/lib/studio-v3/route-sanity.ts` so the composer uses the exact same threshold logic. No behavior change to the existing runtime path.
+**Cause**: `#studio-title`, `#final-cta-title`, `#signatures-title`, `#groups-title` H2s don't currently use the locked responsive ramp (`2.1→2.5→3.8rem` for conversion tier, `1.8→2.1→2.95rem` for editorial tier). Also `.he-eyebrow-bar` utility isn't applied on every major section eyebrow.
+→ **Fix code** in `src/routes/index.tsx`: apply the correct locked class strings to those 4 H2s and add `.he-eyebrow-bar` to any section eyebrow missing it. This is the memory's "canonical UI primitives" rule — the lock is the source of truth.
 
-## 4. Not touched this turn
+## Bucket 6 — Homepage structure (4 failures) — `-homepage-structure.test.ts`
 
-- `StudioV3.tsx` reveal surfaces
-- `curation.ts` (still powers the current live Studio until Phase B swaps it)
-- pricing / `resolveJourneyPricing`
-- checkout wiring
-- `AddMomentSheet`, `AddOnsPanel`, "Why this fits you" copy surfaces
+**Cause**: sections `#2 "Trust strip — reviews + private guide line"` and `#3 "Three paths — Day / Bespoke / Occasions"` are missing (or renamed) from the source; approved top-to-bottom order broken.
+→ **Investigate**: recent homepage edits (guest moments / stock-photo replacement work) likely renamed section markers. Read `approved-homepage-structure.ts` (the lock spec) + `src/routes/index.tsx`. Restore the two missing section markers/comments so the source-lock finds them, without changing rendered content. This is a comment/id restoration, not a UI rewrite.
 
-Those land in Phases B → E, gated on Phase A tests staying green.
+## Bucket 7 — Typography regression + FAQ typography lock (3 failures)
 
-## Deliverables at end of turn
+- `typography-regression.test.ts`: 2 obsolete snapshots for `[multi-day]` and `[proposals]` hero subheads.
+→ **Update snapshots** (`vitest -u` scoped to that file) — recent proposal/multi-day animation work in earlier turns intentionally changed subhead class strings.
 
-1. `composeStudioJourney.ts` + `route-sanity.ts`
-2. 5 passing scenario tests + 1 cross-scenario distinctness test
-3. Printed test output showing the 5 composed itineraries (stop labels + drive minutes) so you can eyeball that they read as genuinely different journeys before we wire them into the UI
+- `faq-typography-lock.test.ts`: FAQ `#faq-title` size/leading/tracking/color drifted from lock.
+→ **Investigate then fix code** in FAQ component to restore locked class string; do not weaken the test.
+
+## Bucket 8 — CTA band guardrail (1 failure) — `cta-band-guardrail.test.ts`
+
+**Cause**: "Talk to a Local" appears 2× in `proposal-in-portugal.tsx` after this session's proposal-page premium-motion pass added a duplicate CTA band.
+→ **Fix code**: remove the duplicated CTA in `proposal-in-portugal.tsx` (keep the single canonical final CTA). Do NOT add a `DUPLICATE_BAND_EXEMPTIONS` entry — a proposal page having two identical CTAs is a real duplication.
+
+## Order of operations in the fix turn
+
+1. Bucket 1 (brand tokens — trivial, unblocks styles.css confidence).
+2. Bucket 8 (CTA dedupe — 1 line).
+3. Bucket 5 + 6 (homepage — read `approved-homepage-structure.ts` first, then edit `src/routes/index.tsx` in one pass).
+4. Bucket 7 (typography snapshots + FAQ lock).
+5. Bucket 2 + 3 + 4 (Studio V3 stepper, reveal, route containment — read each test + source, decide direction, edit).
+6. Re-run full suite. Target: 0 failures.
+
+## Non-goals
+
+- No behavior refactors. No new features. No design changes beyond restoring what the locks describe.
+- No touching Phase A composer files.
+- No `-u` snapshot bulk-refresh across the whole suite — only the two files explicitly listed above.
+
+## Deliverables
+
+- Green `bunx vitest run` (0 failed).
+- Per-bucket 1-line summary in the final reply of what was fixed vs which tests were updated with the reason.
