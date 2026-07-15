@@ -6,6 +6,7 @@
 // declared in `src/data/signatureTours.ts` for that tour id.
 
 import { describe, it, expect, vi } from "vitest";
+import { useState } from "react";
 import { fireEvent, render as rtlRender, screen, within } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SignaturePriceCard } from "../SignaturePriceCard";
@@ -170,8 +171,8 @@ describe("Studio V3 price card — source-of-truth pricing", () => {
     const baseParty = tour.priceFrom! * guests;
 
     function Harness() {
-      const [ids, setIds] = React.useState<string[]>([]);
-      const [partyTotal, setPartyTotal] = React.useState(baseParty);
+      const [ids, setIds] = useState<string[]>([]);
+      const [partyTotal, setPartyTotal] = useState(baseParty);
       return (
         <SignaturePriceCard
           variant="refine"
