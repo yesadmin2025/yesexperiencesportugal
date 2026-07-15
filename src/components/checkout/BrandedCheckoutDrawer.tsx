@@ -9,8 +9,6 @@ import {
   summarizeJourneyLines as summarizeJourneyLinesShared,
   hasCompleteJourneyPricing,
   type CheckoutJourneyLine as SharedJourneyLine,
-} from "@/lib/checkout/journeyDisplay";
-
   type JourneyBand as SharedJourneyBand,
 } from "@/lib/checkout/journeyDisplay";
 
@@ -18,6 +16,7 @@ import {
 export type JourneyBand = SharedJourneyBand;
 export type CheckoutJourneyLine = SharedJourneyLine;
 export const summarizeJourneyLines = summarizeJourneyLinesShared;
+
 
 /**
  * BrandedCheckoutDrawer
