@@ -224,9 +224,11 @@ export function CheckoutSummary({
         <Row
           label="Guests"
           value={
-            typeof guestDetails.guests === "number"
-              ? `${guestDetails.guests} ${guestDetails.guests === 1 ? "guest" : "guests"}`
-              : "—"
+            formatGuestComposition(
+              adults,
+              minorAges,
+              typeof guestDetails.guests === "number" ? guestDetails.guests : null,
+            ) ?? "—"
           }
         />
         <Row label="Pickup" value={pickupLabel} />
