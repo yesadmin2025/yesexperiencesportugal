@@ -165,7 +165,9 @@ export function SignaturePriceCard({
   remainingMinutes = null,
   itineraryStops = [],
   dwellHours = null,
+  variant = "full",
 }: SignaturePriceCardProps) {
+  const isRefine = variant === "refine";
 
   const meta = tour ? VIATOR_META[tour.id] : null;
   const priceEur = useMemo(() => {
