@@ -3565,76 +3565,22 @@ export function StoryboardHandoff({
 
       <BackLink onClick={onBack} />
 
-      {/* ---------- 1. Hero — Your Signature ---------- */}
+      {/* ---------- 1. Header — clear decision-page title ---------- */}
       <header
         className="text-center pt-10"
         style={{ animation: "studioV3RiseIn 720ms ease-out both" }}
       >
-        <p
-          className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-        >
-          <span style={{ color: "var(--gold)" }}>—</span> Your Signature
-        </p>
         <h2
-          className="mt-4 text-[26px] sm:text-[32px] leading-[1.1] tracking-[-0.012em] font-bold text-balance"
-          style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+          className="text-[26px] sm:text-[32px] leading-[1.15] tracking-[-0.012em] font-medium text-balance"
+          style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
           data-testid="studio-v3-signature-hero"
         >
-          {heroLead}
+          Your day is ready.
+          <br />
+          <span className="italic" style={{ color: "var(--teal)" }}>
+            Now you can refine it.
+          </span>
         </h2>
-        <p
-          className="mt-4 text-[15.5px] sm:text-[18px] leading-[1.5] italic text-balance [text-wrap:pretty] [hyphens:auto] max-w-[360px] sm:max-w-[460px] mx-auto"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
-          }}
-        >
-          {heroSub}
-        </p>
-        <p
-          className="hidden sm:block mt-4 text-[12.5px] leading-[1.55] [text-wrap:pretty] [hyphens:auto] max-w-[340px] sm:max-w-[420px] mx-auto"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-        >
-          {heroOrigin}
-        </p>
-
-        {/* Quiet price eyebrow — real per-pax when tier data exists,
-            otherwise the "from" anchor. Guests fall back to 2 for the
-            indicative line, never invented. */}
-        {(() => {
-          const px = resolvePerPaxEur(skeletonTour, state.guests ?? 2, tourPriceTiers);
-          if (!px) return null;
-          const guestsForLine =
-            typeof state.guests === "number" && state.guests > 0 ? state.guests : 2;
-          return (
-            <p
-              data-testid="studio-v3-hero-price"
-              className="mt-5 text-[10.5px] uppercase tracking-[0.26em] font-semibold"
-              style={{ color: "var(--gold)" }}
-            >
-              <span style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
-                {px.real ? "" : "From "}
-              </span>
-              €{px.eurPerPax} per person
-              <span style={{ color: "color-mix(in oklab, var(--charcoal) 45%, transparent)" }}>
-                {" · "}
-                {guestsForLine} guest{guestsForLine === 1 ? "" : "s"}
-              </span>
-            </p>
-          );
-        })()}
-
-        <span
-          aria-hidden
-          className="mt-6 inline-block h-px w-10"
-          style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
-        />
-        {/* Plan §H approval state machine — never renders "YES Approved"
-            unless validateItinerary() returns "approved". */}
-        <div className="mt-5">
-          <ApprovalBadge state={approvalStatus} />
-        </div>
       </header>
 
       {/* ---------- Unified "Your Signature" card (map · story · edit · DNA · price · add-ons) ---------- */}
