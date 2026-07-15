@@ -2961,6 +2961,88 @@ function ContinueCta({
   );
 }
 
+/**
+ * ComposerRevealPanel — Phase B: additive display of the Phase A composer
+ * output alongside the existing Signature-based reveal. Renders nothing
+ * when the adapter cannot produce a journey (thin pool, missing state).
+ * Read-only: pricing, checkout, map, edit UI are untouched.
+ */
+function ComposerRevealPanel({ state }: { state: StudioV3State }) {
+  const journey = useMemo(() => composeFromState(state), [state]);
+  if (!journey || journey.stops.length === 0) return null;
+  return (
+    <div
+      data-testid="studio-v3-composer-reveal-panel"
+      className="mt-8 sm:mt-10 max-w-[520px] mx-auto px-3 sm:px-1"
+    >
+      <p
+        className="text-center text-[11px] font-semibold uppercase tracking-[0.22em] mb-3"
+        style={{ color: "var(--gold)", fontFamily: "var(--font-body)" }}
+      >
+        Composed for you
+      </p>
+      <p
+        className="text-center text-[13px] mb-4 sm:mb-5"
+        style={{
+          fontFamily: "var(--font-editorial)",
+          color: "color-mix(in oklab, var(--charcoal) 75%, transparent)",
+        }}
+      >
+        Why these stops fit your day
+      </p>
+      <ol className="space-y-2.5">
+        {journey.stops.map((s, i) => (
+          <li
+            key={s.id}
+            data-testid="studio-v3-composer-stop"
+            className="rounded-[10px] px-4 py-3"
+            style={{
+              background: "color-mix(in oklab, var(--ivory) 60%, transparent)",
+              border: "1px solid color-mix(in oklab, var(--gold) 22%, transparent)",
+            }}
+          >
+            <div className="flex items-start gap-3">
+              <span
+                aria-hidden
+                className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+                style={{
+                  background: "color-mix(in oklab, var(--gold) 25%, transparent)",
+                  color: "var(--charcoal)",
+                }}
+              >
+                {i + 1}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p
+                  className="text-[13.5px] font-semibold leading-[1.3]"
+                  style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+                >
+                  {s.name}
+                </p>
+                <p
+                  className="mt-0.5 text-[11.5px] leading-[1.45] italic"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+                >
+                  {s.rationale}
+                </p>
+                {s.blurb ? (
+                  <p
+                    className="mt-1 text-[12px] leading-[1.45]"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+                  >
+                    {s.blurb}
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+
 // Exported so `SignatureDayReveal` (see ./SignatureDayReveal.tsx) can
 // re-export it under its final name. Physical body-move is deferred until
 // Steps 6–9 rebuild the reveal sections; this establishes the module
