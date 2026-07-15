@@ -697,6 +697,32 @@ export function SignaturePriceCard({
                   total for your group
                 </span>
               </p>
+            {journeyRows.length > 0 ? (
+              <ul
+                data-testid="studio-v3-journey-lines"
+                className="mt-3 mx-auto max-w-[280px] space-y-1"
+              >
+                {journeyRows.map((row) => (
+                  <li
+                    key={row.key}
+                    className="flex items-baseline justify-between gap-3 text-[12px] tabular-nums"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
+                  >
+                    <span className="truncate">
+                      {row.label}
+                      {row.qty > 1 ? (
+                        <span
+                          className="ml-1"
+                          style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+                        >
+                          (€{Math.round(row.unitEur).toLocaleString("en-GB")} × {row.qty})
+                        </span>
+                      ) : null}
+                    </span>
+                    <span>€{Math.round(row.subtotalEur).toLocaleString("en-GB")}</span>
+                  </li>
+                ))}
+              </ul>
             ) : null}
           </>
         ) : (
