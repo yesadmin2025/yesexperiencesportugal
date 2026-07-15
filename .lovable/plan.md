@@ -1,183 +1,226 @@
+# Owner-Only Diagnostic MCP — Plan v3 (no changes made)
 
-# Studio journey — revised plan (audit-first, no invention)
+Owner UID masked as `32558…35e42` throughout. The exact UID appears only inside the Phase-0B migration SQL (submitted for approval, never committed as literal in application source or docs).
 
-Nothing in the codebase or database has been modified. This plan reports evidence, flags what is missing, and stops for owner decisions where required by the rules.
+## A. Corrected bootstrap flow
 
----
+Three sequential phases with an owner checkpoint between 0A and 0B. The two-factor gate used in 0A is deliberately weaker than the final three-factor gate — it exists only to let the owner confirm identity so the allow-list can be populated. It is removed the moment 0B ships.
 
-## A. Pricing rules recovered
+```
+Phase 0A  ── temporary identity confirmation
+   │        Tool: get_current_mcp_identity
+   │        Guard: OAuth + admin role (no allow-list check)
+   │        Data: caller's own claims + one caller-scoped role read
+   ▼
+Owner checkpoint
+   │        Owner signs in via OAuth consent, calls the tool once,
+   │        reads the masked UID it returns, and confirms it matches
+   │        the sole current admin (32558…35e42).
+   ▼
+Phase 0B  ── allow-list + audit tables + guard hardening
+   │        Migration: create mcp_owner_allowlist, mcp_owner_audit_log,
+   │        insert confirmed UID. Remove get_current_mcp_identity from
+   │        src/lib/mcp/index.ts. Ship the three-factor requireOwner guard.
+   ▼
+Phase 1   ── seven read-only diagnostic tools
+   │        Every tool: OAuth + admin role + exact allow-list match.
+   ▼
+Phase 2   ── separately approved (RPCs, resolver extraction, cache-only route,
+             reduced system health).
+```
 
-Evidence gathered:
+Safety property: no business-data tool is ever installed while the guard is running in the weaker two-factor mode. `get_current_mcp_identity` returns only masked identity fields and is deleted before Phase 1 ships.
 
-- `src/data/signatureTourPricing.ts` — the only pricing resolver. `resolvePerPaxEur(tour, guests)` clamps `guests` to `[1..8]` and returns a **single per-person EUR** value from `tour_price_tiers.tiers` (jsonb map `{ "1": eur, ..., "8": eur }`), else the `priceFrom` anchor. **No age-tier logic exists.**
-- `supabase.public.tour_price_tiers` — columns `tour_id text`, `tiers jsonb`, `updated_at`, `updated_by`. Live rows checked; every row shape is `{ "1"..."8": <adult EUR> }`. No child/youth/infant keys, no age bands. 12 tour rows in DB; ~14 tours in code — some Signature tours have no tier row and fall back to `priceFrom`.
-- `src/data/signatureToursViator.ts` — mirrors the same `priceTiersEUR: {1..8: number}` shape used to seed `tour_price_tiers`. No child pricing field.
-- `src/data/signatureAddOns.ts` — add-ons priced as `pricePctOfBase` (fraction of base per-pax anchor) with `pricingUnit ∈ per_person | per_group | per_vehicle | fixed`. No child pricing.
-- `supabase/functions/create-signature-checkout/index.ts` — server-side authoritative today: re-reads `tour_price_tiers` from Supabase, multiplies `eurPerPax * guests`, adds validated add-on line items. Enforces `guests ∈ [1..12]` and rejects amounts < €50. **It has no concept of minors.**
-- `rg -in "child|infant|minor|youth|age.?band"` across `src/data`, `src/lib`, `supabase/` returned zero pricing hits. Historical migrations and git-tracked files show no removed child-pricing scheme.
-- Prior chat memory / project memory (`mem://` index) contains no age-band rules.
+## B. Corrected table permissions (Phase 0B migration)
 
-**Verdict:** the owner-approved pricing source of truth today prices per **adult** only. There is **no recoverable child/youth/infant band, no discount rule, no minimum age**. Per the correction, "count minors as pax" is unacceptable — so **composition collection stops here** until §D is answered.
+Both tables: **no privileges** for `authenticated` or `anon`; `service_role` only; RLS enabled; **no policies**. Application access happens exclusively through the owner-gated server handler using `supabaseAdmin`, after `requireOwner` has already validated OAuth + admin role + allow-list membership.
 
----
+```sql
+-- Allow-list
+create table public.mcp_owner_allowlist (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  note text,
+  added_at timestamptz not null default now()
+);
+revoke all on public.mcp_owner_allowlist from public, anon, authenticated;
+grant all on public.mcp_owner_allowlist to service_role;
+alter table public.mcp_owner_allowlist enable row level security;
+-- intentionally no policies
 
-## B. Active Bókun runtime touchpoints
+-- Audit log
+create table public.mcp_owner_audit_log (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  tool_name text not null,
+  called_at timestamptz not null default now(),
+  duration_ms integer,
+  success boolean not null,
+  result_bytes integer,
+  error_code text
+);
+revoke all on public.mcp_owner_audit_log from public, anon, authenticated;
+grant all on public.mcp_owner_audit_log to service_role;
+alter table public.mcp_owner_audit_log enable row level security;
+-- intentionally no policies
 
-Full sweep (`rg -in "bokun|bókun" src supabase`, DB schema check):
+-- Owner UID insert (single row; UID redacted from this plan)
+insert into public.mcp_owner_allowlist (user_id, note)
+values ('<confirmed-owner-uid>', 'yesexperiences owner — MCP diagnostic');
+```
 
-- **Database:** the Bókun schema was already dropped in migration `20260714201407_*` (columns removed from `bookings`, `stripe_webhook_events`, related mapping table `tour_bokun_mapping` dropped with CASCADE). Runtime schema audit in the previous turn confirmed zero remaining bokun tables/columns/functions/policies/triggers.
-- **Runtime code:** zero active `.ts`/`.tsx`/edge-function code paths call Bókun. Verified:
-  - No frontend availability calls, product IDs, availability IDs, hooks, or shared modules reference Bókun runtime.
-  - `supabase/functions/*` (checkout, stripe-webhook, stripe-session-status, signature-checkout, builder-checkout) contain no Bókun calls.
-  - `src/lib/checkout/inclusions.ts` — only **comments** describe an old server priority "Bókun → clientIncluded → nothing". The current server (`create-signature-checkout/index.ts`) uses **only `clientIncluded`** — no Bókun fetch. The comments are stale.
-- **Textual residue only (safe to remove in a follow-up cleanup, non-functional):**
-  - `src/data/tailorBlueprints.ts` — 3 doc-comment mentions.
-  - `src/lib/checkout/inclusions.ts` + its test — comments only.
-  - `src/routes/experiences.tsx:156` — one code comment.
-  - Historical migration SQL files (must not be rewritten; they encode already-applied history).
+The earlier proposed `for select to authenticated using (…subquery on mcp_owner_allowlist…)` policy is dropped: authenticated has no privilege on that table, so the subquery would fail; the policy was internally inconsistent. Audit reads happen through the server handler only.
 
-**Verdict:** No Bókun runtime request occurs. No user-facing feature depends on Bókun. Dormant migrations remain (as allowed). No replacement work is required for §B. A textual scrub is optional and out of scope for this plan.
+## C. Corrected Phase-1 tool schemas
 
----
+Common wrapper on every response:
+```
+{ ok: boolean, tool: string, generatedAt: string, data?: T, error?: { code: string, message: string } }
+```
+All timestamps ISO-8601 UTC. Every list uses hard `.limit()`. Every string field returned is either a fixed enum or a value derived from a whitelisted column. No raw rows.
 
-## C. Route, stop and add-on data audit
+1. `get_current_mcp_permissions`
+   - Input: `{}` (Zod `.strict()`).
+   - Data returned:
+     ```
+     { authenticated: true, maskedUserId, verifiedEmailMasked, role: "admin",
+       allowListed: true, lastAuditAt: string | null, auditCount24h: number }
+     ```
+   - Access: caller-scoped RLS for the role read; **service-role read** (via `supabaseAdmin`) for allow-list presence and audit stats — only after `requireOwner` has succeeded.
 
-### C.1 Stops
+2. `get_owner_diagnostic_snapshot`
+   - Input: `{}`.
+   - Data: `{ counts: { tours, priceTiers, wiredStops, unwiredStops, activeBookings24h, quotes24h, funnelEvents24h, clientErrors24h }, lastImportedTourAt, lastBookingAt, lastErrorAt }`.
+   - Access: service-role scalar aggregates; no PII.
 
-- `src/data/signatureTours.ts` `TourStop` shape: `{ label, story, imageTheme, image?, focal? }`. **No coordinates**, **no dwell minutes**, **no opening days/hours**, **no morning/afternoon constraint**, **no removable/replaceable flag**, **no add-on anchor.**
-- Coordinates are resolved at runtime by `lookupStopGeo(label)` from `src/data/stopGeo.ts` / `stopCoords.ts` — a **string-match lookup**. Any label drift silently returns null and the stop drops off the map.
-- `REGION_STOP_POOL` (`src/data/regionStopPool.ts`) is the only source for replacement candidates; it uses region keys, not per-tour eligibility.
-- Dwell time and time-of-day windows do not exist in the data. `use-route-leg-minutes` and `src/lib/studio/timing.ts` estimate durations from stop count + region defaults.
+3. `list_internal_tours`
+   - Input: `{ region?: string, limit?: 1..100 }`.
+   - Data: `{ tours: Array<{ id, title, region, durationHours, priceFromEur, tier, stopsCount, imageUrlPresent: boolean, catalogueRecordPresent: true, publicationStatus: "not_recorded", lastUpdatedAt }>, total }`.
+   - No `publishedOnly` input. Nothing claims presence == published.
 
-### C.2 Route legs
+4. `get_tour_pricing_config`
+   - Input: `{ tourId: string }`.
+   - Data: `{ tourId, tierRecordPresent: boolean, tiers: jsonb | null, tierUpdatedAt, addOns: Array<{ id, label, pricingUnit, unitEur, active }>, availableAddOns: Array<{ addOnId, scope, active, sortOrder }>, warnings: string[] }`.
 
-- Approved routing provider is **Mapbox Directions**, cached in `public.builder_route_cache` (see `src/lib/studio-v2/routing.server.ts`; the client reads via `use-route-leg-minutes.ts`). This is a real driving-route source — **not** straight-line, **not** AI estimates. Good news: leg distance + drive minutes are already trustworthy when the pipeline is used.
-- Total-duration display in Studio V3 does NOT consistently pipe Mapbox minutes into the storytelling/summary/Stripe metadata; it uses region rhythm defaults in several code paths (`summarizeDay` in `src/lib/studio/timing.ts`). Convergence gap.
+5. `get_tour_wiring`
+   - Input: `{ tourId: string }`.
+   - Data: `{ tourId, stops: Array<{ position, stopCanonical, variantBucket, durationMinutes, optional, stopRecordPresent, geoPresent, operationalPresent, lat?: number, lng?: number, region }>, compatibilityHits: Array<{ stopA, stopB, cooccurrenceCount }>, warnings: string[] }`.
+   - Static project data (`stopGeo`, `stopOperational`) is consumed via **top-of-file ES imports** and mapped into explicitly constructed fields. No filename, path, or arbitrary-file input. No source-code content is returned.
 
-### C.3 Add-ons
+6. `get_data_gaps_report`
+   - Input: `{}`.
+   - Data: `{ toursWithoutTiers: string[], toursWithoutWiring: string[], wiringWithoutStops: Array<{ tourId, stopCanonical }>, stopsMissingGeo: string[], stopsMissingOperational: string[], addOnsWiredButInactive: Array<{ tourId, addOnId }>, warnings: string[] }`. All arrays capped.
 
-Two sources coexist and disagree in shape:
+7. `get_recent_sanitized_errors`
+   - Input: `{ since?: ISO-8601 string, limit?: 1..100 }`.
+   - Data: `{ clientErrors: Array<{ createdAt, route, source, severity, messagePreview }>, aiErrors: Array<{ createdAt, provider, model, feature, errorCode }>, failedWebhooks: Array<{ receivedAt, eventType, statusCode, errorCodePreview }> }`.
+   - Never returns `stack`, `user_agent`, `session_id`, `customer_email`, raw `metadata`, or full messages. `messagePreview` = first 140 chars, regex-scrubbed of `@`-emails / phone digits / 24-char hex tokens.
 
-- **Code catalog** `src/data/signatureAddOns.ts` (`ADD_ON_CATALOG`): fields `id, label, blurb, pricePctOfBase, pricingUnit, sourceTourId, minStops?, minHours?, durationMinutes, lisbonSubRegion?, conflictsWith?`.
-- **DB table** `public.tour_available_add_ons` (13 active rows) + parent `public.booking_add_ons` (`id, label, pricing_unit, unit_eur, active, inclusion_ids, description, scope, tour_id, add_on_id, active, sort_order`). This carries **unit EUR** and a per-tour eligibility list.
+Phase-0A tool schema:
 
-Neither source encodes: **region**, **physical location / anchor stop coordinates**, **capacity**, **time-of-day restriction**, **availability / manual-confirmation flag**, or explicit **route impact minutes** beyond `durationMinutes`. Compatibility filtering today is only:
-- Region bucket + Lisbon sub-region (Tejo north/south) in code.
-- `conflictsWith` inclusion tags to avoid duplicating what a Signature already delivers.
-- `tour_available_add_ons` eligibility in DB — currently unused by the Studio V3 refine surface.
+- `get_current_mcp_identity` — input `{}`; data `{ authenticated: true, maskedUserId, role: "admin", verifiedEmailMasked }`. Guard: OAuth + admin role only. No allow-list, no service-role except the standard `has_role` RPC (SECURITY DEFINER; already granted to `authenticated`).
 
-**Verdict:** Approved routing provider exists (Mapbox + cache). Approved coordinate source for stops exists via `stopGeo` but is fragile. Approved dwell/hours/time-window/anchor/capacity/availability data **does not exist**. Approved per-tour add-on eligibility exists but is not wired to the Studio.
+## D. Exact Phase-0A files (no migration)
 
----
+Created:
+- `src/lib/mcp/lib/redact.ts` — `maskUid(uuid) → "32558…35e42"`, `maskEmail`, `maskPhone`, `safeError`. Pure functions, no I/O.
+- `src/lib/mcp/lib/rate-limit.ts` — in-memory per-uid rate limit for the identity tool (10/min).
+- `src/lib/mcp/lib/two-factor-guard.ts` — `requireAdmin(ctx)`: checks `ctx.isAuthenticated()`, then `has_role` via `supabaseForUser(ctx)`. Returns `{ ok, uid, email }` or `{ ok:false, code, message }`. No service-role, no allow-list.
+- `src/lib/mcp/tools/owner/get-current-mcp-identity.ts` — Phase-0A tool. Reads `ctx.getUserEmail()` (verified by OAuth), applies `maskUid` and `maskEmail`, returns four fields above. `annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false }`. Zod `.strict()` empty input.
 
-## D. Owner decisions still missing (blocking)
+Edited:
+- `src/lib/mcp/index.ts` — append `getCurrentMcpIdentityTool` to the `tools` array.
 
-Implementation of traveller composition, Stripe re-pricing and add-on compatibility cannot proceed until each of these is answered by the owner. Do not implement anything below the line without written decisions here.
+Auto-regenerated (never hand-edited): `.lovable/mcp/manifest.json` via `app_mcp_server--extract_mcp_manifest`.
 
-D1. **Age bands and pricing rule per band** — for every Signature tour:
-   - Adult age (default 18+?).
-   - Youth band (e.g. 12–17): % of adult, or fixed EUR, or same as adult?
-   - Child band (e.g. 3–11): % of adult, fixed EUR, or free?
-   - Infant band (0–2): free, seat-charge only, or excluded?
-   - Whether bands vary per tour (e.g. wine tastings adults-only; some suppliers charge full adult from 12).
-   - Whether children/infants count toward `guests` for tier resolution (currently tier 1..8 uses total pax).
-   - Minimum age or "not suitable for children" restrictions per tour (some tours may be adults-only entirely).
+Owner checkpoint (no files): owner authorises MCP client through `/.lovable/oauth/consent`, calls `get_current_mcp_identity` once, reports the masked UID. Only when it matches `32558…35e42` do we proceed.
 
-D2. **Add-on child pricing** — do add-ons follow the same age-band rule, always adult-priced, or unit-specific (per_group / per_vehicle stay flat regardless)?
+## E. Exact Phase-0B files and migration
 
-D3. **Group-size vs tier** — with mixed adults + children, does the pricing tier lookup use `adults + minors` (current behaviour) or `adults only` or `chargeable pax`?
+Migration (single file, requires approval):
+1. `create table public.mcp_owner_allowlist …` + `revoke all from public,anon,authenticated` + `grant all to service_role` + RLS enabled, no policies.
+2. `create table public.mcp_owner_audit_log …` + same revoke/grant + RLS enabled, no policies.
+3. `insert into public.mcp_owner_allowlist (user_id, note) values ('<confirmed-owner-uid>', 'yesexperiences owner — MCP diagnostic');` — UID injected into the SQL body only, never into TypeScript or docs.
 
-D4. **Add-on eligibility fields we must add** — confirm which of these owner-approved facts exist and where to sourced from (per add-on):
-   - anchor stop label or GPS point,
-   - real duration and time-of-day window (morning/afternoon/either),
-   - real capacity limit (e.g. boats),
-   - manual-confirmation vs instant,
-   - which specific tour ids it may attach to (beyond region).
+Created:
+- `src/lib/mcp/lib/owner-guard.ts` — three-factor `requireOwner(ctx)`:
+  1. `ctx.isAuthenticated()`,
+  2. `has_role(uid,'admin')` via caller-scoped client,
+  3. allow-list membership via `supabaseAdmin.from('mcp_owner_allowlist').select('user_id').eq('user_id', uid).maybeSingle()`.
+  Returns `{ ok, uid, userClient }` or a deny result. No tool ever imports `supabaseAdmin` itself.
+- `src/lib/mcp/lib/audit.ts` — `recordAudit({ uid, toolName, durationMs, success, resultBytes, errorCode })` inserts via `supabaseAdmin`; wrapped in try/catch so audit failure never fails the tool call. Never writes payloads.
 
-D5. **Stop-level operational data** — per stop: coordinates (canonical, no label lookup), dwell minutes, opening days/hours by season, removable Y/N, replaceable Y/N (and by whom), add-on anchor Y/N. Owner must supply this dataset (spreadsheet or admin form) or approve extracting from Viator/existing internal notes.
+Edited:
+- `src/lib/mcp/index.ts` — **remove** `getCurrentMcpIdentityTool` from the array (temporary tool retired the moment Phase 1 lands in the same PR).
 
-D6. **Story-email consent copy** — approved wording of the explicit submit button (proposed: **"Continue and email my Signature story"**) and confirmation that no marketing consent is bundled.
+Deleted:
+- `src/lib/mcp/lib/two-factor-guard.ts`
+- `src/lib/mcp/tools/owner/get-current-mcp-identity.ts`
 
-D7. **Optional but recommended** — approval to store the read-only journey revision hash inside the existing `email_send_log.metadata` jsonb (no schema change) rather than a new column.
+Auto-regenerated: `.lovable/mcp/manifest.json` — no longer advertises the identity tool.
 
----
+## F. Exact Phase-1 files
 
-## E. Corrected implementation phases (executed only after D is answered)
+Created:
+- `src/lib/mcp/tools/owner/get-current-mcp-permissions.ts`
+- `src/lib/mcp/tools/owner/get-owner-diagnostic-snapshot.ts`
+- `src/lib/mcp/tools/owner/list-internal-tours.ts`
+- `src/lib/mcp/tools/owner/get-tour-pricing-config.ts`
+- `src/lib/mcp/tools/owner/get-tour-wiring.ts` (top-level imports from `@/data/stopGeo` and `@/data/stopOperational`; no path input)
+- `src/lib/mcp/tools/owner/get-data-gaps-report.ts`
+- `src/lib/mcp/tools/owner/get-recent-sanitized-errors.ts`
 
-Each phase is gated. Do not start a phase until the prior phase's owner approval + verification passes.
+Every tool body:
+```ts
+const guard = await requireOwner(ctx);
+if (!guard.ok) return deny(guard);
+const started = Date.now();
+try {
+  const data = await work(guard);           // uses supabaseAdmin, explicit columns, .limit()
+  const bytes = JSON.stringify(data).length;
+  await recordAudit({ uid: guard.uid, toolName: NAME, durationMs: Date.now()-started, success: true, resultBytes: bytes });
+  return ok(data);
+} catch (err) {
+  await recordAudit({ uid: guard.uid, toolName: NAME, durationMs: Date.now()-started, success: false, errorCode: safeError(err).code });
+  return fail(err);
+}
+```
 
-### E0 — Pricing source of truth (blocks everything else)
-- Extend `tour_price_tiers.tiers` jsonb (or add a sibling column `age_bands jsonb`) with owner-decided age bands (D1). Non-destructive: existing `{1..8}` adult tiers keep working.
-- Rewrite `resolvePerPaxEur` to accept `{ adults, minorAges[] }` and return `{ lines: [{ label, unitEur, qty, ageBand }], totalEur }`. Zero fallback to adult price for minors — throw if a band is missing.
-- Server (`create-signature-checkout`) becomes the single authority: accepts only `{ tourId, adults, minorAges[], addOns[{id, qty}], dateExact, pickupLabel, environment }` and independently recomputes every line. **Client-supplied prices removed** (`priceFromEur`, add-on `priceEur`, `includedItems`). Reject checkout if any line unresolved.
-- Tests: `signatureTourPricing.age-bands.test.ts` (unit), `create-signature-checkout.test.ts` (integration) covering "child missing band → reject", "adults+children mixed → itemised total", "add-on child rule".
+Edited:
+- `src/lib/mcp/index.ts` — add the seven tools to `tools`.
 
-### E1 — Composition capture UI
-- `StudioV3State` extended: `adults: number | null; minorAges: number[]`. `guests` becomes derived. Load/save signature payloads backfill legacy `guests` as `{ adults: guests, minorAges: [] }`.
-- Replace `GuestStepper` with `GroupComposition` (44×44 controls, per-minor age input, validation blocks advance).
-- `guests` phase guard prevents advancing to `map` (Reveal) until composition validates against the age bands from E0 (e.g. adults-only tours reject minors up-front).
+Auto-regenerated: `.lovable/mcp/manifest.json`.
 
-### E2 — Shared journey state + revision id
-- New hook `useResolvedJourney(state)` returns `{ tour, orderedStops, addOns, priceLines, totalEur, durationMinutes, adults, minorAges, dateExact, pickup, journeyRevision }`.
-- `journeyRevision = sha1(tourId|orderedStopIds|addOnIds|dateExact|pickup|adults|minorAges.sorted)`.
-- Storytelling (`FinalRevealStory`/confirmation), `GuestDetailsStep` recap, `CheckoutSummaryStep`, story-email snapshot, Stripe metadata all consume `useResolvedJourney`. No other resolver is called downstream. Dev-only invariant: summary total === server-quoted total (added to E4).
+Phase 2 (deferred, separate approvals): pure `resolveQuote` extraction from `supabase/functions/create-builder-checkout/index.ts`, RPCs `mcp_owner_get_journey_diag` / `mcp_owner_get_checkout_diag` / `mcp_owner_get_email_diag` (PII masked inside Postgres), cache-only `preview_route` (zero outbound calls), reduced `get_system_health` returning `{ mcpRuntimeReachable: true, publicWebsiteStatus: "unknown", buildStatus: "not_recorded", testStatus: "not_recorded", deployedCommit: "not_recorded", edgeFunctionInventory: "not_recorded", integrations: { stripeConfigured: boolean, emailConfigured: boolean, mapboxConfigured: boolean } }` — booleans computed from `Boolean(process.env.X)` inside the server; never returns names, prefixes, or values.
 
-### E3 — Refine convergence + add-on compatibility
-- Only after D4/D5 land the missing add-on/stop fields (E3a data work). Then filter add-ons through the real compatibility predicate (region, anchor stop present in current route, capacity ≥ chargeable pax, time-of-day OK, day-of-week OK). Auto-deselect on incompatibility with a calm toast.
-- Stop removal/replacement + add-on toggles write to shared state; every subsequent phase re-derives via `useResolvedJourney`. Removed stops never re-appear downstream (test).
+## G. Tests
 
-### E4 — Checkout: summary above Stripe on one page
-- `checkoutSummary` phase becomes a single page: mobile stacked (summary → Stripe Embedded); desktop two-column with summary sticky-visible. Retire the `BrandedCheckoutDrawer` from the Studio V3 path (kept for other entry points).
-- Client sends only approved inputs (see E0). Server re-computes and returns Stripe `clientSecret`. Summary displays the server-returned `priceLines`, not client-computed values (dev assertion fails the render if client-derived total drifts from server total).
+Phase-0A (`src/lib/mcp/__tests__/phase-0a/`):
+- `identity-guard.test.ts` — 401 unauth; 403 authed non-admin; success returns exactly the four masked fields and nothing else.
+- `identity-no-business-data.test.ts` — static import scan of `get-current-mcp-identity.ts` forbids references to `imported_tours`, `booking_quotes`, `bookings`, `studio_v3_leads`, `email_send_log`, `stripe_webhook_events`, `client_error_logs`, `supabaseAdmin`, `client.server`.
+- `identity-masking.test.ts` — UID and email in the response match `^[0-9a-f]{5}…[0-9a-f]{5}$` and `^.\*\*\*@.+$`; full UID/email are never present in the JSON.
+- `identity-rate-limit.test.ts` — 11th call/min is rejected.
+- `identity-tool-registered-alone.test.ts` — asserts Phase-0A `src/lib/mcp/index.ts` `tools` contains only `[echo, list_my_signature_journeys, get_signature_journey, get_current_mcp_identity]`.
 
-### E5 — Story email: submit-only, revision-scoped
-- Delete `onEmailBlur` from `GuestDetailsStep` and its wiring in `StudioV3.tsx`. No blur send. No checked-by-default consent.
-- New explicit primary CTA on Guest Details: **"Continue and email my Signature story"** (owner-approved copy per D6). Clicking it advances to checkout AND enqueues the email once. Failure toasts a retry that re-invokes the same server fn.
-- `sendSignatureStoryEmail` idempotency key becomes `signature-story-${sha1(email|tourId|journeyRevision)}` — `journeyRevision` is passed from client but included **only inside the existing key hash** (no new DB column, unless D7 is approved to write it into `email_send_log.metadata`).
-- Snapshot payload sent to the email builder = `useResolvedJourney(state)` — same object powering Storytelling on screen. Never calls a new AI resolver.
+Phase-0B / Phase-1 (`src/lib/mcp/__tests__/phase-1/`):
+- `owner-guard.test.ts` — all four rejection paths (unauth, non-admin, admin-not-in-allowlist, allow-list row removed at runtime); success only when all three factors hold.
+- `identity-tool-removed.test.ts` — asserts `get_current_mcp_identity` no longer imported anywhere and not in the manifest.
+- `no-writes.test.ts` — static scan of `src/lib/mcp/tools/owner/` fails on `.insert(|.update(|.delete(|.upsert(`; the only allowed `.rpc(` is `has_role`.
+- `no-side-effects.test.ts` — greps forbid `stripe`, `resend`, `sendEmail`, Mapbox/OSRM HTTP calls, `fetch(` outside `supabaseAdmin`.
+- `service-role-scope.test.ts` — `supabaseAdmin` imported only in `owner-guard.ts` and `audit.ts`; tool files import `requireOwner`, never the admin client directly.
+- `pii-redaction.test.ts` — snapshot every Phase-1 tool response against a seeded fixture; regex asserts no `@`-emails, no phone-shaped digit runs, no 24-char hex tokens, no `stack`, no `user_agent`, no `metadata` key, no full UIDs other than the caller's own masked form.
+- `input-strict.test.ts` — Zod `.strict()` rejects unknown props; `limit` clamped; `since` parsed as ISO-8601.
+- `rate-limit.test.ts` — per-(uid,tool) 10/min and global 120/min per uid.
+- `audit-logged.test.ts` — one `mcp_owner_audit_log` row per call (success and failure); rows contain no payload; audit failure never fails the tool call.
+- `allowlist-forgery.test.ts` — spoofed `user_id` in tool input cannot bypass the guard.
+- `no-publication-claim.test.ts` — `list_internal_tours` output always has `publicationStatus === "not_recorded"` and no `published`/`active`/`visibility` field.
+- `wiring-no-path-input.test.ts` — `get_tour_wiring` Zod schema rejects any key other than `tourId`.
+- `uid-not-in-source.test.ts` — repo grep for the confirmed UID literal finds it only in the migration file, and 0 matches under `src/`, `docs/`, `.lovable/`.
 
-### E6 — Verification suite
-- Vitest: composition validation, age-band pricing math, refine → downstream re-derivation, revision hash stability, email submit-only + dedupe.
-- Playwright (mobile, per project rule): full path Preferences → Map Reveal → Refine (remove stop + add add-on) → Storytelling → Guest Details submit → summary-above-Stripe → server total matches summary total. Second run with same inputs: no second email; back-nav + refine + resubmit: exactly one new email with new revision.
-- Regression tests: no Bókun runtime request (network intercept in Playwright).
+## H. Confirmation
 
----
-
-## F. Exact files and database objects proposed
-
-Nothing modified now. Proposed touch list once D is answered:
-
-**Frontend / shared code**
-- `src/components/studio-v3/types.ts` — `StudioV3State` gains `adults`, `minorAges`, derives `guests`.
-- `src/components/studio-v3/StudioV3.tsx` — remove `onEmailBlur` wiring, mount `useResolvedJourney`, gate `map` advance on composition, wire new checkout page.
-- `src/components/studio-v3/GuestStepper.tsx` → replaced by new `GroupComposition.tsx`.
-- `src/components/studio-v3/GuestDetailsStep.tsx` — remove blur callback; add explicit "Continue and email my Signature story" CTA; show composition recap with "Edit" back-link.
-- `src/components/studio-v3/CheckoutSummary.tsx` — rebuild as single-page summary-above-Stripe layout consuming server `clientSecret` directly.
-- `src/components/studio-v3/curation.ts`, `src/lib/studio/timing.ts` — read composition; use Mapbox leg minutes for total duration.
-- `src/data/signatureTourPricing.ts` — new signature returning itemised `priceLines` with age bands. No adult fallback for minors.
-- `src/data/signatureAddOns.ts` + `public.tour_available_add_ons`/`booking_add_ons` — add owner-approved compatibility fields (D4).
-- `src/lib/studio-v3/save-signature.functions.ts` / `load-signature.functions.ts` — persist + backfill composition.
-- `src/lib/emails/sendSignatureStoryEmail.functions.ts` — accept `journeyRevision`; new idempotency key; snapshot payload from shared state only.
-- `src/components/studio-v3/signatureStorySnapshot.ts` — consume `useResolvedJourney` output; never invents facts.
-- `src/components/checkout/BrandedCheckoutDrawer.tsx` — kept, but Studio V3 stops importing it.
-- Tests as listed in E6.
-
-**Server (edge functions)**
-- `supabase/functions/create-signature-checkout/index.ts` — remove client price/inclusion inputs; recompute everything from DB; require `adults` + `minorAges`; reject unresolved lines; add `journey_revision` to metadata.
-- `supabase/functions/stripe-webhook/index.ts` — persist `adults` and `minor_ages` into `bookings.notes`/existing jsonb metadata field (no schema change) using webhook metadata.
-
-**Database (proposals only, non-destructive)**
-- `tour_price_tiers` — extend `tiers` jsonb shape (or add `age_bands jsonb`) per D1. Backfill script for existing 12 rows + insert rows for tours currently missing tiers (owner supplies EUR).
-- `tour_available_add_ons` / `booking_add_ons` — add owner-approved columns for anchor, capacity, time window, availability, per-tour eligibility (D4). All non-null-with-default so existing rows stay valid.
-- No new columns on `email_send_log`. Revision lives inside the existing idempotency key. Optional D7: write revision into existing `email_send_log.metadata` jsonb.
-
-**Not touched**
-- `src/integrations/supabase/*` (auto-generated).
-- Historical Bókun migrations.
-- Any Signature tour copy, hero image, or catalogue entry.
-
----
-
-## G. Confirmation
-
-No file has been modified. No database row has been modified. No migration has been enqueued. This plan is read-only exploration + a revised proposal. Implementation waits on the owner decisions in section D.
+- No file has been modified.
+- No database row has been modified.
+- No migration has run.
+- No edge function has been deployed.
+- No MCP manifest entry, route, or permission has changed.
+- Awaiting owner approval to execute Phase 0A. The confirmed UID will be supplied inside the Phase-0B migration SQL only; masked (`32558…35e42`) everywhere else.
