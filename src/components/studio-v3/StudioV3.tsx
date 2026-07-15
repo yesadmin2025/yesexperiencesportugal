@@ -2588,53 +2588,13 @@ export function StudioV3() {
           <CheckoutSummaryStep
             state={state}
             guestDetails={pendingGuestDetails}
-            selectedAddOns={selectedAddOnItems}
-            adults={state.adults ?? null}
-            minorAges={state.minorAges ?? []}
-            composedStops={(() => {
-              const resolved = resolveStudioV3Route({
-                feeling: state.feeling,
-                companions: state.companions,
-                rhythm: state.rhythm,
-                interests: state.interests,
-                pickup: state.pickup,
-                occasion: state.occasion,
-                considerations: state.considerations,
-                investment: state.investment,
-                destinationIntent: state.destinationIntent,
-              });
-              return resolved.routePoints.map((p) => ({ label: p.label }));
-            })()}
+            selectedAddOns={resolvedJourney.addOns}
+            adults={resolvedJourney.adults}
+            minorAges={resolvedJourney.minorAges}
+            composedStops={resolvedJourney.stops}
+            perPaxEur={resolvedJourney.perPaxEur}
+            totalEur={resolvedJourney.totalEur}
 
-            perPaxEur={(() => {
-              const tour = state.tourId ? findTour(state.tourId) : null;
-              if (!tour) return null;
-              return (
-                resolvePerPaxEur(tour, pendingGuestDetails.guests, tourPriceTiers)?.eurPerPax ??
-                tour.priceFrom ??
-                null
-              );
-            })()}
-            totalEur={(() => {
-              const tour = state.tourId ? findTour(state.tourId) : null;
-              if (!tour) return null;
-              const g = pendingGuestDetails.guests;
-              const minors = state.minorAges ?? [];
-              const adultsN = state.adults ?? null;
-              // When composition is supplied, honor age-band pricing so
-              // the summary total matches what Stripe will charge server-side.
-              if (typeof adultsN === "number" && adultsN >= 1 && minors.length > 0) {
-                const journey = resolveJourneyPricing(tour, adultsN, minors, tourPriceTiers);
-                if (journey) {
-                  return Math.round(journey.totalEur + selectedAddOnsTotalEur * g);
-                }
-              }
-              const perPax =
-                resolvePerPaxEur(tour, g, tourPriceTiers)?.eurPerPax ??
-                tour.priceFrom ??
-                0;
-              return Math.round(perPax * g + selectedAddOnsTotalEur * g);
-            })()}
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}
