@@ -310,13 +310,13 @@ function ExperienceSummaryCard({
         </ul>
       ) : null}
 
-      {summary.journeyLines && summary.journeyLines.length > 0 ? (
+      {hasCompleteJourneyPricing(summary.journeyLines) ? (
         <div className="mt-4 pt-3 border-t border-[color:var(--border)]" data-testid="checkout-drawer-journey-lines">
           <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
             Travellers
           </p>
           <ul className="mt-2 space-y-1">
-            {summarizeJourneyLines(summary.journeyLines).map((row) => (
+            {summarizeJourneyLines(summary.journeyLines!).map((row) => (
               <li
                 key={row.key}
                 className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]/80 font-sans"
@@ -337,6 +337,7 @@ function ExperienceSummaryCard({
           </ul>
         </div>
       ) : null}
+
 
       {summary.addOns && summary.addOns.length > 0 ? (
         <div className="mt-4 pt-3 border-t border-[color:var(--border)]">
