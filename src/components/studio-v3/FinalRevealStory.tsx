@@ -30,6 +30,7 @@ import {
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import { cn } from "@/lib/utils";
+import { formatGuestComposition } from "./formatGuests";
 import parchmentLetter from "@/assets/studio-v3/reveal-letter-parchment.jpg";
 
 // Roman numerals for chapter markers — the reveal reads like a bound book,
