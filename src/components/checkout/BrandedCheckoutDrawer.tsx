@@ -5,6 +5,16 @@ import { Lock, X, MapPin, Clock, Users, Calendar } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
+import {
+  summarizeJourneyLines as summarizeJourneyLinesShared,
+  type CheckoutJourneyLine as SharedJourneyLine,
+  type JourneyBand as SharedJourneyBand,
+} from "@/lib/checkout/journeyDisplay";
+
+// Re-exports so existing importers keep working.
+export type JourneyBand = SharedJourneyBand;
+export type CheckoutJourneyLine = SharedJourneyLine;
+export const summarizeJourneyLines = summarizeJourneyLinesShared;
 
 /**
  * BrandedCheckoutDrawer
