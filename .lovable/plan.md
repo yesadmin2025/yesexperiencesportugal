@@ -1,98 +1,92 @@
-# Studio Pricing Consistency — Total as Source of Truth
+# Studio Add-Ons Reactivity — Instant Price Updates
 
-## Problem (verified in `src/components/studio-v3/SignaturePriceCard.tsx`)
+## Diagnosis
 
-Today the reveal card renders two prices computed on different tracks:
+Wiring already exists (`SignaturePriceCard` → `onAddOnsChange` → `StudioV3.handleAddOnsChange` → `setSelectedAddOnIds` → controlled rerender), but three defects delay/desync the price:
 
-- **Per-guest** (`studio-v3-base-price`) — `displayPerPaxEur`, resolved from Viator per-guest tier data (`useTourPriceTiers`) or the catalogue `priceFrom`. It does NOT include add-ons.
-- **Party total** (`studio-v3-party-total`) — `displayPerPaxEur × partyCount + Σ add-on line items (unit-aware)`.
+1. **Controlled `selectedAddOnIds` is a fresh `Array.from(...)` on every render** (line 223–226). Referential inequality retriggers the sync effect at line 300 on every render. That effect calls `onAddOnsChange(buildSummary(...))` unconditionally, which calls `setSelectedAddOnItems(newArrayEveryTime)` in the parent — new array identity → parent rerenders → child rerenders → effect fires again. React usually escapes this via primitive bail-outs on the id list, but under load it produces jank and delays paint of the toggled price.
+2. **Optimistic vs source-of-truth ordering.** `commitAddOnIds` in controlled mode calls `onAddOnsChange(buildSummary(next))` (good — instant), then React re-renders with the parent's new `controlledAddOnIds`, and the sync effect fires `onAddOnsChange` again with the SAME ids but a new items array reference — parent state churn, no visible price change.
+3. **Chip visual state changes only after parent state round-trips.** `aria-pressed`/highlight read from `selectedAddOnIds` which is `controlledAddOnIds` in controlled mode → depends on the parent round-trip. If the parent update is delayed (batched with other setState), the click feels laggy.
 
-When the traveller toggles an add-on:
-- The total updates (add-ons added).
-- The per-guest number stays static.
+## Fix (frontend/presentation only)
 
-Result: `perPerson × guests ≠ total` on screen. Same drift occurs when guests change and add-on line items use `per_group`/`per_vehicle`/`fixed` units (they don't scale linearly with headcount).
+### `src/components/studio-v3/SignaturePriceCard.tsx`
 
-## Fix — single source of truth
+1. **Stabilise `selectedAddOnIds` identity.** Replace the `Array.from` memo with a content-hash memo so equal id lists keep the same array reference:
+   ```ts
+   const controlledKey = (controlledAddOnIds ?? []).join("|");
+   const selectedAddOnIds = useMemo<string[]>(
+     () => (isControlled ? [...(controlledAddOnIds ?? [])] : uncontrolledAddOnIds),
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+     [isControlled, controlledKey, uncontrolledAddOnIds],
+   );
+   ```
+   Now the sync effect fires only when ids actually change.
 
-Total is the only computed price. Per-guest is a pure derivation of it.
+2. **Optimistic local mirror for instant chip feedback (controlled mode).** Track the last committed id list in a `useRef` and compute chip `selected` from `Set(nextIds || selectedAddOnIds)` where `nextIds` is the just-committed list captured synchronously in `toggleAddOn`. Simpler alternative implemented in this plan: keep `uncontrolledAddOnIds` as the always-updated local mirror even in controlled mode (dual write), and read chip state from the union. Concretely:
+   ```ts
+   const commitAddOnIds = (next: string[]) => {
+     setUncontrolledAddOnIds(next);         // instant local paint
+     if (isControlled) onAddOnsChangeRef.current?.(buildSummary(next));
+   };
+   const effectiveIds = isControlled ? (controlledAddOnIds ?? []) : uncontrolledAddOnIds;
+   ```
+   Read `effectiveIds` (memoised by content hash) everywhere `selectedAddOnIds` is read today. Chips flip in the same frame as the click; parent state syncs on the next tick without blocking paint.
 
-```ts
-const totalGuests = (adults ?? 0) + (minorAges?.length ?? 0);
-// fall back to state.guests when the adults/minors split isn't set yet
-const effectiveGuests = totalGuests > 0 ? totalGuests : (guests ?? 1);
+3. **Dedupe the sync effect.** Only call `onAddOnsChange` from the effect when the id list actually changed since the last emission (compare against a `useRef<string>` of the last emitted joined key). Prevents the redundant re-emit that churns parent items array.
 
-const total = partyTotalEur;                     // already unit-aware
-const perPerson = effectiveGuests > 0
-  ? Math.round(total / effectiveGuests)
-  : 0;
-```
+4. **Move price derivations off the round-trip.** `addOnsTotalEur`, `addOnsDisplayPartyEur`, `partyTotalEur`, `perPersonDerived` already depend on `selectedAddOns` (derived from `selectedAddOnIds`). With step 2 + step 1 they recompute in the same render as the click. No further changes.
 
-Both numbers rerender from the same `total` on every add-on toggle and every guest change.
+5. **Visual feedback ≤200ms.** Chip already has `transition-colors duration-200`, `aria-pressed`, gold border, check icon fade, and a 180ms pending shimmer (`pendingAddOnId`). Confirm nothing longer than 200ms:
+   - Keep `duration-200` on background/border.
+   - Keep 180ms `pendingAddOnId` shimmer (reduced-motion safe).
+   - No debounce/setTimeout on the price recompute path.
 
-## Scope of changes (frontend/presentation only)
+### `src/components/studio-v3/StudioV3.tsx`
 
-### 1. `src/components/studio-v3/SignaturePriceCard.tsx`
+6. **Dedupe `handleAddOnsChange` writes** so `setSelectedAddOnItems` and `setSelectedAddOnsTotalEur` skip identical payloads:
+   ```ts
+   setSelectedAddOnItems((prev) =>
+     prev.length === summary.items.length &&
+     prev.every((p, i) => p.id === summary.items[i].id && p.amount === summary.items[i].amount)
+       ? prev
+       : summary.items,
+   );
+   setSelectedAddOnsTotalEur((prev) => (prev === summary.totalEur ? prev : summary.totalEur));
+   ```
+   Stops the render loop the sync effect could trigger.
 
-- Keep `partyTotalEur` as the authoritative computation (base × guests + Σ unit-aware add-on line items). No changes to how it's derived.
-- Replace the rendered per-guest number at line 559 (`€{displayPerPaxEur ?? priceEur}`) with `€{perPersonDerived}`, where `perPersonDerived = Math.round(partyTotalEur / effectiveGuests)`.
-- Update the `data-per-pax-eur` attribute (line 554) to `perPersonDerived` so tests read the same value the user sees.
-- Retain `priceEur` internally as the **base anchor** used to compute add-on line items (`addOnEurFor({ baseEur: priceEur, … })`) and for the `data-base-price-eur` catalogue anchor attribute (required by `price-source-of-truth.test.tsx`). It is no longer rendered as text.
-- Remove the tier-picker UI display of per-guest tiers (`tierRows`, `cheapestRealTier`, "drops to €X/pp with N guests" hint) — they show static per-guest numbers that will disagree with the derived per-person once add-ons are on. The tier data itself stays available to `useTourPriceTiers` for computing the base `priceEur` anchor per party size, but no per-tier UI row is shown.
-- Ensure both `studio-v3-base-price` (now derived per-person) and `studio-v3-party-total` are rendered from the same `partyTotalEur` value in the same render pass — they already are; this fix just aligns them mathematically.
-- Add a dev-only invariant check:
-  ```ts
-  if (import.meta.env.DEV && partyTotalEur != null && effectiveGuests > 0) {
-    if (Math.abs(perPersonDerived * effectiveGuests - partyTotalEur) > effectiveGuests) {
-      console.error("[studio-v3] price mismatch", { partyTotalEur, perPersonDerived, effectiveGuests });
-    }
-  }
-  ```
-  Tolerance = `effectiveGuests` € to absorb the single rounding step; anything larger is a real drift.
+## Tests
 
-### 2. `src/components/studio-v3/RunningInvestmentRibbon.tsx`
+### Unit — `src/components/studio-v3/__tests__/add-ons-reactivity.test.tsx` (new)
 
-The ribbon line currently prints `from €${priceFromEur} / guest · party of ${guests} · ~€${totalK}`, using the static catalogue `priceFrom` for per-guest. Change to derive both from the same source:
-- Compute `partyTotal = priceFromEur × guests + Σ selected add-on line items` (add-on selection lives on `state.selectedAddOnIds` if present — reuse the same helper as the price card, or accept `partyTotalEur` as a prop from the parent that already knows it).
-- Render `perGuest = Math.round(partyTotal / totalGuests)` and `total = partyTotal`.
-- If ribbon has no access to add-on selection at its mount point, pass `partyTotalEur` down from `StudioV3.tsx` (already computed there for the price card).
+- Mount `SignaturePriceCard` with `guests=3`.
+- `fireEvent.click(chip)` and, **in the same `act` flush**, assert:
+  - chip has `aria-pressed="true"` and `data-state="checked"` (or `pending` then `checked` after 200ms).
+  - `studio-v3-party-total` text changed by the expected delta.
+  - `studio-v3-base-price[data-per-pax-eur]` === `round(newPartyTotal / 3)`.
+- Toggle off in a second click and assert both revert in the same flush.
+- Assert no `console.error` (rules out the derivation invariant added last turn).
 
-### 3. `src/components/builder/StickyBar.tsx`
+### Unit — controlled parity
 
-Currently `const total = pricePerPersonEur * guests`. This module is legacy Builder (not Studio V3) — **out of scope** unless it's also mounted inside Studio V3. Grep confirms it's Builder-only. Leave untouched.
+- Mount with controlled `selectedAddOnIds` + `onAddOnsChange` spy. Assert:
+  - Chip flips visually **before** the parent has re-supplied new `selectedAddOnIds` (call `onAddOnsChange` spy with a `no-op` and confirm chip state — proves optimistic paint).
+  - Spy called exactly once per user toggle (no double emission from the sync effect).
 
-### 4. Any other Studio V3 surface displaying per-guest
+### E2E — existing suites cover the frame-tight contract
 
-Grep for `data-testid="studio-v3-base-price"`, `€{priceEur}`, `/ guest` under `src/components/studio-v3/`. Every render site must use the derived `perPersonDerived`, never the raw `priceEur`/`displayPerPaxEur`.
-
-## Test updates
-
-### Update
-- `src/components/studio-v3/__tests__/price-source-of-truth.test.tsx`
-  - The "party total = per-pax × guests" test still holds because `perPersonDerived = round(total / guests)` ⇒ `perPersonDerived × guests ≈ total` (within €guests). Loosen the exact-equality assertion to `Math.abs(perPax * 3 - partyTotal) <= 3`.
-  - The "add-ons update per-pp total by catalogue %" test currently reads `studio-v3-add-ons-total` (per-pax add-ons subtotal). Keep — that subtotal is still unit-`per_person`-based per catalogue and unchanged.
-  - `data-base-price-eur` anchor attribute still equals `tour.priceFrom` — kept.
-
-### Add
-- `src/components/studio-v3/__tests__/pricing-consistency.test.tsx` (new):
-  1. Mount `SignaturePriceCard` with `guests=3`, no add-ons → assert `perPersonDerived × 3 === partyTotalEur` (±3).
-  2. Toggle one `per_person` add-on → both values update in the same render, invariant still holds.
-  3. Toggle one `per_group` add-on → per-guest number changes (total spread across guests), invariant holds.
-  4. Change guests 3 → 5 → per-guest updates, invariant holds.
-  5. In dev mode, force an artificial mismatch (via a stubbed prop path) and assert `console.error` is called with `[studio-v3] price mismatch`.
-
-### E2E
-- `e2e/studio-v3-final-investment-live.spec.ts` reads `studio-v3-party-total` — unchanged behaviour.
-- Add an assertion in the same spec: on every add-on toggle, `Number(baseEl.getAttribute("data-per-pax-eur")) * partyCount` is within `partyCount` € of the party-total number.
+- `e2e/studio-v3-add-ons-same-frame.spec.ts` — passes today and will keep passing (stronger dedupe, not weaker).
+- `e2e/studio-v3-final-investment-live.spec.ts` — asserts party total updates immediately on each toggle.
+- Add an `expect(page.getByTestId("studio-v3-base-price").getAttribute("data-per-pax-eur"))` × `partyCount` ≈ party-total assertion after each toggle in the same spec.
 
 ## Out of scope
 
-- No changes to add-on catalogue, `signatureTours.priceFrom`, tier pricing hook, Viator/USD conversion, or checkout server functions.
-- No backend / RLS / migrations.
-- Builder (non-Studio-V3) sticky bar untouched.
+- No changes to add-on catalogue, checkout server functions, or backend.
+- No visual redesign — motion tokens (200ms transition, 180ms pending shimmer) are already brand-spec.
 
 ## Rollout
 
-1. Land the derivation + dev invariant + ribbon fix + test suite in one commit.
-2. CI runs `price-source-of-truth`, new `pricing-consistency`, and `studio-v3-final-investment-live` — all must pass.
-3. Manual mobile QA on `/studio-v3?e2e=1`: walk to reveal, toggle each add-on, change guest count 2↔5, confirm per-guest and total always agree on screen.
+1. Ship the four SignaturePriceCard changes + StudioV3 dedupe in one commit.
+2. Run the new unit test + existing `studio-v3-add-ons-*` e2e + `studio-v3-final-investment-live` — all green before merge.
+3. Manual mobile QA on `/studio-v3?e2e=1`: reach reveal, tap each add-on chip, confirm chip highlights within 200ms and both per-guest and total numbers change in the same frame.
