@@ -3,9 +3,11 @@ import {
   ADD_ON_CATALOG,
   deriveTimeOfDay,
   deriveAnchorStop,
+  deriveMaxGuests,
   selectSignatureAddOns,
   type SignatureAddOn,
 } from "@/data/signatureAddOns";
+
 
 const arrabidaTour = {
   id: "arrabida-wine-allinclusive",
@@ -77,4 +79,34 @@ describe("E3 add-on compatibility fields", () => {
     const middayCount = picks.filter((a) => deriveTimeOfDay(a) === "midday").length;
     expect(middayCount).toBeLessThanOrEqual(1);
   });
+
+  it("derives maxGuests conservatively from add-on nature", () => {
+    const workshop = ADD_ON_CATALOG["lisbon-arrabida"].find((a) => a.id === "azulejo-workshop")!;
+    const boat = ADD_ON_CATALOG["lisbon-arrabida"].find((a) => a.id === "coastal-boat-ride")!;
+    const picnic = ADD_ON_CATALOG["lisbon-arrabida"].find((a) => a.id === "hidden-cove-picnic")!;
+    const detour = ADD_ON_CATALOG["lisbon-arrabida"].find((a) => a.id === "sintra-detour")!;
+    expect(deriveMaxGuests(workshop)).toBe(8);
+    expect(deriveMaxGuests(boat)).toBe(12);
+    expect(deriveMaxGuests(picnic)).toBe(10);
+    expect(deriveMaxGuests(detour)).toBeUndefined();
+  });
+
+  it("selector honors derived cap when explicit maxGuests is unset", () => {
+    // Workshop derived cap = 8; party of 10 must drop it, party of 6 keeps it.
+    const picksSmall = selectSignatureAddOns({
+      resolvedTour: arrabidaTour,
+      stopCount: 5,
+      durationLabel: "8h",
+      guests: 6,
+    });
+    const picksLarge = selectSignatureAddOns({
+      resolvedTour: arrabidaTour,
+      stopCount: 5,
+      durationLabel: "8h",
+      guests: 10,
+    });
+    expect(picksSmall.some((a) => a.id === "azulejo-workshop")).toBe(true);
+    expect(picksLarge.some((a) => a.id === "azulejo-workshop")).toBe(false);
+  });
 });
+
