@@ -15,6 +15,7 @@ import type { StudioV3State } from "./types";
 import { resolveStudioV3Route } from "./curation";
 import { signatureTours } from "@/data/signatureTours";
 import { regionalVoiceFor } from "./regionalVoice";
+import { formatGuestComposition } from "./formatGuests";
 
 const DISMISS_KEY = "studio-v3-investment-ribbon-dismissed";
 
