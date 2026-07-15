@@ -7,8 +7,12 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { PROPOSAL_FAQ } from "@/content/seo-faq";
 import imgRomantic from "@/assets/exp-romantic.jpg";
-import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
-import imgTroiaBeach from "@/assets/tours/troia-comporta/beach.jpg";
+import coupleVineyardAsset from "@/assets/owner-photos/couple-vineyard.jpeg.asset.json";
+import wineCheersAsset from "@/assets/owner-photos/wine-cheers-arch.jpeg.asset.json";
+import arrabidaGroupAsset from "@/assets/owner-photos/arrabida-viewpoint-group.jpeg.asset.json";
+const imgCoupleVineyard = coupleVineyardAsset.url;
+const imgWineCheers = wineCheersAsset.url;
+const imgArrabidaGroup = arrabidaGroupAsset.url;
 
 const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/proposal-in-portugal";

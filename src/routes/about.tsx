@@ -6,8 +6,6 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
-import { GuestMomentsStrip } from "@/components/ui/GuestMomentsStrip";
-import { ABOUT_MOMENTS } from "@/content/guest-moments";
 import {
   BASED_IN_SHORT,
   EMAIL,
@@ -98,14 +96,7 @@ function Page() {
         </div>
       </section>
 
-      {/* Guest moments — real photography from actual journeys */}
-      <GuestMomentsStrip
-        eyebrow="From the road"
-        title="Faces, tables,"
-        titleEm="viewpoints."
-        photos={ABOUT_MOMENTS}
-        surface="ivory"
-      />
+
 
 
 
