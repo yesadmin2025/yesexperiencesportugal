@@ -96,8 +96,8 @@ describe("StudioV3ProgressStepper · telemetry contract", () => {
     render(<StudioV3ProgressStepper phase="storyboard" onJumpToBeat={onJump} />);
     recordMock.mockClear();
 
-    fireEvent.click(screen.getByRole("button", { name: /return to region/i }));
-    fireEvent.click(screen.getByRole("button", { name: /return to rhythm/i }));
+    fireEvent.click(screen.getByRole("button", { name: /return to feel/i }));
+    fireEvent.click(screen.getByRole("button", { name: /return to shape/i }));
 
     expect(onJump).toHaveBeenCalledTimes(2);
     expect(recordMock).not.toHaveBeenCalled();
