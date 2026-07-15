@@ -58,7 +58,7 @@ const BLOCKS = [
       "Private groups of any size, scoped around the right transport, guides, suppliers and timing · invoice & DMC support · designed around your goals.",
     local:
       "We handle the moving parts on the ground — real driving times, real venues, real partners.",
-    image: imgArrabidaWineLunch,
+    image: imgWineryGroup,
     icon: Users,
   },
   {
@@ -69,7 +69,7 @@ const BLOCKS = [
     practical:
       "Multi-day flow, regional logistics, meeting-friendly venues, cultural moments built into the rhythm.",
     local: "Coordinated by a local host who knows how each piece of the day connects.",
-    image: imgSintraEstates,
+    image: imgWineCheers,
     icon: Compass,
   },
   {
@@ -78,7 +78,7 @@ const BLOCKS = [
     emotional: "When it matters who's in the room and how the day feels — we shape it accordingly.",
     practical: "Small groups · private settings · careful pacing · NDAs welcome.",
     local: "Planned end to end with our local team — every detail confirmed before the day.",
-    image: imgFatimaNazare,
+    image: imgTastingCake,
     icon: ClipboardCheck,
   },
 ];
