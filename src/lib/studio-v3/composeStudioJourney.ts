@@ -184,7 +184,10 @@ function scoreStop(stop: RegionStop, input: ComposeInput): ScoreBreakdown {
   const targetEnergy = RHYTHM_ENERGY[input.rhythm];
   const rhythm = stop.affinity.energy?.includes(targetEnergy) ? 3 : 0;
 
-  const who = stop.affinity.companions?.includes(input.who) ? 2 : 0;
+  // RegionStop companions vocabulary uses "group" for what the traveller-facing
+  // Studio calls "friends"; map before matching.
+  const companion = input.who === "friends" ? "group" : input.who;
+  const who = stop.affinity.companions?.includes(companion) ? 2 : 0;
 
   // Budget: no `tier` field on RegionStop, so proxy via editorial `priority`.
   // Higher-priority (marquee) stops fit "signature"/"rare" better; lower-
@@ -251,7 +254,7 @@ function simulateDay(
   let drive = 0;
   let dwell = 0;
   let maxHopKm = 0;
-  let prev = origin;
+  let prev: { lat: number; lng: number } = { lat: origin.lat, lng: origin.lng };
   for (const s of stops) {
     const km = haversineKm(prev, s.coords);
     if (km > maxHopKm) maxHopKm = km;
