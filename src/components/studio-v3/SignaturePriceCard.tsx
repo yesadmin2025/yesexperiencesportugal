@@ -700,9 +700,15 @@ export function SignaturePriceCard({
               className="mb-2 w-full text-center text-[10.5px] uppercase tracking-[0.24em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
             >
-              <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
+              {isRefine ? (
+                "Enhance your experience"
+              ) : (
+                <>
+                  <span style={{ color: "var(--gold)" }}>—</span> Make the day yours
+                </>
+              )}
             </legend>
-            {remainingMinutes != null && remainingMinutes > 0
+            {!isRefine && remainingMinutes != null && remainingMinutes > 0
               ? (() => {
                   const totalBudget = remainingMinutes; // free minutes on the base day
                   const usedPct = Math.min(100, Math.round((addOnsMinutes / totalBudget) * 100));
