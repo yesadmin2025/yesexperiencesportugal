@@ -1,66 +1,56 @@
-# Story Output → Narrative Mode
+# Checkout — Summary + Payment
 
-Turn the Final Reveal (FinalRevealStory.tsx) from a numbered chapter list into a single flowing editorial narrative. Structural change only — no pricing/logic/data changes.
+Simplify `src/components/studio-v3/CheckoutSummary.tsx` so the summary card shows exactly the five items requested, in order, then Stripe below. Zero price math on this surface.
 
-## What changes
+## Summary card (top) — exact contents, in order
 
-**File:** `src/components/studio-v3/FinalRevealStory.tsx` (only file touched)
+1. **Date** — `guestDetails.tourDate ?? state.dateExact`, formatted
+2. **Guests** — `formatGuestComposition(adults, minorAges, guestDetails.guests)` → "N guests (X adults, Y children)" — same helper the refine page uses
+3. **Stops** — resolved from the same priority chain the reveal uses: `state.editedRoutePoints` → composed stops passed via a new `composedStops` prop → `tour.stops`. Rendered as a compact stacked list of stop labels only (no stories, no numerals). Guarantees the checkout stops match refine exactly.
+4. **Add-ons** — `selectedAddOns` from props, each row `· label ······ €price` using existing `formatEur` (display only, no math)
+5. **Total** — `totalEur` from props, with `perPaxEur` as small subline. **No calculation** — both values come straight from the same props the refine page uses.
 
-### 1. Title
-Replace the current `REVEAL_TITLE` italic line + journey subtitle with:
+## What is removed from the summary card
 
-> **Your private day in {region}**
+To eliminate "checkout confusion" and honor the strict list:
+- Pickup row
+- Language row
+- Start time row
+- Travellers age-band block (`resolveJourneyPricing(...)` → itemized per-traveller %/€) — this is a derived recalculation on the page and is explicitly out per "DO NOT recalculate price here"
+- "Included" list (inclusions) — belongs to the reveal, not the payment step
 
-Region resolved from `state.destinationIntent` → friendly label (Arrábida, Sintra & the Atlantic Coast, Alentejo, Douro, Lisbon, or a graceful fallback "Portugal" when unknown). Region-label helper added locally to the file (pure, no new module).
+Also removes the "Download one-pager (PDF)" CTA on this surface — not part of the requested layout, adds cognitive load right before payment. PDF stays available on the reveal (unchanged).
 
-Keep the small meta line (date · pickup · guests) unchanged directly below the title.
+## What is kept (unchanged behavior)
 
-### 2. Intro paragraph
-Add one deterministic 2-sentence intro immediately under the title/meta, built from `state.feeling` + companions + region — same restraint rules as `compose-live-story` (no invented places/partners/prices, ≤ 280 chars, no exclamations). Deterministic template, no server call — the AI intro already lives elsewhere in the flow; here we want zero-latency guaranteed copy so the reveal never blanks.
-
-### 3. Body: narrative, not a list
-Replace the `<ol>` of chapter items with a single `<div>` of `<p>` paragraphs — one paragraph per stop, joined with editorial connectives that rotate by index:
-
-- 1st stop: *"You'll start your day in {label}. {story}"*
-- middle stops: *"Then continue towards {label}…"*, *"Along the way, {label}…"*, *"As the afternoon opens, {label}…"*, *"Later, {label}…"* (rotated, never repeating the same opener twice in a row)
-- last stop: *"To close the day, {label}. {story}"*
-
-Rules enforced:
-- No `Stop 1 / Chapter I / roman numerals / bullets / <li>`
-- No visible label header — the label is folded into the sentence
-- If a stop has no `story` copy, the connective sentence stands alone (no empty paragraph)
-
-### 4. Add-ons woven into the story
-Selected add-ons no longer render as pseudo-chapters at the end. Instead, each selected add-on becomes an *italic inline paragraph* inserted after the stop that best matches its theme, falling back to "before the day closes" position when no match. Copy pattern:
-
-> *"Because you've chosen the {addon.label}, this is where your day opens to {themed continuation}."*
-
-Themed continuation is a small deterministic map keyed by add-on id/keyword (boat/sea → "the sea", helicopter → "the coast from above", private chef → "a long, quiet table", photographer → "moments you'll keep", etc.), with a neutral fallback ("something quieter and made just for you"). No invented facts, no prices in the sentence — price stays in the collapsible inclusions block below (unchanged).
-
-If no add-ons are selected: nothing is inserted — the story reads clean.
-
-### 5. Removed
-- `ROMAN` array + `romanFor()` helper
-- `<ol>` / `<li>` structure and roman-numeral gutter span
-- `· your addition` micro-label
-- `addOnBeats` array
-
-### 6. Preserved unchanged
-- Parchment letter card frame, image, gradient
-- Meta line (date · pickup · guests)
+- Back button (top-left)
+- Header: eyebrow + `CHECKOUT_HEADER` + italic tour title
+- Guest identity recap (name / email / phone + Edit button) — this is *who is booking*, not pricing, and is required for trust before payment
 - `INSTANT_CONFIRMATION` reassurance line
-- Collapsible "See what's included" details block (inclusions list + add-on price rows + total)
-- CTAs (Continue / Save / Back)
-- `data-testid="studio-v3-final-reveal"`, `data-studio-v3-screen="storytelling"`, `data-testid="studio-v3-final-reveal-letter"` — kept so existing e2e specs still resolve
-- `data-testid="studio-v3-final-reveal-timeline"` — kept on the new narrative wrapper (rebound to the `<div>` container) so timeline-count assertions still pass by counting `<p>` children instead of `<li>`
+- Bottom: Stripe Embedded Checkout when `clientSecret + publishableKey` are set; otherwise sticky "Reserve and pay" CTA that opens the session (existing logic, untouched)
+- All existing testids: `studio-v3-checkout-summary`, `-cta-bar`, `-reserve`, `-stripe-inline`. The removed `-travellers` and `-pdf` testids go with the removed blocks — checked against e2e specs before deletion.
+
+## Wiring
+
+**File edited:** `src/components/studio-v3/CheckoutSummary.tsx`
+- Drop imports no longer used: `Download`, `Loader2`, `CtaButton` (still used by sticky bar — keep), `BookingCtaSkeleton` (still used — keep), `resolveJourneyPricing`, `pdf`, `@react-pdf/renderer`, `signatureOnePagerPdf`, PDF state + handler.
+- Add prop `readonly composedStops?: ReadonlyArray<{ label: string }>` (optional; deep-link edge case falls back to `tour.stops`).
+- Resolve `stopsForSummary` using the same chain as FinalRevealStory.
+
+**File edited:** `src/components/studio-v3/StudioV3.tsx`
+- At the CheckoutSummary mount, pass `composedStops={resolvedStops}` — reusing the same value already computed for the refine/reveal surfaces (no duplication, single source of truth).
 
 ## Verification
-- Build + typecheck pass
-- Manual walkthrough on 393×588: title reads "Your private day in {region}", one flowing block of paragraphs, no numerals, no bullets, add-on sentence italicized inline when toggled
-- Toggle add-ons on/off → paragraphs appear/disappear in place; pricing card unaffected
-- Existing reveal e2e specs (`studio-v3-reveal-*`) still find their testids
+
+- Typecheck + build pass
+- Grep for `studio-v3-checkout-summary-travellers` and `studio-v3-checkout-summary-pdf` in `e2e/` and `src/` to confirm no test relies on them; if any do, patch those specs in the same turn.
+- Mobile 393×588 walkthrough: exactly five summary rows visible in the card (Date, Guests, Stops, Add-ons, Total) → Stripe below (or sticky Reserve CTA)
+- Toggle add-ons upstream → row list + total update via the same props the refine page uses (proves same source of truth)
+- Regression: existing Stripe embedded flow still mounts, still fires `onPaymentComplete`
 
 ## Out of scope
-- No changes to StudioV3 refine surface, pricing card, guest details, checkout
-- No new server functions or AI calls (deterministic copy only)
-- No new files, no dependency changes
+
+- No pricing/logic changes (`totalEur`, `perPaxEur`, add-on selection, session creation edge function)
+- No changes to Guest Details step, Reveal, Refine, or PriceCard
+- No copy changes to `INSTANT_CONFIRMATION`, `CHECKOUT_HEADER`, `CTA_RESERVE_AND_PAY`
+- No backend / Supabase / Stripe function changes

@@ -2615,6 +2615,21 @@ export function StudioV3() {
             selectedAddOns={selectedAddOnItems}
             adults={state.adults ?? null}
             minorAges={state.minorAges ?? []}
+            composedStops={(() => {
+              const resolved = resolveStudioV3Route({
+                feeling: state.feeling,
+                companions: state.companions,
+                rhythm: state.rhythm,
+                interests: state.interests,
+                pickup: state.pickup,
+                occasion: state.occasion,
+                considerations: state.considerations,
+                investment: state.investment,
+                destinationIntent: state.destinationIntent,
+              });
+              return resolved.routePoints.map((p) => ({ label: p.label }));
+            })()}
+
             perPaxEur={(() => {
               const tour = state.tourId ? findTour(state.tourId) : null;
               if (!tour) return null;
