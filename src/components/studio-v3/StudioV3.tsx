@@ -2496,6 +2496,8 @@ export function StudioV3() {
               tourPriceTiers={tourPriceTiers}
               selectedAddOnIds={selectedAddOnIds}
               onAddOnsChange={handleAddOnsChange}
+              resolvedPerPaxEur={resolvedJourney.perPaxEur}
+              resolvedTotalEur={resolvedJourney.totalEur}
             />
 
           </PhaseShell>
