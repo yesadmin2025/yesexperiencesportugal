@@ -351,7 +351,7 @@ function TailorPage() {
     // reality once they scale a wine-forward tour up to pickMax.
     const choiceTarget = blueprint.choice ? choiceSelected.size : 0;
     return coreKept + choiceTarget + optionalSelected.size;
-  }, [blueprint, tour.stops, skippedCore, optionalSelected]);
+  }, [blueprint, tour.stops, skippedCore, choiceSelected, optionalSelected]);
 
   const estimatedHours = useMemo(() => {
     const base = parseHours(tour.durationHours);
@@ -852,7 +852,7 @@ function TailorPage() {
                   {blueprint.choice && (
                     <>
                       <p className="mb-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
-                        Choose {blueprint.choice.pickCount} · {blueprint.choice.label}
+                        {blueprint.choice.label}
                       </p>
                       <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
                         {blueprint.choice.note}
@@ -860,7 +860,11 @@ function TailorPage() {
                       <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
                         {blueprint.choice.options.map((o) => {
                           const on = choiceSelected.has(o.id);
-                          const atLimit = !on && choiceSelected.size >= blueprint.choice!.pickCount;
+                          // Soft cap: only hard-disable at pickMax. Between
+                          // pickMin and pickMax the feasibility engine (via
+                          // tryToggleChoice) decides whether the day absorbs
+                          // the extra winery.
+                          const atLimit = !on && choiceSelected.size >= blueprint.choice!.pickMax;
                           return (
                             <li key={o.id}>
                               <button
