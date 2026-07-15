@@ -30,6 +30,7 @@ import {
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import { cn } from "@/lib/utils";
+import { formatGuestComposition } from "./formatGuests";
 import parchmentLetter from "@/assets/studio-v3/reveal-letter-parchment.jpg";
 
 // Roman numerals for chapter markers — the reveal reads like a bound book,
@@ -133,12 +134,11 @@ export function FinalRevealStory({
 
   const dateLabel = formatDate(state.dateExact);
   const pickupLabel = pickupCityLabel(state.pickup);
-  const guestsLabel =
-    typeof state.guests === "number" && state.guests > 0
-      ? state.guests === 1
-        ? "1 guest"
-        : `${state.guests} guests`
-      : null;
+  const guestsLabel = formatGuestComposition(
+    state.adults,
+    state.minorAges,
+    state.guests,
+  );
 
   const included: string[] = (() => {
     if (tour?.included && tour.included.length > 0) return tour.included;

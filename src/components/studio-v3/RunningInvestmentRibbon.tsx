@@ -15,6 +15,7 @@ import type { StudioV3State } from "./types";
 import { resolveStudioV3Route } from "./curation";
 import { signatureTours } from "@/data/signatureTours";
 import { regionalVoiceFor } from "./regionalVoice";
+import { formatGuestComposition } from "./formatGuests";
 
 const DISMISS_KEY = "studio-v3-investment-ribbon-dismissed";
 
@@ -65,10 +66,13 @@ export function RunningInvestmentRibbon({ state, hidden = false }: RunningInvest
   const voice = tour ? regionalVoiceFor(tour.region) : null;
 
   // Compose the live line.
+  const partyLabel =
+    formatGuestComposition(state.adults, state.minorAges, guests) ??
+    (guests != null ? `party of ${guests}` : null);
   let line: string;
-  if (priceFromEur != null && guests != null && partyTotalEur != null) {
+  if (priceFromEur != null && guests != null && partyTotalEur != null && partyLabel) {
     const totalK = (partyTotalEur / 1000).toFixed(partyTotalEur >= 10000 ? 0 : 1);
-    line = `from €${priceFromEur} / guest · party of ${guests} · ~€${totalK}K`;
+    line = `from €${priceFromEur} / guest · ${partyLabel} · ~€${totalK}K`;
   } else if (priceFromEur != null) {
     line = `from €${priceFromEur} / guest · shaped with you`;
   } else {

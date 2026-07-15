@@ -16,6 +16,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { findTour } from "@/data/signatureTours";
 import { pickupCityLabel } from "./curation";
+import { formatGuestComposition } from "./formatGuests";
 import {
   CHECKOUT_HEADER,
   CTA_RESERVE_AND_PAY,
@@ -223,9 +224,11 @@ export function CheckoutSummary({
         <Row
           label="Guests"
           value={
-            typeof guestDetails.guests === "number"
-              ? `${guestDetails.guests} ${guestDetails.guests === 1 ? "guest" : "guests"}`
-              : "—"
+            formatGuestComposition(
+              adults,
+              minorAges,
+              typeof guestDetails.guests === "number" ? guestDetails.guests : null,
+            ) ?? "—"
           }
         />
         <Row label="Pickup" value={pickupLabel} />

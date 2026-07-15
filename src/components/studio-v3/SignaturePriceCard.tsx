@@ -34,6 +34,7 @@ import { MountBadge } from "./useStudioDebug";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { recordStudioV3RevealPremium, recordStudioV3RevealAddOns } from "@/lib/studio-v3-telemetry";
 import { CTA_ASK_CURATOR, INCLUDED_HEADER_REFINE } from "@/content/signature-day-copy";
+import { formatGuestComposition } from "./formatGuests";
 
 /** Fixed USD→EUR conversion. We don't show "live FX" or hide behind decimals
  *  — this is a "from" anchor, rounded to the nearest €5 so it reads premium. */
@@ -87,6 +88,10 @@ export interface SignaturePriceCardProps {
   journeyTitle?: string | null;
   /** Number of travellers — when ≥2, party total is shown alongside per-pp. */
   guests?: number | null;
+  /** Adult count (18+) for guest-composition transparency in the header label. */
+  adults?: number | null;
+  /** Minor ages (0–17) for guest-composition transparency in the header label. */
+  minorAges?: readonly number[] | null;
   /** Real `included[]` from the resolved Signature — drives the footnote. */
   included?: ReadonlyArray<string>;
   /** Public Studio keeps pricing clean; legacy/tests can still exercise add-ons. */
@@ -141,6 +146,8 @@ export function SignaturePriceCard({
   onRefine,
   journeyTitle,
   guests,
+  adults = null,
+  minorAges = null,
   included,
   showAddOns = true,
   selectedAddOnIds: controlledAddOnIds,
@@ -596,10 +603,12 @@ export function SignaturePriceCard({
             <p
               className="mt-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+              data-testid="studio-v3-price-card-guests"
             >
-              {partyCount != null
-                ? `For ${partyCount} ${partyCount === 1 ? "guest" : "guests"}`
-                : "Per guest"}
+              {formatGuestComposition(adults, minorAges, partyCount) ??
+                (partyCount != null
+                  ? `For ${partyCount} ${partyCount === 1 ? "guest" : "guests"}`
+                  : "Per guest")}
             </p>
             <p
               data-testid="studio-v3-base-price"

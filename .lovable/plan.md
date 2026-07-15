@@ -1,92 +1,89 @@
-# Studio Add-Ons Reactivity — Instant Price Updates
+# Studio Guest Composition — Always-Visible Transparency
 
-## Diagnosis
+## Fix
 
-Wiring already exists (`SignaturePriceCard` → `onAddOnsChange` → `StudioV3.handleAddOnsChange` → `setSelectedAddOnIds` → controlled rerender), but three defects delay/desync the price:
+Introduce a single formatter and use it at every Studio V3 surface that displays a guests count so the split between adults and children stays visible from selection to checkout.
 
-1. **Controlled `selectedAddOnIds` is a fresh `Array.from(...)` on every render** (line 223–226). Referential inequality retriggers the sync effect at line 300 on every render. That effect calls `onAddOnsChange(buildSummary(...))` unconditionally, which calls `setSelectedAddOnItems(newArrayEveryTime)` in the parent — new array identity → parent rerenders → child rerenders → effect fires again. React usually escapes this via primitive bail-outs on the id list, but under load it produces jank and delays paint of the toggled price.
-2. **Optimistic vs source-of-truth ordering.** `commitAddOnIds` in controlled mode calls `onAddOnsChange(buildSummary(next))` (good — instant), then React re-renders with the parent's new `controlledAddOnIds`, and the sync effect fires `onAddOnsChange` again with the SAME ids but a new items array reference — parent state churn, no visible price change.
-3. **Chip visual state changes only after parent state round-trips.** `aria-pressed`/highlight read from `selectedAddOnIds` which is `controlledAddOnIds` in controlled mode → depends on the parent round-trip. If the parent update is delayed (batched with other setState), the click feels laggy.
+### New helper — `src/components/studio-v3/formatGuests.ts`
 
-## Fix (frontend/presentation only)
+```ts
+export function formatGuestComposition(
+  adults: number | null | undefined,
+  minorAges: readonly number[] | null | undefined,
+  fallbackGuests?: number | null,
+): string | null {
+  const adultCount = typeof adults === "number" && adults >= 0 ? adults : null;
+  const minorCount = minorAges?.length ?? 0;
+  const total =
+    adultCount != null
+      ? adultCount + minorCount
+      : typeof fallbackGuests === "number" && fallbackGuests > 0
+        ? fallbackGuests
+        : null;
+  if (total == null || total <= 0) return null;
+  const guestWord = total === 1 ? "guest" : "guests";
+  if (adultCount == null) return `${total} ${guestWord}`;
+  const adultWord = adultCount === 1 ? "adult" : "adults";
+  const childWord = minorCount === 1 ? "child" : "children";
+  return `${total} ${guestWord} (${adultCount} ${adultWord}, ${minorCount} ${childWord})`;
+}
+```
 
-### `src/components/studio-v3/SignaturePriceCard.tsx`
+Rule: when `adults` is unknown (early phases), fall back to `${total} guests` — never guess a split.
 
-1. **Stabilise `selectedAddOnIds` identity.** Replace the `Array.from` memo with a content-hash memo so equal id lists keep the same array reference:
-   ```ts
-   const controlledKey = (controlledAddOnIds ?? []).join("|");
-   const selectedAddOnIds = useMemo<string[]>(
-     () => (isControlled ? [...(controlledAddOnIds ?? [])] : uncontrolledAddOnIds),
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-     [isControlled, controlledKey, uncontrolledAddOnIds],
-   );
-   ```
-   Now the sync effect fires only when ids actually change.
+### Render sites to update (all in `src/components/studio-v3/`)
 
-2. **Optimistic local mirror for instant chip feedback (controlled mode).** Track the last committed id list in a `useRef` and compute chip `selected` from `Set(nextIds || selectedAddOnIds)` where `nextIds` is the just-committed list captured synchronously in `toggleAddOn`. Simpler alternative implemented in this plan: keep `uncontrolledAddOnIds` as the always-updated local mirror even in controlled mode (dual write), and read chip state from the union. Concretely:
-   ```ts
-   const commitAddOnIds = (next: string[]) => {
-     setUncontrolledAddOnIds(next);         // instant local paint
-     if (isControlled) onAddOnsChangeRef.current?.(buildSummary(next));
-   };
-   const effectiveIds = isControlled ? (controlledAddOnIds ?? []) : uncontrolledAddOnIds;
-   ```
-   Read `effectiveIds` (memoised by content hash) everywhere `selectedAddOnIds` is read today. Chips flip in the same frame as the click; parent state syncs on the next tick without blocking paint.
+1. **`FinalRevealStory.tsx`** — story chip line (lines ~136–140 and ~232). Replace `guestsLabel` with `formatGuestComposition(state.adults, state.minorAges, state.guests)`.
 
-3. **Dedupe the sync effect.** Only call `onAddOnsChange` from the effect when the id list actually changed since the last emission (compare against a `useRef<string>` of the last emitted joined key). Prevents the redundant re-emit that churns parent items array.
+2. **`SignaturePriceCard.tsx`** — the "For N guests" label above the per-guest number (currently `` `For ${partyCount} guest(s)` ``). Accept optional `adults` + `minorAges` props (default undefined); render `formatGuestComposition(adults, minorAges, partyCount)` when it returns non-null, else keep today's copy. Wire the props from `StudioV3.tsx` where the card is mounted (already passes `guests`).
 
-4. **Move price derivations off the round-trip.** `addOnsTotalEur`, `addOnsDisplayPartyEur`, `partyTotalEur`, `perPersonDerived` already depend on `selectedAddOns` (derived from `selectedAddOnIds`). With step 2 + step 1 they recompute in the same render as the click. No further changes.
+3. **`CheckoutSummary.tsx`** — Guests row `value` (lines ~226–228). Prefer `formatGuestComposition(adults, minorAges, guestDetails.guests)` over the current bare `N guest(s)`. The traveller-itemisation block below stays untouched (it's the priced breakdown, not the composition line).
 
-5. **Visual feedback ≤200ms.** Chip already has `transition-colors duration-200`, `aria-pressed`, gold border, check icon fade, and a 180ms pending shimmer (`pendingAddOnId`). Confirm nothing longer than 200ms:
-   - Keep `duration-200` on background/border.
-   - Keep 180ms `pendingAddOnId` shimmer (reduced-motion safe).
-   - No debounce/setTimeout on the price recompute path.
+4. **`RunningInvestmentRibbon.tsx`** — line `party of ${guests}`. Swap for `formatGuestComposition(state.adults, state.minorAges, state.guests)` when it returns non-null; keep the `from €X / guest · … · ~€YK` shape.
 
-### `src/components/studio-v3/StudioV3.tsx`
+5. **Refine surface** — the "refine" experience in Studio V3 is `RefineAccordion.tsx` / `RefineStopCard.tsx`, which currently render no guest string. Add a compact composition line at the top of `RefineAccordion` (single `<p data-testid="studio-v3-refine-guests">`) using the same formatter, so the traveller sees the split while refining stops. Only render when the formatter returns non-null.
 
-6. **Dedupe `handleAddOnsChange` writes** so `setSelectedAddOnItems` and `setSelectedAddOnsTotalEur` skip identical payloads:
-   ```ts
-   setSelectedAddOnItems((prev) =>
-     prev.length === summary.items.length &&
-     prev.every((p, i) => p.id === summary.items[i].id && p.amount === summary.items[i].amount)
-       ? prev
-       : summary.items,
-   );
-   setSelectedAddOnsTotalEur((prev) => (prev === summary.totalEur ? prev : summary.totalEur));
-   ```
-   Stops the render loop the sync effect could trigger.
+No other surface (map legend, add-on chips, etc.) displays a guests count.
+
+### Update dynamically
+
+Every consumer already receives `state.adults` and `state.minorAges` from `StudioV3.tsx`. The formatter is pure — a new render every time the props change is enough. No new state, no effects.
 
 ## Tests
 
-### Unit — `src/components/studio-v3/__tests__/add-ons-reactivity.test.tsx` (new)
+### Unit — `src/components/studio-v3/__tests__/format-guests.test.ts` (new)
 
-- Mount `SignaturePriceCard` with `guests=3`.
-- `fireEvent.click(chip)` and, **in the same `act` flush**, assert:
-  - chip has `aria-pressed="true"` and `data-state="checked"` (or `pending` then `checked` after 200ms).
-  - `studio-v3-party-total` text changed by the expected delta.
-  - `studio-v3-base-price[data-per-pax-eur]` === `round(newPartyTotal / 3)`.
-- Toggle off in a second click and assert both revert in the same flush.
-- Assert no `console.error` (rules out the derivation invariant added last turn).
+- `(2, [10, 8])` → `"4 guests (2 adults, 2 children)"`
+- `(1, [5])` → `"2 guests (1 adult, 1 child)"`
+- `(2, [])` → `"2 guests (2 adults, 0 children)"`
+- `(null, null, 3)` → `"3 guests"`
+- `(null, null, 0)` → `null`
 
-### Unit — controlled parity
+### Component
 
-- Mount with controlled `selectedAddOnIds` + `onAddOnsChange` spy. Assert:
-  - Chip flips visually **before** the parent has re-supplied new `selectedAddOnIds` (call `onAddOnsChange` spy with a `no-op` and confirm chip state — proves optimistic paint).
-  - Spy called exactly once per user toggle (no double emission from the sync effect).
+- `CheckoutSummary`: mount with `adults=2, minorAges=[10, 8]` → Guests row text contains `"4 guests (2 adults, 2 children)"`.
+- `FinalRevealStory`: mount with the same → meta chip contains the composition string.
+- `SignaturePriceCard`: mount with `adults=2, minorAges=[10]` and `guests=3` → header line reads `"3 guests (2 adults, 1 child)"` in place of `"For 3 guests"`.
 
-### E2E — existing suites cover the frame-tight contract
+### E2E — `e2e/studio-v3-guest-composition.spec.ts` (new)
 
-- `e2e/studio-v3-add-ons-same-frame.spec.ts` — passes today and will keep passing (stronger dedupe, not weaker).
-- `e2e/studio-v3-final-investment-live.spec.ts` — asserts party total updates immediately on each toggle.
-- Add an `expect(page.getByTestId("studio-v3-base-price").getAttribute("data-per-pax-eur"))` × `partyCount` ≈ party-total assertion after each toggle in the same spec.
+- Deep-link to the reveal via the existing `walkToReveal` helper.
+- Set 2 adults + add 1 minor via the Composition control.
+- Assert composition text is visible on:
+  - `[data-testid="studio-v3-reveal"]` story chip
+  - `[data-testid="studio-v3-price-card"]` header
+  - `[data-testid="studio-v3-refine-guests"]` (new)
+- Open the checkout drawer → assert Guests row includes the composition.
+- Remove the minor → all four sites drop back to `"2 guests (2 adults, 0 children)"` in the same interaction.
 
 ## Out of scope
 
-- No changes to add-on catalogue, checkout server functions, or backend.
-- No visual redesign — motion tokens (200ms transition, 180ms pending shimmer) are already brand-spec.
+- No changes to age-band pricing, checkout server function, or backend.
+- No new state model — reuses `state.adults` + `state.minorAges` already in Studio V3.
+- Composition selection UX itself (`Composition.tsx`) unchanged.
 
 ## Rollout
 
-1. Ship the four SignaturePriceCard changes + StudioV3 dedupe in one commit.
-2. Run the new unit test + existing `studio-v3-add-ons-*` e2e + `studio-v3-final-investment-live` — all green before merge.
-3. Manual mobile QA on `/studio-v3?e2e=1`: reach reveal, tap each add-on chip, confirm chip highlights within 200ms and both per-guest and total numbers change in the same frame.
+1. Land helper + 5 render-site edits + tests in one commit.
+2. Green: new unit + component tests, new e2e spec, existing `journey-revision` + `add-ons-same-frame` + `final-investment-live` specs.
+3. Mobile QA on `/studio-v3?e2e=1`: pick 2 adults + 1 child → composition visible on story, price card, refine, ribbon, and checkout.
