@@ -430,8 +430,31 @@ export function SignaturePriceCard({
     );
   }, [selectedAddOns, hasPrice, priceEur, displayGuests]);
   const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
-  const partyBaseEur =
-    displayPerPaxEur != null && partyCount != null ? displayPerPaxEur * partyCount : null;
+
+  // Age-band journey pricing — matches BrandedCheckoutDrawer exactly. Only
+  // applied when the traveller isn't previewing a different group size via
+  // the hidden picker (previewGuests !== null), because that preview is an
+  // adults-only "what-if" and would silently reprice minors otherwise.
+  const composedAdults = typeof adults === "number" && adults >= 1 ? adults : null;
+  const composedMinors = minorAges ?? [];
+  const journey = useMemo(() => {
+    if (previewGuests !== null) return null;
+    if (composedAdults == null) return null;
+    return resolveJourneyPricing(tour, composedAdults, composedMinors, effectiveOverrides);
+  }, [previewGuests, composedAdults, composedMinors, tour, effectiveOverrides]);
+  const journeyLines: readonly CheckoutJourneyLine[] | null = journey
+    ? (journey.lines as unknown as readonly CheckoutJourneyLine[])
+    : null;
+  const journeyRows = useMemo(
+    () => (journeyLines && journeyLines.length > 0 ? summarizeJourneyLines(journeyLines) : []),
+    [journeyLines],
+  );
+
+  const partyBaseEur = journey
+    ? journey.totalEur
+    : displayPerPaxEur != null && partyCount != null
+      ? displayPerPaxEur * partyCount
+      : null;
   const localPartyTotalEur =
     partyBaseEur != null ? partyBaseEur + addOnsDisplayPartyEur : null;
 
