@@ -217,7 +217,7 @@ export function CheckoutSummary({
                 <li key={a.id} className="flex justify-between gap-3">
                   <span>· {a.label}</span>
                   <span className="tabular-nums" style={{ color: "var(--teal)" }}>
-                    {formatEur(a.priceEur)}
+                    +{formatEur(a.amount)} · {a.unitLabel}
                   </span>
                 </li>
               ))}
