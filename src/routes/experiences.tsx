@@ -173,7 +173,7 @@ function ExperiencesPage() {
                   </div>
 
                   {/* Dual CTAs — Reserve (confirm as designed) +
-                      Make it yours (adjust details inside this same
+                      Tailor this day (adjust details inside this same
                       Signature, never a different tour). */}
                   <div className="mt-5 flex flex-col xs:flex-row gap-2.5">
                     <CtaButton
@@ -192,9 +192,9 @@ function ExperiencesPage() {
                       variant="ghost"
                       size="sm"
                       className="flex-1"
-                      aria-label={`Make ${t.title} yours`}
+                      aria-label={`Tailor ${t.title}`}
                     >
-                      Make it yours
+                      Tailor this day
                     </CtaButton>
                   </div>
                 </article>

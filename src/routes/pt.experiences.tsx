@@ -181,9 +181,9 @@ function ExperiencesPage() {
                       variant="ghost"
                       size="sm"
                       className="flex-1"
-                      aria-label={`Personalizar ${t.title}`}
+                      aria-label={`Adaptar ${t.title} ao seu dia`}
                     >
-                      Personalizar
+                      Adaptar este dia
                     </CtaButton>
                   </div>
                 </article>
