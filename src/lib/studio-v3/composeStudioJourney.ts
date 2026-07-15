@@ -327,7 +327,7 @@ export function composeStudioJourney(input: ComposeInput): ComposedJourney {
 
       // Leg-sanity guard: reject if any leg would exceed the composer ceiling.
       let legOk = true;
-      let prev = origin;
+      let prev: { lat: number; lng: number } = { lat: origin.lat, lng: origin.lng };
       for (const s of tentative) {
         if (!isPlausibleComposerLeg(prev, s.coords)) {
           legOk = false;
