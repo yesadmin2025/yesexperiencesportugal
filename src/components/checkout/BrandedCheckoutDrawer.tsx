@@ -170,15 +170,23 @@ export function BrandedCheckoutDrawer({
       : (summary.addOnsTotalEur ?? 0));
 
   const total = (() => {
-    if (summary.totalEur != null) return summary.totalEur;
-    if (summary.journeyTotalEur != null) {
+    if (summary.totalEur != null && Number.isFinite(summary.totalEur)) return summary.totalEur;
+    // Only trust journeyTotalEur when the underlying journey lines are
+    // fully populated — otherwise the number could reflect an incomplete
+    // composition (missing minor age) and would mismatch the itemised rows.
+    if (
+      summary.journeyTotalEur != null &&
+      Number.isFinite(summary.journeyTotalEur) &&
+      hasCompleteJourneyPricing(summary.journeyLines)
+    ) {
       return Math.round(summary.journeyTotalEur + addOnsPartyTotal);
     }
-    if (summary.pricePerPaxEur != null) {
+    if (summary.pricePerPaxEur != null && Number.isFinite(summary.pricePerPaxEur)) {
       return Math.round(summary.pricePerPaxEur * summary.guests + addOnsPartyTotal);
     }
     return null;
   })();
+
 
   useEffect(() => {
     if (open) prewarmStripeScript();
