@@ -1,21 +1,20 @@
 /**
- * CheckoutSummary — compact recap between Guest Details and Payment.
+ * CheckoutSummary — final step: tour summary on top, Stripe payment below.
  *
- * Shows a tight summary card (date, guests, pickup, language, inclusions,
- * additions, total) then hands off to the existing Stripe embedded flow.
- * Instant-confirmation language only — never "to be confirmed".
+ * Summary card shows exactly five rows in this order: Date · Guests · Stops
+ * · Add-ons · Total. No pricing math on this surface — totals come straight
+ * from the props the refine page already resolved, so summary and refine
+ * always match. Instant-confirmation language only.
  */
 
 import * as React from "react";
-import { ArrowLeft, Download, Loader2, Lock } from "lucide-react";
-import { toast } from "sonner";
+import { ArrowLeft, Lock } from "lucide-react";
 import { loadStripe, type Stripe } from "@stripe/stripe-js";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { findTour } from "@/data/signatureTours";
-import { pickupCityLabel } from "./curation";
 import { formatGuestComposition } from "./formatGuests";
 import {
   CHECKOUT_HEADER,
@@ -26,10 +25,8 @@ import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { cn } from "@/lib/utils";
-import { resolveJourneyPricing } from "@/data/signatureTourPricing";
 
-// One Stripe instance per publishable key, memoized across renders. Mirrors
-// BrandedCheckoutDrawer so we don't re-download stripe.js for the same key.
+// One Stripe instance per publishable key, memoized across renders.
 const stripeCache = new Map<string, Promise<Stripe | null>>();
 function getStripePromise(pk: string): Promise<Stripe | null> {
   if (!pk) return Promise.resolve(null);
@@ -46,30 +43,24 @@ export interface CheckoutSummaryProps {
   readonly selectedAddOns: SelectedAddOnSummary["items"];
   readonly perPaxEur: number | null;
   readonly totalEur: number | null;
-  /**
-   * Optional adults + minorAges — when both are set (adults ≥ 1 and at least
-   * one minor), the summary itemises each traveller with their age-band %,
-   * matching the server-side pricing used at Stripe checkout.
-   */
   readonly adults?: number | null;
   readonly minorAges?: readonly number[];
+  /**
+   * Stops the traveller was shown on refine. Same priority the reveal uses:
+   * editedRoutePoints → composedStops → tour.stops. Guarantees the checkout
+   * stops match the refine page exactly.
+   */
+  readonly composedStops?: ReadonlyArray<{ label: string }>;
   readonly submitting?: boolean;
   readonly onEditGuestDetails: () => void;
   readonly onBack: () => void;
   readonly onReserve: () => void;
-  /**
-   * When both are provided the summary renders Stripe Embedded Checkout
-   * inline directly below the recap — single-page: summary above, payment
-   * below. Both must point at the SAME journey revision as the summary.
-   */
   readonly clientSecret?: string | null;
   readonly publishableKey?: string | null;
-  /** Called when Stripe reports the embedded session as complete. */
   readonly onPaymentComplete?: (sessionId: string | null) => void;
   readonly className?: string;
   readonly testId?: string;
 }
-
 
 function formatEur(n: number | null): string {
   if (n == null || !Number.isFinite(n)) return "—";
@@ -102,6 +93,7 @@ export function CheckoutSummary({
   totalEur,
   adults = null,
   minorAges = [],
+  composedStops,
   submitting = false,
   onEditGuestDetails,
   onBack,
@@ -115,60 +107,23 @@ export function CheckoutSummary({
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your Signature";
   const dateLabel = formatDate(guestDetails.tourDate ?? state.dateExact);
-  const pickupLabel =
-    guestDetails.pickupAddress ||
-    pickupCityLabel(state.pickup) ||
-    "Pickup shared with your host";
-  const included: string[] =
-    tour?.included && tour.included.length > 0
-      ? tour.included
-      : ["Private guide", "Private transport", "All confirmed entries"];
+  const guestsLabel =
+    formatGuestComposition(
+      adults,
+      minorAges,
+      typeof guestDetails.guests === "number" ? guestDetails.guests : null,
+    ) ?? "—";
 
-  const [pdfLoading, setPdfLoading] = React.useState(false);
-  const handleDownloadPdf = async () => {
-    if (pdfLoading) return;
-    setPdfLoading(true);
-    try {
-      const [{ pdf }, { SignatureOnePager }] = await Promise.all([
-        import("@react-pdf/renderer"),
-        import("./signatureOnePagerPdf"),
-      ]);
-      const blob = await pdf(
-        <SignatureOnePager
-          data={{
-            title,
-            dateLabel,
-            guests: typeof guestDetails.guests === "number" ? guestDetails.guests : 2,
-            pickupLabel,
-            languageLabel: guestDetails.language === "pt" ? "Portuguese" : "English",
-            inclusions: included,
-            additions: selectedAddOns.map((a) => ({ label: a.label, priceEur: a.priceEur })),
-            totalEur,
-            perPaxEur,
-          }}
-        />,
-      ).toBlob();
-      const url = URL.createObjectURL(blob);
-      const slug = (title || "signature-day")
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "")
-        .slice(0, 60);
-      const isoBit = (guestDetails.tourDate ?? state.dateExact ?? "").replace(/[^0-9-]/g, "");
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = isoBit ? `signature-day-${slug}-${isoBit}.pdf` : `signature-day-${slug}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-    } catch (err) {
-      console.error("[CheckoutSummary] PDF generation failed", err);
-      toast.error("Couldn't generate the PDF — please try again.");
-    } finally {
-      setPdfLoading(false);
+  // Same priority chain as FinalRevealStory — labels only, no stories.
+  const stopLabels: string[] = (() => {
+    if (state.editedRoutePoints && state.editedRoutePoints.length > 0) {
+      return state.editedRoutePoints.map((p) => p.label);
     }
-  };
+    if (composedStops && composedStops.length > 0) {
+      return composedStops.map((p) => p.label);
+    }
+    return (tour?.stops ?? []).map((s) => s.label);
+  })();
 
   return (
     <section
@@ -212,7 +167,7 @@ export function CheckoutSummary({
         </p>
       </header>
 
-      {/* Summary card */}
+      {/* Summary card — Date · Guests · Stops · Add-ons · Total */}
       <div
         className="mt-8 border p-5 space-y-4"
         style={{
@@ -221,98 +176,43 @@ export function CheckoutSummary({
         }}
       >
         <Row label="Date" value={dateLabel ?? "Flexible"} />
-        <Row
-          label="Guests"
-          value={
-            formatGuestComposition(
-              adults,
-              minorAges,
-              typeof guestDetails.guests === "number" ? guestDetails.guests : null,
-            ) ?? "—"
-          }
-        />
-        <Row label="Pickup" value={pickupLabel} />
-        <Row
-          label="Language"
-          value={guestDetails.language === "pt" ? "Portuguese" : "English"}
-        />
-        {guestDetails.startTime ? <Row label="Start time" value={guestDetails.startTime} /> : null}
+        <Row label="Guests" value={guestsLabel} />
 
-        {(() => {
-          // Age-band itemisation — shown when the traveller went through
-          // the Composition control and captured minors. Mirrors what the
-          // Stripe edge function priced server-side.
-          const hasComposition =
-            typeof adults === "number" && adults >= 1 && (minorAges?.length ?? 0) > 0;
-          if (!hasComposition || !tour) return null;
-          const journey = resolveJourneyPricing(tour, adults!, minorAges ?? []);
-          if (!journey) return null;
-          return (
-            <div
-              className="pt-3 border-t"
-              style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
-              data-testid="studio-v3-checkout-summary-travellers"
+        {stopLabels.length > 0 ? (
+          <div
+            className="pt-3 border-t"
+            style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
+          >
+            <p
+              className="text-[10px] uppercase tracking-[0.22em] mb-2"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
-              <p
-                className="text-[10px] uppercase tracking-[0.22em] mb-2"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-              >
-                Travellers
-              </p>
-              <ul className="space-y-1 text-[13px]" style={{ color: "var(--charcoal)" }}>
-                {journey.lines.map((l, i) => {
-                  const label =
-                    l.kind === "adult"
-                      ? "Adult · 100%"
-                      : l.band === "youth"
-                        ? `Youth · age ${l.age} · 75%`
-                        : l.band === "child"
-                          ? `Child · age ${l.age} · 50%`
-                          : `Infant · age ${l.age} · free`;
-                  return (
-                    <li key={i} className="flex justify-between gap-3">
-                      <span>· {label}</span>
-                      <span
-                        className="tabular-nums"
-                        style={{ color: l.unitEur === 0 ? "var(--teal)" : "var(--charcoal)" }}
-                      >
-                        {l.unitEur === 0 ? "Free" : formatEur(l.unitEur)}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-              <p
-                className="mt-2 text-[11px] italic"
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-                }}
-              >
-                Priced honestly by age — no adult fallback for minors.
-              </p>
-            </div>
-          );
-        })()}
-
-
-        <div className="pt-3 border-t" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
-          <p className="text-[10px] uppercase tracking-[0.22em] mb-2" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
-            Included
-          </p>
-          <ul className="space-y-1 text-[13px]" style={{ color: "var(--charcoal)" }}>
-            {included.slice(0, 6).map((i) => (
-              <li key={i}>· {i}</li>
-            ))}
-          </ul>
-        </div>
+              Stops
+            </p>
+            <ul
+              className="space-y-1 text-[13.5px]"
+              style={{ color: "var(--charcoal)" }}
+              data-testid="studio-v3-checkout-summary-stops"
+            >
+              {stopLabels.map((label, i) => (
+                <li key={`${i}-${label}`}>· {label}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
 
         {selectedAddOns.length > 0 ? (
-          <div className="pt-3 border-t" style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}>
-            <p className="text-[10px] uppercase tracking-[0.22em] mb-2" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+          <div
+            className="pt-3 border-t"
+            style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
+          >
+            <p
+              className="text-[10px] uppercase tracking-[0.22em] mb-2"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
               Your additions
             </p>
-            <ul className="space-y-1 text-[13px]" style={{ color: "var(--charcoal)" }}>
+            <ul className="space-y-1 text-[13.5px]" style={{ color: "var(--charcoal)" }}>
               {selectedAddOns.map((a) => (
                 <li key={a.id} className="flex justify-between gap-3">
                   <span>· {a.label}</span>
@@ -329,7 +229,10 @@ export function CheckoutSummary({
           className="pt-3 border-t flex justify-between items-baseline"
           style={{ borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)" }}
         >
-          <span className="text-[11px] uppercase tracking-[0.22em]" style={{ color: "var(--charcoal)" }}>
+          <span
+            className="text-[11px] uppercase tracking-[0.22em]"
+            style={{ color: "var(--charcoal)" }}
+          >
             Total
           </span>
           <span
@@ -349,31 +252,12 @@ export function CheckoutSummary({
         </div>
       </div>
 
-      {/* One-pager PDF download */}
-      <div className="mt-6">
-        <CtaButton
-          type="button"
-          variant="ghost"
-          size="md"
-          className="w-full"
-          iconLeading={
-            pdfLoading ? (
-              <Loader2 size={14} className="animate-spin" aria-hidden />
-            ) : (
-              <Download size={14} aria-hidden />
-            )
-          }
-          onClick={handleDownloadPdf}
-          disabled={pdfLoading}
-          data-testid="studio-v3-checkout-summary-pdf"
-        >
-          {pdfLoading ? "Preparing PDF…" : "Download one-pager (PDF)"}
-        </CtaButton>
-      </div>
-
-      {/* Guest details recap */}
+      {/* Guest identity recap — who is booking (not pricing) */}
       <div className="mt-6 flex items-center justify-between">
-        <div className="text-[12.5px]" style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}>
+        <div
+          className="text-[12.5px]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
+        >
           <div className="font-medium" style={{ color: "var(--charcoal)" }}>
             {guestDetails.fullName}
           </div>
@@ -400,24 +284,18 @@ export function CheckoutSummary({
         {INSTANT_CONFIRMATION}
       </p>
 
-      {/* Inline Stripe Embedded Checkout — same page as the summary.
-          Renders only when we have a live session; otherwise the sticky
-          Reserve CTA below opens one. Same journey revision as summary.
-          Premium spacing spec: generous negative space above, thin gold
-          rule as section divider, eyebrow label, then a soft sand-tinted
-          container with quiet border — no heavy card, no double frame. */}
+      {/* Inline Stripe Embedded Checkout — same page as summary. */}
       {clientSecret && publishableKey ? (
-        <div
-          className="mt-14"
-          data-testid="studio-v3-checkout-summary-stripe-inline"
-        >
+        <div className="mt-14" data-testid="studio-v3-checkout-summary-stripe-inline">
           <div
             aria-hidden
             className="mx-auto h-px w-16"
             style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
           />
-          <div className="mt-6 flex items-center justify-center gap-2 text-[10.5px] uppercase tracking-[0.24em]"
-               style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}>
+          <div
+            className="mt-6 flex items-center justify-center gap-2 text-[10.5px] uppercase tracking-[0.24em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+          >
             <Lock size={11} aria-hidden strokeWidth={1.75} />
             <span>Secure payment · Powered by Stripe</span>
           </div>
@@ -476,7 +354,10 @@ export function CheckoutSummary({
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex justify-between gap-3 text-[13.5px]" style={{ color: "var(--charcoal)" }}>
+    <div
+      className="flex justify-between gap-3 text-[13.5px]"
+      style={{ color: "var(--charcoal)" }}
+    >
       <span
         className="text-[11px] uppercase tracking-[0.22em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
