@@ -152,4 +152,8 @@ export const BRAND_HEX_EXEMPT_PATH_PREFIXES = [
   // (a lookup map of mood → tint). Studio v2 is deprecated; do not
   // refactor unless the file is removed.
   "src/lib/studio-v2/",
+  // Transactional email templates — email clients (Gmail, Outlook,
+  // Apple Mail) do not resolve CSS custom properties, so brand hex
+  // MUST be inlined at the template level.
+  "src/lib/email-templates/",
 ] as const;
