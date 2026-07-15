@@ -1155,7 +1155,7 @@ export function SignaturePriceCard({
           WhatsApp when the traveller is about to leave the reveal. Real save:
           the composed journey title goes into the message body, the YES team
           replies with the confirmed investment. No fabricated urgency. */}
-      {hasPrice ? <ExitIntentSave journeyTitle={journeyTitle ?? null} /> : null}
+      {!isRefine && hasPrice ? <ExitIntentSave journeyTitle={journeyTitle ?? null} /> : null}
     </section>
   );
 }
