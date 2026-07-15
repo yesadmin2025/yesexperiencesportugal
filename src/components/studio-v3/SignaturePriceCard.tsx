@@ -965,7 +965,7 @@ export function SignaturePriceCard({
         {/* Included in your day — the single, tight list. Real included[]
             from the resolved Signature (capped) + any add-ons the traveller
             just toggled on, so the block moves with the price above. */}
-        {hasPrice && (inclusionFootnote.length > 0 || selectedAddOns.length > 0) ? (
+        {!isRefine && hasPrice && (inclusionFootnote.length > 0 || selectedAddOns.length > 0) ? (
           <footer
             data-testid="studio-v3-inclusions-footnote"
             className="mt-5 mx-auto max-w-[380px] rounded-[4px] px-3 py-2.5 text-left"
