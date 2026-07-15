@@ -444,9 +444,7 @@ export function SignaturePriceCard({
       ? Math.round(partyTotalEur / effectiveGuests)
       : (displayPerPaxEur ?? null);
 
-    partyTotalEur != null && effectiveGuests != null && effectiveGuests > 0
-      ? Math.round(partyTotalEur / effectiveGuests)
-      : (displayPerPaxEur ?? null);
+
 
   // Dev-only invariant: perPerson × guests must equal total (±rounding).
   if (import.meta.env.DEV && partyTotalEur != null && effectiveGuests && effectiveGuests > 0) {
