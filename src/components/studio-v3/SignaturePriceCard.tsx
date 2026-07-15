@@ -26,7 +26,11 @@ import {
   type SignatureAddOn,
 } from "@/data/signatureAddOns";
 import type { SignatureTour } from "@/data/signatureTours";
-import { resolvePerPaxEur } from "@/data/signatureTourPricing";
+import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
+import {
+  summarizeJourneyLines,
+  type CheckoutJourneyLine,
+} from "@/lib/checkout/journeyDisplay";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { getSignatureOptionalAddOns } from "@/lib/tailor-chapters";
 import { MountBadge } from "./useStudioDebug";
