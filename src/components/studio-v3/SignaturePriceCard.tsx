@@ -612,7 +612,7 @@ export function SignaturePriceCard({
           </>
         )}
 
-        {hasPrice ? (
+        {isRefine ? null : hasPrice ? (
           <>
             <p
               className="mt-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
