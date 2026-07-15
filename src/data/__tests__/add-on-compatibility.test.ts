@@ -3,9 +3,11 @@ import {
   ADD_ON_CATALOG,
   deriveTimeOfDay,
   deriveAnchorStop,
+  deriveMaxGuests,
   selectSignatureAddOns,
   type SignatureAddOn,
 } from "@/data/signatureAddOns";
+
 
 const arrabidaTour = {
   id: "arrabida-wine-allinclusive",
