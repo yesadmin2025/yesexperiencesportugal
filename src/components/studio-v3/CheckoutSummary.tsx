@@ -399,34 +399,46 @@ export function CheckoutSummary({
 
       {/* Inline Stripe Embedded Checkout — same page as the summary.
           Renders only when we have a live session; otherwise the sticky
-          Reserve CTA below opens one. Same journey revision as summary. */}
+          Reserve CTA below opens one. Same journey revision as summary.
+          Premium spacing spec: generous negative space above, thin gold
+          rule as section divider, eyebrow label, then a soft sand-tinted
+          container with quiet border — no heavy card, no double frame. */}
       {clientSecret && publishableKey ? (
         <div
-          className="mt-8 border p-4"
-          style={{
-            borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
-            background: "var(--ivory)",
-          }}
+          className="mt-14"
           data-testid="studio-v3-checkout-summary-stripe-inline"
         >
-          <div className="flex items-center gap-2 mb-3 text-[11px] uppercase tracking-[0.22em]"
-               style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}>
-            <Lock size={12} aria-hidden /> Secure payment · Powered by Stripe
+          <div
+            aria-hidden
+            className="mx-auto h-px w-16"
+            style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
+          />
+          <div className="mt-6 flex items-center justify-center gap-2 text-[10.5px] uppercase tracking-[0.24em]"
+               style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}>
+            <Lock size={11} aria-hidden strokeWidth={1.75} />
+            <span>Secure payment · Powered by Stripe</span>
           </div>
-          <EmbeddedCheckoutProvider
-            stripe={getStripePromise(publishableKey)}
-            options={{
-              clientSecret,
-              onComplete: () => {
-                // Stripe fires onComplete when payment succeeds; we then
-                // navigate. `session_id` is embedded in the returnUrl by
-                // the checkout session; we forward what we have.
-                onPaymentComplete?.(null);
-              },
+          <div
+            className="mt-5 px-4 pt-5 pb-6 sm:px-6 sm:pt-6 sm:pb-8"
+            style={{
+              borderTop: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+              borderBottom: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+              background:
+                "linear-gradient(180deg, color-mix(in oklab, var(--sand) 28%, var(--ivory)) 0%, var(--ivory) 100%)",
             }}
           >
-            <EmbeddedCheckout />
-          </EmbeddedCheckoutProvider>
+            <EmbeddedCheckoutProvider
+              stripe={getStripePromise(publishableKey)}
+              options={{
+                clientSecret,
+                onComplete: () => {
+                  onPaymentComplete?.(null);
+                },
+              }}
+            >
+              <EmbeddedCheckout />
+            </EmbeddedCheckoutProvider>
+          </div>
         </div>
       ) : (
         <div
