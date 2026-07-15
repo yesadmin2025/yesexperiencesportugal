@@ -445,9 +445,14 @@ export function SignaturePriceCard({
   const journeyLines: readonly CheckoutJourneyLine[] | null = journey
     ? (journey.lines as unknown as readonly CheckoutJourneyLine[])
     : null;
+  // Only itemise when the party actually mixes bands — adults-only bookings
+  // are already fully described by the "€X / guest × N" line above.
   const journeyRows = useMemo(
-    () => (journeyLines && journeyLines.length > 0 ? summarizeJourneyLines(journeyLines) : []),
-    [journeyLines],
+    () =>
+      journeyLines && journeyLines.length > 0 && composedMinors.length > 0
+        ? summarizeJourneyLines(journeyLines)
+        : [],
+    [journeyLines, composedMinors.length],
   );
 
   const partyBaseEur = journey
