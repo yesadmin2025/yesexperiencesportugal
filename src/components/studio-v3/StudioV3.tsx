@@ -2950,6 +2950,8 @@ export function StoryboardHandoff({
   tourPriceTiers,
   selectedAddOnIds,
   onAddOnsChange,
+  resolvedPerPaxEur = null,
+  resolvedTotalEur = null,
 }: {
   state: StudioV3State;
   onStateChange: Dispatch<SetStateAction<StudioV3State>>;
@@ -2960,6 +2962,8 @@ export function StoryboardHandoff({
   tourPriceTiers?: import("@/hooks/use-tour-price-tiers").TourPriceTiersMap;
   selectedAddOnIds?: ReadonlyArray<string>;
   onAddOnsChange?: (summary: SelectedAddOnSummary) => void;
+  resolvedPerPaxEur?: number | null;
+  resolvedTotalEur?: number | null;
 }) {
 
   const pickupCity = pickupCityLabel(state.pickup);
