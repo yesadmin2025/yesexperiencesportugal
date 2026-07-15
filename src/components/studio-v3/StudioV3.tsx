@@ -4107,6 +4107,8 @@ export function StoryboardHandoff({
           onRefine={onRefine}
           journeyTitle={state.journeyTitle}
           guests={state.guests}
+          adults={state.adults ?? null}
+          minorAges={state.minorAges ?? []}
           included={skeletonTour?.included ?? []}
           showAddOns={true}
           selectedAddOnIds={selectedAddOnIds}
