@@ -220,10 +220,28 @@ export function SignaturePriceCard({
   }, [tour, availableAddOns, stopCount, durationLabel]);
   const [uncontrolledAddOnIds, setUncontrolledAddOnIds] = useState<string[]>([]);
   const isControlled = controlledAddOnIds !== undefined;
-  const selectedAddOnIds = useMemo<string[]>(
-    () => (isControlled ? Array.from(controlledAddOnIds ?? []) : uncontrolledAddOnIds),
-    [isControlled, controlledAddOnIds, uncontrolledAddOnIds],
+  // Content-hash the controlled id list so equal lists keep a stable array
+  // identity — prevents the sync effect below from firing on every render
+  // and thrashing parent state with a fresh items array reference.
+  const controlledKey = (controlledAddOnIds ?? []).join("|");
+  // Optimistic local mirror: even in controlled mode we keep the last
+  // committed id list here so chip highlight paints in the same frame as
+  // the click, without waiting for the parent's state round-trip.
+  const effectiveIds = useMemo<string[]>(
+    () => {
+      if (!isControlled) return uncontrolledAddOnIds;
+      const controlled = [...(controlledAddOnIds ?? [])];
+      // Prefer the local mirror when it's already in sync with the parent —
+      // otherwise adopt the parent value (source of truth).
+      const sameAsMirror =
+        controlled.length === uncontrolledAddOnIds.length &&
+        controlled.every((id, i) => id === uncontrolledAddOnIds[i]);
+      return sameAsMirror ? uncontrolledAddOnIds : controlled;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isControlled, controlledKey, uncontrolledAddOnIds],
   );
+  const selectedAddOnIds = effectiveIds;
   const [pendingAddOnId, setPendingAddOnId] = useState<string | null>(null);
   const MAX_ADDONS = 3;
   const atCap = selectedAddOnIds.length >= MAX_ADDONS;
