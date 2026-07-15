@@ -7,6 +7,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import {
   summarizeJourneyLines as summarizeJourneyLinesShared,
+  hasCompleteJourneyPricing,
   type CheckoutJourneyLine as SharedJourneyLine,
   type JourneyBand as SharedJourneyBand,
 } from "@/lib/checkout/journeyDisplay";
@@ -15,6 +16,7 @@ import {
 export type JourneyBand = SharedJourneyBand;
 export type CheckoutJourneyLine = SharedJourneyLine;
 export const summarizeJourneyLines = summarizeJourneyLinesShared;
+
 
 /**
  * BrandedCheckoutDrawer
@@ -168,15 +170,23 @@ export function BrandedCheckoutDrawer({
       : (summary.addOnsTotalEur ?? 0));
 
   const total = (() => {
-    if (summary.totalEur != null) return summary.totalEur;
-    if (summary.journeyTotalEur != null) {
+    if (summary.totalEur != null && Number.isFinite(summary.totalEur)) return summary.totalEur;
+    // Only trust journeyTotalEur when the underlying journey lines are
+    // fully populated — otherwise the number could reflect an incomplete
+    // composition (missing minor age) and would mismatch the itemised rows.
+    if (
+      summary.journeyTotalEur != null &&
+      Number.isFinite(summary.journeyTotalEur) &&
+      hasCompleteJourneyPricing(summary.journeyLines)
+    ) {
       return Math.round(summary.journeyTotalEur + addOnsPartyTotal);
     }
-    if (summary.pricePerPaxEur != null) {
+    if (summary.pricePerPaxEur != null && Number.isFinite(summary.pricePerPaxEur)) {
       return Math.round(summary.pricePerPaxEur * summary.guests + addOnsPartyTotal);
     }
     return null;
   })();
+
 
   useEffect(() => {
     if (open) prewarmStripeScript();
@@ -308,13 +318,13 @@ function ExperienceSummaryCard({
         </ul>
       ) : null}
 
-      {summary.journeyLines && summary.journeyLines.length > 0 ? (
+      {hasCompleteJourneyPricing(summary.journeyLines) ? (
         <div className="mt-4 pt-3 border-t border-[color:var(--border)]" data-testid="checkout-drawer-journey-lines">
           <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
             Travellers
           </p>
           <ul className="mt-2 space-y-1">
-            {summarizeJourneyLines(summary.journeyLines).map((row) => (
+            {summarizeJourneyLines(summary.journeyLines!).map((row) => (
               <li
                 key={row.key}
                 className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]/80 font-sans"
@@ -335,6 +345,7 @@ function ExperienceSummaryCard({
           </ul>
         </div>
       ) : null}
+
 
       {summary.addOns && summary.addOns.length > 0 ? (
         <div className="mt-4 pt-3 border-t border-[color:var(--border)]">
@@ -385,7 +396,7 @@ function ExperienceSummaryCard({
           </span>
           <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
             €{total.toLocaleString("en-GB")}
-            {summary.journeyLines && summary.journeyLines.length > 0 ? null : summary.pricePerPaxEur != null &&
+            {hasCompleteJourneyPricing(summary.journeyLines) ? null : summary.pricePerPaxEur != null &&
               summary.guests > 1 &&
               (summary.minorAges?.length ?? 0) === 0 ? (
               <span className="ml-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans">

@@ -29,6 +29,8 @@ import type { SignatureTour } from "@/data/signatureTours";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
 import {
   summarizeJourneyLines,
+  hasCompleteJourneyPricing,
+
   type CheckoutJourneyLine,
 } from "@/lib/checkout/journeyDisplay";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
@@ -437,23 +439,37 @@ export function SignaturePriceCard({
   // adults-only "what-if" and would silently reprice minors otherwise.
   const composedAdults = typeof adults === "number" && adults >= 1 ? adults : null;
   const composedMinors = minorAges ?? [];
+  // Guard: every minor age must be a plausible integer (0-17). If ANY age is
+  // missing or invalid the journey pricing inputs are incomplete — refuse to
+  // itemise or compute a total from it so the card can never show a mismatch
+  // vs. what the checkout drawer would charge.
+  const minorAgesComplete = useMemo(
+    () =>
+      composedMinors.every(
+        (age) => typeof age === "number" && Number.isFinite(age) && Number.isInteger(age) && age >= 0 && age <= 17,
+      ),
+    [composedMinors],
+  );
   const journey = useMemo(() => {
     if (previewGuests !== null) return null;
     if (composedAdults == null) return null;
+    if (!minorAgesComplete) return null;
     return resolveJourneyPricing(tour, composedAdults, composedMinors, effectiveOverrides);
-  }, [previewGuests, composedAdults, composedMinors, tour, effectiveOverrides]);
+  }, [previewGuests, composedAdults, composedMinors, minorAgesComplete, tour, effectiveOverrides]);
   const journeyLines: readonly CheckoutJourneyLine[] | null = journey
     ? (journey.lines as unknown as readonly CheckoutJourneyLine[])
     : null;
-  // Only itemise when the party actually mixes bands — adults-only bookings
-  // are already fully described by the "€X / guest × N" line above.
+  // Only itemise when the party actually mixes bands AND every line is fully
+  // populated — adults-only bookings are already fully described by the
+  // "€X / guest × N" line above, and an incomplete line would render "€NaN".
   const journeyRows = useMemo(
     () =>
-      journeyLines && journeyLines.length > 0 && composedMinors.length > 0
+      journeyLines && composedMinors.length > 0 && hasCompleteJourneyPricing(journeyLines)
         ? summarizeJourneyLines(journeyLines)
         : [],
     [journeyLines, composedMinors.length],
   );
+
 
   const partyBaseEur = journey
     ? journey.totalEur
