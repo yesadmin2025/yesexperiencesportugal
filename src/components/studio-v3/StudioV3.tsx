@@ -3648,86 +3648,23 @@ export function StoryboardHandoff({
           </div>
         ) : null}
 
-        {/* ---------- 2b. Daypart timeline ---------- */}
-        {dayparts.length > 0 ? (
-          <section
-            data-testid="studio-v3-daypart-timeline"
-            className="mt-8 max-w-[440px] mx-auto px-2"
-            aria-label="How the day unfolds across the day"
-          >
-            <div className="relative">
-              <span
-                aria-hidden
-                className="absolute left-2 right-2 top-[3px] h-px"
-                style={{ background: "color-mix(in oklab, var(--gold) 35%, transparent)" }}
-              />
-              <ol className="relative flex items-start justify-between gap-2">
-                {dayparts.map((label) => (
-                  <li key={label} className="flex flex-col items-center text-center">
-                    <span
-                      aria-hidden
-                      className="block h-[7px] w-[7px] rounded-full"
-                      style={{ background: "var(--gold)" }}
-                    />
-                    <span
-                      className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
-                      style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
-                    >
-                      {label}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </section>
-        ) : null}
+        {/* Daypart timeline, story-of-day intentionally removed on Refine —
+            this is a decision page, not the cinematic reveal. */}
 
-        {/* ---------- 3. Story of the day ---------- */}
-
-        <section className="mt-10 max-w-[520px] mx-auto" data-testid="studio-v3-story-of-day">
-          <p
-            className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-          >
-            <span style={{ color: "var(--gold)" }}>—</span> How the day unfolds
-          </p>
-          <div className="mt-5 space-y-5">
-            {storyChapters.map((c) => (
-              <div key={c.eyebrow}>
-                <p
-                  className="text-[10.5px] uppercase tracking-[0.24em] font-semibold"
-                  style={{ color: "var(--gold)" }}
-                >
-                  {c.eyebrow}
-                </p>
-                <p
-                  className="mt-1.5 text-[14px] leading-[1.6] [text-wrap:pretty] [hyphens:auto]"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
-                >
-                  {c.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ---------- 4. Fine-tune your Signature (editable stops) ---------- */}
+        {/* ---------- Stops list (editable) ---------- */}
         {editedStops.length > 0 ? (
           <div
             data-testid="studio-v3-stops-editor"
-            className="mt-10 sm:mt-12 max-w-[520px] mx-auto px-3 sm:px-1"
+            className="mt-8 sm:mt-10 max-w-[520px] mx-auto px-3 sm:px-1"
           >
             <p
-              className="text-center text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+              className="text-center text-[13px] font-medium mb-4 sm:mb-5"
+              style={{
+                fontFamily: "var(--font-editorial)",
+                color: "var(--charcoal)",
+              }}
             >
-              <span style={{ color: "var(--gold)" }}>—</span> Refine the moments
-            </p>
-            <p
-              className="mt-2 mb-6 sm:mb-5 text-center text-[12px] leading-[1.55] max-w-[300px] sm:max-w-[320px] mx-auto"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-            >
-              Reorder, swap or remove a moment. The route stays inside the same region.
+              Your stops
             </p>
             <ol className="space-y-3 sm:space-y-3">
               {editedStops.map((s, i) => {
