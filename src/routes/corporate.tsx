@@ -158,14 +158,6 @@ function CorporatePage() {
         </div>
       </section>
 
-      {/* Guest moments — real groups, real days */}
-      <GuestMomentsStrip
-        eyebrow="Recent private groups"
-        title="Groups who came,"
-        titleEm="together."
-        photos={CORPORATE_MOMENTS}
-        surface="sand"
-      />
 
       {/* FAQ */}
       <section className="py-16 md:py-20 bg-[color:var(--ivory)] reveal">
