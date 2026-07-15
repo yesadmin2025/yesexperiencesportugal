@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { breadcrumbLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { MessageCircle, Heart, Sparkles, Users } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -91,7 +92,9 @@ const BLOCKS = [
 ];
 
 function ProposalInPortugalPage() {
+  useMarketingMotion();
   return (
+
     <SiteLayout>
       {/* Hero */}
       <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">

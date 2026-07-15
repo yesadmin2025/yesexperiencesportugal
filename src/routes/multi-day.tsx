@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { breadcrumbLd, faqPageLd, jsonLdScript, travelDesignerServiceLd } from "@/lib/jsonld";
 import { TRAVEL_DESIGNER_FAQ } from "@/content/seo-faq";
 import { SiteLayout } from "@/components/SiteLayout";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+
 import {
   MessageCircle,
   Compass,
@@ -180,8 +182,10 @@ function GroupCard({ title, body }: Card) {
 }
 
 function MultiDayPage() {
+  useMarketingMotion();
   return (
     <SiteLayout>
+
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-3xl text-center">
@@ -359,19 +363,24 @@ function MultiDayPage() {
           </div>
 
           {/* All 23 pages — tap any thumbnail to open the page full size */}
-          <div className="mt-10 md:mt-14">
+          {/* Peek strip — a horizontal glimpse of the file. Any page tap opens
+              full-size. Keeps the section compact; no 23-image scroll wall. */}
+          <div className="mt-10 md:mt-14 reveal-stagger">
             <p className="text-center font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)]">
-              Every page of the file
+              A glimpse inside
             </p>
-            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
-              {SAMPLE_PAGES.slice(1).map((p, i) => (
+            <div
+              className="mt-6 -mx-4 md:mx-0 px-4 md:px-0 flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory md:snap-none scrollbar-none"
+              style={{ scrollbarWidth: "none" }}
+            >
+              {SAMPLE_PAGES.slice(1, 8).map((p, i) => (
                 <a
                   key={p.src}
                   href={p.src}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Open page ${i + 2} full size`}
-                  className="group relative block overflow-hidden border border-[color:var(--border)] shadow-[0_12px_30px_-16px_rgba(46,46,46,0.28)] bg-white cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+                  className="group relative flex-none w-[150px] md:w-[180px] snap-start overflow-hidden border border-[color:var(--border)] shadow-[0_12px_30px_-16px_rgba(46,46,46,0.28)] bg-white cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
                 >
                   <img
                     src={p.src}
@@ -388,9 +397,20 @@ function MultiDayPage() {
                 </a>
               ))}
             </div>
+            <div className="mt-8 flex justify-center">
+              <a
+                href={SAMPLE_PAGES[0].src}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 border border-[color:var(--charcoal)]/25 hover:border-[color:var(--gold)] text-[color:var(--charcoal)] px-6 py-3 text-[11px] uppercase tracking-[0.22em] font-semibold transition-all"
+              >
+                Open the full file · {TOTAL_SAMPLE_PAGES} pages
+              </a>
+            </div>
           </div>
         </div>
       </section>
+
 
       {/* ── Where it can go ──────────────────────────────── */}
       <section className="py-14 md:py-24 reveal">
