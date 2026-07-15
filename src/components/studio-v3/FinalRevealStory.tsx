@@ -218,6 +218,14 @@ export function FinalRevealStory({
   });
 
 
+  const dateLabel = formatDate(state.dateExact);
+  const pickupLabel = pickupCityLabel(state.pickup);
+  const guestsLabel = formatGuestComposition(
+    state.adults,
+    state.minorAges,
+    state.guests,
+  );
+
   const included: string[] = (() => {
     if (tour?.included && tour.included.length > 0) return tour.included;
     return [
@@ -226,6 +234,7 @@ export function FinalRevealStory({
       "All confirmed entries listed above",
     ];
   })();
+
 
   return (
     <section
