@@ -27,6 +27,8 @@ import { CinematicHero } from "@/components/home/CinematicHero";
 import { RecentJourney } from "@/components/home/RecentJourney";
 import { ExitIntentEmailCapture } from "@/components/home/EmailCapture";
 import { FourWaysIn } from "@/components/home/FourWaysIn";
+import { GuestMomentsStrip } from "@/components/ui/GuestMomentsStrip";
+import { HOMEPAGE_MOMENTS } from "@/content/guest-moments";
 
 import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
@@ -523,6 +525,20 @@ function HomePage() {
             <GuestQuotes />
           </div>
         </section>
+
+        {/* 2a — GUEST MOMENTS
+          Real, owner-supplied photography from recent journeys. Editorial
+          captions only, no invented quotes. Uses shared <GuestMomentsStrip>
+          so the same primitive appears on About / Corporate / Multi-day. */}
+        <GuestMomentsStrip
+          eyebrow="Moments from recent journeys"
+          title="Real days,"
+          titleEm="really lived."
+          photos={HOMEPAGE_MOMENTS}
+          surface="sand"
+        />
+
+
 
         {/* 2b — FIVE WAYS TO SHAPE YOUR PORTUGAL
           Concise editorial explainer so visitors instantly understand

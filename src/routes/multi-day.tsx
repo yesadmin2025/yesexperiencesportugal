@@ -21,6 +21,8 @@ import {
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { GuestMomentsStrip } from "@/components/ui/GuestMomentsStrip";
+import { MULTI_DAY_MOMENTS } from "@/content/guest-moments";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 // All 23 pages of the anonymised private travel file live in public/ so
@@ -454,6 +456,15 @@ function MultiDayPage() {
           </p>
         </div>
       </section>
+
+      {/* Guest moments — the craft that longer journeys reveal */}
+      <GuestMomentsStrip
+        eyebrow="The Portugal you rarely reach"
+        title="Craft, land,"
+        titleEm="a slower rhythm."
+        photos={MULTI_DAY_MOMENTS}
+        surface="ivory"
+      />
 
       {/* ── FAQ ──────────────────────────────────────────── */}
       <section className="py-14 md:py-20 bg-[color:var(--ivory)] reveal" aria-labelledby="td-faq">
