@@ -37,6 +37,22 @@ export interface BlueprintStop {
    *  anchor price (Core + Choice). Optional stops may carry a real
    *  upcharge from the Bókun product. */
   upchargePerPaxEUR?: number;
+  /** Approved supplier lat/lng — required for real drive-time computation.
+   *  Omit until the operator confirms; the feasibility engine will fall
+   *  back to category defaults and the UI will flag manual confirmation. */
+  coords?: { lat: number; lng: number };
+  /** Approved supplier opening window in local time, "HH:mm" 24h. */
+  openingWindow?: { open: string; close: string };
+  /** Approved on-site visit component (excluding tasting) in minutes. */
+  visitMinutes?: number;
+  /** Approved tasting component in minutes (may be zero for non-wine stops). */
+  tastingMinutes?: number;
+  /** Approved per-pax price for including this stop, EUR. */
+  pricePerPaxEUR?: number;
+  /** Approved age-eligibility rules from the supplier. */
+  ageEligibility?: { minAge?: number; adultsOnly?: boolean };
+  /** Supplier confirmation status. Absent = unknown → treated as "manual". */
+  confirmationStatus?: "instant" | "manual";
   /**
    *  Structured operational lock. A stop with no `lock` is removable.
    *  There is NO generic boolean "locked" flag — every lock must carry
@@ -75,9 +91,17 @@ export interface TailorBlueprint {
   tourId: string;
   /** Stops the anchor price always buys. */
   core: BlueprintStop[];
-  /** "Pick N from the pool" — Viator's "2 or 3 wineries" rule. */
+  /**
+   *  "Pick N from the pool" — Viator's "2 or 3 wineries" rule, extended
+   *  to allow duration-driven ranges (e.g. 2–4 wineries for wine-forward
+   *  tours). The UI defaults to `pickMin` selected; the traveller can
+   *  scale up to `pickMax` as long as the day stays feasible.
+   */
   choice?: {
-    pickCount: number;
+    /** Minimum picks required to satisfy the base product. */
+    pickMin: number;
+    /** Maximum picks allowed when the day can absorb them. */
+    pickMax: number;
     /** UI section header, e.g. "Choose 2 wineries from this pool". */
     label: string;
     /** Plain note shown verbatim to the guest. */
