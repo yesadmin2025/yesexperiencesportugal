@@ -180,25 +180,43 @@ export function FinalRevealStory({
       : composedStops && composedStops.length > 0
         ? composedStops
         : (tour?.stops ?? []).map((s) => ({ label: s.label, story: s.story ?? "" }));
-  const stops = keptStops.map((s) => ({
-    label: s.label,
-    story: s.story,
-    kind: "stop" as const,
-  }));
-  const addOnBeats = selectedAddOns.map((a) => ({
-    label: a.label,
-    story: "",
-    kind: "addition" as const,
-  }));
-  const timeline = [...stops, ...addOnBeats];
+  const stops = keptStops.map((s) => ({ label: s.label, story: s.story }));
 
-  const dateLabel = formatDate(state.dateExact);
-  const pickupLabel = pickupCityLabel(state.pickup);
-  const guestsLabel = formatGuestComposition(
-    state.adults,
-    state.minorAges,
-    state.guests,
-  );
+  const region = regionLabelFor(state.destinationIntent);
+  const intro = introFor(state.feeling, region);
+
+  // Weave add-ons into the narrative. Distribute them evenly across stops
+  // (after which stop each add-on appears). If we have more add-ons than
+  // stops, remaining ones tail the final stop.
+  type Paragraph =
+    | { kind: "stop"; text: string; key: string }
+    | { kind: "addon"; text: string; key: string };
+  const paragraphs: Paragraph[] = [];
+  const addOnQueue = selectedAddOns.map((a, i) => ({ a, i }));
+  const insertionPoints = stops.length > 1
+    ? addOnQueue.map((_, idx) =>
+        Math.min(stops.length - 1, Math.floor((idx + 1) * (stops.length / (addOnQueue.length + 1)))),
+      )
+    : addOnQueue.map(() => 0);
+
+  stops.forEach((s, i) => {
+    const isLast = i === stops.length - 1;
+    paragraphs.push({
+      kind: "stop",
+      text: stopSentence(i, isLast, s.label, s.story),
+      key: `stop-${i}-${s.label}`,
+    });
+    addOnQueue.forEach(({ a, i: ai }, qIdx) => {
+      if (insertionPoints[qIdx] === i) {
+        paragraphs.push({
+          kind: "addon",
+          text: `Because you've chosen the ${a.label}, this is where your day opens to ${addOnContinuation(a.label)}.`,
+          key: `addon-${ai}-${a.id}`,
+        });
+      }
+    });
+  });
+
 
   const included: string[] = (() => {
     if (tour?.included && tour.included.length > 0) return tour.included;
