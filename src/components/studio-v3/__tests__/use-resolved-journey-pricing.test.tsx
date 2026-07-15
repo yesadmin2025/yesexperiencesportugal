@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { signatureTours } from "@/data/signatureTours";
+import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { INITIAL_STATE } from "../types";
 import { useResolvedJourney } from "../useResolvedJourney";
 
@@ -35,7 +36,8 @@ describe("useResolvedJourney pricing", () => {
       ),
     );
 
-    const expectedBase = tour.priceFrom! * guests;
+    const expectedPerPax = resolvePerPaxEur(tour, guests, null)?.eurPerPax ?? tour.priceFrom!;
+    const expectedBase = expectedPerPax * guests;
     expect(result.current.totalEur).toBe(expectedBase + addOnPartyAmount);
     expect(result.current.perPaxEur).toBe(
       Math.round((expectedBase + addOnPartyAmount) / guests),
