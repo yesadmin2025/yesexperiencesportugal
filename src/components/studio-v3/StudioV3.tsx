@@ -3117,6 +3117,15 @@ export function StoryboardHandoff({
   const editedStops = state.editedRoutePoints ?? baseStops;
   const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
 
+  // Phase C: composer rationales, indexed by stop position. Merged inline
+  // into each stop row below when the flag is on. Never affects pricing,
+  // checkout, map or edit behaviour — display-only enrichment.
+  const composerRationales = useMemo<ReadonlyArray<string>>(() => {
+    if (!STUDIO_V3_COMPOSER_REVEAL) return [];
+    const journey = composeFromState(state);
+    return journey ? journey.stops.map((s) => s.rationale) : [];
+  }, [state]);
+
   // Real OSRM driving legs — shared with RevealRouteMap via react-query's
   // dedupe on the same routeStops key, so we pay for one fetch and both the
   // map AND the add-on day budget below read the same honest minutes.
@@ -3719,11 +3728,8 @@ export function StoryboardHandoff({
         {/* Daypart timeline, story-of-day intentionally removed on Refine —
             this is a decision page, not the cinematic reveal. */}
 
-        {/* ---------- Phase B: composer-driven "Why these fit you" panel ----------
-            Additive, flag-gated. Reads from composeStudioJourney (Phase A engine)
-            without touching editedStops/pricing/checkout/map. Off in production;
-            QA opt-in via localStorage["studio-v3-composer-reveal"] = "1". */}
-        {STUDIO_V3_COMPOSER_REVEAL ? <ComposerRevealPanel state={state} /> : null}
+        {/* Phase C: composer rationale is now merged inline into each stop row
+            below (no separate panel). Flag still gates the inline rendering. */}
 
         {/* ---------- Stops list (editable) ---------- */}
         {editedStops.length > 0 ? (
@@ -3784,6 +3790,18 @@ export function StoryboardHandoff({
                             }}
                           >
                             {s.story}
+                          </p>
+                        ) : null}
+                        {composerRationales[i] ? (
+                          <p
+                            data-testid="studio-v3-stop-rationale"
+                            className="mt-1 text-[11.5px] leading-[1.4] italic"
+                            style={{
+                              fontFamily: "var(--font-editorial)",
+                              color: "var(--gold)",
+                            }}
+                          >
+                            {composerRationales[i]}
                           </p>
                         ) : null}
                       </div>
