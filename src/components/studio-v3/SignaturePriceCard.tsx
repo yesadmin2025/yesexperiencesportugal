@@ -143,6 +143,15 @@ export interface SignaturePriceCardProps {
    * is identical; only the rendered surface changes.
    */
   variant?: "full" | "refine";
+  /**
+   * Canonical totals from `useResolvedJourney` (the single source of truth).
+   * When provided AND the traveller isn't previewing a different group size
+   * via the hidden picker, these are rendered verbatim — the card never
+   * derives its own party total in that case. Keeps refine/reveal/checkout
+   * from silently drifting apart.
+   */
+  resolvedPerPaxEur?: number | null;
+  resolvedTotalEur?: number | null;
 }
 
 
