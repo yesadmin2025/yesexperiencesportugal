@@ -440,8 +440,13 @@ export function FinalRevealStory({
                 {selectedAddOns.map((a) => (
                   <li key={a.id} className="flex justify-between gap-3">
                     <span>· {a.label}</span>
-                    <span className="tabular-nums" style={{ color: "var(--teal)" }}>
-                      +{formatEur(a.amount)} · {a.unitLabel}
+                    <span className="text-right tabular-nums" style={{ color: "var(--teal)" }}>
+                      +{formatEur(a.perUnit)} {a.unitLabel}
+                      {a.amount !== a.perUnit ? (
+                        <span className="block text-[10.5px]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
+                          {formatEur(a.amount)} for your group
+                        </span>
+                      ) : null}
                     </span>
                   </li>
                 ))}
