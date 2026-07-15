@@ -120,33 +120,56 @@ export function Composition({
                   >
                     Child {i + 1}
                   </span>
-                  <label className="flex items-center gap-2 flex-1">
+                  <div className="flex items-center gap-2 flex-1">
                     <span className="sr-only">Age of child {i + 1}</span>
-                    <input
-                      type="number"
-                      inputMode="numeric"
-                      min={0}
-                      max={17}
-                      step={1}
-                      value={Number.isFinite(age) ? age : ""}
-                      onChange={(e) => {
-                        const raw = e.target.value;
-                        if (raw === "") return;
-                        const n = Math.max(0, Math.min(17, Math.trunc(Number(raw))));
-                        if (Number.isFinite(n)) onMinorAgeChange(i, n);
-                      }}
-                      className="h-11 w-16 text-center tabular-nums border bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                    <div
+                      role="group"
+                      aria-label={`Age of child ${i + 1}`}
+                      className="inline-flex items-center border"
                       style={{
                         borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
-                        color: "var(--charcoal)",
-                        fontFamily: "var(--font-display)",
-                        fontSize: "18px",
-                        fontWeight: 600,
+                        background: "var(--ivory)",
                       }}
-                      aria-label={`Age of child ${i + 1}`}
-                    />
+                    >
+                      <button
+                        type="button"
+                        onClick={() =>
+                          onMinorAgeChange(i, Math.max(0, (Number.isFinite(age) ? age : 8) - 1))
+                        }
+                        disabled={Number.isFinite(age) && age <= 0}
+                        aria-label={`Decrease age of child ${i + 1}`}
+                        className="inline-flex h-11 w-11 items-center justify-center text-[18px] leading-none disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                        style={{ color: "var(--charcoal)" }}
+                      >
+                        −
+                      </button>
+                      <span
+                        aria-live="polite"
+                        className="min-w-[44px] text-center tabular-nums select-none"
+                        style={{
+                          color: "var(--charcoal)",
+                          fontFamily: "var(--font-display)",
+                          fontSize: "18px",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {Number.isFinite(age) ? age : 8}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          onMinorAgeChange(i, Math.min(17, (Number.isFinite(age) ? age : 8) + 1))
+                        }
+                        disabled={Number.isFinite(age) && age >= 17}
+                        aria-label={`Increase age of child ${i + 1}`}
+                        className="inline-flex h-11 w-11 items-center justify-center text-[18px] leading-none disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                        style={{ color: "var(--charcoal)" }}
+                      >
+                        +
+                      </button>
+                    </div>
                     <span
-                      className="text-[11px] uppercase tracking-[0.2em]"
+                      className="text-[11px] uppercase tracking-[0.18em]"
                       style={{
                         color:
                           band && band !== "adult"
@@ -157,7 +180,8 @@ export function Composition({
                     >
                       {bandLabel}
                     </span>
-                  </label>
+                  </div>
+
                   <button
                     type="button"
                     onClick={() => onRemoveMinor(i)}
