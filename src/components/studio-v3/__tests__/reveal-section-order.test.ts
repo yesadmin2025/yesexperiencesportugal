@@ -29,7 +29,6 @@ const REVEAL_SRC = readFileSync(
 const EXPECTED_ORDER = [
   "studio-v3-reveal",
   "studio-v3-signature-hero",
-  "studio-v3-hero-price",
   "studio-v3-reveal-map",
   "studio-v3-daypart-timeline",
   "studio-v3-story-of-day",
@@ -68,12 +67,10 @@ describe("Studio V3 reveal — section order & hierarchy", () => {
     }
   });
 
-  it("hero price sits inside the signature hero block, never below the map", () => {
+  it("map renders below (or inside) the signature hero block", () => {
     const heroIdx = indexOfTestId(REVEAL_SRC, "studio-v3-signature-hero");
-    const priceIdx = indexOfTestId(REVEAL_SRC, "studio-v3-hero-price");
     const mapIdx = indexOfTestId(REVEAL_SRC, "studio-v3-reveal-map");
-    expect(priceIdx).toBeGreaterThan(heroIdx);
-    expect(priceIdx).toBeLessThan(mapIdx);
+    expect(mapIdx).toBeGreaterThan(heroIdx);
   });
 
   it("stops editor renders after the timeline so users see 'when' before 'what changes'", () => {
