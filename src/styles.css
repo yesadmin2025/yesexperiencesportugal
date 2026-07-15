@@ -94,13 +94,13 @@
      button hairlines so gold remains visible without going yellow. */
   --gold-warm: #d8be82;
   --gold-deep: #b89452;
-  --ivory: #faf8f3;
-  --sand: #f4efe7;
-  --charcoal: #2e2e2e;
+  --ivory: #FAF8F3;
+  --sand: #F4EFE7;
+  --charcoal: #2E2E2E;
   /* Secondary text — was #5A5A5A, deepened to #555555 so secondary copy on
      mobile clears 7:1 contrast on ivory and never reads as washed grey. */
   --charcoal-soft: #555555;
-  --charcoal-deep: #1f1f1f;
+  --charcoal-deep: #1F1F1F;
 
   /* ─────────────────────────────────────────────────────────────
      HERO SCRIM TOKENS — single source of truth for the dark
