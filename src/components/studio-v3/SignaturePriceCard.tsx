@@ -428,15 +428,22 @@ export function SignaturePriceCard({
   const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
   const partyBaseEur =
     displayPerPaxEur != null && partyCount != null ? displayPerPaxEur * partyCount : null;
-  const partyTotalEur =
+  const localPartyTotalEur =
     partyBaseEur != null ? partyBaseEur + addOnsDisplayPartyEur : null;
 
-  // ── Pricing consistency: TOTAL is the single source of truth. ─────────────
-  // Per-person is a pure derivation of the party total so add-on toggles and
-  // guest changes can never desync the two visible numbers. When we don't yet
-  // know the guest count we fall back to the "from" anchor (displayPerPaxEur)
-  // so early phases still surface a per-guest hint.
-  const perPersonDerived =
+  // Prefer the resolved (canonical) totals when the traveller isn't previewing
+  // a different group size via the hidden picker. Otherwise fall back to the
+  // locally computed preview so the picker keeps showing "at N guests" hints.
+  const usingResolved = previewGuests === null && resolvedTotalEur != null;
+  const partyTotalEur = usingResolved ? resolvedTotalEur : localPartyTotalEur;
+  const perPersonDerived = usingResolved
+    ? (resolvedPerPaxEur ?? (effectiveGuests && effectiveGuests > 0
+        ? Math.round((resolvedTotalEur ?? 0) / effectiveGuests)
+        : null))
+    : partyTotalEur != null && effectiveGuests != null && effectiveGuests > 0
+      ? Math.round(partyTotalEur / effectiveGuests)
+      : (displayPerPaxEur ?? null);
+
     partyTotalEur != null && effectiveGuests != null && effectiveGuests > 0
       ? Math.round(partyTotalEur / effectiveGuests)
       : (displayPerPaxEur ?? null);
