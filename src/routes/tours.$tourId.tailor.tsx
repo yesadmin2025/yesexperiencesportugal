@@ -198,10 +198,10 @@ function TailorPage() {
   // anchor price actually includes.
   const blueprint = useMemo(() => getTailorBlueprint(tour.id), [tour.id]);
   const [choiceSelected, setChoiceSelected] = useState<Set<string>>(() => {
-    // Pre-select the first N options to match the "pickCount" by default.
+    // Pre-select the minimum required (`pickMin`) by default.
     const bp = getTailorBlueprint(tour.id);
     if (!bp?.choice) return new Set();
-    return new Set(bp.choice.options.slice(0, bp.choice.pickCount).map((o) => o.id));
+    return new Set(bp.choice.options.slice(0, bp.choice.pickMin).map((o) => o.id));
   });
   const [optionalSelected, setOptionalSelected] = useState<Set<string>>(new Set());
   // Skippable core stops — market, viewpoints, generic lunches — can be
@@ -347,7 +347,9 @@ function TailorPage() {
   const summaryTotal = useMemo(() => {
     if (!blueprint) return (tour.stops ?? []).length;
     const coreKept = blueprint.core.filter((s) => !skippedCore.has(s.id)).length;
-    const choiceTarget = blueprint.choice?.pickCount ?? 0;
+    // Use the traveller's current selection count so the summary reflects
+    // reality once they scale a wine-forward tour up to pickMax.
+    const choiceTarget = blueprint.choice ? choiceSelected.size : 0;
     return coreKept + choiceTarget + optionalSelected.size;
   }, [blueprint, tour.stops, skippedCore, optionalSelected]);
 
