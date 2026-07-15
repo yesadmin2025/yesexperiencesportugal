@@ -994,7 +994,7 @@ export function SignaturePriceCard({
                   <span style={{ color: "var(--gold)" }}>—</span> €
                   {isRefine ? perPersonDerived : totalEur}
                   <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">
-                    / person
+                    {isRefine ? "/ person" : "/ pp"}
                   </span>
                 </>
               ) : (

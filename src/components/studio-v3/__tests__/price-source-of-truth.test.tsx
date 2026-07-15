@@ -127,12 +127,14 @@ describe("Studio V3 price card — source-of-truth pricing", () => {
   });
 
   it("keeps refine pricing visible when the resolved tour has no compatible add-ons", () => {
-    const tour = signatureTours.find(
-      (candidate) =>
-        candidate.priceFrom &&
-        candidate.priceFrom > 0 &&
-        regionBucket(candidate.region) === "douro",
+    const pricedTour = signatureTours.find(
+      (candidate) => candidate.priceFrom && candidate.priceFrom > 0,
     )!;
+    const tour = {
+      ...pricedTour,
+      id: "douro-no-addons-fixture",
+      region: "Douro Valley",
+    };
 
     render(
       <SignaturePriceCard
