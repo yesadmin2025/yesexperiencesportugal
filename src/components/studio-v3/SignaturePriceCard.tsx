@@ -29,6 +29,8 @@ import type { SignatureTour } from "@/data/signatureTours";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
 import {
   summarizeJourneyLines,
+  hasCompleteJourneyPricing,
+
   type CheckoutJourneyLine,
 } from "@/lib/checkout/journeyDisplay";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
