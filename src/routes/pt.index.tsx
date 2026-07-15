@@ -9,33 +9,24 @@ import { TourImage } from "@/components/tours/TourImage";
 import { signatureTours } from "@/data/signatureTours";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { buildLocaleUrl } from "@/i18n/config";
+import { itemListLd, jsonLdScript, studioServiceLd } from "@/lib/jsonld";
 
 /**
  * Portuguese homepage (`/pt`). Editorial European Portuguese, mirroring
  * the completed PT surface: Signature → Studio (EN) → Multi-day paths,
  * featured day experiences, corporate & reviews strips, contact.
  */
+const PT_TITLE = "YES Experiences Portugal — Portugal privado, ao seu ritmo";
+const PT_DESCRIPTION =
+  "Experiências privadas por Portugal com guias locais — Arrábida ao Douro, Sintra ao Alentejo. Signature ou à medida, sem grupos.";
+
 export const Route = createFileRoute("/pt/")({
   head: () => ({
     meta: [
-      {
-        title:
-          "YES Experiences Portugal — Portugal privado, como um local mostra a um amigo",
-      },
-      {
-        name: "description",
-        content:
-          "Experiências privadas por Portugal com guias locais — da Arrábida ao Douro, de Sintra ao Alentejo. Dias Signature prontos a partir ou jornadas à medida, ao seu ritmo e sem grupos.",
-      },
-      {
-        property: "og:title",
-        content: "YES Experiences Portugal — Portugal privado, como um local mostra a um amigo",
-      },
-      {
-        property: "og:description",
-        content:
-          "Experiências privadas por Portugal com guias locais. Dias Signature prontos a partir ou jornadas à medida, ao seu ritmo e sem grupos.",
-      },
+      { title: PT_TITLE },
+      { name: "description", content: PT_DESCRIPTION },
+      { property: "og:title", content: PT_TITLE },
+      { property: "og:description", content: PT_DESCRIPTION },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_PT" },
       { property: "og:locale:alternate", content: "en_US" },
@@ -46,6 +37,28 @@ export const Route = createFileRoute("/pt/")({
       { rel: "alternate", hrefLang: "en", href: buildLocaleUrl("/", "en") },
       { rel: "alternate", hrefLang: "pt-PT", href: buildLocaleUrl("/", "pt") },
       { rel: "alternate", hrefLang: "x-default", href: buildLocaleUrl("/", "en") },
+    ],
+    scripts: [
+      jsonLdScript(
+        itemListLd({
+          name: "Experiências Signature — YES experiences Portugal",
+          path: "/pt",
+          items: signatureTours.map((t) => ({
+            id: t.id,
+            name: t.title,
+            description: t.blurb,
+            image: t.img,
+          })),
+        }),
+      ),
+      jsonLdScript(
+        studioServiceLd({
+          path: "/pt",
+          name: "YES Experiences Portugal — dias privados e jornadas locais por Portugal",
+          description:
+            "Experiências privadas e personalizadas em Portugal com guias locais — dias Signature, um Studio para desenhar o seu dia em tempo real e um Travel Designer humano para jornadas de vários dias por Lisboa, Sintra, Arrábida, Sesimbra, Alentejo e Costa Vicentina.",
+        }),
+      ),
     ],
   }),
   component: PtHomePage,
