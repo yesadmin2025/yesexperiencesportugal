@@ -1046,7 +1046,7 @@ export function SignaturePriceCard({
         {/* Trust strip removed — the reassurance above the CTA + the final
             reveal's own trust cues cover this without duplication. */}
 
-        <div ref={ctaRef} className="mt-6 flex flex-col items-center gap-3">
+        <div ref={ctaRef} className={`${isRefine ? "hidden" : "mt-6 flex flex-col items-center gap-3"}`}>
           {hasPrice ? (
             <>
               <button
