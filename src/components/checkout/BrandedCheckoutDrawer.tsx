@@ -296,9 +296,15 @@ function ExperienceSummaryCard({
           </span>
           <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
             €{total.toLocaleString("en-GB")}
-            {summary.pricePerPaxEur != null && summary.guests > 1 ? (
+            {summary.pricePerPaxEur != null &&
+            summary.guests > 1 &&
+            (summary.minorAges?.length ?? 0) === 0 ? (
               <span className="ml-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans">
                 €{Math.round(summary.pricePerPaxEur).toLocaleString("en-GB")} × {summary.guests}
+              </span>
+            ) : (summary.minorAges?.length ?? 0) > 0 ? (
+              <span className="ml-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans">
+                age-based pricing
               </span>
             ) : null}
           </span>
