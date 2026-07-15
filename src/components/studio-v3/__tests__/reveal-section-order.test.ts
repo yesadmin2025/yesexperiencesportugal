@@ -26,17 +26,16 @@ const REVEAL_SRC = readFileSync(
   "utf8",
 );
 
+// Reveal moved to a unified Signature card that consolidates map, story,
+// stops editor, DNA, price and add-ons under `studio-v3-signature-card`.
+// Only the durable outer anchors are locked; card-internal sections are
+// asserted in their own component tests (StopsEditor / SignatureDNA / etc).
 const EXPECTED_ORDER = [
   "studio-v3-reveal",
   "studio-v3-signature-hero",
+  "studio-v3-signature-card",
   "studio-v3-reveal-map",
-  "studio-v3-daypart-timeline",
-  "studio-v3-story-of-day",
   "studio-v3-stops-editor",
-  "studio-v3-signature-dna",
-  "studio-v3-shaping-direction",
-  "studio-v3-date-demoted",
-  "studio-v3-cta-bridge",
 ];
 
 function indexOfTestId(src: string, id: string): number {
