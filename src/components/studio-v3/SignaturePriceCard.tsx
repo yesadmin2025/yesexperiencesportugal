@@ -1055,7 +1055,7 @@ export function SignaturePriceCard({
                 data-testid="studio-v3-cta-primary"
                 data-total-eur={partyTotalEur ?? totalEur ?? ""}
                 data-party-total-eur={partyTotalEur ?? ""}
-                className="group hidden md:inline-flex items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                className={`group ${isRefine ? "inline-flex" : "hidden md:inline-flex"} items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]`}
                 style={{
                   background: "var(--charcoal)",
                   color: "var(--ivory)",
@@ -1063,7 +1063,7 @@ export function SignaturePriceCard({
                     "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 }}
               >
-                See my signature story
+                {isRefine ? "Continue" : "See my signature story"}
                 <ArrowRight
                   size={14}
                   aria-hidden
