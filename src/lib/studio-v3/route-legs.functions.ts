@@ -47,6 +47,29 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
+/**
+ * Sanity guard for day-tour legs.
+ *
+ * When OSRM returns a leg distance that is > 3× the straight-line
+ * haversine between the two stops, we treat the OSRM reading as
+ * corrupt/stale (bad geocode, wrong-side-of-country routing, cached row
+ * against a superseded coord) and fall back to a haversine-driven
+ * estimate for THAT leg. This prevented the observed
+ * "Sintra → Park of Pena · 155 min · 187.8 km" ghost leg from ever
+ * reaching the reveal.
+ *
+ * We do NOT hide the leg — a day-tour still needs a distance to render —
+ * but the number is now geographically defensible.
+ */
+const OSRM_SANITY_FACTOR = 3;
+/** Hard ceiling for any single leg in a day tour. Portugal N–S is ~600 km;
+ *  a single day-tour leg over 250 km is almost certainly a bug. */
+const MAX_SINGLE_LEG_KM = 250;
+
+function haversineDriveMinutes(km: number): number {
+  return Math.max(1, Math.round(((km * 1.12) / 55) * 60));
+}
+
 export const getStudioV3RouteLegs = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => inputSchema.parse(input))
   .handler(async ({ data }): Promise<RouteLegMinutes> => {
@@ -56,24 +79,51 @@ export const getStudioV3RouteLegs = createServerFn({ method: "POST" })
       const legMinutes: number[] = [];
       const legDistancesKm: number[] = [];
       const legModes: RouteLegMode[] = [];
-      for (const l of legs) {
-        const km = Number(l.distance_km) || 0;
+      let sanityFallbacks = 0;
+      for (let i = 0; i < legs.length; i++) {
+        const l = legs[i];
+        const a = data.stops[i];
+        const b = data.stops[i + 1];
+        const hav = haversineKm(a, b);
+        let km = Number(l.distance_km) || 0;
+        let driveMin = l.drive_minutes;
+
+        // Defense-in-depth: if OSRM reported an implausible leg, drop it and
+        // rely on haversine. Both conditions are conservative — legitimate
+        // road detours rarely exceed 2×, let alone 3× haversine.
+        const looksWrong =
+          km > MAX_SINGLE_LEG_KM || (hav > 0.2 && km > hav * OSRM_SANITY_FACTOR);
+        if (looksWrong) {
+          km = hav;
+          driveMin = haversineDriveMinutes(hav);
+          sanityFallbacks += 1;
+          // eslint-disable-next-line no-console
+          console.warn("[studio-v3 route-legs] sanity fallback", {
+            osrmKm: Number(l.distance_km),
+            haversineKm: +hav.toFixed(2),
+            a,
+            b,
+          });
+        }
+
         legDistancesKm.push(+km.toFixed(2));
         if (km <= WALKING_THRESHOLD_KM) {
           legModes.push("walking");
           legMinutes.push(Math.max(1, Math.round((km / WALKING_KMH) * 60)));
         } else {
           legModes.push("driving");
-          legMinutes.push(l.drive_minutes);
+          legMinutes.push(driveMin);
         }
       }
       const providers = new Set(legs.map((l) => l.provider));
       const provider: RouteLegMinutes["provider"] =
-        providers.size === 1
-          ? (providers.values().next().value as string) === "osrm"
-            ? "osrm"
-            : "haversine"
-          : "mixed";
+        sanityFallbacks > 0
+          ? "mixed"
+          : providers.size === 1
+            ? (providers.values().next().value as string) === "osrm"
+              ? "osrm"
+              : "haversine"
+            : "mixed";
       return { legMinutes, legDistancesKm, legModes, provider };
     } catch {
       const legMinutes: number[] = [];
@@ -87,7 +137,7 @@ export const getStudioV3RouteLegs = createServerFn({ method: "POST" })
           legMinutes.push(Math.max(1, Math.round((km / WALKING_KMH) * 60)));
         } else {
           legModes.push("driving");
-          legMinutes.push(Math.max(1, Math.round(((km * 1.12) / 55) * 60)));
+          legMinutes.push(haversineDriveMinutes(km));
         }
       }
       return { legMinutes, legDistancesKm, legModes, provider: "haversine" };
