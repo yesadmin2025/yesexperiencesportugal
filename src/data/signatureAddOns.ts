@@ -475,6 +475,27 @@ export function deriveTimeOfDay(addOn: SignatureAddOn): TimeOfDaySlot {
 }
 
 /**
+ * Derive a conservative party-size cap for an add-on when no explicit
+ * `maxGuests` is set. Owner-approved values always win; this heuristic
+ * only fires as the fallback so Studio V3 never surfaces a workshop or
+ * small boat for a party the venue physically can't seat.
+ *
+ * Caps (kept generous — under-selling beats over-promising):
+ *   - hand-crafted workshop / atelier (azulejo, cheese-making) → 8
+ *   - small-boat / kayak / sail       → 12
+ *   - intimate tasting / picnic       → 10
+ *   - open-air detours (cliffs, walls, ruins, chapel) → uncapped
+ */
+export function deriveMaxGuests(addOn: SignatureAddOn): number | undefined {
+  if (typeof addOn.maxGuests === "number") return addOn.maxGuests;
+  const t = `${addOn.label} ${addOn.blurb}`.toLowerCase();
+  if (/workshop|atelier|hand-painted|cheese-making|cheesemaker/.test(t)) return 8;
+  if (/\bboat\b|kayak|sail|catamaran/.test(t)) return 12;
+  if (/picnic|tasting|hamper/.test(t)) return 10;
+  return undefined;
+}
+
+/**
  * Derive the anchor stop reference for an add-on. Returns the explicit
  * `anchorStopKey` when set, else the sibling `sourceTourId` (which every
  * add-on already declares). Never fabricates a stop key.
@@ -488,6 +509,7 @@ export function deriveAnchorStop(addOn: SignatureAddOn): {
     sourceTourId: addOn.sourceTourId,
   };
 }
+
 
 /**
  * Pick up to 3 add-ons appropriate for the resolved itinerary.
@@ -541,7 +563,11 @@ export function selectSignatureAddOns(opts: {
     })
     .filter((a) => (a.minStops ? opts.stopCount >= a.minStops : true))
     .filter((a) => (a.minHours ? hours >= a.minHours : true))
-    .filter((a) => (a.maxGuests == null ? true : guests <= a.maxGuests));
+    .filter((a) => {
+      const cap = deriveMaxGuests(a);
+      return cap == null ? true : guests <= cap;
+    });
+
   // Time-of-day de-duplication: keep the first add-on per non-flexible slot.
   const usedSlots = new Set<TimeOfDaySlot>();
   const slotFiltered: SignatureAddOn[] = [];
