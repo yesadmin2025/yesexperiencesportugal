@@ -3792,6 +3792,18 @@ export function StoryboardHandoff({
                             {s.story}
                           </p>
                         ) : null}
+                        {composerRationales[i] ? (
+                          <p
+                            data-testid="studio-v3-stop-rationale"
+                            className="mt-1 text-[11.5px] leading-[1.4] italic"
+                            style={{
+                              fontFamily: "var(--font-editorial)",
+                              color: "var(--gold)",
+                            }}
+                          >
+                            {composerRationales[i]}
+                          </p>
+                        ) : null}
                       </div>
                       <div className="flex shrink-0 items-center gap-1">
                         <button
