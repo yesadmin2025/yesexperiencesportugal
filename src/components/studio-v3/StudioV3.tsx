@@ -738,8 +738,15 @@ export function StudioV3() {
         prev.length === summary.ids.length && prev.every((id, i) => id === summary.ids[i]);
       return same ? prev : summary.ids;
     });
-    setSelectedAddOnItems(summary.items);
-    setSelectedAddOnsTotalEur(summary.totalEur);
+    setSelectedAddOnItems((prev) => {
+      const same =
+        prev.length === summary.items.length &&
+        prev.every(
+          (p, i) => p.id === summary.items[i].id && p.amount === summary.items[i].amount,
+        );
+      return same ? prev : summary.items;
+    });
+    setSelectedAddOnsTotalEur((prev) => (prev === summary.totalEur ? prev : summary.totalEur));
   }, []);
   // Reset add-ons when the resolved tour changes (fresh reveal ⇒ clean slate).
   useEffect(() => {
