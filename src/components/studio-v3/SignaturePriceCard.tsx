@@ -315,22 +315,6 @@ export function SignaturePriceCard({
     };
   };
 
-  useEffect(() => {
-    const cb = onAddOnsChangeRef.current;
-    if (!cb) return;
-    cb(buildSummary(selectedAddOnIds));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedAddOnIds, addOnsTotalEur, addOnsMinutes, selectedAddOns, priceEur, summaryGuests]);
-
-  const commitAddOnIds = (next: string[]) => {
-    if (isControlled) {
-      // Parent owns state; emit the summary optimistically via the callback.
-      const cb = onAddOnsChangeRef.current;
-      if (cb) cb(buildSummary(next));
-    } else {
-      setUncontrolledAddOnIds(next);
-    }
-  };
 
   // Track the last id list we emitted to the parent so the sync effect
   // doesn't re-emit on unrelated rerenders (guest count changes, price
