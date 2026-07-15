@@ -418,6 +418,44 @@ function TailorPage() {
     return Math.max(floor, Math.round(p));
   }, [basePerPax, blueprint, added, skipped, skippedCore, optionalSelected, addons, lunch]);
 
+  // ─── Wine-extension state ───────────────────────────────────
+  // A "wine extension" = the traveller picked MORE wineries than the
+  // Signature's baseline `pickMin`. Because per-winery extension pricing
+  // has not been supplier-approved for every estate, extended selections
+  // fall to the manual-confirmation path — we don't invent a delta.
+  const wineExtension = useMemo(() => {
+    if (!blueprint?.choice) return { extra: 0, hasManualSupplier: false };
+    const extra = Math.max(0, choiceSelected.size - blueprint.choice.pickMin);
+    // Any selected option that explicitly requires manual confirmation.
+    const hasManualSupplier = blueprint.choice.options.some(
+      (o) => choiceSelected.has(o.id) && o.confirmationStatus === "manual",
+    );
+    return { extra, hasManualSupplier };
+  }, [blueprint, choiceSelected]);
+
+  const requiresManualConfirmation =
+    wineExtension.extra > 0 || wineExtension.hasManualSupplier;
+
+  // Blueprint contains a winery selection surface (choice or core).
+  const hasWinerySurface = useMemo(() => {
+    if (!blueprint) return false;
+    if (blueprint.core.some((s) => s.category === "winery")) return true;
+    if (blueprint.choice?.options.some((o) => o.category === "winery")) return true;
+    return false;
+  }, [blueprint]);
+  const hasMinors = composition.minorAges.length > 0;
+  const showMinorsWineAdvisory = hasWinerySurface && hasMinors;
+
+  // Removable-stop suggestions when the day is at capacity — surfaced
+  // as advice only. Never auto-removed; the traveller decides.
+  const removableCoreLabels = useMemo(() => {
+    if (!blueprint) return [] as string[];
+    return blueprint.core
+      .filter((s) => !s.lock && !skippedCore.has(s.id))
+      .map((s) => s.label);
+  }, [blueprint, skippedCore]);
+
+
 
   // ─── Helpers ────────────────────────────────────────────────
   const toggle = <T extends string>(setter: (s: Set<T>) => void, current: Set<T>, val: T) => {
