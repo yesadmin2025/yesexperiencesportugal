@@ -697,6 +697,7 @@ export function SignaturePriceCard({
                   total for your group
                 </span>
               </p>
+            ) : null}
             {journeyRows.length > 0 ? (
               <ul
                 data-testid="studio-v3-journey-lines"
