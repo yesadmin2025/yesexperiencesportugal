@@ -339,7 +339,12 @@ const tilesWorkshop: TailorBlueprint = {
       blurb: "Hands-on azulejo class at a 19th-century tile factory — take your tile home.",
       category: "workshop",
       dwellMinutesOverride: 90,
-      skippable: false,
+      lock: {
+        reasonCode: "product_defining",
+        customerFacingReason:
+          "The tile-painting workshop is the heart of this tour — removing it would leave nothing to tailor.",
+        source: "Viator PDP · signature inclusion",
+      },
     },
     {
       id: "lunch-azeitao",
@@ -424,7 +429,12 @@ const azeitaoCheese: TailorBlueprint = {
       blurb: "Private workshop at a small family producer — see the Azeitão DOP cheese being made.",
       category: "workshop",
       dwellMinutesOverride: 75,
-      skippable: false,
+      lock: {
+        reasonCode: "product_defining",
+        customerFacingReason:
+          "The cheese-making workshop is the heart of this tour — removing it would leave nothing to tailor.",
+        source: "Viator PDP · signature inclusion",
+      },
     },
     {
       id: "lunch-azeitao",
@@ -437,7 +447,12 @@ const azeitaoCheese: TailorBlueprint = {
       label: "Quinta de Catralvos winery",
       blurb: "Five-wine tasting at the family cellar door.",
       category: "winery",
-      skippable: false,
+      lock: {
+        reasonCode: "product_defining",
+        customerFacingReason:
+          "This is the tour's only winery — removing it drops the 'wine' half of Cheese & Wine.",
+        source: "Viator PDP · signature inclusion",
+      },
     },
   ],
   optional: [
