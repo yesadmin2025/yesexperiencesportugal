@@ -3913,75 +3913,10 @@ export function StoryboardHandoff({
           </div>
         ) : null}
 
-        {/* ---------- 5. Signature DNA ---------- */}
-        {dnaChips.length > 0 ? (
-          <section
-            data-testid="studio-v3-signature-dna"
-            className="mt-10 max-w-[520px] mx-auto text-center"
-          >
-            <p
-              className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-            >
-              <span style={{ color: "var(--gold)" }}>—</span> Your Signature DNA
-            </p>
-            <ul className="mt-4 flex flex-wrap justify-center gap-1.5">
-              {dnaChips.map((chip) => (
-                <li
-                  key={chip}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 text-[11.5px] leading-[1.3] rounded-full font-semibold"
-                  style={{
-                    background: "transparent",
-                    border: "1px solid color-mix(in oklab, var(--teal) 40%, transparent)",
-                    color: "color-mix(in oklab, var(--charcoal) 88%, transparent)",
-                  }}
-                >
-                  <span
-                    aria-hidden
-                    className="block h-1 w-1 rounded-full"
-                    style={{ background: "var(--gold)" }}
-                  />
-                  {chip}
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
+        {/* Signature DNA + Shaping direction removed on Refine — decorative
+            content belongs to the final reveal, not the decision page. */}
 
-        {/* ---------- 6. Shaping direction (investment) ---------- */}
-        {shapingLine ? (
-          <div
-            data-testid="studio-v3-shaping-direction"
-            className="mt-10 text-center motion-safe:[animation:studioV3RiseIn_720ms_ease-out_220ms_both] motion-reduce:opacity-100"
-          >
-            <span
-              aria-hidden
-              className="mx-auto mb-5 block h-px w-10"
-              style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
-            />
-            <p
-              className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-            >
-              <span style={{ color: "var(--gold)" }}>—</span> Shaping direction
-            </p>
-            <p
-              className="mt-3 text-[15px] sm:text-[16px] leading-[1.55] italic text-balance max-w-[440px] mx-auto"
-              style={{
-                fontFamily: "var(--font-serif)",
-                color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
-              }}
-            >
-              {shapingLine}
-            </p>
-          </div>
-        ) : null}
-
-        {/* Quality Score intentionally omitted from the reveal (kept for debug overlay only) */}
-
-        {/* ---------- 7b. Premium price card ---------- */}
-
-        {/* ---------- 7b. Premium price card ---------- */}
+        {/* ---------- Add-ons + Total (SignaturePriceCard refine variant) ---------- */}
         <SignaturePriceCard
           tour={skeletonTour ?? null}
           stopCount={editedStops.length}
