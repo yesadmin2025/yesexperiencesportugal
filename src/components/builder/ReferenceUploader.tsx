@@ -15,6 +15,17 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteBuilderReference } from "@/lib/builderReferences.functions";
 import { listBuilderReferences } from "@/lib/builderReferences.list.functions";
+import { uploadBuilderReference } from "@/lib/builderReferences.upload.functions";
+
+async function fileToBase64(file: File): Promise<string> {
+  const buf = new Uint8Array(await file.arrayBuffer());
+  let bin = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < buf.length; i += chunk) {
+    bin += String.fromCharCode(...buf.subarray(i, i + chunk));
+  }
+  return btoa(bin);
+}
 
 const MAX_FILES = 5;
 const MAX_BYTES = 10 * 1024 * 1024;
@@ -104,39 +115,25 @@ export function ReferenceUploader({ sessionId, onToneReady }: Props) {
           continue;
         }
         const safeName = file.name.replace(/[^\w.-]+/g, "_").slice(0, 80);
-        const path = `${sessionId}/${Date.now()}-${safeName}`;
-        const { error: upErr } = await supabase.storage
-          .from("builder-references")
-          .upload(path, file, {
-            contentType: file.type,
-            upsert: false,
+        try {
+          const base64 = await fileToBase64(file);
+          const result = await uploadBuilderReference({
+            data: {
+              sessionId,
+              fileName: safeName,
+              mimeType: file.type,
+              fileSizeBytes: file.size,
+              base64,
+            },
           });
-        if (upErr) {
-          console.error(upErr);
+          if (!result.ok) {
+            console.error("upload failed:", result.reason);
+            toast.error(`Upload failed: ${file.name}`);
+            continue;
+          }
+        } catch (err) {
+          console.error(err);
           toast.error(`Upload failed: ${file.name}`);
-          continue;
-        }
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("builder-references").getPublicUrl(path);
-
-        const { error: insErr } = await supabase.from("builder_reference_uploads").insert({
-          session_id: sessionId,
-          file_path: path,
-          // file_url is legacy/NOT NULL — store storage path reference
-          // only; clients now read via short-lived signed URLs.
-          file_url: publicUrl,
-          file_name: file.name.slice(0, 200),
-          mime_type: file.type,
-          file_size_bytes: file.size,
-        });
-        if (insErr) {
-          console.error(insErr);
-          await supabase.storage
-            .from("builder-references")
-            .remove([path])
-            .catch(() => {});
-          toast.error(`Couldn't save ${file.name}`);
           continue;
         }
       }
