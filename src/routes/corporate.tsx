@@ -6,11 +6,14 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
-import { GuestMomentsStrip } from "@/components/ui/GuestMomentsStrip";
-import { CORPORATE_MOMENTS } from "@/content/guest-moments";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
-import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
-import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
+import wineryGroupAsset from "@/assets/owner-photos/winery-group-orange-tree.jpeg.asset.json";
+import wineCheersAsset from "@/assets/owner-photos/wine-cheers-arch.jpeg.asset.json";
+import tastingCakeAsset from "@/assets/owner-photos/tasting-cake-moment.jpeg.asset.json";
+
+const imgWineryGroup = wineryGroupAsset.url;
+const imgWineCheers = wineCheersAsset.url;
+const imgTastingCake = tastingCakeAsset.url;
 
 const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
