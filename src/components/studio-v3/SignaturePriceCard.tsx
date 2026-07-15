@@ -374,6 +374,30 @@ export function SignaturePriceCard({
   const partyTotalEur =
     partyBaseEur != null ? partyBaseEur + addOnsDisplayPartyEur : null;
 
+  // ── Pricing consistency: TOTAL is the single source of truth. ─────────────
+  // Per-person is a pure derivation of the party total so add-on toggles and
+  // guest changes can never desync the two visible numbers. When we don't yet
+  // know the guest count we fall back to the "from" anchor (displayPerPaxEur)
+  // so early phases still surface a per-guest hint.
+  const perPersonDerived =
+    partyTotalEur != null && effectiveGuests != null && effectiveGuests > 0
+      ? Math.round(partyTotalEur / effectiveGuests)
+      : (displayPerPaxEur ?? null);
+
+  // Dev-only invariant: perPerson × guests must equal total (±rounding).
+  if (import.meta.env.DEV && partyTotalEur != null && effectiveGuests && effectiveGuests > 0) {
+    const drift = Math.abs((perPersonDerived ?? 0) * effectiveGuests - partyTotalEur);
+    if (drift > effectiveGuests) {
+      // eslint-disable-next-line no-console
+      console.error("[studio-v3] price mismatch", {
+        partyTotalEur,
+        perPersonDerived,
+        effectiveGuests,
+        drift,
+      });
+    }
+  }
+
   // Tier rows for the picker — real per-pax when available, "from" anchor otherwise.
   const tierRows = useMemo(() => {
     if (!tour || !priceEur) return [] as Array<{ tier: number; eur: number; real: boolean }>;
