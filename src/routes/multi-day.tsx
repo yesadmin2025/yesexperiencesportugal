@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { breadcrumbLd, faqPageLd, jsonLdScript, travelDesignerServiceLd } from "@/lib/jsonld";
 import { TRAVEL_DESIGNER_FAQ } from "@/content/seo-faq";
 import { SiteLayout } from "@/components/SiteLayout";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+
 import {
   MessageCircle,
   Compass,
