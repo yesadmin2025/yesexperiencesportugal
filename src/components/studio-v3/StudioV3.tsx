@@ -738,7 +738,6 @@ export function StudioV3() {
   const [selectedAddOnItems, setSelectedAddOnItems] = useState<
     SelectedAddOnSummary["items"]
   >([]);
-  const [selectedAddOnsTotalEur, setSelectedAddOnsTotalEur] = useState(0);
   const handleAddOnsChange = useCallback((summary: SelectedAddOnSummary) => {
     setSelectedAddOnIds((prev) => {
       const same =
@@ -753,13 +752,11 @@ export function StudioV3() {
         );
       return same ? prev : summary.items;
     });
-    setSelectedAddOnsTotalEur((prev) => (prev === summary.totalEur ? prev : summary.totalEur));
   }, []);
   // Reset add-ons when the resolved tour changes (fresh reveal ⇒ clean slate).
   useEffect(() => {
     setSelectedAddOnIds([]);
     setSelectedAddOnItems([]);
-    setSelectedAddOnsTotalEur(0);
   }, [state.tourId]);
 
   // Single source of truth for adults/minorAges/stops/addOns/perPax/total.
@@ -1004,7 +1001,6 @@ export function StudioV3() {
       openLeadSheet,
       tourPriceTiers,
       selectedAddOnItems,
-      selectedAddOnsTotalEur,
     ],
   );
 
