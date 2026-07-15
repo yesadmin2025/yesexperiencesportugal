@@ -276,13 +276,35 @@ function TailorPage() {
   const tryToggleChoice = (id: string) => {
     const on = choiceSelected.has(id);
     const next = new Set(choiceSelected);
-    if (on) next.delete(id);
-    else {
+    if (on) {
+      // Guard against dropping below the base product's pickMin.
+      if (blueprint?.choice && next.size <= blueprint.choice.pickMin) {
+        toast.error(
+          `This tour needs at least ${blueprint.choice.pickMin} — swap one instead of removing it.`,
+        );
+        return;
+      }
+      next.delete(id);
+    } else {
       next.add(id);
       const proj = projectFeasibility(skippedCore, next, optionalSelected);
       if (proj && !proj.feasible) {
         toast.error(proj.warnings[0] ?? "Adding that stop overloads the day.");
         return;
+      }
+      // Consequence preview — surface the estimated time cost so the
+      // traveller sees WHY the day just changed. Uses approved supplier
+      // visit + tasting minutes when populated, else the category default.
+      const option = blueprint?.choice?.options.find((o) => o.id === id);
+      if (option) {
+        const approved =
+          (option.visitMinutes ?? 0) + (option.tastingMinutes ?? 0);
+        const added = approved > 0 ? approved : DWELL_MINIMUM_MIN[option.category];
+        toast.success(
+          `Adding ${option.label} adds about ${added} min to your day.${
+            approved > 0 ? "" : " Estimated — supplier will confirm timing."
+          }`,
+        );
       }
     }
     setChoiceSelected(next);
