@@ -87,6 +87,10 @@ export interface SignaturePriceCardProps {
   journeyTitle?: string | null;
   /** Number of travellers — when ≥2, party total is shown alongside per-pp. */
   guests?: number | null;
+  /** Adult count (18+) for guest-composition transparency in the header label. */
+  adults?: number | null;
+  /** Minor ages (0–17) for guest-composition transparency in the header label. */
+  minorAges?: readonly number[] | null;
   /** Real `included[]` from the resolved Signature — drives the footnote. */
   included?: ReadonlyArray<string>;
   /** Public Studio keeps pricing clean; legacy/tests can still exercise add-ons. */
