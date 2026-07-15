@@ -26,7 +26,11 @@ import {
   type SignatureAddOn,
 } from "@/data/signatureAddOns";
 import type { SignatureTour } from "@/data/signatureTours";
-import { resolvePerPaxEur } from "@/data/signatureTourPricing";
+import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
+import {
+  summarizeJourneyLines,
+  type CheckoutJourneyLine,
+} from "@/lib/checkout/journeyDisplay";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { getSignatureOptionalAddOns } from "@/lib/tailor-chapters";
 import { MountBadge } from "./useStudioDebug";
@@ -426,8 +430,36 @@ export function SignaturePriceCard({
     );
   }, [selectedAddOns, hasPrice, priceEur, displayGuests]);
   const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
-  const partyBaseEur =
-    displayPerPaxEur != null && partyCount != null ? displayPerPaxEur * partyCount : null;
+
+  // Age-band journey pricing — matches BrandedCheckoutDrawer exactly. Only
+  // applied when the traveller isn't previewing a different group size via
+  // the hidden picker (previewGuests !== null), because that preview is an
+  // adults-only "what-if" and would silently reprice minors otherwise.
+  const composedAdults = typeof adults === "number" && adults >= 1 ? adults : null;
+  const composedMinors = minorAges ?? [];
+  const journey = useMemo(() => {
+    if (previewGuests !== null) return null;
+    if (composedAdults == null) return null;
+    return resolveJourneyPricing(tour, composedAdults, composedMinors, effectiveOverrides);
+  }, [previewGuests, composedAdults, composedMinors, tour, effectiveOverrides]);
+  const journeyLines: readonly CheckoutJourneyLine[] | null = journey
+    ? (journey.lines as unknown as readonly CheckoutJourneyLine[])
+    : null;
+  // Only itemise when the party actually mixes bands — adults-only bookings
+  // are already fully described by the "€X / guest × N" line above.
+  const journeyRows = useMemo(
+    () =>
+      journeyLines && journeyLines.length > 0 && composedMinors.length > 0
+        ? summarizeJourneyLines(journeyLines)
+        : [],
+    [journeyLines, composedMinors.length],
+  );
+
+  const partyBaseEur = journey
+    ? journey.totalEur
+    : displayPerPaxEur != null && partyCount != null
+      ? displayPerPaxEur * partyCount
+      : null;
   const localPartyTotalEur =
     partyBaseEur != null ? partyBaseEur + addOnsDisplayPartyEur : null;
 
@@ -670,6 +702,33 @@ export function SignaturePriceCard({
                   total for your group
                 </span>
               </p>
+            ) : null}
+            {journeyRows.length > 0 ? (
+              <ul
+                data-testid="studio-v3-journey-lines"
+                className="mt-3 mx-auto max-w-[280px] space-y-1"
+              >
+                {journeyRows.map((row) => (
+                  <li
+                    key={row.key}
+                    className="flex items-baseline justify-between gap-3 text-[12px] tabular-nums"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
+                  >
+                    <span className="truncate">
+                      {row.label}
+                      {row.qty > 1 ? (
+                        <span
+                          className="ml-1"
+                          style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+                        >
+                          (€{Math.round(row.unitEur).toLocaleString("en-GB")} × {row.qty})
+                        </span>
+                      ) : null}
+                    </span>
+                    <span>€{Math.round(row.subtotalEur).toLocaleString("en-GB")}</span>
+                  </li>
+                ))}
+              </ul>
             ) : null}
           </>
         ) : (

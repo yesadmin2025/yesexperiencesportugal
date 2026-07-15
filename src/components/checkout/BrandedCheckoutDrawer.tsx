@@ -5,6 +5,16 @@ import { Lock, X, MapPin, Clock, Users, Calendar } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
+import {
+  summarizeJourneyLines as summarizeJourneyLinesShared,
+  type CheckoutJourneyLine as SharedJourneyLine,
+  type JourneyBand as SharedJourneyBand,
+} from "@/lib/checkout/journeyDisplay";
+
+// Re-exports so existing importers keep working.
+export type JourneyBand = SharedJourneyBand;
+export type CheckoutJourneyLine = SharedJourneyLine;
+export const summarizeJourneyLines = summarizeJourneyLinesShared;
 
 /**
  * BrandedCheckoutDrawer
@@ -15,14 +25,6 @@ import { CredentialStrip } from "@/components/ui/CredentialStrip";
  * paying for. No full-page redirect — checkout happens on our domain.
  */
 
-export type JourneyBand = "adult" | "youth" | "child" | "infant";
-export interface CheckoutJourneyLine {
-  readonly kind: "adult" | "minor";
-  readonly band: JourneyBand;
-  readonly age: number | null;
-  readonly unitEur: number;
-  readonly qty: 1;
-}
 
 export interface CheckoutAddOnLine {
   id: string;
@@ -443,65 +445,6 @@ function buildCompositionLine(
   return parts.join(" · ");
 }
 
-/** Aggregate journey lines into display rows: adults grouped, each minor
- *  listed individually with its age. Order: adults → youths → children →
- *  infants, minors sorted by age descending. */
-interface JourneyDisplayRow {
-  readonly key: string;
-  readonly label: string;
-  readonly unitEur: number;
-  readonly qty: number;
-  readonly subtotalEur: number;
-}
-export function summarizeJourneyLines(
-  lines: readonly CheckoutJourneyLine[],
-): JourneyDisplayRow[] {
-  const adults = lines.filter((l) => l.band === "adult");
-  const minors = lines
-    .filter((l) => l.band !== "adult")
-    .slice()
-    .sort((a, b) => {
-      const order: Record<JourneyBand, number> = {
-        adult: 0,
-        youth: 1,
-        child: 2,
-        infant: 3,
-      };
-      const oa = order[a.band] - order[b.band];
-      if (oa !== 0) return oa;
-      return (b.age ?? 0) - (a.age ?? 0);
-    });
-  const rows: JourneyDisplayRow[] = [];
-  if (adults.length > 0) {
-    const unit = adults[0].unitEur;
-    rows.push({
-      key: "adults",
-      label: `Adult${adults.length === 1 ? "" : "s"}`,
-      unitEur: unit,
-      qty: adults.length,
-      subtotalEur: unit * adults.length,
-    });
-  }
-  const bandLabel: Record<Exclude<JourneyBand, "adult">, string> = {
-    youth: "Youth",
-    child: "Child",
-    infant: "Infant",
-  };
-  for (const m of minors) {
-    const label =
-      m.age != null
-        ? `${bandLabel[m.band as "youth" | "child" | "infant"]} (age ${m.age})`
-        : bandLabel[m.band as "youth" | "child" | "infant"];
-    rows.push({
-      key: `${m.band}-${m.age ?? "x"}-${rows.length}`,
-      label,
-      unitEur: m.unitEur,
-      qty: 1,
-      subtotalEur: m.unitEur,
-    });
-  }
-  return rows;
-}
 
 function CheckoutSkeleton() {
   return (
