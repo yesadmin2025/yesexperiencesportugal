@@ -603,10 +603,12 @@ export function SignaturePriceCard({
             <p
               className="mt-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
+              data-testid="studio-v3-price-card-guests"
             >
-              {partyCount != null
-                ? `For ${partyCount} ${partyCount === 1 ? "guest" : "guests"}`
-                : "Per guest"}
+              {formatGuestComposition(adults, minorAges, partyCount) ??
+                (partyCount != null
+                  ? `For ${partyCount} ${partyCount === 1 ? "guest" : "guests"}`
+                  : "Per guest")}
             </p>
             <p
               data-testid="studio-v3-base-price"
