@@ -15,9 +15,9 @@ import {
   whatsappUrl,
 } from "@/config/business-nap";
 
-const TITLE = "Sobre a YES Experiences Portugal | Viagens privadas, feitas por quem cá vive";
+const TITLE = "Sobre a YES Experiences Portugal | Viagens por quem cá vive";
 const DESCRIPTION =
-  "Operador turístico privado, fundado em Sesimbra em 2022. Conheça a equipa por trás da YES — licenciado RNAAT nº 31/2023, a desenhar viagens privadas por Portugal.";
+  "Operador turístico privado, fundado em Sesimbra em 2022. Licenciado RNAAT nº 31/2023, a desenhar viagens privadas por Portugal.";
 
 export const Route = createFileRoute("/pt/about")({
   head: () => ({
