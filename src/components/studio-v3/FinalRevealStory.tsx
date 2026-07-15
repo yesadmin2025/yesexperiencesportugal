@@ -33,15 +33,75 @@ import { cn } from "@/lib/utils";
 import { formatGuestComposition } from "./formatGuests";
 import parchmentLetter from "@/assets/studio-v3/reveal-letter-parchment.jpg";
 
-// Roman numerals for chapter markers — the reveal reads like a bound book,
-// not a checklist. Falls back to arabic beyond XII so we never render blank.
-const ROMAN = [
-  "I", "II", "III", "IV", "V", "VI",
-  "VII", "VIII", "IX", "X", "XI", "XII",
-];
-function romanFor(i: number): string {
-  return ROMAN[i] ?? String(i + 1);
+// Friendly region label rendered in the reveal title.
+const REGION_LABELS: Record<string, string> = {
+  arrabida: "the Arrábida",
+  "arrabida-setubal": "the Arrábida",
+  sintra: "Sintra & the Atlantic coast",
+  "lisbon-coast": "Sintra & the Atlantic coast",
+  lisbon: "Lisbon",
+  alentejo: "the Alentejo",
+  douro: "the Douro",
+  centro: "central Portugal",
+};
+function regionLabelFor(intent: string | null | undefined): string {
+  if (!intent) return "Portugal";
+  return REGION_LABELS[intent.toLowerCase()] ?? "Portugal";
 }
+
+// Deterministic intro paragraph — no invented facts, sets tone only.
+function introFor(feeling: string | null | undefined, region: string): string {
+  const opener =
+    feeling === "wine-food"
+      ? `A slower rhythm shapes your day in ${region} — long tables, unhurried afternoons, Portugal felt without hurry.`
+      : feeling === "coastal" || feeling === "adventure"
+        ? `Your day in ${region} follows the Atlantic light — open roads, sea air, room for the country to breathe.`
+        : feeling === "romance"
+          ? `Your day in ${region} is built for two — soft pacing, quiet corners, the country meeting you gently.`
+          : feeling === "hidden"
+            ? `Your day in ${region} keeps to the quieter roads — small doors, unshowy places, nothing that performs.`
+            : feeling === "slow-luxury"
+              ? `Your day in ${region} moves gently — fewer moments, held longer, nothing asked of you.`
+              : `Your day in ${region} unfolds at its own pace — private, unhurried, made only for you.`;
+  return opener + " Every moment below is confirmed and yours the second you say yes.";
+}
+
+// Rotating editorial connectives for middle stops. Kept short and quiet.
+const MIDDLE_OPENERS = [
+  "Then you'll continue towards",
+  "Along the way,",
+  "As the afternoon opens,",
+  "Later,",
+  "From there,",
+];
+
+function stopSentence(
+  index: number,
+  isLast: boolean,
+  label: string,
+  story: string,
+): string {
+  const body = story?.trim() ? ` ${story.trim()}` : "";
+  if (index === 0) return `You'll start your day in ${label}.${body}`;
+  if (isLast) return `To close the day, ${label}.${body}`;
+  const opener = MIDDLE_OPENERS[(index - 1) % MIDDLE_OPENERS.length];
+  const glue = opener.endsWith(",") ? " " : " ";
+  return `${opener}${glue}${label}.${body}`;
+}
+
+// Themed continuation for add-on integration into the narrative.
+function addOnContinuation(label: string): string {
+  const l = label.toLowerCase();
+  if (/(boat|sail|yacht|sea|ocean)/.test(l)) return "the sea";
+  if (/(helicopter|heli|flight|aerial)/.test(l)) return "the coast seen from above";
+  if (/(chef|dinner|tasting|table|lunch|wine)/.test(l)) return "a long, quiet table";
+  if (/(photo|photograph)/.test(l)) return "moments you'll want to keep";
+  if (/(spa|massage|wellness)/.test(l)) return "an hour that belongs only to you";
+  if (/(horse|ride|equestr)/.test(l)) return "the country at a slower pace";
+  if (/(picnic|hamper)/.test(l)) return "a table set under open sky";
+  return "something quieter, made just for you";
+}
+
 
 export interface FinalRevealStoryProps {
   readonly state: StudioV3State;
