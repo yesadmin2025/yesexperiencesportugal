@@ -29,16 +29,21 @@ import {
 } from "./composeStudioJourney";
 import type { RegionKey } from "@/data/regionStops";
 
+/**
+ * Phase C QA cycle: default ON everywhere. QA can force-off by setting
+ *   localStorage.setItem("studio-v3-composer-reveal", "0")
+ * A future turn will remove the flag entirely once QA signs off.
+ */
 export const STUDIO_V3_COMPOSER_REVEAL: boolean = (() => {
   try {
-    if (import.meta.env?.DEV) return true;
     if (typeof window !== "undefined") {
-      return window.localStorage?.getItem("studio-v3-composer-reveal") === "1";
+      const v = window.localStorage?.getItem("studio-v3-composer-reveal");
+      if (v === "0") return false;
     }
   } catch {
     /* no-op */
   }
-  return false;
+  return true;
 })();
 
 export function pickupToComposerRegion(pickup: Pickup | null | undefined): RegionKey | null {
