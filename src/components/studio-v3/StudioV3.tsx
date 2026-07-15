@@ -73,8 +73,10 @@ import {
 import { findTour, signatureTours } from "@/data/signatureTours";
 import {
   composeFromState,
+  adaptStateToComposeInput,
   STUDIO_V3_COMPOSER_REVEAL,
 } from "@/lib/studio-v3/composerAdapter";
+import { priceComposedJourney } from "@/lib/studio-v3/composerPricing";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
@@ -2969,6 +2971,19 @@ function ContinueCta({
  */
 function ComposerRevealPanel({ state }: { state: StudioV3State }) {
   const journey = useMemo(() => composeFromState(state), [state]);
+  const composerInput = useMemo(() => adaptStateToComposeInput(state), [state]);
+  const { data: tourPriceTiers } = useTourPriceTiers();
+  const composerPrice = useMemo(() => {
+    if (!composerInput) return null;
+    const adults = typeof state.adults === "number" && state.adults >= 1 ? state.adults : 2;
+    return priceComposedJourney({
+      region: composerInput.region,
+      budgetTier: composerInput.budgetTier,
+      adults,
+      minorAges: composerInput.minorAges ?? [],
+      overrides: tourPriceTiers ?? null,
+    });
+  }, [composerInput, state.adults, tourPriceTiers]);
   if (!journey || journey.stops.length === 0) return null;
   return (
     <div
@@ -2990,6 +3005,27 @@ function ComposerRevealPanel({ state }: { state: StudioV3State }) {
       >
         Why these stops fit your day
       </p>
+      {composerPrice ? (
+        <p
+          data-testid="studio-v3-composer-price-preview"
+          className="text-center text-[12px] mb-4"
+          style={{
+            fontFamily: "var(--font-body)",
+            color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+          }}
+        >
+          Composer preview:{" "}
+          <span style={{ color: "var(--charcoal)", fontWeight: 600 }}>
+            from €{composerPrice.perPax.eurPerPax} pp
+          </span>
+          <span
+            className="ml-1"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+          >
+            · booking price shown above
+          </span>
+        </p>
+      ) : null}
       <ol className="space-y-2.5">
         {journey.stops.map((s, i) => (
           <li
