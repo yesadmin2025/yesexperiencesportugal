@@ -84,10 +84,10 @@
   --ease-snap: cubic-bezier(0.34, 1.2, 0.64, 1); /* muted tap release */
 
   /* Brand — locked palette, used site-wide. */
-  --teal: #295b61;
-  --teal-2: #2a7c82;
-  --gold: #c9a96a;
-  --gold-soft: #e1cfa6;
+  --teal: #295B61;
+  --teal-2: #2A7C82;
+  --gold: #C9A96A;
+  --gold-soft: #E1CFA6;
   /* Refined champagne accents — additive, do NOT replace --gold/--gold-soft.
      --gold-warm: a touch warmer, used for hover/active sheen so the accent
      doesn't read grey on ivory. --gold-deep: deeper rim for thin rules and
