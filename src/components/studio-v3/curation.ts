@@ -2775,9 +2775,14 @@ const STUDIO_V3_ROUTE_COMPOSITION_ENABLED = true;
 const ROUTE_POINT_BASELINE_MIN = 60;
 
 function replacementCapForRhythm(rhythm: Rhythm): number {
-  if (rhythm === "slow") return 1;
-  if (rhythm === "balanced") return 2;
-  return 3; // full | immersive
+  // Studio must NOT feel like a Signature editor. Cap raised so answers
+  // materially reshape the day: at balanced rhythm the composer may now
+  // swap up to 3 of ~4 stops (only the anchor is protected), and
+  // full/immersive may swap every non-anchor stop. See the Studio-vs-
+  // Signature correction brief, §5 and §7.
+  if (rhythm === "slow") return 2;
+  if (rhythm === "balanced") return 3;
+  return 4; // full | immersive — effectively unbounded within routePoints.length
 }
 
 /** Inferred route-point kind. Extends OptionalStopType with a virtual
