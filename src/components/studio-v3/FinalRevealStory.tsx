@@ -25,7 +25,7 @@ import {
   CTA_SEE_INCLUSIONS,
   INCLUSION_HEADER,
   INSTANT_CONFIRMATION,
-  REVEAL_TITLE,
+  
 } from "@/content/signature-day-copy";
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
