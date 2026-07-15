@@ -3005,6 +3005,27 @@ function ComposerRevealPanel({ state }: { state: StudioV3State }) {
       >
         Why these stops fit your day
       </p>
+      {composerPrice ? (
+        <p
+          data-testid="studio-v3-composer-price-preview"
+          className="text-center text-[12px] mb-4"
+          style={{
+            fontFamily: "var(--font-body)",
+            color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+          }}
+        >
+          Composer preview:{" "}
+          <span style={{ color: "var(--charcoal)", fontWeight: 600 }}>
+            from €{composerPrice.perPax.eurPerPax} pp
+          </span>
+          <span
+            className="ml-1"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+          >
+            · booking price shown above
+          </span>
+        </p>
+      ) : null}
       <ol className="space-y-2.5">
         {journey.stops.map((s, i) => (
           <li
