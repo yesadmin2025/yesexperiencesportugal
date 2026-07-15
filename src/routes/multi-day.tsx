@@ -182,8 +182,10 @@ function GroupCard({ title, body }: Card) {
 }
 
 function MultiDayPage() {
+  useMarketingMotion();
   return (
     <SiteLayout>
+
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-3xl text-center">
