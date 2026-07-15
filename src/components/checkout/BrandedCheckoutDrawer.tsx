@@ -388,7 +388,7 @@ function ExperienceSummaryCard({
           </span>
           <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
             €{total.toLocaleString("en-GB")}
-            {summary.journeyLines && summary.journeyLines.length > 0 ? null : summary.pricePerPaxEur != null &&
+            {hasCompleteJourneyPricing(summary.journeyLines) ? null : summary.pricePerPaxEur != null &&
               summary.guests > 1 &&
               (summary.minorAges?.length ?? 0) === 0 ? (
               <span className="ml-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans">
