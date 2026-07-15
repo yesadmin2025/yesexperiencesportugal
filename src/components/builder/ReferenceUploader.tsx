@@ -15,6 +15,17 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteBuilderReference } from "@/lib/builderReferences.functions";
 import { listBuilderReferences } from "@/lib/builderReferences.list.functions";
+import { uploadBuilderReference } from "@/lib/builderReferences.upload.functions";
+
+async function fileToBase64(file: File): Promise<string> {
+  const buf = new Uint8Array(await file.arrayBuffer());
+  let bin = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < buf.length; i += chunk) {
+    bin += String.fromCharCode(...buf.subarray(i, i + chunk));
+  }
+  return btoa(bin);
+}
 
 const MAX_FILES = 5;
 const MAX_BYTES = 10 * 1024 * 1024;
