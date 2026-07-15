@@ -93,6 +93,22 @@
           "$schema": "http://json-schema.org/draft-07/schema#"
         },
         "outputSchema": null
+      },
+      {
+        "name": "get_current_mcp_identity",
+        "title": "Get current MCP identity (bootstrap)",
+        "description": "Temporary bootstrap tool. Returns the masked identity of the signed-in caller so the owner can confirm the exact account before the allow-list is populated. Requires OAuth + admin role. Removed once the owner allow-list is active.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
       }
     ]
   }
