@@ -67,15 +67,15 @@ describe("StudioV3ProgressStepper — visual contract", () => {
     expect(nav.querySelectorAll('[aria-current="step"]').length).toBe(1);
   });
 
-  it("keeps label typography stable (display font, uppercase, tracking)", () => {
+  it("keeps label typography stable (editorial font, uppercase, tracking)", () => {
     const { getByTestId } = render(<StudioV3ProgressStepper phase="rhythm" />);
     const nav = getByTestId("studio-v3-progress-stepper");
     const labelNodes = nav.querySelectorAll<HTMLSpanElement>("span:not([aria-hidden])");
     for (const node of Array.from(labelNodes)) {
       expect(node.className).toContain("uppercase");
-      expect(node.className).toContain("tracking-[0.22em]");
+      expect(node.className).toContain("tracking-[0.16em]");
       expect(node.className).toContain("font-semibold");
-      expect(node.style.fontFamily).toBe("var(--font-display)");
+      expect(node.style.fontFamily).toBe("var(--font-editorial)");
     }
   });
 
