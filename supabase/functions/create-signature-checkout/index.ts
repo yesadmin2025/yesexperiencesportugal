@@ -207,7 +207,19 @@ Deno.serve(async (req) => {
     const tier = Math.min(8, Math.max(1, headcount));
     const tiers = (tierRow?.tiers ?? null) as Record<string, number> | null;
     const real = tiers && typeof tiers[String(tier)] === "number" ? tiers[String(tier)] : null;
+    // Guardrail: NEVER price minors against the anchor "from" price.
+    // If a Signature has no approved per-tier row, we cannot honestly
+    // price a child at 50% of an unknown per-pax rate — surface an
+    // explicit owner-data error and refuse the checkout. Adults-only
+    // bookings continue to fall back to `priceFromEur` as before.
+    if (real == null && minorAges.length > 0) {
+      return jsonError(
+        `owner_data_missing: Child pricing not yet configured for ${body.tourId}. Please book adults only or contact us to price this family day.`,
+        409,
+      );
+    }
     const eurPerPax = real ?? body.priceFromEur;
+
 
     // Build itemised age-band lines (server-authoritative). When
     // composition is absent, this collapses to `headcount × adult`.

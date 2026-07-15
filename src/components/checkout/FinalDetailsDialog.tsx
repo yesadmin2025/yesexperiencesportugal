@@ -13,6 +13,15 @@ import {
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { toast } from "sonner";
 import { prewarmStripeScript } from "@/components/checkout/BrandedCheckoutDrawer";
+import { CompositionField } from "@/components/booking/CompositionField";
+import {
+  formatCompositionSummary,
+  hydrateLegacyComposition,
+  isCompositionComplete,
+  totalGuests,
+  type TravellerComposition,
+} from "@/lib/checkout/composition";
+
 
 /**
  * Final details before payment — the last step before Stripe checkout
@@ -30,7 +39,14 @@ export interface GuestDetails {
   tourDate: string;
   /** "HH:mm" — optional preferred start time. */
   startTime?: string;
+  /** Total headcount = adults + minorAges.length. Kept for downstream code
+   *  that hasn't been fully migrated; NEVER used for pricing when minors
+   *  are present — the server prices from `adults` + `minorAges`. */
   guests: number;
+  /** Adults 18+ (required, min 1). */
+  adults: number;
+  /** Exact integer age per minor (0..17). Empty when adults-only. */
+  minorAges: number[];
   pickupAddress: string;
   language: "en" | "pt";
   mainContact: string;
@@ -43,7 +59,10 @@ export interface GuestDetails {
 
 export interface FinalDetailsInitial {
   tourDate?: string | null;
+  /** Legacy adults-only count — hydrated as `{adults: guests, minorAges: []}`. */
   guests?: number;
+  adults?: number;
+  minorAges?: number[];
   pickupAddress?: string | null;
   language?: GuestDetails["language"];
   fullName?: string | null;
@@ -51,6 +70,7 @@ export interface FinalDetailsInitial {
   phone?: string | null;
   guideNotes?: string | null;
 }
+
 
 interface Props {
   open: boolean;
@@ -75,7 +95,9 @@ export function FinalDetailsDialog({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [tourDate, setTourDate] = useState(initial?.tourDate ?? "");
-  const [guests, setGuests] = useState(initial?.guests ?? 2);
+  const [composition, setComposition] = useState<TravellerComposition>(() =>
+    hydrateLegacyComposition(initial),
+  );
   const [pickupAddress, setPickupAddress] = useState(initial?.pickupAddress ?? "");
   const [language, setLanguage] = useState<GuestDetails["language"]>(initial?.language ?? "en");
   const [mainContact, setMainContact] = useState("");
@@ -89,10 +111,13 @@ export function FinalDetailsDialog({
     if (!open) return;
     prewarmStripeScript();
     if (initial?.tourDate) setTourDate(initial.tourDate);
-    if (initial?.guests) setGuests(initial.guests);
+    if (initial) setComposition(hydrateLegacyComposition(initial));
     if (initial?.pickupAddress) setPickupAddress(initial.pickupAddress);
     if (initial?.language) setLanguage(initial.language);
-  }, [open, initial?.tourDate, initial?.guests, initial?.pickupAddress, initial?.language]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  const compositionComplete = isCompositionComplete(composition);
 
   const handleSubmit = async () => {
     if (submitting) return;
@@ -101,8 +126,8 @@ export function FinalDetailsDialog({
     if (!email.trim() || !isEmail(email)) missing.push("email");
     if (!phone.trim()) missing.push("phone / WhatsApp");
     if (!tourDate) missing.push("tour date");
-    if (!guests || guests < 1) missing.push("number of guests");
     if (!pickupAddress.trim()) missing.push("pickup address");
+    if (!compositionComplete) missing.push("age for every child");
     if (missing.length) {
       toast.error(`Please complete: ${missing.join(", ")}`);
       return;
@@ -112,7 +137,9 @@ export function FinalDetailsDialog({
       email: email.trim(),
       phone: phone.trim(),
       tourDate,
-      guests,
+      guests: totalGuests(composition),
+      adults: composition.adults,
+      minorAges: [...composition.minorAges],
       pickupAddress: pickupAddress.trim(),
       language,
       mainContact: mainContact.trim() || fullName.trim(),
@@ -123,6 +150,7 @@ export function FinalDetailsDialog({
       guideNotes: guideNotes.trim() || undefined,
     });
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -189,38 +217,26 @@ export function FinalDetailsDialog({
           </Section>
 
           <Section title="Your day">
-            <Row>
-              <Field label="Tour date" required>
-                <input
-                  type="date"
-                  value={tourDate}
-                  min={new Date().toISOString().split("T")[0]}
-                  onChange={(e) => setTourDate(e.target.value)}
-                  className={inputClass}
-                />
-              </Field>
-              <Field label="Guests" required>
-                <div className="flex items-center border border-[color:var(--border)] bg-[color:var(--ivory)]">
-                  <button
-                    type="button"
-                    onClick={() => setGuests((g) => Math.max(1, g - 1))}
-                    className="px-3 py-2.5 text-sm hover:bg-[color:var(--sand)]"
-                    aria-label="Decrease guests"
-                  >
-                    −
-                  </button>
-                  <span className="flex-1 text-center text-sm">{guests}</span>
-                  <button
-                    type="button"
-                    onClick={() => setGuests((g) => Math.min(24, g + 1))}
-                    className="px-3 py-2.5 text-sm hover:bg-[color:var(--sand)]"
-                    aria-label="Increase guests"
-                  >
-                    +
-                  </button>
-                </div>
-              </Field>
-            </Row>
+            <Field label="Tour date" required>
+              <input
+                type="date"
+                value={tourDate}
+                min={new Date().toISOString().split("T")[0]}
+                onChange={(e) => setTourDate(e.target.value)}
+                className={inputClass}
+              />
+            </Field>
+            <Field label="Who's travelling" required>
+              <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
+                <CompositionField value={composition} onChange={setComposition} compact />
+              </div>
+              <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+                {compositionComplete
+                  ? formatCompositionSummary(composition)
+                  : "Add an age for every child so we can price honestly."}
+              </p>
+            </Field>
+
             <Field label="Pickup address / hotel" required>
               <input
                 value={pickupAddress}
