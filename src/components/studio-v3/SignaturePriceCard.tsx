@@ -332,6 +332,33 @@ export function SignaturePriceCard({
     }
   };
 
+  // Track the last id list we emitted to the parent so the sync effect
+  // doesn't re-emit on unrelated rerenders (guest count changes, price
+  // resolution, etc.). Only fires when the id set actually changes.
+  const lastEmittedKeyRef = useRef<string | null>(null);
+  useEffect(() => {
+    const cb = onAddOnsChangeRef.current;
+    if (!cb) return;
+    const key = selectedAddOnIds.join("|");
+    if (lastEmittedKeyRef.current === key) return;
+    lastEmittedKeyRef.current = key;
+    cb(buildSummary(selectedAddOnIds));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAddOnIds, priceEur, summaryGuests]);
+
+  const commitAddOnIds = (next: string[]) => {
+    // Dual-write: always update the local mirror so the chip flips in the
+    // same frame, and if the parent owns state, notify it optimistically.
+    setUncontrolledAddOnIds(next);
+    if (isControlled) {
+      const cb = onAddOnsChangeRef.current;
+      if (cb) {
+        lastEmittedKeyRef.current = next.join("|");
+        cb(buildSummary(next));
+      }
+    }
+  };
+
   const toggleAddOn = (id: string) => {
     const isSelected = selectedAddOnIds.includes(id);
     if (!isSelected && atCap) return; // gated
