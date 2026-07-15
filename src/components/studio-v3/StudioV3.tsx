@@ -2506,52 +2506,16 @@ export function StudioV3() {
         <PhaseShell accent="ivory" exiting={exiting}>
           <FinalRevealStory
             state={state}
-            selectedAddOns={selectedAddOnItems}
-            composedStops={(() => {
-              // The traveller's kept set fallback — matches the composer's
-              // resolved routePoints so the reveal never widens past what
-              // the Studio actually surfaced pre-refine.
-              const resolved = resolveStudioV3Route({
-                feeling: state.feeling,
-                companions: state.companions,
-                rhythm: state.rhythm,
-                interests: state.interests,
-                pickup: state.pickup,
-                occasion: state.occasion,
-                considerations: state.considerations,
-                investment: state.investment,
-                destinationIntent: state.destinationIntent,
-              });
-              return resolved.routePoints.map((p) => ({
-                label: p.label,
-                story: p.story,
-              }));
-            })()}
-            perPaxEur={(() => {
-              const tour = state.tourId ? findTour(state.tourId) : null;
-              if (!tour) return null;
-              const g = typeof state.guests === "number" ? state.guests : 2;
-              return (
-                resolvePerPaxEur(tour, g, tourPriceTiers)?.eurPerPax ??
-                tour.priceFrom ??
-                null
-              );
-            })()}
-            totalEur={(() => {
-              const tour = state.tourId ? findTour(state.tourId) : null;
-              if (!tour) return null;
-              const g = typeof state.guests === "number" && state.guests > 0 ? state.guests : 2;
-              const perPax =
-                resolvePerPaxEur(tour, g, tourPriceTiers)?.eurPerPax ??
-                tour.priceFrom ??
-                0;
-              return Math.round(perPax * g + selectedAddOnsTotalEur * g);
-            })()}
+            selectedAddOns={resolvedJourney.addOns}
+            composedStops={resolvedJourney.stops}
+            perPaxEur={resolvedJourney.perPaxEur}
+            totalEur={resolvedJourney.totalEur}
             saving={savingSignature}
             onContinue={() => advance("guestDetails")}
             onSaveSignature={handleSaveSignature}
             onBack={() => back("storyboard")}
           />
+
         </PhaseShell>
       ) : null}
 
