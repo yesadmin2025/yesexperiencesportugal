@@ -575,12 +575,12 @@ export function SignaturePriceCard({
             <p
               data-testid="studio-v3-base-price"
               data-eur={priceEur ?? ""}
-              data-per-pax-eur={displayPerPaxEur ?? ""}
+              data-per-pax-eur={perPersonDerived ?? ""}
               data-per-pax-real={realPerPax?.real ? "true" : "false"}
               className="mt-1 text-[40px] leading-none font-bold tabular-nums"
               style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
             >
-              €{displayPerPaxEur ?? priceEur}
+              €{perPersonDerived ?? priceEur}
               <span
                 className="ml-1.5 align-middle text-[13px] font-semibold uppercase tracking-[0.18em]"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
