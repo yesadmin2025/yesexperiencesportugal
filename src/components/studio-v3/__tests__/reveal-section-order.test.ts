@@ -72,9 +72,9 @@ describe("Studio V3 reveal — section order & hierarchy", () => {
     expect(mapIdx).toBeGreaterThan(heroIdx);
   });
 
-  it("stops editor renders after the timeline so users see 'when' before 'what changes'", () => {
+  it("stops editor renders after the reveal map so users see the route before edits", () => {
     expect(indexOfTestId(REVEAL_SRC, "studio-v3-stops-editor")).toBeGreaterThan(
-      indexOfTestId(REVEAL_SRC, "studio-v3-daypart-timeline"),
+      indexOfTestId(REVEAL_SRC, "studio-v3-reveal-map"),
     );
   });
 });
