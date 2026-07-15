@@ -39,17 +39,50 @@ const MINOR_LABEL: Record<Exclude<JourneyBand, "adult">, string> = {
 };
 
 /**
+ * Guard: a journey line is safe to render only when the unit price is a
+ * finite non-negative number and any minor line carries a plausible age
+ * (0-17 integer). Anything else means the pricing inputs are incomplete
+ * (missing minor age, unresolved tier, NaN from a stale calc) and MUST NOT
+ * be shown — the caller should fall back to a bespoke / "confirmed by
+ * curator" state instead of rendering "€NaN" or "age null".
+ */
+export function isValidJourneyLine(line: CheckoutJourneyLine): boolean {
+  if (!Number.isFinite(line.unitEur) || line.unitEur < 0) return false;
+  if (line.band === "adult") return true;
+  const age = line.age;
+  return typeof age === "number" && Number.isFinite(age) && age >= 0 && age <= 17 && Number.isInteger(age);
+}
+
+/**
+ * True only when every journey line is renderable AND the caller passed at
+ * least one line. Both `SignaturePriceCard` and `BrandedCheckoutDrawer` use
+ * this to decide whether to itemise or fall back to a safer summary.
+ */
+export function hasCompleteJourneyPricing(
+  lines: readonly CheckoutJourneyLine[] | null | undefined,
+): boolean {
+  if (!lines || lines.length === 0) return false;
+  return lines.every(isValidJourneyLine);
+}
+
+/**
  * Aggregate journey lines into display rows:
  *   - Adults grouped into a single row with a qty count.
  *   - Each minor listed individually with its age + band-adjusted unit price.
  *   - Order: adults → youths → children → infants; minors sorted by age desc
  *     inside their band so older kids read first.
+ *
+ * Invalid lines (missing age, non-finite price) are dropped defensively so a
+ * partially-populated composition can never leak "€NaN" / "age null" into the
+ * UI. Callers that need a stricter guard should check
+ * `hasCompleteJourneyPricing` first and hide the block entirely.
  */
 export function summarizeJourneyLines(
   lines: readonly CheckoutJourneyLine[],
 ): JourneyDisplayRow[] {
-  const adults = lines.filter((l) => l.band === "adult");
-  const minors = lines
+  const safe = lines.filter(isValidJourneyLine);
+  const adults = safe.filter((l) => l.band === "adult");
+  const minors = safe
     .filter((l) => l.band !== "adult")
     .slice()
     .sort((a, b) => {
@@ -82,3 +115,4 @@ export function summarizeJourneyLines(
   }
   return rows;
 }
+
