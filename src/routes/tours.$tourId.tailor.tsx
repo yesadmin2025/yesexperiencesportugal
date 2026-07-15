@@ -1390,12 +1390,38 @@ function TailorPage() {
                     </span>
                   </div>
 
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] inline-flex items-center gap-1.5">
-                    <Check size={12} /> Confirmation status: ready
-                  </p>
+                  {requiresManualConfirmation ? (
+                    <p
+                      className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)] inline-flex items-center gap-1.5"
+                      data-testid="tailor-manual-confirmation"
+                    >
+                      <Info size={12} /> Confirmation status: manual
+                    </p>
+                  ) : (
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] inline-flex items-center gap-1.5">
+                      <Check size={12} /> Confirmation status: ready
+                    </p>
+                  )}
+
+                  {wineExtension.extra > 0 && removableCoreLabels.length > 0 && (
+                    <p className="mt-2 text-[11.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                      To fit this longer wine day you can remove{" "}
+                      <span className="text-[color:var(--charcoal)]">
+                        {removableCoreLabels.slice(0, 3).join(", ")}
+                      </span>{" "}
+                      — or keep them and we'll confirm timing with your guide.
+                    </p>
+                  )}
+
+                  {showMinorsWineAdvisory && (
+                    <p className="mt-2 text-[11.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                      Wine tasting is offered to adults only — minors visit the estate without tasting.
+                    </p>
+                  )}
                 </div>
 
-                {/* 6 · CTA — instant Stripe checkout */}
+                {/* 6 · CTA — instant Stripe checkout, or request confirmation
+                    when the selection is beyond the Signature baseline. */}
                 <div className="p-5 pt-0">
                   <button
                     type="button"
@@ -1408,6 +1434,10 @@ function TailorPage() {
                       <>
                         <Loader2 size={15} className="animate-spin" /> Opening checkout…
                       </>
+                    ) : requiresManualConfirmation ? (
+                      <>
+                        <Sparkles size={15} /> Request confirmation
+                      </>
                     ) : (
                       <>
                         <Sparkles size={15} /> Reserve securely
@@ -1415,7 +1445,9 @@ function TailorPage() {
                     )}
                   </button>
                   <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-                    Instant confirmation
+                    {requiresManualConfirmation
+                      ? "Your guide replies within one working day with final availability and price."
+                      : "Instant confirmation"}
                   </p>
                   <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
                     <Lock size={10} /> Secure checkout
