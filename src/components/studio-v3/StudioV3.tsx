@@ -73,8 +73,10 @@ import {
 import { findTour, signatureTours } from "@/data/signatureTours";
 import {
   composeFromState,
+  adaptStateToComposeInput,
   STUDIO_V3_COMPOSER_REVEAL,
 } from "@/lib/studio-v3/composerAdapter";
+import { priceComposedJourney } from "@/lib/studio-v3/composerPricing";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
