@@ -25,14 +25,6 @@ export const summarizeJourneyLines = summarizeJourneyLinesShared;
  * paying for. No full-page redirect — checkout happens on our domain.
  */
 
-export type JourneyBand = "adult" | "youth" | "child" | "infant";
-export interface CheckoutJourneyLine {
-  readonly kind: "adult" | "minor";
-  readonly band: JourneyBand;
-  readonly age: number | null;
-  readonly unitEur: number;
-  readonly qty: 1;
-}
 
 export interface CheckoutAddOnLine {
   id: string;
