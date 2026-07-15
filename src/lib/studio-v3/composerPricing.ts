@@ -56,6 +56,10 @@ const ANCHOR_TOUR_BY_REGION_TIER: Readonly<
     signature: "troia-comporta",
     rare: "roman-heritage-alentejo",
   },
+  centro: {
+    essential: "fatima-nazare-obidos",
+    signature: "tomar-coimbra",
+  },
 } as const;
 
 export interface ComposerPricingInput {
