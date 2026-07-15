@@ -71,6 +71,10 @@ import {
   selectReplacementCandidates,
 } from "./curation";
 import { findTour, signatureTours } from "@/data/signatureTours";
+import {
+  composeFromState,
+  STUDIO_V3_COMPOSER_REVEAL,
+} from "@/lib/studio-v3/composerAdapter";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
