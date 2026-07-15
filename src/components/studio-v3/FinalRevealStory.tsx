@@ -133,12 +133,11 @@ export function FinalRevealStory({
 
   const dateLabel = formatDate(state.dateExact);
   const pickupLabel = pickupCityLabel(state.pickup);
-  const guestsLabel =
-    typeof state.guests === "number" && state.guests > 0
-      ? state.guests === 1
-        ? "1 guest"
-        : `${state.guests} guests`
-      : null;
+  const guestsLabel = formatGuestComposition(
+    state.adults,
+    state.minorAges,
+    state.guests,
+  );
 
   const included: string[] = (() => {
     if (tour?.included && tour.included.length > 0) return tour.included;
