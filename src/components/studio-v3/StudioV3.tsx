@@ -3117,6 +3117,15 @@ export function StoryboardHandoff({
   const editedStops = state.editedRoutePoints ?? baseStops;
   const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
 
+  // Phase C: composer rationales, indexed by stop position. Merged inline
+  // into each stop row below when the flag is on. Never affects pricing,
+  // checkout, map or edit behaviour — display-only enrichment.
+  const composerRationales = useMemo<ReadonlyArray<string>>(() => {
+    if (!STUDIO_V3_COMPOSER_REVEAL) return [];
+    const journey = composeFromState(state);
+    return journey ? journey.stops.map((s) => s.rationale) : [];
+  }, [state]);
+
   // Real OSRM driving legs — shared with RevealRouteMap via react-query's
   // dedupe on the same routeStops key, so we pay for one fetch and both the
   // map AND the add-on day budget below read the same honest minutes.
