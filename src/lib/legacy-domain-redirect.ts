@@ -242,10 +242,34 @@ export function buildLegacy301Response(request: Request): Response | null {
       });
     }
 
-    // 410: on legacy host, everything unmapped. On other hosts, only
-    // WordPress-specific patterns (/wp-*, /tour/*, /category/*, ...).
-    const shouldGone = onLegacyHost || matchesWpLegacyPattern(key);
-    if (!shouldGone) return null;
+    // On the legacy host: WordPress-specific paths still 410 to shed
+    // retired URLs cleanly; everything else 301s 1:1 to the canonical
+    // origin (blanket-forward decision 2026-07-16, supersedes the
+    // hybrid 410-fallback policy).
+    if (onLegacyHost) {
+      if (matchesWpLegacyPattern(key)) {
+        return new Response(GONE_BODY, {
+          status: 410,
+          headers: {
+            "content-type": "text/html; charset=utf-8",
+            "cache-control": "public, max-age=3600",
+            "x-robots-tag": "noindex, nofollow",
+          },
+        });
+      }
+      const location = `${CANONICAL_ORIGIN}${url.pathname}${url.search}`;
+      return new Response(null, {
+        status: 301,
+        headers: {
+          location,
+          "cache-control": "public, max-age=86400",
+          "x-robots-tag": "noindex",
+        },
+      });
+    }
+
+    // Off the legacy host: only WordPress-specific patterns get 410.
+    if (!matchesWpLegacyPattern(key)) return null;
 
     return new Response(GONE_BODY, {
       status: 410,
