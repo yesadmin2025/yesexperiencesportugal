@@ -7,7 +7,7 @@
  */
 
 export function waGeneric(): string {
-  return "Hi YES — I'd like a hand planning my Portugal experience.";
+  return "Hi YES — I'd like a hand planning my day in Portugal.";
 }
 
 export function waSignature(tourName?: string): string {
