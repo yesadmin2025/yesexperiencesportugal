@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T18:03:20.243Z",
+  "generatedAt": "2026-07-16T18:24:32.934Z",
   "filesScanned": 660,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1080,19 +1080,19 @@
     {
       "file": "src/components/home/CinematicHero.tsx",
       "line": 207,
-      "col": 265,
-      "raw": "#C9A96A",
-      "normalized": "#c9a96a",
-      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] upp",
-      "status": "approved"
-    },
-    {
-      "file": "src/components/home/CinematicHero.tsx",
-      "line": 220,
       "col": 267,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
       "snippet": "className=\"hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] u",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/home/CinematicHero.tsx",
+      "line": 238,
+      "col": 265,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] upp",
       "status": "approved"
     },
     {
