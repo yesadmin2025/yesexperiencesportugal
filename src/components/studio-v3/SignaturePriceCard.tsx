@@ -1010,13 +1010,13 @@ export function SignaturePriceCard({
               className="mt-3 block text-center text-[11px] uppercase tracking-[0.22em] font-semibold tabular-nums"
               style={{ color: "var(--charcoal)" }}
             >
-              {selectedAddOnIds.length > 0 && (isRefine ? perPersonDerived : totalEur) != null ? (
+              {selectedAddOnIds.length > 0 && totalEur != null ? (
                 <>
                   {isRefine ? "Updated price" : "Additions"}{" "}
                   <span style={{ color: "var(--gold)" }}>—</span> €
-                  {isRefine ? perPersonDerived : totalEur}
+                  {totalEur}
                   <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">
-                    {isRefine ? "/ person" : "/ pp"}
+                    total
                   </span>
                 </>
               ) : (
@@ -1129,14 +1129,21 @@ export function SignaturePriceCard({
               >
                 €{totalForDisplay}
               </p>
-              {perPersonDerived != null ? (
-                <p
-                  className="mt-1.5 text-[11px] font-semibold tabular-nums"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 68%, transparent)" }}
-                >
-                  €{perPersonDerived} per person
-                </p>
-              ) : null}
+              <div
+                className="mt-1.5 text-[11px] font-semibold tabular-nums leading-[1.7]"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 68%, transparent)" }}
+              >
+                <PerPersonBands
+                  journeyLines={journeyLines}
+                  adultUnitEur={
+                    bandRowsFromJourney(journeyLines).find((b) => b.band === "adult")?.unitEur
+                      ?? perPersonDerived
+                      ?? priceEur
+                      ?? null
+                  }
+                  testId="studio-v3-price-card-final-per-person"
+                />
+              </div>
             </div>
           );
         })()}

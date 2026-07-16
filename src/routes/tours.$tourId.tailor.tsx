@@ -1400,7 +1400,7 @@ function TailorPage() {
                     <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
                       €{estimatedPrice}
                       <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-                        / pp
+                        / adult
                       </span>
                     </span>
                   </div>
