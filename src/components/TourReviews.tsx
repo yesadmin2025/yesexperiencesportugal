@@ -50,6 +50,8 @@ export function TourReviews({ tourId }: { tourId: string }) {
   const [stats, setStats] = useState<TourStats | null>(null);
   const [reviews, setReviews] = useState<PublicReview[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState<"recent" | "highest">("recent");
+
 
   useEffect(() => {
     let cancelled = false;
@@ -102,6 +104,16 @@ export function TourReviews({ tourId }: { tourId: string }) {
         source_url: meta!.viatorUrl,
       }))
     : filterVisibleReviews(reviews).map((r) => ({ ...r, source_url: null }));
+
+  const sortedReviews = [...displayReviews].sort((a, b) => {
+    if (sortBy === "highest" && b.rating !== a.rating) return b.rating - a.rating;
+    const aDate = Date.parse((a as { published_at?: string }).published_at ?? "") || 0;
+    const bDate = Date.parse((b as { published_at?: string }).published_at ?? "") || 0;
+    return bDate - aDate;
+  });
+
+
+
 
 
   return (
@@ -158,9 +170,42 @@ export function TourReviews({ tourId }: { tourId: string }) {
         )}
       </div>
 
-      {displayReviews.length > 0 && (
-        <ul className="mt-10 grid gap-5 md:grid-cols-2 list-none p-0">
-          {displayReviews.map((r) => (
+      {displayReviews.length > 1 && (
+        <div
+          className="mt-8 flex items-center justify-center gap-2"
+          role="group"
+          aria-label="Sort reviews"
+        >
+          <span className="text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--text-muted)] mr-1">
+            Sort
+          </span>
+          {([
+            { id: "recent", label: "Most recent" },
+            { id: "highest", label: "Highest rated" },
+          ] as const).map((opt) => {
+            const active = sortBy === opt.id;
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setSortBy(opt.id)}
+                aria-pressed={active}
+                className={`text-[12px] px-3 py-1.5 rounded-full border transition-colors ${
+                  active
+                    ? "border-[color:var(--teal)] bg-[color:var(--teal)] text-white"
+                    : "border-[color:var(--charcoal)]/15 text-[color:var(--charcoal)]/75 hover:border-[color:var(--charcoal)]/35"
+                }`}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {sortedReviews.length > 0 && (
+        <ul className="mt-6 grid gap-5 md:grid-cols-2 list-none p-0">
+          {sortedReviews.map((r) => (
             <li
               key={r.id}
               className="rounded-lg border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-5"
@@ -187,6 +232,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
           ))}
         </ul>
       )}
+
 
       <p className="mt-8 text-center text-[12px] text-[color:var(--charcoal)]/60">
         Based on verified guest reviews across major booking platforms.
