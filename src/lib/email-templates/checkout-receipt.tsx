@@ -254,14 +254,18 @@ export const template = {
     tourTitle: "Arrábida Wine · All-inclusive Signature",
     bookingType: "signature",
     dateExact: "2026-08-14",
-    guests: 2,
-    amountFormatted: "€ 690,00",
+    guests: 4,
+    adults: 2,
+    minorAges: [13, 8],
+    perPaxAdultEur: 250,
+    amountFormatted: "€ 813,00",
     bookingRef: "cs_live_a1b2c3",
     receiptUrl: "https://pay.stripe.com/receipts/example",
     bookingStatusUrl:
       "https://yesexperiencesportugal.com/booking-confirmed?session_id=cs_live_a1b2c3",
     pickup: "Hotel Ritz Lisbon",
   } satisfies CheckoutReceiptProps,
+
 } satisfies TemplateEntry;
 
 export default CheckoutReceipt;
