@@ -72,7 +72,9 @@ function DayToursPage() {
             <ImageQualityToggle />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {dayTours.map((t) => (
+            {dayTours.map((t) => {
+              const meta = getViatorMeta(t.id);
+              return (
               <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
                 <Link
                   to="/tours/$tourId"
@@ -114,6 +116,18 @@ function DayToursPage() {
                   <span className="text-[color:var(--teal)]">From €{t.priceFrom}</span>
                 </div>
 
+                {meta && meta.reviewCount > 0 && (
+                  <div className="mt-2 flex items-center gap-2 text-[12px] text-[color:var(--charcoal-soft)] tabular-nums">
+                    <Star size={13} className="text-[color:var(--gold)] fill-[color:var(--gold)]" strokeWidth={0} />
+                    <span>
+                      <span className="text-[color:var(--charcoal)] font-medium">{meta.rating.toFixed(1)}</span>
+                      {" · "}
+                      {meta.reviewCount} reviews
+                      <span className="text-[color:var(--charcoal-soft)]/75"> · Tripadvisor &amp; Viator</span>
+                    </span>
+                  </div>
+                )}
+
                 <p className="mt-3 text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
                   {t.blurb}
                 </p>
@@ -128,7 +142,8 @@ function DayToursPage() {
                   View experience &amp; reserve
                 </CtaButton>
               </article>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
