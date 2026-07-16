@@ -48,6 +48,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/portugal-tours", changefreq: "monthly", priority: "0.9" },
           { path: "/luxury-tours-portugal", changefreq: "monthly", priority: "0.85" },
           { path: "/private-tours-portugal", changefreq: "monthly", priority: "0.85" },
+          { path: "/alentejo-wine-tour-from-lisbon", changefreq: "monthly", priority: "0.8" },
+          { path: "/arrabida-day-trip-from-lisbon", changefreq: "monthly", priority: "0.8" },
+          { path: "/arrabida-wine-tour", changefreq: "monthly", priority: "0.8" },
 
 
 
