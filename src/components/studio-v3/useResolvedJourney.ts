@@ -15,6 +15,7 @@ import { findTour } from "@/data/signatureTours";
 import {
   resolveJourneyPricing,
   resolvePerPaxEur,
+  type JourneyPriceLine,
 } from "@/data/signatureTourPricing";
 import type { TourPriceTiersMap } from "@/hooks/use-tour-price-tiers";
 import { resolveStudioV3Route } from "./curation";
@@ -35,6 +36,14 @@ export interface ResolvedJourney {
   readonly addOns: SelectedAddOnSummary["items"];
   readonly perPaxEur: number | null;
   readonly totalEur: number | null;
+  /**
+   * Canonical age-banded per-traveller lines. Populated only when
+   * composition (adults + minor ages) is complete. `null` for legacy
+   * adults-only bookings — callers should show the flat per-pax total.
+   */
+  readonly journeyLines: readonly JourneyPriceLine[] | null;
+  /** Sum of `journeyLines[].unitEur`. `null` when journeyLines is null. */
+  readonly journeyTotalEur: number | null;
 }
 
 export function useResolvedJourney(
@@ -91,20 +100,18 @@ export function useResolvedJourney(
       ? (resolvePerPaxEur(tour, guests, tiers)?.eurPerPax ?? tour.priceFrom ?? null)
       : null;
 
-    // Base total — age-band branch when composition is complete, flat otherwise.
+    // Age-band branch — full itemised lines when composition is complete.
+    let journey: ReturnType<typeof resolveJourneyPricing> | null = null;
+    if (tour && typeof adults === "number" && adults >= 1) {
+      journey = resolveJourneyPricing(tour, adults, minorAges, tiers);
+    }
+
+    // Base total — prefer age-band, fall back to flat.
     let baseTotalEur: number | null = null;
-    if (tour) {
-      const useAgeBand =
-        typeof adults === "number" && adults >= 1 && minorAges.length > 0;
-      if (useAgeBand) {
-        const journey = resolveJourneyPricing(tour, adults!, minorAges, tiers);
-        if (journey) {
-          baseTotalEur = Math.round(journey.totalEur);
-        }
-      }
-      if (baseTotalEur == null && basePerPaxEur != null) {
-        baseTotalEur = Math.round(basePerPaxEur * guests);
-      }
+    if (journey) {
+      baseTotalEur = Math.round(journey.totalEur);
+    } else if (basePerPaxEur != null) {
+      baseTotalEur = Math.round(basePerPaxEur * guests);
     }
 
     // Add-on items already carry their unit-aware party amount. Summing those
@@ -144,6 +151,9 @@ export function useResolvedJourney(
       addOns: selectedAddOns,
       perPaxEur,
       totalEur,
+      journeyLines: journey ? journey.lines : null,
+      journeyTotalEur: journey ? Math.round(journey.totalEur) : null,
     };
   }, [state, selectedAddOns, tourPriceTiers]);
 }
+
