@@ -926,17 +926,10 @@ export function StudioV3() {
       }
       try {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
-        // Composition supplied only when the traveller went through the
-        // Composition control and at least one minor was recorded — otherwise
-        // fall through to legacy adults-only pricing so nothing regresses
-        // for guests who never touched the minors editor.
-        const currentMinors = currentState.minorAges ?? [];
-        const currentAdults =
-          typeof currentState.adults === "number" && currentState.adults >= 1
-            ? currentState.adults
-            : typeof details.adults === "number" && details.adults >= 1
-              ? details.adults
-              : null;
+        // Composition inputs are the ones already resolved above for the
+        // summary card (`composedAdults` / `composedMinors`). Do NOT redefine
+        // them here — divergent fallbacks are exactly what caused the price
+        // mismatch we're fixing.
         // Composition must come from the SAME source the summary displayed
         // (state.adults/minorAges → details fallback). Using different inputs
         // for the invoke would let Stripe re-price against a composition the
