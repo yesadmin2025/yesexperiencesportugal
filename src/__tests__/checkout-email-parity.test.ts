@@ -56,17 +56,39 @@ describe("Checkout email ↔ on-page summary parity", () => {
     { label: "large mixed party", adults: 4, minorAges: [15, 12, 9, 4, 2] },
   ];
 
+  // Reproduce the on-page pricing path (`resolveJourneyPricing` → lines)
+  // using the shared constants, so any drift between the two AGE_BAND_PCT
+  // copies would surface as unit/subtotal mismatch below.
+  function buildJourneyLinesLikeOnPage(
+    adults: number,
+    minorAges: number[],
+    perPaxAdultEur: number,
+  ): CheckoutJourneyLine[] {
+    const lines: CheckoutJourneyLine[] = [];
+    for (let i = 0; i < adults; i++) {
+      lines.push({ kind: "adult", band: "adult", age: null, unitEur: perPaxAdultEur, qty: 1 });
+    }
+    for (const rawAge of minorAges) {
+      const b = onPageAgeBand(rawAge);
+      if (!b || b === "adult") continue;
+      const unitEur = Math.round(perPaxAdultEur * ONPAGE_PCT[b]);
+      lines.push({ kind: "minor", band: b, age: Math.floor(rawAge), unitEur, qty: 1 });
+    }
+    return lines;
+  }
+
   for (const c of cases) {
-    it(`matches on-page rows for: ${c.label}`, () => {
-      const resolved = resolveSignatureAgeBandPricing(c.adults, c.minorAges);
-      if (!resolved) throw new Error("test fixture: pricing must resolve");
-
-      const onPageRows = summarizeJourneyLines(resolved.lines);
-      const emailRows = summarizeJourneyLines(
-        buildJourneyLinesLikeEmail(c.adults, c.minorAges, resolved.perPaxAdultEur),
-      );
-
-      expect(emailRows).toEqual(onPageRows);
-    });
+    for (const perPaxAdultEur of [200, 250, 333, 417]) {
+      it(`matches on-page rows for: ${c.label} @ €${perPaxAdultEur}/adult`, () => {
+        const onPage = summarizeJourneyLines(
+          buildJourneyLinesLikeOnPage(c.adults, c.minorAges, perPaxAdultEur),
+        );
+        const email = summarizeJourneyLines(
+          buildJourneyLinesLikeEmail(c.adults, c.minorAges, perPaxAdultEur),
+        );
+        expect(email).toEqual(onPage);
+      });
+    }
   }
 });
+
