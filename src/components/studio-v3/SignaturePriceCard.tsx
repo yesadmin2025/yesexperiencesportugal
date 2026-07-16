@@ -1098,18 +1098,26 @@ export function SignaturePriceCard({
                   <span style={{ color: "var(--gold)" }}>—</span>
                   Your additions
                 </p>
-                <ul className="mt-1.5 flex flex-col gap-1">
+                <ul
+                  className="mt-1.5 flex flex-col gap-1"
+                  data-testid="studio-v3-add-on-lines"
+                >
                   {selectedAddOns.map((a) => {
                     const line = addOnEurFor({
                       addOn: a,
                       baseEur: priceEur ?? 0,
                       guests: summaryGuests,
                     });
+                    const isPerPerson = line.unit === "per_person";
+                    const showQty = isPerPerson && summaryGuests > 1;
                     return (
                       <li
                         key={`inc-addon-${a.id}`}
-                        data-testid="studio-v3-included-addon-row"
+                        data-testid="studio-v3-add-on-line"
                         data-addon-id={a.id}
+                        data-per-unit-eur={line.perUnit}
+                        data-amount-eur={line.amount}
+                        data-unit={line.unit}
                         className="flex items-start justify-between gap-3 text-[11.5px] leading-snug"
                         style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
                       >
@@ -1119,13 +1127,23 @@ export function SignaturePriceCard({
                             className="mt-[6px] inline-block h-1 w-1 shrink-0 rounded-full"
                             style={{ background: "var(--gold)" }}
                           />
-                          <span className="font-medium">{a.label}</span>
+                          <span className="min-w-0">
+                            <span className="font-medium">{a.label}</span>
+                            <span
+                              className="ml-1 tabular-nums"
+                              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                            >
+                              {showQty
+                                ? `(€${line.perUnit} × ${summaryGuests})`
+                                : `(${line.unitLabel})`}
+                            </span>
+                          </span>
                         </span>
                         <span
                           className="shrink-0 tabular-nums text-[11px] font-semibold"
                           style={{ color: "var(--charcoal)" }}
                         >
-                          +€{line.amount}
+                          €{line.amount.toLocaleString("en-GB")}
                         </span>
                       </li>
                     );
