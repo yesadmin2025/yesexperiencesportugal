@@ -169,6 +169,7 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
  * Page
  * ──────────────────────────────────────────────────────────── */
 function TailorPage() {
+  useMarketingMotion();
   const { tour } = Route.useLoaderData();
   const meta = getViatorMeta(tour.id);
   const validation = useMemo(() => validateTour(tour, meta), [tour, meta]);
