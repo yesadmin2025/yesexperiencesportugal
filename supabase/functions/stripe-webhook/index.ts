@@ -149,14 +149,38 @@ Deno.serve(async (req) => {
   const amountTotal = session.amount_total ?? null;
   const currency = (session.currency ?? "eur").toLowerCase();
 
+  // Parse composition from metadata written by create-signature-checkout.
+  // Persisted into booking_details jsonb so confirmation emails and
+  // operator ops can render adult/youth/child/infant split.
+  const adultsMeta = Number(meta.adults ?? guests);
+  const adults = Number.isFinite(adultsMeta) && adultsMeta >= 1 ? Math.floor(adultsMeta) : guests;
+  const minorAges = (meta.minor_ages ?? "")
+    .split(",")
+    .map((s) => Number(s.trim()))
+    .filter((n) => Number.isInteger(n) && n >= 0 && n <= 17);
+  const composition = {
+    adults,
+    minorAges,
+    pricingMode: meta.pricing_mode ?? "legacy_adults_only",
+    perPaxEur: Number(meta.per_pax_eur ?? 0) || null,
+    tourSubtotalEur: Number(meta.tour_subtotal_eur ?? 0) || null,
+    addOnsTotalEur: Number(meta.add_ons_total_eur ?? 0) || 0,
+    priceSource: meta.price_source ?? null,
+  };
+
   // Upsert booking — unique on stripe_session_id.
   const { data: existing } = await admin
     .from("bookings")
-    .select("id")
+    .select("id, booking_details")
     .eq("stripe_session_id", session.id)
     .maybeSingle();
 
   let bookingId = existing?.id as string | undefined;
+
+  const existingDetails =
+    existing?.booking_details && typeof existing.booking_details === "object"
+      ? (existing.booking_details as Record<string, unknown>)
+      : {};
 
   const baseRow = {
     booking_type: bookingType,
@@ -173,7 +197,9 @@ Deno.serve(async (req) => {
     stripe_payment_intent_id:
       typeof session.payment_intent === "string" ? session.payment_intent : null,
     metadata: { ...meta, stripe_env: stripeEnv, event_id: event.id },
+    booking_details: { ...existingDetails, composition },
   } as const;
+
 
   if (!bookingId) {
     const { data: ins, error: insErr } = await admin
