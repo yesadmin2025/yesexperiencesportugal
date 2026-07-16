@@ -1,59 +1,34 @@
-## Fixes
 
-Three bugs, all on the Studio + Tailor checkout surfaces. No pricing math changes on the backend — the edge function already computes age-banded totals correctly. All three fixes are in the presentation + call layer.
+## Parity audit — findings
 
-### 1. Kill the blended "€X / guest" per-person line
+The confirmation email's traveller section does NOT match the on-page summary today. The values are usually numerically close but the shape, labels, and source of truth differ:
 
-Root cause: `useResolvedJourney` computes `perPaxEur = totalEur / guests`, which averages adults + children into a meaningless number. That value is then labelled "per person" / "/ guest" in `FinalRevealStory`, `CheckoutSummary`, `SignaturePriceCard`, and tailor's `/ pp` line.
+| Aspect | On-page summary (`PriceBreakdownRows` / `summarizeJourneyLines`) | Confirmation email (`checkout-receipt.tsx` → `buildCompositionRows`) |
+|---|---|---|
+| Source of unit prices | Real `journeyLines[]` from `useResolvedJourney` (tier-resolved server truth) | Recomputed in the template from a single `perPaxAdultEur` × hardcoded 0.75 / 0.5 / 0 band multipliers |
+| Minor rows | One row per minor: `Youth (age 13) — €188` | Grouped per band: `Youth (11–17) · ages 8, 12 — €188 each · €376` |
+| Adult label | `Adults` | `Adults (18+)` |
+| Rounding | `unit * qty` on raw unit | `Math.round(perPaxAdultEur * pct)` per band, then `* qty` — can drift by €1 vs summary when tiers use non-round multipliers |
+| Webhook payload | Sends `perPaxAdultEur` only; no per-line array | Same |
 
-Fix:
+So there IS a real drift risk (any future change to age-band multipliers in `signatureTourPricing.ts` would silently desynchronise the email) plus a visible label/format mismatch.
 
-- In `useResolvedJourney`, stop returning a blended `perPaxEur`. Instead expose:
-  - `adultUnitEur` — unit price for the Adult band (from `journeyLines`)
-  - `childUnitEur` — the highest minor-band unit (Youth/Child/Infant, whichever exists in `journeyLines`), or `null` when there are no minors
-  - Keep `perPaxEur` **only** as a fallback for legacy adults-only bookings (no composition) — computed as `adult unit`, not a blended average.
-- Update the four display sites to render two lines when children are present:
-  - `€250 / adult`
-  - `€125 / child` (only when `minorAges.length > 0`)
-  - When multiple minor bands are present (Youth + Child + Infant), show each on its own line using the same treatment.
-- Surfaces touched: `FinalRevealStory.tsx` (lines ~404, 505), `CheckoutSummary.tsx` (line ~292), `SignaturePriceCard.tsx` (lines ~706, 997, 1115), `tours.$tourId.tailor.tsx` (line ~1403).
-- Reuse `<PriceBreakdownRows />` styling tokens for consistency; this is a compact 1–3 line label block, not the full itemised breakdown.
+## Fix plan
 
-### 2. Studio "Checkout Summary total ≠ Stripe amount"
+1. **Extend the webhook → email hook payload** (`supabase/functions/stripe-webhook/index.ts` + `src/routes/api/public/hooks/checkout-email.ts`) to forward the resolved `journeyLines` array (kind, band, age, unitEur) that the summary already uses. Keep `perPaxAdultEur` as a fallback for legacy sends.
 
-Root cause: `StudioV3.tsx` (line ~945) invokes `create-signature-checkout` with `adults` / `minorAges` **only when composition is present in the current state**, otherwise falls back to `details.adults` / `details.minorAges`. In some flows the summary renders using `state.adults + state.minorAges` (via `useResolvedJourney`) while the checkout call sends `details.*`, so Stripe recomputes against a different composition and returns a different amount.
+2. **Rewrite the email traveller section** (`src/lib/email-templates/checkout-receipt.tsx`):
+   - Add a `journeyLines?: CheckoutJourneyLine[]` prop.
+   - When present, feed it to the SHARED `summarizeJourneyLines` from `@/lib/checkout/journeyDisplay` — same helper the on-page `PriceBreakdownRows` uses. One row per minor, adult label = `Adults`, same subtotal math.
+   - Delete `buildCompositionRows` + hardcoded `pct` multipliers so there's a single source of truth.
+   - Keep the current grouped fallback only when `journeyLines` is absent (legacy sessions).
 
-Fix:
+3. **Update `previewData`** with a 2 adults + 2 minors (age 13, age 8) example carrying `journeyLines` so the dashboard preview reflects the new shape.
 
-- In `StudioV3.tsx` handleCheckout, use exactly the same composition the summary displays: read directly from the same `journeyLines` / `state.adults` / `state.minorAges` that `useResolvedJourney` already returns. Remove the `details.*` fallback branch — if composition is missing at checkout time, block the CTA (defensive) rather than send a mismatched payload.
-- Add a client-side assertion: sum of `line_items` derived from `journeyLines` × units must equal the displayed `totalEur` before the invoke; if not, log and abort with a user-visible retry toast.
-- No edge function changes; the server pricing is authoritative and already correct.
+4. **Render a preview to `/mnt/documents`**: run a small Node script that calls `@react-email/render` on the updated template with realistic data (2 adults + child age 8 + youth age 13), save as `checkout-receipt-preview.html` + a PNG screenshot via Playwright, then emit a `<presentation-artifact>` tag so you can open it directly in chat.
 
-### 3. "Review & confirm" step before Stripe on Studio
+5. **Assertion test** (`src/__tests__/checkout-email-parity.test.ts`): given the same `journeyLines`, assert the rows returned by `summarizeJourneyLines` (on-page) equal the rows rendered in the email — labels, unit, qty, subtotal — so this can never drift again.
 
-Currently the Studio checkout button calls `supabase.functions.invoke("create-signature-checkout", …)` and redirects straight to Stripe. Add one interstitial modal:
+## Out of scope
 
-- New component `src/components/studio-v3/ReviewConfirmDialog.tsx`: full-screen sheet on mobile, centered dialog on desktop. Shows:
-  - Tour title + date
-  - Composition ("2 adults · 1 child (8)")
-  - Itemised price breakdown (`<PriceBreakdownRows />`)
-  - Add-ons
-  - Grand total (matches Stripe exactly — see fix #2)
-  - Two buttons: **Back to edit** (ghost) and **Confirm & pay** (primary, gold arrow)
-- CTA in `CheckoutSummary` no longer invokes the edge function directly; it opens the dialog. The dialog's "Confirm & pay" is the only path that calls `create-signature-checkout`.
-- Analytics: fire `studio_review_opened` on open, `studio_review_confirmed` on confirm, `studio_review_dismissed` on back.
-- Reduced-motion safe; brand tokens only; existing `Sheet`/`Dialog` primitives from shadcn.
-
-Tailor checkout instant without manual review 
-
-### Out of scope
-
-- &nbsp;
-- Email templates and receipts (unchanged, already itemised in Turn 2).
-- Backend pricing math.
-
-### Verification (after build)
-
-- Playwright: adults-only → single "€X / adult" line, no mismatch.
-- Playwright: 2 adults + 1 child (8) → "€250 / adult" + "€125 / child", summary total = review-dialog total = Stripe amount metadata.
-- Playwright: Confirm & pay path reaches Stripe; Back to edit returns to summary with state intact.
+No pricing math changes, no Stripe amount changes, no on-page UI changes — only the email side is being aligned to the on-page truth.
