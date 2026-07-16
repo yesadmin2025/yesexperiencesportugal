@@ -1,53 +1,85 @@
-## Scope
+## Goal
 
-Two workstreams: **(A)** finish JSON-LD coverage across the site, and **(B)** hide sub-3★ reviews from the on-site widget while keeping the emitted AggregateRating honest (unfiltered).
+Fix the hero copy bug shown in the screenshot, standardize the homepage's motion system across every public page (elevated, editorial, non-bouncy), sharpen the hero CTAs for conversion, and stop image repetition across pages by mapping the existing image library to page-specific contexts.
 
-## A. Structured data (JSON-LD)
+---
 
-Most work is already done: `/tours/$tourId` emits `Product + Offer + AggregateRating + individual Reviews + BreadcrumbList + FAQPage`. The gaps:
+## 1. Hero duplication fix (the screenshot bug)
 
-1. **`/experiences` (Signature index)** — add `ItemList` JSON-LD listing each tour as `TouristAttraction` (or `Product`) with its `AggregateRating`, `url`, `image`. This is what surfaces star badges on listing pages in Google.
-2. **`/day-tours`** — same `ItemList` + per-item `AggregateRating`.
-3. **`/multi-day`** — `ItemList` of multi-day itineraries + `BreadcrumbList`.
-4. **`/reviews`** — page-level `ItemList` of `Review` items with `itemReviewed` pointing back to the correct tour. Keep aggregate omitted here (aggregate lives on the tour page).
-5. **`BreadcrumbList` audit** — add on `/about`, `/corporate`, `/press`, `/contact`, `/proposal-in-portugal`, `/faq`, `/moments`, `/portugal-tours`, `/luxury-tours-portugal`, `/private-tours-portugal` (any leaf that currently lacks it).
-6. **PT locale mirrors** — apply the same additions to `pt.experiences`, `pt.day-tours`, `pt.reviews` with `inLanguage: "pt-PT"` and PT canonical URLs.
+**Bug:** `src/components/home/CinematicHero.tsx` renders the second phrase twice — once combined inside the `<h1>` (line 167 → `{HERO_PHRASES[0]} {HERO_PHRASES[1]}`) and again as a `<p>` below (line 187 → `{HERO_PHRASES[1]}`). Result on mobile: "Portugal is the stage. You write the story." followed by a repeated "You write the story."
 
-Ratings source for every emitted `AggregateRating`: **first-party `tour_reviews` + `tour_external_ratings`** (Viator/TripAdvisor aggregates), combined with a weighted average — the same numbers already shown by `TourReviews`.
+**Fix:** restore the intended two-line stanza — `<h1>` shows only `HERO_PHRASES[0]` ("Portugal is the stage."), `<p>` shows only `HERO_PHRASES[1]` ("You write the story."). Keep the existing `line1` / `line2` staggered reveal timings (already wired). Zero copy changes, zero token changes.
 
-## B. On-site review filter (accept-risk path)
+Also verify `EntryScreen.tsx` (Builder) isn't affected — it uses its own string, no change needed.
 
-You explicitly asked to hide negative reviews. I'll implement it in a way that minimizes exposure to a Google manual action and EU consumer-law risk:
+---
 
-- **`TourReviews.tsx`** — filter out reviews with `rating < 3` from the visible list. Add a small disclosure line ("Showing 3★ and above — see full history on TripAdvisor and Viator") linking to the external profiles. Without disclosure this is a clear consumer-law violation; with it, it's a defensible editorial choice.
-- **`/reviews` and `/pt/reviews`** — same filter + same disclosure.
-- **AggregateRating stays UNFILTERED** in every JSON-LD emission. Rating-value mismatch between the JSON-LD aggregate and what's actually visible on-page is the specific pattern Google penalises. Keeping the schema honest is what prevents a site-wide rich-result manual action.
-- **Individual `Review` JSON-LD** — only emit reviews you actually display (3★+), so the visible reviews match the schema `Review` items.
-- Filter applied in one place (`useTourReviews` hook or a `filterVisibleReviews()` helper) so it's easy to remove later.
+## 2. Standardize page animations on the homepage system
 
-## Technical details
+**Rule:** every public marketing route uses the SAME primitive as the homepage — `data-motion="fade-up"` markup + the `home-motion.ts` controller booted via `useMarketingMotion()`. No new animation library, no framer-motion sprinkles, no per-page custom systems.
 
-**Files to touch**
+**Elevate the values (single source of truth, applied to homepage AND all pages):**
+- Entry: `opacity 0 → 1`, `translateY(22px → 0)`, `filter: blur(6px → 0)`, `380ms` `cubic-bezier(0.22, 0.61, 0.36, 1)` (editorial ease, no overshoot, no bounce).
+- Section eyebrow → title → body → CTA cascade: 90ms stagger, capped at 360ms on fast devices / 240ms on low-power (existing tuning in `home-motion.ts`).
+- Card grids: 100ms stagger, capped at 400ms.
+- Hover: lift `-3px`, shadow deepen, `220ms` ease-out. No scale > 1.02. No spring.
+- Image reveal: subtle 1.04 → 1.0 scale over 600ms paired with fade — replaces the current static image loads on Signature / Local Stories / About.
+- `prefers-reduced-motion`: short-circuits to instant reveal (already implemented, keep).
+- Marketing scope (`html[data-motion-scope="marketing"]`): keep the current 8px / 220ms cap so non-home routes stay restrained; but bump the homepage scope to the elevated values above so home stays the most alive.
 
-- `src/lib/jsonld.ts` — add `itemListLd({ items: {url, title, image, rating, reviewCount} })` helper. Existing `tourProductLd`, `breadcrumbLd`, `reviewLd` stay.
-- `src/lib/tour-reviews-filter.ts` (new) — `MIN_VISIBLE_RATING = 3`, `filterVisibleReviews(rows)`.
-- `src/components/TourReviews.tsx` — apply filter to visible list; keep `stats.average_rating` unfiltered for the star row and JSON-LD.
-- `src/routes/experiences.tsx`, `src/routes/day-tours.tsx`, `src/routes/multi-day.tsx`, `src/routes/reviews.tsx` — add `ItemList`/`Review` JSON-LD in `head().scripts`.
-- `src/routes/about.tsx`, `corporate.tsx`, `press.tsx`, `contact.tsx`, `proposal-in-portugal.tsx`, `faq.tsx`, `moments.tsx`, `portugal-tours.tsx`, `luxury-tours-portugal.tsx`, `private-tours-portugal.tsx` — add `BreadcrumbList` in `head().scripts` where missing.
-- PT mirrors: `pt.experiences.tsx`, `pt.day-tours.tsx`, `pt.reviews.tsx`.
+**Wire-up work (24 routes missing the hook):**
+Add `useMarketingMotion()` to: `experiences`, `day-tours`, `multi-day`, `tours.$tourId`, `tours.$tourId.tailor`, `about`, `contact`, `reviews`, `press`, `corporate`, `proposal-in-portugal`, `portugal-tours`, `luxury-tours-portugal`, `private-tours-portugal`, `local-stories.index`, `local-stories.$slug`, `itineraries.10-day-private-portugal-tour`, and all `pt.*` mirrors of the above.
 
-**No schema changes.** No new tables, no RLS work. Pure content + head() edits.
+**Auto-tagging (in `home-motion.ts`):** extend the existing `.home-energy` heading/card auto-tagger to also run under `[data-motion-scope="marketing"]` so pages get the same rhythm without hand-tagging every h2/eyebrow/card. Selector list unchanged (h2, h3, eyebrow, lead, `.he-card-lift`, etc.).
 
-## What I'm explicitly NOT doing
+**Forbidden (guardrails, unchanged):** parallax off-homepage, glassmorphism, blobs, shimmer, bounce, spring, autoplay carousels.
 
-- Not editing the emitted `AggregateRating` value to match the filtered visible average (that's the pattern that triggers penalties).
-- Not scraping or attempting to remove TripAdvisor reviews from source.
-- Not touching Stripe/refund/owner-response operational work — that's still on your side.
+---
 
-## Verification
+## 3. Hero CTA elevation (conversion, still editorial)
 
-After implementation:
-1. Run Google Rich Results Test on `/tours/arrabida-wine-allinclusive`, `/experiences`, `/reviews` (locally via preview URL).
-2. Confirm `AggregateRating.ratingValue` in JSON-LD matches the star row on-page (both are the unfiltered average).
-3. Confirm every visible `<Review>` in the widget also appears as a `Review` node in JSON-LD.
-4. Call `seo_chat--update_findings` if there's a matching finding.
+Two CTAs stay ("Open the Studio" primary, "Choose Your Experience" ghost) — the memory-locked pair. Changes are craft only, no copy invention:
+
+- **Primary CTA ("Open the Studio"):** promote from ghost outline to a solid gold-fill button (`--gold` bg, `--charcoal` text), 48px height on mobile (currently ~40px), gold-sheen sweep on hover (already scoped in `.home-energy`), 220ms ease-out. Meets 44×44 tap target.
+- **Secondary CTA ("Choose Your Experience"):** demote to a lighter ghost — ivory text, hairline gold underline, arrow ramp on hover. Removes the current competing gold-fill treatment visible in the screenshot where both CTAs read at the same weight.
+- Vertical order + wording: unchanged.
+- Reveal: keep the existing `composed` delay so CTAs appear after the stanza settles (~1200ms), but shorten from current cubic to the standardized 380ms editorial ease for consistency with rest of site.
+
+---
+
+## 4. Stop image repetition — page-specific image assignment
+
+**Problem:** several routes reuse the same 3–4 hero/section images (owner photos, Arrábida viewpoint, winery group) even when the page context is different (Corporate, Proposals, Local Stories, About).
+
+**Fix (data-only, no new images):** build one small manifest `src/content/page-image-map.ts` that assigns from the existing library (`src/assets/owner-photos/*`, `src/assets/tours/*`, `public/tours/*`, hero clips) to each route by context tag:
+
+| Context tag | Pool draws from |
+| --- | --- |
+| celebration / proposal | `tasting-cake-moment`, `wine-cheers-arch`, `couple-vineyard` |
+| corporate / group | `winery-group-orange-tree`, `arrabida-viewpoint-group` |
+| craft / artisan | `ceramic-painter-plate`, `potter-wheel-azeitao`, `cork-harvesters-alentejo` |
+| wine / gastronomy | `couple-vineyard`, `wine-cheers-arch`, Azeitão scene clips |
+| coast / nature | Arrábida / Cabo da Roca / hidden cove scene stills |
+| local stories editorial | rotate by slug hash so each article gets a distinct image |
+
+Each page pulls from its tag pool with a route-stable selector (no duplicates within a page, no repeat between adjacent pages in the nav). Also runs through the existing `vite-imagetools` `?format=webp&quality=82` pipeline where imports aren't already using asset.json pointers — elevates perceived quality without a re-shoot.
+
+Explicitly OUT of scope: generating new images, replacing Signature-tour real operation images (memory: real-operation only), touching Viator-sourced imagery.
+
+---
+
+## 5. Files touched (summary)
+
+- `src/components/home/CinematicHero.tsx` — hero duplication fix + CTA weight swap.
+- `src/lib/home-motion.ts` — extend auto-tagger to `[data-motion-scope="marketing"]`, bump values.
+- `src/styles.css` — update `data-motion` transition tokens (blur+380ms+editorial ease), homepage-scope override.
+- `src/hooks/use-marketing-motion.ts` — no signature change.
+- 24 public route files — add `useMarketingMotion()` call (one line each).
+- `src/content/page-image-map.ts` (new) + swap image imports on `about`, `corporate`, `proposal-in-portugal`, `local-stories.$slug`, `press`, and PT mirrors.
+
+## 6. Verification
+
+- Playwright: capture home hero at 393×588 — assert single "You write the story." rendering.
+- Playwright: scroll each of `/experiences`, `/day-tours`, `/multi-day`, `/tours/[first]`, `/about`, `/local-stories`, `/reviews`, `/corporate` — assert `html.motion-ready` present and `[data-motion].motion-in` count > 0 after scroll.
+- Visual: screenshot before/after on 3 sample pages to confirm elevated feel with no bounce.
+- Existing e2e (`hero-copy-byte-exact`, `hero-cinematic-attrs`, `homepage-structure`, `studio-v3-p0-*`, typography regression) must still pass — no token, copy, or Studio changes.
