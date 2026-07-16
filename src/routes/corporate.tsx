@@ -9,12 +9,12 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 import wineryGroupAsset from "@/assets/owner-photos/winery-group-orange-tree.jpeg.asset.json";
-import wineCheersAsset from "@/assets/owner-photos/wine-cheers-arch.jpeg.asset.json";
-import tastingCakeAsset from "@/assets/owner-photos/tasting-cake-moment.jpeg.asset.json";
+import corkHarvestAsset from "@/assets/owner-photos/cork-harvesters-alentejo.jpeg.asset.json";
+import ceramicPainterAsset from "@/assets/owner-photos/ceramic-painter-plate.jpeg.asset.json";
 
 const imgWineryGroup = wineryGroupAsset.url;
-const imgWineCheers = wineCheersAsset.url;
-const imgTastingCake = tastingCakeAsset.url;
+const imgWineCheers = corkHarvestAsset.url;
+const imgTastingCake = ceramicPainterAsset.url;
 
 const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
