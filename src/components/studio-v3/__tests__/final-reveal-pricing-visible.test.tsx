@@ -35,7 +35,7 @@ describe("FinalRevealStory pricing visibility", () => {
 
     const details = screen.getByTestId("studio-v3-final-reveal-inclusions");
     expect(details).not.toHaveAttribute("open");
-    expect(details).toHaveTextContent("+€40 per guest");
-    expect(details).toHaveTextContent("€120 for your group");
+    expect(details).toHaveTextContent("(€40 × 3)");
+    expect(details).toHaveTextContent("€120");
   });
 });
