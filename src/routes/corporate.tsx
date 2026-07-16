@@ -70,7 +70,7 @@ const BLOCKS = [
     practical:
       "Multi-day flow, regional logistics, meeting-friendly venues, cultural moments built into the rhythm.",
     local: "Coordinated by a local host who knows how each piece of the day connects.",
-    image: imgWineCheers,
+    image: imgCorkHarvest,
     icon: Compass,
   },
   {
@@ -79,7 +79,7 @@ const BLOCKS = [
     emotional: "When it matters who's in the room and how the day feels — we shape it accordingly.",
     practical: "Small groups · private settings · careful pacing · NDAs welcome.",
     local: "Planned end to end with our local team — every detail confirmed before the day.",
-    image: imgTastingCake,
+    image: imgCeramicPainter,
     icon: ClipboardCheck,
   },
 ];
