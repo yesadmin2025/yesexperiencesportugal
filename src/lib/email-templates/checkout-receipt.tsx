@@ -12,6 +12,11 @@ import {
   Text,
 } from "@react-email/components";
 import type { TemplateEntry } from "./registry";
+import {
+  summarizeJourneyLines,
+  type CheckoutJourneyLine,
+  type JourneyBand,
+} from "@/lib/checkout/journeyDisplay";
 
 export interface CheckoutReceiptProps {
   customerName?: string | null;
@@ -20,10 +25,10 @@ export interface CheckoutReceiptProps {
   dateExact?: string | null;
   guests?: number | null;
   /** Adults 18+. When present alongside `minorAges`, the receipt renders
-   *  the full composition breakdown (Adults · Youth · Child · Infant). */
+   *  the full per-minor breakdown mirroring the on-page summary. */
   adults?: number | null;
   minorAges?: number[] | null;
-  /** Per-adult EUR at the resolved tier — used to compute band subtotals.
+  /** Per-adult EUR at the resolved tier — used to derive band unit prices.
    *  When absent, only qty rows are shown, no per-band euro amounts. */
   perPaxAdultEur?: number | null;
   amountFormatted?: string | null;
@@ -34,65 +39,45 @@ export interface CheckoutReceiptProps {
   pickup?: string | null;
 }
 
-type CompositionRow = {
-  key: string;
-  label: string;
-  qty: number;
-  unitEur: number | null;
-  subtotalEur: number | null;
-};
+/**
+ * Age-band multipliers — must stay in lockstep with `AGE_BAND_PCT` in
+ * `src/data/signatureTourPricing.ts`. The on-page summary reads unit prices
+ * from `journeyLines[]` produced by `resolveSignatureAgeBandPricing`, which
+ * applies these exact percentages and rounding — reproducing them here
+ * yields byte-identical unit/subtotals in the confirmation email.
+ */
+const AGE_BAND_PCT = { adult: 1.0, youth: 0.75, child: 0.5, infant: 0 } as const;
 
-function ageBand(age: number): "youth" | "child" | "infant" | null {
+function ageBand(age: number): JourneyBand | null {
   if (!Number.isInteger(age) || age < 0 || age > 17) return null;
   if (age >= 11) return "youth";
   if (age >= 3) return "child";
   return "infant";
 }
 
-function buildCompositionRows(
+/** Rebuild the same `CheckoutJourneyLine[]` shape the on-page summary uses. */
+function buildJourneyLines(
   adults: number,
   minorAges: number[],
-  perPaxAdultEur: number | null,
-): CompositionRow[] {
-  const rows: CompositionRow[] = [];
-  if (adults > 0) {
-    rows.push({
-      key: "adults",
-      label: `Adult${adults === 1 ? "" : "s"} (18+)`,
-      qty: adults,
-      unitEur: perPaxAdultEur,
-      subtotalEur: perPaxAdultEur != null ? Math.round(perPaxAdultEur * adults) : null,
-    });
+  perPaxAdultEur: number,
+): CheckoutJourneyLine[] {
+  const lines: CheckoutJourneyLine[] = [];
+  for (let i = 0; i < adults; i++) {
+    lines.push({ kind: "adult", band: "adult", age: null, unitEur: perPaxAdultEur, qty: 1 });
   }
-  const grouped: Record<"youth" | "child" | "infant", number[]> = {
-    youth: [],
-    child: [],
-    infant: [],
-  };
-  for (const a of minorAges) {
-    const b = ageBand(a);
-    if (b) grouped[b].push(a);
+  for (const rawAge of minorAges) {
+    const band = ageBand(rawAge);
+    if (!band) continue;
+    const unitEur = Math.round(perPaxAdultEur * AGE_BAND_PCT[band]);
+    lines.push({ kind: "minor", band, age: Math.floor(rawAge), unitEur, qty: 1 });
   }
-  const pct = { youth: 0.75, child: 0.5, infant: 0 } as const;
-  const nameFor = { youth: "Youth (11–17)", child: "Child (3–10)", infant: "Infant (0–2, free)" } as const;
-  (["youth", "child", "infant"] as const).forEach((band) => {
-    const ages = grouped[band];
-    if (ages.length === 0) return;
-    const unit = perPaxAdultEur != null ? Math.round(perPaxAdultEur * pct[band]) : null;
-    rows.push({
-      key: band,
-      label: `${nameFor[band]} · ages ${ages.join(", ")}`,
-      qty: ages.length,
-      unitEur: unit,
-      subtotalEur: unit != null ? unit * ages.length : null,
-    });
-  });
-  return rows;
+  return lines;
 }
 
 function formatEurInline(n: number): string {
   return `€${Math.round(n).toLocaleString("en-GB")}`;
 }
+
 
 
 const TEAL = "#295B61";
@@ -140,10 +125,17 @@ const CheckoutReceipt = ({
   const g = guests ?? 2;
   const hasComposition =
     typeof adults === "number" && adults >= 1 && Array.isArray(minorAges);
-  const compositionRows: CompositionRow[] = hasComposition
-    ? buildCompositionRows(adults!, minorAges ?? [], perPaxAdultEur ?? null)
-    : [];
   const hasMinors = hasComposition && (minorAges ?? []).length > 0;
+  const hasAdultRate = typeof perPaxAdultEur === "number" && perPaxAdultEur > 0;
+  // Reuse the SAME aggregation the on-page summary calls
+  // (`PriceBreakdownRows` → `summarizeJourneyLines`) so every label, unit
+  // and subtotal in the email matches the checkout screen byte-for-byte.
+  const compositionRows =
+    hasComposition && hasAdultRate
+      ? summarizeJourneyLines(
+          buildJourneyLines(adults!, minorAges ?? [], perPaxAdultEur!),
+        )
+      : [];
   return (
     <Html lang="en" dir="ltr">
       <Head />
@@ -170,18 +162,19 @@ const CheckoutReceipt = ({
             <Text style={cardValue}>{formatDate(dateExact)}</Text>
             <Hr style={hr} />
             <Text style={cardLabel}>{hasMinors ? "Travellers" : "Guests"}</Text>
-            {hasMinors ? (
+            {hasMinors && compositionRows.length > 0 ? (
               <>
                 {compositionRows.map((row) => (
                   <Text key={row.key} style={cardValue}>
-                    {`${row.qty} × ${row.label}`}
-                    {row.subtotalEur != null && row.unitEur != null
-                      ? ` — ${formatEurInline(row.unitEur)} each · ${formatEurInline(row.subtotalEur)}`
-                      : ""}
+                    {row.qty > 1
+                      ? `${row.label} (${formatEurInline(row.unitEur)} × ${row.qty})`
+                      : row.label}
+                    {` — ${formatEurInline(row.subtotalEur)}`}
                   </Text>
                 ))}
               </>
             ) : (
+
               <Text style={cardValue}>{`${g} ${g === 1 ? "guest" : "guests"}`}</Text>
             )}
             {pickup ? (
@@ -261,14 +254,18 @@ export const template = {
     tourTitle: "Arrábida Wine · All-inclusive Signature",
     bookingType: "signature",
     dateExact: "2026-08-14",
-    guests: 2,
-    amountFormatted: "€ 690,00",
+    guests: 4,
+    adults: 2,
+    minorAges: [13, 8],
+    perPaxAdultEur: 250,
+    amountFormatted: "€ 813,00",
     bookingRef: "cs_live_a1b2c3",
     receiptUrl: "https://pay.stripe.com/receipts/example",
     bookingStatusUrl:
       "https://yesexperiencesportugal.com/booking-confirmed?session_id=cs_live_a1b2c3",
     pickup: "Hotel Ritz Lisbon",
   } satisfies CheckoutReceiptProps,
+
 } satisfies TemplateEntry;
 
 export default CheckoutReceipt;
