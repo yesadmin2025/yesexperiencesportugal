@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-16T22:19:10.058Z",
-  "filesScanned": 662,
+  "generatedAt": "2026-07-16T22:32:02.442Z",
+  "filesScanned": 663,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1979,7 +1979,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 98,
+      "line": 83,
       "col": 15,
       "raw": "#295B61",
       "normalized": "#295b61",
@@ -1988,7 +1988,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 99,
+      "line": 84,
       "col": 15,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1997,7 +1997,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 100,
+      "line": 85,
       "col": 19,
       "raw": "#2E2E2E",
       "normalized": "#2e2e2e",
@@ -2006,7 +2006,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 101,
+      "line": 86,
       "col": 15,
       "raw": "#F4EEE2",
       "normalized": "#f4eee2",
@@ -2015,7 +2015,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 276,
+      "line": 273,
       "col": 35,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2024,7 +2024,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 278,
+      "line": 275,
       "col": 21,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2033,7 +2033,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 364,
+      "line": 361,
       "col": 11,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2042,7 +2042,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 375,
+      "line": 372,
       "col": 21,
       "raw": "#ffffff",
       "normalized": "#ffffff",
