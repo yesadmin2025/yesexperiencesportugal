@@ -46,6 +46,15 @@ export interface CheckoutSummaryProps {
   readonly adults?: number | null;
   readonly minorAges?: readonly number[];
   /**
+   * Canonical age-banded per-traveller lines from `useResolvedJourney`.
+   * When present, the summary itemises adults + each minor with the
+   * band-adjusted unit price above the additions block.
+   */
+  readonly journeyLines?:
+    | import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[]
+    | readonly import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[]
+    | null;
+  /**
    * Stops the traveller was shown on refine. Same priority the reveal uses:
    * editedRoutePoints → composedStops → tour.stops. Guarantees the checkout
    * stops match the refine page exactly.
@@ -61,6 +70,7 @@ export interface CheckoutSummaryProps {
   readonly className?: string;
   readonly testId?: string;
 }
+
 
 function formatEur(n: number | null): string {
   if (n == null || !Number.isFinite(n)) return "—";
