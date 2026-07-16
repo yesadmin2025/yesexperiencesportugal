@@ -49,10 +49,10 @@ export const INCLUDED_HEADER_REFINE = "Included in your day" as const;
 
 // Final Reveal — cinematic story screen after refinement.
 export const REVEAL_TITLE = "Your story in Portugal" as const;
-// Primary CTA on Storytelling — advances to Guest Details. Kept literal per
-// the approved flow plan (one job per screen; the emotional beat lives in
-// the letter body, the CTA does its transactional job).
-export const CTA_CONTINUE_TO_GUEST_DETAILS = "Continue to guest details" as const;
+// Primary CTA on Storytelling — advances to Guest Details / checkout.
+// Uses transactional language so the user feels the reservation is one
+// tap away, not another "next step".
+export const CTA_CONTINUE_TO_GUEST_DETAILS = "Confirm & reserve" as const;
 /**
  * @deprecated Retired P1 (audit fix #5). The same string used to appear
  * on both Refine and Storytelling — Refine now says "See my signature
