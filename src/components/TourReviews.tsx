@@ -105,6 +105,22 @@ export function TourReviews({ tourId }: { tourId: string }) {
       }))
     : filterVisibleReviews(reviews).map((r) => ({ ...r, source_url: null }));
 
+  const sortedReviews = [...displayReviews].sort((a, b) => {
+    if (sortBy === "highest") {
+      if (b.rating !== a.rating) return b.rating - a.rating;
+    }
+    // recent: fall back to source order (already published_at desc for DB rows)
+    const aDate = "published_at" in a && (a as { published_at?: string }).published_at
+      ? Date.parse((a as { published_at: string }).published_at)
+      : 0;
+    const bDate = "published_at" in b && (b as { published_at?: string }).published_at
+      ? Date.parse((b as { published_at: string }).published_at)
+      : 0;
+    return bDate - aDate;
+  });
+
+
+
 
   return (
     <section className="mt-16 md:mt-20" aria-labelledby="tour-reviews-heading">
