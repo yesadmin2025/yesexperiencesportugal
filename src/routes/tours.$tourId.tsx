@@ -166,6 +166,7 @@ export const Route = createFileRoute("/tours/$tourId")({
 });
 
 function TourDetailPage() {
+  useMarketingMotion();
   const { tour } = Route.useLoaderData();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { resolveImg } = useImportedTourImages();
