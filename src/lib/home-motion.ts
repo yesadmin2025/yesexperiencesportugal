@@ -106,7 +106,15 @@ export function startHomeMotion(): () => void {
   // component markup, or from a live/interactive surface). We tag by
   // proximity — the closest section/article/header — and space children
   // in staggered 90ms increments (capped) so the eye tracks a rhythm.
-  const homeScope = document.querySelector<HTMLElement>(".home-energy");
+  // Scope root: `.home-energy` on homepage, `<main>` (or body) on marketing
+  // pages that boot via `useMarketingMotion` (sets `data-motion-scope`).
+  const isMarketing =
+    document.documentElement.getAttribute("data-motion-scope") === "marketing";
+  const homeScope =
+    document.querySelector<HTMLElement>(".home-energy") ??
+    (isMarketing
+      ? (document.querySelector<HTMLElement>("main") ?? document.body)
+      : null);
   if (homeScope) {
     // Cadence — tuned so a full row of ~4 cards resolves inside ~360ms on
     // fast devices and inside ~200ms on slow devices. Uses the hoisted
