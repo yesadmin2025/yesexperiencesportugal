@@ -34,6 +34,16 @@ export interface ResolvedJourney {
   readonly guests: number;
   readonly stops: ReadonlyArray<ResolvedJourneyStop>;
   readonly addOns: SelectedAddOnSummary["items"];
+  /**
+   * Real adult unit price (never a blended average across adults + minors).
+   * Callers that need to render minor bands should read `journeyLines` and
+   * derive per-band units via `bandRowsFromJourney`.
+   */
+  readonly adultUnitEur: number | null;
+  /**
+   * @deprecated Legacy alias — equals `adultUnitEur`. New surfaces should
+   * read `adultUnitEur` directly and render minor bands from `journeyLines`.
+   */
   readonly perPaxEur: number | null;
   readonly totalEur: number | null;
   /**
@@ -123,10 +133,17 @@ export function useResolvedJourney(
     );
     const totalEur =
       baseTotalEur != null ? Math.round(baseTotalEur + addOnsPartyTotalEur) : null;
-    // This is the effective average per traveller, including age bands and
-    // additions. The base tier remains available inside the price card for
-    // line-item calculations, while every summary surface shows this number.
-    const perPaxEur = totalEur != null && guests > 0 ? Math.round(totalEur / guests) : null;
+    // Real adult unit price. Never a total/guests blend — averaging adults
+    // with discounted minors produces a per-person number that matches
+    // nothing the traveller actually pays.
+    const adultUnitEur = (() => {
+      if (journey) {
+        const adultLine = journey.lines.find((l) => l.band === "adult");
+        if (adultLine) return Math.round(adultLine.unitEur);
+      }
+      return basePerPaxEur != null ? Math.round(basePerPaxEur) : null;
+    })();
+    const perPaxEur = adultUnitEur;
 
     // Dev-only guardrails.
     if (import.meta.env.DEV) {
@@ -149,6 +166,7 @@ export function useResolvedJourney(
       guests,
       stops,
       addOns: selectedAddOns,
+      adultUnitEur,
       perPaxEur,
       totalEur,
       journeyLines: journey ? journey.lines : null,
