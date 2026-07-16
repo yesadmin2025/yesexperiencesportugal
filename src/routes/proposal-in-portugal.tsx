@@ -10,10 +10,10 @@ import { PROPOSAL_FAQ } from "@/content/seo-faq";
 import imgRomantic from "@/assets/exp-romantic.jpg";
 import coupleVineyardAsset from "@/assets/owner-photos/couple-vineyard.jpeg.asset.json";
 import wineCheersAsset from "@/assets/owner-photos/wine-cheers-arch.jpeg.asset.json";
-import arrabidaGroupAsset from "@/assets/owner-photos/arrabida-viewpoint-group.jpeg.asset.json";
+import tastingCakeAsset from "@/assets/owner-photos/tasting-cake-moment.jpeg.asset.json";
 const imgCoupleVineyard = coupleVineyardAsset.url;
 const imgWineCheers = wineCheersAsset.url;
-const imgArrabidaGroup = arrabidaGroupAsset.url;
+const imgTastingCake = tastingCakeAsset.url;
 
 const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/proposal-in-portugal";
@@ -85,7 +85,7 @@ const BLOCKS = [
     practical: "Small group days · private transport · personal touches · adjusted to your rhythm.",
     local:
       "We work with people we trust on the ground — places that welcome you as guests, not bookings.",
-    image: imgArrabidaGroup,
+    image: imgTastingCake,
     icon: Users,
     cta: "Plan a Private Day",
   },

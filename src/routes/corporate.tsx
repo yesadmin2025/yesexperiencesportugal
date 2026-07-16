@@ -9,12 +9,12 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 import wineryGroupAsset from "@/assets/owner-photos/winery-group-orange-tree.jpeg.asset.json";
-import wineCheersAsset from "@/assets/owner-photos/wine-cheers-arch.jpeg.asset.json";
-import tastingCakeAsset from "@/assets/owner-photos/tasting-cake-moment.jpeg.asset.json";
+import corkHarvestAsset from "@/assets/owner-photos/cork-harvesters-alentejo.jpeg.asset.json";
+import ceramicPainterAsset from "@/assets/owner-photos/ceramic-painter-plate.jpeg.asset.json";
 
 const imgWineryGroup = wineryGroupAsset.url;
-const imgWineCheers = wineCheersAsset.url;
-const imgTastingCake = tastingCakeAsset.url;
+const imgCorkHarvest = corkHarvestAsset.url;
+const imgCeramicPainter = ceramicPainterAsset.url;
 
 const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
@@ -70,7 +70,7 @@ const BLOCKS = [
     practical:
       "Multi-day flow, regional logistics, meeting-friendly venues, cultural moments built into the rhythm.",
     local: "Coordinated by a local host who knows how each piece of the day connects.",
-    image: imgWineCheers,
+    image: imgCorkHarvest,
     icon: Compass,
   },
   {
@@ -79,7 +79,7 @@ const BLOCKS = [
     emotional: "When it matters who's in the room and how the day feels — we shape it accordingly.",
     practical: "Small groups · private settings · careful pacing · NDAs welcome.",
     local: "Planned end to end with our local team — every detail confirmed before the day.",
-    image: imgTastingCake,
+    image: imgCeramicPainter,
     icon: ClipboardCheck,
   },
 ];
