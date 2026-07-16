@@ -13,8 +13,8 @@ import corkHarvestAsset from "@/assets/owner-photos/cork-harvesters-alentejo.jpe
 import ceramicPainterAsset from "@/assets/owner-photos/ceramic-painter-plate.jpeg.asset.json";
 
 const imgWineryGroup = wineryGroupAsset.url;
-const imgWineCheers = corkHarvestAsset.url;
-const imgTastingCake = ceramicPainterAsset.url;
+const imgCorkHarvest = corkHarvestAsset.url;
+const imgCeramicPainter = ceramicPainterAsset.url;
 
 const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
