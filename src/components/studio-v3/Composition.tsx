@@ -70,7 +70,7 @@ export function Composition({
             className="text-[11px] uppercase tracking-[0.2em] tabular-nums"
             style={{
               fontFamily: "var(--font-display)",
-              color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
             }}
           >
             {minorAges.length} · Party {totalParty}
@@ -248,7 +248,7 @@ export function Composition({
         className="mt-4 text-[12px] leading-snug"
         style={{
           fontFamily: "var(--font-sans)",
-          color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+          color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
         }}
       >
         <Minus className="inline h-3 w-3 -mt-0.5" aria-hidden /> Ages let us
