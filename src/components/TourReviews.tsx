@@ -101,7 +101,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
         is_first_party: false,
         source_url: meta!.viatorUrl,
       }))
-    : reviews.map((r) => ({ ...r, source_url: null }));
+    : filterVisibleReviews(reviews).map((r) => ({ ...r, source_url: null }));
 
 
   return (
