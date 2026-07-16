@@ -204,19 +204,6 @@ export function CinematicHero() {
           <Link
             to="/studio-v3"
             data-hero-field="secondaryCta"
-            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
-            style={{
-              letterSpacing: "0.24em",
-              fontFamily: "Inter, system-ui, sans-serif",
-              fontWeight: 450,
-            }}
-          >
-            <span className="hero-cta__sheen" aria-hidden="true" />
-            <span className="relative z-10">Open the Studio</span>
-          </Link>
-          <Link
-            to="/experiences"
-            data-hero-field="primaryCta"
             className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.24em",
@@ -226,7 +213,7 @@ export function CinematicHero() {
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
             <span className="relative z-10 inline-flex items-center gap-2.5">
-              Choose your Experience
+              Open the Studio
               <svg
                 className="hero-cta__arrow"
                 width="10"
@@ -244,6 +231,19 @@ export function CinematicHero() {
                 />
               </svg>
             </span>
+          </Link>
+          <Link
+            to="/experiences"
+            data-hero-field="primaryCta"
+            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            style={{
+              letterSpacing: "0.24em",
+              fontFamily: "Inter, system-ui, sans-serif",
+              fontWeight: 450,
+            }}
+          >
+            <span className="hero-cta__sheen" aria-hidden="true" />
+            <span className="relative z-10">Choose your Experience</span>
           </Link>
         </div>
       </div>
