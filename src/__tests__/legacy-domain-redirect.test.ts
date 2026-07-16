@@ -47,13 +47,15 @@ describe("legacy-domain hybrid (301 + 410)", () => {
     );
   });
 
-  it("410s unmapped legacy paths (no blanket homepage redirect)", () => {
+  it("301s unmapped legacy paths 1:1 to the canonical origin", () => {
     const res = buildLegacy301Response(
       req("https://yesexperiences.pt/some/random/unknown-page"),
     );
     expect(res).not.toBeNull();
-    expect(res!.status).toBe(410);
-    expect(res!.headers.get("location")).toBeNull();
+    expect(res!.status).toBe(301);
+    expect(res!.headers.get("location")).toBe(
+      "https://yesexperiencesportugal.com/some/random/unknown-page",
+    );
   });
 
   it("handles www.yesexperiences.pt the same way", () => {
