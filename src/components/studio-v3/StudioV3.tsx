@@ -937,19 +937,19 @@ export function StudioV3() {
             : typeof details.adults === "number" && details.adults >= 1
               ? details.adults
               : null;
-        // Composition is now supplied by the GuestDetailsStep for every
-        // Studio checkout — send it unconditionally so the edge fn prices
-        // via owner-approved age bands (adults-only bookings collapse to
-        // the same math as the legacy `guests` path).
-        const compositionSupplied = typeof currentAdults === "number" && currentAdults >= 1;
+        // Composition must come from the SAME source the summary displayed
+        // (state.adults/minorAges → details fallback). Using different inputs
+        // for the invoke would let Stripe re-price against a composition the
+        // traveller never saw, producing the "summary €X ≠ Stripe €Y" bug.
+        const compositionSupplied = typeof composedAdults === "number" && composedAdults >= 1;
         const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
           body: {
             tourId: tour.id,
             tourTitle: tour.title ?? tour.id,
             guests: details.guests,
             ...(compositionSupplied
-              ? { adults: currentAdults, minorAges: currentMinors }
-              : { adults: details.adults, minorAges: details.minorAges }),
+              ? { adults: composedAdults, minorAges: composedMinors }
+              : {}),
             stopLabels,
 
             includedItems: (() => {
@@ -1112,19 +1112,23 @@ export function StudioV3() {
     ]);
   }, [state.phase]);
 
-  // Auto-request the Stripe embedded session when the traveller reaches the
-  // single-page checkoutSummary phase. Summary + payment share this same
-  // clientSecret so the two surfaces cannot drift.
+  // Review-and-confirm gate: do NOT auto-invoke Stripe when reaching the
+  // summary. The traveller reviews the itemised price + composition first,
+  // then taps "Reserve & pay" — that click is the only trigger that opens
+  // Stripe Embedded Checkout inline below the summary.
+  //
+  // Rationale (owner-approved, Turn 3): auto-loading Stripe alongside the
+  // review made "Confirm & pay" ambiguous — the payment fields appeared
+  // before the traveller had confirmed the total. Gating on an explicit
+  // click keeps summary and payment as two distinct beats.
   useEffect(() => {
-    if (state.phase !== "checkoutSummary") return;
-    if (!pendingGuestDetails) return;
-    if (clientSecret || checkoutPending) return;
-    void handleStripeCheckout(state, pendingGuestDetails);
-    // Intentionally omit handleStripeCheckout/state from deps — the latter
-    // would re-fire on every state tick and the former is stable via
-    // useCallback. Guard above prevents duplicate sessions.
+    if (state.phase !== "checkoutSummary" && clientSecret) {
+      // Leaving the checkout phase — drop the session so the next entry
+      // starts from the review state again.
+      setClientSecret(null);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.phase, pendingGuestDetails, clientSecret, checkoutPending]);
+  }, [state.phase]);
 
   const advance = useCallback((next: StudioV3Phase) => {
     // If a previous cinematic beat is still dissolving, remove it before any
