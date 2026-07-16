@@ -1,82 +1,74 @@
 ## Scope
 
-Two workstreams the user asked for in this turn:
+Ten items across copy, NAP, media, and SEO. Grouped into three passes.
 
-**A. Visual consistency pass across inner pages**
+---
 
-- use real images already sent and in db from team tours for each page matching the content make them high resolution Migrar og:images do bucket Lovable para domínio de produção.
-- Match homepage motion (`.home-energy` sequenced reveals, hover lift, gold sheen) on `/day-tours`, `/experiences`, `/multi-day`, `/about`, `/proposal-in-portugal`, `/corporate`, `/local-stories`, tour detail pages. Update more animations for the site to feel alive but premmium no bouncing and uniform in alll pages
-- Extend the `arrow-nudge` idle motion (already on `CtaButton`) to any remaining inline CTA arrows on inner pages.
+### Pass A — Copy & NAP
 
-**B. Site hygiene / SEO fixes**
+**1. WhatsApp prefill PT → EN (legacy pages)**
+The exact PT string "Olá! Estou a montar a minha experiência e gostaria de uma sugestão." does not exist in the repo (grep for `Estou a montar` = 0 hits). The only Portuguese prefill on an English-language surface is in `src/routes/pt.contact.tsx:66`: `"Olá! Gostaria de saber mais sobre uma experiência YES."` — but that's a `/pt/*` route (correct locale). All English-language WhatsApp CTAs already route through `whatsappUrl()` with English messages (verified in `index.tsx`, `TrustStrip.tsx`, `WhatsAppSupportButton.tsx`, `SimpleTailorForm.tsx`, `builder/types.ts`, `multi-day.tsx`, `about.tsx`, `tailor.tsx`).
 
-1. `yesexperiences.pt` → `yesexperiencesportugal.com`: audit `src/lib/legacy-domain-redirect.ts` + `src/start.ts` to confirm every path 301s to the canonical apex (and add a wildcard fallback so unmapped paths 301 instead of 410, per user request).
-2. Remove obsolete 301s for `/proposals`, `/contact`, `/local-stories` where the equivalent routes are now active — turn them into real route files (or drop the redirect if the target already exists as a live route).
-3. Global copy fix: replace every `RNAVT` → `RNAAT nº 31/2023`, and correct any `Lisbon`-as-basecity references to `Sesimbra` (only where it refers to the operator's base, not tour pickup/region context).
-4. `/builder` → `/studio-v3`: confirm the redirect exists (it does) and rewrite every internal `to="/builder"` link to `to="/studio-v3"` so we stop bouncing users through a 301.
-5. Unify footer payment badges to one canonical `<PaymentMethodsRow />` set across every footer surface.
+Action: run one more targeted sweep of `/contact`, `/proposals`, `/local-stories` route files + `WhatsAppFab.tsx` / `whatsapp-messages.ts` builders to confirm every English-surface prefill uses the exact target string `"Hi YES — I'd like a hand planning my day in Portugal."` and normalize any drift (e.g. `index.tsx` currently says "planning my Portugal experience"). Leave `/pt/*` routes in Portuguese.
 
-## Approach
+**2. Single NAP (address + phone)**
+`src/config/business-nap.ts` is already the single source: Sesimbra + `+351 911 889 992`. Guardrail test `nap-consistency.test.ts` enforces it. Action: run the test; if it passes, no change. If any component hard-codes a second address/phone, replace with imports from `business-nap.ts`.
 
-### A1. Image dedupe audit
+---
 
-- Add `scripts/audit-image-usage.mjs` to list every `<img>`/`TourImage` src across `src/routes/**` and `src/components/**` and flag files where the same tour is rendered with different image sources.
-- Consolidate to `getTourGallery(tour, meta)` + `useImportedTourImages().resolveImg` everywhere; 
+### Pass B — Media
 
-### A2. Homepage-parity motion on inner pages
+**3. Southwest Coast Signature — missing cover photo**
+`southwest-vicentine-coast` gallery in `signatureToursViator.ts` still points at `media.tacdn.com` hotlinks. The tour resolver falls back to a generic when the hotlink 404s/blocks, which is why no cover appears. Action: generate one cinematic Southwest/Vicentine coast cover image via `imagegen` (fast tier, 1600×1000, jpg), place under `src/assets/tours/southwest-vicentine-coast-cover.jpg`, upload via `lovable-assets`, and wire it into the tour's local override (same mechanism the other tours already use — the "when defined AND non-empty, this REPLACES the external Viator" comment at `signatureToursViator.ts:69`).
 
-- Wrap the top-level `<SiteLayout>` children on each inner route in the `home-energy` reveal cadence (already available in `useMarketingMotion` — `/day-tours` uses it; extend to the routes that don't).
-- Ensure every primary CTA on inner pages uses `<CtaButton>` (so it inherits the `arrow-nudge` keyframe added last pass). Replace any bespoke `<Link>` + arrow with `<CtaButton>`.
+**4. Reviews on each Signature card**
+Signature tour pages currently don't render inline reviews on stop/day cards. Action: on each `tours.$tourId.tsx` page section (and the Signature index cards), render 1–2 top reviews per card using `topReviews` from `signatureToursViator.ts`, styled as a compact ivory quote block (Fraunces italic pull, gold hairline, reviewer name in Inter caption). Fallback to `aggregateRating` chip when a tour has no `topReviews`.
 
-### A3. CTA arrow motion
+**5. Hotlinked `media.tacdn.com` → own assets**
+~40+ hotlinks across all 8 Signature tours in `signatureToursViator.ts`. Full replacement is a large content op (needs one cover + 4-5 gallery images per tour = ~40 generated images). Given scope, do it in **two sub-batches**:
 
-- Sweep for inline `<ArrowRight />`/`→` usages not inside `<CtaButton>` and either migrate them or add the `arrow-nudge` class directly.
+- B5a (this pass): southwest-vicentine-coast cover + gallery (5 images) — unblocks the visible bug.
+- B5b (follow-up pass, will confirm before starting): remaining 7 tours' galleries.
 
-### B1. Legacy domain
+**6. og:image → `yesexperiencesportugal.com/assets/**`
+Current og:image URLs use Lovable's asset CDN (`/__l5e/assets-v1/...`) prefixed with the canonical domain. Action: move the images that back og:image tags into a stable `/assets/` path served from the site's public folder or via a redirect at `public/_headers`, and update the head() blocks in `about.tsx`, `contact.tsx`, `corporate.tsx`, `terms.tsx`, `studio-v3.tsx`, `pt.*` routes accordingly. Keeps the crawler-visible URL on our domain.
 
-- Edit `src/lib/legacy-domain-redirect.ts`: after the mapped-path lookup, replace the `410 Gone` fallback with a 301 to `https://yesexperiencesportugal.com${pathname}${search}`.
-- Update the existing tests to reflect the new fallback.
+---
 
-### B2. Stale redirects
+### Pass C — SEO
 
-- `src/routes/proposals.tsx` currently 301s → `/proposal-in-portugal`. User wants the redirect eliminated: keep `/proposal-in-portugal` as canonical (it's the SEO-targeted URL) but restore `/proposals` as a live route rendering the same component (or vice-versa — confirm target below in Questions).
-- Same treatment for `/contact` and `/local-stories` (I'll read each redirect file to see the current target).
+**7. Index reviews in Google**
+`/reviews` and `/pt/reviews` already emit `AggregateRating` JSON-LD. To get review-rich results:
 
-### B3. RNAVT / Lisbon copy
+- Add `Product` or `Service` JSON-LD with `aggregateRating` + top `review` array on each Signature tour route (`tours.$tourId.tsx`) — this is what Google actually indexes and shows as star ratings.
+- Ensure `/reviews` is in `sitemap.xml` and linked from the footer.
+- Add `Organization` `aggregateRating` on `__root.tsx` so brand SERP shows stars.
 
-- `rg -n "RNAVT"` and `rg -n "\bLisbon\b"` across `src/**` + `public/**`. Fix `RNAVT` → `LICENSE_LABEL` (or the literal `RNAAT nº 31/2023`). For `Lisbon`, only replace instances that describe the operator's base city (footer, About, JSON-LD `addressLocality`, structured data, meta descriptions that say "based in Lisbon"). Leave tour pickup/region copy that legitimately mentions Lisbon alone.
+---
 
-### B4. `/builder` internal links
+## Order of execution
 
-- `rg -n "to=\"/builder\"|href=\"/builder\"|/builder\b"` across `src/**`. Rewrite every internal `<Link>`/`<CtaButton>`/nav item to `/studio-v3`. Leave the `/builder` route file (301) as a safety net for external inbound links.
+1. **A1 + A2** (copy sweep + NAP guardrail test) — fastest, zero risk.
+2. **B3 + B5a** (Southwest cover + gallery) — user-visible bug.
+3. **B6** (og:image URL migration).
+4. **B4** (reviews on Signature cards).
+5. **C7** (review JSON-LD on Signature routes + Organization aggregate).
+6. **B5b** (remaining 7 tour galleries) — confirm before starting.
 
-### B5. Footer payment badges
+## Files touched (estimate)
 
-- Locate every footer (`src/components/Footer.tsx`, any locale variants, any per-page footer in Studio/Signature) and ensure they all render the single `<PaymentMethodsRow />` component. Remove any hand-rolled badge lists.
+- `src/routes/contact.tsx`, `proposals.tsx`, `local-stories.tsx`, `index.tsx` (prefill normalization)
+- `src/routes/about.tsx`, `contact.tsx`, `terms.tsx`, `corporate.tsx`, `studio-v3.tsx`, `pt.*.tsx` (og:image)
+- `src/routes/tours.$tourId.tsx` (reviews section + Product JSON-LD)
+- `src/routes/__root.tsx` (Organization aggregateRating)
+- `src/data/signatureToursViator.ts` (southwest gallery override)
+- `src/assets/tours/southwest-vicentine-coast-*.jpg` (new)
+- Guardrail: run `nap-consistency.test.ts`, add a test asserting no `media.tacdn.com` URLs remain for `southwest-vicentine-coast`.
 
-## Files (expected)
+## Open question
 
-- `scripts/audit-image-usage.mjs` (new)
-- `src/lib/legacy-domain-redirect.ts` + its test
-- `src/routes/proposals.tsx`, `src/routes/contact.tsx` (if it's a redirect), `src/routes/local-stories*.tsx`
-- Global copy pass touching footer, About page, business-nap consumers, JSON-LD helpers
-- Nav + CTA files referencing `/builder`
-- Inner-route pages (`/experiences`, `/multi-day`, `/about`, `/proposal-in-portugal`, `/corporate`, tour detail) for motion + CTA parity + image dedupe
-- `src/components/Footer.tsx` and any secondary footers
+Item 5 (all tacdn hotlinks) is the largest chunk — 7 tours × ~5 images = ~35 generated images. Confirm you want AI-generated cinematic imagery for those, or if you'd prefer to upload your own operational photos (recommended per brand guardrails: "real operation/Viator only, never stock"). Default per plan: only do Southwest now, park the other 7 pending your photos.
 
-No schema, backend or pricing logic changes.
+&nbsp;
 
-## Rollout order
-
-1. B3 copy fixes (RNAVT / Lisbon) — safest, high-trust.
-2. B1 legacy-domain fallback + tests.
-3. B4 `/builder` internal link rewrite.
-4. B2 redirect eliminations (needs a couple of clarifications below).
-5. B5 footer payment badge unification.
-6. A1–A3 image dedupe + motion parity + arrow nudge sweep across inner routes.
-7. Update `.lovable/plan.md` + `src/generated/brand-audit.json`.
-
-## Clarifications needed before I start B2
-
-- `/proposals`, `/contact`, `/local-stories` — for each, do you want the CANONICAL URL to switch back to the short one (so `/proposals` becomes the live page and `/proposal-in-portugal` 301s to it), OR do you want BOTH URLs to render the page (no redirect, duplicate canonical resolved with `<link rel=canonical>`)? SEO-safest is option 1 for `/contact` (short is canonical) and keeping `/proposal-in-portugal` canonical for the keyword-targeted proposals page while ALSO serving `/proposals` live. I'll confirm before touching those files.
-- yes
+Animations on alll the pages !!!!
