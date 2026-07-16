@@ -1,85 +1,53 @@
-## Goal
+## Final Pre-Launch QA & Correction Pass
 
-Fix the hero copy bug shown in the screenshot, standardize the homepage's motion system across every public page (elevated, editorial, non-bouncy), sharpen the hero CTAs for conversion, and stop image repetition across pages by mapping the existing image library to page-specific contexts.
+Scope: exhaustive audit + safe corrections across Signature, Tailor, Studio, checkout, pricing, composition, responsive, motion. No new features, no redesign, no SEO.
 
----
+### Phase 1 — Read-only audit (no code changes)
 
-## 1. Hero duplication fix (the screenshot bug)
+Build a written findings register before touching code. Deliverable per finding: severity (CRITICAL/HIGH/MED/LOW), file path, reproduction, proposed fix, risk.
 
-**Bug:** `src/components/home/CinematicHero.tsx` renders the second phrase twice — once combined inside the `<h1>` (line 167 → `{HERO_PHRASES[0]} {HERO_PHRASES[1]}`) and again as a `<p>` below (line 187 → `{HERO_PHRASES[1]}`). Result on mobile: "Portugal is the stage. You write the story." followed by a repeated "You write the story."
+1. **Product-mode integrity** — trace `flow: 'signature' | 'tailor' | 'studio'` from selection → resolved journey → `create-signature-checkout` payload → Stripe metadata → confirmation. Files: `useResolvedJourney.ts`, `SignaturePriceCard.tsx`, `create-signature-checkout/index.ts`, tour detail + tailor + Studio V3 reveal.
+2. **Traveller composition** — audit every entry surface (`SimpleBookingForm`, tailor, `GuestDetails`, checkout drawer, resume) uses `TravellerComposition {adults, minorAges[]}` end-to-end. Look for legacy `guests`-only leaks via `hydrateLegacyComposition`.
+3. **Child pricing truth** — cross-check `signatureTourPricing.ts` age bands (adult 100 / youth 75 / child 50 / infant 0), `tour_price_tiers`, `tour_available_add_ons` child rules. Flag any tour/add-on where child rule is missing → must surface "manual confirmation" not silent adult price.
+4. **Single source of truth** — grep for `* guests`, `* adults`, `priceFrom *`, `Math.round(.../guests)` outside `useResolvedJourney`. Any independent recompute in cards/Refine/Story/summary/checkout is a finding.
+5. **Per-person display** — locate every "per person / pp / /guest" label. Rule: mixed adult+child parties must show "Average per guest" OR split OR hide. Flag every unlabeled adult-price-as-per-person.
+6. **Live reactivity** — Playwright: change adults, add minor, edit age, toggle add-on, swap winery → assert total/breakdown/checkout drawer update in same frame.
+7. **Checkout server authority** — verify `stripe-session-status` / `create-signature-checkout` recomputes server-side and client blocks on mismatch. Currently unknown — audit and add guard if missing.
+8. **Checkout responsive fit** — Playwright screenshots at 375/390/430/768/1024/1280/1440 on `/checkout/$token`. Check modal width, sticky CTA reachability, Stripe element cropping, keyboard-obscured fields (mobile emulation).
+9. **Route-wide responsive** — same viewport matrix across Signature listing, detail, Tailor, Studio questionnaire/map/Refine/Story, summary, confirmation. Screenshot diff, flag overflow / word-per-line wraps / shrunk-to-hide-problem typography.
+10. **Motion QA** — with the recent marketing-motion elevation (18px/4px blur/420ms), sweep every public route for: replay loops, layout shift, hidden-after-failed-observer, mobile transform breaks, `prefers-reduced-motion` respect.
+11. **CTAs & navigation** — grep for stale "Make it yours" in Signature contexts, dead buttons, hover-only mobile states, duplicated submit handlers.
+12. **State persistence** — back nav, refresh, Tailor edits, Studio refinements, checkout return, payment retry — confirm no dropped minors/stops/add-ons via draft persistence layer (`useBuilderPersistence`, `studio_drafts`).
+13. **Edge cases** — 0 adults, missing/invalid child age, unavailable add-on/winery, over-duration route, stale quote, payment fail/cancel, network drop, double-click, back-during-checkout. Confirm each produces a customer-facing message.
+14. **Frontend hygiene** — dev-server + Playwright console for React warnings, hydration mismatches, missing keys, failed assets, listener leaks.
 
-**Fix:** restore the intended two-line stanza — `<h1>` shows only `HERO_PHRASES[0]` ("Portugal is the stage."), `<p>` shows only `HERO_PHRASES[1]` ("You write the story."). Keep the existing `line1` / `line2` staggered reveal timings (already wired). Zero copy changes, zero token changes.
+Tools used in Phase 1: `rg`, `code--view`, Playwright scripts under `/tmp/browser/`, `bunx vitest run` for the existing add-on/pricing/reveal suites, `supabase--read_query` for tier + add-on rows.
 
-Also verify `EntryScreen.tsx` (Builder) isn't affected — it uses its own string, no change needed.
+### Phase 2 — Safe corrections
 
----
+Only after the register is complete. Grouped by risk:
 
-## 2. Standardize page animations on the homepage system
+- **A. Non-controversial fixes** (typos, unlabeled per-person → "Average per guest", missing `aria-label`, mobile overflow via `min-w-0`/`shrink-0`, listener cleanup, missing keys, motion replay guards).
+- **B. Pricing display fixes** — route every remaining recompute through `useResolvedJourney`. Add "manual confirmation" state where child pricing is missing rather than silent adult fallback.
+- **C. Checkout guardrails** — client refuses submit when local `resolvedQuote.total !== serverQuote.total`; show refresh CTA. Only added if audit shows the guard missing.
+- **D. Responsive fixes** — grid `[minmax(0,1fr)_auto]`, `min-w-0`, `shrink-0`, sticky-CTA lift already at 72px; extend where audit finds overlap. No typography shrink-to-fit.
+- **E. Motion consistency** — align stragglers to the marketing `data-motion="fade-up"` primitive already standardized. No new keyframes.
 
-**Rule:** every public marketing route uses the SAME primitive as the homepage — `data-motion="fade-up"` markup + the `home-motion.ts` controller booted via `useMarketingMotion()`. No new animation library, no framer-motion sprinkles, no per-page custom systems.
+Every fix runs through the existing gate suites (`studio-checkout-gate`, hero visual, cta parity, add-on totals, reveal walkthrough) before it's considered done. Baselines are only updated when the audit proves the baseline itself is wrong; otherwise the fix conforms to the baseline.
 
-**Elevate the values (single source of truth, applied to homepage AND all pages):**
-- Entry: `opacity 0 → 1`, `translateY(22px → 0)`, `filter: blur(6px → 0)`, `380ms` `cubic-bezier(0.22, 0.61, 0.36, 1)` (editorial ease, no overshoot, no bounce).
-- Section eyebrow → title → body → CTA cascade: 90ms stagger, capped at 360ms on fast devices / 240ms on low-power (existing tuning in `home-motion.ts`).
-- Card grids: 100ms stagger, capped at 400ms.
-- Hover: lift `-3px`, shadow deepen, `220ms` ease-out. No scale > 1.02. No spring.
-- Image reveal: subtle 1.04 → 1.0 scale over 600ms paired with fade — replaces the current static image loads on Signature / Local Stories / About.
-- `prefers-reduced-motion`: short-circuits to instant reveal (already implemented, keep).
-- Marketing scope (`html[data-motion-scope="marketing"]`): keep the current 8px / 220ms cap so non-home routes stay restrained; but bump the homepage scope to the elevated values above so home stays the most alive.
+### Phase 3 — Test matrix execution
 
-**Wire-up work (24 routes missing the hook):**
-Add `useMarketingMotion()` to: `experiences`, `day-tours`, `multi-day`, `tours.$tourId`, `tours.$tourId.tailor`, `about`, `contact`, `reviews`, `press`, `corporate`, `proposal-in-portugal`, `portugal-tours`, `luxury-tours-portugal`, `private-tours-portugal`, `local-stories.index`, `local-stories.$slug`, `itineraries.10-day-private-portugal-tour`, and all `pt.*` mirrors of the above.
+Playwright-drive the 14 scenarios from §18 against the running dev server, capture screenshots + network payloads (including the Stripe session request body from `instant-booking-checkout` helpers), and record pass/fail per scenario across composition / itinerary / duration / breakdown / total / checkout / confirmation columns.
 
-**Auto-tagging (in `home-motion.ts`):** extend the existing `.home-energy` heading/card auto-tagger to also run under `[data-motion-scope="marketing"]` so pages get the same rhythm without hand-tagging every h2/eyebrow/card. Selector list unchanged (h2, h3, eyebrow, lead, `.he-card-lift`, etc.).
+### Phase 4 — Final report
 
-**Forbidden (guardrails, unchanged):** parallax off-homepage, glassmorphism, blobs, shimmer, bounce, spring, autoplay carousels.
+Return the 17-point report from §20, ending with `READY FOR RELEASE` or `NOT READY FOR RELEASE` + exact blockers.
 
----
+### Explicit non-goals
+Approved copy, business rules, child pricing rules, canonical URLs, sitemap, metadata, schema strategy, search, content clusters, backend refactors unrelated to a found bug. No SEO work.
 
-## 3. Hero CTA elevation (conversion, still editorial)
+### Ask before I start
+This is a multi-hour pass with real potential to touch 30+ files. Two calibration questions:
 
-Two CTAs stay ("Open the Studio" primary, "Choose Your Experience" ghost) — the memory-locked pair. Changes are craft only, no copy invention:
-
-- **Primary CTA ("Open the Studio"):** promote from ghost outline to a solid gold-fill button (`--gold` bg, `--charcoal` text), 48px height on mobile (currently ~40px), gold-sheen sweep on hover (already scoped in `.home-energy`), 220ms ease-out. Meets 44×44 tap target.
-- **Secondary CTA ("Choose Your Experience"):** demote to a lighter ghost — ivory text, hairline gold underline, arrow ramp on hover. Removes the current competing gold-fill treatment visible in the screenshot where both CTAs read at the same weight.
-- Vertical order + wording: unchanged.
-- Reveal: keep the existing `composed` delay so CTAs appear after the stanza settles (~1200ms), but shorten from current cubic to the standardized 380ms editorial ease for consistency with rest of site.
-
----
-
-## 4. Stop image repetition — page-specific image assignment
-
-**Problem:** several routes reuse the same 3–4 hero/section images (owner photos, Arrábida viewpoint, winery group) even when the page context is different (Corporate, Proposals, Local Stories, About).
-
-**Fix (data-only, no new images):** build one small manifest `src/content/page-image-map.ts` that assigns from the existing library (`src/assets/owner-photos/*`, `src/assets/tours/*`, `public/tours/*`, hero clips) to each route by context tag:
-
-| Context tag | Pool draws from |
-| --- | --- |
-| celebration / proposal | `tasting-cake-moment`, `wine-cheers-arch`, `couple-vineyard` |
-| corporate / group | `winery-group-orange-tree`, `arrabida-viewpoint-group` |
-| craft / artisan | `ceramic-painter-plate`, `potter-wheel-azeitao`, `cork-harvesters-alentejo` |
-| wine / gastronomy | `couple-vineyard`, `wine-cheers-arch`, Azeitão scene clips |
-| coast / nature | Arrábida / Cabo da Roca / hidden cove scene stills |
-| local stories editorial | rotate by slug hash so each article gets a distinct image |
-
-Each page pulls from its tag pool with a route-stable selector (no duplicates within a page, no repeat between adjacent pages in the nav). Also runs through the existing `vite-imagetools` `?format=webp&quality=82` pipeline where imports aren't already using asset.json pointers — elevates perceived quality without a re-shoot.
-
-Explicitly OUT of scope: generating new images, replacing Signature-tour real operation images (memory: real-operation only), touching Viator-sourced imagery.
-
----
-
-## 5. Files touched (summary)
-
-- `src/components/home/CinematicHero.tsx` — hero duplication fix + CTA weight swap.
-- `src/lib/home-motion.ts` — extend auto-tagger to `[data-motion-scope="marketing"]`, bump values.
-- `src/styles.css` — update `data-motion` transition tokens (blur+380ms+editorial ease), homepage-scope override.
-- `src/hooks/use-marketing-motion.ts` — no signature change.
-- 24 public route files — add `useMarketingMotion()` call (one line each).
-- `src/content/page-image-map.ts` (new) + swap image imports on `about`, `corporate`, `proposal-in-portugal`, `local-stories.$slug`, `press`, and PT mirrors.
-
-## 6. Verification
-
-- Playwright: capture home hero at 393×588 — assert single "You write the story." rendering.
-- Playwright: scroll each of `/experiences`, `/day-tours`, `/multi-day`, `/tours/[first]`, `/about`, `/local-stories`, `/reviews`, `/corporate` — assert `html.motion-ready` present and `[data-motion].motion-in` count > 0 after scroll.
-- Visual: screenshot before/after on 3 sample pages to confirm elevated feel with no bounce.
-- Existing e2e (`hero-copy-byte-exact`, `hero-cinematic-attrs`, `homepage-structure`, `studio-v3-p0-*`, typography regression) must still pass — no token, copy, or Studio changes.
+1. **Correction depth** — should Phase 2 auto-apply all A/B/D/E fixes and only pause for C (checkout server-authority guard, which changes payment flow)? Or pause after Phase 1 register so you approve each severity tier?
+2. **Test matrix coverage** — payment fail/retry (scenario 13) needs Stripe sandbox interaction end-to-end (not just session creation). OK to drive Stripe's test card `4000 0000 0000 0002` through the live sandbox from Playwright, or keep it at "session created + redirect asserted" like the current `instant-booking-checkout.spec.ts`?
