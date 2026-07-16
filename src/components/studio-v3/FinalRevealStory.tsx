@@ -27,6 +27,7 @@ import {
   INSTANT_CONFIRMATION,
   
 } from "@/content/signature-day-copy";
+import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import { cn } from "@/lib/utils";
