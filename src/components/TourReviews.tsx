@@ -15,6 +15,7 @@ import {
   type PublicReview,
   type TourStats,
 } from "@/lib/reviews.functions";
+import { getViatorMeta } from "@/data/signatureToursViator";
 
 const SOURCE_LABEL: Record<string, string> = {
   viator: "Viator",
@@ -64,7 +65,43 @@ export function TourReviews({ tourId }: { tourId: string }) {
     };
   }, [tourId, statsFn, reviewsFn]);
 
-  if (loading || !stats || stats.total_reviews === 0) return null;
+  // Fallback: when the DB has no reviews yet, surface the curated
+  // Viator/Tripadvisor reviews from VIATOR_META so every Signature
+  // page still shows real guest voices (source-linked, non-first-party).
+  const meta = getViatorMeta(tourId);
+  const dbEmpty = !loading && (!stats || stats.total_reviews === 0);
+  const useFallback = dbEmpty && meta && meta.topReviews.length > 0;
+
+  if (loading) return null;
+  if (!useFallback && (!stats || stats.total_reviews === 0)) return null;
+
+  const displayRating = useFallback ? meta!.rating : (stats?.average_rating ?? 5);
+  const displayTotal = useFallback ? meta!.reviewCount : (stats?.total_reviews ?? 0);
+  const perSource = useFallback ? [] : (stats?.per_source ?? []);
+  const displayReviews: Array<{
+    id: string;
+    rating: number;
+    title?: string | null;
+    body: string;
+    reviewer_name: string | null;
+    reviewer_country: string | null;
+    source: string;
+    is_first_party: boolean;
+    source_url?: string | null;
+  }> = useFallback
+    ? meta!.topReviews.slice(0, 6).map((r, i) => ({
+        id: `viator-${i}`,
+        rating: 5,
+        title: r.title,
+        body: r.text,
+        reviewer_name: r.author,
+        reviewer_country: null,
+        source: (r.source ?? "Viator").toLowerCase(),
+        is_first_party: false,
+        source_url: meta!.viatorUrl,
+      }))
+    : reviews.map((r) => ({ ...r, source_url: null }));
+
 
   return (
     <section className="mt-16 md:mt-20" aria-labelledby="tour-reviews-heading">
