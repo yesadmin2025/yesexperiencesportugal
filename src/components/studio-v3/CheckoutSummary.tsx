@@ -213,6 +213,12 @@ export function CheckoutSummary({
           </div>
         ) : null}
 
+        <PriceBreakdownRows
+          journeyLines={journeyLines}
+          label="Travellers"
+          testId="studio-v3-checkout-summary-price-breakdown"
+        />
+
         {selectedAddOns.length > 0 ? (
           <div
             className="pt-3 border-t"
