@@ -180,12 +180,12 @@ export function Composition({
                       </button>
                     </div>
                     <span
-                      className="text-[11px] uppercase tracking-[0.18em]"
+                      className="text-[11.5px] uppercase tracking-[0.18em] font-semibold"
                       style={{
                         color:
                           band && band !== "adult"
                             ? "var(--teal)"
-                            : "color-mix(in oklab, var(--charcoal) 45%, transparent)",
+                            : "color-mix(in oklab, var(--charcoal) 70%, transparent)",
                         fontFamily: "var(--font-display)",
                       }}
                     >
@@ -198,7 +198,7 @@ export function Composition({
                     onClick={() => onRemoveMinor(i)}
                     className="inline-flex h-11 w-11 items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                     aria-label={`Remove child ${i + 1}`}
-                    style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
                   >
                     <X className="h-4 w-4" aria-hidden />
                   </button>
