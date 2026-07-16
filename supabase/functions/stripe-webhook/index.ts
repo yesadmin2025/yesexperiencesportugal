@@ -260,13 +260,19 @@ Deno.serve(async (req) => {
           bookingType,
           dateExact,
           guests,
+          // Composition + per-adult rate so the receipt renders the
+          // Adults · Youth · Child · Infant breakdown with subtotals.
+          adults: composition.adults,
+          minorAges: composition.minorAges,
+          perPaxAdultEur: composition.perPaxEur,
           amountFormatted,
           bookingRef: session.id,
-          
+
           receiptUrl,
           bookingStatusUrl: `${siteUrl}/booking-confirmed?session_id=${encodeURIComponent(session.id)}`,
           pickup: meta.pickup || null,
         };
+
         const resp = await fetch(`${siteUrl}/api/public/hooks/checkout-email`, {
           method: "POST",
           headers: {
