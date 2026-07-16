@@ -484,6 +484,12 @@ export function FinalRevealStory({
               </ul>
             </div>
           ) : null}
+          <PriceBreakdownRows
+            journeyLines={journeyLines ?? null}
+            label="Travellers"
+            testId="studio-v3-reveal-price-breakdown"
+          />
+
           <div
             className="pt-3 border-t flex justify-between items-baseline"
             style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
