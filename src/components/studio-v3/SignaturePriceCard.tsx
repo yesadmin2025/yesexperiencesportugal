@@ -1004,6 +1004,76 @@ export function SignaturePriceCard({
           </fieldset>
         ) : null}
 
+        {/* Refine-only: itemised add-ons breakdown. The full variant
+            renders the same rows inside the "Included in your day"
+            footer below, so this block is refine-only to avoid
+            duplication. */}
+        {isRefine && hasPrice && selectedAddOns.length > 0 ? (
+          <div
+            className="mt-4 mx-auto max-w-[380px] text-left"
+            data-testid="studio-v3-add-on-lines-refine"
+          >
+            <p
+              className="text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              <span style={{ color: "var(--gold)" }}>—</span>
+              Your additions
+            </p>
+            <ul
+              className="mt-1.5 flex flex-col gap-1"
+              data-testid="studio-v3-add-on-lines"
+            >
+              {selectedAddOns.map((a) => {
+                const line = addOnEurFor({
+                  addOn: a,
+                  baseEur: priceEur ?? 0,
+                  guests: summaryGuests,
+                });
+                const isPerPerson = line.unit === "per_person";
+                const showQty = isPerPerson && summaryGuests > 1;
+                return (
+                  <li
+                    key={`refine-addon-${a.id}`}
+                    data-testid="studio-v3-add-on-line"
+                    data-addon-id={a.id}
+                    data-per-unit-eur={line.perUnit}
+                    data-amount-eur={line.amount}
+                    data-unit={line.unit}
+                    className="flex items-start justify-between gap-3 text-[11.5px] leading-snug"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
+                  >
+                    <span className="flex items-start gap-2 min-w-0">
+                      <span
+                        aria-hidden
+                        className="mt-[6px] inline-block h-1 w-1 shrink-0 rounded-full"
+                        style={{ background: "var(--gold)" }}
+                      />
+                      <span className="min-w-0">
+                        <span className="font-medium">{a.label}</span>
+                        <span
+                          className="ml-1 tabular-nums"
+                          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                        >
+                          {showQty
+                            ? `(€${line.perUnit} × ${summaryGuests})`
+                            : `(${line.unitLabel})`}
+                        </span>
+                      </span>
+                    </span>
+                    <span
+                      className="shrink-0 tabular-nums text-[11px] font-semibold"
+                      style={{ color: "var(--charcoal)" }}
+                    >
+                      €{line.amount.toLocaleString("en-GB")}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ) : null}
+
         {/* Always keep the resolved investment visible on Refine, even when
             this Signature has no compatible add-ons. This block deliberately
             sits outside the add-on fieldset so an empty pool cannot hide the
