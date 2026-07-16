@@ -28,6 +28,7 @@ import {
   
 } from "@/content/signature-day-copy";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
+import { PerPersonBands } from "@/components/checkout/PerPersonBands";
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import { cn } from "@/lib/utils";
