@@ -164,7 +164,7 @@ export function CinematicHero() {
               transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), filter ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
             }}
           >
-            {HERO_PHRASES[0]} {HERO_PHRASES[1]}
+            {HERO_PHRASES[0]}
           </h1>
           <p
             className="font-serif italic font-normal mt-3 sm:mt-4"

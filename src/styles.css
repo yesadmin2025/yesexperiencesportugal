@@ -3140,18 +3140,24 @@ html.motion-ready [data-motion].motion-in {
 
 /* Marketing-scoped override — public marketing pages boot the same
    `[data-motion]` controller via `useMarketingMotion`, which sets
-   `data-motion-scope="marketing"` on <html>. Values are tightened to
-   the approved bounded plan: max translateY 8px, max duration 220ms,
-   runs once, no layout shift. Homepage (no scope attribute) is
-   unaffected. */
+   `data-motion-scope="marketing"` on <html>. Elevated to feel alive
+   without any bounce/spring: translateY 18px, 420ms editorial ease,
+   subtle blur-in. Runs once, no layout shift. Homepage (no scope
+   attribute) keeps its stronger 22px/620ms cadence. */
 html.motion-ready[data-motion-scope="marketing"] [data-motion] {
-  transform: translateY(8px);
+  transform: translateY(18px);
+  filter: blur(4px);
   transition:
-    opacity 220ms var(--ease-premium, cubic-bezier(0.22, 1, 0.36, 1)),
-    transform 220ms var(--ease-premium, cubic-bezier(0.22, 1, 0.36, 1));
+    opacity 420ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 420ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 html.motion-ready[data-motion-scope="marketing"] [data-motion].motion-in {
   transform: translateY(0);
+  filter: blur(0);
+}
+html.motion-ready[data-motion-scope="marketing"] [data-motion="fade-up-sm"] {
+  transform: translateY(12px);
 }
 
 @media (prefers-reduced-motion: reduce) {
