@@ -50,6 +50,8 @@ export function TourReviews({ tourId }: { tourId: string }) {
   const [stats, setStats] = useState<TourStats | null>(null);
   const [reviews, setReviews] = useState<PublicReview[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState<"recent" | "highest">("recent");
+
 
   useEffect(() => {
     let cancelled = false;
