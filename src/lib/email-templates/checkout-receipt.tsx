@@ -125,10 +125,17 @@ const CheckoutReceipt = ({
   const g = guests ?? 2;
   const hasComposition =
     typeof adults === "number" && adults >= 1 && Array.isArray(minorAges);
-  const compositionRows: CompositionRow[] = hasComposition
-    ? buildCompositionRows(adults!, minorAges ?? [], perPaxAdultEur ?? null)
-    : [];
   const hasMinors = hasComposition && (minorAges ?? []).length > 0;
+  const hasAdultRate = typeof perPaxAdultEur === "number" && perPaxAdultEur > 0;
+  // Reuse the SAME aggregation the on-page summary calls
+  // (`PriceBreakdownRows` → `summarizeJourneyLines`) so every label, unit
+  // and subtotal in the email matches the checkout screen byte-for-byte.
+  const compositionRows =
+    hasComposition && hasAdultRate
+      ? summarizeJourneyLines(
+          buildJourneyLines(adults!, minorAges ?? [], perPaxAdultEur!),
+        )
+      : [];
   return (
     <Html lang="en" dir="ltr">
       <Head />
@@ -155,18 +162,19 @@ const CheckoutReceipt = ({
             <Text style={cardValue}>{formatDate(dateExact)}</Text>
             <Hr style={hr} />
             <Text style={cardLabel}>{hasMinors ? "Travellers" : "Guests"}</Text>
-            {hasMinors ? (
+            {hasMinors && compositionRows.length > 0 ? (
               <>
                 {compositionRows.map((row) => (
                   <Text key={row.key} style={cardValue}>
-                    {`${row.qty} × ${row.label}`}
-                    {row.subtotalEur != null && row.unitEur != null
-                      ? ` — ${formatEurInline(row.unitEur)} each · ${formatEurInline(row.subtotalEur)}`
-                      : ""}
+                    {row.qty > 1
+                      ? `${row.label} (${formatEurInline(row.unitEur)} × ${row.qty})`
+                      : row.label}
+                    {` — ${formatEurInline(row.subtotalEur)}`}
                   </Text>
                 ))}
               </>
             ) : (
+
               <Text style={cardValue}>{`${g} ${g === 1 ? "guest" : "guests"}`}</Text>
             )}
             {pickup ? (
