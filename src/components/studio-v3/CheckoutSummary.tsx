@@ -103,6 +103,7 @@ export function CheckoutSummary({
   totalEur,
   adults = null,
   minorAges = [],
+  journeyLines = null,
   composedStops,
   submitting = false,
   onEditGuestDetails,
