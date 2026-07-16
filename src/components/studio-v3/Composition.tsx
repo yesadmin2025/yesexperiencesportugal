@@ -123,10 +123,10 @@ export function Composition({
                   }}
                 >
                   <span
-                    className="text-[11px] uppercase tracking-[0.2em] min-w-[52px]"
+                    className="text-[11px] uppercase tracking-[0.2em] min-w-[52px] font-semibold"
                     style={{
                       fontFamily: "var(--font-display)",
-                      color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                      color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
                     }}
                   >
                     Child {i + 1}
