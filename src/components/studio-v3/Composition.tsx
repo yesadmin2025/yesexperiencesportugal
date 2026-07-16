@@ -79,14 +79,25 @@ export function Composition({
 
         {minorAges.length === 0 ? (
           <p
-            className="mt-2 text-[12.5px] leading-snug italic"
+            className="mt-2 text-[13px] leading-relaxed"
             style={{
-              fontFamily: "var(--font-serif)",
-              color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+              fontFamily: "var(--font-sans)",
+              color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
             }}
           >
-            Adds a row per child so we can price honestly by age — infants (0–2)
-            are free, children (3–10) half, youth (11–17) three-quarters.
+            Adds a row per child so we can price honestly by age —{" "}
+            <strong className="font-semibold" style={{ color: "var(--charcoal)" }}>
+              infants (0–2) free
+            </strong>
+            ,{" "}
+            <strong className="font-semibold" style={{ color: "var(--charcoal)" }}>
+              children (3–10) half
+            </strong>
+            ,{" "}
+            <strong className="font-semibold" style={{ color: "var(--charcoal)" }}>
+              youth (11–17) three-quarters
+            </strong>
+            .
           </p>
         ) : (
           <ul className="mt-3 space-y-2" aria-label="Minor travellers">
