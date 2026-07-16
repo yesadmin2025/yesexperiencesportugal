@@ -127,6 +127,9 @@ const CheckoutReceipt = ({
   bookingType,
   dateExact,
   guests,
+  adults,
+  minorAges,
+  perPaxAdultEur,
   amountFormatted,
   bookingRef,
   receiptUrl,
@@ -135,6 +138,12 @@ const CheckoutReceipt = ({
 }: CheckoutReceiptProps) => {
   const firstName = customerName ? customerName.split(" ")[0] : null;
   const g = guests ?? 2;
+  const hasComposition =
+    typeof adults === "number" && adults >= 1 && Array.isArray(minorAges);
+  const compositionRows: CompositionRow[] = hasComposition
+    ? buildCompositionRows(adults!, minorAges ?? [], perPaxAdultEur ?? null)
+    : [];
+  const hasMinors = hasComposition && (minorAges ?? []).length > 0;
   return (
     <Html lang="en" dir="ltr">
       <Head />
@@ -160,8 +169,21 @@ const CheckoutReceipt = ({
             <Text style={cardLabel}>Date</Text>
             <Text style={cardValue}>{formatDate(dateExact)}</Text>
             <Hr style={hr} />
-            <Text style={cardLabel}>Guests</Text>
-            <Text style={cardValue}>{`${g} ${g === 1 ? "guest" : "guests"}`}</Text>
+            <Text style={cardLabel}>{hasMinors ? "Travellers" : "Guests"}</Text>
+            {hasMinors ? (
+              <>
+                {compositionRows.map((row) => (
+                  <Text key={row.key} style={cardValue}>
+                    {`${row.qty} × ${row.label}`}
+                    {row.subtotalEur != null && row.unitEur != null
+                      ? ` — ${formatEurInline(row.unitEur)} each · ${formatEurInline(row.subtotalEur)}`
+                      : ""}
+                  </Text>
+                ))}
+              </>
+            ) : (
+              <Text style={cardValue}>{`${g} ${g === 1 ? "guest" : "guests"}`}</Text>
+            )}
             {pickup ? (
               <>
                 <Hr style={hr} />
@@ -176,6 +198,7 @@ const CheckoutReceipt = ({
                 <Text style={cardValueLg}>{amountFormatted}</Text>
               </>
             ) : null}
+
             {bookingRef ? (
               <>
                 <Hr style={hr} />
