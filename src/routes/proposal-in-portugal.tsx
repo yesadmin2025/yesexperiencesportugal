@@ -91,7 +91,7 @@ const BLOCKS = [
   },
 ];
 
-function ProposalInPortugalPage() {
+export function ProposalInPortugalPage() {
   useMarketingMotion();
   return (
 
