@@ -968,7 +968,7 @@ function HomePage() {
                       Open the Studio
                     </CtaButton>
                     <CtaButton
-                      href={whatsappUrl("Hi YES — I'd like a hand planning my Portugal experience.")}
+                      href={whatsappUrl("Hi YES — I'd like a hand planning my day in Portugal.")}
                       variant="hairline"
                       target="_blank"
                       rel="noopener noreferrer"
