@@ -1,32 +1,68 @@
 ## Goal
-Ensure the Studio always shows the resolved base price, available add-ons, live updated price per person, and live party total—on mobile first and consistently through refine, final story, checkout summary, and payment.
 
-## Confirmed causes
-- The refine variant intentionally hides its main base-price block.
-- Its fallback Total block is nested inside the add-ons fieldset, so tours with no compatible add-ons show no pricing at all.
-- The canonical journey total updates when add-ons change, but the canonical per-person value remains the base rate; the card then prefers that stale base value.
-- The final story places all pricing inside a closed “See what’s included” disclosure, making it appear absent.
+Make the Studio pricing UI show a real, itemised add-ons breakdown — for every selected add-on, display the name, quantity (based on how it's billed), per-unit price, and party-total impact — everywhere pricing appears (Refine price card, Final Reveal inclusions panel, Checkout summary).
 
-## Implementation
-1. **Correct the canonical pricing model**
-   - Keep the resolved base per-person rate separate from the final effective per-person amount.
-   - Derive the displayed effective per-person figure from the same resolved party total and guest count used by checkout, including age-band pricing and selected add-ons.
-   - Preserve unit-aware add-on totals so per-group/fixed additions are never multiplied incorrectly.
+Today all three surfaces render a single line per add-on like `+€40 per guest · €120 for your group`. There is no per-add-on subtotal row inside the price card, no explicit quantity (`×3`), and the refine card doesn't itemise add-ons at all — it only rolls them into the "Final estimated total" number.
 
-2. **Fix the refine price card structure**
-   - Render an always-visible pricing summary independently of whether an add-on pool exists.
-   - Show base/itemised traveller pricing, selected additions, updated effective price per person, and party total.
-   - Keep compatible add-ons visible and selectable; if none fit, retain the price summary rather than hiding the whole section.
+## What changes
 
-3. **Expose pricing on the final story**
-   - Add a compact, always-visible investment summary above the Continue action.
-   - Keep detailed inclusions and line items collapsible, but never hide the primary per-person and total figures inside the disclosure.
-   - Show each selected add-on with its billing unit and party contribution.
+### 1. `SignaturePriceCard.tsx` — add an "Additions" itemised block
 
-4. **Keep every downstream surface identical**
-   - Feed the same resolved itemisation into the final story, checkout summary, and checkout payload.
-   - Ensure adult/child rows only render when complete, while valid base and party totals remain visible if optional composition details are incomplete.
+Right below the `journeyRows` traveller-lines list (around line 750) and above the "Final estimated total" line, render a new list that mirrors the traveller-rows visual style so the two feel like one ledger:
 
-5. **Regression coverage and mobile verification**
-   - Add tests for: no compatible add-ons, initial base pricing, add-on selection/deselection, same-frame effective per-person updates, party-total updates, age-band itemisation, and parity across card/final story/checkout.
-   - Verify the complete Studio path at 393×588, including the exact mobile states shown in the screenshots, and confirm no clipping or hidden pricing.
+For each selected add-on, one row:
+
+```
+Sunset sailing (€40 × 3)                                €120
+Private driver upgrade (per group)                      €90
+```
+
+Rules per row (derived from the existing `SelectedAddOnSummaryItem`):
+- `label` — the add-on name.
+- Quantity segment:
+  - `unit === 'per_person'` → `(€{perUnit} × {guests})` when `guests > 1`; hidden when guests = 1.
+  - `unit === 'per_group' | 'per_vehicle' | 'fixed'` → `({unitLabel})` (e.g. `per group`).
+- Right-aligned subtotal = `amount` (party total for that line), formatted `€{n}` with `toLocaleString("en-GB")`.
+
+Show the block only when `selectedAddOns.length > 0` and `hasPrice`. Add `data-testid="studio-v3-add-on-lines"` and a per-row `data-testid="studio-v3-add-on-line"` with `data-addon-id`, `data-per-unit-eur`, `data-amount-eur` for regression tests.
+
+The existing chip picker (further down the card) is untouched — the new block is a read-only summary of what's already selected, matching the traveller ledger's role.
+
+### 2. `FinalRevealStory.tsx` — enrich the "Your additions" list inside the inclusions disclosure
+
+Replace the current row (label + `+€perUnit unitLabel` + optional group amount) with the same three-column shape as the refine card:
+
+```
+· Sunset sailing        (€40 × 3)          €120
+· Private driver        (per group)         €90
+```
+
+Keeps the existing collapsible container, just swaps the row rendering. No change to the always-visible "Final investment" summary above it — that already shows the party total and per-guest number.
+
+### 3. `CheckoutSummary.tsx` — same row treatment
+
+Mirror the exact same row shape in the checkout drawer's `Your additions` block (lines 204–231) so refine → final reveal → checkout read as one ledger. The drawer's `BrandedCheckoutDrawer` already itemises correctly and stays as-is.
+
+## What stays the same
+
+- No changes to pricing math. All numbers come from the existing `SelectedAddOnSummaryItem` fields (`perUnit`, `amount`, `unit`, `unitLabel`) produced by `useResolvedJourney` / `SignaturePriceCard`'s `buildSummary`.
+- No changes to add-on selection logic, budget gating, or the chip UI.
+- No changes to the "Final estimated total" line or per-guest number — those already reflect add-ons.
+- No copy or brand-token changes outside the new rows.
+
+## Regression coverage
+
+Extend `src/components/studio-v3/__tests__/price-source-of-truth.test.tsx` (or add a sibling `add-on-itemisation.test.tsx`) with:
+
+1. Select 2 add-ons of different units (per_person, per_group) with `guests = 3`. Assert both `studio-v3-add-on-line` rows render in the refine card with the expected `data-per-unit-eur` and `data-amount-eur`, and that the row subtotals sum to `addOnsPartyTotalEur`.
+2. Assert identical rows appear in `FinalRevealStory` and `CheckoutSummary` (parity check).
+3. Assert `guests = 1` hides the `(€X × N)` quantity fragment for per_person items.
+
+All existing add-on/parity tests must continue to pass.
+
+## Files touched
+
+- `src/components/studio-v3/SignaturePriceCard.tsx` — new itemised list JSX block, no logic changes.
+- `src/components/studio-v3/FinalRevealStory.tsx` — swap row rendering inside existing "Your additions" list.
+- `src/components/studio-v3/CheckoutSummary.tsx` — swap row rendering inside existing "Your additions" list.
+- `src/components/studio-v3/__tests__/price-source-of-truth.test.tsx` (or new file) — coverage for the new rows and cross-surface parity.

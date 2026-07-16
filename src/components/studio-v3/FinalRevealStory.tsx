@@ -436,20 +436,40 @@ export function FinalRevealStory({
               >
                 Your additions
               </p>
-              <ul className="space-y-1.5 text-[13.5px]" style={{ color: "var(--charcoal)" }}>
-                {selectedAddOns.map((a) => (
-                  <li key={a.id} className="flex justify-between gap-3">
-                    <span>· {a.label}</span>
-                    <span className="text-right tabular-nums" style={{ color: "var(--teal)" }}>
-                      +{formatEur(a.perUnit)} {a.unitLabel}
-                      {a.amount !== a.perUnit ? (
-                        <span className="block text-[10.5px]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
-                          {formatEur(a.amount)} for your group
+              <ul
+                className="space-y-1.5 text-[13.5px]"
+                style={{ color: "var(--charcoal)" }}
+                data-testid="studio-v3-add-on-lines"
+              >
+                {selectedAddOns.map((a) => {
+                  const guests = typeof state.guests === "number" && state.guests > 0 ? state.guests : 1;
+                  const isPerPerson = a.unit === "per_person";
+                  const showQty = isPerPerson && guests > 1;
+                  return (
+                    <li
+                      key={a.id}
+                      data-testid="studio-v3-add-on-line"
+                      data-addon-id={a.id}
+                      data-per-unit-eur={a.perUnit}
+                      data-amount-eur={a.amount}
+                      data-unit={a.unit}
+                      className="flex justify-between gap-3"
+                    >
+                      <span className="min-w-0">
+                        · {a.label}
+                        <span
+                          className="ml-1 tabular-nums"
+                          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                        >
+                          {showQty ? `(${formatEur(a.perUnit)} × ${guests})` : `(${a.unitLabel})`}
                         </span>
-                      ) : null}
-                    </span>
-                  </li>
-                ))}
+                      </span>
+                      <span className="text-right tabular-nums font-medium" style={{ color: "var(--charcoal)" }}>
+                        {formatEur(a.amount)}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ) : null}
