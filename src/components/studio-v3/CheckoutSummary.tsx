@@ -26,6 +26,7 @@ import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { cn } from "@/lib/utils";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
+import { PerPersonBands } from "@/components/checkout/PerPersonBands";
 
 // One Stripe instance per publishable key, memoized across renders.
 const stripeCache = new Map<string, Promise<Stripe | null>>();
@@ -289,15 +290,17 @@ export function CheckoutSummary({
             style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
           >
             {formatEur(totalEur)}
-            {perPaxEur != null ? (
-              <span
-                className="ml-2 text-[11px] uppercase tracking-[0.2em]"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-              >
-                · {formatEur(perPaxEur)} / guest
-              </span>
-            ) : null}
           </span>
+        </div>
+        <div
+          className="flex justify-end text-[11px] uppercase tracking-[0.2em] text-right leading-[1.6]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+        >
+          <PerPersonBands
+            journeyLines={journeyLines}
+            adultUnitEur={perPaxEur}
+            testId="studio-v3-checkout-summary-per-person"
+          />
         </div>
       </div>
 
