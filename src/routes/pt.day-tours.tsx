@@ -38,6 +38,15 @@ export const Route = createFileRoute("/pt/day-tours")({
           { name: "Experiências de um Dia", path: "/pt/day-tours" },
         ]),
       ),
+      jsonLdScript(
+        itemListLd({
+          name: "Tours privados de um dia a partir de Lisboa",
+          path: "/pt/day-tours",
+          items: signatureTours
+            .filter((t) => !/days?/i.test(t.duration) || /half|full|long/i.test(t.duration))
+            .map((t) => ({ id: t.id, name: t.title, description: t.blurb, image: t.img })),
+        }),
+      ),
     ],
   }),
   component: DayToursPage,
