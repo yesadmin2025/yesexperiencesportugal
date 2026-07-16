@@ -815,6 +815,66 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     datePublished: "2026-07-09",
   },
+  {
+    slug: "best-private-day-tours-from-lisbon",
+    title: "Best Private Day Tours from Lisbon — A Local's Guide",
+    metaDescription:
+      "A local operator's guide to the best private day tours from Lisbon — Sintra, Arrábida and Évora compared, honestly, by the team that designs them.",
+    h1: "Best Private Day Tours from Lisbon",
+    eyebrow: "Lisbon · Private Day Tours",
+    standfirst:
+      "Three directions, three different Portugals. Sintra for palaces and forest, Arrábida for wine and wild coast, Évora for the slow inland south. Here is how a local chooses between them — and why doing them privately changes the day.",
+    sections: [
+      {
+        heading: "Why private, and why from Lisbon.",
+        body: "Lisbon is one of the rare European capitals where an hour's drive lands you in a completely different landscape — a UNESCO forest, a marine park, or a walled Roman city on the plain. The three directions below are all doable as a single day. What changes, when the day is private, is the rhythm: you leave when you want, you stop when the light is right, and lunch is chosen for you — not for the coach behind you.",
+      },
+      {
+        heading: "Sintra — palaces, forest, and Cabo da Roca.",
+        body: "Thirty minutes west, Sintra sits in a green microclimate of its own. Pena Palace above the treeline, Quinta da Regaleira and its initiation well, the road out to Cabo da Roca — Europe's westernmost point — and Cascais light on the way back. Private matters most here: the estates fill by 11am, and an early private start (in before the coaches) is the difference between a magical morning and a queue.",
+      },
+      {
+        heading: "Arrábida — wine, fish, and a wild Atlantic coast.",
+        body: "South across the 25 de Abril Bridge, the cork and pine hills of Arrábida drop straight into a turquoise sea. This is our home region. A private day here typically threads a small family winery in Azeitão, a hidden cove for a swim, and grilled fish on the Setúbal waterfront. It is the most sensory of the three — the one guests describe as the day they did not want to end.",
+      },
+      {
+        heading: "Évora — the slow, inland Alentejo.",
+        body: "Ninety minutes east, past cork oaks and long horizons, Évora is a walled Roman-to-Renaissance city on the Alentejo plain. A private day here pairs the Roman temple and the old town with a working Alentejo estate — talha wines fermented in clay, olive oil pressed on site, a long lunch under a tree. It is the quietest of the three, and the one that surprises people most.",
+      },
+      {
+        heading: "How to choose in one line.",
+        body: "Choose Sintra for palaces and forest drama; choose Arrábida for wine, sea, and long lunches; choose Évora for the slow inland south. If it is your first time in Portugal and you want the postcard, Sintra. If you want the day you will still talk about a year later, Arrábida. If you already know Lisbon and want somewhere different, Évora.",
+      },
+      {
+        heading: "What private actually changes.",
+        body: "A private day is not the group day with fewer people. The route flexes to the weather, the light, and your pace. Winery visits are booked ahead so no one is turning us away at the door. Lunch is a real table at a real place, not a set menu for forty. And the guide is a local who lives here — not a script.",
+      },
+    ],
+    ctaLead:
+      "Each of the three directions lives inside a Signature day designed by our team. Start with the one that matches the mood you want.",
+    ctaLabel: "See our Signature Day Tours",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "sintra-cascais", label: "Sintra & Cascais Signature" },
+      { slug: "evora-alentejo", label: "Évora & Alentejo Signature" },
+      { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+    ],
+    datePublished: "2026-07-16",
+    faq: [
+      {
+        q: "What is the best private day tour from Lisbon?",
+        a: "It depends on the mood you want. Sintra is best for palaces and forest, Arrábida for wine and wild coast, and Évora for the slow inland Alentejo. All three are within 90 minutes of Lisbon and can be done comfortably as a single private day.",
+      },
+      {
+        q: "How long is a private day tour from Lisbon?",
+        a: "A typical private day runs 8 to 10 hours door-to-door, with pickup at your hotel or apartment. Timings flex to your pace — an earlier start avoids crowds at Sintra, while Arrábida and Évora days often stretch later for a long lunch.",
+      },
+      {
+        q: "Is a private tour worth it compared to a group tour?",
+        a: "For Sintra especially, yes — a private early start beats the coach traffic that arrives around 11am. For Arrábida and Évora, private unlocks small family wineries and lunch tables that group tours cannot access. The day is shaped to you, not to a fixed schedule.",
+      },
+    ],
+  },
 ];
 
 export const LOCAL_STORIES_ARTICLES_BY_SLUG: Record<string, LocalStoryArticle> = Object.fromEntries(
