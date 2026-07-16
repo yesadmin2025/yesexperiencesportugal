@@ -10,6 +10,8 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { TourImage } from "@/components/tours/TourImage";
 
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+
 const TITLE = "Experiências de um Dia — YES Experiences Portugal";
 const DESCRIPTION =
   "Experiências privadas de um dia por Portugal — Arrábida, Setúbal, Sintra, Évora, Douro e outras. Reserva com confirmação em tempo real.";
@@ -46,6 +48,7 @@ const dayTours = signatureTours.filter(
 );
 
 function DayToursPage() {
+  useMarketingMotion();
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>

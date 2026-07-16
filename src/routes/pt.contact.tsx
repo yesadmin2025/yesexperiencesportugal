@@ -3,6 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { buildLocaleUrl } from "@/i18n/config";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+
 import {
   BUSINESS_NAME,
   EMAIL,
@@ -42,6 +44,7 @@ export const Route = createFileRoute("/pt/contact")({
 });
 
 function PtContactPage() {
+  useMarketingMotion();
   return (
     <SiteLayout>
       <section className="mx-auto max-w-2xl px-6 py-20 md:py-28">

@@ -9,6 +9,8 @@ import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 import imgArrabidaWineLunch from "@/assets/tours/arrabida-wine-allinclusive/lunch.jpg";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+
 const TITLE = "Experiências corporativas e para grupos privados em Portugal | YES";
 const DESCRIPTION =
   "Dias corporativos privados, retiros de equipa e experiências de grupo em Portugal — desenhados e conduzidos por um operador local licenciado. Transporte, guias e locais coordenados de ponta a ponta.";
@@ -98,6 +100,7 @@ const FAQ_PT = [
 ];
 
 function CorporatePage() {
+  useMarketingMotion();
   return (
     <SiteLayout>
       <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">

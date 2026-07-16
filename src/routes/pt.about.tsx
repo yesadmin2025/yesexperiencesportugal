@@ -6,6 +6,8 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
 import { buildLocaleUrl } from "@/i18n/config";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+
 import {
   BASED_IN_SHORT,
   EMAIL,
@@ -59,6 +61,7 @@ export const Route = createFileRoute("/pt/about")({
 });
 
 function Page() {
+  useMarketingMotion();
   return (
     <SiteLayout>
       {/* Hero */}
