@@ -1063,6 +1063,12 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/dd/caption.jpg",
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/e2/caption.jpg",
     ],
+    localGallery: [
+      {
+        src: "/__l5e/assets-v1/7924df33-3fa2-4529-846e-008b2f637e54/southwest-vicentine-coast-cover.jpg",
+        alt: "Odeceixe river-meets-ocean beach on the wild Southwest Vicentine Coast at golden hour, Portugal",
+      },
+    ],
     // Source: supplier.viator.com — TG1, Jun 18 2026 – no end date.
     // Per-pax EUR by group size: 2-3→€359, 4-6→€299, 7-8→€239. Min 2 pax.
     priceTiersEUR: { 2: 359, 3: 359, 4: 299, 5: 299, 6: 299, 7: 239, 8: 239 },
