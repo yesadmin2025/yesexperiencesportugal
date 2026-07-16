@@ -14,7 +14,7 @@ import {
   summarizeJourneyLines,
   type CheckoutJourneyLine,
 } from "@/lib/checkout/journeyDisplay";
-import { resolveSignatureAgeBandPricing } from "@/data/signatureTourPricing";
+import { resolveJourneyPricing } from "@/data/signatureTourPricing";
 
 // Reproduce the email template's local builder without importing the .tsx
 // (React Email components pull JSX + browser-y deps into vitest).
