@@ -108,6 +108,13 @@ export interface FinalRevealStoryProps {
   readonly selectedAddOns: SelectedAddOnSummary["items"];
   readonly perPaxEur: number | null;
   readonly totalEur: number | null;
+  /**
+   * Canonical age-banded per-traveller lines from `useResolvedJourney`.
+   * When present, the inclusions drawer renders one row per adult/child
+   * with the band-adjusted unit price before the total. Null → adults-only
+   * flat pricing.
+   */
+  readonly journeyLines?: import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[] | readonly import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[] | null;
   readonly onContinue: () => void;
   readonly onSaveSignature: () => void;
   readonly onBack: () => void;
@@ -122,6 +129,7 @@ export interface FinalRevealStoryProps {
    */
   readonly composedStops?: ReadonlyArray<{ label: string; story: string }>;
 }
+
 
 function formatEur(n: number | null): string {
   if (n == null || !Number.isFinite(n)) return "—";
