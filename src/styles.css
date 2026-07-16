@@ -968,6 +968,29 @@
     transition: box-shadow 320ms var(--ease-premium);
   }
 
+  /* ────────────────────────────────────────────────────────────
+     Kinetic Luxury — idle arrow nudge.
+     Subtle 2.6s loop nudging the CTA arrow +3px right so primary
+     CTAs feel "alive" without being noisy. Paused on hover
+     (hover animation takes over) and disabled by reduced-motion.
+     Amplitude kept small so it never crosses into fidgety.
+     ──────────────────────────────────────────────────────────── */
+  @keyframes ctaArrowIdleNudge {
+    0%, 60%, 100% { transform: translateX(0); }
+    30% { transform: translateX(3px); }
+  }
+  .cta-arrow-idle {
+    animation: ctaArrowIdleNudge 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  .group:hover .cta-arrow-idle,
+  .group:focus-visible .cta-arrow-idle,
+  .group:active .cta-arrow-idle {
+    animation: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cta-arrow-idle { animation: none !important; }
+  }
+
   /* Shimmer sweep for BookingCtaSkeleton — lightweight, brand-ivory wash. */
   @keyframes shimmer {
     100% {

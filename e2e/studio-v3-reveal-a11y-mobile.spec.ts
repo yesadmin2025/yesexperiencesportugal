@@ -3,7 +3,7 @@
  *
  * Locks the accessible surface of the two reveal screens:
  *   - Every add-on toggle has an accessible name.
- *   - Reveal CTAs (Save my signature, Continue to guest details,
+ *   - Reveal CTAs (Save my signature, Confirm & reserve,
  *     ← Back to refine) have non-empty accessible names that match their
  *     visible text.
  *   - Keyboard: Space toggles the first add-on (aria-pressed flips) and a
@@ -72,7 +72,7 @@ test.describe("Studio V3 · Reveal a11y @ 393×588", () => {
     const backCta = page.getByTestId("studio-v3-final-reveal-back");
 
     for (const [cta, pattern] of [
-      [continueCta, /Continue to guest details/i],
+      [continueCta, /Confirm & reserve/i],
       [saveCta, /Save my signature/i],
       [backCta, /Back to refine/i],
     ] as const) {

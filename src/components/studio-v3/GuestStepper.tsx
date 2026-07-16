@@ -51,7 +51,7 @@ export function GuestStepper({ value, inferred, onChange }: Props) {
         className="block text-[11px] uppercase tracking-[0.22em]"
         style={{
           fontFamily: "var(--font-display)",
-          color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+          color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
         }}
       >
         Guests
@@ -90,7 +90,7 @@ export function GuestStepper({ value, inferred, onChange }: Props) {
             className="mt-1 text-[11px] uppercase tracking-[0.2em]"
             style={{
               fontFamily: "var(--font-display)",
-              color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
             }}
           >
             {current === 1 ? "guest" : "guests"}
@@ -106,7 +106,7 @@ export function GuestStepper({ value, inferred, onChange }: Props) {
         className="mt-3 text-[12.5px] leading-snug italic"
         style={{
           fontFamily: "var(--font-serif)",
-          color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+          color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
         }}
       >
         {helper}

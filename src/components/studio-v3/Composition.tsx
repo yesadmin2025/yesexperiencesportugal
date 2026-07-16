@@ -70,7 +70,7 @@ export function Composition({
             className="text-[11px] uppercase tracking-[0.2em] tabular-nums"
             style={{
               fontFamily: "var(--font-display)",
-              color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
             }}
           >
             {minorAges.length} · Party {totalParty}
@@ -79,14 +79,25 @@ export function Composition({
 
         {minorAges.length === 0 ? (
           <p
-            className="mt-2 text-[12.5px] leading-snug italic"
+            className="mt-2 text-[13px] leading-relaxed"
             style={{
-              fontFamily: "var(--font-serif)",
-              color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
+              fontFamily: "var(--font-sans)",
+              color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
             }}
           >
-            Adds a row per child so we can price honestly by age — infants (0–2)
-            are free, children (3–10) half, youth (11–17) three-quarters.
+            Adds a row per child so we can price honestly by age —{" "}
+            <strong className="font-semibold" style={{ color: "var(--charcoal)" }}>
+              infants (0–2) free
+            </strong>
+            ,{" "}
+            <strong className="font-semibold" style={{ color: "var(--charcoal)" }}>
+              children (3–10) half
+            </strong>
+            ,{" "}
+            <strong className="font-semibold" style={{ color: "var(--charcoal)" }}>
+              youth (11–17) three-quarters
+            </strong>
+            .
           </p>
         ) : (
           <ul className="mt-3 space-y-2" aria-label="Minor travellers">
@@ -112,10 +123,10 @@ export function Composition({
                   }}
                 >
                   <span
-                    className="text-[11px] uppercase tracking-[0.2em] min-w-[52px]"
+                    className="text-[11px] uppercase tracking-[0.2em] min-w-[52px] font-semibold"
                     style={{
                       fontFamily: "var(--font-display)",
-                      color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                      color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
                     }}
                   >
                     Child {i + 1}
@@ -169,12 +180,12 @@ export function Composition({
                       </button>
                     </div>
                     <span
-                      className="text-[11px] uppercase tracking-[0.18em]"
+                      className="text-[11.5px] uppercase tracking-[0.18em] font-semibold"
                       style={{
                         color:
                           band && band !== "adult"
                             ? "var(--teal)"
-                            : "color-mix(in oklab, var(--charcoal) 45%, transparent)",
+                            : "color-mix(in oklab, var(--charcoal) 70%, transparent)",
                         fontFamily: "var(--font-display)",
                       }}
                     >
@@ -187,7 +198,7 @@ export function Composition({
                     onClick={() => onRemoveMinor(i)}
                     className="inline-flex h-11 w-11 items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                     aria-label={`Remove child ${i + 1}`}
-                    style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
                   >
                     <X className="h-4 w-4" aria-hidden />
                   </button>
@@ -237,7 +248,7 @@ export function Composition({
         className="mt-4 text-[12px] leading-snug"
         style={{
           fontFamily: "var(--font-sans)",
-          color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+          color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
         }}
       >
         <Minus className="inline h-3 w-3 -mt-0.5" aria-hidden /> Ages let us
