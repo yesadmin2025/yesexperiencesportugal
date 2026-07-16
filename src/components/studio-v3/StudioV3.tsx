@@ -2643,6 +2643,8 @@ export function StudioV3() {
             composedStops={resolvedJourney.stops}
             perPaxEur={resolvedJourney.perPaxEur}
             totalEur={resolvedJourney.totalEur}
+            journeyLines={resolvedJourney.journeyLines}
+
 
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
