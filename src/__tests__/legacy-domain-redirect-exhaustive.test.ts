@@ -69,26 +69,41 @@ describe("legacy-domain map: exhaustive 301 coverage", () => {
   }
 });
 
-describe("legacy-domain map: unmapped paths return 410 (no soft-404)", () => {
-  const UNMAPPED = [
+describe("legacy-domain map: WP-legacy patterns return 410 (no soft-404)", () => {
+  const WP_UNMAPPED = [
     "/wp-admin",
     "/wp-login.php",
     "/tour/does-not-exist",
     "/category/wine",
     "/tag/porto",
-    "/2024/06/some-old-post",
-    "/random/unknown-page",
     "/author/joao",
   ];
 
   for (const host of HOSTS) {
-    for (const path of UNMAPPED) {
+    for (const path of WP_UNMAPPED) {
       it(`${host}${path} → 410 Gone (no Location)`, () => {
         const res = buildLegacy301Response(req(host, path));
         expect(res).not.toBeNull();
         expect(res!.status).toBe(410);
         expect(res!.headers.get("location")).toBeNull();
         expect(res!.headers.get("x-robots-tag")).toContain("noindex");
+      });
+    }
+  }
+});
+
+describe("legacy-domain map: unmapped non-WP paths 301 to canonical 1:1", () => {
+  const UNMAPPED = ["/2024/06/some-old-post", "/random/unknown-page"];
+
+  for (const host of HOSTS) {
+    for (const path of UNMAPPED) {
+      it(`${host}${path} → 301 canonical${path}`, () => {
+        const res = buildLegacy301Response(req(host, path));
+        expect(res).not.toBeNull();
+        expect(res!.status).toBe(301);
+        expect(res!.headers.get("location")).toBe(
+          `${CANONICAL_ORIGIN}${path}`,
+        );
       });
     }
   }
