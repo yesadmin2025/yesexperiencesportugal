@@ -44,13 +44,31 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
           bookingType: body.bookingType ?? null,
           dateExact: body.dateExact ?? null,
           guests: typeof body.guests === "number" ? body.guests : Number(body.guests) || null,
+          adults:
+            typeof body.adults === "number"
+              ? body.adults
+              : body.adults != null
+                ? Number(body.adults) || null
+                : null,
+          minorAges: Array.isArray(body.minorAges)
+            ? (body.minorAges as unknown[])
+                .map((n) => Number(n))
+                .filter((n) => Number.isInteger(n) && n >= 0 && n <= 17)
+            : null,
+          perPaxAdultEur:
+            typeof body.perPaxAdultEur === "number"
+              ? body.perPaxAdultEur
+              : body.perPaxAdultEur != null
+                ? Number(body.perPaxAdultEur) || null
+                : null,
           amountFormatted: body.amountFormatted ?? null,
           bookingRef: body.bookingRef ?? sessionId,
-          
+
           receiptUrl: body.receiptUrl ?? null,
           bookingStatusUrl: body.bookingStatusUrl ?? null,
           pickup: body.pickup ?? null,
         };
+
 
         const result = await sendTransactionalInternal({
           templateName: "checkout-receipt",

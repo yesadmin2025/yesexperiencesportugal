@@ -19,13 +19,81 @@ export interface CheckoutReceiptProps {
   bookingType?: "signature" | "builder" | "moment" | string | null;
   dateExact?: string | null;
   guests?: number | null;
+  /** Adults 18+. When present alongside `minorAges`, the receipt renders
+   *  the full composition breakdown (Adults · Youth · Child · Infant). */
+  adults?: number | null;
+  minorAges?: number[] | null;
+  /** Per-adult EUR at the resolved tier — used to compute band subtotals.
+   *  When absent, only qty rows are shown, no per-band euro amounts. */
+  perPaxAdultEur?: number | null;
   amountFormatted?: string | null;
   bookingRef?: string | null;
-  
+
   receiptUrl?: string | null;
   bookingStatusUrl?: string | null;
   pickup?: string | null;
 }
+
+type CompositionRow = {
+  key: string;
+  label: string;
+  qty: number;
+  unitEur: number | null;
+  subtotalEur: number | null;
+};
+
+function ageBand(age: number): "youth" | "child" | "infant" | null {
+  if (!Number.isInteger(age) || age < 0 || age > 17) return null;
+  if (age >= 11) return "youth";
+  if (age >= 3) return "child";
+  return "infant";
+}
+
+function buildCompositionRows(
+  adults: number,
+  minorAges: number[],
+  perPaxAdultEur: number | null,
+): CompositionRow[] {
+  const rows: CompositionRow[] = [];
+  if (adults > 0) {
+    rows.push({
+      key: "adults",
+      label: `Adult${adults === 1 ? "" : "s"} (18+)`,
+      qty: adults,
+      unitEur: perPaxAdultEur,
+      subtotalEur: perPaxAdultEur != null ? Math.round(perPaxAdultEur * adults) : null,
+    });
+  }
+  const grouped: Record<"youth" | "child" | "infant", number[]> = {
+    youth: [],
+    child: [],
+    infant: [],
+  };
+  for (const a of minorAges) {
+    const b = ageBand(a);
+    if (b) grouped[b].push(a);
+  }
+  const pct = { youth: 0.75, child: 0.5, infant: 0 } as const;
+  const nameFor = { youth: "Youth (11–17)", child: "Child (3–10)", infant: "Infant (0–2, free)" } as const;
+  (["youth", "child", "infant"] as const).forEach((band) => {
+    const ages = grouped[band];
+    if (ages.length === 0) return;
+    const unit = perPaxAdultEur != null ? Math.round(perPaxAdultEur * pct[band]) : null;
+    rows.push({
+      key: band,
+      label: `${nameFor[band]} · ages ${ages.join(", ")}`,
+      qty: ages.length,
+      unitEur: unit,
+      subtotalEur: unit != null ? unit * ages.length : null,
+    });
+  });
+  return rows;
+}
+
+function formatEurInline(n: number): string {
+  return `€${Math.round(n).toLocaleString("en-GB")}`;
+}
+
 
 const TEAL = "#295B61";
 const GOLD = "#C9A96A";
@@ -59,6 +127,9 @@ const CheckoutReceipt = ({
   bookingType,
   dateExact,
   guests,
+  adults,
+  minorAges,
+  perPaxAdultEur,
   amountFormatted,
   bookingRef,
   receiptUrl,
@@ -67,6 +138,12 @@ const CheckoutReceipt = ({
 }: CheckoutReceiptProps) => {
   const firstName = customerName ? customerName.split(" ")[0] : null;
   const g = guests ?? 2;
+  const hasComposition =
+    typeof adults === "number" && adults >= 1 && Array.isArray(minorAges);
+  const compositionRows: CompositionRow[] = hasComposition
+    ? buildCompositionRows(adults!, minorAges ?? [], perPaxAdultEur ?? null)
+    : [];
+  const hasMinors = hasComposition && (minorAges ?? []).length > 0;
   return (
     <Html lang="en" dir="ltr">
       <Head />
@@ -92,8 +169,21 @@ const CheckoutReceipt = ({
             <Text style={cardLabel}>Date</Text>
             <Text style={cardValue}>{formatDate(dateExact)}</Text>
             <Hr style={hr} />
-            <Text style={cardLabel}>Guests</Text>
-            <Text style={cardValue}>{`${g} ${g === 1 ? "guest" : "guests"}`}</Text>
+            <Text style={cardLabel}>{hasMinors ? "Travellers" : "Guests"}</Text>
+            {hasMinors ? (
+              <>
+                {compositionRows.map((row) => (
+                  <Text key={row.key} style={cardValue}>
+                    {`${row.qty} × ${row.label}`}
+                    {row.subtotalEur != null && row.unitEur != null
+                      ? ` — ${formatEurInline(row.unitEur)} each · ${formatEurInline(row.subtotalEur)}`
+                      : ""}
+                  </Text>
+                ))}
+              </>
+            ) : (
+              <Text style={cardValue}>{`${g} ${g === 1 ? "guest" : "guests"}`}</Text>
+            )}
             {pickup ? (
               <>
                 <Hr style={hr} />
@@ -108,6 +198,7 @@ const CheckoutReceipt = ({
                 <Text style={cardValueLg}>{amountFormatted}</Text>
               </>
             ) : null}
+
             {bookingRef ? (
               <>
                 <Hr style={hr} />

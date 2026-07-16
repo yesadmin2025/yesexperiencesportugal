@@ -27,6 +27,7 @@ import {
   INSTANT_CONFIRMATION,
   
 } from "@/content/signature-day-copy";
+import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import { cn } from "@/lib/utils";
@@ -108,6 +109,13 @@ export interface FinalRevealStoryProps {
   readonly selectedAddOns: SelectedAddOnSummary["items"];
   readonly perPaxEur: number | null;
   readonly totalEur: number | null;
+  /**
+   * Canonical age-banded per-traveller lines from `useResolvedJourney`.
+   * When present, the inclusions drawer renders one row per adult/child
+   * with the band-adjusted unit price before the total. Null → adults-only
+   * flat pricing.
+   */
+  readonly journeyLines?: import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[] | readonly import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[] | null;
   readonly onContinue: () => void;
   readonly onSaveSignature: () => void;
   readonly onBack: () => void;
@@ -122,6 +130,7 @@ export interface FinalRevealStoryProps {
    */
   readonly composedStops?: ReadonlyArray<{ label: string; story: string }>;
 }
+
 
 function formatEur(n: number | null): string {
   if (n == null || !Number.isFinite(n)) return "—";
@@ -150,6 +159,7 @@ export function FinalRevealStory({
   selectedAddOns,
   perPaxEur,
   totalEur,
+  journeyLines,
   onContinue,
   onSaveSignature,
   onBack,
@@ -158,6 +168,7 @@ export function FinalRevealStory({
   testId,
   composedStops,
 }: FinalRevealStoryProps) {
+
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your private Portugal day";
 
@@ -473,6 +484,12 @@ export function FinalRevealStory({
               </ul>
             </div>
           ) : null}
+          <PriceBreakdownRows
+            journeyLines={journeyLines ?? null}
+            label="Travellers"
+            testId="studio-v3-reveal-price-breakdown"
+          />
+
           <div
             className="pt-3 border-t flex justify-between items-baseline"
             style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}

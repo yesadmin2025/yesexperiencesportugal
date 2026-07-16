@@ -25,6 +25,7 @@ import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { cn } from "@/lib/utils";
+import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 
 // One Stripe instance per publishable key, memoized across renders.
 const stripeCache = new Map<string, Promise<Stripe | null>>();
@@ -46,6 +47,15 @@ export interface CheckoutSummaryProps {
   readonly adults?: number | null;
   readonly minorAges?: readonly number[];
   /**
+   * Canonical age-banded per-traveller lines from `useResolvedJourney`.
+   * When present, the summary itemises adults + each minor with the
+   * band-adjusted unit price above the additions block.
+   */
+  readonly journeyLines?:
+    | import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[]
+    | readonly import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[]
+    | null;
+  /**
    * Stops the traveller was shown on refine. Same priority the reveal uses:
    * editedRoutePoints → composedStops → tour.stops. Guarantees the checkout
    * stops match the refine page exactly.
@@ -61,6 +71,7 @@ export interface CheckoutSummaryProps {
   readonly className?: string;
   readonly testId?: string;
 }
+
 
 function formatEur(n: number | null): string {
   if (n == null || !Number.isFinite(n)) return "—";
@@ -93,6 +104,7 @@ export function CheckoutSummary({
   totalEur,
   adults = null,
   minorAges = [],
+  journeyLines = null,
   composedStops,
   submitting = false,
   onEditGuestDetails,
@@ -200,6 +212,12 @@ export function CheckoutSummary({
             </ul>
           </div>
         ) : null}
+
+        <PriceBreakdownRows
+          journeyLines={journeyLines}
+          label="Travellers"
+          testId="studio-v3-checkout-summary-price-breakdown"
+        />
 
         {selectedAddOns.length > 0 ? (
           <div
