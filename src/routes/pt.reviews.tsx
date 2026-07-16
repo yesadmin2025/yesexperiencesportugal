@@ -21,6 +21,7 @@ import {
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { findTour } from "@/data/signatureTours";
 import { SITE_URL } from "@/lib/seo";
+import { filterVisibleReviews } from "@/lib/tour-reviews-filter";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
@@ -150,8 +151,9 @@ function ReviewsPage() {
             statsFn({ data: { tourId: id } }),
             reviewsFn({ data: { tourId: id, limit: 6 } }),
           ]);
-          if (s.total_reviews > 0 || r.length > 0) {
-            out[id] = { stats: s, reviews: r };
+          const visible = filterVisibleReviews(r);
+          if (s.total_reviews > 0 || visible.length > 0) {
+            out[id] = { stats: s, reviews: visible };
           }
         } catch {
           /* skip */

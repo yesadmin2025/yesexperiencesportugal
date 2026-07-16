@@ -16,6 +16,7 @@ import {
   type TourStats,
 } from "@/lib/reviews.functions";
 import { getViatorMeta } from "@/data/signatureToursViator";
+import { filterVisibleReviews } from "@/lib/tour-reviews-filter";
 
 const SOURCE_LABEL: Record<string, string> = {
   viator: "Viator",
@@ -100,7 +101,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
         is_first_party: false,
         source_url: meta!.viatorUrl,
       }))
-    : reviews.map((r) => ({ ...r, source_url: null }));
+    : filterVisibleReviews(reviews).map((r) => ({ ...r, source_url: null }));
 
 
   return (

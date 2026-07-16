@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
@@ -37,6 +37,15 @@ export const Route = createFileRoute("/pt/day-tours")({
           { name: "Início", path: "/pt" },
           { name: "Experiências de um Dia", path: "/pt/day-tours" },
         ]),
+      ),
+      jsonLdScript(
+        itemListLd({
+          name: "Tours privados de um dia a partir de Lisboa",
+          path: "/pt/day-tours",
+          items: signatureTours
+            .filter((t) => !/days?/i.test(t.duration) || /half|full|long/i.test(t.duration))
+            .map((t) => ({ id: t.id, name: t.title, description: t.blurb, image: t.img })),
+        }),
       ),
     ],
   }),

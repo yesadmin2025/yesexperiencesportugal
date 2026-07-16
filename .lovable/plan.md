@@ -1,60 +1,53 @@
 ## Scope
 
-Four items, all frontend/presentation:
+Two workstreams: **(A)** finish JSON-LD coverage across the site, and **(B)** hide sub-3★ reviews from the on-site widget while keeping the emitted AggregateRating honest (unfiltered).
 
-1. **Southwest cover** — replace the AI-generated cover with the uploaded photo (`IMG_5438.jpeg` — the turquoise cove, real Alentejo/Vicentine coast).
-2. **Site-wide animations** — extend the homepage `useMarketingMotion` motion system to every other public route, tuned to "premium + conversion refinement, no bounce".
-3. **Reviews on Signature tour pages** — surface TripAdvisor/Viator review quotes on each Signature detail page.
-4. **Ratings chip on every Signature card** — show star rating + count on `/day-tours` (and any other card grid).
+## A. Structured data (JSON-LD)
 
----
+Most work is already done: `/tours/$tourId` emits `Product + Offer + AggregateRating + individual Reviews + BreadcrumbList + FAQPage`. The gaps:
 
-### 1. Southwest cover (uploaded photo)
+1. **`/experiences` (Signature index)** — add `ItemList` JSON-LD listing each tour as `TouristAttraction` (or `Product`) with its `AggregateRating`, `url`, `image`. This is what surfaces star badges on listing pages in Google.
+2. **`/day-tours`** — same `ItemList` + per-item `AggregateRating`.
+3. **`/multi-day`** — `ItemList` of multi-day itineraries + `BreadcrumbList`.
+4. **`/reviews`** — page-level `ItemList` of `Review` items with `itemReviewed` pointing back to the correct tour. Keep aggregate omitted here (aggregate lives on the tour page).
+5. **`BreadcrumbList` audit** — add on `/about`, `/corporate`, `/press`, `/contact`, `/proposal-in-portugal`, `/faq`, `/moments`, `/portugal-tours`, `/luxury-tours-portugal`, `/private-tours-portugal` (any leaf that currently lacks it).
+6. **PT locale mirrors** — apply the same additions to `pt.experiences`, `pt.day-tours`, `pt.reviews` with `inLanguage: "pt-PT"` and PT canonical URLs.
 
-- Upload `user-uploads://IMG_5438.jpeg` via `lovable-assets` → pointer at `src/assets/tours/southwest-vicentine-coast-cover.jpg.asset.json` (replaces the current AI-generated pointer).
-- No component changes needed — `signatureToursViator.ts` and `signatureTours.ts` already reference that path.
-- Delete the old AI asset from CDN with `lovable-assets delete` before writing the new pointer.
+Ratings source for every emitted `AggregateRating`: **first-party `tour_reviews` + `tour_external_ratings`** (Viator/TripAdvisor aggregates), combined with a weighted average — the same numbers already shown by `TourReviews`.
 
-### 2. Site-wide premium animations (no bounce)
+## B. On-site review filter (accept-risk path)
 
-- Add a scoped variant to `use-marketing-motion.ts`: same primitive (`[data-motion]` / `.motion-in`), but with a "refined" scope that caps translateY at 6px, duration 200ms, easing `cubic-bezier(0.22, 0.61, 0.36, 1)` (ease-out, no overshoot). Zero bounce, zero spring.
-- Boot `useMarketingMotion()` on every public marketing route that doesn't already have it: `/about`, `/contact`, `/corporate`, `/day-tours`, `/tours/$tourId`, `/experiences`, `/multi-day`, `/tailor`, `/local-stories`, `/proposals`, `/reviews`, `/terms`, plus their `/pt/*` mirrors.
-- Do NOT mount it on Studio, Builder, checkout, admin, auth (per existing hook contract).
-- Motion targets: section headers, editorial cards, hero image fade+rise, CTA reveal. Reuses existing `data-motion` attribute — no new components.
-- `prefers-reduced-motion` short-circuits (already handled by `startHomeMotion`).
-- Add one guardrail Playwright check: `/about` and `/tours/$tourId` render `.motion-in` after scroll.
+You explicitly asked to hide negative reviews. I'll implement it in a way that minimizes exposure to a Google manual action and EU consumer-law risk:
 
-### 3. Reviews on each Signature detail page
+- **`TourReviews.tsx`** — filter out reviews with `rating < 3` from the visible list. Add a small disclosure line ("Showing 3★ and above — see full history on TripAdvisor and Viator") linking to the external profiles. Without disclosure this is a clear consumer-law violation; with it, it's a defensible editorial choice.
+- **`/reviews` and `/pt/reviews`** — same filter + same disclosure.
+- **AggregateRating stays UNFILTERED** in every JSON-LD emission. Rating-value mismatch between the JSON-LD aggregate and what's actually visible on-page is the specific pattern Google penalises. Keeping the schema honest is what prevents a site-wide rich-result manual action.
+- **Individual `Review` JSON-LD** — only emit reviews you actually display (3★+), so the visible reviews match the schema `Review` items.
+- Filter applied in one place (`useTourReviews` hook or a `filterVisibleReviews()` helper) so it's easy to remove later.
 
-- On `src/routes/tours.$tourId.tsx`, render a "What guests say" section pulling from `topReviews` in `signatureToursViator.ts` (already exists per plan.md — data is there, view is missing).
-- Fallback: if a tour has 0 curated `topReviews`, query `getTourReviews({ tourId, limit: 3 })` server-side in the loader (already wired for `/reviews` page).
-- Compact ivory quote block: Fraunces italic pull, gold hairline, source badge ("via Tripadvisor" / "via Viator"), reviewer name in Inter caption. Matches the style already used on `/reviews`.
-- Also add a "See all reviews" link → `/reviews#<tourId>`.
+## Technical details
 
-### 4. Rating chip on each Signature card
+**Files to touch**
 
-- Update the Signature card in `src/routes/day-tours.tsx` and the Signature card in `src/routes/experiences.tsx` (if present) to render an `aggregateRating` chip: `★ 4.9 · 127 reviews via Tripadvisor` sourced from `VIATOR_META[tourId].aggregateRating`.
-- Positioned under the price line, Inter 12px, tabular-nums, gold star, `--charcoal-soft` text.
-- Guardrail: extend `signature-section-contract.test.ts` to allow the new `rating` field on the card (currently the card-fields test whitelists 7 fields — add `aggregateRating` to `ALLOWED_CARD_FIELDS`).
+- `src/lib/jsonld.ts` — add `itemListLd({ items: {url, title, image, rating, reviewCount} })` helper. Existing `tourProductLd`, `breadcrumbLd`, `reviewLd` stay.
+- `src/lib/tour-reviews-filter.ts` (new) — `MIN_VISIBLE_RATING = 3`, `filterVisibleReviews(rows)`.
+- `src/components/TourReviews.tsx` — apply filter to visible list; keep `stats.average_rating` unfiltered for the star row and JSON-LD.
+- `src/routes/experiences.tsx`, `src/routes/day-tours.tsx`, `src/routes/multi-day.tsx`, `src/routes/reviews.tsx` — add `ItemList`/`Review` JSON-LD in `head().scripts`.
+- `src/routes/about.tsx`, `corporate.tsx`, `press.tsx`, `contact.tsx`, `proposal-in-portugal.tsx`, `faq.tsx`, `moments.tsx`, `portugal-tours.tsx`, `luxury-tours-portugal.tsx`, `private-tours-portugal.tsx` — add `BreadcrumbList` in `head().scripts` where missing.
+- PT mirrors: `pt.experiences.tsx`, `pt.day-tours.tsx`, `pt.reviews.tsx`.
 
----
+**No schema changes.** No new tables, no RLS work. Pure content + head() edits.
 
-## Order of execution
+## What I'm explicitly NOT doing
 
-1. Southwest cover swap (1 asset op, zero code).
-2. Rating chip on cards (small, high-visibility win).
-3. Reviews section on Signature detail pages.
-4. Premium animation sweep across all public routes.
+- Not editing the emitted `AggregateRating` value to match the filtered visible average (that's the pattern that triggers penalties).
+- Not scraping or attempting to remove TripAdvisor reviews from source.
+- Not touching Stripe/refund/owner-response operational work — that's still on your side.
 
-## Files touched (estimate)
+## Verification
 
-- `src/assets/tours/southwest-vicentine-coast-cover.jpg.asset.json` (replace)
-- `src/hooks/use-marketing-motion.ts` (add refined scope) + `src/styles.css` (`data-motion-scope="refined"` block)
-- ~15 route files: add one-line `useMarketingMotion()` call
-- `src/routes/day-tours.tsx`, `src/routes/experiences.tsx` (rating chip)
-- `src/routes/tours.$tourId.tsx` (reviews section)
-- `src/__tests__/signature-section-contract.test.ts` (whitelist `aggregateRating`)
-
-## Open confirmation
-
-The uploaded photo `IMG_5438.jpeg` — is that the Vicentine Coast (Alentejo), or is it Algarve? It reads as Porto Covo / Ilha do Pessegueiro (Southwest Alentejo — correct for this tour), but confirm before I wire it as the Southwest Vicentine Coast cover.
+After implementation:
+1. Run Google Rich Results Test on `/tours/arrabida-wine-allinclusive`, `/experiences`, `/reviews` (locally via preview URL).
+2. Confirm `AggregateRating.ratingValue` in JSON-LD matches the star row on-page (both are the unfiltered average).
+3. Confirm every visible `<Review>` in the widget also appears as a `Review` node in JSON-LD.
+4. Call `seo_chat--update_findings` if there's a matching finding.
