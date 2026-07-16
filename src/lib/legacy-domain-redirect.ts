@@ -64,8 +64,8 @@ export const LEGACY_REDIRECT_MAP: Readonly<Record<string, string>> = {
   "/blog": "/local-stories",
 
   // Commercial pages
-  "/proposal": "/proposal-in-portugal",
-  "/proposals": "/proposal-in-portugal",
+  // /proposal(s) intentionally NOT mapped: /proposals is a live route on
+  // the canonical origin that reuses the /proposal-in-portugal component.
   "/corporate": "/corporate",
   "/press": "/press",
 
