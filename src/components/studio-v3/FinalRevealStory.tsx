@@ -28,6 +28,7 @@ import {
   
 } from "@/content/signature-day-copy";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
+import { PerPersonBands } from "@/components/checkout/PerPersonBands";
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import { cn } from "@/lib/utils";
@@ -401,14 +402,16 @@ export function FinalRevealStory({
           >
             {formatEur(totalEur)}
           </p>
-          {perPaxEur != null ? (
-            <p
-              className="mt-1.5 text-[11px] font-semibold tabular-nums"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 66%, transparent)" }}
-            >
-              {formatEur(perPaxEur)} per person
-            </p>
-          ) : null}
+          <div
+            className="mt-1.5 text-[11px] font-semibold tabular-nums leading-[1.7]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 66%, transparent)" }}
+          >
+            <PerPersonBands
+              journeyLines={journeyLines}
+              adultUnitEur={perPaxEur}
+              testId="studio-v3-reveal-final-per-person"
+            />
+          </div>
         </div>
       ) : null}
 
@@ -502,12 +505,17 @@ export function FinalRevealStory({
               style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
             >
               {formatEur(totalEur)}
-              {perPaxEur != null ? (
-                <span className="ml-2 text-[11px] uppercase tracking-[0.2em]" style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}>
-                  · {formatEur(perPaxEur)} / guest
-                </span>
-              ) : null}
             </span>
+          </div>
+          <div
+            className="flex justify-end text-[11px] uppercase tracking-[0.2em] text-right leading-[1.6]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          >
+            <PerPersonBands
+              journeyLines={journeyLines}
+              adultUnitEur={perPaxEur}
+              testId="studio-v3-reveal-inclusions-per-person"
+            />
           </div>
         </div>
       </details>

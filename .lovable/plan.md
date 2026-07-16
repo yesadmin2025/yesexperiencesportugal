@@ -1,53 +1,59 @@
-## Final Pre-Launch QA & Correction Pass
+## Fixes
 
-Scope: exhaustive audit + safe corrections across Signature, Tailor, Studio, checkout, pricing, composition, responsive, motion. No new features, no redesign, no SEO.
+Three bugs, all on the Studio + Tailor checkout surfaces. No pricing math changes on the backend — the edge function already computes age-banded totals correctly. All three fixes are in the presentation + call layer.
 
-### Phase 1 — Read-only audit (no code changes)
+### 1. Kill the blended "€X / guest" per-person line
 
-Build a written findings register before touching code. Deliverable per finding: severity (CRITICAL/HIGH/MED/LOW), file path, reproduction, proposed fix, risk.
+Root cause: `useResolvedJourney` computes `perPaxEur = totalEur / guests`, which averages adults + children into a meaningless number. That value is then labelled "per person" / "/ guest" in `FinalRevealStory`, `CheckoutSummary`, `SignaturePriceCard`, and tailor's `/ pp` line.
 
-1. **Product-mode integrity** — trace `flow: 'signature' | 'tailor' | 'studio'` from selection → resolved journey → `create-signature-checkout` payload → Stripe metadata → confirmation. Files: `useResolvedJourney.ts`, `SignaturePriceCard.tsx`, `create-signature-checkout/index.ts`, tour detail + tailor + Studio V3 reveal.
-2. **Traveller composition** — audit every entry surface (`SimpleBookingForm`, tailor, `GuestDetails`, checkout drawer, resume) uses `TravellerComposition {adults, minorAges[]}` end-to-end. Look for legacy `guests`-only leaks via `hydrateLegacyComposition`.
-3. **Child pricing truth** — cross-check `signatureTourPricing.ts` age bands (adult 100 / youth 75 / child 50 / infant 0), `tour_price_tiers`, `tour_available_add_ons` child rules. Flag any tour/add-on where child rule is missing → must surface "manual confirmation" not silent adult price.
-4. **Single source of truth** — grep for `* guests`, `* adults`, `priceFrom *`, `Math.round(.../guests)` outside `useResolvedJourney`. Any independent recompute in cards/Refine/Story/summary/checkout is a finding.
-5. **Per-person display** — locate every "per person / pp / /guest" label. Rule: mixed adult+child parties must show "Average per guest" OR split OR hide. Flag every unlabeled adult-price-as-per-person.
-6. **Live reactivity** — Playwright: change adults, add minor, edit age, toggle add-on, swap winery → assert total/breakdown/checkout drawer update in same frame.
-7. **Checkout server authority** — verify `stripe-session-status` / `create-signature-checkout` recomputes server-side and client blocks on mismatch. Currently unknown — audit and add guard if missing.
-8. **Checkout responsive fit** — Playwright screenshots at 375/390/430/768/1024/1280/1440 on `/checkout/$token`. Check modal width, sticky CTA reachability, Stripe element cropping, keyboard-obscured fields (mobile emulation).
-9. **Route-wide responsive** — same viewport matrix across Signature listing, detail, Tailor, Studio questionnaire/map/Refine/Story, summary, confirmation. Screenshot diff, flag overflow / word-per-line wraps / shrunk-to-hide-problem typography.
-10. **Motion QA** — with the recent marketing-motion elevation (18px/4px blur/420ms), sweep every public route for: replay loops, layout shift, hidden-after-failed-observer, mobile transform breaks, `prefers-reduced-motion` respect.
-11. **CTAs & navigation** — grep for stale "Make it yours" in Signature contexts, dead buttons, hover-only mobile states, duplicated submit handlers.
-12. **State persistence** — back nav, refresh, Tailor edits, Studio refinements, checkout return, payment retry — confirm no dropped minors/stops/add-ons via draft persistence layer (`useBuilderPersistence`, `studio_drafts`).
-13. **Edge cases** — 0 adults, missing/invalid child age, unavailable add-on/winery, over-duration route, stale quote, payment fail/cancel, network drop, double-click, back-during-checkout. Confirm each produces a customer-facing message.
-14. **Frontend hygiene** — dev-server + Playwright console for React warnings, hydration mismatches, missing keys, failed assets, listener leaks.
+Fix:
 
-Tools used in Phase 1: `rg`, `code--view`, Playwright scripts under `/tmp/browser/`, `bunx vitest run` for the existing add-on/pricing/reveal suites, `supabase--read_query` for tier + add-on rows.
+- In `useResolvedJourney`, stop returning a blended `perPaxEur`. Instead expose:
+  - `adultUnitEur` — unit price for the Adult band (from `journeyLines`)
+  - `childUnitEur` — the highest minor-band unit (Youth/Child/Infant, whichever exists in `journeyLines`), or `null` when there are no minors
+  - Keep `perPaxEur` **only** as a fallback for legacy adults-only bookings (no composition) — computed as `adult unit`, not a blended average.
+- Update the four display sites to render two lines when children are present:
+  - `€250 / adult`
+  - `€125 / child` (only when `minorAges.length > 0`)
+  - When multiple minor bands are present (Youth + Child + Infant), show each on its own line using the same treatment.
+- Surfaces touched: `FinalRevealStory.tsx` (lines ~404, 505), `CheckoutSummary.tsx` (line ~292), `SignaturePriceCard.tsx` (lines ~706, 997, 1115), `tours.$tourId.tailor.tsx` (line ~1403).
+- Reuse `<PriceBreakdownRows />` styling tokens for consistency; this is a compact 1–3 line label block, not the full itemised breakdown.
 
-### Phase 2 — Safe corrections
+### 2. Studio "Checkout Summary total ≠ Stripe amount"
 
-Only after the register is complete. Grouped by risk:
+Root cause: `StudioV3.tsx` (line ~945) invokes `create-signature-checkout` with `adults` / `minorAges` **only when composition is present in the current state**, otherwise falls back to `details.adults` / `details.minorAges`. In some flows the summary renders using `state.adults + state.minorAges` (via `useResolvedJourney`) while the checkout call sends `details.*`, so Stripe recomputes against a different composition and returns a different amount.
 
-- **A. Non-controversial fixes** (typos, unlabeled per-person → "Average per guest", missing `aria-label`, mobile overflow via `min-w-0`/`shrink-0`, listener cleanup, missing keys, motion replay guards).
-- **B. Pricing display fixes** — route every remaining recompute through `useResolvedJourney`. Add "manual confirmation" state where child pricing is missing rather than silent adult fallback.
-- **C. Checkout guardrails** — client refuses submit when local `resolvedQuote.total !== serverQuote.total`; show refresh CTA. Only added if audit shows the guard missing.
-- **D. Responsive fixes** — grid `[minmax(0,1fr)_auto]`, `min-w-0`, `shrink-0`, sticky-CTA lift already at 72px; extend where audit finds overlap. No typography shrink-to-fit.
-- **E. Motion consistency** — align stragglers to the marketing `data-motion="fade-up"` primitive already standardized. No new keyframes.
+Fix:
 
-Every fix runs through the existing gate suites (`studio-checkout-gate`, hero visual, cta parity, add-on totals, reveal walkthrough) before it's considered done. Baselines are only updated when the audit proves the baseline itself is wrong; otherwise the fix conforms to the baseline.
+- In `StudioV3.tsx` handleCheckout, use exactly the same composition the summary displays: read directly from the same `journeyLines` / `state.adults` / `state.minorAges` that `useResolvedJourney` already returns. Remove the `details.*` fallback branch — if composition is missing at checkout time, block the CTA (defensive) rather than send a mismatched payload.
+- Add a client-side assertion: sum of `line_items` derived from `journeyLines` × units must equal the displayed `totalEur` before the invoke; if not, log and abort with a user-visible retry toast.
+- No edge function changes; the server pricing is authoritative and already correct.
 
-### Phase 3 — Test matrix execution
+### 3. "Review & confirm" step before Stripe on Studio
 
-Playwright-drive the 14 scenarios from §18 against the running dev server, capture screenshots + network payloads (including the Stripe session request body from `instant-booking-checkout` helpers), and record pass/fail per scenario across composition / itinerary / duration / breakdown / total / checkout / confirmation columns.
+Currently the Studio checkout button calls `supabase.functions.invoke("create-signature-checkout", …)` and redirects straight to Stripe. Add one interstitial modal:
 
-### Phase 4 — Final report
+- New component `src/components/studio-v3/ReviewConfirmDialog.tsx`: full-screen sheet on mobile, centered dialog on desktop. Shows:
+  - Tour title + date
+  - Composition ("2 adults · 1 child (8)")
+  - Itemised price breakdown (`<PriceBreakdownRows />`)
+  - Add-ons
+  - Grand total (matches Stripe exactly — see fix #2)
+  - Two buttons: **Back to edit** (ghost) and **Confirm & pay** (primary, gold arrow)
+- CTA in `CheckoutSummary` no longer invokes the edge function directly; it opens the dialog. The dialog's "Confirm & pay" is the only path that calls `create-signature-checkout`.
+- Analytics: fire `studio_review_opened` on open, `studio_review_confirmed` on confirm, `studio_review_dismissed` on back.
+- Reduced-motion safe; brand tokens only; existing `Sheet`/`Dialog` primitives from shadcn.
 
-Return the 17-point report from §20, ending with `READY FOR RELEASE` or `NOT READY FOR RELEASE` + exact blockers.
+Tailor checkout instant without manual review 
 
-### Explicit non-goals
-Approved copy, business rules, child pricing rules, canonical URLs, sitemap, metadata, schema strategy, search, content clusters, backend refactors unrelated to a found bug. No SEO work.
+### Out of scope
 
-### Ask before I start
-This is a multi-hour pass with real potential to touch 30+ files. Two calibration questions:
+- &nbsp;
+- Email templates and receipts (unchanged, already itemised in Turn 2).
+- Backend pricing math.
 
-1. **Correction depth** — should Phase 2 auto-apply all A/B/D/E fixes and only pause for C (checkout server-authority guard, which changes payment flow)? Or pause after Phase 1 register so you approve each severity tier?
-2. **Test matrix coverage** — payment fail/retry (scenario 13) needs Stripe sandbox interaction end-to-end (not just session creation). OK to drive Stripe's test card `4000 0000 0000 0002` through the live sandbox from Playwright, or keep it at "session created + redirect asserted" like the current `instant-booking-checkout.spec.ts`?
+### Verification (after build)
+
+- Playwright: adults-only → single "€X / adult" line, no mismatch.
+- Playwright: 2 adults + 1 child (8) → "€250 / adult" + "€125 / child", summary total = review-dialog total = Stripe amount metadata.
+- Playwright: Confirm & pay path reaches Stripe; Back to edit returns to summary with state intact.
