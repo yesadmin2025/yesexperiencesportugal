@@ -146,8 +146,8 @@ export function CinematicHero() {
       {/* ── Centered stanza ─────────────────────────────────────────── */}
       <div className="absolute inset-0 z-10 flex items-start justify-center pt-[30vh] sm:items-center sm:pt-0 px-6 sm:px-10 md:px-16">
         <div className="text-center">
-          <p
-            className="font-serif italic font-normal"
+          <h1
+            className="font-serif italic font-normal m-0"
             style={{
               fontFamily: 'Georgia, "Cormorant Garamond", "Newsreader", serif',
               fontWeight: 400,
@@ -164,8 +164,8 @@ export function CinematicHero() {
               transition: `opacity ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), transform ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1), filter ${FADE_MS}ms cubic-bezier(0.22,0.61,0.36,1)`,
             }}
           >
-            {HERO_PHRASES[0]}
-          </p>
+            {HERO_PHRASES[0]} {HERO_PHRASES[1]}
+          </h1>
           <p
             className="font-serif italic font-normal mt-3 sm:mt-4"
             style={{
@@ -252,10 +252,10 @@ export function CinematicHero() {
 
       {/* ── SR-only / SSR probes — keep HERO_COPY locks happy ──────── */}
       <div className="sr-only">
-        <h1 className="hero-h1">
+        <div className="hero-h1">
           <span data-hero-field="headlineLine1">{HERO_COPY.headlineLine1}</span>{" "}
           <span data-hero-field="headlineLine2">{HERO_COPY.headlineLine2}</span>
-        </h1>
+        </div>
         <p data-hero-field="eyebrow">{HERO_COPY.eyebrow}</p>
         <p data-hero-field="subheadline">{HERO_COPY.subheadline}</p>
         <p data-hero-field="microcopy">{HERO_COPY.microcopy}</p>
