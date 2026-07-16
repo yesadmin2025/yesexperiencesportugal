@@ -158,6 +158,7 @@ export function FinalRevealStory({
   selectedAddOns,
   perPaxEur,
   totalEur,
+  journeyLines,
   onContinue,
   onSaveSignature,
   onBack,
@@ -166,6 +167,7 @@ export function FinalRevealStory({
   testId,
   composedStops,
 }: FinalRevealStoryProps) {
+
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your private Portugal day";
 
