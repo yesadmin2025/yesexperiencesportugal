@@ -33,6 +33,7 @@ import {
 
   type CheckoutJourneyLine,
 } from "@/lib/checkout/journeyDisplay";
+import { PerPersonBands, bandRowsFromJourney } from "@/components/checkout/PerPersonBands";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { getSignatureOptionalAddOns } from "@/lib/tailor-chapters";
 import { MountBadge } from "./useStudioDebug";
@@ -690,22 +691,43 @@ export function SignaturePriceCard({
                   ? `For ${partyCount} ${partyCount === 1 ? "guest" : "guests"}`
                   : "Per guest")}
             </p>
-            <p
-              data-testid="studio-v3-base-price"
-              data-eur={priceEur ?? ""}
-              data-per-pax-eur={perPersonDerived ?? ""}
-              data-per-pax-real={realPerPax?.real ? "true" : "false"}
-              className="mt-1 text-[40px] leading-none font-bold tabular-nums"
-              style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
-            >
-              €{perPersonDerived ?? priceEur}
-              <span
-                className="ml-1.5 align-middle text-[13px] font-semibold uppercase tracking-[0.18em]"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
-              >
-                / guest
-              </span>
-            </p>
+            {(() => {
+              const bands = bandRowsFromJourney(journeyLines);
+              const adultUnit = bands.length > 0
+                ? bands.find((b) => b.band === "adult")?.unitEur ?? priceEur
+                : (perPersonDerived ?? priceEur);
+              return (
+                <>
+                  <p
+                    data-testid="studio-v3-base-price"
+                    data-eur={priceEur ?? ""}
+                    data-per-pax-eur={perPersonDerived ?? ""}
+                    data-per-pax-real={realPerPax?.real ? "true" : "false"}
+                    className="mt-1 text-[40px] leading-none font-bold tabular-nums"
+                    style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+                  >
+                    €{adultUnit}
+                    <span
+                      className="ml-1.5 align-middle text-[13px] font-semibold uppercase tracking-[0.18em]"
+                      style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+                    >
+                      / adult
+                    </span>
+                  </p>
+                  {bands.filter((b) => b.band !== "adult").length > 0 ? (
+                    <p
+                      className="mt-1 text-[11.5px] font-semibold uppercase tracking-[0.2em] tabular-nums"
+                      style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                    >
+                      {bands
+                        .filter((b) => b.band !== "adult")
+                        .map((b) => `€${b.unitEur} / ${b.label}`)
+                        .join(" · ")}
+                    </p>
+                  ) : null}
+                </>
+              );
+            })()}
             {partyTotalEur != null && partyCount != null ? (
               <p
                 data-testid="studio-v3-party-total"
