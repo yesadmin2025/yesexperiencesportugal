@@ -11,6 +11,8 @@ import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { buildLocaleUrl } from "@/i18n/config";
 import { itemListLd, jsonLdScript, studioServiceLd } from "@/lib/jsonld";
 
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+
 /**
  * Portuguese homepage (`/pt`). Editorial European Portuguese, mirroring
  * the completed PT surface: Signature → Studio (EN) → Multi-day paths,
@@ -75,6 +77,7 @@ const FEATURED = FEATURED_IDS.map((id) => signatureTours.find((t) => t.id === id
 );
 
 function PtHomePage() {
+  useMarketingMotion();
   const { resolveImg } = useImportedTourImages();
 
   return (

@@ -1,74 +1,60 @@
 ## Scope
 
-Ten items across copy, NAP, media, and SEO. Grouped into three passes.
+Four items, all frontend/presentation:
+
+1. **Southwest cover** — replace the AI-generated cover with the uploaded photo (`IMG_5438.jpeg` — the turquoise cove, real Alentejo/Vicentine coast).
+2. **Site-wide animations** — extend the homepage `useMarketingMotion` motion system to every other public route, tuned to "premium + conversion refinement, no bounce".
+3. **Reviews on Signature tour pages** — surface TripAdvisor/Viator review quotes on each Signature detail page.
+4. **Ratings chip on every Signature card** — show star rating + count on `/day-tours` (and any other card grid).
 
 ---
 
-### Pass A — Copy & NAP
+### 1. Southwest cover (uploaded photo)
 
-**1. WhatsApp prefill PT → EN (legacy pages)**
-The exact PT string "Olá! Estou a montar a minha experiência e gostaria de uma sugestão." does not exist in the repo (grep for `Estou a montar` = 0 hits). The only Portuguese prefill on an English-language surface is in `src/routes/pt.contact.tsx:66`: `"Olá! Gostaria de saber mais sobre uma experiência YES."` — but that's a `/pt/*` route (correct locale). All English-language WhatsApp CTAs already route through `whatsappUrl()` with English messages (verified in `index.tsx`, `TrustStrip.tsx`, `WhatsAppSupportButton.tsx`, `SimpleTailorForm.tsx`, `builder/types.ts`, `multi-day.tsx`, `about.tsx`, `tailor.tsx`).
+- Upload `user-uploads://IMG_5438.jpeg` via `lovable-assets` → pointer at `src/assets/tours/southwest-vicentine-coast-cover.jpg.asset.json` (replaces the current AI-generated pointer).
+- No component changes needed — `signatureToursViator.ts` and `signatureTours.ts` already reference that path.
+- Delete the old AI asset from CDN with `lovable-assets delete` before writing the new pointer.
 
-Action: run one more targeted sweep of `/contact`, `/proposals`, `/local-stories` route files + `WhatsAppFab.tsx` / `whatsapp-messages.ts` builders to confirm every English-surface prefill uses the exact target string `"Hi YES — I'd like a hand planning my day in Portugal."` and normalize any drift (e.g. `index.tsx` currently says "planning my Portugal experience"). Leave `/pt/*` routes in Portuguese.
+### 2. Site-wide premium animations (no bounce)
 
-**2. Single NAP (address + phone)**
-`src/config/business-nap.ts` is already the single source: Sesimbra + `+351 911 889 992`. Guardrail test `nap-consistency.test.ts` enforces it. Action: run the test; if it passes, no change. If any component hard-codes a second address/phone, replace with imports from `business-nap.ts`.
+- Add a scoped variant to `use-marketing-motion.ts`: same primitive (`[data-motion]` / `.motion-in`), but with a "refined" scope that caps translateY at 6px, duration 200ms, easing `cubic-bezier(0.22, 0.61, 0.36, 1)` (ease-out, no overshoot). Zero bounce, zero spring.
+- Boot `useMarketingMotion()` on every public marketing route that doesn't already have it: `/about`, `/contact`, `/corporate`, `/day-tours`, `/tours/$tourId`, `/experiences`, `/multi-day`, `/tailor`, `/local-stories`, `/proposals`, `/reviews`, `/terms`, plus their `/pt/*` mirrors.
+- Do NOT mount it on Studio, Builder, checkout, admin, auth (per existing hook contract).
+- Motion targets: section headers, editorial cards, hero image fade+rise, CTA reveal. Reuses existing `data-motion` attribute — no new components.
+- `prefers-reduced-motion` short-circuits (already handled by `startHomeMotion`).
+- Add one guardrail Playwright check: `/about` and `/tours/$tourId` render `.motion-in` after scroll.
 
----
+### 3. Reviews on each Signature detail page
 
-### Pass B — Media
+- On `src/routes/tours.$tourId.tsx`, render a "What guests say" section pulling from `topReviews` in `signatureToursViator.ts` (already exists per plan.md — data is there, view is missing).
+- Fallback: if a tour has 0 curated `topReviews`, query `getTourReviews({ tourId, limit: 3 })` server-side in the loader (already wired for `/reviews` page).
+- Compact ivory quote block: Fraunces italic pull, gold hairline, source badge ("via Tripadvisor" / "via Viator"), reviewer name in Inter caption. Matches the style already used on `/reviews`.
+- Also add a "See all reviews" link → `/reviews#<tourId>`.
 
-**3. Southwest Coast Signature — missing cover photo**
-`southwest-vicentine-coast` gallery in `signatureToursViator.ts` still points at `media.tacdn.com` hotlinks. The tour resolver falls back to a generic when the hotlink 404s/blocks, which is why no cover appears. Action: generate one cinematic Southwest/Vicentine coast cover image via `imagegen` (fast tier, 1600×1000, jpg), place under `src/assets/tours/southwest-vicentine-coast-cover.jpg`, upload via `lovable-assets`, and wire it into the tour's local override (same mechanism the other tours already use — the "when defined AND non-empty, this REPLACES the external Viator" comment at `signatureToursViator.ts:69`).
+### 4. Rating chip on each Signature card
 
-**4. Reviews on each Signature card**
-Signature tour pages currently don't render inline reviews on stop/day cards. Action: on each `tours.$tourId.tsx` page section (and the Signature index cards), render 1–2 top reviews per card using `topReviews` from `signatureToursViator.ts`, styled as a compact ivory quote block (Fraunces italic pull, gold hairline, reviewer name in Inter caption). Fallback to `aggregateRating` chip when a tour has no `topReviews`.
-
-**5. Hotlinked `media.tacdn.com` → own assets**
-~40+ hotlinks across all 8 Signature tours in `signatureToursViator.ts`. Full replacement is a large content op (needs one cover + 4-5 gallery images per tour = ~40 generated images). Given scope, do it in **two sub-batches**:
-
-- B5a (this pass): southwest-vicentine-coast cover + gallery (5 images) — unblocks the visible bug.
-- B5b (follow-up pass, will confirm before starting): remaining 7 tours' galleries.
-
-**6. og:image → `yesexperiencesportugal.com/assets/**`
-Current og:image URLs use Lovable's asset CDN (`/__l5e/assets-v1/...`) prefixed with the canonical domain. Action: move the images that back og:image tags into a stable `/assets/` path served from the site's public folder or via a redirect at `public/_headers`, and update the head() blocks in `about.tsx`, `contact.tsx`, `corporate.tsx`, `terms.tsx`, `studio-v3.tsx`, `pt.*` routes accordingly. Keeps the crawler-visible URL on our domain.
-
----
-
-### Pass C — SEO
-
-**7. Index reviews in Google**
-`/reviews` and `/pt/reviews` already emit `AggregateRating` JSON-LD. To get review-rich results:
-
-- Add `Product` or `Service` JSON-LD with `aggregateRating` + top `review` array on each Signature tour route (`tours.$tourId.tsx`) — this is what Google actually indexes and shows as star ratings.
-- Ensure `/reviews` is in `sitemap.xml` and linked from the footer.
-- Add `Organization` `aggregateRating` on `__root.tsx` so brand SERP shows stars.
+- Update the Signature card in `src/routes/day-tours.tsx` and the Signature card in `src/routes/experiences.tsx` (if present) to render an `aggregateRating` chip: `★ 4.9 · 127 reviews via Tripadvisor` sourced from `VIATOR_META[tourId].aggregateRating`.
+- Positioned under the price line, Inter 12px, tabular-nums, gold star, `--charcoal-soft` text.
+- Guardrail: extend `signature-section-contract.test.ts` to allow the new `rating` field on the card (currently the card-fields test whitelists 7 fields — add `aggregateRating` to `ALLOWED_CARD_FIELDS`).
 
 ---
 
 ## Order of execution
 
-1. **A1 + A2** (copy sweep + NAP guardrail test) — fastest, zero risk.
-2. **B3 + B5a** (Southwest cover + gallery) — user-visible bug.
-3. **B6** (og:image URL migration).
-4. **B4** (reviews on Signature cards).
-5. **C7** (review JSON-LD on Signature routes + Organization aggregate).
-6. **B5b** (remaining 7 tour galleries) — confirm before starting.
+1. Southwest cover swap (1 asset op, zero code).
+2. Rating chip on cards (small, high-visibility win).
+3. Reviews section on Signature detail pages.
+4. Premium animation sweep across all public routes.
 
 ## Files touched (estimate)
 
-- `src/routes/contact.tsx`, `proposals.tsx`, `local-stories.tsx`, `index.tsx` (prefill normalization)
-- `src/routes/about.tsx`, `contact.tsx`, `terms.tsx`, `corporate.tsx`, `studio-v3.tsx`, `pt.*.tsx` (og:image)
-- `src/routes/tours.$tourId.tsx` (reviews section + Product JSON-LD)
-- `src/routes/__root.tsx` (Organization aggregateRating)
-- `src/data/signatureToursViator.ts` (southwest gallery override)
-- `src/assets/tours/southwest-vicentine-coast-*.jpg` (new)
-- Guardrail: run `nap-consistency.test.ts`, add a test asserting no `media.tacdn.com` URLs remain for `southwest-vicentine-coast`.
+- `src/assets/tours/southwest-vicentine-coast-cover.jpg.asset.json` (replace)
+- `src/hooks/use-marketing-motion.ts` (add refined scope) + `src/styles.css` (`data-motion-scope="refined"` block)
+- ~15 route files: add one-line `useMarketingMotion()` call
+- `src/routes/day-tours.tsx`, `src/routes/experiences.tsx` (rating chip)
+- `src/routes/tours.$tourId.tsx` (reviews section)
+- `src/__tests__/signature-section-contract.test.ts` (whitelist `aggregateRating`)
 
-## Open question
+## Open confirmation
 
-Item 5 (all tacdn hotlinks) is the largest chunk — 7 tours × ~5 images = ~35 generated images. Confirm you want AI-generated cinematic imagery for those, or if you'd prefer to upload your own operational photos (recommended per brand guardrails: "real operation/Viator only, never stock"). Default per plan: only do Southwest now, park the other 7 pending your photos.
-
-&nbsp;
-
-Animations on alll the pages !!!!
+The uploaded photo `IMG_5438.jpeg` — is that the Vicentine Coast (Alentejo), or is it Algarve? It reads as Porto Covo / Ilha do Pessegueiro (Southwest Alentejo — correct for this tour), but confirm before I wire it as the Southwest Vicentine Coast cover.

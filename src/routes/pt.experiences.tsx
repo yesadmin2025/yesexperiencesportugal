@@ -13,6 +13,8 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { buildLocaleUrl } from "@/i18n/config";
 
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+
 export const Route = createFileRoute("/pt/experiences")({
   head: () => ({
     meta: [
@@ -71,6 +73,7 @@ export const Route = createFileRoute("/pt/experiences")({
 });
 
 function ExperiencesPage() {
+  useMarketingMotion();
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>
