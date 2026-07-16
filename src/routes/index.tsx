@@ -680,7 +680,7 @@ function HomePage() {
                       >
                         <img
                           src={t.img}
-                          alt={t.title}
+                          alt={`${t.title} — private day tour in ${t.region}, Portugal`}
                           loading="lazy"
                           decoding="async"
                           className="relative z-[1] w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.05]"
