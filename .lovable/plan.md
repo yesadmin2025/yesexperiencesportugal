@@ -1,127 +1,82 @@
-## Goal
+## Scope
 
-Bring pricing transparency, mobile clarity and site-wide craft up to the premium bar — across Studio V3, Signature pages, Tailor form and the rest of the site.
+Two workstreams the user asked for in this turn:
 
----
+**A. Visual consistency pass across inner pages**
 
-## 1. Pickup time (Studio + Signature + Tailor)
+- use real images already sent and in db from team tours for each page matching the content make them high resolution Migrar og:images do bucket Lovable para domínio de produção.
+- Match homepage motion (`.home-energy` sequenced reveals, hover lift, gold sheen) on `/day-tours`, `/experiences`, `/multi-day`, `/about`, `/proposal-in-portugal`, `/corporate`, `/local-stories`, tour detail pages. Update more animations for the site to feel alive but premmium no bouncing and uniform in alll pages
+- Extend the `arrow-nudge` idle motion (already on `CtaButton`) to any remaining inline CTA arrows on inner pages.
 
-Add a shared `PickupTimeField` primitive (`src/components/ui/PickupTimeField.tsx`):
+**B. Site hygiene / SEO fixes**
 
-- Shows a **suggested pickup window** per tour (e.g. "9:00 – 9:30") pulled from tour data (fallback: "8:30 – 9:30").
-- Chip: `Use suggested` (default active) + `Choose a time` toggle → reveals a native `time` input (mobile-friendly).
-- State lives at the composer level; passes into checkout payload as `pickupTime` or `"suggested (window)"`.
+1. `yesexperiences.pt` → `yesexperiencesportugal.com`: audit `src/lib/legacy-domain-redirect.ts` + `src/start.ts` to confirm every path 301s to the canonical apex (and add a wildcard fallback so unmapped paths 301 instead of 410, per user request).
+2. Remove obsolete 301s for `/proposals`, `/contact`, `/local-stories` where the equivalent routes are now active — turn them into real route files (or drop the redirect if the target already exists as a live route).
+3. Global copy fix: replace every `RNAVT` → `RNAAT nº 31/2023`, and correct any `Lisbon`-as-basecity references to `Sesimbra` (only where it refers to the operator's base, not tour pickup/region context).
+4. `/builder` → `/studio-v3`: confirm the redirect exists (it does) and rewrite every internal `to="/builder"` link to `to="/studio-v3"` so we stop bouncing users through a 301.
+5. Unify footer payment badges to one canonical `<PaymentMethodsRow />` set across every footer surface.
 
-Wire into:
+## Approach
 
-- `StudioV3` refine phase (below date/guests).
-- `SimpleTailorForm` (new Field between Date and Guests).
-- `SignaturePriceCard` — shows `Pickup · 9:00 (suggested)` as a subtle row above the traveller ledger.
-- `BrandedCheckoutDrawer` — reads `pickupTime` into the summary and outbound payload.
+### A1. Image dedupe audit
 
-Data: extend `SignatureTour` type with optional `pickupWindow?: { from: string; to: string }`; add to existing signature tour records (fallback constant when absent).
+- Add `scripts/audit-image-usage.mjs` to list every `<img>`/`TourImage` src across `src/routes/**` and `src/components/**` and flag files where the same tour is rendered with different image sources.
+- Consolidate to `getTourGallery(tour, meta)` + `useImportedTourImages().resolveImg` everywhere; 
 
----
+### A2. Homepage-parity motion on inner pages
 
-## 2. Per-band pricing table (Studio + Signature + Tailor)
+- Wrap the top-level `<SiteLayout>` children on each inner route in the `home-energy` reveal cadence (already available in `useMarketingMotion` — `/day-tours` uses it; extend to the routes that don't).
+- Ensure every primary CTA on inner pages uses `<CtaButton>` (so it inherits the `arrow-nudge` keyframe added last pass). Replace any bespoke `<Link>` + arrow with `<CtaButton>`.
 
-Replace the current "average per person" summary with an explicit **age-band price table** shown above the total.
+### A3. CTA arrow motion
 
-New primitive `AgeBandPriceTable` (`src/components/pricing/AgeBandPriceTable.tsx`):
+- Sweep for inline `<ArrowRight />`/`→` usages not inside `<CtaButton>` and either migrate them or add the `arrow-nudge` class directly.
 
-```
-Adult      €240   [× 2]  ← highlighted (selected)
-Youth 13–17 €180
-Child 4–12  €120   [× 1]  ← highlighted (selected)
-Infant 0–3  Free
-```
+### B1. Legacy domain
 
-- Highlighted row = band present in current party (soft `--gold-soft` background, `--charcoal` text).
-- Non-selected bands stay visible but muted (`--charcoal-soft`).
-- Renders below the description on Signature pages (moved out of the confusing "average" block).
-- Reused in `SignaturePriceCard`, `SimpleTailorForm` estimate block, and Signature tour hero pricing section.
+- Edit `src/lib/legacy-domain-redirect.ts`: after the mapped-path lookup, replace the `410 Gone` fallback with a 301 to `https://yesexperiencesportugal.com${pathname}${search}`.
+- Update the existing tests to reflect the new fallback.
 
-Removes: the averaged "€X per person" copy underneath tour descriptions.
+### B2. Stale redirects
 
----
+- `src/routes/proposals.tsx` currently 301s → `/proposal-in-portugal`. User wants the redirect eliminated: keep `/proposal-in-portugal` as canonical (it's the SEO-targeted URL) but restore `/proposals` as a live route rendering the same component (or vice-versa — confirm target below in Questions).
+- Same treatment for `/contact` and `/local-stories` (I'll read each redirect file to see the current target).
 
-## 3. Minor-age selection clarity
+### B3. RNAVT / Lisbon copy
 
-In Studio V3 guest picker and Tailor:
+- `rg -n "RNAVT"` and `rg -n "\bLisbon\b"` across `src/**` + `public/**`. Fix `RNAVT` → `LICENSE_LABEL` (or the literal `RNAAT nº 31/2023`). For `Lisbon`, only replace instances that describe the operator's base city (footer, About, JSON-LD `addressLocality`, structured data, meta descriptions that say "based in Lisbon"). Leave tour pickup/region copy that legitimately mentions Lisbon alone.
 
-- Replace ambiguous "Child" counter with a **per-minor age row**: each minor rendered as `Minor 1 [age select 0–17]` with the band auto-labeled (`Infant · free`, `Child · €120`, `Youth · €180`) inline in `--teal`.
-- Typography: age label `text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]`; band chip `text-[12px] text-[color:var(--teal)]` (fixes current low-contrast).
-- Prevents adding a minor without an age (disabled `Next` + inline hint).
+### B4. `/builder` internal links
 
----
+- `rg -n "to=\"/builder\"|href=\"/builder\"|/builder\b"` across `src/**`. Rewrite every internal `<Link>`/`<CtaButton>`/nav item to `/studio-v3`. Leave the `/builder` route file (301) as a safety net for external inbound links.
 
-## 4. Studio post-story CTA rename
+### B5. Footer payment badges
 
-Rename `CTA_email my story` → **"Confirm & reserve"** in `src/content/signature-day-copy.ts`.
+- Locate every footer (`src/components/Footer.tsx`, any locale variants, any per-page footer in Studio/Signature) and ensure they all render the single `<PaymentMethodsRow />` component. Remove any hand-rolled badge lists.
 
-- Keep the alias export for backwards compat.
-- Update tests referencing the old label.
-- Verify all surfaces: FinalRevealStory, mobile sticky bar, storytelling screen.
+## Files (expected)
 
----
+- `scripts/audit-image-usage.mjs` (new)
+- `src/lib/legacy-domain-redirect.ts` + its test
+- `src/routes/proposals.tsx`, `src/routes/contact.tsx` (if it's a redirect), `src/routes/local-stories*.tsx`
+- Global copy pass touching footer, About page, business-nap consumers, JSON-LD helpers
+- Nav + CTA files referencing `/builder`
+- Inner-route pages (`/experiences`, `/multi-day`, `/about`, `/proposal-in-portugal`, `/corporate`, tour detail) for motion + CTA parity + image dedupe
+- `src/components/Footer.tsx` and any secondary footers
 
-## 5. Mobile alignment pass (Studio + Signature + Tailor)
+No schema, backend or pricing logic changes.
 
-Apply responsive-layout-patterns rules:
+## Rollout order
 
-- Convert header rows using `flex flex-wrap` → `grid grid-cols-[minmax(0,1fr)_auto]` with `min-w-0` + `shrink-0`.
-- Studio refine card, checkout summary, Signature price card: audit each `<header>` and pricing row at 393px.
-- Sticky bottom CTA on Studio + Signature + Tailor booking flows (44px min tap targets, safe-area padding).
-- Guest details form: single-column, larger touch targets, clearer field grouping.
+1. B3 copy fixes (RNAVT / Lisbon) — safest, high-trust.
+2. B1 legacy-domain fallback + tests.
+3. B4 `/builder` internal link rewrite.
+4. B2 redirect eliminations (needs a couple of clarifications below).
+5. B5 footer payment badge unification.
+6. A1–A3 image dedupe + motion parity + arrow nudge sweep across inner routes.
+7. Update `.lovable/plan.md` + `src/generated/brand-audit.json`.
 
----
+## Clarifications needed before I start B2
 
-## 6. Site-wide polish
-
-### 6a. Image dedupe + upgrade
-
-- Audit `src/assets/` + Signature tour images for duplicates across routes (home, /about, Signature tours, /multi-day, /studio-v3).
-- Build an image-usage report (script `scripts/audit-image-usage.mjs`).
-- Replace duplicates with unique editorial shots from the owner-photos library; commission new via `imagegen` or real images from tours
-- All new images uploaded via `lovable-assets` and referenced via `.asset.json` pointers.
-
-### 6b. Homepage-parity animations on inner pages
-
-- Extract `.home-energy` motion utilities into a reusable `page-energy` scope OR broaden the class allowlist. Add more premmium animations focused on conversion 
-- Apply sequenced reveals and homepage animations (fade + translateY 12–16px, ≤450ms cap), hover lift -3px, gold sheen on primary CTAs to: /about, Signature tour pages, /multi-day, /studio-v3, /tailor.
-- &nbsp;
-
-### 6c. Animated CTA arrows
-
-- Update `CtaButton` primitive: arrow uses `translate-x-0 group-hover:translate-x-1 transition-transform duration-300 ease-out`; on primary variant add subtle continuous idle nudge (`animate-[arrow-nudge_2.4s_ease-in-out_infinite]`, 3px amplitude, paused on hover, disabled by `prefers-reduced-motion`).
-- Add `@keyframes arrow-nudge` to `styles.css`.
-
-### 6d. Typography, contrast, spacing
-
-- Audit all pages routes for:
-  - Body copy contrast (must clear 4.5:1 on `--ivory` / `--sand`; fix any `text-[color:var(--charcoal-soft)]` on light surfaces below spec — bump to `--charcoal` or darken the soft token by ~6%).
-  - Section rhythm: enforce `py-16 md:py-24` (skill §13).
-  - Heading scale on inner routes to match homepage editorial rhythm.
-  - Label typography (≥10.5px, tracking 0.22em) on all eyebrows.
-- Add ESLint/style regression: existing brand-audit script gets new rules for these thresholds.
-
----
-
-## Technical notes
-
-- New files: `src/components/ui/PickupTimeField.tsx`, `src/components/pricing/AgeBandPriceTable.tsx`, `scripts/audit-image-usage.mjs`.
-- Edited primitives: `SignaturePriceCard`, `SimpleTailorForm`, `StudioV3`, `FinalRevealStory`, `CheckoutSummary`, `BrandedCheckoutDrawer`, `CtaButton`, `styles.css`, `signature-day-copy.ts`.
-- Data: extend `SignatureTour` type + tour records with `pickupWindow` and confirm per-band pricing already exists (via `signatureTourPricing`).
-- Tests: update existing checkout / final-reveal tests for the renamed CTA + new pickup row; add tests for age-band table rendering and pickup time round-trip.
-- No backend / schema changes.
-
----
-
-## Rollout order (single plan, executed in one build cycle)
-
-1. Copy + type + data changes (safe, no visual impact yet).
-2. Primitives (`PickupTimeField`, `AgeBandPriceTable`, `CtaButton` arrow motion).
-3. Wire into Studio → Signature → Tailor → Checkout.
-4. Mobile alignment pass across those surfaces.
-5. Site-wide polish (images, motion parity, contrast/spacing).
-6. Test + brand-audit run.
+- `/proposals`, `/contact`, `/local-stories` — for each, do you want the CANONICAL URL to switch back to the short one (so `/proposals` becomes the live page and `/proposal-in-portugal` 301s to it), OR do you want BOTH URLs to render the page (no redirect, duplicate canonical resolved with `<link rel=canonical>`)? SEO-safest is option 1 for `/contact` (short is canonical) and keeping `/proposal-in-portugal` canonical for the keyword-targeted proposals page while ALSO serving `/proposals` live. I'll confirm before touching those files.
+- yes

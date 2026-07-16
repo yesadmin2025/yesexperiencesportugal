@@ -12,6 +12,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { findTour, type SignatureTour, type TourStop } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { bookableIncluded, validateTour, logTourValidation } from "@/lib/viatorValidation";
@@ -168,6 +169,7 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
  * Page
  * ──────────────────────────────────────────────────────────── */
 function TailorPage() {
+  useMarketingMotion();
   const { tour } = Route.useLoaderData();
   const meta = getViatorMeta(tour.id);
   const validation = useMemo(() => validateTour(tour, meta), [tour, meta]);

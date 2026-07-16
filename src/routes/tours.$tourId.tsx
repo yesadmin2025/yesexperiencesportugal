@@ -32,6 +32,7 @@ import { TourReviews } from "@/components/TourReviews";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { TourImage } from "@/components/tours/TourImage";
+import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
@@ -165,6 +166,7 @@ export const Route = createFileRoute("/tours/$tourId")({
 });
 
 function TourDetailPage() {
+  useMarketingMotion();
   const { tour } = Route.useLoaderData();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { resolveImg } = useImportedTourImages();

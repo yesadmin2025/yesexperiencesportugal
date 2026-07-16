@@ -1,14 +1,28 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { ProposalInPortugalPage } from "./proposal-in-portugal";
 
 /**
- * /proposals is superseded by the keyword-targeted /proposal-in-portugal
- * (Semrush: "proposal in portugal" = 40/mo, KDI 3). This route now
- * permanently redirects so link equity consolidates on the canonical URL.
- * Any internal Navbar/Footer links continue to work; external inbound
- * links are preserved via this redirect.
+ * /proposals renders the same page as /proposal-in-portugal so the short
+ * URL works as a live page (no 301 hop). /proposal-in-portugal remains
+ * the SEO-canonical URL — the <link rel="canonical"> on this route
+ * points there so search engines consolidate signals on the keyword URL.
  */
+const CANONICAL = "https://yesexperiencesportugal.com/proposal-in-portugal";
+const TITLE = "Proposal in Portugal — Private Moments, Planned Discreetly";
+const DESCRIPTION =
+  "Plan a proposal in Portugal — Sintra cliffs, Arrábida coves, Lisbon rooftops. A private moment shaped end to end by a local team.";
+
 export const Route = createFileRoute("/proposals")({
-  beforeLoad: () => {
-    throw redirect({ to: "/proposal-in-portugal" });
-  },
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
+      { property: "og:url", content: CANONICAL },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: CANONICAL }],
+  }),
+  component: ProposalInPortugalPage,
 });
