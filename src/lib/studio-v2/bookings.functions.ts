@@ -153,7 +153,9 @@ export const confirmCustomBookingDraft = createServerFn({ method: "POST" })
         templateData: {
           contactName: data.contactName,
           preferredDate: data.preferredDate ?? null,
-          guests: data.guests,
+          guests: totalGuests,
+          compositionSummary,
+
           region: draft.region ?? null,
           archetype: draft.archetype ?? null,
           totalMinutes: draft.total_minutes ?? 0,
