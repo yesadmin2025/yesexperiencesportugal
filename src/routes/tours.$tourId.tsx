@@ -172,6 +172,7 @@ function TourDetailPage() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { resolveImg } = useImportedTourImages();
   const meta = getViatorMeta(tour.id);
+  const adminPhotos = useAdminTourPhotos(tour.id);
   const validation = validateTour(tour, meta);
   useEffect(() => {
     logTourValidation(validation);
