@@ -16,6 +16,7 @@ export interface BookingConfirmationProps {
   contactName?: string;
   preferredDate?: string | null;
   guests?: number;
+  compositionSummary?: string | null;
   region?: string | null;
   archetype?: string | null;
   totalMinutes?: number;
