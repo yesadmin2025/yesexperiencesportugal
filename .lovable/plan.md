@@ -1,31 +1,36 @@
-## `/admin/photos` already exists — plus quick-import for these 9
+## Upload these 6 photos to their tour galleries
 
-The protected `/admin/photos` page is already live from our last build: sign in with **nidiadealmeida85@gmail.com**, pick a tour, tap "Add photos", multi-select from iPhone, HEIC auto-converts, and they land on the public tour page.
+I've inspected all 6. Here's what I see and where I'd put them:
 
-You just uploaded 9 photos. Rather than making you re-upload them through the page, I can push them straight into the right tour galleries from here — no sign-in needed. But I need you to confirm which tour each set belongs to, because some are ambiguous:
+### Clearly Cabo Espichel (4 photos)
+- **1000021681** — Cabo Espichel lighthouse close-up
+- **1000021684** — Lighthouse from clifftop with cliff face
+- **1000021678** — Sanctuary of Our Lady of the Cape (silhouette, dramatic sky)
+- **1000021669** — Sanctuary courtyard with arched pilgrim wings
 
-### Group A — clearly coastal cliffs / wild trails / sunset over ocean
-- IMG_9402 (person filming ocean from wooden fence)
-- IMG_9403 (golden cliffs + sea)
-- IMG_9404 (sandy trail through coastal scrub)
-- IMG_9420 (sunset behind pine tree over cliffs)
-- IMG_9395 (dramatic white cliff face over ocean)
-- IMG_6467 (whitewashed terrace with driftwood pergola)
+All four are the Cabo Espichel cape — the same location as the 6 photos I uploaded yesterday to `arrabida-boat` (Arrábida & Sesimbra Private Tour with Coastal Boat Ride). Cabo Espichel is a stop on that tour.
 
-→ Best fit: **Southwest Vicentine Coast** OR **Arrábida / Sesimbra** (the white cliffs in 9395 and the terrace in 6467 look more like Cabo Espichel / Sesimbra than the Vicentine coast).
+→ **Default: append to `arrabida-boat` gallery** (sort order 7–10, no cover change).
 
-### Group B — turquoise-water beaches
-- IMG_6472 (beach with straw parasols + cabanas + Arrábida on horizon)
-- IMG_6473 (aerial screenshot of long turquoise beach)
-- IMG_6475 (wooden boardwalk to turquoise beach)
+### Picnic spread (1 photo)
+- **661** — Red-checkered blanket, bread, plums, chorizo, Portal do Minho cheese, orange juice, wine
 
-→ Best fit: **Tróia & Comporta** (the Arrábida silhouette in 6472 confirms this is the Setúbal peninsula).
+Perfect match for **`wild-beaches-picnic`** (Wild Beaches & Picnic tour).
+
+→ **Default: upload to `wild-beaches-picnic`, set as cover** (picnic is the tour's defining moment).
+
+### Busy Algarve beach (1 photo — ambiguous)
+- **1000021871** — Wooden staircase down to a crowded beach with rows of straw parasols, turquoise water. Looks like **Praia da Falésia (Algarve)** — cliff colour, boardwalk style, umbrella density.
+
+There is **no Algarve tour** in your current signature list (closest are Arrábida, Sintra-Cascais, Tróia-Comporta, Southwest Vicentine Coast). This photo doesn't naturally fit any of them.
+
+**I need your call on this one:**
+- (a) Skip it — don't upload
+- (b) Upload to `southwest-vicentine-coast` anyway (nearest coastal tour)
+- (c) It's actually [another tour] — tell me which
 
 ### One question before I upload
 
-**Which tour does Group A belong to?**
-- (a) Southwest Vicentine Coast — Secret Paradise from Lisbon
-- (b) Arrábida & Sesimbra Private Tour with Coastal Boat Ride
-- (c) Split — tell me which image goes where
+**What should I do with photo 1000021871 (the crowded beach with wooden stairs)?**
 
-Once you answer, I'll upload all 9 (resized + web-optimised) and set the strongest one in each group as the cover. They'll appear on the tour pages immediately.
+Once you answer, I'll upload all 6 in one go — Cabo Espichel photos appended to Arrábida & Sesimbra, picnic set as the Wild Beaches cover, and the beach photo handled per your choice.
