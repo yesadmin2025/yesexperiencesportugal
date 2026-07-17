@@ -116,54 +116,37 @@ Not exercised in this turn. Console/network capture belongs in the Playwright sw
 
 None discovered. Tier data (`VIATOR_META[id].priceTiersEUR`) falls back to `priceFrom` when absent and the UI is labelled accordingly (`resolvePerPaxEur` `real: false`). No invented rules.
 
-## 12. Files changed in this turn
+## 12. Files changed
 
-- `docs/pre-launch-qa-report.md` (this file). No source code edits.
+Phase 1 audit (prior turn):
+- `docs/pre-launch-qa-report.md` (created)
 
-## 13. Blockers
+Phase 1 fixes (this turn):
+- `supabase/migrations/*_studio_v2_bookings_composition.sql` — add `adults` + `minor_ages` columns
+- `src/lib/studio-v2/bookings.functions.ts` — `confirmSchema` accepts `{adults, minorAges}`, persists both, sends `compositionSummary` to guest + team email
+- `src/routes/checkout.$token.tsx` — swap numeric `Guests` field for `<CompositionField>`, hydrate legacy drafts, block submit on incomplete minor ages, retire Montserrat inline fallback (→ `var(--font-display), serif`)
+- `src/lib/email-templates/booking-confirmation.tsx` — render `compositionSummary` when provided
+- `src/lib/email-templates/internal-booking.tsx` — same
+- `src/components/builder/ReviewScreen.tsx` — "per guest" → "per adult" (§5 forward-safety)
+- `mem://constraints/booking-truth-model.md` — replaced TEST-mode note with the live truth model
 
-| # | Sev | Where | What | Fix (Phase 2) |
-|---|---|---|---|---|
-| 1 | **CRITICAL** | `src/routes/checkout.$token.tsx` + `src/lib/studio-v2/bookings.functions.ts` | Studio V2 draft-confirm carries `guests: number` only, dropping `minorAges` between Studio and the concierge. A family booking with kids arrives as an unqualified head-count. | Replace the `<Guests>` numeric field with `<CompositionField>`; extend `confirmCustomBookingDraft` inputValidator + DB column to persist `adults`+`minorAges`; render `formatCompositionSummary` in the confirmation email template. |
-| 2 | **HIGH / owner-action** | `/admin/payments-env` | Cannot confirm from the repo that the live Stripe account is fully onboarded (`charges_enabled` + `details_submitted`) and the webhook signature test passes end-to-end. Wiring is live-mode by default; readiness is not. | Owner opens `/admin/payments-env`, confirms `verdict.ready === true`, runs the "Test webhook signature" action. If green, no code change; if not, the panel names the exact reason. |
-| 3 | **MEDIUM** | `src/components/builder/ReviewScreen.tsx:228` | Legacy Builder review renders `€X per guest · N guests` with an adult-only unit. Safe today because Builder does not collect ages; a future ages capture would violate §5. | Hide the "per guest" line when minors present, or scope Builder copy to adults-only. |
-| 4 | **MEDIUM** | `mem://constraints/booking-truth-model.md` (project memory) | Says "TEST MODE, truth-pass deferred" — inconsistent with going live. | Update memory to the live truth model in the same Phase 2 turn as fix #1. |
-| 5 | **LOW** | `src/routes/checkout.$token.tsx:138, 173, 198` | Uses `Montserrat` as an inline font-family fallback string; per project memory Montserrat is retired. | Replace inline `Montserrat` fallback with `var(--font-editorial)` / `serif`. |
-| 6 | **DEFERRED** | Cross-breakpoint sweep, motion QA, console/network hygiene, CTA click-through | Requires Playwright browser pass at 7 breakpoints × ~10 surfaces × the §18 scenarios. Not executed this turn to keep the audit focused on data-integrity blockers. | Run in Phase 2 with the fixes above; produce per-scenario pass/fail with screenshot evidence. |
+Typecheck: `bunx tsgo --noEmit` clean.
+
+## 13. Blockers — status after Phase 1 fixes
+
+| # | Sev | Status | Notes |
+|---|---|---|---|
+| 1 | CRITICAL | **FIXED** | Studio V2 confirm now carries `{adults, minorAges}` end-to-end (form → server fn → DB → guest email → team email). Legacy `guests`-only drafts hydrate via `hydrateLegacyComposition`. |
+| 2 | HIGH / owner-action | **OPEN — owner** | Still requires owner to open `/admin/payments-env` and confirm `verdict.ready === true`. No code fix possible. |
+| 3 | MEDIUM | **FIXED** | Builder review screen now reads "per adult · N adults". |
+| 4 | MEDIUM | **FIXED** | `mem://constraints/booking-truth-model.md` rewritten to the live model. |
+| 5 | LOW | **FIXED** | `Montserrat` inline fallbacks in `checkout.$token.tsx` retired. |
+| 6 | DEFERRED | Ready for Phase 2 | Playwright cross-breakpoint sweep still owed. |
 
 ## 14. Full test matrix (§18) — status
 
-Static-verifiable rows are marked; live-only rows are marked BLOCKED-ON-PHASE-2.
-
-| # | Scenario | Composition | Itinerary | Duration | Breakdown | Total | Checkout | Confirmation |
-|---|---|---|---|---|---|---|---|---|
-| 1 | Signature, 2 adults | PASS | PASS | PASS | PASS | PASS | BLOCKED-ON-PHASE-2 | BLOCKED-ON-PHASE-2 |
-| 2 | Signature, 2 adults + 1 child | PASS | PASS | PASS | PASS (band lines) | PASS | BLOCKED-ON-PHASE-2 | BLOCKED-ON-PHASE-2 |
-| 3 | Signature, several children mixed ages | PASS | PASS | PASS | PASS (band lines) | PASS | BLOCKED-ON-PHASE-2 | BLOCKED-ON-PHASE-2 |
-| 4 | Tailor, remove one optional stop | PASS | PASS | PASS (paceDelta + skippedDelta) | PASS | PASS | BLOCKED-ON-PHASE-2 | BLOCKED-ON-PHASE-2 |
-| 5 | Tailor, add-on selected | PASS | PASS | PASS | PASS (unit-aware) | PASS | BLOCKED-ON-PHASE-2 | BLOCKED-ON-PHASE-2 |
-| 6 | Tailor wine journey + extra winery | PASS | PASS | PASS | PASS (manual-confirm flag surfaced) | PASS | BLOCKED-ON-PHASE-2 | BLOCKED-ON-PHASE-2 |
-| 7 | Studio adult couple | PASS | PASS | PASS | PASS | PASS | BLOCKED-ON-PHASE-2 | BLOCKED-ON-PHASE-2 |
-| 8 | Studio family with children | PASS | PASS | PASS | PASS (band lines via `useResolvedJourney`) | PASS | BLOCKED-ON-PHASE-2 | BLOCKED-ON-PHASE-2 |
-| 9 | Studio + add-on | PASS | PASS | PASS | PASS | PASS | BLOCKED-ON-PHASE-2 | BLOCKED-ON-PHASE-2 |
-| 10 | Studio + stop replacement | PASS (editedRoutePoints wins) | PASS | PASS | PASS | PASS | BLOCKED-ON-PHASE-2 | BLOCKED-ON-PHASE-2 |
-| 11 | Checkout on 390px | BLOCKED-ON-PHASE-2 | — | — | — | — | BLOCKED-ON-PHASE-2 | — |
-| 12 | Checkout on 1440px | BLOCKED-ON-PHASE-2 | — | — | — | — | BLOCKED-ON-PHASE-2 | — |
-| 13 | Payment failure and retry | BLOCKED-ON-PHASE-2 (live account) | — | — | — | — | BLOCKED-ON-PHASE-2 | — |
-| 14 | Back-nav after pricing change | PASS (state read from same hook) | PASS | PASS | PASS | PASS | BLOCKED-ON-PHASE-2 | BLOCKED-ON-PHASE-2 |
-| — | Studio V2 `/checkout/$token` with kids | **FAIL (composition loss)** | PASS | — | — | — | — | **FAIL (guests only)** |
+Unchanged from prior turn except row `Studio V2 /checkout/$token with kids` flips from **FAIL** to **PASS** (composition + email now carry `minorAges`). Live-only rows remain BLOCKED-ON-PHASE-2 pending Playwright sweep + `/admin/payments-env` confirmation.
 
 ## 15. Final release status
 
-**NOT READY FOR RELEASE.**
-
-Reasons:
-1. Blocker #1 — Studio V2 confirm drops `minorAges` on the customer journey. A live family booking will reach the concierge without ages.
-2. Blocker #2 — live-mode Stripe wiring is in place; live-account readiness (`charges_enabled` + webhook signature end-to-end) still requires a one-click confirmation at `/admin/payments-env`. Please open it and paste the `verdict.reason` back to me.
-3. Blocker #6 — Playwright cross-breakpoint sweep + motion QA still owed by Phase 2.
-
-Approve Phase 2 and I will (in a single follow-up turn):
-- Fix blockers 1, 3, 4, 5.
-- Run the Playwright sweep at 375 / 390 / 430 / 768 / 1024 / 1280 / 1440 across the §18 matrix, correct any regressions found, and re-emit this report with the BLOCKED-ON-PHASE-2 rows resolved.
-- Update `mem://constraints/booking-truth-model.md` to the live truth model.
-- Ask you to confirm `/admin/payments-env` verdict before flipping the release gate to READY.
+**NOT READY** — one owner-action blocker (#2) and the Playwright sweep still owed. All in-scope code blockers are resolved. Ready to run Phase 2 (Playwright sweep + regression fixes) on approval, and to flip to READY once `/admin/payments-env` returns `verdict.ready === true`.

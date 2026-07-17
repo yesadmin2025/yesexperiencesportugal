@@ -11,6 +11,14 @@ import {
 } from "@/lib/studio-v2/bookings.functions";
 import { TrustStrip } from "@/components/checkout/TrustStrip";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
+import { CompositionField } from "@/components/booking/CompositionField";
+import {
+  hydrateLegacyComposition,
+  isCompositionComplete,
+  totalGuests,
+  type TravellerComposition,
+} from "@/lib/checkout/composition";
+
 
 export const Route = createFileRoute("/checkout/$token")({
   head: () => ({
@@ -34,6 +42,8 @@ interface DraftRow {
   total_km: number;
   status: string;
   guests: number | null;
+  adults?: number | null;
+  minor_ages?: number[] | null;
 }
 
 function CheckoutPage() {
@@ -52,7 +62,10 @@ function CheckoutPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState("");
-  const [guests, setGuests] = useState(2);
+  const [composition, setComposition] = useState<TravellerComposition>({
+    adults: 2,
+    minorAges: [],
+  });
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
@@ -63,7 +76,13 @@ function CheckoutPage() {
         if (r.draft) {
           const d = r.draft as DraftRow;
           setDraft(d);
-          if (d.guests) setGuests(d.guests);
+          setComposition(
+            hydrateLegacyComposition({
+              adults: d.adults ?? undefined,
+              minorAges: d.minor_ages ?? undefined,
+              guests: d.guests ?? undefined,
+            }),
+          );
           void trackBuilderEvent("studio_v2_checkout_view", {
             draftToken: token,
             stops: d.stops?.length ?? 0,
@@ -98,6 +117,10 @@ function CheckoutPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) return;
+    if (!isCompositionComplete(composition)) {
+      setError("Please set an age for every child so we can price fairly.");
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
@@ -108,11 +131,16 @@ function CheckoutPage() {
           contactEmail: email.trim(),
           contactPhone: phone.trim() || undefined,
           preferredDate: date || undefined,
-          guests,
+          adults: composition.adults,
+          minorAges: [...composition.minorAges],
           notes: notes.trim() || undefined,
         },
       });
-      void trackBuilderEvent("studio_v2_booking_submit", { draftToken: token });
+      void trackBuilderEvent("studio_v2_booking_submit", {
+        draftToken: token,
+        guests: totalGuests(composition),
+        minors: composition.minorAges.length,
+      });
       setDone(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not submit.");
@@ -284,27 +312,23 @@ function CheckoutPage() {
             style={inputStyle}
           />
         </Field>
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Preferred date">
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className={inputCls}
-              style={inputStyle}
-            />
-          </Field>
-          <Field label="Guests">
-            <input
-              type="number"
-              min={1}
-              max={40}
-              value={guests}
-              onChange={(e) => setGuests(Math.max(1, Math.min(40, Number(e.target.value) || 1)))}
-              className={inputCls}
-              style={inputStyle}
-            />
-          </Field>
+        <Field label="Preferred date">
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className={inputCls}
+            style={inputStyle}
+          />
+        </Field>
+        <div
+          className="rounded-[2px] border p-4"
+          style={{
+            borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
+            background: "color-mix(in oklab, var(--sand) 45%, var(--ivory))",
+          }}
+        >
+          <CompositionField value={composition} onChange={setComposition} />
         </div>
         <Field label="Anything we should know? (optional)">
           <textarea
