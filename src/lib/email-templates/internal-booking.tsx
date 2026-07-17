@@ -71,7 +71,7 @@ const InternalBooking: React.FC<InternalBookingProps> = (p) => (
         <Field label="Experience" value={p.tourTitle} />
         <Field label="Type" value={p.bookingType} />
         <Field label="Date" value={p.dateExact} />
-        <Field label="Guests" value={p.guests ?? null} />
+        <Field label="Guests" value={p.compositionSummary ?? p.guests ?? null} />
         <Field label="Amount" value={p.amountFormatted} />
         <Field label="Pickup" value={p.pickup} />
         <Field label="Stripe session" value={p.bookingRef} />
