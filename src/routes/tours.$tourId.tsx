@@ -728,10 +728,12 @@ function GalleryStrip({
   tour,
   resolveImg,
   meta,
+  adminPhotos,
 }: {
   tour: SignatureTour;
   resolveImg: ReturnType<typeof useImportedTourImages>["resolveImg"];
   meta?: ViatorMeta;
+  adminPhotos: ReturnType<typeof useAdminTourPhotos>;
 }) {
   const seen = new Set<string>();
   const photos: { src: string; alt: string; focal?: string }[] = [];
@@ -741,9 +743,9 @@ function GalleryStrip({
     photos.push({ src, alt, focal });
   };
 
-  // Source priority: locally-uploaded YES photos (`meta.localGallery`),
-  // otherwise the curated Viator gallery. Both flow through getTourGallery
-  // so alt text is always tour-name + location aware.
+  // Priority: admin-uploaded YES photos first (cover then sort_order),
+  // then baked local gallery, then curated Viator gallery.
+  for (const p of adminPhotos) push(p.src, p.alt);
   for (const p of getTourGallery(tour, meta)) push(p.src, p.alt);
 
   if (photos.length < 3) return null;
