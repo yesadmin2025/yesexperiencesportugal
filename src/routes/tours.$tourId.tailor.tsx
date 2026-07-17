@@ -35,6 +35,8 @@ import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPri
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION_SHORT } from "@/config/business-nap";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
+import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
+import { hasCompleteJourneyPricing } from "@/lib/checkout/journeyDisplay";
 import { CompositionField } from "@/components/booking/CompositionField";
 import {
   formatCompositionSummary,
@@ -419,6 +421,37 @@ function TailorPage() {
     const floor = Math.round(basePerPax * 0.85);
     return Math.max(floor, Math.round(p));
   }, [basePerPax, blueprint, added, skipped, skippedCore, optionalSelected, addons, lunch]);
+
+  // Age-banded journey pricing — mirrors the reserve-handler math so the
+  // summary shows adults vs each minor at their band-adjusted unit price.
+  // Silent (null) when minor ages are incomplete; adults-only parties fall
+  // back to the single "Indicative total" row.
+  const minorAgesComplete = useMemo(
+    () =>
+      composition.minorAges.length === 0 ||
+      composition.minorAges.every(
+        (age) =>
+          typeof age === "number" &&
+          Number.isFinite(age) &&
+          Number.isInteger(age) &&
+          age >= 0 &&
+          age <= 17,
+      ),
+    [composition.minorAges],
+  );
+  const journeyPricing = useMemo(() => {
+    if (!minorAgesComplete) return null;
+    return resolveJourneyPricing(
+      { id: tour.id, priceFrom: estimatedPrice },
+      composition.adults,
+      composition.minorAges,
+      null,
+    );
+  }, [tour.id, estimatedPrice, composition.adults, composition.minorAges, minorAgesComplete]);
+  const journeyLines = journeyPricing?.lines ?? null;
+  const showBandBreakdown =
+    composition.minorAges.length > 0 && hasCompleteJourneyPricing(journeyLines);
+  const displayTotalEur = journeyPricing?.totalEur ?? estimatedPrice * guests;
 
   // ─── Wine-extension state ───────────────────────────────────
   // A "wine extension" = the traveller picked MORE wineries than the
@@ -1393,17 +1426,32 @@ function TailorPage() {
                     </div>
                   )}
 
+                  {showBandBreakdown && (
+                    <PriceBreakdownRows
+                      journeyLines={journeyLines}
+                      label="Travellers"
+                      testId="tailor-price-breakdown"
+                    />
+                  )}
+
                   <div className="pt-3 border-t border-[color:var(--border)] flex items-baseline justify-between">
                     <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
                       Indicative total
                     </span>
-                    <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
-                      €{estimatedPrice}
-                      <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-                        / adult
-                      </span>
+                    <span className="serif text-[1.4rem] text-[color:var(--charcoal)] tabular-nums">
+                      €{Math.round(displayTotalEur).toLocaleString("en-GB")}
+                      {!showBandBreakdown && (
+                        <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                          / adult
+                        </span>
+                      )}
                     </span>
                   </div>
+                  {showBandBreakdown && (
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] text-right">
+                      Party total · {guests} {guests === 1 ? "guest" : "guests"}
+                    </p>
+                  )}
 
                   {/* Confirmation status is always instant on Tailor —
                       manual gate retired per owner (test-mode + memory:

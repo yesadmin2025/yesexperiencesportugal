@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
-import { Clock, MapPin } from "lucide-react";
+import { Clock, MapPin, Star } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
@@ -161,6 +161,24 @@ function ExperiencesPage() {
                       Price kept (conversion) but reduced to body weight
                       so it stops dominating the card read. */}
                   <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                    {meta && meta.reviewCount > 0 && (
+                      <>
+                        <span className="flex items-center gap-1.5 text-[color:var(--charcoal)]">
+                          <Star
+                            size={11}
+                            className="text-[color:var(--gold)]"
+                            fill="currentColor"
+                            strokeWidth={0}
+                            aria-hidden="true"
+                          />
+                          <span className="tabular-nums">{meta.rating.toFixed(1)}</span>
+                          <span className="text-[color:var(--charcoal-soft)]">
+                            · <span className="tabular-nums">{meta.reviewCount}</span> reviews
+                          </span>
+                        </span>
+                        <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
+                      </>
+                    )}
                     <span className="flex items-center gap-1.5">
                       <MapPin size={11} /> {t.region}
                     </span>
