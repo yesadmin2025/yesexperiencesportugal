@@ -35,6 +35,8 @@ import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPri
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION_SHORT } from "@/config/business-nap";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
+import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
+import { hasCompleteJourneyPricing } from "@/lib/checkout/journeyDisplay";
 import { CompositionField } from "@/components/booking/CompositionField";
 import {
   formatCompositionSummary,
