@@ -84,7 +84,8 @@ const confirmSchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/)
     .optional(),
-  guests: z.number().int().min(1).max(40),
+  adults: z.number().int().min(1).max(12),
+  minorAges: z.array(z.number().int().min(0).max(17)).max(11).default([]),
   notes: z.string().max(2000).optional(),
 });
 
@@ -102,6 +103,13 @@ export const confirmCustomBookingDraft = createServerFn({ method: "POST" })
     if (loadErr) throw new Error(loadErr.message);
     if (!draft) throw new Error("Draft not found.");
 
+    const totalGuests = data.adults + data.minorAges.length;
+    const { formatCompositionSummary } = await import("@/lib/checkout/composition");
+    const compositionSummary = formatCompositionSummary({
+      adults: data.adults,
+      minorAges: data.minorAges,
+    });
+
     const { error } = await supabaseAdmin
       .from("studio_v2_bookings")
       .update({
@@ -109,7 +117,9 @@ export const confirmCustomBookingDraft = createServerFn({ method: "POST" })
         contact_email: data.contactEmail,
         contact_phone: data.contactPhone ?? null,
         preferred_date: data.preferredDate ?? null,
-        guests: data.guests,
+        adults: data.adults,
+        minor_ages: data.minorAges,
+        guests: totalGuests,
         notes: data.notes ?? null,
         status: "submitted",
       })
