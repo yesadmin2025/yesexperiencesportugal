@@ -42,6 +42,8 @@ interface DraftRow {
   total_km: number;
   status: string;
   guests: number | null;
+  adults?: number | null;
+  minor_ages?: number[] | null;
 }
 
 function CheckoutPage() {
