@@ -76,7 +76,13 @@ function CheckoutPage() {
         if (r.draft) {
           const d = r.draft as DraftRow;
           setDraft(d);
-          if (d.guests) setGuests(d.guests);
+          setComposition(
+            hydrateLegacyComposition({
+              adults: d.adults ?? undefined,
+              minorAges: d.minor_ages ?? undefined,
+              guests: d.guests ?? undefined,
+            }),
+          );
           void trackBuilderEvent("studio_v2_checkout_view", {
             draftToken: token,
             stops: d.stops?.length ?? 0,
