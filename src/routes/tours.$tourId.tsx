@@ -33,6 +33,7 @@ import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { TourImage } from "@/components/tours/TourImage";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { useAdminTourPhotos } from "@/lib/useAdminTourPhotos";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
@@ -171,6 +172,7 @@ function TourDetailPage() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { resolveImg } = useImportedTourImages();
   const meta = getViatorMeta(tour.id);
+  const adminPhotos = useAdminTourPhotos(tour.id);
   const validation = validateTour(tour, meta);
   useEffect(() => {
     logTourValidation(validation);
@@ -187,7 +189,7 @@ function TourDetailPage() {
   return (
     <SiteLayout>
       {/* ── 1 · HERO ─────────────────────────────────────────────── */}
-      <TourHero tour={tour} resolveImg={resolveImg} meta={meta} />
+      <TourHero tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
 
       {/* ── 2 · TRUST MICROCOPY ─────────────────────────────────── */}
       <TrustStrip meta={meta} />
@@ -208,7 +210,7 @@ function TourDetailPage() {
       <IncludedAndIdeal tour={tour} meta={meta} />
 
       {/* ── 9 · GALLERY (real photos) ──────────────────────────── */}
-      <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} />
+      <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
 
       {/* ── 10 · RESERVE THIS DAY (simple booking) ─────────────── */}
       <BookingBlock tour={tour} />
@@ -241,16 +243,19 @@ function TourHero({
   tour,
   resolveImg,
   meta,
+  adminPhotos,
 }: {
   tour: SignatureTour;
   resolveImg: ReturnType<typeof useImportedTourImages>["resolveImg"];
   meta: ViatorMeta | undefined;
+  adminPhotos: ReturnType<typeof useAdminTourPhotos>;
 }) {
   const heroResolved = resolveImg(tour, "hero");
-  // Prefer locally-uploaded YES Experiences photos when present, then the
-  // curated Viator gallery cover, then the imported tour image.
-  const heroSrc = meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
-  const heroAlt = getHeroAlt(tour, meta);
+  // Prefer admin-uploaded photos (cover first), then locally-baked YES photos,
+  // then Viator gallery cover, then the imported tour image.
+  const adminCover = adminPhotos[0]?.src;
+  const heroSrc = adminCover ?? meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
+  const heroAlt = adminPhotos[0]?.alt || getHeroAlt(tour, meta);
   return (
     <>
       {/* Breadcrumb */}
@@ -723,10 +728,12 @@ function GalleryStrip({
   tour,
   resolveImg,
   meta,
+  adminPhotos,
 }: {
   tour: SignatureTour;
   resolveImg: ReturnType<typeof useImportedTourImages>["resolveImg"];
   meta?: ViatorMeta;
+  adminPhotos: ReturnType<typeof useAdminTourPhotos>;
 }) {
   const seen = new Set<string>();
   const photos: { src: string; alt: string; focal?: string }[] = [];
@@ -736,9 +743,9 @@ function GalleryStrip({
     photos.push({ src, alt, focal });
   };
 
-  // Source priority: locally-uploaded YES photos (`meta.localGallery`),
-  // otherwise the curated Viator gallery. Both flow through getTourGallery
-  // so alt text is always tour-name + location aware.
+  // Priority: admin-uploaded YES photos first (cover then sort_order),
+  // then baked local gallery, then curated Viator gallery.
+  for (const p of adminPhotos) push(p.src, p.alt);
   for (const p of getTourGallery(tour, meta)) push(p.src, p.alt);
 
   if (photos.length < 3) return null;
