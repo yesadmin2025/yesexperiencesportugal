@@ -1,15 +1,29 @@
-# Polish duplicated reviews on tour pages
+## 1. Tailor page — show adult/child tiered pricing
 
-## Problem
-On `/tours/$tourId`, two review sections render back-to-back:
-1. `<TourReviews />` — canonical, DB-driven aggregate + reviews (with Viator fallback when DB empty)
-2. `<ReviewsBlock meta={meta} />` — legacy inline block that re-renders the same Viator `topReviews`
+**File:** `src/routes/tours.$tourId.tailor.tsx`
 
-Result: guests see the same star rating and quotes twice.
+The tailor summary card currently shows one line: `€{estimatedPrice} / adult`. It doesn't itemise minors even though `composition.adults` and `composition.minorAges` are already tracked, and the reserve handler already computes a full age-banded `summaryJourney` via `resolveJourneyPricing`.
 
-## Change
-- `src/routes/tours.$tourId.tsx`: remove the `<ReviewsBlock meta={meta} />` render (line 220) and delete the now-unused `ReviewsBlock` component + `FALLBACK_REVIEWS` constant further down the file. Keep `<TourReviews />` as the single reviews section — it already handles the Viator fallback when the DB has no rows, so no data coverage is lost.
-- No other file changes: `LandingTourCredibility` is only used on SEO landing pages (not tour detail), and homepage `RealReviewsStrip` is a different surface.
+**Change:** Lift that same age-banded resolution into a `useMemo` at render time, then render the shared `<PriceBreakdownRows journeyLines={...} label="Travellers" />` (already used by Studio V3 checkout) above the `Indicative total` row when the party has minors AND every minor age is filled in. The total line stays; the `/ adult` suffix is dropped in favour of the per-band rows, matching the on-page summary in Studio V3 and the confirmation email.
+
+The tailored signature card has too much information inside the cover image, should be polished 
+
+Additional total shown at the bottom becomes the true party total (`summaryJourney.totalEur`) instead of just the adult unit, keeping the "Indicative total" honest for mixed parties. Adults-only bookings render exactly as today (single line, no band breakdown) — no visual change when there are no minors.
+
+## 2. Signature listing — per-tour rating as trust signal
+
+**File:** `src/routes/experiences.tsx`
+
+Each card's meta strip is currently: `Region · Duration · From €X`. Add the tour's real rating from `VIATOR_META[t.id]` (already imported) as a fourth pill, positioned first so it acts as a trust anchor:
+
+```
+★ 4.9 · 210 reviews  ·  Region  ·  Duration  ·  From €X
+```
+
+Only rendered when `meta?.reviewCount > 0` (silent fallback — no fake stars). Uses the existing gold star token, same 11px uppercase tracking as the rest of the strip, tabular-nums for the numbers. No new component — inline span with a `Star` icon from `lucide-react`, matching the treatment already used on the tour detail page (`tours.$tourId.tsx` lines 301–313).
 
 ## Out of scope
-No copy, styling, or schema changes. JSON-LD `withAggregateAndReviews(...)` stays as-is (it's schema, not a visible block).
+
+- No changes to server pricing, checkout flow, email, or `TourReviews` component.
+- No copy/style changes elsewhere.
+- Homepage signature strip untouched (different surface).
