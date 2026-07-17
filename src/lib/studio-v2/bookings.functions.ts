@@ -183,7 +183,9 @@ export const confirmCustomBookingDraft = createServerFn({ method: "POST" })
               tourTitle,
               bookingType: "bespoke",
               dateExact: data.preferredDate ?? null,
-              guests: data.guests,
+              guests: totalGuests,
+              compositionSummary,
+
               bookingRef: data.draftToken,
               pickup: data.contactPhone ?? null,
             },
