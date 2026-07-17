@@ -422,6 +422,37 @@ function TailorPage() {
     return Math.max(floor, Math.round(p));
   }, [basePerPax, blueprint, added, skipped, skippedCore, optionalSelected, addons, lunch]);
 
+  // Age-banded journey pricing — mirrors the reserve-handler math so the
+  // summary shows adults vs each minor at their band-adjusted unit price.
+  // Silent (null) when minor ages are incomplete; adults-only parties fall
+  // back to the single "Indicative total" row.
+  const minorAgesComplete = useMemo(
+    () =>
+      composition.minorAges.length === 0 ||
+      composition.minorAges.every(
+        (age) =>
+          typeof age === "number" &&
+          Number.isFinite(age) &&
+          Number.isInteger(age) &&
+          age >= 0 &&
+          age <= 17,
+      ),
+    [composition.minorAges],
+  );
+  const journeyPricing = useMemo(() => {
+    if (!minorAgesComplete) return null;
+    return resolveJourneyPricing(
+      { id: tour.id, priceFrom: estimatedPrice },
+      composition.adults,
+      composition.minorAges,
+      null,
+    );
+  }, [tour.id, estimatedPrice, composition.adults, composition.minorAges, minorAgesComplete]);
+  const journeyLines = journeyPricing?.lines ?? null;
+  const showBandBreakdown =
+    composition.minorAges.length > 0 && hasCompleteJourneyPricing(journeyLines);
+  const displayTotalEur = journeyPricing?.totalEur ?? estimatedPrice * guests;
+
   // ─── Wine-extension state ───────────────────────────────────
   // A "wine extension" = the traveller picked MORE wineries than the
   // Signature's baseline `pickMin`. Because per-winery extension pricing
