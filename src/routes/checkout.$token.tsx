@@ -11,6 +11,14 @@ import {
 } from "@/lib/studio-v2/bookings.functions";
 import { TrustStrip } from "@/components/checkout/TrustStrip";
 import { trackBuilderEvent } from "@/lib/builder-analytics";
+import { CompositionField } from "@/components/booking/CompositionField";
+import {
+  hydrateLegacyComposition,
+  isCompositionComplete,
+  totalGuests,
+  type TravellerComposition,
+} from "@/lib/checkout/composition";
+
 
 export const Route = createFileRoute("/checkout/$token")({
   head: () => ({
