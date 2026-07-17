@@ -1,44 +1,87 @@
-## Goal
-Add the 10 uploaded photos to the site as **general brand imagery** — extending the existing `GuestMomentsStrip` system (real, owner-supplied moments used on Homepage / About / Corporate / Multi-day), not tied to any Signature tour.
+## Framing
 
-## Photo reading & proposed captions
-Each caption stays in the existing editorial voice (short, sensory, specific, no invention).
+This is a **QA + safe-fix pass**, not a feature build. Scope is huge (Signature + Tailor + Studio + checkout across 7 breakpoints, plus animation/mobile/visual polish, plus a full test matrix and release-gate report). One turn cannot honestly cover it. I'm proposing a **two-phase plan** so you can steer between them.
 
-| # | File | Scene | Proposed caption |
-|---|---|---|---|
-| 1 | 1000028943 | Group tasting inside a Setúbal barrel cellar, host pouring | *In the barrel room, wine tells its own story.* |
-| 2 | 1000028925 | Master tile-painter tracing a hand-drawn azulejo in his Azeitão workshop | *A tile, drawn by hand — the way it has always been done.* |
-| 3 | 1000028901 | Couple with white wine + petiscos board at the winery patio | *A glass, a board of petiscos, no rush at all.* |
-| 4 | 1000028886 | Couple kissing on the Portinho boardwalk, Tróia sandbar below | *Above Portinho — the view no one wants to leave.* |
-| 5 | 1000022999 | Guide presenting the giant 20,000-litre Moscatel oak vats | *Twenty thousand litres, aging quietly since 1834.* |
-| 6 | 1000022539 | Artisan hand-painting a blue cat on a raw ceramic tile | *One brush, one cat, one afternoon in Azeitão.* |
-| 7 | 1000021672 | Aerial of Portinho da Arrábida — turquoise bay, anchored boats | *Portinho da Arrábida — Portugal's quiet Caribbean.* |
-| 8 | 1000021461 | Full tasting flight — white, Moscatel, aged tawny | *A full flight — from crisp white to aged Moscatel.* |
-| 9 | 1000020224 | Large private group selfie with guide, arriving at Sintra | *Sintra mornings — the whole group, one story.* |
-| 10 | 1000019828 | Two women at Serra da Arrábida viewpoint, Tróia sandbar beyond | *The Serra viewpoint — Tróia stretching out below.* |
+Also important — from project memory: the site is in **TEST MODE**. There is no live Stripe charge in the current flow; the Studio "checkout" (`/checkout/$token`) is a draft-confirm form, and Signature/Tailor "Reserve instantly" writes a booking without capturing payment. That reshapes what "checkout validation" can actually verify today (see Constraints below).
 
-If any caption feels off after seeing them in context, we tweak in a follow-up.
+Switch to live mode stripe 
 
-## Implementation
+---
 
-1. **Upload** all 10 photos as Lovable CDN assets under `src/assets/owner-photos/` (same convention as existing moments):
-   ```
-   lovable-assets create --file /mnt/user-uploads/<name>.jpeg --filename <slug>.jpeg > src/assets/owner-photos/<slug>.jpeg.asset.json
-   ```
-   Slugs: `barrel-cellar-tasting`, `azulejo-master-painter`, `couple-petiscos-patio`, `portinho-boardwalk-couple`, `moscatel-giant-vats-guide`, `azulejo-blue-cat`, `portinho-aerial-bay`, `tasting-flight-full`, `sintra-group-selfie`, `arrabida-viewpoint-women`.
+## What I already know from recon
 
-2. **Extend `src/content/guest-moments.ts`** — import the 10 new asset pointers, add 10 `MOMENT_*` exports with the captions above.
+- **Pricing single source of truth exists**: `src/data/signatureTourPricing.ts` → `resolveJourneyPricing(tour, adults, minorAges, overrides)`. Owner-approved age bands: adult 100% / youth 11–17 75% / child 3–10 50% / infant 0–2 free. Returns `null` when a minor age is out of band (server must reject) — good.
+- **Traveller composition model exists**: `src/lib/checkout/composition.ts` — `{adults, minorAges}`, `isCompositionComplete`, `formatCompositionSummary`, `hydrateLegacyComposition`.
+- **Studio V3** has `useResolvedJourney`, `Composition`, `SignaturePriceCard`; parity tests already live under `src/components/studio-v3/__tests__/`.
+- **Signature + Tailor** consume the same pricing engine (imports in `SimpleBookingForm.tsx`, `tours.$tourId.tailor.tsx`).
+- **Known gap**: `src/routes/checkout.$token.tsx` still uses a bare `guests: number` input — it does not carry `minorAges` from Studio through the Studio-V2 draft-confirm form. Composition can be lost at that boundary.
 
-3. **Refresh the curated sets** so each surface shows a stronger mix (no other component changes needed — sets flow through `GuestMomentsStrip` on Homepage, About, Corporate, Multi-day):
-   - `HOMEPAGE_MOMENTS` (5) → couple on boardwalk, aerial Portinho, barrel cellar tasting, tile master painting, couple with petiscos.
-   - `ABOUT_MOMENTS` (4) → Sintra group selfie, Arrábida viewpoint women, tile painter, existing tasting-cake.
-   - `CORPORATE_MOMENTS` (3) → Sintra group selfie, barrel cellar tasting, existing wine-cheers.
-   - `MULTI_DAY_MOMENTS` (4) → aerial Portinho, tasting flight, Moscatel giant vats, blue-cat azulejo.
-   - Existing moments stay defined (not deleted) so nothing else breaks.
+---
 
-4. **Verify**: build passes, then quick Playwright screenshot of the homepage Moments strip + About page to confirm the new photos render at 4:5 with captions.
+## Phase 1 — Audit & report (this task, single turn)
 
-## Out of scope
-- No new tour_gallery_photos rows, no `tour-photos` bucket uploads (these are brand imagery, not tour-scoped).
-- No changes to `GuestMomentsStrip` component or motion.
-- No copy changes elsewhere.
+Produce the **§20 Final Report** as a real audit document, findings-first, no code changes yet. Deliverable: `docs/pre-launch-qa-report.md` plus the audit surface files that back each finding.
+
+Steps I will execute:
+
+1. **Map the three flows** (Signature / Tailor / Studio) end-to-end with file references — entry routes, composition steps, pricing hook, summary, CTA target, "checkout" surface, confirmation.
+2. **Verify the pricing single source of truth** by importing every price display in the codebase and diffing it against `resolveJourneyPricing`. Any component computing its own subtotal, adult-only per-pax display, or hardcoded child rule → flagged CRITICAL.
+3. **Composition persistence trace** — cold-navigation reproductions with Playwright at 390px:
+  - Signature (2 adults) → detail → reserve → summary
+  - Signature + 1 child aged 8 → same path
+  - Signature + kids of mixed ages (7, 12, 3) → same path
+  - Tailor: remove one optional stop, add one add-on, add one winery
+  - Studio: adult couple / family with children / add-on / stop replacement
+  - Back nav after pricing change; browser refresh where supported
+4. **Per-person display audit** — every `€ / guest`, `€ per person`, `average` string. Confirm mixed-age screens either hide per-person, label it "Average per guest", or split adult/child rows (§5 rule).
+5. **Checkout validation** (given TEST MODE):
+  - `/checkout/$token` (Studio V2 draft) — composition, itinerary, total consistency, mobile fit at 390 / 430 / 768.
+  - Signature "Reserve instantly" flow — composition round-trip, correct product type in booking payload, `booking_confirmed` state.
+  - Explicitly log which checks are **N/A until live payments** (Stripe metadata, server-authoritative amount vs client, payment failure/retry).
+6. **Responsive sweep** at 375 / 390 / 430 / 768 / 1024 / 1280 / 1440 via Playwright element screenshots on: Signature listing, Signature detail, Tailor, Studio composition, Studio map, Studio Refine, Studio Story, Studio final reveal, `/checkout/$token`, `/booking-confirmed`.
+7. **Animation QA** — read `home-motion.ts` + `data-motion` usages on Signature/Tailor/Studio; check `prefers-reduced-motion` guards; note any observer-hidden content, replays, or transform-clipping.
+8. **Frontend hygiene** — captured console/network from each reproduction: React warnings, missing keys, hydration mismatches, failed asset requests, 401/500 to server fns.
+9. **CTA/nav sweep** — enumerate the CTAs in §13 and confirm destinations by static grep + one click in Playwright per CTA class.
+10. **Test matrix (§18)** — filled table with pass/fail per scenario, evidence links (screenshot paths, file:line, network trace).
+11. **Release gate** — verdict per §19, blockers listed with severity (CRITICAL/HIGH/MEDIUM/LOW). Expected: NOT READY, because §7 Stripe checks are structurally impossible in TEST MODE and I expect at least the `checkout.$token` composition gap plus a handful of responsive/motion issues.
+
+### What Phase 1 explicitly does NOT do
+
+- No source edits, no copy changes, no schema changes.
+- No new features, no redesigns.
+- No SEO work.
+
+---
+
+## Phase 2 — Safe fixes (only after you approve the report)
+
+You review the findings, mark CRITICAL/HIGH ones "fix", MEDIUM/LOW "defer or fix". I then execute in a single follow-up:
+
+- Pipe composition (`adults + minorAges`) all the way to `/checkout/$token` and its confirm handler so Studio bookings never lose child data.
+- Any per-person display that violates §5 gets corrected (label "Average per guest", split rows, or hide — chosen per surface).
+- Any component that recomputes price locally is refactored to call `resolveJourneyPricing`.
+- Broken CTAs, wrong destinations, dead buttons.
+- Responsive regressions at the tested breakpoints (grid/min-w-0/shrink-0 fixes per responsive-layout-patterns).
+- Motion issues (missing reduced-motion guard, observer replays, transform overflow).
+- Console/network cleanups where the fix is local (missing keys, warned nesting, listener leaks).
+
+Every fix ships with a targeted verification (Playwright screenshot or vitest run) before I claim it green. Nothing bundles unrelated work.
+
+---
+
+## Constraints & honesty notes (§7, §17)
+
+- **Live Stripe checkout is not wired** (TEST MODE per project memory). §7 items "correct Stripe metadata / correct payment amount / server-authoritative quote / payment failure & retry" cannot pass today because there is no live payment layer to test against. The report will flag them as **BLOCKED by TEST MODE**, not "PASS" or "FAIL". Enabling live payments is a separate task and requires your go-ahead (built-in `enable_stripe_payments`).
+- **No invented pricing**: if a Signature is missing a real Viator tier for a group size, the report calls it out — I will not backfill numbers.
+- **No copy rewrites** unless a CTA string or product name is factually wrong.
+- **No SEO / canonical / sitemap / metadata changes** in either phase.
+
+---
+
+## Deliverables of Phase 1 (this turn)
+
+1. `docs/pre-launch-qa-report.md` — the §20 report, with each finding sourced to a file:line or screenshot path.
+2. Screenshot evidence under `/tmp/browser/qa/` (not committed).
+3. A short chat summary listing **CRITICAL / HIGH blockers only** and the release-gate verdict.
+
+Approve this plan to run Phase 1. I'll return with the report and wait for your call on which fixes to ship in Phase 2.
