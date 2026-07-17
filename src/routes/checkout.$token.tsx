@@ -62,7 +62,10 @@ function CheckoutPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState("");
-  const [guests, setGuests] = useState(2);
+  const [composition, setComposition] = useState<TravellerComposition>({
+    adults: 2,
+    minorAges: [],
+  });
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
