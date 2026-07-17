@@ -18,6 +18,8 @@ export interface InternalBookingProps {
   bookingType?: string | null;
   dateExact?: string | null;
   guests?: number | null;
+  compositionSummary?: string | null;
+
   amountFormatted?: string | null;
   bookingRef?: string | null;
   
