@@ -676,13 +676,12 @@ function TailorPage() {
                 style={{ objectPosition: tour.focal ?? "50% 50%" }}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal-deep)]/80 via-transparent to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[color:var(--charcoal-deep)]/60 to-transparent" />
               <div className="absolute bottom-3 left-3 right-3 text-[color:var(--ivory)]">
                 <span className="text-[10px] uppercase tracking-[0.24em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-2.5 py-1">
                   Signature
                 </span>
-                <p className="serif italic mt-2 text-[15px] leading-snug">{tour.blurb}</p>
-                <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/85">
+                <div className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/90">
                   <span className="inline-flex items-center gap-1.5">
                     <MapPin size={11} /> {tour.region}
                   </span>
