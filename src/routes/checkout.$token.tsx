@@ -312,27 +312,23 @@ function CheckoutPage() {
             style={inputStyle}
           />
         </Field>
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Preferred date">
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className={inputCls}
-              style={inputStyle}
-            />
-          </Field>
-          <Field label="Guests">
-            <input
-              type="number"
-              min={1}
-              max={40}
-              value={guests}
-              onChange={(e) => setGuests(Math.max(1, Math.min(40, Number(e.target.value) || 1)))}
-              className={inputCls}
-              style={inputStyle}
-            />
-          </Field>
+        <Field label="Preferred date">
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className={inputCls}
+            style={inputStyle}
+          />
+        </Field>
+        <div
+          className="rounded-[2px] border p-4"
+          style={{
+            borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
+            background: "color-mix(in oklab, var(--sand) 45%, var(--ivory))",
+          }}
+        >
+          <CompositionField value={composition} onChange={setComposition} />
         </div>
         <Field label="Anything we should know? (optional)">
           <textarea
