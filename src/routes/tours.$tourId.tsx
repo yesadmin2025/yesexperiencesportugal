@@ -33,6 +33,7 @@ import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { TourImage } from "@/components/tours/TourImage";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { useAdminTourPhotos } from "@/lib/useAdminTourPhotos";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
