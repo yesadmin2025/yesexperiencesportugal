@@ -226,7 +226,7 @@ export function ReviewScreen({
                 €{totalEur}
               </p>
               <p className="mt-1 text-[12px] text-[color:var(--charcoal)]/65">
-                €{route.pricePerPersonEur} per guest · {guests} guest
+                €{route.pricePerPersonEur} per adult · {guests} adult
                 {guests > 1 ? "s" : ""}
               </p>
 
