@@ -1426,17 +1426,32 @@ function TailorPage() {
                     </div>
                   )}
 
+                  {showBandBreakdown && (
+                    <PriceBreakdownRows
+                      journeyLines={journeyLines}
+                      label="Travellers"
+                      testId="tailor-price-breakdown"
+                    />
+                  )}
+
                   <div className="pt-3 border-t border-[color:var(--border)] flex items-baseline justify-between">
                     <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
                       Indicative total
                     </span>
-                    <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
-                      €{estimatedPrice}
-                      <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-                        / adult
-                      </span>
+                    <span className="serif text-[1.4rem] text-[color:var(--charcoal)] tabular-nums">
+                      €{Math.round(displayTotalEur).toLocaleString("en-GB")}
+                      {!showBandBreakdown && (
+                        <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                          / adult
+                        </span>
+                      )}
                     </span>
                   </div>
+                  {showBandBreakdown && (
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] text-right">
+                      Party total · {guests} {guests === 1 ? "guest" : "guests"}
+                    </p>
+                  )}
 
                   {/* Confirmation status is always instant on Tailor —
                       manual gate retired per owner (test-mode + memory:
