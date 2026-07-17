@@ -26,14 +26,33 @@ export type TourPhoto = { src: string; alt: string };
  *   the hero / cover); subsequent items append a numbered location string.
  */
 export function getTourGallery(tour: SignatureTour, meta: ViatorMeta | undefined): TourPhoto[] {
-  if (meta?.localGallery?.length) {
-    return meta.localGallery.map((p) => ({ src: p.src, alt: p.alt }));
+  const seen = new Set<string>();
+  const out: TourPhoto[] = [];
+
+  // 1) Locally-uploaded YES photos first (editor-written alt text preserved).
+  for (const p of meta?.localGallery ?? []) {
+    if (!p?.src || seen.has(p.src)) continue;
+    seen.add(p.src);
+    out.push({ src: p.src, alt: p.alt });
   }
-  const fallback = meta?.gallery ?? [];
-  return fallback.map((src, i) => ({
-    src,
-    alt: i === 0 ? `${tour.title} — ${tour.region}` : `${tour.title} — ${tour.region} (${i + 1})`,
-  }));
+
+  // 2) Fall through to the curated Viator gallery so tours with a thin local
+  //    set (or none) still reach the gallery block's 3-photo threshold.
+  //    Tours with a full local gallery already covered above just skip these.
+  const viator = meta?.gallery ?? [];
+  viator.forEach((src, i) => {
+    if (!src || seen.has(src)) return;
+    seen.add(src);
+    out.push({
+      src,
+      alt:
+        out.length === 0
+          ? `${tour.title} — ${tour.region}`
+          : `${tour.title} — ${tour.region} (${i + 1})`,
+    });
+  });
+
+  return out;
 }
 
 /**
