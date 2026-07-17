@@ -118,7 +118,7 @@ function AdminPhotosPage() {
       .from("tour-photos")
       .createSignedUrls(rows.map((r) => r.storage_path), SIGNED_URL_TTL);
     const byPath = new Map((signed ?? []).map((s) => [s.path ?? "", s.signedUrl]));
-    setPhotos(rows.map((r) => ({ ...r, signedUrl: byPath.get(r.storage_path) })));
+    setPhotos(rows.map((r) => ({ ...r, signedUrl: byPath.get(r.storage_path) ?? undefined })));
     setLoadingPhotos(false);
   }, []);
 
