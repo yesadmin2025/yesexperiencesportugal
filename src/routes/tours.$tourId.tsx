@@ -189,7 +189,7 @@ function TourDetailPage() {
   return (
     <SiteLayout>
       {/* ── 1 · HERO ─────────────────────────────────────────────── */}
-      <TourHero tour={tour} resolveImg={resolveImg} meta={meta} />
+      <TourHero tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
 
       {/* ── 2 · TRUST MICROCOPY ─────────────────────────────────── */}
       <TrustStrip meta={meta} />
@@ -210,7 +210,7 @@ function TourDetailPage() {
       <IncludedAndIdeal tour={tour} meta={meta} />
 
       {/* ── 9 · GALLERY (real photos) ──────────────────────────── */}
-      <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} />
+      <GalleryStrip tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
 
       {/* ── 10 · RESERVE THIS DAY (simple booking) ─────────────── */}
       <BookingBlock tour={tour} />
