@@ -1857,6 +1857,7 @@ export type Database = {
       }
       studio_v2_bookings: {
         Row: {
+          adults: number | null
           archetype: string | null
           contact_email: string | null
           contact_name: string | null
@@ -1865,6 +1866,7 @@ export type Database = {
           draft_token: string
           guests: number | null
           id: string
+          minor_ages: number[]
           notes: string | null
           preferred_date: string | null
           profile: Json
@@ -1877,6 +1879,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          adults?: number | null
           archetype?: string | null
           contact_email?: string | null
           contact_name?: string | null
@@ -1885,6 +1888,7 @@ export type Database = {
           draft_token: string
           guests?: number | null
           id?: string
+          minor_ages?: number[]
           notes?: string | null
           preferred_date?: string | null
           profile: Json
@@ -1897,6 +1901,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          adults?: number | null
           archetype?: string | null
           contact_email?: string | null
           contact_name?: string | null
@@ -1905,6 +1910,7 @@ export type Database = {
           draft_token?: string
           guests?: number | null
           id?: string
+          minor_ages?: number[]
           notes?: string | null
           preferred_date?: string | null
           profile?: Json
