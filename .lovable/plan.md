@@ -1,31 +1,31 @@
-## Admin photo upload page
+## `/admin/photos` already exists — plus quick-import for these 9
 
-Build a private `/admin/photos` page so you can add photos to any tour straight from your iPhone — pick from your gallery, upload, reorder, set cover, done. No cloud folders, no middleman.
+The protected `/admin/photos` page is already live from our last build: sign in with **nidiadealmeida85@gmail.com**, pick a tour, tap "Add photos", multi-select from iPhone, HEIC auto-converts, and they land on the public tour page.
 
-### What you'll see and do
+You just uploaded 9 photos. Rather than making you re-upload them through the page, I can push them straight into the right tour galleries from here — no sign-in needed. But I need you to confirm which tour each set belongs to, because some are ambiguous:
 
-1. Sign in at `/auth` with **nidiadealmeida85@gmail.com** — that email is granted the `admin` role automatically.
-2. Open `/admin/photos` (linked from your account menu when signed in as admin).
-3. Pick a tour from a dropdown (Southwest Vicentine Coast, Sintra, Douro, etc.).
-4. Tap **Add photos** → iPhone opens your Photos gallery → multi-select 50+ at once → they upload with progress bars.
-5. Thumbnails appear in a grid: drag to reorder, tap ⭐ to set cover, tap 🗑 to delete, edit alt text inline.
-6. Changes save live to the tour gallery — public tour page updates immediately.
+### Group A — clearly coastal cliffs / wild trails / sunset over ocean
+- IMG_9402 (person filming ocean from wooden fence)
+- IMG_9403 (golden cliffs + sea)
+- IMG_9404 (sandy trail through coastal scrub)
+- IMG_9420 (sunset behind pine tree over cliffs)
+- IMG_9395 (dramatic white cliff face over ocean)
+- IMG_6467 (whitewashed terrace with driftwood pergola)
 
-### What happens behind the scenes
+→ Best fit: **Southwest Vicentine Coast** OR **Arrábida / Sesimbra** (the white cliffs in 9395 and the terrace in 6467 look more like Cabo Espichel / Sesimbra than the Vicentine coast).
 
-- Private `tour-photos` storage bucket + new `tour_gallery_photos` table (tour_id, storage_path, alt, sort_order, is_cover).
-- HEIC photos from iPhone auto-convert to JPEG in the browser; every photo is resized to max 2400px and compressed (~85% quality) before upload — keeps galleries fast without you thinking about it.
-- Alt text auto-suggested from tour name + index, editable.
-- `admin` role stored in the existing `user_roles` table (safe pattern, no privilege escalation).
-- `getTourGallery` reads from `tour_gallery_photos` first; falls back to the current curated Viator/local images when a tour has none uploaded yet — so nothing breaks and Southwest Vicentine Coast keeps the 5 Viator photos I wired earlier until you replace them.
-- All upload/delete/reorder endpoints are `createServerFn` with `requireSupabaseAuth` + admin role check — no one else can touch your galleries.
+### Group B — turquoise-water beaches
+- IMG_6472 (beach with straw parasols + cabanas + Arrábida on horizon)
+- IMG_6473 (aerial screenshot of long turquoise beach)
+- IMG_6475 (wooden boardwalk to turquoise beach)
 
-### Out of scope (for v1)
+→ Best fit: **Tróia & Comporta** (the Arrábida silhouette in 6472 confirms this is the Setúbal peninsula).
 
-- No public user uploads.
-- No AI cropping or auto alt-text.
-- No bulk import from Google Drive / iCloud.
+### One question before I upload
 
-### After approval
+**Which tour does Group A belong to?**
+- (a) Southwest Vicentine Coast — Secret Paradise from Lisbon
+- (b) Arrábida & Sesimbra Private Tour with Coastal Boat Ride
+- (c) Split — tell me which image goes where
 
-I'll build it in one pass, then walk you through: sign in → open `/admin/photos` → upload the Southwest Vicentine Coast photos first as a test.
+Once you answer, I'll upload all 9 (resized + web-optimised) and set the strongest one in each group as the cover. They'll appear on the tour pages immediately.
