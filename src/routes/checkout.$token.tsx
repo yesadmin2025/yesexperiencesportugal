@@ -117,6 +117,10 @@ function CheckoutPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) return;
+    if (!isCompositionComplete(composition)) {
+      setError("Please set an age for every child so we can price fairly.");
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
@@ -127,11 +131,16 @@ function CheckoutPage() {
           contactEmail: email.trim(),
           contactPhone: phone.trim() || undefined,
           preferredDate: date || undefined,
-          guests,
+          adults: composition.adults,
+          minorAges: [...composition.minorAges],
           notes: notes.trim() || undefined,
         },
       });
-      void trackBuilderEvent("studio_v2_booking_submit", { draftToken: token });
+      void trackBuilderEvent("studio_v2_booking_submit", {
+        draftToken: token,
+        guests: totalGuests(composition),
+        minors: composition.minorAges.length,
+      });
       setDone(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not submit.");
