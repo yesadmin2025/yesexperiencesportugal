@@ -2169,6 +2169,42 @@ export type Database = {
         }
         Relationships: []
       }
+      tour_gallery_photos: {
+        Row: {
+          alt: string
+          created_at: string
+          id: string
+          is_cover: boolean
+          sort_order: number
+          storage_path: string
+          tour_id: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          alt?: string
+          created_at?: string
+          id?: string
+          is_cover?: boolean
+          sort_order?: number
+          storage_path: string
+          tour_id: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          alt?: string
+          created_at?: string
+          id?: string
+          is_cover?: boolean
+          sort_order?: number
+          storage_path?: string
+          tour_id?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
       tour_price_tiers: {
         Row: {
           tiers: Json
