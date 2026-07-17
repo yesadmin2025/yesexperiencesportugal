@@ -243,16 +243,19 @@ function TourHero({
   tour,
   resolveImg,
   meta,
+  adminPhotos,
 }: {
   tour: SignatureTour;
   resolveImg: ReturnType<typeof useImportedTourImages>["resolveImg"];
   meta: ViatorMeta | undefined;
+  adminPhotos: ReturnType<typeof useAdminTourPhotos>;
 }) {
   const heroResolved = resolveImg(tour, "hero");
-  // Prefer locally-uploaded YES Experiences photos when present, then the
-  // curated Viator gallery cover, then the imported tour image.
-  const heroSrc = meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
-  const heroAlt = getHeroAlt(tour, meta);
+  // Prefer admin-uploaded photos (cover first), then locally-baked YES photos,
+  // then Viator gallery cover, then the imported tour image.
+  const adminCover = adminPhotos[0]?.src;
+  const heroSrc = adminCover ?? meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
+  const heroAlt = adminPhotos[0]?.alt || getHeroAlt(tour, meta);
   return (
     <>
       {/* Breadcrumb */}
