@@ -23,8 +23,6 @@ import {
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { MULTIDAY_LANDSCAPES } from "@/components/ui/AmbientLandscapeStrip";
-import { AmbientLandscapeReveal } from "@/components/ui/AmbientLandscapeReveal";
 
 import { whatsappHref } from "@/components/WhatsAppFab";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
@@ -443,15 +441,6 @@ function MultiDayPage() {
           </p>
         </div>
       </section>
-
-      <AmbientLandscapeReveal
-        eyebrow="A few of the places"
-        title={<>Real coast, real <SectionTitle.Em>quiet corners.</SectionTitle.Em></>}
-        intro="A handful of the settings a multi-day route can pass through. Never invented, never off a stock library."
-        photos={MULTIDAY_LANDSCAPES}
-        moduleKey="multi_day_ambient"
-      />
-
 
       {/* ── Local support ────────────────────────────────── */}
       <section className="py-14 md:py-20 bg-[color:var(--sand)] reveal">
