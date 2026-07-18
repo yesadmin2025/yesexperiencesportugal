@@ -411,6 +411,21 @@ function StaticArticleView({
                   ))}
                 </ul>
               )}
+
+              {article.relatedReads && article.relatedReads.length > 0 && (
+                <ul className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] tracking-[0.02em] text-[color:var(--charcoal-soft)]">
+                  {article.relatedReads.map((r) => (
+                    <li key={r.path}>
+                      <a
+                        href={r.path}
+                        className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
+                      >
+                        {r.label} →
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </aside>
 
             {reviews.length > 0 && (
