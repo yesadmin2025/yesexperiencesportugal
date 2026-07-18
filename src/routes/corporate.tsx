@@ -6,6 +6,10 @@ import { MessageCircle, Users, Compass, ClipboardCheck } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import {
+  AmbientLandscapeStrip,
+  CORPORATE_LANDSCAPES,
+} from "@/components/ui/AmbientLandscapeStrip";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 import wineryGroupAsset from "@/assets/owner-photos/winery-group-orange-tree.jpeg.asset.json";
@@ -186,6 +190,13 @@ function CorporatePage() {
           </dl>
         </div>
       </section>
+
+      <AmbientLandscapeStrip
+        eyebrow="Where the day happens"
+        title={<>The landscapes you'll <SectionTitle.Em>host in.</SectionTitle.Em></>}
+        intro="Coast, cliffs, cellars and quiet coves — real places on the Lisbon, Setúbal and Alentejo axis, all reachable inside one working day."
+        photos={CORPORATE_LANDSCAPES}
+      />
 
       {/* Closing CTA */}
       <section className="py-16 md:py-20 bg-[color:var(--sand)] reveal">
