@@ -102,6 +102,7 @@ export function GuestMomentsStrip({
         >
           {rendered.map((photo, idx) => {
             const responsive = buildResponsiveSrc(photo.src, { sizes: "portrait" });
+            const kbVariant = idx % 3 === 1 ? " ken-burns-slow--b" : idx % 3 === 2 ? " ken-burns-slow--c" : "";
             return (
             <li
               key={photo.src}
@@ -119,16 +120,11 @@ export function GuestMomentsStrip({
                     src={responsive.src}
                     srcSet={responsive.srcSet}
                     alt={photo.alt}
-                    loading="lazy"
+                    loading={idx === 0 ? "eager" : "lazy"}
                     decoding="async"
+                    fetchPriority={idx === 0 ? "high" : "auto"}
                     sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 76vw"
-                    className="
-                      editorial-photo-motion
-                      absolute inset-0 h-full w-full object-cover
-                      transition-transform duration-[560ms] ease-[var(--ease-premium)]
-                      md:group-hover:scale-[1.03]
-                      motion-reduce:transition-none motion-reduce:transform-none
-                    "
+                    className={`ken-burns-slow${kbVariant} absolute inset-0 h-full w-full object-cover`}
                   />
                 </div>
                 <figcaption className="mt-4 font-serif italic text-[0.95rem] md:text-[1rem] leading-snug text-[color:var(--teal)]">
