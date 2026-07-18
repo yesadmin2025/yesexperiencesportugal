@@ -523,6 +523,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedSignatures: [{ slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" }],
+    relatedReads: [
+      { path: "/wine-tours-lisbon", label: "Wine tours from Lisbon" },
+      { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
+      { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
+    ],
     datePublished: "2026-06-30",
     faq: [
       {
