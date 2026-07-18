@@ -1,71 +1,55 @@
-## Contexto
+## Problema
 
-Levantamento confirmou que os heroes de `/corporate` e `/proposal-in-portugal` já usam owner-photos com pessoas reais, e `/multi-day` não tem hero fotográfico (é preview do PDF). O banco novo `tour_gallery_photos` traz paisagens (Comporta, Cabo Espichel, Vicentine, picnic) que não devem substituir retratos — mas podem enriquecer as páginas como blocos ambientais.
+As páginas hero (corporate, proposal, multi-day, about) e os novos blocos `AmbientLandscapeStrip` estão a reutilizar as mesmas fotos do banco (Comporta boardwalk, Espichel cliffs, Vicentine bay) em vários sítios. Além disso, várias imagens do banco (`tour_gallery_photos` + `owner-photos`) são de qualidade média (compressão iPhone, enquadramento amador, luz plana) e não passam o padrão editorial "Aman / Cereal magazine".
 
-Escopo aprovado:
+## Objectivo
 
-1. Manter todos os retratos/casais/grupos que já lá estão.
-2. Adicionar as paisagens do banco em blocos secundários onde reforcem a narrativa.
-3. Nos "corporate moments" (`GuestMomentsStrip` em `/corporate` e homepage), garantir que só passam as melhores fotos com pessoas + alta conversão.
+1. **Zero repetição** — cada foto aparece só numa página em todo o site público.
+2. **Só imagens premium** — banir do site qualquer foto que não tenha qualidade editorial (nítida, luz cinemática, composição limpa, sem duplicados temáticos).
 
-## O que muda
+## Plano
 
-### 1. `/corporate` — reforçar prova social + paisagem
+### 1. Auditoria completa (primeiro passo, sem código)
 
-- **GuestMomentsStrip**: auditar o `CORPORATE_SET` em `src/content/guest-moments.ts` e reduzir aos 6-8 momentos mais fortes com pessoas (grupos, brindes, refeições partilhadas). Retirar naturezas-mortas fracas se existirem.
-- **Novo bloco ambiental "The landscapes you'll host in"** entre "Where it fits" e o CTA final: mini-galeria 3-up com Comporta boardwalk + Arrábida Espichel cliffs + Setúbal winery landscape (Viator). Legenda editorial curta, sem CTA. Sinaliza escala do território.
+Vou listar **todas** as imagens actualmente usadas nas páginas de conversão e no banco:
 
-### 2. `/proposal-in-portugal` — adicionar cenário
+- `src/assets/owner-photos/*` (18 fotos)
+- `src/assets/ambient/*` (8 fotos novas)
+- `tour_gallery_photos` no Supabase (fotos admin)
+- Referências em: `index.tsx`, `about.tsx`, `corporate.tsx`, `proposal-in-portugal.tsx`, `multi-day.tsx`, `experiences.tsx`, `tours.$tourId.tsx`, `AmbientLandscapeStrip.tsx`, `guest-moments.ts`, `SignatureCarousel`.
 
-- Novo bloco "The settings we work with" após os 3 cards de casais: 3 paisagens (Cabo Espichel sunset, palm-fronds turquoise bay Vicentine, Comporta cabanas) apresentadas como "onde o momento pode acontecer". Mantém todos os retratos actuais intactos.
+Entrego uma **tabela** com: ficheiro · onde é usada · quantas vezes · veredicto de qualidade (keep / replace / retire).
 
-### 3. `/multi-day` — enriquecer "Where it can go"
+### 2. Curadoria (tu decides)
 
-- Substituir o `imgCorkHarvest` isolado por uma tira de 3 paisagens (Comporta aerial, Vicentine cove, Sesimbra/Arrábida) mostrando amplitude geográfica dos itinerários multi-dia. Cork harvest passa para dentro do fluxo do texto como imagem pequena secundária, ou é removido se ficar redundante.
+Depois da tabela, peço-te para:
 
-### 4. Homepage — curadoria dos "moments"
+- Confirmar quais fotos **retiras** do site (qualidade insuficiente).
+- Indicar de que categorias precisas de **novas fotos** (ex: corporate premium, proposta romântica, multi-day Douro).
 
-- Auditar `HOMEPAGE_SET` em `src/content/guest-moments.ts`: só as 8 fotos com pessoas de maior qualidade e emocionalmente ricas (brindes, casais, grupos em viewpoint, artesãos em acção). Fotos ambientais/paisagem saem daqui — vão para os novos blocos das páginas de conversão.
-- CinematicHero (vídeo) fica intocado, conforme pedido.
+Podes enviar fotos novas ou eu proponho gerar hero images editoriais premium (IA fotorrealista, estilo Aman/Cereal) para preencher os buracos até teres o material real.
 
-### 5. Utilitário partilhado
+### 3. Regra de unicidade (implementação após tua aprovação)
 
-- Novo componente `<AmbientLandscapeStrip>` em `src/components/ui/` (padrão editorial, 3 fotos, sem CTA, aspect 3:2, `buildResponsiveSrc` já integrado, `sizes="(min-width: 1024px) 33vw, 100vw"`). Usado nos 3 blocos ambientais acima — evita triplicar markup.
+- Cada asset entra numa única página. Se uma foto é hero em `/corporate`, não pode aparecer em `AmbientLandscapeStrip` nem em Guest Moments.
+- Crio um teste `src/__tests__/image-uniqueness.test.ts` que falha o build se a mesma URL aparecer em >1 rota de conversão (corporate, proposal, multi-day, about, index, experiences).
 
-### 6. Fotos do banco → assets renderizáveis
+### 4. Substituições concretas
 
-As fotos do banco vivem em Supabase Storage privado (signed URLs, `useAdminTourPhotos`). Para páginas públicas sem tour associado, preciso:
+Com o mapa de curadoria aprovado, faço num único commit:
 
-- **Opção A (rápida)**: fazer download das 6-8 paisagens escolhidas e uploadar via `lovable-assets` como CDN pointers (`.asset.json`), consumo directo por `<AmbientLandscapeStrip>`. Zero signed-URL churn, cache CDN forte.
-- **Opção B**: server fn pública que devolve signed URLs para um subset marcado como "public showcase". Mais infra, sem benefício visível.
+- Trocar imagens repetidas por únicas.
+- Retirar do código as fotos rejeitadas (delete via `lovable-assets delete`).
+- Actualizar `AmbientLandscapeStrip` presets (Corporate/Proposal/Multi-day) para usarem 3 fotos exclusivas cada, sem overlap.
+- Actualizar `guest-moments.ts` para não repetir nenhuma foto usada em heroes.
 
-**Recomendação: Opção A** — as fotos ficam no banco (fonte de verdade), e as duplicamos como assets CDN para uso editorial em páginas públicas.
+### 5. Qualidade responsiva (sanity check final)
 
-## Regras editoriais (sem invenção)
+Confirmar que todas as fotos finais servem via `buildResponsiveSrc` com AVIF/WebP e `srcSet` correcto, e que os heroes têm `fetchPriority="high"`.
 
-- Cada foto ambiental usa a `alt` já registada em `tour_gallery_photos` (fiel ao local).
-- Legendas curtas descrevem o **lugar**, não a experiência (evita implicar itinerários que não existem).
-- Nenhum bloco novo introduz CTA, preço ou promessa.
-- Motion: só o `reveal` padrão editorial (fade + translateY ≤16px).
+## Antes de avançar preciso de duas respostas
 
-## Testes
+1. **Autorizas gerar hero images premium por IA** (fotorrealistas, estilo editorial Aman/Cereal) para preencher lacunas onde não temos foto real de qualidade, ou preferes esperar até enviares mais fotos tuas?
+2. **A auditoria (passo 1) — queres a tabela em português, no chat, ou preferes num ficheiro `docs/image-audit.md` para reveres com calma?**  
 
-- `src/__tests__/image-alt-coverage.test.ts` já exige alt — o novo componente passa naturalmente.
-- Snapshot de `<AmbientLandscapeStrip>` para lock de estrutura.
-
-## Fora do escopo
-
-- Trocar retratos actuais por paisagens.
-- Mexer em hero video da homepage.
-- Alterar `/about` (retrato da fundadora fica).
-- Novas fotos além das já no banco.
-
-## Entregáveis
-
-- 1 componente novo (`AmbientLandscapeStrip`).
-- 6-8 novos `.asset.json` (paisagens do banco em CDN).
-- Blocos ambientais em `/corporate`, `/proposal-in-portugal`, `/multi-day`. /moments
-- Curadoria de `HOMEPAGE_SET` + `CORPORATE_SET` em `guest-moments.ts`.
-- 1 snapshot test.
-
-Fotos com Alta qualidade nas páginas e Motion 
+Quero que melhores a qualidade das imagens que são boas para cada contexto e que lhes dês Motion 

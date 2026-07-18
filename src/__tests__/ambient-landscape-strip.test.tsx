@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/AmbientLandscapeStrip";
 
 describe("AmbientLandscapeStrip", () => {
-  it("renders 3 photos per preset with alt + caption", () => {
+  it("renders each preset with alt + caption + valid src", () => {
     for (const set of [CORPORATE_LANDSCAPES, PROPOSAL_LANDSCAPES, MULTIDAY_LANDSCAPES]) {
-      expect(set).toHaveLength(3);
+      expect(set.length).toBeGreaterThanOrEqual(3);
       for (const p of set) {
         expect(p.alt).toBeTruthy();
         expect(p.caption).toBeTruthy();
@@ -19,7 +19,13 @@ describe("AmbientLandscapeStrip", () => {
     }
   });
 
-  it("emits <img> with alt, sizes and lazy loading", () => {
+  it("uses every ambient photo in exactly ONE preset (zero cross-page repeats)", () => {
+    const all = [...CORPORATE_LANDSCAPES, ...PROPOSAL_LANDSCAPES, ...MULTIDAY_LANDSCAPES].map((p) => p.src);
+    const unique = new Set(all);
+    expect(unique.size).toBe(all.length);
+  });
+
+  it("emits <img> with alt, sizes, lazy loading and Ken Burns motion class", () => {
     const html = renderToString(
       <AmbientLandscapeStrip
         eyebrow="Test"
@@ -28,9 +34,10 @@ describe("AmbientLandscapeStrip", () => {
       />,
     );
     const imgCount = (html.match(/<img /g) ?? []).length;
-    expect(imgCount).toBe(3);
+    expect(imgCount).toBe(CORPORATE_LANDSCAPES.length);
     expect(html).toMatch(/loading="lazy"/);
     expect(html).toMatch(/sizes="/);
     expect(html).toMatch(/alt="/);
+    expect(html).toMatch(/ambient-kenburns/);
   });
 });

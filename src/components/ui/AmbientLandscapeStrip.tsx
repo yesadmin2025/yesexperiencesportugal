@@ -1,17 +1,13 @@
 /**
  * AmbientLandscapeStrip — editorial 3-up strip of landscape photos used
- * as a secondary, place-driven trust block on conversion pages. No CTA,
- * no promise, no invented itineraries — just faithful "settings we work
- * in". Every image is a real photo from the owner's `tour-photos` bank.
+ * as a secondary, place-driven trust block on conversion pages.
  *
- * Layout & motion follow the existing editorial system:
- *   • 3:2 landscape crop, aspect locked
- *   • fade + translateY reveal (≤16px), no parallax outside .home-energy
- *   • Fraunces caption (place, not experience)
- *
- * Use it via one of the exported presets, or pass your own `photos` when
- * a page needs a bespoke selection — presets keep the three main pages
- * visually consistent.
+ * Rules:
+ *   • Every photo is unique across the site (no cross-page repeats).
+ *   • 3:2 landscape crop, aspect locked.
+ *   • Ken Burns motion: slow scale+drift, 12s, alternate; disabled by
+ *     prefers-reduced-motion (see .ambient-kenburns in styles.css).
+ *   • Fraunces caption (place, not experience).
  */
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -27,6 +23,8 @@ import espichelSunset from "@/assets/ambient/sunset-pine-cliffs.jpg.asset.json";
 import vicentineBay from "@/assets/ambient/01-cover-turquoise-bay-palm.jpg.asset.json";
 import vicentineCove from "@/assets/ambient/02-hidden-cove-rocks.jpg.asset.json";
 import vicentineIlha from "@/assets/ambient/03-ilha-do-pessegueiro.jpg.asset.json";
+import douroTerraces from "@/assets/ambient/douro-terraces-golden.jpg.asset.json";
+import alentejoCork from "@/assets/ambient/alentejo-cork-dawn.jpg.asset.json";
 
 export interface AmbientPhoto {
   src: string;
@@ -35,7 +33,7 @@ export interface AmbientPhoto {
 }
 
 // -------------------------------------------------------------------
-// Preset selections (place, not experience)
+// Preset selections — every photo appears in EXACTLY ONE preset.
 // -------------------------------------------------------------------
 
 export const CORPORATE_LANDSCAPES: AmbientPhoto[] = [
@@ -50,9 +48,9 @@ export const CORPORATE_LANDSCAPES: AmbientPhoto[] = [
     caption: "Cabo Espichel",
   },
   {
-    src: vicentineBay.url,
-    alt: "Turquoise bay framed by palm fronds on the Southwest Vicentine Coast",
-    caption: "Southwest Coast",
+    src: vicentineIlha.url,
+    alt: "Ilha do Pessegueiro from the beach, Southwest Vicentine Coast",
+    caption: "Ilha do Pessegueiro",
   },
 ];
 
@@ -63,9 +61,9 @@ export const PROPOSAL_LANDSCAPES: AmbientPhoto[] = [
     caption: "Cabo Espichel, at sunset",
   },
   {
-    src: vicentineBay.url,
-    alt: "Turquoise bay framed by palm fronds on the Southwest Vicentine Coast",
-    caption: "A private bay, Southwest Coast",
+    src: vicentineCove.url,
+    alt: "Hidden cove framed by ochre rock, Southwest Vicentine Coast",
+    caption: "A hidden cove",
   },
   {
     src: comportaCabanas.url,
@@ -81,14 +79,19 @@ export const MULTIDAY_LANDSCAPES: AmbientPhoto[] = [
     caption: "Comporta coast",
   },
   {
-    src: vicentineIlha.url,
-    alt: "Ilha do Pessegueiro seen from the beach on the Southwest Vicentine Coast",
-    caption: "Ilha do Pessegueiro",
+    src: douroTerraces.url,
+    alt: "Douro Valley vineyard terraces at golden hour above the river",
+    caption: "Douro Valley",
   },
   {
-    src: espichelCliffs.url,
-    alt: "Dramatic white cliffs of Cabo Espichel above the Atlantic",
-    caption: "Arrábida & Espichel",
+    src: alentejoCork.url,
+    alt: "Alentejo cork oak plains at dawn, mist between ancient trees",
+    caption: "Alentejo, at dawn",
+  },
+  {
+    src: vicentineBay.url,
+    alt: "Turquoise bay framed by palm fronds, Southwest Vicentine Coast",
+    caption: "Southwest Coast",
   },
 ];
 
@@ -104,6 +107,13 @@ interface Props {
 }
 
 export function AmbientLandscapeStrip({ eyebrow, title, intro, photos }: Props) {
+  const cols =
+    photos.length >= 4
+      ? "sm:grid-cols-2 lg:grid-cols-4"
+      : photos.length === 2
+        ? "sm:grid-cols-2"
+        : "sm:grid-cols-3";
+
   return (
     <section className="py-14 md:py-24 bg-[color:var(--ivory)] reveal">
       <div className="container-x">
@@ -121,7 +131,7 @@ export function AmbientLandscapeStrip({ eyebrow, title, intro, photos }: Props) 
         </div>
 
         <ul
-          className="mt-10 md:mt-14 grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6"
+          className={`mt-10 md:mt-14 grid grid-cols-1 ${cols} gap-4 md:gap-6`}
           data-testid="ambient-landscape-strip"
         >
           {photos.map((p, i) => {
@@ -129,15 +139,20 @@ export function AmbientLandscapeStrip({ eyebrow, title, intro, photos }: Props) 
             return (
               <li key={`${p.src}-${i}`} className="reveal-stagger">
                 <figure className="overflow-hidden">
-                  <img
-                    src={r.src}
-                    srcSet={r.srcSet}
-                    sizes={r.sizes}
-                    alt={p.alt}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full aspect-[3/2] object-cover transition-transform duration-700 ease-out hover:scale-[1.02]"
-                  />
+                  <div className="overflow-hidden">
+                    <img
+                      src={r.src}
+                      srcSet={r.srcSet}
+                      sizes={r.sizes}
+                      alt={p.alt}
+                      loading="lazy"
+                      decoding="async"
+                      width={1600}
+                      height={1067}
+                      className="ambient-kenburns w-full aspect-[3/2] object-cover"
+                      style={{ animationDelay: `${i * -3}s` }}
+                    />
+                  </div>
                   <figcaption className="mt-3 serif text-[0.95rem] text-[color:var(--charcoal)] leading-tight">
                     {p.caption}
                   </figcaption>
