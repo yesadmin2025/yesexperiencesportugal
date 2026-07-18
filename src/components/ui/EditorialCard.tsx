@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link, type LinkProps } from "@tanstack/react-router";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { buildResponsiveSrc } from "@/lib/responsive-image";
 
 /**
  * EditorialCard — canonical homepage card with named slots.
@@ -62,13 +63,17 @@ function ImageSide({
     "he-tilt relative z-10 block md:col-span-7 overflow-hidden rounded-[2px] border border-[color:var(--border)] bg-[color:var(--card)] transition-transform duration-300 ease-out group-hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 " +
     (reverse ? "md:order-2" : "md:order-1");
 
+  const responsive = buildResponsiveSrc(image.src, { sizes: "portrait" });
   const Inner = (
     <div className="he-image-cinema he-image-rise relative aspect-[4/3] md:aspect-[5/4] overflow-hidden">
       <img
-        src={image.src}
+        src={responsive.src}
+        srcSet={responsive.srcSet}
+        sizes={responsive.sizes}
         alt={image.alt ?? ""}
         aria-hidden={image.alt ? undefined : "true"}
         loading="lazy"
+        decoding="async"
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.04]"
       />
       <div

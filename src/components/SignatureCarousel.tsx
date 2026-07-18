@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { buildResponsiveSrc } from "@/lib/responsive-image";
 
 /**
  * SignatureCarousel — premium horizontal swipe carousel for the
@@ -250,13 +251,22 @@ export function SignatureCarousel({ items, autoplayMs = DEFAULT_AUTOPLAY_MS }: P
                 className="editorial-card block relative overflow-hidden aspect-[3/2] border border-[color:var(--border)] transition-[transform,box-shadow] duration-[600ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-data-[active=true]:shadow-[0_28px_56px_-24px_rgba(0,0,0,0.55)] active:scale-[0.995]"
                 aria-label={`Open journey — ${s.title}`}
               >
-                <img
-                  src={s.img}
-                  alt={s.title}
-                  loading="lazy"
-                  data-card-image
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-data-[active=true]:scale-[1.04] group-hover:scale-[1.04]"
-                />
+                {(() => {
+                  const r = buildResponsiveSrc(s.img, { sizes: "card" });
+                  return (
+                    <img
+                      src={r.src}
+                      srcSet={r.srcSet}
+                      sizes={r.sizes}
+                      alt={s.title}
+                      loading={i === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      fetchPriority={i === 0 ? "high" : "auto"}
+                      data-card-image
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-data-[active=true]:scale-[1.04] group-hover:scale-[1.04]"
+                    />
+                  );
+                })()}
                 {/* Cinematic bottom-anchored wash. Top kept light so the
                     photography breathes; bottom carries the legibility. */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal-deep)]/90 via-[color:var(--charcoal-deep)]/35 to-transparent" />
