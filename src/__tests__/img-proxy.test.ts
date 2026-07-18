@@ -82,6 +82,9 @@ describe("buildCacheKey", () => {
 describe("allowlists", () => {
   it("allows expected hosts only", () => {
     expect(ALLOWED_HOSTS.has("yesexperiences.pt")).toBe(true);
+    expect(ALLOWED_HOSTS.has("www.yesexperiences.pt")).toBe(true);
+    // Viator CDN — imported tour images and Signature/Tailor covers.
+    expect(ALLOWED_HOSTS.has("media.tacdn.com")).toBe(true);
     expect(ALLOWED_HOSTS.has("evil.example.com")).toBe(false);
   });
   it("allows expected image extensions", () => {
