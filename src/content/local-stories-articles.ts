@@ -467,17 +467,20 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Arrábida: the coast that quietly makes great wine",
-        body: "[Body copy to be supplied.]",
+        body: "Arrábida is often discovered for its beaches and mountain views, but wine has been part of this landscape for centuries. Vineyards sit between the Atlantic, the limestone hills and the warmer plains around Azeitão and Palmela.\n\nThis unusual combination creates very different styles within a relatively small area. Local wineries produce fresh whites, structured reds and the region's famous Moscatel de Setúbal. Castelão remains one of the most characteristic red grapes, particularly in the sandy soils of the Setúbal Peninsula.\n\nWhat makes Arrábida especially attractive from Lisbon is the variety of the day. A private wine experience can include family cellars, panoramic roads, a traditional lunch and the coast without spending several hours travelling between each stop.",
       },
       {
         heading: "Setúbal Moscatel — sweet, salty, and very Portuguese",
-        body: "[Body copy to be supplied.]",
+        body: "Moscatel de Setúbal is one of Portugal's great fortified wines and one of the clearest expressions of this region. It begins with intensely aromatic grapes and develops greater complexity through ageing.\n\nOrange blossom, candied citrus, honey, dried fruit and spices are common notes. Some wines remain bright and floral, while older Moscatel can become deep, nutty and almost savoury. That contrast between sweetness, acidity and a subtle saline character is what makes it so distinctive.\n\nIt is traditionally associated with dessert, but locally it also appears beside Azeitão cheese or as the final glass after a long lunch. For many visitors, Moscatel becomes the unexpected discovery of a wine tour near Lisbon.",
       },
       {
         heading: "Alentejo talha wines — buried clay, ancient method",
-        body: "[Body copy to be supplied.]",
+        body: "In Alentejo, some producers continue to make wine in large clay vessels called talhas. The method has roots stretching back to Roman times and remains especially important in villages around Vidigueira.\n\nGrapes ferment inside the clay vessels, often with their skins, before the wine is separated naturally through an opening near the base. The process is simple in appearance but demands knowledge, patience and careful attention throughout fermentation.\n\nTalha wines can feel textured, earthy and direct, with a character very different from wines made entirely in modern stainless-steel tanks or oak barrels. Visiting a working talha cellar is not merely a tasting. It is an encounter with a living winemaking tradition that has survived for almost two thousand years.",
       },
-      { heading: "How we choose which wineries to visit", body: "[Body copy to be supplied.]" },
+      {
+        heading: "How we choose which wineries to visit",
+        body: "We choose wineries according to the quality of the experience, not only the fame of the label. Good wine matters, but so do the people hosting, the time allowed for the visit and the ability to explain the region without turning the tasting into a rehearsed sales presentation.\n\nFor some guests, the right choice is a small family cellar. Others appreciate the history and wider range of an established estate. Some want traditional Portuguese grapes, while others are curious about natural methods, clay amphorae or premium aged wines.\n\nWe therefore build the winery combination around the traveller, availability and the rhythm of the day. The goal is contrast: different producers, different stories and enough time to understand what makes each one worth visiting.",
+      },
     ],
     ctaLead:
       "Most of these wineries are part of our private Signature wine days — door-to-door from your Lisbon hotel, with a quiet long lunch in between.",
