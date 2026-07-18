@@ -100,7 +100,7 @@ export function GuestMomentsStrip({
           "
           role="list"
         >
-          {photos.map((photo, idx) => {
+          {rendered.map((photo, idx) => {
             const responsive = buildResponsiveSrc(photo.src, { sizes: "portrait" });
             return (
             <li
