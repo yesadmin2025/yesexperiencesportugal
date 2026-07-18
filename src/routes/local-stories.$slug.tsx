@@ -314,8 +314,8 @@ function StaticArticleView({
   });
 
   return (
-    <SiteLayout><div className="local-stories-scope">
-      <article>
+    <SiteLayout>
+      <article className="local-stories-scope">
         <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)]">
           <div className="container-x max-w-3xl text-center">
             <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5">
