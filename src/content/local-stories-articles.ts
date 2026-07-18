@@ -93,10 +93,22 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     standfirst:
       "Two very different sides of Lisbon. Here is how we help guests pick the right one.",
     sections: [
-      { heading: "What Arrábida feels like", body: "[Body copy to be supplied.]" },
-      { heading: "What Sintra feels like", body: "[Body copy to be supplied.]" },
-      { heading: "Crowds, driving time, pace", body: "[Body copy to be supplied.]" },
-      { heading: "Our honest take", body: "[Body copy to be supplied.]" },
+      {
+        heading: "What Arrábida feels like",
+        body: "Arrábida feels open, bright and unhurried. The road crosses vineyards and cork-oak countryside before climbing into a natural park where the mountains fall directly towards the Atlantic.\n\nA typical day can combine a local market, family wineries, a long Portuguese lunch, viewpoints and the fishing towns of Setúbal or Sesimbra. The experience is shaped less by famous monuments and more by landscape, food, wine and the freedom to stop when somewhere feels right.\n\nArrábida suits travellers who want to escape the city rather than replace it with another crowded attraction. It is especially rewarding for guests interested in local producers, coastal scenery and a slower rhythm.",
+      },
+      {
+        heading: "What Sintra feels like",
+        body: "Sintra feels theatrical, historic and slightly mysterious. Forested hills surround palaces, gardens and old estates, while mist and changing light give the landscape a character unlike anywhere else near Lisbon.\n\nThe main attractions are internationally famous, particularly Pena Palace and Quinta da Regaleira. A well-designed private day can also continue through the Sintra-Cascais Natural Park, Cabo da Roca and the coast towards Cascais.\n\nSintra suits travellers drawn to architecture, royal history, gardens and dramatic scenery. It is more monument-focused than Arrábida and generally requires greater planning because entrance times, traffic and visitor numbers influence the rhythm of the day.",
+      },
+      {
+        heading: "Crowds, driving time, pace",
+        body: "Both regions are accessible from Lisbon, but they behave very differently once the day begins. Sintra attracts large numbers of visitors, particularly around its principal palaces. Starting early, reserving timed entrance tickets and planning the route carefully can make a substantial difference.\n\nArrábida usually feels less pressured. Driving times between wineries, viewpoints and coastal stops are manageable, and the day can remain flexible. There is more freedom to extend lunch, add a tasting or spend longer beside the sea.\n\nSintra rewards structure. Arrábida rewards spontaneity. Neither is automatically better, but the preferred pace should influence the choice as much as the list of places to visit.",
+      },
+      {
+        heading: "Our honest take",
+        body: "Choose Sintra when palaces, gardens and Portuguese royal history are essential to your trip. It is one of the country's most remarkable destinations and deserves to be experienced properly rather than rushed between compulsory photographs.\n\nChoose Arrábida when you want wine, local food, Atlantic scenery and a day that can adapt as it unfolds. It is quieter, more personal and still unfamiliar to many international visitors.\n\nFor a first visit to Portugal, Sintra may feel unavoidable. For travellers who already know the famous sights, or who simply prefer authentic local experiences to crowded landmarks, Arrábida is often the more memorable surprise.",
+      },
     ],
     ctaLead:
       "If Sintra calls you, we have a private Signature shaped around it — palaces, forest, and Cascais light.",
@@ -115,10 +127,22 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     standfirst:
       "Twenty minutes south of Lisbon, a wine region most travellers still miss. Here is what to taste, and where.",
     sections: [
-      { heading: "Why Setúbal is different", body: "[Body copy to be supplied.]" },
-      { heading: "Moscatel de Setúbal, explained simply", body: "[Body copy to be supplied.]" },
-      { heading: "The wineries we love", body: "[Body copy to be supplied.]" },
-      { heading: "What to pair it with", body: "[Body copy to be supplied.]" },
+      {
+        heading: "Why Setúbal is different",
+        body: "Setúbal feels remarkably removed from Lisbon despite being close enough for an easy private day trip. Vineyards stretch between the limestone hills of Arrábida, the plains around Palmela and the Atlantic coast. The sea influences the climate, while the soils and sheltered valleys allow local grape varieties to develop with freshness and character.\n\nIt is also a working wine region rather than a destination built only for visitors. Family producers, historic estates and small cellars still form part of everyday life. Tastings are usually relaxed, lunches are long and the landscape changes continually between vines, cork oaks, fishing towns and sea views. For travellers who want Portuguese wine without losing an entire day to driving, Setúbal is one of the most rewarding regions near Lisbon.",
+      },
+      {
+        heading: "Moscatel de Setúbal, explained simply",
+        body: "Moscatel de Setúbal is the region's most distinctive wine. It is made mainly from aromatic Muscat grapes and fortified during fermentation, preserving natural sweetness while developing greater depth as it ages.\n\nYou may find aromas of orange blossom, citrus peel, honey, dried apricot, spices and roasted nuts. Older examples can become darker, richer and unexpectedly complex. Despite the sweetness, good Moscatel keeps enough acidity to feel balanced rather than heavy.\n\nLocally, it may be served after lunch, alongside dessert or with the strong, buttery character of Azeitão cheese. Even guests who normally avoid sweet wines are often surprised by how fresh and expressive Moscatel de Setúbal can be.",
+      },
+      {
+        heading: "The wineries we love",
+        body: "The most memorable wineries are not necessarily the largest or the most photographed. We look for producers where the tasting still feels personal, the wines express the region and the people hosting genuinely understand what is inside each bottle.\n\nSome estates have centuries of history. Others are small family projects working with local grapes, limited production and a more contemporary approach. The best visits allow enough time to understand the vineyards, the cellar and the choices made by the winemaker rather than moving guests rapidly through a standard tasting.\n\nAvailability changes throughout the year, so we select wineries according to the day, the guests and the style of wine they are most interested in discovering.",
+      },
+      {
+        heading: "What to pair it with",
+        body: "Setúbal wine makes most sense when experienced with the food and landscape that surround it. Azeitão cheese is the classic local pairing, particularly with Moscatel, but the region also offers excellent bread, olive oil, seafood and grilled fish.\n\nSetúbal itself is known for its fishing tradition, while Sesimbra and Portinho da Arrábida offer coastal lunches where the setting becomes part of the experience. A dry white can work beautifully with fresh fish, while local reds pair naturally with meat, richer dishes and aged cheese.\n\nThe point is not to rush from tasting to tasting. A good Setúbal wine day leaves room for lunch, conversation and the pleasure of understanding why the wines taste as they do here.",
+      },
     ],
     ctaLead:
       "We bring guests into these cellars on a private, all-inclusive day — wine, lunch, and the Arrábida coast on the way home.",
@@ -443,17 +467,20 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Arrábida: the coast that quietly makes great wine",
-        body: "[Body copy to be supplied.]",
+        body: "Arrábida is often discovered for its beaches and mountain views, but wine has been part of this landscape for centuries. Vineyards sit between the Atlantic, the limestone hills and the warmer plains around Azeitão and Palmela.\n\nThis unusual combination creates very different styles within a relatively small area. Local wineries produce fresh whites, structured reds and the region's famous Moscatel de Setúbal. Castelão remains one of the most characteristic red grapes, particularly in the sandy soils of the Setúbal Peninsula.\n\nWhat makes Arrábida especially attractive from Lisbon is the variety of the day. A private wine experience can include family cellars, panoramic roads, a traditional lunch and the coast without spending several hours travelling between each stop.",
       },
       {
         heading: "Setúbal Moscatel — sweet, salty, and very Portuguese",
-        body: "[Body copy to be supplied.]",
+        body: "Moscatel de Setúbal is one of Portugal's great fortified wines and one of the clearest expressions of this region. It begins with intensely aromatic grapes and develops greater complexity through ageing.\n\nOrange blossom, candied citrus, honey, dried fruit and spices are common notes. Some wines remain bright and floral, while older Moscatel can become deep, nutty and almost savoury. That contrast between sweetness, acidity and a subtle saline character is what makes it so distinctive.\n\nIt is traditionally associated with dessert, but locally it also appears beside Azeitão cheese or as the final glass after a long lunch. For many visitors, Moscatel becomes the unexpected discovery of a wine tour near Lisbon.",
       },
       {
         heading: "Alentejo talha wines — buried clay, ancient method",
-        body: "[Body copy to be supplied.]",
+        body: "In Alentejo, some producers continue to make wine in large clay vessels called talhas. The method has roots stretching back to Roman times and remains especially important in villages around Vidigueira.\n\nGrapes ferment inside the clay vessels, often with their skins, before the wine is separated naturally through an opening near the base. The process is simple in appearance but demands knowledge, patience and careful attention throughout fermentation.\n\nTalha wines can feel textured, earthy and direct, with a character very different from wines made entirely in modern stainless-steel tanks or oak barrels. Visiting a working talha cellar is not merely a tasting. It is an encounter with a living winemaking tradition that has survived for almost two thousand years.",
       },
-      { heading: "How we choose which wineries to visit", body: "[Body copy to be supplied.]" },
+      {
+        heading: "How we choose which wineries to visit",
+        body: "We choose wineries according to the quality of the experience, not only the fame of the label. Good wine matters, but so do the people hosting, the time allowed for the visit and the ability to explain the region without turning the tasting into a rehearsed sales presentation.\n\nFor some guests, the right choice is a small family cellar. Others appreciate the history and wider range of an established estate. Some want traditional Portuguese grapes, while others are curious about natural methods, clay amphorae or premium aged wines.\n\nWe therefore build the winery combination around the traveller, availability and the rhythm of the day. The goal is contrast: different producers, different stories and enough time to understand what makes each one worth visiting.",
+      },
     ],
     ctaLead:
       "Most of these wineries are part of our private Signature wine days — door-to-door from your Lisbon hotel, with a quiet long lunch in between.",
