@@ -51,6 +51,13 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/alentejo-wine-tour-from-lisbon", changefreq: "monthly", priority: "0.8" },
           { path: "/arrabida-day-trip-from-lisbon", changefreq: "monthly", priority: "0.8" },
           { path: "/arrabida-wine-tour", changefreq: "monthly", priority: "0.8" },
+          { path: "/day-trips-from-lisbon", changefreq: "monthly", priority: "0.85" },
+          { path: "/sintra-day-tour-from-lisbon", changefreq: "monthly", priority: "0.85" },
+          { path: "/evora-private-tour-from-lisbon", changefreq: "monthly", priority: "0.8" },
+          { path: "/evora-alentejo-wine-tour", changefreq: "monthly", priority: "0.8" },
+          { path: "/private-wine-tour-lisbon", changefreq: "monthly", priority: "0.8" },
+          { path: "/wine-tours-lisbon", changefreq: "monthly", priority: "0.8" },
+          { path: "/portugal-wine-tours", changefreq: "monthly", priority: "0.8" },
 
 
 
