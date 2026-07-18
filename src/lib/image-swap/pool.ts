@@ -80,22 +80,22 @@ export async function loadAdminUploads(): Promise<PoolPhoto[]> {
       SIGNED_URL_TTL,
     );
   const byPath = new Map((signed ?? []).map((s) => [s.path ?? "", s.signedUrl]));
-  return data
-    .map((r) => {
-      const url = byPath.get(r.storage_path);
-      if (!url) return null;
-      const name = r.storage_path.split("/").pop() ?? "upload";
-      return {
-        id: r.storage_path,
-        src: url,
-        source: "admin-upload" as const,
-        name,
-        tags: inferTags(`${name} ${r.alt ?? ""}`),
-        width: r.width ?? undefined,
-        height: r.height ?? undefined,
-      } satisfies PoolPhoto;
-    })
-    .filter((x): x is PoolPhoto => x !== null);
+  const out: PoolPhoto[] = [];
+  for (const r of data) {
+    const url = byPath.get(r.storage_path);
+    if (!url) continue;
+    const name = r.storage_path.split("/").pop() ?? "upload";
+    out.push({
+      id: r.storage_path,
+      src: url,
+      source: "admin-upload",
+      name,
+      tags: inferTags(`${name} ${r.alt ?? ""}`),
+      width: r.width ?? undefined,
+      height: r.height ?? undefined,
+    });
+  }
+  return out;
 }
 
 export async function loadFullPool(): Promise<PoolPhoto[]> {
