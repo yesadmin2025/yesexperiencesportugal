@@ -190,7 +190,7 @@ function CorporatePage() {
         </div>
       </section>
 
-      <AmbientLandscapeStrip
+      <AmbientLandscapeReveal
         eyebrow="Where the day happens"
         title={<>The landscapes you'll <SectionTitle.Em>host in.</SectionTitle.Em></>}
         intro="Coast, cliffs, cellars and quiet coves — real places on the Lisbon, Setúbal and Alentejo axis, all reachable inside one working day."
