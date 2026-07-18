@@ -6,18 +6,13 @@ import { MessageCircle, Heart, Sparkles, Users } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { PROPOSAL_LANDSCAPES } from "@/components/ui/AmbientLandscapeStrip";
-import { AmbientLandscapeReveal } from "@/components/ui/AmbientLandscapeReveal";
+import { ResponsiveEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
+import { PROPOSAL_SERVICE_IMAGES } from "@/content/editorial-service-images";
+import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
 
 import { PROPOSAL_FAQ } from "@/content/seo-faq";
 import imgRomantic from "@/assets/exp-romantic.jpg";
-import coupleVineyardAsset from "@/assets/owner-photos/couple-vineyard.jpeg.asset.json";
-import wineCheersAsset from "@/assets/owner-photos/wine-cheers-arch.jpeg.asset.json";
-import tastingCakeAsset from "@/assets/owner-photos/tasting-cake-moment.jpeg.asset.json";
-const imgCoupleVineyard = coupleVineyardAsset.url;
-const imgWineCheers = wineCheersAsset.url;
-const imgTastingCake = tastingCakeAsset.url;
 
 const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/proposal-in-portugal";
@@ -66,7 +61,7 @@ const BLOCKS = [
     practical:
       "Discreet location · careful timing · surprise logistics · planned with full discretion.",
     local: "Planned end to end with our local team — every detail confirmed before the day.",
-    image: imgCoupleVineyard,
+    image: PROPOSAL_SERVICE_IMAGES[0],
     icon: Heart,
     cta: "Plan a Proposal",
   },
@@ -77,7 +72,7 @@ const BLOCKS = [
       "Birthdays, anniversaries, honeymoons or family moments — shaped around your rhythm, your people and the way you want to feel Portugal.",
     practical: "Private host · any group size · multi-activity planning · flexible scheduling.",
     local: "Coordinated by a local host who knows how each piece of the day connects.",
-    image: imgWineCheers,
+    image: PROPOSAL_SERVICE_IMAGES[1],
     icon: Sparkles,
     cta: "Plan a Celebration",
   },
@@ -89,7 +84,7 @@ const BLOCKS = [
     practical: "Small group days · private transport · personal touches · adjusted to your rhythm.",
     local:
       "We work with people we trust on the ground — places that welcome you as guests, not bookings.",
-    image: imgTastingCake,
+    image: PROPOSAL_SERVICE_IMAGES[2],
     icon: Users,
     cta: "Plan a Private Day",
   },
@@ -97,6 +92,10 @@ const BLOCKS = [
 
 export function ProposalInPortugalPage() {
   useMarketingMotion();
+  const serviceImages = useEditorialOverrides(
+    "proposal_services",
+    PROPOSAL_SERVICE_IMAGES.map((image) => ({ ...image, caption: "" })),
+  );
   return (
 
     <SiteLayout>
@@ -126,20 +125,17 @@ export function ProposalInPortugalPage() {
           {BLOCKS.map((b, i) => {
             const Icon = b.icon;
             const reverse = i % 2 === 1;
+            const image = { ...b.image, ...serviceImages[i] };
             return (
               <article
                 key={b.eyebrow}
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
               >
-                <div className="overflow-hidden">
-                  <img
-                    src={b.image}
-                    alt={b.title}
-                    loading={i === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                    fetchPriority={i === 0 ? "high" : "auto"}
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="w-full aspect-[4/5] md:aspect-[5/6] object-cover transition-transform duration-700 hover:scale-[1.03]"
+                <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[4/5] md:aspect-[5/6]">
+                  <ResponsiveEditorialImage
+                    image={image}
+                    priority={i === 0}
+                    className="service-block-photo h-full w-full object-cover"
                   />
                 </div>
                 <div>
@@ -188,14 +184,6 @@ export function ProposalInPortugalPage() {
           </dl>
         </div>
       </section>
-
-      <AmbientLandscapeReveal
-        eyebrow="Where it can happen"
-        title={<>The settings we <SectionTitle.Em>work with.</SectionTitle.Em></>}
-        intro="Cliffs at sunset, a quiet cove, a private terrace. Real places along Portugal's Atlantic coast — chosen for the moment, never off a menu."
-        photos={PROPOSAL_LANDSCAPES}
-        moduleKey="proposal_ambient"
-      />
 
       {/* Closing CTA */}
       <section className="py-16 md:py-20 bg-[color:var(--sand)] reveal">
