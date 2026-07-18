@@ -13,7 +13,7 @@ export type CandidateFilterState = {
   onlyOrientationMatch: boolean;
 };
 
-export const ALL_SOURCES: PoolSource[] = ["owner-photo", "admin-upload"];
+export const ALL_SOURCES: PoolSource[] = ["owner-photo", "admin-upload", "ambient"];
 export const ALL_TAGS = [
   "people",
   "place",
@@ -28,6 +28,7 @@ export const ALL_QUALITIES: QualityTier[] = ["alta", "media", "baixa", "desconhe
 const SOURCE_LABEL: Record<PoolSource, string> = {
   "owner-photo": "Owner",
   "admin-upload": "Uploads",
+  ambient: "Ambient",
 };
 const QUALITY_LABEL: Record<QualityTier, string> = {
   alta: "Alta",
