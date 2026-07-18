@@ -18,7 +18,6 @@ import azulejoMaster from "@/assets/owner-photos/azulejo-master-painter.jpeg.ass
 import couplePetiscos from "@/assets/owner-photos/couple-petiscos-patio.jpeg.asset.json";
 import portinhoBoardwalk from "@/assets/owner-photos/portinho-boardwalk-couple.jpeg.asset.json";
 import moscatelVats from "@/assets/owner-photos/moscatel-giant-vats-guide.jpeg.asset.json";
-import potterWheel from "@/assets/owner-photos/potter-wheel-azeitao.jpeg.asset.json";
 import azulejoBlueCat from "@/assets/owner-photos/azulejo-blue-cat.jpeg.asset.json";
 import sintraGroup from "@/assets/owner-photos/sintra-group-selfie.jpeg.asset.json";
 import arrabidaViewpointWomen from "@/assets/owner-photos/arrabida-viewpoint-women.jpeg.asset.json";
@@ -91,12 +90,6 @@ export const MOMENT_MOSCATEL_VATS: GuestMoment = {
   caption: "Twenty thousand litres, aging quietly since 1834.",
 };
 
-export const MOMENT_POTTER_WHEEL: GuestMoment = {
-  src: potterWheel.url,
-  alt: "An Azeitão potter shaping clay by hand at the workshop wheel.",
-  caption: "Clay taking shape by hand in Azeitão.",
-};
-
 export const MOMENT_AZULEJO_BLUE_CAT: GuestMoment = {
   src: azulejoBlueCat.url,
   alt: "An artisan hand-painting a blue cat motif onto a raw ceramic tile during a workshop in Azeitão.",
@@ -116,7 +109,8 @@ export const MOMENT_ARRABIDA_VIEWPOINT_WOMEN: GuestMoment = {
 };
 
 // Curated sets per surface. HOMEPAGE + CORPORATE are people-only
-// (highest conversion signal). No decorative ambient modules are added.
+// (highest conversion signal). Landscape / still-life scenes moved to
+// <AmbientLandscapeStrip> ambient blocks.
 export const HOMEPAGE_MOMENTS = [
   MOMENT_PORTINHO_BOARDWALK,
   MOMENT_SINTRA_GROUP,
@@ -128,7 +122,7 @@ export const HOMEPAGE_MOMENTS = [
 
 export const ABOUT_MOMENTS = [
   MOMENT_CERAMIC_PAINTER,
-  MOMENT_POTTER_WHEEL,
+  MOMENT_MOSCATEL_VATS,
   MOMENT_AZULEJO_BLUE_CAT,
 ];
 

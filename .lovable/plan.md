@@ -1,76 +1,78 @@
 ## Objetivo
 
-Corrigir o erro de abordagem: **não acrescentar galerias, carrosséis ou blocos no fundo das páginas**. Melhorar apenas os módulos que já existiam, usando fotografia real, relevante e com apresentação premium.
+Remover as tiras estáticas de 3 fotos ambientais que ficaram no fundo de **Corporate**, **Propose in Portugal** (Moments) e **Multi-day** (Travel Designer) — hoje parecem uma grelha de stock e quebram o ritmo editorial — e substituí-las por um único painel cinemático que mostra **uma paisagem de cada vez**, em alta qualidade, com movimento restrito e legenda que dá contexto.
 
-## 1. Remover integralmente o que foi acrescentado indevidamente
+Ao mesmo tempo, promover as melhores fotos reais do stock existente e aposentar as de menor qualidade das três tiras.
 
-- Retirar o `AmbientLandscapeReveal` de:
-  - Corporate
-  - Moments / Proposal in Portugal
-  - Travel Designer
-- Eliminar o autoplay, os pontos de navegação, as legendas sobrepostas e o zoom contínuo vistos nas capturas.
-- Remover o componente, as animações CSS e os testes associados quando deixarem de ter uso.
-- Retirar do painel `/admin/image-swap` os módulos “Ambient landscapes”, para não voltar a sugerir secções que já não existem.
+---
 
-## 2. Corporate: substituir imagens dentro dos três blocos existentes
+## 1. Novo componente `AmbientLandscapeReveal`
 
-Manter exatamente a estrutura atual dos três blocos — sem criar uma quarta área visual.
+Ficheiro: `src/components/ui/AmbientLandscapeReveal.tsx`. Substitui `AmbientLandscapeStrip` nas três rotas (o ficheiro antigo mantém-se por agora só para preservar `CORPORATE_LANDSCAPES` / `PROPOSAL_LANDSCAPES` / `MULTIDAY_LANDSCAPES` como fonte de dados e não partir `registry.ts`; o export do componente é removido dos routes).
 
-- **Executive & Incentive:** fotografia real de um grupo privado recebido numa experiência, com escala humana e sinal claro de equipa.
-- **Off-sites & Retreats:** fotografia real de grupo num cenário português, mostrando convivência, espaço e contexto de destino.
-- **Client Hosting & VIP:** momento real de hosting discreto — pequeno grupo, mesa, adega ou interação guiada — em vez do close-up genérico da cerâmica.
-- Excluir imagens como a extração de cortiça isolada ou detalhes artesanais quando não comunicam diretamente corporate, grupo ou hosting.
-- Escolher entre as fotografias reais já carregadas pela proprietária, dando prioridade a nitidez, resolução, luz natural, contexto e pessoas.
+Comportamento:
 
-## 3. Moments: melhorar as três imagens que já pertencem aos blocos
+- **Uma foto de cada vez**, em card editorial largo (aspect 16:9 desktop, 4:5 mobile), com legenda Fraunces + eyebrow de lugar.
+- **Auto-avanço a cada 6s** com crossfade suave (400ms), mesmo motor `editorial-photo-motion` (settle + micro-zoom 1.00 → 1.03 ao longo de 8s por foto — cinematic, não Ken Burns agressivo).
+- **Indicadores minimalistas**: bullets ivory/gold no rodapé + setas subtis (só desktop) para avanço manual.
+- **Pausa on-hover** e quando a secção sai do viewport (`IntersectionObserver`).
+- `**prefers-reduced-motion**`: desactiva auto-avanço e zoom; utilizadora navega manualmente.
+- **Preload**: imagem N carrega `eager` + `fetchpriority="high"`, N+1 pré-carregada em background.
+- **Mantém integração com admin overrides** via `useEditorialOverrides(moduleKey, photos)` — mesma API que o strip actual, para o painel `/admin/image-swap` continuar a funcionar sem alterações.
 
-- Manter os blocos existentes de Proposal, Celebrations e Family & Friends.
-- Rever a imagem de cada bloco para garantir correspondência direta:
-  - casal e intimidade para Proposal;
-  - celebração real para Celebrations;
-  - convivência real para Family & Friends.
-- Substituir apenas uma imagem quando houver na biblioteca real uma alternativa claramente mais nítida e mais contextual.
-- Não adicionar uma galeria de paisagens depois do FAQ.
+Contentor da secção: fundo `--ivory`, `py-14 md:py-24`, alinhamento igual ao actual (Eyebrow + gold-rule + SectionTitle + intro à esquerda, painel abaixo).
 
-## 4. Travel Designer: remover o bloco fotográfico adicional
+## 2. Curadoria de qualidade — substituir as fracas
 
-- Retirar completamente o carrossel “A few of the places”.
-- Preservar a narrativa existente: processo, travel file, percurso, apoio local, FAQ e CTA.
-- Não inserir outra galeria ou secção visual em substituição.
-- Melhorar apenas a apresentação das imagens reais do travel file já integradas na página, sem alterar o seu conteúdo.
+Auditar as fotos hoje listadas em `CORPORATE_LANDSCAPES`, `PROPOSAL_LANDSCAPES`, `MULTIDAY_LANDSCAPES` e substituir apenas as de menor impacto por candidatas premium já existentes no stock (`src/assets/owner-photos/*` e `src/assets/ambient/*`), respeitando:
 
-## 5. Qualidade e movimento aplicados às imagens existentes
+- **Regra de unicidade**: cobertura mantida por `src/__tests__/editorial-image-uniqueness.test.ts` — nenhuma foto pode aparecer em duas rotas.
+- **Contexto por rota**:
+  - Corporate → paisagem + ofício (cork, potter, cliffs).
+  - Propose → paisagem íntima ao pôr-do-sol, coves.
+  - Multi-day → paisagem + prova de vinho + costa.
+- **Sem inventar** fotos novas nem gerar IA. Apenas re-ordenar/substituir a partir do pool real.
+- Selecção final é feita lendo `src/lib/image-swap/quality.ts` (`estimateQuality`) e o `rankCandidates` já existentes, escolhendo `alta` sempre que possível; onde só houver `desconhecida` (assets estáticos sem `width/height`), manter a foto actual se o contexto for forte.
 
-Em Corporate, Moments e no travel file:
+O ficheiro `AmbientLandscapeStrip.tsx` fica apenas com as três constantes exportadas (fonte de dados). Se preferires, movemos as constantes para `src/content/ambient-landscapes.ts` e apagamos o componente antigo por completo.
 
-- aplicar `srcSet` e `sizes` responsivos através do sistema de imagem já existente;
-- definir dimensões estáveis e crops/focal points específicos para mobile, evitando rostos ou ações cortadas;
-- usar carregamento prioritário apenas na primeira imagem relevante e lazy loading nas restantes;
-- manter alt text factual e específico;
-- aplicar somente movimento editorial discreto: entrada suave e micro-zoom máximo de aproximadamente `1.02–1.03` em interação compatível;
-- sem autoplay, sem Ken Burns contínuo, sem animações decorativas e com `prefers-reduced-motion` respeitado.
+## 3. Motion premium (scoped)
 
-## 6. Adaptar o painel de substituição à estrutura correta
+Novas keyframes/utilities no `src/styles.css`, todas dentro de `@media (prefers-reduced-motion: no-preference)`:
 
-- Fazer o `/admin/image-swap` atuar sobre os **slots de imagem dos blocos que já existem** em Corporate e Moments, em vez de controlar módulos Ambient adicionados ao fundo.
-- Manter comparação, ranking, aplicação em lote e desfazer.
-- Mostrar apenas candidatas reais da biblioteca da proprietária/admin, filtradas por contexto e qualidade.
-- Não criar slots novos; uma aplicação substitui sempre uma imagem existente.
+- `.ambient-reveal-fade` — crossfade opacity 0 → 1 (400ms ease-out).
+- `.ambient-reveal-zoom` — `transform: scale(1) → scale(1.03)` ao longo de 8s linear, reset no swap.
+- Sem parallax, sem sheen, sem glow — respeita as guardrails de rotas não-homepage (só fade + zoom subtil).
 
-## 7. Validação final
+## 4. Remoção dos strips no fundo das rotas
 
-- Verificação mobile a `393 × 706`, incluindo enquadramento, legibilidade, estabilidade e ausência de overflow.
-- Verificação desktop responsiva.
-- Confirmar que não existe nenhuma secção Ambient no fundo das três páginas.
-- Confirmar que não há imagem repetida entre os blocos afetados e os restantes módulos editoriais principais.
-- Adicionar/ajustar testes para bloquear:
-  - reintrodução dos carrosséis Ambient;
-  - slots adicionais;
-  - imagens duplicadas;
-  - ausência de `srcSet`, `sizes`, alt text ou suporte a reduced motion.
+Editar:
 
-## Critério de conclusão
+- `src/routes/corporate.tsx` (linha ~194): substituir `<AmbientLandscapeStrip … moduleKey="corporate_ambient" />` por `<AmbientLandscapeReveal … moduleKey="corporate_ambient" photos={CORPORATE_LANDSCAPES} />`.
+- `src/routes/proposal-in-portugal.tsx` (linha ~192): idem com `proposal_ambient` + `PROPOSAL_LANDSCAPES`.
+- `src/routes/multi-day.tsx` (linha ~448): idem com `multi_day_ambient` + `MULTIDAY_LANDSCAPES`.
 
-A correção só fica concluída quando as três páginas mantiverem a sua estrutura original, cada fotografia comunicar claramente o contexto do respetivo bloco e não existir qualquer galeria ou carrossel adicional no fundo.
+Nenhuma outra secção destas rotas é tocada.
 
-Editar imagens de cada bloco para a melhor qualidade possível como a qualidade de imagem por exemplo que há no site black tomato. E alguma animação sim. Ou zoom in ou out. Tem de ter vida. 
+## 5. Testes
+
+- `src/__tests__/ambient-landscape-strip.test.tsx` → renomear/reescrever como `ambient-landscape-reveal.test.tsx`. Verifica:
+  - Renderiza apenas uma imagem visível (opacity 1) por vez.
+  - Avança para o próximo slot quando o timer dispara (fake timers).
+  - Pausa em hover.
+  - Com `prefers-reduced-motion: reduce`, não auto-avança.
+- `src/__tests__/editorial-image-uniqueness.test.ts` → continua a passar com as substituições novas (é o guarda de duplicados).
+
+## Fora de âmbito
+
+- `AmbientLandscapeStrip` e `admin/image-swap` — só troco o consumidor, não mexo no registry nem no pool.
+- Guest Moments strips (homepage/about) — não são o que a utilizadora chamou "no fundo" destas três rotas.
+- Novas fotos, uploads, ou geração por IA.
+- Alterações a `registry.ts` / `pool.ts` / módulos do admin.
+
+---
+
+## Confirmação rápida antes de implementar
+
+- **Homepage , "Travel designer" = Multi-day (`/multi-day`)** e **"Moments" = Propose in Portugal (`/proposal-in-portugal`)** — se te referires a outra rota (por exemplo o Builder / Studio), diz e eu ajusto.
+- **Auto-avanço 6s + crossfade** vs **avanço só ao scroll** (uma imagem por viewport, sem timer) — o plano acima usa auto-avanço; se preferires scroll-driven, mudo antes de codar.
