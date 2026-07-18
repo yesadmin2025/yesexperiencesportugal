@@ -23,10 +23,9 @@ import {
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import {
-  AmbientLandscapeStrip,
-  MULTIDAY_LANDSCAPES,
-} from "@/components/ui/AmbientLandscapeStrip";
+import { MULTIDAY_LANDSCAPES } from "@/components/ui/AmbientLandscapeStrip";
+import { AmbientLandscapeReveal } from "@/components/ui/AmbientLandscapeReveal";
+
 import { whatsappHref } from "@/components/WhatsAppFab";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 // All 23 pages of the anonymised private travel file live in public/ so
