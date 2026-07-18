@@ -39,16 +39,31 @@ describe("image alt coverage", () => {
 
   it("every <img> tag in JSX declares an alt attribute", () => {
     const offenders: string[] = [];
-    // Regex matches an opening <img ...> tag, greedy up to the first `>` that
-    // isn't inside a JSX expression. Good enough for a lint-level check.
-    const IMG_TAG = /<img\b[^>]*>/g;
 
+    // Scan an `<img` tag respecting JSX brace nesting so arrow functions
+    // (`() =>`) or ternaries inside props don't fool a naive regex.
     for (const file of files) {
       const src = readFileSync(file, "utf8");
-      const tags = src.match(IMG_TAG) ?? [];
-      for (const tag of tags) {
+      const re = /<img\b/g;
+      let m: RegExpExecArray | null;
+      while ((m = re.exec(src))) {
+        let i = m.index + 4;
+        let depth = 0;
+        let end = -1;
+        while (i < src.length) {
+          const ch = src[i];
+          if (ch === "{") depth++;
+          else if (ch === "}") depth--;
+          else if (ch === ">" && depth === 0) {
+            end = i;
+            break;
+          }
+          i++;
+        }
+        if (end === -1) continue;
+        const tag = src.slice(m.index, end + 1);
         if (!/\balt\s*=/.test(tag)) {
-          offenders.push(`${file.replace(ROOT, "")}: ${tag.slice(0, 120)}`);
+          offenders.push(`${file.replace(ROOT, "")}: ${tag.slice(0, 160).replace(/\s+/g, " ")}`);
         }
       }
     }
