@@ -228,6 +228,91 @@ function AdminImageSwapPage() {
     });
   }
 
+  // ---------- Batch (multi-slot) ----------
+  const addToBatch = (slotIndex: number, photo: PoolPhoto) => {
+    const module = EDITORIAL_MODULES.find((m) => m.key === activeKey)!;
+    if (slotIndex < 0 || slotIndex >= module.defaults.length) {
+      toast.error("Slot inválido — esta ferramenta só substitui slots existentes.");
+      return;
+    }
+    for (const [idx, p] of batch) {
+      if (idx !== slotIndex && p.src === photo.src) {
+        toast.error(`Essa imagem já está atribuída ao slot ${idx + 1} deste módulo.`);
+        return;
+      }
+    }
+    setBatch((prev) => {
+      const next = new Map(prev);
+      next.set(slotIndex, photo);
+      return next;
+    });
+  };
+
+  const removeFromBatch = (slotIndex: number) => {
+    setBatch((prev) => {
+      const next = new Map(prev);
+      next.delete(slotIndex);
+      return next;
+    });
+  };
+
+  const clearBatch = () => setBatch(new Map());
+
+  async function publishBatch() {
+    const module = EDITORIAL_MODULES.find((m) => m.key === activeKey)!;
+    const entries = Array.from(batch.entries()).map(([slotIndex, photo]) => {
+      const defaultSlot = module.defaults[slotIndex];
+      return {
+        slotIndex,
+        photoSrc: photo.src,
+        alt: defaultSlot.alt,
+        caption: defaultSlot.caption,
+      };
+    });
+    if (entries.length === 0) return;
+    setSaving(true);
+    try {
+      const { snapshot } = await publishOverridesBatch(
+        activeKey,
+        entries,
+        module.defaults.length,
+      );
+      if (batchUndoRef.current) window.clearTimeout(batchUndoRef.current.timer);
+      const timer = window.setTimeout(() => {
+        batchUndoRef.current = null;
+      }, 10000);
+      batchUndoRef.current = { timer, snapshot, moduleKey: activeKey };
+      const savedModuleKey = activeKey;
+      clearBatch();
+      setBatchMode(false);
+      await loadOverrides();
+      toast.success(
+        `${entries.length} substituição${entries.length === 1 ? "" : "ões"} publicada${entries.length === 1 ? "" : "s"}`,
+        {
+          duration: 10000,
+          action: {
+            label: "Desfazer tudo",
+            onClick: async () => {
+              try {
+                await revertOverridesBatch(savedModuleKey, snapshot);
+                await loadOverrides();
+                toast.success("Batch revertido");
+              } catch (e) {
+                toast.error(e instanceof Error ? e.message : "Falha ao reverter");
+              }
+            },
+          },
+        },
+      );
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha ao publicar batch");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+
+
   if (authState === "loading") {
     return (
       <SiteLayout>
