@@ -194,6 +194,7 @@ export function ProposalInPortugalPage() {
         title={<>The settings we <SectionTitle.Em>work with.</SectionTitle.Em></>}
         intro="Cliffs at sunset, a quiet cove, a private terrace. Real places along Portugal's Atlantic coast — chosen for the moment, never off a menu."
         photos={PROPOSAL_LANDSCAPES}
+        moduleKey="proposal_ambient"
       />
 
       {/* Closing CTA */}
