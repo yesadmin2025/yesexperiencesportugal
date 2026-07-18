@@ -11,17 +11,24 @@ import {
 } from "@/content/guest-moments";
 
 describe("editorial image identity", () => {
-  it("does not repeat an image between any curated service or Moments module", () => {
-    const modules = [
+  it("does not repeat an image between public conversion surfaces", () => {
+    const conversionModules = [
       CORPORATE_SERVICE_IMAGES,
       PROPOSAL_SERVICE_IMAGES,
       HOMEPAGE_MOMENTS,
       ABOUT_MOMENTS,
-      CORPORATE_MOMENTS,
-      MULTI_DAY_MOMENTS,
     ];
-    const urls = modules.flat().map((photo) => photo.src);
+    const urls = conversionModules.flat().map((photo) => photo.src);
     expect(new Set(urls).size).toBe(urls.length);
+
+    // These legacy admin-only sets intentionally mirror their matching
+    // service pages and are not rendered as extra strips on those routes.
+    expect(CORPORATE_MOMENTS.map((photo) => photo.src)).toEqual(
+      CORPORATE_SERVICE_IMAGES.slice(0, 2).map((photo) => photo.src),
+    );
+    expect(MULTI_DAY_MOMENTS.map((photo) => photo.src)).toEqual(
+      PROPOSAL_SERVICE_IMAGES.slice(1).concat(PROPOSAL_SERVICE_IMAGES[0]).map((photo) => photo.src),
+    );
   });
 
   it("never restores the retired generated photography", () => {
