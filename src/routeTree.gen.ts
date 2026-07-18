@@ -100,6 +100,7 @@ import { Route as AdminPaymentsEnvRouteImport } from './routes/admin.payments-en
 import { Route as AdminLegacyDomainsMonitorRouteImport } from './routes/admin.legacy-domains-monitor'
 import { Route as AdminLegacyDomainUnlinkRouteImport } from './routes/admin.legacy-domain-unlink'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
+import { Route as AdminImageSwapRouteImport } from './routes/admin.image-swap'
 import { Route as AdminGscRouteImport } from './routes/admin.gsc'
 import { Route as AdminGbpLegacyRemovalRouteImport } from './routes/admin.gbp-legacy-removal'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
@@ -588,6 +589,11 @@ const AdminImportToursRoute = AdminImportToursRouteImport.update({
   path: '/admin/import-tours',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminImageSwapRoute = AdminImageSwapRouteImport.update({
+  id: '/admin/image-swap',
+  path: '/admin/image-swap',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminGscRoute = AdminGscRouteImport.update({
   id: '/admin/gsc',
   path: '/admin/gsc',
@@ -792,6 +798,7 @@ export interface FileRoutesByFullPath {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
+  '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
@@ -910,6 +917,7 @@ export interface FileRoutesByTo {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
+  '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
@@ -1031,6 +1039,7 @@ export interface FileRoutesById {
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
+  '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
   '/admin/legacy-domains-monitor': typeof AdminLegacyDomainsMonitorRoute
@@ -1153,6 +1162,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
+    | '/admin/image-swap'
     | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
@@ -1271,6 +1281,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
+    | '/admin/image-swap'
     | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
@@ -1391,6 +1402,7 @@ export interface FileRouteTypes {
     | '/admin/error-logs'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
+    | '/admin/image-swap'
     | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
     | '/admin/legacy-domains-monitor'
@@ -1512,6 +1524,7 @@ export interface RootRouteChildren {
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
   AdminGscRoute: typeof AdminGscRoute
+  AdminImageSwapRoute: typeof AdminImageSwapRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
   AdminLegacyDomainUnlinkRoute: typeof AdminLegacyDomainUnlinkRoute
   AdminLegacyDomainsMonitorRoute: typeof AdminLegacyDomainsMonitorRoute
@@ -2195,6 +2208,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminImportToursRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/image-swap': {
+      id: '/admin/image-swap'
+      path: '/admin/image-swap'
+      fullPath: '/admin/image-swap'
+      preLoaderRoute: typeof AdminImageSwapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/gsc': {
       id: '/admin/gsc'
       path: '/admin/gsc'
@@ -2521,6 +2541,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
   AdminGscRoute: AdminGscRoute,
+  AdminImageSwapRoute: AdminImageSwapRoute,
   AdminImportToursRoute: AdminImportToursRoute,
   AdminLegacyDomainUnlinkRoute: AdminLegacyDomainUnlinkRoute,
   AdminLegacyDomainsMonitorRoute: AdminLegacyDomainsMonitorRoute,
