@@ -44,15 +44,20 @@ export function rankCandidates(
     const orientationMatch = orientation === slot.desiredOrientation ? 1 : 0;
     const usedIn = usedElsewhere.get(photo.src) ?? [];
     const fresh = usedIn.length === 0 ? 1 : 0;
+    const quality = estimateQuality(photo);
+    const qualityBoost = quality === "alta" ? 2 : quality === "baixa" ? -2 : 0;
 
-    const score = tagOverlap * 3 + orientationMatch * 2 + fresh * 2;
+    const score = tagOverlap * 3 + orientationMatch * 2 + fresh * 2 + qualityBoost;
 
     const reasons: string[] = [];
     if (tagOverlap > 0)
       reasons.push(`combina com o tema (${photo.tags.filter((t) => slot.desiredTags.includes(t)).join(", ")})`);
     if (orientationMatch) reasons.push(`orientação ${orientation} correta`);
+    if (quality === "alta") reasons.push("alta resolução");
+    else if (quality === "baixa") reasons.push("resolução baixa");
     if (fresh) reasons.push("ainda não é usada noutro módulo");
     else reasons.push(`já usada em: ${usedIn.join(", ")}`);
+
 
     results.push({
       photo,
