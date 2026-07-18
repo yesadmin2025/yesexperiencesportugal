@@ -493,9 +493,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wineries-near-lisbon",
-    title: "Best Wineries Near Lisbon — Arrábida & Alentejo (by a Local)",
+    title: "Best Wineries Near Lisbon | A Local Wine Guide",
     metaDescription:
-      "A local's guide to the best wineries near Lisbon — small Arrábida cellars, Setúbal Moscatel houses and Alentejo talha producers worth the drive.",
+      "Discover the best winery experiences near Lisbon, from family cellars in Arrábida and Setúbal to traditional talha wine in Alentejo.",
     h1: "The Best Wineries Near Lisbon",
     eyebrow: "Wine · Lisbon Region",
     standfirst:
