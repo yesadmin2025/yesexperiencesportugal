@@ -80,6 +80,10 @@ function AdminImageSwapPage() {
   const [filters, setFilters] = useState<CandidateFilterState>(defaultFilterState);
   const [saving, setSaving] = useState(false);
   const undoRef = useRef<{ timer: number; prev: OverrideRow | null } | null>(null);
+  const [batchMode, setBatchMode] = useState(false);
+  const [batch, setBatch] = useState<Map<number, PoolPhoto>>(new Map());
+  const batchUndoRef = useRef<{ timer: number; snapshot: BatchSnapshotEntry[]; moduleKey: EditorialModuleKey } | null>(null);
+
 
   const checkAuth = useCallback(async () => {
     const { data: userData } = await supabase.auth.getUser();
