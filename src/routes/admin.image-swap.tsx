@@ -9,7 +9,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, RefreshCw, Undo2, Zap } from "lucide-react";
+import { ArrowLeft, Loader2, RefreshCw, Undo2, Zap, CheckSquare, Square, Sparkles } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -20,7 +20,13 @@ import {
 import { loadFullPool, type PoolPhoto } from "@/lib/image-swap/pool";
 import { rankCandidates, type RankedCandidate } from "@/lib/image-swap/rank";
 import { estimateQuality, qualityLabel, resolutionLabel } from "@/lib/image-swap/quality";
-import type { EditorialModuleKey, EditorialSlot } from "@/lib/editorial-overrides";
+import {
+  publishOverridesBatch,
+  revertOverridesBatch,
+  type BatchSnapshotEntry,
+  type EditorialModuleKey,
+  type EditorialSlot,
+} from "@/lib/editorial-overrides";
 import { BeforeAfterSlider } from "@/components/admin/BeforeAfterSlider";
 import {
   CandidateFilters,
@@ -28,6 +34,8 @@ import {
   type CandidateFilterState,
 } from "@/components/admin/CandidateFilters";
 import { DuplicatesPanel } from "@/components/admin/DuplicatesPanel";
+import { BatchSelectionBar, type BatchPending } from "@/components/admin/BatchSelectionBar";
+
 
 export const Route = createFileRoute("/admin/image-swap")({
   head: () => ({
