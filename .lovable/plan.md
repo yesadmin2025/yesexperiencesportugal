@@ -1,62 +1,80 @@
-# Comparador de imagens no admin — antes de substituir
+## Objetivo
 
-Nova página `/admin/image-swap` (mesmo gate admin de `/admin/photos`) que permite, para cada slot editorial do site, ver a imagem **atual** lado a lado com as **melhores alternativas reais do stock** e aplicar a troca com um clique — sem editar código à mão.
+Evoluir `/admin/image-swap` de ferramenta funcional para painel de curadoria editorial com filtros, comparação rápida e deteção de duplicados — reduzindo o número de cliques para publicar uma troca e tornando visível *porquê* cada candidata foi sugerida.
 
-## Fluxo
+Todas as alterações são no painel admin (protegido por `has_role admin`). Nenhum componente público muda; a leitura via `useEditorialOverrides` já funciona.
 
-1. Selecionar módulo no topo (`Homepage Moments`, `About Moments`, `Corporate Moments`, `Multi-day Moments`, `Corporate Ambient`, `Proposal Ambient`, `Multi-day Ambient`, `Tour hero/cover` por tour).
-2. Ver a lista de slots do módulo. Cada slot mostra:
-  - Imagem atual (thumb grande) + legenda/alt atual + dimensões + score de qualidade.
-  - Botão **"Ver alternativas"** que abre um painel com candidatos do stock ordenados por adequação.
-3. Painel de candidatos mostra até 12 alternativas com:
-  - Miniatura, dimensões, fonte (`owner-photo` / `admin-upload` / `tour-gallery`).
-  - Motivo do ranking (ex.: "mesma paleta costeira", "orientação vertical", "resolução 2400px", "ainda não usada em nenhum módulo").
-  - Aviso se a alternativa já está a ser usada noutro módulo (evita novo duplicado).
-4. Selecionar candidato → abre **modo Comparar** ecrã inteiro (antes | depois) com slider arrastável (estilo before/after), no viewport mobile por defeito (o utilizador trabalha em mobile) e toggle para desktop.
-5. **Aplicar** grava a troca. **Guardar rascunho** deixa a troca pendente para revisão.
-6. Após selecionadas, editar para qualidade premium e ao coloca las adicionar animações premmium de alta qualidade 
+---
 
-## Como as trocas são persistidas (sem reescrever ficheiros)
+## 1. Filtros e ranking visível nos candidatos
 
-Novo mapa de overrides guardado em Supabase, lido pelos módulos existentes com fallback para os defaults atuais em `guest-moments.ts` / `AmbientLandscapeStrip.tsx`. Zero refactor dos consumidores públicos.
+No painel de candidatos (lado direito, por slot):
 
-- Nova tabela `public.editorial_image_overrides` com:
-  - `module_key` (ex.: `homepage_moments`), `slot_index`, `photo_src`, `alt`, `caption`, `status` (`draft` | `published`), `updated_by`, `updated_at`.
-  - Grants: `SELECT` a `anon` + `authenticated` só para `status = 'published'` (via policy); `ALL` para admins via `has_role`; `service_role` total.
-  - RLS ligada.
-- Novo helper `src/lib/editorial-overrides.ts` + hook `useEditorialOverrides(moduleKey)` que faz merge com o array default. Os módulos existentes passam a chamar esse hook — mudança mínima, comportamento idêntico quando não há overrides.
+- **Barra de filtros** acima da grelha de candidatos:
+  - **Fonte**: `owner-photo` · `admin-upload` · `ambient` (chips toggle).
+  - **Tags**: chips derivados de `pool.ts` (`people`, `landscape`, `coast`, `craft`, `wine`, `food`, `place`) — multi-select AND.
+  - **Qualidade estimada**: `alta` (≥1600px lado maior) · `média` (≥1000px) · `baixa` (<1000px ou desconhecida). Cálculo derivado de `width`/`height` do pool; para assets estáticos sem dimensões, marcar `desconhecida` e permitir excluir.
+  - **Só não usadas**: toggle que esconde imagens já presentes em qualquer módulo (usa `buildUsageIndex`).
+  - **Só orientação correta**: toggle já implícito no ranking, agora exposto.
 
-## Ranking de candidatos
+- **Cartão de candidata** passa a mostrar:
+  - Badge de qualidade (alta/média/baixa) + resolução real (`1920×2400`).
+  - Badges de tags.
+  - **Motivo do ranking**: linha compacta com `reason` já produzido por `rank.ts` (ex.: "combina com o tema (people, place) · orientação portrait correta · ainda não é usada").
+  - Se `alreadyUsedIn.length > 0`, aviso âmbar com os módulos onde já aparece.
 
-Utilitário puro `src/lib/image-swap/rank.ts`:
+- Ordenação: manter score decrescente; adicionar toggle secundário `Mais recentes primeiro` (apenas para `admin-upload`, por `created_at`).
 
-- Recolhe pool de: `src/assets/owner-photos/*`, `tour_gallery_photos`, `src/assets/ambient/*`.
-- Exclui imagens já usadas em qualquer módulo (via registro do painel de auditoria já planeado) — reaproveita `src/lib/image-audit/registry.ts`.
-- Score = resolução (peso alto) + orientação compatível com o slot + tag temática (people/landscape/craft/food) inferida do nome/pasta + bónus se ainda inédita.
-- Retorna top-N com razão legível em PT.
+## 2. Comparação rápida e "Aplicar ao módulo"
 
-## Segurança e permissões
+- **Modo comparação rápida**: novo botão `Comparar` em cada cartão candidato abre um painel lateral (não modal bloqueante) com:
+  - Slider antes/depois (`BeforeAfterSlider` existente).
+  - Grelha secundária "Aplicar a outros slots deste módulo" com checkboxes por slot — permite substituir várias posições numa só publicação.
+  - Ações: `Publicar troca` · `Guardar como rascunho` · `Descartar`.
+- **Atalho "Aplicar ao módulo"**: botão inline no cartão candidato que aplica a candidata ao slot activo e publica em um clique (com toast `undo` durante 8s que reverte para o override anterior).
+- **Navegação por teclado**: `←/→` para percorrer candidatas dentro do painel de comparação; `Enter` aplica; `Esc` fecha.
+- **Contador de cliques poupados**: pequeno indicador `-N cliques hoje` apenas cosmético, ajuda a validar que o fluxo ficou mais curto.
 
-- Rota `admin.image-swap.tsx` com o mesmo padrão de proteção de `admin.photos.tsx` (verifica `has_role admin`).
-- Server functions em `src/lib/admin-image-swap.functions.ts`:
-  - `listSwapCandidates({ moduleKey, slotIndex })` — admin only.
-  - `saveOverride({ moduleKey, slotIndex, photo, status })` — admin only.
-  - `publishOverride({ id })` / `revertOverride({ id })` — admin only.
-- `service_role` só é usado dentro do handler, depois de confirmar admin via `context.supabase.rpc('has_role', ...)`.
+## 3. Secção "Duplicados entre módulos"
 
-## Ficheiros
+Nova tab no topo do painel: **Auditoria de duplicados**.
 
-- `src/routes/admin.image-swap.tsx` (novo) — UI.
-- `src/components/admin/BeforeAfterSlider.tsx` (novo) — comparador arrastável, respeita `prefers-reduced-motion`.
-- `src/lib/image-swap/rank.ts` (novo) + teste.
-- `src/lib/editorial-overrides.ts` (novo) + hook.
-- `src/lib/admin-image-swap.functions.ts` (novo).
-- Migração Supabase: cria `editorial_image_overrides` com GRANTs, RLS e policies.
-- Pequena edição em `src/content/guest-moments.ts` e `src/components/ui/AmbientLandscapeStrip.tsx` para consumir overrides publicados (fallback = comportamento atual).
-- Teste que garante que overrides publicados não introduzem duplicados globais (reaproveita `editorial-image-uniqueness.test.ts`).
+- Lista agrupada por chave de duplicação:
+  - **Duplicado exato (mesma origem)**: mesmo `src` em ≥2 módulos — resultado directo de `buildUsageIndex`.
+  - **Duplicado de conteúdo**: para `admin-upload`, agrupar por `content_hash` já existente em `tour_gallery_photos`. Para assets estáticos, agrupar por nome de ficheiro base (ex.: `arrabida-viewpoint-*`) como aproximação — sem re-hash de imagens no browser.
+- Cada grupo mostra:
+  - Miniatura + nome + dimensões.
+  - Lista de módulos/slots onde aparece (com link "Ir para slot").
+  - **Sugestão de substituição**: top-1 candidata do stock para o módulo com pior encaixe temático (score mais baixo), reutilizando `rankCandidates` com o contexto desse módulo/slot.
+  - Botão `Aplicar sugestão` que publica o override directamente (mesmo fluxo do atalho da secção 2).
+- Contador global no cabeçalho: `X módulos com duplicados · Y imagens repetidas`.
 
-## Fora do âmbito
+---
 
-- Não altera arrays default no código — trocas ficam em BD, revertíveis.
-- Não gera imagens; só escolhe entre reais existentes.
-- Não mexe em capas de tour dentro do `admin/photos` (esse fluxo já existe); apenas as expõe como pool de origem.
+## Detalhes técnicos
+
+**Ficheiros novos**
+- `src/lib/image-swap/quality.ts` — helper `estimateQuality(photo): 'alta'|'media'|'baixa'|'desconhecida'` a partir de `width/height` e heurística por nome.
+- `src/lib/image-swap/duplicates.ts` — `findDuplicateGroups(modules, pool)` devolve `{ key, kind: 'exact'|'content'|'name', photos, usedIn: Slot[] }[]`.
+- `src/components/admin/CandidateFilters.tsx` — barra de filtros controlada.
+- `src/components/admin/CandidateCard.tsx` — extraído do route file, mostra badges + motivo + atalhos.
+- `src/components/admin/QuickCompareDrawer.tsx` — painel lateral com slider + multi-slot apply.
+- `src/components/admin/DuplicatesPanel.tsx` — tab de auditoria.
+
+**Ficheiros editados**
+- `src/routes/admin.image-swap.tsx` — introduzir tabs (`Slots` · `Duplicados`), estado de filtros, integrar novos componentes, atalho `applyAndPublish(slot, photo)`.
+- `src/lib/image-swap/rank.ts` — expor `reason` já existente sem alterações de assinatura; adicionar campo opcional `qualityBoost` para dar leve preferência a `alta`.
+- `src/lib/editorial-overrides.ts` — expor helper `publishOverride(moduleKey, slots)` que aceita batch (usado pelo multi-slot apply e pelo undo).
+
+**Base de dados**
+- Nenhuma migração nova necessária. Reutiliza `editorial_image_overrides` (com `status: 'published'|'draft'`) e `tour_gallery_photos.content_hash/width/height` já existentes.
+
+**Testes**
+- `src/__tests__/image-swap-duplicates.test.ts` — cobre exact/content/name grouping.
+- `src/__tests__/image-swap-quality.test.ts` — thresholds e casos `desconhecida`.
+- Reutilizar `editorial-image-uniqueness.test.ts` para garantir que a política global continua a passar após uma sessão de aplicação de sugestões.
+
+**Fora de âmbito** (não fazer neste plano)
+- Re-hash de assets estáticos no cliente.
+- Alterar componentes públicos ou o `pool`/`registry` de módulos.
+- Novas fontes de stock (Viator, uploads adicionais).
