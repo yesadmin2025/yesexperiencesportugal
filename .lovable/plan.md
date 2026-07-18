@@ -1,54 +1,51 @@
-# Surgical correction plan — premium real imagery, visible motion, no duplication
+## Objetivo
 
-## Confirmed issues
-- The English Corporate page uses the same `winery-group-orange-tree` photo that appears on the homepage, so the repetition is real.
-- Corporate service imagery is based on 1280px derivatives; the darker cellar photographs are then cropped into tall 4:5 frames, which amplifies blur and makes them feel low quality on high-density iPhone screens.
-- English Corporate/Proposal technically animate, but the current 22–26s movement from scale 1.00 to 1.06 is too subtle to register while scrolling and there is no crossfade sequence.
-- Portuguese Corporate still uses static tour images and does not share the responsive image or motion implementation.
-- The old `corporate_moments` and `multi_day_moments` sets remain in the admin registry even though they are not rendered publicly; this creates misleading duplicate management.
+Garantir que Corporate, Adegas (tour), Moments (guest moments strip) e blocos da Homepage carreguem imagens nítidas em iPhone (DPR 3) e mostrem o crossfade/Ken Burns visível — sem borrão inicial nem atraso que "mate" a animação. Zero regressões com `prefers-reduced-motion`.
 
-## 1. Curate by context — real photos only
-- Keep the existing image slots; add no bottom strips or new decorative sections.
-- Corporate: select unique owner/admin-upload photographs that clearly show teams, hosted wine activity and facilitated group experiences. Remove the homepage group photo from Corporate and retire the two weak/dark cellar crops from this surface.
-- Proposal: keep its slots distinct from Homepage and Corporate, prioritising intimate hosted moments rather than corporate groups.
-- Multi-day: keep the existing real travel-file presentation; improve its current image rendering/motion rather than introducing another gallery.
-- Enforce exact-source uniqueness across Homepage Guest Moments, Corporate and Proposal with a regression test.
+## Verificação (Playwright em mobile 393×852 @ DPR 3)
 
-## 2. Preserve genuine iPhone-level detail
-- Rebuild responsive AVIF/WebP variants from the highest-resolution original real files, not from existing 1280px derivatives.
-- Generate 640, 960, 1280, 1600, 1920 and source-capped large variants; never upscale beyond the original pixel dimensions.
-- Use high-quality AVIF/WebP settings and correct `srcSet`/`sizes` so DPR 2–3 phones receive the sharpest legitimate source.
-- Change Corporate/Proposal mobile media from forced portrait crop to a stable landscape/editorial ratio, with per-image focal positioning where needed. This avoids enlarging and cutting landscape cellar photographs into blurry 4:5 windows.
-- Preserve source-photo character: no AI, no stock, no invented enhancement and no HDR-style processing.
+1. Rotas: `/`, `/corporate`, `/pt/corporate`, `/proposal-in-portugal`, `/multi-day`, uma página de tour de adegas (Azeitão) e o strip Guest Moments.
+2. Capturas por rota:
+  - Screenshot inicial (LCP) + screenshot aos 2s, 6s, 14s para confirmar Ken Burns e crossfade visíveis.
+  - Console filtrado a `[font-fallback]` e erros.
+  - Network: verificar que a 1ª imagem acima da dobra vem em AVIF, largura ≥ 1600w, `fetchpriority=high`, e que variantes 2400w existem para high-DPR.
+3. Repetir com `context.emulate_media(reduced_motion="reduce")` — confirmar que animação é substituída por fade estático, sem layout shift.
+4. Registar cada slot com problema (rota + índice) num pequeno relatório antes de tocar em código.
 
-## 3. One image at a time with visible cinematic life
-- Upgrade the existing editorial image component into a two-frame sequence for each existing slot: the primary real photo plus one context-matched real alternate.
-- Use a restrained but clearly visible cycle: crossfade one image at a time, with continuous 14–18s Ken Burns zoom/pan and opposing focal movement between frames.
-- Start the sequence when the block enters the viewport so movement is visible during normal mobile scrolling; do not autoplay off-screen.
-- Apply the same component to Corporate EN/PT and Proposal. Enhance the existing Multi-day travel-file frame with the same viewport-aware motion, without adding a new module.
-- Respect `prefers-reduced-motion` by showing one still, sharp image.
+## Correções direcionadas (só o que a verificação apontar)
 
-## 4. Align English and Portuguese surfaces
-- Make `/corporate` and `/pt/corporate` consume the same curated image records, responsive variants, focal positions and cinematic component.
-- Keep language-specific copy unchanged.
-- Update each page’s social image to a real, contextually correct Corporate image that is not reused as a homepage moment.
+1. **LCP acima da dobra**
+  - Adicionar `priority` + `fetchpriority="high"` + `decoding="sync"` no primeiro `CinematicEditorialImage` de cada rota (corporate EN/PT, proposal EN/PT, tour adegas hero).
+  - Emitir `<link rel="preload" as="image" imagesrcset imagesizes>` no `head()` da rota, apontando ao mesmo srcSet AVIF do LCP (usa o helper `premiumEditorialImage`).
+2. `**sizes` corretos para mobile DPR3**
+  - Nos blocos service (`aspect-[4/5]` em mobile full-width): `sizes="100vw"` mobile, `50vw` ≥lg. Confirmar em `ResponsiveEditorialImage` e overrides.
+  - Garantir que variantes 2000/2400w são realmente emitidas nos srcSet (hoje o helper faz sort — validar que os arquivos existem em `src/assets/editorial-premium/`).
+3. **Movimento visível**
+  - Confirmar `.ken-burns-slow` com amplitude ≥ scale 1.10 e duração 22–26s; se a verificação mostrar imperceptível em mobile, subir para scale 1.12 e adicionar translate ±2%.
+  - Garantir que crossfade só arranca depois de `img.decode()` resolver da imagem primária (evita "flash" antes da animação). Fallback: `onLoad` da `<img>` primária dispara `data-ready=true` que a CSS usa para começar o loop.
+  - Respeitar `@media (prefers-reduced-motion: reduce)`: pausar animação, mostrar imagem primária estática.
+4. **Adegas (tour Azeitão / winery hero)**
+  - Se o hero da tour usa `<img>` cru, trocar por `CinematicEditorialImage` com a mesma foto owner em variantes 2400w e `priority`.
 
-## 5. Clean the admin model
-- Remove the obsolete `corporate_moments` and `multi_day_moments` modules from the image-swap registry/type labels so the admin only exposes slots that actually render.
-- Keep `corporate_services` and `proposal_services` editable; extend each slot record to carry its real alternate and focal data without adding page slots.
-- Update duplicate detection to compare only active public modules, preventing false “Ambient/Moments” duplication reports.
+## Fora de escopo
 
-## 6. Mobile verification before completion
-- Validate at iPhone-size viewport first, then tablet/desktop.
-- Capture the initial frame and a later frame for Homepage Guest Moments, Corporate EN/PT, Proposal and Multi-day to prove that crossfade and pan/zoom are visibly running.
-- Inspect rendered `currentSrc`, intrinsic dimensions and CSS crop ratio to confirm high-DPI images are selected without upscaling.
-- Run targeted tests for: no cross-page duplicate sources, no retired/generated/ambient images, reduced-motion fallback, valid responsive sources and no extra public image sections.
+- Não adicionar novos slots.
+- Não trocar fotos (a curadoria feita no turno anterior fica).
+- Sem mudanças de copy, layout ou tokens de marca.
 
-## Acceptance criteria
-- No Corporate image repeats a Homepage Guest Moments image.
-- No generated, invented or stock photography is used.
-- Corporate’s blurry cellar images are replaced with real, context-relevant, sharper material.
-- EN and PT Corporate have identical image quality and motion behaviour.
-- Each existing page slot shows one image at a time with an observable crossfade and continuous Ken Burns movement.
-- No extra section is added to Corporate, Proposal, Moments or Multi-day.
-- iPhone rendering uses the best genuine resolution available and never fabricates pixels by upscaling.
+## Detalhes técnicos
+
+- Arquivos que serão tocados apenas se a verificação identificar problema:
+  - `src/components/ui/ResponsiveEditorialImage.tsx` (gate `data-ready`, `fetchpriority`, `decoding`).
+  - `src/routes/corporate.tsx`, `src/routes/pt.corporate.tsx`, `src/routes/proposal-in-portugal.tsx` (preload no `head()`, `priority` no primeiro slot).
+  - `src/routes/tours.$tourId.tsx` (hero das adegas — preload + priority se aplicável).
+  - `src/styles.css` (`.ken-burns-slow` amplitude/duração; regra `prefers-reduced-motion`).
+  - `src/content/editorial-premium-images.ts` (garantir variantes 2000/2400w listadas).
+- Testes:
+  - Playwright screenshots antes/depois em `/tmp/browser/mobile-motion/`.
+  - `bunx vitest run src/__tests__/responsive-image.test.ts` continua verde.
+  - Sem novas dependências.
+
+## Entregável
+
+Relatório curto com: rotas verificadas, evidência (screenshot + tamanho de imagem servido), ajustes aplicados, e resultado final com/sem reduced-motion. Especial atenção à qualidade gráfica das imagens 

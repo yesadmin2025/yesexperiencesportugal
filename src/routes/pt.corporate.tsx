@@ -143,8 +143,8 @@ function CorporatePage() {
                 key={b.eyebrow}
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
               >
-                <div className="overflow-hidden aspect-[4/5] md:aspect-[5/6]">
-                  <CinematicEditorialImage image={b.image} className="h-full w-full" phase={i === 1 ? "b" : i === 2 ? "c" : "a"} />
+                <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[4/5] md:aspect-[5/6]">
+                  <CinematicEditorialImage image={b.image} priority={i === 0} className="h-full w-full" phase={i === 1 ? "b" : i === 2 ? "c" : "a"} />
                 </div>
                 <div>
                   <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
