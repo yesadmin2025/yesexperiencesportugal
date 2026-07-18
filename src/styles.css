@@ -6484,3 +6484,42 @@ html {
   }
 }
 
+/* ============================================================
+   Ken Burns — slow, editorial photo breathing.
+   Applied to real photography in Homepage Guest Moments and the
+   Corporate / Proposal service cards. Contained amplitude, three
+   phase-offset variants to avoid sync, paused when out of view via
+   IntersectionObserver (controller adds .kb-paused), and fully
+   disabled for prefers-reduced-motion.
+   ============================================================ */
+@keyframes ken-burns-a {
+  0%   { transform: scale(1.00) translate3d(0%, 0%, 0); }
+  100% { transform: scale(1.06) translate3d(-1.5%, -1%, 0); }
+}
+@keyframes ken-burns-b {
+  0%   { transform: scale(1.02) translate3d(1%, 0%, 0); }
+  100% { transform: scale(1.06) translate3d(-1%, 1.5%, 0); }
+}
+@keyframes ken-burns-c {
+  0%   { transform: scale(1.00) translate3d(-1%, 1%, 0); }
+  100% { transform: scale(1.05) translate3d(1.5%, -1%, 0); }
+}
+.ken-burns-slow {
+  will-change: transform;
+  transform-origin: center;
+  animation: ken-burns-a 22s ease-in-out infinite alternate;
+  filter: saturate(0.98) contrast(1.02);
+}
+.ken-burns-slow--b { animation-name: ken-burns-b; animation-duration: 26s; animation-delay: -6s; }
+.ken-burns-slow--c { animation-name: ken-burns-c; animation-duration: 24s; animation-delay: -12s; }
+.ken-burns-slow.kb-paused { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .ken-burns-slow,
+  .ken-burns-slow--b,
+  .ken-burns-slow--c {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+

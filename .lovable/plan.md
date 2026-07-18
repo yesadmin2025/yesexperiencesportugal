@@ -1,76 +1,69 @@
 ## Objetivo
 
-Corrigir o erro de abordagem: **não acrescentar galerias, carrosséis ou blocos no fundo das páginas**. Melhorar apenas os módulos que já existiam, usando fotografia real, relevante e com apresentação premium.
+Deixar o site como estava — sem os blocos extra que adicionei — e melhorar a qualidade e vida das fotos **nos sítios onde já existiam**: Homepage (Guest Moments) e Corporate / Proposal / Multi-day (nos cartões de serviço originais). Zero IA, zero stock: apenas as tuas fotos reais e Viator.
 
-## 1. Remover integralmente o que foi acrescentado indevidamente
+## O que faço
 
-- Retirar o `AmbientLandscapeReveal` de:
-  - Corporate
-  - Moments / Proposal in Portugal
-  - Travel Designer
-- Eliminar o autoplay, os pontos de navegação, as legendas sobrepostas e o zoom contínuo vistos nas capturas.
-- Remover o componente, as animações CSS e os testes associados quando deixarem de ter uso.
-- Retirar do painel `/admin/image-swap` os módulos “Ambient landscapes”, para não voltar a sugerir secções que já não existem.
+### 1. Remover tudo o que adicionei no fundo destas páginas
+- `AmbientLandscapeReveal` / `AmbientLandscapeStrip` no fundo de `/corporate`, `/proposal-in-portugal`, `/multi-day` → **eliminados**.
+- Recurar `HOMEPAGE_MOMENTS` / `CORPORATE_MOMENTS` para o conjunto original aprovado (sem os assets que enfiei nos últimos passos).
+- Componente `AmbientLandscapeReveal` e teste associado → apagados. Ficheiro `guest-moments.ts` volta à seleção anterior + só as fotos com pessoas que já lá estavam antes das minhas experiências recentes.
 
-## 2. Corporate: substituir imagens dentro dos três blocos existentes
+### 2. Curadoria nos blocos originais (Homepage Guest Moments + service cards)
+Regra: **um slot = a melhor foto real disponível para aquele contexto**, sem repetições entre módulos.
 
-Manter exatamente a estrutura atual dos três blocos — sem criar uma quarta área visual.
+- **Homepage — Guest Moments**: manter estrutura atual, mas escolher, slot a slot, a foto owner-photo que melhor conta a história (casal no Portinho, mesa em Azeitão, grupo Arrábida, etc.), evitando qualquer foto de paisagem "still-life" e qualquer duplicado com Corporate/Proposal.
+- **/corporate (3 cards de serviço editorial)**: Winery group · Barrel cellar tasting · Moscatel giant vats (já são as owner-photos certas — foco vai para o upgrade técnico do ponto 3).
+- **/proposal-in-portugal (3 cards)**: Couple vineyard · Wine cheers arch · Tasting cake moment.
+- **/multi-day**: manter as fotos owner atuais nos cartões de dias; nenhuma tira decorativa no fundo.
 
-- **Executive & Incentive:** fotografia real de um grupo privado recebido numa experiência, com escala humana e sinal claro de equipa.
-- **Off-sites & Retreats:** fotografia real de grupo num cenário português, mostrando convivência, espaço e contexto de destino.
-- **Client Hosting & VIP:** momento real de hosting discreto — pequeno grupo, mesa, adega ou interação guiada — em vez do close-up genérico da cerâmica.
-- Excluir imagens como a extração de cortiça isolada ou detalhes artesanais quando não comunicam diretamente corporate, grupo ou hosting.
-- Escolher entre as fotografias reais já carregadas pela proprietária, dando prioridade a nitidez, resolução, luz natural, contexto e pessoas.
+Um teste garante zero fotos repetidas entre estes quatro módulos.
 
-## 3. Moments: melhorar as três imagens que já pertencem aos blocos
+### 3. Upgrade real de qualidade de imagem ("nível Black Tomato")
+Todas as fotos destes blocos passam a servir através do proxy `/api/img` com o `ResponsiveEditorialImage` já existente, mas com presets mais fortes:
 
-- Manter os blocos existentes de Proposal, Celebrations e Family & Friends.
-- Rever a imagem de cada bloco para garantir correspondência direta:
-  - casal e intimidade para Proposal;
-  - celebração real para Celebrations;
-  - convivência real para Family & Friends.
-- Substituir apenas uma imagem quando houver na biblioteca real uma alternativa claramente mais nítida e mais contextual.
-- Não adicionar uma galeria de paisagens depois do FAQ.
+- `srcSet` até **2400w** (hoje pára em 2000w) para render nítido em DPR 3 (iPhone).
+- `sizes` corretos por breakpoint (full-bleed no mobile, 33vw nos cartões desktop).
+- Servido em **AVIF → WebP → JPEG** com `q=82` (AVIF) / `q=88` (WebP) — sem lavar cor.
+- `fetchpriority="high"` no primeiro slot visível, `loading="lazy"` + `decoding="async"` nos restantes.
+- LQIP (blur-up 24px) para eliminar o "pop" no scroll.
 
-## 4. Travel Designer: remover o bloco fotográfico adicional
+Nos Guest Moments da homepage, também upscale das owner-photos que hoje estão a servir num contentor maior do que a sua resolução original — se o master tiver menos de 1600px no lado maior, mantenho-a mas restrinjo o slot a um formato onde não perde nitidez (ex: 4:5 em vez de 16:9).
 
-- Retirar completamente o carrossel “A few of the places”.
-- Preservar a narrativa existente: processo, travel file, percurso, apoio local, FAQ e CTA.
-- Não inserir outra galeria ou secção visual em substituição.
-- Melhorar apenas a apresentação das imagens reais do travel file já integradas na página, sem alterar o seu conteúdo.
+### 4. Animação premium — Ken Burns lento contínuo
+Uma única utility CSS reutilizável (`.ken-burns-slow`) aplicada às fotos destes blocos:
 
-## 5. Qualidade e movimento aplicados às imagens existentes
+- Duração 22s, `ease-in-out`, `alternate infinite`.
+- Amplitude contida: zoom 1.00 → 1.06, pan ±2% no eixo dominante (varia por slot para não parecer sincronizado).
+- Pausa quando fora do viewport (`IntersectionObserver`) — não gasta GPU no fundo da página.
+- Pausa em `prefers-reduced-motion`.
+- Combinado com hover subtil (lift -2px, sombra suave) nos cartões clicáveis.
 
-Em Corporate, Moments e no travel file:
+Zero parallax, zero shimmer, zero carousel — só a respiração lenta da foto, no espírito editorial pedido.
 
-- aplicar `srcSet` e `sizes` responsivos através do sistema de imagem já existente;
-- definir dimensões estáveis e crops/focal points específicos para mobile, evitando rostos ou ações cortadas;
-- usar carregamento prioritário apenas na primeira imagem relevante e lazy loading nas restantes;
-- manter alt text factual e específico;
-- aplicar somente movimento editorial discreto: entrada suave e micro-zoom máximo de aproximadamente `1.02–1.03` em interação compatível;
-- sem autoplay, sem Ken Burns contínuo, sem animações decorativas e com `prefers-reduced-motion` respeitado.
+## Ficheiros afetados
 
-## 6. Adaptar o painel de substituição à estrutura correta
+- `src/routes/corporate.tsx`, `src/routes/proposal-in-portugal.tsx`, `src/routes/multi-day.tsx` — remover import + uso de `AmbientLandscapeReveal`.
+- `src/components/ui/AmbientLandscapeReveal.tsx` + `src/__tests__/ambient-landscape-strip.test.tsx` — apagar.
+- `src/content/guest-moments.ts` — reverter para seleção owner-photo aprovada, sem duplicados.
+- `src/content/editorial-service-images.ts` — reforço de srcSet/sizes/quality (nada muda visualmente nos slots, muda o que chega ao ecrã).
+- `src/lib/responsive-image.ts` — presets `hero-full`, `card-3up`, `moment-portrait` com widths até 2400w e qualidade ajustada.
+- `src/components/ui/ResponsiveEditorialImage.tsx` — adicionar LQIP + `fetchpriority`.
+- `src/styles.css` — adicionar `.ken-burns-slow` (+ variantes A/B/C para dessincronizar) e regra `prefers-reduced-motion`.
+- `src/components/ui/GuestMomentsStrip.tsx` — aplicar `.ken-burns-slow` e IntersectionObserver de pausa.
+- `src/__tests__/editorial-image-uniqueness.test.ts` — atualizar para novo scope (só módulos originais).
 
-- Fazer o `/admin/image-swap` atuar sobre os **slots de imagem dos blocos que já existem** em Corporate e Moments, em vez de controlar módulos Ambient adicionados ao fundo.
-- Manter comparação, ranking, aplicação em lote e desfazer.
-- Mostrar apenas candidatas reais da biblioteca da proprietária/admin, filtradas por contexto e qualidade.
-- Não criar slots novos; uma aplicação substitui sempre uma imagem existente.
+## O que **não** faço (para não gastar créditos à toa)
 
-## 7. Validação final
+- Não gero nenhuma imagem nova.
+- Não mexo em Signature covers, hero video, retrato da fundadora, nem em qualquer surface fora dos 4 blocos acima.
+- Não crio novos painéis de admin — o `/admin/image-swap` fica como está.
+- Não adiciono parallax nem transições cinemáticas em cascata — só o Ken Burns silencioso pedido.
 
-- Verificação mobile a `393 × 706`, incluindo enquadramento, legibilidade, estabilidade e ausência de overflow.
-- Verificação desktop responsiva.
-- Confirmar que não existe nenhuma secção Ambient no fundo das três páginas.
-- Confirmar que não há imagem repetida entre os blocos afetados e os restantes módulos editoriais principais.
-- Adicionar/ajustar testes para bloquear:
-  - reintrodução dos carrosséis Ambient;
-  - slots adicionais;
-  - imagens duplicadas;
-  - ausência de `srcSet`, `sizes`, alt text ou suporte a reduced motion.
+## Verificação antes de fechar
 
-## Critério de conclusão
+1. `tsgo` + testes (uniqueness + responsive-image) verdes.
+2. Playwright: screenshot mobile 393×706 de `/`, `/corporate`, `/proposal-in-portugal`, `/multi-day` antes/depois — comparo nitidez das fotos e confirmo que o fundo das páginas está limpo.
+3. Confirmo Ken Burns visível (motion.animation-play-state) e pausa com `prefers-reduced-motion`.
 
-A correção só fica concluída quando as três páginas mantiverem a sua estrutura original, cada fotografia comunicar claramente o contexto do respetivo bloco e não existir qualquer galeria ou carrossel adicional no fundo.
-
-Editar imagens de cada bloco para a melhor qualidade possível como a qualidade de imagem por exemplo que há no site black tomato. E alguma animação sim. Ou zoom in ou out. Tem de ter vida. 
+Confirmas para eu executar?

@@ -15,7 +15,7 @@
  * `useAdminTourPhotos` so all caches stay unified.
  */
 
-const DEFAULT_WIDTHS = [480, 800, 1200, 1600, 2000] as const;
+const DEFAULT_WIDTHS = [480, 800, 1200, 1600, 2000, 2400] as const;
 
 export const SIZES = {
   /** 3-up grid at lg, 2-up at sm, 1-up mobile. */
