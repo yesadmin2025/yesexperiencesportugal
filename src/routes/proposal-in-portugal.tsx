@@ -135,7 +135,7 @@ export function ProposalInPortugalPage() {
                   <ResponsiveEditorialImage
                     image={image}
                     priority={i === 0}
-                    className="service-block-photo h-full w-full object-cover"
+                    className={`ken-burns-slow${i === 1 ? " ken-burns-slow--b" : i === 2 ? " ken-burns-slow--c" : ""} h-full w-full object-cover`}
                   />
                 </div>
                 <div>
