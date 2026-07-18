@@ -741,16 +741,16 @@ function GalleryStrip({
   adminPhotos: ReturnType<typeof useAdminTourPhotos>;
 }) {
   const seen = new Set<string>();
-  const photos: { src: string; alt: string; focal?: string }[] = [];
-  const push = (src: string, alt: string, focal?: string) => {
+  const photos: { src: string; alt: string; srcSet?: string; focal?: string }[] = [];
+  const push = (src: string, alt: string, srcSet?: string, focal?: string) => {
     if (!src || seen.has(src)) return;
     seen.add(src);
-    photos.push({ src, alt, focal });
+    photos.push({ src, alt, srcSet, focal });
   };
 
   // Priority: admin-uploaded YES photos first (cover then sort_order),
   // then baked local gallery, then curated Viator gallery.
-  for (const p of adminPhotos) push(p.src, p.alt);
+  for (const p of adminPhotos) push(p.src, p.alt, p.srcSet);
   for (const p of getTourGallery(tour, meta)) push(p.src, p.alt);
 
   if (photos.length < 3) return null;
@@ -783,6 +783,8 @@ function GalleryStrip({
               >
                 <TourImage
                   src={p.src}
+                  srcSet={p.srcSet}
+                  sizes={i === 0 ? "(min-width: 768px) 42rem, 80vw" : "(min-width: 768px) 22rem, 64vw"}
                   alt={p.alt}
                   ratio="3/2"
                   focal={p.focal ?? "50% 50%"}
