@@ -93,10 +93,22 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     standfirst:
       "Two very different sides of Lisbon. Here is how we help guests pick the right one.",
     sections: [
-      { heading: "What Arrábida feels like", body: "[Body copy to be supplied.]" },
-      { heading: "What Sintra feels like", body: "[Body copy to be supplied.]" },
-      { heading: "Crowds, driving time, pace", body: "[Body copy to be supplied.]" },
-      { heading: "Our honest take", body: "[Body copy to be supplied.]" },
+      {
+        heading: "What Arrábida feels like",
+        body: "Arrábida feels open, bright and unhurried. The road crosses vineyards and cork-oak countryside before climbing into a natural park where the mountains fall directly towards the Atlantic.\n\nA typical day can combine a local market, family wineries, a long Portuguese lunch, viewpoints and the fishing towns of Setúbal or Sesimbra. The experience is shaped less by famous monuments and more by landscape, food, wine and the freedom to stop when somewhere feels right.\n\nArrábida suits travellers who want to escape the city rather than replace it with another crowded attraction. It is especially rewarding for guests interested in local producers, coastal scenery and a slower rhythm.",
+      },
+      {
+        heading: "What Sintra feels like",
+        body: "Sintra feels theatrical, historic and slightly mysterious. Forested hills surround palaces, gardens and old estates, while mist and changing light give the landscape a character unlike anywhere else near Lisbon.\n\nThe main attractions are internationally famous, particularly Pena Palace and Quinta da Regaleira. A well-designed private day can also continue through the Sintra-Cascais Natural Park, Cabo da Roca and the coast towards Cascais.\n\nSintra suits travellers drawn to architecture, royal history, gardens and dramatic scenery. It is more monument-focused than Arrábida and generally requires greater planning because entrance times, traffic and visitor numbers influence the rhythm of the day.",
+      },
+      {
+        heading: "Crowds, driving time, pace",
+        body: "Both regions are accessible from Lisbon, but they behave very differently once the day begins. Sintra attracts large numbers of visitors, particularly around its principal palaces. Starting early, reserving timed entrance tickets and planning the route carefully can make a substantial difference.\n\nArrábida usually feels less pressured. Driving times between wineries, viewpoints and coastal stops are manageable, and the day can remain flexible. There is more freedom to extend lunch, add a tasting or spend longer beside the sea.\n\nSintra rewards structure. Arrábida rewards spontaneity. Neither is automatically better, but the preferred pace should influence the choice as much as the list of places to visit.",
+      },
+      {
+        heading: "Our honest take",
+        body: "Choose Sintra when palaces, gardens and Portuguese royal history are essential to your trip. It is one of the country's most remarkable destinations and deserves to be experienced properly rather than rushed between compulsory photographs.\n\nChoose Arrábida when you want wine, local food, Atlantic scenery and a day that can adapt as it unfolds. It is quieter, more personal and still unfamiliar to many international visitors.\n\nFor a first visit to Portugal, Sintra may feel unavoidable. For travellers who already know the famous sights, or who simply prefer authentic local experiences to crowded landmarks, Arrábida is often the more memorable surprise.",
+      },
     ],
     ctaLead:
       "If Sintra calls you, we have a private Signature shaped around it — palaces, forest, and Cascais light.",
