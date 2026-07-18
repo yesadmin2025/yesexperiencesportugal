@@ -2178,7 +2178,9 @@ export type Database = {
       tour_gallery_photos: {
         Row: {
           alt: string
+          content_hash: string | null
           created_at: string
+          height: number | null
           id: string
           is_cover: boolean
           sort_order: number
@@ -2186,10 +2188,13 @@ export type Database = {
           tour_id: string
           updated_at: string
           uploaded_by: string | null
+          width: number | null
         }
         Insert: {
           alt?: string
+          content_hash?: string | null
           created_at?: string
+          height?: number | null
           id?: string
           is_cover?: boolean
           sort_order?: number
@@ -2197,10 +2202,13 @@ export type Database = {
           tour_id: string
           updated_at?: string
           uploaded_by?: string | null
+          width?: number | null
         }
         Update: {
           alt?: string
+          content_hash?: string | null
           created_at?: string
+          height?: number | null
           id?: string
           is_cover?: boolean
           sort_order?: number
@@ -2208,6 +2216,7 @@ export type Database = {
           tour_id?: string
           updated_at?: string
           uploaded_by?: string | null
+          width?: number | null
         }
         Relationships: []
       }
