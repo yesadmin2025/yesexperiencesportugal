@@ -127,10 +127,22 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     standfirst:
       "Twenty minutes south of Lisbon, a wine region most travellers still miss. Here is what to taste, and where.",
     sections: [
-      { heading: "Why Setúbal is different", body: "[Body copy to be supplied.]" },
-      { heading: "Moscatel de Setúbal, explained simply", body: "[Body copy to be supplied.]" },
-      { heading: "The wineries we love", body: "[Body copy to be supplied.]" },
-      { heading: "What to pair it with", body: "[Body copy to be supplied.]" },
+      {
+        heading: "Why Setúbal is different",
+        body: "Setúbal feels remarkably removed from Lisbon despite being close enough for an easy private day trip. Vineyards stretch between the limestone hills of Arrábida, the plains around Palmela and the Atlantic coast. The sea influences the climate, while the soils and sheltered valleys allow local grape varieties to develop with freshness and character.\n\nIt is also a working wine region rather than a destination built only for visitors. Family producers, historic estates and small cellars still form part of everyday life. Tastings are usually relaxed, lunches are long and the landscape changes continually between vines, cork oaks, fishing towns and sea views. For travellers who want Portuguese wine without losing an entire day to driving, Setúbal is one of the most rewarding regions near Lisbon.",
+      },
+      {
+        heading: "Moscatel de Setúbal, explained simply",
+        body: "Moscatel de Setúbal is the region's most distinctive wine. It is made mainly from aromatic Muscat grapes and fortified during fermentation, preserving natural sweetness while developing greater depth as it ages.\n\nYou may find aromas of orange blossom, citrus peel, honey, dried apricot, spices and roasted nuts. Older examples can become darker, richer and unexpectedly complex. Despite the sweetness, good Moscatel keeps enough acidity to feel balanced rather than heavy.\n\nLocally, it may be served after lunch, alongside dessert or with the strong, buttery character of Azeitão cheese. Even guests who normally avoid sweet wines are often surprised by how fresh and expressive Moscatel de Setúbal can be.",
+      },
+      {
+        heading: "The wineries we love",
+        body: "The most memorable wineries are not necessarily the largest or the most photographed. We look for producers where the tasting still feels personal, the wines express the region and the people hosting genuinely understand what is inside each bottle.\n\nSome estates have centuries of history. Others are small family projects working with local grapes, limited production and a more contemporary approach. The best visits allow enough time to understand the vineyards, the cellar and the choices made by the winemaker rather than moving guests rapidly through a standard tasting.\n\nAvailability changes throughout the year, so we select wineries according to the day, the guests and the style of wine they are most interested in discovering.",
+      },
+      {
+        heading: "What to pair it with",
+        body: "Setúbal wine makes most sense when experienced with the food and landscape that surround it. Azeitão cheese is the classic local pairing, particularly with Moscatel, but the region also offers excellent bread, olive oil, seafood and grilled fish.\n\nSetúbal itself is known for its fishing tradition, while Sesimbra and Portinho da Arrábida offer coastal lunches where the setting becomes part of the experience. A dry white can work beautifully with fresh fish, while local reds pair naturally with meat, richer dishes and aged cheese.\n\nThe point is not to rush from tasting to tasting. A good Setúbal wine day leaves room for lunch, conversation and the pleasure of understanding why the wines taste as they do here.",
+      },
     ],
     ctaLead:
       "We bring guests into these cellars on a private, all-inclusive day — wine, lunch, and the Arrábida coast on the way home.",
