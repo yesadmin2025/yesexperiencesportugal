@@ -189,6 +189,13 @@ export function ProposalInPortugalPage() {
         </div>
       </section>
 
+      <AmbientLandscapeStrip
+        eyebrow="Where it can happen"
+        title={<>The settings we <SectionTitle.Em>work with.</SectionTitle.Em></>}
+        intro="Cliffs at sunset, a quiet cove, a private terrace. Real places along Portugal's Atlantic coast — chosen for the moment, never off a menu."
+        photos={PROPOSAL_LANDSCAPES}
+      />
+
       {/* Closing CTA */}
       <section className="py-16 md:py-20 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-2xl text-center">
