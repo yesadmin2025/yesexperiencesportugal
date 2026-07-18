@@ -135,7 +135,7 @@ export function AmbientLandscapeStrip({ eyebrow, title, intro, photos, moduleKey
           className={`mt-10 md:mt-14 grid grid-cols-1 ${cols} gap-4 md:gap-6`}
           data-testid="ambient-landscape-strip"
         >
-          {photos.map((p, i) => {
+          {rendered.map((p, i) => {
             const r = buildResponsiveSrc(p.src, { sizes: "card" });
             return (
                <li key={`${p.src}-${i}`} className="reveal-stagger group">
