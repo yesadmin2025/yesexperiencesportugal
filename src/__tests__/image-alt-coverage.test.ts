@@ -37,14 +37,20 @@ function walk(dir: string): string[] {
 describe("image alt coverage", () => {
   const files = walk(ROOT).filter((f) => !SKIP.some((s) => f.includes(s)));
 
+  /** Strip block and line comments so `<img>` in JSDoc examples doesn't
+   *  count as a real JSX tag. */
+  const stripComments = (src: string) =>
+    src.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/^\s*\/\/.*$/gm, " ");
+
   it("every <img> tag in JSX declares an alt attribute", () => {
     const offenders: string[] = [];
 
-    // Scan an `<img` tag respecting JSX brace nesting so arrow functions
-    // (`() =>`) or ternaries inside props don't fool a naive regex.
     for (const file of files) {
-      const src = readFileSync(file, "utf8");
-      const re = /<img\b/g;
+      const src = stripComments(readFileSync(file, "utf8"));
+      // Require whitespace or `/` after `<img` so we only match real JSX
+      // element opens, never `<img>` embedded in prose that survived
+      // comment-stripping (e.g. inside a template literal).
+      const re = /<img(?=[\s/])/g;
       let m: RegExpExecArray | null;
       while ((m = re.exec(src))) {
         let i = m.index + 4;
