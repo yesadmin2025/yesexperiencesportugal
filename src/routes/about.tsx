@@ -127,6 +127,8 @@ function Page() {
                 src={founderAsset.url}
                 alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
                 loading="lazy"
+                decoding="async"
+                sizes="100vw"
                 className="w-full aspect-[4/3] object-cover"
               />
               <figcaption className="mt-3 text-xs text-[color:var(--charcoal-soft)]/80 leading-relaxed italic">
@@ -159,6 +161,8 @@ function Page() {
               src={founderAsset.url}
               alt="Nídia Almeida hosting a private wine experience with YES Experiences Portugal guests."
               loading="lazy"
+              decoding="async"
+              sizes="(min-width: 1024px) 50vw, 100vw"
               className="w-full aspect-[4/3] object-cover"
             />
             <figcaption className="mt-3 text-xs text-[color:var(--charcoal-soft)]/80 leading-relaxed italic">

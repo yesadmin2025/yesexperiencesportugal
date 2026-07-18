@@ -131,7 +131,10 @@ export function ProposalInPortugalPage() {
                   <img
                     src={b.image}
                     alt={b.title}
-                    loading="lazy"
+                    loading={i === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                    fetchPriority={i === 0 ? "high" : "auto"}
+                    sizes="(min-width: 1024px) 50vw, 100vw"
                     className="w-full aspect-[4/5] md:aspect-[5/6] object-cover transition-transform duration-700 hover:scale-[1.03]"
                   />
                 </div>

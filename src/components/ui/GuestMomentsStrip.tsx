@@ -108,6 +108,7 @@ export function GuestMomentsStrip({
                     alt={photo.alt}
                     loading="lazy"
                     decoding="async"
+                    sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 76vw"
                     className="
                       absolute inset-0 h-full w-full object-cover
                       transition-transform duration-[560ms] ease-[var(--ease-premium)]

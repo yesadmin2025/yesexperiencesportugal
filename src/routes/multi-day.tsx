@@ -420,6 +420,8 @@ function MultiDayPage() {
               src={imgCorkHarvest}
               alt="Private Portugal journey designed by YES Experiences Portugal"
               loading="lazy"
+              decoding="async"
+              sizes="(min-width: 1024px) 50vw, 100vw"
               className="w-full aspect-[4/5] md:aspect-[5/6] object-cover"
             />
           </div>
