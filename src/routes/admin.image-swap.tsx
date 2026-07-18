@@ -756,13 +756,34 @@ function CandidatesPanel({
                     ⚠ em uso: {c.alreadyUsedIn.join(", ")}
                   </p>
                 )}
-                <button
-                  type="button"
-                  onClick={() => onQuickApply(c.photo)}
-                  className="mt-1 inline-flex items-center justify-center gap-1 bg-[color:var(--charcoal)] text-[color:var(--ivory)] text-[10px] uppercase tracking-[0.2em] py-1.5"
-                >
-                  <Zap size={10} /> Aplicar
-                </button>
+                {batchMode ? (
+                  inBatch?.src === c.photo.src ? (
+                    <button
+                      type="button"
+                      onClick={onRemoveFromBatch}
+                      className="mt-1 inline-flex items-center justify-center gap-1 bg-[color:var(--teal)] text-[color:var(--ivory)] text-[10px] uppercase tracking-[0.2em] py-1.5"
+                    >
+                      <CheckSquare size={10} /> No batch (remover)
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => onAddToBatch(c.photo)}
+                      className="mt-1 inline-flex items-center justify-center gap-1 border border-[color:var(--charcoal)] text-[color:var(--charcoal)] text-[10px] uppercase tracking-[0.2em] py-1.5"
+                    >
+                      <Square size={10} /> Atribuir ao slot {slotIndex + 1}
+                    </button>
+                  )
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => onQuickApply(c.photo)}
+                    className="mt-1 inline-flex items-center justify-center gap-1 bg-[color:var(--charcoal)] text-[color:var(--ivory)] text-[10px] uppercase tracking-[0.2em] py-1.5"
+                  >
+                    <Zap size={10} /> Aplicar
+                  </button>
+                )}
+
               </div>
             </div>
           );
