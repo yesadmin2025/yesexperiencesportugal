@@ -33,17 +33,17 @@ const TOTAL_SAMPLE_PAGES = 23;
 export const Route = createFileRoute("/multi-day")({
   head: () => ({
     meta: [
-      { title: "Private Multi-Day Portugal Journeys | Travel Designer by YES" },
+      { title: "Private Multi-Day Tours in Portugal | Custom Itineraries" },
       {
         name: "description",
         content:
-          "Full private Portugal journeys, designed with a local travel designer — shaped around your time, rhythm and interests. Delivered as a complete travel file.",
+          "Create a private multi-day journey through Portugal with a local travel designer, tailored routes, regional experiences and personal guidance.",
       },
-      { property: "og:title", content: "Private Multi-Day Portugal Journeys | Travel Designer by YES" },
+      { property: "og:title", content: "Private Multi-Day Tours in Portugal | Custom Itineraries" },
       {
         property: "og:description",
         content:
-          "Full private Portugal journeys, designed with a local travel designer — shaped around your time, rhythm and interests. Delivered as a complete travel file.",
+          "Create a private multi-day journey through Portugal with a local travel designer, tailored routes, regional experiences and personal guidance.",
       },
 
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgSintraEstates}` },
