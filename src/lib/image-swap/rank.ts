@@ -1,10 +1,9 @@
 /**
  * Ranks candidate photos for an editorial slot.
  *
- * Score = tag overlap + orientation match + freshness (not already used
- * elsewhere on the site). Returns top-N with a human-readable PT reason.
- */
 import type { PoolPhoto } from "./pool";
+import { estimateQuality } from "./quality";
+
 
 export type RankedCandidate = {
   photo: PoolPhoto;
