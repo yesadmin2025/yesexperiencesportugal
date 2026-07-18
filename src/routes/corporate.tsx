@@ -187,6 +187,13 @@ function CorporatePage() {
         </div>
       </section>
 
+      <AmbientLandscapeStrip
+        eyebrow="Where the day happens"
+        title={<>The landscapes you'll <SectionTitle.Em>host in.</SectionTitle.Em></>}
+        intro="Coast, cliffs, cellars and quiet coves — real places on the Lisbon, Setúbal and Alentejo axis, all reachable inside one working day."
+        photos={CORPORATE_LANDSCAPES}
+      />
+
       {/* Closing CTA */}
       <section className="py-16 md:py-20 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-2xl text-center">
