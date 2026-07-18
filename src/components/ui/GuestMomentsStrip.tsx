@@ -15,6 +15,7 @@
  *   • Captions in Fraunces italic teal (Editorial v3), body in Inter.
  */
 import { type ReactNode } from "react";
+import { buildResponsiveSrc } from "@/lib/responsive-image";
 
 export type GuestMoment = {
   src: string;
@@ -90,7 +91,9 @@ export function GuestMomentsStrip({
           "
           role="list"
         >
-          {photos.map((photo, idx) => (
+          {photos.map((photo, idx) => {
+            const responsive = buildResponsiveSrc(photo.src, { sizes: "portrait" });
+            return (
             <li
               key={photo.src}
               data-motion="fade-up"
@@ -104,12 +107,14 @@ export function GuestMomentsStrip({
               <figure className="flex h-full flex-col">
                 <div className="relative overflow-hidden rounded-[2px] bg-[color:var(--sand)] aspect-[4/5] shadow-[0_20px_40px_-24px_rgba(46,46,46,0.18)]">
                   <img
-                    src={photo.src}
+                    src={responsive.src}
+                    srcSet={responsive.srcSet}
                     alt={photo.alt}
                     loading="lazy"
                     decoding="async"
                     sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 76vw"
                     className="
+                      editorial-photo-motion
                       absolute inset-0 h-full w-full object-cover
                       transition-transform duration-[560ms] ease-[var(--ease-premium)]
                       md:group-hover:scale-[1.03]
@@ -122,7 +127,8 @@ export function GuestMomentsStrip({
                 </figcaption>
               </figure>
             </li>
-          ))}
+            );
+          })}
         </ul>
 
         {footnote && (

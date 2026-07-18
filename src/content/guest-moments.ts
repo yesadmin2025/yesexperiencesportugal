@@ -11,8 +11,6 @@ import wineryGroup from "@/assets/owner-photos/winery-group-orange-tree.jpeg.ass
 import tastingCake from "@/assets/owner-photos/tasting-cake-moment.jpeg.asset.json";
 import wineCheers from "@/assets/owner-photos/wine-cheers-arch.jpeg.asset.json";
 import coupleVineyard from "@/assets/owner-photos/couple-vineyard.jpeg.asset.json";
-import corkHarvest from "@/assets/owner-photos/cork-harvesters-alentejo.jpeg.asset.json";
-import potter from "@/assets/owner-photos/potter-wheel-azeitao.jpeg.asset.json";
 import ceramicPainter from "@/assets/owner-photos/ceramic-painter-plate.jpeg.asset.json";
 
 import barrelCellar from "@/assets/owner-photos/barrel-cellar-tasting.jpeg.asset.json";
@@ -21,8 +19,6 @@ import couplePetiscos from "@/assets/owner-photos/couple-petiscos-patio.jpeg.ass
 import portinhoBoardwalk from "@/assets/owner-photos/portinho-boardwalk-couple.jpeg.asset.json";
 import moscatelVats from "@/assets/owner-photos/moscatel-giant-vats-guide.jpeg.asset.json";
 import azulejoBlueCat from "@/assets/owner-photos/azulejo-blue-cat.jpeg.asset.json";
-import portinhoAerial from "@/assets/owner-photos/portinho-aerial-bay.jpeg.asset.json";
-import tastingFlight from "@/assets/owner-photos/tasting-flight-full.jpeg.asset.json";
 import sintraGroup from "@/assets/owner-photos/sintra-group-selfie.jpeg.asset.json";
 import arrabidaViewpointWomen from "@/assets/owner-photos/arrabida-viewpoint-women.jpeg.asset.json";
 
@@ -56,18 +52,6 @@ export const MOMENT_COUPLE_VINEYARD: GuestMoment = {
   src: coupleVineyard.url,
   alt: "A couple embracing between winter vines in a Setúbal peninsula vineyard.",
   caption: "Between the vines, in low winter light.",
-};
-
-export const MOMENT_CORK_HARVEST: GuestMoment = {
-  src: corkHarvest.url,
-  alt: "Two Alentejo cork harvesters carefully stripping bark from a cork oak in high summer.",
-  caption: "Cork harvest, Alentejo — nine years of patience.",
-};
-
-export const MOMENT_POTTER: GuestMoment = {
-  src: potter.url,
-  alt: "An Azeitão potter shaping a clay bowl on a wheel in his workshop.",
-  caption: "The potter's wheel, Azeitão.",
 };
 
 export const MOMENT_CERAMIC_PAINTER: GuestMoment = {
@@ -112,18 +96,6 @@ export const MOMENT_AZULEJO_BLUE_CAT: GuestMoment = {
   caption: "One brush, one cat, one afternoon in Azeitão.",
 };
 
-export const MOMENT_PORTINHO_AERIAL: GuestMoment = {
-  src: portinhoAerial.url,
-  alt: "Aerial view of Portinho da Arrábida — turquoise water, anchored boats, wooded cliffs above the beach.",
-  caption: "Portinho da Arrábida — Portugal's quiet Caribbean.",
-};
-
-export const MOMENT_TASTING_FLIGHT: GuestMoment = {
-  src: tastingFlight.url,
-  alt: "A tray of tasting glasses lined up — dry white, red, and aged Moscatel — at a Setúbal peninsula cellar.",
-  caption: "A full flight — from crisp white to aged Moscatel.",
-};
-
 export const MOMENT_SINTRA_GROUP: GuestMoment = {
   src: sintraGroup.url,
   alt: "A large private group photographed with their local guide on a cobbled Sintra street in the morning.",
@@ -151,25 +123,21 @@ export const HOMEPAGE_MOMENTS = [
 ];
 
 export const ABOUT_MOMENTS = [
-  MOMENT_SINTRA_GROUP,
-  MOMENT_ARRABIDA_VIEWPOINT_WOMEN,
-  MOMENT_AZULEJO_MASTER,
-  MOMENT_TASTING_CAKE,
+  MOMENT_PORTINHO_BOARDWALK,
+  MOMENT_CERAMIC_PAINTER,
+  MOMENT_COUPLE_PETISCOS,
+  MOMENT_MOSCATEL_VATS,
 ];
 
 export const CORPORATE_MOMENTS = [
-  MOMENT_SINTRA_GROUP,
   MOMENT_WINERY_GROUP,
   MOMENT_BARREL_CELLAR,
-  MOMENT_WINE_CHEERS,
-  MOMENT_MOSCATEL_VATS,
-  MOMENT_ARRABIDA_VIEW,
+  MOMENT_AZULEJO_BLUE_CAT,
 ];
 
 export const MULTI_DAY_MOMENTS = [
-  MOMENT_ARRABIDA_VIEW,
-  MOMENT_TASTING_FLIGHT,
-  MOMENT_MOSCATEL_VATS,
-  MOMENT_AZULEJO_BLUE_CAT,
+  MOMENT_ARRABIDA_VIEWPOINT_WOMEN,
+  MOMENT_AZULEJO_MASTER,
+  MOMENT_TASTING_CAKE,
 ];
 

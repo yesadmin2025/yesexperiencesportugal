@@ -41,6 +41,9 @@ type PhotoRow = {
   alt: string;
   sort_order: number;
   is_cover: boolean;
+  content_hash: string | null;
+  width: number | null;
+  height: number | null;
   signedUrl?: string;
 };
 
@@ -154,6 +157,17 @@ function AdminPhotosPage() {
     });
   }
 
+  async function imageMetadata(file: File) {
+    const digest = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
+    const contentHash = Array.from(new Uint8Array(digest), (byte) =>
+      byte.toString(16).padStart(2, "0"),
+    ).join("");
+    const bitmap = await createImageBitmap(file);
+    const dimensions = { width: bitmap.width, height: bitmap.height };
+    bitmap.close();
+    return { contentHash, ...dimensions };
+  }
+
   async function handleFiles(fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
     const files = Array.from(fileList);
@@ -167,6 +181,18 @@ function AdminPhotosPage() {
     for (const file of files) {
       try {
         const processed = await processFile(file);
+        const { contentHash, width, height } = await imageMetadata(processed);
+        const { data: duplicate } = await supabase
+          .from("tour_gallery_photos")
+          .select("id, tour_id")
+          .eq("content_hash", contentHash)
+          .maybeSingle();
+        if (duplicate) {
+          toast.error(`${file.name} is already in the gallery.`);
+          done += 1;
+          setUploadProgress({ done, total: files.length });
+          continue;
+        }
         const path = `${tourId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
         const { error: upErr } = await supabase.storage
           .from("tour-photos")
@@ -179,6 +205,9 @@ function AdminPhotosPage() {
           alt: `${tour?.title ?? tourId} — photo ${currentMax + done + 1}`,
           sort_order: currentMax + done + 1,
           is_cover: false,
+          content_hash: contentHash,
+          width,
+          height,
         });
         if (dbErr) throw dbErr;
       } catch (err) {
