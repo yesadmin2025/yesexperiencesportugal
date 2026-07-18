@@ -521,11 +521,16 @@ function AdminImageSwapPage() {
                             poolLoading={poolLoading}
                             usageIndex={usageIndex}
                             filters={filters}
+                            batchMode={batchMode}
+                            inBatch={batch.get(i) ?? null}
                             onCompare={(candidate) => setPreview({ candidate, slotIndex: i })}
                             onQuickApply={(candidate) =>
                               applyAndPublish(activeKey, i, candidate)
                             }
+                            onAddToBatch={(candidate) => addToBatch(i, candidate)}
+                            onRemoveFromBatch={() => removeFromBatch(i)}
                           />
+
                         </div>
                       )}
                     </div>
