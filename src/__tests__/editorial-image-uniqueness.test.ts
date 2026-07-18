@@ -27,7 +27,9 @@ describe("editorial image identity", () => {
       CORPORATE_SERVICE_IMAGES.slice(0, 2).map((photo) => photo.src),
     );
     expect(MULTI_DAY_MOMENTS.map((photo) => photo.src)).toEqual(
-      PROPOSAL_SERVICE_IMAGES.slice(1).concat(PROPOSAL_SERVICE_IMAGES[0]).map((photo) => photo.src),
+      [PROPOSAL_SERVICE_IMAGES[1], PROPOSAL_SERVICE_IMAGES[0], PROPOSAL_SERVICE_IMAGES[2]].map(
+        (photo) => photo.src,
+      ),
     );
   });
 
