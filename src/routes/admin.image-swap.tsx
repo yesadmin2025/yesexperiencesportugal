@@ -606,7 +606,24 @@ function AdminImageSwapPage() {
           </div>
         </div>
       )}
+
+      <BatchSelectionBar
+        pending={Array.from(batch.entries())
+          .sort((a, b) => a[0] - b[0])
+          .map(
+            ([slotIndex, photo]): BatchPending => ({
+              slotIndex,
+              photoSrc: photo.src,
+              photoName: photo.name,
+            }),
+          )}
+        saving={saving}
+        onClear={clearBatch}
+        onPublish={publishBatch}
+        onRemove={removeFromBatch}
+      />
     </SiteLayout>
+
   );
 }
 
