@@ -6,9 +6,9 @@ import { MessageCircle, Heart, Sparkles, Users } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import {
 import { PROPOSAL_LANDSCAPES } from "@/components/ui/AmbientLandscapeStrip";
 import { AmbientLandscapeReveal } from "@/components/ui/AmbientLandscapeReveal";
+
 
 import { PROPOSAL_FAQ } from "@/content/seo-faq";
 import imgRomantic from "@/assets/exp-romantic.jpg";
