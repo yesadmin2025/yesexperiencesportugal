@@ -415,6 +415,31 @@ function AdminImageSwapPage() {
                 ))}
               </div>
 
+              <div className="mb-4 flex items-center justify-between gap-3 flex-wrap border-t border-b border-[color:var(--border)] py-3">
+                <div className="flex items-center gap-2 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                  <Sparkles size={12} className="text-[color:var(--gold)]" />
+                  <span>
+                    Curadoria = substituir. Nº de imagens de cada módulo é fixo ({activeModule.defaults.length}).
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBatchMode((v) => !v);
+                    if (batchMode) clearBatch();
+                  }}
+                  className={`inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] px-3 py-1.5 border ${
+                    batchMode
+                      ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)] border-[color:var(--charcoal)]"
+                      : "bg-white border-[color:var(--border)]"
+                  }`}
+                >
+                  {batchMode ? <CheckSquare size={12} /> : <Square size={12} />}
+                  Selecção múltipla
+                </button>
+              </div>
+
+
               <div className="space-y-6">
                 {activeSlots.map((slot, i) => {
                   const isOpen = openSlot === i;
