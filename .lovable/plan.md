@@ -1,80 +1,62 @@
-## Objetivo
+# Comparador de imagens no admin — antes de substituir
 
-Recurar e tratar as fotografias reais já existentes, remover integralmente as duas imagens inventadas e garantir que uma fotografia só ocupa **um único lugar editorial** entre todos os módulos Ambient e Moments — mesmo quando a fonte original é um upload do admin. A fotografia pode continuar na galeria original do tour, como confirmaste.
+Nova página `/admin/image-swap` (mesmo gate admin de `/admin/photos`) que permite, para cada slot editorial do site, ver a imagem **atual** lado a lado com as **melhores alternativas reais do stock** e aplicar a troca com um clique — sem editar código à mão.
 
-## O que a auditoria confirmou
+## Fluxo
 
-- As imagens inventadas `douro-terraces-golden` e `alentejo-cork-dawn` aparecem apenas no Ambient de `/multi-day`; serão removidas do código e do CDN.
-- O teste atual só verifica repetições entre os três presets Ambient. Não inclui Moments, não compara Ambient com Moments e não reconhece uploads do admin.
-- Moments contém atualmente 7 fotografias repetidas entre os seus conjuntos, incluindo Sintra Group, Arrábida View, Wine Cheers, Tasting Cake, Arrábida Women, Azulejo Master e Moscatel Vats.
-- O banco do admin tem 18 fotografias reais em quatro galerias. Algumas são também a fonte visual das imagens Ambient, mas com URLs diferentes; comparar apenas URLs não deteta essa repetição.
-- As imagens antigas continuam a ser servidas diretamente dos ficheiros originais: não foram criadas versões tratadas nem variantes reais por largura para os assets do CDN.
-- O movimento Ambient atual é um zoom infinito de 1.06–1.12, demasiado forte e permanentemente ampliado. Moments tem apenas um hover e nem sequer gera `srcSet` real para os assets locais.
+1. Selecionar módulo no topo (`Homepage Moments`, `About Moments`, `Corporate Moments`, `Multi-day Moments`, `Corporate Ambient`, `Proposal Ambient`, `Multi-day Ambient`, `Tour hero/cover` por tour).
+2. Ver a lista de slots do módulo. Cada slot mostra:
+  - Imagem atual (thumb grande) + legenda/alt atual + dimensões + score de qualidade.
+  - Botão **"Ver alternativas"** que abre um painel com candidatos do stock ordenados por adequação.
+3. Painel de candidatos mostra até 12 alternativas com:
+  - Miniatura, dimensões, fonte (`owner-photo` / `admin-upload` / `tour-gallery`).
+  - Motivo do ranking (ex.: "mesma paleta costeira", "orientação vertical", "resolução 2400px", "ainda não usada em nenhum módulo").
+  - Aviso se a alternativa já está a ser usada noutro módulo (evita novo duplicado).
+4. Selecionar candidato → abre **modo Comparar** ecrã inteiro (antes | depois) com slider arrastável (estilo before/after), no viewport mobile por defeito (o utilizador trabalha em mobile) e toggle para desktop.
+5. **Aplicar** grava a troca. **Guardar rascunho** deixa a troca pendente para revisão.
+6. Após selecionadas, editar para qualidade premium e ao coloca las adicionar animações premmium de alta qualidade 
 
-## Implementação
+## Como as trocas são persistidas (sem reescrever ficheiros)
 
-### 1. Remover todo o conteúdo inventado
+Novo mapa de overrides guardado em Supabase, lido pelos módulos existentes com fallback para os defaults atuais em `guest-moments.ts` / `AmbientLandscapeStrip.tsx`. Zero refactor dos consumidores públicos.
 
-- Retirar `douro-terraces-golden` e `alentejo-cork-dawn` do preset Multi-day.
-- Eliminar os respetivos assets do CDN, sem os substituir por imagens geradas, stock ou fotografias de locais não comprovados.
-- Substituí-los exclusivamente por fotografias reais já existentes no banco/admin, escolhidas pelo contexto da página.
+- Nova tabela `public.editorial_image_overrides` com:
+  - `module_key` (ex.: `homepage_moments`), `slot_index`, `photo_src`, `alt`, `caption`, `status` (`draft` | `published`), `updated_by`, `updated_at`.
+  - Grants: `SELECT` a `anon` + `authenticated` só para `status = 'published'` (via policy); `ALL` para admins via `has_role`; `service_role` total.
+  - RLS ligada.
+- Novo helper `src/lib/editorial-overrides.ts` + hook `useEditorialOverrides(moduleKey)` que faz merge com o array default. Os módulos existentes passam a chamar esse hook — mudança mínima, comportamento idêntico quando não há overrides.
 
-### 2. Criar um catálogo editorial global por identidade da fotografia
+## Ranking de candidatos
 
-- Centralizar Ambient e Moments num catálogo único com:
-  - identidade estável da fotografia por hash do conteúdo, não apenas URL ou nome;
-  - origem real: owner photo, tour gallery/admin ou asset existente;
-  - contexto permitido, alt, legenda, proporção e variantes responsivas;
-  - colocação editorial exata: página + módulo + posição.
-- Manter a galeria do tour como fonte original: uma imagem usada num Ambient ou Moment continua disponível na sua galeria.
-- Aplicar a regra de unicidade apenas às colocações editoriais Ambient/Moments; nenhuma fotografia pode ocupar dois desses lugares.
+Utilitário puro `src/lib/image-swap/rank.ts`:
 
-### 3. Incluir uploads do admin na verificação
+- Recolhe pool de: `src/assets/owner-photos/*`, `tour_gallery_photos`, `src/assets/ambient/*`.
+- Exclui imagens já usadas em qualquer módulo (via registro do painel de auditoria já planeado) — reaproveita `src/lib/image-audit/registry.ts`.
+- Score = resolução (peso alto) + orientação compatível com o slot + tag temática (people/landscape/craft/food) inferida do nome/pasta + bónus se ainda inédita.
+- Retorna top-N com razão legível em PT.
 
-- Guardar hash, largura e altura de cada novo upload do admin após o processamento, através de uma migração segura da tabela existente.
-- Calcular o hash também para as 18 fotografias já armazenadas e associá-las ao catálogo real.
-- Antes de uma fotografia do admin ser atribuída a Ambient ou Moments, validar o hash contra todas as colocações editoriais existentes.
-- Mostrar no admin o uso editorial atual e impedir uma segunda atribuição, sem remover a fotografia da galeria do tour.
+## Segurança e permissões
 
-### 4. Recuradoria contextual das páginas
+- Rota `admin.image-swap.tsx` com o mesmo padrão de proteção de `admin.photos.tsx` (verifica `has_role admin`).
+- Server functions em `src/lib/admin-image-swap.functions.ts`:
+  - `listSwapCandidates({ moduleKey, slotIndex })` — admin only.
+  - `saveOverride({ moduleKey, slotIndex, photo, status })` — admin only.
+  - `publishOverride({ id })` / `revertOverride({ id })` — admin only.
+- `service_role` só é usado dentro do handler, depois de confirmar admin via `context.supabase.rpc('has_role', ...)`.
 
-- Rever as imagens atuais de `/corporate`, `/proposal-in-portugal`, `/multi-day`, Homepage e About usando apenas o stock real confirmado.
-- Reatribuir cada fotografia ao contexto onde transmite mais valor:
-  - Corporate: pessoas, grupos, espaços e execução real;
-  - Proposal: casal, privacidade, luz e locais discretos;
-  - Multi-day: variedade regional e sensação de percurso real;
-  - About: fundador, equipa e operação autêntica;
-  - Moments: emoção humana, artesanato e hospitalidade.
-- Evitar imagens tecnicamente fracas em posições grandes, especialmente o Comporta aerial vertical dentro de um corte horizontal e os ficheiros de baixa resolução em blocos largos.
-- Não criar secções novas nem alterar o layout; apenas melhorar seleção, enquadramento e apresentação das secções fotográficas existentes.
+## Ficheiros
 
-### 5. Tratamento editorial não generativo
+- `src/routes/admin.image-swap.tsx` (novo) — UI.
+- `src/components/admin/BeforeAfterSlider.tsx` (novo) — comparador arrastável, respeita `prefers-reduced-motion`.
+- `src/lib/image-swap/rank.ts` (novo) + teste.
+- `src/lib/editorial-overrides.ts` (novo) + hook.
+- `src/lib/admin-image-swap.functions.ts` (novo).
+- Migração Supabase: cria `editorial_image_overrides` com GRANTs, RLS e policies.
+- Pequena edição em `src/content/guest-moments.ts` e `src/components/ui/AmbientLandscapeStrip.tsx` para consumir overrides publicados (fallback = comportamento atual).
+- Teste que garante que overrides publicados não introduzem duplicados globais (reaproveita `editorial-image-uniqueness.test.ts`).
 
-- Trabalhar as fotografias selecionadas sem alterar o conteúdo real:
-  - correção subtil de exposição e balanço de cor;
-  - recuperação de altas luzes/sombras;
-  - redução de ruído e nitidez moderada;
-  - corte específico para 3:2 ou 4:5 conforme o módulo;
-  - sem acrescentar, remover ou inventar pessoas, objetos, céu ou paisagem.
-- Não ampliar artificialmente fotografias pequenas para posições onde perderiam qualidade.
-- Recompactar ficheiros pesados, incluindo a imagem About de 1,1 MB, preservando detalhe visual.
+## Fora do âmbito
 
-### 6. Variantes responsivas reais
-
-- Criar derivados WebP/AVIF nos tamanhos úteis de cada fotografia, limitados pela resolução real da origem.
-- Atualizar o catálogo e os dois componentes para fornecer `srcSet` e `sizes` verdadeiros, incluindo Moments.
-- Manter carregamento lazy nas imagens secundárias e prioridade apenas na primeira imagem de conversão relevante.
-
-### 7. Movimento premium e contido
-
-- Remover o Ken Burns infinito atual.
-- Aplicar uma entrada única e subtil: pequeno settle de escala até 1:1, máscara/reveal suave e fade, sem parallax.
-- Manter hover máximo de aproximadamente 1.02–1.03 apenas em dispositivos com hover.
-- Desativar totalmente transformações em `prefers-reduced-motion`.
-
-### 8. Verificação automática e QA visual
-
-- Substituir o teste Ambient isolado por uma verificação global que falha quando o mesmo hash aparece em mais de uma colocação Ambient/Moments.
-- Cobrir assets estáticos, owner photos e fotografias originadas no admin.
-- Adicionar testes de `srcSet`, alt text, proporção, redução de movimento e ausência dos dois assets inventados.
-- Validar visualmente Homepage, About, Corporate, Proposal e Multi-day em mobile primeiro e depois desktop, confirmando enquadramento, nitidez, movimento e ausência de repetições editoriais. Que fique o mais premmium possível e melhor qualidade e movimento possível 
+- Não altera arrays default no código — trocas ficam em BD, revertíveis.
+- Não gera imagens; só escolhe entre reais existentes.
+- Não mexe em capas de tour dentro do `admin/photos` (esse fluxo já existe); apenas as expõe como pool de origem.
