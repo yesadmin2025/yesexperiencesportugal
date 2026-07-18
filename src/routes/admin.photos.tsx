@@ -178,6 +178,7 @@ function AdminPhotosPage() {
     const tour = signatureTours.find((t) => t.id === tourId);
 
     let done = 0;
+    let uploaded = 0;
     for (const file of files) {
       try {
         const processed = await processFile(file);
@@ -209,7 +210,11 @@ function AdminPhotosPage() {
           width,
           height,
         });
-        if (dbErr) throw dbErr;
+        if (dbErr) {
+          await supabase.storage.from("tour-photos").remove([path]);
+          throw dbErr;
+        }
+        uploaded += 1;
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         toast.error(`Failed on ${file.name}: ${msg}`);
@@ -221,7 +226,9 @@ function AdminPhotosPage() {
     setUploading(false);
     setUploadProgress(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
-    toast.success(`Uploaded ${done} photo${done === 1 ? "" : "s"}`);
+    if (uploaded > 0) {
+      toast.success(`Uploaded ${uploaded} photo${uploaded === 1 ? "" : "s"}`);
+    }
     loadPhotos(tourId);
   }
 
