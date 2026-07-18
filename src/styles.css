@@ -6457,3 +6457,37 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .editorial-photo-motion { transform: none; transition: none; }
 }
+
+/* AmbientLandscapeReveal — single-slide crossfade + slow cinematic zoom.
+   One slide is `.is-active`; others fade underneath. Zoom resets when the
+   slide becomes active again. Disabled by prefers-reduced-motion. */
+.ambient-reveal-slide {
+  opacity: 0;
+  transition: opacity 500ms ease-out;
+  pointer-events: none;
+}
+.ambient-reveal-slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.ambient-reveal-zoom {
+  transform: scale(1.0);
+  filter: saturate(0.95) contrast(1.02);
+  transform-origin: center;
+  will-change: transform;
+}
+.ambient-reveal-zoom.is-active {
+  animation: ambient-reveal-zoom-kf 8000ms linear forwards;
+}
+@keyframes ambient-reveal-zoom-kf {
+  from { transform: scale(1.0); }
+  to   { transform: scale(1.035); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-reveal-slide { transition: none; }
+  .ambient-reveal-zoom, .ambient-reveal-zoom.is-active {
+    animation: none;
+    transform: none;
+  }
+}
+
