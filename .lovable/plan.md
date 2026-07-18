@@ -1,109 +1,71 @@
-# Fotos responsivas nas páginas de conversão
-
 ## Contexto
 
-O turn anterior deixou o pipeline responsivo pronto para fotos **admin** (Supabase transforms) e para o hero/gallery de `/tours/$tourId`. Falta o mesmo tratamento nas restantes páginas onde a imagem influencia a decisão de reservar — hoje muitas ainda servem 1 única URL (Viator ou asset local) sem `srcSet` nem `sizes`, o que penaliza LCP em mobile e desperdiça banda.
+Levantamento confirmou que os heroes de `/corporate` e `/proposal-in-portugal` já usam owner-photos com pessoas reais, e `/multi-day` não tem hero fotográfico (é preview do PDF). O banco novo `tour_gallery_photos` traz paisagens (Comporta, Cabo Espichel, Vicentine, picnic) que não devem substituir retratos — mas podem enriquecer as páginas como blocos ambientais.
 
-## Páginas no âmbito (impacto direto em conversão)
+Escopo aprovado:
 
-1. `/experiences` — grelha Signature (cartão editorial + rating pill).
-2. `/day-tours` — cartões de tours.
-3. `/tours/$tourId` — hero + galeria (já feito) + secção "outras experiências".
-4. `/tours/$tourId/tailor` — hero + resumo visual.
-5. `/multi-day` — cartões de itinerário.
-6. `/corporate` — hero + prova social visual.
-7. `/proposal-in-portugal` — hero editorial.
-8. `/` (homepage) — RecentJourney, SignatureCarousel, EditorialCard, GuestMomentsStrip (CinematicHero já usa `<picture>` com `srcSet`).
-9. `/about` — retratos editoriais.
+1. Manter todos os retratos/casais/grupos que já lá estão.
+2. Adicionar as paisagens do banco em blocos secundários onde reforcem a narrativa.
+3. Nos "corporate moments" (`GuestMomentsStrip` em `/corporate` e homepage), garantir que só passam as melhores fotos com pessoas + alta conversão.
 
-Fora do âmbito: `/admin/*`, `-brand-qa.test`, `local-stories` (leitura, não conversão) — ficam para segunda fase se necessário.
+## O que muda
 
-## O que vai mudar
+### 1. `/corporate` — reforçar prova social + paisagem
 
-### 1. Novo helper `src/lib/responsive-image.ts`
+- **GuestMomentsStrip**: auditar o `CORPORATE_SET` em `src/content/guest-moments.ts` e reduzir aos 6-8 momentos mais fortes com pessoas (grupos, brindes, refeições partilhadas). Retirar naturezas-mortas fracas se existirem.
+- **Novo bloco ambiental "The landscapes you'll host in"** entre "Where it fits" e o CTA final: mini-galeria 3-up com Comporta boardwalk + Arrábida Espichel cliffs + Setúbal winery landscape (Viator). Legenda editorial curta, sem CTA. Sinaliza escala do território.
 
-Função pura `buildResponsiveSrc(url, { widths?, quality? })` que devolve `{ src, srcSet, sizes }` reconhecendo três origens:
+### 2. `/proposal-in-portugal` — adicionar cenário
 
-- **Viator** (`media.tacdn.com/...`): reescreve o path para variantes de largura via segmento `-w{W}` já suportado pelo CDN Viator; fallback ao original quando o padrão não bate.
-- **Supabase Storage transform** (fotos admin — já coberto no hook, expõe utilitário partilhado).
-- **Asset local Lovable CDN / `public/***`: devolve o `src` original + `sizes` (o CDN Lovable já entrega AVIF/WebP negociado).
+- Novo bloco "The settings we work with" após os 3 cards de casais: 3 paisagens (Cabo Espichel sunset, palm-fronds turquoise bay Vicentine, Comporta cabanas) apresentadas como "onde o momento pode acontecer". Mantém todos os retratos actuais intactos.
 
-Uma única fonte de verdade — o hook `useAdminTourPhotos` passa a chamá-la.
+### 3. `/multi-day` — enriquecer "Where it can go"
 
-### 2. Sizes presets em `src/lib/responsive-image.ts`
+- Substituir o `imgCorkHarvest` isolado por uma tira de 3 paisagens (Comporta aerial, Vicentine cove, Sesimbra/Arrábida) mostrando amplitude geográfica dos itinerários multi-dia. Cork harvest passa para dentro do fluxo do texto como imagem pequena secundária, ou é removido se ficar redundante.
 
-- `SIZES.card` = `"(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"`
-- `SIZES.hero` = `"100vw"`
-- `SIZES.gallery` = `"(min-width: 1024px) 50vw, 100vw"`
-- `SIZES.portrait` = `"(min-width: 1024px) 33vw, 100vw"`
+### 4. Homepage — curadoria dos "moments"
 
-### 3. Substituição dos `<img>` crus por `TourImage`
+- Auditar `HOMEPAGE_SET` em `src/content/guest-moments.ts`: só as 8 fotos com pessoas de maior qualidade e emocionalmente ricas (brindes, casais, grupos em viewpoint, artesãos em acção). Fotos ambientais/paisagem saem daqui — vão para os novos blocos das páginas de conversão.
+- CinematicHero (vídeo) fica intocado, conforme pedido.
 
-Em cada página do âmbito, trocar `<img src=... />` por `<TourImage>` com o preset `sizes` correcto e `srcSet` derivado do helper. Componentes tocados:
+### 5. Utilitário partilhado
 
-- `src/components/ui/EditorialCard.tsx` (usado no homepage)
-- `src/components/SignatureCarousel.tsx`
-- `src/components/home/RecentJourney.tsx` (4 `<img>`)
-- `src/components/ui/GuestMomentsStrip.tsx`
-- `src/routes/multi-day.tsx` (3 `<img>`)
-- `src/routes/corporate.tsx`
-- `src/routes/proposal-in-portugal.tsx`
-- `src/routes/about.tsx` (2 `<img>`)
-- `src/routes/index.tsx` (1 `<img>` remanescente)
+- Novo componente `<AmbientLandscapeStrip>` em `src/components/ui/` (padrão editorial, 3 fotos, sem CTA, aspect 3:2, `buildResponsiveSrc` já integrado, `sizes="(min-width: 1024px) 33vw, 100vw"`). Usado nos 3 blocos ambientais acima — evita triplicar markup.
 
-`experiences.tsx` e `day-tours.tsx` já usam `TourImage` — só falta passar `sizes` + `srcSet` do helper.
+### 6. Fotos do banco → assets renderizáveis
 
-### 4. Cover art priorização (LCP)
+As fotos do banco vivem em Supabase Storage privado (signed URLs, `useAdminTourPhotos`). Para páginas públicas sem tour associado, preciso:
 
-Em cada página, marcar apenas o primeiro cartão acima da dobra com `priority` — hoje várias marcam múltiplos (ou nenhum). O helper de LCP fica no próprio ficheiro, sem componente novo.
+- **Opção A (rápida)**: fazer download das 6-8 paisagens escolhidas e uploadar via `lovable-assets` como CDN pointers (`.asset.json`), consumo directo por `<AmbientLandscapeStrip>`. Zero signed-URL churn, cache CDN forte.
+- **Opção B**: server fn pública que devolve signed URLs para um subset marcado como "public showcase". Mais infra, sem benefício visível.
 
-### 5. Fotos a substituir (curadoria)
+**Recomendação: Opção A** — as fotos ficam no banco (fonte de verdade), e as duplicamos como assets CDN para uso editorial em páginas públicas.
 
-Passagem manual pelas páginas para trocar fotos "fracas" pelas melhores do banco atual (fotos admin uploadadas nas últimas rondas + Viator originais). Regras:
+## Regras editoriais (sem invenção)
 
-- `/experiences` cartões: usar cover admin quando existir; senão Viator hero.
-- `/multi-day`, `/corporate`, `/proposal-in-portugal`: substituir stock/genéricos por fotos reais das galerias equivalentes (ex.: Comporta, Cabo Espichel, Sesimbra).
-- `/about`: manter retratos actuais (não são de operação).
+- Cada foto ambiental usa a `alt` já registada em `tour_gallery_photos` (fiel ao local).
+- Legendas curtas descrevem o **lugar**, não a experiência (evita implicar itinerários que não existem).
+- Nenhum bloco novo introduz CTA, preço ou promessa.
+- Motion: só o `reveal` padrão editorial (fade + translateY ≤16px).
 
-Lista concreta de substituições para aprovar antes de aplicar (é a única parte com decisão editorial):
+## Testes
 
+- `src/__tests__/image-alt-coverage.test.ts` já exige alt — o novo componente passa naturalmente.
+- Snapshot de `<AmbientLandscapeStrip>` para lock de estrutura.
 
-| Página                                      | Bloco        | Foto atual       | Proposta                                        |
-| ------------------------------------------- | ------------ | ---------------- | ----------------------------------------------- |
-| `/multi-day` hero                           | topo         | genérica costa   | cover admin Comporta (IMG_5241)                 |
-| `/multi-day` card "Rota Sul"                | &nbsp;       | Viator genérica  | Cabo Espichel farol (admin)                     |
-| `/corporate` hero                           | topo         | vinha stock      | terraço-vinhedo Setúbal (Viator)                |
-| `/corporate` "prova social"                 | 3 miniaturas | mistas           | 3 melhores momentos de grupo (guest moments)    |
-| `/proposal-in-portugal` hero                | topo         | pôr-do-sol stock | pôr-do-sol Cabo Espichel (admin)                |
-| `/experiences` cartão "Southwest Vicentine" | cover        | Viator           | IMG_5241 (já aplicada) — confirmar renderização |
+## Fora do escopo
 
-
-Se preferires manter as fotos actuais e só melhorar tamanho/entrega, digo e saltamos o ponto 5 — os pontos 1-4 já resolvem performance sozinhos.
-
-### 6. Testes
-
-- Estender `src/__tests__/image-alt-coverage.test.ts` para exigir que `<TourImage>` ou `<img>` em rotas de conversão declarem `sizes` OU `srcSet`.
-- Adicionar teste unitário para `buildResponsiveSrc` (Viator, Supabase, passthrough).
-
-## Detalhes técnicos
-
-- **Sem sharp / sem worker resize custom**: Viator serve variantes por URL (`-w800`, `-w1200`), Supabase serve via `?width=&quality=`, Lovable CDN já negoceia formato. Zero dependências novas.
-- `**fetchPriority**`: só o primeiro hero de cada página; restantes ficam `lazy` + `decoding=async` (já é o default do `TourImage`).
-- **A11y**: `alt` fallback `"<título> — <região>"` mantém-se; `TourImage` continua a receber `alt` obrigatório (tipado).
-- **Zero mudanças de layout**: `TourImage` mantém rácio 3:2 / 16:9 / 4:5 conforme o slot.
-
-## Fora do âmbito
-
-- Optimizar imagens de admin/interno (`/admin/*`).
-- Substituir a lógica de `CinematicHero` (já usa `<picture>` responsivo).
-- Introduzir CDN de terceiros.
-- Rondas adicionais de curadoria fotográfica além da tabela acima.
+- Trocar retratos actuais por paisagens.
+- Mexer em hero video da homepage.
+- Alterar `/about` (retrato da fundadora fica).
+- Novas fotos além das já no banco.
 
 ## Entregáveis
 
-- 1 helper + presets (`src/lib/responsive-image.ts`)
-- ~9 ficheiros de componentes/rotas migrados para `TourImage` + `sizes/srcSet`
-- 1 teste novo + expansão do teste existente
-- 6 substituições fotográficas (se aprovado o ponto 5)
+- 1 componente novo (`AmbientLandscapeStrip`).
+- 6-8 novos `.asset.json` (paisagens do banco em CDN).
+- Blocos ambientais em `/corporate`, `/proposal-in-portugal`, `/multi-day`. /moments
+- Curadoria de `HOMEPAGE_SET` + `CORPORATE_SET` em `guest-moments.ts`.
+- 1 snapshot test.
 
-Utiliza de preferência fotos de boa qualidade e que incluam pessoas felizes. Só se for possivel 
+Fotos com Alta qualidade nas páginas e Motion 
