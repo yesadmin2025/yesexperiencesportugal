@@ -3,7 +3,6 @@
  *
  * Aggregates every real photo the site can legitimately draw from:
  *   • owner-photos/*  — verified owner photography
- *   • ambient/*       — curated landscape stock (real places)
  *   • tour_gallery_photos (admin uploads) — resolved to signed URLs
  *
  * Static assets are collected via import.meta.glob so new files added to
@@ -12,7 +11,7 @@
  */
 import { supabase } from "@/integrations/supabase/client";
 
-export type PoolSource = "owner-photo" | "ambient" | "admin-upload";
+export type PoolSource = "owner-photo" | "admin-upload";
 
 export type PoolPhoto = {
   id: string;               // stable id (url or storage_path)
@@ -30,11 +29,6 @@ const ownerModules = import.meta.glob<AssetJson>(
   "/src/assets/owner-photos/*.asset.json",
   { eager: true, import: "default" },
 );
-const ambientModules = import.meta.glob<AssetJson>(
-  "/src/assets/ambient/*.asset.json",
-  { eager: true, import: "default" },
-);
-
 function inferTags(name: string): string[] {
   const n = name.toLowerCase();
   const tags: string[] = [];
@@ -62,7 +56,6 @@ function toPool(source: PoolSource, path: string, mod: AssetJson): PoolPhoto {
 
 const STATIC_POOL: PoolPhoto[] = [
   ...Object.entries(ownerModules).map(([p, m]) => toPool("owner-photo", p, m)),
-  ...Object.entries(ambientModules).map(([p, m]) => toPool("ambient", p, m)),
 ];
 
 const SIGNED_URL_TTL = 60 * 60 * 24 * 7;
