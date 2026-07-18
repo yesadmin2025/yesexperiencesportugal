@@ -136,13 +136,18 @@ export const MOMENT_ARRABIDA_VIEWPOINT_WOMEN: GuestMoment = {
   caption: "The Serra viewpoint — Tróia stretching out below.",
 };
 
-// Curated sets per surface.
+// Curated sets per surface. HOMEPAGE + CORPORATE are people-only
+// (highest conversion signal). Landscape / still-life scenes moved to
+// <AmbientLandscapeStrip> ambient blocks.
 export const HOMEPAGE_MOMENTS = [
   MOMENT_PORTINHO_BOARDWALK,
-  MOMENT_PORTINHO_AERIAL,
-  MOMENT_BARREL_CELLAR,
-  MOMENT_AZULEJO_MASTER,
+  MOMENT_WINE_CHEERS,
+  MOMENT_SINTRA_GROUP,
   MOMENT_COUPLE_PETISCOS,
+  MOMENT_AZULEJO_MASTER,
+  MOMENT_ARRABIDA_VIEW,
+  MOMENT_TASTING_CAKE,
+  MOMENT_ARRABIDA_VIEWPOINT_WOMEN,
 ];
 
 export const ABOUT_MOMENTS = [
@@ -154,13 +159,17 @@ export const ABOUT_MOMENTS = [
 
 export const CORPORATE_MOMENTS = [
   MOMENT_SINTRA_GROUP,
+  MOMENT_WINERY_GROUP,
   MOMENT_BARREL_CELLAR,
   MOMENT_WINE_CHEERS,
+  MOMENT_MOSCATEL_VATS,
+  MOMENT_ARRABIDA_VIEW,
 ];
 
 export const MULTI_DAY_MOMENTS = [
-  MOMENT_PORTINHO_AERIAL,
+  MOMENT_ARRABIDA_VIEW,
   MOMENT_TASTING_FLIGHT,
   MOMENT_MOSCATEL_VATS,
   MOMENT_AZULEJO_BLUE_CAT,
 ];
+
