@@ -23,10 +23,12 @@ import {
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import {
+  AmbientLandscapeStrip,
+  MULTIDAY_LANDSCAPES,
+} from "@/components/ui/AmbientLandscapeStrip";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
-import corkHarvestAsset from "@/assets/owner-photos/cork-harvesters-alentejo.jpeg.asset.json";
-const imgCorkHarvest = corkHarvestAsset.url;
 // All 23 pages of the anonymised private travel file live in public/ so
 // they can be shown inline — no external PDF.
 const TOTAL_SAMPLE_PAGES = 23;
