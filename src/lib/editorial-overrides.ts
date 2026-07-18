@@ -80,6 +80,9 @@ export function useEditorialOverrides<T extends EditorialSlot>(
       setMerged(next);
     }
 
+
+
+
     (async () => {
       const { data, error } = await supabase
         .from("editorial_image_overrides")
@@ -100,3 +103,113 @@ export function useEditorialOverrides<T extends EditorialSlot>(
 
   return merged;
 }
+
+// ---------- Batch helpers (admin-only writes; RLS enforces role) ----------
+
+export type BatchEntry = {
+  slotIndex: number;
+  photoSrc: string;
+  alt: string;
+  caption: string | null;
+};
+
+export type BatchSnapshotEntry = {
+  slotIndex: number;
+  previous: { photoSrc: string; alt: string; caption: string | null } | null;
+};
+
+/**
+ * Publish multiple slot overrides for one module in a single call. Reads
+ * current published rows first so callers can offer a single undo. Rejects
+ * out-of-range slot indexes — this tool NEVER adds new slots to a module.
+ */
+export async function publishOverridesBatch(
+  moduleKey: EditorialModuleKey,
+  entries: BatchEntry[],
+  maxSlotIndex: number,
+): Promise<{ snapshot: BatchSnapshotEntry[] }> {
+  for (const e of entries) {
+    if (e.slotIndex < 0 || e.slotIndex >= maxSlotIndex) {
+      throw new Error(
+        `slot ${e.slotIndex} fora do intervalo do módulo ${moduleKey} (0..${maxSlotIndex - 1}). Esta ferramenta só substitui slots existentes.`,
+      );
+    }
+  }
+
+  const slotIndexes = entries.map((e) => e.slotIndex);
+  const { data: currentRows } = await supabase
+    .from("editorial_image_overrides")
+    .select("slot_index, photo_src, alt, caption")
+    .eq("module_key", moduleKey)
+    .eq("status", "published")
+    .in("slot_index", slotIndexes);
+
+  const currentByIndex = new Map(
+    (currentRows ?? []).map((r) => [r.slot_index as number, r]),
+  );
+  const snapshot: BatchSnapshotEntry[] = entries.map((e) => {
+    const c = currentByIndex.get(e.slotIndex);
+    return {
+      slotIndex: e.slotIndex,
+      previous: c
+        ? { photoSrc: c.photo_src, alt: c.alt, caption: c.caption }
+        : null,
+    };
+  });
+
+  const payload = entries.map((e) => ({
+    module_key: moduleKey,
+    slot_index: e.slotIndex,
+    photo_src: e.photoSrc,
+    alt: e.alt,
+    caption: e.caption,
+    status: "published" as const,
+  }));
+  const { error } = await supabase
+    .from("editorial_image_overrides")
+    .upsert(payload, { onConflict: "module_key,slot_index,status" });
+  if (error) throw error;
+  cache.delete(moduleKey);
+  return { snapshot };
+}
+
+export async function deleteOverrides(
+  moduleKey: EditorialModuleKey,
+  slotIndexes: number[],
+): Promise<void> {
+  if (slotIndexes.length === 0) return;
+  const { error } = await supabase
+    .from("editorial_image_overrides")
+    .delete()
+    .eq("module_key", moduleKey)
+    .eq("status", "published")
+    .in("slot_index", slotIndexes);
+  if (error) throw error;
+  cache.delete(moduleKey);
+}
+
+/** Revert a batch using the snapshot returned by publishOverridesBatch. */
+export async function revertOverridesBatch(
+  moduleKey: EditorialModuleKey,
+  snapshot: BatchSnapshotEntry[],
+): Promise<void> {
+  const toRestore = snapshot.filter((s) => s.previous !== null);
+  const toDelete = snapshot.filter((s) => s.previous === null).map((s) => s.slotIndex);
+  if (toRestore.length > 0) {
+    const payload = toRestore.map((s) => ({
+      module_key: moduleKey,
+      slot_index: s.slotIndex,
+      photo_src: s.previous!.photoSrc,
+      alt: s.previous!.alt,
+      caption: s.previous!.caption,
+      status: "published" as const,
+    }));
+    const { error } = await supabase
+      .from("editorial_image_overrides")
+      .upsert(payload, { onConflict: "module_key,slot_index,status" });
+    if (error) throw error;
+  }
+  if (toDelete.length > 0) await deleteOverrides(moduleKey, toDelete);
+  cache.delete(moduleKey);
+}
+

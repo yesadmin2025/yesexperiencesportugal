@@ -9,7 +9,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, RefreshCw, Undo2, Zap } from "lucide-react";
+import { ArrowLeft, Loader2, RefreshCw, Undo2, Zap, CheckSquare, Square, Sparkles } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -20,7 +20,13 @@ import {
 import { loadFullPool, type PoolPhoto } from "@/lib/image-swap/pool";
 import { rankCandidates, type RankedCandidate } from "@/lib/image-swap/rank";
 import { estimateQuality, qualityLabel, resolutionLabel } from "@/lib/image-swap/quality";
-import type { EditorialModuleKey, EditorialSlot } from "@/lib/editorial-overrides";
+import {
+  publishOverridesBatch,
+  revertOverridesBatch,
+  type BatchSnapshotEntry,
+  type EditorialModuleKey,
+  type EditorialSlot,
+} from "@/lib/editorial-overrides";
 import { BeforeAfterSlider } from "@/components/admin/BeforeAfterSlider";
 import {
   CandidateFilters,
@@ -28,6 +34,8 @@ import {
   type CandidateFilterState,
 } from "@/components/admin/CandidateFilters";
 import { DuplicatesPanel } from "@/components/admin/DuplicatesPanel";
+import { BatchSelectionBar, type BatchPending } from "@/components/admin/BatchSelectionBar";
+
 
 export const Route = createFileRoute("/admin/image-swap")({
   head: () => ({
@@ -72,6 +80,10 @@ function AdminImageSwapPage() {
   const [filters, setFilters] = useState<CandidateFilterState>(defaultFilterState);
   const [saving, setSaving] = useState(false);
   const undoRef = useRef<{ timer: number; prev: OverrideRow | null } | null>(null);
+  const [batchMode, setBatchMode] = useState(false);
+  const [batch, setBatch] = useState<Map<number, PoolPhoto>>(new Map());
+  const batchUndoRef = useRef<{ timer: number; snapshot: BatchSnapshotEntry[]; moduleKey: EditorialModuleKey } | null>(null);
+
 
   const checkAuth = useCallback(async () => {
     const { data: userData } = await supabase.auth.getUser();
@@ -216,6 +228,91 @@ function AdminImageSwapPage() {
     });
   }
 
+  // ---------- Batch (multi-slot) ----------
+  const addToBatch = (slotIndex: number, photo: PoolPhoto) => {
+    const module = EDITORIAL_MODULES.find((m) => m.key === activeKey)!;
+    if (slotIndex < 0 || slotIndex >= module.defaults.length) {
+      toast.error("Slot inválido — esta ferramenta só substitui slots existentes.");
+      return;
+    }
+    for (const [idx, p] of batch) {
+      if (idx !== slotIndex && p.src === photo.src) {
+        toast.error(`Essa imagem já está atribuída ao slot ${idx + 1} deste módulo.`);
+        return;
+      }
+    }
+    setBatch((prev) => {
+      const next = new Map(prev);
+      next.set(slotIndex, photo);
+      return next;
+    });
+  };
+
+  const removeFromBatch = (slotIndex: number) => {
+    setBatch((prev) => {
+      const next = new Map(prev);
+      next.delete(slotIndex);
+      return next;
+    });
+  };
+
+  const clearBatch = () => setBatch(new Map());
+
+  async function publishBatch() {
+    const module = EDITORIAL_MODULES.find((m) => m.key === activeKey)!;
+    const entries = Array.from(batch.entries()).map(([slotIndex, photo]) => {
+      const defaultSlot = module.defaults[slotIndex];
+      return {
+        slotIndex,
+        photoSrc: photo.src,
+        alt: defaultSlot.alt,
+        caption: defaultSlot.caption,
+      };
+    });
+    if (entries.length === 0) return;
+    setSaving(true);
+    try {
+      const { snapshot } = await publishOverridesBatch(
+        activeKey,
+        entries,
+        module.defaults.length,
+      );
+      if (batchUndoRef.current) window.clearTimeout(batchUndoRef.current.timer);
+      const timer = window.setTimeout(() => {
+        batchUndoRef.current = null;
+      }, 10000);
+      batchUndoRef.current = { timer, snapshot, moduleKey: activeKey };
+      const savedModuleKey = activeKey;
+      clearBatch();
+      setBatchMode(false);
+      await loadOverrides();
+      toast.success(
+        `${entries.length} substituição${entries.length === 1 ? "" : "ões"} publicada${entries.length === 1 ? "" : "s"}`,
+        {
+          duration: 10000,
+          action: {
+            label: "Desfazer tudo",
+            onClick: async () => {
+              try {
+                await revertOverridesBatch(savedModuleKey, snapshot);
+                await loadOverrides();
+                toast.success("Batch revertido");
+              } catch (e) {
+                toast.error(e instanceof Error ? e.message : "Falha ao reverter");
+              }
+            },
+          },
+        },
+      );
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Falha ao publicar batch");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+
+
   if (authState === "loading") {
     return (
       <SiteLayout>
@@ -318,6 +415,31 @@ function AdminImageSwapPage() {
                 ))}
               </div>
 
+              <div className="mb-4 flex items-center justify-between gap-3 flex-wrap border-t border-b border-[color:var(--border)] py-3">
+                <div className="flex items-center gap-2 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                  <Sparkles size={12} className="text-[color:var(--gold)]" />
+                  <span>
+                    Curadoria = substituir. Nº de imagens de cada módulo é fixo ({activeModule.defaults.length}).
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBatchMode((v) => !v);
+                    if (batchMode) clearBatch();
+                  }}
+                  className={`inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] px-3 py-1.5 border ${
+                    batchMode
+                      ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)] border-[color:var(--charcoal)]"
+                      : "bg-white border-[color:var(--border)]"
+                  }`}
+                >
+                  {batchMode ? <CheckSquare size={12} /> : <Square size={12} />}
+                  Selecção múltipla
+                </button>
+              </div>
+
+
               <div className="space-y-6">
                 {activeSlots.map((slot, i) => {
                   const isOpen = openSlot === i;
@@ -342,19 +464,25 @@ function AdminImageSwapPage() {
                           </div>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-                            Slot {i + 1}
+                          <div className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] flex items-center gap-2 flex-wrap">
+                            <span>Slot {i + 1}</span>
                             {published && (
-                              <span className="ml-2 bg-[color:var(--gold)] text-[color:var(--charcoal)] px-1.5 py-0.5">
+                              <span className="bg-[color:var(--gold)] text-[color:var(--charcoal)] px-1.5 py-0.5">
                                 override ativo
                               </span>
                             )}
                             {draft && (
-                              <span className="ml-2 border border-[color:var(--charcoal)]/30 px-1.5 py-0.5">
+                              <span className="border border-[color:var(--charcoal)]/30 px-1.5 py-0.5">
                                 rascunho
                               </span>
                             )}
+                            {batchMode && batch.has(i) && (
+                              <span className="bg-[color:var(--teal)] text-[color:var(--ivory)] px-1.5 py-0.5 inline-flex items-center gap-1">
+                                <CheckSquare size={10} /> em batch
+                              </span>
+                            )}
                           </div>
+
                           <p className="mt-1 font-serif italic text-[color:var(--teal)]">
                             {slot.caption}
                           </p>
@@ -393,11 +521,16 @@ function AdminImageSwapPage() {
                             poolLoading={poolLoading}
                             usageIndex={usageIndex}
                             filters={filters}
+                            batchMode={batchMode}
+                            inBatch={batch.get(i) ?? null}
                             onCompare={(candidate) => setPreview({ candidate, slotIndex: i })}
                             onQuickApply={(candidate) =>
                               applyAndPublish(activeKey, i, candidate)
                             }
+                            onAddToBatch={(candidate) => addToBatch(i, candidate)}
+                            onRemoveFromBatch={() => removeFromBatch(i)}
                           />
+
                         </div>
                       )}
                     </div>
@@ -473,7 +606,24 @@ function AdminImageSwapPage() {
           </div>
         </div>
       )}
+
+      <BatchSelectionBar
+        pending={Array.from(batch.entries())
+          .sort((a, b) => a[0] - b[0])
+          .map(
+            ([slotIndex, photo]): BatchPending => ({
+              slotIndex,
+              photoSrc: photo.src,
+              photoName: photo.name,
+            }),
+          )}
+        saving={saving}
+        onClear={clearBatch}
+        onPublish={publishBatch}
+        onRemove={removeFromBatch}
+      />
     </SiteLayout>
+
   );
 }
 
@@ -485,8 +635,12 @@ function CandidatesPanel({
   poolLoading,
   usageIndex,
   filters,
+  batchMode,
+  inBatch,
   onCompare,
   onQuickApply,
+  onAddToBatch,
+  onRemoveFromBatch,
 }: {
   module: ModuleShape;
   slot: EditorialSlot;
@@ -495,9 +649,14 @@ function CandidatesPanel({
   poolLoading: boolean;
   usageIndex: Map<string, string[]>;
   filters: CandidateFilterState;
+  batchMode: boolean;
+  inBatch: PoolPhoto | null;
   onCompare: (p: PoolPhoto) => void;
   onQuickApply: (p: PoolPhoto) => void;
+  onAddToBatch: (p: PoolPhoto) => void;
+  onRemoveFromBatch: () => void;
 }) {
+
   const filteredPool = useMemo(() => {
     return pool.filter((p) => {
       if (!filters.sources.has(p.source)) return false;
@@ -614,13 +773,34 @@ function CandidatesPanel({
                     ⚠ em uso: {c.alreadyUsedIn.join(", ")}
                   </p>
                 )}
-                <button
-                  type="button"
-                  onClick={() => onQuickApply(c.photo)}
-                  className="mt-1 inline-flex items-center justify-center gap-1 bg-[color:var(--charcoal)] text-[color:var(--ivory)] text-[10px] uppercase tracking-[0.2em] py-1.5"
-                >
-                  <Zap size={10} /> Aplicar
-                </button>
+                {batchMode ? (
+                  inBatch?.src === c.photo.src ? (
+                    <button
+                      type="button"
+                      onClick={onRemoveFromBatch}
+                      className="mt-1 inline-flex items-center justify-center gap-1 bg-[color:var(--teal)] text-[color:var(--ivory)] text-[10px] uppercase tracking-[0.2em] py-1.5"
+                    >
+                      <CheckSquare size={10} /> No batch (remover)
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => onAddToBatch(c.photo)}
+                      className="mt-1 inline-flex items-center justify-center gap-1 border border-[color:var(--charcoal)] text-[color:var(--charcoal)] text-[10px] uppercase tracking-[0.2em] py-1.5"
+                    >
+                      <Square size={10} /> Atribuir ao slot {slotIndex + 1}
+                    </button>
+                  )
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => onQuickApply(c.photo)}
+                    className="mt-1 inline-flex items-center justify-center gap-1 bg-[color:var(--charcoal)] text-[color:var(--ivory)] text-[10px] uppercase tracking-[0.2em] py-1.5"
+                  >
+                    <Zap size={10} /> Aplicar
+                  </button>
+                )}
+
               </div>
             </div>
           );
