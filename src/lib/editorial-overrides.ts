@@ -1,7 +1,7 @@
 /**
  * Editorial image overrides — read-through helper.
  *
- * Public modules (GuestMomentsStrip, AmbientLandscapeStrip) pass their
+ * Public editorial modules pass their
  * `moduleKey` + default photos to `useEditorialOverrides`. If an admin has
  * published an override for a slot in `public.editorial_image_overrides`,
  * the corresponding default is replaced (src/alt/caption) — otherwise the
@@ -15,18 +15,16 @@ export type EditorialModuleKey =
   | "about_moments"
   | "corporate_moments"
   | "multi_day_moments"
-  | "corporate_ambient"
-  | "proposal_ambient"
-  | "multi_day_ambient";
+  | "corporate_services"
+  | "proposal_services";
 
 export const EDITORIAL_MODULE_LABELS: Record<EditorialModuleKey, string> = {
   homepage_moments: "Homepage · Moments",
   about_moments: "About · Moments",
   corporate_moments: "Corporate · Moments",
   multi_day_moments: "Multi-day · Moments",
-  corporate_ambient: "Corporate · Ambient landscapes",
-  proposal_ambient: "Proposal · Ambient landscapes",
-  multi_day_ambient: "Multi-day · Ambient landscapes",
+  corporate_services: "Corporate · Service blocks",
+  proposal_services: "Moments · Service blocks",
 };
 
 export type EditorialSlot = {
