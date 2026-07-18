@@ -7,9 +7,9 @@
  * Access: admin role — same gate as /admin/photos.
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, RefreshCw, Undo2 } from "lucide-react";
+import { ArrowLeft, Loader2, RefreshCw, Undo2, Zap } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -19,8 +19,15 @@ import {
 } from "@/lib/image-swap/registry";
 import { loadFullPool, type PoolPhoto } from "@/lib/image-swap/pool";
 import { rankCandidates, type RankedCandidate } from "@/lib/image-swap/rank";
+import { estimateQuality, qualityLabel, resolutionLabel } from "@/lib/image-swap/quality";
 import type { EditorialModuleKey, EditorialSlot } from "@/lib/editorial-overrides";
 import { BeforeAfterSlider } from "@/components/admin/BeforeAfterSlider";
+import {
+  CandidateFilters,
+  defaultFilterState,
+  type CandidateFilterState,
+} from "@/components/admin/CandidateFilters";
+import { DuplicatesPanel } from "@/components/admin/DuplicatesPanel";
 
 export const Route = createFileRoute("/admin/image-swap")({
   head: () => ({
@@ -41,6 +48,7 @@ export const Route = createFileRoute("/admin/image-swap")({
 });
 
 type AuthState = "loading" | "signed-out" | "not-admin" | "ready";
+type Tab = "slots" | "duplicates";
 
 type OverrideRow = {
   id: string;
@@ -57,10 +65,13 @@ function AdminImageSwapPage() {
   const [pool, setPool] = useState<PoolPhoto[]>([]);
   const [poolLoading, setPoolLoading] = useState(true);
   const [overrides, setOverrides] = useState<OverrideRow[]>([]);
+  const [tab, setTab] = useState<Tab>("slots");
   const [activeKey, setActiveKey] = useState<EditorialModuleKey>(EDITORIAL_MODULES[0].key);
   const [openSlot, setOpenSlot] = useState<number | null>(null);
   const [preview, setPreview] = useState<{ candidate: PoolPhoto; slotIndex: number } | null>(null);
+  const [filters, setFilters] = useState<CandidateFilterState>(defaultFilterState);
   const [saving, setSaving] = useState(false);
+  const undoRef = useRef<{ timer: number; prev: OverrideRow | null } | null>(null);
 
   const checkAuth = useCallback(async () => {
     const { data: userData } = await supabase.auth.getUser();
@@ -95,7 +106,6 @@ function AdminImageSwapPage() {
     loadOverrides();
   }, [authState, loadOverrides]);
 
-  // Merged (defaults + published/draft overrides) per module for usage index.
   const overridesByModule = useMemo(() => {
     const map = new Map<EditorialModuleKey, EditorialSlot[]>();
     for (const m of EDITORIAL_MODULES) {
@@ -114,32 +124,31 @@ function AdminImageSwapPage() {
   const activeModule = EDITORIAL_MODULES.find((m) => m.key === activeKey)!;
   const activeSlots = overridesByModule.get(activeKey) ?? activeModule.defaults;
 
-  function findDraft(slotIndex: number): OverrideRow | undefined {
-    return overrides.find(
-      (o) => o.module_key === activeKey && o.slot_index === slotIndex && o.status === "draft",
+  const findRow = (moduleKey: EditorialModuleKey, slotIndex: number, status: "draft" | "published") =>
+    overrides.find(
+      (o) => o.module_key === moduleKey && o.slot_index === slotIndex && o.status === status,
     );
-  }
-  function findPublished(slotIndex: number): OverrideRow | undefined {
-    return overrides.find(
-      (o) => o.module_key === activeKey && o.slot_index === slotIndex && o.status === "published",
-    );
-  }
 
   async function upsertOverride(
+    moduleKey: EditorialModuleKey,
     slotIndex: number,
     candidate: PoolPhoto,
     status: "draft" | "published",
+    opts: { silent?: boolean } = {},
   ) {
     setSaving(true);
-    const existing = overrides.find(
-      (o) => o.module_key === activeKey && o.slot_index === slotIndex && o.status === status,
-    );
-    const defaultSlot = activeModule.defaults[slotIndex];
+    const module = EDITORIAL_MODULES.find((m) => m.key === moduleKey);
+    if (!module) {
+      setSaving(false);
+      return toast.error("Módulo desconhecido");
+    }
+    const existing = findRow(moduleKey, slotIndex, status);
+    const defaultSlot = module.defaults[slotIndex];
     const payload = {
-      module_key: activeKey,
+      module_key: moduleKey,
       slot_index: slotIndex,
       photo_src: candidate.src,
-      alt: defaultSlot.alt, // preserve editorial alt by default
+      alt: defaultSlot.alt,
       caption: defaultSlot.caption,
       status,
     };
@@ -148,22 +157,63 @@ function AdminImageSwapPage() {
       : await supabase.from("editorial_image_overrides").insert(payload);
     setSaving(false);
     if (error) return toast.error(error.message);
-    toast.success(status === "published" ? "Aplicada no site" : "Rascunho guardado");
+    if (!opts.silent) {
+      toast.success(status === "published" ? "Aplicada no site" : "Rascunho guardado");
+    }
     setPreview(null);
-    loadOverrides();
+    await loadOverrides();
+    return existing ?? null;
   }
 
-  async function revertOverride(slotIndex: number) {
+  async function revertOverride(moduleKey: EditorialModuleKey, slotIndex: number) {
     setSaving(true);
     const { error } = await supabase
       .from("editorial_image_overrides")
       .delete()
-      .eq("module_key", activeKey)
+      .eq("module_key", moduleKey)
       .eq("slot_index", slotIndex);
     setSaving(false);
     if (error) return toast.error(error.message);
     toast.success("Restaurado ao original");
     loadOverrides();
+  }
+
+  /** One-click publish with an 8s undo toast reverting to the prior state. */
+  async function applyAndPublish(
+    moduleKey: EditorialModuleKey,
+    slotIndex: number,
+    candidate: PoolPhoto,
+  ) {
+    const prev = findRow(moduleKey, slotIndex, "published") ?? null;
+    await upsertOverride(moduleKey, slotIndex, candidate, "published", { silent: true });
+    if (undoRef.current) window.clearTimeout(undoRef.current.timer);
+    const timer = window.setTimeout(() => {
+      undoRef.current = null;
+    }, 8000);
+    undoRef.current = { timer, prev };
+    toast.success("Aplicada no site", {
+      duration: 8000,
+      action: {
+        label: "Desfazer",
+        onClick: async () => {
+          if (prev) {
+            await supabase
+              .from("editorial_image_overrides")
+              .update({ photo_src: prev.photo_src, alt: prev.alt, caption: prev.caption })
+              .eq("id", prev.id);
+          } else {
+            await supabase
+              .from("editorial_image_overrides")
+              .delete()
+              .eq("module_key", moduleKey)
+              .eq("slot_index", slotIndex)
+              .eq("status", "published");
+          }
+          await loadOverrides();
+          toast.success("Alteração revertida");
+        },
+      },
+    });
   }
 
   if (authState === "loading") {
@@ -218,112 +268,161 @@ function AdminImageSwapPage() {
 
           <h1 className="text-3xl mb-2">Comparar & trocar imagens</h1>
           <p className="text-sm text-[color:var(--charcoal-soft)] mb-6">
-            Selecione um módulo, veja o slot atual e compare com as melhores
-            alternativas reais do stock antes de substituir.
+            Filtre por fonte, tag ou qualidade, veja o motivo do ranking e aplique
+            trocas com um clique. A tab Duplicados agrupa imagens repetidas entre
+            módulos e sugere substituições.
           </p>
 
-          {/* Module tabs */}
-          <div className="flex flex-wrap gap-2 mb-8">
-            {EDITORIAL_MODULES.map((m) => (
+          {/* Tabs */}
+          <div className="flex gap-2 mb-6 border-b border-[color:var(--border)]">
+            {(
+              [
+                { id: "slots", label: "Slots" },
+                { id: "duplicates", label: "Duplicados" },
+              ] as { id: Tab; label: string }[]
+            ).map((t) => (
               <button
-                key={m.key}
+                key={t.id}
                 type="button"
-                onClick={() => {
-                  setActiveKey(m.key);
-                  setOpenSlot(null);
-                }}
-                className={`px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] border ${
-                  activeKey === m.key
-                    ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)] border-[color:var(--charcoal)]"
-                    : "bg-white text-[color:var(--charcoal)] border-[color:var(--border)]"
+                onClick={() => setTab(t.id)}
+                className={`px-3 py-2 text-[11px] uppercase tracking-[0.2em] border-b-2 -mb-px ${
+                  tab === t.id
+                    ? "border-[color:var(--charcoal)] text-[color:var(--charcoal)]"
+                    : "border-transparent text-[color:var(--charcoal-soft)]"
                 }`}
               >
-                {m.label}
+                {t.label}
               </button>
             ))}
           </div>
 
-          {/* Slots */}
-          <div className="space-y-6">
-            {activeSlots.map((slot, i) => {
-              const isOpen = openSlot === i;
-              const draft = findDraft(i);
-              const published = findPublished(i);
-              return (
-                <div key={`${activeKey}-${i}`} className="border border-[color:var(--border)] p-4">
-                  <div className="flex gap-4">
-                    <div className="w-32 flex-shrink-0">
-                      <div
-                        className={`bg-[color:var(--sand)] overflow-hidden ${activeModule.orientation === "portrait" ? "aspect-[4/5]" : "aspect-[3/2]"}`}
-                      >
-                        <img
-                          src={slot.src}
-                          alt={slot.alt}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-                        Slot {i + 1}
-                        {published && (
-                          <span className="ml-2 bg-[color:var(--gold)] text-[color:var(--charcoal)] px-1.5 py-0.5">
-                            override ativo
-                          </span>
-                        )}
-                        {draft && (
-                          <span className="ml-2 border border-[color:var(--charcoal)]/30 px-1.5 py-0.5">
-                            rascunho
-                          </span>
-                        )}
-                      </div>
-                      <p className="mt-1 font-serif italic text-[color:var(--teal)]">
-                        {slot.caption}
-                      </p>
-                      <p className="mt-1 text-xs text-[color:var(--charcoal-soft)] truncate">
-                        {slot.alt}
-                      </p>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setOpenSlot(isOpen ? null : i)}
-                          className="text-[11px] uppercase tracking-[0.2em] bg-[color:var(--charcoal)] text-[color:var(--ivory)] px-3 py-1.5"
-                        >
-                          {isOpen ? "Fechar" : "Ver alternativas"}
-                        </button>
-                        {(published || draft) && (
-                          <button
-                            type="button"
-                            onClick={() => revertOverride(i)}
-                            className="inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.2em] border border-[color:var(--border)] px-3 py-1.5"
-                          >
-                            <Undo2 size={12} /> Restaurar
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+          {tab === "slots" && (
+            <>
+              <div className="flex flex-wrap gap-2 mb-6">
+                {EDITORIAL_MODULES.map((m) => (
+                  <button
+                    key={m.key}
+                    type="button"
+                    onClick={() => {
+                      setActiveKey(m.key);
+                      setOpenSlot(null);
+                    }}
+                    className={`px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] border ${
+                      activeKey === m.key
+                        ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)] border-[color:var(--charcoal)]"
+                        : "bg-white text-[color:var(--charcoal)] border-[color:var(--border)]"
+                    }`}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
 
-                  {isOpen && (
-                    <CandidatesPanel
-                      module={activeModule}
-                      slot={slot}
-                      slotIndex={i}
-                      pool={pool}
-                      poolLoading={poolLoading}
-                      usageIndex={usageIndex}
-                      onCompare={(candidate) => setPreview({ candidate, slotIndex: i })}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+              <div className="space-y-6">
+                {activeSlots.map((slot, i) => {
+                  const isOpen = openSlot === i;
+                  const draft = findRow(activeKey, i, "draft");
+                  const published = findRow(activeKey, i, "published");
+                  return (
+                    <div
+                      key={`${activeKey}-${i}`}
+                      className="border border-[color:var(--border)] p-4"
+                    >
+                      <div className="flex gap-4">
+                        <div className="w-32 flex-shrink-0">
+                          <div
+                            className={`bg-[color:var(--sand)] overflow-hidden ${activeModule.orientation === "portrait" ? "aspect-[4/5]" : "aspect-[3/2]"}`}
+                          >
+                            <img
+                              src={slot.src}
+                              alt={slot.alt}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                            Slot {i + 1}
+                            {published && (
+                              <span className="ml-2 bg-[color:var(--gold)] text-[color:var(--charcoal)] px-1.5 py-0.5">
+                                override ativo
+                              </span>
+                            )}
+                            {draft && (
+                              <span className="ml-2 border border-[color:var(--charcoal)]/30 px-1.5 py-0.5">
+                                rascunho
+                              </span>
+                            )}
+                          </div>
+                          <p className="mt-1 font-serif italic text-[color:var(--teal)]">
+                            {slot.caption}
+                          </p>
+                          <p className="mt-1 text-xs text-[color:var(--charcoal-soft)] truncate">
+                            {slot.alt}
+                          </p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setOpenSlot(isOpen ? null : i)}
+                              className="text-[11px] uppercase tracking-[0.2em] bg-[color:var(--charcoal)] text-[color:var(--ivory)] px-3 py-1.5"
+                            >
+                              {isOpen ? "Fechar" : "Ver alternativas"}
+                            </button>
+                            {(published || draft) && (
+                              <button
+                                type="button"
+                                onClick={() => revertOverride(activeKey, i)}
+                                className="inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.2em] border border-[color:var(--border)] px-3 py-1.5"
+                              >
+                                <Undo2 size={12} /> Restaurar
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {isOpen && (
+                        <div className="mt-4 pt-4 border-t border-[color:var(--border)] space-y-3">
+                          <CandidateFilters value={filters} onChange={setFilters} />
+                          <CandidatesPanel
+                            module={activeModule}
+                            slot={slot}
+                            slotIndex={i}
+                            pool={pool}
+                            poolLoading={poolLoading}
+                            usageIndex={usageIndex}
+                            filters={filters}
+                            onCompare={(candidate) => setPreview({ candidate, slotIndex: i })}
+                            onQuickApply={(candidate) =>
+                              applyAndPublish(activeKey, i, candidate)
+                            }
+                          />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {tab === "duplicates" && (
+            <DuplicatesPanel
+              effectiveByModule={overridesByModule}
+              pool={pool}
+              usageIndex={usageIndex}
+              onApply={(mk, i, c) => applyAndPublish(mk, i, c)}
+              onJumpToSlot={(mk, i) => {
+                setTab("slots");
+                setActiveKey(mk);
+                setOpenSlot(i);
+              }}
+            />
+          )}
         </div>
       </section>
 
-      {/* Compare modal */}
       {preview && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
           <div className="bg-[color:var(--ivory)] w-full max-w-md">
@@ -352,7 +451,9 @@ function AdminImageSwapPage() {
                 <button
                   type="button"
                   disabled={saving}
-                  onClick={() => upsertOverride(preview.slotIndex, preview.candidate, "published")}
+                  onClick={() =>
+                    upsertOverride(activeKey, preview.slotIndex, preview.candidate, "published")
+                  }
                   className="flex-1 bg-[color:var(--charcoal)] text-[color:var(--ivory)] py-2.5 text-[11px] uppercase tracking-[0.22em] disabled:opacity-60"
                 >
                   Aplicar no site
@@ -360,7 +461,9 @@ function AdminImageSwapPage() {
                 <button
                   type="button"
                   disabled={saving}
-                  onClick={() => upsertOverride(preview.slotIndex, preview.candidate, "draft")}
+                  onClick={() =>
+                    upsertOverride(activeKey, preview.slotIndex, preview.candidate, "draft")
+                  }
                   className="flex-1 border border-[color:var(--border)] py-2.5 text-[11px] uppercase tracking-[0.22em] disabled:opacity-60"
                 >
                   Rascunho
@@ -381,7 +484,9 @@ function CandidatesPanel({
   pool,
   poolLoading,
   usageIndex,
+  filters,
   onCompare,
+  onQuickApply,
 }: {
   module: ModuleShape;
   slot: EditorialSlot;
@@ -389,69 +494,141 @@ function CandidatesPanel({
   pool: PoolPhoto[];
   poolLoading: boolean;
   usageIndex: Map<string, string[]>;
+  filters: CandidateFilterState;
   onCompare: (p: PoolPhoto) => void;
+  onQuickApply: (p: PoolPhoto) => void;
 }) {
+  const filteredPool = useMemo(() => {
+    return pool.filter((p) => {
+      if (!filters.sources.has(p.source)) return false;
+      if (filters.tags.size > 0 && !p.tags.some((t) => filters.tags.has(t))) return false;
+      const q = estimateQuality(p);
+      if (!filters.qualities.has(q)) return false;
+      if (filters.onlyFresh && (usageIndex.get(p.src)?.length ?? 0) > 0) return false;
+      if (filters.onlyOrientationMatch) {
+        const orient =
+          p.width && p.height
+            ? p.width >= p.height
+              ? "landscape"
+              : "portrait"
+            : /aerial|cliff|coast|bay|cove|sunset|boardwalk/.test(p.name.toLowerCase())
+              ? "landscape"
+              : "portrait";
+        if (orient !== module.orientation) return false;
+      }
+      return true;
+    });
+  }, [pool, filters, usageIndex, module.orientation]);
+
   const ranked: RankedCandidate[] = useMemo(
     () =>
       rankCandidates(
-        pool,
+        filteredPool,
         {
           currentSrc: slot.src,
           desiredOrientation: module.orientation,
           desiredTags: module.desiredTags,
         },
         usageIndex,
-        12,
+        18,
       ),
-    [pool, slot.src, module.orientation, module.desiredTags, usageIndex],
+    [filteredPool, slot.src, module.orientation, module.desiredTags, usageIndex],
   );
 
   if (poolLoading) {
     return (
-      <div className="mt-4 py-6 text-center text-sm text-[color:var(--charcoal-soft)]">
+      <div className="py-6 text-center text-sm text-[color:var(--charcoal-soft)]">
         <Loader2 className="inline animate-spin" size={16} /> A carregar candidatos…
       </div>
     );
   }
 
   return (
-    <div className="mt-4 pt-4 border-t border-[color:var(--border)]">
+    <div>
       <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] mb-3">
-        Alternativas para o slot {slotIndex + 1}
+        {ranked.length} alternativas para o slot {slotIndex + 1}
       </p>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {ranked.map((c) => (
-          <button
-            key={c.photo.id}
-            type="button"
-            onClick={() => onCompare(c.photo)}
-            className="text-left group"
-          >
+        {ranked.map((c) => {
+          const q = estimateQuality(c.photo);
+          const res = resolutionLabel(c.photo);
+          return (
             <div
-              className={`overflow-hidden bg-[color:var(--sand)] ${module.orientation === "portrait" ? "aspect-[4/5]" : "aspect-[3/2]"}`}
+              key={c.photo.id}
+              className="border border-[color:var(--border)] bg-white flex flex-col"
             >
-              <img
-                src={c.photo.src}
-                alt={c.photo.name}
-                loading="lazy"
-                className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
-              />
+              <button
+                type="button"
+                onClick={() => onCompare(c.photo)}
+                className="text-left"
+                title="Comparar antes/depois"
+              >
+                <div
+                  className={`overflow-hidden bg-[color:var(--sand)] ${module.orientation === "portrait" ? "aspect-[4/5]" : "aspect-[3/2]"}`}
+                >
+                  <img
+                    src={c.photo.src}
+                    alt={c.photo.name}
+                    loading="lazy"
+                    className="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-500"
+                  />
+                </div>
+              </button>
+              <div className="p-2 space-y-1 flex-1 flex flex-col">
+                <div className="flex items-center gap-1 flex-wrap">
+                  <span className="text-[9px] uppercase tracking-[0.18em] bg-[color:var(--charcoal)] text-[color:var(--ivory)] px-1.5 py-0.5">
+                    {c.photo.source}
+                  </span>
+                  <span
+                    className={`text-[9px] uppercase tracking-[0.18em] px-1.5 py-0.5 border ${
+                      q === "alta"
+                        ? "bg-[color:var(--gold)] text-[color:var(--charcoal)] border-[color:var(--gold)]"
+                        : q === "media"
+                          ? "border-[color:var(--charcoal)]/30"
+                          : q === "baixa"
+                            ? "border-[color:var(--charcoal)]/20 text-[color:var(--charcoal-soft)]"
+                            : "border-dashed border-[color:var(--charcoal)]/20 text-[color:var(--charcoal-soft)]"
+                    }`}
+                  >
+                    {qualityLabel(q)}
+                    {res && <span className="ml-1 normal-case tracking-normal">· {res}</span>}
+                  </span>
+                </div>
+                {c.photo.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {c.photo.tags.slice(0, 3).map((t) => (
+                      <span
+                        key={t}
+                        className="text-[9px] uppercase tracking-[0.15em] text-[color:var(--charcoal-soft)] border border-[color:var(--border)] px-1"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <p className="text-[10.5px] text-[color:var(--charcoal-soft)] leading-snug flex-1">
+                  {c.reason}
+                </p>
+                {c.alreadyUsedIn.length > 0 && (
+                  <p className="text-[10px] text-[color:var(--gold)] uppercase tracking-[0.15em]">
+                    ⚠ em uso: {c.alreadyUsedIn.join(", ")}
+                  </p>
+                )}
+                <button
+                  type="button"
+                  onClick={() => onQuickApply(c.photo)}
+                  className="mt-1 inline-flex items-center justify-center gap-1 bg-[color:var(--charcoal)] text-[color:var(--ivory)] text-[10px] uppercase tracking-[0.2em] py-1.5"
+                >
+                  <Zap size={10} /> Aplicar
+                </button>
+              </div>
             </div>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-              {c.photo.source}
-              {c.alreadyUsedIn.length > 0 && (
-                <span className="ml-1 text-[color:var(--charcoal)]">· em uso</span>
-              )}
-            </p>
-            <p className="text-[11px] text-[color:var(--charcoal-soft)] leading-snug mt-0.5">
-              {c.reason}
-            </p>
-          </button>
-        ))}
+          );
+        })}
       </div>
       {ranked.length === 0 && (
         <p className="text-sm text-[color:var(--charcoal-soft)]">
-          Sem candidatos disponíveis no stock atual.
+          Sem candidatos disponíveis com os filtros actuais.
         </p>
       )}
     </div>
