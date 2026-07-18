@@ -18,7 +18,7 @@ const imgCeramicPainter = ceramicPainterAsset.url;
 
 const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
-  "Private corporate days, team retreats and group experiences across Portugal — designed and hosted by a licensed local operator. Transport, guides and venues coordinated end to end.";
+  "Private corporate days, team retreats and group experiences across Portugal — designed and hosted end to end by a licensed local operator.";
 
 
 export const Route = createFileRoute("/corporate")({

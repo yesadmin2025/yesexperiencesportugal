@@ -1721,7 +1721,7 @@ function Stepper({
         type="button"
         onClick={() => onChange(Math.max(min, value - 1))}
         className="px-4 py-2.5 text-lg leading-none text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
-        aria-label="Fewer"
+        aria-label="Decrease traveller count"
       >
         −
       </button>
@@ -1730,7 +1730,7 @@ function Stepper({
         type="button"
         onClick={() => onChange(Math.min(max, value + 1))}
         className="px-4 py-2.5 text-lg leading-none text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
-        aria-label="More"
+        aria-label="Increase traveller count"
       >
         +
       </button>
