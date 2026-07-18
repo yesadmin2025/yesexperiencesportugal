@@ -6,7 +6,7 @@ import { MessageCircle, Users, Compass, ClipboardCheck } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { ResponsiveEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
+import { CinematicEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
 import { CORPORATE_SERVICE_IMAGES } from "@/content/editorial-service-images";
 import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
@@ -134,10 +134,11 @@ function CorporatePage() {
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
               >
                 <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[4/5] md:aspect-[5/6]">
-                  <ResponsiveEditorialImage
+                  <CinematicEditorialImage
                     image={image}
                     priority={i === 0}
-                    className={`ken-burns-slow${i === 1 ? " ken-burns-slow--b" : i === 2 ? " ken-burns-slow--c" : ""} h-full w-full object-cover`}
+                    className="h-full w-full"
+                    phase={i === 1 ? "b" : i === 2 ? "c" : "a"}
                   />
                 </div>
                 <div>
