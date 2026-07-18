@@ -16,7 +16,11 @@
  */
 import { describe, it, expect } from "vitest";
 import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const SKIP = ["__tests__/", "styles.css", "/admin.", "\\admin."];
 
 const ROOT = new URL("../", import.meta.url).pathname;
 const SKIP = ["__tests__/", "styles.css", "/admin.", "\\admin."];
