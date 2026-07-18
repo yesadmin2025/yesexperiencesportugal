@@ -150,6 +150,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "We bring guests into these cellars on a private, all-inclusive day — wine, lunch, and the Arrábida coast on the way home.",
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
+    relatedReads: [
+      { path: "/arrabida-wine-tour", label: "Arrábida wine tour from Lisbon" },
+      { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
+      { path: "/local-stories/best-wineries-near-lisbon", label: "Best wineries near Lisbon" },
+    ],
     datePublished: "2026-06-03",
   },
   {
