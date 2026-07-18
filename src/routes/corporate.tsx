@@ -13,9 +13,9 @@ import { useEditorialOverrides } from "@/lib/editorial-overrides";
 import { CORPORATE_FAQ } from "@/content/seo-faq";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
 
-const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
+const TITLE = "Corporate Events & Team Building in Portugal | YES";
 const DESCRIPTION =
-  "Private corporate days, team retreats and group experiences across Portugal — designed and hosted end to end by a licensed local operator.";
+  "Private corporate experiences, team-building activities and group events in Lisbon, Sesimbra, Arrábida and across Portugal.";
 
 
 export const Route = createFileRoute("/corporate")({
