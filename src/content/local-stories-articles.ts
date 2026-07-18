@@ -588,9 +588,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "arrabida-wine-tour",
-    title: "Arrábida Wine Tour from Lisbon | Private Azeitão Day",
+    title: "Arrábida Wine Tour from Lisbon | Private Setúbal Day",
     metaDescription:
-      "Private Arrábida wine day from Lisbon — three family cellars in Azeitão, Moscatel tasting and a slow lunch. Licensed local operator, instant confirmation.",
+      "Discover Arrábida and Setúbal on a private wine tour from Lisbon, with family wineries, Azeitão, coastal scenery and a relaxed Portuguese lunch.",
     h1: "Arrábida Wine Tour — Azeitão & Setúbal, from Lisbon",
     eyebrow: "Arrábida · Private Wine Day",
     standfirst:
