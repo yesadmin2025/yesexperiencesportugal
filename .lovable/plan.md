@@ -1,47 +1,54 @@
-# Plano cirúrgico — imagens premium reais, sem créditos
+# Surgical correction plan — premium real imagery, visible motion, no duplication
 
-## Diagnóstico confirmado
-- A mesma fotografia de grupo da adega aparece no cartão **Corporate da homepage** e no primeiro bloco da página **Corporate**.
-- A página **Corporate em português** ficou fora da melhoria: ainda usa três imagens antigas fixas, sem variantes responsivas e sem Ken Burns.
-- Na página **Corporate em inglês**, as variantes AVIF/WebP terminam em **1280 px**. A fotografia horizontal da sala de barricas é forçada para um enquadramento vertical 4:5; no iPhone DPR 3 fica ampliada e perde nitidez — é o principal problema visível nas capturas.
-- O Ken Burns inglês está tecnicamente ativo, mas passa apenas de escala 1.00 para 1.06 em 22–26 segundos. No tempo normal de visualização do bloco, a mudança é quase impercetível. Não existe crossfade.
-- **Multi-day** não tem atualmente qualquer Ken Burns/crossfade nas imagens da página. A homepage também não renderiza a antiga tira `GuestMomentsStrip`; as repetições atuais vêm sobretudo dos cartões de ocasiões face às páginas de destino.
+## Confirmed issues
+- The English Corporate page uses the same `winery-group-orange-tree` photo that appears on the homepage, so the repetition is real.
+- Corporate service imagery is based on 1280px derivatives; the darker cellar photographs are then cropped into tall 4:5 frames, which amplifies blur and makes them feel low quality on high-density iPhone screens.
+- English Corporate/Proposal technically animate, but the current 22–26s movement from scale 1.00 to 1.06 is too subtle to register while scrolling and there is no crossfade sequence.
+- Portuguese Corporate still uses static tour images and does not share the responsive image or motion implementation.
+- The old `corporate_moments` and `multi_day_moments` sets remain in the admin registry even though they are not rendered publicly; this creates misleading duplicate management.
 
-## Implementação
+## 1. Curate by context — real photos only
+- Keep the existing image slots; add no bottom strips or new decorative sections.
+- Corporate: select unique owner/admin-upload photographs that clearly show teams, hosted wine activity and facilitated group experiences. Remove the homepage group photo from Corporate and retire the two weak/dark cellar crops from this surface.
+- Proposal: keep its slots distinct from Homepage and Corporate, prioritising intimate hosted moments rather than corporate groups.
+- Multi-day: keep the existing real travel-file presentation; improve its current image rendering/motion rather than introducing another gallery.
+- Enforce exact-source uniqueness across Homepage Guest Moments, Corporate and Proposal with a regression test.
 
-### 1. Curadoria sem gerar nada
-- Usar exclusivamente as fotografias reais já existentes da proprietária e imagens reais já associadas aos tours/Viator.
-- Reservar cada fotografia para um único módulo de conversão: homepage, Corporate, Proposal ou Multi-day.
-- Manter a melhor fotografia de grupo na página Corporate e trocar a miniatura Corporate da homepage por uma fotografia real diferente e contextual.
-- Retirar dos blocos verticais as fotografias horizontais de adega que exigem crop agressivo; reutilizá-las apenas onde o formato horizontal seja adequado ou removê-las da seleção pública.
-- Não criar stock, IA, novas secções, galerias no fundo ou conteúdo decorativo.
+## 2. Preserve genuine iPhone-level detail
+- Rebuild responsive AVIF/WebP variants from the highest-resolution original real files, not from existing 1280px derivatives.
+- Generate 640, 960, 1280, 1600, 1920 and source-capped large variants; never upscale beyond the original pixel dimensions.
+- Use high-quality AVIF/WebP settings and correct `srcSet`/`sizes` so DPR 2–3 phones receive the sharpest legitimate source.
+- Change Corporate/Proposal mobile media from forced portrait crop to a stable landscape/editorial ratio, with per-image focal positioning where needed. This avoids enlarging and cutting landscape cellar photographs into blurry 4:5 windows.
+- Preserve source-photo character: no AI, no stock, no invented enhancement and no HDR-style processing.
 
-### 2. Um componente de imagem cinematográfica para os slots que já existem
-- Evoluir o atual `ResponsiveEditorialImage` para suportar uma pequena sequência editorial dentro do mesmo enquadramento existente.
-- Mostrar **uma fotografia de cada vez**, com hold calmo, crossfade suave e Ken Burns contínuo (zoom + pan com direção definida por fotografia).
-- Nada de carrossel visível, setas, dots ou movimento chamativo; o bloco continua a ocupar exatamente o mesmo espaço.
-- Em `prefers-reduced-motion`, mostrar apenas a melhor fotografia estática.
+## 3. One image at a time with visible cinematic life
+- Upgrade the existing editorial image component into a two-frame sequence for each existing slot: the primary real photo plus one context-matched real alternate.
+- Use a restrained but clearly visible cycle: crossfade one image at a time, with continuous 14–18s Ken Burns zoom/pan and opposing focal movement between frames.
+- Start the sequence when the block enters the viewport so movement is visible during normal mobile scrolling; do not autoplay off-screen.
+- Apply the same component to Corporate EN/PT and Proposal. Enhance the existing Multi-day travel-file frame with the same viewport-aware motion, without adding a new module.
+- Respect `prefers-reduced-motion` by showing one still, sharp image.
 
-### 3. Corporate EN + PT como uma única experiência visual
-- Aplicar a mesma fonte de imagens curadas, variantes responsivas e movimento às páginas inglesa e portuguesa.
-- Corrigir particularmente os três slots Corporate: executivo/grupo, off-site e client hosting/VIP.
-- Usar enquadramentos próprios por imagem para proteger rostos e grupos no mobile, sem esticar imagens horizontais em retratos altos.
+## 4. Align English and Portuguese surfaces
+- Make `/corporate` and `/pt/corporate` consume the same curated image records, responsive variants, focal positions and cinematic component.
+- Keep language-specific copy unchanged.
+- Update each page’s social image to a real, contextually correct Corporate image that is not reused as a homepage moment.
 
-### 4. Homepage, Proposal e Multi-day sem repetição
-- **Homepage:** substituir somente as imagens dos cartões existentes que repetem as páginas de destino; sem adicionar a antiga tira de Moments.
-- **Proposal:** manter os três blocos existentes, mas atribuir-lhes fotografias exclusivas e sequências coerentes com casal/celebração/família.
-- **Multi-day:** aplicar o crossfade ao slot visual já existente do travel file, alternando páginas reais do dossier; sem criar uma faixa fotográfica adicional.
-- Remover do admin os conjuntos legacy “Corporate Moments” e “Multi-day Moments” que hoje parecem módulos públicos mas não são renderizados, evitando novas substituições duplicadas por engano.
+## 5. Clean the admin model
+- Remove the obsolete `corporate_moments` and `multi_day_moments` modules from the image-swap registry/type labels so the admin only exposes slots that actually render.
+- Keep `corporate_services` and `proposal_services` editable; extend each slot record to carry its real alternate and focal data without adding page slots.
+- Update duplicate detection to compare only active public modules, preventing false “Ambient/Moments” duplication reports.
 
-### 5. Qualidade iPhone premium
-- Acrescentar aos `srcSet` a imagem original real quando esta tiver resolução superior às variantes de 1280 px; nunca gerar uma variante acima dos píxeis disponíveis.
-- Definir `sizes` reais por slot e carregar apenas a primeira imagem visível com prioridade.
-- Evitar upscaling no DPR 3: cada enquadramento terá fonte suficiente para a área efetivamente apresentada; imagens sem altura útil para crop 4:5 não entram nesses slots.
+## 6. Mobile verification before completion
+- Validate at iPhone-size viewport first, then tablet/desktop.
+- Capture the initial frame and a later frame for Homepage Guest Moments, Corporate EN/PT, Proposal and Multi-day to prove that crossfade and pan/zoom are visibly running.
+- Inspect rendered `currentSrc`, intrinsic dimensions and CSS crop ratio to confirm high-DPI images are selected without upscaling.
+- Run targeted tests for: no cross-page duplicate sources, no retired/generated/ambient images, reduced-motion fallback, valid responsive sources and no extra public image sections.
 
-### 6. Bloqueios de regressão e validação visual
-- Atualizar o teste de unicidade para cobrir as imagens que são realmente renderizadas na homepage e em todas as páginas afetadas, incluindo paridade EN/PT.
-- Testar que cada sequência mostra uma imagem de cada vez, que o crossfade/Ken Burns está ativo e que reduced motion fica estático.
-- Validar visualmente em **393×706, DPR 3**, com capturas da homepage, Corporate EN/PT, Proposal e Multi-day; verificar nitidez, rostos, crops, ausência de duplicados e movimento perceptível.
-
-## Limite de custo
-- Esta correção não usa geração de imagem, edição por IA, stock pago nem novas chamadas externas. Trabalha apenas com os ficheiros reais que já estão no projeto, portanto **não gasta créditos de imagem**.
+## Acceptance criteria
+- No Corporate image repeats a Homepage Guest Moments image.
+- No generated, invented or stock photography is used.
+- Corporate’s blurry cellar images are replaced with real, context-relevant, sharper material.
+- EN and PT Corporate have identical image quality and motion behaviour.
+- Each existing page slot shows one image at a time with an observable crossfade and continuous Ken Burns movement.
+- No extra section is added to Corporate, Proposal, Moments or Multi-day.
+- iPhone rendering uses the best genuine resolution available and never fabricates pixels by upscaling.
