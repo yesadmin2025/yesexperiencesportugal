@@ -121,9 +121,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "setubal-wine-guide",
-    title: "Setúbal Wine Country: A Local's Guide",
+    title: "Setúbal Wine Country Guide | Moscatel & Wineries",
     metaDescription:
-      "Setúbal Moscatel, Palmela reds, and the family wineries we visit ourselves — a local's guide to Portugal's most underrated wine region.",
+      "Explore Setúbal wine country near Lisbon, from Moscatel and Azeitão cheese to family wineries, Arrábida landscapes and coastal lunches.",
     h1: "Setúbal Wine Country — A Local's Guide",
     eyebrow: "Setúbal · Wine",
     standfirst:
