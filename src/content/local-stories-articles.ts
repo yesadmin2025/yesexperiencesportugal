@@ -34,6 +34,8 @@ export type LocalStoryArticle = {
   heroImageAlt?: string;
   /** Optional FAQ block — rendered on page AND emitted as FAQPage JSON-LD. */
   faq?: { q: string; a: string }[];
+  /** Optional related-read links (any internal path) rendered in the aside. */
+  relatedReads?: { path: string; label: string }[];
 
 };
 
