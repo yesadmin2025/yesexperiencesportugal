@@ -1,75 +1,78 @@
 ## Objetivo
 
-Adicionar seleção múltipla no `/admin/image-swap` para publicar várias trocas de uma só vez, com **um único toast de undo** que reverte tudo em bloco. Reforçar que a ferramenta **só substitui slots pre existentes** (nunca adiciona novos ao fim do módulo) e que cada substituição privilegia qualidade premium + movimento editorial já existente. Retirar imagens adicionadas no fim das páginas . 
+Remover as tiras estáticas de 3 fotos ambientais que ficaram no fundo de **Corporate**, **Propose in Portugal** (Moments) e **Multi-day** (Travel Designer) — hoje parecem uma grelha de stock e quebram o ritmo editorial — e substituí-las por um único painel cinemático que mostra **uma paisagem de cada vez**, em alta qualidade, com movimento restrito e legenda que dá contexto.
 
-Sem novas migrações, sem alterações em componentes públicos, sem novos módulos ou slots.
-
----
-
-## 1. Modo seleção múltipla (batch)
-
-No painel de slots do módulo activo:
-
-- **Toggle "Selecção múltipla"** no topo do módulo. Quando activo:
-  - Cada slot mostra uma checkbox.
-  - Cada cartão de candidata mostra um botão `Atribuir ao slot X` (dropdown com os slots seleccionados) em vez do `Aplicar` de um clique.
-  - Painel flutuante inferior com resumo: `N slots seleccionados · M substituições prontas` e ações `Publicar tudo` · `Limpar`.
-- **Regras de segurança (reforço explícito no UI)**:
-  - Só é possível atribuir candidatas a slots que **já existem** no `EDITORIAL_MODULES[key].defaults`. Não há botão "adicionar slot".
-  - Aviso visível: *"Esta acção substitui a imagem actual do slot. Nunca acrescenta imagens novas ao módulo."*
-  - Se a candidata escolhida tiver `estimateQuality === 'baixa'` face à actual (`alta`/`media`), badge âmbar `Qualidade inferior à actual` e confirmação extra antes de entrar no batch.
-  - Bloquear a inclusão no batch quando a candidata já é usada noutro slot **do mesmo módulo** (evita duplicar dentro do próprio strip).
-
-## 2. Publicação em lote com um único undo
-
-- Novo helper `publishOverridesBatch(moduleKey, entries[])` em `src/lib/editorial-overrides.ts`:
-  - Lê os overrides actuais dos slots afectados (para snapshot de reversão).
-  - Faz um único `upsert` na tabela `editorial_image_overrides` com todas as linhas (status `published`).
-  - Devolve `{ applied: Entry[], previous: (Entry|null)[] }`.
-- `applyBatch()` no route file:
-  - Chama o helper.
-  - Mostra **um único toast Sonner**: `N substituições publicadas · Desfazer` com 10s de duração.
-  - `Desfazer` chama `publishOverridesBatch` com o snapshot `previous` (repõe overrides antigos ou apaga linhas que não existiam antes via `deleteOverrides(moduleKey, slotIndexes)`).
-  - Falha parcial: se algum upsert falhar, o toast passa a erro e nenhum override é aplicado (usar transacção via RPC ou upsert único — preferir upsert único, já é atómico por linha; em erro mostrar quais slots falharam e não oferecer undo).
-
-## 3. Reforço "só substituir, nunca acrescentar"
-
-- Remover/ocultar qualquer UI que sugira acrescentar imagens (não existe hoje, mas garantir que o Duplicates panel também usa apenas `Aplicar sugestão` sobre um slot existente).
-- Adicionar teste `src/__tests__/image-swap-slot-invariants.test.ts` que garante:
-  - `publishOverridesBatch` rejeita `slotIndex >= defaults.length`.
-  - Nenhum código-path chama `insert` sem `slot_index` válido dentro do intervalo do módulo.
-- Copy no topo do painel: *"Curadoria = substituir imagens actuais por melhores versões reais. O número de imagens de cada módulo é fixo."*
-
-## 4. Qualidade premium + movimento (garantir que já se aplica)
-
-Sem tocar em componentes públicos, garantir que o pipeline actual continua a servir:
-
-- `AmbientLandscapeStrip` e `GuestMomentsStrip` já usam a animação editorial `settle` (ver `src/styles.css`) e `responsive-image.ts` para `srcSet` AVIF/WebP. Confirmar via leitura que continua ligada após overrides (o helper actual só troca `src/alt/caption`, mantém wrapper → OK).
-- No painel admin, adicionar badge `Movimento editorial activo` no cabeçalho de cada módulo apenas como lembrete visual (link para a memória `homepage-energy-motion` / `editorial-palette-v2`).
-- Priorizar candidatas `alta` no ranking: aumentar peso quando `estimateQuality === 'alta'` (`+2`), penalizar `baixa` (`-2`) em `rank.ts`. Não altera assinatura pública.
+Ao mesmo tempo, promover as melhores fotos reais do stock existente e aposentar as de menor qualidade das três tiras.
 
 ---
 
-## Detalhes técnicos
+## 1. Novo componente `AmbientLandscapeReveal`
 
-**Ficheiros novos**
+Ficheiro: `src/components/ui/AmbientLandscapeReveal.tsx`. Substitui `AmbientLandscapeStrip` nas três rotas (o ficheiro antigo mantém-se por agora só para preservar `CORPORATE_LANDSCAPES` / `PROPOSAL_LANDSCAPES` / `MULTIDAY_LANDSCAPES` como fonte de dados e não partir `registry.ts`; o export do componente é removido dos routes).
 
-- `src/components/admin/BatchSelectionBar.tsx` — barra flutuante inferior com resumo e ações.
-- `src/__tests__/image-swap-slot-invariants.test.ts` — invariante "só substituir".
+Comportamento:
 
-**Ficheiros editados**
+- **Uma foto de cada vez**, em card editorial largo (aspect 16:9 desktop, 4:5 mobile), com legenda Fraunces + eyebrow de lugar.
+- **Auto-avanço a cada 6s** com crossfade suave (400ms), mesmo motor `editorial-photo-motion` (settle + micro-zoom 1.00 → 1.03 ao longo de 8s por foto — cinematic, não Ken Burns agressivo).
+- **Indicadores minimalistas**: bullets ivory/gold no rodapé + setas subtis (só desktop) para avanço manual.
+- **Pausa on-hover** e quando a secção sai do viewport (`IntersectionObserver`).
+- `**prefers-reduced-motion**`: desactiva auto-avanço e zoom; utilizadora navega manualmente.
+- **Preload**: imagem N carrega `eager` + `fetchpriority="high"`, N+1 pré-carregada em background.
+- **Mantém integração com admin overrides** via `useEditorialOverrides(moduleKey, photos)` — mesma API que o strip actual, para o painel `/admin/image-swap` continuar a funcionar sem alterações.
 
-- `src/lib/editorial-overrides.ts` — adicionar `publishOverridesBatch()` e `deleteOverrides()` (helpers server-side via `supabase` client já autenticado; RLS admin-only mantém-se).
-- `src/lib/image-swap/rank.ts` — incorporar `qualityBoost` já previsto no plano anterior mas ainda não aplicado.
-- `src/routes/admin.image-swap.tsx` — estado `selection: Map<slotIndex, PoolPhoto>`, toggle de modo batch, integração da `BatchSelectionBar`, `applyBatch()` + toast único com undo.
-- `src/components/admin/CandidateCard.tsx` — quando `batchMode`, mostrar `Atribuir a slot…` em vez de `Aplicar`; badges de qualidade inferior/duplicado no módulo.
+Contentor da secção: fundo `--ivory`, `py-14 md:py-24`, alinhamento igual ao actual (Eyebrow + gold-rule + SectionTitle + intro à esquerda, painel abaixo).
 
-**Base de dados**
+## 2. Curadoria de qualidade — substituir as fracas
 
-- Nenhuma migração. Reutiliza `editorial_image_overrides` com upsert por `(module_key, slot_index)`.
+Auditar as fotos hoje listadas em `CORPORATE_LANDSCAPES`, `PROPOSAL_LANDSCAPES`, `MULTIDAY_LANDSCAPES` e substituir apenas as de menor impacto por candidatas premium já existentes no stock (`src/assets/owner-photos/*` e `src/assets/ambient/*`), respeitando:
 
-**Fora de âmbito**
+- **Regra de unicidade**: cobertura mantida por `src/__tests__/editorial-image-uniqueness.test.ts` — nenhuma foto pode aparecer em duas rotas.
+- **Contexto por rota**:
+  - Corporate → paisagem + ofício (cork, potter, cliffs).
+  - Propose → paisagem íntima ao pôr-do-sol, coves.
+  - Multi-day → paisagem + prova de vinho + costa.
+- **Sem inventar** fotos novas nem gerar IA. Apenas re-ordenar/substituir a partir do pool real.
+- Selecção final é feita lendo `src/lib/image-swap/quality.ts` (`estimateQuality`) e o `rankCandidates` já existentes, escolhendo `alta` sempre que possível; onde só houver `desconhecida` (assets estáticos sem `width/height`), manter a foto actual se o contexto for forte.
 
-- Adicionar novos slots ou módulos.
-- Alterar componentes públicos, motion tokens, ou pool de stock.
-- Batch cross-module (o undo teria de reverter em vários módulos — mantemos batch por módulo activo para o undo ser previsível).
+O ficheiro `AmbientLandscapeStrip.tsx` fica apenas com as três constantes exportadas (fonte de dados). Se preferires, movemos as constantes para `src/content/ambient-landscapes.ts` e apagamos o componente antigo por completo.
+
+## 3. Motion premium (scoped)
+
+Novas keyframes/utilities no `src/styles.css`, todas dentro de `@media (prefers-reduced-motion: no-preference)`:
+
+- `.ambient-reveal-fade` — crossfade opacity 0 → 1 (400ms ease-out).
+- `.ambient-reveal-zoom` — `transform: scale(1) → scale(1.03)` ao longo de 8s linear, reset no swap.
+- Sem parallax, sem sheen, sem glow — respeita as guardrails de rotas não-homepage (só fade + zoom subtil).
+
+## 4. Remoção dos strips no fundo das rotas
+
+Editar:
+
+- `src/routes/corporate.tsx` (linha ~194): substituir `<AmbientLandscapeStrip … moduleKey="corporate_ambient" />` por `<AmbientLandscapeReveal … moduleKey="corporate_ambient" photos={CORPORATE_LANDSCAPES} />`.
+- `src/routes/proposal-in-portugal.tsx` (linha ~192): idem com `proposal_ambient` + `PROPOSAL_LANDSCAPES`.
+- `src/routes/multi-day.tsx` (linha ~448): idem com `multi_day_ambient` + `MULTIDAY_LANDSCAPES`.
+
+Nenhuma outra secção destas rotas é tocada.
+
+## 5. Testes
+
+- `src/__tests__/ambient-landscape-strip.test.tsx` → renomear/reescrever como `ambient-landscape-reveal.test.tsx`. Verifica:
+  - Renderiza apenas uma imagem visível (opacity 1) por vez.
+  - Avança para o próximo slot quando o timer dispara (fake timers).
+  - Pausa em hover.
+  - Com `prefers-reduced-motion: reduce`, não auto-avança.
+- `src/__tests__/editorial-image-uniqueness.test.ts` → continua a passar com as substituições novas (é o guarda de duplicados).
+
+## Fora de âmbito
+
+- `AmbientLandscapeStrip` e `admin/image-swap` — só troco o consumidor, não mexo no registry nem no pool.
+- Guest Moments strips (homepage/about) — não são o que a utilizadora chamou "no fundo" destas três rotas.
+- Novas fotos, uploads, ou geração por IA.
+- Alterações a `registry.ts` / `pool.ts` / módulos do admin.
+
+---
+
+## Confirmação rápida antes de implementar
+
+- **Homepage , "Travel designer" = Multi-day (`/multi-day`)** e **"Moments" = Propose in Portugal (`/proposal-in-portugal`)** — se te referires a outra rota (por exemplo o Builder / Studio), diz e eu ajusto.
+- **Auto-avanço 6s + crossfade** vs **avanço só ao scroll** (uma imagem por viewport, sem timer) — o plano acima usa auto-avanço; se preferires scroll-driven, mudo antes de codar.
