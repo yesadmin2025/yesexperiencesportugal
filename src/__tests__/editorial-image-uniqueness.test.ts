@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-  CORPORATE_LANDSCAPES,
-  MULTIDAY_LANDSCAPES,
-  PROPOSAL_LANDSCAPES,
-} from "@/components/ui/AmbientLandscapeStrip";
+  CORPORATE_SERVICE_IMAGES,
+  PROPOSAL_SERVICE_IMAGES,
+} from "@/content/editorial-service-images";
 import {
   ABOUT_MOMENTS,
   CORPORATE_MOMENTS,
@@ -12,11 +11,10 @@ import {
 } from "@/content/guest-moments";
 
 describe("editorial image identity", () => {
-  it("does not repeat an image between any Ambient or Moments module", () => {
+  it("does not repeat an image between any curated service or Moments module", () => {
     const modules = [
-      CORPORATE_LANDSCAPES,
-      PROPOSAL_LANDSCAPES,
-      MULTIDAY_LANDSCAPES,
+      CORPORATE_SERVICE_IMAGES,
+      PROPOSAL_SERVICE_IMAGES,
       HOMEPAGE_MOMENTS,
       ABOUT_MOMENTS,
       CORPORATE_MOMENTS,
@@ -27,11 +25,10 @@ describe("editorial image identity", () => {
   });
 
   it("never restores the retired generated photography", () => {
-    const urls = [
-      ...CORPORATE_LANDSCAPES,
-      ...PROPOSAL_LANDSCAPES,
-      ...MULTIDAY_LANDSCAPES,
-    ].map((photo) => photo.src);
+    const urls = [...CORPORATE_SERVICE_IMAGES, ...PROPOSAL_SERVICE_IMAGES].map(
+      (photo) => photo.src,
+    );
     expect(urls.join(" ")).not.toMatch(/douro-terraces-golden|alentejo-cork-dawn/);
+    expect(urls.join(" ")).not.toMatch(/\/ambient\//);
   });
 });

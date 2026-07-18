@@ -109,8 +109,7 @@ export const MOMENT_ARRABIDA_VIEWPOINT_WOMEN: GuestMoment = {
 };
 
 // Curated sets per surface. HOMEPAGE + CORPORATE are people-only
-// (highest conversion signal). Landscape / still-life scenes moved to
-// <AmbientLandscapeStrip> ambient blocks.
+// (highest conversion signal). No decorative ambient modules are added.
 export const HOMEPAGE_MOMENTS = [
   MOMENT_PORTINHO_BOARDWALK,
   MOMENT_SINTRA_GROUP,
