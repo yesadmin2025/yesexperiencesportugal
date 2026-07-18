@@ -678,13 +678,20 @@ function HomePage() {
                         className="he-image-cinema he-image-rise relative block aspect-[3/2] overflow-hidden bg-[color:var(--sand)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
                         aria-label={`Open ${t.title}`}
                       >
-                        <img
-                          src={t.img}
-                          alt={`${t.title} — private day tour in ${t.region}, Portugal`}
-                          loading="lazy"
-                          decoding="async"
-                          className="relative z-[1] w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.05]"
-                        />
+                        {(() => {
+                          const r = buildResponsiveSrc(t.img, { sizes: "card" });
+                          return (
+                            <img
+                              src={r.src}
+                              srcSet={r.srcSet}
+                              sizes={r.sizes}
+                              alt={`${t.title} — private day tour in ${t.region}, Portugal`}
+                              loading="lazy"
+                              decoding="async"
+                              className="relative z-[1] w-full h-full object-cover transition-transform duration-[700ms] ease-out group-hover:scale-[1.05]"
+                            />
+                          );
+                        })()}
                         {/* Two-sided gradient — protects pills (top) and title (bottom) on both
                           bright skies and dark hero shots. Tuned to clear WCAG AA over Viator imagery. */}
                         <div
