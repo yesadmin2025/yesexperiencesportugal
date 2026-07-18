@@ -464,19 +464,25 @@ function AdminImageSwapPage() {
                           </div>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-                            Slot {i + 1}
+                          <div className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] flex items-center gap-2 flex-wrap">
+                            <span>Slot {i + 1}</span>
                             {published && (
-                              <span className="ml-2 bg-[color:var(--gold)] text-[color:var(--charcoal)] px-1.5 py-0.5">
+                              <span className="bg-[color:var(--gold)] text-[color:var(--charcoal)] px-1.5 py-0.5">
                                 override ativo
                               </span>
                             )}
                             {draft && (
-                              <span className="ml-2 border border-[color:var(--charcoal)]/30 px-1.5 py-0.5">
+                              <span className="border border-[color:var(--charcoal)]/30 px-1.5 py-0.5">
                                 rascunho
                               </span>
                             )}
+                            {batchMode && batch.has(i) && (
+                              <span className="bg-[color:var(--teal)] text-[color:var(--ivory)] px-1.5 py-0.5 inline-flex items-center gap-1">
+                                <CheckSquare size={10} /> em batch
+                              </span>
+                            )}
                           </div>
+
                           <p className="mt-1 font-serif italic text-[color:var(--teal)]">
                             {slot.caption}
                           </p>
