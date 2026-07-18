@@ -16,7 +16,15 @@
  */
 import { createFileRoute } from "@tanstack/react-router";
 
-export const ALLOWED_HOSTS = new Set(["yesexperiences.pt", "www.yesexperiences.pt"]);
+// Upstreams the proxy may fetch. Kept explicit so the route can't be used
+// as an open image relay. Viator's `media.tacdn.com` already serves AVIF/
+// WebP based on Accept; proxying through the Worker adds long-lived edge
+// caching + our own quantised cache key so repeat renders are instant.
+export const ALLOWED_HOSTS = new Set<string>([
+  "yesexperiences.pt",
+  "www.yesexperiences.pt",
+  "media.tacdn.com",
+]);
 export const ALLOWED_EXT = /\.(avif|webp|jpe?g|png)$/i;
 // 30 days at the edge, 7 days in the browser. Imported tour images are
 // content-addressed by WordPress filename so safe to cache for a long time.

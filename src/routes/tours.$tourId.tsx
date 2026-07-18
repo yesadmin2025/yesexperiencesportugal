@@ -172,7 +172,9 @@ function TourDetailPage() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { resolveImg } = useImportedTourImages();
   const meta = getViatorMeta(tour.id);
-  const adminPhotos = useAdminTourPhotos(tour.id);
+  const adminPhotos = useAdminTourPhotos(tour.id, {
+    defaultAlt: `${tour.title} — ${tour.region}`,
+  });
   const validation = validateTour(tour, meta);
   useEffect(() => {
     logTourValidation(validation);
@@ -253,9 +255,10 @@ function TourHero({
   const heroResolved = resolveImg(tour, "hero");
   // Prefer admin-uploaded photos (cover first), then locally-baked YES photos,
   // then Viator gallery cover, then the imported tour image.
-  const adminCover = adminPhotos[0]?.src;
-  const heroSrc = adminCover ?? meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
-  const heroAlt = adminPhotos[0]?.alt || getHeroAlt(tour, meta);
+  const adminCover = adminPhotos[0];
+  const heroSrc = adminCover?.src ?? meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
+  const heroSrcSet = adminCover?.srcSet ?? heroResolved.srcSet;
+  const heroAlt = adminCover?.alt || getHeroAlt(tour, meta);
   return (
     <>
       {/* Breadcrumb */}
@@ -275,6 +278,7 @@ function TourHero({
           {/* Cinematic hero — unified 3:2 frame, blur-up on load. */}
           <TourImage
             src={heroSrc}
+            srcSet={heroSrcSet}
             alt={heroAlt}
             ratio="3/2"
             priority
@@ -283,6 +287,7 @@ function TourHero({
             className="shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]"
             imgClassName="motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
           />
+
 
           {/* Editorial header — title, blurb and meta sit BELOW the hero
               so the cinematic image reads as a single quiet frame. */}
