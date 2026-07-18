@@ -416,46 +416,42 @@ function MultiDayPage() {
 
       {/* ── Where it can go ──────────────────────────────── */}
       <section className="py-14 md:py-24 reveal">
-        <div className="container-x grid lg:grid-cols-2 gap-10 md:gap-14 items-center">
-          <div className="overflow-hidden">
-            <img
-              src={imgCorkHarvest}
-              alt="Private Portugal journey designed by YES Experiences Portugal"
-              loading="lazy"
-              decoding="async"
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="w-full aspect-[4/5] md:aspect-[5/6] object-cover"
-            />
-          </div>
-          <div>
-            <Eyebrow icon={<RouteIcon strokeWidth={1.8} />}>Where it can go</Eyebrow>
-            <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
-            <SectionTitle size="compact" spacing="loose">
-              Across Portugal, <SectionTitle.Em>shaped around your journey.</SectionTitle.Em>
-            </SectionTitle>
-            <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-              A Travel Designer journey can stay focused on one region or connect several parts of
-              Portugal into a complete route. It may be a few days, a long weekend, a full week, or
-              a multi-week journey through the country.
-            </p>
-            <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
-              The point is not to collect destinations. It is to create the right rhythm: where to
-              begin, where to sleep, what to experience, when to slow down, what is worth the drive
-              and what should be left for another trip.
-            </p>
-            <blockquote className="mt-6 pl-4 border-l-2 border-[color:var(--gold)] font-serif italic text-[1.05rem] md:text-[1.15rem] text-[color:var(--teal)] leading-snug">
-              Regions are chosen because they belong in your journey, not because they appear on a
-              list.
-            </blockquote>
-            <p className="mt-6 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
-              Examples may include Lisbon, the coast, wine country, historic towns, the Alentejo,
-              the Douro, Central Portugal, the Algarve or Atlantic routes — but each journey is
-              designed from scratch and may go wherever your time, interests and logistics make
-              sense.
-            </p>
-          </div>
+        <div className="container-x max-w-3xl">
+          <Eyebrow icon={<RouteIcon strokeWidth={1.8} />}>Where it can go</Eyebrow>
+          <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
+          <SectionTitle size="compact" spacing="loose">
+            Across Portugal, <SectionTitle.Em>shaped around your journey.</SectionTitle.Em>
+          </SectionTitle>
+          <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+            A Travel Designer journey can stay focused on one region or connect several parts of
+            Portugal into a complete route. It may be a few days, a long weekend, a full week, or
+            a multi-week journey through the country.
+          </p>
+          <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
+            The point is not to collect destinations. It is to create the right rhythm: where to
+            begin, where to sleep, what to experience, when to slow down, what is worth the drive
+            and what should be left for another trip.
+          </p>
+          <blockquote className="mt-6 pl-4 border-l-2 border-[color:var(--gold)] font-serif italic text-[1.05rem] md:text-[1.15rem] text-[color:var(--teal)] leading-snug">
+            Regions are chosen because they belong in your journey, not because they appear on a
+            list.
+          </blockquote>
+          <p className="mt-6 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
+            Examples may include Lisbon, the coast, wine country, historic towns, the Alentejo,
+            the Douro, Central Portugal, the Algarve or Atlantic routes — but each journey is
+            designed from scratch and may go wherever your time, interests and logistics make
+            sense.
+          </p>
         </div>
       </section>
+
+      <AmbientLandscapeStrip
+        eyebrow="A few of the places"
+        title={<>Real coast, real <SectionTitle.Em>quiet corners.</SectionTitle.Em></>}
+        intro="A handful of the settings a multi-day route can pass through. Never invented, never off a stock library."
+        photos={MULTIDAY_LANDSCAPES}
+      />
+
 
       {/* ── Local support ────────────────────────────────── */}
       <section className="py-14 md:py-20 bg-[color:var(--sand)] reveal">
