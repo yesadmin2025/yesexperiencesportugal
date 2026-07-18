@@ -8,6 +8,7 @@ import { CtaPair } from "@/components/ui/CtaPair";
 import { EditorialCard } from "@/components/ui/EditorialCard";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { whatsappUrl } from "@/config/business-nap";
+import { buildResponsiveSrc } from "@/lib/responsive-image";
 
 import heroImg from "@/assets/hero-coast.jpg";
 
