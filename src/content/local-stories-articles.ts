@@ -160,10 +160,22 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     standfirst:
       "Our home town. Here is how we would spend a day in Sesimbra — slowly, and by the sea.",
     sections: [
-      { heading: "The fishing port and the fort", body: "[Body copy to be supplied.]" },
-      { heading: "Where we eat", body: "[Body copy to be supplied.]" },
-      { heading: "Wild beaches inside the Arrábida park", body: "[Body copy to be supplied.]" },
-      { heading: "A quiet half-day option", body: "[Body copy to be supplied.]" },
+      {
+        heading: "The fishing port and the fort",
+        body: "Sesimbra still feels like a fishing town because fishing remains part of its daily life. Boats return to the harbour, seafood restaurants prepare the morning’s catch, and the waterfront becomes livelier as families arrive for lunch and an evening walk beside the beach.\n\nAbove the town, Sesimbra Castle looks across the roofs, the bay and the surrounding hills. The climb reveals how naturally the town is protected between the sea and the Arrábida landscape. Closer to the water, the old centre is compact and easy to explore on foot.\n\nSesimbra is not a place built around a checklist of monuments. Its appeal lies in watching the harbour, walking through the narrow streets and allowing the pace of the coast to replace the rhythm of Lisbon.",
+      },
+      {
+        heading: "Where we eat",
+        body: "In Sesimbra, lunch should begin with the fish rather than with a restaurant ranking. Many menus depend on what arrived at the harbour, so the best choice may be grilled sea bass, sea bream, cuttlefish or another local catch simply prepared with olive oil, garlic, potatoes and vegetables.\n\nThe restaurants along the waterfront are convenient, but smaller streets behind the main promenade also hide long-established local places. We usually look for a dining room where Portuguese families are eating, the fish is shown clearly and nobody is attempting to rush the table.\n\nA Sesimbra lunch is part of the day, not an interruption between activities. Leave time for it. The sea view, conversation and unhurried service are part of what makes the town worth visiting.",
+      },
+      {
+        heading: "Wild beaches inside the Arrábida park",
+        body: "Beyond Sesimbra, the Arrábida coast becomes quieter and more dramatic. Limestone hills descend towards clear Atlantic water, creating coves and beaches protected by the natural park.\n\nSome beaches are easily reached, while others require a short walk, seasonal transport or local knowledge. Conditions also change throughout the year, so the right stop depends on weather, access and how much time guests want to spend by the sea.\n\nThe water can be cold even in summer, but the landscape is exceptional. A beach stop here is less about organised entertainment and more about swimming, walking, watching the cliffs and enjoying a part of the Portuguese coast that still feels remarkably untouched.",
+      },
+      {
+        heading: "A quiet half-day option",
+        body: "Sesimbra also works well when a full sightseeing day feels unnecessary. A relaxed half-day can include a coastal drive through Arrábida, time beside the harbour, a walk through the old centre and a long seafood lunch.\n\nIt is particularly suitable for travellers staying in Lisbon who want to see another side of the region without beginning early or returning late. The town offers enough to feel like a genuine escape, but not so much that the visit becomes another demanding itinerary.\n\nFor a slower version, combine Sesimbra with a viewpoint or quiet beach. For a fuller day, add wineries in Azeitão, Setúbal or more of the Arrábida coast.",
+      },
     ],
     ctaLead:
       "Most guests reach Sesimbra through our Wild Beaches & Picnic Signature — a slow, private day on the Arrábida coast.",
