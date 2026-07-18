@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-17T02:36:41.240Z",
-  "filesScanned": 665,
+  "generatedAt": "2026-07-18T01:54:28.207Z",
+  "filesScanned": 675,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1934,7 +1934,7 @@
     },
     {
       "file": "src/lib/email-templates/booking-confirmation.tsx",
-      "line": 28,
+      "line": 29,
       "col": 15,
       "raw": "#295B61",
       "normalized": "#295b61",
@@ -1943,7 +1943,7 @@
     },
     {
       "file": "src/lib/email-templates/booking-confirmation.tsx",
-      "line": 29,
+      "line": 30,
       "col": 15,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1952,7 +1952,7 @@
     },
     {
       "file": "src/lib/email-templates/booking-confirmation.tsx",
-      "line": 30,
+      "line": 31,
       "col": 19,
       "raw": "#2E2E2E",
       "normalized": "#2e2e2e",
@@ -1961,7 +1961,7 @@
     },
     {
       "file": "src/lib/email-templates/booking-confirmation.tsx",
-      "line": 31,
+      "line": 32,
       "col": 15,
       "raw": "#F4EEE2",
       "normalized": "#f4eee2",
@@ -1970,7 +1970,7 @@
     },
     {
       "file": "src/lib/email-templates/booking-confirmation.tsx",
-      "line": 171,
+      "line": 174,
       "col": 21,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2168,7 +2168,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 27,
+      "line": 29,
       "col": 34,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2177,7 +2177,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 29,
+      "line": 31,
       "col": 22,
       "raw": "#295B61",
       "normalized": "#295b61",
@@ -2186,7 +2186,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 31,
+      "line": 33,
       "col": 11,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -2195,7 +2195,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 39,
+      "line": 41,
       "col": 11,
       "raw": "#888",
       "normalized": "#888888",
@@ -2204,7 +2204,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 45,
+      "line": 47,
       "col": 25,
       "raw": "#111",
       "normalized": "#111111",
@@ -2213,7 +2213,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 77,
+      "line": 79,
       "col": 42,
       "raw": "#666",
       "normalized": "#666666",
