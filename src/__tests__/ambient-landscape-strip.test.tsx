@@ -25,7 +25,7 @@ describe("AmbientLandscapeStrip", () => {
     expect(unique.size).toBe(all.length);
   });
 
-  it("emits <img> with alt, sizes, lazy loading and Ken Burns motion class", () => {
+  it("emits <img> with alt, sizes, lazy loading and editorial motion class", () => {
     const html = renderToString(
       <AmbientLandscapeStrip
         eyebrow="Test"
@@ -38,6 +38,6 @@ describe("AmbientLandscapeStrip", () => {
     expect(html).toMatch(/loading="lazy"/);
     expect(html).toMatch(/sizes="/);
     expect(html).toMatch(/alt="/);
-    expect(html).toMatch(/ambient-kenburns/);
+    expect(html).toMatch(/editorial-photo-motion/);
   });
 });

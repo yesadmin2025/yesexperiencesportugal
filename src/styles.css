@@ -6434,21 +6434,26 @@ html {
 }
 
 
-/* -------------------------------------------------------------------
- * Ambient landscape Ken Burns
- * Slow scale+drift for AmbientLandscapeStrip images. Each image gets a
- * staggered animation-delay inline. Disabled under reduced motion.
- * ------------------------------------------------------------------- */
-@keyframes ambient-kenburns {
-  0%   { transform: scale(1.06) translate3d(-1%, -0.5%, 0); }
-  50%  { transform: scale(1.12) translate3d(1%, 0.5%, 0); }
-  100% { transform: scale(1.06) translate3d(-1%, -0.5%, 0); }
-}
-.ambient-kenburns {
-  animation: ambient-kenburns 18s ease-in-out infinite alternate;
-  will-change: transform;
+/* Restrained editorial photography: a calm settle on reveal and a very
+   small pointer hover. No perpetual Ken Burns movement. */
+.editorial-photo-motion {
+  transform: scale(1.025);
+  filter: saturate(0.94) contrast(1.025);
+  transition:
+    transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 500ms ease;
   transform-origin: center;
 }
+.reveal.in-view .editorial-photo-motion,
+[data-motion].is-visible .editorial-photo-motion {
+  transform: scale(1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .editorial-photo-motion {
+    transform: scale(1.025);
+    filter: saturate(0.98) contrast(1.035);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .ambient-kenburns { animation: none; transform: none; }
+  .editorial-photo-motion { transform: none; transition: none; }
 }

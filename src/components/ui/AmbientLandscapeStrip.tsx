@@ -5,8 +5,7 @@
  * Rules:
  *   • Every photo is unique across the site (no cross-page repeats).
  *   • 3:2 landscape crop, aspect locked.
- *   • Ken Burns motion: slow scale+drift, 12s, alternate; disabled by
- *     prefers-reduced-motion (see .ambient-kenburns in styles.css).
+ *   • Restrained editorial settle + hover, disabled by reduced motion.
  *   • Fraunces caption (place, not experience).
  */
 
@@ -15,16 +14,15 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { buildResponsiveSrc } from "@/lib/responsive-image";
 import { MapPin } from "lucide-react";
 
-import comportaBoardwalk from "@/assets/ambient/comporta-boardwalk.jpg.asset.json";
-import comportaAerial from "@/assets/ambient/comporta-aerial.jpg.asset.json";
-import comportaCabanas from "@/assets/ambient/comporta-cabanas.jpg.asset.json";
 import espichelCliffs from "@/assets/ambient/cabo-espichel-cliffs.jpg.asset.json";
 import espichelSunset from "@/assets/ambient/sunset-pine-cliffs.jpg.asset.json";
 import vicentineBay from "@/assets/ambient/01-cover-turquoise-bay-palm.jpg.asset.json";
 import vicentineCove from "@/assets/ambient/02-hidden-cove-rocks.jpg.asset.json";
 import vicentineIlha from "@/assets/ambient/03-ilha-do-pessegueiro.jpg.asset.json";
-import douroTerraces from "@/assets/ambient/douro-terraces-golden.jpg.asset.json";
-import alentejoCork from "@/assets/ambient/alentejo-cork-dawn.jpg.asset.json";
+import portinhoAerial from "@/assets/owner-photos/portinho-aerial-bay.jpeg.asset.json";
+import corkHarvesters from "@/assets/owner-photos/cork-harvesters-alentejo.jpeg.asset.json";
+import tastingFlight from "@/assets/owner-photos/tasting-flight-full.jpeg.asset.json";
+import potterWheel from "@/assets/owner-photos/potter-wheel-azeitao.jpeg.asset.json";
 
 export interface AmbientPhoto {
   src: string;
@@ -38,9 +36,9 @@ export interface AmbientPhoto {
 
 export const CORPORATE_LANDSCAPES: AmbientPhoto[] = [
   {
-    src: comportaBoardwalk.url,
-    alt: "Wooden boardwalk descending to turquoise water — Comporta",
-    caption: "Comporta",
+    src: corkHarvesters.url,
+    alt: "Two Alentejo cork harvesters working beside a mature cork oak",
+    caption: "Cork harvest, Alentejo",
   },
   {
     src: espichelCliffs.url,
@@ -48,9 +46,9 @@ export const CORPORATE_LANDSCAPES: AmbientPhoto[] = [
     caption: "Cabo Espichel",
   },
   {
-    src: vicentineIlha.url,
-    alt: "Ilha do Pessegueiro from the beach, Southwest Vicentine Coast",
-    caption: "Ilha do Pessegueiro",
+    src: potterWheel.url,
+    alt: "An Azeitão potter shaping clay by hand at the workshop wheel",
+    caption: "Azeitão, at the potter's wheel",
   },
 ];
 
@@ -66,27 +64,22 @@ export const PROPOSAL_LANDSCAPES: AmbientPhoto[] = [
     caption: "A hidden cove",
   },
   {
-    src: comportaCabanas.url,
-    alt: "Comporta beach cabanas with Arrábida on the horizon",
-    caption: "Comporta cabanas",
+    src: portinhoAerial.url,
+    alt: "Aerial view of Portinho da Arrábida, with turquoise water and wooded cliffs",
+    caption: "Portinho da Arrábida",
   },
 ];
 
 export const MULTIDAY_LANDSCAPES: AmbientPhoto[] = [
   {
-    src: comportaAerial.url,
-    alt: "Aerial view of the long turquoise Comporta coastline",
-    caption: "Comporta coast",
+    src: vicentineIlha.url,
+    alt: "Ilha do Pessegueiro seen from the Southwest Vicentine Coast",
+    caption: "Ilha do Pessegueiro",
   },
   {
-    src: douroTerraces.url,
-    alt: "Douro Valley vineyard terraces at golden hour above the river",
-    caption: "Douro Valley",
-  },
-  {
-    src: alentejoCork.url,
-    alt: "Alentejo cork oak plains at dawn, mist between ancient trees",
-    caption: "Alentejo, at dawn",
+    src: tastingFlight.url,
+    alt: "A tasting flight of Portuguese wines prepared at a local cellar",
+    caption: "Setúbal wine country",
   },
   {
     src: vicentineBay.url,
@@ -137,8 +130,8 @@ export function AmbientLandscapeStrip({ eyebrow, title, intro, photos }: Props) 
           {photos.map((p, i) => {
             const r = buildResponsiveSrc(p.src, { sizes: "card" });
             return (
-              <li key={`${p.src}-${i}`} className="reveal-stagger">
-                <figure className="overflow-hidden">
+               <li key={`${p.src}-${i}`} className="reveal-stagger group">
+                 <figure className="overflow-hidden">
                   <div className="overflow-hidden">
                     <img
                       src={r.src}
@@ -149,8 +142,8 @@ export function AmbientLandscapeStrip({ eyebrow, title, intro, photos }: Props) 
                       decoding="async"
                       width={1600}
                       height={1067}
-                      className="ambient-kenburns w-full aspect-[3/2] object-cover"
-                      style={{ animationDelay: `${i * -3}s` }}
+                       className="editorial-photo-motion w-full aspect-[3/2] object-cover"
+                       style={{ transitionDelay: `${i * 45}ms` }}
                     />
                   </div>
                   <figcaption className="mt-3 serif text-[0.95rem] text-[color:var(--charcoal)] leading-tight">
