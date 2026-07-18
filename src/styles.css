@@ -6493,45 +6493,48 @@ html {
    disabled for prefers-reduced-motion.
    ============================================================ */
 @keyframes ken-burns-a {
-  0%   { transform: scale(1.00) translate3d(0%, 0%, 0); }
-  100% { transform: scale(1.06) translate3d(-1.5%, -1%, 0); }
+  0%   { transform: scale(1.02) translate3d(0%, 0%, 0); }
+  100% { transform: scale(1.12) translate3d(-2%, -1.5%, 0); }
 }
 @keyframes ken-burns-b {
-  0%   { transform: scale(1.02) translate3d(1%, 0%, 0); }
-  100% { transform: scale(1.06) translate3d(-1%, 1.5%, 0); }
+  0%   { transform: scale(1.03) translate3d(1.5%, 0%, 0); }
+  100% { transform: scale(1.11) translate3d(-1.5%, 2%, 0); }
 }
 @keyframes ken-burns-c {
-  0%   { transform: scale(1.00) translate3d(-1%, 1%, 0); }
-  100% { transform: scale(1.05) translate3d(1.5%, -1%, 0); }
+  0%   { transform: scale(1.02) translate3d(-1.5%, 1.5%, 0); }
+  100% { transform: scale(1.10) translate3d(2%, -1.5%, 0); }
 }
 .ken-burns-slow {
   will-change: transform;
   transform-origin: center;
-  animation: ken-burns-a 22s ease-in-out infinite alternate;
+  animation: ken-burns-a 24s ease-in-out infinite alternate;
   filter: saturate(0.98) contrast(1.02);
 }
 .ken-burns-slow--b { animation-name: ken-burns-b; animation-duration: 26s; animation-delay: -6s; }
-.ken-burns-slow--c { animation-name: ken-burns-c; animation-duration: 24s; animation-delay: -12s; }
+.ken-burns-slow--c { animation-name: ken-burns-c; animation-duration: 22s; animation-delay: -12s; }
 .ken-burns-slow.kb-paused { animation-play-state: paused; }
 
 @keyframes cinematic-primary {
-  0%, 38% { opacity: 1; transform: scale(1.01) translate3d(0, 0, 0); }
-  52%, 88% { opacity: 0; transform: scale(1.11) translate3d(-2.5%, -1.5%, 0); }
-  100% { opacity: 1; transform: scale(1.13) translate3d(-3%, -2%, 0); }
+  0%, 34% { opacity: 1; transform: scale(1.02) translate3d(0, 0, 0); }
+  50%, 84% { opacity: 0; transform: scale(1.12) translate3d(-2.5%, -1.5%, 0); }
+  100% { opacity: 1; transform: scale(1.14) translate3d(-3%, -2%, 0); }
 }
 @keyframes cinematic-secondary {
-  0%, 38% { opacity: 0; transform: scale(1.12) translate3d(2.5%, 1.5%, 0); }
-  52%, 88% { opacity: 1; transform: scale(1.02) translate3d(0, 0, 0); }
-  100% { opacity: 0; transform: scale(1.01) translate3d(-1%, 0, 0); }
+  0%, 34% { opacity: 0; transform: scale(1.13) translate3d(2.5%, 1.5%, 0); }
+  50%, 84% { opacity: 1; transform: scale(1.03) translate3d(0, 0, 0); }
+  100% { opacity: 0; transform: scale(1.02) translate3d(-1%, 0, 0); }
 }
 .cinematic-editorial { position: relative; overflow: hidden; isolation: isolate; background: var(--sand); }
-.cinematic-editorial__frame { position: absolute; inset: 0; display: block; width: 100%; height: 100%; will-change: transform, opacity; }
-.cinematic-editorial__frame img { filter: saturate(0.96) contrast(1.025); }
+.cinematic-editorial__frame { position: absolute; inset: 0; display: block; width: 100%; height: 100%; will-change: transform, opacity; backface-visibility: hidden; transform: translateZ(0); }
+.cinematic-editorial__frame img { filter: saturate(0.98) contrast(1.03); image-rendering: -webkit-optimize-contrast; }
 .cinematic-editorial__frame--secondary { opacity: 0; }
-.cinematic-editorial.is-playing .cinematic-editorial__frame--primary { animation: cinematic-primary 18s cubic-bezier(0.45, 0, 0.25, 1) infinite; }
-.cinematic-editorial.is-playing .cinematic-editorial__frame--secondary { animation: cinematic-secondary 18s cubic-bezier(0.45, 0, 0.25, 1) infinite; }
-.cinematic-editorial--b .cinematic-editorial__frame { animation-delay: -5s !important; }
-.cinematic-editorial--c .cinematic-editorial__frame { animation-delay: -10s !important; }
+/* Animation only begins after the primary image has decoded (is-ready) AND
+   the block is on-screen (is-playing) — prevents blur/pixel-race on iPhone
+   high-DPR and guarantees the crossfade sequence is actually seen. */
+.cinematic-editorial.is-playing.is-ready .cinematic-editorial__frame--primary { animation: cinematic-primary 20s cubic-bezier(0.42, 0, 0.22, 1) infinite; }
+.cinematic-editorial.is-playing.is-ready .cinematic-editorial__frame--secondary { animation: cinematic-secondary 20s cubic-bezier(0.42, 0, 0.22, 1) infinite; }
+.cinematic-editorial--b.is-playing.is-ready .cinematic-editorial__frame { animation-delay: -5s !important; }
+.cinematic-editorial--c.is-playing.is-ready .cinematic-editorial__frame { animation-delay: -10s !important; }
 @media (prefers-reduced-motion: reduce) {
   .ken-burns-slow,
   .ken-burns-slow--b,

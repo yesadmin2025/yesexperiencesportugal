@@ -56,19 +56,35 @@ export function CinematicEditorialImage({ image, priority = false, sizes = "(min
   image: EditorialImageSource; priority?: boolean; sizes?: string; className?: string; imageClassName?: string; phase?: "a" | "b" | "c";
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [playing, setPlaying] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [ready, setReady] = useState(false);
   useEffect(() => {
     const node = rootRef.current;
-    if (!node || !image.alternate || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const observer = new IntersectionObserver(([entry]) => setPlaying(entry.isIntersecting), { threshold: 0.16 });
+    if (!node || !image.alternate) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.16 });
     observer.observe(node);
     return () => observer.disconnect();
   }, [image.alternate]);
+  useEffect(() => {
+    // Ensure animation only starts after the primary image has decoded so the
+    // first frame is sharp on high-DPR iPhone and the Ken Burns/crossfade
+    // sequence is actually visible instead of racing with the decode.
+    const node = rootRef.current;
+    if (!node) return;
+    const img = node.querySelector<HTMLImageElement>(".cinematic-editorial__frame--primary img");
+    if (!img) return;
+    if (img.complete && img.naturalWidth > 0) { setReady(true); return; }
+    const done = () => setReady(true);
+    img.addEventListener("load", done, { once: true });
+    return () => img.removeEventListener("load", done);
+  }, [image.src]);
   if (!image.alternate) return <ResponsiveEditorialImage image={image} priority={priority} sizes={sizes} className={imageClassName} />;
+  const playing = visible && ready;
   return (
-    <div ref={rootRef} className={`cinematic-editorial cinematic-editorial--${phase}${playing ? " is-playing" : ""} ${className}`} data-cinematic-editorial="true" data-cinematic-playing={playing ? "true" : "false"}>
+    <div ref={rootRef} className={`cinematic-editorial cinematic-editorial--${phase}${playing ? " is-playing" : ""}${ready ? " is-ready" : ""} ${className}`} data-cinematic-editorial="true" data-cinematic-playing={playing ? "true" : "false"} data-cinematic-ready={ready ? "true" : "false"}>
       <ResponsiveEditorialImage image={image} priority={priority} sizes={sizes} className={imageClassName} pictureClassName="cinematic-editorial__frame cinematic-editorial__frame--primary" />
-      <ResponsiveEditorialImage image={image.alternate} sizes={sizes} className={imageClassName} pictureClassName="cinematic-editorial__frame cinematic-editorial__frame--secondary" decorative />
+      <ResponsiveEditorialImage image={image.alternate} priority={priority} sizes={sizes} className={imageClassName} pictureClassName="cinematic-editorial__frame cinematic-editorial__frame--secondary" decorative />
     </div>
   );
 }
