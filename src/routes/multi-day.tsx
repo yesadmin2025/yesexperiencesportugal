@@ -450,6 +450,7 @@ function MultiDayPage() {
         title={<>Real coast, real <SectionTitle.Em>quiet corners.</SectionTitle.Em></>}
         intro="A handful of the settings a multi-day route can pass through. Never invented, never off a stock library."
         photos={MULTIDAY_LANDSCAPES}
+        moduleKey="multi_day_ambient"
       />
 
 

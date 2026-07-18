@@ -16,6 +16,7 @@
  */
 import { type ReactNode } from "react";
 import { buildResponsiveSrc } from "@/lib/responsive-image";
+import { useEditorialOverrides, type EditorialModuleKey } from "@/lib/editorial-overrides";
 
 export type GuestMoment = {
   src: string;
@@ -32,6 +33,8 @@ type Props = {
   surface?: "ivory" | "sand";
   /** Optional footnote below the strip. */
   footnote?: string;
+  /** When set, publishable admin overrides for this module replace matching slots. */
+  moduleKey?: EditorialModuleKey;
 };
 
 export function GuestMomentsStrip({
@@ -41,7 +44,13 @@ export function GuestMomentsStrip({
   photos,
   surface = "ivory",
   footnote,
+  moduleKey,
 }: Props) {
+  const effective = useEditorialOverrides(
+    moduleKey ?? ("homepage_moments" as EditorialModuleKey),
+    photos,
+  );
+  const rendered = moduleKey ? effective : photos;
   const bg = surface === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]";
 
   return (
@@ -91,7 +100,7 @@ export function GuestMomentsStrip({
           "
           role="list"
         >
-          {photos.map((photo, idx) => {
+          {rendered.map((photo, idx) => {
             const responsive = buildResponsiveSrc(photo.src, { sizes: "portrait" });
             return (
             <li

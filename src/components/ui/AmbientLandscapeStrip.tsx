@@ -12,6 +12,7 @@
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { buildResponsiveSrc } from "@/lib/responsive-image";
+import { useEditorialOverrides, type EditorialModuleKey } from "@/lib/editorial-overrides";
 import { MapPin } from "lucide-react";
 
 import espichelCliffs from "@/assets/ambient/cabo-espichel-cliffs.jpg.asset.json";
@@ -97,13 +98,20 @@ interface Props {
   title: React.ReactNode;
   intro?: string;
   photos: AmbientPhoto[];
+  /** When set, publishable admin overrides for this module replace matching slots. */
+  moduleKey?: EditorialModuleKey;
 }
 
-export function AmbientLandscapeStrip({ eyebrow, title, intro, photos }: Props) {
+export function AmbientLandscapeStrip({ eyebrow, title, intro, photos, moduleKey }: Props) {
+  const effective = useEditorialOverrides(
+    moduleKey ?? ("corporate_ambient" as EditorialModuleKey),
+    photos,
+  );
+  const rendered = moduleKey ? effective : photos;
   const cols =
-    photos.length >= 4
+    rendered.length >= 4
       ? "sm:grid-cols-2 lg:grid-cols-4"
-      : photos.length === 2
+      : rendered.length === 2
         ? "sm:grid-cols-2"
         : "sm:grid-cols-3";
 
@@ -127,7 +135,7 @@ export function AmbientLandscapeStrip({ eyebrow, title, intro, photos }: Props) 
           className={`mt-10 md:mt-14 grid grid-cols-1 ${cols} gap-4 md:gap-6`}
           data-testid="ambient-landscape-strip"
         >
-          {photos.map((p, i) => {
+          {rendered.map((p, i) => {
             const r = buildResponsiveSrc(p.src, { sizes: "card" });
             return (
                <li key={`${p.src}-${i}`} className="reveal-stagger group">

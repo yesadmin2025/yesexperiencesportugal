@@ -1069,6 +1069,45 @@ export type Database = {
         }
         Relationships: []
       }
+      editorial_image_overrides: {
+        Row: {
+          alt: string
+          caption: string | null
+          created_at: string
+          id: string
+          module_key: string
+          photo_src: string
+          slot_index: number
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          alt: string
+          caption?: string | null
+          created_at?: string
+          id?: string
+          module_key: string
+          photo_src: string
+          slot_index: number
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          alt?: string
+          caption?: string | null
+          created_at?: string
+          id?: string
+          module_key?: string
+          photo_src?: string
+          slot_index?: number
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
