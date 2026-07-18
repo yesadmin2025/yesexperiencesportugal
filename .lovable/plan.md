@@ -1,18 +1,27 @@
-Replace only the placeholder body copy in three Local Stories entries inside `src/content/local-stories-articles.ts`. No other files, no title/heading/CTA/style changes.
+## Direct copy replacement: two Local Stories
 
-&nbsp;
+### Scope
+Edit only `src/content/local-stories-articles.ts`. No other files, routes, components, styles, metadata or assets will change.
 
-Low credit 
+### Changes
+1. **“What to Do in Sesimbra — A Fishing Town Worth the Drive”** (slug `what-to-do-in-sesimbra`)  
+   Replace the four `[Body copy to be supplied.]` placeholders under these section headings with the supplied copy exactly:
+   - The fishing port and the fort
+   - Where we eat
+   - Wild beaches inside the Arrábida park
+   - A quiet half-day option
 
-## Edits (single file: `src/content/local-stories-articles.ts`)
+2. **“Private vs Group Tours in Portugal — What's Actually Worth It”** (slug `private-tour-vs-group-tour`)  
+   Replace the four `[Body copy to be supplied.]` placeholders under these section headings with the supplied copy exactly:
+   - What 'private' actually means
+   - What you pay for, and what you don't
+   - Where group tours still make sense
+   - Our rule of thumb
 
-1. **Setúbal Wine Country — A Local's Guide** (lines 118–121): replace the 4 `[Body copy to be supplied.]` bodies for sections "Why Setúbal is different", "Moscatel de Setúbal, explained simply", "The wineries we love", "What to pair it with" with the supplied copy exactly as written.
-2. **The Best Wineries Near Lisbon** (lines ~442–457): replace the 4 placeholder bodies for "Arrábida: the coast that quietly makes great wine", "Setúbal Moscatel — sweet, salty, and very Portuguese", "Alentejo talha wines — buried clay, ancient method", "How we choose which wineries to visit" with the supplied copy exactly.
-3. **Arrábida vs Sintra: Which Day Trip Is Right For You?** (lines 96–99): replace the 4 placeholder bodies for "What Arrábida feels like", "What Sintra feels like", "Crowds, driving time, pace", "Our honest take" with the supplied copy exactly.
+### Verification
+- Confirm no `[Body copy to be supplied.]` remains in the two updated stories.
+- Confirm `git diff --stat` shows only `src/content/local-stories-articles.ts` modified.
 
-Placeholders on other articles (Portinho da Arrábida, private-vs-group) are left untouched per instructions.
-
-## Verification
-
-- `rg "Body copy to be supplied" src/content/local-stories-articles.ts` — confirm remaining placeholders belong only to the two untouched articles.
-- `git diff --stat` shows only `src/content/local-stories-articles.ts` modified.
+### Notes
+- Titles, headings, CTAs, links, metadata, images, layout, typography, spacing and animations remain untouched.
+- Copy will be used verbatim as supplied by the founder.

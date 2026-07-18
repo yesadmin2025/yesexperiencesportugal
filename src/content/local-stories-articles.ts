@@ -160,10 +160,22 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     standfirst:
       "Our home town. Here is how we would spend a day in Sesimbra — slowly, and by the sea.",
     sections: [
-      { heading: "The fishing port and the fort", body: "[Body copy to be supplied.]" },
-      { heading: "Where we eat", body: "[Body copy to be supplied.]" },
-      { heading: "Wild beaches inside the Arrábida park", body: "[Body copy to be supplied.]" },
-      { heading: "A quiet half-day option", body: "[Body copy to be supplied.]" },
+      {
+        heading: "The fishing port and the fort",
+        body: "Sesimbra still feels like a fishing town because fishing remains part of its daily life. Boats return to the harbour, seafood restaurants prepare the morning’s catch, and the waterfront becomes livelier as families arrive for lunch and an evening walk beside the beach.\n\nAbove the town, Sesimbra Castle looks across the roofs, the bay and the surrounding hills. The climb reveals how naturally the town is protected between the sea and the Arrábida landscape. Closer to the water, the old centre is compact and easy to explore on foot.\n\nSesimbra is not a place built around a checklist of monuments. Its appeal lies in watching the harbour, walking through the narrow streets and allowing the pace of the coast to replace the rhythm of Lisbon.",
+      },
+      {
+        heading: "Where we eat",
+        body: "In Sesimbra, lunch should begin with the fish rather than with a restaurant ranking. Many menus depend on what arrived at the harbour, so the best choice may be grilled sea bass, sea bream, cuttlefish or another local catch simply prepared with olive oil, garlic, potatoes and vegetables.\n\nThe restaurants along the waterfront are convenient, but smaller streets behind the main promenade also hide long-established local places. We usually look for a dining room where Portuguese families are eating, the fish is shown clearly and nobody is attempting to rush the table.\n\nA Sesimbra lunch is part of the day, not an interruption between activities. Leave time for it. The sea view, conversation and unhurried service are part of what makes the town worth visiting.",
+      },
+      {
+        heading: "Wild beaches inside the Arrábida park",
+        body: "Beyond Sesimbra, the Arrábida coast becomes quieter and more dramatic. Limestone hills descend towards clear Atlantic water, creating coves and beaches protected by the natural park.\n\nSome beaches are easily reached, while others require a short walk, seasonal transport or local knowledge. Conditions also change throughout the year, so the right stop depends on weather, access and how much time guests want to spend by the sea.\n\nThe water can be cold even in summer, but the landscape is exceptional. A beach stop here is less about organised entertainment and more about swimming, walking, watching the cliffs and enjoying a part of the Portuguese coast that still feels remarkably untouched.",
+      },
+      {
+        heading: "A quiet half-day option",
+        body: "Sesimbra also works well when a full sightseeing day feels unnecessary. A relaxed half-day can include a coastal drive through Arrábida, time beside the harbour, a walk through the old centre and a long seafood lunch.\n\nIt is particularly suitable for travellers staying in Lisbon who want to see another side of the region without beginning early or returning late. The town offers enough to feel like a genuine escape, but not so much that the visit becomes another demanding itinerary.\n\nFor a slower version, combine Sesimbra with a viewpoint or quiet beach. For a fuller day, add wineries in Azeitão, Setúbal or more of the Arrábida coast.",
+      },
     ],
     ctaLead:
       "Most guests reach Sesimbra through our Wild Beaches & Picnic Signature — a slow, private day on the Arrábida coast.",
@@ -181,10 +193,22 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     standfirst:
       "We run private days for a living. Here is an honest comparison — including when a group tour is the smarter call.",
     sections: [
-      { heading: "What 'private' actually means", body: "[Body copy to be supplied.]" },
-      { heading: "What you pay for, and what you don't", body: "[Body copy to be supplied.]" },
-      { heading: "Where group tours still make sense", body: "[Body copy to be supplied.]" },
-      { heading: "Our rule of thumb", body: "[Body copy to be supplied.]" },
+      {
+        heading: "What 'private' actually means",
+        body: "A private tour should mean more than travelling in a smaller vehicle. The guide, transport and route are reserved for your party, but the real difference is control over the rhythm of the day.\n\nThere is no need to wait for other guests, return to a meeting point or follow a schedule designed around a large group. Stops can last longer when they are interesting and be shortened when they are not. Lunch can suit your preferences, and the route can adapt to weather, energy levels and unexpected discoveries.\n\nPrivacy also creates space for conversation. Guests can ask detailed questions, change direction and experience Portugal through their own interests rather than through a fixed script prepared for everyone.",
+      },
+      {
+        heading: "What you pay for, and what you don't",
+        body: "A private experience usually costs more per person because the vehicle, guide and operating time are not divided among a large group. The value lies in exclusivity, flexibility and the ability to shape the day around a small number of travellers.\n\nYou are not necessarily paying for more attractions. You are paying to avoid unnecessary waiting, generic stops, fixed restaurants and a timetable designed for thirty unrelated people.\n\nA well-designed private day should also explain clearly what is included. Transport, tastings, meals, admission tickets and activities vary between experiences. The important comparison is not simply the headline price, but what the day contains, how personal it is and how much of your limited holiday time is used well.",
+      },
+      {
+        heading: "Where group tours still make sense",
+        body: "Group tours can be the sensible choice for solo travellers, guests with a limited budget or visitors who want a straightforward introduction without needing much flexibility.\n\nThey also work well when the main goal is reaching one famous monument or destination and the traveller is comfortable following a fixed schedule. A reputable small-group tour may offer good information, convenient transport and the social element of meeting other people.\n\nThe compromise is usually pace. Departure times, lunch stops and the length of each visit must serve the whole group. For some travellers that structure is reassuring. For others, it is precisely what they hoped to escape while on holiday.",
+      },
+      {
+        heading: "Our rule of thumb",
+        body: "Choose a group tour when price matters most, the route is simple and you are happy for someone else to determine the schedule.\n\nChoose a private tour when time, comfort and flexibility matter more. It is especially valuable for families, couples celebrating something important, groups of friends and travellers with specific interests or mobility considerations.\n\nPrivate touring also becomes more economical as the number of guests increases because the cost of the vehicle and guide is shared within the party.\n\nThe best option is not automatically the most expensive one. It is the format that matches the way you actually like to travel, rather than the way a generic itinerary assumes you should.",
+      },
     ],
     ctaLead:
       "If a private day feels right, our Signature experiences are fully private — one host, one car, one route shaped to you.",
