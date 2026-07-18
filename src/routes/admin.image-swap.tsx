@@ -618,8 +618,12 @@ function CandidatesPanel({
   poolLoading,
   usageIndex,
   filters,
+  batchMode,
+  inBatch,
   onCompare,
   onQuickApply,
+  onAddToBatch,
+  onRemoveFromBatch,
 }: {
   module: ModuleShape;
   slot: EditorialSlot;
@@ -628,9 +632,14 @@ function CandidatesPanel({
   poolLoading: boolean;
   usageIndex: Map<string, string[]>;
   filters: CandidateFilterState;
+  batchMode: boolean;
+  inBatch: PoolPhoto | null;
   onCompare: (p: PoolPhoto) => void;
   onQuickApply: (p: PoolPhoto) => void;
+  onAddToBatch: (p: PoolPhoto) => void;
+  onRemoveFromBatch: () => void;
 }) {
+
   const filteredPool = useMemo(() => {
     return pool.filter((p) => {
       if (!filters.sources.has(p.source)) return false;
