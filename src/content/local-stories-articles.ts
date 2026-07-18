@@ -450,6 +450,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
       { slug: "azeitao-cheese-wine", label: "Azeitão Cheese & Wine" },
     ],
+    relatedReads: [
+      { path: "/wine-tours-lisbon", label: "Wine tours from Lisbon" },
+      { path: "/arrabida-wine-tour", label: "Arrábida wine tour" },
+      { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
+    ],
     datePublished: "2026-06-11",
   },
   {
