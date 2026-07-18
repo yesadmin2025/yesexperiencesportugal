@@ -12,10 +12,9 @@ import {
   MULTI_DAY_MOMENTS,
 } from "@/content/guest-moments";
 import {
-  CORPORATE_LANDSCAPES,
-  PROPOSAL_LANDSCAPES,
-  MULTIDAY_LANDSCAPES,
-} from "@/components/ui/AmbientLandscapeStrip";
+  CORPORATE_SERVICE_IMAGES,
+  PROPOSAL_SERVICE_IMAGES,
+} from "@/content/editorial-service-images";
 
 export type ModuleShape = {
   key: EditorialModuleKey;
@@ -60,28 +59,20 @@ export const EDITORIAL_MODULES: ModuleShape[] = [
     defaults: MULTI_DAY_MOMENTS,
   },
   {
-    key: "corporate_ambient",
-    label: "Corporate · Ambient landscapes",
-    kind: "ambient",
-    orientation: "landscape",
-    desiredTags: ["landscape", "place", "craft"],
-    defaults: CORPORATE_LANDSCAPES,
+    key: "corporate_services",
+    label: "Corporate · Service blocks",
+    kind: "moments",
+    orientation: "portrait",
+    desiredTags: ["people", "wine", "group"],
+    defaults: CORPORATE_SERVICE_IMAGES.map((image) => ({ ...image, caption: "" })),
   },
   {
-    key: "proposal_ambient",
-    label: "Proposal · Ambient landscapes",
-    kind: "ambient",
-    orientation: "landscape",
-    desiredTags: ["landscape", "coast"],
-    defaults: PROPOSAL_LANDSCAPES,
-  },
-  {
-    key: "multi_day_ambient",
-    label: "Multi-day · Ambient landscapes",
-    kind: "ambient",
-    orientation: "landscape",
-    desiredTags: ["landscape", "coast", "wine"],
-    defaults: MULTIDAY_LANDSCAPES,
+    key: "proposal_services",
+    label: "Moments · Service blocks",
+    kind: "moments",
+    orientation: "portrait",
+    desiredTags: ["people", "couple", "wine", "food"],
+    defaults: PROPOSAL_SERVICE_IMAGES.map((image) => ({ ...image, caption: "" })),
   },
 ];
 
