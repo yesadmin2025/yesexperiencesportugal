@@ -413,9 +413,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-regions-near-lisbon",
-    title: "The Best Wine Regions Near Lisbon — A Local's Guide",
+    title: "Best Wine Regions Near Lisbon | Arrábida, Setúbal & Alentejo",
     metaDescription:
-      "Setúbal, Palmela, Arrábida, Alentejo — a local's guide to the best wine regions within reach of Lisbon, what each tastes like, and which suits your day.",
+      "Compare the best wine regions near Lisbon, including Arrábida, Setúbal and Alentejo, with local advice on distance, style and the right day trip.",
     h1: "The Best Wine Regions Near Lisbon",
     eyebrow: "Wine · Regions",
     standfirst:
