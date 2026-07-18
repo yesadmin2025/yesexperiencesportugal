@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 
 export const Route = createFileRoute("/cookies")({
   head: () => ({
@@ -22,6 +23,14 @@ export const Route = createFileRoute("/cookies")({
       { name: "twitter:card", content: "summary" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/cookies" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Cookie Policy", path: "/cookies" },
+        ]),
+      ),
+    ],
   }),
   component: CookiesPage,
 });
