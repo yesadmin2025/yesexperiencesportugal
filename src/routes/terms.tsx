@@ -6,6 +6,7 @@ import {
   CANCELLATION_SIGNATURE,
   CANCELLATION_STUDIO,
 } from "@/config/business-nap";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import ogImg from "@/assets/hero-coast.jpg";
 
 export const Route = createFileRoute("/terms")({
@@ -33,6 +34,14 @@ export const Route = createFileRoute("/terms")({
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/terms" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Terms & Conditions", path: "/terms" },
+        ]),
+      ),
+    ],
   }),
   component: TermsPage,
 });
