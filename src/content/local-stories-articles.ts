@@ -193,10 +193,22 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     standfirst:
       "We run private days for a living. Here is an honest comparison — including when a group tour is the smarter call.",
     sections: [
-      { heading: "What 'private' actually means", body: "[Body copy to be supplied.]" },
-      { heading: "What you pay for, and what you don't", body: "[Body copy to be supplied.]" },
-      { heading: "Where group tours still make sense", body: "[Body copy to be supplied.]" },
-      { heading: "Our rule of thumb", body: "[Body copy to be supplied.]" },
+      {
+        heading: "What 'private' actually means",
+        body: "A private tour should mean more than travelling in a smaller vehicle. The guide, transport and route are reserved for your party, but the real difference is control over the rhythm of the day.\n\nThere is no need to wait for other guests, return to a meeting point or follow a schedule designed around a large group. Stops can last longer when they are interesting and be shortened when they are not. Lunch can suit your preferences, and the route can adapt to weather, energy levels and unexpected discoveries.\n\nPrivacy also creates space for conversation. Guests can ask detailed questions, change direction and experience Portugal through their own interests rather than through a fixed script prepared for everyone.",
+      },
+      {
+        heading: "What you pay for, and what you don't",
+        body: "A private experience usually costs more per person because the vehicle, guide and operating time are not divided among a large group. The value lies in exclusivity, flexibility and the ability to shape the day around a small number of travellers.\n\nYou are not necessarily paying for more attractions. You are paying to avoid unnecessary waiting, generic stops, fixed restaurants and a timetable designed for thirty unrelated people.\n\nA well-designed private day should also explain clearly what is included. Transport, tastings, meals, admission tickets and activities vary between experiences. The important comparison is not simply the headline price, but what the day contains, how personal it is and how much of your limited holiday time is used well.",
+      },
+      {
+        heading: "Where group tours still make sense",
+        body: "Group tours can be the sensible choice for solo travellers, guests with a limited budget or visitors who want a straightforward introduction without needing much flexibility.\n\nThey also work well when the main goal is reaching one famous monument or destination and the traveller is comfortable following a fixed schedule. A reputable small-group tour may offer good information, convenient transport and the social element of meeting other people.\n\nThe compromise is usually pace. Departure times, lunch stops and the length of each visit must serve the whole group. For some travellers that structure is reassuring. For others, it is precisely what they hoped to escape while on holiday.",
+      },
+      {
+        heading: "Our rule of thumb",
+        body: "Choose a group tour when price matters most, the route is simple and you are happy for someone else to determine the schedule.\n\nChoose a private tour when time, comfort and flexibility matter more. It is especially valuable for families, couples celebrating something important, groups of friends and travellers with specific interests or mobility considerations.\n\nPrivate touring also becomes more economical as the number of guests increases because the cost of the vehicle and guide is shared within the party.\n\nThe best option is not automatically the most expensive one. It is the format that matches the way you actually like to travel, rather than the way a generic itinerary assumes you should.",
+      },
     ],
     ctaLead:
       "If a private day feels right, our Signature experiences are fully private — one host, one car, one route shaped to you.",
