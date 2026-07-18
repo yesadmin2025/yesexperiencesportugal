@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ProposalInPortugalPage } from "./proposal-in-portugal";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 
 /**
  * /proposals renders the same page as /proposal-in-portugal so the short
@@ -23,6 +24,14 @@ export const Route = createFileRoute("/proposals")({
       { property: "og:type", content: "website" },
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Proposal in Portugal", path: "/proposal-in-portugal" },
+        ]),
+      ),
+    ],
   }),
   component: ProposalInPortugalPage,
 });

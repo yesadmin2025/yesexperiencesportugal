@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
@@ -22,6 +23,14 @@ export const Route = createFileRoute("/privacy")({
       { name: "twitter:card", content: "summary" },
     ],
     links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/privacy" }],
+    scripts: [
+      jsonLdScript(
+        breadcrumbLd([
+          { name: "Home", path: "/" },
+          { name: "Privacy Policy", path: "/privacy" },
+        ]),
+      ),
+    ],
   }),
   component: PrivacyPage,
 });
