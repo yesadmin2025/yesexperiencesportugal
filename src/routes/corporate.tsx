@@ -6,18 +6,12 @@ import { MessageCircle, Users, Compass, ClipboardCheck } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { CORPORATE_LANDSCAPES } from "@/components/ui/AmbientLandscapeStrip";
-import { AmbientLandscapeReveal } from "@/components/ui/AmbientLandscapeReveal";
+import { ResponsiveEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
+import { CORPORATE_SERVICE_IMAGES } from "@/content/editorial-service-images";
+import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
 import { CORPORATE_FAQ } from "@/content/seo-faq";
 import imgFatimaNazare from "@/assets/tours/fatima-nazare-obidos/nazare.jpg";
-import wineryGroupAsset from "@/assets/owner-photos/winery-group-orange-tree.jpeg.asset.json";
-import corkHarvestAsset from "@/assets/owner-photos/cork-harvesters-alentejo.jpeg.asset.json";
-import ceramicPainterAsset from "@/assets/owner-photos/ceramic-painter-plate.jpeg.asset.json";
-
-const imgWineryGroup = wineryGroupAsset.url;
-const imgCorkHarvest = corkHarvestAsset.url;
-const imgCeramicPainter = ceramicPainterAsset.url;
 
 const TITLE = "Corporate and Private Group Experiences in Portugal | YES";
 const DESCRIPTION =
@@ -62,7 +56,7 @@ const BLOCKS = [
       "Private groups of any size, scoped around the right transport, guides, suppliers and timing · invoice & DMC support · designed around your goals.",
     local:
       "We handle the moving parts on the ground — real driving times, real venues, real partners.",
-    image: imgWineryGroup,
+    image: CORPORATE_SERVICE_IMAGES[0],
     icon: Users,
   },
   {
@@ -73,7 +67,7 @@ const BLOCKS = [
     practical:
       "Multi-day flow, regional logistics, meeting-friendly venues, cultural moments built into the rhythm.",
     local: "Coordinated by a local host who knows how each piece of the day connects.",
-    image: imgCorkHarvest,
+    image: CORPORATE_SERVICE_IMAGES[1],
     icon: Compass,
   },
   {
@@ -82,13 +76,17 @@ const BLOCKS = [
     emotional: "When it matters who's in the room and how the day feels — we shape it accordingly.",
     practical: "Small groups · private settings · careful pacing · NDAs welcome.",
     local: "Planned end to end with our local team — every detail confirmed before the day.",
-    image: imgCeramicPainter,
+    image: CORPORATE_SERVICE_IMAGES[2],
     icon: ClipboardCheck,
   },
 ];
 
 function CorporatePage() {
   useMarketingMotion();
+  const serviceImages = useEditorialOverrides(
+    "corporate_services",
+    CORPORATE_SERVICE_IMAGES.map((image) => ({ ...image, caption: "" })),
+  );
   return (
 
     <SiteLayout>
@@ -129,20 +127,17 @@ function CorporatePage() {
           {BLOCKS.map((b, i) => {
             const Icon = b.icon;
             const reverse = i % 2 === 1;
+            const image = { ...b.image, ...serviceImages[i] };
             return (
               <article
                 key={b.eyebrow}
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
               >
-                <div className="overflow-hidden">
-                  <img
-                    src={b.image}
-                    alt={b.title}
-                    loading={i === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                    fetchPriority={i === 0 ? "high" : "auto"}
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="w-full aspect-[4/5] md:aspect-[5/6] object-cover transition-transform duration-700 hover:scale-[1.03]"
+                <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[4/5] md:aspect-[5/6]">
+                  <ResponsiveEditorialImage
+                    image={image}
+                    priority={i === 0}
+                    className="service-block-photo h-full w-full object-cover"
                   />
                 </div>
                 <div>
@@ -189,14 +184,6 @@ function CorporatePage() {
           </dl>
         </div>
       </section>
-
-      <AmbientLandscapeReveal
-        eyebrow="Where the day happens"
-        title={<>The landscapes you'll <SectionTitle.Em>host in.</SectionTitle.Em></>}
-        intro="Coast, cliffs, cellars and quiet coves — real places on the Lisbon, Setúbal and Alentejo axis, all reachable inside one working day."
-        photos={CORPORATE_LANDSCAPES}
-        moduleKey="corporate_ambient"
-      />
 
       {/* Closing CTA */}
       <section className="py-16 md:py-20 bg-[color:var(--sand)] reveal">
