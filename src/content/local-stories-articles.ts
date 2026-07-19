@@ -591,14 +591,14 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     title: "Arrábida Wine Tour from Lisbon | Private Setúbal Day",
     metaDescription:
       "Discover Arrábida and Setúbal on a private wine tour from Lisbon, with family wineries, Azeitão, coastal scenery and a relaxed Portuguese lunch.",
-    h1: "Arrábida Wine Tour — Azeitão & Setúbal, from Lisbon",
+    h1: "Private Arrábida Wine Tour from Lisbon",
     eyebrow: "Arrábida · Private Wine Day",
     standfirst:
       "Three family wineries, the Setúbal market, a long Portuguese lunch — all on the cork-oak side of the Atlantic, with your own driver and guide.",
     sections: [
       {
-        heading: "The closest serious wine country to Lisbon.",
-        body: "Cross the 25 de Abril Bridge and forty minutes later the road climbs into the Arrábida hills. Cork oaks on one side, the Atlantic glinting on the other. At the centre is the village of Azeitão — home of Moscatel de Setúbal and small family wineries that have been pouring for seven generations. The Setúbal fish market, 145 years old, is fifteen minutes further down the coast.",
+        heading: "The closest complete wine region to Lisbon",
+        body: "Arrábida and the Setúbal Peninsula form the closest complete wine region to Lisbon. Vineyards spread between Azeitão, Palmela and the limestone hills of the Arrábida Natural Park, with the Atlantic coast always nearby.\n\nThe region is known for Moscatel de Setúbal, local Castelão reds and a mixture of historic wine houses and independent family estates. A private Arrábida wine tour can combine contrasting tastings with Setúbal, a traditional lunch, panoramic mountain roads or the fishing town of Sesimbra.\n\nBecause the distances are relatively short, the experience can remain flexible. There is time to understand the wines, speak with local hosts and enjoy lunch without following the fixed pace of a large group tour. It is an especially strong choice for travellers who want Portuguese wine, local food and coastal scenery within one day from Lisbon.",
       },
       {
         heading: "Three cellars, one long lunch, no rush.",
@@ -617,6 +617,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
       { slug: "arrabida-boat", label: "Arrábida by Boat" },
       { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+    ],
+    relatedReads: [
+      { path: "/tours/arrabida-wine-allinclusive", label: "Reserve the private three-winery experience" },
+      { path: "/wine-tours-lisbon", label: "Compare private wine tours from Lisbon" },
+      { path: "/local-stories/setubal-wine-guide", label: "Read our local guide to Setúbal wine country" },
     ],
     datePublished: "2026-07-02",
   },
