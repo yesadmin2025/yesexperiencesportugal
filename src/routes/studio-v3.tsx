@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { StudioV3 } from "@/components/studio-v3/StudioV3";
 import { breadcrumbLd, studioServiceLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { STUDIO_FAQ } from "@/content/seo-faq";
+import { Scene } from "@/components/motion/Scene";
 import ogImg from "@/assets/decision-studio.jpg";
 
 /**
@@ -76,28 +77,29 @@ function StudioV3Page() {
         </p>
       </header>
       {/* Short indexable intro — kept compact so it never delays the questionnaire. */}
-      <section
+      <Scene
+        as="section"
         aria-label="About the YES Studio"
         className="bg-[color:var(--sand)] border-b border-[color:var(--border)] py-8 md:py-10"
       >
         <div className="container-x max-w-3xl">
           <div className="space-y-4 text-[14.5px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-relaxed">
-            <p>
+            <p className="scene-body">
               The YES Studio is an interactive way to design a private Portugal experience around
               your interests.
             </p>
-            <p>
+            <p className="scene-body">
               Instead of beginning with a fixed itinerary, it begins with the traveller. Choose the
               themes, landscapes and experiences that matter to you, and the Studio will shape them
               into a coherent private day using real regional possibilities.
             </p>
-            <p>
+            <p className="scene-body">
               Wine, coast, food, heritage, traditional crafts and local encounters can be combined
               without turning the day into an exhausting checklist. The final journey remains
               subject to real availability, geography and timing, so creativity is supported by
               practical local knowledge.
             </p>
-            <p className="text-[13px]">
+            <p className="scene-cta text-[13px]">
               <a
                 href="/portugal-travel-designer"
                 className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
@@ -107,14 +109,15 @@ function StudioV3Page() {
             </p>
           </div>
         </div>
-      </section>
+      </Scene>
       <StudioV3 />
-      <aside
+      <Scene
+        as="aside"
         aria-label="Beyond a single day"
         className="bg-[color:var(--ivory)] border-t border-[color:var(--border)] py-10 text-center"
       >
         <div className="container-x max-w-xl">
-          <p className="text-[13px] md:text-[14px] text-[color:var(--charcoal-soft)] leading-[1.7]">
+          <p className="scene-body text-[13px] md:text-[14px] text-[color:var(--charcoal-soft)] leading-[1.7]">
             Studio composes a single private day. For a multi-day Portugal — stitched across
             regions, hotels and rhythm —{" "}
             <a
@@ -126,7 +129,7 @@ function StudioV3Page() {
             .
           </p>
         </div>
-      </aside>
+      </Scene>
     </>
   );
 }
