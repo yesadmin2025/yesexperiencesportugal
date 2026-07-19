@@ -275,7 +275,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LocaleProvider locale={locale}>
-        <Outlet />
+        <RouteFade>
+          <Outlet />
+        </RouteFade>
         <WhatsAppSupportButton />
         <Toaster position="bottom-left" richColors closeButton />
       </LocaleProvider>
