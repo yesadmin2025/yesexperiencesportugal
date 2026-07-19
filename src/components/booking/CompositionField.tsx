@@ -77,15 +77,15 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
           <div
             className="text-[11px] uppercase tracking-[0.22em]"
             style={{
-              fontFamily: "var(--font-display)",
-              color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+              fontFamily: "var(--font-sans)",
+              color: "var(--charcoal)",
             }}
           >
             Adults
           </div>
           <p
             className="mt-0.5 text-[11.5px]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            style={{ color: "var(--charcoal-soft)" }}
           >
             18 and over
           </p>
@@ -127,8 +127,8 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
           <div
             className="text-[11px] uppercase tracking-[0.22em]"
             style={{
-              fontFamily: "var(--font-display)",
-              color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+              fontFamily: "var(--font-sans)",
+              color: "var(--charcoal)",
             }}
           >
             Travelling with children?
@@ -136,8 +136,8 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
           <span
             className="text-[11px] uppercase tracking-[0.2em] tabular-nums"
             style={{
-              fontFamily: "var(--font-display)",
-              color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+              fontFamily: "var(--font-sans)",
+              color: "var(--charcoal-soft)",
             }}
           >
             {minorAges.length} · Party {totalParty}
@@ -145,16 +145,17 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
         </div>
 
         {minorAges.length === 0 ? (
-          <p
-            className="mt-2 text-[12.5px] leading-snug italic"
-            style={{
-              fontFamily: "var(--font-serif)",
-              color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
-            }}
-          >
-            Add a row per child so we price honestly by age — infants (0–2)
-            free, children (3–10) half, youth (11–17) three-quarters.
-          </p>
+          <div className="mt-3 border border-[color:var(--border)] bg-[color:var(--sand)]/35 px-3 py-2.5">
+            <p className="text-[10.5px] font-semibold uppercase tracking-[0.2em] text-[color:var(--charcoal)]">
+              Price per traveller
+            </p>
+            <dl className="mt-2 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1.5 text-[12px] text-[color:var(--charcoal)]">
+              <dt>Adult · 18+</dt><dd className="font-semibold">100%</dd>
+              <dt>Youth · 11–17</dt><dd className="font-semibold">75%</dd>
+              <dt>Child · 3–10</dt><dd className="font-semibold">50%</dd>
+              <dt>Infant · 0–2</dt><dd className="font-semibold">Free</dd>
+            </dl>
+          </div>
         ) : (
           <ul className="mt-3 space-y-2" aria-label="Minor travellers">
             {minorAges.map((age, i) => {
@@ -173,7 +174,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
               return (
                 <li
                   key={i}
-                  className="flex items-center gap-3 border px-3 py-2"
+                  className="grid grid-cols-[52px_minmax(0,1fr)_44px] items-center gap-2 border px-2.5 py-2 sm:gap-3 sm:px-3"
                   style={{
                     background: "var(--ivory)",
                     borderColor: "color-mix(in oklab, var(--charcoal) 28%, transparent)",
@@ -188,7 +189,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
                   >
                     Child {i + 1}
                   </span>
-                  <label className="flex items-center gap-2 flex-1">
+                  <label className="grid min-w-0 grid-cols-[64px_minmax(0,1fr)] items-center gap-2">
                     <span className="sr-only">Age of child {i + 1}</span>
                     <input
                       type="number"
@@ -218,7 +219,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
                       aria-invalid={!hasAge}
                     />
                     <span
-                      className="text-[11px] uppercase tracking-[0.2em]"
+                      className="min-w-0 text-[10.5px] uppercase tracking-[0.14em] sm:text-[11px] sm:tracking-[0.2em]"
                       style={{
                         color: !hasAge
                           ? "var(--gold-ink)"
@@ -287,7 +288,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
         className="mt-3 text-[11.5px] leading-snug"
         style={{
           fontFamily: "var(--font-sans)",
-          color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+          color: "var(--charcoal-soft)",
         }}
       >
         Ages let us price fairly by band — no adult fallback for minors.

@@ -37,6 +37,48 @@ export const STOP_LATLNG: Record<string, StopLatLng> = {
   sintra: { lat: 38.7972, lng: -9.3906, label: "Sintra", region: "lisbon" },
   cascais: { lat: 38.6979, lng: -9.4215, label: "Cascais", region: "lisbon" },
   "cabo da roca": { lat: 38.7805, lng: -9.4989, label: "Cabo da Roca", region: "lisbon" },
+  "house museum jose maria da fonseca": {
+    lat: 38.5178738,
+    lng: -9.0156895,
+    label: "House & Museum José Maria da Fonseca",
+    region: "lisbon",
+  },
+  "jose maria da fonseca": {
+    lat: 38.5178738,
+    lng: -9.0156895,
+    label: "José Maria da Fonseca",
+    region: "lisbon",
+  },
+  "quinta do piloto": {
+    lat: 38.5671036,
+    lng: -8.9137523,
+    label: "Quinta do Piloto",
+    region: "lisbon",
+  },
+  "farm catralvos": {
+    lat: 38.506507,
+    lng: -9.0439191,
+    label: "Quinta de Catralvos",
+    region: "lisbon",
+  },
+  "quinta de catralvos": {
+    lat: 38.506507,
+    lng: -9.0439191,
+    label: "Quinta de Catralvos",
+    region: "lisbon",
+  },
+  "adega de palmela": {
+    lat: 38.5774639,
+    lng: -8.8731769,
+    label: "Adega de Palmela",
+    region: "lisbon",
+  },
+  "bacalhoa vinhos de portugal": {
+    lat: 38.5245877,
+    lng: -9.0164657,
+    label: "Bacalhôa Vinhos de Portugal",
+    region: "lisbon",
+  },
 
   // Centro / Alentejo
   obidos: { lat: 39.3606, lng: -9.1571, label: "Óbidos", region: "alentejo" },

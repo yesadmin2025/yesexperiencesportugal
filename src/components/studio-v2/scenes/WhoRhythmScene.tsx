@@ -179,7 +179,7 @@ export function WhoRhythmScene({ onComplete }: Props) {
       <h2
         className={[
           "mb-8 text-center font-display text-[24px] font-bold leading-tight tracking-tight text-[var(--charcoal,#2E2E2E)] sm:text-[30px]",
-          "transition-all duration-[800ms] ease-out",
+          "transition-all duration-[800ms] ease-out motion-reduce:transform-none motion-reduce:transition-none",
           entered ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
         ].join(" ")}
       >
@@ -204,7 +204,7 @@ export function WhoRhythmScene({ onComplete }: Props) {
                 className={[
                   "group relative block aspect-[4/5] w-full overflow-hidden rounded-[6px] text-left",
                   "ring-1 ring-[var(--charcoal,#2E2E2E)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#C9A96A)]",
-                  "transition-[opacity,transform] duration-[600ms] ease-out",
+                  "transition-[opacity,transform] duration-[600ms] ease-out motion-reduce:transform-none motion-reduce:transition-none",
                   entered ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
                   isDimmed ? "opacity-30" : "",
                   isPicked ? "ring-2 ring-[var(--gold,#C9A96A)]" : "",
@@ -215,7 +215,7 @@ export function WhoRhythmScene({ onComplete }: Props) {
                   src={card.image}
                   alt={card.alt}
                   loading={i < 2 ? "eager" : "lazy"}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1100ms] ease-out group-hover:scale-[1.03]"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1100ms] ease-out group-hover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
                 />
                 <div
                   aria-hidden="true"
