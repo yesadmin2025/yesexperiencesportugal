@@ -123,13 +123,13 @@ export function CinematicHero() {
               "radial-gradient(ellipse at center, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.26) 100%)",
           }}
         />
-        {/* Mobile contrast lift — only behind the stanza band, leaves sky/sun untouched */}
+        {/* Mobile contrast lift — bottom-anchored so sky stays untouched but overlay copy hits AA */}
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 top-[30%] h-[40%] md:hidden pointer-events-none"
+          className="absolute inset-x-0 bottom-0 h-[55%] md:hidden pointer-events-none"
           style={{
             background:
-              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.18) 50%, transparent 100%)",
+              "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.14) 35%, rgba(0,0,0,0.42) 100%)",
           }}
         />
         {/* Ultra-subtle film grain — fine texture, ~1% opacity */}
