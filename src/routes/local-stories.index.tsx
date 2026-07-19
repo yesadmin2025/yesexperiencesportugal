@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
+import { Scene } from "@/components/motion/Scene";
 import { supabase } from "@/integrations/supabase/client";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -111,13 +112,19 @@ function Page() {
       {/* Header */}
       <section className="pt-40 pb-16 md:pt-48 md:pb-20 bg-[color:var(--sand)] text-center">
         <div className="container-x">
-          <Eyebrow flank>Local Stories</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            The Portugal <SectionTitle.Em>we travel ourselves</SectionTitle.Em>
-          </SectionTitle>
-          <p className="mt-6 max-w-xl mx-auto text-[15px] md:text-[17px] text-[color:var(--charcoal-soft)] leading-[1.75]">
-            Notes from the road — written by the locals who design our private experiences.
-          </p>
+          <Scene>
+            <div className="scene-atmosphere">
+              <Eyebrow flank>Local Stories</Eyebrow>
+            </div>
+            <div className="scene-title">
+              <SectionTitle as="h1" size="anchor" spacing="loose">
+                The Portugal <SectionTitle.Em>we travel ourselves</SectionTitle.Em>
+              </SectionTitle>
+            </div>
+            <p className="scene-body mt-6 max-w-xl mx-auto text-[15px] md:text-[17px] text-[color:var(--charcoal-soft)] leading-[1.75]">
+              Notes from the road — written by the locals who design our private experiences.
+            </p>
+          </Scene>
         </div>
       </section>
 

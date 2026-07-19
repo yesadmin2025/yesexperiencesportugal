@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { breadcrumbLd, jsonLdScript, personFounderLd } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
+import { Scene } from "@/components/motion/Scene";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { EMAIL, LICENSE_LABEL, PHONE_DISPLAY } from "@/config/business-nap";
@@ -274,16 +275,22 @@ function PressPage() {
   return (
     <SiteLayout>
       <article className="mx-auto max-w-3xl px-5 py-16 sm:py-24">
-        <Eyebrow>Press &amp; brand kit</Eyebrow>
-        <SectionTitle>
-          Resources for journalists, <em className="font-serif italic">editors and partners</em>
-        </SectionTitle>
-        <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-[color:var(--charcoal)]/80">
-          A single source of truth for citing YES Experiences Portugal. Please use the exact
-          spelling, phone and address below to keep listings consistent across Google, Tripadvisor,
-          Visit Portugal and travel publications. Every text block, HTML snippet and logo file on
-          this page is copy-and-paste ready.
-        </p>
+        <Scene>
+          <div className="scene-atmosphere">
+            <Eyebrow>Press &amp; brand kit</Eyebrow>
+          </div>
+          <div className="scene-title">
+            <SectionTitle>
+              Resources for journalists, <em className="font-serif italic">editors and partners</em>
+            </SectionTitle>
+          </div>
+          <p className="scene-body mt-5 max-w-2xl text-[15px] leading-relaxed text-[color:var(--charcoal)]/80">
+            A single source of truth for citing YES Experiences Portugal. Please use the exact
+            spelling, phone and address below to keep listings consistent across Google, Tripadvisor,
+            Visit Portugal and travel publications. Every text block, HTML snippet and logo file on
+            this page is copy-and-paste ready.
+          </p>
+        </Scene>
 
         {/* Fact strip — scannable trust cues. */}
         <div className="mt-6 flex flex-wrap gap-2">

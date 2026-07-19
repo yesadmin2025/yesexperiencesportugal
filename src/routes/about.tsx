@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
+import { Scene } from "@/components/motion/Scene";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -57,19 +58,25 @@ function Page() {
       {/* Hero */}
       <section className="reveal pt-32 pb-14 bg-[color:var(--sand)] text-center">
         <div className="container-x">
-          <Eyebrow flank>About YES</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            We design <SectionTitle.Em>meaningful Portugal</SectionTitle.Em>.
-          </SectionTitle>
-          <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-            YES Experiences Portugal is a licensed Portuguese private tour operator, founder-led
-            since 2022 and built around one idea: Portugal should feel personal, local and genuinely
-            yours.
-          </p>
-          <p className="mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
-            Private days, live-designed experiences and full journeys, created from real routes,
-            real guests and real local knowledge.
-          </p>
+          <Scene>
+            <div className="scene-atmosphere">
+              <Eyebrow flank>About YES</Eyebrow>
+            </div>
+            <div className="scene-title">
+              <SectionTitle as="h1" size="anchor" spacing="loose">
+                We design <SectionTitle.Em>meaningful Portugal</SectionTitle.Em>.
+              </SectionTitle>
+            </div>
+            <p className="scene-body mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
+              YES Experiences Portugal is a licensed Portuguese private tour operator, founder-led
+              since 2022 and built around one idea: Portugal should feel personal, local and genuinely
+              yours.
+            </p>
+            <p className="scene-body mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
+              Private days, live-designed experiences and full journeys, created from real routes,
+              real guests and real local knowledge.
+            </p>
+          </Scene>
         </div>
       </section>
 

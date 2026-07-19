@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Star } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { Scene } from "@/components/motion/Scene";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -193,26 +194,32 @@ function ReviewsPage() {
       <article>
         <header className="reveal pt-32 md:pt-40 pb-12 md:pb-16 bg-[color:var(--sand)]">
           <div className="container-x max-w-3xl text-center">
-            <Eyebrow flank>Real guest reviews</Eyebrow>
-            <SectionTitle as="h1" size="anchor" spacing="loose">
-              What guests <SectionTitle.Em>actually</SectionTitle.Em> say.
-            </SectionTitle>
-            {global.total_reviews >= 25 && (
-              <p className="mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
-                <span className="tabular-nums">{global.total_reviews.toLocaleString("en-US")}</span>{" "}
-                reviews
-                {global.average_rating && (
-                  <>
-                    {" "}
-                    · <span className="tabular-nums">{global.average_rating.toFixed(1)}</span>★
-                  </>
-                )}{" "}
-                across platforms.
+            <Scene>
+              <div className="scene-atmosphere">
+                <Eyebrow flank>Real guest reviews</Eyebrow>
+              </div>
+              <div className="scene-title">
+                <SectionTitle as="h1" size="anchor" spacing="loose">
+                  What guests <SectionTitle.Em>actually</SectionTitle.Em> say.
+                </SectionTitle>
+              </div>
+              {global.total_reviews >= 25 && (
+                <p className="scene-body mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
+                  <span className="tabular-nums">{global.total_reviews.toLocaleString("en-US")}</span>{" "}
+                  reviews
+                  {global.average_rating && (
+                    <>
+                      {" "}
+                      · <span className="tabular-nums">{global.average_rating.toFixed(1)}</span>★
+                    </>
+                  )}{" "}
+                  across platforms.
+                </p>
+              )}
+              <p className="scene-body mt-4 font-sans text-[12.5px] text-[color:var(--charcoal-soft)]">
+                Based on verified guest reviews across major booking platforms.
               </p>
-            )}
-            <p className="mt-4 font-sans text-[12.5px] text-[color:var(--charcoal-soft)]">
-              Based on verified guest reviews across major booking platforms.
-            </p>
+            </Scene>
           </div>
         </header>
 
