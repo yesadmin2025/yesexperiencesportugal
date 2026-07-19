@@ -1,89 +1,166 @@
-# dreamscape-builder-co
+# Yes Experiences Portugal - Web Application
 
-## Hero copy QA in CI
+A modern TypeScript React web application showcasing Portugal experiences.
 
-The `scripts/hero-copy-qa.mjs` preflight checks that the deployed preview and
-production hero copy match `src/content/hero-copy.ts`. It exposes three JSON
-flags designed for CI integration:
+## 🚀 Quick Start
 
-| Flag | Purpose |
-| --- | --- |
-| `--report-json[=<path\|->]` | Emit a structured run report. `-` (or no value) writes to stdout and routes the human log to stderr; any other value is treated as a file path. |
-| `--report-json-strict` | Validate every emitted report against the declared `hero-copy-qa@<N>` schema. If `buildReport` ever diverges, the script exits `EXIT.RUNTIME_ERROR (3)` instead of silently emitting a malformed report. |
-| `--report-json-schema` | Print the strict-validator schema (`{ schema, shape }`) to stdout and exit `0`. No network calls — safe in air-gapped runners. |
-
-### Exit codes
-
-| Code | Name | Meaning |
-| --- | --- | --- |
-| `0` | `OK` | All targets matched. |
-| `1` | `DRIFT` | Preview/production drift detected. |
-| `2` | `FLAG_MISCONFIG` | Bad flag or no targets matched the filter. |
-| `3` | `RUNTIME_ERROR` | Script bug or strict-schema violation. |
-| `4` | `FETCH_ERROR` | A target URL was unreachable. |
-
-### Exact CI commands
+### Installation
 
 ```bash
-# 1. One-shot run, structured report written to a file for upload as an artifact.
-npm run qa:hero-copy -- \
-  --report-json=qa-hero-copy.json \
-  --report-json-strict
+# Clone the repository
+gh repo clone yesadmin2025/yesexperiencesportugal
+cd yesexperiencesportugal
 
-# 2. One-shot run, JSON streamed to stdout for inline parsing (e.g. jq).
-#    The human-readable log is automatically routed to stderr.
-npm run qa:hero-copy -- \
-  --report-json=- \
-  --report-json-strict \
-  | jq '.totals'
-
-# 3. Production-only gate (skip preview, useful for post-deploy smoke tests).
-npm run qa:hero-copy -- \
-  --production-only \
-  --report-json=qa-hero-copy.prod.json \
-  --report-json-strict
-
-# 4. Preview-only gate (typical PR check before promoting to production).
-npm run qa:hero-copy -- \
-  --preview-only \
-  --report-json=qa-hero-copy.preview.json \
-  --report-json-strict
-
-# 5. Print the validator schema and pin against it from a test/lint job.
-#    Exits 0, performs no network I/O.
-npm run qa:hero-copy -- --report-json-schema
-
-# 6. Assert the schema name from a shell job (fails loudly if it ever bumps).
-test "$(npm run --silent qa:hero-copy -- --report-json-schema | jq -r .schema)" \
-  = "hero-copy-qa@1"
-
-# 7. Watch mode in CI is rarely useful, but if needed cap the runs and
-#    stream one JSON object per tick to stdout.
-npm run qa:hero-copy:watch -- \
-  --max-runs=3 \
-  --report-json=- \
-  --report-json-strict
+# Install dependencies
+npm install
 ```
 
-### GitHub Actions snippet
+### Development
 
-```yaml
-- name: Hero copy QA (preview)
-  run: |
-    npm run qa:hero-copy -- \
-      --preview-only \
-      --report-json=qa-hero-copy.json \
-      --report-json-strict
+```bash
+# Start development server (opens at http://localhost:3000)
+npm run dev
 
-- name: Upload hero-copy QA report
-  if: always()
-  uses: actions/upload-artifact@v4
-  with:
-    name: hero-copy-qa-report
-    path: qa-hero-copy.json
+# Run tests with coverage
+npm run test
+
+# Format code
+npm run format
+
+# Lint code
+npm run lint
+
+# Type check
+npm run type-check
 ```
 
-The companion test `src/content/hero-copy-qa-script.test.ts` locks in this
-contract: it spawns the real script, asserts that strict validation passes on
-the unmodified emitter, fails with `EXIT.RUNTIME_ERROR (3)` when the report
-shape is mutated, and pins `--report-json-schema` output to `hero-copy-qa@1`.
+### Production
+
+```bash
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## 📦 Tech Stack
+
+- **Frontend Framework**: React 18 with TypeScript
+- **Build Tool**: Vite (fast build and dev server)
+- **Testing**: Vitest with React Testing Library
+- **Code Quality**:
+  - ESLint (code linting)
+  - Prettier (code formatting)
+  - TypeScript (strict type checking)
+- **CI/CD**: GitHub Actions (automated testing and building)
+
+## 📁 Project Structure
+
+```
+yesexperiencesportugal/
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml           # GitHub Actions workflow
+├── src/
+│   ├── main.tsx               # React entry point
+│   ├── App.tsx                # Main App component
+│   ├── App.css                # App styles
+│   ├── App.test.tsx           # App component tests
+│   └── index.css              # Global styles
+├── index.html                 # HTML entry point
+├── package.json               # Dependencies and scripts
+├── tsconfig.json              # TypeScript configuration
+├── tsconfig.node.json         # TypeScript config for build tools
+├── vite.config.ts             # Vite configuration
+├── vitest.config.ts           # Vitest configuration
+├── .eslintrc.json             # ESLint configuration
+├── .prettierrc.json           # Prettier configuration
+└── .gitignore                 # Git ignore file
+```
+
+## 🔧 Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run test` | Run tests |
+| `npm test:coverage` | Run tests with coverage report |
+| `npm run lint` | Lint code |
+| `npm run format` | Format code with Prettier |
+| `npm run type-check` | Check TypeScript types |
+
+## 🧪 Testing
+
+Tests are located alongside components with `.test.tsx` extension.
+
+```bash
+# Run all tests
+npm run test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run tests in watch mode
+npm run test -- --watch
+```
+
+## 🔄 CI/CD Pipeline
+
+The GitHub Actions workflow automatically:
+
+- ✅ Installs dependencies
+- ✅ Checks TypeScript types
+- ✅ Lints code
+- ✅ Runs tests
+- ✅ Builds the application
+- ✅ Uploads build artifacts
+- ✅ Prepares for deployment
+
+Triggered on:
+- Push to `main` or `develop` branches
+- Pull requests to `main` or `develop` branches
+
+## 📝 Git Workflow
+
+```bash
+# Configure git (run once)
+git config user.name "Your Name"
+git config user.email "your.email@example.com"
+
+# Create a new branch for features
+git checkout -b feature/your-feature-name
+
+# Make changes and commit
+git add .
+git commit -m "feat: add your feature description"
+
+# Push to remote
+git push origin feature/your-feature-name
+
+# Create a pull request on GitHub
+```
+
+## 📖 Development Tips
+
+- **Fast Refresh**: Changes are automatically reflected in the browser during development
+- **Type Safety**: TypeScript catches errors at compile time
+- **Code Quality**: ESLint and Prettier ensure consistent code style
+- **Testing**: Write tests alongside your components
+
+## 📄 License
+
+MIT
+
+## 🤝 Contributing
+
+1. Create a feature branch from `develop`
+2. Make your changes and add tests
+3. Run `npm run lint` and `npm run format`
+4. Submit a pull request
+
+---
+
+**Ready to build amazing experiences in Portugal! 🇵🇹**
