@@ -686,26 +686,18 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     title: "Private Portugal Wine Tours | Lisbon, Alentejo & Beyond",
     metaDescription:
       "Discover private wine tours across Portugal, from Arrábida and Setúbal near Lisbon to Alentejo traditions, family wineries and local food.",
-    h1: "Portugal wine tours, poured properly.",
+    h1: "Private Wine Tours in Portugal",
     eyebrow: "Portugal · Wine Tours",
     standfirst:
       "Small cellars, real winemakers, and a private day paced around lunch.",
     sections: [
       {
-        heading: "Off the coach circuit.",
-        body: "Portugal is a wine country before it's a beach country. Our private wine tours stay off the coach circuit — small cellars, working winemakers, and the kind of lunch that turns a tasting into a proper day.",
+        heading: "Portugal as a wine destination",
+        body: "Portugal is one of the most diverse wine countries in Europe, with distinct regions, native grape varieties and long-established traditions in every part of the territory. Each area has its own climate, its own soil and its own way of making and drinking wine.\n\nFrom the Douro Valley in the north to the Alentejo plains in the south, and from Bairrada and Dão in central Portugal to the vineyards near Lisbon in Arrábida and Setúbal, the country offers many possible experiences for wine lovers.\n\nA well-designed private wine tour makes it possible to explore this diversity without trying to include everything at once. The most memorable journeys tend to focus on one or two regions and give enough time to enjoy the landscape, food and hospitality that surround the wine itself.",
       },
       {
-        heading: "Arrábida & Setúbal — the wine coast an hour from Lisbon.",
-        body: "Moscatel de Setúbal, Castelão reds, and cellars perched between cork forest and Atlantic cliffs. Our home region — a private day here is what we do best.",
-      },
-      {
-        heading: "Azeitão — a quieter cellar day: cheese, wine, and no queue.",
-        body: "Azeitão's small artisan cheesemakers, a working family cellar, and a lunch table under grapevines. Slower, closer, and often the guest favourite.",
-      },
-      {
-        heading: "Alentejo — Reserva reds under old olive trees.",
-        body: "Two hours south, the Alentejo pours the country's most concentrated reds. Estates that don't take walk-ins, long lunches, and an afternoon in Évora on the way back.",
+        heading: "How we design private wine journeys",
+        body: "Our private wine journeys begin with the traveller rather than a predefined itinerary. We consider the amount of time available, previous experience with Portuguese wine, personal preferences, physical rhythm and interest in food, culture or nature.\n\nBased on this, we can plan a full private day near Lisbon in Arrábida, Setúbal or Palmela, a longer day in the Alentejo, or a multi-day route combining more than one region. Winery selection, driving times, meals and cultural stops are all considered together to create a natural pace.\n\nWe pay particular attention to matching each guest with wineries that suit their curiosity. Some travellers prefer historic estates, others prefer smaller family cellars. Some want a strong focus on tasting technique, while others prefer conversation and landscape. Every element is intended to feel intentional rather than generic.",
       },
       {
         heading: "One private car, one guide, one great cellar day.",
@@ -719,6 +711,12 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedSignatures: [
       { slug: "evora-alentejo", label: "Évora & Alentejo Wine" },
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
+    ],
+    relatedReads: [
+      { path: "/wine-tours-lisbon", label: "Private wine tours from Lisbon" },
+      { path: "/arrabida-wine-tour", label: "Explore Arrábida and Setúbal wine country" },
+      { path: "/alentejo-wine-tour-from-lisbon", label: "Explore an Alentejo wine day" },
+      { path: "/multi-day", label: "Design a multi-day Portugal wine journey" },
     ],
     datePublished: "2026-07-04",
   },
