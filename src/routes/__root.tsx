@@ -19,6 +19,7 @@ import { installClientErrorLogger } from "@/lib/client-error-logger";
 import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
+import { RouteFade } from "@/components/motion/RouteFade";
 import { installAnalyticsAttrs } from "@/lib/analytics";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
@@ -62,6 +63,11 @@ function useAppReadyFlag() {
     if (typeof window === "undefined") return;
     // We're in the client effect → hydration has started.
     reportStage("hydrating");
+    // Motion gate: opts scoped reveal styles in. Content stays visible
+    // by default; individual Scenes carry their own [data-scene-ready].
+    // This attribute is future-proofing for CSS that wants to know the
+    // React tree is live (e.g. gating hover-only choreography).
+    document.documentElement.setAttribute("data-motion-ready", "1");
     // Defer one frame so layout/styles settle before we signal ready.
     const raf = requestAnimationFrame(() => {
       window.__APP_READY__ = true;
@@ -269,7 +275,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LocaleProvider locale={locale}>
-        <Outlet />
+        <RouteFade>
+          <Outlet />
+        </RouteFade>
         <WhatsAppSupportButton />
         <Toaster position="bottom-left" richColors closeButton />
       </LocaleProvider>
