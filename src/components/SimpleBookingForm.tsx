@@ -266,6 +266,18 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             value={date}
             onChange={(e) => {
               const v = e.target.value;
+              if (v && rule) {
+                const check = validateDateISO(v, rule);
+                if (!check.ok) {
+                  gaBookingValidationBlocked({ tourId: tour.id, surface: "signature", reason: `date_${check.reason}` });
+                  const msg =
+                    check.reason === "weekday_closed" ? "This tour doesn't run on that day. Please pick another date." :
+                    check.reason === "blackout" ? "That date is unavailable. Please pick another." :
+                    "Please choose a date at least 24 hours from now.";
+                  toast.error(msg);
+                  return;
+                }
+              }
               setDate(v);
               if (v) {
                 if (!firedDate.current) {
@@ -273,6 +285,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
                   gaBookingDateSelected({ tourId: tour.id, surface: "signature", dateISO: v });
                 }
               }
+
             }}
             min={minDateISO}
             className="w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-sm focus:border-[color:var(--gold)] focus:outline-none"
