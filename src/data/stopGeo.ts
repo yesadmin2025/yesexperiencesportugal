@@ -73,6 +73,12 @@ export const STOP_LATLNG: Record<string, StopLatLng> = {
     label: "Adega de Palmela",
     region: "lisbon",
   },
+  "adega coop de palmela c r l": {
+    lat: 38.5774639,
+    lng: -8.8731769,
+    label: "Adega Coop. de Palmela, C.R.L.",
+    region: "lisbon",
+  },
   "bacalhoa vinhos de portugal": {
     lat: 38.5245877,
     lng: -9.0164657,
