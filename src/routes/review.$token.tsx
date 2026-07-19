@@ -81,15 +81,17 @@ function ReviewSubmissionPage() {
 
   return (
     <div className="max-w-xl mx-auto py-14 md:py-20 px-5 md:px-6 text-[color:var(--charcoal)]">
-      <div className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--text-muted)]">
-        Share your experience
-      </div>
-      <h1 className="mt-2 text-3xl md:text-4xl font-medium leading-tight">
-        How was your day with YES?
-      </h1>
-      <p className="mt-3 text-[color:var(--charcoal)]/70">
-        One honest sentence is enough. Real reviews from real guests is what we trade on.
-      </p>
+      <Scene>
+        <div className="scene-atmosphere text-[11px] uppercase tracking-[0.22em] text-[color:var(--text-muted)]">
+          Share your experience
+        </div>
+        <h1 className="scene-title mt-2 text-3xl md:text-4xl font-medium leading-tight">
+          How was your day with YES?
+        </h1>
+        <p className="scene-body mt-3 text-[color:var(--charcoal)]/70">
+          One honest sentence is enough. Real reviews from real guests is what we trade on.
+        </p>
+      </Scene>
 
       <form onSubmit={onSubmit} className="mt-8 space-y-5">
         <div>
