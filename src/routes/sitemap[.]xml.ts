@@ -37,6 +37,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/studio-v3", changefreq: "weekly", priority: "0.9" },
           { path: "/day-tours", changefreq: "weekly", priority: "0.8" },
           { path: "/multi-day", changefreq: "weekly", priority: "0.9" },
+          { path: "/portugal-travel-designer", changefreq: "monthly", priority: "0.85" },
+
           { path: "/proposal-in-portugal", changefreq: "monthly", priority: "0.8" },
           { path: "/corporate", changefreq: "monthly", priority: "0.7" },
           { path: "/local-stories", changefreq: "weekly", priority: "0.7" },

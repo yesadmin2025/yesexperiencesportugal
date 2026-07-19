@@ -194,10 +194,11 @@ function MultiDayPage() {
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
-            From a few days to a full journey across Portugal, shaped around your time, rhythm and
-            interests — designed by a local Travel Designer from real routes, timings, stays and
-            details that actually work on the ground.
+            Portugal changes quickly as the road moves from one region to another — a private
+            multi-day journey is designed around the travellers, the time available and the rhythm
+            they want to maintain.
           </p>
+
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/contact" variant="primary">
               Begin with a Designer
@@ -211,6 +212,85 @@ function MultiDayPage() {
           </p>
         </div>
       </section>
+
+      {/* ── Editorial intro (indexable) ─────────────────────── */}
+      <section className="py-12 md:py-16 bg-[color:var(--ivory)] reveal">
+        <div className="container-x max-w-3xl">
+          <div className="space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+            <p>
+              Portugal changes quickly as the road moves from one region to another. The Atlantic
+              coast, Alentejo plains, historic towns, northern vineyards and small local traditions
+              cannot be understood through the same repeated itinerary.
+            </p>
+            <p>
+              Our private multi-day journeys are designed around the travellers, the time available
+              and the rhythm they want to maintain. Some routes focus on wine and gastronomy. Others
+              combine coast, heritage, artisans, villages and less familiar parts of the country.
+            </p>
+            <p>
+              Rather than forcing every guest into a fixed package, we create a coherent route with
+              realistic travel times and space for each region to feel distinct. The journey may
+              begin in Lisbon, but it is designed to reveal a wider Portugal.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── How a private multi-day journey is created ──────── */}
+      <section className="py-14 md:py-20 reveal">
+        <div className="container-x max-w-3xl">
+          <Eyebrow icon={<RouteIcon strokeWidth={1.8} />}>How it is created</Eyebrow>
+          <SectionTitle as="h2" size="default" spacing="loose">
+            How a private multi-day journey <SectionTitle.Em>is created.</SectionTitle.Em>
+          </SectionTitle>
+          <span className="gold-rule mt-5 max-w-[64px]" aria-hidden="true" />
+          <div className="mt-6 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+            <p>
+              The process begins with the travellers: dates, interests, preferred pace and the
+              regions they are considering.
+            </p>
+            <p>
+              From there, we shape a realistic route and identify the experiences that give each day
+              its own character. Winery visits, traditional workshops, coastal landscapes, food,
+              heritage and local encounters may be combined when they belong naturally together.
+            </p>
+            <p>
+              Accommodation preferences and wider travel arrangements are discussed clearly during
+              the proposal process. Nothing should appear unexpectedly at checkout, and no inclusion
+              should be assumed unless it is stated in the final proposal.
+            </p>
+            <p>
+              The result is a private journey designed as one connected story rather than a
+              collection of unrelated day tours.
+            </p>
+            <p className="text-[13px] pt-2">
+              You can also{" "}
+              <a
+                href="/portugal-travel-designer"
+                className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
+              >
+                work with a Portugal travel designer
+              </a>
+              ,{" "}
+              <a
+                href="/studio-v3"
+                className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
+              >
+                begin with the YES Studio
+              </a>{" "}
+              or{" "}
+              <a
+                href="/portugal-tours"
+                className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
+              >
+                explore private journeys across Portugal
+              </a>
+              .
+            </p>
+          </div>
+        </div>
+      </section>
+
 
       {/* ── Who it is for ────────────────────────────────── */}
       <section className="py-14 md:py-20 bg-[color:var(--ivory)] reveal">

@@ -695,6 +695,46 @@ function TailorPage() {
         </div>
       </section>
 
+      {/* ── 2 · TAILOR EXPLAINER (indexable, one-time) ───────── */}
+      <section aria-label="About Tailor" className="pb-6">
+        <div className="container-x max-w-3xl">
+          <div className="space-y-4 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
+            <p>
+              A Signature gives you a complete private day. Tailor allows you to keep its central
+              story while adjusting selected parts of the experience.
+            </p>
+            <p>
+              Depending on the Signature and current availability, travellers may be able to change
+              a stop, add an activity, adjust the rhythm or refine the balance between wine, coast,
+              food, heritage and local culture.
+            </p>
+            <p>
+              Tailor is designed for focused adjustments rather than building an entirely new
+              itinerary. For a journey beginning from a blank page, use the YES Studio.
+            </p>
+            <p className="text-[13px]">
+              <Link
+                to="/studio-v3"
+                className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
+              >
+                Build a journey from the beginning →
+              </Link>
+              <span className="mx-3 text-[color:var(--charcoal-soft)]/50">·</span>
+              <Link
+                to="/portugal-travel-designer"
+                className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
+              >
+                Discover our Portugal travel design →
+              </Link>
+            </p>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
       {/* ── 3 · WHAT STAYS / WHAT YOU CAN ADJUST ──────────────
           Two-column reassurance block. The user must understand:
           "I can adjust this tour a little, without starting from
