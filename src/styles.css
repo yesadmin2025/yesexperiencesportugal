@@ -83,6 +83,19 @@
   --dur-slow: 560ms;     /* section entry, curtain */
   --ease-snap: cubic-bezier(0.34, 1.2, 0.64, 1); /* muted tap release */
 
+  /* Scene motion tier — layered on top of the base scale, single source of
+     truth for the site-wide Scene/ChapterLead/RevealImage system. Numbers
+     live only in CSS; TS references these via var(--…) strings. Reduced-
+     motion removes all transform/clip-path/scale — see the reduced-motion
+     block at the bottom of this file. */
+  --dur-text: var(--dur-slow);       /* text reveals — aliases 560ms */
+  --dur-image: 780ms;                /* editorial image mask reveals */
+  --dur-scene: 1000ms;               /* section transitions */
+  --dur-cinematic: 1500ms;           /* hero cinematic movements */
+  --stagger-sm: 80ms;                /* small related elements */
+  --stagger-md: 130ms;               /* cards, chapter items */
+  --ease-scene: cubic-bezier(0.22, 1, 0.36, 1); /* smooth premium out */
+
   /* Brand — locked palette, used site-wide. */
   --teal: #295B61;
   --teal-2: #2A7C82;
