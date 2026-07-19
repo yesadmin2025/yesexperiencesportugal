@@ -159,6 +159,10 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
     setDetailsOpen(false);
     setCheckoutOpen(true);
+    if (!firedDrawer.current) {
+      firedDrawer.current = true;
+      gaCheckoutDrawerOpened({ tourId: tour.id, surface: "signature" });
+    }
     // GA4 add_to_cart + begin_checkout — Signature Reserve intent.
     try {
       gaAddToCartSignature({ tour, guests: details.guests, perPaxEur: perPaxForSummary });
@@ -378,8 +382,17 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
       <button
         type="button"
-        onClick={() => setDetailsOpen(true)}
-        disabled={pending || !compositionReady}
+        onClick={() => {
+          if (!canReserve) {
+            const reason = !dateValid ? "date_missing_or_past" : "composition_incomplete";
+            gaBookingValidationBlocked({ tourId: tour.id, surface: "signature", reason });
+            toast.error(!dateValid ? "Pick a date at least 24h from now." : "Add an age for every child.");
+            return;
+          }
+          setDetailsOpen(true);
+        }}
+        disabled={pending}
+        aria-disabled={!canReserve}
         className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
       >
         {pending ? (
