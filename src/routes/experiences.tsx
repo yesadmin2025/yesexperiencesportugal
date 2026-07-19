@@ -187,7 +187,12 @@ function ExperiencesPage() {
                       <Clock size={11} /> {t.durationHours}
                     </span>
                     <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
-                    <span className="text-[color:var(--charcoal)]">From €{t.priceFrom}</span>
+                    <span className="text-[color:var(--charcoal)]">
+                      From €{t.priceFrom}
+                      <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                        per person
+                      </span>
+                    </span>
                   </div>
 
                   {/* Dual CTAs — Reserve (confirm as designed) +

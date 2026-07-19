@@ -122,7 +122,12 @@ function DayToursPage() {
                   <span className="flex items-center gap-1.5">
                     <MapPin size={12} /> {t.theme}
                   </span>
-                  <span className="text-[color:var(--teal)]">From €{t.priceFrom}</span>
+                  <span className="text-[color:var(--teal)]">
+                    From €{t.priceFrom}
+                    <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                      per person
+                    </span>
+                  </span>
                 </div>
 
                 {meta && meta.reviewCount > 0 && (
