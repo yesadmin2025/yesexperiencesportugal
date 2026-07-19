@@ -14,7 +14,7 @@
  *     Desktop: 3–4 column responsive grid, 4:5 aspect.
  *   • Captions in Fraunces italic teal (Editorial v3), body in Inter.
  */
-import { type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { buildResponsiveSrc } from "@/lib/responsive-image";
 import { useEditorialOverrides, type EditorialModuleKey } from "@/lib/editorial-overrides";
 
@@ -52,6 +52,27 @@ export function GuestMomentsStrip({
   );
   const rendered = moduleKey ? effective : photos;
   const bg = surface === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]";
+  const listRef = useRef<HTMLUListElement | null>(null);
+
+  // Viewport-gate ken-burns: pause off-screen images to save GPU/paint on mobile.
+  useEffect(() => {
+    const root = listRef.current;
+    if (!root || typeof IntersectionObserver === "undefined") return;
+    const imgs = Array.from(root.querySelectorAll<HTMLImageElement>("img.ken-burns-slow"));
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          e.target.classList.toggle("kb-paused", !e.isIntersecting);
+        }
+      },
+      { rootMargin: "200px 0px", threshold: 0.01 },
+    );
+    imgs.forEach((img) => {
+      img.classList.add("kb-paused");
+      io.observe(img);
+    });
+    return () => io.disconnect();
+  }, [rendered.length]);
 
   return (
     <section
@@ -90,6 +111,7 @@ export function GuestMomentsStrip({
 
         {/* Mobile: horizontal snap-scroll. Desktop: responsive grid. */}
         <ul
+          ref={listRef}
           className="
             mt-10 md:mt-14
             flex gap-4 overflow-x-auto snap-x snap-mandatory

@@ -333,7 +333,7 @@ function StaticArticleView({
         </header>
 
         <section className="py-20 md:py-28 bg-[color:var(--ivory)] reveal">
-          <div className="container-x max-w-2xl">
+          <div className="container-x prose-longform">
             <div className="prose-yes">
               {article.sections.map((s, i) => (
                 <div key={i} className="mb-12">
