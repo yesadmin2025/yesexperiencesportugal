@@ -176,14 +176,14 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
                   className="flex items-center gap-3 border px-3 py-2"
                   style={{
                     background: "var(--ivory)",
-                    borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)",
+                    borderColor: "color-mix(in oklab, var(--charcoal) 28%, transparent)",
                   }}
                 >
                   <span
                     className="text-[11px] uppercase tracking-[0.2em] min-w-[52px]"
                     style={{
                       fontFamily: "var(--font-display)",
-                      color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
+                      color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
                     }}
                   >
                     Child {i + 1}
@@ -207,7 +207,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
                       className="h-11 w-16 text-center tabular-nums border bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                       style={{
                         borderColor: hasAge
-                          ? "color-mix(in oklab, var(--charcoal) 18%, transparent)"
+                          ? "color-mix(in oklab, var(--charcoal) 32%, transparent)"
                           : "var(--gold)",
                         color: "var(--charcoal)",
                         fontFamily: "var(--font-display)",
@@ -221,10 +221,10 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
                       className="text-[11px] uppercase tracking-[0.2em]"
                       style={{
                         color: !hasAge
-                          ? "var(--gold)"
+                          ? "var(--gold-ink)"
                           : band && band !== "adult"
                             ? "var(--teal)"
-                            : "color-mix(in oklab, var(--charcoal) 45%, transparent)",
+                            : "color-mix(in oklab, var(--charcoal) 78%, transparent)",
                         fontFamily: "var(--font-display)",
                       }}
                     >

@@ -12,6 +12,7 @@ import {
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
 import { CompositionField } from "@/components/booking/CompositionField";
+import { PerPersonBands } from "@/components/checkout/PerPersonBands";
 import {
   formatCompositionSummary,
   isCompositionComplete,
@@ -375,6 +376,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             €{Math.round(displayPerPaxEur).toLocaleString("en-GB")}
           </span>
         </div>
+        {displayIsReal && hasMinors && journeyPricing?.lines?.length ? (
+          <PerPersonBands
+            journeyLines={journeyPricing.lines}
+            className="block pt-1"
+            rowClassName="flex items-baseline justify-between text-[12px] tracking-wide text-[color:var(--charcoal)]"
+          />
+        ) : null}
         {displayIsReal && guests > 1 ? (
           <div className="flex items-baseline justify-between">
             <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">

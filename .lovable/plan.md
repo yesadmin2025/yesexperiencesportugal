@@ -1,63 +1,37 @@
-## Goal
+# Three mobile polish fixes on the Signature tour page
 
-Make **per-person pricing** the primary, trust-building number everywhere a traveller sees a price (Signature card → Signature detail → Tailor → Studio → Checkout), and tighten the checkout drawer so the path from "I want this" to "Reserve" is frictionless.
+## 1. Per-child price line missing on Signature booking form
+`src/components/SimpleBookingForm.tsx` currently only shows:
+- `For 3 guests · per person  €215`
+- `Party total  €538  age-based pricing`
 
-## Current state (verified in code)
+When minors are in the party, the user cannot see the child rate. Every other surface (Tailor, Studio V3 reveal, CheckoutSummary) already uses `<PerPersonBands journeyLines={...} />` to render one line per band (adult / youth / child / infant).
 
-| Surface | Today | Gap |
-|---|---|---|
-| `/experiences` cards | `From €X` | no "per person" — reads as party price |
-| `/day-tours` cards | `From €X` (teal) | same |
-| `/tours/:id` (Signature detail) | price only inside `SimpleBookingForm` | no visible headline price above the fold |
-| `SimpleBookingForm` | shows "Party total" only | missing per-person line + count breakdown |
-| `/tours/:id/tailor` | ✅ "For N guests · per person" + "Party total (indicative)" | keep as source-of-truth pattern |
-| Studio V3 final reveal | ✅ "€X per person" | keep |
-| `BrandedCheckoutDrawer` | per-traveller rows via `PriceBreakdownRows` | audit CTA hierarchy, sticky footer, trust cues |
+Do the same here:
+- Compute `journeyLines` from the existing pricing hook (same source Tailor uses via `journeyPricing.lines`).
+- Under the "For N guests · per person €X" row, when `hasMinors` and complete journey pricing exists, render `<PerPersonBands journeyLines={journeyLines} />` — producing e.g. `€215 / adult` + `€108 / child` stacked. Keep the party-total row underneath.
+- Adults-only parties keep today's single "per person" line (no change).
 
-## Scope
+## 2. Map attribution footer
+Remove the `Map data © OpenStreetMap · Tiles © CARTO` paragraph (lines 285–304 of `src/components/SignatureRouteMap.tsx`). The Leaflet control is already suppressed via `attributionControl: false`; the standalone paragraph was the last visible attribution. Owner-approved on the earlier "keep it clean and simple" pass — this one was missed.
 
-### 1 · Unify the price label — "per person" is the primary number
-- **Card lists** (`experiences.tsx`, `day-tours.tsx`): `From €X per person` — small `per person` in `--charcoal-soft`, same line, so the number keeps visual weight.
-- **Signature detail hero** (`tours.$tourId.tsx`): add a single price tag next to the H1: `From €X · per person`, gold hairline, no CTA duplication.
-- **`SimpleBookingForm`**: mirror the Tailor pattern — two rows, "For N guests · per person = €X" and "Party total (indicative) €Y".
-- **Studio V2 booking panel** (`FinalBookingPanel.tsx`) + `InvestmentTierPicker`, `RunningInvestmentRibbon`: confirm every visible € is suffixed with `per person` (spot-fix any that aren't).
-- **Reusable primitive**: extract `<PricePerPerson perPax={...} guests={...} total={...} variant="card|hero|form" />` in `src/components/ui/PricePerPerson.tsx` so the pattern stays consistent as new surfaces appear.
+## 3. Low contrast on the child selection card (mobile)
+The card in `src/components/booking/CompositionField.tsx` (each minor row) sits on `--ivory` with:
+- Row border at `color-mix(charcoal 14%)` — too faint on mobile.
+- "CHILD 1" label and "CHILD · 50%" band label rendered in teal or charcoal at 60% mix — dips below 4.5:1 on ivory at 11px uppercase.
+- Age input border at 18% charcoal.
 
-### 2 · Conversion-focused checkout drawer polish
-Scoped to `BrandedCheckoutDrawer.tsx` + `PriceBreakdownRows.tsx`:
-- **Sticky footer** on mobile with **one primary CTA** ("Reserve €Y") and the per-person recap in eyebrow style above it — no competing secondary buttons at the bottom.
-- **Trust row** above the CTA: "Free cancellation up to 24h · Instant confirmation · Secure payment" (only claims already true in the copy source-of-truth memory).
-- **Progress hint**: `Step 2 of 2 — Traveller details` eyebrow at drawer top so the user knows this is the final step (reduces drop-off).
-- **Field polish**: floating labels, `inputMode="email|tel"` on the right fields, `autoComplete` tokens (`given-name`, `family-name`, `email`, `tel`), inline error under the field (not a top banner), 44×44 tap targets.
-- **Loading state**: `Reserve €Y` → spinner + `Securing your date…` (uses existing `CtaButton` loading prop) so nothing feels frozen after tap.
+Bump each to brand-guardrail AA:
+- Row border → `color-mix(charcoal 28%)`, background stays ivory.
+- "CHILD n" eyebrow → charcoal at 78% mix (was 60%).
+- Band tag ("CHILD · 50%" etc.) → use `var(--teal)` solid (AA on ivory) instead of `var(--teal)` behind a mixed opacity; when the band is "adult" or unset, use `--gold-ink` (already a token) instead of 45% charcoal.
+- Age-input border → `color-mix(charcoal 32%)` when filled; keep gold when empty (invalid state).
 
-### 3 · Analytics — measure the fix
-Add two GA4 events (extends `src/lib/analytics-ga4.ts` already used for booking funnel):
-- `gaPriceLabelViewed` on card/hero mount — surface + tour id.
-- `gaCheckoutFieldFocus` on first focus per field — lets you see which field causes drop-off after the price-label change ships.
-
-### 4 · Non-goals (explicit)
-- No pricing-model change — per-person rate is still resolved from `tour_price_tiers` / `priceFrom`, no math changes.
-- No new payment provider work; Stripe stays as-is.
-- No copy invention — labels stay to the two approved patterns ("per person", "Party total (indicative)").
+No layout, spacing, or typography changes — contrast only.
 
 ## Files touched
+- `src/components/SimpleBookingForm.tsx` — wire `journeyLines` + `<PerPersonBands>` row.
+- `src/components/SignatureRouteMap.tsx` — delete attribution `<p>` block.
+- `src/components/booking/CompositionField.tsx` — contrast tokens on minor row.
 
-- new `src/components/ui/PricePerPerson.tsx`
-- `src/routes/experiences.tsx`, `src/routes/day-tours.tsx`
-- `src/routes/tours.$tourId.tsx` (hero price tag)
-- `src/components/SimpleBookingForm.tsx` (two-row pattern)
-- `src/components/checkout/BrandedCheckoutDrawer.tsx` (sticky footer, trust row, progress, field polish)
-- `src/components/checkout/PriceBreakdownRows.tsx` (only if row hierarchy needs the per-person emphasis)
-- `src/lib/analytics-ga4.ts` (+2 events, wired in the surfaces above)
-- spot-check: `FinalBookingPanel.tsx`, `InvestmentTierPicker.tsx`, `RunningInvestmentRibbon.tsx`
-
-## Out of scope (flag, don't touch)
-
-- Rewriting `PriceBreakdownRows` per-traveller-band logic — already correct.
-- Studio V3 pricing surfaces — already show "per person" and are covered by tests.
-
-## Acceptance
-- Every visible price on the site is either "per person" or explicitly labelled "Party total (indicative)".
-- Checkout drawer on 390 CSS px has a single primary CTA above the safe-area, trust row visible, no competing buttons.
-- No test in `src/components/studio-v3/__tests__/*` regresses.
+No new deps, no schema changes, no copy changes beyond what the band renderer already outputs.
