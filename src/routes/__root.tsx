@@ -20,6 +20,7 @@ import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
 import { RouteFade } from "@/components/motion/RouteFade";
+import { Scene } from "@/components/motion/Scene";
 import { installAnalyticsAttrs } from "@/lib/analytics";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
