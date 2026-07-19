@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Star } from "lucide-react";
 import { submitFirstPartyReview } from "@/lib/reviewsPublic.functions";
+import { Scene } from "@/components/motion/Scene";
 
 export const Route = createFileRoute("/review/$token")({
   component: ReviewSubmissionPage,
