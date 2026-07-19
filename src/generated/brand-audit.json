@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-19T16:16:16.424Z",
-  "filesScanned": 847,
+  "generatedAt": "2026-07-19T16:26:27.073Z",
+  "filesScanned": 846,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -827,7 +827,7 @@
     },
     {
       "file": "src/components/SignatureRouteMap.tsx",
-      "line": 75,
+      "line": 76,
       "col": 32,
       "raw": "#faf8f3",
       "normalized": "#faf8f3",
@@ -836,7 +836,7 @@
     },
     {
       "file": "src/components/SignatureRouteMap.tsx",
-      "line": 76,
+      "line": 77,
       "col": 37,
       "raw": "#c9a96a",
       "normalized": "#c9a96a",
@@ -845,7 +845,7 @@
     },
     {
       "file": "src/components/SignatureRouteMap.tsx",
-      "line": 80,
+      "line": 81,
       "col": 26,
       "raw": "#295b61",
       "normalized": "#295b61",
