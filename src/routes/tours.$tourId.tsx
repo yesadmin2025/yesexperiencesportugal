@@ -493,13 +493,13 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
           </span>
         </div>
 
-        <ol className="relative space-y-7">
+        <Scene as="ol" className="relative space-y-7">
           <span
             className="absolute left-[15px] top-2 bottom-2 w-px bg-gradient-to-b from-[color:var(--gold)]/60 via-[color:var(--gold)]/30 to-transparent md:left-[19px]"
             aria-hidden
           />
           {chapters.map((s, i) => (
-            <li key={s.label + i} className="relative pl-12 md:pl-16">
+            <li key={s.label + i} className="scene-item relative pl-12 md:pl-16">
               <span className="absolute left-0 top-1 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-[color:var(--ivory)] border border-[color:var(--gold)] text-[12px] md:text-[13px] text-[color:var(--teal)] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.15)]">
                 {i + 1}
               </span>
@@ -529,7 +529,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
               </div>
             </li>
           ))}
-        </ol>
+        </Scene>
       </div>
     </section>
   );
