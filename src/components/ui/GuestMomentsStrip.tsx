@@ -111,6 +111,7 @@ export function GuestMomentsStrip({
 
         {/* Mobile: horizontal snap-scroll. Desktop: responsive grid. */}
         <ul
+          ref={listRef}
           className="
             mt-10 md:mt-14
             flex gap-4 overflow-x-auto snap-x snap-mandatory
