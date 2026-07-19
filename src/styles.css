@@ -222,12 +222,18 @@
   --motion-lift: -2px;
   --motion-image-zoom: 1.03;
 
-  /* Motion v3 — editorial cinematic tokens (see docs/motion-v3-report.md). */
+  /* Motion v3/v4 — editorial cinematic tokens. */
   --motion-ease-editorial: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --motion-ease-cine: cubic-bezier(0.2, 0.7, 0.1, 1);
   --motion-dur-mask: 720ms;
   --motion-dur-split: 560ms;
-  --motion-dur-rule: 640ms;
+  --motion-dur-rule: 720ms;
+  --motion-dur-reveal: 900ms;
+  --motion-dur-rise: 720ms;
+  --motion-drift-loop: 22s;
   --motion-stagger: 60ms;
+  --parallax-cap-desktop: 48px;
+  --parallax-cap-mobile: 28px;
 
   /* Semantic — restored to brand board v1 (2026-04-25).
      The 8 canonical tokens above (--teal/--teal-2/--gold/--gold-soft/
