@@ -3,6 +3,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { useEffect, useState } from "react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { Scene } from "@/components/motion/Scene";
 
 type State =
   | { kind: "loading" }
