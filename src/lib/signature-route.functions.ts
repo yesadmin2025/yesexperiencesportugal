@@ -7,20 +7,21 @@
  *
  * Public read-only endpoint, safe for SSR/prerender. Cached inside
  * `builder_route_cache` via `resolveLegs`.
+ *
+ * Content policy: this fn returns only geography (label + coords) and
+ * real routing metrics. It never attaches invented operational notes
+ * (arrival windows, transit claims, on-site duration). Stops must
+ * mirror the matching Viator source page.
  */
 
 import { createServerFn } from "@tanstack/react-start";
 import { findTour } from "@/data/signatureTours";
 import { lookupStop } from "@/data/stopGeo";
-import { lookupStopNote } from "@/data/stopNotes";
 
 export interface SignatureRouteStop {
   label: string;
   lat: number;
   lng: number;
-  bestArrival?: string;
-  transit?: string;
-  duration?: string;
 }
 
 export interface SignatureRouteLeg {
@@ -56,15 +57,7 @@ export const getSignatureTourRoute = createServerFn({ method: "GET" })
       const key = `${hit.lat.toFixed(4)},${hit.lng.toFixed(4)}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      const note = lookupStopNote(s.label) ?? undefined;
-      stops.push({
-        label: s.label,
-        lat: hit.lat,
-        lng: hit.lng,
-        bestArrival: note?.bestArrival,
-        transit: note?.transit,
-        duration: note?.duration,
-      });
+      stops.push({ label: s.label, lat: hit.lat, lng: hit.lng });
     }
 
     if (stops.length < 2) return { stops, legs: [] };

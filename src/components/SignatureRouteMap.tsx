@@ -1,9 +1,14 @@
 /**
  * SignatureRouteMap — real Leaflet map for Signature tour pages.
  *
- * Renders actual coastline + place names via CartoDB Voyager tiles, drops
- * numbered gold pins at real stop coordinates, and draws the true driving
- * route returned by OSRM (fallback: straight dashed line between stops).
+ * Purpose: show geography only — real coastline + place names via CartoDB
+ * Voyager tiles, numbered gold pins at real stop coordinates, and the true
+ * driving route from OSRM (fallback: straight dashed line between stops).
+ *
+ * Content policy: this component NEVER surfaces invented operational
+ * notes (arrival windows, transit claims, on-site duration, meals).
+ * Stops mirror the Viator source page — labels only, plus real km /
+ * drive time per leg from OSRM.
  *
  * Client-only: Leaflet touches `window`, so we dynamic-import it after
  * mount and render a lightweight placeholder during SSR.
@@ -12,10 +17,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { MapPin, Clock, Sunrise, Route as RouteIcon } from "lucide-react";
+import { MapPin } from "lucide-react";
 import type { SignatureTour } from "@/data/signatureTours";
 import { lookupStop } from "@/data/stopGeo";
-import { lookupStopNote } from "@/data/stopNotes";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { RouteLegend } from "@/components/studio-v3/RouteLegend";
@@ -62,9 +66,6 @@ interface ResolvedStop {
   label: string;
   lat: number;
   lng: number;
-  bestArrival?: string;
-  transit?: string;
-  duration?: string;
 }
 
 function makeGoldPin(L: typeof import("leaflet"), index: number) {
@@ -117,12 +118,11 @@ function LeafletMap({
         { maxZoom: 18 },
       ).addTo(map);
 
-      // Draw real driving polylines when available, else straight leg lines.
       if (polylines.length > 0) {
         polylines.forEach((coords) => {
           if (coords.length < 2) return;
           L.polyline(coords, {
-            color: "var(--teal)",
+            color: "#295b61",
             weight: 3.5,
             opacity: 0.85,
             lineCap: "round",
@@ -133,7 +133,7 @@ function LeafletMap({
         L.polyline(
           stops.map((s) => [s.lat, s.lng] as [number, number]),
           {
-            color: "var(--teal)",
+            color: "#295b61",
             weight: 2.5,
             opacity: 0.55,
             dashArray: "6 8",
@@ -163,7 +163,6 @@ function LeafletMap({
       cleanup?.();
       mapRef.current = null;
     };
-    // Re-init when the route payload changes (new tour or polylines resolved)
   }, [stops, polylines]);
 
   return (
@@ -177,7 +176,6 @@ function LeafletMap({
 }
 
 export function SignatureRouteMap({ tour }: Props) {
-  // Client-side base stops from curated coords — instant render, no wait.
   const baseStops = useMemo<ResolvedStop[]>(() => {
     const out: ResolvedStop[] = [];
     const seen = new Set<string>();
@@ -187,15 +185,7 @@ export function SignatureRouteMap({ tour }: Props) {
       const key = `${hit.lat.toFixed(4)},${hit.lng.toFixed(4)}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      const note = lookupStopNote(s.label);
-      out.push({
-        label: s.label,
-        lat: hit.lat,
-        lng: hit.lng,
-        bestArrival: note?.bestArrival,
-        transit: note?.transit,
-        duration: note?.duration,
-      });
+      out.push({ label: s.label, lat: hit.lat, lng: hit.lng });
     }
     return out;
   }, [tour]);
@@ -231,8 +221,8 @@ export function SignatureRouteMap({ tour }: Props) {
             Where the <SectionTitle.Em>day goes</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] max-w-lg mx-auto">
-            Real locations across {tour.region}. The route below is drawn on real
-            roads — your guide sets the order and pace on the day.
+            Real locations across {tour.region}. The map shows the drive between
+            them — distances only, so you get a feel for the ground you'll cover.
           </p>
         </div>
 
@@ -251,7 +241,7 @@ export function SignatureRouteMap({ tour }: Props) {
           </div>
         </div>
 
-        {/* Route breakdown — real km + min per leg when OSRM has resolved. */}
+        {/* Real km + drive minutes per leg — from OSRM, not invented. */}
         {legMinutes && legMinutes.length > 0 && (
           <div className="mt-5">
             <RouteLegend
@@ -264,65 +254,26 @@ export function SignatureRouteMap({ tour }: Props) {
           </div>
         )}
 
-        {/* Per-stop travel notes — arrival, transit, duration. Fields hide when unknown. */}
-        <ol className="mt-8 space-y-4 list-none p-0">
-          {stops.map((p, i) => {
-            const hasNotes = Boolean(p.bestArrival || p.transit || p.duration);
-            return (
-              <li
-                key={`${p.label}-${i}`}
-                className="flex gap-4 border-t border-[color:var(--gold)]/15 pt-4 first:border-t-0 first:pt-0"
+        {/* Plain numbered list of stops — labels only, matches Viator source. */}
+        <ol className="mt-8 grid sm:grid-cols-2 gap-x-6 gap-y-2 list-none p-0">
+          {stops.map((p, i) => (
+            <li
+              key={`${p.label}-${i}`}
+              className="flex items-baseline gap-3 text-[14px] text-[color:var(--charcoal)]"
+            >
+              <span
+                aria-hidden
+                className="shrink-0 text-[11px] font-semibold text-[color:var(--gold)] tabular-nums w-4"
               >
-                <span
-                  aria-hidden
-                  className="shrink-0 mt-0.5 w-8 h-8 rounded-full border border-[color:var(--gold)]/50 bg-[color:var(--ivory)] flex items-center justify-center text-[13px] font-semibold text-[color:var(--teal)]"
-                >
-                  {i + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-[color:var(--charcoal)] leading-snug">
-                    {p.label}
-                  </div>
-                  {hasNotes && (
-                    <dl className="mt-2 grid sm:grid-cols-3 gap-x-5 gap-y-1.5 text-[12.5px] text-[color:var(--charcoal-soft)]">
-                      {p.bestArrival && (
-                        <div className="flex items-start gap-1.5">
-                          <Sunrise size={12} className="text-[color:var(--gold)] mt-0.5 shrink-0" aria-hidden />
-                          <div>
-                            <dt className="text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] font-semibold">Arrive</dt>
-                            <dd className="leading-snug">{p.bestArrival}</dd>
-                          </div>
-                        </div>
-                      )}
-                      {p.transit && (
-                        <div className="flex items-start gap-1.5">
-                          <RouteIcon size={12} className="text-[color:var(--gold)] mt-0.5 shrink-0" aria-hidden />
-                          <div>
-                            <dt className="text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] font-semibold">Getting there</dt>
-                            <dd className="leading-snug">{p.transit}</dd>
-                          </div>
-                        </div>
-                      )}
-                      {p.duration && (
-                        <div className="flex items-start gap-1.5">
-                          <Clock size={12} className="text-[color:var(--gold)] mt-0.5 shrink-0" aria-hidden />
-                          <div>
-                            <dt className="text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] font-semibold">Time on site</dt>
-                            <dd className="leading-snug">{p.duration}</dd>
-                          </div>
-                        </div>
-                      )}
-                    </dl>
-                  )}
-                </div>
-              </li>
-            );
-          })}
+                {i + 1}.
+              </span>
+              <span className="leading-snug">{p.label}</span>
+            </li>
+          ))}
         </ol>
 
         <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-3xl">
-          Your day is shaped from these stops — your guide sets the order and pace
-          around you. Not every stop, every time.
+          Your guide sets the order and pace on the day — not every stop, every time.
         </p>
 
         <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]/70">

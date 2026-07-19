@@ -1,40 +1,22 @@
 ## Goal
-Enrich the Signature tour map with per-stop travel notes, keep the numbered gold pins, and strip Leaflet's branding for a cleaner editorial look.
+Map section on Signature tour pages should only convey **geography** (real locations, real distances, real drive times). Remove the invented per-stop notes ("arrive 12:30–14:00 · lunch on the seafront", "transit: private transfer only", etc.) — none of that is on the Viator source pages, so it violates the no-invention rule.
 
 ## Changes
 
-### 1. Per-stop travel notes data
-- Extend `src/data/stopGeo.ts` (or add a sibling `src/data/stopNotes.ts` keyed by the same normalized label) with an optional record per stop:
-  - `bestArrival` — e.g. "Best 9:30–10:30 · softer light, fewer cars"
-  - `transit` — e.g. "Private transfer only · no reliable bus on weekends"
-  - `duration` — e.g. "45–60 min on site"
-- Curate notes only for stops that already appear in Signature tours (Arrábida, Portinho, Sesimbra, Azeitão, Cristo Rei, Mercado do Livramento, Cabo Espichel, Vicentine Coast stops, etc.). No invention — leave the field empty when unknown; the UI hides missing fields.
+### 1. Strip fabricated notes from the map UI
+`src/components/SignatureRouteMap.tsx`
+- Remove the `<ol>` per-stop notes block (arrival / transit / duration cards).
+- Keep: real Leaflet map, numbered gold pins, driving polyline, region chip, `RouteLegend` (real km + minutes per leg from OSRM), OSM/CARTO attribution.
+- Replace the closing paragraph with a single short line — just names the ordered stops so the pins have labels below the map, no operational claims:
+  > "Stops on this route: 1. Arrábida viewpoint · 2. Portinho · 3. …"
+- Drop imports/props for `bestArrival`, `transit`, `duration`, `Sunrise`, `Clock`, `RouteIcon`, `lookupStopNote`.
 
-### 2. Server payload
-- `src/lib/signature-route.functions.ts` — attach the notes on each resolved stop returned by `getSignatureTourRoute` (`SignatureRouteStop` gains optional `bestArrival` / `transit` / `duration`).
+### 2. Retire the curated notes file
+`src/data/stopNotes.ts` → delete.
+`src/lib/signature-route.functions.ts` → remove `lookupStopNote` usage and the `bestArrival`/`transit`/`duration` fields from `SignatureRouteStop`. Server fn now returns just `{ label, lat, lng }` per stop plus the OSRM legs.
 
-### 3. Map + notes UI (`src/components/SignatureRouteMap.tsx`)
-- Keep the existing numbered gold divIcons (they already show `1..n`); confirm pin+tooltip render for every stop.
-- Remove Leaflet branding:
-  - `attributionControl: false` on `L.map(...)` (drops the "Leaflet | © CARTO" strip).
-  - Keep zoom control; hide the tiny Leaflet flag on the zoom control via one CSS rule (`.leaflet-control-attribution{display:none}` scoped inside the map wrapper).
-- Replace the plain ordered `<ol>` under the map with an editorial "Stop notes" list:
-  - Number chip (matches pin), stop label, then a compact 3-row micro-grid rendering only the fields that exist:
-    - `Arrive` · bestArrival
-    - `Getting there` · transit
-    - `Time on site` · duration
-  - Uses existing tokens (`--charcoal-soft`, `--gold`, Inter uppercase eyebrows at 10–11px, tracking 0.22em). No new colors, no motion beyond the existing `.reveal`.
-- Screen-reader: each list item stays a single `<li>` with an accessible label combining stop name + notes.
+### 3. Signature stops = Viator source of truth
+No content edits in this pass unless a mismatch is found. As a follow-up guard, add a short note at the top of `src/data/signatureTours.ts` reminding future edits: *stops[] must mirror the matching Viator itinerary — never add stops, meals, or descriptors that aren't on the Viator page.* If you want, I can also spot-audit each tour's `stops[]` against its Viator URL in a follow-up turn and flag any drift for your approval before editing copy.
 
-### 4. Attribution compliance
-Leaflet's LGPL and CARTO's terms require attribution somewhere visible on the page. To keep the map itself clean, add a single 10px `--charcoal-soft` line under the notes list: "Map data © OpenStreetMap · Tiles © CARTO" (links open in a new tab). This satisfies attribution without cluttering the map surface.
-
-## Files touched
-- `src/data/stopGeo.ts` (or new `src/data/stopNotes.ts`)
-- `src/lib/signature-route.functions.ts`
-- `src/components/SignatureRouteMap.tsx`
-- `src/styles.css` — one scoped rule to hide the in-map attribution flag
-
-## Out of scope
-- No changes to the OSRM routing, `RouteLegend`, or other maps (Builder / PremiumMap keep their current attribution).
-- No new stops or itinerary claims — notes are curated per real operational knowledge; unknown fields stay hidden.
+## Result
+Map page shows: title → real map with numbered pins and drawn route → leg-by-leg distance + drive time → plain numbered list of stop names → attribution. No invented arrival windows, no invented transit claims, no "lunch on the seafront". Signature itineraries stay bound to Viator.
