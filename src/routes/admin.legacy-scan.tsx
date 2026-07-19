@@ -39,7 +39,11 @@ type SourceHit = {
 // Load every project source file as raw text at build time. Cast keeps
 // TS happy across Vite versions.
 const RAW_SOURCES = import.meta.glob(
-  "/src/**/*.{ts,tsx,js,jsx,md,mdx,json,html,css}",
+  [
+    "/src/**/*.{ts,tsx,js,jsx,md,mdx,json,html,css}",
+    "!/src/routeTree.gen.ts",
+    "!/src/**/*.d.ts",
+  ],
   { query: "?raw", import: "default", eager: true },
 ) as Record<string, string>;
 const RAW_PUBLIC = import.meta.glob(
