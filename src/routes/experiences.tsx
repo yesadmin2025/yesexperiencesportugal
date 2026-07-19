@@ -243,7 +243,7 @@ function CtaStrip() {
             </p>
           </div>
           <CtaButton to="/studio-v3" variant="ghostDark" className="flex-shrink-0">
-            Start the Studio
+            Open the Studio
           </CtaButton>
         </div>
       </div>

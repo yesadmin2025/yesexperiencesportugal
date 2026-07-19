@@ -603,7 +603,7 @@ function HomePage() {
 
                 <div className="mt-8 flex flex-wrap gap-x-5 gap-y-4">
                   <CtaButton to="/studio-v3" variant="primary">
-                    Start designing
+                    Open the Studio
                   </CtaButton>
                 </div>
                 <p className="mt-4 text-[13px] text-[color:var(--charcoal-soft)]">
