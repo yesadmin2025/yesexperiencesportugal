@@ -25,10 +25,12 @@ export function useHoverPointer(): boolean {
       mq.addEventListener("change", apply);
       return () => mq.removeEventListener("change", apply);
     }
-    // @ts-expect-error legacy Safari
-    mq.addListener(apply);
-    // @ts-expect-error legacy Safari
-    return () => mq.removeListener(apply);
+    const legacy = mq as unknown as {
+      addListener?: (fn: () => void) => void;
+      removeListener?: (fn: () => void) => void;
+    };
+    legacy.addListener?.(apply);
+    return () => legacy.removeListener?.(apply);
   }, []);
 
   return hasHover;
