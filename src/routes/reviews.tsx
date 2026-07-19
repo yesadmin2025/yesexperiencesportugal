@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Star } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { Scene } from "@/components/motion/Scene";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
