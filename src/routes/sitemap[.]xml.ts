@@ -50,16 +50,19 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/portugal-tours", changefreq: "monthly", priority: "0.9" },
           { path: "/luxury-tours-portugal", changefreq: "monthly", priority: "0.85" },
           { path: "/private-tours-portugal", changefreq: "monthly", priority: "0.85" },
-          { path: "/alentejo-wine-tour-from-lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/arrabida-day-trip-from-lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/arrabida-wine-tour", changefreq: "monthly", priority: "0.8" },
-          { path: "/day-trips-from-lisbon", changefreq: "monthly", priority: "0.85" },
-          { path: "/sintra-day-tour-from-lisbon", changefreq: "monthly", priority: "0.85" },
-          { path: "/evora-private-tour-from-lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/evora-alentejo-wine-tour", changefreq: "monthly", priority: "0.8" },
-          { path: "/private-wine-tour-lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/wine-tours-lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/portugal-wine-tours", changefreq: "monthly", priority: "0.8" },
+          // Wine + day-trip landing URLs now permanently redirect to their
+          // /local-stories/* canonical destinations. Sitemap must list the
+          // 200 targets, not the 301 sources.
+          { path: "/local-stories/alentejo-wine-tour-from-lisbon", changefreq: "monthly", priority: "0.8" },
+          { path: "/local-stories/arrabida-day-trip-from-lisbon", changefreq: "monthly", priority: "0.8" },
+          { path: "/local-stories/arrabida-wine-tour", changefreq: "monthly", priority: "0.8" },
+          { path: "/local-stories/best-day-trips-from-lisbon", changefreq: "monthly", priority: "0.85" },
+          { path: "/local-stories/sintra-day-tour-from-lisbon", changefreq: "monthly", priority: "0.85" },
+          { path: "/local-stories/evora-private-tour-from-lisbon", changefreq: "monthly", priority: "0.8" },
+          { path: "/local-stories/evora-alentejo-wine-tour", changefreq: "monthly", priority: "0.8" },
+          { path: "/local-stories/private-wine-tour-lisbon", changefreq: "monthly", priority: "0.8" },
+          { path: "/local-stories/wine-tours-lisbon", changefreq: "monthly", priority: "0.8" },
+          { path: "/local-stories/portugal-wine-tours", changefreq: "monthly", priority: "0.8" },
 
 
 
