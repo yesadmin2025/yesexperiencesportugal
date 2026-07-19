@@ -57,6 +57,13 @@ import {
   gaBookingValidationBlocked,
   gaCheckoutDrawerOpened,
 } from "@/lib/analytics-ga4";
+import {
+  getOperatingRule,
+  computeMinDateISO,
+  validateDateISO,
+  type OperatingRule,
+} from "@/lib/availability";
+
 
 
 
