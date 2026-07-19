@@ -146,8 +146,7 @@ function BookingConfirmedPage() {
             ) : state.kind === "error" ? (
               <AlertCircle size={28} strokeWidth={2.2} />
             ) : (
-              <Check size={28} strokeWidth={2.2} />
-            )}
+              <Check size={28} strokeWidth={2.2} className="motion-check-in" />)}
           </div>
 
           <Eyebrow>
