@@ -383,12 +383,6 @@ function TailorPage() {
   const editsUsed = skipped.size + added.size;
   const editsLeft = Math.max(0, MAX_EDITS - editsUsed);
 
-  // Tour-aware add-ons — only those plausible for this tour
-  const addonOptions = useMemo(() => buildAddons(tour), [tour]);
-  const lunchOptions = useMemo(() => buildLunch(tour, inc.items), [tour, inc.items]);
-  const [addons, setAddons] = useState<Set<string>>(new Set());
-  const [lunch, setLunch] = useState<string>(lunchOptions[0]?.id ?? "");
-
   const [accessibility, setAccessibility] = useState<Set<string>>(new Set());
   const [notes, setNotes] = useState("");
 
@@ -459,12 +453,9 @@ function TailorPage() {
       p += added.size * ADD_STOP_DELTA;
       p -= skipped.size * REMOVE_STOP_DELTA;
     }
-    if (addons.has("photographer")) p += 75;
-    if (addons.has("wine")) p += 25;
-    if (lunch === "premium") p += 35;
     const floor = Math.round(basePerPax * 0.85);
     return Math.max(floor, Math.round(p));
-  }, [basePerPax, blueprint, added, skipped, skippedCore, optionalSelected, addons, lunch]);
+  }, [basePerPax, blueprint, added, skipped, skippedCore, optionalSelected]);
 
   // Age-banded journey pricing — mirrors the reserve-handler math so the
   // summary shows adults vs each minor at their band-adjusted unit price.
@@ -635,8 +626,6 @@ function TailorPage() {
             ...details,
             hotelPickupIncluded: true,
             pace,
-            addons: [...addons],
-            lunch,
             accessibility: [...accessibility],
             notes,
             skippedCoreStops: blueprint
@@ -1319,54 +1308,12 @@ function TailorPage() {
                 </Group>
               )}
 
-              {/* Lunch — only when relevant for this tour */}
-              {lunchOptions.length > 0 && (
-                <Group title="Lunch">
-                  <ChipGroup
-                    value={lunch}
-                    onChange={setLunch}
-                    options={lunchOptions.map((l) => ({ v: l.id, l: l.label }))}
-                  />
-                </Group>
-              )}
-
-              {/* Add-ons — tour-aware. Hotel pickup is always included
-                  and surfaced statically (never toggleable). */}
-              <Group title="Small additions">
-                <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-3 -mt-1">
-                  Hotel pickup is always included. Other additions are optional.
-                </p>
+              {/* Included service only — optional products must come from
+                  explicit supplier data, never title/keyword heuristics. */}
+              <Group title="Pickup">
                 <div className="mb-3 inline-flex items-center gap-2 border border-[color:var(--teal)]/40 bg-[color:var(--teal)]/8 px-2.5 py-1.5 text-[11px] uppercase tracking-[0.18em] text-[color:var(--teal)]">
                   <Check size={12} /> Hotel pickup included
                 </div>
-                {addonOptions.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {addonOptions.map((a) => {
-                      const on = addons.has(a.id);
-                      return (
-                        <button
-                          key={a.id}
-                          type="button"
-                          onClick={() => toggle(setAddons, addons, a.id)}
-                          aria-pressed={on}
-                          className={[
-                            "px-3.5 py-2 text-[12px] border transition-colors min-h-[40px]",
-                            on
-                              ? "border-[color:var(--gold)] bg-[color:var(--gold)]/15 text-[color:var(--charcoal)]"
-                              : "border-[color:var(--border)] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
-                          ].join(" ")}
-                        >
-                          {a.label}
-                          {a.priceDelta ? (
-                            <span className="ml-1.5 text-[color:var(--teal)] tracking-normal">
-                              +€{a.priceDelta}
-                            </span>
-                          ) : null}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
               </Group>
 
               {/* Accessibility / comfort */}
@@ -1512,33 +1459,6 @@ function TailorPage() {
                     </ol>
                   </div>
 
-
-                  {(addons.size > 0 || lunch) && (
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-                        Additions
-                      </p>
-                      <ul className="mt-2 flex flex-wrap gap-1.5 list-none p-0">
-                        {lunch && (
-                          <li className="text-[10.5px] uppercase tracking-[0.18em] border border-[color:var(--gold)]/40 px-2 py-1">
-                            {lunchOptions.find((l) => l.id === lunch)?.label}
-                          </li>
-                        )}
-                        {[...addons].map((id) => {
-                          const a = addonOptions.find((x) => x.id === id);
-                          if (!a) return null;
-                          return (
-                            <li
-                              key={id}
-                              className="text-[10.5px] uppercase tracking-[0.18em] border border-[color:var(--gold)]/40 px-2 py-1"
-                            >
-                              {a.label}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  )}
 
                   {showBandBreakdown && (
                     <PriceBreakdownRows
@@ -1705,46 +1625,6 @@ function TailorPage() {
 
     </SiteLayout>
   );
-}
-
-/* ────────────────────────────────────────────────────────────────
- * Per-tour option builders (tour-aware, never global)
- * ──────────────────────────────────────────────────────────── */
-function buildAddons(tour: SignatureTour): { id: string; label: string; priceDelta?: number }[] {
-  // Hotel pickup is always included on every Signature — never a toggleable
-  // add-on. It's surfaced as a static "Included" note in the UI instead.
-  const out: { id: string; label: string; priceDelta?: number }[] = [];
-  const styles = tour.seed.styles ?? [];
-  const text = (tour.title + " " + tour.blurb + " " + tour.intro).toLowerCase();
-
-  if (styles.includes("wine") || /wine|tasting|winery/.test(text)) {
-    out.push({ id: "wine", label: "Extra wine pairing", priceDelta: 25 });
-  }
-  if (/photo|memorable|anniversary|propos/.test(text) || styles.includes("celebration")) {
-    out.push({ id: "photographer", label: "Photographer (1h)", priceDelta: 75 });
-  }
-  if (/family|kids|children/.test(text)) {
-    out.push({ id: "kids", label: "Kids' activity kit" });
-  }
-  if (/sunset|dusk|evening/.test(text)) {
-    out.push({ id: "sunset", label: "Sunset extension" });
-  }
-  return out;
-}
-
-function buildLunch(
-  tour: SignatureTour,
-  bookableIncludedItems?: string[],
-): { id: string; label: string }[] {
-  const text = (tour.title + " " + tour.intro + " " + tour.blurb).toLowerCase();
-  const includedList = bookableIncludedItems ?? tour.included ?? [];
-  const includesLunch = includedList.some((i) => /lunch/i.test(i));
-  if (!/lunch|picnic|meal|seafood|tasting/.test(text) && !includesLunch) return [];
-  return [
-    { id: "included", label: includesLunch ? "Keep included lunch" : "Add a local lunch" },
-    { id: "premium", label: "Premium tasting menu" },
-    { id: "skip", label: "Skip — light snack only" },
-  ];
 }
 
 /* ────────────────────────────────────────────────────────────────

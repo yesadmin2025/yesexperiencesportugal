@@ -58,7 +58,7 @@ export function DriftScene({ scene, index, onSignal }: Props) {
           <img
             src={left.image}
             alt={left.alt}
-            className="absolute inset-0 h-full w-full object-cover transition-[transform,filter] duration-[700ms] ease-out"
+            className="absolute inset-0 h-full w-full object-cover transition-[transform,filter] duration-[700ms] ease-out motion-reduce:transform-none motion-reduce:transition-none"
             style={{
               transform: hovered === "left" ? "scale(1.04)" : "scale(1.0)",
               filter: hovered === "right" ? "brightness(0.55) saturate(0.85)" : "brightness(0.88)",
@@ -84,7 +84,7 @@ export function DriftScene({ scene, index, onSignal }: Props) {
           <img
             src={right.image}
             alt={right.alt}
-            className="absolute inset-0 h-full w-full object-cover transition-[transform,filter] duration-[700ms] ease-out"
+            className="absolute inset-0 h-full w-full object-cover transition-[transform,filter] duration-[700ms] ease-out motion-reduce:transform-none motion-reduce:transition-none"
             style={{
               transform: hovered === "right" ? "scale(1.04)" : "scale(1.0)",
               filter: hovered === "left" ? "brightness(0.55) saturate(0.85)" : "brightness(0.88)",
@@ -122,7 +122,7 @@ export function DriftScene({ scene, index, onSignal }: Props) {
         <p
           className="text-[15px] leading-[1.3] sm:text-[17px] transition-opacity duration-300"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-editorial)",
             fontStyle: "italic",
             color: "var(--ivory)",
             opacity: hovered === "right" ? 0.35 : 1,
@@ -134,7 +134,7 @@ export function DriftScene({ scene, index, onSignal }: Props) {
         <p
           className="text-right text-[15px] leading-[1.3] sm:text-[17px] transition-opacity duration-300"
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-editorial)",
             fontStyle: "italic",
             color: "var(--ivory)",
             opacity: hovered === "left" ? 0.35 : 1,
