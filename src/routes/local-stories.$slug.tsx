@@ -6,6 +6,9 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { Scene } from "@/components/motion/Scene";
+import { RevealImage } from "@/components/motion/RevealImage";
+import { ReadingProgress } from "@/components/motion/ReadingProgress";
 import {
   jsonLdScript,
   breadcrumbLd,
