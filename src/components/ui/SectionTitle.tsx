@@ -20,11 +20,11 @@ const baseClasses = "serif text-[color:var(--charcoal)] font-medium";
 
 const sizeClasses = {
   default:
-    "text-[2rem] sm:text-[2.4rem] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em]",
+    "text-[clamp(1.875rem,7vw,2.4rem)] md:text-[3.6rem] leading-[1.1] md:leading-[1.0] tracking-[-0.018em] text-balance",
   anchor:
-    "text-[2.4rem] sm:text-[2.8rem] md:text-[4rem] leading-[1.05] md:leading-[0.98] tracking-[-0.02em]",
+    "text-[clamp(2.125rem,7.5vw,2.8rem)] md:text-[4rem] leading-[1.05] md:leading-[0.98] tracking-[-0.02em] text-balance",
   compact:
-    "text-[1.7rem] sm:text-[1.95rem] md:text-[2.4rem] leading-[1.18] md:leading-[1.1] tracking-[-0.012em]",
+    "text-[clamp(1.6rem,5.5vw,1.95rem)] md:text-[2.4rem] leading-[1.18] md:leading-[1.1] tracking-[-0.012em] text-balance",
 } as const;
 
 export type SectionTitleSize = keyof typeof sizeClasses;

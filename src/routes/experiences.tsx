@@ -165,13 +165,13 @@ function ExperiencesPage() {
                       <>
                         <span className="flex items-center gap-1.5 text-[color:var(--charcoal)]">
                           <Star
-                            size={11}
-                            className="text-[color:var(--gold)]"
+                            size={12}
+                            className="text-[color:var(--gold-ink)]"
                             fill="currentColor"
                             strokeWidth={0}
                             aria-hidden="true"
                           />
-                          <span className="tabular-nums">{meta.rating.toFixed(1)}</span>
+                          <span className="tabular-nums font-medium text-[color:var(--gold-ink)]">{meta.rating.toFixed(1)}</span>
                           <span className="text-[color:var(--charcoal-soft)]">
                             · <span className="tabular-nums">{meta.reviewCount}</span> reviews
                           </span>

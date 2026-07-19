@@ -94,6 +94,10 @@
      button hairlines so gold remains visible without going yellow. */
   --gold-warm: #d8be82;
   --gold-deep: #b89452;
+  /* --gold-ink: deepest gold, AA-safe on ivory/sand for functional text
+     (rating numerics, small labels, links). Never use for large decorative
+     accents — that stays --gold / --gold-warm. */
+  --gold-ink: #8A611F;
   --ivory: #FAF8F3;
   --sand: #F4EFE7;
   --charcoal: #2E2E2E;
