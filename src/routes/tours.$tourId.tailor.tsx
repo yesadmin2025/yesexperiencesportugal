@@ -729,6 +729,10 @@ function TailorPage() {
             </p>
           </div>
         </div>
+      </section>
+
+
+
 
 
       {/* ── 3 · WHAT STAYS / WHAT YOU CAN ADJUST ──────────────
