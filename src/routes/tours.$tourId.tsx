@@ -326,6 +326,19 @@ function TourHero({
                   </span>
                 </>
               )}
+              {typeof (tour as { priceFrom?: number }).priceFrom === "number" ? (
+                <>
+                  <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
+                  <span className="flex items-baseline gap-1.5 normal-case tracking-normal text-[12px] text-[color:var(--charcoal)]">
+                    <span className="font-semibold">
+                      From €{(tour as { priceFrom: number }).priceFrom}
+                    </span>
+                    <span className="text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                      per person
+                    </span>
+                  </span>
+                </>
+              ) : null}
             </div>
           </div>
 

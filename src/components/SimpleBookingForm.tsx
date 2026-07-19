@@ -366,22 +366,19 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         <div className="flex items-baseline justify-between">
           <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
             {displayIsReal
-              ? `For ${guests} guest${guests > 1 ? "s" : ""}`
+              ? `For ${guests} guest${guests > 1 ? "s" : ""} · per person`
               : hasTierData
-                ? "From · 8+ guests"
-                : "From"}
+                ? "From · 8+ guests · per person"
+                : "From · per person"}
           </span>
           <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
             €{Math.round(displayPerPaxEur).toLocaleString("en-GB")}
-            <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-              / pp
-            </span>
           </span>
         </div>
         {displayIsReal && guests > 1 ? (
           <div className="flex items-baseline justify-between">
             <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-              Party total
+              Party total (indicative)
             </span>
             <span className="serif text-[1.05rem] text-[color:var(--charcoal)]">
               €{Math.round(partyTotalEur).toLocaleString("en-GB")}

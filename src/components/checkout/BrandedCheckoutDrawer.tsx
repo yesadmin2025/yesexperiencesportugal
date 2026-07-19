@@ -209,13 +209,32 @@ export function BrandedCheckoutDrawer({
           >
             <X size={18} />
           </button>
-          <Eyebrow>{summary.flowLabel ?? "Signature"} · Secure checkout</Eyebrow>
+          <Eyebrow>Step 2 of 2 · {summary.flowLabel ?? "Signature"} · Payment</Eyebrow>
           <SheetTitle className="serif text-[1.35rem] leading-tight text-[color:var(--charcoal)] mt-2 font-normal">
             {summary.tourTitle}
           </SheetTitle>
           <SheetDescription className="sr-only">
             Secure checkout for {summary.tourTitle}.
           </SheetDescription>
+          {/* Trust row — conversion-focused: three claims true across the
+              brand (see booking-truth-model memory: TEST MODE + free
+              cancellation policy + payments encrypted). Sits right under
+              the title so the guest sees them before the payment iframe
+              paints. */}
+          <ul className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+            <li className="flex items-center gap-1.5">
+              <span aria-hidden className="w-1 h-1 rounded-full bg-[color:var(--gold)]" />
+              Free cancellation up to 24h
+            </li>
+            <li className="flex items-center gap-1.5">
+              <span aria-hidden className="w-1 h-1 rounded-full bg-[color:var(--gold)]" />
+              Instant confirmation
+            </li>
+            <li className="flex items-center gap-1.5">
+              <span aria-hidden className="w-1 h-1 rounded-full bg-[color:var(--gold)]" />
+              Secure payment
+            </li>
+          </ul>
         </div>
 
         {/* Credential microstrip — operator legitimacy above the summary,

@@ -1,76 +1,63 @@
+## Goal
+
+Make **per-person pricing** the primary, trust-building number everywhere a traveller sees a price (Signature card → Signature detail → Tailor → Studio → Checkout), and tighten the checkout drawer so the path from "I want this" to "Reserve" is frictionless.
+
+## Current state (verified in code)
+
+| Surface | Today | Gap |
+|---|---|---|
+| `/experiences` cards | `From €X` | no "per person" — reads as party price |
+| `/day-tours` cards | `From €X` (teal) | same |
+| `/tours/:id` (Signature detail) | price only inside `SimpleBookingForm` | no visible headline price above the fold |
+| `SimpleBookingForm` | shows "Party total" only | missing per-person line + count breakdown |
+| `/tours/:id/tailor` | ✅ "For N guests · per person" + "Party total (indicative)" | keep as source-of-truth pattern |
+| Studio V3 final reveal | ✅ "€X per person" | keep |
+| `BrandedCheckoutDrawer` | per-traveller rows via `PriceBreakdownRows` | audit CTA hierarchy, sticky footer, trust cues |
+
 ## Scope
 
-Two parallel tracks:
+### 1 · Unify the price label — "per person" is the primary number
+- **Card lists** (`experiences.tsx`, `day-tours.tsx`): `From €X per person` — small `per person` in `--charcoal-soft`, same line, so the number keeps visual weight.
+- **Signature detail hero** (`tours.$tourId.tsx`): add a single price tag next to the H1: `From €X · per person`, gold hairline, no CTA duplication.
+- **`SimpleBookingForm`**: mirror the Tailor pattern — two rows, "For N guests · per person = €X" and "Party total (indicative) €Y".
+- **Studio V2 booking panel** (`FinalBookingPanel.tsx`) + `InvestmentTierPicker`, `RunningInvestmentRibbon`: confirm every visible € is suffixed with `per person` (spot-fix any that aren't).
+- **Reusable primitive**: extract `<PricePerPerson perPax={...} guests={...} total={...} variant="card|hero|form" />` in `src/components/ui/PricePerPerson.tsx` so the pattern stays consistent as new surfaces appear.
 
-**Track A — Finish the booking-flow work already in flight** (the "go ahead" items still open from the last batch)
+### 2 · Conversion-focused checkout drawer polish
+Scoped to `BrandedCheckoutDrawer.tsx` + `PriceBreakdownRows.tsx`:
+- **Sticky footer** on mobile with **one primary CTA** ("Reserve €Y") and the per-person recap in eyebrow style above it — no competing secondary buttons at the bottom.
+- **Trust row** above the CTA: "Free cancellation up to 24h · Instant confirmation · Secure payment" (only claims already true in the copy source-of-truth memory).
+- **Progress hint**: `Step 2 of 2 — Traveller details` eyebrow at drawer top so the user knows this is the final step (reduces drop-off).
+- **Field polish**: floating labels, `inputMode="email|tel"` on the right fields, `autoComplete` tokens (`given-name`, `family-name`, `email`, `tel`), inline error under the field (not a top banner), 44×44 tap targets.
+- **Loading state**: `Reserve €Y` → spinner + `Securing your date…` (uses existing `CtaButton` loading prop) so nothing feels frozen after tap.
 
-**Track B — Run the ULTRA LOW-CREDIT VISUAL UX AUDIT** (audit only, no code changes, no deploy)
+### 3 · Analytics — measure the fix
+Add two GA4 events (extends `src/lib/analytics-ga4.ts` already used for booking funnel):
+- `gaPriceLabelViewed` on card/hero mount — surface + tour id.
+- `gaCheckoutFieldFocus` on first focus per field — lets you see which field causes drop-off after the price-label change ships.
 
----
+### 4 · Non-goals (explicit)
+- No pricing-model change — per-person rate is still resolved from `tour_price_tiers` / `priceFrom`, no math changes.
+- No new payment provider work; Stripe stays as-is.
+- No copy invention — labels stay to the two approved patterns ("per person", "Party total (indicative)").
 
-## Track A — Close out booking-flow leftovers
+## Files touched
 
-From the last turn, two items were explicitly not shipped:
+- new `src/components/ui/PricePerPerson.tsx`
+- `src/routes/experiences.tsx`, `src/routes/day-tours.tsx`
+- `src/routes/tours.$tourId.tsx` (hero price tag)
+- `src/components/SimpleBookingForm.tsx` (two-row pattern)
+- `src/components/checkout/BrandedCheckoutDrawer.tsx` (sticky footer, trust row, progress, field polish)
+- `src/components/checkout/PriceBreakdownRows.tsx` (only if row hierarchy needs the per-person emphasis)
+- `src/lib/analytics-ga4.ts` (+2 events, wired in the surfaces above)
+- spot-check: `FinalBookingPanel.tsx`, `InvestmentTierPicker.tsx`, `RunningInvestmentRibbon.tsx`
 
-1. **Analytics wiring for the Tailor flow + sticky bar**
-   - Add the 8 GA4 funnel events (already defined in `src/lib/analytics-ga4.ts`) to `src/routes/tours.$tourId.tailor.tsx` and its sticky "Reserve" bar:
-     - `tailor_cta_click`, `tailor_date_selected`, `tailor_composition_changed`, `tailor_addon_toggled`, `tailor_validation_blocked`, `tailor_drawer_opened`, `tailor_drawer_submitted`, `tailor_sticky_reserve_click`.
-   - No visual change. No pricing change.
+## Out of scope (flag, don't touch)
 
-2. **Per-tour operating-days table (availability truth)**
-   - New Supabase table `public.tour_operating_rules` with columns: `tour_id text pk`, `weekdays int[]` (0–6), `blackout_dates date[]`, `min_lead_hours int default 24`, `cutoff_local_time time`, `updated_at timestamptz`.
-   - GRANTs: `select` to `anon, authenticated`; `all` to `service_role`. RLS on. Public read policy (rules are non-sensitive).
-   - Read helper in `src/lib/availability.functions.ts` (`getOperatingRules(tourId)`), consumed by `SimpleBookingForm.tsx` and the Tailor date picker to:
-     - disable non-operating weekdays,
-     - disable blackout dates,
-     - enforce `min_lead_hours` (currently hard-coded 24h),
-     - respect same-day cutoff.
-   - Seed rows for the 6 Signature tours from the current Viator operating schedules (source-of-truth rule).
-   - Fallback: if no row exists for a tour, keep today's 24h lead-time behavior (no regression).
+- Rewriting `PriceBreakdownRows` per-traveller-band logic — already correct.
+- Studio V3 pricing surfaces — already show "per person" and are covered by tests.
 
-Nothing else in Track A. No copy, palette, or Studio changes.
-
----
-
-## Track B — Visual UX & Design Consistency Audit (READ-ONLY)
-
-Inspect https://yesexperiencesportugal.com per the brief. No file edits. No deploy.
-
-### Method (credit-minimal)
-- Drive Playwright via shell against the live production URL at 5 viewports (390 / 430 / 768 / 1024 / 1440).
-- Capture element-scoped screenshots (never full-page) only where a finding needs visual evidence.
-- Reuse one screenshot per shared component across the routes that use it — do not re-shoot the same header/footer/card per page.
-- Read shared component source (`Navbar`, `SiteLayout`, `EditorialCard`, `SectionTitle`, `CtaButton`, `Eyebrow`, `GuestMomentsStrip`, `SignatureRouteMap`, `TourReviews`, `SimpleBookingForm`, tour + tailor routes) to attribute each finding to shared vs page-specific.
-- Programmatic contrast check via Playwright: sample computed `color` + effective background for text nodes on each route and flag pairs < 4.5:1 (or < 3:1 for large text).
-- `prefers-reduced-motion` pass: re-load 2 representative routes with the emulated preference and confirm motion is suppressed.
-
-### Routes inspected
-`/`, `/about`, `/experiences`, `/day-tours`, `/studio-v3`, `/multi-day`, `/corporate`, `/proposal-in-portugal`, `/local-stories`, one Local Story leaf, `/tours/arrabida-wine-allinclusive`, one additional Signature leaf, `/contact`, `/faq`.
-
-### Deliverable
-A single audit report saved to `docs/visual-ux-audit-2026-07.md` (no source files touched) containing:
-
-1. Findings table with columns: severity · route · viewport · component · issue · evidence (screenshot path) · likely source · recommended correction · scope (Tiny/Small/Medium/Structural).
-2. Groupings: Contrast · Typography · CTAs · Spacing & layout · Component consistency · Animations & interactions · Accessibility · Mobile-specific · Desktop-specific.
-3. Top 10 highest-impact corrections.
-4. Quick wins on shared components.
-5. Page-specific issues.
-6. Items requiring owner/design decision.
-7. Components that should become a single source of truth.
-8. Confirmation: no files changed, nothing deployed.
-9. Final status: `VISUAL SYSTEM CONSISTENT` | `VISUAL POLISH REQUIRED` | `SIGNIFICANT UX INCONSISTENCIES FOUND`.
-
-### What's missing / risks to flag now
-- **Report file location.** The brief says "no files". I'll write only the report markdown under `docs/` (no source, no config). Say the word if you'd rather I return it inline in chat with zero disk writes.
-- **Live production vs preview.** Auditing production means findings may already be one deploy behind the codebase. I'll note per-finding whether the current repo already fixes it.
-- **Language coverage.** The brief mentions EN/PT/ES/FR wrapping. The live site currently ships EN + PT surfaces; ES/FR will be marked "not present on live — skipped".
-- **Cookie banner / sticky overlap check** requires an interaction pass; included in method above.
-
----
-
-## Order of execution
-1. Track A #1 (analytics wiring — no schema, ~15 min).
-2. Track A #2 (operating-days table + seed + wiring).
-3. Track B audit report.
-
-Nothing in Track A alters visuals, so it won't invalidate the Track B findings.
+## Acceptance
+- Every visible price on the site is either "per person" or explicitly labelled "Party total (indicative)".
+- Checkout drawer on 390 CSS px has a single primary CTA above the safe-area, trust row visible, no competing buttons.
+- No test in `src/components/studio-v3/__tests__/*` regresses.
