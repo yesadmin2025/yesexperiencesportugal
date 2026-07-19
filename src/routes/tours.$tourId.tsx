@@ -34,6 +34,7 @@ import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { TourImage } from "@/components/tours/TourImage";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { useAdminTourPhotos } from "@/lib/useAdminTourPhotos";
+import { SignatureRouteMap } from "@/components/SignatureRouteMap";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
