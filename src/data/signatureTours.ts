@@ -118,6 +118,10 @@ export type SignatureTour = {
   theme: string;
   blurb: string; // one-line card teaser
   intro: string; // 2–3 sentence opening on detail page
+  /** Optional editorial context paragraph shown under the intro. */
+  contextParagraph?: string;
+  /** Optional link back to a related Local Story or guide, shown under intro. */
+  contextLink?: { href: string; label: string };
   fitsBest: string;
   pace: string[];
   stops: TourStop[];
@@ -195,6 +199,12 @@ export const signatureTours: SignatureTour[] = [
 
     intro:
       "The most-loved YES day, in one word: complete. We leave Lisbon for the Arrábida hills, walk the Livramento market, sit down for an unhurried Portuguese lunch in Azeitão and visit two or three small family wineries. An optional viewpoint at Cristo Rei or Sesimbra Castle closes the day.",
+    contextParagraph:
+      "This experience takes place in one of the most respected wine regions near Lisbon, combining Arrábida, Setúbal and Azeitão. It is designed for travellers who want a full day of family wineries, traditional lunch and Atlantic scenery at a considered pace, rather than a rushed multi-stop circuit.",
+    contextLink: {
+      href: "/arrabida-wine-tour",
+      label: "Read more about wine in Arrábida and Setúbal",
+    },
     fitsBest: "Couples · friends · wine-curious travelers",
     pace: ["Two or three wineries", "Long Azeitão lunch", "Optional viewpoint close"],
     stops: [

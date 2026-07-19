@@ -392,6 +392,21 @@ function IntroBlock({ tour }: { tour: SignatureTour }) {
         <p className="serif mt-5 text-[1.5rem] sm:text-2xl md:text-[1.85rem] leading-snug text-[color:var(--charcoal)]">
           {tour.intro}
         </p>
+        {tour.contextParagraph && (
+          <p className="mt-6 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+            {tour.contextParagraph}
+          </p>
+        )}
+        {tour.contextLink && (
+          <p className="mt-4 text-[14px]">
+            <a
+              href={tour.contextLink.href}
+              className="underline decoration-[color:var(--gold)]/60 underline-offset-4 text-[color:var(--teal)] hover:text-[color:var(--charcoal)] transition-colors"
+            >
+              {tour.contextLink.label} →
+            </a>
+          </p>
+        )}
       </div>
     </section>
   );

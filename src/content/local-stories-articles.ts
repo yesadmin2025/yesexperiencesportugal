@@ -591,14 +591,14 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     title: "Arrábida Wine Tour from Lisbon | Private Setúbal Day",
     metaDescription:
       "Discover Arrábida and Setúbal on a private wine tour from Lisbon, with family wineries, Azeitão, coastal scenery and a relaxed Portuguese lunch.",
-    h1: "Arrábida Wine Tour — Azeitão & Setúbal, from Lisbon",
+    h1: "Private Arrábida Wine Tour from Lisbon",
     eyebrow: "Arrábida · Private Wine Day",
     standfirst:
       "Three family wineries, the Setúbal market, a long Portuguese lunch — all on the cork-oak side of the Atlantic, with your own driver and guide.",
     sections: [
       {
-        heading: "The closest serious wine country to Lisbon.",
-        body: "Cross the 25 de Abril Bridge and forty minutes later the road climbs into the Arrábida hills. Cork oaks on one side, the Atlantic glinting on the other. At the centre is the village of Azeitão — home of Moscatel de Setúbal and small family wineries that have been pouring for seven generations. The Setúbal fish market, 145 years old, is fifteen minutes further down the coast.",
+        heading: "The closest complete wine region to Lisbon",
+        body: "Arrábida and the Setúbal Peninsula form the closest complete wine region to Lisbon. Vineyards spread between Azeitão, Palmela and the limestone hills of the Arrábida Natural Park, with the Atlantic coast always nearby.\n\nThe region is known for Moscatel de Setúbal, local Castelão reds and a mixture of historic wine houses and independent family estates. A private Arrábida wine tour can combine contrasting tastings with Setúbal, a traditional lunch, panoramic mountain roads or the fishing town of Sesimbra.\n\nBecause the distances are relatively short, the experience can remain flexible. There is time to understand the wines, speak with local hosts and enjoy lunch without following the fixed pace of a large group tour. It is an especially strong choice for travellers who want Portuguese wine, local food and coastal scenery within one day from Lisbon.",
       },
       {
         heading: "Three cellars, one long lunch, no rush.",
@@ -617,6 +617,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
       { slug: "arrabida-boat", label: "Arrábida by Boat" },
       { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
+    ],
+    relatedReads: [
+      { path: "/tours/arrabida-wine-allinclusive", label: "Reserve the private three-winery experience" },
+      { path: "/wine-tours-lisbon", label: "Compare private wine tours from Lisbon" },
+      { path: "/local-stories/setubal-wine-guide", label: "Read our local guide to Setúbal wine country" },
     ],
     datePublished: "2026-07-02",
   },
@@ -681,26 +686,18 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     title: "Private Portugal Wine Tours | Lisbon, Alentejo & Beyond",
     metaDescription:
       "Discover private wine tours across Portugal, from Arrábida and Setúbal near Lisbon to Alentejo traditions, family wineries and local food.",
-    h1: "Portugal wine tours, poured properly.",
+    h1: "Private Wine Tours in Portugal",
     eyebrow: "Portugal · Wine Tours",
     standfirst:
       "Small cellars, real winemakers, and a private day paced around lunch.",
     sections: [
       {
-        heading: "Off the coach circuit.",
-        body: "Portugal is a wine country before it's a beach country. Our private wine tours stay off the coach circuit — small cellars, working winemakers, and the kind of lunch that turns a tasting into a proper day.",
+        heading: "Portugal as a wine destination",
+        body: "Portugal is one of the most diverse wine countries in Europe, with distinct regions, native grape varieties and long-established traditions in every part of the territory. Each area has its own climate, its own soil and its own way of making and drinking wine.\n\nFrom the Douro Valley in the north to the Alentejo plains in the south, and from Bairrada and Dão in central Portugal to the vineyards near Lisbon in Arrábida and Setúbal, the country offers many possible experiences for wine lovers.\n\nA well-designed private wine tour makes it possible to explore this diversity without trying to include everything at once. The most memorable journeys tend to focus on one or two regions and give enough time to enjoy the landscape, food and hospitality that surround the wine itself.",
       },
       {
-        heading: "Arrábida & Setúbal — the wine coast an hour from Lisbon.",
-        body: "Moscatel de Setúbal, Castelão reds, and cellars perched between cork forest and Atlantic cliffs. Our home region — a private day here is what we do best.",
-      },
-      {
-        heading: "Azeitão — a quieter cellar day: cheese, wine, and no queue.",
-        body: "Azeitão's small artisan cheesemakers, a working family cellar, and a lunch table under grapevines. Slower, closer, and often the guest favourite.",
-      },
-      {
-        heading: "Alentejo — Reserva reds under old olive trees.",
-        body: "Two hours south, the Alentejo pours the country's most concentrated reds. Estates that don't take walk-ins, long lunches, and an afternoon in Évora on the way back.",
+        heading: "How we design private wine journeys",
+        body: "Our private wine journeys begin with the traveller rather than a predefined itinerary. We consider the amount of time available, previous experience with Portuguese wine, personal preferences, physical rhythm and interest in food, culture or nature.\n\nBased on this, we can plan a full private day near Lisbon in Arrábida, Setúbal or Palmela, a longer day in the Alentejo, or a multi-day route combining more than one region. Winery selection, driving times, meals and cultural stops are all considered together to create a natural pace.\n\nWe pay particular attention to matching each guest with wineries that suit their curiosity. Some travellers prefer historic estates, others prefer smaller family cellars. Some want a strong focus on tasting technique, while others prefer conversation and landscape. Every element is intended to feel intentional rather than generic.",
       },
       {
         heading: "One private car, one guide, one great cellar day.",
@@ -715,6 +712,12 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "evora-alentejo", label: "Évora & Alentejo Wine" },
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
     ],
+    relatedReads: [
+      { path: "/wine-tours-lisbon", label: "Private wine tours from Lisbon" },
+      { path: "/arrabida-wine-tour", label: "Explore Arrábida and Setúbal wine country" },
+      { path: "/alentejo-wine-tour-from-lisbon", label: "Explore an Alentejo wine day" },
+      { path: "/multi-day", label: "Design a multi-day Portugal wine journey" },
+    ],
     datePublished: "2026-07-04",
   },
   {
@@ -722,18 +725,14 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     title: "Private Wine Tours from Lisbon | Arrábida & Setúbal",
     metaDescription:
       "Explore private wine tours from Lisbon to Arrábida, Setúbal, Azeitão and Palmela, with family wineries, local lunch and a private guide.",
-    h1: "The Best Wine Tours from Lisbon — Arrábida, Comporta & Alentejo",
+    h1: "Private Wine Tours from Lisbon",
     eyebrow: "Lisbon · Private Wine Days",
     standfirst:
       "Three real wine regions within reach of your hotel. Family producers, long Portuguese lunches, your own driver and guide.",
     sections: [
       {
-        heading: "Three wine regions, all reachable in a day.",
-        body: "Lisbon sits between two serious wine countries. Forty minutes south across the 25 de Abril bridge are the Arrábida hills and Azeitão — Moscatel de Setúbal country, small whitewashed family wineries, the Atlantic just below. An hour and a half east lies the Alentejo plain, with the walled town of Évora at its centre. We design private wine days in both, and we drive you door to door.",
-      },
-      {
-        heading: "Private. Local. Designed live, not booked off a shelf.",
-        body: "We are a licensed Portuguese tour operator (RNAAT nº 31/2023), not a marketplace reselling someone else's bus tour. Every day is private from the start: your group, your pace, your wineries. We open the wineries we have personally worked with — the cellars where the family pours, not a tasting-room queue — and we sit you at a long lunch that takes as long as it should.",
+        heading: "Wine tours from Lisbon at their best",
+        body: "Lisbon is one of the most convenient starting points in Europe for a serious wine day. Within a short drive, travellers can reach several distinct regions, each with its own grape varieties, wineries and gastronomic traditions.\n\nArrábida, Setúbal, Palmela and Azeitão are especially close. All can easily be visited on a single day trip, offering a strong balance between tasting quality, landscape and a comfortable pace. A little further, the Alentejo and its historic talha wines allow for a more immersive full-day experience.\n\nA private wine tour from Lisbon is ideal for travellers who want to understand these regions in depth without long, exhausting itineraries. It also allows the day to be shaped precisely to individual preferences, whether the focus is on family cellars, historic estates, coastal scenery, traditional lunch or all of these together.",
       },
       {
         heading: "Real Signature wine days.",
@@ -747,6 +746,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedSignatures: [
       { slug: "evora-alentejo", label: "Évora & Alentejo Wine" },
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
+    ],
+    relatedReads: [
+      { path: "/arrabida-wine-tour", label: "Explore the Arrábida wine region" },
+      { path: "/tours/arrabida-wine-allinclusive", label: "See the three-winery Signature" },
+      { path: "/portugal-wine-tours", label: "Explore wine journeys across Portugal" },
     ],
     datePublished: "2026-07-05",
   },
