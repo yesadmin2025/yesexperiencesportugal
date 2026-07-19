@@ -1750,7 +1750,7 @@
     height: 1px;
     width: 18px;
     background: var(--gold);
-    transition: width 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    transition: width 320ms cubic-bezier(0.22, 0.61, 0.36, 1); /* motion-budget-allow: legacy underline sweep */
   }
   .group:hover .tour-card-link,
   .tour-card-link:hover,
@@ -4316,7 +4316,7 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade-up-sm"] {
      drift between routes once the animation completes. */
   .home-energy .he-eyebrow-bar::before {
     width: 0;
-    transition: width 720ms cubic-bezier(0.22, 0.61, 0.36, 1) 80ms;
+    transition: width 720ms cubic-bezier(0.22, 0.61, 0.36, 1) 80ms; /* motion-budget-allow: legacy rule draw */
   }
   .home-energy .reveal-stagger.is-visible .he-eyebrow-bar::before,
   .home-energy .is-visible .he-eyebrow-bar::before,
@@ -4346,7 +4346,7 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade-up-sm"] {
     );
     /* +~15% visibility — warmer gold, slightly higher opacity, longer rule. */
     opacity: 0.7;
-    transition: width 680ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    transition: width 680ms cubic-bezier(0.22, 0.61, 0.36, 1); /* motion-budget-allow: legacy rule draw */
   }
   .home-energy .he-section-rule.is-visible::before,
   .home-energy .is-visible .he-section-rule::before {
