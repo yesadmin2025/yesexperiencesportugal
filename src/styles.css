@@ -6849,8 +6849,9 @@ html {
 }
 
 @media (max-width: 767.98px) {
-  .motion-magnetic,
-  .motion-parallax { transform: none !important; will-change: auto !important; }
+  .motion-magnetic { transform: none !important; will-change: auto !important; }
+  /* Motion v4: parallax stays on mobile but scaled down (60%). */
+  .motion-parallax-layer { transform: translate3d(0, calc(var(--parallax-y, 0px) * 0.6), 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -6858,12 +6859,116 @@ html {
   .motion-split-line,
   .motion-rule,
   .motion-parallax,
-  .motion-magnetic {
+  .motion-parallax-layer,
+  .motion-magnetic,
+  .motion-image-reveal,
+  .motion-image-reveal-inner,
+  .motion-rise-part,
+  .motion-goldrule,
+  .motion-drift {
     transition: none !important;
     animation: none !important;
     clip-path: none !important;
     transform: none !important;
+    filter: none !important;
     opacity: 1 !important;
     will-change: auto !important;
   }
 }
+
+/* ============================================================
+   Motion v4 — cinematic parallax + reveals (site-wide)
+   ============================================================ */
+
+/* ParallaxScene wrapper — no styles needed beyond being a positioning
+   context for its layers; kept as a hook for future scoping. */
+.motion-scene { position: relative; }
+
+.motion-parallax-layer {
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
+  will-change: transform;
+}
+
+/* ImageReveal — diagonal clip + scale + blur, synchronized. */
+.motion-image-reveal {
+  display: block;
+  overflow: hidden;
+  clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  transition: clip-path var(--motion-dur-reveal) var(--motion-ease-cine);
+  will-change: clip-path;
+}
+.motion-image-reveal[data-reveal-dir="left"] {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--motion-dur-reveal) var(--motion-ease-cine);
+}
+.motion-image-reveal[data-reveal-dir="right"] {
+  clip-path: inset(0 0 0 100%);
+  transition: clip-path var(--motion-dur-reveal) var(--motion-ease-cine);
+}
+.motion-image-reveal.is-visible[data-reveal-dir="diagonal"] {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.motion-image-reveal.is-visible[data-reveal-dir="left"],
+.motion-image-reveal.is-visible[data-reveal-dir="right"] {
+  clip-path: inset(0 0 0 0);
+}
+.motion-image-reveal-inner {
+  display: block;
+  transform: scale(1.06);
+  filter: blur(6px);
+  transition:
+    transform var(--motion-dur-reveal) var(--motion-ease-cine),
+    filter var(--motion-dur-reveal) var(--motion-ease-cine);
+  will-change: transform, filter;
+}
+.motion-image-reveal.is-visible .motion-image-reveal-inner {
+  transform: scale(1);
+  filter: blur(0);
+}
+
+/* TextRise — lines or words rise from a mask. */
+.motion-rise { display: block; }
+.motion-rise.mode-lines .motion-rise-part { display: block; }
+.motion-rise.mode-words .motion-rise-part { display: inline-block; white-space: pre; }
+.motion-rise-part {
+  overflow: hidden;
+  transform: translateY(115%);
+  opacity: 0;
+  transition:
+    transform var(--motion-dur-rise) var(--motion-ease-cine),
+    opacity var(--motion-dur-rise) var(--motion-ease-cine);
+  transition-delay: calc(var(--rise-index, 0) * var(--rise-stagger, 60ms));
+  will-change: transform, opacity;
+}
+.motion-rise.is-visible .motion-rise-part {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* GoldRule — draws in from the left. */
+.motion-goldrule {
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform var(--motion-dur-rule) var(--motion-ease-cine);
+  will-change: transform;
+}
+.motion-goldrule.is-visible { transform: scaleX(1); }
+
+/* AmbientDrift — continuous cinematic micro-motion, plays only in view. */
+@keyframes motion-drift-loop {
+  0%   { transform: translate3d(-4px, 0, 0) scale(1.00); }
+  50%  { transform: translate3d( 4px, -3px, 0) scale(1.02); }
+  100% { transform: translate3d(-4px, 0, 0) scale(1.00); }
+}
+.motion-drift {
+  will-change: transform;
+  animation-play-state: paused;
+}
+.motion-drift.is-playing {
+  animation: motion-drift-loop var(--motion-drift-loop) ease-in-out infinite;
+  animation-play-state: running;
+}
+.motion-drift[data-drift="medium"] {
+  --motion-drift-loop: 18s;
+}
+
