@@ -238,7 +238,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
                     className="inline-flex h-11 w-11 items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                     aria-label={`Remove child ${i + 1}`}
                     style={{
-                      color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                      color: "var(--charcoal-soft)",
                     }}
                   >
                     <X className="h-4 w-4" aria-hidden />
