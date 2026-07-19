@@ -1,50 +1,95 @@
-# Motion — tornar visível sem quebrar o premium
+# Motion v3 — Editorial Cinematic + Performance Budget
 
-## Diagnóstico
+Objetivo: passar de reveals "contidos" para um sistema com **storytelling gráfico** (máscaras, split-text, parallax controlado, chapter leads, gold rule draw-in) mantendo LCP ≤ 2.5s, CLS < 0.05, INP < 200ms em mobile mid-tier.
 
-As animações estão implementadas em todo o lado, mas com valores tão contidos que praticamente não se leem no mobile:
+## 1. Performance budget (guardrails, medidos antes e depois)
 
-- `.reveal` sobe **12px em 360ms**, `.reveal-stagger` **10px em 320ms** — abaixo do limite premium.
-- `RouteFade` faz apenas fade de opacidade em 160ms, sem lift.
-- Scope `marketing` (aplicado nas páginas públicas) força translateY 18px + blur 4px em 420ms — bom, mas homepage e Signature/editorial não recebem o mesmo tratamento porque usam `.reveal` diretamente.
-- `RevealImage` está em `motion="none"` por defeito e quase nenhum call site opta por `mask`/`scale`, logo as imagens não têm o mask reveal cinematográfico do plano.
-- Ken-Burns em `GuestMomentsStrip`/service blocks continua a existir mas sem stagger nem entry lift.
+- LCP ≤ 2.5s / CLS < 0.05 / INP < 200ms (mobile, Moto G class, 4G throttled).
+- JS por rota ≤ 180KB gzipped incremental.
+- Nenhuma animação toca `top/left/width/height` — só `transform` + `opacity` + `filter` (composited).
+- `will-change` só durante a animação, removido no `onEnd`.
+- Todas as animações passam por `useHydrated()` + `IntersectionObserver` (rootMargin 15%), gated por `prefers-reduced-motion`.
+- Imagens hero mantêm `fetchpriority="high"` + `<link rel="preload">` no route `head()`. Blur-in aplicado só depois de `decode()` resolver para não empurrar LCP.
+- Novo script `scripts/check-motion-budget.mjs` corre no `prebuild`: falha se algum ficheiro adicionar `transition: all`, `animation: *` sobre propriedades não-composited, ou `will-change` permanente.
 
-Resultado: o sistema funciona, mas o utilizador sente “nada acontece”.
+## 2. Motion primitives novos (src/components/motion/)
 
-## Implementação (dentro do plano v2 aprovado, sem reintroduzir bounce/spring)
+Todos SSR-safe, sem layout shift, com fallback estático se JS falhar.
 
-1. **Refinar tokens de reveal (globais, exceto excluded routes)**
-  - `.reveal`: translateY **20px → 0**, duração **520ms**, ease existente `--ease-premium`.
-  - `.reveal-stagger`: translateY **16px → 0**, duração **460ms**, delay base 60ms mantido.
-  - Adicionar um leve `filter: blur(3px) → 0` em imagens dentro de `.reveal` (via `.reveal img, .reveal [data-reveal-image]`) durante 560ms para dar textura cinematográfica sem mover layout.
-  - &nbsp;
-2. **Ativar mask reveal nas imagens editoriais**
-  - Trocar `motion="none"` para `motion="mask"` em call sites editoriais aprovados: homepage, cards de Signature (`experiences.tsx`), heros de tour (`tours.$tourId.tsx`), cards de Local Stories e blocos `EditorialCard` com imagem.
-    &nbsp;
-  - Duração continua ligada a `--dur-image` (780ms) — apenas garantimos que dispara.
-3. **RouteFade com micro-lift**
-  - Adicionar translateY 6px → 0 em 220ms junto ao fade existente, apenas nas rotas já cobertas (mantém exclusão de Studio/Builder/Checkout/Tailor/Admin).
-4. **Stagger real onde já existe intenção**
-  - Em `experiences.tsx` (grelha Signature), `local-stories` (grelha de artigos) e `corporate.tsx` (blocos de serviço): aplicar `.reveal-stagger` com delays 0/80/160/240ms via nth-child para garantir sequência visível.
-  - Sem alterar layout, só classes.
-5. **Ken-Burns sempre ligado nos ambient reveals**
-  - `AmbientLandscapeReveal` / `CinematicEditorialImage` já implementam pan, mas dependem de viewport gating; garantir que o gate ativa 200ms depois do reveal do container (não em paralelo) e que o pan corre continuamente enquanto visível, em vez de parar após um ciclo.
-6. **Reading Progress mais evidente**
-  - Aumentar altura da barra de 2px → 3px e opacidade da cor gold para 100% (atualmente com transição)
-7. **Guardrails**
-  - Nenhum valor ultrapassa: translateY 22px, duração 620ms, blur 4px, sem bounce/spring, pode usar  parallax 
-  - &nbsp;
-  - Correr suite existente `src/__tests__/animation-contract-regression.test.ts` — atualizar os matchers de duração/translate onde o contrato agora exige o valor novo.
-  - Correr `scripts/check-css-braces.mjs` no prebuild (já existe).
+- **`<MaskReveal>`** — clip-path inset 100%→0 diagonal (12deg), 720ms, cubic-bezier(.2,.7,.1,1). Usado em heroes e imagens editoriais chave. Substitui blur+translate genérico.
+- **`<SplitLines>`** — divide h1/h2 em linhas via CSS `background-clip` + `translateY(110%)→0` stagger 60ms. Sem re-flow (mede uma vez). Aplicado só a headings de secção principais (1-2 por página).
+- **`<ChapterLead>`** — eyebrow + gold rule que "desenha" (scaleX 0→1, transform-origin left, 640ms) + título com SplitLines. Marca início de secção editorial.
+- **`<ParallaxLayer amount="sm|md">`** — translateY via `requestAnimationFrame` gated a IO, cap ±24px, off em mobile <390px e reduced-motion. Só em hero e 1 secção âncora por rota.
+- **`<StickyChapter>`** — para Signature/Local Stories: título fica sticky durante scroll do bloco e faz cross-fade entre capítulos (opacity + 8px translate).
+- **`<MagneticCTA>`** — botão primário atrai cursor ±6px em desktop, sheen dourado em hover. No-op mobile.
+- **`<CountUp>`** — para números de trust (reviews, anos, guests). IO-gated, 900ms.
 
-## Verificação
+## 3. Storytelling por família de rota
 
-- Playwright mobile 393×706 em `/`, `/experiences`, `/tours/arrabida-wine-secret-coves`, `/local-stories`, homepage, about , moments `/corporate`: gravar 3 screenshots por rota (pré-scroll, mid-scroll, pós-scroll) e confirmar entrada visível de secções + zoom cinematográfico em imagens editoriais.
-- Verificar consola sem warnings de fallback de fonte ou hydration.
-- Preços com crianças tem de estar descriminado não apenas por adulto ou apenas o total em todos os portos . 
+### Home (`.home-energy` scope)
+- Hero: MaskReveal na imagem + SplitLines no H1 + ChapterLead na secção seguinte.
+- Occasions row: cards entram em stagger diagonal (não vertical) 80ms.
+- CTA final: MagneticCTA + sheen já existente reforçada (opacity .35→.6).
 
-## Fora de âmbito
+### Signature index + tour detail
+- Hero MaskReveal + SplitLines.
+- Cada "capítulo" do dia usa ChapterLead + StickyChapter (o número do stop fica sticky enquanto scrolla).
+- Mapa: pins entram um a um (60ms stagger) quando o mapa entra em viewport.
+- Trust row: CountUp nos ratings/anos.
 
-- Studio V2/V3, Builder, 
-  &nbsp;
+### Local Stories (article)
+- Cover: MaskReveal + eyebrow draw-in.
+- ReadingProgress mantém-se (já 3px gold).
+- Primeiro parágrafo: drop-cap Fraunces 4.5rem, float left, fade+scale.
+- Imagens inline: MaskReveal com direção alternada.
+
+### Editorial (About, Corporate, Moments, Press, Reviews, Travel Designer)
+- ChapterLead a abrir cada secção major.
+- Uma imagem hero por página com ParallaxLayer amount="sm".
+- Restante mantém `.reveal` atual (já em 20px/520ms).
+
+### Studio V3
+- **Não tocar.** Continua excluído por decisão prévia (studio-philosophy).
+
+### Booking / Checkout / Auth / Admin
+- Excluídos. Apenas RouteFade. Zero storytelling para não distrair de conversão.
+
+## 4. Tokens & CSS
+
+Adicionar em `src/styles.css`:
+
+```
+--motion-ease-editorial: cubic-bezier(.2,.7,.1,1);
+--motion-dur-mask: 720ms;
+--motion-dur-split: 560ms;
+--motion-dur-rule: 640ms;
+--motion-stagger: 60ms;
+```
+
+Refinar `.reveal` para 24px/560ms (subida ligeira do v2 atual) e manter blur-in.
+
+## 5. Verificação (obrigatória antes de marcar done)
+
+1. `bun run build` limpo + `check-motion-budget.mjs` verde.
+2. Lighthouse mobile em `/`, `/experiences`, `/tours/:id`, `/local-stories/:slug`, `/about` — anexar métricas ao relatório.
+3. Playwright: screenshot antes/depois em 393×706 de cada rota-âncora, gravando `performance.now()` do primeiro `is-visible`.
+4. Teste `prefers-reduced-motion: reduce` — nenhum keyframe corre, conteúdo visível estático.
+5. Regression tests atualizados (`animation-contract-regression.test.ts`) com os novos tokens.
+
+## 6. Rollout em 4 batches (implementação após aprovação)
+
+- **B1 — Foundation:** tokens, primitives novos, budget script, testes. Sem alteração visual ainda.
+- **B2 — Home + Signature index:** MaskReveal hero, SplitLines H1, ChapterLead nas duas rotas mais visitadas. Medir LCP/INP.
+- **B3 — Tour detail + Local Stories:** StickyChapter, drop-cap, mask alternada, pins staggered.
+- **B4 — Editorial pages + polish:** ChapterLead + ParallaxLayer sm, CountUp em trust rows, MagneticCTA no CTA global.
+
+## Fora de scope
+
+- Studio V3 (excluído por design).
+- Booking/Checkout (conversão primeiro).
+- Bibliotecas pesadas (GSAP, Lenis, Locomotive) — tudo custom com IO + rAF para não estourar budget JS.
+- Vídeo de fundo, WebGL, canvas.
+
+## Deliverable final
+
+Relatório em `docs/motion-v3-report.md` com métricas Lighthouse antes/depois por rota + checklist de budget verde.
