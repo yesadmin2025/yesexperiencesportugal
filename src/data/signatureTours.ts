@@ -1,4 +1,11 @@
 // rev 3 — multi-photo Viator galleries + per-stop images
+//
+// SOURCE-OF-TRUTH RULE (do not violate):
+// Each tour's `stops[]` MUST mirror the ordered itinerary on the matching
+// Viator product page. Do not add stops, meals, activities, timing claims,
+// or descriptors that are not on the Viator page. AI writes tone only —
+// never invents itinerary facts. When the Viator page changes, update
+// `stops[]` here to match; do not diverge for storytelling.
 // -----------------------------------------------------------------------------
 // Each tour now has:
 //   - `img`  → hero photo (used on cards, hero, og:image)
