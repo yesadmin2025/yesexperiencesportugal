@@ -1577,7 +1577,19 @@ function TailorPage() {
                 <div className="p-5 pt-0">
                   <button
                     type="button"
-                    onClick={() => setDetailsOpen(true)}
+                    onClick={() => {
+                      gaReserveCtaClick({ tourId: tour.id, surface: "tailor", ctaLocation: "final" });
+                      if (!compositionReady) {
+                        gaBookingValidationBlocked({ tourId: tour.id, surface: "tailor", reason: "composition_incomplete" });
+                        return;
+                      }
+                      if (summaryStops.length === 0) {
+                        gaBookingValidationBlocked({ tourId: tour.id, surface: "tailor", reason: "no_stops" });
+                        return;
+                      }
+                      gaCheckoutDrawerOpened({ tourId: tour.id, surface: "tailor" });
+                      setDetailsOpen(true);
+                    }}
                     disabled={checkoutPending || summaryStops.length === 0 || !compositionReady}
                     className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
                   >
