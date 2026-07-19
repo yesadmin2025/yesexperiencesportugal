@@ -51,7 +51,13 @@ import {
   gaBeginCheckout,
   gaGenerateLead,
   buildTourItem,
+  gaReserveCtaClick,
+  gaBookingDateSelected,
+  gaBookingCompositionSet,
+  gaBookingValidationBlocked,
+  gaCheckoutDrawerOpened,
 } from "@/lib/analytics-ga4";
+
 
 
 /* ════════════════════════════════════════════════════════════════
