@@ -526,13 +526,13 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
           </div>
           {post.heroImage && (
             <div className="container-x max-w-4xl mt-10">
-              <div className="relative overflow-hidden aspect-[16/9] shadow-[0_24px_60px_-30px_rgba(46,46,46,0.4)]">
-                <img
-                  src={post.heroImage}
-                  alt={post.heroImageAlt ?? post.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              <RevealImage
+                motion="mask"
+                ratio="16 / 9"
+                frameClassName="shadow-[0_24px_60px_-30px_rgba(46,46,46,0.4)]"
+                src={post.heroImage}
+                alt={post.heroImageAlt ?? post.title}
+              />
             </div>
           )}
         </header>
