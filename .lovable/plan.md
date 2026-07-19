@@ -1,158 +1,117 @@
-# Visual UX & Design Consistency Audit — yesexperiencesportugal.com
+# Booking flow & itinerary truth pass
 
-**Mode:** Inspection only. No files changed. Nothing deployed.
-**Method:** Static review of shared components + routes in the codebase, cross-checked against the two live screenshots shared this session (tour hero, corporate service block) and the memory-locked design system (Fraunces + Inter, 8-token palette, homepage `.home-energy` scope). No browser automation was run to preserve credits.
-
----
-
-## Findings by category
-
-Severity: C=Critical · H=High · M=Medium · L=Low
-Scope: T=Tiny · S=Small · M=Medium · X=Structural
-
-### 1. Contrast
-
-| Sev | Route(s) | Component | Issue | Source | Fix |
-|---|---|---|---|---|---|
-| H | /experiences, /day-tours, tour cards | `ExperienceCard` gold rating badge | Gold `#C9A96A` on ivory `#FAF8F3` ≈ 2.1:1 — fails AA for numeric rating + star | Shared | Swap numeric/star to `--gold-ink` `#8A611F` (already exists), keep gold decorative only. S |
-| H | Hero / tour hero overlays | `HeroOverlay` caption | Ivory text over bright photograph zones drops below 4.5:1 | Shared | Deepen lower-third scrim 35% → 50% or add text-shadow token. S |
-| M | Footer, ghost CTAs | Ghost button | `--charcoal-soft` on `--sand` ≈ 4.3:1 for 14px labels | Shared | Bump label 15px or switch to `--charcoal`. T |
-| M | Form placeholders | Input | `text-muted-foreground` on white ≈ 3.9:1 | Shared | Use `--charcoal-soft` token. T |
-| L | Disabled buttons | Button variants | Disabled indistinguishable from ghost | Shared | 40% opacity + not-allowed cursor. T |
-
-### 2. Typography
-
-| Sev | Route | Issue | Source | Fix |
-|---|---|---|---|---|
-| H | /corporate, /proposal-in-portugal | H2 compresses to near-body scale at 390px | `<SectionTitle>` | Mobile clamp `clamp(30px, 7vw, 40px)`. S |
-| M | /local-stories articles | Line length exceeds 80ch at ≥1024px | Page-specific | Apply existing `prose-longform`. T |
-| M | /studio-v3 reveal | Italic emphasis wraps orphan word at 393px | Content | `text-wrap: balance` on H1/H2 tokens. T |
-| M | Tour stop list | Number labels weight = body → reads as prose | `SignatureRouteMap` | Inter medium 15px + tabular-nums. T |
-| L | /faq | Accordion trigger = body weight/size | Shared | Trigger Inter medium 16px. T |
-| L | /experiences card titles | 18px vs 20px with no rule | Shared | Document scale in EditorialCard. T |
-
-### 3. CTAs
-
-| Sev | Route | Issue | Source | Fix |
-|---|---|---|---|---|
-| H | Home + /studio-v3 + tour hero | "Enter the Studio" / "Design your journey" / "Start with Studio" — 3 labels, 1 action | Page copy over `<CtaButton>` | Lock vocabulary to 2 labels — owner sign-off. S |
-| H | Tour detail | "Reserve this day" + "Book now" + "Reserve instantly" same viewport, same weight | Page | One primary; rest → ghost/link. S |
-| M | Mobile sticky CTA | Overlaps in-card CTA at 390px → double primary | Shared sticky | Hide sticky when in-card CTA in viewport (IntersectionObserver). S |
-| M | WhatsApp CTA | Sometimes primary green, sometimes ghost | Shared | Force ghost/tertiary per memory. T |
-| M | Ghost CTAs | Missing focus ring on Safari iOS | Shared | `focus-visible:ring-2 ring-[color:var(--teal)]`. T |
-| L | Card arrow color | Teal vs gold inconsistent | Shared | Consolidate via `<CtaButton variant="link">`. T |
-
-### 4. Spacing & Layout
-
-| Sev | Route | Issue | Source | Fix |
-|---|---|---|---|---|
-| H | /corporate mobile (per your IMG_6526–6528) | Consecutive photo blocks share rhythm with paragraphs → wall-of-image | Page | `space-y-24 md:space-y-32` + gold rule divider. S |
-| H | Tour hero → stop list | Desktop 120px vs mobile 24px gap | Page | Standardise via `--section-gap`. T |
-| M | /faq | Accordions flush to edge at 390px | Page | Add `px-5` container. T |
-| M | Footer | Columns 2–3 kiss at 768px | Shared footer | `gap-x-8` → `gap-x-12` at md. T |
-| M | Signature map + notes | Map full-bleed, card 16px padding — misaligned | Shared | Match container. T |
-| L | /about | Founder portrait crops head at 430px | Page | `object-position: center 20%`. T |
-
-### 5. Component Consistency
-
-| Sev | Issue | Fix |
-|---|---|---|
-| H | Two review block variants (star row vs badge row) — same data, different UI | S |
-| H | Card corner radius drifts `rounded-xl` / `2xl` / `lg` across sections | T (token `--radius-card`) |
-| M | Payment/trust badge strip at 3 sizes (footer, checkout, tour) | S |
-| M | Breadcrumb only on tour detail; missing on Local Story leaf, /experiences filters | S |
-| M | Two eyebrow implementations (hand-rolled vs `<Eyebrow>` primitive) | S |
-| L | Icon sizes 16/18/20px in same nav row | T |
-
-### 6. Animations & Interactions
-
-| Sev | Issue | Source | Fix |
-|---|---|---|---|
-| M | `CinematicEditorialImage` Ken-Burns runs off-viewport → mobile CPU waste | Shared | IntersectionObserver pause. S |
-| M | Studio storyboard reveal ~700ms before CTA tappable | Studio | Cap 450ms per memory. T |
-| M | `prefers-reduced-motion` honored on `.home-energy` but not all residual reveals | Shared | Wrap in `@media (prefers-reduced-motion: no-preference)`. T |
-| L | Hover-only tooltips on stop numbers unavailable on touch | Shared map | Tap-toggle popover. S |
-| L | Mobile menu open eases ~380ms — sluggish | Shared nav | 220ms. T |
-
-### 7. Accessibility
-
-| Sev | Issue | Fix |
-|---|---|---|
-| H | Icon-only header buttons (menu, language) missing `aria-label` on some variants | T |
-| H | Studio phase-progress dots convey progress by color only | Add numeric + `aria-current="step"`. T |
-| M | Tailor guest-details form errors color-only | Add `role="alert"` + text. T |
-| M | Local Stories alt-text policy inconsistent (empty vs meaningful) | Reconcile. S |
-| L | Site-wide skip-link missing | T |
-
-### 8. Mobile-specific (390 / 430)
-
-- Sticky CTA overlaps last FAQ accordion when expanded.
-- 430px landscape: hero CTA below fold on tour pages.
-- `100vh` still in `AuthLayout` — collapses under iOS URL bar (use `100dvh`).
-- /multi-day itinerary chip row overflows without visible affordance.
-
-### 9. Desktop-specific (1440)
-
-- /corporate stretches full width while other routes cap ~1280 → looks unbranded.
-- Homepage hero video letterboxes on ultrawide due to fixed 16:9 in `min-h-screen`.
-- Footer logo scales beyond locked 32px height at 1440+.
+Single-branch plan that ships the earlier three asks (availability, funnel analytics, contrast) plus the four new issues surfaced in the screenshots. All fixes stay inside guardrails: no invented stops, no repointed brand tokens, source-of-truth honoured.
 
 ---
 
-## Top 10 highest-impact corrections
+## 1 · Time-slot availability & validation (client-side, per-tour)
 
-1. Rating badge contrast → `--gold-ink` for numerics (H, shared).
-2. Corporate mobile rhythm — section-gap token + gold rule dividers (H).
-3. Studio-entry CTA vocabulary consolidation (H, owner sign-off).
-4. Tour page competing primary CTAs — enforce one primary (H).
-5. Card radius token unification (H, shared).
-6. H2 mobile clamp in `<SectionTitle>` (H).
-7. Hero overlay scrim to protect ivory text (H).
-8. Ken-Burns pause off-viewport (M, perf).
-9. Icon-only `aria-label` in header (H, a11y).
-10. Sticky mobile CTA vs. inline CTA overlap resolver (H).
+**New** `src/data/tourAvailability.ts` — per-tour: `operatingDays`, `pickupWindows`, `minLeadHours` (default 24), `sameDayCutoffHourLocal?`, `blackoutDates?` (Dec 25 / Jan 1). Default fallback used when a tour isn't listed.
 
-## Quick wins in shared components (all Tiny)
+**New** `src/lib/booking/availability.ts` (+ unit tests):
+- `isDateSelectable(tourId, dateISO, nowLisbon)` → `{ ok, reason: 'past'|'lead-time'|'blackout'|'off-day' }`
+- `earliestSelectableDate(tourId, now)` — drives `<input type="date" min>`
+- `availablePickups(tourId, dateISO)` — filters `pickupWindows` against lead time so past slots disappear (cleaner than disabling)
 
-- Placeholder + disabled contrast tokens.
-- Focus ring on ghost CTA.
-- FAQ accordion trigger weight.
-- Footer column gap at md.
-- Icon size normalization.
+**Form wiring** in `SimpleBookingForm.tsx` + `SimpleTailorForm.tsx`:
+- Date `min` = earliest selectable. On invalid change → single-line editorial hint under the field, pickup cleared.
+- Pickup grid renders only `availablePickups()` results; empty → *"No pickups left today — pick tomorrow."*
+- Submit `disabled` + `aria-disabled` until date + pickup + composition + language all valid.
 
-## Page-specific
-
-- /corporate spacing + max-width.
-- /about founder image crop.
-- /local-stories reading measure.
-- /multi-day chip overflow affordance.
-
-## Owner/design decisions required
-
-- Canonical Studio-entry CTA vocabulary (max 2 labels).
-- WhatsApp CTA tier (memory says ghost — confirm).
-- Which review-block variant becomes canonical.
-- Breadcrumb policy on leaf routes.
-- Alt-text policy for editorial photography with adjacent captions.
-
-## Components to collapse to a single source of truth
-
-- `ReviewBlock` (2 variants).
-- `TrustBadgeStrip` (3 sizes).
-- `Eyebrow` (primitive exists — enforce).
-- `SectionDivider` gold rule (not yet a primitive).
-- `StickyMobileCTA` (viewport-aware wrapper).
+**Server safeguard**: the checkout server function re-runs `isDateSelectable` before minting Stripe session; on fail returns 422 with reason. No DB, no new secrets.
 
 ---
 
-## Confirmations
+## 2 · Funnel analytics — CTA to confirmation
 
-- No files were changed.
-- Nothing was deployed.
-- No copy, colors, typography, routes, pricing, SEO, Stripe, Studio or Tailor logic touched.
+Extend `src/lib/analytics-ga4.ts` with custom (non-ecommerce) events carrying `tour_id`, `surface: 'signature'|'tailor'`:
 
-## Final status
+| Event | Trigger |
+|---|---|
+| `reserve_cta_click` | Any "Check availability & reserve" CTA (hero / sticky / final band) — with `cta_location` |
+| `booking_date_selected` | Valid date chosen (`days_ahead`) |
+| `booking_time_selected` | Pickup chosen (`pickup_time`) |
+| `booking_composition_set` | Composition becomes complete (`adults`, `minors`, `total_guests`) |
+| `booking_language_selected` | `language` |
+| `booking_validation_blocked` | Submit while disabled OR server 422 (`reason`) |
+| `checkout_drawer_opened` | Drawer mount — alongside existing `begin_checkout` |
+| `checkout_drawer_abandoned` | Drawer close without purchase (`time_open_ms`) |
 
-**VISUAL POLISH REQUIRED**
+Each event fires once per session per field (useRef guard). Existing `view_item → add_to_cart → begin_checkout → add_payment_info → purchase` untouched. Tests added to `analytics-ga4.test.ts`.
 
-Design system is coherent at the token layer. Issues concentrate in: (1) gold-on-ivory contrast for functional text, (2) mobile rhythm on /corporate and /proposal-in-portugal, (3) CTA vocabulary/hierarchy drift around Studio entries, and (4) a few shared components that should collapse to one source of truth. No structural rework needed — a scoped polish pass on ~15 primitives + 3 page containers resolves the majority.
+---
+
+## 3 · Price label truth — "per person / per adult / party total"
+
+**Problem** (IMG_6547 & IMG_6552): "INDICATIVE TOTAL €718 / ADULT" reads as a total but is a per-adult rate. IMG_6552 already shows the better shape (`FOR 3 GUESTS €215/pp · PARTY TOTAL €538`) — Studio V3 gets it right, but the Tailor summary card and the shared Signature price card do not.
+
+**Fix** in `src/routes/tours.$tourId.tailor.tsx` (line ~1478) and `src/components/studio-v3/SignaturePriceCard.tsx`:
+- Replace the single "Indicative total · €X / adult" row with the two-line shape used elsewhere:
+  - `For N guests · €X / pp` (adult unit, real when tier data present, else labelled *from*)
+  - `Party total · €Y` (uses `resolveJourneyPricing().totalEur` — age-band aware)
+- When minors present, show a compact `PerPersonBands` (already built) line below. When adults-only, drop the second bands line.
+- Eyebrow above the block: `INDICATIVE` (not `INDICATIVE TOTAL`) so it can't be misread. Small note underneath: *"Final on checkout."*
+
+No pricing math changes — reuses `resolveJourneyPricing` + `PerPersonBands` primitives. Snapshot test added to lock the shape.
+
+---
+
+## 4 · Tailor add-ons — geographic sanity (no nonsense stops)
+
+**Problem** (IMG_6548): Southwest Vicentine Coast (Alentejo/Costa Vicentina) offers **Lisbon** as an "Optional stop you can add". `optionalStops` reads `meta.stops.filter(s => s.passBy)` from Viator raw data — which includes hub cities Viator lists as pass-by/orientation, not as real user-selectable additions.
+
+**Fix** in `src/routes/tours.$tourId.tailor.tsx` (line ~335) + `src/data/tailorBlueprints.ts`:
+- Introduce `optionalStopsAllowlist?: string[]` on each Signature's Tailor blueprint. When present, `optionalStops` is intersected with the allowlist (case-insensitive).
+- When absent, apply a defensive filter: drop any stop whose label matches the tour's own `region` hub or is > ~120 km from the tour's centroid (uses `stopCoords` — pure math, no API). Rule: **when in doubt, hide it.** Never invent, never surface geographically wrong stops.
+- Populate the allowlist for every current Signature (owner-approved names only). Tours without a curated list show zero add-ons rather than junk — matches the brand rule *silence beats a wrong option*.
+- Also: the `optionalStops` block header changes from "Optional stops you can add" to **"Curated add-ons for this journey"** so users don't expect an open menu.
+
+Unit tests: Southwest Vicentine Coast → allowlist empty → block hidden; Arrábida wine → allowlist = curated set.
+
+---
+
+## 5 · Map legend truth — wineries + "2 or 3 depending on"
+
+**Problem** (IMG_6551): Arrábida wine tour map shows only civic stops (Cristo Rei, Parque Natural, Azulejos, Castelo de Sesimbra). Wineries — the actual point of the tour — aren't on the map, and the legend line ("Your guide sets the order and pace…") doesn't explain that winery count is *chosen* (2 or 3, availability-dependent).
+
+**Fix** in `src/components/SignatureRouteMap.tsx` + `src/data/stopGeo.ts`:
+- Add winery pins (with real coordinates) to Arrábida-wine-family tours. Pins use a distinct gold ◆ marker (vs. numbered gold circles for civic stops) so hierarchy is obvious. No fabricated coordinates — a winery without confirmed geo stays out.
+- Map legend gains one line under the numbered list when the tour has a `wineriesRule` set on its `SignatureTour`:
+  - Arrábida wine: *"You'll visit 2 or 3 of these wineries — the exact count depends on the experience you choose, and on same-day availability."*
+- The `SignatureTour.wineriesRule?: string` field is optional and hand-authored per tour (source-of-truth stays with owner). Tours without it show no extra legend line.
+
+Also fix the broken Signature card image on the Tailor hero (IMG_6550: blue "?" icon) — `src/routes/tours.$tourId.tailor.tsx` uses the tour's cover; when the Southwest Vicentine Coast cover is missing at that size, fall back to the responsive gallery lead. Small mechanical fix.
+
+---
+
+## 6 · Typography contrast — systemic token + booking-flow migration
+
+`src/styles.css`:
+- Add `--charcoal-ink: #4A4A4A` (≥ 4.6:1 on `--ivory` and `--sand`) for **functional body/hint text**.
+- Keep `--charcoal-soft` untouched — reserved for **decorative dimming only** (eyebrow underlines, dividers, disabled). Documented inline. Brand palette 8 tokens unchanged.
+
+**Migration** (surgical, not global):
+- `rg`-driven swap of `text-[color:var(--charcoal-soft)]` on hint/label/caption text nodes to `--charcoal-ink`. Preserve on borders and decorative dividers.
+- Priority: booking flow first (`SimpleBookingForm`, `SimpleTailorForm`, `checkout.$token.tsx`, `BrandedCheckoutDrawer`, `PriceBreakdownRows`, `PerPersonBands`, `TrustStrip`), then tour detail, then homepage, then rest.
+
+**Dev-only probe** `src/lib/contrast-check.ts` (opt-in `?contrastDebug=1`) console-warns any text node < 4.5:1 vs computed background. Not shipped hot.
+
+---
+
+## Ship order (single branch)
+1. Availability helpers + tests → form wiring → server guard.
+2. Analytics events + tests → CTA wiring → drawer events.
+3. Price label refactor (Tailor summary + SignaturePriceCard) + snapshot test.
+4. Tailor add-ons allowlist + geo filter + blueprint fills + tests.
+5. Map winery pins + legend rule + broken cover fallback.
+6. Contrast token + booking-flow swap + `?contrastDebug=1` probe.
+
+## Files touched (est.)
+- **New**: `src/data/tourAvailability.ts`, `src/lib/booking/availability.ts` (+tests), `src/lib/contrast-check.ts`
+- **Edited**: `src/components/SimpleBookingForm.tsx`, `src/components/SimpleTailorForm.tsx`, `src/components/checkout/BrandedCheckoutDrawer.tsx`, `src/components/MobileStickyCTA.tsx`, `src/components/SignatureRouteMap.tsx`, `src/components/studio-v3/SignaturePriceCard.tsx`, `src/routes/tours.$tourId.tsx`, `src/routes/tours.$tourId.tailor.tsx`, `src/routes/checkout.$token.tsx`, `src/data/tailorBlueprints.ts`, `src/data/signatureTours.ts` (optional `wineriesRule` field only), `src/data/stopGeo.ts`, `src/lib/analytics-ga4.ts` (+tests), `src/styles.css`, checkout server function (+ ~15 mechanical contrast swap sites)
+
+## Non-goals (explicit)
+- Live Viator/Bókun availability, blackout admin UI, real-time winery inventory.
+- Repointing brand palette tokens.
+- Copy invention (all new microcopy is functional & owner-approvable).
+- New analytics backend — reuses GA4 dataLayer.
