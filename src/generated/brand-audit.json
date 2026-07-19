@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-19T15:56:02.829Z",
-  "filesScanned": 844,
+  "generatedAt": "2026-07-19T16:16:16.424Z",
+  "filesScanned": 847,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,8 +18,8 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 372,
-    "approved": 90,
+    "total": 375,
+    "approved": 93,
     "allowlisted": 64,
     "mismatch": 218
   },
@@ -824,6 +824,33 @@
       "normalized": "#1a1a1a",
       "snippet": "<div style=\"font-weight:700;color:#1a1a1a;\">${escapeHtml(m.label)}</div>",
       "status": "mismatch"
+    },
+    {
+      "file": "src/components/SignatureRouteMap.tsx",
+      "line": 75,
+      "col": 32,
+      "raw": "#faf8f3",
+      "normalized": "#faf8f3",
+      "snippet": "background:var(--ivory,#faf8f3);",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/SignatureRouteMap.tsx",
+      "line": 76,
+      "col": 37,
+      "raw": "#c9a96a",
+      "normalized": "#c9a96a",
+      "snippet": "border:2px solid var(--gold,#c9a96a);",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/SignatureRouteMap.tsx",
+      "line": 80,
+      "col": 26,
+      "raw": "#295b61",
+      "normalized": "#295b61",
+      "snippet": "color:var(--teal,#295b61);line-height:1;\">${index + 1}</div>`,",
+      "status": "approved"
     },
     {
       "file": "src/components/admin/LegacyDomainsHistoryChart.tsx",

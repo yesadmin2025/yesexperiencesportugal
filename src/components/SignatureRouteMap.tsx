@@ -122,7 +122,7 @@ function LeafletMap({
         polylines.forEach((coords) => {
           if (coords.length < 2) return;
           L.polyline(coords, {
-            color: "#295b61",
+            color: "var(--teal)",
             weight: 3.5,
             opacity: 0.85,
             lineCap: "round",
@@ -133,7 +133,7 @@ function LeafletMap({
         L.polyline(
           stops.map((s) => [s.lat, s.lng] as [number, number]),
           {
-            color: "#295b61",
+            color: "var(--teal)",
             weight: 2.5,
             opacity: 0.55,
             dashArray: "6 8",
