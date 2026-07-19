@@ -62,6 +62,9 @@ interface ResolvedStop {
   label: string;
   lat: number;
   lng: number;
+  bestArrival?: string;
+  transit?: string;
+  duration?: string;
 }
 
 function makeGoldPin(L: typeof import("leaflet"), index: number) {
@@ -105,17 +108,13 @@ function LeafletMap({
       const map = L.map(ref.current, {
         zoomControl: true,
         scrollWheelZoom: false,
-        attributionControl: true,
+        attributionControl: false,
       });
       mapRef.current = map;
 
       L.tileLayer(
         "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        {
-          maxZoom: 18,
-          attribution:
-            '&copy; <a href="https://openstreetmap.org">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        },
+        { maxZoom: 18 },
       ).addTo(map);
 
       // Draw real driving polylines when available, else straight leg lines.
@@ -188,7 +187,15 @@ export function SignatureRouteMap({ tour }: Props) {
       const key = `${hit.lat.toFixed(4)},${hit.lng.toFixed(4)}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      out.push({ label: s.label, lat: hit.lat, lng: hit.lng });
+      const note = lookupStopNote(s.label);
+      out.push({
+        label: s.label,
+        lat: hit.lat,
+        lng: hit.lng,
+        bestArrival: note?.bestArrival,
+        transit: note?.transit,
+        duration: note?.duration,
+      });
     }
     return out;
   }, [tour]);
@@ -257,21 +264,86 @@ export function SignatureRouteMap({ tour }: Props) {
           </div>
         )}
 
-        {/* Full ordered stop list — screen-reader friendly, always shown. */}
-        <ol className="mt-6 grid sm:grid-cols-2 gap-x-6 gap-y-2 text-[13px] text-[color:var(--charcoal)] list-none p-0">
-          {stops.map((p, i) => (
-            <li key={`${p.label}-${i}`} className="flex items-baseline gap-3">
-              <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--gold)] shrink-0 w-6 font-semibold">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span className="leading-snug">{p.label}</span>
-            </li>
-          ))}
+        {/* Per-stop travel notes — arrival, transit, duration. Fields hide when unknown. */}
+        <ol className="mt-8 space-y-4 list-none p-0">
+          {stops.map((p, i) => {
+            const hasNotes = Boolean(p.bestArrival || p.transit || p.duration);
+            return (
+              <li
+                key={`${p.label}-${i}`}
+                className="flex gap-4 border-t border-[color:var(--gold)]/15 pt-4 first:border-t-0 first:pt-0"
+              >
+                <span
+                  aria-hidden
+                  className="shrink-0 mt-0.5 w-8 h-8 rounded-full border border-[color:var(--gold)]/50 bg-[color:var(--ivory)] flex items-center justify-center text-[13px] font-semibold text-[color:var(--teal)]"
+                >
+                  {i + 1}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-medium text-[color:var(--charcoal)] leading-snug">
+                    {p.label}
+                  </div>
+                  {hasNotes && (
+                    <dl className="mt-2 grid sm:grid-cols-3 gap-x-5 gap-y-1.5 text-[12.5px] text-[color:var(--charcoal-soft)]">
+                      {p.bestArrival && (
+                        <div className="flex items-start gap-1.5">
+                          <Sunrise size={12} className="text-[color:var(--gold)] mt-0.5 shrink-0" aria-hidden />
+                          <div>
+                            <dt className="text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] font-semibold">Arrive</dt>
+                            <dd className="leading-snug">{p.bestArrival}</dd>
+                          </div>
+                        </div>
+                      )}
+                      {p.transit && (
+                        <div className="flex items-start gap-1.5">
+                          <RouteIcon size={12} className="text-[color:var(--gold)] mt-0.5 shrink-0" aria-hidden />
+                          <div>
+                            <dt className="text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] font-semibold">Getting there</dt>
+                            <dd className="leading-snug">{p.transit}</dd>
+                          </div>
+                        </div>
+                      )}
+                      {p.duration && (
+                        <div className="flex items-start gap-1.5">
+                          <Clock size={12} className="text-[color:var(--gold)] mt-0.5 shrink-0" aria-hidden />
+                          <div>
+                            <dt className="text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] font-semibold">Time on site</dt>
+                            <dd className="leading-snug">{p.duration}</dd>
+                          </div>
+                        </div>
+                      )}
+                    </dl>
+                  )}
+                </div>
+              </li>
+            );
+          })}
         </ol>
 
-        <p className="mt-5 text-[13px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-3xl">
+        <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-3xl">
           Your day is shaped from these stops — your guide sets the order and pace
           around you. Not every stop, every time.
+        </p>
+
+        <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]/70">
+          Map data ©{" "}
+          <a
+            href="https://www.openstreetmap.org/copyright"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline decoration-[color:var(--gold)]/40 underline-offset-2"
+          >
+            OpenStreetMap
+          </a>{" "}
+          · Tiles ©{" "}
+          <a
+            href="https://carto.com/attributions"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline decoration-[color:var(--gold)]/40 underline-offset-2"
+          >
+            CARTO
+          </a>
         </p>
       </div>
     </section>
