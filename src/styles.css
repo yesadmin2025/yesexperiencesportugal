@@ -3040,21 +3040,6 @@ svg.lucide {
   animation: siteRevealIn 560ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
-/* Cinematic image blur-in inside reveals — no layout shift. */
-.reveal img,
-.reveal [data-reveal-image],
-.reveal-stagger img,
-.reveal-stagger [data-reveal-image] {
-  filter: blur(3px);
-  transition: filter 560ms cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-.reveal.is-visible img,
-.reveal.is-visible [data-reveal-image],
-.reveal-stagger.is-visible img,
-.reveal-stagger.is-visible [data-reveal-image] {
-  filter: blur(0);
-}
-
 /* Stagger child — opt-in reveal for individual items inside a parent. */
 .reveal-stagger {
   opacity: 0;
@@ -3068,6 +3053,21 @@ svg.lucide {
   opacity: 1;
   transform: translateY(0);
   animation: siteRevealStaggerIn 500ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* Cinematic image blur-in inside reveals — no layout shift. */
+.reveal img,
+.reveal [data-reveal-image],
+.reveal-stagger img,
+.reveal-stagger [data-reveal-image] {
+  filter: blur(3px);
+  transition: filter 560ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.reveal.is-visible img,
+.reveal.is-visible [data-reveal-image],
+.reveal-stagger.is-visible img,
+.reveal-stagger.is-visible [data-reveal-image] {
+  filter: blur(0);
 }
 
 @media (max-width: 767.98px) {
