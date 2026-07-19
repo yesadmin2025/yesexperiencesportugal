@@ -52,6 +52,27 @@ export function GuestMomentsStrip({
   );
   const rendered = moduleKey ? effective : photos;
   const bg = surface === "sand" ? "bg-[color:var(--sand)]" : "bg-[color:var(--ivory)]";
+  const listRef = useRef<HTMLUListElement | null>(null);
+
+  // Viewport-gate ken-burns: pause off-screen images to save GPU/paint on mobile.
+  useEffect(() => {
+    const root = listRef.current;
+    if (!root || typeof IntersectionObserver === "undefined") return;
+    const imgs = Array.from(root.querySelectorAll<HTMLImageElement>("img.ken-burns-slow"));
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          e.target.classList.toggle("kb-paused", !e.isIntersecting);
+        }
+      },
+      { rootMargin: "200px 0px", threshold: 0.01 },
+    );
+    imgs.forEach((img) => {
+      img.classList.add("kb-paused");
+      io.observe(img);
+    });
+    return () => io.disconnect();
+  }, [rendered.length]);
 
   return (
     <section
