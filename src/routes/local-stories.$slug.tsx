@@ -557,21 +557,23 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
             </div>
 
             {post.signatureSlug && (
-              <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
-                <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
+              <Scene as="aside" className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
+                <span className="scene-atmosphere block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
                   Travel this story
                 </span>
-                <p className="text-[15px] text-[color:var(--charcoal-soft)] mb-6">
+                <p className="scene-title text-[15px] text-[color:var(--charcoal-soft)] mb-6">
                   The places in this piece live inside one of our private days.
                 </p>
-                <CtaButton
-                  to="/tours/$tourId"
-                  params={{ tourId: post.signatureSlug }}
-                  variant="primary"
-                >
-                  See the Signature
-                </CtaButton>
-              </aside>
+                <div className="scene-cta">
+                  <CtaButton
+                    to="/tours/$tourId"
+                    params={{ tourId: post.signatureSlug }}
+                    variant="primary"
+                  >
+                    See the Signature
+                  </CtaButton>
+                </div>
+              </Scene>
             )}
 
             <nav className="mt-16 text-center">
