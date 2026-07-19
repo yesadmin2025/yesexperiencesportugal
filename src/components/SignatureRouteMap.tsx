@@ -143,7 +143,7 @@ function LeafletMap({
       }
 
       stops.forEach((s, i) => {
-        L.marker([s.lat, s.lng], { icon: makeGoldPin(i), title: s.label })
+        L.marker([s.lat, s.lng], { icon: makeGoldPin(L, i), title: s.label })
           .bindTooltip(`${i + 1}. ${s.label}`, {
             direction: "top",
             offset: [0, -14],
