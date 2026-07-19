@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Calendar, Sparkles, Lock, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { SignatureTour } from "@/data/signatureTours";
@@ -29,6 +29,12 @@ import {
   gaAddToCartSignature,
   gaBeginCheckout,
   buildTourItem,
+  gaBookingDateSelected,
+  gaBookingTimeSelected,
+  gaBookingCompositionSet,
+  gaBookingLanguageSelected,
+  gaBookingValidationBlocked,
+  gaCheckoutDrawerOpened,
 } from "@/lib/analytics-ga4";
 
 
@@ -52,6 +58,41 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [language, setLanguage] = useState<"en" | "pt">("en");
   const [pending, setPending] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
+
+  // Client-side availability floor: today + 24h lead time (Lisbon local).
+  const minDateISO = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split("T")[0];
+  })();
+  const dateValid = date ? date >= minDateISO : false;
+  const canReserve = compositionReady && dateValid;
+
+  // Fire funnel events at most once per field per mount.
+  const firedDate = useRef(false);
+  const firedTime = useRef(false);
+  const firedComposition = useRef(false);
+  const firedLanguage = useRef(false);
+  const firedDrawer = useRef(false);
+
+  useEffect(() => {
+    if (compositionReady && !firedComposition.current) {
+      firedComposition.current = true;
+      gaBookingCompositionSet({
+        tourId: tour.id,
+        surface: "signature",
+        adults: composition.adults,
+        minors: composition.minorAges.length,
+      });
+    }
+  }, [compositionReady, composition.adults, composition.minorAges.length, tour.id]);
+
+  useEffect(() => {
+    if (!firedLanguage.current) {
+      firedLanguage.current = true;
+      gaBookingLanguageSelected({ tourId: tour.id, surface: "signature", language });
+    }
+  }, [language, tour.id]);
 
   // Live tier resolution — DB-backed, falls back to code defaults.
   const { data: tierOverrides } = useTourPriceTiers();
@@ -118,6 +159,10 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
     setDetailsOpen(false);
     setCheckoutOpen(true);
+    if (!firedDrawer.current) {
+      firedDrawer.current = true;
+      gaCheckoutDrawerOpened({ tourId: tour.id, surface: "signature" });
+    }
     // GA4 add_to_cart + begin_checkout — Signature Reserve intent.
     try {
       gaAddToCartSignature({ tour, guests: details.guests, perPaxEur: perPaxForSummary });
@@ -208,8 +253,17 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           <input
             type="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
-            min={new Date().toISOString().split("T")[0]}
+            onChange={(e) => {
+              const v = e.target.value;
+              setDate(v);
+              if (v) {
+                if (!firedDate.current) {
+                  firedDate.current = true;
+                  gaBookingDateSelected({ tourId: tour.id, surface: "signature", dateISO: v });
+                }
+              }
+            }}
+            min={minDateISO}
             className="w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-sm focus:border-[color:var(--gold)] focus:outline-none"
           />
         </Field>
@@ -219,7 +273,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
               <button
                 key={t}
                 type="button"
-                onClick={() => setPickup(t)}
+                onClick={() => {
+                  setPickup(t);
+                  if (!firedTime.current) {
+                    firedTime.current = true;
+                    gaBookingTimeSelected({ tourId: tour.id, surface: "signature", pickupTime: t });
+                  }
+                }}
                 aria-pressed={pickup === t}
                 className={[
                   "py-2.5 text-xs tracking-wide transition-colors",
@@ -322,8 +382,17 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
       <button
         type="button"
-        onClick={() => setDetailsOpen(true)}
-        disabled={pending || !compositionReady}
+        onClick={() => {
+          if (!canReserve) {
+            const reason = !dateValid ? "date_missing_or_past" : "composition_incomplete";
+            gaBookingValidationBlocked({ tourId: tour.id, surface: "signature", reason });
+            toast.error(!dateValid ? "Pick a date at least 24h from now." : "Add an age for every child.");
+            return;
+          }
+          setDetailsOpen(true);
+        }}
+        disabled={pending}
+        aria-disabled={!canReserve}
         className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
       >
         {pending ? (

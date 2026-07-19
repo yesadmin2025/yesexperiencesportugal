@@ -15,6 +15,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { findTour, type SignatureTour, type TourStop } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
+import { lookupStop } from "@/data/stopGeo";
 import { bookableIncluded, validateTour, logTourValidation } from "@/lib/viatorValidation";
 import { useEffect } from "react";
 import { whatsappHref } from "@/components/WhatsAppFab";
@@ -329,13 +330,35 @@ function TailorPage() {
     setOptionalSelected(next);
   };
 
-  // Optional stops surfaced by Viator (passBy=true). These can be
-  // promoted into the day. Capped at MAX_EDITS combined add/remove.
+  // Optional stops surfaced by Viator (passBy=true). Filtered for
+  // geographic sanity: Viator's passBy list includes hub cities used
+  // as orientation (e.g. "Lisbon" on a Southwest Coast tour). Drop
+  // anything > ~120 km from this tour's own centre so we never offer
+  // a nonsensical add-on. Capped at MAX_EDITS combined add/remove.
   const MAX_EDITS = 3;
-  const optionalStops = useMemo(
-    () => (meta?.stops ?? []).filter((s) => s.passBy).map((s) => s.name),
-    [meta],
-  );
+  const optionalStops = useMemo(() => {
+    const raw = (meta?.stops ?? []).filter((s) => s.passBy).map((s) => s.name);
+    // Resolve this tour's geographic anchor from its own real stops.
+    const anchorHit = (tour.stops ?? [])
+      .map((s: TourStop) => lookupStop(s.label))
+      .find((h: ReturnType<typeof lookupStop>) => h !== null);
+    if (!anchorHit) return raw;
+    const toRad = (d: number) => (d * Math.PI) / 180;
+    const distanceKm = (a: { lat: number; lng: number }, b: { lat: number; lng: number }) => {
+      const R = 6371;
+      const dLat = toRad(b.lat - a.lat);
+      const dLng = toRad(b.lng - a.lng);
+      const s = Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(s));
+    };
+    return raw.filter((label) => {
+      const hit = lookupStop(label);
+      // Unknown geography → hide (silence beats a wrong option).
+      if (!hit) return false;
+      return distanceKm(anchorHit, hit) <= 120;
+    });
+  }, [meta, tour.stops]);
   const editsUsed = skipped.size + added.size;
   const editsLeft = Math.max(0, MAX_EDITS - editsUsed);
 
@@ -1196,7 +1219,7 @@ function TailorPage() {
                   {optionalStops.length > 0 && (
                     <>
                       <p className="mt-5 mb-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-                        Optional stops you can add
+                        Curated add-ons for this journey
                       </p>
                       <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0">
                         {optionalStops.map((label) => {
@@ -1473,24 +1496,33 @@ function TailorPage() {
                     />
                   )}
 
-                  <div className="pt-3 border-t border-[color:var(--border)] flex items-baseline justify-between">
-                    <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-                      Indicative total
-                    </span>
-                    <span className="serif text-[1.4rem] text-[color:var(--charcoal)] tabular-nums">
-                      €{Math.round(displayTotalEur).toLocaleString("en-GB")}
-                      {!showBandBreakdown && (
+                  {/* Truthful per-person + party-total split. "Indicative
+                      total / adult" was misread as a party total; use the
+                      same two-line shape as the Signature price card. */}
+                  <div className="pt-3 border-t border-[color:var(--border)] space-y-1.5">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                        For {guests} {guests === 1 ? "guest" : "guests"} · per person
+                      </span>
+                      <span className="serif text-[1.15rem] text-[color:var(--charcoal)] tabular-nums">
+                        €{Math.round(displayTotalEur / Math.max(1, guests)).toLocaleString("en-GB")}
                         <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-                          / adult
+                          / pp
                         </span>
-                      )}
-                    </span>
-                  </div>
-                  {showBandBreakdown && (
-                    <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] text-right">
-                      Party total · {guests} {guests === 1 ? "guest" : "guests"}
+                      </span>
+                    </div>
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                        Party total (indicative)
+                      </span>
+                      <span className="serif text-[1.4rem] text-[color:var(--charcoal)] tabular-nums">
+                        €{Math.round(displayTotalEur).toLocaleString("en-GB")}
+                      </span>
+                    </div>
+                    <p className="text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                      Final total confirmed at checkout.
                     </p>
-                  )}
+                  </div>
 
                   {/* Confirmation status is always instant on Tailor —
                       manual gate retired per owner (test-mode + memory:

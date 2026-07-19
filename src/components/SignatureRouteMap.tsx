@@ -272,7 +272,13 @@ export function SignatureRouteMap({ tour }: Props) {
           ))}
         </ol>
 
-        <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-3xl">
+        {tour.wineriesRule ? (
+          <p className="mt-6 text-[13px] text-[color:var(--charcoal)] leading-relaxed max-w-3xl border-l-2 border-[color:var(--gold)] pl-3">
+            {tour.wineriesRule}
+          </p>
+        ) : null}
+
+        <p className="mt-4 text-[13px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-3xl">
           Your guide sets the order and pace on the day — not every stop, every time.
         </p>
 

@@ -166,6 +166,13 @@ export type SignatureTour = {
    * Shape: see `TourI18nMap` in src/i18n/tour-i18n.ts.
    */
   i18n?: Partial<Record<"en" | "pt", import("@/i18n/tour-i18n").TourLocaleOverlay>>;
+  /**
+   * Optional plain-language rule shown under the SignatureRouteMap
+   * stop list. Use ONLY when the number of stops varies at run time
+   * (e.g. "2 or 3 wineries depending on availability"). Owner-authored;
+   * no invention. Absent → no extra legend line.
+   */
+  wineriesRule?: string;
 };
 
 
@@ -200,6 +207,8 @@ export const signatureTours: SignatureTour[] = [
     duration: "Full Day",
     durationHours: "7–9h",
     priceFrom: 138,
+    wineriesRule:
+      "You'll visit 2 or 3 of these wineries — the exact count depends on the experience you choose and same-day availability.",
     theme: "Wine",
     blurb:
       "Two or three family wineries, Livramento market and a long traditional lunch in Azeitão — handled door to door from Lisbon.",
