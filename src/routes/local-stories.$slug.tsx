@@ -507,6 +507,7 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
 
   return (
     <SiteLayout>
+      <ReadingProgress />
       <article>
         <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)]">
           <div className="container-x max-w-3xl text-center">
