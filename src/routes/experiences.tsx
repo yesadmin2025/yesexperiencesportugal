@@ -13,6 +13,8 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { Scene } from "@/components/motion/Scene";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { MaskReveal } from "@/components/motion/MaskReveal";
 
 export const Route = createFileRoute("/experiences")({
   head: () => ({
@@ -74,17 +76,20 @@ function ExperiencesPage() {
         className="pt-32 pb-[var(--section-y-sm)] bg-[color:var(--sand)] text-center"
       >
         <div className="container-x">
-          <div className="scene-atmosphere">
-            <Eyebrow flank>Signature Collection</Eyebrow>
-          </div>
-          <SectionTitle as="h1" size="anchor" spacing="loose" className="scene-title">
-            Signature <SectionTitle.Em>Tours</SectionTitle.Em>
-          </SectionTitle>
-          <p className="scene-body mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond. Book as designed, or quietly tailor a few details.
-          </p>
+          <ParallaxLayer amount="sm">
+            <div className="scene-atmosphere">
+              <Eyebrow flank>Signature Collection</Eyebrow>
+            </div>
+            <SectionTitle as="h1" size="anchor" spacing="loose" className="scene-title">
+              Signature <SectionTitle.Em>Tours</SectionTitle.Em>
+            </SectionTitle>
+            <p className="scene-body mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+              A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond. Book as designed, or quietly tailor a few details.
+            </p>
+          </ParallaxLayer>
         </div>
       </Scene>
+
 
       <section className="reveal section-y">
         <div className="container-x">
@@ -105,24 +110,27 @@ function ExperiencesPage() {
               return (
                 <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
                   {/* Cover — clickable to source-of-truth detail page */}
-                  <Link
-                    to="/tours/$tourId"
-                    params={{ tourId: t.id }}
-                    className="lift-layer-sm relative block mb-5 shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
-                    aria-label={`Open ${t.title}`}
-                  >
-                    <TourImage
-                      {...resolveImg(t, "lg")}
-                      alt={`${t.title} — private ${t.theme.toLowerCase()} experience in ${t.region}, Portugal`}
-                      ratio="3/2"
-                      focal={t.focal ?? "50% 50%"}
-                      imgClassName="transition-transform duration-700 group-hover:scale-105"
+                  <MaskReveal direction="diagonal" className="mb-5">
+                    <Link
+                      to="/tours/$tourId"
+                      params={{ tourId: t.id }}
+                      className="lift-layer-sm relative block shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+                      aria-label={`Open ${t.title}`}
                     >
-                      <span className="absolute top-4 left-4 text-[10px] uppercase tracking-[0.25em] bg-[color:var(--ivory)]/90 text-[color:var(--teal)] px-3 py-1.5">
-                        {t.theme}
-                      </span>
-                    </TourImage>
-                  </Link>
+                      <TourImage
+                        {...resolveImg(t, "lg")}
+                        alt={`${t.title} — private ${t.theme.toLowerCase()} experience in ${t.region}, Portugal`}
+                        ratio="3/2"
+                        focal={t.focal ?? "50% 50%"}
+                        imgClassName="transition-transform duration-700 group-hover:scale-105"
+                      >
+                        <span className="absolute top-4 left-4 text-[10px] uppercase tracking-[0.25em] bg-[color:var(--ivory)]/90 text-[color:var(--teal)] px-3 py-1.5">
+                          {t.theme}
+                        </span>
+                      </TourImage>
+                    </Link>
+                  </MaskReveal>
+
 
                   <Link
                     to="/tours/$tourId"
