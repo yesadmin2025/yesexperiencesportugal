@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Calendar, Sparkles, Lock, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { SignatureTour } from "@/data/signatureTours";
@@ -29,6 +29,12 @@ import {
   gaAddToCartSignature,
   gaBeginCheckout,
   buildTourItem,
+  gaBookingDateSelected,
+  gaBookingTimeSelected,
+  gaBookingCompositionSet,
+  gaBookingLanguageSelected,
+  gaBookingValidationBlocked,
+  gaCheckoutDrawerOpened,
 } from "@/lib/analytics-ga4";
 
 
