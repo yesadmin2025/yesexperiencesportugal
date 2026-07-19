@@ -214,8 +214,17 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           <input
             type="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
-            min={new Date().toISOString().split("T")[0]}
+            onChange={(e) => {
+              const v = e.target.value;
+              setDate(v);
+              if (v) {
+                if (!firedDate.current) {
+                  firedDate.current = true;
+                  gaBookingDateSelected({ tourId: tour.id, surface: "signature", dateISO: v });
+                }
+              }
+            }}
+            min={minDateISO}
             className="w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-sm focus:border-[color:var(--gold)] focus:outline-none"
           />
         </Field>
@@ -225,7 +234,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
               <button
                 key={t}
                 type="button"
-                onClick={() => setPickup(t)}
+                onClick={() => {
+                  setPickup(t);
+                  if (!firedTime.current) {
+                    firedTime.current = true;
+                    gaBookingTimeSelected({ tourId: tour.id, surface: "signature", pickupTime: t });
+                  }
+                }}
                 aria-pressed={pickup === t}
                 className={[
                   "py-2.5 text-xs tracking-wide transition-colors",
