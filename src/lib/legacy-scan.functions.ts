@@ -42,12 +42,13 @@ export const scanDatabaseLegacy = createServerFn({ method: "POST" }).handler(
     const skipped: string[] = [];
     let scanned = 0;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const admin = supabaseAdmin as any;
     for (const probe of PROBES) {
       try {
-        const { data, error } = await supabaseAdmin
+        const { data, error } = (await admin
           .from(probe.table)
-          // deno-lint-ignore no-explicit-any
-          .select([probe.idCol, ...probe.cols].join(",")) as unknown as {
+          .select([probe.idCol, ...probe.cols].join(","))) as {
           data: Record<string, unknown>[] | null;
           error: { message: string } | null;
         };
