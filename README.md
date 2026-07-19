@@ -1,166 +1,159 @@
-# Yes Experiences Portugal - Web Application
+# 🇵🇹 Yes Experiences Portugal - Quick Start
 
 A modern TypeScript React web application showcasing Portugal experiences.
 
-## 🚀 Quick Start
+## ⚡ Quick Start (5 minutes)
 
-### Installation
+### 1️⃣ Clone the Repository
 
+Choose ONE of these commands:
+
+**Using GitHub CLI (recommended):**
 ```bash
-# Clone the repository
 gh repo clone yesadmin2025/yesexperiencesportugal
 cd yesexperiencesportugal
-
-# Install dependencies
-npm install
 ```
 
-### Development
+**Using Git:**
+```bash
+git clone https://github.com/yesadmin2025/yesexperiencesportugal.git
+cd yesexperiencesportugal
+```
+
+---
+
+### 2️⃣ Run the Setup Script
 
 ```bash
-# Start development server (opens at http://localhost:3000)
+npm run setup
+```
+
+This will automatically:
+- ✅ Install all dependencies
+- ✅ Build the project
+- ✅ Run tests
+- ✅ Display next steps
+
+---
+
+### 3️⃣ Start Development
+
+```bash
 npm run dev
-
-# Run tests with coverage
-npm run test
-
-# Format code
-npm run format
-
-# Lint code
-npm run lint
-
-# Type check
-npm run type-check
 ```
 
-### Production
+Your app will open at **http://localhost:3000** 🎉
 
-```bash
-# Build for production
-npm run build
+---
 
-# Preview production build
-npm run preview
-```
+## 📚 Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run setup` | Automatic setup (install, build, test) |
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run test` | Run tests |
+| `npm run test:coverage` | Run tests with coverage |
+| `npm run lint` | Check code quality |
+| `npm run format` | Format code automatically |
+| `npm run type-check` | Check TypeScript types |
+
+---
 
 ## 📦 Tech Stack
 
-- **Frontend Framework**: React 18 with TypeScript
-- **Build Tool**: Vite (fast build and dev server)
-- **Testing**: Vitest with React Testing Library
-- **Code Quality**:
-  - ESLint (code linting)
-  - Prettier (code formatting)
-  - TypeScript (strict type checking)
-- **CI/CD**: GitHub Actions (automated testing and building)
+- **Frontend**: React 18 with TypeScript
+- **Build**: Vite (ultra-fast)
+- **Testing**: Vitest + React Testing Library
+- **Code Quality**: ESLint, Prettier, TypeScript
+- **CI/CD**: GitHub Actions
+
+---
 
 ## 📁 Project Structure
 
 ```
 yesexperiencesportugal/
-├── .github/
-│   └── workflows/
-│       └── ci-cd.yml           # GitHub Actions workflow
 ├── src/
-│   ├── main.tsx               # React entry point
-│   ├── App.tsx                # Main App component
-│   ├── App.css                # App styles
-│   ├── App.test.tsx           # App component tests
-│   └── index.css              # Global styles
-├── index.html                 # HTML entry point
-├── package.json               # Dependencies and scripts
-├── tsconfig.json              # TypeScript configuration
-├── tsconfig.node.json         # TypeScript config for build tools
-├── vite.config.ts             # Vite configuration
-├── vitest.config.ts           # Vitest configuration
-├── .eslintrc.json             # ESLint configuration
-├── .prettierrc.json           # Prettier configuration
-└── .gitignore                 # Git ignore file
+│   ├── main.tsx           # React entry point
+│   ├── App.tsx            # Main component
+│   ├── App.css            # Styles
+│   ├── App.test.tsx       # Tests
+│   └── index.css          # Global styles
+├── index.html             # HTML entry
+├── package.json           # Dependencies
+├── tsconfig.json          # TypeScript config
+├── vite.config.ts         # Build config
+├── .github/workflows/     # GitHub Actions
+└── README.md              # This file
 ```
-
-## 🔧 Available Commands
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run test` | Run tests |
-| `npm test:coverage` | Run tests with coverage report |
-| `npm run lint` | Lint code |
-| `npm run format` | Format code with Prettier |
-| `npm run type-check` | Check TypeScript types |
-
-## 🧪 Testing
-
-Tests are located alongside components with `.test.tsx` extension.
-
-```bash
-# Run all tests
-npm run test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run tests in watch mode
-npm run test -- --watch
-```
-
-## 🔄 CI/CD Pipeline
-
-The GitHub Actions workflow automatically:
-
-- ✅ Installs dependencies
-- ✅ Checks TypeScript types
-- ✅ Lints code
-- ✅ Runs tests
-- ✅ Builds the application
-- ✅ Uploads build artifacts
-- ✅ Prepares for deployment
-
-Triggered on:
-- Push to `main` or `develop` branches
-- Pull requests to `main` or `develop` branches
-
-## 📝 Git Workflow
-
-```bash
-# Configure git (run once)
-git config user.name "Your Name"
-git config user.email "your.email@example.com"
-
-# Create a new branch for features
-git checkout -b feature/your-feature-name
-
-# Make changes and commit
-git add .
-git commit -m "feat: add your feature description"
-
-# Push to remote
-git push origin feature/your-feature-name
-
-# Create a pull request on GitHub
-```
-
-## 📖 Development Tips
-
-- **Fast Refresh**: Changes are automatically reflected in the browser during development
-- **Type Safety**: TypeScript catches errors at compile time
-- **Code Quality**: ESLint and Prettier ensure consistent code style
-- **Testing**: Write tests alongside your components
-
-## 📄 License
-
-MIT
-
-## 🤝 Contributing
-
-1. Create a feature branch from `develop`
-2. Make your changes and add tests
-3. Run `npm run lint` and `npm run format`
-4. Submit a pull request
 
 ---
 
-**Ready to build amazing experiences in Portugal! 🇵🇹**
+## 🚀 Development Workflow
+
+1. **Make changes** in the `src/` folder
+2. **See live updates** in your browser (Hot Reload)
+3. **Write tests** in `*.test.tsx` files
+4. **Run `npm run lint`** to check code quality
+5. **Run `npm run format`** to auto-format code
+6. **Commit and push** - GitHub Actions will test automatically
+
+---
+
+## 🔄 GitHub Actions CI/CD
+
+Your repository has automated workflows that:
+
+1. **On every push**:
+   - Run linting
+   - Type check
+   - Run tests
+   - Build project
+   - Upload artifacts
+
+2. **Setup verification**:
+   - Automatic setup script runs
+   - Verifies everything works
+   - Reports status
+
+---
+
+## 📚 Learning Resources
+
+- [React Documentation](https://react.dev)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [Vite Guide](https://vitejs.dev/)
+- [Vitest Documentation](https://vitest.dev/)
+
+---
+
+## 💡 Tips
+
+- **Hot Reload**: Changes appear instantly in the browser
+- **Type Safety**: TypeScript catches errors before runtime
+- **Fast Builds**: Vite is 10x faster than traditional bundlers
+- **Automated Testing**: Run `npm run test` after making changes
+
+---
+
+## 🎯 Next Steps
+
+1. ✅ Run `npm run setup`
+2. ✅ Run `npm run dev`
+3. ✅ Explore the code in `src/`
+4. ✅ Make your first feature!
+
+---
+
+## 📞 Need Help?
+
+- Check the [GitHub Issues](https://github.com/yesadmin2025/yesexperiencesportugal/issues)
+- Review the CI/CD logs in GitHub Actions
+- Check the test output for guidance
+
+---
+
+**Happy coding! 🚀 Build amazing Portugal experiences!**
