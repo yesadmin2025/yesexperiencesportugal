@@ -205,8 +205,8 @@ function TourDetailPage() {
       {/* ── 5 · ITINERARY (real Viator stops only) ────────────── */}
       <ItineraryTimeline tour={tour} meta={meta} />
 
-      {/* ── 6 · MAP — branded markers, real stops only ──────── */}
-      <RouteMap tour={tour} meta={meta} />
+      {/* ── 6 · MAP — real geographic map with driving route ───── */}
+      <SignatureRouteMap tour={tour} />
 
       {/* ── 7 · WHAT'S INCLUDED ────────────────────────────────── */}
       <IncludedAndIdeal tour={tour} meta={meta} />
