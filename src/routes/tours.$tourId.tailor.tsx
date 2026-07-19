@@ -189,6 +189,14 @@ function TailorPage() {
 
   // ─── State (only adjustable details) ────────────────────────
   const [date, setDate] = useState("");
+  const [rule, setRule] = useState<OperatingRule | null>(null);
+  useEffect(() => {
+    let active = true;
+    getOperatingRule(tour.id).then((r) => { if (active) setRule(r); });
+    return () => { active = false; };
+  }, [tour.id]);
+  const minDateISO = computeMinDateISO(rule?.minLeadHours ?? 24);
+
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
   const [pace, setPace] = useState<"relaxed" | "balanced" | "full">("balanced");
   const [composition, setComposition] = useState<TravellerComposition>({
