@@ -118,6 +118,10 @@ export type SignatureTour = {
   theme: string;
   blurb: string; // one-line card teaser
   intro: string; // 2–3 sentence opening on detail page
+  /** Optional editorial context paragraph shown under the intro. */
+  contextParagraph?: string;
+  /** Optional link back to a related Local Story or guide, shown under intro. */
+  contextLink?: { href: string; label: string };
   fitsBest: string;
   pace: string[];
   stops: TourStop[];
