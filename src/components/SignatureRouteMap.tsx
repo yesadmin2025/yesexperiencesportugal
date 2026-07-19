@@ -282,26 +282,6 @@ export function SignatureRouteMap({ tour }: Props) {
           Your guide sets the order and pace on the day — not every stop, every time.
         </p>
 
-        <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]/70">
-          Map data ©{" "}
-          <a
-            href="https://www.openstreetmap.org/copyright"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline decoration-[color:var(--gold)]/40 underline-offset-2"
-          >
-            OpenStreetMap
-          </a>{" "}
-          · Tiles ©{" "}
-          <a
-            href="https://carto.com/attributions"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline decoration-[color:var(--gold)]/40 underline-offset-2"
-          >
-            CARTO
-          </a>
-        </p>
       </div>
     </section>
   );
