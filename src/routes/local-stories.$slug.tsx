@@ -315,7 +315,7 @@ function StaticArticleView({
 
   return (
     <SiteLayout>
-      <article>
+      <article className="local-stories-scope">
         <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)]">
           <div className="container-x max-w-3xl text-center">
             <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5">
@@ -407,6 +407,21 @@ function StaticArticleView({
                       >
                         {r.label} →
                       </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {article.relatedReads && article.relatedReads.length > 0 && (
+                <ul className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] tracking-[0.02em] text-[color:var(--charcoal-soft)]">
+                  {article.relatedReads.map((r) => (
+                    <li key={r.path}>
+                      <a
+                        href={r.path}
+                        className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
+                      >
+                        {r.label} →
+                      </a>
                     </li>
                   ))}
                 </ul>

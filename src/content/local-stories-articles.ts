@@ -34,6 +34,8 @@ export type LocalStoryArticle = {
   heroImageAlt?: string;
   /** Optional FAQ block — rendered on page AND emitted as FAQPage JSON-LD. */
   faq?: { q: string; a: string }[];
+  /** Optional related-read links (any internal path) rendered in the aside. */
+  relatedReads?: { path: string; label: string }[];
 
 };
 
@@ -119,9 +121,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "setubal-wine-guide",
-    title: "Setúbal Wine Country: A Local's Guide",
+    title: "Setúbal Wine Country Guide | Moscatel & Wineries",
     metaDescription:
-      "Setúbal Moscatel, Palmela reds, and the family wineries we visit ourselves — a local's guide to Portugal's most underrated wine region.",
+      "Explore Setúbal wine country near Lisbon, from Moscatel and Azeitão cheese to family wineries, Arrábida landscapes and coastal lunches.",
     h1: "Setúbal Wine Country — A Local's Guide",
     eyebrow: "Setúbal · Wine",
     standfirst:
@@ -148,6 +150,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "We bring guests into these cellars on a private, all-inclusive day — wine, lunch, and the Arrábida coast on the way home.",
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
+    relatedReads: [
+      { path: "/arrabida-wine-tour", label: "Arrábida wine tour from Lisbon" },
+      { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
+      { path: "/local-stories/best-wineries-near-lisbon", label: "Best wineries near Lisbon" },
+    ],
     datePublished: "2026-06-03",
   },
   {
@@ -406,9 +413,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-regions-near-lisbon",
-    title: "The Best Wine Regions Near Lisbon — A Local's Guide",
+    title: "Best Wine Regions Near Lisbon | Arrábida, Setúbal & Alentejo",
     metaDescription:
-      "Setúbal, Palmela, Arrábida, Alentejo — a local's guide to the best wine regions within reach of Lisbon, what each tastes like, and which suits your day.",
+      "Compare the best wine regions near Lisbon, including Arrábida, Setúbal and Alentejo, with local advice on distance, style and the right day trip.",
     h1: "The Best Wine Regions Near Lisbon",
     eyebrow: "Wine · Regions",
     standfirst:
@@ -442,6 +449,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedSignatures: [
       { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
       { slug: "azeitao-cheese-wine", label: "Azeitão Cheese & Wine" },
+    ],
+    relatedReads: [
+      { path: "/wine-tours-lisbon", label: "Wine tours from Lisbon" },
+      { path: "/arrabida-wine-tour", label: "Arrábida wine tour" },
+      { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
     ],
     datePublished: "2026-06-11",
   },
@@ -481,9 +493,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wineries-near-lisbon",
-    title: "Best Wineries Near Lisbon — Arrábida & Alentejo (by a Local)",
+    title: "Best Wineries Near Lisbon | A Local Wine Guide",
     metaDescription:
-      "A local's guide to the best wineries near Lisbon — small Arrábida cellars, Setúbal Moscatel houses and Alentejo talha producers worth the drive.",
+      "Discover the best winery experiences near Lisbon, from family cellars in Arrábida and Setúbal to traditional talha wine in Alentejo.",
     h1: "The Best Wineries Near Lisbon",
     eyebrow: "Wine · Lisbon Region",
     standfirst:
@@ -511,6 +523,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedSignatures: [{ slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" }],
+    relatedReads: [
+      { path: "/wine-tours-lisbon", label: "Wine tours from Lisbon" },
+      { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
+      { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
+    ],
     datePublished: "2026-06-30",
     faq: [
       {
@@ -571,9 +588,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "arrabida-wine-tour",
-    title: "Arrábida Wine Tour from Lisbon | Private Azeitão Day",
+    title: "Arrábida Wine Tour from Lisbon | Private Setúbal Day",
     metaDescription:
-      "Private Arrábida wine day from Lisbon — three family cellars in Azeitão, Moscatel tasting and a slow lunch. Licensed local operator, instant confirmation.",
+      "Discover Arrábida and Setúbal on a private wine tour from Lisbon, with family wineries, Azeitão, coastal scenery and a relaxed Portuguese lunch.",
     h1: "Arrábida Wine Tour — Azeitão & Setúbal, from Lisbon",
     eyebrow: "Arrábida · Private Wine Day",
     standfirst:
@@ -661,9 +678,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "portugal-wine-tours",
-    title: "Portugal Wine Tours | Private Wine Days by YES Experiences",
+    title: "Private Portugal Wine Tours | Lisbon, Alentejo & Beyond",
     metaDescription:
-      "Private wine days across Arrábida, Setúbal, Azeitão and Alentejo — small family cellars, slow lunches and real winemakers, all-inclusive from Lisbon.",
+      "Discover private wine tours across Portugal, from Arrábida and Setúbal near Lisbon to Alentejo traditions, family wineries and local food.",
     h1: "Portugal wine tours, poured properly.",
     eyebrow: "Portugal · Wine Tours",
     standfirst:
@@ -702,9 +719,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "wine-tours-lisbon",
-    title: "Private Wine Tours from Lisbon | Arrábida and Alentejo by YES",
+    title: "Private Wine Tours from Lisbon | Arrábida & Setúbal",
     metaDescription:
-      "Private wine tours from Lisbon — Arrábida, Setúbal, Comporta and Alentejo. Real family cellars, no group buses. Booked with a licensed local operator.",
+      "Explore private wine tours from Lisbon to Arrábida, Setúbal, Azeitão and Palmela, with family wineries, local lunch and a private guide.",
     h1: "The Best Wine Tours from Lisbon — Arrábida, Comporta & Alentejo",
     eyebrow: "Lisbon · Private Wine Days",
     standfirst:
