@@ -63,6 +63,11 @@ function useAppReadyFlag() {
     if (typeof window === "undefined") return;
     // We're in the client effect → hydration has started.
     reportStage("hydrating");
+    // Motion gate: opts scoped reveal styles in. Content stays visible
+    // by default; individual Scenes carry their own [data-scene-ready].
+    // This attribute is future-proofing for CSS that wants to know the
+    // React tree is live (e.g. gating hover-only choreography).
+    document.documentElement.setAttribute("data-motion-ready", "1");
     // Defer one frame so layout/styles settle before we signal ready.
     const raf = requestAnimationFrame(() => {
       window.__APP_READY__ = true;
