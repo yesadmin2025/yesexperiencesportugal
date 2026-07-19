@@ -238,24 +238,24 @@ function ExperiencesPage() {
 
 function CtaStrip() {
   return (
-    <section data-audit="experiences-cta" className="reveal section-y-sm pt-0">
+    <Scene as="section" data-audit="experiences-cta" className="reveal section-y-sm pt-0">
       <div className="container-x">
         <div className="bg-[color:var(--teal)] text-[color:var(--ivory)] p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h2 className="serif text-3xl md:text-4xl text-[color:var(--ivory)]">
+            <h2 className="scene-title serif text-3xl md:text-4xl text-[color:var(--ivory)]">
               Want to start from scratch?{" "}
               <span className="italic font-normal text-[color:var(--ivory)]">Open the Studio.</span>
             </h2>
-            <p className="mt-3 text-[color:var(--ivory)]/80 max-w-lg">
+            <p className="scene-body mt-3 text-[color:var(--ivory)]/80 max-w-lg">
               Start your way — with a place, a region or a feeling. We'll guide you as you build,
               shaping it within what works best on the ground.
             </p>
           </div>
-          <CtaButton to="/studio-v3" variant="ghostDark" className="flex-shrink-0">
+          <CtaButton to="/studio-v3" variant="ghostDark" className="scene-cta flex-shrink-0">
             Open the Studio
           </CtaButton>
         </div>
       </div>
-    </section>
+    </Scene>
   );
 }
