@@ -341,7 +341,7 @@ function TailorPage() {
     // Resolve this tour's geographic anchor from its own real stops.
     const anchorHit = (tour.stops ?? [])
       .map((s: TourStop) => lookupStop(s.label))
-      .find((h): h is NonNullable<ReturnType<typeof lookupStop>> => Boolean(h));
+      .find((h) => h !== null);
     if (!anchorHit) return raw;
     const toRad = (d: number) => (d * Math.PI) / 180;
     const distanceKm = (a: { lat: number; lng: number }, b: { lat: number; lng: number }) => {
