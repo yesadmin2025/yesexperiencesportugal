@@ -126,7 +126,6 @@ export function GuestMomentsStrip({
         >
           {rendered.map((photo, idx) => {
             const responsive = buildResponsiveSrc(photo.src, { sizes: "portrait" });
-            const kbVariant = idx % 3 === 1 ? " ken-burns-slow--b" : idx % 3 === 2 ? " ken-burns-slow--c" : "";
             return (
             <li
               key={photo.src}
