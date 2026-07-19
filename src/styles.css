@@ -6752,5 +6752,10 @@ html {
   [data-route-fade] {
     animation: none !important;
   }
+  .motion-check-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
