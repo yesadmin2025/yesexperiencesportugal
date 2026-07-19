@@ -6600,3 +6600,149 @@ html {
 .local-stories-scope .text-\[color\:var\(--gold-warm\)\] {
   color: #8A611F !important;
 }
+
+/* ============================================================
+ * Scene motion system — progressive enhancement
+ *
+ * Content is ALWAYS visible by default. Reveal styles apply ONLY to
+ * elements that a mounted Scene has marked with [data-scene-ready="1"].
+ * If JS/hydration fails, or a Scene never mounts, the element stays
+ * in its natural visible state.
+ *
+ * A Scene near or inside the viewport at mount time skips the hidden
+ * state entirely and paints [data-scene="in"] on first frame, so users
+ * never see already-visible content flicker to hidden and back.
+ *
+ * Reduced motion removes every transform/clip-path/scale; content is
+ * shown in final state with no delayed sequence.
+ * ========================================================== */
+
+/* Hidden initial state — scoped to opted-in scenes only. */
+[data-scene-ready="1"] .scene-atmosphere,
+[data-scene-ready="1"] .scene-title,
+[data-scene-ready="1"] .scene-body,
+[data-scene-ready="1"] .scene-cta,
+[data-scene-ready="1"] .scene-item {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition:
+    opacity var(--dur-text) var(--ease-scene),
+    transform var(--dur-text) var(--ease-scene);
+  will-change: opacity, transform;
+}
+
+[data-scene-ready="1"] .scene-atmosphere {
+  transform: translate3d(0, 0, 0);
+  transition: opacity var(--dur-image) var(--ease-scene);
+}
+
+/* Revealed state — added by useSceneReveal when the Scene enters the
+   viewport OR immediately on mount if the Scene is already visible. */
+[data-scene="in"] .scene-atmosphere,
+[data-scene="in"] .scene-title,
+[data-scene="in"] .scene-body,
+[data-scene="in"] .scene-cta,
+[data-scene="in"] .scene-item {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Section-level stagger — title first, then body, then CTA. */
+[data-scene="in"] .scene-title  { transition-delay: 0ms; }
+[data-scene="in"] .scene-body   { transition-delay: var(--stagger-md); }
+[data-scene="in"] .scene-cta    { transition-delay: calc(var(--stagger-md) * 2); }
+
+/* Card / list stagger — up to 8 items. */
+[data-scene="in"] .scene-item:nth-child(1)  { transition-delay: 0ms; }
+[data-scene="in"] .scene-item:nth-child(2)  { transition-delay: calc(var(--stagger-md) * 1); }
+[data-scene="in"] .scene-item:nth-child(3)  { transition-delay: calc(var(--stagger-md) * 2); }
+[data-scene="in"] .scene-item:nth-child(4)  { transition-delay: calc(var(--stagger-md) * 3); }
+[data-scene="in"] .scene-item:nth-child(5)  { transition-delay: calc(var(--stagger-md) * 4); }
+[data-scene="in"] .scene-item:nth-child(6)  { transition-delay: calc(var(--stagger-md) * 5); }
+[data-scene="in"] .scene-item:nth-child(7)  { transition-delay: calc(var(--stagger-md) * 6); }
+[data-scene="in"] .scene-item:nth-child(8)  { transition-delay: calc(var(--stagger-md) * 7); }
+
+/* RevealImage — clip-path mask reveal, with opacity fallback. */
+[data-reveal-image] {
+  opacity: 1;
+}
+[data-reveal-image][data-motion="mask"][data-reveal-ready="1"] {
+  clip-path: inset(0 100% 0 0);
+  opacity: 1;
+  transition: clip-path var(--dur-image) var(--ease-scene);
+}
+[data-reveal-image][data-motion="mask"][data-reveal="in"] {
+  clip-path: inset(0 0 0 0);
+}
+@supports not (clip-path: inset(0)) {
+  [data-reveal-image][data-motion="mask"][data-reveal-ready="1"] {
+    clip-path: none;
+    opacity: 0;
+    transition: opacity var(--dur-image) var(--ease-scene);
+  }
+  [data-reveal-image][data-motion="mask"][data-reveal="in"] {
+    opacity: 1;
+  }
+}
+[data-reveal-image][data-motion="scale"][data-reveal-ready="1"] {
+  opacity: 0;
+  transform: scale(1.03);
+  transition:
+    opacity var(--dur-image) var(--ease-scene),
+    transform var(--dur-image) var(--ease-scene);
+}
+[data-reveal-image][data-motion="scale"][data-reveal="in"] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* CTA sentinel emphasis — subtle arrow slide + border shift, once. */
+[data-cta-active] {
+  --cta-active-shift: 3px;
+}
+[data-cta-active] .cta-arrow,
+[data-cta-active] svg.cta-arrow {
+  transform: translate3d(var(--cta-active-shift), 0, 0);
+  transition: transform var(--dur-base) var(--ease-scene);
+}
+
+/* Route fade — presentational only, does not block render. */
+[data-route-fade] {
+  animation: routeFadeIn 160ms var(--ease-scene) both;
+}
+@keyframes routeFadeIn {
+  from { opacity: 0.85; }
+  to   { opacity: 1; }
+}
+
+/* ── Reduced motion — one unambiguous rule ────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  [data-scene-ready="1"] .scene-atmosphere,
+  [data-scene-ready="1"] .scene-title,
+  [data-scene-ready="1"] .scene-body,
+  [data-scene-ready="1"] .scene-cta,
+  [data-scene-ready="1"] .scene-item,
+  [data-reveal-image][data-reveal-ready="1"] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+  [data-scene="in"] .scene-title,
+  [data-scene="in"] .scene-body,
+  [data-scene="in"] .scene-cta,
+  [data-scene="in"] .scene-item {
+    transition-delay: 0ms !important;
+  }
+  [data-cta-active] .cta-arrow,
+  [data-cta-active] svg.cta-arrow {
+    transform: none !important;
+    transition: none !important;
+  }
+  [data-route-fade] {
+    animation: none !important;
+  }
+}
+
