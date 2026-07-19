@@ -869,7 +869,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
           Confirm in real time. The day is yours.
         </p>
 
-        <CtaPair className="mt-8" justify="center">
+        <div className="mt-8 flex flex-col items-center gap-4">
           <CtaButton
             href="#book"
             variant="primary"
@@ -877,10 +877,14 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
           >
             Check availability & reserve
           </CtaButton>
-          <CtaButton to="/tours/$tourId/tailor" params={{ tourId: tour.id }} variant="ghostDark">
-            Tailor this day
-          </CtaButton>
-        </CtaPair>
+          <Link
+            to="/tours/$tourId/tailor"
+            params={{ tourId: tour.id }}
+            className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/85 hover:text-[color:var(--gold)] transition-colors min-h-[44px]"
+          >
+            Tailor this day <span aria-hidden="true" className="text-[color:var(--gold)]">→</span>
+          </Link>
+        </div>
 
         <p className="mt-5 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory)]/65">
           Instant confirmation · Free cancellation up to 24h · A local on WhatsApp if you need help
