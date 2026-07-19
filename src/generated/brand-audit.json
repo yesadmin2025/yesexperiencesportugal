@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T23:52:34.909Z",
+  "generatedAt": "2026-07-19T00:39:19.224Z",
   "filesScanned": 841,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 371,
+    "total": 372,
     "approved": 90,
     "allowlisted": 64,
-    "mismatch": 217
+    "mismatch": 218
   },
   "findings": [
     {
@@ -3361,6 +3361,15 @@
       "raw": "#d8b97a",
       "normalized": "#d8b97a",
       "snippet": "color: color-mix(in oklab, var(--gold-soft, #d8b97a) 88%, var(--ivory));",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/styles.css",
+      "line": 6554,
+      "col": 10,
+      "raw": "#8A611F",
+      "normalized": "#8a611f",
+      "snippet": "color: #8A611F !important;",
       "status": "mismatch"
     }
   ]
