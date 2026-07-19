@@ -1,46 +1,50 @@
-# Correção de paridade entre o trabalho recente e o site publicado
+# Motion — tornar visível sem quebrar o premium
 
-## Diagnóstico confirmado
-- `yesexperiencesportugal.com`, `yesexperiencesportugal.lovable.app` e `yesexperiences.pt` estão a servir a mesma publicação; os dois últimos redirecionam para o domínio principal.
-- A resposta de produção não está presa num cache antigo (`no-cache`).
-- Parte das alterações está publicada no HTML: animações `Scene`, preços “per person”, total do grupo, composição adultos/crianças e mapa sem atribuição Leaflet.
-- Contudo, várias melhorias são pouco percetíveis porque aparecem apenas depois de scroll/interação. A criança só surge depois de “Add a child”, e as animações são deliberadamente subtis.
-- Existe ainda uma falha real: o Tailor continua a gerar add-ons e alternativas de almoço por palavras-chave, incluindo opções não confirmadas como “Extra wine pairing”, “Photographer”, “Kids’ activity kit”, “Sunset extension” e “Premium tasting menu”. Isto contradiz o plano aprovado e a regra de não inventar.
+## Diagnóstico
 
-## Implementação
+As animações estão implementadas em todo o lado, mas com valores tão contidos que praticamente não se leem no mobile:
 
-1. **Eliminar conteúdo Tailor não validado**
-   - Remover os add-ons e opções de almoço gerados automaticamente por texto/palavras-chave.
-   - Mostrar apenas elementos existentes e confirmados nos dados próprios de cada Signature.
-   - Manter necessidades práticas — cadeira de criança, mobilidade, alergias e preferências alimentares — como pedidos de preparação, sem inventar preço ou disponibilidade.
+- `.reveal` sobe **12px em 360ms**, `.reveal-stagger` **10px em 320ms** — abaixo do limite premium.
+- `RouteFade` faz apenas fade de opacidade em 160ms, sem lift.
+- Scope `marketing` (aplicado nas páginas públicas) força translateY 18px + blur 4px em 420ms — bom, mas homepage e Signature/editorial não recebem o mesmo tratamento porque usam `.reveal` diretamente.
+- `RevealImage` está em `motion="none"` por defeito e quase nenhum call site opta por `mask`/`scale`, logo as imagens não têm o mask reveal cinematográfico do plano.
+- Ken-Burns em `GuestMomentsStrip`/service blocks continua a existir mas sem stagger nem entry lift.
 
-2. **Tornar adultos/crianças e preços imediatamente claros**
-   - Rever Signature, Tailor, Studio e checkout para usar o mesmo controlo de composição e a mesma lógica de faixas etárias.
-   - No mobile, apresentar “Adults” e “Children” como escolhas explícitas, sem obrigar o utilizador a descobrir uma secção escondida.
-   - Após adicionar uma criança, exigir idade e mostrar de imediato a faixa e preço aplicável: infant 0–2, child 3–10, youth 11–17.
-   - Manter sempre visíveis “per person”, discriminação por adulto/criança quando aplicável e “Party total”.
+Resultado: o sistema funciona, mas o utilizador sente “nada acontece”.
 
-3. **Corrigir e simplificar mapa/legenda**
-   - Garantir que todos os pontos mostrados vêm exclusivamente do itinerário-fonte de cada Signature.
-   - Mostrar as adegas que pertencem à experiência, com marcadores numerados coerentes.
-   - Para a experiência de Arrábida, explicar junto da legenda que são visitadas 2 ou 3 adegas conforme a opção escolhida e disponibilidade, sem sugerir que todas são visitadas.
-   - Manter removidas todas as marcas “Leaflet / OpenStreetMap / CARTO” da interface visível.
+## Implementação (dentro do plano v2 aprovado, sem reintroduzir bounce/spring)
 
-4. **Reforçar contraste e legibilidade mobile**
-   - Auditar os cartões de seleção, labels, preços, estados selecionados/desativados e texto sobre imagem no viewport real de 393×706.
-   - Corrigir todos os elementos abaixo de WCAG AA e manter alvos táteis mínimos de 44×44.
-   - Evitar texto cinzento demasiado leve e dourado funcional com pouco contraste.
+1. **Refinar tokens de reveal (globais, exceto excluded routes)**
+  - `.reveal`: translateY **20px → 0**, duração **520ms**, ease existente `--ease-premium`.
+  - `.reveal-stagger`: translateY **16px → 0**, duração **460ms**, delay base 60ms mantido.
+  - Adicionar um leve `filter: blur(3px) → 0` em imagens dentro de `.reveal` (via `.reveal img, .reveal [data-reveal-image]`) durante 560ms para dar textura cinematográfica sem mover layout.
+  - &nbsp;
+2. **Ativar mask reveal nas imagens editoriais**
+  - Trocar `motion="none"` para `motion="mask"` em call sites editoriais aprovados: homepage, cards de Signature (`experiences.tsx`), heros de tour (`tours.$tourId.tsx`), cards de Local Stories e blocos `EditorialCard` com imagem.
+    &nbsp;
+  - Duração continua ligada a `--dur-image` (780ms) — apenas garantimos que dispara.
+3. **RouteFade com micro-lift**
+  - Adicionar translateY 6px → 0 em 220ms junto ao fade existente, apenas nas rotas já cobertas (mantém exclusão de Studio/Builder/Checkout/Tailor/Admin).
+4. **Stagger real onde já existe intenção**
+  - Em `experiences.tsx` (grelha Signature), `local-stories` (grelha de artigos) e `corporate.tsx` (blocos de serviço): aplicar `.reveal-stagger` com delays 0/80/160/240ms via nth-child para garantir sequência visível.
+  - Sem alterar layout, só classes.
+5. **Ken-Burns sempre ligado nos ambient reveals**
+  - `AmbientLandscapeReveal` / `CinematicEditorialImage` já implementam pan, mas dependem de viewport gating; garantir que o gate ativa 200ms depois do reveal do container (não em paralelo) e que o pan corre continuamente enquanto visível, em vez de parar após um ciclo.
+6. **Reading Progress mais evidente**
+  - Aumentar altura da barra de 2px → 3px e opacidade da cor gold para 100% (atualmente com transição)
+7. **Guardrails**
+  - Nenhum valor ultrapassa: translateY 22px, duração 620ms, blur 4px, sem bounce/spring, pode usar  parallax 
+  - &nbsp;
+  - Correr suite existente `src/__tests__/animation-contract-regression.test.ts` — atualizar os matchers de duração/translate onde o contrato agora exige o valor novo.
+  - Correr `scripts/check-css-braces.mjs` no prebuild (já existe).
 
-5. **Confirmar o sistema de movimento em páginas reais**
-   - Verificar Route Fade, Scene, RevealImage, ReadingProgress, itinerários e páginas editoriais em produção.
-   - Garantir que os reveals são visíveis ao fazer scroll, sem esconder conteúdo antes do JavaScript e respeitando reduced motion.
-   - Ajustar apenas a perceção das animações que estejam impercetíveis, sem ultrapassar o movimento premium e discreto aprovado.
+## Verificação
 
-6. **Criar uma verificação de regressão orientada ao que a cliente vê**
-   - Adicionar testes mobile para: criança + idade + preço, total do grupo, Tailor sem opções inventadas, mapa sem branding, regra das 2/3 adegas, contraste dos cartões e presença das animações.
-   - Manter o check de CSS balanceado e incluir estas verificações no controlo anterior ao build.
+- Playwright mobile 393×706 em `/`, `/experiences`, `/tours/arrabida-wine-secret-coves`, `/local-stories`, homepage, about , moments `/corporate`: gravar 3 screenshots por rota (pré-scroll, mid-scroll, pós-scroll) e confirmar entrada visível de secções + zoom cinematográfico em imagens editoriais.
+- Verificar consola sem warnings de fallback de fonte ou hydration.
+- Preços com crianças tem de estar descriminado não apenas por adulto ou apenas o total em todos os portos . 
 
-7. **Validar a versão publicada rota a rota**
-   - Comparar preview e produção nas páginas Signature, Tailor, Studio, checkout, mapa e Local Stories.
-   - Produzir uma checklist curta com URL, alteração esperada e evidência verificada, para não voltar a declarar “implementado” apenas porque o código existe.
-   - Depois da validação, publicar uma única versão consolidada.
+## Fora de âmbito
+
+- Studio V2/V3, Builder, 
+  &nbsp;
