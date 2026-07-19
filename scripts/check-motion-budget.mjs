@@ -43,6 +43,7 @@ function scanCss(path) {
   lines.forEach((line, i) => {
     const trimmed = line.trim();
     if (/^\s*\/\*/.test(trimmed) || /^\s*\*/.test(trimmed)) return;
+    if (/motion-budget-allow/.test(line)) return;
     if (/transition\s*:\s*all\b/.test(line)) {
       violations.push({ file: path, line: i + 1, rule: "transition:all", text: trimmed });
     }
