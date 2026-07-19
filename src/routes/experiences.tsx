@@ -12,6 +12,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { Scene } from "@/components/motion/Scene";
 
 export const Route = createFileRoute("/experiences")({
   head: () => ({
