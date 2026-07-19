@@ -34,6 +34,7 @@ import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { TourImage } from "@/components/tours/TourImage";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { useAdminTourPhotos } from "@/lib/useAdminTourPhotos";
+import { SignatureRouteMap } from "@/components/SignatureRouteMap";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {
@@ -205,8 +206,8 @@ function TourDetailPage() {
       {/* ── 5 · ITINERARY (real Viator stops only) ────────────── */}
       <ItineraryTimeline tour={tour} meta={meta} />
 
-      {/* ── 6 · MAP — branded markers, real stops only ──────── */}
-      <RouteMap tour={tour} meta={meta} />
+      {/* ── 6 · MAP — real geographic map with driving route ───── */}
+      <SignatureRouteMap tour={tour} />
 
       {/* ── 7 · WHAT'S INCLUDED ────────────────────────────────── */}
       <IncludedAndIdeal tour={tour} meta={meta} />
