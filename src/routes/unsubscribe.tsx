@@ -69,10 +69,16 @@ function Page() {
     <SiteLayout>
       <section className="pt-32 pb-24 bg-[color:var(--sand)] min-h-[70vh]">
         <div className="container-x max-w-xl text-center">
-          <Eyebrow flank>Email preferences</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Unsubscribe
-          </SectionTitle>
+          <Scene>
+            <div className="scene-atmosphere">
+              <Eyebrow flank>Email preferences</Eyebrow>
+            </div>
+            <div className="scene-title">
+              <SectionTitle as="h1" size="anchor" spacing="loose">
+                Unsubscribe
+              </SectionTitle>
+            </div>
+          </Scene>
 
           <div className="mt-10 border-l-4 border-[color:var(--gold)] bg-white p-8 text-left">
             {state.kind === "loading" && (
