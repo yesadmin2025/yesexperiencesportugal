@@ -866,7 +866,12 @@ function TailorPage() {
                     <input
                       type="date"
                       value={date}
-                      onChange={(e) => setDate(e.target.value)}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setDate(v);
+                        if (v) gaBookingDateSelected({ tourId: tour.id, surface: "tailor", dateISO: v });
+                      }}
+
                       className="w-full bg-transparent border border-[color:var(--border)] px-3 py-3 text-sm focus:outline-none focus:border-[color:var(--gold)] min-h-[48px]"
                     />
                   </Field>
