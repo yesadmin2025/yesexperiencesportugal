@@ -910,7 +910,20 @@ function TailorPage() {
                 <div className="space-y-4">
                   <Field label="Who's travelling">
                     <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
-                      <CompositionField value={composition} onChange={setComposition} compact />
+                      <CompositionField
+                        value={composition}
+                        onChange={(next) => {
+                          setComposition(next);
+                          gaBookingCompositionSet({
+                            tourId: tour.id,
+                            surface: "tailor",
+                            adults: next.adults,
+                            minors: next.minorAges.length,
+                          });
+                        }}
+                        compact
+                      />
+
                     </div>
                     <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
                       {compositionReady
