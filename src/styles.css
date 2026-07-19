@@ -222,6 +222,13 @@
   --motion-lift: -2px;
   --motion-image-zoom: 1.03;
 
+  /* Motion v3 — editorial cinematic tokens (see docs/motion-v3-report.md). */
+  --motion-ease-editorial: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --motion-dur-mask: 720ms;
+  --motion-dur-split: 560ms;
+  --motion-dur-rule: 640ms;
+  --motion-stagger: 60ms;
+
   /* Semantic — restored to brand board v1 (2026-04-25).
      The 8 canonical tokens above (--teal/--teal-2/--gold/--gold-soft/
      --ivory/--sand/--charcoal/--charcoal-soft) are the single source
