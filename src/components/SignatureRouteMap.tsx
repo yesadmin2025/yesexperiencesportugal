@@ -12,9 +12,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { MapPin } from "lucide-react";
+import { MapPin, Clock, Sunrise, Route as RouteIcon } from "lucide-react";
 import type { SignatureTour } from "@/data/signatureTours";
 import { lookupStop } from "@/data/stopGeo";
+import { lookupStopNote } from "@/data/stopNotes";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { RouteLegend } from "@/components/studio-v3/RouteLegend";
