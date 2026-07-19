@@ -606,6 +606,16 @@ function HomePage() {
                     Start designing
                   </CtaButton>
                 </div>
+                <p className="mt-4 text-[13px] text-[color:var(--charcoal-soft)]">
+                  Prefer a human hand?{" "}
+                  <a
+                    href="/portugal-travel-designer"
+                    className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
+                  >
+                    Portugal Travel Designer →
+                  </a>
+                </p>
+
               </div>
 
               <div className="lg:col-span-7 lg:order-2 order-2">

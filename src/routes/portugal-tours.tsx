@@ -187,6 +187,16 @@ function Page() {
               </span>
               <ul className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
                 <li>
+                  <Link to="/portugal-travel-designer" className="hover:text-[color:var(--teal)]">
+                    Design a private Portugal journey →
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/multi-day" className="hover:text-[color:var(--teal)]">
+                    Explore multi-day Portugal →
+                  </Link>
+                </li>
+                <li>
                   <Link to="/luxury-tours-portugal" className="hover:text-[color:var(--teal)]">
                     Luxury Portugal tours →
                   </Link>
@@ -206,13 +216,9 @@ function Page() {
                     Day trips from Lisbon →
                   </Link>
                 </li>
-                <li>
-                  <Link to="/multi-day" className="hover:text-[color:var(--teal)]">
-                    Multi-day journeys →
-                  </Link>
-                </li>
               </ul>
             </aside>
+
           </div>
         </section>
       </article>

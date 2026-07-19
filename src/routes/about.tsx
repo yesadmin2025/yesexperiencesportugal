@@ -198,8 +198,30 @@ function Page() {
             </p>
             <p>
               This is not anonymous reselling. It is not another operator's coach tour with a
-              different logo.
+              different logo. Read more about{" "}
+              <a
+                href="/portugal-travel-designer"
+                className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
+              >
+                our approach to Portugal travel design
+              </a>
+              ,{" "}
+              <a
+                href="/studio-v3"
+                className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
+              >
+                build through the YES Studio
+              </a>{" "}
+              or explore{" "}
+              <a
+                href="/multi-day"
+                className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
+              >
+                private multi-day journeys
+              </a>
+              .
             </p>
+
           </div>
         </div>
       </section>
