@@ -250,6 +250,7 @@ export function SignatureRouteMap({ tour }: Props) {
               legMinutes={legMinutes}
               legDistancesKm={legDistancesKm}
               legModes={legModes}
+              hideTotals={!!tour.wineriesRule}
             />
           </div>
         )}

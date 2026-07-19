@@ -21,6 +21,12 @@ interface Props {
   legDistancesKm?: ReadonlyArray<number> | null;
   legModes?: ReadonlyArray<RouteLegMode> | null;
   className?: string;
+  /**
+   * When true, suppresses the "Total transit" summary in the header.
+   * Used for tours where stops are optional/variable, making a total
+   * summation misleading.
+   */
+  hideTotals?: boolean;
 }
 
 function formatKm(km: number): string {
@@ -35,6 +41,7 @@ export function RouteLegend({
   legDistancesKm,
   legModes,
   className,
+  hideTotals = false,
 }: Props) {
   if (!legMinutes || legMinutes.length === 0) return null;
 
@@ -61,10 +68,12 @@ export function RouteLegend({
           <RouteIcon size={12} aria-hidden="true" />
           Route breakdown
         </span>
-        <span className="text-[11px] text-[color:var(--charcoal)]/65">
-          {Math.round(totalMin)} min in transit
-          {totalKm !== null ? ` · ${formatKm(totalKm)}` : ""}
-        </span>
+        {!hideTotals && (
+          <span className="text-[11px] text-[color:var(--charcoal)]/65">
+            {Math.round(totalMin)} min in transit
+            {totalKm !== null ? ` · ${formatKm(totalKm)}` : ""}
+          </span>
+        )}
       </figcaption>
 
       <ol className="space-y-1.5 list-none p-0 m-0">
@@ -100,12 +109,14 @@ export function RouteLegend({
         })}
       </ol>
 
-      <p className="mt-3 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--text-muted)]">
-        {drivingCount > 0 && `${drivingCount} driving`}
-        {drivingCount > 0 && walkingCount > 0 && " · "}
-        {walkingCount > 0 && `${walkingCount} walking`}
-        {drivingCount === 0 && walkingCount === 0 && "Timing based on real roads"}
-      </p>
+      {!hideTotals && (
+        <p className="mt-3 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--text-muted)]">
+          {drivingCount > 0 && `${drivingCount} driving`}
+          {drivingCount > 0 && walkingCount > 0 && " · "}
+          {walkingCount > 0 && `${walkingCount} walking`}
+          {drivingCount === 0 && walkingCount === 0 && "Timing based on real roads"}
+        </p>
+      )}
     </figure>
   );
 }
