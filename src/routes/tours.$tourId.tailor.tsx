@@ -883,12 +883,25 @@ function TailorPage() {
                       value={date}
                       onChange={(e) => {
                         const v = e.target.value;
+                        if (v && rule) {
+                          const check = validateDateISO(v, rule);
+                          if (!check.ok) {
+                            gaBookingValidationBlocked({ tourId: tour.id, surface: "tailor", reason: `date_${check.reason}` });
+                            const msg =
+                              check.reason === "weekday_closed" ? "This tour doesn't run on that day. Please pick another date." :
+                              check.reason === "blackout" ? "That date is unavailable. Please pick another." :
+                              "Please choose a date at least 24 hours from now.";
+                            toast.error(msg);
+                            return;
+                          }
+                        }
                         setDate(v);
                         if (v) gaBookingDateSelected({ tourId: tour.id, surface: "tailor", dateISO: v });
                       }}
-
+                      min={minDateISO}
                       className="w-full bg-transparent border border-[color:var(--border)] px-3 py-3 text-sm focus:outline-none focus:border-[color:var(--gold)] min-h-[48px]"
                     />
+
                   </Field>
                   <Field label="Pickup time">
                     <Segmented
