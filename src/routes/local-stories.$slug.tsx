@@ -6,6 +6,9 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { Scene } from "@/components/motion/Scene";
+import { RevealImage } from "@/components/motion/RevealImage";
+import { ReadingProgress } from "@/components/motion/ReadingProgress";
 import {
   jsonLdScript,
   breadcrumbLd,
@@ -504,6 +507,7 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
 
   return (
     <SiteLayout>
+      <ReadingProgress />
       <article>
         <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)]">
           <div className="container-x max-w-3xl text-center">
@@ -523,13 +527,13 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
           </div>
           {post.heroImage && (
             <div className="container-x max-w-4xl mt-10">
-              <div className="relative overflow-hidden aspect-[16/9] shadow-[0_24px_60px_-30px_rgba(46,46,46,0.4)]">
-                <img
-                  src={post.heroImage}
-                  alt={post.heroImageAlt ?? post.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              <RevealImage
+                motion="mask"
+                ratio="16 / 9"
+                frameClassName="shadow-[0_24px_60px_-30px_rgba(46,46,46,0.4)]"
+                src={post.heroImage}
+                alt={post.heroImageAlt ?? post.title}
+              />
             </div>
           )}
         </header>
@@ -553,21 +557,23 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
             </div>
 
             {post.signatureSlug && (
-              <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
-                <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
+              <Scene as="aside" className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
+                <span className="scene-atmosphere block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
                   Travel this story
                 </span>
-                <p className="text-[15px] text-[color:var(--charcoal-soft)] mb-6">
+                <p className="scene-title text-[15px] text-[color:var(--charcoal-soft)] mb-6">
                   The places in this piece live inside one of our private days.
                 </p>
-                <CtaButton
-                  to="/tours/$tourId"
-                  params={{ tourId: post.signatureSlug }}
-                  variant="primary"
-                >
-                  See the Signature
-                </CtaButton>
-              </aside>
+                <div className="scene-cta">
+                  <CtaButton
+                    to="/tours/$tourId"
+                    params={{ tourId: post.signatureSlug }}
+                    variant="primary"
+                  >
+                    See the Signature
+                  </CtaButton>
+                </div>
+              </Scene>
             )}
 
             <nav className="mt-16 text-center">
