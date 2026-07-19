@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { StudioV3 } from "@/components/studio-v3/StudioV3";
 import { breadcrumbLd, studioServiceLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { STUDIO_FAQ } from "@/content/seo-faq";
+import { Scene } from "@/components/motion/Scene";
 import ogImg from "@/assets/decision-studio.jpg";
 
 /**
