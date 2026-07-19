@@ -17,8 +17,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { buildResponsiveSrc } from "@/lib/responsive-image";
 import { useEditorialOverrides, type EditorialModuleKey } from "@/lib/editorial-overrides";
-import { ImageReveal } from "@/components/motion/ImageReveal";
-import { AmbientDrift } from "@/components/motion/AmbientDrift";
 
 export type GuestMoment = {
   src: string;
@@ -126,6 +124,7 @@ export function GuestMomentsStrip({
         >
           {rendered.map((photo, idx) => {
             const responsive = buildResponsiveSrc(photo.src, { sizes: "portrait" });
+            const kbVariant = idx % 3 === 1 ? " ken-burns-slow--b" : idx % 3 === 2 ? " ken-burns-slow--c" : "";
             return (
             <li
               key={photo.src}
@@ -138,28 +137,22 @@ export function GuestMomentsStrip({
               "
             >
               <figure className="flex h-full flex-col">
-                <ImageReveal
-                  direction={idx % 2 === 0 ? "diagonal" : "left"}
-                  className="relative overflow-hidden rounded-[2px] bg-[color:var(--sand)] aspect-[4/5] shadow-[0_20px_40px_-24px_rgba(46,46,46,0.18)]"
-                >
-                  <AmbientDrift intensity={idx % 3 === 1 ? "medium" : "subtle"}>
-                    <img
-                      src={responsive.src}
-                      srcSet={responsive.srcSet}
-                      alt={photo.alt}
-                      loading={idx === 0 ? "eager" : "lazy"}
-                      decoding="async"
-                      fetchPriority={idx === 0 ? "high" : "auto"}
-                      sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 76vw"
-                      className="absolute inset-0 h-full w-full object-cover"
-                    />
-                  </AmbientDrift>
-                </ImageReveal>
+                <div className="relative overflow-hidden rounded-[2px] bg-[color:var(--sand)] aspect-[4/5] shadow-[0_20px_40px_-24px_rgba(46,46,46,0.18)]">
+                  <img
+                    src={responsive.src}
+                    srcSet={responsive.srcSet}
+                    alt={photo.alt}
+                    loading={idx === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                    fetchPriority={idx === 0 ? "high" : "auto"}
+                    sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 76vw"
+                    className={`ken-burns-slow${kbVariant} absolute inset-0 h-full w-full object-cover`}
+                  />
+                </div>
                 <figcaption className="mt-4 font-serif italic text-[0.95rem] md:text-[1rem] leading-snug text-[color:var(--teal)]">
                   {photo.caption}
                 </figcaption>
               </figure>
-
             </li>
             );
           })}

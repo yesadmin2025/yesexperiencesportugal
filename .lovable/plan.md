@@ -1,99 +1,95 @@
-## Motion v4 — Cinematic Parallax Site-Wide
+# Motion v3 — Editorial Cinematic + Performance Budget
 
-Objetivo: sensação editorial high-end genuína (Black Tomato / Aesop / Kinfolk digital), com parallax controlado em **todo** o site (não só hero), imagens que "respiram", texto que entra em camadas com peso — sem bounce, sem spring, sem overshoot, sem gimmicks.
+Objetivo: passar de reveals "contidos" para um sistema com **storytelling gráfico** (máscaras, split-text, parallax controlado, chapter leads, gold rule draw-in) mantendo LCP ≤ 2.5s, CLS < 0.05, INP < 200ms em mobile mid-tier.
 
-### O que muda na filosofia
+## 1. Performance budget (guardrails, medidos antes e depois)
 
-- Autorização de parallax site-wide (revogo a regra "parallax = homepage-only"). Aplicado a: heroes, imagens editoriais, capas de tour, chapter leads, backgrounds de secção. Mantém-se OFF em Studio V3, Checkout, Auth, Admin (conversão/foco).
-- Curva única site-wide: `cubic-bezier(.2,.7,.1,1)` (ease-out longo, zero overshoot). Nunca `spring`, nunca `elastic`, nunca `back`.
-- Motion sempre GPU-only: `transform`, `opacity`, `filter`, `clip-path`. Guardrail `check-motion-budget.mjs` mantém-se verde.
-- `prefers-reduced-motion` desliga tudo (estático).
+- LCP ≤ 2.5s / CLS < 0.05 / INP < 200ms (mobile, Moto G class, 4G throttled).
+- JS por rota ≤ 180KB gzipped incremental.
+- Nenhuma animação toca `top/left/width/height` — só `transform` + `opacity` + `filter` (composited).
+- `will-change` só durante a animação, removido no `onEnd`.
+- Todas as animações passam por `useHydrated()` + `IntersectionObserver` (rootMargin 15%), gated por `prefers-reduced-motion`.
+- Imagens hero mantêm `fetchpriority="high"` + `<link rel="preload">` no route `head()`. Blur-in aplicado só depois de `decode()` resolver para não empurrar LCP.
+- Novo script `scripts/check-motion-budget.mjs` corre no `prebuild`: falha se algum ficheiro adicionar `transition: all`, `animation: *` sobre propriedades não-composited, ou `will-change` permanente.
 
-### 1. Parallax multi-camada (o que faltava)
+## 2. Motion primitives novos (src/components/motion/)
 
-Substituir o `ParallaxLayer` atual (single-layer, cap 20px) por sistema de **3 camadas com profundidades diferentes** — é isto que dá a sensação "high-end", não translations maiores.
+Todos SSR-safe, sem layout shift, com fallback estático se JS falhar.
 
-`<ParallaxScene>` — container que expõe `--scroll-progress` (-1 → 1) via rAF partilhado (um único listener global, não um por instância — crítico para performance com N cenas).
+- **`<MaskReveal>`** — clip-path inset 100%→0 diagonal (12deg), 720ms, cubic-bezier(.2,.7,.1,1). Usado em heroes e imagens editoriais chave. Substitui blur+translate genérico.
+- **`<SplitLines>`** — divide h1/h2 em linhas via CSS `background-clip` + `translateY(110%)→0` stagger 60ms. Sem re-flow (mede uma vez). Aplicado só a headings de secção principais (1-2 por página).
+- **`<ChapterLead>`** — eyebrow + gold rule que "desenha" (scaleX 0→1, transform-origin left, 640ms) + título com SplitLines. Marca início de secção editorial.
+- **`<ParallaxLayer amount="sm|md">`** — translateY via `requestAnimationFrame` gated a IO, cap ±24px, off em mobile <390px e reduced-motion. Só em hero e 1 secção âncora por rota.
+- **`<StickyChapter>`** — para Signature/Local Stories: título fica sticky durante scroll do bloco e faz cross-fade entre capítulos (opacity + 8px translate).
+- **`<MagneticCTA>`** — botão primário atrai cursor ±6px em desktop, sheen dourado em hover. No-op mobile.
+- **`<CountUp>`** — para números de trust (reviews, anos, guests). IO-gated, 900ms.
 
-`<ParallaxLayer depth="back|mid|fore">` — cada camada translada por múltiplo do progresso:
-- `back` (imagem/background): 40px, blur 0→0
-- `mid` (overlay/gradient): 20px em direção oposta
-- `fore` (texto/eyebrow/CTA): 8px, ligeira contra-direção
-- Cap absoluto: 48px. Em mobile <768px: reduzido a 60% (não desligado — o utilizador quer ver movimento no mobile também).
+## 3. Storytelling por família de rota
 
-### 2. Novos primitives cinematográficos
+### Home (`.home-energy` scope)
+- Hero: MaskReveal na imagem + SplitLines no H1 + ChapterLead na secção seguinte.
+- Occasions row: cards entram em stagger diagonal (não vertical) 80ms.
+- CTA final: MagneticCTA + sheen já existente reforçada (opacity .35→.6).
 
-Adicionar a `src/components/motion/`:
+### Signature index + tour detail
+- Hero MaskReveal + SplitLines.
+- Cada "capítulo" do dia usa ChapterLead + StickyChapter (o número do stop fica sticky enquanto scrolla).
+- Mapa: pins entram um a um (60ms stagger) quando o mapa entra em viewport.
+- Trust row: CountUp nos ratings/anos.
 
-- **`<ParallaxScene>` / `<ParallaxLayer depth>`** — substitui o atual `ParallaxLayer`.
-- **`<ImageReveal>`** — clip-path inset diagonal 0→100% (900ms) + `scale(1.08→1)` + `filter: blur(6px)→0` sincronizados. Substitui o `MaskReveal` atual em imagens grandes. Faz sentir "câmara a focar".
-- **`<TextRise stagger>`** — versão upgraded de `SplitLines`: cada linha entra com `translateY(120%)→0` + `opacity 0→1` + máscara vertical, stagger configurável 40/60/80ms. Também aceita `words` mode (palavra a palavra) para eyebrows/lead paragraphs.
-- **`<GoldRule>`** — filete gold que "desenha" da esquerda (scaleX 0→1, 720ms, origem left). Marca abertura de secção editorial.
-- **`<AmbientDrift>`** — micro-movimento contínuo (loop 18-24s, translate ±4px + scale 1.00→1.02) para imagens de "atmosphere" em backgrounds. Só quando a imagem está em viewport. Substitui o `ken-burns-slow` genérico atual.
-- **`<StickyCaption>`** — legenda/número que fica sticky durante o scroll do bloco e faz cross-fade entre estados (para capítulos Signature).
+### Local Stories (article)
+- Cover: MaskReveal + eyebrow draw-in.
+- ReadingProgress mantém-se (já 3px gold).
+- Primeiro parágrafo: drop-cap Fraunces 4.5rem, float left, fade+scale.
+- Imagens inline: MaskReveal com direção alternada.
 
-### 3. Aplicação por família de rota
+### Editorial (About, Corporate, Moments, Press, Reviews, Travel Designer)
+- ChapterLead a abrir cada secção major.
+- Uma imagem hero por página com ParallaxLayer amount="sm".
+- Restante mantém `.reveal` atual (já em 20px/520ms).
 
-**Heroes (todas as rotas exceto excluídas):**
-- `<ParallaxScene>` com 3 camadas: imagem back, gradient scrim mid, título+CTA fore.
-- Título via `<TextRise>` linha a linha.
-- Eyebrow com `<GoldRule>` a preceder.
+### Studio V3
+- **Não tocar.** Continua excluído por decisão prévia (studio-philosophy).
 
-**Home:** manter vídeo hero. Aplicar Parallax multi-camada nas secções seguintes (Occasions cards com depth back/fore separadas, FourWaysIn com gold rule + text rise, Guest Moments com AmbientDrift nas imagens).
+### Booking / Checkout / Auth / Admin
+- Excluídos. Apenas RouteFade. Zero storytelling para não distrair de conversão.
 
-**Experiences (Signature index):** cada card de tour com `<ImageReveal>` diagonal + parallax `back` na capa + `fore` no título; entrada em stagger diagonal (não vertical linear).
+## 4. Tokens & CSS
 
-**Tour detail:** hero com scene multi-camada; cada "capítulo do dia" abre com GoldRule + TextRise; imagens do dia com ImageReveal alternando direção; mapa mantém-se.
-
-**Local Stories:** cover com ImageReveal + AmbientDrift; drop-cap Fraunces no primeiro parágrafo; imagens inline com ImageReveal.
-
-**Editorial (About, Corporate, Moments, Press, Reviews, Travel Designer):** cada secção major abre com GoldRule + TextRise; uma imagem hero por página com ParallaxScene; imagens de suporte com AmbientDrift subtil.
-
-**Portugal Travel Designer:** mesmo tratamento editorial.
-
-**Excluídos (zero motion novo, só RouteFade):** Studio V3, Builder, Checkout, Tailor, Auth, Admin, API.
-
-### 4. Performance — não negociável
-
-- Um único `requestAnimationFrame` global (`src/lib/motion/scroll-driver.ts`) que notifica todas as `ParallaxScene` registadas. Evita N listeners.
-- `IntersectionObserver` gate: parallax só corre quando a cena está em viewport (± 20% rootMargin).
-- `will-change: transform` aplicado no `enter`, removido no `leave`.
-- Imagens hero mantêm `fetchpriority="high"` + preload; blur-in só após `img.decode()` resolver (não empurra LCP).
-- Budget: LCP ≤ 2.5s / CLS < 0.05 / INP < 200ms em mobile mid-tier. Medido antes/depois.
-
-### 5. Tokens CSS a adicionar
+Adicionar em `src/styles.css`:
 
 ```
---motion-ease-cine: cubic-bezier(.2,.7,.1,1);
---motion-dur-reveal: 900ms;
---motion-dur-rise: 720ms;
---motion-dur-rule: 720ms;
---motion-drift-loop: 22s;
---parallax-cap-desktop: 48px;
---parallax-cap-mobile: 28px;
+--motion-ease-editorial: cubic-bezier(.2,.7,.1,1);
+--motion-dur-mask: 720ms;
+--motion-dur-split: 560ms;
+--motion-dur-rule: 640ms;
+--motion-stagger: 60ms;
 ```
 
-### 6. Verificação obrigatória antes de "done"
+Refinar `.reveal` para 24px/560ms (subida ligeira do v2 atual) e manter blur-in.
 
-1. `check-motion-budget.mjs` verde + `check-css-braces.mjs` verde.
-2. Playwright em 393×706: screenshots a 3 depths de scroll (0/50/100%) em `/`, `/experiences`, `/tours/:id`, `/local-stories/:slug`, `/about`, `/corporate`, `/portugal-travel-designer`. Verificar que camadas se movem a velocidades diferentes.
-3. Lighthouse mobile em `/` e `/experiences` — LCP/CLS/INP dentro do budget.
-4. Teste `prefers-reduced-motion: reduce` — nada anima, tudo visível estático.
-5. FPS check via Playwright trace em scroll rápido de `/` — sem long tasks >50ms atribuíveis a scroll handlers.
+## 5. Verificação (obrigatória antes de marcar done)
 
-### 7. Rollout em 3 batches
+1. `bun run build` limpo + `check-motion-budget.mjs` verde.
+2. Lighthouse mobile em `/`, `/experiences`, `/tours/:id`, `/local-stories/:slug`, `/about` — anexar métricas ao relatório.
+3. Playwright: screenshot antes/depois em 393×706 de cada rota-âncora, gravando `performance.now()` do primeiro `is-visible`.
+4. Teste `prefers-reduced-motion: reduce` — nenhum keyframe corre, conteúdo visível estático.
+5. Regression tests atualizados (`animation-contract-regression.test.ts`) com os novos tokens.
 
-- **B1 — Foundation (sem visual change ainda):** scroll-driver global, `<ParallaxScene>`/`<ParallaxLayer depth>`, `<ImageReveal>`, `<TextRise>` upgraded, `<GoldRule>`, `<AmbientDrift>`, `<StickyCaption>`, tokens CSS, deprecar `ParallaxLayer` v3 sem remover (mantém compat).
-- **B2 — Heroes + Home + Experiences + Tour detail:** rotas de maior visita. Medir LCP/INP antes/depois.
-- **B3 — Editorial pages (About, Corporate, Moments, Press, Reviews, Travel Designer, Local Stories, Portugal Travel Designer):** mesmo sistema.
+## 6. Rollout em 4 batches (implementação após aprovação)
 
-### Fora de scope
+- **B1 — Foundation:** tokens, primitives novos, budget script, testes. Sem alteração visual ainda.
+- **B2 — Home + Signature index:** MaskReveal hero, SplitLines H1, ChapterLead nas duas rotas mais visitadas. Medir LCP/INP.
+- **B3 — Tour detail + Local Stories:** StickyChapter, drop-cap, mask alternada, pins staggered.
+- **B4 — Editorial pages + polish:** ChapterLead + ParallaxLayer sm, CountUp em trust rows, MagneticCTA no CTA global.
 
-- Studio V3, Builder, Checkout, Tailor, Auth, Admin (excluídos por conversão/foco).
-- GSAP/Lenis/Locomotive/Framer Motion novo (tudo custom com IO + rAF partilhado).
-- Vídeo/WebGL/canvas.
-- Reescrever `CinematicHero` da home (aprovado, mantém-se).
+## Fora de scope
 
-### Deliverable
+- Studio V3 (excluído por design).
+- Booking/Checkout (conversão primeiro).
+- Bibliotecas pesadas (GSAP, Lenis, Locomotive) — tudo custom com IO + rAF para não estourar budget JS.
+- Vídeo de fundo, WebGL, canvas.
 
-Relatório em `docs/motion-v4-report.md` com métricas Lighthouse antes/depois por rota + screenshots parallax a 3 depths + confirmação budget verde.
+## Deliverable final
+
+Relatório em `docs/motion-v3-report.md` com métricas Lighthouse antes/depois por rota + checklist de budget verde.
