@@ -63,10 +63,7 @@ interface ResolvedStop {
   lng: number;
 }
 
-function makeGoldPin(index: number) {
-  // Late-import L only from callers that already ensured we're in a browser.
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const L = require("leaflet");
+function makeGoldPin(L: typeof import("leaflet"), index: number) {
   return L.divIcon({
     className: "yes-signature-pin",
     html: `<div style="
