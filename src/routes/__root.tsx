@@ -20,6 +20,7 @@ import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
 import { RouteFade } from "@/components/motion/RouteFade";
+import { Scene } from "@/components/motion/Scene";
 import { installAnalyticsAttrs } from "@/lib/analytics";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
@@ -112,11 +113,11 @@ function NotFoundComponent() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">{strings.title}</h2>
-        <p className="mt-2 text-sm text-muted-foreground">{strings.body}</p>
-        <div className="mt-6">
+      <Scene className="max-w-md text-center">
+        <h1 className="scene-title text-7xl font-bold text-foreground">404</h1>
+        <h2 className="scene-title mt-4 text-xl font-semibold text-foreground">{strings.title}</h2>
+        <p className="scene-body mt-2 text-sm text-muted-foreground">{strings.body}</p>
+        <div className="scene-cta mt-6">
           <Link
             to={isPt ? "/pt" : "/"}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
@@ -124,7 +125,7 @@ function NotFoundComponent() {
             {strings.cta}
           </Link>
         </div>
-      </div>
+      </Scene>
     </div>
   );
 }

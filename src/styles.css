@@ -6714,6 +6714,14 @@ html {
 @keyframes routeFadeIn {
   from { opacity: 0.85; }
   to   { opacity: 1; }
+
+/* Booking confirmed check icon — one-shot scale-in, 240ms, no bounce. */
+.motion-check-in {
+  animation: motionCheckIn 240ms var(--ease-scene) both;
+}
+@keyframes motionCheckIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 /* ── Reduced motion — one unambiguous rule ────────────────── */
@@ -6743,6 +6751,11 @@ html {
   }
   [data-route-fade] {
     animation: none !important;
+  }
+  .motion-check-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 

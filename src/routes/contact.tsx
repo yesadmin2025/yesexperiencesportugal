@@ -8,6 +8,7 @@ import ogImg from "@/assets/why-image.jpg";
 
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
+import { Scene } from "@/components/motion/Scene";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   BUSINESS_LEGAL_NAME,
@@ -128,16 +129,20 @@ function Page() {
   return (
     <SiteLayout>
       <section className="reveal pt-32 pb-12 bg-[color:var(--sand)]">
-        <div className="container-x text-center">
-          <Eyebrow flank>Talk to a Designer</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Begin Your <SectionTitle.Em>Portugal Story</SectionTitle.Em>
-          </SectionTitle>
-          <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+        <Scene className="container-x text-center">
+          <div className="scene-atmosphere">
+            <Eyebrow flank>Talk to a Designer</Eyebrow>
+          </div>
+          <div className="scene-title">
+            <SectionTitle as="h1" size="anchor" spacing="loose">
+              Begin Your <SectionTitle.Em>Portugal Story</SectionTitle.Em>
+            </SectionTitle>
+          </div>
+          <p className="scene-body mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
             Tell us a little about who you are and what you'd love to experience. A local usually
             replies within a few hours.
           </p>
-        </div>
+        </Scene>
       </section>
 
       <section className="reveal py-20">
