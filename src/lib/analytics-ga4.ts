@@ -219,3 +219,97 @@ export function gaGenerateLead(args: {
     ...(args.requestType ? { request_type: args.requestType } : {}),
   });
 }
+
+/* ────────────────────────────────────────────────────────────────
+   Booking-funnel events (custom, non-ecommerce).
+   Emitted between the Reserve CTA click and the confirmation page,
+   in addition to the standard add_to_cart / begin_checkout /
+   add_payment_info / purchase chain. Read in GA4 Explore as
+   funnel steps keyed on `tour_id` + `surface`.
+   ──────────────────────────────────────────────────────────────── */
+
+export type BookingSurface = "signature" | "tailor";
+
+interface BookingBase {
+  tourId: string;
+  surface: BookingSurface;
+}
+
+export function gaReserveCtaClick(
+  args: BookingBase & { ctaLocation: "hero" | "sticky" | "final" | "card" | "inline" },
+): void {
+  pushEvent("reserve_cta_click", {
+    tour_id: args.tourId,
+    surface: args.surface,
+    cta_location: args.ctaLocation,
+  });
+}
+
+export function gaBookingDateSelected(args: BookingBase & { dateISO: string }): void {
+  const now = new Date();
+  const picked = new Date(args.dateISO + "T00:00:00");
+  const daysAhead = Math.max(
+    0,
+    Math.round((picked.getTime() - now.getTime()) / 86_400_000),
+  );
+  pushEvent("booking_date_selected", {
+    tour_id: args.tourId,
+    surface: args.surface,
+    days_ahead: daysAhead,
+  });
+}
+
+export function gaBookingTimeSelected(args: BookingBase & { pickupTime: string }): void {
+  pushEvent("booking_time_selected", {
+    tour_id: args.tourId,
+    surface: args.surface,
+    pickup_time: args.pickupTime,
+  });
+}
+
+export function gaBookingCompositionSet(
+  args: BookingBase & { adults: number; minors: number },
+): void {
+  pushEvent("booking_composition_set", {
+    tour_id: args.tourId,
+    surface: args.surface,
+    adults: args.adults,
+    minors: args.minors,
+    total_guests: args.adults + args.minors,
+  });
+}
+
+export function gaBookingLanguageSelected(args: BookingBase & { language: string }): void {
+  pushEvent("booking_language_selected", {
+    tour_id: args.tourId,
+    surface: args.surface,
+    language: args.language,
+  });
+}
+
+export function gaBookingValidationBlocked(
+  args: BookingBase & { reason: string },
+): void {
+  pushEvent("booking_validation_blocked", {
+    tour_id: args.tourId,
+    surface: args.surface,
+    reason: args.reason,
+  });
+}
+
+export function gaCheckoutDrawerOpened(args: BookingBase): void {
+  pushEvent("checkout_drawer_opened", {
+    tour_id: args.tourId,
+    surface: args.surface,
+  });
+}
+
+export function gaCheckoutDrawerAbandoned(
+  args: BookingBase & { timeOpenMs: number },
+): void {
+  pushEvent("checkout_drawer_abandoned", {
+    tour_id: args.tourId,
+    surface: args.surface,
+    time_open_ms: args.timeOpenMs,
+  });
+}
