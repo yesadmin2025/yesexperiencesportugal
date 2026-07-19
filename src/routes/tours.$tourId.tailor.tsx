@@ -15,6 +15,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { findTour, type SignatureTour, type TourStop } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
+import { lookupStop } from "@/data/stopGeo";
 import { bookableIncluded, validateTour, logTourValidation } from "@/lib/viatorValidation";
 import { useEffect } from "react";
 import { whatsappHref } from "@/components/WhatsAppFab";
