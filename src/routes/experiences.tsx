@@ -68,20 +68,23 @@ function ExperiencesPage() {
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>
-      <section
+      <Scene
+        as="section"
         data-audit="experiences-hero"
         className="pt-32 pb-[var(--section-y-sm)] bg-[color:var(--sand)] text-center"
       >
         <div className="container-x">
-          <Eyebrow flank>Signature Collection</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
+          <div className="scene-atmosphere">
+            <Eyebrow flank>Signature Collection</Eyebrow>
+          </div>
+          <SectionTitle as="h1" size="anchor" spacing="loose" className="scene-title">
             Signature <SectionTitle.Em>Tours</SectionTitle.Em>
           </SectionTitle>
-          <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+          <p className="scene-body mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
             A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond. Book as designed, or quietly tailor a few details.
           </p>
         </div>
-      </section>
+      </Scene>
 
       <section className="reveal section-y">
         <div className="container-x">
