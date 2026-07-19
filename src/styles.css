@@ -6889,7 +6889,11 @@ html {
   will-change: transform;
 }
 
-/* ImageReveal — diagonal clip + scale + blur, synchronized. */
+/* ImageReveal — diagonal clip + scale + blur, synchronized.
+   The observer sits on `.motion-image-reveal-outer` (no clip-path),
+   because zero-area clip-paths make Chromium IntersectionObserver
+   report isIntersecting=false and the reveal never fires. */
+.motion-image-reveal-outer { display: block; }
 .motion-image-reveal {
   display: block;
   overflow: hidden;
@@ -6905,11 +6909,11 @@ html {
   clip-path: inset(0 0 0 100%);
   transition: clip-path var(--motion-dur-reveal) var(--motion-ease-cine);
 }
-.motion-image-reveal.is-visible[data-reveal-dir="diagonal"] {
+.motion-image-reveal-outer.is-visible .motion-image-reveal[data-reveal-dir="diagonal"] {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
-.motion-image-reveal.is-visible[data-reveal-dir="left"],
-.motion-image-reveal.is-visible[data-reveal-dir="right"] {
+.motion-image-reveal-outer.is-visible .motion-image-reveal[data-reveal-dir="left"],
+.motion-image-reveal-outer.is-visible .motion-image-reveal[data-reveal-dir="right"] {
   clip-path: inset(0 0 0 0);
 }
 .motion-image-reveal-inner {
@@ -6921,10 +6925,11 @@ html {
     filter var(--motion-dur-reveal) var(--motion-ease-cine);
   will-change: transform, filter;
 }
-.motion-image-reveal.is-visible .motion-image-reveal-inner {
+.motion-image-reveal-outer.is-visible .motion-image-reveal-inner {
   transform: scale(1);
   filter: blur(0);
 }
+
 
 /* TextRise — lines or words rise from a mask. */
 .motion-rise { display: block; }
