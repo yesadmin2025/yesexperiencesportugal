@@ -6781,3 +6781,83 @@ html {
   }
 }
 
+
+/* ============================================================
+   Motion v3 — editorial primitives
+   ============================================================ */
+
+/* MaskReveal — diagonal clip-path wipe, GPU-only. */
+.motion-mask {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--motion-dur-mask) var(--motion-ease-editorial);
+  will-change: clip-path;
+}
+.motion-mask.is-visible {
+  clip-path: inset(0 0 0 0);
+}
+.motion-mask[data-mask-dir="diagonal"] {
+  clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  transition: clip-path var(--motion-dur-mask) var(--motion-ease-editorial);
+}
+.motion-mask[data-mask-dir="diagonal"].is-visible {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* SplitLines — line-by-line rise, mask overflow so descenders don't clip UI. */
+.motion-split { display: block; overflow: hidden; }
+.motion-split-line {
+  display: block;
+  transform: translateY(110%);
+  opacity: 0;
+  transition:
+    transform var(--motion-dur-split) var(--motion-ease-editorial),
+    opacity var(--motion-dur-split) var(--motion-ease-editorial);
+  transition-delay: calc(var(--split-index, 0) * var(--motion-stagger));
+  will-change: transform, opacity;
+}
+.motion-split.is-visible .motion-split-line {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Gold rule draw-in (used by ChapterLead / SectionTitle). */
+.motion-rule {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--motion-dur-rule) var(--motion-ease-editorial);
+  will-change: transform;
+}
+.motion-rule.is-visible { transform: scaleX(1); }
+
+/* ParallaxLayer — smooth translate on scroll, controlled by JS via --parallax-y. */
+.motion-parallax {
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
+  will-change: transform;
+}
+
+/* MagneticCTA — desktop-only micro-attraction handled in JS via --mag-x/--mag-y. */
+.motion-magnetic {
+  transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0);
+  transition: transform 220ms var(--motion-ease-editorial);
+  will-change: transform;
+}
+
+@media (max-width: 767.98px) {
+  .motion-magnetic,
+  .motion-parallax { transform: none !important; will-change: auto !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-mask,
+  .motion-split-line,
+  .motion-rule,
+  .motion-parallax,
+  .motion-magnetic {
+    transition: none !important;
+    animation: none !important;
+    clip-path: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    will-change: auto !important;
+  }
+}
