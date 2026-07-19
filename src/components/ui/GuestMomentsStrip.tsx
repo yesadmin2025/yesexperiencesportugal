@@ -14,7 +14,7 @@
  *     Desktop: 3–4 column responsive grid, 4:5 aspect.
  *   • Captions in Fraunces italic teal (Editorial v3), body in Inter.
  */
-import { type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { buildResponsiveSrc } from "@/lib/responsive-image";
 import { useEditorialOverrides, type EditorialModuleKey } from "@/lib/editorial-overrides";
 
