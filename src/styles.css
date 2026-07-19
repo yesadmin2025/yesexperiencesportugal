@@ -6438,6 +6438,36 @@ html {
 }
 
 
+/* prose-longform — 68ch reading measure for long articles / about copy.
+   Referenced by /about and /local-stories/*; keeps body copy inside the
+   optimal 60–75 character measure without hand-rolling per-page widths. */
+@utility prose-longform {
+  max-width: 68ch;
+  margin-inline: auto;
+  font-family: var(--font-sans, Inter, system-ui, sans-serif);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--charcoal);
+  text-wrap: pretty;
+}
+@media (min-width: 768px) {
+  .prose-longform {
+    font-size: 17px;
+    line-height: 1.75;
+  }
+}
+.prose-longform > * + * {
+  margin-top: 1.1em;
+}
+.prose-longform h2,
+.prose-longform h3 {
+  margin-top: 1.6em;
+  margin-bottom: 0.4em;
+  text-wrap: balance;
+}
+
+
+
 /* Restrained editorial photography: a calm settle on reveal and a very
    small pointer hover. No perpetual Ken Burns movement. */
 .editorial-photo-motion {
