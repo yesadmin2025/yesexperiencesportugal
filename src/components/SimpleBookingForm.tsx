@@ -18,6 +18,13 @@ import {
   totalGuests,
   type TravellerComposition,
 } from "@/lib/checkout/composition";
+import {
+  getOperatingRule,
+  computeMinDateISO,
+  validateDateISO,
+  type OperatingRule,
+} from "@/lib/availability";
+
 
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getViatorMeta } from "@/data/signatureToursViator";
@@ -59,13 +66,17 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [pending, setPending] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
-  // Client-side availability floor: today + 24h lead time (Lisbon local).
-  const minDateISO = (() => {
-    const d = new Date();
-    d.setDate(d.getDate() + 1);
-    return d.toISOString().split("T")[0];
-  })();
-  const dateValid = date ? date >= minDateISO : false;
+  // Availability rule from public.tour_operating_rules (with safe defaults).
+  const [rule, setRule] = useState<OperatingRule | null>(null);
+  useEffect(() => {
+    let active = true;
+    getOperatingRule(tour.id).then((r) => { if (active) setRule(r); });
+    return () => { active = false; };
+  }, [tour.id]);
+  const leadHours = rule?.minLeadHours ?? 24;
+  const minDateISO = computeMinDateISO(leadHours);
+  const dateValid = date ? validateDateISO(date, rule ?? { tourId: tour.id, weekdays: [0,1,2,3,4,5,6], blackoutDates: [], minLeadHours: leadHours, cutoffLocalTime: null }).ok : false;
+
   const canReserve = compositionReady && dateValid;
 
   // Fire funnel events at most once per field per mount.
@@ -255,6 +266,18 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             value={date}
             onChange={(e) => {
               const v = e.target.value;
+              if (v && rule) {
+                const check = validateDateISO(v, rule);
+                if (!check.ok) {
+                  gaBookingValidationBlocked({ tourId: tour.id, surface: "signature", reason: `date_${check.reason}` });
+                  const msg =
+                    check.reason === "weekday_closed" ? "This tour doesn't run on that day. Please pick another date." :
+                    check.reason === "blackout" ? "That date is unavailable. Please pick another." :
+                    "Please choose a date at least 24 hours from now.";
+                  toast.error(msg);
+                  return;
+                }
+              }
               setDate(v);
               if (v) {
                 if (!firedDate.current) {
@@ -262,6 +285,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
                   gaBookingDateSelected({ tourId: tour.id, surface: "signature", dateISO: v });
                 }
               }
+
             }}
             min={minDateISO}
             className="w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-sm focus:border-[color:var(--gold)] focus:outline-none"

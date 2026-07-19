@@ -2259,6 +2259,33 @@ export type Database = {
         }
         Relationships: []
       }
+      tour_operating_rules: {
+        Row: {
+          blackout_dates: string[]
+          cutoff_local_time: string | null
+          min_lead_hours: number
+          tour_id: string
+          updated_at: string
+          weekdays: number[]
+        }
+        Insert: {
+          blackout_dates?: string[]
+          cutoff_local_time?: string | null
+          min_lead_hours?: number
+          tour_id: string
+          updated_at?: string
+          weekdays?: number[]
+        }
+        Update: {
+          blackout_dates?: string[]
+          cutoff_local_time?: string | null
+          min_lead_hours?: number
+          tour_id?: string
+          updated_at?: string
+          weekdays?: number[]
+        }
+        Relationships: []
+      }
       tour_price_tiers: {
         Row: {
           tiers: Json

@@ -51,7 +51,20 @@ import {
   gaBeginCheckout,
   gaGenerateLead,
   buildTourItem,
+  gaReserveCtaClick,
+  gaBookingDateSelected,
+  gaBookingCompositionSet,
+  gaBookingValidationBlocked,
+  gaCheckoutDrawerOpened,
 } from "@/lib/analytics-ga4";
+import {
+  getOperatingRule,
+  computeMinDateISO,
+  validateDateISO,
+  type OperatingRule,
+} from "@/lib/availability";
+
+
 
 
 /* ════════════════════════════════════════════════════════════════
@@ -183,6 +196,14 @@ function TailorPage() {
 
   // ─── State (only adjustable details) ────────────────────────
   const [date, setDate] = useState("");
+  const [rule, setRule] = useState<OperatingRule | null>(null);
+  useEffect(() => {
+    let active = true;
+    getOperatingRule(tour.id).then((r) => { if (active) setRule(r); });
+    return () => { active = false; };
+  }, [tour.id]);
+  const minDateISO = computeMinDateISO(rule?.minLeadHours ?? 24);
+
   const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
   const [pace, setPace] = useState<"relaxed" | "balanced" | "full">("balanced");
   const [composition, setComposition] = useState<TravellerComposition>({
@@ -860,9 +881,27 @@ function TailorPage() {
                     <input
                       type="date"
                       value={date}
-                      onChange={(e) => setDate(e.target.value)}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (v && rule) {
+                          const check = validateDateISO(v, rule);
+                          if (!check.ok) {
+                            gaBookingValidationBlocked({ tourId: tour.id, surface: "tailor", reason: `date_${check.reason}` });
+                            const msg =
+                              check.reason === "weekday_closed" ? "This tour doesn't run on that day. Please pick another date." :
+                              check.reason === "blackout" ? "That date is unavailable. Please pick another." :
+                              "Please choose a date at least 24 hours from now.";
+                            toast.error(msg);
+                            return;
+                          }
+                        }
+                        setDate(v);
+                        if (v) gaBookingDateSelected({ tourId: tour.id, surface: "tailor", dateISO: v });
+                      }}
+                      min={minDateISO}
                       className="w-full bg-transparent border border-[color:var(--border)] px-3 py-3 text-sm focus:outline-none focus:border-[color:var(--gold)] min-h-[48px]"
                     />
+
                   </Field>
                   <Field label="Pickup time">
                     <Segmented
@@ -899,7 +938,20 @@ function TailorPage() {
                 <div className="space-y-4">
                   <Field label="Who's travelling">
                     <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
-                      <CompositionField value={composition} onChange={setComposition} compact />
+                      <CompositionField
+                        value={composition}
+                        onChange={(next) => {
+                          setComposition(next);
+                          gaBookingCompositionSet({
+                            tourId: tour.id,
+                            surface: "tailor",
+                            adults: next.adults,
+                            minors: next.minorAges.length,
+                          });
+                        }}
+                        compact
+                      />
+
                     </div>
                     <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
                       {compositionReady
@@ -1553,7 +1605,19 @@ function TailorPage() {
                 <div className="p-5 pt-0">
                   <button
                     type="button"
-                    onClick={() => setDetailsOpen(true)}
+                    onClick={() => {
+                      gaReserveCtaClick({ tourId: tour.id, surface: "tailor", ctaLocation: "final" });
+                      if (!compositionReady) {
+                        gaBookingValidationBlocked({ tourId: tour.id, surface: "tailor", reason: "composition_incomplete" });
+                        return;
+                      }
+                      if (summaryStops.length === 0) {
+                        gaBookingValidationBlocked({ tourId: tour.id, surface: "tailor", reason: "no_stops" });
+                        return;
+                      }
+                      gaCheckoutDrawerOpened({ tourId: tour.id, surface: "tailor" });
+                      setDetailsOpen(true);
+                    }}
                     disabled={checkoutPending || summaryStops.length === 0 || !compositionReady}
                     className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
                   >
