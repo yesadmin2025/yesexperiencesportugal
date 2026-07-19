@@ -6548,3 +6548,8 @@ html {
 }
 
 
+
+/* Local Stories: ensure eyebrow/accent gold text meets AA contrast on ivory/sand. */
+.local-stories-scope .text-\[color\:var\(--gold-warm\)\] {
+  color: #8A611F !important;
+}
