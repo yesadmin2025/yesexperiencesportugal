@@ -59,6 +59,41 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [pending, setPending] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
+  // Client-side availability floor: today + 24h lead time (Lisbon local).
+  const minDateISO = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split("T")[0];
+  })();
+  const dateValid = date ? date >= minDateISO : false;
+  const canReserve = compositionReady && dateValid;
+
+  // Fire funnel events at most once per field per mount.
+  const firedDate = useRef(false);
+  const firedTime = useRef(false);
+  const firedComposition = useRef(false);
+  const firedLanguage = useRef(false);
+  const firedDrawer = useRef(false);
+
+  useEffect(() => {
+    if (compositionReady && !firedComposition.current) {
+      firedComposition.current = true;
+      gaBookingCompositionSet({
+        tourId: tour.id,
+        surface: "signature",
+        adults: composition.adults,
+        minors: composition.minorAges.length,
+      });
+    }
+  }, [compositionReady, composition.adults, composition.minorAges.length, tour.id]);
+
+  useEffect(() => {
+    if (!firedLanguage.current) {
+      firedLanguage.current = true;
+      gaBookingLanguageSelected({ tourId: tour.id, surface: "signature", language });
+    }
+  }, [language, tour.id]);
+
   // Live tier resolution — DB-backed, falls back to code defaults.
   const { data: tierOverrides } = useTourPriceTiers();
   const perPax = resolvePerPaxEur(tour, guests, tierOverrides);
