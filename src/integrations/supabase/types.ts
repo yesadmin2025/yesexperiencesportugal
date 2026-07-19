@@ -2456,6 +2456,57 @@ export type Database = {
         }
         Relationships: []
       }
+      tour_reviews_public: {
+        Row: {
+          body: string | null
+          id: string | null
+          is_featured: boolean | null
+          is_first_party: boolean | null
+          language: string | null
+          published_at: string | null
+          rating: number | null
+          reviewer_country: string | null
+          reviewer_name: string | null
+          source: string | null
+          source_url: string | null
+          title: string | null
+          tour_id: string | null
+          verified: boolean | null
+        }
+        Insert: {
+          body?: string | null
+          id?: string | null
+          is_featured?: boolean | null
+          is_first_party?: boolean | null
+          language?: string | null
+          published_at?: string | null
+          rating?: number | null
+          reviewer_country?: string | null
+          reviewer_name?: string | null
+          source?: string | null
+          source_url?: string | null
+          title?: string | null
+          tour_id?: string | null
+          verified?: boolean | null
+        }
+        Update: {
+          body?: string | null
+          id?: string | null
+          is_featured?: boolean | null
+          is_first_party?: boolean | null
+          language?: string | null
+          published_at?: string | null
+          rating?: number | null
+          reviewer_country?: string | null
+          reviewer_name?: string | null
+          source?: string | null
+          source_url?: string | null
+          title?: string | null
+          tour_id?: string | null
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       cleanup_expired_builder_references: { Args: never; Returns: number }
