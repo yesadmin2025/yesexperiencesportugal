@@ -18,6 +18,13 @@ import {
   totalGuests,
   type TravellerComposition,
 } from "@/lib/checkout/composition";
+import {
+  getOperatingRule,
+  computeMinDateISO,
+  validateDateISO,
+  type OperatingRule,
+} from "@/lib/availability";
+
 
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getViatorMeta } from "@/data/signatureToursViator";
