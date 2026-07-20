@@ -7,6 +7,8 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CinematicEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+
 import { PROPOSAL_SERVICE_IMAGES } from "@/content/editorial-service-images";
 import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
@@ -132,13 +134,25 @@ export function ProposalInPortugalPage() {
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
               >
                 <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[4/5] md:aspect-[5/6]">
-                  <CinematicEditorialImage
-                    image={image}
-                    priority={i === 0}
-                    className="h-full w-full"
-                    phase={i === 1 ? "b" : i === 2 ? "c" : "a"}
-                  />
+                  {i === 0 ? (
+                    <ParallaxLayer amount="md" className="h-full w-full">
+                      <CinematicEditorialImage
+                        image={image}
+                        priority
+                        className="h-full w-full"
+                        phase="a"
+                      />
+                    </ParallaxLayer>
+                  ) : (
+                    <CinematicEditorialImage
+                      image={image}
+                      priority={false}
+                      className="h-full w-full"
+                      phase={i === 1 ? "b" : "c"}
+                    />
+                  )}
                 </div>
+
                 <div>
                   <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
                   <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
