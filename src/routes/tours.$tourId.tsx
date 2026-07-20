@@ -278,17 +278,20 @@ function TourHero({
       <section className="pb-8">
         <div className="container-x max-w-6xl">
           {/* Cinematic hero — unified 3:2 frame, blur-up on load. */}
-          <TourImage
-            src={heroSrc}
-            srcSet={heroSrcSet}
-            alt={heroAlt}
-            ratio="3/2"
-            priority
-            focal={tour.focal ?? "50% 50%"}
-            sizes="(min-width: 1024px) 1152px, 100vw"
-            className="shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]"
-            imgClassName="motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
-          />
+          <ParallaxLayer amount="md">
+            <TourImage
+              src={heroSrc}
+              srcSet={heroSrcSet}
+              alt={heroAlt}
+              ratio="3/2"
+              priority
+              focal={tour.focal ?? "50% 50%"}
+              sizes="(min-width: 1024px) 1152px, 100vw"
+              className="shadow-[0_30px_60px_-30px_rgba(46,46,46,0.4)]"
+              imgClassName="motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
+            />
+          </ParallaxLayer>
+
 
 
           {/* Editorial header — title, blurb and meta sit BELOW the hero
