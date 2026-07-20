@@ -11,6 +11,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { TourImage } from "@/components/tours/TourImage";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 
 const TITLE = "Experiências de um Dia — YES Experiences Portugal";
 const DESCRIPTION =
@@ -63,18 +64,20 @@ function DayToursPage() {
     <SiteLayout>
       <section className="reveal pt-32 pb-12 bg-[color:var(--sand)] text-center">
         <div className="container-x">
-          <Eyebrow flank>Meio dia &amp; Dia inteiro</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Experiências <SectionTitle.Em>de um dia</SectionTitle.Em>
-          </SectionTitle>
-          <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Guias privados, ritmo cuidado e as partes de Portugal que se recordam melhor.
-            Reserve em tempo real — ou ajuste alguns detalhes dentro da experiência para
-            se adaptar ao seu ritmo.
-          </p>
-          <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">
-            As páginas detalhadas de cada experiência estão, para já, disponíveis em inglês.
-          </p>
+          <ParallaxLayer amount="sm">
+            <Eyebrow flank>Meio dia &amp; Dia inteiro</Eyebrow>
+            <SectionTitle as="h1" size="anchor" spacing="loose">
+              Experiências <SectionTitle.Em>de um dia</SectionTitle.Em>
+            </SectionTitle>
+            <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+              Guias privados, ritmo cuidado e as partes de Portugal que se recordam melhor.
+              Reserve em tempo real — ou ajuste alguns detalhes dentro da experiência para
+              se adaptar ao seu ritmo.
+            </p>
+            <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">
+              As páginas detalhadas de cada experiência estão, para já, disponíveis em inglês.
+            </p>
+          </ParallaxLayer>
         </div>
       </section>
 

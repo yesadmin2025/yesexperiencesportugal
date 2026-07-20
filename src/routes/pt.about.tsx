@@ -7,6 +7,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
 import { buildLocaleUrl } from "@/i18n/config";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 
 import {
   BASED_IN_SHORT,
@@ -67,19 +68,21 @@ function Page() {
       {/* Hero */}
       <section className="reveal pt-32 pb-14 bg-[color:var(--sand)] text-center">
         <div className="container-x">
-          <Eyebrow flank>Sobre a YES</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Desenhamos <SectionTitle.Em>Portugal com sentido</SectionTitle.Em>.
-          </SectionTitle>
-          <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-            A YES Experiences Portugal é um operador turístico privado e licenciado, fundado em
-            2022 em torno de uma ideia simples: Portugal deve ser pessoal, local e genuinamente
-            seu.
-          </p>
-          <p className="mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
-            Dias privados, experiências desenhadas ao vivo e jornadas completas — criadas a partir
-            de rotas reais, hóspedes reais e conhecimento local verdadeiro.
-          </p>
+          <ParallaxLayer amount="sm">
+            <Eyebrow flank>Sobre a YES</Eyebrow>
+            <SectionTitle as="h1" size="anchor" spacing="loose">
+              Desenhamos <SectionTitle.Em>Portugal com sentido</SectionTitle.Em>.
+            </SectionTitle>
+            <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
+              A YES Experiences Portugal é um operador turístico privado e licenciado, fundado em
+              2022 em torno de uma ideia simples: Portugal deve ser pessoal, local e genuinamente
+              seu.
+            </p>
+            <p className="mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
+              Dias privados, experiências desenhadas ao vivo e jornadas completas — criadas a partir
+              de rotas reais, hóspedes reais e conhecimento local verdadeiro.
+            </p>
+          </ParallaxLayer>
         </div>
       </section>
 

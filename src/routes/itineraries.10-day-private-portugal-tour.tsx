@@ -5,6 +5,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { jsonLdScript, breadcrumbLd, SITE_URL } from "@/lib/jsonld";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 
 /**
  * /itineraries/10-day-private-portugal-tour
@@ -172,21 +173,23 @@ function Page() {
       {/* Hero */}
       <section className="reveal pt-32 pb-14 bg-[color:var(--sand)] text-center">
         <div className="container-x">
-          <Eyebrow flank>10-day itinerary</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            A private ten-day <SectionTitle.Em>Portugal</SectionTitle.Em>, composed with you.
-          </SectionTitle>
-          <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-            Lisbon, Sintra, the Arrábida coast and the Alentejo — stitched into a single, unhurried
-            private journey. Ten days is the shape most of our guests settle into; the exact days
-            are composed with your travel designer once we know how you want it to feel.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3 justify-center">
-            <CtaButton to="/multi-day">Work with a travel designer</CtaButton>
-            <CtaButton to="/experiences" variant="ghost">
-              Browse Signature experiences
-            </CtaButton>
-          </div>
+          <ParallaxLayer amount="sm">
+            <Eyebrow flank>10-day itinerary</Eyebrow>
+            <SectionTitle as="h1" size="anchor" spacing="loose">
+              A private ten-day <SectionTitle.Em>Portugal</SectionTitle.Em>, composed with you.
+            </SectionTitle>
+            <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
+              Lisbon, Sintra, the Arrábida coast and the Alentejo — stitched into a single, unhurried
+              private journey. Ten days is the shape most of our guests settle into; the exact days
+              are composed with your travel designer once we know how you want it to feel.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3 justify-center">
+              <CtaButton to="/multi-day">Work with a travel designer</CtaButton>
+              <CtaButton to="/experiences" variant="ghost">
+                Browse Signature experiences
+              </CtaButton>
+            </div>
+          </ParallaxLayer>
         </div>
       </section>
 

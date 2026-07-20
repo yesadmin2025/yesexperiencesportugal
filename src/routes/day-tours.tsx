@@ -11,6 +11,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { TourImage } from "@/components/tours/TourImage";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 
 export const Route = createFileRoute("/day-tours")({
   head: () => ({
@@ -63,14 +64,16 @@ function DayToursPage() {
     <SiteLayout>
       <section className="reveal pt-32 pb-12 bg-[color:var(--sand)] text-center">
         <div className="container-x">
-          <Eyebrow flank>Half &amp; Full Day</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Day <SectionTitle.Em>Tours</SectionTitle.Em>
-          </SectionTitle>
-          <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Private guides, refined pace, and the parts of Portugal you'll remember most. Reserve
-            instantly — or adjust a few details within the experience to match your rhythm.
-          </p>
+          <ParallaxLayer amount="sm">
+            <Eyebrow flank>Half &amp; Full Day</Eyebrow>
+            <SectionTitle as="h1" size="anchor" spacing="loose">
+              Day <SectionTitle.Em>Tours</SectionTitle.Em>
+            </SectionTitle>
+            <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+              Private guides, refined pace, and the parts of Portugal you'll remember most. Reserve
+              instantly — or adjust a few details within the experience to match your rhythm.
+            </p>
+          </ParallaxLayer>
         </div>
       </section>
 
