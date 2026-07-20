@@ -59,7 +59,29 @@ const noindexNonProdHost = createMiddleware().server(async ({ next, request }) =
   return { ...result, response: withNoindexHeader(result.response) };
 });
 
+/**
+ * Normalise trailing-slash duplicates with a permanent 301.
+ *
+ * The hosting layer otherwise serves `/pt/` and `/contact/` with a 307
+ * redirect to their no-slash canonicals, which Google Search Console
+ * flags as a "Page with redirect" duplicate. A 301 tells crawlers the
+ * canonical is permanent and consolidates signal on the no-slash URL.
+ *
+ * Rules: root `/` stays as-is; any other path ending in `/` (that isn't
+ * an internal `/lovable/` tool route) 301s to the same path without the
+ * trailing slash, preserving query + hash.
+ */
+const trailingSlashRedirect = createMiddleware().server(async ({ next, request }) => {
+  const url = new URL(request.url);
+  const { pathname } = url;
+  if (pathname === "/" || !pathname.endsWith("/")) return next();
+  if (pathname.startsWith("/lovable/")) return next();
+  const target = pathname.replace(/\/+$/, "") + url.search + url.hash;
+  return new Response(null, { status: 301, headers: { location: target } });
+});
+
 export const startInstance = createStart(() => ({
-  requestMiddleware: [legacyDomainRedirect, noindexNonProdHost],
+  requestMiddleware: [legacyDomainRedirect, trailingSlashRedirect, noindexNonProdHost],
   functionMiddleware: [attachSupabaseAuth],
 }));
+
