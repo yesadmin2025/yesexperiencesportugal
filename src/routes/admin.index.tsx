@@ -634,8 +634,8 @@ function Th({ children }: { children: React.ReactNode }) {
   return <th className="text-left font-normal py-2 pr-4">{children}</th>;
 }
 
-function Td({ children }: { children: React.ReactNode }) {
-  return <td className="py-2 pr-4">{children}</td>;
+function Td({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <td className={`py-2 pr-4 ${className ?? ""}`}>{children}</td>;
 }
 
 function StatusBadge({ value }: { value: string | null }) {
