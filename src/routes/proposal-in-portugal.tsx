@@ -7,6 +7,8 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { CinematicEditorialImage } from "@/components/ui/ResponsiveEditorialImage";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+
 import { PROPOSAL_SERVICE_IMAGES } from "@/content/editorial-service-images";
 import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
