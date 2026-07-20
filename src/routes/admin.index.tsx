@@ -48,6 +48,30 @@ type LeadRow = {
   contact_note: string | null;
 };
 
+type StripeEventRow = {
+  id: string;
+  received_at: string;
+  event_type: string | null;
+  verified: boolean | null;
+  status_code: number | null;
+  error_message: string | null;
+  customer_email: string | null;
+  amount_total: number | null;
+  currency: string | null;
+  session_id: string | null;
+  stripe_env: string | null;
+};
+
+type EmailLogRow = {
+  id: string;
+  created_at: string;
+  template_name: string | null;
+  recipient_email: string | null;
+  status: string | null;
+  error_message: string | null;
+  message_id: string | null;
+};
+
 function ErrorView({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   return (
