@@ -48,6 +48,30 @@ type LeadRow = {
   contact_note: string | null;
 };
 
+type StripeEventRow = {
+  id: string;
+  received_at: string;
+  event_type: string | null;
+  verified: boolean | null;
+  status_code: number | null;
+  error_message: string | null;
+  customer_email: string | null;
+  amount_total: number | null;
+  currency: string | null;
+  session_id: string | null;
+  stripe_env: string | null;
+};
+
+type EmailLogRow = {
+  id: string;
+  created_at: string;
+  template_name: string | null;
+  recipient_email: string | null;
+  status: string | null;
+  error_message: string | null;
+  message_id: string | null;
+};
+
 function ErrorView({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   return (
@@ -119,6 +143,8 @@ function AdminOverviewPage() {
   const [bookings, setBookings] = useState<BookingRow[] | null>(null);
   const [contacts, setContacts] = useState<ContactRow[] | null>(null);
   const [leads, setLeads] = useState<LeadRow[] | null>(null);
+  const [stripeEvents, setStripeEvents] = useState<StripeEventRow[] | null>(null);
+  const [emailLog, setEmailLog] = useState<EmailLogRow[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
 
@@ -158,7 +184,7 @@ function AdminOverviewPage() {
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
-    const [b, c, l] = await Promise.all([
+    const [b, c, l, sw, em] = await Promise.all([
       supabase
         .from("bookings")
         .select(
@@ -178,10 +204,24 @@ function AdminOverviewPage() {
         )
         .order("created_at", { ascending: false })
         .limit(20),
+      supabase
+        .from("stripe_webhook_events")
+        .select(
+          "id, received_at, event_type, verified, status_code, error_message, customer_email, amount_total, currency, session_id, stripe_env",
+        )
+        .order("received_at", { ascending: false })
+        .limit(30),
+      supabase
+        .from("email_send_log")
+        .select("id, created_at, template_name, recipient_email, status, error_message, message_id")
+        .order("created_at", { ascending: false })
+        .limit(50),
     ]);
     setBookings((b.data ?? []) as BookingRow[]);
     setContacts((c.data ?? []) as ContactRow[]);
     setLeads((l.data ?? []) as LeadRow[]);
+    setStripeEvents((sw.data ?? []) as StripeEventRow[]);
+    setEmailLog((em.data ?? []) as EmailLogRow[]);
     setLastRefresh(new Date());
     setLoading(false);
   }, []);
@@ -449,6 +489,98 @@ function AdminOverviewPage() {
             <EmptyState label="Sem pedidos do Studio ainda." />
           )}
         </Panel>
+
+        {/* Stripe webhook events */}
+        <Panel
+          title="Stripe webhooks (últimos 30)"
+          hint="Se aparecer verified=false ou erro, o STRIPE_WEBHOOK_SECRET não bate com o endpoint no dashboard Stripe — nenhuma reserva é criada."
+        >
+          {stripeEvents && stripeEvents.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-[11px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
+                  <tr className="border-b border-[color:var(--border)]">
+                    <Th>Data</Th>
+                    <Th>Evento</Th>
+                    <Th>Env</Th>
+                    <Th>Verif.</Th>
+                    <Th>Status</Th>
+                    <Th>Email</Th>
+                    <Th>Valor</Th>
+                    <Th>Erro</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stripeEvents.map((e) => (
+                    <tr key={e.id} className="border-b border-[color:var(--border)] align-top">
+                      <Td>{formatDate(e.received_at)}</Td>
+                      <Td>{e.event_type ?? "—"}</Td>
+                      <Td>{e.stripe_env ?? "—"}</Td>
+                      <Td>
+                        <span
+                          className={
+                            e.verified
+                              ? "text-emerald-800"
+                              : "text-red-800 font-medium"
+                          }
+                        >
+                          {e.verified ? "ok" : "FALHA"}
+                        </span>
+                      </Td>
+                      <Td>{e.status_code ?? "—"}</Td>
+                      <Td className="max-w-[200px] truncate">{e.customer_email ?? "—"}</Td>
+                      <Td>{formatMoney(e.amount_total, e.currency)}</Td>
+                      <Td className="max-w-[280px] text-[11px] text-red-800 whitespace-pre-wrap">
+                        {e.error_message ?? ""}
+                      </Td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <EmptyState label="Sem eventos Stripe registados." />
+          )}
+        </Panel>
+
+        {/* Email send log */}
+        <Panel
+          title="Emails enviados (últimos 50)"
+          hint="Se vires status 'failed' com erro 'You can only send testing emails' — o domínio de email ainda não está verificado no DNS."
+        >
+          {emailLog && emailLog.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-[11px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
+                  <tr className="border-b border-[color:var(--border)]">
+                    <Th>Data</Th>
+                    <Th>Template</Th>
+                    <Th>Destinatário</Th>
+                    <Th>Estado</Th>
+                    <Th>Erro</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {emailLog.map((r) => (
+                    <tr key={r.id} className="border-b border-[color:var(--border)] align-top">
+                      <Td>{formatDate(r.created_at)}</Td>
+                      <Td>{r.template_name ?? "—"}</Td>
+                      <Td className="max-w-[220px] truncate">{r.recipient_email ?? "—"}</Td>
+                      <Td>
+                        <StatusBadge value={r.status} />
+                      </Td>
+                      <Td className="max-w-[320px] text-[11px] text-red-800 whitespace-pre-wrap">
+                        {r.error_message ?? ""}
+                      </Td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <EmptyState label="Sem envios registados." />
+          )}
+        </Panel>
       </section>
     </SiteLayout>
   );
@@ -502,8 +634,8 @@ function Th({ children }: { children: React.ReactNode }) {
   return <th className="text-left font-normal py-2 pr-4">{children}</th>;
 }
 
-function Td({ children }: { children: React.ReactNode }) {
-  return <td className="py-2 pr-4">{children}</td>;
+function Td({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <td className={`py-2 pr-4 ${className ?? ""}`}>{children}</td>;
 }
 
 function StatusBadge({ value }: { value: string | null }) {
