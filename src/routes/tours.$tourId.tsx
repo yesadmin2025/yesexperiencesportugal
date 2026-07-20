@@ -24,6 +24,8 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { Scene } from "@/components/motion/Scene";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+
 import { CtaPair } from "@/components/ui/CtaPair";
 import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
