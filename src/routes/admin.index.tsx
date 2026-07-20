@@ -143,6 +143,8 @@ function AdminOverviewPage() {
   const [bookings, setBookings] = useState<BookingRow[] | null>(null);
   const [contacts, setContacts] = useState<ContactRow[] | null>(null);
   const [leads, setLeads] = useState<LeadRow[] | null>(null);
+  const [stripeEvents, setStripeEvents] = useState<StripeEventRow[] | null>(null);
+  const [emailLog, setEmailLog] = useState<EmailLogRow[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
 
@@ -182,7 +184,7 @@ function AdminOverviewPage() {
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
-    const [b, c, l] = await Promise.all([
+    const [b, c, l, sw, em] = await Promise.all([
       supabase
         .from("bookings")
         .select(
@@ -202,10 +204,24 @@ function AdminOverviewPage() {
         )
         .order("created_at", { ascending: false })
         .limit(20),
+      supabase
+        .from("stripe_webhook_events")
+        .select(
+          "id, received_at, event_type, verified, status_code, error_message, customer_email, amount_total, currency, session_id, stripe_env",
+        )
+        .order("received_at", { ascending: false })
+        .limit(30),
+      supabase
+        .from("email_send_log")
+        .select("id, created_at, template_name, recipient_email, status, error_message, message_id")
+        .order("created_at", { ascending: false })
+        .limit(50),
     ]);
     setBookings((b.data ?? []) as BookingRow[]);
     setContacts((c.data ?? []) as ContactRow[]);
     setLeads((l.data ?? []) as LeadRow[]);
+    setStripeEvents((sw.data ?? []) as StripeEventRow[]);
+    setEmailLog((em.data ?? []) as EmailLogRow[]);
     setLastRefresh(new Date());
     setLoading(false);
   }, []);
