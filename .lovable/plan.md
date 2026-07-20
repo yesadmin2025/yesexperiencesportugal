@@ -1,95 +1,75 @@
-# Motion v3 — Editorial Cinematic + Performance Budget
+# Porque não estás a receber pedidos + como passar a receber tudo
 
-Objetivo: passar de reveals "contidos" para um sistema com **storytelling gráfico** (máscaras, split-text, parallax controlado, chapter leads, gold rule draw-in) mantendo LCP ≤ 2.5s, CLS < 0.05, INP < 200ms em mobile mid-tier.
+Investiguei a base de dados e encontrei **duas falhas críticas** e uma **lacuna de acesso admin**. Nenhuma é de UI — é infraestrutura de email/Stripe + uma nova página admin.
 
-## 1. Performance budget (guardrails, medidos antes e depois)
+## Diagnóstico (factos, não suposições)
 
-- LCP ≤ 2.5s / CLS < 0.05 / INP < 200ms (mobile, Moto G class, 4G throttled).
-- JS por rota ≤ 180KB gzipped incremental.
-- Nenhuma animação toca `top/left/width/height` — só `transform` + `opacity` + `filter` (composited).
-- `will-change` só durante a animação, removido no `onEnd`.
-- Todas as animações passam por `useHydrated()` + `IntersectionObserver` (rootMargin 15%), gated por `prefers-reduced-motion`.
-- Imagens hero mantêm `fetchpriority="high"` + `<link rel="preload">` no route `head()`. Blur-in aplicado só depois de `decode()` resolver para não empurrar LCP.
-- Novo script `scripts/check-motion-budget.mjs` corre no `prebuild`: falha se algum ficheiro adicionar `transition: all`, `animation: *` sobre propriedades não-composited, ou `will-change` permanente.
+1. **Stripe webhook está a falhar com assinatura inválida (HTTP 400)**
+   - Último evento em `stripe_webhook_events`: `"No signatures found matching the expected signature for payload"`.
+   - Consequência: a reserva que viste no Stripe **nunca criou linha em `bookings`**, **nunca disparou o email de recibo**, **nunca notificou a equipa YES**. A tabela `bookings` está vazia.
+   - Causa: `STRIPE_WEBHOOK_SECRET` (live) não corresponde ao endpoint configurado no dashboard Stripe, ou o endpoint aponta para o URL errado.
 
-## 2. Motion primitives novos (src/components/motion/)
+2. **Resend está em modo de teste (domínio não verificado)**
+   - Todos os envios para endereços que não sejam `yesexperiences@gmail.com` falham com `403: "You can only send testing emails to your own email address..."`.
+   - Consequência: mesmo que o webhook funcionasse, emails para clientes e para `info@yesexperiencesportugal.com` seriam rejeitados. Só o Gmail pessoal recebe.
+   - Vê-se no `email_send_log`: dezenas de `internal-lead` / `contact-received` / `signature-story` a falhar para `info@…` e para emails de clientes.
 
-Todos SSR-safe, sem layout shift, com fallback estático se JS falhar.
+3. **Não existe uma página admin unificada** que mostre num único sítio:
+   - Contactos (`contact_messages`)
+   - Leads do Studio V3 (`studio_v3_leads`)
+   - Reservas (`bookings`)
+   - Sessões de checkout Stripe (via `stripe_webhook_events`)
+   - Estado de emails (`email_send_log`)
 
-- **`<MaskReveal>`** — clip-path inset 100%→0 diagonal (12deg), 720ms, cubic-bezier(.2,.7,.1,1). Usado em heroes e imagens editoriais chave. Substitui blur+translate genérico.
-- **`<SplitLines>`** — divide h1/h2 em linhas via CSS `background-clip` + `translateY(110%)→0` stagger 60ms. Sem re-flow (mede uma vez). Aplicado só a headings de secção principais (1-2 por página).
-- **`<ChapterLead>`** — eyebrow + gold rule que "desenha" (scaleX 0→1, transform-origin left, 640ms) + título com SplitLines. Marca início de secção editorial.
-- **`<ParallaxLayer amount="sm|md">`** — translateY via `requestAnimationFrame` gated a IO, cap ±24px, off em mobile <390px e reduced-motion. Só em hero e 1 secção âncora por rota.
-- **`<StickyChapter>`** — para Signature/Local Stories: título fica sticky durante scroll do bloco e faz cross-fade entre capítulos (opacity + 8px translate).
-- **`<MagneticCTA>`** — botão primário atrai cursor ±6px em desktop, sheen dourado em hover. No-op mobile.
-- **`<CountUp>`** — para números de trust (reviews, anos, guests). IO-gated, 900ms.
+## Plano
 
-## 3. Storytelling por família de rota
+### 1. Configurar domínio de email real (elimina o 403 do Resend)
+Abrir o diálogo de setup do domínio de email da Lovable para que o `notify.yesexperiencesportugal.com` (ou similar) seja provisionado e verificado. A partir desse momento, todos os `sendTransactionalInternal` para clientes e para `info@yesexperiencesportugal.com` passam a chegar.
 
-### Home (`.home-energy` scope)
-- Hero: MaskReveal na imagem + SplitLines no H1 + ChapterLead na secção seguinte.
-- Occasions row: cards entram em stagger diagonal (não vertical) 80ms.
-- CTA final: MagneticCTA + sheen já existente reforçada (opacity .35→.6).
-
-### Signature index + tour detail
-- Hero MaskReveal + SplitLines.
-- Cada "capítulo" do dia usa ChapterLead + StickyChapter (o número do stop fica sticky enquanto scrolla).
-- Mapa: pins entram um a um (60ms stagger) quando o mapa entra em viewport.
-- Trust row: CountUp nos ratings/anos.
-
-### Local Stories (article)
-- Cover: MaskReveal + eyebrow draw-in.
-- ReadingProgress mantém-se (já 3px gold).
-- Primeiro parágrafo: drop-cap Fraunces 4.5rem, float left, fade+scale.
-- Imagens inline: MaskReveal com direção alternada.
-
-### Editorial (About, Corporate, Moments, Press, Reviews, Travel Designer)
-- ChapterLead a abrir cada secção major.
-- Uma imagem hero por página com ParallaxLayer amount="sm".
-- Restante mantém `.reveal` atual (já em 20px/520ms).
-
-### Studio V3
-- **Não tocar.** Continua excluído por decisão prévia (studio-philosophy).
-
-### Booking / Checkout / Auth / Admin
-- Excluídos. Apenas RouteFade. Zero storytelling para não distrair de conversão.
-
-## 4. Tokens & CSS
-
-Adicionar em `src/styles.css`:
-
+Ação em chat:
 ```
---motion-ease-editorial: cubic-bezier(.2,.7,.1,1);
---motion-dur-mask: 720ms;
---motion-dur-split: 560ms;
---motion-dur-rule: 640ms;
---motion-stagger: 60ms;
+<presentation-open-email-setup>Set up email domain</presentation-open-email-setup>
 ```
 
-Refinar `.reveal` para 24px/560ms (subida ligeira do v2 atual) e manter blur-in.
+### 2. Corrigir o Stripe webhook
+- Confirmar que o endpoint no dashboard Stripe (live) aponta para o URL da edge function `stripe-webhook` do projecto.
+- Copiar o **signing secret** exacto desse endpoint e actualizar o secret `STRIPE_WEBHOOK_SECRET_LIVE` (via `update_secret`, form seguro — não escrevo o valor).
+- Repetir para sandbox se necessário (`STRIPE_WEBHOOK_SECRET_SANDBOX`).
+- Depois: fazer um teste de checkout de 1 € e confirmar que aparece linha em `bookings` + emails de `internal-booking` e `checkout-receipt` em `email_send_log` com `status='sent'`.
 
-## 5. Verificação (obrigatória antes de marcar done)
+### 3. Reforço: garantir alerta mesmo quando o webhook falha
+Adicionar um send fire-and-forget para a equipa quando o webhook devolve erro (dentro de `supabase/functions/stripe-webhook/index.ts`): um email simples “Stripe webhook falhou — sessão X” para `TEAM_NOTIFICATION_RECIPIENTS`. Assim, mesmo que a assinatura volte a partir, ficas a saber logo em vez de descobrir no dashboard Stripe dias depois.
 
-1. `bun run build` limpo + `check-motion-budget.mjs` verde.
-2. Lighthouse mobile em `/`, `/experiences`, `/tours/:id`, `/local-stories/:slug`, `/about` — anexar métricas ao relatório.
-3. Playwright: screenshot antes/depois em 393×706 de cada rota-âncora, gravando `performance.now()` do primeiro `is-visible`.
-4. Teste `prefers-reduced-motion: reduce` — nenhum keyframe corre, conteúdo visível estático.
-5. Regression tests atualizados (`animation-contract-regression.test.ts`) com os novos tokens.
+### 4. Nova página admin: `/admin/inbox`
+Uma única página com abas para veres tudo o que entra, sem depender de email:
 
-## 6. Rollout em 4 batches (implementação após aprovação)
+- **Contactos** — últimos 100 `contact_messages` (nome, email, mensagem, data, source).
+- **Leads Studio** — últimos 100 `studio_v3_leads` (intent book/refine, jornada, contacto, data).
+- **Reservas** — últimos 100 `bookings` (email, tour, montante, status, data).
+- **Checkouts Stripe** — últimos 50 `stripe_webhook_events` (event_type, verificado?, status_code, error_message, email) — para veres imediatamente se algum webhook falhou.
+- **Emails** — últimos 100 `email_send_log` (template, destinatário, status, erro) — para veres se algum envio caiu.
 
-- **B1 — Foundation:** tokens, primitives novos, budget script, testes. Sem alteração visual ainda.
-- **B2 — Home + Signature index:** MaskReveal hero, SplitLines H1, ChapterLead nas duas rotas mais visitadas. Medir LCP/INP.
-- **B3 — Tour detail + Local Stories:** StickyChapter, drop-cap, mask alternada, pins staggered.
-- **B4 — Editorial pages + polish:** ChapterLead + ParallaxLayer sm, CountUp em trust rows, MagneticCTA no CTA global.
+Cada aba: tabela simples, ordenada por data desc, com filtro rápido por email. Sem edição, só leitura.
 
-## Fora de scope
+Acesso: protegido pelo mesmo padrão dos outros `/admin/*` (role `admin` via `has_role`). O teu utilizador `yesexperiences@gmail.com` já tem role admin (via `grant_admin_for_yes_email`).
 
-- Studio V3 (excluído por design).
-- Booking/Checkout (conversão primeiro).
-- Bibliotecas pesadas (GSAP, Lenis, Locomotive) — tudo custom com IO + rAF para não estourar budget JS.
-- Vídeo de fundo, WebGL, canvas.
+### 5. Notificação em tempo real (opcional, ligar depois)
+Depois do domínio de email estar verificado, ligar Supabase Realtime na tabela `contact_messages`, `studio_v3_leads` e `bookings` para que a página `/admin/inbox` mostre novos itens sem refresh. Fica marcado como próximo passo, não bloqueia o essencial.
 
-## Deliverable final
+## Ficheiros a alterar
 
-Relatório em `docs/motion-v3-report.md` com métricas Lighthouse antes/depois por rota + checklist de budget verde.
+- `supabase/functions/stripe-webhook/index.ts` — enviar email de alerta ao falhar assinatura.
+- `src/routes/admin.inbox.tsx` — nova página com as 5 abas.
+- `src/lib/admin/inbox.functions.ts` — server functions (`requireSupabaseAuth` + role check) para ler cada tabela.
+- `src/routes/admin.index.tsx` — adicionar link para `/admin/inbox`.
+
+## Fora de âmbito
+- Nenhuma mudança de UI pública, tipografia, branding, Studio ou fluxo de checkout.
+- Não mexer no schema das tabelas existentes.
+- Não alterar templates de email (apenas garantir que chegam).
+
+## Ordem de execução
+1. Setup do domínio de email (acção tua no diálogo).
+2. Actualizar `STRIPE_WEBHOOK_SECRET_LIVE` com o valor correcto do dashboard.
+3. Implementar `/admin/inbox` + alerta de webhook falhado.
+4. Teste end-to-end: 1 contacto + 1 checkout sandbox → confirmar linhas nas tabelas e emails enviados.
