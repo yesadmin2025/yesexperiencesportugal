@@ -50,19 +50,13 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/portugal-tours", changefreq: "monthly", priority: "0.9" },
           { path: "/luxury-tours-portugal", changefreq: "monthly", priority: "0.85" },
           { path: "/private-tours-portugal", changefreq: "monthly", priority: "0.85" },
-          // Wine + day-trip landing URLs now permanently redirect to their
-          // /local-stories/* canonical destinations. Sitemap must list the
-          // 200 targets, not the 301 sources.
-          { path: "/local-stories/alentejo-wine-tour-from-lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/local-stories/arrabida-day-trip-from-lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/local-stories/arrabida-wine-tour", changefreq: "monthly", priority: "0.8" },
-          { path: "/local-stories/best-day-trips-from-lisbon", changefreq: "monthly", priority: "0.85" },
-          { path: "/local-stories/sintra-day-tour-from-lisbon", changefreq: "monthly", priority: "0.85" },
-          { path: "/local-stories/evora-private-tour-from-lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/local-stories/evora-alentejo-wine-tour", changefreq: "monthly", priority: "0.8" },
-          { path: "/local-stories/private-wine-tour-lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/local-stories/wine-tours-lisbon", changefreq: "monthly", priority: "0.8" },
-          { path: "/local-stories/portugal-wine-tours", changefreq: "monthly", priority: "0.8" },
+          // NOTE: /local-stories/* entries below were previously hard-coded
+          // here AND also emitted by `staticArticleEntries` (from
+          // LOCAL_STORIES_ARTICLES), producing duplicate <loc> pairs in
+          // sitemap.xml (flagged by Google Search Console). Source of truth
+          // for Local Stories is LOCAL_STORIES_ARTICLES — do not re-add
+          // /local-stories/* here.
+
 
 
 

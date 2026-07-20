@@ -1,10 +1,18 @@
 # YES Experiences Portugal — canonical site: https://yesexperiencesportugal.com
 # Any other domain/profile referencing this brand is unrelated and not endorsed.
+#
+# Single User-agent: * group. Do NOT add crawler-specific groups with
+# Allow: / — a matching User-agent block overrides this one entirely for
+# that crawler and would bypass the Disallow rules below.
+#
+# Note: robots.txt controls crawling, not access. Transactional/admin
+# routes below are additionally protected by auth and/or noindex/X-Robots-Tag
+# at the application layer; do not rely on robots.txt for privacy.
 
 User-agent: *
 Allow: /
 
-# Internal / QA / admin routes that should not be indexed
+# Internal / QA / admin / transactional routes that should not be crawled
 Disallow: /admin
 Disallow: /auth
 Disallow: /booking-confirmed
@@ -29,15 +37,4 @@ Disallow: /unsubscribe
 Disallow: /local-stories/$slug
 Disallow: /local-stories/%24slug
 
-# Allow major AI / search crawlers explicitly
-User-agent: Googlebot
-Allow: /
-
-User-agent: Googlebot-Image
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-Host: https://yesexperiencesportugal.com
 Sitemap: https://yesexperiencesportugal.com/sitemap.xml
