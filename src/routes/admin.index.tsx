@@ -489,6 +489,98 @@ function AdminOverviewPage() {
             <EmptyState label="Sem pedidos do Studio ainda." />
           )}
         </Panel>
+
+        {/* Stripe webhook events */}
+        <Panel
+          title="Stripe webhooks (últimos 30)"
+          hint="Se aparecer verified=false ou erro, o STRIPE_WEBHOOK_SECRET não bate com o endpoint no dashboard Stripe — nenhuma reserva é criada."
+        >
+          {stripeEvents && stripeEvents.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-[11px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
+                  <tr className="border-b border-[color:var(--border)]">
+                    <Th>Data</Th>
+                    <Th>Evento</Th>
+                    <Th>Env</Th>
+                    <Th>Verif.</Th>
+                    <Th>Status</Th>
+                    <Th>Email</Th>
+                    <Th>Valor</Th>
+                    <Th>Erro</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stripeEvents.map((e) => (
+                    <tr key={e.id} className="border-b border-[color:var(--border)] align-top">
+                      <Td>{formatDate(e.received_at)}</Td>
+                      <Td>{e.event_type ?? "—"}</Td>
+                      <Td>{e.stripe_env ?? "—"}</Td>
+                      <Td>
+                        <span
+                          className={
+                            e.verified
+                              ? "text-emerald-800"
+                              : "text-red-800 font-medium"
+                          }
+                        >
+                          {e.verified ? "ok" : "FALHA"}
+                        </span>
+                      </Td>
+                      <Td>{e.status_code ?? "—"}</Td>
+                      <Td className="max-w-[200px] truncate">{e.customer_email ?? "—"}</Td>
+                      <Td>{formatMoney(e.amount_total, e.currency)}</Td>
+                      <Td className="max-w-[280px] text-[11px] text-red-800 whitespace-pre-wrap">
+                        {e.error_message ?? ""}
+                      </Td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <EmptyState label="Sem eventos Stripe registados." />
+          )}
+        </Panel>
+
+        {/* Email send log */}
+        <Panel
+          title="Emails enviados (últimos 50)"
+          hint="Se vires status 'failed' com erro 'You can only send testing emails' — o domínio de email ainda não está verificado no DNS."
+        >
+          {emailLog && emailLog.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-[11px] uppercase tracking-wider text-[color:var(--charcoal-soft)]">
+                  <tr className="border-b border-[color:var(--border)]">
+                    <Th>Data</Th>
+                    <Th>Template</Th>
+                    <Th>Destinatário</Th>
+                    <Th>Estado</Th>
+                    <Th>Erro</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {emailLog.map((r) => (
+                    <tr key={r.id} className="border-b border-[color:var(--border)] align-top">
+                      <Td>{formatDate(r.created_at)}</Td>
+                      <Td>{r.template_name ?? "—"}</Td>
+                      <Td className="max-w-[220px] truncate">{r.recipient_email ?? "—"}</Td>
+                      <Td>
+                        <StatusBadge value={r.status} />
+                      </Td>
+                      <Td className="max-w-[320px] text-[11px] text-red-800 whitespace-pre-wrap">
+                        {r.error_message ?? ""}
+                      </Td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <EmptyState label="Sem envios registados." />
+          )}
+        </Panel>
       </section>
     </SiteLayout>
   );
