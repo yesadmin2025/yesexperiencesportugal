@@ -14,6 +14,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { buildLocaleUrl } from "@/i18n/config";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 
 export const Route = createFileRoute("/pt/experiences")({
   head: () => ({
@@ -82,18 +83,20 @@ function ExperiencesPage() {
         className="pt-32 pb-[var(--section-y-sm)] bg-[color:var(--sand)] text-center"
       >
         <div className="container-x">
-          <Eyebrow flank>Coleção Signature</Eyebrow>
-          <SectionTitle as="h1" size="anchor" spacing="loose">
-            Signature <SectionTitle.Em>Tours</SectionTitle.Em>
-          </SectionTitle>
-          <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            Uma coleção editada de dias privados em Portugal — Sintra, Arrábida, Évora e mais.
-            Reserve como desenhado, ou ajuste discretamente alguns detalhes.
-          </p>
-          <p className="mt-4 mx-auto max-w-xl text-[12px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]/75">
-            As páginas detalhadas de cada tour estão, para já, disponíveis em inglês. A tradução
-            editorial está em curso.
-          </p>
+          <ParallaxLayer amount="sm">
+            <Eyebrow flank>Coleção Signature</Eyebrow>
+            <SectionTitle as="h1" size="anchor" spacing="loose">
+              Signature <SectionTitle.Em>Tours</SectionTitle.Em>
+            </SectionTitle>
+            <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
+              Uma coleção editada de dias privados em Portugal — Sintra, Arrábida, Évora e mais.
+              Reserve como desenhado, ou ajuste discretamente alguns detalhes.
+            </p>
+            <p className="mt-4 mx-auto max-w-xl text-[12px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]/75">
+              As páginas detalhadas de cada tour estão, para já, disponíveis em inglês. A tradução
+              editorial está em curso.
+            </p>
+          </ParallaxLayer>
         </div>
       </section>
 
