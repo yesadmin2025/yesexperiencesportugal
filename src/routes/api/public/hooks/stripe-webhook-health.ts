@@ -24,7 +24,7 @@ export const Route = createFileRoute("/api/public/hooks/stripe-webhook-health")(
     handlers: {
       POST: async ({ request }) => {
         const internalSecret = process.env.EMAIL_INTERNAL_SECRET;
-        const anonKey = process.env.SUPABASE_ANON_KEY;
+        const anonKey = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY;
         const bearer = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") || "";
         const apikey = request.headers.get("apikey") || "";
         const authorized =
