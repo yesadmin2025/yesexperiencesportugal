@@ -34,12 +34,16 @@ export const Route = createFileRoute("/api/public/hooks/stripe-webhook-health")(
           return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
         }
 
-        const result = await runHealthCheck();
+        const url = new URL(request.url);
+        const envParam = (url.searchParams.get("env") || "live").toLowerCase();
+        const env: "live" | "sandbox" = envParam === "sandbox" || envParam === "test" ? "sandbox" : "live";
+
+        const result = await runHealthCheck(env);
 
         // Persist result.
         await supabaseAdmin.from("stripe_webhook_health_checks").insert({
           status: result.ok ? "ok" : "fail",
-          reason: result.reason,
+          reason: `[${env}] ${result.reason}`,
           valid_status: result.validStatus,
           invalid_status: result.invalidStatus,
           secret_present: result.secretPresent,
