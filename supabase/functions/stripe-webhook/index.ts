@@ -39,13 +39,36 @@ Deno.serve(async (req) => {
   let lastError = "";
   for (const c of candidates) {
     if (!c.secret) continue;
+    const stripe = createStripeClient(c.env);
+    // Try classic webhook payload format first.
     try {
-      const stripe = createStripeClient(c.env);
       event = await stripe.webhooks.constructEventAsync(rawBody, sig, c.secret);
       stripeEnv = c.env;
       break;
     } catch (e) {
       lastError = e instanceof Error ? e.message : String(e);
+      // Fallback: v2 "event notification" (thin event) format. Fetch the full event
+      // from Stripe so downstream code keeps its existing Event shape.
+      if (lastError.includes("parseEventNotificationAsync")) {
+        try {
+          const parseFn = (stripe.webhooks as unknown as {
+            parseEventNotificationAsync?: (
+              body: string,
+              sig: string,
+              secret: string,
+            ) => Promise<{ id: string; type: string }>;
+          }).parseEventNotificationAsync;
+          if (typeof parseFn === "function") {
+            const thin = await parseFn.call(stripe.webhooks, rawBody, sig, c.secret);
+            const full = await stripe.events.retrieve(thin.id);
+            event = full as unknown as Stripe.Event;
+            stripeEnv = c.env;
+            break;
+          }
+        } catch (e2) {
+          lastError = e2 instanceof Error ? e2.message : String(e2);
+        }
+      }
     }
   }
 
