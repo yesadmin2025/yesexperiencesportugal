@@ -693,6 +693,8 @@ function WebhookHealthWidget() {
   const [lastVerified, setLastVerified] = useState<StripeEventRow | null>(null);
   const [lastCheckout, setLastCheckout] = useState<StripeEventRow | null>(null);
   const [loading, setLoading] = useState(false);
+  const [triggering, setTriggering] = useState(false);
+  const [triggerMsg, setTriggerMsg] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -730,6 +732,37 @@ function WebhookHealthWidget() {
     setLoading(false);
   }, []);
 
+  const runTest = useCallback(async () => {
+    setTriggering(true);
+    setTriggerMsg(null);
+    try {
+      const apikey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+      const res = await fetch("/api/public/hooks/stripe-webhook-health", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey },
+      });
+      const json = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        reason?: string;
+        error?: string;
+      };
+      if (!res.ok) {
+        setTriggerMsg(`Falhou: ${json.error ?? res.status}`);
+      } else {
+        setTriggerMsg(
+          json.ok
+            ? "Self-test OK — assinatura válida aceite, forjada rejeitada."
+            : `Self-test FALHOU: ${json.reason ?? "sem detalhes"}`,
+        );
+      }
+    } catch (e) {
+      setTriggerMsg(`Erro: ${(e as Error).message}`);
+    } finally {
+      await load();
+      setTriggering(false);
+    }
+  }, [load]);
+
   useEffect(() => {
     load();
     const t = setInterval(load, 60_000);
@@ -751,15 +784,38 @@ function WebhookHealthWidget() {
           </p>
           <h2 className="mt-1 text-lg">Estado do endpoint em tempo real</h2>
         </div>
-        <button
-          type="button"
-          onClick={load}
-          disabled={loading}
-          className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-1.5 text-xs hover:border-[color:var(--gold)] disabled:opacity-50"
-        >
-          <RefreshCw size={12} className={loading ? "animate-spin" : ""} /> Verificar
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={runTest}
+            disabled={triggering || loading}
+            className="inline-flex items-center gap-2 border border-[color:var(--gold)] bg-[color:var(--gold)] px-3 py-1.5 text-xs text-[color:var(--ivory)] hover:opacity-90 disabled:opacity-50"
+          >
+            <RefreshCw size={12} className={triggering ? "animate-spin" : ""} />
+            {triggering ? "A testar…" : "Testar webhook agora"}
+          </button>
+          <button
+            type="button"
+            onClick={load}
+            disabled={loading}
+            className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-1.5 text-xs hover:border-[color:var(--gold)] disabled:opacity-50"
+          >
+            <RefreshCw size={12} className={loading ? "animate-spin" : ""} /> Verificar
+          </button>
+        </div>
       </div>
+
+      {triggerMsg && (
+        <p
+          className={`px-4 py-2 text-xs border-b border-[color:var(--border)] ${
+            triggerMsg.startsWith("Self-test OK")
+              ? "text-[color:var(--teal)]"
+              : "text-[color:var(--charcoal)]"
+          }`}
+        >
+          {triggerMsg}
+        </p>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[color:var(--border)]">
         <HealthTile
