@@ -352,6 +352,9 @@ function AdminOverviewPage() {
           />
         </div>
 
+        {/* Stripe webhook health */}
+        <WebhookHealthWidget />
+
         {/* Bookings */}
         <Panel
           title="Últimas reservas"
