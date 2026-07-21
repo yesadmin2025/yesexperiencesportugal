@@ -1,46 +1,42 @@
-## Diagnóstico
+## Diagnóstico atualizado (logs da Edge Function)
 
-Endpoint no dashboard Stripe (Live): `https://yesexperiencesportugal.com/functions/v1/stripe-webhook` → **URL errado**. Esse domínio serve o site (Cloudflare Worker), não tem a rota `/functions/v1/*`, portanto todos os `checkout.session.completed` reais devolvem 404/erro e nada é registado.
+O self-test passa porque assina e verifica com a mesma secret guardada. Mas os logs mostram dois problemas reais separados:
 
-O self-test do widget passa porque bate directamente no URL Supabase correcto:
-`https://kqygnqetygcvkaauwbji.supabase.co/functions/v1/stripe-webhook`
-
-## Correcção — 3 passos, sem código
-
-### 1. Editar o endpoint na Stripe
-
-Dashboard Stripe (Live) → Webhooks → **YesExperiences Portugal** → **Editar destino**.
-
-Substituir o URL por:
-
+**1. Eventos reais da Stripe continuam a falhar com "No signatures found matching"**
 ```
-https://kqygnqetygcvkaauwbji.supabase.co/functions/v1/stripe-webhook
+sig: t=1784605209,v1=94fb03468bae07af... | bodyLen: 496
+STRIPE_WEBHOOK_SECRET_LIVE: present len=38 prefix=whsec_If
 ```
+A `whsec_If…` que temos guardada **não é** a signing secret que a Stripe está a usar para o endpoint `yesexperiencesportugal.com/functions/v1/stripe-webhook`. Tem de vir literalmente do dashboard da Stripe → Developers → Webhooks → esse endpoint específico → "Signing secret" → **Reveal**.
 
-O **Signing secret** permanece o mesmo (o `whsec_…` que já está guardado em `STRIPE_WEBHOOK_SECRET_LIVE` — o self-test confirma que coincide). Não geres um novo secret; se o dashboard forçar a rotação, colas o novo no formulário seguro que abro em seguida.
+**2. A `rk_live_…` foi guardada no secret errado**
+```
+STRIPE_WEBHOOK_SECRET_SANDBOX: present len=107 prefix=rk_live_
+```
+A restricted key acabou dentro de `STRIPE_WEBHOOK_SECRET_SANDBOX`. Isto corrompe o ambiente sandbox e sugere que também a `STRIPE_LIVE_API_KEY` pode não ter recebido a chave correta.
 
-Confirma que os 15 eventos que já tens seleccionados incluem:
+## Plano de correção
 
-- `checkout.session.completed` ✅ (crítico)
-- `checkout.session.async_payment_succeeded`
-- `payment_intent.succeeded`
-- `charge.refunded`
+**Passo A — Limpar o secret errado**
+- Apagar / substituir `STRIPE_WEBHOOK_SECRET_SANDBOX` (nunca deve conter `rk_live_`). Se não usas sandbox agora, remover é o mais seguro.
 
-### 2. "Fazer ping" na Stripe
+**Passo B — Confirmar `STRIPE_LIVE_API_KEY`**
+- Verificar prefixo atual em `/admin/payments-env`. Se não estiver `rk_live_…` ou `sk_live_…`, abrir formulário novamente para colares a restricted key correta.
 
-Ainda no mesmo ecrã, carrega em **Fazer ping**. Depois abre `/admin` → **Verificar**. Deve aparecer o evento novo em "Último evento verificado" com timestamp de segundos atrás e status live.
+**Passo C — Corrigir `STRIPE_WEBHOOK_SECRET_LIVE` (root cause dos pagamentos não gravarem)**
+- Ir a: Stripe Dashboard (modo Live) → Developers → Webhooks → endpoint `yesexperiencesportugal.com/functions/v1/stripe-webhook` → "Signing secret" → Reveal → copiar valor `whsec_…`.
+- Colar num formulário seguro que eu abro com `update_secret` → `STRIPE_WEBHOOK_SECRET_LIVE`.
 
-### 3. Teste real de €1
+**Passo D — Validar end-to-end**
+- Na Stripe, clicar **"Send test webhook"** → `checkout.session.completed`.
+- Em `/admin` → widget deve mostrar o evento real como último verificado (não `ping.selftest`).
+- Fazer reserva real de €1 numa tour e confirmar:
+  - `bookings` recebe row nova.
+  - `email_send_log` mostra tentativa (falhará ainda se DNS `notify.yesexperiencesportugal.com` estiver pendente).
 
-- Reserva real numa Signature tour (reembolsas depois).
-- Confirmar em `/admin`: `checkout.session.completed` a verde, linha em Bookings, e-mail enviado (se o DNS `notify.yesexperiencesportugal.com` já estiver verificado — senão o e-mail continua a falhar independentemente disto).
+## O que eu preciso de ti
 
-## Se preferires, posso automatizar
+1. Confirmação para apagar/limpar `STRIPE_WEBHOOK_SECRET_SANDBOX`.
+2. Cópia da signing secret `whsec_…` do endpoint live na Stripe (só se sim, eu abro o formulário seguro — nunca a coles aqui em texto simples).
 
-Alternativa: em vez de mudares o URL na Stripe, mantenho `yesexperiencesportugal.com/functions/v1/stripe-webhook` e crio uma rota de proxy TanStack em `src/routes/api/public/stripe-webhook.ts` que reencaminha o corpo cru + header `stripe-signature` para a Edge Function. Vantagem: URL bonito no domínio próprio. Desvantagem: um salto extra e mais código para manter. Recomendação: **apontar directamente para o URL Supabase** (passo 1) — é o padrão Stripe + Supabase e é o que o próprio self-test valida.
-
-Diz-me qual dos dois caminhos preferes e avanço.
-
-&nbsp;
-
-Mantém o do site yes
+Nenhum código muda; é só rotação de secrets + verificação.
