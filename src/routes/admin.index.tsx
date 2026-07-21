@@ -689,6 +689,7 @@ function relativeTime(iso: string | null): string {
 }
 
 function WebhookHealthWidget() {
+  const [env, setEnv] = useState<"live" | "sandbox">("live");
   const [health, setHealth] = useState<HealthCheckRow | null>(null);
   const [lastVerified, setLastVerified] = useState<StripeEventRow | null>(null);
   const [lastCheckout, setLastCheckout] = useState<StripeEventRow | null>(null);
@@ -698,12 +699,14 @@ function WebhookHealthWidget() {
 
   const load = useCallback(async () => {
     setLoading(true);
+    const envTag = `[${env}]`;
     const [h, v, c] = await Promise.all([
       supabase
         .from("stripe_webhook_health_checks")
         .select(
           "status, reason, valid_status, invalid_status, secret_present, secret_prefix_ok, endpoint, checked_at",
         )
+        .ilike("reason", `${envTag}%`)
         .order("checked_at", { ascending: false })
         .limit(1)
         .maybeSingle(),
@@ -713,6 +716,7 @@ function WebhookHealthWidget() {
           "id, received_at, event_type, verified, status_code, error_message, customer_email, amount_total, currency, session_id, stripe_env",
         )
         .eq("verified", true)
+        .eq("stripe_env", env)
         .order("received_at", { ascending: false })
         .limit(1)
         .maybeSingle(),
@@ -722,6 +726,7 @@ function WebhookHealthWidget() {
           "id, received_at, event_type, verified, status_code, error_message, customer_email, amount_total, currency, session_id, stripe_env",
         )
         .eq("event_type", "checkout.session.completed")
+        .eq("stripe_env", env)
         .order("received_at", { ascending: false })
         .limit(1)
         .maybeSingle(),
@@ -730,14 +735,14 @@ function WebhookHealthWidget() {
     setLastVerified((v.data ?? null) as StripeEventRow | null);
     setLastCheckout((c.data ?? null) as StripeEventRow | null);
     setLoading(false);
-  }, []);
+  }, [env]);
 
   const runTest = useCallback(async () => {
     setTriggering(true);
     setTriggerMsg(null);
     try {
       const apikey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
-      const res = await fetch("/api/public/hooks/stripe-webhook-health", {
+      const res = await fetch(`/api/public/hooks/stripe-webhook-health?env=${env}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", apikey },
       });
@@ -751,8 +756,8 @@ function WebhookHealthWidget() {
       } else {
         setTriggerMsg(
           json.ok
-            ? "Self-test OK — assinatura válida aceite, forjada rejeitada."
-            : `Self-test FALHOU: ${json.reason ?? "sem detalhes"}`,
+            ? `Self-test OK (${env}) — assinatura válida aceite, forjada rejeitada.`
+            : `Self-test FALHOU (${env}): ${json.reason ?? "sem detalhes"}`,
         );
       }
     } catch (e) {
@@ -761,7 +766,7 @@ function WebhookHealthWidget() {
       await load();
       setTriggering(false);
     }
-  }, [load]);
+  }, [env, load]);
 
   useEffect(() => {
     load();
@@ -784,7 +789,30 @@ function WebhookHealthWidget() {
           </p>
           <h2 className="mt-1 text-lg">Estado do endpoint em tempo real</h2>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <div
+            role="tablist"
+            aria-label="Ambiente Stripe"
+            className="inline-flex border border-[color:var(--border)]"
+          >
+            {(["live", "sandbox"] as const).map((e) => (
+              <button
+                key={e}
+                type="button"
+                role="tab"
+                aria-selected={env === e}
+                onClick={() => setEnv(e)}
+                disabled={triggering}
+                className={`px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] transition ${
+                  env === e
+                    ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
+                    : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+                }`}
+              >
+                {e === "live" ? "Live" : "Test"}
+              </button>
+            ))}
+          </div>
           <button
             type="button"
             onClick={runTest}
@@ -792,7 +820,7 @@ function WebhookHealthWidget() {
             className="inline-flex items-center gap-2 border border-[color:var(--gold)] bg-[color:var(--gold)] px-3 py-1.5 text-xs text-[color:var(--ivory)] hover:opacity-90 disabled:opacity-50"
           >
             <RefreshCw size={12} className={triggering ? "animate-spin" : ""} />
-            {triggering ? "A testar…" : "Testar webhook agora"}
+            {triggering ? "A testar…" : `Testar ${env === "live" ? "live" : "test"} agora`}
           </button>
           <button
             type="button"
@@ -804,6 +832,7 @@ function WebhookHealthWidget() {
           </button>
         </div>
       </div>
+
 
       {triggerMsg && (
         <p
