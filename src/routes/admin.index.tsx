@@ -352,6 +352,9 @@ function AdminOverviewPage() {
           />
         </div>
 
+        {/* Stripe webhook health */}
+        <WebhookHealthWidget />
+
         {/* Bookings */}
         <Panel
           title="Últimas reservas"
@@ -660,3 +663,204 @@ function StatusBadge({ value }: { value: string | null }) {
 function EmptyState({ label }: { label: string }) {
   return <p className="text-sm text-[color:var(--charcoal-soft)]">{label}</p>;
 }
+
+type HealthCheckRow = {
+  status: string | null;
+  reason: string | null;
+  valid_status: number | null;
+  invalid_status: number | null;
+  secret_present: boolean | null;
+  secret_prefix_ok: boolean | null;
+  endpoint: string | null;
+  checked_at: string;
+};
+
+function relativeTime(iso: string | null): string {
+  if (!iso) return "—";
+  const diff = Date.now() - new Date(iso).getTime();
+  const s = Math.round(diff / 1000);
+  if (s < 60) return `há ${s}s`;
+  const m = Math.round(s / 60);
+  if (m < 60) return `há ${m} min`;
+  const h = Math.round(m / 60);
+  if (h < 48) return `há ${h} h`;
+  const d = Math.round(h / 24);
+  return `há ${d} d`;
+}
+
+function WebhookHealthWidget() {
+  const [health, setHealth] = useState<HealthCheckRow | null>(null);
+  const [lastVerified, setLastVerified] = useState<StripeEventRow | null>(null);
+  const [lastCheckout, setLastCheckout] = useState<StripeEventRow | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const [h, v, c] = await Promise.all([
+      supabase
+        .from("stripe_webhook_health_checks")
+        .select(
+          "status, reason, valid_status, invalid_status, secret_present, secret_prefix_ok, endpoint, checked_at",
+        )
+        .order("checked_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+      supabase
+        .from("stripe_webhook_events")
+        .select(
+          "id, received_at, event_type, verified, status_code, error_message, customer_email, amount_total, currency, session_id, stripe_env",
+        )
+        .eq("verified", true)
+        .order("received_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+      supabase
+        .from("stripe_webhook_events")
+        .select(
+          "id, received_at, event_type, verified, status_code, error_message, customer_email, amount_total, currency, session_id, stripe_env",
+        )
+        .eq("event_type", "checkout.session.completed")
+        .order("received_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+    ]);
+    setHealth((h.data ?? null) as HealthCheckRow | null);
+    setLastVerified((v.data ?? null) as StripeEventRow | null);
+    setLastCheckout((c.data ?? null) as StripeEventRow | null);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    load();
+    const t = setInterval(load, 60_000);
+    return () => clearInterval(t);
+  }, [load]);
+
+  const healthOk = health?.status === "ok";
+  const checkoutHours = lastCheckout
+    ? (Date.now() - new Date(lastCheckout.received_at).getTime()) / 36e5
+    : Infinity;
+  const receivingCheckout = lastCheckout && lastCheckout.verified && checkoutHours < 72;
+
+  return (
+    <div className="mt-8 border border-[color:var(--border)] bg-[color:var(--ivory)]">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[color:var(--border)] px-4 py-3">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+            Stripe webhook health
+          </p>
+          <h2 className="mt-1 text-lg">Estado do endpoint em tempo real</h2>
+        </div>
+        <button
+          type="button"
+          onClick={load}
+          disabled={loading}
+          className="inline-flex items-center gap-2 border border-[color:var(--border)] px-3 py-1.5 text-xs hover:border-[color:var(--gold)] disabled:opacity-50"
+        >
+          <RefreshCw size={12} className={loading ? "animate-spin" : ""} /> Verificar
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[color:var(--border)]">
+        <HealthTile
+          label="Self-test signature"
+          status={health ? (healthOk ? "ok" : "fail") : "unknown"}
+          primary={
+            health
+              ? healthOk
+                ? "A assinar e a verificar"
+                : "FALHA de verificação"
+              : "Sem self-test recente"
+          }
+          detail={
+            health
+              ? `${relativeTime(health.checked_at)} · valid=${health.valid_status ?? "—"} · forged=${health.invalid_status ?? "—"}`
+              : "O cron ainda não correu."
+          }
+          note={health?.reason ?? undefined}
+        />
+        <HealthTile
+          label="Último evento verificado"
+          status={lastVerified ? "ok" : "unknown"}
+          primary={lastVerified?.event_type ?? "Nenhum ainda"}
+          detail={
+            lastVerified
+              ? `${relativeTime(lastVerified.received_at)} · ${lastVerified.stripe_env ?? "—"}`
+              : "Nenhum webhook verificado registado."
+          }
+          note={
+            lastVerified?.customer_email
+              ? `${lastVerified.customer_email} · ${formatMoney(lastVerified.amount_total, lastVerified.currency)}`
+              : undefined
+          }
+        />
+        <HealthTile
+          label="checkout.session.completed"
+          status={receivingCheckout ? "ok" : lastCheckout ? "warn" : "fail"}
+          primary={
+            receivingCheckout
+              ? "A receber"
+              : lastCheckout
+                ? "Sem eventos recentes"
+                : "Nunca recebido"
+          }
+          detail={
+            lastCheckout
+              ? `Último ${relativeTime(lastCheckout.received_at)}${lastCheckout.verified ? "" : " · NÃO verificado"}`
+              : "Ainda não chegou nenhum checkout completo ao endpoint."
+          }
+          note={
+            lastCheckout?.customer_email
+              ? `${lastCheckout.customer_email} · ${formatMoney(lastCheckout.amount_total, lastCheckout.currency)}`
+              : undefined
+          }
+        />
+      </div>
+
+      {health?.endpoint && (
+        <p className="px-4 py-2 text-[10px] text-[color:var(--charcoal-soft)] break-all border-t border-[color:var(--border)]">
+          Endpoint: {health.endpoint}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function HealthTile({
+  label,
+  status,
+  primary,
+  detail,
+  note,
+}: {
+  label: string;
+  status: "ok" | "warn" | "fail" | "unknown";
+  primary: string;
+  detail: string;
+  note?: string;
+}) {
+  const tone =
+    status === "ok"
+      ? { dot: "bg-emerald-500", text: "text-emerald-800" }
+      : status === "warn"
+        ? { dot: "bg-amber-500", text: "text-amber-800" }
+        : status === "fail"
+          ? { dot: "bg-red-500", text: "text-red-800" }
+          : { dot: "bg-[color:var(--charcoal-soft)]", text: "text-[color:var(--charcoal-soft)]" };
+  return (
+    <div className="p-4">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+        {label}
+      </p>
+      <div className="mt-2 flex items-center gap-2">
+        <span className={`inline-block h-2 w-2 rounded-full ${tone.dot}`} />
+        <span className={`text-sm font-medium ${tone.text}`}>{primary}</span>
+      </div>
+      <p className="mt-1 text-[11px] text-[color:var(--charcoal-soft)]">{detail}</p>
+      {note && (
+        <p className="mt-1 text-[11px] text-[color:var(--charcoal)] break-words">{note}</p>
+      )}
+    </div>
+  );
+}
+
