@@ -128,8 +128,13 @@ interface HealthCheckResult {
   invalidStatus: number | null;
 }
 
-async function runHealthCheck(): Promise<HealthCheckResult> {
-  const whsec = process.env.STRIPE_WEBHOOK_SECRET_LIVE;
+async function runHealthCheck(env: "live" | "sandbox"): Promise<HealthCheckResult> {
+  const secretName =
+    env === "sandbox" ? "STRIPE_WEBHOOK_SECRET_SANDBOX" : "STRIPE_WEBHOOK_SECRET_LIVE";
+  const whsec =
+    env === "sandbox"
+      ? process.env.STRIPE_WEBHOOK_SECRET_SANDBOX
+      : process.env.STRIPE_WEBHOOK_SECRET_LIVE || process.env.STRIPE_WEBHOOK_SECRET;
   const supabaseUrl = process.env.SUPABASE_URL!;
   const endpoint = `${supabaseUrl}/functions/v1/stripe-webhook`;
 
@@ -144,11 +149,11 @@ async function runHealthCheck(): Promise<HealthCheckResult> {
   };
 
   if (!whsec) {
-    result.reason = "STRIPE_WEBHOOK_SECRET_LIVE is not configured.";
+    result.reason = `${secretName} is not configured.`;
     return result;
   }
   if (!result.secretPrefixOk) {
-    result.reason = "STRIPE_WEBHOOK_SECRET_LIVE does not start with whsec_.";
+    result.reason = `${secretName} does not start with whsec_.`;
     return result;
   }
 
@@ -157,7 +162,7 @@ async function runHealthCheck(): Promise<HealthCheckResult> {
     id: `evt_healthcheck_${timestamp}`,
     object: "event",
     type: "ping.selftest",
-    livemode: true,
+    livemode: env === "live",
     created: timestamp,
     data: { object: { id: "healthcheck" } },
   });
@@ -198,9 +203,9 @@ async function runHealthCheck(): Promise<HealthCheckResult> {
 
   result.ok = validOk && invalidOk;
   result.reason = result.ok
-    ? "Live signature accepted, forged signature rejected."
+    ? `${env === "live" ? "Live" : "Sandbox"} signature accepted, forged signature rejected.`
     : !validOk
-      ? "Live-signed payload was NOT accepted by the webhook — signing-secret mismatch between env and deployed function."
+      ? `${secretName}-signed payload was NOT accepted by the webhook — signing-secret mismatch between env and deployed function.`
       : "Forged signature was accepted — critical signature-verification failure.";
   return result;
 }
