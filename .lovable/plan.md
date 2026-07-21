@@ -1,49 +1,20 @@
-## Estado atual (verificado nos dados)
+Two Stripe credentials visible in the screenshots need to be stored securely so live payments and webhooks work end-to-end:
 
-- **Bookings:** tabela `bookings` está vazia — **nenhum checkout live jamais gravou** (0 rows). Isto confirma que o webhook nunca completou uma reserva real.
-- **Emails para clientes:** desde julho **todos os emails para destinatários que não sejam `yesexperiences@gmail.com` falham** com `resend 403 validation_error` — a Resend está em modo de teste porque `notify.yesexperiencesportugal.com` ainda não tem os DNS verificados. Único email que passa: o teu próprio (interno).
-- **Emails internos para ti:** funcionam (`internal-lead` → `yesexperiences@gmail.com` = `sent`). Último envio: hoje 20:39.
-- **Webhook Stripe:** signing secret foi rodada agora há pouco + adicionei fallback para o formato v2 (thin event). Ainda não há evento real verificado após a rotação.
+1. **New live signing secret** (`whsec_Zccyz8bhfJN8LSKIMCQEW2uzgHRuj4m7…`) from the "Yes Experiences" endpoint on `yesexperiencesportugal.com/functions/v1/stripe-webhook`.
+2. **Full secret key** (`sk_live_51OCRvxDB0RPdsEWfvs1eC63vEs20…`) — replaces the current restricted key (`rk_live_…`) so all Stripe API calls (checkout, payment intents, receipts) work without permission errors.
 
-## O que testar (nesta ordem)
+## Steps
 
-**1. Webhook signature (30 s, sem gastar dinheiro)**
-- Na Stripe (Live) → Developers → Webhooks → endpoint `yesexperiencesportugal.com/functions/v1/stripe-webhook` → **Send test webhook** → escolher `checkout.session.completed` → **Send**.
-- Em `/admin` (site publicado) → carregar **Verificar**.
-- **Esperado:** último evento verificado passa de `ping.selftest` → `checkout.session.completed`. Tile "checkout.session.completed (72h)" fica verde.
-- Se falhar → parar, ler o log e corrigir antes de fazer pagamento real.
+1. Update `STRIPE_WEBHOOK_SECRET_LIVE` → paste the new `whsec_Zccyz8bhf…` value.
+2. Update `STRIPE_LIVE_API_KEY` → paste the new `sk_live_51OCRvx…` value (overrides the previous `rk_live_`).
+3. Redeploy `stripe-webhook` and `stripe-session-status` edge functions so they pick up the new secrets.
+4. Verify in `/admin`:
+   - Webhook Health widget → **Verificar** → self-test should be green with the new secret.
+   - `/admin/payments-env` → live account ping should show `chargesEnabled: true` and `payoutsEnabled: true` with the sk_live_ prefix.
+5. In Stripe dashboard, click **"Send test webhook"** → `checkout.session.completed` → confirm it appears as last verified event in `/admin`.
 
-**2. Reserva real de €1 (fim-a-fim)**
-- Escolher uma tour, agendar para uma data ≥ 24 h à frente, cartão real, valor mínimo.
-- **Verificar em SQL logo a seguir:**
-  - `bookings` tem uma nova linha com `status = 'paid'`, `stripe_session_id`, `amount_total`, `customer_email`, composição correta (adultos/crianças).
-  - `stripe_webhook_events` regista o evento com `verified = true`.
-  - `email_send_log` mostra tentativa do template `booking-confirmation` (ou equivalente) para o email do cliente.
+## Security note
 
-**3. Analisar o que aconteceu aos emails**
+The screenshots contain live secrets. After I save them via the secrets tool, please **revoke and rotate both** in the Stripe dashboard (Developers → API keys → Roll; Webhooks → Roll signing secret) and then re-send new values — screenshots posted in chat are considered exposed. I'll re-save whichever new values you provide.
 
-Aqui há **dois destinatários e dois resultados esperados diferentes**:
-
-| Destinatário | Template | Resultado esperado hoje | Porquê |
-|---|---|---|---|
-| **Cliente** (email real dele) | Confirmação de reserva + recibo Stripe | ❌ Vai falhar com `resend 403` | DNS de `notify.yesexperiencesportugal.com` **ainda pendente** — Resend está em modo teste |
-| **Tu** (`yesexperiences@gmail.com`) | Notificação interna de nova reserva | ✅ Deve chegar | É o email "owner" verificado na Resend |
-
-Ou seja, sem o DNS verificado **é impossível testar o email ao cliente com sucesso**. O checkout e o gravar em `bookings` são independentes disso — esses vão funcionar assim que o webhook estiver ok.
-
-## Bloqueio a resolver antes de dizermos "prontos"
-
-**DNS pendente em `notify.yesexperiencesportugal.com`.** Enquanto isto não estiver verificado, todo o cliente que reservar não recebe confirmação. Registos exatos a adicionar no provedor de DNS (aparecem em Cloud → Emails do painel):
-
-- `TXT` em `_lovable-email.yesexperiencesportugal.com`
-- `NS` em `notify.yesexperiencesportugal.com` → `ns3.lovable.cloud` + `ns4.lovable.cloud`
-
-Depois de propagar, carregar em **Verify Domain** em Cloud → Emails.
-
-## O que preciso de ti para avançar
-
-1. Confirmação de que fizeste o passo 1 (test webhook Stripe) e o resultado em `/admin`.
-2. Se sim → autorização para fazer a reserva real de €1 e depois eu verifico as 3 tabelas em SQL.
-3. Confirmação de que **avanças com o DNS de `notify.yesexperiencesportugal.com`** (posso guiar-te no provedor onde tens o domínio) — sem isto o email ao cliente nunca vai passar em produção, por muito que o resto funcione.
-
-Sem alterações de código nesta fase — é validação + desbloqueio de DNS.
+No code changes required unless the webhook function still fails after redeploy.
