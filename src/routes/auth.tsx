@@ -269,6 +269,84 @@ function AuthPage() {
                 </>
               )}
             </button>
+
+            <button
+              type="button"
+              disabled={busy || appleBusy || googleBusy}
+              aria-busy={appleBusy}
+              onClick={async () => {
+                setAppleBusy(true);
+                setErrorMsg(null);
+                try {
+                  const result = await lovable.auth.signInWithOAuth("apple", {
+                    redirect_uri: window.location.origin + "/auth",
+                  });
+                  if (result.error) {
+                    const raw = result.error.message ?? "";
+                    const m = raw.toLowerCase();
+                    let friendly = raw || "Não foi possível iniciar sessão com Apple.";
+                    if (m.includes("popup") && m.includes("closed"))
+                      friendly = "Janela da Apple fechada antes de concluir. Tenta novamente.";
+                    else if (m.includes("popup") && m.includes("block"))
+                      friendly =
+                        "O browser bloqueou a janela da Apple. Permite popups para este site.";
+                    else if (m.includes("unsupported provider"))
+                      friendly = "Apple sign-in ainda não está ativo. Contacta o admin.";
+                    else if (m.includes("network") || m.includes("fetch"))
+                      friendly = "Sem ligação. Verifica a internet e tenta de novo.";
+                    throw new Error(friendly);
+                  }
+                  if (result.redirected) return;
+                  const { data, error } = await supabase.auth.getUser();
+                  if (error) throw new Error("Sessão inválida após Apple. Tenta novamente.");
+                  if (data.user) await routeByRole(data.user.id, navigate);
+                } catch (err) {
+                  const msg = err instanceof Error ? err.message : "Falha no Apple sign-in.";
+                  setErrorMsg(msg);
+                  toast.error(msg);
+                } finally {
+                  setAppleBusy(false);
+                }
+              }}
+              className="w-full inline-flex items-center justify-center gap-3 border border-black bg-black hover:bg-[color:var(--charcoal)] disabled:opacity-60 disabled:cursor-not-allowed text-white px-5 py-3 text-sm tracking-wide transition-all"
+            >
+              {appleBusy ? (
+                <>
+                  <svg
+                    className="animate-spin"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      fill="none"
+                      opacity="0.25"
+                    />
+                    <path
+                      d="M22 12a10 10 0 0 1-10 10"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      fill="none"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  A ligar à Apple…
+                </>
+              ) : (
+                <>
+                  <svg width="16" height="18" viewBox="0 0 16 18" aria-hidden="true" fill="currentColor">
+                    <path d="M13.06 9.53c-.02-2.13 1.74-3.16 1.82-3.21-.99-1.45-2.54-1.65-3.09-1.67-1.32-.13-2.57.77-3.24.77-.67 0-1.7-.75-2.79-.73-1.44.02-2.76.84-3.5 2.13-1.49 2.58-.38 6.4 1.08 8.5.71 1.03 1.56 2.19 2.67 2.15 1.07-.04 1.48-.7 2.78-.7 1.3 0 1.66.7 2.79.68 1.15-.02 1.88-1.05 2.59-2.09.82-1.2 1.15-2.36 1.17-2.42-.03-.01-2.24-.86-2.28-3.41zM10.9 3.34c.59-.72 1-1.72.89-2.72-.86.04-1.9.57-2.51 1.28-.55.63-1.03 1.65-.9 2.62.96.07 1.94-.49 2.52-1.18z" />
+                  </svg>
+                  Continuar com Apple
+                </>
+              )}
+            </button>
           </form>
 
           <div className="mt-6 flex items-center justify-between text-sm">
