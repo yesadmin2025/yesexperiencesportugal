@@ -179,7 +179,7 @@ function AuthPage() {
 
             <button
               type="button"
-              disabled={busy || googleBusy}
+              disabled={busy || googleBusy || appleBusy}
               aria-busy={googleBusy}
               onClick={async () => {
                 setGoogleBusy(true);
