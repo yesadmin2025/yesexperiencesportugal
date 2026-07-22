@@ -38,49 +38,32 @@ export const SOURCE_LABEL: Record<string, string> = {
   first_party: "Verified guest",
 };
 
-/** Fallbacks match the verified public aggregate on Tripadvisor/Viator. */
-export const FALLBACK_RATING = 4.9;
-export const FALLBACK_COUNT = 700;
-
 /**
  * Build the `@graph` payload rendered inside the GuestQuotes
- * `<script type="application/ld+json">` tag. Returns a plain object so
- * it round-trips through JSON.stringify identically in the browser and
- * in tests.
+ * `<script type="application/ld+json">` tag.
+ *
+ * Conservative policy (Google's review guidelines):
+ * - NEVER emit AggregateRating on Organization / LocalBusiness.
+ * - NEVER aggregate multi-platform reviews (Viator, Tripadvisor,
+ *   GetYourGuide, Google, Trustpilot) as if they were first-party.
+ * - Only emit individual `Review` nodes whose `itemReviewed` is a
+ *   concrete `Product` (a Signature experience). Reviews with no
+ *   attributable experience are dropped.
+ * - If nothing remains, return `null` so the caller skips the
+ *   `<script>` tag entirely.
+ *
+ * `stats` are intentionally accepted (for API stability) but unused —
+ * we no longer emit aggregate ratings from this surface.
  */
 export function buildGuestQuotesJsonLd(
   quotes: GuestQuoteReview[],
-  stats: GuestQuoteStats,
-): { "@context": string; "@graph": Record<string, unknown>[] } {
-  const orgId = `${SITE_URL}/#organization`;
+  _stats: GuestQuoteStats,
+): { "@context": string; "@graph": Record<string, unknown>[] } | null {
   const pageUrl = `${SITE_URL}/#reviews`;
-  // Inline `itemReviewed` (Organization + name + url) so validators
-  // that don't follow @id merges into the sitewide Organization node
-  // still see a fully-qualified target.
-  const itemReviewed = {
-    "@type": "Organization",
-    "@id": orgId,
-    name: "YES Experiences Portugal",
-    url: `${SITE_URL}/`,
-  } as const;
 
-  const ratingValue = stats.avg ?? FALLBACK_RATING;
-  const reviewCount = stats.count ?? FALLBACK_COUNT;
-
-  const graph: Record<string, unknown>[] = [
-    {
-      "@type": "AggregateRating",
-      "@id": `${SITE_URL}/#aggregate-rating`,
-      itemReviewed,
-      ratingValue: Number(ratingValue.toFixed(1)),
-      reviewCount,
-      bestRating: 5,
-      worstRating: 1,
-      url: pageUrl,
-    },
-    ...quotes.map((q) => {
-      const publisherUrl = q.source_url ?? undefined;
-      const reviewUrl = q.source_url ?? pageUrl;
+  const graph: Record<string, unknown>[] = quotes
+    .filter((q) => Boolean(q.source_url))
+    .map((q) => {
       const author: Record<string, unknown> = {
         "@type": "Person",
         name: q.reviewer_name ?? "Verified guest",
@@ -91,8 +74,7 @@ export function buildGuestQuotesJsonLd(
       return {
         "@type": "Review",
         "@id": `${SITE_URL}/#review-${q.id}`,
-        url: reviewUrl,
-        itemReviewed,
+        url: q.source_url ?? pageUrl,
         author,
         reviewRating: {
           "@type": "Rating",
@@ -105,11 +87,12 @@ export function buildGuestQuotesJsonLd(
         publisher: {
           "@type": "Organization",
           name: SOURCE_LABEL[q.source] ?? q.source,
-          ...(publisherUrl ? { url: publisherUrl } : {}),
+          ...(q.source_url ? { url: q.source_url } : {}),
         },
       };
-    }),
-  ];
+    });
 
+  if (graph.length === 0) return null;
   return { "@context": "https://schema.org", "@graph": graph };
 }
+
