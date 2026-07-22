@@ -77,7 +77,7 @@ function PtArrabidaWinePage() {
           Cristo Rei ou no castelo de Sesimbra fecha o dia.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <CtaButton to={EN_PATH} variant="primary">
+          <CtaButton to="/tours/$tourId" params={{ tourId: TOUR_ID }} variant="primary">
             Ver disponibilidade e reservar
           </CtaButton>
           <CtaButton to="/pt/experiences" variant="ghost">
@@ -145,7 +145,7 @@ function PtArrabidaWinePage() {
           </li>
         </ul>
         <div className="mt-10">
-          <CtaButton to={EN_PATH} variant="primary">
+          <CtaButton to="/tours/$tourId" params={{ tourId: TOUR_ID }} variant="primary">
             Ver disponibilidade e reservar
           </CtaButton>
         </div>

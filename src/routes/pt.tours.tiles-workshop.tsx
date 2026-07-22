@@ -66,7 +66,7 @@ function PtTilesWorkshopPage() {
           um copo de vinho local, e depois o sal e o sol de Sesimbra.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <CtaButton to={EN_PATH} variant="primary">
+          <CtaButton to="/tours/$tourId" params={{ tourId: TOUR_ID }} variant="primary">
             Ver disponibilidade e reservar
           </CtaButton>
           <CtaButton to="/pt/experiences" variant="ghost">
@@ -130,7 +130,7 @@ function PtTilesWorkshopPage() {
           </li>
         </ul>
         <div className="mt-10">
-          <CtaButton to={EN_PATH} variant="primary">
+          <CtaButton to="/tours/$tourId" params={{ tourId: TOUR_ID }} variant="primary">
             Ver disponibilidade e reservar
           </CtaButton>
         </div>
