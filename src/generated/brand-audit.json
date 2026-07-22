@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-22T03:17:05.649Z",
-  "filesScanned": 867,
+  "generatedAt": "2026-07-22T04:58:54.712Z",
+  "filesScanned": 876,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1106,7 +1106,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 207,
+      "line": 209,
       "col": 267,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1115,7 +1115,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 238,
+      "line": 243,
       "col": 265,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1124,7 +1124,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 457,
+      "line": 463,
       "col": 13,
       "raw": "#B8985A",
       "normalized": "#b8985a",
@@ -1133,7 +1133,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 458,
+      "line": 464,
       "col": 25,
       "raw": "#B8985A",
       "normalized": "#b8985a",
@@ -1142,7 +1142,7 @@
     },
     {
       "file": "src/components/home/FourWaysIn.tsx",
-      "line": 137,
+      "line": 151,
       "col": 122,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
