@@ -64,6 +64,27 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/terms", changefreq: "yearly", priority: "0.4" },
           { path: "/privacy", changefreq: "yearly", priority: "0.4" },
           { path: "/cookies", changefreq: "yearly", priority: "0.4" },
+
+          // pt-PT commercial funnel (human-reviewed European Portuguese copy).
+          // Source of truth: src/i18n/pt-ready.ts. Only entries with real PT
+          // pages ship here — no auto-translated stubs.
+          { path: "/pt", changefreq: "weekly", priority: "0.9" },
+          { path: "/pt/experiences", changefreq: "weekly", priority: "0.85" },
+          { path: "/pt/studio-v3", changefreq: "weekly", priority: "0.85" },
+          { path: "/pt/multi-day", changefreq: "weekly", priority: "0.85" },
+          { path: "/pt/portugal-travel-designer", changefreq: "monthly", priority: "0.8" },
+          { path: "/pt/moments", changefreq: "monthly", priority: "0.75" },
+          { path: "/pt/corporate", changefreq: "monthly", priority: "0.7" },
+          { path: "/pt/day-tours", changefreq: "weekly", priority: "0.75" },
+          { path: "/pt/about", changefreq: "monthly", priority: "0.55" },
+          { path: "/pt/contact", changefreq: "monthly", priority: "0.55" },
+          { path: "/pt/reviews", changefreq: "monthly", priority: "0.5" },
+          { path: "/pt/tours/arrabida-wine-allinclusive", changefreq: "monthly", priority: "0.9" },
+          { path: "/pt/tours/arrabida-boat", changefreq: "monthly", priority: "0.8" },
+          { path: "/pt/tours/tiles-workshop", changefreq: "monthly", priority: "0.8" },
+          { path: "/pt/terms", changefreq: "yearly", priority: "0.3" },
+          { path: "/pt/privacy", changefreq: "yearly", priority: "0.3" },
+          { path: "/pt/cookies", changefreq: "yearly", priority: "0.3" },
         ];
 
 
