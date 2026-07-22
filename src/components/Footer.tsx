@@ -7,6 +7,7 @@ import {
   BUSINESS_NAME,
   LICENSE_NUMBER,
   LICENSE_SHORT,
+  SOCIAL,
   whatsappUrl,
 } from "@/config/business-nap";
 
@@ -109,17 +110,17 @@ export function Footer() {
             title="Connect"
             links={[
               {
-                to: "https://www.instagram.com/yesexperiencesportugal",
+                to: SOCIAL.instagram,
                 label: "Instagram",
                 external: true,
               },
               {
-                to: "https://www.facebook.com/yesexperiencesportugal",
+                to: SOCIAL.facebook,
                 label: "Facebook",
                 external: true,
               },
               {
-                to: "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
+                to: SOCIAL.tripadvisor,
                 label: "Tripadvisor",
                 external: true,
               },
@@ -131,6 +132,8 @@ export function Footer() {
             ]}
           />
         </div>
+
+
 
         {/* Payment-provider names intentionally hidden — guests see only
             "Instant confirmation" and "Secure checkout" copy throughout. */}

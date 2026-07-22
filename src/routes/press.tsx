@@ -5,7 +5,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Scene } from "@/components/motion/Scene";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { EMAIL, LICENSE_LABEL, PHONE_DISPLAY } from "@/config/business-nap";
+import { EMAIL, LICENSE_LABEL, PHONE_DISPLAY, SOCIAL } from "@/config/business-nap";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 const TITLE = "Press & Brand Kit — YES Experiences Portugal";
@@ -63,16 +63,13 @@ const FOUNDER_BIO_SHORT =
 const FOUNDER_BIO_LONG =
   "YES Experiences Portugal was founded in 2022 and designed end-to-end by Nídia Almeida — concept, brand, website and every itinerary, with no agency and no team behind the curtain. The aim was to offer travellers something Portugal had long missed: private, emotionally intelligent days shaped by a real host with deep local relationships in wine, gastronomy and culture, not by a marketplace algorithm. The studio designs experiences the length of the country, from the Douro to the Algarve and the islands.";
 
-// Verified from Footer.tsx — single source of truth.
-const SOCIAL = [
-  {
-    label: "Tripadvisor",
-    href: "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
-  },
-  { label: "Instagram", href: "https://www.instagram.com/yesexperiencesportugal" },
-  { label: "Facebook", href: "https://www.facebook.com/yesexperiencesportugal" },
+// All social/review URLs come from the canonical SOCIAL map in business-nap.ts.
+const SOCIAL_LINKS = [
+  { label: "Tripadvisor", href: SOCIAL.tripadvisor },
+  { label: "Instagram", href: SOCIAL.instagram },
+  { label: "Facebook", href: SOCIAL.facebook },
   { label: "LinkedIn (founder)", href: "https://www.linkedin.com/in/nidiadealmeida" },
-];
+].filter((l) => l.href);
 
 // Backlink / HTML snippets partners can paste directly.
 const HTML_TEXT_LINK = `<a href="https://yesexperiencesportugal.com" rel="noopener" target="_blank">YES Experiences Portugal</a> — licensed Portuguese travel studio (RNAAT nº 31/2023) designing private tours nationwide.`;
