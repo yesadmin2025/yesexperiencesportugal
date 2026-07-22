@@ -1,97 +1,70 @@
-## Inventário (auditoria completa)
+# Semantic & Text Concatenation Fix Pass
 
-Testadas as 55 URLs do sitemap + rotas suspeitas com `curl -I` em produção. Verificadas todas as `beforeLoad: redirect(...)` no `src/routes/`.
+Focused audit + surgical fixes. No visual, layout, copy, spacing, motion, or typography changes — only string separation, semantic HTML, and a11y attributes.
 
-### Problemas encontrados
+## Scope (in order)
 
-**1. Redirects 307 (temporários) que deveriam ser 301 (permanentes)**
-GSC marca-os como "Página com redirecionamento". Ficheiros afetados:
-- `src/routes/faq.tsx` → `/about` (307)
-- `src/routes/moments.tsx` → `/proposal-in-portugal` (307)
-- `src/routes/pt.$.tsx` → `/pt` (307)
-- `src/routes/pt.faq.tsx` → `/pt/about` (307)
-- `src/routes/pt.moments.tsx` → `/pt/contact` (307)
-- `src/routes/pt.proposals.tsx` → `/pt/contact` (307)
+1. **Homepage** (`src/routes/index.tsx` + `src/components/home/*`) — hero/section CTAs, card CTA pairs.
+2. **Signature cards & pages** (`experiences.tsx`, `tours.$tourId.tsx`, `SignatureCard*`, `SimpleBookingForm`, `SimpleTailorForm`).
+3. **Studio** (`studio-v3.tsx`, `components/builder/v3/*`, `components/studio-v2/*`, `components/studio-v3/*`).
+4. **Tailor pages** (`tours.$tourId.tailor.tsx`, `SimpleTailorForm`).
+5. **Checkout** (`checkout.$token.tsx`, `EmbeddedConfirmationSheet`, `HostHandoffPanel`).
+6. **Contact / Moments / Corporate / Travel Designer** (`contact.tsx`, `moments.tsx` variants, `corporate.tsx`, `portugal-travel-designer.tsx`).
 
-**2. URLs no sitemap.xml que redirecionam (violam "sitemap = HTTP 200")**
-- `/faq` → 307 → `/about`
-- `/moments` → 307 → `/proposal-in-portugal`
+## Audit — what to grep for
 
-**3. Cadeia de redirect em parâmetros literais**
-- `/local-stories/$tourId` → 307 → `/local-stories/undefined` → 404
-  (hospedagem substitui `$tourId` por `undefined`; a rota destino já devolve 404 via `notFound()`, mas a cadeia 307→404 não é limpa)
-- `/local-stories/$slug` → 307 → `/local-stories/%24slug` → 404 (mesma dinâmica; termina em 404 correto)
+Run these greps in each scope and record every hit before editing:
 
-**4. OK — sem alterações**
-- `/local-stories/%24slug` → **404** ✅
-- `/local-stories/slug|undefined|null` → **404** ✅ (loader já bloqueia)
-- `robots.txt` → 200 ✅, já exclui rotas técnicas e `/local-stories/$slug`
-- Todas as outras 53 URLs do sitemap → 200 ✅
-- 301s existentes (`/builder`, `/wine-tours-lisbon`, `/day-trips-from-lisbon`, etc.) → OK ✅
-- Nenhum link interno para `/faq` ou `/moments` (`rg` confirmou)
-- Nenhum redirect loop real
-- Canonicals self-referencing OK nas rotas verificadas
-- `sitemap.xml` já filtra slugs placeholder via `isRealSlug()`
+- **Adjacent CTAs without separator**: two `<CtaButton>`, `<a>`, or `<button>` siblings not wrapped in `<CtaPair>`.
+  - `rg -nP '(</(CtaButton|Link|button|a)>)\s*(<(CtaButton|Link|button|a)\b)'`
+- **Text glued to CTA/heading**: paragraph immediately followed by a link/button on same line with no whitespace, or JSX `{desc}<Button>` patterns.
+  - `rg -nP '\}\s*<(button|a|Link|CtaButton)\b'`
+- **Duplicate/repeated labels**: same visible label rendered twice in the same block (visible + sr-only siblings, "Add… Add", etc.).
+- **Icon-only `<button>` without accessible name**: `<button` … `<Icon />` … `</button>` with no text child and no `aria-label`.
+- **`<div onClick>` / `<span onClick>`** acting as controls (already found: `AmbientPrologue.tsx`, plus verify others).
+- **`<input>` without associated `<label htmlFor>` or `aria-label`** — the `SimpleTailorForm` `<Field>` helper uses a wrapping `<label>` but the input has no `id`; verify all form fields.
+- **Missing `autoComplete`** on `name`, `email`, `tel`, `date`, `given-name` inputs in `contact.tsx`, `SimpleBookingForm`, `HostHandoffPanel`, checkout.
+- **`<form>` wrapper missing** where multiple inputs + a submit button exist (Enter key won't submit).
+- **`type="button"` missing** on non-submit `<button>` inside forms (defaults to `submit` and can cause accidental submits).
 
----
+## Fix rules (mechanical, no design change)
 
-## Correções (mínimas, cirúrgicas)
+- Adjacent CTAs → wrap in existing `<CtaPair>` (already provides `aria-hidden` " · " separator) OR insert `{" "}` between them. Choose whichever keeps existing className exactly.
+- `<div onClick>` → `<button type="button" className={same}>` with existing classes untouched; add `aria-label` if content is icon-only.
+- Icon-only `<button>` → add `aria-label="…"` describing action; do not add visible text.
+- `<input>` without label → add `id` + connect existing wrapping `<label>` via `htmlFor`, or add `aria-label`. Prefer `htmlFor` when a visible label exists.
+- Description text glued to CTA → ensure a block-level element separates them (already true visually; add explicit whitespace in JSX where serialized output concatenates: `{description}{" "}<Cta>`).
+- Add `autoComplete` to name/email/tel/date/postal inputs.
+- Wrap orphan input groups in `<form onSubmit={…}>`; add `type="button"` to any non-submit buttons inside.
+- Focus visibility: only add `focus-visible:outline` where currently missing on custom buttons — reuse existing `--gold` ring token; do not restyle.
 
-### A. Marcar redirects como permanentes (301)
-Adicionar `statusCode: 301` (e `replace: true` onde faz sentido) nos 6 ficheiros de redirect ainda com 307:
-- `src/routes/faq.tsx`
-- `src/routes/moments.tsx`
-- `src/routes/pt.$.tsx`
-- `src/routes/pt.faq.tsx`
-- `src/routes/pt.moments.tsx`
-- `src/routes/pt.proposals.tsx`
+## Files expected to change (from initial scan)
 
-### B. Remover URLs que redirecionam do sitemap
-Em `src/routes/sitemap[.]xml.ts`, remover as entradas `/faq` e `/moments` do array `staticEntries` (o conteúdo real vive em `/about` e `/proposal-in-portugal`, ambos já no sitemap).
+- `src/components/builder/v3/AmbientPrologue.tsx` — `<div onClick>` → `<button>`.
+- `src/components/SimpleTailorForm.tsx` — associate `<label>`/`<input>` via `htmlFor`/`id`, add `autoComplete` where relevant, ensure notes textarea has an id.
+- `src/components/SimpleBookingForm.tsx` — same audit (autocomplete, label association, form wrapper).
+- `src/routes/contact.tsx` — autocomplete + label association + `<form>` if missing.
+- Any homepage / experiences / studio / tailor / checkout / corporate / travel-designer file that shows adjacent CTAs without `<CtaPair>` or has icon-only buttons.
 
-### C. Curto-circuito de segmentos com parâmetro literal
-Em `src/start.ts` adicionar um `requestMiddleware` que devolve **404 direto** (sem redirect) quando qualquer segmento do path começa por `$` (ou `%24` decodificado) seguido de nome de parâmetro (`$slug`, `$tourId`, `$token`, `$postId`, etc.). Aplicado antes do handler da app — elimina a cadeia 307→404 para uma resposta 404 única. Não afeta URLs válidas (nenhum slug legítimo começa por `$`).
+Exact final list is produced during the audit step (see Deliverables).
 
-### D. Nada mais
-- Não altero design, copy, Studio, checkout, preços, animações, tipografia.
-- Não removo/renomeio rotas válidas.
-- Não toco em `robots.txt` (já correto).
-- Não mexo nos canonicals existentes.
+## Guardrails
 
----
+- Do not touch: `src/styles.css`, `tailwind.config.*`, any file under `src/content/*`, hero copy, brand tokens, animation utilities.
+- Do not rename or move existing classes; only add semantic attributes and swap element tags where required.
+- No new components except `<CtaPair>` (already exists).
+- Reduced-motion, brand palette, typography rules from memory remain untouched.
 
-## Verificação pós-alteração
+## Verification
 
-Corro em produção após publish (o utilizador confirma quando republicar):
+- `bunx tsgo --noEmit` clean.
+- `rg` for each pattern returns 0 hits inside audited scope.
+- Manual: tab through each edited page — every interactive element reachable, focus ring visible, screen-reader label present (spot-check with browser devtools accessibility panel via Playwright).
+- Visual regression sanity: `bunx playwright test e2e/homepage-typography-spacing-regression.spec.ts e2e/studio-v3-*mobile*.spec.ts` still pass (they lock layout & copy — proves no visual drift).
 
-```bash
-# 1. Todos os URLs do sitemap devolvem 200
-curl -s /sitemap.xml | grep -oE '<loc>[^<]+' | sed 's/<loc>//' | \
-  xargs -I{} sh -c 'curl -sI "{}" -o /dev/null -w "%{http_code} {}\n"' | grep -v ^200
+## Deliverables (posted in final reply)
 
-# 2. Redirects agora são 301
-for p in /faq /moments /pt/foobar /pt/faq /pt/moments /pt/proposals; do
-  curl -sI "https://yesexperiencesportugal.com$p" -o /dev/null -w "$p -> %{http_code}\n"
-done
-
-# 3. Segmentos $param retornam 404 direto (sem cadeia)
-for p in '/local-stories/$slug' '/local-stories/$tourId' '/tours/$tourId'; do
-  curl -sI "https://yesexperiencesportugal.com$p" -o /dev/null -w "$p -> %{http_code}\n"
-done
-```
-
-Resultado esperado: todos sitemap = 200; grupo 2 = 301; grupo 3 = 404 direto.
-
----
-
-## Ficheiros a alterar
-1. `src/routes/faq.tsx` — adicionar `statusCode: 301`
-2. `src/routes/moments.tsx` — adicionar `statusCode: 301`
-3. `src/routes/pt.$.tsx` — adicionar `statusCode: 301`
-4. `src/routes/pt.faq.tsx` — adicionar `statusCode: 301`
-5. `src/routes/pt.moments.tsx` — adicionar `statusCode: 301`
-6. `src/routes/pt.proposals.tsx` — adicionar `statusCode: 301`
-7. `src/routes/sitemap[.]xml.ts` — remover `/faq` e `/moments` de `staticEntries`
-8. `src/start.ts` — novo middleware `literalParamSegment404`
-
-Total: 8 ficheiros. Nenhum ficheiro criado ou eliminado.
+1. **Corrected strings table**: `before → after` for every concatenation/duplicate-label fix.
+2. **File → page map**: which route each fixed component appears on.
+3. **Confirmation statement**: no layout, copy, or style tokens changed; only semantic HTML + a11y attributes + whitespace between adjacent CTAs.
+4. **Test evidence**: tsgo clean + Playwright layout suites green.
