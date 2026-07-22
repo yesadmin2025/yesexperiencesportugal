@@ -21,7 +21,12 @@ interface Props {
   showVerifiedDate?: boolean;
   /** Horizontal alignment of the chip row. Defaults to "center". */
   align?: "start" | "center";
+  /** Hide the numeric rating next to the logo. */
+  hideRating?: boolean;
+  /** Hide the "N+ reviews" count. */
+  hideCount?: boolean;
 }
+
 
 function formatVerifiedDate(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
