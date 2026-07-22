@@ -3,11 +3,13 @@
 // automatic notification emails are not yet delivering.
 
 import { createFileRoute, Link, useRouter, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RefreshCw, Mail, Sparkles, CalendarCheck2 } from "lucide-react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
+import { recoverPaidBooking } from "@/lib/booking-recovery.functions";
 
 type BookingRow = {
   id: string;
@@ -21,7 +23,7 @@ type BookingRow = {
   amount_total: number | null;
   currency: string | null;
   status: string | null;
-  
+  stripe_session_id: string | null;
 };
 
 type ContactRow = {
@@ -189,6 +191,7 @@ function AdminOverviewPage() {
         .from("bookings")
         .select(
           "id, created_at, customer_name, customer_email, customer_phone, guests, preferred_date, source_tour_id, amount_total, currency, status",
+          "id, created_at, customer_name, customer_email, customer_phone, guests, preferred_date, source_tour_id, amount_total, currency, status, stripe_session_id",
         )
         .order("created_at", { ascending: false })
         .limit(20),
