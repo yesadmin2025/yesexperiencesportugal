@@ -409,7 +409,7 @@ function PressPage() {
             Verified profiles for reviews, reach and fact-checking.
           </p>
           <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 text-[15px]">
-            {SOCIAL.map((s) => (
+            {SOCIAL_LINKS.map((s) => (
               <li key={s.href}>
                 <a
                   className="text-[color:var(--teal)] underline underline-offset-4"
