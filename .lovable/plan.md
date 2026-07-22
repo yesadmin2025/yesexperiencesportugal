@@ -1,29 +1,46 @@
-## Confirmação do que vejo nos screenshots
+# Plano de recuperação do checkout
 
-- **Signing secret do endpoint "Yes Experiences"**: `whsec_Zccyz8bhfJN8LSKIMCQEW2uzgHRuj4m7…` — **bate com o `STRIPE_WEBHOOK_SECRET_LIVE` já guardado** (prefixo `whsec_Zccyz8bhf`). Não precisa de update.
-- **Chave secreta "Yes Experiences"**: `sk_live_…R0Bs` — é uma **chave secreta nova** (a atual `STRIPE_LIVE_API_KEY` acabou em outros chars). É esta que quero atualizar.
-- **Entregas recentes**: "Nenhuma entrega recente" — o endpoint está ativo mas a Stripe não entregou nada nas últimas 24h. Os erros na base de dados são de tentativas antigas ou de outro caminho.
+Não precisas de fazer mais tentativas agora. Os dados confirmam que a Stripe já consegue chegar ao sistema: um evento real `payment_intent.processing` foi verificado. O vermelho atual é sobretudo um falso negativo do teste sintético, porque o site e a função de webhook estão a ler cópias diferentes da signing secret.
 
-## Plano
+## 1. Corrigir o diagnóstico do webhook
+- Remover a dependência do teste atual entre dois ambientes com cópias separadas da signing secret.
+- Executar a assinatura e verificação sintética no mesmo ambiente do webhook.
+- Manter os eventos reais da Stripe como sinal principal de saúde.
+- No admin, separar claramente:
+  - endpoint a receber eventos reais;
+  - assinatura válida;
+  - último `checkout.session.completed`;
+  - processamento da reserva;
+  - envio dos emails.
+- Um teste sintético indisponível deixará de transformar um evento real verificado num estado geral vermelho.
 
-### 1. Atualizar `STRIPE_LIVE_API_KEY` (secure form)
-Abro o formulário para colares a nova `sk_live_…R0Bs` completa. Guardado, o servidor passa a usar esta chave para criar sessões de checkout e ler eventos.
+## 2. Fechar o fluxo de reserva
+- Rever todos os checkouts Signature, Tailor, Studio e Builder.
+- Corrigir o Builder para aceitar os domínios atuais `yesexperiencesportugal.com` e `www.yesexperiencesportugal.com`; neste momento a allowlist dessa função ainda contém apenas os domínios antigos e Lovable.
+- Confirmar que `checkout.session.completed` pago cria ou atualiza exatamente uma reserva, com idempotência por sessão Stripe.
+- Registar no webhook o resultado de cada etapa: evento verificado, pagamento confirmado, reserva persistida e notificação solicitada.
 
-### 2. Validação sem código novo
-Depois de guardares:
-- Abres `/admin` → **Webhook Health (Live)** → **Verificar**. Tile deve continuar verde (`ping.selftest`).
-- Na Stripe → endpoint "Yes Experiences" → **Enviar webhook de teste** → `checkout.session.completed`.
-- Consulto `stripe_webhook_events` — deve aparecer `verified: true` com `event_type = checkout.session.completed`.
+## 3. Recuperação operacional no admin
+- Mostrar eventos pagos verificados que ainda não produziram uma reserva.
+- Adicionar uma ação segura para reprocessar um evento concluído sem duplicar a cobrança nem a reserva.
+- Adicionar reenvio de confirmação ao cliente e de notificação à equipa, também idempotente.
 
-### 3. Reserva real €1
-Fazes checkout num tour → confirmo:
-- Row nova em `bookings` com `payment_status = paid`.
-- Email interno enviado.
-- Email cliente continua bloqueado até DNS `notify.yesexperiencesportugal.com` verificar (paralelo).
+## 4. Desbloquear os emails
+- O domínio `notify.yesexperiencesportugal.com` continua pendente; os envios estão a falhar com `403`, portanto nem o cliente nem a equipa recebem mensagens.
+- Concluir a verificação em **Project Settings → Email** com os registos já atribuídos ao domínio.
+- Depois da verificação, repetir os emails falhados através da ação de recuperação, sem repetir pagamentos.
 
-### Segurança
-A `sk_live_…R0Bs` completa apareceu no screenshot. Assim que estiver tudo verde, roda-a na Stripe e volto a guardar a nova (mesmo processo, 30s).
+## 5. Validação final
+- Executar um checkout controlado e confirmar, por esta ordem:
+  1. sessão Stripe criada;
+  2. pagamento concluído;
+  3. `checkout.session.completed` verificado;
+  4. reserva criada com cliente, data, viajantes e valor;
+  5. email do cliente entregue;
+  6. email interno entregue;
+  7. admin totalmente verde.
+- Testar também falha, repetição do webhook e reprocessamento para garantir ausência de duplicados.
 
----
-
-Confirmas que abro o formulário para atualizares `STRIPE_LIVE_API_KEY` com a `sk_live_…R0Bs` completa?
+## 6. Segurança após estabilização
+- Rodar a chave `sk_live` que apareceu nas imagens.
+- Atualizar a chave segura e repetir apenas o ping da conta e a validação final, sem alterar novamente a signing secret que estiver funcional.
