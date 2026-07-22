@@ -145,6 +145,8 @@ export function FourWaysIn() {
             >
               <Link
                 to={p.href}
+                data-analytics={p.analyticsEvent}
+                data-analytics-placement="five_ways"
                 style={{ transitionDelay: `${idx * 60}ms` }}
                 className="fw-card reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-6 shadow-[0_1px_2px_rgba(46,46,46,0.04)] overflow-hidden no-underline transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:border-[color:var(--gold)]/50 hover:shadow-[0_18px_40px_-24px_rgba(46,46,46,0.22)]"
               >
