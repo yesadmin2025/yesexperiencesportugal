@@ -106,6 +106,8 @@ const PATHS: Path[] = [
     body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
     cta: "Begin with a designer",
     href: "/multi-day",
+    analyticsEvent: "five_ways_travel_designer_click",
+
   },
 ];
 
