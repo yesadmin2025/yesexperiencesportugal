@@ -352,7 +352,7 @@ function TourHero({
           <div className="mt-6 flex flex-col items-start gap-4">
             <a
               href="#book"
-              href="#reserve"
+
               data-analytics="signature_reserve_click"
               data-analytics-placement="hero"
               data-analytics-experience-id={tour.id}
