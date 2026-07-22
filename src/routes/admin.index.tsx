@@ -1029,7 +1029,7 @@ function HealthTile({
       </div>
       <p className="mt-1 text-[11px] text-[color:var(--charcoal-soft)]">{detail}</p>
       {note && (
-        <p className="mt-1 text-[11px] text-[color:var(--charcoal)] break-words">{note}</p>
+        <div className="mt-1 text-[11px] text-[color:var(--charcoal)] break-words">{note}</div>
       )}
     </div>
   );

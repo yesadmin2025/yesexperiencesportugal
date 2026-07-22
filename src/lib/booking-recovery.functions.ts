@@ -174,37 +174,20 @@ export const recoverPaidBooking = createServerFn({ method: "POST" })
         bookingStatusUrl: `https://yesexperiencesportugal.com/booking-confirmed?session_id=${encodeURIComponent(session.id)}`,
         pickup: metadata.pickup || null,
       };
-      const { data: alreadySent } = await supabaseAdmin
-        .from("email_send_log")
-        .select("template_name, recipient_email")
-        .eq("status", "sent")
-        .in("template_name", ["checkout-receipt", "internal-booking"])
-        .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
-      const wasSent = (templateName: string, recipient: string) =>
-        (alreadySent ?? []).some(
-          (row) =>
-            row.template_name === templateName &&
-            row.recipient_email.toLowerCase() === recipient.toLowerCase(),
-        );
-
-      const customerResult = wasSent("checkout-receipt", customerEmail)
-        ? { ok: true }
-        : await sendTransactionalInternal({
-            templateName: "checkout-receipt",
-            recipientEmail: customerEmail,
-            idempotencyKey: `checkout-receipt-${session.id}`,
-            templateData,
-          });
+      const customerResult = await sendTransactionalInternal({
+        templateName: "checkout-receipt",
+        recipientEmail: customerEmail,
+        idempotencyKey: `checkout-receipt-${session.id}`,
+        templateData,
+      });
       const teamResults = await Promise.all(
         TEAM_NOTIFICATION_RECIPIENTS.map((recipient) =>
-          wasSent("internal-booking", recipient)
-            ? Promise.resolve({ ok: true })
-            : sendTransactionalInternal({
-                templateName: "internal-booking",
-                recipientEmail: recipient,
-                idempotencyKey: `internal-booking-${session.id}-${recipient}`,
-                templateData,
-              }),
+          sendTransactionalInternal({
+            templateName: "internal-booking",
+            recipientEmail: recipient,
+            idempotencyKey: `internal-booking-${session.id}-${recipient}`,
+            templateData,
+          }),
         ),
       );
       emailQueued = customerResult.ok && teamResults.every((result) => result.ok);
