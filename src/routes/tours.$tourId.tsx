@@ -910,6 +910,10 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
           <Link
             to="/tours/$tourId/tailor"
             params={{ tourId: tour.id }}
+            data-analytics="signature_tailor_click"
+            data-analytics-placement="final"
+            data-analytics-experience-id={tour.id}
+            data-analytics-experience-type="signature"
             className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/85 hover:text-[color:var(--gold)] transition-colors min-h-[44px]"
           >
             Tailor this day <span aria-hidden="true" className="text-[color:var(--gold)]">→</span>
