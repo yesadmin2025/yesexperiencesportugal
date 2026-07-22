@@ -277,8 +277,17 @@ function RootComponent() {
   useEffect(() => installClientErrorLogger(), []);
   useEffect(() => installDevHardReload(), []);
   useEffect(() => installAnalyticsAttrs(), []);
+  useEffect(() => {
+    captureUtmsFromLocation();
+  }, []);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { locale } = parseLocaleFromPath(pathname);
+  useEffect(() => {
+    setAnalyticsLocale(locale);
+    // Re-check UTMs on client-side navigation (SPA route changes).
+    captureUtmsFromLocation();
+  }, [locale, pathname]);
+
   // Single QueryClient per browser session — keeps SignaturePriceCard and
 
   // any future useQuery hook resolvable without each route wiring its own.
