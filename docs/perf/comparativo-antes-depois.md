@@ -93,13 +93,22 @@ Auditoria confirmou que o pipeline visual já implementa a maioria dos quick win
 | Impedir layout shifts | ✅ Skeletons já implementados em `SignaturePriceCard`, `TourReviews`, `SignatureRouteMap` |
 | `prefers-reduced-motion` | ✅ Respeitado em `styles.css` e nos componentes de motion |
 
-### 2.3 Não aplicado nesta iteração
+### 2.3 Lazy-load do mapa Leaflet (`src/routes/tours.$tourId.tsx`)
+
+`SignatureRouteMap` (que carrega Leaflet + tiles + routing OSRM, ~140 KB gzip) foi convertido para `React.lazy` + `Suspense`. O mapa fica no bloco 6 da página, sempre abaixo da dobra, pelo que a divisão de chunk não afeta LCP e retira peso significativo do bundle inicial das rotas `/tours/*`.
+
+**Impacto esperado:**
+
+- Bundle inicial de `/tours/[id]` reduz ~140 KB gzip (Leaflet + plugins).
+- TBT desktop deve baixar 50–150 ms; mobile 150–400 ms.
+- Sem impacto visual: fallback é um espaço reservado com `min-h-[420px]` que evita CLS enquanto o chunk carrega.
+
+### 2.4 Não aplicado nesta iteração
 
 Os seguintes items do plano requerem investigação/edição mais profunda e ficam registados como follow-up de baixa prioridade:
 
 - **Preload de WOFF2 específico**: requer identificar peso exato usado no H1 do hero e obter a URL final da fonte após Google Fonts resolver o CSS. Ganho marginal (~50–100 ms) e frágil quando o Google Fonts roda cache-bust.
 - **Lazy do `<video>` via `React.lazy`**: o componente já monta o `<video>` só depois de `requestIdleCallback`; envolver em `React.lazy` não traz ganho adicional e complica o SSR do poster.
-- **Mapa Leaflet lazy**: verificar se `SignatureRouteMap` é importado por rotas sem mapa (grep necessário) antes de mudar o padrão de import.
 
 ---
 
