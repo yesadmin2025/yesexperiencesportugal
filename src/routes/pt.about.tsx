@@ -13,7 +13,6 @@ import {
   BASED_IN_SHORT,
   EMAIL,
   EMAIL_HREF,
-  LICENSE_LABEL,
   LICENSE_LABEL_PT,
   PHONE_DISPLAY,
   whatsappUrl,
