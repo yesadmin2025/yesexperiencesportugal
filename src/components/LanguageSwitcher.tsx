@@ -87,7 +87,12 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
             {sep}
             <Link
               to={`${target}${search}${hash}` as string}
-              onClick={() => setLocaleCookie(loc)}
+              onClick={() => {
+                setLocaleCookie(loc);
+                if (loc !== active) {
+                  trackEvent("language_changed", { from: active, to: loc });
+                }
+              }}
               aria-current={isActive ? "true" : undefined}
               hrefLang={loc}
               className={cn(
