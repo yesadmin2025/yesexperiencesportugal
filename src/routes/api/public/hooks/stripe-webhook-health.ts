@@ -103,21 +103,6 @@ export const Route = createFileRoute("/api/public/hooks/stripe-webhook-health")(
   },
 });
 
-async function hmacSha256Hex(secret: string, payload: string): Promise<string> {
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    enc.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(payload));
-  return Array.from(new Uint8Array(sig))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
 interface HealthCheckResult {
   ok: boolean;
   reason: string;
@@ -131,81 +116,51 @@ interface HealthCheckResult {
 async function runHealthCheck(env: "live" | "sandbox"): Promise<HealthCheckResult> {
   const secretName =
     env === "sandbox" ? "STRIPE_WEBHOOK_SECRET_SANDBOX" : "STRIPE_WEBHOOK_SECRET_LIVE";
-  const whsec =
-    env === "sandbox"
-      ? process.env.STRIPE_WEBHOOK_SECRET_SANDBOX
-      : process.env.STRIPE_WEBHOOK_SECRET_LIVE || process.env.STRIPE_WEBHOOK_SECRET;
   const supabaseUrl = process.env.SUPABASE_URL!;
   const endpoint = `${supabaseUrl}/functions/v1/stripe-webhook`;
+  const internalSecret = process.env.EMAIL_INTERNAL_SECRET;
 
   const result: HealthCheckResult = {
     ok: false,
     reason: "",
     endpoint,
-    secretPresent: Boolean(whsec),
-    secretPrefixOk: Boolean(whsec && whsec.startsWith("whsec_")),
+    secretPresent: false,
+    secretPrefixOk: false,
     validStatus: null,
     invalidStatus: null,
   };
 
-  if (!whsec) {
-    result.reason = `${secretName} is not configured.`;
+  if (!internalSecret) {
+    result.reason = "EMAIL_INTERNAL_SECRET is not configured for the internal health check.";
     return result;
   }
-  if (!result.secretPrefixOk) {
-    result.reason = `${secretName} does not start with whsec_.`;
-    return result;
-  }
-
-  const timestamp = Math.floor(Date.now() / 1000);
-  const payload = JSON.stringify({
-    id: `evt_healthcheck_${timestamp}`,
-    object: "event",
-    type: "ping.selftest",
-    livemode: env === "live",
-    created: timestamp,
-    data: { object: { id: "healthcheck" } },
-  });
-
-  const signedPayload = `${timestamp}.${payload}`;
-  const v1 = await hmacSha256Hex(whsec, signedPayload);
-  const validHeader = `t=${timestamp},v1=${v1}`;
-  const invalidHeader = `t=${timestamp},v1=${"0".repeat(64)}`;
-
-  let validOk = false;
   try {
     const res = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "stripe-signature": validHeader },
-      body: payload,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${internalSecret}`,
+        "x-yes-internal-action": "healthcheck",
+      },
+      body: JSON.stringify({ environment: env }),
     });
-    result.validStatus = res.status;
-    const body = (await res.text()).slice(0, 300);
-    validOk = res.status === 200 && body.includes("ping.selftest");
+    const body = (await res.json()) as {
+      ok?: boolean;
+      reason?: string;
+      secretPresent?: boolean;
+      secretPrefixOk?: boolean;
+      validStatus?: number | null;
+      invalidStatus?: number | null;
+    };
+    result.ok = res.ok && body.ok === true;
+    result.reason = body.reason ?? `${secretName} health check returned no reason.`;
+    result.secretPresent = body.secretPresent === true;
+    result.secretPrefixOk = body.secretPrefixOk === true;
+    result.validStatus = body.validStatus ?? null;
+    result.invalidStatus = body.invalidStatus ?? null;
+    return result;
   } catch (e) {
-    result.reason = `Valid-signature request failed: ${(e as Error).message}`.slice(0, 300);
+    result.reason = `Internal webhook health request failed: ${(e as Error).message}`.slice(0, 300);
     return result;
   }
-
-  let invalidOk = false;
-  try {
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "stripe-signature": invalidHeader },
-      body: payload,
-    });
-    result.invalidStatus = res.status;
-    invalidOk = res.status === 400;
-  } catch (e) {
-    result.reason = `Forged-signature request failed: ${(e as Error).message}`.slice(0, 300);
-    return result;
-  }
-
-  result.ok = validOk && invalidOk;
-  result.reason = result.ok
-    ? `${env === "live" ? "Live" : "Sandbox"} signature accepted, forged signature rejected.`
-    : !validOk
-      ? `${secretName}-signed payload was NOT accepted by the webhook — signing-secret mismatch between env and deployed function.`
-      : "Forged signature was accepted — critical signature-verification failure.";
-  return result;
 }

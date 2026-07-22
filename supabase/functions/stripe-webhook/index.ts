@@ -22,6 +22,106 @@ Deno.serve(async (req) => {
   if (req.method !== "POST")
     return new Response("Method not allowed", { status: 405, headers: corsHeaders });
 
+  // Internal health diagnostics run entirely inside this deployed function.
+  // This avoids the old false-negative where the app server and this function
+  // held different snapshots of STRIPE_WEBHOOK_SECRET_LIVE.
+  if (req.headers.get("x-yes-internal-action") === "healthcheck") {
+    const internalSecret = Deno.env.get("EMAIL_INTERNAL_SECRET") ?? "";
+    const bearer = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
+    if (!internalSecret || bearer !== internalSecret) {
+      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+    }
+
+    let requestedEnv: StripeEnv = "live";
+    try {
+      const body = (await req.json()) as { environment?: string };
+      requestedEnv = body.environment === "sandbox" ? "sandbox" : "live";
+    } catch {
+      // Default to live when the internal caller sends no body.
+    }
+
+    const secretName =
+      requestedEnv === "sandbox" ? "STRIPE_WEBHOOK_SECRET_SANDBOX" : "STRIPE_WEBHOOK_SECRET_LIVE";
+    const secret = Deno.env.get(secretName);
+    if (!secret || !secret.startsWith("whsec_")) {
+      return Response.json(
+        {
+          ok: false,
+          reason: `${secretName} is missing or invalid in the deployed webhook.`,
+          secretPresent: Boolean(secret),
+          secretPrefixOk: Boolean(secret?.startsWith("whsec_")),
+          validStatus: null,
+          invalidStatus: null,
+        },
+        { status: 200, headers: corsHeaders },
+      );
+    }
+
+    const stripe = createStripeClient(requestedEnv);
+    const timestamp = Math.floor(Date.now() / 1000);
+    const payload = JSON.stringify({
+      id: `evt_healthcheck_${timestamp}`,
+      object: "event",
+      type: "ping.selftest",
+      livemode: requestedEnv === "live",
+      created: timestamp,
+      data: { object: { id: "healthcheck" } },
+    });
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      "raw",
+      encoder.encode(secret),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"],
+    );
+    const signed = await crypto.subtle.sign(
+      "HMAC",
+      key,
+      encoder.encode(`${timestamp}.${payload}`),
+    );
+    const digest = Array.from(new Uint8Array(signed))
+      .map((byte) => byte.toString(16).padStart(2, "0"))
+      .join("");
+
+    let validAccepted = false;
+    let forgedRejected = false;
+    try {
+      await stripe.webhooks.constructEventAsync(
+        payload,
+        `t=${timestamp},v1=${digest}`,
+        secret,
+      );
+      validAccepted = true;
+    } catch {
+      validAccepted = false;
+    }
+    try {
+      await stripe.webhooks.constructEventAsync(
+        payload,
+        `t=${timestamp},v1=${"0".repeat(64)}`,
+        secret,
+      );
+    } catch {
+      forgedRejected = true;
+    }
+
+    const ok = validAccepted && forgedRejected;
+    return Response.json(
+      {
+        ok,
+        reason: ok
+          ? `${requestedEnv === "live" ? "Live" : "Sandbox"} signature accepted and forged signature rejected inside the deployed webhook.`
+          : "The deployed webhook could not verify its own signing configuration.",
+        secretPresent: true,
+        secretPrefixOk: true,
+        validStatus: validAccepted ? 200 : 400,
+        invalidStatus: forgedRejected ? 400 : 200,
+      },
+      { status: 200, headers: corsHeaders },
+    );
+  }
+
   const sig = req.headers.get("stripe-signature");
   if (!sig) return new Response("Missing signature", { status: 400, headers: corsHeaders });
 

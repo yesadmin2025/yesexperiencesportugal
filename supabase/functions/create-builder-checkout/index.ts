@@ -60,6 +60,8 @@ Deno.serve(async (req) => {
       .map((s) => s.trim())
       .filter(Boolean);
     const staticAllow = new Set<string>([
+      "https://yesexperiencesportugal.com",
+      "https://www.yesexperiencesportugal.com",
       "https://yesexperiences.pt",
       "https://www.yesexperiences.pt",
       "https://dreamscape-builder-co.lovable.app",
