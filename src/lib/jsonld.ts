@@ -520,7 +520,7 @@ export function tourTailorProductLd(args: {
             priceCurrency: currency,
             price: args.priceFrom,
 
-            availability: "https://schema.org/InStock",
+            // availability intentionally omitted — see tourProductLd().
             seller: { "@id": `${SITE_URL}/#organization` },
           },
         }
