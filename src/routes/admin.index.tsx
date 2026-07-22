@@ -3,11 +3,13 @@
 // automatic notification emails are not yet delivering.
 
 import { createFileRoute, Link, useRouter, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RefreshCw, Mail, Sparkles, CalendarCheck2 } from "lucide-react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
+import { recoverPaidBooking } from "@/lib/booking-recovery.functions";
 
 type BookingRow = {
   id: string;
@@ -21,7 +23,7 @@ type BookingRow = {
   amount_total: number | null;
   currency: string | null;
   status: string | null;
-  
+  stripe_session_id: string | null;
 };
 
 type ContactRow = {
@@ -60,6 +62,7 @@ type StripeEventRow = {
   currency: string | null;
   session_id: string | null;
   stripe_env: string | null;
+  payment_status: string | null;
 };
 
 type EmailLogRow = {
@@ -188,7 +191,7 @@ function AdminOverviewPage() {
       supabase
         .from("bookings")
         .select(
-          "id, created_at, customer_name, customer_email, customer_phone, guests, preferred_date, source_tour_id, amount_total, currency, status",
+          "id, created_at, customer_name, customer_email, customer_phone, guests, preferred_date, source_tour_id, amount_total, currency, status, stripe_session_id",
         )
         .order("created_at", { ascending: false })
         .limit(20),
@@ -207,7 +210,7 @@ function AdminOverviewPage() {
       supabase
         .from("stripe_webhook_events")
         .select(
-          "id, received_at, event_type, verified, status_code, error_message, customer_email, amount_total, currency, session_id, stripe_env",
+          "id, received_at, event_type, verified, status_code, error_message, customer_email, amount_total, currency, session_id, stripe_env, payment_status",
         )
         .order("received_at", { ascending: false })
         .limit(30),
@@ -353,7 +356,7 @@ function AdminOverviewPage() {
         </div>
 
         {/* Stripe webhook health */}
-        <WebhookHealthWidget />
+        <WebhookHealthWidget bookings={bookings} emailLog={emailLog} onRecovered={fetchAll} />
 
         {/* Bookings */}
         <Panel
@@ -688,13 +691,23 @@ function relativeTime(iso: string | null): string {
   return `há ${d} d`;
 }
 
-function WebhookHealthWidget() {
+function WebhookHealthWidget({
+  bookings,
+  emailLog,
+  onRecovered,
+}: {
+  bookings: BookingRow[] | null;
+  emailLog: EmailLogRow[] | null;
+  onRecovered: () => Promise<void>;
+}) {
+  const recover = useServerFn(recoverPaidBooking);
   const [env, setEnv] = useState<"live" | "sandbox">("live");
   const [health, setHealth] = useState<HealthCheckRow | null>(null);
   const [lastVerified, setLastVerified] = useState<StripeEventRow | null>(null);
   const [lastCheckout, setLastCheckout] = useState<StripeEventRow | null>(null);
   const [loading, setLoading] = useState(false);
   const [triggering, setTriggering] = useState(false);
+  const [recovering, setRecovering] = useState(false);
   const [triggerMsg, setTriggerMsg] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -713,7 +726,7 @@ function WebhookHealthWidget() {
       supabase
         .from("stripe_webhook_events")
         .select(
-          "id, received_at, event_type, verified, status_code, error_message, customer_email, amount_total, currency, session_id, stripe_env",
+          "id, received_at, event_type, verified, status_code, error_message, customer_email, amount_total, currency, session_id, stripe_env, payment_status",
         )
         .eq("verified", true)
         .eq("stripe_env", env)
@@ -723,9 +736,10 @@ function WebhookHealthWidget() {
       supabase
         .from("stripe_webhook_events")
         .select(
-          "id, received_at, event_type, verified, status_code, error_message, customer_email, amount_total, currency, session_id, stripe_env",
+          "id, received_at, event_type, verified, status_code, error_message, customer_email, amount_total, currency, session_id, stripe_env, payment_status",
         )
         .eq("event_type", "checkout.session.completed")
+        .eq("verified", true)
         .eq("stripe_env", env)
         .order("received_at", { ascending: false })
         .limit(1)
@@ -779,6 +793,38 @@ function WebhookHealthWidget() {
     ? (Date.now() - new Date(lastCheckout.received_at).getTime()) / 36e5
     : Infinity;
   const receivingCheckout = lastCheckout && lastCheckout.verified && checkoutHours < 72;
+  const matchingBooking = Boolean(
+    lastCheckout?.session_id &&
+      bookings?.some((booking) => booking.stripe_session_id === lastCheckout.session_id),
+  );
+  const receiptStatus = lastCheckout?.customer_email
+    ? emailLog?.find(
+        (entry) =>
+          entry.template_name === "checkout-receipt" &&
+          entry.recipient_email?.toLowerCase() === lastCheckout.customer_email?.toLowerCase() &&
+          new Date(entry.created_at).getTime() >= new Date(lastCheckout.received_at).getTime(),
+      ) ?? null
+    : null;
+
+  const runRecovery = useCallback(async () => {
+    if (!lastCheckout?.session_id) return;
+    setRecovering(true);
+    try {
+      const result = await recover({
+        data: { sessionId: lastCheckout.session_id, resendEmails: true },
+      });
+      toast.success(
+        result.emailQueued
+          ? "Reserva recuperada e emails colocados em envio."
+          : "Reserva recuperada. O email continua dependente da verificação do domínio.",
+      );
+      await Promise.all([load(), onRecovered()]);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Não foi possível recuperar a reserva.");
+    } finally {
+      setRecovering(false);
+    }
+  }, [lastCheckout, recover, load, onRecovered]);
 
   return (
     <div className="mt-8 border border-[color:var(--border)] bg-[color:var(--ivory)]">
@@ -846,15 +892,17 @@ function WebhookHealthWidget() {
         </p>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[color:var(--border)]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[color:var(--border)]">
         <HealthTile
-          label="Self-test signature"
-          status={health ? (healthOk ? "ok" : "fail") : "unknown"}
+          label="Diagnóstico interno"
+          status={health ? (healthOk ? "ok" : lastVerified ? "warn" : "fail") : "unknown"}
           primary={
             health
               ? healthOk
                 ? "A assinar e a verificar"
-                : "FALHA de verificação"
+                : lastVerified
+                  ? "Rever configuração"
+                  : "FALHA de verificação"
               : "Sem self-test recente"
           }
           detail={
@@ -862,7 +910,11 @@ function WebhookHealthWidget() {
               ? `${relativeTime(health.checked_at)} · valid=${health.valid_status ?? "—"} · forged=${health.invalid_status ?? "—"}`
               : "O cron ainda não correu."
           }
-          note={health?.reason ?? undefined}
+          note={
+            health && !healthOk && lastVerified
+              ? "Há eventos reais verificados; este diagnóstico não invalida o endpoint."
+              : health?.reason ?? undefined
+          }
         />
         <HealthTile
           label="Último evento verificado"
@@ -880,13 +932,15 @@ function WebhookHealthWidget() {
           }
         />
         <HealthTile
-          label="checkout.session.completed"
-          status={receivingCheckout ? "ok" : lastCheckout ? "warn" : "fail"}
+          label="Checkout e reserva"
+          status={receivingCheckout && matchingBooking ? "ok" : lastCheckout ? "warn" : "fail"}
           primary={
-            receivingCheckout
-              ? "A receber"
+            receivingCheckout && matchingBooking
+              ? "Reserva registada"
               : lastCheckout
-                ? "Sem eventos recentes"
+                ? matchingBooking
+                  ? "Evento antigo registado"
+                  : "Pagamento por recuperar"
                 : "Nunca recebido"
           }
           detail={
@@ -895,10 +949,42 @@ function WebhookHealthWidget() {
               : "Ainda não chegou nenhum checkout completo ao endpoint."
           }
           note={
-            lastCheckout?.customer_email
-              ? `${lastCheckout.customer_email} · ${formatMoney(lastCheckout.amount_total, lastCheckout.currency)}`
-              : undefined
+            lastCheckout && !matchingBooking && lastCheckout.payment_status === "paid" ? (
+              <button
+                type="button"
+                onClick={runRecovery}
+                disabled={recovering}
+                className="mt-2 min-h-11 border border-[color:var(--gold)] px-3 py-2 text-xs text-[color:var(--charcoal)] disabled:opacity-50"
+              >
+                {recovering ? "A recuperar…" : "Recuperar reserva e emails"}
+              </button>
+            ) : lastCheckout?.customer_email ? (
+              `${lastCheckout.customer_email} · ${formatMoney(lastCheckout.amount_total, lastCheckout.currency)}`
+            ) : undefined
           }
+        />
+        <HealthTile
+          label="Email do cliente"
+          status={
+            receiptStatus?.status === "sent"
+              ? "ok"
+              : receiptStatus?.status === "failed"
+                ? "fail"
+                : receiptStatus
+                  ? "warn"
+                  : "unknown"
+          }
+          primary={
+            receiptStatus?.status === "sent"
+              ? "Entregue ao serviço"
+              : receiptStatus?.status === "failed"
+                ? "Falhou"
+                : receiptStatus
+                  ? "Em envio"
+                  : "Ainda sem confirmação"
+          }
+          detail={receiptStatus ? `${relativeTime(receiptStatus.created_at)} · ${receiptStatus.status}` : "Aparece após uma reserva paga."}
+          note={receiptStatus?.error_message ?? undefined}
         />
       </div>
 
@@ -922,7 +1008,7 @@ function HealthTile({
   status: "ok" | "warn" | "fail" | "unknown";
   primary: string;
   detail: string;
-  note?: string;
+  note?: React.ReactNode;
 }) {
   const tone =
     status === "ok"
@@ -943,7 +1029,7 @@ function HealthTile({
       </div>
       <p className="mt-1 text-[11px] text-[color:var(--charcoal-soft)]">{detail}</p>
       {note && (
-        <p className="mt-1 text-[11px] text-[color:var(--charcoal)] break-words">{note}</p>
+        <div className="mt-1 text-[11px] text-[color:var(--charcoal)] break-words">{note}</div>
       )}
     </div>
   );
