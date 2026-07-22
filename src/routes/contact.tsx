@@ -216,10 +216,10 @@ function Page() {
                 noValidate
               >
                 <div className="grid sm:grid-cols-2 gap-6">
-                  <Field label="First Name" name="first" />
-                  <Field label="Last Name" name="last" />
+                  <Field label="First Name" name="first" autoComplete="given-name" />
+                  <Field label="Last Name" name="last" autoComplete="family-name" />
                 </div>
-                <Field label="Email" name="email" type="email" />
+                <Field label="Email" name="email" type="email" autoComplete="email" />
                 <SelectField
                   label="What can we help you plan?"
                   name="requestType"
@@ -231,8 +231,9 @@ function Page() {
                   type="date"
                   required={false}
                   min={new Date().toISOString().slice(0, 10)}
+                  autoComplete="off"
                 />
-                <Field label="What are you dreaming of?" name="message" textarea />
+                <Field label="What are you dreaming of?" name="message" textarea autoComplete="off" />
                 {errorMsg ? (
                   <p className="text-[13px] text-red-700" role="alert">
                     {errorMsg}
