@@ -10,9 +10,9 @@
  * `<script type="application/ld+json">` per node.
  */
 
-import { PHONE_TEL } from "@/config/business-nap";
+import { PHONE_TEL, SOCIAL, WEBSITE_URL } from "@/config/business-nap";
 
-export const SITE_URL = "https://yesexperiencesportugal.com";
+export const SITE_URL = WEBSITE_URL;
 
 /**
  * Sitewide Organization — emitted on every page from __root.tsx.
@@ -213,12 +213,13 @@ export function organizationLd() {
     founder: { "@id": `${SITE_URL}/about#nidia-almeida` },
     employee: [{ "@id": `${SITE_URL}/about#nidia-almeida` }],
     sameAs: [
-      "https://www.google.com/search?q=Yes+Experiences+Portugal&stick=H4sIAAAAAAAA_-NgU1I1qLAwNkpMtjRKTjIytDA3NDO1MqhISzJNMTVONTFMMTZOSzZLXMQqEZlarOBaUZBalJmalwxkB-QXlZSmJ-YAALUyfiJEAAAA",
-      "https://www.instagram.com/yesexperiencesportugal",
-      "https://www.facebook.com/yesexperiencesportugal",
-      "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
+      SOCIAL.google,
+      SOCIAL.instagram,
+      SOCIAL.facebook,
+      SOCIAL.tripadvisor,
+      SOCIAL.viator,
       "https://www.linkedin.com/in/nidiadealmeida",
-    ],
+    ].filter(Boolean),
   } as const;
 }
 

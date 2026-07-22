@@ -278,7 +278,7 @@ function Page() {
               <div className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
                 Licença
               </div>
-              <p className="mt-2 font-display text-lg">{LICENSE_LABEL}</p>
+              <p className="mt-2 font-display text-lg">{LICENSE_LABEL_PT}</p>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
                 Operador turístico registado no Registo Nacional dos Agentes de Animação
                 Turística.
