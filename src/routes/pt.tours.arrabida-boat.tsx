@@ -14,7 +14,7 @@ const TITLE = "Arrábida & Sesimbra — dia privado com passeio de barco costeir
 const DESCRIPTION =
   "Dia privado na Arrábida desde Lisboa com passeio de barco pelas covas turquesa do parque natural — nadar, mergulhar, almoçar à beira-mar e terminar em Sesimbra.";
 
-export const Route = createFileRoute(`/pt/tours/${TOUR_ID}`)({
+export const Route = createFileRoute("/pt/tours/arrabida-boat")({
   head: () => {
     const i18n = buildI18nHead({ path: EN_PATH, locale: "pt" });
     return {

@@ -14,7 +14,7 @@ const TITLE = "Oficina de Azulejo, prova de vinhos e Sesimbra — dia privado";
 const DESCRIPTION =
   "Pinte o seu próprio azulejo num atelier com cinco séculos em Azeitão, prove vinhos locais na quinta ao lado e termine o dia junto ao mar em Sesimbra.";
 
-export const Route = createFileRoute(`/pt/tours/${TOUR_ID}`)({
+export const Route = createFileRoute("/pt/tours/tiles-workshop")({
   head: () => {
     const i18n = buildI18nHead({ path: EN_PATH, locale: "pt" });
     return {

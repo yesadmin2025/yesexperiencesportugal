@@ -24,7 +24,7 @@ const TITLE = "Arrábida Private Wine Tour desde Lisboa | Dia privado tudo-inclu
 const DESCRIPTION =
   "Dia privado de vinho na Arrábida desde Lisboa — duas ou três adegas familiares em Azeitão, prova de Moscatel, mercado de Setúbal e almoço tradicional demorado. Operador local licenciado.";
 
-export const Route = createFileRoute(`/pt/tours/${TOUR_ID}`)({
+export const Route = createFileRoute("/pt/tours/arrabida-wine-allinclusive")({
   head: () => {
     const i18n = buildI18nHead({ path: EN_PATH, locale: "pt" });
     return {
