@@ -90,6 +90,8 @@ const PATHS: Path[] = [
     body: "From intimate boards to full incentives — transport, venues and timing handled with a single point of contact.",
     cta: "Plan a group day",
     href: "/corporate",
+    analyticsEvent: "five_ways_corporate_click",
+
   },
   {
     num: "05",
