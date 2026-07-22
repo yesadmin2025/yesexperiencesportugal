@@ -21,12 +21,7 @@ interface Props {
   showVerifiedDate?: boolean;
   /** Horizontal alignment of the chip row. Defaults to "center". */
   align?: "start" | "center";
-  /** Hide the numeric rating next to the logo. */
-  hideRating?: boolean;
-  /** Hide the "N+ reviews" count. */
-  hideCount?: boolean;
 }
-
 
 function formatVerifiedDate(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
@@ -38,19 +33,7 @@ function formatVerifiedDate(iso: string): string {
   });
 }
 
-function Chip({
-  p,
-  tone,
-  showVerifiedDate,
-  hideRating,
-  hideCount,
-}: {
-  p: ReviewPlatform;
-  tone: "light" | "dark";
-  showVerifiedDate: boolean;
-  hideRating: boolean;
-  hideCount: boolean;
-}) {
+function Chip({ p, tone, showVerifiedDate }: { p: ReviewPlatform; tone: "light" | "dark"; showVerifiedDate: boolean }) {
   const textColor = tone === "dark" ? "text-[color:var(--ivory)]" : "text-[color:var(--charcoal)]";
   const subColor = tone === "dark" ? "text-[color:var(--ivory)]/60" : "text-[color:var(--charcoal-soft)]";
   const borderColor = tone === "dark" ? "border-[color:var(--ivory)]/15" : "border-[color:var(--charcoal)]/12";
@@ -76,17 +59,13 @@ function Chip({
       <span className="inline-flex h-4 w-auto items-center">
         <PlatformBadge platform={p.id as Platform} className="h-4" />
       </span>
-      {!hideRating && (
-        <span className={`inline-flex items-center gap-1 text-[12px] font-medium tabular-nums ${textColor}`}>
-          <Star size={11} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold)]" />
-          {p.rating.toFixed(1)}
-        </span>
-      )}
-      {!hideCount && (
-        <span className={`text-[11.5px] tabular-nums ${subColor}`}>
-          {p.reviewCount}+ reviews
-        </span>
-      )}
+      <span className={`inline-flex items-center gap-1 text-[12px] font-medium tabular-nums ${textColor}`}>
+        <Star size={11} fill="currentColor" strokeWidth={0} className="text-[color:var(--gold)]" />
+        {p.rating.toFixed(1)}
+      </span>
+      <span className={`text-[11.5px] tabular-nums ${subColor}`}>
+        {p.reviewCount}+ reviews
+      </span>
       {showVerifiedDate && (
         <span className={`hidden sm:inline text-[10px] uppercase tracking-[0.14em] ${subColor}`}>
           · verified {formatVerifiedDate(p.lastVerifiedAt)}
@@ -96,14 +75,7 @@ function Chip({
   );
 }
 
-export function PlatformProofRow({
-  tone = "light",
-  className = "",
-  showVerifiedDate = false,
-  align = "center",
-  hideRating = false,
-  hideCount = false,
-}: Props) {
+export function PlatformProofRow({ tone = "light", className = "", showVerifiedDate = false, align = "center" }: Props) {
   const justify = align === "start" ? "justify-start" : "justify-center";
   return (
     <div
@@ -112,18 +84,10 @@ export function PlatformProofRow({
       className={`flex flex-wrap items-center ${justify} gap-2 sm:gap-3 ${className}`}
     >
       {REVIEW_PLATFORMS.map((p) => (
-        <Chip
-          key={p.id}
-          p={p}
-          tone={tone}
-          showVerifiedDate={showVerifiedDate}
-          hideRating={hideRating}
-          hideCount={hideCount}
-        />
+        <Chip key={p.id} p={p} tone={tone} showVerifiedDate={showVerifiedDate} />
       ))}
     </div>
   );
 }
-
 
 export default PlatformProofRow;

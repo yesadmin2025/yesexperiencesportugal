@@ -117,7 +117,7 @@ export function GuestQuotes() {
           rating + count + clickable logo. No combined total is shown here;
           the sum in the H2 is paired with "across verified platforms" so
           it is legible as such. Data comes from `src/config/review-platforms.ts`. */}
-      <PlatformProofRow className="mt-5" hideRating hideCount />
+      <PlatformProofRow className="mt-5" />
 
       <ReviewCarousel quotes={quotes.filter((q) => Boolean(q.source_url))} />
     </div>
