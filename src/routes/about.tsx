@@ -323,8 +323,8 @@ function Page() {
               </div>
               <p className="mt-2 font-display text-lg">700+ five-star</p>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
-                Verified guest reviews across Tripadvisor, Viator, Google, GetYourGuide and other
-                major travel platforms.
+                Verified guest reviews across Tripadvisor, Viator and Google. Combined count across
+                verified platforms — see each source for its own rating and review count.
               </p>
             </div>
             <div>

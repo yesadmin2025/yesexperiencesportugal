@@ -19,6 +19,7 @@ import {
   type PublicReview,
 } from "@/lib/reviews.functions";
 import { ReviewSourceLink } from "@/components/ui/ReviewSourceLink";
+import { PlatformProofRow } from "@/components/social-proof/PlatformProofRow";
 import { buildGuestQuotesJsonLd, SOURCE_LABEL } from "@/lib/guest-quotes-jsonld";
 
 export function GuestQuotes() {
