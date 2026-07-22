@@ -784,9 +784,35 @@ function WebhookHealthWidget({
 
   useEffect(() => {
     load();
-    const t = setInterval(load, 60_000);
-    return () => clearInterval(t);
-  }, [load]);
+    const t = setInterval(load, 15_000);
+    // Realtime: reload immediately when a new stripe_webhook_events row arrives
+    const channel = supabase
+      .channel(`admin-webhook-events-${env}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "stripe_webhook_events", filter: `stripe_env=eq.${env}` },
+        () => {
+          load();
+          onRecovered().catch(() => {});
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "stripe_webhook_health_checks" },
+        () => load(),
+      )
+      .subscribe();
+    // Reload on tab focus so publishing the webhook and coming back updates instantly
+    const onFocus = () => load();
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    return () => {
+      clearInterval(t);
+      supabase.removeChannel(channel);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+    };
+  }, [load, env, onRecovered]);
 
   const healthOk = health?.status === "ok";
   const checkoutHours = lastCheckout
