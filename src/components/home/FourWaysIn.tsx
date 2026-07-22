@@ -17,6 +17,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 type Path = {
   num: string;
   Icon: LucideIcon;
+  descriptor: string;
   label: string;
   title: React.ReactNode;
   body: string;
@@ -30,6 +31,7 @@ const PATHS: Path[] = [
   {
     num: "01",
     Icon: BookOpen,
+    descriptor: "Designed by YES",
     label: "Signature Experiences",
     title: (
       <>
@@ -39,7 +41,7 @@ const PATHS: Path[] = [
         </span>
       </>
     ),
-    body: "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
+    body: "Private days thoughtfully designed and ready to reserve. Enjoy the experience as created, or tailor a few details with us.",
     cta: "Explore Signatures",
     href: "/experiences",
     analyticsEvent: "five_ways_signature_click",
@@ -48,6 +50,7 @@ const PATHS: Path[] = [
   {
     num: "02",
     Icon: Wand2,
+    descriptor: "Designed by you, in real time",
     label: "Studio",
     title: (
       <>
@@ -55,7 +58,7 @@ const PATHS: Path[] = [
         <span className="italic font-normal text-[color:var(--teal)]">designed by you.</span>
       </>
     ),
-    body: "Choose the mood, rhythm and route in real time. See the live price and reserve instantly, with local support if you need it.",
+    body: "Choose what speaks to you and watch the route, timings and price take shape in real time. Then reserve in minutes.",
     cta: "Open the Studio",
     href: "/studio-v3",
     analyticsEvent: "five_ways_studio_click",
@@ -64,6 +67,7 @@ const PATHS: Path[] = [
   {
     num: "03",
     Icon: Sparkles,
+    descriptor: "Designed around the moment",
     label: "Moments",
     title: (
       <>
@@ -71,7 +75,7 @@ const PATHS: Path[] = [
         <span className="italic font-normal text-[color:var(--teal)]">held with care.</span>
       </>
     ),
-    body: "The proposal on the cliff, the anniversary in a vineyard, the birthday nobody forgets — quietly composed, precisely held.",
+    body: "Proposals, birthdays and private celebrations created around the people and meaning behind the day.",
     cta: "Share the occasion",
     href: "/proposal-in-portugal",
     analyticsEvent: "five_ways_moments_click",
@@ -80,6 +84,7 @@ const PATHS: Path[] = [
   {
     num: "04",
     Icon: Users,
+    descriptor: "Designed around the group",
     label: "Corporate & Groups",
     title: (
       <>
@@ -87,7 +92,7 @@ const PATHS: Path[] = [
         <span className="italic font-normal text-[color:var(--teal)]">& private groups.</span>
       </>
     ),
-    body: "From intimate boards to full incentives — transport, venues and timing handled with a single point of contact.",
+    body: "Team days, incentives and private group experiences shaped around your people, purpose and pace.",
     cta: "Plan a group day",
     href: "/corporate",
     analyticsEvent: "five_ways_corporate_click",
@@ -96,6 +101,7 @@ const PATHS: Path[] = [
   {
     num: "05",
     Icon: Compass,
+    descriptor: "Designed with a local",
     label: "Travel Designer",
     title: (
       <>
@@ -103,13 +109,14 @@ const PATHS: Path[] = [
         <span className="italic font-normal text-[color:var(--teal)]">designed for you.</span>
       </>
     ),
-    body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
+    body: "Multi-day journeys across Portugal, created with a local designer around the way you want to travel.",
     cta: "Begin with a designer",
     href: "/multi-day",
     analyticsEvent: "five_ways_travel_designer_click",
 
   },
 ];
+
 
 export function FourWaysIn() {
   return (
@@ -131,7 +138,11 @@ export function FourWaysIn() {
             </span>
           </h2>
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
+          <p className="mt-5 md:mt-6 max-w-2xl mx-auto text-[15px] md:text-[16px] leading-[1.6] text-[color:var(--charcoal-soft)] text-balance">
+            Every path is private. Choose a day already designed by YES, shape your own in real time in the Studio, or let us create a celebration, group experience or full Portugal journey around you.
+          </p>
         </div>
+
 
         <ul className="he-stagger max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5 list-none p-0">
           {PATHS.map((p, idx) => (
@@ -199,9 +210,13 @@ export function FourWaysIn() {
                   </span>
                 </div>
 
-                <span className="relative mt-4 inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--teal)]">
+                <span className="relative mt-4 block text-[10px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)]">
+                  {p.descriptor}
+                </span>
+                <span className="relative mt-1 inline-flex items-center gap-2 text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--teal)]">
                   {p.label}
                 </span>
+
                 <h3 className="relative serif mt-2.5 text-[1.3rem] md:text-[1.6rem] leading-[1.22] md:leading-[1.18] text-[color:var(--charcoal)] font-medium">
                   {p.title}
                 </h3>
