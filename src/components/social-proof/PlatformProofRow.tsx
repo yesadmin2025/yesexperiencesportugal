@@ -19,6 +19,8 @@ interface Props {
   className?: string;
   /** Tiny "verified {date}" hint under each chip. Off by default. */
   showVerifiedDate?: boolean;
+  /** Horizontal alignment of the chip row. Defaults to "center". */
+  align?: "start" | "center";
 }
 
 function formatVerifiedDate(iso: string): string {
@@ -73,12 +75,13 @@ function Chip({ p, tone, showVerifiedDate }: { p: ReviewPlatform; tone: "light" 
   );
 }
 
-export function PlatformProofRow({ tone = "light", className = "", showVerifiedDate = false }: Props) {
+export function PlatformProofRow({ tone = "light", className = "", showVerifiedDate = false, align = "center" }: Props) {
+  const justify = align === "start" ? "justify-start" : "justify-center";
   return (
     <div
       role="group"
       aria-label="Verified review platforms"
-      className={`flex flex-wrap items-center justify-center gap-2 sm:gap-3 ${className}`}
+      className={`flex flex-wrap items-center ${justify} gap-2 sm:gap-3 ${className}`}
     >
       {REVIEW_PLATFORMS.map((p) => (
         <Chip key={p.id} p={p} tone={tone} showVerifiedDate={showVerifiedDate} />
