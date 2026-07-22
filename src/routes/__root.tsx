@@ -22,8 +22,11 @@ import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButto
 import { RouteFade } from "@/components/motion/RouteFade";
 import { Scene } from "@/components/motion/Scene";
 import { installAnalyticsAttrs } from "@/lib/analytics";
+import { setAnalyticsLocale } from "@/lib/analytics-events";
+import { captureUtmsFromLocation } from "@/lib/utm";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
+
 
 /* ──────────────────────────────────────────────────────────────────
  * App readiness flag — sets `window.__APP_READY__ = true` and fires
