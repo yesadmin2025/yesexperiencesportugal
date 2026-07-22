@@ -104,51 +104,94 @@ function PtHomePage() {
         </div>
       </section>
 
-      {/* Positioning — three paths */}
+      {/* Positioning — five paths (parity with EN homepage) */}
       <section className="bg-[color:var(--sand)]/40 py-16 md:py-24">
-        <div className="mx-auto max-w-5xl px-6 grid gap-10 md:grid-cols-3">
-          {[
-            {
-              eyebrow: "Signature",
-              title: "Dias assinados",
-              body: "Dias privados prontos a partir, desenhados pela nossa equipa em torno de uma região e de um tema — vinho, mar, gastronomia, paisagem.",
-              href: "/pt/experiences",
-              cta: "Ver a coleção",
-            },
-            {
-              eyebrow: "Studio",
-              title: "Desenhe o seu dia",
-              body: "Um estúdio interativo onde compõe a sua experiência em tempo real — ritmo, paragens, mesa, guia — com ajuda editorial ao seu lado.",
-              href: "/",
-              cta: "Abrir o Studio (EN)",
-              external: true,
-            },
-            {
-              eyebrow: "Roteiros à Medida",
-              title: "Jornadas de vários dias",
-              body: "Roteiros privados de 3 a 14 dias, cosidos à mão por um Travel Designer, com hotéis escolhidos e transições sem esforço.",
-              href: "/pt/contact",
-              cta: "Falar connosco",
-            },
-          ].map((card) => (
-            <article key={card.title} className="flex flex-col">
-              <Eyebrow>{card.eyebrow}</Eyebrow>
-              <h2 className="mt-3 font-[family-name:var(--font-editorial)] font-medium text-2xl leading-tight text-[color:var(--charcoal)]">
-                {card.title}
-              </h2>
-              <p className="mt-3 text-[14.5px] leading-relaxed text-[color:var(--charcoal-soft)] flex-1">
-                {card.body}
-              </p>
-              <Link
-                to={card.href}
-                className="mt-5 self-start text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] transition-colors"
-              >
-                {card.cta} →
-              </Link>
-            </article>
-          ))}
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="max-w-2xl mx-auto text-center mb-10 md:mb-14">
+            <Eyebrow>Por onde começar</Eyebrow>
+            <SectionTitle spacing="loose">
+              Cinco caminhos para <SectionTitle.Em>desenhar o seu Portugal.</SectionTitle.Em>
+            </SectionTitle>
+            <p className="mt-5 md:mt-6 max-w-2xl mx-auto text-[15px] md:text-[16px] leading-[1.6] text-[color:var(--charcoal-soft)]">
+              Todos os caminhos são privados. Escolha um dia já desenhado pela YES, crie o seu em
+              tempo real no Studio, ou deixe-nos conceber uma celebração, experiência de grupo ou
+              viagem completa por Portugal à sua medida.
+            </p>
+          </div>
+
+          <div className="grid gap-8 md:gap-6 md:grid-cols-2 lg:grid-cols-5">
+            {[
+              {
+                descriptor: "Desenhado pela YES",
+                label: "Signature Experiences",
+                title: "Dias assinados",
+                body: "Dias privados pensados ao detalhe e prontos a reservar. Viva a experiência tal como foi criada ou ajuste alguns detalhes connosco.",
+                href: "/pt/experiences",
+                cta: "Ver a coleção",
+                external: false,
+              },
+              {
+                descriptor: "Desenhado por si, em tempo real",
+                label: "Studio",
+                title: "Desenhe o seu dia",
+                body: "Escolha o que mais combina consigo e veja o percurso, os horários e o preço ganharem forma em tempo real. Depois, reserve em minutos.",
+                href: "/studio-v3",
+                cta: "Abrir o Studio",
+                external: false,
+              },
+              {
+                descriptor: "Desenhado para o momento",
+                label: "Moments",
+                title: "Momentos com significado",
+                body: "Pedidos de casamento, aniversários e celebrações privadas criados em torno das pessoas e do significado do dia.",
+                href: "/pt/moments",
+                cta: "Partilhar a ocasião",
+                external: false,
+              },
+              {
+                descriptor: "Desenhado para o grupo",
+                label: "Corporate & Groups",
+                title: "Empresas e grupos",
+                body: "Dias de equipa, incentivos e experiências privadas de grupo pensados em função das pessoas, do objetivo e do ritmo do grupo.",
+                href: "/pt/corporate",
+                cta: "Planear um dia",
+                external: false,
+              },
+              {
+                descriptor: "Desenhado com um especialista local",
+                label: "Travel Designer",
+                title: "Jornadas de vários dias",
+                body: "Viagens de vários dias por Portugal, criadas com um especialista local à medida da forma como gosta de viajar.",
+                href: "/pt/contact",
+                cta: "Começar uma conversa",
+                external: false,
+              },
+            ].map((card) => (
+              <article key={card.label} className="flex flex-col">
+                <span className="block text-[10px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)]">
+                  {card.descriptor}
+                </span>
+                <span className="mt-1 block text-[10.5px] uppercase tracking-[0.28em] font-semibold text-[color:var(--teal)]">
+                  {card.label}
+                </span>
+                <h3 className="mt-2 font-[family-name:var(--font-editorial)] font-medium text-2xl leading-tight text-[color:var(--charcoal)]">
+                  {card.title}
+                </h3>
+                <p className="mt-3 text-[14.5px] leading-relaxed text-[color:var(--charcoal-soft)] flex-1">
+                  {card.body}
+                </p>
+                <Link
+                  to={card.href}
+                  className="mt-5 self-start text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] transition-colors"
+                >
+                  {card.cta} →
+                </Link>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
+
 
       {/* Featured Signature experiences */}
       <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
