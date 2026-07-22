@@ -19,11 +19,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { SOCIAL } from "@/config/business-nap";
 
-const TA_URL_PAGE_1 =
-  "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html";
-const TA_URL_PAGE_2 =
-  "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-or10-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html";
+const TA_URL_PAGE_1 = SOCIAL.tripadvisor;
+// Tripadvisor paginates via an "-or10-" segment inserted before the review slug.
+const TA_URL_PAGE_2 = SOCIAL.tripadvisor.replace("-Reviews-", "-Reviews-or10-");
 
 /** Map Tripadvisor product IDs (e.g. `d24072186`) to our signature tour slugs. */
 const PRODUCT_TO_TOUR: Record<string, string> = {

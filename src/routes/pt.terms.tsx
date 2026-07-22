@@ -1,11 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import {
-  CANCELLATION_SHORT,
-  CANCELLATION_SIGNATURE,
-  CANCELLATION_STUDIO,
-} from "@/config/business-nap";
+import { CANCELLATION } from "@/config/business-nap";
 import ogImg from "@/assets/hero-coast.jpg";
 import { buildLocaleUrl } from "@/i18n/config";
 
@@ -76,8 +72,14 @@ function TermsPage() {
               Cancelamentos
             </h2>
             <p>
-              {CANCELLATION_SHORT} {CANCELLATION_SIGNATURE} {CANCELLATION_STUDIO} Faremos sempre
-              o possível para reagendar, quando viável.
+              <strong className="text-[color:var(--charcoal)]">Signature Experiences.</strong>{" "}
+              {CANCELLATION.signature.pt}
+            </p>
+            <p>
+              <strong className="text-[color:var(--charcoal)]">
+                Studio, Travel Designer, Corporate, Moments e outras experiências personalizadas.
+              </strong>{" "}
+              {CANCELLATION.custom.pt} Faremos sempre o possível para reagendar, quando viável.
             </p>
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
               Responsabilidade

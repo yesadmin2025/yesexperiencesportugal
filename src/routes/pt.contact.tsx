@@ -12,7 +12,7 @@ import {
   PHONE_DISPLAY,
   PHONE_HREF,
   BASED_IN,
-  LICENSE_LABEL,
+  TRUST_LINE_PT,
   whatsappUrl,
 } from "@/config/business-nap";
 
@@ -107,7 +107,7 @@ function PtContactPage() {
             <dd className="mt-1 text-[color:var(--charcoal-soft)]">
               {BUSINESS_NAME} · {BASED_IN}
               <br />
-              Operador turístico licenciado · {LICENSE_LABEL}
+              {TRUST_LINE_PT}
             </dd>
           </div>
           <div>

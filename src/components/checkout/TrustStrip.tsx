@@ -22,7 +22,7 @@
 
 import { useEffect } from "react";
 import { Lock, ShieldCheck, RefreshCcw, MessageCircle } from "lucide-react";
-import { whatsappUrl, LICENSE_LABEL } from "@/config/business-nap";
+import { whatsappUrl, LICENSE_LABEL, CANCELLATION } from "@/config/business-nap";
 import { track } from "@/lib/analytics";
 
 type TrustVariant = "signature" | "studio" | "bespoke";
@@ -34,7 +34,8 @@ interface Props {
   itemSlug?: string;
   /**
    * Which product surface the strip sits on. Drives cancellation copy.
-   * Signature = 24h window; Studio/Bespoke = shown before checkout.
+   * Signature shows the 24h line; Studio / Bespoke show the "before
+   * checkout or confirmation" line. Never both on the same surface.
    */
   variant?: TrustVariant;
 }
@@ -42,9 +43,9 @@ interface Props {
 const WA_MESSAGE = "Hi YES Experiences — I have a quick question before I book.";
 
 const CANCELLATION_COPY: Record<TrustVariant, string> = {
-  signature: "Free cancellation — up to 24h before",
-  studio: "Cancellation terms shown before checkout",
-  bespoke: "Cancellation terms shown before checkout",
+  signature: CANCELLATION.signature.en,
+  studio: CANCELLATION.custom.en,
+  bespoke: CANCELLATION.custom.en,
 };
 
 export function TrustStrip({ placement, itemSlug, variant = "signature" }: Props) {

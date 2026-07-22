@@ -4,7 +4,7 @@
  * review aggregation. Each set targets high-intent Lisbon day-tour
  * queries surfaced in Search Console.
  */
-import { CANCELLATION_SIGNATURE, CANCELLATION_STUDIO } from "@/config/business-nap";
+import { CANCELLATION } from "@/config/business-nap";
 
 export type FaqItem = { q: string; a: string };
 
@@ -101,7 +101,7 @@ export const SIGNATURE_FAQ: FaqItem[] = [
   },
   {
     q: "What's your cancellation policy?",
-    a: `${CANCELLATION_SIGNATURE} ${CANCELLATION_STUDIO}`,
+    a: `Signature Experiences: ${CANCELLATION.signature.en} Studio, Travel Designer, Corporate, Moments and other custom-built experiences: ${CANCELLATION.custom.en}`,
   },
 ];
 

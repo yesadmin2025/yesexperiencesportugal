@@ -10,6 +10,7 @@ import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json"
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   BASED_IN_SHORT,
+  CANCELLATION,
   EMAIL,
   EMAIL_HREF,
   LICENSE_LABEL,
@@ -380,9 +381,14 @@ function Page() {
             </h2>
             <ul className="mt-6 space-y-4 text-[color:var(--charcoal-soft)] leading-relaxed">
               <li>
-                <strong className="text-[color:var(--charcoal)]">Cancellation</strong> — Signature
-                days usually include free cancellation up to 24h before the experience. Studio and
-                custom-built days show final cancellation terms before checkout.
+                <strong className="text-[color:var(--charcoal)]">Cancellation (Signature)</strong>{" "}
+                — {CANCELLATION.signature.en}
+              </li>
+              <li>
+                <strong className="text-[color:var(--charcoal)]">
+                  Cancellation (Studio, Travel Designer, Corporate, Moments)
+                </strong>{" "}
+                — {CANCELLATION.custom.en}
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Weather</strong> — outdoor stops

@@ -57,11 +57,55 @@ export const CREDENTIAL_LINE = `Licensed tour operator ${LICENSE_LABEL} · ${BAS
 export const TRUST_LINE =
   `Licensed Portuguese tour operator · ${LICENSE_LABEL} · Based in ${BASED_IN}` as const;
 
+/** Canonical website — every canonical/og:url must import this. */
+export const WEBSITE_URL = "https://yesexperiencesportugal.com" as const;
+
 /**
- * Cancellation policy — single source of truth.
- * All three variants approved for public copy. Use SIGNATURE on Signature
- * surfaces, STUDIO on Studio / custom-built surfaces, SHORT as a generic
- * micro-line under totals when policy varies by product.
+ * Official social + review profiles — single source of truth.
+ * Empty string = not yet confirmed by the operator; UIs must skip missing links.
+ */
+export const SOCIAL = {
+  instagram:
+    "https://www.instagram.com/yesexperiencesportugal",
+  facebook:
+    "https://www.facebook.com/yesexperiencesportugal",
+  tripadvisor:
+    "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
+  google:
+    "https://www.google.com/search?q=Yes+Experiences+Portugal&stick=H4sIAAAAAAAA_-NgU1I1qLAwNkpMtjRKTjIytDA3NDO1MqhISzJNMTVONTFMMTZOSzZLXMQqEZlarOBaUZBalJmalwxkB-QXlZSmJ-YAALUyfiJEAAAA",
+  viator: "" as string,
+} as const;
+
+/** PT counterpart of LICENSE_LABEL — European Portuguese uses "n.º" with a period. */
+export const LICENSE_LABEL_PT = "RNAAT n.º 31/2023" as const;
+
+/** PT trust one-liner — mirror of TRUST_LINE. */
+export const TRUST_LINE_PT =
+  `Operador de animação turística licenciado em Portugal · ${LICENSE_LABEL_PT} · Sedeado em ${BASED_IN}.` as const;
+
+/**
+ * Cancellation policy — single source of truth, EN + PT.
+ *
+ * Rule (never break): a single product surface shows ONE variant only.
+ * Signature = 24h. Studio / Travel Designer / Corporate / Moments / Tailor
+ * = "shown before checkout or confirmation". Never both for the same
+ * product on the same screen.
+ */
+export const CANCELLATION = {
+  signature: {
+    en: "Free cancellation up to 24h before, when applicable.",
+    pt: "Cancelamento gratuito até 24 horas antes, quando aplicável.",
+  },
+  custom: {
+    en: "Cancellation terms are shown clearly before checkout or confirmation.",
+    pt: "Condições de cancelamento apresentadas claramente antes do checkout ou confirmação.",
+  },
+} as const;
+
+/**
+ * Legacy aliases — kept for backwards compatibility and the NAP
+ * guardrail test. New code MUST import `CANCELLATION` above.
+ * @deprecated use `CANCELLATION.signature.en` / `CANCELLATION.custom.en`.
  */
 export const CANCELLATION_SIGNATURE =
   "Signature days usually include free cancellation up to 24h before the experience." as const;

@@ -1,11 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import {
-  CANCELLATION_SHORT,
-  CANCELLATION_SIGNATURE,
-  CANCELLATION_STUDIO,
-} from "@/config/business-nap";
+import { CANCELLATION } from "@/config/business-nap";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import ogImg from "@/assets/hero-coast.jpg";
 
@@ -77,8 +73,14 @@ function TermsPage() {
               Cancellations
             </h2>
             <p>
-              {CANCELLATION_SHORT} {CANCELLATION_SIGNATURE} {CANCELLATION_STUDIO} We will always do
-              our best to reschedule when possible.
+              <strong className="text-[color:var(--charcoal)]">Signature Experiences.</strong>{" "}
+              {CANCELLATION.signature.en}
+            </p>
+            <p>
+              <strong className="text-[color:var(--charcoal)]">
+                Studio, Travel Designer, Corporate, Moments and other custom-built experiences.
+              </strong>{" "}
+              {CANCELLATION.custom.en} We will always do our best to reschedule when possible.
             </p>
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
               Liability

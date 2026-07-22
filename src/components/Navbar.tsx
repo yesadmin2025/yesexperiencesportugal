@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
 import { CtaButton } from "@/components/ui/CtaButton";
-import { whatsappUrl } from "@/config/business-nap";
+import { SOCIAL, whatsappUrl } from "@/config/business-nap";
 import { useT } from "@/i18n/locale-context";
 
 function useDesktopLinks() {
@@ -29,11 +29,8 @@ function useMobileSecondaryLinks() {
 
 const mobileSocialLinks = [
   { href: whatsappUrl(), label: "WhatsApp" },
-  { href: "https://www.instagram.com/yesexperiencesportugal", label: "Instagram" },
-  {
-    href: "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
-    label: "Tripadvisor",
-  },
+  { href: SOCIAL.instagram, label: "Instagram" },
+  { href: SOCIAL.tripadvisor, label: "Tripadvisor" },
 ];
 
 export function Navbar() {

@@ -5,6 +5,7 @@ import { Lock, X, MapPin, Clock, Users, Calendar } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
+import { CANCELLATION } from "@/config/business-nap";
 import {
   summarizeJourneyLines as summarizeJourneyLinesShared,
   hasCompleteJourneyPricing,
@@ -224,7 +225,7 @@ export function BrandedCheckoutDrawer({
           <ul className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
             <li className="flex items-center gap-1.5">
               <span aria-hidden className="w-1 h-1 rounded-full bg-[color:var(--gold)]" />
-              Free cancellation up to 24h
+              {CANCELLATION.signature.en}
             </li>
             <li className="flex items-center gap-1.5">
               <span aria-hidden className="w-1 h-1 rounded-full bg-[color:var(--gold)]" />
