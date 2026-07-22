@@ -276,6 +276,7 @@ function Field({
   textarea = false,
   required = true,
   min,
+  autoComplete,
 }: {
   label: string;
   name: string;
@@ -283,6 +284,7 @@ function Field({
   textarea?: boolean;
   required?: boolean;
   min?: string;
+  autoComplete?: string;
 }) {
   return (
     <label className="block">
@@ -295,6 +297,7 @@ function Field({
           rows={5}
           required={required}
           maxLength={4000}
+          autoComplete={autoComplete}
           className="mt-2 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base resize-none transition-colors"
         />
       ) : (
@@ -304,6 +307,7 @@ function Field({
           required={required}
           min={min}
           maxLength={type === "email" ? 254 : 80}
+          autoComplete={autoComplete}
           className="mt-2 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base transition-colors"
         />
       )}
