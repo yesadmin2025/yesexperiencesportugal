@@ -42,6 +42,8 @@ const PATHS: Path[] = [
     body: "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
     cta: "Explore Signatures",
     href: "/experiences",
+    analyticsEvent: "five_ways_signature_click",
+
   },
   {
     num: "02",
