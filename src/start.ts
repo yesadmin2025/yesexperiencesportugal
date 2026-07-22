@@ -80,8 +80,47 @@ const trailingSlashRedirect = createMiddleware().server(async ({ next, request }
   return new Response(null, { status: 301, headers: { location: target } });
 });
 
+/**
+ * Return a real 404 (no redirect chain) for any URL whose path contains a
+ * literal `$paramName` (or its `%24paramName` encoding) segment.
+ *
+ * The hosting layer otherwise canonicalises these placeholder-looking
+ * paths (e.g. `/local-stories/$tourId`) with a 307 to `.../undefined` or
+ * `.../%24tourId`, producing a 307→404 chain that GSC flags as a
+ * "Page with redirect" duplicate. Short-circuiting to 404 here keeps
+ * the response single-hop.
+ *
+ * Legitimate slugs never start with `$`, so this is safe.
+ */
+const literalParamSegment404 = createMiddleware().server(async ({ next, request }) => {
+  const url = new URL(request.url);
+  if (url.pathname.startsWith("/lovable/")) return next();
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(url.pathname);
+  } catch {
+    decoded = url.pathname;
+  }
+  // Match any segment that is exactly `$name` where name is [a-zA-Z_][a-zA-Z0-9_]*
+  if (/\/\$[a-zA-Z_][a-zA-Z0-9_]*(?:\/|$)/.test(decoded)) {
+    return new Response("Not found", {
+      status: 404,
+      headers: {
+        "content-type": "text/plain; charset=utf-8",
+        "x-robots-tag": "noindex, nofollow",
+      },
+    });
+  }
+  return next();
+});
+
 export const startInstance = createStart(() => ({
-  requestMiddleware: [legacyDomainRedirect, trailingSlashRedirect, noindexNonProdHost],
+  requestMiddleware: [
+    legacyDomainRedirect,
+    trailingSlashRedirect,
+    literalParamSegment404,
+    noindexNonProdHost,
+  ],
   functionMiddleware: [attachSupabaseAuth],
 }));
 
