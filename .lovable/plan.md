@@ -1,89 +1,131 @@
-## Objetivo
+## Objective
 
-Concluir a versão pt-PT do funil comercial prioritário com copy editorial escrita à mão (não traduzida por máquina), URLs estáveis, canonicals corretos e hreflang recíproco. Sem alterações visuais — apenas conteúdo, rotas e head tags.
+Auditar e endurecer o JSON-LD do site para cumprir estritamente as regras pedidas (sem alterar conteúdo visual). Foco em três correções P0 e em confirmar/documentar o que já cumpre a spec.
 
-## Estado atual (auditado)
+## Diagnóstico (estado atual)
 
-Já em pt-PT: `/pt`, `/pt/experiences`, `/pt/contact`, `/pt/corporate`, `/pt/about`, `/pt/day-tours`, `/pt/reviews`, `/pt/privacy`, `/pt/terms`, `/pt/cookies`.
+Já cumpre:
+- **Site-wide**: `organizationLd()` em `__root.tsx` já emite `TravelAgency`+`LocalBusiness` (o "mais adequado suportado" para operador turístico local); `websiteLd()` também sitewide; `breadcrumbLd()` em todas as leaf routes principais.
+- **Signature (`/tours/$tourId`)**: `tourProductLd()` emite `Product`+`TouristTrip` com `name/description/image/url/brand/provider/priceCurrency: EUR`. Reviews por experiência via `withAggregateAndReviews()` já respeitam visible-parity (só emite se `topReviews` visíveis).
+- **FAQPage**: emitido em `/tours/$id`, `/`, `/corporate`, `/proposal-in-portugal`, `/multi-day` — todos com blocos FAQ visíveis.
+- **Travel Designer (`/multi-day`)**: `travelDesignerServiceLd()` (Service) — sem preços/datas inventadas.
 
-**Ainda em falta do funil prioritário:**
-- Studio (`/studio-v3`) — sem PT
-- Moments (`/pt/moments` faz 301 → `/pt/contact`, tem de virar página real)
-- Travel Designer (`/multi-day` e/ou `/portugal-travel-designer`) — sem PT
-- Páginas de detalhe dos três Signatures pedidos: Arrábida Wine (`arrabida-wine-allinclusive`), Arrábida Boat (`arrabida-boat`), Tile Workshop (`tiles-workshop`)
+Violações a corrigir:
+1. **`src/lib/guest-quotes-jsonld.ts` + `src/components/home/GuestQuotes.tsx`** — emite `AggregateRating` **em `Organization`** na homepage, agregando reviews multi-plataforma (Viator/Tripadvisor/GetYourGuide/Google) num único bloco. Viola diretamente a regra 5 (bullets 1–3): "Não colocar AggregateRating em LocalBusiness/Organization" e "Não agregar automaticamente reviews do Google/Tripadvisor/Viator/Trustpilot". Também usa `FALLBACK_RATING/COUNT` quando as stats faltam — schema divergente do visível.
+2. **`src/lib/jsonld.ts` `tourProductLd()`** — quando `priceFrom` existe, emite sempre `availability: InStock`. A regra 2 diz "availability apenas quando for verdadeira". A disponibilidade real depende da data escolhida no BookingForm, não é um estado permanente do Product → remover `availability` do Offer (ou torná-lo opcional só quando explicitamente confirmado).
+3. **`src/routes/portugal-travel-designer.tsx`** — só emite Breadcrumb; falta `travelDesignerServiceLd()` (ou `TouristTrip`/`Trip` conforme conteúdo) para paridade com `/multi-day`. Confirmar semanticamente antes de escolher.
 
-Homepage, Experiences, Corporate, Contact já cumprem os requisitos — vão receber apenas um passe de revisão editorial + verificação de hreflang/x-default.
+Ambíguo (verificar visibilidade antes de emitir):
+- Homepage emite `faqPageLd(HOMEPAGE_FAQ)` e `studioServiceLd`. Vou confirmar que o bloco FAQ da homepage é realmente visível (ou remover o FAQPage se estiver escondido/collapsed sem visibilidade real).
+- `/corporate`, `/proposal-in-portugal` — confirmar que o FAQ visível corresponde 1:1 a `CORPORATE_FAQ` / `PROPOSAL_FAQ`.
 
-## Trabalho por rota
+## Alterações (código, sem tocar em UI)
 
-### A. Novas rotas PT
+**1. Remover AggregateRating/Review em Organization (homepage)**
+- `src/lib/guest-quotes-jsonld.ts`: apagar o nó `AggregateRating` sobre `Organization`. Manter apenas nós `Review` **individuais** que apontem para `itemReviewed = Product` (por Signature) quando o review for atribuível a uma experiência específica; se um review não tem ligação a experiência única, **não emitir**. Nenhum review multi-fonte fica agregado. Remover `FALLBACK_RATING`/`FALLBACK_COUNT` (nunca inventar valores).
+- Se, após o filtro, não sobrar review atribuível: o helper devolve `{ "@graph": [] }` e o `<script>` não é renderizado.
+- `src/components/home/GuestQuotes.tsx`: chamar o helper novo, e não emitir `<script>` quando o graph vier vazio. Nenhuma mudança visual.
 
-1. `src/routes/pt.studio-v3.tsx` — página PT que monta `<StudioV3 locale="pt" />`. Vou estender `StudioV3` para aceitar prop `locale` e trocar as strings da intro, instruções passo-a-passo, resumo final e ecrã de checkout via um dicionário `studio.pt.ts`. Copy nova em português europeu, mantendo a voz editorial (não traduzir literalmente os headlines EN — reescrever). Restantes microtextos técnicos do componente ficam em EN até a próxima fase (documentado no ficheiro).
-2. `src/routes/pt.moments.tsx` — substituir o 301 por página real (equivalente PT do `proposal-in-portugal` / Moments). Copy editorial nova.
-3. `src/routes/pt.multi-day.tsx` — página PT do Travel Designer (equivalente a `/multi-day`).
-4. `src/routes/pt.portugal-travel-designer.tsx` — variante SEO PT (equivalente a `/portugal-travel-designer`) com canonical próprio.
-5. `src/routes/pt.tours.arrabida-wine-allinclusive.tsx`, `pt.tours.arrabida-boat.tsx`, `pt.tours.tiles-workshop.tsx` — três rotas dedicadas que renderizam o template de detalhe existente com um bloco de copy PT (título, subtítulo, blurb, itinerário-outlook, inclui/exclui, o que trazer, ponto de encontro). O preço, reviews Viator e mapa mantêm-se (são dados). Adicionar campos PT opcionais em `signatureTours.ts` só para estes três IDs, com fallback ao EN.
+**2. `tourProductLd()` — Offer conservadora**
+- Em `src/lib/jsonld.ts`: remover `availability: InStock` do Offer padrão. Adicionar campo opcional `availability?: string` que só é preenchido quando o caller confirmar disponibilidade genuína (por enquanto, nenhum caller preenche → nunca é emitido).
+- Confirmar que `price` corresponde ao `priceFrom` realmente visível na página (já é o caso via `signatureTours.ts`).
+- Manter `priceCurrency: EUR` e `brand: YES Experiences Portugal` (já OK via `@id` do organization).
 
-### B. Ajustes transversais
+**3. Travel Designer (`/portugal-travel-designer`)**
+- Emitir `travelDesignerServiceLd({ path: "/portugal-travel-designer" })` para paridade semântica com `/multi-day`. Não emitir `Trip`/`TouristTrip` porque a página não descreve uma viagem concreta com stops fixos — Service é o tipo correto.
 
-- `src/i18n/pt-ready.ts` — adicionar `/studio-v3`, `/multi-day`, `/portugal-travel-designer`, `/moments`, e os três paths `/tours/<id>` alvo. Assim o `LanguageSwitcher` passa a oferecer PT nessas rotas em vez de "coming soon".
-- `src/routes/sitemap[.]xml.ts` — emitir versões PT para todos os PT-ready paths.
-- `src/routes/__root.tsx` — garantir que quando o utilizador troca idioma o `LanguageSwitcher` preserva a rota equivalente (já funciona via `parseLocaleFromPath`); confirmar que também funciona para as novas rotas.
-- Confirmar que **não** há redirect automático por IP em lado nenhum (auditado; a cookie `yes_locale` só é escrita em clique — manter).
+**4. Signature (`tourProductLd`) — sem AggregateRating quando não visível**
+- Já é o comportamento via `withAggregateAndReviews()`. Confirmar por leitura e adicionar comentário-guardrail.
 
-### C. Head tags por rota
+**5. FAQ**
+- Confirmar por leitura que os arrays `HOMEPAGE_FAQ`, `SIGNATURE_FAQ`, `CORPORATE_FAQ`, `PROPOSAL_FAQ`, `TRAVEL_DESIGNER_FAQ` são renderizados 1:1 na página correspondente. Se algum não estiver visível, remover a chamada a `faqPageLd()` nesse ficheiro.
 
-Cada nova rota emite via helper `buildI18nHead` (já existe em `src/i18n/seo.ts`):
-- `<title>` e `<meta description>` únicos em PT
-- `og:title`, `og:description`, `og:locale=pt_PT`, `og:locale:alternate=en_US`, `og:url` self
-- `<link rel="canonical">` self (URL PT)
-- `<link rel="alternate" hreflang="en">` → URL EN equivalente
-- `<link rel="alternate" hreflang="pt-PT">` → URL PT self
-- `<link rel="alternate" hreflang="x-default">` → URL EN
+**6. Duplicados / validação**
+- Manter `jsonLdScript()` como único wrapper (já é) e confirmar que cada rota não repete `organizationLd`/`websiteLd` (já ficam só em `__root.tsx`).
+- Nada de mudanças em `src/routes/__root.tsx` para além de continuar sitewide.
 
-Também vou adicionar o par recíproco no lado EN das rotas equivalentes que ainda não o emitem (Studio, Multi-day, Moments, os três tours) — sem isto o Google ignora o alternate PT.
+## Fora do âmbito
 
-## Copy — princípios
+- Não alterar `local-stories` review nodes (já cumprem visible-parity estrita por Product/Signature).
+- Não tocar em `tourTailorProductLd()` (já usa `isVariantOf` sobre o Product parent).
+- Sem alterações visuais em nenhum componente.
 
-- Português europeu natural, voz editorial YES (mesma que já está em `/pt` e `/pt/experiences`).
-- Não traduzir headlines EN palavra-a-palavra — reescrever para o ritmo PT.
-- Zero termos brasileiros. Zero "você" — usamos tratamento neutro/formal ("consigo", "connosco", frase impessoal).
-- Preservar o léxico já validado: "Signature", "Studio", "Roteiros à Medida", "Momentos", "Retiros & Empresas".
-- Nunca inventar factos: inclusões, itinerários, preços e paragens dos três tours vêm 1:1 do EN / `signatureTours.ts` (fonte Viator).
+## Exemplos finais (payloads simplificados que este plano vai emitir)
 
-## Detalhes técnicos
+**Homepage** — só o essencial, sem AggregateRating/Review em Organization:
 
-- Locale prop no `StudioV3`: adicionar `locale?: "en" | "pt"` na assinatura do componente e um pequeno dicionário `src/components/studio-v3/i18n.pt.ts` com as chaves visíveis do funil (intro, títulos de passo, CTAs, textos de resumo, labels do checkout). Todas as chaves em falta caem para o texto EN atual — sem strings partidas.
-- Detalhe de tour: não vou duplicar o template. As três rotas PT importam o mesmo componente `TourDetail` e passam um objecto de overrides PT que é aplicado dentro do template com fallback ao campo EN. Isto mantém a fonte de verdade em `signatureTours.ts`.
-- Sem alterações de design — apenas texto, `head()`, `beforeLoad`s e novas rotas de ficheiro.
-
-## Verificação antes de publicar (a tabela pedida)
-
-Vou gerar e apresentar uma tabela final com todas as rotas cobertas:
-
-```text
-Rota EN                              → Rota PT                              → Title (PT)                              → H1 (PT)                              → Canonical (PT)                              → hreflang emitidos
-/                                    → /pt                                  → …                                       → …                                    → https://…/pt                                → en, pt-PT, x-default
-/experiences                         → /pt/experiences                      → …                                       → …                                    → https://…/pt/experiences                    → en, pt-PT, x-default
-/studio-v3                           → /pt/studio-v3                        → …                                       → …                                    → https://…/pt/studio-v3                      → en, pt-PT, x-default
-/moments (=/proposal-in-portugal)    → /pt/moments                          → …                                       → …                                    → https://…/pt/moments                        → en, pt-PT, x-default
-/corporate                           → /pt/corporate                        → …                                       → …                                    → https://…/pt/corporate                      → en, pt-PT, x-default
-/contact                             → /pt/contact                          → …                                       → …                                    → https://…/pt/contact                        → en, pt-PT, x-default
-/tours/arrabida-wine-allinclusive    → /pt/tours/arrabida-wine-allinclusive → …                                       → …                                    → https://…/pt/tours/arrabida-wine-allinclusive → en, pt-PT, x-default
-/tours/arrabida-boat                 → /pt/tours/arrabida-boat              → …                                       → …                                    → https://…/pt/tours/arrabida-boat            → en, pt-PT, x-default
-/tours/tiles-workshop                → /pt/tours/tiles-workshop             → …                                       → …                                    → https://…/pt/tours/tiles-workshop           → en, pt-PT, x-default
-/multi-day                           → /pt/multi-day                        → …                                       → …                                    → https://…/pt/multi-day                      → en, pt-PT, x-default
-/portugal-travel-designer            → /pt/portugal-travel-designer         → …                                       → …                                    → https://…/pt/portugal-travel-designer       → en, pt-PT, x-default
+```json
+[
+  {"@type":["TravelAgency","LocalBusiness"], "@id":"…/#organization", "name":"YES Experiences Portugal", "…":"…"},
+  {"@type":"WebSite", "@id":"…/#website"},
+  {"@type":"FAQPage", "mainEntity":[{"@type":"Question","name":"…","acceptedAnswer":{"@type":"Answer","text":"…"}}]},
+  {"@type":"Service", "@id":"…/studio-v3#service", "name":"YES Experience Studio", "provider":{"@id":"…/#organization"}},
+  {"@type":"ItemList", "itemListElement":[{"@type":"ListItem","position":1,"url":"…/tours/arrabida-wine-allinclusive","name":"…"}]}
+]
 ```
 
-Preencho os valores reais depois de escrever a copy. Verifico também com uma spec de teste (`src/i18n/__tests__/pt-ready-coverage.test.ts`) que cada nova rota tem canonical self, hreflang recíproco e og:locale correto.
+**Signature** (`/tours/arrabida-wine-allinclusive`):
 
-## Fora de âmbito (a confirmar depois)
+```json
+[
+  {"@type":"BreadcrumbList","itemListElement":[…]},
+  {
+    "@type":["Product","TouristTrip"],
+    "@id":"…/tours/arrabida-wine-allinclusive#product",
+    "name":"…","description":"…","image":"…","url":"…",
+    "brand":{"@id":"…/#organization"},
+    "provider":{"@id":"…/#organization"},
+    "offers":{"@type":"Offer","priceCurrency":"EUR","price":220,"url":"…","seller":{"@id":"…/#organization"}},
+    "aggregateRating":{"@type":"AggregateRating","ratingValue":4.9,"reviewCount":312,"bestRating":5,"worstRating":1},
+    "review":[{"@type":"Review","author":{"@type":"Person","name":"…"},"reviewRating":{…},"reviewBody":"…","publisher":{"@type":"Organization","name":"Viator"}}]
+  },
+  {"@type":"FAQPage","mainEntity":[…]}
+]
+```
+(AggregateRating + review só emitidos quando `topReviews` estão visíveis na página, via `withAggregateAndReviews`.)
 
-- Detalhes PT dos restantes ~15 Signatures não pedidos nesta lista.
-- `/day-tours`, `/reviews`, `/faq` — já em PT ou stub, sem trabalho novo.
-- Studio: microtextos internos do composer (drift labels, tooltips secundários) ficam em EN nesta fase; documento isso no ficheiro do dicionário PT. Se quiseres cobertura 100% do Studio em PT, faço num segundo passe.
+**Moments** (`/proposal-in-portugal`) — sem Product (não há preço fixo visível), Service opcional futuro:
 
-## Pergunta antes de avançar
+```json
+[
+  {"@type":"BreadcrumbList","itemListElement":[…]},
+  {"@type":"FAQPage","mainEntity":[…]}
+]
+```
 
-Confirma só uma coisa antes de eu implementar: para as três páginas de tour (Arrábida Wine, Arrábida Boat, Tile Workshop), o **título do tour** deve ficar em português (ex.: "Arrábida — Vinho e Costa, dia privado") ou manter o nome comercial em inglês para consistência com Viator/reviews? A minha recomendação é **manter o nome comercial em EN no H1 e traduzir subtítulo + corpo** — preserva o reconhecimento de marca e o link com as reviews externas.
+**Corporate** (`/corporate`):
+
+```json
+[
+  {"@type":"BreadcrumbList","itemListElement":[…]},
+  {"@type":"FAQPage","mainEntity":[…]}
+]
+```
+
+**Travel Designer** (`/multi-day` e `/portugal-travel-designer`):
+
+```json
+[
+  {"@type":"BreadcrumbList","itemListElement":[…]},
+  {
+    "@type":"Service","@id":"…/multi-day#service",
+    "name":"YES Travel Designer — full Portugal journeys",
+    "serviceType":"Bespoke multi-day Portugal travel design",
+    "provider":{"@id":"…/#organization"},
+    "areaServed":{"@type":"Country","name":"Portugal"},
+    "potentialAction":{"@type":"PlanAction","target":{…}}
+  },
+  {"@type":"FAQPage","mainEntity":[…]}
+]
+```
+
+## Validação
+
+- `bunx vitest run src/lib/__tests__/guest-quotes-jsonld.test.ts src/lib/__tests__/aggregate-review-schema.test.ts` (adicionar/atualizar asserts para a nova regra).
+- `scripts/check-required-status-context.mjs` já existe? correr também um Playwright smoke que faça fetch de `/`, `/tours/arrabida-wine-allinclusive`, `/corporate`, `/proposal-in-portugal`, `/multi-day`, `/portugal-travel-designer` e valide que cada `<script type="application/ld+json">` faz parse e não contém `AggregateRating` sobre `Organization`/`LocalBusiness`.
+- Confirmar no Rich Results Test após publish (o utilizador executa, não é executável daqui).
+
+## Deliverables
+
+- Ficheiros editados: `src/lib/guest-quotes-jsonld.ts`, `src/components/home/GuestQuotes.tsx`, `src/lib/jsonld.ts`, `src/routes/portugal-travel-designer.tsx`, mais os testes correspondentes.
+- Zero alterações visuais.

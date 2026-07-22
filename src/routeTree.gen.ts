@@ -64,12 +64,9 @@ import { Route as ReviewTokenRouteImport } from './routes/review.$token'
 import { Route as QaMobileRouteImport } from './routes/qa.mobile'
 import { Route as QaHeroRouteImport } from './routes/qa.hero'
 import { Route as PtTermsRouteImport } from './routes/pt.terms'
-import { Route as PtStudioV3RouteImport } from './routes/pt.studio-v3'
 import { Route as PtReviewsRouteImport } from './routes/pt.reviews'
 import { Route as PtProposalsRouteImport } from './routes/pt.proposals'
 import { Route as PtPrivacyRouteImport } from './routes/pt.privacy'
-import { Route as PtPortugalTravelDesignerRouteImport } from './routes/pt.portugal-travel-designer'
-import { Route as PtMultiDayRouteImport } from './routes/pt.multi-day'
 import { Route as PtMomentsRouteImport } from './routes/pt.moments'
 import { Route as PtFaqRouteImport } from './routes/pt.faq'
 import { Route as PtExperiencesRouteImport } from './routes/pt.experiences'
@@ -119,9 +116,6 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.tailor'
 import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
-import { Route as PtToursTilesWorkshopRouteImport } from './routes/pt.tours.tiles-workshop'
-import { Route as PtToursArrabidaWineAllinclusiveRouteImport } from './routes/pt.tours.arrabida-wine-allinclusive'
-import { Route as PtToursArrabidaBoatRouteImport } from './routes/pt.tours.arrabida-boat'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
@@ -415,11 +409,6 @@ const PtTermsRoute = PtTermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => PtRoute,
 } as any)
-const PtStudioV3Route = PtStudioV3RouteImport.update({
-  id: '/studio-v3',
-  path: '/studio-v3',
-  getParentRoute: () => PtRoute,
-} as any)
 const PtReviewsRoute = PtReviewsRouteImport.update({
   id: '/reviews',
   path: '/reviews',
@@ -433,17 +422,6 @@ const PtProposalsRoute = PtProposalsRouteImport.update({
 const PtPrivacyRoute = PtPrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
-  getParentRoute: () => PtRoute,
-} as any)
-const PtPortugalTravelDesignerRoute =
-  PtPortugalTravelDesignerRouteImport.update({
-    id: '/portugal-travel-designer',
-    path: '/portugal-travel-designer',
-    getParentRoute: () => PtRoute,
-  } as any)
-const PtMultiDayRoute = PtMultiDayRouteImport.update({
-  id: '/multi-day',
-  path: '/multi-day',
   getParentRoute: () => PtRoute,
 } as any)
 const PtMomentsRoute = PtMomentsRouteImport.update({
@@ -695,22 +673,6 @@ const StudioV2ITokenRoute = StudioV2ITokenRouteImport.update({
   path: '/i/$token',
   getParentRoute: () => StudioV2Route,
 } as any)
-const PtToursTilesWorkshopRoute = PtToursTilesWorkshopRouteImport.update({
-  id: '/tours/tiles-workshop',
-  path: '/tours/tiles-workshop',
-  getParentRoute: () => PtRoute,
-} as any)
-const PtToursArrabidaWineAllinclusiveRoute =
-  PtToursArrabidaWineAllinclusiveRouteImport.update({
-    id: '/tours/arrabida-wine-allinclusive',
-    path: '/tours/arrabida-wine-allinclusive',
-    getParentRoute: () => PtRoute,
-  } as any)
-const PtToursArrabidaBoatRoute = PtToursArrabidaBoatRouteImport.update({
-  id: '/tours/arrabida-boat',
-  path: '/tours/arrabida-boat',
-  getParentRoute: () => PtRoute,
-} as any)
 const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   id: '/lovable/email/suppression',
   path: '/lovable/email/suppression',
@@ -884,12 +846,9 @@ export interface FileRoutesByFullPath {
   '/pt/experiences': typeof PtExperiencesRoute
   '/pt/faq': typeof PtFaqRoute
   '/pt/moments': typeof PtMomentsRoute
-  '/pt/multi-day': typeof PtMultiDayRoute
-  '/pt/portugal-travel-designer': typeof PtPortugalTravelDesignerRoute
   '/pt/privacy': typeof PtPrivacyRoute
   '/pt/proposals': typeof PtProposalsRoute
   '/pt/reviews': typeof PtReviewsRoute
-  '/pt/studio-v3': typeof PtStudioV3Route
   '/pt/terms': typeof PtTermsRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
@@ -904,9 +863,6 @@ export interface FileRoutesByFullPath {
   '/api/public/contact': typeof ApiPublicContactRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
-  '/pt/tours/arrabida-boat': typeof PtToursArrabidaBoatRoute
-  '/pt/tours/arrabida-wine-allinclusive': typeof PtToursArrabidaWineAllinclusiveRoute
-  '/pt/tours/tiles-workshop': typeof PtToursTilesWorkshopRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
@@ -1011,12 +967,9 @@ export interface FileRoutesByTo {
   '/pt/experiences': typeof PtExperiencesRoute
   '/pt/faq': typeof PtFaqRoute
   '/pt/moments': typeof PtMomentsRoute
-  '/pt/multi-day': typeof PtMultiDayRoute
-  '/pt/portugal-travel-designer': typeof PtPortugalTravelDesignerRoute
   '/pt/privacy': typeof PtPrivacyRoute
   '/pt/proposals': typeof PtProposalsRoute
   '/pt/reviews': typeof PtReviewsRoute
-  '/pt/studio-v3': typeof PtStudioV3Route
   '/pt/terms': typeof PtTermsRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
@@ -1031,9 +984,6 @@ export interface FileRoutesByTo {
   '/api/public/contact': typeof ApiPublicContactRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
-  '/pt/tours/arrabida-boat': typeof PtToursArrabidaBoatRoute
-  '/pt/tours/arrabida-wine-allinclusive': typeof PtToursArrabidaWineAllinclusiveRoute
-  '/pt/tours/tiles-workshop': typeof PtToursTilesWorkshopRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
@@ -1141,12 +1091,9 @@ export interface FileRoutesById {
   '/pt/experiences': typeof PtExperiencesRoute
   '/pt/faq': typeof PtFaqRoute
   '/pt/moments': typeof PtMomentsRoute
-  '/pt/multi-day': typeof PtMultiDayRoute
-  '/pt/portugal-travel-designer': typeof PtPortugalTravelDesignerRoute
   '/pt/privacy': typeof PtPrivacyRoute
   '/pt/proposals': typeof PtProposalsRoute
   '/pt/reviews': typeof PtReviewsRoute
-  '/pt/studio-v3': typeof PtStudioV3Route
   '/pt/terms': typeof PtTermsRoute
   '/qa/hero': typeof QaHeroRoute
   '/qa/mobile': typeof QaMobileRoute
@@ -1161,9 +1108,6 @@ export interface FileRoutesById {
   '/api/public/contact': typeof ApiPublicContactRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
-  '/pt/tours/arrabida-boat': typeof PtToursArrabidaBoatRoute
-  '/pt/tours/arrabida-wine-allinclusive': typeof PtToursArrabidaWineAllinclusiveRoute
-  '/pt/tours/tiles-workshop': typeof PtToursTilesWorkshopRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
@@ -1272,12 +1216,9 @@ export interface FileRouteTypes {
     | '/pt/experiences'
     | '/pt/faq'
     | '/pt/moments'
-    | '/pt/multi-day'
-    | '/pt/portugal-travel-designer'
     | '/pt/privacy'
     | '/pt/proposals'
     | '/pt/reviews'
-    | '/pt/studio-v3'
     | '/pt/terms'
     | '/qa/hero'
     | '/qa/mobile'
@@ -1292,9 +1233,6 @@ export interface FileRouteTypes {
     | '/api/public/contact'
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
-    | '/pt/tours/arrabida-boat'
-    | '/pt/tours/arrabida-wine-allinclusive'
-    | '/pt/tours/tiles-workshop'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/api/public/hooks/checkout-email'
@@ -1399,12 +1337,9 @@ export interface FileRouteTypes {
     | '/pt/experiences'
     | '/pt/faq'
     | '/pt/moments'
-    | '/pt/multi-day'
-    | '/pt/portugal-travel-designer'
     | '/pt/privacy'
     | '/pt/proposals'
     | '/pt/reviews'
-    | '/pt/studio-v3'
     | '/pt/terms'
     | '/qa/hero'
     | '/qa/mobile'
@@ -1419,9 +1354,6 @@ export interface FileRouteTypes {
     | '/api/public/contact'
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
-    | '/pt/tours/arrabida-boat'
-    | '/pt/tours/arrabida-wine-allinclusive'
-    | '/pt/tours/tiles-workshop'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/api/public/hooks/checkout-email'
@@ -1528,12 +1460,9 @@ export interface FileRouteTypes {
     | '/pt/experiences'
     | '/pt/faq'
     | '/pt/moments'
-    | '/pt/multi-day'
-    | '/pt/portugal-travel-designer'
     | '/pt/privacy'
     | '/pt/proposals'
     | '/pt/reviews'
-    | '/pt/studio-v3'
     | '/pt/terms'
     | '/qa/hero'
     | '/qa/mobile'
@@ -1548,9 +1477,6 @@ export interface FileRouteTypes {
     | '/api/public/contact'
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
-    | '/pt/tours/arrabida-boat'
-    | '/pt/tours/arrabida-wine-allinclusive'
-    | '/pt/tours/tiles-workshop'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/api/public/hooks/checkout-email'
@@ -2057,13 +1983,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PtTermsRouteImport
       parentRoute: typeof PtRoute
     }
-    '/pt/studio-v3': {
-      id: '/pt/studio-v3'
-      path: '/studio-v3'
-      fullPath: '/pt/studio-v3'
-      preLoaderRoute: typeof PtStudioV3RouteImport
-      parentRoute: typeof PtRoute
-    }
     '/pt/reviews': {
       id: '/pt/reviews'
       path: '/reviews'
@@ -2083,20 +2002,6 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/pt/privacy'
       preLoaderRoute: typeof PtPrivacyRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/portugal-travel-designer': {
-      id: '/pt/portugal-travel-designer'
-      path: '/portugal-travel-designer'
-      fullPath: '/pt/portugal-travel-designer'
-      preLoaderRoute: typeof PtPortugalTravelDesignerRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/multi-day': {
-      id: '/pt/multi-day'
-      path: '/multi-day'
-      fullPath: '/pt/multi-day'
-      preLoaderRoute: typeof PtMultiDayRouteImport
       parentRoute: typeof PtRoute
     }
     '/pt/moments': {
@@ -2442,27 +2347,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioV2ITokenRouteImport
       parentRoute: typeof StudioV2Route
     }
-    '/pt/tours/tiles-workshop': {
-      id: '/pt/tours/tiles-workshop'
-      path: '/tours/tiles-workshop'
-      fullPath: '/pt/tours/tiles-workshop'
-      preLoaderRoute: typeof PtToursTilesWorkshopRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/tours/arrabida-wine-allinclusive': {
-      id: '/pt/tours/arrabida-wine-allinclusive'
-      path: '/tours/arrabida-wine-allinclusive'
-      fullPath: '/pt/tours/arrabida-wine-allinclusive'
-      preLoaderRoute: typeof PtToursArrabidaWineAllinclusiveRouteImport
-      parentRoute: typeof PtRoute
-    }
-    '/pt/tours/arrabida-boat': {
-      id: '/pt/tours/arrabida-boat'
-      path: '/tours/arrabida-boat'
-      fullPath: '/pt/tours/arrabida-boat'
-      preLoaderRoute: typeof PtToursArrabidaBoatRouteImport
-      parentRoute: typeof PtRoute
-    }
     '/lovable/email/suppression': {
       id: '/lovable/email/suppression'
       path: '/lovable/email/suppression'
@@ -2588,17 +2472,11 @@ interface PtRouteChildren {
   PtExperiencesRoute: typeof PtExperiencesRoute
   PtFaqRoute: typeof PtFaqRoute
   PtMomentsRoute: typeof PtMomentsRoute
-  PtMultiDayRoute: typeof PtMultiDayRoute
-  PtPortugalTravelDesignerRoute: typeof PtPortugalTravelDesignerRoute
   PtPrivacyRoute: typeof PtPrivacyRoute
   PtProposalsRoute: typeof PtProposalsRoute
   PtReviewsRoute: typeof PtReviewsRoute
-  PtStudioV3Route: typeof PtStudioV3Route
   PtTermsRoute: typeof PtTermsRoute
   PtIndexRoute: typeof PtIndexRoute
-  PtToursArrabidaBoatRoute: typeof PtToursArrabidaBoatRoute
-  PtToursArrabidaWineAllinclusiveRoute: typeof PtToursArrabidaWineAllinclusiveRoute
-  PtToursTilesWorkshopRoute: typeof PtToursTilesWorkshopRoute
 }
 
 const PtRouteChildren: PtRouteChildren = {
@@ -2611,17 +2489,11 @@ const PtRouteChildren: PtRouteChildren = {
   PtExperiencesRoute: PtExperiencesRoute,
   PtFaqRoute: PtFaqRoute,
   PtMomentsRoute: PtMomentsRoute,
-  PtMultiDayRoute: PtMultiDayRoute,
-  PtPortugalTravelDesignerRoute: PtPortugalTravelDesignerRoute,
   PtPrivacyRoute: PtPrivacyRoute,
   PtProposalsRoute: PtProposalsRoute,
   PtReviewsRoute: PtReviewsRoute,
-  PtStudioV3Route: PtStudioV3Route,
   PtTermsRoute: PtTermsRoute,
   PtIndexRoute: PtIndexRoute,
-  PtToursArrabidaBoatRoute: PtToursArrabidaBoatRoute,
-  PtToursArrabidaWineAllinclusiveRoute: PtToursArrabidaWineAllinclusiveRoute,
-  PtToursTilesWorkshopRoute: PtToursTilesWorkshopRoute,
 }
 
 const PtRouteWithChildren = PtRoute._addFileChildren(PtRouteChildren)
