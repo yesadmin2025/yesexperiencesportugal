@@ -22,8 +22,11 @@ import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButto
 import { RouteFade } from "@/components/motion/RouteFade";
 import { Scene } from "@/components/motion/Scene";
 import { installAnalyticsAttrs } from "@/lib/analytics";
+import { setAnalyticsLocale } from "@/lib/analytics-events";
+import { captureUtmsFromLocation } from "@/lib/utm";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
+
 
 /* ──────────────────────────────────────────────────────────────────
  * App readiness flag — sets `window.__APP_READY__ = true` and fires
@@ -213,12 +216,21 @@ export const Route = createRootRoute({
     ],
     scripts: [
       {
+        // Google Consent Mode v2 — default denied, before GTM boots.
+        // The cookie banner must call setAnalyticsConsent("granted") /
+        // window.gtag('consent','update',{ analytics_storage:'granted', ... })
+        // once the visitor accepts.
+        children:
+          "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=window.gtag||gtag;gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500});",
+      },
+      {
         children:
           "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-M82SQS79');",
       },
       jsonLdScript(organizationLd()),
       jsonLdScript(websiteLd()),
     ],
+
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -265,8 +277,17 @@ function RootComponent() {
   useEffect(() => installClientErrorLogger(), []);
   useEffect(() => installDevHardReload(), []);
   useEffect(() => installAnalyticsAttrs(), []);
+  useEffect(() => {
+    captureUtmsFromLocation();
+  }, []);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { locale } = parseLocaleFromPath(pathname);
+  useEffect(() => {
+    setAnalyticsLocale(locale);
+    // Re-check UTMs on client-side navigation (SPA route changes).
+    captureUtmsFromLocation();
+  }, [locale, pathname]);
+
   // Single QueryClient per browser session — keeps SignaturePriceCard and
 
   // any future useQuery hook resolvable without each route wiring its own.

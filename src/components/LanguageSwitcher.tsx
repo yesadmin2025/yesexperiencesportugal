@@ -22,11 +22,13 @@ import {
 import { useLocale, useT } from "@/i18n/locale-context";
 import { isPtReady } from "@/i18n/pt-ready";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics-events";
 
 function setLocaleCookie(locale: Locale) {
   if (typeof document === "undefined") return;
   document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=${60 * 60 * 24 * 180}; SameSite=Lax`;
 }
+
 
 interface LanguageSwitcherProps {
   variant?: "header" | "footer";
@@ -85,7 +87,12 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
             {sep}
             <Link
               to={`${target}${search}${hash}` as string}
-              onClick={() => setLocaleCookie(loc)}
+              onClick={() => {
+                setLocaleCookie(loc);
+                if (loc !== active) {
+                  trackEvent("language_changed", { from: active, to: loc });
+                }
+              }}
               aria-current={isActive ? "true" : undefined}
               hrefLang={loc}
               className={cn(

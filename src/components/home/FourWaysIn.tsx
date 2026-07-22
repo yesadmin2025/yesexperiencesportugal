@@ -22,7 +22,9 @@ type Path = {
   body: string;
   cta: string;
   href: string;
+  analyticsEvent: string;
 };
+
 
 const PATHS: Path[] = [
   {
@@ -40,6 +42,8 @@ const PATHS: Path[] = [
     body: "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
     cta: "Explore Signatures",
     href: "/experiences",
+    analyticsEvent: "five_ways_signature_click",
+
   },
   {
     num: "02",
@@ -54,6 +58,8 @@ const PATHS: Path[] = [
     body: "Choose the mood, rhythm and route in real time. See the live price and reserve instantly, with local support if you need it.",
     cta: "Open the Studio",
     href: "/studio-v3",
+    analyticsEvent: "five_ways_studio_click",
+
   },
   {
     num: "03",
@@ -68,6 +74,8 @@ const PATHS: Path[] = [
     body: "The proposal on the cliff, the anniversary in a vineyard, the birthday nobody forgets — quietly composed, precisely held.",
     cta: "Share the occasion",
     href: "/proposal-in-portugal",
+    analyticsEvent: "five_ways_moments_click",
+
   },
   {
     num: "04",
@@ -82,6 +90,8 @@ const PATHS: Path[] = [
     body: "From intimate boards to full incentives — transport, venues and timing handled with a single point of contact.",
     cta: "Plan a group day",
     href: "/corporate",
+    analyticsEvent: "five_ways_corporate_click",
+
   },
   {
     num: "05",
@@ -96,6 +106,8 @@ const PATHS: Path[] = [
     body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
     cta: "Begin with a designer",
     href: "/multi-day",
+    analyticsEvent: "five_ways_travel_designer_click",
+
   },
 ];
 
@@ -133,6 +145,8 @@ export function FourWaysIn() {
             >
               <Link
                 to={p.href}
+                data-analytics={p.analyticsEvent}
+                data-analytics-placement="five_ways"
                 style={{ transitionDelay: `${idx * 60}ms` }}
                 className="fw-card reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-6 shadow-[0_1px_2px_rgba(46,46,46,0.04)] overflow-hidden no-underline transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:border-[color:var(--gold)]/50 hover:shadow-[0_18px_40px_-24px_rgba(46,46,46,0.22)]"
               >
