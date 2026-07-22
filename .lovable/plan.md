@@ -1,70 +1,135 @@
-# Semantic & Text Concatenation Fix Pass
 
-Focused audit + surgical fixes. No visual, layout, copy, spacing, motion, or typography changes — only string separation, semantic HTML, and a11y attributes.
+## Inventário de inconsistências encontradas
 
-## Scope (in order)
+### 1. Política de cancelamento — quatro variantes diferentes para o MESMO produto (Signature)
 
-1. **Homepage** (`src/routes/index.tsx` + `src/components/home/*`) — hero/section CTAs, card CTA pairs.
-2. **Signature cards & pages** (`experiences.tsx`, `tours.$tourId.tsx`, `SignatureCard*`, `SimpleBookingForm`, `SimpleTailorForm`).
-3. **Studio** (`studio-v3.tsx`, `components/builder/v3/*`, `components/studio-v2/*`, `components/studio-v3/*`).
-4. **Tailor pages** (`tours.$tourId.tailor.tsx`, `SimpleTailorForm`).
-5. **Checkout** (`checkout.$token.tsx`, `EmbeddedConfirmationSheet`, `HostHandoffPanel`).
-6. **Contact / Moments / Corporate / Travel Designer** (`contact.tsx`, `moments.tsx` variants, `corporate.tsx`, `portugal-travel-designer.tsx`).
+| Local | String atual |
+|---|---|
+| `src/config/business-nap.ts` `CANCELLATION_SIGNATURE` | "Signature days usually include free cancellation up to 24h before the experience." |
+| `src/components/checkout/TrustStrip.tsx:45` | "Free cancellation — up to 24h before" (hardcoded) |
+| `src/routes/tours.$tourId.tsx:378` | "Free cancellation up to 24h" (hardcoded, sem "when applicable") |
+| `src/routes/tours.$tourId.tsx:909` | "Instant confirmation · Free cancellation up to 24h · …" (hardcoded) |
+| `src/components/checkout/BrandedCheckoutDrawer.tsx:227` | "Free cancellation up to 24h" (hardcoded) |
+| `src/routes/about.tsx:383-385` | Prosa manual "Signature days usually include free cancellation up to 24h before…" |
 
-## Audit — what to grep for
+**Pior violação da regra do utilizador** — `src/routes/terms.tsx:80` e `src/routes/pt.terms.tsx:79` renderizam `{CANCELLATION_SHORT} {CANCELLATION_SIGNATURE} {CANCELLATION_STUDIO}` numa única frase, ou seja mostram **"24h" + "terms at checkout" para os mesmos produtos**, exatamente o que o utilizador proíbe.
 
-Run these greps in each scope and record every hit before editing:
+Também: não existe versão PT das constantes `CANCELLATION_*`.
 
-- **Adjacent CTAs without separator**: two `<CtaButton>`, `<a>`, or `<button>` siblings not wrapped in `<CtaPair>`.
-  - `rg -nP '(</(CtaButton|Link|button|a)>)\s*(<(CtaButton|Link|button|a)\b)'`
-- **Text glued to CTA/heading**: paragraph immediately followed by a link/button on same line with no whitespace, or JSX `{desc}<Button>` patterns.
-  - `rg -nP '\}\s*<(button|a|Link|CtaButton)\b'`
-- **Duplicate/repeated labels**: same visible label rendered twice in the same block (visible + sr-only siblings, "Add… Add", etc.).
-- **Icon-only `<button>` without accessible name**: `<button` … `<Icon />` … `</button>` with no text child and no `aria-label`.
-- **`<div onClick>` / `<span onClick>`** acting as controls (already found: `AmbientPrologue.tsx`, plus verify others).
-- **`<input>` without associated `<label htmlFor>` or `aria-label`** — the `SimpleTailorForm` `<Field>` helper uses a wrapping `<label>` but the input has no `id`; verify all form fields.
-- **Missing `autoComplete`** on `name`, `email`, `tel`, `date`, `given-name` inputs in `contact.tsx`, `SimpleBookingForm`, `HostHandoffPanel`, checkout.
-- **`<form>` wrapper missing** where multiple inputs + a submit button exist (Enter key won't submit).
-- **`type="button"` missing** on non-submit `<button>` inside forms (defaults to `submit` and can cause accidental submits).
+### 2. Trust one-liner legal — sem versão PT
 
-## Fix rules (mechanical, no design change)
+- `TRUST_LINE` (EN) existe em `business-nap.ts`.
+- Não existe `TRUST_LINE_PT`. As páginas `pt.*` compõem manualmente ("Operador turístico licenciado · RNAAT nº 31/2023") — a frase pedida ("Operador de animação turística licenciado em Portugal · RNAAT n.º 31/2023 · Sedeado em Sesimbra, Portugal.") não existe em lado nenhum.
+- Nota: o utilizador pediu "n.º" (com ponto) em PT vs "nº" em EN — atualmente só temos "nº".
 
-- Adjacent CTAs → wrap in existing `<CtaPair>` (already provides `aria-hidden` " · " separator) OR insert `{" "}` between them. Choose whichever keeps existing className exactly.
-- `<div onClick>` → `<button type="button" className={same}>` with existing classes untouched; add `aria-label` if content is icon-only.
-- Icon-only `<button>` → add `aria-label="…"` describing action; do not add visible text.
-- `<input>` without label → add `id` + connect existing wrapping `<label>` via `htmlFor`, or add `aria-label`. Prefer `htmlFor` when a visible label exists.
-- Description text glued to CTA → ensure a block-level element separates them (already true visually; add explicit whitespace in JSX where serialized output concatenates: `{description}{" "}<Cta>`).
-- Add `autoComplete` to name/email/tel/date/postal inputs.
-- Wrap orphan input groups in `<form onSubmit={…}>`; add `type="button"` to any non-submit buttons inside.
-- Focus visibility: only add `focus-visible:outline` where currently missing on custom buttons — reuse existing `--gold` ring token; do not restyle.
+### 3. Links sociais / plataformas de reviews — duplicados em 5 ficheiros
 
-## Files expected to change (from initial scan)
+Mesmos URLs (Instagram, Facebook, Tripadvisor) repetidos em:
+- `src/components/Footer.tsx:112-122`
+- `src/components/Navbar.tsx:32-34`
+- `src/routes/press.tsx:70-73`
+- `src/lib/jsonld.ts:217-219`
+- `src/routes/api/public/hooks/import-tripadvisor-reviews.ts:24-26`
 
-- `src/components/builder/v3/AmbientPrologue.tsx` — `<div onClick>` → `<button>`.
-- `src/components/SimpleTailorForm.tsx` — associate `<label>`/`<input>` via `htmlFor`/`id`, add `autoComplete` where relevant, ensure notes textarea has an id.
-- `src/components/SimpleBookingForm.tsx` — same audit (autocomplete, label association, form wrapper).
-- `src/routes/contact.tsx` — autocomplete + label association + `<form>` if missing.
-- Any homepage / experiences / studio / tailor / checkout / corporate / travel-designer file that shows adjacent CTAs without `<CtaPair>` or has icon-only buttons.
+**Faltam ainda**: perfil oficial Google (GBP), URL Viator do operador — nunca centralizados. Viator só aparece como texto ("Tripadvisor & Viator") em `day-tours.tsx`, `about.tsx`, `reviews.tsx`, `cookies.tsx` sem link.
 
-Exact final list is produced during the audit step (see Deliverables).
+### 4. Website canónico — nunca exportado
 
-## Guardrails
+`https://yesexperiencesportugal.com` aparece como literal em `terms.tsx`, `pt.terms.tsx`, `contact.tsx`, `unsubscribe.tsx`, `__root.tsx`, JSON-LD, sitemap, canonicals, og:url etc.
 
-- Do not touch: `src/styles.css`, `tailwind.config.*`, any file under `src/content/*`, hero copy, brand tokens, animation utilities.
-- Do not rename or move existing classes; only add semantic attributes and swap element tags where required.
-- No new components except `<CtaPair>` (already exists).
-- Reduced-motion, brand palette, typography rules from memory remain untouched.
+### 5. Menores
 
-## Verification
+- `BUSINESS_NAME` = "YES experiences Portugal" (e minúsculo) vs `BUSINESS_LEGAL_NAME` = "YES Experiences Portugal" — a discrepância parece intencional (marca vs legal) mas não está documentada.
+- `booking-confirmed.tsx:223` "guide will introduce themselves on WhatsApp within 24h" — SLA de resposta, não cancelamento, mas usa a mesma numeração; ficará como está (não é política).
 
-- `bunx tsgo --noEmit` clean.
-- `rg` for each pattern returns 0 hits inside audited scope.
-- Manual: tab through each edited page — every interactive element reachable, focus ring visible, screen-reader label present (spot-check with browser devtools accessibility panel via Playwright).
-- Visual regression sanity: `bunx playwright test e2e/homepage-typography-spacing-regression.spec.ts e2e/studio-v3-*mobile*.spec.ts` still pass (they lock layout & copy — proves no visual drift).
+---
 
-## Deliverables (posted in final reply)
+## O que vai mudar (só código, zero design)
 
-1. **Corrected strings table**: `before → after` for every concatenation/duplicate-label fix.
-2. **File → page map**: which route each fixed component appears on.
-3. **Confirmation statement**: no layout, copy, or style tokens changed; only semantic HTML + a11y attributes + whitespace between adjacent CTAs.
-4. **Test evidence**: tsgo clean + Playwright layout suites green.
+### A. `src/config/business-nap.ts` — expandir a fonte única
+
+Adicionar sem quebrar exports existentes:
+
+```ts
+// Website
+export const WEBSITE_URL = "https://yesexperiencesportugal.com" as const;
+
+// Perfis oficiais — únicos e canónicos
+export const SOCIAL = {
+  instagram: "https://www.instagram.com/yesexperiencesportugal",
+  facebook:  "https://www.facebook.com/yesexperiencesportugal",
+  tripadvisor: "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
+  viator:    "", // deixado vazio até o utilizador confirmar o URL oficial do operador
+  google:    "", // idem, GBP público
+} as const;
+
+// PT trust one-liner (com "n.º" como pedido)
+export const LICENSE_LABEL_PT = "RNAAT n.º 31/2023" as const;
+export const TRUST_LINE_PT =
+  `Operador de animação turística licenciado em Portugal · ${LICENSE_LABEL_PT} · Sedeado em ${BASED_IN}.` as const;
+
+// Política de cancelamento — UMA frase por variante de produto, EN + PT
+export const CANCELLATION = {
+  signature: {
+    en: "Free cancellation up to 24h before, when applicable.",
+    pt: "Cancelamento gratuito até 24 horas antes, quando aplicável.",
+  },
+  custom: { // studio + travel designer + corporate + moments + tailor
+    en: "Cancellation terms are shown clearly before checkout or confirmation.",
+    pt: "Condições de cancelamento apresentadas claramente antes do checkout ou confirmação.",
+  },
+} as const;
+```
+
+Manter (deprecated internos, sem remoção brusca): `CANCELLATION_SHORT`, `CANCELLATION_SIGNATURE`, `CANCELLATION_STUDIO` como aliases apontando para o novo objeto para não partir imports; guardrail test continua a passar.
+
+### B. Cancelamento — substituir strings hardcoded pela fonte
+
+Alterações **só de string / import**, sem tocar em JSX estrutural, tokens ou classes:
+
+- `src/components/checkout/TrustStrip.tsx` — usar `CANCELLATION.signature.en` / `.custom.en` em vez do map local.
+- `src/routes/tours.$tourId.tsx:378, 909` — usar `CANCELLATION.signature.en`.
+- `src/components/checkout/BrandedCheckoutDrawer.tsx:227` — idem.
+- `src/routes/about.tsx:383-385` — frase única (`CANCELLATION.signature.en` para Signature, `.custom.en` para o resto), sem "24h + terms at checkout" juntos.
+- `src/routes/terms.tsx:80` e `src/routes/pt.terms.tsx:79` — substituir a concatenação tripla por **duas linhas separadas** (uma por família de produto), eliminando a violação do "não mostrar 24h e terms at checkout para o mesmo produto".
+- `src/content/seo-faq.ts:104` — resposta FAQ passa a listar as duas famílias com clareza (Signature: 24h; restantes: antes do checkout).
+
+### C. Links sociais — passar todos a consumir `SOCIAL`
+
+- `src/components/Footer.tsx` → `SOCIAL.instagram/facebook/tripadvisor`.
+- `src/components/Navbar.tsx` → idem.
+- `src/routes/press.tsx` → idem.
+- `src/lib/jsonld.ts` (`sameAs`) → array construído a partir de `SOCIAL` (Viator/Google entram automaticamente se preenchidos).
+- `src/routes/api/public/hooks/import-tripadvisor-reviews.ts` → usar `SOCIAL.tripadvisor` como fonte, mantendo a variante "or10" só onde é necessária para paginação.
+
+### D. Website canónico
+
+Substituir os literais `https://yesexperiencesportugal.com` por `WEBSITE_URL` em `terms.tsx`, `pt.terms.tsx`, `contact.tsx`, `unsubscribe.tsx`, e onde aparecer em compor de canonical/og:url em rotas simples. Não tocar em ficheiros gerados (`sitemap[.]xml.ts` mantém as suas próprias constantes se depender delas — se já usar literal, migrar).
+
+### E. Trust line PT
+
+Aplicar `TRUST_LINE_PT` onde as páginas `pt.*` compõem a frase manualmente (footer PT, `pt.contact.tsx:110`, `pt.about.tsx`, `pt.terms.tsx`, meta descriptions relevantes).
+
+---
+
+## O que fica de fora (fora do âmbito ou fica pendente de decisão do utilizador)
+
+- **Não adiciono URLs Viator / Google Business Profile inventados**. Ficam `""` no `SOCIAL` e a UI condiciona-os (`if link`). Precisamos que confirmes:
+  - URL público do perfil Viator do operador.
+  - URL público do Google Business Profile (Maps) atual.
+- Nenhuma alteração de layout, tokens, tipografia, animações, copy comercial, preços, Studio ou checkout.
+- `booking-confirmed.tsx` SLA "24h" fica (não é política de cancelamento).
+
+---
+
+## Validação final
+
+- Typecheck.
+- Grep pós-alteração: nenhuma ocorrência de "Free cancellation up to 24h" ou "24h" fora de `business-nap.ts`, `booking-confirmed.tsx` e `admin.*`; nenhum literal `instagram.com/yesexperiencesportugal`, `facebook.com/yesexperiencesportugal` ou `tripadvisor.com/Attraction_Review-...Yes_Experiences_Portugal...` fora de `business-nap.ts`.
+- Guardrail existente `src/__tests__/nap-consistency.test.ts` continua verde.
+
+---
+
+**Antes de implementar, confirma:**
+1. URL oficial Viator do operador (para `SOCIAL.viator`) — deixo vazio se não tiveres agora?
+2. URL do Google Business Profile atual (para `SOCIAL.google` e `sameAs` JSON-LD) — idem?
