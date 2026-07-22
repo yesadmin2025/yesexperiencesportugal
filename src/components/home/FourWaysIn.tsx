@@ -138,7 +138,11 @@ export function FourWaysIn() {
             </span>
           </h2>
           <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
+          <p className="mt-5 md:mt-6 max-w-2xl mx-auto text-[15px] md:text-[16px] leading-[1.6] text-[color:var(--charcoal-soft)] text-balance">
+            Every path is private. Choose a day already designed by YES, shape your own in real time in the Studio, or let us create a celebration, group experience or full Portugal journey around you.
+          </p>
         </div>
+
 
         <ul className="he-stagger max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5 list-none p-0">
           {PATHS.map((p, idx) => (
