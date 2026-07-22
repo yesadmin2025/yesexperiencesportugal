@@ -16,7 +16,7 @@ import {
   validateTour,
   logTourValidation,
 } from "@/lib/viatorValidation";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { snapStop, type StopCoord } from "@/data/stopCoords";
 import { SimpleBookingForm } from "@/components/SimpleBookingForm";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
@@ -37,7 +37,10 @@ import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { TourImage } from "@/components/tours/TourImage";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { useAdminTourPhotos } from "@/lib/useAdminTourPhotos";
-import { SignatureRouteMap } from "@/components/SignatureRouteMap";
+// Lazy-loaded below the fold — keeps Leaflet (~140KB) out of the initial tour bundle
+const SignatureRouteMap = lazy(() =>
+  import("@/components/SignatureRouteMap").then((m) => ({ default: m.SignatureRouteMap })),
+);
 import { CANCELLATION } from "@/config/business-nap";
 
 export const Route = createFileRoute("/tours/$tourId")({
@@ -210,8 +213,10 @@ function TourDetailPage() {
       {/* ── 5 · ITINERARY (real Viator stops only) ────────────── */}
       <ItineraryTimeline tour={tour} meta={meta} />
 
-      {/* ── 6 · MAP — real geographic map with driving route ───── */}
-      <SignatureRouteMap tour={tour} />
+      {/* ── 6 · MAP — real geographic map with driving route (lazy) ─ */}
+      <Suspense fallback={<div className="min-h-[420px]" aria-hidden="true" />}>
+        <SignatureRouteMap tour={tour} />
+      </Suspense>
 
       {/* ── 7 · WHAT'S INCLUDED ────────────────────────────────── */}
       <IncludedAndIdeal tour={tour} meta={meta} />
