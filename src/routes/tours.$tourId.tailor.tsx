@@ -700,7 +700,7 @@ function TailorPage() {
                 . The route, story and trusted local guide remain intact — only the details below
                 can be adjusted.
               </p>
-              <PlatformProofRow className="mt-6 justify-start" />
+              <div className="mt-6 flex justify-start"><PlatformProofRow /></div>
             </div>
 
             {/* Tour mini card — visual anchor */}
