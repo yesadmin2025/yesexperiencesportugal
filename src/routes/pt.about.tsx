@@ -14,6 +14,7 @@ import {
   EMAIL,
   EMAIL_HREF,
   LICENSE_LABEL,
+  LICENSE_LABEL_PT,
   PHONE_DISPLAY,
   whatsappUrl,
 } from "@/config/business-nap";
