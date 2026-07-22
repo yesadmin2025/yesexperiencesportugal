@@ -10,6 +10,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
  */
 export const Route = createFileRoute("/moments")({
   beforeLoad: () => {
-    throw redirect({ to: "/proposal-in-portugal" });
+    throw redirect({ to: "/proposal-in-portugal", statusCode: 301 });
   },
 });
