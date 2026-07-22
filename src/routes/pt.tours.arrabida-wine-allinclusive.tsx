@@ -19,6 +19,7 @@ import { buildI18nHead } from "@/i18n/seo";
 const TOUR_ID = "arrabida-wine-allinclusive";
 const EN_PATH = `/tours/${TOUR_ID}`;
 const PT_PATH = `/pt/tours/${TOUR_ID}`;
+const EN_HREF = `https://yesexperiencesportugal.com${EN_PATH}`;
 const TITLE = "Arrábida Private Wine Tour desde Lisboa | Dia privado tudo-incluído";
 const DESCRIPTION =
   "Dia privado de vinho na Arrábida desde Lisboa — duas ou três adegas familiares em Azeitão, prova de Moscatel, mercado de Setúbal e almoço tradicional demorado. Operador local licenciado.";
