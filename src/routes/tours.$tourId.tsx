@@ -375,7 +375,7 @@ function TourHero({
 function TrustStrip({ meta }: { meta?: ViatorMeta }) {
   const items = [
     { icon: <Shield size={14} />, label: "Instant confirmation" },
-    { icon: <Check size={14} />, label: "Free cancellation up to 24h" },
+    { icon: <Check size={14} />, label: CANCELLATION.signature.en },
     { icon: <Check size={14} />, label: "A local on WhatsApp if you need help" },
     {
       icon: <Star size={14} />,
@@ -906,7 +906,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
         </div>
 
         <p className="mt-5 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory)]/65">
-          Instant confirmation · Free cancellation up to 24h · A local on WhatsApp if you need help
+          Instant confirmation · {CANCELLATION.signature.en} · A local on WhatsApp if you need help
         </p>
         <CredentialStrip variant="dark" className="mt-6" />
         <p className="mt-6 text-[13px] text-[color:var(--ivory)]/75">
