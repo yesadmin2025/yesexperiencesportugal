@@ -74,6 +74,8 @@ const PATHS: Path[] = [
     body: "The proposal on the cliff, the anniversary in a vineyard, the birthday nobody forgets — quietly composed, precisely held.",
     cta: "Share the occasion",
     href: "/proposal-in-portugal",
+    analyticsEvent: "five_ways_moments_click",
+
   },
   {
     num: "04",
