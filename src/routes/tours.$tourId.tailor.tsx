@@ -21,7 +21,6 @@ import { useEffect } from "react";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { PlatformProofRow } from "@/components/social-proof/PlatformProofRow";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getStripeEnvironment } from "@/lib/stripe";
@@ -700,7 +699,6 @@ function TailorPage() {
                 . The route, story and trusted local guide remain intact — only the details below
                 can be adjusted.
               </p>
-              <PlatformProofRow className="mt-6" align="start" />
             </div>
 
             {/* Tour mini card — visual anchor */}
