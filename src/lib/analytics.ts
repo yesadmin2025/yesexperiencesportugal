@@ -119,6 +119,21 @@ export function installAnalyticsAttrs(): void {
   const handler = (ev: MouseEvent) => {
     const target = ev.target;
     if (!(target instanceof Element)) return;
+
+    // Auto-track outbound review links + tel: / mailto: without needing data attrs.
+    const anchor = target.closest<HTMLAnchorElement>("a[href]");
+    if (anchor && !anchor.dataset.analytics) {
+      const href = anchor.getAttribute("href") ?? "";
+      const auto = detectAutoEvent(href);
+      if (auto) {
+        void import("@/lib/analytics-events").then((m) =>
+          m.trackEvent(auto, {
+            placement: anchor.dataset.analyticsPlacement ?? inferPlacement(anchor),
+          }),
+        );
+      }
+    }
+
     const el = target.closest<HTMLElement>("[data-analytics]");
     if (!el) return;
     const event = el.dataset.analytics;
@@ -126,12 +141,14 @@ export function installAnalyticsAttrs(): void {
     const params: AnalyticsParams = {};
     for (const [key, value] of Object.entries(el.dataset)) {
       if (key === "analytics" || !key.startsWith("analytics")) continue;
-      // data-analytics-placement -> analyticsPlacement -> placement
       const param = key.slice("analytics".length);
       const paramKey = param.charAt(0).toLowerCase() + param.slice(1);
       params[paramKey] = value;
     }
-    track(event, params);
+    // Route declarative clicks through the canonical wrapper for consent + dedupe + PII strip.
+    void import("@/lib/analytics-events").then((m) =>
+      m.trackEvent(event as never, params as never),
+    );
     // GA4 generate_lead — any WhatsApp click across the site is a lead.
     if (event === "whatsapp_click") {
       void import("@/lib/analytics-ga4").then((m) =>
@@ -148,3 +165,36 @@ export function installAnalyticsAttrs(): void {
 
   document.addEventListener("click", handler, { capture: true, passive: true });
 }
+
+function detectAutoEvent(
+  href: string,
+): "phone_click" | "email_click" | "tripadvisor_click" | "google_reviews_click" | null {
+  if (href.startsWith("tel:")) return "phone_click";
+  if (href.startsWith("mailto:")) return "email_click";
+  try {
+    const base = isBrowser() ? window.location.href : "https://example.com";
+    const u = new URL(href, base);
+    const host = u.hostname.toLowerCase();
+    if (host.endsWith("tripadvisor.com") || host.endsWith("tripadvisor.pt")) {
+      return "tripadvisor_click";
+    }
+    if (host.endsWith("google.com") || host.endsWith("google.pt")) {
+      if (
+        u.pathname.startsWith("/search") ||
+        u.pathname.startsWith("/maps") ||
+        u.pathname.includes("/reviews")
+      ) {
+        return "google_reviews_click";
+      }
+    }
+  } catch {
+    /* not a URL */
+  }
+  return null;
+}
+
+function inferPlacement(el: Element): string {
+  const section = el.closest<HTMLElement>("[data-section], section");
+  return section?.dataset?.section ?? section?.id ?? "unknown";
+}
+
