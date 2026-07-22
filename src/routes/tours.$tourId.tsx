@@ -38,6 +38,7 @@ import { TourImage } from "@/components/tours/TourImage";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { useAdminTourPhotos } from "@/lib/useAdminTourPhotos";
 import { SignatureRouteMap } from "@/components/SignatureRouteMap";
+import { CANCELLATION } from "@/config/business-nap";
 
 export const Route = createFileRoute("/tours/$tourId")({
   loader: ({ params }) => {

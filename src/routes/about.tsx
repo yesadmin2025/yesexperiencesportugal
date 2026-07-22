@@ -10,6 +10,7 @@ import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json"
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   BASED_IN_SHORT,
+  CANCELLATION,
   EMAIL,
   EMAIL_HREF,
   LICENSE_LABEL,

@@ -5,6 +5,7 @@ import { Lock, X, MapPin, Clock, Users, Calendar } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
+import { CANCELLATION } from "@/config/business-nap";
 import {
   summarizeJourneyLines as summarizeJourneyLinesShared,
   hasCompleteJourneyPricing,
