@@ -4,7 +4,7 @@ import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { breadcrumbLd, jsonLdScript, travelDesignerServiceLd } from "@/lib/jsonld";
+import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
 const TITLE = "Portugal Travel Designer | Custom Private Journeys";
@@ -29,7 +29,6 @@ export const Route = createFileRoute("/portugal-travel-designer")({
           { name: "Portugal Travel Designer", path: "/portugal-travel-designer" },
         ]),
       ),
-      jsonLdScript(travelDesignerServiceLd({ path: "/portugal-travel-designer" })),
     ],
   }),
   component: PortugalTravelDesignerPage,

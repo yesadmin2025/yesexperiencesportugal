@@ -437,10 +437,7 @@ export function tourProductLd(args: {
             url,
             priceCurrency: currency,
             price: args.priceFrom,
-            // availability intentionally omitted — real availability
-            // depends on the date picked in BookingForm and is not a
-            // permanent Product state. Do not re-add without a caller
-            // that can confirm live availability.
+            availability: "https://schema.org/InStock",
             seller: { "@id": `${SITE_URL}/#organization` },
           },
         }
@@ -520,7 +517,7 @@ export function tourTailorProductLd(args: {
             priceCurrency: currency,
             price: args.priceFrom,
 
-            // availability intentionally omitted — see tourProductLd().
+            availability: "https://schema.org/InStock",
             seller: { "@id": `${SITE_URL}/#organization` },
           },
         }
