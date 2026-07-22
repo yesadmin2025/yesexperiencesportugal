@@ -22,7 +22,9 @@ type Path = {
   body: string;
   cta: string;
   href: string;
+  analyticsEvent: string;
 };
+
 
 const PATHS: Path[] = [
   {
