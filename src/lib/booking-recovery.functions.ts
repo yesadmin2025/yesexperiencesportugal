@@ -1,16 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database, Json } from "@/integrations/supabase/types";
 
 const recoveryInput = z.object({
   sessionId: z.string().min(8).max(255),
   resendEmails: z.boolean().default(true),
 });
 
-async function assertAdmin(context: {
-  supabase: { rpc: (name: string, args: Record<string, unknown>) => PromiseLike<{ data: unknown; error: unknown }> };
-  userId: string;
-}) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function assertAdmin(context: { supabase: any; userId: string }) {
   const { data, error } = await context.supabase.rpc("has_role", {
     _user_id: context.userId,
     _role: "admin",
@@ -76,10 +75,14 @@ export const recoverPaidBooking = createServerFn({ method: "POST" })
       .map((value) => Number(value.trim()))
       .filter((value) => Number.isInteger(value) && value >= 0 && value <= 17);
     const customerEmail = session.customer_details?.email ?? session.customer_email ?? null;
+    if (!customerEmail) throw new Error("The paid Stripe session has no customer email.");
     const customerName = session.customer_details?.name ?? null;
-    const bookingType = ["signature", "builder", "moment"].includes(metadata.booking_type)
-      ? metadata.booking_type
-      : "builder";
+    const bookingType: Database["public"]["Enums"]["booking_type"] =
+      metadata.booking_type === "signature"
+        ? "signature"
+        : metadata.booking_type === "tailored"
+          ? "tailored"
+          : "builder";
     const paymentIntent = session.payment_intent;
     const paymentIntentId =
       typeof paymentIntent === "string" ? paymentIntent : paymentIntent?.id ?? null;
@@ -102,7 +105,7 @@ export const recoverPaidBooking = createServerFn({ method: "POST" })
       existing?.booking_details && typeof existing.booking_details === "object"
         ? (existing.booking_details as Record<string, unknown>)
         : {};
-    const bookingRow = {
+    const bookingRow: Database["public"]["Tables"]["bookings"]["Insert"] = {
       booking_type: bookingType,
       source_tour_id: metadata.tour_id || null,
       customer_email: customerEmail,
@@ -110,12 +113,12 @@ export const recoverPaidBooking = createServerFn({ method: "POST" })
       customer_phone: session.customer_details?.phone ?? null,
       guests,
       preferred_date: metadata.date_exact || null,
-      amount_total: session.amount_total ?? null,
+      amount_total: session.amount_total ?? 0,
       currency: (session.currency ?? "eur").toLowerCase(),
       status: "paid",
       stripe_session_id: session.id,
       stripe_payment_intent_id: paymentIntentId,
-      metadata: { ...metadata, stripe_env: "live", recovered_by_admin: true },
+      metadata: { ...metadata, stripe_env: "live", recovered_by_admin: true } as Json,
       booking_details: {
         ...existingDetails,
         composition: {
@@ -127,7 +130,7 @@ export const recoverPaidBooking = createServerFn({ method: "POST" })
           addOnsTotalEur: Number(metadata.add_ons_total_eur ?? 0) || 0,
           priceSource: metadata.price_source ?? null,
         },
-      },
+      } as Json,
     };
 
     let bookingId = existing?.id ?? null;
@@ -171,20 +174,37 @@ export const recoverPaidBooking = createServerFn({ method: "POST" })
         bookingStatusUrl: `https://yesexperiencesportugal.com/booking-confirmed?session_id=${encodeURIComponent(session.id)}`,
         pickup: metadata.pickup || null,
       };
-      const customerResult = await sendTransactionalInternal({
-        templateName: "checkout-receipt",
-        recipientEmail: customerEmail,
-        idempotencyKey: `checkout-receipt-${session.id}`,
-        templateData,
-      });
+      const { data: alreadySent } = await supabaseAdmin
+        .from("email_send_log")
+        .select("template_name, recipient_email")
+        .eq("status", "sent")
+        .in("template_name", ["checkout-receipt", "internal-booking"])
+        .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+      const wasSent = (templateName: string, recipient: string) =>
+        (alreadySent ?? []).some(
+          (row) =>
+            row.template_name === templateName &&
+            row.recipient_email.toLowerCase() === recipient.toLowerCase(),
+        );
+
+      const customerResult = wasSent("checkout-receipt", customerEmail)
+        ? { ok: true }
+        : await sendTransactionalInternal({
+            templateName: "checkout-receipt",
+            recipientEmail: customerEmail,
+            idempotencyKey: `checkout-receipt-${session.id}`,
+            templateData,
+          });
       const teamResults = await Promise.all(
         TEAM_NOTIFICATION_RECIPIENTS.map((recipient) =>
-          sendTransactionalInternal({
-            templateName: "internal-booking",
-            recipientEmail: recipient,
-            idempotencyKey: `internal-booking-${session.id}-${recipient}`,
-            templateData,
-          }),
+          wasSent("internal-booking", recipient)
+            ? Promise.resolve({ ok: true })
+            : sendTransactionalInternal({
+                templateName: "internal-booking",
+                recipientEmail: recipient,
+                idempotencyKey: `internal-booking-${session.id}-${recipient}`,
+                templateData,
+              }),
         ),
       );
       emailQueued = customerResult.ok && teamResults.every((result) => result.ok);
@@ -195,6 +215,6 @@ export const recoverPaidBooking = createServerFn({ method: "POST" })
       bookingId,
       created: !existing,
       emailQueued,
-      emailBlocked: !customerEmail,
+      emailBlocked: false,
     };
   });
