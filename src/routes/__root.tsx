@@ -205,9 +205,17 @@ export const Route = createRootRoute({
       { rel: "manifest", href: "/site.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      // Perf: pruned to the two families actually rendered on-screen.
+      // --font-serif (Georgia, "Cormorant Garamond", "Newsreader", serif)
+      // resolves to Georgia (system) first, so the Google-hosted fallbacks
+      // never render — safe to drop from the network request. Kaushan Script
+      // (--font-script) is only referenced by the internal typography-audit
+      // route and is not used in production surfaces. Weight ranges tightened
+      // to the actually-used span (300–700) to shrink the variable-font WOFF2
+      // payload without losing any visual weight the site renders.
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Inter:wght@100..900&family=Kaushan+Script&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..700;1,300..700&family=Inter:wght@300..700&display=swap",
       },
       {
         rel: "stylesheet",
