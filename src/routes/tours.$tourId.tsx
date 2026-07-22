@@ -32,6 +32,7 @@ import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { SIGNATURE_FAQ } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { TourReviews } from "@/components/TourReviews";
+import { PlatformProofRow } from "@/components/social-proof/PlatformProofRow";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { TourImage } from "@/components/tours/TourImage";
@@ -224,6 +225,8 @@ function TourDetailPage() {
 
       {/* ── 11 · REVIEWS ───────────────────────────────────────── */}
       <section className="container-x py-6">
+        {/* Per-platform verified proof — each source cited separately. */}
+        <PlatformProofRow className="mb-6" />
         <TourReviews tourId={tour.id} />
       </section>
       

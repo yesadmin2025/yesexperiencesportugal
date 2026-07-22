@@ -19,6 +19,7 @@ import {
   type PublicReview,
 } from "@/lib/reviews.functions";
 import { ReviewSourceLink } from "@/components/ui/ReviewSourceLink";
+import { PlatformProofRow } from "@/components/social-proof/PlatformProofRow";
 import { buildGuestQuotesJsonLd, SOURCE_LABEL } from "@/lib/guest-quotes-jsonld";
 
 export function GuestQuotes() {
@@ -99,24 +100,26 @@ export function GuestQuotes() {
           <>
             {count.toLocaleString("en-US")} five-star reviews{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
-              — real guests, real stories.
+              across verified platforms.
             </span>
           </>
         ) : (
           <>
             700+ five-star reviews{" "}
             <span className="italic font-normal text-[color:var(--teal)]">
-              — real guests, real stories.
+              across verified platforms.
             </span>
           </>
         )}
       </h2>
 
-      {/* Platform badge row removed — each review card now carries its
-          own source label ("via Tripadvisor" etc.), so the standalone
-          badge strip was redundant. */}
+      {/* Per-platform proof — each source cited separately with its own
+          rating + count + clickable logo. No combined total is shown here;
+          the sum in the H2 is paired with "across verified platforms" so
+          it is legible as such. Data comes from `src/config/review-platforms.ts`. */}
+      <PlatformProofRow className="mt-5" />
 
-      <ReviewCarousel quotes={quotes} />
+      <ReviewCarousel quotes={quotes.filter((q) => Boolean(q.source_url))} />
     </div>
   );
 }

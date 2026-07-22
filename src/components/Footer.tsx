@@ -73,7 +73,7 @@ export function Footer() {
             style={{ fontWeight: 400, letterSpacing: "0.005em" }}
           >
             Private Portugal, shown the way a local shows a friend. Intimate, real, and genuinely
-            different — designed with you and confirmed in minutes. 700+ five-star reviews.
+            different — designed with you and confirmed in minutes. 700+ five-star reviews across verified platforms.
           </p>
 
         </div>
