@@ -204,7 +204,10 @@ export function CinematicHero() {
           <Link
             to="/studio-v3"
             data-hero-field="secondaryCta"
+            data-analytics="hero_open_studio"
+            data-analytics-placement="hero"
             className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+
             style={{
               letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
