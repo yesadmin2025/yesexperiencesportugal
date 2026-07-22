@@ -352,6 +352,11 @@ function TourHero({
           <div className="mt-6 flex flex-col items-start gap-4">
             <a
               href="#book"
+              href="#reserve"
+              data-analytics="signature_reserve_click"
+              data-analytics-placement="hero"
+              data-analytics-experience-id={tour.id}
+              data-analytics-experience-type="signature"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-8 py-4 text-sm tracking-wide transition-all min-h-[52px]"
             >
               <Sparkles size={14} /> Check availability & reserve
@@ -359,10 +364,15 @@ function TourHero({
             <Link
               to="/tours/$tourId/tailor"
               params={{ tourId: tour.id }}
+              data-analytics="signature_tailor_click"
+              data-analytics-placement="hero"
+              data-analytics-experience-id={tour.id}
+              data-analytics-experience-type="signature"
               className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] hover:text-[color:var(--gold)] transition-colors min-h-[44px]"
             >
               Tailor this day <span aria-hidden="true" className="text-[color:var(--gold)]">→</span>
             </Link>
+
           </div>
         </div>
       </section>
