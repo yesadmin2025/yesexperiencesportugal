@@ -47,6 +47,14 @@ function ErrorShell({ title }: { title: string }) {
   );
 }
 
+function SharedItineraryPageWithProviders() {
+  return (
+    <CurrencyProvider>
+      <SharedItineraryPage />
+    </CurrencyProvider>
+  );
+}
+
 function SharedItineraryPage() {
   const { token } = Route.useParams();
   const load = useServerFn(loadJourney);
