@@ -229,14 +229,19 @@ function SharedItineraryPage() {
 
         {/* Price */}
         <section className="mt-10 rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--sand)]/40 p-6 print:bg-transparent">
-          <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
-            Investimento estimado
-          </p>
+          <div className="flex items-start justify-between gap-4">
+            <p className="text-[10px] uppercase tracking-[0.28em] font-bold text-[color:var(--charcoal)]">
+              Investimento estimado
+            </p>
+            <div className="print:hidden">
+              <PriceCurrencyChip align="end" />
+            </div>
+          </div>
           <p className="mt-2 serif text-[2.4rem] leading-none font-semibold tabular-nums">
-            €{totalEur}
+            <PriceEur amountEur={totalEur} role="total" />
           </p>
           <p className="mt-1 text-[12px] text-[color:var(--charcoal)]/65">
-            €{route.pricePerPersonEur} por convidado · {guests} convidado
+            <PriceEur amountEur={route.pricePerPersonEur} role="per-person" /> por convidado · {guests} convidado
             {guests > 1 ? "s" : ""}
           </p>
         </section>
