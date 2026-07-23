@@ -120,31 +120,36 @@ export function Footer() {
               { to: "/contact", label: "Contact" },
             ]}
           />
-          <FooterCol
-            title="Connect"
-            links={[
-              {
-                to: SOCIAL.instagram,
-                label: "Instagram",
-                external: true,
-              },
-              {
-                to: SOCIAL.facebook,
-                label: "Facebook",
-                external: true,
-              },
-              {
-                to: SOCIAL.tripadvisor,
-                label: "Tripadvisor",
-                external: true,
-              },
-              {
-                to: whatsappUrl(),
-                label: "WhatsApp Support",
-                external: true,
-              },
-            ]}
-          />
+          <div>
+            <h4
+              className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5"
+              style={{ fontWeight: 600 }}
+            >
+              Connect
+            </h4>
+            <ul className="flex flex-wrap items-center gap-3" aria-label="Social channels">
+              {[
+                { href: SOCIAL.instagram, label: "Instagram", Icon: InstagramIcon },
+                { href: SOCIAL.facebook, label: "Facebook", Icon: FacebookIcon },
+                { href: SOCIAL.tripadvisor, label: "Tripadvisor", Icon: TripadvisorIcon },
+                { href: whatsappUrl(), label: "WhatsApp", Icon: WhatsAppIcon },
+              ].map(({ href, label, Icon }) => (
+                <li key={label}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    title={label}
+                    className="tap inline-flex h-10 w-10 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] hover:ring-[color:var(--gold-warm)]/70 transition-colors duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                  >
+                    <Icon size={16} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
         </div>
 
 
