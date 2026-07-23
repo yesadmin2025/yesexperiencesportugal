@@ -4,6 +4,7 @@ import { Menu, X, Globe } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
 import { CtaButton } from "@/components/ui/CtaButton";
+import { AccessibleIconLink } from "@/components/AccessibleIconLink";
 import { SOCIAL, whatsappUrl } from "@/config/business-nap";
 import { useT } from "@/i18n/locale-context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -219,18 +220,17 @@ export function Navbar() {
               <div className="border-t border-[color:var(--charcoal)]/[0.06]" />
               <div className="flex flex-wrap items-center gap-3">
                 {mobileSocialLinks.map((n) => (
-                  <a
+                  <AccessibleIconLink
                     key={n.label}
                     href={n.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    external
+                    label={n.label}
+                    tooltip={n.label}
                     onClick={() => setOpen(false)}
-                    aria-label={n.label}
-                    title={n.label}
                     className="tap inline-flex h-11 w-11 items-center justify-center rounded-full ring-1 ring-[color:var(--charcoal)]/15 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] hover:ring-[color:var(--teal)]/40 transition-colors duration-[var(--dur-quick)] rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
                   >
                     <n.Icon size={16} />
-                  </a>
+                  </AccessibleIconLink>
                 ))}
               </div>
 
