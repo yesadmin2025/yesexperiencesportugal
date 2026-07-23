@@ -1,16 +1,40 @@
 /**
  * Currency context — indicative EUR ↔ USD display toggle.
  *
- * Persists the user's choice in localStorage. All checkout, PDFs and
- * emails remain in EUR (source of truth). USD is display-only; when
- * active, callers should surface a small "Charged in EUR" hint.
+ * Persists the user's choice in BOTH localStorage and a cookie so the
+ * preference survives refreshes, cross-page navigation, and cookie-only
+ * privacy modes. All checkout, PDFs and emails remain in EUR (source of
+ * truth). USD is display-only; when active, callers should surface a
+ * small "Charged in EUR" hint.
  */
 
 import * as React from "react";
 import { FX_BASE, FX_RATES, type Currency } from "@/config/fx-rates";
 
-const STORAGE_KEY = "yes.currency.v1";
+export const CURRENCY_STORAGE_KEY = "yes.currency.v1";
+export const CURRENCY_COOKIE = "yes.currency.v1";
 const CURRENCIES: Currency[] = ["EUR", "USD"];
+
+function readCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(
+    new RegExp(`(?:^|; )${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}=([^;]*)`),
+  );
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function readStoredCurrency(): Currency | null {
+  try {
+    const ls =
+      typeof window !== "undefined" ? window.localStorage.getItem(CURRENCY_STORAGE_KEY) : null;
+    if (ls && (CURRENCIES as string[]).includes(ls)) return ls as Currency;
+  } catch {
+    /* private mode / disabled */
+  }
+  const ck = readCookie(CURRENCY_COOKIE);
+  if (ck && (CURRENCIES as string[]).includes(ck)) return ck as Currency;
+  return null;
+}
 
 interface CurrencyContextValue {
   currency: Currency;
@@ -25,24 +49,35 @@ const CurrencyContext = React.createContext<CurrencyContextValue>({
 });
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
-  const [currency, setCurrencyState] = React.useState<Currency>(FX_BASE);
+  // Lazy initializer: on the client, read the persisted value up-front so
+  // there is no EUR → USD flicker on first paint / route change. On the
+  // server, `typeof window` is undefined and we fall back to FX_BASE —
+  // which matches what the client would render before hydration when
+  // nothing is stored, so hydration attributes still match.
+  const [currency, setCurrencyState] = React.useState<Currency>(() => {
+    if (typeof window === "undefined") return FX_BASE;
+    return readStoredCurrency() ?? FX_BASE;
+  });
 
+  // Belt-and-braces sync after mount for the SSR path where the initial
+  // client render used FX_BASE. Wrapped in an effect so it only runs
+  // client-side; setState is a no-op when values match.
   React.useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem(STORAGE_KEY);
-      if (stored && (CURRENCIES as string[]).includes(stored)) {
-        setCurrencyState(stored as Currency);
-      }
-    } catch {
-      /* no-op — private mode / disabled storage */
-    }
+    const stored = readStoredCurrency();
+    if (stored && stored !== currency) setCurrencyState(stored);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const setCurrency = React.useCallback((c: Currency) => {
     setCurrencyState(c);
     try {
-      window.localStorage.setItem(STORAGE_KEY, c);
-      document.cookie = `${STORAGE_KEY}=${c}; path=/; max-age=${60 * 60 * 24 * 180}; SameSite=Lax`;
+      window.localStorage.setItem(CURRENCY_STORAGE_KEY, c);
+    } catch {
+      /* no-op */
+    }
+    try {
+      const secure = typeof location !== "undefined" && location.protocol === "https:" ? "; Secure" : "";
+      document.cookie = `${CURRENCY_COOKIE}=${c}; path=/; max-age=${60 * 60 * 24 * 180}; SameSite=Lax${secure}`;
     } catch {
       /* no-op */
     }

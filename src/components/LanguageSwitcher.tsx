@@ -24,9 +24,18 @@ import { isPtReady } from "@/i18n/pt-ready";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/analytics-events";
 
-function setLocaleCookie(locale: Locale) {
+const LOCALE_STORAGE_KEY = "yes.locale.v1";
+
+function persistLocale(locale: Locale) {
   if (typeof document === "undefined") return;
-  document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=${60 * 60 * 24 * 180}; SameSite=Lax`;
+  const secure =
+    typeof location !== "undefined" && location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=${60 * 60 * 24 * 180}; SameSite=Lax${secure}`;
+  try {
+    window.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+  } catch {
+    /* private mode / disabled */
+  }
 }
 
 
@@ -34,6 +43,11 @@ interface LanguageSwitcherProps {
   variant?: "header" | "footer";
   className?: string;
 }
+
+const FULL_LOCALE_KEY: Record<Locale, string> = {
+  en: "lang.english",
+  pt: "lang.portuguese",
+};
 
 export function LanguageSwitcher({ variant = "header", className }: LanguageSwitcherProps) {
   const active = useLocale();
@@ -46,7 +60,8 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
   const ptReady = isPtReady(localeNeutralPath);
 
   return (
-    <nav
+    <div
+      role="group"
       aria-label={t("lang.switcher_label")}
       className={cn(
         "inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em]",
@@ -61,6 +76,7 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
         const isDisabled = loc === "pt" && !ptReady && active !== "pt";
 
         const label = LOCALE_LABELS[loc].short;
+        const fullName = t(FULL_LOCALE_KEY[loc]);
         const sep = i > 0 && (
           <span aria-hidden className="text-[color:var(--charcoal-soft)] opacity-40">
             ·
@@ -71,13 +87,20 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
           return (
             <span key={loc} className="inline-flex items-center gap-2">
               {sep}
-              <span
-                title={t("lang.pt_coming_soon")}
+              <button
+                type="button"
+                disabled
                 aria-disabled="true"
-                className="cursor-not-allowed text-[color:var(--charcoal-soft)] opacity-40"
+                aria-label={`${fullName} — ${t("lang.pt_coming_soon")}`}
+                title={t("lang.pt_coming_soon")}
+                data-locale-option={loc}
+                className={cn(
+                  "tap min-h-[32px] min-w-[32px] px-1 cursor-not-allowed rounded-sm text-[color:var(--charcoal-soft)] opacity-40",
+                  variant === "footer" && "text-[color:var(--ivory)]/60",
+                )}
               >
-                {label}
-              </span>
+                <span aria-hidden>{label}</span>
+              </button>
             </span>
           );
         }
@@ -88,25 +111,34 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
             <Link
               to={`${target}${search}${hash}` as string}
               onClick={() => {
-                setLocaleCookie(loc);
+                persistLocale(loc);
                 if (loc !== active) {
                   trackEvent("language_changed", { from: active, to: loc });
                 }
               }}
               aria-current={isActive ? "true" : undefined}
+              aria-label={fullName}
               hrefLang={loc}
+              data-locale-option={loc}
               className={cn(
-                "transition-colors duration-200",
+                "tap min-h-[32px] min-w-[32px] px-1 inline-flex items-center justify-center rounded-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]",
+                variant === "footer" &&
+                  "focus-visible:ring-offset-[color:var(--charcoal)]",
                 isActive
-                  ? "text-[color:var(--teal)] font-medium"
-                  : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
+                  ? variant === "footer"
+                    ? "text-[color:var(--gold-soft)] font-medium"
+                    : "text-[color:var(--teal)] font-medium"
+                  : variant === "footer"
+                    ? "text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)]"
+                    : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
               )}
             >
-              {label}
+              <span aria-hidden>{label}</span>
             </Link>
           </span>
         );
       })}
-    </nav>
+    </div>
   );
 }
+

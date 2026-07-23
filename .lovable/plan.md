@@ -1,67 +1,77 @@
-## Objetivo
+# Traveller Preferences: Tests · A11y · Persistence
 
-Adicionar três peças transversais ao site, sem alterar o design editorial:
-
-1. **Banner de consentimento de cookies** (RGPD) integrado com o Consent Mode v2 já ativo.
-2. **Ícone de troca de idioma PT/EN** visível no header e footer (o componente `LanguageSwitcher` já existe mas não está montado em lado nenhum).
-3. **Conversor de moeda EUR → USD** aplicado aos preços exibidos publicamente (Signature, Tailor, Studio V3, cards).
+Three surgical additions on top of the existing `CurrencyProvider`, `CurrencyToggle` and `LanguageSwitcher`. No visual redesign, no checkout changes (checkout stays EUR — source of truth).
 
 ---
 
-### 1. Cookie consent (RGPD + Consent Mode v2)
+## 1. E2E — currency conversion parity
 
-- Criar `src/components/CookieConsent.tsx` — cartão inferior discreto, ivory/charcoal, com três ações: **Aceitar tudo**, **Só essenciais**, **Personalizar** (modal com toggles: analytics, ads).
-- Persistir escolha em `localStorage` (`yes.cookieConsent.v1`) + cookie 180 dias.
-- Chamar `window.gtag('consent','update', {...})` com o mapeamento correto (`analytics_storage`, `ad_storage`, `ad_user_data`, `ad_personalization`).
-- Só renderiza se ainda não houver decisão; disparar evento GA4 `consent_choice`.
-- Montar em `src/components/SiteLayout.tsx` (uma única vez, fora do Studio full-bleed).
-- Adicionar link "Preferências de cookies" no footer que reabre o modal.
-- Respeitar `prefers-reduced-motion` no fade-in.
+New Playwright suite `e2e/currency-toggle-parity.spec.ts` (mobile 393×706, matching the site's default probe viewport).
 
-### 2. Language switcher visível (PT · EN)
+Covers on **Home · `/experiences` · a Signature tour · `/tours/$id/tailor` · `/studio` intro**:
 
-- Montar `<LanguageSwitcher variant="header" />` em `src/components/Navbar.tsx` (desktop: à direita antes do CTA; mobile: dentro do menu, topo).
-- Montar `<LanguageSwitcher variant="footer" />` na linha legal do `Footer.tsx`.
-- Manter o design chip existente (11–12px, tracking 0.22em, separador `·`, teal ativo). Adicionar um pequeno ícone globo (lucide `Globe`) apenas no header, à esquerda do par de chips, para reforçar affordance.
-- Nada de auto-redirect por Accept-Language (Google penaliza) — comportamento atual mantém-se.
+- Toggle mounts with `EUR` active by default (fresh context).
+- After clicking `USD` in the header toggle:
+  - Every visible price element (selector: `[data-price-eur]`, plus `PricePerPerson` output) reformats to `$` and matches `Math.round(eur * FX_RATES.USD)` from `src/config/fx-rates.ts`.
+  - The "Charged in EUR" indicative hint appears next to converted prices.
+  - Sum of per-person × pax lines still equals the displayed total (no double-conversion).
+- Checkout / booking summary routes (`/checkout/*`, Stripe redirect stub, email preview route) MUST remain EUR even when USD is active — asserted by scanning for `€` and absence of `$` in totals.
+- Reload the page → USD persists (localStorage + cookie both present).
+- Navigate to another route → USD persists without flicker (single render, no EUR → USD swap after mount).
 
-### 3. Conversor de preços EUR → USD
+Helpers extracted to `e2e/currency-parity-helpers.ts` (price scraping + rate math), reused by future suites.
 
-- Criar `src/lib/currency.ts`:
-  - `SUPPORTED = ['EUR','USD']`, default `EUR`.
-  - `useCurrency()` hook (Context) com persistência em `localStorage` (`yes.currency.v1`).
-  - `formatPrice(amountEur, { currency, locale })` — devolve string formatada com `Intl.NumberFormat`.
-  - Taxa EUR→USD carregada de `src/config/fx-rates.ts` (constante versionada, ex. `1 EUR = 1.08 USD`, com nota "Rates updated {date}. Charges processed in EUR."). Sem chamada externa em runtime — evita CLS, custo e falhas de edge.
-- Adicionar `<CurrencyProvider>` em `SiteLayout.tsx`.
-- Criar `<CurrencyToggle />` chip (EUR · USD) ao lado do `LanguageSwitcher` no header e footer, mesmo tratamento visual.
-- Substituir os locais que hoje formatam preço à mão para usar `formatPrice(...)`:
-  - `src/components/ui/PricePerPerson.tsx`
-  - `src/components/studio-v3/SignaturePriceCard.tsx`
-  - `src/components/studio-v3/CheckoutSummary.tsx`
-  - `src/components/studio-v3/InvestmentTierPicker.tsx`
-  - `src/components/SimpleBookingForm.tsx`
-  - `src/routes/tours.$tourId.tailor.tsx` (linhas de tier)
-- **Regra crítica (não alterar):** o *checkout* Stripe, cálculos server-side, PDFs (`signatureOnePagerPdf.tsx`) e emails permanecem em **EUR**. USD é apenas indicativo na UI pública. Adicionar micro-legenda "≈ USD · Charged in EUR" junto ao preço quando `currency === 'USD'`.
-- Não tocar em `src/lib/studio-v3/composerPricing.ts` nem em `supabase/functions/**` (SSOT de preço).
-
-### Testes
-
-- `e2e/cookie-consent.spec.ts`: banner aparece na primeira visita, desaparece após escolha, `gtag('consent','update')` é chamado.
-- `e2e/language-switcher.spec.ts`: ambos os chips visíveis no header e footer em `/` e `/tours/arrabida-wine-allinclusive`, PT desativado com tooltip nas rotas sem PT.
-- `src/lib/__tests__/currency.test.ts`: `formatPrice(100,'EUR','en')` → `€100`, `formatPrice(100,'USD','en')` com taxa configurada.
-- Estender `e2e/checkout-price-parity.spec.ts` para assegurar que o checkout permanece em EUR mesmo com toggle em USD.
-
-### Fora do âmbito
-
-- Tradução real de conteúdo PT (fluxo separado, já existe `pt-ready.ts`).
-- FX ao vivo (fica para v2 se o negócio quiser).
-- Alterar identidade visual ou tipografia.
+Wire into existing Playwright config alongside `copy-parity` suites; no new CI job needed.
 
 ---
 
-### Detalhes técnicos
+## 2. Accessibility polish — LanguageSwitcher & CurrencyToggle
 
-- Cookie consent: componente client-only, gate `useHydrated()` para evitar mismatch SSR.
-- Currency: Provider client-only; durante SSR renderiza EUR (default) — nenhum layout shift porque a taxa é síncrona.
-- Ambos os toggles seguem o padrão `<Eyebrow>`-style (11px uppercase, tracking 0.22em) já canônico.
-- Nenhum ficheiro auto-gerado é tocado (`routeTree.gen.ts`, `integrations/supabase/*`).
+Keep the visual language as-is; only strengthen semantics and contrast.
+
+- **Keyboard**
+  - Both switchers become a single `role="group"` with roving `aria-pressed` buttons already in place; verify Tab order lands on each option and Enter/Space activates.
+  - Add `focus-visible` ring already present on Currency — mirror it on LanguageSwitcher active/inactive buttons (currently missing on the anchor variant).
+  - Disabled PT `<span>` becomes `<button disabled aria-disabled="true">` so screen readers announce state and it stays in Tab order predictably.
+- **ARIA labels**
+  - `nav aria-label` becomes translatable: `t("currency.switcher_label")` (new key, EN "Currency", PT "Moeda"). Language switcher already uses `t("lang.switcher_label")`.
+  - Each option gets `aria-label` including full name: e.g. `aria-label="Euro"` / `aria-label="US dollar (indicative)"`, `aria-label="English"` / `aria-label="Português"`.
+  - Globe icon in Navbar becomes `aria-hidden` (decorative), with the label carried by the surrounding switcher.
+- **Contrast**
+  - Footer variant currently uses `text-[color:var(--ivory)]/75` on `--charcoal` — bump inactive to `/85` to clear 4.5:1 (verified against `--charcoal #2E2E2E`).
+  - Header inactive uses `--charcoal-soft`; keep, already passes on `--ivory`.
+- **Announce currency change** via a polite `aria-live="polite"` visually-hidden region ("Prices now shown in US dollars, indicative — charged in euros").
+
+New test `e2e/traveller-prefs-a11y.spec.ts`:
+- axe scan on the switcher cluster (header + footer).
+- Tab from logo reaches Language then Currency buttons in order.
+- `aria-pressed` toggles correctly on Space.
+
+---
+
+## 3. Persistence hardening
+
+Currency and locale already write to `localStorage` + cookie individually — align them and guarantee cross-navigation stability.
+
+- **Currency** (`src/lib/currency.tsx`)
+  - On mount, prefer cookie value when localStorage is empty (fixes first render after cross-subdomain arrival / cleared storage).
+  - Emit selection synchronously via a lazy `useState` initializer guarded by `useHydrated()` to avoid an EUR → USD flicker on route change (currently a `useEffect` swap).
+  - Cookie already 180-day `SameSite=Lax`; add `Secure` in production (`location.protocol === 'https:'`).
+- **Locale** (`src/i18n/locale-context.tsx` + `LanguageSwitcher`)
+  - Cookie is the canonical store (SSR-readable); mirror to `localStorage["yes.locale.v1"]` so the client can restore instantly if the cookie is stripped by a privacy extension.
+  - Ensure globe icon + label render the persisted locale on first paint (no `EN` flash when cookie says `pt`).
+- **E2E persistence check** added to the currency suite above: set USD + PT → hard reload → navigate to 3 routes → both preferences survive; clear cookie only → localStorage rehydrates; clear both → defaults return.
+
+---
+
+## Files touched
+
+- Add: `e2e/currency-toggle-parity.spec.ts`, `e2e/currency-parity-helpers.ts`, `e2e/traveller-prefs-a11y.spec.ts`
+- Edit: `src/lib/currency.tsx`, `src/components/CurrencyToggle.tsx`, `src/components/LanguageSwitcher.tsx`, `src/i18n/locale-context.tsx`, `src/i18n/en.ts` / `pt.ts` (new keys), `src/components/ui/PricePerPerson.tsx` (add `data-price-eur` attribute for reliable scraping)
+- No changes to checkout, Stripe, pricing SSOT, or visual design tokens.
+
+## Out of scope
+
+- Live FX rates (stays versioned in `fx-rates.ts`).
+- Adding new currencies or locales.
+- Any change to checkout / receipt / email currency (remains EUR).

@@ -61,6 +61,8 @@ export function PricePerPerson(props: PricePerPersonProps) {
   if (props.variant === "card") {
     return (
       <span
+        data-price-eur={props.fromEur}
+        data-price-variant="card"
         className={cn(
           "inline-flex items-baseline gap-1 text-[color:var(--charcoal)] normal-case tracking-normal",
           props.className,
@@ -77,6 +79,8 @@ export function PricePerPerson(props: PricePerPersonProps) {
   if (props.variant === "hero") {
     return (
       <span
+        data-price-eur={props.fromEur}
+        data-price-variant="hero"
         className={cn(
           "inline-flex items-baseline gap-1.5 text-[color:var(--charcoal)] normal-case tracking-normal",
           props.className,
@@ -93,22 +97,33 @@ export function PricePerPerson(props: PricePerPersonProps) {
     );
   }
 
+
   const { perPaxEur, guests, partyTotalEur, indicative, hasMinors, className } = props;
   return (
-    <div className={cn("space-y-1.5", className)}>
+    <div className={cn("space-y-1.5", className)} data-price-variant="form">
       <div className="flex items-baseline justify-between">
         <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
           {guests > 0 ? `For ${guests} ${guests === 1 ? "guest" : "guests"}` : "From"}
           {" · per person"}
         </span>
-        <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">{eur(perPaxEur)}</span>
+        <span
+          data-price-eur={perPaxEur}
+          data-price-role="per-pax"
+          className="serif text-[1.4rem] text-[color:var(--charcoal)]"
+        >
+          {eur(perPaxEur)}
+        </span>
       </div>
       {partyTotalEur != null && guests > 1 ? (
         <div className="flex items-baseline justify-between">
           <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
             Party total{indicative ? " (indicative)" : ""}
           </span>
-          <span className="serif text-[1.05rem] text-[color:var(--charcoal)]">
+          <span
+            data-price-eur={partyTotalEur}
+            data-price-role="party-total"
+            className="serif text-[1.05rem] text-[color:var(--charcoal)]"
+          >
             {eur(partyTotalEur)}
             <span className="ml-1.5 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans not-italic">
               {hasMinors ? "age-based pricing" : `${eur(perPaxEur)} × ${guests}`}
