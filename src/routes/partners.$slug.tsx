@@ -10,6 +10,14 @@ import {
   partnerBySlug,
   type PlatformPartner,
 } from "@/data/platform-partners";
+import { ViatorIcon, GetYourGuideIcon, TripadvisorIcon } from "@/components/BrandIcon";
+import type { ComponentType } from "react";
+
+const PARTNER_ICON: Record<PlatformPartner["slug"], ComponentType<{ size?: number; className?: string }>> = {
+  viator: ViatorIcon,
+  getyourguide: GetYourGuideIcon,
+  tripadvisor: TripadvisorIcon,
+};
 import { abs } from "@/lib/seo";
 import heroImg from "@/assets/hero-coast.jpg";
 
