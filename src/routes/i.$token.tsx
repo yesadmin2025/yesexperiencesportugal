@@ -23,7 +23,7 @@ export const Route = createFileRoute("/i/$token")({
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
-  component: SharedItineraryPage,
+  component: SharedItineraryPageWithProviders,
   errorComponent: () => <ErrorShell title="Não foi possível carregar este roteiro." />,
   notFoundComponent: () => <ErrorShell title="Este roteiro foi removido ou nunca existiu." />,
 });
