@@ -7,7 +7,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { SOCIAL, whatsappUrl } from "@/config/business-nap";
 import { useT } from "@/i18n/locale-context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { CurrencyToggle } from "@/components/CurrencyToggle";
+
 
 
 function useDesktopLinks() {
@@ -149,7 +149,6 @@ export function Navbar() {
               <Globe size={13} strokeWidth={1.6} aria-hidden />
               <LanguageSwitcher variant="header" />
             </span>
-            <CurrencyToggle variant="header" />
             <CtaButton to="/studio-v3" variant="primary" size="sm" className="ml-2">
               Design &amp; Book
             </CtaButton>
@@ -162,8 +161,6 @@ export function Navbar() {
               <Globe size={12} strokeWidth={1.6} aria-hidden />
               <LanguageSwitcher variant="header" />
             </span>
-            <span aria-hidden className="h-3 w-px bg-[color:var(--charcoal)]/15" />
-            <CurrencyToggle variant="header" />
             <button
               className={menuBtnClass}
               onClick={() => setOpen(!open)}

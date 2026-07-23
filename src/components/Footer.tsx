@@ -3,7 +3,7 @@ import { ShieldCheck, BadgeCheck, Lock } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { CurrencyToggle } from "@/components/CurrencyToggle";
+
 import { openCookieConsent } from "@/components/CookieConsent";
 import {
   BASED_IN,
@@ -306,7 +306,6 @@ export function Footer() {
           </div>
           <div className="mt-5 pt-5 border-t border-[color:var(--gold-warm)]/10 flex flex-wrap items-center justify-between gap-4">
             <LanguageSwitcher variant="footer" className="text-[color:var(--ivory)]/75" />
-            <CurrencyToggle variant="footer" />
           </div>
 
           <p className="md:hidden mt-3 text-[11px] leading-[1.55] text-[color:var(--text-on-dark-muted)] font-[family-name:var(--font-sans)]">

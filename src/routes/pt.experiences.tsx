@@ -15,6 +15,8 @@ import { buildLocaleUrl } from "@/i18n/config";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
+import { PriceEur } from "@/components/ui/PriceEur";
 
 export const Route = createFileRoute("/pt/experiences")({
   head: () => ({
@@ -103,6 +105,9 @@ function ExperiencesPage() {
       <section className="reveal section-y">
         <div className="container-x">
           <h2 className="sr-only">A nossa coleção Signature</h2>
+          <div className="mb-6 flex justify-end">
+            <PriceCurrencyChip />
+          </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {signatureTours.map((t) => {
               const meta = VIATOR_META[t.id];
@@ -167,7 +172,7 @@ function ExperiencesPage() {
                       <Clock size={11} /> {t.durationHours}
                     </span>
                     <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
-                    <span className="text-[color:var(--charcoal)]">A partir de €{t.priceFrom}</span>
+                    <span className="text-[color:var(--charcoal)]">A partir de <PriceEur amountEur={t.priceFrom} role="from" /></span>
                   </div>
 
                   <div className="mt-5 flex flex-col xs:flex-row gap-2.5">

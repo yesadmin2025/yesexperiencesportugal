@@ -12,6 +12,8 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { TourImage } from "@/components/tours/TourImage";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
+import { PriceEur } from "@/components/ui/PriceEur";
 
 export const Route = createFileRoute("/day-tours")({
   head: () => ({
@@ -80,7 +82,8 @@ function DayToursPage() {
       <section className="reveal py-16 md:py-20">
         <div className="container-x">
           <h2 className="sr-only">Available Day Tours</h2>
-          <div className="flex justify-end mb-6">
+          <div className="flex flex-wrap items-center justify-end gap-4 mb-6">
+            <PriceCurrencyChip />
             <ImageQualityToggle />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -126,7 +129,7 @@ function DayToursPage() {
                     <MapPin size={12} /> {t.theme}
                   </span>
                   <span className="text-[color:var(--teal)]">
-                    From €{t.priceFrom}
+                    From <PriceEur amountEur={t.priceFrom} role="from" />
                     <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
                       per person
                     </span>

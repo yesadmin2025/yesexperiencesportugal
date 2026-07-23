@@ -15,6 +15,8 @@ import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { Scene } from "@/components/motion/Scene";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { MaskReveal } from "@/components/motion/MaskReveal";
+import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
+import { PriceEur } from "@/components/ui/PriceEur";
 
 export const Route = createFileRoute("/experiences")({
   head: () => ({
@@ -94,6 +96,9 @@ function ExperiencesPage() {
       <section className="reveal section-y">
         <div className="container-x">
           <h2 className="sr-only">Our Signature Collection</h2>
+          <div className="mb-6 flex justify-end">
+            <PriceCurrencyChip />
+          </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {signatureTours.map((t) => {
               // Real bullets sourced from the matching Viator product page
@@ -200,7 +205,7 @@ function ExperiencesPage() {
                     </span>
                     <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
                     <span className="text-[color:var(--charcoal)]">
-                      From €{t.priceFrom}
+                      From <PriceEur amountEur={t.priceFrom} role="from" />
                       <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
                         per person
                       </span>
