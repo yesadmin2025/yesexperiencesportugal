@@ -61,6 +61,8 @@ export function PricePerPerson(props: PricePerPersonProps) {
   if (props.variant === "card") {
     return (
       <span
+        data-price-eur={props.fromEur}
+        data-price-variant="card"
         className={cn(
           "inline-flex items-baseline gap-1 text-[color:var(--charcoal)] normal-case tracking-normal",
           props.className,
@@ -77,6 +79,8 @@ export function PricePerPerson(props: PricePerPersonProps) {
   if (props.variant === "hero") {
     return (
       <span
+        data-price-eur={props.fromEur}
+        data-price-variant="hero"
         className={cn(
           "inline-flex items-baseline gap-1.5 text-[color:var(--charcoal)] normal-case tracking-normal",
           props.className,
@@ -92,6 +96,7 @@ export function PricePerPerson(props: PricePerPersonProps) {
       </span>
     );
   }
+
 
   const { perPaxEur, guests, partyTotalEur, indicative, hasMinors, className } = props;
   return (
