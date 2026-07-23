@@ -7,6 +7,8 @@ import { Check, MapPin, Printer } from "lucide-react";
 import { loadJourney } from "@/lib/builderJourneys.functions";
 import { buildDayRoute } from "@/lib/builderEngine.functions";
 import { fmtMinutes } from "@/components/builder/types";
+import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
+import { PriceEur } from "@/components/ui/PriceEur";
 
 export const Route = createFileRoute("/i/$token")({
   head: ({ params }) => ({
