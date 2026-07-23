@@ -86,16 +86,26 @@ function PartnersHub() {
         </Scene>
 
         <section className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {PLATFORM_PARTNERS.map((p) => (
+          {PLATFORM_PARTNERS.map((p) => {
+            const Icon = PARTNER_ICON[p.slug];
+            return (
             <Link
               key={p.slug}
               to="/partners/$slug"
               params={{ slug: p.slug }}
               className="group flex flex-col rounded-2xl border border-[color:var(--charcoal)]/12 bg-[color:var(--sand)]/40 p-6 transition hover:-translate-y-0.5 hover:border-[color:var(--gold)]/60 hover:shadow-md"
             >
-              <span className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold-ink)]">
-                {p.eyebrow}
-              </span>
+              <div className="flex items-center gap-3">
+                <span
+                  aria-hidden="true"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-[color:var(--gold)]/45 text-[color:var(--gold-ink)]"
+                >
+                  <Icon size={16} />
+                </span>
+                <span className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold-ink)]">
+                  {p.eyebrow}
+                </span>
+              </div>
               <h2 className="mt-3 font-display text-[22px] leading-snug text-[color:var(--charcoal)]">
                 {p.name}
               </h2>
@@ -111,7 +121,8 @@ function PartnersHub() {
                 <span aria-hidden>→</span>
               </span>
             </Link>
-          ))}
+            );
+          })}
         </section>
 
         <section className="mt-20 rounded-2xl border border-[color:var(--charcoal)]/10 bg-white/60 p-8">
