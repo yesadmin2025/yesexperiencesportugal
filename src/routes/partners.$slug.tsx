@@ -124,7 +124,15 @@ function PartnerPage() {
         </nav>
 
         <Scene>
-          <Eyebrow className="mt-8">{p.eyebrow}</Eyebrow>
+          <div className="mt-8 flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full ring-1 ring-[color:var(--gold)]/50 text-[color:var(--gold-ink)]"
+            >
+              {(() => { const Icon = PARTNER_ICON[p.slug]; return <Icon size={18} />; })()}
+            </span>
+            <Eyebrow>{p.eyebrow}</Eyebrow>
+          </div>
           <SectionTitle as="h1" size="anchor" className="mt-4">
             {p.h1}
           </SectionTitle>
