@@ -34,6 +34,8 @@ test("mobile nav social icons expose aria-labels", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
 
   const menuBtn = page.locator('header button[aria-label*="menu" i]').first();
+  // Wait for hydration so the React onClick handler is attached.
+  await expect(menuBtn).toHaveAttribute("aria-expanded", "false");
   await menuBtn.click();
 
   const mobileNav = page.locator("#mobile-nav").first();
