@@ -2537,6 +2537,7 @@ export type Database = {
     }
     Functions: {
       cleanup_expired_builder_references: { Args: never; Returns: number }
+      current_user_confirmed_email: { Args: never; Returns: string }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean

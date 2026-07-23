@@ -9,6 +9,7 @@ import { buildDayRoute } from "@/lib/builderEngine.functions";
 import { fmtMinutes } from "@/components/builder/types";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
+import { CurrencyProvider } from "@/lib/currency";
 
 export const Route = createFileRoute("/i/$token")({
   head: ({ params }) => ({
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/i/$token")({
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
-  component: SharedItineraryPage,
+  component: SharedItineraryPageWithProviders,
   errorComponent: () => <ErrorShell title="Não foi possível carregar este roteiro." />,
   notFoundComponent: () => <ErrorShell title="Este roteiro foi removido ou nunca existiu." />,
 });
@@ -43,6 +44,14 @@ function ErrorShell({ title }: { title: string }) {
         </a>
       </div>
     </div>
+  );
+}
+
+function SharedItineraryPageWithProviders() {
+  return (
+    <CurrencyProvider>
+      <SharedItineraryPage />
+    </CurrencyProvider>
   );
 }
 
