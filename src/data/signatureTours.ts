@@ -206,7 +206,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Setúbal · Arrábida",
     duration: "Full Day",
     durationHours: "7–9h",
-    priceFrom: 138,
+    priceFrom: 135,
     wineriesRule:
       "You'll visit 2 or 3 of these wineries — the exact count depends on the experience you choose and same-day availability.",
     theme: "Wine",
@@ -345,7 +345,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Arrábida · Sesimbra",
     duration: "Full Day",
     durationHours: "6+h",
-    priceFrom: 190,
+    priceFrom: 118,
     theme: "Coastal",
     blurb:
       "A private coastal day — Arrábida viewpoints, hidden coves and a slow picnic on a quiet beach.",
@@ -450,7 +450,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Setúbal · Arrábida",
     duration: "Full Day",
     durationHours: "8–9h",
-    priceFrom: 159,
+    priceFrom: 135,
     theme: "Coastal",
     blurb:
       "A private Arrábida day with a boat ride into the park's turquoise coves — swim, snorkel, drift and lunch by the water.",
@@ -552,7 +552,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Azeitão · Sesimbra",
     duration: "Full Day",
     durationHours: "8–9h",
-    priceFrom: 145,
+    priceFrom: 135,
     theme: "Heritage",
     blurb:
       "Paint your own azulejo in a centuries-old atelier, taste local wines next door, then unwind by the sea in Sesimbra.",
@@ -651,7 +651,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Azeitão · Sesimbra",
     duration: "Full Day",
     durationHours: "8–9h",
-    priceFrom: 135,
+    priceFrom: 101,
     theme: "Gastronomy",
     blurb:
       "Hands-on cheese making in Azeitão, a private winery tasting next door, then sea air and seafood in Sesimbra.",
@@ -743,7 +743,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Lisbon Coast",
     duration: "Full Day",
     durationHours: "8–9h",
-    priceFrom: 159,
+    priceFrom: 161,
     theme: "Heritage",
     blurb:
       "Sintra's quieter palaces and forests, the wild westernmost coast, Cascais lanes and a private wine tasting.",
@@ -848,7 +848,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Tróia · Comporta · Alentejo",
     duration: "Full Day",
     durationHours: "8–10h",
-    priceFrom: 165,
+    priceFrom: 157,
     theme: "Coastal",
     blurb:
       "Cross the Sado by ferry to the Roman ruins of Tróia, then long Comporta beaches, rice fields and a slow Alentejo lunch.",
@@ -957,7 +957,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Alentejo",
     duration: "Long Day",
     durationHours: "9–11h",
-    priceFrom: 262,
+    priceFrom: 169,
     theme: "Wine",
     blurb:
       "Roman temples and the Chapel of Bones in Évora, then Alentejo wineries and a slow lunch in vineyard country.",
@@ -1062,7 +1062,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Centro",
     duration: "Full Day",
     durationHours: "9–10h",
-    priceFrom: 220,
+    priceFrom: 152,
     theme: "Heritage",
     blurb:
       "The Templar Convento de Cristo in Tomar, then Coimbra's ancient university and old town along the Mondego.",
@@ -1150,7 +1150,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Centro · Coast",
     duration: "Full Day",
     durationHours: "9–10h",
-    priceFrom: 195,
+    priceFrom: 135,
     theme: "Heritage",
     blurb:
       "The Sanctuary of Fátima, the giant waves of Nazaré, the medieval lanes of Óbidos and a Ginjinha tasting.",
@@ -1239,7 +1239,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Alentejo · Vidigueira",
     duration: "Long Day",
     durationHours: "10–12h",
-    priceFrom: 260,
+    priceFrom: 254,
     theme: "Wine",
     blurb:
       "Roman ruins, amphora wines and a hidden Alentejo most travelers never reach — a quiet inland day with deep roots.",
@@ -1335,7 +1335,7 @@ export const signatureTours: SignatureTour[] = [
     region: "Southwest Alentejo · Costa Vicentina",
     duration: "Long Day",
     durationHours: "9–10h",
-    priceFrom: 239,
+    priceFrom: 203,
     theme: "Coastal",
     blurb:
       "Whitewashed fishing villages, protected cliffs and the wild river-meets-ocean beach at Odeceixe — a hidden Atlantic Portugal few travelers reach.",
