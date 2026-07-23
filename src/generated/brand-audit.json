@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-23T05:43:54.717Z",
-  "filesScanned": 872,
+  "generatedAt": "2026-07-23T06:18:46.554Z",
+  "filesScanned": 876,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 376,
-    "approved": 93,
+    "total": 382,
+    "approved": 97,
     "allowlisted": 64,
-    "mismatch": 219
+    "mismatch": 221
   },
   "findings": [
     {
@@ -320,6 +320,60 @@
       "normalized": "#8a8a8a",
       "snippet": ".empty { color: #8a8a8a; padding: 20px; text-align: center; }",
       "status": "mismatch"
+    },
+    {
+      "file": "src/components/CookieConsent.tsx",
+      "line": 115,
+      "col": 144,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"pointer-events-auto mx-auto max-w-[640px] rounded-[14px] border border-[color:var(--charcoal)]/[0.08] bg-[color:var(--ivory,#FAF8F3)] shadow-[0_18px_",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/CookieConsent.tsx",
+      "line": 200,
+      "col": 152,
+      "raw": "#1e4a4f",
+      "normalized": "#1e4a4f",
+      "snippet": "className=\"tap text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/CookieConsent.tsx",
+      "line": 200,
+      "col": 365,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"tap text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/CookieConsent.tsx",
+      "line": 225,
+      "col": 152,
+      "raw": "#1e4a4f",
+      "normalized": "#1e4a4f",
+      "snippet": "className=\"tap text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/CookieConsent.tsx",
+      "line": 225,
+      "col": 365,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "className=\"tap text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/CurrencyToggle.tsx",
+      "line": 46,
+      "col": 224,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "\"tap transition-colors duration-200 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-",
+      "status": "approved"
     },
     {
       "file": "src/components/HeroColorDebugOverlay.tsx",
@@ -683,7 +737,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 68,
+      "line": 71,
       "col": 364,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -692,7 +746,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 71,
+      "line": 74,
       "col": 321,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -701,7 +755,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 99,
+      "line": 102,
       "col": 250,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -710,7 +764,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 176,
+      "line": 190,
       "col": 351,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -719,7 +773,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 189,
+      "line": 203,
       "col": 351,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -728,7 +782,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 205,
+      "line": 219,
       "col": 353,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
