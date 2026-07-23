@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T11:46:21.204Z",
+  "generatedAt": "2026-07-23T15:18:02.245Z",
   "filesScanned": 883,
   "approvedPalette": {
     "teal": "#295B61",
@@ -3158,7 +3158,7 @@
     },
     {
       "file": "src/routes/i.$token.tsx",
-      "line": 325,
+      "line": 334,
       "col": 34,
       "raw": "#fff",
       "normalized": "#ffffff",
