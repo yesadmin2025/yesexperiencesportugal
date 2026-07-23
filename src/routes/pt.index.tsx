@@ -6,6 +6,8 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { TourImage } from "@/components/tours/TourImage";
+import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
+import { PriceEur } from "@/components/ui/PriceEur";
 import { signatureTours } from "@/data/signatureTours";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { buildLocaleUrl } from "@/i18n/config";
