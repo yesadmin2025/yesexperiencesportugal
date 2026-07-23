@@ -1,85 +1,50 @@
-# Plano de Otimização de Performance (sem alterar identidade/animações/vídeo)
+# Auditoria — correções restantes
 
-Objetivo: LCP ≤ 2,5 s · INP < 200 ms · CLS < 0,1 em mobile e desktop, mantendo vídeo hero, cinematografia, tipografia Fraunces/Inter, paleta e motion system (com `prefers-reduced-motion` respeitado).
+Fonte: subagente auditor (read-only). Fixamos só o que tem correção clara e alcance visível. Nada de mudanças visuais.
 
-## 1. Baseline (medir antes de tocar)
+## P0 — Verdade de preço
 
-Correr Lighthouse CI (já configurado em `.lighthouserc.json` + `.lighthouserc.mobile.json`) em:
-- `/` (home)
-- `/experiences`
-- `/tours/$tourId` (uma Signature representativa, ex. Arrábida)
-- `/studio-v3`
-- `/portugal-travel-designer`
-- `/about`
+1. **Centralizar `AGE_BAND_PCT`**
+   - Frontend: `src/lib/email-templates/checkout-receipt.tsx` deixa de redeclarar e passa a `import { AGE_BAND_PCT } from "@/data/signatureTourPricing"`.
+   - Edge (Deno): criar `supabase/functions/_shared/pricing.ts` com `AGE_BAND_PCT` + `ageBand()`; `create-signature-checkout/index.ts` importa daí.
+   - Teste `src/__tests__/checkout-email-parity.test.ts` importa a constante em vez de a redeclarar.
 
-Registar por página, mobile e desktop, num relatório em `docs/perf/baseline-2026-07.md`:
-- LCP, INP (proxy: TBT + max-potential-FID), CLS
-- Peso total transferido, JS total, CSS total, imagens totais, vídeo
-- Elemento LCP identificado (screenshot + selector)
-- Long tasks > 50 ms no boot
-- Fontes carregadas vs. usadas (via coverage)
+2. **Remover edge function órfã `create-builder-checkout`**
+   - Não é referenciada em `src/`. Contém fórmula de preço legada sem age-bands (risco de mis-pricing se alguém a religar).
+   - Ação: apagar via `supabase--delete_edge_functions` (mantém `create-signature-checkout` como único caminho).
 
-Sem este baseline não avanço para as correções — é o "antes" da entrega antes/depois.
+## P1 — NAP / legal / CTA
 
-## 2. Quick wins (ordem de execução)
+3. **Legal pages a usar `business-nap.ts`**
+   - `src/routes/terms.tsx`, `src/routes/privacy.tsx`, `src/routes/cookies.tsx`: substituir literal `info@yesexperiencesportugal.com` por `EMAIL` + `href={EMAIL_HREF}`.
+   - `src/routes/terms.tsx`: substituir 3× `"RNAAT nº 31/2023"` por `LICENSE_LABEL`.
 
-### Fontes (impacto imediato em LCP + CLS)
-- `__root.tsx` carrega Montserrat + Newsreader + Cormorant Garamond + Inter + Kaushan Script. Memória confirma: **só Fraunces + Inter estão em uso** (Montserrat/Cormorant/Newsreader/Kaushan foram retiradas). Remover famílias mortas do `<link>` do Google Fonts.
-- Reduzir Inter e Fraunces aos pesos realmente usados (auditar via coverage; provável Inter 400/500/600 e Fraunces 400/500/600 + italic).
-- Adicionar `font-display: swap` (garantir na query string do Google Fonts com `&display=swap` — já presente, confirmar após poda).
-- `<link rel="preload" as="font" ... crossorigin>` **apenas** para o peso/estilo usado no H1 do hero e no corpo above-the-fold.
+4. **/contact info rows clicáveis**
+   - `src/routes/contact.tsx:253-254`: passar `href={EMAIL_HREF}` e `href={PHONE_HREF}` ao componente `Info` (já suporta `href`).
 
-### Vídeo hero (LCP-critical)
-- Manter o hero cinematográfico.
-- Servir sempre um **poster leve** (AVIF/WebP, ~40–80 KB, dimensões exatas) com `fetchpriority="high"` e `<link rel="preload" as="image">` na rota home.
-- `<video>` com `preload="none"` + `poster=...`, começar o carregamento só depois de `app:ready` (ou em `requestIdleCallback`); manter autoplay/muted/inline como está mas atrasado.
-- Confirmar `width`/`height` no `<video>` e no poster para eliminar CLS.
-- Auditar codecs disponíveis em `public/video/` (já existem variantes 720 av1/hevc/mp4 + 1080) — servir a mais leve compatível via `<source type="video/...; codecs=...">` por ordem av1 → hevc → h264, e limitar a 720p em mobile por media query.
+5. **CTA verb parity — "Reserve"**
+   - `src/content/faq-data.ts:34,38`: alinhar copy "book"/"submit a request" com o verbo canónico "reserve" já usado em product/tailor/studio.
 
-### Imagens
-- O pipeline `editorial-premium` + `ResponsiveEditorialImage` já emite AVIF/WebP com `srcset`/`sizes`. Auditar cada `<img>` restante (grep) e migrar as que ainda usam JPG único.
-- Todas as `<img>` e `<video>` precisam de `width`/`height` explícitos (ou `aspect-ratio` no CSS) — varrer e corrigir onde faltar.
-- `loading="lazy"` + `decoding="async"` em **tudo abaixo da dobra**; `loading="eager"` + `fetchpriority="high"` **apenas** no LCP de cada rota (hero image ou primeiro card visível quando não há hero).
-- Nunca `lazy` no elemento LCP.
+6. **Footer: remover duplicação `/contact`**
+   - `src/components/Footer.tsx:274-278`: manter `Contact` apenas na coluna "Company"; retirar do bottom-bar legal.
 
-### JS / bundles
-- Auditar `src/routes/studio-v3.tsx` e sub-componentes: garantir que o bundle do Studio (composer, map, add-ons, checkout drawer) só carrega quando o utilizador entra em `/studio-v3` — usar `React.lazy` + `Suspense` para os painéis pesados; o TanStack code-splitter já divide por rota, verificar que nenhum `import` estático do Studio vaza para a home (`rg` em `src/components/home/*`).
-- Idem Leaflet/Mapbox: só carregar dentro de `<ClientOnly>` + `React.lazy` nos routes que usam mapa; confirmar que `SignatureRouteMap`/`PremiumMap` não são importados por rotas sem mapa.
-- Remover imports mortos (typografias antigas em `styles.css`, componentes órfãos revelados por `knip`/`ts-prune`).
+## Fora de escopo (deixar como está, com nota)
 
-### Terceiros
-- GTM continua no `<head>` (necessário para consent-mode gating). Manter, mas garantir que qualquer tag pesada (Meta Pixel, hotjar, etc.) só dispara após consentimento e via GTM — não injetar no bundle.
-- Adiar Toaster (`sonner`) e `WhatsAppSupportButton` para depois do primeiro paint (já são client-only; confirmar que não bloqueiam hydrate).
+- **Viator link vazio** (`SOCIAL.viator: ""`) — precisa do URL real do owner; não invento. Deixo TODO no ficheiro.
+- **Rating badge condicional** em `tours.$tourId.tsx` — é intencional (sem ratings inventados). Sem ação.
+- **`serif italic` em about/legal H1s** — precisa decisão de design antes de refactor; não é regressão.
+- **PT locale** — strings `_PT` em `business-nap.ts` não renderizam em lado nenhum; auditoria PT é outra tarefa.
+- **Studio "no invented stops"** — já coberto por memória `studio-v3-no-invented-stops`; sem findings novos concretos.
 
-### CLS
-- Skeletons/placeholders com dimensões fixas em: `SignaturePriceCard` (preço async), `TourReviews`, `SignatureRouteMap` (altura mínima), sliders/carousels, `AmbientLandscapeReveal`.
-- Reservar espaço para o `RouteFade` overlay e para a barra de progresso de leitura.
+## Verificação pós-fix
 
-### Motion
-- Manter `.home-energy` e todas as animações. Confirmar que continuam gated por `prefers-reduced-motion` (memória já regista) — não mexer no conteúdo.
+- `tsgo` no repo (build/typecheck já corre automático).
+- Rota manual: abrir `/terms`, `/privacy`, `/cookies`, `/contact` — confirmar `mailto:` funciona.
+- Teste de paridade de email de checkout já existente (`checkout-email-parity.test.ts`) continua a passar após import.
 
-## 3. Guardrails
+## Impacto
 
-- Nada de remover vídeo hero, animações, parallax homepage, ou trocar tipografia/paleta.
-- Nenhuma imagem visivelmente degradada — só formato/dimensão.
-- Sem novos testes visuais a falhar (`hero-visual-regression`, `homepage-structure`, `homepage-typography-spacing-regression` têm de passar).
-- CI Lighthouse (`.lighthouserc*.json`) tem de manter ou melhorar scores atuais.
-
-## 4. Entregável final
-
-`docs/perf/comparativo-antes-depois.md` com, por página e device:
-
-| Página | Device | LCP antes | LCP depois | INP/TBT antes | depois | CLS antes | depois | JS transferido antes | depois |
-|---|---|---|---|---|---|---|---|---|---|
-
-Mais: elemento LCP identificado, lista de otimizações aplicadas por página, e confirmação de zero regressões visuais (screenshots Playwright antes/depois em `docs/perf/screenshots/`).
-
-## Detalhes técnicos
-
-- Poda de Google Fonts no `head.links` de `src/routes/__root.tsx`.
-- `vite-imagetools` já disponível (ver knowledge `perf`) — usar para novas conversões AVIF/WebP em build.
-- Preload do LCP via `head().links` da rota que o possui, não em `__root`.
-- Vídeo: adiar `.load()` com `requestIdleCallback` (fallback `setTimeout(…, 1500)`).
-- Studio lazy: `const StudioComposer = React.lazy(() => import('...'))` dentro de `src/routes/studio-v3.tsx`; Suspense fallback = skeleton com dimensões do stage.
-- Mapa lazy: mesmo padrão para `SignatureRouteMap`.
-- Após cada batch, correr `bun run build` + Lighthouse CI local antes de seguir.
+- Zero mudanças visuais.
+- Remove risco de drift de preço (bandas etárias) entre email, checkout e Stripe.
+- Remove 1 edge function morta (menos superfície, menos custo mental).
+- 4 páginas passam a respeitar o contrato "toda info NAP vem de `business-nap.ts`".

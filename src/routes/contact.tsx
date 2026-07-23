@@ -15,7 +15,9 @@ import {
   CITY,
   COUNTRY_CODE,
   EMAIL,
+  EMAIL_HREF,
   PHONE_DISPLAY,
+  PHONE_HREF,
 } from "@/config/business-nap";
 
 const REQUEST_TYPES = [
@@ -250,8 +252,8 @@ function Page() {
             )}
           </div>
           <aside className="space-y-7">
-            <Info icon={<Mail size={16} />} label="Email" value={EMAIL} />
-            <Info icon={<Phone size={16} />} label="Phone" value={PHONE_DISPLAY} />
+            <Info icon={<Mail size={16} />} label="Email" value={EMAIL} href={EMAIL_HREF} />
+            <Info icon={<Phone size={16} />} label="Phone" value={PHONE_DISPLAY} href={PHONE_HREF} />
             <Info
               icon={<MapPin size={16} />}
               label="Based in"

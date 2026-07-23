@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { EMAIL, EMAIL_HREF } from "@/config/business-nap";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 
 export const Route = createFileRoute("/cookies")({
@@ -98,10 +99,10 @@ function CookiesPage() {
             <p className="text-[13px] text-[color:var(--charcoal-soft)]/80">
               Questions? Write to us at{" "}
               <a
-                href="mailto:info@yesexperiencesportugal.com"
+                href={EMAIL_HREF}
                 className="text-[color:var(--teal)] underline underline-offset-4"
               >
-                info@yesexperiencesportugal.com
+                {EMAIL}
               </a>{" "}
               — or see our{" "}
               <Link to="/privacy" className="text-[color:var(--teal)] underline underline-offset-4">
