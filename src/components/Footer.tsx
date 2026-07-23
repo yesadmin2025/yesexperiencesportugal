@@ -2,6 +2,9 @@ import { Link } from "@tanstack/react-router";
 import { ShieldCheck, BadgeCheck, Lock } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { CurrencyToggle } from "@/components/CurrencyToggle";
+import { openCookieConsent } from "@/components/CookieConsent";
 import {
   BASED_IN,
   BUSINESS_NAME,
@@ -10,6 +13,7 @@ import {
   SOCIAL,
   whatsappUrl,
 } from "@/config/business-nap";
+
 
 
 const LEGAL_META_LINE = BASED_IN;
