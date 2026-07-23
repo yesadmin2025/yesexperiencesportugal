@@ -1,79 +1,67 @@
-## Goal
+## Objetivo
 
-Extend `e2e/copy-parity.spec.ts` so the same copy-drift guardrails already applied to `/terms`, `/privacy`, `/cookies`, `/contact` and the shared footer also cover:
+Adicionar três peças transversais ao site, sem alterar o design editorial:
 
-1. **Signature product pages** (`/tours/$tourId` and their `/tailor` variants)
-2. **The checkout step** (`/checkout/$token`)
+1. **Banner de consentimento de cookies** (RGPD) integrado com o Consent Mode v2 já ativo.
+2. **Ícone de troca de idioma PT/EN** visível no header e footer (o componente `LanguageSwitcher` já existe mas não está montado em lado nenhum).
+3. **Conversor de moeda EUR → USD** aplicado aos preços exibidos publicamente (Signature, Tailor, Studio V3, cards).
 
-So that legal terms, FAQ wording and the approved CTA vocabulary stay in lock-step across the full purchase funnel.
+---
 
-## Current state (verified)
+### 1. Cookie consent (RGPD + Consent Mode v2)
 
-- `e2e/copy-parity.spec.ts` already asserts: canonical `EMAIL` / `LICENSE_LABEL` on legal pages, `EMAIL_HREF` + `PHONE_HREF` on `/contact`, canonical `SOCIAL` links on the footer of `/`, `/experiences`, `/portugal-travel-designer`, and that `HOMEPAGE_FAQ` never uses the verb "book".
-- `e2e/cta-vocabulary-lock.spec.ts` already checks a legacy-CTA blacklist on product routes but does NOT assert the approved verbs (`Check availability & reserve`, `Tailor this day`, `Reserve securely`) are actually present, and it does not touch `/checkout/$token`.
-- Signature routes render `SIGNATURE_FAQ` (from `src/content/seo-faq.ts`) as visible FAQ + `faqPageLd` — perfect surface for a "no legacy verbs / same wording" guard.
-- Checkout route is `/checkout/$token` — a stateful page. We need a fixture strategy to reach it.
+- Criar `src/components/CookieConsent.tsx` — cartão inferior discreto, ivory/charcoal, com três ações: **Aceitar tudo**, **Só essenciais**, **Personalizar** (modal com toggles: analytics, ads).
+- Persistir escolha em `localStorage` (`yes.cookieConsent.v1`) + cookie 180 dias.
+- Chamar `window.gtag('consent','update', {...})` com o mapeamento correto (`analytics_storage`, `ad_storage`, `ad_user_data`, `ad_personalization`).
+- Só renderiza se ainda não houver decisão; disparar evento GA4 `consent_choice`.
+- Montar em `src/components/SiteLayout.tsx` (uma única vez, fora do Studio full-bleed).
+- Adicionar link "Preferências de cookies" no footer que reabre o modal.
+- Respeitar `prefers-reduced-motion` no fade-in.
 
-## Scope
+### 2. Language switcher visível (PT · EN)
 
-### 1. New "product pages" block in `e2e/copy-parity.spec.ts`
+- Montar `<LanguageSwitcher variant="header" />` em `src/components/Navbar.tsx` (desktop: à direita antes do CTA; mobile: dentro do menu, topo).
+- Montar `<LanguageSwitcher variant="footer" />` na linha legal do `Footer.tsx`.
+- Manter o design chip existente (11–12px, tracking 0.22em, separador `·`, teal ativo). Adicionar um pequeno ícone globo (lucide `Globe`) apenas no header, à esquerda do par de chips, para reforçar affordance.
+- Nada de auto-redirect por Accept-Language (Google penaliza) — comportamento atual mantém-se.
 
-For a small canonical sample of Signature routes:
-```
-/tours/arrabida-wine-allinclusive
-/tours/southwest-vicentine-coast
-/sintra-day-tour-from-lisbon
-/evora-private-tour-from-lisbon
-```
-assert on the rendered DOM:
-- Canonical `EMAIL` appears somewhere (footer surfaces it), and `EMAIL_HREF` mailto is present.
-- Canonical `LICENSE_LABEL` appears (footer credential line).
-- Approved primary CTA `Check availability & reserve` is present (`getByRole('link'|'button', { name: /check availability & reserve/i })`).
-- Approved secondary CTA `Tailor this day` is present.
-- Cancellation copy on the page equals `CANCELLATION.signature.en` (never the deprecated `CANCELLATION_STUDIO` variant on a Signature route).
-- FAQ items rendered on the page match `SIGNATURE_FAQ` from `src/content/seo-faq.ts` — for each item's question string, `body.innerText()` must contain it verbatim. Guards against a page starting to hand-edit the visible FAQ while JSON-LD stays untouched (or vice-versa).
+### 3. Conversor de preços EUR → USD
 
-### 2. `/tours/$tourId/tailor` sub-block
+- Criar `src/lib/currency.ts`:
+  - `SUPPORTED = ['EUR','USD']`, default `EUR`.
+  - `useCurrency()` hook (Context) com persistência em `localStorage` (`yes.currency.v1`).
+  - `formatPrice(amountEur, { currency, locale })` — devolve string formatada com `Intl.NumberFormat`.
+  - Taxa EUR→USD carregada de `src/config/fx-rates.ts` (constante versionada, ex. `1 EUR = 1.08 USD`, com nota "Rates updated {date}. Charges processed in EUR."). Sem chamada externa em runtime — evita CLS, custo e falhas de edge.
+- Adicionar `<CurrencyProvider>` em `SiteLayout.tsx`.
+- Criar `<CurrencyToggle />` chip (EUR · USD) ao lado do `LanguageSwitcher` no header e footer, mesmo tratamento visual.
+- Substituir os locais que hoje formatam preço à mão para usar `formatPrice(...)`:
+  - `src/components/ui/PricePerPerson.tsx`
+  - `src/components/studio-v3/SignaturePriceCard.tsx`
+  - `src/components/studio-v3/CheckoutSummary.tsx`
+  - `src/components/studio-v3/InvestmentTierPicker.tsx`
+  - `src/components/SimpleBookingForm.tsx`
+  - `src/routes/tours.$tourId.tailor.tsx` (linhas de tier)
+- **Regra crítica (não alterar):** o *checkout* Stripe, cálculos server-side, PDFs (`signatureOnePagerPdf.tsx`) e emails permanecem em **EUR**. USD é apenas indicativo na UI pública. Adicionar micro-legenda "≈ USD · Charged in EUR" junto ao preço quando `currency === 'USD'`.
+- Não tocar em `src/lib/studio-v3/composerPricing.ts` nem em `supabase/functions/**` (SSOT de preço).
 
-For the same tours, on their `/tailor` route:
-- No legacy CTA strings (reuses `LEGACY` list, kept in sync with `cta-vocabulary-lock`).
-- `EMAIL` + `LICENSE_LABEL` still present (footer parity).
-- The Tailor page shows a CTA whose accessible name matches `/reserve securely|check availability & reserve/i` (whichever the funnel currently uses — read once via first-match, then assert on subsequent tours to prove parity across tours).
+### Testes
 
-### 3. Checkout block — `/checkout/$token`
+- `e2e/cookie-consent.spec.ts`: banner aparece na primeira visita, desaparece após escolha, `gtag('consent','update')` é chamado.
+- `e2e/language-switcher.spec.ts`: ambos os chips visíveis no header e footer em `/` e `/tours/arrabida-wine-allinclusive`, PT desativado com tooltip nas rotas sem PT.
+- `src/lib/__tests__/currency.test.ts`: `formatPrice(100,'EUR','en')` → `€100`, `formatPrice(100,'USD','en')` com taxa configurada.
+- Estender `e2e/checkout-price-parity.spec.ts` para assegurar que o checkout permanece em EUR mesmo com toggle em USD.
 
-Checkout is token-gated. Two options; the plan picks (b):
+### Fora do âmbito
 
-- (a) Full happy path: mock a Stripe session — heavy, brittle, out of scope for a copy-parity spec.
-- (b) **Chosen**: assert the invalid-token / expired-token state renders the canonical copy from `business-nap.ts`. Visit `/checkout/copy-parity-fixture` (a deliberately invalid token) and confirm:
-  - The page (or its error state) still renders the site footer with canonical `EMAIL_HREF`, `PHONE_HREF`, `LICENSE_LABEL`.
-  - Any recovery CTA uses approved verbs (`Reserve securely`, or a "Back to experiences" style link) — no legacy `Continue draft`, `Design & Book`.
-  - Support email in any error message equals `EMAIL` (not a hard-coded string).
+- Tradução real de conteúdo PT (fluxo separado, já existe `pt-ready.ts`).
+- FX ao vivo (fica para v2 se o negócio quiser).
+- Alterar identidade visual ou tipografia.
 
-If `checkout.$token.tsx` currently renders nothing user-facing for an invalid token (pure redirect), the test instead asserts the redirect target is one of the approved recovery routes (`/experiences`, `/`, `/portugal-travel-designer`) — captured via `page.waitForURL`.
+---
 
-### 4. Small helper refactor (kept in-file)
+### Detalhes técnicos
 
-Extract two tiny helpers already implicit in the current spec:
-- `assertCanonicalFooter(page)` — email + license + no duplicate `/contact` link.
-- `assertNoLegacyCta(page)` — reuses the same `LEGACY` array as `cta-vocabulary-lock.spec.ts`. To keep the two specs in sync without cross-importing test files, move the array into a new tiny module `e2e/copy-parity-constants.ts` and import it from both specs.
-
-## Out of scope
-
-- No changes to production source files. This is a test-only expansion.
-- No new fixtures for a real Stripe session — invalid-token path only.
-- No visual/regression screenshots — copy assertions only.
-- Does not touch the Studio V3 funnel (already covered by `studio-v3-cta-labels-live.spec.ts`).
-
-## Files touched
-
-- edit `e2e/copy-parity.spec.ts` — three new `describe` blocks (Product pages · Tailor pages · Checkout token page) + helpers.
-- **new** `e2e/copy-parity-constants.ts` — shared `LEGACY_CTAS` list.
-- edit `e2e/cta-vocabulary-lock.spec.ts` — import `LEGACY_CTAS` from the new module (replaces its inline `LEGACY` constant) so both specs cannot drift.
-
-## Verification
-
-- Run locally: `bunx playwright test --config=playwright.local.config.ts e2e/copy-parity.spec.ts e2e/cta-vocabulary-lock.spec.ts` against the running dev server on `:8080`.
-- Confirm all pre-existing copy-parity + cta-vocabulary tests still pass unchanged.
-- Confirm the new blocks fail deliberately when a temporary edit (e.g. changing the CTA to `Reserve this day` on one tour, or hard-coding `support@…` on `/checkout/$token`) is applied — proving the guard bites.
-- The `pricing-ssot.yml` workflow already runs the copy-parity suite in CI, so the expanded coverage is automatically enforced on every PR — no new workflow file needed.
+- Cookie consent: componente client-only, gate `useHydrated()` para evitar mismatch SSR.
+- Currency: Provider client-only; durante SSR renderiza EUR (default) — nenhum layout shift porque a taxa é síncrona.
+- Ambos os toggles seguem o padrão `<Eyebrow>`-style (11px uppercase, tracking 0.22em) já canônico.
+- Nenhum ficheiro auto-gerado é tocado (`routeTree.gen.ts`, `integrations/supabase/*`).

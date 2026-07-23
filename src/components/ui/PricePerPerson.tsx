@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { useCurrency, formatPrice } from "@/lib/currency";
 
 /**
  * PricePerPerson — the single price label used across cards, hero and
@@ -11,8 +12,9 @@ import { cn } from "@/lib/utils";
  *   • "hero"  — larger chip beside the H1 (Signature detail hero)
  *   • "form"  — two-row form summary (per-person + optional party total)
  *
- * All variants suffix the amount with "per person" in charcoal-soft micro
- * copy so the number keeps its visual weight while the unit stays explicit.
+ * Amounts are stored in EUR (source of truth). Display currency follows
+ * the CurrencyProvider; when a non-EUR currency is active we suffix a
+ * small "Charged in EUR" hint so guests understand USD is indicative.
  */
 
 interface CardProps {
@@ -40,9 +42,22 @@ interface FormProps {
 
 export type PricePerPersonProps = CardProps | HeroProps | FormProps;
 
-const eur = (n: number) => `€${Math.round(n).toLocaleString("en-GB")}`;
+function useMoney() {
+  const { currency } = useCurrency();
+  const fmt = React.useCallback((n: number) => formatPrice(n, { currency }), [currency]);
+  return { fmt, currency };
+}
 
 export function PricePerPerson(props: PricePerPersonProps) {
+  const { fmt, currency } = useMoney();
+  const eur = fmt;
+  const showFx = currency !== "EUR";
+  const chargedHint = showFx ? (
+    <span className="ml-1.5 text-[9.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]/80">
+      · charged in EUR
+    </span>
+  ) : null;
+
   if (props.variant === "card") {
     return (
       <span
@@ -73,6 +88,7 @@ export function PricePerPerson(props: PricePerPersonProps) {
         <span className="text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
           per person
         </span>
+        {chargedHint}
       </span>
     );
   }
@@ -100,6 +116,11 @@ export function PricePerPerson(props: PricePerPersonProps) {
           </span>
         </div>
       ) : null}
+      {showFx && (
+        <p className="text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
+          Indicative {currency} · charged in EUR
+        </p>
+      )}
     </div>
   );
 }

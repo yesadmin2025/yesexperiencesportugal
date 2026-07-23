@@ -1,11 +1,14 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Globe } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
 import { CtaButton } from "@/components/ui/CtaButton";
 import { SOCIAL, whatsappUrl } from "@/config/business-nap";
 import { useT } from "@/i18n/locale-context";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { CurrencyToggle } from "@/components/CurrencyToggle";
+
 
 function useDesktopLinks() {
   const t = useT();
@@ -138,10 +141,21 @@ export function Navbar() {
                 {n.label}
               </Link>
             ))}
+            <span
+              aria-hidden
+              className="mx-1 h-3 w-px bg-[color:var(--charcoal)]/15"
+            />
+            <span className="inline-flex items-center gap-1.5 text-[color:var(--charcoal-soft)]">
+              <Globe size={13} strokeWidth={1.6} aria-hidden />
+              <LanguageSwitcher variant="header" />
+            </span>
+            <CurrencyToggle variant="header" />
             <CtaButton to="/studio-v3" variant="primary" size="sm" className="ml-2">
               Design &amp; Book
             </CtaButton>
           </nav>
+
+
 
           <button
             className={menuBtnClass}
@@ -209,6 +223,15 @@ export function Navbar() {
                   </a>
                 ))}
               </div>
+              <div className="border-t border-[color:var(--charcoal)]/[0.06]" />
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+                <span className="inline-flex items-center gap-1.5 text-[color:var(--charcoal-soft)]">
+                  <Globe size={13} strokeWidth={1.6} aria-hidden />
+                  <LanguageSwitcher variant="header" />
+                </span>
+                <CurrencyToggle variant="header" />
+              </div>
+
             </div>
           </div>
           <div className="container-x py-4 border-t border-[color:var(--charcoal)]/[0.06] shrink-0">
