@@ -5,8 +5,12 @@
  * centered two-line stanza, then delayed minimal CTAs. `HERO_PHRASES`
  * holds the two stanza lines; `HERO_COPY` carries the closing /
  * locked strings used by SEO, SSR probes and byte-exact e2e.
+ *
+ * The visible H1 (HERO_PHRASES[0]) is intentionally descriptive
+ * rather than poetic so crawlers and assistive tech immediately name
+ * the service. The second line keeps the brand voice.
  */
-export const HERO_PHRASES = ["Portugal is the stage.", "You write the story."] as const;
+export const HERO_PHRASES = ["Private Portugal Tours, Designed With a Local.", "You write the story."] as const;
 
 export const HERO_COPY = {
   eyebrow: "PORTUGAL IS THE STAGE",
