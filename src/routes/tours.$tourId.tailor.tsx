@@ -1474,12 +1474,18 @@ function TailorPage() {
                       total / adult" was misread as a party total; use the
                       same two-line shape as the Signature price card. */}
                   <div className="pt-3 border-t border-[color:var(--border)] space-y-1.5">
+                    <div className="flex items-center justify-end">
+                      <PriceCurrencyChip align="end" />
+                    </div>
                     <div className="flex items-baseline justify-between">
                       <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
                         For {guests} {guests === 1 ? "guest" : "guests"} · per person
                       </span>
                       <span className="serif text-[1.15rem] text-[color:var(--charcoal)] tabular-nums">
-                        €{Math.round(displayTotalEur / Math.max(1, guests)).toLocaleString("en-GB")}
+                        <PriceEur
+                          amountEur={Math.round(displayTotalEur / Math.max(1, guests))}
+                          role="per-person"
+                        />
                         <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
                           / pp
                         </span>
@@ -1490,11 +1496,11 @@ function TailorPage() {
                         Party total (indicative)
                       </span>
                       <span className="serif text-[1.4rem] text-[color:var(--charcoal)] tabular-nums">
-                        €{Math.round(displayTotalEur).toLocaleString("en-GB")}
+                        <PriceEur amountEur={Math.round(displayTotalEur)} role="party-total" />
                       </span>
                     </div>
                     <p className="text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
-                      Final total confirmed at checkout.
+                      Final total confirmed at checkout in euros.
                     </p>
                   </div>
 
