@@ -9,6 +9,7 @@ import { buildDayRoute } from "@/lib/builderEngine.functions";
 import { fmtMinutes } from "@/components/builder/types";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
+import { CurrencyProvider } from "@/lib/currency";
 
 export const Route = createFileRoute("/i/$token")({
   head: ({ params }) => ({
