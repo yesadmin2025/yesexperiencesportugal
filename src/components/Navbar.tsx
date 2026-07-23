@@ -30,11 +30,14 @@ function useMobileSecondaryLinks() {
   ];
 }
 
+import { WhatsAppIcon, InstagramIcon, TripadvisorIcon } from "@/components/BrandIcon";
+
 const mobileSocialLinks = [
-  { href: whatsappUrl(), label: "WhatsApp" },
-  { href: SOCIAL.instagram, label: "Instagram" },
-  { href: SOCIAL.tripadvisor, label: "Tripadvisor" },
+  { href: whatsappUrl(), label: "WhatsApp", Icon: WhatsAppIcon },
+  { href: SOCIAL.instagram, label: "Instagram", Icon: InstagramIcon },
+  { href: SOCIAL.tripadvisor, label: "Tripadvisor", Icon: TripadvisorIcon },
 ];
+
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -214,7 +217,7 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="border-t border-[color:var(--charcoal)]/[0.06]" />
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <div className="flex flex-wrap items-center gap-3">
                 {mobileSocialLinks.map((n) => (
                   <a
                     key={n.label}
@@ -222,13 +225,15 @@ export function Navbar() {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setOpen(false)}
-                    className="tap text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
-                    style={{ fontWeight: 380 }}
+                    aria-label={n.label}
+                    title={n.label}
+                    className="tap inline-flex h-11 w-11 items-center justify-center rounded-full ring-1 ring-[color:var(--charcoal)]/15 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] hover:ring-[color:var(--teal)]/40 transition-colors duration-[var(--dur-quick)] rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
                   >
-                    {n.label}
+                    <n.Icon size={16} />
                   </a>
                 ))}
               </div>
+
 
 
 

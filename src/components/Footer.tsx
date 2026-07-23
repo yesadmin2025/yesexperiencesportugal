@@ -1,8 +1,17 @@
 import { Link } from "@tanstack/react-router";
+import type { ComponentType } from "react";
 import { ShieldCheck, BadgeCheck, Lock } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import {
+  InstagramIcon,
+  FacebookIcon,
+  TripadvisorIcon,
+  WhatsAppIcon,
+  ViatorIcon,
+  GetYourGuideIcon,
+} from "@/components/BrandIcon";
 
 import { openCookieConsent } from "@/components/CookieConsent";
 import {
@@ -13,6 +22,7 @@ import {
   SOCIAL,
   whatsappUrl,
 } from "@/config/business-nap";
+
 
 
 
@@ -110,31 +120,36 @@ export function Footer() {
               { to: "/contact", label: "Contact" },
             ]}
           />
-          <FooterCol
-            title="Connect"
-            links={[
-              {
-                to: SOCIAL.instagram,
-                label: "Instagram",
-                external: true,
-              },
-              {
-                to: SOCIAL.facebook,
-                label: "Facebook",
-                external: true,
-              },
-              {
-                to: SOCIAL.tripadvisor,
-                label: "Tripadvisor",
-                external: true,
-              },
-              {
-                to: whatsappUrl(),
-                label: "WhatsApp Support",
-                external: true,
-              },
-            ]}
-          />
+          <div>
+            <h4
+              className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5"
+              style={{ fontWeight: 600 }}
+            >
+              Connect
+            </h4>
+            <ul className="flex flex-wrap items-center gap-3" aria-label="Social channels">
+              {[
+                { href: SOCIAL.instagram, label: "Instagram", Icon: InstagramIcon },
+                { href: SOCIAL.facebook, label: "Facebook", Icon: FacebookIcon },
+                { href: SOCIAL.tripadvisor, label: "Tripadvisor", Icon: TripadvisorIcon },
+                { href: whatsappUrl(), label: "WhatsApp", Icon: WhatsAppIcon },
+              ].map(({ href, label, Icon }) => (
+                <li key={label}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    title={label}
+                    className="tap inline-flex h-10 w-10 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] hover:ring-[color:var(--gold-warm)]/70 transition-colors duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                  >
+                    <Icon size={16} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
         </div>
 
 
@@ -212,6 +227,50 @@ export function Footer() {
             ))}
           </ul>
         </div>
+
+        {/* Also listed on — distribution partners trust strip.
+            Links to the /partners hub and each platform subpage. */}
+        <div className="mt-10 pt-8 border-t border-[color:var(--gold-warm)]/15">
+          <div className="flex flex-col items-center gap-5 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col items-center md:items-start gap-1">
+              <h4
+                className="font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)]"
+                style={{ fontWeight: 600 }}
+              >
+                Also listed on
+              </h4>
+              <Link
+                to="/partners"
+                className="link-hairline-gold tap text-[12px] text-[color:var(--ivory)]/75 hover:text-[color:var(--gold-soft)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+              >
+                View all distribution partners
+              </Link>
+            </div>
+            <ul
+              className="flex flex-wrap items-center justify-center gap-3"
+              aria-label="Distribution partners"
+            >
+              {[
+                { to: "/partners/viator", label: "Viator", Icon: ViatorIcon },
+                { to: "/partners/getyourguide", label: "GetYourGuide", Icon: GetYourGuideIcon },
+                { to: "/partners/tripadvisor", label: "Tripadvisor", Icon: TripadvisorIcon },
+              ].map(({ to, label, Icon }) => (
+                <li key={label}>
+                  <Link
+                    to={to}
+                    aria-label={`Also listed on ${label}`}
+                    title={label}
+                    className="tap inline-flex h-10 w-10 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] hover:ring-[color:var(--gold-warm)]/70 transition-colors duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                  >
+                    <Icon size={16} />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+
 
         {/* Trust strip — official credentials + secure checkout signals.
             Sits above the payment brands so the footer closes with a
