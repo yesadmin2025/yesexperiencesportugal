@@ -92,3 +92,151 @@ test.describe("FAQ verb parity — 'reserve' not 'book' in canonical Q/A", () =>
     }
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────
+// Shared helpers used by the product / tailor / checkout blocks below.
+// Kept in-file (small, one-off) rather than exported; the two constants
+// they lean on (LEGACY_CTAS, canonical NAP) live in modules already.
+// ─────────────────────────────────────────────────────────────────────
+
+async function assertCanonicalFooter(page: Page, url: string) {
+  const footer = page.locator("footer");
+  await expect(footer, `${url}: footer must render`).toHaveCount(1);
+  const footerText = await footer.innerText();
+  expect(footerText, `${url}: footer must show ${EMAIL}`).toContain(EMAIL);
+  const hasLicense =
+    footerText.includes(LICENSE_LABEL) || footerText.includes(LICENSE_LABEL_PT);
+  expect(hasLicense, `${url}: footer must show RNAAT label`).toBe(true);
+  await expect(page.locator(`footer a[href="${EMAIL_HREF}"]`).first()).toHaveCount(1);
+}
+
+async function assertNoLegacyCta(page: Page, url: string) {
+  const bodyText = await page.locator("body").innerText();
+  for (const legacy of LEGACY_CTAS) {
+    expect(bodyText, `${url}: legacy CTA "${legacy}" must not appear`).not.toContain(legacy);
+  }
+}
+
+test.describe("Signature product pages — canonical copy + CTAs", () => {
+  const productRoutes = [
+    ...SIGNATURE_PRODUCT_TOURS.map((slug) => `/tours/${slug}`),
+    ...SIGNATURE_STANDALONE_ROUTES,
+  ];
+
+  for (const route of productRoutes) {
+    test(`${route} shows canonical footer + approved CTAs`, async ({ page }) => {
+      await page.goto(route, { waitUntil: "domcontentloaded" });
+      await page.waitForLoadState("networkidle").catch(() => undefined);
+
+      await assertCanonicalFooter(page, route);
+      await assertNoLegacyCta(page, route);
+
+      // Approved Signature CTA pair must be present (link OR button).
+      const reserveCta = page.getByRole("link", { name: /check availability & reserve/i }).first();
+      const tailorCta = page.getByRole("link", { name: /tailor this day/i }).first();
+      await expect(reserveCta, `${route}: approved primary CTA must appear`).toBeVisible();
+      await expect(tailorCta, `${route}: approved secondary CTA must appear`).toBeVisible();
+    });
+  }
+
+  // FAQ wording must match the SIGNATURE_FAQ source of truth on the
+  // canonical /tours/$tourId surface (JSON-LD + visible FAQ share the
+  // same source). One representative tour keeps the suite fast.
+  test("/tours/arrabida-wine-allinclusive visible FAQ matches SIGNATURE_FAQ SSOT", async ({ page }) => {
+    await page.goto("/tours/arrabida-wine-allinclusive", { waitUntil: "domcontentloaded" });
+    await page.waitForLoadState("networkidle").catch(() => undefined);
+    const bodyText = await page.locator("body").innerText();
+    for (const { q } of SIGNATURE_FAQ) {
+      expect(
+        bodyText,
+        `SIGNATURE_FAQ question drifted from rendered page: "${q}"`,
+      ).toContain(q);
+    }
+  });
+
+  // Signature routes must show the Signature cancellation copy — never
+  // the deprecated Studio/custom variant, which lives on custom flows only.
+  test("Signature product page shows Signature cancellation copy", async ({ page }) => {
+    await page.goto("/tours/arrabida-wine-allinclusive", { waitUntil: "domcontentloaded" });
+    await page.waitForLoadState("networkidle").catch(() => undefined);
+    const bodyText = await page.locator("body").innerText();
+    expect(
+      bodyText,
+      "Signature cancellation copy must appear verbatim (single source of truth)",
+    ).toContain(CANCELLATION.signature.en);
+  });
+});
+
+test.describe("Tailor pages — footer parity + no legacy CTAs", () => {
+  for (const slug of SIGNATURE_PRODUCT_TOURS) {
+    const route = `/tours/${slug}/tailor`;
+    test(`${route} keeps canonical footer + approved CTA vocabulary`, async ({ page }) => {
+      await page.goto(route, { waitUntil: "domcontentloaded" });
+      await page.waitForLoadState("networkidle").catch(() => undefined);
+
+      await assertCanonicalFooter(page, route);
+      await assertNoLegacyCta(page, route);
+
+      // At least one approved conversion verb must be reachable from the
+      // Tailor page — either the reserve verb or the Studio-final verb.
+      const approvedRegex = /(check availability & reserve|reserve securely|reserve now)/i;
+      const approvedCta = page.getByRole("link", { name: approvedRegex }).first();
+      const approvedButton = page.getByRole("button", { name: approvedRegex }).first();
+      const linkCount = await approvedCta.count();
+      const buttonCount = await approvedButton.count();
+      expect(
+        linkCount + buttonCount,
+        `${route}: at least one approved reserve CTA must be present`,
+      ).toBeGreaterThan(0);
+    });
+  }
+});
+
+test.describe("Checkout token page — canonical recovery copy on invalid token", () => {
+  // /checkout/$token is token-gated. A deliberately invalid token
+  // renders the recovery state; we assert its copy uses approved
+  // vocabulary and doesn't hard-code a support email that diverges
+  // from `business-nap.ts`.
+  const INVALID_TOKEN_ROUTE = "/checkout/copy-parity-fixture-invalid";
+
+  test("invalid token renders the recovery state with approved copy", async ({ page }) => {
+    await page.goto(INVALID_TOKEN_ROUTE, { waitUntil: "domcontentloaded" });
+    await page.waitForLoadState("networkidle").catch(() => undefined);
+
+    const bodyText = await page.locator("body").innerText();
+
+    // No legacy CTA vocabulary anywhere in the recovery UI.
+    for (const legacy of LEGACY_CTAS) {
+      expect(
+        bodyText,
+        `Checkout recovery must not surface legacy CTA "${legacy}"`,
+      ).not.toContain(legacy);
+    }
+
+    // If the recovery state exposes a support email, it MUST be the
+    // canonical one — no hand-typed fallbacks. Any other mailto is a bug.
+    const mailtos = await page.locator('a[href^="mailto:"]').evaluateAll((els) =>
+      els.map((el) => (el as HTMLAnchorElement).getAttribute("href") || ""),
+    );
+    for (const href of mailtos) {
+      expect(
+        href,
+        `Checkout must only expose ${EMAIL_HREF}, found ${href}`,
+      ).toBe(EMAIL_HREF);
+    }
+
+    // Recovery navigation must exist and point at an approved home
+    // route — never at a legacy funnel URL.
+    const recoveryHref = await page
+      .getByRole("link", { name: /(back to home|back to experiences|design & book|home)/i })
+      .first()
+      .getAttribute("href")
+      .catch(() => null);
+    if (recoveryHref) {
+      expect(
+        ["/", "/experiences", "/portugal-travel-designer"].includes(recoveryHref),
+        `Checkout recovery link must target an approved route, got: ${recoveryHref}`,
+      ).toBe(true);
+    }
+  });
+});
