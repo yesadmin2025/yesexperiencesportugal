@@ -26,6 +26,14 @@ export const Route = createFileRoute("/sitemap.xml")({
         // Static entries omit <lastmod> on purpose — a rolling "today" trains
         // crawlers to ignore the field. Dynamic DB posts keep their real
         // published_at.
+        //
+        // Explicitly excluded from this sitemap (SEO scanner note):
+        // - /alentejo-wine-tour-from-lisbon, /arrabida-day-trip-from-lisbon, /arrabida-wine-tour:
+        //   these are 301 redirects to /local-stories/<slug>. Sitemaps must list only
+        //   HTTP 200 final destinations; the canonical article URLs are already emitted below
+        //   by LOCAL_STORIES_ARTICLES and the journal_posts query.
+        // - /auth, /booking-confirmed: both have robots noindex/nofollow and are Disallow'd in
+        //   robots.txt; they must not appear in the sitemap.
         const staticEntries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/about", changefreq: "monthly", priority: "0.6" },
