@@ -5,11 +5,13 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
+import ogImg from "@/assets/hero-coast.jpg";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
 const TITLE = "Portugal Travel Designer | Custom Private Journeys";
 const DESC =
   "Design a private Portugal journey with local experts, from tailored day experiences and wine tours to custom multi-day itineraries across the country.";
+const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;
 
 export const Route = createFileRoute("/portugal-travel-designer")({
   head: () => ({
@@ -20,6 +22,12 @@ export const Route = createFileRoute("/portugal-travel-designer")({
       { property: "og:description", content: DESC },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "Portugal Travel Designer — private custom journeys" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
     scripts: [
