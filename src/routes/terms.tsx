@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { CANCELLATION } from "@/config/business-nap";
+import { CANCELLATION, EMAIL, EMAIL_HREF, LICENSE_LABEL } from "@/config/business-nap";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import ogImg from "@/assets/hero-coast.jpg";
 
@@ -11,14 +11,12 @@ export const Route = createFileRoute("/terms")({
       { title: "Terms & Conditions — YES Experiences Portugal" },
       {
         name: "description",
-        content:
-          "Terms and conditions for booking private experiences with YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT nº 31/2023).",
+        content: `Terms and conditions for booking private experiences with YES Experiences Portugal — a licensed Portuguese tour operator (${LICENSE_LABEL}).`,
       },
       { property: "og:title", content: "Terms & Conditions — YES Experiences Portugal" },
       {
         property: "og:description",
-        content:
-          "Booking terms for private experiences with YES Experiences Portugal — a licensed Portuguese tour operator (RNAAT nº 31/2023).",
+        content: `Booking terms for private experiences with YES Experiences Portugal — a licensed Portuguese tour operator (${LICENSE_LABEL}).`,
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/terms" },
@@ -55,7 +53,7 @@ function TermsPage() {
 
           <div className="mt-10 space-y-7 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
             <p>
-              YES Experiences Portugal is a licensed Portuguese tour operator (RNAAT nº 31/2023)
+              YES Experiences Portugal is a licensed Portuguese tour operator ({LICENSE_LABEL})
               based in Sesimbra, designing private journeys across Portugal, with pickups from
               Lisbon, Cascais, Sintra, Sesimbra and Setúbal. By making a reservation with us
               you agree to the terms below, which govern the booking, payment, cancellation and
@@ -94,9 +92,9 @@ function TermsPage() {
               For the full operator terms, contact us at{" "}
               <a
                 className="underline decoration-[color:var(--gold)]/50 hover:text-[color:var(--teal)]"
-                href="mailto:info@yesexperiencesportugal.com"
+                href={EMAIL_HREF}
               >
-                info@yesexperiencesportugal.com
+                {EMAIL}
               </a>
               .
             </p>

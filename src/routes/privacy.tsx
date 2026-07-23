@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { EMAIL, EMAIL_HREF } from "@/config/business-nap";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 
 export const Route = createFileRoute("/privacy")({
@@ -79,9 +80,9 @@ function PrivacyPage() {
               Data requests:{" "}
               <a
                 className="underline decoration-[color:var(--gold)]/50 hover:text-[color:var(--teal)]"
-                href="mailto:info@yesexperiencesportugal.com"
+                href={EMAIL_HREF}
               >
-                info@yesexperiencesportugal.com
+                {EMAIL}
               </a>
               .
             </p>

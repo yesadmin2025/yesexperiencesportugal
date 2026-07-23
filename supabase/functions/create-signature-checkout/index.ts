@@ -69,19 +69,7 @@ interface Body {
   }>;
 }
 
-type AgeBand = "adult" | "youth" | "child" | "infant";
-const AGE_BAND_PCT: Record<AgeBand, number> = {
-  adult: 1.0,
-  youth: 0.75,
-  child: 0.5,
-  infant: 0,
-};
-function ageBand(age: number): AgeBand | null {
-  if (!Number.isFinite(age) || age < 0 || age > 17 || !Number.isInteger(age)) return null;
-  if (age >= 11) return "youth";
-  if (age >= 3) return "child";
-  return "infant";
-}
+import { AGE_BAND_PCT, ageBand, type AgeBand } from "../_shared/pricing.ts";
 
 
 type Flow = "studio" | "signature" | "tailor";

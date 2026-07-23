@@ -40,19 +40,15 @@ export interface CheckoutReceiptProps {
 }
 
 /**
- * Age-band multipliers — must stay in lockstep with `AGE_BAND_PCT` in
- * `src/data/signatureTourPricing.ts`. The on-page summary reads unit prices
- * from `journeyLines[]` produced by `resolveSignatureAgeBandPricing`, which
- * applies these exact percentages and rounding — reproducing them here
- * yields byte-identical unit/subtotals in the confirmation email.
+ * Age-band multipliers — imported from the single source of truth in
+ * `src/data/signatureTourPricing.ts` so email totals stay byte-identical
+ * to the on-page summary.
  */
-const AGE_BAND_PCT = { adult: 1.0, youth: 0.75, child: 0.5, infant: 0 } as const;
+import { AGE_BAND_PCT, ageBand as ageBandRaw } from "@/data/signatureTourPricing";
 
 function ageBand(age: number): JourneyBand | null {
-  if (!Number.isInteger(age) || age < 0 || age > 17) return null;
-  if (age >= 11) return "youth";
-  if (age >= 3) return "child";
-  return "infant";
+  const b = ageBandRaw(age);
+  return b === "adult" ? null : b;
 }
 
 /** Rebuild the same `CheckoutJourneyLine[]` shape the on-page summary uses. */

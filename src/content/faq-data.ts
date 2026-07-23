@@ -31,11 +31,11 @@ export const HOMEPAGE_FAQ: { q: string; a: string }[] = [
     a: "Always. A local from our team takes your request personally — never a call centre, never a chatbot. For Travel Designer journeys, the conversation begins before anything is confirmed.",
   },
   {
-    q: "How far in advance should I book?",
+    q: "How far in advance should I reserve?",
     a: "Signature and Studio days are usually available within a few days' notice. For Travel Designer journeys, two to four weeks gives us room to design properly; peak season fills earlier.",
   },
   {
-    q: "What happens after I submit a request?",
+    q: "What happens after I reserve or send a request?",
     a: "A local replies personally, usually within the hour. We confirm the details, share a clear proposal, and only then ask for confirmation — no pressure, no automated funnels.",
   },
   {
