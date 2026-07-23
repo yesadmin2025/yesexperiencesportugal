@@ -857,21 +857,21 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-1 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
-      <Footer />
-      <FloatingActions />
-      {/* WhatsAppFab intentionally not rendered — WhatsAppSupportButton (in __root.tsx)
-          is the single source of truth for the floating support affordance. Rendering
-          both stacked two 56×56 FABs 4px apart on desktop, failing WCAG 2.2 target-size. */}
+    <CurrencyProvider>
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
+        <Footer />
+        <FloatingActions />
+        {/* WhatsAppFab intentionally not rendered — WhatsAppSupportButton (in __root.tsx)
+            is the single source of truth for the floating support affordance. */}
 
-      {/* Single polite SR announcer — fires once per tab when the user
-          first scrolls past the hero, giving screen-reader users parity
-          with sighted users who see the post-hero CTA surfaces appear. */}
-      <PostHeroAnnouncer />
-      <QaPanel />
-      <MotionQaPanel />
-    </div>
+        <PostHeroAnnouncer />
+        <QaPanel />
+        <MotionQaPanel />
+        <CookieConsent />
+      </div>
+    </CurrencyProvider>
   );
 }
+
