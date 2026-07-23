@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-23T06:18:46.554Z",
-  "filesScanned": 876,
+  "generatedAt": "2026-07-23T07:05:40.245Z",
+  "filesScanned": 877,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,8 +18,8 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 382,
-    "approved": 97,
+    "total": 383,
+    "approved": 98,
     "allowlisted": 64,
     "mismatch": 221
   },
@@ -368,11 +368,11 @@
     },
     {
       "file": "src/components/CurrencyToggle.tsx",
-      "line": 46,
-      "col": 224,
+      "line": 76,
+      "col": 67,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "\"tap transition-colors duration-200 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-",
+      "snippet": ": \"focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]\",",
       "status": "approved"
     },
     {
@@ -736,6 +736,15 @@
       "status": "mismatch"
     },
     {
+      "file": "src/components/LanguageSwitcher.tsx",
+      "line": 126,
+      "col": 295,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "\"tap min-h-[32px] min-w-[32px] px-1 inline-flex items-center justify-center rounded-sm transition-colors duration-200 focus-visible:outline-none focus-visible:r",
+      "status": "approved"
+    },
+    {
       "file": "src/components/Navbar.tsx",
       "line": 71,
       "col": 364,
@@ -764,7 +773,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 190,
+      "line": 196,
       "col": 351,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -773,7 +782,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 203,
+      "line": 209,
       "col": 351,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -782,7 +791,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 219,
+      "line": 225,
       "col": 353,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -3149,7 +3158,7 @@
     },
     {
       "file": "src/routes/i.$token.tsx",
-      "line": 318,
+      "line": 325,
       "col": 34,
       "raw": "#fff",
       "normalized": "#ffffff",
