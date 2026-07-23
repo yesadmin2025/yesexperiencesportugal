@@ -399,13 +399,13 @@ const HEADLINES: HeadlineSpec[] = [
     page: "home",
     role: "hero primary CTA",
     file: "src/components/home/CinematicHero.tsx",
-    pattern: /data-hero-field="primaryCta"[\s\S]*?className="([^"]+)"/,
+    pattern: /className="([^"]*hero-cta--primary[^"]*)"/,
   },
   {
     page: "home",
     role: "hero secondary CTA",
     file: "src/components/home/CinematicHero.tsx",
-    pattern: /data-hero-field="secondaryCta"[\s\S]*?className="([^"]+)"/,
+    pattern: /className="([^"]*hero-cta--ghost[^"]*)"/,
   }
 
   // Removed: /multi-day hero subhead (copy rebuilt to a Designer-led lead)
