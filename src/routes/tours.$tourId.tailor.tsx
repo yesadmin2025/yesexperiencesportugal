@@ -712,6 +712,10 @@ function TailorPage() {
               <img
                 src={tour.img}
                 alt={tour.title}
+                width={1600}
+                height={900}
+                fetchPriority="high"
+                decoding="async"
                 style={{ objectPosition: tour.focal ?? "50% 50%" }}
                 className="w-full h-full object-cover"
               />
