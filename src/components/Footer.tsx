@@ -294,8 +294,21 @@ export function Footer() {
                   )}
                 </span>
               ))}
+              <span aria-hidden="true" className="text-[color:var(--text-on-dark-muted)]">·</span>
+              <button
+                type="button"
+                onClick={openCookieConsent}
+                className="inline-flex items-center min-h-[24px] py-1 link-hairline-gold tap text-[color:var(--ivory)]/75 hover:text-[color:var(--gold-soft)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+              >
+                Cookie preferences
+              </button>
             </nav>
           </div>
+          <div className="mt-5 pt-5 border-t border-[color:var(--gold-warm)]/10 flex flex-wrap items-center justify-between gap-4">
+            <LanguageSwitcher variant="footer" className="text-[color:var(--ivory)]/75" />
+            <CurrencyToggle variant="footer" />
+          </div>
+
           <p className="md:hidden mt-3 text-[11px] leading-[1.55] text-[color:var(--text-on-dark-muted)] font-[family-name:var(--font-sans)]">
             {LEGAL_META_LINE}
           </p>
