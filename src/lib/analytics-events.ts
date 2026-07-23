@@ -53,10 +53,13 @@ export type YesAnalyticsEvent =
   | "travel_designer_lead"
   // Other
   | "language_changed"
+  | "currency_changed"
+  | "consent_choice"
   | "tripadvisor_click"
   | "google_reviews_click"
   | "phone_click"
   | "email_click";
+
 
 export type ExperienceType =
   | "signature"
