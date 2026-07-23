@@ -2288,18 +2288,21 @@ export type Database = {
       }
       tour_price_tiers: {
         Row: {
+          platform_tiers: Json | null
           tiers: Json
           tour_id: string
           updated_at: string
           updated_by: string | null
         }
         Insert: {
+          platform_tiers?: Json | null
           tiers?: Json
           tour_id: string
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
+          platform_tiers?: Json | null
           tiers?: Json
           tour_id?: string
           updated_at?: string
