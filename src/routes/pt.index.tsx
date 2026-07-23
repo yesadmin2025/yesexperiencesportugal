@@ -165,7 +165,12 @@ function PtHomePage() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 flex justify-end">
+          <PriceCurrencyChip align="end" />
+        </div>
+
+        <div className="mt-4 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+
           {FEATURED.map((t) => (
             <article key={t.id} className="group flex flex-col text-left">
               <Link
