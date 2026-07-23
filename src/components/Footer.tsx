@@ -1,8 +1,17 @@
 import { Link } from "@tanstack/react-router";
+import type { ComponentType } from "react";
 import { ShieldCheck, BadgeCheck, Lock } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import {
+  InstagramIcon,
+  FacebookIcon,
+  TripadvisorIcon,
+  WhatsAppIcon,
+  ViatorIcon,
+  GetYourGuideIcon,
+} from "@/components/BrandIcon";
 
 import { openCookieConsent } from "@/components/CookieConsent";
 import {
@@ -13,6 +22,7 @@ import {
   SOCIAL,
   whatsappUrl,
 } from "@/config/business-nap";
+
 
 
 
