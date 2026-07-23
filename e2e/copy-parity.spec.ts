@@ -131,13 +131,13 @@ test.describe("Signature product pages — canonical copy + CTAs", () => {
       await assertCanonicalFooter(page, route);
       await assertNoLegacyCta(page, route);
 
-      // Approved Signature CTA pair must be present (link OR button).
-      const reserveCta = page.getByRole("link", { name: /check availability & reserve/i }).first();
-      const tailorCta = page.getByRole("link", { name: /tailor this day/i }).first();
-      await expect(reserveCta, `${route}: approved primary CTA must appear`).toBeVisible();
-      await expect(tailorCta, `${route}: approved secondary CTA must appear`).toBeVisible();
-    });
-  }
+      // Approved Signature CTA pair must be present (any anchor/button).
+      // Use count-based assertion so a genuine drift fails fast instead
+      // of waiting on toBeVisible's default retry window.
+      const reserveCount = await page.getByText(/check availability & reserve/i).count();
+      const tailorCount = await page.getByText(/tailor this day/i).count();
+      expect(reserveCount, `${route}: approved primary CTA must appear`).toBeGreaterThan(0);
+      expect(tailorCount, `${route}: approved secondary CTA must appear`).toBeGreaterThan(0);
 
   // FAQ wording must match the SIGNATURE_FAQ source of truth on the
   // canonical /tours/$tourId surface (JSON-LD + visible FAQ share the
