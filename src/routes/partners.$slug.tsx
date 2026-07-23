@@ -129,7 +129,7 @@ function PartnerPage() {
               aria-hidden="true"
               className="inline-flex h-10 w-10 items-center justify-center rounded-full ring-1 ring-[color:var(--gold)]/50 text-[color:var(--gold-ink)]"
             >
-              {(() => { const Icon = PARTNER_ICON[p.slug]; return <Icon size={18} />; })()}
+              {(() => { const Icon = PARTNER_ICON[p.slug as PlatformPartner["slug"]]; return <Icon size={18} />; })()}
             </span>
             <Eyebrow>{p.eyebrow}</Eyebrow>
           </div>
