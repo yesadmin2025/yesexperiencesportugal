@@ -63,6 +63,8 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
     <div
       role="group"
       aria-label={t("lang.switcher_label")}
+      data-a11y-scope="language-switcher"
+      data-variant={variant}
       className={cn(
         "inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em]",
         variant === "footer" && "gap-3 text-[12px]",

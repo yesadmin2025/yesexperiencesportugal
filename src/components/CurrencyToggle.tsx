@@ -35,6 +35,8 @@ export function CurrencyToggle({ variant = "header", className }: Props) {
       <div
         role="group"
         aria-label={t("currency.switcher_label")}
+        data-a11y-scope="currency-toggle"
+        data-variant={variant}
         className={cn(
           "inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em]",
           variant === "footer" && "gap-3 text-[12px]",
