@@ -33,11 +33,10 @@ test("mobile nav social icons expose aria-labels", async ({ page }) => {
   await page.setViewportSize({ width: 393, height: 780 });
   await page.goto("/", { waitUntil: "domcontentloaded" });
 
+  // Render the menu by toggling state via the button's click handler.
   const menuBtn = page.locator('header button[aria-label*="menu" i]').first();
-  // Wait for hydration so the React onClick handler is attached.
   await expect(menuBtn).toHaveAttribute("aria-expanded", "false");
-  // Use JS click to avoid headless pointer-event quirks.
-  await menuBtn.evaluate((el) => (el as HTMLButtonElement).click());
+  await menuBtn.evaluate((el) => el.dispatchEvent(new MouseEvent("click", { bubbles: true })));
 
   const mobileNav = page.locator("#mobile-nav").first();
   await expect(mobileNav).toBeVisible();
