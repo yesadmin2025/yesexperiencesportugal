@@ -5,6 +5,10 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { breadcrumbLd, jsonLdScript, organizationLd } from "@/lib/jsonld";
 import { PLATFORM_PARTNERS, PARTNERS_BASE_URL, PARTNERS_HUB } from "@/data/platform-partners";
+import { abs } from "@/lib/seo";
+import heroImg from "@/assets/hero-coast.jpg";
+
+const OG_IMAGE = abs(heroImg);
 
 const TITLE = "Distribution partners — Viator, GetYourGuide, Tripadvisor | YES Experiences Portugal";
 const DESCRIPTION =
@@ -33,9 +37,13 @@ export const Route = createFileRoute("/partners/")({
       { property: "og:description", content: DESCRIPTION },
       { property: "og:url", content: PARTNERS_BASE_URL },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "YES Experiences Portugal" },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:alt", content: "YES Experiences Portugal — private tours designed with a local" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESCRIPTION },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
     links: [{ rel: "canonical", href: PARTNERS_BASE_URL }],
     scripts: [

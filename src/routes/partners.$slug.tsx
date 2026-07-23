@@ -10,6 +10,10 @@ import {
   partnerBySlug,
   type PlatformPartner,
 } from "@/data/platform-partners";
+import { abs } from "@/lib/seo";
+import heroImg from "@/assets/hero-coast.jpg";
+
+const OG_IMAGE = abs(heroImg);
 
 /**
  * /partners/:slug — one page per distribution platform.
@@ -71,9 +75,13 @@ export const Route = createFileRoute("/partners/$slug")({
         { property: "og:description", content: description },
         { property: "og:url", content: url },
         { property: "og:type", content: "website" },
+        { property: "og:site_name", content: "YES Experiences Portugal" },
+        { property: "og:image", content: OG_IMAGE },
+        { property: "og:image:alt", content: `${p.h1} — YES Experiences Portugal` },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: p.h1 },
         { name: "twitter:description", content: description },
+        { name: "twitter:image", content: OG_IMAGE },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
