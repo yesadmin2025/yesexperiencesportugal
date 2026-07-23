@@ -16,8 +16,15 @@ import {
   LICENSE_LABEL,
   LICENSE_LABEL_PT,
   SOCIAL,
+  CANCELLATION,
 } from "../src/config/business-nap";
 import { HOMEPAGE_FAQ } from "../src/content/faq-data";
+import { SIGNATURE_FAQ } from "../src/content/seo-faq";
+import {
+  LEGACY_CTAS,
+  SIGNATURE_PRODUCT_TOURS,
+  SIGNATURE_STANDALONE_ROUTES,
+} from "./copy-parity-constants";
 
 async function bodyText(page: Page, url: string): Promise<string> {
   await page.goto(url, { waitUntil: "domcontentloaded" });
