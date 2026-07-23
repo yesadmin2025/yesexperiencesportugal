@@ -15,7 +15,7 @@
   {
     "name": "experiences",
     "url": "http://localhost:8080/experiences",
-    "lcp": 732,
+    "lcp": 444,
     "lcpElement": {
       "tag": "P",
       "id": null,
@@ -33,42 +33,33 @@
       }
     ],
     "resources": [],
-    "transferBytes": 9580194,
+    "transferBytes": 8622247,
     "resourceCount": 250,
-    "jsBytes": 8943176,
+    "jsBytes": 7985229,
     "imgBytes": 123043
   },
   {
     "name": "tour",
     "url": "http://localhost:8080/tours/lisbon-arrabida-sanctuary",
-    "lcp": 376,
+    "lcp": 1676,
     "lcpElement": {
       "tag": "P",
       "id": null,
       "cls": "mt-5 font-[family-name:var(--font-sans)] text-[14px] text-[color:var(--ivory)]/85 leading-[1.65] max-w-md",
       "src": null
     },
-    "cls": 0.0031338364636374154,
-    "shifts": [
-      {
-        "value": 0.0031338364636374154,
-        "sources": [
-          null,
-          "A",
-          null
-        ]
-      }
-    ],
+    "cls": 0,
+    "shifts": [],
     "resources": [],
-    "transferBytes": 8667515,
+    "transferBytes": 349009,
     "resourceCount": 250,
-    "jsBytes": 7965010,
-    "imgBytes": 176045
+    "jsBytes": 333355,
+    "imgBytes": 2100
   },
   {
     "name": "tailor",
     "url": "http://localhost:8080/tours/lisbon-arrabida-sanctuary/tailor",
-    "lcp": 1084,
+    "lcp": 804,
     "lcpElement": {
       "tag": "P",
       "id": null,
@@ -87,27 +78,27 @@
       }
     ],
     "resources": [],
-    "transferBytes": 8673090,
+    "transferBytes": 8664243,
     "resourceCount": 250,
-    "jsBytes": 7970585,
+    "jsBytes": 7961738,
     "imgBytes": 176045
   },
   {
     "name": "designer",
     "url": "http://localhost:8080/portugal-travel-designer",
-    "lcp": 308,
+    "lcp": 1672,
     "lcpElement": {
-      "tag": "IMG",
+      "tag": "P",
       "id": null,
-      "cls": "logo-mark logo-mark--teal-on-ivory absolute left-0 top-0 block h-full w-auto select-none",
-      "src": "http://localhost:8080/src/assets/yes-logo-approved.webp"
+      "cls": null,
+      "src": null
     },
     "cls": 0,
     "shifts": [],
     "resources": [],
-    "transferBytes": 8622247,
+    "transferBytes": 8624872,
     "resourceCount": 250,
-    "jsBytes": 7985229,
+    "jsBytes": 7987854,
     "imgBytes": 123043
   }
 ]
