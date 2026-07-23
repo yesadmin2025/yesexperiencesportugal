@@ -4,6 +4,7 @@ import { ShieldCheck, BadgeCheck, Lock } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { AccessibleIconLink } from "@/components/AccessibleIconLink";
 import {
   InstagramIcon,
   FacebookIcon,
@@ -135,16 +136,15 @@ export function Footer() {
                 { href: whatsappUrl(), label: "WhatsApp", Icon: WhatsAppIcon },
               ].map(({ href, label, Icon }) => (
                 <li key={label}>
-                  <a
+                  <AccessibleIconLink
                     href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    title={label}
+                    external
+                    label={label}
+                    tooltip={label}
                     className="tap inline-flex h-10 w-10 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] hover:ring-[color:var(--gold-warm)]/70 transition-colors duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
                   >
                     <Icon size={16} />
-                  </a>
+                  </AccessibleIconLink>
                 </li>
               ))}
             </ul>
@@ -256,14 +256,14 @@ export function Footer() {
                 { to: "/partners/tripadvisor", label: "Tripadvisor", Icon: TripadvisorIcon },
               ].map(({ to, label, Icon }) => (
                 <li key={label}>
-                  <Link
+                  <AccessibleIconLink
                     to={to}
-                    aria-label={`Also listed on ${label}`}
-                    title={label}
+                    label={`Also listed on ${label}`}
+                    tooltip={label}
                     className="tap inline-flex h-10 w-10 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] hover:ring-[color:var(--gold-warm)]/70 transition-colors duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
                   >
                     <Icon size={16} />
-                  </Link>
+                  </AccessibleIconLink>
                 </li>
               ))}
             </ul>

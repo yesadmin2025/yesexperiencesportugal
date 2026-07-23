@@ -12,19 +12,24 @@ const Monogram = ({
   label,
   size = 16,
   className,
+  title,
 }: {
   label: string;
   size?: number;
   className?: string;
+  title?: string;
 }) => (
   <svg
     viewBox="0 0 24 24"
     width={size}
     height={size}
     className={className}
-    aria-hidden="true"
+    aria-hidden={title ? undefined : "true"}
+    aria-label={title}
+    role={title ? "img" : undefined}
     focusable="false"
   >
+    {title && <title>{title}</title>}
     <text
       x="50%"
       y="52%"
@@ -42,8 +47,18 @@ const Monogram = ({
 );
 
 const wrap = (Icon: ComponentType<SVGProps<SVGSVGElement>>): ComponentType<IconProps> =>
-  ({ size = 16, className }: IconProps) => (
-    <Icon width={size} height={size} className={className} aria-hidden="true" focusable="false" />
+  ({ size = 16, className, title }: IconProps) => (
+    <Icon
+      width={size}
+      height={size}
+      className={className}
+      aria-hidden={title ? undefined : "true"}
+      aria-label={title}
+      role={title ? "img" : undefined}
+      focusable="false"
+    >
+      {title && <title>{title}</title>}
+    </Icon>
   );
 
 export const InstagramIcon = wrap(FaInstagram as ComponentType<SVGProps<SVGSVGElement>>);

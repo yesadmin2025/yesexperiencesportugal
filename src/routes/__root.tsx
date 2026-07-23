@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 import appCss from "../styles.css?url";
 import { installResetBlankCheckFilter } from "@/lib/silence-reset-blank-check";
@@ -305,11 +306,13 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LocaleProvider locale={locale}>
-        <RouteFade>
-          <Outlet />
-        </RouteFade>
-        <WhatsAppSupportButton />
-        <Toaster position="bottom-left" richColors closeButton />
+        <TooltipProvider delayDuration={150}>
+          <RouteFade>
+            <Outlet />
+          </RouteFade>
+          <WhatsAppSupportButton />
+          <Toaster position="bottom-left" richColors closeButton />
+        </TooltipProvider>
       </LocaleProvider>
     </QueryClientProvider>
   );

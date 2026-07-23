@@ -10,6 +10,7 @@ import {
   partnerBySlug,
   type PlatformPartner,
 } from "@/data/platform-partners";
+import { AccessibleIconLink } from "@/components/AccessibleIconLink";
 import { ViatorIcon, GetYourGuideIcon, TripadvisorIcon } from "@/components/BrandIcon";
 import type { ComponentType } from "react";
 
@@ -247,14 +248,16 @@ function PartnerPage() {
               const Icon = PARTNER_ICON[x.slug as PlatformPartner["slug"]];
               return (
               <li key={x.slug}>
-                <Link
+                <AccessibleIconLink
                   to="/partners/$slug"
                   params={{ slug: x.slug }}
+                  label={`Also listed on ${x.name}`}
+                  tooltip={x.name}
                   className="inline-flex items-center gap-2 rounded-full border border-[color:var(--charcoal)]/15 bg-[color:var(--sand)]/50 px-4 py-2 text-[13px] text-[color:var(--charcoal)]/85 transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold-ink)]"
                 >
                   <Icon size={14} />
                   {x.name}
-                </Link>
+                </AccessibleIconLink>
               </li>
               );
             })}
