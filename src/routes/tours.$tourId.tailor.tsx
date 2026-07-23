@@ -122,7 +122,11 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
       ],
       // Canonical points to the parent Signature page to avoid duplicate-content
       // signals; the tailor URL is a customization surface, not a separate product.
-      links: [{ rel: "canonical", href: parentUrl }],
+      links: [
+        { rel: "canonical", href: parentUrl },
+        // LCP preload — the tour mini-card hero <img> below the fold-in intro.
+        { rel: "preload", as: "image", href: t.img, fetchpriority: "high" },
+      ],
       scripts: [
         jsonLdScript(
           breadcrumbLd([
