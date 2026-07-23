@@ -243,17 +243,21 @@ function PartnerPage() {
             Also listed on
           </p>
           <ul className="mt-4 flex flex-wrap gap-3">
-            {PLATFORM_PARTNERS.filter((x) => x.slug !== p.slug).map((x) => (
+            {PLATFORM_PARTNERS.filter((x) => x.slug !== p.slug).map((x) => {
+              const Icon = PARTNER_ICON[x.slug as PlatformPartner["slug"]];
+              return (
               <li key={x.slug}>
                 <Link
                   to="/partners/$slug"
                   params={{ slug: x.slug }}
-                  className="inline-flex items-center rounded-full border border-[color:var(--charcoal)]/15 bg-[color:var(--sand)]/50 px-4 py-2 text-[13px] text-[color:var(--charcoal)]/85 transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold-ink)]"
+                  className="inline-flex items-center gap-2 rounded-full border border-[color:var(--charcoal)]/15 bg-[color:var(--sand)]/50 px-4 py-2 text-[13px] text-[color:var(--charcoal)]/85 transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold-ink)]"
                 >
+                  <Icon size={14} />
                   {x.name}
                 </Link>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </section>
       </main>
