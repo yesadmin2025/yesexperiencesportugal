@@ -5,6 +5,10 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { breadcrumbLd, jsonLdScript, organizationLd } from "@/lib/jsonld";
 import { PLATFORM_PARTNERS, PARTNERS_BASE_URL, PARTNERS_HUB } from "@/data/platform-partners";
+import { abs } from "@/lib/seo";
+import heroImg from "@/assets/hero-coast.jpg";
+
+const OG_IMAGE = abs(heroImg);
 
 const TITLE = "Distribution partners — Viator, GetYourGuide, Tripadvisor | YES Experiences Portugal";
 const DESCRIPTION =
