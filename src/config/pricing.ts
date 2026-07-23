@@ -45,11 +45,8 @@ export function tailorAdjustedPerPax(
   principalsRemoved: number,
 ): number {
   if (!Number.isFinite(directEur) || directEur <= 0) return 0;
-  const stepPct = Math.max(0, Math.min(principalsRemoved, 0)) * 0; // placeholder
   const raw = Math.max(0, principalsRemoved) * TAILOR_PRINCIPAL_STEP_PCT;
   const reductionPct = Math.min(raw, MAX_TAILOR_REDUCTION_PCT);
   const proposed = Math.round(directEur * (1 - reductionPct));
   return Math.max(proposed, operationalFloor(directEur));
-  // stepPct is intentionally unused; kept as a doc anchor for reviewers.
-  void stepPct;
 }
