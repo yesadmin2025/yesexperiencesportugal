@@ -4,7 +4,15 @@ import { Scene } from "@/components/motion/Scene";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { breadcrumbLd, jsonLdScript, organizationLd } from "@/lib/jsonld";
-import { PLATFORM_PARTNERS, PARTNERS_BASE_URL, PARTNERS_HUB } from "@/data/platform-partners";
+import { PLATFORM_PARTNERS, PARTNERS_BASE_URL, PARTNERS_HUB, type PlatformSlug } from "@/data/platform-partners";
+import { ViatorIcon, GetYourGuideIcon, TripadvisorIcon } from "@/components/BrandIcon";
+import type { ComponentType } from "react";
+
+const PARTNER_ICON: Record<PlatformSlug, ComponentType<{ size?: number; className?: string }>> = {
+  viator: ViatorIcon,
+  getyourguide: GetYourGuideIcon,
+  tripadvisor: TripadvisorIcon,
+};
 import { abs } from "@/lib/seo";
 import heroImg from "@/assets/hero-coast.jpg";
 
