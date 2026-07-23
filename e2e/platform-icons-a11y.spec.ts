@@ -33,10 +33,8 @@ test("mobile nav social icons expose aria-labels", async ({ page }) => {
   await page.setViewportSize({ width: 393, height: 780 });
   await page.goto("/", { waitUntil: "domcontentloaded" });
 
-  // The menu is rendered client-side after the hamburger click.
-  // We verify the icons are present in the initial markup by forcing the
-  // menu open through React state, which is more reliable than headless
-  // pointer events on the fixed header button.
+  // The mobile menu is rendered client-side after the hamburger click.
+  // We verify the markup by toggling the menu via React's click handler.
   await page.evaluate(() => {
     const buttons = Array.from(document.querySelectorAll('header button'));
     const menuBtn = buttons.find((b) =>
