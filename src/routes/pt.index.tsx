@@ -199,7 +199,9 @@ function PtHomePage() {
                 <span className="flex items-center gap-1.5">
                   <MapPin size={12} /> {t.theme}
                 </span>
-                <span className="text-[color:var(--teal)]">Desde €{t.priceFrom}</span>
+                <span className="text-[color:var(--teal)]">
+                  A partir de <PriceEur amountEur={t.priceFrom} role="from" />
+                </span>
               </div>
             </article>
           ))}
