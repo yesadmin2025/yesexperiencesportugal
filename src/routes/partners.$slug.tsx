@@ -10,6 +10,14 @@ import {
   partnerBySlug,
   type PlatformPartner,
 } from "@/data/platform-partners";
+import { ViatorIcon, GetYourGuideIcon, TripadvisorIcon } from "@/components/BrandIcon";
+import type { ComponentType } from "react";
+
+const PARTNER_ICON: Record<PlatformPartner["slug"], ComponentType<{ size?: number; className?: string }>> = {
+  viator: ViatorIcon,
+  getyourguide: GetYourGuideIcon,
+  tripadvisor: TripadvisorIcon,
+};
 import { abs } from "@/lib/seo";
 import heroImg from "@/assets/hero-coast.jpg";
 
@@ -116,7 +124,15 @@ function PartnerPage() {
         </nav>
 
         <Scene>
-          <Eyebrow className="mt-8">{p.eyebrow}</Eyebrow>
+          <div className="mt-8 flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full ring-1 ring-[color:var(--gold)]/50 text-[color:var(--gold-ink)]"
+            >
+              {(() => { const Icon = PARTNER_ICON[p.slug as PlatformPartner["slug"]]; return <Icon size={18} />; })()}
+            </span>
+            <Eyebrow>{p.eyebrow}</Eyebrow>
+          </div>
           <SectionTitle as="h1" size="anchor" className="mt-4">
             {p.h1}
           </SectionTitle>
@@ -227,17 +243,21 @@ function PartnerPage() {
             Also listed on
           </p>
           <ul className="mt-4 flex flex-wrap gap-3">
-            {PLATFORM_PARTNERS.filter((x) => x.slug !== p.slug).map((x) => (
+            {PLATFORM_PARTNERS.filter((x) => x.slug !== p.slug).map((x) => {
+              const Icon = PARTNER_ICON[x.slug as PlatformPartner["slug"]];
+              return (
               <li key={x.slug}>
                 <Link
                   to="/partners/$slug"
                   params={{ slug: x.slug }}
-                  className="inline-flex items-center rounded-full border border-[color:var(--charcoal)]/15 bg-[color:var(--sand)]/50 px-4 py-2 text-[13px] text-[color:var(--charcoal)]/85 transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold-ink)]"
+                  className="inline-flex items-center gap-2 rounded-full border border-[color:var(--charcoal)]/15 bg-[color:var(--sand)]/50 px-4 py-2 text-[13px] text-[color:var(--charcoal)]/85 transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold-ink)]"
                 >
+                  <Icon size={14} />
                   {x.name}
                 </Link>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </section>
       </main>
