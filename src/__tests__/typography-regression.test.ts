@@ -386,15 +386,15 @@ const HEADLINES: HeadlineSpec[] = [
     page: "home",
     role: "hero stanza line 1",
     file: "src/components/home/CinematicHero.tsx",
-    pattern: /<h1\s+className="(font-serif italic font-normal)"[^>]*>[\s\S]*?\{HERO_PHRASES\[0\]\}/,
+    pattern: /<h1\s+className="(font-serif italic font-normal)[^"]*"[^>]*>[\s\S]*?\{HERO_PHRASES\[0\]\}/,
   },
   {
     page: "home",
     role: "hero stanza line 2",
     file: "src/components/home/CinematicHero.tsx",
     pattern:
-      /<p\s+className="(font-serif italic font-normal mt-3 sm:mt-4)"[^>]*>[\s\S]*?\{HERO_PHRASES\[1\]\}/,
-  },
+      /<p\s+className="(font-serif italic font-normal mt-3 sm:mt-4)[^"]*"[^>]*>[\s\S]*?\{HERO_PHRASES\[1\]\}/,
+  }
   {
     page: "home",
     role: "hero primary CTA",
