@@ -30,11 +30,14 @@ function useMobileSecondaryLinks() {
   ];
 }
 
+import { WhatsAppIcon, InstagramIcon, TripadvisorIcon } from "@/components/BrandIcon";
+
 const mobileSocialLinks = [
-  { href: whatsappUrl(), label: "WhatsApp" },
-  { href: SOCIAL.instagram, label: "Instagram" },
-  { href: SOCIAL.tripadvisor, label: "Tripadvisor" },
+  { href: whatsappUrl(), label: "WhatsApp", Icon: WhatsAppIcon },
+  { href: SOCIAL.instagram, label: "Instagram", Icon: InstagramIcon },
+  { href: SOCIAL.tripadvisor, label: "Tripadvisor", Icon: TripadvisorIcon },
 ];
+
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
