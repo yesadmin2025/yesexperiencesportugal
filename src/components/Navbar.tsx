@@ -232,14 +232,8 @@ export function Navbar() {
                   </a>
                 ))}
               </div>
-              <div className="border-t border-[color:var(--charcoal)]/[0.06]" />
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-                <span className="inline-flex items-center gap-1.5 text-[color:var(--charcoal-soft)]">
-                  <Globe size={13} strokeWidth={1.6} aria-hidden />
-                  <LanguageSwitcher variant="header" />
-                </span>
-                <CurrencyToggle variant="header" />
-              </div>
+
+
 
             </div>
           </div>
