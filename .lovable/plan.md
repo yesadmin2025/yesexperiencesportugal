@@ -1,35 +1,38 @@
 ## Goal
-1. Adicionar checks automáticos com axe-core aos alternadores de idioma (`LanguageSwitcher`) e de moeda (`CurrencyToggle`) — o teste falha em violações de ARIA, contraste ou foco.
-2. Tornar ambos os alternadores permanentemente visíveis no header mobile (fora do menu hamburger), mantendo o design premium.
+- Header (desktop + mobile) e footer: manter **apenas** o `LanguageSwitcher`. Remover o `CurrencyToggle` desses locais.
+- `CurrencyToggle` passa a aparecer **só nas páginas onde há preços em euros**, colocado inline junto ao bloco de preços principal.
 
 ## Changes
 
-### 1. Mobile visibility — `src/components/Navbar.tsx`
-- Adicionar um cluster compacto ao lado direito do header (antes do botão do menu) visível apenas em `<lg` com `LanguageSwitcher` + `CurrencyToggle` inline. Já visível no header desktop — permanece igual.
-- Remover a duplicação dentro do painel mobile (`open && ...` bloco linhas 227–233) para evitar controlos duplicados.
-- Estilo: mesma altura visual do botão de menu (44×44 tap target garantido pelo `.tap`), separador vertical fino a `--charcoal/15`, sem alterar tipografia nem tokens de cor.
+### 1. Remover CurrencyToggle de header e footer
+- `src/components/Navbar.tsx`: remover `<CurrencyToggle>` e o separador vertical do cluster mobile (mantém `Globe + LanguageSwitcher`) e do bloco desktop (linha 152). Remover import não usado.
+- `src/components/Footer.tsx`: remover `<CurrencyToggle variant="footer" />` (linha 309) e o import.
 
-### 2. Axe-core a11y spec — `e2e/switchers-a11y-axe.spec.ts` (novo)
-Cobre header desktop, header mobile (novo cluster) e footer. Fluxo por viewport (`1280×800` e `393×780`):
-1. `page.goto('/')`, aguardar font-ready.
-2. Correr `AxeBuilder`  com `.include('[data-a11y-scope="language-switcher"]')` e depois `.include('[data-a11y-scope="currency-toggle"]')`.
-3. `withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa'])` e regras explícitas: `color-contrast`, `aria-allowed-attr`, `aria-required-attr`, `aria-valid-attr-value`, `button-name`, `role-support-aria`, `focus-order-semantics`.
-4. `expect(results.violations).toEqual([])` — teste falha em qualquer violação.
-5. Foco por teclado: `Tab` até ao primeiro control do scope, verificar `:focus-visible` box (getBoundingClientRect + `outlineWidth` computado ≥ 2px) e roving `aria-pressed` após `Enter`/`Space`.
+### 2. Mount inline nas páginas com preços EUR
+Criar `src/components/PriceCurrencyChip.tsx` — wrapper minimalista à volta do `CurrencyToggle` existente (mesmo componente, `variant="header"`, com eyebrow "Ver em" antes). Sem novo design, só posicionamento.
 
-Adicionar `data-a11y-scope="language-switcher"` em `src/components/LanguageSwitcher.tsx` e `data-a11y-scope="currency-toggle"` em `src/components/CurrencyToggle.tsx` no elemento `role="group"` raiz (não altera visual).
+Montar `<PriceCurrencyChip />` nas rotas/componentes que hoje mostram preços em EUR, alinhado à direita, imediatamente acima do primeiro bloco de preços:
+- `src/routes/experiences.tsx` e `src/routes/pt.experiences.tsx` — topo do grid de tours.
+- `src/routes/day-tours.tsx` e `src/routes/pt.day-tours.tsx` — topo do grid.
+- `src/routes/tours.$tourId.tsx` — junto ao painel de preço/reserva.
+- `src/routes/tours.$tourId.tailor.tsx` — junto ao resumo de preço.
+- `src/routes/multi-day.tsx` — junto ao bloco de investimento.
+- `src/routes/portugal-travel-designer.tsx` — junto ao bloco de investimento (se aplicável).
+- Studio V3: `src/components/studio-v3/*` — dentro do "Final Investment" onde já se mostra EUR.
 
-### 3. Sem alterações de design
-- Não mexer em tokens de cor, tipografia ou motion.
-- Não modificar `SiteLayout`, footer nem outros componentes.
+Não montar em: homepage (sem preços), about, contact, terms, FAQs, admin, booking-confirmed, checkout (recibo é sempre EUR — mantém-se sem toggle), e-mails.
 
-## Technical notes
-- `@axe-core/playwright` e `axe-core` já instalados.
-- Playwright config já em `393px` por defeito; adicionar override para desktop no describe correspondente via `test.use({ viewport: { width: 1280, height: 800 } })`.
-- Contraste: a11y-scope root herda o fundo real (ivory no header, teal no footer) — axe avalia contra o fundo computado, sem hacks.
-- Nenhum backend, nenhuma migration, nenhuma alteração de copy.
+### 3. Testes
+- `e2e/switchers-a11y-axe.spec.ts`: remover o cenário `[data-a11y-scope="currency-toggle"]` do header/footer; adicionar cenário que carrega `/experiences` e `/tours/<slug>` e corre axe apenas no `[data-a11y-scope="currency-toggle"]` inline. Mantém-se WCAG A/AA + focus visible.
+- `e2e/currency-toggle-parity.spec.ts`: atualizar selectors — usa o chip inline em vez do header. Continua a validar que alternar EUR↔USD atualiza todos `[data-price-eur]` da página.
+- `e2e/traveller-prefs-a11y.spec.ts`: dividir — parte do idioma continua no header; parte da moeda passa a testar-se numa página com preços (`/experiences`).
+
+### 4. Sem alterações visuais fora do mount inline
+- Não mexer no `CurrencyToggle.tsx` (aria/foco/contraste já cobertos).
+- Não mexer em tokens, tipografia, motion.
+- Persistência (cookie + localStorage) e Consent Mode mantêm-se.
 
 ## Out of scope
-- Redesign visual dos switchers.
-- Alterações de i18n ou câmbio.
-- Outros componentes fora dos dois alternadores.
+- Redesign do switcher.
+- Mudanças em checkout/e-mails (permanecem EUR canónico).
+- i18n de novo cobre — apenas usa keys existentes.

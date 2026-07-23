@@ -12,6 +12,8 @@ import { TourImage } from "@/components/tours/TourImage";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
+import { PriceEur } from "@/components/ui/PriceEur";
 
 const TITLE = "Experiências de um Dia — YES Experiences Portugal";
 const DESCRIPTION =
@@ -84,7 +86,8 @@ function DayToursPage() {
       <section className="reveal py-16 md:py-20">
         <div className="container-x">
           <h2 className="sr-only">Experiências de um dia disponíveis</h2>
-          <div className="flex justify-end mb-6">
+          <div className="flex flex-wrap items-center justify-end gap-4 mb-6">
+            <PriceCurrencyChip />
             <ImageQualityToggle />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -127,7 +130,7 @@ function DayToursPage() {
                   <span className="flex items-center gap-1.5">
                     <MapPin size={12} /> {t.theme}
                   </span>
-                  <span className="text-[color:var(--teal)]">Desde €{t.priceFrom}</span>
+                  <span className="text-[color:var(--teal)]">Desde <PriceEur amountEur={t.priceFrom} role="from" /></span>
                 </div>
 
                 <p className="mt-3 text-sm text-[color:var(--charcoal-soft)] leading-relaxed">

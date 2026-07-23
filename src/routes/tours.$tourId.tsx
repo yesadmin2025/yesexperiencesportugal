@@ -36,6 +36,8 @@ import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { TourImage } from "@/components/tours/TourImage";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
+import { PriceEur } from "@/components/ui/PriceEur";
 import { useAdminTourPhotos } from "@/lib/useAdminTourPhotos";
 // Lazy-loaded below the fold — keeps Leaflet (~140KB) out of the initial tour bundle
 const SignatureRouteMap = lazy(() =>
@@ -343,12 +345,14 @@ function TourHero({
                   <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
                   <span className="flex items-baseline gap-1.5 normal-case tracking-normal text-[12px] text-[color:var(--charcoal)]">
                     <span className="font-semibold">
-                      From €{(tour as { priceFrom: number }).priceFrom}
+                      From <PriceEur amountEur={(tour as { priceFrom: number }).priceFrom} role="from" />
                     </span>
                     <span className="text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
                       per person
                     </span>
                   </span>
+                  <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
+                  <PriceCurrencyChip align="start" />
                 </>
               ) : null}
             </div>
