@@ -10,6 +10,10 @@ import {
   partnerBySlug,
   type PlatformPartner,
 } from "@/data/platform-partners";
+import { abs } from "@/lib/seo";
+import heroImg from "@/assets/hero-coast.jpg";
+
+const OG_IMAGE = abs(heroImg);
 
 /**
  * /partners/:slug — one page per distribution platform.
