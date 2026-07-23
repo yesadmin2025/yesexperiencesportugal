@@ -14,14 +14,13 @@
  *   - "Resume your draft"               (Studio draft return)
  */
 import { test, expect, type Page } from "@playwright/test";
-
-const LEGACY = ["Reserve this day", "Tailor this Signature", "Continue draft"];
+import { LEGACY_CTAS } from "./copy-parity-constants";
 
 async function assertNoLegacyLabels(page: Page, url: string) {
   await page.goto(url, { waitUntil: "domcontentloaded" });
   await page.waitForLoadState("networkidle").catch(() => undefined);
   const bodyText = await page.locator("body").innerText();
-  for (const legacy of LEGACY) {
+  for (const legacy of LEGACY_CTAS) {
     expect(bodyText, `Legacy CTA "${legacy}" found on ${url}`).not.toContain(legacy);
   }
 }
