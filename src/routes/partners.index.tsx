@@ -58,7 +58,7 @@ function PartnersHub() {
       <main className="mx-auto max-w-5xl px-6 pb-24 pt-14 sm:pt-20">
         <Scene>
           <Eyebrow>{PARTNERS_HUB.eyebrow}</Eyebrow>
-          <SectionTitle as="h1" size="xl" className="mt-4">
+          <SectionTitle as="h1" size="anchor" className="mt-4">
             {PARTNERS_HUB.h1}
           </SectionTitle>
           <p className="mt-6 max-w-2xl text-[17px] leading-relaxed text-[color:var(--charcoal)]/85">
@@ -100,7 +100,7 @@ function PartnersHub() {
 
         <section className="mt-20 rounded-2xl border border-[color:var(--charcoal)]/10 bg-white/60 p-8">
           <Eyebrow>Book directly</Eyebrow>
-          <SectionTitle as="h2" size="md" className="mt-3">
+          <SectionTitle as="h2" size="compact" className="mt-3">
             Or skip the marketplace — <SectionTitle.Em>design your own day</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[color:var(--charcoal)]/80">

@@ -109,7 +109,7 @@ function PartnerPage() {
 
         <Scene>
           <Eyebrow className="mt-8">{p.eyebrow}</Eyebrow>
-          <SectionTitle as="h1" size="xl" className="mt-4">
+          <SectionTitle as="h1" size="anchor" className="mt-4">
             {p.h1}
           </SectionTitle>
           <p className="mt-2 text-[12px] uppercase tracking-[0.2em] text-[color:var(--charcoal)]/55">
@@ -122,7 +122,7 @@ function PartnerPage() {
         </Scene>
 
         <section className="mt-12 space-y-6 text-[16px] leading-relaxed text-[color:var(--charcoal)]/85">
-          {p.paragraphs.map((para) => (
+          {p.paragraphs.map((para: string) => (
             <p key={para.slice(0, 40)}>{para}</p>
           ))}
         </section>
@@ -130,7 +130,7 @@ function PartnerPage() {
         <section className="mt-14 rounded-2xl border border-[color:var(--charcoal)]/12 bg-[color:var(--sand)]/45 p-7">
           <Eyebrow>What verification means</Eyebrow>
           <ul className="mt-4 space-y-3 text-[15px] leading-relaxed text-[color:var(--charcoal)]/85">
-            {p.verifiedFacts.map((f) => (
+            {p.verifiedFacts.map((f: string) => (
               <li key={f} className="flex gap-3">
                 <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--gold)]" />
                 <span>{f}</span>
@@ -190,7 +190,7 @@ function PartnerPage() {
 
         <section className="mt-16 rounded-2xl border border-[color:var(--charcoal)]/10 bg-[color:var(--ivory)] p-7">
           <Eyebrow>Prefer to book directly</Eyebrow>
-          <SectionTitle as="h2" size="md" className="mt-3">
+          <SectionTitle as="h2" size="compact" className="mt-3">
             The full catalogue — <SectionTitle.Em>only on this site</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal)]/80">
@@ -242,7 +242,7 @@ function PartnerNotFound() {
     <SiteLayout>
       <main className="mx-auto max-w-2xl px-6 py-24 text-center">
         <Eyebrow>Not found</Eyebrow>
-        <SectionTitle as="h1" size="lg" className="mt-4">
+        <SectionTitle as="h1" size="default" className="mt-4">
           That partner page does not exist
         </SectionTitle>
         <p className="mt-6 text-[15px] text-[color:var(--charcoal)]/70">
