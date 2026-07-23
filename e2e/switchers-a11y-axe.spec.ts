@@ -1,13 +1,14 @@
 /**
- * Axe-core a11y checks for LanguageSwitcher and CurrencyToggle.
+ * Axe-core a11y checks for the price-scoped switchers.
  *
- * Fails on any WCAG 2.1 A/AA violation in ARIA, contrast, or focus
- * within the switcher subtrees, across desktop header, mobile header
- * (persistent cluster outside the hamburger menu) and footer surfaces.
- *
- * Also asserts basic keyboard-focus visibility: the first control in
- * each scope must show a visible focus ring (non-zero outline OR
- * box-shadow) when focused via Tab.
+ * The currency toggle is intentionally NOT in the header — it only
+ * appears next to euro prices via `PriceCurrencyChip`. These specs
+ * enforce:
+ *   • header/footer scopes contain the LanguageSwitcher only.
+ *   • every `PriceCurrencyChip` render carries an accessible group
+ *     name and passes axe on ARIA, contrast, and focus rules.
+ *   • the currency chip's roving `aria-pressed` reflects the active
+ *     selection after click.
  */
 
 import { test, expect, type Page } from "@playwright/test";
@@ -48,74 +49,66 @@ async function assertFocusVisible(page: Page, selector: string) {
   expect(ring.outlineWidth >= 2 || ring.hasShadow).toBeTruthy();
 }
 
-test.describe("Switchers — axe-core a11y (mobile 393×780)", () => {
+test.describe("Chrome switchers — language only (mobile 393×780)", () => {
   test.use({ viewport: { width: 393, height: 780 } });
 
-  test("mobile header switchers are visible outside the menu and pass axe", async ({ page }) => {
+  test("mobile header exposes LanguageSwitcher and no currency chip", async ({ page }) => {
     await page.goto("/");
     await page.waitForLoadState("domcontentloaded");
 
-    // Persistent, not hidden inside the hamburger menu.
-    const lang = page.locator('[data-a11y-scope="language-switcher"]').first();
-    const curr = page.locator('[data-a11y-scope="currency-toggle"]').first();
+    const lang = page.locator('header [data-a11y-scope="language-switcher"]').first();
     await expect(lang).toBeVisible();
-    await expect(curr).toBeVisible();
+    await expect(page.locator('header [data-a11y-scope="currency-toggle"]')).toHaveCount(0);
+    await expect(page.locator('header [data-a11y-scope="price-currency-chip"]')).toHaveCount(0);
 
-    for (const scope of [
-      '[data-a11y-scope="language-switcher"]',
-      '[data-a11y-scope="currency-toggle"]',
-    ]) {
-      const violations = await scanScope(page, scope);
-      expect(violations, `axe violations in ${scope}: ${JSON.stringify(violations, null, 2)}`)
-        .toEqual([]);
-      await assertFocusVisible(page, scope);
-    }
+    const violations = await scanScope(page, 'header [data-a11y-scope="language-switcher"]');
+    expect(violations, `axe violations: ${JSON.stringify(violations, null, 2)}`).toEqual([]);
+    await assertFocusVisible(page, 'header [data-a11y-scope="language-switcher"]');
   });
 
-  test("footer switchers pass axe on mobile", async ({ page }) => {
+  test("footer exposes LanguageSwitcher and no currency chip", async ({ page }) => {
     await page.goto("/");
     await page.locator("footer").scrollIntoViewIfNeeded();
 
-    for (const scope of [
-      'footer [data-a11y-scope="language-switcher"]',
-      'footer [data-a11y-scope="currency-toggle"]',
-    ]) {
-      const violations = await scanScope(page, scope);
-      expect(violations, `axe violations in ${scope}: ${JSON.stringify(violations, null, 2)}`)
-        .toEqual([]);
-    }
+    await expect(
+      page.locator('footer [data-a11y-scope="language-switcher"]').first(),
+    ).toBeVisible();
+    await expect(page.locator('footer [data-a11y-scope="currency-toggle"]')).toHaveCount(0);
   });
 });
 
-test.describe("Switchers — axe-core a11y (desktop 1280×800)", () => {
-  test.use({ viewport: { width: 1280, height: 800 } });
+test.describe("PriceCurrencyChip — axe + roving state", () => {
+  test.use({ viewport: { width: 1280, height: 900 } });
 
-  test("desktop header switchers pass axe", async ({ page }) => {
-    await page.goto("/");
-    await page.waitForLoadState("domcontentloaded");
+  const priceSurfaces = ["/experiences", "/day-tours", "/pt/experiences", "/pt/day-tours"];
 
-    for (const scope of [
-      'header [data-a11y-scope="language-switcher"]',
-      'header [data-a11y-scope="currency-toggle"]',
-    ]) {
-      const violations = await scanScope(page, scope);
-      expect(violations, `axe violations in ${scope}: ${JSON.stringify(violations, null, 2)}`)
+  for (const url of priceSurfaces) {
+    test(`chip on ${url} passes axe and shows roving aria-pressed`, async ({ page }) => {
+      await page.goto(url);
+      await page.waitForLoadState("domcontentloaded");
+
+      const chip = page.locator('[data-a11y-scope="price-currency-chip"]').first();
+      await expect(chip).toBeVisible();
+
+      // Group has an accessible name via aria-labelledby.
+      const group = chip.locator('[role="group"]').first();
+      const labelledBy = await group.getAttribute("aria-labelledby");
+      expect(labelledBy).toBeTruthy();
+      const label = await page.locator(`#${labelledBy}`).first().innerText();
+      expect(label.trim().length).toBeGreaterThan(0);
+
+      // Roving pressed state.
+      const eur = chip.locator('[data-currency-option="EUR"]');
+      const usd = chip.locator('[data-currency-option="USD"]');
+      await expect(eur).toHaveAttribute("aria-pressed", /true|false/);
+      await usd.click();
+      await expect(usd).toHaveAttribute("aria-pressed", "true");
+      await expect(eur).toHaveAttribute("aria-pressed", "false");
+
+      const violations = await scanScope(page, '[data-a11y-scope="price-currency-chip"]');
+      expect(violations, `axe violations on ${url}: ${JSON.stringify(violations, null, 2)}`)
         .toEqual([]);
-      await assertFocusVisible(page, scope);
-    }
-  });
-
-  test("currency toggle roving aria-pressed reflects active selection", async ({ page }) => {
-    await page.goto("/");
-    const scope = page.locator('header [data-a11y-scope="currency-toggle"]').first();
-    const eur = scope.locator('[data-currency-option="EUR"]');
-    const usd = scope.locator('[data-currency-option="USD"]');
-
-    await expect(eur).toHaveAttribute("aria-pressed", "true");
-    await expect(usd).toHaveAttribute("aria-pressed", "false");
-
-    await usd.click();
-    await expect(usd).toHaveAttribute("aria-pressed", "true");
-    await expect(eur).toHaveAttribute("aria-pressed", "false");
-  });
+      await assertFocusVisible(page, '[data-a11y-scope="price-currency-chip"]');
+    });
+  }
 });
