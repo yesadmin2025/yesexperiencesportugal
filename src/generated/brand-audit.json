@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-23T07:32:35.697Z",
-  "filesScanned": 881,
+  "generatedAt": "2026-07-23T07:50:09.039Z",
+  "filesScanned": 882,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -746,7 +746,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 71,
+      "line": 74,
       "col": 364,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -755,7 +755,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 74,
+      "line": 77,
       "col": 321,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -764,7 +764,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 102,
+      "line": 105,
       "col": 250,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -773,7 +773,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 196,
+      "line": 199,
       "col": 351,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -782,7 +782,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 209,
+      "line": 212,
       "col": 351,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -791,11 +791,11 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 225,
-      "col": 353,
+      "line": 230,
+      "col": 451,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "className=\"tap text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] uppercase tracking-[0.22em] text-[12px]",
+      "snippet": "className=\"tap inline-flex h-11 w-11 items-center justify-center rounded-full ring-1 ring-[color:var(--charcoal)]/15 text-[color:var(--charcoal)] hover:text-[co",
       "status": "approved"
     },
     {
