@@ -138,6 +138,10 @@ test.describe("Signature product pages — canonical copy + CTAs", () => {
       const tailorCount = await page.getByText(/tailor this day/i).count();
       expect(reserveCount, `${route}: approved primary CTA must appear`).toBeGreaterThan(0);
       expect(tailorCount, `${route}: approved secondary CTA must appear`).toBeGreaterThan(0);
+    });
+  }
+
+
 
   // FAQ wording must match the SIGNATURE_FAQ source of truth on the
   // canonical /tours/$tourId surface (JSON-LD + visible FAQ share the
