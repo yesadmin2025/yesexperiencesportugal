@@ -2,12 +2,15 @@ import { ReactNode, useEffect } from "react";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { FloatingActions } from "./FloatingActions";
+import { CookieConsent } from "./CookieConsent";
+import { CurrencyProvider } from "@/lib/currency";
 
 
 import { PostHeroAnnouncer } from "./PostHeroAnnouncer";
 import { QaPanel } from "./dev/QaPanel";
 import { MotionQaPanel } from "./dev/MotionQaPanel";
 import { installSmoothAnchorScroll } from "@/lib/smooth-anchor-scroll";
+
 import {
   applyScrollDebugClasses,
   getScrollDebugFlags,
