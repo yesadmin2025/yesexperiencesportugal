@@ -40,12 +40,18 @@ interface CurrencyContextValue {
   currency: Currency;
   setCurrency: (c: Currency) => void;
   supported: readonly Currency[];
+  /** Announce a message through the shared polite live region. */
+  announce: (message: string) => void;
+  /** Stable id of the shared "Indicative conversion" describedby helper. */
+  describedById: string;
 }
 
 const CurrencyContext = React.createContext<CurrencyContextValue>({
   currency: FX_BASE,
   setCurrency: () => {},
   supported: CURRENCIES,
+  announce: () => {},
+  describedById: "yes-currency-desc",
 });
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
@@ -58,6 +64,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
     if (typeof window === "undefined") return FX_BASE;
     return readStoredCurrency() ?? FX_BASE;
   });
+  const [announcement, setAnnouncement] = React.useState<string>("");
 
   // Belt-and-braces sync after mount for the SSR path where the initial
   // client render used FX_BASE. Wrapped in an effect so it only runs
@@ -83,12 +90,41 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const announce = React.useCallback((message: string) => {
+    // Reset first so identical repeat announcements still fire in AT.
+    setAnnouncement("");
+    // Next tick.
+    setTimeout(() => setAnnouncement(message), 30);
+  }, []);
+
+  const describedById = "yes-currency-desc";
+
   const value = React.useMemo(
-    () => ({ currency, setCurrency, supported: CURRENCIES }),
-    [currency, setCurrency],
+    () => ({ currency, setCurrency, supported: CURRENCIES, announce, describedById }),
+    [currency, setCurrency, announce],
   );
 
-  return <CurrencyContext.Provider value={value}>{children}</CurrencyContext.Provider>;
+  return (
+    <CurrencyContext.Provider value={value}>
+      {children}
+      {/* Single app-level polite live region. Deduplicates announcements
+          when multiple currency chips are mounted on the same page. */}
+      <span
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+        data-currency-live
+      >
+        {announcement}
+      </span>
+      {/* Shared describedby target so every currency button reassures the
+          traveller that the change is display-only. */}
+      <span id={describedById} className="sr-only">
+        Indicative conversion. Checkout remains in euros.
+      </span>
+    </CurrencyContext.Provider>
+  );
 }
 
 export function useCurrency() {

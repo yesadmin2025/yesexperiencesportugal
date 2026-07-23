@@ -6,6 +6,8 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { TourImage } from "@/components/tours/TourImage";
+import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
+import { PriceEur } from "@/components/ui/PriceEur";
 import { signatureTours } from "@/data/signatureTours";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { buildLocaleUrl } from "@/i18n/config";
@@ -163,7 +165,12 @@ function PtHomePage() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 flex justify-end">
+          <PriceCurrencyChip align="end" />
+        </div>
+
+        <div className="mt-4 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+
           {FEATURED.map((t) => (
             <article key={t.id} className="group flex flex-col text-left">
               <Link
@@ -197,7 +204,9 @@ function PtHomePage() {
                 <span className="flex items-center gap-1.5">
                   <MapPin size={12} /> {t.theme}
                 </span>
-                <span className="text-[color:var(--teal)]">Desde €{t.priceFrom}</span>
+                <span className="text-[color:var(--teal)]">
+                  A partir de <PriceEur amountEur={t.priceFrom} role="from" />
+                </span>
               </div>
             </article>
           ))}
