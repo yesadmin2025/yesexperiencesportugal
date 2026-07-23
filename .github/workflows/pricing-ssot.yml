@@ -1,0 +1,30 @@
+name: Pricing SSOT
+
+# Guards that AGE_BAND_PCT stays byte-identical between
+#   - src/data/signatureTourPricing.ts (frontend + email template)
+#   - supabase/functions/_shared/pricing.ts (edge functions)
+# Failure means the frontend and edge would price minors differently.
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: pricing-ssot-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ssot:
+    name: AGE_BAND_PCT frontend ↔ edge
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - name: Run SSOT + email parity tests
+        run: bunx vitest run src/__tests__/age-band-pct-ssot.test.ts src/__tests__/checkout-email-parity.test.ts
+        env:
+          CI: "true"

@@ -118,6 +118,7 @@ import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.ta
 import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
+import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -684,6 +685,11 @@ const FunctionsV1StripeWebhookRoute =
     path: '/functions/v1/stripe-webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicPricingSsotRoute = ApiPublicPricingSsotRouteImport.update({
+  id: '/api/public/pricing-ssot',
+  path: '/api/public/pricing-ssot',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   id: '/api/public/contact',
   path: '/api/public/contact',
@@ -861,6 +867,7 @@ export interface FileRoutesByFullPath {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -982,6 +989,7 @@ export interface FileRoutesByTo {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -1106,6 +1114,7 @@ export interface FileRoutesById {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
@@ -1231,6 +1240,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/api/public/contact'
+    | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1352,6 +1362,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/api/public/contact'
+    | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1475,6 +1486,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/api/public/contact'
+    | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
@@ -1583,6 +1595,7 @@ export interface RootRouteChildren {
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
+  ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
@@ -2361,6 +2374,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FunctionsV1StripeWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/pricing-ssot': {
+      id: '/api/public/pricing-ssot'
+      path: '/api/public/pricing-ssot'
+      fullPath: '/api/public/pricing-ssot'
+      preLoaderRoute: typeof ApiPublicPricingSsotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/contact': {
       id: '/api/public/contact'
       path: '/api/public/contact'
@@ -2617,6 +2637,7 @@ const rootRouteChildren: RootRouteChildren = {
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
+  ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
