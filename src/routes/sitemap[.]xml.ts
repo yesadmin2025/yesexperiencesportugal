@@ -55,6 +55,11 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/portugal-tours", changefreq: "monthly", priority: "0.9" },
           { path: "/luxury-tours-portugal", changefreq: "monthly", priority: "0.85" },
           { path: "/private-tours-portugal", changefreq: "monthly", priority: "0.85" },
+          // High-intent SEO landing pages (one keyword cluster each).
+          { path: "/arrabida-wine-tour", changefreq: "monthly", priority: "0.8" },
+          { path: "/arrabida-day-trip-from-lisbon", changefreq: "monthly", priority: "0.8" },
+          { path: "/alentejo-wine-tour-from-lisbon", changefreq: "monthly", priority: "0.8" },
+          { path: "/evora-alentejo-wine-tour", changefreq: "monthly", priority: "0.8" },
           // NOTE: /local-stories/* entries below were previously hard-coded
           // here AND also emitted by `staticArticleEntries` (from
           // LOCAL_STORIES_ARTICLES), producing duplicate <loc> pairs in
