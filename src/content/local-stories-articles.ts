@@ -1026,6 +1026,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "southwest-vicentine-coast", label: "Southwest Vicentine Coast" },
       { slug: "troia-comporta", label: "Tróia & Comporta" },
     ],
+    relatedReads: [
+      { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
+      { path: "/experiences", label: "Browse all Signature Experiences" },
+      { path: "/local-stories/arrabida-day-trip-from-lisbon", label: "Arrábida day trip from Lisbon" },
+    ],
     datePublished: "2026-07-11",
   },
 ];
