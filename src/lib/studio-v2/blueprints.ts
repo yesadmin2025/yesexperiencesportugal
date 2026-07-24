@@ -52,7 +52,7 @@ export const BLUEPRINTS: StudioBlueprint[] = [
     sourceTourKeys: ["southern-lisbon-wine", "setubal-wine"],
     matchIntents: ["food_local", "elegant_cultural", "romantic_intimate"],
     matchStyles: ["wine", "table"],
-    pricePerGuestFrom: 138,
+    pricePerGuestFrom: 135,
     durationHours: [7, 9],
     pickupNote: "Hotel pickup in Lisbon",
     weight: 90,
