@@ -708,8 +708,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/17/11/72/ef.jpg",
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/17/11/72/f1.jpg",
     ],
-    // Source: supplier.viator.com — adult per-pax EUR: 2→€285, 3-4→€235, 5-7→€195, 8-12→€185. Min 2 pax.
-    priceTiersEUR: { 2: 285, 3: 235, 4: 235, 5: 195, 6: 195, 7: 195, 8: 185 },
+    // Source: supplier.viator.com — platform per-pax EUR: 2→€285, 3-4→€235, 5-7→€195, 8-12→€185. Min 2 pax. Direct = platform − 15%.
+    priceTiersEUR: { 2: 242, 3: 200, 4: 200, 5: 166, 6: 166, 7: 166, 8: 157 },
   },
   "evora-alentejo": {
     viatorUrl:
