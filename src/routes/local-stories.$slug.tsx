@@ -26,6 +26,37 @@ import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
 
+/**
+ * Inline-renders `[label](/tours/slug)` tokens in article body copy as
+ * TanStack <Link> anchors. Used to weave natural-anchor internal links
+ * (e.g. "private wine tour from Lisbon" → /tours/arrabida-wine-allinclusive)
+ * inside longform Local Stories without breaking the plain-text body model.
+ * Anything else is rendered as-is.
+ */
+function renderBodyWithTourLinks(text: string): React.ReactNode[] {
+  const re = /\[([^\]]+)\]\(\/tours\/([a-z0-9-]+)\)/g;
+  const nodes: React.ReactNode[] = [];
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let key = 0;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) nodes.push(text.slice(last, m.index));
+    nodes.push(
+      <Link
+        key={`tl-${key++}`}
+        to="/tours/$tourId"
+        params={{ tourId: m[2] }}
+        className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
+      >
+        {m[1]}
+      </Link>,
+    );
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) nodes.push(text.slice(last));
+  return nodes;
+}
+
 type JournalPostFull = {
   slug: string;
   title: string;
