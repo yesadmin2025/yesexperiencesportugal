@@ -344,7 +344,7 @@ function StaticArticleView({
                     {s.heading}
                   </h2>
                   <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
-                    {s.body}
+                    {renderBodyWithTourLinks(s.body)}
                   </p>
                 </div>
               ))}
