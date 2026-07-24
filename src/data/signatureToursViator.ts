@@ -209,8 +209,9 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/36/c6/7e.jpg",
     ],
     // Source: supplier.viator.com — Wine & Tile Painting / Sesimbra & Traditions (TG1).
-    // Per-pax EUR by group size: 1→€279, 2-3→€215, 4-6→€189, 7-8→€159.
-    priceTiersEUR: { 1: 279, 2: 215, 3: 215, 4: 189, 5: 189, 6: 189, 7: 159, 8: 159 },
+    // Platform per-pax EUR: 1→€279, 2-3→€215, 4-6→€189, 7-8→€159.
+    // Direct = platform − 15% (see src/config/pricing.ts).
+    priceTiersEUR: { 1: 237, 2: 183, 3: 183, 4: 161, 5: 161, 6: 161, 7: 135, 8: 135 },
     // Editorial chapters now derived from src/data/tailorBlueprints.ts
     // via toEditorialChapters() — single source of truth. Do not re-add.
   },
