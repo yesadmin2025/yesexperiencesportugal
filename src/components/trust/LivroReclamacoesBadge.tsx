@@ -45,7 +45,7 @@ export function LivroReclamacoesBadge() {
         height={58}
         loading="lazy"
         decoding="async"
-        className="block h-[36px] sm:h-[42px] w-auto select-none"
+        className="block h-[40px] min-[360px]:h-[42px] sm:h-[46px] w-auto max-w-full select-none"
         style={{
           filter:
             "brightness(0) invert(1) drop-shadow(0 1px 1px rgba(0,0,0,0.35))",
