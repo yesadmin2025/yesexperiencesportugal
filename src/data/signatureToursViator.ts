@@ -892,7 +892,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     viatorUrl:
       "https://www.viator.com/tours/Lisbon/Private-Full-day-Fatima-Nazare-Obidos-Tour-from-Lisbon/d538-349639P5",
     priceFromUSD: 270.82,
-    priceTiersEUR: { 1: 359, 2: 229, 3: 229, 4: 179, 5: 179, 6: 179, 7: 179, 8: 159 },
+    // Platform per-pax EUR: 1→€359, 2-3→€229, 4-7→€179, 8→€159. Direct = platform − 15%.
+    priceTiersEUR: { 1: 305, 2: 195, 3: 195, 4: 152, 5: 152, 6: 152, 7: 152, 8: 135 },
     viatorReviewCount: 9,
     reviewCount: 29,
     rating: 5,
