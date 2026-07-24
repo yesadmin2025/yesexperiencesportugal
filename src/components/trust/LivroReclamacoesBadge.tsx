@@ -1,4 +1,4 @@
-import logoAsset from "@/assets/logo-livro-reclamacoes.png.asset.json";
+import logoAsset from "@/assets/logo-livro-reclamacoes-mark.png.asset.json";
 
 /**
  * Livro de Reclamações Eletrónico badge.
@@ -8,8 +8,9 @@ import logoAsset from "@/assets/logo-livro-reclamacoes.png.asset.json";
  * the government portal at https://www.livroreclamacoes.pt/. Rendered inside
  * the shared <Footer /> so it appears on every SiteLayout route.
  *
- * Uses the "azul negativo" variant (white text on institutional blue) — the
- * only version legible on the charcoal footer surface.
+ * Uses the "preto positivo" variant (mark on transparent background) and
+ * recolors it to pure white via CSS (`brightness(0) invert(1)`) so it sits
+ * quietly on the charcoal footer as a legal signature — no colored block.
  */
 export function LivroReclamacoesBadge() {
   return (
@@ -18,7 +19,7 @@ export function LivroReclamacoesBadge() {
       target="_blank"
       rel="noopener noreferrer nofollow"
       aria-label="Livro de Reclamações — abrir portal oficial (novo separador)"
-      className="tap inline-flex items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] hover:opacity-90 transition-opacity duration-[var(--dur-quick)]"
+      className="tap inline-flex items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] opacity-70 hover:opacity-100 transition-opacity duration-[var(--dur-quick)]"
     >
       <img
         src={logoAsset.url}
@@ -27,7 +28,8 @@ export function LivroReclamacoesBadge() {
         height={58}
         loading="lazy"
         decoding="async"
-        className="block h-[34px] w-auto select-none"
+        className="block h-[26px] w-auto select-none"
+        style={{ filter: "brightness(0) invert(1)" }}
       />
     </a>
   );
