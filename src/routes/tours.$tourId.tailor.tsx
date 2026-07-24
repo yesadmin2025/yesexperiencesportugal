@@ -1488,7 +1488,12 @@ function TailorPage() {
                       <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
                         For {guests} {guests === 1 ? "guest" : "guests"} · per person
                       </span>
-                      <span className="serif text-[1.15rem] text-[color:var(--charcoal)] tabular-nums">
+                      <span className="serif text-[1.15rem] text-[color:var(--charcoal)] tabular-nums inline-flex items-baseline gap-2">
+                        {savingsEur > 0 && (
+                          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--teal)] not-italic">
+                            −<PriceEur amountEur={savingsEur} role="per-person" /> pp
+                          </span>
+                        )}
                         <PriceEur
                           amountEur={Math.round(displayTotalEur / Math.max(1, guests))}
                           role="per-person"
@@ -1498,6 +1503,13 @@ function TailorPage() {
                         </span>
                       </span>
                     </div>
+                    {principalsRemoved > 0 && (
+                      <p className="text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                        Adjusted from <PriceEur amountEur={basePerPax} role="per-person" /> —{" "}
+                        {principalsRemoved} stop{principalsRemoved === 1 ? "" : "s"} removed.
+                        Direct booking rate, floor-protected.
+                      </p>
+                    )}
                     <div className="flex items-baseline justify-between">
                       <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
                         Party total (indicative)
@@ -1510,6 +1522,7 @@ function TailorPage() {
                       Final total confirmed at checkout in euros.
                     </p>
                   </div>
+
 
                   {/* Confirmation status is always instant on Tailor —
                       manual gate retired per owner (test-mode + memory:
