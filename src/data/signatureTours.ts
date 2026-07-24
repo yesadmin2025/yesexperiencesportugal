@@ -969,9 +969,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "evora-alentejo",
     title: "Évora & Alentejo Wine Private Tour from Lisbon — Local Traditions",
-    seoTitle: "Évora & Alentejo Wine Private Tour from Lisbon | UNESCO",
+    seoTitle: "Alentejo Wine Tour from Lisbon — Private Évora UNESCO Day",
     seoDescription:
-      "Private Évora and Alentejo wine day from Lisbon — Roman temple, Chapel of Bones, two wineries and a slow lunch in vineyard country.",
+      "Alentejo wine tour from Lisbon — private day to Évora's Roman temple and Chapel of Bones, two family wineries and a slow lunch in vineyard country.",
     region: "Alentejo",
     duration: "Long Day",
     durationHours: "9–11h",
