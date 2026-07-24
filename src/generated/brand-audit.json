@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-24T23:12:41.036Z",
-  "filesScanned": 897,
+  "generatedAt": "2026-07-24T23:16:10.295Z",
+  "filesScanned": 898,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,9 +18,9 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 383,
+    "total": 385,
     "approved": 98,
-    "allowlisted": 64,
+    "allowlisted": 66,
     "mismatch": 221
   },
   "findings": [
@@ -1895,6 +1895,24 @@
       "normalized": "#c9a96a",
       "snippet": "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)]",
       "status": "approved"
+    },
+    {
+      "file": "src/components/trust/LivroReclamacoesBadge.tsx",
+      "line": 25,
+      "col": 20,
+      "raw": "#FFFFFF",
+      "normalized": "#ffffff",
+      "snippet": "foreground: \"#FFFFFF\",",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/a11y/contrast-check.ts",
+      "line": 101,
+      "col": 12,
+      "raw": "#FFFFFF",
+      "normalized": "#ffffff",
+      "snippet": "* (e.g. `\"#FFFFFF\"` for a white-filtered PNG whose computed `color` doesn't",
+      "status": "allowlisted"
     },
     {
       "file": "src/lib/brand-tokens.test.ts",
