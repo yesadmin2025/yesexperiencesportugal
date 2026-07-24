@@ -130,7 +130,7 @@ export const Route = createFileRoute("/tours/$tourId")({
             params.tourId,
           ),
         ),
-        jsonLdScript(faqPageLd(SIGNATURE_FAQ)),
+        jsonLdScript(faqPageLd(getFaqForTour(params.tourId))),
       ],
     };
   },
