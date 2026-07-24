@@ -35,6 +35,8 @@ import { getTailorBlueprint, type BlueprintStop } from "@/data/tailorBlueprints"
 import { DWELL_MINIMUM_MIN, evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
+import { tailorAdjustedPerPax } from "@/config/pricing";
+
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION_SHORT } from "@/config/business-nap";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
