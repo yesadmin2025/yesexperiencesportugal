@@ -72,6 +72,79 @@ export const WINE_LISBON_FAQ: FaqItem[] = [
   },
 ];
 
+/**
+ * Per-tour FAQ overlays for wine-focused Signatures. These questions are
+ * prepended to SIGNATURE_FAQ for the matching tour and emitted in the
+ * FAQPage JSON-LD + rendered visibly on the tour page. Targets the
+ * "wine tour lisbon" / "wine tasting near lisbon" / "alentejo wine tour
+ * from lisbon" query cluster.
+ */
+export const WINE_TOUR_FAQ_BY_ID: Record<string, FaqItem[]> = {
+  "arrabida-wine-allinclusive": [
+    {
+      q: "Is this the best private wine tour from Lisbon?",
+      a: "It's our most-booked private wine tour from Lisbon — a full Arrábida day with two family wineries in Azeitão, the Livramento market in Setúbal, a long Portuguese lunch, and time in the Arrábida Natural Park. Everything included, only your group, back in Lisbon by evening.",
+    },
+    {
+      q: "How far is Arrábida from Lisbon?",
+      a: "About 40 minutes across the 25 de Abril Bridge. The road climbs into cork-oak hills with the Atlantic below — the drive itself is part of the day, and you spend the rest on wine and coast, not on the road.",
+    },
+    {
+      q: "Which wines will I taste on this Lisbon wine tour?",
+      a: "Moscatel de Setúbal at a historic Azeitão cellar, and Castelão / Syrah / Fernão Pires reds at a second family estate. Every tasting is guided by someone who works with the wine, not a hostess reading from a script.",
+    },
+  ],
+  "azeitao-cheese": [
+    {
+      q: "Is this a good wine tasting near Lisbon?",
+      a: "Yes — it's designed for travelers who want serious wine tasting near Lisbon without a full-day drive. A morning at an Azeitão winery, a small producer of the DOP Azeitão sheep's cheese, and lunch in the village. Back in Lisbon by mid-afternoon.",
+    },
+    {
+      q: "How does this compare to the Arrábida private wine tour from Lisbon?",
+      a: "Same region, shorter and more focused. Arrábida All-Inclusive is the full wine-and-coast day. Azeitão Cheese & Wine is the depth-over-distance option — one estate, one cheese producer, one long lunch, and back early.",
+    },
+    {
+      q: "Is a cellar tour and tasting included?",
+      a: "Yes. A guided cellar visit and a seated tasting of the estate's core range are included, alongside the cheese-maker visit and lunch. All private, only your group.",
+    },
+  ],
+  "evora-alentejo": [
+    {
+      q: "Is this the best Alentejo wine tour from Lisbon?",
+      a: "It's our most-requested Alentejo wine tour from Lisbon — a private day combining UNESCO Évora (Roman temple, Chapel of Bones, medieval walls) with a working Alentejo winery visit and a long regional lunch. One driver, one guide, door-to-door from your Lisbon hotel.",
+    },
+    {
+      q: "How long is the drive to the Alentejo from Lisbon?",
+      a: "About 90 minutes each way to Évora. The day is long — usually 10 to 11 hours door-to-door — but the pace inside it is unhurried: heritage in the morning, wine and lunch after, and time to actually taste rather than tick boxes.",
+    },
+    {
+      q: "Which Alentejo wines will I taste?",
+      a: "The core Alentejo range at a working winery — typically Alicante Bouschet, Aragonez, Trincadeira and Syrah reds, with Antão Vaz or Arinto whites. Tastings are guided by the estate team, not a marketing host.",
+    },
+  ],
+  "roman-heritage-alentejo": [
+    {
+      q: "What makes this different from a standard Alentejo wine tour from Lisbon?",
+      a: "It's built around vinho de talha — wine still fermented in clay amphorae, the way the Romans made it here two thousand years ago. Small cellars, a hands-on tasting, and a wine story you won't find on the standard Évora circuit.",
+    },
+    {
+      q: "Is this a private tour from Lisbon?",
+      a: "Yes. Fully private, door-to-door from your Lisbon hotel. A licensed local driver, an English-speaking guide, and only your group in the vehicle.",
+    },
+    {
+      q: "Who is this wine tour best for?",
+      a: "Wine travelers who have already seen the standard Portuguese wine circuit and want a quieter, deeper day — real cellars, real winemakers, and a technique older than most of Europe's vineyards.",
+    },
+  ],
+};
+
+/** Returns the FAQ set for a tour page — wine overlay (if any) + SIGNATURE_FAQ. */
+export function getFaqForTour(tourId: string): FaqItem[] {
+  const overlay = WINE_TOUR_FAQ_BY_ID[tourId] ?? [];
+  return [...overlay, ...SIGNATURE_FAQ];
+}
+
+
 
 
 export const SIGNATURE_FAQ: FaqItem[] = [
