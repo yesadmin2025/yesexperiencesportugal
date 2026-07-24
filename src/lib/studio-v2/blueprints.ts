@@ -137,7 +137,7 @@ export const BLUEPRINTS: StudioBlueprint[] = [
     sourceTourKeys: ["setubal-wine"], // current evora-alentejo stops carry this key
     matchIntents: ["elegant_cultural", "food_local"],
     matchStyles: ["wine", "heritage"],
-    pricePerGuestFrom: 210,
+    pricePerGuestFrom: 169,
     durationHours: [9, 11],
     pickupNote: "Hotel pickup in Lisbon · long day",
     weight: 70,
