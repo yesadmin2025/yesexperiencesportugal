@@ -98,7 +98,7 @@ export const BLUEPRINTS: StudioBlueprint[] = [
     sourceTourKeys: ["troia-comporta"],
     matchIntents: ["coastal_cinematic", "relaxed_scenic", "romantic_intimate"],
     matchStyles: ["coast"],
-    pricePerGuestFrom: 195,
+    pricePerGuestFrom: 157,
     durationHours: [8, 10],
     pickupNote: "Hotel pickup in Lisbon · ferry crossing included",
     weight: 70,
