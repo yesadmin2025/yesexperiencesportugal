@@ -342,6 +342,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "wild-beaches-picnic",
     title: "Lisbon Coastal Tour — Arrábida, Sesimbra & Beach Picnic",
+    seoTitle: "Arrábida Beach Picnic Tour from Lisbon | Private Coastal Day",
+    seoDescription:
+      "Private Arrábida coastal tour from Lisbon with hidden coves, a beach picnic of local produce and wine, and a slow end in Sesimbra.",
     region: "Arrábida · Sesimbra",
     duration: "Full Day",
     durationHours: "6+h",
@@ -447,6 +450,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "arrabida-boat",
     title: "Arrábida & Sesimbra Private Tour with Coastal Boat Ride",
+    seoTitle: "Arrábida & Sesimbra Private Boat Tour from Lisbon | YES",
+    seoDescription:
+      "Private Arrábida day trip from Lisbon with a coastal boat ride into hidden coves, seafood lunch and golden-hour Sesimbra. All-inclusive.",
     region: "Setúbal · Arrábida",
     duration: "Full Day",
     durationHours: "8–9h",
@@ -549,6 +555,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "tiles-workshop",
     title: "Tile Painting Workshop, Wine Tasting & Sesimbra — Private Day",
+    seoTitle: "Azulejo Tile Workshop & Wine Tasting from Lisbon | YES",
+    seoDescription:
+      "Paint your own Portuguese azulejo in a master atelier, taste Setúbal wines and unwind in Sesimbra on this private day from Lisbon.",
     region: "Azeitão · Sesimbra",
     duration: "Full Day",
     durationHours: "8–9h",
@@ -740,6 +749,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "sintra-cascais",
     title: "Sintra & Cascais Private Tour — Hidden Gems & Wine Tasting",
+    seoTitle: "Sintra & Cascais Private Tour from Lisbon | Hidden Gems",
+    seoDescription:
+      "Private Sintra and Cascais day from Lisbon — quieter palaces, Cabo da Roca, Atlantic cliffs and a local wine tasting. All-inclusive.",
     region: "Lisbon Coast",
     duration: "Full Day",
     durationHours: "8–9h",
@@ -845,6 +857,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "troia-comporta",
     title: "Tróia & Comporta Private Tour from Lisbon — Ruins, Wine & Coast",
+    seoTitle: "Tróia & Comporta Private Tour from Lisbon | Ruins & Wine",
+    seoDescription:
+      "Private Alentejo coast day from Lisbon — Sado ferry, Roman ruins of Tróia, Comporta beaches, rice fields and a slow winery lunch.",
     region: "Tróia · Comporta · Alentejo",
     duration: "Full Day",
     durationHours: "8–10h",
@@ -954,6 +969,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "evora-alentejo",
     title: "Évora & Alentejo Wine Private Tour from Lisbon — Local Traditions",
+    seoTitle: "Évora & Alentejo Wine Private Tour from Lisbon | UNESCO",
+    seoDescription:
+      "Private Évora and Alentejo wine day from Lisbon — Roman temple, Chapel of Bones, two wineries and a slow lunch in vineyard country.",
     region: "Alentejo",
     duration: "Long Day",
     durationHours: "9–11h",
@@ -1059,6 +1077,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "tomar-coimbra",
     title: "Tomar & Coimbra Private Tour from Lisbon — Templars & Heritage",
+    seoTitle: "Tomar & Coimbra Private Tour from Lisbon | Templars",
+    seoDescription:
+      "Private day from Lisbon to Tomar's Templar Convento de Cristo and Coimbra's ancient university, with a slow lunch by the Mondego.",
     region: "Centro",
     duration: "Full Day",
     durationHours: "9–10h",
@@ -1147,6 +1168,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "fatima-nazare-obidos",
     title: "Fátima, Nazaré & Óbidos Private Tour from Lisbon — Spirit & Charm",
+    seoTitle: "Fátima, Nazaré & Óbidos Private Tour from Lisbon | YES",
+    seoDescription:
+      "Private day from Lisbon to Fátima sanctuary, Nazaré's big-wave cliffs and Óbidos medieval walls, ending with a Ginjinha tasting.",
     region: "Centro · Coast",
     duration: "Full Day",
     durationHours: "9–10h",
@@ -1236,6 +1260,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "roman-heritage-alentejo",
     title: "Roman Heritage Wine Tour — Hidden Alentejo from Lisbon",
+    seoTitle: "Roman Heritage Wine Tour from Lisbon | Hidden Alentejo",
+    seoDescription:
+      "Private Alentejo wine tour from Lisbon — Roman ruins of São Cucufate, amphora-wine tasting in clay talhas and a hidden river beach.",
     region: "Alentejo · Vidigueira",
     duration: "Long Day",
     durationHours: "10–12h",
@@ -1332,6 +1359,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "southwest-vicentine-coast",
     title: "Southwest Vicentine Coast — Secret Paradise from Lisbon",
+    seoTitle: "Southwest Vicentine Coast Tour from Lisbon | Secret Beaches",
+    seoDescription:
+      "Private day from Lisbon to the Vicentine Coast — Porto Covo, Milfontes, Odeceixe and protected cliffs along one of Portugal's wildest shores.",
     region: "Southwest Alentejo · Costa Vicentina",
     duration: "Long Day",
     durationHours: "9–10h",
