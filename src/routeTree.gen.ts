@@ -24,6 +24,7 @@ import { Route as ProposalsRouteImport } from './routes/proposals'
 import { Route as ProposalInPortugalRouteImport } from './routes/proposal-in-portugal'
 import { Route as PrivateWineTourLisbonRouteImport } from './routes/private-wine-tour-lisbon'
 import { Route as PrivateToursPortugalRouteImport } from './routes/private-tours-portugal'
+import { Route as PrivateToursFromLisbonRouteImport } from './routes/private-tours-from-lisbon'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PreviewCheckRouteImport } from './routes/preview-check'
 import { Route as PressRouteImport } from './routes/press'
@@ -50,6 +51,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as BrandQaRouteImport } from './routes/brand-qa'
 import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
+import { Route as BestWineTastingNearLisbonRouteImport } from './routes/best-wine-tasting-near-lisbon'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArrabidaWineTourRouteImport } from './routes/arrabida-wine-tour'
 import { Route as ArrabidaDayTripFromLisbonRouteImport } from './routes/arrabida-day-trip-from-lisbon'
@@ -210,6 +212,11 @@ const PrivateToursPortugalRoute = PrivateToursPortugalRouteImport.update({
   path: '/private-tours-portugal',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivateToursFromLisbonRoute = PrivateToursFromLisbonRouteImport.update({
+  id: '/private-tours-from-lisbon',
+  path: '/private-tours-from-lisbon',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -341,6 +348,12 @@ const BookingConfirmedRoute = BookingConfirmedRouteImport.update({
   path: '/booking-confirmed',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BestWineTastingNearLisbonRoute =
+  BestWineTastingNearLisbonRouteImport.update({
+    id: '/best-wine-tasting-near-lisbon',
+    path: '/best-wine-tasting-near-lisbon',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -783,6 +796,7 @@ export interface FileRoutesByFullPath {
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
   '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
   '/auth': typeof AuthRoute
+  '/best-wine-tasting-near-lisbon': typeof BestWineTastingNearLisbonRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
@@ -809,6 +823,7 @@ export interface FileRoutesByFullPath {
   '/press': typeof PressRoute
   '/preview-check': typeof PreviewCheckRoute
   '/privacy': typeof PrivacyRoute
+  '/private-tours-from-lisbon': typeof PrivateToursFromLisbonRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposal-in-portugal': typeof ProposalInPortugalRoute
@@ -910,6 +925,7 @@ export interface FileRoutesByTo {
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
   '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
   '/auth': typeof AuthRoute
+  '/best-wine-tasting-near-lisbon': typeof BestWineTastingNearLisbonRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
@@ -934,6 +950,7 @@ export interface FileRoutesByTo {
   '/press': typeof PressRoute
   '/preview-check': typeof PreviewCheckRoute
   '/privacy': typeof PrivacyRoute
+  '/private-tours-from-lisbon': typeof PrivateToursFromLisbonRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposal-in-portugal': typeof ProposalInPortugalRoute
@@ -1035,6 +1052,7 @@ export interface FileRoutesById {
   '/arrabida-day-trip-from-lisbon': typeof ArrabidaDayTripFromLisbonRoute
   '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
   '/auth': typeof AuthRoute
+  '/best-wine-tasting-near-lisbon': typeof BestWineTastingNearLisbonRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
@@ -1061,6 +1079,7 @@ export interface FileRoutesById {
   '/press': typeof PressRoute
   '/preview-check': typeof PreviewCheckRoute
   '/privacy': typeof PrivacyRoute
+  '/private-tours-from-lisbon': typeof PrivateToursFromLisbonRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
   '/private-wine-tour-lisbon': typeof PrivateWineTourLisbonRoute
   '/proposal-in-portugal': typeof ProposalInPortugalRoute
@@ -1164,6 +1183,7 @@ export interface FileRouteTypes {
     | '/arrabida-day-trip-from-lisbon'
     | '/arrabida-wine-tour'
     | '/auth'
+    | '/best-wine-tasting-near-lisbon'
     | '/booking-confirmed'
     | '/brand-qa'
     | '/builder'
@@ -1190,6 +1210,7 @@ export interface FileRouteTypes {
     | '/press'
     | '/preview-check'
     | '/privacy'
+    | '/private-tours-from-lisbon'
     | '/private-tours-portugal'
     | '/private-wine-tour-lisbon'
     | '/proposal-in-portugal'
@@ -1291,6 +1312,7 @@ export interface FileRouteTypes {
     | '/arrabida-day-trip-from-lisbon'
     | '/arrabida-wine-tour'
     | '/auth'
+    | '/best-wine-tasting-near-lisbon'
     | '/booking-confirmed'
     | '/brand-qa'
     | '/builder'
@@ -1315,6 +1337,7 @@ export interface FileRouteTypes {
     | '/press'
     | '/preview-check'
     | '/privacy'
+    | '/private-tours-from-lisbon'
     | '/private-tours-portugal'
     | '/private-wine-tour-lisbon'
     | '/proposal-in-portugal'
@@ -1415,6 +1438,7 @@ export interface FileRouteTypes {
     | '/arrabida-day-trip-from-lisbon'
     | '/arrabida-wine-tour'
     | '/auth'
+    | '/best-wine-tasting-near-lisbon'
     | '/booking-confirmed'
     | '/brand-qa'
     | '/builder'
@@ -1441,6 +1465,7 @@ export interface FileRouteTypes {
     | '/press'
     | '/preview-check'
     | '/privacy'
+    | '/private-tours-from-lisbon'
     | '/private-tours-portugal'
     | '/private-wine-tour-lisbon'
     | '/proposal-in-portugal'
@@ -1543,6 +1568,7 @@ export interface RootRouteChildren {
   ArrabidaDayTripFromLisbonRoute: typeof ArrabidaDayTripFromLisbonRoute
   ArrabidaWineTourRoute: typeof ArrabidaWineTourRoute
   AuthRoute: typeof AuthRoute
+  BestWineTastingNearLisbonRoute: typeof BestWineTastingNearLisbonRoute
   BookingConfirmedRoute: typeof BookingConfirmedRoute
   BrandQaRoute: typeof BrandQaRoute
   BuilderRoute: typeof BuilderRoute
@@ -1569,6 +1595,7 @@ export interface RootRouteChildren {
   PressRoute: typeof PressRoute
   PreviewCheckRoute: typeof PreviewCheckRoute
   PrivacyRoute: typeof PrivacyRoute
+  PrivateToursFromLisbonRoute: typeof PrivateToursFromLisbonRoute
   PrivateToursPortugalRoute: typeof PrivateToursPortugalRoute
   PrivateWineTourLisbonRoute: typeof PrivateWineTourLisbonRoute
   ProposalInPortugalRoute: typeof ProposalInPortugalRoute
@@ -1751,6 +1778,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateToursPortugalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/private-tours-from-lisbon': {
+      id: '/private-tours-from-lisbon'
+      path: '/private-tours-from-lisbon'
+      fullPath: '/private-tours-from-lisbon'
+      preLoaderRoute: typeof PrivateToursFromLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -1931,6 +1965,13 @@ declare module '@tanstack/react-router' {
       path: '/booking-confirmed'
       fullPath: '/booking-confirmed'
       preLoaderRoute: typeof BookingConfirmedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/best-wine-tasting-near-lisbon': {
+      id: '/best-wine-tasting-near-lisbon'
+      path: '/best-wine-tasting-near-lisbon'
+      fullPath: '/best-wine-tasting-near-lisbon'
+      preLoaderRoute: typeof BestWineTastingNearLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -2619,6 +2660,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArrabidaDayTripFromLisbonRoute: ArrabidaDayTripFromLisbonRoute,
   ArrabidaWineTourRoute: ArrabidaWineTourRoute,
   AuthRoute: AuthRoute,
+  BestWineTastingNearLisbonRoute: BestWineTastingNearLisbonRoute,
   BookingConfirmedRoute: BookingConfirmedRoute,
   BrandQaRoute: BrandQaRoute,
   BuilderRoute: BuilderRoute,
@@ -2645,6 +2687,7 @@ const rootRouteChildren: RootRouteChildren = {
   PressRoute: PressRoute,
   PreviewCheckRoute: PreviewCheckRoute,
   PrivacyRoute: PrivacyRoute,
+  PrivateToursFromLisbonRoute: PrivateToursFromLisbonRoute,
   PrivateToursPortugalRoute: PrivateToursPortugalRoute,
   PrivateWineTourLisbonRoute: PrivateWineTourLisbonRoute,
   ProposalInPortugalRoute: ProposalInPortugalRoute,
