@@ -1,0 +1,66 @@
+name: Signature A11y Scan
+
+# Fails CI if any Signature tour page has:
+#   - <img> missing alt text
+#   - broken landmark structure (missing/duplicate <main>, region violations)
+#   - route map missing accessible name
+#
+# Runs `e2e/signature-a11y-axe.spec.ts` across all Signature tour IDs.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: signature-a11y-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  signature-a11y:
+    name: Playwright — signature a11y (alt + landmarks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package.json', 'bun.lockb') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright Chromium + system deps
+        run: |
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = "true" ]; then
+            bunx playwright install-deps chromium
+          else
+            bunx playwright install --with-deps chromium
+          fi
+
+      - name: Run signature a11y suite
+        run: bun run test:e2e:signature-a11y
+        env:
+          CI: "true"
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: signature-a11y-playwright-report
+          path: playwright-report/
+          retention-days: 14
