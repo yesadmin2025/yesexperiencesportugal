@@ -1077,8 +1077,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       },
     ],
     // Source: supplier.viator.com — TG1, Jun 18 2026 – no end date.
-    // Per-pax EUR by group size: 2-3→€359, 4-6→€299, 7-8→€239. Min 2 pax.
-    priceTiersEUR: { 2: 359, 3: 359, 4: 299, 5: 299, 6: 299, 7: 239, 8: 239 },
+    // Platform per-pax EUR: 2-3→€359, 4-6→€299, 7-8→€239. Direct = platform − 15%.
+    priceTiersEUR: { 2: 305, 3: 305, 4: 254, 5: 254, 6: 254, 7: 203, 8: 203 },
   },
 };
 
