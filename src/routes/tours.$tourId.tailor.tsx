@@ -1509,7 +1509,6 @@ function TailorPage() {
                       <p className="text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
                         Adjusted from <PriceEur amountEur={basePerPax} role="per-person" /> —{" "}
                         {principalsRemoved} stop{principalsRemoved === 1 ? "" : "s"} removed.
-                        Direct booking rate, floor-protected.
                       </p>
                     )}
                     <div className="flex items-baseline justify-between">
