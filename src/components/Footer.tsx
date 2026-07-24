@@ -365,10 +365,12 @@ export function Footer() {
               </button>
             </nav>
           </div>
-          <div className="mt-5 pt-5 border-t border-[color:var(--gold-warm)]/10 flex flex-wrap items-center justify-between gap-4">
+          <div className="mt-5 pt-5 border-t border-[color:var(--gold-warm)]/10 flex justify-center md:justify-start">
             <LanguageSwitcher variant="footer" className="text-[color:var(--ivory)]/75" />
-            {/* Legal signature — Livro de Reclamações Eletrónico (DL 74/2017). */}
-            {/* Sits in the legal row so it reads as part of the footer, not a tacked-on strip. */}
+          </div>
+          {/* Legal signature — Livro de Reclamações Eletrónico (DL 74/2017). */}
+          {/* Dedicated centered row so the official seal reads as a legal signature. */}
+          <div className="mt-6 pt-5 border-t border-[color:var(--gold-warm)]/10 flex justify-center">
             <LivroReclamacoesBadge />
           </div>
 
