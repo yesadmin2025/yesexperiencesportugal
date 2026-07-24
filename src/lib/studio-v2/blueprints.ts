@@ -124,7 +124,7 @@ export const BLUEPRINTS: StudioBlueprint[] = [
     sourceTourKeys: ["sintra-cascais-hidden"],
     matchIntents: ["elegant_cultural", "relaxed_scenic", "romantic_intimate"],
     matchStyles: ["heritage", "coast"],
-    pricePerGuestFrom: 165,
+    pricePerGuestFrom: 161,
     durationHours: [7, 9],
     pickupNote: "Hotel pickup in Lisbon",
     weight: 85,
