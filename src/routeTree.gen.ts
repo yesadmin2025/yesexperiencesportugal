@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WineToursLisbonRouteImport } from './routes/wine-tours-lisbon'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as TypographyAuditRouteImport } from './routes/typography-audit'
+import { Route as TradeRouteImport } from './routes/trade'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StudioV3RouteImport } from './routes/studio-v3'
 import { Route as StudioV2RouteImport } from './routes/studio-v2'
@@ -150,6 +151,11 @@ const UnsubscribeRoute = UnsubscribeRouteImport.update({
 const TypographyAuditRoute = TypographyAuditRouteImport.update({
   id: '/typography-audit',
   path: '/typography-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TradeRoute = TradeRouteImport.update({
+  id: '/trade',
+  path: '/trade',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -836,6 +842,7 @@ export interface FileRoutesByFullPath {
   '/studio-v2': typeof StudioV2RouteWithChildren
   '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
+  '/trade': typeof TradeRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
@@ -962,6 +969,7 @@ export interface FileRoutesByTo {
   '/studio-v2': typeof StudioV2RouteWithChildren
   '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
+  '/trade': typeof TradeRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
@@ -1092,6 +1100,7 @@ export interface FileRoutesById {
   '/studio-v2': typeof StudioV2RouteWithChildren
   '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
+  '/trade': typeof TradeRoute
   '/typography-audit': typeof TypographyAuditRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/wine-tours-lisbon': typeof WineToursLisbonRoute
@@ -1223,6 +1232,7 @@ export interface FileRouteTypes {
     | '/studio-v2'
     | '/studio-v3'
     | '/terms'
+    | '/trade'
     | '/typography-audit'
     | '/unsubscribe'
     | '/wine-tours-lisbon'
@@ -1349,6 +1359,7 @@ export interface FileRouteTypes {
     | '/studio-v2'
     | '/studio-v3'
     | '/terms'
+    | '/trade'
     | '/typography-audit'
     | '/unsubscribe'
     | '/wine-tours-lisbon'
@@ -1478,6 +1489,7 @@ export interface FileRouteTypes {
     | '/studio-v2'
     | '/studio-v3'
     | '/terms'
+    | '/trade'
     | '/typography-audit'
     | '/unsubscribe'
     | '/wine-tours-lisbon'
@@ -1608,6 +1620,7 @@ export interface RootRouteChildren {
   StudioV2Route: typeof StudioV2RouteWithChildren
   StudioV3Route: typeof StudioV3Route
   TermsRoute: typeof TermsRoute
+  TradeRoute: typeof TradeRoute
   TypographyAuditRoute: typeof TypographyAuditRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   WineToursLisbonRoute: typeof WineToursLisbonRoute
@@ -1692,6 +1705,13 @@ declare module '@tanstack/react-router' {
       path: '/typography-audit'
       fullPath: '/typography-audit'
       preLoaderRoute: typeof TypographyAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trade': {
+      id: '/trade'
+      path: '/trade'
+      fullPath: '/trade'
+      preLoaderRoute: typeof TradeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -2700,6 +2720,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudioV2Route: StudioV2RouteWithChildren,
   StudioV3Route: StudioV3Route,
   TermsRoute: TermsRoute,
+  TradeRoute: TradeRoute,
   TypographyAuditRoute: TypographyAuditRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   WineToursLisbonRoute: WineToursLisbonRoute,
