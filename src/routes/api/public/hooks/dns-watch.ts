@@ -21,7 +21,26 @@ export const Route = createFileRoute("/api/public/hooks/dns-watch")({
   },
 });
 
-async function handleDnsWatch() {
+function timingSafeEqualStr(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i++) mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return mismatch === 0;
+}
+
+async function handleDnsWatch({ request }: { request: Request }) {
+  // Server-only secret gate — this hook writes to the database and issues
+  // outbound probes, so it must not be callable by the public.
+  const secret = process.env.EMAIL_INTERNAL_SECRET;
+  if (!secret) {
+    return Response.json({ ok: false, error: "not_configured" }, { status: 500 });
+  }
+  const auth = request.headers.get("authorization") || "";
+  const provided = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (!provided || !timingSafeEqualStr(provided, secret)) {
+    return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
+  }
+
   const url = process.env.SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !serviceKey) {
