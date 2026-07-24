@@ -53,4 +53,18 @@ describe("tailorAdjustedPerPax", () => {
     expect(MAX_TAILOR_REDUCTION_PCT).toBe(0.15);
     expect(MIN_OPERATIONAL_PCT).toBe(0.7);
   });
+
+  // Guest-facing behaviour, documented against a realistic discounted tier
+  // (southwest-vicentine-coast @ tier 8 = €203/pp). Each principal removed
+  // takes 5% off the per-pax; cap engages at −15% (3 stops).
+  it("walks 0..5 removed principals against a live direct tier (€203)", () => {
+    const direct = 203;
+    expect(tailorAdjustedPerPax(direct, 0)).toBe(direct);
+    expect(tailorAdjustedPerPax(direct, 1)).toBe(Math.round(direct * 0.95)); // 193
+    expect(tailorAdjustedPerPax(direct, 2)).toBe(Math.round(direct * 0.9));  // 183
+    expect(tailorAdjustedPerPax(direct, 3)).toBe(Math.round(direct * 0.85)); // 173 = −15% cap
+    expect(tailorAdjustedPerPax(direct, 4)).toBe(Math.round(direct * 0.85));
+    expect(tailorAdjustedPerPax(direct, 5)).toBe(Math.round(direct * 0.85));
+  });
 });
+
