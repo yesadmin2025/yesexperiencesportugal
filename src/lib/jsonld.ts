@@ -71,12 +71,6 @@ export function organizationLd() {
       "Tróia and Comporta private day tour from Lisbon",
       "Private multi-day Portugal itineraries",
     ],
-    areaServed: [
-      { "@type": "Country", name: "Portugal" },
-      { "@type": "AdministrativeArea", name: "Lisbon" },
-      { "@type": "AdministrativeArea", name: "Alentejo" },
-      { "@type": "AdministrativeArea", name: "Sintra" },
-    ],
     audience: [
       {
         "@type": "Audience",
