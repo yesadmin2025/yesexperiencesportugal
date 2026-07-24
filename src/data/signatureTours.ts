@@ -1260,9 +1260,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "roman-heritage-alentejo",
     title: "Roman Heritage Wine Tour — Hidden Alentejo from Lisbon",
-    seoTitle: "Roman Heritage Wine Tour from Lisbon | Hidden Alentejo",
+    seoTitle: "Alentejo Wine Tour from Lisbon — Hidden Roman Heritage",
     seoDescription:
-      "Private Alentejo wine tour from Lisbon — Roman ruins of São Cucufate, amphora-wine tasting in clay talhas and a hidden river beach.",
+      "Alentejo wine tour from Lisbon into hidden Vidigueira — Roman ruins of São Cucufate, amphora-wine tasting in clay talhas and a secret river beach.",
     region: "Alentejo · Vidigueira",
     duration: "Long Day",
     durationHours: "10–12h",
