@@ -719,7 +719,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     reviewCount: 51,
     rating: 5,
     recommendedPct: 94,
-    priceTiersEUR: { 2: 279, 3: 249, 4: 249, 5: 199, 6: 199, 7: 199, 8: 199 },
+    // Platform per-pax EUR: 2→€279, 3-4→€249, 5-8→€199. Direct = platform − 15%.
+    priceTiersEUR: { 2: 237, 3: 212, 4: 212, 5: 169, 6: 169, 7: 169, 8: 169 },
     overview:
       "Portugal’s Alentejo region is famous for its history and wine, but it can be difficult to access with public transportation. Skip the rental cars and book a private day trip from Lisbon to Evora, the capital of Alentejo. With your guide, visit local wineries for guided tastings and explore the highlights of the city, including the eerie Chapel of Bones.",
     included: [
