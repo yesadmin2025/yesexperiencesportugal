@@ -982,6 +982,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
       { slug: "roman-heritage-alentejo", label: "Roman Heritage & Talha Wines" },
     ],
+    relatedReads: [
+      { path: "/tours/arrabida-wine-allinclusive", label: "Reserve the private Arrábida wine day" },
+      { path: "/local-stories/private-wine-tour-lisbon", label: "Private wine tour from Lisbon" },
+      { path: "/local-stories/setubal-wine-guide", label: "Local guide to Setúbal wine" },
+    ],
     datePublished: "2026-07-10",
   },
   {
