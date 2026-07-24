@@ -63,7 +63,7 @@ export const BLUEPRINTS: StudioBlueprint[] = [
     sourceTourKeys: ["arrabida-sesimbra"],
     matchIntents: ["coastal_cinematic", "relaxed_scenic"],
     matchStyles: ["coast"],
-    pricePerGuestFrom: 159,
+    pricePerGuestFrom: 135,
     durationHours: [8, 9],
     pickupNote: "Hotel pickup in Lisbon",
     weight: 85,
