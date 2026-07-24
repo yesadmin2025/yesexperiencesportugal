@@ -315,6 +315,9 @@ export function Footer() {
                 Secure checkout · Stripe
               </span>
             </li>
+            <li className="flex items-center">
+              <LivroReclamacoesBadge />
+            </li>
           </ul>
         </div>
 
