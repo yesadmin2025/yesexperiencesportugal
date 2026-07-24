@@ -1,17 +1,17 @@
 ## Goal
 
-Make the Livro de Reclamações badge appear as a white mark on a transparent background, and relocate it to the very bottom of the footer (below the copyright/legal bar) instead of sitting in the trust strip.
+Make the Livro de Reclamações badge larger and more prominent (matching the reference screenshot), well-structured and legible on mobile, while keeping it integrated in the footer's legal zone.
 
 ## Changes
 
 1. `src/components/trust/LivroReclamacoesBadge.tsx`
-   - Swap the asset from the "azul negativo" (white-on-blue block) variant to the `logo_LRE_preto positivo.png` variant (mark on transparent background) — uploaded via `lovable-assets` from the existing `LogosLRE.zip`.
-   - Apply `filter: brightness(0) invert(1)` so the mark renders pure white on transparent, matching the charcoal footer. Keep hover opacity for affordance.
-   - Update the doc comment to reflect the new variant + CSS-recolor approach.
+   - Increase rendered height from `h-[22px]` to `h-[36px]` on mobile and `sm:h-[42px]` on tablet/desktop (roughly 1.7–1.9× current), keeping `w-auto` so the aspect ratio stays correct.
+   - Keep white filter + drop-shadow, hover opacity, focus ring and dev-only WCAG contrast assertion (AAA graphic) unchanged.
 
-2. `src/components/Footer.tsx`
-   - Remove the `<li>` wrapping `<LivroReclamacoesBadge />` from the trust strip (around line 318–320).
-   - Add a new discreet row at the very bottom of the footer, after the copyright/legal `nav` block (after line ~363), centered on mobile and right-aligned on desktop, with a small top margin so it reads as a final legal signature — not a trust brag.
-   - No other footer content changes.
+2. `src/components/Footer.tsx` (around lines 368–373)
+   - Split the current single legal row into two rows:
+     - Row A: `LanguageSwitcher` on its own (left on desktop, centered on mobile), same styling as today.
+     - Row B: a dedicated centered block for `<LivroReclamacoesBadge />` with `mt-6` top spacing and `pt-5 border-t border-[color:var(--gold-warm)]/10` so it reads as a distinct legal signature — visually matching the standalone framed area in the reference screenshot.
+   - Ensure the badge row is centered on all viewports (`flex justify-center`) so it feels like an official legal seal, not a tacked-on strip.
 
-No copy, layout, or logic changes elsewhere. Reduced-motion and focus-ring behavior preserved.
+No copy, color-token, routing or logic changes. Reduced-motion and A11y behavior preserved.
