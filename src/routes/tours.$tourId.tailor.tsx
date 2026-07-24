@@ -621,7 +621,9 @@ function TailorPage() {
           pickupLabel: details.pickupAddress || pickup,
           dateExact: details.tourDate || null,
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
-          priceFromEur: estimatedPrice,
+          priceFromEur: basePerPax,
+          principalsRemoved,
+
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
           environment: getStripeEnvironment(),
           tailored: true,
