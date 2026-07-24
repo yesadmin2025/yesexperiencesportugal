@@ -654,9 +654,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "azeitao-cheese",
     title: "Azeitão Cheese-Making & Wine Private Tour from Lisbon",
-    seoTitle: "Azeitão Cheese and Wine Tour from Lisbon | Private Day by YES",
+    seoTitle: "Wine Tasting Near Lisbon — Azeitão Cheese & Wine Day",
     seoDescription:
-      "Hands-on cheese making in Azeitão, a private winery tasting next door, then sea air and seafood in Sesimbra. Private day from Lisbon, designed by a local team.",
+      "Wine tasting near Lisbon in Azeitão — hands-on cheese making, a private family winery tasting and seafood in Sesimbra. Private day from Lisbon, local team.",
     region: "Azeitão · Sesimbra",
     duration: "Full Day",
     durationHours: "8–9h",
