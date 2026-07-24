@@ -480,7 +480,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     reviewCount: 22,
     rating: 5,
     recommendedPct: null,
-    priceTiersEUR: { 2: 239, 3: 189, 4: 189, 5: 149, 6: 149, 7: 149, 8: 119 },
+    // Platform per-pax EUR: 2→€239, 3-4→€189, 5-7→€149, 8→€119. Direct = platform − 15%.
+    priceTiersEUR: { 2: 203, 3: 161, 4: 161, 5: 127, 6: 127, 7: 127, 8: 101 },
     overview:
       "Make exploring beyond Lisbon city limits seamless—and enjoy multiple Portuguese culinary and cultural experiences in just one trip—on this private day tour. With your guide in the lead, visit the top-ranked Livramento Market in Setúbal, drive through Arrábida Natural Park, and make your very own cheese during a hands-on workshop in Azeitão. Finally, cap off your day out with a winery visit and tasting in the coastal village of Sesimbra.",
     included: [
