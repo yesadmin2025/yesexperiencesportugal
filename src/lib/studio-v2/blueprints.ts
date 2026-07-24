@@ -161,7 +161,7 @@ export const BLUEPRINTS: StudioBlueprint[] = [
     sourceTourKeys: ["fatima-nazare-obidos"],
     matchIntents: ["elegant_cultural", "relaxed_scenic"],
     matchStyles: ["heritage", "coast"],
-    pricePerGuestFrom: 195,
+    pricePerGuestFrom: 135,
     durationHours: [9, 11],
     pickupNote: "Hotel pickup in Lisbon · long day",
     weight: 60,
