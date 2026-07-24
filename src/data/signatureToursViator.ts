@@ -321,8 +321,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/78/ec/e4.jpg",
     ],
     // Source: supplier.viator.com — Wild Beaches and Picnic Experience (TG1).
-    // Per-pax EUR by group size: 2-6→€159, 7-8→€139.
-    priceTiersEUR: { 2: 159, 3: 159, 4: 159, 5: 159, 6: 159, 7: 139, 8: 139 },
+    // Platform per-pax EUR: 2-6→€159, 7-8→€139. Direct = platform − 15%.
+    priceTiersEUR: { 2: 135, 3: 135, 4: 135, 5: 135, 6: 135, 7: 118, 8: 118 },
   },
   "arrabida-boat": {
     viatorUrl:
