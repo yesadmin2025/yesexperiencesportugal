@@ -1,48 +1,99 @@
+# SEO Gap-Closing Plan — YES Experiences Portugal
+
+## Current state (verified)
+
+- Domain has ~3 organic keywords and ~39 estimated monthly visits (Semrush).
+- 11 Signature tours exist; only 2 have explicit `seoTitle`/`seoDescription` overrides.
+- Structured data is already wired on Signature pages (Product + TouristTrip + AggregateRating + BreadcrumbList + FAQPage).
+- `/partners` hub exists with 3 platform pages (Viator, GetYourGuide, Tripadvisor).
+- `/local-stories` content hub exists with SEO articles, but several high-intent wine phrases redirect to it without dedicated articles.
+- No venue / winery / hotel partner pages exist yet.
+- Sitemap already prioritises 4 SEO-focus tours (`arrabida-wine-allinclusive`, `southwest-vicentine-coast`, `troia-comporta`, `roman-heritage-alentejo`).
+
 ## Goal
 
-Verify — and lock down with a test — that two policies hold everywhere prices are shown or charged:
+Close the organic-visibility gap by turning existing Signature pages into high-intent landing pages, expanding the content hub around proven low-competition phrases, earning editorial backlinks through venue pages, and establishing monthly tracking.
 
-1. **Direct = platform − 15%** on every tier and every age band.
-2. **Tailor = −5% per principal stop removed**, capped at −15%, floored at 70% of direct.
+## Phase 1 — Signature pages become landing pages (quick win, low credit)
 
-Batches A and B already implemented the maths. This pass is a verification + guardrail pass, not a rewrite. No visual changes.
+1. Write unique `seoTitle` and `seoDescription` for the remaining 9 Signature tours, targeting the high-intent phrases the data already supports:
+  - `arrabida-boat` → "Arrábida boat trip from Lisbon | Private coastal day tour"
+  - `azeitao-cheese` → already has one; refine if needed
+  - `sintra-cascais` → "Sintra and Cascais private tour from Lisbon"
+  - `troia-comporta` → "Tróia & Comporta private tour from Lisbon"
+  - `evora-alentejo` → "Évora private tour from Lisbon | Alentejo day trip"
+  - `roman-heritage-alentejo` → "Alentejo wine tour from Lisbon | Roman heritage"
+  - `southwest-vicentine-coast` → "Southwest Vicentine Coast tour from Lisbon"
+  - `wild-beaches-picnic` → "Wild beaches picnic from Lisbon | Arrábida coast"
+  - `tiles-workshop` → "Portuguese tiles workshop Lisbon | Azulejos experience"
+  - `tomar-coimbra` → "Tomar and Coimbra private tour from Lisbon"
+  - `fatima-nazare-obidos` → "Fátima, Nazaré & Óbidos private tour from Lisbon"
+2. Ensure every title is < 60 chars and every description is < 160 chars.
+3. Keep the existing auto-build fallback so future tours are never un-optimised.
+4. Add an E2E assertion that every Signature page emits a non-generic `<title>` and `<meta name="description">`.
 
-## Current state (already verified via reads)
+## Phase 2 — Content hub expansion (medium effort)
 
-- `src/config/pricing.ts` and `supabase/functions/_shared/pricing.ts`: `DIRECT_DISCOUNT_PCT = 0.15`, `TAILOR_PRINCIPAL_STEP_PCT = 0.05`, `MAX_TAILOR_REDUCTION_PCT = 0.15`.
-- `tour_price_tiers` in the DB: every row's `tiers[n]` = `round(platform_tiers[n] * 0.85)` across all 12 signatures (spot-checked all 12).
-- `signatureTours.priceFrom` literals (12 tours) match the 8-pax discounted tier.
-- Age bands are applied as % of the resolved discounted per-pax (`AGE_BAND_PCT` in both client + edge SSOT), so the 15% discount propagates automatically to Youth/Child/Infant.
-- Tailor route (`tours.$tourId.tailor.tsx`) and server (`create-signature-checkout`) both use `tailorAdjustedPerPax(direct, principalsRemoved)`.
+Create new `/local-stories` articles for validated high-intent phrases, each linking to the matching Signature tour:
 
-## What to actually change
+1. "Private wine tour Lisbon — Arrábida, Alentejo or a custom day" → link to `/tours/arrabida-wine-allinclusive` and `/tours/roman-heritage-alentejo`.
+2. "Alentejo wine tour from Lisbon — what a private day looks like" → link to `/tours/roman-heritage-alentejo`.
+3. "Arrábida day trip from Lisbon — wine, coast and lunch" → link to `/tours/arrabida-wine-allinclusive`.
+4. "Best wine tasting near Lisbon — Setúbal, Arrábida and Azeitão" → link to `/tours/azeitao-cheese`.
+5. "Private tours from Lisbon — Sintra, Arrábida or Alentejo" → hub-style article linking to multiple Signatures.
 
-### 1. Add a DB-vs-SSOT parity assertion
+For each article:
 
-New Vitest that fetches `platform_tiers` + `tiers` for all rows (via a lightweight fixture snapshot in code, updated at each price change) and asserts `tiers[n] === round(platform_tiers[n] * (1 - DIRECT_DISCOUNT_PCT))` for every (tour, tier). Catches any future row where an editor forgot to re-apply the 15%.
+- Unique `<title>`, `<meta name="description">`, H1, and standfirst.
+- Article/BlogPosting JSON-LD with author and datePublished.
+- 1 internal link to the primary Signature tour and 1–2 related tours.
+- Add to `sitemap.xml` with `priority="0.75"` and `changefreq="monthly"`.
+- Add a redirect route from the raw keyword slug (e.g. `/private-wine-tour-lisbon`) to `/local-stories/private-wine-tour-lisbon` only where it does not already exist.
 
-### 2. Add a `priceFrom` ↔ tier[8] parity assertion
+## Phase 3 — Venue pages for backlinks (higher effort)
 
-Vitest over `signatureTours` confirming `priceFrom === tiers[8]` (or the smallest available tier when 8 is missing) using the same fixture. Prevents the "From €X" drift the audit originally caught on wild-beaches / sintra.
+Build a `/venues` hub and individual venue pages for real partners/cellars visited on Signature tours. These are designed to attract editorial and resource backlinks.
 
-### 3. Extend the existing tailor test
+1. Create `src/data/venues.ts` with real venues only (no invented partners):
+  - Example: the Azeitão/Moscatel cellars used in `arrabida-wine-allinclusive` and `azeitao-cheese`.
+  - Example: the Alentejo winery used in `roman-heritage-alentejo`.
+2. Each venue page gets:
+  - Unique title/description and H1.
+  - `TouristAttraction` + `LocalBusiness` JSON-LD.
+  - BreadcrumbList.
+  - Link to the Signature tour that visits it.
+  - A short, factual description (no superlatives, no invented claims).
+3. Add `/venues` to the sitemap and footer navigation under "For partners".
+4. Add a small "Venues we work with" link from the `/partners` hub.
 
-Add cases to `src/__tests__/tailor-adjusted-per-pax.test.ts` that walk 1 → 5 principals removed and assert exact −5%, −10%, −15%, −15%, −15% against a discounted-tier input (not just an abstract €200), so the test doubles as documentation of the guest-facing behaviour.
+## Phase 4 — Internal linking and authority flow
 
-### 4. Add a Playwright smoke on the Tailor summary
+1. Add a contextual "Related experiences" block at the bottom of each Local Story article, linking to 2–3 relevant Signature tours.
+2. Add a "Also read" link from each Signature page to its matching Local Story (when one exists).
+3. Ensure the `/partners` hub links to `/venues` and vice versa.
+4. Add `rel="nofollow noopener"` only to external platform links; keep internal links followable.
 
-One spec that opens a Signature tour, removes one principal, and asserts the summary shows a "−€… pp" chip whose value equals `round(direct × 0.05)`. Guards the UI wiring, not just the maths.
+## Phase 5 — Tracking and monthly reporting
 
-### 5. Age-band propagation regression
+1. Add an `/admin/seo-dashboard` panel that shows:
+  - GSC property status and verification.
+  - Sitemap last generated date and URL count.
+  - Signature pages missing `seoTitle`/`seoDescription`.
+  - Local Stories without a matching Signature link.
+2. Store a monthly snapshot of:
+  - Total indexed pages (manual GSC input field + link to GSC).
+  - Target keyword list and current Semrush rank estimate.
+3. Add a scheduled reminder (email/Slack optional) to review the dashboard monthly.
 
-Extend `src/__tests__/age-band-pct-ssot.test.ts` (or add a sibling) with one integration case per band: pick a tour, resolve the journey with 1 adult + 1 youth + 1 child + 1 infant, and assert each line's `unitEur` equals `round(discountedPerPax × AGE_BAND_PCT[band])`. This is the "15% flows to every age" lock.
+## Success metrics
 
-## Out of scope
+- All 11 Signature pages have unique `<title>` and `<meta name="description">` within 60/160 chars.
+- At least 5 new Local Stories published targeting the high-intent phrases above.
+- At least 3 real venue pages live in `/venues`.
+- Sitemap contains every new route, no duplicates, no redirect URLs.
+- Zero SEO scanner findings for missing metadata or sitemap issues.
+- Baseline organic keyword count recorded; target: 2x within 90 days.
 
-- Any change to the discount %, cap, or floor constants.
-- Any change to `tour_price_tiers` values or `priceFrom` literals — the pass is to prove they're already right, not to move them.
-- Visual / copy changes on Tailor or Signature pages.
+## Open question before implementation
 
-## Deliverable
-
-Four new/expanded test files and a green CI run. If any assertion fails, that's a real drift to fix — I'll list the offending rows and propose the correction before touching data.
+Douro Valley is the largest wine-search volume, but there is currently no Douro Signature tour or Local Story with a bookable product. Should the plan include creating a Douro Valley Signature experience, or should we defer Douro content until a real itinerary exists? No, we don't have that yet 
