@@ -1059,23 +1059,23 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Arrábida All-Inclusive Day — the complete wine-and-coast day.",
-        body: "Our most-booked private wine day. Family wineries in Azeitão, the Livramento market in Setúbal, a long Portuguese lunch, and the Arrábida Natural Park where the mountains fall into the Atlantic. Door-to-door from Lisbon, everything included, paced around you rather than a coach timetable.",
+        body: "Our most-booked [private wine tour from Lisbon](/tours/arrabida-wine-allinclusive). Family wineries in Azeitão, the Livramento market in Setúbal, a long Portuguese lunch, and the Arrábida Natural Park where the mountains fall into the Atlantic. Door-to-door from Lisbon, everything included, paced around you rather than a coach timetable.",
       },
       {
         heading: "Azeitão Cheese & Wine Day — a shorter, more focused tasting.",
-        body: "For travelers who want depth over distance. A morning at a working Azeitão estate — Moscatel and JP Azeitão reds — a small producer of Azeitão sheep's cheese, and lunch in a village that has been making both for centuries. Back in Lisbon by mid-afternoon.",
+        body: "For travelers who want depth over distance — the best [wine tasting near Lisbon](/tours/azeitao-cheese) for a half-day. A morning at a working Azeitão estate — Moscatel and JP Azeitão reds — a small producer of Azeitão sheep's cheese, and lunch in a village that has been making both for centuries. Back in Lisbon by mid-afternoon.",
       },
       {
         heading: "Évora & Alentejo Wine Tour — the Alentejo day, done properly.",
-        body: "A private day to Évora — UNESCO Roman temple, medieval walls, the Chapel of Bones — with an Alentejo winery visit and a long regional lunch. It is a longer drive than Arrábida, but the landscape and the wines are entirely different: cork oaks, open plains, structured reds.",
+        body: "A private [Alentejo wine tour from Lisbon](/tours/evora-alentejo) to Évora — UNESCO Roman temple, medieval walls, the Chapel of Bones — with an Alentejo winery visit and a long regional lunch. It is a longer drive than Arrábida, but the landscape and the wines are entirely different: cork oaks, open plains, structured reds.",
       },
       {
         heading: "Roman Heritage Wine Tour — the day for wine travelers who have seen the rest.",
-        body: "A quieter Alentejo alternative built around vinho de talha — wine still fermented in clay amphorae, the way the Romans made it here two thousand years ago. Small cellars, a hands-on tasting, and history you can drink. Private, slow, and off the standard route.",
+        body: "A quieter [Alentejo wine tour from Lisbon](/tours/roman-heritage-alentejo) built around vinho de talha — wine still fermented in clay amphorae, the way the Romans made it here two thousand years ago. Small cellars, a hands-on tasting, and history you can drink. Private, slow, and off the standard route.",
       },
       {
         heading: "How to choose.",
-        body: "If it is your first wine day from Lisbon, choose Arrábida — coast, food and wine in the same afternoon. If you want to be back early and taste seriously, choose Azeitão. If Alentejo is on your list, choose Évora for the heritage plus wine, or Roman Heritage for the deeper wine story. All four are private, licensed, and shaped around your pace — never a fixed coach itinerary.",
+        body: "If it is your first wine day from Lisbon, choose [Arrábida](/tours/arrabida-wine-allinclusive) — coast, food and wine in the same afternoon. If you want to be back early and taste seriously, choose [Azeitão](/tours/azeitao-cheese). If Alentejo is on your list, choose [Évora](/tours/evora-alentejo) for the heritage plus wine, or [Roman Heritage](/tours/roman-heritage-alentejo) for the deeper wine story. All four are private, licensed, and shaped around your pace — never a fixed coach itinerary.",
       },
     ],
     ctaLead:
