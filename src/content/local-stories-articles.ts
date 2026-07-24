@@ -947,6 +947,82 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
     ],
   },
+  {
+    slug: "best-wine-tasting-near-lisbon",
+    title: "Best Wine Tasting Near Lisbon — Setúbal, Arrábida & Azeitão",
+    metaDescription:
+      "Best wine tasting near Lisbon — family wineries in Setúbal, Azeitão and Arrábida, with Moscatel, local reds and a long lunch. Private days.",
+    h1: "Best Wine Tasting Near Lisbon — by a Local",
+    eyebrow: "Lisbon · Wine Tasting",
+    standfirst:
+      "The most interesting wine tastings within an hour of Lisbon are not in the city — they are south, in Azeitão and Setúbal.",
+    sections: [
+      {
+        heading: "Why the best tastings are south of the bridge.",
+        body: "Lisbon itself has good wine bars, but the wineries are across the Tagus. In less than an hour you reach Azeitão and Setúbal, where family producers have been making Moscatel and Castelão for generations. The cellars are small, the pours are generous, and the lunch that follows is part of the tasting.",
+      },
+      {
+        heading: "Azeitão — Moscatel and small cellars.",
+        body: "Azeitão is a village of wineries, cheese dairies and tile workshops. The tastings here are intimate — often in the family's own cellar or courtyard — and Moscatel de Setúbal is the star. A good Azeitão morning can include cheese, a tile atelier and two wineries without ever feeling rushed.",
+      },
+      {
+        heading: "Setúbal — market, fish, wine.",
+        body: "Setúbal's Livramento market is one of the best in Portugal. A tasting day that starts here — oysters, cheese, bread — then moves to a nearby cellar feels connected to the place rather than just the grape. The best Setúbal days end with grilled fish by the water.",
+      },
+      {
+        heading: "Arrábida — wine with a view.",
+        body: "The Arrábida Natural Park rises behind the wineries, and the road between them offers some of the most cinematic coastal views near Lisbon. A tasting here is as much about the landscape as the wine — which is why private days linger longer than group tours can.",
+      },
+    ],
+    ctaLead:
+      "This is exactly the day we built our Arrábida Wine Signature around — private, paced, and designed around the long lunch.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
+      { slug: "roman-heritage-alentejo", label: "Roman Heritage & Talha Wines" },
+    ],
+    datePublished: "2026-07-10",
+  },
+  {
+    slug: "private-tours-from-lisbon",
+    title: "Private Tours from Lisbon — Sintra, Arrábida & Alentejo",
+    metaDescription:
+      "Private tours from Lisbon — Sintra, Arrábida, Alentejo and the Vicentine Coast, designed around you. Licensed local operator, door-to-door.",
+    h1: "Private Tours from Lisbon — a local's guide to the best days",
+    eyebrow: "Lisbon · Private Days",
+    standfirst:
+      "The best private day tours from Lisbon head south to Arrábida, inland to Évora, or west to Sintra and Cascais.",
+    sections: [
+      {
+        heading: "Arrábida — wine, coast and a long lunch.",
+        body: "South of the bridge, the Arrábida hills drop into the Atlantic. A private day here combines family wineries in Azeitão, the Livramento market in Setúbal and a long Portuguese lunch. It is the most complete wine-and-coast day within an hour of Lisbon.",
+      },
+      {
+        heading: "Alentejo — history and slow wine.",
+        body: "Évora is a UNESCO city of Roman temples, medieval walls and the Chapel of Bones. Around it, Alentejo wineries work at a slower pace — big reds, cork oaks, long lunches. A private day from Lisbon is long but unhurried, with time for both heritage and wine.",
+      },
+      {
+        heading: "Sintra & Cascais — palaces and the Atlantic.",
+        body: "Sintra is the famous choice, and best done early. A private day can slip into quieter estates, reach Cabo da Roca — Europe's westernmost point — and end in Cascais with a small wine tasting. Structure matters here; a guide who knows the timing makes the difference.",
+      },
+      {
+        heading: "The Vicentine Coast — wild and far.",
+        body: "For travellers who have already seen Sintra and Arrábida, the Southwest Vicentine Coast is the next level. Porto Covo, Milfontes and Odeceixe sit inside a protected natural park of cliffs, dunes and river-meets-ocean beaches. It is a long day from Lisbon, but the emptiness is the point.",
+      },
+    ],
+    ctaLead:
+      "Every one of these days exists as a Signature Experience — private from the start, shaped to your pace.",
+    ctaLabel: "See all Signature Experiences",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "sintra-cascais", label: "Sintra & Cascais" },
+      { slug: "evora-alentejo", label: "Évora & Alentejo" },
+      { slug: "southwest-vicentine-coast", label: "Southwest Vicentine Coast" },
+      { slug: "troia-comporta", label: "Tróia & Comporta" },
+    ],
+    datePublished: "2026-07-11",
+  },
 ];
 
 export const LOCAL_STORIES_ARTICLES_BY_SLUG: Record<string, LocalStoryArticle> = Object.fromEntries(
