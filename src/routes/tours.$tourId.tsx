@@ -233,6 +233,10 @@ function TourDetailPage() {
       <section className="container-x py-6">
         <TourReviews tourId={tour.id} />
       </section>
+
+      {/* ── 11b · FAQ (matches FAQPage JSON-LD in <head>) ──────── */}
+      <TourFaq tourId={tour.id} />
+      
       
 
       {/* Editorial mentions — shown ONLY on Arrábida-region signatures
