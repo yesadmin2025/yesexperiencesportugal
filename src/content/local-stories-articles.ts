@@ -1083,7 +1083,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "See all Signature Experiences",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedSignatures: [
-      { slug: "azeitao-cheese-wine", label: "Azeitão Cheese & Wine Day" },
+      { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine Day" },
       { slug: "evora-alentejo", label: "Évora & Alentejo Wine Tour" },
       { slug: "roman-heritage-alentejo", label: "Roman Heritage Wine Tour" },
     ],
