@@ -370,7 +370,7 @@ export function Footer() {
           </div>
           {/* Legal signature — Livro de Reclamações Eletrónico (DL 74/2017). */}
           {/* Dedicated centered row so the official seal reads as a legal signature. */}
-          <div className="mt-6 pt-5 border-t border-[color:var(--gold-warm)]/10 flex justify-center">
+          <div className="mt-6 pt-5 border-t border-[color:var(--gold-warm)]/10 flex justify-center min-w-0 px-1">
             <LivroReclamacoesBadge />
           </div>
 
