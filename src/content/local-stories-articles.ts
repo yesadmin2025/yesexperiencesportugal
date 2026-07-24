@@ -584,6 +584,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
       { slug: "azeitao-cheese", label: "Azeitão Cheese" },
     ],
+    relatedReads: [
+      { path: "/local-stories/private-tours-from-lisbon", label: "Best private tours from Lisbon" },
+      { path: "/local-stories/arrabida-wine-tour", label: "Arrábida wine tour guide" },
+      { path: "/local-stories/best-wine-tasting-near-lisbon", label: "Best wine tasting near Lisbon" },
+    ],
     datePublished: "2026-07-01",
   },
   {
