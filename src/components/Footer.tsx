@@ -367,17 +367,14 @@ export function Footer() {
           </div>
           <div className="mt-5 pt-5 border-t border-[color:var(--gold-warm)]/10 flex flex-wrap items-center justify-between gap-4">
             <LanguageSwitcher variant="footer" className="text-[color:var(--ivory)]/75" />
+            {/* Legal signature — Livro de Reclamações Eletrónico (DL 74/2017). */}
+            {/* Sits in the legal row so it reads as part of the footer, not a tacked-on strip. */}
+            <LivroReclamacoesBadge />
           </div>
 
           <p className="md:hidden mt-3 text-[11px] leading-[1.55] text-[color:var(--text-on-dark-muted)] font-[family-name:var(--font-sans)]">
             {LEGAL_META_LINE}
           </p>
-
-          {/* Legal signature — Livro de Reclamações Eletrónico (DL 74/2017). */}
-          {/* Consistent spacing across pages: sits clearly below the legal links row. */}
-          <div className="mt-8 md:mt-10 pt-6 pb-2 border-t border-[color:var(--gold-warm)]/10 flex justify-center md:justify-end">
-            <LivroReclamacoesBadge />
-          </div>
         </div>
       </div>
     </footer>
