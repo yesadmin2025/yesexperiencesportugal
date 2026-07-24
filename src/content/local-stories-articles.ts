@@ -786,6 +786,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "arrabida-boat", label: "Arrábida by Boat" },
       { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
     ],
+    relatedReads: [
+      { path: "/local-stories/best-wine-tasting-near-lisbon", label: "Best wine tasting near Lisbon" },
+      { path: "/local-stories/arrabida-wine-tour", label: "Arrábida wine tour guide" },
+      { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
+    ],
     datePublished: "2026-07-06",
   },
   {
