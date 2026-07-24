@@ -52,6 +52,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as BrandQaRouteImport } from './routes/brand-qa'
 import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
+import { Route as BestWineToursLisbonRouteImport } from './routes/best-wine-tours-lisbon'
 import { Route as BestWineTastingNearLisbonRouteImport } from './routes/best-wine-tasting-near-lisbon'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArrabidaWineTourRouteImport } from './routes/arrabida-wine-tour'
@@ -352,6 +353,11 @@ const BrandQaRoute = BrandQaRouteImport.update({
 const BookingConfirmedRoute = BookingConfirmedRouteImport.update({
   id: '/booking-confirmed',
   path: '/booking-confirmed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BestWineToursLisbonRoute = BestWineToursLisbonRouteImport.update({
+  id: '/best-wine-tours-lisbon',
+  path: '/best-wine-tours-lisbon',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BestWineTastingNearLisbonRoute =
@@ -803,6 +809,7 @@ export interface FileRoutesByFullPath {
   '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
   '/auth': typeof AuthRoute
   '/best-wine-tasting-near-lisbon': typeof BestWineTastingNearLisbonRoute
+  '/best-wine-tours-lisbon': typeof BestWineToursLisbonRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
@@ -933,6 +940,7 @@ export interface FileRoutesByTo {
   '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
   '/auth': typeof AuthRoute
   '/best-wine-tasting-near-lisbon': typeof BestWineTastingNearLisbonRoute
+  '/best-wine-tours-lisbon': typeof BestWineToursLisbonRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
@@ -1061,6 +1069,7 @@ export interface FileRoutesById {
   '/arrabida-wine-tour': typeof ArrabidaWineTourRoute
   '/auth': typeof AuthRoute
   '/best-wine-tasting-near-lisbon': typeof BestWineTastingNearLisbonRoute
+  '/best-wine-tours-lisbon': typeof BestWineToursLisbonRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/brand-qa': typeof BrandQaRoute
   '/builder': typeof BuilderRoute
@@ -1193,6 +1202,7 @@ export interface FileRouteTypes {
     | '/arrabida-wine-tour'
     | '/auth'
     | '/best-wine-tasting-near-lisbon'
+    | '/best-wine-tours-lisbon'
     | '/booking-confirmed'
     | '/brand-qa'
     | '/builder'
@@ -1323,6 +1333,7 @@ export interface FileRouteTypes {
     | '/arrabida-wine-tour'
     | '/auth'
     | '/best-wine-tasting-near-lisbon'
+    | '/best-wine-tours-lisbon'
     | '/booking-confirmed'
     | '/brand-qa'
     | '/builder'
@@ -1450,6 +1461,7 @@ export interface FileRouteTypes {
     | '/arrabida-wine-tour'
     | '/auth'
     | '/best-wine-tasting-near-lisbon'
+    | '/best-wine-tours-lisbon'
     | '/booking-confirmed'
     | '/brand-qa'
     | '/builder'
@@ -1581,6 +1593,7 @@ export interface RootRouteChildren {
   ArrabidaWineTourRoute: typeof ArrabidaWineTourRoute
   AuthRoute: typeof AuthRoute
   BestWineTastingNearLisbonRoute: typeof BestWineTastingNearLisbonRoute
+  BestWineToursLisbonRoute: typeof BestWineToursLisbonRoute
   BookingConfirmedRoute: typeof BookingConfirmedRoute
   BrandQaRoute: typeof BrandQaRoute
   BuilderRoute: typeof BuilderRoute
@@ -1985,6 +1998,13 @@ declare module '@tanstack/react-router' {
       path: '/booking-confirmed'
       fullPath: '/booking-confirmed'
       preLoaderRoute: typeof BookingConfirmedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/best-wine-tours-lisbon': {
+      id: '/best-wine-tours-lisbon'
+      path: '/best-wine-tours-lisbon'
+      fullPath: '/best-wine-tours-lisbon'
+      preLoaderRoute: typeof BestWineToursLisbonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/best-wine-tasting-near-lisbon': {
@@ -2681,6 +2701,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArrabidaWineTourRoute: ArrabidaWineTourRoute,
   AuthRoute: AuthRoute,
   BestWineTastingNearLisbonRoute: BestWineTastingNearLisbonRoute,
+  BestWineToursLisbonRoute: BestWineToursLisbonRoute,
   BookingConfirmedRoute: BookingConfirmedRoute,
   BrandQaRoute: BrandQaRoute,
   BuilderRoute: BuilderRoute,

@@ -1043,6 +1043,57 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     datePublished: "2026-07-11",
   },
+  {
+    slug: "best-wine-tours-from-lisbon",
+    title: "Best Wine Tours from Lisbon — Private Day Trips 2026",
+    metaDescription:
+      "The best wine tours from Lisbon — private day trips to Arrábida, Azeitão and Alentejo. Small-group, door-to-door, designed by a licensed local operator.",
+    h1: "The Best Wine Tours from Lisbon",
+    eyebrow: "Lisbon · Wine",
+    standfirst:
+      "Three real wine regions sit within 90 minutes of Lisbon. Here are the private days we actually run — and how to choose between them.",
+    sections: [
+      {
+        heading: "Lisbon is closer to serious wine country than travelers expect.",
+        body: "South of the 25 de Abril Bridge, the Setúbal Peninsula makes Moscatel de Setúbal and structured reds around Azeitão. Ninety minutes inland, the Alentejo plains produce Portugal's most recognised big reds. And on the coast west of the city, the tiny Colares appellation still grows vines in sand. You do not need to travel to the Douro to taste real Portuguese wine — the best wine tours from Lisbon are day trips, private, and back in the city for dinner.",
+      },
+      {
+        heading: "Arrábida All-Inclusive Day — the complete wine-and-coast day.",
+        body: "Our most-booked private wine day. Family wineries in Azeitão, the Livramento market in Setúbal, a long Portuguese lunch, and the Arrábida Natural Park where the mountains fall into the Atlantic. Door-to-door from Lisbon, everything included, paced around you rather than a coach timetable.",
+      },
+      {
+        heading: "Azeitão Cheese & Wine Day — a shorter, more focused tasting.",
+        body: "For travelers who want depth over distance. A morning at a working Azeitão estate — Moscatel and JP Azeitão reds — a small producer of Azeitão sheep's cheese, and lunch in a village that has been making both for centuries. Back in Lisbon by mid-afternoon.",
+      },
+      {
+        heading: "Évora & Alentejo Wine Tour — the Alentejo day, done properly.",
+        body: "A private day to Évora — UNESCO Roman temple, medieval walls, the Chapel of Bones — with an Alentejo winery visit and a long regional lunch. It is a longer drive than Arrábida, but the landscape and the wines are entirely different: cork oaks, open plains, structured reds.",
+      },
+      {
+        heading: "Roman Heritage Wine Tour — the day for wine travelers who have seen the rest.",
+        body: "A quieter Alentejo alternative built around vinho de talha — wine still fermented in clay amphorae, the way the Romans made it here two thousand years ago. Small cellars, a hands-on tasting, and history you can drink. Private, slow, and off the standard route.",
+      },
+      {
+        heading: "How to choose.",
+        body: "If it is your first wine day from Lisbon, choose Arrábida — coast, food and wine in the same afternoon. If you want to be back early and taste seriously, choose Azeitão. If Alentejo is on your list, choose Évora for the heritage plus wine, or Roman Heritage for the deeper wine story. All four are private, licensed, and shaped around your pace — never a fixed coach itinerary.",
+      },
+    ],
+    ctaLead:
+      "Every day above exists as a private Signature Experience. Prefer to shape your own? Our Studio lets you design a wine day from scratch.",
+    ctaLabel: "See all Signature Experiences",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine Day" },
+      { slug: "evora-alentejo", label: "Évora & Alentejo Wine Tour" },
+      { slug: "roman-heritage-alentejo", label: "Roman Heritage Wine Tour" },
+    ],
+    relatedReads: [
+      { path: "/local-stories/private-wine-tour-lisbon", label: "Private wine tour from Lisbon" },
+      { path: "/local-stories/best-wine-tasting-near-lisbon", label: "Best wine tasting near Lisbon" },
+      { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
+    ],
+    datePublished: "2026-07-24",
+  },
 ];
 
 export const LOCAL_STORIES_ARTICLES_BY_SLUG: Record<string, LocalStoryArticle> = Object.fromEntries(
