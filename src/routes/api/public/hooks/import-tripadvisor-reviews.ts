@@ -143,11 +143,28 @@ export const Route = createFileRoute("/api/public/hooks/import-tripadvisor-revie
   server: {
     handlers: {
       POST: async ({ request }) => {
-        // Simple gate — require the Supabase publishable key so random
-        // callers on the internet can't kick off scraping runs.
-        const apikey = request.headers.get("apikey") ?? "";
-        const expected = process.env.SUPABASE_PUBLISHABLE_KEY ?? "";
-        if (!apikey || !expected || apikey !== expected) {
+        // Server-only secret gate. The previous apikey check compared against
+        // the Supabase publishable key, which is shipped in the client bundle
+        // and blocks nobody. Use the shared internal cron secret instead so
+        // random callers cannot trigger paid Firecrawl scrapes.
+        const secret = process.env.EMAIL_INTERNAL_SECRET;
+        if (!secret) {
+          return new Response(JSON.stringify({ error: "not_configured" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        const auth = request.headers.get("authorization") || "";
+        const provided = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+        const ok = (() => {
+          if (!provided || provided.length !== secret.length) return false;
+          let mismatch = 0;
+          for (let i = 0; i < provided.length; i++) {
+            mismatch |= provided.charCodeAt(i) ^ secret.charCodeAt(i);
+          }
+          return mismatch === 0;
+        })();
+        if (!ok) {
           return new Response(JSON.stringify({ error: "unauthorized" }), {
             status: 401,
             headers: { "Content-Type": "application/json" },
