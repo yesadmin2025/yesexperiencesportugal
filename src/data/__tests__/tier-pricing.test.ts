@@ -55,21 +55,21 @@ describe("Signature ↔ Viator meta ↔ Studio v2 blueprint — southwest-vicent
     expect(blueprint).toBeTruthy();
   });
 
-  it("priceFrom === tiers[8] === blueprint.pricePerGuestFrom === 239", () => {
-    expect(tour.priceFrom).toBe(239);
-    expect(meta.priceTiersEUR?.[8]).toBe(239);
-    expect(blueprint.pricePerGuestFrom).toBe(239);
+  it("priceFrom === tiers[8] === blueprint.pricePerGuestFrom === 203 (discounted)", () => {
+    expect(tour.priceFrom).toBe(203);
+    expect(meta.priceTiersEUR?.[8]).toBe(203);
+    expect(blueprint.pricePerGuestFrom).toBe(203);
   });
 
-  it("has the expected per-tier rate ladder", () => {
+  it("has the expected discounted per-tier rate ladder (platform − 15%)", () => {
     expect(meta.priceTiersEUR).toEqual({
-      2: 359,
-      3: 359,
-      4: 299,
-      5: 299,
-      6: 299,
-      7: 239,
-      8: 239,
+      2: 305,
+      3: 305,
+      4: 254,
+      5: 254,
+      6: 254,
+      7: 203,
+      8: 203,
     });
   });
 });
@@ -78,13 +78,13 @@ describe("resolvePerPaxEur — auto-picks correct tier from guest count", () => 
   const tour = signatureTours.find((t) => t.id === "southwest-vicentine-coast")!;
 
   it.each([
-    [2, 359, true],
-    [3, 359, true],
-    [4, 299, true],
-    [6, 299, true],
-    [7, 239, true],
-    [8, 239, true],
-    [10, 239, true], // clamps up to tier 8
+    [2, 305, true],
+    [3, 305, true],
+    [4, 254, true],
+    [6, 254, true],
+    [7, 203, true],
+    [8, 203, true],
+    [10, 203, true], // clamps up to tier 8
   ] as const)("guests=%s → €%s/pp (real=%s)", (guests, expectedEur, expectedReal) => {
     const r = resolvePerPaxEur(tour, guests);
     expect(r?.eurPerPax).toBe(expectedEur);
@@ -95,7 +95,7 @@ describe("resolvePerPaxEur — auto-picks correct tier from guest count", () => 
   it("guests=null falls back to the 8+ anchor and is NOT labelled real", () => {
     const r = resolvePerPaxEur(tour, null);
     expect(r?.eurPerPax).toBe(tour.priceFrom);
-    expect(r?.eurPerPax).toBe(239);
+    expect(r?.eurPerPax).toBe(203);
     // When guests is unknown we clamp to tier 8; tier data still exists so
     // resolver returns real=true — but the UI treats null guests as anchor.
     expect(r?.tier).toBe(8);
