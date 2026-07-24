@@ -200,9 +200,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "arrabida-wine-allinclusive",
     title: "Arrábida Private Wine Tour from Lisbon — All-Inclusive",
-    seoTitle: "Arrábida Private Wine Tour from Lisbon | All-Inclusive",
+    seoTitle: "Private Wine Tour Lisbon — Arrábida All-Inclusive Day",
     seoDescription:
-      "Private Arrábida wine day from Lisbon — three family cellars in Azeitão, Moscatel tasting and a slow lunch. Licensed local operator, all-inclusive.",
+      "Private wine tour from Lisbon to Arrábida — three family cellars in Azeitão, Moscatel tasting near Lisbon and a slow lunch. Licensed local operator, all-inclusive.",
     region: "Setúbal · Arrábida",
     duration: "Full Day",
     durationHours: "7–9h",
@@ -654,9 +654,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "azeitao-cheese",
     title: "Azeitão Cheese-Making & Wine Private Tour from Lisbon",
-    seoTitle: "Azeitão Cheese and Wine Tour from Lisbon | Private Day by YES",
+    seoTitle: "Wine Tasting Near Lisbon — Azeitão Cheese & Wine Day",
     seoDescription:
-      "Hands-on cheese making in Azeitão, a private winery tasting next door, then sea air and seafood in Sesimbra. Private day from Lisbon, designed by a local team.",
+      "Wine tasting near Lisbon in Azeitão — hands-on cheese making, a private family winery tasting and seafood in Sesimbra. Private day from Lisbon, local team.",
     region: "Azeitão · Sesimbra",
     duration: "Full Day",
     durationHours: "8–9h",
@@ -969,9 +969,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "evora-alentejo",
     title: "Évora & Alentejo Wine Private Tour from Lisbon — Local Traditions",
-    seoTitle: "Évora & Alentejo Wine Private Tour from Lisbon | UNESCO",
+    seoTitle: "Alentejo Wine Tour from Lisbon — Private Évora UNESCO Day",
     seoDescription:
-      "Private Évora and Alentejo wine day from Lisbon — Roman temple, Chapel of Bones, two wineries and a slow lunch in vineyard country.",
+      "Alentejo wine tour from Lisbon — private day to Évora's Roman temple and Chapel of Bones, two family wineries and a slow lunch in vineyard country.",
     region: "Alentejo",
     duration: "Long Day",
     durationHours: "9–11h",
@@ -1260,9 +1260,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "roman-heritage-alentejo",
     title: "Roman Heritage Wine Tour — Hidden Alentejo from Lisbon",
-    seoTitle: "Roman Heritage Wine Tour from Lisbon | Hidden Alentejo",
+    seoTitle: "Alentejo Wine Tour from Lisbon — Hidden Roman Heritage",
     seoDescription:
-      "Private Alentejo wine tour from Lisbon — Roman ruins of São Cucufate, amphora-wine tasting in clay talhas and a hidden river beach.",
+      "Alentejo wine tour from Lisbon into hidden Vidigueira — Roman ruins of São Cucufate, amphora-wine tasting in clay talhas and a secret river beach.",
     region: "Alentejo · Vidigueira",
     duration: "Long Day",
     durationHours: "10–12h",
