@@ -1010,8 +1010,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/ad/15/caption.jpg",
     ],
     // Source: supplier.viator.com — TG1, May 6 2026 – no end date.
-    // Per-pax EUR by group size: 2→€399, 3-4→€345, 5-6→€320, 7-10→€299. Min 2 pax.
-    priceTiersEUR: { 2: 399, 3: 345, 4: 345, 5: 320, 6: 320, 7: 299, 8: 299 },
+    // Platform per-pax EUR: 2→€399, 3-4→€345, 5-6→€320, 7-10→€299. Direct = platform − 15%.
+    priceTiersEUR: { 2: 339, 3: 293, 4: 293, 5: 272, 6: 272, 7: 254, 8: 254 },
   },
   "southwest-vicentine-coast": {
     viatorUrl:
