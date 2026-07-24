@@ -73,7 +73,7 @@ interface Body {
   }>;
 }
 
-import { AGE_BAND_PCT, ageBand, type AgeBand } from "../_shared/pricing.ts";
+import { AGE_BAND_PCT, ageBand, tailorAdjustedPerPax, type AgeBand } from "../_shared/pricing.ts";
 
 
 type Flow = "studio" | "signature" | "tailor";
