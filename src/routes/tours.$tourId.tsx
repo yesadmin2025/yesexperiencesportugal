@@ -29,12 +29,13 @@ import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { CtaPair } from "@/components/ui/CtaPair";
 import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
-import { SIGNATURE_FAQ } from "@/content/seo-faq";
+import { getFaqForTour } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { TourReviews } from "@/components/TourReviews";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
 import { TourImage } from "@/components/tours/TourImage";
+import { TourFaq } from "@/components/tours/TourFaq";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
@@ -130,7 +131,7 @@ export const Route = createFileRoute("/tours/$tourId")({
             params.tourId,
           ),
         ),
-        jsonLdScript(faqPageLd(SIGNATURE_FAQ)),
+        jsonLdScript(faqPageLd(getFaqForTour(params.tourId))),
       ],
     };
   },
@@ -233,6 +234,10 @@ function TourDetailPage() {
       <section className="container-x py-6">
         <TourReviews tourId={tour.id} />
       </section>
+
+      {/* ── 11b · FAQ (matches FAQPage JSON-LD in <head>) ──────── */}
+      <TourFaq tourId={tour.id} />
+      
       
 
       {/* Editorial mentions — shown ONLY on Arrábida-region signatures
