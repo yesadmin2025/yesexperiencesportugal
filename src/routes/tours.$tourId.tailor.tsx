@@ -435,33 +435,30 @@ function TailorPage() {
     [pickup, estimatedHours],
   );
 
-  // Per-stop deltas — added optional stops add a modest premium,
-  // removing a stop returns a small credit. Anchor never drops below
-  // the base "from" by more than 15% so the math stays honest.
-  const ADD_STOP_DELTA = 20;
-  const REMOVE_STOP_DELTA = 10;
+  // Per-stop deltas retired in Batch B — Tailor pricing now flows through
+  // the SSOT `tailorAdjustedPerPax` helper: each principal stop the guest
+  // removes reduces the direct per-pax by a fixed step (5%), capped at
+  // −15% and floored at the operational minimum (70% of direct). Optional
+  // additions no longer inflate the base price — they're handled as
+  // add-ons / manual confirmation lines.
   const { data: tierOverrides } = useTourPriceTiers();
   const basePerPax = useMemo(() => {
     const r = resolvePerPaxEur(tour, guests, tierOverrides);
     return r?.eurPerPax ?? tour.priceFrom;
   }, [tour, guests, tierOverrides]);
 
-  const estimatedPrice = useMemo(() => {
-    let p = basePerPax;
-    if (blueprint) {
-      // Blueprint tours: price reacts to the real selection state.
-      // Chosen `pickCount` is baseline; skipped-core credits, extra
-      // optionals cost extra.
-      p += optionalSelected.size * ADD_STOP_DELTA;
-      p -= skippedCore.size * REMOVE_STOP_DELTA;
-    } else {
-      // Non-blueprint tours keep legacy add/skip deltas.
-      p += added.size * ADD_STOP_DELTA;
-      p -= skipped.size * REMOVE_STOP_DELTA;
-    }
-    const floor = Math.round(basePerPax * 0.85);
-    return Math.max(floor, Math.round(p));
-  }, [basePerPax, blueprint, added, skipped, skippedCore, optionalSelected]);
+  const principalsRemoved = useMemo(
+    () => (blueprint ? skippedCore.size : skipped.size),
+    [blueprint, skippedCore, skipped],
+  );
+
+  const estimatedPrice = useMemo(
+    () => tailorAdjustedPerPax(basePerPax, principalsRemoved),
+    [basePerPax, principalsRemoved],
+  );
+
+  const savingsEur = Math.max(0, basePerPax - estimatedPrice);
+
 
   // Age-banded journey pricing — mirrors the reserve-handler math so the
   // summary shows adults vs each minor at their band-adjusted unit price.
