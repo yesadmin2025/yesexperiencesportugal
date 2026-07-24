@@ -35,6 +35,8 @@ import { getTailorBlueprint, type BlueprintStop } from "@/data/tailorBlueprints"
 import { DWELL_MINIMUM_MIN, evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
+import { tailorAdjustedPerPax } from "@/config/pricing";
+
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION_SHORT } from "@/config/business-nap";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
@@ -435,33 +437,30 @@ function TailorPage() {
     [pickup, estimatedHours],
   );
 
-  // Per-stop deltas — added optional stops add a modest premium,
-  // removing a stop returns a small credit. Anchor never drops below
-  // the base "from" by more than 15% so the math stays honest.
-  const ADD_STOP_DELTA = 20;
-  const REMOVE_STOP_DELTA = 10;
+  // Per-stop deltas retired in Batch B — Tailor pricing now flows through
+  // the SSOT `tailorAdjustedPerPax` helper: each principal stop the guest
+  // removes reduces the direct per-pax by a fixed step (5%), capped at
+  // −15% and floored at the operational minimum (70% of direct). Optional
+  // additions no longer inflate the base price — they're handled as
+  // add-ons / manual confirmation lines.
   const { data: tierOverrides } = useTourPriceTiers();
   const basePerPax = useMemo(() => {
     const r = resolvePerPaxEur(tour, guests, tierOverrides);
     return r?.eurPerPax ?? tour.priceFrom;
   }, [tour, guests, tierOverrides]);
 
-  const estimatedPrice = useMemo(() => {
-    let p = basePerPax;
-    if (blueprint) {
-      // Blueprint tours: price reacts to the real selection state.
-      // Chosen `pickCount` is baseline; skipped-core credits, extra
-      // optionals cost extra.
-      p += optionalSelected.size * ADD_STOP_DELTA;
-      p -= skippedCore.size * REMOVE_STOP_DELTA;
-    } else {
-      // Non-blueprint tours keep legacy add/skip deltas.
-      p += added.size * ADD_STOP_DELTA;
-      p -= skipped.size * REMOVE_STOP_DELTA;
-    }
-    const floor = Math.round(basePerPax * 0.85);
-    return Math.max(floor, Math.round(p));
-  }, [basePerPax, blueprint, added, skipped, skippedCore, optionalSelected]);
+  const principalsRemoved = useMemo(
+    () => (blueprint ? skippedCore.size : skipped.size),
+    [blueprint, skippedCore, skipped],
+  );
+
+  const estimatedPrice = useMemo(
+    () => tailorAdjustedPerPax(basePerPax, principalsRemoved),
+    [basePerPax, principalsRemoved],
+  );
+
+  const savingsEur = Math.max(0, basePerPax - estimatedPrice);
+
 
   // Age-banded journey pricing — mirrors the reserve-handler math so the
   // summary shows adults vs each minor at their band-adjusted unit price.
@@ -622,7 +621,9 @@ function TailorPage() {
           pickupLabel: details.pickupAddress || pickup,
           dateExact: details.tourDate || null,
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
-          priceFromEur: estimatedPrice,
+          priceFromEur: basePerPax,
+          principalsRemoved,
+
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
           environment: getStripeEnvironment(),
           tailored: true,
@@ -1489,7 +1490,12 @@ function TailorPage() {
                       <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
                         For {guests} {guests === 1 ? "guest" : "guests"} · per person
                       </span>
-                      <span className="serif text-[1.15rem] text-[color:var(--charcoal)] tabular-nums">
+                      <span className="serif text-[1.15rem] text-[color:var(--charcoal)] tabular-nums inline-flex items-baseline gap-2">
+                        {savingsEur > 0 && (
+                          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--teal)] not-italic">
+                            −<PriceEur amountEur={savingsEur} role="per-person" /> pp
+                          </span>
+                        )}
                         <PriceEur
                           amountEur={Math.round(displayTotalEur / Math.max(1, guests))}
                           role="per-person"
@@ -1499,6 +1505,13 @@ function TailorPage() {
                         </span>
                       </span>
                     </div>
+                    {principalsRemoved > 0 && (
+                      <p className="text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                        Adjusted from <PriceEur amountEur={basePerPax} role="per-person" /> —{" "}
+                        {principalsRemoved} stop{principalsRemoved === 1 ? "" : "s"} removed.
+                        Direct booking rate, floor-protected.
+                      </p>
+                    )}
                     <div className="flex items-baseline justify-between">
                       <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
                         Party total (indicative)
@@ -1511,6 +1524,7 @@ function TailorPage() {
                       Final total confirmed at checkout in euros.
                     </p>
                   </div>
+
 
                   {/* Confirmation status is always instant on Tailor —
                       manual gate retired per owner (test-mode + memory:

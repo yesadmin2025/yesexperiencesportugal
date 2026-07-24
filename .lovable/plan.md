@@ -1,91 +1,57 @@
+# Batch B — Tailor pricing → SSOT
 
-# Conversion, Pricing, Tailor, Studio & Checkout Audit — Phase 1 (audit only)
+Replace the legacy flat ±€20 / ±€10 tailor deltas with the SSOT `tailorAdjustedPerPax(direct, principalsRemoved)` from `src/config/pricing.ts` (mirrored in `supabase/functions/_shared/pricing.ts`, shipped in Batch A). Refresh the Tailor UI so the price change is honest and legible, and make the checkout server recompute the tailor total instead of trusting the client anchor.
 
-Per your answers this pass is **audit-only**. No code, data, DB, or copy will change. Deliverable is a written report + tables + annotated screenshots. Implementation waits for a second explicit approval.
+## Policy recap (already agreed in Phase 1)
 
-Design locks (hero, hero video, hero copy/CTAs, palette, typography, homepage order, five-paths section, Signature card design, approved animations, nav) are treated as untouchable throughout.
+- Base per-pax = real tier from `resolvePerPaxEur(tour, headcount, tierOverrides)` (fallback: `tour.priceFrom`).
+- **Principal removed** = a *core / principal* stop the guest chose to skip. Add-ons and extra optional stops do **not** move the base price (they're separate lines / manual review).
+- Each principal removed = −5% (`TAILOR_PRINCIPAL_STEP_PCT`), capped at −15% (`MAX_TAILOR_REDUCTION_PCT`), floored at 70% of direct (`operationalFloor`).
 
----
+## Files & changes
 
-## What I will audit
+### 1. `src/routes/tours.$tourId.tailor.tsx` (P0)
+- Remove `ADD_STOP_DELTA` / `REMOVE_STOP_DELTA` constants.
+- Replace the `estimatedPrice` `useMemo` with:
+  - `principalsRemoved` = `blueprint ? skippedCore.size : skipped.size` (added optional stops no longer reduce or inflate base).
+  - `perPaxEur = tailorAdjustedPerPax(basePerPax, principalsRemoved)`.
+- Keep `basePerPax` as-is (real tier / anchor).
+- Add a small `savingsEur = basePerPax - perPaxEur` value used in the summary.
 
-**Signature pages** (`src/routes/tours.$tourId.tsx`)
-- price shown on card vs product vs Tailor vs Studio vs checkout
-- "From €X" origin (must be lowest currently bookable tier)
-- inclusions/exclusions vs Viator source of truth
-- rating badge, gallery, hero, sticky CTA behaviour
+### 2. Tailor UI refresh (same file, presentation only)
+- Live summary price row (~line 1490): show `perPaxEur` with an inline `−€{savings} pp` chip when > 0; keep "For {guests} guest(s) · per person" wording.
+- Below the price, add a one-line explanation when `principalsRemoved > 0`:
+  *"Adjusted from €{basePerPax} — {n} stop{s} removed. Direct booking rate, floor-protected."*
+- Skipped-core / skipped stop chips get a `−€{step}` micro-hint next to the label, computed against current `basePerPax` so the number always matches what the guest sees.
+- Optional additions & manual-supplier notices unchanged (price impact still handled by manual confirmation copy).
+- Reserve CTA + drawer summary use `perPaxEur` (no visual layout change).
 
-**Tailor** (`src/routes/tours.$tourId.tailor.tsx`, `src/data/tailorBlueprints.ts`)
-- removable vs locked components
-- current price math on removal / add-on / restore
-- regional coherence (must stay inside the Signature's region)
-- age-band price rows (adult / youth / child / infant) present + correct
+### 3. `src/lib/tailored-policy.ts` wiring (P0, small)
+- Import `evaluateTailorAdjustment` in the tailor route.
+- Wrap the three interactive actions (`toggle` core skip, `toggle` optional add, pace change) with an evaluation against a `ResolvedSignature` built from `tour.stops` / `blueprint`. On refusal, toast the `message` and, when `route === "studio"`, keep the toast (no auto-redirect — Batch B is presentation-safe).
 
-**Studio V3** (`src/routes/studio-v3.tsx`, `src/components/studio-v3/*`, `src/lib/studio-v3/composerPricing.ts`)
-- whether it composes an original day or silently returns a Signature
-- module data completeness (region, coords, duration, price, capacity, compatibility)
-- incompatible-region behaviour
-- pricing parity with reveal → checkout
+### 4. `supabase/functions/create-signature-checkout/index.ts` (P0)
+- For `flow === "tailor"` only:
+  - Accept `principalsRemoved: number` in the request body (validated 0..8, defaulted to 0).
+  - After resolving `eurPerPax` from the tier / anchor, run it through `tailorAdjustedPerPax(eurPerPax, principalsRemoved)` **before** building the age-band price lines.
+  - Ignore any `priceFromEur` value the client submits for tailor flow beyond its role as anchor fallback when no tier row exists.
+- Signature / studio flows untouched.
 
-**Availability / composition / pickup** (`SimpleBookingForm`, `CompositionField`, checkout drawers)
-- date + guest + pickup persistence between steps
-- pickup field contrast, label, disabled/active/error states
-- 24h lead-time rule, unavailable-date recovery
+### 5. Client → server contract (same file section + tailor route)
+- Tailor route sends `principalsRemoved` in the `supabase.functions.invoke("create-signature-checkout", …)` payload.
+- Payload also drops `estimatedPrice`-as-priceFromEur override in favour of the raw `basePerPax` anchor + `principalsRemoved`, so server is the source of truth.
 
-**Checkout** (`create-signature-checkout` edge fn, `BrandedCheckoutDrawer`, `CheckoutSummary`, `PriceBreakdownRows`)
-- itinerary/removed/added items shown correctly
-- final total = per-pax × age bands + add-ons − tailor reduction
-- inclusions from Bókun → clientIncluded → nothing (already the server contract)
-- payment failure, expired session, NaN/€0 guards
+### 6. Tests
+- `src/__tests__/tailor-adjusted-per-pax.test.ts` (new, unit): matrix over 0..5 principals removed × two anchor prices, asserting the client SSOT matches the values in `docs/audit-2026-07/tailor-formula.md`.
+- `e2e/checkout-price-parity.spec.ts` (extend): add a tailor scenario that skips 2 core stops and asserts the drawer per-pax = server total / guests.
 
-**Confirmation** (`booking-confirmed.tsx`) — data parity with checkout.
+## Out of scope (Batch C / D)
 
-**EN vs PT** — every route above, both locales.
+- Studio V3 composer refactor.
+- Card "From €" refresh across index / experiences (still driven by `tour.priceFrom`).
+- Removing / renaming add-on lines beyond the pricing behaviour above.
 
-**Desktop vs iPhone 393-wide vs Android narrow** — Playwright probes for readability, sticky CTA overlap, WhatsApp overlap, keyboard occlusion, horizontal scroll.
+## Risk & rollback
 
-**Analytics** — presence of the 17 events you listed; confirm no PII in payloads.
-
----
-
-## How I will run it
-
-1. **Static read** of the pricing chain: `signatureTours.ts` → `signatureToursViator.ts` (`priceTiersEUR`) → `signatureTourPricing.ts` (`resolvePerPaxEur`, age bands) → `tailor.tsx` → `useResolvedJourney` → checkout edge fn → confirmation. Flag every place a price is computed or hard-coded outside this chain.
-2. **DB read** of `tour_price_tiers` runtime overrides to catch card ≠ product mismatches.
-3. **Playwright probes** on localhost across the QA matrix scenarios (1 adult / 2 adults / 2 + child / max group; unchanged / 1 removed / 3 removed / restored / add-on; one-region Studio / incompatible Studio; successful checkout; failed payment; unavailable date; pickup manual / later). Screenshots for each.
-4. **Contrast + a11y** pass on pickup field, CTAs, disabled states (WCAG AA).
-
----
-
-## Deliverables (Phase 1)
-
-Saved under `docs/audit-2026-07/`:
-
-1. `report.md` — every issue with **Severity · Route · Component · Repro · Proposed fix**.
-2. `pricing-table.md` — for every tour × tier: current site price, `platformPrice` (= current site price, per your answer), proposed `directBookingPrice = platform × 0.85`, `minimumOperationalPrice = directBookingPrice × 0.70`, current "From €" vs proposed "From €".
-3. `tailor-formula.md` — exact formula with worked examples per tour, floor checks, list of components classified as "principal / removable" vs "descriptive / non-discounting" per Signature blueprint.
-4. `studio-findings.md` — list of Studio behaviours that violate "compose, don't return"; module-data gaps (missing coords, capacity, compatibility).
-5. `checkout-screens/` — annotated PNGs before any change, per scenario, EN + PT, mobile + desktop.
-6. `files-to-change.md` — exact file list that Phase 2 would touch (nothing edited yet).
-7. `ssot-proposal.md` — proposed shape of the single pricing config (types, where it lives, migration path from `signatureToursViator.priceTiersEUR` + `tour_price_tiers` runtime overrides, without breaking the current age-band engine).
-
----
-
-## Locked answers driving the report
-
-- **platformPrice** = current live site price for each tier (no scraping, no new manual field required for Phase 1).
-- **directBookingPrice** = `platformPrice × 0.85`, rounded to whole EUR only if the result still yields ≥ 15% off.
-- **minimumOperationalPrice** = `directBookingPrice × 0.70` (Tailor removals cannot cross this floor).
-- **Studio modules** derived from existing Signature stops (`regionStops.ts`, `stopOperational.ts`, `stopGeo.ts`), no new module catalogue.
-- **Audit-only now.** No SSOT scaffolding, no price changes, no Tailor/Studio refactor, no copy edits in this pass.
-
-## Out of scope this pass
-
-Hero, homepage sections, five-paths, Signature card visuals, palette, typography, nav, animations, any route not technically broken. Implementation (Phases 2–5: SSOT, 15% direct discount, Tailor 5% engine, Studio composer, pickup redesign, checkout polish, tracking, QA matrix) is proposed in `files-to-change.md` and waits for your explicit go.
-
-## Technical detail
-
-- Report will cite exact file:line for each finding.
-- Age-band engine (`AGE_BAND_PCT` + server mirror in `supabase/functions/_shared/pricing.ts`) is already SSOT-shaped — the report will note it as the pattern to extend, not replace.
-- Playwright runs headless against `http://localhost:8080`; screenshots stored under `/tmp/browser/audit-*` and copied into `docs/audit-2026-07/checkout-screens/`.
-- No writes to Supabase, no edge fn deploys, no publish.
+- Pricing policy already validated in Phase 1 (`ssot-proposal.md`, `tailor-formula.md`).
+- All maths lives in one function; if a regression surfaces, reverting the tailor route's `estimatedPrice` block and the server tailor branch restores current behaviour without touching Batch A.
