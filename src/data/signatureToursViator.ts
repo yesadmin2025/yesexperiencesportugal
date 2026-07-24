@@ -392,7 +392,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/13/17/14/fb.jpg",
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/36/c6/7e.jpg",
     ],
-    priceTiersEUR: { 2: 209, 3: 209, 4: 199, 5: 199, 6: 159, 7: 159, 8: 159 },
+    // Platform per-pax EUR: 2-3→€209, 4-5→€199, 6-8→€159. Direct = platform − 15%.
+    priceTiersEUR: { 2: 178, 3: 178, 4: 169, 5: 169, 6: 135, 7: 135, 8: 135 },
   },
   "tiles-workshop": {
     viatorUrl:
