@@ -54,6 +54,7 @@ export const Route = createFileRoute("/sitemap.xml")({
 
           { path: "/proposal-in-portugal", changefreq: "monthly", priority: "0.8" },
           { path: "/corporate", changefreq: "monthly", priority: "0.7" },
+          { path: "/trade", changefreq: "monthly", priority: "0.7" },
           { path: "/local-stories", changefreq: "weekly", priority: "0.7" },
           {
             path: "/itineraries/10-day-private-portugal-tour",
