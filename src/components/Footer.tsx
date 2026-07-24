@@ -315,9 +315,6 @@ export function Footer() {
                 Secure checkout · Stripe
               </span>
             </li>
-            <li className="flex items-center">
-              <LivroReclamacoesBadge />
-            </li>
           </ul>
         </div>
 
@@ -375,6 +372,11 @@ export function Footer() {
           <p className="md:hidden mt-3 text-[11px] leading-[1.55] text-[color:var(--text-on-dark-muted)] font-[family-name:var(--font-sans)]">
             {LEGAL_META_LINE}
           </p>
+
+          {/* Legal signature — Livro de Reclamações Eletrónico (DL 74/2017). */}
+          <div className="mt-6 pt-5 border-t border-[color:var(--gold-warm)]/10 flex justify-center md:justify-end">
+            <LivroReclamacoesBadge />
+          </div>
         </div>
       </div>
     </footer>
