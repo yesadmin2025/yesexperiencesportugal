@@ -1,57 +1,48 @@
-# Batch B — Tailor pricing → SSOT
+## Goal
 
-Replace the legacy flat ±€20 / ±€10 tailor deltas with the SSOT `tailorAdjustedPerPax(direct, principalsRemoved)` from `src/config/pricing.ts` (mirrored in `supabase/functions/_shared/pricing.ts`, shipped in Batch A). Refresh the Tailor UI so the price change is honest and legible, and make the checkout server recompute the tailor total instead of trusting the client anchor.
+Verify — and lock down with a test — that two policies hold everywhere prices are shown or charged:
 
-## Policy recap (already agreed in Phase 1)
+1. **Direct = platform − 15%** on every tier and every age band.
+2. **Tailor = −5% per principal stop removed**, capped at −15%, floored at 70% of direct.
 
-- Base per-pax = real tier from `resolvePerPaxEur(tour, headcount, tierOverrides)` (fallback: `tour.priceFrom`).
-- **Principal removed** = a *core / principal* stop the guest chose to skip. Add-ons and extra optional stops do **not** move the base price (they're separate lines / manual review).
-- Each principal removed = −5% (`TAILOR_PRINCIPAL_STEP_PCT`), capped at −15% (`MAX_TAILOR_REDUCTION_PCT`), floored at 70% of direct (`operationalFloor`).
+Batches A and B already implemented the maths. This pass is a verification + guardrail pass, not a rewrite. No visual changes.
 
-## Files & changes
+## Current state (already verified via reads)
 
-### 1. `src/routes/tours.$tourId.tailor.tsx` (P0)
-- Remove `ADD_STOP_DELTA` / `REMOVE_STOP_DELTA` constants.
-- Replace the `estimatedPrice` `useMemo` with:
-  - `principalsRemoved` = `blueprint ? skippedCore.size : skipped.size` (added optional stops no longer reduce or inflate base).
-  - `perPaxEur = tailorAdjustedPerPax(basePerPax, principalsRemoved)`.
-- Keep `basePerPax` as-is (real tier / anchor).
-- Add a small `savingsEur = basePerPax - perPaxEur` value used in the summary.
+- `src/config/pricing.ts` and `supabase/functions/_shared/pricing.ts`: `DIRECT_DISCOUNT_PCT = 0.15`, `TAILOR_PRINCIPAL_STEP_PCT = 0.05`, `MAX_TAILOR_REDUCTION_PCT = 0.15`.
+- `tour_price_tiers` in the DB: every row's `tiers[n]` = `round(platform_tiers[n] * 0.85)` across all 12 signatures (spot-checked all 12).
+- `signatureTours.priceFrom` literals (12 tours) match the 8-pax discounted tier.
+- Age bands are applied as % of the resolved discounted per-pax (`AGE_BAND_PCT` in both client + edge SSOT), so the 15% discount propagates automatically to Youth/Child/Infant.
+- Tailor route (`tours.$tourId.tailor.tsx`) and server (`create-signature-checkout`) both use `tailorAdjustedPerPax(direct, principalsRemoved)`.
 
-### 2. Tailor UI refresh (same file, presentation only)
-- Live summary price row (~line 1490): show `perPaxEur` with an inline `−€{savings} pp` chip when > 0; keep "For {guests} guest(s) · per person" wording.
-- Below the price, add a one-line explanation when `principalsRemoved > 0`:
-  *"Adjusted from €{basePerPax} — {n} stop{s} removed. Direct booking rate, floor-protected."*
-- Skipped-core / skipped stop chips get a `−€{step}` micro-hint next to the label, computed against current `basePerPax` so the number always matches what the guest sees.
-- Optional additions & manual-supplier notices unchanged (price impact still handled by manual confirmation copy).
-- Reserve CTA + drawer summary use `perPaxEur` (no visual layout change).
+## What to actually change
 
-### 3. `src/lib/tailored-policy.ts` wiring (P0, small)
-- Import `evaluateTailorAdjustment` in the tailor route.
-- Wrap the three interactive actions (`toggle` core skip, `toggle` optional add, pace change) with an evaluation against a `ResolvedSignature` built from `tour.stops` / `blueprint`. On refusal, toast the `message` and, when `route === "studio"`, keep the toast (no auto-redirect — Batch B is presentation-safe).
+### 1. Add a DB-vs-SSOT parity assertion
 
-### 4. `supabase/functions/create-signature-checkout/index.ts` (P0)
-- For `flow === "tailor"` only:
-  - Accept `principalsRemoved: number` in the request body (validated 0..8, defaulted to 0).
-  - After resolving `eurPerPax` from the tier / anchor, run it through `tailorAdjustedPerPax(eurPerPax, principalsRemoved)` **before** building the age-band price lines.
-  - Ignore any `priceFromEur` value the client submits for tailor flow beyond its role as anchor fallback when no tier row exists.
-- Signature / studio flows untouched.
+New Vitest that fetches `platform_tiers` + `tiers` for all rows (via a lightweight fixture snapshot in code, updated at each price change) and asserts `tiers[n] === round(platform_tiers[n] * (1 - DIRECT_DISCOUNT_PCT))` for every (tour, tier). Catches any future row where an editor forgot to re-apply the 15%.
 
-### 5. Client → server contract (same file section + tailor route)
-- Tailor route sends `principalsRemoved` in the `supabase.functions.invoke("create-signature-checkout", …)` payload.
-- Payload also drops `estimatedPrice`-as-priceFromEur override in favour of the raw `basePerPax` anchor + `principalsRemoved`, so server is the source of truth.
+### 2. Add a `priceFrom` ↔ tier[8] parity assertion
 
-### 6. Tests
-- `src/__tests__/tailor-adjusted-per-pax.test.ts` (new, unit): matrix over 0..5 principals removed × two anchor prices, asserting the client SSOT matches the values in `docs/audit-2026-07/tailor-formula.md`.
-- `e2e/checkout-price-parity.spec.ts` (extend): add a tailor scenario that skips 2 core stops and asserts the drawer per-pax = server total / guests.
+Vitest over `signatureTours` confirming `priceFrom === tiers[8]` (or the smallest available tier when 8 is missing) using the same fixture. Prevents the "From €X" drift the audit originally caught on wild-beaches / sintra.
 
-## Out of scope (Batch C / D)
+### 3. Extend the existing tailor test
 
-- Studio V3 composer refactor.
-- Card "From €" refresh across index / experiences (still driven by `tour.priceFrom`).
-- Removing / renaming add-on lines beyond the pricing behaviour above.
+Add cases to `src/__tests__/tailor-adjusted-per-pax.test.ts` that walk 1 → 5 principals removed and assert exact −5%, −10%, −15%, −15%, −15% against a discounted-tier input (not just an abstract €200), so the test doubles as documentation of the guest-facing behaviour.
 
-## Risk & rollback
+### 4. Add a Playwright smoke on the Tailor summary
 
-- Pricing policy already validated in Phase 1 (`ssot-proposal.md`, `tailor-formula.md`).
-- All maths lives in one function; if a regression surfaces, reverting the tailor route's `estimatedPrice` block and the server tailor branch restores current behaviour without touching Batch A.
+One spec that opens a Signature tour, removes one principal, and asserts the summary shows a "−€… pp" chip whose value equals `round(direct × 0.05)`. Guards the UI wiring, not just the maths.
+
+### 5. Age-band propagation regression
+
+Extend `src/__tests__/age-band-pct-ssot.test.ts` (or add a sibling) with one integration case per band: pick a tour, resolve the journey with 1 adult + 1 youth + 1 child + 1 infant, and assert each line's `unitEur` equals `round(discountedPerPax × AGE_BAND_PCT[band])`. This is the "15% flows to every age" lock.
+
+## Out of scope
+
+- Any change to the discount %, cap, or floor constants.
+- Any change to `tour_price_tiers` values or `priceFrom` literals — the pass is to prove they're already right, not to move them.
+- Visual / copy changes on Tailor or Signature pages.
+
+## Deliverable
+
+Four new/expanded test files and a green CI run. If any assertion fails, that's a real drift to fix — I'll list the offending rows and propose the correction before touching data.

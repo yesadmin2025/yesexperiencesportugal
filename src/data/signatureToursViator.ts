@@ -209,8 +209,9 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/36/c6/7e.jpg",
     ],
     // Source: supplier.viator.com — Wine & Tile Painting / Sesimbra & Traditions (TG1).
-    // Per-pax EUR by group size: 1→€279, 2-3→€215, 4-6→€189, 7-8→€159.
-    priceTiersEUR: { 1: 279, 2: 215, 3: 215, 4: 189, 5: 189, 6: 189, 7: 159, 8: 159 },
+    // Platform per-pax EUR: 1→€279, 2-3→€215, 4-6→€189, 7-8→€159.
+    // Direct = platform − 15% (see src/config/pricing.ts).
+    priceTiersEUR: { 1: 237, 2: 183, 3: 183, 4: 161, 5: 161, 6: 161, 7: 135, 8: 135 },
     // Editorial chapters now derived from src/data/tailorBlueprints.ts
     // via toEditorialChapters() — single source of truth. Do not re-add.
   },
@@ -320,8 +321,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/78/ec/e4.jpg",
     ],
     // Source: supplier.viator.com — Wild Beaches and Picnic Experience (TG1).
-    // Per-pax EUR by group size: 2-6→€159, 7-8→€139.
-    priceTiersEUR: { 2: 159, 3: 159, 4: 159, 5: 159, 6: 159, 7: 139, 8: 139 },
+    // Platform per-pax EUR: 2-6→€159, 7-8→€139. Direct = platform − 15%.
+    priceTiersEUR: { 2: 135, 3: 135, 4: 135, 5: 135, 6: 135, 7: 118, 8: 118 },
   },
   "arrabida-boat": {
     viatorUrl:
@@ -391,7 +392,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/13/17/14/fb.jpg",
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/36/c6/7e.jpg",
     ],
-    priceTiersEUR: { 2: 209, 3: 209, 4: 199, 5: 199, 6: 159, 7: 159, 8: 159 },
+    // Platform per-pax EUR: 2-3→€209, 4-5→€199, 6-8→€159. Direct = platform − 15%.
+    priceTiersEUR: { 2: 178, 3: 178, 4: 169, 5: 169, 6: 135, 7: 135, 8: 135 },
   },
   "tiles-workshop": {
     viatorUrl:
@@ -478,7 +480,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     reviewCount: 22,
     rating: 5,
     recommendedPct: null,
-    priceTiersEUR: { 2: 239, 3: 189, 4: 189, 5: 149, 6: 149, 7: 149, 8: 119 },
+    // Platform per-pax EUR: 2→€239, 3-4→€189, 5-7→€149, 8→€119. Direct = platform − 15%.
+    priceTiersEUR: { 2: 203, 3: 161, 4: 161, 5: 127, 6: 127, 7: 127, 8: 101 },
     overview:
       "Make exploring beyond Lisbon city limits seamless—and enjoy multiple Portuguese culinary and cultural experiences in just one trip—on this private day tour. With your guide in the lead, visit the top-ranked Livramento Market in Setúbal, drive through Arrábida Natural Park, and make your very own cheese during a hands-on workshop in Azeitão. Finally, cap off your day out with a winery visit and tasting in the coastal village of Sesimbra.",
     included: [
@@ -550,7 +553,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     reviewCount: 30,
     rating: 5,
     recommendedPct: 100,
-    priceTiersEUR: { 2: 215, 3: 215, 4: 199, 5: 199, 6: 199, 7: 189, 8: 189 },
+    // Platform per-pax EUR: 2-3→€215, 4-6→€199, 7-8→€189. Direct = platform − 15%.
+    priceTiersEUR: { 2: 183, 3: 183, 4: 169, 5: 169, 6: 169, 7: 161, 8: 161 },
     overview:
       "Discover the cultural gems and coastal charm of Sintra and Cascais on this customizable private tour from Lisbon. Travel in comfort with round-trip transport as you explore palaces, sip local wines, and enjoy scenic stops along Portugal’s scenic western coast. Perfect for travelers seeking a deeper, more flexible experience with expert local guidance.",
     included: [
@@ -704,8 +708,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/17/11/72/ef.jpg",
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/17/11/72/f1.jpg",
     ],
-    // Source: supplier.viator.com — adult per-pax EUR: 2→€285, 3-4→€235, 5-7→€195, 8-12→€185. Min 2 pax.
-    priceTiersEUR: { 2: 285, 3: 235, 4: 235, 5: 195, 6: 195, 7: 195, 8: 185 },
+    // Source: supplier.viator.com — platform per-pax EUR: 2→€285, 3-4→€235, 5-7→€195, 8-12→€185. Min 2 pax. Direct = platform − 15%.
+    priceTiersEUR: { 2: 242, 3: 200, 4: 200, 5: 166, 6: 166, 7: 166, 8: 157 },
   },
   "evora-alentejo": {
     viatorUrl:
@@ -715,7 +719,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     reviewCount: 51,
     rating: 5,
     recommendedPct: 94,
-    priceTiersEUR: { 2: 279, 3: 249, 4: 249, 5: 199, 6: 199, 7: 199, 8: 199 },
+    // Platform per-pax EUR: 2→€279, 3-4→€249, 5-8→€199. Direct = platform − 15%.
+    priceTiersEUR: { 2: 237, 3: 212, 4: 212, 5: 169, 6: 169, 7: 169, 8: 169 },
     overview:
       "Portugal’s Alentejo region is famous for its history and wine, but it can be difficult to access with public transportation. Skip the rental cars and book a private day trip from Lisbon to Evora, the capital of Alentejo. With your guide, visit local wineries for guided tastings and explore the highlights of the city, including the eerie Chapel of Bones.",
     included: [
@@ -819,7 +824,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     reviewCount: 26,
     rating: 5,
     recommendedPct: null,
-    priceTiersEUR: { 2: 318, 3: 189, 4: 189, 5: 189, 6: 189, 7: 189, 8: 179 },
+    // Platform per-pax EUR: 2→€318, 3-7→€189, 8→€179. Direct = platform − 15%.
+    priceTiersEUR: { 2: 270, 3: 161, 4: 161, 5: 161, 6: 161, 7: 161, 8: 152 },
     overview:
       "Discover Portugal’s historic heartlands on this private full‑day tour to Tomar—home to the medieval Templar fortress—and the scholarly city of Coimbra, with its ancient university and rich traditions. With a dedicated driver and guide, enjoy a relaxed pace, insightful stories, and a seamless route through two of Portugal’s most culturally significant cities.",
     included: [
@@ -886,7 +892,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     viatorUrl:
       "https://www.viator.com/tours/Lisbon/Private-Full-day-Fatima-Nazare-Obidos-Tour-from-Lisbon/d538-349639P5",
     priceFromUSD: 270.82,
-    priceTiersEUR: { 1: 359, 2: 229, 3: 229, 4: 179, 5: 179, 6: 179, 7: 179, 8: 159 },
+    // Platform per-pax EUR: 1→€359, 2-3→€229, 4-7→€179, 8→€159. Direct = platform − 15%.
+    priceTiersEUR: { 1: 305, 2: 195, 3: 195, 4: 152, 5: 152, 6: 152, 7: 152, 8: 135 },
     viatorReviewCount: 9,
     reviewCount: 29,
     rating: 5,
@@ -1003,8 +1010,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/ad/15/caption.jpg",
     ],
     // Source: supplier.viator.com — TG1, May 6 2026 – no end date.
-    // Per-pax EUR by group size: 2→€399, 3-4→€345, 5-6→€320, 7-10→€299. Min 2 pax.
-    priceTiersEUR: { 2: 399, 3: 345, 4: 345, 5: 320, 6: 320, 7: 299, 8: 299 },
+    // Platform per-pax EUR: 2→€399, 3-4→€345, 5-6→€320, 7-10→€299. Direct = platform − 15%.
+    priceTiersEUR: { 2: 339, 3: 293, 4: 293, 5: 272, 6: 272, 7: 254, 8: 254 },
   },
   "southwest-vicentine-coast": {
     viatorUrl:
@@ -1070,8 +1077,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       },
     ],
     // Source: supplier.viator.com — TG1, Jun 18 2026 – no end date.
-    // Per-pax EUR by group size: 2-3→€359, 4-6→€299, 7-8→€239. Min 2 pax.
-    priceTiersEUR: { 2: 359, 3: 359, 4: 299, 5: 299, 6: 299, 7: 239, 8: 239 },
+    // Platform per-pax EUR: 2-3→€359, 4-6→€299, 7-8→€239. Direct = platform − 15%.
+    priceTiersEUR: { 2: 305, 3: 305, 4: 254, 5: 254, 6: 254, 7: 203, 8: 203 },
   },
 };
 
