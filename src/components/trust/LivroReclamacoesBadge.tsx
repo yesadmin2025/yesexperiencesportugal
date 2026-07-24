@@ -11,6 +11,8 @@ import logoAsset from "@/assets/logo-livro-reclamacoes-mark.png.asset.json";
  * Uses the "preto positivo" variant (mark on transparent background) and
  * recolors it to pure white via CSS (`brightness(0) invert(1)`) so it sits
  * quietly on the charcoal footer as a legal signature — no colored block.
+ * A subtle drop-shadow keeps the mark crisp on any dark surface, and the
+ * base opacity holds ≥4.5:1 contrast against the footer charcoal.
  */
 export function LivroReclamacoesBadge() {
   return (
@@ -19,7 +21,7 @@ export function LivroReclamacoesBadge() {
       target="_blank"
       rel="noopener noreferrer nofollow"
       aria-label="Livro de Reclamações — abrir portal oficial (novo separador)"
-      className="tap inline-flex items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] opacity-70 hover:opacity-100 transition-opacity duration-[var(--dur-quick)]"
+      className="tap inline-flex items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] opacity-85 hover:opacity-100 transition-opacity duration-[var(--dur-quick)]"
     >
       <img
         src={logoAsset.url}
@@ -29,7 +31,10 @@ export function LivroReclamacoesBadge() {
         loading="lazy"
         decoding="async"
         className="block h-[26px] w-auto select-none"
-        style={{ filter: "brightness(0) invert(1)" }}
+        style={{
+          filter:
+            "brightness(0) invert(1) drop-shadow(0 1px 1px rgba(0,0,0,0.35))",
+        }}
       />
     </a>
   );

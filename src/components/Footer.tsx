@@ -374,7 +374,8 @@ export function Footer() {
           </p>
 
           {/* Legal signature — Livro de Reclamações Eletrónico (DL 74/2017). */}
-          <div className="mt-6 pt-5 border-t border-[color:var(--gold-warm)]/10 flex justify-center md:justify-end">
+          {/* Consistent spacing across pages: sits clearly below the legal links row. */}
+          <div className="mt-8 md:mt-10 pt-6 pb-2 border-t border-[color:var(--gold-warm)]/10 flex justify-center md:justify-end">
             <LivroReclamacoesBadge />
           </div>
         </div>
