@@ -74,7 +74,7 @@ export const BLUEPRINTS: StudioBlueprint[] = [
     sourceTourKeys: ["wild-beaches-picnic"],
     matchIntents: ["coastal_cinematic", "relaxed_scenic", "romantic_intimate"],
     matchStyles: ["coast"],
-    pricePerGuestFrom: 190,
+    pricePerGuestFrom: 118,
     durationHours: [6, 8],
     pickupNote: "Hotel pickup in Lisbon",
     weight: 80,
