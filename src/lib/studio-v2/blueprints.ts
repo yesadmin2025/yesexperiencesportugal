@@ -85,7 +85,7 @@ export const BLUEPRINTS: StudioBlueprint[] = [
     sourceTourKeys: ["azeitao-cheese"],
     matchIntents: ["elegant_cultural", "food_local"],
     matchStyles: ["heritage", "table"],
-    pricePerGuestFrom: 145,
+    pricePerGuestFrom: 101,
     durationHours: [7, 9],
     pickupNote: "Hotel pickup in Lisbon",
     weight: 75,
