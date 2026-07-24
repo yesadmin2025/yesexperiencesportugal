@@ -1,49 +1,34 @@
-## Objetivo
-Cobrir a query popular **"best wine tours lisbon"** (e variações "best wine tour lisbon", "best wine tasting lisbon") sem canibalizar as metas já otimizadas para "private wine tour lisbon" / "wine tasting near lisbon" / "alentejo wine tour from lisbon".
+## Goal
+Cumprir a obrigação legal portuguesa: exibir o logótipo do **Livro de Reclamações Eletrónico** em todas as páginas do site, com link para o portal oficial `https://www.livroreclamacoes.pt/`.
 
-## Estratégia
-Em vez de reescrever metas de Signatures individuais (que já estão a competir por queries mais específicas de maior intenção comercial), criar **um Local Story hub** dedicado a "best wine tours from Lisbon". Este formato ranqueia melhor para queries "best X" — que são comparativas/editoriais, não transacionais — e serve como página de entrada que distribui tráfego para as Signatures.
+## What ships
 
-## Alterações
+1. **Upload de 1 logótipo via Lovable Assets (CDN)**
+   - Ficheiro escolhido: `logo_LRE_azul negativo.png` (fundo azul, texto branco) — a versão *negativo* é a única legível sobre o footer em `--charcoal`, e o azul institucional é o mais reconhecível pelos consumidores (as versões preto/vermelho são para outros contextos gráficos).
+   - Comando: `lovable-assets create --file "/tmp/lre/logo_LRE_azul negativo.png" --filename logo-livro-reclamacoes.png > src/assets/logo-livro-reclamacoes.png.asset.json`.
+   - Os restantes 5 ficheiros do zip ficam **fora** do repo (só um logo é usado; sem binários no `src/`).
 
-### 1. Novo Local Story: "Best Wine Tours from Lisbon"
-Ficheiro: `src/content/local-stories-articles.ts`
+2. **Novo componente `<LivroReclamacoesBadge />`** em `src/components/trust/LivroReclamacoesBadge.tsx`
+   - `<a href="https://www.livroreclamacoes.pt/" target="_blank" rel="noopener noreferrer nofollow">` com `aria-label="Livro de Reclamações — abrir portal oficial (novo separador)"`.
+   - `<img>` importando o `.asset.json`, `alt="Livro de Reclamações"`, `loading="lazy"`, `decoding="async"`, largura fixa (~140px) e `height` proporcional para evitar CLS.
+   - Foco visível a `--gold` (consistente com os restantes links do footer).
 
-- Slug: `best-wine-tours-from-lisbon`
-- Title (H1): "The Best Wine Tours from Lisbon"
-- SEO title (≤60): "Best Wine Tours from Lisbon — Private Day Trips 2026"
-- SEO description (≤160): inclui "best wine tours from Lisbon", "private", "Arrábida", "Alentejo", "small-group"
-- Conteúdo editorial curto (voz YES, sem inventar):
-  - Intro: porque Lisboa é base ideal (proximidade a 3 regiões vinícolas reais: Setúbal/Arrábida, Alentejo, Colares)
-  - 4 secções, uma por Signature real já existente, cada uma a ligar para a página da tour:
-    - Arrábida All-Inclusive Day
-    - Azeitão Cheese & Wine Day
-    - Évora & Alentejo Wine Tour
-    - Roman Heritage Wine Tour
-  - Cada secção: 2–3 frases descritivas (baseadas no que já existe nas Signatures — sem inventar stops/inclusions)
-  - Fecho: convite para Studio/Tailored
-- JSON-LD: `Article` + `BreadcrumbList` (já usado no template dos Local Stories)
+3. **Integração no `src/components/Footer.tsx`**
+   - Adicionar o badge na linha do trust strip (junto ao `RNAVT`, `Turismo de Portugal`, `Secure checkout · Stripe`), como um `<li>` extra — mesma altura visual, alinhado com os outros selos oficiais.
+   - Isto garante que aparece em **todas as páginas** (o `Footer` está montado no `SiteLayout`, que envolve todas as rotas públicas).
 
-### 2. Redirect canónico
-Ficheiro: `src/routes/best-wine-tours-lisbon.tsx` (novo)
-- 301 → `/local-stories/best-wine-tours-from-lisbon`
-- Mesmo padrão dos redirects já criados em Phase 2 (ex.: `wine-tasting-near-lisbon`, `arrabida-wine-tour`)
+4. **Verificar cobertura**
+   - Confirmar que `SiteLayout` renderiza o `Footer` nas rotas públicas (incluindo `/studio-v3`, `/checkout`, e rotas admin públicas). Se alguma rota importante não usar `SiteLayout` (ex: `/admin`), documenta-se — mas admin não é público e não precisa cumprir a obrigação.
 
-### 3. Sitemap
-Ficheiro: `src/routes/sitemap[.]xml.ts`
-- Adicionar `/local-stories/best-wine-tours-from-lisbon` (destino canónico, HTTP 200)
-- NÃO adicionar `/best-wine-tours-lisbon` (é 301 — sitemap só destinos finais)
-
-### 4. Internal linking
-Ficheiro: `src/routes/local-stories.tsx` (ou index dos artigos, dependendo da estrutura actual)
-- O novo artigo aparece automaticamente se a listagem lê de `local-stories-articles.ts` — verificar durante build.
-
-## Fora de escopo
-- Não mexer nas metas das 4 Signatures — já cobrem queries de maior intenção transacional.
-- Não criar página "best wine tours portugal" (query dominada por Douro, produto que não temos).
-- Não pedir Request Indexing por API (Google já bloqueou esse endpoint) — utilizador faz manualmente no Search Console após deploy.
+## Não incluído (a confirmar caso queiras)
+- Não vou adicionar uma página dedicada tipo `/reclamacoes` nem texto legal extra em português — o logótipo com link para o portal oficial cumpre a obrigação legal do DL 74/2017. Se quiseres também uma frase adicional (“Este estabelecimento dispõe de Livro de Reclamações Eletrónico”), diz e acrescento.
+- Não vou adicionar o logo da **ASAE / RAL / Centro de Arbitragem de Consumo** — se precisares desses também (obrigatórios para venda a consumidores em PT), envia os logos ou peço para eu procurar os links oficiais.
 
 ## Detalhes técnicos
-- Todo o conteúdo em US-EN (travelers, favorites, color) — consistente com pivot americano.
-- Reutilizar o template/render existente dos Local Stories — sem novos componentes.
-- Sem imagens novas geradas — reutilizar galleries das Signatures referenciadas.
+```text
+src/assets/logo-livro-reclamacoes.png.asset.json     (novo, pointer CDN)
+src/components/trust/LivroReclamacoesBadge.tsx       (novo)
+src/components/Footer.tsx                            (add <li> no trust strip)
+```
+
+Sem migrations, sem novas dependências, sem alterações a lógica de negócio.
