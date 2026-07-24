@@ -216,7 +216,7 @@ export const signatureTours: SignatureTour[] = [
     intro:
       "The most-loved YES day, in one word: complete. We leave Lisbon for the Arrábida hills, walk the Livramento market, sit down for an unhurried Portuguese lunch in Azeitão and visit two or three small family wineries. An optional viewpoint at Cristo Rei or Sesimbra Castle closes the day.",
     contextParagraph:
-      "This experience takes place in one of the most respected wine regions near Lisbon, combining Arrábida, Setúbal and Azeitão. It is designed for travellers who want a full day of family wineries, traditional lunch and Atlantic scenery at a considered pace, rather than a rushed multi-stop circuit.",
+      "This experience takes place in one of the most respected wine regions near Lisbon, combining Arrábida, Setúbal and Azeitão. It is designed for travelers who want a full day of family wineries, traditional lunch and Atlantic scenery at a considered pace, rather than a rushed multi-stop circuit.",
     contextLink: {
       href: "/arrabida-wine-tour",
       label: "Read more about wine in Arrábida and Setúbal",
@@ -780,7 +780,7 @@ export const signatureTours: SignatureTour[] = [
       {
         label: "Park and National Palace of Pena",
         story:
-          "Itinerary option — romantic 19th-century palace on the highest hill, in vivid colour.",
+          "Itinerary option — romantic 19th-century palace on the highest hill, in vivid color.",
         imageTheme: "sintra-cascais",
       },
       {

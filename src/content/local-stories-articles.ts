@@ -97,11 +97,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "What Arrábida feels like",
-        body: "Arrábida feels open, bright and unhurried. The road crosses vineyards and cork-oak countryside before climbing into a natural park where the mountains fall directly towards the Atlantic.\n\nA typical day can combine a local market, family wineries, a long Portuguese lunch, viewpoints and the fishing towns of Setúbal or Sesimbra. The experience is shaped less by famous monuments and more by landscape, food, wine and the freedom to stop when somewhere feels right.\n\nArrábida suits travellers who want to escape the city rather than replace it with another crowded attraction. It is especially rewarding for guests interested in local producers, coastal scenery and a slower rhythm.",
+        body: "Arrábida feels open, bright and unhurried. The road crosses vineyards and cork-oak countryside before climbing into a natural park where the mountains fall directly towards the Atlantic.\n\nA typical day can combine a local market, family wineries, a long Portuguese lunch, viewpoints and the fishing towns of Setúbal or Sesimbra. The experience is shaped less by famous monuments and more by landscape, food, wine and the freedom to stop when somewhere feels right.\n\nArrábida suits travelers who want to escape the city rather than replace it with another crowded attraction. It is especially rewarding for guests interested in local producers, coastal scenery and a slower rhythm.",
       },
       {
         heading: "What Sintra feels like",
-        body: "Sintra feels theatrical, historic and slightly mysterious. Forested hills surround palaces, gardens and old estates, while mist and changing light give the landscape a character unlike anywhere else near Lisbon.\n\nThe main attractions are internationally famous, particularly Pena Palace and Quinta da Regaleira. A well-designed private day can also continue through the Sintra-Cascais Natural Park, Cabo da Roca and the coast towards Cascais.\n\nSintra suits travellers drawn to architecture, royal history, gardens and dramatic scenery. It is more monument-focused than Arrábida and generally requires greater planning because entrance times, traffic and visitor numbers influence the rhythm of the day.",
+        body: "Sintra feels theatrical, historic and slightly mysterious. Forested hills surround palaces, gardens and old estates, while mist and changing light give the landscape a character unlike anywhere else near Lisbon.\n\nThe main attractions are internationally famous, particularly Pena Palace and Quinta da Regaleira. A well-designed private day can also continue through the Sintra-Cascais Natural Park, Cabo da Roca and the coast towards Cascais.\n\nSintra suits travelers drawn to architecture, royal history, gardens and dramatic scenery. It is more monument-focused than Arrábida and generally requires greater planning because entrance times, traffic and visitor numbers influence the rhythm of the day.",
       },
       {
         heading: "Crowds, driving time, pace",
@@ -109,7 +109,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Our honest take",
-        body: "Choose Sintra when palaces, gardens and Portuguese royal history are essential to your trip. It is one of the country's most remarkable destinations and deserves to be experienced properly rather than rushed between compulsory photographs.\n\nChoose Arrábida when you want wine, local food, Atlantic scenery and a day that can adapt as it unfolds. It is quieter, more personal and still unfamiliar to many international visitors.\n\nFor a first visit to Portugal, Sintra may feel unavoidable. For travellers who already know the famous sights, or who simply prefer authentic local experiences to crowded landmarks, Arrábida is often the more memorable surprise.",
+        body: "Choose Sintra when palaces, gardens and Portuguese royal history are essential to your trip. It is one of the country's most remarkable destinations and deserves to be experienced properly rather than rushed between compulsory photographs.\n\nChoose Arrábida when you want wine, local food, Atlantic scenery and a day that can adapt as it unfolds. It is quieter, more personal and still unfamiliar to many international visitors.\n\nFor a first visit to Portugal, Sintra may feel unavoidable. For travelers who already know the famous sights, or who simply prefer authentic local experiences to crowded landmarks, Arrábida is often the more memorable surprise.",
       },
     ],
     ctaLead:
@@ -127,11 +127,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "Setúbal Wine Country — A Local's Guide",
     eyebrow: "Setúbal · Wine",
     standfirst:
-      "Twenty minutes south of Lisbon, a wine region most travellers still miss. Here is what to taste, and where.",
+      "Twenty minutes south of Lisbon, a wine region most travelers still miss. Here is what to taste, and where.",
     sections: [
       {
         heading: "Why Setúbal is different",
-        body: "Setúbal feels remarkably removed from Lisbon despite being close enough for an easy private day trip. Vineyards stretch between the limestone hills of Arrábida, the plains around Palmela and the Atlantic coast. The sea influences the climate, while the soils and sheltered valleys allow local grape varieties to develop with freshness and character.\n\nIt is also a working wine region rather than a destination built only for visitors. Family producers, historic estates and small cellars still form part of everyday life. Tastings are usually relaxed, lunches are long and the landscape changes continually between vines, cork oaks, fishing towns and sea views. For travellers who want Portuguese wine without losing an entire day to driving, Setúbal is one of the most rewarding regions near Lisbon.",
+        body: "Setúbal feels remarkably removed from Lisbon despite being close enough for an easy private day trip. Vineyards stretch between the limestone hills of Arrábida, the plains around Palmela and the Atlantic coast. The sea influences the climate, while the soils and sheltered valleys allow local grape varieties to develop with freshness and character.\n\nIt is also a working wine region rather than a destination built only for visitors. Family producers, historic estates and small cellars still form part of everyday life. Tastings are usually relaxed, lunches are long and the landscape changes continually between vines, cork oaks, fishing towns and sea views. For travelers who want Portuguese wine without losing an entire day to driving, Setúbal is one of the most rewarding regions near Lisbon.",
       },
       {
         heading: "Moscatel de Setúbal, explained simply",
@@ -181,7 +181,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "A quiet half-day option",
-        body: "Sesimbra also works well when a full sightseeing day feels unnecessary. A relaxed half-day can include a coastal drive through Arrábida, time beside the harbour, a walk through the old centre and a long seafood lunch.\n\nIt is particularly suitable for travellers staying in Lisbon who want to see another side of the region without beginning early or returning late. The town offers enough to feel like a genuine escape, but not so much that the visit becomes another demanding itinerary.\n\nFor a slower version, combine Sesimbra with a viewpoint or quiet beach. For a fuller day, add wineries in Azeitão, Setúbal or more of the Arrábida coast.",
+        body: "Sesimbra also works well when a full sightseeing day feels unnecessary. A relaxed half-day can include a coastal drive through Arrábida, time beside the harbour, a walk through the old centre and a long seafood lunch.\n\nIt is particularly suitable for travelers staying in Lisbon who want to see another side of the region without beginning early or returning late. The town offers enough to feel like a genuine escape, but not so much that the visit becomes another demanding itinerary.\n\nFor a slower version, combine Sesimbra with a viewpoint or quiet beach. For a fuller day, add wineries in Azeitão, Setúbal or more of the Arrábida coast.",
       },
     ],
     ctaLead:
@@ -202,19 +202,19 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "What 'private' actually means",
-        body: "A private tour should mean more than travelling in a smaller vehicle. The guide, transport and route are reserved for your party, but the real difference is control over the rhythm of the day.\n\nThere is no need to wait for other guests, return to a meeting point or follow a schedule designed around a large group. Stops can last longer when they are interesting and be shortened when they are not. Lunch can suit your preferences, and the route can adapt to weather, energy levels and unexpected discoveries.\n\nPrivacy also creates space for conversation. Guests can ask detailed questions, change direction and experience Portugal through their own interests rather than through a fixed script prepared for everyone.",
+        body: "A private tour should mean more than traveling in a smaller vehicle. The guide, transport and route are reserved for your party, but the real difference is control over the rhythm of the day.\n\nThere is no need to wait for other guests, return to a meeting point or follow a schedule designed around a large group. Stops can last longer when they are interesting and be shortened when they are not. Lunch can suit your preferences, and the route can adapt to weather, energy levels and unexpected discoveries.\n\nPrivacy also creates space for conversation. Guests can ask detailed questions, change direction and experience Portugal through their own interests rather than through a fixed script prepared for everyone.",
       },
       {
         heading: "What you pay for, and what you don't",
-        body: "A private experience usually costs more per person because the vehicle, guide and operating time are not divided among a large group. The value lies in exclusivity, flexibility and the ability to shape the day around a small number of travellers.\n\nYou are not necessarily paying for more attractions. You are paying to avoid unnecessary waiting, generic stops, fixed restaurants and a timetable designed for thirty unrelated people.\n\nA well-designed private day should also explain clearly what is included. Transport, tastings, meals, admission tickets and activities vary between experiences. The important comparison is not simply the headline price, but what the day contains, how personal it is and how much of your limited holiday time is used well.",
+        body: "A private experience usually costs more per person because the vehicle, guide and operating time are not divided among a large group. The value lies in exclusivity, flexibility and the ability to shape the day around a small number of travelers.\n\nYou are not necessarily paying for more attractions. You are paying to avoid unnecessary waiting, generic stops, fixed restaurants and a timetable designed for thirty unrelated people.\n\nA well-designed private day should also explain clearly what is included. Transport, tastings, meals, admission tickets and activities vary between experiences. The important comparison is not simply the headline price, but what the day contains, how personal it is and how much of your limited holiday time is used well.",
       },
       {
         heading: "Where group tours still make sense",
-        body: "Group tours can be the sensible choice for solo travellers, guests with a limited budget or visitors who want a straightforward introduction without needing much flexibility.\n\nThey also work well when the main goal is reaching one famous monument or destination and the traveller is comfortable following a fixed schedule. A reputable small-group tour may offer good information, convenient transport and the social element of meeting other people.\n\nThe compromise is usually pace. Departure times, lunch stops and the length of each visit must serve the whole group. For some travellers that structure is reassuring. For others, it is precisely what they hoped to escape while on holiday.",
+        body: "Group tours can be the sensible choice for solo travelers, guests with a limited budget or visitors who want a straightforward introduction without needing much flexibility.\n\nThey also work well when the main goal is reaching one famous monument or destination and the traveler is comfortable following a fixed schedule. A reputable small-group tour may offer good information, convenient transport and the social element of meeting other people.\n\nThe compromise is usually pace. Departure times, lunch stops and the length of each visit must serve the whole group. For some travelers that structure is reassuring. For others, it is precisely what they hoped to escape while on holiday.",
       },
       {
         heading: "Our rule of thumb",
-        body: "Choose a group tour when price matters most, the route is simple and you are happy for someone else to determine the schedule.\n\nChoose a private tour when time, comfort and flexibility matter more. It is especially valuable for families, couples celebrating something important, groups of friends and travellers with specific interests or mobility considerations.\n\nPrivate touring also becomes more economical as the number of guests increases because the cost of the vehicle and guide is shared within the party.\n\nThe best option is not automatically the most expensive one. It is the format that matches the way you actually like to travel, rather than the way a generic itinerary assumes you should.",
+        body: "Choose a group tour when price matters most, the route is simple and you are happy for someone else to determine the schedule.\n\nChoose a private tour when time, comfort and flexibility matter more. It is especially valuable for families, couples celebrating something important, groups of friends and travelers with specific interests or mobility considerations.\n\nPrivate touring also becomes more economical as the number of guests increases because the cost of the vehicle and guide is shared within the party.\n\nThe best option is not automatically the most expensive one. It is the format that matches the way you actually like to travel, rather than the way a generic itinerary assumes you should.",
       },
     ],
     ctaLead:
@@ -235,7 +235,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Crossing to Tróia — Lisbon behind, another Portugal ahead",
-        body: "The day begins with a short ferry over the Sado estuary. It sounds banal on paper. In practice, it's the moment the trip changes register: bottlenose dolphins live in this estuary year-round, the Serra da Arrábida drops behind you, and by the time you step off on the Tróia side you're in a landscape most travellers never see. This is not Algarve, and it is not Lisbon. It is the Alentejo coast — quieter, sandier, older.",
+        body: "The day begins with a short ferry over the Sado estuary. It sounds banal on paper. In practice, it's the moment the trip changes register: bottlenose dolphins live in this estuary year-round, the Serra da Arrábida drops behind you, and by the time you step off on the Tróia side you're in a landscape most travelers never see. This is not Algarve, and it is not Lisbon. It is the Alentejo coast — quieter, sandier, older.",
       },
       {
         heading: "Roman ruins almost nobody visits",
@@ -272,11 +272,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "The Southwest Vicentine Coast — Portugal's Hidden Atlantic",
     eyebrow: "Vicentine Coast · Alentejo · Costa",
     standfirst:
-      "Between Alentejo and Algarve there is a coastline most travellers never see — protected, empty, cinematic. Here is how we spend a day inside it.",
+      "Between Alentejo and Algarve there is a coastline most travelers never see — protected, empty, cinematic. Here is how we spend a day inside it.",
     sections: [
       {
         heading: "Why this coast still feels secret",
-        body: "The Parque Natural do Sudoeste Alentejano e Costa Vicentina protects roughly 120 kilometres of Atlantic coastline south of Sines. Development is capped by law: no high-rises, no beachfront resorts, no marinas. The result is a landscape that looks the way the Algarve looked in the 1970s — whitewashed villages, cliffs, coves reached on foot, and a light most travellers associate with Greece rather than Portugal.",
+        body: "The Parque Natural do Sudoeste Alentejano e Costa Vicentina protects roughly 120 kilometres of Atlantic coastline south of Sines. Development is capped by law: no high-rises, no beachfront resorts, no marinas. The result is a landscape that looks the way the Algarve looked in the 1970s — whitewashed villages, cliffs, coves reached on foot, and a light most travelers associate with Greece rather than Portugal.",
       },
       {
         heading: "Porto Covo and Ilha do Pessegueiro",
@@ -334,7 +334,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         body: "Talha wine is fermented and aged in large clay amphorae, buried in the ground or standing in cool cellars — the same method the Romans used across the Empire and the same method preserved almost exclusively today in a small triangle of Alentejo villages: Vila de Frades, Vila Alva, Vidigueira. Not stainless steel, not oak barrels, not modern concrete. Clay. When you taste one for the first time, it doesn't taste like any Alentejo wine you've had — it's fresher, more mineral, with a texture that comes from centuries of skin contact and slow settling.",
       },
       {
-        heading: "São Cucufate — a Roman villa most travellers never see",
+        heading: "São Cucufate — a Roman villa most travelers never see",
         body: "The Villa Romana de São Cucufate, near Vila de Frades, is one of the best-preserved Roman rural estates in the Iberian Peninsula — 1st to 4th century, later converted into a medieval monastery. The site tells the whole story of why wine ended up here at all: Roman legionaries settled this land specifically for grain, olives and wine. We visit with a licensed local host who works with the archaeological team and can walk you through the layers without a script.",
       },
       {
@@ -347,7 +347,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "A quiet river beach to finish",
-        body: "If the season is right we finish at Albergaria dos Fusos, a small hidden river beach tucked into the countryside — a Portuguese habit foreign travellers rarely discover. Feet in the water, olive trees, no one else there. Then the drive back to Lisbon, which takes roughly 1h45.",
+        body: "If the season is right we finish at Albergaria dos Fusos, a small hidden river beach tucked into the countryside — a Portuguese habit foreign travelers rarely discover. Feet in the water, olive trees, no one else there. Then the drive back to Lisbon, which takes roughly 1h45.",
       },
     ],
     ctaLead:
@@ -386,7 +386,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "The short answer",
-        body: "Yes — a wine tour from Lisbon is one of the best days you can have in Portugal, provided you do it well. Within an hour of the city you have three serious wine regions (Setúbal, Palmela, Arrábida) and within two hours, Alentejo opens up. The mistake most travellers make is booking a 40-seat coach with three tastings and a buffet lunch. That is not a wine tour. That is a logistics exercise with wine in it.",
+        body: "Yes — a wine tour from Lisbon is one of the best days you can have in Portugal, provided you do it well. Within an hour of the city you have three serious wine regions (Setúbal, Palmela, Arrábida) and within two hours, Alentejo opens up. The mistake most travelers make is booking a 40-seat coach with three tastings and a buffet lunch. That is not a wine tour. That is a logistics exercise with wine in it.",
       },
       {
         heading: "When it's absolutely worth it",
@@ -394,7 +394,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "When it isn't",
-        body: "If you have one day in Lisbon and have never seen the city, do Lisbon. If you don't drink, a wine-led day will feel long. And if you are travelling on a group coach tour — skip it. The drive south is short but the experience compresses badly at scale. Better to wait for a private day, even if it means doing it on a different trip.",
+        body: "If you have one day in Lisbon and have never seen the city, do Lisbon. If you don't drink, a wine-led day will feel long. And if you are traveling on a group coach tour — skip it. The drive south is short but the experience compresses badly at scale. Better to wait for a private day, even if it means doing it on a different trip.",
       },
       {
         heading: "How to choose the right day",
@@ -438,7 +438,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         body: "Ninety minutes east of Lisbon and the landscape changes completely: cork oaks, wheat plains, white villages, and wineries that have been making wine in clay amphorae (talhas) for two thousand years. Alentejo is a longer day — and a better one if you want to slow down properly. Évora makes the perfect base, and the wines (Antão Vaz, Aragonez, Trincadeira) reward the drive.",
       },
       {
-        heading: "Which region for which traveller",
+        heading: "Which region for which traveler",
         body: "Short on time and want one beautiful day — Arrábida. Wine-obsessed and prepared to drive — Alentejo. First trip to Portugal and want something genuinely local without the distance — Setúbal and Palmela together. If you can't decide, the Studio lets you mix two regions across a slow day, or stretch it into a two-day private journey south.",
       },
     ],
@@ -503,7 +503,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Arrábida: the coast that quietly makes great wine",
-        body: "Arrábida is often discovered for its beaches and mountain views, but wine has been part of this landscape for centuries. Vineyards sit between the Atlantic, the limestone hills and the warmer plains around Azeitão and Palmela.\n\nThis unusual combination creates very different styles within a relatively small area. Local wineries produce fresh whites, structured reds and the region's famous Moscatel de Setúbal. Castelão remains one of the most characteristic red grapes, particularly in the sandy soils of the Setúbal Peninsula.\n\nWhat makes Arrábida especially attractive from Lisbon is the variety of the day. A private wine experience can include family cellars, panoramic roads, a traditional lunch and the coast without spending several hours travelling between each stop.",
+        body: "Arrábida is often discovered for its beaches and mountain views, but wine has been part of this landscape for centuries. Vineyards sit between the Atlantic, the limestone hills and the warmer plains around Azeitão and Palmela.\n\nThis unusual combination creates very different styles within a relatively small area. Local wineries produce fresh whites, structured reds and the region's famous Moscatel de Setúbal. Castelão remains one of the most characteristic red grapes, particularly in the sandy soils of the Setúbal Peninsula.\n\nWhat makes Arrábida especially attractive from Lisbon is the variety of the day. A private wine experience can include family cellars, panoramic roads, a traditional lunch and the coast without spending several hours traveling between each stop.",
       },
       {
         heading: "Setúbal Moscatel — sweet, salty, and very Portuguese",
@@ -515,7 +515,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "How we choose which wineries to visit",
-        body: "We choose wineries according to the quality of the experience, not only the fame of the label. Good wine matters, but so do the people hosting, the time allowed for the visit and the ability to explain the region without turning the tasting into a rehearsed sales presentation.\n\nFor some guests, the right choice is a small family cellar. Others appreciate the history and wider range of an established estate. Some want traditional Portuguese grapes, while others are curious about natural methods, clay amphorae or premium aged wines.\n\nWe therefore build the winery combination around the traveller, availability and the rhythm of the day. The goal is contrast: different producers, different stories and enough time to understand what makes each one worth visiting.",
+        body: "We choose wineries according to the quality of the experience, not only the fame of the label. Good wine matters, but so do the people hosting, the time allowed for the visit and the ability to explain the region without turning the tasting into a rehearsed sales presentation.\n\nFor some guests, the right choice is a small family cellar. Others appreciate the history and wider range of an established estate. Some want traditional Portuguese grapes, while others are curious about natural methods, clay amphorae or premium aged wines.\n\nWe therefore build the winery combination around the traveler, availability and the rhythm of the day. The goal is contrast: different producers, different stories and enough time to understand what makes each one worth visiting.",
       },
     ],
     ctaLead:
@@ -603,7 +603,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "The closest complete wine region to Lisbon",
-        body: "Arrábida and the Setúbal Peninsula form the closest complete wine region to Lisbon. Vineyards spread between Azeitão, Palmela and the limestone hills of the Arrábida Natural Park, with the Atlantic coast always nearby.\n\nThe region is known for Moscatel de Setúbal, local Castelão reds and a mixture of historic wine houses and independent family estates. A private Arrábida wine tour can combine contrasting tastings with Setúbal, a traditional lunch, panoramic mountain roads or the fishing town of Sesimbra.\n\nBecause the distances are relatively short, the experience can remain flexible. There is time to understand the wines, speak with local hosts and enjoy lunch without following the fixed pace of a large group tour. It is an especially strong choice for travellers who want Portuguese wine, local food and coastal scenery within one day from Lisbon.",
+        body: "Arrábida and the Setúbal Peninsula form the closest complete wine region to Lisbon. Vineyards spread between Azeitão, Palmela and the limestone hills of the Arrábida Natural Park, with the Atlantic coast always nearby.\n\nThe region is known for Moscatel de Setúbal, local Castelão reds and a mixture of historic wine houses and independent family estates. A private Arrábida wine tour can combine contrasting tastings with Setúbal, a traditional lunch, panoramic mountain roads or the fishing town of Sesimbra.\n\nBecause the distances are relatively short, the experience can remain flexible. There is time to understand the wines, speak with local hosts and enjoy lunch without following the fixed pace of a large group tour. It is an especially strong choice for travelers who want Portuguese wine, local food and coastal scenery within one day from Lisbon.",
       },
       {
         heading: "Three cellars, one long lunch, no rush.",
@@ -702,7 +702,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "How we design private wine journeys",
-        body: "Our private wine journeys begin with the traveller rather than a predefined itinerary. We consider the amount of time available, previous experience with Portuguese wine, personal preferences, physical rhythm and interest in food, culture or nature.\n\nBased on this, we can plan a full private day near Lisbon in Arrábida, Setúbal or Palmela, a longer day in the Alentejo, or a multi-day route combining more than one region. Winery selection, driving times, meals and cultural stops are all considered together to create a natural pace.\n\nWe pay particular attention to matching each guest with wineries that suit their curiosity. Some travellers prefer historic estates, others prefer smaller family cellars. Some want a strong focus on tasting technique, while others prefer conversation and landscape. Every element is intended to feel intentional rather than generic.",
+        body: "Our private wine journeys begin with the traveler rather than a predefined itinerary. We consider the amount of time available, previous experience with Portuguese wine, personal preferences, physical rhythm and interest in food, culture or nature.\n\nBased on this, we can plan a full private day near Lisbon in Arrábida, Setúbal or Palmela, a longer day in the Alentejo, or a multi-day route combining more than one region. Winery selection, driving times, meals and cultural stops are all considered together to create a natural pace.\n\nWe pay particular attention to matching each guest with wineries that suit their curiosity. Some travelers prefer historic estates, others prefer smaller family cellars. Some want a strong focus on tasting technique, while others prefer conversation and landscape. Every element is intended to feel intentional rather than generic.",
       },
       {
         heading: "One private car, one guide, one great cellar day.",
@@ -737,7 +737,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     sections: [
       {
         heading: "Wine tours from Lisbon at their best",
-        body: "Lisbon is one of the most convenient starting points in Europe for a serious wine day. Within a short drive, travellers can reach several distinct regions, each with its own grape varieties, wineries and gastronomic traditions.\n\nArrábida, Setúbal, Palmela and Azeitão are especially close. All can easily be visited on a single day trip, offering a strong balance between tasting quality, landscape and a comfortable pace. A little further, the Alentejo and its historic talha wines allow for a more immersive full-day experience.\n\nA private wine tour from Lisbon is ideal for travellers who want to understand these regions in depth without long, exhausting itineraries. It also allows the day to be shaped precisely to individual preferences, whether the focus is on family cellars, historic estates, coastal scenery, traditional lunch or all of these together.",
+        body: "Lisbon is one of the most convenient starting points in Europe for a serious wine day. Within a short drive, travelers can reach several distinct regions, each with its own grape varieties, wineries and gastronomic traditions.\n\nArrábida, Setúbal, Palmela and Azeitão are especially close. All can easily be visited on a single day trip, offering a strong balance between tasting quality, landscape and a comfortable pace. A little further, the Alentejo and its historic talha wines allow for a more immersive full-day experience.\n\nA private wine tour from Lisbon is ideal for travelers who want to understand these regions in depth without long, exhausting itineraries. It also allows the day to be shaped precisely to individual preferences, whether the focus is on family cellars, historic estates, coastal scenery, traditional lunch or all of these together.",
       },
       {
         heading: "Real Signature wine days.",
@@ -1023,7 +1023,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "The Vicentine Coast — wild and far.",
-        body: "For travellers who have already seen Sintra and Arrábida, the Southwest Vicentine Coast is the next level. Porto Covo, Milfontes and Odeceixe sit inside a protected natural park of cliffs, dunes and river-meets-ocean beaches. It is a long day from Lisbon, but the emptiness is the point.",
+        body: "For travelers who have already seen Sintra and Arrábida, the Southwest Vicentine Coast is the next level. Porto Covo, Milfontes and Odeceixe sit inside a protected natural park of cliffs, dunes and river-meets-ocean beaches. It is a long day from Lisbon, but the emptiness is the point.",
       },
     ],
     ctaLead:

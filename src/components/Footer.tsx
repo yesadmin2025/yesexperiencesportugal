@@ -118,6 +118,7 @@ export function Footer() {
             links={[
               { to: "/about", label: "About YES" },
               { to: "/local-stories", label: "Local Stories" },
+              { to: "/trade", label: "For Travel Advisors" },
               { to: "/contact", label: "Contact" },
             ]}
           />

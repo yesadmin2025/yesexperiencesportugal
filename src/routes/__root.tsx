@@ -164,7 +164,8 @@ export const Route = createRootRoute({
       { name: "ICBM", content: "38.4451, -9.1018" },
       { property: "og:site_name", content: "YES experiences Portugal" },
       { property: "og:type", content: "website" },
-      { property: "og:locale", content: "en_GB" },
+      { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "en_GB" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@yesexperiencespt" },
 

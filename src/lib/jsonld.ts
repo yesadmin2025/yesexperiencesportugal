@@ -71,6 +71,17 @@ export function organizationLd() {
       "Tróia and Comporta private day tour from Lisbon",
       "Private multi-day Portugal itineraries",
     ],
+    audience: [
+      {
+        "@type": "Audience",
+        audienceType: "US travelers, couples, small private groups",
+        geographicArea: { "@type": "Country", name: "United States" },
+      },
+      {
+        "@type": "Audience",
+        audienceType: "Travel advisors, travel designers, travel agencies",
+      },
+    ],
     award: [
       "First Portuguese tour operator to offer real-time private tour design and instant reservation through an in-house Experience Studio",
       "Recognised on Tripadvisor, Viator and GetYourGuide for the Arrábida private wine tour from Lisbon",
