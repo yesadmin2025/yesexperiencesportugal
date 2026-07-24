@@ -47,8 +47,12 @@ interface Body {
   priceFromEur: number;
   /** True when the booking comes from the Tailor flow (stop changes applied). */
   tailored?: boolean;
+  /** Number of principal stops the guest removed in Tailor. Used to apply
+   *  the SSOT tailor reduction to the resolved per-pax price. */
+  principalsRemoved?: number;
   /** Which surface initiated checkout. Drives copy in Stripe Checkout. */
   flow?: "studio" | "signature" | "tailor";
+
   /** Stripe Checkout UI mode. Defaults to "hosted" (full-page redirect). */
   uiMode?: "hosted" | "embedded";
   /** Stable client-side hash of the composed journey — mirrored into
