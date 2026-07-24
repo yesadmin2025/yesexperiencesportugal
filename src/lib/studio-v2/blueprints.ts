@@ -150,7 +150,7 @@ export const BLUEPRINTS: StudioBlueprint[] = [
     sourceTourKeys: ["tomar-coimbra"],
     matchIntents: ["elegant_cultural"],
     matchStyles: ["heritage"],
-    pricePerGuestFrom: 220,
+    pricePerGuestFrom: 152,
     durationHours: [10, 12],
     pickupNote: "Hotel pickup in Lisbon · long day",
     weight: 65,
