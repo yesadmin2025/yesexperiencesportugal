@@ -107,10 +107,20 @@ function ExperiencesPage() {
               // tour's highlights only when no Viator meta exists. Never
               // invented marketing copy.
               const meta = VIATOR_META[t.id];
-              const realStopBullets = meta?.stops
-                ? meta.stops.filter((s) => !s.passBy).map((s) => s.name)
-                : [];
               const content = getTourContent(t.id);
+              // Prefer verified SoT itinerary chapter labels (real, non-
+              // optional stops from the Viator source-of-truth). Fall
+              // back to raw Viator meta stops, then to legacy highlights.
+              const sotStopBullets =
+                content.source === "sot"
+                  ? content.itinerary.filter((c) => !c.optional).map((c) => c.label)
+                  : [];
+              const realStopBullets =
+                sotStopBullets.length > 0
+                  ? sotStopBullets
+                  : meta?.stops
+                    ? meta.stops.filter((s) => !s.passBy).map((s) => s.name)
+                    : [];
               const topHighlights = (
                 realStopBullets.length > 0 ? realStopBullets : content.highlights
               ).slice(0, 3);
