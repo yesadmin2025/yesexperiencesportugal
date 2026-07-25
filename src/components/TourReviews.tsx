@@ -16,6 +16,7 @@ import {
   type TourStats,
 } from "@/lib/reviews.functions";
 import { getViatorMeta } from "@/data/signatureToursViator";
+import { canonicalViatorUrl } from "@/data/signatureToursSourceOfTruth";
 import { filterVisibleReviews } from "@/lib/tour-reviews-filter";
 
 const SOURCE_LABEL: Record<string, string> = {
