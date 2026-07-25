@@ -27,6 +27,7 @@ import { setAnalyticsLocale } from "@/lib/analytics-events";
 import { captureUtmsFromLocation } from "@/lib/utm";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
+import { Analytics } from "@vercel/analytics/react";
 
 
 /* ──────────────────────────────────────────────────────────────────
@@ -313,6 +314,7 @@ function RootComponent() {
           </RouteFade>
           <WhatsAppSupportButton />
           <Toaster position="bottom-left" richColors closeButton />
+          <Analytics />
         </TooltipProvider>
       </LocaleProvider>
     </QueryClientProvider>
