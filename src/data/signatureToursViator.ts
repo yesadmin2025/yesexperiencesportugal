@@ -423,8 +423,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
         desc: "Experience the vibrant Mercado do Livramento in Setúbal, hailed as one of the Best Fresh Markets in the World by USA Today. Delight your senses as you explore over 145 years of local culinary tradition, from freshly harvested vegetables and fruits to an array of exquisite freshly caught fish and seafood, including the renowned local delicacy: fresh oysters. Immerse yours …",
       },
       {
-        name: "Azulejos de Azeitao",
-        desc: "Embark on a private tiles painting workshop where you'll delve into the artistry and heritage of tile making. Learn the time-honored techniques used since the 15th century passed down through generations as you craft your own masterpiece. Under the guidance of skilled artisans, unleash your creativity onto a blank canvas of ceramic tiles. Whether you're inspired by trad …",
+        name: "Tile Painting Workshop – Sesimbra",
+        desc: "In Sesimbra, join a private tile-painting workshop and delve into the artistry and heritage of Portuguese azulejos. Under the guidance of skilled artisans, unleash your creativity onto ceramic tiles and craft a masterpiece to take home.",
       },
       {
         name: "Castelo de Sesimbra",
