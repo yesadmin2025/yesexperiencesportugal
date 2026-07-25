@@ -11,6 +11,7 @@
  */
 
 import { SOCIAL, WEBSITE_URL } from "@/config/business-nap";
+import { canonicalViatorUrl } from "@/data/signatureToursSourceOfTruth";
 
 export type PlatformSlug = "viator" | "getyourguide" | "tripadvisor";
 
