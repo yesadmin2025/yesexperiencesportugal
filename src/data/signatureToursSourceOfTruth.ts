@@ -114,7 +114,7 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
     maxGroup: null,
     overview: "Leave Lisbon behind to explore the stunning beauty of southern Lisbon on this full-day private tour. Visit the world-renowned Mercado do Livramento in Setúbal and wind through the dramatic cliffs of Arrábida Natural Park. Enjoy a scenic coastal boat ride with flexible options including dolphin watching, snorkeling, or kayaking.",
     highlights: ["Visit the vibrant Livramento Market in Setúbal, one of the top fresh markets in the world","Wind through the dramatic landscapes of Arrábida Natural Park","Enjoy a scenic boat ride along the Arrábida coastline with multiple activity options","Explore the charming fishing village of Sesimbra and its historic castle","Take in the sweeping views from the spectacular cliffs of Cape Espichel"],
-    included: ["Private transportation","Boat Tour (3 different options)","Private local tour guide","Lunch (when choosing the “Arrabida Discovery Boat Tour with Lunch”)","Private pick up and drop off anywhere in Lisbon, Setúbal, Sesimbra and Almada.","Bottled water","Air-conditioned vehicle"],
+    included: ["Private transportation","Boat Tour (3 different options)","Private local tour guide","Private pick up and drop off anywhere in Lisbon, Setúbal, Sesimbra and Almada.","Bottled water","Air-conditioned vehicle"],
     notIncluded: ["Lunch","Personal expenses"],
     variesByOption: ["dolphin watching","snorkeling","kayaking","boat ride with an included lunch"],
     itinerary: [
