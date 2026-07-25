@@ -110,8 +110,9 @@ function ExperiencesPage() {
               const realStopBullets = meta?.stops
                 ? meta.stops.filter((s) => !s.passBy).map((s) => s.name)
                 : [];
+              const content = getTourContent(t.id);
               const topHighlights = (
-                realStopBullets.length > 0 ? realStopBullets : t.highlights
+                realStopBullets.length > 0 ? realStopBullets : content.highlights
               ).slice(0, 3);
               return (
                 <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
