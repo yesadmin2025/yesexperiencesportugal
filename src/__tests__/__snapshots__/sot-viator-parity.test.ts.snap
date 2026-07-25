@@ -769,9 +769,9 @@ exports[`SoT locked snapshot > tiles-workshop: rendered content snapshot 1`] = `
       "travelToNextMinutes": null,
     },
     {
-      "description": "Embark on a private tiles painting workshop where you'll delve into the artistry and heritage of tile making. Under the guidance of skilled artisans, unleash your creativity and craft your own ceramic tile masterpiece.",
+      "description": "In Sesimbra, join a private tile-painting workshop and delve into the artistry and heritage of Portuguese azulejos. Under the guidance of skilled artisans, craft your own ceramic tile masterpiece to take home.",
       "durationMinutes": 120,
-      "label": "Azulejos de Azeitao",
+      "label": "Tile Painting Workshop – Sesimbra",
       "optional": false,
       "order": 4,
       "travelToNextMinutes": null,
