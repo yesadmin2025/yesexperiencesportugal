@@ -88,10 +88,12 @@ function LeafletMap({
   stops,
   polylines,
   ariaLabel,
+  onFallback,
 }: {
   stops: ResolvedStop[];
   polylines: Array<Array<[number, number]>>;
   ariaLabel: string;
+  onFallback: (reason: string) => void;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<unknown>(null);
@@ -100,70 +102,100 @@ function LeafletMap({
     if (!ref.current || mapRef.current) return;
     let disposed = false;
     let cleanup: (() => void) | undefined;
+    let firstTileLoaded = false;
+    const tileTimeout = setTimeout(() => {
+      if (!firstTileLoaded && !disposed) onFallback("tiles timed out");
+    }, 5000);
 
     (async () => {
-      const L = (await import("leaflet")).default;
-      await import("leaflet/dist/leaflet.css");
-      if (disposed || !ref.current) return;
+      try {
+        const L = (await import("leaflet")).default;
+        await import("leaflet/dist/leaflet.css");
+        if (disposed || !ref.current) return;
 
-      const map = L.map(ref.current, {
-        zoomControl: true,
-        scrollWheelZoom: false,
-        attributionControl: false,
-      });
-      mapRef.current = map;
-
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        { maxZoom: 18 },
-      ).addTo(map);
-
-      if (polylines.length > 0) {
-        polylines.forEach((coords) => {
-          if (coords.length < 2) return;
-          L.polyline(coords, {
-            color: "var(--teal)",
-            weight: 3.5,
-            opacity: 0.85,
-            lineCap: "round",
-            lineJoin: "round",
-          }).addTo(map);
+        const map = L.map(ref.current, {
+          zoomControl: true,
+          scrollWheelZoom: false,
+          attributionControl: false,
         });
-      } else if (stops.length >= 2) {
-        L.polyline(
-          stops.map((s) => [s.lat, s.lng] as [number, number]),
-          {
-            color: "var(--teal)",
-            weight: 2.5,
-            opacity: 0.55,
-            dashArray: "6 8",
-            lineCap: "round",
-          },
-        ).addTo(map);
+        mapRef.current = map;
+
+        const primary = L.tileLayer(
+          "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+          { maxZoom: 18 },
+        );
+        primary.on("load", () => {
+          firstTileLoaded = true;
+          clearTimeout(tileTimeout);
+        });
+        primary.on("tileerror", () => {
+          if (firstTileLoaded) return;
+          try {
+            map.removeLayer(primary);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18 })
+              .on("load", () => {
+                firstTileLoaded = true;
+                clearTimeout(tileTimeout);
+              })
+              .on("tileerror", () => onFallback("tiles unavailable"))
+              .addTo(map);
+          } catch {
+            onFallback("tiles error");
+          }
+        });
+        primary.addTo(map);
+
+        if (polylines.length > 0) {
+          polylines.forEach((coords) => {
+            if (coords.length < 2) return;
+            L.polyline(coords, {
+              color: "var(--teal)",
+              weight: 3.5,
+              opacity: 0.85,
+              lineCap: "round",
+              lineJoin: "round",
+            }).addTo(map);
+          });
+        } else if (stops.length >= 2) {
+          L.polyline(
+            stops.map((s) => [s.lat, s.lng] as [number, number]),
+            {
+              color: "var(--teal)",
+              weight: 2.5,
+              opacity: 0.55,
+              dashArray: "6 8",
+              lineCap: "round",
+            },
+          ).addTo(map);
+        }
+
+        stops.forEach((s, i) => {
+          L.marker([s.lat, s.lng], { icon: makeGoldPin(L, i), title: s.label })
+            .bindTooltip(`${i + 1}. ${s.label}`, {
+              direction: "top",
+              offset: [0, -14],
+              className: "yes-signature-tip",
+            })
+            .addTo(map);
+        });
+
+        const bounds = L.latLngBounds(stops.map((s) => [s.lat, s.lng]));
+        map.fitBounds(bounds, { padding: [36, 36], maxZoom: 12 });
+
+        cleanup = () => map.remove();
+      } catch (err) {
+        console.warn("[SignatureRouteMap] Leaflet init failed", err);
+        onFallback("map init failed");
       }
-
-      stops.forEach((s, i) => {
-        L.marker([s.lat, s.lng], { icon: makeGoldPin(L, i), title: s.label })
-          .bindTooltip(`${i + 1}. ${s.label}`, {
-            direction: "top",
-            offset: [0, -14],
-            className: "yes-signature-tip",
-          })
-          .addTo(map);
-      });
-
-      const bounds = L.latLngBounds(stops.map((s) => [s.lat, s.lng]));
-      map.fitBounds(bounds, { padding: [36, 36], maxZoom: 12 });
-
-      cleanup = () => map.remove();
     })();
 
     return () => {
       disposed = true;
+      clearTimeout(tileTimeout);
       cleanup?.();
       mapRef.current = null;
     };
-  }, [stops, polylines]);
+  }, [stops, polylines, onFallback]);
 
   return (
     <div
