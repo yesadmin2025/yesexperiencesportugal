@@ -118,8 +118,63 @@ function SotRefreshPage() {
           Populated: <strong>{populatedCount}</strong> / {totalCount}
         </p>
 
-        <ul className="mt-8 space-y-4">
-          {Object.entries(CANONICAL_VIATOR_URLS).map(([tourId, url]) => {
+        <div className="mt-6 rounded-lg border border-[color:var(--charcoal)]/10 bg-[color:var(--sand)]/30 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="text-[13px] font-medium text-[color:var(--charcoal)]">
+                Batch mode
+              </div>
+              <div className="text-[12px] text-[color:var(--charcoal)]/70">
+                Extract all {totalCount} tours sequentially and produce one combined TS block.
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={runAll}
+              disabled={batchRunning}
+              className="rounded bg-[color:var(--teal)] px-4 py-2 text-[13px] font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+            >
+              {batchRunning
+                ? `Extracting ${batchProgress.done}/${batchProgress.total}…`
+                : `Extract all ${totalCount}`}
+            </button>
+          </div>
+          {batchRunning && (
+            <div className="mt-3 h-1.5 w-full overflow-hidden rounded bg-[color:var(--charcoal)]/10">
+              <div
+                className="h-full bg-[color:var(--teal)] transition-all"
+                style={{
+                  width: `${batchProgress.total ? (batchProgress.done / batchProgress.total) * 100 : 0}%`,
+                }}
+              />
+            </div>
+          )}
+          {combined && !batchRunning && (
+            <div className="mt-4">
+              <div className="mb-2 flex items-center justify-between text-[12px] text-[color:var(--charcoal)]/70">
+                <span>
+                  Combined block · {Object.values(rows).filter((r) => r.status === "done").length}{" "}
+                  ok ·{" "}
+                  {Object.values(rows).filter((r) => r.status === "error").length} failed
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    void navigator.clipboard.writeText(combined);
+                  }}
+                  className="rounded border border-[color:var(--charcoal)]/20 bg-white px-2 py-1 text-[12px] font-medium hover:bg-[color:var(--sand)]/40"
+                >
+                  Copy combined TS
+                </button>
+              </div>
+              <pre className="max-h-[520px] overflow-auto rounded bg-[color:var(--charcoal)] p-3 text-[11px] leading-relaxed text-white">
+                {combined}
+              </pre>
+            </div>
+          )}
+        </div>
+
+
             const state = rows[tourId];
             const populated = Boolean(SIGNATURE_SOURCE_OF_TRUTH[tourId]);
             const productCode = url.match(/d\d+P(\d+)/i);
