@@ -38,6 +38,7 @@ import { HOMEPAGE_FAQ } from "@/content/faq-data";
 import { faqPageLd, itemListLd, jsonLdScript, studioServiceLd } from "@/lib/jsonld";
 import { signatureTours, isValidTourId } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
+import { getTourContent } from "@/lib/tourContent";
 
 /* ──────────────────────────────────────────────────────────────────
  * Featured Signature tours — exactly 4 real tours, in display order.
