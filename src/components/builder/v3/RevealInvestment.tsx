@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { DriftLocale } from "@/lib/drift/i18n";
 import type { SignatureTour } from "@/data/signatureTours";
+import { getTourContent } from "@/lib/tourContent";
+
 
 /**
  * RevealInvestment — transparent "estimated experience investment" block,
@@ -91,10 +93,12 @@ export function RevealInvestment({ anchor, companions, locale, stopsCount }: Pro
   const total = anchor.priceFrom * party;
   const [open, setOpen] = useState(false);
 
+  const sotIncluded = getTourContent(anchor.id).included;
   const included = useMemo(
-    () => anchor.included.filter((line) => line && line.trim().length > 0),
-    [anchor.included],
+    () => sotIncluded.filter((line) => line && line.trim().length > 0),
+    [sotIncluded],
   );
+
 
   return (
     <section
