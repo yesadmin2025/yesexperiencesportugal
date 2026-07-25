@@ -1,69 +1,70 @@
-## Goal
-Align every Signature tour with its Viator page (source of truth) and produce ONE canonical file that Studio reads for real timings/itineraries — so descriptions, highlights, inclusions, stops, durations and per-chapter timings all match what Viator actually sells.
+# Aplicar Source of Truth em todo o site
 
-## Scope: 12 Viator URLs → 12 Signature tours
+Objetivo: cada uma das 12 Signature tours passa a mostrar exatamente o que está na sua página Viator (as 12 URLs canónicas já registadas em `CANONICAL_VIATOR_URLS`). Sem inventar, sem duplicar, sem drift.
 
-Current mapping is mostly correct, but two internal IDs point to the WRONG Viator page — needs your confirmation before rewriting content:
+## Estado atual (verificado)
 
-| Internal id | Currently points to | Likely correct |
-|---|---|---|
-| `tiles-workshop` | P4 (Golf & Wine) | ? — the id says "tiles workshop" but P4 is a golf tour |
-| `evora-alentejo` | P6 (Setúbal Wine Tour) | ? — id says "evora" but P6 is Setúbal, not Évora |
+- `SIGNATURE_SOURCE_OF_TRUTH` está **vazio** — as 12 URLs canónicas estão registadas mas nenhum tour tem SoT populada.
+- Infra pronta: extractor (`viatorSot.server.ts`), server fn admin (`viatorSot.functions.ts`), admin batch mode em `/admin/sot-refresh`.
+- Campos duplicados vivos hoje em `src/data/signatureTours.ts` (linhas 299, 413, 510, 618, 710, 821, 930, 1042, 1132, 1223…) e em `src/data/signatureToursViator.ts`: `overview`, `highlights`, `included`, `notIncluded`, `itinerary`.
+- Read sites principais confirmados: `src/routes/tours.$tourId.tsx`, `src/routes/tours.$tourId.tailor.tsx`, `src/lib/studio-v2/itinerary.*`.
 
-Everything else lines up: P1→wild-beaches, P3→arrabida-wine, P5→fatima-nazaré, P8→tomar-coimbra, P9→azeitao-cheese, P10→sintra-cascais, P12→arrabida-boat, P16→southwest-coast, P17→roman-heritage, P18→troia-comporta.
+## Decisões (do seu último input)
 
-## New canonical file — `src/data/signatureToursSourceOfTruth.ts`
+1. Eu extraio end-to-end (invoco `extractSignatureSotFn` server-side em build mode).
+2. **Single source of truth estrito** — apago os campos duplicados de `signatureTours.ts` e `signatureToursViator.ts` no mesmo turno em que fizer o wiring.
+3. Âmbito do wiring: página do tour + Tailor + Studio. (Signature map fica fora deste turno.)
 
-Single hand-verified file, per tour, keyed by internal id, containing exactly what Viator publishes:
+## Fases
 
-```text
-{
-  viatorUrl, productCode: "P3",
-  title, subtitle, durationText: "8–9h", durationMinutes: 510,
-  pickupWindow: "08:00–09:00", pickupZone,
-  groupType: "Private", maxGroup: 8,
-  overview: string (Viator's own),
-  highlights: string[]   // exact Viator bullet list
-  included: string[]     // exact
-  notIncluded: string[]  // exact
-  variesByOption: string[]
-  itinerary: [
-    { order, label, description, durationMinutes, travelToNextMinutes, optional }
-    // ~4–8 chapters, real minutes — sums to durationMinutes
-  ]
-  cancellation, languages, meetingPoint
-}
-```
+### Fase A — Popular SoT (uma vez)
 
-Rules:
-- Only content that appears on the linked Viator page. No invented stops, no invented timings.
-- When Viator says "depending on option / optional / subject to availability" → `optional: true` and listed in `variesByOption`.
-- `durationMinutes` and per-chapter minutes are derived from the Viator itinerary block (e.g. "8–9 hours" → 510; per-stop times taken verbatim when shown, otherwise left `null` — never guessed).
+1. Invocar `extractSignatureSotFn` para cada um dos 12 `tourId` em `CANONICAL_VIATOR_URLS` (com backoff idêntico ao batch mode do admin: 3 tentativas, delay 800/1600 ms).
+2. Escrever os 12 blocos gerados dentro de `SIGNATURE_SOURCE_OF_TRUTH` em `src/data/signatureToursSourceOfTruth.ts` (ordem alfabética por `tourId`).
+3. Se algum tour falhar as 3 tentativas → parar antes de qualquer delete. Reporto quais falharam e você decide (nova tentativa vs. adiar esse tour vs. fallback manual).
 
-## Wiring (no behavior change beyond truth)
+Regras do extractor já aplicadas: só conteúdo que aparece na página Viator, midpoint para ranges ("8–9h" → 510), `null` em minutos por capítulo quando Viator não imprime, nomes reais em PT correto.
 
-1. **Signature detail pages** — replace `VIATOR_META[...].overview / included / editorialChapters` reads with the new SoT file. `signatureToursViator.ts` stays for reviews/gallery/pricing (those are already truth-passed).
-2. **Signature list copy** — `signatureTours.ts` `description`, `highlights`, `included`, `durationHours` reset to match SoT for the 12 tours.
-3. **Studio V2** — `src/lib/studio-v2/itinerary.functions.ts` + `content.ts` read `itinerary[]` + `durationMinutes` + `travelToNextMinutes` from SoT so the Living Itinerary shows real timings instead of computed guesses. AI voice stays voice-only (no invented stops — matches `studio-v3-no-invented-stops` memory).
-4. **Tailor** — inclusion list already routes through `resolveClientIncludedItems`; it will pick up SoT via the same fallback chain.
-5. **Validation** — extend `src/lib/viatorValidation.ts` to also diff highlights + itinerary chapter labels against SoT and surface mismatches at `/admin/viator-validation`.
+### Fase B — Wiring dos read sites (SoT-only)
 
-## Extraction workflow (one call per URL, ultra-low credit)
+Novos helpers em `signatureToursSourceOfTruth.ts` (adicionar aos já existentes):
 
-Reuse the existing `extractViatorTour` server function in `src/lib/viatorTour.server.ts` (already tool-calls Gemini Flash on the fetched HTML). Add a small admin action `/admin/sot-refresh` that:
-- takes a tour id + Viator URL,
-- runs the extractor,
-- writes the result into `signatureToursSourceOfTruth.ts` (via generated patch you review before commit — no live DB write).
+- `sotNotIncluded(tourId)`, `sotVariesByOption(tourId)`, `sotDurationText(tourId)`, `sotDurationMinutes(tourId)`, `sotChapterMinutes(tourId)` (retorna array alinhado com a ordem dos capítulos SoT).
 
-You approve each of the 12 diffs one by one; nothing ships until you confirm.
+Read sites:
 
-## Questions before I build
+- `**src/routes/tours.$tourId.tsx**` — Overview, Highlights, What's included, What's not included, Itinerary passam a vir de `sotOverview / sotHighlights / sotIncluded / sotNotIncluded / sotItinerary`. `tour.highlights` fallback (linha 464) removido — passa a `sotHighlights(tourId)`. Se por acaso a SoT vier vazia numa release futura, mostra estado vazio limpo (sem cair para legacy — decisão do single-source).
+- `**src/routes/tours.$tourId.tailor.tsx**` — bloco de validação (linhas 1420-1424 hoje compara "included" contra Viator) passa a comparar contra SoT. Chapters editáveis usam `sotItinerary(tourId)` como base (ordem + labels reais). Inclusões e "not included" mostradas nas cards leem de SoT.
+- `**src/lib/studio-v2/itinerary.functions.ts` / `itinerary.server.ts**` — quando um Signature está filtrado, a duração total do dia = `sotDurationMinutes` (midpoint) e cada capítulo usa `sotChapterMinutes[i]` quando não-null; capítulos com minutos `null` mantêm o cálculo atual do composer (não inventamos tempos).
 
-1. **`tiles-workshop` and `evora-alentejo` mappings** — do I (a) rename the ids to match P4/P6, (b) fix the `viatorUrl` to point at the real Azulejos/Évora products, or (c) drop them? Your 12 URLs don't include an azulejos or Évora page.
-2. **Timings** — when Viator shows a range ("8–9h") should chapter minutes sum to the LOW end (480) or the HIGH end (540)? Studio needs one number.
-3. Should the SoT file be the ONLY place inclusions/highlights/overview live (i.e. delete those fields from `signatureTours.ts` and `signatureToursViator.ts`), or keep both and mark SoT as authoritative? Cleaner is single-source; safer is dual with a lint that fails on divergence.
+### Fase C — Remover fontes duplicadas
 
-## Technical notes
-- No schema/RLS changes. Pure content + one new TS file + read-path swap.
-- Existing tests: `viatorValidation`, `tailor-blueprints-locks`, `signature-map-and-images` will re-run against SoT.
-- Credits: ~12 Gemini Flash calls (one per URL) for the initial extraction, then zero at runtime — SoT is static.
+Após B compilar limpo:
+
+1. Em `src/data/signatureTours.ts`: apagar os campos `overview`, `highlights`, `included`, `notIncluded`, `itinerary` do tipo `SignatureTour` e de cada uma das 12 entradas. Manter tudo o resto (`stops[]`, pricing, imagens, slugs, `story`, `seoTitle`/`seoDescription` — não são SoT).
+2. Em `src/data/signatureToursViator.ts`: apagar as mesmas 5 propriedades duplicadas; manter apenas o que é editorial/hero e não vive em Viator.
+3. Corrigir cada import que leia esses campos (esperado: os ficheiros já editados em B, testes em `src/data/__tests__/*`, e `src/lib/viatorValidation.ts`). Onde um teste comparava `signatureTours` vs Viator, passa a comparar SoT vs `stops[]`.
+
+### Fase D — Verificação
+
+- `tsgo` deve passar após Fase C (todos os leitores atualizados).
+- Correr os specs Playwright já existentes tocados: `signature-map-and-images`, `signature-a11y-axe`, `studio-v3-*` (composer/timings). Sem alterar baselines a menos que a copy real da Viator os force a mudar — nesse caso reporto e você decide.
+- Não toco em `SignatureRouteMap`, `/experiences`, `/index`, cards de homepage (fora de âmbito hoje).
+
+## Riscos e mitigações
+
+- **Extração falha em 1-2 tours** (429 do gateway, ou Viator renderiza JS): parar antes da Fase C, manter registo parcial + apagar apenas os campos duplicados dos tours com SoT populada. Sem meia-mistura silenciosa.
+- **Copy vira "estilo Viator" e perde tom YES**: SoT guarda o texto literal da Viator; o tom editorial YES vive nos campos que NÃO vão para SoT (`story`, hero, meta). Se algum overview Viator soar demasiado marketing, aviso e paramos. Manter copy yes mas a verdade do produto do viator 
+- **Studio timings mudam**: passar a midpoint real (ex.: 8-9h → 510) pode alterar tempos hoje mostrados. É o objetivo — mas confirmo antes de mergir se algum tour ficar com >30 min de swing vs. actual.
+
+## Fora deste âmbito (próxima ronda, se quiser)
+
+- Signature route map (ordem dos stops vs SoT) e cards em `/experiences` a puxar duração da SoT.
+- Um lint no CI que falha o build se algum destes campos reaparecer em `signatureTours.ts`.
+
+## O que fica escrito
+
+- `src/data/signatureToursSourceOfTruth.ts` (populado + novos helpers).
+- `src/routes/tours.$tourId.tsx`, `src/routes/tours.$tourId.tailor.tsx`, `src/lib/studio-v2/itinerary.*` (leem só SoT).
+- `src/data/signatureTours.ts`, `src/data/signatureToursViator.ts` (sem os 5 campos duplicados).
+- Ajustes em `src/lib/viatorValidation.ts` + testes afetados.
