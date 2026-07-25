@@ -28,7 +28,9 @@
     "test:e2e:signature-a11y": "playwright test e2e/signature-a11y-axe.spec.ts",
     "qa:hero-copy": "node scripts/hero-copy-qa.mjs",
     "qa:hero-copy:watch": "node scripts/hero-copy-qa.mjs --watch",
-    "check:css": "node scripts/check-css-braces.mjs"
+    "check:css": "node scripts/check-css-braces.mjs",
+    "test:sot-parity": "vitest run src/__tests__/sot-viator-parity.test.ts"
+
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.42.3",
