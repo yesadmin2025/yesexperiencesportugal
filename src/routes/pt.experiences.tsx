@@ -112,10 +112,17 @@ function ExperiencesPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {signatureTours.map((t) => {
               const meta = VIATOR_META[t.id];
-              const realStopBullets = meta?.stops
-                ? meta.stops.filter((s) => !s.passBy).map((s) => s.name)
-                : [];
               const content = getTourContent(t.id);
+              const sotStopBullets =
+                content.source === "sot"
+                  ? content.itinerary.filter((c) => !c.optional).map((c) => c.label)
+                  : [];
+              const realStopBullets =
+                sotStopBullets.length > 0
+                  ? sotStopBullets
+                  : meta?.stops
+                    ? meta.stops.filter((s) => !s.passBy).map((s) => s.name)
+                    : [];
               const topHighlights = (
                 realStopBullets.length > 0 ? realStopBullets : content.highlights
               ).slice(0, 3);
