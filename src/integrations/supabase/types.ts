@@ -2448,6 +2448,36 @@ export type Database = {
         }
         Relationships: []
       }
+      viator_drift_reports: {
+        Row: {
+          created_at: string
+          id: string
+          report: Json
+          run_at: string
+          scrape_errors: number
+          tours_checked: number
+          tours_with_drift: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          report: Json
+          run_at?: string
+          scrape_errors?: number
+          tours_checked?: number
+          tours_with_drift?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          report?: Json
+          run_at?: string
+          scrape_errors?: number
+          tours_checked?: number
+          tours_with_drift?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       global_review_aggregate: {
