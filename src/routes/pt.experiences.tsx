@@ -139,8 +139,10 @@ function ExperiencesPage() {
                         .filter((s) => !s.passBy && !isGenericOrigin(s.name))
                         .map((s) => s.name)
                     : [];
+              const curatedMoments = getSignatureCardMoments(t.id);
               const topHighlights = (
-                realStopBullets.length > 0 ? realStopBullets : content.highlights
+                curatedMoments ??
+                (realStopBullets.length > 0 ? realStopBullets : content.highlights)
               ).slice(0, 3);
               return (
                 <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
