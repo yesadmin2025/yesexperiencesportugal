@@ -68,11 +68,11 @@ function chaptersFromLegacy(tour: SignatureTour | null): TourContentChapter[] {
   if (!tour?.stops?.length) return [];
   return tour.stops.map((s, i) => ({
     order: i + 1,
-    label: s.name,
-    description: s.note ?? "",
+    label: s.label,
+    description: s.story ?? "",
     durationMinutes: null,
     travelToNextMinutes: null,
-    optional: Boolean((s as { passBy?: boolean }).passBy),
+    optional: false,
   }));
 }
 
