@@ -1,52 +1,72 @@
-## What's wrong (verified in code)
+## Goals
 
-1. **Lunch shows on tours it shouldn't** — `src/lib/viatorValidation.ts::bookableIncluded()` reads `VIATOR_META.included` (legacy) instead of the Source-of-Truth. Legacy `included` arrays in `signatureToursViator.ts` still list "Lunch" on 7 tours (arrabida-boat, azeitao-cheese, sintra-cascais, troia-comporta, evora-alentejo, tomar-coimbra, fatima-nazare-obidos), so the "What's included" block on `/tours/:id` and `/tours/:id/tailor` prints Lunch. SoT itself is correct (lunch only on `arrabida-wine-allinclusive` and `roman-heritage-alentejo`).
-2. **Studio blocked / stops inconsistent** — console error:
-  ```
-   [stopIntents] orphan stop: tiles-workshop :: "Azulejos de Azeitao"
-   [stopIntents] untagged Signature stop: tiles-workshop :: "Tile Painting Workshop – Sesimbra"
-  ```
-   `signatureTours.ts` was renamed to "Tile Painting Workshop – Sesimbra" but `src/data/stopIntents.ts` under `tiles-workshop` still keys the old "Azulejos de Azeitao". Schema validation fails → Studio curation blocked, which is the "some maps not showing" symptom (Studio's living map + downstream reveal never mount).
-3. **Cards keep repeating "Mercado do Livramento"** — `src/routes/experiences.tsx` (and `pt.experiences.tsx`) builds the 3 card bullets from the first non-generic itinerary chapter labels. Five tours legitimately open at Mercado do Livramento, so it dominates every card and there's no differentiator.
+1. Preview-only stop parity check vs Viator source of truth
+2. Map fallback so tour maps always render in preview
+3. Studio (V3) working end-to-end with all Signature stops available
+4. Site-wide price correctness — Tailor add-ons and stop exclusions actually change price
 
-## Fix plan (frontend + data only, no schema changes)
+---
 
-### A. Route inclusions through SoT — kills the "lunch" bug site-wide
+## 1. Stop-by-stop consistency check (preview only)
 
-- `src/lib/viatorValidation.ts::bookableIncluded(tour, meta)`: return `getTourContent(tour.id).included` when SoT source is `"sot"`; keep legacy fallback for the (currently empty) miss case. Same helper is consumed by both `/tours/:id` and `/tours/:id/tailor`, so a single change fixes both surfaces. `validateTour()` is admin-only diagnostics and stays untouched.
+New admin route `src/routes/admin.stop-parity.tsx` (also surfaced via a small dev overlay on `/tours/$tourId` when `?parity=1` or hostname is preview/lovable).
 
-### B. Realign `tiles-workshop` in `src/data/stopIntents.ts`
+- For each Signature tour, read the canonical stops from `src/data/signatureToursSourceOfTruth.ts` and compare against:
+  - the tour config stops used by Studio V3 / tour details (`signatureTours.ts` + `stopIntents.ts`)
+  - the map stops rendered by `SignatureRouteMap` (`stopCoords.ts` / `stopGeo.ts`)
+- Diff engine (reuse the pattern from `admin.sot-diff.tsx`) outputs per tour:
+  - stops present in SoT but missing in YES
+  - stops present in YES but not in SoT
+  - name/order mismatches
+- Table view with tour, field, SoT value, YES value, status chip. Zero writes; read-only.
+- Gate behind `hostname.includes("lovable.app")` or explicit `?preview=1` — never render in production nav.
 
-- Rename the `"Azulejos de Azeitao"` key inside the `"tiles-workshop"` block to `"Tile Painting Workshop – Sesimbra"` (intents stay `["craft","heritage","culture"]`). This clears both schema errors, unblocks Studio curation and restores its map.
+## 2. Map loading fallback
 
-### C. Give each Signature card a unique "moment" bullet
+Problem: `SignatureRouteMap` uses Leaflet tiles + OSRM routing; when either times out the map area is blank.
 
-Replace the stop-label loop in `src/routes/experiences.tsx` (and mirror in `src/routes/pt.experiences.tsx`) with a curated per-tour trio. Source stays truthful — pulled from each tour's SoT `highlights` + one unmistakable stop — never invented copy. New file:
+- Wrap the Leaflet mount in `src/components/SignatureRouteMap.tsx` with:
+  - a 4s tile-load timeout — if OSM tiles don't fire `load`, swap to a secondary tile provider (CARTO Voyager), then to a static SVG map (`PortugalSilhouette` + numbered pins from `stopCoords`) as a final fallback.
+  - OSRM route: 5s timeout → fall back to straight polyline through stop coords; never leave the map without a drawn path.
+- Add a small "Map running in offline preview mode" caption when the static fallback is used.
+- Add error boundary so any Leaflet init error renders the SVG fallback instead of a blank div.
 
-- `src/content/signature-card-moments.ts` — `{ [tourId]: [string, string, string] }`, e.g.
-  - `tiles-workshop` → "Hand-paint your own azulejo tile", "Family cellar tastings in Azeitão", "Sesimbra castle by the sea"
-  - `arrabida-boat` → "Boat into hidden Arrábida coves", "Turquoise-water beaches, no crowds", "Sesimbra fishing village at golden hour"
-  - `arrabida-wine-allinclusive` → "Three family cellars, one long lunch", "Setúbal's Mercado do Livramento", "Coastal drive through Arrábida"
-  - …one bespoke trio for each of the 12 tours
-- `experiences.tsx`: prefer `SIGNATURE_CARD_MOMENTS[t.id]` when present; keep the existing SoT-stop fallback for any tour that isn't listed yet, so nothing regresses if a new tour is added.
+## 3. Studio V3 audit
 
-### D. Map coverage sanity check
+- Verify `StudioV3.tsx` boots on preview, all beats reachable (Intro → Composition → MapAwakens → Refine → Reveal → Checkout).
+- Run the existing `signature-map-coverage.test.ts` + `sot-viator-parity.test.ts` and fix any regressions surfaced.
+- Ensure every stop from every Signature tour's SoT is:
+  - registered in `stopIntents.ts` (Studio uses this for curation)
+  - has coords in `stopCoords.ts` / `stopGeo.ts` (map renders)
+  - appears in `RefineAccordion` for its parent tour
+- Add a new test `studio-signature-stop-completeness.test.ts` that iterates every SoT tour × stop and asserts presence in Studio's resolved journey.
+- Fix any missing entries surfaced by the test.
 
-Run `src/__tests__/signature-map-coverage.test.ts` after B. If any tour now falls under 2 resolvable stops (very likely just `tiles-workshop` after the rename), add a matching entry to `src/data/stopGeo.ts` (`"Tile Painting Workshop – Sesimbra"` at Sesimbra coords) — reusing the existing Sesimbra coord already in the catalog, no invented geography.
+## 4. Pricing correctness — Tailor add-ons & exclusions
 
-## Guardrails
+Audit and fix pricing math flow using `src/config/pricing.ts` as SSOT.
 
-- No SoT edits (parity snapshots stay green).
-- No new copy invented: card moments are drawn from each tour's SoT `highlights` or verified stop.
-- No touch to pricing, checkout, or booking logic.
+- `src/routes/tours.$tourId.tailor.tsx` + `SimpleTailorForm.tsx`:
+  - Confirm each toggled add-on from `signatureAddOns.ts` adds its price to the running total per-adult/child tier.
+  - Confirm each excluded stop applies the −5% per stop rule (per pricing SSOT memory).
+  - Ensure the displayed price on the Tailor summary, checkout summary (`studio-v3/CheckoutSummary.tsx`), and Stripe line item all use the same computed number.
+- Add unit tests in `src/__tests__/tailor-pricing.test.ts`:
+  - base price → known value
+  - +1 add-on → base + addon
+  - −1 stop → base × 0.95
+  - combined → correct compound
+- Audit surfaces where price is shown: experience cards, tour detail hero, Tailor, Studio V3 running ribbon, Checkout, confirmation email. All must read from the same `computeTourPrice()` helper — introduce it in `src/config/pricing.ts` if not already the single call site.
 
-## Verification
+---
 
-- `bun run test src/__tests__/sot-viator-parity.test.ts src/__tests__/signature-map-coverage.test.ts` — must stay green.
-- Reload `/tours/arrabida-boat`, `/tours/sintra-cascais`, `/tours/tomar-coimbra` on the preview → "What's included" no longer lists Lunch.
-- Reload `/` and `/experiences` → each card shows a distinct 3-bullet moment; no duplicated "Mercado do Livramento" across cards.
-- Console clean of `[stopIntents]` errors → Studio living map renders again
-- Map on signatures render 
-- Information on signatures, Taylor abd studio matches and are true to viator products information 
-- Make sure studio is working properly 
-- On tailor and studio price reduction on removing but also price addition when not included originally 
+## Technical notes
+
+- No schema changes. No new secrets. No new deps (Leaflet + fallback tile URL already in bundle).
+- All new admin/debug routes gated to preview host or query flag; excluded from `sitemap.xml` and `robots.txt` (already `Disallow: /admin/`).
+- Tests: bunx vitest for unit; existing Playwright e2e untouched.
+
+## Out of scope
+
+- No Viator API integration — SoT stays the manual `signatureToursSourceOfTruth.ts`.
+- No Studio V3 visual redesign — only correctness/coverage fixes.
+- No new payment provider work.
