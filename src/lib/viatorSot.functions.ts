@@ -6,7 +6,7 @@ import {
   formatSotEntry,
   type SotExtraction,
 } from "@/lib/viatorSot.server";
-import { CANONICAL_VIATOR_URLS } from "@/data/signatureToursSourceOfTruth";
+import { canonicalViatorUrl } from "@/data/signatureToursSourceOfTruth";
 
 /**
  * Admin-only: extract the Source of Truth for a single Signature tour.
@@ -49,7 +49,7 @@ export const extractSignatureSotFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
-    const url = data.viatorUrl ?? CANONICAL_VIATOR_URLS[data.tourId];
+    const url = data.viatorUrl ?? canonicalViatorUrl(data.tourId);
     if (!url) {
       throw new Error(
         `No canonical Viator URL registered for tourId="${data.tourId}"`,

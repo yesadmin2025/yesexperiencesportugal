@@ -9,6 +9,7 @@
  */
 import { Star } from "lucide-react";
 import { getViatorMeta } from "@/data/signatureToursViator";
+import { canonicalViatorUrl } from "@/data/signatureToursSourceOfTruth";
 
 export function LandingTourCredibility({
   parentTourId,
@@ -51,7 +52,7 @@ export function LandingTourCredibility({
         <p className="mt-3 text-[13px] text-[color:var(--charcoal-soft)]">
           Verified by{" "}
           <a
-            href={meta.viatorUrl}
+            href={canonicalViatorUrl(parentTourId) ?? meta.viatorUrl}
             target="_blank"
             rel="noopener noreferrer nofollow"
             className="underline-offset-2 hover:underline text-[color:var(--teal)]"

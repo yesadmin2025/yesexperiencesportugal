@@ -11,6 +11,7 @@
  */
 
 import { SOCIAL, WEBSITE_URL } from "@/config/business-nap";
+import { canonicalViatorUrl } from "@/data/signatureToursSourceOfTruth";
 
 export type PlatformSlug = "viator" | "getyourguide" | "tripadvisor";
 
@@ -47,6 +48,7 @@ export const PLATFORM_PARTNERS: PlatformPartner[] = [
     founded: "1995",
     category: "Global experiences marketplace",
     yesProfileUrl:
+      canonicalViatorUrl("arrabida-wine-allinclusive") ??
       "https://www.viator.com/tours/Lisbon/Private-Wine-Tour-with-Food-and-Wine-Tasting-in-Southern-Lisbon/d538-349639P3",
     platformHome: "https://www.viator.com",
     eyebrow: "Distribution partner",

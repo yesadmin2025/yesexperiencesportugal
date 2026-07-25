@@ -548,3 +548,14 @@ export function sotDurationMinutes(tourId: string): number | undefined {
 export function sotDurationText(tourId: string): string | undefined {
   return getSot(tourId)?.durationText;
 }
+
+/**
+ * canonicalViatorUrl — single source of truth for every Viator link
+ * rendered on the site. SoT entry first, canonical registry fallback,
+ * `undefined` when the id is unknown. All new code MUST use this
+ * helper instead of reading `VIATOR_META[id].viatorUrl` or
+ * hardcoding a Viator URL.
+ */
+export function canonicalViatorUrl(tourId: string): string | undefined {
+  return getSot(tourId)?.viatorUrl ?? CANONICAL_VIATOR_URLS[tourId];
+}
