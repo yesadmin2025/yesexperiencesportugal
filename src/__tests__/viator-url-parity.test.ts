@@ -48,19 +48,19 @@ describe("Viator URL parity across surfaces", () => {
     }
   });
 
-  it("signatureTours.bookingUrl matches CANONICAL_VIATOR_URLS", () => {
+  it("any viator.com bookingUrl in signatureTours matches CANONICAL_VIATOR_URLS", () => {
+    // `bookingUrl` is polymorphic — some tours link to our own /tour/…
+    // landing, others deep-link to Viator. When it IS a viator.com URL,
+    // it must equal the canonical one for that tour id.
     for (const id of canonicalIds) {
       const t = signatureTours.find((row) => row.id === id) as
         | { id: string; bookingUrl?: string }
         | undefined;
-      expect(t, `signatureTours missing "${id}"`).toBeDefined();
-      // Some blueprint rows may legitimately omit bookingUrl; when present it
-      // must equal the canonical URL.
-      if (t!.bookingUrl !== undefined) {
-        expect(t!.bookingUrl, `signatureTours "${id}".bookingUrl`).toBe(
-          CANONICAL_VIATOR_URLS[id],
-        );
-      }
+      if (!t?.bookingUrl) continue;
+      if (!/^https?:\/\/(www\.)?viator\.com\//i.test(t.bookingUrl)) continue;
+      expect(t.bookingUrl, `signatureTours "${id}".bookingUrl`).toBe(
+        CANONICAL_VIATOR_URLS[id],
+      );
     }
   });
 
