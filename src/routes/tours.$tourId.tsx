@@ -31,6 +31,7 @@ import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/json
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { getFaqForTour } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
+import { getTourContent } from "@/lib/tourContent";
 import { TourReviews } from "@/components/TourReviews";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
@@ -461,7 +462,8 @@ function IntroBlock({ tour }: { tour: SignatureTour }) {
  * 4 · HIGHLIGHTS — clean bullets only
  * ════════════════════════════════════════════════════════════ */
 function HighlightsBlock({ tour }: { tour: SignatureTour }) {
-  const items = tour.highlights ?? [];
+  const content = getTourContent(tour.id);
+  const items = content.highlights.length > 0 ? content.highlights : (tour.highlights ?? []);
   if (items.length === 0) return null;
   return (
     <section className="pb-14 md:pb-16 reveal">

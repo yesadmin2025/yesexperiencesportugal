@@ -17,6 +17,7 @@ import * as React from "react";
 import { useEffect } from "react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { findTour } from "@/data/signatureTours";
+import { getTourContent } from "@/lib/tourContent";
 import { pickupCityLabel } from "./curation";
 import {
   CTA_BACK_TO_REFINE,
@@ -239,6 +240,10 @@ export function FinalRevealStory({
   );
 
   const included: string[] = (() => {
+    if (tour?.id) {
+      const c = getTourContent(tour.id);
+      if (c.included.length > 0) return c.included;
+    }
     if (tour?.included && tour.included.length > 0) return tour.included;
     return [
       "Private licensed guide",

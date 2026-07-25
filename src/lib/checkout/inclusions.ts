@@ -3,22 +3,25 @@
  * `includedItems` payload the Signature/Tailor flows send to the
  * `create-signature-checkout` edge function.
  *
- * Contract (must match `supabase/functions/create-signature-checkout/index.ts`):
- *   1. If `VIATOR_META[tourId].included` has entries → use those verbatim
- *      (this is the truth-passed operator list).
- *   2. Otherwise fall back to `tour.included` (blueprint-level list).
+ * Priority (SoT-first):
+ *   0. If `tour.id` resolves to a verified Source of Truth entry
+ *      (see `signatureToursSourceOfTruth`), return its `included`.
+ *   1. Otherwise, `VIATOR_META[tourId].included` verbatim.
+ *   2. Otherwise, `tour.included` (blueprint-level fallback).
  *   3. Otherwise `undefined` so the edge function's own fallback chain
  *      (Bókun inclusions → nothing) kicks in.
  *
  * The server priority is then:  Bókun → clientIncluded → nothing.
- * Together this guarantees checkout descriptions never invent copy.
  */
+
+import { getTourContent } from "@/lib/tourContent";
 
 export interface ViatorMetaLike {
   included?: readonly string[];
 }
 
 export interface TourLike {
+  id?: string;
   included?: readonly string[];
 }
 
@@ -26,6 +29,12 @@ export function resolveClientIncludedItems(
   meta: ViatorMetaLike | null | undefined,
   tour: TourLike,
 ): string[] | undefined {
+  if (tour?.id) {
+    const content = getTourContent(tour.id);
+    if (content.source === "sot" && content.included.length > 0) {
+      return [...content.included];
+    }
+  }
   if (meta && Array.isArray(meta.included) && meta.included.length > 0) {
     return [...meta.included];
   }
