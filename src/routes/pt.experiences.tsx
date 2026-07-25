@@ -5,6 +5,7 @@ import { Clock, MapPin } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { getTourContent } from "@/lib/tourContent";
+import { getSignatureCardMoments } from "@/content/signature-card-moments";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
 import ogImg from "@/assets/hero-coast.jpg";
