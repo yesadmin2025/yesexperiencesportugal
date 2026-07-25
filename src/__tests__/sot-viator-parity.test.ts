@@ -27,8 +27,9 @@ describe("SoT coverage", () => {
 
 describe("SoT ↔ getTourContent parity", () => {
   it.each(sotIds)("%s: getTourContent output matches SoT payload", (tourId) => {
-    const sot = SIGNATURE_SOURCE_OF_TRUTH[tourId];
+    const sot = SIGNATURE_SOURCE_OF_TRUTH[tourId]!;
     const content = getTourContent(tourId);
+
 
     expect(content.source).toBe("sot");
     expect(content.overview).toBe(sot.overview);
