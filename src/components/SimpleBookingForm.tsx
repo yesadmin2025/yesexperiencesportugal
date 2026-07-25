@@ -32,6 +32,7 @@ import { getViatorMeta } from "@/data/signatureToursViator";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
+import { getTourContent } from "@/lib/tourContent";
 import {
   gaAddPaymentInfo,
   gaAddToCartSignature,
@@ -165,7 +166,12 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       pricePerPaxEur: perPaxForSummary,
       totalEur: totalForSummary,
       heroSrc: meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? tour.img,
-      beats: meta?.included && meta.included.length > 0 ? meta.included : (tour.highlights ?? []),
+      beats: (() => {
+        const c = getTourContent(tour.id);
+        if (c.included.length > 0) return c.included;
+        if (c.highlights.length > 0) return c.highlights;
+        return tour.highlights ?? [];
+      })(),
       flowLabel: "Signature",
     });
 
