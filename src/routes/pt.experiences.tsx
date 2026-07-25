@@ -178,7 +178,7 @@ function ExperiencesPage() {
 
                   {topHighlights.length > 0 && (
                     <ul className="mt-4 flex flex-col gap-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
-                      {topHighlights.map((h) => (
+                      {topHighlights.map((h: string) => (
                         <li key={h} className="flex items-start gap-2">
                           <span
                             aria-hidden="true"
