@@ -127,12 +127,12 @@ const signatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
       rating: meta?.rating ?? null,
       reviewCount: meta?.reviewCount ?? 0,
       // First 3 real bookable stops from the matching Viator product page
-      // (pass-bys excluded). Falls back to internal highlights only when
-      // no Viator meta exists. Never fabricated.
-      highlights: (meta?.stops?.filter((s) => !s.passBy).map((s) => s.name) ?? t.highlights).slice(
-        0,
-        3,
-      ),
+      // (pass-bys excluded). Falls back to SoT-aware highlights via
+      // getTourContent when no Viator meta exists. Never fabricated.
+      highlights: (
+        meta?.stops?.filter((s) => !s.passBy).map((s) => s.name) ??
+        getTourContent(t.id).highlights
+      ).slice(0, 3),
     };
   });
 
