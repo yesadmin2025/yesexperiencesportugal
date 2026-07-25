@@ -9,6 +9,7 @@
 
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { getViatorMeta, type ViatorMeta, type ViatorStop } from "@/data/signatureToursViator";
+import { getTourContent } from "@/lib/tourContent";
 
 export type Severity = "critical" | "major" | "minor" | "clean";
 
