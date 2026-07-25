@@ -71,6 +71,7 @@ import {
   selectReplacementCandidates,
 } from "./curation";
 import { findTour, signatureTours } from "@/data/signatureTours";
+import { getTourContent } from "@/lib/tourContent";
 import {
   composeFromState,
   adaptStateToComposeInput,
@@ -946,6 +947,8 @@ export function StudioV3() {
             stopLabels,
 
             includedItems: (() => {
+              const c = getTourContent(tour.id);
+              if (c.included.length > 0) return c.included;
               const m = getViatorMeta(tour.id);
               if (m?.included && m.included.length > 0) return m.included;
               return tour.included ?? [];
@@ -4078,7 +4081,11 @@ export function StoryboardHandoff({
           guests={state.guests}
           adults={state.adults ?? null}
           minorAges={state.minorAges ?? []}
-          included={skeletonTour?.included ?? []}
+          included={(() => {
+            if (!skeletonTour?.id) return skeletonTour?.included ?? [];
+            const c = getTourContent(skeletonTour.id);
+            return c.included.length > 0 ? c.included : (skeletonTour.included ?? []);
+          })()}
           showAddOns={true}
           selectedAddOnIds={selectedAddOnIds}
           onAddOnsChange={onAddOnsChange}
