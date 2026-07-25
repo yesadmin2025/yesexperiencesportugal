@@ -15,7 +15,7 @@ const MIN_MATCHED_STOPS: Record<string, number> = {
   "arrabida-boat": 5,
   "arrabida-wine-allinclusive": 5,
   "azeitao-cheese": 3,
-  "evora-alentejo": 3,
+  "evora-alentejo": 2,
   "fatima-nazare-obidos": 3,
   "roman-heritage-alentejo": 2,
   "sintra-cascais": 3,
