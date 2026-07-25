@@ -116,19 +116,31 @@ export const Route = createFileRoute("/tours/$tourId")({
         ),
         jsonLdScript(
           withAggregateAndReviews(
-            tourProductLd({
-              id: params.tourId,
-              title: t.title,
-              blurb: t.blurb,
-              img: t.img,
-              priceFrom: (t as { priceFrom?: number }).priceFrom,
-              currency: "EUR",
-              rating: getViatorMeta(params.tourId)?.rating ?? null,
-              reviewCount: getViatorMeta(params.tourId)?.reviewCount ?? null,
-              region: (t as { region?: string }).region ?? null,
-              durationHours: (t as { durationHours?: string }).durationHours ?? null,
-              stops: (t.stops ?? []).map((s) => ({ label: s.label, story: s.story })),
-            }),
+            (() => {
+              // Prefer the SoT itinerary (verified against Viator) for JSON-LD.
+              // Falls back to legacy tour.stops when SoT is not populated for a tour.
+              const content = getTourContent(params.tourId);
+              const sotStops = content.itinerary
+                .filter((c) => !c.optional)
+                .map((c) => ({ label: c.label, story: c.description }));
+              const stops =
+                sotStops.length > 0
+                  ? sotStops
+                  : (t.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
+              return tourProductLd({
+                id: params.tourId,
+                title: t.title,
+                blurb: t.blurb,
+                img: t.img,
+                priceFrom: (t as { priceFrom?: number }).priceFrom,
+                currency: "EUR",
+                rating: getViatorMeta(params.tourId)?.rating ?? null,
+                reviewCount: getViatorMeta(params.tourId)?.reviewCount ?? null,
+                region: (t as { region?: string }).region ?? null,
+                durationHours: (t as { durationHours?: string }).durationHours ?? null,
+                stops,
+              });
+            })(),
             params.tourId,
           ),
         ),
