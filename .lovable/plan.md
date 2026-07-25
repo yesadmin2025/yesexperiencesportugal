@@ -1,42 +1,52 @@
-## Context
+## What's wrong (verified in code)
 
-Site already routes every tour content surface (tour detail, Studio V3 reveal, checkout inclusions, experiences cards, booking form, JSON-LD) through `getTourContent(tourId)`, which returns the verified Viator payload from `SIGNATURE_SOURCE_OF_TRUTH`. Coverage is 12/12 tours verified. Locked snapshot + parity tests (`sot-viator-parity.test.ts`, 30 tests) already guard rendered output against the SoT block.
+1. **Lunch shows on tours it shouldn't** — `src/lib/viatorValidation.ts::bookableIncluded()` reads `VIATOR_META.included` (legacy) instead of the Source-of-Truth. Legacy `included` arrays in `signatureToursViator.ts` still list "Lunch" on 7 tours (arrabida-boat, azeitao-cheese, sintra-cascais, troia-comporta, evora-alentejo, tomar-coimbra, fatima-nazare-obidos), so the "What's included" block on `/tours/:id` and `/tours/:id/tailor` prints Lunch. SoT itself is correct (lunch only on `arrabida-wine-allinclusive` and `roman-heritage-alentejo`).
+2. **Studio blocked / stops inconsistent** — console error:
+  ```
+   [stopIntents] orphan stop: tiles-workshop :: "Azulejos de Azeitao"
+   [stopIntents] untagged Signature stop: tiles-workshop :: "Tile Painting Workshop – Sesimbra"
+  ```
+   `signatureTours.ts` was renamed to "Tile Painting Workshop – Sesimbra" but `src/data/stopIntents.ts` under `tiles-workshop` still keys the old "Azulejos de Azeitao". Schema validation fails → Studio curation blocked, which is the "some maps not showing" symptom (Studio's living map + downstream reveal never mount).
+3. **Cards keep repeating "Mercado do Livramento"** — `src/routes/experiences.tsx` (and `pt.experiences.tsx`) builds the 3 card bullets from the first non-generic itinerary chapter labels. Five tours legitimately open at Mercado do Livramento, so it dominates every card and there's no differentiator.
 
-What's still there: **legacy fallback fields** on `signatureTours[].description/highlights/included/stops[].story` and `VIATOR_META[].overview/included/editorialChapters`, plus the fallback branches in read helpers and card grids. They never execute at runtime today (SoT is 12/12), but they let future edits silently reintroduce non-Viator copy on any surface if a tour is ever dropped from SoT — which is exactly what the docs call "Phase C" cleanup.
+## Fix plan (frontend + data only, no schema changes)
 
-This plan finishes Phase C: retire the fallbacks so Viator truth is the only path.
+### A. Route inclusions through SoT — kills the "lunch" bug site-wide
 
-## Plan
+- `src/lib/viatorValidation.ts::bookableIncluded(tour, meta)`: return `getTourContent(tour.id).included` when SoT source is `"sot"`; keep legacy fallback for the (currently empty) miss case. Same helper is consumed by both `/tours/:id` and `/tours/:id/tailor`, so a single change fixes both surfaces. `validateTour()` is admin-only diagnostics and stays untouched.
 
-### 1. Delete legacy content fallbacks in read helpers
+### B. Realign `tiles-workshop` in `src/data/stopIntents.ts`
 
-- `src/lib/tourContent.ts` — drop the `else` branch that reads `VIATOR_META[tourId].overview/included` and `tour.highlights/included/stops`. If `SIGNATURE_SOURCE_OF_TRUTH[tourId]` is missing, throw (guarantees Viator truth or fail loudly).
-- `src/lib/checkout/inclusions.ts` — remove VIATOR_META fallback; SoT included only.
-- `src/components/studio-v3/FinalRevealStory.tsx` (line 195, 245–247) — remove `tour.stops` / `tour.included` fallbacks.
-- `src/components/studio-v3/signatureStorySnapshot.ts` (lines 79–80) — same.
-- `src/components/SimpleBookingForm.tsx` (lines 171–199) — same.
-- `src/routes/experiences.tsx` & `src/routes/pt.experiences.tsx` — remove `meta?.stops` branch; keep only `content.itinerary` chapter labels or `content.highlights`.
-- `src/routes/tours.$tourId.tsx` line 478 — drop `tour.highlights` fallback.
+- Rename the `"Azulejos de Azeitao"` key inside the `"tiles-workshop"` block to `"Tile Painting Workshop – Sesimbra"` (intents stay `["craft","heritage","culture"]`). This clears both schema errors, unblocks Studio curation and restores its map.
 
-### 2. Retire legacy content fields on the data files
+### C. Give each Signature card a unique "moment" bullet
 
-- `src/data/signatureTours.ts` — remove `description`, `highlights`, `included`, and per-stop `story` fields on every Signature blueprint. Keep `id`, `title`, `region`, `img`, `stops[].label/coords`, `bookingUrl`, and pricing anchors — those are geometry/media, not editorial copy.
-- `src/data/signatureToursViator.ts` — remove `overview`, `included`, `editorialChapters` from every `VIATOR_META` entry. Keep `priceTiersEUR`, `reviews`, `gallery`, `viatorProductCode` — truth-passed operational data.
-- Update `SignatureTour` and `VIATOR_META` TS types accordingly so the compiler flags any future consumer that tries to read a retired field.
+Replace the stop-label loop in `src/routes/experiences.tsx` (and mirror in `src/routes/pt.experiences.tsx`) with a curated per-tour trio. Source stays truthful — pulled from each tour's SoT `highlights` + one unmistakable stop — never invented copy. New file:
 
-### 3. Guardrail test
+- `src/content/signature-card-moments.ts` — `{ [tourId]: [string, string, string] }`, e.g.
+  - `tiles-workshop` → "Hand-paint your own azulejo tile", "Family cellar tastings in Azeitão", "Sesimbra castle by the sea"
+  - `arrabida-boat` → "Boat into hidden Arrábida coves", "Turquoise-water beaches, no crowds", "Sesimbra fishing village at golden hour"
+  - `arrabida-wine-allinclusive` → "Three family cellars, one long lunch", "Setúbal's Mercado do Livramento", "Coastal drive through Arrábida"
+  - …one bespoke trio for each of the 12 tours
+- `experiences.tsx`: prefer `SIGNATURE_CARD_MOMENTS[t.id]` when present; keep the existing SoT-stop fallback for any tour that isn't listed yet, so nothing regresses if a new tour is added.
 
-Add `src/__tests__/no-legacy-tour-content.test.ts`:
+### D. Map coverage sanity check
 
-- Assert `SignatureTour` type has no `description`/`highlights`/`included`/`story` keys.
-- Assert `ViatorMeta` type has no `overview`/`included`/`editorialChapters` keys.
-- Grep `src/**/*.{ts,tsx}` and fail if any file (outside SoT + this test) references those field names on a tour/meta object.
+Run `src/__tests__/signature-map-coverage.test.ts` after B. If any tour now falls under 2 resolvable stops (very likely just `tiles-workshop` after the rename), add a matching entry to `src/data/stopGeo.ts` (`"Tile Painting Workshop – Sesimbra"` at Sesimbra coords) — reusing the existing Sesimbra coord already in the catalog, no invented geography.
 
-### 4. Verify
+## Guardrails
 
-- Run `bun test` — expect the existing 30 SoT parity tests + new guardrail to pass; fix any TS compile errors surfaced by step 1 & 2.
-- Spot-check `/tours/arrabida-wine-allinclusive`, `/tours/troia-comporta`, and Studio V3 reveal in preview to confirm rendered content is unchanged (it should be — SoT was already the effective source).
+- No SoT edits (parity snapshots stay green).
+- No new copy invented: card moments are drawn from each tour's SoT `highlights` or verified stop.
+- No touch to pricing, checkout, or booking logic.
 
-## Outcome
+## Verification
 
-Every tour surface on the site reads Viator truth from a single verified block, with no dormant legacy path that could silently reintroduce invented copy. Future tour additions must land in `SIGNATURE_SOURCE_OF_TRUTH` via `/admin/sot-refresh` or the site fails loudly instead of falling back to fiction. On the tour card on the highlights remove Lisbon and add real differentiation. The content is viator but with yes storytelling tone. The maps should be rrendering on every tour page and is not. 
+- `bun run test src/__tests__/sot-viator-parity.test.ts src/__tests__/signature-map-coverage.test.ts` — must stay green.
+- Reload `/tours/arrabida-boat`, `/tours/sintra-cascais`, `/tours/tomar-coimbra` on the preview → "What's included" no longer lists Lunch.
+- Reload `/` and `/experiences` → each card shows a distinct 3-bullet moment; no duplicated "Mercado do Livramento" across cards.
+- Console clean of `[stopIntents]` errors → Studio living map renders again
+- Map on signatures render 
+- Information on signatures, Taylor abd studio matches and are true to viator products information 
+- Make sure studio is working properly 
+- On tailor and studio price reduction on removing but also price addition when not included originally 
