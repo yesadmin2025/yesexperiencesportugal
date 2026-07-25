@@ -49,7 +49,7 @@ export const extractSignatureSotFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
-    const url = data.viatorUrl ?? CANONICAL_VIATOR_URLS[data.tourId];
+    const url = data.viatorUrl ?? canonicalViatorUrl(data.tourId);
     if (!url) {
       throw new Error(
         `No canonical Viator URL registered for tourId="${data.tourId}"`,
