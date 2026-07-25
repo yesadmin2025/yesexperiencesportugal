@@ -9,6 +9,7 @@ import { template as internalBooking } from "./internal-booking";
 import { template as welcome } from "./welcome";
 import { template as legacyDomainReady } from "./legacy-domain-ready";
 import { template as signatureStory } from "./signature-story";
+import { template as viatorDriftAlert } from "./viator-drift-alert";
 
 export interface TemplateEntry {
   component: ComponentType<any>;
@@ -33,4 +34,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   welcome: welcome,
   "legacy-domain-ready": legacyDomainReady,
   "signature-story": signatureStory,
+  "viator-drift-alert": viatorDriftAlert,
 };

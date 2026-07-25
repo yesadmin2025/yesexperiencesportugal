@@ -136,6 +136,7 @@ import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/l
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as ApiPublicHooksViatorDriftCheckRouteImport } from './routes/api/public/hooks/viator-drift-check'
 import { Route as ApiPublicHooksStripeWebhookHealthRouteImport } from './routes/api/public/hooks/stripe-webhook-health'
 import { Route as ApiPublicHooksImportTripadvisorReviewsRouteImport } from './routes/api/public/hooks/import-tripadvisor-reviews'
 import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
@@ -789,6 +790,12 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   path: '/lovable/email/auth/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksViatorDriftCheckRoute =
+  ApiPublicHooksViatorDriftCheckRouteImport.update({
+    id: '/api/public/hooks/viator-drift-check',
+    path: '/api/public/hooks/viator-drift-check',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksStripeWebhookHealthRoute =
   ApiPublicHooksStripeWebhookHealthRouteImport.update({
     id: '/api/public/hooks/stripe-webhook-health',
@@ -940,6 +947,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
+  '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -1070,6 +1078,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
+  '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -1204,6 +1213,7 @@ export interface FileRoutesById {
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
   '/api/public/hooks/stripe-webhook-health': typeof ApiPublicHooksStripeWebhookHealthRoute
+  '/api/public/hooks/viator-drift-check': typeof ApiPublicHooksViatorDriftCheckRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -1339,6 +1349,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
+    | '/api/public/hooks/viator-drift-check'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -1469,6 +1480,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
+    | '/api/public/hooks/viator-drift-check'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -1602,6 +1614,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/import-tripadvisor-reviews'
     | '/api/public/hooks/stripe-webhook-health'
+    | '/api/public/hooks/viator-drift-check'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -1716,6 +1729,7 @@ export interface RootRouteChildren {
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
   ApiPublicHooksImportTripadvisorReviewsRoute: typeof ApiPublicHooksImportTripadvisorReviewsRoute
   ApiPublicHooksStripeWebhookHealthRoute: typeof ApiPublicHooksStripeWebhookHealthRoute
+  ApiPublicHooksViatorDriftCheckRoute: typeof ApiPublicHooksViatorDriftCheckRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -2614,6 +2628,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/viator-drift-check': {
+      id: '/api/public/hooks/viator-drift-check'
+      path: '/api/public/hooks/viator-drift-check'
+      fullPath: '/api/public/hooks/viator-drift-check'
+      preLoaderRoute: typeof ApiPublicHooksViatorDriftCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/stripe-webhook-health': {
       id: '/api/public/hooks/stripe-webhook-health'
       path: '/api/public/hooks/stripe-webhook-health'
@@ -2844,6 +2865,7 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPublicHooksImportTripadvisorReviewsRoute,
   ApiPublicHooksStripeWebhookHealthRoute:
     ApiPublicHooksStripeWebhookHealthRoute,
+  ApiPublicHooksViatorDriftCheckRoute: ApiPublicHooksViatorDriftCheckRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
