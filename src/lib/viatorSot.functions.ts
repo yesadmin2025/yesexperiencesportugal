@@ -6,7 +6,7 @@ import {
   formatSotEntry,
   type SotExtraction,
 } from "@/lib/viatorSot.server";
-import { CANONICAL_VIATOR_URLS } from "@/data/signatureToursSourceOfTruth";
+import { CANONICAL_VIATOR_URLS, canonicalViatorUrl } from "@/data/signatureToursSourceOfTruth";
 
 /**
  * Admin-only: extract the Source of Truth for a single Signature tour.
