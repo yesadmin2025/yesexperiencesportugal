@@ -1,0 +1,183 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
+import { SiteLayout } from "@/components/SiteLayout";
+import { SectionTitle } from "@/components/ui/SectionTitle";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { extractSignatureSotFn } from "@/lib/viatorSot.functions";
+import {
+  CANONICAL_VIATOR_URLS,
+  SIGNATURE_SOURCE_OF_TRUTH,
+} from "@/data/signatureToursSourceOfTruth";
+
+/**
+ * /admin/sot-refresh — one-click Source-of-Truth refresher.
+ *
+ * For each Signature tour, fetches the canonical Viator page, runs the
+ * SoT extractor (Gemini Flash, tool-calling with strict schema), and
+ * shows a ready-to-paste TS block. YOU review each and paste it into
+ * `src/data/signatureToursSourceOfTruth.ts` under SIGNATURE_SOURCE_OF_TRUTH.
+ *
+ * Nothing is written to the DB or to code from this page — human review
+ * is mandatory. No invented content ever ships.
+ */
+
+export const Route = createFileRoute("/admin/sot-refresh")({
+  head: () => ({
+    meta: [
+      { title: "Signature Source-of-Truth refresh — Admin" },
+      { name: "robots", content: "noindex,nofollow" },
+    ],
+  }),
+  component: SotRefreshPage,
+});
+
+type RowState = {
+  status: "idle" | "loading" | "done" | "error";
+  snippet?: string;
+  error?: string;
+  chapterCount?: number;
+  minutes?: number;
+};
+
+function SotRefreshPage() {
+  const runFn = useServerFn(extractSignatureSotFn);
+  const [rows, setRows] = useState<Record<string, RowState>>(() =>
+    Object.fromEntries(
+      Object.keys(CANONICAL_VIATOR_URLS).map((id) => [id, { status: "idle" as const }]),
+    ),
+  );
+
+  async function run(tourId: string) {
+    setRows((r) => ({ ...r, [tourId]: { status: "loading" } }));
+    try {
+      const res = await runFn({ data: { tourId } });
+      setRows((r) => ({
+        ...r,
+        [tourId]: {
+          status: "done",
+          snippet: res.tsSnippet,
+          chapterCount: res.extraction.itinerary.length,
+          minutes: res.extraction.durationMinutes,
+        },
+      }));
+    } catch (e) {
+      setRows((r) => ({
+        ...r,
+        [tourId]: {
+          status: "error",
+          error: e instanceof Error ? e.message : String(e),
+        },
+      }));
+    }
+  }
+
+  const populatedCount = Object.keys(SIGNATURE_SOURCE_OF_TRUTH).filter(
+    (k) => SIGNATURE_SOURCE_OF_TRUTH[k],
+  ).length;
+  const totalCount = Object.keys(CANONICAL_VIATOR_URLS).length;
+
+  return (
+    <SiteLayout>
+      <main className="mx-auto max-w-4xl px-6 py-10">
+        <Eyebrow>Admin · Source of Truth</Eyebrow>
+        <SectionTitle>Signature tours — refresh from Viator</SectionTitle>
+        <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal)]/80">
+          For each tour: click <strong>Extract</strong> to fetch its Viator page and
+          generate a TS block. Copy the block into{" "}
+          <code className="rounded bg-[color:var(--sand)]/60 px-1.5 py-0.5 text-[13px]">
+            src/data/signatureToursSourceOfTruth.ts
+          </code>{" "}
+          under <code>SIGNATURE_SOURCE_OF_TRUTH</code>. Nothing writes automatically.
+        </p>
+        <p className="mt-2 text-[13px] text-[color:var(--charcoal)]/70">
+          Populated: <strong>{populatedCount}</strong> / {totalCount}
+        </p>
+
+        <ul className="mt-8 space-y-4">
+          {Object.entries(CANONICAL_VIATOR_URLS).map(([tourId, url]) => {
+            const state = rows[tourId];
+            const populated = Boolean(SIGNATURE_SOURCE_OF_TRUTH[tourId]);
+            const productCode = url.match(/d\d+P(\d+)/i);
+            return (
+              <li
+                key={tourId}
+                className="rounded-lg border border-[color:var(--charcoal)]/10 bg-white p-5 shadow-sm"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <code className="text-[14px] font-medium text-[color:var(--charcoal)]">
+                        {tourId}
+                      </code>
+                      {productCode && (
+                        <span className="rounded bg-[color:var(--sand)]/60 px-1.5 py-0.5 text-[11px] uppercase tracking-wide text-[color:var(--charcoal)]/70">
+                          {productCode[0]}
+                        </span>
+                      )}
+                      {populated && (
+                        <span className="rounded bg-[color:var(--teal)]/10 px-1.5 py-0.5 text-[11px] uppercase tracking-wide text-[color:var(--teal)]">
+                          in SoT
+                        </span>
+                      )}
+                    </div>
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-1 block truncate text-[12px] text-[color:var(--charcoal)]/60 hover:underline"
+                    >
+                      {url}
+                    </a>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => run(tourId)}
+                    disabled={state?.status === "loading"}
+                    className="rounded bg-[color:var(--charcoal)] px-3 py-2 text-[13px] font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+                  >
+                    {state?.status === "loading" ? "Extracting…" : "Extract"}
+                  </button>
+                </div>
+
+                {state?.status === "error" && (
+                  <p className="mt-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700">
+                    {state.error}
+                  </p>
+                )}
+
+                {state?.status === "done" && state.snippet && (
+                  <div className="mt-4">
+                    <div className="mb-2 flex items-center justify-between text-[12px] text-[color:var(--charcoal)]/70">
+                      <span>
+                        {state.chapterCount} chapters · {state.minutes} min total
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          void navigator.clipboard.writeText(state.snippet ?? "");
+                        }}
+                        className="rounded border border-[color:var(--charcoal)]/20 px-2 py-1 text-[12px] font-medium hover:bg-[color:var(--sand)]/40"
+                      >
+                        Copy TS block
+                      </button>
+                    </div>
+                    <pre className="max-h-[420px] overflow-auto rounded bg-[color:var(--charcoal)] p-3 text-[11px] leading-relaxed text-white">
+                      {state.snippet}
+                    </pre>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+
+        <p className="mt-10 text-[12px] text-[color:var(--charcoal)]/60">
+          Rules: only content that literally appears on the linked Viator page.
+          Ranges use midpoint minutes. Chapter timings are <code>null</code> when
+          Viator doesn&apos;t print them — never guessed.
+        </p>
+      </main>
+    </SiteLayout>
+  );
+}
