@@ -98,6 +98,7 @@ import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link
 import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
 import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
 import { Route as AdminSotRefreshRouteImport } from './routes/admin.sot-refresh'
+import { Route as AdminSotDiffRouteImport } from './routes/admin.sot-diff'
 import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
 import { Route as AdminSeoJsonldRouteImport } from './routes/admin.seo-jsonld'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
@@ -590,6 +591,11 @@ const AdminSotRefreshRoute = AdminSotRefreshRouteImport.update({
   path: '/admin/sot-refresh',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSotDiffRoute = AdminSotDiffRouteImport.update({
+  id: '/admin/sot-diff',
+  path: '/admin/sot-diff',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSeoMonitorRoute = AdminSeoMonitorRouteImport.update({
   id: '/admin/seo-monitor',
   path: '/admin/seo-monitor',
@@ -883,6 +889,7 @@ export interface FileRoutesByFullPath {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
+  '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -1012,6 +1019,7 @@ export interface FileRoutesByTo {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
+  '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -1145,6 +1153,7 @@ export interface FileRoutesById {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
+  '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
@@ -1279,6 +1288,7 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
+    | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -1408,6 +1418,7 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
+    | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -1540,6 +1551,7 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/seo-jsonld'
     | '/admin/seo-monitor'
+    | '/admin/sot-diff'
     | '/admin/sot-refresh'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
@@ -1673,6 +1685,7 @@ export interface RootRouteChildren {
   AdminReviewsRoute: typeof AdminReviewsRoute
   AdminSeoJsonldRoute: typeof AdminSeoJsonldRoute
   AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
+  AdminSotDiffRoute: typeof AdminSotDiffRoute
   AdminSotRefreshRoute: typeof AdminSotRefreshRoute
   AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
   AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
@@ -2335,6 +2348,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSotRefreshRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/sot-diff': {
+      id: '/admin/sot-diff'
+      path: '/admin/sot-diff'
+      fullPath: '/admin/sot-diff'
+      preLoaderRoute: typeof AdminSotDiffRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/seo-monitor': {
       id: '/admin/seo-monitor'
       path: '/admin/seo-monitor'
@@ -2790,6 +2810,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminReviewsRoute: AdminReviewsRoute,
   AdminSeoJsonldRoute: AdminSeoJsonldRoute,
   AdminSeoMonitorRoute: AdminSeoMonitorRoute,
+  AdminSotDiffRoute: AdminSotDiffRoute,
   AdminSotRefreshRoute: AdminSotRefreshRoute,
   AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
   AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
