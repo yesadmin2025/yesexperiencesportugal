@@ -98,7 +98,7 @@ function extractSignatureTourKeys(): string[] {
   // contents can't masquerade as keys.
   const cleaned = body
     .replace(/\/\*[\s\S]*?\*\//g, "")
-    .replace(/(^|\n)\s*\/\/[^\n]*/g, "$1")
+    .replace(/\/\/[^\n]*/g, "")
     .replace(/(["'`])(?:\\.|(?!\1).)*\1/g, '""');
 
   // Split on top-level `;` / `,` — but SignatureTour uses `;` per line.
