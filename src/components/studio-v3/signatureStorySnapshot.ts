@@ -13,6 +13,7 @@
 
 import { resolveStudioV3Route, pickupCityLabel } from "./curation";
 import { findTour } from "@/data/signatureTours";
+import { getTourContent } from "@/lib/tourContent";
 import type { StudioV3State } from "./types";
 
 export interface SignatureStoryChapter {
@@ -71,10 +72,13 @@ export function buildSignatureStorySnapshot(
     body: p.story,
   }));
 
+  const includedResolved = tour?.id ? getTourContent(tour.id).included : [];
   const inclusions: string[] =
-    tour?.included && tour.included.length > 0
-      ? tour.included.slice(0, 8)
-      : ["Private guide", "Private transport", "All confirmed entries"];
+    includedResolved.length > 0
+      ? includedResolved.slice(0, 8)
+      : tour?.included && tour.included.length > 0
+        ? tour.included.slice(0, 8)
+        : ["Private guide", "Private transport", "All confirmed entries"];
 
   const guests =
     overrides?.guests && overrides.guests > 0
