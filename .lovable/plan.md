@@ -1,52 +1,33 @@
-# Viator SoT ↔ Site Reconciliation
+## Goal
 
-Goal: guarantee every Signature tour's overview, highlights, inclusions/exclusions, itinerary, and midpoint durations on the site match the live Viator product page, and are surfaced everywhere through `getTourContent(tourId)`.
+Guarantee that every Signature tour's rendered content (inclusions, not-included, itinerary chapters) exactly matches its Source-of-Truth payload — and that any drift fails CI, whether it comes from a legacy fallback leaking in, a UI helper mutating the data, or an unreviewed edit to the SoT file itself.
 
-## Scope
+## Approach
 
-All 12 Signature tours in `src/data/signatureToursSourceOfTruth.ts` (SoT) vs. their live Viator URLs, plus every UI consumer already migrated to `getTourContent`.
+One new Vitest suite, run by the existing `bun test` / `vitest run` CI step (already invoked from `prebuild`-adjacent scripts and `test`). Two complementary checks per tour, plus a committed snapshot so unreviewed SoT edits are visible in diff review.  live fetch of viator.com to validate source of truth 
 
-## Steps
+### New file: `src/__tests__/sot-viator-parity.test.ts`
 
-1. **Refresh SoT from Viator (source of truth pass)**
-  - Run the existing `/admin/sot-refresh` batch (Firecrawl + Gemini extractor) for all 12 tours, sequential with backoff.
-  - Persist updated `overview`, `highlights`, `included`, `excluded`, `itinerary[]` (with `durationMinutes`), and `totalDurationMinutes` into `signatureToursSourceOfTruth.ts`.
-  - Diff before/after; log any tour where extraction confidence is low for manual review.
-2. **Manual verification pass (per tour)**
-  - Open each Viator URL, spot-check: title of each itinerary stop, order, inclusions list, exclusions, meeting point, duration.
-  - Correct any Gemini extraction slips directly in the SoT file.
-  - Confirm 11/11 tours have `sotStatus: 'verified'`.
-3. **Consumer coverage audit**
-  - Re-run existing guardrail tests:
-    - `tour-content-direct-reads.test.ts`
-    - `tour-content-getter-usage.test.ts`
-    - `signature-tour-schema-lock.test.ts`
-  - Grep for any surface still rendering legacy fields (emails, PDFs, JSON-LD builders, checkout confirmation, Studio final reveal, Tailor summary, `og`/meta descriptions).
-  - Route every remaining consumer through `getTourContent(tourId)`; extend the getter-usage test to include newly-touched files.
-4. **Cross-surface propagation checks**
-  - Signature detail route: overview, highlights, itinerary, inclusions/exclusions blocks.
-  - Tailor route: itinerary editor + summary + price recompute basis.
-  - Studio V3 final reveal: story snapshot + inclusions.
-  - Checkout: `inclusions.ts` + booking confirmation email templates.
-  - JSON-LD `Product`/`TouristTrip` structured data on tour pages.
-  - Homepage + `/experiences` (+ `pt.experiences`) highlight chips.
-  - PT locale overlay: ensure translations still merge on top of SoT (no English leak, no stale itinerary).
-5. **Validation**
-  - `bunx vitest run` for the three guardrail tests + any updated ones.
-  - Playwright spot-check on 2 tours: verify itinerary bullets and inclusions on the live preview match Viator.
-  - Manual visual QA on mobile viewport for one wine tour + one coastal tour.
-6. **Report**
-  - Write `docs/sot-viator-reconciliation-YYYY-MM.md` listing per-tour diffs applied and any Viator ambiguities left for the operator to confirm.
+For each `tourId` in `SIGNATURE_SOURCE_OF_TRUTH`:
 
-## Technical notes
+1. **Parity check (hard equality)** — call `getTourContent(tourId)` and assert:
+  - `source === "sot"` (proves the helper is not silently falling back to legacy).
+  - `included`, `notIncluded`, `highlights` deep-equal the SoT arrays (same order, same strings, no trims/casing drift).
+  - `overview === sot.overview`.
+  - `itinerary` length equals `sot.itinerary.length`, and every chapter matches field-by-field: `order`, `label`, `description`, `durationMinutes`, `travelToNextMinutes`, `optional`. `null` stays `null` — no coerced `0`.
+2. **Locked snapshot** — `expect(normalized).toMatchSnapshot()` on a stable projection `{ tourId, source, overview, highlights, included, notIncluded, itinerary }`. Snapshot committed under `src/__tests__/__snapshots__/sot-viator-parity.test.ts.snap`. Any SoT edit surfaces as a snapshot diff that a reviewer must approve with `-u`.
+3. **Coverage guard** — assert `Object.keys(SIGNATURE_SOURCE_OF_TRUTH).length === expectedCount` (12 today, read from the file) so a tour silently dropped from SoT fails CI instead of quietly reverting to legacy content.
 
-- No schema changes; SoT file is the only data mutation.
-- PT overlay merging in `tour-i18n.ts` stays exempt (already approved).
-- If Firecrawl rate-limits, fall back to per-tour manual paste into SoT rather than blocking the batch.
-- No changes to pricing, motion, or design tokens.
+### CI wiring
 
-## Out of scope
+- Suite is picked up automatically by `bun run test` (`vitest run`), which is the existing CI signal — no new workflow file required.
+- Add `"test:sot-parity": "vitest run src/__tests__/sot-viator-parity.test.ts"` to `package.json` scripts for local + targeted CI use, and reference it alongside the existing `tour-content-*` guardrail tests in `docs/sot-viator-reconciliation-2026-07.md`.
 
-- Adding new tours.
-- Changing itinerary/inclusions copy beyond what Viator publishes.
-- Translating new SoT content to PT (separate follow-up if English deltas are large).
+## Failure semantics (what a red build tells you)
+
+- "source is legacy for `<tourId>`" → SoT entry deleted or `getTourContent` regression.
+- "included[3] differs" → UI helper mutated the array, or SoT was edited without updating the snapshot.
+- "snapshot mismatch" → SoT payload changed; reviewer runs `vitest -u` after confirming Viator page still matches.
+- "expected 12 SoT tours, got 11" → a tour was removed from SoT.
+
+fix all the failing tests 
