@@ -9,6 +9,7 @@
 
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { getViatorMeta, type ViatorMeta, type ViatorStop } from "@/data/signatureToursViator";
+import { getTourContent } from "@/lib/tourContent";
 
 export type Severity = "critical" | "major" | "minor" | "clean";
 
@@ -91,11 +92,19 @@ export function bookableStops(
   return (tour.stops ?? []).map((s) => ({ label: s.label, source: "internal" as const }));
 }
 
-/** Inclusions the booking flow should sell. Falls back to internal when no Viator meta. */
+/** Inclusions the booking flow should sell. Source-of-Truth first
+ *  (verified against Viator per tour), then legacy Viator meta, then the
+ *  internal blueprint. This is what /tours/:id and /tours/:id/tailor
+ *  render — routing through SoT here fixes site-wide inclusion drift
+ *  (e.g. legacy "Lunch" leaking onto tours where it isn't included). */
 export function bookableIncluded(
   tour: SignatureTour,
   meta: ViatorMeta | undefined,
 ): { items: string[]; source: "viator" | "internal" } {
+  const content = getTourContent(tour.id);
+  if (content.source === "sot" && content.included.length > 0) {
+    return { items: content.included, source: "viator" };
+  }
   if (meta?.included?.length) return { items: meta.included, source: "viator" };
   return { items: tour.included ?? [], source: "internal" };
 }

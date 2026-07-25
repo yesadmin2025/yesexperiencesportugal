@@ -5,6 +5,7 @@ import { Clock, MapPin } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { getTourContent } from "@/lib/tourContent";
+import { getSignatureCardMoments } from "@/content/signature-card-moments";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
 import ogImg from "@/assets/hero-coast.jpg";
@@ -138,8 +139,10 @@ function ExperiencesPage() {
                         .filter((s) => !s.passBy && !isGenericOrigin(s.name))
                         .map((s) => s.name)
                     : [];
+              const curatedMoments = getSignatureCardMoments(t.id);
               const topHighlights = (
-                realStopBullets.length > 0 ? realStopBullets : content.highlights
+                curatedMoments ??
+                (realStopBullets.length > 0 ? realStopBullets : content.highlights)
               ).slice(0, 3);
               return (
                 <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
@@ -175,7 +178,7 @@ function ExperiencesPage() {
 
                   {topHighlights.length > 0 && (
                     <ul className="mt-4 flex flex-col gap-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
-                      {topHighlights.map((h) => (
+                      {topHighlights.map((h: string) => (
                         <li key={h} className="flex items-start gap-2">
                           <span
                             aria-hidden="true"
