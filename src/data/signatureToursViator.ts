@@ -416,6 +416,8 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       "Cheese tasting",
       "Lunch",
     ],
+    // Platform per-pax EUR (Viator): 1→€279, 2-3→€215, 4-6→€189, 7-8→€159. Direct = platform − 15%.
+    priceTiersEUR: { 1: 237, 2: 183, 3: 183, 4: 161, 5: 161, 6: 161, 7: 135, 8: 135 },
     stops: [
       {
         name: "Mercado do Livramento",
