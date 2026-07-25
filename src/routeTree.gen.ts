@@ -97,6 +97,7 @@ import { Route as AdminViatorValidationRouteImport } from './routes/admin.viator
 import { Route as AdminTourLinkAuditRouteImport } from './routes/admin.tour-link-audit'
 import { Route as AdminStudioV3FunnelRouteImport } from './routes/admin.studio-v3-funnel'
 import { Route as AdminStudioV3AuditRouteImport } from './routes/admin.studio-v3-audit'
+import { Route as AdminStopParityRouteImport } from './routes/admin.stop-parity'
 import { Route as AdminSotRefreshRouteImport } from './routes/admin.sot-refresh'
 import { Route as AdminSotDiffRouteImport } from './routes/admin.sot-diff'
 import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
@@ -587,6 +588,11 @@ const AdminStudioV3AuditRoute = AdminStudioV3AuditRouteImport.update({
   path: '/admin/studio-v3-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminStopParityRoute = AdminStopParityRouteImport.update({
+  id: '/admin/stop-parity',
+  path: '/admin/stop-parity',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSotRefreshRoute = AdminSotRefreshRouteImport.update({
   id: '/admin/sot-refresh',
   path: '/admin/sot-refresh',
@@ -898,6 +904,7 @@ export interface FileRoutesByFullPath {
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
+  '/admin/stop-parity': typeof AdminStopParityRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
@@ -1029,6 +1036,7 @@ export interface FileRoutesByTo {
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
+  '/admin/stop-parity': typeof AdminStopParityRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
@@ -1164,6 +1172,7 @@ export interface FileRoutesById {
   '/admin/seo-monitor': typeof AdminSeoMonitorRoute
   '/admin/sot-diff': typeof AdminSotDiffRoute
   '/admin/sot-refresh': typeof AdminSotRefreshRoute
+  '/admin/stop-parity': typeof AdminStopParityRoute
   '/admin/studio-v3-audit': typeof AdminStudioV3AuditRoute
   '/admin/studio-v3-funnel': typeof AdminStudioV3FunnelRoute
   '/admin/tour-link-audit': typeof AdminTourLinkAuditRoute
@@ -1300,6 +1309,7 @@ export interface FileRouteTypes {
     | '/admin/seo-monitor'
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
+    | '/admin/stop-parity'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
@@ -1431,6 +1441,7 @@ export interface FileRouteTypes {
     | '/admin/seo-monitor'
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
+    | '/admin/stop-parity'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
@@ -1565,6 +1576,7 @@ export interface FileRouteTypes {
     | '/admin/seo-monitor'
     | '/admin/sot-diff'
     | '/admin/sot-refresh'
+    | '/admin/stop-parity'
     | '/admin/studio-v3-audit'
     | '/admin/studio-v3-funnel'
     | '/admin/tour-link-audit'
@@ -1700,6 +1712,7 @@ export interface RootRouteChildren {
   AdminSeoMonitorRoute: typeof AdminSeoMonitorRoute
   AdminSotDiffRoute: typeof AdminSotDiffRoute
   AdminSotRefreshRoute: typeof AdminSotRefreshRoute
+  AdminStopParityRoute: typeof AdminStopParityRoute
   AdminStudioV3AuditRoute: typeof AdminStudioV3AuditRoute
   AdminStudioV3FunnelRoute: typeof AdminStudioV3FunnelRoute
   AdminTourLinkAuditRoute: typeof AdminTourLinkAuditRoute
@@ -2355,6 +2368,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStudioV3AuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/stop-parity': {
+      id: '/admin/stop-parity'
+      path: '/admin/stop-parity'
+      fullPath: '/admin/stop-parity'
+      preLoaderRoute: typeof AdminStopParityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/sot-refresh': {
       id: '/admin/sot-refresh'
       path: '/admin/sot-refresh'
@@ -2833,6 +2853,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminSeoMonitorRoute: AdminSeoMonitorRoute,
   AdminSotDiffRoute: AdminSotDiffRoute,
   AdminSotRefreshRoute: AdminSotRefreshRoute,
+  AdminStopParityRoute: AdminStopParityRoute,
   AdminStudioV3AuditRoute: AdminStudioV3AuditRoute,
   AdminStudioV3FunnelRoute: AdminStudioV3FunnelRoute,
   AdminTourLinkAuditRoute: AdminTourLinkAuditRoute,
