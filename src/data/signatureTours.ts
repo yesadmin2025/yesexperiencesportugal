@@ -577,9 +577,9 @@ export const signatureTours: SignatureTour[] = [
         imageTheme: "tiles-workshop",
       },
       {
-        label: "Azulejos de Azeitao",
+        label: "Tile Painting Workshop – Sesimbra",
         story:
-          "Paint your own azulejo under a master tile-maker — five centuries of cobalt-blue tradition, hands-on.",
+          "In Sesimbra, paint your own azulejo under a master tile-maker — five centuries of cobalt-blue tradition, hands-on.",
         imageTheme: "tiles-workshop",
       },
       {
