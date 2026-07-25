@@ -47,10 +47,17 @@ const APPROVED_PREFIXES = [
   "src/lib/__tests__/tourContent",
 ];
 
-// Match property access like `.overview`, `.highlights`, `.included`, `.itinerary`
-// as well as destructuring `{ overview, highlights, included, itinerary }`.
+// Match all of:
+//   - Dot / optional-chain access:  t.overview, t?.overview
+//   - Bracket string access:        t["overview"], t?.["overview"]
+//   - Destructuring w/ separators:  { overview, ... }, { overview } = tour, { overview: alias }
+//   - Destructuring with default:   { overview = [] }
+const FIELDS = "overview|highlights|included|itinerary";
 const PATTERN =
-  String.raw`(\.(overview|highlights|included|itinerary)\b)|(\b(overview|highlights|included|itinerary)\s*[,}:])`;
+  String.raw`(\??\.\s*(` + FIELDS + String.raw`)\b)` +
+  String.raw`|(\??\.\s*\[\s*["'](` + FIELDS + String.raw`)["']\s*\])` +
+  String.raw`|(\[\s*["'](` + FIELDS + String.raw`)["']\s*\])` +
+  String.raw`|(\b(` + FIELDS + String.raw`)\s*[,}:=])`;
 
 function rg(pattern: string): string[] {
   try {
