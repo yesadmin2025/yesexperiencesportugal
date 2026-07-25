@@ -174,7 +174,8 @@ function SotRefreshPage() {
           )}
         </div>
 
-
+        <ul className="mt-8 space-y-4">
+          {Object.entries(CANONICAL_VIATOR_URLS).map(([tourId, url]) => {
             const state = rows[tourId];
             const populated = Boolean(SIGNATURE_SOURCE_OF_TRUTH[tourId]);
             const productCode = url.match(/d\d+P(\d+)/i);
