@@ -109,17 +109,34 @@ function ExperiencesPage() {
               const meta = VIATOR_META[t.id];
               const content = getTourContent(t.id);
               // Prefer verified SoT itinerary chapter labels (real, non-
-              // optional stops from the Viator source-of-truth). Fall
-              // back to raw Viator meta stops, then to legacy highlights.
+              // optional stops from the Viator source-of-truth). Skip
+              // generic pickup / pass-by chapters ("Lisbon", "Lisbon
+              // District", "Lisbon (Pass By)", the 25 de Abril bridge)
+              // so every card differentiates on its actual destinations.
+              const isGenericOrigin = (label: string) => {
+                const l = label.toLowerCase().replace(/[().]/g, " ").replace(/\s+/g, " ").trim();
+                return (
+                  l === "lisbon" ||
+                  l === "lisboa" ||
+                  l === "lisbon district" ||
+                  l.startsWith("lisbon pass by") ||
+                  l.startsWith("lisboa pass by") ||
+                  l === "ponte 25 de abril"
+                );
+              };
               const sotStopBullets =
                 content.source === "sot"
-                  ? content.itinerary.filter((c) => !c.optional).map((c) => c.label)
+                  ? content.itinerary
+                      .filter((c) => !c.optional && !isGenericOrigin(c.label))
+                      .map((c) => c.label)
                   : [];
               const realStopBullets =
                 sotStopBullets.length > 0
                   ? sotStopBullets
                   : meta?.stops
-                    ? meta.stops.filter((s) => !s.passBy).map((s) => s.name)
+                    ? meta.stops
+                        .filter((s) => !s.passBy && !isGenericOrigin(s.name))
+                        .map((s) => s.name)
                     : [];
               const topHighlights = (
                 realStopBullets.length > 0 ? realStopBullets : content.highlights
