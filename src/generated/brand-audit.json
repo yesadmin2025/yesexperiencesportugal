@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-25T03:23:26.965Z",
-  "filesScanned": 909,
+  "generatedAt": "2026-07-25T03:30:22.416Z",
+  "filesScanned": 910,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 385,
-    "approved": 98,
+    "total": 394,
+    "approved": 101,
     "allowlisted": 66,
-    "mismatch": 221
+    "mismatch": 227
   },
   "findings": [
     {
@@ -2800,6 +2800,87 @@
       "file": "src/lib/email-templates/stripe-webhook-alert.tsx",
       "line": 74,
       "col": 32,
+      "raw": "#666",
+      "normalized": "#666666",
+      "snippet": "<Text style={{ color: \"#666\", fontSize: 12, marginTop: 16 }}>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/viator-drift-alert.tsx",
+      "line": 36,
+      "col": 22,
+      "raw": "#295B61",
+      "normalized": "#295b61",
+      "snippet": "const h1 = { color: \"#295B61\", fontSize: 20, margin: \"0 0 12px\" } as const;",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/viator-drift-alert.tsx",
+      "line": 38,
+      "col": 11,
+      "raw": "#666",
+      "normalized": "#666666",
+      "snippet": "color: \"#666\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/viator-drift-alert.tsx",
+      "line": 43,
+      "col": 25,
+      "raw": "#111",
+      "normalized": "#111111",
+      "snippet": "const value = { color: \"#111\", fontSize: 14, margin: \"2px 0 12px\" };",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/viator-drift-alert.tsx",
+      "line": 45,
+      "col": 25,
+      "raw": "#E8E2D5",
+      "normalized": "#e8e2d5",
+      "snippet": "borderTop: \"1px solid #E8E2D5\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/viator-drift-alert.tsx",
+      "line": 57,
+      "col": 40,
+      "raw": "#FAF8F3",
+      "normalized": "#faf8f3",
+      "snippet": "<Body style={{ backgroundColor: \"#FAF8F3\", margin: 0 }}>",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/viator-drift-alert.tsx",
+      "line": 60,
+      "col": 34,
+      "raw": "#333",
+      "normalized": "#333333",
+      "snippet": "<Text style={{ color: \"#333\", fontSize: 14 }}>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/viator-drift-alert.tsx",
+      "line": 75,
+      "col": 36,
+      "raw": "#295B61",
+      "normalized": "#295b61",
+      "snippet": "<Text style={{ color: \"#295B61\", fontSize: 14, marginTop: 16 }}>",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email-templates/viator-drift-alert.tsx",
+      "line": 83,
+      "col": 42,
+      "raw": "#888",
+      "normalized": "#888888",
+      "snippet": "<span style={{ color: \"#888\", fontWeight: 400 }}>({it.tourId})</span>",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/viator-drift-alert.tsx",
+      "line": 107,
+      "col": 34,
       "raw": "#666",
       "normalized": "#666666",
       "snippet": "<Text style={{ color: \"#666\", fontSize: 12, marginTop: 16 }}>",

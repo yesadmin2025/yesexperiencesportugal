@@ -53,7 +53,7 @@ const Alert: React.FC<ViatorDriftAlertProps> = (p) => {
   return (
     <Html>
       <Head />
-      <Preview>Viator drift check: {drift} tour(s) changed</Preview>
+      <Preview>{`Viator drift check: ${drift} tour(s) changed`}</Preview>
       <Body style={{ backgroundColor: "#FAF8F3", margin: 0 }}>
         <Container style={container}>
           <Heading style={h1}>Viator drift report</Heading>
