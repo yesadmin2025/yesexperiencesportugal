@@ -260,11 +260,16 @@ export function SignatureRouteMap({ tour }: Props) {
         </div>
 
         <div className="relative overflow-hidden border border-[color:var(--gold)]/25 rounded-[6px] shadow-[0_2px_18px_rgba(46,46,46,0.06)]">
-          <LeafletMap
-            stops={stops}
-            polylines={polylines}
-            ariaLabel={`Route map for ${tour.title} — ${stops.length} stops across ${tour.region}`}
-          />
+          {fallbackReason ? (
+            <SignatureRouteMapFallback tour={tour} reason={fallbackReason} />
+          ) : (
+            <LeafletMap
+              stops={stops}
+              polylines={polylines}
+              ariaLabel={`Route map for ${tour.title} — ${stops.length} stops across ${tour.region}`}
+              onFallback={handleFallback}
+            />
+          )}
 
           <div className="absolute top-3 left-3 z-[400] pointer-events-none">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur-sm px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] border border-[color:var(--gold)]/40 shadow-sm">
