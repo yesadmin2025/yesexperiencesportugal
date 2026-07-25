@@ -91,7 +91,7 @@ export const TOUR_STOP_INTENTS: Record<string, Record<string, StopIntent[]>> = {
   },
   "tiles-workshop": {
     "Mercado do Livramento": ["gastronomy", "local-life", "wine"],
-    "Azulejos de Azeitao": ["craft", "heritage", "culture"],
+    "Tile Painting Workshop – Sesimbra": ["craft", "heritage", "culture"],
     "Farm Catralvos": ["wine", "local-life"],
     "Jose Maria de Fonseca": ["wine", "heritage"],
     "Bacalhoa Vinhos de Portugal": ["wine", "culture"],
