@@ -239,6 +239,11 @@ export function SignatureRouteMap({ tour }: Props) {
     [data],
   );
 
+  const [fallbackReason, setFallbackReason] = useState<string | null>(null);
+  const handleFallback = useCallback((reason: string) => {
+    setFallbackReason((prev) => prev ?? reason);
+  }, []);
+
   if (stops.length === 0) return null;
 
   const legMinutes = data?.legs?.map((l) => l.driveMinutes) ?? null;
