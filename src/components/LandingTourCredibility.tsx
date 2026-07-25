@@ -9,6 +9,7 @@
  */
 import { Star } from "lucide-react";
 import { getViatorMeta } from "@/data/signatureToursViator";
+import { canonicalViatorUrl } from "@/data/signatureToursSourceOfTruth";
 
 export function LandingTourCredibility({
   parentTourId,
