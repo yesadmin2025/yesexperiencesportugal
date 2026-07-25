@@ -189,6 +189,54 @@ function SotRefreshPage() {
               </pre>
             </div>
           )}
+          {!batchRunning && failedIds.length > 0 && (
+            <div className="mt-4 rounded border border-red-200 bg-red-50 p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-[12px] text-red-800">
+                  <strong>{failedIds.length}</strong> tour{failedIds.length === 1 ? "" : "s"} still failed after 3 attempts:
+                  <ul className="mt-1 list-disc pl-5">
+                    {failedIds.map((id) => (
+                      <li key={id}>
+                        <code>{id}</code>
+                        {rows[id]?.error ? (
+                          <span className="text-red-700/80"> — {rows[id]?.error}</span>
+                        ) : null}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const ids = [...failedIds];
+                    setBatchRunning(true);
+                    setBatchProgress({ done: 0, total: ids.length });
+                    const stillFailed: string[] = [];
+                    const newSnips: string[] = [];
+                    for (const id of ids) {
+                      let snip: string | null = null;
+                      for (let attempt = 1; attempt <= 3; attempt++) {
+                        snip = await run(id);
+                        if (snip) break;
+                        if (attempt < 3) await new Promise((r) => setTimeout(r, 800 * attempt));
+                      }
+                      if (snip) newSnips.push(snip);
+                      else stillFailed.push(id);
+                      setBatchProgress((p) => ({ ...p, done: p.done + 1 }));
+                    }
+                    if (newSnips.length > 0) {
+                      setCombined((prev) => prev + "\n" + newSnips.join("\n"));
+                    }
+                    setFailedIds(stillFailed);
+                    setBatchRunning(false);
+                  }}
+                  className="shrink-0 rounded bg-red-700 px-3 py-1.5 text-[12px] font-medium text-white hover:bg-red-800"
+                >
+                  Retry failed
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <ul className="mt-8 space-y-4">
