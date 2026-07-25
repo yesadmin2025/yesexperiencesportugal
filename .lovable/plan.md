@@ -1,121 +1,42 @@
-# Viator link SoT — site-wide propagation
+## Context
 
-## Current state (verified by reading the code)
+Site already routes every tour content surface (tour detail, Studio V3 reveal, checkout inclusions, experiences cards, booking form, JSON-LD) through `getTourContent(tourId)`, which returns the verified Viator payload from `SIGNATURE_SOURCE_OF_TRUTH`. Coverage is 12/12 tours verified. Locked snapshot + parity tests (`sot-viator-parity.test.ts`, 30 tests) already guard rendered output against the SoT block.
 
-We already have a canonical Viator URL registry:
-`CANONICAL_VIATOR_URLS` in `src/data/signatureToursSourceOfTruth.ts`
-(12 tours × 1 URL each) — plus per-tour `viatorUrl` inside each
-`SIGNATURE_SOURCE_OF_TRUTH` entry.
+What's still there: **legacy fallback fields** on `signatureTours[].description/highlights/included/stops[].story` and `VIATOR_META[].overview/included/editorialChapters`, plus the fallback branches in read helpers and card grids. They never execute at runtime today (SoT is 12/12), but they let future edits silently reintroduce non-Viator copy on any surface if a tour is ever dropped from SoT — which is exactly what the docs call "Phase C" cleanup.
 
-But three parallel URL sources are still shipping to production:
-
-1. `**VIATOR_META[id].viatorUrl**` in `src/data/signatureToursViator.ts`
-  — 12 hand-maintained duplicates. Read by:
-  - `src/components/TourReviews.tsx` — "Read all reviews on Viator &
-  Tripadvisor →" and per-review `source_url`.
-  - `src/components/LandingTourCredibility.tsx` — "Verified by Viator"
-  link on tour detail.
-2. `**signatureTours[i].bookingUrl**` in `src/data/signatureTours.ts` —
-  12 duplicates, read by admin/importer tooling
-   (`admin.import-tours.tsx`, `use-imported-tour-images.ts`).
-3. **Hardcoded Viator URLs** — `src/data/platform-partners.ts` (one
-  Arrábida wine URL used on the partners page).
-
-There is no test that keeps these three in sync with
-`CANONICAL_VIATOR_URLS`. Nothing catches drift today.
-
-Two other surfaces still read raw legacy fields when SoT is available:
-
-4. `**src/routes/experiences.tsx` + `src/routes/pt.experiences.tsx**` —
-  card highlight bullets are built from `VIATOR_META[id].stops` (raw
-   Viator stop dump) instead of the verified SoT itinerary chapter
-   labels.
-5. `**src/routes/tours.$tourId.tsx**` JSON-LD already uses SoT for
-  itinerary but the tour page has no visible "official listing" back-
-   link to the canonical Viator URL for trust/SEO.
+This plan finishes Phase C: retire the fallbacks so Viator truth is the only path.
 
 ## Plan
 
-### 1. Single resolver for every Viator URL
+### 1. Delete legacy content fallbacks in read helpers
 
-Add one helper next to the registry:
+- `src/lib/tourContent.ts` — drop the `else` branch that reads `VIATOR_META[tourId].overview/included` and `tour.highlights/included/stops`. If `SIGNATURE_SOURCE_OF_TRUTH[tourId]` is missing, throw (guarantees Viator truth or fail loudly).
+- `src/lib/checkout/inclusions.ts` — remove VIATOR_META fallback; SoT included only.
+- `src/components/studio-v3/FinalRevealStory.tsx` (line 195, 245–247) — remove `tour.stops` / `tour.included` fallbacks.
+- `src/components/studio-v3/signatureStorySnapshot.ts` (lines 79–80) — same.
+- `src/components/SimpleBookingForm.tsx` (lines 171–199) — same.
+- `src/routes/experiences.tsx` & `src/routes/pt.experiences.tsx` — remove `meta?.stops` branch; keep only `content.itinerary` chapter labels or `content.highlights`.
+- `src/routes/tours.$tourId.tsx` line 478 — drop `tour.highlights` fallback.
 
-```ts
-// src/data/signatureToursSourceOfTruth.ts
-export function canonicalViatorUrl(tourId: string): string | undefined {
-  return SIGNATURE_SOURCE_OF_TRUTH[tourId]?.viatorUrl
-      ?? CANONICAL_VIATOR_URLS[tourId];
-}
-```
+### 2. Retire legacy content fields on the data files
 
-SoT-first, canonical map fallback, `undefined` for unknown ids. This is
-the ONLY function new code should use to get a Viator link.
+- `src/data/signatureTours.ts` — remove `description`, `highlights`, `included`, and per-stop `story` fields on every Signature blueprint. Keep `id`, `title`, `region`, `img`, `stops[].label/coords`, `bookingUrl`, and pricing anchors — those are geometry/media, not editorial copy.
+- `src/data/signatureToursViator.ts` — remove `overview`, `included`, `editorialChapters` from every `VIATOR_META` entry. Keep `priceTiersEUR`, `reviews`, `gallery`, `viatorProductCode` — truth-passed operational data.
+- Update `SignatureTour` and `VIATOR_META` TS types accordingly so the compiler flags any future consumer that tries to read a retired field.
 
-### 2. Migrate the four current consumers
+### 3. Guardrail test
 
-- `src/components/TourReviews.tsx` — replace both `meta.viatorUrl` reads
-with `canonicalViatorUrl(tourId)`.
-- `src/components/LandingTourCredibility.tsx` — same swap for the
-"Verified by Viator" href.
-- `src/data/platform-partners.ts` — the Arrábida wine entry pulls its
-URL from `canonicalViatorUrl("arrabida-wine-allinclusive")` at module
-load instead of hardcoding the string.
-- `src/lib/viatorSot.functions.ts` — already falls back to the canonical
-map; switch to the new helper for consistency.
+Add `src/__tests__/no-legacy-tour-content.test.ts`:
 
-`getViatorMeta()` continues to exist for reviews / gallery / price
-tiers — we do NOT delete `VIATOR_META.viatorUrl` yet (importer &
-`bookingUrl` still need a resolution step). The field becomes
-informational.
+- Assert `SignatureTour` type has no `description`/`highlights`/`included`/`story` keys.
+- Assert `ViatorMeta` type has no `overview`/`included`/`editorialChapters` keys.
+- Grep `src/**/*.{ts,tsx}` and fail if any file (outside SoT + this test) references those field names on a tour/meta object.
 
-### 3. Card highlights on /experiences and /pt/experiences
+### 4. Verify
 
-When a tour has an SoT entry, prefer its itinerary chapter labels
-(non-optional, first 3) for the card bullets instead of the raw
-`meta.stops` list. Falls back to `getTourContent(id).highlights` when no
-SoT — behavior unchanged for un-populated tours.
+- Run `bun test` — expect the existing 30 SoT parity tests + new guardrail to pass; fix any TS compile errors surfaced by step 1 & 2.
+- Spot-check `/tours/arrabida-wine-allinclusive`, `/tours/troia-comporta`, and Studio V3 reveal in preview to confirm rendered content is unchanged (it should be — SoT was already the effective source).
 
-### 4. Optional "official Viator listing" backlink on tour detail
+## Outcome
 
-
-
-
-
-### 5. Parity guardrail — new Vitest suite
-
-`src/__tests__/viator-url-parity.test.ts` fails CI if any of the
-following diverges from `CANONICAL_VIATOR_URLS[id]`:
-
-- `SIGNATURE_SOURCE_OF_TRUTH[id].viatorUrl`
-- `VIATOR_META[id].viatorUrl`
-- `signatureTours.find(t => t.id === id).bookingUrl`
-
-Plus a coverage check: every id in `signatureTours` has a
-`CANONICAL_VIATOR_URLS` entry, and every id in `CANONICAL_VIATOR_URLS`
-has both a `signatureTours` row and a `VIATOR_META` row.
-
-## Out of scope
-
-- Removing `VIATOR_META.viatorUrl` or `signatureTours.bookingUrl`
-fields. Those stay until the importer is migrated in a later pass;
-parity test guarantees they can't drift in the meantime.
-- Any Viator SDK / affiliate-tag rewriting — pure href changes only.
-- &nbsp;
-
-## Files touched
-
-- `src/data/signatureToursSourceOfTruth.ts` — add `canonicalViatorUrl()`.
-- `src/components/TourReviews.tsx`
-- `src/components/LandingTourCredibility.tsx`
-- `src/data/platform-partners.ts`
-- `src/lib/viatorSot.functions.ts`
-- `src/routes/experiences.tsx`
-- `src/routes/pt.experiences.tsx`
-- `src/__tests__/viator-url-parity.test.ts` (new)
-
-## Validation
-
-- `bun run vitest run src/__tests__/viator-url-parity.test.ts`
-- Existing SoT parity suite (`sot-viator-parity.test.ts`) stays green.
-- Spot-check `/tours/arrabida-boat`, `/experiences`, `/partners`: every
-"Viator" link resolves to the same URL as `CANONICAL_VIATOR_URLS`.
+Every tour surface on the site reads Viator truth from a single verified block, with no dormant legacy path that could silently reintroduce invented copy. Future tour additions must land in `SIGNATURE_SOURCE_OF_TRUTH` via `/admin/sot-refresh` or the site fails loudly instead of falling back to fiction. On the tour card on the highlights remove Lisbon and add real differentiation. The content is viator but with yes storytelling tone. The maps should be rrendering on every tour page and is not. 
