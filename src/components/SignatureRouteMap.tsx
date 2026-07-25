@@ -14,7 +14,8 @@
  * mount and render a lightweight placeholder during SSR.
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { SignatureRouteMapFallback } from "./SignatureRouteMapFallback";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { MapPin } from "lucide-react";
