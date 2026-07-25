@@ -102,7 +102,7 @@ export function TourReviews({ tourId }: { tourId: string }) {
         reviewer_country: null,
         source: (r.source ?? "Viator").toLowerCase(),
         is_first_party: false,
-        source_url: meta!.viatorUrl,
+        source_url: canonicalViatorUrl(tourId) ?? meta!.viatorUrl,
       }))
     : filterVisibleReviews(reviews).map((r) => ({ ...r, source_url: null }));
 
