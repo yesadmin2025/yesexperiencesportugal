@@ -2552,6 +2552,23 @@ export function StudioV3() {
       {state.phase === "guestDetails" ? (
         <PhaseShell accent="ivory" exiting={exiting}>
           <GuestDetailsStep
+            priceQuote={({ adults, minorAges }) => {
+              // Same math as the Stripe reserve handler: age-banded journey
+              // total + unit-aware add-on party total.
+              const t = state.tourId ? findTour(state.tourId) : null;
+              if (!t) return null;
+              const guests = adults + minorAges.length;
+              const j = resolveJourneyPricing(t, adults, minorAges, tourPriceTiers);
+              if (!j) return null;
+              const addOns = addOnsPartyTotal(selectedAddOnItems, guests);
+              return {
+                totalEur: Math.round(j.totalEur + addOns),
+                perPaxAdultEur: j.perPaxAdultEur,
+                hasMinors: minorAges.length > 0,
+                adults,
+              };
+            }}
+
             tourId={state.tourId ?? undefined}
             journeyTitle={state.journeyTitle ?? undefined}
             submitting={false}
