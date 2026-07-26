@@ -99,7 +99,9 @@ export function FinalDetailsDialog({
   onConfirm,
   initial,
   submitting = false,
+  priceQuote,
 }: Props) {
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
