@@ -506,7 +506,7 @@ function TailorPage() {
       { id: tour.id, priceFrom: estimatedPrice },
       composition.adults,
       composition.minorAges,
-      null,
+      tailorTierOverride,
     );
   }, [tour.id, estimatedPrice, composition.adults, composition.minorAges, minorAgesComplete]);
   const journeyLines = journeyPricing?.lines ?? null;
