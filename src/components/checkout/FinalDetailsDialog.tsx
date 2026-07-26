@@ -129,6 +129,11 @@ export function FinalDetailsDialog({
   }, [open]);
 
   const compositionComplete = isCompositionComplete(composition);
+  const quote =
+    priceQuote && compositionComplete
+      ? priceQuote({ adults: composition.adults, minorAges: [...composition.minorAges] })
+      : null;
+
 
   const handleSubmit = async () => {
     if (submitting) return;
