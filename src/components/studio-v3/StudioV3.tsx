@@ -80,6 +80,8 @@ import {
 import { priceComposedJourney } from "@/lib/studio-v3/composerPricing";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
+import { addOnPartyAmount, addOnsPartyTotal } from "@/lib/checkout/studio-charge";
+
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { supabase } from "@/integrations/supabase/client";
