@@ -1,72 +1,60 @@
-## Goals
+## Goal
 
-1. Preview-only stop parity check vs Viator source of truth
-2. Map fallback so tour maps always render in preview
-3. Studio (V3) working end-to-end with all Signature stops available
-4. Site-wide price correctness — Tailor add-ons and stop exclusions actually change price
+Before a guest enters their details and moves to payment, show one unambiguous line — **"You'll be charged €X"** — using exactly the same amount that is sent to Stripe, in all three booking paths: Signature, Tailored Signature, and Studio.
 
----
+## Current state (verified)
 
-## 1. Stop-by-stop consistency check (preview only)
+- All three flows collect details in the same place before Stripe: `FinalDetailsDialog` (Signature via `SimpleBookingForm`, Tailor via `tours.$tourId.tailor.tsx`) and `GuestDetailsStep` (Studio V3, an inline variant of the same form).
+- Each flow already computes the Stripe-bound total *after* the dialog is confirmed, inside its own `handleReserve`, via `resolveJourneyPricing(...)`:
+  - Signature: tour tiers + live tier overrides.
+  - Tailor: tiers pinned to the adjusted per-pax (`tailorTierOverride`), so stop removals/add-ons are reflected.
+  - Studio: `perPaxBase` + `addOnsPartyTotalEur`.
+- The dialog itself shows no charge amount — only "Secure checkout · Final price shown before payment". So the guest fills in the form blind, and the number first appears on the Stripe surface.
 
-New admin route `src/routes/admin.stop-parity.tsx` (also surfaced via a small dev overlay on `/tours/$tourId` when `?parity=1` or hostname is preview/lovable).
+## Approach
 
-- For each Signature tour, read the canonical stops from `src/data/signatureToursSourceOfTruth.ts` and compare against:
-  - the tour config stops used by Studio V3 / tour details (`signatureTours.ts` + `stopIntents.ts`)
-  - the map stops rendered by `SignatureRouteMap` (`stopCoords.ts` / `stopGeo.ts`)
-- Diff engine (reuse the pattern from `admin.sot-diff.tsx`) outputs per tour:
-  - stops present in SoT but missing in YES
-  - stops present in YES but not in SoT
-  - name/order mismatches
-- Table view with tour, field, SoT value, YES value, status chip. Zero writes; read-only.
-- Gate behind `hostname.includes("lovable.app")` or explicit `?preview=1` — never render in production nav.
+Introduce one shared, live price quote into the details step, driven by the composition the guest is editing (adults + each child's age), so the number updates as they change the party.
 
-## 2. Map loading fallback
+### 1. Shared quote contract
 
-Problem: `SignatureRouteMap` uses Leaflet tiles + OSRM routing; when either times out the map area is blank.
+Add an optional prop to `FinalDetailsDialog`:
 
-- Wrap the Leaflet mount in `src/components/SignatureRouteMap.tsx` with:
-  - a 4s tile-load timeout — if OSM tiles don't fire `load`, swap to a secondary tile provider (CARTO Voyager), then to a static SVG map (`PortugalSilhouette` + numbered pins from `stopCoords`) as a final fallback.
-  - OSRM route: 5s timeout → fall back to straight polyline through stop coords; never leave the map without a drawn path.
-- Add a small "Map running in offline preview mode" caption when the static fallback is used.
-- Add error boundary so any Leaflet init error renders the SVG fallback instead of a blank div.
+```
+priceQuote?: (c: { adults: number; minorAges: number[] }) =>
+  { totalEur: number; perPaxAdultEur: number; hasMinors: boolean } | null
+```
 
-## 3. Studio V3 audit
+Returning `null` means "not priceable yet" (incomplete child ages, manual-confirmation path) — the band then shows a neutral "Final price confirmed before payment" state instead of a number.
 
-- Verify `StudioV3.tsx` boots on preview, all beats reachable (Intro → Composition → MapAwakens → Refine → Reveal → Checkout).
-- Run the existing `signature-map-coverage.test.ts` + `sot-viator-parity.test.ts` and fix any regressions surfaced.
-- Ensure every stop from every Signature tour's SoT is:
-  - registered in `stopIntents.ts` (Studio uses this for curation)
-  - has coords in `stopCoords.ts` / `stopGeo.ts` (map renders)
-  - appears in `RefineAccordion` for its parent tour
-- Add a new test `studio-signature-stop-completeness.test.ts` that iterates every SoT tour × stop and asserts presence in Studio's resolved journey.
-- Fix any missing entries surfaced by the test.
+### 2. Shared presentation component
 
-## 4. Pricing correctness — Tailor add-ons & exclusions
+New `src/components/checkout/ChargeSummaryLine.tsx`:
+- Ivory/sand band directly above the confirm CTA.
+- Primary line: **You'll be charged €X** (total, EUR, no cents), in Fraunces at the size of a section figure.
+- Secondary line (Inter, small, muted): `X adults · €Y per adult` and, when minors are present, `child pricing applied (youth 75% · child 50% · infants free)`.
+- Third micro-line: "Charged securely in EUR. No hidden fees."
+- Reduced-motion-safe number crossfade when the total changes; no animation beyond a 180ms fade.
 
-Audit and fix pricing math flow using `src/config/pricing.ts` as SSOT.
+### 3. Wire each flow to its Stripe math
 
-- `src/routes/tours.$tourId.tailor.tsx` + `SimpleTailorForm.tsx`:
-  - Confirm each toggled add-on from `signatureAddOns.ts` adds its price to the running total per-adult/child tier.
-  - Confirm each excluded stop applies the −5% per stop rule (per pricing SSOT memory).
-  - Ensure the displayed price on the Tailor summary, checkout summary (`studio-v3/CheckoutSummary.tsx`), and Stripe line item all use the same computed number.
-- Add unit tests in `src/__tests__/tailor-pricing.test.ts`:
-  - base price → known value
-  - +1 add-on → base + addon
-  - −1 stop → base × 0.95
-  - combined → correct compound
-- Audit surfaces where price is shown: experience cards, tour detail hero, Tailor, Studio V3 running ribbon, Checkout, confirmation email. All must read from the same `computeTourPrice()` helper — introduce it in `src/config/pricing.ts` if not already the single call site.
+Each route passes a `priceQuote` that calls the *same* resolver with the *same* arguments its `handleReserve` already uses — no duplicated formulas:
 
----
+- **Signature** (`SimpleBookingForm`): `resolveJourneyPricing(tour, adults, minorAges, tierOverrides)`.
+- **Tailor** (`tours.$tourId.tailor.tsx`): `resolveJourneyPricing({ id, priceFrom: estimatedPrice }, adults, minorAges, tailorTierOverride)`, so removed stops / add-on deltas are inside the quoted number. When the selection requires manual confirmation (wine extension / manual supplier), return `null` so we never quote a price we can't charge.
+- **Studio V3** (`GuestDetailsStep`, fed from `StudioV3`): same resolver with `perPaxBase`, plus `addOnsPartyTotalEur` added to the total — mirroring `handleReserve` exactly.
+
+To keep them honest, extract the per-flow math into small pure helpers used by both the quote and the reserve handler, so the two can't drift.
+
+### 4. Studio inline step
+
+`GuestDetailsStep` gets the same `priceQuote` prop and renders the same `ChargeSummaryLine` above its footer CTA, respecting the existing mobile sticky footer layout.
+
+### 5. Guardrail test
+
+Extend the existing checkout tests with a parity test: for a set of party compositions (2 adults; 2 adults + 1 child age 7; 2 adults + infant; 6 adults) in each flow, the amount rendered by `ChargeSummaryLine` equals the `totalEur` the flow sends to `create-signature-checkout`.
 
 ## Technical notes
 
-- No schema changes. No new secrets. No new deps (Leaflet + fallback tile URL already in bundle).
-- All new admin/debug routes gated to preview host or query flag; excluded from `sitemap.xml` and `robots.txt` (already `Disallow: /admin/`).
-- Tests: bunx vitest for unit; existing Playwright e2e untouched.
-
-## Out of scope
-
-- No Viator API integration — SoT stays the manual `signatureToursSourceOfTruth.ts`.
-- No Studio V3 visual redesign — only correctness/coverage fixes.
-- No new payment provider work.
+- No backend or pricing-logic changes; the server remains the authority and its math is untouched.
+- Mobile-first: the band sits above the CTA, never inside a scroll trap, and stays visible with the sticky footer on 393px viewports.
+- Currency: EUR is the charged currency; if the site-wide USD switcher is active the USD figure may be shown as a parenthetical "approx." only, with EUR as the charged amount.
