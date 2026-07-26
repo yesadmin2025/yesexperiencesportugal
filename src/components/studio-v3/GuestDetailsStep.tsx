@@ -31,6 +31,8 @@ import {
   totalGuests,
   type TravellerComposition,
 } from "@/lib/checkout/composition";
+import { ChargeSummaryLine, type ChargeQuote } from "@/components/checkout/ChargeSummaryLine";
+
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
