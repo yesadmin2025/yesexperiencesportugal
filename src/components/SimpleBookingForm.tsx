@@ -462,6 +462,18 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       </div>
 
       <FinalDetailsDialog
+        priceQuote={({ adults, minorAges }) => {
+          // Same resolver + arguments as handleReserve → Stripe.
+          const j = resolveJourneyPricing(tour, adults, minorAges, tierOverrides);
+          if (!j) return null;
+          return {
+            totalEur: j.totalEur,
+            perPaxAdultEur: j.perPaxAdultEur,
+            hasMinors: minorAges.length > 0,
+            adults,
+          };
+        }}
+
         open={detailsOpen}
         onOpenChange={(o) => {
           setDetailsOpen(o);
