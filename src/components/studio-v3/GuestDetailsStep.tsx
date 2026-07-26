@@ -364,7 +364,9 @@ export function GuestDetailsStep({
           data-testid="studio-v3-guest-details-cta-bar"
         >
           <div className="max-w-[560px] mx-auto">
+            {priceQuote ? <ChargeSummaryLine quote={quote} className="mb-3" /> : null}
             {submitting ? (
+
               <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
             ) : (
               <CtaButton
