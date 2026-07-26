@@ -80,7 +80,14 @@ interface Props {
   submitting?: boolean;
   /** Signature tour id — recorded on the checkout session for the host. */
   tourId?: string;
+  /**
+   * Live charge quote for the composition currently in the form. MUST be
+   * derived from the same math the flow sends to Stripe. Return `null`
+   * when the selection isn't priceable yet.
+   */
+  priceQuote?: (c: { adults: number; minorAges: number[] }) => ChargeQuote | null;
 }
+
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
