@@ -332,7 +332,9 @@ export function FinalDetailsDialog({
         </div>
 
         <DialogFooter className="px-5 sm:px-7 py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 sm:flex-col sm:items-stretch sm:space-x-0 gap-2">
+          {priceQuote ? <ChargeSummaryLine quote={quote} /> : null}
           {submitting ? (
+
             <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
           ) : (
             <CtaButton
