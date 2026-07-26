@@ -508,7 +508,7 @@ function TailorPage() {
       composition.minorAges,
       tailorTierOverride,
     );
-  }, [tour.id, estimatedPrice, composition.adults, composition.minorAges, minorAgesComplete]);
+  }, [tour.id, estimatedPrice, tailorTierOverride, composition.adults, composition.minorAges, minorAgesComplete]);
   const journeyLines = journeyPricing?.lines ?? null;
   const showBandBreakdown =
     composition.minorAges.length > 0 && hasCompleteJourneyPricing(journeyLines);
