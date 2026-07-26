@@ -167,7 +167,13 @@ export function GuestDetailsStep({
   };
 
 
+  const quote =
+    priceQuote && isCompositionComplete(composition)
+      ? priceQuote({ adults: composition.adults, minorAges: [...composition.minorAges] })
+      : null;
+
   return (
+
     <section
       data-testid={testId ?? "studio-v3-guest-details"}
       aria-labelledby="studio-v3-guest-details-title"
