@@ -461,6 +461,27 @@ function TailorPage() {
 
   const savingsEur = Math.max(0, basePerPax - estimatedPrice);
 
+  // The journey resolver prefers real Viator tier data over `priceFrom`,
+  // so passing the Tailor-adjusted per-pax as an anchor alone would be
+  // ignored (every Signature has tiers). Pin every tier to the adjusted
+  // per-pax so the displayed per-person / party total match the reduction
+  // the guest sees — and what the edge function charges.
+  const tailorTierOverride = useMemo(
+    () => ({
+      [tour.id]: {
+        1: estimatedPrice,
+        2: estimatedPrice,
+        3: estimatedPrice,
+        4: estimatedPrice,
+        5: estimatedPrice,
+        6: estimatedPrice,
+        7: estimatedPrice,
+        8: estimatedPrice,
+      } as Record<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8, number>,
+    }),
+    [tour.id, estimatedPrice],
+  );
+
 
   // Age-banded journey pricing — mirrors the reserve-handler math so the
   // summary shows adults vs each minor at their band-adjusted unit price.
