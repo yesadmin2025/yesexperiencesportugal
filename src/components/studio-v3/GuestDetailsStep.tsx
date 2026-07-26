@@ -56,6 +56,11 @@ export interface GuestDetailsStepProps {
    * sent on blur. Only the explicit "Continue and email…" action fires.
    */
   readonly onStorySubmit?: (email: string) => Promise<void> | void;
+  /**
+   * Live charge quote for the composition currently in the form. MUST be
+   * derived from the same math the flow sends to Stripe.
+   */
+  readonly priceQuote?: (c: { adults: number; minorAges: number[] }) => ChargeQuote | null;
   readonly className?: string;
   readonly testId?: string;
 }
@@ -69,9 +74,11 @@ export function GuestDetailsStep({
   onBack,
   onSubmit,
   onStorySubmit,
+  priceQuote,
   className,
   testId,
 }: GuestDetailsStepProps) {
+
   const [fullName, setFullName] = useState(initial?.fullName ?? "");
   const [email, setEmail] = useState(initial?.email ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
