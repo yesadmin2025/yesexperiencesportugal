@@ -590,8 +590,9 @@ function TailorPage() {
       { id: tour.id, priceFrom: estimatedPrice },
       details.adults,
       details.minorAges,
-      // Pass empty overrides so resolver uses the estimatedPrice anchor.
-      null,
+      // Pin tiers to the Tailor-adjusted per-pax so the resolver can't
+      // fall back to full Viator tier pricing.
+      tailorTierOverride,
     );
     const totalForSummary =
       summaryJourney?.totalEur ?? Math.round(estimatedPrice * details.guests);
