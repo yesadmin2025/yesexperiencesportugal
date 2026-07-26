@@ -21,6 +21,8 @@ import {
   totalGuests,
   type TravellerComposition,
 } from "@/lib/checkout/composition";
+import { ChargeSummaryLine, type ChargeQuote } from "@/components/checkout/ChargeSummaryLine";
+
 
 
 /**
@@ -80,7 +82,14 @@ interface Props {
   submitting?: boolean;
   /** Signature tour id — recorded on the checkout session for the host. */
   tourId?: string;
+  /**
+   * Live charge quote for the composition currently in the form. MUST be
+   * derived from the same math the flow sends to Stripe. Return `null`
+   * when the selection isn't priceable yet.
+   */
+  priceQuote?: (c: { adults: number; minorAges: number[] }) => ChargeQuote | null;
 }
+
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
@@ -90,7 +99,9 @@ export function FinalDetailsDialog({
   onConfirm,
   initial,
   submitting = false,
+  priceQuote,
 }: Props) {
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -118,6 +129,11 @@ export function FinalDetailsDialog({
   }, [open]);
 
   const compositionComplete = isCompositionComplete(composition);
+  const quote =
+    priceQuote && compositionComplete
+      ? priceQuote({ adults: composition.adults, minorAges: [...composition.minorAges] })
+      : null;
+
 
   const handleSubmit = async () => {
     if (submitting) return;
@@ -316,7 +332,9 @@ export function FinalDetailsDialog({
         </div>
 
         <DialogFooter className="px-5 sm:px-7 py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 sm:flex-col sm:items-stretch sm:space-x-0 gap-2">
+          {priceQuote ? <ChargeSummaryLine quote={quote} /> : null}
           {submitting ? (
+
             <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
           ) : (
             <CtaButton

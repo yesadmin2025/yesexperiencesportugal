@@ -31,6 +31,8 @@ import {
   totalGuests,
   type TravellerComposition,
 } from "@/lib/checkout/composition";
+import { ChargeSummaryLine, type ChargeQuote } from "@/components/checkout/ChargeSummaryLine";
+
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -54,6 +56,11 @@ export interface GuestDetailsStepProps {
    * sent on blur. Only the explicit "Continue and email…" action fires.
    */
   readonly onStorySubmit?: (email: string) => Promise<void> | void;
+  /**
+   * Live charge quote for the composition currently in the form. MUST be
+   * derived from the same math the flow sends to Stripe.
+   */
+  readonly priceQuote?: (c: { adults: number; minorAges: number[] }) => ChargeQuote | null;
   readonly className?: string;
   readonly testId?: string;
 }
@@ -67,9 +74,11 @@ export function GuestDetailsStep({
   onBack,
   onSubmit,
   onStorySubmit,
+  priceQuote,
   className,
   testId,
 }: GuestDetailsStepProps) {
+
   const [fullName, setFullName] = useState(initial?.fullName ?? "");
   const [email, setEmail] = useState(initial?.email ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
@@ -158,7 +167,13 @@ export function GuestDetailsStep({
   };
 
 
+  const quote =
+    priceQuote && isCompositionComplete(composition)
+      ? priceQuote({ adults: composition.adults, minorAges: [...composition.minorAges] })
+      : null;
+
   return (
+
     <section
       data-testid={testId ?? "studio-v3-guest-details"}
       aria-labelledby="studio-v3-guest-details-title"
@@ -349,7 +364,9 @@ export function GuestDetailsStep({
           data-testid="studio-v3-guest-details-cta-bar"
         >
           <div className="max-w-[560px] mx-auto">
+            {priceQuote ? <ChargeSummaryLine quote={quote} className="mb-3" /> : null}
             {submitting ? (
+
               <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
             ) : (
               <CtaButton

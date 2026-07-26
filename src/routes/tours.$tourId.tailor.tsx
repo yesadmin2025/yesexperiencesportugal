@@ -1631,6 +1631,25 @@ function TailorPage() {
         </div>
       </section>
       <FinalDetailsDialog
+        priceQuote={({ adults, minorAges }) => {
+          // Never quote a price we can't charge instantly.
+          if (requiresManualConfirmation) return null;
+          // Same resolver + pinned tiers as handleReserve → Stripe.
+          const j = resolveJourneyPricing(
+            { id: tour.id, priceFrom: estimatedPrice },
+            adults,
+            minorAges,
+            tailorTierOverride,
+          );
+          if (!j) return null;
+          return {
+            totalEur: j.totalEur,
+            perPaxAdultEur: j.perPaxAdultEur,
+            hasMinors: minorAges.length > 0,
+            adults,
+          };
+        }}
+
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
         submitting={checkoutPending}
