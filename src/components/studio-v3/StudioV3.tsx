@@ -834,19 +834,9 @@ export function StudioV3() {
       // all resolve to the same amount the traveler sees in the reveal.
       // Never assume "per_person × guests" — that over-charges per_group
       // add-ons the moment the catalog gains one. P2 #15 price parity.
-      const partyAmountFor = (item: (typeof selectedAddOnItems)[number]) => {
-        switch (item.unit) {
-          case "per_person":
-            return item.perUnit * details.guests;
-          case "per_vehicle":
-            return item.perUnit * Math.ceil(details.guests / 4);
-          case "per_group":
-          case "fixed":
-            return item.perUnit;
-          default:
-            return item.amount;
-        }
-      };
+      const partyAmountFor = (item: (typeof selectedAddOnItems)[number]) =>
+        addOnPartyAmount(item, details.guests);
+
       // Add-ons for the Stripe edge function. Today the function hardcodes
       // `quantity: guests`, so it only computes the correct charge when every
       // line is per_person. All current catalog entries are per_person; warn
