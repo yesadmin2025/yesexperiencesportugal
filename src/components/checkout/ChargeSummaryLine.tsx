@@ -40,9 +40,11 @@ const eur = (n: number) =>
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <li className="flex items-baseline justify-between gap-3">
-      <span className="min-w-0 text-[color:var(--charcoal-soft)]">{label}</span>
-      <span className="tabular-nums text-[color:var(--charcoal)]">{value}</span>
+    <li className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3">
+      <span className="min-w-0 break-words leading-snug text-[color:var(--charcoal-soft)]">
+        {label}
+      </span>
+      <span className="shrink-0 tabular-nums text-[color:var(--charcoal)]">{value}</span>
     </li>
   );
 }
