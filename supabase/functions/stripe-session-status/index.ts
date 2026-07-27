@@ -31,7 +31,48 @@ Deno.serve(async (req) => {
     const charge = pi && typeof pi === "object" ? (pi.latest_charge as any) : null;
     const receiptUrl = charge && typeof charge === "object" ? (charge.receipt_url ?? null) : null;
 
+    // Line items + a whitelisted slice of metadata power the printable
+    // receipt page. No PII beyond what the buyer already submitted.
+    let lineItems: Array<{ description: string; quantity: number; amountEur: number }> = [];
+    try {
+      const li = await stripe.checkout.sessions.listLineItems(sessionId, { limit: 25 });
+      // deno-lint-ignore no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      lineItems = (li.data as any[]).map((i) => ({
+        description: String(i.description ?? ""),
+        quantity: Number(i.quantity ?? 1),
+        amountEur: Number(i.amount_total ?? 0) / 100,
+      }));
+    } catch (_e) {
+      lineItems = [];
+    }
+
+    const md = (session.metadata ?? {}) as Record<string, string>;
+    const pick = [
+      "booking_type",
+      "flow",
+      "tour_id",
+      "journey_title",
+      "guests",
+      "adults",
+      "minor_ages",
+      "per_pax_eur",
+      "tour_subtotal_eur",
+      "add_ons",
+      "add_ons_total_eur",
+      "date_exact",
+      "start_time",
+      "pickup",
+      "stops",
+      "tailored",
+    ];
+    const meta: Record<string, string> = {};
+    for (const k of pick) if (md[k]) meta[k] = md[k];
+
     return json({
+      lineItems,
+      metadata: meta,
+      created: session.created ?? null,
       status: session.status, // open | complete | expired
       paymentStatus: session.payment_status, // paid | unpaid | no_payment_required
       amountTotal: session.amount_total,

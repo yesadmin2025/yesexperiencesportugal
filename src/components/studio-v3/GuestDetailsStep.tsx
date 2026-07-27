@@ -35,6 +35,7 @@ import { ChargeSummaryLine, type ChargeQuote } from "@/components/checkout/Charg
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { GuestField, GuestFieldGroup, guestInputClass } from "@/components/checkout/guest-form-ui";
 
 
 export interface GuestDetailsStepProps {
@@ -219,57 +220,57 @@ export function GuestDetailsStep({
       </header>
 
       <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-7">
-        <FieldGroup title="Who's coming">
-          <Field label="Full name" required>
+        <GuestFieldGroup title="Who's coming">
+          <GuestField label="Full name" required>
             <input
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className={inputClass}
+              className={guestInputClass}
               autoComplete="name"
             />
-          </Field>
-          <Field label="Main contact person" hint="If different">
+          </GuestField>
+          <GuestField label="Main contact person" hint="If different">
             <input
               value={mainContact}
               onChange={(e) => setMainContact(e.target.value)}
               placeholder={fullName || "Same as above"}
-              className={inputClass}
+              className={guestInputClass}
             />
-          </Field>
-          <Field label="Email" required>
+          </GuestField>
+          <GuestField label="Email" required>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={inputClass}
+              className={guestInputClass}
               autoComplete="email"
               inputMode="email"
             />
-          </Field>
-          <Field label="Phone / WhatsApp" required>
+          </GuestField>
+          <GuestField label="Phone / WhatsApp" required>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+351 …"
-              className={inputClass}
+              className={guestInputClass}
               autoComplete="tel"
               inputMode="tel"
             />
-          </Field>
-        </FieldGroup>
+          </GuestField>
+        </GuestFieldGroup>
 
-        <FieldGroup title="Your day">
-          <Field label="Tour date" required>
+        <GuestFieldGroup title="Your day">
+          <GuestField label="Tour date" required>
             <input
               type="date"
               value={tourDate}
               min={new Date().toISOString().split("T")[0]}
               onChange={(e) => setTourDate(e.target.value)}
-              className={inputClass}
+              className={guestInputClass}
             />
-          </Field>
-          <Field label="Who's travelling" required>
+          </GuestField>
+          <GuestField label="Who's travelling" required as="div">
             <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
               <CompositionField value={composition} onChange={setComposition} compact />
             </div>
@@ -278,17 +279,17 @@ export function GuestDetailsStep({
                 ? formatCompositionSummary(composition)
                 : "Add an age for every child so we can price honestly."}
             </p>
-          </Field>
+          </GuestField>
 
-          <Field label="Pickup address / hotel" required>
+          <GuestField label="Pickup address / hotel" required>
             <input
               value={pickupAddress}
               onChange={(e) => setPickupAddress(e.target.value)}
               placeholder="Hotel, address or meeting point"
-              className={inputClass}
+              className={guestInputClass}
             />
-          </Field>
-          <Field label="Preferred tour language" required>
+          </GuestField>
+          <GuestField label="Preferred tour language" required as="div">
             <div className="grid grid-cols-2 border border-[color:var(--border)]">
               {(["en", "pt"] as const).map((l) => (
                 <button
@@ -310,52 +311,52 @@ export function GuestDetailsStep({
             <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
               Spanish available on request — subject to guide availability.
             </p>
-          </Field>
-        </FieldGroup>
+          </GuestField>
+        </GuestFieldGroup>
 
-        <FieldGroup
+        <GuestFieldGroup
           title="Anything we should know"
           optional
           subtitle="Optional — skip unless it matters for your day."
         >
-          <Field label="Dietary restrictions">
+          <GuestField label="Dietary restrictions">
             <input
               value={dietary}
               onChange={(e) => setDietary(e.target.value)}
-              className={inputClass}
+              className={guestInputClass}
             />
-          </Field>
-          <Field label="Mobility notes">
+          </GuestField>
+          <GuestField label="Mobility notes">
             <input
               value={mobility}
               onChange={(e) => setMobility(e.target.value)}
-              className={inputClass}
+              className={guestInputClass}
             />
-          </Field>
-          <Field label="Children / child seats">
+          </GuestField>
+          <GuestField label="Children / child seats">
             <input
               value={children}
               onChange={(e) => setChildren(e.target.value)}
-              className={inputClass}
+              className={guestInputClass}
             />
-          </Field>
-          <Field label="Special occasion">
+          </GuestField>
+          <GuestField label="Special occasion">
             <input
               value={occasion}
               onChange={(e) => setOccasion(e.target.value)}
               placeholder="Anniversary, birthday…"
-              className={inputClass}
+              className={guestInputClass}
             />
-          </Field>
-          <Field label="Notes for the guide">
+          </GuestField>
+          <GuestField label="Notes for the guide">
             <textarea
               value={guideNotes}
               onChange={(e) => setGuideNotes(e.target.value)}
               rows={3}
-              className={`${inputClass} resize-none`}
+              className={`${guestInputClass} resize-none`}
             />
-          </Field>
-        </FieldGroup>
+          </GuestField>
+        </GuestFieldGroup>
 
         {/* Sticky CTA — sits above the virtual keyboard via safe-area padding
             on the wrapper. */}
@@ -387,76 +388,6 @@ export function GuestDetailsStep({
         </div>
       </form>
     </section>
-  );
-}
-
-const inputClass =
-  "w-full min-h-[44px] border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-[15px] focus:border-[color:var(--gold)] focus:outline-none";
-
-function FieldGroup({
-  title,
-  optional,
-  subtitle,
-  children,
-}: {
-  title: string;
-  optional?: boolean;
-  subtitle?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-3">
-      <div className="flex items-baseline justify-between">
-        <h3 className="text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal)]">
-          {title}
-        </h3>
-        {optional ? (
-          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/70">
-            Optional
-          </span>
-        ) : null}
-      </div>
-      {subtitle ? (
-        <p className="text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
-          {subtitle}
-        </p>
-      ) : null}
-      <div className="space-y-3">{children}</div>
-    </div>
-  );
-}
-
-function Field({
-  label,
-  required,
-  hint,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  hint?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <div className="flex items-baseline justify-between text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
-        <span>
-          {label}
-          {required ? (
-            <span className="text-[color:var(--teal)] ml-1" aria-hidden>
-              *
-            </span>
-          ) : null}
-          {required ? <span className="sr-only"> (required)</span> : null}
-        </span>
-        {hint ? (
-          <span className="normal-case tracking-normal text-[10px] text-[color:var(--charcoal-soft)]/70">
-            {hint}
-          </span>
-        ) : null}
-      </div>
-      {children}
-    </label>
   );
 }
 
