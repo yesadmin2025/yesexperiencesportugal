@@ -73,3 +73,37 @@ export function tailorFinalPerPax(
   const extra = Number.isFinite(supplementsEur) ? Math.max(0, Math.round(supplementsEur)) : 0;
   return base + extra;
 }
+
+/**
+ * Per-Signature Tailor entitlements — server mirror of `src/data/tailorRules.ts`.
+ * The server never trusts a client-supplied euro amount: it re-derives the
+ * supplement from booleans/counts using these tables.
+ */
+export const TAILOR_LUNCH_ELIGIBLE: ReadonlySet<string> = new Set([
+  "troia-comporta",
+  "southwest-vicentine-coast",
+  "arrabida-boat",
+  "sintra-cascais",
+  "azeitao-cheese",
+  "tomar-coimbra",
+  "evora-alentejo",
+  "fatima-nazare-obidos",
+  "tiles-workshop",
+]);
+
+/** Extra wineries beyond the included baseline, per Signature. */
+export const TAILOR_MAX_EXTRA_WINERIES: Record<string, number> = {
+  "arrabida-wine-allinclusive": 2, // 2 included, up to 4
+};
+
+export function serverTailorSupplementsEur(
+  tourId: string,
+  lunchAdded: boolean,
+  extraWineries: number,
+): number {
+  const lunch =
+    lunchAdded && TAILOR_LUNCH_ELIGIBLE.has(tourId) ? TAILOR_LUNCH_SUPPLEMENT_EUR : 0;
+  const maxExtra = TAILOR_MAX_EXTRA_WINERIES[tourId] ?? 0;
+  const extra = Math.min(maxExtra, Math.max(0, Number(extraWineries) | 0));
+  return lunch + extra * TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR;
+}
