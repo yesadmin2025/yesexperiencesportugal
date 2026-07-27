@@ -164,8 +164,13 @@ function FormatCard({ format }: { format: (typeof FORMATS)[number] }) {
       ref={ref}
       className="reveal-stagger border-t border-[color:var(--border)] pt-6 md:pt-8"
     >
-      <Eyebrow icon={<Icon strokeWidth={1.8} />}>{format.title}</Eyebrow>
-      <h3 className="serif mt-3 text-[1.25rem] md:text-[1.5rem] leading-[1.2] text-[color:var(--charcoal)]">
+      <Icon
+        size={20}
+        strokeWidth={1.6}
+        aria-hidden="true"
+        className="text-[color:var(--gold-deep,var(--gold))]"
+      />
+      <h3 className="serif mt-4 text-[1.25rem] md:text-[1.5rem] leading-[1.2] text-[color:var(--charcoal)]">
         {format.title}
       </h3>
       <p className="mt-3 text-[15px] md:text-[16px] leading-[1.75] text-[color:var(--charcoal-soft)]">
