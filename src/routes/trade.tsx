@@ -296,16 +296,17 @@ function TradePage() {
           <div className="mt-9 md:mt-14 grid md:grid-cols-3 gap-8 md:gap-12 items-start divide-y divide-[color:var(--charcoal)]/10 md:divide-y-0">
 
             {BENEFITS.map((b) => (
-              <div key={b.title} className="reveal-stagger">
+              <div key={b.title} className="reveal-stagger pt-8 first:pt-0 md:pt-0">
                 <h3 className="serif text-[1.15rem] md:text-xl leading-snug text-[color:var(--teal)]">
                   {b.title}
                 </h3>
                 <span className="gold-rule mt-3 max-w-[40px]" aria-hidden="true" />
-                <p className="mt-3 max-w-[60ch] text-[15px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+                <p className="mt-3 max-w-[46ch] md:max-w-[60ch] text-[15px] leading-[1.75] md:leading-[1.7] text-[color:var(--charcoal-soft)]">
                   {b.body}
                 </p>
               </div>
             ))}
+
           </div>
         </Scene>
       </section>
