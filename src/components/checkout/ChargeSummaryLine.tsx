@@ -40,9 +40,11 @@ const eur = (n: number) =>
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <li className="flex items-baseline justify-between gap-3">
-      <span className="min-w-0 text-[color:var(--charcoal-soft)]">{label}</span>
-      <span className="tabular-nums text-[color:var(--charcoal)]">{value}</span>
+    <li className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3">
+      <span className="min-w-0 break-words leading-snug text-[color:var(--charcoal-soft)]">
+        {label}
+      </span>
+      <span className="shrink-0 tabular-nums text-[color:var(--charcoal)]">{value}</span>
     </li>
   );
 }
@@ -89,13 +91,13 @@ export function ChargeSummaryLine({
         className,
       ].join(" ")}
     >
-      <div className="flex items-baseline justify-between gap-3">
-        <span className="text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-          Total today
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3">
+        <span className="min-w-0 text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+          Final price
         </span>
         <span
           key={Math.round(quote.totalEur)}
-          className="serif text-[1.15rem] leading-none text-[color:var(--charcoal)] motion-safe:animate-in motion-safe:fade-in motion-safe:duration-200"
+          className="serif shrink-0 text-[1.15rem] leading-none text-[color:var(--charcoal)] motion-safe:animate-in motion-safe:fade-in motion-safe:duration-200"
         >
           {eur(quote.totalEur)}
         </span>
@@ -106,9 +108,9 @@ export function ChargeSummaryLine({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         data-testid="charge-summary-toggle"
-        className="mt-1 flex w-full items-center justify-between gap-2 py-1 text-left text-[10.5px] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+        className="mt-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-2 py-1 text-left text-[10.5px] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
       >
-        <span>
+        <span className="min-w-0 break-words leading-snug">
           {quote.adults} {quote.adults === 1 ? "adult" : "adults"}
           {minors > 0 ? ` · ${minors} ${minors === 1 ? "child" : "children"}` : ""} ·{" "}
           {eur(quote.perPaxAdultEur)} per adult
@@ -125,7 +127,7 @@ export function ChargeSummaryLine({
       {open ? (
         <ul
           data-testid="charge-summary-breakdown"
-          className="mt-1 space-y-1 border-t border-[color:var(--border)] pt-1.5 text-[11px]"
+          className="mt-1 max-h-[30vh] space-y-1 overflow-y-auto overscroll-contain border-t border-[color:var(--border)] pt-1.5 text-[11px]"
         >
           <Row
             label={`Per adult × ${quote.adults}`}
@@ -133,7 +135,7 @@ export function ChargeSummaryLine({
           />
           {minors > 0 ? (
             <Row
-              label={`Children (youth 75% · child 50% · infants free)`}
+              label={`Children · youth 75% · child 50% · infants free`}
               value={eur(Math.max(0, journey - quote.perPaxAdultEur * quote.adults))}
             />
           ) : null}
@@ -143,6 +145,7 @@ export function ChargeSummaryLine({
       ) : null}
 
       <p className="mt-1 text-[9.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]/80">
+
         Charged securely in EUR · no hidden fees
       </p>
     </div>
