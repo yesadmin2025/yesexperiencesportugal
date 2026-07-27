@@ -82,6 +82,7 @@ import { Route as PtCookiesRouteImport } from './routes/pt.cookies'
 import { Route as PtContactRouteImport } from './routes/pt.contact'
 import { Route as PtAboutRouteImport } from './routes/pt.about'
 import { Route as PtSplatRouteImport } from './routes/pt.$'
+import { Route as PartnersSplatRouteImport } from './routes/partners.$'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
 import { Route as Itineraries10DayPrivatePortugalTourRouteImport } from './routes/itineraries.10-day-private-portugal-tour'
 import { Route as ITokenRouteImport } from './routes/i.$token'
@@ -511,6 +512,11 @@ const PtSplatRoute = PtSplatRouteImport.update({
   path: '/$',
   getParentRoute: () => PtRoute,
 } as any)
+const PartnersSplatRoute = PartnersSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => PartnersRoute,
+} as any)
 const LocalStoriesSlugRoute = LocalStoriesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -849,7 +855,7 @@ export interface FileRoutesByFullPath {
   '/mcp-signin': typeof McpSigninRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
-  '/partners': typeof PartnersRoute
+  '/partners': typeof PartnersRouteWithChildren
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -914,6 +920,7 @@ export interface FileRoutesByFullPath {
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
+  '/partners/$': typeof PartnersSplatRoute
   '/pt/$': typeof PtSplatRoute
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
@@ -982,7 +989,7 @@ export interface FileRoutesByTo {
   '/mcp-signin': typeof McpSigninRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
-  '/partners': typeof PartnersRoute
+  '/partners': typeof PartnersRouteWithChildren
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -1046,6 +1053,7 @@ export interface FileRoutesByTo {
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
+  '/partners/$': typeof PartnersSplatRoute
   '/pt/$': typeof PtSplatRoute
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
@@ -1116,7 +1124,7 @@ export interface FileRoutesById {
   '/mcp-signin': typeof McpSigninRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
-  '/partners': typeof PartnersRoute
+  '/partners': typeof PartnersRouteWithChildren
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -1181,6 +1189,7 @@ export interface FileRoutesById {
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
+  '/partners/$': typeof PartnersSplatRoute
   '/pt/$': typeof PtSplatRoute
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
@@ -1317,6 +1326,7 @@ export interface FileRouteTypes {
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
+    | '/partners/$'
     | '/pt/$'
     | '/pt/about'
     | '/pt/contact'
@@ -1449,6 +1459,7 @@ export interface FileRouteTypes {
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
+    | '/partners/$'
     | '/pt/$'
     | '/pt/about'
     | '/pt/contact'
@@ -1583,6 +1594,7 @@ export interface FileRouteTypes {
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
+    | '/partners/$'
     | '/pt/$'
     | '/pt/about'
     | '/pt/contact'
@@ -1653,7 +1665,7 @@ export interface RootRouteChildren {
   McpSigninRoute: typeof McpSigninRoute
   MomentsRoute: typeof MomentsRoute
   MultiDayRoute: typeof MultiDayRoute
-  PartnersRoute: typeof PartnersRoute
+  PartnersRoute: typeof PartnersRouteWithChildren
   PortugalToursRoute: typeof PortugalToursRoute
   PortugalTravelDesignerRoute: typeof PortugalTravelDesignerRoute
   PortugalWineToursRoute: typeof PortugalWineToursRoute
@@ -2254,6 +2266,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PtSplatRouteImport
       parentRoute: typeof PtRoute
     }
+    '/partners/$': {
+      id: '/partners/$'
+      path: '/$'
+      fullPath: '/partners/$'
+      preLoaderRoute: typeof PartnersSplatRouteImport
+      parentRoute: typeof PartnersRoute
+    }
     '/local-stories/$slug': {
       id: '/local-stories/$slug'
       path: '/$slug'
@@ -2684,6 +2703,18 @@ const LocalStoriesRouteWithChildren = LocalStoriesRoute._addFileChildren(
   LocalStoriesRouteChildren,
 )
 
+interface PartnersRouteChildren {
+  PartnersSplatRoute: typeof PartnersSplatRoute
+}
+
+const PartnersRouteChildren: PartnersRouteChildren = {
+  PartnersSplatRoute: PartnersSplatRoute,
+}
+
+const PartnersRouteWithChildren = PartnersRoute._addFileChildren(
+  PartnersRouteChildren,
+)
+
 interface PtRouteChildren {
   PtSplatRoute: typeof PtSplatRoute
   PtAboutRoute: typeof PtAboutRoute
@@ -2773,7 +2804,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpSigninRoute: McpSigninRoute,
   MomentsRoute: MomentsRoute,
   MultiDayRoute: MultiDayRoute,
-  PartnersRoute: PartnersRoute,
+  PartnersRoute: PartnersRouteWithChildren,
   PortugalToursRoute: PortugalToursRoute,
   PortugalTravelDesignerRoute: PortugalTravelDesignerRoute,
   PortugalWineToursRoute: PortugalWineToursRoute,
