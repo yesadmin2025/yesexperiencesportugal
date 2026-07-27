@@ -50,3 +50,29 @@ export function tailorAdjustedPerPax(
   const proposed = Math.round(directEur * (1 - reductionPct));
   return Math.max(proposed, operationalFloor(directEur));
 }
+
+/* -------------------------------------------------------------------- *
+ * Authorized Tailor supplements (Canonical Signature Bible v1.1).      *
+ * Supplements are flat per-person amounts and are NEVER touched by the *
+ * percentage reduction or the operational floor.                       *
+ * -------------------------------------------------------------------- */
+
+/** "Add lunch" — offered only on Signatures where lunch is excluded. */
+export const TAILOR_LUNCH_SUPPLEMENT_EUR = 35;
+/** "Add a 3rd / 4th winery" — Setúbal & Arrábida Wine only. */
+export const TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR = 20;
+
+/**
+ * Final Tailor per-pax price: the reduced base plus flat supplements.
+ * This is the exact amount shown as "Final price" and charged by Stripe.
+ */
+export function tailorFinalPerPax(
+  directEur: number,
+  principalsRemoved: number,
+  supplementsEur = 0,
+): number {
+  const base = tailorAdjustedPerPax(directEur, principalsRemoved);
+  const extra = Number.isFinite(supplementsEur) ? Math.max(0, Math.round(supplementsEur)) : 0;
+  return base + extra;
+}
+

@@ -50,6 +50,10 @@ interface Body {
   /** Number of principal stops the guest removed in Tailor. Used to apply
    *  the SSOT tailor reduction to the resolved per-pax price. */
   principalsRemoved?: number;
+  /** Tailor: guest added the +€35pp lunch (only on lunch-excluded Signatures). */
+  tailorLunchAdded?: boolean;
+  /** Tailor: wineries selected beyond the Signature baseline (+€20pp each). */
+  tailorExtraWineries?: number;
   /** Which surface initiated checkout. Drives copy in Stripe Checkout. */
   flow?: "studio" | "signature" | "tailor";
 
@@ -73,7 +77,13 @@ interface Body {
   }>;
 }
 
-import { AGE_BAND_PCT, ageBand, tailorAdjustedPerPax, type AgeBand } from "../_shared/pricing.ts";
+import {
+  AGE_BAND_PCT,
+  ageBand,
+  serverTailorSupplementsEur,
+  tailorFinalPerPax,
+  type AgeBand,
+} from "../_shared/pricing.ts";
 
 
 type Flow = "studio" | "signature" | "tailor";
@@ -213,16 +223,24 @@ Deno.serve(async (req) => {
     const resolvedPerPax = real ?? body.priceFromEur;
 
     // Tailor flow only: apply SSOT reduction based on principal stops the
-    // guest removed. Client-supplied `principalsRemoved` is clamped 0..8;
-    // `tailorAdjustedPerPax` enforces the −5%/step, −15% cap and the 70%
-    // operational floor. Signature/Studio flows keep the resolved per-pax.
+    // guest removed, then add the authorized flat supplements (add lunch,
+    // extra wineries). Supplements are re-derived server-side from the
+    // per-Signature entitlement tables — never taken as a euro amount.
     const isTailorFlow = (body.flow ?? (body.tailored ? "tailor" : "signature")) === "tailor";
     const principalsRemoved = isTailorFlow
       ? Math.min(8, Math.max(0, Number(body.principalsRemoved ?? 0) | 0))
       : 0;
+    const tailorSupplements = isTailorFlow
+      ? serverTailorSupplementsEur(
+          body.tourId,
+          body.tailorLunchAdded === true,
+          Number(body.tailorExtraWineries ?? 0),
+        )
+      : 0;
     const eurPerPax = isTailorFlow
-      ? tailorAdjustedPerPax(resolvedPerPax, principalsRemoved)
+      ? tailorFinalPerPax(resolvedPerPax, principalsRemoved, tailorSupplements)
       : resolvedPerPax;
+
 
 
 

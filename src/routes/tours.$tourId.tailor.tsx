@@ -35,7 +35,9 @@ import { getTailorBlueprint, type BlueprintStop } from "@/data/tailorBlueprints"
 import { DWELL_MINIMUM_MIN, evaluateDay, type FeasibilityStop } from "@/lib/feasibility";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
-import { tailorAdjustedPerPax } from "@/config/pricing";
+import { tailorAdjustedPerPax, tailorFinalPerPax } from "@/config/pricing";
+import { canSelectWineries, tailorRules, tailorSupplementsEur } from "@/data/tailorRules";
+import { TAILOR_LUNCH_SUPPLEMENT_EUR } from "@/config/pricing";
 
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION_SHORT } from "@/config/business-nap";
@@ -321,6 +323,25 @@ function TailorPage() {
       next.delete(id);
     } else {
       next.add(id);
+      // Canonical winery ladder: max 4, and the 4th needs a stop removed.
+      const option0 = blueprint?.choice?.options.find((o) => o.id === id);
+      if (option0?.category === "winery") {
+        const coreWineries = (blueprint?.core ?? []).filter(
+          (s) => s.category === "winery" && !skippedCore.has(s.id),
+        ).length;
+        const chosenWineries = (blueprint?.choice?.options ?? []).filter(
+          (o) => o.category === "winery" && next.has(o.id),
+        ).length;
+        const gate = canSelectWineries(
+          tour.id,
+          coreWineries + chosenWineries,
+          skippedCore.size,
+        );
+        if (!gate.allowed) {
+          toast.error(gate.message);
+          return;
+        }
+      }
       const proj = projectFeasibility(skippedCore, next, optionalSelected);
       if (proj && !proj.feasible) {
         toast.error(proj.warnings[0] ?? "Adding that stop overloads the day.");
@@ -449,17 +470,51 @@ function TailorPage() {
     return r?.eurPerPax ?? tour.priceFrom;
   }, [tour, guests, tierOverrides]);
 
+  const [lunchAdded, setLunchAdded] = useState(false);
+
   const principalsRemoved = useMemo(
     () => (blueprint ? skippedCore.size : skipped.size),
     [blueprint, skippedCore, skipped],
   );
 
-  const estimatedPrice = useMemo(
+  // ─── Authorized Tailor supplements (Canonical Bible v1.1) ───
+  // Only two levers exist beyond stop removal: "add lunch" (+€35 pp, and
+  // only where lunch is genuinely excluded) and extra wineries (+€20 pp,
+  // Setúbal & Arrábida only, max 4, the 4th requiring a stop removal).
+  const rules = useMemo(() => tailorRules(tour.id), [tour.id]);
+
+  /** Total wineries currently in the day (kept core + chosen options). */
+  const wineriesSelected = useMemo(() => {
+    if (!blueprint) return 0;
+    const core = blueprint.core.filter(
+      (s) => s.category === "winery" && !skippedCore.has(s.id),
+    ).length;
+    const chosen = (blueprint.choice?.options ?? []).filter(
+      (o) => o.category === "winery" && choiceSelected.has(o.id),
+    ).length;
+    return core + chosen;
+  }, [blueprint, skippedCore, choiceSelected]);
+
+  const supplementsPerPax = useMemo(
+    () =>
+      tailorSupplementsEur(tour.id, {
+        lunchAdded,
+        wineriesSelected: rules.wineries ? wineriesSelected : undefined,
+      }),
+    [tour.id, lunchAdded, rules.wineries, wineriesSelected],
+  );
+
+  const reducedPerPax = useMemo(
     () => tailorAdjustedPerPax(basePerPax, principalsRemoved),
     [basePerPax, principalsRemoved],
   );
 
-  const savingsEur = Math.max(0, basePerPax - estimatedPrice);
+  const estimatedPrice = useMemo(
+    () => tailorFinalPerPax(basePerPax, principalsRemoved, supplementsPerPax),
+    [basePerPax, principalsRemoved, supplementsPerPax],
+  );
+
+  const savingsEur = Math.max(0, basePerPax - reducedPerPax);
 
   // The journey resolver prefers real Viator tier data over `priceFrom`,
   // so passing the Tailor-adjusted per-pax as an anchor alone would be
@@ -645,6 +700,10 @@ function TailorPage() {
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
           priceFromEur: basePerPax,
           principalsRemoved,
+          tailorLunchAdded: lunchAdded,
+          tailorExtraWineries: rules.wineries
+            ? Math.max(0, wineriesSelected - rules.wineries.included)
+            : 0,
 
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
           environment: getStripeEnvironment(),
@@ -1501,6 +1560,37 @@ function TailorPage() {
                     />
                   )}
 
+                  {/* Add lunch — offered only where the canonical product
+                      genuinely excludes it (never on the picnic, the winery
+                      lunch or the all-inclusive wine day). */}
+                  {rules.allowAddLunch && (
+                    <button
+                      type="button"
+                      onClick={() => setLunchAdded((v) => !v)}
+                      aria-pressed={lunchAdded}
+                      data-testid="tailor-add-lunch"
+                      className={[
+                        "w-full flex items-center justify-between gap-3 border px-3 py-2.5 text-left transition-colors min-h-[52px]",
+                        lunchAdded
+                          ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
+                          : "border-[color:var(--border)]",
+                      ].join(" ")}
+                    >
+                      <span className="flex flex-col">
+                        <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
+                          Add lunch
+                        </span>
+                        <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
+                          {lunchAdded ? "Added to your day" : "Lunch is not included in this Signature"}
+                        </span>
+                      </span>
+                      <span className="text-[12px] tabular-nums text-[color:var(--charcoal)] whitespace-nowrap">
+                        +<PriceEur amountEur={TAILOR_LUNCH_SUPPLEMENT_EUR} role="per-person" /> pp
+                      </span>
+                    </button>
+                  )}
+
+
                   {/* Truthful per-person + party-total split. "Indicative
                       total / adult" was misread as a party total; use the
                       same two-line shape as the Signature price card. */}
@@ -1527,6 +1617,12 @@ function TailorPage() {
                         </span>
                       </span>
                     </div>
+                    {supplementsPerPax > 0 && (
+                      <p className="text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                        Includes <PriceEur amountEur={supplementsPerPax} role="per-person" /> pp of
+                        additions.
+                      </p>
+                    )}
                     {principalsRemoved > 0 && (
                       <p className="text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
                         Adjusted from <PriceEur amountEur={basePerPax} role="per-person" /> —{" "}

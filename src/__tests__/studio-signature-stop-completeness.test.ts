@@ -15,7 +15,13 @@ const MIN_MATCHED_STOPS: Record<string, number> = {
   "arrabida-boat": 5,
   "arrabida-wine-allinclusive": 5,
   "azeitao-cheese": 3,
-  "evora-alentejo": 2,
+  // 2026-07-27: the canonical Bible content for this Signature is Évora +
+  // Alentejo (matching the live site), while CANONICAL_VIATOR_URLS still
+  // points at the P6 Setúbal product. External mappings are reported, never
+  // silently changed — so the Studio pool has no Évora/Alentejo winery stops
+  // yet. Ratchet back to 2+ once those builder_stops rows are added.
+  "evora-alentejo": 1,
+
   "fatima-nazare-obidos": 3,
   "roman-heritage-alentejo": 2,
   "sintra-cascais": 3,
