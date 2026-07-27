@@ -190,59 +190,59 @@ export function FinalDetailsDialog({
         </DialogHeader>
 
         <div className="overflow-y-auto px-5 sm:px-7 py-5 space-y-5">
-          <Section title="Who's coming">
-            <Row>
-              <Field label="Full name" required>
+          <GuestFieldGroup title="Who's coming">
+            <GuestRow>
+              <GuestField label="Full name" required>
                 <input
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className={inputClass}
+                  className={guestInputClass}
                   autoComplete="name"
                 />
-              </Field>
-              <Field label="Main contact person" hint="If different">
+              </GuestField>
+              <GuestField label="Main contact person" hint="If different">
                 <input
                   value={mainContact}
                   onChange={(e) => setMainContact(e.target.value)}
                   placeholder={fullName || "Same as above"}
-                  className={inputClass}
+                  className={guestInputClass}
                 />
-              </Field>
-            </Row>
-            <Row>
-              <Field label="Email" required>
+              </GuestField>
+            </GuestRow>
+            <GuestRow>
+              <GuestField label="Email" required>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={inputClass}
+                  className={guestInputClass}
                   autoComplete="email"
                 />
-              </Field>
-              <Field label="Phone / WhatsApp" required>
+              </GuestField>
+              <GuestField label="Phone / WhatsApp" required>
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+351 …"
-                  className={inputClass}
+                  className={guestInputClass}
                   autoComplete="tel"
                 />
-              </Field>
-            </Row>
-          </Section>
+              </GuestField>
+            </GuestRow>
+          </GuestFieldGroup>
 
-          <Section title="Your day">
-            <Field label="Tour date" required>
+          <GuestFieldGroup title="Your day">
+            <GuestField label="Tour date" required>
               <input
                 type="date"
                 value={tourDate}
                 min={new Date().toISOString().split("T")[0]}
                 onChange={(e) => setTourDate(e.target.value)}
-                className={inputClass}
+                className={guestInputClass}
               />
-            </Field>
-            <Field label="Who's travelling" required>
+            </GuestField>
+            <GuestField label="Who's travelling" required>
               <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
                 <CompositionField value={composition} onChange={setComposition} compact />
               </div>
@@ -251,17 +251,17 @@ export function FinalDetailsDialog({
                   ? formatCompositionSummary(composition)
                   : "Add an age for every child so we can price honestly."}
               </p>
-            </Field>
+            </GuestField>
 
-            <Field label="Pickup address / hotel" required>
+            <GuestField label="Pickup address / hotel" required>
               <input
                 value={pickupAddress}
                 onChange={(e) => setPickupAddress(e.target.value)}
                 placeholder="Hotel, address or meeting point"
-                className={inputClass}
+                className={guestInputClass}
               />
-            </Field>
-            <Field label="Preferred tour language" required>
+            </GuestField>
+            <GuestField label="Preferred tour language" required>
               <div className="grid grid-cols-2 border border-[color:var(--border)]">
                 {(["en", "pt"] as const).map((l) => (
                   <button
@@ -283,52 +283,52 @@ export function FinalDetailsDialog({
               <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
                 Spanish available on request — subject to guide availability.
               </p>
-            </Field>
-          </Section>
+            </GuestField>
+          </GuestFieldGroup>
 
-          <Section title="Anything we should know" optional>
-            <Row>
-              <Field label="Dietary restrictions">
+          <GuestFieldGroup title="Anything we should know" optional>
+            <GuestRow>
+              <GuestField label="Dietary restrictions">
                 <input
                   value={dietary}
                   onChange={(e) => setDietary(e.target.value)}
-                  className={inputClass}
+                  className={guestInputClass}
                 />
-              </Field>
-              <Field label="Mobility notes">
+              </GuestField>
+              <GuestField label="Mobility notes">
                 <input
                   value={mobility}
                   onChange={(e) => setMobility(e.target.value)}
-                  className={inputClass}
+                  className={guestInputClass}
                 />
-              </Field>
-            </Row>
-            <Row>
-              <Field label="Children / child seats">
+              </GuestField>
+            </GuestRow>
+            <GuestRow>
+              <GuestField label="Children / child seats">
                 <input
                   value={children}
                   onChange={(e) => setChildren(e.target.value)}
-                  className={inputClass}
+                  className={guestInputClass}
                 />
-              </Field>
-              <Field label="Special occasion">
+              </GuestField>
+              <GuestField label="Special occasion">
                 <input
                   value={occasion}
                   onChange={(e) => setOccasion(e.target.value)}
                   placeholder="Anniversary, birthday…"
-                  className={inputClass}
+                  className={guestInputClass}
                 />
-              </Field>
-            </Row>
-            <Field label="Notes for the guide">
+              </GuestField>
+            </GuestRow>
+            <GuestField label="Notes for the guide">
               <textarea
                 value={guideNotes}
                 onChange={(e) => setGuideNotes(e.target.value)}
                 rows={3}
-                className={`${inputClass} resize-none`}
+                className={`${guestInputClass} resize-none`}
               />
-            </Field>
-          </Section>
+            </GuestField>
+          </GuestFieldGroup>
         </div>
 
         <DialogFooter className="px-5 sm:px-7 py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 sm:flex-col sm:items-stretch sm:space-x-0 gap-2">
@@ -354,72 +354,5 @@ export function FinalDetailsDialog({
         </form>
       </DialogContent>
     </Dialog>
-  );
-}
-
-const inputClass =
-  "w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-sm focus:border-[color:var(--gold)] focus:outline-none";
-
-function Section({
-  title,
-  optional,
-  children,
-}: {
-  title: string;
-  optional?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-3">
-      <div className="flex items-baseline justify-between">
-        <h3 className="text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal)]">
-          {title}
-        </h3>
-        {optional && (
-          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/70">
-            Optional
-          </span>
-        )}
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function Row({ children }: { children: React.ReactNode }) {
-  return <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">{children}</div>;
-}
-
-function Field({
-  label,
-  required,
-  hint,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  hint?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="block">
-      <div className="flex items-baseline justify-between text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
-        <span>
-          {label}
-          {required && (
-            <span className="text-[color:var(--teal)] ml-1" aria-hidden>
-              *
-            </span>
-          )}
-          {required && <span className="sr-only"> (required)</span>}
-        </span>
-        {hint && (
-          <span className="normal-case tracking-normal text-[10px] text-[color:var(--charcoal-soft)]/70">
-            {hint}
-          </span>
-        )}
-      </div>
-      {children}
-    </div>
   );
 }
