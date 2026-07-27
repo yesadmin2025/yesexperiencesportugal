@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import logoAsset from "@/assets/logo-livro-reclamacoes-wordmark.png.asset.json";
+import logoAsset from "@/assets/logo-livro-reclamacoes-lockup.png.asset.json";
 import { assertContrast } from "@/lib/a11y/contrast-check";
 
 /**
@@ -39,12 +39,11 @@ export function LivroReclamacoesBadge() {
         ref={imgRef}
         src={logoAsset.url}
         alt="Livro de Reclamações"
-        width={1249}
-        height={108}
+        width={737}
+        height={294}
         loading="lazy"
         decoding="async"
-        className="block h-auto w-[150px] max-w-full select-none min-[360px]:w-[176px] sm:w-[200px]"
-        style={{ filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.35))" }}
+        className="block h-auto w-[180px] max-w-full select-none sm:w-[210px]"
       />
     </a>
   );
