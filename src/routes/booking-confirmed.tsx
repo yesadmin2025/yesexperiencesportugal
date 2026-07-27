@@ -198,15 +198,27 @@ function BookingConfirmedPage() {
             </p>
           ) : null}
 
-          {state.kind === "ok" && state.data.receiptUrl ? (
+          {session_id ? (
             <div className="mt-6">
+              <Link
+                to="/booking-receipt"
+                search={{ session_id }}
+                className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] border-b border-[color:var(--teal)]/40 hover:border-[color:var(--gold)] pb-1 min-h-[44px]"
+              >
+                <Receipt size={14} /> Printable receipt
+              </Link>
+            </div>
+          ) : null}
+
+          {state.kind === "ok" && state.data.receiptUrl ? (
+            <div className="mt-4">
               <a
                 href={state.data.receiptUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] border-b border-[color:var(--teal)]/40 hover:border-[color:var(--gold)] pb-1"
               >
-                <Receipt size={14} /> View your receipt
+                <Receipt size={14} /> Stripe payment receipt
               </a>
             </div>
           ) : null}
