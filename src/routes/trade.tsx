@@ -248,25 +248,25 @@ function TradePage() {
   return (
     <SiteLayout>
       {/* ── Hero ────────────────────────────────────────── */}
-      <section className="reveal pt-32 pb-16 md:pb-24 bg-[color:var(--sand)]">
+      <section className="reveal pt-24 md:pt-32 pb-14 md:pb-24 bg-[color:var(--sand)]">
         <Scene className="container-x max-w-4xl text-center">
           <div className="scene-atmosphere">
             <Eyebrow flank>For travel advisors &amp; designers</Eyebrow>
           </div>
-          <div className="scene-title mt-5">
+          <div className="scene-title mt-4 md:mt-5">
             <SectionTitle as="h1" size="anchor" spacing="loose">
               Your clients&rsquo; Portugal,{" "}
               <SectionTitle.Em>designed and delivered locally.</SectionTitle.Em>
             </SectionTitle>
           </div>
-          <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
-          <p className="scene-body mt-6 mx-auto max-w-[62ch] text-[15.5px] md:text-[16.5px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+          <span className="gold-rule mt-5 md:mt-6 mx-auto max-w-[64px] md:max-w-[80px]" aria-hidden="true" />
+          <p className="scene-body mt-5 md:mt-6 mx-auto max-w-[42ch] md:max-w-[62ch] text-[15.5px] md:text-[16.5px] leading-[1.75] md:leading-[1.7] text-[color:var(--charcoal-soft)]">
             A trusted on-the-ground partner across Portugal, combining the places clients come to
             see with the people, traditions and landscapes they would rarely find on their own.
             Private experiences, tailor-made journeys, celebrations and groups, all handled
             through one named local contact.
           </p>
-          <div className="scene-cta mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="scene-cta mt-8 md:mt-10 flex flex-col sm:flex-row gap-2.5 sm:gap-3 justify-center">
             <CtaButton
               href="#trade-inquiry"
               variant="primary"
@@ -286,31 +286,33 @@ function TradePage() {
       </section>
 
       {/* ── Why partner with YES ────────────────────────── */}
-      <section className="reveal py-16 md:py-24 bg-[color:var(--ivory)]">
+      <section className="reveal py-14 md:py-24 bg-[color:var(--ivory)]">
         <Scene className="container-x max-w-6xl">
           <Eyebrow>Why partner with YES</Eyebrow>
-          <SectionTitle as="h2" spacing="tight" className="mt-4 max-w-[24ch]">
+          <SectionTitle as="h2" spacing="tight" className="mt-4 max-w-[18ch] md:max-w-[24ch]">
             Local knowledge.{" "}
             <SectionTitle.Em>Portugal beyond the obvious.</SectionTitle.Em>
           </SectionTitle>
-          <div className="mt-12 md:mt-14 grid md:grid-cols-3 gap-10 md:gap-12 items-start">
+          <div className="mt-9 md:mt-14 grid md:grid-cols-3 gap-8 md:gap-12 items-start divide-y divide-[color:var(--charcoal)]/10 md:divide-y-0">
+
             {BENEFITS.map((b) => (
-              <div key={b.title} className="reveal-stagger">
+              <div key={b.title} className="reveal-stagger pt-8 first:pt-0 md:pt-0">
                 <h3 className="serif text-[1.15rem] md:text-xl leading-snug text-[color:var(--teal)]">
                   {b.title}
                 </h3>
                 <span className="gold-rule mt-3 max-w-[40px]" aria-hidden="true" />
-                <p className="mt-3 max-w-[60ch] text-[15px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+                <p className="mt-3 max-w-[46ch] md:max-w-[60ch] text-[15px] leading-[1.75] md:leading-[1.7] text-[color:var(--charcoal-soft)]">
                   {b.body}
                 </p>
               </div>
             ))}
+
           </div>
         </Scene>
       </section>
 
       {/* ── What we design for your clients ─────────────── */}
-      <section id="trade-services" className="reveal py-16 md:py-24 bg-[color:var(--sand)]">
+      <section id="trade-services" className="reveal py-14 md:py-24 bg-[color:var(--sand)]">
         <Scene className="container-x max-w-6xl">
           <Eyebrow>What we design for your clients</Eyebrow>
           <SectionTitle as="h2" spacing="tight" className="mt-4 max-w-[26ch]">
@@ -390,14 +392,14 @@ function TradePage() {
       </section>
 
       {/* ── Trade FAQ ───────────────────────────────────── */}
-      <section className="reveal py-16 md:py-24 pb-24 md:pb-28 bg-[color:var(--sand)]">
+      <section className="reveal py-14 md:py-24 pb-20 md:pb-28 bg-[color:var(--sand)]">
         <Scene className="container-x max-w-3xl">
           <Eyebrow>Trade FAQ</Eyebrow>
           <SectionTitle as="h2" spacing="tight" className="mt-4 max-w-[24ch]">
             Clear answers before{" "}
             <SectionTitle.Em>you entrust us with a client.</SectionTitle.Em>
           </SectionTitle>
-          <div className="mt-10 md:mt-12">
+          <div className="mt-8 md:mt-12">
             <Accordion
               type="single"
               collapsible
@@ -443,7 +445,7 @@ function TradePage() {
       {/* ── Trade access form ───────────────────────────── */}
       <section
         id="trade-inquiry"
-        className="reveal py-16 md:py-24 pb-28 md:pb-24 bg-[color:var(--ivory)] scroll-mt-28"
+        className="reveal py-14 md:py-24 pb-24 md:pb-24 bg-[color:var(--ivory)] scroll-mt-28"
       >
         <Scene className="container-x max-w-2xl">
           <Eyebrow>Request trade access</Eyebrow>
