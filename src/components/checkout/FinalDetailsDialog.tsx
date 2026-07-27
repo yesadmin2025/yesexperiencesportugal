@@ -243,7 +243,7 @@ export function FinalDetailsDialog({
                 className={guestInputClass}
               />
             </GuestField>
-            <GuestField label="Who's travelling" required>
+            <GuestField label="Who's travelling" required as="div">
               <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
                 <CompositionField value={composition} onChange={setComposition} compact />
               </div>
@@ -262,7 +262,7 @@ export function FinalDetailsDialog({
                 className={guestInputClass}
               />
             </GuestField>
-            <GuestField label="Preferred tour language" required>
+            <GuestField label="Preferred tour language" required as="div">
               <div className="grid grid-cols-2 border border-[color:var(--border)]">
                 {(["en", "pt"] as const).map((l) => (
                   <button
