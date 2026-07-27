@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/accordion";
 import { trackEvent } from "@/lib/analytics-events";
 
-import { CORPORATE_SERVICE_IMAGES } from "@/content/editorial-service-images";
+import { premiumEditorialImage as premiumImage } from "@/content/editorial-premium-images";
 import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
 import { CORPORATE_FAQ } from "@/content/seo-faq";
@@ -43,6 +43,51 @@ const OG_TITLE = "Corporate Experiences Across Portugal | YES";
 const OG_DESCRIPTION =
   "Team building, incentives, retreats, executive off-sites and private corporate groups across Portugal, coordinated from brief to delivery.";
 const CANONICAL = "https://yesexperiencesportugal.com/corporate";
+
+/**
+ * Corporate imagery — real operational group photography only.
+ * Every slot (and every crossfade alternate) must read as a *group*:
+ * the previous first slot showed two guests in a market, which framed
+ * the page as leisure travel rather than corporate work.
+ */
+const CORPORATE_BLOCK_IMAGES = [
+  premiumImage("alentejo-group-ruins", {
+    alt: "A private company group raising a toast together during a hosted day in Alentejo.",
+    width: 1280,
+    height: 846,
+    objectPosition: "50% 44%",
+    alternate: premiumImage("winery-group-orange-tree", {
+      alt: "A large corporate group gathered at a Portuguese wine estate with their local hosts.",
+      width: 1280,
+      height: 960,
+      objectPosition: "50% 50%",
+    }),
+  }),
+  premiumImage("arrabida-viewpoint-group", {
+    alt: "A company group pausing together at a viewpoint above the Arrábida coast.",
+    width: 1280,
+    height: 960,
+    objectPosition: "50% 45%",
+    alternate: premiumImage("alentejo-group-ruins", {
+      alt: "A private group sharing a hosted cultural moment in Alentejo.",
+      width: 1280,
+      height: 846,
+      objectPosition: "50% 46%",
+    }),
+  }),
+  premiumImage("sintra-group-selfie", {
+    alt: "A large corporate group of guests arriving with their coaches and local guide in Sintra.",
+    width: 1280,
+    height: 1707,
+    objectPosition: "50% 42%",
+    alternate: premiumImage("winery-group-orange-tree", {
+      alt: "A company-wide group photographed together at a Portuguese estate.",
+      width: 1280,
+      height: 960,
+      objectPosition: "50% 50%",
+    }),
+  }),
+];
 
 export const Route = createFileRoute("/corporate")({
   head: () => ({
@@ -189,11 +234,11 @@ function CorporatePage() {
   useMarketingMotion();
   const serviceImages = useEditorialOverrides(
     "corporate_services",
-    CORPORATE_SERVICE_IMAGES.map((image) => ({ ...image, caption: "" })),
+    CORPORATE_BLOCK_IMAGES.map((image) => ({ ...image, caption: "" })),
   );
-  const positioningImage = { ...CORPORATE_SERVICE_IMAGES[0], ...serviceImages[0] };
-  const reachImage = { ...CORPORATE_SERVICE_IMAGES[1], ...serviceImages[1] };
-  const closingImage = { ...CORPORATE_SERVICE_IMAGES[2], ...serviceImages[2] };
+  const positioningImage = { ...CORPORATE_BLOCK_IMAGES[0], ...serviceImages[0] };
+  const reachImage = { ...CORPORATE_BLOCK_IMAGES[1], ...serviceImages[1] };
+  const closingImage = { ...CORPORATE_BLOCK_IMAGES[2], ...serviceImages[2] };
 
   return (
     <SiteLayout>
