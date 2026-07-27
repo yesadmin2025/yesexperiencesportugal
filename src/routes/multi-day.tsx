@@ -27,8 +27,11 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 // All 23 pages of the anonymised private travel file live in public/ so
-// they can be shown inline — no external PDF.
-const TOTAL_SAMPLE_PAGES = 23;
+// they can be shown inline — no external PDF. Shared with /trade.
+import {
+  SAMPLE_PAGES,
+  TOTAL_SAMPLE_PAGES,
+} from "@/components/travel-designer/TravelFilePreview";
 
 export const Route = createFileRoute("/multi-day")({
   head: () => ({
