@@ -54,3 +54,22 @@ export function tailorAdjustedPerPax(
   const proposed = Math.round(directEur * (1 - reductionPct));
   return Math.max(proposed, operationalFloor(directEur));
 }
+
+/* ---------------------------------------------------------------- *
+ * Authorized Tailor supplements (Canonical Signature Bible v1.1).  *
+ * Mirrors `src/config/pricing.ts`. Edit both in the same commit.   *
+ * Flat per-person amounts — never scaled by the % reduction.       *
+ * ---------------------------------------------------------------- */
+
+export const TAILOR_LUNCH_SUPPLEMENT_EUR = 35;
+export const TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR = 20;
+
+export function tailorFinalPerPax(
+  directEur: number,
+  principalsRemoved: number,
+  supplementsEur = 0,
+): number {
+  const base = tailorAdjustedPerPax(directEur, principalsRemoved);
+  const extra = Number.isFinite(supplementsEur) ? Math.max(0, Math.round(supplementsEur)) : 0;
+  return base + extra;
+}
