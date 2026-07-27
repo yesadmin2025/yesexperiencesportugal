@@ -271,7 +271,7 @@ export function Footer() {
               className="flex flex-col gap-4 font-[family-name:var(--font-sans)] text-[12px] text-[color:var(--ivory)]/75 md:flex-row md:items-center md:justify-between"
               style={{ fontWeight: 400 }}
             >
-              <p className="leading-[1.6]">
+              <p className="leading-[1.6] text-[color:var(--ivory)]/75">
                 © {new Date().getFullYear()} {BUSINESS_NAME}. All rights reserved. · {LEGAL_META_LINE}.
               </p>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">

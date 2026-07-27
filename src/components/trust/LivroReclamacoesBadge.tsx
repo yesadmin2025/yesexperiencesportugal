@@ -33,7 +33,7 @@ export function LivroReclamacoesBadge() {
       target="_blank"
       rel="noopener noreferrer nofollow"
       aria-label="Livro de Reclamações — abrir portal oficial (novo separador)"
-      className="tap inline-flex min-h-[44px] max-w-full items-center justify-center rounded-sm opacity-90 transition-opacity duration-[var(--dur-quick)] hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+      className="tap inline-flex min-h-[44px] max-w-full items-center justify-center rounded-sm transition-opacity duration-[var(--dur-quick)] hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
     >
       <img
         ref={imgRef}
