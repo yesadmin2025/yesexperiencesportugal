@@ -1,60 +1,24 @@
 ## Goal
 
-Before a guest enters their details and moves to payment, show one unambiguous line — **"You'll be charged €X"** — using exactly the same amount that is sent to Stripe, in all three booking paths: Signature, Tailored Signature, and Studio.
+The footer's legal complaints-book seal is currently the small square mark. Recolored to white it hides the word "LIVRO" behind the circle, it is too small, and on mobile the badge row sits awkwardly relative to the legal text. Replace it with the horizontal "LIVRO DE RECLAMAÇÕES" lockup you uploaded, cleaned so it reads in white, and restructure the footer's bottom legal block.
 
-## Current state (verified)
+## What changes
 
-- All three flows collect details in the same place before Stripe: `FinalDetailsDialog` (Signature via `SimpleBookingForm`, Tailor via `tours.$tourId.tailor.tsx`) and `GuestDetailsStep` (Studio V3, an inline variant of the same form).
-- Each flow already computes the Stripe-bound total *after* the dialog is confirmed, inside its own `handleReserve`, via `resolveJourneyPricing(...)`:
-  - Signature: tour tiers + live tier overrides.
-  - Tailor: tiers pinned to the adjusted per-pax (`tailorTierOverride`), so stop removals/add-ons are reflected.
-  - Studio: `perPaxBase` + `addOnsPartyTotalEur`.
-- The dialog itself shows no charge amount — only "Secure checkout · Final price shown before payment". So the guest fills in the form blind, and the number first appears on the Stripe surface.
+1. **Prepare the asset**
+   - Take the uploaded PNG and process it: drop the white circle behind "LIVRO" (make near-white pixels transparent), keep only the wordmark glyphs, and trim the empty margins so the artwork is tight to the letters.
+   - Register the cleaned file as a CDN asset (`logo-livro-reclamacoes-wordmark.png.asset.json`); keep the old assets in place unused.
 
-## Approach
+2. **Badge component (`src/components/trust/LivroReclamacoesBadge.tsx`)**
+   - Point at the new wordmark asset with correct intrinsic width/height (wide, roughly 6:1).
+   - Recolor to solid white via `brightness(0) invert(1)` plus a soft drop-shadow — with the circle removed, every letter stays legible.
+   - Size it a step larger than today and scaled by viewport: about 150px wide on small phones, ~176px from 360px up, ~200px on desktop, height auto, `max-w-full` so it never overflows a 320px screen.
+   - Keep the link to `livroreclamacoes.pt`, the aria-label, focus ring, 44px tap area, and the dev contrast assertion.
 
-Introduce one shared, live price quote into the details step, driven by the composition the guest is editing (adults + each child's age), so the number updates as they change the party.
+3. **Footer bottom block (`src/components/Footer.tsx`)**
+   - Give the seal a clear final row: legal meta line first, then a hairline rule, then the centered badge as the last element in the footer on mobile (currently the mobile legal paragraph renders after the badge).
+   - Consistent vertical rhythm (same padding above/below as the other footer rules) and centered on mobile, left-aligned from `md:` up to match the rest of the footer.
 
-### 1. Shared quote contract
+## Verification
 
-Add an optional prop to `FinalDetailsDialog`:
-
-```
-priceQuote?: (c: { adults: number; minorAges: number[] }) =>
-  { totalEur: number; perPaxAdultEur: number; hasMinors: boolean } | null
-```
-
-Returning `null` means "not priceable yet" (incomplete child ages, manual-confirmation path) — the band then shows a neutral "Final price confirmed before payment" state instead of a number.
-
-### 2. Shared presentation component
-
-New `src/components/checkout/ChargeSummaryLine.tsx`:
-- Ivory/sand band directly above the confirm CTA.
-- Primary line: **You'll be charged €X** (total, EUR, no cents), in Fraunces at the size of a section figure.
-- Secondary line (Inter, small, muted): `X adults · €Y per adult` and, when minors are present, `child pricing applied (youth 75% · child 50% · infants free)`.
-- Third micro-line: "Charged securely in EUR. No hidden fees."
-- Reduced-motion-safe number crossfade when the total changes; no animation beyond a 180ms fade.
-
-### 3. Wire each flow to its Stripe math
-
-Each route passes a `priceQuote` that calls the *same* resolver with the *same* arguments its `handleReserve` already uses — no duplicated formulas:
-
-- **Signature** (`SimpleBookingForm`): `resolveJourneyPricing(tour, adults, minorAges, tierOverrides)`.
-- **Tailor** (`tours.$tourId.tailor.tsx`): `resolveJourneyPricing({ id, priceFrom: estimatedPrice }, adults, minorAges, tailorTierOverride)`, so removed stops / add-on deltas are inside the quoted number. When the selection requires manual confirmation (wine extension / manual supplier), return `null` so we never quote a price we can't charge.
-- **Studio V3** (`GuestDetailsStep`, fed from `StudioV3`): same resolver with `perPaxBase`, plus `addOnsPartyTotalEur` added to the total — mirroring `handleReserve` exactly.
-
-To keep them honest, extract the per-flow math into small pure helpers used by both the quote and the reserve handler, so the two can't drift.
-
-### 4. Studio inline step
-
-`GuestDetailsStep` gets the same `priceQuote` prop and renders the same `ChargeSummaryLine` above its footer CTA, respecting the existing mobile sticky footer layout.
-
-### 5. Guardrail test
-
-Extend the existing checkout tests with a parity test: for a set of party compositions (2 adults; 2 adults + 1 child age 7; 2 adults + infant; 6 adults) in each flow, the amount rendered by `ChargeSummaryLine` equals the `totalEur` the flow sends to `create-signature-checkout`.
-
-## Technical notes
-
-- No backend or pricing-logic changes; the server remains the authority and its math is untouched.
-- Mobile-first: the band sits above the CTA, never inside a scroll trap, and stays visible with the sticky footer on 393px viewports.
-- Currency: EUR is the charged currency; if the site-wide USD switcher is active the USD figure may be shown as a parenthetical "approx." only, with EUR as the charged amount.
+- Screenshot the footer at 320, 393 and 1280px to confirm the wordmark is fully legible, not clipped, and vertically balanced.
+- Confirm the "LIVRO" letters are visible (no dark disc) and the link still opens the official portal.

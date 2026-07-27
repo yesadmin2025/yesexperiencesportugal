@@ -368,15 +368,16 @@ export function Footer() {
           <div className="mt-5 pt-5 border-t border-[color:var(--gold-warm)]/10 flex justify-center md:justify-start">
             <LanguageSwitcher variant="footer" className="text-[color:var(--ivory)]/75" />
           </div>
+          <p className="md:hidden mt-5 text-center text-[11px] leading-[1.55] text-[color:var(--text-on-dark-muted)] font-[family-name:var(--font-sans)]">
+            {LEGAL_META_LINE}
+          </p>
+
           {/* Legal signature — Livro de Reclamações Eletrónico (DL 74/2017). */}
-          {/* Dedicated centered row so the official seal reads as a legal signature. */}
-          <div className="mt-6 pt-5 border-t border-[color:var(--gold-warm)]/10 flex justify-center min-w-0 px-1">
+          {/* Last row of the footer so the official seal reads as a signature. */}
+          <div className="mt-5 pt-5 border-t border-[color:var(--gold-warm)]/10 flex min-w-0 justify-center md:justify-start">
             <LivroReclamacoesBadge />
           </div>
 
-          <p className="md:hidden mt-3 text-[11px] leading-[1.55] text-[color:var(--text-on-dark-muted)] font-[family-name:var(--font-sans)]">
-            {LEGAL_META_LINE}
-          </p>
         </div>
       </div>
     </footer>
