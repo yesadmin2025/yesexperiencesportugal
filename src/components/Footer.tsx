@@ -288,7 +288,7 @@ export function Footer() {
             </div>
 
             {/* Official seal — closing signature, centered at every width. */}
-            <div className="mt-8 flex min-w-0 justify-center">
+            <div className="mt-6 flex w-full min-w-0 items-center justify-center text-center">
               <LivroReclamacoesBadge />
             </div>
           </div>
