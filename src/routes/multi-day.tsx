@@ -161,13 +161,7 @@ const FILE_GROUPS: Card[] = [
   },
 ];
 
-const SAMPLE_PAGES = Array.from({ length: TOTAL_SAMPLE_PAGES }, (_, i) => {
-  const n = i + 1;
-  return {
-    src: `/travel-file-sample/page-${String(n).padStart(2, "0")}.jpg`,
-    alt: `Private Portugal travel file — page ${n}`,
-  };
-});
+
 
 function GroupCard({ title, body }: Card) {
   return (
