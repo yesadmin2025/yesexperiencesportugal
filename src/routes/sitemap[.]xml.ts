@@ -39,9 +39,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/about", changefreq: "monthly", priority: "0.6" },
           { path: "/press", changefreq: "monthly", priority: "0.5" },
           { path: "/contact", changefreq: "monthly", priority: "0.6" },
-          { path: "/partners", changefreq: "monthly", priority: "0.6" },
           { path: "/partners/viator", changefreq: "monthly", priority: "0.55" },
-          { path: "/partners/getyourguide", changefreq: "monthly", priority: "0.55" },
           { path: "/partners/tripadvisor", changefreq: "monthly", priority: "0.55" },
           // /faq and /moments intentionally omitted — both 301 to canonical
           // targets (/about and /proposal-in-portugal). Sitemap URLs must be
