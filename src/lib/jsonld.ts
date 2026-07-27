@@ -875,3 +875,54 @@ export function organizationUsCaAudienceLd() {
     },
   } as const;
 }
+
+/**
+ * Corporate Service — /corporate.
+ *
+ * Corporate work isn't a single bookable Product: it's a designed and
+ * coordinated programme. Emitted as a Service provided by the sitewide
+ * Organization, served across the whole country (never region-scoped),
+ * covering team building, incentives, retreats, off-sites and private
+ * corporate groups from leadership teams to 100+ guests.
+ */
+export function corporateServiceLd(args: { path: string }) {
+  const url = `${SITE_URL}${args.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${url}#service`,
+    name: "Corporate experiences, team building and incentives in Portugal",
+    description:
+      "Private corporate events, team building, incentive travel, executive retreats, off-sites, client hosting and company celebrations across Portugal — designed and coordinated locally, from leadership teams to corporate groups of 100+.",
+    serviceType: [
+      "Corporate events",
+      "Team building",
+      "Incentive travel",
+      "Corporate retreats",
+      "Executive off-sites",
+      "Client hosting and VIP programmes",
+      "Private group experiences",
+    ],
+    category: "Corporate event design and coordination",
+    provider: { "@id": `${SITE_URL}/#organization` },
+    brand: { "@id": `${SITE_URL}/#organization` },
+    areaServed: { "@type": "Country", name: "Portugal" },
+    url,
+    audience: {
+      "@type": "Audience",
+      audienceType:
+        "Companies, leadership teams, event organisers, DMCs and incentive planners, from small executive groups to corporate groups of 100+",
+    },
+    potentialAction: {
+      "@type": "PlanAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/contact`,
+        actionPlatform: [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform",
+        ],
+      },
+    },
+  };
+}

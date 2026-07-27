@@ -1,82 +1,81 @@
-## 1. Structural issues found (current `/trade`)
+## Audit of the current /corporate page
 
-- **Defensive / banned copy present**: "not a marketplace" (H2), "not a rebooked third party", "No call centre, no OTA queue", "One contact, on Lisbon time".
-- **Geographically limiting copy**: hero and benefits imply US-advisor-only framing; services list names only Lisbon/Arrábida/Sintra/Alentejo/Vicentine Coast; FAQ 5 reveals internal supplier logic ("vetted partners for the regions we do not drive ourselves", "home base is Sesimbra, 40 minutes south of Lisbon").
-- **Product naming**: service is titled "Multi-day journeys" instead of the official **Travel Designer**.
-- **Spacing**: sections all use a flat `py-20`; benefit/service headings sit at `mt-3` from body with no rule; grid `gap-y-8` makes service rows visually merge; FAQ `space-y-6` + `pt-5` puts an open answer nearly touching the next question's border; form heading→paragraph→form gaps are uneven (`mt-3` / `mt-4` / `mt-10`).
-- **Reading width**: hero paragraph is `max-w-2xl` centered (fine) but benefit and service body copy run the full grid column with no `max-w` ⇒ >75ch on large desktop.
-- **Motion**: only `reveal` + `Scene` on hero; benefits, services and FAQ items have no `reveal-stagger`, so they appear all at once, unlike the rest of the site.
-- **FAQ**: native `<details>` — no height transition (site standard is the Radix accordion used in `src/components/FAQ.tsx`), plus rotate-45 on a text "+" and a sub-44px touch target.
-- **Form**: labels at 11px `--charcoal-soft` on sand = weak contrast; borders at `charcoal/25`; no per-field error state; `required` + `noValidate` shows only the first zod message at the bottom; entered values are preserved (uncontrolled form) — OK.
-- **No proof section** and **no mid-page CTA** between services and FAQ.
-- **No trade analytics**: only `gaGenerateLead` on success.
-- Hero CTAs: currently one primary + one anchor; secondary "email a local designer" mailto missing.
+Read: `src/routes/corporate.tsx`, `src/content/seo-faq.ts` (CORPORATE_FAQ), `src/content/editorial-service-images.ts`, `src/lib/jsonld.ts`, `src/lib/analytics-events.ts`.
 
-## 2. Before → after copy
+### 1. Structural issues found
 
-| Slot | Before | After |
+- **Scale is invisible.** Nothing above the FAQ states group capability. "100+" appears only inside one FAQ answer.
+- **Geographically restrictive.** The hero lists "Lisbon and Sintra to the Arrábida coast, the Alentejo, the Douro"; FAQ answers list Sesimbra/Comporta/Sintra. This reads as a regional operator.
+- **Only three service blocks** (Executive & Incentive · Off-sites & Retreats · Client hosting & VIP). Team building, incentive programmes and large corporate groups are not distinct formats, despite team building being the SEO title's lead term.
+- **"Small groups" wording** appears in two places (see §2) and frames VIP hosting as the small-group service.
+- **FAQ is a plain `<dl>`, not an accordion**; no open interaction, no analytics, and only 3 questions.
+- **No Service JSON-LD.** Only BreadcrumbList + FAQPage today.
+- **No corporate-specific analytics.** `corporate_lead` exists in the catalogue; none of the nine requested events exist or fire.
+- **CTA inconsistency:** hero says "Plan a Group Experience", closing says "Request a Proposal"; both go to `/contact`, which is fine and stays.
+- **Contrast/spacing:** body copy uses `--charcoal-soft` throughout including small 14px operational lines (`text-sm`) — the weakest text on the page; FAQ `<dd>` sits at 15px soft. Hero paragraph is a single long block with no measure cap on mobile.
+- **No internal links** anywhere on the page except `/contact`.
+
+### 2. Every "small group"-style occurrence
+
+| File | Line | Current text |
 |---|---|---|
-| Hero eyebrow | For travel advisors & designers | FOR TRAVEL ADVISORS & DESIGNERS (unchanged wording) |
-| Hero H1 | Portugal, designed with your *clients* in mind. | Your clients' Portugal, *designed and delivered locally.* |
-| Hero body | "A direct partner… US travel advisors… reached in minutes, not days." | New supplied paragraph (trusted on-the-ground partner across Portugal…) |
-| Hero CTAs | Request trade access / (anchor) | REQUEST TRADE ACCESS (primary) · EMAIL A LOCAL DESIGNER (ghost, mailto) |
-| Why H2 | A working Portuguese operator — not a marketplace. | Local knowledge. *Portugal beyond the obvious.* |
-| Benefit 1 | A real operator on the ground / "not a rebooked third party" | Portugal, known from the inside / supplied body |
-| Benefit 2 | Bookable in real time | Designed around the client, not the circuit / supplied body |
-| Benefit 3 | One contact, on Lisbon time | One local contact, from idea to travel / supplied body |
-| Services H2 | Five ways your client can travel with us. | Five ways we can support *your clients in Portugal.* |
-| Signature | "Twelve pre-designed private days across Lisbon, Arrábida…" | supplied body (no region list) |
-| Studio | "A live design tool…" | supplied body (route, timings, price update in real time; reservable) |
-| Multi-day journeys | title + "Custom 4–12 day…" | **Travel Designer** + supplied body |
-| Moments | "quiet, cinematic setups run by our team with the guide" | supplied body |
-| Corporate | "briefed and quoted directly with you" | supplied body |
-| — | *(new)* | Travel Designer Book section (eyebrow/H2/2 paragraphs/CTAs as supplied) |
-| FAQ H2 | Straight answers before you send us a client. | Clear answers before *you entrust us with a client.* |
-| FAQ Q1 | "How do you work with US travel advisors?" + "Direct. You reach out…" | supplied Q/A |
-| FAQ Q2 | keeps policy: trade terms on confirmed bookings, negotiated per relationship, not published | same policy, retoned: "Yes. We work on standard trade terms for confirmed bookings, agreed per relationship. Terms depend on volume, seasonality and whether you prefer net or commissionable pricing, so we discuss them directly rather than publish them." (no invented figures) |
-| FAQ Q3 | "Not yet. …If you require consortium membership as a condition, tell us — we are open to conversations." | "No. YES Experiences Portugal is a licensed independent Portuguese operator and works directly with advisors and agencies. If consortium membership matters for your programme, tell us and we will discuss it." |
-| FAQ Q4 | case-by-case wording | supplied body |
-| FAQ Q5 | Sesimbra base + supplier disclosure | supplied body (operate across Portugal) |
-| Form H2 | Tell us about your agency and your clients. | Tell us about your agency *and the clients you serve.* |
-| Form body | "A named designer replies from Lisbon…" | supplied body (agency profile, typical client, support sought; reply within one business day) |
-| Submit | Send trade inquiry | REQUEST TRADE ACCESS |
+| `src/routes/corporate.tsx` | 79 | "Small groups · private settings · careful pacing · NDAs welcome." |
+| `src/content/seo-faq.ts` | 22 | "From small executive off-sites of 6 to 12 people up to full-company retreats of 100+…" |
+| `src/routes/corporate.tsx` | 58 | "Private groups of any size" — vague, replaced by explicit scale language |
 
-## 3. Spacing & hierarchy proposal
+### 3. Copy: current vs proposed
 
-Site rhythm reused: sections `py-16 md:py-24`, alternating `--sand` / `--ivory`.
-
-| Section | Padding | Internal rhythm |
+| Slot | Current | Proposed |
 |---|---|---|
-| Hero | `pt-32 pb-16 md:pb-24`, sand | eyebrow → `mt-5` H1 → `gold-rule mt-6` → `mt-6` body (`max-w-[62ch] mx-auto`) → `mt-10` CTA row |
-| Why partner | `py-16 md:py-24`, ivory | eyebrow → `mt-4` H2 (`max-w-[22ch]`) → `mt-12 md:mt-14` grid; items `gap-10 md:gap-12`, title → `mt-3` gold rule → `mt-3` body `max-w-[60ch]`, `items-start` for equal top alignment |
-| Services | `py-16 md:py-24`, sand | header same; grid `gap-x-12 gap-y-10 md:gap-y-12`, each row `pt-6` under top border, title/arrow row → `mt-3` body `max-w-[58ch]`, `min-h` not forced (border-top keeps alignment) |
-| Travel Designer Book | `py-16 md:py-24`, ivory | eyebrow → `mt-4` H2 → `mt-6` body → `mt-4` secondary line → `mt-8` preview → `mt-10` CTAs |
-| FAQ | `py-16 md:py-24`, sand | header → `mt-10` accordion, items `space-y-3`, trigger `px-5 py-5` (≥44px), answer `pb-6 pt-0`, `pb-24` on section so the back-to-top / WhatsApp FABs never sit over an open answer |
-| Form | `py-16 md:py-24`, ivory, `scroll-mt-28` | eyebrow → `mt-4` H2 → `mt-5` body (`max-w-[60ch]`) → `mt-10` form, fields `space-y-6`, submit `mt-10`, section `pb-28` on mobile to clear the WhatsApp FAB |
+| Hero eyebrow | Corporate Retreats | CORPORATE, INCENTIVES & GROUPS |
+| H1 | Team building in Portugal, *designed by locals.* | Corporate experiences in Portugal, *designed by locals.* |
+| Hero body | "…from Lisbon and Sintra to the Arrábida coast, the Alentejo, the Douro and beyond…effortless, not arranged." | Supplied paragraph (team building, incentives, retreats, off-sites, client hosting, celebrations; "across Portugal"; "leadership teams to groups of 100+"), no region list |
+| Hero CTAs | Plan a Group Experience / Talk to a Local | PLAN A CORPORATE EXPERIENCE / TALK TO A LOCAL |
+| Block 1 | "Executive & Incentive — A day that feels effortless, not arranged." | New positioning section: DESIGNED FOR THE PURPOSE / "Built around the team. Scaled around the group." + supplied editorial line, body and operational proof line |
+| Block 2 | "Off-sites & Retreats" | Folded into the new Formats grid |
+| Block 3 | "Client Hosting & VIP — Small groups · …" | Formats card, detail line without "small groups" |
+| New | — | PORTUGAL, BEYOND THE MEETING ROOM / "Local knowledge, across the country." + supplied body and supporting line |
+| New | — | WHAT WE DESIGN / "Different briefs. One local team." — six formats: Team building · Incentive programmes · Corporate retreats · Executive off-sites · Client hosting & VIP · Large corporate groups (all supplied copy verbatim) |
+| New | — | Scale line above FAQ: "From small leadership teams to corporate groups of 100+." |
+| FAQ | 3 questions, region-listing answers | 5 supplied questions/answers, accordion |
+| Closing | "Tell us about your group." + "Real driving times, real venues, real partners…" | START WITH THE BRIEF / same headline / supplied supporting + proof line; "real driving times…" demoted to a small reassurance line |
+| Closing CTAs | Request a Proposal / Talk to a Local | REQUEST A CORPORATE PROPOSAL / TALK TO A LOCAL |
 
-Body copy line-height standardised to `leading-[1.7]`; all paragraph blocks capped at 58–62ch.
+### 4. SEO metadata: current vs proposed
 
-## 4. Travel Designer Book placement & behaviour
+| Tag | Current | Proposed |
+|---|---|---|
+| title | Corporate Events & Team Building in Portugal \| YES | unchanged (already matches the brief) |
+| description | "Private corporate experiences, team-building activities and group events in Lisbon, Sesimbra, Arrábida and across Portugal." | "Private corporate events, team building, incentive travel, executive retreats and group experiences across Portugal, designed and coordinated locally." |
+| og:title | (inherits page title) | "Corporate Experiences Across Portugal \| YES" |
+| og:description | same as meta description | "Team building, incentives, retreats, executive off-sites and private corporate groups across Portugal, coordinated from brief to delivery." |
+| canonical / og:url | `https://yesexperiencesportugal.com/corporate` | unchanged (self-referencing) |
+| hreflang | **missing on EN** (the pt route declares both) | add `en`/`en-US`, `pt-PT`, `x-default` via the existing i18n head helper |
+| JSON-LD | Breadcrumb + FAQPage | + Service (name, description, provider → YES organisation, areaServed Portugal, serviceType list, url); FAQPage regenerated from the visible 5 Q&As |
 
-- Placed **after the five services, before the Trade FAQ**, on `--ivory`.
-- Reuses the existing approved sample file already live on `/multi-day`: `/travel-file-sample/page-01..23.jpg` (anonymised sample already public) plus the same border/shadow/`cursor-zoom-in` treatment.
-- The current `/multi-day` block is extracted into a shared component `src/components/travel-designer/TravelFilePreview.tsx` so both pages render identical design language; `/multi-day` keeps its current appearance and copy (no visual change there).
-- Behaviour: large cover + manual-nav strip of internal spreads, prev/next buttons and keyboard arrows, discreet "03 / 23" progress, no autoplay, no flip/3D. Opening a spread uses a simple lightbox overlay (esc/backdrop close, focus trap). All images `loading="lazy"` + fixed aspect box so nothing shifts.
-- No downloadable client PDF; CTAs are **VIEW A SAMPLE JOURNEY** (opens preview / scrolls to it) and **REQUEST A TRAVEL BOOK SAMPLE** (ghost → `#trade-inquiry`, prefills nothing personal). This is also the mid-page trade CTA required by the conversion flow.
-- Crossfade transitions ~300ms ease-out, disabled under `prefers-reduced-motion`.
+### 5. Imagery
 
-## 5. Files to be changed
+Current blocks already use group photos, not couples: `azeitao-group-tasting`, `arrabida-team-viewpoint`, `alentejo-group-ruins`. **However**, the page runs `useEditorialOverrides("corporate_services", …)`, so a database override can be swapping the first image for a couple shot — that is my working hypothesis for the leisure-couple impression and the first thing I will verify by querying the overrides table.
 
-- `src/routes/trade.tsx` — full copy + structure + spacing + accordion + form + analytics rewrite.
-- `src/components/travel-designer/TravelFilePreview.tsx` — **new**, extracted/shared book preview.
-- `src/routes/multi-day.tsx` — swap the inline sample-file markup for the shared component (visual output unchanged).
-- `src/lib/analytics-events.ts` — add the nine `trade_*` / `sample_journey_view` / `travel_book_sample_request` names to the `YesAnalyticsEvent` union (no PII sent; only placement/step params).
-- `docs/analytics/events.md` — document the new trade events.
-- `e2e/trade-structure.spec.ts` — **new**: hero copy, banned-phrase check, five services present, accordion opens, form validation + success state, no horizontal scroll at 360/393/768/1280/1728.
+- If an override is responsible → remove/repoint that override row; no code image change.
+- Additional real group images available in the approved library for the new formats grid: `winery-group-orange-tree`, `sintra-group-selfie`, `arrabida-viewpoint-group`, `azulejo-private-workshop`, `wine-cheers-arch`.
+- No stock, no AI corporate imagery. I will show the exact proposed image per slot before swapping anything.
+
+### 6. Files to be changed
+
+- `src/routes/corporate.tsx` — full restructure (hero, positioning, nationwide reach, formats grid, scale line, accordion FAQ, closing), metadata, hreflang, Service JSON-LD, internal links, event wiring.
+- `src/content/seo-faq.ts` — replace `CORPORATE_FAQ` with the five supplied Q&As (EN only).
+- `src/lib/jsonld.ts` — add a `corporateServiceLd()` helper alongside the existing service builders.
+- `src/lib/analytics-events.ts` — add the nine `corporate_*` events to the catalogue.
+- `src/content/editorial-service-images.ts` — only if the formats grid needs image slots beyond the current three.
+- `e2e/corporate-structure.spec.ts` — new: asserts H1, "across Portugal", "100+" above the fold, large-group card outside FAQ, no "small groups", no horizontal overflow at 375/393/768/1280/1920.
 
 ## Technical notes
 
-- FAQ moves from `<details>` to the project's Radix `Accordion` (`type="single" collapsible`), matching `src/components/FAQ.tsx`; the FAQ JSON-LD keeps rendering from the same `FAQS` array.
-- Motion reuses `Scene` + `.scene-title/.scene-body/.scene-cta` and `.reveal-stagger`; no new motion primitives.
-- Form gains per-field error state (zod issue mapped to field name), `aria-invalid`/`aria-describedby`, darker labels (`--charcoal`) and `border-charcoal/40`; the endpoint (`/api/public/contact`, `source: "trade"`) and success handling are unchanged.
-- No publish; changes land in preview only.
+- Formats grid uses the existing `EditorialCard`/`Eyebrow`/`SectionTitle`/`CtaButton` primitives; no new visual language.
+- FAQ moves to the Radix `Accordion` already used on `/trade`, with `FAQPage` JSON-LD generated from the same array so schema and visible copy cannot drift; answers render in the initial HTML (Radix keeps content mounted for SSR with `forceMount` where needed).
+- Motion reuses `useMarketingMotion` + `reveal`/`reveal-stagger` and `ParallaxLayer` exactly as today; reduced-motion already honoured.
+- `corporate_format_view` fires once per card via IntersectionObserver; form events carry no PII (the existing `stripPii` guard covers it).
+- Internal links: "team building in Portugal" → relevant Signature, "Travel Designer" → `/portugal-travel-designer`, "Moments" → `/moments`, proposal CTAs → `/contact`.
+- The pt-PT `/pt/corporate` page is left untouched except for the reciprocal hreflang already present.
+- Nothing is published; changes land on preview only and wait for your approval.

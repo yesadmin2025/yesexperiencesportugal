@@ -61,6 +61,16 @@ export type YesAnalyticsEvent =
   | "trade_form_started"
   | "trade_form_submitted"
   | "trade_form_error"
+  // Corporate
+  | "corporate_hero_proposal_click"
+  | "corporate_whatsapp_click"
+  | "corporate_format_view"
+  | "corporate_faq_open"
+  | "corporate_form_started"
+  | "corporate_form_submitted"
+  | "corporate_form_error"
+  | "corporate_signature_click"
+  | "corporate_travel_designer_click"
   // Other
   | "language_changed"
   | "currency_changed"
