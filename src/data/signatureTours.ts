@@ -347,7 +347,7 @@ export const signatureTours: SignatureTour[] = [
       "Private Arrábida coastal tour from Lisbon with hidden coves, a beach picnic of local produce and wine, and a slow end in Sesimbra.",
     region: "Arrábida · Sesimbra",
     duration: "Full Day",
-    durationHours: "6+h",
+    durationHours: "7h30",
     priceFrom: 118,
     theme: "Coastal",
     blurb:
@@ -455,7 +455,7 @@ export const signatureTours: SignatureTour[] = [
       "Private Arrábida day trip from Lisbon with a coastal boat ride into hidden coves, seafood lunch and golden-hour Sesimbra. All-inclusive.",
     region: "Setúbal · Arrábida",
     duration: "Full Day",
-    durationHours: "8–9h",
+    durationHours: "6–8h",
     priceFrom: 135,
     theme: "Coastal",
     blurb:
@@ -754,7 +754,7 @@ export const signatureTours: SignatureTour[] = [
       "Private Sintra and Cascais day from Lisbon — quieter palaces, Cabo da Roca, Atlantic cliffs and a local wine tasting. All-inclusive.",
     region: "Lisbon Coast",
     duration: "Full Day",
-    durationHours: "8–9h",
+    durationHours: "8–10h",
     priceFrom: 161,
     theme: "Heritage",
     blurb:
@@ -862,7 +862,7 @@ export const signatureTours: SignatureTour[] = [
       "Private Alentejo coast day from Lisbon — Sado ferry, Roman ruins of Tróia, Comporta beaches, rice fields and a slow winery lunch.",
     region: "Tróia · Comporta · Alentejo",
     duration: "Full Day",
-    durationHours: "8–10h",
+    durationHours: "8–9h",
     priceFrom: 157,
     theme: "Coastal",
     blurb:
@@ -1082,7 +1082,7 @@ export const signatureTours: SignatureTour[] = [
       "Private day from Lisbon to Tomar's Templar Convento de Cristo and Coimbra's ancient university, with a slow lunch by the Mondego.",
     region: "Centro",
     duration: "Full Day",
-    durationHours: "9–10h",
+    durationHours: "8–9h",
     priceFrom: 152,
     theme: "Heritage",
     blurb:
@@ -1173,7 +1173,7 @@ export const signatureTours: SignatureTour[] = [
       "Private day from Lisbon to Fátima sanctuary, Nazaré's big-wave cliffs and Óbidos medieval walls, ending with a Ginjinha tasting.",
     region: "Centro · Coast",
     duration: "Full Day",
-    durationHours: "9–10h",
+    durationHours: "8–9h",
     priceFrom: 135,
     theme: "Heritage",
     blurb:
@@ -1264,8 +1264,8 @@ export const signatureTours: SignatureTour[] = [
     seoDescription:
       "Alentejo wine tour from Lisbon into hidden Vidigueira — Roman ruins of São Cucufate, amphora-wine tasting in clay talhas and a secret river beach.",
     region: "Alentejo · Vidigueira",
-    duration: "Long Day",
-    durationHours: "10–12h",
+    duration: "Full Day",
+    durationHours: "8–9h",
     priceFrom: 254,
     theme: "Wine",
     blurb:
