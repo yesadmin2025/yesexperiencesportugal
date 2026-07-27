@@ -326,7 +326,7 @@ function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
  */
 function FooterLinkGroup({ title, links }: { title: string; links: FooterLink[] }) {
   return (
-    <details className="group footer-links-group md:open" open>
+    <details className="group footer-links-group">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-2 md:cursor-default md:py-0">
         <h4 className={EYEBROW_CLASS} style={{ fontWeight: 600 }}>
           {title}
