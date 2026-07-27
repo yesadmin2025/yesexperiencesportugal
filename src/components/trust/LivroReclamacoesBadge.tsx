@@ -43,8 +43,14 @@ export function LivroReclamacoesBadge() {
         height={294}
         loading="lazy"
         decoding="async"
-        className="block h-auto w-[180px] max-w-full select-none sm:w-[210px]"
+        onError={(e) => {
+          // Never let a failed asset expand into a large empty alt-text box;
+          // the link stays reachable through its aria-label.
+          e.currentTarget.style.display = "none";
+        }}
+        className="block h-[60px] w-[150px] max-w-full select-none object-contain sm:h-[70px] sm:w-[175px]"
       />
+
     </a>
   );
 }

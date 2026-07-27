@@ -1,54 +1,22 @@
-## Goal
+## What's happening
 
-Two things: use the official lockup **with the circular symbol** (as in your image) instead of the plain wordmark, and rebuild the footer so it reads as one designed block instead of six stacked strips separated by hairlines.
+The seal file itself is fine — the current image serves correctly (HTTP 200, 16 KB PNG) from the preview domain. What you're seeing is the **previous** seal file, which was replaced during the last redesign. Any tab or build still pointing at the old file gets a broken image, and because the badge has no fixed height, the broken placeholder expands into that tall empty box.
 
-## 1. Legal seal — correct lockup
+## Fix
 
-The current footer uses a stripped wordmark where the white circle was deliberately removed. Your image shows the correct official lockup: white circle + "LIVRO DE" sitting over it + "RECLAMAÇÕES".
+1. **Force the new seal through**
+   - Hard-refresh the preview so the page picks up the current asset pointer instead of the retired one.
+   - Republish so the live site stops referencing the retired file.
 
-- Process your uploaded file: crop tight to the artwork, remove the dark background to full transparency, keep the white circle and white glyphs intact, export as a transparent PNG.
-- Upload as a CDN asset and replace the wordmark pointer used by `LivroReclamacoesBadge`.
-- Render at a legible size (about 180px mobile / 210px desktop wide), no CSS filters other than the subtle shadow, 44px minimum tap area, link to livroreclamacoes.pt in a new tab.
+2. **Make the badge fail gracefully**
+   - Constrain the image with an explicit height (not just width) so it can never blow up into a large empty box if an asset ever 404s again.
+   - Hide the broken-image state (`onError`) instead of showing alt text in a bordered frame, keeping the "Livro de Reclamações" link accessible via its `aria-label`.
 
-## 2. Footer redesign — from six strips to three zones
+3. **Make it slightly smaller**
+   - Mobile: 180px → 150px wide.
+   - Desktop: 210px → 175px wide.
+   - Keeps the 44×44 minimum tap target intact.
 
-Today the footer stacks seven blocks, each with its own `border-t` hairline and its own alignment (some centered, some left) — that's what makes it feel scattered, especially on mobile.
+## Verification
 
-New structure, one consistent alignment rule (left on desktop, centered only where a row is a single element):
-
-```text
-ZONE A — BRAND
-  logo · one-line tagline · social icons
-
-ZONE B — NAVIGATE  (single hairline above)
-  Experiences | Occasions | Company | Legal   (4 cols desktop, 2 cols mobile)
-  Popular searches + Signature Experiences become
-  collapsible <details> groups on mobile, open lists on desktop
-  → keeps every SEO link crawlable, removes the endless mobile scroll
-
-ZONE C — TRUST & LEGAL  (single hairline above)
-  credentials row (licence · Turismo de Portugal · secure checkout)
-  payment methods
-  "Also listed on" partner icons
-  ─────────────────────────────
-  © line · legal links · language switcher
-  Livro de Reclamações seal, centered, as the closing signature
-```
-
-Design rules applied throughout:
-- One hairline weight only (`--gold-warm`/15), used just twice — no hairline between every sub-block.
-- One vertical rhythm: 40px between zones, 24px inside a zone, 12px between list items.
-- All eyebrow headings identical (11px, uppercase, 0.32em, gold-warm, 600).
-- Mobile: everything left-aligned in a single column except the closing seal; no mixed center/left rows.
-- Icon rows share one pill style and 44px targets.
-
-## Technical notes
-
-- Asset processing with Python/PIL from the uploaded image, published via the assets CLI as `logo-livro-reclamacoes-lockup.png.asset.json`; the old wordmark pointer is deleted.
-- `src/components/trust/LivroReclamacoesBadge.tsx` — new asset, new intrinsic dimensions, updated sizing; keeps the dev contrast assertion.
-- `src/components/Footer.tsx` — restructured into `FooterBrand`, `FooterNav`, `FooterTrust` sections inside the same file; link data and all existing routes unchanged.
-- Mobile collapsibles use native `<details>/<summary>` so links stay in the DOM for crawlers.
-- Verification: Playwright screenshots at 320 / 393 / 768 / 1280 px, plus a check that every current footer link is still present.
-
-No copy, routes, or business logic change — this is layout, hierarchy, and the seal asset only.</content>
-</invoke>
+Capture the footer at mobile (393px) and desktop widths to confirm the seal renders crisp white, is correctly centered, and sits at the reduced size.
