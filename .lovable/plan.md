@@ -1,24 +1,54 @@
 ## Goal
 
-The footer's legal complaints-book seal is currently the small square mark. Recolored to white it hides the word "LIVRO" behind the circle, it is too small, and on mobile the badge row sits awkwardly relative to the legal text. Replace it with the horizontal "LIVRO DE RECLAMAÇÕES" lockup you uploaded, cleaned so it reads in white, and restructure the footer's bottom legal block.
+Two things: use the official lockup **with the circular symbol** (as in your image) instead of the plain wordmark, and rebuild the footer so it reads as one designed block instead of six stacked strips separated by hairlines.
 
-## What changes
+## 1. Legal seal — correct lockup
 
-1. **Prepare the asset**
-   - Take the uploaded PNG and process it: drop the white circle behind "LIVRO" (make near-white pixels transparent), keep only the wordmark glyphs, and trim the empty margins so the artwork is tight to the letters.
-   - Register the cleaned file as a CDN asset (`logo-livro-reclamacoes-wordmark.png.asset.json`); keep the old assets in place unused.
+The current footer uses a stripped wordmark where the white circle was deliberately removed. Your image shows the correct official lockup: white circle + "LIVRO DE" sitting over it + "RECLAMAÇÕES".
 
-2. **Badge component (`src/components/trust/LivroReclamacoesBadge.tsx`)**
-   - Point at the new wordmark asset with correct intrinsic width/height (wide, roughly 6:1).
-   - Recolor to solid white via `brightness(0) invert(1)` plus a soft drop-shadow — with the circle removed, every letter stays legible.
-   - Size it a step larger than today and scaled by viewport: about 150px wide on small phones, ~176px from 360px up, ~200px on desktop, height auto, `max-w-full` so it never overflows a 320px screen.
-   - Keep the link to `livroreclamacoes.pt`, the aria-label, focus ring, 44px tap area, and the dev contrast assertion.
+- Process your uploaded file: crop tight to the artwork, remove the dark background to full transparency, keep the white circle and white glyphs intact, export as a transparent PNG.
+- Upload as a CDN asset and replace the wordmark pointer used by `LivroReclamacoesBadge`.
+- Render at a legible size (about 180px mobile / 210px desktop wide), no CSS filters other than the subtle shadow, 44px minimum tap area, link to livroreclamacoes.pt in a new tab.
 
-3. **Footer bottom block (`src/components/Footer.tsx`)**
-   - Give the seal a clear final row: legal meta line first, then a hairline rule, then the centered badge as the last element in the footer on mobile (currently the mobile legal paragraph renders after the badge).
-   - Consistent vertical rhythm (same padding above/below as the other footer rules) and centered on mobile, left-aligned from `md:` up to match the rest of the footer.
+## 2. Footer redesign — from six strips to three zones
 
-## Verification
+Today the footer stacks seven blocks, each with its own `border-t` hairline and its own alignment (some centered, some left) — that's what makes it feel scattered, especially on mobile.
 
-- Screenshot the footer at 320, 393 and 1280px to confirm the wordmark is fully legible, not clipped, and vertically balanced.
-- Confirm the "LIVRO" letters are visible (no dark disc) and the link still opens the official portal.
+New structure, one consistent alignment rule (left on desktop, centered only where a row is a single element):
+
+```text
+ZONE A — BRAND
+  logo · one-line tagline · social icons
+
+ZONE B — NAVIGATE  (single hairline above)
+  Experiences | Occasions | Company | Legal   (4 cols desktop, 2 cols mobile)
+  Popular searches + Signature Experiences become
+  collapsible <details> groups on mobile, open lists on desktop
+  → keeps every SEO link crawlable, removes the endless mobile scroll
+
+ZONE C — TRUST & LEGAL  (single hairline above)
+  credentials row (licence · Turismo de Portugal · secure checkout)
+  payment methods
+  "Also listed on" partner icons
+  ─────────────────────────────
+  © line · legal links · language switcher
+  Livro de Reclamações seal, centered, as the closing signature
+```
+
+Design rules applied throughout:
+- One hairline weight only (`--gold-warm`/15), used just twice — no hairline between every sub-block.
+- One vertical rhythm: 40px between zones, 24px inside a zone, 12px between list items.
+- All eyebrow headings identical (11px, uppercase, 0.32em, gold-warm, 600).
+- Mobile: everything left-aligned in a single column except the closing seal; no mixed center/left rows.
+- Icon rows share one pill style and 44px targets.
+
+## Technical notes
+
+- Asset processing with Python/PIL from the uploaded image, published via the assets CLI as `logo-livro-reclamacoes-lockup.png.asset.json`; the old wordmark pointer is deleted.
+- `src/components/trust/LivroReclamacoesBadge.tsx` — new asset, new intrinsic dimensions, updated sizing; keeps the dev contrast assertion.
+- `src/components/Footer.tsx` — restructured into `FooterBrand`, `FooterNav`, `FooterTrust` sections inside the same file; link data and all existing routes unchanged.
+- Mobile collapsibles use native `<details>/<summary>` so links stay in the DOM for crawlers.
+- Verification: Playwright screenshots at 320 / 393 / 768 / 1280 px, plus a check that every current footer link is still present.
+
+No copy, routes, or business logic change — this is layout, hierarchy, and the seal asset only.</content>
+</invoke>

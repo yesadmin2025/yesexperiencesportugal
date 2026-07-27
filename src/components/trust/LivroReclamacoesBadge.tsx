@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import logoAsset from "@/assets/logo-livro-reclamacoes-wordmark.png.asset.json";
+import logoAsset from "@/assets/logo-livro-reclamacoes-lockup.png.asset.json";
 import { assertContrast } from "@/lib/a11y/contrast-check";
 
 /**
@@ -33,18 +33,17 @@ export function LivroReclamacoesBadge() {
       target="_blank"
       rel="noopener noreferrer nofollow"
       aria-label="Livro de Reclamações — abrir portal oficial (novo separador)"
-      className="tap inline-flex min-h-[44px] max-w-full items-center justify-center rounded-sm opacity-90 transition-opacity duration-[var(--dur-quick)] hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+      className="tap inline-flex min-h-[44px] max-w-full items-center justify-center rounded-sm transition-opacity duration-[var(--dur-quick)] hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
     >
       <img
         ref={imgRef}
         src={logoAsset.url}
         alt="Livro de Reclamações"
-        width={1249}
-        height={108}
+        width={737}
+        height={294}
         loading="lazy"
         decoding="async"
-        className="block h-auto w-[150px] max-w-full select-none min-[360px]:w-[176px] sm:w-[200px]"
-        style={{ filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.35))" }}
+        className="block h-auto w-[180px] max-w-full select-none sm:w-[210px]"
       />
     </a>
   );
