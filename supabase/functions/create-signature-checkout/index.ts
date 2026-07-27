@@ -213,16 +213,24 @@ Deno.serve(async (req) => {
     const resolvedPerPax = real ?? body.priceFromEur;
 
     // Tailor flow only: apply SSOT reduction based on principal stops the
-    // guest removed. Client-supplied `principalsRemoved` is clamped 0..8;
-    // `tailorAdjustedPerPax` enforces the −5%/step, −15% cap and the 70%
-    // operational floor. Signature/Studio flows keep the resolved per-pax.
+    // guest removed, then add the authorized flat supplements (add lunch,
+    // extra wineries). Supplements are re-derived server-side from the
+    // per-Signature entitlement tables — never taken as a euro amount.
     const isTailorFlow = (body.flow ?? (body.tailored ? "tailor" : "signature")) === "tailor";
     const principalsRemoved = isTailorFlow
       ? Math.min(8, Math.max(0, Number(body.principalsRemoved ?? 0) | 0))
       : 0;
+    const tailorSupplements = isTailorFlow
+      ? serverTailorSupplementsEur(
+          body.tourId,
+          body.tailorLunchAdded === true,
+          Number(body.tailorExtraWineries ?? 0),
+        )
+      : 0;
     const eurPerPax = isTailorFlow
-      ? tailorAdjustedPerPax(resolvedPerPax, principalsRemoved)
+      ? tailorFinalPerPax(resolvedPerPax, principalsRemoved, tailorSupplements)
       : resolvedPerPax;
+
 
 
 
