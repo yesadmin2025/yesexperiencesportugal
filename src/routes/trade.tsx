@@ -310,7 +310,7 @@ function TradePage() {
       </section>
 
       {/* ── What we design for your clients ─────────────── */}
-      <section className="reveal py-16 md:py-24 bg-[color:var(--sand)]">
+      <section id="trade-services" className="reveal py-16 md:py-24 bg-[color:var(--sand)]">
         <Scene className="container-x max-w-6xl">
           <Eyebrow>What we design for your clients</Eyebrow>
           <SectionTitle as="h2" spacing="tight" className="mt-4 max-w-[26ch]">
