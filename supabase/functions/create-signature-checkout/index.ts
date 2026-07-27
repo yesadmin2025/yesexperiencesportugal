@@ -50,6 +50,10 @@ interface Body {
   /** Number of principal stops the guest removed in Tailor. Used to apply
    *  the SSOT tailor reduction to the resolved per-pax price. */
   principalsRemoved?: number;
+  /** Tailor: guest added the +€35pp lunch (only on lunch-excluded Signatures). */
+  tailorLunchAdded?: boolean;
+  /** Tailor: wineries selected beyond the Signature baseline (+€20pp each). */
+  tailorExtraWineries?: number;
   /** Which surface initiated checkout. Drives copy in Stripe Checkout. */
   flow?: "studio" | "signature" | "tailor";
 
@@ -73,7 +77,13 @@ interface Body {
   }>;
 }
 
-import { AGE_BAND_PCT, ageBand, tailorAdjustedPerPax, type AgeBand } from "../_shared/pricing.ts";
+import {
+  AGE_BAND_PCT,
+  ageBand,
+  serverTailorSupplementsEur,
+  tailorFinalPerPax,
+  type AgeBand,
+} from "../_shared/pricing.ts";
 
 
 type Flow = "studio" | "signature" | "tailor";
