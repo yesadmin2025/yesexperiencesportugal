@@ -342,7 +342,7 @@ function CorporatePage() {
           </div>
 
           <div>
-            <Eyebrow>Portugal, beyond the meeting room</Eyebrow>
+            <Eyebrow>Beyond the meeting room</Eyebrow>
             <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
             <SectionTitle size="compact" spacing="loose">
               Local knowledge, <SectionTitle.Em>across the country.</SectionTitle.Em>
