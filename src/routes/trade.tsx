@@ -312,7 +312,7 @@ function TradePage() {
       </section>
 
       {/* ── What we design for your clients ─────────────── */}
-      <section id="trade-services" className="reveal py-16 md:py-24 bg-[color:var(--sand)]">
+      <section id="trade-services" className="reveal py-14 md:py-24 bg-[color:var(--sand)]">
         <Scene className="container-x max-w-6xl">
           <Eyebrow>What we design for your clients</Eyebrow>
           <SectionTitle as="h2" spacing="tight" className="mt-4 max-w-[26ch]">
@@ -392,14 +392,14 @@ function TradePage() {
       </section>
 
       {/* ── Trade FAQ ───────────────────────────────────── */}
-      <section className="reveal py-16 md:py-24 pb-24 md:pb-28 bg-[color:var(--sand)]">
+      <section className="reveal py-14 md:py-24 pb-20 md:pb-28 bg-[color:var(--sand)]">
         <Scene className="container-x max-w-3xl">
           <Eyebrow>Trade FAQ</Eyebrow>
           <SectionTitle as="h2" spacing="tight" className="mt-4 max-w-[24ch]">
             Clear answers before{" "}
             <SectionTitle.Em>you entrust us with a client.</SectionTitle.Em>
           </SectionTitle>
-          <div className="mt-10 md:mt-12">
+          <div className="mt-8 md:mt-12">
             <Accordion
               type="single"
               collapsible
@@ -445,7 +445,7 @@ function TradePage() {
       {/* ── Trade access form ───────────────────────────── */}
       <section
         id="trade-inquiry"
-        className="reveal py-16 md:py-24 pb-28 md:pb-24 bg-[color:var(--ivory)] scroll-mt-28"
+        className="reveal py-14 md:py-24 pb-24 md:pb-24 bg-[color:var(--ivory)] scroll-mt-28"
       >
         <Scene className="container-x max-w-2xl">
           <Eyebrow>Request trade access</Eyebrow>
