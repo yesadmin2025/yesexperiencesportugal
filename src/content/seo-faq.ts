@@ -10,18 +10,27 @@ export type FaqItem = { q: string; a: string };
 
 export const CORPORATE_FAQ: FaqItem[] = [
   {
-    q: "Do you organise team building in Portugal?",
-    a: "Yes. We design private team-building days across Portugal — wine and gastronomy days on the Arrábida coast, sailing and coastal experiences from Sesimbra, cultural days in Sintra and the Alentejo. Transport, guides and venues are coordinated end to end by our local team.",
+    q: "Do you organise team building across Portugal?",
+    a: "Yes. We design private team-building experiences across Portugal, from cultural, gastronomic and hands-on programmes to coastal activities, workshops, boats and regional experiences. Each programme is adapted to the group's objectives, size and preferred pace.",
   },
   {
-    q: "Can you plan corporate retreats in Portugal?",
-    a: "Yes. Multi-day corporate retreats are handled as a bespoke journey — regional logistics, meeting-friendly venues, cultural moments and free time built into the flow. We work with trusted partners across Lisbon, Sintra, Arrábida, Comporta and the Alentejo.",
+    q: "Can you plan corporate retreats and incentives?",
+    a: "Yes. We coordinate single-day and multi-day corporate programmes across Portugal, including transport, activities, venues, guides, group logistics and local hosting.",
   },
   {
     q: "What group sizes do you handle?",
-    a: "From small executive off-sites of 6 to 12 people up to full-company retreats of 100+. Transport is scoped accordingly — private vehicles for small groups, coaches with hostesses for large ones — and every group has a dedicated local coordinator.",
+    a: "From small executive and leadership teams to company-wide groups of 100+. Transport, venues, staffing, activity rotations and logistics are scaled to the brief.",
+  },
+  {
+    q: "Do you work only in Lisbon and the surrounding region?",
+    a: "No. We operate across Portugal. The route and programme are selected according to the group, travel window, objectives and preferred style of experience.",
+  },
+  {
+    q: "Can you create a fully customised corporate programme?",
+    a: "Yes. Every proposal can be shaped around the group's objectives, timings, budget, interests and operational requirements. We do not rely on one fixed team-building template.",
   },
 ];
+
 
 
 
