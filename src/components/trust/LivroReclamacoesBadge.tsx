@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import logoAsset from "@/assets/logo-livro-reclamacoes-mark.png.asset.json";
+import logoAsset from "@/assets/logo-livro-reclamacoes-wordmark.png.asset.json";
 import { assertContrast } from "@/lib/a11y/contrast-check";
 
 /**
@@ -7,15 +7,13 @@ import { assertContrast } from "@/lib/a11y/contrast-check";
  *
  * Legally required in Portugal for consumer-facing businesses (DL 74/2017):
  * every public page must expose the official complaints-book logo linking to
- * the government portal at https://www.livroreclamacoes.pt/. Rendered inside
- * the shared <Footer /> so it appears on every SiteLayout route.
+ * the government portal at https://www.livroreclamacoes.pt/.
  *
- * Rendering: uses the "preto positivo" variant (mark on transparent
- * background) recolored to pure white via CSS filter, with a soft
- * drop-shadow for edge crispness. A dev-only WCAG contrast check runs on
- * mount to catch footer/theme regressions where the effective background
- * changes and the mark stops meeting AA (≥3:1 for non-text graphics; we
- * assert AAA ≥4.5:1 as a safety margin).
+ * Rendering: horizontal wordmark lockup, pre-rendered as pure white glyphs on
+ * transparency (no CSS invert — the previous square mark had a white disc
+ * behind "LIVRO" that turned black when inverted and swallowed the word). A
+ * soft drop-shadow keeps the edges crisp on the charcoal footer. A dev-only
+ * WCAG contrast check runs on mount to catch footer/theme regressions.
  */
 export function LivroReclamacoesBadge() {
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -35,21 +33,18 @@ export function LivroReclamacoesBadge() {
       target="_blank"
       rel="noopener noreferrer nofollow"
       aria-label="Livro de Reclamações — abrir portal oficial (novo separador)"
-      className="tap inline-flex items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] opacity-85 hover:opacity-100 transition-opacity duration-[var(--dur-quick)]"
+      className="tap inline-flex min-h-[44px] max-w-full items-center justify-center rounded-sm opacity-90 transition-opacity duration-[var(--dur-quick)] hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
     >
       <img
         ref={imgRef}
         src={logoAsset.url}
         alt="Livro de Reclamações"
-        width={140}
-        height={58}
+        width={1249}
+        height={108}
         loading="lazy"
         decoding="async"
-        className="block h-[40px] min-[360px]:h-[42px] sm:h-[46px] w-auto max-w-full select-none"
-        style={{
-          filter:
-            "brightness(0) invert(1) drop-shadow(0 1px 1px rgba(0,0,0,0.35))",
-        }}
+        className="block h-auto w-[150px] max-w-full select-none min-[360px]:w-[176px] sm:w-[200px]"
+        style={{ filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.35))" }}
       />
     </a>
   );
