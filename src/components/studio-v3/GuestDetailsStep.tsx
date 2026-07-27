@@ -35,6 +35,7 @@ import { ChargeSummaryLine, type ChargeQuote } from "@/components/checkout/Charg
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { GuestField, GuestFieldGroup, guestInputClass } from "@/components/checkout/guest-form-ui";
 
 
 export interface GuestDetailsStepProps {

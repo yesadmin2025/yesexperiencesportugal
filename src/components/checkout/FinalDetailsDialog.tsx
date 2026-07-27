@@ -22,6 +22,7 @@ import {
   type TravellerComposition,
 } from "@/lib/checkout/composition";
 import { ChargeSummaryLine, type ChargeQuote } from "@/components/checkout/ChargeSummaryLine";
+import { GuestField, GuestFieldGroup, GuestRow, guestInputClass } from "@/components/checkout/guest-form-ui";
 
 
 
