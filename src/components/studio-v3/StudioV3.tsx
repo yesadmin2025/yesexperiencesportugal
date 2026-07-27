@@ -2566,6 +2566,9 @@ export function StudioV3() {
                 perPaxAdultEur: j.perPaxAdultEur,
                 hasMinors: minorAges.length > 0,
                 adults,
+                minors: minorAges.length,
+                journeySubtotalEur: Math.round(j.totalEur),
+                addOnsEur: addOns,
               };
             }}
 

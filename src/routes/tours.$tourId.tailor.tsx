@@ -1647,6 +1647,9 @@ function TailorPage() {
             perPaxAdultEur: j.perPaxAdultEur,
             hasMinors: minorAges.length > 0,
             adults,
+            minors: minorAges.length,
+            journeySubtotalEur: j.totalEur,
+            addOnsEur: 0,
           };
         }}
 
