@@ -59,6 +59,22 @@ PII (`email`, `phone`, `name`, `given-name`, `family-name`, `message`,
 | `corporate_lead` | `/corporate` form submit | – |
 | `travel_designer_lead` | `/portugal-travel-designer` form submit | – |
 
+## Trade (B2B, `/trade`)
+
+| Event | Where it fires | Extra params |
+|---|---|---|
+| `trade_access_click` | Hero "Request trade access" CTA | `placement: "hero"` |
+| `trade_email_click` | Hero "Email a local designer" CTA | `placement: "hero"` |
+| `trade_whatsapp_click` | WhatsApp entry from `/trade` | `placement` |
+| `sample_journey_view` | First interaction with the Travel Designer book preview | `placement: "trade"` |
+| `travel_book_sample_request` | "Request a travel book sample" CTA | `placement: "sample_journey"` |
+| `trade_faq_open` | A Trade FAQ item is opened | `placement` (item id) |
+| `trade_form_started` | First focus into a trade form field | – |
+| `trade_form_submitted` | Trade form submit OK | – |
+| `trade_form_error` | Validation or network failure | `placement: "validation" \| "network"` |
+
+No agency name, personal name, email or phone is sent with any trade event.
+
 ## Other
 
 | Event | Where it fires | Extra params |
