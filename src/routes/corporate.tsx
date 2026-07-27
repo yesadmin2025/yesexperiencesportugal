@@ -245,7 +245,7 @@ function CorporatePage() {
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="pt-24 md:pt-28 pb-16 md:pb-20 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-3xl text-center">
-          <Eyebrow flank>Corporate, incentives &amp; groups</Eyebrow>
+          <Eyebrow flank>Corporate &amp; incentives</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose" className="mt-6">
             Corporate experiences in Portugal,{" "}
             <SectionTitle.Em>designed by locals.</SectionTitle.Em>
@@ -342,7 +342,7 @@ function CorporatePage() {
           </div>
 
           <div>
-            <Eyebrow>Portugal, beyond the meeting room</Eyebrow>
+            <Eyebrow>Beyond the meeting room</Eyebrow>
             <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
             <SectionTitle size="compact" spacing="loose">
               Local knowledge, <SectionTitle.Em>across the country.</SectionTitle.Em>
