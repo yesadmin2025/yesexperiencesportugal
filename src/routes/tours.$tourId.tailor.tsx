@@ -1560,6 +1560,37 @@ function TailorPage() {
                     />
                   )}
 
+                  {/* Add lunch — offered only where the canonical product
+                      genuinely excludes it (never on the picnic, the winery
+                      lunch or the all-inclusive wine day). */}
+                  {rules.allowAddLunch && (
+                    <button
+                      type="button"
+                      onClick={() => setLunchAdded((v) => !v)}
+                      aria-pressed={lunchAdded}
+                      data-testid="tailor-add-lunch"
+                      className={[
+                        "w-full flex items-center justify-between gap-3 border px-3 py-2.5 text-left transition-colors min-h-[52px]",
+                        lunchAdded
+                          ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
+                          : "border-[color:var(--border)]",
+                      ].join(" ")}
+                    >
+                      <span className="flex flex-col">
+                        <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
+                          Add lunch
+                        </span>
+                        <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
+                          {lunchAdded ? "Added to your day" : "Lunch is not included in this Signature"}
+                        </span>
+                      </span>
+                      <span className="text-[12px] tabular-nums text-[color:var(--charcoal)] whitespace-nowrap">
+                        +<PriceEur amountEur={TAILOR_LUNCH_SUPPLEMENT_EUR} role="per-person" /> pp
+                      </span>
+                    </button>
+                  )}
+
+
                   {/* Truthful per-person + party-total split. "Indicative
                       total / adult" was misread as a party total; use the
                       same two-line shape as the Signature price card. */}
