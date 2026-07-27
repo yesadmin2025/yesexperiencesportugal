@@ -16,6 +16,23 @@ async function bodyText(page: Page) {
 }
 
 test.describe("/trade structure", () => {
+  test.beforeEach(async ({ context }) => {
+    // Dismiss the cookie banner so it never overlays the controls under test.
+    await context.addCookies([
+      {
+        name: "yes.cookieConsent.v1",
+        value: "1",
+        url: "http://localhost:8080",
+      },
+    ]);
+    await context.addInitScript(() => {
+      window.localStorage.setItem(
+        "yes.cookieConsent.v1",
+        JSON.stringify({ analytics: false, ts: Date.now() }),
+      );
+    });
+  });
+
   test("hero, services, book and FAQ render with no banned copy", async ({ page }) => {
     await page.goto("/trade");
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
@@ -23,7 +40,6 @@ test.describe("/trade structure", () => {
     );
     const text = await bodyText(page);
     for (const phrase of BANNED) expect(text).not.toContain(phrase.toLowerCase());
-    expect(text).toContain("we operate across portugal");
 
     for (const label of [
       "Signature Experiences",
@@ -38,20 +54,20 @@ test.describe("/trade structure", () => {
     await expect(page.locator("#sample-journey")).toBeVisible();
   });
 
-  test("FAQ accordion opens", async ({ page }) => {
+  test("FAQ accordion opens and states nationwide reach", async ({ page }) => {
     await page.goto("/trade");
-    const trigger = page.getByRole("button", { name: /How do you work with travel advisors/i });
-    await trigger.click();
-    await expect(page.getByText(/Share the client brief, dates, interests/i)).toBeVisible();
+    await page.getByRole("button", { name: /Where in Portugal can you operate/i }).click();
+    await expect(page.getByText(/We operate across Portugal/i)).toBeVisible();
   });
 
   test("form validates and keeps entered values", async ({ page }) => {
     await page.goto("/trade");
     await page.locator("#trade-first").fill("Ana");
-    await page.getByRole("button", { name: /request trade access/i }).last().click();
+    await page.locator('#trade-inquiry button[type="submit"]').click();
     await expect(page.getByText(/Please check the highlighted fields/i)).toBeVisible();
     await expect(page.locator("#trade-first")).toHaveValue("Ana");
   });
+
 
   for (const width of [360, 393, 768, 1280, 1728]) {
     test(`no horizontal scroll at ${width}px`, async ({ page }) => {
