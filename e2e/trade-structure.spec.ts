@@ -41,6 +41,7 @@ test.describe("/trade structure", () => {
     const text = await bodyText(page);
     for (const phrase of BANNED) expect(text).not.toContain(phrase.toLowerCase());
 
+    const services = page.locator("#trade-services");
     for (const label of [
       "Signature Experiences",
       "Experience Studio",
@@ -48,7 +49,7 @@ test.describe("/trade structure", () => {
       "Moments",
       "Corporate & Private Groups",
     ]) {
-      await expect(page.getByRole("heading", { name: label, exact: true })).toBeVisible();
+      await expect(services.getByRole("heading", { name: label, exact: true })).toBeVisible();
     }
 
     await expect(page.locator("#sample-journey")).toBeVisible();
@@ -56,17 +57,27 @@ test.describe("/trade structure", () => {
 
   test("FAQ accordion opens and states nationwide reach", async ({ page }) => {
     await page.goto("/trade");
-    await page.getByRole("button", { name: /Where in Portugal can you operate/i }).click();
+    const trigger = page.getByRole("button", { name: /Where in Portugal can you operate/i });
+    // Retry until React has hydrated the accordion.
+    await expect(async () => {
+      await trigger.click();
+      await expect(trigger).toHaveAttribute("aria-expanded", "true", { timeout: 1000 });
+    }).toPass({ timeout: 15000 });
     await expect(page.getByText(/We operate across Portugal/i)).toBeVisible();
   });
 
   test("form validates and keeps entered values", async ({ page }) => {
     await page.goto("/trade");
-    await page.locator("#trade-first").fill("Ana");
-    await page.locator('#trade-inquiry button[type="submit"]').click();
-    await expect(page.getByText(/Please check the highlighted fields/i)).toBeVisible();
+    const submit = page.locator('#trade-inquiry button[type="submit"]');
+    const error = page.getByText(/Please check the highlighted fields/i);
+    await expect(async () => {
+      await page.locator("#trade-first").fill("Ana");
+      await submit.click();
+      await expect(error).toBeVisible({ timeout: 1000 });
+    }).toPass({ timeout: 15000 });
     await expect(page.locator("#trade-first")).toHaveValue("Ana");
   });
+
 
 
   for (const width of [360, 393, 768, 1280, 1728]) {
