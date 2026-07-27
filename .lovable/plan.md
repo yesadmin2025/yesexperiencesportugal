@@ -1,22 +1,27 @@
-## What's happening
+## Goal
 
-The seal file itself is fine — the current image serves correctly (HTTP 200, 16 KB PNG) from the preview domain. What you're seeing is the **previous** seal file, which was replaced during the last redesign. Any tab or build still pointing at the old file gets a broken image, and because the badge has no fixed height, the broken placeholder expands into that tall empty box.
+Remove the invented-feeling `/partners` hub and its three platform pages. Keep only three small icons in the footer, linking directly out to the real listings.
 
-## Fix
+## What gets removed
 
-1. **Force the new seal through**
-   - Hard-refresh the preview so the page picks up the current asset pointer instead of the retired one.
-   - Republish so the live site stops referencing the retired file.
+- `src/routes/partners.tsx`, `src/routes/partners.index.tsx`, `src/routes/partners.$slug.tsx`
+- `src/data/platform-partners.ts` (all the long unique copy, "verified facts", editorial notes)
+- The four `/partners*` entries in `src/routes/sitemap[.]xml.ts`
+- `e2e/platform-icons-a11y.spec.ts` partner-page test; the sitemap spec's `/partners*` expectations
 
-2. **Make the badge fail gracefully**
-   - Constrain the image with an explicit height (not just width) so it can never blow up into a large empty box if an asset ever 404s again.
-   - Hide the broken-image state (`onError`) instead of showing alt text in a bordered frame, keeping the "Livro de Reclamações" link accessible via its `aria-label`.
+## Footer change
 
-3. **Make it slightly smaller**
-   - Mobile: 180px → 150px wide.
-   - Desktop: 210px → 175px wide.
-   - Keeps the 44×44 minimum tap target intact.
+Replace the "Also listed on" block's internal links plus the "View all partners" text link with a single row of three icon-only external links, opening in a new tab with `rel="noopener noreferrer"`:
 
-## Verification
+- Viator → the canonical Viator tour listing already stored in the source-of-truth data
+- GetYourGuide → `https://www.getyourguide.com/pt-pt/yesexperiences-portugal-s249432/` (tracking/visitor query params stripped)
+- Tripadvisor → the existing Tripadvisor profile URL from business NAP config
 
-Capture the footer at mobile (393px) and desktop widths to confirm the seal renders crisp white, is correctly centered, and sits at the reduced size.
+Each keeps its `aria-label` ("Also listed on Viator", etc.), tooltip, 44×44 tap target and visible focus ring. Nothing else in the footer moves.
+
+## Technical notes
+
+- `AccessibleIconLink` currently takes a router `to`; it needs an external `href` mode (plain `<a>` with target/rel) — added without changing existing call sites.
+- Old URLs: add 301 redirects from `/partners` and `/partners/*` to `/` so indexed pages don't 404.
+- Update `e2e/platform-icons-a11y.spec.ts` to assert the external `href`s instead of internal routes.
+- Grep confirms no other route links to `/partners`, so no orphaned internal links remain.

@@ -234,30 +234,35 @@ export function Footer() {
               <h4 className={`${EYEBROW_CLASS} mb-3`} style={{ fontWeight: 600 }}>
                 Also listed on
               </h4>
-              <div className="flex flex-wrap items-center gap-3">
-                <ul className="flex items-center gap-2.5" aria-label="Distribution partners">
-                  {[
-                    { to: "/partners/viator", label: "Viator", Icon: ViatorIcon },
-                    { to: "/partners/getyourguide", label: "GetYourGuide", Icon: GetYourGuideIcon },
-                    { to: "/partners/tripadvisor", label: "Tripadvisor", Icon: TripadvisorIcon },
-                  ].map(({ to, label, Icon }) => (
-                    <li key={label}>
-                      <AccessibleIconLink
-                        to={to}
-                        label={`Also listed on ${label}`}
-                        tooltip={label}
-                        className={ICON_LINK_CLASS}
-                      >
-                        <Icon size={16} />
-                      </AccessibleIconLink>
-                    </li>
-                  ))}
-                </ul>
-                <Link to="/partners" className={`${LINK_CLASS} text-[12px] text-[color:var(--ivory)]/70`}>
-                  View all partners
-                </Link>
-              </div>
+              <ul className="flex items-center gap-2.5" aria-label="Distribution partners">
+                {[
+                  {
+                    href: "https://www.viator.com/tours/Lisbon/Private-Wine-Tour-with-Food-and-Wine-Tasting-in-Southern-Lisbon/d538-349639P3",
+                    label: "Viator",
+                    Icon: ViatorIcon,
+                  },
+                  {
+                    href: "https://www.getyourguide.com/yesexperiences-portugal-s249432/",
+                    label: "GetYourGuide",
+                    Icon: GetYourGuideIcon,
+                  },
+                  { href: SOCIAL.tripadvisor, label: "Tripadvisor", Icon: TripadvisorIcon },
+                ].map(({ href, label, Icon }) => (
+                  <li key={label}>
+                    <AccessibleIconLink
+                      href={href}
+                      external
+                      label={`Also listed on ${label}`}
+                      tooltip={label}
+                      className={ICON_LINK_CLASS}
+                    >
+                      <Icon size={16} />
+                    </AccessibleIconLink>
+                  </li>
+                ))}
+              </ul>
             </div>
+
           </div>
 
           {/* Payments */}

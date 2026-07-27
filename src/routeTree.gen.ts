@@ -62,7 +62,6 @@ import { Route as AlentejoWineTourFromLisbonRouteImport } from './routes/alentej
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PtIndexRouteImport } from './routes/pt.index'
-import { Route as PartnersIndexRouteImport } from './routes/partners.index'
 import { Route as LocalStoriesIndexRouteImport } from './routes/local-stories.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ToursTourIdRouteImport } from './routes/tours.$tourId'
@@ -83,7 +82,7 @@ import { Route as PtCookiesRouteImport } from './routes/pt.cookies'
 import { Route as PtContactRouteImport } from './routes/pt.contact'
 import { Route as PtAboutRouteImport } from './routes/pt.about'
 import { Route as PtSplatRouteImport } from './routes/pt.$'
-import { Route as PartnersSlugRouteImport } from './routes/partners.$slug'
+import { Route as PartnersSplatRouteImport } from './routes/partners.$'
 import { Route as LocalStoriesSlugRouteImport } from './routes/local-stories.$slug'
 import { Route as Itineraries10DayPrivatePortugalTourRouteImport } from './routes/itineraries.10-day-private-portugal-tour'
 import { Route as ITokenRouteImport } from './routes/i.$token'
@@ -413,11 +412,6 @@ const PtIndexRoute = PtIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PtRoute,
 } as any)
-const PartnersIndexRoute = PartnersIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PartnersRoute,
-} as any)
 const LocalStoriesIndexRoute = LocalStoriesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -518,9 +512,9 @@ const PtSplatRoute = PtSplatRouteImport.update({
   path: '/$',
   getParentRoute: () => PtRoute,
 } as any)
-const PartnersSlugRoute = PartnersSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
+const PartnersSplatRoute = PartnersSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => PartnersRoute,
 } as any)
 const LocalStoriesSlugRoute = LocalStoriesSlugRouteImport.update({
@@ -926,7 +920,7 @@ export interface FileRoutesByFullPath {
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
-  '/partners/$slug': typeof PartnersSlugRoute
+  '/partners/$': typeof PartnersSplatRoute
   '/pt/$': typeof PtSplatRoute
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
@@ -947,7 +941,6 @@ export interface FileRoutesByFullPath {
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
-  '/partners/': typeof PartnersIndexRoute
   '/pt/': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -996,6 +989,7 @@ export interface FileRoutesByTo {
   '/mcp-signin': typeof McpSigninRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
+  '/partners': typeof PartnersRouteWithChildren
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -1059,7 +1053,7 @@ export interface FileRoutesByTo {
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
-  '/partners/$slug': typeof PartnersSlugRoute
+  '/partners/$': typeof PartnersSplatRoute
   '/pt/$': typeof PtSplatRoute
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
@@ -1080,7 +1074,6 @@ export interface FileRoutesByTo {
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/local-stories': typeof LocalStoriesIndexRoute
-  '/partners': typeof PartnersIndexRoute
   '/pt': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -1196,7 +1189,7 @@ export interface FileRoutesById {
   '/i/$token': typeof ITokenRoute
   '/itineraries/10-day-private-portugal-tour': typeof Itineraries10DayPrivatePortugalTourRoute
   '/local-stories/$slug': typeof LocalStoriesSlugRoute
-  '/partners/$slug': typeof PartnersSlugRoute
+  '/partners/$': typeof PartnersSplatRoute
   '/pt/$': typeof PtSplatRoute
   '/pt/about': typeof PtAboutRoute
   '/pt/contact': typeof PtContactRoute
@@ -1217,7 +1210,6 @@ export interface FileRoutesById {
   '/tours/$tourId': typeof ToursTourIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
-  '/partners/': typeof PartnersIndexRoute
   '/pt/': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -1334,7 +1326,7 @@ export interface FileRouteTypes {
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
-    | '/partners/$slug'
+    | '/partners/$'
     | '/pt/$'
     | '/pt/about'
     | '/pt/contact'
@@ -1355,7 +1347,6 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/admin/'
     | '/local-stories/'
-    | '/partners/'
     | '/pt/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -1404,6 +1395,7 @@ export interface FileRouteTypes {
     | '/mcp-signin'
     | '/moments'
     | '/multi-day'
+    | '/partners'
     | '/portugal-tours'
     | '/portugal-travel-designer'
     | '/portugal-wine-tours'
@@ -1467,7 +1459,7 @@ export interface FileRouteTypes {
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
-    | '/partners/$slug'
+    | '/partners/$'
     | '/pt/$'
     | '/pt/about'
     | '/pt/contact'
@@ -1488,7 +1480,6 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/admin'
     | '/local-stories'
-    | '/partners'
     | '/pt'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -1603,7 +1594,7 @@ export interface FileRouteTypes {
     | '/i/$token'
     | '/itineraries/10-day-private-portugal-tour'
     | '/local-stories/$slug'
-    | '/partners/$slug'
+    | '/partners/$'
     | '/pt/$'
     | '/pt/about'
     | '/pt/contact'
@@ -1624,7 +1615,6 @@ export interface FileRouteTypes {
     | '/tours/$tourId'
     | '/admin/'
     | '/local-stories/'
-    | '/partners/'
     | '/pt/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -2136,13 +2126,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PtIndexRouteImport
       parentRoute: typeof PtRoute
     }
-    '/partners/': {
-      id: '/partners/'
-      path: '/'
-      fullPath: '/partners/'
-      preLoaderRoute: typeof PartnersIndexRouteImport
-      parentRoute: typeof PartnersRoute
-    }
     '/local-stories/': {
       id: '/local-stories/'
       path: '/'
@@ -2283,11 +2266,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PtSplatRouteImport
       parentRoute: typeof PtRoute
     }
-    '/partners/$slug': {
-      id: '/partners/$slug'
-      path: '/$slug'
-      fullPath: '/partners/$slug'
-      preLoaderRoute: typeof PartnersSlugRouteImport
+    '/partners/$': {
+      id: '/partners/$'
+      path: '/$'
+      fullPath: '/partners/$'
+      preLoaderRoute: typeof PartnersSplatRouteImport
       parentRoute: typeof PartnersRoute
     }
     '/local-stories/$slug': {
@@ -2721,13 +2704,11 @@ const LocalStoriesRouteWithChildren = LocalStoriesRoute._addFileChildren(
 )
 
 interface PartnersRouteChildren {
-  PartnersSlugRoute: typeof PartnersSlugRoute
-  PartnersIndexRoute: typeof PartnersIndexRoute
+  PartnersSplatRoute: typeof PartnersSplatRoute
 }
 
 const PartnersRouteChildren: PartnersRouteChildren = {
-  PartnersSlugRoute: PartnersSlugRoute,
-  PartnersIndexRoute: PartnersIndexRoute,
+  PartnersSplatRoute: PartnersSplatRoute,
 }
 
 const PartnersRouteWithChildren = PartnersRoute._addFileChildren(
