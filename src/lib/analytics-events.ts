@@ -51,6 +51,16 @@ export type YesAnalyticsEvent =
   | "moments_lead"
   | "corporate_lead"
   | "travel_designer_lead"
+  // Trade (B2B)
+  | "trade_access_click"
+  | "trade_email_click"
+  | "trade_whatsapp_click"
+  | "sample_journey_view"
+  | "travel_book_sample_request"
+  | "trade_faq_open"
+  | "trade_form_started"
+  | "trade_form_submitted"
+  | "trade_form_error"
   // Other
   | "language_changed"
   | "currency_changed"
