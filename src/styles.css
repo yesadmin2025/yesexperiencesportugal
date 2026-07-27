@@ -6861,14 +6861,3 @@ html {
     will-change: auto !important;
   }
 }
-
-/* Footer SEO link groups: collapsed on mobile, always expanded from md up.
-   Links stay in the DOM at every width so crawlers see the full index. */
-@media (min-width: 768px) {
-  .footer-links-group > summary {
-    pointer-events: none;
-  }
-  .footer-links-group > ul {
-    display: grid !important;
-  }
-}
