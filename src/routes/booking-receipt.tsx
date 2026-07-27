@@ -1,7 +1,12 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Printer, ArrowLeft, Loader2, AlertCircle } from "lucide-react";
-import { BUSINESS_NAP } from "@/config/business-nap";
+import {
+  BUSINESS_LEGAL_NAME,
+  EMAIL,
+  LICENSE_LABEL,
+  PHONE_DISPLAY,
+} from "@/config/business-nap";
 
 interface Search {
   session_id?: string;
@@ -147,8 +152,7 @@ function BookingReceiptPage() {
               YES Experiences Portugal
             </h1>
             <p className="mt-2 text-[12.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
-              {BUSINESS_NAP.legalName} · {BUSINESS_NAP.email}
-              {BUSINESS_NAP.phoneDisplay ? ` · ${BUSINESS_NAP.phoneDisplay}` : ""}
+              {BUSINESS_LEGAL_NAME} · {EMAIL} · {PHONE_DISPLAY}
             </p>
           </header>
 
@@ -276,13 +280,11 @@ function BookingReceiptPage() {
 
               <footer className="mt-8 border-t border-[color:var(--border)] pt-5 text-[11.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
                 <p>
-                  {BUSINESS_NAP.legalName}
-                  {BUSINESS_NAP.vatId ? ` · VAT ${BUSINESS_NAP.vatId}` : ""}
-                  {BUSINESS_NAP.rnaavt ? ` · RNAVT ${BUSINESS_NAP.rnaavt}` : ""}
+                  {BUSINESS_LEGAL_NAME} · {LICENSE_LABEL}
                 </p>
                 <p className="mt-1">
                   Questions about this booking? Reply to your confirmation email or write to{" "}
-                  {BUSINESS_NAP.email}.
+                  {EMAIL}.
                 </p>
               </footer>
             </>
