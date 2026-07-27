@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { ShieldCheck, BadgeCheck, Lock, ChevronDown } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
@@ -321,24 +321,38 @@ function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
 }
 
 /**
- * SEO link group. Native <details> keeps every link in the DOM for crawlers
- * while collapsing the long lists on mobile; forced open from md upwards.
+ * SEO link group. Collapsed behind a toggle on mobile, always expanded from
+ * md up. Links stay in the DOM at every width, so crawlers see the full index.
  */
 function FooterLinkGroup({ title, links }: { title: string; links: FooterLink[] }) {
+  const [open, setOpen] = useState(false);
+  const id = `footer-group-${title.replace(/\s+/g, "-").toLowerCase()}`;
+
   return (
-    <details className="group footer-links-group">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-2 md:cursor-default md:py-0">
+    <div className="min-w-0">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls={id}
+        className="flex w-full items-center justify-between gap-3 py-2 text-left md:pointer-events-none md:py-0"
+      >
         <h4 className={EYEBROW_CLASS} style={{ fontWeight: 600 }}>
           {title}
         </h4>
         <ChevronDown
           size={16}
           aria-hidden="true"
-          className="shrink-0 text-[color:var(--gold-warm)] transition-transform duration-[var(--dur-quick)] group-open:rotate-180 md:hidden"
+          className={`shrink-0 text-[color:var(--gold-warm)] transition-transform duration-[var(--dur-quick)] md:hidden ${
+            open ? "rotate-180" : ""
+          }`}
         />
-      </summary>
+      </button>
       <ul
-        className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 font-[family-name:var(--font-sans)] text-[13px] sm:grid-cols-2"
+        id={id}
+        className={`mt-3 grid-cols-1 gap-x-6 gap-y-2 font-[family-name:var(--font-sans)] text-[13px] sm:grid-cols-2 md:grid ${
+          open ? "grid" : "hidden"
+        }`}
         style={{ fontWeight: 400 }}
       >
         {links.map((l) => (
@@ -349,6 +363,6 @@ function FooterLinkGroup({ title, links }: { title: string; links: FooterLink[] 
           </li>
         ))}
       </ul>
-    </details>
+    </div>
   );
 }
