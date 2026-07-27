@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-27T01:29:37.039Z",
-  "filesScanned": 922,
+  "generatedAt": "2026-07-27T01:37:24.916Z",
+  "filesScanned": 923,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1898,7 +1898,7 @@
     },
     {
       "file": "src/components/trust/LivroReclamacoesBadge.tsx",
-      "line": 25,
+      "line": 23,
       "col": 20,
       "raw": "#FFFFFF",
       "normalized": "#ffffff",
