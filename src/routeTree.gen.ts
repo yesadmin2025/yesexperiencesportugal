@@ -32,6 +32,7 @@ import { Route as PressRouteImport } from './routes/press'
 import { Route as PortugalWineToursRouteImport } from './routes/portugal-wine-tours'
 import { Route as PortugalTravelDesignerRouteImport } from './routes/portugal-travel-designer'
 import { Route as PortugalToursRouteImport } from './routes/portugal-tours'
+import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
 import { Route as MomentsRouteImport } from './routes/moments'
 import { Route as McpSigninRouteImport } from './routes/mcp-signin'
@@ -254,6 +255,11 @@ const PortugalTravelDesignerRoute = PortugalTravelDesignerRouteImport.update({
 const PortugalToursRoute = PortugalToursRouteImport.update({
   id: '/portugal-tours',
   path: '/portugal-tours',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartnersRoute = PartnersRouteImport.update({
+  id: '/partners',
+  path: '/partners',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MultiDayRoute = MultiDayRouteImport.update({
@@ -843,6 +849,7 @@ export interface FileRoutesByFullPath {
   '/mcp-signin': typeof McpSigninRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
+  '/partners': typeof PartnersRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -975,6 +982,7 @@ export interface FileRoutesByTo {
   '/mcp-signin': typeof McpSigninRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
+  '/partners': typeof PartnersRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -1108,6 +1116,7 @@ export interface FileRoutesById {
   '/mcp-signin': typeof McpSigninRoute
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
+  '/partners': typeof PartnersRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
   '/portugal-wine-tours': typeof PortugalWineToursRoute
@@ -1243,6 +1252,7 @@ export interface FileRouteTypes {
     | '/mcp-signin'
     | '/moments'
     | '/multi-day'
+    | '/partners'
     | '/portugal-tours'
     | '/portugal-travel-designer'
     | '/portugal-wine-tours'
@@ -1375,6 +1385,7 @@ export interface FileRouteTypes {
     | '/mcp-signin'
     | '/moments'
     | '/multi-day'
+    | '/partners'
     | '/portugal-tours'
     | '/portugal-travel-designer'
     | '/portugal-wine-tours'
@@ -1507,6 +1518,7 @@ export interface FileRouteTypes {
     | '/mcp-signin'
     | '/moments'
     | '/multi-day'
+    | '/partners'
     | '/portugal-tours'
     | '/portugal-travel-designer'
     | '/portugal-wine-tours'
@@ -1641,6 +1653,7 @@ export interface RootRouteChildren {
   McpSigninRoute: typeof McpSigninRoute
   MomentsRoute: typeof MomentsRoute
   MultiDayRoute: typeof MultiDayRoute
+  PartnersRoute: typeof PartnersRoute
   PortugalToursRoute: typeof PortugalToursRoute
   PortugalTravelDesignerRoute: typeof PortugalTravelDesignerRoute
   PortugalWineToursRoute: typeof PortugalWineToursRoute
@@ -1889,6 +1902,13 @@ declare module '@tanstack/react-router' {
       path: '/portugal-tours'
       fullPath: '/portugal-tours'
       preLoaderRoute: typeof PortugalToursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/partners': {
+      id: '/partners'
+      path: '/partners'
+      fullPath: '/partners'
+      preLoaderRoute: typeof PartnersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/multi-day': {
@@ -2753,6 +2773,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpSigninRoute: McpSigninRoute,
   MomentsRoute: MomentsRoute,
   MultiDayRoute: MultiDayRoute,
+  PartnersRoute: PartnersRoute,
   PortugalToursRoute: PortugalToursRoute,
   PortugalTravelDesignerRoute: PortugalTravelDesignerRoute,
   PortugalWineToursRoute: PortugalWineToursRoute,
