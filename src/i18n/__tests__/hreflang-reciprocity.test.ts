@@ -66,8 +66,13 @@ describe("bilingual sitemap", () => {
   });
 
   it("never lists a PT redirect stub", () => {
+    // Strip comments — the rationale for excluding the stubs names them.
+    const code = sitemap.replace(/\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//g, "");
     for (const stub of ["/pt/faq", "/pt/moments", "/pt/proposals"]) {
-      expect(sitemap).not.toContain(stub);
+      expect(code).not.toContain(stub);
+    }
+    for (const stub of ["/faq", "/moments", "/proposals"]) {
+      expect(PT_PAIRED_PATHS).not.toContain(stub);
     }
   });
 });
