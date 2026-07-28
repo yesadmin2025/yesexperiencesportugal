@@ -777,14 +777,19 @@ export function studioServiceLd(args: { path: string; name: string; description:
  * Emitted as Service so Google can distinguish it from the Studio (day) and
  * from a single bookable Product.
  */
-export function travelDesignerServiceLd(args: { path: string }) {
+export function travelDesignerServiceLd(args: {
+  path: string;
+  name?: string;
+  description?: string;
+}) {
   const url = `${SITE_URL}${args.path}`;
   return {
     "@context": "https://schema.org",
     "@type": "Service",
     "@id": `${url}#service`,
-    name: "YES Travel Designer — full Portugal journeys, designed for you",
+    name: args.name ?? "YES Travel Designer — full Portugal journeys, designed for you",
     description:
+      args.description ??
       "A local Travel Designer composes full private journeys across Portugal — private, personalized, built around your time, rhythm and interests, with local hidden gems. From a few days to a full journey across Portugal, delivered as a curated travel file.",
     serviceType: "Bespoke multi-day Portugal travel design",
     category: "Private personalized multi-day travel design",
