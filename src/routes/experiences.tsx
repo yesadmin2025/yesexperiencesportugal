@@ -107,47 +107,18 @@ function ExperiencesPage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {signatureTours.map((t) => {
-              // Real bullets sourced from the matching Viator product page
-              // (bookable stops, pass-bys excluded). Falls back to the
-              // tour's highlights only when no Viator meta exists. Never
-              // invented marketing copy.
               const meta = VIATOR_META[t.id];
               const content = getTourContent(t.id);
-              // Prefer verified SoT itinerary chapter labels (real, non-
-              // optional stops from the Viator source-of-truth). Skip
-              // generic pickup / pass-by chapters ("Lisbon", "Lisbon
-              // District", "Lisbon (Pass By)", the 25 de Abril bridge)
-              // so every card differentiates on its actual destinations.
-              const isGenericOrigin = (label: string) => {
-                const l = label.toLowerCase().replace(/[().]/g, " ").replace(/\s+/g, " ").trim();
-                return (
-                  l === "lisbon" ||
-                  l === "lisboa" ||
-                  l === "lisbon district" ||
-                  l.startsWith("lisbon pass by") ||
-                  l.startsWith("lisboa pass by") ||
-                  l === "ponte 25 de abril"
-                );
-              };
-              const sotStopBullets =
-                content.source === "sot"
-                  ? content.itinerary
-                      .filter((c) => !c.optional && !isGenericOrigin(c.label))
-                      .map((c) => c.label)
-                  : [];
-              const realStopBullets =
-                sotStopBullets.length > 0
-                  ? sotStopBullets
-                  : meta?.stops
-                    ? meta.stops
-                        .filter((s) => !s.passBy && !isGenericOrigin(s.name))
-                        .map((s) => s.name)
-                    : [];
-              const curatedMoments = getSignatureCardMoments(t.id);
-              const topHighlights = (
-                curatedMoments ??
-                (realStopBullets.length > 0 ? realStopBullets : content.highlights)
-              ).slice(0, 3);
+              // Card bullets come from the curated moments file, which is
+              // derived strictly from each tour's canonical
+              // Source-of-Truth entry (highlights / included / real
+              // stops). Every one of the 12 Signatures has a trio; the
+              // canonical highlights remain as a safety net for any new
+              // tour added before its trio exists.
+              const topHighlights = (getSignatureCardMoments(t.id) ?? content.highlights).slice(
+                0,
+                3,
+              );
               return (
                 <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
                   {/* Cover — clickable to source-of-truth detail page */}
