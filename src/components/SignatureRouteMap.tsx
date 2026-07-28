@@ -20,7 +20,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { MapPin } from "lucide-react";
 import type { SignatureTour } from "@/data/signatureTours";
-import { lookupStop } from "@/data/stopGeo";
+import { resolveSignatureMapStops } from "@/lib/signature-map-stops";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { RouteLegend } from "@/components/studio-v3/RouteLegend";
@@ -209,19 +209,7 @@ function LeafletMap({
 }
 
 export function SignatureRouteMap({ tour }: Props) {
-  const baseStops = useMemo<ResolvedStop[]>(() => {
-    const out: ResolvedStop[] = [];
-    const seen = new Set<string>();
-    for (const s of tour.stops ?? []) {
-      const hit = lookupStop(s.label);
-      if (!hit) continue;
-      const key = `${hit.lat.toFixed(4)},${hit.lng.toFixed(4)}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      out.push({ label: s.label, lat: hit.lat, lng: hit.lng });
-    }
-    return out;
-  }, [tour]);
+  const baseStops = useMemo<ResolvedStop[]>(() => resolveSignatureMapStops(tour), [tour]);
 
   const fetchRoute = useServerFn(getSignatureTourRoute);
   const { data } = useQuery<SignatureRoutePayload>({

@@ -16,7 +16,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { findTour } from "@/data/signatureTours";
-import { lookupStop } from "@/data/stopGeo";
+import { resolveSignatureMapStops } from "@/lib/signature-map-stops";
 
 export interface SignatureRouteStop {
   label: string;
@@ -49,16 +49,7 @@ export const getSignatureTourRoute = createServerFn({ method: "GET" })
     const tour = findTour(data.tourId);
     if (!tour) return { stops: [], legs: [] };
 
-    const seen = new Set<string>();
-    const stops: SignatureRouteStop[] = [];
-    for (const s of tour.stops ?? []) {
-      const hit = lookupStop(s.label);
-      if (!hit) continue;
-      const key = `${hit.lat.toFixed(4)},${hit.lng.toFixed(4)}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      stops.push({ label: s.label, lat: hit.lat, lng: hit.lng });
-    }
+    const stops: SignatureRouteStop[] = resolveSignatureMapStops(tour);
 
     if (stops.length < 2) return { stops, legs: [] };
 
