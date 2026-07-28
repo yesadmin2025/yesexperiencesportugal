@@ -515,9 +515,21 @@ function TailorPage() {
     [basePerPax, principalsRemoved],
   );
 
+  /** Flat lunch-removal credit (Arrábida Wine only). Outside cap + floor. */
+  const lunchRemovalPerPax = useMemo(
+    () => lunchRemovalEur(tour.id, lunchRemoved),
+    [tour.id, lunchRemoved],
+  );
+
   const estimatedPrice = useMemo(
-    () => tailorFinalPerPax(basePerPax, principalsRemoved, supplementsPerPax),
-    [basePerPax, principalsRemoved, supplementsPerPax],
+    () =>
+      tailorFinalPerPax(
+        basePerPax,
+        principalsRemoved,
+        supplementsPerPax,
+        lunchRemovalPerPax,
+      ),
+    [basePerPax, principalsRemoved, supplementsPerPax, lunchRemovalPerPax],
   );
 
   const savingsEur = Math.max(0, basePerPax - reducedPerPax);
