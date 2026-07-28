@@ -36,7 +36,9 @@ import { getScrollDebugFlags, useScrollDebugFlags } from "@/lib/scroll-debug";
 
 import { HERO_COPY, HERO_COPY_VERSION } from "@/content/hero-copy";
 import { HOMEPAGE_FAQ } from "@/content/faq-data";
-import { faqPageLd, itemListLd, jsonLdScript, studioServiceLd } from "@/lib/jsonld";
+import { faqPageLd, itemListLd, jsonLdScript, studioServiceLd
+  serviceEntityListLd,
+} from "@/lib/jsonld";
 import { signatureTours, isValidTourId } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
@@ -274,6 +276,7 @@ export const Route = createFileRoute("/")({
     ],
     scripts: [
       jsonLdScript(faqPageLd(HOMEPAGE_FAQ)),
+      jsonLdScript(serviceEntityListLd()),
       jsonLdScript(
         itemListLd({
           name: "Signature Experiences — YES experiences Portugal",

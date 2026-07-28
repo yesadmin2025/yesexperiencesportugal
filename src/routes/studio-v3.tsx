@@ -71,8 +71,16 @@ function StudioV3Page() {
           travelling and the rhythm you want. The map and stops reveal themselves as you go.
         </p>
         <p>
-          For multi-day journeys across Portugal, a human designer composes it with you —{" "}
-          <a href="/multi-day">work with our Travel Designer</a>.
+          As you choose, the route, the stops and the price move with you. When the configuration
+          is standard you can reserve it directly; when it needs local judgement, the same team
+          reviews it and confirms before anything is charged.
+        </p>
+        <p>
+          For a complete journey across Portugal rather than a single private day, a human designer
+          composes it with you —{" "}
+          <a href="/portugal-travel-designer">work with our Portugal Travel Designer</a>. Advisors
+          and agencies planning for clients can work with us directly through{" "}
+          <a href="/trade">our travel trade partnerships</a>.
         </p>
       </header>
       <StudioV3 />
