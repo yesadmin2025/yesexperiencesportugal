@@ -194,6 +194,30 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_snapshots: {
+        Row: {
+          created_at: string
+          frozen_at: string | null
+          payload: Json
+          stripe_session_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          frozen_at?: string | null
+          payload?: Json
+          stripe_session_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          frozen_at?: string | null
+          payload?: Json
+          stripe_session_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           amount_total: number
