@@ -157,7 +157,7 @@ describe("Studio V3 price card — source-of-truth pricing", () => {
       `€${tour.priceFrom! * 2}`,
     );
     expect(screen.getByTestId("studio-v3-final-total")).toHaveTextContent(
-      `€${tour.priceFrom} per person`,
+      `€${tour.priceFrom} / adult`,
     );
   });
 
@@ -203,6 +203,6 @@ describe("Studio V3 price card — source-of-truth pricing", () => {
     const finalTotal = screen.getByTestId("studio-v3-final-total");
     expect(Number(finalTotal.getAttribute("data-final-eur"))).toBeGreaterThan(baseParty);
     expect(screen.getByTestId("studio-v3-add-ons-total")).toHaveTextContent("Updated price");
-    expect(finalTotal).toHaveTextContent("per person");
+    expect(finalTotal).toHaveTextContent("/ adult");
   });
 });

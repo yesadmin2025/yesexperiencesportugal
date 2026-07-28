@@ -39,8 +39,9 @@ describe("useResolvedJourney pricing", () => {
     const expectedPerPax = resolvePerPaxEur(tour, guests, null)?.eurPerPax ?? tour.priceFrom!;
     const expectedBase = expectedPerPax * guests;
     expect(result.current.totalEur).toBe(expectedBase + addOnPartyAmount);
-    expect(result.current.perPaxEur).toBe(
-      Math.round((expectedBase + addOnPartyAmount) / guests),
-    );
+    // perPaxEur is the real adult unit price (never a blended
+    // total/guests average that matches nothing the traveller pays).
+    expect(result.current.perPaxEur).toBe(Math.round(expectedPerPax));
+    expect(result.current.adultUnitEur).toBe(result.current.perPaxEur);
   });
 });

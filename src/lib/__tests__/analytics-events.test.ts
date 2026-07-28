@@ -59,10 +59,12 @@ describe("analytics-events.trackEvent", () => {
   it("queues events while consent is denied and flushes on grant", () => {
     setAnalyticsConsent("denied");
     trackEvent("whatsapp_click", { placement: "footer" });
-    restore();
     expect(dl().find((e) => e.event === "whatsapp_click")).toBeUndefined();
     expect(__testing.queueLength()).toBe(1);
+    // The flush path pushes through track(), which is also test-gated —
+    // keep VITEST unset until after the grant so the flush is observable.
     setAnalyticsConsent("granted");
+    restore();
     expect(__testing.queueLength()).toBe(0);
     expect(dl().find((e) => e.event === "whatsapp_click")).toBeTruthy();
   });

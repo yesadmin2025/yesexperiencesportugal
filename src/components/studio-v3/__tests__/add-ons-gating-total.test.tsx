@@ -249,7 +249,7 @@ describe("SignaturePriceCard · add-ons (no invention, sibling-sourced)", () => 
           runningTotal += item.eur;
           const total = screen.getByTestId("studio-v3-add-ons-total");
           expect(total.textContent).toContain(`€${runningTotal}`);
-          expect(total.textContent?.toLowerCase()).toContain("/ pp");
+          expect(total.textContent?.toLowerCase()).toContain("/ adult");
         }
 
         // Toggle the first one OFF and verify the total subtracts.

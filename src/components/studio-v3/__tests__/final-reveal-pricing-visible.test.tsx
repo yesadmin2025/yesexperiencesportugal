@@ -31,7 +31,7 @@ describe("FinalRevealStory pricing visibility", () => {
 
     const investment = screen.getByTestId("studio-v3-final-reveal-investment");
     expect(within(investment).getByText("€620")).toBeVisible();
-    expect(within(investment).getByText("€207 per person")).toBeVisible();
+    expect(within(investment).getByText("€207 / adult")).toBeVisible();
 
     const details = screen.getByTestId("studio-v3-final-reveal-inclusions");
     expect(details).not.toHaveAttribute("open");
