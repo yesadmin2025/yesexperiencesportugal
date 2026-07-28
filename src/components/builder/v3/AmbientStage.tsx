@@ -107,7 +107,7 @@ export function AmbientStage({
           loop
           playsInline
           preload="metadata"
-          poster={imageUrl}
+          poster={imageUrl ?? undefined}
           className="absolute inset-0 h-full w-full object-cover transition-opacity duration-[900ms] motion-reduce:transition-none"
           style={{ opacity: 0.72, filter: "saturate(0.92) contrast(1.02) brightness(0.92)" }}
         >
