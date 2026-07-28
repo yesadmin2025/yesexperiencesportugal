@@ -54,6 +54,9 @@ interface Body {
   tailorLunchAdded?: boolean;
   /** Tailor: wineries selected beyond the Signature baseline (+€20pp each). */
   tailorExtraWineries?: number;
+  /** Tailor: guest removed the included lunch (−€15pp, Arrábida Wine only).
+   *  Boolean intent only — the euro amount is always derived server-side. */
+  tailorLunchRemoved?: boolean;
   /** Which surface initiated checkout. Drives copy in Stripe Checkout. */
   flow?: "studio" | "signature" | "tailor";
 
