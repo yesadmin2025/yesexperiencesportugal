@@ -1,57 +1,57 @@
-- Goal
+## P0 technical SEO, indexation and route integrity
 
-Finish the last item from the /experiences delivery warning: four `signatureTours[].intro` strings still promise things the canonical record does not include. Only `intro` changes; one file.
+Scope: head metadata, sitemap, robots, redirects, and CTA/heading semantics only. No design, pricing, Stripe, Tailor, Studio logic, tour IDs or slugs change.
 
-## File changed
+### What I verified first (current state)
 
-`src/data/signatureTours.ts` — 4 `intro` values only (lines ~464, ~762, ~870, ~982). No blurbs, titles, stops, pricing, SoT, routes or design.
+- `src/start.ts` already returns a single-hop 404 with `x-robots-tag: noindex` for any path containing a literal `$name` segment (decoded, so `%24slug` is covered). No redirect chain for `/local-stories/%24slug` in code.
+- `src/routes/sitemap[.]xml.ts` already filters placeholder slugs and excludes redirect/admin/QA routes. It emits **no `/pt/*` URLs at all**.
+- Only `corporate.tsx`, `trade.tsx` carry hreflang on the English side; the PT pages (`pt.about`, `pt.contact`, `pt.cookies`, `pt.privacy`, `pt.terms`, `pt.reviews`, `pt.corporate`) point at EN equivalents that mostly do **not** point back — hreflang is non-reciprocal.
+- `src/i18n/seo.ts` (`buildI18nHead`) exists and is used by zero routes.
+- `src/routes/local-stories.index.tsx` has no `rel="canonical"`.
+- 49 routes already declare `noindex`; admin/checkout/auth/QA coverage looks broad but needs a completeness sweep.
 
-## 1. `arrabida-boat`
+### A. Malformed / placeholder URLs
 
-Current (contradicts: guaranteed coves, guaranteed swim, lunch included):
+1. Full-codebase sweep for `$slug`, `$tourId`, `${`, `undefined`, `null`, `%24` appearing inside emitted `href`/`to`/canonical/og:url/sitemap strings (excluding legitimate `<Link to params>` usage and the generated route tree).
+2. Keep the existing 404 middleware; add a Playwright regression asserting `/local-stories/%24slug` and `/local-stories/$slug` return 404 in one hop with `noindex`, and that `/tours/$tourId` does the same.
+3. Add a runtime guard in `local-stories.$slug.tsx` and `tours.$tourId.tsx`: unknown/placeholder param → `notFound()` (hard 404 + noindex), never a redirect.
 
-> "A day told by the sea. We cross into the Arrábida Natural Park and trade the coast road for a boat into its quiet coves — swim or simply drift — then lunch in Portinho with sand still on your feet before easing into Sesimbra at golden hour."
+### B. Canonicals
 
-Replacement:
+- Add the missing self-canonical to `/local-stories`.
+- Sweep every indexable route so each emits exactly one self-referencing canonical on `https://yesexperiencesportugal.com`, no leaf duplicates, none in `__root.tsx`.
+- Confirm no query-parameter state (checkout token, filters, Tailor config, `?heroVariant=`) produces a differing canonical — canonicals stay parameter-free.
 
-> "A day told by the sea. It begins at Livramento Market, then follows the coast into the Arrábida Natural Park, past Lapa de Santa Margarida and out on the Sesimbra Coastal Boat Tour. The afternoon eases into Sesimbra and the cliffs of Cabo Espichel. Lunch can be added when you tailor the day."
+### C. Hreflang (reciprocity)
 
-## 2. `troia-comporta`
+- Route every locale-paired page's head through the existing `buildI18nHead` helper so the EN↔PT pairs emit identical, reciprocal sets plus `x-default`.
+- Genuine pairs to wire (EN side currently missing the return reference): `/about`, `/contact`, `/cookies`, `/privacy`, `/terms`, `/corporate`, `/day-tours`, `/experiences`, `/reviews`, `/` ↔ `/pt`.
+- Remove hreflang from PT pages whose EN target is a redirect or absent (`pt/faq`, `pt/moments`, `pt/proposals` are 301s — they get `noindex` instead of alternates).
+- Deliver a report table of EN pages with no genuine PT equivalent (no hreflang added for those).
 
-Current (contradicts: lunch included):
+### D. Sitemap
 
-> "A quiet day in the Alentejo most visitors miss. We board the ferry across the Sado to Tróia's Roman ruins, then drift down to Comporta — long Atlantic beaches, rice paddies, white-and-blue villages — and finish with a slow lunch in the country."
+- Add the PT pages that are real 200 canonical pages (`/pt`, `/pt/about`, `/pt/contact`, `/pt/experiences`, `/pt/day-tours`, `/pt/corporate`, `/pt/privacy`, `/pt/terms`, `/pt/cookies`) — currently absent, so PT is effectively undiscoverable.
+- Re-verify each existing entry returns 200 and is not a redirect; drop any that fail.
+- Keep `lastmod` only where a real timestamp exists (DB `published_at`); no generated "today" values.
+- Extend `e2e/sitemap-robots-canonical.spec.ts` with the PT set, a 200-status check per URL, and a "no `%24`/`$` in any `<loc>`" assertion.
 
-Replacement:
+### E. Robots / noindex
 
-> "A quiet day in the Alentejo most visitors miss. We board the ferry across the Sado to the Roman Ruins of Tróia, pause at the Carrasqueira stilt pier, then drift down to Comporta — long Atlantic beaches, rice paddies, white-and-blue villages — with a wine tasting at Herdade da Comporta. Lunch is not included, so the pace stays yours."
+- Sweep for any indexable route among: checkout steps, payment success/cancel, booking receipt, Tailor draft states, Studio temp state, admin, auth, previews, token routes (`/s/`, `/i/`, `/review/`). Add `robots: noindex, nofollow` where missing.
+- `public/robots.txt`: keep `Allow: /` and existing disallows; confirm no CSS/JS/image path is blocked.
 
-## 3. `evora-alentejo`
+### F. Semantic HTML / concatenated CTA strings
 
-Current (vague single winery, no wineries/cork named, implies a long winery day):
+- Audit rendered DOM on `/`, `/experiences`, `/tours/:id`, `/studio-v3`, `/day-tours` for the reported concatenations ("Open the StudioChoose your Experience", "Check availability & reserveTailor this day", repeated "Add…Add", "ImageImageImage").
+- Fixes are markup-only: split fused CTAs into separate interactive elements, unnest any anchor-in-anchor / button-in-anchor, restore one `h1` per page with ordered `h2`/`h3`, add `aria-label` where visible text is insufficient, and give card blocks proper `article`/heading structure.
+- Add a Playwright a11y/structure spec asserting: no nested interactive elements, single `h1`, and no accessible name containing two CTA labels.
 
-> "Alentejo unwinds you. Plains of cork oaks, white-washed villages, and a city — Évora — that's quietly held two thousand years of history together. We walk it slowly, then disappear into the wineries that have been quietly making some of Portugal's best reds."
+### G. Validation
 
-Replacement:
+Production build, `tsgo` typecheck, full vitest suite, the new + existing Playwright specs (sitemap/robots/canonical, malformed-URL 404s, semantics), plus a manual pass over booking/Tailor flows to confirm nothing broke. No publish.
 
-> "Alentejo unwinds you. We walk Évora's historic centre slowly — the Roman Temple, the Chapel of Bones — then head into two selected Alentejo wineries and a traditional cork-production visit. Lunch is not included, so the day keeps its own rhythm."
+### Deliverable report
 
-## 4. `sintra-cascais`
-
-Current (contradicts: queue-free guarantee, wine always included, no package logic):
-
-> "Sintra without the queues. We slip into the smaller estates, walk the forest paths most visitors never find, then chase the cliffs to Cabo da Roca — the western edge of Europe — before easing into Cascais and a glass of wine in a quiet courtyard."
-
-Replacement:
-
-> "Sintra, chosen your way: one palace visit plus a Colares wine visit, or two palace visits. From there the day heads to Azenhas do Mar, the cliffs of Cabo da Roca — the western edge of Europe — and a slow finish in Cascais."
-
-## Validation
-
-- Re-read each new intro against the canonical SoT inclusions: no excluded lunch described as included, no palace/winery/boat feature or wildlife sighting presented as guaranteed, no pricing mentioned.
-- `tsgo --noEmit`.
-- Full vitest suite (copy/parity and signature tests included).
-- price matching stripe 
-- Reservation details sent to clients and supplier  matching and with uptaded prices
-
-Once passes all tests, publish 
+Files changed · route problems found · redirects created · canonical + hreflang changes · pages excluded from indexing · build/test results · off-codebase actions (Search Console: resubmit sitemap, request removal of `/local-stories/%24slug`, validate hreflang in the International Targeting report).

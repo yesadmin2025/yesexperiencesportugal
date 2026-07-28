@@ -49,6 +49,9 @@ function TourLinkAuditErrorComponent({ error, reset }: { error: Error; reset: ()
 }
 
 export const Route = createFileRoute("/admin/tour-link-audit")({
+  head: () => ({
+    meta: [{ title: "Tour link audit — Studio Admin" }, { name: "robots", content: "noindex, nofollow" }],
+  }),
   beforeLoad: () => {
     if (!import.meta.env.DEV) {
       throw new Error("Tour link audit is only available in development.");

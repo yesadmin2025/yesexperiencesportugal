@@ -1,8 +1,8 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { buildLocaleUrl } from "@/i18n/config";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 import {
@@ -35,9 +35,7 @@ export const Route = createFileRoute("/pt/contact")({
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/contact" },
-      { rel: "alternate", hrefLang: "en", href: buildLocaleUrl("/contact", "en") },
-      { rel: "alternate", hrefLang: "pt-PT", href: buildLocaleUrl("/contact", "pt") },
-      { rel: "alternate", hrefLang: "x-default", href: buildLocaleUrl("/contact", "en") },
+      ...localeAlternateLinks("/contact"),
     ],
   }),
   component: PtContactPage,

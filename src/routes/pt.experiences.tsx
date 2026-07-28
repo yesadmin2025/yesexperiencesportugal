@@ -1,3 +1,4 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -13,7 +14,6 @@ import ogImg from "@/assets/hero-coast.jpg";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { buildLocaleUrl } from "@/i18n/config";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
@@ -49,9 +49,7 @@ export const Route = createFileRoute("/pt/experiences")({
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/experiences" },
-      { rel: "alternate", hrefLang: "en", href: buildLocaleUrl("/experiences", "en") },
-      { rel: "alternate", hrefLang: "pt-PT", href: buildLocaleUrl("/experiences", "pt") },
-      { rel: "alternate", hrefLang: "x-default", href: buildLocaleUrl("/experiences", "en") },
+      ...localeAlternateLinks("/experiences"),
     ],
     scripts: [
       jsonLdScript(

@@ -3,6 +3,9 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/error-logs")({
+  head: () => ({
+    meta: [{ title: "Error logs — Studio Admin" }, { name: "robots", content: "noindex, nofollow" }],
+  }),
   beforeLoad: async () => {
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) throw redirect({ to: "/auth" });

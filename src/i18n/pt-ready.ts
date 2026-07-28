@@ -30,3 +30,31 @@ export function isPtReady(path: string): boolean {
 }
 
 export const PT_READY_PATHS: readonly string[] = Array.from(READY_PATHS);
+
+/**
+ * Paths with a genuine, indexable page on BOTH sides (EN and PT).
+ *
+ * This is the hreflang + bilingual-sitemap allow-list. It deliberately
+ * excludes `/faq`, `/moments` and `/proposals`: those are 301 redirect
+ * stubs in both locales, and hreflang must never point at a redirect.
+ * They stay in READY_PATHS so the language switcher keeps working.
+ */
+const PAIRED = new Set<string>([
+  "/",
+  "/about",
+  "/contact",
+  "/cookies",
+  "/corporate",
+  "/day-tours",
+  "/experiences",
+  "/privacy",
+  "/reviews",
+  "/terms",
+]);
+
+export function isPtPaired(path: string): boolean {
+  return PAIRED.has(path === "" ? "/" : path);
+}
+
+export const PT_PAIRED_PATHS: readonly string[] = Array.from(PAIRED);
+

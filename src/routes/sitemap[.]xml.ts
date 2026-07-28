@@ -3,6 +3,8 @@ import type {} from "@tanstack/react-start";
 import { signatureTours } from "@/data/signatureTours";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { supabase } from "@/integrations/supabase/client";
+import { PT_PAIRED_PATHS } from "@/i18n/pt-ready";
+
 
 const BASE_URL = "https://yesexperiencesportugal.com";
 
@@ -145,12 +147,28 @@ export const Route = createFileRoute("/sitemap.xml")({
           LOCAL_STORIES_ARTICLES.map((a) => `/local-stories/${a.slug}`),
         );
         const dedupedDbPosts = postEntries.filter((e) => !staticSlugSet.has(e.path));
+
+        // Portuguese twins. Only paths in PT_PAIRED_PATHS ship a real,
+        // human-reviewed PT page that returns 200 — redirect stubs
+        // (/pt/faq, /pt/moments, /pt/proposals) are excluded by that list.
+        // /reviews is excluded on both locales (thin widget page), so the
+        // PT twin is skipped here too, keeping EN and PT symmetric.
+        const ptEntries: SitemapEntry[] = PT_PAIRED_PATHS.filter((p) => p !== "/reviews").map(
+          (p) => ({
+            path: p === "/" ? "/pt" : `/pt${p}`,
+            changefreq: "monthly",
+            priority: p === "/" ? "0.8" : "0.5",
+          }),
+        );
+
         const entries = [
           ...staticEntries,
           ...tourEntries,
           ...staticArticleEntries,
           ...dedupedDbPosts,
+          ...ptEntries,
         ];
+
         const urls = entries.map((e) =>
           [
             `  <url>`,

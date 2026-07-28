@@ -1,3 +1,4 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -47,7 +48,12 @@ export const Route = createFileRoute("/experiences")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],
-    links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/experiences" }],
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/experiences" },
+      // Reciprocal hreflang — the PT twin at /pt/experiences points back with the
+      // identical set. Emitted from the shared helper so both stay in sync.
+      ...localeAlternateLinks("/experiences"),
+    ],
     scripts: [
       jsonLdScript(
         breadcrumbLd([

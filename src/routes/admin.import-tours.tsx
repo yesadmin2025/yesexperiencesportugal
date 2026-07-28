@@ -46,7 +46,10 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/admin/import-tours")({
   validateSearch: zodValidator(searchSchema),
   head: () => ({
-    meta: [{ title: "Import Tours — Studio Admin" }],
+    meta: [
+      { title: "Import Tours — Studio Admin" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
   }),
   component: AdminImportPage,
 });

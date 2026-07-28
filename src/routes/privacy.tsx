@@ -1,3 +1,4 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -23,7 +24,12 @@ export const Route = createFileRoute("/privacy")({
       { property: "og:url", content: "https://yesexperiencesportugal.com/privacy" },
       { name: "twitter:card", content: "summary" },
     ],
-    links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/privacy" }],
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/privacy" },
+      // Reciprocal hreflang — the PT twin at /pt/privacy points back with the
+      // identical set. Emitted from the shared helper so both stay in sync.
+      ...localeAlternateLinks("/privacy"),
+    ],
     scripts: [
       jsonLdScript(
         breadcrumbLd([
