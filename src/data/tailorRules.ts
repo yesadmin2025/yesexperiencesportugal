@@ -14,6 +14,7 @@
 import {
   TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR,
   TAILOR_LUNCH_SUPPLEMENT_EUR,
+  lunchRemovalDiscountEur,
 } from "@/config/pricing";
 
 export type TailorRules = {
