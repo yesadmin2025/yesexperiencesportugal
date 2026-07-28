@@ -236,7 +236,18 @@ function BookingReceiptPage() {
                     />
                   ) : null}
                 </ul>
+                {meta.tailor_lunch_removed === "1" ? (
+                  <p
+                    data-testid="receipt-lunch-removal"
+                    className="mt-3 text-[12.5px] leading-relaxed text-[color:var(--teal)]"
+                  >
+                    Included lunch removed — −
+                    {eur(Number(meta.tailor_lunch_removal_eur_pp ?? 15))} per person, already
+                    applied to the per-person price above.
+                  </p>
+                ) : null}
               </section>
+
 
               <section className="border-t border-[color:var(--border)] py-5">
                 <h2 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
