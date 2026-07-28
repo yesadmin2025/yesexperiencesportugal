@@ -22,10 +22,22 @@ export type TailorRules = {
   /**
    * Offer "Add lunch" (+€35 pp). `false` when lunch is already included
    * or replaced by another meal component (picnic, winery lunch).
+   *
+   * CANONICAL PRODUCT EXCEPTION (not a pricing change): Roman Talha
+   * ("roman-heritage-alentejo") and Wild Beaches & Picnic already include
+   * a meal in the canonical product, so "Add lunch" stays suppressed.
    */
   allowAddLunch: boolean;
   /** Why the lunch upsell is hidden — shown to no-one, used by tests/QA. */
   lunchExcludedReason?: string;
+  /**
+   * Offer "Remove included lunch" (−€15 pp, flat). Only for Signatures
+   * where lunch is included AND the operation can run the day without it.
+   * Never expressed as a stop removal or a negative supplement.
+   */
+  allowRemoveLunch?: boolean;
+  /** Guest-facing note shown next to the included-lunch row. */
+  lunchIncludedNote?: string;
   /** Extra wineries beyond the included baseline (Setúbal & Arrábida only). */
   wineries?: {
     /** Wineries included in the base price. */
