@@ -20,9 +20,9 @@ const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/proposal-in-portugal";
 const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 
-const TITLE = "Proposal in Portugal — Private Moments, Planned Discreetly";
+const TITLE = "Proposal & Celebration Experiences in Portugal | YES";
 const DESCRIPTION =
-  "Plan a proposal in Portugal — Sintra cliffs, Arrábida coves, Lisbon rooftops. A private moment shaped end to end by a local team, discreet from first email to last detail.";
+  "Private proposals, anniversaries, birthdays and special-occasion experiences across Portugal — Sintra cliffs, Arrábida coves, Lisbon rooftops — planned discreetly by a local team.";
 
 export const Route = createFileRoute("/proposal-in-portugal")({
   head: () => ({

@@ -8,6 +8,7 @@ import {
   jsonLdScript,
 } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
+import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
   MessageCircle,
@@ -525,6 +526,32 @@ function CorporatePage() {
           </div>
         </div>
       </section>
+
+      <ServiceCrossLinks
+        tone="ivory"
+        eyebrow="Related YES services"
+        title="Corporate travel connects to the rest of what we do."
+        links={[
+          {
+            to: "/trade",
+            label: "Portugal ground partner for agencies and travel advisors",
+            description:
+              "Agencies, incentive houses and travel advisors planning corporate programmes in Portugal work with us as their local supplier and destination support.",
+          },
+          {
+            to: "/portugal-travel-designer",
+            label: "Portugal travel designer for multi-day programmes",
+            description:
+              "When an off-site extends into a full journey across regions, the same team plans the complete private itinerary.",
+          },
+          {
+            to: "/proposal-in-portugal",
+            label: "Private celebrations and milestone moments",
+            description:
+              "Company milestones, client hosting and private celebrations planned with the same local coordination.",
+          },
+        ]}
+      />
     </SiteLayout>
   );
 }
