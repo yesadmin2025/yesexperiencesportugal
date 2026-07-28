@@ -13,7 +13,7 @@ describe("SoT geo coverage", () => {
   it("every SoT chapter label has curated coordinates", () => {
     const missing: string[] = [];
     for (const [tourId, sot] of Object.entries(SIGNATURE_SOURCE_OF_TRUTH)) {
-      for (const c of sot.itinerary) {
+      for (const c of sot?.itinerary ?? []) {
         if (!lookupStop(c.label)) missing.push(`${tourId}: ${c.label}`);
       }
     }
