@@ -466,6 +466,8 @@ Deno.serve(async (req) => {
         journey_revision: (body.journeyRevision ?? "").slice(0, 80),
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
         tailored: body.tailored ? "1" : "0",
+        tailor_lunch_removed: lunchRemovalCredit > 0 ? "1" : "0",
+        tailor_lunch_removal_eur_pp: String(lunchRemovalCredit),
         add_ons: JSON.stringify(
           validatedAddOns.map((a) => ({ id: a.id, label: a.label, priceEur: a.priceEur })),
         ).slice(0, 480),
