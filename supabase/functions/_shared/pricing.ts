@@ -64,14 +64,34 @@ export function tailorAdjustedPerPax(
 export const TAILOR_LUNCH_SUPPLEMENT_EUR = 35;
 export const TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR = 20;
 
+/**
+ * "Remove the included lunch" — Setúbal & Arrábida Wine ONLY.
+ * Fixed per-person credit. Not a negative supplement, not a stop removal:
+ * excluded from the −15% cap, the % reduction and the 70% floor.
+ */
+export const TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR = 15;
+
+export const TAILOR_LUNCH_REMOVAL_ELIGIBLE: ReadonlySet<string> = new Set([
+  "arrabida-wine-allinclusive",
+]);
+
+/** Server-derived lunch-removal credit. Never trusts a client euro amount. */
+export function serverLunchRemovalEur(tourId: string, lunchRemoved: boolean): number {
+  return lunchRemoved === true && TAILOR_LUNCH_REMOVAL_ELIGIBLE.has(tourId)
+    ? TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR
+    : 0;
+}
+
 export function tailorFinalPerPax(
   directEur: number,
   principalsRemoved: number,
   supplementsEur = 0,
+  lunchRemovalEur = 0,
 ): number {
   const base = tailorAdjustedPerPax(directEur, principalsRemoved);
   const extra = Number.isFinite(supplementsEur) ? Math.max(0, Math.round(supplementsEur)) : 0;
-  return base + extra;
+  const credit = Number.isFinite(lunchRemovalEur) ? Math.max(0, Math.round(lunchRemovalEur)) : 0;
+  return Math.max(0, base + extra - credit);
 }
 
 /**
