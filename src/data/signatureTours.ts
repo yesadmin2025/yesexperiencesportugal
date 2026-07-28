@@ -459,7 +459,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 135,
     theme: "Coastal",
     blurb:
-      "A private Arrábida day with a boat ride into the park's turquoise coves — swim, snorkel, drift and lunch by the water.",
+      "A private Arrábida day with the Sesimbra Coastal Boat Tour, Lapa de Santa Margarida and the cliffs of Cabo Espichel.",
     intro:
       "A day told by the sea. We cross into the Arrábida Natural Park and trade the coast road for a boat into its quiet coves — swim or simply drift — then lunch in Portinho with sand still on your feet before easing into Sesimbra at golden hour.",
     fitsBest: "Couples · families · active travelers",
