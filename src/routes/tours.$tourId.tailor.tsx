@@ -71,8 +71,8 @@ import {
   gaBookingValidationBlocked,
   gaCheckoutDrawerOpened,
 } from "@/lib/analytics-ga4";
-import {
 import { signatureDurationLabel } from "@/lib/tourContent";
+import {
   getOperatingRule,
   computeMinDateISO,
   validateDateISO,
