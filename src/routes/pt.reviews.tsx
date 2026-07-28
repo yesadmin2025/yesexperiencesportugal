@@ -1,3 +1,4 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 /**
  * /pt/reviews — Portuguese reviews aggregator.
  * Same data source as /reviews, chrome in European Portuguese.
@@ -58,8 +59,7 @@ export const Route = createFileRoute("/pt/reviews")({
     ];
     const links = [
       { rel: "canonical", href: `${SITE_URL}/pt/reviews` },
-      { rel: "alternate", hrefLang: "en", href: `${SITE_URL}/reviews` },
-      { rel: "alternate", hrefLang: "pt-PT", href: `${SITE_URL}/pt/reviews` },
+      ...localeAlternateLinks("/reviews"),
     ];
     const scripts: Array<{ type: string; children: string }> = [
       {

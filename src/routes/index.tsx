@@ -1,3 +1,4 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
@@ -253,6 +254,8 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/" },
+      // Reciprocal hreflang with the PT homepage at /pt.
+      ...localeAlternateLinks("/"),
       // Preload the hero film poster — it's the LCP element on the
       // homepage. Marking it fetchpriority=high lets the browser pull
       // the bytes in parallel with critical CSS instead of waiting for

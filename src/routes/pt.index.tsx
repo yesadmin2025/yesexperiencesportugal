@@ -1,3 +1,4 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, MapPin } from "lucide-react";
 
@@ -10,7 +11,6 @@ import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { signatureTours } from "@/data/signatureTours";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
-import { buildLocaleUrl } from "@/i18n/config";
 import { itemListLd, jsonLdScript, studioServiceLd } from "@/lib/jsonld";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
@@ -39,9 +39,7 @@ export const Route = createFileRoute("/pt/")({
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/pt" },
-      { rel: "alternate", hrefLang: "en", href: buildLocaleUrl("/", "en") },
-      { rel: "alternate", hrefLang: "pt-PT", href: buildLocaleUrl("/", "pt") },
-      { rel: "alternate", hrefLang: "x-default", href: buildLocaleUrl("/", "en") },
+      ...localeAlternateLinks("/"),
     ],
     scripts: [
       jsonLdScript(

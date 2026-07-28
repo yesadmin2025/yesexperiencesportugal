@@ -1,7 +1,7 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { buildLocaleUrl } from "@/i18n/config";
 
 export const Route = createFileRoute("/pt/privacy")({
   head: () => ({
@@ -25,9 +25,7 @@ export const Route = createFileRoute("/pt/privacy")({
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/privacy" },
-      { rel: "alternate", hrefLang: "en", href: buildLocaleUrl("/privacy", "en") },
-      { rel: "alternate", hrefLang: "pt-PT", href: buildLocaleUrl("/privacy", "pt") },
-      { rel: "alternate", hrefLang: "x-default", href: buildLocaleUrl("/privacy", "en") },
+      ...localeAlternateLinks("/privacy"),
     ],
   }),
   component: PrivacyPage,

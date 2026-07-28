@@ -73,3 +73,35 @@ export function buildI18nHead({ path, locale }: I18nHeadInput): I18nHeadOutput {
 
   return { links, meta };
 }
+
+/**
+ * Reciprocal hreflang alternates ONLY (no canonical, no og:url).
+ *
+ * Use this in routes that already emit their own self-canonical so the
+ * EN and PT twins advertise the identical alternate set. Both sides must
+ * call it with the same locale-neutral `path` — that reciprocity is what
+ * Google requires; a one-way annotation is ignored.
+ *
+ * Only call it for paths that have a genuine, human-reviewed translation
+ * on both sides (see `PT_PAIRED_PATHS` in `./pt-ready`). Never point an
+ * alternate at a redirect stub or a missing page.
+ */
+export function localeAlternateLinks(path: string): Array<{
+  rel: "alternate";
+  hrefLang: string;
+  href: string;
+}> {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  const links = LOCALES.map((l) => ({
+    rel: "alternate" as const,
+    hrefLang: LOCALE_BCP47[l],
+    href: buildLocaleUrl(normalized, l, ORIGIN),
+  }));
+  links.push({
+    rel: "alternate" as const,
+    hrefLang: "x-default",
+    href: buildLocaleUrl(normalized, DEFAULT_LOCALE, ORIGIN),
+  });
+  return links;
+}
+

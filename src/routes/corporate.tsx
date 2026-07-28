@@ -1,3 +1,4 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import {
@@ -109,14 +110,7 @@ export const Route = createFileRoute("/corporate")({
     ],
     links: [
       { rel: "canonical", href: CANONICAL },
-      { rel: "alternate", hrefLang: "en", href: CANONICAL },
-      { rel: "alternate", hrefLang: "en-US", href: CANONICAL },
-      {
-        rel: "alternate",
-        hrefLang: "pt-PT",
-        href: "https://yesexperiencesportugal.com/pt/corporate",
-      },
-      { rel: "alternate", hrefLang: "x-default", href: CANONICAL },
+      ...localeAlternateLinks("/corporate"),
     ],
     scripts: [
       jsonLdScript(

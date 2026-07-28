@@ -1,8 +1,8 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { buildLocaleUrl } from "@/i18n/config";
 
 export const Route = createFileRoute("/pt/cookies")({
   head: () => ({
@@ -18,9 +18,7 @@ export const Route = createFileRoute("/pt/cookies")({
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/cookies" },
-      { rel: "alternate", hrefLang: "en", href: buildLocaleUrl("/cookies", "en") },
-      { rel: "alternate", hrefLang: "pt-PT", href: buildLocaleUrl("/cookies", "pt") },
-      { rel: "alternate", hrefLang: "x-default", href: buildLocaleUrl("/cookies", "en") },
+      ...localeAlternateLinks("/cookies"),
     ],
   }),
   component: PtCookiesPage,

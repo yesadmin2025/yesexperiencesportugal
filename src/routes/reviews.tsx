@@ -8,6 +8,7 @@
  *
  * Read-only. No external review links — guests stay on site.
  */
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -69,7 +70,11 @@ export const Route = createFileRoute("/reviews")({
       { property: "og:url", content: `${SITE_URL}/reviews` },
       { property: "og:type", content: "website" },
     ];
-    const links = [{ rel: "canonical", href: `${SITE_URL}/reviews` }];
+    const links = [
+      { rel: "canonical", href: `${SITE_URL}/reviews` },
+      // Reciprocal hreflang with /pt/reviews.
+      ...localeAlternateLinks("/reviews"),
+    ];
 
     const scripts: Array<{ type: string; children: string }> = [
       {

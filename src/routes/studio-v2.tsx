@@ -13,6 +13,9 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
  * or session tokens) are forwarded so deep links keep working.
  */
 export const Route = createFileRoute("/studio-v2")({
+  head: () => ({
+    meta: [{ title: "Studio — YES Experiences Portugal" }, { name: "robots", content: "noindex, nofollow" }],
+  }),
   beforeLoad: ({ search }) => {
     throw redirect({ to: "/studio-v3", search: search as Record<string, unknown> });
   },

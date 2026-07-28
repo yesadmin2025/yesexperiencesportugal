@@ -1,3 +1,4 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -33,7 +34,12 @@ export const Route = createFileRoute("/day-tours")({
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/day-tours" },
     ],
-    links: [{ rel: "canonical", href: "https://yesexperiencesportugal.com/day-tours" }],
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/day-tours" },
+      // Reciprocal hreflang — the PT twin at /pt/day-tours points back with the
+      // identical set. Emitted from the shared helper so both stay in sync.
+      ...localeAlternateLinks("/day-tours"),
+    ],
     scripts: [
       jsonLdScript(
         breadcrumbLd([

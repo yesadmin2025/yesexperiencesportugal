@@ -1,9 +1,9 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CANCELLATION } from "@/config/business-nap";
 import ogImg from "@/assets/hero-coast.jpg";
-import { buildLocaleUrl } from "@/i18n/config";
 
 export const Route = createFileRoute("/pt/terms")({
   head: () => ({
@@ -32,9 +32,7 @@ export const Route = createFileRoute("/pt/terms")({
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/terms" },
-      { rel: "alternate", hrefLang: "en", href: buildLocaleUrl("/terms", "en") },
-      { rel: "alternate", hrefLang: "pt-PT", href: buildLocaleUrl("/terms", "pt") },
-      { rel: "alternate", hrefLang: "x-default", href: buildLocaleUrl("/terms", "en") },
+      ...localeAlternateLinks("/terms"),
     ],
   }),
   component: TermsPage,

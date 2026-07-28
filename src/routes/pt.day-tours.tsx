@@ -1,3 +1,4 @@
+import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -32,8 +33,7 @@ export const Route = createFileRoute("/pt/day-tours")({
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/day-tours" },
-      { rel: "alternate", hrefLang: "en", href: "https://yesexperiencesportugal.com/day-tours" },
-      { rel: "alternate", hrefLang: "pt-PT", href: "https://yesexperiencesportugal.com/pt/day-tours" },
+      ...localeAlternateLinks("/day-tours"),
     ],
     scripts: [
       jsonLdScript(
