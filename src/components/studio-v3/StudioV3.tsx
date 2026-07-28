@@ -3647,6 +3647,8 @@ export function StoryboardHandoff({
                 src={skeletonTour.img}
                 alt=""
                 aria-hidden
+                loading="eager"
+                decoding="async"
                 className="absolute inset-0 h-full w-full object-cover"
                 style={{ filter: "saturate(0.92) contrast(1.02)" }}
               />
@@ -4551,6 +4553,8 @@ function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbac
             src={reaction.bgImage}
             alt=""
             aria-hidden
+            loading="eager"
+            decoding="async"
             className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
             style={{
               opacity: 0.62,
