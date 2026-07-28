@@ -86,7 +86,8 @@ export function AtmosphereBeat({ imageSrc, videoSrc, eyebrow, line }: Atmosphere
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
+          poster={imageSrc}
           onCanPlay={() => setVideoReady(true)}
           onError={() => setVideoReady(true)}
           className="absolute inset-0 w-full h-full object-cover motion-reduce:hidden sv3-kenburns"

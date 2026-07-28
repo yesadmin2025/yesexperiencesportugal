@@ -147,7 +147,7 @@ export function DriftScene({ scene, index, onSignal }: Props) {
 
       {/* Soft hint at the very bottom */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-3 text-center text-[9.5px] uppercase tracking-[0.36em]"
+        className="pointer-events-none absolute inset-x-0 bottom-3 text-center text-[10.5px] uppercase tracking-[0.36em]"
         style={{ color: "color-mix(in oklab, var(--ivory) 55%, transparent)" }}
       >
         Drift toward one

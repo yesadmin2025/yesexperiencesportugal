@@ -777,7 +777,7 @@ function MoodSceneView({
             }}
           >
             <span
-              className="block text-[9.5px] uppercase tracking-[0.34em]"
+              className="block text-[10.5px] uppercase tracking-[0.34em]"
               style={{
                 color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
                 fontWeight: 600,

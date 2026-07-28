@@ -144,7 +144,7 @@ export function StudioLivePreview(props: Props) {
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0 flex-1">
                 <p
-                  className="mb-0.5 text-[9px] uppercase"
+                  className="mb-0.5 text-[10.5px] uppercase"
                   style={{
                     fontFamily: "'Inter', system-ui, sans-serif",
                     fontWeight: 700,
@@ -245,7 +245,7 @@ export function StudioLivePreview(props: Props) {
             <div className="flex items-center justify-between px-4 pt-1 pb-2">
               <div className="min-w-0">
                 <p
-                  className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
+                  className="text-[10.5px] uppercase tracking-[0.22em] font-bold"
                   style={{ color: "var(--gold)" }}
                 >
                   {tt("build.eyebrow", locale)}

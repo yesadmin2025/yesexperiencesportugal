@@ -159,7 +159,7 @@ export function InvestmentTierPicker({
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
                       <p
-                        className="text-[9.5px] uppercase tracking-[0.26em] font-bold"
+                        className="text-[10.5px] uppercase tracking-[0.26em] font-bold"
                         style={{
                           color: active
                             ? "var(--teal)"

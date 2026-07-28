@@ -101,7 +101,7 @@ export function ChargeSummaryLine({
       ].join(" ")}
     >
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3">
-        <span className="min-w-0 text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+        <span className="min-w-0 text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
           Final price
         </span>
         <span
@@ -160,7 +160,7 @@ export function ChargeSummaryLine({
         </ul>
       ) : null}
 
-      <p className="mt-1 text-[9.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]/80">
+      <p className="mt-1 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]/80">
 
         Charged securely in EUR · no hidden fees
       </p>

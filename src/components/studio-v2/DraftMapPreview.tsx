@@ -124,7 +124,7 @@ export function DraftMapPreview({
         }}
       >
         <span
-          className="inline-flex items-center gap-2 text-[9.5px] md:text-[10px] uppercase tracking-[0.28em] tabular-nums"
+          className="inline-flex items-center gap-2 text-[10.5px] md:text-[10px] uppercase tracking-[0.28em] tabular-nums"
           style={{ color: "var(--gold)" }}
         >
           <span className="relative inline-flex h-1.5 w-1.5">
@@ -140,7 +140,7 @@ export function DraftMapPreview({
           Your draft · live
         </span>
         <span
-          className="text-[9.5px] md:text-[10px] uppercase tracking-[0.26em] tabular-nums"
+          className="text-[10.5px] md:text-[10px] uppercase tracking-[0.26em] tabular-nums"
           style={{ color: "color-mix(in oklab, var(--ivory) 65%, transparent)" }}
         >
           {stops.length} stops · {hrs}h
@@ -324,7 +324,7 @@ export function DraftMapPreview({
                   {s.label}
                 </span>
                 <span
-                  className="mt-0.5 block text-[9px] md:text-[10px] tracking-[0.04em] truncate"
+                  className="mt-0.5 block text-[10.5px] md:text-[10px] tracking-[0.04em] truncate"
                   style={{
                     color: "color-mix(in oklab, var(--ivory) 75%, transparent)",
                     textShadow: "0 1px 3px rgba(0,0,0,0.55)",
@@ -365,7 +365,7 @@ export function DraftMapPreview({
         <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-3">
           <div className="min-w-0">
             <span
-              className="block text-[9.5px] uppercase tracking-[0.26em] font-semibold"
+              className="block text-[10.5px] uppercase tracking-[0.26em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
             >
               From

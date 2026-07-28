@@ -324,7 +324,7 @@ function PathCard({
         </p>
         {recommended ? (
           <span
-            className="text-[9.5px] uppercase font-semibold"
+            className="text-[10.5px] uppercase font-semibold"
             style={{
               color: "color-mix(in oklab, var(--ivory) 65%, transparent)",
               letterSpacing: "0.22em",
