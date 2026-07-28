@@ -499,6 +499,119 @@ Deno.serve(async (req) => {
 
     const session = await stripe.checkout.sessions.create(sessionParams);
 
+    // ── Purchase snapshot (display-only) ────────────────────────────
+    // Frozen copy of exactly what the guest is buying, keyed by session id.
+    // Written as a draft here; the webhook stamps `frozen_at` on payment
+    // success. Nothing in this block feeds pricing — every euro value is
+    // copied from the already-computed, server-authoritative numbers.
+    try {
+      const gd = (body.guestDetails ?? {}) as Record<string, unknown>;
+      const str = (v: unknown, max = 400) =>
+        typeof v === "string" && v.trim() ? v.trim().slice(0, max) : null;
+      const itinerary = (Array.isArray(body.itinerary) ? body.itinerary : [])
+        .filter((s) => s && typeof s.label === "string" && s.label.trim())
+        .slice(0, 20)
+        .map((s, i) => ({
+          order: i + 1,
+          label: s.label.trim().slice(0, 160),
+          durationMinutes: Number.isFinite(s.durationMinutes)
+            ? Math.max(0, Math.min(600, Math.round(s.durationMinutes as number)))
+            : null,
+          note: str(s.note, 240),
+        }));
+      const fallbackItinerary = (Array.isArray(body.stopLabels) ? body.stopLabels : [])
+        .filter((l) => typeof l === "string" && l.trim())
+        .slice(0, 20)
+        .map((l, i) => ({
+          order: i + 1,
+          label: l.trim().slice(0, 160),
+          durationMinutes: null,
+          note: null,
+        }));
+
+      const removedOptions = (Array.isArray(body.removedOptions) ? body.removedOptions : [])
+        .filter((l) => typeof l === "string" && l.trim())
+        .slice(0, 20)
+        .map((l) => l.trim().slice(0, 160));
+      if (lunchRemovalCredit > 0) {
+        removedOptions.push(`Included lunch removed (−€${lunchRemovalCredit} per person)`);
+      }
+      if (principalsRemoved > 0 && removedOptions.length === 0) {
+        removedOptions.push(
+          `${principalsRemoved} stop${principalsRemoved === 1 ? "" : "s"} removed`,
+        );
+      }
+
+      const notes = [
+        str(gd.guideNotes, 1200) ? `Guide notes: ${str(gd.guideNotes, 1200)}` : null,
+        str(gd.notes, 1200) ? `Notes: ${str(gd.notes, 1200)}` : null,
+        str(gd.dietary, 600) ? `Dietary: ${str(gd.dietary, 600)}` : null,
+        str(gd.mobility, 600) ? `Mobility: ${str(gd.mobility, 600)}` : null,
+        str(gd.children, 600) ? `Children: ${str(gd.children, 600)}` : null,
+        str(gd.occasion, 600) ? `Occasion: ${str(gd.occasion, 600)}` : null,
+      ].filter(Boolean) as string[];
+
+      const addOnsTotalEur = validatedAddOns.reduce((s, a) => s + a.priceEur, 0) * body.guests;
+
+      const snapshotPayload = {
+        version: 1,
+        capturedAt: new Date().toISOString(),
+        flow,
+        tourId: body.tourId,
+        experienceName: productName,
+        tourTitle: body.tourTitle,
+        journeyTitle: str(body.journeyTitle, 160),
+        tailored: isTailored,
+        dateExact: body.dateExact ?? null,
+        startTime: str(gd.startTime, 16),
+        durationLabel: str(body.durationLabel, 120),
+        pickup: str(body.pickupLabel, 200),
+        language: str(gd.language, 8),
+        mainContact: str(gd.mainContact, 160),
+        customerName: str(gd.fullName, 160),
+        customerPhone: str(gd.phone, 40),
+        itinerary: itinerary.length > 0 ? itinerary : fallbackItinerary,
+        includedItems: clientIncluded ? clientIncluded.slice(0, 20) : [],
+        addOns: validatedAddOns,
+        removedOptions,
+        notes,
+        composition: {
+          guests: body.guests,
+          adults: adultsCount,
+          minorAges,
+          lines: priceLines,
+        },
+        pricing: {
+          currency: "eur",
+          basePerPaxEur: resolvedPerPax,
+          finalPerPaxEur: eurPerPax,
+          principalsRemoved,
+          tailorSupplementsEur: tailorSupplements,
+          lunchRemovalCreditEurPerPax: lunchRemovalCredit,
+          tourSubtotalEur: Math.round(tourSubtotalCents / 100),
+          addOnsPerPaxTotalEur: validatedAddOns.reduce((s, a) => s + a.priceEur, 0),
+          addOnsTotalEur,
+          totalEur: Math.round(tourSubtotalCents / 100) + addOnsTotalEur,
+          priceSource: real != null ? "tier" : "anchor",
+        },
+      };
+
+      const { error: snapErr } = await admin
+        .from("booking_snapshots")
+        .upsert(
+          { stripe_session_id: session.id, payload: snapshotPayload },
+          { onConflict: "stripe_session_id" },
+        );
+      if (snapErr) console.warn("[create-signature-checkout] snapshot write failed:", snapErr.message);
+    } catch (e) {
+      // Snapshot is observability, never a checkout blocker.
+      console.warn(
+        "[create-signature-checkout] snapshot build failed:",
+        e instanceof Error ? e.message : e,
+      );
+    }
+
+
     const rawPublishable =
       body.environment === "live"
         ? (Deno.env.get("STRIPE_LIVE_PUBLISHABLE_KEY") ?? "")
