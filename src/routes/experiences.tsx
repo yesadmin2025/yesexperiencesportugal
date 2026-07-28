@@ -236,6 +236,17 @@ function ExperiencesPage() {
                       <Clock size={11} /> {signatureDurationLabel(t.id, t.durationHours)}
                     </span>
                     <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
+                    {signatureIncludesLunch(t.id) && (
+                      <>
+                        {/* Only when the canonical inclusions say so —
+                            never inferred from the itinerary. */}
+                        <span className="flex items-center gap-1.5 text-[color:var(--charcoal)]">
+                          <UtensilsCrossed size={11} className="text-[color:var(--gold-ink)]" />
+                          Lunch included
+                        </span>
+                        <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
+                      </>
+                    )}
                     <span className="text-[color:var(--charcoal)]">
                       From <PriceEur amountEur={t.priceFrom} role="from" />
                       <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
