@@ -229,8 +229,9 @@ Deno.serve(async (req) => {
 
     // Tailor flow only: apply SSOT reduction based on principal stops the
     // guest removed, then add the authorized flat supplements (add lunch,
-    // extra wineries). Supplements are re-derived server-side from the
-    // per-Signature entitlement tables — never taken as a euro amount.
+    // extra wineries) and subtract the flat lunch-removal credit.
+    // Every euro amount is re-derived server-side from the per-Signature
+    // entitlement tables — never taken from the client.
     const isTailorFlow = (body.flow ?? (body.tailored ? "tailor" : "signature")) === "tailor";
     const principalsRemoved = isTailorFlow
       ? Math.min(8, Math.max(0, Number(body.principalsRemoved ?? 0) | 0))
@@ -242,8 +243,31 @@ Deno.serve(async (req) => {
           Number(body.tailorExtraWineries ?? 0),
         )
       : 0;
+
+    // ── Lunch removal (Arrábida Wine only) ──────────────────────────
+    // Strict validation: boolean-only, tailor flow only, eligible product
+    // only. The €15 comes from the server table, never from the payload.
+    if (body.tailorLunchRemoved !== undefined && typeof body.tailorLunchRemoved !== "boolean") {
+      return jsonError("Invalid tailorLunchRemoved: must be a boolean", 400);
+    }
+    const lunchRemoved = body.tailorLunchRemoved === true;
+    if (lunchRemoved && !isTailorFlow) {
+      return jsonError("Lunch removal is only available in the Tailor flow", 400);
+    }
+    if (lunchRemoved && !TAILOR_LUNCH_REMOVAL_ELIGIBLE.has(body.tourId)) {
+      return jsonError(`Lunch removal is not available for ${body.tourId}`, 400);
+    }
+    const lunchRemovalCredit = isTailorFlow
+      ? serverLunchRemovalEur(body.tourId, lunchRemoved)
+      : 0;
+
     const eurPerPax = isTailorFlow
-      ? tailorFinalPerPax(resolvedPerPax, principalsRemoved, tailorSupplements)
+      ? tailorFinalPerPax(
+          resolvedPerPax,
+          principalsRemoved,
+          tailorSupplements,
+          lunchRemovalCredit,
+        )
       : resolvedPerPax;
 
 
