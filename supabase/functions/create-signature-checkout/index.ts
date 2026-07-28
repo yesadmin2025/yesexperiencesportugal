@@ -328,6 +328,7 @@ Deno.serve(async (req) => {
     const description = [
       guestsLine + " · Hotel pickup included",
       includesLine,
+      lunchRemovedLine,
       tailoredNote,
     ]
       .filter(Boolean)
