@@ -92,15 +92,21 @@ export function localeAlternateLinks(path: string): Array<{
   href: string;
 }> {
   const normalized = path.startsWith("/") ? path : `/${path}`;
+  // buildLocaleUrl returns a bare origin for "/" — keep the trailing slash so
+  // the alternate matches the homepage canonical byte-for-byte.
+  const href = (l: Locale) => {
+    const url = buildLocaleUrl(normalized, l, ORIGIN);
+    return url === ORIGIN ? `${ORIGIN}/` : url;
+  };
   const links = LOCALES.map((l) => ({
     rel: "alternate" as const,
     hrefLang: LOCALE_BCP47[l],
-    href: buildLocaleUrl(normalized, l, ORIGIN),
+    href: href(l),
   }));
   links.push({
     rel: "alternate" as const,
     hrefLang: "x-default",
-    href: buildLocaleUrl(normalized, DEFAULT_LOCALE, ORIGIN),
+    href: href(DEFAULT_LOCALE),
   });
   return links;
 }
