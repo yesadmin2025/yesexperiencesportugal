@@ -4,7 +4,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin, Star } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
-import { getTourContent } from "@/lib/tourContent";
+import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { getSignatureCardMoments } from "@/content/signature-card-moments";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
@@ -233,7 +233,7 @@ function ExperiencesPage() {
                     </span>
                     <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
                     <span className="flex items-center gap-1.5">
-                      <Clock size={11} /> {t.durationHours}
+                      <Clock size={11} /> {signatureDurationLabel(t.id, t.durationHours)}
                     </span>
                     <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
                     <span className="text-[color:var(--charcoal)]">

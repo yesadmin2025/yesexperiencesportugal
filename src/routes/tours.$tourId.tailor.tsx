@@ -72,6 +72,7 @@ import {
   gaCheckoutDrawerOpened,
 } from "@/lib/analytics-ga4";
 import {
+import { signatureDurationLabel } from "@/lib/tourContent";
   getOperatingRule,
   computeMinDateISO,
   validateDateISO,
@@ -157,7 +158,7 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
             priceFrom: (t as { priceFrom?: number }).priceFrom,
             currency: "EUR",
             region: (t as { region?: string }).region ?? null,
-            durationHours: (t as { durationHours?: string }).durationHours ?? null,
+            durationHours: signatureDurationLabel(t.id, (t as { durationHours?: string }).durationHours ?? null),
           }),
         ),
       ],
@@ -841,7 +842,7 @@ function TailorPage() {
                     <MapPin size={11} /> {tour.region}
                   </span>
                   <span className="inline-flex items-center gap-1.5">
-                    <Clock size={11} /> {tour.durationHours}
+                    <Clock size={11} /> {signatureDurationLabel(tour.id, tour.durationHours)}
                   </span>
                 </div>
               </div>

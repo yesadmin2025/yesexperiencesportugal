@@ -38,7 +38,7 @@ import { HOMEPAGE_FAQ } from "@/content/faq-data";
 import { faqPageLd, itemListLd, jsonLdScript, studioServiceLd } from "@/lib/jsonld";
 import { signatureTours, isValidTourId } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
-import { getTourContent } from "@/lib/tourContent";
+import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 
 /* ──────────────────────────────────────────────────────────────────
  * Featured Signature tours — exactly 4 real tours, in display order.
@@ -123,7 +123,7 @@ const signatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
       pace: t.pace,
       region: t.region,
       priceFrom: t.priceFrom,
-      durationHours: t.durationHours,
+      durationHours: signatureDurationLabel(t.id, t.durationHours),
       rating: meta?.rating ?? null,
       reviewCount: meta?.reviewCount ?? 0,
       // First 3 real bookable stops from the matching Viator product page
@@ -754,7 +754,7 @@ function HomePage() {
                           </h3>
                           <div className="mt-3 flex items-center gap-2">
                             <span className="inline-block text-[11px] uppercase tracking-[0.22em] text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
-                              {t.durationHours}
+                              {signatureDurationLabel(t.id, t.durationHours)}
                             </span>
                             <span
                               className="inline-block w-px h-3 bg-white/60"

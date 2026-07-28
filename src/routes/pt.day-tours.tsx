@@ -14,6 +14,7 @@ import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
+import { signatureDurationLabel } from "@/lib/tourContent";
 
 const TITLE = "Experiências de um Dia — YES Experiences Portugal";
 const DESCRIPTION =
@@ -125,7 +126,7 @@ function DayToursPage() {
 
                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
                   <span className="flex items-center gap-1.5">
-                    <Clock size={12} /> {t.durationHours}
+                    <Clock size={12} /> {signatureDurationLabel(t.id, t.durationHours)}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <MapPin size={12} /> {t.theme}
