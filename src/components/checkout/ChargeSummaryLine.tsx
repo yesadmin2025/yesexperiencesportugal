@@ -148,6 +148,13 @@ export function ChargeSummaryLine({
               value={eur(Math.max(0, journey - quote.perPaxAdultEur * quote.adults))}
             />
           ) : null}
+          {(quote.adjustments ?? []).map((a) => (
+            <Row
+              key={a.label}
+              label={a.label}
+              value={`${a.amountEur < 0 ? "−" : ""}${eur(Math.abs(a.amountEur))}`}
+            />
+          ))}
           {addOns > 0 ? <Row label="Add-ons" value={eur(addOns)} /> : null}
           <Row label="Party total" value={eur(quote.totalEur)} />
         </ul>
