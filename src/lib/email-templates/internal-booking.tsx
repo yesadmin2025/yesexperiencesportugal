@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
   Body,
+  Button,
   Container,
   Head,
   Heading,
@@ -15,6 +16,7 @@ export interface InternalBookingProps {
   customerName?: string | null;
   customerEmail?: string | null;
   tourTitle?: string | null;
+  experienceName?: string | null;
   bookingType?: string | null;
   dateExact?: string | null;
   guests?: number | null;
@@ -22,8 +24,14 @@ export interface InternalBookingProps {
 
   amountFormatted?: string | null;
   bookingRef?: string | null;
-  
+  bookingId?: string | null;
+  adminUrl?: string | null;
+  durationLabel?: string | null;
+
   pickup?: string | null;
+  addOnLabels?: string[] | null;
+  removedOptions?: string[] | null;
+  customerNotes?: string[] | null;
 }
 
 const main = { backgroundColor: "#ffffff", fontFamily: "Arial, Helvetica, sans-serif" } as const;
@@ -45,6 +53,15 @@ const label = {
   margin: "0 0 3px",
 };
 const value = { color: "#111", fontSize: 14, margin: 0, lineHeight: 1.55 };
+const button = {
+  backgroundColor: "#295B61",
+  color: "#ffffff",
+  fontSize: 14,
+  padding: "12px 22px",
+  borderRadius: 4,
+  textDecoration: "none",
+  display: "inline-block",
+};
 
 const Field: React.FC<{ label: string; value?: string | number | null }> = ({
   label: l,
@@ -57,49 +74,92 @@ const Field: React.FC<{ label: string; value?: string | number | null }> = ({
     </Section>
   );
 
-const InternalBooking: React.FC<InternalBookingProps> = (p) => (
-  <Html lang="en">
-    <Head />
-    <Preview>New booking — {p.tourTitle ?? "YES experience"}</Preview>
-    <Body style={main}>
-      <Container style={container}>
-        <Heading style={h1}>New booking confirmed</Heading>
-        <Text style={sub}>Stripe payment confirmed</Text>
-
-        <Field label="Guest" value={p.customerName} />
-        <Field label="Email" value={p.customerEmail} />
-        <Field label="Experience" value={p.tourTitle} />
-        <Field label="Type" value={p.bookingType} />
-        <Field label="Date" value={p.dateExact} />
-        <Field label="Guests" value={p.compositionSummary ?? p.guests ?? null} />
-        <Field label="Amount" value={p.amountFormatted} />
-        <Field label="Pickup" value={p.pickup} />
-        <Field label="Stripe session" value={p.bookingRef} />
-
-        <Text style={{ ...value, color: "#666", fontSize: 12, marginTop: 22 }}>
-          The guest has already received the branded receipt. Reach out to confirm the final
-          logistics with the local host.
+const ListField: React.FC<{ label: string; items?: string[] | null }> = ({
+  label: l,
+  items,
+}) =>
+  !items || items.length === 0 ? null : (
+    <Section style={row}>
+      <Text style={label}>{l}</Text>
+      {items.map((item, i) => (
+        <Text key={i} style={value}>
+          • {item}
         </Text>
-      </Container>
-    </Body>
-  </Html>
-);
+      ))}
+    </Section>
+  );
+
+const InternalBooking: React.FC<InternalBookingProps> = (p) => {
+  const experience = p.experienceName || p.tourTitle || "YES experience";
+  return (
+    <Html lang="en">
+      <Head />
+      <Preview>New booking — {experience}</Preview>
+      <Body style={main}>
+        <Container style={container}>
+          <Heading style={h1}>New booking confirmed</Heading>
+          <Text style={sub}>Stripe payment confirmed</Text>
+
+          <Field label="Booking reference" value={p.bookingRef} />
+          <Field label="Guest" value={p.customerName} />
+          <Field label="Email" value={p.customerEmail} />
+          <Field label="Experience" value={experience} />
+          <Field label="Type" value={p.bookingType} />
+          <Field label="Booking date" value={p.dateExact} />
+          <Field label="Duration" value={p.durationLabel} />
+          <Field label="Guests" value={p.compositionSummary ?? p.guests ?? null} />
+          <Field label="Total paid" value={p.amountFormatted} />
+          <Field label="Pickup" value={p.pickup} />
+          <ListField label="Add-ons" items={p.addOnLabels} />
+          <ListField label="Removed options" items={p.removedOptions} />
+          <ListField label="Customer notes" items={p.customerNotes} />
+
+          {p.adminUrl ? (
+            <Section style={{ margin: "26px 0 6px" }}>
+              <Button href={p.adminUrl} style={button}>
+                Open booking in Admin
+              </Button>
+            </Section>
+          ) : null}
+
+          <Text style={{ ...value, color: "#666", fontSize: 12, marginTop: 22 }}>
+            The guest has already received the branded receipt. Reach out to confirm the final
+            logistics with the local host.
+          </Text>
+        </Container>
+      </Body>
+    </Html>
+  );
+};
 
 export const template = {
   component: InternalBooking,
   subject: (data: Record<string, unknown>) => {
-    const t = typeof data.tourTitle === "string" ? data.tourTitle : "a YES experience";
-    return `New booking · ${t}`;
+    const t =
+      typeof data.experienceName === "string" && data.experienceName
+        ? data.experienceName
+        : typeof data.tourTitle === "string"
+          ? data.tourTitle
+          : "a YES experience";
+    const d = typeof data.dateExact === "string" && data.dateExact ? ` · ${data.dateExact}` : "";
+    return `New booking · ${t}${d}`;
   },
   displayName: "Internal — new booking",
   previewData: {
     customerName: "Sofia Martins",
     customerEmail: "sofia@example.com",
+    experienceName: "Private Sintra & Cascais Tour from Lisbon",
     tourTitle: "Private Sintra & Cascais Tour from Lisbon",
     bookingType: "signature",
     dateExact: "2026-08-14",
     guests: 2,
+    durationLabel: "Full day · ~9h",
     amountFormatted: "€ 690,00",
     bookingRef: "cs_live_a1b2c3",
+    adminUrl: "https://yesexperiencesportugal.com/admin/bookings/00000000-0000-0000-0000-000000000000",
+    addOnLabels: ["Private photographer · €120 pp"],
+    removedOptions: ["Included lunch removed (−€15 per person)"],
+    customerNotes: ["Dietary: one vegetarian"],
   },
 } satisfies TemplateEntry;
+
