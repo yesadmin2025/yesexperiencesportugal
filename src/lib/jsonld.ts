@@ -590,14 +590,134 @@ export function itemListLd(args: {
       // Without offers/review/aggregateRating on every item, Google's
       // Product-snippet validator flags them as invalid. The detail
       // pages (/tours/{id}) carry the full Product+Offer+AggregateRating
-      // payload — this ItemList just points at them.
+      // payload. We DO declare TouristTrip on the inner item — it has no
+      // required-field validator, so it enriches travel surfaces without
+      // risking an invalid Product snippet.
+      const image = it.image
+        ? it.image.startsWith("http")
+          ? it.image
+          : `${SITE_URL}${it.image}`
+        : undefined;
       return {
         "@type": "ListItem",
         position: i + 1,
         url,
         name: it.name,
+        item: {
+          "@type": "TouristTrip",
+          "@id": `${url}#trip`,
+          name: it.name,
+          url,
+          ...(it.description ? { description: it.description } : {}),
+          ...(image ? { image } : {}),
+          provider: { "@id": `${SITE_URL}/#organization` },
+        },
       };
     }),
+  };
+}
+
+/**
+ * Multi-day / editorial itinerary node.
+ *
+ * Describes the *shape* of a journey (day-by-day) without inventing a
+ * bookable product: each day becomes a TouristDestination inside the
+ * trip's `itinerary` ItemList, which is the structure Google's travel
+ * surfaces read. Days may link to a real Signature page via `path`.
+ */
+export function tripItineraryLd(args: {
+  path: string;
+  name: string;
+  description: string;
+  touristType?: string;
+  days: { name: string; description?: string; path?: string }[];
+}) {
+  const url = `${SITE_URL}${args.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "TouristTrip",
+    "@id": `${url}#trip`,
+    name: args.name,
+    description: args.description,
+    url,
+    mainEntityOfPage: url,
+    ...(args.touristType ? { touristType: args.touristType } : {}),
+    provider: { "@id": `${SITE_URL}/#organization` },
+    itinerary: {
+      "@type": "ItemList",
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      numberOfItems: args.days.length,
+      itemListElement: args.days.map((d, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: d.name,
+        item: {
+          "@type": "TouristDestination",
+          name: d.name,
+          ...(d.description ? { description: d.description } : {}),
+          ...(d.path ? { url: `${SITE_URL}${d.path}` } : {}),
+          includesAttraction: { "@type": "TouristAttraction", name: d.name },
+        },
+      })),
+    },
+    potentialAction: {
+      "@type": "PlanAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/multi-day`,
+        actionPlatform: [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform",
+        ],
+      },
+    },
+  };
+}
+
+/**
+ * Reservation node for a confirmed booking (receipt / confirmation
+ * pages). These pages are noindex, so this exists for machine readers
+ * (email/receipt parsers, assistants), not for search snippets — it is
+ * emitted client-side once the real Stripe session has loaded, never
+ * with placeholder values.
+ */
+export function tourReservationLd(args: {
+  reservationId: string;
+  name: string;
+  status: "confirmed" | "pending";
+  totalPrice?: number | null;
+  currency?: string | null;
+  customerName?: string | null;
+  customerEmail?: string | null;
+  bookingTime?: string | null;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Reservation",
+    reservationId: args.reservationId,
+    reservationStatus:
+      args.status === "confirmed"
+        ? "https://schema.org/ReservationConfirmed"
+        : "https://schema.org/ReservationPending",
+    reservationFor: {
+      "@type": "TouristTrip",
+      name: args.name,
+      provider: { "@id": `${SITE_URL}/#organization` },
+    },
+    provider: { "@id": `${SITE_URL}/#organization` },
+    ...(args.bookingTime ? { bookingTime: args.bookingTime } : {}),
+    ...(typeof args.totalPrice === "number"
+      ? { totalPrice: args.totalPrice, priceCurrency: (args.currency ?? "EUR").toUpperCase() }
+      : {}),
+    ...(args.customerName || args.customerEmail
+      ? {
+          underName: {
+            "@type": "Person",
+            ...(args.customerName ? { name: args.customerName } : {}),
+            ...(args.customerEmail ? { email: args.customerEmail } : {}),
+          },
+        }
+      : {}),
   };
 }
 
