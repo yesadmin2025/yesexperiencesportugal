@@ -122,7 +122,26 @@ function BookingReceiptPage() {
   const journeyLines = (data?.lineItems ?? []).filter((l) => !/^Add-on —/.test(l.description));
   const addOnLines = (data?.lineItems ?? []).filter((l) => /^Add-on —/.test(l.description));
 
-  return (
+  // Machine-readable receipt. Emitted only once real Stripe data has
+  // loaded — never with placeholder values. The page is noindex, so this
+  // serves receipt/assistant parsers rather than search snippets.
+  const reservationLd =
+    data && session_id
+      ? tourReservationLd({
+          reservationId: session_id,
+          name:
+            journeyLines[0]?.description ??
+            meta.tour_title ??
+            "Private Portugal experience — YES Experiences",
+          status: data.paymentStatus === "paid" ? "confirmed" : "pending",
+          totalPrice: total,
+          currency: data.currency,
+          customerName: data.customerName,
+          customerEmail: data.customerEmail,
+          bookingTime: data.created ? new Date(data.created * 1000).toISOString() : null,
+        })
+      : null;
+
     <main className="min-h-screen bg-[color:var(--sand)]/30 py-10 print:bg-white print:py-0">
       <div className="container-x max-w-2xl">
         {/* Screen-only actions */}
