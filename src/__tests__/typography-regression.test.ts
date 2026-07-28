@@ -386,7 +386,8 @@ const HEADLINES: HeadlineSpec[] = [
     page: "home",
     role: "hero stanza line 1",
     file: "src/components/home/CinematicHero.tsx",
-    pattern: /<p\s+className="(font-serif italic font-normal)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
+    // Line 1 is the page's single <h1> (SEO + a11y); line 2 stays a <p>.
+    pattern: /<h1\s+className="(font-serif italic font-normal m-0)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
   },
   {
     page: "home",
@@ -399,13 +400,14 @@ const HEADLINES: HeadlineSpec[] = [
     page: "home",
     role: "hero primary CTA",
     file: "src/components/home/CinematicHero.tsx",
-    pattern: /data-hero-field="primaryCta"\s+className="([^"]+)"/,
+    // Analytics attributes sit between data-hero-field and className.
+    pattern: /data-hero-field="primaryCta"[^>]*?\sclassName="([^"]+)"/,
   },
   {
     page: "home",
     role: "hero secondary CTA",
     file: "src/components/home/CinematicHero.tsx",
-    pattern: /data-hero-field="secondaryCta"\s+className="([^"]+)"/,
+    pattern: /data-hero-field="secondaryCta"[^>]*?\sclassName="([^"]+)"/,
   },
 
   // Removed: /multi-day hero subhead (copy rebuilt to a Designer-led lead)

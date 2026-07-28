@@ -91,6 +91,12 @@ const DUPLICATE_BAND_EXEMPTIONS: { route: string; label: string; reason: string 
       "Proposals is human-only and the hero CTA + closing CTA are both Talk to a Local by design (no self-serve path). Tracked: align with corporate consolidation.",
   },
   {
+    route: "index.tsx",
+    label: "Open the Studio",
+    reason:
+      "Homepage has one contextual Studio CTA inside the Studio section (where the live device is shown) and one in the Final CTA closer at the end of a very long page. Both are the same canonical label by intent — the closer is the page's conversion band and must not send users back up the page. CTA vocabulary is locked (e2e/cta-vocabulary-lock.spec.ts), so renaming either is not an option.",
+  },
+  {
     route: "tours.$tourId.tsx",
     label: "Reserve instantly",
     reason:

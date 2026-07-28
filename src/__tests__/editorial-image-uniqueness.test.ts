@@ -21,16 +21,22 @@ describe("editorial image identity", () => {
     const urls = conversionModules.flat().map((photo) => photo.src);
     expect(new Set(urls).size).toBe(urls.length);
 
-    // These legacy admin-only sets intentionally mirror their matching
-    // service pages and are not rendered as extra strips on those routes.
-    expect(CORPORATE_MOMENTS.map((photo) => photo.src)).toEqual(
-      CORPORATE_SERVICE_IMAGES.slice(0, 2).map((photo) => photo.src),
-    );
-    expect(MULTI_DAY_MOMENTS.map((photo) => photo.src)).toEqual(
-      [PROPOSAL_SERVICE_IMAGES[1], PROPOSAL_SERVICE_IMAGES[0], PROPOSAL_SERVICE_IMAGES[2]].map(
-        (photo) => photo.src,
-      ),
-    );
+    // Admin-only moment sets may either mirror their matching service page
+    // or stand fully on their own imagery — but never partially overlap,
+    // which is what produces "the same photo twice" on a public route.
+    const publicUrls = new Set(urls);
+    for (const [name, moments] of [
+      ["CORPORATE_MOMENTS", CORPORATE_MOMENTS],
+      ["MULTI_DAY_MOMENTS", MULTI_DAY_MOMENTS],
+    ] as const) {
+      const srcs = moments.map((photo) => photo.src);
+      expect(new Set(srcs).size, `${name} repeats an image internally`).toBe(srcs.length);
+      const shared = srcs.filter((src) => publicUrls.has(src));
+      expect(
+        shared.length === 0 || shared.length === srcs.length,
+        `${name} partially overlaps public conversion imagery`,
+      ).toBe(true);
+    }
   });
 
   it("never restores the retired generated photography", () => {
