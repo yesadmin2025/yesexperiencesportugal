@@ -434,7 +434,29 @@ Deno.serve(async (req) => {
           receiptUrl,
           bookingStatusUrl: `${siteUrl}/booking-confirmed?session_id=${encodeURIComponent(session.id)}`,
           pickup: meta.pickup || null,
+          // Admin-only extras (used by the internal team template).
+          bookingId,
+          adminUrl: `${siteUrl}/admin/bookings/${bookingId}`,
+          experienceName:
+            (snapshot?.experienceName as string | undefined) ||
+            meta.journey_title ||
+            meta.tour_title ||
+            tourId ||
+            null,
+          durationLabel: (snapshot?.durationLabel as string | undefined) ?? null,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          addOnLabels: Array.isArray((snapshot as any)?.addOns)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ? ((snapshot as any).addOns as Array<{ label?: string; priceEur?: number }>)
+                .map((a) => (a?.label ? `${a.label}${a.priceEur ? ` · €${a.priceEur} pp` : ""}` : ""))
+                .filter(Boolean)
+            : [],
+          removedOptions: Array.isArray(snapshot?.removedOptions)
+            ? (snapshot?.removedOptions as string[])
+            : [],
+          customerNotes: Array.isArray(snapshot?.notes) ? (snapshot?.notes as string[]) : [],
         };
+
 
         const resp = await fetch(`${siteUrl}/api/public/hooks/checkout-email`, {
           method: "POST",
