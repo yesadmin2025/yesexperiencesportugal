@@ -318,6 +318,9 @@ Deno.serve(async (req) => {
     const includesLine = clientIncluded
       ? `Includes: ${clientIncluded.slice(0, 4).join(", ")}`
       : null;
+    const lunchRemovedLine = lunchRemovalCredit > 0
+      ? `Included lunch removed — €${lunchRemovalCredit} per person credited`
+      : null;
     const tailoredNote = isTailored
       ? "Tailored adjustments confirmed by our team within 2 hours after payment."
       : null;
