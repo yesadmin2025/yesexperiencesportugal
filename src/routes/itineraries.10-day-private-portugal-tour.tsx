@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { jsonLdScript, breadcrumbLd, SITE_URL } from "@/lib/jsonld";
+import { jsonLdScript, breadcrumbLd, tripItineraryLd, SITE_URL } from "@/lib/jsonld";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 
