@@ -119,3 +119,27 @@ export function getTourContent(tourId: string): TourContent {
 export function hasSourceOfTruth(tourId: string): boolean {
   return Boolean(SIGNATURE_SOURCE_OF_TRUTH[tourId]);
 }
+
+/**
+ * Canonical duration label for a Signature ("8–9h").
+ *
+ * Reads the Viator-verified SoT `durationText` so cards, tour pages,
+ * Tailor and JSON-LD can never show three different numbers. Falls back
+ * to the legacy `durationHours` only while a tour has no SoT entry.
+ */
+export function signatureDurationLabel(
+  tourId: string,
+  fallback?: string | null,
+): string | null {
+  return SIGNATURE_SOURCE_OF_TRUTH[tourId]?.durationText ?? fallback ?? null;
+}
+
+/**
+ * True when the canonical inclusions explicitly include a meal.
+ * Used for the "Lunch included" card cue — never inferred from the
+ * itinerary (Bible 5.2).
+ */
+export function signatureIncludesLunch(tourId: string): boolean {
+  const included = SIGNATURE_SOURCE_OF_TRUTH[tourId]?.included ?? [];
+  return included.some((i) => /\blunch\b|\balmoço\b|\bpicnic\b/i.test(i));
+}
