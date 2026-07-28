@@ -980,7 +980,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "The Roman Temple and Chapel of Bones in Évora, two selected Alentejo wineries and a traditional cork-production visit.",
     intro:
-      "Alentejo unwinds you. Plains of cork oaks, white-washed villages, and a city — Évora — that's quietly held two thousand years of history together. We walk it slowly, then disappear into the wineries that have been quietly making some of Portugal's best reds.",
+      "Alentejo unwinds you. We walk Évora's historic centre slowly — the Roman Temple, the Chapel of Bones — then head into two selected Alentejo wineries and a traditional cork-production visit. Lunch is not included, so the day keeps its own rhythm.",
     fitsBest: "History buffs · wine lovers · couples",
     pace: ["Évora old town", "Chapel of Bones", "Alentejo winery"],
     stops: [
