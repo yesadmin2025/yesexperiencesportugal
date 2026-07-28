@@ -1616,6 +1616,47 @@ function TailorPage() {
                     </button>
                   )}
 
+                  {/* Remove the INCLUDED lunch — Arrábida Wine only.
+                      Rendered outside the stop list on purpose: this is a
+                      flat −€15 pp credit, not a −5% stop removal, and it
+                      never unlocks the 4th winery. */}
+                  {rules.allowRemoveLunch && (
+                    <button
+                      type="button"
+                      onClick={() => setLunchRemoved((v) => !v)}
+                      aria-pressed={lunchRemoved}
+                      data-testid="tailor-remove-lunch"
+                      className={[
+                        "w-full flex items-center justify-between gap-3 border px-3 py-2.5 text-left transition-colors min-h-[52px]",
+                        lunchRemoved
+                          ? "border-[color:var(--teal)] bg-[color:var(--teal)]/10"
+                          : "border-[color:var(--border)]",
+                      ].join(" ")}
+                    >
+                      <span className="flex flex-col">
+                        <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
+                          {lunchRemoved ? "Restore included lunch" : "Remove included lunch"}
+                        </span>
+                        <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
+                          {lunchRemoved
+                            ? "The day runs without the seated lunch."
+                            : (rules.lunchIncludedNote ??
+                              "A seated lunch is included in this Signature.")}
+                        </span>
+                      </span>
+                      <span className="text-[12px] tabular-nums text-[color:var(--teal)] whitespace-nowrap">
+                        −
+                        <PriceEur
+                          amountEur={TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR}
+                          role="per-person"
+                        />{" "}
+                        pp
+                      </span>
+                    </button>
+                  )}
+
+
+
 
                   {/* Truthful per-person + party-total split. "Indicative
                       total / adult" was misread as a party total; use the
