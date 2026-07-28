@@ -461,7 +461,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "A private Arrábida day with the Sesimbra Coastal Boat Tour, Lapa de Santa Margarida and the cliffs of Cabo Espichel.",
     intro:
-      "A day told by the sea. We cross into the Arrábida Natural Park and trade the coast road for a boat into its quiet coves — swim or simply drift — then lunch in Portinho with sand still on your feet before easing into Sesimbra at golden hour.",
+      "A day told by the sea. It begins at Livramento Market, then follows the coast into the Arrábida Natural Park, past Lapa de Santa Margarida and out on the Sesimbra Coastal Boat Tour. The afternoon eases into Sesimbra and the cliffs of Cabo Espichel. Lunch can be added when you tailor the day.",
     fitsBest: "Couples · families · active travelers",
     pace: ["Arrábida by road", "Boat into the coves", "Sesimbra at dusk"],
     stops: [
