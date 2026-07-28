@@ -41,7 +41,7 @@ export function ServiceCrossLinks({
           {links.map((l) => (
             <li key={l.to + l.label}>
               <Link
-                to={l.to}
+                to={l.to as never}
                 className="tap inline-flex min-h-[44px] items-center font-display text-lg text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded-sm"
               >
                 {l.label}
