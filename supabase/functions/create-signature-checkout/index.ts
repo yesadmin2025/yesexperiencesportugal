@@ -78,7 +78,14 @@ interface Body {
     priceEur: number;
     durationMinutes?: number;
   }>;
+  /** DISPLAY-ONLY. Booked itinerary as shown to the guest. Never priced. */
+  itinerary?: Array<{ label: string; durationMinutes?: number; note?: string }>;
+  /** DISPLAY-ONLY. Human labels of options the guest removed in Tailor. */
+  removedOptions?: string[];
+  /** DISPLAY-ONLY. Duration label shown at checkout ("Full day · ~9h"). */
+  durationLabel?: string;
 }
+
 
 import {
   AGE_BAND_PCT,
