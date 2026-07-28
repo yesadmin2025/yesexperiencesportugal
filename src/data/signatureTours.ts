@@ -1177,7 +1177,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 135,
     theme: "Heritage",
     blurb:
-      "The Sanctuary of Fátima, the giant waves of Nazaré, the medieval lanes of Óbidos and a Ginjinha tasting.",
+      "The Sanctuary of Fátima, Nazaré's cliff viewpoint and Atlantic coast, the medieval lanes of Óbidos and a Ginjinha tasting.",
     intro:
       "Three landmarks, one perfectly composed day. Faith in Fátima, the awe of Nazaré's giant Atlantic waves, and the medieval streets of Óbidos finished off with a small ceramic cup of cherry liqueur.",
     fitsBest: "Pilgrims · couples · families",
