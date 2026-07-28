@@ -35,7 +35,15 @@ export function TravelFilePreview({ className, onEngage }: TravelFilePreviewProp
   const engaged = useRef(false);
   const closeRef = useRef<HTMLButtonElement | null>(null);
 
+  // All 23 pages stack absolute-inset in the same box for the crossfade,
+  // so native `loading="lazy"` can't help — every stacked <img> shares the
+  // same on-screen rect as the visible one and would fetch immediately.
+  // Only mount the full stack once the guest actually engages; until then
+  // render just the cover page.
+  const [interacted, setInteracted] = useState(false);
+
   const engage = useCallback(() => {
+    setInteracted(true);
     if (engaged.current) return;
     engaged.current = true;
     onEngage?.();
@@ -83,7 +91,7 @@ export function TravelFilePreview({ className, onEngage }: TravelFilePreviewProp
           className="block w-full overflow-hidden border border-[color:var(--border)] bg-white shadow-[0_24px_60px_-24px_rgba(46,46,46,0.32)] cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
         >
           <span className="block relative w-full aspect-[3/4]">
-            {SAMPLE_PAGES.map((p, i) => (
+            {(interacted ? SAMPLE_PAGES : [SAMPLE_PAGES[0]]).map((p, i) => (
               <img
                 key={p.src}
                 src={p.src}
