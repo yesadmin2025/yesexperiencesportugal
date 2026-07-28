@@ -211,7 +211,7 @@ export const signatureTours: SignatureTour[] = [
       "You'll visit 2 or 3 of these wineries — the exact count depends on the experience you choose and same-day availability.",
     theme: "Wine",
     blurb:
-      "Two or three family wineries, Livramento market and a long traditional lunch in Azeitão — handled door to door from Lisbon.",
+      "Two selected wineries, Livramento market and a long traditional lunch in Azeitão — handled door to door from Lisbon.",
 
     intro:
       "The most-loved YES day, in one word: complete. We leave Lisbon for the Arrábida hills, walk the Livramento market, sit down for an unhurried Portuguese lunch in Azeitão and visit two or three small family wineries. An optional viewpoint at Cristo Rei or Sesimbra Castle closes the day.",
