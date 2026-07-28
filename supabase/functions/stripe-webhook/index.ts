@@ -342,6 +342,46 @@ Deno.serve(async (req) => {
     await admin.from("bookings").update(baseRow).eq("id", bookingId);
   }
 
+  // ── Freeze the purchase snapshot ────────────────────────────────
+  // Copies the draft written at checkout-create into the booking row so
+  // later edits to tours/pricing data can never rewrite a past booking.
+  // Idempotent: an already-frozen snapshot is never overwritten.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let snapshot: Record<string, unknown> | null =
+    existingDetails && typeof existingDetails.snapshot === "object" && existingDetails.snapshot
+      ? (existingDetails.snapshot as Record<string, unknown>)
+      : null;
+  try {
+    if (!snapshot) {
+      const { data: snapRow } = await admin
+        .from("booking_snapshots")
+        .select("payload, frozen_at")
+        .eq("stripe_session_id", session.id)
+        .maybeSingle();
+      if (snapRow?.payload && typeof snapRow.payload === "object") {
+        snapshot = {
+          ...(snapRow.payload as Record<string, unknown>),
+          frozenAt: (snapRow.frozen_at as string | null) ?? new Date().toISOString(),
+          amountPaidCents: amountTotal,
+          currency,
+        };
+        await admin
+          .from("bookings")
+          .update({ booking_details: { ...existingDetails, composition, snapshot } })
+          .eq("id", bookingId);
+        if (!snapRow.frozen_at) {
+          await admin
+            .from("booking_snapshots")
+            .update({ frozen_at: new Date().toISOString() })
+            .eq("stripe_session_id", session.id);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("snapshot freeze failed:", e instanceof Error ? e.message : e);
+  }
+
+
   // Fire-and-forget: send branded checkout confirmation email with receipt link.
   // Non-blocking so a failure here never breaks Stripe delivery.
   try {
