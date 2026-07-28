@@ -730,6 +730,10 @@ function TailorPage() {
           tailorExtraWineries: rules.wineries
             ? Math.max(0, wineriesSelected - rules.wineries.included)
             : 0,
+          // Boolean intent only — the server derives the €15 itself.
+          tailorLunchRemoved: rules.allowRemoveLunch === true && lunchRemoved,
+
+
 
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
           environment: getStripeEnvironment(),
