@@ -1831,6 +1831,15 @@ function TailorPage() {
             minors: minorAges.length,
             journeySubtotalEur: j.totalEur,
             addOnsEur: 0,
+            adjustments:
+              lunchRemovalPerPax > 0
+                ? [
+                    {
+                      label: "Included lunch removed",
+                      amountEur: -lunchRemovalPerPax * (adults + minorAges.length),
+                    },
+                  ]
+                : undefined,
           };
         }}
 
