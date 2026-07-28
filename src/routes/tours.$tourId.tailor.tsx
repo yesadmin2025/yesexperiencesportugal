@@ -36,8 +36,16 @@ import { DWELL_MINIMUM_MIN, evaluateDay, type FeasibilityStop } from "@/lib/feas
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { tailorAdjustedPerPax, tailorFinalPerPax } from "@/config/pricing";
-import { canSelectWineries, tailorRules, tailorSupplementsEur } from "@/data/tailorRules";
-import { TAILOR_LUNCH_SUPPLEMENT_EUR } from "@/config/pricing";
+import {
+  canSelectWineries,
+  lunchRemovalEur,
+  tailorRules,
+  tailorSupplementsEur,
+} from "@/data/tailorRules";
+import {
+  TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR,
+  TAILOR_LUNCH_SUPPLEMENT_EUR,
+} from "@/config/pricing";
 
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION_SHORT } from "@/config/business-nap";
