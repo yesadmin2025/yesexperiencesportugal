@@ -723,7 +723,7 @@ function TailorPage() {
           includedItems: resolveClientIncludedItems(metaForSummary, tour),
           // Display-only: what the guest actually booked / opted out of.
           // Never priced — the server re-derives every euro itself.
-          itinerary: stopLabels.slice(0, 20).map((label) => ({ label })),
+          itinerary: stopLabels.slice(0, 20).map((label: string) => ({ label })),
           removedOptions: [
             ...(blueprint
               ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.label)
