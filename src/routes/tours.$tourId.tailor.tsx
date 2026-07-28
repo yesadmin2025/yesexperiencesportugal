@@ -471,6 +471,12 @@ function TailorPage() {
   }, [tour, guests, tierOverrides]);
 
   const [lunchAdded, setLunchAdded] = useState(false);
+  /**
+   * Arrábida Wine only: the canonical product INCLUDES lunch, so the
+   * default is `false` (lunch kept). Removing it is a flat −€15 pp credit
+   * — never a −5% stop removal, never a negative supplement.
+   */
+  const [lunchRemoved, setLunchRemoved] = useState(false);
 
   const principalsRemoved = useMemo(
     () => (blueprint ? skippedCore.size : skipped.size),
