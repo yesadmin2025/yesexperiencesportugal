@@ -1,57 +1,56 @@
-## P0 technical SEO, indexation and route integrity
+## Goal
 
-Scope: head metadata, sitemap, robots, redirects, and CTA/heading semantics only. No design, pricing, Stripe, Tailor, Studio logic, tour IDs or slugs change.
+When a payment succeeds, freeze exactly what was purchased, email the team a complete summary with a deep link, and give admins a booking page that shows the full purchase. No pricing, Stripe amount, checkout calculation or business rule changes — every euro figure is copied from what was already charged.
 
-### What I verified first (current state)
+## What exists today (verified)
 
-- `src/start.ts` already returns a single-hop 404 with `x-robots-tag: noindex` for any path containing a literal `$name` segment (decoded, so `%24slug` is covered). No redirect chain for `/local-stories/%24slug` in code.
-- `src/routes/sitemap[.]xml.ts` already filters placeholder slugs and excludes redirect/admin/QA routes. It emits **no `/pt/*` URLs at all**.
-- Only `corporate.tsx`, `trade.tsx` carry hreflang on the English side; the PT pages (`pt.about`, `pt.contact`, `pt.cookies`, `pt.privacy`, `pt.terms`, `pt.reviews`, `pt.corporate`) point at EN equivalents that mostly do **not** point back — hreflang is non-reciprocal.
-- `src/i18n/seo.ts` (`buildI18nHead`) exists and is used by zero routes.
-- `src/routes/local-stories.index.tsx` has no `rel="canonical"`.
-- 49 routes already declare `noindex`; admin/checkout/auth/QA coverage looks broad but needs a completeness sweep.
+- `supabase/functions/stripe-webhook/index.ts` inserts/updates `public.bookings` and posts to `/api/public/hooks/checkout-email`.
+- `bookings` already has `booking_details jsonb`, currently holding only `{ composition }`.
+- The team email uses `src/lib/email-templates/internal-booking.tsx` (guest, email, experience, type, date, guests, amount, pickup, Stripe session) — no booking reference beyond the Stripe id and no admin link.
+- Stripe metadata carries only truncated fields (`stops` capped at 480 chars, `add_ons` JSON capped at 480 chars); itinerary, removed options, notes and the pricing breakdown are not durably stored.
+- There is no `/admin/bookings` route — admins have no place to look at a booking.
 
-### A. Malformed / placeholder URLs
+## Plan
 
-1. Full-codebase sweep for `$slug`, `$tourId`, `${`, `undefined`, `null`, `%24` appearing inside emitted `href`/`to`/canonical/og:url/sitemap strings (excluding legitimate `<Link to params>` usage and the generated route tree).
-2. Keep the existing 404 middleware; add a Playwright regression asserting `/local-stories/%24slug` and `/local-stories/$slug` return 404 in one hop with `noindex`, and that `/tours/$tourId` does the same.
-3. Add a runtime guard in `local-stories.$slug.tsx` and `tours.$tourId.tsx`: unknown/placeholder param → `notFound()` (hard 404 + noindex), never a redirect.
+### 1. Booking snapshot (database)
 
-### B. Canonicals
+New table `public.booking_snapshots`:
 
-- Add the missing self-canonical to `/local-stories`.
-- Sweep every indexable route so each emits exactly one self-referencing canonical on `https://yesexperiencesportugal.com`, no leaf duplicates, none in `__root.tsx`.
-- Confirm no query-parameter state (checkout token, filters, Tailor config, `?heroVariant=`) produces a differing canonical — canonicals stay parameter-free.
+- `stripe_session_id` (PK), `payload jsonb`, `created_at`, `frozen_at`
+- Grants: `service_role` full; no `anon`; `authenticated` SELECT only via admin policy `has_role(auth.uid(),'admin')`. RLS enabled.
 
-### C. Hreflang (reciprocity)
+Flow:
 
-- Route every locale-paired page's head through the existing `buildI18nHead` helper so the EN↔PT pairs emit identical, reciprocal sets plus `x-default`.
-- Genuine pairs to wire (EN side currently missing the return reference): `/about`, `/contact`, `/cookies`, `/privacy`, `/terms`, `/corporate`, `/day-tours`, `/experiences`, `/reviews`, `/` ↔ `/pt`.
-- Remove hreflang from PT pages whose EN target is a redirect or absent (`pt/faq`, `pt/moments`, `pt/proposals` are 301s — they get `noindex` instead of alternates).
-- Deliver a report table of EN pages with no genuine PT equivalent (no hreflang added for those).
+```text
+checkout create  ->  writes draft snapshot row (payload, frozen_at NULL)
+payment succeeds ->  webhook sets frozen_at = now()
+                     and copies payload into bookings.booking_details.snapshot
+```
 
-### D. Sitemap
+The snapshot is display-only: written from a new optional `snapshot` field on the checkout request body, never read by any pricing path.
 
-- Add the PT pages that are real 200 canonical pages (`/pt`, `/pt/about`, `/pt/contact`, `/pt/experiences`, `/pt/day-tours`, `/pt/corporate`, `/pt/privacy`, `/pt/terms`, `/pt/cookies`) — currently absent, so PT is effectively undiscoverable.
-- Re-verify each existing entry returns 200 and is not a redirect; drop any that fail.
-- Keep `lastmod` only where a real timestamp exists (DB `published_at`); no generated "today" values.
-- Extend `e2e/sitemap-robots-canonical.spec.ts` with the PT set, a 200-status check per URL, and a "no `%24`/`$` in any `<loc>`" assertion.
+Snapshot payload contains: experience id/title, itinerary stops (label, duration, order), selected add-ons (label + price as charged), removed options (removed stop labels, lunch removed/added, extra wineries), pickup, total duration, customer notes, and the pricing breakdown already computed server-side (per-pax, composition subtotals, supplements/credits, add-ons total, final total).
 
-### E. Robots / noindex
+### 2. Admin notification email
 
-- Sweep for any indexable route among: checkout steps, payment success/cancel, booking receipt, Tailor draft states, Studio temp state, admin, auth, previews, token routes (`/s/`, `/i/`, `/review/`). Add `robots: noindex, nofollow` where missing.
-- `public/robots.txt`: keep `Allow: /` and existing disallows; confirm no CSS/JS/image path is blocked.
+`src/lib/email-templates/internal-booking.tsx` gains: booking reference, experience name, booking date, guests, total paid, and a prominent "Open in Admin" button linking to `/admin/bookings/<bookingId>`, plus a compact add-ons / removed-options / notes block. `src/routes/api/public/hooks/checkout-email.ts` and the webhook payload forward `bookingId` and the snapshot summary.
 
-### F. Semantic HTML / concatenated CTA strings
+### 3. Admin booking pages
 
-- Audit rendered DOM on `/`, `/experiences`, `/tours/:id`, `/studio-v3`, `/day-tours` for the reported concatenations ("Open the StudioChoose your Experience", "Check availability & reserveTailor this day", repeated "Add…Add", "ImageImageImage").
-- Fixes are markup-only: split fused CTAs into separate interactive elements, unnest any anchor-in-anchor / button-in-anchor, restore one `h1` per page with ordered `h2`/`h3`, add `aria-label` where visible text is insufficient, and give card blocks proper `article`/heading structure.
-- Add a Playwright a11y/structure spec asserting: no nested interactive elements, single `h1`, and no accessible name containing two CTA labels.
+- `src/routes/admin.bookings.tsx` — searchable list (date, guest, experience, total, status).
+- `src/routes/admin.bookings.$id.tsx` — full detail: experience, booked itinerary, add-ons, removed options, pickup, duration, customer notes, pricing breakdown, Stripe session/payment ids, and email send log for that booking.
+- Data via `createServerFn` with `requireSupabaseAuth` + admin role check (same pattern as existing admin tools). Both routes `noindex`.
 
-### G. Validation
+### 4. Tests
 
-Production build, `tsgo` typecheck, full vitest suite, the new + existing Playwright specs (sitemap/robots/canonical, malformed-URL 404s, semantics), plus a manual pass over booking/Tailor flows to confirm nothing broke. No publish.
+- Unit: snapshot builder shape + email template renders all required fields.
+- Unit: snapshot freeze is idempotent and never mutates amounts.
+- Existing suites (pricing parity, checkout parity, typecheck) re-run to prove no pricing drift.
 
-### Deliverable report
+## Technical notes
 
-Files changed · route problems found · redirects created · canonical + hreflang changes · pages excluded from indexing · build/test results · off-codebase actions (Search Console: resubmit sitemap, request removal of `/local-stories/%24slug`, validate hreflang in the International Targeting report).
+Legacy bookings without a snapshot render from `metadata` + `booking_details.composition` with a clear "legacy record" note, so the admin page never breaks on older rows.
+
+## Deliverables at the end
+
+Files changed, database changes, and tests performed will be listed in the final report.

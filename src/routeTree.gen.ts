@@ -124,12 +124,14 @@ import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-i
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as AdminBookingsIndexRouteImport } from './routes/admin.bookings.index'
 import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.tailor'
 import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
 import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
+import { Route as AdminBookingsIdRouteImport } from './routes/admin.bookings.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
@@ -726,6 +728,11 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminBookingsIndexRoute = AdminBookingsIndexRouteImport.update({
+  id: '/admin/bookings/',
+  path: '/admin/bookings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToursTourIdTailorRoute = ToursTourIdTailorRouteImport.update({
   id: '/tailor',
   path: '/tailor',
@@ -755,6 +762,11 @@ const ApiPublicPricingSsotRoute = ApiPublicPricingSsotRouteImport.update({
 const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   id: '/api/public/contact',
   path: '/api/public/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBookingsIdRoute = AdminBookingsIdRouteImport.update({
+  id: '/admin/bookings/$id',
+  path: '/admin/bookings/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
@@ -944,12 +956,14 @@ export interface FileRoutesByFullPath {
   '/pt/': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/admin/bookings/': typeof AdminBookingsIndexRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
@@ -1077,12 +1091,14 @@ export interface FileRoutesByTo {
   '/pt': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/admin/bookings': typeof AdminBookingsIndexRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
@@ -1213,12 +1229,14 @@ export interface FileRoutesById {
   '/pt/': typeof PtIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/admin/bookings/': typeof AdminBookingsIndexRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
@@ -1350,12 +1368,14 @@ export interface FileRouteTypes {
     | '/pt/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/bookings/$id'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
+    | '/admin/bookings/'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/import-tripadvisor-reviews'
@@ -1483,12 +1503,14 @@ export interface FileRouteTypes {
     | '/pt'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/bookings/$id'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
+    | '/admin/bookings'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/import-tripadvisor-reviews'
@@ -1618,12 +1640,14 @@ export interface FileRouteTypes {
     | '/pt/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/bookings/$id'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
+    | '/admin/bookings/'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/import-tripadvisor-reviews'
@@ -1737,10 +1761,12 @@ export interface RootRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  AdminBookingsIdRoute: typeof AdminBookingsIdRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
+  AdminBookingsIndexRoute: typeof AdminBookingsIndexRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
   ApiPublicHooksImportTripadvisorReviewsRoute: typeof ApiPublicHooksImportTripadvisorReviewsRoute
@@ -2560,6 +2586,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/bookings/': {
+      id: '/admin/bookings/'
+      path: '/admin/bookings'
+      fullPath: '/admin/bookings/'
+      preLoaderRoute: typeof AdminBookingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tours/$tourId/tailor': {
       id: '/tours/$tourId/tailor'
       path: '/tailor'
@@ -2600,6 +2633,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/contact'
       fullPath: '/api/public/contact'
       preLoaderRoute: typeof ApiPublicContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/bookings/$id': {
+      id: '/admin/bookings/$id'
+      path: '/admin/bookings/$id'
+      fullPath: '/admin/bookings/$id'
+      preLoaderRoute: typeof AdminBookingsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/invoke-tool/$tool': {
@@ -2878,10 +2918,12 @@ const rootRouteChildren: RootRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  AdminBookingsIdRoute: AdminBookingsIdRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
+  AdminBookingsIndexRoute: AdminBookingsIndexRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
   ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,
   ApiPublicHooksImportTripadvisorReviewsRoute:

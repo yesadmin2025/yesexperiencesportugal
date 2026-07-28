@@ -94,6 +94,13 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
         // Notify the YES team on every completed booking. Non-fatal — the
         // client receipt is the priority; internal alerts must never block it.
         try {
+          const strList = (v: unknown) =>
+            Array.isArray(v)
+              ? (v as unknown[])
+                  .map((s) => String(s ?? "").trim())
+                  .filter((s) => s.length > 0)
+                  .slice(0, 20)
+              : [];
           await Promise.all(
             TEAM_NOTIFICATION_RECIPIENTS.map((recipient) =>
               sendTransactionalInternal({
@@ -103,11 +110,19 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
                 templateData: {
                   ...templateData,
                   customerEmail: recipientEmail,
+                  bookingId: body.bookingId ?? null,
+                  adminUrl: body.adminUrl ?? null,
+                  experienceName: body.experienceName ?? templateData.tourTitle ?? null,
+                  durationLabel: body.durationLabel ?? null,
+                  addOnLabels: strList(body.addOnLabels),
+                  removedOptions: strList(body.removedOptions),
+                  customerNotes: strList(body.customerNotes),
                 },
               }),
             ),
           );
         } catch (e) {
+
           console.error("[checkout-email] team notification failed", {
             error: e instanceof Error ? e.message : e,
           });
