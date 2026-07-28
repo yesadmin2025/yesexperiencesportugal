@@ -255,29 +255,19 @@ function BookFlip() {
   const [index, setIndex] = useState(0);
   const [flipDir, setFlipDir] = useState<"next" | "prev" | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  // Travel File is 23 full-page JPEGs — only the cover is needed for the
-  // first paint. The rest are decoded once the guest actually engages
-  // with the book (flip, thumbnail jump, or full-screen open) so the
-  // homepage never pays for 22 pages nobody may look at.
-  const [interacted, setInteracted] = useState(false);
-  const openLightbox = useCallback(() => {
-    setInteracted(true);
-    setLightboxOpen(true);
-  }, []);
+  const openLightbox = useCallback(() => setLightboxOpen(true), []);
   const closeLightbox = useCallback(() => setLightboxOpen(false), []);
   const reduced = usePrefersReducedMotion();
   const touchStartX = useRef<number | null>(null);
   const flipping = useRef(false);
 
-  const previewSrcs = useMemo(() => [PAGES[0].src], []);
-  const allSrcs = useMemo(() => PAGES.map((p) => p.src), []);
-  const loaded = useImageLoader(interacted ? allSrcs : previewSrcs);
+  const srcs = useMemo(() => PAGES.map((p) => p.src), []);
+  const loaded = useImageLoader(srcs);
 
   const total = PAGES.length;
 
   const goTo = (target: number) => {
     if (flipping.current) return;
-    setInteracted(true);
     if (target < 0 || target >= total || target === index) return;
     const dir: "next" | "prev" = target > index ? "next" : "prev";
     if (reduced) {

@@ -105,7 +105,7 @@ export function SmartRecommendation({
       <div className="flex items-center gap-1.5">
         <Sparkles size={12} aria-hidden style={{ color: "var(--gold)" }} />
         <p
-          className="text-[10.5px] uppercase tracking-[0.26em] font-bold"
+          className="text-[9px] uppercase tracking-[0.26em] font-bold"
           style={{ color: "var(--gold)" }}
         >
           Smart recommendation

@@ -72,7 +72,7 @@ export function LivingStoryStrip({
           </span>
           <div className="min-w-0 flex-1">
             <p
-              className="text-[10.5px] uppercase tracking-[0.32em]"
+              className="text-[9.5px] uppercase tracking-[0.32em]"
               style={{
                 color: "color-mix(in oklab, var(--gold) 82%, var(--charcoal))",
                 fontWeight: 600,
@@ -152,7 +152,7 @@ export function LivingStoryStrip({
           >
             <div>
               <p
-                className="text-[10.5px] uppercase tracking-[0.3em]"
+                className="text-[9.5px] uppercase tracking-[0.3em]"
                 style={{
                   color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                   fontWeight: 600,
@@ -182,7 +182,7 @@ export function LivingStoryStrip({
             </div>
             <div className="text-right">
               <p
-                className="text-[10.5px] uppercase tracking-[0.3em]"
+                className="text-[9.5px] uppercase tracking-[0.3em]"
                 style={{
                   color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                   fontWeight: 600,

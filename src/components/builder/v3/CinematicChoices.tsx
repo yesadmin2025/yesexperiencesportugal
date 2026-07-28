@@ -156,7 +156,6 @@ function SceneTile({
       aria-pressed={isActive}
       aria-label={option.label}
     >
-      {/* TODO: poster — clipFor() has no matching still asset per option. */}
       <video
         aria-hidden="true"
         autoPlay

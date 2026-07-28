@@ -171,7 +171,7 @@ export function SmartRecommendations({ anchor, profile, locale, max = 2 }: Props
                     style={{ background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.45))" }}
                   />
                   <span
-                    className="absolute top-2 left-2 inline-flex items-center rounded-[2px] px-2 py-1 text-[10.5px] uppercase tracking-[0.22em] font-bold"
+                    className="absolute top-2 left-2 inline-flex items-center rounded-[2px] px-2 py-1 text-[9.5px] uppercase tracking-[0.22em] font-bold"
                     style={{ background: "var(--ivory)", color: "var(--teal)" }}
                   >
                     {tour.theme}

@@ -59,7 +59,7 @@ export function TimelineView({
     <div data-testid="studio-v3-timeline-view" className="mt-3">
       <div className="flex items-center justify-between gap-3">
         <p
-          className="text-[10.5px] uppercase tracking-[0.22em] font-bold"
+          className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
           style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
         >
           The shape of the day
@@ -92,7 +92,7 @@ export function TimelineView({
               }}
             />
             <p
-              className="text-[10.5px] uppercase tracking-[0.22em] font-bold"
+              className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
               Begin
@@ -119,7 +119,7 @@ export function TimelineView({
             </span>
             {m.driveMinBefore && m.driveMinBefore >= 5 ? (
               <p
-                className="mb-1 text-[10.5px] uppercase tracking-[0.18em] font-semibold tabular-nums"
+                className="mb-1 text-[9.5px] uppercase tracking-[0.18em] font-semibold tabular-nums"
                 style={{ color: "color-mix(in oklab, var(--teal) 75%, transparent)" }}
               >
                 Drive · {formatMinutes(m.driveMinBefore)}
@@ -143,7 +143,7 @@ export function TimelineView({
             </div>
             {m.kindLabel ? (
               <p
-                className="text-[10.5px] uppercase tracking-[0.2em] font-semibold"
+                className="text-[9.5px] uppercase tracking-[0.2em] font-semibold"
                 style={{ color: "color-mix(in oklab, var(--gold) 85%, transparent)" }}
               >
                 {m.kindLabel}
@@ -170,7 +170,7 @@ export function TimelineView({
               }}
             />
             <p
-              className="text-[10.5px] uppercase tracking-[0.22em] font-bold"
+              className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
               Return

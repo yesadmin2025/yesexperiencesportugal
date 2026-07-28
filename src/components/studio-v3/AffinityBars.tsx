@@ -110,7 +110,7 @@ export function AffinityBars({ feeling, interests, rhythm, companions }: Affinit
   return (
     <div data-testid="studio-v3-affinity-bars" className="mt-4">
       <p
-        className="text-[10.5px] uppercase tracking-[0.22em] font-bold"
+        className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
         style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
       >
         How your day leans

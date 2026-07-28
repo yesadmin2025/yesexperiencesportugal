@@ -73,7 +73,7 @@ export function ElementsShelf({ selected, onToggle }: Props) {
                 <p className="mt-1 text-[11.5px] text-[color:var(--charcoal)]/65 leading-snug">
                   {el.sub}
                 </p>
-                <p className="mt-2 text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--text-subtle)]">
+                <p className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--text-subtle)]">
                   Concierge confirms
                 </p>
               </button>

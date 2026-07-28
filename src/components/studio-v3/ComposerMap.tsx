@@ -176,7 +176,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
           }}
         >
           <span
-            className="text-[10.5px] uppercase font-semibold"
+            className="text-[9px] uppercase font-semibold"
             style={{
               color: "color-mix(in oklab, var(--gold) 80%, var(--ivory))",
               letterSpacing: "0.26em",
@@ -186,7 +186,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
           </span>
           {hasPickup ? (
             <span
-              className="text-[10.5px] uppercase font-semibold truncate max-w-[55%]"
+              className="text-[9px] uppercase font-semibold truncate max-w-[55%]"
               style={{
                 color: "color-mix(in oklab, var(--ivory) 60%, transparent)",
                 letterSpacing: "0.22em",
@@ -205,7 +205,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
           }}
         >
           <span
-            className="text-[10.5px] uppercase tracking-[0.26em] font-bold inline-flex items-center gap-1.5"
+            className="text-[9.5px] uppercase tracking-[0.26em] font-bold inline-flex items-center gap-1.5"
             style={{ color: "var(--gold)" }}
           >
             <span
@@ -217,7 +217,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
           </span>
           {hasPickup ? (
             <span
-              className="text-[10.5px] uppercase tracking-[0.22em] font-semibold truncate max-w-[55%]"
+              className="text-[9.5px] uppercase tracking-[0.22em] font-semibold truncate max-w-[55%]"
               style={{
                 color: "color-mix(in oklab, var(--ivory) 70%, transparent)",
               }}
@@ -268,7 +268,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
             {dnaChips.map((label) => (
               <span
                 key={label}
-                className="shrink-0 rounded-full px-2.5 py-[5px] text-[10.5px] uppercase tracking-[0.22em] font-semibold leading-none"
+                className="shrink-0 rounded-full px-2.5 py-[5px] text-[9.5px] uppercase tracking-[0.22em] font-semibold leading-none"
                 style={{
                   border: "1px solid color-mix(in oklab, var(--gold) 32%, transparent)",
                   color: "color-mix(in oklab, var(--ivory) 88%, transparent)",
@@ -298,7 +298,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
           >
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
               <span
-                className="text-[10.5px] uppercase tracking-[0.22em] font-semibold inline-flex items-center gap-1.5 min-w-0 truncate"
+                className="text-[9.5px] uppercase tracking-[0.22em] font-semibold inline-flex items-center gap-1.5 min-w-0 truncate"
                 style={{
                   color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
                 }}
@@ -316,7 +316,7 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
               </span>
               {scopePriceFromEur != null ? (
                 <span
-                  className="hidden sm:inline text-[10.5px] uppercase tracking-[0.22em] font-bold"
+                  className="hidden sm:inline text-[9.5px] uppercase tracking-[0.22em] font-bold"
                   style={{ color: "var(--gold)" }}
                 >
                   From €{scopePriceFromEur} / guest

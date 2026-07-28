@@ -18,7 +18,7 @@ import { breadcrumbLd, jsonLdScript, SITE_URL } from "@/lib/jsonld";
 import { trackEvent } from "@/lib/analytics-events";
 import { EMAIL, EMAIL_HREF, LICENSE_LABEL } from "@/config/business-nap";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import heroImg from "@/assets/cat-private.jpg";
+import heroImg from "@/assets/why-image.jpg";
 
 /**
  * /trade — B2B page for travel advisors, designers, agencies, DMC and

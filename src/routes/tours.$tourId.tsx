@@ -565,7 +565,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
                     Chapter {i + 1}
                   </span>
                   {s.optional && (
-                    <span className="text-[10.5px] uppercase tracking-[0.22em] px-2 py-[3px] rounded-full border border-[color:var(--gold)]/40 text-[color:var(--charcoal)] bg-[color:var(--gold)]/[0.06]">
+                    <span className="text-[9.5px] uppercase tracking-[0.22em] px-2 py-[3px] rounded-full border border-[color:var(--gold)]/40 text-[color:var(--charcoal)] bg-[color:var(--gold)]/[0.06]">
                       Optional
                     </span>
                   )}

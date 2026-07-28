@@ -428,7 +428,7 @@ export function MapAwakens({
           {/* Top-left chip — duplicates EditorialMap eyebrow on mobile,
               so hidden ≤sm to free vertical space above the map. */}
           <div
-            className="hidden sm:inline-flex absolute left-3 top-3 z-10 items-center gap-1.5 px-2.5 py-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+            className="hidden sm:inline-flex absolute left-3 top-3 z-10 items-center gap-1.5 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
             style={{
               background: "color-mix(in oklab, var(--ivory) 88%, transparent)",
               color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
@@ -442,7 +442,7 @@ export function MapAwakens({
           {/* Bottom-right footnote — clarifies status without alarming */}
           {revealed >= journey.moments.length ? (
             <div
-              className="absolute right-3 bottom-3 z-10 px-2.5 py-1 text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+              className="absolute right-3 bottom-3 z-10 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
               style={{
                 background: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
                 color: "var(--ivory)",

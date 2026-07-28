@@ -183,7 +183,7 @@ export function AddStopSheet({
                         <p className="text-[13.5px] font-semibold leading-tight text-[color:var(--charcoal)]">
                           {s.label}
                           {suggestedSet.has(s.key) && (
-                            <span className="ml-2 inline-flex items-center rounded-full bg-[color:var(--gold)]/15 px-1.5 py-0.5 text-[10.5px] uppercase tracking-[0.18em] font-bold text-[color:var(--charcoal)] align-middle">
+                            <span className="ml-2 inline-flex items-center rounded-full bg-[color:var(--gold)]/15 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.18em] font-bold text-[color:var(--charcoal)] align-middle">
                               Suggested
                             </span>
                           )}

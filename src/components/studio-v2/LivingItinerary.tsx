@@ -413,7 +413,7 @@ export function LivingItinerary({
           {/* Chapter II — marks the shift from intent-gathering into the
               living journey. Subtle, surfaces only here (Phase 5+). */}
           <p
-            className="text-[10.5px] uppercase tracking-[0.42em]"
+            className="text-[9.5px] uppercase tracking-[0.42em]"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 42%, transparent)",
               fontWeight: 600,

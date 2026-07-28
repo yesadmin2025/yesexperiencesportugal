@@ -859,21 +859,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <CurrencyProvider>
       <div className="min-h-screen flex flex-col">
-        {/* Keyboard users land here first: one Tab reaches the page content
-            without walking the whole navigation. Visually hidden until
-            focused (see `.skip-link` in styles.css). */}
-        <a href="#main-content" className="skip-link">
-          Skip to main content
-        </a>
         <Navbar />
-        <main
-          id="main-content"
-          tabIndex={-1}
-          className="flex-1 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-0"
-        >
-          {children}
-        </main>
-
+        <main className="flex-1 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
         <Footer />
         <FloatingActions />
         {/* WhatsAppFab intentionally not rendered — WhatsAppSupportButton (in __root.tsx)

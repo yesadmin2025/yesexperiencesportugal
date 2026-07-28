@@ -142,7 +142,7 @@ export function RunningInvestmentRibbon({ state, hidden = false }: RunningInvest
         </div>
         {voice ? (
           <span
-            className="text-[10.5px] uppercase tracking-[0.26em] font-semibold inline-flex items-center gap-1.5 truncate"
+            className="text-[9.5px] uppercase tracking-[0.26em] font-semibold inline-flex items-center gap-1.5 truncate"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, var(--ivory))" }}
             data-testid="studio-v3-region-voice"
           >

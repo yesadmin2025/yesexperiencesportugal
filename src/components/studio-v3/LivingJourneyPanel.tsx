@@ -366,7 +366,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
             aria-hidden
           />
           <span
-            className="text-[10.5px] uppercase tracking-[0.24em] font-bold leading-none whitespace-nowrap"
+            className="text-[9px] uppercase tracking-[0.24em] font-bold leading-none whitespace-nowrap"
             style={{ color: "var(--gold)" }}
           >
             Your journey · forming
@@ -584,7 +584,7 @@ function JourneyDraftDrawer({
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p
-                className="text-[10.5px] uppercase tracking-[0.28em] font-bold"
+                className="text-[9.5px] uppercase tracking-[0.28em] font-bold"
                 style={{ color: "var(--gold)" }}
               >
                 Your journey draft
@@ -617,7 +617,7 @@ function JourneyDraftDrawer({
           {storyText || storyLoading ? (
             <div className="mt-4">
               <p
-                className="text-[10.5px] uppercase tracking-[0.26em] font-bold"
+                className="text-[9px] uppercase tracking-[0.26em] font-bold"
                 style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
               >
                 {storySource === "ai" ? "Composed for you" : "A quiet read"}
@@ -691,14 +691,14 @@ function JourneyDraftDrawer({
             >
               <div className="flex items-center justify-between gap-2">
                 <p
-                  className="text-[10.5px] uppercase tracking-[0.26em] font-bold"
+                  className="text-[9.5px] uppercase tracking-[0.26em] font-bold"
                   style={{ color: "var(--gold)" }}
                 >
                   <span aria-hidden>—</span> Scope so far
                 </p>
                 {scopeRegion ? (
                   <p
-                    className="text-[10.5px] uppercase tracking-[0.26em] font-bold"
+                    className="text-[9px] uppercase tracking-[0.26em] font-bold"
                     style={{ color: "color-mix(in oklab, var(--teal) 88%, transparent)" }}
                     data-testid="studio-v3-region-voice"
                   >
@@ -755,7 +755,7 @@ function JourneyDraftDrawer({
               {scopePriceFromEur ? (
                 <p className="mt-2 text-[12px] tabular-nums" style={{ color: "var(--charcoal)" }}>
                   <span
-                    className="mr-1.5 text-[10.5px] uppercase tracking-[0.24em] font-bold"
+                    className="mr-1.5 text-[9px] uppercase tracking-[0.24em] font-bold"
                     style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
                   >
                     Experience Investment
@@ -841,7 +841,7 @@ function JourneyDraftDrawer({
                   style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
                 >
                   <span
-                    className="mr-1.5 text-[10.5px] uppercase tracking-[0.22em] font-bold"
+                    className="mr-1.5 text-[9.5px] uppercase tracking-[0.22em] font-bold"
                     style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
                   >
                     Route
@@ -852,7 +852,7 @@ function JourneyDraftDrawer({
               {moments.length > 0 ? (
                 <div className="mt-3">
                   <p
-                    className="text-[10.5px] uppercase tracking-[0.22em] font-bold"
+                    className="text-[9.5px] uppercase tracking-[0.22em] font-bold"
                     style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
                   >
                     Moments so far
@@ -911,7 +911,7 @@ function JourneyDraftDrawer({
               />
 
               <p
-                className="absolute left-3 top-2 text-[10.5px] uppercase tracking-[0.26em] font-bold pointer-events-none"
+                className="absolute left-3 top-2 text-[9px] uppercase tracking-[0.26em] font-bold pointer-events-none"
                 style={{ color: "color-mix(in oklab, var(--gold) 90%, white)" }}
               >
                 {activePins < totalPins ? "Drawing your route…" : "Your route"}
@@ -926,7 +926,7 @@ function JourneyDraftDrawer({
               style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
             >
               <span
-                className="mr-1.5 text-[10.5px] uppercase tracking-[0.22em] font-bold"
+                className="mr-1.5 text-[9.5px] uppercase tracking-[0.22em] font-bold"
                 style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
               >
                 Investment

@@ -106,7 +106,7 @@ export function PhaseShell({
               {progress.phrase}
             </p>
             <p
-              className="shrink-0 text-[10.5px] uppercase tracking-[0.26em] font-semibold"
+              className="shrink-0 text-[9.5px] uppercase tracking-[0.26em] font-semibold"
               style={{ color: "var(--gold)" }}
             >
               — {Math.round(progress.percent)}% shaped
@@ -120,7 +120,7 @@ export function PhaseShell({
         </div>
       ) : step && totalSteps ? (
         <div
-          className="hidden sm:block absolute left-1/2 top-5 -translate-x-1/2 text-[10.5px] uppercase tracking-[0.3em] font-semibold select-none"
+          className="hidden sm:block absolute left-1/2 top-5 -translate-x-1/2 text-[9.5px] uppercase tracking-[0.3em] font-semibold select-none"
           style={{ color: "color-mix(in oklab, var(--charcoal) 30%, transparent)" }}
           aria-label={`Step ${step} of ${totalSteps}`}
         >

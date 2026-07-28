@@ -81,7 +81,7 @@ export function StudioBuilderChrome({
           </span>
           <span className="hidden sm:inline-flex flex-col leading-tight">
             <span
-              className="text-[10.5px] uppercase tracking-[0.28em]"
+              className="text-[9.5px] uppercase tracking-[0.28em]"
               style={{
                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 fontWeight: 600,
@@ -145,7 +145,7 @@ export function StudioBuilderChrome({
             }}
           >
             <span
-              className="text-[10.5px] uppercase tracking-[0.28em]"
+              className="text-[9.5px] uppercase tracking-[0.28em]"
               style={{
                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 fontWeight: 600,

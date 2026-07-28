@@ -98,7 +98,7 @@ export function SignatureRouteMapFallback({ tour, reason }: Props) {
           </g>
         ))}
       </svg>
-      <div className="absolute bottom-2 right-2 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] bg-[color:var(--ivory)]/90 px-2 py-1 rounded border border-[color:var(--gold)]/30">
+      <div className="absolute bottom-2 right-2 text-[9.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] bg-[color:var(--ivory)]/90 px-2 py-1 rounded border border-[color:var(--gold)]/30">
         Offline preview map{reason ? ` · ${reason}` : ""}
       </div>
     </div>

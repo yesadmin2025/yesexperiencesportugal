@@ -23,9 +23,8 @@ export const Route = createFileRoute("/sitemap.xml")({
         // because they are blocked by robots.txt and should not be indexed. These include:
         // /admin/*, /auth, /booking-confirmed, /brand-qa, /builder, /checkout, /e2e, /email,
         // /hero-verify, /lovable, /preview-check, /qa, /s/, /i/, /studio-drift, /studio-v2,
-        // /typography-audit, /unsubscribe. /reviews (thin widget) is also excluded.
-        // (portugal-travel-designer is a real 200 page and IS emitted below —
-        // note kept accurate: it is NOT a redirect, do not remove it.)
+        // /typography-audit, /unsubscribe. /reviews (thin widget) and
+        // /portugal-travel-designer (301 → /multi-day) are also excluded.
         // Static entries omit <lastmod> on purpose — a rolling "today" trains
         // crawlers to ignore the field. Dynamic DB posts keep their real
         // published_at.

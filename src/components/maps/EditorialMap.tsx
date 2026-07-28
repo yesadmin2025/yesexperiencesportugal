@@ -327,7 +327,7 @@ export function EditorialMap({
         </span>
         {meta ? (
           <span
-            className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+            className="text-[9.5px] uppercase tracking-[0.28em] font-semibold"
             style={{ color: metaColor }}
           >
             {meta}
@@ -392,7 +392,7 @@ export function EditorialMap({
             return (
               <li
                 key={`leg-${i}`}
-                className="absolute text-[10.5px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
+                className="absolute text-[9px] uppercase tracking-[0.22em] font-semibold whitespace-nowrap"
                 style={{
                   left: `${xPct}%`,
                   top: `${yPct}%`,
@@ -423,7 +423,7 @@ export function EditorialMap({
           {caption ? (
             <div>
               <p
-                className="text-[10.5px] uppercase tracking-[0.32em] font-semibold"
+                className="text-[9.5px] uppercase tracking-[0.32em] font-semibold"
                 style={{ color: eyebrowColor }}
               >
                 Today's draft
@@ -440,7 +440,7 @@ export function EditorialMap({
           )}
           {footerRight ? (
             <span
-              className="text-[10.5px] uppercase tracking-[0.28em] font-semibold whitespace-nowrap"
+              className="text-[9.5px] uppercase tracking-[0.28em] font-semibold whitespace-nowrap"
               style={{ color: metaColor }}
             >
               {footerRight}
