@@ -866,7 +866,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 157,
     theme: "Coastal",
     blurb:
-      "Cross the Sado by ferry to the Roman ruins of Tróia, then long Comporta beaches, rice fields and a slow Alentejo lunch.",
+      "Cross the Sado by ferry to the Roman ruins of Tróia, then Comporta's stilt pier, Atlantic beaches and a Herdade da Comporta tasting.",
     intro:
       "A quiet day in the Alentejo most visitors miss. We board the ferry across the Sado to Tróia's Roman ruins, then drift down to Comporta — long Atlantic beaches, rice paddies, white-and-blue villages — and finish with a slow lunch in the country.",
     fitsBest: "Couples · slow travelers · style-led explorers",
