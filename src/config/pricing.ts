@@ -63,16 +63,40 @@ export const TAILOR_LUNCH_SUPPLEMENT_EUR = 35;
 export const TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR = 20;
 
 /**
- * Final Tailor per-pax price: the reduced base plus flat supplements.
+ * "Remove the included lunch" — Setúbal & Arrábida Wine ONLY.
+ * A fixed per-person credit. It is NOT a negative "Add lunch" supplement
+ * and NOT an itinerary-stop removal: it never counts towards the −15%
+ * removal cap, is never scaled by the percentage reduction, is applied
+ * after the 70% operational floor, and never unlocks the 4th winery.
+ */
+export const TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR = 15;
+
+/** Signatures where the canonical product includes lunch and it may be removed. */
+export const TAILOR_LUNCH_REMOVAL_ELIGIBLE: ReadonlySet<string> = new Set([
+  "arrabida-wine-allinclusive",
+]);
+
+/** Flat per-person credit for removing the included lunch (0 when not eligible). */
+export function lunchRemovalDiscountEur(tourId: string, lunchRemoved: boolean): number {
+  return lunchRemoved === true && TAILOR_LUNCH_REMOVAL_ELIGIBLE.has(tourId)
+    ? TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR
+    : 0;
+}
+
+/**
+ * Final Tailor per-pax price: the reduced base, plus flat supplements,
+ * minus the flat lunch-removal credit.
  * This is the exact amount shown as "Final price" and charged by Stripe.
  */
 export function tailorFinalPerPax(
   directEur: number,
   principalsRemoved: number,
   supplementsEur = 0,
+  lunchRemovalEur = 0,
 ): number {
   const base = tailorAdjustedPerPax(directEur, principalsRemoved);
   const extra = Number.isFinite(supplementsEur) ? Math.max(0, Math.round(supplementsEur)) : 0;
-  return base + extra;
+  const credit = Number.isFinite(lunchRemovalEur) ? Math.max(0, Math.round(lunchRemovalEur)) : 0;
+  return Math.max(0, base + extra - credit);
 }
 

@@ -54,6 +54,9 @@ interface Body {
   tailorLunchAdded?: boolean;
   /** Tailor: wineries selected beyond the Signature baseline (+€20pp each). */
   tailorExtraWineries?: number;
+  /** Tailor: guest removed the included lunch (−€15pp, Arrábida Wine only).
+   *  Boolean intent only — the euro amount is always derived server-side. */
+  tailorLunchRemoved?: boolean;
   /** Which surface initiated checkout. Drives copy in Stripe Checkout. */
   flow?: "studio" | "signature" | "tailor";
 
@@ -80,7 +83,9 @@ interface Body {
 import {
   AGE_BAND_PCT,
   ageBand,
+  serverLunchRemovalEur,
   serverTailorSupplementsEur,
+  TAILOR_LUNCH_REMOVAL_ELIGIBLE,
   tailorFinalPerPax,
   type AgeBand,
 } from "../_shared/pricing.ts";
@@ -224,8 +229,9 @@ Deno.serve(async (req) => {
 
     // Tailor flow only: apply SSOT reduction based on principal stops the
     // guest removed, then add the authorized flat supplements (add lunch,
-    // extra wineries). Supplements are re-derived server-side from the
-    // per-Signature entitlement tables — never taken as a euro amount.
+    // extra wineries) and subtract the flat lunch-removal credit.
+    // Every euro amount is re-derived server-side from the per-Signature
+    // entitlement tables — never taken from the client.
     const isTailorFlow = (body.flow ?? (body.tailored ? "tailor" : "signature")) === "tailor";
     const principalsRemoved = isTailorFlow
       ? Math.min(8, Math.max(0, Number(body.principalsRemoved ?? 0) | 0))
@@ -237,8 +243,31 @@ Deno.serve(async (req) => {
           Number(body.tailorExtraWineries ?? 0),
         )
       : 0;
+
+    // ── Lunch removal (Arrábida Wine only) ──────────────────────────
+    // Strict validation: boolean-only, tailor flow only, eligible product
+    // only. The €15 comes from the server table, never from the payload.
+    if (body.tailorLunchRemoved !== undefined && typeof body.tailorLunchRemoved !== "boolean") {
+      return jsonError("Invalid tailorLunchRemoved: must be a boolean", 400);
+    }
+    const lunchRemoved = body.tailorLunchRemoved === true;
+    if (lunchRemoved && !isTailorFlow) {
+      return jsonError("Lunch removal is only available in the Tailor flow", 400);
+    }
+    if (lunchRemoved && !TAILOR_LUNCH_REMOVAL_ELIGIBLE.has(body.tourId)) {
+      return jsonError(`Lunch removal is not available for ${body.tourId}`, 400);
+    }
+    const lunchRemovalCredit = isTailorFlow
+      ? serverLunchRemovalEur(body.tourId, lunchRemoved)
+      : 0;
+
     const eurPerPax = isTailorFlow
-      ? tailorFinalPerPax(resolvedPerPax, principalsRemoved, tailorSupplements)
+      ? tailorFinalPerPax(
+          resolvedPerPax,
+          principalsRemoved,
+          tailorSupplements,
+          lunchRemovalCredit,
+        )
       : resolvedPerPax;
 
 
@@ -289,6 +318,9 @@ Deno.serve(async (req) => {
     const includesLine = clientIncluded
       ? `Includes: ${clientIncluded.slice(0, 4).join(", ")}`
       : null;
+    const lunchRemovedLine = lunchRemovalCredit > 0
+      ? `Included lunch removed — €${lunchRemovalCredit} per person credited`
+      : null;
     const tailoredNote = isTailored
       ? "Tailored adjustments confirmed by our team within 2 hours after payment."
       : null;
@@ -296,6 +328,7 @@ Deno.serve(async (req) => {
     const description = [
       guestsLine + " · Hotel pickup included",
       includesLine,
+      lunchRemovedLine,
       tailoredNote,
     ]
       .filter(Boolean)
@@ -433,6 +466,8 @@ Deno.serve(async (req) => {
         journey_revision: (body.journeyRevision ?? "").slice(0, 80),
         stops: (body.stopLabels ?? []).slice(0, 8).join("|").slice(0, 480),
         tailored: body.tailored ? "1" : "0",
+        tailor_lunch_removed: lunchRemovalCredit > 0 ? "1" : "0",
+        tailor_lunch_removal_eur_pp: String(lunchRemovalCredit),
         add_ons: JSON.stringify(
           validatedAddOns.map((a) => ({ id: a.id, label: a.label, priceEur: a.priceEur })),
         ).slice(0, 480),

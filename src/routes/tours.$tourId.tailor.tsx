@@ -36,8 +36,16 @@ import { DWELL_MINIMUM_MIN, evaluateDay, type FeasibilityStop } from "@/lib/feas
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { tailorAdjustedPerPax, tailorFinalPerPax } from "@/config/pricing";
-import { canSelectWineries, tailorRules, tailorSupplementsEur } from "@/data/tailorRules";
-import { TAILOR_LUNCH_SUPPLEMENT_EUR } from "@/config/pricing";
+import {
+  canSelectWineries,
+  lunchRemovalEur,
+  tailorRules,
+  tailorSupplementsEur,
+} from "@/data/tailorRules";
+import {
+  TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR,
+  TAILOR_LUNCH_SUPPLEMENT_EUR,
+} from "@/config/pricing";
 
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION_SHORT } from "@/config/business-nap";
@@ -471,6 +479,12 @@ function TailorPage() {
   }, [tour, guests, tierOverrides]);
 
   const [lunchAdded, setLunchAdded] = useState(false);
+  /**
+   * Arrábida Wine only: the canonical product INCLUDES lunch, so the
+   * default is `false` (lunch kept). Removing it is a flat −€15 pp credit
+   * — never a −5% stop removal, never a negative supplement.
+   */
+  const [lunchRemoved, setLunchRemoved] = useState(false);
 
   const principalsRemoved = useMemo(
     () => (blueprint ? skippedCore.size : skipped.size),
@@ -509,9 +523,21 @@ function TailorPage() {
     [basePerPax, principalsRemoved],
   );
 
+  /** Flat lunch-removal credit (Arrábida Wine only). Outside cap + floor. */
+  const lunchRemovalPerPax = useMemo(
+    () => lunchRemovalEur(tour.id, lunchRemoved),
+    [tour.id, lunchRemoved],
+  );
+
   const estimatedPrice = useMemo(
-    () => tailorFinalPerPax(basePerPax, principalsRemoved, supplementsPerPax),
-    [basePerPax, principalsRemoved, supplementsPerPax],
+    () =>
+      tailorFinalPerPax(
+        basePerPax,
+        principalsRemoved,
+        supplementsPerPax,
+        lunchRemovalPerPax,
+      ),
+    [basePerPax, principalsRemoved, supplementsPerPax, lunchRemovalPerPax],
   );
 
   const savingsEur = Math.max(0, basePerPax - reducedPerPax);
@@ -704,6 +730,10 @@ function TailorPage() {
           tailorExtraWineries: rules.wineries
             ? Math.max(0, wineriesSelected - rules.wineries.included)
             : 0,
+          // Boolean intent only — the server derives the €15 itself.
+          tailorLunchRemoved: rules.allowRemoveLunch === true && lunchRemoved,
+
+
 
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
           environment: getStripeEnvironment(),
@@ -1590,6 +1620,47 @@ function TailorPage() {
                     </button>
                   )}
 
+                  {/* Remove the INCLUDED lunch — Arrábida Wine only.
+                      Rendered outside the stop list on purpose: this is a
+                      flat −€15 pp credit, not a −5% stop removal, and it
+                      never unlocks the 4th winery. */}
+                  {rules.allowRemoveLunch && (
+                    <button
+                      type="button"
+                      onClick={() => setLunchRemoved((v) => !v)}
+                      aria-pressed={lunchRemoved}
+                      data-testid="tailor-remove-lunch"
+                      className={[
+                        "w-full flex items-center justify-between gap-3 border px-3 py-2.5 text-left transition-colors min-h-[52px]",
+                        lunchRemoved
+                          ? "border-[color:var(--teal)] bg-[color:var(--teal)]/10"
+                          : "border-[color:var(--border)]",
+                      ].join(" ")}
+                    >
+                      <span className="flex flex-col">
+                        <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
+                          {lunchRemoved ? "Restore included lunch" : "Remove included lunch"}
+                        </span>
+                        <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
+                          {lunchRemoved
+                            ? "The day runs without the seated lunch."
+                            : (rules.lunchIncludedNote ??
+                              "A seated lunch is included in this Signature.")}
+                        </span>
+                      </span>
+                      <span className="text-[12px] tabular-nums text-[color:var(--teal)] whitespace-nowrap">
+                        −
+                        <PriceEur
+                          amountEur={TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR}
+                          role="per-person"
+                        />{" "}
+                        pp
+                      </span>
+                    </button>
+                  )}
+
+
+
 
                   {/* Truthful per-person + party-total split. "Indicative
                       total / adult" was misread as a party total; use the
@@ -1627,6 +1698,20 @@ function TailorPage() {
                       <p className="text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
                         Adjusted from <PriceEur amountEur={basePerPax} role="per-person" /> —{" "}
                         {principalsRemoved} stop{principalsRemoved === 1 ? "" : "s"} removed.
+                      </p>
+                    )}
+                    {lunchRemovalPerPax > 0 && (
+                      <p
+                        data-testid="tailor-lunch-removal-line"
+                        className="text-[10.5px] leading-snug text-[color:var(--teal)]"
+                      >
+                        Included lunch removed — −
+                        <PriceEur amountEur={lunchRemovalPerPax} role="per-person" /> pp (
+                        <PriceEur
+                          amountEur={lunchRemovalPerPax * guests}
+                          role="party-total"
+                        />{" "}
+                        for your party).
                       </p>
                     )}
                     <div className="flex items-baseline justify-between">
@@ -1746,6 +1831,15 @@ function TailorPage() {
             minors: minorAges.length,
             journeySubtotalEur: j.totalEur,
             addOnsEur: 0,
+            adjustments:
+              lunchRemovalPerPax > 0
+                ? [
+                    {
+                      label: "Included lunch removed",
+                      amountEur: -lunchRemovalPerPax * (adults + minorAges.length),
+                    },
+                  ]
+                : undefined,
           };
         }}
 
