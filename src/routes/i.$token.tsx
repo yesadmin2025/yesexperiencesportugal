@@ -288,7 +288,7 @@ function Stat({
 }) {
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-3 py-3">
-      <p className="text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-muted)]">
+      <p className="text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-muted)]">
         {label}
       </p>
       <p

@@ -826,7 +826,7 @@ export function StudioV3SignatureMap({
                   key={`drive-${i}`}
                   aria-hidden
                   data-selected={isSel || undefined}
-                  className="pointer-events-none absolute text-[9px] font-semibold tracking-[0.12em] px-1.5 py-0.5 rounded-sm"
+                  className="pointer-events-none absolute text-[10.5px] font-semibold tracking-[0.12em] px-1.5 py-0.5 rounded-sm"
                   style={{
                     left: `${xPct}%`,
                     top: `${yPct}%`,
@@ -871,7 +871,7 @@ export function StudioV3SignatureMap({
               key={`dwell-${i}`}
               aria-hidden
               data-selected={isSel || undefined}
-              className="pointer-events-none absolute text-[9px] font-semibold tracking-[0.14em] px-1.5 py-0.5 rounded-sm"
+              className="pointer-events-none absolute text-[10.5px] font-semibold tracking-[0.14em] px-1.5 py-0.5 rounded-sm"
               style={{
                 left: `${xPct}%`,
                 top: `${yPct}%`,
@@ -932,7 +932,7 @@ export function StudioV3SignatureMap({
         >
           {originLabel ? (
             <span
-              className="inline-flex items-center gap-1.5 text-[9.5px] uppercase tracking-[0.26em] font-semibold truncate"
+              className="inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.26em] font-semibold truncate"
               style={{ color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))" }}
             >
               <span
@@ -947,14 +947,14 @@ export function StudioV3SignatureMap({
           )}
           {paceLabel ? (
             <span
-              className="text-[9.5px] uppercase tracking-[0.26em] font-semibold"
+              className="text-[10.5px] uppercase tracking-[0.26em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--ivory) 82%, transparent)" }}
             >
               Pace · {paceLabel}
             </span>
           ) : shown.length > 0 ? (
             <span
-              className="text-[9.5px] uppercase tracking-[0.26em] font-semibold"
+              className="text-[10.5px] uppercase tracking-[0.26em] font-semibold"
               style={{ color: "color-mix(in oklab, var(--ivory) 75%, transparent)" }}
             >
               {shown.length} stop{shown.length === 1 ? "" : "s"}

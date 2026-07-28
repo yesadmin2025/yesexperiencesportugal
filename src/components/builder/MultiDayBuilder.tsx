@@ -688,7 +688,7 @@ export function MultiDayBuilder({
                     : "border-[color:var(--charcoal)]/12 hover:border-[color:var(--charcoal)]/30 bg-[color:var(--ivory)]",
                 ].join(" ")}
               >
-                <span className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]">
+                <span className="text-[10.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--charcoal)]">
                   Day {idx + 1}
                 </span>
                 <span className="mt-0.5 text-[12px] font-semibold text-[color:var(--charcoal)] tabular-nums">
@@ -730,7 +730,7 @@ export function MultiDayBuilder({
               />
             </Suspense>
             {/* Map legend */}
-            <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[2px] bg-[color:var(--ivory)]/95 px-3 py-2 text-[9.5px] sm:text-[10px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]/75 backdrop-blur shadow-sm">
+            <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[2px] bg-[color:var(--ivory)]/95 px-3 py-2 text-[10.5px] sm:text-[10px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]/75 backdrop-blur shadow-sm">
               <span className="inline-flex items-center gap-1.5">
                 <span className="inline-block h-2.5 w-2.5 rounded-full bg-[color:var(--teal)]" /> In
                 your day
@@ -1012,7 +1012,7 @@ export function MultiDayBuilder({
         {state.days.length > 0 && (
           <div className="mt-6 grid grid-cols-3 gap-3 rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--sand)]/40 p-4">
             <div>
-              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)]">
+              <p className="text-[10.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)]">
                 Days
               </p>
               <p className="serif mt-1 text-[1.25rem] font-semibold tabular-nums">
@@ -1020,7 +1020,7 @@ export function MultiDayBuilder({
               </p>
             </div>
             <div>
-              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)]">
+              <p className="text-[10.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)]">
                 Total time
               </p>
               <p className="serif mt-1 text-[1.25rem] font-semibold tabular-nums">
@@ -1028,7 +1028,7 @@ export function MultiDayBuilder({
               </p>
             </div>
             <div>
-              <p className="text-[9.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)]">
+              <p className="text-[10.5px] uppercase tracking-[0.24em] font-bold text-[color:var(--text-muted)]">
                 Per person
               </p>
               <p className="serif mt-1 text-[1.25rem] font-semibold tabular-nums">

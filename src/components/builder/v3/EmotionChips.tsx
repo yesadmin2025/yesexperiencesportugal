@@ -177,7 +177,7 @@ export function EmotionChips({ t, tone = "light", active, onPick }: Props) {
         className="animate-in fade-in slide-in-from-bottom-2 duration-[600ms] ease-out"
       >
         <p
-          className={`text-center text-[9.5px] uppercase tracking-[0.32em] font-semibold mb-1 ${stepColor}`}
+          className={`text-center text-[10.5px] uppercase tracking-[0.32em] font-semibold mb-1 ${stepColor}`}
         >
           {stepLine}
         </p>

@@ -3660,7 +3660,7 @@ export function StoryboardHandoff({
                 }}
               />
               <p
-                className="absolute left-4 bottom-3 text-[9.5px] uppercase tracking-[0.3em] font-semibold"
+                className="absolute left-4 bottom-3 text-[10.5px] uppercase tracking-[0.3em] font-semibold"
                 style={{ color: "color-mix(in oklab, var(--ivory) 92%, transparent)" }}
               >
                 <span style={{ color: "var(--gold)" }}>—</span> Composing your Signature
@@ -4593,7 +4593,7 @@ function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbac
         <>
           {/* Quiet "Route forming" eyebrow, top-left of the canvas. */}
           <p
-            className="absolute left-5 top-5 text-[9.5px] uppercase tracking-[0.28em] font-semibold"
+            className="absolute left-5 top-5 text-[10.5px] uppercase tracking-[0.28em] font-semibold"
             style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
           >
             Route forming
@@ -4800,7 +4800,7 @@ function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbac
       {reaction.kind === "investment" ? (
         <>
           <p
-            className="absolute left-5 top-5 text-[9.5px] uppercase tracking-[0.28em] font-semibold"
+            className="absolute left-5 top-5 text-[10.5px] uppercase tracking-[0.28em] font-semibold"
             style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
           >
             The route can take shape

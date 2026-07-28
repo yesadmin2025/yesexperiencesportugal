@@ -115,7 +115,7 @@ export function StudioLivePreview() {
     >
       {/* ── Header strip — stepper + live status ─────────────────── */}
       <div className="relative z-20 flex items-center justify-between gap-3 border-b border-[color:var(--gold)]/15 bg-[color:var(--charcoal-deep)]/90 px-4 md:px-5 py-2.5 md:py-3 backdrop-blur-[2px]">
-        <span className="inline-flex items-center gap-2 text-[9.5px] md:text-[10px] uppercase tracking-[0.28em] text-[color:var(--charcoal)] tabular-nums">
+        <span className="inline-flex items-center gap-2 text-[10.5px] md:text-[10px] uppercase tracking-[0.28em] text-[color:var(--charcoal)] tabular-nums">
           <span className="relative inline-flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full rounded-full bg-[color:var(--gold)] opacity-70 animate-ping" />
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[color:var(--gold)]" />
@@ -291,7 +291,7 @@ export function StudioLivePreview() {
                 <span className="block text-[10px] md:text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
                   {s.label}
                 </span>
-                <span className="mt-0.5 block text-[9px] md:text-[10px] tracking-[0.04em] text-[color:var(--ivory)]/75 [text-shadow:0_1px_3px_rgba(0,0,0,0.55)] truncate">
+                <span className="mt-0.5 block text-[10.5px] md:text-[10px] tracking-[0.04em] text-[color:var(--ivory)]/75 [text-shadow:0_1px_3px_rgba(0,0,0,0.55)] truncate">
                   {s.caption}
                 </span>
               </li>
@@ -321,7 +321,7 @@ export function StudioLivePreview() {
           <Sparkles size={12} aria-hidden="true" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)]">
+          <span className="block text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)]">
             Private cellar available
           </span>
           <span className="mt-0.5 block truncate text-[12px] md:text-[12.5px] text-[color:var(--ivory)]/90">
@@ -348,7 +348,7 @@ export function StudioLivePreview() {
       <div className="relative z-10 border-t border-[color:var(--gold)]/15 bg-[color:var(--ivory)] px-4 md:px-5 py-3.5">
         <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-3">
           <div className="min-w-0">
-            <span className="block text-[9.5px] uppercase tracking-[0.26em] font-semibold text-[color:var(--charcoal-soft)]">
+            <span className="block text-[10.5px] uppercase tracking-[0.26em] font-semibold text-[color:var(--charcoal-soft)]">
               Your day so far —
             </span>
             <div className="mt-1 flex items-baseline gap-1.5">
@@ -395,7 +395,7 @@ function Chip({ icon, label, value }: { icon: React.ReactNode; label: string; va
       className="slv-focusable inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/30 bg-[color:var(--charcoal-deep)]/60 px-2.5 py-1 text-[color:var(--ivory)]"
     >
       <span className="text-[color:var(--gold)]">{icon}</span>
-      <span className="text-[9px] uppercase tracking-[0.26em] text-[color:var(--ivory)]/65">
+      <span className="text-[10.5px] uppercase tracking-[0.26em] text-[color:var(--ivory)]/65">
         {label}
       </span>
       <span className="text-[11px] font-semibold tracking-[0.01em] text-[color:var(--ivory)]">

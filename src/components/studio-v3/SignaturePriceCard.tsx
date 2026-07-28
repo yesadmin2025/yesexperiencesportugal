@@ -960,7 +960,7 @@ export function SignaturePriceCard({
                         </span>
                         {!fits ? (
                           <span
-                            className="mt-1 inline-block text-[9.5px] uppercase tracking-[0.2em] font-semibold"
+                            className="mt-1 inline-block text-[10.5px] uppercase tracking-[0.2em] font-semibold"
                             style={{
                               color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                             }}
@@ -976,13 +976,13 @@ export function SignaturePriceCard({
                       >
                         <span className="whitespace-nowrap">
                           +€{line.perUnit}
-                          <span className="ml-1 text-[9.5px] font-semibold opacity-60 lowercase tracking-normal">
+                          <span className="ml-1 text-[10.5px] font-semibold opacity-60 lowercase tracking-normal">
                             {line.unitLabel.replace(/^per\s+/i, "/ ")}
                           </span>
                         </span>
                         {a.durationMinutes > 0 ? (
                           <span
-                            className="mt-0.5 text-[9.5px] uppercase tracking-[0.14em] font-semibold whitespace-nowrap"
+                            className="mt-0.5 text-[10.5px] uppercase tracking-[0.14em] font-semibold whitespace-nowrap"
                             style={{
                               color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
                             }}
@@ -1015,7 +1015,7 @@ export function SignaturePriceCard({
                   {isRefine ? "Updated price" : "Additions"}{" "}
                   <span style={{ color: "var(--gold)" }}>—</span> €
                   {totalEur}
-                  <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">
+                  <span className="ml-1 text-[10.5px] tracking-[0.18em] opacity-60">
                     total
                   </span>
                 </>
@@ -1036,7 +1036,7 @@ export function SignaturePriceCard({
             data-testid="studio-v3-add-on-lines-refine"
           >
             <p
-              className="text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
+              className="text-[10.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
               <span style={{ color: "var(--gold)" }}>—</span>
@@ -1167,7 +1167,7 @@ export function SignaturePriceCard({
             }}
           >
             <p
-              className="text-[9.5px] uppercase tracking-[0.24em] font-bold"
+              className="text-[10.5px] uppercase tracking-[0.24em] font-bold"
               style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
             >
               {INCLUDED_HEADER_REFINE}
@@ -1191,7 +1191,7 @@ export function SignaturePriceCard({
             {selectedAddOns.length > 0 ? (
               <>
                 <p
-                  className="mt-3 text-[9.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
+                  className="mt-3 text-[10.5px] uppercase tracking-[0.24em] font-bold flex items-center gap-1.5"
                   style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
                 >
                   <span style={{ color: "var(--gold)" }}>—</span>
@@ -1353,7 +1353,7 @@ export function SignaturePriceCard({
             See my signature story <ArrowRight size={14} aria-hidden />
           </button>
           <p
-            className="mt-1.5 text-center text-[9.5px] uppercase tracking-[0.22em]"
+            className="mt-1.5 text-center text-[10.5px] uppercase tracking-[0.22em]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
           >
             Nothing is booked yet · Confirm on the next step

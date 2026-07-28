@@ -53,7 +53,7 @@ export function PricePerPerson(props: PricePerPersonProps) {
   const eur = fmt;
   const showFx = currency !== "EUR";
   const chargedHint = showFx ? (
-    <span className="ml-1.5 text-[9.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]/80">
+    <span className="ml-1.5 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]/80">
       · charged in EUR
     </span>
   ) : null;
@@ -132,7 +132,7 @@ export function PricePerPerson(props: PricePerPersonProps) {
         </div>
       ) : null}
       {showFx && (
-        <p className="text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
+        <p className="text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
           Indicative {currency} · charged in EUR
         </p>
       )}

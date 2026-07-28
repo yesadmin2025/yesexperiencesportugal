@@ -91,7 +91,7 @@ export function ReviewScreen({
                   key={s.key}
                   className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)] border border-[color:var(--charcoal)]/12 px-2.5 py-1 text-[11.5px] font-semibold text-[color:var(--charcoal)] shadow-sm"
                 >
-                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[color:var(--teal)] text-[9.5px] text-[color:var(--ivory)] tabular-nums">
+                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[color:var(--teal)] text-[10.5px] text-[color:var(--ivory)] tabular-nums">
                     {i + 1}
                   </span>
                   {s.label}
@@ -305,7 +305,7 @@ function Stat({
 }) {
   return (
     <div className="rounded-[2px] border border-[color:var(--charcoal)]/12 bg-[color:var(--ivory)] px-3 py-2.5">
-      <p className="text-[9.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-muted)]">
+      <p className="text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--text-muted)]">
         {label}
       </p>
       <p

@@ -44,7 +44,7 @@ export function DayAtGlance({ chips, className, testId }: DayAtGlanceProps) {
       {chips.map((chip) => (
         <div key={chip.key} className="flex flex-col items-start">
           <span
-            className="text-[9.5px] uppercase tracking-[0.28em] font-semibold"
+            className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
             style={{ color: "var(--gold-deep, var(--gold))" }}
           >
             {chip.label}

@@ -112,7 +112,7 @@ export function StudioQualityBand({ day, profile, confidence, locale }: Props) {
     >
       <header className="mb-2.5 flex items-baseline justify-between gap-2">
         <p
-          className="text-[9.5px] uppercase tracking-[0.18em] font-bold"
+          className="text-[10.5px] uppercase tracking-[0.18em] font-bold"
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
         >
           {tt("quality.eyebrow", locale)}
