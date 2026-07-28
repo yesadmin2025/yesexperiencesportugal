@@ -8,6 +8,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Json } from "@/integrations/supabase/types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function assertAdmin(context: { supabase: any; userId: string }) {
@@ -74,7 +75,7 @@ export const getAdminBooking = createServerFn({ method: "POST" })
       .eq("id", data.id)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    if (!booking) return { booking: null, snapshot: null };
+    if (!booking) return { booking: null, snapshot: null as Json | null };
 
     // Prefer the snapshot frozen into the booking row; fall back to the
     // checkout-time draft when the webhook froze before this feature shipped.
@@ -98,5 +99,5 @@ export const getAdminBooking = createServerFn({ method: "POST" })
       }
     }
 
-    return { booking, snapshot };
+    return { booking, snapshot: (snapshot ?? null) as Json | null };
   });
