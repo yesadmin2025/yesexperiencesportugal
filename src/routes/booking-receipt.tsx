@@ -7,6 +7,7 @@ import {
   LICENSE_LABEL,
   PHONE_DISPLAY,
 } from "@/config/business-nap";
+import { tourReservationLd } from "@/lib/jsonld";
 
 interface Search {
   session_id?: string;
