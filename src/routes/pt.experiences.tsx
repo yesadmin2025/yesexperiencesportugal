@@ -114,36 +114,12 @@ function ExperiencesPage() {
             {signatureTours.map((t) => {
               const meta = VIATOR_META[t.id];
               const content = getTourContent(t.id);
-              const isGenericOrigin = (label: string) => {
-                const l = label.toLowerCase().replace(/[().]/g, " ").replace(/\s+/g, " ").trim();
-                return (
-                  l === "lisbon" ||
-                  l === "lisboa" ||
-                  l === "lisbon district" ||
-                  l.startsWith("lisbon pass by") ||
-                  l.startsWith("lisboa pass by") ||
-                  l === "ponte 25 de abril"
-                );
-              };
-              const sotStopBullets =
-                content.source === "sot"
-                  ? content.itinerary
-                      .filter((c) => !c.optional && !isGenericOrigin(c.label))
-                      .map((c) => c.label)
-                  : [];
-              const realStopBullets =
-                sotStopBullets.length > 0
-                  ? sotStopBullets
-                  : meta?.stops
-                    ? meta.stops
-                        .filter((s) => !s.passBy && !isGenericOrigin(s.name))
-                        .map((s) => s.name)
-                    : [];
-              const curatedMoments = getSignatureCardMoments(t.id);
-              const topHighlights = (
-                curatedMoments ??
-                (realStopBullets.length > 0 ? realStopBullets : content.highlights)
-              ).slice(0, 3);
+              // Bullets vêm dos "moments" curados, derivados estritamente
+              // da fonte de verdade canónica de cada tour.
+              const topHighlights = (getSignatureCardMoments(t.id) ?? content.highlights).slice(
+                0,
+                3,
+              );
               return (
                 <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
                   <Link

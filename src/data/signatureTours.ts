@@ -211,7 +211,7 @@ export const signatureTours: SignatureTour[] = [
       "You'll visit 2 or 3 of these wineries — the exact count depends on the experience you choose and same-day availability.",
     theme: "Wine",
     blurb:
-      "Two or three family wineries, Livramento market and a long traditional lunch in Azeitão — handled door to door from Lisbon.",
+      "Two selected wineries, Livramento market and a long traditional lunch in Azeitão — handled door to door from Lisbon.",
 
     intro:
       "The most-loved YES day, in one word: complete. We leave Lisbon for the Arrábida hills, walk the Livramento market, sit down for an unhurried Portuguese lunch in Azeitão and visit two or three small family wineries. An optional viewpoint at Cristo Rei or Sesimbra Castle closes the day.",
@@ -459,7 +459,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 135,
     theme: "Coastal",
     blurb:
-      "A private Arrábida day with a boat ride into the park's turquoise coves — swim, snorkel, drift and lunch by the water.",
+      "A private Arrábida day with the Sesimbra Coastal Boat Tour, Lapa de Santa Margarida and the cliffs of Cabo Espichel.",
     intro:
       "A day told by the sea. We cross into the Arrábida Natural Park and trade the coast road for a boat into its quiet coves — swim or simply drift — then lunch in Portinho with sand still on your feet before easing into Sesimbra at golden hour.",
     fitsBest: "Couples · families · active travelers",
@@ -564,7 +564,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 135,
     theme: "Heritage",
     blurb:
-      "Paint your own azulejo in a centuries-old atelier, taste local wines next door, then unwind by the sea in Sesimbra.",
+      "Paint your own azulejo in a centuries-old Azeitão atelier, taste a selected regional wine, then unwind by the sea in Sesimbra.",
     intro:
       "Five centuries of tile-making in one quiet courtyard. You meet the master, mix the cobalt blue, and paint a single azulejo that becomes yours forever. The day softens from there — a glass of local wine, then the salt and sun of Sesimbra.",
     fitsBest: "Couples · creatives · families with teens",
@@ -663,7 +663,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 101,
     theme: "Gastronomy",
     blurb:
-      "Hands-on cheese making in Azeitão, a private winery tasting next door, then sea air and seafood in Sesimbra.",
+      "Hands-on cheese making in Azeitão, a selected winery tasting nearby, then sea air and the castle above Sesimbra.",
 
     intro:
       "You won't watch — you'll work. In a small Azeitão dairy, hands deep in fresh curd, you shape the cheese that built this village's reputation. The afternoon answers with wine from the next farm and a quiet table by the sea in Sesimbra.",
@@ -758,7 +758,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 161,
     theme: "Heritage",
     blurb:
-      "Sintra's quieter palaces and forests, the wild westernmost coast, Cascais lanes and a private wine tasting.",
+      "A flexible palace selection in Sintra — one palace and a Colares wine visit, or two palaces — plus Cabo da Roca and Cascais.",
     intro:
       "Sintra without the queues. We slip into the smaller estates, walk the forest paths most visitors never find, then chase the cliffs to Cabo da Roca — the western edge of Europe — before easing into Cascais and a glass of wine in a quiet courtyard.",
     fitsBest: "Couples · culture lovers · first-timers",
@@ -866,7 +866,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 157,
     theme: "Coastal",
     blurb:
-      "Cross the Sado by ferry to the Roman ruins of Tróia, then long Comporta beaches, rice fields and a slow Alentejo lunch.",
+      "Cross the Sado by ferry to the Roman ruins of Tróia, then Comporta's stilt pier, Atlantic beaches and a Herdade da Comporta tasting.",
     intro:
       "A quiet day in the Alentejo most visitors miss. We board the ferry across the Sado to Tróia's Roman ruins, then drift down to Comporta — long Atlantic beaches, rice paddies, white-and-blue villages — and finish with a slow lunch in the country.",
     fitsBest: "Couples · slow travelers · style-led explorers",
@@ -978,7 +978,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 169,
     theme: "Wine",
     blurb:
-      "Roman temples and the Chapel of Bones in Évora, then Alentejo wineries and a slow lunch in vineyard country.",
+      "The Roman Temple and Chapel of Bones in Évora, two selected Alentejo wineries and a traditional cork-production visit.",
     intro:
       "Alentejo unwinds you. Plains of cork oaks, white-washed villages, and a city — Évora — that's quietly held two thousand years of history together. We walk it slowly, then disappear into the wineries that have been quietly making some of Portugal's best reds.",
     fitsBest: "History buffs · wine lovers · couples",
@@ -1177,7 +1177,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 135,
     theme: "Heritage",
     blurb:
-      "The Sanctuary of Fátima, the giant waves of Nazaré, the medieval lanes of Óbidos and a Ginjinha tasting.",
+      "The Sanctuary of Fátima, Nazaré's cliff viewpoint and Atlantic coast, the medieval lanes of Óbidos and a Ginjinha tasting.",
     intro:
       "Three landmarks, one perfectly composed day. Faith in Fátima, the awe of Nazaré's giant Atlantic waves, and the medieval streets of Óbidos finished off with a small ceramic cup of cherry liqueur.",
     fitsBest: "Pilgrims · couples · families",
