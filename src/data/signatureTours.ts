@@ -760,7 +760,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "A flexible palace selection in Sintra — one palace and a Colares wine visit, or two palaces — plus Cabo da Roca and Cascais.",
     intro:
-      "Sintra without the queues. We slip into the smaller estates, walk the forest paths most visitors never find, then chase the cliffs to Cabo da Roca — the western edge of Europe — before easing into Cascais and a glass of wine in a quiet courtyard.",
+      "Sintra, chosen your way: one palace visit plus a Colares wine visit, or two palace visits. From there the day heads to Azenhas do Mar, the cliffs of Cabo da Roca — the western edge of Europe — and a slow finish in Cascais.",
     fitsBest: "Couples · culture lovers · first-timers",
     pace: ["Sintra forests", "Cabo da Roca", "Cascais tasting"],
     stops: [
