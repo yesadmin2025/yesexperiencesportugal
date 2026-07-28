@@ -508,18 +508,27 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
  * ════════════════════════════════════════════════════════════ */
 function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   // Source of truth (in order of preference):
-  //   1. Tailor blueprint, projected to editorial chapters (single source)
-  //   2. Raw Viator stops (passBy excluded) — fallback when no blueprint
-  //   3. Internal tour.stops — last resort
+  //   1. Viator-verified SoT itinerary (pass-bys excluded)
+  //   2. Tailor blueprint, projected to editorial chapters
+  //   3. Raw Viator stops (passBy excluded)
+  //   4. Internal tour.stops — last resort
   type Chapter = { label: string; story?: string; optional?: boolean };
+  const sot = sotItinerary(tour.id) ?? [];
+  const fromSot = sot
+    .slice()
+    .sort((a, b) => a.order - b.order)
+    .filter((c) => c.stopType !== "pass-by")
+    .map((c) => ({ label: c.label, story: c.description, optional: c.optional }));
   const fromBlueprint = toEditorialChapters(tour.id);
   const viator = meta?.stops?.filter((s) => !s.passBy) ?? [];
   const chapters: Chapter[] =
-    fromBlueprint && fromBlueprint.length > 0
-      ? fromBlueprint.map((c) => ({ label: c.label, story: c.story, optional: c.optional }))
-      : viator.length > 0
-        ? viator.map((s) => ({ label: s.name, story: s.desc }))
-        : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
+    fromSot.length > 0
+      ? fromSot
+      : fromBlueprint && fromBlueprint.length > 0
+        ? fromBlueprint.map((c) => ({ label: c.label, story: c.story, optional: c.optional }))
+        : viator.length > 0
+          ? viator.map((s) => ({ label: s.name, story: s.desc }))
+          : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
 
   if (chapters.length === 0) return null;
 
