@@ -758,7 +758,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 161,
     theme: "Heritage",
     blurb:
-      "Sintra's quieter palaces and forests, the wild westernmost coast, Cascais lanes and a private wine tasting.",
+      "A flexible palace selection in Sintra — one palace and a Colares wine visit, or two palaces — plus Cabo da Roca and Cascais.",
     intro:
       "Sintra without the queues. We slip into the smaller estates, walk the forest paths most visitors never find, then chase the cliffs to Cabo da Roca — the western edge of Europe — before easing into Cascais and a glass of wine in a quiet courtyard.",
     fitsBest: "Couples · culture lovers · first-timers",
