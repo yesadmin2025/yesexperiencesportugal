@@ -26,52 +26,47 @@ const TITLE = "10-Day Private Portugal Tour | Luxury Itinerary by YES";
 const DESCRIPTION =
   "A private 10-day Portugal tour, composed with a human travel designer — Lisbon, Sintra, Arrábida coast and Alentejo wine country. Real experiences, real pace.";
 
-const tripLd = {
-  "@context": "https://schema.org",
-  "@type": "TouristTrip",
-  "@id": `${PAGE_URL}#trip`,
+const tripLd = tripItineraryLd({
+  path: PAGE_PATH,
   name: "10-Day Private Portugal Tour",
   description: DESCRIPTION,
-  url: PAGE_URL,
-  mainEntityOfPage: PAGE_URL,
   touristType: "Luxury private travellers · couples · small families",
-  itinerary: {
-    "@type": "ItemList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Lisbon — arrival, quiet neighbourhoods, hidden Fado",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Sintra — palaces, Cabo da Roca, Atlantic coast",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Arrábida & Sesimbra — coastal drive, hidden cove, fresh fish lunch",
-      },
-      {
-        "@type": "ListItem",
-        position: 4,
-        name: "Azeitão — small family wineries and cheese producers",
-      },
-      {
-        "@type": "ListItem",
-        position: 5,
-        name: "Évora & the Alentejo — UNESCO old town, cork country, long lunch",
-      },
-      {
-        "@type": "ListItem",
-        position: 6,
-        name: "Return to Lisbon — private farewell dinner",
-      },
-    ],
-  },
-  provider: { "@id": `${SITE_URL}/#organization` },
-};
+  days: [
+    {
+      name: "Lisbon — arrival, quiet neighbourhoods, hidden Fado",
+      description:
+        "Arrival day in Lisbon at a slow pace: quiet neighbourhoods away from the crowds and an intimate Fado evening.",
+    },
+    {
+      name: "Sintra — palaces, Cabo da Roca, Atlantic coast",
+      description:
+        "Sintra's palaces and forest, then the cliffs of Cabo da Roca and the Atlantic coastline back toward Lisbon.",
+      path: "/tours/sintra-cascais",
+    },
+    {
+      name: "Arrábida & Sesimbra — coastal drive, hidden cove, fresh fish lunch",
+      description:
+        "The Arrábida Natural Park coastal road, a hidden cove and a fresh fish lunch in the fishing town of Sesimbra.",
+      path: "/tours/arrabida-boat",
+    },
+    {
+      name: "Azeitão — small family wineries and cheese producers",
+      description:
+        "Family wineries and cheese producers in Azeitão, at the foot of the Arrábida hills.",
+      path: "/tours/arrabida-wine-allinclusive",
+    },
+    {
+      name: "Évora & the Alentejo — UNESCO old town, cork country, long lunch",
+      description:
+        "The UNESCO old town of Évora, cork and vineyard country, and a long Alentejo lunch.",
+      path: "/tours/evora-alentejo",
+    },
+    {
+      name: "Return to Lisbon — private farewell dinner",
+      description: "A slow return to Lisbon and a private farewell dinner to close the journey.",
+    },
+  ],
+});
 
 export const Route = createFileRoute("/itineraries/10-day-private-portugal-tour")({
   head: () => ({
