@@ -461,7 +461,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "A private Arrábida day with the Sesimbra Coastal Boat Tour, Lapa de Santa Margarida and the cliffs of Cabo Espichel.",
     intro:
-      "A day told by the sea. We cross into the Arrábida Natural Park and trade the coast road for a boat into its quiet coves — swim or simply drift — then lunch in Portinho with sand still on your feet before easing into Sesimbra at golden hour.",
+      "A day told by the sea. It begins at Livramento Market, then follows the coast into the Arrábida Natural Park, past Lapa de Santa Margarida and out on the Sesimbra Coastal Boat Tour. The afternoon eases into Sesimbra and the cliffs of Cabo Espichel. Lunch can be added when you tailor the day.",
     fitsBest: "Couples · families · active travelers",
     pace: ["Arrábida by road", "Boat into the coves", "Sesimbra at dusk"],
     stops: [
@@ -760,7 +760,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "A flexible palace selection in Sintra — one palace and a Colares wine visit, or two palaces — plus Cabo da Roca and Cascais.",
     intro:
-      "Sintra without the queues. We slip into the smaller estates, walk the forest paths most visitors never find, then chase the cliffs to Cabo da Roca — the western edge of Europe — before easing into Cascais and a glass of wine in a quiet courtyard.",
+      "Sintra, chosen your way: one palace visit plus a Colares wine visit, or two palace visits. From there the day heads to Azenhas do Mar, the cliffs of Cabo da Roca — the western edge of Europe — and a slow finish in Cascais.",
     fitsBest: "Couples · culture lovers · first-timers",
     pace: ["Sintra forests", "Cabo da Roca", "Cascais tasting"],
     stops: [
@@ -868,7 +868,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "Cross the Sado by ferry to the Roman ruins of Tróia, then Comporta's stilt pier, Atlantic beaches and a Herdade da Comporta tasting.",
     intro:
-      "A quiet day in the Alentejo most visitors miss. We board the ferry across the Sado to Tróia's Roman ruins, then drift down to Comporta — long Atlantic beaches, rice paddies, white-and-blue villages — and finish with a slow lunch in the country.",
+      "A quiet day in the Alentejo most visitors miss. We board the ferry across the Sado to the Roman Ruins of Tróia, pause at the Carrasqueira stilt pier, then drift down to Comporta — long Atlantic beaches, rice paddies, white-and-blue villages — with a wine tasting at Herdade da Comporta. Lunch is not included, so the pace stays yours.",
     fitsBest: "Couples · slow travelers · style-led explorers",
     pace: ["Sado ferry", "Tróia ruins", "Comporta beach & lunch"],
     stops: [
@@ -980,7 +980,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "The Roman Temple and Chapel of Bones in Évora, two selected Alentejo wineries and a traditional cork-production visit.",
     intro:
-      "Alentejo unwinds you. Plains of cork oaks, white-washed villages, and a city — Évora — that's quietly held two thousand years of history together. We walk it slowly, then disappear into the wineries that have been quietly making some of Portugal's best reds.",
+      "Alentejo unwinds you. We walk Évora's historic centre slowly — the Roman Temple, the Chapel of Bones — then head into two selected Alentejo wineries and a traditional cork-production visit. Lunch is not included, so the day keeps its own rhythm.",
     fitsBest: "History buffs · wine lovers · couples",
     pace: ["Évora old town", "Chapel of Bones", "Alentejo winery"],
     stops: [
