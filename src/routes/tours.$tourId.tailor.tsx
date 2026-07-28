@@ -1696,6 +1696,20 @@ function TailorPage() {
                         {principalsRemoved} stop{principalsRemoved === 1 ? "" : "s"} removed.
                       </p>
                     )}
+                    {lunchRemovalPerPax > 0 && (
+                      <p
+                        data-testid="tailor-lunch-removal-line"
+                        className="text-[10.5px] leading-snug text-[color:var(--teal)]"
+                      >
+                        Included lunch removed — −
+                        <PriceEur amountEur={lunchRemovalPerPax} role="per-person" /> pp (
+                        <PriceEur
+                          amountEur={lunchRemovalPerPax * guests}
+                          role="party-total"
+                        />{" "}
+                        for your party).
+                      </p>
+                    )}
                     <div className="flex items-baseline justify-between">
                       <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
                         Party total (indicative)
