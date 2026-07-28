@@ -663,7 +663,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 101,
     theme: "Gastronomy",
     blurb:
-      "Hands-on cheese making in Azeitão, a private winery tasting next door, then sea air and seafood in Sesimbra.",
+      "Hands-on cheese making in Azeitão, a selected winery tasting nearby, then sea air and the castle above Sesimbra.",
 
     intro:
       "You won't watch — you'll work. In a small Azeitão dairy, hands deep in fresh curd, you shape the cheese that built this village's reputation. The afternoon answers with wine from the next farm and a quiet table by the sea in Sesimbra.",
