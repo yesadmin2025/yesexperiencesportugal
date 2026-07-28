@@ -564,7 +564,7 @@ export const signatureTours: SignatureTour[] = [
     priceFrom: 135,
     theme: "Heritage",
     blurb:
-      "Paint your own azulejo in a centuries-old atelier, taste local wines next door, then unwind by the sea in Sesimbra.",
+      "Paint your own azulejo in a centuries-old Azeitão atelier, taste a selected regional wine, then unwind by the sea in Sesimbra.",
     intro:
       "Five centuries of tile-making in one quiet courtyard. You meet the master, mix the cobalt blue, and paint a single azulejo that becomes yours forever. The day softens from there — a glass of local wine, then the salt and sun of Sesimbra.",
     fitsBest: "Couples · creatives · families with teens",
