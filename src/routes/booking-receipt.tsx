@@ -142,7 +142,14 @@ function BookingReceiptPage() {
         })
       : null;
 
+  return (
     <main className="min-h-screen bg-[color:var(--sand)]/30 py-10 print:bg-white print:py-0">
+      {reservationLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(reservationLd) }}
+        />
+      ) : null}
       <div className="container-x max-w-2xl">
         {/* Screen-only actions */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 print:hidden">
