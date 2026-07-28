@@ -246,6 +246,8 @@ export function MemoryCard({ stops, regionKey, pace, chapter, proposal, onClose 
           ~1.6s before the timeline emerges. */}
       <section className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden">
         {/* Cinematic backdrop */}
+        {/* TODO: poster — no still fallback image is referenced for
+            HERO_CLIP in this component; wire one in if one becomes available. */}
         <video
           aria-hidden="true"
           autoPlay

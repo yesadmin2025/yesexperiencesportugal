@@ -55,7 +55,10 @@ export function SceneCanvas({ source, tint }: Props) {
               muted
               loop
               playsInline
-              preload="auto"
+              preload="metadata"
+              // TODO: poster — SceneSource carries no still fallback for
+              // "video" scenes; wire one in if a per-scene still becomes
+              // available.
               className="absolute inset-0 h-full w-full object-cover motion-safe:animate-[drift-kenburns_28s_ease-in-out_infinite_alternate]"
               style={{ filter: "saturate(0.92) contrast(1.04) brightness(0.96)" }}
             />

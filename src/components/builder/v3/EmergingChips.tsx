@@ -133,6 +133,7 @@ export function EmergingChips({
               }}
               aria-label={`${addLabel}: ${phrase}`}
             >
+              {/* TODO: poster — CARD_CLIPS has no matching still asset per card. */}
               <video
                 aria-hidden="true"
                 autoPlay
