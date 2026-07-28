@@ -88,6 +88,9 @@ export const TAILOR_RULES: Record<string, TailorRules> = {
     allowRemoveStop: true,
     allowAddLunch: false,
     lunchExcludedReason: "Lunch is already included in this Signature.",
+    allowRemoveLunch: true,
+    lunchIncludedNote:
+      "A seated lunch is included in this Signature. Remove it and the day continues without the table.",
     wineries: {
       included: 2,
       max: 4,
@@ -105,6 +108,20 @@ export function tailorRules(tourId: string): TailorRules {
 /** Flat per-person supplement for the "Add lunch" action, if allowed. */
 export function lunchSupplementEur(tourId: string): number {
   return tailorRules(tourId).allowAddLunch ? TAILOR_LUNCH_SUPPLEMENT_EUR : 0;
+}
+
+/** May the guest remove the included lunch on this Signature? */
+export function allowsLunchRemoval(tourId: string): boolean {
+  return tailorRules(tourId).allowRemoveLunch === true;
+}
+
+/**
+ * Flat per-person credit for removing the included lunch.
+ * Always 0 unless the Signature is lunch-removal eligible.
+ */
+export function lunchRemovalEur(tourId: string, lunchRemoved: boolean): number {
+  if (!allowsLunchRemoval(tourId)) return 0;
+  return lunchRemovalDiscountEur(tourId, lunchRemoved);
 }
 
 /**
