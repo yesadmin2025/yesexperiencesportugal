@@ -868,7 +868,7 @@ export const signatureTours: SignatureTour[] = [
     blurb:
       "Cross the Sado by ferry to the Roman ruins of Tróia, then Comporta's stilt pier, Atlantic beaches and a Herdade da Comporta tasting.",
     intro:
-      "A quiet day in the Alentejo most visitors miss. We board the ferry across the Sado to Tróia's Roman ruins, then drift down to Comporta — long Atlantic beaches, rice paddies, white-and-blue villages — and finish with a slow lunch in the country.",
+      "A quiet day in the Alentejo most visitors miss. We board the ferry across the Sado to the Roman Ruins of Tróia, pause at the Carrasqueira stilt pier, then drift down to Comporta — long Atlantic beaches, rice paddies, white-and-blue villages — with a wine tasting at Herdade da Comporta. Lunch is not included, so the pace stays yours.",
     fitsBest: "Couples · slow travelers · style-led explorers",
     pace: ["Sado ferry", "Tróia ruins", "Comporta beach & lunch"],
     stops: [
