@@ -215,6 +215,108 @@ export const STOP_LATLNG: Record<string, StopLatLng> = {
   "ria formosa": { lat: 37.0167, lng: -7.85, label: "Ria Formosa", region: "algarve" },
   tavira: { lat: 37.1273, lng: -7.6506, label: "Tavira", region: "algarve" },
   faro: { lat: 37.0194, lng: -7.9304, label: "Faro", region: "algarve" },
+
+  // ── Source-of-Truth Signature stops (real Viator itinerary labels) ──
+  // Added so every SoT chapter resolves to a real coordinate and each
+  // Signature map renders without runtime geocoding. Coordinates are the
+  // public centre of each real place — no invented stops.
+  "25 de abril bridge": {
+    lat: 38.6906,
+    lng: -9.1772,
+    label: "Ponte 25 de Abril",
+    region: "lisbon",
+  },
+  bacalhoa: { lat: 38.5122, lng: -9.0044, label: "Quinta da Bacalhôa", region: "lisbon" },
+  "quinta da bacalhoa": {
+    lat: 38.5122,
+    lng: -9.0044,
+    label: "Quinta da Bacalhôa",
+    region: "lisbon",
+  },
+  "adega cooperativa de palmela": {
+    lat: 38.5774639,
+    lng: -8.8731769,
+    label: "Adega Cooperativa de Palmela",
+    region: "lisbon",
+  },
+  "quinta velha": { lat: 38.5142, lng: -9.0195, label: "Quinta Velha, Azeitão", region: "lisbon" },
+  "lapa de santa margarida": {
+    lat: 38.4816,
+    lng: -8.9581,
+    label: "Lapa de Santa Margarida",
+    region: "lisbon",
+  },
+  "praia de galapinhos": {
+    lat: 38.4728,
+    lng: -8.9553,
+    label: "Praia de Galapinhos",
+    region: "lisbon",
+  },
+  "praia das bicas": { lat: 38.4676, lng: -9.1836, label: "Praia das Bicas", region: "lisbon" },
+  "praia do meco": { lat: 38.5153, lng: -9.1889, label: "Praia do Meco", region: "lisbon" },
+  "praia da foz": { lat: 38.4907, lng: -9.1861, label: "Praia da Foz", region: "lisbon" },
+  "lagoa de albufeira": {
+    lat: 38.5074,
+    lng: -9.1737,
+    label: "Lagoa de Albufeira",
+    region: "lisbon",
+  },
+  "pena palace": { lat: 38.7876, lng: -9.3904, label: "Pena Palace", region: "lisbon" },
+  "quinta da regaleira": {
+    lat: 38.7963,
+    lng: -9.3963,
+    label: "Quinta da Regaleira",
+    region: "lisbon",
+  },
+  "azenhas do mar": { lat: 38.8215, lng: -9.4655, label: "Azenhas do Mar", region: "lisbon" },
+  "adega regional de colares": {
+    lat: 38.7997,
+    lng: -9.4478,
+    label: "Adega Regional de Colares",
+    region: "lisbon",
+  },
+  "cais palafitico da carrasqueira": {
+    lat: 38.4247,
+    lng: -8.7756,
+    label: "Cais Palafítico da Carrasqueira",
+    region: "alentejo",
+  },
+  "convento de cristo": {
+    lat: 39.6041,
+    lng: -8.4177,
+    label: "Convento de Cristo",
+    region: "centro",
+  },
+  "biblioteca joanina": {
+    lat: 40.2077,
+    lng: -8.4265,
+    label: "Biblioteca Joanina",
+    region: "centro",
+  },
+  "talha wine interpretation center": {
+    lat: 38.3213,
+    lng: -7.7247,
+    label: "Centro Interpretativo do Vinho de Talha",
+    region: "alentejo",
+  },
+  "joao portugal ramos": {
+    lat: 38.8365,
+    lng: -7.6217,
+    label: "João Portugal Ramos",
+    region: "alentejo",
+  },
+  cartuxa: { lat: 38.5776, lng: -7.928, label: "Adega Cartuxa", region: "alentejo" },
+  "pera grave": { lat: 38.6913, lng: -7.9556, label: "Pêra-Grave", region: "alentejo" },
+  ervideira: { lat: 38.4256, lng: -7.5316, label: "Adega Ervideira", region: "alentejo" },
+  "herdade do esporao": {
+    lat: 38.3985,
+    lng: -7.5497,
+    label: "Herdade do Esporão",
+    region: "alentejo",
+  },
+  "chapel of bones": { lat: 38.5698, lng: -7.9083, label: "Capela dos Ossos", region: "alentejo" },
+  "capela dos ossos": { lat: 38.5698, lng: -7.9083, label: "Capela dos Ossos", region: "alentejo" },
+  corticarte: { lat: 38.465, lng: -8.023, label: "Corticarte", region: "alentejo" },
 };
 
 const norm = (s: string) =>

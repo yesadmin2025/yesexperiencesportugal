@@ -31,7 +31,8 @@ import { breadcrumbLd, tourProductLd, faqPageLd, jsonLdScript } from "@/lib/json
 import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { getFaqForTour } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
-import { getTourContent } from "@/lib/tourContent";
+import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
+import { sotItinerary } from "@/data/signatureToursSourceOfTruth";
 import { TourReviews } from "@/components/TourReviews";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
@@ -137,7 +138,7 @@ export const Route = createFileRoute("/tours/$tourId")({
                 rating: getViatorMeta(params.tourId)?.rating ?? null,
                 reviewCount: getViatorMeta(params.tourId)?.reviewCount ?? null,
                 region: (t as { region?: string }).region ?? null,
-                durationHours: (t as { durationHours?: string }).durationHours ?? null,
+                durationHours: signatureDurationLabel(t.id, (t as { durationHours?: string }).durationHours ?? null),
                 stops,
               });
             })(),
@@ -339,7 +340,8 @@ function TourHero({
               </span>
               <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
               <span className="flex items-center gap-2">
-                <Clock size={12} className="text-[color:var(--gold)]" /> {tour.durationHours}
+                <Clock size={12} className="text-[color:var(--gold)]" />{" "}
+                {signatureDurationLabel(tour.id, tour.durationHours)}
               </span>
               {meta && meta.reviewCount > 0 && (
                 <>
@@ -507,18 +509,27 @@ function HighlightsBlock({ tour }: { tour: SignatureTour }) {
  * ════════════════════════════════════════════════════════════ */
 function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
   // Source of truth (in order of preference):
-  //   1. Tailor blueprint, projected to editorial chapters (single source)
-  //   2. Raw Viator stops (passBy excluded) — fallback when no blueprint
-  //   3. Internal tour.stops — last resort
+  //   1. Viator-verified SoT itinerary (pass-bys excluded)
+  //   2. Tailor blueprint, projected to editorial chapters
+  //   3. Raw Viator stops (passBy excluded)
+  //   4. Internal tour.stops — last resort
   type Chapter = { label: string; story?: string; optional?: boolean };
+  const sot = sotItinerary(tour.id) ?? [];
+  const fromSot = sot
+    .slice()
+    .sort((a, b) => a.order - b.order)
+    .filter((c) => c.stopType !== "pass-by")
+    .map((c) => ({ label: c.label, story: c.description, optional: c.optional }));
   const fromBlueprint = toEditorialChapters(tour.id);
   const viator = meta?.stops?.filter((s) => !s.passBy) ?? [];
   const chapters: Chapter[] =
-    fromBlueprint && fromBlueprint.length > 0
-      ? fromBlueprint.map((c) => ({ label: c.label, story: c.story, optional: c.optional }))
-      : viator.length > 0
-        ? viator.map((s) => ({ label: s.name, story: s.desc }))
-        : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
+    fromSot.length > 0
+      ? fromSot
+      : fromBlueprint && fromBlueprint.length > 0
+        ? fromBlueprint.map((c) => ({ label: c.label, story: c.story, optional: c.optional }))
+        : viator.length > 0
+          ? viator.map((s) => ({ label: s.name, story: s.desc }))
+          : (tour.stops ?? []).map((s) => ({ label: s.label, story: s.story }));
 
   if (chapters.length === 0) return null;
 

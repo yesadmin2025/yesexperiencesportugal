@@ -14,6 +14,7 @@ import { buildLocaleUrl } from "@/i18n/config";
 import { itemListLd, jsonLdScript, studioServiceLd } from "@/lib/jsonld";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import { signatureDurationLabel } from "@/lib/tourContent";
 
 /**
  * Portuguese homepage (`/pt`). Editorial European Portuguese, mirroring
@@ -199,7 +200,7 @@ function PtHomePage() {
               </Link>
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
                 <span className="flex items-center gap-1.5">
-                  <Clock size={12} /> {t.durationHours}
+                  <Clock size={12} /> {signatureDurationLabel(t.id, t.durationHours)}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <MapPin size={12} /> {t.theme}

@@ -1,10 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
-import { Clock, MapPin, Star } from "lucide-react";
+import { Clock, MapPin, Star, UtensilsCrossed } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
-import { getTourContent } from "@/lib/tourContent";
+import {
+  getTourContent,
+  signatureDurationLabel,
+  signatureIncludesLunch,
+} from "@/lib/tourContent";
 import { getSignatureCardMoments } from "@/content/signature-card-moments";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
@@ -233,9 +237,20 @@ function ExperiencesPage() {
                     </span>
                     <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
                     <span className="flex items-center gap-1.5">
-                      <Clock size={11} /> {t.durationHours}
+                      <Clock size={11} /> {signatureDurationLabel(t.id, t.durationHours)}
                     </span>
                     <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
+                    {signatureIncludesLunch(t.id) && (
+                      <>
+                        {/* Only when the canonical inclusions say so —
+                            never inferred from the itinerary. */}
+                        <span className="flex items-center gap-1.5 text-[color:var(--charcoal)]">
+                          <UtensilsCrossed size={11} className="text-[color:var(--gold-ink)]" />
+                          Lunch included
+                        </span>
+                        <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
+                      </>
+                    )}
                     <span className="text-[color:var(--charcoal)]">
                       From <PriceEur amountEur={t.priceFrom} role="from" />
                       <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">

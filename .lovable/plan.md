@@ -1,80 +1,53 @@
 ## Goal
 
-Add "remove included lunch" to the Arrábida Wine Tailor as a dedicated, fixed −€15 per-person adjustment — separate from stop removal, supplements, the −15% cap and the 70% floor — enforced identically on client, server, Stripe and receipt. No publishing, no Studio changes. All signatures cards must be uptaded with with souchr of truth, on homepage and signatures pages. 
+Every Signature (all 12, not only the wine tours) shows viators Source-of-Truth (SoT) content on its card and on its page, renders a correct map, and displays a price that provably matches what Stripe charges. No invented content, no publish.
 
-## 1. Pricing SSOT (client + edge mirror)
+## What I verified first
 
-`src/config/pricing.ts` and `supabase/functions/_shared/pricing.ts` (kept byte-parallel, guarded by the existing Pricing SSOT workflow):
+- All 12 Signatures now have a viator `SIGNATURE_SOURCE_OF_TRUTH` entry, so the legacy fallbacks are no longer needed for content.
+- **Price parity is already correct**: for all 12 tours, the card's `priceFrom` equals the 8-guest tier in `tour_price_tiers` (the table the checkout function resolves prices from server-side). Example: Arrábida Wine 135, Tróia 157, Roman 254. So "From €X per person" = the real lowest per-person price Stripe would charge. I will add a test that locks this instead of changing numbers.
+- **Cards read viator SoT**: except prices 
+- **Maps use viator SoT labels have coordinate gaps**. 
+  - `evora-alentejo` — 8 of 10 unresolved (all Évora wineries, Chapel of Bones)
+  - `wild-beaches-picnic` — 7 of 15 (Meco, Bicas, Galapinhos, Lagoa de Albufeira, Lapa de Santa Margarida…)
+  - `sintra-cascais` — 4 of 8 (Pena Palace, Quinta da Regaleira, Azenhas do Mar, Adega de Colares)
+  - plus single misses on Arrábida Wine, Boat, Tiles, Azeitão, Tróia, Tomar, Roman. 
 
-- New constant `TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR = 15`.
-- New table `TAILOR_LUNCH_REMOVAL_ELIGIBLE = new Set(["arrabida-wine-allinclusive"])` and helper `lunchRemovalDiscountEur(tourId, lunchRemoved)` returning 15 or 0.
-- New final calculator, replacing direct `tailorFinalPerPax` use in Tailor:
+## 1. Geo coverage for every viator SoT stop
 
-```text
-base        = resolvedPerPax (direct tier)
-reduced     = tailorAdjustedPerPax(base, principalsRemoved)   // −5%/stop, cap −15%, floor 70%
-final       = reduced + supplementsEur(+35 lunch add / +20 per extra winery) − lunchRemovalEur(15)
-```
+`src/data/stopGeo.ts`: add real coordinates for each unresolved SoT label above (public, verifiable place coordinates only — no invented stops; aliases where the SoT label is a variant, e.g. "25 de Abril Bridge" → existing Ponte 25 de Abril entry, "Bacalhôa" → Quinta da Bacalhôa).
 
-`tailorFinalPerPax(direct, principalsRemoved, supplementsEur, lunchRemovalEur = 0)` gains the 4th argument (default 0, so existing call sites and tests are unchanged). The removal is subtracted after the floor, is never fed into `principalsRemoved`, and never influences the cap.
+New test `src/__tests__/sot-geo-coverage.test.ts`: every non-pass-by SoT itinerary label for all 12 tours resolves through `lookupStop`. This makes future SoT edits fail loudly instead of silently degrading a map.
 
-Server mirror: `serverTailorSupplementsEur` stays as-is; a separate `serverLunchRemovalEur(tourId, lunchRemoved)` returns 15 only when `tourId === "arrabida-wine-allinclusive"` and `lunchRemoved === true`, else 0.
+## 2. Maps read the viator Source of Truth
 
-## 2. Tailor rules
+`src/components/SignatureRouteMap.tsx`: build the stop list from `sotItinerary(tour.id)` (excluding pass-by/optional-generic chapters) and fall back to `tour.stops` only when the tour has no SoT entry. Keep the existing OSRM route fetch, tile fallback and `SignatureRouteMapFallback` behaviour untouched. The server route function keyed on `tourId` is aligned to the same list so drawn legs match the pins.
 
-`src/data/tailorRules.ts`: add `allowRemoveLunch: boolean` + `lunchIncludedNote` to `TailorRules`; `true` only for `arrabida-wine-allinclusive`. Roman Talha and Wild Beaches keep `allowAddLunch: false` with their existing `lunchExcludedReason` — documented in the file header as a canonical product exception, not a pricing change.
+Extend `e2e/signature-map-and-images.spec.ts` to walk all 12 tour pages and assert the map (or its fallback) renders with the expected pin count.
 
-Winery gate (`canSelectWineries`) is untouched: `stopsRemoved` continues to count itinerary stops only, so removing lunch cannot unlock the 4th winery.
+## 3. Cards read the viator Source of Truth
 
-## 3. Tailor UI
+`src/routes/experiences.tsx` (and the Portuguese variant + the homepage Signature rows that use the same data):
 
-`src/routes/tours.$tourId.tailor.tsx`:
+- Duration comes from `sotDurationMinutes(t.id)`, formatted to the existing "8–9h"-style label, with `t.durationHours` only as fallback.
+- Highlights keep the curated `SIGNATURE_CARD_MOMENTS` trio (already unique per tour, already SoT-derived) — no change to that file unless a SoT edit made an entry stale; I'll re-check all 12 against the SoT and correct only genuine mismatches.
+- Add a small SoT-derived inclusion cue where it is a real differentiator (e.g. "Lunch included" only when SoT `included` says so), so cards stop implying lunch on tours that exclude it.
+- Rating/review badge and price line stay as they are.
 
-- New `lunchRemoved` state (default `false` = lunch included).
-- Where the Arrábida Wine day is shown, render an "Included" lunch row with the action **"Remove included lunch · −€15 per person"** (and "Restore included lunch" when removed), `data-testid="tailor-remove-lunch"`. It is rendered outside the stop-removal list so it can never read as a stop.
-- Price preview and configuration summary get a distinct line: `Included lunch removed  −€15 pp`, separate from `Stops removed −X%` and from supplements.
-- `estimatedPrice` flows through the new calculator, so the pinned tier override, party total, age-band lines and `ChargeSummaryLine` all follow automatically.
+## 4. Signature page content parity
 
-`src/components/checkout/ChargeSummaryLine.tsx`: accept an optional `adjustments` array so the expandable breakdown can show "Included lunch removed" as its own negative row (per-person and party amounts).
+`src/routes/tours.$tourId.tsx`: remove the remaining legacy fallbacks for overview, highlights, inclusions/exclusions and itinerary where SoT exists, so page and card cannot disagree. Duration on the page comes from the same `sotDurationMinutes` helper as the card.
 
-`src/routes/booking-receipt.tsx`: render the same named adjustment line.
+## 5. Price parity lock (no price changes)
 
-## 4. Server-side validation
+New `src/__tests__/signature-price-parity.test.ts`: for all 12 tours, `priceFrom` equals the 8-guest tier value used by `create-signature-checkout`, and every tour that can be booked with minors has a tier row (the checkout function 409s otherwise). Tailor lunch-removal / supplement math is already covered by the existing tests and is not touched.
 
-`supabase/functions/create-signature-checkout/index.ts`:
+## Out of scope
 
-- Accept `tailorLunchRemoved?: boolean` only.
-- Reject non-boolean values (400).
-- Reject `tailorLunchRemoved === true` when `tourId !== "arrabida-wine-allinclusive"` or the flow is not `tailor` (400).
-- Derive the €15 from the server table only; any client euro amount is ignored.
-- Feed it into the new `tailorFinalPerPax(..., lunchRemovalEur)` so the Stripe unit price, age-band lines and `tourSubtotalCents` all match the displayed total. Record `tailor_lunch_removed` in Stripe metadata and append " · lunch removed" to the line-item description so the Stripe dashboard, webhook and receipt agree.
+- No `builder_stops` migration; Studio untouched.
+- `CANONICAL_VIATOR_URLS` mismatch (`evora-alentejo`, `tiles-workshop`) reported only, not modified.
+- No pricing value changes, no publish.
 
-## 5. Signature card / page data
+## Deliverables
 
-Sync the Arrábida Wine card and Signature page copy to canonical data: lunch shown as **included** in inclusions and card meta, correct duration and unique highlight (no "Mercado do Livramento" duplication), via `src/content/signature-card-moments.ts` and the source-of-truth resolver — no invented content.
-
-## 6. Tests
-
-New `src/__tests__/tailor-lunch-removal.test.ts`:
-
-- default config includes lunch (discount 0);
-- removing lunch subtracts exactly 15 pp; party discount = 15 × pax;
-- removal adds no −5% and does not change `principalsRemoved`;
-- removal does not unlock the 4th winery (`canSelectWineries` unchanged);
-- cap and floor computed ignoring lunch removal (incl. a case where the floor binds);
-- re-adding restores the exact original per-pax;
-- lunch removal returns 0 for every other Signature id.
-
-Extend `src/__tests__/age-band-pct-ssot.test.ts` to assert the new constant and eligibility set are identical in the frontend and edge copies.
-
-Extend `e2e/checkout-price-parity.spec.ts` with an Arrábida Wine lunch-removed run asserting displayed total = `data-total-eur` = checkout summary total.
-
-## 7. Out of scope (confirmed)
-
-- No `builder_stops` migration; Studio untouched. Canonical Évora winery pool stays in Signature canonical data only. If a Signature-side surface turns out to read Évora stops through a Studio-owned table, I will stop and report the exact dependency instead of migrating.
-- `CANONICAL_VIATOR_URLS` mismatch reported, not modified.
-- No publish.
-
-## Deliverables returned after implementation
-
-Files changed, the exact implemented formula, the server validation code, `vitest`/Playwright output, and mobile screenshots of the Arrábida Wine Tailor with lunch included and lunch removed. All signatures and tailor  updated on every card and page and sync with stripe and map rendering on every signature page . Info updates as client updates or changes info 
+Files changed, the geo entries added, vitest + Playwright output, and mobile screenshots of `/experiences` plus all  repaired maps 
