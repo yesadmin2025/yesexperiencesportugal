@@ -14,6 +14,13 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
+export interface ChargeAdjustment {
+  /** Guest-facing label, e.g. "Included lunch removed". */
+  readonly label: string;
+  /** Party amount in EUR. Negative for credits. */
+  readonly amountEur: number;
+}
+
 export interface ChargeQuote {
   /** Party total in EUR — exactly what is sent to Stripe. */
   readonly totalEur: number;
@@ -29,6 +36,8 @@ export interface ChargeQuote {
   readonly journeySubtotalEur?: number;
   /** Add-on party total in EUR (optional). */
   readonly addOnsEur?: number;
+  /** Named adjustments (e.g. lunch removal) shown as their own rows. */
+  readonly adjustments?: readonly ChargeAdjustment[];
 }
 
 const eur = (n: number) =>
