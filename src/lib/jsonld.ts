@@ -777,14 +777,19 @@ export function studioServiceLd(args: { path: string; name: string; description:
  * Emitted as Service so Google can distinguish it from the Studio (day) and
  * from a single bookable Product.
  */
-export function travelDesignerServiceLd(args: { path: string }) {
+export function travelDesignerServiceLd(args: {
+  path: string;
+  name?: string;
+  description?: string;
+}) {
   const url = `${SITE_URL}${args.path}`;
   return {
     "@context": "https://schema.org",
     "@type": "Service",
     "@id": `${url}#service`,
-    name: "YES Travel Designer — full Portugal journeys, designed for you",
+    name: args.name ?? "YES Travel Designer — full Portugal journeys, designed for you",
     description:
+      args.description ??
       "A local Travel Designer composes full private journeys across Portugal — private, personalized, built around your time, rhythm and interests, with local hidden gems. From a few days to a full journey across Portugal, delivered as a curated travel file.",
     serviceType: "Bespoke multi-day Portugal travel design",
     category: "Private personalized multi-day travel design",
@@ -1044,5 +1049,123 @@ export function corporateServiceLd(args: { path: string }) {
         ],
       },
     },
+  };
+}
+
+/**
+ * Moments Service — /proposal-in-portugal.
+ *
+ * Private proposals, anniversaries, birthdays and celebrations. Emitted as a
+ * Service so Google separates the occasion entity from day-tour Products.
+ */
+export function momentsServiceLd(args: { path: string }) {
+  const url = `${SITE_URL}${args.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${url}#service`,
+    name: "Private proposals, anniversaries and celebrations in Portugal",
+    description:
+      "Private proposal planning, anniversary and birthday experiences, honeymoon days and special-occasion celebrations across Portugal — discreetly designed and coordinated by a local team, from Lisbon and Sintra to Arrábida, Alentejo and the Atlantic coast.",
+    serviceType: [
+      "Private proposal planning",
+      "Anniversary experiences",
+      "Birthday experiences",
+      "Honeymoon days",
+      "Private celebrations",
+      "Special occasion travel",
+    ],
+    category: "Special occasion experience design",
+    provider: { "@id": `${SITE_URL}/#organization` },
+    brand: { "@id": `${SITE_URL}/#organization` },
+    areaServed: { "@type": "Country", name: "Portugal" },
+    url,
+    audience: {
+      "@type": "Audience",
+      audienceType:
+        "Couples planning a proposal, anniversary, honeymoon or private celebration in Portugal",
+    },
+    potentialAction: {
+      "@type": "PlanAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: url,
+        actionPlatform: [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform",
+        ],
+      },
+    },
+  };
+}
+
+/**
+ * Service entity graph — emitted once on the homepage.
+ *
+ * Communicates the brand → service hierarchy so search engines do not reduce
+ * YES Experiences Portugal to a single day-tour catalogue. Each item points at
+ * the page that owns the entity.
+ */
+export function serviceEntityListLd() {
+  const services: { path: string; name: string; description: string }[] = [
+    {
+      path: "/experiences",
+      name: "Signature Experiences",
+      description:
+        "Curated private day experiences across Portugal, ready to reserve with a dedicated local guide and vehicle.",
+    },
+    {
+      path: "/studio-v3",
+      name: "YES Experience Studio",
+      description:
+        "Design a private Portugal experience online in real time — route, stops and pricing evolve as you choose, then reserve directly or have it reviewed locally.",
+    },
+    {
+      path: "/portugal-travel-designer",
+      name: "Portugal Travel Designer",
+      description:
+        "Bespoke planning of complete multi-day private journeys across Portugal, distinct from a single private day tour.",
+    },
+    {
+      path: "/proposal-in-portugal",
+      name: "Moments — proposals and celebrations",
+      description:
+        "Private proposals, anniversaries, birthdays and special-occasion experiences planned discreetly across Portugal.",
+    },
+    {
+      path: "/corporate",
+      name: "Corporate and incentive travel",
+      description:
+        "Corporate events, team building, incentives, executive retreats and company off-sites in Portugal, from leadership teams to groups of 100+.",
+    },
+    {
+      path: "/trade",
+      name: "Travel advisors and trade partnerships",
+      description:
+        "Local Portugal ground support for travel advisors, designers and agencies — FIT travel, private guiding and destination coordination across the country.",
+    },
+  ];
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${SITE_URL}/#services`,
+    name: "YES Experiences Portugal — services",
+    description:
+      "The distinct services offered by YES Experiences Portugal across the whole country, beyond day tours from Lisbon.",
+    itemListElement: services.map((s, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${SITE_URL}${s.path}`,
+      item: {
+        "@type": "Service",
+        "@id": `${SITE_URL}${s.path}#service`,
+        name: s.name,
+        description: s.description,
+        url: `${SITE_URL}${s.path}`,
+        provider: { "@id": `${SITE_URL}/#organization` },
+        areaServed: { "@type": "Country", name: "Portugal" },
+      },
+    })),
   };
 }

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { breadcrumbLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, faqPageLd, jsonLdScript, momentsServiceLd } from "@/lib/jsonld";
+import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { MessageCircle, Heart, Sparkles, Users } from "lucide-react";
@@ -20,9 +21,9 @@ const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/proposal-in-portugal";
 const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 
-const TITLE = "Proposal in Portugal — Private Moments, Planned Discreetly";
+const TITLE = "Proposal & Celebration Experiences in Portugal | YES";
 const DESCRIPTION =
-  "Plan a proposal in Portugal — Sintra cliffs, Arrábida coves, Lisbon rooftops. A private moment shaped end to end by a local team, discreet from first email to last detail.";
+  "Private proposals, anniversaries, birthdays and special-occasion experiences across Portugal — Sintra cliffs, Arrábida coves, Lisbon rooftops — planned discreetly by a local team.";
 
 export const Route = createFileRoute("/proposal-in-portugal")({
   head: () => ({
@@ -48,6 +49,7 @@ export const Route = createFileRoute("/proposal-in-portugal")({
           { name: "Proposal in Portugal", path: PAGE_PATH },
         ]),
       ),
+      jsonLdScript(momentsServiceLd({ path: PAGE_PATH })),
       jsonLdScript(faqPageLd(PROPOSAL_FAQ)),
     ],
   }),
@@ -225,6 +227,31 @@ export function ProposalInPortugalPage() {
           </div>
         </div>
       </section>
+      <ServiceCrossLinks
+        tone="ivory"
+        eyebrow="Related YES services"
+        title="Moments sit inside a wider set of private services."
+        links={[
+          {
+            to: "/studio-v3",
+            label: "Design the surrounding private day in the Studio",
+            description:
+              "Build the day around the moment — region, stops and rhythm, with the route and pricing updating as you choose.",
+          },
+          {
+            to: "/portugal-travel-designer",
+            label: "Plan a longer celebration journey across Portugal",
+            description:
+              "Honeymoons, anniversaries and milestone trips composed as complete multi-day private itineraries.",
+          },
+          {
+            to: "/corporate",
+            label: "Company celebrations and client hosting",
+            description:
+              "Private celebrations for teams and clients, coordinated across Portugal.",
+          },
+        ]}
+      />
     </SiteLayout>
   );
 }

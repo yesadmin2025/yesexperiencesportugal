@@ -2,6 +2,7 @@ import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
+import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import { Scene } from "@/components/motion/Scene";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -374,6 +375,12 @@ function Page() {
                 locations depending on the experience.
               </li>
               <li>
+                <strong className="text-[color:var(--charcoal)]">Legal base, wider reach.</strong>{" "}
+                Registered in Sesimbra, with most pickups from the Lisbon area, and operating
+                private experiences across Portugal — Sintra, Arrábida, Alentejo, the Vicentine
+                Coast, central Portugal and beyond.
+              </li>
+              <li>
                 <strong className="text-[color:var(--charcoal)]">Local replies, fast.</strong>{" "}
                 WhatsApp and email replies usually within the hour when the team is available.
               </li>
@@ -453,6 +460,48 @@ function Page() {
           </div>
         </div>
       </section>
+      <ServiceCrossLinks
+        tone="ivory"
+        eyebrow="What we do"
+        title="Six distinct services, one local team."
+        links={[
+          {
+            to: "/experiences",
+            label: "Signature Experiences across Portugal",
+            description:
+              "Curated private days, ready to reserve with a dedicated guide and vehicle.",
+          },
+          {
+            to: "/studio-v3",
+            label: "Experience Studio — build your own Portugal experience",
+            description:
+              "Design a private day online and watch the route and pricing evolve before you reserve.",
+          },
+          {
+            to: "/portugal-travel-designer",
+            label: "Portugal travel designer for complete journeys",
+            description:
+              "Custom multi-day private itineraries across the country, not a single day trip.",
+          },
+          {
+            to: "/proposal-in-portugal",
+            label: "Moments — proposals, anniversaries and celebrations",
+            description: "Private occasions planned discreetly, anywhere we operate.",
+          },
+          {
+            to: "/corporate",
+            label: "Corporate events, incentives and retreats",
+            description:
+              "From leadership teams to corporate groups of 100+, coordinated across Portugal.",
+          },
+          {
+            to: "/trade",
+            label: "Travel advisors, designers and agency partners",
+            description:
+              "Local Portugal supplier and destination support for FIT travel and private guiding.",
+          },
+        ]}
+      />
     </SiteLayout>
   );
 }

@@ -4,7 +4,8 @@ import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
+import { breadcrumbLd, jsonLdScript, travelDesignerServiceLd } from "@/lib/jsonld";
+import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import ogImg from "@/assets/hero-coast.jpg";
 
 const CANONICAL = "https://yesexperiencesportugal.com/portugal-travel-designer";
@@ -36,6 +37,14 @@ export const Route = createFileRoute("/portugal-travel-designer")({
           { name: "Home", path: "/" },
           { name: "Portugal Travel Designer", path: "/portugal-travel-designer" },
         ]),
+      ),
+      jsonLdScript(
+        travelDesignerServiceLd({
+          path: "/portugal-travel-designer",
+          name: "Portugal Travel Designer — bespoke private itinerary planning",
+          description:
+            "Personalized Portugal itinerary planning by a local travel designer: complete multi-day private journeys across the country, distinct from a single private day tour. Custom Portugal trips, honeymoons, family journeys and longer bespoke travel planning from Lisbon and Sesimbra to Alentejo, central Portugal, the Douro and the north.",
+        }),
       ),
     ],
   }),
@@ -183,6 +192,38 @@ function PortugalTravelDesignerPage() {
           places, in the right order, with enough time to experience them properly.
         </p>
       </Section>
+
+      <ServiceCrossLinks
+        tone="ivory"
+        eyebrow="Related YES services"
+        title="Where travel design sits among our services."
+        links={[
+          {
+            to: "/studio-v3",
+            label: "Design a private day in the Experience Studio",
+            description:
+              "Build your own Portugal day online: choose the region, stops and rhythm and watch the route and pricing evolve, then reserve directly or ask for a local review.",
+          },
+          {
+            to: "/multi-day",
+            label: "Private multi-day tours in Portugal",
+            description:
+              "The multi-day product itself — several regions connected into one private journey with the same guide and vehicle.",
+          },
+          {
+            to: "/trade",
+            label: "Portugal ground partner for travel advisors and agencies",
+            description:
+              "Advisors, travel designers and agencies planning FIT travel in Portugal work with us directly for local itinerary support and private guiding.",
+          },
+          {
+            to: "/corporate",
+            label: "Corporate and incentive travel in Portugal",
+            description:
+              "Company off-sites, incentives and executive retreats coordinated across the country.",
+          },
+        ]}
+      />
 
       <section className="reveal py-16 md:py-20 bg-[color:var(--sand)]">
         <div className="container-x max-w-2xl text-center">

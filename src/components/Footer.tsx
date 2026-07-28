@@ -62,7 +62,8 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
     links: [
       { to: "/experiences", label: "All Experiences" },
       { to: "/day-tours", label: "Day Experiences" },
-      { to: "/multi-day", label: "Travel Designer" },
+      { to: "/portugal-travel-designer", label: "Travel Designer" },
+      { to: "/multi-day", label: "Multi-Day Journeys" },
       { to: "/studio-v3", label: "Experience Studio" },
     ],
   },
@@ -79,7 +80,7 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
     links: [
       { to: "/about", label: "About YES" },
       { to: "/local-stories", label: "Local Stories" },
-      { to: "/trade", label: "For Travel Advisors" },
+      { to: "/trade", label: "For Travel Advisors & Agencies" },
       { to: "/contact", label: "Contact" },
     ],
   },
@@ -111,7 +112,7 @@ const POPULAR_SEARCHES: FooterLink[] = [
   { to: "/local-stories/$slug", params: { slug: "best-day-trips-from-lisbon" }, label: "Day trips from Lisbon" },
   { to: "/local-stories/$slug", params: { slug: "alentejo-wine-tour-from-lisbon" }, label: "Alentejo wine tour from Lisbon" },
   { to: "/itineraries/10-day-private-portugal-tour", label: "10-day private Portugal tour" },
-  { to: "/multi-day", label: "Portugal Travel Designer" },
+  { to: "/portugal-travel-designer", label: "Portugal travel designer" },
   { to: "/proposal-in-portugal", label: "Proposal in Portugal" },
 ];
 
