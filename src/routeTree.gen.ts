@@ -124,6 +124,7 @@ import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-i
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as AdminBookingsIndexRouteImport } from './routes/admin.bookings.index'
 import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.tailor'
 import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
@@ -726,6 +727,11 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminBookingsIndexRoute = AdminBookingsIndexRouteImport.update({
+  id: '/admin/bookings/',
+  path: '/admin/bookings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToursTourIdTailorRoute = ToursTourIdTailorRouteImport.update({
   id: '/tailor',
   path: '/tailor',
@@ -950,6 +956,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/admin/bookings/': typeof AdminBookingsIndexRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
@@ -1083,6 +1090,7 @@ export interface FileRoutesByTo {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/admin/bookings': typeof AdminBookingsIndexRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
@@ -1219,6 +1227,7 @@ export interface FileRoutesById {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/admin/bookings/': typeof AdminBookingsIndexRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/import-tripadvisor-reviews': typeof ApiPublicHooksImportTripadvisorReviewsRoute
@@ -1356,6 +1365,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
+    | '/admin/bookings/'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/import-tripadvisor-reviews'
@@ -1489,6 +1499,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
+    | '/admin/bookings'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/import-tripadvisor-reviews'
@@ -1624,6 +1635,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
+    | '/admin/bookings/'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/import-tripadvisor-reviews'
@@ -1741,6 +1753,7 @@ export interface RootRouteChildren {
   ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
+  AdminBookingsIndexRoute: typeof AdminBookingsIndexRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
   ApiPublicHooksImportTripadvisorReviewsRoute: typeof ApiPublicHooksImportTripadvisorReviewsRoute
@@ -2560,6 +2573,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/bookings/': {
+      id: '/admin/bookings/'
+      path: '/admin/bookings'
+      fullPath: '/admin/bookings/'
+      preLoaderRoute: typeof AdminBookingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tours/$tourId/tailor': {
       id: '/tours/$tourId/tailor'
       path: '/tailor'
@@ -2882,6 +2902,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
+  AdminBookingsIndexRoute: AdminBookingsIndexRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
   ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,
   ApiPublicHooksImportTripadvisorReviewsRoute:
