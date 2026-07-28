@@ -83,7 +83,9 @@ interface Body {
 import {
   AGE_BAND_PCT,
   ageBand,
+  serverLunchRemovalEur,
   serverTailorSupplementsEur,
+  TAILOR_LUNCH_REMOVAL_ELIGIBLE,
   tailorFinalPerPax,
   type AgeBand,
 } from "../_shared/pricing.ts";
