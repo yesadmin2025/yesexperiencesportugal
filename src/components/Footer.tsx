@@ -303,6 +303,11 @@ export function Footer() {
               <LivroReclamacoesBadge />
             </div>
 
+            {/* Vendor loader — verifies the domain with Trustindex. Renders no
+                layout of its own; the visible seal above stays ours. */}
+            <TrustindexWidget />
+
+
           </div>
         </div>
       </div>
