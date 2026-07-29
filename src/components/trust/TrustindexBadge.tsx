@@ -22,7 +22,7 @@ const TRUSTINDEX_GREEN = "#3E9C6D";
 
 function Star() {
   return (
-    <svg viewBox="0 0 24 24" width={11} height={11} aria-hidden="true" focusable="false">
+    <svg viewBox="0 0 24 24" width={9} height={9} aria-hidden="true" focusable="false">
       <path
         d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"
         fill={TRUSTINDEX_GREEN}
@@ -54,11 +54,11 @@ export function TrustindexBadge() {
       target="_blank"
       rel="noopener noreferrer nofollow"
       aria-label={`Excellent rating ${RATING} out of 5 from ${REVIEW_COUNT} customer reviews — open the Trustindex certificate (opens in a new tab)`}
-      className="tap inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-[6px] bg-[#FFFFFF] px-2.5 py-1.5 transition-opacity duration-[var(--dur-quick)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] sm:gap-2.5 sm:px-3"
+      className="tap inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-[6px] bg-[#FFFFFF] px-2 py-1.5 transition-opacity duration-[var(--dur-quick)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] sm:gap-2.5 sm:px-3"
     >
       {/* Rating block */}
       <span className="flex flex-col gap-[2px] font-[family-name:var(--font-sans)] leading-none text-[#1A1A1A]">
-        <span className="text-[9.5px]" style={{ fontWeight: 700 }}>
+        <span className="text-[8px] sm:text-[9.5px]" style={{ fontWeight: 700 }}>
           Excellent rating
         </span>
         <span className="flex items-center gap-[3px]">
@@ -69,26 +69,26 @@ export function TrustindexBadge() {
             <Star />
             <Star />
           </span>
-          <span className="text-[10px]" style={{ fontWeight: 700 }}>
+          <span className="text-[9px] sm:text-[10px]" style={{ fontWeight: 700 }}>
             {RATING}
           </span>
         </span>
-        <span className="text-[9.5px]" style={{ fontWeight: 700 }}>
+        <span className="text-[8px] sm:text-[9.5px]" style={{ fontWeight: 700 }}>
           {REVIEW_COUNT} customer reviews
         </span>
       </span>
 
       {/* Certificate card */}
       <span className="flex shrink-0 flex-col overflow-hidden rounded-[4px] font-[family-name:var(--font-sans)] leading-none">
-        <span className="flex items-center justify-center gap-1 bg-[#FFFFFF] px-2 py-[3px] text-[10px] text-[#1A1A1A]" style={{ fontWeight: 700 }}>
+        <span className="flex items-center justify-center gap-1 bg-[#FFFFFF] px-1.5 py-[3px] text-[8.5px] sm:px-2 sm:text-[10px] text-[#1A1A1A]" style={{ fontWeight: 700 }}>
           <CheckDisc />
           Trusted Site
         </span>
-        <span className="flex flex-col items-center bg-[#111111] px-2 py-[3px] text-[#FFFFFF]">
-          <span className="text-[7.5px]" style={{ fontWeight: 400 }}>
+        <span className="flex flex-col items-center bg-[#111111] px-1.5 py-[3px] sm:px-2 text-[#FFFFFF]">
+          <span className="text-[6.5px] sm:text-[7.5px]" style={{ fontWeight: 400 }}>
             Verified by
           </span>
-          <span className="text-[9px]" style={{ fontWeight: 700 }}>
+          <span className="text-[8px] sm:text-[9px]" style={{ fontWeight: 700 }}>
             Trustindex
           </span>
         </span>
