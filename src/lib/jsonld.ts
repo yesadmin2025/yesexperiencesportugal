@@ -90,7 +90,6 @@ export function organizationLd() {
       reviewCount: 1000,
       // Independently collected and verified — public certificate:
       // https://www.trustindex.io/reviews/yesexperiencesportugal.com
-      itemReviewed: { "@id": `${SITE_URL}/#organization` },
     },
     award: [
       "First Portuguese tour operator to offer real-time private tour design and instant reservation through an in-house Experience Studio",
