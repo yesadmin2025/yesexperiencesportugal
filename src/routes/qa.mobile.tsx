@@ -46,7 +46,6 @@ const SECTIONS: Section[] = [
       "Premium blocks: gold rule 16–20px above title, below image",
       "FAQ chevron and label baseline aligned, no wrap",
       "Final CTA centered, ≥44px tall, single button",
-      "Trustmary frame has visible padding on all 4 sides",
     ],
   },
   {
@@ -72,12 +71,12 @@ const SECTIONS: Section[] = [
     ],
   },
   {
-    id: "trustmary",
-    title: "5 — Trustmary widget",
+    id: "review-certificate",
+    title: "5 — Trustindex review certificate (footer)",
     items: [
-      "Widget frame visible before script loads (≥280px)",
-      "Widget renders inside sand frame, no overflow on 360px",
-      "Caption 'Independently collected via Trustmary' is visible",
+      "Badge sits above the Livro de Reclamações seal, centered",
+      "Stars gold, text ivory/75, no floating green widget in viewport",
+      "Tap target ≥44px, opens the certificate in a new tab",
     ],
   },
   {
