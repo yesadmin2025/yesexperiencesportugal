@@ -74,9 +74,9 @@ function rg(pattern: string): string[] {
       { cwd: path.resolve(__dirname, "../.."), encoding: "utf8" },
     );
     return out.split("\n").filter(Boolean);
-  } catch (e: any) {
+  } catch (e) {
     // rg exits 1 when no matches — treat as empty.
-    if (e?.status === 1) return [];
+    if ((e as { status?: number })?.status === 1) return [];
     throw e;
   }
 }

@@ -49,6 +49,7 @@ export function AccessibleIconLink({
         {to ? (
           <Link
             to={to}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- heterogeneous shape; narrowing here buys no safety
             params={params as any}
             aria-label={label}
             className={className}
