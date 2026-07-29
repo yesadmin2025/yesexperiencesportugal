@@ -5,6 +5,7 @@ import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import { LivroReclamacoesBadge } from "@/components/trust/LivroReclamacoesBadge";
 import { TrustindexBadge } from "@/components/trust/TrustindexBadge";
+import { TrustindexWidget } from "@/components/trust/TrustindexWidget";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AccessibleIconLink } from "@/components/AccessibleIconLink";
 import {
@@ -301,6 +302,11 @@ export function Footer() {
               <TrustindexBadge />
               <LivroReclamacoesBadge />
             </div>
+
+            {/* Vendor loader — verifies the domain with Trustindex. Renders no
+                layout of its own; the visible seal above stays ours. */}
+            <TrustindexWidget />
+
 
           </div>
         </div>

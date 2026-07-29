@@ -1,34 +1,48 @@
-## Goal
+## Why it says "not embedded"
 
-Make the review certificate look like the official Trustindex asset (as in the picture) — more credible — and place it **side by side** with the Livro de Reclamações seal so the footer stays compact.
+Trustindex only registers a domain when **their own loader script** runs on the page. Our footer currently shows a hand-built replica of the certificate (no third-party JS), so their dashboard will always report "The domain list empty".
 
-## What changes
+## One thing I need from you
 
-### 1. Rebuild `src/components/trust/TrustindexBadge.tsx`
-Recreate the official certificate layout, in code (no third-party script, no CLS):
+The widget ID is cut off in the screenshot — I can read `…r-cert.js?5b4acfc688a54881970649b49a5` but the first characters of the ID are hidden. Paste the full URL (or just the `?` value) from **Copy embed code** and I'll wire it in. Everything below is ready to go the moment I have it. 
 
-```text
-Excellent rating        ┌───────────────────────┐
-★★★★★  4.9              │ ✓  Trusted Site       │  (white top)
-1000 customer reviews   │ Verified by Trustindex│  (black bottom)
-                        └───────────────────────┘
-```
+<script defer async src='[https://cdn.trustindex.io/loader-cert.js?5b4acfc688a54881970649b49a5'></script>](https://cdn.trustindex.io/loader-cert.js?5b4acfc688a54881970649b49a5'></script>)
 
-- Left block: "Excellent rating" (bold), green star row + 4.9, "1000 customer reviews".
-- Right block: rounded card — white top row with green check disc + "Trusted Site", black bottom row with "Verified by Trustindex".
-- Rendered on a small ivory/white plate so the official green/black/white reads correctly against the charcoal footer, keeping brand tokens untouched (the certificate is a third-party mark, treated like the Livro de Reclamações seal).
-- Compact scale for mobile (about 40% smaller than the reference), still a ≥44px tap target, links to the certificate URL with the same aria-label.
+## What I'll build
 
-### 2. Footer layout — one shared trust row
-In `src/components/Footer.tsx` (lines 297–305), replace the two stacked centered blocks with a single row:
+### 1. `src/components/trust/TrustindexWidget.tsx` (new)
 
-- Mobile (393px): both seals on one line, centered, `flex items-center justify-center gap-4`, each allowed to shrink; wraps only if truly needed.
-- Tablet/desktop: same row, slightly larger gap.
+- Loads `https://cdn.trustindex.io/loader-cert.js?<ID>` **once**, `defer async`, only after the footer scrolls into view (IntersectionObserver) — so it never touches LCP or the mobile sticky CTA.
+- Renders inside a reserved-height container so there is **zero layout shift** when the certificate paints.
+- Respects cookie consent: script only loads once consent state allows third-party scripts (reuses the existing consent hook), and it never blocks the page if it fails.
+- Trustindex's default is a *fixed floating* badge — I'll pin it into the footer container (their embed supports inline placement) and suppress the floating variant, so it can't collide with the sticky booking CTA.
 
-No other footer content moves.
+### 2. Premium footer treatment
 
-### 3. Unchanged
-Organization JSON-LD `aggregateRating` (4.9 / 1000) already added — stays as is. Brand palette untouched.
+The vendor widget is green/black by default. To keep it feeling like YES and not a bolted-on ad:
+
+- It sits on a small ivory plate inside a quiet gold hairline frame, same plate language already used for the Livro de Reclamações seal.
+- Slightly reduced scale on mobile so both seals still share **one line** at 320 / 393 / 768 px (existing `flex-nowrap` row).
+- Muted opacity at rest, full opacity on hover/focus — discreet, not shouty.
+
+### 3. Static seal stays as fallback + elsewhere
+
+- If the script is blocked (ad-blocker, consent declined, network), our existing `TrustindexBadge` renders instead, so the footer is never empty.
+- The compact static seal keeps being used on any other surface where we want trust without third-party JS.
+
+### 4. Security header
+
+`public/_headers` CSP currently blocks `cdn.trustindex.io`. I'll add it to `script-src` (and `img-src`/`connect-src` if the widget needs it) — narrowly, nothing else opens up.
+
+### 5. Data stays in sync
+
+`src/config/trust-certificate.ts` remains the single source of truth for the JSON-LD `aggregateRating` (4.9 · 1000). Existing regression test keeps badge ↔ JSON-LD aligned.
+
+### 6. Verification
+
+- Playwright pass at 320 / 393 / 768 px: both seals on one line, no clipping, no CLS.
+- Confirm in your Trustindex dashboard that `yesexperiencesportugal.com` appears under "Widget appearances" after publish.
 
 ## Technical notes
-Static markup only; certificate numbers stay as constants at the top of the badge file for easy updates.
+
+Widget ID goes in `src/config/trust-certificate.ts` as `widgetId`, so it's updatable in one place. Loading is lazy + consent-gated, so Core Web Vitals budgets in `e2e/core-web-vitals.spec.ts` stay green.
