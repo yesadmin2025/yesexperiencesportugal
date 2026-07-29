@@ -1,38 +1,45 @@
 /**
- * TrustindexBadge — discreet, brand-native review certificate line for the footer.
+ * TrustindexBadge — official-look review certificate, rebuilt in static markup.
  *
- * Why not the official floating widget: Trustindex's `loader-cert.js` injects a
- * fixed green badge in the viewport corner. It collides with the sticky CTA on
- * mobile and breaks the ivory/gold/charcoal language. We render the same facts
- * statically (zero third-party JS, zero CSP change, zero CLS) and keep the
- * official Trustindex check mark inline so the certificate reads as verified.
+ * Why not the vendor script: Trustindex's `loader-cert.js` injects a fixed
+ * floating badge that collides with the sticky mobile CTA. We reproduce the
+ * official certificate exactly (rating block + "Trusted Site / Verified by
+ * Trustindex" card) with zero third-party JS, zero CSP change, zero CLS.
  *
- * Numbers below mirror the public certificate — update them here when the
- * certificate updates.
+ * The green/black/white are the third-party certificate's own mark — treated
+ * like the Livro de Reclamações seal, so they intentionally sit outside the
+ * brand palette and are placed on a light plate to read on the charcoal footer.
+ *
+ * Numbers below mirror the public certificate — update them here when it changes.
  */
 
 /** Public certificate values — keep in sync with admin.trustindex.io. */
 const RATING = "4.9";
-const REVIEW_COUNT = "1,000";
+const REVIEW_COUNT = "1000";
 const CERTIFICATE_URL = "https://www.trustindex.io/reviews/yesexperiencesportugal.com";
 
-/** Official Trustindex mark: green disc + white check. Kept at 13px. */
-function TrustindexMark() {
+const TRUSTINDEX_GREEN = "#3E9C6D";
+
+function Star() {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      width={13}
-      height={13}
-      aria-hidden="true"
-      focusable="false"
-      className="shrink-0"
-    >
-      <circle cx="12" cy="12" r="12" fill="#0E9E63" />
+    <svg viewBox="0 0 24 24" width={11} height={11} aria-hidden="true" focusable="false">
+      <path
+        d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"
+        fill={TRUSTINDEX_GREEN}
+      />
+    </svg>
+  );
+}
+
+function CheckDisc() {
+  return (
+    <svg viewBox="0 0 24 24" width={12} height={12} aria-hidden="true" focusable="false" className="shrink-0">
+      <circle cx="12" cy="12" r="12" fill={TRUSTINDEX_GREEN} />
       <path
         d="M6.8 12.4l3.3 3.3 7.1-7.1"
         fill="none"
         stroke="#FFFFFF"
-        strokeWidth="2.4"
+        strokeWidth="2.6"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -47,28 +54,43 @@ export function TrustindexBadge() {
       target="_blank"
       rel="noopener noreferrer nofollow"
       aria-label={`Excellent rating ${RATING} out of 5 from ${REVIEW_COUNT} customer reviews — open the Trustindex certificate (opens in a new tab)`}
-      className="tap mx-auto inline-flex min-h-[44px] max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-sm px-2 text-center text-[color:var(--ivory)]/75 transition-opacity duration-[var(--dur-quick)] hover:text-[color:var(--ivory)] hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+      className="tap inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-[6px] bg-[#FFFFFF] px-2.5 py-1.5 transition-opacity duration-[var(--dur-quick)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)] sm:gap-2.5 sm:px-3"
     >
-      <span
-        aria-hidden="true"
-        className="text-[11px] leading-none text-[color:var(--gold)]"
-        style={{ letterSpacing: "0.06em" }}
-      >
-        ★★★★★
+      {/* Rating block */}
+      <span className="flex flex-col gap-[2px] font-[family-name:var(--font-sans)] leading-none text-[#1A1A1A]">
+        <span className="text-[9.5px]" style={{ fontWeight: 700 }}>
+          Excellent rating
+        </span>
+        <span className="flex items-center gap-[3px]">
+          <span aria-hidden="true" className="flex items-center gap-[1px]">
+            <Star />
+            <Star />
+            <Star />
+            <Star />
+            <Star />
+          </span>
+          <span className="text-[10px]" style={{ fontWeight: 700 }}>
+            {RATING}
+          </span>
+        </span>
+        <span className="text-[9.5px]" style={{ fontWeight: 700 }}>
+          {REVIEW_COUNT} customer reviews
+        </span>
       </span>
-      <span
-        className="font-[family-name:var(--font-sans)] text-[10.5px] uppercase leading-none"
-        style={{ fontWeight: 600, letterSpacing: "0.2em" }}
-      >
-        {RATING} · {REVIEW_COUNT} reviews
-      </span>
-      <span className="inline-flex items-center gap-1.5">
-        <TrustindexMark />
-        <span
-          className="font-[family-name:var(--font-sans)] text-[10.5px] uppercase leading-none"
-          style={{ fontWeight: 500, letterSpacing: "0.2em" }}
-        >
-          Verified by Trustindex
+
+      {/* Certificate card */}
+      <span className="flex shrink-0 flex-col overflow-hidden rounded-[4px] font-[family-name:var(--font-sans)] leading-none">
+        <span className="flex items-center justify-center gap-1 bg-[#FFFFFF] px-2 py-[3px] text-[10px] text-[#1A1A1A]" style={{ fontWeight: 700 }}>
+          <CheckDisc />
+          Trusted Site
+        </span>
+        <span className="flex flex-col items-center bg-[#111111] px-2 py-[3px] text-[#FFFFFF]">
+          <span className="text-[7.5px]" style={{ fontWeight: 400 }}>
+            Verified by
+          </span>
+          <span className="text-[9px]" style={{ fontWeight: 700 }}>
+            Trustindex
+          </span>
         </span>
       </span>
     </a>

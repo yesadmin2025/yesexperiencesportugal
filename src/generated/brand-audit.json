@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-29T20:17:54.005Z",
+  "generatedAt": "2026-07-29T20:31:19.920Z",
   "filesScanned": 936,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 396,
+    "total": 398,
     "approved": 102,
-    "allowlisted": 67,
-    "mismatch": 227
+    "allowlisted": 68,
+    "mismatch": 228
   },
   "findings": [
     {
@@ -1903,6 +1903,24 @@
       "raw": "#FFFFFF",
       "normalized": "#ffffff",
       "snippet": "foreground: \"#FFFFFF\",",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/components/trust/TrustindexBadge.tsx",
+      "line": 30,
+      "col": 44,
+      "raw": "#0E9E63",
+      "normalized": "#0e9e63",
+      "snippet": "<circle cx=\"12\" cy=\"12\" r=\"12\" fill=\"#0E9E63\" />",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/trust/TrustindexBadge.tsx",
+      "line": 34,
+      "col": 17,
+      "raw": "#FFFFFF",
+      "normalized": "#ffffff",
+      "snippet": "stroke=\"#FFFFFF\"",
       "status": "allowlisted"
     },
     {
