@@ -1,32 +1,33 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 /**
  * Trustindex review certificate — footer only, loaded once site-wide.
  *
  * The official loader script is injected asynchronously and idempotently
- * (guarded by the src lookup), and renders into the container below.
- * We never touch the widget's markup, links or branding — it simply sits
- * inside a warm ivory, gold-ruled container so it reads as part of the
- * YES footer instead of a third-party badge.
+ * into the slot below, so the certificate renders in place (the loader
+ * positions itself relative to its own script tag) rather than as a
+ * floating widget. We never touch the widget's markup, links or branding
+ * — it simply sits inside a warm ivory, gold-ruled container so it reads
+ * as part of the YES footer instead of a third-party badge.
  *
  * CLS: the slot reserves a fixed min-height before the widget paints.
  */
 
 const TRUSTINDEX_SRC = "https://cdn.trustindex.io/loader-cert.js?5b4acfc688a54881970649b49a5";
 
-function ensureTrustindexScript() {
-  if (typeof document === "undefined") return;
-  if (document.querySelector(`script[src="${TRUSTINDEX_SRC}"]`)) return;
-  const s = document.createElement("script");
-  s.src = TRUSTINDEX_SRC;
-  s.async = true;
-  s.defer = true;
-  document.body.appendChild(s);
-}
-
 export function TrustindexCertificate() {
+  const slotRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
-    ensureTrustindexScript();
+    if (typeof document === "undefined") return;
+    if (document.querySelector(`script[src="${TRUSTINDEX_SRC}"]`)) return;
+    const slot = slotRef.current;
+    if (!slot) return;
+    const s = document.createElement("script");
+    s.src = TRUSTINDEX_SRC;
+    s.async = true;
+    s.defer = true;
+    slot.appendChild(s);
   }, []);
 
   return (
@@ -41,10 +42,7 @@ export function TrustindexCertificate() {
         Independent review verification
       </h3>
 
-      <span
-        aria-hidden="true"
-        className="mx-auto mt-4 block h-px w-10 bg-[color:var(--gold)]"
-      />
+      <span aria-hidden="true" className="mx-auto mt-4 block h-px w-10 bg-[color:var(--gold)]" />
 
       <p className="mt-4 text-[12px] leading-[1.7] text-[color:var(--charcoal-soft)]">
         <span aria-hidden="true" className="text-[color:var(--gold)]">
@@ -59,6 +57,7 @@ export function TrustindexCertificate() {
 
       {/* Official Trustindex certificate — rendered by the loader script. */}
       <div
+        ref={slotRef}
         className="mx-auto mt-6 flex min-h-[150px] w-full max-w-full items-center justify-center overflow-x-hidden"
         aria-label="Trustindex review certificate"
       />
