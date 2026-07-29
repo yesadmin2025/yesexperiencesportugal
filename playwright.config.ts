@@ -1,16 +1,21 @@
+import { createRequire, register } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
 
 // Specs import real app modules, which in turn import images. Node can't parse
-// a JPEG as JavaScript, so we preload a stub hook into every worker process
-// (workers inherit this env) that resolves asset imports to their URL string.
+// a JPEG as JavaScript, so we install a stub hook that resolves asset imports
+// to their URL string — once here for the process that collects the tests, and
+// again via NODE_OPTIONS for every worker process that runs them.
 const assetHook = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   "e2e",
   "asset-require-hook.cjs",
 );
+createRequire(import.meta.url)(assetHook);
 process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS ?? ""} --require ${assetHook}`.trim();
+void register;
+
 
 
 /**
