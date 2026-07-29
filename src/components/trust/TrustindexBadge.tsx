@@ -13,10 +13,12 @@
  * Numbers below mirror the public certificate — update them here when it changes.
  */
 
-/** Public certificate values — keep in sync with admin.trustindex.io. */
-const RATING = "4.9";
-const REVIEW_COUNT = "1000";
-const CERTIFICATE_URL = "https://www.trustindex.io/reviews/yesexperiencesportugal.com";
+/** Public certificate values — single source of truth shared with JSON-LD. */
+import { REVIEW_CERTIFICATE, REVIEW_COUNT_DISPLAY } from "@/config/trust-certificate";
+
+const RATING = REVIEW_CERTIFICATE.ratingValue;
+const REVIEW_COUNT = REVIEW_COUNT_DISPLAY;
+const CERTIFICATE_URL = REVIEW_CERTIFICATE.url;
 
 const TRUSTINDEX_GREEN = "#3E9C6D";
 
