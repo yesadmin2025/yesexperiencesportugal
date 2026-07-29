@@ -2,7 +2,7 @@
  * CredentialStrip — a one-line operator-credentials microstrip.
  *
  * Not a review / popularity signal (those live in <GuestQuotes />, the
- * <StudioTrustStrip /> and the Trustmary widget). This strip carries only
+ * <StudioTrustStrip /> and the footer review certificate). This strip carries only
  * the operator-legitimacy cues a hesitant traveller looks for at the
  * point of doubt: licence, insurance, secure checkout, human support.
  *

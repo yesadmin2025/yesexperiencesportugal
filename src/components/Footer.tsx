@@ -4,6 +4,7 @@ import { ShieldCheck, BadgeCheck, Lock, ChevronDown } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import { LivroReclamacoesBadge } from "@/components/trust/LivroReclamacoesBadge";
+import { TrustindexBadge } from "@/components/trust/TrustindexBadge";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AccessibleIconLink } from "@/components/AccessibleIconLink";
 import {
@@ -293,8 +294,13 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Official seal — closing signature, centered at every width. */}
+            {/* Review certificate — discreet, brand-native, above the seal. */}
             <div className="mt-6 flex w-full min-w-0 items-center justify-center text-center">
+              <TrustindexBadge />
+            </div>
+
+            {/* Official seal — closing signature, centered at every width. */}
+            <div className="mt-3 flex w-full min-w-0 items-center justify-center text-center">
               <LivroReclamacoesBadge />
             </div>
           </div>

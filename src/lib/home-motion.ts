@@ -304,7 +304,7 @@ export function startHomeMotion(): () => void {
   });
 
   // Re-scan periodically during the early-mount window to catch elements
-  // that mount lazily after the initial frame (e.g. Trustmary, images).
+  // that mount lazily after the initial frame (e.g. lazy images).
   const pollEnd = Date.now() + POLL_AFTER_INIT_MS;
   let pollId = 0;
   const poll = () => {
