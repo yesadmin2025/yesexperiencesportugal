@@ -63,8 +63,9 @@ async function measureLogo(page: Page, selector: string) {
 
 test.describe("Footer logo proportions match navbar (mobile)", () => {
   // Run only on the mobile project — desktop has its own chrome regression.
-  // eslint-disable-next-line no-empty-pattern -- Playwright requires the first
-  // arg to be an object destructuring pattern, even when unused.
+  // Playwright requires the first arg to be an object destructuring pattern,
+  // even when unused.
+  // eslint-disable-next-line no-empty-pattern
   test.skip(({}, testInfo) => testInfo.project.name !== "mobile-chromium", "mobile-only spec");
 
   for (const bp of MOBILE_BREAKPOINTS) {
