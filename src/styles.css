@@ -6890,3 +6890,39 @@ html {
     clip-path: none !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Trustindex vendor certificate (third-party).
+
+   The loader injects a fixed floating certificate. We keep it — it is what
+   makes Trustindex verify the domain — but hold it to our own manners:
+   discreet at rest, never over the sticky booking CTA, hidden on phones where
+   the footer's static seal already carries the signal.
+--------------------------------------------------------------------------- */
+.ti-widget[data-layout-id],
+#ti-widget-container,
+.trustindex-widget,
+[class^="ti-certificate"],
+[class*=" ti-certificate"] {
+  z-index: 30 !important;
+  opacity: 0.82;
+  transition: opacity var(--dur-quick, 180ms) ease;
+}
+
+.ti-widget[data-layout-id]:hover,
+#ti-widget-container:hover,
+.trustindex-widget:hover,
+[class^="ti-certificate"]:hover,
+[class*=" ti-certificate"]:hover {
+  opacity: 1;
+}
+
+@media (max-width: 767px) {
+  .ti-widget[data-layout-id],
+  #ti-widget-container,
+  .trustindex-widget,
+  [class^="ti-certificate"],
+  [class*=" ti-certificate"] {
+    display: none !important;
+  }
+}
