@@ -294,15 +294,13 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Review certificate — discreet, brand-native, above the seal. */}
-            <div className="mt-6 flex w-full min-w-0 items-center justify-center text-center">
+            {/* Trust seals — review certificate + official complaints book,
+                side by side so the footer close stays compact. */}
+            <div className="mt-6 flex w-full min-w-0 flex-wrap items-center justify-center gap-x-4 gap-y-3 text-center sm:gap-x-6">
               <TrustindexBadge />
-            </div>
-
-            {/* Official seal — closing signature, centered at every width. */}
-            <div className="mt-3 flex w-full min-w-0 items-center justify-center text-center">
               <LivroReclamacoesBadge />
             </div>
+
           </div>
         </div>
       </div>

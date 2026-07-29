@@ -48,7 +48,7 @@ export function LivroReclamacoesBadge() {
           // the link stays reachable through its aria-label.
           e.currentTarget.style.display = "none";
         }}
-        className="mx-auto block h-[52px] w-[130px] max-w-full select-none object-contain sm:h-[60px] sm:w-[150px]"
+        className="mx-auto block h-[42px] w-[105px] max-w-full select-none object-contain sm:h-[56px] sm:w-[140px]"
       />
 
     </a>

@@ -1,41 +1,34 @@
-## Objetivo
+## Goal
 
-Selo Trustindex estático e discreto no rodapé, em linguagem de marca (ivory/gold sobre charcoal), sem o badge flutuante verde. Trustindex passa a ser o único fornecedor de reviews de terceiros no site.
+Make the review certificate look like the official Trustindex asset (as in the picture) — more credible — and place it **side by side** with the Livro de Reclamações seal so the footer stays compact.
 
-## O que muda
+## What changes
 
-### 1. Novo `src/components/trust/TrustindexBadge.tsx`
+### 1. Rebuild `src/components/trust/TrustindexBadge.tsx`
+Recreate the official certificate layout, in code (no third-party script, no CLS):
 
-Selo estático, sem script de terceiros a correr em todas as páginas:
+```text
+Excellent rating        ┌───────────────────────┐
+★★★★★  4.9              │ ✓  Trusted Site       │  (white top)
+1000 customer reviews   │ Verified by Trustindex│  (black bottom)
+                        └───────────────────────┘
+```
 
-- Uma linha, Inter 11px uppercase, tracking 0.22em:
-`★★★★★ 4.9 · 1000 reviews · Verified by Trustindex`
-- Estrelas em `--gold`, texto em `--ivory`/75, sem caixa verde nem logo importado.
-- Link para a página pública do certificado Trustindex (`target="_blank"`, `rel="noopener nofollow"`), min-height 44px, focus-visible em gold — mesmas regras dos outros badges de confiança.
-- Sem animação; respeita `prefers-reduced-motion` por herança da regra global.
-- Valores (4.9 / 1000) num único `const` no topo do ficheiro, fáceis de atualizar.
+- Left block: "Excellent rating" (bold), green star row + 4.9, "1000 customer reviews".
+- Right block: rounded card — white top row with green check disc + "Trusted Site", black bottom row with "Verified by Trustindex".
+- Rendered on a small ivory/white plate so the official green/black/white reads correctly against the charcoal footer, keeping brand tokens untouched (the certificate is a third-party mark, treated like the Livro de Reclamações seal).
+- Compact scale for mobile (about 40% smaller than the reference), still a ≥44px tap target, links to the certificate URL with the same aria-label.
 
-### 2. `src/components/Footer.tsx`
+### 2. Footer layout — one shared trust row
+In `src/components/Footer.tsx` (lines 297–305), replace the two stacked centered blocks with a single row:
 
-Renderizar o selo na barra legal, imediatamente acima do Livro de Reclamações, separado por espaçamento (sem nova regra visual — a barra já tem a linha gold). Ordem final do rodapé: pagamentos → barra legal → Trustindex → Livro de Reclamações.
+- Mobile (393px): both seals on one line, centered, `flex items-center justify-center gap-4`, each allowed to shrink; wraps only if truly needed.
+- Tablet/desktop: same row, slightly larger gap.
 
-### 3. Remover o Trustmary
+No other footer content moves.
 
-`TrustmarySection.tsx` não está montado em nenhuma rota (só referências em comentários e no checklist de QA). Como pediste um só fornecedor:
+### 3. Unchanged
+Organization JSON-LD `aggregateRating` (4.9 / 1000) already added — stays as is. Brand palette untouched.
 
-- Apagar `src/components/TrustmarySection.tsx`.
-- Limpar as referências em `src/routes/qa.mobile.tsx` (secção "5 — Trustmary widget"), `src/content/approved-homepage-structure.ts`, `src/lib/home-motion.ts` e `src/components/ui/CredentialStrip.tsx` (comentários).
-- A homepage mantém as reviews reais próprias (`RealReviewsStrip` / `GuestQuotes`) — nada de conteúdo perdido.
-
-### 4. SEO
-
-O script do Trustindex não gera `AggregateRating` rastreável (injeção client-side), por isso o ganho vem do nosso JSON-LD:
-
-- Adicionar `aggregateRating` (4.9 / 1000) à entidade `Organization`/`TravelAgency` em `src/lib/jsonld.ts`, já que os valores são verificáveis no certificado público.
-- Nada de números inventados; se preferires não publicar o agregado ao nível da organização, salto este ponto.
-
-Como não carregamos o `loader-cert.js`, **não é preciso mexer na CSP** em `public/_headers` — zero impacto em performance e em Core Web Vitals.
-
-## Teste
-
-Playwright rápido: selo visível no rodapé a 393px e em desktop, link abre em nova aba, sem badge flutuante em viewport, contraste ok sobre charcoal. Mas anger o icon oficial do trust index de forma credível 
+## Technical notes
+Static markup only; certificate numbers stay as constants at the top of the badge file for easy updates.
