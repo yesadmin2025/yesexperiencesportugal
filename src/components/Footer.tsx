@@ -4,6 +4,7 @@ import { ShieldCheck, BadgeCheck, Lock, ChevronDown } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import { LivroReclamacoesBadge } from "@/components/trust/LivroReclamacoesBadge";
+import { TrustindexCertificate } from "@/components/trust/TrustindexCertificate";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AccessibleIconLink } from "@/components/AccessibleIconLink";
 import {
@@ -270,6 +271,13 @@ export function Footer() {
           <div className="mt-8">
             <PaymentMethodsRow />
           </div>
+
+          {/* Trust — independent review certification */}
+          <div className="mt-10">
+            <TrustindexCertificate />
+          </div>
+
+
 
           {/* Legal bar */}
           <div className="mt-8 pt-6 border-t border-[color:var(--gold-warm)]/15">
