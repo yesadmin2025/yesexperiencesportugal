@@ -109,9 +109,16 @@ const VIEWPORTS = [
   },
   {
     name: "mobile 393×851 (iPhone 14)",
+    // Emulation fields only — spreading the whole device descriptor would
+    // carry `defaultBrowserType`, which Playwright forbids inside a
+    // test.describe() block ("forces a new worker") and which would break
+    // spec collection for the entire suite.
     use: {
-      ...devices["iPhone 14"],
       viewport: { width: 393, height: 851 },
+      userAgent: devices["iPhone 14"].userAgent,
+      deviceScaleFactor: devices["iPhone 14"].deviceScaleFactor,
+      isMobile: devices["iPhone 14"].isMobile,
+      hasTouch: devices["iPhone 14"].hasTouch,
     },
     droppedFrameRatioMax: 0.05, // ≤5% under mobile decode pressure
     firstFrameBudgetMs: 2500, // mobile decode pressure → +500ms slack
