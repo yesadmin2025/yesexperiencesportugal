@@ -47,7 +47,7 @@ export function TrustindexBadge() {
       target="_blank"
       rel="noopener noreferrer nofollow"
       aria-label={`Excellent rating ${RATING} out of 5 from ${REVIEW_COUNT} customer reviews — open the Trustindex certificate (opens in a new tab)`}
-      className="tap mx-auto inline-flex min-h-[44px] max-w-full items-center justify-center gap-2 rounded-sm px-2 text-[color:var(--ivory)]/75 transition-opacity duration-[var(--dur-quick)] hover:text-[color:var(--ivory)] hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+      className="tap mx-auto inline-flex min-h-[44px] max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-sm px-2 text-center text-[color:var(--ivory)]/75 transition-opacity duration-[var(--dur-quick)] hover:text-[color:var(--ivory)] hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
     >
       <span
         aria-hidden="true"
@@ -64,9 +64,9 @@ export function TrustindexBadge() {
       </span>
       <span
         aria-hidden="true"
-        className="hidden h-3 w-px bg-[color:var(--ivory)]/20 sm:block"
+        className="h-3 w-px bg-[color:var(--ivory)]/20"
       />
-      <span className="hidden items-center gap-1.5 sm:inline-flex">
+      <span className="inline-flex items-center gap-1.5">
         <TrustindexMark />
         <span
           className="font-[family-name:var(--font-sans)] text-[10.5px] uppercase leading-none"
