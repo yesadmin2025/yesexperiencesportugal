@@ -1,5 +1,5 @@
-import { createRequire, register } from "node:module";
-import { fileURLToPath } from "node:url";
+import { register } from "node:module";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
 
@@ -7,14 +7,11 @@ import { defineConfig, devices } from "@playwright/test";
 // a JPEG as JavaScript, so we install a stub hook that resolves asset imports
 // to their URL string — once here for the process that collects the tests, and
 // again via NODE_OPTIONS for every worker process that runs them.
-const assetHook = path.join(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "e2e",
-  "asset-require-hook.cjs",
-);
-createRequire(import.meta.url)(assetHook);
-process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS ?? ""} --require ${assetHook}`.trim();
-void register;
+const e2eDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "e2e");
+register(pathToFileURL(path.join(e2eDir, "asset-esm-hook.mjs")).href);
+process.env.NODE_OPTIONS =
+  `${process.env.NODE_OPTIONS ?? ""} --import ${pathToFileURL(path.join(e2eDir, "register-asset-hook.mjs")).href}`.trim();
+
 
 
 
