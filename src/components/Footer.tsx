@@ -5,6 +5,7 @@ import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import { LivroReclamacoesBadge } from "@/components/trust/LivroReclamacoesBadge";
 import { TrustindexBadge } from "@/components/trust/TrustindexBadge";
+import { TrustindexWidget } from "@/components/trust/TrustindexWidget";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AccessibleIconLink } from "@/components/AccessibleIconLink";
 import {
