@@ -1,159 +1,89 @@
-# 🇵🇹 Yes Experiences Portugal - Quick Start
+# YES Experiences Portugal
 
-A modern TypeScript React web application showcasing Portugal experiences.
+Premium tourism site for YES Experiences Portugal — Signature tours, the Tailor flow, Studio V3, the Builder, corporate proposals and instant Stripe checkout.
 
-## ⚡ Quick Start (5 minutes)
+## Stack
 
-### 1️⃣ Clone the Repository
+| Layer | Technology |
+| --- | --- |
+| Framework | TanStack Start v1 (React 19, SSR + prerender) |
+| Router | TanStack Router (file-based, `src/routes/`) |
+| Build | Vite 7 |
+| Runtime / package manager | Bun (`bun.lock`, text lockfile) |
+| Styling | Tailwind CSS v4 via `src/styles.css` (`@theme` tokens, no `tailwind.config.js`) |
+| Backend | Lovable Cloud (Postgres, auth, storage, edge functions) |
+| Payments | Stripe |
+| Maps | Leaflet + Mapbox |
+| Unit tests | Vitest |
+| E2E / visual | Playwright |
 
-Choose ONE of these commands:
+Deployment target is an edge worker runtime — server code must be Worker-compatible (no native addons, no child processes).
 
-**Using GitHub CLI (recommended):**
-```bash
-gh repo clone yesadmin2025/yesexperiencesportugal
-cd yesexperiencesportugal
-```
-
-**Using Git:**
-```bash
-git clone https://github.com/yesadmin2025/yesexperiencesportugal.git
-cd yesexperiencesportugal
-```
-
----
-
-### 2️⃣ Run the Setup Script
+## Getting started
 
 ```bash
-npm run setup
+bun install
+bun run dev        # http://localhost:8080
 ```
 
-This will automatically:
-- ✅ Install all dependencies
-- ✅ Build the project
-- ✅ Run tests
-- ✅ Display next steps
+`predev` and `prebuild` run the guard scripts (CSS braces, motion budget, route imports, hero scene IDs, brand audits, hero a11y) before the server or build starts.
 
----
+## Commands
 
-### 3️⃣ Start Development
+| Command | Purpose |
+| --- | --- |
+| `bun run dev` | Dev server on port 8080 |
+| `bun run build` | Production build (`vite build`) |
+| `bun run build:dev` | Development-mode build, used to catch prerender failures |
+| `bun run test` | Full Vitest suite |
+| `bun run test:watch` | Vitest in watch mode |
+| `bun run test:e2e` | Playwright suite (`bun run test:e2e:install` once, first) |
+| `bun run lint` | ESLint |
+| `bun run format` | Prettier |
+| `bun run brand:audit` | Palette/token audit → `src/generated/brand-audit.json` |
+| `bun run brand:audit:site` | Site-wide brand audit |
+| `bun run check:routes` | Route import guard |
+| `bun run qa:hero-copy` | Hero copy lock check |
+| `bun run test:sot-parity` | Signature tours vs. Viator source-of-truth parity |
 
-```bash
-npm run dev
-```
+TypeScript check: `bunx tsgo --noEmit`.
 
-Your app will open at **http://localhost:3000** 🎉
-
----
-
-## 📚 Available Commands
-
-| Command | Description |
-|---------|-------------|
-| `npm run setup` | Automatic setup (install, build, test) |
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run test` | Run tests |
-| `npm run test:coverage` | Run tests with coverage |
-| `npm run lint` | Check code quality |
-| `npm run format` | Format code automatically |
-| `npm run type-check` | Check TypeScript types |
-
----
-
-## 📦 Tech Stack
-
-- **Frontend**: React 18 with TypeScript
-- **Build**: Vite (ultra-fast)
-- **Testing**: Vitest + React Testing Library
-- **Code Quality**: ESLint, Prettier, TypeScript
-- **CI/CD**: GitHub Actions
-
----
-
-## 📁 Project Structure
+## Project structure
 
 ```
-yesexperiencesportugal/
-├── src/
-│   ├── main.tsx           # React entry point
-│   ├── App.tsx            # Main component
-│   ├── App.css            # Styles
-│   ├── App.test.tsx       # Tests
-│   └── index.css          # Global styles
-├── index.html             # HTML entry
-├── package.json           # Dependencies
-├── tsconfig.json          # TypeScript config
-├── vite.config.ts         # Build config
-├── .github/workflows/     # GitHub Actions
-└── README.md              # This file
+src/
+  routes/              file-based routes; api/ for server routes, api/public/ bypasses auth
+  routes/__root.tsx    root layout, <head> metadata, global providers
+  components/          UI (ui/ holds shadcn + canonical primitives)
+  lib/                 helpers; *.functions.ts = server functions, *.server.ts = server-only
+  config/              single sources of truth (pricing, business NAP, trust certificate)
+  content/             editorial copy, SEO FAQ, local stories
+  data/                signatureToursSourceOfTruth.ts and related fixed data
+  integrations/        generated Lovable Cloud clients — do not edit by hand
+  styles.css           Tailwind v4 theme tokens
+e2e/                   Playwright specs and visual baselines
+scripts/               prebuild guards and audit scripts
+docs/                  QA, SEO and audit reports
+.github/workflows/     CI (typecheck, prebuild, visual, a11y, checkout gates)
 ```
 
----
+There is no `src/App.tsx`, `src/main.tsx` or `src/pages/` — routing is entirely file-based under `src/routes/`.
 
-## 🚀 Development Workflow
+## Sources of truth
 
-1. **Make changes** in the `src/` folder
-2. **See live updates** in your browser (Hot Reload)
-3. **Write tests** in `*.test.tsx` files
-4. **Run `npm run lint`** to check code quality
-5. **Run `npm run format`** to auto-format code
-6. **Commit and push** - GitHub Actions will test automatically
+Do not hardcode values that live in these files:
 
----
+- `src/data/signatureToursSourceOfTruth.ts` — tour stops, inclusions, durations. Never invent stops, partners, prices or itineraries.
+- `src/config/pricing.ts` — pricing rules and the direct-booking discount.
+- `src/config/business-nap.ts` — legal name, address, phone, licence data.
+- `src/config/trust-certificate.ts` — Trustindex rating shown in the footer and in JSON-LD.
 
-## 🔄 GitHub Actions CI/CD
+Brand tokens (teal, gold, ivory, sand, charcoal) live in `src/styles.css`. Typography is Fraunces (headings) plus Inter (body) only. Never hardcode color utilities in components.
 
-Your repository has automated workflows that:
+## CI
 
-1. **On every push**:
-   - Run linting
-   - Type check
-   - Run tests
-   - Build project
-   - Upload artifacts
+Every workflow in `.github/workflows/` runs on Bun. Guard suites cover typecheck, prebuild scripts, hero copy/typography/visual locks, homepage structure, builder and Studio V3 regressions, signature map + a11y, pricing SSOT and the checkout gates. Checkout specs are release-blocking.
 
-2. **Setup verification**:
-   - Automatic setup script runs
-   - Verifies everything works
-   - Reports status
+## Environment
 
----
-
-## 📚 Learning Resources
-
-- [React Documentation](https://react.dev)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [Vite Guide](https://vitejs.dev/)
-- [Vitest Documentation](https://vitest.dev/)
-
----
-
-## 💡 Tips
-
-- **Hot Reload**: Changes appear instantly in the browser
-- **Type Safety**: TypeScript catches errors before runtime
-- **Fast Builds**: Vite is 10x faster than traditional bundlers
-- **Automated Testing**: Run `npm run test` after making changes
-
----
-
-## 🎯 Next Steps
-
-1. ✅ Run `npm run setup`
-2. ✅ Run `npm run dev`
-3. ✅ Explore the code in `src/`
-4. ✅ Make your first feature!
-
----
-
-## 📞 Need Help?
-
-- Check the [GitHub Issues](https://github.com/yesadmin2025/yesexperiencesportugal/issues)
-- Review the CI/CD logs in GitHub Actions
-- Check the test output for guidance
-
----
-
-**Happy coding! 🚀 Build amazing Portugal experiences!**
+Server secrets are read inside server-function handlers via `process.env`. Browser config uses `import.meta.env.VITE_*`. Cloud credentials in `.env` are generated — do not edit them by hand.
