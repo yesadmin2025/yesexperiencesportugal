@@ -1439,10 +1439,10 @@ export const signatureTours: SignatureTour[] = [
     focal: "50% 50%",
     gallery: [
       "/__l5e/assets-v1/7924df33-3fa2-4529-846e-008b2f637e54/southwest-vicentine-coast-cover.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/78/ad/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/e0/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/dd/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/e2/caption.jpg",
+      "/__l5e/assets-v1/a196f9b1-7319-4ad0-90a4-627239fc73f2/yes-tour-b6e8bf6b3edf.webp",
+      "/__l5e/assets-v1/efda4d5f-92d2-48dc-82d0-669496f77d36/yes-tour-be801f64f96b.webp",
+      "/__l5e/assets-v1/638fa871-f692-4f40-a55f-266ed4598d29/yes-tour-092bb83ed7a2.webp",
+      "/__l5e/assets-v1/d550a2d1-a58f-434c-8cac-8234ac9c53fe/yes-tour-70b3dfc928fa.webp",
     ],
     bookingUrl:
       "https://www.viator.com/tours/Lisbon/Exclusive-Southwest-Coast-Experience-Undiscovered-Hidden-Secret/d538-349639P16",
@@ -1475,7 +1475,7 @@ export const STOP_THEME_IMG: Record<StopTheme, string> = {
   "roman-heritage-alentejo": imgRomanHero,
   "sintra-cascais": imgSintraCascaisHero,
   "southwest-vicentine-coast":
-    "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/9c/2a/59/caption.jpg",
+    "/__l5e/assets-v1/f2725404-9b59-4a19-892d-4e5c1bc550ed/yes-tour-94c3a93cd262.webp",
   "tiles-workshop": imgTilesWorkshop,
   "tomar-coimbra": imgTomarCoimbraHero,
   "troia-comporta": imgTroiaComportaHero,

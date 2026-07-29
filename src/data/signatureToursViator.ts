@@ -202,11 +202,11 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       },
     ],
     gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/db/dd/b6.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/36/c6/89.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/2b/b4/5a/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/15/30/73/04.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/36/c6/7e.jpg",
+      "/__l5e/assets-v1/c5c5d49d-2312-4eb3-8b4c-0b31b4026fad/yes-tour-7cf4cd4feceb.webp",
+      "/__l5e/assets-v1/638715b5-30fd-4e2e-8474-e0a8d0e927ed/yes-tour-0b186fb99543.webp",
+      "/__l5e/assets-v1/3b5c78c4-709d-4969-b6b3-ffdb6b2bf24f/yes-tour-de7cff4a6b61.webp",
+      "/__l5e/assets-v1/53848967-19ae-4833-b412-4764662290e0/yes-tour-ba2452dc5fb6.webp",
+      "/__l5e/assets-v1/d2084a1d-3b62-4452-9ed7-c779bb01ec58/yes-tour-169b24606d3d.webp",
     ],
     // Source: supplier.viator.com — Wine & Tile Painting / Sesimbra & Traditions (TG1).
     // Platform per-pax EUR: 1→€279, 2-3→€215, 4-6→€189, 7-8→€159.
@@ -314,11 +314,11 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       },
     ],
     gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/0f/ec/66/f5.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/0f/35/b9/0f.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/0f/35/b9/0c.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/0e/c0/cd/ea.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/78/ec/e4.jpg",
+      "/__l5e/assets-v1/b8462311-6fa9-47b7-a3ef-4775419d5db8/yes-tour-4921702ede90.webp",
+      "/__l5e/assets-v1/4a088cdb-ed37-49a5-8cb5-3601ba639f2d/yes-tour-3e31a1eaed4f.webp",
+      "/__l5e/assets-v1/01c4ca34-f50f-4584-8a0a-cc62eb4c227a/yes-tour-c8181717b436.webp",
+      "/__l5e/assets-v1/cb0f79d9-6c6c-4ad5-8685-7d660775bf6b/yes-tour-2cacc6503f9c.webp",
+      "/__l5e/assets-v1/2c89b5cf-0313-452c-9429-47dde8122817/yes-tour-e3ae2f33a7c4.webp",
     ],
     // Source: supplier.viator.com — Wild Beaches and Picnic Experience (TG1).
     // Platform per-pax EUR: 2-6→€159, 7-8→€139. Direct = platform − 15%.
@@ -386,11 +386,11 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       },
     ],
     gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/2b/14/5c/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/13/17/da/c4.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/13/17/15/10.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/13/17/14/fb.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/36/c6/7e.jpg",
+      "/__l5e/assets-v1/9b5d363f-b15d-448f-9191-0cbc9b70a639/yes-tour-32208c39c5bb.webp",
+      "/__l5e/assets-v1/a46b1945-37c9-4d09-8f51-6f14df1f6a18/yes-tour-5c0aa0f987da.webp",
+      "/__l5e/assets-v1/31d1aad3-5980-4465-a050-d132649af0c0/yes-tour-a8472e0832ae.webp",
+      "/__l5e/assets-v1/1177b9f6-a59c-4061-a129-f301a28895e0/yes-tour-b818b66db338.webp",
+      "/__l5e/assets-v1/d2084a1d-3b62-4452-9ed7-c779bb01ec58/yes-tour-169b24606d3d.webp",
     ],
     // Platform per-pax EUR: 2-3→€209, 4-5→€199, 6-8→€159. Direct = platform − 15%.
     priceTiersEUR: { 2: 178, 3: 178, 4: 169, 5: 169, 6: 135, 7: 135, 8: 135 },
@@ -466,11 +466,11 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       },
     ],
     gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/32/d2/34/4a/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/36/c6/4c.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/51/e0/92.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/40/f3/07.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/10/3e/4e/50.jpg",
+      "/__l5e/assets-v1/0064a0e9-f9b0-412c-9e80-e360b79e11bc/yes-tour-07486019b6ae.webp",
+      "/__l5e/assets-v1/e1508d0c-0d71-4c95-881a-86500b62bb13/yes-tour-fa90b71560ab.webp",
+      "/__l5e/assets-v1/9a9aef0f-7e1b-43d0-a3ba-f38fffb929d8/yes-tour-dbf559b5da10.webp",
+      "/__l5e/assets-v1/5c2ba8b5-9343-4324-a650-acb1b773b7ff/yes-tour-98fd2870302d.webp",
+      "/__l5e/assets-v1/e2f8d82d-28b9-4d27-8122-1786b01ba71d/yes-tour-753efd9deeca.webp",
     ],
   },
   "azeitao-cheese": {
@@ -539,11 +539,11 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       },
     ],
     gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/7c/3c/18.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/7c/38/fe.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/7c/39/0d.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/40/f3/53.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/4c/45/62.jpg",
+      "/__l5e/assets-v1/b68314ea-7e4c-4c18-b7c3-3dd46d513961/yes-tour-11977f71a12f.webp",
+      "/__l5e/assets-v1/8b8712c6-26a2-459d-9b02-9db766da6061/yes-tour-d828e4bb1213.webp",
+      "/__l5e/assets-v1/f93f82eb-95be-48ee-ae11-89d126aed778/yes-tour-316df35524f3.webp",
+      "/__l5e/assets-v1/bec563ce-6895-4b50-80d6-af92b8092449/yes-tour-a0646e5fa894.webp",
+      "/__l5e/assets-v1/1b01eab0-7b3f-4edc-aba9-7760db975268/yes-tour-f9d67cab8758.webp",
     ],
   },
   "sintra-cascais": {
@@ -623,11 +623,11 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       },
     ],
     gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/2b/06/27/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/74/20/11.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/74/20/2c.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/74/20/0f.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/74/20/10.jpg",
+      "/__l5e/assets-v1/bf6227b4-6bdd-44a7-9809-738edce5e10a/yes-tour-945fc1083553.webp",
+      "/__l5e/assets-v1/b0835bfc-9b72-41f4-b0b6-b2e6f1c1be24/yes-tour-7e6736bdf85d.webp",
+      "/__l5e/assets-v1/e1cf4272-2013-43f6-95a8-b0fabc6a7bd7/yes-tour-ec5e336e11e6.webp",
+      "/__l5e/assets-v1/b2206e16-abb3-409d-ab28-7f18f554d2ea/yes-tour-57e2e76ab9c8.webp",
+      "/__l5e/assets-v1/ee402de0-f407-4153-98d1-84d529f06f5c/yes-tour-39261086d19d.webp",
     ],
   },
   "troia-comporta": {
@@ -703,11 +703,11 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       },
     ],
     gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/32/f2/00/39/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/17/11/72/ea.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/2a/f5/51/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/17/11/72/ef.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/17/11/72/f1.jpg",
+      "/__l5e/assets-v1/663f5f19-d8f4-4117-9a3b-166fb2a6661f/yes-tour-5184039e1dd6.webp",
+      "/__l5e/assets-v1/8a356c0f-dfb4-491b-998e-7c99d2093823/yes-tour-d3de33376d90.webp",
+      "/__l5e/assets-v1/81297cd8-fd3a-4431-ad88-c488178c45df/yes-tour-2c32f1682d8e.webp",
+      "/__l5e/assets-v1/1e3e3f66-ed67-4137-bd81-2f1053f80cc1/yes-tour-6b270461b973.webp",
+      "/__l5e/assets-v1/615df98b-77e3-4e80-9712-a4b62b5ca868/yes-tour-6b22d91c8cf3.webp",
     ],
     // Source: supplier.viator.com — platform per-pax EUR: 2→€285, 3-4→€235, 5-7→€195, 8-12→€185. Min 2 pax. Direct = platform − 15%.
     priceTiersEUR: { 2: 242, 3: 200, 4: 200, 5: 166, 6: 166, 7: 166, 8: 157 },
@@ -810,11 +810,11 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       },
     ],
     gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/2b/cb/8a/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/11/f9/67/80.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/78/ed/78.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/78/ed/76.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/11/82/30/56.jpg",
+      "/__l5e/assets-v1/114ddeb0-af7e-4993-ac55-2c4a42846122/yes-tour-40a955224793.webp",
+      "/__l5e/assets-v1/069e9c3a-de65-4cd5-bb49-e3fd21f902fe/yes-tour-2a32e7057a8c.webp",
+      "/__l5e/assets-v1/b3a5d576-ebb7-48e3-88c9-1ac675eacdec/yes-tour-c0db8159b9d6.webp",
+      "/__l5e/assets-v1/8fde1e99-bfe4-4d84-8a6e-475f5b0e4e8e/yes-tour-988c23f202ec.webp",
+      "/__l5e/assets-v1/bba5a2ad-2688-4781-946d-096a9b154022/yes-tour-5c17e75e3509.webp",
     ],
   },
   "tomar-coimbra": {
@@ -882,11 +882,11 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       },
     ],
     gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/3b/18/0c.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/78/f0/0b.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/3b/18/03.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/3b/18/04.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/3b/18/06.jpg",
+      "/__l5e/assets-v1/18c7e244-3687-4922-8b46-4af4a653904a/yes-tour-5359882cb726.webp",
+      "/__l5e/assets-v1/1a5200c3-bd9f-4da8-9e78-b8927dd463a6/yes-tour-15f3131ecd68.webp",
+      "/__l5e/assets-v1/df455a24-9e2e-46b0-a18b-50b54b197fe2/yes-tour-94fcdc6b2a34.webp",
+      "/__l5e/assets-v1/6439f31b-a9e7-4952-9a7b-2e7167a9736b/yes-tour-aa82866d5ae9.webp",
+      "/__l5e/assets-v1/3248f3c2-1e98-4a20-84a9-d32aaf23dca2/yes-tour-d159a3683b9c.webp",
     ],
   },
   "fatima-nazare-obidos": {
@@ -952,11 +952,11 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
       },
     ],
     gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/11/f9/30/c0.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/11/f9/30/c2.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/2b/0b/d2/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/11/f9/30/bf.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/11/f9/30/c1.jpg",
+      "/__l5e/assets-v1/7cb7cecd-c5b4-40f9-9758-f3ac48169074/yes-tour-24ba2da08797.webp",
+      "/__l5e/assets-v1/fb451aa2-034b-4a08-b4ae-4359b45eafda/yes-tour-3eadd18ab04d.webp",
+      "/__l5e/assets-v1/dbab38d5-6c12-42b4-9463-2a7d8e451b17/yes-tour-6997415f6e5c.webp",
+      "/__l5e/assets-v1/957f3ed3-9309-476d-97f9-1b8e04706dce/yes-tour-765aade35e44.webp",
+      "/__l5e/assets-v1/ba5cd6bd-3b91-496b-8374-053ceaefc254/yes-tour-cf5a9416ddcb.webp",
     ],
   },
   "roman-heritage-alentejo": {
@@ -1004,11 +1004,11 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     ],
     topReviews: [],
     gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/f3/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/f6/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/81/ff/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/82/03/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/24/ad/15/caption.jpg",
+      "/__l5e/assets-v1/c089b6c8-e222-4009-ba95-8fb112c7086f/yes-tour-f242ec995989.webp",
+      "/__l5e/assets-v1/bf655d0d-dc01-4651-8cae-b43ccffeacaf/yes-tour-79b6e68aea8e.webp",
+      "/__l5e/assets-v1/5c5234e3-eeef-4bbf-93f7-9b4b41f7ba82/yes-tour-9f6c87d3e38b.webp",
+      "/__l5e/assets-v1/5dc5c045-e0d6-4d4e-b4c7-6d602557c819/yes-tour-0274ce3aa791.webp",
+      "/__l5e/assets-v1/49b96e2d-395f-4973-a847-b7aae3f6d4a2/yes-tour-0f11e3ea71a2.webp",
     ],
     // Source: supplier.viator.com — TG1, May 6 2026 – no end date.
     // Platform per-pax EUR: 2→€399, 3-4→€345, 5-6→€320, 7-10→€299. Direct = platform − 15%.
@@ -1065,11 +1065,11 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     ],
     topReviews: [],
     gallery: [
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/9c/2a/59/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/78/ad/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/e0/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/dd/caption.jpg",
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/r/33/98/77/e2/caption.jpg",
+      "/__l5e/assets-v1/f2725404-9b59-4a19-892d-4e5c1bc550ed/yes-tour-94c3a93cd262.webp",
+      "/__l5e/assets-v1/a196f9b1-7319-4ad0-90a4-627239fc73f2/yes-tour-b6e8bf6b3edf.webp",
+      "/__l5e/assets-v1/efda4d5f-92d2-48dc-82d0-669496f77d36/yes-tour-be801f64f96b.webp",
+      "/__l5e/assets-v1/638fa871-f692-4f40-a55f-266ed4598d29/yes-tour-092bb83ed7a2.webp",
+      "/__l5e/assets-v1/d550a2d1-a58f-434c-8cac-8234ac9c53fe/yes-tour-70b3dfc928fa.webp",
     ],
     localGallery: [
       {

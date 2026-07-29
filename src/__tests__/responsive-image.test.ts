@@ -4,7 +4,7 @@ import { buildResponsiveSrc, SIZES } from "@/lib/responsive-image";
 describe("buildResponsiveSrc", () => {
   it("routes Viator URLs through /api/img with a full width ramp", () => {
     const r = buildResponsiveSrc(
-      "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/db/dd/b6.jpg",
+      "/__l5e/assets-v1/c5c5d49d-2312-4eb3-8b4c-0b31b4026fad/yes-tour-7cf4cd4feceb.webp",
       { sizes: "card" },
     );
     expect(r.src).toContain("/api/img?u=");
