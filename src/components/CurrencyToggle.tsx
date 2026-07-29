@@ -74,8 +74,7 @@ export function CurrencyToggle({ variant = "header", surface = "light", classNam
                 surface === "dark"
                   ? "focus-visible:ring-offset-[color:var(--charcoal)]"
                   : "focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]",
-                variant === "footer" &&
-                  "focus-visible:ring-offset-[color:var(--charcoal)]",
+                variant === "footer" && "focus-visible:ring-offset-[color:var(--charcoal)]",
                 active
                   ? variant === "footer"
                     ? "text-[color:var(--gold-soft)] font-medium"

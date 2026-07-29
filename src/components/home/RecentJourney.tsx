@@ -37,7 +37,6 @@ const PAGES = Array.from({ length: TOTAL_PAGES }, (_, i) => {
   };
 }) as ReadonlyArray<{ src: string; label: string; alt: string }>;
 
-
 const PILLARS = [
   {
     label: "Portugal-wide journeys",
@@ -357,7 +356,6 @@ function BookFlip() {
                 decoding="async"
                 className="absolute inset-0 h-full w-full object-contain rounded-[3px] bg-[color:var(--sand)] shadow-[0_40px_80px_-30px_rgba(46,46,46,0.6),0_18px_36px_-18px_rgba(46,46,46,0.35)]"
               />
-
             ) : (
               <PageSkeleton />
             )
@@ -393,7 +391,6 @@ function BookFlip() {
                 loading="lazy"
                 decoding="async"
               />
-
             ) : (
               <PageSkeleton />
             )}

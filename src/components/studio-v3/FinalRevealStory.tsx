@@ -26,7 +26,6 @@ import {
   CTA_SEE_INCLUSIONS,
   INCLUSION_HEADER,
   INSTANT_CONFIRMATION,
-  
 } from "@/content/signature-day-copy";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import { PerPersonBands } from "@/components/checkout/PerPersonBands";
@@ -78,12 +77,7 @@ const MIDDLE_OPENERS = [
   "From there,",
 ];
 
-function stopSentence(
-  index: number,
-  isLast: boolean,
-  label: string,
-  story: string,
-): string {
+function stopSentence(index: number, isLast: boolean, label: string, story: string): string {
   const body = story?.trim() ? ` ${story.trim()}` : "";
   if (index === 0) return `You'll start your day in ${label}.${body}`;
   if (isLast) return `To close the day, ${label}.${body}`;
@@ -105,7 +99,6 @@ function addOnContinuation(label: string): string {
   return "something quieter, made just for you";
 }
 
-
 export interface FinalRevealStoryProps {
   readonly state: StudioV3State;
   readonly selectedAddOns: SelectedAddOnSummary["items"];
@@ -117,7 +110,10 @@ export interface FinalRevealStoryProps {
    * with the band-adjusted unit price before the total. Null → adults-only
    * flat pricing.
    */
-  readonly journeyLines?: import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[] | readonly import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[] | null;
+  readonly journeyLines?:
+    | import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[]
+    | readonly import("@/lib/checkout/journeyDisplay").CheckoutJourneyLine[]
+    | null;
   readonly onContinue: () => void;
   readonly onSaveSignature: () => void;
   readonly onBack: () => void;
@@ -132,7 +128,6 @@ export interface FinalRevealStoryProps {
    */
   readonly composedStops?: ReadonlyArray<{ label: string; story: string }>;
 }
-
 
 function formatEur(n: number | null): string {
   if (n == null || !Number.isFinite(n)) return "—";
@@ -170,7 +165,6 @@ export function FinalRevealStory({
   testId,
   composedStops,
 }: FinalRevealStoryProps) {
-
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your private Portugal day";
 
@@ -206,11 +200,15 @@ export function FinalRevealStory({
     | { kind: "addon"; text: string; key: string };
   const paragraphs: Paragraph[] = [];
   const addOnQueue = selectedAddOns.map((a, i) => ({ a, i }));
-  const insertionPoints = stops.length > 1
-    ? addOnQueue.map((_, idx) =>
-        Math.min(stops.length - 1, Math.floor((idx + 1) * (stops.length / (addOnQueue.length + 1)))),
-      )
-    : addOnQueue.map(() => 0);
+  const insertionPoints =
+    stops.length > 1
+      ? addOnQueue.map((_, idx) =>
+          Math.min(
+            stops.length - 1,
+            Math.floor((idx + 1) * (stops.length / (addOnQueue.length + 1))),
+          ),
+        )
+      : addOnQueue.map(() => 0);
 
   stops.forEach((s, i) => {
     const isLast = i === stops.length - 1;
@@ -230,14 +228,9 @@ export function FinalRevealStory({
     });
   });
 
-
   const dateLabel = formatDate(state.dateExact);
   const pickupLabel = pickupCityLabel(state.pickup);
-  const guestsLabel = formatGuestComposition(
-    state.adults,
-    state.minorAges,
-    state.guests,
-  );
+  const guestsLabel = formatGuestComposition(state.adults, state.minorAges, state.guests);
 
   const included: string[] = (() => {
     if (tour?.id) {
@@ -251,7 +244,6 @@ export function FinalRevealStory({
       "All confirmed entries listed above",
     ];
   })();
-
 
   return (
     <section
@@ -279,9 +271,7 @@ export function FinalRevealStory({
             first chapter of the reveal sit above the fold on 393×588
             viewports (regression fix for audit BLOCKER #1). Desktop keeps
             the taller 5:3 crop for cinematic weight. */}
-        <div
-          className="relative w-full aspect-[8/3] sm:aspect-[5/3]"
-        >
+        <div className="relative w-full aspect-[8/3] sm:aspect-[5/3]">
           <img
             src={parchmentLetter}
             alt="Handwritten letter on aged parchment paper, sealed in deep teal wax"
@@ -295,8 +285,7 @@ export function FinalRevealStory({
             aria-hidden
             className="absolute inset-x-0 bottom-0 h-24"
             style={{
-              background:
-                "linear-gradient(to bottom, transparent, var(--ivory))",
+              background: "linear-gradient(to bottom, transparent, var(--ivory))",
             }}
           />
         </div>
@@ -320,7 +309,7 @@ export function FinalRevealStory({
                 {region}
               </span>
             </h2>
-            {(dateLabel || guestsLabel || pickupLabel) ? (
+            {dateLabel || guestsLabel || pickupLabel ? (
               <p
                 className="mt-3 text-[11px] uppercase tracking-[0.22em]"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
@@ -368,10 +357,8 @@ export function FinalRevealStory({
               </p>
             ))}
           </div>
-
         </div>
       </article>
-
 
       {/* Reassurance — replaces removed pending/status copy */}
       <p
@@ -431,7 +418,9 @@ export function FinalRevealStory({
           style={{ color: "var(--charcoal)" }}
         >
           <span>{CTA_SEE_INCLUSIONS}</span>
-          <span aria-hidden style={{ color: "var(--gold)" }}>+</span>
+          <span aria-hidden style={{ color: "var(--gold)" }}>
+            +
+          </span>
         </summary>
         <div className="mt-4 space-y-4">
           <div>
@@ -461,7 +450,8 @@ export function FinalRevealStory({
                 data-testid="studio-v3-add-on-lines"
               >
                 {selectedAddOns.map((a) => {
-                  const guests = typeof state.guests === "number" && state.guests > 0 ? state.guests : 1;
+                  const guests =
+                    typeof state.guests === "number" && state.guests > 0 ? state.guests : 1;
                   const isPerPerson = a.unit === "per_person";
                   const showQty = isPerPerson && guests > 1;
                   return (
@@ -483,7 +473,10 @@ export function FinalRevealStory({
                           {showQty ? `(${formatEur(a.perUnit)} × ${guests})` : `(${a.unitLabel})`}
                         </span>
                       </span>
-                      <span className="text-right tabular-nums font-medium" style={{ color: "var(--charcoal)" }}>
+                      <span
+                        className="text-right tabular-nums font-medium"
+                        style={{ color: "var(--charcoal)" }}
+                      >
                         {formatEur(a.amount)}
                       </span>
                     </li>
@@ -502,7 +495,10 @@ export function FinalRevealStory({
             className="pt-3 border-t flex justify-between items-baseline"
             style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
           >
-            <span className="text-[11px] uppercase tracking-[0.22em]" style={{ color: "var(--charcoal)" }}>
+            <span
+              className="text-[11px] uppercase tracking-[0.22em]"
+              style={{ color: "var(--charcoal)" }}
+            >
               Total
             </span>
             <span
@@ -568,7 +564,6 @@ export function FinalRevealStory({
           ← {CTA_BACK_TO_REFINE}
         </button>
       </div>
-
     </section>
   );
 }

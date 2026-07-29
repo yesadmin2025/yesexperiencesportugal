@@ -24,10 +24,7 @@ import { resolveSignatureMapStops } from "@/lib/signature-map-stops";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { RouteLegend } from "@/components/studio-v3/RouteLegend";
-import {
-  getSignatureTourRoute,
-  type SignatureRoutePayload,
-} from "@/lib/signature-route.functions";
+import { getSignatureTourRoute, type SignatureRoutePayload } from "@/lib/signature-route.functions";
 
 /** Google encoded-polyline decoder (precision 5). */
 function decodePolyline(str: string): Array<[number, number]> {
@@ -247,8 +244,8 @@ export function SignatureRouteMap({ tour }: Props) {
             Where the <SectionTitle.Em>day goes</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] max-w-lg mx-auto">
-            Real locations across {tour.region}. The map shows the drive between
-            them — distances only, so you get a feel for the ground you'll cover.
+            Real locations across {tour.region}. The map shows the drive between them — distances
+            only, so you get a feel for the ground you'll cover.
           </p>
         </div>
 
@@ -313,7 +310,6 @@ export function SignatureRouteMap({ tour }: Props) {
         <p className="mt-4 text-[13px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-3xl">
           Your guide sets the order and pace on the day — not every stop, every time.
         </p>
-
       </div>
     </section>
   );

@@ -1,23 +1,12 @@
 import { describe, it, expect } from "vitest";
-import {
-  priceComposedJourney,
-  resolveComposerAnchorTour,
-} from "../composerPricing";
+import { priceComposedJourney, resolveComposerAnchorTour } from "../composerPricing";
 
 describe("composerPricing (Phase D adapter — no UI wiring)", () => {
   it("resolves an anchor tour for every mapped (region, tier)", () => {
-    expect(resolveComposerAnchorTour("lisbon-coast", "essential")?.id).toBe(
-      "tiles-workshop",
-    );
-    expect(resolveComposerAnchorTour("lisbon-coast", "signature")?.id).toBe(
-      "sintra-cascais",
-    );
-    expect(resolveComposerAnchorTour("arrabida", "rare")?.id).toBe(
-      "arrabida-wine-allinclusive",
-    );
-    expect(resolveComposerAnchorTour("alentejo", "signature")?.id).toBe(
-      "troia-comporta",
-    );
+    expect(resolveComposerAnchorTour("lisbon-coast", "essential")?.id).toBe("tiles-workshop");
+    expect(resolveComposerAnchorTour("lisbon-coast", "signature")?.id).toBe("sintra-cascais");
+    expect(resolveComposerAnchorTour("arrabida", "rare")?.id).toBe("arrabida-wine-allinclusive");
+    expect(resolveComposerAnchorTour("alentejo", "signature")?.id).toBe("troia-comporta");
   });
 
   it("returns null when no anchor exists (never invents)", () => {

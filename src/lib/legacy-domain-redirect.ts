@@ -180,7 +180,7 @@ function normalizePath(pathname: string): string {
  * would never expose.
  */
 const WP_LEGACY_410_PATTERNS: readonly RegExp[] = [
-  /^\/wp-/i,                    // /wp-admin, /wp-login.php, /wp-content, /wp-json, ...
+  /^\/wp-/i, // /wp-admin, /wp-login.php, /wp-content, /wp-json, ...
   /^\/xmlrpc\.php$/i,
   /^\/trackback\/?$/i,
   /^\/feed\/?$/i,
@@ -190,7 +190,7 @@ const WP_LEGACY_410_PATTERNS: readonly RegExp[] = [
   /^\/author\//i,
   /^\/\?p=\d+/i,
   /^\/\?page_id=\d+/i,
-  /^\/tour\//i,                 // unmapped /tour/<slug> — new site uses /tours/<slug>
+  /^\/tour\//i, // unmapped /tour/<slug> — new site uses /tours/<slug>
 ];
 
 function matchesWpLegacyPattern(pathname: string): boolean {
@@ -281,7 +281,6 @@ export function buildLegacy301Response(request: Request): Response | null {
     });
   } catch {
     return null;
-
   }
 }
 

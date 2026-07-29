@@ -19,10 +19,7 @@
 
 import type { RegionKey } from "@/data/regionStops";
 import { DWELL_MINIMUM_MIN, type StopCategory } from "@/lib/feasibility";
-import {
-  resolveThresholds,
-  type ResolvedThresholds,
-} from "./itinerary-thresholds";
+import { resolveThresholds, type ResolvedThresholds } from "./itinerary-thresholds";
 
 export type ValidationStatus = "approved" | "review" | "reject" | "incomplete";
 
@@ -52,12 +49,7 @@ export interface ValidationFailure {
 
 export interface ValidationSuggestion {
   /** Machine-readable so the reveal UI can offer a one-tap auto-fix. */
-  action:
-    | "drop_stop"
-    | "reorder_stops"
-    | "extend_day"
-    | "shorten_day"
-    | "swap_stop";
+  action: "drop_stop" | "reorder_stops" | "extend_day" | "shorten_day" | "swap_stop";
   stopIndex?: number;
   message: string;
 }
@@ -164,8 +156,7 @@ export function validateItinerary(input: ValidateItineraryInput): ValidatedItine
   }
 
   const expectedLegs = stops.length - 1;
-  const haveLegs =
-    Array.isArray(input.legMinutes) && input.legMinutes.length === expectedLegs;
+  const haveLegs = Array.isArray(input.legMinutes) && input.legMinutes.length === expectedLegs;
   if (!haveLegs) {
     return {
       status: "incomplete",
@@ -298,10 +289,7 @@ export function validateItinerary(input: ValidateItineraryInput): ValidatedItine
   }
 
   // ── Soft rules (trigger "review", not "reject") ──────────────────
-  if (
-    drivingPct > thresholds.preferredDrivingPct &&
-    drivingPct <= thresholds.maxDrivingPct
-  ) {
+  if (drivingPct > thresholds.preferredDrivingPct && drivingPct <= thresholds.maxDrivingPct) {
     failures.push({
       code: "driving_over_preferred_pct",
       severity: "soft",

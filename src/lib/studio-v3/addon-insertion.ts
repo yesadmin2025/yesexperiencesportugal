@@ -82,10 +82,7 @@ export interface AddonInsertionInput {
 
 const EARTH_KM = 6371;
 
-function haversineKm(
-  a: { lat: number; lng: number },
-  b: { lat: number; lng: number },
-): number {
+function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
   const toRad = (d: number) => (d * Math.PI) / 180;
   const dLat = toRad(b.lat - a.lat);
   const dLng = toRad(b.lng - a.lng);
@@ -179,8 +176,7 @@ function probeCandidate(
     simulatedLegMinutes,
     simulatedLegDistancesKm,
     validation,
-    keepsApproval:
-      validation.status === "approved" || validation.status === "review",
+    keepsApproval: validation.status === "approved" || validation.status === "review",
   };
 }
 
@@ -225,8 +221,7 @@ export function planAddonInsertion(input: AddonInsertionInput): InsertionResult 
     .map((i) => {
       const a = input.baseStops[i - 1].coords!;
       const b = input.baseStops[i].coords!;
-      const midDist =
-        (haversineKm(a, addonCoords) + haversineKm(addonCoords, b)) / 2;
+      const midDist = (haversineKm(a, addonCoords) + haversineKm(addonCoords, b)) / 2;
       return { i, midDist };
     })
     .sort((x, y) => x.midDist - y.midDist)

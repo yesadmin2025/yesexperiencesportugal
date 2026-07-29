@@ -6,7 +6,6 @@
 // update immediately to reflect the recalculated party-total (or
 // per-person price when party-total is not exposed).
 
-
 import { expect, test } from "@playwright/test";
 import {
   parseAddOnsTotalEur,
@@ -20,7 +19,6 @@ function parseEurAttr(attr: string | null | undefined): number | null {
   const n = Number(attr);
   return Number.isFinite(n) ? n : null;
 }
-
 
 test.describe("Studio V3 — CTA labels update live with totals", () => {
   test.beforeEach(async ({ page }) => {
@@ -62,7 +60,9 @@ test.describe("Studio V3 — CTA labels update live with totals", () => {
       const expected = await readExpected();
       // Same-frame read — CTA must reflect the new total on the next paint.
       await expect
-        .poll(async () => parseEurAttr(await primary.getAttribute("data-total-eur")), { timeout: 3_000 })
+        .poll(async () => parseEurAttr(await primary.getAttribute("data-total-eur")), {
+          timeout: 3_000,
+        })
         .toBe(expected);
     }
 
@@ -82,7 +82,9 @@ test.describe("Studio V3 — CTA labels update live with totals", () => {
       await btn.click();
       const expected = await readExpected();
       await expect
-        .poll(async () => parseEurAttr(await sticky.getAttribute("data-total-eur")), { timeout: 3_000 })
+        .poll(async () => parseEurAttr(await sticky.getAttribute("data-total-eur")), {
+          timeout: 3_000,
+        })
         .toBe(expected);
       // Inline CTA must agree too (labels stay in lock-step).
       expect(parseEurAttr(await primary.getAttribute("data-total-eur"))).toBe(expected);
@@ -100,7 +102,9 @@ test.describe("Studio V3 — CTA labels update live with totals", () => {
       }
     }
     await expect
-      .poll(async () => parseEurAttr(await primary.getAttribute("data-total-eur")), { timeout: 3_000 })
+      .poll(async () => parseEurAttr(await primary.getAttribute("data-total-eur")), {
+        timeout: 3_000,
+      })
       .toBe(baseExpected);
   });
 });

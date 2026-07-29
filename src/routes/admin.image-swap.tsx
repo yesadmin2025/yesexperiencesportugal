@@ -9,14 +9,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, RefreshCw, Undo2, Zap, CheckSquare, Square, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  Loader2,
+  RefreshCw,
+  Undo2,
+  Zap,
+  CheckSquare,
+  Square,
+  Sparkles,
+} from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  EDITORIAL_MODULES,
-  buildUsageIndex,
-  type ModuleShape,
-} from "@/lib/image-swap/registry";
+import { EDITORIAL_MODULES, buildUsageIndex, type ModuleShape } from "@/lib/image-swap/registry";
 import { loadFullPool, type PoolPhoto } from "@/lib/image-swap/pool";
 import { rankCandidates, type RankedCandidate } from "@/lib/image-swap/rank";
 import { estimateQuality, qualityLabel, resolutionLabel } from "@/lib/image-swap/quality";
@@ -36,13 +41,9 @@ import {
 import { DuplicatesPanel } from "@/components/admin/DuplicatesPanel";
 import { BatchSelectionBar, type BatchPending } from "@/components/admin/BatchSelectionBar";
 
-
 export const Route = createFileRoute("/admin/image-swap")({
   head: () => ({
-    meta: [
-      { title: "Image swap · Admin" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Image swap · Admin" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: AdminImageSwapPage,
   errorComponent: ({ error }) => (
@@ -82,8 +83,11 @@ function AdminImageSwapPage() {
   const undoRef = useRef<{ timer: number; prev: OverrideRow | null } | null>(null);
   const [batchMode, setBatchMode] = useState(false);
   const [batch, setBatch] = useState<Map<number, PoolPhoto>>(new Map());
-  const batchUndoRef = useRef<{ timer: number; snapshot: BatchSnapshotEntry[]; moduleKey: EditorialModuleKey } | null>(null);
-
+  const batchUndoRef = useRef<{
+    timer: number;
+    snapshot: BatchSnapshotEntry[];
+    moduleKey: EditorialModuleKey;
+  } | null>(null);
 
   const checkAuth = useCallback(async () => {
     const { data: userData } = await supabase.auth.getUser();
@@ -136,7 +140,11 @@ function AdminImageSwapPage() {
   const activeModule = EDITORIAL_MODULES.find((m) => m.key === activeKey)!;
   const activeSlots = overridesByModule.get(activeKey) ?? activeModule.defaults;
 
-  const findRow = (moduleKey: EditorialModuleKey, slotIndex: number, status: "draft" | "published") =>
+  const findRow = (
+    moduleKey: EditorialModuleKey,
+    slotIndex: number,
+    status: "draft" | "published",
+  ) =>
     overrides.find(
       (o) => o.module_key === moduleKey && o.slot_index === slotIndex && o.status === status,
     );
@@ -272,11 +280,7 @@ function AdminImageSwapPage() {
     if (entries.length === 0) return;
     setSaving(true);
     try {
-      const { snapshot } = await publishOverridesBatch(
-        activeKey,
-        entries,
-        module.defaults.length,
-      );
+      const { snapshot } = await publishOverridesBatch(activeKey, entries, module.defaults.length);
       if (batchUndoRef.current) window.clearTimeout(batchUndoRef.current.timer);
       const timer = window.setTimeout(() => {
         batchUndoRef.current = null;
@@ -310,8 +314,6 @@ function AdminImageSwapPage() {
       setSaving(false);
     }
   }
-
-
 
   if (authState === "loading") {
     return (
@@ -365,9 +367,8 @@ function AdminImageSwapPage() {
 
           <h1 className="text-3xl mb-2">Comparar & trocar imagens</h1>
           <p className="text-sm text-[color:var(--charcoal-soft)] mb-6">
-            Filtre por fonte, tag ou qualidade, veja o motivo do ranking e aplique
-            trocas com um clique. A tab Duplicados agrupa imagens repetidas entre
-            módulos e sugere substituições.
+            Filtre por fonte, tag ou qualidade, veja o motivo do ranking e aplique trocas com um
+            clique. A tab Duplicados agrupa imagens repetidas entre módulos e sugere substituições.
           </p>
 
           {/* Tabs */}
@@ -419,7 +420,8 @@ function AdminImageSwapPage() {
                 <div className="flex items-center gap-2 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
                   <Sparkles size={12} className="text-[color:var(--gold)]" />
                   <span>
-                    Curadoria = substituir. Nº de imagens de cada módulo é fixo ({activeModule.defaults.length}).
+                    Curadoria = substituir. Nº de imagens de cada módulo é fixo (
+                    {activeModule.defaults.length}).
                   </span>
                 </div>
                 <button
@@ -438,7 +440,6 @@ function AdminImageSwapPage() {
                   Selecção múltipla
                 </button>
               </div>
-
 
               <div className="space-y-6">
                 {activeSlots.map((slot, i) => {
@@ -524,13 +525,10 @@ function AdminImageSwapPage() {
                             batchMode={batchMode}
                             inBatch={batch.get(i) ?? null}
                             onCompare={(candidate) => setPreview({ candidate, slotIndex: i })}
-                            onQuickApply={(candidate) =>
-                              applyAndPublish(activeKey, i, candidate)
-                            }
+                            onQuickApply={(candidate) => applyAndPublish(activeKey, i, candidate)}
                             onAddToBatch={(candidate) => addToBatch(i, candidate)}
                             onRemoveFromBatch={() => removeFromBatch(i)}
                           />
-
                         </div>
                       )}
                     </div>
@@ -623,7 +621,6 @@ function AdminImageSwapPage() {
         onRemove={removeFromBatch}
       />
     </SiteLayout>
-
   );
 }
 
@@ -656,7 +653,6 @@ function CandidatesPanel({
   onAddToBatch: (p: PoolPhoto) => void;
   onRemoveFromBatch: () => void;
 }) {
-
   const filteredPool = useMemo(() => {
     return pool.filter((p) => {
       if (!filters.sources.has(p.source)) return false;
@@ -800,7 +796,6 @@ function CandidatesPanel({
                     <Zap size={10} /> Aplicar
                   </button>
                 )}
-
               </div>
             </div>
           );

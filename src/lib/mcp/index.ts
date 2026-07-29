@@ -15,7 +15,6 @@ import echoTool from "./tools/echo";
 import listMySignatureJourneysTool from "./tools/list-my-signature-journeys";
 import getSignatureJourneyTool from "./tools/get-signature-journey";
 
-
 // The OAuth issuer MUST be the direct supabase.co host; the SUPABASE_URL
 // runtime value is rewritten to a .lovable.cloud proxy on publish, which
 // mcp-js rejects (RFC 8414 issuer mismatch). VITE_SUPABASE_PROJECT_ID is

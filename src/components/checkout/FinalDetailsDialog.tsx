@@ -22,9 +22,12 @@ import {
   type TravellerComposition,
 } from "@/lib/checkout/composition";
 import { ChargeSummaryLine, type ChargeQuote } from "@/components/checkout/ChargeSummaryLine";
-import { GuestField, GuestFieldGroup, GuestRow, guestInputClass } from "@/components/checkout/guest-form-ui";
-
-
+import {
+  GuestField,
+  GuestFieldGroup,
+  GuestRow,
+  guestInputClass,
+} from "@/components/checkout/guest-form-ui";
 
 /**
  * Final details before payment — the last step before Stripe checkout
@@ -74,7 +77,6 @@ export interface FinalDetailsInitial {
   guideNotes?: string | null;
 }
 
-
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -91,7 +93,6 @@ interface Props {
   priceQuote?: (c: { adults: number; minorAges: number[] }) => ChargeQuote | null;
 }
 
-
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
 export function FinalDetailsDialog({
@@ -102,7 +103,6 @@ export function FinalDetailsDialog({
   submitting = false,
   priceQuote,
 }: Props) {
-
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -134,7 +134,6 @@ export function FinalDetailsDialog({
     priceQuote && compositionComplete
       ? priceQuote({ adults: composition.adults, minorAges: [...composition.minorAges] })
       : null;
-
 
   const handleSubmit = async () => {
     if (submitting) return;
@@ -168,7 +167,6 @@ export function FinalDetailsDialog({
     });
   };
 
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg p-0 gap-0 bg-[color:var(--ivory)] border border-[color:var(--border)] max-h-[92vh] overflow-hidden flex flex-col">
@@ -180,178 +178,177 @@ export function FinalDetailsDialog({
           className="flex flex-col flex-1 overflow-hidden"
           noValidate
         >
-        <DialogHeader className="px-5 sm:px-7 pt-6 pb-3 border-b border-[color:var(--border)]">
-          <Eyebrow>Almost there</Eyebrow>
-          <DialogTitle className="serif text-[1.35rem] leading-tight text-[color:var(--charcoal)] mt-2">
-            Final details before payment
-          </DialogTitle>
-          <DialogDescription className="text-[13px] text-[color:var(--charcoal-soft)] mt-1.5 leading-relaxed">
-            So your local host has everything ready — then secure checkout.
-          </DialogDescription>
-        </DialogHeader>
+          <DialogHeader className="px-5 sm:px-7 pt-6 pb-3 border-b border-[color:var(--border)]">
+            <Eyebrow>Almost there</Eyebrow>
+            <DialogTitle className="serif text-[1.35rem] leading-tight text-[color:var(--charcoal)] mt-2">
+              Final details before payment
+            </DialogTitle>
+            <DialogDescription className="text-[13px] text-[color:var(--charcoal-soft)] mt-1.5 leading-relaxed">
+              So your local host has everything ready — then secure checkout.
+            </DialogDescription>
+          </DialogHeader>
 
-        <div className="overflow-y-auto px-5 sm:px-7 py-5 space-y-5">
-          <GuestFieldGroup title="Who's coming">
-            <GuestRow>
-              <GuestField label="Full name" required>
-                <input
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className={guestInputClass}
-                  autoComplete="name"
-                />
-              </GuestField>
-              <GuestField label="Main contact person" hint="If different">
-                <input
-                  value={mainContact}
-                  onChange={(e) => setMainContact(e.target.value)}
-                  placeholder={fullName || "Same as above"}
-                  className={guestInputClass}
-                />
-              </GuestField>
-            </GuestRow>
-            <GuestRow>
-              <GuestField label="Email" required>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={guestInputClass}
-                  autoComplete="email"
-                />
-              </GuestField>
-              <GuestField label="Phone / WhatsApp" required>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+351 …"
-                  className={guestInputClass}
-                  autoComplete="tel"
-                />
-              </GuestField>
-            </GuestRow>
-          </GuestFieldGroup>
+          <div className="overflow-y-auto px-5 sm:px-7 py-5 space-y-5">
+            <GuestFieldGroup title="Who's coming">
+              <GuestRow>
+                <GuestField label="Full name" required>
+                  <input
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className={guestInputClass}
+                    autoComplete="name"
+                  />
+                </GuestField>
+                <GuestField label="Main contact person" hint="If different">
+                  <input
+                    value={mainContact}
+                    onChange={(e) => setMainContact(e.target.value)}
+                    placeholder={fullName || "Same as above"}
+                    className={guestInputClass}
+                  />
+                </GuestField>
+              </GuestRow>
+              <GuestRow>
+                <GuestField label="Email" required>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={guestInputClass}
+                    autoComplete="email"
+                  />
+                </GuestField>
+                <GuestField label="Phone / WhatsApp" required>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+351 …"
+                    className={guestInputClass}
+                    autoComplete="tel"
+                  />
+                </GuestField>
+              </GuestRow>
+            </GuestFieldGroup>
 
-          <GuestFieldGroup title="Your day">
-            <GuestField label="Tour date" required>
-              <input
-                type="date"
-                value={tourDate}
-                min={new Date().toISOString().split("T")[0]}
-                onChange={(e) => setTourDate(e.target.value)}
-                className={guestInputClass}
-              />
-            </GuestField>
-            <GuestField label="Who's travelling" required as="div">
-              <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
-                <CompositionField value={composition} onChange={setComposition} compact />
-              </div>
-              <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
-                {compositionComplete
-                  ? formatCompositionSummary(composition)
-                  : "Add an age for every child so we can price honestly."}
-              </p>
-            </GuestField>
-
-            <GuestField label="Pickup address / hotel" required>
-              <input
-                value={pickupAddress}
-                onChange={(e) => setPickupAddress(e.target.value)}
-                placeholder="Hotel, address or meeting point"
-                className={guestInputClass}
-              />
-            </GuestField>
-            <GuestField label="Preferred tour language" required as="div">
-              <div className="grid grid-cols-2 border border-[color:var(--border)]">
-                {(["en", "pt"] as const).map((l) => (
-                  <button
-                    key={l}
-                    type="button"
-                    onClick={() => setLanguage(l)}
-                    aria-pressed={language === l}
-                    className={[
-                      "py-2.5 text-xs uppercase tracking-[0.18em] transition-colors",
-                      language === l
-                        ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
-                        : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
-                    ].join(" ")}
-                  >
-                    {l}
-                  </button>
-                ))}
-              </div>
-              <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
-                Spanish available on request — subject to guide availability.
-              </p>
-            </GuestField>
-          </GuestFieldGroup>
-
-          <GuestFieldGroup title="Anything we should know" optional>
-            <GuestRow>
-              <GuestField label="Dietary restrictions">
+            <GuestFieldGroup title="Your day">
+              <GuestField label="Tour date" required>
                 <input
-                  value={dietary}
-                  onChange={(e) => setDietary(e.target.value)}
+                  type="date"
+                  value={tourDate}
+                  min={new Date().toISOString().split("T")[0]}
+                  onChange={(e) => setTourDate(e.target.value)}
                   className={guestInputClass}
                 />
               </GuestField>
-              <GuestField label="Mobility notes">
-                <input
-                  value={mobility}
-                  onChange={(e) => setMobility(e.target.value)}
-                  className={guestInputClass}
-                />
+              <GuestField label="Who's travelling" required as="div">
+                <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
+                  <CompositionField value={composition} onChange={setComposition} compact />
+                </div>
+                <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+                  {compositionComplete
+                    ? formatCompositionSummary(composition)
+                    : "Add an age for every child so we can price honestly."}
+                </p>
               </GuestField>
-            </GuestRow>
-            <GuestRow>
-              <GuestField label="Children / child seats">
-                <input
-                  value={children}
-                  onChange={(e) => setChildren(e.target.value)}
-                  className={guestInputClass}
-                />
-              </GuestField>
-              <GuestField label="Special occasion">
-                <input
-                  value={occasion}
-                  onChange={(e) => setOccasion(e.target.value)}
-                  placeholder="Anniversary, birthday…"
-                  className={guestInputClass}
-                />
-              </GuestField>
-            </GuestRow>
-            <GuestField label="Notes for the guide">
-              <textarea
-                value={guideNotes}
-                onChange={(e) => setGuideNotes(e.target.value)}
-                rows={3}
-                className={`${guestInputClass} resize-none`}
-              />
-            </GuestField>
-          </GuestFieldGroup>
-        </div>
 
-        <DialogFooter className="px-5 sm:px-7 py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 sm:flex-col sm:items-stretch sm:space-x-0 gap-2">
-          {priceQuote ? <ChargeSummaryLine quote={quote} /> : null}
-          {submitting ? (
+              <GuestField label="Pickup address / hotel" required>
+                <input
+                  value={pickupAddress}
+                  onChange={(e) => setPickupAddress(e.target.value)}
+                  placeholder="Hotel, address or meeting point"
+                  className={guestInputClass}
+                />
+              </GuestField>
+              <GuestField label="Preferred tour language" required as="div">
+                <div className="grid grid-cols-2 border border-[color:var(--border)]">
+                  {(["en", "pt"] as const).map((l) => (
+                    <button
+                      key={l}
+                      type="button"
+                      onClick={() => setLanguage(l)}
+                      aria-pressed={language === l}
+                      className={[
+                        "py-2.5 text-xs uppercase tracking-[0.18em] transition-colors",
+                        language === l
+                          ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
+                          : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
+                      ].join(" ")}
+                    >
+                      {l}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+                  Spanish available on request — subject to guide availability.
+                </p>
+              </GuestField>
+            </GuestFieldGroup>
 
-            <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
-          ) : (
-            <CtaButton
-              type="submit"
-              variant="primary"
-              size="md"
-              className="w-full"
-              iconLeading={<Lock size={14} aria-hidden />}
-            >
-              Continue to secure checkout
-            </CtaButton>
-          )}
-          <p className="text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
-            Secure checkout · Final price shown before payment
-          </p>
-        </DialogFooter>
+            <GuestFieldGroup title="Anything we should know" optional>
+              <GuestRow>
+                <GuestField label="Dietary restrictions">
+                  <input
+                    value={dietary}
+                    onChange={(e) => setDietary(e.target.value)}
+                    className={guestInputClass}
+                  />
+                </GuestField>
+                <GuestField label="Mobility notes">
+                  <input
+                    value={mobility}
+                    onChange={(e) => setMobility(e.target.value)}
+                    className={guestInputClass}
+                  />
+                </GuestField>
+              </GuestRow>
+              <GuestRow>
+                <GuestField label="Children / child seats">
+                  <input
+                    value={children}
+                    onChange={(e) => setChildren(e.target.value)}
+                    className={guestInputClass}
+                  />
+                </GuestField>
+                <GuestField label="Special occasion">
+                  <input
+                    value={occasion}
+                    onChange={(e) => setOccasion(e.target.value)}
+                    placeholder="Anniversary, birthday…"
+                    className={guestInputClass}
+                  />
+                </GuestField>
+              </GuestRow>
+              <GuestField label="Notes for the guide">
+                <textarea
+                  value={guideNotes}
+                  onChange={(e) => setGuideNotes(e.target.value)}
+                  rows={3}
+                  className={`${guestInputClass} resize-none`}
+                />
+              </GuestField>
+            </GuestFieldGroup>
+          </div>
+
+          <DialogFooter className="px-5 sm:px-7 py-4 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40 sm:flex-col sm:items-stretch sm:space-x-0 gap-2">
+            {priceQuote ? <ChargeSummaryLine quote={quote} /> : null}
+            {submitting ? (
+              <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
+            ) : (
+              <CtaButton
+                type="submit"
+                variant="primary"
+                size="md"
+                className="w-full"
+                iconLeading={<Lock size={14} aria-hidden />}
+              >
+                Continue to secure checkout
+              </CtaButton>
+            )}
+            <p className="text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
+              Secure checkout · Final price shown before payment
+            </p>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

@@ -23,14 +23,13 @@ function regionKey(region: string): string {
 
 export function SignatureRouteMapFallback({ tour, reason }: Props) {
   const region = regionKey(tour.region);
-  const points = (tour.stops ?? [])
-    .slice(0, 12)
-    .map((s, i) => snapStop(s.label, region, i));
+  const points = (tour.stops ?? []).slice(0, 12).map((s, i) => snapStop(s.label, region, i));
 
   const centroid = REGION_CENTROIDS[region] ?? REGION_CENTROIDS.lisbon;
-  const path = points.length >= 2
-    ? points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ")
-    : null;
+  const path =
+    points.length >= 2
+      ? points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ")
+      : null;
 
   return (
     <div
@@ -53,13 +52,7 @@ export function SignatureRouteMapFallback({ tour, reason }: Props) {
           strokeWidth="0.5"
         />
         {/* Region halo */}
-        <circle
-          cx={centroid.x}
-          cy={centroid.y}
-          r={12}
-          fill="var(--gold)"
-          fillOpacity="0.05"
-        />
+        <circle cx={centroid.x} cy={centroid.y} r={12} fill="var(--gold)" fillOpacity="0.05" />
         {/* Route path */}
         {path && (
           <path

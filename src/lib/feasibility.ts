@@ -153,9 +153,7 @@ export function evaluateDay(plan: DayPlan): FeasibilityResult {
   const wineries = plan.stops.filter((s) => s.category === "winery");
   if (wineries.length > 4) {
     feasible = false;
-    warnings.push(
-      `Four wineries is the safe maximum — palate fatigue past that point.`,
-    );
+    warnings.push(`Four wineries is the safe maximum — palate fatigue past that point.`);
   } else if (wineries.length === 4) {
     warnings.push(
       `Four wineries is a full wine day — expect a shorter stop at each and plan a hearty lunch in between.`,

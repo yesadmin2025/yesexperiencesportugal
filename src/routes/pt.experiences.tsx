@@ -173,7 +173,9 @@ function ExperiencesPage() {
                       <Clock size={11} /> {signatureDurationLabel(t.id, t.durationHours)}
                     </span>
                     <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
-                    <span className="text-[color:var(--charcoal)]">A partir de <PriceEur amountEur={t.priceFrom} role="from" /></span>
+                    <span className="text-[color:var(--charcoal)]">
+                      A partir de <PriceEur amountEur={t.priceFrom} role="from" />
+                    </span>
                   </div>
 
                   <div className="mt-5 flex flex-col xs:flex-row gap-2.5">

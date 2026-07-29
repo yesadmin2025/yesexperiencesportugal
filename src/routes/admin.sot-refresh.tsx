@@ -124,8 +124,8 @@ function SotRefreshPage() {
         <Eyebrow>Admin · Source of Truth</Eyebrow>
         <SectionTitle>Signature tours — refresh from Viator</SectionTitle>
         <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--charcoal)]/80">
-          For each tour: click <strong>Extract</strong> to fetch its Viator page and
-          generate a TS block. Copy the block into{" "}
+          For each tour: click <strong>Extract</strong> to fetch its Viator page and generate a TS
+          block. Copy the block into{" "}
           <code className="rounded bg-[color:var(--sand)]/60 px-1.5 py-0.5 text-[13px]">
             src/data/signatureToursSourceOfTruth.ts
           </code>{" "}
@@ -138,9 +138,7 @@ function SotRefreshPage() {
         <div className="mt-6 rounded-lg border border-[color:var(--charcoal)]/10 bg-[color:var(--sand)]/30 p-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <div className="text-[13px] font-medium text-[color:var(--charcoal)]">
-                Batch mode
-              </div>
+              <div className="text-[13px] font-medium text-[color:var(--charcoal)]">Batch mode</div>
               <div className="text-[12px] text-[color:var(--charcoal)]/70">
                 Extract all {totalCount} tours sequentially and produce one combined TS block.
               </div>
@@ -171,8 +169,7 @@ function SotRefreshPage() {
               <div className="mb-2 flex items-center justify-between text-[12px] text-[color:var(--charcoal)]/70">
                 <span>
                   Combined block · {Object.values(rows).filter((r) => r.status === "done").length}{" "}
-                  ok ·{" "}
-                  {Object.values(rows).filter((r) => r.status === "error").length} failed
+                  ok · {Object.values(rows).filter((r) => r.status === "error").length} failed
                 </span>
                 <button
                   type="button"
@@ -193,7 +190,8 @@ function SotRefreshPage() {
             <div className="mt-4 rounded border border-red-200 bg-red-50 p-3">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-[12px] text-red-800">
-                  <strong>{failedIds.length}</strong> tour{failedIds.length === 1 ? "" : "s"} still failed after 3 attempts:
+                  <strong>{failedIds.length}</strong> tour{failedIds.length === 1 ? "" : "s"} still
+                  failed after 3 attempts:
                   <ul className="mt-1 list-disc pl-5">
                     {failedIds.map((id) => (
                       <li key={id}>
@@ -318,9 +316,9 @@ function SotRefreshPage() {
         </ul>
 
         <p className="mt-10 text-[12px] text-[color:var(--charcoal)]/60">
-          Rules: only content that literally appears on the linked Viator page.
-          Ranges use midpoint minutes. Chapter timings are <code>null</code> when
-          Viator doesn&apos;t print them — never guessed.
+          Rules: only content that literally appears on the linked Viator page. Ranges use midpoint
+          minutes. Chapter timings are <code>null</code> when Viator doesn&apos;t print them — never
+          guessed.
         </p>
       </main>
     </SiteLayout>

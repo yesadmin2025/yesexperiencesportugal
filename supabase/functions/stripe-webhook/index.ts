@@ -75,11 +75,7 @@ Deno.serve(async (req) => {
       false,
       ["sign"],
     );
-    const signed = await crypto.subtle.sign(
-      "HMAC",
-      key,
-      encoder.encode(`${timestamp}.${payload}`),
-    );
+    const signed = await crypto.subtle.sign("HMAC", key, encoder.encode(`${timestamp}.${payload}`));
     const digest = Array.from(new Uint8Array(signed))
       .map((byte) => byte.toString(16).padStart(2, "0"))
       .join("");
@@ -87,11 +83,7 @@ Deno.serve(async (req) => {
     let validAccepted = false;
     let forgedRejected = false;
     try {
-      await stripe.webhooks.constructEventAsync(
-        payload,
-        `t=${timestamp},v1=${digest}`,
-        secret,
-      );
+      await stripe.webhooks.constructEventAsync(payload, `t=${timestamp},v1=${digest}`, secret);
       validAccepted = true;
     } catch {
       validAccepted = false;
@@ -151,13 +143,15 @@ Deno.serve(async (req) => {
       // from Stripe so downstream code keeps its existing Event shape.
       if (lastError.includes("parseEventNotificationAsync")) {
         try {
-          const parseFn = (stripe.webhooks as unknown as {
-            parseEventNotificationAsync?: (
-              body: string,
-              sig: string,
-              secret: string,
-            ) => Promise<{ id: string; type: string }>;
-          }).parseEventNotificationAsync;
+          const parseFn = (
+            stripe.webhooks as unknown as {
+              parseEventNotificationAsync?: (
+                body: string,
+                sig: string,
+                secret: string,
+              ) => Promise<{ id: string; type: string }>;
+            }
+          ).parseEventNotificationAsync;
           if (typeof parseFn === "function") {
             const thin = await parseFn.call(stripe.webhooks, rawBody, sig, c.secret);
             const full = await stripe.events.retrieve(thin.id);
@@ -323,7 +317,6 @@ Deno.serve(async (req) => {
     booking_details: { ...existingDetails, composition },
   } as const;
 
-
   if (!bookingId) {
     const { data: ins, error: insErr } = await admin
       .from("bookings")
@@ -346,7 +339,7 @@ Deno.serve(async (req) => {
   // Copies the draft written at checkout-create into the booking row so
   // later edits to tours/pricing data can never rewrite a past booking.
   // Idempotent: an already-frozen snapshot is never overwritten.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   let snapshot: Record<string, unknown> | null =
     existingDetails && typeof existingDetails.snapshot === "object" && existingDetails.snapshot
       ? (existingDetails.snapshot as Record<string, unknown>)
@@ -380,7 +373,6 @@ Deno.serve(async (req) => {
   } catch (e) {
     console.warn("snapshot freeze failed:", e instanceof Error ? e.message : e);
   }
-
 
   // Fire-and-forget: send branded checkout confirmation email with receipt link.
   // Non-blocking so a failure here never breaks Stripe delivery.
@@ -446,9 +438,11 @@ Deno.serve(async (req) => {
           durationLabel: (snapshot?.durationLabel as string | undefined) ?? null,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           addOnLabels: Array.isArray((snapshot as any)?.addOns)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ? ((snapshot as any).addOns as Array<{ label?: string; priceEur?: number }>)
-                .map((a) => (a?.label ? `${a.label}${a.priceEur ? ` · €${a.priceEur} pp` : ""}` : ""))
+            ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ((snapshot as any).addOns as Array<{ label?: string; priceEur?: number }>)
+                .map((a) =>
+                  a?.label ? `${a.label}${a.priceEur ? ` · €${a.priceEur} pp` : ""}` : "",
+                )
                 .filter(Boolean)
             : [],
           removedOptions: Array.isArray(snapshot?.removedOptions)
@@ -456,7 +450,6 @@ Deno.serve(async (req) => {
             : [],
           customerNotes: Array.isArray(snapshot?.notes) ? (snapshot?.notes as string[]) : [],
         };
-
 
         const resp = await fetch(`${siteUrl}/api/public/hooks/checkout-email`, {
           method: "POST",

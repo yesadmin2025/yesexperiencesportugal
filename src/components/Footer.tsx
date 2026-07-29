@@ -89,8 +89,16 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
 ];
 
 const SIGNATURE_TOURS: FooterLink[] = [
-  { to: "/tours/$tourId", params: { tourId: "arrabida-wine-allinclusive" }, label: "Arrábida Wine & Coast" },
-  { to: "/tours/$tourId", params: { tourId: "wild-beaches-picnic" }, label: "Wild Beaches & Picnic" },
+  {
+    to: "/tours/$tourId",
+    params: { tourId: "arrabida-wine-allinclusive" },
+    label: "Arrábida Wine & Coast",
+  },
+  {
+    to: "/tours/$tourId",
+    params: { tourId: "wild-beaches-picnic" },
+    label: "Wild Beaches & Picnic",
+  },
   { to: "/tours/$tourId", params: { tourId: "arrabida-boat" }, label: "Arrábida Boat" },
   { to: "/tours/$tourId", params: { tourId: "tiles-workshop" }, label: "Tiles Workshop" },
   { to: "/tours/$tourId", params: { tourId: "azeitao-cheese" }, label: "Azeitão Cheese & Wine" },
@@ -98,21 +106,57 @@ const SIGNATURE_TOURS: FooterLink[] = [
   { to: "/tours/$tourId", params: { tourId: "troia-comporta" }, label: "Tróia & Comporta" },
   { to: "/tours/$tourId", params: { tourId: "evora-alentejo" }, label: "Évora & Alentejo" },
   { to: "/tours/$tourId", params: { tourId: "tomar-coimbra" }, label: "Tomar & Coimbra" },
-  { to: "/tours/$tourId", params: { tourId: "fatima-nazare-obidos" }, label: "Fátima, Nazaré & Óbidos" },
-  { to: "/tours/$tourId", params: { tourId: "roman-heritage-alentejo" }, label: "Roman Heritage Alentejo" },
-  { to: "/tours/$tourId", params: { tourId: "southwest-vicentine-coast" }, label: "Southwest Vicentine Coast" },
+  {
+    to: "/tours/$tourId",
+    params: { tourId: "fatima-nazare-obidos" },
+    label: "Fátima, Nazaré & Óbidos",
+  },
+  {
+    to: "/tours/$tourId",
+    params: { tourId: "roman-heritage-alentejo" },
+    label: "Roman Heritage Alentejo",
+  },
+  {
+    to: "/tours/$tourId",
+    params: { tourId: "southwest-vicentine-coast" },
+    label: "Southwest Vicentine Coast",
+  },
 ];
 
 const POPULAR_SEARCHES: FooterLink[] = [
   { to: "/portugal-tours", label: "Portugal tours" },
   { to: "/luxury-tours-portugal", label: "Luxury Portugal tours" },
   { to: "/private-tours-portugal", label: "Private tours Portugal" },
-  { to: "/local-stories/$slug", params: { slug: "portugal-wine-tours" }, label: "Portugal wine tours" },
-  { to: "/local-stories/$slug", params: { slug: "sintra-day-tour-from-lisbon" }, label: "Sintra day tour from Lisbon" },
-  { to: "/local-stories/$slug", params: { slug: "private-wine-tour-lisbon" }, label: "Private wine tour Lisbon" },
-  { to: "/local-stories/$slug", params: { slug: "arrabida-day-trip-from-lisbon" }, label: "Arrábida day trip from Lisbon" },
-  { to: "/local-stories/$slug", params: { slug: "best-day-trips-from-lisbon" }, label: "Day trips from Lisbon" },
-  { to: "/local-stories/$slug", params: { slug: "alentejo-wine-tour-from-lisbon" }, label: "Alentejo wine tour from Lisbon" },
+  {
+    to: "/local-stories/$slug",
+    params: { slug: "portugal-wine-tours" },
+    label: "Portugal wine tours",
+  },
+  {
+    to: "/local-stories/$slug",
+    params: { slug: "sintra-day-tour-from-lisbon" },
+    label: "Sintra day tour from Lisbon",
+  },
+  {
+    to: "/local-stories/$slug",
+    params: { slug: "private-wine-tour-lisbon" },
+    label: "Private wine tour Lisbon",
+  },
+  {
+    to: "/local-stories/$slug",
+    params: { slug: "arrabida-day-trip-from-lisbon" },
+    label: "Arrábida day trip from Lisbon",
+  },
+  {
+    to: "/local-stories/$slug",
+    params: { slug: "best-day-trips-from-lisbon" },
+    label: "Day trips from Lisbon",
+  },
+  {
+    to: "/local-stories/$slug",
+    params: { slug: "alentejo-wine-tour-from-lisbon" },
+    label: "Alentejo wine tour from Lisbon",
+  },
   { to: "/itineraries/10-day-private-portugal-tour", label: "10-day private Portugal tour" },
   { to: "/portugal-travel-designer", label: "Portugal travel designer" },
   { to: "/proposal-in-portugal", label: "Proposal in Portugal" },
@@ -216,7 +260,10 @@ export function Footer() {
         <div className="mt-10 pt-10 border-t border-[color:var(--gold-warm)]/15">
           <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
             {/* Credentials */}
-            <ul className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-6" aria-label="Credentials and secure checkout">
+            <ul
+              className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-6"
+              aria-label="Credentials and secure checkout"
+            >
               {CREDENTIALS.map(({ Icon, label }, i) => (
                 <li key={i} className="flex min-w-0 items-center gap-2.5">
                   <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--gold-warm)]">
@@ -265,7 +312,6 @@ export function Footer() {
                 ))}
               </ul>
             </div>
-
           </div>
 
           {/* Payments */}
@@ -280,11 +326,14 @@ export function Footer() {
               style={{ fontWeight: 400 }}
             >
               <p className="leading-[1.6] text-[color:var(--ivory)]/75">
-                © {new Date().getFullYear()} {BUSINESS_NAME}. All rights reserved. · {LEGAL_META_LINE}.
+                © {new Date().getFullYear()} {BUSINESS_NAME}. All rights reserved. ·{" "}
+                {LEGAL_META_LINE}.
               </p>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <LanguageSwitcher variant="footer" className="text-[color:var(--ivory)]/75" />
-                <span aria-hidden="true" className="text-[color:var(--text-on-dark-muted)]">·</span>
+                <span aria-hidden="true" className="text-[color:var(--text-on-dark-muted)]">
+                  ·
+                </span>
                 <button
                   type="button"
                   onClick={openCookieConsent}
@@ -306,8 +355,6 @@ export function Footer() {
             {/* Vendor loader — verifies the domain with Trustindex. Renders no
                 layout of its own; the visible seal above stays ours. */}
             <TrustindexWidget />
-
-
           </div>
         </div>
       </div>
@@ -374,7 +421,11 @@ function FooterLinkGroup({ title, links }: { title: string; links: FooterLink[] 
       >
         {links.map((l) => (
           <li key={`${l.to}:${l.label}`}>
-            <Link to={l.to} params={l.params} className={`${LINK_CLASS} text-[color:var(--ivory)]/75`}>
+            <Link
+              to={l.to}
+              params={l.params}
+              className={`${LINK_CLASS} text-[color:var(--ivory)]/75`}
+            >
               {l.label}
             </Link>
           </li>

@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { __testing, setAnalyticsConsent, setAnalyticsLocale, trackEvent } from "../analytics-events";
+import {
+  __testing,
+  setAnalyticsConsent,
+  setAnalyticsLocale,
+  trackEvent,
+} from "../analytics-events";
 
 const ORIGINAL_VITEST = process.env.VITEST;
 

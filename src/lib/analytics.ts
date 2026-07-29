@@ -197,4 +197,3 @@ function inferPlacement(el: Element): string {
   const section = el.closest<HTMLElement>("[data-section], section");
   return section?.dataset?.section ?? section?.id ?? "unknown";
 }
-

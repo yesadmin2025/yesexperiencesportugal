@@ -32,13 +32,7 @@ import {
 // ─── Public input / output ────────────────────────────────────────────────
 
 export type StudioRhythm = "slow" | "balanced" | "full";
-export type StudioInterest =
-  | "wine"
-  | "coast"
-  | "culture"
-  | "gastronomy"
-  | "wellness"
-  | "hidden";
+export type StudioInterest = "wine" | "coast" | "culture" | "gastronomy" | "wellness" | "hidden";
 export type StudioWho = "solo" | "couple" | "family" | "friends";
 export type StudioBudgetTier = "essential" | "signature" | "rare";
 
@@ -141,10 +135,7 @@ function passesWeekdayGate(stop: RegionStop, weekday: number): boolean {
 function hasValidCoords(stop: RegionStop): boolean {
   const { lat, lng } = stop.coords;
   return (
-    Number.isFinite(lat) &&
-    Number.isFinite(lng) &&
-    Math.abs(lat) > 0.0001 &&
-    Math.abs(lng) > 0.0001
+    Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) > 0.0001 && Math.abs(lng) > 0.0001
   );
 }
 
@@ -212,11 +203,7 @@ function scoreStop(stop: RegionStop, input: ComposeInput): ScoreBreakdown {
 
 // ─── Rationale ────────────────────────────────────────────────────────────
 
-function buildRationale(
-  input: ComposeInput,
-  breakdown: ScoreBreakdown,
-  stop: RegionStop,
-): string {
+function buildRationale(input: ComposeInput, breakdown: ScoreBreakdown, stop: RegionStop): string {
   const parts: string[] = [];
   if (breakdown.matchedInterests.length > 0) {
     const label = breakdown.matchedInterests[0];
@@ -231,10 +218,7 @@ function buildRationale(
 
 // ─── Assembly ─────────────────────────────────────────────────────────────
 
-const TIME_ORDER: Record<
-  NonNullable<RegionStop["timeOfDay"][number]>,
-  number
-> = {
+const TIME_ORDER: Record<NonNullable<RegionStop["timeOfDay"][number]>, number> = {
   morning: 0,
   midday: 1,
   afternoon: 2,
@@ -273,9 +257,7 @@ export function composeStudioJourney(input: ComposeInput): ComposedJourney {
   const overheadMin = 60; // pickup + dropoff overhead
 
   const dayBudget =
-    input.rhythm === "slow"
-      ? rules.dayLengthMinutes.near
-      : rules.dayLengthMinutes.far;
+    input.rhythm === "slow" ? rules.dayLengthMinutes.near : rules.dayLengthMinutes.far;
 
   // 1. Pool → filter.
   const pool = REGION_STOPS.filter((s) => s.region === input.region)

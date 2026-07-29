@@ -59,9 +59,7 @@ for (const route of ROUTES) {
   test(`Core Web Vitals — ${route.name} (${route.path})`, async ({ page }) => {
     await page.setViewportSize({ width: 393, height: 852 });
     await page.goto(route.path, { waitUntil: "domcontentloaded" });
-    await page
-      .waitForLoadState("networkidle", { timeout: 8_000 })
-      .catch(() => undefined);
+    await page.waitForLoadState("networkidle", { timeout: 8_000 }).catch(() => undefined);
 
     const { lcp, cls } = await measure(page);
 

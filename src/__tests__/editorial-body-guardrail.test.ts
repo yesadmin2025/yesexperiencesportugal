@@ -125,10 +125,7 @@ describe("editorial-body guardrail", () => {
 
     if (hits.length > 0) {
       const report = hits
-        .map(
-          (h) =>
-            `  ${h.file}:${h.line}  [${h.patternLabel}]\n    ${h.snippet}`,
-        )
+        .map((h) => `  ${h.file}:${h.line}  [${h.patternLabel}]\n    ${h.snippet}`)
         .join("\n");
       throw new Error(
         `Found ${hits.length} prose paragraph(s) still on the legacy text styling ` +

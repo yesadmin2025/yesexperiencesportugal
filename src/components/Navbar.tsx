@@ -9,8 +9,6 @@ import { SOCIAL, whatsappUrl } from "@/config/business-nap";
 import { useT } from "@/i18n/locale-context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
-
-
 function useDesktopLinks() {
   const t = useT();
   return [
@@ -38,7 +36,6 @@ const mobileSocialLinks = [
   { href: SOCIAL.instagram, label: "Instagram", Icon: InstagramIcon },
   { href: SOCIAL.tripadvisor, label: "Tripadvisor", Icon: TripadvisorIcon },
 ];
-
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -145,10 +142,7 @@ export function Navbar() {
                 {n.label}
               </Link>
             ))}
-            <span
-              aria-hidden
-              className="mx-1 h-3 w-px bg-[color:var(--charcoal)]/15"
-            />
+            <span aria-hidden className="mx-1 h-3 w-px bg-[color:var(--charcoal)]/15" />
             <span className="inline-flex items-center gap-1.5 text-[color:var(--charcoal-soft)]">
               <Globe size={13} strokeWidth={1.6} aria-hidden />
               <LanguageSwitcher variant="header" />
@@ -157,8 +151,6 @@ export function Navbar() {
               Design &amp; Book
             </CtaButton>
           </nav>
-
-
 
           <div className="lg:hidden inline-flex items-center gap-2 h-full">
             <span className="inline-flex items-center gap-1 text-[color:var(--charcoal-soft)]">
@@ -175,7 +167,6 @@ export function Navbar() {
               {open ? <X size={20} strokeWidth={1.75} /> : <Menu size={20} strokeWidth={1.75} />}
             </button>
           </div>
-
         </div>
       </div>
 
@@ -233,10 +224,6 @@ export function Navbar() {
                   </AccessibleIconLink>
                 ))}
               </div>
-
-
-
-
             </div>
           </div>
           <div className="container-x py-4 border-t border-[color:var(--charcoal)]/[0.06] shrink-0">

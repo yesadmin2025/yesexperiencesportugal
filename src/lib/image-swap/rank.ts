@@ -6,9 +6,6 @@
 import type { PoolPhoto } from "./pool";
 import { estimateQuality } from "./quality";
 
-
-
-
 export type RankedCandidate = {
   photo: PoolPhoto;
   score: number;
@@ -51,13 +48,14 @@ export function rankCandidates(
 
     const reasons: string[] = [];
     if (tagOverlap > 0)
-      reasons.push(`combina com o tema (${photo.tags.filter((t) => slot.desiredTags.includes(t)).join(", ")})`);
+      reasons.push(
+        `combina com o tema (${photo.tags.filter((t) => slot.desiredTags.includes(t)).join(", ")})`,
+      );
     if (orientationMatch) reasons.push(`orientação ${orientation} correta`);
     if (quality === "alta") reasons.push("alta resolução");
     else if (quality === "baixa") reasons.push("resolução baixa");
     if (fresh) reasons.push("ainda não é usada noutro módulo");
     else reasons.push(`já usada em: ${usedIn.join(", ")}`);
-
 
     results.push({
       photo,

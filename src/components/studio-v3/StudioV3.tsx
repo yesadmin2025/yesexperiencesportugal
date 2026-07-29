@@ -105,10 +105,7 @@ import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import { RouteLegend } from "@/components/studio-v3/RouteLegend";
 import { ApprovalBadge } from "@/components/studio-v3/ApprovalBadge";
-import {
-  validateItinerary,
-  type ValidationStatus,
-} from "@/lib/studio-v3/itinerary-validation";
+import { validateItinerary, type ValidationStatus } from "@/lib/studio-v3/itinerary-validation";
 
 // Lazy — Leaflet ships only when the reveal mounts.
 const BuilderMap = lazy(() =>
@@ -738,9 +735,7 @@ export function StudioV3() {
   // `SignaturePriceCard` calls `onAddOnsChange` on every toggle; we mirror
   // the summary here and forward it to `handleStripeCheckout`.
   const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
-  const [selectedAddOnItems, setSelectedAddOnItems] = useState<
-    SelectedAddOnSummary["items"]
-  >([]);
+  const [selectedAddOnItems, setSelectedAddOnItems] = useState<SelectedAddOnSummary["items"]>([]);
   const handleAddOnsChange = useCallback((summary: SelectedAddOnSummary) => {
     setSelectedAddOnIds((prev) => {
       const same =
@@ -750,9 +745,7 @@ export function StudioV3() {
     setSelectedAddOnItems((prev) => {
       const same =
         prev.length === summary.items.length &&
-        prev.every(
-          (p, i) => p.id === summary.items[i].id && p.amount === summary.items[i].amount,
-        );
+        prev.every((p, i) => p.id === summary.items[i].id && p.amount === summary.items[i].amount);
       return same ? prev : summary.items;
     });
   }, []);
@@ -765,12 +758,7 @@ export function StudioV3() {
   // Single source of truth for adults/minorAges/stops/addOns/perPax/total.
   // Every UI surface (price card, reveal, checkout) reads from this — never
   // recompute pricing or stops downstream.
-  const resolvedJourney = useResolvedJourney(
-    state,
-    selectedAddOnItems,
-    tourPriceTiers,
-  );
-
+  const resolvedJourney = useResolvedJourney(state, selectedAddOnItems, tourPriceTiers);
 
   // Guest Details snapshot — captured on Guest Details submit, then rendered
   // in CheckoutSummary before we open Stripe. Kept in local state (not the
@@ -800,8 +788,6 @@ export function StudioV3() {
     }
   }, [savingSignature, saveSig, state]);
 
-
-
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsState, setDetailsState] = useState<StudioV3State | null>(null);
   const requestStripeCheckout = useCallback(
@@ -828,9 +814,7 @@ export function StudioV3() {
       // Open the drawer immediately with a branded skeleton.
       const stopLabels = (tour.stops ?? []).map((s) => s.label).slice(0, 6);
       const perPaxBase =
-        resolvePerPaxEur(tour, details.guests, tourPriceTiers)?.eurPerPax ??
-        tour.priceFrom ??
-        180;
+        resolvePerPaxEur(tour, details.guests, tourPriceTiers)?.eurPerPax ?? tour.priceFrom ?? 180;
       // Unit-aware party total for add-ons — mirrors `addOnEurFor` in the
       // price card so per_person, per_group, per_vehicle and fixed add-ons
       // all resolve to the same amount the traveler sees in the reveal.
@@ -933,9 +917,7 @@ export function StudioV3() {
             tourId: tour.id,
             tourTitle: tour.title ?? tour.id,
             guests: details.guests,
-            ...(compositionSupplied
-              ? { adults: composedAdults, minorAges: composedMinors }
-              : {}),
+            ...(compositionSupplied ? { adults: composedAdults, minorAges: composedMinors } : {}),
             stopLabels,
 
             includedItems: (() => {
@@ -984,14 +966,8 @@ export function StudioV3() {
         setCheckoutPending(false);
       }
     },
-    [
-      checkoutPending,
-      openLeadSheet,
-      tourPriceTiers,
-      selectedAddOnItems,
-    ],
+    [checkoutPending, openLeadSheet, tourPriceTiers, selectedAddOnItems],
   );
-
 
   // Phase 7D — hydrate a saved Signature directly into the final reveal.
   // Reads ?saved=<token> once on mount, fetches the persisted state, then
@@ -1070,7 +1046,14 @@ export function StudioV3() {
     if (typeof window === "undefined") return;
     const onHide = () => {
       if (document.visibilityState !== "hidden") return;
-      if (state.phase === "intro" || state.phase === "storyboard" || state.phase === "confirmation" || state.phase === "guestDetails" || state.phase === "checkoutSummary") return;
+      if (
+        state.phase === "intro" ||
+        state.phase === "storyboard" ||
+        state.phase === "confirmation" ||
+        state.phase === "guestDetails" ||
+        state.phase === "checkoutSummary"
+      )
+        return;
       trackStep({
         stepNumber: stepOf(state.phase),
         stepKey: state.phase,
@@ -1939,7 +1922,13 @@ export function StudioV3() {
   ];
   const chromeReady = state.pickup != null && !EARLY_PHASES.includes(state.phase);
   const composerHidden =
-    !!reaction || !chromeReady || state.phase === "map" || state.phase === "storyboard" || state.phase === "confirmation" || state.phase === "guestDetails" || state.phase === "checkoutSummary";
+    !!reaction ||
+    !chromeReady ||
+    state.phase === "map" ||
+    state.phase === "storyboard" ||
+    state.phase === "confirmation" ||
+    state.phase === "guestDetails" ||
+    state.phase === "checkoutSummary";
 
   // Phase 7D — saved-link hydration overlays. Loading spinner while we
   // fetch a `?saved=<token>` Signature; graceful card if it's missing or
@@ -1966,14 +1955,8 @@ export function StudioV3() {
               className="editorial-shimmer h-[9px] w-[92px] rounded-[1px]"
               style={{ opacity: 0.85 }}
             />
-            <div
-              aria-hidden
-              className="editorial-shimmer h-[22px] w-[78%] rounded-[2px]"
-            />
-            <div
-              aria-hidden
-              className="editorial-shimmer h-[22px] w-[62%] rounded-[2px]"
-            />
+            <div aria-hidden className="editorial-shimmer h-[22px] w-[78%] rounded-[2px]" />
+            <div aria-hidden className="editorial-shimmer h-[22px] w-[62%] rounded-[2px]" />
             <div
               aria-hidden
               className="mt-1 h-px w-10"
@@ -1995,7 +1978,6 @@ export function StudioV3() {
       </main>
     );
   }
-
 
   if (hydrateError) {
     return (
@@ -2300,7 +2282,6 @@ export function StudioV3() {
             }}
             label="Continue"
           />
-
         </PhaseShell>
       ) : null}
 
@@ -2525,7 +2506,6 @@ export function StudioV3() {
               resolvedPerPaxEur={resolvedJourney.perPaxEur}
               resolvedTotalEur={resolvedJourney.totalEur}
             />
-
           </PhaseShell>
         </>
       ) : null}
@@ -2544,9 +2524,7 @@ export function StudioV3() {
             onSaveSignature={handleSaveSignature}
             onBack={() => back("storyboard")}
           />
-
         </PhaseShell>
-
       ) : null}
 
       {state.phase === "guestDetails" ? (
@@ -2571,7 +2549,6 @@ export function StudioV3() {
                 addOnsEur: addOns,
               };
             }}
-
             tourId={state.tourId ?? undefined}
             journeyTitle={state.journeyTitle ?? undefined}
             submitting={false}
@@ -2591,7 +2568,6 @@ export function StudioV3() {
               phone: state.guestDraft?.phone ?? null,
               guideNotes: state.guestDraft?.guideNotes ?? null,
             }}
-
             onBack={() => back("confirmation")}
             onStorySubmit={async (email: string) => {
               try {
@@ -2639,7 +2615,6 @@ export function StudioV3() {
               }));
               advance("checkoutSummary");
             }}
-
           />
         </PhaseShell>
       ) : null}
@@ -2656,8 +2631,6 @@ export function StudioV3() {
             perPaxEur={resolvedJourney.perPaxEur}
             totalEur={resolvedJourney.totalEur}
             journeyLines={resolvedJourney.journeyLines}
-
-
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}
@@ -2677,9 +2650,6 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
-
-
-
       <BrandedCheckoutDrawer
         open={checkoutOpen}
         onOpenChange={(o) => {
@@ -2698,7 +2668,6 @@ export function StudioV3() {
             flowLabel: "Studio",
           }
         }
-
         onComplete={(sid) => {
           setCheckoutOpen(false);
           const tid = checkoutTourId ?? state.tourId ?? "";
@@ -3115,7 +3084,6 @@ function ComposerRevealPanel({ state }: { state: StudioV3State }) {
   );
 }
 
-
 // Exported so `SignatureDayReveal` (see ./SignatureDayReveal.tsx) can
 // re-export it under its final name. Physical body-move is deferred until
 // Steps 6–9 rebuild the reveal sections; this establishes the module
@@ -3145,7 +3113,6 @@ export function StoryboardHandoff({
   resolvedPerPaxEur?: number | null;
   resolvedTotalEur?: number | null;
 }) {
-
   const pickupCity = pickupCityLabel(state.pickup);
 
   const journeyTitle = state.journeyTitle ?? "Your private Portugal day";
@@ -4103,7 +4070,6 @@ export function StoryboardHandoff({
           onAddOnsChange={onAddOnsChange}
           resolvedPerPaxEur={resolvedPerPaxEur}
           resolvedTotalEur={resolvedTotalEur}
-
           remainingMinutes={
             revealLegsLoading
               ? null
@@ -4181,8 +4147,6 @@ export function StoryboardHandoff({
 
         <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
       </div>
-
-
     </div>
   );
 }
@@ -4999,4 +4963,3 @@ function SaveSignatureButton({
     </div>
   );
 }
-

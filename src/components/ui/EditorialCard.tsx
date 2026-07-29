@@ -195,7 +195,11 @@ export function EditorialCard({
         ) : null}
 
         {cta ? (
-          <CtaButton to={cta.to} variant="primary" className="relative z-10 mt-7 md:mt-6 self-start">
+          <CtaButton
+            to={cta.to}
+            variant="primary"
+            className="relative z-10 mt-7 md:mt-6 self-start"
+          >
             {cta.label}
           </CtaButton>
         ) : null}

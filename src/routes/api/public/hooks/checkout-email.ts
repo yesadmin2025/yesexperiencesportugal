@@ -69,7 +69,6 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
           pickup: body.pickup ?? null,
         };
 
-
         const result = await sendTransactionalInternal({
           templateName: "checkout-receipt",
           recipientEmail,
@@ -122,7 +121,6 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
             ),
           );
         } catch (e) {
-
           console.error("[checkout-email] team notification failed", {
             error: e instanceof Error ? e.message : e,
           });

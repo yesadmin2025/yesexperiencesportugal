@@ -121,8 +121,9 @@ function Page() {
               <p className="editorial-body">
                 Every experience we run is{" "}
                 <strong className="font-medium">private by default</strong> — never joined with
-                strangers, never bus-scheduled. We're a licensed Portuguese tour operator (RNAAT nº 31/2023)
-                based in Sesimbra, so the guides, the cars, and the estates are ours, not a broker's.
+                strangers, never bus-scheduled. We're a licensed Portuguese tour operator (RNAAT nº
+                31/2023) based in Sesimbra, so the guides, the cars, and the estates are ours, not a
+                broker's.
               </p>
 
               {ITEMS.map((p, i) => (
@@ -131,9 +132,7 @@ function Page() {
                   <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                     {p.title}
                   </h2>
-                  <p className="editorial-body">
-                    {p.body}
-                  </p>
+                  <p className="editorial-body">{p.body}</p>
                   <div className="mt-7">
                     {p.cta.tourId ? (
                       <Link

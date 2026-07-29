@@ -47,16 +47,12 @@ export const sendSignatureStoryEmail = createServerFn({ method: "POST" })
   .inputValidator((data) => inputSchema.parse(data))
   .handler(async ({ data }) => {
     try {
-      const { sendTransactionalInternal } = await import(
-        "@/lib/email/send-internal.server"
-      );
+      const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
       // Revision-scoped idempotency: repeated submits of the same journey
       // dedupe at the email_send_log layer; a refined journey (new revision)
       // sends a fresh copy.
       const revision = data.journeyRevision ?? data.dateIso ?? "";
-      const key = await sha1Hex(
-        `${data.email.toLowerCase()}|${data.tourId ?? ""}|${revision}`,
-      );
+      const key = await sha1Hex(`${data.email.toLowerCase()}|${data.tourId ?? ""}|${revision}`);
       await sendTransactionalInternal({
         templateName: "signature-story",
         recipientEmail: data.email,

@@ -83,9 +83,7 @@ describe("Homepage eyebrow labels — canonical utility usage", () => {
       // Accept EITHER a raw `.he-eyebrow-bar` wrapper OR the canonical
       // `<Eyebrow …>Label</Eyebrow>` primitive (which compiles down to
       // the same DOM — see src/components/ui/Eyebrow.tsx).
-      const rawRe = new RegExp(
-        `he-eyebrow-bar[^"]*"[^>]*>\\s*(?:<[^>]+>\\s*)?${escaped}`,
-      );
+      const rawRe = new RegExp(`he-eyebrow-bar[^"]*"[^>]*>\\s*(?:<[^>]+>\\s*)?${escaped}`);
       const eyebrowRe = new RegExp(`<Eyebrow\\b[^>]*>\\s*${escaped}\\s*</Eyebrow>`);
       expect(
         rawRe.test(src) || eyebrowRe.test(src),

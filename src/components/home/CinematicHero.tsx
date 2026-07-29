@@ -28,8 +28,10 @@ const HERO_CLIP = {
   // Modern codecs for browsers that negotiate them (Safari → HEVC, Chrome/FF → AV1).
   // ~30–40 % smaller than the H.264 720p mobile source; browsers that don't decode
   // them silently fall through to the H.264 <source> below.
-  srcMobileHevc: "/__l5e/assets-v1/07f8da30-1c73-4d49-a615-19beccd6bc17/hero-sunset-road-720.hevc.mp4",
-  srcMobileAv1: "/__l5e/assets-v1/5b4b22ae-6087-461f-b6bb-2befd85ae8de/hero-sunset-road-720.av1.mp4",
+  srcMobileHevc:
+    "/__l5e/assets-v1/07f8da30-1c73-4d49-a615-19beccd6bc17/hero-sunset-road-720.hevc.mp4",
+  srcMobileAv1:
+    "/__l5e/assets-v1/5b4b22ae-6087-461f-b6bb-2befd85ae8de/hero-sunset-road-720.av1.mp4",
   posterWebp: "/video/hero-sunset-road-poster.webp",
   posterWebpMobile: "/video/hero-sunset-road-poster-720.webp",
   posterJpg: "/video/hero-sunset-road-poster.jpg",
@@ -207,7 +209,6 @@ export function CinematicHero() {
             data-analytics="hero_open_studio"
             data-analytics-placement="hero"
             className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
-
             style={{
               letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
@@ -241,7 +242,6 @@ export function CinematicHero() {
             data-analytics="hero_choose_experience"
             data-analytics-placement="hero"
             className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
-
             style={{
               letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
@@ -524,7 +524,6 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           }}
         />
       </picture>
-
 
       {showVideo ? (
         <video

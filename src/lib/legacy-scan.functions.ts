@@ -22,7 +22,11 @@ type Probe = { table: string; idCol: string; cols: string[] };
 // Narrow, deliberate list — tables/columns that plausibly hold URLs or
 // free-text pasted by staff or scrapers.
 const PROBES: Probe[] = [
-  { table: "journal_posts", idCol: "id", cols: ["body", "excerpt", "hero_image_url", "cover_image_url"] },
+  {
+    table: "journal_posts",
+    idCol: "id",
+    cols: ["body", "excerpt", "hero_image_url", "cover_image_url"],
+  },
   { table: "contact_messages", idCol: "id", cols: ["message"] },
   { table: "tour_reviews", idCol: "id", cols: ["body", "author_name", "source_url"] },
   { table: "imported_tours", idCol: "id", cols: ["source_url", "description", "raw_json"] },

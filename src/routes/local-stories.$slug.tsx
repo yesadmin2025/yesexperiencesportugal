@@ -1,7 +1,6 @@
 import type React from "react";
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 
-
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -12,7 +11,6 @@ import { ReadingProgress } from "@/components/motion/ReadingProgress";
 import {
   jsonLdScript,
   breadcrumbLd,
-  
   personFounderLd,
   localStoryReviewsLd,
   localStoryArticleLd,
@@ -20,7 +18,6 @@ import {
   faqPageLd,
   type NormalizedLocalStoryReview,
 } from "@/lib/jsonld";
-
 
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
@@ -97,7 +94,6 @@ function articleImageUrl(a: LocalStoryArticle): string | undefined {
   if (!img) return undefined;
   return img.startsWith("http") ? img : `${BASE}${img.startsWith("/") ? "" : "/"}${img}`;
 }
-
 
 type LoaderData = {
   reviews: NormalizedLocalStoryReview[];
@@ -180,7 +176,6 @@ export const Route = createFileRoute("/local-stories/$slug")({
 
     // Every Local Story is self-canonical at /local-stories/<slug>.
 
-
     if (article) {
       const url = `${BASE}/local-stories/${params.slug}`;
       const reviews = loaderData?.reviews ?? [];
@@ -236,7 +231,6 @@ export const Route = createFileRoute("/local-stories/$slug")({
       };
     }
 
-
     // No static article and no matching DB post — the loader threw
     // notFound() (or errored). Emit a minimal noindex head so this URL
     // never gets indexed, and never advertise a canonical for it.
@@ -277,7 +271,6 @@ export const Route = createFileRoute("/local-stories/$slug")({
       ),
     ];
 
-
     return {
       meta: [
         { title },
@@ -297,7 +290,6 @@ export const Route = createFileRoute("/local-stories/$slug")({
   },
 
   beforeLoad: ({ params }) => {
-
     // Placeholder / malformed slugs ($slug, %24slug, undefined, template
     // stubs, anything that can't be a real article) must serve a real 404
     // with noindex — NOT a 301 to the listing. A 301 keeps the URL alive
@@ -588,7 +580,10 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
             </div>
 
             {post.signatureSlug && (
-              <Scene as="aside" className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
+              <Scene
+                as="aside"
+                className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center"
+              >
                 <span className="scene-atmosphere block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
                   Travel this story
                 </span>

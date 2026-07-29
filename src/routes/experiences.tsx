@@ -5,11 +5,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin, Star, UtensilsCrossed } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
-import {
-  getTourContent,
-  signatureDurationLabel,
-  signatureIncludesLunch,
-} from "@/lib/tourContent";
+import { getTourContent, signatureDurationLabel, signatureIncludesLunch } from "@/lib/tourContent";
 import { getSignatureCardMoments } from "@/content/signature-card-moments";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
@@ -98,12 +94,12 @@ function ExperiencesPage() {
               Signature <SectionTitle.Em>Tours</SectionTitle.Em>
             </SectionTitle>
             <p className="scene-body mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-              A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond. Book as designed, or quietly tailor a few details.
+              A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond.
+              Book as designed, or quietly tailor a few details.
             </p>
           </ParallaxLayer>
         </div>
       </Scene>
-
 
       <section className="reveal section-y">
         <div className="container-x">
@@ -148,7 +144,6 @@ function ExperiencesPage() {
                       </TourImage>
                     </Link>
                   </MaskReveal>
-
 
                   <Link
                     to="/tours/$tourId"
@@ -201,7 +196,9 @@ function ExperiencesPage() {
                             strokeWidth={0}
                             aria-hidden="true"
                           />
-                          <span className="tabular-nums font-medium text-[color:var(--gold-ink)]">{meta.rating.toFixed(1)}</span>
+                          <span className="tabular-nums font-medium text-[color:var(--gold-ink)]">
+                            {meta.rating.toFixed(1)}
+                          </span>
                           <span className="text-[color:var(--charcoal-soft)]">
                             · <span className="tabular-nums">{meta.reviewCount}</span> reviews
                           </span>

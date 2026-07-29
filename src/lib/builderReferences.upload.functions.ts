@@ -35,12 +35,19 @@ const ALLOWED_MIME = new Set([
 const MAX_FILES_PER_SESSION = 5;
 
 const Input = z.object({
-  sessionId: z.string().min(8).max(64).regex(/^[a-zA-Z0-9_-]+$/),
+  sessionId: z
+    .string()
+    .min(8)
+    .max(64)
+    .regex(/^[a-zA-Z0-9_-]+$/),
   fileName: z.string().min(1).max(200),
   mimeType: z.string().min(1).max(100),
   fileSizeBytes: z.number().int().positive().max(MAX_BYTES),
   // base64-encoded file bytes (no data: prefix)
-  base64: z.string().min(4).max(Math.ceil((MAX_BYTES * 4) / 3) + 64),
+  base64: z
+    .string()
+    .min(4)
+    .max(Math.ceil((MAX_BYTES * 4) / 3) + 64),
 });
 
 export const uploadBuilderReference = createServerFn({ method: "POST" })
@@ -95,9 +102,7 @@ export const uploadBuilderReference = createServerFn({ method: "POST" })
       return { ok: false as const, reason: "storage_failed" };
     }
 
-    const { data: publicUrl } = supabaseAdmin.storage
-      .from("builder-references")
-      .getPublicUrl(path);
+    const { data: publicUrl } = supabaseAdmin.storage.from("builder-references").getPublicUrl(path);
 
     const { data: row, error: insErr } = await supabaseAdmin
       .from("builder_reference_uploads")

@@ -137,8 +137,7 @@ const signatures = FEATURED_TOUR_IDS.filter((id) => isValidTourId(id))
       // (pass-bys excluded). Falls back to SoT-aware highlights via
       // getTourContent when no Viator meta exists. Never fabricated.
       highlights: (
-        meta?.stops?.filter((s) => !s.passBy).map((s) => s.name) ??
-        getTourContent(t.id).highlights
+        meta?.stops?.filter((s) => !s.passBy).map((s) => s.name) ?? getTourContent(t.id).highlights
       ).slice(0, 3),
     };
   });
@@ -276,7 +275,6 @@ export const Route = createFileRoute("/")({
         type: "image/webp",
         fetchPriority: "high",
       },
-
     ],
     scripts: [
       jsonLdScript(faqPageLd(HOMEPAGE_FAQ)),
@@ -538,10 +536,6 @@ function HomePage() {
           </div>
         </section>
 
-
-
-
-
         {/* 2b — FIVE WAYS TO SHAPE YOUR PORTUGAL
           Concise editorial explainer so visitors instantly understand
           the paths: Signature, Studio, Moments, Corporate, Travel Designer. */}
@@ -626,7 +620,6 @@ function HomePage() {
                     Portugal Travel Designer →
                   </a>
                 </p>
-
               </div>
 
               <div className="lg:col-span-7 lg:order-2 order-2">

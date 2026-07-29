@@ -33,9 +33,7 @@ export async function scrapePrices(page: Page): Promise<ScrapedPrice[]> {
 }
 
 export async function setCurrency(page: Page, currency: Currency) {
-  const btn = page
-    .locator(`[data-currency-option="${currency}"]`)
-    .first();
+  const btn = page.locator(`[data-currency-option="${currency}"]`).first();
   await btn.click();
 }
 

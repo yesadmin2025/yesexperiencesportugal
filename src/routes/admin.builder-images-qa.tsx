@@ -14,7 +14,12 @@ import {
 } from "@/lib/builderImages.functions";
 
 export const Route = createFileRoute("/admin/builder-images-qa")({
-  head: () => ({ meta: [{ title: "Builder image QA — Studio Admin" }, { name: "robots", content: "noindex, nofollow" }] }),
+  head: () => ({
+    meta: [
+      { title: "Builder image QA — Studio Admin" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: BuilderImagesQAPage,
 });
 

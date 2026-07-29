@@ -86,7 +86,11 @@ describe("buildJourneyRevision", () => {
     const otherRoute = buildJourneyRevision(
       baseState({
         editedRoutePoints: [
-          { label: "New Stop", story: "x", index: 0 } as unknown as StudioV3State["editedRoutePoints"] extends (infer U)[] | null ? U : never,
+          {
+            label: "New Stop",
+            story: "x",
+            index: 0,
+          } as unknown as StudioV3State["editedRoutePoints"] extends (infer U)[] | null ? U : never,
         ] as StudioV3State["editedRoutePoints"],
       }),
       { adults: 2, minorAges: [] },

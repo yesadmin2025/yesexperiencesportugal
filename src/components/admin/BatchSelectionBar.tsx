@@ -60,7 +60,10 @@ export function BatchSelectionBar({
               key={p.slotIndex}
               className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] bg-white/10 px-2 py-1"
             >
-              Slot {p.slotIndex + 1} · <span className="normal-case tracking-normal truncate max-w-[10rem]">{p.photoName}</span>
+              Slot {p.slotIndex + 1} ·{" "}
+              <span className="normal-case tracking-normal truncate max-w-[10rem]">
+                {p.photoName}
+              </span>
               <button
                 type="button"
                 onClick={() => onRemove(p.slotIndex)}

@@ -283,9 +283,9 @@ function PressPage() {
           </div>
           <p className="scene-body mt-5 max-w-2xl text-[15px] leading-relaxed text-[color:var(--charcoal)]/80">
             A single source of truth for citing YES Experiences Portugal. Please use the exact
-            spelling, phone and address below to keep listings consistent across Google, Tripadvisor,
-            Visit Portugal and travel publications. Every text block, HTML snippet and logo file on
-            this page is copy-and-paste ready.
+            spelling, phone and address below to keep listings consistent across Google,
+            Tripadvisor, Visit Portugal and travel publications. Every text block, HTML snippet and
+            logo file on this page is copy-and-paste ready.
           </p>
         </Scene>
 
@@ -310,7 +310,9 @@ function PressPage() {
                 key={lane.title}
                 className="flex flex-col rounded-md border border-[color:var(--charcoal)]/10 bg-[color:var(--sand)]/40 p-5"
               >
-                <p className="font-display text-[15px] text-[color:var(--charcoal)]">{lane.title}</p>
+                <p className="font-display text-[15px] text-[color:var(--charcoal)]">
+                  {lane.title}
+                </p>
                 <p className="mt-2 flex-1 text-[13.5px] leading-relaxed text-[color:var(--charcoal)]/75">
                   {lane.body}
                 </p>
@@ -350,8 +352,8 @@ function PressPage() {
             Paste any of these into your CMS. Please link to{" "}
             <code>https://yesexperiencesportugal.com</code> (or a relevant deeper page such as{" "}
             <code>/portugal-tours</code>) using a <code>dofollow</code> link — no{" "}
-            <code>rel=&quot;nofollow&quot;</code>, no <code>rel=&quot;sponsored&quot;</code>, no
-            URL shorteners. Preferred anchor text: <em>YES Experiences Portugal</em>,{" "}
+            <code>rel=&quot;nofollow&quot;</code>, no <code>rel=&quot;sponsored&quot;</code>, no URL
+            shorteners. Preferred anchor text: <em>YES Experiences Portugal</em>,{" "}
             <em>private Portugal tours</em>, or <em>licensed Portuguese travel studio</em>.
           </p>
           <Snippet label="HTML — text link" code={HTML_TEXT_LINK} filename="yes-text-link.html" />
@@ -509,7 +511,9 @@ function PressPage() {
           <h2 className="font-display text-xl font-semibold">Logo usage</h2>
           <ul className="mt-4 list-disc space-y-2 pl-5 text-[15px] leading-relaxed text-[color:var(--charcoal)]/85">
             <li>Use the official lockups above without modification.</li>
-            <li>Maintain clear space equal to the height of the letter &ldquo;Y&rdquo; on all sides.</li>
+            <li>
+              Maintain clear space equal to the height of the letter &ldquo;Y&rdquo; on all sides.
+            </li>
             <li>Minimum width: 120px on screen, 30mm in print.</li>
             <li>Use the mono-light lockup on dark backgrounds; mono-dark on light backgrounds.</li>
             <li>
@@ -517,8 +521,9 @@ function PressPage() {
               imagery.
             </li>
             <li>
-              Primary palette: teal <code>var(--teal)</code>, gold <code>var(--gold)</code>, charcoal{" "}
-              <code>var(--charcoal)</code>, ivory <code>var(--ivory)</code>. Full palette on the brand board.
+              Primary palette: teal <code>var(--teal)</code>, gold <code>var(--gold)</code>,
+              charcoal <code>var(--charcoal)</code>, ivory <code>var(--ivory)</code>. Full palette
+              on the brand board.
             </li>
           </ul>
         </section>

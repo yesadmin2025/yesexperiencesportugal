@@ -128,7 +128,10 @@ export function TravelFilePreview({ className, onEngage }: TravelFilePreviewProp
       </div>
 
       {/* Spread strip */}
-      <div className="mt-8 -mx-4 md:mx-0 px-4 md:px-0 flex gap-4 overflow-x-auto snap-x snap-mandatory md:snap-none scrollbar-none" style={{ scrollbarWidth: "none" }}>
+      <div
+        className="mt-8 -mx-4 md:mx-0 px-4 md:px-0 flex gap-4 overflow-x-auto snap-x snap-mandatory md:snap-none scrollbar-none"
+        style={{ scrollbarWidth: "none" }}
+      >
         {thumbs.map((p, i) => (
           <button
             key={p.src}

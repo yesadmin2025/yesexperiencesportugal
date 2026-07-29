@@ -97,78 +97,87 @@ function DayToursPage() {
             {dayTours.map((t) => {
               const meta = getViatorMeta(t.id);
               return (
-              <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
-                <Link
-                  to="/tours/$tourId"
-                  params={{ tourId: t.id }}
-                  className="lift-layer-sm relative block mb-5 shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
-                  aria-label={`Open ${t.title}`}
-                >
-                  <TourImage
-                    {...resolveImg(t, "lg")}
-                    alt={`${t.title} — private day tour in ${t.region}, Portugal (${t.theme})`}
-                    ratio="3/2"
-                    focal={t.focal ?? "50% 50%"}
-                    imgClassName="group-hover:scale-105 transition-transform duration-700"
+                <article key={t.id} className="group flex flex-col text-left" aria-label={t.title}>
+                  <Link
+                    to="/tours/$tourId"
+                    params={{ tourId: t.id }}
+                    className="lift-layer-sm relative block mb-5 shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+                    aria-label={`Open ${t.title}`}
                   >
-                    <span className="absolute top-4 right-4 text-[10px] uppercase tracking-[0.22em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-3 py-1.5">
-                      Tailored Signature
+                    <TourImage
+                      {...resolveImg(t, "lg")}
+                      alt={`${t.title} — private day tour in ${t.region}, Portugal (${t.theme})`}
+                      ratio="3/2"
+                      focal={t.focal ?? "50% 50%"}
+                      imgClassName="group-hover:scale-105 transition-transform duration-700"
+                    >
+                      <span className="absolute top-4 right-4 text-[10px] uppercase tracking-[0.22em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-3 py-1.5">
+                        Tailored Signature
+                      </span>
+                    </TourImage>
+                  </Link>
+
+                  <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--charcoal)]">
+                    {t.region}
+                  </p>
+                  <Link
+                    to="/tours/$tourId"
+                    params={{ tourId: t.id }}
+                    className="serif text-2xl mt-2 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
+                  >
+                    {t.title}
+                  </Link>
+
+                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                    <span className="flex items-center gap-1.5">
+                      <Clock size={12} /> {signatureDurationLabel(t.id, t.durationHours)}
                     </span>
-                  </TourImage>
-                </Link>
-
-                <p className="text-xs uppercase tracking-[0.3em] text-[color:var(--charcoal)]">
-                  {t.region}
-                </p>
-                <Link
-                  to="/tours/$tourId"
-                  params={{ tourId: t.id }}
-                  className="serif text-2xl mt-2 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
-                >
-                  {t.title}
-                </Link>
-
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-                  <span className="flex items-center gap-1.5">
-                    <Clock size={12} /> {signatureDurationLabel(t.id, t.durationHours)}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <MapPin size={12} /> {t.theme}
-                  </span>
-                  <span className="text-[color:var(--teal)]">
-                    From <PriceEur amountEur={t.priceFrom} role="from" />
-                    <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-                      per person
+                    <span className="flex items-center gap-1.5">
+                      <MapPin size={12} /> {t.theme}
                     </span>
-                  </span>
-                </div>
-
-                {meta && meta.reviewCount > 0 && (
-                  <div className="mt-2 flex items-center gap-2 text-[12px] text-[color:var(--charcoal-soft)] tabular-nums">
-                    <Star size={13} className="text-[color:var(--gold)] fill-[color:var(--gold)]" strokeWidth={0} />
-                    <span>
-                      <span className="text-[color:var(--charcoal)] font-medium">{meta.rating.toFixed(1)}</span>
-                      {" · "}
-                      {meta.reviewCount} reviews
-                      <span className="text-[color:var(--charcoal-soft)]/75"> · Tripadvisor &amp; Viator</span>
+                    <span className="text-[color:var(--teal)]">
+                      From <PriceEur amountEur={t.priceFrom} role="from" />
+                      <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                        per person
+                      </span>
                     </span>
                   </div>
-                )}
 
-                <p className="mt-3 text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
-                  {t.blurb}
-                </p>
+                  {meta && meta.reviewCount > 0 && (
+                    <div className="mt-2 flex items-center gap-2 text-[12px] text-[color:var(--charcoal-soft)] tabular-nums">
+                      <Star
+                        size={13}
+                        className="text-[color:var(--gold)] fill-[color:var(--gold)]"
+                        strokeWidth={0}
+                      />
+                      <span>
+                        <span className="text-[color:var(--charcoal)] font-medium">
+                          {meta.rating.toFixed(1)}
+                        </span>
+                        {" · "}
+                        {meta.reviewCount} reviews
+                        <span className="text-[color:var(--charcoal-soft)]/75">
+                          {" "}
+                          · Tripadvisor &amp; Viator
+                        </span>
+                      </span>
+                    </div>
+                  )}
 
-                <CtaButton
-                  to="/tours/$tourId"
-                  params={{ tourId: t.id }}
-                  variant="ghost"
-                  size="sm"
-                  className="mt-5 self-start"
-                >
-                  View experience &amp; reserve
-                </CtaButton>
-              </article>
+                  <p className="mt-3 text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
+                    {t.blurb}
+                  </p>
+
+                  <CtaButton
+                    to="/tours/$tourId"
+                    params={{ tourId: t.id }}
+                    variant="ghost"
+                    size="sm"
+                    className="mt-5 self-start"
+                  >
+                    View experience &amp; reserve
+                  </CtaButton>
+                </article>
               );
             })}
           </div>

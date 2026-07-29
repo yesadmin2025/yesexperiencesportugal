@@ -35,7 +35,14 @@ function Star() {
 
 function CheckDisc() {
   return (
-    <svg viewBox="0 0 24 24" width={12} height={12} aria-hidden="true" focusable="false" className="shrink-0">
+    <svg
+      viewBox="0 0 24 24"
+      width={12}
+      height={12}
+      aria-hidden="true"
+      focusable="false"
+      className="shrink-0"
+    >
       <circle cx="12" cy="12" r="12" fill={TRUSTINDEX_GREEN} />
       <path
         d="M6.8 12.4l3.3 3.3 7.1-7.1"
@@ -82,7 +89,10 @@ export function TrustindexBadge() {
 
       {/* Certificate card */}
       <span className="flex shrink-0 flex-col overflow-hidden rounded-[4px] font-[family-name:var(--font-sans)] leading-none">
-        <span className="flex items-center justify-center gap-1 bg-[#FFFFFF] px-1.5 py-[3px] text-[8.5px] sm:px-2 sm:text-[10px] text-[#1A1A1A]" style={{ fontWeight: 700 }}>
+        <span
+          className="flex items-center justify-center gap-1 bg-[#FFFFFF] px-1.5 py-[3px] text-[8.5px] sm:px-2 sm:text-[10px] text-[#1A1A1A]"
+          style={{ fontWeight: 700 }}
+        >
           <CheckDisc />
           Trusted Site
         </span>

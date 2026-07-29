@@ -30,7 +30,6 @@ describe("SoT ↔ getTourContent parity", () => {
     const sot = SIGNATURE_SOURCE_OF_TRUTH[tourId]!;
     const content = getTourContent(tourId);
 
-
     expect(content.source).toBe("sot");
     expect(content.overview).toBe(sot.overview);
     expect(content.highlights).toEqual(sot.highlights);
@@ -38,9 +37,7 @@ describe("SoT ↔ getTourContent parity", () => {
     expect(content.notIncluded).toEqual(sot.notIncluded);
 
     expect(content.itinerary).toHaveLength(sot.itinerary.length);
-    const sortedSot = sot.itinerary
-      .slice()
-      .sort((a, b) => a.order - b.order);
+    const sortedSot = sot.itinerary.slice().sort((a, b) => a.order - b.order);
     content.itinerary.forEach((chapter, i) => {
       const expected = sortedSot[i];
       expect(chapter.order).toBe(expected.order);

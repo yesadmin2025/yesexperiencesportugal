@@ -5,7 +5,6 @@ import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { supabase } from "@/integrations/supabase/client";
 import { PT_PAIRED_PATHS } from "@/i18n/pt-ready";
 
-
 const BASE_URL = "https://yesexperiencesportugal.com";
 
 interface SitemapEntry {
@@ -74,14 +73,10 @@ export const Route = createFileRoute("/sitemap.xml")({
           // for Local Stories is LOCAL_STORIES_ARTICLES — do not re-add
           // /local-stories/* here.
 
-
-
-
           { path: "/terms", changefreq: "yearly", priority: "0.4" },
           { path: "/privacy", changefreq: "yearly", priority: "0.4" },
           { path: "/cookies", changefreq: "yearly", priority: "0.4" },
         ];
-
 
         // Bump SEO focus tours so they surface ahead of the rest of the Signature
         // catalog for crawlers. Arrábida = best-seller / brand-recognition anchor.
@@ -120,7 +115,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           changefreq: "monthly",
           priority: "0.7",
         }));
-
 
         let postEntries: SitemapEntry[] = [];
         try {

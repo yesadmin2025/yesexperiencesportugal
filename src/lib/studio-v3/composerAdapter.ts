@@ -17,7 +17,13 @@
  */
 
 import type { StudioV3State } from "@/components/studio-v3/types";
-import type { Pickup, Interest, Rhythm, Companions, InvestmentTier } from "@/components/studio-v3/types";
+import type {
+  Pickup,
+  Interest,
+  Rhythm,
+  Companions,
+  InvestmentTier,
+} from "@/components/studio-v3/types";
 import {
   composeStudioJourney,
   type ComposeInput,
@@ -148,10 +154,7 @@ export function adaptStateToComposeInput(
  * Convenience: adapt + compose. Returns null when adapter returns null,
  * or when the composer produced fewer than 2 stops (thin pool guard).
  */
-export function composeFromState(
-  state: StudioV3State,
-  now?: Date,
-): ComposedJourney | null {
+export function composeFromState(state: StudioV3State, now?: Date): ComposedJourney | null {
   const input = adaptStateToComposeInput(state, now);
   if (!input) return null;
   const journey = composeStudioJourney(input);

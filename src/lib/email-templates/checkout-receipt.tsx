@@ -74,8 +74,6 @@ function formatEurInline(n: number): string {
   return `€${Math.round(n).toLocaleString("en-GB")}`;
 }
 
-
-
 const TEAL = "#295B61";
 const GOLD = "#C9A96A";
 const CHARCOAL = "#2E2E2E";
@@ -119,8 +117,7 @@ const CheckoutReceipt = ({
 }: CheckoutReceiptProps) => {
   const firstName = customerName ? customerName.split(" ")[0] : null;
   const g = guests ?? 2;
-  const hasComposition =
-    typeof adults === "number" && adults >= 1 && Array.isArray(minorAges);
+  const hasComposition = typeof adults === "number" && adults >= 1 && Array.isArray(minorAges);
   const hasMinors = hasComposition && (minorAges ?? []).length > 0;
   const hasAdultRate = typeof perPaxAdultEur === "number" && perPaxAdultEur > 0;
   // Reuse the SAME aggregation the on-page summary calls
@@ -128,9 +125,7 @@ const CheckoutReceipt = ({
   // and subtotal in the email matches the checkout screen byte-for-byte.
   const compositionRows =
     hasComposition && hasAdultRate
-      ? summarizeJourneyLines(
-          buildJourneyLines(adults!, minorAges ?? [], perPaxAdultEur!),
-        )
+      ? summarizeJourneyLines(buildJourneyLines(adults!, minorAges ?? [], perPaxAdultEur!))
       : [];
   return (
     <Html lang="en" dir="ltr">
@@ -170,7 +165,6 @@ const CheckoutReceipt = ({
                 ))}
               </>
             ) : (
-
               <Text style={cardValue}>{`${g} ${g === 1 ? "guest" : "guests"}`}</Text>
             )}
             {pickup ? (
@@ -261,7 +255,6 @@ export const template = {
       "https://yesexperiencesportugal.com/booking-confirmed?session_id=cs_live_a1b2c3",
     pickup: "Hotel Ritz Lisbon",
   } satisfies CheckoutReceiptProps,
-
 } satisfies TemplateEntry;
 
 export default CheckoutReceipt;

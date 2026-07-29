@@ -14,37 +14,45 @@ import { supabase } from "@/integrations/supabase/client";
 export type PoolSource = "owner-photo" | "admin-upload";
 
 export type PoolPhoto = {
-  id: string;               // stable id (url or storage_path)
-  src: string;              // usable src (CDN url or signed url)
+  id: string; // stable id (url or storage_path)
+  src: string; // usable src (CDN url or signed url)
   source: PoolSource;
-  name: string;             // human-readable filename
-  tags: string[];           // inferred: people, landscape, craft, food, coast, wine
+  name: string; // human-readable filename
+  tags: string[]; // inferred: people, landscape, craft, food, coast, wine
   width?: number;
   height?: number;
 };
 
 type AssetJson = { url: string; original_filename?: string };
 
-const ownerModules = import.meta.glob<AssetJson>(
-  "/src/assets/owner-photos/*.asset.json",
-  { eager: true, import: "default" },
-);
+const ownerModules = import.meta.glob<AssetJson>("/src/assets/owner-photos/*.asset.json", {
+  eager: true,
+  import: "default",
+});
 function inferTags(name: string): string[] {
   const n = name.toLowerCase();
   const tags: string[] = [];
   if (/(couple|group|women|people|selfie|hands|painter|potter|harvester|guide)/.test(n))
     tags.push("people");
-  if (/(cove|bay|cliff|beach|coast|sunset|aerial|boardwalk|palm|pessegueiro|espichel|vicentine)/.test(n))
+  if (
+    /(cove|bay|cliff|beach|coast|sunset|aerial|boardwalk|palm|pessegueiro|espichel|vicentine)/.test(
+      n,
+    )
+  )
     tags.push("landscape", "coast");
   if (/(potter|ceramic|azulejo|painter|craft|barrel)/.test(n)) tags.push("craft");
-  if (/(wine|tasting|cheers|petiscos|moscatel|barrel|cake|orange)/.test(n)) tags.push("wine", "food");
+  if (/(wine|tasting|cheers|petiscos|moscatel|barrel|cake|orange)/.test(n))
+    tags.push("wine", "food");
   if (/(sintra|arrabida|azeitao|alentejo|comporta|troia|setubal)/.test(n)) tags.push("place");
   if (tags.length === 0) tags.push("editorial");
   return Array.from(new Set(tags));
 }
 
 function toPool(source: PoolSource, path: string, mod: AssetJson): PoolPhoto {
-  const name = (mod.original_filename ?? path.split("/").pop() ?? "photo").replace(/\.asset\.json$/, "");
+  const name = (mod.original_filename ?? path.split("/").pop() ?? "photo").replace(
+    /\.asset\.json$/,
+    "",
+  );
   return {
     id: mod.url,
     src: mod.url,
@@ -66,12 +74,10 @@ export async function loadAdminUploads(): Promise<PoolPhoto[]> {
     .select("id, storage_path, alt, width, height")
     .order("created_at", { ascending: false });
   if (error || !data || data.length === 0) return [];
-  const { data: signed } = await supabase.storage
-    .from("tour-photos")
-    .createSignedUrls(
-      data.map((r) => r.storage_path),
-      SIGNED_URL_TTL,
-    );
+  const { data: signed } = await supabase.storage.from("tour-photos").createSignedUrls(
+    data.map((r) => r.storage_path),
+    SIGNED_URL_TTL,
+  );
   const byPath = new Map((signed ?? []).map((s) => [s.path ?? "", s.signedUrl]));
   const out: PoolPhoto[] = [];
   for (const r of data) {

@@ -83,7 +83,8 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
       /* no-op */
     }
     try {
-      const secure = typeof location !== "undefined" && location.protocol === "https:" ? "; Secure" : "";
+      const secure =
+        typeof location !== "undefined" && location.protocol === "https:" ? "; Secure" : "";
       document.cookie = `${CURRENCY_COOKIE}=${c}; path=/; max-age=${60 * 60 * 24 * 180}; SameSite=Lax${secure}`;
     } catch {
       /* no-op */

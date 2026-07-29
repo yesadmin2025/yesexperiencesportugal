@@ -62,12 +62,7 @@ export function RevealImage({
       data-motion={motion}
       data-reveal-ready={active ? "1" : undefined}
     >
-      {/* eslint-disable-next-line jsx-a11y/alt-text */}
-      <img
-        alt={alt}
-        className={cn("block h-full w-full object-cover", className)}
-        {...imgProps}
-      />
+      <img alt={alt} className={cn("block h-full w-full object-cover", className)} {...imgProps} />
     </div>
   );
 }

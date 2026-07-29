@@ -25,8 +25,7 @@ const canonicalIds = Object.keys(CANONICAL_VIATOR_URLS);
 describe("Viator URL parity across surfaces", () => {
   it("has a canonical URL for every SoT entry", () => {
     for (const id of Object.keys(SIGNATURE_SOURCE_OF_TRUTH)) {
-      expect(CANONICAL_VIATOR_URLS[id], `missing canonical URL for "${id}"`)
-        .toBeDefined();
+      expect(CANONICAL_VIATOR_URLS[id], `missing canonical URL for "${id}"`).toBeDefined();
     }
   });
 
@@ -42,9 +41,7 @@ describe("Viator URL parity across surfaces", () => {
     for (const id of canonicalIds) {
       const meta = VIATOR_META[id];
       expect(meta, `VIATOR_META missing for "${id}"`).toBeDefined();
-      expect(meta!.viatorUrl, `VIATOR_META "${id}"`).toBe(
-        CANONICAL_VIATOR_URLS[id],
-      );
+      expect(meta!.viatorUrl, `VIATOR_META "${id}"`).toBe(CANONICAL_VIATOR_URLS[id]);
     }
   });
 
@@ -58,17 +55,13 @@ describe("Viator URL parity across surfaces", () => {
         | undefined;
       if (!t?.bookingUrl) continue;
       if (!/^https?:\/\/(www\.)?viator\.com\//i.test(t.bookingUrl)) continue;
-      expect(t.bookingUrl, `signatureTours "${id}".bookingUrl`).toBe(
-        CANONICAL_VIATOR_URLS[id],
-      );
+      expect(t.bookingUrl, `signatureTours "${id}".bookingUrl`).toBe(CANONICAL_VIATOR_URLS[id]);
     }
   });
 
   it("canonicalViatorUrl() returns the same URL for every id", () => {
     for (const id of canonicalIds) {
-      expect(canonicalViatorUrl(id), `resolver "${id}"`).toBe(
-        CANONICAL_VIATOR_URLS[id],
-      );
+      expect(canonicalViatorUrl(id), `resolver "${id}"`).toBe(CANONICAL_VIATOR_URLS[id]);
     }
     expect(canonicalViatorUrl("does-not-exist")).toBeUndefined();
   });

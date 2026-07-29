@@ -52,8 +52,20 @@ export function ResponsiveEditorialImage({
   );
 }
 
-export function CinematicEditorialImage({ image, priority = false, sizes = "(min-width: 1024px) 50vw, 100vw", className = "", imageClassName = "h-full w-full object-cover", phase = "a" }: {
-  image: EditorialImageSource; priority?: boolean; sizes?: string; className?: string; imageClassName?: string; phase?: "a" | "b" | "c";
+export function CinematicEditorialImage({
+  image,
+  priority = false,
+  sizes = "(min-width: 1024px) 50vw, 100vw",
+  className = "",
+  imageClassName = "h-full w-full object-cover",
+  phase = "a",
+}: {
+  image: EditorialImageSource;
+  priority?: boolean;
+  sizes?: string;
+  className?: string;
+  imageClassName?: string;
+  phase?: "a" | "b" | "c";
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -62,7 +74,9 @@ export function CinematicEditorialImage({ image, priority = false, sizes = "(min
     const node = rootRef.current;
     if (!node || !image.alternate) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.16 });
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
+      threshold: 0.16,
+    });
     observer.observe(node);
     return () => observer.disconnect();
   }, [image.alternate]);
@@ -74,17 +88,47 @@ export function CinematicEditorialImage({ image, priority = false, sizes = "(min
     if (!node) return;
     const img = node.querySelector<HTMLImageElement>(".cinematic-editorial__frame--primary img");
     if (!img) return;
-    if (img.complete && img.naturalWidth > 0) { setReady(true); return; }
+    if (img.complete && img.naturalWidth > 0) {
+      setReady(true);
+      return;
+    }
     const done = () => setReady(true);
     img.addEventListener("load", done, { once: true });
     return () => img.removeEventListener("load", done);
   }, [image.src]);
-  if (!image.alternate) return <ResponsiveEditorialImage image={image} priority={priority} sizes={sizes} className={imageClassName} />;
+  if (!image.alternate)
+    return (
+      <ResponsiveEditorialImage
+        image={image}
+        priority={priority}
+        sizes={sizes}
+        className={imageClassName}
+      />
+    );
   const playing = visible && ready;
   return (
-    <div ref={rootRef} className={`cinematic-editorial cinematic-editorial--${phase}${playing ? " is-playing" : ""}${ready ? " is-ready" : ""} ${className}`} data-cinematic-editorial="true" data-cinematic-playing={playing ? "true" : "false"} data-cinematic-ready={ready ? "true" : "false"}>
-      <ResponsiveEditorialImage image={image} priority={priority} sizes={sizes} className={imageClassName} pictureClassName="cinematic-editorial__frame cinematic-editorial__frame--primary" />
-      <ResponsiveEditorialImage image={image.alternate} priority={priority} sizes={sizes} className={imageClassName} pictureClassName="cinematic-editorial__frame cinematic-editorial__frame--secondary" decorative />
+    <div
+      ref={rootRef}
+      className={`cinematic-editorial cinematic-editorial--${phase}${playing ? " is-playing" : ""}${ready ? " is-ready" : ""} ${className}`}
+      data-cinematic-editorial="true"
+      data-cinematic-playing={playing ? "true" : "false"}
+      data-cinematic-ready={ready ? "true" : "false"}
+    >
+      <ResponsiveEditorialImage
+        image={image}
+        priority={priority}
+        sizes={sizes}
+        className={imageClassName}
+        pictureClassName="cinematic-editorial__frame cinematic-editorial__frame--primary"
+      />
+      <ResponsiveEditorialImage
+        image={image.alternate}
+        priority={priority}
+        sizes={sizes}
+        className={imageClassName}
+        pictureClassName="cinematic-editorial__frame cinematic-editorial__frame--secondary"
+        decorative
+      />
     </div>
   );
 }

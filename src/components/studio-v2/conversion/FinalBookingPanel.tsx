@@ -348,8 +348,8 @@ export function FinalBookingPanel({
           lineHeight: 1.5,
         }}
       >
-        Cancellation terms shown before checkout · Pay securely · Book now or shape it with a
-        local — your choice.
+        Cancellation terms shown before checkout · Pay securely · Book now or shape it with a local
+        — your choice.
       </p>
 
       {/* Demo modal — placeholder until Stripe checkout is enabled. */}

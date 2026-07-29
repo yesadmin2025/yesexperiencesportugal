@@ -83,10 +83,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
           >
             Adults
           </div>
-          <p
-            className="mt-0.5 text-[11.5px]"
-            style={{ color: "var(--charcoal-soft)" }}
-          >
+          <p className="mt-0.5 text-[11.5px]" style={{ color: "var(--charcoal-soft)" }}>
             18 and over
           </p>
         </div>
@@ -100,10 +97,7 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
           >
             <Minus size={14} aria-hidden />
           </button>
-          <span
-            className="min-w-[40px] text-center text-[15px] tabular-nums"
-            aria-live="polite"
-          >
+          <span className="min-w-[40px] text-center text-[15px] tabular-nums" aria-live="polite">
             {adults}
           </span>
           <button
@@ -150,10 +144,14 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
               Price per traveller
             </p>
             <dl className="mt-2 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1.5 text-[12px] text-[color:var(--charcoal)]">
-              <dt>Adult · 18+</dt><dd className="font-semibold">100%</dd>
-              <dt>Youth · 11–17</dt><dd className="font-semibold">75%</dd>
-              <dt>Child · 3–10</dt><dd className="font-semibold">50%</dd>
-              <dt>Infant · 0–2</dt><dd className="font-semibold">Free</dd>
+              <dt>Adult · 18+</dt>
+              <dd className="font-semibold">100%</dd>
+              <dt>Youth · 11–17</dt>
+              <dd className="font-semibold">75%</dd>
+              <dt>Child · 3–10</dt>
+              <dd className="font-semibold">50%</dd>
+              <dt>Infant · 0–2</dt>
+              <dd className="font-semibold">Free</dd>
             </dl>
           </div>
         ) : (
@@ -161,16 +159,15 @@ export function CompositionField({ value, onChange, maxParty, compact }: Props) 
             {minorAges.map((age, i) => {
               const hasAge = Number.isFinite(age);
               const band = hasAge ? ageBand(age) : null;
-              const bandLabel =
-                !hasAge
-                  ? "Set age"
-                  : band === "youth"
-                    ? "Youth · 75%"
-                    : band === "child"
-                      ? "Child · 50%"
-                      : band === "infant"
-                        ? "Infant · free"
-                        : "Adult";
+              const bandLabel = !hasAge
+                ? "Set age"
+                : band === "youth"
+                  ? "Youth · 75%"
+                  : band === "child"
+                    ? "Child · 50%"
+                    : band === "infant"
+                      ? "Infant · free"
+                      : "Adult";
               return (
                 <li
                   key={i}

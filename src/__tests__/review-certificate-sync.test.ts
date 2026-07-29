@@ -11,7 +11,7 @@ import { organizationLd } from "@/lib/jsonld";
  */
 describe("review certificate ↔ JSON-LD sync", () => {
   it("organization aggregateRating mirrors the certificate constants", () => {
-    const ld = organizationLd() as Record<string, any>;
+    const ld = organizationLd() as Record<string, unknown>;
     expect(ld.aggregateRating).toMatchObject({
       "@type": "AggregateRating",
       ratingValue: REVIEW_CERTIFICATE.ratingValue,

@@ -110,4 +110,3 @@ export function localeAlternateLinks(path: string): Array<{
   });
   return links;
 }
-

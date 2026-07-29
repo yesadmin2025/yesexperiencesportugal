@@ -26,10 +26,7 @@ export function DuplicatesPanel({
   onApply: (moduleKey: EditorialModuleKey, slotIndex: number, candidate: PoolPhoto) => void;
   onJumpToSlot: (moduleKey: EditorialModuleKey, slotIndex: number) => void;
 }) {
-  const moduleLabels = useMemo(
-    () => new Map(EDITORIAL_MODULES.map((m) => [m.key, m.label])),
-    [],
-  );
+  const moduleLabels = useMemo(() => new Map(EDITORIAL_MODULES.map((m) => [m.key, m.label])), []);
   const groups = useMemo(
     () => findDuplicateGroups(effectiveByModule, moduleLabels, pool),
     [effectiveByModule, moduleLabels, pool],
@@ -83,9 +80,7 @@ export function DuplicatesPanel({
                     </span>
                   )}
                 </div>
-                <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)]">
-                  Aparece em:
-                </p>
+                <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)]">Aparece em:</p>
                 <ul className="mt-1 space-y-1">
                   {group.usedIn.map((ref) => (
                     <li

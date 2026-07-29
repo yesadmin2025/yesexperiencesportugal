@@ -29,7 +29,6 @@ import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
 import { Analytics } from "@vercel/analytics/react";
 
-
 /* ──────────────────────────────────────────────────────────────────
  * App readiness flag — sets `window.__APP_READY__ = true` and fires
  * a `app:ready` CustomEvent after the React tree mounts. Useful for:
@@ -102,8 +101,7 @@ function NotFoundComponent() {
   if (typeof window !== "undefined" && window.location.pathname === "/index") {
     return <Navigate to="/" replace />;
   }
-  const isPt =
-    typeof window !== "undefined" && window.location.pathname.startsWith("/pt");
+  const isPt = typeof window !== "undefined" && window.location.pathname.startsWith("/pt");
   const strings = isPt
     ? {
         title: "Página não encontrada",
@@ -169,7 +167,6 @@ export const Route = createRootRoute({
       { property: "og:locale:alternate", content: "en_GB" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@yesexperiencespt" },
-
     ],
 
     links: [
@@ -241,7 +238,6 @@ export const Route = createRootRoute({
       jsonLdScript(organizationLd()),
       jsonLdScript(websiteLd()),
     ],
-
   }),
   shellComponent: RootShell,
   component: RootComponent,

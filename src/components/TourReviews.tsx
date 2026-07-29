@@ -53,7 +53,6 @@ export function TourReviews({ tourId }: { tourId: string }) {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<"recent" | "highest">("recent");
 
-
   useEffect(() => {
     let cancelled = false;
     Promise.all([statsFn({ data: { tourId } }), reviewsFn({ data: { tourId, limit: 8 } })])
@@ -112,10 +111,6 @@ export function TourReviews({ tourId }: { tourId: string }) {
     const bDate = Date.parse((b as { published_at?: string }).published_at ?? "") || 0;
     return bDate - aDate;
   });
-
-
-
-
 
   return (
     <section className="mt-16 md:mt-20" aria-labelledby="tour-reviews-heading">
@@ -180,10 +175,12 @@ export function TourReviews({ tourId }: { tourId: string }) {
           <span className="text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--text-muted)] mr-1">
             Sort
           </span>
-          {([
-            { id: "recent", label: "Most recent" },
-            { id: "highest", label: "Highest rated" },
-          ] as const).map((opt) => {
+          {(
+            [
+              { id: "recent", label: "Most recent" },
+              { id: "highest", label: "Highest rated" },
+            ] as const
+          ).map((opt) => {
             const active = sortBy === opt.id;
             return (
               <button
@@ -233,7 +230,6 @@ export function TourReviews({ tourId }: { tourId: string }) {
           ))}
         </ul>
       )}
-
 
       <p className="mt-8 text-center text-[12px] text-[color:var(--charcoal)]/60">
         Based on verified guest reviews across major booking platforms.

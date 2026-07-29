@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-29T23:25:32.934Z",
+  "generatedAt": "2026-07-29T23:42:40.780Z",
   "filesScanned": 939,
   "approvedPalette": {
     "teal": "#295B61",
@@ -332,7 +332,7 @@
     },
     {
       "file": "src/components/CookieConsent.tsx",
-      "line": 200,
+      "line": 196,
       "col": 152,
       "raw": "#1e4a4f",
       "normalized": "#1e4a4f",
@@ -341,7 +341,7 @@
     },
     {
       "file": "src/components/CookieConsent.tsx",
-      "line": 200,
+      "line": 196,
       "col": 365,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -350,7 +350,7 @@
     },
     {
       "file": "src/components/CookieConsent.tsx",
-      "line": 225,
+      "line": 221,
       "col": 152,
       "raw": "#1e4a4f",
       "normalized": "#1e4a4f",
@@ -359,7 +359,7 @@
     },
     {
       "file": "src/components/CookieConsent.tsx",
-      "line": 225,
+      "line": 221,
       "col": 365,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -737,7 +737,7 @@
     },
     {
       "file": "src/components/LanguageSwitcher.tsx",
-      "line": 126,
+      "line": 125,
       "col": 295,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -746,7 +746,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 75,
+      "line": 72,
       "col": 364,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -755,7 +755,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 78,
+      "line": 75,
       "col": 321,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -764,7 +764,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 106,
+      "line": 103,
       "col": 250,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -773,7 +773,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 200,
+      "line": 191,
       "col": 351,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -782,7 +782,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 213,
+      "line": 204,
       "col": 351,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -791,7 +791,7 @@
     },
     {
       "file": "src/components/Navbar.tsx",
-      "line": 230,
+      "line": 221,
       "col": 451,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -890,7 +890,7 @@
     },
     {
       "file": "src/components/SignatureRouteMap.tsx",
-      "line": 77,
+      "line": 74,
       "col": 32,
       "raw": "#faf8f3",
       "normalized": "#faf8f3",
@@ -899,7 +899,7 @@
     },
     {
       "file": "src/components/SignatureRouteMap.tsx",
-      "line": 78,
+      "line": 75,
       "col": 37,
       "raw": "#c9a96a",
       "normalized": "#c9a96a",
@@ -908,7 +908,7 @@
     },
     {
       "file": "src/components/SignatureRouteMap.tsx",
-      "line": 82,
+      "line": 79,
       "col": 26,
       "raw": "#295b61",
       "normalized": "#295b61",
@@ -1142,7 +1142,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 94,
+      "line": 96,
       "col": 80,
       "raw": "#1a1816",
       "normalized": "#1a1816",
@@ -1151,7 +1151,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 157,
+      "line": 159,
       "col": 23,
       "raw": "#F1D8AB",
       "normalized": "#f1d8ab",
@@ -1160,7 +1160,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 177,
+      "line": 179,
       "col": 23,
       "raw": "#F1D8AB",
       "normalized": "#f1d8ab",
@@ -1169,7 +1169,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 209,
+      "line": 211,
       "col": 267,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1178,7 +1178,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 243,
+      "line": 244,
       "col": 265,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1205,7 +1205,7 @@
     },
     {
       "file": "src/components/home/FourWaysIn.tsx",
-      "line": 151,
+      "line": 145,
       "col": 122,
       "raw": "#EAE2D6",
       "normalized": "#eae2d6",
@@ -1637,7 +1637,7 @@
     },
     {
       "file": "src/components/studio-v3/SignaturePriceCard.tsx",
-      "line": 833,
+      "line": 820,
       "col": 44,
       "raw": "#b8541a",
       "normalized": "#b8541a",
@@ -1646,7 +1646,7 @@
     },
     {
       "file": "src/components/studio-v3/SignaturePriceCard.tsx",
-      "line": 855,
+      "line": 842,
       "col": 51,
       "raw": "#b8541a",
       "normalized": "#b8541a",
@@ -1916,7 +1916,7 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 43,
+      "line": 50,
       "col": 17,
       "raw": "#FFFFFF",
       "normalized": "#ffffff",
@@ -1925,7 +1925,7 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 59,
+      "line": 66,
       "col": 95,
       "raw": "#FFFFFF",
       "normalized": "#ffffff",
@@ -1934,7 +1934,7 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 62,
+      "line": 69,
       "col": 103,
       "raw": "#1A1A1A",
       "normalized": "#1a1a1a",
@@ -1943,25 +1943,25 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 85,
-      "col": 69,
+      "line": 93,
+      "col": 65,
       "raw": "#FFFFFF",
       "normalized": "#ffffff",
-      "snippet": "<span className=\"flex items-center justify-center gap-1 bg-[#FFFFFF] px-1.5 py-[3px] text-[8.5px] sm:px-2 sm:text-[10px] text-[#1A1A1A]\" style={{ fontWeight: 70",
+      "snippet": "className=\"flex items-center justify-center gap-1 bg-[#FFFFFF] px-1.5 py-[3px] text-[8.5px] sm:px-2 sm:text-[10px] text-[#1A1A1A]\"",
       "status": "allowlisted"
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 85,
-      "col": 136,
+      "line": 93,
+      "col": 132,
       "raw": "#1A1A1A",
       "normalized": "#1a1a1a",
-      "snippet": "<span className=\"flex items-center justify-center gap-1 bg-[#FFFFFF] px-1.5 py-[3px] text-[8.5px] sm:px-2 sm:text-[10px] text-[#1A1A1A]\" style={{ fontWeight: 70",
+      "snippet": "className=\"flex items-center justify-center gap-1 bg-[#FFFFFF] px-1.5 py-[3px] text-[8.5px] sm:px-2 sm:text-[10px] text-[#1A1A1A]\"",
       "status": "mismatch"
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 89,
+      "line": 99,
       "col": 57,
       "raw": "#111111",
       "normalized": "#111111",
@@ -1970,7 +1970,7 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 89,
+      "line": 99,
       "col": 96,
       "raw": "#FFFFFF",
       "normalized": "#ffffff",
@@ -1979,7 +1979,7 @@
     },
     {
       "file": "src/lib/a11y/contrast-check.ts",
-      "line": 101,
+      "line": 108,
       "col": 12,
       "raw": "#FFFFFF",
       "normalized": "#ffffff",
@@ -2150,7 +2150,7 @@
     },
     {
       "file": "src/lib/email-templates/booking-confirmation.tsx",
-      "line": 174,
+      "line": 173,
       "col": 21,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2159,7 +2159,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 79,
+      "line": 77,
       "col": 15,
       "raw": "#295B61",
       "normalized": "#295b61",
@@ -2168,7 +2168,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 80,
+      "line": 78,
       "col": 15,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -2177,7 +2177,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 81,
+      "line": 79,
       "col": 19,
       "raw": "#2E2E2E",
       "normalized": "#2e2e2e",
@@ -2186,7 +2186,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 82,
+      "line": 80,
       "col": 15,
       "raw": "#F4EEE2",
       "normalized": "#f4eee2",
@@ -2195,7 +2195,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 269,
+      "line": 262,
       "col": 35,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2204,7 +2204,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 271,
+      "line": 264,
       "col": 21,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2213,7 +2213,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 357,
+      "line": 350,
       "col": 11,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2222,7 +2222,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 368,
+      "line": 361,
       "col": 21,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2294,56 +2294,56 @@
     },
     {
       "file": "src/lib/email-templates/email-change.tsx",
-      "line": 67,
+      "line": 64,
       "col": 34,
       "raw": "#ffffff",
       "normalized": "#ffffff",
-      "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }",
+      "snippet": "const main = { backgroundColor: \"#ffffff\", fontFamily: \"Arial, sans-serif\" };",
       "status": "allowlisted"
     },
     {
       "file": "src/lib/email-templates/email-change.tsx",
-      "line": 72,
+      "line": 69,
       "col": 11,
       "raw": "#000000",
       "normalized": "#000000",
-      "snippet": "color: '#000000',",
+      "snippet": "color: \"#000000\",",
       "status": "allowlisted"
     },
     {
       "file": "src/lib/email-templates/email-change.tsx",
-      "line": 77,
+      "line": 74,
       "col": 11,
       "raw": "#55575d",
       "normalized": "#55575d",
-      "snippet": "color: '#55575d',",
+      "snippet": "color: \"#55575d\",",
       "status": "mismatch"
     },
     {
       "file": "src/lib/email-templates/email-change.tsx",
-      "line": 83,
+      "line": 80,
       "col": 21,
       "raw": "#000000",
       "normalized": "#000000",
-      "snippet": "backgroundColor: '#000000',",
+      "snippet": "backgroundColor: \"#000000\",",
       "status": "allowlisted"
     },
     {
       "file": "src/lib/email-templates/email-change.tsx",
-      "line": 84,
+      "line": 81,
       "col": 11,
       "raw": "#ffffff",
       "normalized": "#ffffff",
-      "snippet": "color: '#ffffff',",
+      "snippet": "color: \"#ffffff\",",
       "status": "allowlisted"
     },
     {
       "file": "src/lib/email-templates/email-change.tsx",
-      "line": 90,
+      "line": 87,
       "col": 44,
       "raw": "#999999",
       "normalized": "#999999",
-      "snippet": "const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }",
+      "snippet": "const footer = { fontSize: \"12px\", color: \"#999999\", margin: \"30px 0 0\" };",
       "status": "mismatch"
     },
     {
@@ -2411,7 +2411,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 125,
+      "line": 122,
       "col": 44,
       "raw": "#666",
       "normalized": "#666666",
@@ -2483,56 +2483,56 @@
     },
     {
       "file": "src/lib/email-templates/invite.tsx",
-      "line": 54,
+      "line": 48,
       "col": 34,
       "raw": "#ffffff",
       "normalized": "#ffffff",
-      "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }",
+      "snippet": "const main = { backgroundColor: \"#ffffff\", fontFamily: \"Arial, sans-serif\" };",
       "status": "allowlisted"
     },
     {
       "file": "src/lib/email-templates/invite.tsx",
-      "line": 59,
+      "line": 53,
       "col": 11,
       "raw": "#000000",
       "normalized": "#000000",
-      "snippet": "color: '#000000',",
+      "snippet": "color: \"#000000\",",
       "status": "allowlisted"
     },
     {
       "file": "src/lib/email-templates/invite.tsx",
-      "line": 64,
+      "line": 58,
       "col": 11,
       "raw": "#55575d",
       "normalized": "#55575d",
-      "snippet": "color: '#55575d',",
+      "snippet": "color: \"#55575d\",",
       "status": "mismatch"
     },
     {
       "file": "src/lib/email-templates/invite.tsx",
-      "line": 70,
+      "line": 64,
       "col": 21,
       "raw": "#000000",
       "normalized": "#000000",
-      "snippet": "backgroundColor: '#000000',",
+      "snippet": "backgroundColor: \"#000000\",",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/invite.tsx",
+      "line": 65,
+      "col": 11,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "color: \"#ffffff\",",
       "status": "allowlisted"
     },
     {
       "file": "src/lib/email-templates/invite.tsx",
       "line": 71,
-      "col": 11,
-      "raw": "#ffffff",
-      "normalized": "#ffffff",
-      "snippet": "color: '#ffffff',",
-      "status": "allowlisted"
-    },
-    {
-      "file": "src/lib/email-templates/invite.tsx",
-      "line": 77,
       "col": 44,
       "raw": "#999999",
       "normalized": "#999999",
-      "snippet": "const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }",
+      "snippet": "const footer = { fontSize: \"12px\", color: \"#999999\", margin: \"30px 0 0\" };",
       "status": "mismatch"
     },
     {
@@ -2591,155 +2591,155 @@
     },
     {
       "file": "src/lib/email-templates/magic-link.tsx",
-      "line": 46,
-      "col": 34,
-      "raw": "#ffffff",
-      "normalized": "#ffffff",
-      "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }",
-      "status": "allowlisted"
-    },
-    {
-      "file": "src/lib/email-templates/magic-link.tsx",
-      "line": 51,
-      "col": 11,
-      "raw": "#000000",
-      "normalized": "#000000",
-      "snippet": "color: '#000000',",
-      "status": "allowlisted"
-    },
-    {
-      "file": "src/lib/email-templates/magic-link.tsx",
-      "line": 56,
-      "col": 11,
-      "raw": "#55575d",
-      "normalized": "#55575d",
-      "snippet": "color: '#55575d',",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/lib/email-templates/magic-link.tsx",
-      "line": 61,
-      "col": 21,
-      "raw": "#000000",
-      "normalized": "#000000",
-      "snippet": "backgroundColor: '#000000',",
-      "status": "allowlisted"
-    },
-    {
-      "file": "src/lib/email-templates/magic-link.tsx",
-      "line": 62,
-      "col": 11,
-      "raw": "#ffffff",
-      "normalized": "#ffffff",
-      "snippet": "color: '#ffffff',",
-      "status": "allowlisted"
-    },
-    {
-      "file": "src/lib/email-templates/magic-link.tsx",
-      "line": 68,
-      "col": 44,
-      "raw": "#999999",
-      "normalized": "#999999",
-      "snippet": "const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/lib/email-templates/reauthentication.tsx",
-      "line": 37,
-      "col": 34,
-      "raw": "#ffffff",
-      "normalized": "#ffffff",
-      "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }",
-      "status": "allowlisted"
-    },
-    {
-      "file": "src/lib/email-templates/reauthentication.tsx",
       "line": 42,
-      "col": 11,
-      "raw": "#000000",
-      "normalized": "#000000",
-      "snippet": "color: '#000000',",
-      "status": "allowlisted"
-    },
-    {
-      "file": "src/lib/email-templates/reauthentication.tsx",
-      "line": 47,
-      "col": 11,
-      "raw": "#55575d",
-      "normalized": "#55575d",
-      "snippet": "color: '#55575d',",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/lib/email-templates/reauthentication.tsx",
-      "line": 55,
-      "col": 11,
-      "raw": "#000000",
-      "normalized": "#000000",
-      "snippet": "color: '#000000',",
-      "status": "allowlisted"
-    },
-    {
-      "file": "src/lib/email-templates/reauthentication.tsx",
-      "line": 58,
-      "col": 44,
-      "raw": "#999999",
-      "normalized": "#999999",
-      "snippet": "const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }",
-      "status": "mismatch"
-    },
-    {
-      "file": "src/lib/email-templates/recovery.tsx",
-      "line": 47,
       "col": 34,
       "raw": "#ffffff",
       "normalized": "#ffffff",
-      "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }",
+      "snippet": "const main = { backgroundColor: \"#ffffff\", fontFamily: \"Arial, sans-serif\" };",
       "status": "allowlisted"
     },
     {
-      "file": "src/lib/email-templates/recovery.tsx",
+      "file": "src/lib/email-templates/magic-link.tsx",
+      "line": 47,
+      "col": 11,
+      "raw": "#000000",
+      "normalized": "#000000",
+      "snippet": "color: \"#000000\",",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/magic-link.tsx",
       "line": 52,
       "col": 11,
+      "raw": "#55575d",
+      "normalized": "#55575d",
+      "snippet": "color: \"#55575d\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/magic-link.tsx",
+      "line": 57,
+      "col": 21,
       "raw": "#000000",
       "normalized": "#000000",
-      "snippet": "color: '#000000',",
+      "snippet": "backgroundColor: \"#000000\",",
       "status": "allowlisted"
     },
     {
-      "file": "src/lib/email-templates/recovery.tsx",
-      "line": 57,
+      "file": "src/lib/email-templates/magic-link.tsx",
+      "line": 58,
+      "col": 11,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "color: \"#ffffff\",",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/magic-link.tsx",
+      "line": 64,
+      "col": 44,
+      "raw": "#999999",
+      "normalized": "#999999",
+      "snippet": "const footer = { fontSize: \"12px\", color: \"#999999\", margin: \"30px 0 0\" };",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/reauthentication.tsx",
+      "line": 29,
+      "col": 34,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "const main = { backgroundColor: \"#ffffff\", fontFamily: \"Arial, sans-serif\" };",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/reauthentication.tsx",
+      "line": 34,
+      "col": 11,
+      "raw": "#000000",
+      "normalized": "#000000",
+      "snippet": "color: \"#000000\",",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/reauthentication.tsx",
+      "line": 39,
       "col": 11,
       "raw": "#55575d",
       "normalized": "#55575d",
-      "snippet": "color: '#55575d',",
+      "snippet": "color: \"#55575d\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/reauthentication.tsx",
+      "line": 47,
+      "col": 11,
+      "raw": "#000000",
+      "normalized": "#000000",
+      "snippet": "color: \"#000000\",",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/reauthentication.tsx",
+      "line": 50,
+      "col": 44,
+      "raw": "#999999",
+      "normalized": "#999999",
+      "snippet": "const footer = { fontSize: \"12px\", color: \"#999999\", margin: \"30px 0 0\" };",
       "status": "mismatch"
     },
     {
       "file": "src/lib/email-templates/recovery.tsx",
-      "line": 62,
+      "line": 44,
+      "col": 34,
+      "raw": "#ffffff",
+      "normalized": "#ffffff",
+      "snippet": "const main = { backgroundColor: \"#ffffff\", fontFamily: \"Arial, sans-serif\" };",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/recovery.tsx",
+      "line": 49,
+      "col": 11,
+      "raw": "#000000",
+      "normalized": "#000000",
+      "snippet": "color: \"#000000\",",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email-templates/recovery.tsx",
+      "line": 54,
+      "col": 11,
+      "raw": "#55575d",
+      "normalized": "#55575d",
+      "snippet": "color: \"#55575d\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email-templates/recovery.tsx",
+      "line": 59,
       "col": 21,
       "raw": "#000000",
       "normalized": "#000000",
-      "snippet": "backgroundColor: '#000000',",
+      "snippet": "backgroundColor: \"#000000\",",
       "status": "allowlisted"
     },
     {
       "file": "src/lib/email-templates/recovery.tsx",
-      "line": 63,
+      "line": 60,
       "col": 11,
       "raw": "#ffffff",
       "normalized": "#ffffff",
-      "snippet": "color: '#ffffff',",
+      "snippet": "color: \"#ffffff\",",
       "status": "allowlisted"
     },
     {
       "file": "src/lib/email-templates/recovery.tsx",
-      "line": 69,
+      "line": 66,
       "col": 44,
       "raw": "#999999",
       "normalized": "#999999",
-      "snippet": "const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }",
+      "snippet": "const footer = { fontSize: \"12px\", color: \"#999999\", margin: \"30px 0 0\" };",
       "status": "mismatch"
     },
     {
@@ -2780,11 +2780,11 @@
     },
     {
       "file": "src/lib/email-templates/signature-story.tsx",
-      "line": 135,
-      "col": 34,
+      "line": 144,
+      "col": 21,
       "raw": "#ffffff",
       "normalized": "#ffffff",
-      "snippet": "const main = { backgroundColor: \"#ffffff\", fontFamily: 'Georgia, \"Times New Roman\", serif' } as const;",
+      "snippet": "backgroundColor: \"#ffffff\",",
       "status": "allowlisted"
     },
     {
@@ -2793,7 +2793,7 @@
       "col": 34,
       "raw": "#ffffff",
       "normalized": "#ffffff",
-      "snippet": "const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }",
+      "snippet": "const main = { backgroundColor: \"#ffffff\", fontFamily: \"Arial, sans-serif\" };",
       "status": "allowlisted"
     },
     {
@@ -2802,7 +2802,7 @@
       "col": 11,
       "raw": "#000000",
       "normalized": "#000000",
-      "snippet": "color: '#000000',",
+      "snippet": "color: \"#000000\",",
       "status": "allowlisted"
     },
     {
@@ -2811,7 +2811,7 @@
       "col": 11,
       "raw": "#55575d",
       "normalized": "#55575d",
-      "snippet": "color: '#55575d',",
+      "snippet": "color: \"#55575d\",",
       "status": "mismatch"
     },
     {
@@ -2820,7 +2820,7 @@
       "col": 21,
       "raw": "#000000",
       "normalized": "#000000",
-      "snippet": "backgroundColor: '#000000',",
+      "snippet": "backgroundColor: \"#000000\",",
       "status": "allowlisted"
     },
     {
@@ -2829,7 +2829,7 @@
       "col": 11,
       "raw": "#ffffff",
       "normalized": "#ffffff",
-      "snippet": "color: '#ffffff',",
+      "snippet": "color: \"#ffffff\",",
       "status": "allowlisted"
     },
     {
@@ -2838,7 +2838,7 @@
       "col": 44,
       "raw": "#999999",
       "normalized": "#999999",
-      "snippet": "const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }",
+      "snippet": "const footer = { fontSize: \"12px\", color: \"#999999\", margin: \"30px 0 0\" };",
       "status": "mismatch"
     },
     {
@@ -3149,11 +3149,11 @@
     },
     {
       "file": "src/routes/[.]lovable.oauth.consent.tsx",
-      "line": 157,
-      "col": 30,
+      "line": 153,
+      "col": 73,
       "raw": "#B4341E",
       "normalized": "#b4341e",
-      "snippet": "style={{ color: \"#B4341E\" }}",
+      "snippet": "<p role=\"alert\" className=\"mt-6 text-[13px]\" style={{ color: \"#B4341E\" }}>",
       "status": "mismatch"
     },
     {
@@ -3347,7 +3347,7 @@
     },
     {
       "file": "src/routes/i.$token.tsx",
-      "line": 334,
+      "line": 335,
       "col": 34,
       "raw": "#fff",
       "normalized": "#ffffff",
@@ -3356,7 +3356,7 @@
     },
     {
       "file": "src/routes/mcp-signin.tsx",
-      "line": 179,
+      "line": 198,
       "col": 72,
       "raw": "#B4341E",
       "normalized": "#b4341e",

@@ -44,10 +44,7 @@ export function operationalFloor(directEur: number): number {
   return Math.round(directEur * MIN_OPERATIONAL_PCT);
 }
 
-export function tailorAdjustedPerPax(
-  directEur: number,
-  principalsRemoved: number,
-): number {
+export function tailorAdjustedPerPax(directEur: number, principalsRemoved: number): number {
   if (!Number.isFinite(directEur) || directEur <= 0) return 0;
   const raw = Math.max(0, principalsRemoved) * TAILOR_PRINCIPAL_STEP_PCT;
   const reductionPct = Math.min(raw, MAX_TAILOR_REDUCTION_PCT);
@@ -121,8 +118,7 @@ export function serverTailorSupplementsEur(
   lunchAdded: boolean,
   extraWineries: number,
 ): number {
-  const lunch =
-    lunchAdded && TAILOR_LUNCH_ELIGIBLE.has(tourId) ? TAILOR_LUNCH_SUPPLEMENT_EUR : 0;
+  const lunch = lunchAdded && TAILOR_LUNCH_ELIGIBLE.has(tourId) ? TAILOR_LUNCH_SUPPLEMENT_EUR : 0;
   const maxExtra = TAILOR_MAX_EXTRA_WINERIES[tourId] ?? 0;
   const extra = Math.min(maxExtra, Math.max(0, Number(extraWineries) | 0));
   return lunch + extra * TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR;

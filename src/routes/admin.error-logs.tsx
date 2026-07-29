@@ -4,7 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/error-logs")({
   head: () => ({
-    meta: [{ title: "Error logs — Studio Admin" }, { name: "robots", content: "noindex, nofollow" }],
+    meta: [
+      { title: "Error logs — Studio Admin" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
   }),
   beforeLoad: async () => {
     const { data, error } = await supabase.auth.getUser();

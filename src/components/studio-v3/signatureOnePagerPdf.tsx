@@ -191,9 +191,7 @@ export function SignatureOnePager({ data }: { data: SignatureOnePagerData }) {
           </View>
           <View style={styles.metaCell}>
             <Text style={styles.metaLabel}>Guests</Text>
-            <Text style={styles.metaValue}>
-              {`${guests} ${guests === 1 ? "guest" : "guests"}`}
-            </Text>
+            <Text style={styles.metaValue}>{`${guests} ${guests === 1 ? "guest" : "guests"}`}</Text>
           </View>
           <View style={styles.metaCell}>
             <Text style={styles.metaLabel}>Pickup</Text>
@@ -208,7 +206,9 @@ export function SignatureOnePager({ data }: { data: SignatureOnePagerData }) {
         <Text style={styles.sectionTitle}>What's included</Text>
         <View style={styles.list}>
           {inclusions.slice(0, 8).map((item, i) => (
-            <Text key={i} style={styles.listItem}>· {item}</Text>
+            <Text key={i} style={styles.listItem}>
+              · {item}
+            </Text>
           ))}
         </View>
 

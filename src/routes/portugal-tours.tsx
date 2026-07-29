@@ -144,10 +144,10 @@ function Page() {
             <div className="prose-yes">
               <p className="editorial-body">
                 Portugal is small enough to see in a week, and layered enough to spend a month on.
-                We're a licensed Portuguese tour operator (RNAAT nº 31/2023) based in Sesimbra, designing{" "}
-                <strong className="font-medium">private Portugal tours</strong> for travelers who
-                want a real day, not a bus route. Every trip below is a real Signature — run by us,
-                priced with everything included, and confirmed in minutes.
+                We're a licensed Portuguese tour operator (RNAAT nº 31/2023) based in Sesimbra,
+                designing <strong className="font-medium">private Portugal tours</strong> for
+                travelers who want a real day, not a bus route. Every trip below is a real Signature
+                — run by us, priced with everything included, and confirmed in minutes.
               </p>
 
               {REGIONS.map((r, i) => (
@@ -156,9 +156,7 @@ function Page() {
                   <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                     {r.title}
                   </h2>
-                  <p className="editorial-body">
-                    {r.body}
-                  </p>
+                  <p className="editorial-body">{r.body}</p>
                   <div className="mt-7">
                     {r.cta.params ? (
                       <Link
@@ -218,7 +216,6 @@ function Page() {
                 </li>
               </ul>
             </aside>
-
           </div>
         </section>
       </article>

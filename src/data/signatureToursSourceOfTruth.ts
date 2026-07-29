@@ -124,8 +124,7 @@ export type SignatureSourceOfTruth = {
 };
 
 const VERIFIED = "2026-07-27";
-const CANCEL_24H =
-  "You can cancel up to 24 hours in advance of the experience for a full refund.";
+const CANCEL_24H = "You can cancel up to 24 hours in advance of the experience for a full refund.";
 
 /** Terse builder so the 12 canonical blocks stay readable. */
 function stop(
@@ -153,9 +152,7 @@ function stop(
 /**
  * Registry — all 12 Signatures, canonical per the Bible.
  */
-export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
-  Record<string, SignatureSourceOfTruth>
-> = {
+export const SIGNATURE_SOURCE_OF_TRUTH: Partial<Record<string, SignatureSourceOfTruth>> = {
   /* ── 1 · Tróia & Comporta — P18 ─────────────────────────── */
   "troia-comporta": {
     tourId: "troia-comporta",
@@ -194,11 +191,27 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
     variesByOption: [],
     itinerary: [
       stop(1, "Lisbon", "Brief starting point entry.", 5, "origin", true),
-      stop(2, "Baía de Setúbal / Sado ferry", "Vehicle and passenger ferry across the Sado.", 15, "core", true),
-      stop(3, "Roman Ruins of Tróia", "Guided archaeological visit; admission included.", 45, "core", true),
+      stop(
+        2,
+        "Baía de Setúbal / Sado ferry",
+        "Vehicle and passenger ferry across the Sado.",
+        15,
+        "core",
+        true,
+      ),
+      stop(
+        3,
+        "Roman Ruins of Tróia",
+        "Guided archaeological visit; admission included.",
+        45,
+        "core",
+        true,
+      ),
       stop(4, "Marina de Tróia", "Short marina stop.", 15, "core", true),
       stop(5, "Cais Palafítico da Carrasqueira", "Stilt fishing pier.", 20, "core", true),
-      stop(6, "Comporta", "Village and lunch time — lunch is own expense.", 95, "core", true, { ownExpense: true }),
+      stop(6, "Comporta", "Village and lunch time — lunch is own expense.", 95, "core", true, {
+        ownExpense: true,
+      }),
       stop(7, "Herdade da Comporta", "Wine experience and tasting.", 95, "core", true),
       stop(8, "Praia do Carvalhal", "Coastal stop.", 15, "core", true),
       stop(9, "Comporta Beach", "Coastal stop.", 15, "core", true),
@@ -248,7 +261,14 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
       stop(1, "Lisbon", "Starting point entry.", 10, "origin", true),
       stop(2, "Villa Romana de São Cucufate", "Roman archaeological site.", 60, "core", true),
       stop(3, "Vila Alva", "Village stop.", 30, "core", true),
-      stop(4, "Adega Mestre Daniel / XXVI Talhas", "Family talha winery, tasting and the included traditional lunch.", 180, "core", true),
+      stop(
+        4,
+        "Adega Mestre Daniel / XXVI Talhas",
+        "Family talha winery, tasting and the included traditional lunch.",
+        180,
+        "core",
+        true,
+      ),
       stop(5, "Albergaria dos Fusos", "Published as a full itinerary stop.", 60, "core", true),
       stop(6, "Talha Wine Interpretation Center", "Interpretive centre.", 60, "core", true),
     ],
@@ -293,8 +313,23 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
       stop(1, "Lisbon", "Departure.", null, "pass-by", true),
       stop(2, "Ilha do Pessegueiro", "Coastal viewpoint.", 25, "core", true),
       stop(3, "Porto Covo", "Village.", 45, "core", true),
-      stop(4, "Vila Nova de Milfontes", "Town and meal opportunity — meals are own expense.", 90, "core", true, { ownExpense: true }),
-      stop(5, "Southwest Alentejo & Vicentine Coast Natural Park", "Protected coastal route.", 60, "core", true),
+      stop(
+        4,
+        "Vila Nova de Milfontes",
+        "Town and meal opportunity — meals are own expense.",
+        90,
+        "core",
+        true,
+        { ownExpense: true },
+      ),
+      stop(
+        5,
+        "Southwest Alentejo & Vicentine Coast Natural Park",
+        "Protected coastal route.",
+        60,
+        "core",
+        true,
+      ),
       stop(6, "Odeceixe", "Where the river meets the ocean.", 90, "core", true),
       stop(7, "Aljezur", "Historic town.", 60, "core", true),
     ],
@@ -344,7 +379,15 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
       stop(4, "Lapa de Santa Margarida", "Sea cave and chapel.", 30, "core", true),
       stop(5, "Castelo de Sesimbra", "Castle stop.", 30, "core", true),
       stop(6, "Cabo Espichel", "Sanctuary and cliffs.", 30, "core", true),
-      stop(7, "Sesimbra — Coastal Boat Tour and free time", "The Sesimbra Coastal Boat Tour plus time in town; lunch is own expense.", 240, "core", true, { ownExpense: true }),
+      stop(
+        7,
+        "Sesimbra — Coastal Boat Tour and free time",
+        "The Sesimbra Coastal Boat Tour plus time in town; lunch is own expense.",
+        240,
+        "core",
+        true,
+        { ownExpense: true },
+      ),
     ],
     cancellation: CANCEL_24H,
     languages: ["English", "Portuguese", "Spanish"],
@@ -388,11 +431,50 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
     ],
     itinerary: [
       stop(1, "Sintra", "Historic town.", 60, "core", true),
-      stop(2, "Sintra National Palace", "Palace candidate — included when selected.", 90, "alternative-pool", false, { poolId: "palaces" }),
-      stop(3, "Pena Palace", "Palace candidate — included when selected.", 90, "alternative-pool", false, { poolId: "palaces" }),
-      stop(4, "Azenhas do Mar", "Clifftop coastal stop and meal opportunity — lunch is own expense.", 90, "core", true, { ownExpense: true }),
-      stop(5, "Quinta da Regaleira", "Palace/monument candidate — included when selected.", 90, "alternative-pool", false, { poolId: "palaces" }),
-      stop(6, "Adega Regional de Colares", "Included with the one-palace-plus-wine package.", 90, "conditional", true),
+      stop(
+        2,
+        "Sintra National Palace",
+        "Palace candidate — included when selected.",
+        90,
+        "alternative-pool",
+        false,
+        { poolId: "palaces" },
+      ),
+      stop(
+        3,
+        "Pena Palace",
+        "Palace candidate — included when selected.",
+        90,
+        "alternative-pool",
+        false,
+        { poolId: "palaces" },
+      ),
+      stop(
+        4,
+        "Azenhas do Mar",
+        "Clifftop coastal stop and meal opportunity — lunch is own expense.",
+        90,
+        "core",
+        true,
+        { ownExpense: true },
+      ),
+      stop(
+        5,
+        "Quinta da Regaleira",
+        "Palace/monument candidate — included when selected.",
+        90,
+        "alternative-pool",
+        false,
+        { poolId: "palaces" },
+      ),
+      stop(
+        6,
+        "Adega Regional de Colares",
+        "Included with the one-palace-plus-wine package.",
+        90,
+        "conditional",
+        true,
+      ),
       stop(7, "Cascais", "Seaside town.", 45, "core", true),
       stop(8, "Cabo da Roca", "Coastal viewpoint.", 30, "core", true),
     ],
@@ -445,8 +527,17 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
     variesByOption: [],
     itinerary: [
       stop(1, "Mercado do Livramento", "Market and products.", 90, "core", true),
-      stop(2, "Quinta Velha — cheese workshop", "Private Azeitão cheese workshop.", 90, "core", true),
-      stop(3, "Azeitão", "Village time and lunch — lunch is own expense.", 90, "core", true, { ownExpense: true }),
+      stop(
+        2,
+        "Quinta Velha — cheese workshop",
+        "Private Azeitão cheese workshop.",
+        90,
+        "core",
+        true,
+      ),
+      stop(3, "Azeitão", "Village time and lunch — lunch is own expense.", 90, "core", true, {
+        ownExpense: true,
+      }),
       stop(4, "Farm Catralvos", "Winery entrance and tasting.", 120, "core", true),
       stop(5, "Castelo de Sesimbra", "Sesimbra and castle block.", 120, "core", true),
       stop(6, "Cristo Rei", "Panoramic route.", null, "pass-by", true),
@@ -538,16 +629,54 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
       "Traditional restaurant reservation or recommendation",
     ],
     notIncluded: ["Lunch — own expense"],
-    variesByOption: [
-      "Which two wineries run is confirmed with you based on availability",
-    ],
+    variesByOption: ["Which two wineries run is confirmed with you based on availability"],
     itinerary: [
       stop(1, "25 de Abril Bridge", "Outbound route.", null, "pass-by", true),
-      stop(2, "João Portugal Ramos", "Winery candidate — two wineries run in total.", 90, "alternative-pool", false, { poolId: "wineries" }),
-      stop(3, "Cartuxa", "Winery candidate — two wineries run in total.", 90, "alternative-pool", false, { poolId: "wineries" }),
-      stop(4, "Pêra-Grave", "Winery candidate — two wineries run in total.", 90, "alternative-pool", false, { poolId: "wineries" }),
-      stop(5, "Ervideira", "Winery candidate — two wineries run in total.", 90, "alternative-pool", false, { poolId: "wineries" }),
-      stop(6, "Herdade do Esporão", "Winery candidate — two wineries run in total.", 120, "alternative-pool", false, { poolId: "wineries" }),
+      stop(
+        2,
+        "João Portugal Ramos",
+        "Winery candidate — two wineries run in total.",
+        90,
+        "alternative-pool",
+        false,
+        { poolId: "wineries" },
+      ),
+      stop(
+        3,
+        "Cartuxa",
+        "Winery candidate — two wineries run in total.",
+        90,
+        "alternative-pool",
+        false,
+        { poolId: "wineries" },
+      ),
+      stop(
+        4,
+        "Pêra-Grave",
+        "Winery candidate — two wineries run in total.",
+        90,
+        "alternative-pool",
+        false,
+        { poolId: "wineries" },
+      ),
+      stop(
+        5,
+        "Ervideira",
+        "Winery candidate — two wineries run in total.",
+        90,
+        "alternative-pool",
+        false,
+        { poolId: "wineries" },
+      ),
+      stop(
+        6,
+        "Herdade do Esporão",
+        "Winery candidate — two wineries run in total.",
+        120,
+        "alternative-pool",
+        false,
+        { poolId: "wineries" },
+      ),
       stop(7, "Chapel of Bones", "Évora — entrance included.", 30, "core", true),
       stop(8, "Évora historic centre", "Walking time.", 60, "core", true, { ownExpense: true }),
       stop(9, "Roman Temple of Évora", "Historic monument.", 10, "core", true),
@@ -598,9 +727,24 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
     itinerary: [
       stop(1, "Lisbon", "Starting point entry.", 10, "origin", true),
       stop(2, "Fátima", "The Sanctuary of Fátima.", 120, "core", true),
-      stop(3, "Nazaré", "Town time and meal opportunity — lunch is own expense.", 120, "core", true, { ownExpense: true }),
+      stop(
+        3,
+        "Nazaré",
+        "Town time and meal opportunity — lunch is own expense.",
+        120,
+        "core",
+        true,
+        { ownExpense: true },
+      ),
       stop(4, "Óbidos", "Walled town.", 90, "core", true),
-      stop(5, "Praia da Nazaré", "Beach stop; the giant waves are a seasonal winter phenomenon.", 30, "core", true),
+      stop(
+        5,
+        "Praia da Nazaré",
+        "Beach stop; the giant waves are a seasonal winter phenomenon.",
+        30,
+        "core",
+        true,
+      ),
       stop(6, "Castelo de Óbidos", "Castle area.", 60, "core", true),
     ],
     cancellation: CANCEL_24H,
@@ -651,11 +795,39 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
       stop(2, "Mercado do Livramento", "Market stop.", 15, "core", true),
       stop(3, "Castelo de Sesimbra", "Castle.", 20, "core", true),
       stop(4, "Azulejos de Azeitão", "Tile workshop.", 120, "core", true),
-      stop(5, "Sesimbra", "Town time and lunch — lunch is own expense.", 90, "core", true, { ownExpense: true }),
-      stop(6, "José Maria da Fonseca", "Winery candidate — one winery runs.", 90, "alternative-pool", false, { poolId: "wineries" }),
-      stop(7, "Farm Catralvos", "Winery candidate — one winery runs.", 90, "alternative-pool", false, { poolId: "wineries" }),
-      stop(8, "Bacalhôa", "Winery candidate — one winery runs.", 90, "alternative-pool", false, { poolId: "wineries" }),
-      stop(9, "Cristo Rei", "Optional viewpoint — admission is not included.", 20, "optional", false, { admissionIncluded: false }),
+      stop(5, "Sesimbra", "Town time and lunch — lunch is own expense.", 90, "core", true, {
+        ownExpense: true,
+      }),
+      stop(
+        6,
+        "José Maria da Fonseca",
+        "Winery candidate — one winery runs.",
+        90,
+        "alternative-pool",
+        false,
+        { poolId: "wineries" },
+      ),
+      stop(
+        7,
+        "Farm Catralvos",
+        "Winery candidate — one winery runs.",
+        90,
+        "alternative-pool",
+        false,
+        { poolId: "wineries" },
+      ),
+      stop(8, "Bacalhôa", "Winery candidate — one winery runs.", 90, "alternative-pool", false, {
+        poolId: "wineries",
+      }),
+      stop(
+        9,
+        "Cristo Rei",
+        "Optional viewpoint — admission is not included.",
+        20,
+        "optional",
+        false,
+        { admissionIncluded: false },
+      ),
     ],
     poolPick: {
       wineries: { min: 1, max: 1, label: "One selected regional winery" },
@@ -706,21 +878,59 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
       "Cristo Rei or Sesimbra Castle — optional route stop",
       "Tróia or Comporta pickup — additional supplement, or guest ferry transfer to Setúbal",
     ],
-    variesByOption: [
-      "Which wineries run is confirmed with you based on availability",
-    ],
+    variesByOption: ["Which wineries run is confirmed with you based on availability"],
     itinerary: [
       stop(1, "Lisbon", "Starting point entry.", 5, "origin", true),
       stop(2, "Sesimbra", "The route may pass through town.", null, "pass-by", true),
       stop(3, "Parque Natural da Arrábida", "Scenic route.", 30, "core", true),
-      stop(4, "José Maria da Fonseca", "Winery candidate — two run by default, up to four in Tailor.", 45, "alternative-pool", false, { poolId: "wineries" }),
+      stop(
+        4,
+        "José Maria da Fonseca",
+        "Winery candidate — two run by default, up to four in Tailor.",
+        45,
+        "alternative-pool",
+        false,
+        { poolId: "wineries" },
+      ),
       stop(5, "Mercado do Livramento", "Market.", 30, "core", true),
       stop(6, "Azeitão", "Village and the included lunch.", 60, "core", true),
-      stop(7, "Quinta do Piloto", "Winery candidate — two run by default, up to four in Tailor.", 30, "alternative-pool", false, { poolId: "wineries" }),
-      stop(8, "Adega Cooperativa de Palmela", "Winery candidate — two run by default, up to four in Tailor.", 30, "alternative-pool", false, { poolId: "wineries" }),
-      stop(9, "Bacalhôa", "Winery candidate — two run by default, up to four in Tailor.", 45, "alternative-pool", false, { poolId: "wineries" }),
+      stop(
+        7,
+        "Quinta do Piloto",
+        "Winery candidate — two run by default, up to four in Tailor.",
+        30,
+        "alternative-pool",
+        false,
+        { poolId: "wineries" },
+      ),
+      stop(
+        8,
+        "Adega Cooperativa de Palmela",
+        "Winery candidate — two run by default, up to four in Tailor.",
+        30,
+        "alternative-pool",
+        false,
+        { poolId: "wineries" },
+      ),
+      stop(
+        9,
+        "Bacalhôa",
+        "Winery candidate — two run by default, up to four in Tailor.",
+        45,
+        "alternative-pool",
+        false,
+        { poolId: "wineries" },
+      ),
       stop(10, "Azulejos de Azeitão", "Tile factory.", 30, "core", true),
-      stop(11, "Farm Catralvos", "Winery candidate — two run by default, up to four in Tailor.", 45, "alternative-pool", false, { poolId: "wineries" }),
+      stop(
+        11,
+        "Farm Catralvos",
+        "Winery candidate — two run by default, up to four in Tailor.",
+        45,
+        "alternative-pool",
+        false,
+        { poolId: "wineries" },
+      ),
       stop(12, "Cristo Rei", "Optional viewpoint.", 15, "optional", false),
       stop(13, "Castelo de Sesimbra", "Optional viewpoint.", 15, "optional", false),
     ],
@@ -743,8 +953,7 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
     durationText: "7h30",
     durationMinutes: 450,
     pickupWindow: null,
-    pickupZone:
-      "Private pickup and drop-off in Lisbon, Setúbal, Almada or Sesimbra.",
+    pickupZone: "Private pickup and drop-off in Lisbon, Setúbal, Almada or Sesimbra.",
     groupType: "Private tour",
     maxGroup: null,
     overview:
@@ -766,9 +975,7 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
       "Private pickup and drop-off in Lisbon, Setúbal, Almada or Sesimbra",
     ],
     notIncluded: [],
-    variesByOption: [
-      "Which beaches run depends on sea and weather conditions on the day",
-    ],
+    variesByOption: ["Which beaches run depends on sea and weather conditions on the day"],
     itinerary: [
       stop(1, "Lisbon", "Departure.", null, "pass-by", true),
       stop(2, "Parque Natural da Arrábida", "Scenic route.", 60, "core", true),
@@ -777,11 +984,23 @@ export const SIGNATURE_SOURCE_OF_TRUTH: Partial<
       stop(5, "Lapa de Santa Margarida", "Sea cave and chapel.", 30, "core", true),
       stop(6, "Sesimbra", "Fishing town.", 30, "core", true),
       stop(7, "Cabo Espichel", "Sanctuary and cliffs.", 40, "core", true),
-      stop(8, "Praia das Bicas", "Beach option, chosen on the day.", 60, "beach-option", false, { poolId: "beaches" }),
-      stop(9, "Praia do Meco", "Beach option, chosen on the day.", 60, "beach-option", false, { poolId: "beaches" }),
+      stop(8, "Praia das Bicas", "Beach option, chosen on the day.", 60, "beach-option", false, {
+        poolId: "beaches",
+      }),
+      stop(9, "Praia do Meco", "Beach option, chosen on the day.", 60, "beach-option", false, {
+        poolId: "beaches",
+      }),
       stop(10, "Praia da Foz", "Coastal route.", null, "pass-by", true),
       stop(11, "Lagoa de Albufeira", "Lagoon route.", null, "pass-by", true),
-      stop(12, "Praia de Galapinhos", "Beach option, chosen on the day.", 60, "beach-option", false, { poolId: "beaches" }),
+      stop(
+        12,
+        "Praia de Galapinhos",
+        "Beach option, chosen on the day.",
+        60,
+        "beach-option",
+        false,
+        { poolId: "beaches" },
+      ),
       stop(13, "Castelo de Sesimbra", "Castle.", 30, "core", true),
       stop(14, "Cristo Rei", "Return panorama.", null, "pass-by", true),
       stop(15, "25 de Abril Bridge", "Return route.", null, "pass-by", true),
@@ -851,17 +1070,13 @@ export function sotIncluded(tourId: string): string[] | undefined {
   return v && v.length > 0 ? v : undefined;
 }
 
-export function sotItinerary(
-  tourId: string,
-): SotItineraryChapter[] | undefined {
+export function sotItinerary(tourId: string): SotItineraryChapter[] | undefined {
   const v = getSot(tourId)?.itinerary;
   return v && v.length > 0 ? v : undefined;
 }
 
 /** Only the stops that run on every departure (excludes pools/options). */
-export function sotDefaultItinerary(
-  tourId: string,
-): SotItineraryChapter[] | undefined {
+export function sotDefaultItinerary(tourId: string): SotItineraryChapter[] | undefined {
   const v = sotItinerary(tourId)?.filter((c) => c.isDefault);
   return v && v.length > 0 ? v : undefined;
 }

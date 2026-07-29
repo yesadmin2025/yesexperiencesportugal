@@ -175,7 +175,6 @@ export type SignatureTour = {
   wineriesRule?: string;
 };
 
-
 /** Deprecated. The site no longer links to any external review platform. */
 export function tripadvisorHrefFor(tour: SignatureTour): string {
   return tour.tripadvisorUrl ?? "";

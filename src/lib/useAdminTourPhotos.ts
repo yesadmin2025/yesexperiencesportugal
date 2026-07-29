@@ -86,7 +86,10 @@ export function useAdminTourPhotos(
             .createSignedUrls(paths, SIGNED_URL_TTL, {
               transform: { width, quality: TRANSFORM_QUALITY, resize: "cover" },
             } as never);
-          return { width, urlsByPath: new Map((data ?? []).map((s) => [s.path ?? "", s.signedUrl])) };
+          return {
+            width,
+            urlsByPath: new Map((data ?? []).map((s) => [s.path ?? "", s.signedUrl])),
+          };
         }),
       ).catch(() => [] as { width: number; urlsByPath: Map<string, string> }[]);
 

@@ -30,7 +30,6 @@ import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPri
 import {
   summarizeJourneyLines,
   hasCompleteJourneyPricing,
-
   type CheckoutJourneyLine,
 } from "@/lib/checkout/journeyDisplay";
 import { PerPersonBands, bandRowsFromJourney } from "@/components/checkout/PerPersonBands";
@@ -161,7 +160,6 @@ export interface SignaturePriceCardProps {
   resolvedTotalEur?: number | null;
 }
 
-
 export function SignaturePriceCard({
   tour,
   stopCount,
@@ -286,10 +284,7 @@ export function SignaturePriceCard({
   );
   const addOnsTotalEur = useMemo(() => {
     if (!hasPrice || !priceEur) return 0;
-    return selectedAddOns.reduce(
-      (sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase),
-      0,
-    );
+    return selectedAddOns.reduce((sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase), 0);
   }, [selectedAddOns, hasPrice, priceEur]);
   const addOnsMinutes = useMemo(
     () => selectedAddOns.reduce((sum, a) => sum + (a.durationMinutes || 0), 0),
@@ -303,9 +298,7 @@ export function SignaturePriceCard({
     if (!hasPrice || !priceEur) return 0;
     const partyGuests = Math.max(1, guests ?? 1);
     return selectedAddOns.reduce(
-      (sum, a) =>
-        sum +
-        addOnEurFor({ addOn: a, baseEur: priceEur, guests: partyGuests }).amount,
+      (sum, a) => sum + addOnEurFor({ addOn: a, baseEur: priceEur, guests: partyGuests }).amount,
       0,
     );
   }, [selectedAddOns, hasPrice, priceEur, guests]);
@@ -350,7 +343,6 @@ export function SignaturePriceCard({
     };
   };
 
-
   // Track the last id list we emitted to the parent so the sync effect
   // doesn't re-emit on unrelated rerenders (guest count changes, price
   // resolution, etc.). Only fires when the id set actually changes.
@@ -385,9 +377,7 @@ export function SignaturePriceCard({
     if (!isSelected && atCap) return; // gated
     // Budget gate: never let the user push the day past the regional rhythm.
     if (!isSelected && fitsBudgetById[id] === false) return;
-    const next = isSelected
-      ? selectedAddOnIds.filter((x) => x !== id)
-      : [...selectedAddOnIds, id];
+    const next = isSelected ? selectedAddOnIds.filter((x) => x !== id) : [...selectedAddOnIds, id];
     commitAddOnIds(next);
     // Transient visual flourish — pending shimmer for ≤180ms, reduced-motion safe.
     const reduced =
@@ -397,7 +387,6 @@ export function SignaturePriceCard({
     setPendingAddOnId(id);
     window.setTimeout(() => setPendingAddOnId(null), 180);
   };
-
 
   // Real per-pax (Viator tier) resolution. When the tour has tier data AND
   // we know the guest count, `realPerPax.real === true` and we display the
@@ -428,9 +417,7 @@ export function SignaturePriceCard({
   const addOnsDisplayPartyEur = useMemo(() => {
     if (!hasPrice || !priceEur) return 0;
     return selectedAddOns.reduce(
-      (sum, a) =>
-        sum +
-        addOnEurFor({ addOn: a, baseEur: priceEur, guests: displayGuests }).amount,
+      (sum, a) => sum + addOnEurFor({ addOn: a, baseEur: priceEur, guests: displayGuests }).amount,
       0,
     );
   }, [selectedAddOns, hasPrice, priceEur, displayGuests]);
@@ -449,7 +436,12 @@ export function SignaturePriceCard({
   const minorAgesComplete = useMemo(
     () =>
       composedMinors.every(
-        (age) => typeof age === "number" && Number.isFinite(age) && Number.isInteger(age) && age >= 0 && age <= 17,
+        (age) =>
+          typeof age === "number" &&
+          Number.isFinite(age) &&
+          Number.isInteger(age) &&
+          age >= 0 &&
+          age <= 17,
       ),
     [composedMinors],
   );
@@ -473,14 +465,12 @@ export function SignaturePriceCard({
     [journeyLines, composedMinors.length],
   );
 
-
   const partyBaseEur = journey
     ? journey.totalEur
     : displayPerPaxEur != null && partyCount != null
       ? displayPerPaxEur * partyCount
       : null;
-  const localPartyTotalEur =
-    partyBaseEur != null ? partyBaseEur + addOnsDisplayPartyEur : null;
+  const localPartyTotalEur = partyBaseEur != null ? partyBaseEur + addOnsDisplayPartyEur : null;
 
   // Prefer the resolved (canonical) totals when the traveller isn't previewing
   // a different group size via the hidden picker. Otherwise fall back to the
@@ -488,20 +478,18 @@ export function SignaturePriceCard({
   const usingResolved = previewGuests === null && resolvedTotalEur != null;
   const partyTotalEur = usingResolved ? resolvedTotalEur : localPartyTotalEur;
   const perPersonDerived = usingResolved
-    ? (resolvedPerPaxEur ?? (effectiveGuests && effectiveGuests > 0
+    ? (resolvedPerPaxEur ??
+      (effectiveGuests && effectiveGuests > 0
         ? Math.round((resolvedTotalEur ?? 0) / effectiveGuests)
         : null))
     : partyTotalEur != null && effectiveGuests != null && effectiveGuests > 0
       ? Math.round(partyTotalEur / effectiveGuests)
       : (displayPerPaxEur ?? null);
 
-
-
   // Dev-only invariant: perPerson × guests must equal total (±rounding).
   if (import.meta.env.DEV && partyTotalEur != null && effectiveGuests && effectiveGuests > 0) {
     const drift = Math.abs((perPersonDerived ?? 0) * effectiveGuests - partyTotalEur);
     if (drift > effectiveGuests) {
-      // eslint-disable-next-line no-console
       console.error("[studio-v3] price mismatch", {
         partyTotalEur,
         perPersonDerived,
@@ -693,9 +681,10 @@ export function SignaturePriceCard({
             </p>
             {(() => {
               const bands = bandRowsFromJourney(journeyLines);
-              const adultUnit = bands.length > 0
-                ? bands.find((b) => b.band === "adult")?.unitEur ?? priceEur
-                : (perPersonDerived ?? priceEur);
+              const adultUnit =
+                bands.length > 0
+                  ? (bands.find((b) => b.band === "adult")?.unitEur ?? priceEur)
+                  : (perPersonDerived ?? priceEur);
               return (
                 <>
                   <p
@@ -791,8 +780,6 @@ export function SignaturePriceCard({
             </p>
           </>
         )}
-
-
 
         {/* "Why this works" bullets removed — the itinerary spine below
             ("Your day includes") already surfaces the real inclusions, so
@@ -1013,11 +1000,8 @@ export function SignaturePriceCard({
               {selectedAddOnIds.length > 0 && totalEur != null ? (
                 <>
                   {isRefine ? "Updated price" : "Additions"}{" "}
-                  <span style={{ color: "var(--gold)" }}>—</span> €
-                  {totalEur}
-                  <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">
-                    total
-                  </span>
+                  <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
+                  <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">total</span>
                 </>
               ) : (
                 <span className="sr-only">No add-ons selected</span>
@@ -1042,10 +1026,7 @@ export function SignaturePriceCard({
               <span style={{ color: "var(--gold)" }}>—</span>
               Your additions
             </p>
-            <ul
-              className="mt-1.5 flex flex-col gap-1"
-              data-testid="studio-v3-add-on-lines"
-            >
+            <ul className="mt-1.5 flex flex-col gap-1" data-testid="studio-v3-add-on-lines">
               {selectedAddOns.map((a) => {
                 const line = addOnEurFor({
                   addOn: a,
@@ -1136,10 +1117,10 @@ export function SignaturePriceCard({
                 <PerPersonBands
                   journeyLines={journeyLines}
                   adultUnitEur={
-                    bandRowsFromJourney(journeyLines).find((b) => b.band === "adult")?.unitEur
-                      ?? perPersonDerived
-                      ?? priceEur
-                      ?? null
+                    bandRowsFromJourney(journeyLines).find((b) => b.band === "adult")?.unitEur ??
+                    perPersonDerived ??
+                    priceEur ??
+                    null
                   }
                   testId="studio-v3-price-card-final-per-person"
                 />
@@ -1152,7 +1133,6 @@ export function SignaturePriceCard({
             reveal on the next step lists the traveller's kept stops in order,
             so repeating them here duplicated the same content in two adjacent
             surfaces. */}
-
 
         {/* Included in your day — the single, tight list. Real included[]
             from the resolved Signature (capped) + any add-ons the traveller
@@ -1197,10 +1177,7 @@ export function SignaturePriceCard({
                   <span style={{ color: "var(--gold)" }}>—</span>
                   Your additions
                 </p>
-                <ul
-                  className="mt-1.5 flex flex-col gap-1"
-                  data-testid="studio-v3-add-on-lines"
-                >
+                <ul className="mt-1.5 flex flex-col gap-1" data-testid="studio-v3-add-on-lines">
                   {selectedAddOns.map((a) => {
                     const line = addOnEurFor({
                       addOn: a,
@@ -1230,7 +1207,9 @@ export function SignaturePriceCard({
                             <span className="font-medium">{a.label}</span>
                             <span
                               className="ml-1 tabular-nums"
-                              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                              style={{
+                                color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                              }}
                             >
                               {showQty
                                 ? `(€${line.perUnit} × ${summaryGuests})`
@@ -1256,7 +1235,10 @@ export function SignaturePriceCard({
         {/* Trust strip removed — the reassurance above the CTA + the final
             reveal's own trust cues cover this without duplication. */}
 
-        <div ref={ctaRef} className={`${isRefine ? "hidden" : "mt-6 flex flex-col items-center gap-3"}`}>
+        <div
+          ref={ctaRef}
+          className={`${isRefine ? "hidden" : "mt-6 flex flex-col items-center gap-3"}`}
+        >
           {hasPrice ? (
             <>
               <button
@@ -1293,8 +1275,7 @@ export function SignaturePriceCard({
                 style={{
                   color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
                   background: "transparent",
-                  borderBottom:
-                    "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                  borderBottom: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
                 }}
               >
                 {CTA_ASK_CURATOR}
@@ -1329,7 +1310,6 @@ export function SignaturePriceCard({
           ) : null}
         </div>
       </div>
-
 
       {/* Mobile sticky CTA — appears only after the inline CTA scrolls out of view. */}
       {!isRefine && hasPrice && stickyVisible ? (

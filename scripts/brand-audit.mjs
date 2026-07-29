@@ -99,8 +99,7 @@ const counts = {
   mismatch: findings.filter((f) => f.status === "mismatch").length,
 };
 
-const report = {
-  generatedAt: new Date().toISOString(),
+const body = {
   filesScanned: scanned,
   approvedPalette: APPROVED,
   allowlist: [...ALLOWLIST],
@@ -109,6 +108,22 @@ const report = {
 };
 
 mkdirSync(OUT_DIR, { recursive: true });
+
+// Keep the artifact deterministic: `generatedAt` only moves when the audit
+// result actually changes. Otherwise every prebuild produced a timestamp-only
+// diff, which buried real findings in commit noise.
+let generatedAt = new Date().toISOString();
+try {
+  const previous = JSON.parse(readFileSync(OUT_FILE, "utf8"));
+  const { generatedAt: previousStamp, ...previousBody } = previous;
+  if (previousStamp && JSON.stringify(previousBody) === JSON.stringify(body)) {
+    generatedAt = previousStamp;
+  }
+} catch {
+  /* no previous report — first run */
+}
+
+const report = { generatedAt, ...body };
 writeFileSync(OUT_FILE, JSON.stringify(report, null, 2));
 
 const tag = counts.mismatch === 0 ? "PASS" : "MISMATCH";

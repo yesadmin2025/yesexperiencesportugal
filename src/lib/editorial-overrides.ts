@@ -78,9 +78,6 @@ export function useEditorialOverrides<T extends EditorialSlot>(
       setMerged(next);
     }
 
-
-
-
     (async () => {
       const { data, error } = await supabase
         .from("editorial_image_overrides")
@@ -142,16 +139,12 @@ export async function publishOverridesBatch(
     .eq("status", "published")
     .in("slot_index", slotIndexes);
 
-  const currentByIndex = new Map(
-    (currentRows ?? []).map((r) => [r.slot_index as number, r]),
-  );
+  const currentByIndex = new Map((currentRows ?? []).map((r) => [r.slot_index as number, r]));
   const snapshot: BatchSnapshotEntry[] = entries.map((e) => {
     const c = currentByIndex.get(e.slotIndex);
     return {
       slotIndex: e.slotIndex,
-      previous: c
-        ? { photoSrc: c.photo_src, alt: c.alt, caption: c.caption }
-        : null,
+      previous: c ? { photoSrc: c.photo_src, alt: c.alt, caption: c.caption } : null,
     };
   });
 
@@ -210,4 +203,3 @@ export async function revertOverridesBatch(
   if (toDelete.length > 0) await deleteOverrides(moduleKey, toDelete);
   cache.delete(moduleKey);
 }
-

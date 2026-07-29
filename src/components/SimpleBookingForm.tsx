@@ -26,7 +26,6 @@ import {
   type OperatingRule,
 } from "@/lib/availability";
 
-
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
@@ -45,7 +44,6 @@ import {
   gaBookingValidationBlocked,
   gaCheckoutDrawerOpened,
 } from "@/lib/analytics-ga4";
-
 
 /**
  * SimpleBookingForm — the *reserve as-is* path.
@@ -72,12 +70,27 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [rule, setRule] = useState<OperatingRule | null>(null);
   useEffect(() => {
     let active = true;
-    getOperatingRule(tour.id).then((r) => { if (active) setRule(r); });
-    return () => { active = false; };
+    getOperatingRule(tour.id).then((r) => {
+      if (active) setRule(r);
+    });
+    return () => {
+      active = false;
+    };
   }, [tour.id]);
   const leadHours = rule?.minLeadHours ?? 24;
   const minDateISO = computeMinDateISO(leadHours);
-  const dateValid = date ? validateDateISO(date, rule ?? { tourId: tour.id, weekdays: [0,1,2,3,4,5,6], blackoutDates: [], minLeadHours: leadHours, cutoffLocalTime: null }).ok : false;
+  const dateValid = date
+    ? validateDateISO(
+        date,
+        rule ?? {
+          tourId: tour.id,
+          weekdays: [0, 1, 2, 3, 4, 5, 6],
+          blackoutDates: [],
+          minLeadHours: leadHours,
+          cutoffLocalTime: null,
+        },
+      ).ok
+    : false;
 
   const canReserve = compositionReady && dateValid;
 
@@ -125,7 +138,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   // Whether we have real per-pax tier data for this tour (code or DB override).
   const hasTierData = Boolean(
     (tierOverrides?.[tour.id] && Object.keys(tierOverrides[tour.id] as object).length > 0) ||
-      getViatorMeta(tour.id)?.priceTiersEUR,
+    getViatorMeta(tour.id)?.priceTiersEUR,
   );
 
   // Embedded checkout state
@@ -133,7 +146,6 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [publishableKey, setPublishableKey] = useState<string | null>(null);
   const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
-
 
   const handleReserve = async (details: GuestDetails) => {
     if (pending) return;
@@ -276,11 +288,17 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
               if (v && rule) {
                 const check = validateDateISO(v, rule);
                 if (!check.ok) {
-                  gaBookingValidationBlocked({ tourId: tour.id, surface: "signature", reason: `date_${check.reason}` });
+                  gaBookingValidationBlocked({
+                    tourId: tour.id,
+                    surface: "signature",
+                    reason: `date_${check.reason}`,
+                  });
                   const msg =
-                    check.reason === "weekday_closed" ? "This tour doesn't run on that day. Please pick another date." :
-                    check.reason === "blackout" ? "That date is unavailable. Please pick another." :
-                    "Please choose a date at least 24 hours from now.";
+                    check.reason === "weekday_closed"
+                      ? "This tour doesn't run on that day. Please pick another date."
+                      : check.reason === "blackout"
+                        ? "That date is unavailable. Please pick another."
+                        : "Please choose a date at least 24 hours from now.";
                   toast.error(msg);
                   return;
                 }
@@ -292,7 +310,6 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
                   gaBookingDateSelected({ tourId: tour.id, surface: "signature", dateISO: v });
                 }
               }
-
             }}
             min={minDateISO}
             className="w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-sm focus:border-[color:var(--gold)] focus:outline-none"
@@ -367,7 +384,6 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         </Field>
       </div>
 
-
       {/* Price for chosen party — tier-resolved when we have real data. */}
       <div className="mt-6 border-t border-[color:var(--border)] pt-4 space-y-1.5">
         <div className="flex items-baseline justify-between">
@@ -421,7 +437,9 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           if (!canReserve) {
             const reason = !dateValid ? "date_missing_or_past" : "composition_incomplete";
             gaBookingValidationBlocked({ tourId: tour.id, surface: "signature", reason });
-            toast.error(!dateValid ? "Pick a date at least 24h from now." : "Add an age for every child.");
+            toast.error(
+              !dateValid ? "Pick a date at least 24h from now." : "Add an age for every child.",
+            );
             return;
           }
           setDetailsOpen(true);
@@ -476,7 +494,6 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             addOnsEur: 0,
           };
         }}
-
         open={detailsOpen}
         onOpenChange={(o) => {
           setDetailsOpen(o);
@@ -528,7 +545,6 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           });
         }}
       />
-
     </div>
   );
 }

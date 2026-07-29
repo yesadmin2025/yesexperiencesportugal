@@ -85,7 +85,9 @@ export function computeTourParity(tourId: string): TourParityReport {
     for (const chapter of sot.itinerary) {
       // Pickup / drop-off entries are transit not stops — ignore.
       if (/^lisbon(\s+district)?$/i.test(chapter.label.trim())) continue;
-      const yesIdx = yesStops.findIndex((s, i) => !yesUsed.has(i) && labelsMatch(s.label, chapter.label));
+      const yesIdx = yesStops.findIndex(
+        (s, i) => !yesUsed.has(i) && labelsMatch(s.label, chapter.label),
+      );
       const yesLabel = yesIdx >= 0 ? yesStops[yesIdx].label : null;
       if (yesIdx >= 0) yesUsed.add(yesIdx);
 
@@ -96,7 +98,8 @@ export function computeTourParity(tourId: string): TourParityReport {
       let status: StopParityStatus = "match";
       if (!yesLabel) status = "sot-missing-in-yes";
       else if (!hasMapCoord) status = "missing-map-coord";
-      else if (!hasStudioIntent && Object.keys(intents).length > 0) status = "missing-studio-intent";
+      else if (!hasStudioIntent && Object.keys(intents).length > 0)
+        status = "missing-studio-intent";
 
       rows.push({
         order: chapter.order,

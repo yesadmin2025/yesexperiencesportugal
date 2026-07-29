@@ -314,7 +314,11 @@ export function StudioLivePreview() {
         type="button"
         onClick={() => setAdded((v) => !v)}
         aria-pressed={added}
-        aria-label={added ? "Remove private cellar tasting from your day" : "Add private cellar tasting to your day"}
+        aria-label={
+          added
+            ? "Remove private cellar tasting from your day"
+            : "Add private cellar tasting to your day"
+        }
         className="group relative z-10 flex w-full items-center gap-3 border-t border-[color:var(--gold)]/15 bg-[color:var(--charcoal-deep)]/80 px-4 md:px-5 py-2.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-inset"
       >
         <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[color:var(--gold)]/45 bg-[color:var(--gold)]/10 text-[color:var(--gold)]">

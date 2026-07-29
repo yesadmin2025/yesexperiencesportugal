@@ -36,10 +36,7 @@ export function ApprovalBadge({ state, className, testId }: ApprovalBadgeProps) 
         data-testid={dataTestId}
         data-approval-state="approved"
         aria-label="YES Approved Signature"
-        className={cn(
-          "inline-flex items-center gap-2 px-3 py-1.5 rounded-full",
-          className,
-        )}
+        className={cn("inline-flex items-center gap-2 px-3 py-1.5 rounded-full", className)}
         style={{
           border: "1px solid color-mix(in oklab, var(--teal) 35%, transparent)",
           background: "color-mix(in oklab, var(--ivory) 80%, transparent)",
@@ -78,10 +75,7 @@ export function ApprovalBadge({ state, className, testId }: ApprovalBadgeProps) 
         data-testid={dataTestId}
         data-approval-state="review"
         aria-label={label}
-        className={cn(
-          "inline-flex items-center gap-2 px-3 py-1.5 rounded-full",
-          className,
-        )}
+        className={cn("inline-flex items-center gap-2 px-3 py-1.5 rounded-full", className)}
         style={{
           border: "1px solid color-mix(in oklab, var(--teal) 25%, transparent)",
           background: "color-mix(in oklab, var(--ivory) 80%, transparent)",

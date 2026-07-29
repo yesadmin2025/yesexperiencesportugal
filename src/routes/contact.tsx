@@ -60,18 +60,23 @@ export const Route = createFileRoute("/contact")({
       { title: "Contact — YES Experiences Portugal" },
       {
         name: "description",
-        content: "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
+        content:
+          "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
       },
       { property: "og:title", content: "Contact — YES Experiences Portugal" },
       {
         property: "og:description",
-        content: "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
+        content:
+          "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/contact" },
       { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "Contact YES Experiences Portugal — a local team in Sesimbra" },
+      {
+        property: "og:image:alt",
+        content: "Contact YES Experiences Portugal — a local team in Sesimbra",
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
     ],
@@ -94,7 +99,8 @@ export const Route = createFileRoute("/contact")({
         "@id": "https://yesexperiencesportugal.com/contact#contactpage",
         url: "https://yesexperiencesportugal.com/contact",
         name: "Contact — YES Experiences Portugal",
-        description: "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
+        description:
+          "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
         inLanguage: "en",
         isPartOf: { "@id": "https://yesexperiencesportugal.com/#website" },
         about: { "@id": "https://yesexperiencesportugal.com/#organization" },
@@ -241,7 +247,12 @@ function Page() {
                   min={new Date().toISOString().slice(0, 10)}
                   autoComplete="off"
                 />
-                <Field label="What are you dreaming of?" name="message" textarea autoComplete="off" />
+                <Field
+                  label="What are you dreaming of?"
+                  name="message"
+                  textarea
+                  autoComplete="off"
+                />
                 {errorMsg ? (
                   <p className="text-[13px] text-red-700" role="alert">
                     {errorMsg}
@@ -259,7 +270,12 @@ function Page() {
           </div>
           <aside className="space-y-7">
             <Info icon={<Mail size={16} />} label="Email" value={EMAIL} href={EMAIL_HREF} />
-            <Info icon={<Phone size={16} />} label="Phone" value={PHONE_DISPLAY} href={PHONE_HREF} />
+            <Info
+              icon={<Phone size={16} />}
+              label="Phone"
+              value={PHONE_DISPLAY}
+              href={PHONE_HREF}
+            />
             <Info
               icon={<MapPin size={16} />}
               label="Based in"

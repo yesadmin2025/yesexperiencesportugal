@@ -27,10 +27,7 @@ export const CANONICAL_HOSTS: ReadonlySet<string> = new Set([
 ]);
 
 /** Legacy hosts are handled by legacy-domain-redirect (410 Gone). Skip them here. */
-const LEGACY_HOSTS: ReadonlySet<string> = new Set([
-  "yesexperiences.pt",
-  "www.yesexperiences.pt",
-]);
+const LEGACY_HOSTS: ReadonlySet<string> = new Set(["yesexperiences.pt", "www.yesexperiences.pt"]);
 
 export function getRequestHost(request: Request): string {
   const url = new URL(request.url);

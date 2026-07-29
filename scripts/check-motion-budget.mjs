@@ -56,11 +56,17 @@ function scanCss(path) {
 
 function scanTsx(path) {
   const src = readFileSync(path, "utf8");
-  if (!/transition\s*:\s*['"`]all/.test(src) && !/transitionProperty\s*:\s*['"`]all/.test(src)) return;
+  if (!/transition\s*:\s*['"`]all/.test(src) && !/transitionProperty\s*:\s*['"`]all/.test(src))
+    return;
   const lines = src.split("\n");
   lines.forEach((line, i) => {
     if (/transition\s*:\s*['"`]all/.test(line) || /transitionProperty\s*:\s*['"`]all/.test(line)) {
-      violations.push({ file: path, line: i + 1, rule: "transition:all (inline)", text: line.trim() });
+      violations.push({
+        file: path,
+        line: i + 1,
+        rule: "transition:all (inline)",
+        text: line.trim(),
+      });
     }
   });
 }
@@ -73,7 +79,9 @@ if (violations.length) {
     console.error(`  ${v.file}:${v.line}  [${v.rule}]`);
     console.error(`    ${v.text}`);
   }
-  console.error("\nFix: animate only transform/opacity/filter/clip-path. See docs/motion-v3-report.md.\n");
+  console.error(
+    "\nFix: animate only transform/opacity/filter/clip-path. See docs/motion-v3-report.md.\n",
+  );
   process.exit(1);
 }
 console.log("✓ Motion budget clean");

@@ -35,8 +35,20 @@ describe("findDuplicateGroups", () => {
       ["about_moments", "About"],
     ]);
     const pool: PoolPhoto[] = [
-      { id: "1", src: "url-1", source: "owner-photo", name: "arrabida-viewpoint-women.jpeg", tags: [] },
-      { id: "2", src: "url-2", source: "owner-photo", name: "arrabida-viewpoint-group.jpeg", tags: [] },
+      {
+        id: "1",
+        src: "url-1",
+        source: "owner-photo",
+        name: "arrabida-viewpoint-women.jpeg",
+        tags: [],
+      },
+      {
+        id: "2",
+        src: "url-2",
+        source: "owner-photo",
+        name: "arrabida-viewpoint-group.jpeg",
+        tags: [],
+      },
     ];
     const groups = findDuplicateGroups(eff, labels, pool);
     expect(groups.some((g) => g.kind === "name")).toBe(true);
@@ -46,12 +58,22 @@ describe("findDuplicateGroups", () => {
     const eff = new Map<EditorialModuleKey, EditorialSlot[]>([
       ["homepage_moments", [slot("url-1"), slot("url-2")]],
     ]);
-    const labels = new Map<EditorialModuleKey, string>([
-      ["homepage_moments", "Homepage"],
-    ]);
+    const labels = new Map<EditorialModuleKey, string>([["homepage_moments", "Homepage"]]);
     const pool: PoolPhoto[] = [
-      { id: "1", src: "url-1", source: "owner-photo", name: "arrabida-viewpoint-women.jpeg", tags: [] },
-      { id: "2", src: "url-2", source: "owner-photo", name: "arrabida-viewpoint-group.jpeg", tags: [] },
+      {
+        id: "1",
+        src: "url-1",
+        source: "owner-photo",
+        name: "arrabida-viewpoint-women.jpeg",
+        tags: [],
+      },
+      {
+        id: "2",
+        src: "url-2",
+        source: "owner-photo",
+        name: "arrabida-viewpoint-group.jpeg",
+        tags: [],
+      },
     ];
     const groups = findDuplicateGroups(eff, labels, pool);
     expect(groups).toHaveLength(0);

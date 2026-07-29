@@ -71,9 +71,9 @@ function StudioV3Page() {
           travelling and the rhythm you want. The map and stops reveal themselves as you go.
         </p>
         <p>
-          As you choose, the route, the stops and the price move with you. When the configuration
-          is standard you can reserve it directly; when it needs local judgement, the same team
-          reviews it and confirms before anything is charged.
+          As you choose, the route, the stops and the price move with you. When the configuration is
+          standard you can reserve it directly; when it needs local judgement, the same team reviews
+          it and confirms before anything is charged.
         </p>
         <p>
           For a complete journey across Portugal rather than a single private day, a human designer
@@ -85,6 +85,5 @@ function StudioV3Page() {
       </header>
       <StudioV3 />
     </>
-
   );
 }

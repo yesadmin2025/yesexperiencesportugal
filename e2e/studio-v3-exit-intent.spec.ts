@@ -189,10 +189,8 @@ test.describe("studio-v3 — exit-intent + full question coverage", () => {
     ).toBe(0);
     expect(
       await page.locator("text=/Drops to\\s+€\\d+\\s+\\/\\s+pp with/i").count(),
-      "\"Drops to €X / pp with…\" copy was retired and must not render",
+      '"Drops to €X / pp with…" copy was retired and must not render',
     ).toBe(0);
-
-
 
     // ─── 3. Exit-intent: arm wait then trigger via visibilitychange ──────
     // Modal arms after 8s on the reveal — wait, then flip visibility.

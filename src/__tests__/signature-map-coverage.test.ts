@@ -7,9 +7,7 @@ describe("Signature tour map coverage", () => {
     const failing: string[] = [];
     for (const t of signatureTours) {
       const resolved = (t.stops ?? []).filter((s) => lookupStop(s.label));
-      const missing = (t.stops ?? [])
-        .filter((s) => !lookupStop(s.label))
-        .map((s) => s.label);
+      const missing = (t.stops ?? []).filter((s) => !lookupStop(s.label)).map((s) => s.label);
       if (resolved.length < 2) {
         failing.push(
           `${t.id} → resolved=${resolved.length}/${(t.stops ?? []).length}, missing: ${missing.join(" | ")}`,
@@ -17,7 +15,6 @@ describe("Signature tour map coverage", () => {
       }
     }
     if (failing.length) {
-      // eslint-disable-next-line no-console
       console.log("\n" + failing.join("\n") + "\n");
     }
     expect(failing).toEqual([]);

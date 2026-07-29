@@ -44,7 +44,9 @@ describe("noindex-nonprod-host", () => {
   });
 
   it("withNoindexHeader adds X-Robots-Tag without clobbering existing", () => {
-    const base = new Response("hi", { headers: { "x-robots-tag": "noindex, nofollow, noarchive" } });
+    const base = new Response("hi", {
+      headers: { "x-robots-tag": "noindex, nofollow, noarchive" },
+    });
     const out = withNoindexHeader(base);
     expect(out.headers.get("x-robots-tag")).toBe("noindex, nofollow, noarchive");
   });

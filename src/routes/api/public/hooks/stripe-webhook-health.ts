@@ -36,7 +36,8 @@ export const Route = createFileRoute("/api/public/hooks/stripe-webhook-health")(
 
         const url = new URL(request.url);
         const envParam = (url.searchParams.get("env") || "live").toLowerCase();
-        const env: "live" | "sandbox" = envParam === "sandbox" || envParam === "test" ? "sandbox" : "live";
+        const env: "live" | "sandbox" =
+          envParam === "sandbox" || envParam === "test" ? "sandbox" : "live";
 
         const result = await runHealthCheck(env);
 

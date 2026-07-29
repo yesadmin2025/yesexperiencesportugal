@@ -12,10 +12,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
-const SRC = readFileSync(
-  resolve(process.cwd(), "src/components/studio-v3/MapAwakens.tsx"),
-  "utf8",
-);
+const SRC = readFileSync(resolve(process.cwd(), "src/components/studio-v3/MapAwakens.tsx"), "utf8");
 
 describe("MapAwakens — Screen 1 CTA contract", () => {
   it("primary CTA label is 'Personalise a few details'", () => {
@@ -33,7 +30,10 @@ describe("MapAwakens — Screen 1 CTA contract", () => {
     // Comments and analytics keys can legitimately mention € — restrict to
     // JSX-string patterns that would render.
     const priceLike = SRC.match(/>[^<]*€\s?\d/);
-    expect(priceLike, `MapAwakens must not render a price string: ${priceLike?.[0] ?? ""}`).toBeNull();
+    expect(
+      priceLike,
+      `MapAwakens must not render a price string: ${priceLike?.[0] ?? ""}`,
+    ).toBeNull();
   });
 
   it("does not render 'Save my signature' or 'See my signature story' (those live on later screens)", () => {

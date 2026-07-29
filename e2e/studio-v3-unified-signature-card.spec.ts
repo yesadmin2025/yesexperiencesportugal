@@ -122,9 +122,7 @@ test.describe("Studio V3 — unified Signature card", () => {
       await footnote.getByText(/Your additions/).count(),
       "Your additions divider must be hidden until an add-on is toggled on",
     ).toBe(0);
-    expect(
-      await footnote.locator('[data-testid="studio-v3-included-addon-row"]').count(),
-    ).toBe(0);
+    expect(await footnote.locator('[data-testid="studio-v3-included-addon-row"]').count()).toBe(0);
 
     // Toggle exactly one add-on ON.
     const addons = await readInteractableAddons(page);
@@ -213,9 +211,7 @@ test.describe("Studio V3 — unified Signature card", () => {
     await btn.scrollIntoViewIfNeeded().catch(() => undefined);
     await btn.click();
     expect(await footnote.getByText(/Your additions/).count()).toBe(0);
-    expect(
-      await footnote.locator('[data-testid="studio-v3-included-addon-row"]').count(),
-    ).toBe(0);
+    expect(await footnote.locator('[data-testid="studio-v3-included-addon-row"]').count()).toBe(0);
   });
 
   test("add-on toggles update totals immediately in the HTML", async ({ page }) => {
@@ -380,14 +376,10 @@ test.describe("Studio V3 — unified Signature card", () => {
     const picks = addons.slice(0, Math.min(3, addons.length)).map((a) => a.id);
 
     // Turn them ON in reverse-catalog order to prove ordering isn't tap order.
-    const tapOrder = [...picks].sort(
-      (a, b) => catalogOrder.indexOf(b) - catalogOrder.indexOf(a),
-    );
+    const tapOrder = [...picks].sort((a, b) => catalogOrder.indexOf(b) - catalogOrder.indexOf(a));
     for (const id of tapOrder) await clickAddon(id);
 
-    await expect
-      .poll(async () => (await rowIds()).length)
-      .toBe(picks.length);
+    await expect.poll(async () => (await rowIds()).length).toBe(picks.length);
     expect(await rowIds()).toEqual(expectedOrder(picks));
 
     // Styling contract on every row.
@@ -440,9 +432,7 @@ test.describe("Studio V3 — unified Signature card", () => {
       const middle = expectedOrder(picks)[1];
       await clickAddon(middle);
       const remaining = picks.filter((id) => id !== middle);
-      await expect
-        .poll(async () => (await rowIds()).length)
-        .toBe(remaining.length);
+      await expect.poll(async () => (await rowIds()).length).toBe(remaining.length);
       expect(await rowIds()).toEqual(expectedOrder(remaining));
     }
 
@@ -450,12 +440,8 @@ test.describe("Studio V3 — unified Signature card", () => {
     // never re-ordered during the round-trip.
     const stillOn = await rowIds();
     for (const id of stillOn) await clickAddon(id);
-    await expect
-      .poll(async () => footnote.getByText(/Your additions/).count())
-      .toBe(0);
-    expect(
-      await footnote.locator('[data-testid="studio-v3-included-addon-row"]').count(),
-    ).toBe(0);
+    await expect.poll(async () => footnote.getByText(/Your additions/).count()).toBe(0);
+    expect(await footnote.locator('[data-testid="studio-v3-included-addon-row"]').count()).toBe(0);
     const finalIncluded = await footnote.evaluate((root) => {
       const items = Array.from(root.querySelectorAll("ul")).flatMap((ul) =>
         Array.from(ul.querySelectorAll("li:not([data-testid='studio-v3-included-addon-row'])")),

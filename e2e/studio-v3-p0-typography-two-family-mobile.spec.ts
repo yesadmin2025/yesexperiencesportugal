@@ -18,14 +18,10 @@ test.use({
 
 const FORBIDDEN = ["Montserrat", "Georgia", "Times", "Cormorant", "Newsreader", "Kaushan"];
 
-async function assertNoHardcodedFallbacks(
-  page: import("@playwright/test").Page,
-  label: string,
-) {
+async function assertNoHardcodedFallbacks(page: import("@playwright/test").Page, label: string) {
   const offenders = await page.evaluate((forbidden) => {
     const root =
-      document.querySelector<HTMLElement>('[data-testid="studio-v3-root"]') ??
-      document.body;
+      document.querySelector<HTMLElement>('[data-testid="studio-v3-root"]') ?? document.body;
     const out: Array<{ tag: string; style: string; text: string }> = [];
     const nodes = root.querySelectorAll<HTMLElement>("[style]");
     nodes.forEach((el) => {

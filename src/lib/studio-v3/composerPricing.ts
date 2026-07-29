@@ -107,9 +107,7 @@ export function resolveComposerAnchorTour(
  * tier data (or the anchor's `priceFrom` when tier data is absent for the
  * resolved party size).
  */
-export function priceComposedJourney(
-  input: ComposerPricingInput,
-): ComposerPricing | null {
+export function priceComposedJourney(input: ComposerPricingInput): ComposerPricing | null {
   if (!Number.isInteger(input.adults) || input.adults < 1) return null;
   const anchor = resolveComposerAnchorTour(input.region, input.budgetTier);
   if (!anchor) return null;

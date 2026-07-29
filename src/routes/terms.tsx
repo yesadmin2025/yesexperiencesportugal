@@ -61,9 +61,9 @@ function TermsPage() {
             <p>
               YES Experiences Portugal is a licensed Portuguese tour operator ({LICENSE_LABEL})
               based in Sesimbra, designing private journeys across Portugal, with pickups from
-              Lisbon, Cascais, Sintra, Sesimbra and Setúbal. By making a reservation with us
-              you agree to the terms below, which govern the booking, payment, cancellation and
-              conduct of your private experience.
+              Lisbon, Cascais, Sintra, Sesimbra and Setúbal. By making a reservation with us you
+              agree to the terms below, which govern the booking, payment, cancellation and conduct
+              of your private experience.
             </p>
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
               Bookings & payment

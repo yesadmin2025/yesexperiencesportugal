@@ -73,7 +73,6 @@ export interface CheckoutSummaryProps {
   readonly testId?: string;
 }
 
-
 function formatEur(n: number | null): string {
   if (n == null || !Number.isFinite(n)) return "—";
   return new Intl.NumberFormat("en-GB", {
@@ -406,10 +405,7 @@ export function CheckoutSummary({
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div
-      className="flex justify-between gap-3 text-[13.5px]"
-      style={{ color: "var(--charcoal)" }}
-    >
+    <div className="flex justify-between gap-3 text-[13.5px]" style={{ color: "var(--charcoal)" }}>
       <span
         className="text-[11px] uppercase tracking-[0.22em]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}

@@ -35,9 +35,7 @@ test.describe("/trade structure", () => {
 
   test("hero, services, book and FAQ render with no banned copy", async ({ page }) => {
     await page.goto("/trade");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "Your clients’ Portugal",
-    );
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Your clients’ Portugal");
     const text = await bodyText(page);
     for (const phrase of BANNED) expect(text).not.toContain(phrase.toLowerCase());
 
@@ -77,8 +75,6 @@ test.describe("/trade structure", () => {
     }).toPass({ timeout: 15000 });
     await expect(page.locator("#trade-first")).toHaveValue("Ana");
   });
-
-
 
   for (const width of [360, 393, 768, 1280, 1728]) {
     test(`no horizontal scroll at ${width}px`, async ({ page }) => {

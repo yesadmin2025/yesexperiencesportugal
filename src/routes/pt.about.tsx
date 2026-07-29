@@ -98,13 +98,11 @@ function Page() {
             </p>
             <p>
               Começou na estrada, a guiar hóspedes por Portugal e a ver a mesma necessidade a
-              repetir-se: os viajantes queriam mais do que outro tour fixo. Queriam liberdade,
-              mas sem confusão. Queriam desenhar o dia à sua medida, e ao mesmo tempo sentir-se
-              guiados por alguém local.
+              repetir-se: os viajantes queriam mais do que outro tour fixo. Queriam liberdade, mas
+              sem confusão. Queriam desenhar o dia à sua medida, e ao mesmo tempo sentir-se guiados
+              por alguém local.
             </p>
-            <p>
-              Queriam perceber a rota, o ritmo e o preço antes de se comprometer.
-            </p>
+            <p>Queriam perceber a rota, o ritmo e o preço antes de se comprometer.</p>
             <p>Foi daí que nasceu o Experience Studio.</p>
           </div>
         </div>
@@ -119,12 +117,10 @@ function Page() {
               Construído por quem <SectionTitle.Em>viu o problema</SectionTitle.Em>.
             </SectionTitle>
             <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
+              <p>O Experience Studio não nasceu porque "viagens à medida" soava bem num website.</p>
               <p>
-                O Experience Studio não nasceu porque "viagens à medida" soava bem num website.
-              </p>
-              <p>
-                Nasceu porque, ao fim de anos a desenhar e a guiar hóspedes privados por Portugal,
-                a mesma necessidade tornou-se impossível de ignorar: as pessoas queriam escolher,
+                Nasceu porque, ao fim de anos a desenhar e a guiar hóspedes privados por Portugal, a
+                mesma necessidade tornou-se impossível de ignorar: as pessoas queriam escolher,
                 comparar, moldar e reservar um dia privado sem formulários intermináveis, sem
                 esperas, sem correios eletrónicos a saltar de lado para lado.
               </p>
@@ -147,9 +143,9 @@ function Page() {
             <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
               <p>
                 Para o tornar real, a fundadora aprendeu a traduzir a experiência de viagem em
-                estrutura de produto, lógica de reserva e fluxo digital — como um hóspede
-                escolhe, como uma rota se ajusta, como se calcula o preço de um dia privado, e
-                como tudo isto podia tornar-se um sistema vivo de desenho de experiências.
+                estrutura de produto, lógica de reserva e fluxo digital — como um hóspede escolhe,
+                como uma rota se ajusta, como se calcula o preço de um dia privado, e como tudo isto
+                podia tornar-se um sistema vivo de desenho de experiências.
               </p>
               <p>
                 O website, o fluxo do Studio e o modelo de reserva foram pensados, estruturados,
@@ -157,8 +153,8 @@ function Page() {
                 alterações de itinerário, hesitações de hóspedes e limitações operacionais.
               </p>
               <p>
-                É por isso que a YES não é apenas um catálogo de tours. É uma plataforma privada
-                de viagens, criada na estrada e ainda hoje refinada em cada reserva.
+                É por isso que a YES não é apenas um catálogo de tours. É uma plataforma privada de
+                viagens, criada na estrada e ainda hoje refinada em cada reserva.
               </p>
             </div>
           </div>
@@ -183,7 +179,8 @@ function Page() {
         <div className="container-x max-w-3xl">
           <Eyebrow>Liderado pela fundadora</Eyebrow>
           <SectionTitle as="h2" size="default">
-            Desenhado com cuidado. <SectionTitle.Em>Entregue por locais de confiança</SectionTitle.Em>.
+            Desenhado com cuidado.{" "}
+            <SectionTitle.Em>Entregue por locais de confiança</SectionTitle.Em>.
           </SectionTitle>
           <div className="mt-8 space-y-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             <p>
@@ -191,11 +188,10 @@ function Page() {
               após anos a desenhar e a conduzir experiências privadas por Portugal.
             </p>
             <p>
-              Cada dia Signature, cada composição no Studio e cada jornada do Travel Designer
-              começa com conhecimento local, rotas reais e detalhes escolhidos com atenção. As
-              experiências são depois entregues por um círculo de confiança de guias locais,
-              motoristas, produtores de vinho, embarcações, restaurantes, anfitriões e parceiros
-              em todo o país.
+              Cada dia Signature, cada composição no Studio e cada jornada do Travel Designer começa
+              com conhecimento local, rotas reais e detalhes escolhidos com atenção. As experiências
+              são depois entregues por um círculo de confiança de guias locais, motoristas,
+              produtores de vinho, embarcações, restaurantes, anfitriões e parceiros em todo o país.
             </p>
             <p>
               De Lisboa, Sintra e Arrábida ao Alentejo, Douro, Algarve e costa atlântica, o
@@ -203,8 +199,7 @@ function Page() {
               conhece os lugares que mostra.
             </p>
             <p>
-              Não é revenda anónima. Não é o autocarro de outro operador com um logótipo
-              diferente.
+              Não é revenda anónima. Não é o autocarro de outro operador com um logótipo diferente.
             </p>
           </div>
         </div>
@@ -278,8 +273,7 @@ function Page() {
               </div>
               <p className="mt-2 font-display text-lg">{LICENSE_LABEL_PT}</p>
               <p className="mt-1 text-sm text-[color:var(--charcoal-soft)]">
-                Operador turístico registado no Registo Nacional dos Agentes de Animação
-                Turística.
+                Operador turístico registado no Registo Nacional dos Agentes de Animação Turística.
               </p>
             </div>
             <div>
@@ -324,13 +318,13 @@ function Page() {
             </h2>
             <ul className="mt-6 space-y-4 text-[color:var(--charcoal-soft)] leading-relaxed">
               <li>
-                <strong className="text-[color:var(--charcoal)]">Só privado.</strong> Sem
-                autocarros partilhados, sem estranhos no carro.
+                <strong className="text-[color:var(--charcoal)]">Só privado.</strong> Sem autocarros
+                partilhados, sem estranhos no carro.
               </li>
               <li>
-                <strong className="text-[color:var(--charcoal)]">Desenhado para si.</strong>{" "}
-                Escolha uma Signature, desenhe um dia no Studio em tempo real, ou deixe um Travel
-                Designer compor a jornada completa.
+                <strong className="text-[color:var(--charcoal)]">Desenhado para si.</strong> Escolha
+                uma Signature, desenhe um dia no Studio em tempo real, ou deixe um Travel Designer
+                compor a jornada completa.
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Reserva imediata.</strong> A
@@ -339,13 +333,13 @@ function Page() {
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Recolha no hotel incluída.</strong>{" "}
-                Disponível a partir de Lisboa, Cascais, Estoril, Sintra, Sesimbra, Setúbal e
-                outros locais consoante a experiência.
+                Disponível a partir de Lisboa, Cascais, Estoril, Sintra, Sesimbra, Setúbal e outros
+                locais consoante a experiência.
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Respostas locais, rápidas.</strong>{" "}
-                Respondemos por WhatsApp e email, habitualmente dentro de uma hora, quando a
-                equipa está disponível.
+                Respondemos por WhatsApp e email, habitualmente dentro de uma hora, quando a equipa
+                está disponível.
               </li>
             </ul>
           </div>
@@ -363,9 +357,9 @@ function Page() {
                 cancelamento antes do pagamento.
               </li>
               <li>
-                <strong className="text-[color:var(--charcoal)]">Meteorologia</strong> — as
-                paragens ao ar livre podem ser substituídas no próprio dia, sem custo, sempre que
-                a segurança ou o conforto o exijam.
+                <strong className="text-[color:var(--charcoal)]">Meteorologia</strong> — as paragens
+                ao ar livre podem ser substituídas no próprio dia, sem custo, sempre que a segurança
+                ou o conforto o exijam.
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Privacidade</strong> — nunca

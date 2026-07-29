@@ -210,7 +210,9 @@ function ReviewsPage() {
               </div>
               {global.total_reviews >= 25 && (
                 <p className="scene-body mt-6 font-serif italic text-[1.1rem] md:text-[1.25rem] leading-[1.55] text-[color:var(--charcoal-soft)]">
-                  <span className="tabular-nums">{global.total_reviews.toLocaleString("en-US")}</span>{" "}
+                  <span className="tabular-nums">
+                    {global.total_reviews.toLocaleString("en-US")}
+                  </span>{" "}
                   reviews
                   {global.average_rating && (
                     <>

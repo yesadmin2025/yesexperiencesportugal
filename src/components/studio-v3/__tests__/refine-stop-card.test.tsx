@@ -19,12 +19,7 @@ describe("Step 7 · RefineStopCard", () => {
   it("renders number, title and story", () => {
     render(
       <ol>
-        <RefineStopCard
-          index={0}
-          total={3}
-          label="Cabo da Roca"
-          story="Where the mainland ends."
-        />
+        <RefineStopCard index={0} total={3} label="Cabo da Roca" story="Where the mainland ends." />
       </ol>,
     );
     const card = screen.getByTestId("studio-v3-refine-stop-card");
@@ -88,13 +83,7 @@ describe("Step 7 · RefineStopCard", () => {
     const onRemove = vi.fn();
     render(
       <ol>
-        <RefineStopCard
-          index={0}
-          total={1}
-          minStops={1}
-          label="Only stop"
-          onRemove={onRemove}
-        />
+        <RefineStopCard index={0} total={1} minStops={1} label="Only stop" onRemove={onRemove} />
       </ol>,
     );
     const remove = screen.getByTestId("studio-v3-refine-remove");

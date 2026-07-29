@@ -121,7 +121,11 @@ function McpSignInPage() {
           <Eyebrow>Sign in to continue</Eyebrow>
           <h1
             className="mt-3 text-[24px] leading-[1.2]"
-            style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)", fontWeight: 500 }}
+            style={{
+              fontFamily: "var(--font-editorial)",
+              color: "var(--charcoal)",
+              fontWeight: 500,
+            }}
           >
             {mode === "signin" ? "Welcome back" : "Create your account"}
           </h1>
@@ -129,7 +133,8 @@ function McpSignInPage() {
             className="mt-3 text-[13.5px]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
           >
-            Sign in with the account you used to save your Signature journey, then approve the connection on the next screen.
+            Sign in with the account you used to save your Signature journey, then approve the
+            connection on the next screen.
           </p>
 
           <button
@@ -146,11 +151,19 @@ function McpSignInPage() {
             {googleBusy ? "Opening Google…" : "Continue with Google"}
           </button>
 
-          <div className="my-5 flex items-center gap-3 text-[10.5px] uppercase tracking-[0.22em]"
-               style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}>
-            <div className="h-px flex-1" style={{ background: "color-mix(in oklab, var(--charcoal) 12%, transparent)" }} />
+          <div
+            className="my-5 flex items-center gap-3 text-[10.5px] uppercase tracking-[0.22em]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
+          >
+            <div
+              className="h-px flex-1"
+              style={{ background: "color-mix(in oklab, var(--charcoal) 12%, transparent)" }}
+            />
             <span>or email</span>
-            <div className="h-px flex-1" style={{ background: "color-mix(in oklab, var(--charcoal) 12%, transparent)" }} />
+            <div
+              className="h-px flex-1"
+              style={{ background: "color-mix(in oklab, var(--charcoal) 12%, transparent)" }}
+            />
           </div>
 
           <form onSubmit={submit} className="space-y-3">
@@ -162,7 +175,10 @@ function McpSignInPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full h-11 px-3 border text-[14px]"
-              style={{ borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)", background: "white" }}
+              style={{
+                borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
+                background: "white",
+              }}
             />
             <input
               type="password"
@@ -173,7 +189,10 @@ function McpSignInPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full h-11 px-3 border text-[14px]"
-              style={{ borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)", background: "white" }}
+              style={{
+                borderColor: "color-mix(in oklab, var(--charcoal) 18%, transparent)",
+                background: "white",
+              }}
             />
             {errorMsg ? (
               <p role="alert" className="text-[13px]" style={{ color: "#B4341E" }}>
@@ -202,9 +221,7 @@ function McpSignInPage() {
             className="mt-5 w-full text-center text-[12.5px] underline"
             style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
           >
-            {mode === "signin"
-              ? "New here? Create an account"
-              : "Already have an account? Sign in"}
+            {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
           </button>
         </div>
       </main>

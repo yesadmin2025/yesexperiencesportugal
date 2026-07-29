@@ -86,7 +86,6 @@ interface Body {
   durationLabel?: string;
 }
 
-
 import {
   AGE_BAND_PCT,
   ageBand,
@@ -96,7 +95,6 @@ import {
   tailorFinalPerPax,
   type AgeBand,
 } from "../_shared/pricing.ts";
-
 
 type Flow = "studio" | "signature" | "tailor";
 
@@ -197,7 +195,7 @@ Deno.serve(async (req) => {
       (body as { adults?: number }).adults! >= 1 &&
       Array.isArray(body.minorAges);
 
-    let adultsCount = compositionSupplied ? (body.adults as number) : body.guests;
+    const adultsCount = compositionSupplied ? (body.adults as number) : body.guests;
     const minorAges = compositionSupplied ? (body.minorAges as number[]) : [];
     if (compositionSupplied) {
       if (adultsCount < 1 || adultsCount > 12)
@@ -264,21 +262,11 @@ Deno.serve(async (req) => {
     if (lunchRemoved && !TAILOR_LUNCH_REMOVAL_ELIGIBLE.has(body.tourId)) {
       return jsonError(`Lunch removal is not available for ${body.tourId}`, 400);
     }
-    const lunchRemovalCredit = isTailorFlow
-      ? serverLunchRemovalEur(body.tourId, lunchRemoved)
-      : 0;
+    const lunchRemovalCredit = isTailorFlow ? serverLunchRemovalEur(body.tourId, lunchRemoved) : 0;
 
     const eurPerPax = isTailorFlow
-      ? tailorFinalPerPax(
-          resolvedPerPax,
-          principalsRemoved,
-          tailorSupplements,
-          lunchRemovalCredit,
-        )
+      ? tailorFinalPerPax(resolvedPerPax, principalsRemoved, tailorSupplements, lunchRemovalCredit)
       : resolvedPerPax;
-
-
-
 
     // Build itemised age-band lines (server-authoritative). When
     // composition is absent, this collapses to `headcount × adult`.
@@ -325,9 +313,10 @@ Deno.serve(async (req) => {
     const includesLine = clientIncluded
       ? `Includes: ${clientIncluded.slice(0, 4).join(", ")}`
       : null;
-    const lunchRemovedLine = lunchRemovalCredit > 0
-      ? `Included lunch removed — €${lunchRemovalCredit} per person credited`
-      : null;
+    const lunchRemovedLine =
+      lunchRemovalCredit > 0
+        ? `Included lunch removed — €${lunchRemovalCredit} per person credited`
+        : null;
     const tailoredNote = isTailored
       ? "Tailored adjustments confirmed by our team within 2 hours after payment."
       : null;
@@ -414,10 +403,7 @@ Deno.serve(async (req) => {
             // Only the first (adult) line carries the full product name +
             // hero image; subsequent bands stay short so the checkout
             // page reads cleanly.
-            name:
-              idx === 0
-                ? productName
-                : `${productName} — ${bandLabel[b]}`.slice(0, 180),
+            name: idx === 0 ? productName : `${productName} — ${bandLabel[b]}`.slice(0, 180),
             ...(idx === 0
               ? {
                   description,
@@ -478,9 +464,7 @@ Deno.serve(async (req) => {
         add_ons: JSON.stringify(
           validatedAddOns.map((a) => ({ id: a.id, label: a.label, priceEur: a.priceEur })),
         ).slice(0, 480),
-        add_ons_total_eur: String(
-          validatedAddOns.reduce((s, a) => s + a.priceEur, 0),
-        ),
+        add_ons_total_eur: String(validatedAddOns.reduce((s, a) => s + a.priceEur, 0)),
 
         ui_mode: uiMode,
         ...(body.guestDetails?.startTime
@@ -602,7 +586,8 @@ Deno.serve(async (req) => {
           { stripe_session_id: session.id, payload: snapshotPayload },
           { onConflict: "stripe_session_id" },
         );
-      if (snapErr) console.warn("[create-signature-checkout] snapshot write failed:", snapErr.message);
+      if (snapErr)
+        console.warn("[create-signature-checkout] snapshot write failed:", snapErr.message);
     } catch (e) {
       // Snapshot is observability, never a checkout blocker.
       console.warn(
@@ -610,7 +595,6 @@ Deno.serve(async (req) => {
         e instanceof Error ? e.message : e,
       );
     }
-
 
     const rawPublishable =
       body.environment === "live"

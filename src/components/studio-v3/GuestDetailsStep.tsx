@@ -37,7 +37,6 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { GuestField, GuestFieldGroup, guestInputClass } from "@/components/checkout/guest-form-ui";
 
-
 export interface GuestDetailsStepProps {
   /** Signature tour id — recorded on the checkout session for the host. */
   readonly tourId?: string;
@@ -79,7 +78,6 @@ export function GuestDetailsStep({
   className,
   testId,
 }: GuestDetailsStepProps) {
-
   const [fullName, setFullName] = useState(initial?.fullName ?? "");
   const [email, setEmail] = useState(initial?.email ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
@@ -95,7 +93,6 @@ export function GuestDetailsStep({
   const [children, setChildren] = useState("");
   const [occasion, setOccasion] = useState("");
   const [guideNotes, setGuideNotes] = useState(initial?.guideNotes ?? "");
-
 
   // Track whether the story email dispatch has already fired for this
   // exact email address on this session — a rapid double-tap of Submit
@@ -167,14 +164,12 @@ export function GuestDetailsStep({
     });
   };
 
-
   const quote =
     priceQuote && isCompositionComplete(composition)
       ? priceQuote({ adults: composition.adults, minorAges: [...composition.minorAges] })
       : null;
 
   return (
-
     <section
       data-testid={testId ?? "studio-v3-guest-details"}
       aria-labelledby="studio-v3-guest-details-title"
@@ -367,7 +362,6 @@ export function GuestDetailsStep({
           <div className="max-w-[560px] mx-auto">
             {priceQuote ? <ChargeSummaryLine quote={quote} className="mb-3" /> : null}
             {submitting ? (
-
               <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
             ) : (
               <CtaButton

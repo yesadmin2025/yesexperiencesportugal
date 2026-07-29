@@ -22,7 +22,6 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SKIP = ["__tests__/", "styles.css", "/admin.", "\\admin."];
 
-
 function walk(dir: string): string[] {
   const out: string[] = [];
   for (const entry of readdirSync(dir)) {

@@ -43,7 +43,10 @@ describe("tour content — required getTourContent usage", () => {
     (rel) => {
       const abs = path.resolve(__dirname, "../..", rel);
       const src = readFileSync(abs, "utf8");
-      expect(IMPORT_RE.test(src), `${rel}: missing import { getTourContent } from "@/lib/tourContent"`).toBe(true);
+      expect(
+        IMPORT_RE.test(src),
+        `${rel}: missing import { getTourContent } from "@/lib/tourContent"`,
+      ).toBe(true);
       expect(CALL_RE.test(src), `${rel}: imports getTourContent but never calls it`).toBe(true);
     },
   );

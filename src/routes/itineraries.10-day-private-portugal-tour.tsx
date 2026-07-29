@@ -169,9 +169,10 @@ function Page() {
               A private ten-day <SectionTitle.Em>Portugal</SectionTitle.Em>, composed with you.
             </SectionTitle>
             <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-              Lisbon, Sintra, the Arrábida coast and the Alentejo — stitched into a single, unhurried
-              private journey. Ten days is the shape most of our guests settle into; the exact days
-              are composed with your travel designer once we know how you want it to feel.
+              Lisbon, Sintra, the Arrábida coast and the Alentejo — stitched into a single,
+              unhurried private journey. Ten days is the shape most of our guests settle into; the
+              exact days are composed with your travel designer once we know how you want it to
+              feel.
             </p>
             <div className="mt-8 flex flex-wrap gap-3 justify-center">
               <CtaButton to="/multi-day">Work with a travel designer</CtaButton>

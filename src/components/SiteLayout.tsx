@@ -5,7 +5,6 @@ import { FloatingActions } from "./FloatingActions";
 import { CookieConsent } from "./CookieConsent";
 import { CurrencyProvider } from "@/lib/currency";
 
-
 import { PostHeroAnnouncer } from "./PostHeroAnnouncer";
 import { QaPanel } from "./dev/QaPanel";
 import { MotionQaPanel } from "./dev/MotionQaPanel";
@@ -860,7 +859,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     <CurrencyProvider>
       <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="flex-1 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
+        <main className="flex-1 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-0">
+          {children}
+        </main>
         <Footer />
         <FloatingActions />
         {/* WhatsAppFab intentionally not rendered — WhatsAppSupportButton (in __root.tsx)
@@ -874,4 +875,3 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     </CurrencyProvider>
   );
 }
-

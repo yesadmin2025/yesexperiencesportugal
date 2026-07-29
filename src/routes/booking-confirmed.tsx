@@ -118,7 +118,6 @@ function BookingConfirmedPage() {
     });
   }, [state, session_id, tour]);
 
-
   const paid = state.kind === "ok" && state.data.paymentStatus === "paid";
   const amountLabel =
     state.kind === "ok" && state.data.amountTotal != null && state.data.currency

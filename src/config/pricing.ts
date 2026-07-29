@@ -40,10 +40,7 @@ export function operationalFloor(directEur: number): number {
  * guest removed, return the Tailor-adjusted per-pax price (never below
  * the operational floor).
  */
-export function tailorAdjustedPerPax(
-  directEur: number,
-  principalsRemoved: number,
-): number {
+export function tailorAdjustedPerPax(directEur: number, principalsRemoved: number): number {
   if (!Number.isFinite(directEur) || directEur <= 0) return 0;
   const raw = Math.max(0, principalsRemoved) * TAILOR_PRINCIPAL_STEP_PCT;
   const reductionPct = Math.min(raw, MAX_TAILOR_REDUCTION_PCT);
@@ -99,4 +96,3 @@ export function tailorFinalPerPax(
   const credit = Number.isFinite(lunchRemovalEur) ? Math.max(0, Math.round(lunchRemovalEur)) : 0;
   return Math.max(0, base + extra - credit);
 }
-

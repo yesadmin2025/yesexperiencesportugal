@@ -5,7 +5,12 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/drift-bible")({
-  head: () => ({ meta: [{ title: "Drift Bible — Studio Admin" }, { name: "robots", content: "noindex, nofollow" }] }),
+  head: () => ({
+    meta: [
+      { title: "Drift Bible — Studio Admin" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: AdminDriftBiblePage,
 });
 

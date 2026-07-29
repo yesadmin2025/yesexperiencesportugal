@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  ageBand,
-  AGE_BAND_PCT,
-  resolveJourneyPricing,
-} from "@/data/signatureTourPricing";
+import { ageBand, AGE_BAND_PCT, resolveJourneyPricing } from "@/data/signatureTourPricing";
 
 const TOUR = { id: "test", priceFrom: 200 } as const;
 

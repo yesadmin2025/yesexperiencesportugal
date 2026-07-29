@@ -250,7 +250,8 @@ function SharedItineraryPage() {
             <PriceEur amountEur={totalEur} role="total" />
           </p>
           <p className="mt-1 text-[12px] text-[color:var(--charcoal)]/65">
-            <PriceEur amountEur={route.pricePerPersonEur} role="per-person" /> por convidado · {guests} convidado
+            <PriceEur amountEur={route.pricePerPersonEur} role="per-person" /> por convidado ·{" "}
+            {guests} convidado
             {guests > 1 ? "s" : ""}
           </p>
         </section>

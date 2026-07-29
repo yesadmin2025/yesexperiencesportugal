@@ -11,7 +11,11 @@ const modules = import.meta.glob<AssetPointer>("/src/assets/editorial-premium/*.
 const variants = new Map<string, Group>();
 
 for (const [path, pointer] of Object.entries(modules)) {
-  const match = path.split("/").pop()?.replace(/\.asset\.json$/, "").match(/^(.*)-(\d+)\.(avif|webp)$/);
+  const match = path
+    .split("/")
+    .pop()
+    ?.replace(/\.asset\.json$/, "")
+    .match(/^(.*)-(\d+)\.(avif|webp)$/);
   if (!match) continue;
   const [, name, width, format] = match;
   const group = variants.get(name) ?? { avif: [], webp: [] };
@@ -19,14 +23,27 @@ for (const [path, pointer] of Object.entries(modules)) {
   variants.set(name, group);
 }
 
-const srcSet = (items: Variant[]) => items.slice().sort((a, b) => a.width - b.width).map((v) => `${v.url} ${v.width}w`).join(", ");
+const srcSet = (items: Variant[]) =>
+  items
+    .slice()
+    .sort((a, b) => a.width - b.width)
+    .map((v) => `${v.url} ${v.width}w`)
+    .join(", ");
 
 export function premiumEditorialImage(
   name: string,
   details: Omit<EditorialImageSource, "src" | "avifSrcSet" | "webpSrcSet">,
 ): EditorialImageSource {
   const group = variants.get(name);
-  const fallback = group?.webp.slice().sort((a, b) => a.width - b.width).at(-1);
+  const fallback = group?.webp
+    .slice()
+    .sort((a, b) => a.width - b.width)
+    .at(-1);
   if (!group || !fallback) throw new Error(`Missing premium editorial variants for ${name}`);
-  return { ...details, src: fallback.url, avifSrcSet: srcSet(group.avif), webpSrcSet: srcSet(group.webp) };
+  return {
+    ...details,
+    src: fallback.url,
+    avifSrcSet: srcSet(group.avif),
+    webpSrcSet: srcSet(group.webp),
+  };
 }

@@ -1,4 +1,16 @@
+import { register } from "node:module";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
+
+// Specs import real app modules, which in turn import images. Node can't parse
+// a JPEG as JavaScript, so we install a stub hook that resolves asset imports
+// to their URL string — once here for the process that collects the tests, and
+// again via NODE_OPTIONS for every worker process that runs them.
+const e2eDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "e2e");
+register(pathToFileURL(path.join(e2eDir, "asset-esm-hook.mjs")).href);
+process.env.NODE_OPTIONS =
+  `${process.env.NODE_OPTIONS ?? ""} --import ${pathToFileURL(path.join(e2eDir, "register-asset-hook.mjs")).href}`.trim();
 
 /**
  * Playwright config for E2E tests.

@@ -51,9 +51,7 @@ export function formatCompositionSummary(c: TravellerComposition): string {
     if (ages.length === 1) agesLabel = `aged ${ages[0]}`;
     else if (ages.length === 2) agesLabel = `aged ${ages[0]} and ${ages[1]}`;
     else agesLabel = `aged ${ages.slice(0, -1).join(", ")} and ${ages[ages.length - 1]}`;
-    parts.push(
-      `${ages.length === 1 ? "child" : "children"} ${agesLabel}`,
-    );
+    parts.push(`${ages.length === 1 ? "child" : "children"} ${agesLabel}`);
   }
   return parts.join(" · ");
 }

@@ -73,7 +73,10 @@ test.describe("Footer parity across routes", () => {
       }
       // No duplicate /contact link in the legal bar (kept only in main nav).
       const contactLinks = await page.locator('footer a[href="/contact"]').count();
-      expect(contactLinks, `${route}: /contact must not be duplicated in footer legal bar`).toBeLessThanOrEqual(1);
+      expect(
+        contactLinks,
+        `${route}: /contact must not be duplicated in footer legal bar`,
+      ).toBeLessThanOrEqual(1);
     });
   }
 });
@@ -104,8 +107,7 @@ async function assertCanonicalFooter(page: Page, url: string) {
   await expect(footer, `${url}: footer must render`).toHaveCount(1);
   const footerText = await footer.innerText();
   expect(footerText, `${url}: footer must show ${EMAIL}`).toContain(EMAIL);
-  const hasLicense =
-    footerText.includes(LICENSE_LABEL) || footerText.includes(LICENSE_LABEL_PT);
+  const hasLicense = footerText.includes(LICENSE_LABEL) || footerText.includes(LICENSE_LABEL_PT);
   expect(hasLicense, `${url}: footer must show RNAAT label`).toBe(true);
   await expect(page.locator(`footer a[href="${EMAIL_HREF}"]`).first()).toHaveCount(1);
 }
@@ -141,20 +143,17 @@ test.describe("Signature product pages — canonical copy + CTAs", () => {
     });
   }
 
-
-
   // FAQ wording must match the SIGNATURE_FAQ source of truth on the
   // canonical /tours/$tourId surface (JSON-LD + visible FAQ share the
   // same source). One representative tour keeps the suite fast.
-  test("/tours/arrabida-wine-allinclusive visible FAQ matches SIGNATURE_FAQ SSOT", async ({ page }) => {
+  test("/tours/arrabida-wine-allinclusive visible FAQ matches SIGNATURE_FAQ SSOT", async ({
+    page,
+  }) => {
     await page.goto("/tours/arrabida-wine-allinclusive", { waitUntil: "domcontentloaded" });
     await page.waitForLoadState("networkidle").catch(() => undefined);
     const bodyText = await page.locator("body").innerText();
     for (const { q } of SIGNATURE_FAQ) {
-      expect(
-        bodyText,
-        `SIGNATURE_FAQ question drifted from rendered page: "${q}"`,
-      ).toContain(q);
+      expect(bodyText, `SIGNATURE_FAQ question drifted from rendered page: "${q}"`).toContain(q);
     }
   });
 
@@ -211,22 +210,18 @@ test.describe("Checkout token page — canonical recovery copy on invalid token"
 
     // No legacy CTA vocabulary anywhere in the recovery UI.
     for (const legacy of LEGACY_CTAS) {
-      expect(
-        bodyText,
-        `Checkout recovery must not surface legacy CTA "${legacy}"`,
-      ).not.toContain(legacy);
+      expect(bodyText, `Checkout recovery must not surface legacy CTA "${legacy}"`).not.toContain(
+        legacy,
+      );
     }
 
     // If the recovery state exposes a support email, it MUST be the
     // canonical one — no hand-typed fallbacks. Any other mailto is a bug.
-    const mailtos = await page.locator('a[href^="mailto:"]').evaluateAll((els) =>
-      els.map((el) => (el as HTMLAnchorElement).getAttribute("href") || ""),
-    );
+    const mailtos = await page
+      .locator('a[href^="mailto:"]')
+      .evaluateAll((els) => els.map((el) => (el as HTMLAnchorElement).getAttribute("href") || ""));
     for (const href of mailtos) {
-      expect(
-        href,
-        `Checkout must only expose ${EMAIL_HREF}, found ${href}`,
-      ).toBe(EMAIL_HREF);
+      expect(href, `Checkout must only expose ${EMAIL_HREF}, found ${href}`).toBe(EMAIL_HREF);
     }
 
     // Recovery navigation must exist and point at an approved home

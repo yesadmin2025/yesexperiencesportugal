@@ -51,9 +51,7 @@ describe("Arrábida Wine lunch removal", () => {
     // Base is untouched by lunch removal; only the flat credit moves.
     expect(tailorAdjustedPerPax(DIRECT, 0)).toBe(DIRECT);
     expect(tailorFinalPerPax(DIRECT, 0, 0, 15)).toBe(DIRECT - 15);
-    expect(tailorFinalPerPax(DIRECT, 0, 0, 15)).not.toBe(
-      tailorAdjustedPerPax(DIRECT, 1),
-    );
+    expect(tailorFinalPerPax(DIRECT, 0, 0, 15)).not.toBe(tailorAdjustedPerPax(DIRECT, 1));
   });
 
   it("does not unlock the 4th winery", () => {
@@ -65,13 +63,9 @@ describe("Arrábida Wine lunch removal", () => {
   it("is ignored by the removal cap and the operational floor", () => {
     // Cap: base reduction saturates at −15% regardless of lunch removal.
     const cappedBase = Math.round(DIRECT * (1 - MAX_TAILOR_REDUCTION_PCT));
-    expect(tailorAdjustedPerPax(DIRECT, 99)).toBe(
-      Math.max(cappedBase, operationalFloor(DIRECT)),
-    );
+    expect(tailorAdjustedPerPax(DIRECT, 99)).toBe(Math.max(cappedBase, operationalFloor(DIRECT)));
     // Floor applies to the base only — the flat credit lands after it.
-    expect(tailorFinalPerPax(DIRECT, 99, 0, 15)).toBe(
-      tailorAdjustedPerPax(DIRECT, 99) - 15,
-    );
+    expect(tailorFinalPerPax(DIRECT, 99, 0, 15)).toBe(tailorAdjustedPerPax(DIRECT, 99) - 15);
   });
 
   it("re-adding lunch restores exactly €15 per person", () => {
@@ -84,9 +78,7 @@ describe("Arrábida Wine lunch removal", () => {
     // 1 stop removed (−5%), 4 wineries (+€40), lunch removed (−€15).
     const supplements = tailorSupplementsEur(ARRABIDA, { wineriesSelected: 4 });
     expect(supplements).toBe(40);
-    expect(tailorFinalPerPax(DIRECT, 1, supplements, 15)).toBe(
-      Math.round(DIRECT * 0.95) + 40 - 15,
-    );
+    expect(tailorFinalPerPax(DIRECT, 1, supplements, 15)).toBe(Math.round(DIRECT * 0.95) + 40 - 15);
   });
 
   it("is unavailable for every other Signature", () => {

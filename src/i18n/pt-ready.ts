@@ -57,4 +57,3 @@ export function isPtPaired(path: string): boolean {
 }
 
 export const PT_PAIRED_PATHS: readonly string[] = Array.from(PAIRED);
-

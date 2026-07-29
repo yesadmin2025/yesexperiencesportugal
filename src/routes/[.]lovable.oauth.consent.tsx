@@ -40,8 +40,7 @@ export const Route = createFileRoute("/.lovable/oauth/consent")({
   // signed-in users straight to sign-in.
   ssr: false,
   validateSearch: (s: Record<string, unknown>) => ({
-    authorization_id:
-      typeof s.authorization_id === "string" ? s.authorization_id : "",
+    authorization_id: typeof s.authorization_id === "string" ? s.authorization_id : "",
   }),
   beforeLoad: async ({ search, location }) => {
     if (!search.authorization_id) throw new Error("Missing authorization_id");
@@ -52,9 +51,7 @@ export const Route = createFileRoute("/.lovable/oauth/consent")({
     }
   },
   loader: async ({ location }) => {
-    const authorizationId = new URLSearchParams(location.search).get(
-      "authorization_id",
-    )!;
+    const authorizationId = new URLSearchParams(location.search).get("authorization_id")!;
     const { data, error } = await oauth.getAuthorizationDetails(authorizationId);
     if (error) throw new Error(error.message);
     const immediate = data?.redirect_url ?? data?.redirect_to;
@@ -72,7 +69,10 @@ export const Route = createFileRoute("/.lovable/oauth/consent")({
         >
           Couldn't load this authorization request
         </h1>
-        <p className="mt-3 text-[13.5px]" style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}>
+        <p
+          className="mt-3 text-[13.5px]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
+        >
           {String((error as Error)?.message ?? error)}
         </p>
       </div>
@@ -129,7 +129,9 @@ function Consent() {
           className="mt-4 text-[14px]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
         >
-          This lets {clientName} use YES Experiences Portugal as you — reading only your own saved Signature journeys through the tools we've published. It does not bypass this site's permissions or backend policies.
+          This lets {clientName} use YES Experiences Portugal as you — reading only your own saved
+          Signature journeys through the tools we've published. It does not bypass this site's
+          permissions or backend policies.
         </p>
 
         {redirectUri ? (
@@ -141,21 +143,14 @@ function Consent() {
           </p>
         ) : null}
 
-        <ul
-          className="mt-6 space-y-1.5 text-[13.5px]"
-          style={{ color: "var(--charcoal)" }}
-        >
+        <ul className="mt-6 space-y-1.5 text-[13.5px]" style={{ color: "var(--charcoal)" }}>
           <li>· Share your basic profile</li>
           <li>· Share your email address</li>
           <li>· Read your own saved Signature journeys</li>
         </ul>
 
         {error ? (
-          <p
-            role="alert"
-            className="mt-6 text-[13px]"
-            style={{ color: "#B4341E" }}
-          >
+          <p role="alert" className="mt-6 text-[13px]" style={{ color: "#B4341E" }}>
             {error}
           </p>
         ) : null}

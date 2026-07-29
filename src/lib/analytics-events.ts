@@ -80,7 +80,6 @@ export type YesAnalyticsEvent =
   | "phone_click"
   | "email_click";
 
-
 export type ExperienceType =
   | "signature"
   | "studio"
@@ -129,7 +128,6 @@ function stripPii(params: Record<string, unknown>): Record<string, unknown> {
     if (v === undefined || v === null) continue;
     if (PII_KEYS.has(k.toLowerCase())) {
       if (typeof process !== "undefined" && process.env?.NODE_ENV !== "production") {
-        // eslint-disable-next-line no-console
         console.warn(`[analytics] dropped PII key '${k}' from event`);
       }
       continue;
