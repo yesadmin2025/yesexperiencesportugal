@@ -19,6 +19,7 @@ import { Route as StudioV2RouteImport } from './routes/studio-v2'
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as PtRouteImport } from './routes/pt'
 import { Route as ProposalsRouteImport } from './routes/proposals'
@@ -193,6 +194,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SintraDayTourFromLisbonRoute = SintraDayTourFromLisbonRouteImport.update({
   id: '/sintra-day-tour-from-lisbon',
   path: '/sintra-day-tour-from-lisbon',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReviewsRoute = ReviewsRouteImport.update({
@@ -881,6 +887,7 @@ export interface FileRoutesByFullPath {
   '/proposals': typeof ProposalsRoute
   '/pt': typeof PtRouteWithChildren
   '/reviews': typeof ReviewsRoute
+  '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -1016,6 +1023,7 @@ export interface FileRoutesByTo {
   '/proposal-in-portugal': typeof ProposalInPortugalRoute
   '/proposals': typeof ProposalsRoute
   '/reviews': typeof ReviewsRoute
+  '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -1154,6 +1162,7 @@ export interface FileRoutesById {
   '/proposals': typeof ProposalsRoute
   '/pt': typeof PtRouteWithChildren
   '/reviews': typeof ReviewsRoute
+  '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -1293,6 +1302,7 @@ export interface FileRouteTypes {
     | '/proposals'
     | '/pt'
     | '/reviews'
+    | '/search'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
     | '/studio-drift'
@@ -1428,6 +1438,7 @@ export interface FileRouteTypes {
     | '/proposal-in-portugal'
     | '/proposals'
     | '/reviews'
+    | '/search'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
     | '/studio-drift'
@@ -1565,6 +1576,7 @@ export interface FileRouteTypes {
     | '/proposals'
     | '/pt'
     | '/reviews'
+    | '/search'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
     | '/studio-drift'
@@ -1703,6 +1715,7 @@ export interface RootRouteChildren {
   ProposalsRoute: typeof ProposalsRoute
   PtRoute: typeof PtRouteWithChildren
   ReviewsRoute: typeof ReviewsRoute
+  SearchRoute: typeof SearchRoute
   SintraDayTourFromLisbonRoute: typeof SintraDayTourFromLisbonRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudioDriftRoute: typeof StudioDriftRoute
@@ -1849,6 +1862,13 @@ declare module '@tanstack/react-router' {
       path: '/sintra-day-tour-from-lisbon'
       fullPath: '/sintra-day-tour-from-lisbon'
       preLoaderRoute: typeof SintraDayTourFromLisbonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reviews': {
@@ -2858,6 +2878,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProposalsRoute: ProposalsRoute,
   PtRoute: PtRouteWithChildren,
   ReviewsRoute: ReviewsRoute,
+  SearchRoute: SearchRoute,
   SintraDayTourFromLisbonRoute: SintraDayTourFromLisbonRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudioDriftRoute: StudioDriftRoute,

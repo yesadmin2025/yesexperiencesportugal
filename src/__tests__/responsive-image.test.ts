@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { buildResponsiveSrc, SIZES } from "@/lib/responsive-image";
 
 describe("buildResponsiveSrc", () => {
-  it("routes Viator URLs through /api/img with a full width ramp", () => {
+  it("routes legacy Viator URLs through /api/img with a full width ramp", () => {
     const r = buildResponsiveSrc(
       "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/db/dd/b6.jpg",
       { sizes: "card" },

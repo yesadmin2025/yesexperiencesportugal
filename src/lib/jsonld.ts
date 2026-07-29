@@ -234,7 +234,10 @@ export function organizationLd() {
   } as const;
 }
 
-/** Sitewide WebSite — anchors page metadata to the brand. */
+/**
+ * Sitewide WebSite — anchors page metadata to the brand and advertises the
+ * real, working site search at /search?q= (see src/routes/search.tsx).
+ */
 export function websiteLd() {
   return {
     "@context": "https://schema.org",
@@ -244,6 +247,14 @@ export function websiteLd() {
     name: "YES experiences Portugal",
     publisher: { "@id": `${SITE_URL}/#organization` },
     inLanguage: "en",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
   } as const;
 }
 
