@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-29T21:52:47.208Z",
-  "filesScanned": 937,
+  "generatedAt": "2026-07-29T22:26:49.518Z",
+  "filesScanned": 938,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1907,7 +1907,7 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 21,
+      "line": 23,
       "col": 27,
       "raw": "#3E9C6D",
       "normalized": "#3e9c6d",
@@ -1916,7 +1916,7 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 41,
+      "line": 43,
       "col": 17,
       "raw": "#FFFFFF",
       "normalized": "#ffffff",
@@ -1925,7 +1925,7 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 57,
+      "line": 59,
       "col": 95,
       "raw": "#FFFFFF",
       "normalized": "#ffffff",
@@ -1934,7 +1934,7 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 60,
+      "line": 62,
       "col": 103,
       "raw": "#1A1A1A",
       "normalized": "#1a1a1a",
@@ -1943,7 +1943,7 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 83,
+      "line": 85,
       "col": 69,
       "raw": "#FFFFFF",
       "normalized": "#ffffff",
@@ -1952,7 +1952,7 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 83,
+      "line": 85,
       "col": 136,
       "raw": "#1A1A1A",
       "normalized": "#1a1a1a",
@@ -1961,7 +1961,7 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 87,
+      "line": 89,
       "col": 57,
       "raw": "#111111",
       "normalized": "#111111",
@@ -1970,7 +1970,7 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 87,
+      "line": 89,
       "col": 96,
       "raw": "#FFFFFF",
       "normalized": "#ffffff",
