@@ -6926,3 +6926,22 @@ html {
     display: none !important;
   }
 }
+
+/* Vendor sticky certificate: move it clear of the WhatsApp bubble (bottom
+   right) and keep it quiet — bottom-left, desktop only. */
+.ti-sticky-button.ti-position-right,
+.ti-sticky-button {
+  right: auto !important;
+  left: 16px !important;
+  bottom: 16px !important;
+  z-index: 30 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 6px 20px -12px rgb(0 0 0 / 0.45) !important;
+}
+
+@media (max-width: 767px) {
+  .ti-sticky-button,
+  .ti-clickable-expand {
+    display: none !important;
+  }
+}
