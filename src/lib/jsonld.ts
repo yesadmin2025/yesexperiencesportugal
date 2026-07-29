@@ -84,10 +84,10 @@ export function organizationLd() {
     ],
     aggregateRating: {
       "@type": "AggregateRating",
-      ratingValue: "4.9",
-      bestRating: "5",
-      worstRating: "1",
-      reviewCount: 1000,
+      ratingValue: REVIEW_CERTIFICATE.ratingValue,
+      bestRating: REVIEW_CERTIFICATE.bestRating,
+      worstRating: REVIEW_CERTIFICATE.worstRating,
+      reviewCount: REVIEW_CERTIFICATE.reviewCount,
       // Independently collected and verified — public certificate:
       // https://www.trustindex.io/reviews/yesexperiencesportugal.com
     },
