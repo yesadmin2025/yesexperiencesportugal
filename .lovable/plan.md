@@ -1,56 +1,41 @@
-## Goal
+## Objetivo
 
-When a payment succeeds, freeze exactly what was purchased, email the team a complete summary with a deep link, and give admins a booking page that shows the full purchase. No pricing, Stripe amount, checkout calculation or business rule changes — every euro figure is copied from what was already charged.
+Selo Trustindex estático e discreto no rodapé, em linguagem de marca (ivory/gold sobre charcoal), sem o badge flutuante verde. Trustindex passa a ser o único fornecedor de reviews de terceiros no site.
 
-## What exists today (verified)
+## O que muda
 
-- `supabase/functions/stripe-webhook/index.ts` inserts/updates `public.bookings` and posts to `/api/public/hooks/checkout-email`.
-- `bookings` already has `booking_details jsonb`, currently holding only `{ composition }`.
-- The team email uses `src/lib/email-templates/internal-booking.tsx` (guest, email, experience, type, date, guests, amount, pickup, Stripe session) — no booking reference beyond the Stripe id and no admin link.
-- Stripe metadata carries only truncated fields (`stops` capped at 480 chars, `add_ons` JSON capped at 480 chars); itinerary, removed options, notes and the pricing breakdown are not durably stored.
-- There is no `/admin/bookings` route — admins have no place to look at a booking.
+### 1. Novo `src/components/trust/TrustindexBadge.tsx`
 
-## Plan
+Selo estático, sem script de terceiros a correr em todas as páginas:
 
-### 1. Booking snapshot (database)
+- Uma linha, Inter 11px uppercase, tracking 0.22em:
+`★★★★★ 4.9 · 1000 reviews · Verified by Trustindex`
+- Estrelas em `--gold`, texto em `--ivory`/75, sem caixa verde nem logo importado.
+- Link para a página pública do certificado Trustindex (`target="_blank"`, `rel="noopener nofollow"`), min-height 44px, focus-visible em gold — mesmas regras dos outros badges de confiança.
+- Sem animação; respeita `prefers-reduced-motion` por herança da regra global.
+- Valores (4.9 / 1000) num único `const` no topo do ficheiro, fáceis de atualizar.
 
-New table `public.booking_snapshots`:
+### 2. `src/components/Footer.tsx`
 
-- `stripe_session_id` (PK), `payload jsonb`, `created_at`, `frozen_at`
-- Grants: `service_role` full; no `anon`; `authenticated` SELECT only via admin policy `has_role(auth.uid(),'admin')`. RLS enabled.
+Renderizar o selo na barra legal, imediatamente acima do Livro de Reclamações, separado por espaçamento (sem nova regra visual — a barra já tem a linha gold). Ordem final do rodapé: pagamentos → barra legal → Trustindex → Livro de Reclamações.
 
-Flow:
+### 3. Remover o Trustmary
 
-```text
-checkout create  ->  writes draft snapshot row (payload, frozen_at NULL)
-payment succeeds ->  webhook sets frozen_at = now()
-                     and copies payload into bookings.booking_details.snapshot
-```
+`TrustmarySection.tsx` não está montado em nenhuma rota (só referências em comentários e no checklist de QA). Como pediste um só fornecedor:
 
-The snapshot is display-only: written from a new optional `snapshot` field on the checkout request body, never read by any pricing path.
+- Apagar `src/components/TrustmarySection.tsx`.
+- Limpar as referências em `src/routes/qa.mobile.tsx` (secção "5 — Trustmary widget"), `src/content/approved-homepage-structure.ts`, `src/lib/home-motion.ts` e `src/components/ui/CredentialStrip.tsx` (comentários).
+- A homepage mantém as reviews reais próprias (`RealReviewsStrip` / `GuestQuotes`) — nada de conteúdo perdido.
 
-Snapshot payload contains: experience id/title, itinerary stops (label, duration, order), selected add-ons (label + price as charged), removed options (removed stop labels, lunch removed/added, extra wineries), pickup, total duration, customer notes, and the pricing breakdown already computed server-side (per-pax, composition subtotals, supplements/credits, add-ons total, final total).
+### 4. SEO
 
-### 2. Admin notification email
+O script do Trustindex não gera `AggregateRating` rastreável (injeção client-side), por isso o ganho vem do nosso JSON-LD:
 
-`src/lib/email-templates/internal-booking.tsx` gains: booking reference, experience name, booking date, guests, total paid, and a prominent "Open in Admin" button linking to `/admin/bookings/<bookingId>`, plus a compact add-ons / removed-options / notes block. `src/routes/api/public/hooks/checkout-email.ts` and the webhook payload forward `bookingId` and the snapshot summary.
+- Adicionar `aggregateRating` (4.9 / 1000) à entidade `Organization`/`TravelAgency` em `src/lib/jsonld.ts`, já que os valores são verificáveis no certificado público.
+- Nada de números inventados; se preferires não publicar o agregado ao nível da organização, salto este ponto.
 
-### 3. Admin booking pages
+Como não carregamos o `loader-cert.js`, **não é preciso mexer na CSP** em `public/_headers` — zero impacto em performance e em Core Web Vitals.
 
-- `src/routes/admin.bookings.tsx` — searchable list (date, guest, experience, total, status).
-- `src/routes/admin.bookings.$id.tsx` — full detail: experience, booked itinerary, add-ons, removed options, pickup, duration, customer notes, pricing breakdown, Stripe session/payment ids, and email send log for that booking.
-- Data via `createServerFn` with `requireSupabaseAuth` + admin role check (same pattern as existing admin tools). Both routes `noindex`.
+## Teste
 
-### 4. Tests
-
-- Unit: snapshot builder shape + email template renders all required fields.
-- Unit: snapshot freeze is idempotent and never mutates amounts.
-- Existing suites (pricing parity, checkout parity, typecheck) re-run to prove no pricing drift.
-
-## Technical notes
-
-Legacy bookings without a snapshot render from `metadata` + `booking_details.composition` with a clear "legacy record" note, so the admin page never breaks on older rows.
-
-## Deliverables at the end
-
-Files changed, database changes, and tests performed will be listed in the final report.
+Playwright rápido: selo visível no rodapé a 393px e em desktop, link abre em nova aba, sem badge flutuante em viewport, contraste ok sobre charcoal. Mas anger o icon oficial do trust index de forma credível 
