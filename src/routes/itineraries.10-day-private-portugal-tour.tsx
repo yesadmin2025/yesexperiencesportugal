@@ -73,11 +73,6 @@ export const Route = createFileRoute("/itineraries/10-day-private-portugal-tour"
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
-      {
-        name: "keywords",
-        content:
-          "portugal tours, portugal trips packages, 10 day portugal itinerary, private portugal tour, luxury portugal tour, portugal travel package",
-      },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:url", content: PAGE_URL },

@@ -6861,3 +6861,32 @@ html {
     will-change: auto !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Global reduced-motion contract.
+   One blanket rule so ANY animation, transition, scroll reveal or
+   Studio widget motion is neutralised for users who ask for it —
+   including components that opt into motion without a local query.
+   Purely motion-related; no color or layout tokens touched.
+   ───────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    will-change: auto !important;
+  }
+  [data-reveal],
+  [data-route-fade],
+  [data-scroll-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}
