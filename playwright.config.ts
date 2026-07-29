@@ -12,9 +12,6 @@ register(pathToFileURL(path.join(e2eDir, "asset-esm-hook.mjs")).href);
 process.env.NODE_OPTIONS =
   `${process.env.NODE_OPTIONS ?? ""} --import ${pathToFileURL(path.join(e2eDir, "register-asset-hook.mjs")).href}`.trim();
 
-
-
-
 /**
  * Playwright config for E2E tests.
  *

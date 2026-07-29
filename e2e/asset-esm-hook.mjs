@@ -11,8 +11,7 @@
  * Here every non-code asset resolves to the URL string Vite would emit, which
  * is all any spec ever needs from an image.
  */
-const ASSET_RE =
-  /\.(jpe?g|png|webp|avif|gif|svg|ico|mp4|webm|mov|woff2?|ttf|otf|css)(\?[^/]*)?$/i;
+const ASSET_RE = /\.(jpe?g|png|webp|avif|gif|svg|ico|mp4|webm|mov|woff2?|ttf|otf|css)(\?[^/]*)?$/i;
 
 export async function resolve(specifier, context, nextResolve) {
   const result = await nextResolve(specifier, context);
