@@ -62,10 +62,6 @@ export function TrustindexBadge() {
       >
         {RATING} · {REVIEW_COUNT} reviews
       </span>
-      <span
-        aria-hidden="true"
-        className="h-3 w-px bg-[color:var(--ivory)]/20"
-      />
       <span className="inline-flex items-center gap-1.5">
         <TrustindexMark />
         <span
