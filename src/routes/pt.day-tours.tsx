@@ -73,9 +73,9 @@ function DayToursPage() {
               Experiências <SectionTitle.Em>de um dia</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-              Guias privados, ritmo cuidado e as partes de Portugal que se recordam melhor.
-              Reserve em tempo real — ou ajuste alguns detalhes dentro da experiência para
-              se adaptar ao seu ritmo.
+              Guias privados, ritmo cuidado e as partes de Portugal que se recordam melhor. Reserve
+              em tempo real — ou ajuste alguns detalhes dentro da experiência para se adaptar ao seu
+              ritmo.
             </p>
             <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">
               As páginas detalhadas de cada experiência estão, para já, disponíveis em inglês.
@@ -131,7 +131,9 @@ function DayToursPage() {
                   <span className="flex items-center gap-1.5">
                     <MapPin size={12} /> {t.theme}
                   </span>
-                  <span className="text-[color:var(--teal)]">Desde <PriceEur amountEur={t.priceFrom} role="from" /></span>
+                  <span className="text-[color:var(--teal)]">
+                    Desde <PriceEur amountEur={t.priceFrom} role="from" />
+                  </span>
                 </div>
 
                 <p className="mt-3 text-sm text-[color:var(--charcoal-soft)] leading-relaxed">

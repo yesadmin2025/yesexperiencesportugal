@@ -45,7 +45,9 @@ test.describe(`Checkout parity — ${TOUR.id}`, () => {
 
       // Set headcount via the guests select if present; otherwise skip
       // the DOM half and leave the library assertion as the guardrail.
-      const guestsSelect = page.locator('[data-testid="guests-select"], select[name="guests"]').first();
+      const guestsSelect = page
+        .locator('[data-testid="guests-select"], select[name="guests"]')
+        .first();
       if (await guestsSelect.count()) {
         await guestsSelect.selectOption(String(totalGuests)).catch(() => undefined);
       }

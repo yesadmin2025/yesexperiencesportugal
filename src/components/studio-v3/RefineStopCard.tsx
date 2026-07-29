@@ -170,13 +170,9 @@ export function RefineStopCard({
         />
       </div>
 
-
       {/* Swap pool — expands in place */}
       {swapOpen && swapPool && swapPool.length > 0 ? (
-        <ul
-          data-testid="studio-v3-refine-swap-pool"
-          className="mt-3 space-y-1 pl-9"
-        >
+        <ul data-testid="studio-v3-refine-swap-pool" className="mt-3 space-y-1 pl-9">
           {swapPool.map((cand) => (
             <li key={cand.label}>
               <button

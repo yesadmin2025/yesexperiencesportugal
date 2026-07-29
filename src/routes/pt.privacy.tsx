@@ -53,24 +53,24 @@ function PrivacyPage() {
               O que recolhemos
             </h2>
             <p>
-              Nome, email, telefone, dimensão do grupo, datas de viagem e quaisquer preferências
-              que partilhe connosco. Os dados de pagamento são geridos pelos nossos parceiros de
+              Nome, email, telefone, dimensão do grupo, datas de viagem e quaisquer preferências que
+              partilhe connosco. Os dados de pagamento são geridos pelos nossos parceiros de
               pagamento e nunca ficam armazenados nos nossos servidores.
             </p>
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
               Como utilizamos
             </h2>
             <p>
-              Para planear e operar a sua experiência, enviar confirmações de reserva e
-              informação de viagem e — apenas se o autorizar — notas editoriais ocasionais sobre
-              Portugal. Nunca vendemos os seus dados.
+              Para planear e operar a sua experiência, enviar confirmações de reserva e informação
+              de viagem e — apenas se o autorizar — notas editoriais ocasionais sobre Portugal.
+              Nunca vendemos os seus dados.
             </p>
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
               Os seus direitos
             </h2>
             <p>
-              Ao abrigo do RGPD, pode aceder, corrigir ou apagar os seus dados pessoais a
-              qualquer momento. Escreva-nos e responderemos no prazo máximo de 30 dias.
+              Ao abrigo do RGPD, pode aceder, corrigir ou apagar os seus dados pessoais a qualquer
+              momento. Escreva-nos e responderemos no prazo máximo de 30 dias.
             </p>
             <p className="text-[13px] text-[color:var(--charcoal-soft)]/80">
               Pedidos relativos a dados:{" "}

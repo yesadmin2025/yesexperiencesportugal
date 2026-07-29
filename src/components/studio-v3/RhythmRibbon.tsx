@@ -35,12 +35,7 @@ function formatMinutes(min: number): string {
   return m === 0 ? `${h}h` : `${h}h ${m}m`;
 }
 
-export function RhythmRibbon({
-  stops,
-  legMinutes,
-  className,
-  testId,
-}: RhythmRibbonProps) {
+export function RhythmRibbon({ stops, legMinutes, className, testId }: RhythmRibbonProps) {
   if (stops.length < 2) return null;
   return (
     <section
@@ -100,7 +95,9 @@ export function RhythmRibbon({
                   className="mt-2 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
                   style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
                 >
-                  {legMinutes && Number.isFinite(legMinutes[i]) ? formatMinutes(legMinutes[i]) : "drive"}
+                  {legMinutes && Number.isFinite(legMinutes[i])
+                    ? formatMinutes(legMinutes[i])
+                    : "drive"}
                 </span>
               </li>
             ) : null}

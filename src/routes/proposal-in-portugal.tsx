@@ -13,7 +13,6 @@ import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { PROPOSAL_SERVICE_IMAGES } from "@/content/editorial-service-images";
 import { useEditorialOverrides } from "@/lib/editorial-overrides";
 
-
 import { PROPOSAL_FAQ } from "@/content/seo-faq";
 import imgRomantic from "@/assets/exp-romantic.jpg";
 
@@ -35,7 +34,10 @@ export const Route = createFileRoute("/proposal-in-portugal")({
       { property: "og:image", content: `${BASE_URL}${imgRomantic}` },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "Plan a proposal in Portugal — private moments, discreetly designed" },
+      {
+        property: "og:image:alt",
+        content: "Plan a proposal in Portugal — private moments, discreetly designed",
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "twitter:image", content: `${BASE_URL}${imgRomantic}` },
       { property: "og:url", content: PAGE_URL },
@@ -101,7 +103,6 @@ export function ProposalInPortugalPage() {
     PROPOSAL_SERVICE_IMAGES.map((image) => ({ ...image, caption: "" })),
   );
   return (
-
     <SiteLayout>
       {/* Hero */}
       <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
@@ -247,8 +248,7 @@ export function ProposalInPortugalPage() {
           {
             to: "/corporate",
             label: "Company celebrations and client hosting",
-            description:
-              "Private celebrations for teams and clients, coordinated across Portugal.",
+            description: "Private celebrations for teams and clients, coordinated across Portugal.",
           },
         ]}
       />

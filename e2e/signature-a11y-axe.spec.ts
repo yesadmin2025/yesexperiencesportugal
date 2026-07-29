@@ -43,8 +43,7 @@ test.describe("Signature tour pages — a11y (alt text + landmarks)", () => {
       // Trigger lazy sections + IntersectionObserver reveals so the map,
       // gallery, and any lazy imagery mount before we scan.
       await page.evaluate(async () => {
-        const step = () =>
-          new Promise((r) => requestAnimationFrame(() => setTimeout(r, 60)));
+        const step = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 60)));
         const h = document.body.scrollHeight;
         for (let y = 0; y <= h; y += 600) {
           window.scrollTo(0, y);

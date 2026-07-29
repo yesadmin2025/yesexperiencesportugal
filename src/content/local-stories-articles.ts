@@ -36,7 +36,6 @@ export type LocalStoryArticle = {
   faq?: { q: string; a: string }[];
   /** Optional related-read links (any internal path) rendered in the aside. */
   relatedReads?: { path: string; label: string }[];
-
 };
 
 export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
@@ -587,7 +586,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedReads: [
       { path: "/local-stories/private-tours-from-lisbon", label: "Best private tours from Lisbon" },
       { path: "/local-stories/arrabida-wine-tour", label: "Arrábida wine tour guide" },
-      { path: "/local-stories/best-wine-tasting-near-lisbon", label: "Best wine tasting near Lisbon" },
+      {
+        path: "/local-stories/best-wine-tasting-near-lisbon",
+        label: "Best wine tasting near Lisbon",
+      },
     ],
     datePublished: "2026-07-01",
   },
@@ -624,9 +626,15 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
     ],
     relatedReads: [
-      { path: "/tours/arrabida-wine-allinclusive", label: "Reserve the private three-winery experience" },
+      {
+        path: "/tours/arrabida-wine-allinclusive",
+        label: "Reserve the private three-winery experience",
+      },
       { path: "/wine-tours-lisbon", label: "Compare private wine tours from Lisbon" },
-      { path: "/local-stories/setubal-wine-guide", label: "Read our local guide to Setúbal wine country" },
+      {
+        path: "/local-stories/setubal-wine-guide",
+        label: "Read our local guide to Setúbal wine country",
+      },
     ],
     datePublished: "2026-07-02",
   },
@@ -693,8 +701,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "Discover private wine tours across Portugal, from Arrábida and Setúbal near Lisbon to Alentejo traditions, family wineries and local food.",
     h1: "Private Wine Tours in Portugal",
     eyebrow: "Portugal · Wine Tours",
-    standfirst:
-      "Small cellars, real winemakers, and a private day paced around lunch.",
+    standfirst: "Small cellars, real winemakers, and a private day paced around lunch.",
     sections: [
       {
         heading: "Portugal as a wine destination",
@@ -792,7 +799,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
     ],
     relatedReads: [
-      { path: "/local-stories/best-wine-tasting-near-lisbon", label: "Best wine tasting near Lisbon" },
+      {
+        path: "/local-stories/best-wine-tasting-near-lisbon",
+        label: "Best wine tasting near Lisbon",
+      },
       { path: "/local-stories/arrabida-wine-tour", label: "Arrábida wine tour guide" },
       { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
     ],
@@ -1039,7 +1049,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedReads: [
       { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
       { path: "/experiences", label: "Browse all Signature Experiences" },
-      { path: "/local-stories/arrabida-day-trip-from-lisbon", label: "Arrábida day trip from Lisbon" },
+      {
+        path: "/local-stories/arrabida-day-trip-from-lisbon",
+        label: "Arrábida day trip from Lisbon",
+      },
     ],
     datePublished: "2026-07-11",
   },
@@ -1089,7 +1102,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     relatedReads: [
       { path: "/local-stories/private-wine-tour-lisbon", label: "Private wine tour from Lisbon" },
-      { path: "/local-stories/best-wine-tasting-near-lisbon", label: "Best wine tasting near Lisbon" },
+      {
+        path: "/local-stories/best-wine-tasting-near-lisbon",
+        label: "Best wine tasting near Lisbon",
+      },
       { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
     ],
     datePublished: "2026-07-24",

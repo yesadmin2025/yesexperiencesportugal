@@ -57,12 +57,7 @@ export function CtaPair({
 
   return (
     <Tag
-      className={cn(
-        layoutClasses[layout],
-        justifyClasses[justify],
-        "gap-y-4 gap-x-4",
-        className,
-      )}
+      className={cn(layoutClasses[layout], justifyClasses[justify], "gap-y-4 gap-x-4", className)}
       role={role}
       aria-label={ariaLabel}
     >

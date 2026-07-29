@@ -25,7 +25,6 @@ type Path = {
   analyticsEvent: string;
 };
 
-
 const PATHS: Path[] = [
   {
     num: "01",
@@ -43,7 +42,6 @@ const PATHS: Path[] = [
     cta: "Explore Signatures",
     href: "/experiences",
     analyticsEvent: "five_ways_signature_click",
-
   },
   {
     num: "02",
@@ -59,7 +57,6 @@ const PATHS: Path[] = [
     cta: "Open the Studio",
     href: "/studio-v3",
     analyticsEvent: "five_ways_studio_click",
-
   },
   {
     num: "03",
@@ -75,7 +72,6 @@ const PATHS: Path[] = [
     cta: "Share the occasion",
     href: "/proposal-in-portugal",
     analyticsEvent: "five_ways_moments_click",
-
   },
   {
     num: "04",
@@ -91,7 +87,6 @@ const PATHS: Path[] = [
     cta: "Plan a group day",
     href: "/corporate",
     analyticsEvent: "five_ways_corporate_click",
-
   },
   {
     num: "05",
@@ -107,7 +102,6 @@ const PATHS: Path[] = [
     cta: "Begin with a designer",
     href: "/multi-day",
     analyticsEvent: "five_ways_travel_designer_click",
-
   },
 ];
 

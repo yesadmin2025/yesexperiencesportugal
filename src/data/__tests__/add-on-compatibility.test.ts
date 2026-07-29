@@ -8,7 +8,6 @@ import {
   type SignatureAddOn,
 } from "@/data/signatureAddOns";
 
-
 const arrabidaTour = {
   id: "arrabida-wine-allinclusive",
   region: "Arrábida",
@@ -109,4 +108,3 @@ describe("E3 add-on compatibility fields", () => {
     expect(picksLarge.some((a) => a.id === "azulejo-workshop")).toBe(false);
   });
 });
-

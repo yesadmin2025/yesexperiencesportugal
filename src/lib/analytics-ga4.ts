@@ -248,10 +248,7 @@ export function gaReserveCtaClick(
 export function gaBookingDateSelected(args: BookingBase & { dateISO: string }): void {
   const now = new Date();
   const picked = new Date(args.dateISO + "T00:00:00");
-  const daysAhead = Math.max(
-    0,
-    Math.round((picked.getTime() - now.getTime()) / 86_400_000),
-  );
+  const daysAhead = Math.max(0, Math.round((picked.getTime() - now.getTime()) / 86_400_000));
   pushEvent("booking_date_selected", {
     tour_id: args.tourId,
     surface: args.surface,
@@ -287,9 +284,7 @@ export function gaBookingLanguageSelected(args: BookingBase & { language: string
   });
 }
 
-export function gaBookingValidationBlocked(
-  args: BookingBase & { reason: string },
-): void {
+export function gaBookingValidationBlocked(args: BookingBase & { reason: string }): void {
   pushEvent("booking_validation_blocked", {
     tour_id: args.tourId,
     surface: args.surface,
@@ -304,9 +299,7 @@ export function gaCheckoutDrawerOpened(args: BookingBase): void {
   });
 }
 
-export function gaCheckoutDrawerAbandoned(
-  args: BookingBase & { timeOpenMs: number },
-): void {
+export function gaCheckoutDrawerAbandoned(args: BookingBase & { timeOpenMs: number }): void {
   pushEvent("checkout_drawer_abandoned", {
     tour_id: args.tourId,
     surface: args.surface,

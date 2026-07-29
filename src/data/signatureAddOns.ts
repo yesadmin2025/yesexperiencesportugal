@@ -510,7 +510,6 @@ export function deriveAnchorStop(addOn: SignatureAddOn): {
   };
 }
 
-
 /**
  * Pick up to 3 add-ons appropriate for the resolved itinerary.
  *

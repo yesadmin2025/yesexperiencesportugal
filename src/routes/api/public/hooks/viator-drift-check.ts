@@ -1,8 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  SIGNATURE_SOURCE_OF_TRUTH,
-  canonicalViatorUrl,
-} from "@/data/signatureToursSourceOfTruth";
+import { SIGNATURE_SOURCE_OF_TRUTH, canonicalViatorUrl } from "@/data/signatureToursSourceOfTruth";
 
 // Weekly Viator drift detector.
 // - Scrapes each canonical Viator URL via Firecrawl (direct API mode).
@@ -28,9 +25,11 @@ async function firecrawlScrape(url: string, apiKey: string): Promise<ScrapeResul
       },
       body: JSON.stringify({ url, formats: ["markdown"], onlyMainContent: true }),
     });
-    const data = (await res.json().catch(() => null)) as
-      | { markdown?: string; data?: { markdown?: string }; error?: string }
-      | null;
+    const data = (await res.json().catch(() => null)) as {
+      markdown?: string;
+      data?: { markdown?: string };
+      error?: string;
+    } | null;
     if (!res.ok) return { markdown: null, error: data?.error ?? `HTTP ${res.status}` };
     const md = data?.markdown ?? data?.data?.markdown ?? null;
     return { markdown: md };
@@ -72,9 +71,7 @@ function extractIncluded(markdown: string): string[] {
 }
 
 function extractPriceFrom(markdown: string): string | null {
-  const m = markdown.match(
-    /(?:from|a partir de)\s*(?:us)?\$\s?([\d,.]+)|€\s?([\d,.]+)/i,
-  );
+  const m = markdown.match(/(?:from|a partir de)\s*(?:us)?\$\s?([\d,.]+)|€\s?([\d,.]+)/i);
   if (!m) return null;
   return m[0];
 }
@@ -112,10 +109,7 @@ export const Route = createFileRoute("/api/public/hooks/viator-drift-check")({
     handlers: {
       POST: async ({ request }) => {
         // Canonical pattern: cron authenticates via `apikey` header (anon key).
-        const anon =
-          process.env.SUPABASE_ANON_KEY ??
-          process.env.SUPABASE_PUBLISHABLE_KEY ??
-          "";
+        const anon = process.env.SUPABASE_ANON_KEY ?? process.env.SUPABASE_PUBLISHABLE_KEY ?? "";
         const providedKey =
           request.headers.get("apikey") ??
           request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
@@ -128,10 +122,10 @@ export const Route = createFileRoute("/api/public/hooks/viator-drift-check")({
 
         const firecrawlKey = process.env.FIRECRAWL_API_KEY;
         if (!firecrawlKey) {
-          return new Response(
-            JSON.stringify({ error: "FIRECRAWL_API_KEY missing" }),
-            { status: 500, headers: { "Content-Type": "application/json" } },
-          );
+          return new Response(JSON.stringify({ error: "FIRECRAWL_API_KEY missing" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
         }
 
         const tourIds = Object.keys(SIGNATURE_SOURCE_OF_TRUTH);
@@ -211,9 +205,7 @@ export const Route = createFileRoute("/api/public/hooks/viator-drift-check")({
 
         // Persist (admin-only reads via RLS; write is service_role).
         try {
-          const { supabaseAdmin } = await import(
-            "@/integrations/supabase/client.server"
-          );
+          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           await supabaseAdmin.from("viator_drift_reports").insert({
             run_at: runAt,
             tours_checked: perTour.length,
@@ -228,9 +220,7 @@ export const Route = createFileRoute("/api/public/hooks/viator-drift-check")({
         // Email only when there is real drift (avoid weekly noise).
         if (drifted.length > 0) {
           try {
-            const { sendTransactionalInternal } = await import(
-              "@/lib/email/send-internal.server"
-            );
+            const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
             await sendTransactionalInternal({
               templateName: "viator-drift-alert",
               recipientEmail: "info@yesexperiencesportugal.com",

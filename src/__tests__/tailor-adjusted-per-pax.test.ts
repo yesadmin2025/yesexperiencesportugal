@@ -21,7 +21,7 @@ describe("tailorAdjustedPerPax", () => {
   it("applies −5% per principal removed up to the −15% cap", () => {
     // €200 anchor
     expect(tailorAdjustedPerPax(200, 1)).toBe(Math.round(200 * 0.95)); // 190
-    expect(tailorAdjustedPerPax(200, 2)).toBe(Math.round(200 * 0.9));  // 180
+    expect(tailorAdjustedPerPax(200, 2)).toBe(Math.round(200 * 0.9)); // 180
     expect(tailorAdjustedPerPax(200, 3)).toBe(Math.round(200 * 0.85)); // 170
     // Cap holds beyond 3 removals
     expect(tailorAdjustedPerPax(200, 4)).toBe(Math.round(200 * 0.85));
@@ -61,10 +61,9 @@ describe("tailorAdjustedPerPax", () => {
     const direct = 203;
     expect(tailorAdjustedPerPax(direct, 0)).toBe(direct);
     expect(tailorAdjustedPerPax(direct, 1)).toBe(Math.round(direct * 0.95)); // 193
-    expect(tailorAdjustedPerPax(direct, 2)).toBe(Math.round(direct * 0.9));  // 183
+    expect(tailorAdjustedPerPax(direct, 2)).toBe(Math.round(direct * 0.9)); // 183
     expect(tailorAdjustedPerPax(direct, 3)).toBe(Math.round(direct * 0.85)); // 173 = −15% cap
     expect(tailorAdjustedPerPax(direct, 4)).toBe(Math.round(direct * 0.85));
     expect(tailorAdjustedPerPax(direct, 5)).toBe(Math.round(direct * 0.85));
   });
 });
-

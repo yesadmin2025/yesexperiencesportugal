@@ -39,8 +39,7 @@ test.describe("Signature tour pages — map + image integrity", () => {
 
       // Trigger lazy sections + IntersectionObserver reveals.
       await page.evaluate(async () => {
-        const step = () =>
-          new Promise((r) => requestAnimationFrame(() => setTimeout(r, 60)));
+        const step = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 60)));
         const h = document.body.scrollHeight;
         for (let y = 0; y <= h; y += 600) {
           window.scrollTo(0, y);
@@ -70,10 +69,7 @@ test.describe("Signature tour pages — map + image integrity", () => {
           })
           .map((el) => (el as HTMLImageElement).currentSrc || (el as HTMLImageElement).src),
       );
-      expect(
-        broken,
-        `broken <img> on /tours/${tourId}:\n${broken.join("\n")}`,
-      ).toEqual([]);
+      expect(broken, `broken <img> on /tours/${tourId}:\n${broken.join("\n")}`).toEqual([]);
 
       expect(
         imageFailures,

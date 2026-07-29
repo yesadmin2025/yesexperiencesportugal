@@ -27,7 +27,10 @@ function parseColor(input: string): [number, number, number] | null {
   // rgb() / rgba()
   const rgb = s.match(/rgba?\(([^)]+)\)/);
   if (rgb) {
-    const parts = rgb[1].split(/[,\s/]+/).filter(Boolean).slice(0, 3);
+    const parts = rgb[1]
+      .split(/[,\s/]+/)
+      .filter(Boolean)
+      .slice(0, 3);
     if (parts.length !== 3) return null;
     const nums = parts.map((p) => {
       if (p.endsWith("%")) return (parseFloat(p) / 100) * 255;
@@ -41,7 +44,11 @@ function parseColor(input: string): [number, number, number] | null {
   const hex = s.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/);
   if (hex) {
     let h = hex[1];
-    if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+    if (h.length === 3)
+      h = h
+        .split("")
+        .map((c) => c + c)
+        .join("");
     const n = parseInt(h, 16);
     return [((n >> 16) & 0xff) / 255, ((n >> 8) & 0xff) / 255, (n & 0xff) / 255];
   }
@@ -127,7 +134,6 @@ export function assertContrast(
   const passes = ratio >= required;
 
   if (!passes) {
-    // eslint-disable-next-line no-console
     console.warn(
       `[a11y:contrast] ${label ?? "element"} fails WCAG ${level} (${size}): ratio ${ratio.toFixed(2)}:1 < required ${required}:1`,
       { fg, bg, el },

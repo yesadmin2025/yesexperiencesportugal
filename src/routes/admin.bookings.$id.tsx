@@ -83,7 +83,9 @@ function AdminBookingDetailPage() {
   const addOns = Array.isArray(snapshot?.addOns) ? snapshot!.addOns : [];
   const removed = Array.isArray(snapshot?.removedOptions) ? snapshot!.removedOptions : [];
   const notes = Array.isArray(snapshot?.notes) ? snapshot!.notes : [];
-  const composition = (snapshot?.composition ?? booking.booking_details?.composition ?? {}) as AnyRec;
+  const composition = (snapshot?.composition ??
+    booking.booking_details?.composition ??
+    {}) as AnyRec;
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
@@ -94,8 +96,7 @@ function AdminBookingDetailPage() {
         {snapshot?.experienceName || booking.source_tour_id || "Booking"}
       </h1>
       <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
-        {booking.status} · {booking.booking_type} ·{" "}
-        {new Date(booking.created_at).toLocaleString()}
+        {booking.status} · {booking.booking_type} · {new Date(booking.created_at).toLocaleString()}
       </p>
 
       <Card title="Customer">

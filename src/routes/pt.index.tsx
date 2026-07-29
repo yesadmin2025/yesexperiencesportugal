@@ -68,11 +68,7 @@ export const Route = createFileRoute("/pt/")({
 });
 
 // Featured trio for the homepage — same source of truth as EN.
-const FEATURED_IDS = [
-  "arrabida-wine-allinclusive",
-  "wild-beaches-picnic",
-  "arrabida-boat",
-];
+const FEATURED_IDS = ["arrabida-wine-allinclusive", "wild-beaches-picnic", "arrabida-boat"];
 const FEATURED = FEATURED_IDS.map((id) => signatureTours.find((t) => t.id === id)).filter(
   (t): t is (typeof signatureTours)[number] => Boolean(t),
 );
@@ -169,7 +165,6 @@ function PtHomePage() {
         </div>
 
         <div className="mt-4 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-
           {FEATURED.map((t) => (
             <article key={t.id} className="group flex flex-col text-left">
               <Link

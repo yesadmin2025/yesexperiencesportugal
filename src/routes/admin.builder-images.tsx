@@ -12,7 +12,12 @@ import {
 } from "@/lib/builderImages.functions";
 
 export const Route = createFileRoute("/admin/builder-images")({
-  head: () => ({ meta: [{ title: "Builder images — Studio Admin" }, { name: "robots", content: "noindex, nofollow" }] }),
+  head: () => ({
+    meta: [
+      { title: "Builder images — Studio Admin" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: AdminBuilderImagesPage,
 });
 

@@ -36,10 +36,12 @@ describe("itinerary thresholds", () => {
 
 describe("addOnEurFor — unit-aware pricing", () => {
   const base = 300;
-  const addOn = (unit: SignatureAddOn["pricingUnit"]): Pick<
-    SignatureAddOn,
-    "pricePctOfBase" | "pricingUnit"
-  > => ({ pricePctOfBase: 0.2, pricingUnit: unit });
+  const addOn = (
+    unit: SignatureAddOn["pricingUnit"],
+  ): Pick<SignatureAddOn, "pricePctOfBase" | "pricingUnit"> => ({
+    pricePctOfBase: 0.2,
+    pricingUnit: unit,
+  });
 
   it("per_person multiplies by guest count", () => {
     const r = addOnEurFor({ addOn: addOn("per_person"), baseEur: base, guests: 3 });

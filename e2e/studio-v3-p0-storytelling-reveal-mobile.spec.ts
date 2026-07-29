@@ -22,7 +22,10 @@ test("storytelling reveal renders non-empty within 2500ms on mobile", async ({ p
   await expect(reveal).toBeVisible({ timeout: 2500 });
 
   const text = (await reveal.innerText()).trim();
-  expect(text.length, `reveal innerText was too short: ${JSON.stringify(text.slice(0, 80))}`).toBeGreaterThan(40);
+  expect(
+    text.length,
+    `reveal innerText was too short: ${JSON.stringify(text.slice(0, 80))}`,
+  ).toBeGreaterThan(40);
 
   // Timeline chapters must render at least one moment (roman numeral + label).
   const timeline = page.getByTestId("studio-v3-final-reveal-timeline");

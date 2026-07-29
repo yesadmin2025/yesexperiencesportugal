@@ -7,7 +7,9 @@ import { useResolvedJourney } from "../useResolvedJourney";
 
 describe("useResolvedJourney pricing", () => {
   it("uses unit-aware add-on party amounts and exposes the effective per-person price", () => {
-    const tour = signatureTours.find((candidate) => candidate.priceFrom && candidate.priceFrom > 0)!;
+    const tour = signatureTours.find(
+      (candidate) => candidate.priceFrom && candidate.priceFrom > 0,
+    )!;
     const guests = 3;
     const addOnPartyAmount = 75;
     const { result } = renderHook(() =>

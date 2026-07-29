@@ -54,10 +54,18 @@ const APPROVED_PREFIXES = [
 //   - Destructuring with default:   { overview = [] }
 const FIELDS = "overview|highlights|included|itinerary";
 const PATTERN =
-  String.raw`(\??\.\s*(` + FIELDS + String.raw`)\b)` +
-  String.raw`|(\??\.\s*\[\s*["'](` + FIELDS + String.raw`)["']\s*\])` +
-  String.raw`|(\[\s*["'](` + FIELDS + String.raw`)["']\s*\])` +
-  String.raw`|(\b(` + FIELDS + String.raw`)\s*[,}:=])`;
+  String.raw`(\??\.\s*(` +
+  FIELDS +
+  String.raw`)\b)` +
+  String.raw`|(\??\.\s*\[\s*["'](` +
+  FIELDS +
+  String.raw`)["']\s*\])` +
+  String.raw`|(\[\s*["'](` +
+  FIELDS +
+  String.raw`)["']\s*\])` +
+  String.raw`|(\b(` +
+  FIELDS +
+  String.raw`)\s*[,}:=])`;
 
 function rg(pattern: string): string[] {
   try {

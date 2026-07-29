@@ -1,12 +1,7 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Printer, ArrowLeft, Loader2, AlertCircle } from "lucide-react";
-import {
-  BUSINESS_LEGAL_NAME,
-  EMAIL,
-  LICENSE_LABEL,
-  PHONE_DISPLAY,
-} from "@/config/business-nap";
+import { BUSINESS_LEGAL_NAME, EMAIL, LICENSE_LABEL, PHONE_DISPLAY } from "@/config/business-nap";
 import { tourReservationLd } from "@/lib/jsonld";
 
 interface Search {
@@ -268,13 +263,11 @@ function BookingReceiptPage() {
                     data-testid="receipt-lunch-removal"
                     className="mt-3 text-[12.5px] leading-relaxed text-[color:var(--teal)]"
                   >
-                    Included lunch removed — −
-                    {eur(Number(meta.tailor_lunch_removal_eur_pp ?? 15))} per person, already
-                    applied to the per-person price above.
+                    Included lunch removed — −{eur(Number(meta.tailor_lunch_removal_eur_pp ?? 15))}{" "}
+                    per person, already applied to the per-person price above.
                   </p>
                 ) : null}
               </section>
-
 
               <section className="border-t border-[color:var(--border)] py-5">
                 <h2 className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
@@ -321,8 +314,8 @@ function BookingReceiptPage() {
                   {BUSINESS_LEGAL_NAME} · {LICENSE_LABEL}
                 </p>
                 <p className="mt-1">
-                  Questions about this booking? Reply to your confirmation email or write to{" "}
-                  {EMAIL}.
+                  Questions about this booking? Reply to your confirmation email or write to {EMAIL}
+                  .
                 </p>
               </footer>
             </>
@@ -346,15 +339,7 @@ function Meta({ label, value }: { label: string; value: string }) {
   );
 }
 
-function LineRow({
-  label,
-  note,
-  amount,
-}: {
-  label: string;
-  note?: string;
-  amount: string;
-}) {
+function LineRow({ label, note, amount }: { label: string; note?: string; amount: string }) {
   return (
     <li className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-4 py-2.5">
       <div className="min-w-0">

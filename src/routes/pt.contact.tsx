@@ -51,9 +51,8 @@ function PtContactPage() {
           Estamos a um recado de distância.
         </h1>
         <p className="mt-6 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
-          Escreva-nos com o que tem em mente — datas, número de pessoas,
-          região ou ocasião. Respondemos em português ou em inglês, todos
-          os dias, com propostas concretas e claras.
+          Escreva-nos com o que tem em mente — datas, número de pessoas, região ou ocasião.
+          Respondemos em português ou em inglês, todos os dias, com propostas concretas e claras.
         </p>
 
         <dl className="mt-10 space-y-6 text-[15px]">
@@ -63,9 +62,7 @@ function PtContactPage() {
             </dt>
             <dd className="mt-1">
               <a
-                href={whatsappUrl(
-                  "Olá! Gostaria de saber mais sobre uma experiência YES.",
-                )}
+                href={whatsappUrl("Olá! Gostaria de saber mais sobre uma experiência YES.")}
                 className="text-[color:var(--teal)] hover:text-[color:var(--charcoal)] transition-colors"
               >
                 {PHONE_DISPLAY}
@@ -113,8 +110,7 @@ function PtContactPage() {
               Horário de resposta
             </dt>
             <dd className="mt-1 text-[color:var(--charcoal-soft)]">
-              Todos os dias, 9h–20h (WET/WEST). Fora deste horário,
-              respondemos na manhã seguinte.
+              Todos os dias, 9h–20h (WET/WEST). Fora deste horário, respondemos na manhã seguinte.
             </dd>
           </div>
         </dl>

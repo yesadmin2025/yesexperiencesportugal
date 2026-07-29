@@ -220,8 +220,7 @@ function TradePage() {
           message: composed,
           source: "trade",
           locale: typeof navigator !== "undefined" ? navigator.language : null,
-          userAgent:
-            typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
+          userAgent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
         }),
       });
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -259,12 +258,15 @@ function TradePage() {
               <SectionTitle.Em>designed and delivered locally.</SectionTitle.Em>
             </SectionTitle>
           </div>
-          <span className="gold-rule mt-5 md:mt-6 mx-auto max-w-[64px] md:max-w-[80px]" aria-hidden="true" />
+          <span
+            className="gold-rule mt-5 md:mt-6 mx-auto max-w-[64px] md:max-w-[80px]"
+            aria-hidden="true"
+          />
           <p className="scene-body mt-5 md:mt-6 mx-auto max-w-[42ch] md:max-w-[62ch] text-[15.5px] md:text-[16.5px] leading-[1.75] md:leading-[1.7] text-[color:var(--charcoal-soft)]">
             A trusted on-the-ground partner across Portugal, combining the places clients come to
             see with the people, traditions and landscapes they would rarely find on their own.
-            Private experiences, tailor-made journeys, celebrations and groups, all handled
-            through one named local contact.
+            Private experiences, tailor-made journeys, celebrations and groups, all handled through
+            one named local contact.
           </p>
           <div className="scene-cta mt-8 md:mt-10 flex flex-col sm:flex-row gap-2.5 sm:gap-3 justify-center">
             <CtaButton
@@ -290,11 +292,9 @@ function TradePage() {
         <Scene className="container-x max-w-6xl">
           <Eyebrow>Why partner with YES</Eyebrow>
           <SectionTitle as="h2" spacing="tight" className="mt-4 max-w-[18ch] md:max-w-[24ch]">
-            Local knowledge.{" "}
-            <SectionTitle.Em>Portugal beyond the obvious.</SectionTitle.Em>
+            Local knowledge. <SectionTitle.Em>Portugal beyond the obvious.</SectionTitle.Em>
           </SectionTitle>
           <div className="mt-9 md:mt-14 grid md:grid-cols-3 gap-8 md:gap-12 items-start divide-y divide-[color:var(--charcoal)]/10 md:divide-y-0">
-
             {BENEFITS.map((b) => (
               <div key={b.title} className="reveal-stagger pt-8 first:pt-0 md:pt-0">
                 <h3 className="serif text-[1.15rem] md:text-xl leading-snug text-[color:var(--teal)]">
@@ -306,7 +306,6 @@ function TradePage() {
                 </p>
               </div>
             ))}
-
           </div>
         </Scene>
       </section>
@@ -316,8 +315,7 @@ function TradePage() {
         <Scene className="container-x max-w-6xl">
           <Eyebrow>What we design for your clients</Eyebrow>
           <SectionTitle as="h2" spacing="tight" className="mt-4 max-w-[26ch]">
-            Five ways we can support{" "}
-            <SectionTitle.Em>your clients in Portugal.</SectionTitle.Em>
+            Five ways we can support <SectionTitle.Em>your clients in Portugal.</SectionTitle.Em>
           </SectionTitle>
           <div className="mt-12 md:mt-14 grid md:grid-cols-2 gap-x-12 gap-y-10 md:gap-y-12">
             {WHAT_WE_DESIGN.map((row) => (
@@ -353,8 +351,7 @@ function TradePage() {
           <div className="max-w-[62ch]">
             <Eyebrow>A sample journey</Eyebrow>
             <SectionTitle as="h2" spacing="tight" className="mt-4 max-w-[24ch]">
-              See how local knowledge{" "}
-              <SectionTitle.Em>becomes a journey.</SectionTitle.Em>
+              See how local knowledge <SectionTitle.Em>becomes a journey.</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-6 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
               Each Travel Designer project brings together the client&rsquo;s priorities,
@@ -396,8 +393,7 @@ function TradePage() {
         <Scene className="container-x max-w-3xl">
           <Eyebrow>Trade FAQ</Eyebrow>
           <SectionTitle as="h2" spacing="tight" className="mt-4 max-w-[24ch]">
-            Clear answers before{" "}
-            <SectionTitle.Em>you entrust us with a client.</SectionTitle.Em>
+            Clear answers before <SectionTitle.Em>you entrust us with a client.</SectionTitle.Em>
           </SectionTitle>
           <div className="mt-8 md:mt-12">
             <Accordion
@@ -450,22 +446,18 @@ function TradePage() {
         <Scene className="container-x max-w-2xl">
           <Eyebrow>Request trade access</Eyebrow>
           <SectionTitle as="h2" spacing="tight" className="mt-4 max-w-[24ch]">
-            Tell us about your agency{" "}
-            <SectionTitle.Em>and the clients you serve.</SectionTitle.Em>
+            Tell us about your agency <SectionTitle.Em>and the clients you serve.</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-5 max-w-[60ch] text-[15px] leading-[1.7] text-[color:var(--charcoal-soft)]">
-            Share your agency profile, typical client and the kind of support you are looking for
-            in Portugal. A named local designer will reply within one business day.
+            Share your agency profile, typical client and the kind of support you are looking for in
+            Portugal. A named local designer will reply within one business day.
           </p>
           {sent ? (
             <div
               className="mt-10 border-l-4 border-[color:var(--gold)] bg-[color:var(--sand)] p-8 flex gap-4"
               role="status"
             >
-              <CheckCircle2
-                className="text-[color:var(--teal)] mt-1 shrink-0"
-                size={22}
-              />
+              <CheckCircle2 className="text-[color:var(--teal)] mt-1 shrink-0" size={22} />
               <div>
                 <h3 className="serif text-2xl text-[color:var(--teal)]">Thank you.</h3>
                 <p className="mt-2 text-[color:var(--charcoal-soft)] text-[15px] leading-[1.7]">

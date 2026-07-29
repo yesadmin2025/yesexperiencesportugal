@@ -50,7 +50,6 @@ export function LivroReclamacoesBadge() {
         }}
         className="mx-auto block h-[42px] w-[105px] max-w-full select-none object-contain sm:h-[56px] sm:w-[140px]"
       />
-
     </a>
   );
 }

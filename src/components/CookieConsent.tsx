@@ -185,18 +185,14 @@ export function CookieConsent() {
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
-                    commit({ analytics: "denied", ads: "denied" }, "essential_only")
-                  }
+                  onClick={() => commit({ analytics: "denied", ads: "denied" }, "essential_only")}
                   className="tap text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors py-2.5 px-4 border border-[color:var(--charcoal)]/[0.14] rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
                 >
                   Essential only
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
-                    commit({ analytics: "granted", ads: "granted" }, "accept_all")
-                  }
+                  onClick={() => commit({ analytics: "granted", ads: "granted" }, "accept_all")}
                   className="tap text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors py-2.5 px-4 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
                 >
                   Accept all

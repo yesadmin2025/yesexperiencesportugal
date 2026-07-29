@@ -251,8 +251,8 @@ export function Composition({
           color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
         }}
       >
-        <Minus className="inline h-3 w-3 -mt-0.5" aria-hidden /> Ages let us
-        price fairly by band — no adult fallback for minors.
+        <Minus className="inline h-3 w-3 -mt-0.5" aria-hidden /> Ages let us price fairly by band —
+        no adult fallback for minors.
       </p>
     </div>
   );

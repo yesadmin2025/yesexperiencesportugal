@@ -16,7 +16,11 @@
  * - respects prefers-reduced-motion (no scale, only color transitions)
  * - if no source URL, renders a non-interactive span (no dead links)
  */
-import { useRef, type PointerEvent as ReactPointerEvent, type MouseEvent as ReactMouseEvent } from "react";
+import {
+  useRef,
+  type PointerEvent as ReactPointerEvent,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
 import { ArrowUpRight } from "lucide-react";
 import { PlatformBadge } from "@/components/PlatformBadge";
 

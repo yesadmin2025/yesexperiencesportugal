@@ -136,4 +136,3 @@ export function TrustindexWidget() {
   // Zero-height anchor: purely the intersection target, never reserves space.
   return <div ref={anchorRef} aria-hidden="true" data-trustindex-anchor="" className="h-0 w-0" />;
 }
-

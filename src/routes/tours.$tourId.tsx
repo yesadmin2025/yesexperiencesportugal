@@ -138,7 +138,10 @@ export const Route = createFileRoute("/tours/$tourId")({
                 rating: getViatorMeta(params.tourId)?.rating ?? null,
                 reviewCount: getViatorMeta(params.tourId)?.reviewCount ?? null,
                 region: (t as { region?: string }).region ?? null,
-                durationHours: signatureDurationLabel(t.id, (t as { durationHours?: string }).durationHours ?? null),
+                durationHours: signatureDurationLabel(
+                  t.id,
+                  (t as { durationHours?: string }).durationHours ?? null,
+                ),
                 stops,
               });
             })(),
@@ -251,8 +254,6 @@ function TourDetailPage() {
 
       {/* ── 11b · FAQ (matches FAQPage JSON-LD in <head>) ──────── */}
       <TourFaq tourId={tour.id} />
-      
-      
 
       {/* Editorial mentions — shown ONLY on Arrábida-region signatures
           (the dataset's `arrabida-tour` placement) so other tours don't
@@ -287,7 +288,8 @@ function TourHero({
   // Prefer admin-uploaded photos (cover first), then locally-baked YES photos,
   // then Viator gallery cover, then the imported tour image.
   const adminCover = adminPhotos[0];
-  const heroSrc = adminCover?.src ?? meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
+  const heroSrc =
+    adminCover?.src ?? meta?.localGallery?.[0]?.src ?? meta?.gallery?.[0] ?? heroResolved.src;
   const heroSrcSet = adminCover?.srcSet ?? heroResolved.srcSet;
   const heroAlt = adminCover?.alt || getHeroAlt(tour, meta);
   return (
@@ -320,8 +322,6 @@ function TourHero({
               imgClassName="motion-safe:animate-[heroZoom_28s_ease-out_infinite_alternate]"
             />
           </ParallaxLayer>
-
-
 
           {/* Editorial header — title, blurb and meta sit BELOW the hero
               so the cinematic image reads as a single quiet frame. */}
@@ -365,7 +365,8 @@ function TourHero({
                   <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
                   <span className="flex items-baseline gap-1.5 normal-case tracking-normal text-[12px] text-[color:var(--charcoal)]">
                     <span className="font-semibold">
-                      From <PriceEur amountEur={(tour as { priceFrom: number }).priceFrom} role="from" />
+                      From{" "}
+                      <PriceEur amountEur={(tour as { priceFrom: number }).priceFrom} role="from" />
                     </span>
                     <span className="text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
                       per person
@@ -381,7 +382,6 @@ function TourHero({
           <div className="mt-6 flex flex-col items-start gap-4">
             <a
               href="#book"
-
               data-analytics="signature_reserve_click"
               data-analytics-placement="hero"
               data-analytics-experience-id={tour.id}
@@ -399,9 +399,11 @@ function TourHero({
               data-analytics-experience-type="signature"
               className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] hover:text-[color:var(--gold)] transition-colors min-h-[44px]"
             >
-              Tailor this day <span aria-hidden="true" className="text-[color:var(--gold)]">→</span>
+              Tailor this day{" "}
+              <span aria-hidden="true" className="text-[color:var(--gold)]">
+                →
+              </span>
             </Link>
-
           </div>
         </div>
       </section>
@@ -869,7 +871,9 @@ function GalleryStrip({
                 <TourImage
                   src={p.src}
                   srcSet={p.srcSet}
-                  sizes={i === 0 ? "(min-width: 768px) 42rem, 80vw" : "(min-width: 768px) 22rem, 64vw"}
+                  sizes={
+                    i === 0 ? "(min-width: 768px) 42rem, 80vw" : "(min-width: 768px) 22rem, 64vw"
+                  }
                   alt={p.alt}
                   ratio="3/2"
                   focal={p.focal ?? "50% 50%"}
@@ -955,7 +959,10 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
             data-analytics-experience-type="signature"
             className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/85 hover:text-[color:var(--gold)] transition-colors min-h-[44px]"
           >
-            Tailor this day <span aria-hidden="true" className="text-[color:var(--gold)]">→</span>
+            Tailor this day{" "}
+            <span aria-hidden="true" className="text-[color:var(--gold)]">
+              →
+            </span>
           </Link>
         </div>
 

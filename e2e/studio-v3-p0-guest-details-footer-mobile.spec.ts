@@ -33,5 +33,7 @@ test("guest-details footer microcopy does not clip on 393px", async ({ page }) =
   expect(text).toContain("Final price");
 
   const overflows = await footerP.evaluate((el) => el.scrollWidth > el.clientWidth + 1);
-  expect(overflows, `footer text overflows its container (text=${JSON.stringify(text)})`).toBe(false);
+  expect(overflows, `footer text overflows its container (text=${JSON.stringify(text)})`).toBe(
+    false,
+  );
 });

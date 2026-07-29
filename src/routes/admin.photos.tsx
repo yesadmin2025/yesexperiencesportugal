@@ -18,10 +18,7 @@ import { signatureTours } from "@/data/signatureTours";
 
 export const Route = createFileRoute("/admin/photos")({
   head: () => ({
-    meta: [
-      { title: "Tour photos · Admin" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Tour photos · Admin" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: AdminPhotosPage,
   errorComponent: ({ error }) => (
@@ -61,7 +58,9 @@ function AdminPhotosPage() {
   const [photos, setPhotos] = useState<PhotoRow[]>([]);
   const [loadingPhotos, setLoadingPhotos] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(
+    null,
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // ── Auth check ─────────────────────────────────────────────────
@@ -117,9 +116,10 @@ function AdminPhotosPage() {
       setLoadingPhotos(false);
       return;
     }
-    const { data: signed } = await supabase.storage
-      .from("tour-photos")
-      .createSignedUrls(rows.map((r) => r.storage_path), SIGNED_URL_TTL);
+    const { data: signed } = await supabase.storage.from("tour-photos").createSignedUrls(
+      rows.map((r) => r.storage_path),
+      SIGNED_URL_TTL,
+    );
     const byPath = new Map((signed ?? []).map((s) => [s.path ?? "", s.signedUrl]));
     setPhotos(rows.map((r) => ({ ...r, signedUrl: byPath.get(r.storage_path) ?? undefined })));
     setLoadingPhotos(false);
@@ -133,9 +133,7 @@ function AdminPhotosPage() {
   async function processFile(file: File): Promise<File> {
     let working = file;
     // HEIC/HEIF → JPEG
-    const isHeic =
-      /heic|heif/i.test(file.type) ||
-      /\.(heic|heif)$/i.test(file.name);
+    const isHeic = /heic|heif/i.test(file.type) || /\.(heic|heif)$/i.test(file.name);
     if (isHeic) {
       const heic2any = (await import("heic2any")).default;
       const blob = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.9 });
@@ -250,10 +248,7 @@ function AdminPhotosPage() {
   }
 
   async function updateAlt(id: string, alt: string) {
-    const { error } = await supabase
-      .from("tour_gallery_photos")
-      .update({ alt })
-      .eq("id", id);
+    const { error } = await supabase.from("tour_gallery_photos").update({ alt }).eq("id", id);
     if (error) toast.error(error.message);
   }
 
@@ -326,9 +321,12 @@ function AdminPhotosPage() {
             </button>
           </form>
           <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">
-            No account yet? <Link to="/auth" className="underline">Create one</Link> — admin
-            access is granted automatically for the approved admin emails once you confirm your
-            email.
+            No account yet?{" "}
+            <Link to="/auth" className="underline">
+              Create one
+            </Link>{" "}
+            — admin access is granted automatically for the approved admin emails once you confirm
+            your email.
           </p>
         </section>
       </SiteLayout>
@@ -341,8 +339,8 @@ function AdminPhotosPage() {
         <section className="pt-32 pb-20 container-x max-w-md">
           <h1 className="text-2xl mb-3">Not authorised</h1>
           <p className="text-sm text-[color:var(--charcoal-soft)] mb-6">
-            Your account is signed in but doesn't have admin access. Sign in with the approved
-            admin email.
+            Your account is signed in but doesn't have admin access. Sign in with the approved admin
+            email.
           </p>
           <button
             onClick={handleSignOut}

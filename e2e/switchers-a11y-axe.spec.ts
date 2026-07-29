@@ -106,8 +106,10 @@ test.describe("PriceCurrencyChip — axe + roving state", () => {
       await expect(eur).toHaveAttribute("aria-pressed", "false");
 
       const violations = await scanScope(page, '[data-a11y-scope="price-currency-chip"]');
-      expect(violations, `axe violations on ${url}: ${JSON.stringify(violations, null, 2)}`)
-        .toEqual([]);
+      expect(
+        violations,
+        `axe violations on ${url}: ${JSON.stringify(violations, null, 2)}`,
+      ).toEqual([]);
       await assertFocusVisible(page, '[data-a11y-scope="price-currency-chip"]');
     });
   }

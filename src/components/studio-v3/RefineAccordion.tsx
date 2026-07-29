@@ -69,11 +69,7 @@ export function RefineAccordion({
           ⌄
         </span>
       </button>
-      <div
-        id={regionId}
-        hidden={!open}
-        className={cn(open ? "mt-3" : "")}
-      >
+      <div id={regionId} hidden={!open} className={cn(open ? "mt-3" : "")}>
         {open ? children : null}
       </div>
     </section>

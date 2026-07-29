@@ -9,11 +9,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import {
-  LEGACY_PATTERNS,
-  isAllowlisted,
-  type LegacyCategory,
-} from "@/lib/legacy-scan-patterns";
+import { LEGACY_PATTERNS, isAllowlisted, type LegacyCategory } from "@/lib/legacy-scan-patterns";
 import { scanDatabaseLegacy, type DbHit } from "@/lib/legacy-scan.functions";
 
 export const Route = createFileRoute("/admin/legacy-scan")({
@@ -39,17 +35,14 @@ type SourceHit = {
 // Load every project source file as raw text at build time. Cast keeps
 // TS happy across Vite versions.
 const RAW_SOURCES = import.meta.glob(
-  [
-    "/src/**/*.{ts,tsx,js,jsx,md,mdx,json,html,css}",
-    "!/src/routeTree.gen.ts",
-    "!/src/**/*.d.ts",
-  ],
+  ["/src/**/*.{ts,tsx,js,jsx,md,mdx,json,html,css}", "!/src/routeTree.gen.ts", "!/src/**/*.d.ts"],
   { query: "?raw", import: "default", eager: true },
 ) as Record<string, string>;
-const RAW_PUBLIC = import.meta.glob(
-  "/public/**/*.{html,xml,txt,json,md}",
-  { query: "?raw", import: "default", eager: true },
-) as Record<string, string>;
+const RAW_PUBLIC = import.meta.glob("/public/**/*.{html,xml,txt,json,md}", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
 
 function scanSource(): SourceHit[] {
   const files = { ...RAW_SOURCES, ...RAW_PUBLIC };
@@ -97,9 +90,7 @@ function LegacyScanPage() {
   const scanDb = useServerFn(scanDatabaseLegacy);
   const dbMutation = useMutation({ mutationFn: () => scanDb() });
 
-  const visibleSource = showAllowlisted
-    ? sourceHits
-    : sourceHits.filter((h) => !h.allowlisted);
+  const visibleSource = showAllowlisted ? sourceHits : sourceHits.filter((h) => !h.allowlisted);
 
   const grouped = groupByCategory(visibleSource);
   const dbHits = dbMutation.data?.hits ?? [];
@@ -126,9 +117,8 @@ function LegacyScanPage() {
             <div>
               <h2 className="text-lg font-semibold text-[color:var(--charcoal)]">Source tree</h2>
               <p className="text-xs text-[color:var(--charcoal-soft)]">
-                {sourceHits.length} raw matches ·{" "}
-                {sourceHits.filter((h) => !h.allowlisted).length} outside the intentional-legacy
-                allowlist
+                {sourceHits.length} raw matches · {sourceHits.filter((h) => !h.allowlisted).length}{" "}
+                outside the intentional-legacy allowlist
               </p>
             </div>
             <label className="flex items-center gap-2 text-xs text-[color:var(--charcoal-soft)]">
@@ -217,8 +207,7 @@ function LegacyScanPage() {
                   <>
                     {" · "}
                     <span className="text-amber-700">
-                      skipped {dbMutation.data.skipped.length}:{" "}
-                      {dbMutation.data.skipped.join("; ")}
+                      skipped {dbMutation.data.skipped.length}: {dbMutation.data.skipped.join("; ")}
                     </span>
                   </>
                 ) : null}
@@ -253,9 +242,7 @@ function LegacyScanPage() {
               )}
             </div>
           ) : (
-            <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">
-              Not scanned yet.
-            </p>
+            <p className="mt-4 text-xs text-[color:var(--charcoal-soft)]">Not scanned yet.</p>
           )}
         </section>
       </div>

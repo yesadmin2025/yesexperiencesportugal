@@ -40,20 +40,11 @@ const FULL_TOKENS = [
   "Local support 7 days a week",
 ];
 
-const COMPACT_TOKENS = [
-  LICENSE_LABEL,
-  "Insured",
-  "Secure checkout",
-  "Local support 7 days",
-];
+const COMPACT_TOKENS = [LICENSE_LABEL, "Insured", "Secure checkout", "Local support 7 days"];
 
 const ARIA_LABEL = `${BUSINESS_LEGAL_NAME} is a licensed Portuguese tour operator (${LICENSE_LABEL}), covered by civil liability insurance, with secure checkout and local support 7 days a week.`;
 
-export function CredentialStrip({
-  variant = "light",
-  compact = false,
-  className,
-}: Props) {
+export function CredentialStrip({ variant = "light", compact = false, className }: Props) {
   const tokens = compact ? COMPACT_TOKENS : FULL_TOKENS;
   const textColor =
     variant === "dark"

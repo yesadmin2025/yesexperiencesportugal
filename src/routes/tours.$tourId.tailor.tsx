@@ -42,10 +42,7 @@ import {
   tailorRules,
   tailorSupplementsEur,
 } from "@/data/tailorRules";
-import {
-  TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR,
-  TAILOR_LUNCH_SUPPLEMENT_EUR,
-} from "@/config/pricing";
+import { TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR, TAILOR_LUNCH_SUPPLEMENT_EUR } from "@/config/pricing";
 
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
 import { CANCELLATION_SHORT } from "@/config/business-nap";
@@ -78,9 +75,6 @@ import {
   validateDateISO,
   type OperatingRule,
 } from "@/lib/availability";
-
-
-
 
 /* ════════════════════════════════════════════════════════════════
  * /tours/$tourId/tailor — Tailor a Signature
@@ -158,7 +152,10 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
             priceFrom: (t as { priceFrom?: number }).priceFrom,
             currency: "EUR",
             region: (t as { region?: string }).region ?? null,
-            durationHours: signatureDurationLabel(t.id, (t as { durationHours?: string }).durationHours ?? null),
+            durationHours: signatureDurationLabel(
+              t.id,
+              (t as { durationHours?: string }).durationHours ?? null,
+            ),
           }),
         ),
       ],
@@ -218,8 +215,12 @@ function TailorPage() {
   const [rule, setRule] = useState<OperatingRule | null>(null);
   useEffect(() => {
     let active = true;
-    getOperatingRule(tour.id).then((r) => { if (active) setRule(r); });
-    return () => { active = false; };
+    getOperatingRule(tour.id).then((r) => {
+      if (active) setRule(r);
+    });
+    return () => {
+      active = false;
+    };
   }, [tour.id]);
   const minDateISO = computeMinDateISO(rule?.minLeadHours ?? 24);
 
@@ -341,11 +342,7 @@ function TailorPage() {
         const chosenWineries = (blueprint?.choice?.options ?? []).filter(
           (o) => o.category === "winery" && next.has(o.id),
         ).length;
-        const gate = canSelectWineries(
-          tour.id,
-          coreWineries + chosenWineries,
-          skippedCore.size,
-        );
+        const gate = canSelectWineries(tour.id, coreWineries + chosenWineries, skippedCore.size);
         if (!gate.allowed) {
           toast.error(gate.message);
           return;
@@ -361,8 +358,7 @@ function TailorPage() {
       // visit + tasting minutes when populated, else the category default.
       const option = blueprint?.choice?.options.find((o) => o.id === id);
       if (option) {
-        const approved =
-          (option.visitMinutes ?? 0) + (option.tastingMinutes ?? 0);
+        const approved = (option.visitMinutes ?? 0) + (option.tastingMinutes ?? 0);
         const added = approved > 0 ? approved : DWELL_MINIMUM_MIN[option.category];
         toast.success(
           `Adding ${option.label} adds about ${added} min to your day.${
@@ -407,7 +403,8 @@ function TailorPage() {
       const R = 6371;
       const dLat = toRad(b.lat - a.lat);
       const dLng = toRad(b.lng - a.lng);
-      const s = Math.sin(dLat / 2) ** 2 +
+      const s =
+        Math.sin(dLat / 2) ** 2 +
         Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
       return 2 * R * Math.asin(Math.sqrt(s));
     };
@@ -437,9 +434,7 @@ function TailorPage() {
     if (!blueprint) return keptStops.map((s: TourStop) => ({ label: s.label }));
     return [
       ...blueprint.core.filter((s) => !skippedCore.has(s.id)),
-      ...(blueprint.choice
-        ? blueprint.choice.options.filter((o) => choiceSelected.has(o.id))
-        : []),
+      ...(blueprint.choice ? blueprint.choice.options.filter((o) => choiceSelected.has(o.id)) : []),
       ...blueprint.optional.filter((o) => optionalSelected.has(o.id)),
     ];
   }, [blueprint, keptStops, skippedCore, choiceSelected, optionalSelected]);
@@ -531,13 +526,7 @@ function TailorPage() {
   );
 
   const estimatedPrice = useMemo(
-    () =>
-      tailorFinalPerPax(
-        basePerPax,
-        principalsRemoved,
-        supplementsPerPax,
-        lunchRemovalPerPax,
-      ),
+    () => tailorFinalPerPax(basePerPax, principalsRemoved, supplementsPerPax, lunchRemovalPerPax),
     [basePerPax, principalsRemoved, supplementsPerPax, lunchRemovalPerPax],
   );
 
@@ -564,7 +553,6 @@ function TailorPage() {
     [tour.id, estimatedPrice],
   );
 
-
   // Age-banded journey pricing — mirrors the reserve-handler math so the
   // summary shows adults vs each minor at their band-adjusted unit price.
   // Silent (null) when minor ages are incomplete; adults-only parties fall
@@ -590,7 +578,14 @@ function TailorPage() {
       composition.minorAges,
       tailorTierOverride,
     );
-  }, [tour.id, estimatedPrice, tailorTierOverride, composition.adults, composition.minorAges, minorAgesComplete]);
+  }, [
+    tour.id,
+    estimatedPrice,
+    tailorTierOverride,
+    composition.adults,
+    composition.minorAges,
+    minorAgesComplete,
+  ]);
   const journeyLines = journeyPricing?.lines ?? null;
   const showBandBreakdown =
     composition.minorAges.length > 0 && hasCompleteJourneyPricing(journeyLines);
@@ -611,8 +606,7 @@ function TailorPage() {
     return { extra, hasManualSupplier };
   }, [blueprint, choiceSelected]);
 
-  const requiresManualConfirmation =
-    wineExtension.extra > 0 || wineExtension.hasManualSupplier;
+  const requiresManualConfirmation = wineExtension.extra > 0 || wineExtension.hasManualSupplier;
 
   // Blueprint contains a winery selection surface (choice or core).
   const hasWinerySurface = useMemo(() => {
@@ -628,12 +622,8 @@ function TailorPage() {
   // as advice only. Never auto-removed; the traveller decides.
   const removableCoreLabels = useMemo(() => {
     if (!blueprint) return [] as string[];
-    return blueprint.core
-      .filter((s) => !s.lock && !skippedCore.has(s.id))
-      .map((s) => s.label);
+    return blueprint.core.filter((s) => !s.lock && !skippedCore.has(s.id)).map((s) => s.label);
   }, [blueprint, skippedCore]);
-
-
 
   // ─── Helpers ────────────────────────────────────────────────
   const toggle = <T extends string>(setter: (s: Set<T>) => void, current: Set<T>, val: T) => {
@@ -676,8 +666,7 @@ function TailorPage() {
       // fall back to full Viator tier pricing.
       tailorTierOverride,
     );
-    const totalForSummary =
-      summaryJourney?.totalEur ?? Math.round(estimatedPrice * details.guests);
+    const totalForSummary = summaryJourney?.totalEur ?? Math.round(estimatedPrice * details.guests);
     setCheckoutSummary({
       tourTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
       region: tour.region,
@@ -731,7 +720,6 @@ function TailorPage() {
             ...(rules.allowRemoveLunch === true && lunchRemoved ? ["Included lunch removed"] : []),
           ],
 
-
           pickupLabel: details.pickupAddress || pickup,
           dateExact: details.tourDate || null,
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
@@ -743,8 +731,6 @@ function TailorPage() {
             : 0,
           // Boolean intent only — the server derives the €15 itself.
           tailorLunchRemoved: rules.allowRemoveLunch === true && lunchRemoved,
-
-
 
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
           environment: getStripeEnvironment(),
@@ -897,10 +883,6 @@ function TailorPage() {
         </div>
       </section>
 
-
-
-
-
       {/* ── 3 · WHAT STAYS / WHAT YOU CAN ADJUST ──────────────
           Two-column reassurance block. The user must understand:
           "I can adjust this tour a little, without starting from
@@ -1008,22 +990,28 @@ function TailorPage() {
                         if (v && rule) {
                           const check = validateDateISO(v, rule);
                           if (!check.ok) {
-                            gaBookingValidationBlocked({ tourId: tour.id, surface: "tailor", reason: `date_${check.reason}` });
+                            gaBookingValidationBlocked({
+                              tourId: tour.id,
+                              surface: "tailor",
+                              reason: `date_${check.reason}`,
+                            });
                             const msg =
-                              check.reason === "weekday_closed" ? "This tour doesn't run on that day. Please pick another date." :
-                              check.reason === "blackout" ? "That date is unavailable. Please pick another." :
-                              "Please choose a date at least 24 hours from now.";
+                              check.reason === "weekday_closed"
+                                ? "This tour doesn't run on that day. Please pick another date."
+                                : check.reason === "blackout"
+                                  ? "That date is unavailable. Please pick another."
+                                  : "Please choose a date at least 24 hours from now.";
                             toast.error(msg);
                             return;
                           }
                         }
                         setDate(v);
-                        if (v) gaBookingDateSelected({ tourId: tour.id, surface: "tailor", dateISO: v });
+                        if (v)
+                          gaBookingDateSelected({ tourId: tour.id, surface: "tailor", dateISO: v });
                       }}
                       min={minDateISO}
                       className="w-full bg-transparent border border-[color:var(--border)] px-3 py-3 text-sm focus:outline-none focus:border-[color:var(--gold)] min-h-[48px]"
                     />
-
                   </Field>
                   <Field label="Pickup time">
                     <Segmented
@@ -1073,7 +1061,6 @@ function TailorPage() {
                         }}
                         compact
                       />
-
                     </div>
                     <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
                       {compositionReady
@@ -1096,7 +1083,6 @@ function TailorPage() {
                   </Field>
                 </div>
               </Group>
-
 
               {/* Truthful Blueprint — replaces the legacy "Stop variations"
                   panel when we have an accurate Core / Choice / Optional
@@ -1569,7 +1555,10 @@ function TailorPage() {
                     value={`${pickup} → ~${estimatedReturn} · ~${formatHours(estimatedHours)}`}
                   />
                   <SummaryRow label="Pace" value={cap(pace)} />
-                  <SummaryRow label="Guests" value={`${formatCompositionSummary(composition)} · ${language.toUpperCase()}`} />
+                  <SummaryRow
+                    label="Guests"
+                    value={`${formatCompositionSummary(composition)} · ${language.toUpperCase()}`}
+                  />
 
                   <div>
                     <p className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
@@ -1591,7 +1580,6 @@ function TailorPage() {
                       )}
                     </ol>
                   </div>
-
 
                   {showBandBreakdown && (
                     <PriceBreakdownRows
@@ -1622,7 +1610,9 @@ function TailorPage() {
                           Add lunch
                         </span>
                         <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
-                          {lunchAdded ? "Added to your day" : "Lunch is not included in this Signature"}
+                          {lunchAdded
+                            ? "Added to your day"
+                            : "Lunch is not included in this Signature"}
                         </span>
                       </span>
                       <span className="text-[12px] tabular-nums text-[color:var(--charcoal)] whitespace-nowrap">
@@ -1670,9 +1660,6 @@ function TailorPage() {
                     </button>
                   )}
 
-
-
-
                   {/* Truthful per-person + party-total split. "Indicative
                       total / adult" was misread as a party total; use the
                       same two-line shape as the Signature price card. */}
@@ -1718,11 +1705,8 @@ function TailorPage() {
                       >
                         Included lunch removed — −
                         <PriceEur amountEur={lunchRemovalPerPax} role="per-person" /> pp (
-                        <PriceEur
-                          amountEur={lunchRemovalPerPax * guests}
-                          role="party-total"
-                        />{" "}
-                        for your party).
+                        <PriceEur amountEur={lunchRemovalPerPax * guests} role="party-total" /> for
+                        your party).
                       </p>
                     )}
                     <div className="flex items-baseline justify-between">
@@ -1737,7 +1721,6 @@ function TailorPage() {
                       Final total confirmed at checkout in euros.
                     </p>
                   </div>
-
 
                   {/* Confirmation status is always instant on Tailor —
                       manual gate retired per owner (test-mode + memory:
@@ -1758,7 +1741,8 @@ function TailorPage() {
 
                   {showMinorsWineAdvisory && (
                     <p className="mt-2 text-[11.5px] leading-snug text-[color:var(--charcoal-soft)]">
-                      Wine tasting is offered to adults only — minors visit the estate without tasting.
+                      Wine tasting is offered to adults only — minors visit the estate without
+                      tasting.
                     </p>
                   )}
                 </div>
@@ -1769,13 +1753,25 @@ function TailorPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      gaReserveCtaClick({ tourId: tour.id, surface: "tailor", ctaLocation: "final" });
+                      gaReserveCtaClick({
+                        tourId: tour.id,
+                        surface: "tailor",
+                        ctaLocation: "final",
+                      });
                       if (!compositionReady) {
-                        gaBookingValidationBlocked({ tourId: tour.id, surface: "tailor", reason: "composition_incomplete" });
+                        gaBookingValidationBlocked({
+                          tourId: tour.id,
+                          surface: "tailor",
+                          reason: "composition_incomplete",
+                        });
                         return;
                       }
                       if (summaryStops.length === 0) {
-                        gaBookingValidationBlocked({ tourId: tour.id, surface: "tailor", reason: "no_stops" });
+                        gaBookingValidationBlocked({
+                          tourId: tour.id,
+                          surface: "tailor",
+                          reason: "no_stops",
+                        });
                         return;
                       }
                       gaCheckoutDrawerOpened({ tourId: tour.id, surface: "tailor" });
@@ -1784,7 +1780,6 @@ function TailorPage() {
                     disabled={checkoutPending || summaryStops.length === 0 || !compositionReady}
                     className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
                   >
-
                     {checkoutPending ? (
                       <>
                         <Loader2 size={15} className="animate-spin" /> Opening checkout…
@@ -1853,7 +1848,6 @@ function TailorPage() {
                 : undefined,
           };
         }}
-
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
         submitting={checkoutPending}
@@ -1896,7 +1890,6 @@ function TailorPage() {
           });
         }}
       />
-
     </SiteLayout>
   );
 }

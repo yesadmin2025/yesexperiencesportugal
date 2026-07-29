@@ -103,10 +103,7 @@ export function GuestMomentsStrip({
               </>
             )}
           </h2>
-          <span
-            className="mt-5 block h-px w-16 bg-[color:var(--gold)]/70"
-            aria-hidden="true"
-          />
+          <span className="mt-5 block h-px w-16 bg-[color:var(--gold)]/70" aria-hidden="true" />
         </header>
 
         {/* Mobile: horizontal snap-scroll. Desktop: responsive grid. */}
@@ -124,36 +121,37 @@ export function GuestMomentsStrip({
         >
           {rendered.map((photo, idx) => {
             const responsive = buildResponsiveSrc(photo.src, { sizes: "portrait" });
-            const kbVariant = idx % 3 === 1 ? " ken-burns-slow--b" : idx % 3 === 2 ? " ken-burns-slow--c" : "";
+            const kbVariant =
+              idx % 3 === 1 ? " ken-burns-slow--b" : idx % 3 === 2 ? " ken-burns-slow--c" : "";
             return (
-            <li
-              key={photo.src}
-              data-motion="fade-up"
-              data-motion-delay={String(Math.min(idx * 90, 360))}
-              className="
+              <li
+                key={photo.src}
+                data-motion="fade-up"
+                data-motion-delay={String(Math.min(idx * 90, 360))}
+                className="
                 shrink-0 basis-[76%] snap-start
                 md:basis-auto
                 group
               "
-            >
-              <figure className="flex h-full flex-col">
-                <div className="relative overflow-hidden rounded-[2px] bg-[color:var(--sand)] aspect-[4/5] shadow-[0_20px_40px_-24px_rgba(46,46,46,0.18)]">
-                  <img
-                    src={responsive.src}
-                    srcSet={responsive.srcSet}
-                    alt={photo.alt}
-                    loading={idx === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                    fetchPriority={idx === 0 ? "high" : "auto"}
-                    sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 76vw"
-                    className={`ken-burns-slow${kbVariant} absolute inset-0 h-full w-full object-cover`}
-                  />
-                </div>
-                <figcaption className="mt-4 font-serif italic text-[0.95rem] md:text-[1rem] leading-snug text-[color:var(--teal)]">
-                  {photo.caption}
-                </figcaption>
-              </figure>
-            </li>
+              >
+                <figure className="flex h-full flex-col">
+                  <div className="relative overflow-hidden rounded-[2px] bg-[color:var(--sand)] aspect-[4/5] shadow-[0_20px_40px_-24px_rgba(46,46,46,0.18)]">
+                    <img
+                      src={responsive.src}
+                      srcSet={responsive.srcSet}
+                      alt={photo.alt}
+                      loading={idx === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      fetchPriority={idx === 0 ? "high" : "auto"}
+                      sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 76vw"
+                      className={`ken-burns-slow${kbVariant} absolute inset-0 h-full w-full object-cover`}
+                    />
+                  </div>
+                  <figcaption className="mt-4 font-serif italic text-[0.95rem] md:text-[1rem] leading-snug text-[color:var(--teal)]">
+                    {photo.caption}
+                  </figcaption>
+                </figure>
+              </li>
             );
           })}
         </ul>

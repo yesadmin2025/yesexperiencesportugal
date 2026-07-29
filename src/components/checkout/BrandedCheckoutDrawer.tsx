@@ -18,7 +18,6 @@ export type JourneyBand = SharedJourneyBand;
 export type CheckoutJourneyLine = SharedJourneyLine;
 export const summarizeJourneyLines = summarizeJourneyLinesShared;
 
-
 /**
  * BrandedCheckoutDrawer
  *
@@ -27,7 +26,6 @@ export const summarizeJourneyLines = summarizeJourneyLinesShared;
  * summary sits above the iframe so the guest always sees what they're
  * paying for. No full-page redirect — checkout happens on our domain.
  */
-
 
 export interface CheckoutAddOnLine {
   id: string;
@@ -81,8 +79,6 @@ export interface CheckoutSummary {
   /** Sum of journeyLines[].unitEur; supplied alongside journeyLines. */
   journeyTotalEur?: number;
 }
-
-
 
 interface Props {
   open: boolean;
@@ -187,7 +183,6 @@ export function BrandedCheckoutDrawer({
     }
     return null;
   })();
-
 
   useEffect(() => {
     if (open) prewarmStripeScript();
@@ -319,7 +314,6 @@ function ExperienceSummaryCard({
                 ? buildCompositionLine(summary.adults, summary.minorAges, summary.guests)
                 : `${summary.guests} guest${summary.guests > 1 ? "s" : ""}`}
             </Meta>
-
           </ul>
         </div>
       </div>
@@ -339,7 +333,10 @@ function ExperienceSummaryCard({
       ) : null}
 
       {hasCompleteJourneyPricing(summary.journeyLines) ? (
-        <div className="mt-4 pt-3 border-t border-[color:var(--border)]" data-testid="checkout-drawer-journey-lines">
+        <div
+          className="mt-4 pt-3 border-t border-[color:var(--border)]"
+          data-testid="checkout-drawer-journey-lines"
+        >
           <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
             Travellers
           </p>
@@ -366,7 +363,6 @@ function ExperienceSummaryCard({
         </div>
       ) : null}
 
-
       {summary.addOns && summary.addOns.length > 0 ? (
         <div className="mt-4 pt-3 border-t border-[color:var(--border)]">
           <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
@@ -374,8 +370,7 @@ function ExperienceSummaryCard({
           </p>
           <ul className="mt-2 space-y-1">
             {summary.addOns.map((a) => {
-              const lineAmount =
-                a.amount != null ? a.amount : a.priceEur * summary.guests;
+              const lineAmount = a.amount != null ? a.amount : a.priceEur * summary.guests;
               const perUnit = a.perUnit != null ? a.perUnit : a.priceEur;
               const isPerPerson = a.unit == null || a.unit === "per_person";
               return (
@@ -405,7 +400,6 @@ function ExperienceSummaryCard({
         </div>
       ) : null}
 
-
       {total != null ? (
         <div
           className="mt-4 pt-3 border-t border-[color:var(--border)] flex items-baseline justify-between"
@@ -416,7 +410,8 @@ function ExperienceSummaryCard({
           </span>
           <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
             €{total.toLocaleString("en-GB")}
-            {hasCompleteJourneyPricing(summary.journeyLines) ? null : summary.pricePerPaxEur != null &&
+            {hasCompleteJourneyPricing(summary.journeyLines) ? null : summary.pricePerPaxEur !=
+                null &&
               summary.guests > 1 &&
               (summary.minorAges?.length ?? 0) === 0 ? (
               <span className="ml-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans">
@@ -456,11 +451,7 @@ function formatDate(iso: string): string {
 /** Format e.g. `4 guests · 2 adults · children aged 8 and 13`. Kept
  *  local so the drawer doesn't take a dep on `@/lib/checkout/composition`
  *  when the summary is populated by legacy callers without a composition. */
-function buildCompositionLine(
-  adults: number,
-  minorAges: readonly number[],
-  total: number,
-): string {
+function buildCompositionLine(adults: number, minorAges: readonly number[], total: number): string {
   const parts = [
     `${total} guest${total === 1 ? "" : "s"}`,
     `${adults} adult${adults === 1 ? "" : "s"}`,
@@ -475,7 +466,6 @@ function buildCompositionLine(
   }
   return parts.join(" · ");
 }
-
 
 function CheckoutSkeleton() {
   return (

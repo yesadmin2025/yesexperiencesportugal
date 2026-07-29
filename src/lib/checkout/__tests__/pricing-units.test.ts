@@ -69,9 +69,7 @@ describe("pricing-units contract", () => {
       mkAddOn("fixed", 0.1),
     ];
     const guests = 6;
-    const lines = cart.map((a) =>
-      addOnEurFor({ addOn: a, baseEur, guests, vehicleCapacity: 4 }),
-    );
+    const lines = cart.map((a) => addOnEurFor({ addOn: a, baseEur, guests, vehicleCapacity: 4 }));
     const finalTotal = lines.reduce((sum, l) => sum + l.amount, 0);
     // Explicit re-derivation — must match line-item sum exactly.
     const explicit =

@@ -136,73 +136,77 @@ function buildAllowedLabelsForSkeleton(
 }
 
 describe("Studio V3 — resolveStudioV3Route route containment", () => {
-  it("never returns a route point whose label is absent from the resolved Signature tour or approved composition pool", { timeout: 30_000 }, () => {
-    const violations: Array<{
-      input: Record<string, unknown>;
-      skeletonTourKey: string | null;
-      offendingLabel: string;
-    }> = [];
+  it(
+    "never returns a route point whose label is absent from the resolved Signature tour or approved composition pool",
+    { timeout: 30_000 },
+    () => {
+      const violations: Array<{
+        input: Record<string, unknown>;
+        skeletonTourKey: string | null;
+        offendingLabel: string;
+      }> = [];
 
-    for (const feeling of FEELINGS) {
-      for (const companions of COMPANIONS) {
-        for (const rhythm of RHYTHMS) {
-          for (const pickup of PICKUPS) {
-            for (const interests of INTEREST_SETS) {
-              const route = resolveStudioV3Route({
-                feeling,
-                companions,
-                rhythm,
-                interests,
-                pickup,
-              });
+      for (const feeling of FEELINGS) {
+        for (const companions of COMPANIONS) {
+          for (const rhythm of RHYTHMS) {
+            for (const pickup of PICKUPS) {
+              for (const interests of INTEREST_SETS) {
+                const route = resolveStudioV3Route({
+                  feeling,
+                  companions,
+                  rhythm,
+                  interests,
+                  pickup,
+                });
 
-              // Fallback case: nothing to validate beyond emptiness.
-              if (!route.skeletonTourKey) {
-                if (route.routePoints.length !== 0) {
-                  violations.push({
-                    input: { feeling, companions, rhythm, pickup, interests },
-                    skeletonTourKey: null,
-                    offendingLabel: `<unexpected routePoints when no skeleton>`,
-                  });
+                // Fallback case: nothing to validate beyond emptiness.
+                if (!route.skeletonTourKey) {
+                  if (route.routePoints.length !== 0) {
+                    violations.push({
+                      input: { feeling, companions, rhythm, pickup, interests },
+                      skeletonTourKey: null,
+                      offendingLabel: `<unexpected routePoints when no skeleton>`,
+                    });
+                  }
+                  continue;
                 }
-                continue;
-              }
 
-              const tour = findTour(route.skeletonTourKey);
-              expect(
-                tour,
-                `skeletonTourKey "${route.skeletonTourKey}" must exist in the Signature catalog`,
-              ).toBeDefined();
+                const tour = findTour(route.skeletonTourKey);
+                expect(
+                  tour,
+                  `skeletonTourKey "${route.skeletonTourKey}" must exist in the Signature catalog`,
+                ).toBeDefined();
 
-              const allowedLabels = buildAllowedLabelsForSkeleton(
-                route.skeletonTourKey,
-                tour!.stops,
-              );
+                const allowedLabels = buildAllowedLabelsForSkeleton(
+                  route.skeletonTourKey,
+                  tour!.stops,
+                );
 
-              for (const point of route.routePoints) {
-                if (!allowedLabels.has(norm(point.label))) {
-                  violations.push({
-                    input: { feeling, companions, rhythm, pickup, interests },
-                    skeletonTourKey: route.skeletonTourKey,
-                    offendingLabel: point.label,
-                  });
+                for (const point of route.routePoints) {
+                  if (!allowedLabels.has(norm(point.label))) {
+                    violations.push({
+                      input: { feeling, companions, rhythm, pickup, interests },
+                      skeletonTourKey: route.skeletonTourKey,
+                      offendingLabel: point.label,
+                    });
+                  }
                 }
               }
             }
           }
         }
       }
-    }
 
-    expect(
-      violations,
-      `Studio V3 produced invented route points (not present in the resolved Signature tour's stops):\n${JSON.stringify(
-        violations.slice(0, 5),
-        null,
-        2,
-      )}${violations.length > 5 ? `\n…and ${violations.length - 5} more` : ""}`,
-    ).toEqual([]);
-  });
+      expect(
+        violations,
+        `Studio V3 produced invented route points (not present in the resolved Signature tour's stops):\n${JSON.stringify(
+          violations.slice(0, 5),
+          null,
+          2,
+        )}${violations.length > 5 ? `\n…and ${violations.length - 5} more` : ""}`,
+      ).toEqual([]);
+    },
+  );
 
   it("every route point label exists somewhere in the Signature catalog (sanity)", () => {
     for (const feeling of FEELINGS) {
@@ -256,43 +260,47 @@ describe("Studio V3 — resolveStudioV3Route route containment", () => {
 });
 
 describe("Studio V3 — curateJourney route containment", () => {
-  it("every moment belongs to the chosen primary tour and is never borrowed", { timeout: 30_000 }, () => {
-    const violations: string[] = [];
+  it(
+    "every moment belongs to the chosen primary tour and is never borrowed",
+    { timeout: 30_000 },
+    () => {
+      const violations: string[] = [];
 
-    for (const feeling of FEELINGS) {
-      for (const companions of COMPANIONS) {
-        for (const rhythm of RHYTHMS) {
-          for (const interests of INTEREST_SETS) {
-            for (const pickup of PICKUPS) {
-              const journey = curateJourney(feeling, companions, rhythm, {
-                interests,
-                pickup,
-              });
-              const primaryLabels = new Set(journey.tour.stops.map((s) => norm(s.label)));
+      for (const feeling of FEELINGS) {
+        for (const companions of COMPANIONS) {
+          for (const rhythm of RHYTHMS) {
+            for (const interests of INTEREST_SETS) {
+              for (const pickup of PICKUPS) {
+                const journey = curateJourney(feeling, companions, rhythm, {
+                  interests,
+                  pickup,
+                });
+                const primaryLabels = new Set(journey.tour.stops.map((s) => norm(s.label)));
 
-              for (const m of journey.moments) {
-                if (!primaryLabels.has(norm(m.label))) {
-                  violations.push(
-                    `[${feeling}/${companions}/${rhythm}/${pickup}] moment "${m.label}" is not a stop of primary tour "${journey.tour.id}"`,
-                  );
-                }
-                if (m.borrowed) {
-                  violations.push(
-                    `[${feeling}/${companions}/${rhythm}/${pickup}] moment "${m.label}" is marked borrowed — cross-tour borrowing is forbidden`,
-                  );
-                }
-                if (m.fromTourId !== journey.tour.id) {
-                  violations.push(
-                    `[${feeling}/${companions}/${rhythm}/${pickup}] moment "${m.label}" came from "${m.fromTourId}" but primary is "${journey.tour.id}"`,
-                  );
+                for (const m of journey.moments) {
+                  if (!primaryLabels.has(norm(m.label))) {
+                    violations.push(
+                      `[${feeling}/${companions}/${rhythm}/${pickup}] moment "${m.label}" is not a stop of primary tour "${journey.tour.id}"`,
+                    );
+                  }
+                  if (m.borrowed) {
+                    violations.push(
+                      `[${feeling}/${companions}/${rhythm}/${pickup}] moment "${m.label}" is marked borrowed — cross-tour borrowing is forbidden`,
+                    );
+                  }
+                  if (m.fromTourId !== journey.tour.id) {
+                    violations.push(
+                      `[${feeling}/${companions}/${rhythm}/${pickup}] moment "${m.label}" came from "${m.fromTourId}" but primary is "${journey.tour.id}"`,
+                    );
+                  }
                 }
               }
             }
           }
         }
       }
-    }
 
-    expect(violations.slice(0, 10)).toEqual([]);
-  });
+      expect(violations.slice(0, 10)).toEqual([]);
+    },
+  );
 });

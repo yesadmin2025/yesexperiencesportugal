@@ -31,9 +31,6 @@ export const CORPORATE_FAQ: FaqItem[] = [
   },
 ];
 
-
-
-
 export const PROPOSAL_FAQ: FaqItem[] = [
   {
     q: "Where in Portugal can we plan a proposal?",
@@ -48,8 +45,6 @@ export const PROPOSAL_FAQ: FaqItem[] = [
     a: "Two to six weeks is comfortable for most private proposals — enough time to align setting, weather, photographer and any surprise element. Shorter windows are possible when a specific date matters; get in touch and we'll tell you honestly what's still feasible.",
   },
 ];
-
-
 
 export const WINE_TOURS_FAQ: FaqItem[] = [
   {
@@ -152,9 +147,6 @@ export function getFaqForTour(tourId: string): FaqItem[] {
   const overlay = WINE_TOUR_FAQ_BY_ID[tourId] ?? [];
   return [...overlay, ...SIGNATURE_FAQ];
 }
-
-
-
 
 export const SIGNATURE_FAQ: FaqItem[] = [
   {

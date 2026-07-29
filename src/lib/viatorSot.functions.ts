@@ -1,11 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  extractSignatureSot,
-  formatSotEntry,
-  type SotExtraction,
-} from "@/lib/viatorSot.server";
+import { extractSignatureSot, formatSotEntry, type SotExtraction } from "@/lib/viatorSot.server";
 import { canonicalViatorUrl } from "@/data/signatureToursSourceOfTruth";
 
 /**
@@ -51,9 +47,7 @@ export const extractSignatureSotFn = createServerFn({ method: "POST" })
     await assertAdmin(context.supabase, context.userId);
     const url = data.viatorUrl ?? canonicalViatorUrl(data.tourId);
     if (!url) {
-      throw new Error(
-        `No canonical Viator URL registered for tourId="${data.tourId}"`,
-      );
+      throw new Error(`No canonical Viator URL registered for tourId="${data.tourId}"`);
     }
     const productCode = parseProductCode(url);
     const extraction: SotExtraction = await extractSignatureSot(url);

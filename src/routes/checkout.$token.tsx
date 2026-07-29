@@ -19,7 +19,6 @@ import {
   type TravellerComposition,
 } from "@/lib/checkout/composition";
 
-
 export const Route = createFileRoute("/checkout/$token")({
   head: () => ({
     meta: [
@@ -348,8 +347,6 @@ function CheckoutPage() {
         )}
 
         <TrustStrip placement="bespoke_checkout" itemSlug={token} />
-
-
 
         <button
           type="submit"

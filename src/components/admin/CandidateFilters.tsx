@@ -14,15 +14,7 @@ export type CandidateFilterState = {
 };
 
 export const ALL_SOURCES: PoolSource[] = ["owner-photo", "admin-upload"];
-export const ALL_TAGS = [
-  "people",
-  "place",
-  "landscape",
-  "coast",
-  "craft",
-  "wine",
-  "food",
-] as const;
+export const ALL_TAGS = ["people", "place", "landscape", "coast", "craft", "wine", "food"] as const;
 export const ALL_QUALITIES: QualityTier[] = ["alta", "media", "baixa", "desconhecida"];
 
 const SOURCE_LABEL: Record<PoolSource, string> = {

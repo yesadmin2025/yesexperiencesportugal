@@ -24,7 +24,6 @@ const TITLE = "About YES Experiences Portugal | Local Travel Designers";
 const DESCRIPTION =
   "Meet YES Experiences Portugal, a licensed private tour operator and local travel design company creating personal journeys from Lisbon and Sesimbra.";
 
-
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
@@ -36,7 +35,10 @@ export const Route = createFileRoute("/about")({
       { property: "og:image", content: `https://yesexperiencesportugal.com${founderAsset.url}` },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "YES Experiences Portugal — founder-led private travel" },
+      {
+        property: "og:image:alt",
+        content: "YES Experiences Portugal — founder-led private travel",
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `https://yesexperiencesportugal.com${founderAsset.url}` },
       { property: "og:type", content: "website" },
@@ -79,8 +81,8 @@ function Page() {
               </div>
               <p className="scene-body mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
                 YES Experiences Portugal is a licensed Portuguese private tour operator, founder-led
-                since 2022 and built around one idea: Portugal should feel personal, local and genuinely
-                yours.
+                since 2022 and built around one idea: Portugal should feel personal, local and
+                genuinely yours.
               </p>
               <p className="scene-body mt-4 max-w-2xl mx-auto text-sm text-[color:var(--charcoal-soft)]/85 leading-relaxed">
                 Private days, live-designed experiences and full journeys, created from real routes,
@@ -113,10 +115,6 @@ function Page() {
           </div>
         </div>
       </section>
-
-
-
-
 
       {/* Founder-built */}
       <section className="reveal py-20 bg-[color:var(--sand)]">
@@ -239,7 +237,6 @@ function Page() {
               </a>
               .
             </p>
-
           </div>
         </div>
       </section>
@@ -394,8 +391,8 @@ function Page() {
             </h2>
             <ul className="mt-6 space-y-4 text-[color:var(--charcoal-soft)] leading-relaxed">
               <li>
-                <strong className="text-[color:var(--charcoal)]">Cancellation (Signature)</strong>{" "}
-                — {CANCELLATION.signature.en}
+                <strong className="text-[color:var(--charcoal)]">Cancellation (Signature)</strong> —{" "}
+                {CANCELLATION.signature.en}
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">

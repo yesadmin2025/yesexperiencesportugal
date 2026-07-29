@@ -1,9 +1,4 @@
-import {
-  FaInstagram,
-  FaFacebookF,
-  FaTripadvisor,
-  FaWhatsapp,
-} from "react-icons/fa";
+import { FaInstagram, FaFacebookF, FaTripadvisor, FaWhatsapp } from "react-icons/fa";
 import type { ComponentType, SVGProps } from "react";
 
 type IconProps = { size?: number; className?: string; title?: string };
@@ -46,7 +41,8 @@ const Monogram = ({
   </svg>
 );
 
-const wrap = (Icon: ComponentType<SVGProps<SVGSVGElement>>): ComponentType<IconProps> =>
+const wrap =
+  (Icon: ComponentType<SVGProps<SVGSVGElement>>): ComponentType<IconProps> =>
   ({ size = 16, className, title }: IconProps) => (
     <Icon
       width={size}

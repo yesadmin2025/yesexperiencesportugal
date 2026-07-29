@@ -42,9 +42,7 @@ function buildItineraryMessage(
   region: string,
   stops: RefineStop[],
 ): string {
-  const greeting = profile.name?.trim()
-    ? `Hi YES — I'm ${profile.name.trim()}.`
-    : "Hi YES —";
+  const greeting = profile.name?.trim() ? `Hi YES — I'm ${profile.name.trim()}.` : "Hi YES —";
   const guests =
     (profile.group?.adults ?? 0) + (profile.group?.teens ?? 0) + (profile.group?.children ?? 0);
   const lines: string[] = [

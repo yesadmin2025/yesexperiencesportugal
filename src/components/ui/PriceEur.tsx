@@ -21,11 +21,7 @@ interface Props {
 export function PriceEur({ amountEur, className, role }: Props) {
   const format = useFormatPrice();
   return (
-    <span
-      className={cn(className)}
-      data-price-eur={amountEur}
-      data-price-role={role ?? "amount"}
-    >
+    <span className={cn(className)} data-price-eur={amountEur} data-price-role={role ?? "amount"}>
       {format(amountEur)}
     </span>
   );

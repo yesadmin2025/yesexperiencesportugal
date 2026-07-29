@@ -126,9 +126,7 @@ function buildDiffs(tourId: string): FieldDiff[] {
     legacyHi.length === 0 ? "sot-only" : hi.equal ? "match" : "diff",
     sot.highlights,
     legacyHi,
-    hi.equal
-      ? undefined
-      : `${hi.onlySot.length} added, ${hi.onlyLegacy.length} removed`,
+    hi.equal ? undefined : `${hi.onlySot.length} added, ${hi.onlyLegacy.length} removed`,
   );
 
   // Included
@@ -140,9 +138,7 @@ function buildDiffs(tourId: string): FieldDiff[] {
     legacyIncluded.length === 0 ? "sot-only" : inc.equal ? "match" : "diff",
     sot.included,
     legacyIncluded,
-    inc.equal
-      ? undefined
-      : `${inc.onlySot.length} added, ${inc.onlyLegacy.length} removed`,
+    inc.equal ? undefined : `${inc.onlySot.length} added, ${inc.onlyLegacy.length} removed`,
   );
 
   // Not included — legacy has none
@@ -177,9 +173,7 @@ function buildDiffs(tourId: string): FieldDiff[] {
     const legacyMin = parseDurationHours(tour.durationHours);
     push(
       "durationMinutes",
-      legacyMin != null && Math.abs(legacyMin - sot.durationMinutes) <= 15
-        ? "match"
-        : "diff",
+      legacyMin != null && Math.abs(legacyMin - sot.durationMinutes) <= 15 ? "match" : "diff",
       `${sot.durationMinutes} min (${sot.durationText})`,
       tour.durationHours,
       legacyMin != null && legacyMin !== sot.durationMinutes
@@ -200,7 +194,10 @@ function parseDurationHours(s: string): number | null {
   return Math.round(((a + b) / 2) * 60);
 }
 
-const STATUS_META: Record<FieldStatus, { label: string; bg: string; border: string; text: string }> = {
+const STATUS_META: Record<
+  FieldStatus,
+  { label: string; bg: string; border: string; text: string }
+> = {
   match: {
     label: "Match",
     bg: "bg-[color:var(--teal)]/5",
@@ -255,12 +252,11 @@ function SotDiffPage() {
         <Eyebrow>Admin · Source-of-truth diff</Eyebrow>
         <SectionTitle>SoT vs Viator (legacy) field-by-field</SectionTitle>
         <p className="mt-4 text-[14.5px] text-[color:var(--charcoal-soft)] max-w-2xl">
-          For every verified Signature tour, compare each SoT field against
-          the legacy <code>VIATOR_META</code> / <code>signatureTours</code>{" "}
-          blueprint. The "surfaces" column shows which YES pages would render
-          differently once the SoT value goes live — every one already reads
-          through <code>getTourContent()</code>, so a "Changed" row here is
-          what visitors actually see.
+          For every verified Signature tour, compare each SoT field against the legacy{" "}
+          <code>VIATOR_META</code> / <code>signatureTours</code> blueprint. The "surfaces" column
+          shows which YES pages would render differently once the SoT value goes live — every one
+          already reads through <code>getTourContent()</code>, so a "Changed" row here is what
+          visitors actually see.
         </p>
 
         <div className="mt-8 grid grid-cols-3 gap-3 text-center">
@@ -270,8 +266,16 @@ function SotDiffPage() {
         </div>
 
         <div className="mt-6 flex items-center gap-2">
-          <FilterPill label="With changes" active={filter === "changed"} onClick={() => setFilter("changed")} />
-          <FilterPill label="All tours" active={filter === "all"} onClick={() => setFilter("all")} />
+          <FilterPill
+            label="With changes"
+            active={filter === "changed"}
+            onClick={() => setFilter("changed")}
+          />
+          <FilterPill
+            label="All tours"
+            active={filter === "all"}
+            onClick={() => setFilter("all")}
+          />
           <Link
             to="/admin/viator-validation"
             className="ml-auto text-[11px] uppercase tracking-[0.22em] underline text-[color:var(--teal)]"
@@ -282,7 +286,13 @@ function SotDiffPage() {
 
         <div className="mt-8 space-y-8">
           {shown.map((t) => (
-            <TourDiffCard key={t.id} tourId={t.id} sotTitle={t.sot.title} viatorUrl={t.sot.viatorUrl} diffs={t.diffs} />
+            <TourDiffCard
+              key={t.id}
+              tourId={t.id}
+              sotTitle={t.sot.title}
+              viatorUrl={t.sot.viatorUrl}
+              diffs={t.diffs}
+            />
           ))}
           {shown.length === 0 && (
             <p className="text-center text-[13.5px] text-[color:var(--charcoal-soft)] py-12">
@@ -306,12 +316,22 @@ function Stat({ label, value, accent }: { label: string; value: number; accent?:
       ].join(" ")}
     >
       <div className="serif text-[2rem] text-[color:var(--charcoal)] leading-none">{value}</div>
-      <div className="mt-2 text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">{label}</div>
+      <div className="mt-2 text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+        {label}
+      </div>
     </div>
   );
 }
 
-function FilterPill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+function FilterPill({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
   return (
     <button
       onClick={onClick}
@@ -351,10 +371,19 @@ function TourDiffCard({
           </h3>
         </div>
         <div className="flex items-center gap-3 text-[10.5px] uppercase tracking-[0.22em]">
-          <a href={viatorUrl} target="_blank" rel="noreferrer" className="underline text-[color:var(--teal)]">
+          <a
+            href={viatorUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="underline text-[color:var(--teal)]"
+          >
             Viator page ↗
           </a>
-          <Link to="/tours/$tourId" params={{ tourId }} className="underline text-[color:var(--teal)]">
+          <Link
+            to="/tours/$tourId"
+            params={{ tourId }}
+            className="underline text-[color:var(--teal)]"
+          >
             YES page →
           </Link>
           <span className="text-[color:var(--charcoal)]">
@@ -437,7 +466,9 @@ function ValueBlock({ label, value, muted }: { label: string; value: unknown; mu
           : "border-[color:var(--teal)]/30 bg-[color:var(--teal)]/5",
       ].join(" ")}
     >
-      <p className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">{label}</p>
+      <p className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+        {label}
+      </p>
       <div className="mt-2 text-[color:var(--charcoal)]">
         {Array.isArray(value) ? (
           value.length === 0 ? (

@@ -54,14 +54,7 @@ export const Route = createFileRoute("/search")({
   }),
 });
 
-const SUGGESTIONS = [
-  "wine tour lisbon",
-  "arrábida",
-  "sintra",
-  "boat",
-  "proposal",
-  "multi-day",
-];
+const SUGGESTIONS = ["wine tour lisbon", "arrábida", "sintra", "boat", "proposal", "multi-day"];
 
 function SearchPage() {
   const { q } = Route.useSearch();

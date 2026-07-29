@@ -92,7 +92,9 @@ const SignatureStory = ({
             <Text style={sectionTitle}>What's included</Text>
             <Section style={inclusionsBox}>
               {inclusions.map((item, i) => (
-                <Text key={i} style={inclusionLine}>· {item}</Text>
+                <Text key={i} style={inclusionLine}>
+                  · {item}
+                </Text>
               ))}
             </Section>
           </>
@@ -100,8 +102,8 @@ const SignatureStory = ({
 
         <Hr style={{ ...hr, margin: "28px 0 18px" }} />
         <Text style={footer}>
-          When you're ready, return to your summary to reserve. The story stays yours —
-          reply to this email any time and a real person will answer.
+          When you're ready, return to your summary to reserve. The story stays yours — reply to
+          this email any time and a real person will answer.
         </Text>
         <Text style={signoff}>— YES Experiences Portugal</Text>
       </Container>
@@ -122,8 +124,14 @@ export const template = {
     guests: 2,
     pickupLabel: "Lisbon",
     chapters: [
-      { title: "Setúbal harbour", body: "A quiet beginning by the boats before the road turns south." },
-      { title: "Arrábida vineyards", body: "Long tastings under the pines, a private cellar just for you." },
+      {
+        title: "Setúbal harbour",
+        body: "A quiet beginning by the boats before the road turns south.",
+      },
+      {
+        title: "Arrábida vineyards",
+        body: "Long tastings under the pines, a private cellar just for you.",
+      },
       { title: "Sesimbra cliffs", body: "The Atlantic wide open before a slow return." },
     ],
     inclusions: ["Private guide", "Private transport", "Wine tasting", "Lunch at a family adega"],
@@ -132,7 +140,10 @@ export const template = {
 
 export default SignatureStory;
 
-const main = { backgroundColor: "#ffffff", fontFamily: 'Georgia, "Times New Roman", serif' } as const;
+const main = {
+  backgroundColor: "#ffffff",
+  fontFamily: 'Georgia, "Times New Roman", serif',
+} as const;
 const container = { padding: "32px 28px", maxWidth: "560px" } as const;
 const eyebrow = {
   fontFamily: "Arial, sans-serif",

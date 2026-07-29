@@ -31,8 +31,12 @@ function extractPct(src: string): Record<string, number> {
 }
 
 function extractThresholds(src: string): { youth: number; child: number } {
-  const y = src.match(/a\s*>=\s*(\d+)\)\s*return\s*"youth"/) ?? src.match(/age\s*>=\s*(\d+)\)\s*return\s*"youth"/);
-  const c = src.match(/a\s*>=\s*(\d+)\)\s*return\s*"child"/) ?? src.match(/age\s*>=\s*(\d+)\)\s*return\s*"child"/);
+  const y =
+    src.match(/a\s*>=\s*(\d+)\)\s*return\s*"youth"/) ??
+    src.match(/age\s*>=\s*(\d+)\)\s*return\s*"youth"/);
+  const c =
+    src.match(/a\s*>=\s*(\d+)\)\s*return\s*"child"/) ??
+    src.match(/age\s*>=\s*(\d+)\)\s*return\s*"child"/);
   if (!y || !c) throw new Error("ageBand thresholds not found");
   return { youth: Number(y[1]), child: Number(c[1]) };
 }

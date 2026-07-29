@@ -127,9 +127,7 @@ function Page() {
                   <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
                     {p.title}
                   </h2>
-                  <p className="editorial-body">
-                    {p.body}
-                  </p>
+                  <p className="editorial-body">{p.body}</p>
                   <div className="mt-7">
                     {p.cta.tourId ? (
                       <Link

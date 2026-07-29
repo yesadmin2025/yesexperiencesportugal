@@ -387,7 +387,8 @@ const HEADLINES: HeadlineSpec[] = [
     role: "hero stanza line 1",
     file: "src/components/home/CinematicHero.tsx",
     // Line 1 is the page's single <h1> (SEO + a11y); line 2 stays a <p>.
-    pattern: /<h1\s+className="(font-serif italic font-normal m-0)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
+    pattern:
+      /<h1\s+className="(font-serif italic font-normal m-0)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
   },
   {
     page: "home",

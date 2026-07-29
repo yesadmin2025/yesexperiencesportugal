@@ -70,9 +70,7 @@ export function useResolvedJourney(
     const fromComposition =
       typeof adults === "number" && adults >= 1 ? adults + minorAges.length : null;
     const guests =
-      typeof state.guests === "number" && state.guests > 0
-        ? state.guests
-        : (fromComposition ?? 2);
+      typeof state.guests === "number" && state.guests > 0 ? state.guests : (fromComposition ?? 2);
 
     // Stops priority chain — same as reveal + checkout share.
     const stops: ResolvedJourneyStop[] = (() => {
@@ -131,8 +129,7 @@ export function useResolvedJourney(
       (sum, item) => sum + (Number.isFinite(item.amount) ? item.amount : 0),
       0,
     );
-    const totalEur =
-      baseTotalEur != null ? Math.round(baseTotalEur + addOnsPartyTotalEur) : null;
+    const totalEur = baseTotalEur != null ? Math.round(baseTotalEur + addOnsPartyTotalEur) : null;
     // Real adult unit price. Never a total/guests blend — averaging adults
     // with discounted minors produces a per-person number that matches
     // nothing the traveller actually pays.
@@ -152,7 +149,6 @@ export function useResolvedJourney(
         fromComposition != null &&
         state.guests !== fromComposition
       ) {
-        // eslint-disable-next-line no-console
         console.warn("[resolvedJourney] guest source mismatch", {
           "state.guests": state.guests,
           "adults+minors": fromComposition,
@@ -174,4 +170,3 @@ export function useResolvedJourney(
     };
   }, [state, selectedAddOns, tourPriceTiers]);
 }
-

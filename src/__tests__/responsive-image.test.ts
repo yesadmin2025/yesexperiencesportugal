@@ -23,7 +23,8 @@ describe("buildResponsiveSrc", () => {
   });
 
   it("passes through Supabase signed URLs unchanged", () => {
-    const url = "https://kqygnqetygcvkaauwbji.supabase.co/storage/v1/object/sign/tour-photos/foo.jpg?token=x";
+    const url =
+      "https://kqygnqetygcvkaauwbji.supabase.co/storage/v1/object/sign/tour-photos/foo.jpg?token=x";
     const r = buildResponsiveSrc(url);
     expect(r.src).toBe(url);
     expect(r.srcSet).toBeUndefined();

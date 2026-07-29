@@ -26,9 +26,6 @@ export function addOnPartyAmount(item: AddOnPartyItem, guests: number): number {
 }
 
 /** Rounded party total across every selected add-on. */
-export function addOnsPartyTotal(
-  items: readonly AddOnPartyItem[],
-  guests: number,
-): number {
+export function addOnsPartyTotal(items: readonly AddOnPartyItem[], guests: number): number {
   return Math.round(items.reduce((sum, i) => sum + addOnPartyAmount(i, guests), 0));
 }

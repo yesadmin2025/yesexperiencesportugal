@@ -97,7 +97,6 @@ export function PricePerPerson(props: PricePerPersonProps) {
     );
   }
 
-
   const { perPaxEur, guests, partyTotalEur, indicative, hasMinors, className } = props;
   return (
     <div className={cn("space-y-1.5", className)} data-price-variant="form">

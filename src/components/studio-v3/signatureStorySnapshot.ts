@@ -80,10 +80,7 @@ export function buildSignatureStorySnapshot(
         ? tour.included.slice(0, 8)
         : ["Private guide", "Private transport", "All confirmed entries"];
 
-  const guests =
-    overrides?.guests && overrides.guests > 0
-      ? overrides.guests
-      : (state.guests ?? 2);
+  const guests = overrides?.guests && overrides.guests > 0 ? overrides.guests : (state.guests ?? 2);
 
   const pickupLabel =
     overrides?.pickupAddress?.trim() ||
@@ -138,7 +135,10 @@ export function buildJourneyRevision(
         }).routePoints.map((p) => p.label);
 
   const addOnPart = (extras?.addOnIds ?? []).slice().sort().join(",");
-  const minorPart = (extras?.minorAges ?? []).slice().sort((a, b) => a - b).join(",");
+  const minorPart = (extras?.minorAges ?? [])
+    .slice()
+    .sort((a, b) => a - b)
+    .join(",");
   const adults = extras?.adults ?? state.guests ?? 0;
 
   const parts = [

@@ -381,7 +381,6 @@ export function localStoryArticleLd(args: {
   };
 }
 
-
 /**
  * Convert a human-readable duration ("8–9h", "6+h", "Full Day") into an
  * ISO 8601 duration suitable for schema.org. Returns `null` when no

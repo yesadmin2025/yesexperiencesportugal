@@ -7,12 +7,17 @@ import {
 import { COMPOSER_MAX_LEG_KM, haversineKm } from "../route-sanity";
 import { REGION_STOPS } from "@/data/regionStops";
 
-const BASE: Omit<ComposeInput, "region" | "rhythm" | "interests" | "who" | "minorAges" | "budgetTier"> = {
+const BASE: Omit<
+  ComposeInput,
+  "region" | "rhythm" | "interests" | "who" | "minorAges" | "budgetTier"
+> = {
   weekday: 4, // Thursday — nothing region-wide is closed
   month: 6, // June — full season for beach stops
 };
 
-function run(partial: Partial<ComposeInput> & Pick<ComposeInput, "region" | "interests" | "who">): ComposedJourney {
+function run(
+  partial: Partial<ComposeInput> & Pick<ComposeInput, "region" | "interests" | "who">,
+): ComposedJourney {
   return composeStudioJourney({
     rhythm: "balanced",
     minorAges: [],
@@ -25,7 +30,9 @@ function run(partial: Partial<ComposeInput> & Pick<ComposeInput, "region" | "int
 function assertLegsPlausible(j: ComposedJourney) {
   for (let i = 1; i < j.stops.length; i++) {
     const km = haversineKm(j.stops[i - 1].coords, j.stops[i].coords);
-    expect(km, `leg ${i} ${j.stops[i - 1].name} → ${j.stops[i].name}`).toBeLessThanOrEqual(COMPOSER_MAX_LEG_KM);
+    expect(km, `leg ${i} ${j.stops[i - 1].name} → ${j.stops[i].name}`).toBeLessThanOrEqual(
+      COMPOSER_MAX_LEG_KM,
+    );
   }
 }
 
@@ -148,7 +155,10 @@ describe("composeStudioJourney — scenario suite", () => {
         const intersect = [...a].filter((x) => b.has(x)).length;
         const union = new Set([...a, ...b]).size;
         const jaccard = union === 0 ? 1 : intersect / union;
-        expect(jaccard, `Jaccard ${jaccard.toFixed(2)} between wine-slow and coast-full Arrábida`).toBeLessThan(0.5);
+        expect(
+          jaccard,
+          `Jaccard ${jaccard.toFixed(2)} between wine-slow and coast-full Arrábida`,
+        ).toBeLessThan(0.5);
       },
     },
   ];
@@ -164,23 +174,52 @@ describe("composeStudioJourney — scenario suite", () => {
 describe("composeStudioJourney — cross-scenario distinctness", () => {
   it("5 scenarios produce pairwise-distinct stop-id sequences", () => {
     const journeys: Array<{ label: string; j: ComposedJourney }> = [
-      { label: "wine-slow-arrabida", j: run({ region: "arrabida", rhythm: "slow", interests: ["wine", "gastronomy"], who: "couple" }) },
-      { label: "family-lisbon-coast", j: run({ region: "lisbon-coast", rhythm: "balanced", interests: ["coast", "culture"], who: "family", minorAges: [6, 9] }) },
-      { label: "coast-arrabida", j: run({ region: "arrabida", rhythm: "balanced", interests: ["coast"], who: "couple" }) },
-      { label: "culture-lisbon-coast", j: run({ region: "lisbon-coast", rhythm: "balanced", interests: ["culture", "hidden"], who: "couple" }) },
-      { label: "coast-full-arrabida", j: run({ region: "arrabida", rhythm: "full", interests: ["coast"], who: "friends" }) },
+      {
+        label: "wine-slow-arrabida",
+        j: run({
+          region: "arrabida",
+          rhythm: "slow",
+          interests: ["wine", "gastronomy"],
+          who: "couple",
+        }),
+      },
+      {
+        label: "family-lisbon-coast",
+        j: run({
+          region: "lisbon-coast",
+          rhythm: "balanced",
+          interests: ["coast", "culture"],
+          who: "family",
+          minorAges: [6, 9],
+        }),
+      },
+      {
+        label: "coast-arrabida",
+        j: run({ region: "arrabida", rhythm: "balanced", interests: ["coast"], who: "couple" }),
+      },
+      {
+        label: "culture-lisbon-coast",
+        j: run({
+          region: "lisbon-coast",
+          rhythm: "balanced",
+          interests: ["culture", "hidden"],
+          who: "couple",
+        }),
+      },
+      {
+        label: "coast-full-arrabida",
+        j: run({ region: "arrabida", rhythm: "full", interests: ["coast"], who: "friends" }),
+      },
     ];
 
     // Print composed itineraries so the human reviewer can eyeball difference.
-    // eslint-disable-next-line no-console
+
     console.log("\n=== Studio composer — 5 scenarios ===");
     for (const { label, j } of journeys) {
-      // eslint-disable-next-line no-console
       console.log(
         `\n[${label}]  drive=${j.totals.driveMin}m  dwell=${j.totals.dwellMin}m  maxHop=${j.totals.maxHopKm}km`,
       );
       for (const s of j.stops) {
-        // eslint-disable-next-line no-console
         console.log(`  · ${s.name} (${s.kind}, ${s.dwellMin}m) — ${s.rationale}  [+${s.legKm}km]`);
       }
       if (j.warnings.length) console.log(`  ! ${j.warnings.join(" | ")}`);

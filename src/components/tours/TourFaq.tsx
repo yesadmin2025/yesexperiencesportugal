@@ -39,7 +39,12 @@ export function TourFaq({ tourId }: { tourId: string }) {
           <div className="gold-divider mt-6 mx-auto w-20" />
         </div>
 
-        <Accordion type="single" collapsible defaultValue="item-0" className="mt-8 md:mt-10 space-y-3">
+        <Accordion
+          type="single"
+          collapsible
+          defaultValue="item-0"
+          className="mt-8 md:mt-10 space-y-3"
+        >
           {items.map((item, i) => (
             <AccordionItem
               key={i}

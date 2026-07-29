@@ -74,10 +74,7 @@ const Field: React.FC<{ label: string; value?: string | number | null }> = ({
     </Section>
   );
 
-const ListField: React.FC<{ label: string; items?: string[] | null }> = ({
-  label: l,
-  items,
-}) =>
+const ListField: React.FC<{ label: string; items?: string[] | null }> = ({ label: l, items }) =>
   !items || items.length === 0 ? null : (
     <Section style={row}>
       <Text style={label}>{l}</Text>
@@ -156,10 +153,10 @@ export const template = {
     durationLabel: "Full day · ~9h",
     amountFormatted: "€ 690,00",
     bookingRef: "cs_live_a1b2c3",
-    adminUrl: "https://yesexperiencesportugal.com/admin/bookings/00000000-0000-0000-0000-000000000000",
+    adminUrl:
+      "https://yesexperiencesportugal.com/admin/bookings/00000000-0000-0000-0000-000000000000",
     addOnLabels: ["Private photographer · €120 pp"],
     removedOptions: ["Included lunch removed (−€15 per person)"],
     customerNotes: ["Dietary: one vegetarian"],
   },
 } satisfies TemplateEntry;
-

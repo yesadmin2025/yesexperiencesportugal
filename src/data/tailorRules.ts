@@ -129,10 +129,7 @@ export function lunchRemovalEur(tourId: string, lunchRemoved: boolean): number {
  * Per-person winery supplement for a requested total winery count.
  * Returns 0 for Signatures without a winery ladder or at/below baseline.
  */
-export function winerySupplementEur(
-  tourId: string,
-  wineriesSelected: number,
-): number {
+export function winerySupplementEur(tourId: string, wineriesSelected: number): number {
   const w = tailorRules(tourId).wineries;
   if (!w) return 0;
   const capped = Math.min(Math.max(wineriesSelected, w.included), w.max);
@@ -185,8 +182,6 @@ export function tailorSupplementsEur(
 ): number {
   const lunch = opts.lunchAdded ? lunchSupplementEur(tourId) : 0;
   const wine =
-    opts.wineriesSelected === undefined
-      ? 0
-      : winerySupplementEur(tourId, opts.wineriesSelected);
+    opts.wineriesSelected === undefined ? 0 : winerySupplementEur(tourId, opts.wineriesSelected);
   return lunch + wine;
 }

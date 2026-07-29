@@ -176,7 +176,9 @@ test.describe("robots.txt + sitemap.xml canonical guardrails", () => {
     const robots = parseRobots(await fetchText("/robots.txt"));
     for (const p of paths) {
       for (const dis of robots.disallows) {
-        const blocked = dis.endsWith("/") ? p.startsWith(dis) : p === dis || p.startsWith(`${dis}/`);
+        const blocked = dis.endsWith("/")
+          ? p.startsWith(dis)
+          : p === dis || p.startsWith(`${dis}/`);
         expect(blocked, `sitemap path ${p} is Disallow'd by robots.txt rule ${dis}`).toBe(false);
       }
     }

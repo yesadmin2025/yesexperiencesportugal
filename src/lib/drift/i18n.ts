@@ -270,7 +270,6 @@ const EN: Dict = {
   "trust.midflow": "700+ five-star reviews · Google · Tripadvisor · Viator",
 };
 
-
 const DICTS: Record<DriftLocale, Dict> = { pt: PT, en: EN };
 
 function detect(): DriftLocale {

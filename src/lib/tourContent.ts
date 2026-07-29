@@ -104,10 +104,7 @@ export function getTourContent(tourId: string): TourContent {
     source: "legacy",
     overview: meta?.overview ?? null,
     highlights: tour?.highlights ?? [],
-    included:
-      meta?.included && meta.included.length > 0
-        ? meta.included
-        : (tour?.included ?? []),
+    included: meta?.included && meta.included.length > 0 ? meta.included : (tour?.included ?? []),
     notIncluded: [],
     itinerary: chaptersFromLegacy(tour),
     sot: null,
@@ -127,10 +124,7 @@ export function hasSourceOfTruth(tourId: string): boolean {
  * Tailor and JSON-LD can never show three different numbers. Falls back
  * to the legacy `durationHours` only while a tour has no SoT entry.
  */
-export function signatureDurationLabel(
-  tourId: string,
-  fallback?: string | null,
-): string | null {
+export function signatureDurationLabel(tourId: string, fallback?: string | null): string | null {
   return SIGNATURE_SOURCE_OF_TRUTH[tourId]?.durationText ?? fallback ?? null;
 }
 

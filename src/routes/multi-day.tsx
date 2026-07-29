@@ -28,10 +28,7 @@ import { whatsappHref } from "@/components/WhatsAppFab";
 import imgSintraEstates from "@/assets/tours/sintra-cascais/estates.jpg";
 // All 23 pages of the anonymised private travel file live in public/ so
 // they can be shown inline — no external PDF. Shared with /trade.
-import {
-  SAMPLE_PAGES,
-  TOTAL_SAMPLE_PAGES,
-} from "@/components/travel-designer/TravelFilePreview";
+import { SAMPLE_PAGES, TOTAL_SAMPLE_PAGES } from "@/components/travel-designer/TravelFilePreview";
 
 export const Route = createFileRoute("/multi-day")({
   head: () => ({
@@ -161,8 +158,6 @@ const FILE_GROUPS: Card[] = [
   },
 ];
 
-
-
 function GroupCard({ title, body }: Card) {
   return (
     <div className="reveal-stagger bg-white border border-[color:var(--border)] p-5 md:p-6">
@@ -181,7 +176,6 @@ function MultiDayPage() {
   useMarketingMotion();
   return (
     <SiteLayout>
-
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="pt-28 pb-14 bg-[color:var(--sand)] reveal">
         <div className="container-x max-w-3xl text-center">
@@ -287,7 +281,6 @@ function MultiDayPage() {
           </div>
         </div>
       </section>
-
 
       {/* ── Who it is for ────────────────────────────────── */}
       <section className="py-14 md:py-20 bg-[color:var(--ivory)] reveal">
@@ -432,8 +425,8 @@ function MultiDayPage() {
                 ))}
               </div>
               <p className="mt-6 font-serif italic text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
-                An example of a real, anonymised file — every page shown below. Tap any page to
-                read it full size.
+                An example of a real, anonymised file — every page shown below. Tap any page to read
+                it full size.
               </p>
             </div>
           </div>
@@ -487,7 +480,6 @@ function MultiDayPage() {
         </div>
       </section>
 
-
       {/* ── Where it can go ──────────────────────────────── */}
       <section className="py-14 md:py-24 reveal">
         <div className="container-x max-w-3xl">
@@ -498,8 +490,8 @@ function MultiDayPage() {
           </SectionTitle>
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
             A Travel Designer journey can stay focused on one region or connect several parts of
-            Portugal into a complete route. It may be a few days, a long weekend, a full week, or
-            a multi-week journey through the country.
+            Portugal into a complete route. It may be a few days, a long weekend, a full week, or a
+            multi-week journey through the country.
           </p>
           <p className="mt-4 text-[color:var(--charcoal-soft)] leading-relaxed">
             The point is not to collect destinations. It is to create the right rhythm: where to
@@ -511,10 +503,9 @@ function MultiDayPage() {
             list.
           </blockquote>
           <p className="mt-6 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
-            Examples may include Lisbon, the coast, wine country, historic towns, the Alentejo,
-            the Douro, Central Portugal, the Algarve or Atlantic routes — but each journey is
-            designed from scratch and may go wherever your time, interests and logistics make
-            sense.
+            Examples may include Lisbon, the coast, wine country, historic towns, the Alentejo, the
+            Douro, Central Portugal, the Algarve or Atlantic routes — but each journey is designed
+            from scratch and may go wherever your time, interests and logistics make sense.
           </p>
         </div>
       </section>
@@ -542,8 +533,6 @@ function MultiDayPage() {
           </p>
         </div>
       </section>
-
-
 
       {/* ── FAQ ──────────────────────────────────────────── */}
       <section className="py-14 md:py-20 bg-[color:var(--ivory)] reveal" aria-labelledby="td-faq">
@@ -591,9 +580,7 @@ function MultiDayPage() {
               Begin with a Designer
             </CtaButton>
             <a
-              href={whatsappHref(
-                "Hi YES — I'd like to plan a multi-day Portugal journey.",
-              )}
+              href={whatsappHref("Hi YES — I'd like to plan a multi-day Portugal journey.")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 border border-[color:var(--charcoal)]/25 hover:border-[color:var(--gold)] text-[color:var(--charcoal)] px-6 py-3 text-sm tracking-wide transition-all"

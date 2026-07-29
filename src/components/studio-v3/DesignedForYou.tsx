@@ -50,7 +50,10 @@ export function DesignedForYou({ notes, className, testId }: DesignedForYouProps
         className="mt-4 text-[10.5px] uppercase tracking-[0.26em] font-semibold"
         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
       >
-        <span aria-hidden style={{ color: "var(--gold)" }}>—</span> YES curator
+        <span aria-hidden style={{ color: "var(--gold)" }}>
+          —
+        </span>{" "}
+        YES curator
       </p>
     </section>
   );

@@ -9,11 +9,7 @@
  */
 import { describe, it, expect } from "vitest";
 import { signatureTours } from "@/data/signatureTours";
-import {
-  AGE_BAND_PCT,
-  resolveJourneyPricing,
-  resolvePerPaxEur,
-} from "@/data/signatureTourPricing";
+import { AGE_BAND_PCT, resolveJourneyPricing, resolvePerPaxEur } from "@/data/signatureTourPricing";
 
 describe("Age-band pricing propagates the 15% direct discount", () => {
   // Pick a tour with a real tier ladder so the resolved per-pax price is

@@ -29,9 +29,7 @@ describe("legacy-domain map: exhaustive 301 coverage", () => {
         const res = buildLegacy301Response(req(host, legacyPath));
         expect(res, `no response for ${host}${legacyPath}`).not.toBeNull();
         expect(res!.status).toBe(301);
-        expect(res!.headers.get("location")).toBe(
-          `${CANONICAL_ORIGIN}${target}`,
-        );
+        expect(res!.headers.get("location")).toBe(`${CANONICAL_ORIGIN}${target}`);
         expect(res!.headers.get("x-robots-tag")).toContain("noindex");
         expect(res!.headers.get("cache-control")).toContain("max-age");
       });
@@ -43,27 +41,19 @@ describe("legacy-domain map: exhaustive 301 coverage", () => {
       it(`${host}${legacyPath}/ (trailing slash) → 301 ${target}`, () => {
         const res = buildLegacy301Response(req(host, `${legacyPath}/`));
         expect(res!.status).toBe(301);
-        expect(res!.headers.get("location")).toBe(
-          `${CANONICAL_ORIGIN}${target}`,
-        );
+        expect(res!.headers.get("location")).toBe(`${CANONICAL_ORIGIN}${target}`);
       });
 
       it(`${host}${legacyPath.toUpperCase()} (uppercase) → 301 ${target}`, () => {
-        const res = buildLegacy301Response(
-          req(host, legacyPath.toUpperCase()),
-        );
+        const res = buildLegacy301Response(req(host, legacyPath.toUpperCase()));
         expect(res!.status).toBe(301);
-        expect(res!.headers.get("location")).toBe(
-          `${CANONICAL_ORIGIN}${target}`,
-        );
+        expect(res!.headers.get("location")).toBe(`${CANONICAL_ORIGIN}${target}`);
       });
 
       it(`${host}${legacyPath}?utm=x preserves query on Location`, () => {
         const res = buildLegacy301Response(req(host, legacyPath, "?utm=x"));
         expect(res!.status).toBe(301);
-        expect(res!.headers.get("location")).toBe(
-          `${CANONICAL_ORIGIN}${target}?utm=x`,
-        );
+        expect(res!.headers.get("location")).toBe(`${CANONICAL_ORIGIN}${target}?utm=x`);
       });
     }
   }
@@ -101,9 +91,7 @@ describe("legacy-domain map: unmapped non-WP paths 301 to canonical 1:1", () => 
         const res = buildLegacy301Response(req(host, path));
         expect(res).not.toBeNull();
         expect(res!.status).toBe(301);
-        expect(res!.headers.get("location")).toBe(
-          `${CANONICAL_ORIGIN}${path}`,
-        );
+        expect(res!.headers.get("location")).toBe(`${CANONICAL_ORIGIN}${path}`);
       });
     }
   }

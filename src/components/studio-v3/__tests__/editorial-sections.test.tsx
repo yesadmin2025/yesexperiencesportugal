@@ -64,9 +64,7 @@ describe("Step 6 · editorial reveal sections", () => {
       expect(container).toBeEmptyDOMElement();
     });
     it("falls back to 'drive' when leg minutes are missing", () => {
-      render(
-        <RhythmRibbon stops={[{ label: "A" }, { label: "B" }]} />,
-      );
+      render(<RhythmRibbon stops={[{ label: "A" }, { label: "B" }]} />);
       expect(screen.getByText("drive")).toBeInTheDocument();
     });
   });

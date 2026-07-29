@@ -75,7 +75,6 @@ export const Route = createFileRoute("/local-stories/")({
           url: `https://yesexperiencesportugal.com/local-stories/${a.slug}`,
           datePublished: a.datePublished,
         })),
-
       }),
     ],
   }),

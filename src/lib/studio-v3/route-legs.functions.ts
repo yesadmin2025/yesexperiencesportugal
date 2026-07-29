@@ -91,13 +91,12 @@ export const getStudioV3RouteLegs = createServerFn({ method: "POST" })
         // Defense-in-depth: if OSRM reported an implausible leg, drop it and
         // rely on haversine. Both conditions are conservative — legitimate
         // road detours rarely exceed 2×, let alone 3× haversine.
-        const looksWrong =
-          km > MAX_SINGLE_LEG_KM || (hav > 0.2 && km > hav * OSRM_SANITY_FACTOR);
+        const looksWrong = km > MAX_SINGLE_LEG_KM || (hav > 0.2 && km > hav * OSRM_SANITY_FACTOR);
         if (looksWrong) {
           km = hav;
           driveMin = haversineDriveMinutes(hav);
           sanityFallbacks += 1;
-          // eslint-disable-next-line no-console
+
           console.warn("[studio-v3 route-legs] sanity fallback", {
             osrmKm: Number(l.distance_km),
             haversineKm: +hav.toFixed(2),

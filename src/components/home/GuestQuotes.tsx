@@ -271,5 +271,4 @@ function ReviewCarousel({ quotes }: { quotes: PublicReview[] }) {
 // SourceBadge moved to `@/components/ui/ReviewSourceLink` — shared primitive
 // used by both the homepage carousel and per-tour review grid.
 
-
 export default GuestQuotes;

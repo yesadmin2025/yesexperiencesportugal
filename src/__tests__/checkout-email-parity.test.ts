@@ -10,10 +10,7 @@
  * `src/lib/email-templates/checkout-receipt.tsx` in lockstep.
  */
 import { describe, it, expect } from "vitest";
-import {
-  summarizeJourneyLines,
-  type CheckoutJourneyLine,
-} from "@/lib/checkout/journeyDisplay";
+import { summarizeJourneyLines, type CheckoutJourneyLine } from "@/lib/checkout/journeyDisplay";
 import { AGE_BAND_PCT as ONPAGE_PCT, ageBand as onPageAgeBand } from "@/data/signatureTourPricing";
 
 // Reproduce the email template's local builder without importing the .tsx
@@ -91,4 +88,3 @@ describe("Checkout email ↔ on-page summary parity", () => {
     }
   }
 });
-

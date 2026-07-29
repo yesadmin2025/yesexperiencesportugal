@@ -85,8 +85,7 @@ const BookingConfirmation = ({
           <Hr style={hr} />
           <Text style={cardLabel}>Guests</Text>
           <Text style={cardValue}>
-            {compositionSummary ??
-              `${guests ?? 2} ${(guests ?? 2) === 1 ? "guest" : "guests"}`}
+            {compositionSummary ?? `${guests ?? 2} ${(guests ?? 2) === 1 ? "guest" : "guests"}`}
           </Text>
           {region ? (
             <>

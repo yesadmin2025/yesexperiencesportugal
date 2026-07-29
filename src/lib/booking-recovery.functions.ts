@@ -56,11 +56,14 @@ export const recoverPaidBooking = createServerFn({ method: "POST" })
     );
     if (!stripeResponse.ok) {
       const detail = await stripeResponse.text().catch(() => "");
-      throw new Error(`Stripe session lookup failed (${stripeResponse.status}): ${detail.slice(0, 220)}`);
+      throw new Error(
+        `Stripe session lookup failed (${stripeResponse.status}): ${detail.slice(0, 220)}`,
+      );
     }
 
     const session = (await stripeResponse.json()) as StripeSession;
-    if (session.livemode !== true) throw new Error("This recovery action only accepts live sessions.");
+    if (session.livemode !== true)
+      throw new Error("This recovery action only accepts live sessions.");
     if (session.payment_status !== "paid") {
       throw new Error(`Payment is not complete (status: ${session.payment_status ?? "unknown"}).`);
     }
@@ -85,11 +88,11 @@ export const recoverPaidBooking = createServerFn({ method: "POST" })
           : "builder";
     const paymentIntent = session.payment_intent;
     const paymentIntentId =
-      typeof paymentIntent === "string" ? paymentIntent : paymentIntent?.id ?? null;
+      typeof paymentIntent === "string" ? paymentIntent : (paymentIntent?.id ?? null);
     const receiptUrl =
       typeof paymentIntent === "object" && paymentIntent
         ? typeof paymentIntent.latest_charge === "object" && paymentIntent.latest_charge
-          ? paymentIntent.latest_charge.receipt_url ?? null
+          ? (paymentIntent.latest_charge.receipt_url ?? null)
           : null
         : null;
 

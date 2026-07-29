@@ -199,7 +199,9 @@ export async function parsePartyTotalEur(page: Page): Promise<number | null> {
  * Shared across mobile reveal / navigation / a11y specs so the transition
  * stays in lockstep.
  */
-export async function advanceRefineToStorytelling(page: import("@playwright/test").Page): Promise<void> {
+export async function advanceRefineToStorytelling(
+  page: import("@playwright/test").Page,
+): Promise<void> {
   const refineCta = page
     .locator('[data-studio-v3-screen="refine"]')
     .getByRole("button", { name: /^See my signature story/i })

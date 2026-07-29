@@ -79,8 +79,8 @@ export function ChargeSummaryLine({
         ].join(" ")}
       >
         <p className="text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
-          Final price confirmed before payment — add an age for every child so we
-          can price honestly.
+          Final price confirmed before payment — add an age for every child so we can price
+          honestly.
         </p>
       </div>
     );
@@ -161,7 +161,6 @@ export function ChargeSummaryLine({
       ) : null}
 
       <p className="mt-1 text-[9.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]/80">
-
         Charged securely in EUR · no hidden fees
       </p>
     </div>

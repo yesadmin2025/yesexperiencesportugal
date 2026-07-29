@@ -11,9 +11,7 @@ import { test, expect } from "@playwright/test";
 test("language switcher exposes labelled group with aria-current", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
 
-  const group = page
-    .locator('[role="group"]', { hasText: /EN/ })
-    .first();
+  const group = page.locator('[role="group"]', { hasText: /EN/ }).first();
   await expect(group).toHaveAttribute("aria-label", /language|idioma/i);
 
   const en = page.locator('[data-locale-option="en"]').first();

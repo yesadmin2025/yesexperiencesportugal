@@ -58,7 +58,10 @@ describe("Tailor blueprints — locked stops", () => {
   it("choice and optional stops are never locked (locks only apply to Core)", () => {
     for (const bp of blueprints) {
       for (const o of bp.choice?.options ?? []) {
-        expect(o.lock, `${bp.tourId}/${o.id}: choice options must remain swappable`).toBeUndefined();
+        expect(
+          o.lock,
+          `${bp.tourId}/${o.id}: choice options must remain swappable`,
+        ).toBeUndefined();
       }
       for (const o of bp.optional) {
         expect(o.lock, `${bp.tourId}/${o.id}: optional stops must remain opt-in`).toBeUndefined();

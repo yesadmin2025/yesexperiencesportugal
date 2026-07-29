@@ -273,9 +273,7 @@ export function JourneyPanel({
               >
                 <Icon
                   size={14}
-                  className={
-                    active ? "text-[color:var(--gold)]" : "text-[color:var(--text-muted)]"
-                  }
+                  className={active ? "text-[color:var(--gold)]" : "text-[color:var(--text-muted)]"}
                   strokeWidth={1.6}
                 />
                 <span className="text-[12px] font-semibold text-[color:var(--charcoal)]">

@@ -151,18 +151,13 @@ export async function extractSignatureSot(url: string): Promise<SotExtraction> {
 
   if (!res.ok) {
     const t = await res.text();
-    if (res.status === 429)
-      throw new Error("AI rate limit exceeded — try again in a minute.");
-    if (res.status === 402)
-      throw new Error("AI credits exhausted — top up in workspace settings.");
-    throw new Error(
-      `AI extraction failed [${res.status}]: ${t.slice(0, 200)}`,
-    );
+    if (res.status === 429) throw new Error("AI rate limit exceeded — try again in a minute.");
+    if (res.status === 402) throw new Error("AI credits exhausted — top up in workspace settings.");
+    throw new Error(`AI extraction failed [${res.status}]: ${t.slice(0, 200)}`);
   }
 
   const data = await res.json();
-  const argsStr =
-    data?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
+  const argsStr = data?.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
   if (!argsStr) throw new Error("AI returned no tool call arguments");
   const parsed = JSON.parse(argsStr) as SotExtraction;
   parsed.itinerary.sort((a, b) => a.order - b.order);

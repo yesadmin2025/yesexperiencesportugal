@@ -1,12 +1,7 @@
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
-import {
-  breadcrumbLd,
-  corporateServiceLd,
-  faqPageLd,
-  jsonLdScript,
-} from "@/lib/jsonld";
+import { breadcrumbLd, corporateServiceLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
@@ -109,10 +104,7 @@ export const Route = createFileRoute("/corporate")({
       { property: "og:locale", content: "en_US" },
       { property: "og:locale:alternate", content: "pt_PT" },
     ],
-    links: [
-      { rel: "canonical", href: CANONICAL },
-      ...localeAlternateLinks("/corporate"),
-    ],
+    links: [{ rel: "canonical", href: CANONICAL }, ...localeAlternateLinks("/corporate")],
     scripts: [
       jsonLdScript(
         breadcrumbLd([
@@ -200,10 +192,7 @@ function FormatCard({ format }: { format: (typeof FORMATS)[number] }) {
   const ref = useFormatView(format.id);
   const Icon = format.icon;
   return (
-    <div
-      ref={ref}
-      className="reveal-stagger border-t border-[color:var(--border)] pt-6 md:pt-8"
-    >
+    <div ref={ref} className="reveal-stagger border-t border-[color:var(--border)] pt-6 md:pt-8">
       <Icon
         size={20}
         strokeWidth={1.6}
@@ -303,8 +292,7 @@ function CorporatePage() {
             <Eyebrow>Designed for the purpose</Eyebrow>
             <span className="gold-rule mt-4 max-w-[64px]" aria-hidden="true" />
             <SectionTitle size="compact" spacing="loose">
-              Built around the team.{" "}
-              <SectionTitle.Em>Scaled around the group.</SectionTitle.Em>
+              Built around the team. <SectionTitle.Em>Scaled around the group.</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-5 font-serif italic text-[1.1rem] md:text-[1.2rem] text-[color:var(--teal)] leading-snug">
               An executive off-site and a 100-person incentive should never feel like the same
@@ -485,12 +473,12 @@ function CorporatePage() {
               Tell us about <SectionTitle.Em>your group.</SectionTitle.Em>
             </SectionTitle>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
-              Share the group size, dates, objectives and the kind of experience you want to
-              create. We will shape a realistic proposal around the people, purpose and place.
+              Share the group size, dates, objectives and the kind of experience you want to create.
+              We will shape a realistic proposal around the people, purpose and place.
             </p>
             <p className="mt-5 text-[15px] md:text-[16px] leading-[1.8] text-[color:var(--charcoal-soft)]">
-              From leadership teams to groups of 100+, every proposal is developed around the
-              actual brief, never copied from a standard package.
+              From leadership teams to groups of 100+, every proposal is developed around the actual
+              brief, never copied from a standard package.
             </p>
             <div className="mt-6 pl-4 border-l-2 border-[color:var(--gold)] text-[13.5px] md:text-sm text-[color:var(--charcoal-soft)] leading-relaxed">
               Real driving times, real venues, real partners.

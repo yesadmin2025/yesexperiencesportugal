@@ -50,7 +50,13 @@ export function isValidJourneyLine(line: CheckoutJourneyLine): boolean {
   if (!Number.isFinite(line.unitEur) || line.unitEur < 0) return false;
   if (line.band === "adult") return true;
   const age = line.age;
-  return typeof age === "number" && Number.isFinite(age) && age >= 0 && age <= 17 && Number.isInteger(age);
+  return (
+    typeof age === "number" &&
+    Number.isFinite(age) &&
+    age >= 0 &&
+    age <= 17 &&
+    Number.isInteger(age)
+  );
 }
 
 /**
@@ -77,9 +83,7 @@ export function hasCompleteJourneyPricing(
  * UI. Callers that need a stricter guard should check
  * `hasCompleteJourneyPricing` first and hide the block entirely.
  */
-export function summarizeJourneyLines(
-  lines: readonly CheckoutJourneyLine[],
-): JourneyDisplayRow[] {
+export function summarizeJourneyLines(lines: readonly CheckoutJourneyLine[]): JourneyDisplayRow[] {
   const safe = lines.filter(isValidJourneyLine);
   const adults = safe.filter((l) => l.band === "adult");
   const minors = safe
@@ -115,4 +119,3 @@ export function summarizeJourneyLines(
   }
   return rows;
 }
-

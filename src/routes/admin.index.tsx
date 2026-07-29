@@ -359,10 +359,7 @@ function AdminOverviewPage() {
         <WebhookHealthWidget bookings={bookings} emailLog={emailLog} onRecovered={fetchAll} />
 
         {/* Bookings */}
-        <Panel
-          title="Últimas reservas"
-          hint="Cada linha é um pagamento/pedido em bookings."
-        >
+        <Panel title="Últimas reservas" hint="Cada linha é um pagamento/pedido em bookings.">
           {bookings && bookings.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -524,11 +521,7 @@ function AdminOverviewPage() {
                       <Td>{e.stripe_env ?? "—"}</Td>
                       <Td>
                         <span
-                          className={
-                            e.verified
-                              ? "text-emerald-800"
-                              : "text-red-800 font-medium"
-                          }
+                          className={e.verified ? "text-emerald-800" : "text-red-800 font-medium"}
                         >
                           {e.verified ? "ok" : "FALHA"}
                         </span>
@@ -790,7 +783,12 @@ function WebhookHealthWidget({
       .channel(`admin-webhook-events-${env}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "stripe_webhook_events", filter: `stripe_env=eq.${env}` },
+        {
+          event: "*",
+          schema: "public",
+          table: "stripe_webhook_events",
+          filter: `stripe_env=eq.${env}`,
+        },
         () => {
           load();
           onRecovered().catch(() => {});
@@ -821,15 +819,15 @@ function WebhookHealthWidget({
   const receivingCheckout = lastCheckout && lastCheckout.verified && checkoutHours < 72;
   const matchingBooking = Boolean(
     lastCheckout?.session_id &&
-      bookings?.some((booking) => booking.stripe_session_id === lastCheckout.session_id),
+    bookings?.some((booking) => booking.stripe_session_id === lastCheckout.session_id),
   );
   const receiptStatus = lastCheckout?.customer_email
-    ? emailLog?.find(
+    ? (emailLog?.find(
         (entry) =>
           entry.template_name === "checkout-receipt" &&
           entry.recipient_email?.toLowerCase() === lastCheckout.customer_email?.toLowerCase() &&
           new Date(entry.created_at).getTime() >= new Date(lastCheckout.received_at).getTime(),
-      ) ?? null
+      ) ?? null)
     : null;
 
   const runRecovery = useCallback(async () => {
@@ -905,7 +903,6 @@ function WebhookHealthWidget({
         </div>
       </div>
 
-
       {triggerMsg && (
         <p
           className={`px-4 py-2 text-xs border-b border-[color:var(--border)] ${
@@ -939,7 +936,7 @@ function WebhookHealthWidget({
           note={
             health && !healthOk && lastVerified
               ? "Há eventos reais verificados; este diagnóstico não invalida o endpoint."
-              : health?.reason ?? undefined
+              : (health?.reason ?? undefined)
           }
         />
         <HealthTile
@@ -1009,7 +1006,11 @@ function WebhookHealthWidget({
                   ? "Em envio"
                   : "Ainda sem confirmação"
           }
-          detail={receiptStatus ? `${relativeTime(receiptStatus.created_at)} · ${receiptStatus.status}` : "Aparece após uma reserva paga."}
+          detail={
+            receiptStatus
+              ? `${relativeTime(receiptStatus.created_at)} · ${receiptStatus.status}`
+              : "Aparece após uma reserva paga."
+          }
           note={receiptStatus?.error_message ?? undefined}
         />
       </div>
@@ -1060,4 +1061,3 @@ function HealthTile({
     </div>
   );
 }
-

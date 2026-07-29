@@ -38,7 +38,6 @@ function persistLocale(locale: Locale) {
   }
 }
 
-
 interface LanguageSwitcherProps {
   variant?: "header" | "footer";
   className?: string;
@@ -124,8 +123,7 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
               data-locale-option={loc}
               className={cn(
                 "tap min-h-[32px] min-w-[32px] px-1 inline-flex items-center justify-center rounded-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]",
-                variant === "footer" &&
-                  "focus-visible:ring-offset-[color:var(--charcoal)]",
+                variant === "footer" && "focus-visible:ring-offset-[color:var(--charcoal)]",
                 isActive
                   ? variant === "footer"
                     ? "text-[color:var(--gold-soft)] font-medium"
@@ -143,4 +141,3 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
     </div>
   );
 }
-

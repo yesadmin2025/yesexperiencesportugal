@@ -52,8 +52,7 @@ const SERVICE_PAGES: SearchDoc[] = [
     id: "page-travel-designer",
     kind: "page",
     title: "Portugal travel designer",
-    summary:
-      "Multi-day private journeys designed end to end — routes, timing, stays and pace.",
+    summary: "Multi-day private journeys designed end to end — routes, timing, stays and pace.",
     path: "/portugal-travel-designer",
     keywords: "travel designer multi day itinerary journey private portugal",
   },
@@ -144,7 +143,14 @@ export function getSearchIndex(): SearchDoc[] {
     summary: t.blurb,
     path: `/tours/${t.id}`,
     meta: `${t.region} · ${t.duration}`,
-    keywords: [t.region, t.theme, t.fitsBest, ...(t.pace ?? []), ...(t.highlights ?? []), ...(t.idealFor ?? [])]
+    keywords: [
+      t.region,
+      t.theme,
+      t.fitsBest,
+      ...(t.pace ?? []),
+      ...(t.highlights ?? []),
+      ...(t.idealFor ?? []),
+    ]
       .filter(Boolean)
       .join(" "),
   }));

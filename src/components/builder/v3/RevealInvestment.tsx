@@ -4,7 +4,6 @@ import type { DriftLocale } from "@/lib/drift/i18n";
 import type { SignatureTour } from "@/data/signatureTours";
 import { getTourContent } from "@/lib/tourContent";
 
-
 /**
  * RevealInvestment — transparent "estimated experience investment" block,
  * rendered at the convergence reveal once an anchor Signature tour has
@@ -98,7 +97,6 @@ export function RevealInvestment({ anchor, companions, locale, stopsCount }: Pro
     () => sotIncluded.filter((line) => line && line.trim().length > 0),
     [sotIncluded],
   );
-
 
   return (
     <section

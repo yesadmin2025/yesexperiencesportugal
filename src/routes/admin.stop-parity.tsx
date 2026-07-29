@@ -16,10 +16,7 @@ import { computeAllTourParity, type StopParityStatus } from "@/lib/stop-parity";
 
 export const Route = createFileRoute("/admin/stop-parity")({
   head: () => ({
-    meta: [
-      { title: "Stop parity — Admin" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
+    meta: [{ title: "Stop parity — Admin" }, { name: "robots", content: "noindex,nofollow" }],
   }),
   component: StopParityPage,
 });
@@ -43,7 +40,14 @@ const STATUS_STYLE: Record<StopParityStatus, string> = {
 function StopParityPage() {
   const reports = useMemo(() => computeAllTourParity(), []);
   const totals = useMemo(() => {
-    const t = { total: 0, matched: 0, missingInYes: 0, yesOnly: 0, missingMapCoord: 0, missingStudioIntent: 0 };
+    const t = {
+      total: 0,
+      matched: 0,
+      missingInYes: 0,
+      yesOnly: 0,
+      missingMapCoord: 0,
+      missingStudioIntent: 0,
+    };
     reports.forEach((r) => {
       t.total += r.counts.total;
       t.matched += r.counts.matched;
@@ -64,9 +68,9 @@ function StopParityPage() {
             Stop <SectionTitle.Em>parity</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-3 max-w-2xl text-[14px] text-[color:var(--charcoal-soft)]">
-            Compares every Signature tour's Viator source-of-truth itinerary against the YES
-            tour config, map coordinates and Studio intents. Flags anything that would render
-            differently on preview.
+            Compares every Signature tour's Viator source-of-truth itinerary against the YES tour
+            config, map coordinates and Studio intents. Flags anything that would render differently
+            on preview.
           </p>
 
           <div className="mt-6 grid grid-cols-2 md:grid-cols-6 gap-3 text-[12px]">
@@ -100,9 +104,7 @@ function StopParityPage() {
                           </span>
                         )}
                         {r.counts.yesOnly > 0 && (
-                          <span className="ml-2 text-amber-700">
-                            · {r.counts.yesOnly} yes-only
-                          </span>
+                          <span className="ml-2 text-amber-700">· {r.counts.yesOnly} yes-only</span>
                         )}
                       </>
                     ) : (
@@ -132,15 +134,14 @@ function StopParityPage() {
                   </thead>
                   <tbody>
                     {r.rows.map((row, i) => (
-                      <tr
-                        key={i}
-                        className="border-t border-[color:var(--border)] align-top"
-                      >
+                      <tr key={i} className="border-t border-[color:var(--border)] align-top">
                         <td className="px-4 py-2 tabular-nums text-[color:var(--charcoal-soft)]">
                           {row.order ?? "—"}
                         </td>
                         <td className="px-4 py-2">
-                          {row.sotLabel ?? <span className="text-[color:var(--charcoal-soft)]">—</span>}
+                          {row.sotLabel ?? (
+                            <span className="text-[color:var(--charcoal-soft)]">—</span>
+                          )}
                           {row.optional && (
                             <span className="ml-2 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
                               optional
@@ -148,7 +149,9 @@ function StopParityPage() {
                           )}
                         </td>
                         <td className="px-4 py-2">
-                          {row.yesLabel ?? <span className="text-[color:var(--charcoal-soft)]">—</span>}
+                          {row.yesLabel ?? (
+                            <span className="text-[color:var(--charcoal-soft)]">—</span>
+                          )}
                         </td>
                         <td className="px-4 py-2">{row.hasMapCoord ? "✓" : "—"}</td>
                         <td className="px-4 py-2">{row.hasStudioIntent ? "✓" : "—"}</td>

@@ -15,13 +15,7 @@ interface SplitLinesProps {
   lineClassName?: string;
 }
 
-export function SplitLines({
-  text,
-  lines,
-  as = "h2",
-  className,
-  lineClassName,
-}: SplitLinesProps) {
+export function SplitLines({ text, lines, as = "h2", className, lineClassName }: SplitLinesProps) {
   const [ref, inView] = useInView<HTMLElement>();
   const parts = lines ?? (text ? text.split(/\n+/) : []);
   return createElement(

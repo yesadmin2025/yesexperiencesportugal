@@ -24,7 +24,10 @@ export const Route = createFileRoute("/pt/corporate")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
-      { property: "twitter:image", content: `https://yesexperiencesportugal.com${imgFatimaNazare}` },
+      {
+        property: "twitter:image",
+        content: `https://yesexperiencesportugal.com${imgFatimaNazare}`,
+      },
       { property: "og:url", content: "https://yesexperiencesportugal.com/pt/corporate" },
       { property: "og:locale", content: "pt_PT" },
     ],
@@ -71,10 +74,10 @@ const BLOCKS = [
   {
     eyebrow: "Hosting de clientes & VIP",
     title: "Discreto, ponderado, totalmente reservado.",
-    emotional:
-      "Quando importa quem está na sala e como o dia se sente — é assim que o desenhamos.",
+    emotional: "Quando importa quem está na sala e como o dia se sente — é assim que o desenhamos.",
     practical: "Grupos pequenos · ambientes privados · ritmo cuidado · NDAs bem-vindos.",
-    local: "Planeado de ponta a ponta com a nossa equipa local — cada detalhe confirmado antes do dia.",
+    local:
+      "Planeado de ponta a ponta com a nossa equipa local — cada detalhe confirmado antes do dia.",
     image: CORPORATE_SERVICE_IMAGES[2],
     icon: ClipboardCheck,
   },
@@ -112,8 +115,8 @@ function CorporatePage() {
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
           <p className="mt-6 text-[1rem] md:text-[1.1rem] text-[color:var(--charcoal-soft)] leading-relaxed">
             Retiros corporativos privados, dias de team building, incentivos e off-sites executivos
-            por Portugal — de Lisboa e Sintra à costa da Arrábida, ao Alentejo, ao Douro e além,
-            com transporte, guias e locais coordenados de ponta a ponta para que o dia pareça{" "}
+            por Portugal — de Lisboa e Sintra à costa da Arrábida, ao Alentejo, ao Douro e além, com
+            transporte, guias e locais coordenados de ponta a ponta para que o dia pareça{" "}
             <strong className="font-medium text-[color:var(--charcoal)]">natural</strong>, não
             organizado.
           </p>
@@ -144,7 +147,12 @@ function CorporatePage() {
                 className={`reveal-stagger grid lg:grid-cols-2 gap-8 md:gap-12 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
               >
                 <div className="group overflow-hidden bg-[color:var(--sand)] aspect-[4/5] md:aspect-[5/6]">
-                  <CinematicEditorialImage image={b.image} priority={i === 0} className="h-full w-full" phase={i === 1 ? "b" : i === 2 ? "c" : "a"} />
+                  <CinematicEditorialImage
+                    image={b.image}
+                    priority={i === 0}
+                    className="h-full w-full"
+                    phase={i === 1 ? "b" : i === 2 ? "c" : "a"}
+                  />
                 </div>
                 <div>
                   <Eyebrow icon={<Icon strokeWidth={1.8} />}>{b.eyebrow}</Eyebrow>
@@ -196,8 +204,8 @@ function CorporatePage() {
           </SectionTitle>
           <span className="gold-rule mt-5 mx-auto max-w-[64px]" aria-hidden="true" />
           <p className="mt-5 text-[color:var(--charcoal-soft)] leading-relaxed">
-            Tempos de viagem reais, locais reais, parceiros reais. Desenhamos a proposta em torno
-            do que a vossa equipa realmente precisa — nunca um template copiado.
+            Tempos de viagem reais, locais reais, parceiros reais. Desenhamos a proposta em torno do
+            que a vossa equipa realmente precisa — nunca um template copiado.
           </p>
           <div className="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
             <CtaButton to="/pt/contact" variant="primary">

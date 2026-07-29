@@ -13,9 +13,7 @@ export function readMotionMs(customProperty: string, fallbackMs = 0): number {
   if (typeof window === "undefined" || typeof document === "undefined") {
     return fallbackMs;
   }
-  const raw = getComputedStyle(document.documentElement)
-    .getPropertyValue(customProperty)
-    .trim();
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(customProperty).trim();
   if (!raw) return fallbackMs;
   // "560ms" → 560, "0.56s" → 560
   if (raw.endsWith("ms")) return parseFloat(raw) || fallbackMs;

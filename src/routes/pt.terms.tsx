@@ -45,26 +45,25 @@ function TermsPage() {
         <div className="container-x max-w-2xl mx-auto">
           <Eyebrow className="mb-5">Legal</Eyebrow>
           <h1 className="serif mt-3 text-[2rem] md:text-[2.8rem] leading-[1.1] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium">
-            Termos e{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">condições.</span>
+            Termos e <span className="italic font-normal text-[color:var(--teal)]">condições.</span>
           </h1>
           <span aria-hidden="true" className="gold-rule mt-8 block max-w-[3rem]" />
 
           <div className="mt-10 space-y-7 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
             <p>
               A YES Experiences Portugal é um operador turístico português licenciado (RNAAT nº
-              31/2023), sediado em Sesimbra, que desenha viagens privadas por Portugal, com
-              recolhas em Lisboa, Cascais, Sintra, Sesimbra e Setúbal. Ao efetuar uma reserva
-              connosco, aceita os termos abaixo, que regem a reserva, o pagamento, o
-              cancelamento e a conduta da sua experiência privada.
+              31/2023), sediado em Sesimbra, que desenha viagens privadas por Portugal, com recolhas
+              em Lisboa, Cascais, Sintra, Sesimbra e Setúbal. Ao efetuar uma reserva connosco,
+              aceita os termos abaixo, que regem a reserva, o pagamento, o cancelamento e a conduta
+              da sua experiência privada.
             </p>
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
               Reservas e pagamento
             </h2>
             <p>
-              As reservas são confirmadas após a receção do pagamento. Os preços apresentados
-              são por grupo privado, salvo indicação em contrário. Todas as experiências são
-              operadas pela YES ou por parceiros locais cuidadosamente escolhidos.
+              As reservas são confirmadas após a receção do pagamento. Os preços apresentados são
+              por grupo privado, salvo indicação em contrário. Todas as experiências são operadas
+              pela YES ou por parceiros locais cuidadosamente escolhidos.
             </p>
             <h2 className="serif text-[1.4rem] text-[color:var(--charcoal)] font-medium">
               Cancelamentos
@@ -83,9 +82,9 @@ function TermsPage() {
               Responsabilidade
             </h2>
             <p>
-              A YES Experiences Portugal dispõe dos seguros exigidos pela lei portuguesa do
-              turismo. Os hóspedes participam nas atividades por sua conta e devem informar
-              qualquer condição que afete a sua capacidade de participação.
+              A YES Experiences Portugal dispõe dos seguros exigidos pela lei portuguesa do turismo.
+              Os hóspedes participam nas atividades por sua conta e devem informar qualquer condição
+              que afete a sua capacidade de participação.
             </p>
             <p className="text-[13px] text-[color:var(--charcoal-soft)]/80">
               Para os termos completos do operador, contacte-nos em{" "}

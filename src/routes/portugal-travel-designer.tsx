@@ -108,26 +108,39 @@ function PortugalTravelDesignerPage() {
         </p>
         <p>
           Some guests begin with one of our curated{" "}
-          <Link to="/experiences" className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]">
+          <Link
+            to="/experiences"
+            className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]"
+          >
             Signatures
           </Link>
           . Others adapt an existing experience or use the{" "}
-          <Link to="/studio-v3" className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]">
+          <Link
+            to="/studio-v3"
+            className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]"
+          >
             Studio
           </Link>{" "}
           to build something more personal.{" "}
-          <Link to="/multi-day" className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]">
+          <Link
+            to="/multi-day"
+            className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]"
+          >
             Multi-day journeys
           </Link>{" "}
           can connect different regions while preserving the same private, flexible approach.
         </p>
       </Section>
 
-      <Section tone="sand" eyebrow="Three ways to shape your Portugal" title="Signature, Tailor, Studio.">
+      <Section
+        tone="sand"
+        eyebrow="Three ways to shape your Portugal"
+        title="Signature, Tailor, Studio."
+      >
         <p>
-          Our Signatures are complete private experiences designed around a particular region,
-          story or tradition. They are ready to reserve, but still feel personal because the guide
-          and vehicle are dedicated exclusively to your party.
+          Our Signatures are complete private experiences designed around a particular region, story
+          or tradition. They are ready to reserve, but still feel personal because the guide and
+          vehicle are dedicated exclusively to your party.
         </p>
         <p>
           Tailor is for travellers who like the structure of a Signature but want to adjust part of
@@ -141,7 +154,11 @@ function PortugalTravelDesignerPage() {
         </p>
       </Section>
 
-      <Section tone="ivory" eyebrow="From one private day to a complete journey" title="A route that makes geographical and emotional sense.">
+      <Section
+        tone="ivory"
+        eyebrow="From one private day to a complete journey"
+        title="A route that makes geographical and emotional sense."
+      >
         <p>
           Travel design may begin with a single day from Lisbon or extend across several regions of
           Portugal.
@@ -159,7 +176,11 @@ function PortugalTravelDesignerPage() {
         </p>
       </Section>
 
-      <Section tone="sand" eyebrow="Designed locally, operated personally" title="A licensed local operator, not a reseller.">
+      <Section
+        tone="sand"
+        eyebrow="Designed locally, operated personally"
+        title="A licensed local operator, not a reseller."
+      >
         <p>A beautiful itinerary is only useful when it can work in real life.</p>
         <p>
           YES Experiences Portugal is a licensed Portuguese tour operator based in Sesimbra. The
@@ -177,7 +198,11 @@ function PortugalTravelDesignerPage() {
         </p>
       </Section>
 
-      <Section tone="ivory" eyebrow="Who travel design is for" title="Privacy and flexibility, without the coordination.">
+      <Section
+        tone="ivory"
+        eyebrow="Who travel design is for"
+        title="Privacy and flexibility, without the coordination."
+      >
         <p>
           Travel design is especially valuable for travellers who want privacy and flexibility but
           do not want to spend weeks coordinating every reservation themselves.

@@ -30,7 +30,9 @@ describe("tailor pricing SSOT", () => {
 
   it("each principal stop removed drops the per-pax by 5%", () => {
     expect(tailorAdjustedPerPax(200, 1)).toBe(Math.round(200 * (1 - TAILOR_PRINCIPAL_STEP_PCT)));
-    expect(tailorAdjustedPerPax(200, 2)).toBe(Math.round(200 * (1 - 2 * TAILOR_PRINCIPAL_STEP_PCT)));
+    expect(tailorAdjustedPerPax(200, 2)).toBe(
+      Math.round(200 * (1 - 2 * TAILOR_PRINCIPAL_STEP_PCT)),
+    );
   });
 
   it("cap: no reduction beyond −15% off direct", () => {

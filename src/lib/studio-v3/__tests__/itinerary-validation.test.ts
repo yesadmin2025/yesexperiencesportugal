@@ -48,11 +48,7 @@ describe("validateItinerary — state machine", () => {
 
   it("rejects when driving exceeds the absolute cap", () => {
     const t = resolveThresholds("arrabida");
-    const stops = [
-      mkStop("a", "winery"),
-      mkStop("b", "lunch"),
-      mkStop("c", "viewpoint"),
-    ];
+    const stops = [mkStop("a", "winery"), mkStop("b", "lunch"), mkStop("c", "viewpoint")];
     const r = validateItinerary({
       region: "arrabida",
       stops,
@@ -78,11 +74,7 @@ describe("validateItinerary — state machine", () => {
 
   it("flags review (soft) when driving is over preferred but under cap", () => {
     // Long-dwell day where drivingPct lands in (preferred, max]
-    const stops = [
-      mkStop("a", "workshop"),
-      mkStop("b", "lunch"),
-      mkStop("c", "viewpoint"),
-    ];
+    const stops = [mkStop("a", "workshop"), mkStop("b", "lunch"), mkStop("c", "viewpoint")];
     const r = validateItinerary({
       region: "arrabida",
       stops,

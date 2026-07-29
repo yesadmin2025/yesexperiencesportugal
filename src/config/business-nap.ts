@@ -46,7 +46,8 @@ export function footerLegalLine(year: number = new Date().getFullYear()): string
 }
 
 /** Compact credential clause — footer tagline / metadata sentence. */
-export const CREDENTIAL_LINE = `Licensed tour operator ${LICENSE_LABEL} · ${BASED_IN_SHORT}` as const;
+export const CREDENTIAL_LINE =
+  `Licensed tour operator ${LICENSE_LABEL} · ${BASED_IN_SHORT}` as const;
 
 /**
  * Canonical trust one-liner. Use this exact string anywhere the site
@@ -65,10 +66,8 @@ export const WEBSITE_URL = "https://yesexperiencesportugal.com" as const;
  * Empty string = not yet confirmed by the operator; UIs must skip missing links.
  */
 export const SOCIAL = {
-  instagram:
-    "https://www.instagram.com/yesexperiencesportugal",
-  facebook:
-    "https://www.facebook.com/yesexperiencesportugal",
+  instagram: "https://www.instagram.com/yesexperiencesportugal",
+  facebook: "https://www.facebook.com/yesexperiencesportugal",
   tripadvisor:
     "https://www.tripadvisor.com/Attraction_Review-g227946-d34430097-Reviews-Yes_Experiences_Portugal-Sesimbra_Setubal_District_Alentejo.html",
   google:
@@ -113,4 +112,3 @@ export const CANCELLATION_STUDIO =
   "Studio and custom-built experiences show final cancellation terms before checkout." as const;
 export const CANCELLATION_SHORT =
   "Cancellation terms are shown before checkout and may vary by experience type." as const;
-

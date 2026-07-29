@@ -58,8 +58,8 @@ const Alert: React.FC<ViatorDriftAlertProps> = (p) => {
         <Container style={container}>
           <Heading style={h1}>Viator drift report</Heading>
           <Text style={{ color: "#333", fontSize: 14 }}>
-            Weekly comparison of scraped Viator inclusions vs the YES source of truth.
-            No SoT files were changed — review below and patch what still matters.
+            Weekly comparison of scraped Viator inclusions vs the YES source of truth. No SoT files
+            were changed — review below and patch what still matters.
           </Text>
 
           <Section style={{ marginTop: 16 }}>

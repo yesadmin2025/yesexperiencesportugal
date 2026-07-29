@@ -126,7 +126,6 @@ try {
 const report = { generatedAt, ...body };
 writeFileSync(OUT_FILE, JSON.stringify(report, null, 2));
 
-
 const tag = counts.mismatch === 0 ? "PASS" : "MISMATCH";
 console.log(
   `[brand-audit] ${tag} — scanned ${scanned} files, ${counts.total} hex refs ` +

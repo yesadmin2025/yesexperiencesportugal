@@ -53,9 +53,7 @@ test.describe("Studio V3 · Reveal a11y @ 393×588", () => {
       .evaluateAll((buttons) =>
         buttons.map((b) => ({
           id: b.getAttribute("data-addon-id"),
-          name:
-            b.getAttribute("aria-label") ??
-            (b.textContent ?? "").replace(/\s+/g, " ").trim(),
+          name: b.getAttribute("aria-label") ?? (b.textContent ?? "").replace(/\s+/g, " ").trim(),
           hasPressed: b.hasAttribute("aria-pressed") || b.hasAttribute("aria-checked"),
         })),
       );
@@ -78,9 +76,7 @@ test.describe("Studio V3 · Reveal a11y @ 393×588", () => {
     ] as const) {
       await expect(cta).toBeVisible();
       const name = await cta.evaluate(
-        (el) =>
-          el.getAttribute("aria-label") ??
-          (el.textContent ?? "").replace(/\s+/g, " ").trim(),
+        (el) => el.getAttribute("aria-label") ?? (el.textContent ?? "").replace(/\s+/g, " ").trim(),
       );
       expect(name).toMatch(pattern);
     }
