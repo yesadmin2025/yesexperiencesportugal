@@ -1,4 +1,17 @@
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
+
+// Specs import real app modules, which in turn import images. Node can't parse
+// a JPEG as JavaScript, so we preload a stub hook into every worker process
+// (workers inherit this env) that resolves asset imports to their URL string.
+const assetHook = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "e2e",
+  "asset-require-hook.cjs",
+);
+process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS ?? ""} --require ${assetHook}`.trim();
+
 
 /**
  * Playwright config for E2E tests.
