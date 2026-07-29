@@ -62,7 +62,6 @@ export function RevealImage({
       data-motion={motion}
       data-reveal-ready={active ? "1" : undefined}
     >
-      
       <img alt={alt} className={cn("block h-full w-full object-cover", className)} {...imgProps} />
     </div>
   );
