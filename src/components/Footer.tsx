@@ -271,6 +271,13 @@ export function Footer() {
             <PaymentMethodsRow />
           </div>
 
+          {/* Trust — independent review certification */}
+          <div className="mt-10">
+            <TrustindexCertificate />
+          </div>
+
+
+
           {/* Legal bar */}
           <div className="mt-8 pt-6 border-t border-[color:var(--gold-warm)]/15">
             <div
