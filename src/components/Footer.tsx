@@ -4,6 +4,7 @@ import { ShieldCheck, BadgeCheck, Lock, ChevronDown } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { PaymentMethodsRow } from "@/components/trust/PaymentMethodsRow";
 import { LivroReclamacoesBadge } from "@/components/trust/LivroReclamacoesBadge";
+import { TrustindexCertificate } from "@/components/trust/TrustindexCertificate";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AccessibleIconLink } from "@/components/AccessibleIconLink";
 import {
