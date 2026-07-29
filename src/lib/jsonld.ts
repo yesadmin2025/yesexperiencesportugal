@@ -11,6 +11,7 @@
  */
 
 import { PHONE_TEL, SOCIAL, WEBSITE_URL } from "@/config/business-nap";
+import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
 
 export const SITE_URL = WEBSITE_URL;
 
