@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-29T20:31:19.920Z",
-  "filesScanned": 936,
+  "generatedAt": "2026-07-29T21:52:47.208Z",
+  "filesScanned": 937,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 398,
+    "total": 404,
     "approved": 102,
-    "allowlisted": 68,
-    "mismatch": 228
+    "allowlisted": 71,
+    "mismatch": 231
   },
   "findings": [
     {
@@ -1907,20 +1907,74 @@
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 30,
-      "col": 44,
-      "raw": "#0E9E63",
-      "normalized": "#0e9e63",
-      "snippet": "<circle cx=\"12\" cy=\"12\" r=\"12\" fill=\"#0E9E63\" />",
+      "line": 21,
+      "col": 27,
+      "raw": "#3E9C6D",
+      "normalized": "#3e9c6d",
+      "snippet": "const TRUSTINDEX_GREEN = \"#3E9C6D\";",
       "status": "mismatch"
     },
     {
       "file": "src/components/trust/TrustindexBadge.tsx",
-      "line": 34,
+      "line": 41,
       "col": 17,
       "raw": "#FFFFFF",
       "normalized": "#ffffff",
       "snippet": "stroke=\"#FFFFFF\"",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/components/trust/TrustindexBadge.tsx",
+      "line": 57,
+      "col": 95,
+      "raw": "#FFFFFF",
+      "normalized": "#ffffff",
+      "snippet": "className=\"tap inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-[6px] bg-[#FFFFFF] px-2 py-1.5 transition-opacity duration-[var(--dur-quick)] hove",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/components/trust/TrustindexBadge.tsx",
+      "line": 60,
+      "col": 103,
+      "raw": "#1A1A1A",
+      "normalized": "#1a1a1a",
+      "snippet": "<span className=\"flex flex-col gap-[2px] font-[family-name:var(--font-sans)] leading-none text-[#1A1A1A]\">",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/trust/TrustindexBadge.tsx",
+      "line": 83,
+      "col": 69,
+      "raw": "#FFFFFF",
+      "normalized": "#ffffff",
+      "snippet": "<span className=\"flex items-center justify-center gap-1 bg-[#FFFFFF] px-1.5 py-[3px] text-[8.5px] sm:px-2 sm:text-[10px] text-[#1A1A1A]\" style={{ fontWeight: 70",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/components/trust/TrustindexBadge.tsx",
+      "line": 83,
+      "col": 136,
+      "raw": "#1A1A1A",
+      "normalized": "#1a1a1a",
+      "snippet": "<span className=\"flex items-center justify-center gap-1 bg-[#FFFFFF] px-1.5 py-[3px] text-[8.5px] sm:px-2 sm:text-[10px] text-[#1A1A1A]\" style={{ fontWeight: 70",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/trust/TrustindexBadge.tsx",
+      "line": 87,
+      "col": 57,
+      "raw": "#111111",
+      "normalized": "#111111",
+      "snippet": "<span className=\"flex flex-col items-center bg-[#111111] px-1.5 py-[3px] sm:px-2 text-[#FFFFFF]\">",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/trust/TrustindexBadge.tsx",
+      "line": 87,
+      "col": 96,
+      "raw": "#FFFFFF",
+      "normalized": "#ffffff",
+      "snippet": "<span className=\"flex flex-col items-center bg-[#111111] px-1.5 py-[3px] sm:px-2 text-[#FFFFFF]\">",
       "status": "allowlisted"
     },
     {
