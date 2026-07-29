@@ -295,8 +295,9 @@ export function Footer() {
             </div>
 
             {/* Trust seals — review certificate + official complaints book,
-                side by side so the footer close stays compact. */}
-            <div className="mt-6 flex w-full min-w-0 flex-wrap items-center justify-center gap-x-4 gap-y-3 text-center sm:gap-x-6">
+                side by side on one line at every width (scaled down on very
+                narrow phones instead of wrapping). */}
+            <div className="mt-6 flex w-full min-w-0 flex-nowrap items-center justify-center gap-x-3 text-center max-[359px]:scale-[0.86] sm:gap-x-6">
               <TrustindexBadge />
               <LivroReclamacoesBadge />
             </div>
