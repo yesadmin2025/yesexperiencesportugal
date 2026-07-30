@@ -71,14 +71,25 @@ function isHeroLastFlag(): boolean {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function CinematicHero() {
-  const skipIntro = useMemo(() => isHeroLastFlag() || prefersReducedMotion(), []);
+  // Hydration-safe: SSR always renders the pre-intro state, and the
+  // "skip" decision (?hero=last / reduced motion) resolves after mount.
+  // Computing it during render caused a server/client attribute mismatch
+  // that React refuses to patch, freezing data-hero-composed at "false".
+  const [skipIntro, setSkipIntro] = useState(false);
 
-  const [line1, setLine1] = useState<boolean>(skipIntro);
-  const [line2, setLine2] = useState<boolean>(skipIntro);
-  const [composed, setComposed] = useState<boolean>(skipIntro);
+  const [line1, setLine1] = useState(false);
+  const [line2, setLine2] = useState(false);
+  const [composed, setComposed] = useState(false);
 
   useEffect(() => {
-    if (skipIntro) return;
+    const skip = isHeroLastFlag() || prefersReducedMotion();
+    if (skip) {
+      setSkipIntro(true);
+      setLine1(true);
+      setLine2(true);
+      setComposed(true);
+      return;
+    }
     const t1 = window.setTimeout(() => setLine1(true), LINE1_DELAY_MS);
     const t2 = window.setTimeout(() => setLine2(true), LINE2_DELAY_MS);
     const t3 = window.setTimeout(() => setComposed(true), CTA_DELAY_MS);
@@ -87,7 +98,8 @@ export function CinematicHero() {
       window.clearTimeout(t2);
       window.clearTimeout(t3);
     };
-  }, [skipIntro]);
+  }, []);
+
 
   return (
     <section
