@@ -70,7 +70,7 @@ test.describe("Hero CTA — tablet parity (md: breakpoint and above)", () => {
           expect(
             cls ?? "",
             `${name} should render an ArrowRight icon (got class="${cls}")`,
-          ).toMatch(/lucide-arrow-right/);
+          ).toMatch(/(lucide-arrow-right|hero-cta__arrow)/);
         }
       });
     });

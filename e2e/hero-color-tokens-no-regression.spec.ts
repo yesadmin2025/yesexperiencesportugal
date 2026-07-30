@@ -1,33 +1,24 @@
 /**
- * Hero color tokens — non-regression guard.
+ * Hero color tokens — non-regression guard (v4 "One Breath").
  *
- * Standalone, fast-running spec re-asserting on every E2E execution that
- * the hero only ever paints with the approved YES brand tokens:
+ * The pre-v4 hero painted an eyebrow, an ivory headline line and a
+ * gold-soft italic line as separate overlay fields. v4 renders a single
+ * centered two-line stanza in Georgia italic, gold-soft #F1D8AB, over
+ * the held clip. Everything else (eyebrow, subheadline, microcopy) now
+ * lives in sr-only probes, which inherit page text color and must not
+ * be color-asserted.
  *
- *   • eyebrow        → gold       #C9A96A
- *   • headlineLine1  → ivory      #FAF8F3   (Montserrat 400, no italic)
- *   • headlineLine2  → gold-soft  #E1CFA6   (Georgia italic 400)
- *
- * The existing `hero-typography-colors.spec.ts` covers a wider surface
- * (debug overlay, opacity, text-shadow). This file is intentionally
- * narrow — one focused regression test per visual contract — so failures
- * point at exactly which token drifted, and the suite stays cheap to
- * include in every run / required-check matrix.
- *
- * Channel tolerance ±10/255 absorbs sub-pixel anti-alias jitter; any
- * drift larger than that fails the build.
+ * This spec locks what is actually painted: both stanza lines stay
+ * gold-soft serif italic, never drifting to ivory/white or a
+ * non-brand hue. Channel tolerance ±10/255 absorbs anti-alias jitter.
  */
 
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 type RGB = { r: number; g: number; b: number };
 
 const CHANNEL_TOL = 10;
-
-const TOKENS = {
-  gold: { r: 0xc9, g: 0xa9, b: 0x6a },
-  ivory: { r: 0xfa, g: 0xf8, b: 0xf3 },
-} as const satisfies Record<string, RGB>;
+const GOLD_SOFT: RGB = { r: 0xf1, g: 0xd8, b: 0xab };
 
 function parseColor(input: string): RGB {
   const m = input.replace(/\s+/g, "").match(/^rgba?\((\d+),(\d+),(\d+)/i);
@@ -44,23 +35,8 @@ function fmt(c: RGB): string {
   return `rgb(${c.r},${c.g},${c.b}) / #${h(c.r)}${h(c.g)}${h(c.b)}`;
 }
 
-async function readField(page: Page, selector: string) {
-  return page.evaluate((sel) => {
-    const el = document.querySelector(sel) as HTMLElement | null;
-    if (!el) throw new Error(`not found: ${sel}`);
-    const cs = window.getComputedStyle(el);
-    return {
-      color: cs.color,
-      fontStyle: cs.fontStyle,
-      fontWeight: cs.fontWeight,
-      fontFamily: cs.fontFamily,
-    };
-  }, selector);
-}
-
 test.describe("Hero color tokens — non-regression", () => {
   test.beforeEach(async ({ page }) => {
-    // Freeze on final beat so every reveal target is in its painted end-state.
     await page.goto("/?hero=last", { waitUntil: "domcontentloaded" });
     await page.locator('[data-hero-cinematic="true"]').waitFor({ state: "visible" });
     await page.evaluate(async () => {
@@ -70,38 +46,28 @@ test.describe("Hero color tokens — non-regression", () => {
     });
   });
 
-  test("eyebrow remains brand gold #C9A96A", async ({ page }) => {
-    const { color } = await readField(page, '[data-hero-field="eyebrow"]');
-    const actual = parseColor(color);
-    expect(
-      within(actual, TOKENS.gold),
-      `Hero eyebrow drifted: got ${fmt(actual)}, expected gold ${fmt(TOKENS.gold)}`,
-    ).toBe(true);
-  });
+  test("both stanza lines stay gold-soft #F1D8AB, serif italic 400", async ({ page }) => {
+    const lines = page.locator('[data-hero-stanza="true"] > p');
+    await expect(lines).toHaveCount(2);
 
-  test("headline line 1 remains ivory #FAF8F3, Montserrat 400, upright", async ({ page }) => {
-    const field = await readField(page, '[data-hero-field="headlineLine1"]:not(h1)');
-    const actual = parseColor(field.color);
-    expect(
-      within(actual, TOKENS.ivory),
-      `Hero headline line 1 drifted: got ${fmt(actual)}, expected ivory ${fmt(TOKENS.ivory)}`,
-    ).toBe(true);
-    expect(field.fontStyle, "headlineLine1 must NOT be italic").toBe("normal");
-    expect(field.fontWeight, "headlineLine1 must stay weight 400").toBe("400");
-  });
-
-  test("headline line 2 remains gold-soft #E1CFA6, Georgia italic 400", async ({ page }) => {
-    const field = await readField(page, '[data-hero-field="headlineLine2"]');
-    const actual = parseColor(field.color);
-    expect(
-      within(actual, { r: 0xe1, g: 0xcf, b: 0xa6 }),
-      `Hero italic line drifted: got ${fmt(actual)}, expected gold-soft rgb(225,207,166) / #e1cfa6`,
-    ).toBe(true);
-    expect(field.fontStyle, "headlineLine2 must remain italic").toBe("italic");
-    expect(field.fontWeight, "headlineLine2 must stay weight 400").toBe("400");
-    expect(
-      field.fontFamily.toLowerCase(),
-      "headlineLine2 must use the Georgia serif italic token",
-    ).toContain("georgia");
+    for (let i = 0; i < 2; i += 1) {
+      const style = await lines.nth(i).evaluate((el) => {
+        const cs = getComputedStyle(el);
+        return {
+          color: cs.color,
+          fontStyle: cs.fontStyle,
+          fontWeight: cs.fontWeight,
+          fontFamily: cs.fontFamily.toLowerCase(),
+        };
+      });
+      const actual = parseColor(style.color);
+      expect(
+        within(actual, GOLD_SOFT),
+        `Stanza line ${i + 1} drifted: got ${fmt(actual)}, expected ${fmt(GOLD_SOFT)}`,
+      ).toBe(true);
+      expect(style.fontStyle, `stanza line ${i + 1} must remain italic`).toBe("italic");
+      expect(style.fontWeight, `stanza line ${i + 1} must stay weight 400`).toBe("400");
+      expect(style.fontFamily, `stanza line ${i + 1} must use the serif token`).toContain("georgia");
+    }
   });
 });

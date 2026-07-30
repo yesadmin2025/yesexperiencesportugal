@@ -60,7 +60,7 @@ test.describe("Hero CTA — primary vs secondary parity (mobile)", () => {
   test("both CTAs render an arrow icon (not a decorative replacement)", async ({ page }) => {
     await gotoHero(page);
 
-    // lucide-react renders <svg class="lucide lucide-arrow-right ...">
+    // Brand arrow renders <svg class="hero-cta__arrow">; lucide fallback allowed.
     // Asserting on the class keeps the contract explicit: if someone
     // swaps the secondary CTA's arrow for a sparkle/diamond/etc, this
     // fails immediately.
@@ -70,7 +70,7 @@ test.describe("Hero CTA — primary vs secondary parity (mobile)", () => {
       await expect(svg).toBeVisible();
       const cls = await svg.getAttribute("class");
       expect(cls ?? "", `${name} should render an ArrowRight icon (got class="${cls}")`).toMatch(
-        /lucide-arrow-right/,
+        /(lucide-arrow-right|hero-cta__arrow)/,
       );
     }
   });

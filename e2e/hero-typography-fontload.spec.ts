@@ -108,78 +108,55 @@ test.describe("Hero typography — font families & scale (post font load)", () =
 
     const isMobile = testInfo.project.name === "mobile-chromium";
 
-    const eyebrow = await readComputed(page, '[data-hero-field="eyebrow"]');
-    const line1 = await readComputed(page, '[data-hero-field="headlineLine1"]:not(h1)');
-    const line2 = await readComputed(page, '[data-hero-field="headlineLine2"]');
-    const sub = await readComputed(page, '[data-hero-field="subheadline"]');
-    const micro = await readComputed(page, '[data-hero-field="microcopy"]');
+    const line1 = await readComputed(page, '[data-hero-stanza="true"] > p:nth-child(1)');
+    const line2 = await readComputed(page, '[data-hero-stanza="true"] > p:nth-child(2)');
+    const primaryCta = await readComputed(page, 'a[data-hero-field="primaryCta"]');
+    const secondaryCta = await readComputed(page, 'a[data-hero-field="secondaryCta"]');
 
-    // Attach the captured snapshot for debugging on failure.
     await testInfo.attach(`hero-typography-fontload-${testInfo.project.name}.json`, {
-      body: JSON.stringify({ eyebrow, line1, line2, sub, micro }, null, 2),
+      body: JSON.stringify({ line1, line2, primaryCta, secondaryCta }, null, 2),
       contentType: "application/json",
     });
 
-    // ── Eyebrow — Inter, tracked, normal style ────────────────────────
-    expect(eyebrow.primaryFamily, "eyebrow font-family").toBe("inter");
-    expect(eyebrow.fontStyle, "eyebrow font-style").toBe("normal");
-    expect(eyebrow.letterSpacingEm, "eyebrow tracking").toBeGreaterThan(0.1);
-
-    // ── Headline line 1 — Montserrat, 400, NOT italic, ivory ──────────
-    expect(line1.primaryFamily, "headline L1 font-family").toBe("montserrat");
-    expect(line1.fontWeight, "headline L1 weight").toBe("400");
-    expect(line1.fontStyle, "headline L1 style").toBe("normal");
-    // line-height ratio between 1.0 and 1.12 — premium editorial leading
-    expect(line1.lineHeightRatio).toBeGreaterThanOrEqual(0.98);
-    expect(line1.lineHeightRatio).toBeLessThanOrEqual(1.14);
-    // tracking is near-zero (-0.005em design tightening allowed)
-    expect(Math.abs(line1.letterSpacingEm)).toBeLessThan(0.012);
-
-    // Mobile-specific scale: 2.125rem = 34px (Tailwind base 16px). Allow
-    // ±1.5px so an OS that reports rem differently doesn't false-fail.
-    if (isMobile) {
-      // 2.125rem = 34px on mobile (Pixel 5, base; sm kicks in at 640px).
-      expect(line1.fontSizePx, "headline L1 mobile size").toBeGreaterThanOrEqual(32.5);
-      expect(line1.fontSizePx, "headline L1 mobile size").toBeLessThanOrEqual(35.5);
-    } else {
-      // Desktop (≥1024px) → 4.75rem = 76px. Tablet ≥768px → 4rem = 64px.
-      expect(line1.fontSizePx, "headline L1 desktop size").toBeGreaterThanOrEqual(60);
-      expect(line1.fontSizePx, "headline L1 desktop size").toBeLessThanOrEqual(80);
+    // ── Stanza — Georgia italic 400, gold-soft, tight editorial leading ──
+    for (const [label, line] of [
+      ["stanza L1", line1],
+      ["stanza L2", line2],
+    ] as const) {
+      expect(line.primaryFamily, `${label} font-family`).toBe("georgia");
+      expect(line.fontStyle, `${label} must be italic`).toBe("italic");
+      expect(line.fontWeight, `${label} weight`).toBe("400");
+      expect(line.lineHeightRatio, `${label} leading`).toBeGreaterThanOrEqual(1.15);
+      expect(line.lineHeightRatio, `${label} leading`).toBeLessThanOrEqual(1.4);
+      // Gold-soft ≈ #F1D8AB → R > G > B, clearly not ivory/white.
+      const m = line.color.match(/\d+/g)?.map(Number) ?? [];
+      expect(m.length, `${label} color parseable`).toBeGreaterThanOrEqual(3);
+      expect(m[0], `${label} gold R > G`).toBeGreaterThan(m[1]);
+      expect(m[1], `${label} gold G > B`).toBeGreaterThan(m[2]);
     }
 
-    // ── Headline line 2 — Georgia, italic, weight 400, gold-soft ──────
-    expect(line2.primaryFamily, "headline L2 font-family").toBe("georgia");
-    expect(line2.fontStyle, "headline L2 must be italic").toBe("italic");
-    expect(line2.fontWeight, "headline L2 weight").toBe("400");
-    // Inherits scale from h1 — assert it matches line 1 within 1px.
+    // clamp(28px, 4.6vw, 50px) — mobile lands at the floor, desktop higher.
+    expect(line1.fontSizePx, "stanza size floor").toBeGreaterThanOrEqual(27.5);
+    expect(line1.fontSizePx, "stanza size ceiling").toBeLessThanOrEqual(50.5);
+    if (!isMobile) {
+      expect(line1.fontSizePx, "stanza scales up beyond mobile").toBeGreaterThanOrEqual(30);
+    }
     expect(
       Math.abs(line2.fontSizePx - line1.fontSizePx),
-      "L2 size should match L1",
+      "stanza L2 size should match L1",
     ).toBeLessThanOrEqual(1.5);
-    // Color sanity: gold-soft ≈ #E1CFA6 → R>G>B and clearly not ivory.
-    const m = line2.color.match(/\d+/g)?.map(Number) ?? [];
-    expect(m.length, "L2 color parseable").toBeGreaterThanOrEqual(3);
-    const [r, g, b] = m;
-    expect(r, "gold R > G").toBeGreaterThan(g);
-    expect(g, "gold G > B").toBeGreaterThan(b);
 
-    // ── Subheadline — Inter, generous leading ────────────────────────
-    expect(sub.primaryFamily, "subheadline font-family").toBe("inter");
-    expect(sub.fontStyle, "subheadline style").toBe("normal");
-    // 14.5px on mobile, 17–18px elsewhere
-    if (isMobile) {
-      expect(sub.fontSizePx).toBeGreaterThanOrEqual(13.5);
-      expect(sub.fontSizePx).toBeLessThanOrEqual(15.5);
-    } else {
-      expect(sub.fontSizePx).toBeGreaterThanOrEqual(16);
-      expect(sub.fontSizePx).toBeLessThanOrEqual(19);
+    // ── CTAs — Inter, uppercase, generously tracked ──────────────────
+    for (const [label, cta] of [
+      ["primary CTA", primaryCta],
+      ["secondary CTA", secondaryCta],
+    ] as const) {
+      expect(cta.primaryFamily, `${label} font-family`).toBe("inter");
+      expect(cta.fontStyle, `${label} style`).toBe("normal");
+      expect(cta.letterSpacingEm, `${label} tracking`).toBeGreaterThanOrEqual(0.12);
+      expect(cta.fontSizePx, `${label} size`).toBeGreaterThanOrEqual(10);
+      expect(cta.fontSizePx, `${label} size`).toBeLessThanOrEqual(13);
     }
-    // Body leading ≥ 1.6 — premium editorial rhythm
-    expect(sub.lineHeightRatio, "subheadline leading").toBeGreaterThanOrEqual(1.6);
-    expect(sub.lineHeightRatio, "subheadline leading").toBeLessThanOrEqual(1.85);
-
-    // ── Microcopy — Inter, tracked ─────────────────────────────────────
-    expect(micro.primaryFamily, "microcopy font-family").toBe("inter");
-    expect(micro.letterSpacingEm, "microcopy tracking").toBeGreaterThanOrEqual(0.03);
   });
 });
+
