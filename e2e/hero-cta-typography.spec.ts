@@ -23,10 +23,16 @@ async function gotoHero(page: Page) {
   const stanza = page.locator('[data-hero-stanza="true"]');
   await expect(stanza).toBeVisible();
   // …then the delayed CTA group fades in.
-  await page.waitForFunction(() => {
-    const el = document.querySelector('[data-hero-composed]') as HTMLElement | null;
-    return !!el && el.getAttribute("data-hero-composed") === "true";
-  });
+  const primary = page.getByRole("link", { name: "Create Your Story", exact: true });
+  await expect(primary).toBeVisible({ timeout: 30_000 });
+  await page.waitForFunction(
+    () => {
+      const el = document.querySelector('[data-hero-composed]') as HTMLElement | null;
+      return !!el && getComputedStyle(el).opacity === "1";
+    },
+    undefined,
+    { timeout: 30_000 },
+  );
   await page.waitForTimeout(250);
 }
 
