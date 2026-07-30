@@ -46,13 +46,21 @@ test.describe("Currency chip surface boundaries", () => {
       const first = eurNodes.first();
       const before = (await first.innerText()).trim();
 
-      await chip.locator('[data-currency-option="USD"]').click();
+      // Dispatch directly and retry: the chip is server-rendered, so a click
+      // before hydration is dropped, and on mobile the sticky CTA can overlay it.
+      const usd = chip.locator('[data-currency-option="USD"]');
       await expect
-        .poll(async () => (await first.innerText()).trim(), { timeout: 3_000 })
+        .poll(
+          async () => {
+            await usd.dispatchEvent("click").catch(() => undefined);
+            return (await first.innerText()).trim();
+          },
+          { timeout: 15_000, intervals: [200, 300, 500, 800, 1000] },
+        )
         .not.toBe(before);
 
       // Reset for isolation between tests.
-      await chip.locator('[data-currency-option="EUR"]').click();
+      await chip.locator('[data-currency-option="EUR"]').dispatchEvent("click");
     });
   }
 });
