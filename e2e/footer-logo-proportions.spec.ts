@@ -32,12 +32,16 @@ import { test, expect, type Page } from "@playwright/test";
 // transition into the md ladder. Anything ≥1024 is desktop and not
 // covered by this mobile-only spec.
 const MOBILE_BREAKPOINTS = [
-  { name: "iPhone SE", width: 375, height: 667, expectedNavH: 45, expectedFooterH: 46 }, // < md
-  { name: "Pixel 5", width: 393, height: 851, expectedNavH: 45, expectedFooterH: 46 }, // < md
-  { name: "iPhone 12", width: 390, height: 844, expectedNavH: 45, expectedFooterH: 46 }, // < md
-  { name: "iPad portrait", width: 768, height: 1024, expectedNavH: 50, expectedFooterH: 52 }, // md
+  { name: "iPhone SE", width: 375, height: 667, expectedNavH: 45, expectedFooterCssH: 46 }, // < md
+  { name: "Pixel 5", width: 393, height: 851, expectedNavH: 45, expectedFooterCssH: 46 }, // < md
+  { name: "iPhone 12", width: 390, height: 844, expectedNavH: 45, expectedFooterCssH: 46 }, // < md
+  { name: "iPad portrait", width: 768, height: 1024, expectedNavH: 50, expectedFooterCssH: 52 }, // md
 ] as const;
 
+// Must match `--logo-scale-gold-on-charcoal` in src/styles.css: the
+// gold-on-charcoal mark optically blooms on the dark surface, so it is
+// scaled down from its CSS box height.
+const EXPECTED_GOLD_SCALE = 0.95;
 // Footer/navbar heights are set explicitly per breakpoint (see the
 // `expectedFooterH` column above) — Navbar uses h-[45px] md:h-[50px],
 // Footer uses h-[46px] md:h-[52px]. The gold-on-charcoal mark reads
@@ -97,11 +101,11 @@ test.describe("Footer logo proportions match navbar (mobile)", () => {
 
       // ── Assertion 2: footer logo height = navbar height × gold scale.
       // This is THE proportionality check the user asked for.
-      const expectedFooterH = bp.expectedFooterH;
+      const expectedFooterH = bp.expectedFooterCssH * EXPECTED_GOLD_SCALE;
       expect(
         Math.abs(footerLogo.height - expectedFooterH),
         `Footer logo at ${bp.name} should render at ~${expectedFooterH.toFixed(2)}px ` +
-          `(navbar renders at ${bp.expectedNavH}px), got ${footerLogo.height.toFixed(2)}px. ` +
+          `(${bp.expectedFooterCssH}px box × ${EXPECTED_GOLD_SCALE} gold scale; navbar renders at ${bp.expectedNavH}px), got ${footerLogo.height.toFixed(2)}px. ` +
           `If you intentionally changed the logo height ladder, update MOBILE_BREAKPOINTS in this spec.`,
       ).toBeLessThanOrEqual(HEIGHT_TOLERANCE_PX);
 
