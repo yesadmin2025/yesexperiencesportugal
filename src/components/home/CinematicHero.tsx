@@ -241,18 +241,18 @@ export function CinematicHero() {
           </Link>
           <Link
             to="/experiences"
-            data-hero-field="primaryCta"
+            data-hero-field="secondaryCta"
             data-analytics="hero_choose_experience"
             data-analytics-placement="hero"
-            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center w-[252px] sm:w-auto sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-auto sm:min-w-[206px] px-7 py-[10px] text-[10.5px] sm:text-[11px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.24em",
+              letterSpacing: "0.14em",
               fontFamily: "Inter, system-ui, sans-serif",
               fontWeight: 450,
             }}
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
-            <span className="relative z-10">Choose your Experience</span>
+            <span className="relative z-10">Explore Signature Experiences</span>
           </Link>
         </div>
       </div>
