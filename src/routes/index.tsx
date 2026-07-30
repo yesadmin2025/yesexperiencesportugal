@@ -786,7 +786,7 @@ function HomePage() {
                             params={{ tourId: t.id }}
                             variant="primary"
                             size="sm"
-                            aria-label={`Reserve ${t.title}`}
+                            aria-label={`Check availability & reserve — ${t.title}`}
                           >
                             Check availability & reserve
                           </CtaButton>
@@ -794,7 +794,7 @@ function HomePage() {
                             to="/tours/$tourId/tailor"
                             params={{ tourId: t.id }}
                             variant="hairline"
-                            aria-label={`Tailor ${t.title}`}
+                            aria-label={`Tailor this day — ${t.title}`}
                           >
                             Tailor this day
                           </CtaButton>

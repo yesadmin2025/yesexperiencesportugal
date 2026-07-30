@@ -386,9 +386,10 @@ const HEADLINES: HeadlineSpec[] = [
     page: "home",
     role: "hero stanza line 1",
     file: "src/components/home/CinematicHero.tsx",
-    // Line 1 is the page's single <h1> (SEO + a11y); line 2 stays a <p>.
+    // Both stanza lines are decorative <p> elements; the semantic <h1>
+    // lives in the sr-only copy probe (see hero-copy specs).
     pattern:
-      /<h1\s+className="(font-serif italic font-normal m-0)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
+      /<p\s+className="(font-serif italic font-normal m-0)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
   },
   {
     page: "home",

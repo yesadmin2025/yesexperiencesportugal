@@ -38,7 +38,6 @@ const ROUTES: Array<{ slug: string; path: string; waitFor?: string }> = [
   // NOTE: /day-trips-from-lisbon is now a 301 to /local-stories/best-day-trips-from-lisbon,
   // and Local Stories articles render content-driven headings without the mixed
   // roman+italic emphasis pattern, so they are intentionally out of scope here.
-
 ];
 
 const EMPHASIS_SELECTOR =
@@ -68,7 +67,6 @@ async function prep(page: Page) {
   // fallback. Then disable animations / hide the hero film, which
   // would otherwise dominate any pixel diff on routes that include it.
   await page.evaluate(async () => {
-
     type FontFaceSetLike = { ready?: Promise<unknown> };
     const fonts = (document as unknown as { fonts?: FontFaceSetLike }).fonts;
     if (fonts?.ready) await fonts.ready;

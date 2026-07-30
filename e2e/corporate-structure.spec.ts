@@ -44,7 +44,7 @@ test.describe("/corporate structure", () => {
       "Client hosting & VIP",
       "Large corporate groups",
     ]) {
-      await expect(page.getByRole("heading", { name: title, level: 3 })).toBeVisible();
+      await expect(page.getByRole("heading", { name: title, level: 3, exact: true })).toBeVisible();
     }
   });
 

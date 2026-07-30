@@ -61,8 +61,8 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
   }) => {
     await gotoFinalCta(page);
 
-    const primary = page.locator("#final-cta a", { hasText: "Create Your Story" });
-    const ghost = page.locator("#final-cta a", { hasText: "Talk to a Local" });
+    const primary = page.locator("#final-cta a", { hasText: "Open the Studio" });
+    const ghost = page.locator("#final-cta a", { hasText: "Talk on WhatsApp" });
 
     await page.mouse.move(0, 0);
 
@@ -80,8 +80,8 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
   test("hover state — primary brightens to gold, ghost deepens to gold-deep", async ({ page }) => {
     await gotoFinalCta(page);
 
-    const primary = page.locator("#final-cta a", { hasText: "Create Your Story" });
-    const ghost = page.locator("#final-cta a", { hasText: "Talk to a Local" });
+    const primary = page.locator("#final-cta a", { hasText: "Open the Studio" });
+    const ghost = page.locator("#final-cta a", { hasText: "Talk on WhatsApp" });
 
     // PRIMARY HOVER (teal bg → arrow lifts gold-soft → gold)
     await primary.hover();
@@ -102,8 +102,8 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
   test("focus state — arrow color stays at rest value, focus ring is --gold", async ({ page }) => {
     await gotoFinalCta(page);
 
-    const primary = page.locator("#final-cta a", { hasText: "Create Your Story" });
-    const ghost = page.locator("#final-cta a", { hasText: "Talk to a Local" });
+    const primary = page.locator("#final-cta a", { hasText: "Open the Studio" });
+    const ghost = page.locator("#final-cta a", { hasText: "Talk on WhatsApp" });
 
     await primary.focus();
     const primaryFocus = await readColor(arrowOf(primary));
@@ -133,8 +133,8 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
   }) => {
     await gotoFinalCta(page);
 
-    const primary = page.locator("#final-cta a", { hasText: "Create Your Story" });
-    const ghost = page.locator("#final-cta a", { hasText: "Talk to a Local" });
+    const primary = page.locator("#final-cta a", { hasText: "Open the Studio" });
+    const ghost = page.locator("#final-cta a", { hasText: "Talk on WhatsApp" });
 
     // Sample all three states for both buttons; flag any that resolve
     // outside the approved gold ramp (gold | gold-soft | gold-deep).
@@ -196,8 +196,8 @@ test.describe("Final CTA arrow colors — primary vs ghost", () => {
   }) => {
     await gotoFinalCta(page);
 
-    const primary = page.locator("#final-cta a", { hasText: "Create Your Story" });
-    const ghost = page.locator("#final-cta a", { hasText: "Talk to a Local" });
+    const primary = page.locator("#final-cta a", { hasText: "Open the Studio" });
+    const ghost = page.locator("#final-cta a", { hasText: "Talk on WhatsApp" });
 
     /**
      * For a given CTA link, returns:

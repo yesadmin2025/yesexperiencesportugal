@@ -42,7 +42,8 @@ test.describe("Legal pages — NAP + license from single source of truth", () =>
       // innerText comes back uppercased — compare case-insensitively.
       const lower = text.toLowerCase();
       const hasLabel =
-        lower.includes(LICENSE_LABEL.toLowerCase()) || lower.includes(LICENSE_LABEL_PT.toLowerCase());
+        lower.includes(LICENSE_LABEL.toLowerCase()) ||
+        lower.includes(LICENSE_LABEL_PT.toLowerCase());
       expect(hasLabel, `${route} must show RNAAT label`).toBe(true);
       // mailto link must point at the canonical address.
       await expect(page.locator(`a[href="${EMAIL_HREF}"]`).first()).toHaveCount(1);

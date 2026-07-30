@@ -100,7 +100,6 @@ export function CinematicHero() {
     };
   }, []);
 
-
   return (
     <section
       data-section="hero"

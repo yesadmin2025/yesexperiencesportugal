@@ -27,7 +27,7 @@ async function gotoHero(page: Page) {
   await expect(primary).toBeVisible({ timeout: 30_000 });
   await page.waitForFunction(
     () => {
-      const el = document.querySelector('[data-hero-composed]') as HTMLElement | null;
+      const el = document.querySelector("[data-hero-composed]") as HTMLElement | null;
       return !!el && getComputedStyle(el).opacity === "1";
     },
     undefined,

@@ -1,4 +1,15 @@
+import { register } from "node:module";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
+
+// Same asset-import stub the main config installs: specs import app modules
+// that import images, which Node can't parse. Register once for the collector
+// process and again via NODE_OPTIONS for every worker.
+const e2eDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "e2e");
+register(pathToFileURL(path.join(e2eDir, "asset-esm-hook.mjs")).href);
+process.env.NODE_OPTIONS =
+  `${process.env.NODE_OPTIONS ?? ""} --import ${pathToFileURL(path.join(e2eDir, "register-asset-hook.mjs")).href}`.trim();
 
 // Local config that targets the already-running dev server on :8080.
 // The default playwright.config.ts boots its own server on :5173, which
