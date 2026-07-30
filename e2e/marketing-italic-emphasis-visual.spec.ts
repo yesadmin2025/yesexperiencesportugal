@@ -35,7 +35,9 @@ const ROUTES: Array<{ slug: string; path: string; waitFor?: string }> = [
   { slug: "multi-day", path: "/multi-day" },
   { slug: "proposals", path: "/proposals" },
   { slug: "corporate", path: "/corporate" },
-  { slug: "day-trips-from-lisbon", path: "/day-trips-from-lisbon" },
+  // /day-trips-from-lisbon is now a 301 to the canonical Local Stories article.
+  { slug: "local-stories-day-trips", path: "/local-stories/best-day-trips-from-lisbon" },
+
 ];
 
 const EMPHASIS_SELECTOR =
