@@ -38,7 +38,11 @@ test.describe("Legal pages — NAP + license from single source of truth", () =>
       const text = await bodyText(page, route);
       expect(text, `${route} must show ${EMAIL}`).toContain(EMAIL);
       // Either EN or PT label is acceptable per route locale.
-      const hasLabel = text.includes(LICENSE_LABEL) || text.includes(LICENSE_LABEL_PT);
+      // The footer renders the label uppercase via CSS text-transform, so
+      // innerText comes back uppercased — compare case-insensitively.
+      const lower = text.toLowerCase();
+      const hasLabel =
+        lower.includes(LICENSE_LABEL.toLowerCase()) || lower.includes(LICENSE_LABEL_PT.toLowerCase());
       expect(hasLabel, `${route} must show RNAAT label`).toBe(true);
       // mailto link must point at the canonical address.
       await expect(page.locator(`a[href="${EMAIL_HREF}"]`).first()).toHaveCount(1);
@@ -107,7 +111,10 @@ async function assertCanonicalFooter(page: Page, url: string) {
   await expect(footer, `${url}: footer must render`).toHaveCount(1);
   const footerText = await footer.innerText();
   expect(footerText, `${url}: footer must show ${EMAIL}`).toContain(EMAIL);
-  const hasLicense = footerText.includes(LICENSE_LABEL) || footerText.includes(LICENSE_LABEL_PT);
+  const footerLower = footerText.toLowerCase();
+  const hasLicense =
+    footerLower.includes(LICENSE_LABEL.toLowerCase()) ||
+    footerLower.includes(LICENSE_LABEL_PT.toLowerCase());
   expect(hasLicense, `${url}: footer must show RNAAT label`).toBe(true);
   await expect(page.locator(`footer a[href="${EMAIL_HREF}"]`).first()).toHaveCount(1);
 }
