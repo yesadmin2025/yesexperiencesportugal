@@ -38,6 +38,13 @@ import {
 const ROUTE = "/";
 
 /**
+ * Content sections only. Excludes the sonner toast live-region
+ * (`<section aria-live="polite">`), which is app chrome rendered by the
+ * root layout and is not part of the approved homepage structure.
+ */
+const CONTENT_SECTION_SELECTOR = "section:not([aria-live])";
+
+/**
  * Minimum bottom-padding of the previous section + top-padding of the
  * next, in CSS pixels, derived from the Tailwind floor in the spec.
  *
@@ -93,17 +100,19 @@ for (const vp of MOBILE_BREAKPOINTS) {
     });
 
     test("has exactly the approved number of top-level sections", async ({ page }) => {
-      const count = await page.evaluate(() => CONTENT_SECTIONS_JS.length);
+      const count = await page.locator(CONTENT_SECTION_SELECTOR).count();
       expect(count).toBe(APPROVED_SECTION_COUNT);
     });
 
     test("sections appear in the approved order with matching aria-labelledby", async ({
       page,
     }) => {
-      const ariaIds = await page.evaluate(() =>
-        Array.from(contentSections()).map(
-          (el) => el.getAttribute("aria-labelledby") ?? "",
-        ),
+      const ariaIds = await page.evaluate(
+        (sel) =>
+          Array.from(document.querySelectorAll(sel)).map(
+            (el) => el.getAttribute("aria-labelledby") ?? "",
+          ),
+        CONTENT_SECTION_SELECTOR,
       );
 
       expect(ariaIds.length).toBe(APPROVED_SECTION_COUNT);
@@ -123,8 +132,8 @@ for (const vp of MOBILE_BREAKPOINTS) {
 
     test("real vertical gaps between adjacent sections meet the spec floors", async ({ page }) => {
       // Force layout, then collect bounding boxes for every <section>.
-      const boxes = await page.evaluate(() => {
-        const list = Array.from(contentSections());
+      const boxes = await page.evaluate((sel) => {
+        const list = Array.from(document.querySelectorAll(sel));
         return list.map((el) => {
           const r = el.getBoundingClientRect();
           return {
@@ -133,7 +142,7 @@ for (const vp of MOBILE_BREAKPOINTS) {
             height: r.height,
           };
         });
-      });
+      }, CONTENT_SECTION_SELECTOR);
 
       expect(boxes.length).toBe(APPROVED_SECTION_COUNT);
 
