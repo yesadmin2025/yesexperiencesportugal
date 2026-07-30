@@ -28,7 +28,7 @@ import {
 
 async function bodyText(page: Page, url: string): Promise<string> {
   await page.goto(url, { waitUntil: "domcontentloaded" });
-  await page.waitForLoadState("networkidle").catch(() => undefined);
+  await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
   return page.locator("body").innerText();
 }
 
@@ -38,7 +38,11 @@ test.describe("Legal pages — NAP + license from single source of truth", () =>
       const text = await bodyText(page, route);
       expect(text, `${route} must show ${EMAIL}`).toContain(EMAIL);
       // Either EN or PT label is acceptable per route locale.
-      const hasLabel = text.includes(LICENSE_LABEL) || text.includes(LICENSE_LABEL_PT);
+      // The footer renders the label uppercase via CSS text-transform, so
+      // innerText comes back uppercased — compare case-insensitively.
+      const lower = text.toLowerCase();
+      const hasLabel =
+        lower.includes(LICENSE_LABEL.toLowerCase()) || lower.includes(LICENSE_LABEL_PT.toLowerCase());
       expect(hasLabel, `${route} must show RNAAT label`).toBe(true);
       // mailto link must point at the canonical address.
       await expect(page.locator(`a[href="${EMAIL_HREF}"]`).first()).toHaveCount(1);
@@ -62,7 +66,7 @@ test.describe("Footer parity across routes", () => {
   for (const route of routes) {
     test(`${route} footer uses canonical social + license`, async ({ page }) => {
       await page.goto(route, { waitUntil: "domcontentloaded" });
-      await page.waitForLoadState("networkidle").catch(() => undefined);
+      await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
 
       // Instagram + Facebook from SOCIAL constant.
       if (SOCIAL.instagram) {
@@ -107,7 +111,10 @@ async function assertCanonicalFooter(page: Page, url: string) {
   await expect(footer, `${url}: footer must render`).toHaveCount(1);
   const footerText = await footer.innerText();
   expect(footerText, `${url}: footer must show ${EMAIL}`).toContain(EMAIL);
-  const hasLicense = footerText.includes(LICENSE_LABEL) || footerText.includes(LICENSE_LABEL_PT);
+  const footerLower = footerText.toLowerCase();
+  const hasLicense =
+    footerLower.includes(LICENSE_LABEL.toLowerCase()) ||
+    footerLower.includes(LICENSE_LABEL_PT.toLowerCase());
   expect(hasLicense, `${url}: footer must show RNAAT label`).toBe(true);
   await expect(page.locator(`footer a[href="${EMAIL_HREF}"]`).first()).toHaveCount(1);
 }
@@ -128,7 +135,7 @@ test.describe("Signature product pages — canonical copy + CTAs", () => {
   for (const route of productRoutes) {
     test(`${route} shows canonical footer + approved CTAs`, async ({ page }) => {
       await page.goto(route, { waitUntil: "domcontentloaded" });
-      await page.waitForLoadState("networkidle").catch(() => undefined);
+      await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
 
       await assertCanonicalFooter(page, route);
       await assertNoLegacyCta(page, route);
@@ -150,7 +157,7 @@ test.describe("Signature product pages — canonical copy + CTAs", () => {
     page,
   }) => {
     await page.goto("/tours/arrabida-wine-allinclusive", { waitUntil: "domcontentloaded" });
-    await page.waitForLoadState("networkidle").catch(() => undefined);
+    await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
     const bodyText = await page.locator("body").innerText();
     for (const { q } of SIGNATURE_FAQ) {
       expect(bodyText, `SIGNATURE_FAQ question drifted from rendered page: "${q}"`).toContain(q);
@@ -161,7 +168,7 @@ test.describe("Signature product pages — canonical copy + CTAs", () => {
   // the deprecated Studio/custom variant, which lives on custom flows only.
   test("Signature product page shows Signature cancellation copy", async ({ page }) => {
     await page.goto("/tours/arrabida-wine-allinclusive", { waitUntil: "domcontentloaded" });
-    await page.waitForLoadState("networkidle").catch(() => undefined);
+    await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
     const bodyText = await page.locator("body").innerText();
     expect(
       bodyText,
@@ -175,7 +182,7 @@ test.describe("Tailor pages — footer parity + no legacy CTAs", () => {
     const route = `/tours/${slug}/tailor`;
     test(`${route} keeps canonical footer + approved CTA vocabulary`, async ({ page }) => {
       await page.goto(route, { waitUntil: "domcontentloaded" });
-      await page.waitForLoadState("networkidle").catch(() => undefined);
+      await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
 
       await assertCanonicalFooter(page, route);
       await assertNoLegacyCta(page, route);
@@ -204,7 +211,7 @@ test.describe("Checkout token page — canonical recovery copy on invalid token"
 
   test("invalid token renders the recovery state with approved copy", async ({ page }) => {
     await page.goto(INVALID_TOKEN_ROUTE, { waitUntil: "domcontentloaded" });
-    await page.waitForLoadState("networkidle").catch(() => undefined);
+    await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
 
     const bodyText = await page.locator("body").innerText();
 

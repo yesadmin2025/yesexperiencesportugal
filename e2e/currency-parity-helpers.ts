@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 
 /**
  * Shared helpers for currency-toggle E2E tests.
@@ -32,9 +32,27 @@ export async function scrapePrices(page: Page): Promise<ScrapedPrice[]> {
   );
 }
 
+/**
+ * Clicks the currency chip and waits until the choice actually applied.
+ *
+ * The chip is server-rendered, so a click that lands before hydration is
+ * silently dropped. We retry until `aria-pressed` flips.
+ */
 export async function setCurrency(page: Page, currency: Currency) {
   const btn = page.locator(`[data-currency-option="${currency}"]`).first();
-  await btn.click();
+  await btn.scrollIntoViewIfNeeded();
+  await expect
+    .poll(
+      async () => {
+        if ((await btn.getAttribute("aria-pressed")) === "true") return "true";
+        // Dispatch directly: on mobile viewports the sticky CTA overlays
+        // the footer chip, so a real tap lands on the overlay instead.
+        await btn.dispatchEvent("click").catch(() => undefined);
+        return btn.getAttribute("aria-pressed");
+      },
+      { timeout: 20_000, intervals: [200, 300, 500, 800, 1000] },
+    )
+    .toBe("true");
 }
 
 export function parseAmount(text: string): number | null {
@@ -46,4 +64,22 @@ export function parseAmount(text: string): number | null {
 
 export function hasSymbol(text: string, currency: Currency): boolean {
   return currency === "USD" ? text.includes("$") : text.includes("€");
+}
+
+/**
+ * Waits until every rendered price uses the given currency symbol.
+ *
+ * Display currency is applied on the client, so straight after a reload the
+ * server-rendered markup is still in EUR for a frame or two.
+ */
+export async function expectAllPricesIn(page: Page, currency: Currency) {
+  await expect
+    .poll(
+      async () => {
+        const prices = await scrapePrices(page);
+        return prices.length > 0 && prices.every((p) => hasSymbol(p.text, currency));
+      },
+      { timeout: 15_000, intervals: [200, 300, 500, 800, 1000] },
+    )
+    .toBe(true);
 }

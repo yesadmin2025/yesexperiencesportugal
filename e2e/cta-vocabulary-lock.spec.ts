@@ -18,7 +18,7 @@ import { LEGACY_CTAS } from "./copy-parity-constants";
 
 async function assertNoLegacyLabels(page: Page, url: string) {
   await page.goto(url, { waitUntil: "domcontentloaded" });
-  await page.waitForLoadState("networkidle").catch(() => undefined);
+  await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
   const bodyText = await page.locator("body").innerText();
   for (const legacy of LEGACY_CTAS) {
     expect(bodyText, `Legacy CTA "${legacy}" found on ${url}`).not.toContain(legacy);
