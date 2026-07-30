@@ -32,7 +32,9 @@ async function prepareHero(page: Page) {
   await page.goto("/?hero=last", { waitUntil: "domcontentloaded" });
 
   await page.locator('[data-hero-cinematic="true"]').waitFor({ state: "visible" });
-  await page.locator('[data-hero-stanza="true"] h1').waitFor({ state: "visible" });
+  // The semantic <h1> now lives in an sr-only probe; the visible stanza
+  // renders as <p> lines inside [data-hero-stanza].
+  await page.locator('[data-hero-stanza="true"] p').first().waitFor({ state: "visible" });
 
   await page.addStyleTag({
     content: `
