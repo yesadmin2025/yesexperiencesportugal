@@ -62,9 +62,17 @@ async function settle(page: Page) {
 }
 
 async function measureLogo(page: Page, selector: string) {
-  const box = await page.locator(selector).first().boundingBox();
+  const el = page.locator(selector).first();
+  const box = await el.boundingBox();
   if (!box) throw new Error(`Logo not found: ${selector}`);
-  return { width: box.width, height: box.height, aspect: box.width / box.height };
+  // Intrinsic artwork ratio. The navbar mark sits inside a fixed-width
+  // `overflow-hidden` span, so its *rendered* box is cropped and can't be
+  // used to prove the artwork isn't squashed — the natural ratio can.
+  const naturalAspect = await el.evaluate((img) => {
+    const i = img as HTMLImageElement;
+    return i.naturalWidth / i.naturalHeight;
+  });
+  return { width: box.width, height: box.height, aspect: naturalAspect };
 }
 
 test.describe("Footer logo proportions match navbar (mobile)", () => {
