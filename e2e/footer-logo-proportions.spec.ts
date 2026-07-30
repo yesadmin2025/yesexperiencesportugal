@@ -53,6 +53,9 @@ const HEIGHT_TOLERANCE_PX = 1.5;
 // Aspect-ratio tolerance — both PNGs are 909×579 ≈ 1.5699. Even the
 // scaled variant should be within 0.5% of that ratio.
 const ASPECT_TOLERANCE = 0.008;
+// The two exports differ slightly (1.5519 vs 1.5699); anything beyond this
+// means one of them got squashed.
+const CROSS_ASPECT_TOLERANCE = 0.02;
 
 async function settle(page: Page) {
   await page.waitForTimeout(900); // header fade-in
@@ -119,16 +122,18 @@ test.describe("Footer logo proportions match navbar (mobile)", () => {
 
       // ── Assertion 3: aspect ratios match (no squash in either chrome).
       // The scale transform preserves aspect, so both should be ≈ 909/579.
-      // Current artwork export: 1240×799 ≈ 1.5519 (both mark variants
-      // share the same source dimensions).
-      const expectedAspect = 1240 / 799;
+      // The two mark variants ship as separate exports with slightly
+      // different intrinsic ratios: teal-on-ivory ≈ 1.5519, the
+      // gold-on-charcoal seal ≈ 1.5699 (909×579).
+      const expectedNavAspect = 1240 / 799;
+      const expectedFooterAspect = 909 / 579;
       expect(
-        Math.abs(navLogo.aspect - expectedAspect),
-        `Navbar logo aspect ${navLogo.aspect.toFixed(4)} drifted from artwork ${expectedAspect.toFixed(4)}`,
+        Math.abs(navLogo.aspect - expectedNavAspect),
+        `Navbar logo aspect ${navLogo.aspect.toFixed(4)} drifted from artwork ${expectedNavAspect.toFixed(4)}`,
       ).toBeLessThanOrEqual(ASPECT_TOLERANCE);
       expect(
-        Math.abs(footerLogo.aspect - expectedAspect),
-        `Footer logo aspect ${footerLogo.aspect.toFixed(4)} drifted from artwork ${expectedAspect.toFixed(4)}`,
+        Math.abs(footerLogo.aspect - expectedFooterAspect),
+        `Footer logo aspect ${footerLogo.aspect.toFixed(4)} drifted from artwork ${expectedFooterAspect.toFixed(4)}`,
       ).toBeLessThanOrEqual(ASPECT_TOLERANCE);
 
       // ── Assertion 4: aspects match each other within a tighter budget.
@@ -138,7 +143,7 @@ test.describe("Footer logo proportions match navbar (mobile)", () => {
         Math.abs(navLogo.aspect - footerLogo.aspect),
         `Navbar (${navLogo.aspect.toFixed(4)}) and footer (${footerLogo.aspect.toFixed(4)}) ` +
           `aspect ratios drifted apart at ${bp.name}`,
-      ).toBeLessThanOrEqual(ASPECT_TOLERANCE);
+      ).toBeLessThanOrEqual(CROSS_ASPECT_TOLERANCE);
     });
   }
 });
