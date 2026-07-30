@@ -45,7 +45,9 @@ export async function setCurrency(page: Page, currency: Currency) {
     .poll(
       async () => {
         if ((await btn.getAttribute("aria-pressed")) === "true") return "true";
-        await btn.click({ force: true }).catch(() => undefined);
+        // Dispatch directly: on mobile viewports the sticky CTA overlays
+        // the footer chip, so a real tap lands on the overlay instead.
+        await btn.dispatchEvent("click").catch(() => undefined);
         return btn.getAttribute("aria-pressed");
       },
       { timeout: 20_000, intervals: [200, 300, 500, 800, 1000] },
