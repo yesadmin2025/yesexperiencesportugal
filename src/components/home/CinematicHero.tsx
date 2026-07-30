@@ -261,10 +261,10 @@ export function CinematicHero() {
 
       {/* ── SR-only / SSR probes — keep HERO_COPY locks happy ──────── */}
       <div className="sr-only">
-        <div className="hero-h1">
+        <h1 className="hero-h1">
           <span data-hero-field="headlineLine1">{HERO_COPY.headlineLine1}</span>{" "}
           <span data-hero-field="headlineLine2">{HERO_COPY.headlineLine2}</span>
-        </div>
+        </h1>
         <p data-hero-field="eyebrow">{HERO_COPY.eyebrow}</p>
         <p data-hero-field="subheadline">{HERO_COPY.subheadline}</p>
         <p data-hero-field="microcopy">{HERO_COPY.microcopy}</p>
