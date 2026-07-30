@@ -170,10 +170,12 @@ test.describe("Signature product pages — canonical copy + CTAs", () => {
     await page.goto("/tours/arrabida-wine-allinclusive", { waitUntil: "domcontentloaded" });
     await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
     const bodyText = await page.locator("body").innerText();
+    // Some surfaces render the line uppercase via CSS text-transform, so
+    // innerText comes back uppercased — compare case-insensitively.
     expect(
-      bodyText,
+      bodyText.toLowerCase(),
       "Signature cancellation copy must appear verbatim (single source of truth)",
-    ).toContain(CANCELLATION.signature.en);
+    ).toContain(CANCELLATION.signature.en.toLowerCase());
   });
 });
 
@@ -233,11 +235,15 @@ test.describe("Checkout token page — canonical recovery copy on invalid token"
 
     // Recovery navigation must exist and point at an approved home
     // route — never at a legacy funnel URL.
-    const recoveryHref = await page
+    // Bounded lookup: an absent link must not stall the test until the
+    // suite-level timeout — count() first, then read the attribute.
+    const recoveryLink = page
       .getByRole("link", { name: /(back to home|back to experiences|design & book|home)/i })
-      .first()
-      .getAttribute("href")
-      .catch(() => null);
+      .first();
+    const recoveryHref =
+      (await recoveryLink.count()) > 0
+        ? await recoveryLink.getAttribute("href", { timeout: 5_000 }).catch(() => null)
+        : null;
     if (recoveryHref) {
       expect(
         ["/", "/experiences", "/portugal-travel-designer"].includes(recoveryHref),

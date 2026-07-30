@@ -7,7 +7,7 @@
  */
 export const HOMEPAGE_FAQ: { q: string; a: string }[] = [
   {
-    q: "Is there a way to design and book a private tour in Portugal in real time?",
+    q: "Is there a way to design and reserve a private tour in Portugal in real time?",
     a: "Yes — through the YES Experience Studio. You choose the mood, rhythm and route, see the live price update as you go, and reserve instantly. Designed in real time, with you — no form, no back-and-forth, no travel agent in the middle.",
   },
   {
@@ -43,7 +43,7 @@ export const HOMEPAGE_FAQ: { q: string; a: string }[] = [
     a: "Yes. Every YES experience is fully private — your group only, your own local host, and a car dedicated to your day. We depart from Lisbon (hotel or address pickup) across Sintra, Arrábida, Comporta, Évora, Alentejo and beyond.",
   },
   {
-    q: "Can I book a private wine tour from Lisbon?",
+    q: "Can I reserve a private wine tour from Lisbon?",
     a: "Yes. Our most-loved wine days visit family wineries in Arrábida, Azeitão and the Alentejo — private tastings, long lunches with a view, and no marketplace groups. Reserve as a Signature day or design your own in the Studio.",
   },
   {

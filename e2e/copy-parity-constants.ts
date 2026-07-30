@@ -28,8 +28,12 @@ export const SIGNATURE_PRODUCT_TOURS = [
   "southwest-vicentine-coast",
 ] as const;
 
-/** Standalone Signature routes (not under /tours/$tourId). */
-export const SIGNATURE_STANDALONE_ROUTES = [
-  "/sintra-day-tour-from-lisbon",
-  "/evora-private-tour-from-lisbon",
-] as const;
+/**
+ * Standalone Signature routes (not under /tours/$tourId).
+ *
+ * Currently none: /sintra-day-tour-from-lisbon and
+ * /evora-private-tour-from-lisbon are now 301 redirects to their
+ * Local Stories articles, so they are no longer product surfaces.
+ * Their redirect targets are covered by the sitemap/canonical spec.
+ */
+export const SIGNATURE_STANDALONE_ROUTES: readonly string[] = [];

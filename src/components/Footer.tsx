@@ -21,8 +21,12 @@ import { openCookieConsent } from "@/components/CookieConsent";
 import {
   BASED_IN,
   BUSINESS_NAME,
+  EMAIL,
+  EMAIL_HREF,
   LICENSE_NUMBER,
   LICENSE_SHORT,
+  PHONE_DISPLAY,
+  PHONE_HREF,
   SOCIAL,
   whatsappUrl,
 } from "@/config/business-nap";
@@ -56,6 +60,7 @@ interface FooterLink {
   to: string;
   label: string;
   params?: Record<string, string>;
+  search?: Record<string, string>;
 }
 
 const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
@@ -74,7 +79,7 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
     links: [
       { to: "/proposal-in-portugal", label: "Moments" },
       { to: "/corporate", label: "Corporate" },
-      { to: "/contact", label: "Private Groups" },
+      { to: "/contact", search: { type: "corporate" }, label: "Private Groups" },
     ],
   },
   {
@@ -217,6 +222,18 @@ export function Footer() {
               Private Portugal, shown the way a local shows a friend. Intimate, real, and genuinely
               different — designed with you and confirmed in minutes. 700+ five-star reviews.
             </p>
+            {/* Canonical NAP — one quiet line, single source of truth. */}
+            <address className="mt-4 not-italic font-[family-name:var(--font-sans)] text-[13px] leading-[1.7] text-[color:var(--ivory)]/70">
+              <a href={EMAIL_HREF} className={LINK_CLASS}>
+                {EMAIL}
+              </a>
+              <span aria-hidden="true" className="mx-2 text-[color:var(--ivory)]/35">
+                ·
+              </span>
+              <a href={PHONE_HREF} className={LINK_CLASS}>
+                {PHONE_DISPLAY}
+              </a>
+            </address>
           </div>
 
           <ul className="flex flex-wrap items-center gap-2.5" aria-label="Social channels">
@@ -374,7 +391,7 @@ function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
       >
         {links.map((l) => (
           <li key={`${l.to}:${l.label}`}>
-            <Link to={l.to} params={l.params} className={LINK_CLASS}>
+            <Link to={l.to} params={l.params} search={l.search} className={LINK_CLASS}>
               {l.label}
             </Link>
           </li>
@@ -424,6 +441,7 @@ function FooterLinkGroup({ title, links }: { title: string; links: FooterLink[] 
             <Link
               to={l.to}
               params={l.params}
+              search={l.search}
               className={`${LINK_CLASS} text-[color:var(--ivory)]/75`}
             >
               {l.label}

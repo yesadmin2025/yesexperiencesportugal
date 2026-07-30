@@ -97,7 +97,9 @@ export function CinematicHero() {
       style={{ minHeight: "100svh", height: "100svh" }}
     >
       {/* ── Held cinematic clip ─────────────────────────────────────── */}
-      <div className="absolute inset-0 z-0">
+      {/* `hero-story-stage` + `data-hero-film` are stable E2E hooks for the
+          hero film playback specs — keep them on the film wrapper/element. */}
+      <div className="hero-story-stage absolute inset-0 z-0">
         <HeldClip skipMotion={skipIntro} />
 
         {/* Lifted blacks — gentle filmic fade, avoids pure black crush */}
@@ -528,6 +530,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
       {showVideo ? (
         <video
           ref={ref}
+          data-hero-film="true"
           poster={HERO_CLIP.posterWebpMobile}
           autoPlay
           muted
