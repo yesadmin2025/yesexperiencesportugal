@@ -93,9 +93,7 @@ for (const vp of MOBILE_BREAKPOINTS) {
     });
 
     test("has exactly the approved number of top-level sections", async ({ page }) => {
-      const count = await page
-        .locator("main > section, body section")
-        .evaluate(() => document.querySelectorAll("section").length);
+      const count = await page.evaluate(() => CONTENT_SECTIONS_JS.length);
       expect(count).toBe(APPROVED_SECTION_COUNT);
     });
 
@@ -103,7 +101,7 @@ for (const vp of MOBILE_BREAKPOINTS) {
       page,
     }) => {
       const ariaIds = await page.evaluate(() =>
-        Array.from(document.querySelectorAll("section")).map(
+        Array.from(contentSections()).map(
           (el) => el.getAttribute("aria-labelledby") ?? "",
         ),
       );
@@ -126,7 +124,7 @@ for (const vp of MOBILE_BREAKPOINTS) {
     test("real vertical gaps between adjacent sections meet the spec floors", async ({ page }) => {
       // Force layout, then collect bounding boxes for every <section>.
       const boxes = await page.evaluate(() => {
-        const list = Array.from(document.querySelectorAll("section"));
+        const list = Array.from(contentSections());
         return list.map((el) => {
           const r = el.getBoundingClientRect();
           return {
