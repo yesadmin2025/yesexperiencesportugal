@@ -17,7 +17,7 @@ const EUR_ROUTES = [
   "/day-tours",
   "/pt/experiences",
   "/pt/day-tours",
-  "/tours/lisbon-secret-food",
+  "/tours/arrabida-wine-allinclusive",
 ];
 
 test.describe("Currency chip surface boundaries", () => {
