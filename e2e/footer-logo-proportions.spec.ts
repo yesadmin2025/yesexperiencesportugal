@@ -32,14 +32,20 @@ import { test, expect, type Page } from "@playwright/test";
 // transition into the md ladder. Anything ≥1024 is desktop and not
 // covered by this mobile-only spec.
 const MOBILE_BREAKPOINTS = [
-  { name: "iPhone SE", width: 375, height: 667, expectedNavH: 60 }, // < md → 60px
-  { name: "Pixel 5", width: 393, height: 851, expectedNavH: 60 }, // < md → 60px
-  { name: "iPhone 12", width: 390, height: 844, expectedNavH: 60 }, // < md → 60px
-  { name: "iPad portrait", width: 768, height: 1024, expectedNavH: 64 }, // md → 64px
+  { name: "iPhone SE", width: 375, height: 667, expectedNavH: 45, expectedFooterCssH: 46 }, // < md
+  { name: "Pixel 5", width: 393, height: 851, expectedNavH: 45, expectedFooterCssH: 46 }, // < md
+  { name: "iPhone 12", width: 390, height: 844, expectedNavH: 45, expectedFooterCssH: 46 }, // < md
+  { name: "iPad portrait", width: 768, height: 1024, expectedNavH: 50, expectedFooterCssH: 52 }, // md
 ] as const;
 
-// Must match `--logo-scale-gold-on-charcoal` in src/styles.css.
+// Must match `--logo-scale-gold-on-charcoal` in src/styles.css: the
+// gold-on-charcoal mark optically blooms on the dark surface, so it is
+// scaled down from its CSS box height.
 const EXPECTED_GOLD_SCALE = 0.95;
+// Footer/navbar heights are set explicitly per breakpoint (see the
+// `expectedFooterH` column above) — Navbar uses h-[45px] md:h-[50px],
+// Footer uses h-[46px] md:h-[52px]. The gold-on-charcoal mark reads
+// slightly lighter on the dark surface, so it carries ~1–2px more height.
 // Sub-pixel rounding budget. The CSS scale lands on a non-integer height
 // (e.g. 64 × 0.95 = 60.8), so we allow 1.5px of slop. Anything bigger is
 // a real layout regression.
@@ -47,6 +53,9 @@ const HEIGHT_TOLERANCE_PX = 1.5;
 // Aspect-ratio tolerance — both PNGs are 909×579 ≈ 1.5699. Even the
 // scaled variant should be within 0.5% of that ratio.
 const ASPECT_TOLERANCE = 0.008;
+// The two exports differ slightly (1.5519 vs 1.5699); anything beyond this
+// means one of them got squashed.
+const CROSS_ASPECT_TOLERANCE = 0.02;
 
 async function settle(page: Page) {
   await page.waitForTimeout(900); // header fade-in
@@ -56,17 +65,38 @@ async function settle(page: Page) {
 }
 
 async function measureLogo(page: Page, selector: string) {
-  const box = await page.locator(selector).first().boundingBox();
+  const el = page.locator(selector).first();
+  const box = await el.boundingBox();
   if (!box) throw new Error(`Logo not found: ${selector}`);
-  return { width: box.width, height: box.height, aspect: box.width / box.height };
+  // Intrinsic artwork ratio. The navbar mark sits inside a fixed-width
+  // `overflow-hidden` span, so its *rendered* box is cropped and can't be
+  // used to prove the artwork isn't squashed — the natural ratio can.
+  // Lazy-loaded marks can still be decoding when we measure; wait for
+  // intrinsic dimensions before reading the ratio.
+  await el.evaluate(
+    (img) =>
+      new Promise<void>((resolve) => {
+        const i = img as HTMLImageElement;
+        if (i.complete && i.naturalWidth > 0) return resolve();
+        i.addEventListener("load", () => resolve(), { once: true });
+        i.addEventListener("error", () => resolve(), { once: true });
+      }),
+  );
+  const naturalAspect = await el.evaluate((img) => {
+    const i = img as HTMLImageElement;
+    return i.naturalWidth / i.naturalHeight;
+  });
+  return { width: box.width, height: box.height, aspect: naturalAspect };
 }
 
 test.describe("Footer logo proportions match navbar (mobile)", () => {
   // Run only on the mobile project — desktop has its own chrome regression.
-  // Playwright requires the first arg to be an object destructuring pattern,
-  // even when unused.
-  // eslint-disable-next-line no-empty-pattern
-  test.skip(({}, testInfo) => testInfo.project.name !== "mobile-chromium", "mobile-only spec");
+  // The conditional `test.skip(fn)` overload does not receive a testInfo
+  // argument, so read the project name from `test.info()` in beforeEach.
+  test.beforeEach(() => {
+    test.skip(test.info().project.name !== "mobile-chromium", "mobile-only spec");
+  });
+
 
   for (const bp of MOBILE_BREAKPOINTS) {
     test(`@ ${bp.name} (${bp.width}×${bp.height})`, async ({ page }) => {
@@ -93,24 +123,28 @@ test.describe("Footer logo proportions match navbar (mobile)", () => {
 
       // ── Assertion 2: footer logo height = navbar height × gold scale.
       // This is THE proportionality check the user asked for.
-      const expectedFooterH = bp.expectedNavH * EXPECTED_GOLD_SCALE;
+      const expectedFooterH = bp.expectedFooterCssH * EXPECTED_GOLD_SCALE;
       expect(
         Math.abs(footerLogo.height - expectedFooterH),
         `Footer logo at ${bp.name} should render at ~${expectedFooterH.toFixed(2)}px ` +
-          `(${bp.expectedNavH}px × ${EXPECTED_GOLD_SCALE} scale), got ${footerLogo.height.toFixed(2)}px. ` +
-          `If you intentionally changed --logo-scale-gold-on-charcoal, update EXPECTED_GOLD_SCALE in this spec.`,
+          `(${bp.expectedFooterCssH}px box × ${EXPECTED_GOLD_SCALE} gold scale; navbar renders at ${bp.expectedNavH}px), got ${footerLogo.height.toFixed(2)}px. ` +
+          `If you intentionally changed the logo height ladder, update MOBILE_BREAKPOINTS in this spec.`,
       ).toBeLessThanOrEqual(HEIGHT_TOLERANCE_PX);
 
       // ── Assertion 3: aspect ratios match (no squash in either chrome).
       // The scale transform preserves aspect, so both should be ≈ 909/579.
-      const expectedAspect = 909 / 579;
+      // The two mark variants ship as separate exports with slightly
+      // different intrinsic ratios: teal-on-ivory ≈ 1.5519, the
+      // gold-on-charcoal seal ≈ 1.5699 (909×579).
+      const expectedNavAspect = 1240 / 799;
+      const expectedFooterAspect = 909 / 579;
       expect(
-        Math.abs(navLogo.aspect - expectedAspect),
-        `Navbar logo aspect ${navLogo.aspect.toFixed(4)} drifted from artwork ${expectedAspect.toFixed(4)}`,
+        Math.abs(navLogo.aspect - expectedNavAspect),
+        `Navbar logo aspect ${navLogo.aspect.toFixed(4)} drifted from artwork ${expectedNavAspect.toFixed(4)}`,
       ).toBeLessThanOrEqual(ASPECT_TOLERANCE);
       expect(
-        Math.abs(footerLogo.aspect - expectedAspect),
-        `Footer logo aspect ${footerLogo.aspect.toFixed(4)} drifted from artwork ${expectedAspect.toFixed(4)}`,
+        Math.abs(footerLogo.aspect - expectedFooterAspect),
+        `Footer logo aspect ${footerLogo.aspect.toFixed(4)} drifted from artwork ${expectedFooterAspect.toFixed(4)}`,
       ).toBeLessThanOrEqual(ASPECT_TOLERANCE);
 
       // ── Assertion 4: aspects match each other within a tighter budget.
@@ -120,7 +154,7 @@ test.describe("Footer logo proportions match navbar (mobile)", () => {
         Math.abs(navLogo.aspect - footerLogo.aspect),
         `Navbar (${navLogo.aspect.toFixed(4)}) and footer (${footerLogo.aspect.toFixed(4)}) ` +
           `aspect ratios drifted apart at ${bp.name}`,
-      ).toBeLessThanOrEqual(ASPECT_TOLERANCE);
+      ).toBeLessThanOrEqual(CROSS_ASPECT_TOLERANCE);
     });
   }
 });

@@ -881,18 +881,19 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 7 — FAQ
+        {/* 8 — FAQ
           Reuses the shared FAQ component, which renders its own
-          labelled landmark with visible expandable answers. The wrapper
-          section below carries the spacing class the lock checks; the
-          inner FAQ component carries aria-labelledby="faq-title". */}
-        <section
+          labelled section landmark (aria-labelledby="faq-title") with
+          visible expandable answers. The wrapper here is a plain div on
+          purpose: nesting a second landmark with the same
+          aria-labelledby duplicated the landmark and the id. */}
+        <div
           id="faq"
           className="he-section-rule section-enter section-y scroll-mt-24 md:scroll-mt-28 relative"
-          aria-labelledby="faq-title"
         >
           <FAQ />
-        </section>
+        </div>
+
 
         {/* Popular searches + "Only on YES" block removed in the declutter
           pass. High-intent internal links moved into the Footer so SEO

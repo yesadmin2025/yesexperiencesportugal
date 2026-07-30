@@ -72,17 +72,18 @@ export interface ApprovedSection {
 }
 
 /**
- * The approved 8-block structure (v4 — Builder-dominance rework).
+ * The approved 9-block structure (v5 — Travel Designer row added).
  *
  * Order:
  *   1.  Hero
  *   2.  Trust strip (reviews + private guide line)
- *   3.  Three paths (Day / Bespoke / Occasions cards)
+ *   3.  Five ways in (Signature / Studio / Designer / Occasions …)
  *   4.  Experience Studio (promoted)
  *   5.  Signature experiences preview
- *   6.  Occasions band (Proposals + Celebrations + Corporate)
- *   7.  FAQ
- *   8.  Final CTA — talk to a local
+ *   6.  Travel Designer (multi-day, bespoke)
+ *   7.  Occasions band (Proposals + Celebrations + Corporate)
+ *   8.  FAQ (shared <FAQ /> component owns its own landmark)
+ *   9.  Final CTA — talk to a local
  */
 export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   {
@@ -100,7 +101,7 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 3,
-    name: "Three paths — Day / Bespoke / Occasions",
+    name: "Where to begin — five ways in",
     componentTag: "FourWaysIn",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
@@ -119,23 +120,32 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 6,
+    name: "Travel Designer — multi-day, written around you",
+    componentTag: "RecentJourney",
+    inComponent: true,
+    requiredSpacing: { kind: "py", minScale: 14 },
+  },
+  {
+    order: 7,
     name: "Occasions band — proposals + celebrations + corporate",
     ariaLabelledBy: "groups-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 7,
+    order: 8,
     name: "FAQ — visible helpful answers",
-    ariaLabelledBy: "faq-title",
+    componentTag: "FAQ",
+    inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 8,
+    order: 9,
     name: "Final CTA — talk to a local",
-    marker: "FINAL CTA",
-    requiredSpacing: { kind: "pb", minScale: 16 },
+    ariaLabelledBy: "final-cta-title",
+    requiredSpacing: { kind: "py", minScale: 16 },
   },
 ] as const;
+
 
 /** Total number of approved blocks (including componentized rows). */
 export const APPROVED_SECTION_COUNT = APPROVED_HOMEPAGE_SECTIONS.length;
