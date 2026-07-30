@@ -55,14 +55,39 @@ configured.
 | Lockfile | `bun install --frozen-lockfile` | pass |
 | E2E collection | `bunx playwright test --list` | 1038 tests / 75 files |
 
-## Open items before declaring launch-ready
+## Browser suites now execute locally (no GitHub runners needed)
 
-1. **GitHub Actions minutes.** All 22 workflows still terminate in 3–20s with
-   `BlobNotFound` logs — the runner is never allocated. Raise the spending limit
-   or upgrade the plan on the repo owner's account, then re-run.
-2. **Execute the browser suites.** They cannot run in the build sandbox
-   (Chromium headless-shell is missing `libglib-2.0`); GitHub's `ubuntu-latest`
-   with `playwright install --with-deps chromium` has them. The checkout price
-   parity suite in particular must be green before launch.
-3. **Optional:** add `BRANCH_PROTECTION_READ_TOKEN` to re-arm the required-check
-   parity guards, which now skip.
+Sandbox Chromium lacks `libglib`; the nixpkgs Chromium works. Run with:
+
+```
+PLAYWRIGHT_BASE_URL=http://localhost:8080 \
+PLAYWRIGHT_CHROMIUM_PATH=$(nix build --print-out-paths nixpkgs#chromium)/bin/chromium \
+bunx playwright test --project=mobile-chromium
+```
+
+### Checkout — GREEN
+
+`checkout-price-parity`, `instant-booking-checkout`,
+`instant-booking-checkout-negative` → **14/14 pass** (mobile).
+Root cause of the previous timeouts: `waitForLoadState("networkidle")` with no
+timeout consumed the whole 30s budget on pages with continuous media. All such
+waits are now bounded at 5s.
+
+### Other fixes this pass
+
+| Suite | Cause | Fix |
+| --- | --- | --- |
+| `currency-toggle-parity`, `currency-chip-header-absence` | Chip clicked before hydration; on mobile the sticky CTA overlays the footer chip; prices scraped from SSR markup before client conversion | `setCurrency()` retries via `dispatchEvent("click")` until `aria-pressed` flips; new `expectAllPricesIn()` polls for the converted symbol |
+| same | Specs referenced retired tour ids (`douro-valley-wine-tour`, `lisbon-secret-food`) and the homepage, which no longer renders prices | Repointed to `arrabida-wine-allinclusive`; homepage dropped from price routes |
+| `copy-parity` (legal/footer license) | Footer uppercases `RNAAT nº 31/2023` via CSS, spec compared case-sensitively | Case-insensitive comparison |
+| `builder-stepper-keyboard` | `/builder` now redirects to `/studio-v3`; `BuilderStepper` has no consumers | Obsolete spec removed |
+
+### Still open
+
+1. `copy-parity` — footer legal bar renders `/contact` twice on `/`,
+   `/experiences`, `/portugal-travel-designer` (real duplicate, needs a footer
+   fix), plus FAQ verb parity and Signature CTA vocabulary assertions.
+2. Visual-regression suites need baselines regenerated against this Chromium
+   build before their results mean anything.
+3. Tablet/desktop projects not yet swept.
+
