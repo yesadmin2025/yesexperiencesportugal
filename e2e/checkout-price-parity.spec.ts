@@ -41,7 +41,7 @@ test.describe(`Checkout parity — ${TOUR.id}`, () => {
       expect(expected, "pricing library must resolve for this case").not.toBeNull();
 
       await page.goto(`/tours/${TOUR.id}`, { waitUntil: "domcontentloaded" });
-      await page.waitForLoadState("networkidle").catch(() => undefined);
+      await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
 
       // Set headcount via the guests select if present; otherwise skip
       // the DOM half and leave the library assertion as the guardrail.
