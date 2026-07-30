@@ -20,8 +20,8 @@ import {
 const ROUTES = [
   "/",
   "/experiences",
-  "/tours/douro-valley-wine-tour",
-  "/tours/douro-valley-wine-tour/tailor",
+  "/tours/arrabida-wine-allinclusive",
+  "/tours/arrabida-wine-allinclusive/tailor",
 ];
 
 for (const route of ROUTES) {
