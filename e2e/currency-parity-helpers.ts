@@ -65,3 +65,21 @@ export function parseAmount(text: string): number | null {
 export function hasSymbol(text: string, currency: Currency): boolean {
   return currency === "USD" ? text.includes("$") : text.includes("€");
 }
+
+/**
+ * Waits until every rendered price uses the given currency symbol.
+ *
+ * Display currency is applied on the client, so straight after a reload the
+ * server-rendered markup is still in EUR for a frame or two.
+ */
+export async function expectAllPricesIn(page: Page, currency: Currency) {
+  await expect
+    .poll(
+      async () => {
+        const prices = await scrapePrices(page);
+        return prices.length > 0 && prices.every((p) => hasSymbol(p.text, currency));
+      },
+      { timeout: 15_000, intervals: [200, 300, 500, 800, 1000] },
+    )
+    .toBe(true);
+}

@@ -4,6 +4,7 @@ import {
   expectedDisplay,
   hasSymbol,
   parseAmount,
+  expectAllPricesIn,
   scrapePrices,
   setCurrency,
 } from "./currency-parity-helpers";
@@ -71,13 +72,11 @@ test("USD selection survives reload and navigation", async ({ page }) => {
 
   await page.reload({ waitUntil: "domcontentloaded" });
   await page.waitForSelector("[data-price-eur]");
-  const afterReload = await scrapePrices(page);
-  expect(afterReload.every((p) => hasSymbol(p.text, "USD"))).toBe(true);
+  await expectAllPricesIn(page, "USD");
 
   await page.goto("/tours/arrabida-wine-allinclusive", { waitUntil: "domcontentloaded" });
   await page.waitForSelector("[data-price-eur]");
-  const afterNav = await scrapePrices(page);
-  expect(afterNav.every((p) => hasSymbol(p.text, "USD"))).toBe(true);
+  await expectAllPricesIn(page, "USD");
 });
 
 test("cookie-only rehydration works when localStorage is cleared", async ({ page }) => {
@@ -86,8 +85,7 @@ test("cookie-only rehydration works when localStorage is cleared", async ({ page
   await page.evaluate(() => window.localStorage.removeItem("yes.currency.v1"));
   await page.reload({ waitUntil: "domcontentloaded" });
   await page.waitForSelector("[data-price-eur]");
-  const prices = await scrapePrices(page);
-  expect(prices.every((p) => hasSymbol(p.text, "USD"))).toBe(true);
+  await expectAllPricesIn(page, "USD");
 });
 
 test("clearing both stores returns to EUR default", async ({ page }) => {
@@ -99,8 +97,7 @@ test("clearing both stores returns to EUR default", async ({ page }) => {
   });
   await page.reload({ waitUntil: "domcontentloaded" });
   await page.waitForSelector("[data-price-eur]");
-  const prices = await scrapePrices(page);
-  expect(prices.every((p) => hasSymbol(p.text, "EUR"))).toBe(true);
+  await expectAllPricesIn(page, "EUR");
 });
 
 test("FX rate table matches the app constant", async ({ page }) => {
