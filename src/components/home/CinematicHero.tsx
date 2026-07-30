@@ -208,19 +208,19 @@ export function CinematicHero() {
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 hero-cta-group">
           <Link
             to="/studio-v3"
-            data-hero-field="secondaryCta"
+            data-hero-field="primaryCta"
             data-analytics="hero_open_studio"
             data-analytics-placement="hero"
-            className="hero-cta hero-cta--primary group inline-flex items-center justify-center w-[252px] sm:w-auto sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-auto sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.24em",
+              letterSpacing: "0.18em",
               fontFamily: "Inter, system-ui, sans-serif",
               fontWeight: 450,
             }}
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
             <span className="relative z-10 inline-flex items-center gap-2.5">
-              Open the Studio
+              Create Your Story
               <svg
                 className="hero-cta__arrow"
                 width="10"
