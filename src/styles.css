@@ -6947,3 +6947,13 @@ html {
     display: none !important;
   }
 }
+
+/* SR-only hero copy probes must never inherit the legacy hero reveal
+   animations (which start at opacity: 0). They carry the locked
+   HERO_COPY strings for SEO/e2e and are visually hidden anyway. */
+.sr-only [data-hero-field],
+.sr-only .hero-h1 {
+  opacity: 1 !important;
+  animation: none !important;
+  transform: none !important;
+}

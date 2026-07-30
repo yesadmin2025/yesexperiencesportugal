@@ -6,7 +6,7 @@ import { defineConfig, devices } from "@playwright/test";
 //
 // Point Playwright at the sandbox-installed Chromium (rev 1194) to avoid
 // requiring `playwright install` for the runner-bundled revision.
-const CHROMIUM_PATH = "/chromium-1194/chrome-linux/chrome";
+const CHROMIUM_PATH = "/opt/ms-playwright/chromium-1194/chrome-linux/chrome";
 
 export default defineConfig({
   testDir: "./e2e",

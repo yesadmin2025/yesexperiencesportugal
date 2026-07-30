@@ -14,12 +14,15 @@
  */
 import { test, expect } from "@playwright/test";
 
+// Scoped to the hero section itself — dev-only debug overlays render
+// their own copies of these markers outside the hero.
 const FIELDS = [
-  '[data-hero-field="eyebrow"]',
-  '[data-hero-field="headlineLine1"]:not(h1)',
-  '[data-hero-field="headlineLine2"]',
-  '[data-hero-field="subheadline"]',
+  '[data-hero-cinematic] [data-hero-field="eyebrow"]',
+  '[data-hero-cinematic] [data-hero-field="headlineLine1"]:not(h1)',
+  '[data-hero-cinematic] [data-hero-field="headlineLine2"]',
+  '[data-hero-cinematic] [data-hero-field="subheadline"]',
 ];
+
 
 test.describe("Hero fields visibility — no opacity:0 regressions", () => {
   test("every hero copy field is fully opaque on the final beat", async ({ page }) => {

@@ -11,7 +11,7 @@
  * All HERO_COPY SR probes preserved so byte-exact / version locks pass.
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
@@ -71,14 +71,25 @@ function isHeroLastFlag(): boolean {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function CinematicHero() {
-  const skipIntro = useMemo(() => isHeroLastFlag() || prefersReducedMotion(), []);
+  // Hydration-safe: SSR always renders the pre-intro state, and the
+  // "skip" decision (?hero=last / reduced motion) resolves after mount.
+  // Computing it during render caused a server/client attribute mismatch
+  // that React refuses to patch, freezing data-hero-composed at "false".
+  const [skipIntro, setSkipIntro] = useState(false);
 
-  const [line1, setLine1] = useState<boolean>(skipIntro);
-  const [line2, setLine2] = useState<boolean>(skipIntro);
-  const [composed, setComposed] = useState<boolean>(skipIntro);
+  const [line1, setLine1] = useState(false);
+  const [line2, setLine2] = useState(false);
+  const [composed, setComposed] = useState(false);
 
   useEffect(() => {
-    if (skipIntro) return;
+    const skip = isHeroLastFlag() || prefersReducedMotion();
+    if (skip) {
+      setSkipIntro(true);
+      setLine1(true);
+      setLine2(true);
+      setComposed(true);
+      return;
+    }
     const t1 = window.setTimeout(() => setLine1(true), LINE1_DELAY_MS);
     const t2 = window.setTimeout(() => setLine2(true), LINE2_DELAY_MS);
     const t3 = window.setTimeout(() => setComposed(true), CTA_DELAY_MS);
@@ -87,7 +98,8 @@ export function CinematicHero() {
       window.clearTimeout(t2);
       window.clearTimeout(t3);
     };
-  }, [skipIntro]);
+  }, []);
+
 
   return (
     <section
@@ -151,7 +163,7 @@ export function CinematicHero() {
       {/* ── Centered stanza ─────────────────────────────────────────── */}
       <div className="absolute inset-0 z-10 flex items-start justify-center pt-[30vh] sm:items-center sm:pt-0 px-6 sm:px-10 md:px-16">
         <div className="text-center" data-hero-stanza="true">
-          <h1
+          <p
             className="font-serif italic font-normal m-0"
             style={{
               fontFamily: 'Georgia, "Cormorant Garamond", "Newsreader", serif',
@@ -170,7 +182,7 @@ export function CinematicHero() {
             }}
           >
             {HERO_PHRASES[0]}
-          </h1>
+          </p>
           <p
             className="font-serif italic font-normal mt-3 sm:mt-4"
             style={{
@@ -208,19 +220,19 @@ export function CinematicHero() {
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 hero-cta-group">
           <Link
             to="/studio-v3"
-            data-hero-field="secondaryCta"
+            data-hero-field="primaryCta"
             data-analytics="hero_open_studio"
             data-analytics-placement="hero"
-            className="hero-cta hero-cta--primary group inline-flex items-center justify-center w-[252px] sm:w-auto sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-auto sm:min-w-[206px] px-7 py-[14px] sm:py-[11px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.24em",
+              letterSpacing: "0.18em",
               fontFamily: "Inter, system-ui, sans-serif",
               fontWeight: 450,
             }}
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
             <span className="relative z-10 inline-flex items-center gap-2.5">
-              Open the Studio
+              Create Your Story
               <svg
                 className="hero-cta__arrow"
                 width="10"
@@ -241,18 +253,18 @@ export function CinematicHero() {
           </Link>
           <Link
             to="/experiences"
-            data-hero-field="primaryCta"
+            data-hero-field="secondaryCta"
             data-analytics="hero_choose_experience"
             data-analytics-placement="hero"
-            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center w-[252px] sm:w-auto sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-auto sm:min-w-[206px] px-7 py-[14px] sm:py-[11px] text-[10.5px] sm:text-[11px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.24em",
+              letterSpacing: "0.14em",
               fontFamily: "Inter, system-ui, sans-serif",
               fontWeight: 450,
             }}
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
-            <span className="relative z-10">Choose your Experience</span>
+            <span className="relative z-10">Explore Signature Experiences</span>
           </Link>
         </div>
       </div>
@@ -261,10 +273,10 @@ export function CinematicHero() {
 
       {/* ── SR-only / SSR probes — keep HERO_COPY locks happy ──────── */}
       <div className="sr-only">
-        <div className="hero-h1">
+        <h1 className="hero-h1">
           <span data-hero-field="headlineLine1">{HERO_COPY.headlineLine1}</span>{" "}
           <span data-hero-field="headlineLine2">{HERO_COPY.headlineLine2}</span>
-        </div>
+        </h1>
         <p data-hero-field="eyebrow">{HERO_COPY.eyebrow}</p>
         <p data-hero-field="subheadline">{HERO_COPY.subheadline}</p>
         <p data-hero-field="microcopy">{HERO_COPY.microcopy}</p>
