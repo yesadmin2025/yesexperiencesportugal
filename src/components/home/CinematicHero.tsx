@@ -92,6 +92,7 @@ export function CinematicHero() {
   return (
     <section
       data-section="hero"
+      data-hero-cinematic="true"
       aria-label="YES Experiences Portugal"
       className="relative w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]"
       style={{ minHeight: "100svh", height: "100svh" }}
