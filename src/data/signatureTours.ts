@@ -1434,10 +1434,10 @@ export const signatureTours: SignatureTour[] = [
       "It's a long day (9–10h) — the Vicentine Coast is a real distance from Lisbon. The drive is the price of the silence at the other end.",
       "Meals are not included — your guide books a table in Milfontes or Odeceixe based on the day.",
     ],
-    img: "/__l5e/assets-v1/7924df33-3fa2-4529-846e-008b2f637e54/southwest-vicentine-coast-cover.jpg",
+    img: "/__l5e/assets-v1/baab2cc3-8f8e-4c48-be82-388c0ea30b67/southwest-vicentine-coast-cover.jpg",
     focal: "50% 50%",
     gallery: [
-      "/__l5e/assets-v1/7924df33-3fa2-4529-846e-008b2f637e54/southwest-vicentine-coast-cover.jpg",
+      "/__l5e/assets-v1/baab2cc3-8f8e-4c48-be82-388c0ea30b67/southwest-vicentine-coast-cover.jpg",
       "/__l5e/assets-v1/a196f9b1-7319-4ad0-90a4-627239fc73f2/yes-tour-b6e8bf6b3edf.webp",
       "/__l5e/assets-v1/efda4d5f-92d2-48dc-82d0-669496f77d36/yes-tour-be801f64f96b.webp",
       "/__l5e/assets-v1/638fa871-f692-4f40-a55f-266ed4598d29/yes-tour-092bb83ed7a2.webp",

@@ -1073,7 +1073,7 @@ export const VIATOR_META: Record<string, ViatorMeta> = {
     ],
     localGallery: [
       {
-        src: "/__l5e/assets-v1/7924df33-3fa2-4529-846e-008b2f637e54/southwest-vicentine-coast-cover.jpg",
+        src: "/__l5e/assets-v1/baab2cc3-8f8e-4c48-be82-388c0ea30b67/southwest-vicentine-coast-cover.jpg",
         alt: "Odeceixe river-meets-ocean beach on the wild Southwest Vicentine Coast at golden hour, Portugal",
       },
     ],

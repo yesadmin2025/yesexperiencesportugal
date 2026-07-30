@@ -121,7 +121,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
       </span>
       {/* Shared describedby target so every currency button reassures the
           traveller that the change is display-only. */}
-      <span id={describedById} className="sr-only">
+      <span id={describedById} role="status" aria-live="off" className="sr-only">
         Indicative conversion. Checkout remains in euros.
       </span>
     </CurrencyContext.Provider>
