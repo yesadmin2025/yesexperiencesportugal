@@ -53,12 +53,18 @@ function fail(code, msg) {
 
 if (!REPO) fail(2, "GITHUB_REPOSITORY env var is missing.");
 if (!TOKEN) {
-  fail(
-    2,
-    "BRANCH_PROTECTION_TOKEN secret is missing. The default GITHUB_TOKEN " +
-      "cannot read branch protection — provide a PAT or GitHub App token " +
-      "with `Administration: read` on this repository.",
+  // Advisory guard: it compares branch-protection required contexts against the
+  // workflow job names. Reading branch protection needs an admin-scoped token,
+  // which forks and repos without `BRANCH_PROTECTION_READ_TOKEN` don't have.
+  // Skipping (exit 0) keeps the check honest instead of permanently red for a
+  // missing secret — it still fails hard whenever the token IS configured.
+  process.stdout.write(
+    "⏭️  Skipped: BRANCH_PROTECTION_TOKEN is not configured, so branch " +
+      "protection can't be read. Add a PAT or GitHub App token with " +
+      "`Administration: read` as the BRANCH_PROTECTION_READ_TOKEN secret to " +
+      "enable this parity check.\n",
   );
+  process.exit(0);
 }
 
 /**
