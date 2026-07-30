@@ -32,9 +32,25 @@ export async function scrapePrices(page: Page): Promise<ScrapedPrice[]> {
   );
 }
 
+/**
+ * Clicks the currency chip and waits until the choice actually applied.
+ *
+ * The chip is server-rendered, so a click that lands before hydration is
+ * silently dropped. We retry until `aria-pressed` flips.
+ */
 export async function setCurrency(page: Page, currency: Currency) {
   const btn = page.locator(`[data-currency-option="${currency}"]`).first();
-  await btn.click();
+  await btn.scrollIntoViewIfNeeded();
+  await expect
+    .poll(
+      async () => {
+        if ((await btn.getAttribute("aria-pressed")) === "true") return "true";
+        await btn.click({ force: true }).catch(() => undefined);
+        return btn.getAttribute("aria-pressed");
+      },
+      { timeout: 20_000, intervals: [200, 300, 500, 800, 1000] },
+    )
+    .toBe("true");
 }
 
 export function parseAmount(text: string): number | null {
