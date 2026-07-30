@@ -23,7 +23,6 @@ const FIELDS = [
   '[data-hero-cinematic] [data-hero-field="subheadline"]',
 ];
 
-
 test.describe("Hero fields visibility — no opacity:0 regressions", () => {
   test("every hero copy field is fully opaque on the final beat", async ({ page }) => {
     await page.goto("/?hero=last", { waitUntil: "domcontentloaded" });

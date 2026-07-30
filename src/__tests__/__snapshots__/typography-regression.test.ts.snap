@@ -1,8 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Typography regression — headline class strings > [home] hero primary CTA 1`] = `"hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"`;
+exports[`Typography regression — headline class strings > [home] hero primary CTA 1`] = `"hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-auto sm:min-w-[206px] px-7 py-[14px] sm:py-[11px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"`;
 
-exports[`Typography regression — headline class strings > [home] hero secondary CTA 1`] = `"hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"`;
+exports[`Typography regression — headline class strings > [home] hero secondary CTA 1`] = `"hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-auto sm:min-w-[206px] px-7 py-[14px] sm:py-[11px] text-[10.5px] sm:text-[11px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"`;
 
 exports[`Typography regression — headline class strings > [home] hero stanza line 1 1`] = `"font-serif italic font-normal m-0"`;
 
