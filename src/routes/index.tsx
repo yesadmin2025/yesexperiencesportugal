@@ -883,9 +883,9 @@ function HomePage() {
 
         {/* 8 — FAQ
           Reuses the shared FAQ component, which renders its own
-          <section aria-labelledby="faq-title"> landmark with visible
-          expandable answers. The wrapper here is a plain <div> on
-          purpose: nesting a second <section> with the same
+          labelled section landmark (aria-labelledby="faq-title") with
+          visible expandable answers. The wrapper here is a plain div on
+          purpose: nesting a second landmark with the same
           aria-labelledby duplicated the landmark and the id. */}
         <div
           id="faq"

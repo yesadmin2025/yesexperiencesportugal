@@ -121,7 +121,8 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   {
     order: 6,
     name: "Travel Designer — multi-day, written around you",
-    ariaLabelledBy: "bespoke-designer-title",
+    componentTag: "RecentJourney",
+    inComponent: true,
     requiredSpacing: { kind: "py", minScale: 14 },
   },
   {
