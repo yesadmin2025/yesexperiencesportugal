@@ -55,6 +55,12 @@ const contactSchema = z.object({
 type Status = "idle" | "submitting" | "success" | "error";
 
 export const Route = createFileRoute("/contact")({
+  validateSearch: (search: Record<string, unknown>) => {
+    const raw = typeof search.type === "string" ? search.type : undefined;
+    return {
+      type: raw && requestTypeValues.includes(raw) ? raw : undefined,
+    };
+  },
   head: () => ({
     meta: [
       { title: "Contact — YES Experiences Portugal" },
@@ -135,6 +141,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Page() {
+  const { type: presetRequestType } = Route.useSearch();
   useMarketingMotion();
   const [sent, setSent] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
@@ -238,6 +245,7 @@ function Page() {
                   label="What can we help you plan?"
                   name="requestType"
                   options={REQUEST_TYPES}
+                  defaultValue={presetRequestType}
                 />
                 <Field
                   label="When are you travelling? (optional)"
@@ -343,10 +351,12 @@ function SelectField({
   label,
   name,
   options,
+  defaultValue,
 }: {
   label: string;
   name: string;
   options: ReadonlyArray<{ value: string; label: string }>;
+  defaultValue?: string;
 }) {
   return (
     <label className="block">
@@ -356,7 +366,7 @@ function SelectField({
       <select
         name={name}
         required
-        defaultValue=""
+        defaultValue={defaultValue ?? ""}
         className="mt-2 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base transition-colors appearance-none"
       >
         <option value="" disabled>

@@ -82,7 +82,7 @@ const FAQS: { q: string; a: ReactNode }[] = [
     ),
   },
   {
-    q: "Can I book a private wine tour from Lisbon?",
+    q: "Can I reserve a private wine tour from Lisbon?",
     a: (
       <>
         Yes. Our most-loved wine days visit family wineries in Arrábida, Azeitão and the Alentejo —
