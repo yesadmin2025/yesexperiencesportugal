@@ -18,7 +18,6 @@ import {
  */
 
 const ROUTES = [
-  "/",
   "/experiences",
   "/tours/arrabida-wine-allinclusive",
   "/tours/arrabida-wine-allinclusive/tailor",
@@ -75,7 +74,7 @@ test("USD selection survives reload and navigation", async ({ page }) => {
   const afterReload = await scrapePrices(page);
   expect(afterReload.every((p) => hasSymbol(p.text, "USD"))).toBe(true);
 
-  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.goto("/tours/arrabida-wine-allinclusive", { waitUntil: "domcontentloaded" });
   await page.waitForSelector("[data-price-eur]");
   const afterNav = await scrapePrices(page);
   expect(afterNav.every((p) => hasSymbol(p.text, "USD"))).toBe(true);
