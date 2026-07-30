@@ -170,7 +170,7 @@ export function CinematicHero() {
             }}
           >
             {HERO_PHRASES[0]}
-          </h1>
+          </p>
           <p
             className="font-serif italic font-normal mt-3 sm:mt-4"
             style={{
