@@ -216,13 +216,13 @@ export function CinematicHero() {
           pointerEvents: composed ? "auto" : "none",
         }}
       >
-        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 hero-cta-group">
+        <div className="flex flex-col items-center gap-3 sm:grid sm:grid-cols-2 sm:items-stretch sm:gap-5 sm:w-full sm:max-w-[560px] hero-cta-group">
           <Link
             to="/studio-v3"
             data-hero-field="primaryCta"
             data-analytics="hero_open_studio"
             data-analytics-placement="hero"
-            className="hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-auto sm:min-w-[206px] px-7 py-[14px] sm:py-[11px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-full px-7 py-[14px] sm:py-[13px] min-h-[44px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.18em",
               fontFamily: "Inter, system-ui, sans-serif",
@@ -255,16 +255,35 @@ export function CinematicHero() {
             data-hero-field="secondaryCta"
             data-analytics="hero_choose_experience"
             data-analytics-placement="hero"
-            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-auto sm:min-w-[206px] px-7 py-[14px] sm:py-[11px] text-[10.5px] sm:text-[11px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-full px-7 py-[14px] sm:py-[13px] min-h-[44px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.14em",
+              letterSpacing: "0.18em",
               fontFamily: "Inter, system-ui, sans-serif",
               fontWeight: 450,
             }}
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
-            <span className="relative z-10">Explore Signature Experiences</span>
+            <span className="relative z-10 inline-flex items-center gap-2.5">
+              Explore Signature Experiences
+              <svg
+                className="hero-cta__arrow"
+                width="10"
+                height="7"
+                viewBox="0 0 14 10"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M1 5h11M8.5 1.8L12.2 5l-3.7 3.2"
+                  stroke="currentColor"
+                  strokeWidth="0.85"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
           </Link>
+
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T04:01:28.374Z",
+  "generatedAt": "2026-07-30T14:15:40.195Z",
   "filesScanned": 939,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1170,7 +1170,7 @@
     {
       "file": "src/components/home/CinematicHero.tsx",
       "line": 225,
-      "col": 315,
+      "col": 328,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
       "snippet": "className=\"hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-auto sm:min-w-[206px] px-7 py-[1",
@@ -1179,7 +1179,7 @@
     {
       "file": "src/components/home/CinematicHero.tsx",
       "line": 258,
-      "col": 313,
+      "col": 326,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
       "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-auto sm:min-w-[206px] px-7 py-[14p",
@@ -1853,7 +1853,7 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 67,
+      "line": 68,
       "col": 30,
       "raw": "#295B61",
       "normalized": "#295b61",
@@ -1862,7 +1862,7 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 67,
+      "line": 68,
       "col": 64,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -1871,7 +1871,7 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 69,
+      "line": 70,
       "col": 39,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1880,7 +1880,7 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 70,
+      "line": 71,
       "col": 38,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1889,7 +1889,7 @@
     },
     {
       "file": "src/components/support/WhatsAppSupportButton.tsx",
-      "line": 71,
+      "line": 72,
       "col": 94,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
