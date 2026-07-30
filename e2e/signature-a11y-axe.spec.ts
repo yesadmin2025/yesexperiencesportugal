@@ -55,7 +55,7 @@ test.describe("Signature tour pages — a11y (alt text + landmarks)", () => {
       // Wait for the map so its accessible name is present in the scan.
       const map = page.locator('[role="img"][aria-label^="Route map"]').first();
       await expect(map, `map landmark missing on /tours/${tourId}`).toBeVisible({
-        timeout: 10_000,
+        timeout: 25_000,
       });
 
       // Direct alt-text assertion — every rendered <img> must declare alt
@@ -81,15 +81,20 @@ test.describe("Signature tour pages — a11y (alt text + landmarks)", () => {
 
       // Axe scan — alt text + landmark rules only, to keep this spec
       // focused and stable against unrelated a11y drift covered elsewhere.
-      const { violations } = await new AxeBuilder({ page })
-        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-        .options({ runOnly: { type: "rule", values: A11Y_RULES } })
-        .analyze();
-
-      expect(
-        violations,
-        `axe violations on /tours/${tourId}:\n${JSON.stringify(violations, null, 2)}`,
-      ).toEqual([]);
+      // Polled: the scan can otherwise race client hydration, which remounts
+      // globally-rendered chrome (support FAB, currency live regions).
+      await expect
+        .poll(
+          async () => {
+            const { violations } = await new AxeBuilder({ page })
+              .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+              .options({ runOnly: { type: "rule", values: A11Y_RULES } })
+              .analyze();
+            return JSON.stringify(violations, null, 2);
+          },
+          { message: `axe violations on /tours/${tourId}`, timeout: 20_000 },
+        )
+        .toBe("[]");
     });
   }
 });

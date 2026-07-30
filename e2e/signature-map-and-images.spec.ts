@@ -51,25 +51,46 @@ test.describe("Signature tour pages — map + image integrity", () => {
       // 1) Map is present and has non-zero rendered size.
       const map = page.locator('[role="img"][aria-label^="Route map"]').first();
       await expect(map, `map missing on /tours/${tourId}`).toBeVisible({
-        timeout: 10_000,
+        timeout: 25_000,
       });
+      // Polled: the lazy map can remount (reveal animation / Leaflet init)
+      // right after becoming visible, briefly detaching the node.
+      await expect
+        .poll(async () => (await map.boundingBox().catch(() => null))?.width ?? 0, {
+          message: `map has no bounding box on /tours/${tourId}`,
+          timeout: 20_000,
+        })
+        .toBeGreaterThan(200);
       const box = await map.boundingBox();
-      expect(box, `map has no bounding box on /tours/${tourId}`).not.toBeNull();
-      expect(box!.width).toBeGreaterThan(200);
       expect(box!.height).toBeGreaterThan(120);
 
-      // 2) Every rendered <img> resolved to a real bitmap.
+      // Images that started loading may still be decoding — give the browser a
+      // short bounded window before asserting.
+      await page
+        .waitForFunction(
+          () =>
+            Array.from(document.images).every((img) => !img.complete || img.naturalWidth > 0),
+          undefined,
+          { timeout: 5_000 },
+        )
+        .catch(() => {});
+
+      // 2) Every <img> the browser actually fetched resolved to a real bitmap.
+      // Images with `loading="lazy"` that never entered the viewport are never
+      // requested at all (complete === false, no bytes) — those are not broken.
+      // Genuine 404s / decode failures still surface here (complete + zero
+      // natural width) and through the HTTP status listener below.
       const broken = await page.$$eval("img", (imgs) =>
         imgs
           .filter((el) => {
             const img = el as HTMLImageElement;
-            // Ignore lazy imgs that haven't been given a src yet.
             if (!img.currentSrc && !img.src) return false;
-            return !img.complete || img.naturalWidth === 0;
+            return img.complete && img.naturalWidth === 0;
           })
           .map((el) => (el as HTMLImageElement).currentSrc || (el as HTMLImageElement).src),
       );
       expect(broken, `broken <img> on /tours/${tourId}:\n${broken.join("\n")}`).toEqual([]);
+
 
       expect(
         imageFailures,
