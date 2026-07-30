@@ -119,7 +119,9 @@ test.describe("Footer logo proportions match navbar (mobile)", () => {
 
       // ── Assertion 3: aspect ratios match (no squash in either chrome).
       // The scale transform preserves aspect, so both should be ≈ 909/579.
-      const expectedAspect = 909 / 579;
+      // Current artwork export: 1240×799 ≈ 1.5519 (both mark variants
+      // share the same source dimensions).
+      const expectedAspect = 1240 / 799;
       expect(
         Math.abs(navLogo.aspect - expectedAspect),
         `Navbar logo aspect ${navLogo.aspect.toFixed(4)} drifted from artwork ${expectedAspect.toFixed(4)}`,
