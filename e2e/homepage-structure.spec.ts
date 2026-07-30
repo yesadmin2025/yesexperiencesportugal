@@ -63,10 +63,14 @@ function topFloorPx(rule: (typeof APPROVED_HOMEPAGE_SECTIONS)[number]["requiredS
 }
 
 async function gotoHomeStable(page: Page) {
-  await page.goto(ROUTE, { waitUntil: "networkidle" });
-  // Wait for hero h1 — guarantees the route component has mounted and
-  // SiteLayout's IntersectionObserver fade-in chain has at least started.
-  await expect(page.locator("h1.hero-h1")).toBeVisible();
+  await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
+  // The hero plays continuous media, so `networkidle` never settles.
+  // Bound it instead and fall through once the DOM is usable.
+  await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {});
+  // Wait for the hero h1 — it lives inside an `sr-only` probe (visually
+  // hidden but present), so assert attachment rather than visibility.
+  await expect(page.locator("h1.hero-h1")).toBeAttached();
+
   // Disable smooth scroll + animations so layout is stable for measurement.
   await page.addStyleTag({
     content: `
