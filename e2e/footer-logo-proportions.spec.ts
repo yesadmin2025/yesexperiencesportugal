@@ -71,6 +71,17 @@ async function measureLogo(page: Page, selector: string) {
   // Intrinsic artwork ratio. The navbar mark sits inside a fixed-width
   // `overflow-hidden` span, so its *rendered* box is cropped and can't be
   // used to prove the artwork isn't squashed — the natural ratio can.
+  // Lazy-loaded marks can still be decoding when we measure; wait for
+  // intrinsic dimensions before reading the ratio.
+  await el.evaluate(
+    (img) =>
+      new Promise<void>((resolve) => {
+        const i = img as HTMLImageElement;
+        if (i.complete && i.naturalWidth > 0) return resolve();
+        i.addEventListener("load", () => resolve(), { once: true });
+        i.addEventListener("error", () => resolve(), { once: true });
+      }),
+  );
   const naturalAspect = await el.evaluate((img) => {
     const i = img as HTMLImageElement;
     return i.naturalWidth / i.naturalHeight;
