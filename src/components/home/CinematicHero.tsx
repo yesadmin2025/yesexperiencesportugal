@@ -92,6 +92,7 @@ export function CinematicHero() {
   return (
     <section
       data-section="hero"
+      data-hero-cinematic="true"
       aria-label="YES Experiences Portugal"
       className="relative w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]"
       style={{ minHeight: "100svh", height: "100svh" }}
@@ -149,7 +150,7 @@ export function CinematicHero() {
 
       {/* ── Centered stanza ─────────────────────────────────────────── */}
       <div className="absolute inset-0 z-10 flex items-start justify-center pt-[30vh] sm:items-center sm:pt-0 px-6 sm:px-10 md:px-16">
-        <div className="text-center">
+        <div className="text-center" data-hero-stanza="true">
           <h1
             className="font-serif italic font-normal m-0"
             style={{
@@ -210,7 +211,7 @@ export function CinematicHero() {
             data-hero-field="secondaryCta"
             data-analytics="hero_open_studio"
             data-analytics-placement="hero"
-            className="hero-cta hero-cta--primary group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--primary group inline-flex items-center justify-center w-[252px] sm:w-auto sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",
@@ -243,7 +244,7 @@ export function CinematicHero() {
             data-hero-field="primaryCta"
             data-analytics="hero_choose_experience"
             data-analytics-placement="hero"
-            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center min-w-[196px] sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center w-[252px] sm:w-auto sm:min-w-[206px] px-7 py-[10px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
               letterSpacing: "0.24em",
               fontFamily: "Inter, system-ui, sans-serif",

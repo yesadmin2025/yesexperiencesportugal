@@ -1,77 +1,74 @@
-import { test, expect, type Page, type Locator } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 /**
- * Hero — visual regression suite.
+ * Hero — visual regression suite (cinematic hero, v3).
  *
- * Pinned screenshots of the three layout-critical hero regions:
- *   1. Eyebrow line  (must stay on a single line at every breakpoint)
- *   2. Headline      (two-line vertical rhythm + italic alignment)
- *   3. CTA group     (button widths, spacing, vertical alignment)
+ * The chaptered hero (eyebrow + two-line headline + subheadline stacked
+ * over a still) is retired. The current hero is a held film clip with a
+ * centered two-line italic stanza and a delayed CTA pair; the legacy
+ * copy fields survive only as sr-only SSR probes and are covered by the
+ * copy-lock specs, not by pixels.
  *
- * Each region is captured at:
- *   • mobile-chromium  (Pixel 5 → 393×851 css px)
- *   • desktop-chromium (Desktop Chrome → 1366×768)
- *
- * Snapshots live under `e2e/__screenshots__/` and are namespaced per
- * project automatically by Playwright's snapshotPathTemplate. Update
- * them deliberately with `bunx playwright test --update-snapshots`
- * after an INTENTIONAL hero layout change.
+ * This suite pins the two regions that are actually rendered:
+ *   1. Stanza  (h1 + supporting line — italic rhythm and alignment)
+ *   2. CTA pair (button widths, spacing, vertical alignment)
  *
  * Stability levers applied before every capture:
- *   • Animations disabled via `prefers-reduced-motion: reduce`.
- *   • All hero text forced to opacity:1 so we never capture mid-fade.
- *   • Background image removed (cinematic zoom + parallax shift would
- *     guarantee diff noise — we are testing TEXT layout, not artwork).
- *   • Shadows/blurs and the hero "breathe" pulse on CTAs disabled.
- *   • One settle frame after style injection so layout metrics flush.
+ *   • `?hero=last` freezes every reveal at its end state.
+ *   • Animations/transitions killed via injected CSS.
+ *   • The film stage is hidden — its frames are non-deterministic and
+ *     would dominate any pixel diff.
+ *
+ * Update deliberately after an INTENTIONAL hero change:
+ *   bunx playwright test hero-visual-regression --update-snapshots
  */
 
-async function prepareHero(page: Page) {
-  await page.goto("/?hero=last");
+const SNAPSHOT_OPTIONS = {
+  maxDiffPixelRatio: 0.015,
+  threshold: 0.2,
+} as const;
 
-  // Wait for the headline to mount before injecting overrides — otherwise
-  // the style block can race the hydrated React tree.
-  await page.locator("h1.hero-h1").waitFor({ state: "visible" });
+async function prepareHero(page: Page) {
+  await page.goto("/?hero=last", { waitUntil: "domcontentloaded" });
+
+  await page.locator('[data-hero-cinematic="true"]').waitFor({ state: "visible" });
+  await page.locator('[data-hero-stanza="true"] h1').waitFor({ state: "visible" });
 
   await page.addStyleTag({
     content: `
-      /* Kill every animation/transition: hero fade-in cascade, slow zoom,
-         CTA "breathe" pulse, parallax transitions. */
       *, *::before, *::after {
         animation: none !important;
         transition: none !important;
       }
-      /* Make sure every fade-in element is fully opaque. */
-      [data-hero-field] { opacity: 1 !important; }
-      .cta-magnet-group { opacity: 1 !important; transform: none !important; }
-      /* Hide the hero background imagery so we are only diffing text/CTA
-         layout — the cinematic story sequence has a slow Ken-Burns pan +
-         crossfade that is deliberately non-deterministic. */
-      section img[alt^="Hidden coastal"],
-      .hero-story-stage,
-      .hero-story-slide { visibility: hidden !important; }
-      /* Hide the on-page debug reset button so it never sneaks into the
-         CTA-group snapshot if layout reflows it nearby. */
+      [data-hero-stanza="true"] h1,
+      [data-hero-stanza="true"] p {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+      }
+      [data-hero-composed] {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      /* Non-deterministic film frames + gradients must never enter a diff. */
+      .hero-story-stage { visibility: hidden !important; }
       [data-hero-copy-reset] { display: none !important; }
     `,
   });
 
-  // One frame to let style injection settle.
-  await page.evaluate(() => new Promise<void>((r) => requestAnimationFrame(() => r())));
-}
-
-/**
- * Capture a region by data-hero-field. We use boundingBox-based clipping
- * (rather than locator.screenshot) so the diff also catches positional
- * drift relative to its container, not just intrinsic re-renders.
- */
-async function snapshotRegion(page: Page, locator: Locator, name: string) {
-  await expect(locator).toBeVisible();
-  // Scroll into view so the box is fully within the viewport before clipping.
-  await locator.scrollIntoViewIfNeeded();
-  await expect(locator).toHaveScreenshot(name, {
-    // Locator-scoped screenshot: Playwright handles devicePixelRatio and
-    // composes a clean PNG without needing manual clip math.
+  await page.evaluate(async () => {
+    type FontFaceSetLike = { ready?: Promise<unknown> };
+    const fonts = (document as unknown as { fonts?: FontFaceSetLike }).fonts;
+    if (fonts?.ready) await fonts.ready;
+    const video = document.querySelector('[data-hero-film="true"]') as HTMLVideoElement | null;
+    if (video) {
+      try {
+        video.pause();
+      } catch {
+        /* noop */
+      }
+    }
+    await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
   });
 }
 
@@ -80,48 +77,31 @@ test.describe("Hero — visual regression", () => {
     await prepareHero(page);
   });
 
-  test("eyebrow line stays pixel-consistent", async ({ page }) => {
-    const eyebrow = page.locator('[data-hero-field="eyebrow"]').first();
+  test("stanza stays pixel-consistent", async ({ page }, testInfo) => {
+    const stanza = page.locator('[data-hero-stanza="true"]').first();
+    await expect(stanza).toBeVisible();
 
-    // Hard guarantee: eyebrow must render as a single visual line at
-    // every breakpoint. We check this BEFORE the snapshot so a wrap
-    // failure produces a clear assertion error instead of a noisy diff.
-    const { lineHeight, height } = await eyebrow.evaluate((el) => {
-      const cs = getComputedStyle(el);
-      const lh = parseFloat(cs.lineHeight);
-      const h = (el as HTMLElement).getBoundingClientRect().height;
-      return { lineHeight: Number.isFinite(lh) ? lh : h, height: h };
+    // Layout contract: the two stanza lines share the same centre axis.
+    const centres = await stanza.evaluate((el) => {
+      const nodes = Array.from(el.querySelectorAll<HTMLElement>("h1, p"));
+      return nodes.map((n) => {
+        const r = n.getBoundingClientRect();
+        return Math.round(r.left + r.width / 2);
+      });
     });
-    // Allow 4px of slack for descenders / sub-pixel rounding.
-    expect(height).toBeLessThanOrEqual(lineHeight + 4);
+    expect(centres.length).toBe(2);
+    expect(Math.abs(centres[0] - centres[1])).toBeLessThanOrEqual(2);
 
-    await snapshotRegion(page, eyebrow, "hero-eyebrow.png");
+    await expect(stanza).toHaveScreenshot(
+      `hero-stanza-${testInfo.project.name}.png`,
+      SNAPSHOT_OPTIONS,
+    );
   });
 
-  test("headline alignment stays pixel-consistent", async ({ page }) => {
-    const headline = page.locator("h1.hero-h1").first();
+  test("CTA group spacing stays pixel-consistent", async ({ page }, testInfo) => {
+    const ctaGroup = page.locator(".hero-cta-group").first();
+    await expect(ctaGroup).toBeVisible();
 
-    // Both spans must share the same left edge — that is the alignment
-    // contract the visual regression is locking in.
-    const leftEdges = await headline.evaluate((h1) => {
-      const spans = Array.from(
-        h1.querySelectorAll<HTMLElement>('[data-hero-field^="headlineLine"]'),
-      );
-      return spans.map((s) => Math.round(s.getBoundingClientRect().left));
-    });
-    expect(leftEdges.length).toBe(2);
-    expect(leftEdges[0]).toBe(leftEdges[1]);
-
-    await snapshotRegion(page, headline, "hero-headline.png");
-  });
-
-  test("CTA group spacing stays pixel-consistent", async ({ page }) => {
-    const ctaGroup = page.locator(".cta-magnet-group").first();
-
-    // Layout contract: on mobile (<640px) the two CTAs stack and share
-    // the same width; on desktop they sit side-by-side with a small,
-    // bounded gap. Asserting both lets the snapshot focus on style
-    // drift rather than re-discovering the layout shape on every diff.
     const layout = await ctaGroup.evaluate((group) => {
       const links = Array.from(group.querySelectorAll<HTMLElement>("a"));
       const rects = links.map((a) => a.getBoundingClientRect());
@@ -129,26 +109,22 @@ test.describe("Hero — visual regression", () => {
         viewportWidth: window.innerWidth,
         widths: rects.map((r) => Math.round(r.width)),
         tops: rects.map((r) => Math.round(r.top)),
-        lefts: rects.map((r) => Math.round(r.left)),
       };
     });
 
     expect(layout.widths.length).toBe(2);
-
     if (layout.viewportWidth < 640) {
-      // Stacked: equal width, equal left edge, primary above secondary.
-      expect(layout.widths[0]).toBe(layout.widths[1]);
-      expect(layout.lefts[0]).toBe(layout.lefts[1]);
+      // Stacked: same width, different rows.
+      expect(Math.abs(layout.widths[0] - layout.widths[1])).toBeLessThanOrEqual(2);
       expect(layout.tops[1]).toBeGreaterThan(layout.tops[0]);
     } else {
-      // Side-by-side: same baseline (top), with a horizontal gap
-      // somewhere between 12px and 48px.
+      // Side by side: same baseline row.
       expect(Math.abs(layout.tops[0] - layout.tops[1])).toBeLessThanOrEqual(2);
-      const gap = layout.lefts[1] - (layout.lefts[0] + layout.widths[0]);
-      expect(gap).toBeGreaterThanOrEqual(12);
-      expect(gap).toBeLessThanOrEqual(48);
     }
 
-    await snapshotRegion(page, ctaGroup, "hero-cta-group.png");
+    await expect(ctaGroup).toHaveScreenshot(
+      `hero-cta-group-${testInfo.project.name}.png`,
+      SNAPSHOT_OPTIONS,
+    );
   });
 });

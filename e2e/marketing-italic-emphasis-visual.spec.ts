@@ -35,17 +35,40 @@ const ROUTES: Array<{ slug: string; path: string; waitFor?: string }> = [
   { slug: "multi-day", path: "/multi-day" },
   { slug: "proposals", path: "/proposals" },
   { slug: "corporate", path: "/corporate" },
-  { slug: "day-trips-from-lisbon", path: "/day-trips-from-lisbon" },
+  // NOTE: /day-trips-from-lisbon is now a 301 to /local-stories/best-day-trips-from-lisbon,
+  // and Local Stories articles render content-driven headings without the mixed
+  // roman+italic emphasis pattern, so they are intentionally out of scope here.
+
 ];
 
 const EMPHASIS_SELECTOR =
   'h1.serif:has(span.italic), h2.serif:has(span.italic), h1[class*="serif"]:has(span.italic), h2[class*="serif"]:has(span.italic)';
 
 async function prep(page: Page) {
+  // Freeze every scroll reveal at its end state — otherwise a heading can be
+  // captured mid-fade and produce a ~90% pixel diff that is pure timing noise.
+  await page.addStyleTag({
+    content: `
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      h1, h2, h1 *, h2 *,
+      [data-reveal], [data-reveal] *,
+      [class*="reveal"], [class*="reveal"] * {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        clip-path: none !important;
+      }
+    `,
+  });
+
   // Wait for web fonts so italic glyphs are Georgia, not the system
   // fallback. Then disable animations / hide the hero film, which
   // would otherwise dominate any pixel diff on routes that include it.
   await page.evaluate(async () => {
+
     type FontFaceSetLike = { ready?: Promise<unknown> };
     const fonts = (document as unknown as { fonts?: FontFaceSetLike }).fonts;
     if (fonts?.ready) await fonts.ready;

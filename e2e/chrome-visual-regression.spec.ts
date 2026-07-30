@@ -60,7 +60,7 @@ test.describe("Navbar chrome", () => {
     await page.goto("/");
     await settle(page);
     await page
-      .getByRole("link", { name: /Design.*Secure$/i })
+      .getByRole("link", { name: /Design\s*&\s*Book/i })
       .first()
       .hover();
     await page.waitForTimeout(550); // 500ms transition

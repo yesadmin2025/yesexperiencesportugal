@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-29T23:42:40.780Z",
+  "generatedAt": "2026-07-30T02:05:07.970Z",
   "filesScanned": 939,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1151,7 +1151,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 159,
+      "line": 161,
       "col": 23,
       "raw": "#F1D8AB",
       "normalized": "#f1d8ab",
@@ -1160,7 +1160,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 179,
+      "line": 181,
       "col": 23,
       "raw": "#F1D8AB",
       "normalized": "#f1d8ab",
@@ -1169,7 +1169,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 211,
+      "line": 213,
       "col": 267,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1178,7 +1178,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 244,
+      "line": 246,
       "col": 265,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -1187,7 +1187,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 463,
+      "line": 465,
       "col": 13,
       "raw": "#B8985A",
       "normalized": "#b8985a",
@@ -1196,7 +1196,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 464,
+      "line": 466,
       "col": 25,
       "raw": "#B8985A",
       "normalized": "#b8985a",
