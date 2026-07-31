@@ -76,8 +76,10 @@ function Page() {
               </div>
               <div className="scene-title">
                 <SectionTitle as="h1" size="anchor" spacing="loose">
-                  We design <SectionTitle.Em>meaningful Portugal</SectionTitle.Em>.
+                  About YES Experiences Portugal:{" "}
+                  <SectionTitle.Em>local travel designers</SectionTitle.Em>.
                 </SectionTitle>
+
               </div>
               <p className="scene-body mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
                 YES Experiences Portugal is a licensed Portuguese private tour operator, founder-led
