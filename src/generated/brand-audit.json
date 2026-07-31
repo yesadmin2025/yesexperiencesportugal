@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T14:15:40.195Z",
+  "generatedAt": "2026-07-31T01:24:02.833Z",
   "filesScanned": 939,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1170,24 +1170,24 @@
     {
       "file": "src/components/home/CinematicHero.tsx",
       "line": 225,
-      "col": 328,
+      "col": 311,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
-      "snippet": "className=\"hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-auto sm:min-w-[206px] px-7 py-[1",
+      "snippet": "className=\"hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-full px-7 py-[14px] sm:py-[13px]",
       "status": "approved"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
       "line": 258,
-      "col": 326,
+      "col": 309,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
-      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-auto sm:min-w-[206px] px-7 py-[14p",
+      "snippet": "className=\"hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-full px-7 py-[14px] sm:py-[13px] m",
       "status": "approved"
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 477,
+      "line": 496,
       "col": 13,
       "raw": "#B8985A",
       "normalized": "#b8985a",
@@ -1196,7 +1196,7 @@
     },
     {
       "file": "src/components/home/CinematicHero.tsx",
-      "line": 478,
+      "line": 497,
       "col": 25,
       "raw": "#B8985A",
       "normalized": "#b8985a",
