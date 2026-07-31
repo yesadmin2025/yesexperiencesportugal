@@ -244,8 +244,6 @@ function ExperiencesPage() {
                     )}
                   </div>
 
-
-
                   {/* Dual CTAs — Reserve (confirm as designed) +
                       Tailor this day (adjust details inside this same
                       Signature, never a different tour). */}
