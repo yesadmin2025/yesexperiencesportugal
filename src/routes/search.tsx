@@ -153,7 +153,11 @@ function SearchPage() {
                     Signature collection
                   </Link>{" "}
                   or{" "}
-                  <Link to="/contact" className="underline underline-offset-4">
+                  <Link
+                    to="/contact"
+                    search={{ type: undefined }}
+                    className="underline underline-offset-4"
+                  >
                     tell us what you have in mind
                   </Link>
                   .

@@ -182,55 +182,66 @@ function ExperiencesPage() {
                       field. Card now exposes only data verifiable against
                       the live product page. */}
 
-                  {/* Subdued meta strip — region · duration · from €X.
-                      Price kept (conversion) but reduced to body weight
-                      so it stops dominating the card read. */}
-                  <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-                    {meta && meta.reviewCount > 0 && (
-                      <>
-                        <span className="flex items-center gap-1.5 text-[color:var(--charcoal)]">
-                          <Star
-                            size={12}
-                            className="text-[color:var(--gold-ink)]"
-                            fill="currentColor"
-                            strokeWidth={0}
-                            aria-hidden="true"
-                          />
-                          <span className="tabular-nums font-medium text-[color:var(--gold-ink)]">
-                            {meta.rating.toFixed(1)}
+                  {/* Deterministic meta block — every card renders the
+                      SAME sequence in the SAME rows, so a column of
+                      Signatures reads as one aligned system on mobile.
+                      Each row holds only items short enough to never wrap
+                      at 360px, so no separator can ever be orphaned at a
+                      line break:
+                        row 1: ★ rating (reviews)  ·  duration
+                        row 2: region
+                        row 3: From €X per person
+                        row 4: Lunch included (only when canonical) */}
+                  <div className="mt-4 flex flex-col gap-1.5 text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                    <div className="flex min-h-[16px] items-center gap-x-2.5">
+                      {meta && meta.reviewCount > 0 && (
+                        <>
+                          <span className="flex items-center gap-1.5 whitespace-nowrap text-[color:var(--charcoal)]">
+                            <Star
+                              size={12}
+                              className="text-[color:var(--gold-ink)]"
+                              fill="currentColor"
+                              strokeWidth={0}
+                              aria-hidden="true"
+                            />
+                            <span className="tabular-nums font-medium text-[color:var(--gold-ink)]">
+                              {meta.rating.toFixed(1)}
+                            </span>
+                            <span className="text-[color:var(--charcoal-soft)]">
+                              (<span className="tabular-nums">{meta.reviewCount}</span>
+                              <span className="sr-only"> reviews</span>)
+                            </span>
                           </span>
-                          <span className="text-[color:var(--charcoal-soft)]">
-                            · <span className="tabular-nums">{meta.reviewCount}</span> reviews
-                          </span>
+                          <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
+                        </>
+                      )}
+                      <span className="flex items-center gap-1.5 whitespace-nowrap">
+                        <Clock size={11} /> {signatureDurationLabel(t.id, t.durationHours)}
+                      </span>
+                    </div>
+                    <div className="flex min-h-[16px] items-center">
+                      <span className="flex items-center gap-1.5">
+                        <MapPin size={11} className="shrink-0" /> {t.region}
+                      </span>
+                    </div>
+                    <div className="flex min-h-[16px] items-center">
+                      <span className="whitespace-nowrap text-[color:var(--charcoal)]">
+                        From <PriceEur amountEur={t.priceFrom} role="from" />
+                        <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                          per person
                         </span>
-                        <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
-                      </>
-                    )}
-                    <span className="flex items-center gap-1.5">
-                      <MapPin size={11} /> {t.region}
-                    </span>
-                    <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
-                    <span className="flex items-center gap-1.5">
-                      <Clock size={11} /> {signatureDurationLabel(t.id, t.durationHours)}
-                    </span>
-                    <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
+                      </span>
+                    </div>
                     {signatureIncludesLunch(t.id) && (
-                      <>
-                        {/* Only when the canonical inclusions say so —
-                            never inferred from the itinerary. */}
-                        <span className="flex items-center gap-1.5 text-[color:var(--charcoal)]">
+                      /* Only when the canonical inclusions say so —
+                         never inferred from the itinerary. */
+                      <div className="flex min-h-[16px] items-center">
+                        <span className="flex items-center gap-1.5 whitespace-nowrap text-[color:var(--charcoal)]">
                           <UtensilsCrossed size={11} className="text-[color:var(--gold-ink)]" />
                           Lunch included
                         </span>
-                        <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
-                      </>
+                      </div>
                     )}
-                    <span className="text-[color:var(--charcoal)]">
-                      From <PriceEur amountEur={t.priceFrom} role="from" />
-                      <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-                        per person
-                      </span>
-                    </span>
                   </div>
 
                   {/* Dual CTAs — Reserve (confirm as designed) +
