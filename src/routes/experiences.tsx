@@ -184,14 +184,16 @@ function ExperiencesPage() {
 
                   {/* Deterministic meta block — every card renders the
                       SAME sequence in the SAME rows, so a column of
-                      Signatures reads as one aligned system on mobile:
-                        row 1: ★ rating · reviews  ·  region  ·  duration
-                        row 2: From €X per person  (·  Lunch included)
-                      Optional data never re-orders or re-wraps the row
-                      above it; the rating slot keeps its height even when
-                      a tour has no reviews yet. */}
-                  <div className="mt-4 flex flex-col gap-1.5 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-                    <div className="flex min-h-[16px] flex-wrap items-center gap-x-2.5 gap-y-1">
+                      Signatures reads as one aligned system on mobile.
+                      Each row holds only items short enough to never wrap
+                      at 360px, so no separator can ever be orphaned at a
+                      line break:
+                        row 1: ★ rating (reviews)  ·  duration
+                        row 2: region
+                        row 3: From €X per person
+                        row 4: Lunch included (only when canonical) */}
+                  <div className="mt-4 flex flex-col gap-1.5 text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                    <div className="flex min-h-[16px] items-center gap-x-2.5">
                       {meta && meta.reviewCount > 0 && (
                         <>
                           <span className="flex items-center gap-1.5 whitespace-nowrap text-[color:var(--charcoal)]">
@@ -206,40 +208,42 @@ function ExperiencesPage() {
                               {meta.rating.toFixed(1)}
                             </span>
                             <span className="text-[color:var(--charcoal-soft)]">
-                              (<span className="tabular-nums">{meta.reviewCount}</span>)
+                              (<span className="tabular-nums">{meta.reviewCount}</span>
+                              <span className="sr-only"> reviews</span>)
                             </span>
                           </span>
                           <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
                         </>
                       )}
                       <span className="flex items-center gap-1.5 whitespace-nowrap">
-                        <MapPin size={11} /> {t.region}
-                      </span>
-                      <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
-                      <span className="flex items-center gap-1.5 whitespace-nowrap">
                         <Clock size={11} /> {signatureDurationLabel(t.id, t.durationHours)}
                       </span>
                     </div>
-                    <div className="flex min-h-[16px] flex-wrap items-center gap-x-2.5 gap-y-1">
+                    <div className="flex min-h-[16px] items-center">
+                      <span className="flex items-center gap-1.5">
+                        <MapPin size={11} className="shrink-0" /> {t.region}
+                      </span>
+                    </div>
+                    <div className="flex min-h-[16px] items-center">
                       <span className="whitespace-nowrap text-[color:var(--charcoal)]">
                         From <PriceEur amountEur={t.priceFrom} role="from" />
                         <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
                           per person
                         </span>
                       </span>
-                      {signatureIncludesLunch(t.id) && (
-                        <>
-                          {/* Only when the canonical inclusions say so —
-                              never inferred from the itinerary. */}
-                          <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
-                          <span className="flex items-center gap-1.5 whitespace-nowrap text-[color:var(--charcoal)]">
-                            <UtensilsCrossed size={11} className="text-[color:var(--gold-ink)]" />
-                            Lunch included
-                          </span>
-                        </>
-                      )}
                     </div>
+                    {signatureIncludesLunch(t.id) && (
+                      /* Only when the canonical inclusions say so —
+                         never inferred from the itinerary. */
+                      <div className="flex min-h-[16px] items-center">
+                        <span className="flex items-center gap-1.5 whitespace-nowrap text-[color:var(--charcoal)]">
+                          <UtensilsCrossed size={11} className="text-[color:var(--gold-ink)]" />
+                          Lunch included
+                        </span>
+                      </div>
+                    )}
                   </div>
+
 
 
                   {/* Dual CTAs — Reserve (confirm as designed) +
