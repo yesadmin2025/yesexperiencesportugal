@@ -2435,6 +2435,7 @@ function ConvergencePhase({
           ) : (
             <Link
               to="/contact"
+              search={{ type: undefined }}
               onClick={() => void recordDriftEvent("cta_refine")}
               className="group inline-flex min-h-[48px] items-center justify-center gap-2.5 rounded-[2px] border px-7 py-3.5 text-[12.5px] lowercase transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
               style={{
