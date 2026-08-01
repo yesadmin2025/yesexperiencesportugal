@@ -1,56 +1,43 @@
-## Final Launch Pass — one sweep, no follow-up plans
+Goal
 
-Goal: run a single end-to-end audit of the live site across the six areas you named, fix every defect found, and prove it with the guard suites already in the repo. Nothing left open.
+Make Playwright runs deterministic in this sandbox and CI, then run the full suite and validate checkout + Signature maps.
 
-### Method
+## 1. Pin the browser path
 
-For each area: audit against the current build (mobile 393px first, then tablet/desktop), list concrete defects, fix them, re-run the relevant guards. I fix as I go — no intermediate approvals.
+- Add `scripts/playwright-env.mjs` that resolves a usable browsers root in this order: existing `PLAYWRIGHT_BROWSERS_PATH`, `/opt/ms-playwright` (present here, contains `chromium-1194` and `chromium_headless_shell-1194`), then `~/.cache/ms-playwright`.
+- Export the resolved value from `playwright.config.ts` and `playwright.local.config.ts` before `defineConfig`, so every worker inherits it (same pattern already used for the asset ESM hook via `NODE_OPTIONS`).
+- Add `package.json` scripts: `test:e2e` and the per-suite scripts run through a small wrapper (`node scripts/playwright-run.mjs …`) that sets the env and forwards args, so no caller can forget the pin.
 
-### 1. Typography
-- Sweep every route for the two-family rule (Fraunces headings + italic emphasis, Inter body/UI). Any Georgia/Cormorant/Montserrat/system fallback left in components, e2e expectations or CSS gets replaced.
-- Run the runtime font-fallback detector across all public routes and fix every `[font-fallback]` warning.
-- Check heading scale/weight consistency per route (homepage H2 medium exception preserved), line-height and tracking on H1/H2, and long-form measure on /about and Local Stories.
-- Guards: `typography-regression`, `hero-typography-fontload`, `studio-v3-p0-typography-two-family-mobile`.
+## 2. Preflight: chrome-headless-shell present or auto-install
 
-### 2. Consistency & spacing
-- Section rhythm audit: every marketing section at `py-16` mobile / `py-24` desktop, consistent container widths, consistent eyebrow → title → body → CTA spacing via the canonical primitives (`Eyebrow`, `SectionTitle`, `CtaButton`, `EditorialCard`). Hand-rolled duplicates get swapped to the primitives.
-- Card grids: equal-height rows, no orphaned meta lines at 360px, tap targets ≥44px everywhere.
-- Chrome consistency: header, footer, sticky CTAs, switchers (language/currency) identical across routes and locales.
-- Guards: `homepage-typography-spacing-regression`, `homepage-structure`, `footer-logo-proportions`, `chrome-runtime-contrast`, `site-brand-audit`.
+- Extend `scripts/check-playwright-libs.mjs` (already wired as Playwright `globalSetup`) into a real preflight:
+  - resolve browsers root (step 1),
+  - check for `chrome-headless-shell` and the Chromium build Playwright's installed version expects,
+  - if missing, run `bunx playwright install chromium chromium-headless-shell` once (guarded by a lockfile so parallel workers don't race), and keep the existing missing-system-libs `ldd` warning,
+  - stay non-blocking on warnings, but fail fast with a clear message if install fails.
 
-### 3. Animations
-- Verify the motion system is uniform: entry fade + 12–16px rise, hover lift −2px, image zoom 1.02–1.04, ≤220ms outside the homepage; homepage `.home-energy` overrides stay scoped.
-- Remove any leftover abrupt image switches (soft crossfade only), any bounce/spring, any motion that fires above the reduced-motion guard.
-- Confirm `prefers-reduced-motion` fully neutralises reveals, parallax, Ken Burns and sheen.
-- Guards: `check-motion-budget`, `marketing-italic-emphasis-visual`, `hero-v4-reveal`, `hero-crossfade`.
+## 3. Full suite run
 
-### 4. Checkout
-- Walk all three instant-book paths end to end on mobile: Signature "as designed", Tailored Signature, Studio V3 reveal — from selection to a real Stripe session.
-- Verify the amount shown in `ChargeSummaryLine` equals the amount Stripe charges, in every case: adults only, mixed adult/youth/child/infant, add-ons on/off, stop removals, lunch removal credit, currency toggle EUR/USD.
-- Verify guest-details validation, idempotency on double-submit, cancel/return URLs, booking snapshot written on success, and the confirmation + admin notification emails.
-- Guards: `instant-booking-checkout`, `instant-booking-checkout-negative`, `checkout-price-parity`, `studio-v3-e6-submit-checkout-idempotency`, `pricing-ssot`, `tier-pricing`, `age-band-pricing`.
+- Run `bun run test:e2e` across the three configured projects (mobile / tablet / desktop Chromium) against the dev server.
+- Triage every failure; where the failure is a legitimate visual drift from the recent typography and sticky-CTA changes, refresh only those snapshots with `--update-snapshots` for the affected specs. Report the final pass/fail counts.
+- All typography and copy consistency all over the site and right spacing and brand pallet, on mobile specially 
+- No repeated images anywhere on the website (exclude signature pages) 
 
-### 5. Prices
-- Reconcile every displayed price against `src/config/pricing.ts` as single source of truth — Signature cards, tour pages, Tailor, Studio, /experiences, sitemap-linked landing pages.
-- Confirm the 15% direct baseline, per-stop-removal logic and age bands are applied identically everywhere, that no page hardcodes a number, and that USD conversion labels are consistent.
-- Cross-check against the Viator source-of-truth table (`test:sot-parity`).
+## 4. Checkout validation (mobile + tablet)
 
-### 6. SEO
-- Re-validate sitemap (every `<loc>` 200 + indexable), robots, canonical/og:url self-reference, reciprocal hreflang, and JSON-LD (Organization, WebSite+SearchAction, Product/Offer/AggregateRating, FAQPage, BreadcrumbList, Itinerary) on rendered HTML, not source.
-- Confirm one H1 per route, unique title <60 / description <160 on every content route, og:image tied to the route hero.
-- Re-run the SEO scanner at the end and close anything that resurfaces.
-- Guards: `sitemap-robots-canonical`, `jsonld-rendered`, `hreflang-reciprocity`, `review-certificate-sync`.
+- Run `e2e/checkout-price-parity.spec.ts`, `e2e/instant-booking-checkout.spec.ts` and `e2e/instant-booking-checkout-negative.spec.ts`.
+- Extend the price-parity spec so it also asserts, for mobile and tablet viewports: per-person and party totals match `resolveJourneyPricing`, the tax/VAT line matches what the pricing library returns, and the final confirmation copy on the review step matches the checkout copy constants.
 
-### 7. Copy
-- Full-site read-through against brand voice: US-EN spelling, sentence case body, no banned words (amazing, best, luxury-as-adjective, unforgettable), no emojis or exclamation marks, CTA vocabulary from the approved library only.
-- "Experience Investment" wording in pricing surfaces; `YES — …` voice on confirmations/progress/completion.
-- PT locale parity for every paired path.
-- Guards: `copy-parity`, `cta-vocabulary-lock`, `sticky-cta-copy`, `brand-audit`, `i18n-check`.
+## 5. Signature route maps
 
-### Final gate before I report done
-`bun run lint` · `tsgo` typecheck · `bunx vitest run` (full unit suite) · full Playwright run · `bun run prebuild` guardrails · security scan. Every one green, or I keep fixing until it is.
+- Run `e2e/signature-map-and-images.spec.ts` (already covers all 11 tours, asserts a `[role="img"][aria-label^="Route map"]` tile with non-zero size).
+- If any tour fails, fix the underlying cause in `SignatureRouteMap` / its stop resolver rather than loosening the assertion.
 
-### Deliverable
-A single closing report listing what was broken, what I changed, and the final green status per suite — plus publish when it's all clean.
+## 6. SEO re-check
 
-Technical notes: work stays in frontend/presentation plus the pricing/SEO config already established as SSOT; no schema changes unless a checkout defect requires one, and no brand token repointing.
+- Re-run `e2e/sitemap-robots-canonical.spec.ts` and `e2e/jsonld-rendered.spec.ts` last, after all code changes, to confirm nothing regressed.
+
+## Technical notes
+
+- No app behaviour changes are planned; edits are limited to test infra, scripts, and (if a real defect surfaces) the specific component at fault.
+- Snapshot refreshes will be scoped per-spec, never a blanket update.

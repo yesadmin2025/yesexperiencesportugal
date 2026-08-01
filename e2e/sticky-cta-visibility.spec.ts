@@ -1,5 +1,6 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
 import { acceptCookiesBeforeLoad } from "./consent-helpers";
+import { settleScrollRestoration } from "./scroll-helpers";
 
 /**
  * E2E coverage for the post-hero sticky CTA visibility contract.
@@ -93,6 +94,9 @@ test.describe("Sticky CTA — post-hero visibility contract", () => {
     // Wait until the bar is at least mounted so locator queries don't
     // race the hero animation cascade.
     await stickyBar(page).waitFor({ state: "attached" });
+    // Router scroll restoration lands after hydration and would revert any
+    // scroll we perform before it — wait it out, then start from the top.
+    await settleScrollRestoration(page);
   });
 
   test("hidden on initial load while inside the hero", async ({ page }) => {
@@ -185,12 +189,18 @@ test.describe("Sticky CTA — post-hero visibility contract", () => {
     //    sessionStorage flag persists across this navigation.
     await page.goto("/about");
     await stickyBar(page).waitFor({ state: "attached" });
+    // Router scroll restoration lands after hydration and would revert any
+    // scroll we perform before it — wait it out, then start from the top.
+    await settleScrollRestoration(page);
 
     // 3. Navigate back. The browser may serve from BFCache or do a
     //    fresh render — either way, the page lands at scrollY = 0
     //    inside the hero and the bar must NOT flash.
     await page.goBack();
     await stickyBar(page).waitFor({ state: "attached" });
+    // Router scroll restoration lands after hydration and would revert any
+    // scroll we perform before it — wait it out, then start from the top.
+    await settleScrollRestoration(page);
 
     // First frame after restore: hidden. Even though sessionStorage
     // says we passed the hero earlier, the current scrollY is in the

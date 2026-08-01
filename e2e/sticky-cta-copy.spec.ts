@@ -1,5 +1,6 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
 import { acceptCookiesBeforeLoad } from "./consent-helpers";
+import { settleScrollRestoration } from "./scroll-helpers";
 
 /**
  * E2E coverage for the post-hero sticky CTA *content* contract.
@@ -117,6 +118,9 @@ test.describe("Sticky CTA — copy, choice sheet, and announcement contract", ()
     await acceptCookiesBeforeLoad(page);
     await page.goto("/");
     await stickyBar(page).waitFor({ state: "attached" });
+    // Router scroll restoration lands after hydration and would revert any
+    // scroll we perform before it — wait it out, then start from the top.
+    await settleScrollRestoration(page);
   });
 
 
