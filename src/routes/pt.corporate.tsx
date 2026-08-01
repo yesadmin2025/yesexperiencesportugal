@@ -14,7 +14,7 @@ import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 const TITLE = "Experiências corporativas e para grupos privados em Portugal | YES";
 const DESCRIPTION =
-  "Dias corporativos privados, retiros de equipa e experiências de grupo em Portugal — desenhados e conduzidos por um operador local licenciado. Transporte, guias e locais coordenados de ponta a ponta.";
+  "Experiências corporativas, team building e grupos privados em Portugal, com transporte, atividades, locais e acompanhamento coordenados por uma equipa local.";
 
 export const Route = createFileRoute("/pt/corporate")({
   head: () => ({

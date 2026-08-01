@@ -10,7 +10,7 @@ import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
 const TITLE = "Press & Brand Kit — YES Experiences Portugal";
 const DESCRIPTION =
-  "Press resources, company boilerplate, founder bio, logo kit, backlink snippets and citation copy for YES Experiences Portugal — licensed Portuguese tour operator RNAAT nº 31/2023, operating nationwide.";
+  "Press resources, founder bio, brand assets and verified company information for YES Experiences Portugal, a licensed local tour operator.";
 const URL = "https://yesexperiencesportugal.com/press";
 const OG_IMAGE = "https://yesexperiencesportugal.com/brand/yes-brand-board.png";
 
@@ -277,7 +277,7 @@ function PressPage() {
             <Eyebrow>Press &amp; brand kit</Eyebrow>
           </div>
           <div className="scene-title">
-            <SectionTitle>
+            <SectionTitle as="h1">
               Resources for journalists, <em className="font-serif italic">editors and partners</em>
             </SectionTitle>
           </div>

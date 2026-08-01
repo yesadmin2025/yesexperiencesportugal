@@ -29,7 +29,7 @@ import heroImg from "@/assets/why-image.jpg";
 const CANONICAL = `${SITE_URL}/trade`;
 const TITLE = "Portugal for travel advisors | YES Experiences trade partner";
 const DESCRIPTION =
-  "Trade partner across Portugal for travel advisors, designers and agencies. Private Signature days, the Experience Studio, Travel Designer journeys, celebrations and groups — one named local contact.";
+  "Portugal ground partner for travel advisors and agencies, with private tours, custom journeys, groups and one dedicated local contact.";
 const OG_IMAGE = `${SITE_URL}${heroImg}`;
 
 const tradeSchema = z.object({

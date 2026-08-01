@@ -3,23 +3,32 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import ogImg from "@/assets/hero-coast.jpg";
+
+const TITLE = "Política de cookies — YES Experiences Portugal";
+const DESCRIPTION =
+  "Saiba como a YES Experiences Portugal utiliza cookies essenciais e analíticos, como gerir as suas preferências e como recusar cookies não essenciais.";
+const PAGE_URL = "https://yesexperiencesportugal.com/pt/cookies";
+const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;
 
 export const Route = createFileRoute("/pt/cookies")({
   head: () => ({
     meta: [
-      { title: "Política de cookies — YES Experiences Portugal" },
-      {
-        name: "description",
-        content:
-          "Como usamos cookies em yesexperiencesportugal.com — cookies essenciais, de análise e como recusar.",
-      },
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "YES Experiences Portugal — Política de cookies" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: OG_IMAGE },
       { property: "og:locale", content: "pt_PT" },
-      { property: "og:url", content: "https://yesexperiencesportugal.com/pt/cookies" },
+      { property: "og:url", content: PAGE_URL },
     ],
-    links: [
-      { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/cookies" },
-      ...localeAlternateLinks("/cookies"),
-    ],
+    links: [{ rel: "canonical", href: PAGE_URL }, ...localeAlternateLinks("/cookies")],
   }),
   component: PtCookiesPage,
 });
