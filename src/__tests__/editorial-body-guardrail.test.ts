@@ -45,7 +45,7 @@ const SCAN_PATTERNS: RegExp[] = [
 ];
 
 /** Files skipped even if they match a scan pattern above. */
-const IGNORED_FILES = new Set<string>(["tours.$tourId.tailor.tsx"]);
+const IGNORED_FILES = new Set<string>(["tours_.$tourId.tailor.tsx"]);
 
 /** Whitelist for intentional non-editorial-body prose. Each entry MUST
  *  document why the exemption exists. Aim to keep this empty. */
