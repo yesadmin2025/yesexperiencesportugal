@@ -161,9 +161,12 @@ export function CinematicHero() {
 
       {/* ── Centered stanza ─────────────────────────────────────────── */}
       <div className="absolute inset-0 z-10 flex items-start justify-center pt-[30vh] sm:items-center sm:pt-0 px-6 sm:px-10 md:px-16">
-        <div className="text-center" data-hero-stanza="true">
-          <p
-            className="font-serif italic font-normal m-0"
+        {/* The visible stanza IS the page H1 — same visuals, same
+            animation, correct document semantics. Each line stays a
+            block so the two-line cadence is unchanged. */}
+        <h1 className="text-center m-0" data-hero-stanza="true">
+          <span
+            className="block font-serif italic font-normal m-0"
             style={{
               fontFamily: 'Georgia, "Cormorant Garamond", "Newsreader", serif',
               fontWeight: 400,
@@ -181,9 +184,9 @@ export function CinematicHero() {
             }}
           >
             {HERO_PHRASES[0]}
-          </p>
-          <p
-            className="font-serif italic font-normal mt-3 sm:mt-4"
+          </span>
+          <span
+            className="block font-serif italic font-normal mt-3 sm:mt-4"
             style={{
               fontFamily: 'Georgia, "Cormorant Garamond", "Newsreader", serif',
               fontWeight: 400,
@@ -201,8 +204,9 @@ export function CinematicHero() {
             }}
           >
             {HERO_PHRASES[1]}
-          </p>
-        </div>
+          </span>
+        </h1>
+
       </div>
 
       {/* ── Delayed CTA reveal ──────────────────────────────────────── */}
@@ -286,12 +290,15 @@ export function CinematicHero() {
 
       {/* ShapeYourDay removed from hero per design brief. */}
 
-      {/* ── SR-only / SSR probes — keep HERO_COPY locks happy ──────── */}
+      {/* ── SR-only / SSR probes — keep HERO_COPY locks happy ────────
+          NOTE: this block is intentionally NOT an <h1>: the visible
+          cinematic stanza above carries the single document H1. */}
       <div className="sr-only">
-        <h1 className="hero-h1">
+        <p className="hero-h1">
           <span data-hero-field="headlineLine1">{HERO_COPY.headlineLine1}</span>{" "}
           <span data-hero-field="headlineLine2">{HERO_COPY.headlineLine2}</span>
-        </h1>
+        </p>
+
         <p data-hero-field="eyebrow">{HERO_COPY.eyebrow}</p>
         <p data-hero-field="subheadline">{HERO_COPY.subheadline}</p>
         <p data-hero-field="microcopy">{HERO_COPY.microcopy}</p>

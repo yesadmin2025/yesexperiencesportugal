@@ -1904,15 +1904,23 @@ function TailorPage() {
  * Small UI primitives
  * ──────────────────────────────────────────────────────────── */
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
+  // Micro-labels ("When", "Pace", "Your group") are grouping labels, not
+  // document headings — they render at 10px, far below the page's heading
+  // scale. Exposed as a labelled group so assistive tech still announces
+  // the grouping without polluting the heading outline.
   return (
-    <div>
-      <h2 className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] mb-3">
+    <div role="group" aria-label={title}>
+      <p
+        aria-hidden="true"
+        className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--charcoal-soft)] mb-3"
+      >
         {title}
-      </h2>
+      </p>
       {children}
     </div>
   );
 }
+
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

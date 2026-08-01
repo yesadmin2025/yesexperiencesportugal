@@ -91,7 +91,7 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
             <button
               type="button"
               onClick={() => setGuests((g) => Math.max(1, g - 1))}
-              className="px-3 py-2.5 text-lg leading-none text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-3 text-lg leading-none text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
               aria-label="Fewer guests"
             >
               −
@@ -100,11 +100,12 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
             <button
               type="button"
               onClick={() => setGuests((g) => Math.min(12, g + 1))}
-              className="px-3 py-2.5 text-lg leading-none text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-3 text-lg leading-none text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
               aria-label="More guests"
             >
               +
             </button>
+
           </div>
         </Field>
       </div>
@@ -231,16 +232,17 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
         href={whatsappHref(message)}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-6 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all"
+        className="mt-6 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[48px]"
       >
-        <MessageCircle size={16} /> Confirm in real time
+        <MessageCircle size={16} /> Send this to a YES curator
       </a>
       <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-        Confirm in real time — secured directly on this site.
+        Opens WhatsApp with your tailored request already written.
       </p>
       <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80 text-center">
-        Reservations handled securely through our integrated booking system.
+        A YES curator replies with availability and the final details.
       </p>
+
     </div>
   );
 }
