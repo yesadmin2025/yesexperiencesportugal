@@ -11,7 +11,6 @@ import { pinBrowsersPath, resolveChromiumExecutable } from "./scripts/playwright
 pinBrowsersPath();
 const CHROMIUM_PATH = resolveChromiumExecutable();
 
-
 // Specs import real app modules, which in turn import images. Node can't parse
 // a JPEG as JavaScript, so we install a stub hook that resolves asset imports
 // to their URL string — once here for the process that collects the tests, and
@@ -62,7 +61,6 @@ export default defineConfig({
     // sandboxes it picks the library-patched build instead of the downloaded
     // one (which fails on missing libglib).
     launchOptions: CHROMIUM_PATH ? { executablePath: CHROMIUM_PATH } : undefined,
-
   },
   // Snapshot config — visual regression tests. A 0.2% pixel-diff budget
   // tolerates sub-pixel font rendering jitter without hiding real layout

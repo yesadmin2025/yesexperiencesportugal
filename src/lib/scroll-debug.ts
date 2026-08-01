@@ -19,7 +19,7 @@ type ObserverRecord = {
 export type ScrollDebugFlags = {
   enabled: boolean;
   disableHashSync: boolean;
-  
+
   disableMobileReveals: boolean;
   staticMobileCarousels: boolean;
   disableMobileStudioMotion: boolean;
@@ -45,7 +45,7 @@ declare global {
 const EMPTY_FLAGS: ScrollDebugFlags = {
   enabled: false,
   disableHashSync: false,
-  
+
   disableMobileReveals: false,
   staticMobileCarousels: false,
   disableMobileStudioMotion: false,
@@ -82,7 +82,7 @@ export function getScrollDebugFlags(
   return {
     enabled: true,
     disableHashSync: all || tokens.has("hash-off") || tokens.has("no-hash-sync"),
-    
+
     disableMobileReveals: all || tokens.has("reveals-off") || tokens.has("no-mobile-reveals"),
     staticMobileCarousels: all || tokens.has("carousels-off") || tokens.has("static-carousels"),
     disableMobileStudioMotion: all || tokens.has("studio-static") || tokens.has("no-studio-motion"),
