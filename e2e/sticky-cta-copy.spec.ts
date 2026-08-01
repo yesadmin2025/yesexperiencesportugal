@@ -1,4 +1,5 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
+import { acceptCookiesBeforeLoad } from "./consent-helpers";
 
 /**
  * E2E coverage for the post-hero sticky CTA *content* contract.
@@ -69,7 +70,8 @@ function choiceSheet(page: Page): Locator {
 
 /** The polite ARIA live region rendered by <PostHeroAnnouncer />. */
 function liveRegion(page: Page): Locator {
-  return page.locator('[role="status"][aria-live="polite"]');
+  // Several polite regions exist (currency, toasts) — target the announcer.
+  return page.locator("[data-post-hero-announcer]");
 }
 
 /** Smoothly scroll to keep us "in motion" for `durationMs`. */
@@ -110,6 +112,9 @@ test.describe("Sticky CTA — copy, choice sheet, and announcement contract", ()
   );
 
   test.beforeEach(async ({ page }) => {
+    // The consent banner is anchored bottom-of-screen above the sticky bar
+    // and would swallow every tap on mobile viewports.
+    await acceptCookiesBeforeLoad(page);
     await page.goto("/");
     await stickyBar(page).waitFor({ state: "attached" });
   });
