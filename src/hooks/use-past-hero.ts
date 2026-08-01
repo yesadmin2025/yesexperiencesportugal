@@ -94,7 +94,7 @@ export function usePastHero({
     const settle = () => {
       if (qualifies()) {
         markPersisted();
-        dispatchPastHeroOnce();
+        
         setPastHero(true);
       } else {
         // Either we're back inside the hero, or the breakpoint changed,
