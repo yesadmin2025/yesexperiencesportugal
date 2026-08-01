@@ -18,21 +18,9 @@ import { useEffect, useState } from "react";
  *   restores).
  * • SSR-safe: starts `false` on the server; hydrates to the real value
  *   after mount so the first server-rendered HTML matches the client.
- * • Fires a one-time `yes:past_hero` DOM CustomEvent the first time the
- *   threshold is crossed in this tab. The accessible-announcer hook
- *   listens for it to deliver a polite SR notification exactly once.
- *
- * Why a custom event instead of a useEffect on the consumer
- * ---------------------------------------------------------
- * Multiple components share this hook. If each consumer also wired up its
- * own "first true" useEffect, we'd announce N times. Centralising the
- * "first crossing" signal in the hook itself + a single global event keeps
- * the announcement guaranteed to be one-shot per session/tab.
  */
 
 const STORAGE_KEY = "yes:passedHero";
-/** One-shot event name. Listeners can subscribe via `window.addEventListener`. */
-export const PAST_HERO_EVENT = "yes:past_hero";
 
 export type UsePastHeroOptions = {
   /** Scroll threshold in px. Default 600. */
@@ -72,21 +60,6 @@ function markPersisted() {
   }
 }
 
-/**
- * Module-scoped guard so the `yes:past_hero` event is dispatched at most
- * once per tab (across multiple consumers and across re-renders).
- */
-let didAnnouncePastHero = false;
-
-function dispatchPastHeroOnce() {
-  if (typeof window === "undefined" || didAnnouncePastHero) return;
-  didAnnouncePastHero = true;
-  try {
-    window.dispatchEvent(new CustomEvent(PAST_HERO_EVENT));
-  } catch {
-    /* noop */
-  }
-}
 
 export function usePastHero({
   threshold = 600,
@@ -121,7 +94,7 @@ export function usePastHero({
     const settle = () => {
       if (qualifies()) {
         markPersisted();
-        dispatchPastHeroOnce();
+        
         setPastHero(true);
       } else {
         // Either we're back inside the hero, or the breakpoint changed,

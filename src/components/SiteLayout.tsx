@@ -6,7 +6,7 @@ import { FloatingActions } from "./FloatingActions";
 import { CookieConsent } from "./CookieConsent";
 import { CurrencyProvider } from "@/lib/currency";
 
-import { PostHeroAnnouncer } from "./PostHeroAnnouncer";
+
 import { QaPanel } from "./dev/QaPanel";
 import { MotionQaPanel } from "./dev/MotionQaPanel";
 import { installSmoothAnchorScroll } from "@/lib/smooth-anchor-scroll";
@@ -865,10 +865,6 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         <FloatingActions />
         {/* WhatsAppFab intentionally not rendered — WhatsAppSupportButton (in __root.tsx)
             is the single source of truth for the floating support affordance. */}
-
-
-
-        <PostHeroAnnouncer />
         <QaPanel />
         <MotionQaPanel />
         <CookieConsent />
