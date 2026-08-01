@@ -23,6 +23,7 @@ Disallow: /e2e
 Disallow: /email
 Disallow: /hero-verify
 Disallow: /lovable
+Disallow: /.lovable
 Disallow: /preview-check
 Disallow: /qa
 Disallow: /s/

@@ -22,8 +22,8 @@ export const Route = createFileRoute("/sitemap.xml")({
         // because they are blocked by robots.txt and should not be indexed. These include:
         // /admin/*, /auth, /booking-confirmed, /brand-qa, /builder, /checkout, /e2e, /email,
         // /hero-verify, /lovable, /preview-check, /qa, /s/, /i/, /studio-drift, /studio-v2,
-        // /typography-audit, /unsubscribe. /reviews (thin widget) and
-        // /portugal-travel-designer (301 → /multi-day) are also excluded.
+        // /typography-audit, /unsubscribe. /portugal-travel-designer
+        // (301 → /multi-day) is also excluded.
         // Static entries omit <lastmod> on purpose — a rolling "today" trains
         // crawlers to ignore the field. Dynamic DB posts keep their real
         // published_at.
@@ -72,6 +72,12 @@ export const Route = createFileRoute("/sitemap.xml")({
           // sitemap.xml (flagged by Google Search Console). Source of truth
           // for Local Stories is LOCAL_STORIES_ARTICLES — do not re-add
           // /local-stories/* here.
+
+          // /reviews is a real, indexable page (robots: index,follow with a
+          // self-canonical) and backs the AggregateRating entity, so it must
+          // be listed here — an indexable page missing from the sitemap is an
+          // inconsistency crawlers flag.
+          { path: "/reviews", changefreq: "monthly", priority: "0.5" },
 
           { path: "/terms", changefreq: "yearly", priority: "0.4" },
           { path: "/privacy", changefreq: "yearly", priority: "0.4" },
@@ -145,15 +151,13 @@ export const Route = createFileRoute("/sitemap.xml")({
         // Portuguese twins. Only paths in PT_PAIRED_PATHS ship a real,
         // human-reviewed PT page that returns 200 — redirect stubs
         // (/pt/faq, /pt/moments, /pt/proposals) are excluded by that list.
-        // /reviews is excluded on both locales (thin widget page), so the
-        // PT twin is skipped here too, keeping EN and PT symmetric.
-        const ptEntries: SitemapEntry[] = PT_PAIRED_PATHS.filter((p) => p !== "/reviews").map(
-          (p) => ({
-            path: p === "/" ? "/pt" : `/pt${p}`,
-            changefreq: "monthly",
-            priority: p === "/" ? "0.8" : "0.5",
-          }),
-        );
+        // /reviews is now listed on both locales, keeping EN and PT symmetric
+        // and matching the reciprocal hreflang pair.
+        const ptEntries: SitemapEntry[] = PT_PAIRED_PATHS.map((p) => ({
+          path: p === "/" ? "/pt" : `/pt${p}`,
+          changefreq: "monthly",
+          priority: p === "/" ? "0.8" : "0.5",
+        }));
 
         const entries = [
           ...staticEntries,

@@ -1,0 +1,2 @@
+REVOKE SELECT ON public.tour_gallery_photos FROM anon;
+GRANT SELECT (id, tour_id, storage_path, alt, sort_order, is_cover, created_at, updated_at, content_hash, width, height) ON public.tour_gallery_photos TO anon;
