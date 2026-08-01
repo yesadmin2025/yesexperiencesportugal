@@ -38,6 +38,7 @@ import { getSignatureOptionalAddOns } from "@/lib/tailor-chapters";
 import { MountBadge } from "./useStudioDebug";
 
 import { whatsappHref } from "@/components/WhatsAppFab";
+import { CANCELLATION, LICENSE_LABEL } from "@/config/business-nap";
 import { recordStudioV3RevealPremium, recordStudioV3RevealAddOns } from "@/lib/studio-v3-telemetry";
 import { CTA_ASK_CURATOR, INCLUDED_HEADER_REFINE } from "@/content/signature-day-copy";
 import { formatGuestComposition } from "./formatGuests";
@@ -697,19 +698,46 @@ export function SignaturePriceCard({
                 bands.length > 0
                   ? (bands.find((b) => b.band === "adult")?.unitEur ?? priceEur)
                   : (perPersonDerived ?? priceEur);
+              const showParty = partyTotalEur != null && partyCount != null;
               return (
                 <>
+                  {showParty ? (
+                    <p
+                      data-testid="studio-v3-party-total"
+                      className="mt-1 text-[44px] sm:text-[52px] leading-none font-bold tabular-nums"
+                      style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+                    >
+                      €{partyTotalEur}
+                      <span
+                        className="mt-2 block text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                      >
+                        total for your group
+                      </span>
+                    </p>
+                  ) : null}
                   <p
                     data-testid="studio-v3-base-price"
                     data-eur={priceEur ?? ""}
                     data-per-pax-eur={perPersonDerived ?? ""}
                     data-per-pax-real={realPerPax?.real ? "true" : "false"}
-                    className="mt-1 text-[40px] leading-none font-bold tabular-nums"
-                    style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+                    className={
+                      showParty
+                        ? "mt-2.5 text-[16px] sm:text-[18px] leading-tight font-semibold tabular-nums"
+                        : "mt-1 text-[44px] sm:text-[52px] leading-none font-bold tabular-nums"
+                    }
+                    style={{
+                      fontFamily: showParty ? undefined : "var(--font-display)",
+                      color: showParty
+                        ? "color-mix(in oklab, var(--charcoal) 72%, transparent)"
+                        : "var(--charcoal)",
+                    }}
                   >
                     €{adultUnit}
                     <span
-                      className="ml-1.5 align-middle text-[13px] font-semibold uppercase tracking-[0.18em]"
+                      className={`ml-1.5 align-middle font-semibold uppercase tracking-[0.18em] ${
+                        showParty ? "text-[11px]" : "text-[13px]"
+                      }`}
                       style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
                     >
                       / adult
@@ -729,21 +757,6 @@ export function SignaturePriceCard({
                 </>
               );
             })()}
-            {partyTotalEur != null && partyCount != null ? (
-              <p
-                data-testid="studio-v3-party-total"
-                className="mt-3 text-[13.5px] font-semibold tabular-nums"
-                style={{ color: "var(--charcoal)" }}
-              >
-                €{partyTotalEur}{" "}
-                <span
-                  className="text-[10.5px] uppercase tracking-[0.22em] font-semibold ml-0.5"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-                >
-                  total for your group
-                </span>
-              </p>
-            ) : null}
             {journeyRows.length > 0 ? (
               <ul
                 data-testid="studio-v3-journey-lines"
@@ -1244,8 +1257,29 @@ export function SignaturePriceCard({
           </footer>
         ) : null}
 
-        {/* Trust strip removed — the reassurance above the CTA + the final
-            reveal's own trust cues cover this without duplication. */}
+        {/* Compact trust facts at the decision point — existing signals only. */}
+        {!isRefine && hasPrice ? (
+          <ul
+            data-testid="studio-v3-decision-trust"
+            aria-label="Booking reassurance"
+            className="mt-5 mx-auto flex max-w-[360px] flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[10.5px] uppercase tracking-[0.18em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+          >
+            <li>Private experience</li>
+            <li aria-hidden style={{ color: "var(--gold)" }}>
+              ·
+            </li>
+            <li>Secure payment · Stripe</li>
+            <li aria-hidden style={{ color: "var(--gold)" }}>
+              ·
+            </li>
+            <li className="normal-case tracking-[0.1em]">{CANCELLATION.signature.en}</li>
+            <li aria-hidden style={{ color: "var(--gold)" }}>
+              ·
+            </li>
+            <li className="normal-case tracking-[0.1em]">Licensed operator {LICENSE_LABEL}</li>
+          </ul>
+        ) : null}
 
         <div
           ref={ctaRef}
@@ -1259,7 +1293,7 @@ export function SignaturePriceCard({
                 data-testid="studio-v3-cta-primary"
                 data-total-eur={partyTotalEur ?? totalEur ?? ""}
                 data-party-total-eur={partyTotalEur ?? ""}
-                className={`group ${isRefine ? "inline-flex" : "hidden md:inline-flex"} items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]`}
+                className="group inline-flex items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{
                   background: "var(--charcoal)",
                   color: "var(--ivory)",

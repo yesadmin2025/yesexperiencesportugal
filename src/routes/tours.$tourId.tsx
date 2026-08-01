@@ -381,26 +381,24 @@ function TourHero({
                   </span>
                 </>
               )}
-              {typeof (tour as { priceFrom?: number }).priceFrom === "number" ? (
-                <>
-                  <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
-                  <span className="flex items-baseline gap-1.5 normal-case tracking-normal text-[12px] text-[color:var(--charcoal)]">
-                    <span className="font-semibold">
-                      From{" "}
-                      <PriceEur amountEur={(tour as { priceFrom: number }).priceFrom} role="from" />
-                    </span>
-                    <span className="text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-                      per person
-                    </span>
-                  </span>
-                  <span aria-hidden className="h-3 w-px bg-[color:var(--border)]" />
-                  <PriceCurrencyChip align="start" />
-                </>
-              ) : null}
             </div>
           </div>
 
           <div className="mt-6 flex flex-col items-start gap-4">
+            {typeof (tour as { priceFrom?: number }).priceFrom === "number" ? (
+              <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+                <span className="text-[12px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                  From
+                </span>
+                <span className="serif text-[24px] sm:text-[28px] leading-none font-semibold text-[color:var(--charcoal)]">
+                  <PriceEur amountEur={(tour as { priceFrom: number }).priceFrom} role="from" />
+                </span>
+                <span className="text-[12px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                  per person
+                </span>
+                <PriceCurrencyChip align="start" />
+              </div>
+            ) : null}
             <CtaButton
               href="#book"
               variant="primary"
