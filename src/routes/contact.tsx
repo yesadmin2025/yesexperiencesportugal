@@ -143,7 +143,9 @@ export const Route = createFileRoute("/contact")({
         },
       }),
     ],
-  }),
+    };
+  },
+
 
   component: Page,
 });
