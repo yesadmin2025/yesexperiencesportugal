@@ -41,10 +41,13 @@ function stickyBar(page: Page): Locator {
 async function expectBarHidden(page: Page) {
   const bar = stickyBar(page);
   await expect(bar).toHaveAttribute("aria-hidden", "true");
-  // Defense-in-depth — opacity 0 means it's also visually invisible
-  // even if a transition is in flight.
-  const opacity = await bar.evaluate((el) => getComputedStyle(el).opacity);
-  expect(parseFloat(opacity)).toBeLessThanOrEqual(0.05);
+  // Defense-in-depth — opacity 0 means it's also visually invisible.
+  // The hide is a 700ms transition, so poll instead of sampling one frame.
+  await expect
+    .poll(async () => parseFloat(await bar.evaluate((el) => getComputedStyle(el).opacity)), {
+      timeout: 3_000,
+    })
+    .toBeLessThanOrEqual(0.05);
 }
 
 async function expectBarVisible(page: Page) {

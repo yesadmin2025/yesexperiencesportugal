@@ -263,8 +263,11 @@ test.describe("Sticky CTA — copy, choice sheet, and announcement contract", ()
 
     await design.click({ noWaitAfter: true });
 
-    // The bar's primary CTA reflects the in-flight submission.
-    const cta = ctaButton(page);
+    // The bar's primary CTA reflects the in-flight submission. Query it
+    // structurally: the client-side navigation lands at scrollY = 0, which
+    // re-gates the bar (aria-hidden + inert) and removes the button from
+    // the accessibility tree, so a role query would race the router.
+    const cta = ctaElement(page);
     await expect(cta).toContainText(BUTTON_LOADING);
     await expect(cta).toHaveAttribute("aria-busy", "true");
     await expect(cta).toHaveAttribute("aria-disabled", "true");
