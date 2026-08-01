@@ -60,7 +60,6 @@ function markPersisted() {
   }
 }
 
-
 export function usePastHero({
   threshold = 600,
   mediaQuery,
@@ -94,7 +93,7 @@ export function usePastHero({
     const settle = () => {
       if (qualifies()) {
         markPersisted();
-        
+
         setPastHero(true);
       } else {
         // Either we're back inside the hero, or the breakpoint changed,

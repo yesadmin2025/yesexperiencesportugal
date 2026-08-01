@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { CANCELLATION } from "@/config/business-nap";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
@@ -351,10 +352,14 @@ function Page() {
             </h2>
             <ul className="mt-6 space-y-4 text-[color:var(--charcoal-soft)] leading-relaxed">
               <li>
-                <strong className="text-[color:var(--charcoal)]">Cancelamento</strong> — os dias
-                Signature incluem normalmente cancelamento gratuito até 24 horas antes da
-                experiência. Os dias Studio e à medida apresentam as condições finais de
-                cancelamento antes do pagamento.
+                <strong className="text-[color:var(--charcoal)]">Cancelamento (Signature)</strong> —{" "}
+                {CANCELLATION.signature.pt}
+              </li>
+              <li>
+                <strong className="text-[color:var(--charcoal)]">
+                  Cancelamento (Studio, Travel Designer, Corporate, Moments)
+                </strong>{" "}
+                — {CANCELLATION.custom.pt}
               </li>
               <li>
                 <strong className="text-[color:var(--charcoal)]">Meteorologia</strong> — as paragens

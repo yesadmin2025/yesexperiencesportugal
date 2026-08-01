@@ -30,7 +30,6 @@ export async function acceptCookiesBeforeLoad(page: Page) {
             version: 1,
           }),
         );
-
       } catch {
         /* storage blocked — banner will show; the spec will surface it */
       }

@@ -5,7 +5,7 @@ import { defineConfig, devices } from "@playwright/test";
 // Pin PLAYWRIGHT_BROWSERS_PATH before Playwright resolves any browser.
 // Importing has the side effect of setting the env var for this process
 // and every worker it spawns.
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+
 import { pinBrowsersPath, resolveChromiumExecutable } from "./scripts/playwright-env.mjs";
 
 pinBrowsersPath();
