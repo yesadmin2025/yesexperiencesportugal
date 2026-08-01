@@ -201,7 +201,6 @@ function listCtaScanFiles(): string[] {
     "src/components/FAQ.tsx",
     "src/components/Footer.tsx",
     "src/components/Navbar.tsx",
-    "src/components/MobileStickyCTA.tsx",
     "src/components/FloatingActions.tsx",
     "src/components/SimpleTailorForm.tsx",
     "src/components/builder/StickyBar.tsx",

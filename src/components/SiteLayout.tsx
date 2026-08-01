@@ -2,7 +2,7 @@ import { ReactNode, useEffect } from "react";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { FloatingActions } from "./FloatingActions";
-import { MobileStickyCTA } from "./MobileStickyCTA";
+
 import { CookieConsent } from "./CookieConsent";
 import { CurrencyProvider } from "@/lib/currency";
 
@@ -860,17 +860,12 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     <CurrencyProvider>
       <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="flex-1 pb-[calc(96px+env(safe-area-inset-bottom))] lg:pb-0">
-          {children}
-        </main>
+        <main className="flex-1">{children}</main>
         <Footer />
         <FloatingActions />
-        {/* Primary conversion surface below the lg breakpoint. FloatingActions
-            deliberately hides its CTA there and this bar owns it instead, so
-            the two never compete. The main padding above reserves its height. */}
-        <MobileStickyCTA />
         {/* WhatsAppFab intentionally not rendered — WhatsAppSupportButton (in __root.tsx)
             is the single source of truth for the floating support affordance. */}
+
 
 
         <PostHeroAnnouncer />

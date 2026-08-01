@@ -20,7 +20,6 @@ type Mode = {
   flag: string;
   expect: {
     disableHashSync: boolean;
-    disableStickyCta: boolean;
     disableMobileReveals: boolean;
     staticMobileCarousels: boolean;
     disableMobileStudioMotion: boolean;
@@ -34,7 +33,6 @@ const MATRIX: Mode[] = [
     flag: "hash-off",
     expect: {
       disableHashSync: true,
-      disableStickyCta: false,
       disableMobileReveals: false,
       staticMobileCarousels: false,
       disableMobileStudioMotion: false,
@@ -46,7 +44,6 @@ const MATRIX: Mode[] = [
     flag: "hash-off,sticky-off",
     expect: {
       disableHashSync: true,
-      disableStickyCta: true,
       disableMobileReveals: false,
       staticMobileCarousels: false,
       disableMobileStudioMotion: false,
@@ -58,7 +55,6 @@ const MATRIX: Mode[] = [
     flag: "hash-off,sticky-off,reveals-off",
     expect: {
       disableHashSync: true,
-      disableStickyCta: true,
       disableMobileReveals: true,
       staticMobileCarousels: false,
       disableMobileStudioMotion: false,
@@ -70,7 +66,6 @@ const MATRIX: Mode[] = [
     flag: "hash-off,sticky-off,reveals-off,carousels-off",
     expect: {
       disableHashSync: true,
-      disableStickyCta: true,
       disableMobileReveals: true,
       staticMobileCarousels: true,
       disableMobileStudioMotion: false,
@@ -82,7 +77,6 @@ const MATRIX: Mode[] = [
     flag: "hash-off,sticky-off,reveals-off,carousels-off,studio-static",
     expect: {
       disableHashSync: true,
-      disableStickyCta: true,
       disableMobileReveals: true,
       staticMobileCarousels: true,
       disableMobileStudioMotion: true,
@@ -113,7 +107,6 @@ describe("scroll debug matrix — flag parser correctness", () => {
         const flags = getScrollDebugFlags(win);
         expect(flags.enabled).toBe(true);
         expect(flags.disableHashSync).toBe(mode.expect.disableHashSync);
-        expect(flags.disableStickyCta).toBe(mode.expect.disableStickyCta);
         expect(flags.disableMobileReveals).toBe(mode.expect.disableMobileReveals);
         expect(flags.staticMobileCarousels).toBe(mode.expect.staticMobileCarousels);
         expect(flags.disableMobileStudioMotion).toBe(mode.expect.disableMobileStudioMotion);
@@ -129,7 +122,6 @@ describe("scroll debug matrix — baseline (no flag) leaves everything ON", () =
       const flags = getScrollDebugFlags(win);
       expect(flags.enabled).toBe(false);
       expect(flags.disableHashSync).toBe(false);
-      expect(flags.disableStickyCta).toBe(false);
       expect(flags.disableMobileReveals).toBe(false);
       expect(flags.staticMobileCarousels).toBe(false);
       expect(flags.disableMobileStudioMotion).toBe(false);

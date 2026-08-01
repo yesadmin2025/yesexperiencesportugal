@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
  * Shared single source-of-truth for "the user has scrolled past the hero
  * and our post-hero CTA surfaces should now be available".
  *
- * Both <MobileStickyCTA> and <FloatingActions> consume this hook so the
+ * <FloatingActions> consumes this hook so the
  * threshold, persistence, BFCache handling, and reveal moment stay in
  * lockstep. Change it once here and every post-hero surface follows.
  *
@@ -39,7 +39,7 @@ export type UsePastHeroOptions = {
   threshold?: number;
   /**
    * Optional media query that must match for the hook to ever return true.
-   * Used by MobileStickyCTA, which only activates below the lg breakpoint.
+   * Useful for surfaces that only activate at a given breakpoint.
    * Default: undefined (always active).
    */
   mediaQuery?: string;

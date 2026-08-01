@@ -4,15 +4,15 @@ import { usePastHero } from "@/hooks/use-past-hero";
 
 /**
  * FloatingActions
- *  - Subtle floating CTA ("Start Your Experience") — appears only after the
- *    user has scrolled past the hero (~600px), matching the mobile sticky
- *    behavior. The hero already carries two prominent CTAs, so a third
- *    floating one over the hero is visual noise; it earns its place once
- *    the user has signalled engagement by scrolling.
+ *  - Subtle floating CTA ("Start Your Experience") on lg+ — appears only after
+ *    the user has scrolled past the hero (~600px). The hero already carries two
+ *    prominent CTAs, so a third floating one over the hero is visual noise; it
+ *    earns its place once the user has signalled engagement by scrolling.
  *  - Scroll-to-top button — appears once the user has scrolled past ~600px.
- * Both are stacked in the bottom-right and stay out of the way on mobile.
+ * Both are stacked in the bottom-right and stay out of the way on mobile,
+ * sitting above the WhatsApp support FAB.
  *
- * A11y / interactivity gating (consistent with MobileStickyCTA):
+ * A11y / interactivity gating:
  *   • The wrapper carries `aria-hidden` + `inert` whenever NOTHING inside is
  *     currently revealed (pre-scroll, both children are hidden), removing
  *     the entire subtree from the focus order, hit testing, and the
@@ -22,13 +22,11 @@ import { usePastHero } from "@/hooks/use-past-hero";
  *     even legacy AT or a stray `inert` override can't reach them.
  */
 export function FloatingActions() {
-  // Shared visibility gate — same threshold, persistence, and BFCache
-  // handling that <MobileStickyCTA> uses, so both post-hero surfaces
-  // appear/disappear in lockstep across breakpoints. No mediaQuery here:
-  // FloatingActions is responsible for both the mobile-only scroll-to-top
-  // arrow and the lg+ floating CTA, so the wrapper itself stays mounted
-  // across breakpoints; per-child Tailwind classes handle the breakpoint
-  // visibility.
+  // Shared post-hero visibility gate (threshold, persistence, BFCache
+  // handling). No mediaQuery here: FloatingActions owns both the mobile
+  // scroll-to-top arrow and the lg+ floating CTA, so the wrapper stays
+  // mounted across breakpoints; per-child Tailwind classes handle the
+  // breakpoint visibility.
   const pastHero = usePastHero({ threshold: 600 });
 
   const scrollTop = () => {
@@ -44,22 +42,23 @@ export function FloatingActions() {
 
   return (
     <div
-      // On mobile, sit above BOTH the MobileStickyCTA bar (~64px) and the
-      // WhatsApp FAB (~56px + spacing) so nothing overlaps. On md+ there's
-      // no sticky bar, so we drop back to a calm offset that still clears
-      // the WhatsApp FAB sitting at bottom-8.
-      className="fixed right-5 md:right-8 z-40 flex flex-col items-end gap-3 print:hidden bottom-44 md:bottom-28"
-      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
+      // Stacked directly above the WhatsApp support FAB, which sits at
+      // bottom `max(1rem, safe-area + 0.75rem)` and is 48px tall on mobile
+      // / 56px from md up. 5.5rem (88px) clears it on phones; 6.5rem
+      // (104px) clears the larger md+ FAB. Safe-area inset is folded into
+      // the calc so iPhone home-indicator devices keep the same gap.
+      className="fixed right-5 md:right-8 z-40 flex flex-col items-end gap-3 print:hidden bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] md:bottom-[calc(6.5rem+env(safe-area-inset-bottom,0px))]"
       // Single source of truth for the hidden state — removes children
       // from focus, AT, and pointer hit-testing while pre-hero.
       aria-hidden={allHidden}
       inert={allHidden}
     >
-      {/* Floating CTA — hidden on mobile (< lg) where MobileStickyCTA owns
-          the primary call-to-action surface. On lg+ it fades in only after
-          the user scrolls past the hero, so it never competes with the
-          hero's own conversion anchors. Same 8px translate-up transition
-          as the scroll-to-top button below for a unified reveal.
+      {/* Floating CTA — hidden below lg so mobile keeps a calm, single
+          support affordance. On lg+ it fades in only after the user scrolls
+          past the hero, so it never competes with the hero's own conversion
+          anchors. Same 8px translate-up transition as the scroll-to-top
+          button below for a unified reveal.
+
 
           tabIndex / pointer-events are also gated here as defense-in-depth
           on top of the wrapper-level `inert`. */}
