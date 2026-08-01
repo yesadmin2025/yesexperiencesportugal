@@ -7148,3 +7148,14 @@ html {
     letter-spacing: 0.18em;
   }
 }
+
+/* ============================================================
+   Batch 4 — offscreen loop pause (see src/lib/motion/pauseOffscreenLoops.ts)
+   Long infinite Ken Burns / crossfade loops stop consuming compositor work
+   while they are outside the viewport, and resume in place on scroll back.
+   ============================================================ */
+[data-loop-paused="1"],
+[data-loop-paused="1"] img,
+[data-loop-paused="1"] .cinematic-editorial__frame {
+  animation-play-state: paused !important;
+}
