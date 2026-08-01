@@ -110,9 +110,32 @@ export function TrustindexWidget() {
       document.body.appendChild(s);
     };
 
+    // Batch 4: once the footer is near, still wait for a genuinely idle
+    // moment (or a hard cap) so the vendor script never shares the main
+    // thread with interaction readiness on a slow device.
+    let idleHandle: number | undefined;
+    let idleTimer: ReturnType<typeof setTimeout> | undefined;
+    const injectWhenIdle = () => {
+      const ric = (window as unknown as { requestIdleCallback?: typeof requestIdleCallback })
+        .requestIdleCallback;
+      if (typeof ric === "function") {
+        idleHandle = ric(() => inject(), { timeout: 3000 }) as unknown as number;
+        return;
+      }
+      idleTimer = setTimeout(inject, 1200);
+    };
+
+    const cleanupIdle = () => {
+      const cic = (window as unknown as { cancelIdleCallback?: typeof cancelIdleCallback })
+        .cancelIdleCallback;
+      if (idleHandle !== undefined && typeof cic === "function") cic(idleHandle);
+      if (idleTimer) clearTimeout(idleTimer);
+    };
+
     if (typeof IntersectionObserver !== "function") {
-      inject();
+      injectWhenIdle();
       return () => {
+        cleanupIdle();
         if (renderTimer) clearTimeout(renderTimer);
       };
     }
@@ -120,7 +143,7 @@ export function TrustindexWidget() {
     const io = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) {
-          inject();
+          injectWhenIdle();
           io.disconnect();
         }
       },
@@ -129,9 +152,11 @@ export function TrustindexWidget() {
     io.observe(el);
     return () => {
       io.disconnect();
+      cleanupIdle();
       if (renderTimer) clearTimeout(renderTimer);
     };
   }, []);
+
 
   // Zero-height anchor: purely the intersection target, never reserves space.
   return <div ref={anchorRef} aria-hidden="true" data-trustindex-anchor="" className="h-0 w-0" />;
