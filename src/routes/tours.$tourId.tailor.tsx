@@ -92,7 +92,6 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
   },
   head: ({ params, loaderData }) => {
     const url = `https://yesexperiencesportugal.com/tours/${params.tourId}/tailor`;
-    const parentUrl = `https://yesexperiencesportugal.com/tours/${params.tourId}`;
     const t = loaderData?.tour;
     if (!t)
       return {
