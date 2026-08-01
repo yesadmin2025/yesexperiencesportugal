@@ -48,7 +48,7 @@ const TARGET_GLOBS = [
   "src/routes/local-stories.tsx",
   "src/routes/local-stories.$slug.tsx",
   "src/routes/tours.$tourId.tsx",
-  "src/routes/tours.$tourId.tailor.tsx",
+  "src/routes/tours_.$tourId.tailor.tsx",
   "src/components/home/**/*.tsx",
 ];
 

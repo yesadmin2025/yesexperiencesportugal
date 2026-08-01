@@ -84,7 +84,7 @@ import {
  * local guide stay locked. Live summary updates as the user adjusts.
  * ════════════════════════════════════════════════════════════ */
 
-export const Route = createFileRoute("/tours/$tourId/tailor")({
+export const Route = createFileRoute("/tours_/$tourId/tailor")({
   loader: ({ params }) => {
     const tour = findTour(params.tourId);
     if (!tour) throw notFound();
@@ -92,15 +92,18 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
   },
   head: ({ params, loaderData }) => {
     const url = `https://yesexperiencesportugal.com/tours/${params.tourId}/tailor`;
-    const parentUrl = `https://yesexperiencesportugal.com/tours/${params.tourId}`;
     const t = loaderData?.tour;
     if (!t)
       return {
         meta: [
           { title: "Tailor a Signature — YES experiences Portugal" },
-          { name: "robots", content: "noindex, nofollow" },
+          // Same directive as the resolved branch: out of the SERPs, but
+          // crawlable and link-following.
+          { name: "robots", content: "noindex, follow" },
         ],
+        links: [{ rel: "canonical", href: url }],
       };
+
     const img = t.img?.startsWith("http") ? t.img : `https://yesexperiencesportugal.com${t.img}`;
     const shortTitle = t.title.split("—")[0].trim();
     const pageTitle =
@@ -127,10 +130,13 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
         // of the SERPs while still letting crawlers follow internal links.
         { name: "robots", content: "noindex, follow" },
       ],
-      // Canonical points to the parent Signature page to avoid duplicate-content
-      // signals; the tailor URL is a customization surface, not a separate product.
+      // Self-referencing canonical: the Tailor URL is the only URL serving this
+      // content. Duplicate-content risk is already handled by `noindex`, and a
+      // cross-canonical to the Signature page conflicts with it (Google ignores
+      // one of the two signals). Signature pages keep their own self-canonical.
       links: [
-        { rel: "canonical", href: parentUrl },
+        { rel: "canonical", href: url },
+
         // LCP preload — the tour mini-card hero <img> below the fold-in intro.
         { rel: "preload", as: "image", href: t.img, fetchpriority: "high" },
       ],

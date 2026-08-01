@@ -7,7 +7,7 @@ import { addOnsPartyTotal } from "@/lib/checkout/studio-charge";
  * guest details MUST equal the total each flow sends to Stripe.
  *
  * Both sides are computed here with the exact expressions used in the
- * product code (see SimpleBookingForm, tours.$tourId.tailor, StudioV3).
+ * product code (see SimpleBookingForm, tours_.$tourId.tailor, StudioV3).
  */
 
 const TOUR = { id: "parity-test-tour", priceFrom: 180 } as const;
