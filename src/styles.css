@@ -891,19 +891,19 @@
   }
   .t-body {
     font-family: var(--font-sans);
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.7;
     font-weight: 400;
     color: var(--charcoal);
   }
   @media (min-width: 768px) {
     .t-body {
-      font-size: 16px;
+      font-size: 17px;
     }
   }
   .t-meta {
     font-family: var(--font-sans);
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.55;
     color: var(--charcoal-soft);
   }
