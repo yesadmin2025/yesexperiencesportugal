@@ -131,10 +131,13 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
         // of the SERPs while still letting crawlers follow internal links.
         { name: "robots", content: "noindex, follow" },
       ],
-      // Canonical points to the parent Signature page to avoid duplicate-content
-      // signals; the tailor URL is a customization surface, not a separate product.
+      // Self-referencing canonical: the Tailor URL is the only URL serving this
+      // content. Duplicate-content risk is already handled by `noindex`, and a
+      // cross-canonical to the Signature page conflicts with it (Google ignores
+      // one of the two signals). Signature pages keep their own self-canonical.
       links: [
-        { rel: "canonical", href: parentUrl },
+        { rel: "canonical", href: url },
+
         // LCP preload — the tour mini-card hero <img> below the fold-in intro.
         { rel: "preload", as: "image", href: t.img, fetchpriority: "high" },
       ],
