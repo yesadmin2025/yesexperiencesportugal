@@ -47,13 +47,26 @@ const SignatureRouteMap = lazy(() =>
   import("@/components/SignatureRouteMap").then((m) => ({ default: m.SignatureRouteMap })),
 );
 import { CANCELLATION } from "@/config/business-nap";
+import { resolveLegacyTourId } from "@/lib/legacy-tour-redirects";
 
 export const Route = createFileRoute("/tours/$tourId")({
+  beforeLoad: ({ params }) => {
+    const current = resolveLegacyTourId(params.tourId);
+    if (current) {
+      throw redirect({
+        to: "/tours/$tourId",
+        params: { tourId: current },
+        statusCode: 301,
+        replace: true,
+      });
+    }
+  },
   loader: ({ params }) => {
     const tour = findTour(params.tourId);
     if (!tour) throw notFound();
     return { tour };
   },
+
   head: ({ params, loaderData }) => {
     const url = `https://yesexperiencesportugal.com/tours/${params.tourId}`;
     // loaderData is undefined during SSR head evaluation in some cases —
