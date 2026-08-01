@@ -6980,13 +6980,13 @@ html {
 }
 
 /* Gold rule draw-in (used by ChapterLead / SectionTitle). */
-.motion-rule {
+[data-motion-ready="1"] .motion-rule {
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform var(--motion-dur-rule) var(--motion-ease-editorial);
   will-change: transform;
 }
-.motion-rule.is-visible {
+[data-motion-ready="1"] .motion-rule.is-visible {
   transform: scaleX(1);
 }
 
