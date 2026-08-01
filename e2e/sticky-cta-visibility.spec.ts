@@ -51,8 +51,14 @@ async function expectBarVisible(page: Page) {
   const bar = stickyBar(page);
   await expect(bar).toHaveAttribute("aria-hidden", "false");
   await expect(bar).toBeVisible();
-  const opacity = await bar.evaluate((el) => getComputedStyle(el).opacity);
-  expect(parseFloat(opacity)).toBeGreaterThan(0.95);
+  // The reveal is a 700ms opacity/transform transition — poll rather than
+  // sampling a single mid-flight frame.
+  await expect
+    .poll(
+      async () => parseFloat(await bar.evaluate((el) => getComputedStyle(el).opacity)),
+      { timeout: 3_000 },
+    )
+    .toBeGreaterThan(0.95);
 }
 
 /**
