@@ -30,8 +30,6 @@ Run this manually on the mobile viewport (393×588) before publishing. Automated
 - [ ] Missing sourceUrl → non-interactive span (no dead link)
 
 ## Mobile chrome
-- [ ] MobileStickyCTA does not cover the WhatsApp FAB (72px lift)
-- [ ] Sticky CTA never covers footer, FAQ, or Signature card CTAs
 - [ ] Signature cards scroll horizontally with next-card peek
 - [ ] Reviews carousel: one card per snap, no autoplay
 - [ ] No back-to-top button on <640px viewports

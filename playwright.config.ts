@@ -27,8 +27,6 @@ process.env.NODE_OPTIONS =
  * • Boots the project's vite dev server on a fixed port so tests are
  *   self-contained — no manual `bun run dev` required.
  * • Runs against Chromium at a mobile-ish viewport by default so the
- *   sticky-CTA tests exercise the `(max-width: 1023.98px)` mediaQuery
- *   gate that <MobileStickyCTA> uses.
  * • Single worker locally — these tests scroll the same page, parallel
  *   workers don't add value and just compete for the dev server.
  */

@@ -12,7 +12,6 @@ import { waGeneric } from "@/lib/whatsapp-messages";
 const DEFAULT_TEXT = waGeneric();
 
 export function WhatsAppFab() {
-  // Hidden on mobile: the MobileStickyCTA bar already exposes the
   // "Talk to a Local" affordance and the round FAB used to overlap its
   // right-side "Say YES" button at 393–430px. Per memory: WhatsApp is
   // optional support, never primary CTA — so the FAB returns from `lg`
