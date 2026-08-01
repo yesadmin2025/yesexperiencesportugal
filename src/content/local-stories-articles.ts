@@ -726,8 +726,14 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     relatedReads: [
       { path: "/local-stories/wine-tours-lisbon", label: "Private wine tours from Lisbon" },
-      { path: "/local-stories/arrabida-wine-tour", label: "Explore Arrábida and Setúbal wine country" },
-      { path: "/local-stories/alentejo-wine-tour-from-lisbon", label: "Explore an Alentejo wine day" },
+      {
+        path: "/local-stories/arrabida-wine-tour",
+        label: "Explore Arrábida and Setúbal wine country",
+      },
+      {
+        path: "/local-stories/alentejo-wine-tour-from-lisbon",
+        label: "Explore an Alentejo wine day",
+      },
       { path: "/multi-day", label: "Design a multi-day Portugal wine journey" },
     ],
     datePublished: "2026-07-04",
@@ -762,7 +768,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedReads: [
       { path: "/local-stories/arrabida-wine-tour", label: "Explore the Arrábida wine region" },
       { path: "/tours/arrabida-wine-allinclusive", label: "See the three-winery Signature" },
-      { path: "/local-stories/portugal-wine-tours", label: "Explore wine journeys across Portugal" },
+      {
+        path: "/local-stories/portugal-wine-tours",
+        label: "Explore wine journeys across Portugal",
+      },
     ],
     datePublished: "2026-07-05",
   },
