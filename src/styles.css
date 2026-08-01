@@ -546,6 +546,22 @@
     padding-top: var(--section-y-app);
     padding-bottom: var(--section-y-app);
   }
+  /* Batch 3 — shared rhythm normalized to 56–64px mobile / 88–96px desktop.
+     Immersive wrappers (.section-y-lg) keep their larger, intentional scale. */
+  @media (min-width: 768px) {
+    .section-y {
+      padding-top: 92px;
+      padding-bottom: 92px;
+    }
+    .section-y-lg {
+      padding-top: 112px;
+      padding-bottom: 112px;
+    }
+    .section-y-sm {
+      padding-top: 64px;
+      padding-bottom: 64px;
+    }
+  }
 
   /* ─────────────────────────────────────────────────────────────
      HERO H1 — display rhythm tuned per breakpoint.
