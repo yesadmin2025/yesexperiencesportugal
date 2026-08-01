@@ -135,9 +135,12 @@ export function CinematicEditorialImage({
         className={imageClassName}
         pictureClassName="cinematic-editorial__frame cinematic-editorial__frame--primary"
       />
+      {/* Batch 4: the crossfade frame is decorative and never the LCP —
+          it must stay lazy even on a priority block so it never competes
+          with the primary image for bandwidth. */}
       <ResponsiveEditorialImage
         image={image.alternate}
-        priority={priority}
+        priority={false}
         sizes={sizes}
         className={imageClassName}
         pictureClassName="cinematic-editorial__frame cinematic-editorial__frame--secondary"
