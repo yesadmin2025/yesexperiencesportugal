@@ -159,4 +159,3 @@ test.describe("Hero typography — font families & scale (post font load)", () =
     }
   });
 });
-

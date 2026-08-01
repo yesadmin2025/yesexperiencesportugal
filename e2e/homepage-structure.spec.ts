@@ -215,7 +215,6 @@ for (const vp of MOBILE_BREAKPOINTS) {
           seamDelta,
           `Unexpected ${seamDelta.toFixed(1)}px void between sections ${prevSpec.order} and ${nextSpec.order}`,
         ).toBeLessThan(200);
-
       }
 
       if (failures.length > 0) {

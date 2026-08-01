@@ -9,17 +9,21 @@
  *   · CONVERSION tier — Studio + Final CTA
  *     "Do something now" sections. Largest type, tightest leading,
  *     italic emphasis carries the action.
- *     → text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem]
- *       leading-[1.05] md:leading-[0.96], tracking-[-0.02em]
+ *     → text-[2.1rem] sm:text-[2.5rem] lg:text-[3.8rem]
+ *       leading-[1.05] lg:leading-[0.96], tracking-[-0.02em]
  *
  *   · EDITORIAL tier — Signatures + Groups
  *     Discovery / browsing sections. Mid scale, calmer leading.
- *     → text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem]
- *       leading-[1.12] md:leading-[1.02], tracking-[-0.014em]
+ *     → text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem]
+ *       leading-[1.12] lg:leading-[1.02], tracking-[-0.014em]
  *
  *   · INFORMATIONAL tier — Three ways
  *     Sub-section primer / navigation. Compact.
  *     → text-[1.7rem] sm:text-[1.95rem] md:text-[2.4rem]
+ *
+ * The top step is gated at `lg:` (≥1024px) so tablets (768–1023px)
+ * keep the calmer `sm:` size instead of jumping straight to the
+ * desktop scale — matches e2e/homepage-typography-spacing-regression.
  *
  * Eyebrows: .he-eyebrow-bar utility (unchanged).
  */
@@ -53,7 +57,7 @@ describe("Homepage H2 — conversion tier (Studio, Final CTA)", () => {
       const cls = findH2Block(id);
       expect(extractRem(cls, null), `#${id}: mobile size`).toBe(2.1);
       expect(extractRem(cls, "sm"), `#${id}: sm size`).toBe(2.5);
-      expect(extractRem(cls, "md"), `#${id}: md size`).toBe(3.8);
+      expect(extractRem(cls, "lg"), `#${id}: lg size`).toBe(3.8);
     });
   }
 });
@@ -66,7 +70,7 @@ describe("Homepage H2 — editorial tier (Signatures, Groups)", () => {
       const cls = findH2Block(id);
       expect(extractRem(cls, null), `#${id}: mobile size`).toBe(1.8);
       expect(extractRem(cls, "sm"), `#${id}: sm size`).toBe(2.1);
-      expect(extractRem(cls, "md"), `#${id}: md size`).toBe(2.95);
+      expect(extractRem(cls, "lg"), `#${id}: lg size`).toBe(2.95);
     });
   }
 });

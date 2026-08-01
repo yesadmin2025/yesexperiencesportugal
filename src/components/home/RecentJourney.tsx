@@ -551,7 +551,7 @@ export function RecentJourney() {
           <Eyebrow className="mb-4">Travel Designer</Eyebrow>
           <h2
             id="bespoke-designer-title"
-            className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
+            className="serif mt-3 text-[2rem] sm:text-[2.4rem] lg:text-[3.4rem] leading-[1.1] lg:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
             A Portugal{" "}
             <span className="italic font-normal text-[color:var(--teal)]">written around you.</span>
