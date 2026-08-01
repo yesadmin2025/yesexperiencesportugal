@@ -575,7 +575,7 @@ function HomePage() {
 
                 <h2
                   id="studio-title"
-                  className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem] leading-[1.05] md:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
+                  className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] lg:text-[3.8rem] leading-[1.05] lg:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
                 >
                   Design your day.{" "}
                   <span className="italic font-normal text-[color:var(--teal)]">
@@ -647,7 +647,7 @@ function HomePage() {
               <Eyebrow className="mb-5">Signature</Eyebrow>
               <h2
                 id="signatures-title"
-                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
                 Signature days,{" "}
                 <span className="italic font-normal text-[color:var(--teal)]">already loved.</span>
@@ -840,7 +840,7 @@ function HomePage() {
 
               <h2
                 id="groups-title"
-                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] md:text-[2.95rem] leading-[1.12] md:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
                 Moments that{" "}
                 <span className="italic font-normal text-[color:var(--teal)]">
@@ -893,7 +893,6 @@ function HomePage() {
         >
           <FAQ />
         </div>
-
 
         {/* Popular searches + "Only on YES" block removed in the declutter
           pass. High-intent internal links moved into the Footer so SEO
@@ -975,7 +974,7 @@ function HomePage() {
 
                   <h2
                     id="final-cta-title"
-                    className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] md:text-[3.8rem] leading-[1.05] md:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
+                    className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] lg:text-[3.8rem] leading-[1.05] lg:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
                   >
                     Portugal is waiting.{" "}
                     <span className="italic font-normal text-[color:var(--teal)]">

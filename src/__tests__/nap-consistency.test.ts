@@ -87,17 +87,21 @@ function walk(dir: string, out: string[] = []): string[] {
   return out;
 }
 
+// Read every candidate file exactly once and share the contents between the
+// scans below. Re-reading ~1k files per assertion made these guards slow
+// enough to trip vitest's default 5s timeout on cold CI filesystems.
 const FILES = walk(ROOT).map((f) => ({
   abs: f,
   rel: path.relative(ROOT, f).replace(/\\/g, "/"),
+  text: fs.readFileSync(f, "utf8"),
 }));
+
+const SCANNABLE = FILES.filter((f) => !f.rel.startsWith(TESTS_REL));
 
 describe("NAP + license consistency", () => {
   it("never uses the forbidden RNAVT / Lisbon-team tokens", () => {
     const violations: string[] = [];
-    for (const { abs, rel } of FILES) {
-      if (rel.startsWith(TESTS_REL)) continue;
-      const text = fs.readFileSync(abs, "utf8");
+    for (const { rel, text } of SCANNABLE) {
       for (const { needle, reason } of FORBIDDEN_TOKENS) {
         needle.lastIndex = 0;
         if (needle.test(text)) violations.push(`${rel}: ${reason}`);
@@ -108,10 +112,8 @@ describe("NAP + license consistency", () => {
 
   it("keeps public NAP literals (phone, wa.me) only in the canonical config", () => {
     const violations: string[] = [];
-    for (const { abs, rel } of FILES) {
-      if (rel.startsWith(TESTS_REL)) continue;
+    for (const { rel, text } of SCANNABLE) {
       if (LITERAL_ALLOWLIST.has(rel)) continue;
-      const text = fs.readFileSync(abs, "utf8");
       for (const { needle, reason } of NAP_LITERALS) {
         needle.lastIndex = 0;
         if (needle.test(text)) violations.push(`${rel}: ${reason}`);

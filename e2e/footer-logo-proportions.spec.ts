@@ -97,7 +97,6 @@ test.describe("Footer logo proportions match navbar (mobile)", () => {
     test.skip(test.info().project.name !== "mobile-chromium", "mobile-only spec");
   });
 
-
   for (const bp of MOBILE_BREAKPOINTS) {
     test(`@ ${bp.name} (${bp.width}×${bp.height})`, async ({ page }) => {
       await page.setViewportSize({ width: bp.width, height: bp.height });

@@ -13,7 +13,7 @@ import { test, expect, type Page, type Locator } from "@playwright/test";
  *   2. Tapping "Say YES" opens a two-option choice sheet, NOT an
  *      immediate navigation, exposing:
  *        • "Explore Signature Experiences"  → /experiences
- *        • "Design & Secure Your Own"       → /builder
+ *        • "Design & Secure Your Own"       → /studio-v3
  *   3. The polite live region announces the new storytelling text
  *      ("Say YES to begin your Portugal experience — shortcut available
  *      at the bottom of the screen.") once the user has scrolled past
@@ -44,10 +44,23 @@ function ctaButton(page: Page): Locator {
   return page.getByRole("button", { name: BUTTON_ARIA });
 }
 
+/**
+ * DOM-level handle on the same button.
+ *
+ * While the bar is gated out it carries `aria-hidden` + `inert`, which
+ * removes it from the accessibility tree — so `getByRole` deliberately
+ * finds nothing (a contract asserted further down). Structural lookups
+ * that must work in *both* states go through the data attributes.
+ */
+function ctaElement(page: Page): Locator {
+  return page.locator('button[data-cta="say_yes_open"][data-cta-surface="mobile_sticky"]');
+}
+
 /** Wrapper div that owns aria-hidden + opacity transitions for the bar. */
 function stickyBar(page: Page): Locator {
-  return ctaButton(page).locator("xpath=ancestor::div[contains(@class,'fixed')][1]");
+  return ctaElement(page).locator("xpath=ancestor::div[contains(@class,'fixed')][1]");
 }
+
 
 /** The two-option dialog rendered above the bar. */
 function choiceSheet(page: Page): Locator {
@@ -89,10 +102,18 @@ async function revealBar(page: Page) {
 }
 
 test.describe("Sticky CTA — copy, choice sheet, and announcement contract", () => {
+  // The bar is `lg:hidden` by design — it is a mobile/tablet affordance and
+  // is display:none from 1024px up, where the header CTA takes over.
+  test.skip(
+    ({ viewport }) => (viewport?.width ?? 0) >= 1024,
+    "Sticky CTA is intentionally hidden from the lg breakpoint up.",
+  );
+
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
     await stickyBar(page).waitFor({ state: "attached" });
   });
+
 
   test("renders the branded headline, eyebrow, and Say YES button copy", async ({ page }) => {
     await revealBar(page);
@@ -151,7 +172,7 @@ test.describe("Sticky CTA — copy, choice sheet, and announcement contract", ()
     await expect(explore).toBeVisible();
     await expect(design).toBeVisible();
     await expect(explore).toHaveAttribute("href", "/experiences");
-    await expect(design).toHaveAttribute("href", "/builder");
+    await expect(design).toHaveAttribute("href", "/studio-v3");
 
     // No navigation happened from opening the sheet itself.
     expect(navigated).toBe(false);

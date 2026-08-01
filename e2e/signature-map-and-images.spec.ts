@@ -68,8 +68,7 @@ test.describe("Signature tour pages — map + image integrity", () => {
       // short bounded window before asserting.
       await page
         .waitForFunction(
-          () =>
-            Array.from(document.images).every((img) => !img.complete || img.naturalWidth > 0),
+          () => Array.from(document.images).every((img) => !img.complete || img.naturalWidth > 0),
           undefined,
           { timeout: 5_000 },
         )
@@ -90,7 +89,6 @@ test.describe("Signature tour pages — map + image integrity", () => {
           .map((el) => (el as HTMLImageElement).currentSrc || (el as HTMLImageElement).src),
       );
       expect(broken, `broken <img> on /tours/${tourId}:\n${broken.join("\n")}`).toEqual([]);
-
 
       expect(
         imageFailures,

@@ -67,7 +67,9 @@ test.describe("Hero color tokens — non-regression", () => {
       ).toBe(true);
       expect(style.fontStyle, `stanza line ${i + 1} must remain italic`).toBe("italic");
       expect(style.fontWeight, `stanza line ${i + 1} must stay weight 400`).toBe("400");
-      expect(style.fontFamily, `stanza line ${i + 1} must use the serif token`).toContain("georgia");
+      expect(style.fontFamily, `stanza line ${i + 1} must use the serif token`).toContain(
+        "georgia",
+      );
     }
   });
 });

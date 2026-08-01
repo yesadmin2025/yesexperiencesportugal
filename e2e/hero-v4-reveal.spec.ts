@@ -35,9 +35,9 @@ test.describe("Hero v4 — one-breath reveal", () => {
 
   test("CTA block composes in and becomes interactive", async ({ page }) => {
     const block = page.locator("[data-hero-composed]");
-    await expect.poll(() => block.getAttribute("data-hero-composed"), { timeout: 15_000 }).toBe(
-      "true",
-    );
+    await expect
+      .poll(() => block.getAttribute("data-hero-composed"), { timeout: 15_000 })
+      .toBe("true");
     await expect
       .poll(() => block.evaluate((el) => getComputedStyle(el).pointerEvents))
       .toBe("auto");

@@ -146,7 +146,6 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
 ] as const;
 
-
 /** Total number of approved blocks (including componentized rows). */
 export const APPROVED_SECTION_COUNT = APPROVED_HOMEPAGE_SECTIONS.length;
 

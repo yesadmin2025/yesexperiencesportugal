@@ -283,7 +283,6 @@ export function CinematicHero() {
               </svg>
             </span>
           </Link>
-
         </div>
       </div>
 
