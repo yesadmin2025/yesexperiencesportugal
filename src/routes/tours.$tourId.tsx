@@ -1,4 +1,12 @@
-import { createFileRoute, Link, Outlet, notFound, useRouterState } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  notFound,
+  redirect,
+  useRouterState,
+} from "@tanstack/react-router";
+
 import { SiteLayout } from "@/components/SiteLayout";
 import { Clock, MapPin, ArrowLeft, Check, Sparkles, Info, Heart, Shield, Star } from "lucide-react";
 import {
