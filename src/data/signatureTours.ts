@@ -217,7 +217,7 @@ export const signatureTours: SignatureTour[] = [
     contextParagraph:
       "This experience takes place in one of the most respected wine regions near Lisbon, combining Arrábida, Setúbal and Azeitão. It is designed for travelers who want a full day of family wineries, traditional lunch and Atlantic scenery at a considered pace, rather than a rushed multi-stop circuit.",
     contextLink: {
-      href: "/arrabida-wine-tour",
+      href: "/local-stories/arrabida-wine-tour",
       label: "Read more about wine in Arrábida and Setúbal",
     },
     fitsBest: "Couples · friends · wine-curious travelers",

@@ -150,7 +150,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedReads: [
-      { path: "/arrabida-wine-tour", label: "Arrábida wine tour from Lisbon" },
+      { path: "/local-stories/arrabida-wine-tour", label: "Arrábida wine tour from Lisbon" },
       { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
       { path: "/local-stories/best-wineries-near-lisbon", label: "Best wineries near Lisbon" },
     ],
@@ -354,7 +354,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "See the Roman Heritage & Talha Wines Signature",
     signatureSlug: "roman-heritage-alentejo",
     relatedSignatures: [
-      { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
+      { slug: "evora-alentejo", label: "Évora & Alentejo Signature" },
       { slug: "troia-comporta", label: "Tróia & Comporta" },
     ],
     datePublished: "2026-06-18",
@@ -405,8 +405,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedSignatures: [
-      { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
-      { slug: "azeitao-cheese-wine", label: "Azeitão Cheese & Wine" },
+      { slug: "evora-alentejo", label: "Évora & Alentejo Signature" },
+      { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
     ],
     datePublished: "2026-06-10",
   },
@@ -446,12 +446,12 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
     relatedSignatures: [
-      { slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" },
-      { slug: "azeitao-cheese-wine", label: "Azeitão Cheese & Wine" },
+      { slug: "evora-alentejo", label: "Évora & Alentejo Signature" },
+      { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
     ],
     relatedReads: [
-      { path: "/wine-tours-lisbon", label: "Wine tours from Lisbon" },
-      { path: "/arrabida-wine-tour", label: "Arrábida wine tour" },
+      { path: "/local-stories/wine-tours-lisbon", label: "Wine tours from Lisbon" },
+      { path: "/local-stories/arrabida-wine-tour", label: "Arrábida wine tour" },
       { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
     ],
     datePublished: "2026-06-11",
@@ -487,7 +487,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "If Arrábida is calling, the all-inclusive wine Signature is our most-loved version of this day. Want the Alentejo one? The Évora Signature does that, in the same private, slow rhythm.",
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
-    relatedSignatures: [{ slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" }],
+    relatedSignatures: [{ slug: "evora-alentejo", label: "Évora & Alentejo Signature" }],
     datePublished: "2026-06-12",
   },
   {
@@ -521,9 +521,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "Most of these wineries are part of our private Signature wine days — door-to-door from your Lisbon hotel, with a quiet long lunch in between.",
     ctaLabel: "See the Arrábida Wine Signature",
     signatureSlug: "arrabida-wine-allinclusive",
-    relatedSignatures: [{ slug: "evora-alentejo-talhas", label: "Évora & Alentejo Signature" }],
+    relatedSignatures: [{ slug: "evora-alentejo", label: "Évora & Alentejo Signature" }],
     relatedReads: [
-      { path: "/wine-tours-lisbon", label: "Wine tours from Lisbon" },
+      { path: "/local-stories/wine-tours-lisbon", label: "Wine tours from Lisbon" },
       { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
       { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
     ],
@@ -630,7 +630,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         path: "/tours/arrabida-wine-allinclusive",
         label: "Reserve the private three-winery experience",
       },
-      { path: "/wine-tours-lisbon", label: "Compare private wine tours from Lisbon" },
+      { path: "/local-stories/wine-tours-lisbon", label: "Compare private wine tours from Lisbon" },
       {
         path: "/local-stories/setubal-wine-guide",
         label: "Read our local guide to Setúbal wine country",
@@ -725,9 +725,15 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
     ],
     relatedReads: [
-      { path: "/wine-tours-lisbon", label: "Private wine tours from Lisbon" },
-      { path: "/arrabida-wine-tour", label: "Explore Arrábida and Setúbal wine country" },
-      { path: "/alentejo-wine-tour-from-lisbon", label: "Explore an Alentejo wine day" },
+      { path: "/local-stories/wine-tours-lisbon", label: "Private wine tours from Lisbon" },
+      {
+        path: "/local-stories/arrabida-wine-tour",
+        label: "Explore Arrábida and Setúbal wine country",
+      },
+      {
+        path: "/local-stories/alentejo-wine-tour-from-lisbon",
+        label: "Explore an Alentejo wine day",
+      },
       { path: "/multi-day", label: "Design a multi-day Portugal wine journey" },
     ],
     datePublished: "2026-07-04",
@@ -760,9 +766,12 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
     ],
     relatedReads: [
-      { path: "/arrabida-wine-tour", label: "Explore the Arrábida wine region" },
+      { path: "/local-stories/arrabida-wine-tour", label: "Explore the Arrábida wine region" },
       { path: "/tours/arrabida-wine-allinclusive", label: "See the three-winery Signature" },
-      { path: "/portugal-wine-tours", label: "Explore wine journeys across Portugal" },
+      {
+        path: "/local-stories/portugal-wine-tours",
+        label: "Explore wine journeys across Portugal",
+      },
     ],
     datePublished: "2026-07-05",
   },

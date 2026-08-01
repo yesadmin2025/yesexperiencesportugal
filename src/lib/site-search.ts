@@ -85,7 +85,7 @@ const SERVICE_PAGES: SearchDoc[] = [
     kind: "page",
     title: "Moments",
     summary: "Small add-on moments — picnics, tastings, photography, celebrations.",
-    path: "/moments",
+    path: "/proposal-in-portugal",
     keywords: "moments add-ons picnic photographer celebration birthday",
   },
   {

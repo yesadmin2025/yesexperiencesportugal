@@ -166,7 +166,11 @@ function Page() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/portugal-wine-tours" className="hover:text-[color:var(--teal)]">
+                  <Link
+                    to="/local-stories/$slug"
+                    params={{ slug: "portugal-wine-tours" }}
+                    className="hover:text-[color:var(--teal)]"
+                  >
                     Portugal wine tours →
                   </Link>
                 </li>
