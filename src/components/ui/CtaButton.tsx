@@ -65,8 +65,8 @@ type ButtonCtaProps = CommonProps &
 export type CtaButtonProps = LinkCtaProps | AnchorCtaProps | ButtonCtaProps;
 
 const sizeClasses: Record<Size, string> = {
-  md: "px-6 py-3.5 min-h-[52px] text-[11px] sm:text-[11.5px] tracking-[0.22em]",
-  sm: "px-5 py-3 min-h-[46px] text-[11px] tracking-[0.22em]",
+  md: "px-6 py-3.5 min-h-[52px] text-[13px] sm:text-[13.5px] tracking-[0.1em]",
+  sm: "px-5 py-3 min-h-[46px] text-[13px] tracking-[0.1em]",
 };
 
 const baseClasses =
@@ -75,7 +75,7 @@ const baseLayoutWithTrailing = "justify-between gap-6";
 const baseLayoutNoTrailing = "justify-center gap-2.5";
 
 const hairlineBaseClasses =
-  "group relative inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[11px] tracking-[0.25em] py-2.5 min-h-[44px] text-[color:var(--charcoal)] transition-opacity duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:pointer-events-none disabled:opacity-40 before:content-[''] before:absolute before:left-0 before:right-0 before:-bottom-0.5 before:h-px before:bg-[color:var(--gold)] before:opacity-60 before:transition-opacity before:duration-[var(--dur-quick)] hover:before:opacity-100 focus-visible:before:opacity-100 active:before:opacity-100";
+  "group relative inline-flex items-center gap-3 rounded-[2px] font-sans uppercase font-semibold text-[13px] tracking-[0.1em] py-2.5 min-h-[44px] text-[color:var(--charcoal)] transition-opacity duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory)] active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:pointer-events-none disabled:opacity-40 before:content-[''] before:absolute before:left-0 before:right-0 before:-bottom-0.5 before:h-px before:bg-[color:var(--gold)] before:opacity-60 before:transition-opacity before:duration-[var(--dur-quick)] hover:before:opacity-100 focus-visible:before:opacity-100 active:before:opacity-100";
 
 const variantClasses: Record<Variant, string> = {
   primary:

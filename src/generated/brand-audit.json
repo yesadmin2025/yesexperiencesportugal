@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-01T23:27:01.794Z",
+  "generatedAt": "2026-08-01T23:33:00.132Z",
   "filesScanned": 938,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1637,7 +1637,7 @@
     },
     {
       "file": "src/components/studio-v3/SignaturePriceCard.tsx",
-      "line": 844,
+      "line": 845,
       "col": 44,
       "raw": "#b8541a",
       "normalized": "#b8541a",
@@ -1646,7 +1646,7 @@
     },
     {
       "file": "src/components/studio-v3/SignaturePriceCard.tsx",
-      "line": 866,
+      "line": 867,
       "col": 51,
       "raw": "#b8541a",
       "normalized": "#b8541a",
@@ -3536,7 +3536,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 753,
+      "line": 769,
       "col": 33,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -3545,7 +3545,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 754,
+      "line": 770,
       "col": 21,
       "raw": "#B89452",
       "normalized": "#b89452",
@@ -3554,7 +3554,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 989,
+      "line": 1005,
       "col": 37,
       "raw": "#b3261e",
       "normalized": "#b3261e",
@@ -3563,7 +3563,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 990,
+      "line": 1006,
       "col": 37,
       "raw": "#b3261e",
       "normalized": "#b3261e",
@@ -3572,7 +3572,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 1164,
+      "line": 1180,
       "col": 12,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -3581,7 +3581,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 1351,
+      "line": 1367,
       "col": 12,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -3590,7 +3590,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 1635,
+      "line": 1651,
       "col": 12,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -3599,7 +3599,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 3675,
+      "line": 3691,
       "col": 23,
       "raw": "#000",
       "normalized": "#000000",
@@ -3608,7 +3608,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 4200,
+      "line": 4216,
       "col": 41,
       "raw": "#000",
       "normalized": "#000000",
@@ -3617,7 +3617,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 4200,
+      "line": 4216,
       "col": 47,
       "raw": "#000",
       "normalized": "#000000",
@@ -3626,7 +3626,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 4857,
+      "line": 4873,
       "col": 7,
       "raw": "#555",
       "normalized": "#555555",
@@ -3635,7 +3635,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 5802,
+      "line": 5818,
       "col": 47,
       "raw": "#8a6f2e",
       "normalized": "#8a6f2e",
@@ -3644,7 +3644,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 5838,
+      "line": 5854,
       "col": 47,
       "raw": "#d8b97a",
       "normalized": "#d8b97a",
@@ -3653,7 +3653,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 6724,
+      "line": 6740,
       "col": 10,
       "raw": "#8a611f",
       "normalized": "#8a611f",

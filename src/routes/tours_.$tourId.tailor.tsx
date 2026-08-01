@@ -795,7 +795,7 @@ function TailorPage() {
           <Link
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
-            className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+            className="inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
           >
             <ArrowLeft size={12} /> Back to this Signature
           </Link>
@@ -836,10 +836,10 @@ function TailorPage() {
               />
               <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[color:var(--charcoal-deep)]/60 to-transparent" />
               <div className="absolute bottom-3 left-3 right-3 text-[color:var(--ivory)]">
-                <span className="text-[10px] uppercase tracking-[0.24em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-2.5 py-1">
+                <span className="text-[12px] uppercase tracking-[0.12em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-2.5 py-1">
                   Signature
                 </span>
-                <div className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/90">
+                <div className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--ivory)]/90">
                   <span className="inline-flex items-center gap-1.5">
                     <MapPin size={11} /> {tour.region}
                   </span>
@@ -908,7 +908,7 @@ function TailorPage() {
             <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-5 md:p-6">
               <div className="flex items-center gap-2.5">
                 <Lock size={14} className="text-[color:var(--gold)] shrink-0" aria-hidden="true" />
-                <span className="text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)]">
+                <span className="text-[12px] uppercase tracking-[0.12em] font-semibold text-[color:var(--charcoal)]">
                   What stays the same
                 </span>
               </div>
@@ -942,7 +942,7 @@ function TailorPage() {
                   className="text-[color:var(--teal)] shrink-0"
                   aria-hidden="true"
                 />
-                <span className="text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal)]">
+                <span className="text-[12px] uppercase tracking-[0.12em] font-semibold text-[color:var(--charcoal)]">
                   What you can adjust
                 </span>
               </div>
@@ -1068,7 +1068,7 @@ function TailorPage() {
                         compact
                       />
                     </div>
-                    <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+                    <p className="mt-1.5 text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
                       {compositionReady
                         ? formatCompositionSummary(composition)
                         : "Add an age for every child so we can price honestly."}
@@ -1083,7 +1083,7 @@ function TailorPage() {
                         { v: "pt", l: "PT" },
                       ]}
                     />
-                    <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+                    <p className="mt-1.5 text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
                       Spanish available on request — subject to guide availability.
                     </p>
                   </Field>
@@ -1101,7 +1101,7 @@ function TailorPage() {
 
                   {/* Core (default-included; markets, viewpoints & lunches
                       can be skipped so the guide re-shapes the day). */}
-                  <p className="mb-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
+                  <p className="mb-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--teal)]">
                     Included by default
                   </p>
                   <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
@@ -1124,10 +1124,10 @@ function TailorPage() {
                               <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
                                 {s.label}
                               </span>
-                              <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
+                              <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] mt-1">
                                 Signature anchor
                               </span>
-                              <span className="text-[11.5px] leading-snug text-[color:var(--charcoal-soft)] mt-1">
+                              <span className="text-[12.5px] leading-snug text-[color:var(--charcoal-soft)] mt-1">
                                 {reason}
                               </span>
                             </span>
@@ -1165,7 +1165,7 @@ function TailorPage() {
                               >
                                 {s.label}
                               </span>
-                              <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
+                              <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] mt-1">
                                 {isSkipped ? "Skipped · time freed" : "Tap to skip"}
                               </span>
                             </span>
@@ -1187,7 +1187,7 @@ function TailorPage() {
                   {/* Choice pool */}
                   {blueprint.choice && (
                     <>
-                      <p className="mb-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
+                      <p className="mb-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal)]">
                         {blueprint.choice.label}
                       </p>
                       <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
@@ -1221,7 +1221,7 @@ function TailorPage() {
                                     {o.label}
                                   </span>
                                   {o.blurb && (
-                                    <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
+                                    <span className="text-[12px] text-[color:var(--charcoal-soft)] mt-0.5">
                                       {o.blurb}
                                     </span>
                                   )}
@@ -1246,7 +1246,7 @@ function TailorPage() {
                   {/* Optional (subject to time & availability) */}
                   {blueprint.optional.length > 0 && (
                     <>
-                      <p className="mb-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                      <p className="mb-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
                         Optional · subject to time & availability
                       </p>
                       <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0">
@@ -1270,7 +1270,7 @@ function TailorPage() {
                                     {o.label}
                                   </span>
                                   {o.blurb && (
-                                    <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
+                                    <span className="text-[12px] text-[color:var(--charcoal-soft)] mt-0.5">
                                       {o.blurb}
                                     </span>
                                   )}
@@ -1303,14 +1303,14 @@ function TailorPage() {
                       ].join(" ")}
                     >
                       <p>
-                        <span className="uppercase tracking-[0.22em] text-[10.5px] mr-2 text-[color:var(--charcoal-soft)]">
+                        <span className="uppercase tracking-[0.12em] text-[12px] mr-2 text-[color:var(--charcoal-soft)]">
                           Day timing
                         </span>
                         ~{Math.round(blueprintFeasibility.totalMinutes / 60)}h of experience
                         {blueprintFeasibility.feasible ? " · fits a full day" : ""}
                       </p>
                       {blueprintFeasibility.warnings.length > 0 && (
-                        <ul className="mt-1.5 list-disc pl-4 text-[11.5px] text-[color:var(--charcoal-soft)]">
+                        <ul className="mt-1.5 list-disc pl-4 text-[12.5px] text-[color:var(--charcoal-soft)]">
                           {blueprintFeasibility.warnings.map((w, i) => (
                             <li key={i}>{w}</li>
                           ))}
@@ -1328,7 +1328,7 @@ function TailorPage() {
                     Remove a stop you'd rather trade for time elsewhere, or add an optional one
                     listed by the local guide.
                   </p>
-                  <p className="mb-3 text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal)]">
+                  <p className="mb-3 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal)]">
                     Up to {MAX_EDITS} changes · {editsLeft} left
                   </p>
 
@@ -1362,7 +1362,7 @@ function TailorPage() {
                               >
                                 {s.label}
                               </span>
-                              <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
+                              <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] mt-1">
                                 {kept ? "Included" : "Removed"}
                               </span>
                             </span>
@@ -1384,7 +1384,7 @@ function TailorPage() {
                   {/* Optional add-able stops from Viator (passBy=true) */}
                   {optionalStops.length > 0 && (
                     <>
-                      <p className="mt-5 mb-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                      <p className="mt-5 mb-2 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
                         Curated add-ons for this journey
                       </p>
                       <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0">
@@ -1410,7 +1410,7 @@ function TailorPage() {
                                   <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
                                     {label}
                                   </span>
-                                  <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
+                                  <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] mt-1">
                                     {on ? "Added" : "Optional"}
                                   </span>
                                 </span>
@@ -1436,7 +1436,7 @@ function TailorPage() {
               {/* Included service only — optional products must come from
                   explicit supplier data, never title/keyword heuristics. */}
               <Group title="Pickup">
-                <div className="mb-3 inline-flex items-center gap-2 border border-[color:var(--teal)]/40 bg-[color:var(--teal)]/8 px-2.5 py-1.5 text-[11px] uppercase tracking-[0.18em] text-[color:var(--teal)]">
+                <div className="mb-3 inline-flex items-center gap-2 border border-[color:var(--teal)]/40 bg-[color:var(--teal)]/8 px-2.5 py-1.5 text-[12px] uppercase tracking-[0.12em] text-[color:var(--teal)]">
                   <Check size={12} /> Hotel pickup included
                 </div>
               </Group>
@@ -1508,7 +1508,7 @@ function TailorPage() {
                       onClick={() =>
                         gaGenerateLead({ leadSource: "tailor_talk_to_local", method: "whatsapp" })
                       }
-                      className="mt-3 inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
+                      className="mt-3 inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.12em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
                     >
                       <MessageCircle size={13} /> Talk to a local
                     </a>
@@ -1521,7 +1521,7 @@ function TailorPage() {
             <aside className="lg:sticky lg:top-24">
               {import.meta.env?.DEV && validation.hasViatorMeta && validation.issueCount > 0 && (
                 <div className="mb-3 border border-[color:var(--gold)]/40 bg-[color:var(--gold-soft)]/40 p-3 text-[12px] text-[color:var(--charcoal)]">
-                  <p className="font-semibold uppercase tracking-[0.2em] text-[10px] text-[color:var(--charcoal-soft)] mb-1">
+                  <p className="font-semibold uppercase tracking-[0.12em] text-[12px] text-[color:var(--charcoal-soft)] mb-1">
                     Viator validation · {validation.issueCount} mismatch
                     {validation.issueCount === 1 ? "" : "es"}
                   </p>
@@ -1545,7 +1545,7 @@ function TailorPage() {
               <div className="bg-[color:var(--card)] border border-[color:var(--border)] overflow-hidden">
                 <div className="px-5 py-4 bg-[color:var(--charcoal-deep)] text-[color:var(--ivory)] flex items-center justify-between">
                   <Eyebrow tone="onDark">Live summary</Eyebrow>
-                  <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-[color:var(--gold-soft)]">
+                  <span className="inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.12em] text-[color:var(--gold-soft)]">
                     <span className="relative inline-flex h-1.5 w-1.5">
                       <span className="absolute inline-flex h-full w-full rounded-full bg-[color:var(--gold)] opacity-60 animate-ping" />
                       <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[color:var(--gold)]" />
@@ -1567,13 +1567,13 @@ function TailorPage() {
                   />
 
                   <div>
-                    <p className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                    <p className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
                       Itinerary ({summaryStops.length} of {summaryTotal})
                     </p>
                     <ol className="mt-2 space-y-1.5 list-none p-0">
                       {summaryStops.map((s, i) => (
                         <li key={s.label + i} className="flex gap-2.5">
-                          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] w-5 shrink-0 mt-0.5">
+                          <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal)] w-5 shrink-0 mt-0.5">
                             {String(i + 1).padStart(2, "0")}
                           </span>
                           <span className="text-[13px] leading-snug">{s.label}</span>
@@ -1615,7 +1615,7 @@ function TailorPage() {
                         <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
                           Add lunch
                         </span>
-                        <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
+                        <span className="text-[12px] text-[color:var(--charcoal-soft)] mt-0.5">
                           {lunchAdded
                             ? "Added to your day"
                             : "Lunch is not included in this Signature"}
@@ -1648,7 +1648,7 @@ function TailorPage() {
                         <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
                           {lunchRemoved ? "Restore included lunch" : "Remove included lunch"}
                         </span>
-                        <span className="text-[11px] text-[color:var(--charcoal-soft)] mt-0.5">
+                        <span className="text-[12px] text-[color:var(--charcoal-soft)] mt-0.5">
                           {lunchRemoved
                             ? "The day runs without the seated lunch."
                             : (rules.lunchIncludedNote ??
@@ -1674,12 +1674,12 @@ function TailorPage() {
                       <PriceCurrencyChip align="end" />
                     </div>
                     <div className="flex items-baseline justify-between">
-                      <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                      <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
                         For {guests} {guests === 1 ? "guest" : "guests"} · per person
                       </span>
                       <span className="serif text-[1.15rem] text-[color:var(--charcoal)] tabular-nums inline-flex items-baseline gap-2">
                         {savingsEur > 0 && (
-                          <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--teal)] not-italic">
+                          <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--teal)] not-italic">
                             −<PriceEur amountEur={savingsEur} role="per-person" /> pp
                           </span>
                         )}
@@ -1687,19 +1687,19 @@ function TailorPage() {
                           amountEur={Math.round(displayTotalEur / Math.max(1, guests))}
                           role="per-person"
                         />
-                        <span className="ml-1 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+                        <span className="ml-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
                           / pp
                         </span>
                       </span>
                     </div>
                     {supplementsPerPax > 0 && (
-                      <p className="text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                      <p className="text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
                         Includes <PriceEur amountEur={supplementsPerPax} role="per-person" /> pp of
                         additions.
                       </p>
                     )}
                     {principalsRemoved > 0 && (
-                      <p className="text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                      <p className="text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
                         Adjusted from <PriceEur amountEur={basePerPax} role="per-person" /> —{" "}
                         {principalsRemoved} stop{principalsRemoved === 1 ? "" : "s"} removed.
                       </p>
@@ -1707,7 +1707,7 @@ function TailorPage() {
                     {lunchRemovalPerPax > 0 && (
                       <p
                         data-testid="tailor-lunch-removal-line"
-                        className="text-[10.5px] leading-snug text-[color:var(--teal)]"
+                        className="text-[12px] leading-snug text-[color:var(--teal)]"
                       >
                         Included lunch removed — −
                         <PriceEur amountEur={lunchRemovalPerPax} role="per-person" /> pp (
@@ -1716,14 +1716,14 @@ function TailorPage() {
                       </p>
                     )}
                     <div className="flex items-baseline justify-between">
-                      <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                      <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
                         Party total (indicative)
                       </span>
                       <span className="serif text-[1.4rem] text-[color:var(--charcoal)] tabular-nums">
                         <PriceEur amountEur={Math.round(displayTotalEur)} role="party-total" />
                       </span>
                     </div>
-                    <p className="text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                    <p className="text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
                       Final total confirmed at checkout in euros.
                     </p>
                   </div>
@@ -1731,12 +1731,12 @@ function TailorPage() {
                   {/* Confirmation status is always instant on Tailor —
                       manual gate retired per owner (test-mode + memory:
                       instant confirmation everywhere except Corporate). */}
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] inline-flex items-center gap-1.5">
+                  <p className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--teal)] inline-flex items-center gap-1.5">
                     <Check size={12} /> Confirmation status: ready
                   </p>
 
                   {wineExtension.extra > 0 && removableCoreLabels.length > 0 && (
-                    <p className="mt-2 text-[11.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                    <p className="mt-2 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
                       To fit this longer wine day you can remove{" "}
                       <span className="text-[color:var(--charcoal)]">
                         {removableCoreLabels.slice(0, 3).join(", ")}
@@ -1746,7 +1746,7 @@ function TailorPage() {
                   )}
 
                   {showMinorsWineAdvisory && (
-                    <p className="mt-2 text-[11.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                    <p className="mt-2 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
                       Wine tasting is offered to adults only — minors visit the estate without
                       tasting.
                     </p>
@@ -1796,13 +1796,13 @@ function TailorPage() {
                       </>
                     )}
                   </button>
-                  <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
+                  <p className="mt-2 text-[12px] text-[color:var(--charcoal-soft)] text-center">
                     Instant confirmation
                   </p>
-                  <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
+                  <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]/80">
                     <Lock size={10} /> Secure checkout
                   </p>
-                  <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center leading-relaxed">
+                  <p className="mt-2 text-[12px] text-[color:var(--charcoal-soft)] text-center leading-relaxed">
                     {CANCELLATION.custom.en}
                   </p>
                 </div>
@@ -1924,7 +1924,7 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mb-1.5">
+      <label className="block text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] mb-1.5">
         {label}
       </label>
       {children}
@@ -2037,7 +2037,7 @@ function Stepper({
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between gap-3">
-      <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)] shrink-0">
+      <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] shrink-0">
         {label}
       </span>
       <span className="text-[12.5px] text-[color:var(--charcoal)] text-right leading-snug">

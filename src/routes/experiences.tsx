@@ -138,7 +138,7 @@ function ExperiencesPage() {
                         focal={t.focal ?? "50% 50%"}
                         imgClassName="transition-transform duration-700 group-hover:scale-105"
                       >
-                        <span className="absolute top-4 left-4 text-[10px] uppercase tracking-[0.25em] bg-[color:var(--ivory)]/90 text-[color:var(--teal)] px-3 py-1.5">
+                        <span className="absolute top-4 left-4 text-[12px] uppercase tracking-[0.12em] bg-[color:var(--ivory)]/90 text-[color:var(--teal)] px-3 py-1.5">
                           {t.theme}
                         </span>
                       </TourImage>
@@ -192,7 +192,7 @@ function ExperiencesPage() {
                         row 2: region
                         row 3: From €X per person
                         row 4: Lunch included (only when canonical) */}
-                  <div className="mt-4 flex flex-col gap-1.5 text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
+                  <div className="mt-4 flex flex-col gap-1.5 text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
                     <div className="flex min-h-[16px] items-center gap-x-2.5">
                       {meta && meta.reviewCount > 0 && (
                         <>
@@ -227,7 +227,7 @@ function ExperiencesPage() {
                     <div className="flex min-h-[16px] items-center">
                       <span className="whitespace-nowrap text-[color:var(--charcoal)]">
                         From <PriceEur amountEur={t.priceFrom} role="from" />
-                        <span className="ml-1 text-[10px] tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                        <span className="ml-1 text-[12px] tracking-[0.12em] text-[color:var(--charcoal-soft)]">
                           per person
                         </span>
                       </span>

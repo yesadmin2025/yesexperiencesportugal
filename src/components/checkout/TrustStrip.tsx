@@ -74,7 +74,7 @@ export function TrustStrip({ placement, itemSlug, variant = "signature" }: Props
         {items.map(({ icon: Icon, label }) => (
           <li
             key={label}
-            className="flex items-center gap-2 text-[12px] leading-[1.35]"
+            className="flex items-center gap-2 text-[13px] leading-[1.4]"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
               fontFamily: "var(--font-sans, Inter), sans-serif",
@@ -89,7 +89,7 @@ export function TrustStrip({ placement, itemSlug, variant = "signature" }: Props
             <span>{label}</span>
           </li>
         ))}
-        <li className="flex items-center gap-2 text-[12px] leading-[1.35]">
+        <li className="flex items-center gap-2 text-[13px] leading-[1.4]">
           <MessageCircle
             className="h-3.5 w-3.5 shrink-0"
             style={{ color: "color-mix(in oklab, var(--gold) 85%, var(--charcoal))" }}
