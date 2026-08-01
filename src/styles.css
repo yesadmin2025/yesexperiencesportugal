@@ -6935,20 +6935,24 @@ html {
    Motion v3 — editorial primitives
    ============================================================ */
 
-/* MaskReveal — diagonal clip-path wipe, GPU-only. */
-.motion-mask {
+/* MaskReveal — diagonal clip-path wipe, GPU-only.
+   Batch 4 safety: the hidden initial state is scoped to
+   [data-motion-ready="1"] (set by React after hydration). Without JS —
+   or before hydration — the content paints fully visible, so a slow or
+   failed bundle can never leave an editorial block blank. */
+[data-motion-ready="1"] .motion-mask {
   clip-path: inset(0 100% 0 0);
   transition: clip-path var(--motion-dur-mask) var(--motion-ease-editorial);
   will-change: clip-path;
 }
-.motion-mask.is-visible {
+[data-motion-ready="1"] .motion-mask.is-visible {
   clip-path: inset(0 0 0 0);
 }
-.motion-mask[data-mask-dir="diagonal"] {
+[data-motion-ready="1"] .motion-mask[data-mask-dir="diagonal"] {
   clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
   transition: clip-path var(--motion-dur-mask) var(--motion-ease-editorial);
 }
-.motion-mask[data-mask-dir="diagonal"].is-visible {
+[data-motion-ready="1"] .motion-mask[data-mask-dir="diagonal"].is-visible {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
@@ -6957,7 +6961,7 @@ html {
   display: block;
   overflow: hidden;
 }
-.motion-split-line {
+[data-motion-ready="1"] .motion-split-line {
   display: block;
   transform: translateY(110%);
   opacity: 0;
@@ -6967,7 +6971,10 @@ html {
   transition-delay: calc(var(--split-index, 0) * var(--motion-stagger));
   will-change: transform, opacity;
 }
-.motion-split.is-visible .motion-split-line {
+.motion-split-line {
+  display: block;
+}
+[data-motion-ready="1"] .motion-split.is-visible .motion-split-line {
   transform: translateY(0);
   opacity: 1;
 }
