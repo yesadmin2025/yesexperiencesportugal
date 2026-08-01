@@ -22,10 +22,6 @@ process.env.NODE_OPTIONS =
 // executable when the caller explicitly asks for a system binary.
 const CHROMIUM_PATH = resolveChromiumExecutable();
 
-
-
-
-
 export default defineConfig({
   testDir: "./e2e",
   timeout: 60_000,

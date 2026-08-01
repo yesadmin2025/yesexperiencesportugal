@@ -276,6 +276,14 @@ export function SignaturePriceCard({
   );
   const selectedAddOnIds = effectiveIds;
   const [pendingAddOnId, setPendingAddOnId] = useState<string | null>(null);
+  // Shimmer timer — cleared on unmount so no setState fires after teardown.
+  const pendingTimerRef = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (pendingTimerRef.current !== null) window.clearTimeout(pendingTimerRef.current);
+    },
+    [],
+  );
   const MAX_ADDONS = 3;
   const atCap = selectedAddOnIds.length >= MAX_ADDONS;
   const selectedAddOns = useMemo(
@@ -385,7 +393,11 @@ export function SignaturePriceCard({
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
     setPendingAddOnId(id);
-    window.setTimeout(() => setPendingAddOnId(null), 180);
+    if (pendingTimerRef.current !== null) window.clearTimeout(pendingTimerRef.current);
+    pendingTimerRef.current = window.setTimeout(() => {
+      pendingTimerRef.current = null;
+      setPendingAddOnId(null);
+    }, 180);
   };
 
   // Real per-pax (Viator tier) resolution. When the tour has tier data AND

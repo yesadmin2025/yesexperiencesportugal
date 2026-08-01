@@ -45,7 +45,7 @@ import {
 import { TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR, TAILOR_LUNCH_SUPPLEMENT_EUR } from "@/config/pricing";
 
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
-import { CANCELLATION_SHORT } from "@/config/business-nap";
+import { CANCELLATION } from "@/config/business-nap";
 import { resolveClientIncludedItems } from "@/lib/checkout/inclusions";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import { hasCompleteJourneyPricing } from "@/lib/checkout/journeyDisplay";
@@ -1797,7 +1797,7 @@ function TailorPage() {
                     <Lock size={10} /> Secure checkout
                   </p>
                   <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center leading-relaxed">
-                    {CANCELLATION_SHORT}
+                    {CANCELLATION.custom.en}
                   </p>
                 </div>
               </div>

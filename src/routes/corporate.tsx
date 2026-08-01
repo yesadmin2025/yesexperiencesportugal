@@ -398,7 +398,7 @@ function CorporatePage() {
             </Link>
             , and company celebrations can borrow from our{" "}
             <Link
-              to="/moments"
+              to="/proposal-in-portugal"
               className="underline decoration-[color:var(--gold)] underline-offset-4 text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"
             >
               private celebration moments
