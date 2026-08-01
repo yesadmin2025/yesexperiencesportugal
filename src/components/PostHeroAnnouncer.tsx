@@ -56,6 +56,10 @@ export function PostHeroAnnouncer() {
   return (
     <div
       role="status"
+      // Stable hook: the page has several polite live regions (currency,
+      // toasts); tests must target this one unambiguously.
+      data-post-hero-announcer="true"
+
       aria-live="polite"
       aria-atomic="true"
       // sr-only — visually hidden but available to assistive tech.

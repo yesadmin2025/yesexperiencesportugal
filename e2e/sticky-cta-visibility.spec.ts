@@ -1,4 +1,5 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
+import { acceptCookiesBeforeLoad } from "./consent-helpers";
 
 /**
  * E2E coverage for the post-hero sticky CTA visibility contract.
@@ -27,8 +28,11 @@ const IDLE_SETTLE_MS = SCROLL_IDLE_MS + 180;
 function stickyBar(page: Page): Locator {
   // The inner Link has a stable aria-label; we go up to the wrapper
   // div that owns the visibility transform + aria-hidden.
+  // While gated out the bar carries aria-hidden + inert, so the button is
+  // absent from the accessibility tree — role queries cannot find it. Use
+  // the stable data attributes, which work in both states.
   return page
-    .getByRole("button", { name: "Start your experience — choose how to begin" })
+    .locator('button[data-cta="say_yes_open"][data-cta-surface="mobile_sticky"]')
     .locator("xpath=ancestor::div[contains(@class,'fixed')][1]");
 }
 
@@ -77,7 +81,14 @@ async function scrollOverTime(page: Page, targetY: number, durationMs: number) {
 }
 
 test.describe("Sticky CTA — post-hero visibility contract", () => {
+  // The bar is `lg:hidden` — a mobile/tablet affordance only.
+  test.skip(
+    ({ viewport }) => (viewport?.width ?? 0) >= 1024,
+    "Sticky CTA is intentionally hidden from the lg breakpoint up.",
+  );
+
   test.beforeEach(async ({ page }) => {
+    await acceptCookiesBeforeLoad(page);
     await page.goto("/");
     // Wait until the bar is at least mounted so locator queries don't
     // race the hero animation cascade.
