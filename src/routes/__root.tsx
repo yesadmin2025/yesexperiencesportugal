@@ -21,6 +21,7 @@ import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
 import { RouteFade } from "@/components/motion/RouteFade";
+import { pauseOffscreenLoops } from "@/lib/motion/pauseOffscreenLoops";
 import { Scene } from "@/components/motion/Scene";
 import { installAnalyticsAttrs } from "@/lib/analytics";
 import { setAnalyticsLocale } from "@/lib/analytics-events";
@@ -294,6 +295,8 @@ function RootComponent() {
     // Re-check UTMs on client-side navigation (SPA route changes).
     captureUtmsFromLocation();
   }, [locale, pathname]);
+  // Pause long Ken Burns / crossfade loops while they are offscreen.
+  useEffect(() => pauseOffscreenLoops(), [pathname]);
 
   // Single QueryClient per browser session — keeps SignaturePriceCard and
 

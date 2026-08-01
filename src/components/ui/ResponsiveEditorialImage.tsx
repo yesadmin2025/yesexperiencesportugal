@@ -28,6 +28,13 @@ export function ResponsiveEditorialImage({
   pictureClassName = "block h-full w-full",
   decorative = false,
 }: Props) {
+  // Batch 4: reserve layout space before the bytes arrive. When intrinsic
+  // dimensions are known we hand the browser an aspect-ratio so no CLS is
+  // possible even inside a flexible editorial frame; crops/focal points are
+  // untouched (object-fit/object-position still drive the visual).
+  const reserve =
+    image.width && image.height ? { aspectRatio: `${image.width} / ${image.height}` } : undefined;
+
   return (
     <picture className={pictureClassName} aria-hidden={decorative ? "true" : undefined}>
       {image.avifSrcSet ? (
@@ -40,13 +47,20 @@ export function ResponsiveEditorialImage({
         src={image.src}
         alt={decorative ? "" : image.alt}
         loading={priority ? "eager" : "lazy"}
-        decoding="async"
+        decoding={priority ? "sync" : "async"}
         fetchPriority={priority ? "high" : "auto"}
         width={image.width}
         height={image.height}
         sizes={sizes}
         className={className}
-        style={image.objectPosition ? { objectPosition: image.objectPosition } : undefined}
+        style={
+          image.objectPosition || reserve
+            ? {
+                ...(reserve ?? {}),
+                ...(image.objectPosition ? { objectPosition: image.objectPosition } : {}),
+              }
+            : undefined
+        }
       />
     </picture>
   );
@@ -121,9 +135,12 @@ export function CinematicEditorialImage({
         className={imageClassName}
         pictureClassName="cinematic-editorial__frame cinematic-editorial__frame--primary"
       />
+      {/* Batch 4: the crossfade frame is decorative and never the LCP —
+          it must stay lazy even on a priority block so it never competes
+          with the primary image for bandwidth. */}
       <ResponsiveEditorialImage
         image={image.alternate}
-        priority={priority}
+        priority={false}
         sizes={sizes}
         className={imageClassName}
         pictureClassName="cinematic-editorial__frame cinematic-editorial__frame--secondary"

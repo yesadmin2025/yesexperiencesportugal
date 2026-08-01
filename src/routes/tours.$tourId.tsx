@@ -126,7 +126,7 @@ export const Route = createFileRoute("/tours/$tourId")({
 
       links: [
         { rel: "canonical", href: url },
-        { rel: "preload", as: "image", href: lcpHref, fetchpriority: "high" },
+        { rel: "preload", as: "image", href: lcpHref, fetchPriority: "high" },
       ],
       scripts: [
         jsonLdScript(
