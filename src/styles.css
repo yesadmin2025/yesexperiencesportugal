@@ -77,10 +77,10 @@
      Reference from CTA/tap/reveal styles so the whole system moves
      on one predictable rhythm. Reduced-motion overrides these to 0ms
      via the existing @media (prefers-reduced-motion: reduce) blocks. */
-  --dur-tap: 140ms;      /* press feedback, tap release */
-  --dur-quick: 200ms;    /* color/opacity hover swap */
-  --dur-base: 320ms;     /* arrow slide, small translateY */
-  --dur-slow: 560ms;     /* section entry, curtain */
+  --dur-tap: 140ms; /* press feedback, tap release */
+  --dur-quick: 200ms; /* color/opacity hover swap */
+  --dur-base: 320ms; /* arrow slide, small translateY */
+  --dur-slow: 560ms; /* section entry, curtain */
   --ease-snap: cubic-bezier(0.34, 1.2, 0.64, 1); /* muted tap release */
 
   /* Scene motion tier — layered on top of the base scale, single source of
@@ -88,19 +88,19 @@
      live only in CSS; TS references these via var(--…) strings. Reduced-
      motion removes all transform/clip-path/scale — see the reduced-motion
      block at the bottom of this file. */
-  --dur-text: var(--dur-slow);       /* text reveals — aliases 560ms */
-  --dur-image: 780ms;                /* editorial image mask reveals */
-  --dur-scene: 1000ms;               /* section transitions */
-  --dur-cinematic: 1500ms;           /* hero cinematic movements */
-  --stagger-sm: 80ms;                /* small related elements */
-  --stagger-md: 130ms;               /* cards, chapter items */
+  --dur-text: var(--dur-slow); /* text reveals — aliases 560ms */
+  --dur-image: 780ms; /* editorial image mask reveals */
+  --dur-scene: 1000ms; /* section transitions */
+  --dur-cinematic: 1500ms; /* hero cinematic movements */
+  --stagger-sm: 80ms; /* small related elements */
+  --stagger-md: 130ms; /* cards, chapter items */
   --ease-scene: cubic-bezier(0.22, 1, 0.36, 1); /* smooth premium out */
 
   /* Brand — locked palette, used site-wide. */
-  --teal: #295B61;
-  --teal-2: #2A7C82;
-  --gold: #C9A96A;
-  --gold-soft: #E1CFA6;
+  --teal: #295b61;
+  --teal-2: #2a7c82;
+  --gold: #c9a96a;
+  --gold-soft: #e1cfa6;
   /* Refined champagne accents — additive, do NOT replace --gold/--gold-soft.
      --gold-warm: a touch warmer, used for hover/active sheen so the accent
      doesn't read grey on ivory. --gold-deep: deeper rim for thin rules and
@@ -110,14 +110,14 @@
   /* --gold-ink: deepest gold, AA-safe on ivory/sand for functional text
      (rating numerics, small labels, links). Never use for large decorative
      accents — that stays --gold / --gold-warm. */
-  --gold-ink: #8A611F;
-  --ivory: #FAF8F3;
-  --sand: #F4EFE7;
-  --charcoal: #2E2E2E;
+  --gold-ink: #8a611f;
+  --ivory: #faf8f3;
+  --sand: #f4efe7;
+  --charcoal: #2e2e2e;
   /* Secondary text — was #5A5A5A, deepened to #555555 so secondary copy on
      mobile clears 7:1 contrast on ivory and never reads as washed grey. */
   --charcoal-soft: #555555;
-  --charcoal-deep: #1F1F1F;
+  --charcoal-deep: #1f1f1f;
 
   /* ─────────────────────────────────────────────────────────────
      HERO SCRIM TOKENS — single source of truth for the dark
@@ -1000,8 +1000,14 @@
      Amplitude kept small so it never crosses into fidgety.
      ──────────────────────────────────────────────────────────── */
   @keyframes ctaArrowIdleNudge {
-    0%, 60%, 100% { transform: translateX(0); }
-    30% { transform: translateX(3px); }
+    0%,
+    60%,
+    100% {
+      transform: translateX(0);
+    }
+    30% {
+      transform: translateX(3px);
+    }
   }
   .cta-arrow-idle {
     animation: ctaArrowIdleNudge 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
@@ -1012,7 +1018,9 @@
     animation: none;
   }
   @media (prefers-reduced-motion: reduce) {
-    .cta-arrow-idle { animation: none !important; }
+    .cta-arrow-idle {
+      animation: none !important;
+    }
   }
 
   /* Shimmer sweep for BookingCtaSkeleton — lightweight, brand-ivory wash. */
@@ -3205,7 +3213,6 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade-up-sm"] {
     transition: none !important;
   }
 }
-
 
 /* ─────────────────────────────────────────────────────────────
    EDITORIAL CARD — unified premium hover for every card on the
@@ -6373,16 +6380,32 @@ html {
    Usage: <ul data-reveal-stagger> with children carrying .reveal-stagger.
    Homepage .home-energy keeps its bespoke sequencing; this is the
    calm fallback for the rest of the site (steps of 70ms, capped). */
-[data-reveal-stagger] > .reveal-stagger:nth-child(1) { animation-delay: 0ms; }
-[data-reveal-stagger] > .reveal-stagger:nth-child(2) { animation-delay: 70ms; }
-[data-reveal-stagger] > .reveal-stagger:nth-child(3) { animation-delay: 140ms; }
-[data-reveal-stagger] > .reveal-stagger:nth-child(4) { animation-delay: 210ms; }
-[data-reveal-stagger] > .reveal-stagger:nth-child(5) { animation-delay: 280ms; }
-[data-reveal-stagger] > .reveal-stagger:nth-child(6) { animation-delay: 340ms; }
-[data-reveal-stagger] > .reveal-stagger:nth-child(n+7) { animation-delay: 380ms; }
+[data-reveal-stagger] > .reveal-stagger:nth-child(1) {
+  animation-delay: 0ms;
+}
+[data-reveal-stagger] > .reveal-stagger:nth-child(2) {
+  animation-delay: 70ms;
+}
+[data-reveal-stagger] > .reveal-stagger:nth-child(3) {
+  animation-delay: 140ms;
+}
+[data-reveal-stagger] > .reveal-stagger:nth-child(4) {
+  animation-delay: 210ms;
+}
+[data-reveal-stagger] > .reveal-stagger:nth-child(5) {
+  animation-delay: 280ms;
+}
+[data-reveal-stagger] > .reveal-stagger:nth-child(6) {
+  animation-delay: 340ms;
+}
+[data-reveal-stagger] > .reveal-stagger:nth-child(n + 7) {
+  animation-delay: 380ms;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal-stagger] > .reveal-stagger { animation-delay: 0ms !important; }
+  [data-reveal-stagger] > .reveal-stagger {
+    animation-delay: 0ms !important;
+  }
 }
 
 /* Editorial shimmer — calm text/skeleton placeholder for loading
@@ -6412,8 +6435,12 @@ html {
 }
 
 @keyframes editorialShimmerSweep {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -6470,7 +6497,6 @@ html {
   }
 }
 
-
 /* prose-longform — 68ch reading measure for long articles / about copy.
    Referenced by /about and /local-stories/*; keeps body copy inside the
    optimal 60–75 character measure without hand-rolling per-page widths. */
@@ -6499,8 +6525,6 @@ html {
   text-wrap: balance;
 }
 
-
-
 /* Restrained editorial photography: a calm settle on reveal and a very
    small pointer hover. No perpetual Ken Burns movement. */
 .editorial-photo-motion {
@@ -6522,7 +6546,10 @@ html {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .editorial-photo-motion { transform: none; transition: none; }
+  .editorial-photo-motion {
+    transform: none;
+    transition: none;
+  }
 }
 
 /* Existing service-block photography: one restrained settle and a small
@@ -6560,16 +6587,28 @@ html {
    disabled for prefers-reduced-motion.
    ============================================================ */
 @keyframes ken-burns-a {
-  0%   { transform: scale(1.02) translate3d(0%, 0%, 0); }
-  100% { transform: scale(1.12) translate3d(-2%, -1.5%, 0); }
+  0% {
+    transform: scale(1.02) translate3d(0%, 0%, 0);
+  }
+  100% {
+    transform: scale(1.12) translate3d(-2%, -1.5%, 0);
+  }
 }
 @keyframes ken-burns-b {
-  0%   { transform: scale(1.03) translate3d(1.5%, 0%, 0); }
-  100% { transform: scale(1.11) translate3d(-1.5%, 2%, 0); }
+  0% {
+    transform: scale(1.03) translate3d(1.5%, 0%, 0);
+  }
+  100% {
+    transform: scale(1.11) translate3d(-1.5%, 2%, 0);
+  }
 }
 @keyframes ken-burns-c {
-  0%   { transform: scale(1.02) translate3d(-1.5%, 1.5%, 0); }
-  100% { transform: scale(1.10) translate3d(2%, -1.5%, 0); }
+  0% {
+    transform: scale(1.02) translate3d(-1.5%, 1.5%, 0);
+  }
+  100% {
+    transform: scale(1.1) translate3d(2%, -1.5%, 0);
+  }
 }
 .ken-burns-slow {
   will-change: transform;
@@ -6577,31 +6616,90 @@ html {
   animation: ken-burns-a 24s ease-in-out infinite alternate;
   filter: saturate(0.98) contrast(1.02);
 }
-.ken-burns-slow--b { animation-name: ken-burns-b; animation-duration: 26s; animation-delay: -6s; }
-.ken-burns-slow--c { animation-name: ken-burns-c; animation-duration: 22s; animation-delay: -12s; }
-.ken-burns-slow.kb-paused { animation-play-state: paused; }
+.ken-burns-slow--b {
+  animation-name: ken-burns-b;
+  animation-duration: 26s;
+  animation-delay: -6s;
+}
+.ken-burns-slow--c {
+  animation-name: ken-burns-c;
+  animation-duration: 22s;
+  animation-delay: -12s;
+}
+.ken-burns-slow.kb-paused {
+  animation-play-state: paused;
+}
 
 @keyframes cinematic-primary {
-  0%, 34% { opacity: 1; transform: scale(1.02) translate3d(0, 0, 0); }
-  50%, 84% { opacity: 0; transform: scale(1.12) translate3d(-2.5%, -1.5%, 0); }
-  100% { opacity: 1; transform: scale(1.14) translate3d(-3%, -2%, 0); }
+  0%,
+  34% {
+    opacity: 1;
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+  50%,
+  84% {
+    opacity: 0;
+    transform: scale(1.12) translate3d(-2.5%, -1.5%, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.14) translate3d(-3%, -2%, 0);
+  }
 }
 @keyframes cinematic-secondary {
-  0%, 34% { opacity: 0; transform: scale(1.13) translate3d(2.5%, 1.5%, 0); }
-  50%, 84% { opacity: 1; transform: scale(1.03) translate3d(0, 0, 0); }
-  100% { opacity: 0; transform: scale(1.02) translate3d(-1%, 0, 0); }
+  0%,
+  34% {
+    opacity: 0;
+    transform: scale(1.13) translate3d(2.5%, 1.5%, 0);
+  }
+  50%,
+  84% {
+    opacity: 1;
+    transform: scale(1.03) translate3d(0, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.02) translate3d(-1%, 0, 0);
+  }
 }
-.cinematic-editorial { position: relative; overflow: hidden; isolation: isolate; background: var(--sand); }
-.cinematic-editorial__frame { position: absolute; inset: 0; display: block; width: 100%; height: 100%; will-change: transform, opacity; backface-visibility: hidden; transform: translateZ(0); }
-.cinematic-editorial__frame img { filter: saturate(0.98) contrast(1.03); image-rendering: -webkit-optimize-contrast; }
-.cinematic-editorial__frame--secondary { opacity: 0; }
+.cinematic-editorial {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--sand);
+}
+.cinematic-editorial__frame {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+.cinematic-editorial__frame img {
+  filter: saturate(0.98) contrast(1.03);
+  image-rendering: -webkit-optimize-contrast;
+}
+.cinematic-editorial__frame--secondary {
+  opacity: 0;
+}
 /* Animation only begins after the primary image has decoded (is-ready) AND
    the block is on-screen (is-playing) — prevents blur/pixel-race on iPhone
    high-DPR and guarantees the crossfade sequence is actually seen. */
-.cinematic-editorial.is-playing.is-ready .cinematic-editorial__frame--primary { animation: cinematic-primary 20s cubic-bezier(0.42, 0, 0.22, 1) infinite; }
-.cinematic-editorial.is-playing.is-ready .cinematic-editorial__frame--secondary { animation: cinematic-secondary 20s cubic-bezier(0.42, 0, 0.22, 1) infinite; }
-.cinematic-editorial--b.is-playing.is-ready .cinematic-editorial__frame { animation-delay: -5s !important; }
-.cinematic-editorial--c.is-playing.is-ready .cinematic-editorial__frame { animation-delay: -10s !important; }
+.cinematic-editorial.is-playing.is-ready .cinematic-editorial__frame--primary {
+  animation: cinematic-primary 20s cubic-bezier(0.42, 0, 0.22, 1) infinite;
+}
+.cinematic-editorial.is-playing.is-ready .cinematic-editorial__frame--secondary {
+  animation: cinematic-secondary 20s cubic-bezier(0.42, 0, 0.22, 1) infinite;
+}
+.cinematic-editorial--b.is-playing.is-ready .cinematic-editorial__frame {
+  animation-delay: -5s !important;
+}
+.cinematic-editorial--c.is-playing.is-ready .cinematic-editorial__frame {
+  animation-delay: -10s !important;
+}
 @media (prefers-reduced-motion: reduce) {
   .ken-burns-slow,
   .ken-burns-slow--b,
@@ -6609,16 +6707,21 @@ html {
     animation: none !important;
     transform: none !important;
   }
-  .cinematic-editorial__frame { animation: none !important; transform: none !important; }
-  .cinematic-editorial__frame--primary { opacity: 1 !important; }
-  .cinematic-editorial__frame--secondary { opacity: 0 !important; }
+  .cinematic-editorial__frame {
+    animation: none !important;
+    transform: none !important;
+  }
+  .cinematic-editorial__frame--primary {
+    opacity: 1 !important;
+  }
+  .cinematic-editorial__frame--secondary {
+    opacity: 0 !important;
+  }
 }
-
-
 
 /* Local Stories: ensure eyebrow/accent gold text meets AA contrast on ivory/sand. */
 .local-stories-scope .text-\[color\:var\(--gold-warm\)\] {
-  color: #8A611F !important;
+  color: #8a611f !important;
 }
 
 /* ============================================================
@@ -6669,19 +6772,41 @@ html {
 }
 
 /* Section-level stagger — title first, then body, then CTA. */
-[data-scene="in"] .scene-title  { transition-delay: 0ms; }
-[data-scene="in"] .scene-body   { transition-delay: var(--stagger-md); }
-[data-scene="in"] .scene-cta    { transition-delay: calc(var(--stagger-md) * 2); }
+[data-scene="in"] .scene-title {
+  transition-delay: 0ms;
+}
+[data-scene="in"] .scene-body {
+  transition-delay: var(--stagger-md);
+}
+[data-scene="in"] .scene-cta {
+  transition-delay: calc(var(--stagger-md) * 2);
+}
 
 /* Card / list stagger — up to 8 items. */
-[data-scene="in"] .scene-item:nth-child(1)  { transition-delay: 0ms; }
-[data-scene="in"] .scene-item:nth-child(2)  { transition-delay: calc(var(--stagger-md) * 1); }
-[data-scene="in"] .scene-item:nth-child(3)  { transition-delay: calc(var(--stagger-md) * 2); }
-[data-scene="in"] .scene-item:nth-child(4)  { transition-delay: calc(var(--stagger-md) * 3); }
-[data-scene="in"] .scene-item:nth-child(5)  { transition-delay: calc(var(--stagger-md) * 4); }
-[data-scene="in"] .scene-item:nth-child(6)  { transition-delay: calc(var(--stagger-md) * 5); }
-[data-scene="in"] .scene-item:nth-child(7)  { transition-delay: calc(var(--stagger-md) * 6); }
-[data-scene="in"] .scene-item:nth-child(8)  { transition-delay: calc(var(--stagger-md) * 7); }
+[data-scene="in"] .scene-item:nth-child(1) {
+  transition-delay: 0ms;
+}
+[data-scene="in"] .scene-item:nth-child(2) {
+  transition-delay: calc(var(--stagger-md) * 1);
+}
+[data-scene="in"] .scene-item:nth-child(3) {
+  transition-delay: calc(var(--stagger-md) * 2);
+}
+[data-scene="in"] .scene-item:nth-child(4) {
+  transition-delay: calc(var(--stagger-md) * 3);
+}
+[data-scene="in"] .scene-item:nth-child(5) {
+  transition-delay: calc(var(--stagger-md) * 4);
+}
+[data-scene="in"] .scene-item:nth-child(6) {
+  transition-delay: calc(var(--stagger-md) * 5);
+}
+[data-scene="in"] .scene-item:nth-child(7) {
+  transition-delay: calc(var(--stagger-md) * 6);
+}
+[data-scene="in"] .scene-item:nth-child(8) {
+  transition-delay: calc(var(--stagger-md) * 7);
+}
 
 /* RevealImage — clip-path mask reveal, with opacity fallback. */
 [data-reveal-image] {
@@ -6732,18 +6857,27 @@ html {
   animation: routeFadeIn 160ms var(--ease-scene) both;
 }
 @keyframes routeFadeIn {
-  from { opacity: 0.85; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0.85;
+  }
+  to {
+    opacity: 1;
+  }
 }
-
 
 /* Booking confirmed check icon — one-shot scale-in, 240ms, no bounce. */
 .motion-check-in {
   animation: motionCheckIn 240ms var(--ease-scene) both;
 }
 @keyframes motionCheckIn {
-  from { opacity: 0; transform: scale(0.7); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* ── Reduced motion — one unambiguous rule ────────────────── */
@@ -6781,7 +6915,6 @@ html {
   }
 }
 
-
 /* ============================================================
    Motion v3 — editorial primitives
    ============================================================ */
@@ -6804,7 +6937,10 @@ html {
 }
 
 /* SplitLines — line-by-line rise, mask overflow so descenders don't clip UI. */
-.motion-split { display: block; overflow: hidden; }
+.motion-split {
+  display: block;
+  overflow: hidden;
+}
 .motion-split-line {
   display: block;
   transform: translateY(110%);
@@ -6827,7 +6963,9 @@ html {
   transition: transform var(--motion-dur-rule) var(--motion-ease-editorial);
   will-change: transform;
 }
-.motion-rule.is-visible { transform: scaleX(1); }
+.motion-rule.is-visible {
+  transform: scaleX(1);
+}
 
 /* ParallaxLayer — smooth translate on scroll, controlled by JS via --parallax-y. */
 .motion-parallax {
@@ -6844,7 +6982,10 @@ html {
 
 @media (max-width: 767.98px) {
   .motion-magnetic,
-  .motion-parallax { transform: none !important; will-change: auto !important; }
+  .motion-parallax {
+    transform: none !important;
+    will-change: auto !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -6957,7 +7098,6 @@ html {
   animation: none !important;
   transform: none !important;
 }
-
 
 /* ────────────────────────────────────────────────────────────────
    Hero CTA fit guard (label clipping fix)
