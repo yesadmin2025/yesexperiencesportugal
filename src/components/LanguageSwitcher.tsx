@@ -96,7 +96,7 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
                 title={t("lang.pt_coming_soon")}
                 data-locale-option={loc}
                 className={cn(
-                  "tap min-h-[32px] min-w-[32px] px-1 cursor-not-allowed rounded-sm text-[color:var(--charcoal-soft)] opacity-40",
+                  "tap min-h-[44px] min-w-[44px] px-1 inline-flex items-center justify-center cursor-not-allowed rounded-sm text-[color:var(--charcoal-soft)] opacity-40",
                   variant === "footer" && "text-[color:var(--ivory)]/60",
                 )}
               >
@@ -122,7 +122,7 @@ export function LanguageSwitcher({ variant = "header", className }: LanguageSwit
               hrefLang={loc}
               data-locale-option={loc}
               className={cn(
-                "tap min-h-[32px] min-w-[32px] px-1 inline-flex items-center justify-center rounded-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]",
+                "tap min-h-[44px] min-w-[44px] px-1 inline-flex items-center justify-center rounded-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]",
                 variant === "footer" && "focus-visible:ring-offset-[color:var(--charcoal)]",
                 isActive
                   ? variant === "footer"

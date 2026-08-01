@@ -244,16 +244,16 @@ function ExperiencesPage() {
                     )}
                   </div>
 
-                  {/* Dual CTAs — Reserve (confirm as designed) +
-                      Tailor this day (adjust details inside this same
-                      Signature, never a different tour). */}
-                  <div className="mt-5 flex flex-col xs:flex-row gap-2.5">
+                  {/* One filled primary (Reserve) + one subordinate
+                      hairline link (Tailor this day) so the card never
+                      presents two competing actions. Tailor still adjusts
+                      details inside this same Signature, never another tour. */}
+                  <div className="mt-5 flex flex-col gap-2.5">
                     <CtaButton
                       to="/tours/$tourId"
                       params={{ tourId: t.id }}
                       variant="primary"
                       size="sm"
-                      className="flex-1"
                       aria-label={`Reserve ${t.title}`}
                     >
                       Check availability & reserve
@@ -261,9 +261,7 @@ function ExperiencesPage() {
                     <CtaButton
                       to="/tours/$tourId/tailor"
                       params={{ tourId: t.id }}
-                      variant="ghost"
-                      size="sm"
-                      className="flex-1"
+                      variant="hairline"
                       aria-label={`Tailor ${t.title}`}
                     >
                       Tailor this day

@@ -401,30 +401,29 @@ function TourHero({
           </div>
 
           <div className="mt-6 flex flex-col items-start gap-4">
-            <a
+            <CtaButton
               href="#book"
+              variant="primary"
+              size="md"
+              className="w-full sm:w-auto"
               data-analytics="signature_reserve_click"
               data-analytics-placement="hero"
               data-analytics-experience-id={tour.id}
               data-analytics-experience-type="signature"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-8 py-4 text-sm tracking-wide transition-all min-h-[52px]"
             >
-              <Sparkles size={14} /> Check availability & reserve
-            </a>
-            <Link
+              Check availability &amp; reserve
+            </CtaButton>
+            <CtaButton
               to="/tours/$tourId/tailor"
               params={{ tourId: tour.id }}
+              variant="hairline"
               data-analytics="signature_tailor_click"
               data-analytics-placement="hero"
               data-analytics-experience-id={tour.id}
               data-analytics-experience-type="signature"
-              className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] hover:text-[color:var(--gold)] transition-colors min-h-[44px]"
             >
-              Tailor this day{" "}
-              <span aria-hidden="true" className="text-[color:var(--gold)]">
-                →
-              </span>
-            </Link>
+              Tailor this day
+            </CtaButton>
           </div>
         </div>
       </section>

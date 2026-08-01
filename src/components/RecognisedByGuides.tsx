@@ -115,7 +115,7 @@ export function RecognisedByGuides({
                   href={m.articleUrl}
                   target="_blank"
                   rel="noopener nofollow"
-                  className="text-[color:var(--teal)] hover:text-[color:var(--gold)] transition-colors"
+                  className="inline-flex min-h-[44px] items-center text-[color:var(--teal)] hover:text-[color:var(--gold-ink)] transition-colors"
                   aria-label={`Read the article on ${m.sourceName}`}
                 >
                   Read article →
