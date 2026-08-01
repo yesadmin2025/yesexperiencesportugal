@@ -1,5 +1,6 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
 import { acceptCookiesBeforeLoad } from "./consent-helpers";
+import { settleScrollRestoration } from "./scroll-helpers";
 
 /**
  * E2E coverage for the post-hero sticky CTA *content* contract.
@@ -117,6 +118,9 @@ test.describe("Sticky CTA — copy, choice sheet, and announcement contract", ()
     await acceptCookiesBeforeLoad(page);
     await page.goto("/");
     await stickyBar(page).waitFor({ state: "attached" });
+    // Router scroll restoration lands after hydration and would revert any
+    // scroll we perform before it — wait it out, then start from the top.
+    await settleScrollRestoration(page);
   });
 
 
@@ -251,6 +255,14 @@ test.describe("Sticky CTA — copy, choice sheet, and announcement contract", ()
 
   // Loading state still applies once a *choice* is taken.
   test("the chosen route enters a loading state and prevents double-tap", async ({ page }) => {
+    // Hold the destination route's chunk so the in-flight state is
+    // observable. Without this the client-side navigation completes in a
+    // frame or two and the sticky bar unmounts with the homepage layout.
+    await page.route(/studio-v3/, async (route) => {
+      await new Promise((r) => setTimeout(r, 3_000));
+      await route.continue();
+    });
+
     await revealBar(page);
 
     await ctaButton(page).click();
@@ -259,11 +271,14 @@ test.describe("Sticky CTA — copy, choice sheet, and announcement contract", ()
 
     await design.click({ noWaitAfter: true });
 
-    // The bar's primary CTA reflects the in-flight submission.
-    const cta = ctaButton(page);
+    // The bar's primary CTA reflects the in-flight submission. Query it
+    // structurally: while submitting it carries aria-disabled, so a role
+    // query would race the attribute flip.
+    const cta = ctaElement(page);
     await expect(cta).toContainText(BUTTON_LOADING);
     await expect(cta).toHaveAttribute("aria-busy", "true");
     await expect(cta).toHaveAttribute("aria-disabled", "true");
     await expect(cta).toHaveAttribute("data-state", "submitting");
   });
+
 });

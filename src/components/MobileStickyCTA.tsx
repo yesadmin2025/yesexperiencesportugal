@@ -96,6 +96,10 @@ export function MobileStickyCTA() {
   // two navigations / two analytics events.
   const [submitting, setSubmitting] = useState(false);
   const submittingRef = useRef(false);
+  /** When the current submission started — used to enforce a minimum
+   * visible loading state so the CTA never flickers "Opening…" for a
+   * single frame before the router reports it is pending. */
+  const submitStartedAtRef = useRef(0);
 
   // Choice-sheet visibility. The bar's primary "Say YES" button toggles
   // this; the sheet itself is the surface that funnels into the two
@@ -112,11 +116,19 @@ export function MobileStickyCTA() {
   useEffect(() => {
     if (!submitting) return;
     if (!isRouterLoading) {
-      const t = window.setTimeout(() => {
-        submittingRef.current = false;
-        setSubmitting(false);
-        setSheetOpen(false);
-      }, 50);
+      // Hold the loading state for a minimum beat: the router can still be
+      // resolving the destination chunk when this effect first runs, and
+      // releasing instantly makes the CTA flash back to its idle label.
+      const MIN_VISIBLE_MS = 450;
+      const elapsed = Date.now() - submitStartedAtRef.current;
+      const t = window.setTimeout(
+        () => {
+          submittingRef.current = false;
+          setSubmitting(false);
+          setSheetOpen(false);
+        },
+        Math.max(50, MIN_VISIBLE_MS - elapsed),
+      );
       return () => window.clearTimeout(t);
     }
     const safety = window.setTimeout(() => {
@@ -193,6 +205,7 @@ export function MobileStickyCTA() {
         return;
       }
       submittingRef.current = true;
+      submitStartedAtRef.current = Date.now();
       setSubmitting(true);
       trackIntent(buildDetail(cta));
     };

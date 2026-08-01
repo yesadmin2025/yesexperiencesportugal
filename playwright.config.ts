@@ -2,6 +2,15 @@ import { register } from "node:module";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
+// Pin PLAYWRIGHT_BROWSERS_PATH before Playwright resolves any browser.
+// Importing has the side effect of setting the env var for this process
+// and every worker it spawns.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+import { pinBrowsersPath, resolveChromiumExecutable } from "./scripts/playwright-env.mjs";
+
+pinBrowsersPath();
+const CHROMIUM_PATH = resolveChromiumExecutable();
+
 
 // Specs import real app modules, which in turn import images. Node can't parse
 // a JPEG as JavaScript, so we install a stub hook that resolves asset imports
@@ -50,11 +59,12 @@ export default defineConfig({
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:8080",
     trace: "retain-on-failure",
     video: "retain-on-failure",
-    // Allow overriding the Chromium executable (useful in sandboxes
-    // where the Playwright-bundled headless shell is missing system libs).
-    launchOptions: process.env.PLAYWRIGHT_CHROMIUM_PATH
-      ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
-      : undefined,
+    // Prefer a Chromium that can actually launch on this host. On CI this
+    // resolves to undefined and Playwright uses its own download; in nix-based
+    // sandboxes it picks the library-patched build instead of the downloaded
+    // one (which fails on missing libglib).
+    launchOptions: CHROMIUM_PATH ? { executablePath: CHROMIUM_PATH } : undefined,
+
   },
   // Snapshot config — visual regression tests. A 0.2% pixel-diff budget
   // tolerates sub-pixel font rendering jitter without hiding real layout

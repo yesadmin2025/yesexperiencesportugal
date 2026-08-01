@@ -1,5 +1,6 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
 import { acceptCookiesBeforeLoad } from "./consent-helpers";
+import { settleScrollRestoration } from "./scroll-helpers";
 
 /**
  * E2E coverage for the post-hero sticky CTA visibility contract.
@@ -40,18 +41,27 @@ function stickyBar(page: Page): Locator {
 async function expectBarHidden(page: Page) {
   const bar = stickyBar(page);
   await expect(bar).toHaveAttribute("aria-hidden", "true");
-  // Defense-in-depth — opacity 0 means it's also visually invisible
-  // even if a transition is in flight.
-  const opacity = await bar.evaluate((el) => getComputedStyle(el).opacity);
-  expect(parseFloat(opacity)).toBeLessThanOrEqual(0.05);
+  // Defense-in-depth — opacity 0 means it's also visually invisible.
+  // The hide is a 700ms transition, so poll instead of sampling one frame.
+  await expect
+    .poll(async () => parseFloat(await bar.evaluate((el) => getComputedStyle(el).opacity)), {
+      timeout: 3_000,
+    })
+    .toBeLessThanOrEqual(0.05);
 }
 
 async function expectBarVisible(page: Page) {
   const bar = stickyBar(page);
   await expect(bar).toHaveAttribute("aria-hidden", "false");
   await expect(bar).toBeVisible();
-  const opacity = await bar.evaluate((el) => getComputedStyle(el).opacity);
-  expect(parseFloat(opacity)).toBeGreaterThan(0.95);
+  // The reveal is a 700ms opacity/transform transition — poll rather than
+  // sampling a single mid-flight frame.
+  await expect
+    .poll(
+      async () => parseFloat(await bar.evaluate((el) => getComputedStyle(el).opacity)),
+      { timeout: 3_000 },
+    )
+    .toBeGreaterThan(0.95);
 }
 
 /**
@@ -93,6 +103,9 @@ test.describe("Sticky CTA — post-hero visibility contract", () => {
     // Wait until the bar is at least mounted so locator queries don't
     // race the hero animation cascade.
     await stickyBar(page).waitFor({ state: "attached" });
+    // Router scroll restoration lands after hydration and would revert any
+    // scroll we perform before it — wait it out, then start from the top.
+    await settleScrollRestoration(page);
   });
 
   test("hidden on initial load while inside the hero", async ({ page }) => {
@@ -185,12 +198,18 @@ test.describe("Sticky CTA — post-hero visibility contract", () => {
     //    sessionStorage flag persists across this navigation.
     await page.goto("/about");
     await stickyBar(page).waitFor({ state: "attached" });
+    // Router scroll restoration lands after hydration and would revert any
+    // scroll we perform before it — wait it out, then start from the top.
+    await settleScrollRestoration(page);
 
     // 3. Navigate back. The browser may serve from BFCache or do a
     //    fresh render — either way, the page lands at scrollY = 0
     //    inside the hero and the bar must NOT flash.
     await page.goBack();
     await stickyBar(page).waitFor({ state: "attached" });
+    // Router scroll restoration lands after hydration and would revert any
+    // scroll we perform before it — wait it out, then start from the top.
+    await settleScrollRestoration(page);
 
     // First frame after restore: hidden. Even though sessionStorage
     // says we passed the hero earlier, the current scrollY is in the
