@@ -22,8 +22,8 @@ export const Route = createFileRoute("/sitemap.xml")({
         // because they are blocked by robots.txt and should not be indexed. These include:
         // /admin/*, /auth, /booking-confirmed, /brand-qa, /builder, /checkout, /e2e, /email,
         // /hero-verify, /lovable, /preview-check, /qa, /s/, /i/, /studio-drift, /studio-v2,
-        // /typography-audit, /unsubscribe. /reviews (thin widget) and
-        // /portugal-travel-designer (301 → /multi-day) are also excluded.
+        // /typography-audit, /unsubscribe. /portugal-travel-designer
+        // (301 → /multi-day) is also excluded.
         // Static entries omit <lastmod> on purpose — a rolling "today" trains
         // crawlers to ignore the field. Dynamic DB posts keep their real
         // published_at.

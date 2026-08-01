@@ -55,7 +55,6 @@ const FORBIDDEN_PATHS = [
   "/unsubscribe",
   "/faq",
   "/moments",
-  "/reviews",
   "/arrabida-wine-tour",
   "/arrabida-day-trip-from-lisbon",
   "/alentejo-wine-tour-from-lisbon",
@@ -66,6 +65,7 @@ const FORBIDDEN_PATHS = [
 // Robots Disallow entries that MUST be present.
 const REQUIRED_DISALLOWS = [
   "/admin",
+  "/.lovable",
   "/auth",
   "/booking-confirmed",
   "/brand-qa",
