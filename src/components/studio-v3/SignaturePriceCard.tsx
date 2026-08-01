@@ -697,19 +697,46 @@ export function SignaturePriceCard({
                 bands.length > 0
                   ? (bands.find((b) => b.band === "adult")?.unitEur ?? priceEur)
                   : (perPersonDerived ?? priceEur);
+              const showParty = partyTotalEur != null && partyCount != null;
               return (
                 <>
+                  {showParty ? (
+                    <p
+                      data-testid="studio-v3-party-total"
+                      className="mt-1 text-[44px] sm:text-[52px] leading-none font-bold tabular-nums"
+                      style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+                    >
+                      €{partyTotalEur}
+                      <span
+                        className="mt-2 block text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                      >
+                        total for your group
+                      </span>
+                    </p>
+                  ) : null}
                   <p
                     data-testid="studio-v3-base-price"
                     data-eur={priceEur ?? ""}
                     data-per-pax-eur={perPersonDerived ?? ""}
                     data-per-pax-real={realPerPax?.real ? "true" : "false"}
-                    className="mt-1 text-[40px] leading-none font-bold tabular-nums"
-                    style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+                    className={
+                      showParty
+                        ? "mt-2.5 text-[16px] sm:text-[18px] leading-tight font-semibold tabular-nums"
+                        : "mt-1 text-[44px] sm:text-[52px] leading-none font-bold tabular-nums"
+                    }
+                    style={{
+                      fontFamily: showParty ? undefined : "var(--font-display)",
+                      color: showParty
+                        ? "color-mix(in oklab, var(--charcoal) 72%, transparent)"
+                        : "var(--charcoal)",
+                    }}
                   >
                     €{adultUnit}
                     <span
-                      className="ml-1.5 align-middle text-[13px] font-semibold uppercase tracking-[0.18em]"
+                      className={`ml-1.5 align-middle font-semibold uppercase tracking-[0.18em] ${
+                        showParty ? "text-[11px]" : "text-[13px]"
+                      }`}
                       style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
                     >
                       / adult
@@ -729,21 +756,6 @@ export function SignaturePriceCard({
                 </>
               );
             })()}
-            {partyTotalEur != null && partyCount != null ? (
-              <p
-                data-testid="studio-v3-party-total"
-                className="mt-3 text-[13.5px] font-semibold tabular-nums"
-                style={{ color: "var(--charcoal)" }}
-              >
-                €{partyTotalEur}{" "}
-                <span
-                  className="text-[10.5px] uppercase tracking-[0.22em] font-semibold ml-0.5"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-                >
-                  total for your group
-                </span>
-              </p>
-            ) : null}
             {journeyRows.length > 0 ? (
               <ul
                 data-testid="studio-v3-journey-lines"
