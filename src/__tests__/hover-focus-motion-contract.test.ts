@@ -28,7 +28,6 @@ const TARGETS = [
   "components/FAQ.tsx",
   "components/Footer.tsx",
   "components/Navbar.tsx",
-  "components/MobileStickyCTA.tsx",
   "components/FloatingActions.tsx",
   "components/WhatsAppFab.tsx",
   "components/SignatureCarousel.tsx",

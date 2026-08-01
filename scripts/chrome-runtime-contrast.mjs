@@ -3,8 +3,9 @@
  * Real-pair contrast audit for chrome components.
  *
  * Goes beyond the canonical-pair list in `site-brand-audit.mjs` by parsing
- * the actual JSX class strings of `Navbar.tsx`, `Footer.tsx`, and
- * `MobileStickyCTA.tsx` and reconstructing every foreground/background pair
+ * the actual JSX class strings of `Navbar.tsx` and `Footer.tsx`
+ * and reconstructing every foreground/background pair
+
  * that the runtime will produce. For each pair:
  *
  *   1. Resolve `var(--token)` → approved hex.
@@ -111,19 +112,6 @@ const CHROME_FILES = [
     surface: APPROVED["charcoal-deep"], // footer is bg-charcoal-deep
     surfaceLabel: "charcoal-deep footer",
     nestedSurfaces: [],
-  },
-  {
-    path: "src/components/MobileStickyCTA.tsx",
-    surface: WHITE, // sticky bar is white
-    surfaceLabel: "white sticky bar",
-    nestedSurfaces: [
-      { match: /bg-\[color:var\(--teal\)\]/, surface: APPROVED.teal, label: "teal sticky CTA" },
-      {
-        match: /bg-\[color:var\(--charcoal-deep\)\]/,
-        surface: APPROVED["charcoal-deep"],
-        label: "dark sticky surface",
-      },
-    ],
   },
 ];
 
