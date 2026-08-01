@@ -294,6 +294,8 @@ function RootComponent() {
     // Re-check UTMs on client-side navigation (SPA route changes).
     captureUtmsFromLocation();
   }, [locale, pathname]);
+  // Pause long Ken Burns / crossfade loops while they are offscreen.
+  useEffect(() => pauseOffscreenLoops(), [pathname]);
 
   // Single QueryClient per browser session — keeps SignaturePriceCard and
 
