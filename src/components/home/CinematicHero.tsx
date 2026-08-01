@@ -216,15 +216,14 @@ export function CinematicHero() {
           pointerEvents: composed ? "auto" : "none",
         }}
       >
-        <div className="flex flex-col items-center gap-3 sm:grid sm:grid-cols-2 sm:items-stretch sm:gap-5 sm:w-full sm:max-w-[560px] hero-cta-group">
+        <div className="flex flex-col items-center gap-3 sm:gap-4 lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-5 lg:w-full lg:max-w-[700px] hero-cta-group">
           <Link
             to="/studio-v3"
             data-hero-field="primaryCta"
             data-analytics="hero_open_studio"
             data-analytics-placement="hero"
-            className="hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-full px-7 py-[14px] sm:py-[13px] min-h-[44px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[330px] sm:max-w-[380px] lg:max-w-none lg:w-full px-5 sm:px-6 py-[14px] sm:py-[13px] min-h-[44px] text-[10.5px] sm:text-[11px] lg:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.18em",
               fontFamily: "Inter, system-ui, sans-serif",
               fontWeight: 450,
             }}
@@ -255,9 +254,8 @@ export function CinematicHero() {
             data-hero-field="secondaryCta"
             data-analytics="hero_choose_experience"
             data-analytics-placement="hero"
-            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-[300px] max-w-full sm:w-full px-7 py-[14px] sm:py-[13px] min-h-[44px] text-[11px] sm:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            className="hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[330px] sm:max-w-[380px] lg:max-w-none lg:w-full px-5 sm:px-6 py-[14px] sm:py-[13px] min-h-[44px] text-[10.5px] sm:text-[11px] lg:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             style={{
-              letterSpacing: "0.18em",
               fontFamily: "Inter, system-ui, sans-serif",
               fontWeight: 450,
             }}
@@ -429,8 +427,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
             border-color 500ms cubic-bezier(0.22,0.61,0.36,1),
             box-shadow 500ms cubic-bezier(0.22,0.61,0.36,1),
             transform 280ms cubic-bezier(0.22,0.61,0.36,1),
-            color 400ms cubic-bezier(0.22,0.61,0.36,1),
-            letter-spacing 500ms cubic-bezier(0.22,0.61,0.36,1);
+            color 400ms cubic-bezier(0.22,0.61,0.36,1);
           will-change: transform, box-shadow;
           cursor: pointer;
         }
@@ -470,10 +467,6 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
         .hero-cta:hover .hero-cta__arrow,
         .hero-cta:focus-visible .hero-cta__arrow {
           transform: translateX(6px);
-        }
-        .hero-cta:hover,
-        .hero-cta:focus-visible {
-          letter-spacing: 0.26em;
         }
 
         /* PRIMARY — filled gold, charcoal text, breathing gold halo */
@@ -528,7 +521,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
         @media (prefers-reduced-motion: reduce) {
           .hero-cta, .hero-cta__sheen, .hero-cta__arrow { transition: none !important; animation: none !important; }
           .hero-cta--primary { animation: none !important; }
-          .hero-cta:hover, .hero-cta:active { transform: none !important; letter-spacing: 0.24em !important; }
+          .hero-cta:hover, .hero-cta:active { transform: none !important; letter-spacing: 0.18em !important; }
         }
 
       `}</style>

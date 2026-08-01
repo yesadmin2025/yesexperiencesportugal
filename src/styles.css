@@ -6957,3 +6957,31 @@ html {
   animation: none !important;
   transform: none !important;
 }
+
+
+/* ────────────────────────────────────────────────────────────────
+   Hero CTA fit guard (label clipping fix)
+   ----------------------------------------------------------------
+   `.hero-cta` uses overflow:hidden for the sheen sweep, so any label
+   wider than the button is silently clipped on BOTH sides (this is
+   what cut the first letter off "EXPLORE SIGNATURE EXPERIENCES").
+   The type scale + tracking below is sized so the longest approved
+   label always fits inside the narrowest button at every breakpoint.
+   Declared outside @layer so it wins over utility classes.
+   ──────────────────────────────────────────────────────────── */
+.hero-cta {
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+}
+@media (min-width: 430px) {
+  .hero-cta {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+  }
+}
+@media (min-width: 1024px) {
+  .hero-cta {
+    font-size: 11.5px;
+    letter-spacing: 0.18em;
+  }
+}
