@@ -23,8 +23,14 @@ export async function acceptCookiesBeforeLoad(page: Page) {
       try {
         window.localStorage.setItem(
           key,
-          JSON.stringify({ analytics: true, marketing: true, decidedAt: Date.now() }),
+          JSON.stringify({
+            analytics: "granted",
+            ads: "denied",
+            decidedAt: new Date().toISOString(),
+            version: 1,
+          }),
         );
+
       } catch {
         /* storage blocked — banner will show; the spec will surface it */
       }
