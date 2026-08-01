@@ -23,7 +23,7 @@ export const Route = createFileRoute("/pt/contact")({
       {
         name: "description",
         content:
-          "Fale connosco por WhatsApp, telefone ou email. Respondemos em português e em inglês, todos os dias.",
+          "Contacte a YES Experiences Portugal por WhatsApp, telefone ou email. Respondemos diariamente em português e inglês e ajudamos a planear a sua experiência.",
       },
       { property: "og:title", content: "Contactos — YES Experiences Portugal" },
       {
