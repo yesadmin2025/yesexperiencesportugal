@@ -53,7 +53,7 @@ export function PricePerPerson(props: PricePerPersonProps) {
   const eur = fmt;
   const showFx = currency !== "EUR";
   const chargedHint = showFx ? (
-    <span className="ml-1.5 text-[9.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]/80">
+    <span className="ml-1.5 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]/80">
       · charged in EUR
     </span>
   ) : null;
@@ -68,8 +68,8 @@ export function PricePerPerson(props: PricePerPersonProps) {
           props.className,
         )}
       >
-        <span className="text-[13px] font-medium">From {eur(props.fromEur)}</span>
-        <span className="text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+        <span className="text-[14px] font-medium">From {eur(props.fromEur)}</span>
+        <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
           per person
         </span>
       </span>
@@ -86,10 +86,10 @@ export function PricePerPerson(props: PricePerPersonProps) {
           props.className,
         )}
       >
-        <span className="serif text-[15px] sm:text-[16px] font-medium">
+        <span className="serif text-[16px] sm:text-[17px] font-medium">
           From {eur(props.fromEur)}
         </span>
-        <span className="text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+        <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
           per person
         </span>
         {chargedHint}
@@ -101,7 +101,7 @@ export function PricePerPerson(props: PricePerPersonProps) {
   return (
     <div className={cn("space-y-1.5", className)} data-price-variant="form">
       <div className="flex items-baseline justify-between">
-        <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+        <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
           {guests > 0 ? `For ${guests} ${guests === 1 ? "guest" : "guests"}` : "From"}
           {" · per person"}
         </span>
@@ -115,7 +115,7 @@ export function PricePerPerson(props: PricePerPersonProps) {
       </div>
       {partyTotalEur != null && guests > 1 ? (
         <div className="flex items-baseline justify-between">
-          <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+          <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
             Party total{indicative ? " (indicative)" : ""}
           </span>
           <span
@@ -124,14 +124,14 @@ export function PricePerPerson(props: PricePerPersonProps) {
             className="serif text-[1.05rem] text-[color:var(--charcoal)]"
           >
             {eur(partyTotalEur)}
-            <span className="ml-1.5 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans not-italic">
+            <span className="ml-1.5 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] font-sans not-italic">
               {hasMinors ? "age-based pricing" : `${eur(perPaxEur)} × ${guests}`}
             </span>
           </span>
         </div>
       ) : null}
       {showFx && (
-        <p className="text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
+        <p className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]/80">
           Indicative {currency} · charged in EUR
         </p>
       )}

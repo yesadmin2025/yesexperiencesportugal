@@ -1262,7 +1262,7 @@ export function SignaturePriceCard({
           <ul
             data-testid="studio-v3-decision-trust"
             aria-label="Booking reassurance"
-            className="mt-5 mx-auto flex max-w-[360px] flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[10.5px] uppercase tracking-[0.18em] font-semibold"
+            className="mt-5 mx-auto flex max-w-[380px] flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[13px] uppercase tracking-[0.08em] font-semibold"
             style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
           >
             <li>Private experience</li>
@@ -1273,11 +1273,11 @@ export function SignaturePriceCard({
             <li aria-hidden style={{ color: "var(--gold)" }}>
               ·
             </li>
-            <li className="normal-case tracking-[0.1em]">{CANCELLATION.signature.en}</li>
+            <li className="normal-case tracking-[0.01em]">{CANCELLATION.signature.en}</li>
             <li aria-hidden style={{ color: "var(--gold)" }}>
               ·
             </li>
-            <li className="normal-case tracking-[0.1em]">Licensed operator {LICENSE_LABEL}</li>
+            <li className="normal-case tracking-[0.01em]">Licensed operator {LICENSE_LABEL}</li>
           </ul>
         ) : null}
 
