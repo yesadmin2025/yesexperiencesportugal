@@ -61,8 +61,16 @@ export const Route = createFileRoute("/contact")({
       type: raw && requestTypeValues.includes(raw) ? raw : undefined,
     };
   },
-  head: () => ({
-    meta: [
+  head: (ctx) => {
+    // `?type=` only preselects the enquiry type — same content as /contact.
+    // Keep the variant crawlable but out of the index (noindex, follow) while
+    // the canonical continues to point at the clean URL.
+    const search = (ctx.match?.search ?? {}) as { type?: string };
+    const isParamVariant = typeof search.type === "string" && search.type.length > 0;
+    return {
+      meta: [
+        ...(isParamVariant ? [{ name: "robots", content: "noindex, follow" }] : []),
+
       { title: "Contact — YES Experiences Portugal" },
       {
         name: "description",
@@ -135,7 +143,9 @@ export const Route = createFileRoute("/contact")({
         },
       }),
     ],
-  }),
+    };
+  },
+
 
   component: Page,
 });
