@@ -71,81 +71,80 @@ export const Route = createFileRoute("/contact")({
       meta: [
         ...(isParamVariant ? [{ name: "robots", content: "noindex, follow" }] : []),
 
-      { title: "Contact — YES Experiences Portugal" },
-      {
-        name: "description",
-        content:
-          "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
-      },
-      { property: "og:title", content: "Contact — YES Experiences Portugal" },
-      {
-        property: "og:description",
-        content:
-          "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
-      },
-      { property: "og:url", content: "https://yesexperiencesportugal.com/contact" },
-      { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      {
-        property: "og:image:alt",
-        content: "Contact YES Experiences Portugal — a local team in Sesimbra",
-      },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
-    ],
-    links: [
-      { rel: "canonical", href: "https://yesexperiencesportugal.com/contact" },
-      // Reciprocal hreflang — the PT twin at /pt/contact points back with the
-      // identical set. Emitted from the shared helper so both stay in sync.
-      ...localeAlternateLinks("/contact"),
-    ],
-    scripts: [
-      jsonLdScript(
-        breadcrumbLd([
-          { name: "Home", path: "/" },
-          { name: "Contact", path: "/contact" },
-        ]),
-      ),
-      jsonLdScript({
-        "@context": "https://schema.org",
-        "@type": "ContactPage",
-        "@id": "https://yesexperiencesportugal.com/contact#contactpage",
-        url: "https://yesexperiencesportugal.com/contact",
-        name: "Contact — YES Experiences Portugal",
-        description:
-          "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
-        inLanguage: "en",
-        isPartOf: { "@id": "https://yesexperiencesportugal.com/#website" },
-        about: { "@id": "https://yesexperiencesportugal.com/#organization" },
-        mainEntity: {
-          "@type": "Organization",
-          "@id": "https://yesexperiencesportugal.com/#organization",
-          name: BUSINESS_LEGAL_NAME,
-          url: "https://yesexperiencesportugal.com",
-          email: EMAIL,
-          telephone: PHONE_DISPLAY,
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: CITY,
-            addressCountry: COUNTRY_CODE,
-          },
-          contactPoint: [
-            {
-              "@type": "ContactPoint",
-              contactType: "customer service",
-              telephone: PHONE_DISPLAY,
-              email: EMAIL,
-              areaServed: COUNTRY_CODE,
-              availableLanguage: ["en", "pt"],
-            },
-          ],
+        { title: "Contact — YES Experiences Portugal" },
+        {
+          name: "description",
+          content:
+            "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
         },
-      }),
-    ],
+        { property: "og:title", content: "Contact — YES Experiences Portugal" },
+        {
+          property: "og:description",
+          content:
+            "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
+        },
+        { property: "og:url", content: "https://yesexperiencesportugal.com/contact" },
+        { property: "og:image", content: `https://yesexperiencesportugal.com${ogImg}` },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        {
+          property: "og:image:alt",
+          content: "Contact YES Experiences Portugal — a local team in Sesimbra",
+        },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogImg}` },
+      ],
+      links: [
+        { rel: "canonical", href: "https://yesexperiencesportugal.com/contact" },
+        // Reciprocal hreflang — the PT twin at /pt/contact points back with the
+        // identical set. Emitted from the shared helper so both stay in sync.
+        ...localeAlternateLinks("/contact"),
+      ],
+      scripts: [
+        jsonLdScript(
+          breadcrumbLd([
+            { name: "Home", path: "/" },
+            { name: "Contact", path: "/contact" },
+          ]),
+        ),
+        jsonLdScript({
+          "@context": "https://schema.org",
+          "@type": "ContactPage",
+          "@id": "https://yesexperiencesportugal.com/contact#contactpage",
+          url: "https://yesexperiencesportugal.com/contact",
+          name: "Contact — YES Experiences Portugal",
+          description:
+            "Reach the YES team directly — quiet, human replies from local experience designers in Lisbon. WhatsApp, email or a short call.",
+          inLanguage: "en",
+          isPartOf: { "@id": "https://yesexperiencesportugal.com/#website" },
+          about: { "@id": "https://yesexperiencesportugal.com/#organization" },
+          mainEntity: {
+            "@type": "Organization",
+            "@id": "https://yesexperiencesportugal.com/#organization",
+            name: BUSINESS_LEGAL_NAME,
+            url: "https://yesexperiencesportugal.com",
+            email: EMAIL,
+            telephone: PHONE_DISPLAY,
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: CITY,
+              addressCountry: COUNTRY_CODE,
+            },
+            contactPoint: [
+              {
+                "@type": "ContactPoint",
+                contactType: "customer service",
+                telephone: PHONE_DISPLAY,
+                email: EMAIL,
+                areaServed: COUNTRY_CODE,
+                availableLanguage: ["en", "pt"],
+              },
+            ],
+          },
+        }),
+      ],
     };
   },
-
 
   component: Page,
 });
