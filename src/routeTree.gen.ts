@@ -126,7 +126,7 @@ import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AdminBookingsIndexRouteImport } from './routes/admin.bookings.index'
-import { Route as ToursTourIdTailorRouteImport } from './routes/tours.$tourId.tailor'
+import { Route as ToursTourIdTailorRouteImport } from './routes/tours_.$tourId.tailor'
 import { Route as StudioV2ITokenRouteImport } from './routes/studio-v2.i.$token'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
@@ -740,9 +740,9 @@ const AdminBookingsIndexRoute = AdminBookingsIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToursTourIdTailorRoute = ToursTourIdTailorRouteImport.update({
-  id: '/tailor',
-  path: '/tailor',
-  getParentRoute: () => ToursTourIdRoute,
+  id: '/tours_/$tourId/tailor',
+  path: '/tours/$tourId/tailor',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const StudioV2ITokenRoute = StudioV2ITokenRouteImport.update({
   id: '/i/$token',
@@ -957,7 +957,7 @@ export interface FileRoutesByFullPath {
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
-  '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/tours/$tourId': typeof ToursTourIdRoute
   '/admin/': typeof AdminIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
@@ -1093,7 +1093,7 @@ export interface FileRoutesByTo {
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
-  '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/tours/$tourId': typeof ToursTourIdRoute
   '/admin': typeof AdminIndexRoute
   '/local-stories': typeof LocalStoriesIndexRoute
   '/pt': typeof PtIndexRoute
@@ -1232,7 +1232,7 @@ export interface FileRoutesById {
   '/qa/mobile': typeof QaMobileRoute
   '/review/$token': typeof ReviewTokenRoute
   '/s/$token': typeof STokenRoute
-  '/tours/$tourId': typeof ToursTourIdRouteWithChildren
+  '/tours/$tourId': typeof ToursTourIdRoute
   '/admin/': typeof AdminIndexRoute
   '/local-stories/': typeof LocalStoriesIndexRoute
   '/pt/': typeof PtIndexRoute
@@ -1244,7 +1244,7 @@ export interface FileRoutesById {
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
-  '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
+  '/tours_/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings/': typeof AdminBookingsIndexRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
@@ -1658,7 +1658,7 @@ export interface FileRouteTypes {
     | '/functions/v1/stripe-webhook'
     | '/lovable/email/suppression'
     | '/studio-v2/i/$token'
-    | '/tours/$tourId/tailor'
+    | '/tours_/$tourId/tailor'
     | '/admin/bookings/'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
@@ -1770,7 +1770,7 @@ export interface RootRouteChildren {
   QaMobileRoute: typeof QaMobileRoute
   ReviewTokenRoute: typeof ReviewTokenRoute
   STokenRoute: typeof STokenRoute
-  ToursTourIdRoute: typeof ToursTourIdRouteWithChildren
+  ToursTourIdRoute: typeof ToursTourIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -1779,6 +1779,7 @@ export interface RootRouteChildren {
   ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
+  ToursTourIdTailorRoute: typeof ToursTourIdTailorRoute
   AdminBookingsIndexRoute: typeof AdminBookingsIndexRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
@@ -2613,12 +2614,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBookingsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tours/$tourId/tailor': {
-      id: '/tours/$tourId/tailor'
-      path: '/tailor'
+    '/tours_/$tourId/tailor': {
+      id: '/tours_/$tourId/tailor'
+      path: '/tours/$tourId/tailor'
       fullPath: '/tours/$tourId/tailor'
       preLoaderRoute: typeof ToursTourIdTailorRouteImport
-      parentRoute: typeof ToursTourIdRoute
+      parentRoute: typeof rootRouteImport
     }
     '/studio-v2/i/$token': {
       id: '/studio-v2/i/$token'
@@ -2823,18 +2824,6 @@ const StudioV2RouteWithChildren = StudioV2Route._addFileChildren(
   StudioV2RouteChildren,
 )
 
-interface ToursTourIdRouteChildren {
-  ToursTourIdTailorRoute: typeof ToursTourIdTailorRoute
-}
-
-const ToursTourIdRouteChildren: ToursTourIdRouteChildren = {
-  ToursTourIdTailorRoute: ToursTourIdTailorRoute,
-}
-
-const ToursTourIdRouteWithChildren = ToursTourIdRoute._addFileChildren(
-  ToursTourIdRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -2935,7 +2924,7 @@ const rootRouteChildren: RootRouteChildren = {
   QaMobileRoute: QaMobileRoute,
   ReviewTokenRoute: ReviewTokenRoute,
   STokenRoute: STokenRoute,
-  ToursTourIdRoute: ToursTourIdRouteWithChildren,
+  ToursTourIdRoute: ToursTourIdRoute,
   AdminIndexRoute: AdminIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
@@ -2944,6 +2933,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
+  ToursTourIdTailorRoute: ToursTourIdTailorRoute,
   AdminBookingsIndexRoute: AdminBookingsIndexRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
   ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,

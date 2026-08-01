@@ -84,7 +84,7 @@ import {
  * local guide stay locked. Live summary updates as the user adjusts.
  * ════════════════════════════════════════════════════════════ */
 
-export const Route = createFileRoute("/tours/$tourId/tailor")({
+export const Route = createFileRoute("/tours_/$tourId/tailor")({
   loader: ({ params }) => {
     const tour = findTour(params.tourId);
     if (!tour) throw notFound();
