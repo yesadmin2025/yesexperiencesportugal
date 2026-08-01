@@ -138,7 +138,7 @@ export const Route = createFileRoute("/tours_/$tourId/tailor")({
         { rel: "canonical", href: url },
 
         // LCP preload — the tour mini-card hero <img> below the fold-in intro.
-        { rel: "preload", as: "image", href: t.img, fetchpriority: "high" },
+        { rel: "preload", as: "image", href: t.img, fetchPriority: "high" },
       ],
       scripts: [
         jsonLdScript(
