@@ -178,13 +178,13 @@ export function EditorialCard({
         </h3>
 
         {body ? (
-          <p className="mt-4 text-[14.5px] md:text-[15.5px] leading-[1.65] text-[color:var(--charcoal-soft)] max-w-md">
+          <p className="mt-4 text-[16px] md:text-[17px] leading-[1.65] text-[color:var(--charcoal-soft)] max-w-md">
             {body}
           </p>
         ) : null}
 
         {detail ? (
-          <p className="mt-5 inline-flex items-center gap-2.5 text-[11px] uppercase tracking-[0.24em] font-semibold text-[color:var(--charcoal-soft)]">
+          <p className="mt-5 inline-flex items-center gap-2.5 text-[12px] uppercase tracking-[0.12em] font-semibold text-[color:var(--charcoal-soft)]">
             <span
               aria-hidden="true"
               className="inline-block h-[6px] w-[6px] rounded-full"
@@ -198,14 +198,14 @@ export function EditorialCard({
           <CtaButton
             to={cta.to}
             variant="primary"
-            className="relative z-10 mt-7 md:mt-6 self-start"
+            className="relative z-10 mt-7 md:mt-8 self-start"
           >
             {cta.label}
           </CtaButton>
         ) : null}
 
         {trust ? (
-          <p className="mt-3 text-[11.5px] leading-[1.55] text-[color:var(--charcoal-soft)]/85 font-normal">
+          <p className="mt-3 text-[13px] leading-[1.55] text-[color:var(--charcoal-soft)]/85 font-normal">
             {trust}
           </p>
         ) : null}
