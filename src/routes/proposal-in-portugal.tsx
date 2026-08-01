@@ -22,7 +22,7 @@ const PAGE_URL = `${BASE_URL}${PAGE_PATH}`;
 
 const TITLE = "Proposal & Celebration Experiences in Portugal | YES";
 const DESCRIPTION =
-  "Private proposals, anniversaries, birthdays and special-occasion experiences across Portugal — Sintra cliffs, Arrábida coves, Lisbon rooftops — planned discreetly by a local team.";
+  "Private proposals, anniversaries and celebrations across Portugal, discreetly designed by a local team with venues, timing and details coordinated.";
 
 export const Route = createFileRoute("/proposal-in-portugal")({
   head: () => ({
