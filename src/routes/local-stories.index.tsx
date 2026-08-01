@@ -29,7 +29,7 @@ export const Route = createFileRoute("/local-stories/")({
       {
         name: "description",
         content:
-          "Notes from the road, written by the locals who design our private Portugal experiences.",
+          "Local guides to Portugal’s wine regions, private day trips, hidden places and travel planning, written by the team who designs the experiences.",
       },
       { property: "og:title", content: "Local Stories — YES Experiences Portugal" },
       {
