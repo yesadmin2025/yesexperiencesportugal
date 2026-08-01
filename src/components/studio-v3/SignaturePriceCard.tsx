@@ -1256,8 +1256,29 @@ export function SignaturePriceCard({
           </footer>
         ) : null}
 
-        {/* Trust strip removed — the reassurance above the CTA + the final
-            reveal's own trust cues cover this without duplication. */}
+        {/* Compact trust facts at the decision point — existing signals only. */}
+        {!isRefine && hasPrice ? (
+          <ul
+            data-testid="studio-v3-decision-trust"
+            aria-label="Booking reassurance"
+            className="mt-5 mx-auto flex max-w-[360px] flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[10.5px] uppercase tracking-[0.18em] font-semibold"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+          >
+            <li>Private experience</li>
+            <li aria-hidden style={{ color: "var(--gold)" }}>
+              ·
+            </li>
+            <li>Secure payment · Stripe</li>
+            <li aria-hidden style={{ color: "var(--gold)" }}>
+              ·
+            </li>
+            <li className="normal-case tracking-[0.1em]">{CANCELLATION.signature.en}</li>
+            <li aria-hidden style={{ color: "var(--gold)" }}>
+              ·
+            </li>
+            <li className="normal-case tracking-[0.1em]">Licensed operator {LICENSE_LABEL}</li>
+          </ul>
+        ) : null}
 
         <div
           ref={ctaRef}
@@ -1271,7 +1292,7 @@ export function SignaturePriceCard({
                 data-testid="studio-v3-cta-primary"
                 data-total-eur={partyTotalEur ?? totalEur ?? ""}
                 data-party-total-eur={partyTotalEur ?? ""}
-                className={`group ${isRefine ? "inline-flex" : "hidden md:inline-flex"} items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]`}
+                className="group inline-flex items-center gap-2 px-7 py-3.5 min-h-[48px] text-[11px] uppercase tracking-[0.24em] font-semibold transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{
                   background: "var(--charcoal)",
                   color: "var(--ivory)",
