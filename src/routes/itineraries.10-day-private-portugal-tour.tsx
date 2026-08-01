@@ -120,14 +120,14 @@ const DAYS: Day[] = [
     eyebrow: "Arrábida · Sesimbra",
     title: "The coast most guests never see.",
     body: "South of the river, the Arrábida ridge falls straight into a Mediterranean-blue sea. A morning viewpoint, a fresh-fish lunch in Sesimbra, and time in a hidden cove.",
-    anchor: { label: "See the Arrábida Signature", to: "/tours/arrabida-sesimbra" },
+    anchor: { label: "See the Arrábida Signature", to: "/tours/arrabida-boat" },
   },
   {
     span: "Day 5",
     eyebrow: "Azeitão · wine & cheese",
     title: "Small producers, generous tables.",
     body: "Two family wineries and a cheese producer near Azeitão — the kind our team drinks with on days off. Small pours, longer conversations.",
-    anchor: { label: "See the Arrábida Wine Signature", to: "/tours/arrabida-wines" },
+    anchor: { label: "See the Arrábida Wine Signature", to: "/tours/arrabida-wine-allinclusive" },
   },
   {
     span: "Days 6–7",
