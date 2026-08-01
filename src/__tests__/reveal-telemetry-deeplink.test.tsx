@@ -30,7 +30,6 @@ vi.mock("@/components/Navbar", () => ({ Navbar: () => null }));
 vi.mock("@/components/Footer", () => ({ Footer: () => null }));
 vi.mock("@/components/FloatingActions", () => ({ FloatingActions: () => null }));
 vi.mock("@/components/WhatsAppFab", () => ({ WhatsAppFab: () => null }));
-vi.mock("@/components/PostHeroAnnouncer", () => ({ PostHeroAnnouncer: () => null }));
 vi.mock("@/lib/smooth-anchor-scroll", () => ({
   installSmoothAnchorScroll: () => () => {},
 }));

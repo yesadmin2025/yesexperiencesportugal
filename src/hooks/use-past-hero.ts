@@ -60,21 +60,6 @@ function markPersisted() {
   }
 }
 
-/**
- * Module-scoped guard so the `yes:past_hero` event is dispatched at most
- * once per tab (across multiple consumers and across re-renders).
- */
-let didAnnouncePastHero = false;
-
-function dispatchPastHeroOnce() {
-  if (typeof window === "undefined" || didAnnouncePastHero) return;
-  didAnnouncePastHero = true;
-  try {
-    window.dispatchEvent(new CustomEvent(PAST_HERO_EVENT));
-  } catch {
-    /* noop */
-  }
-}
 
 export function usePastHero({
   threshold = 600,
