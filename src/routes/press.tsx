@@ -277,7 +277,7 @@ function PressPage() {
             <Eyebrow>Press &amp; brand kit</Eyebrow>
           </div>
           <div className="scene-title">
-            <SectionTitle>
+            <SectionTitle as="h1">
               Resources for journalists, <em className="font-serif italic">editors and partners</em>
             </SectionTitle>
           </div>
