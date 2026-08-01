@@ -26,7 +26,7 @@ process.env.NODE_OPTIONS =
  *
  * • Boots the project's vite dev server on a fixed port so tests are
  *   self-contained — no manual `bun run dev` required.
- * • Runs against Chromium at a mobile-ish viewport by default so the
+ * • Runs against Chromium at a mobile-ish viewport by default.
  * • Single worker locally — these tests scroll the same page, parallel
  *   workers don't add value and just compete for the dev server.
  */
