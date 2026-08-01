@@ -38,6 +38,7 @@ import { getSignatureOptionalAddOns } from "@/lib/tailor-chapters";
 import { MountBadge } from "./useStudioDebug";
 
 import { whatsappHref } from "@/components/WhatsAppFab";
+import { CANCELLATION, LICENSE_LABEL } from "@/config/business-nap";
 import { recordStudioV3RevealPremium, recordStudioV3RevealAddOns } from "@/lib/studio-v3-telemetry";
 import { CTA_ASK_CURATOR, INCLUDED_HEADER_REFINE } from "@/content/signature-day-copy";
 import { formatGuestComposition } from "./formatGuests";
