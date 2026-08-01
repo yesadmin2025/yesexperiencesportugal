@@ -267,7 +267,6 @@ function ExperiencesPage() {
                       Tailor this day
                     </CtaButton>
                   </div>
-
                 </article>
               );
             })}

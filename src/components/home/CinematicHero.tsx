@@ -206,7 +206,6 @@ export function CinematicHero() {
             {HERO_PHRASES[1]}
           </span>
         </h1>
-
       </div>
 
       {/* ── Delayed CTA reveal ──────────────────────────────────────── */}

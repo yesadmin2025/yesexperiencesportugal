@@ -105,7 +105,6 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
             >
               +
             </button>
-
           </div>
         </Field>
       </div>
@@ -242,7 +241,6 @@ export function SimpleTailorForm({ tour }: { tour: SignatureTour }) {
       <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80 text-center">
         A YES curator replies with availability and the final details.
       </p>
-
     </div>
   );
 }

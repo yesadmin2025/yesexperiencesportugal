@@ -425,7 +425,6 @@ function TourHero({
               Tailor this day
             </CtaButton>
           </div>
-
         </div>
       </section>
     </>
