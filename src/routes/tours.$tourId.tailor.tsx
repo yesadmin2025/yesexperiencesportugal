@@ -98,9 +98,13 @@ export const Route = createFileRoute("/tours/$tourId/tailor")({
       return {
         meta: [
           { title: "Tailor a Signature — YES experiences Portugal" },
-          { name: "robots", content: "noindex, nofollow" },
+          // Same directive as the resolved branch: out of the SERPs, but
+          // crawlable and link-following.
+          { name: "robots", content: "noindex, follow" },
         ],
+        links: [{ rel: "canonical", href: url }],
       };
+
     const img = t.img?.startsWith("http") ? t.img : `https://yesexperiencesportugal.com${t.img}`;
     const shortTitle = t.title.split("—")[0].trim();
     const pageTitle =
