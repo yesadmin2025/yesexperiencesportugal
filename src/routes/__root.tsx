@@ -21,6 +21,7 @@ import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
 import { RouteFade } from "@/components/motion/RouteFade";
+import { pauseOffscreenLoops } from "@/lib/motion/pauseOffscreenLoops";
 import { Scene } from "@/components/motion/Scene";
 import { installAnalyticsAttrs } from "@/lib/analytics";
 import { setAnalyticsLocale } from "@/lib/analytics-events";
