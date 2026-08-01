@@ -204,7 +204,7 @@ export const Route = createFileRoute("/tours/$tourId")({
           <p className="mt-3 text-[color:var(--charcoal-soft)] text-sm">{error.message}</p>
           <Link
             to="/experiences"
-            className="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-[color:var(--teal)]"
+            className="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.12em] text-[color:var(--teal)]"
           >
             <ArrowLeft size={12} /> Back to experiences
           </Link>
@@ -320,7 +320,7 @@ function TourHero({
         <div className="container-x max-w-6xl">
           <Link
             to="/experiences"
-            className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+            className="inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
           >
             <ArrowLeft size={12} /> All Signature Experiences
           </Link>
@@ -355,7 +355,7 @@ function TourHero({
               {tour.blurb}
             </p>
 
-            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+            <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
               <span className="flex items-center gap-2">
                 <MapPin size={12} className="text-[color:var(--gold)]" /> {tour.region}
               </span>
@@ -387,13 +387,13 @@ function TourHero({
           <div className="mt-6 flex flex-col items-start gap-4">
             {typeof (tour as { priceFrom?: number }).priceFrom === "number" ? (
               <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-                <span className="text-[12px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
                   From
                 </span>
                 <span className="serif text-[24px] sm:text-[28px] leading-none font-semibold text-[color:var(--charcoal)]">
                   <PriceEur amountEur={(tour as { priceFrom: number }).priceFrom} role="from" />
                 </span>
-                <span className="text-[12px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
                   per person
                 </span>
                 <PriceCurrencyChip align="start" />
@@ -448,7 +448,7 @@ function TrustStrip({ meta }: { meta?: ViatorMeta }) {
   return (
     <section className="border-y border-[color:var(--border)] bg-[color:var(--ivory)] reveal">
       <div className="container-x max-w-6xl py-4">
-        <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+        <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
           {items.map((it) => (
             <li key={it.label} className="flex items-center gap-2">
               <span className="text-[color:var(--gold)]">{it.icon}</span>
@@ -563,7 +563,7 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
               The day, <SectionTitle.Em>chapter by chapter</SectionTitle.Em>
             </SectionTitle>
           </div>
-          <span className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+          <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
             {chapters.length} chapters · in this order
           </span>
         </div>
@@ -581,11 +581,11 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
 
               <div className="pt-1 pb-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
+                  <span className="text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
                     Chapter {i + 1}
                   </span>
                   {s.optional && (
-                    <span className="text-[9.5px] uppercase tracking-[0.22em] px-2 py-[3px] rounded-full border border-[color:var(--gold)]/40 text-[color:var(--charcoal)] bg-[color:var(--gold)]/[0.06]">
+                    <span className="text-[12px] uppercase tracking-[0.12em] px-2 py-[3px] rounded-full border border-[color:var(--gold)]/40 text-[color:var(--charcoal)] bg-[color:var(--gold)]/[0.06]">
                       Optional
                     </span>
                   )}
@@ -754,7 +754,7 @@ function RouteMap({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
             <ol className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-[12.5px] text-[color:var(--ivory)]/90 list-none p-0">
               {points.map((p, i) => (
                 <li key={p.label + i} className="flex items-baseline gap-3">
-                  <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)] shrink-0 w-6">
+                  <span className="text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)] shrink-0 w-6">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="leading-snug">{p.raw.label}</span>
@@ -870,7 +870,7 @@ function GalleryStrip({
               Inside <SectionTitle.Em>the day</SectionTitle.Em>
             </SectionTitle>
           </div>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+          <p className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
             Real photos · real stops
           </p>
         </div>
@@ -898,7 +898,7 @@ function GalleryStrip({
                   imgClassName="transition-transform duration-700 hover:scale-[1.04]"
                 >
                   <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-[color:var(--charcoal-deep)]/80 to-transparent">
-                    <figcaption className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/90">
+                    <figcaption className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--ivory)]/90">
                       {p.alt}
                     </figcaption>
                   </div>
@@ -975,7 +975,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
             data-analytics-placement="final"
             data-analytics-experience-id={tour.id}
             data-analytics-experience-type="signature"
-            className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.22em] text-[color:var(--ivory)]/85 hover:text-[color:var(--gold)] transition-colors min-h-[44px]"
+            className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.12em] text-[color:var(--ivory)]/85 hover:text-[color:var(--gold)] transition-colors min-h-[44px]"
           >
             Tailor this day{" "}
             <span aria-hidden="true" className="text-[color:var(--gold)]">
@@ -984,7 +984,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
           </Link>
         </div>
 
-        <p className="mt-5 text-[11px] uppercase tracking-[0.24em] text-[color:var(--ivory)]/65">
+        <p className="mt-5 text-[12px] uppercase tracking-[0.12em] text-[color:var(--ivory)]/65">
           Instant confirmation · {CANCELLATION.signature.en} · A local on WhatsApp if you need help
         </p>
         <CredentialStrip variant="dark" className="mt-6" />
@@ -1017,7 +1017,7 @@ function Block({
 }) {
   return (
     <div>
-      <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
+      <div className="flex items-center gap-2 text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
         <span className="text-[color:var(--gold)]">{icon}</span>
         {title}
       </div>
@@ -1056,7 +1056,7 @@ function RelatedTours({ currentId }: { currentId: string }) {
                 imgClassName="transition-transform duration-700 group-hover:scale-105"
               />
               <h3 className="serif text-lg">{t.title}</h3>
-              <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] mt-1">
+              <p className="text-xs uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] mt-1">
                 {t.region}
               </p>
             </Link>
