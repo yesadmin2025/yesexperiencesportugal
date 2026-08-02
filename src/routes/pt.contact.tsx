@@ -17,8 +17,18 @@ import {
 } from "@/config/business-nap";
 
 export const Route = createFileRoute("/pt/contact")({
-  head: () => ({
-    meta: [
+  validateSearch: (search: Record<string, unknown>) => ({
+    type: typeof search.type === "string" && search.type.length > 0 ? search.type : undefined,
+  }),
+  head: (ctx) => {
+    // Parity with /contact: `?type=` is only a preselection hint, so the
+    // variant stays crawlable but out of the index while the canonical keeps
+    // pointing at the clean PT URL.
+    const search = (ctx.match?.search ?? {}) as { type?: string };
+    const isParamVariant = typeof search.type === "string" && search.type.length > 0;
+    return {
+      meta: [
+        ...(isParamVariant ? [{ name: "robots", content: "noindex, follow" }] : []),
       { title: "Contactos — YES Experiences Portugal" },
       {
         name: "description",
