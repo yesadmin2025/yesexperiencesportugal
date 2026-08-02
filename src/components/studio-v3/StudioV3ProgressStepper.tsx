@@ -155,7 +155,7 @@ export function StudioV3ProgressStepper({
         data-active-beat={STUDIO_V3_BEATS[active].id}
         // pr-12 reserves right-hand hit-area so the close (X) button in
         // StudioV3 header never overlaps the last beat label (audit P1 #2).
-        className="mt-4 mb-1 flex w-full items-center justify-between gap-2 pl-5 pr-12"
+        className="mt-4 mb-1 flex w-full items-center justify-between gap-2 pl-5 pr-16 sm:pr-12"
       >
         {STUDIO_V3_BEATS.map((beat, i) => {
           const isActive = i === active;

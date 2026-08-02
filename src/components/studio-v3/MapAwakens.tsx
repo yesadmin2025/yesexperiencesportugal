@@ -425,19 +425,10 @@ export function MapAwakens({
             }}
           />
 
-          {/* Top-left chip — duplicates EditorialMap eyebrow on mobile,
-              so hidden ≤sm to free vertical space above the map. */}
-          <div
-            className="hidden sm:inline-flex absolute left-3 top-3 z-10 items-center gap-1.5 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
-            style={{
-              background: "color-mix(in oklab, var(--ivory) 88%, transparent)",
-              color: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
-              border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
-              borderRadius: "2px",
-            }}
-          >
-            <span style={{ color: "var(--gold)" }}>—</span> Suggested route
-          </div>
+          {/* Top-left "Suggested route" chip removed — EditorialMap already
+              renders that eyebrow inside the canvas at the same position,
+              so the two literally overlapped on ≥sm (Studio audit). */}
+
 
           {/* Bottom-right footnote — clarifies status without alarming */}
           {revealed >= journey.moments.length ? (

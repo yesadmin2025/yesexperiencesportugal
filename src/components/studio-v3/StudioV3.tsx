@@ -3857,7 +3857,7 @@ export function StoryboardHandoff({
                               return n;
                             })
                           }
-                          className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          className="relative grid h-8 w-8 place-items-center rounded-full text-[14px] after:absolute after:-inset-[6px] after:content-[''] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                           style={{ color: "var(--charcoal)" }}
                         >
                           ↑
@@ -3873,7 +3873,7 @@ export function StoryboardHandoff({
                               return n;
                             })
                           }
-                          className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          className="relative grid h-8 w-8 place-items-center rounded-full text-[14px] after:absolute after:-inset-[6px] after:content-[''] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                           style={{ color: "var(--charcoal)" }}
                         >
                           ↓
@@ -3884,7 +3884,7 @@ export function StoryboardHandoff({
                             aria-label={`Swap ${s.label}`}
                             aria-expanded={swapOpen}
                             onClick={() => setSwapOpenIdx(swapOpen ? null : i)}
-                            className="grid h-8 w-8 place-items-center rounded-full text-[13px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                            className="relative grid h-8 w-8 place-items-center rounded-full text-[13px] after:absolute after:-inset-[6px] after:content-[''] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                             style={{ color: "var(--charcoal)" }}
                           >
                             ⇄
@@ -3895,7 +3895,7 @@ export function StoryboardHandoff({
                           aria-label={`Remove ${s.label}`}
                           disabled={editedStops.length <= 1}
                           onClick={() => setEdited((prev) => prev.filter((_, j) => j !== i))}
-                          className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          className="relative grid h-8 w-8 place-items-center rounded-full text-[14px] after:absolute after:-inset-[6px] after:content-[''] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                           style={{ color: "var(--charcoal)" }}
                         >
                           ✕
