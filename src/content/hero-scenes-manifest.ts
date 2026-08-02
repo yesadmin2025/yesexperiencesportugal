@@ -25,7 +25,7 @@
  * of the hero by design.
  */
 
-const FILM_1080 = "/video/film/yes-hero-film-1080.mp4";
+const FILM_1080 = "/__l5e/assets-v1/cc76b325-b728-4ce6-9356-19ec8388d94f/yes-hero-film-1080.mp4";
 const FILM_720 = "/video/film/yes-hero-film-720.mp4";
 const FILM_POSTER = "/video/film/yes-hero-poster.jpg";
 

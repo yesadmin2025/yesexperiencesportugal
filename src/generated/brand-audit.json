@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-02T00:41:34.532Z",
-  "filesScanned": 943,
+  "generatedAt": "2026-08-02T01:08:15.803Z",
+  "filesScanned": 944,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -890,7 +890,7 @@
     },
     {
       "file": "src/components/SignatureRouteMap.tsx",
-      "line": 74,
+      "line": 75,
       "col": 32,
       "raw": "#faf8f3",
       "normalized": "#faf8f3",
@@ -899,7 +899,7 @@
     },
     {
       "file": "src/components/SignatureRouteMap.tsx",
-      "line": 75,
+      "line": 76,
       "col": 37,
       "raw": "#c9a96a",
       "normalized": "#c9a96a",
@@ -908,7 +908,7 @@
     },
     {
       "file": "src/components/SignatureRouteMap.tsx",
-      "line": 79,
+      "line": 80,
       "col": 26,
       "raw": "#295b61",
       "normalized": "#295b61",
@@ -3367,36 +3367,36 @@
       "file": "src/styles.css",
       "line": 100,
       "col": 11,
-      "raw": "#295B61",
+      "raw": "#295b61",
       "normalized": "#295b61",
-      "snippet": "--teal: #295B61;",
+      "snippet": "--teal: #295b61;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 101,
       "col": 13,
-      "raw": "#2A7C82",
+      "raw": "#2a7c82",
       "normalized": "#2a7c82",
-      "snippet": "--teal-2: #2A7C82;",
+      "snippet": "--teal-2: #2a7c82;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 102,
       "col": 11,
-      "raw": "#C9A96A",
+      "raw": "#c9a96a",
       "normalized": "#c9a96a",
-      "snippet": "--gold: #C9A96A;",
+      "snippet": "--gold: #c9a96a;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 103,
       "col": 16,
-      "raw": "#E1CFA6",
+      "raw": "#e1cfa6",
       "normalized": "#e1cfa6",
-      "snippet": "--gold-soft: #E1CFA6;",
+      "snippet": "--gold-soft: #e1cfa6;",
       "status": "approved"
     },
     {
@@ -3430,27 +3430,27 @@
       "file": "src/styles.css",
       "line": 114,
       "col": 12,
-      "raw": "#FAF8F3",
+      "raw": "#faf8f3",
       "normalized": "#faf8f3",
-      "snippet": "--ivory: #FAF8F3;",
+      "snippet": "--ivory: #faf8f3;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 115,
       "col": 11,
-      "raw": "#F4EFE7",
+      "raw": "#f4efe7",
       "normalized": "#f4efe7",
-      "snippet": "--sand: #F4EFE7;",
+      "snippet": "--sand: #f4efe7;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 116,
       "col": 15,
-      "raw": "#2E2E2E",
+      "raw": "#2e2e2e",
       "normalized": "#2e2e2e",
-      "snippet": "--charcoal: #2E2E2E;",
+      "snippet": "--charcoal: #2e2e2e;",
       "status": "approved"
     },
     {
@@ -3484,9 +3484,9 @@
       "file": "src/styles.css",
       "line": 120,
       "col": 20,
-      "raw": "#1F1F1F",
+      "raw": "#1f1f1f",
       "normalized": "#1f1f1f",
-      "snippet": "--charcoal-deep: #1F1F1F;",
+      "snippet": "--charcoal-deep: #1f1f1f;",
       "status": "allowlisted"
     },
     {

@@ -97,10 +97,10 @@
   --ease-scene: cubic-bezier(0.22, 1, 0.36, 1); /* smooth premium out */
 
   /* Brand — locked palette, used site-wide. */
-  --teal: #295b61;
-  --teal-2: #2a7c82;
-  --gold: #c9a96a;
-  --gold-soft: #e1cfa6;
+  --teal: #295B61;
+  --teal-2: #2A7C82;
+  --gold: #C9A96A;
+  --gold-soft: #E1CFA6;
   /* Refined champagne accents — additive, do NOT replace --gold/--gold-soft.
      --gold-warm: a touch warmer, used for hover/active sheen so the accent
      doesn't read grey on ivory. --gold-deep: deeper rim for thin rules and
@@ -111,13 +111,13 @@
      (rating numerics, small labels, links). Never use for large decorative
      accents — that stays --gold / --gold-warm. */
   --gold-ink: #8a611f;
-  --ivory: #faf8f3;
-  --sand: #f4efe7;
-  --charcoal: #2e2e2e;
+  --ivory: #FAF8F3;
+  --sand: #F4EFE7;
+  --charcoal: #2E2E2E;
   /* Secondary text — was #5A5A5A, deepened to #555555 so secondary copy on
      mobile clears 7:1 contrast on ivory and never reads as washed grey. */
   --charcoal-soft: #555555;
-  --charcoal-deep: #1f1f1f;
+  --charcoal-deep: #1F1F1F;
 
   /* ─────────────────────────────────────────────────────────────
      HERO SCRIM TOKENS — single source of truth for the dark
