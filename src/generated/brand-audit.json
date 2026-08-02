@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-02T01:08:15.803Z",
+  "generatedAt": "2026-08-02T21:03:48.680Z",
   "filesScanned": 944,
   "approvedPalette": {
     "teal": "#295B61",
@@ -3367,36 +3367,36 @@
       "file": "src/styles.css",
       "line": 100,
       "col": 11,
-      "raw": "#295b61",
+      "raw": "#295B61",
       "normalized": "#295b61",
-      "snippet": "--teal: #295b61;",
+      "snippet": "--teal: #295B61;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 101,
       "col": 13,
-      "raw": "#2a7c82",
+      "raw": "#2A7C82",
       "normalized": "#2a7c82",
-      "snippet": "--teal-2: #2a7c82;",
+      "snippet": "--teal-2: #2A7C82;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 102,
       "col": 11,
-      "raw": "#c9a96a",
+      "raw": "#C9A96A",
       "normalized": "#c9a96a",
-      "snippet": "--gold: #c9a96a;",
+      "snippet": "--gold: #C9A96A;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 103,
       "col": 16,
-      "raw": "#e1cfa6",
+      "raw": "#E1CFA6",
       "normalized": "#e1cfa6",
-      "snippet": "--gold-soft: #e1cfa6;",
+      "snippet": "--gold-soft: #E1CFA6;",
       "status": "approved"
     },
     {
@@ -3430,27 +3430,27 @@
       "file": "src/styles.css",
       "line": 114,
       "col": 12,
-      "raw": "#faf8f3",
+      "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "--ivory: #faf8f3;",
+      "snippet": "--ivory: #FAF8F3;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 115,
       "col": 11,
-      "raw": "#f4efe7",
+      "raw": "#F4EFE7",
       "normalized": "#f4efe7",
-      "snippet": "--sand: #f4efe7;",
+      "snippet": "--sand: #F4EFE7;",
       "status": "approved"
     },
     {
       "file": "src/styles.css",
       "line": 116,
       "col": 15,
-      "raw": "#2e2e2e",
+      "raw": "#2E2E2E",
       "normalized": "#2e2e2e",
-      "snippet": "--charcoal: #2e2e2e;",
+      "snippet": "--charcoal: #2E2E2E;",
       "status": "approved"
     },
     {
@@ -3484,9 +3484,9 @@
       "file": "src/styles.css",
       "line": 120,
       "col": 20,
-      "raw": "#1f1f1f",
+      "raw": "#1F1F1F",
       "normalized": "#1f1f1f",
-      "snippet": "--charcoal-deep: #1f1f1f;",
+      "snippet": "--charcoal-deep: #1F1F1F;",
       "status": "allowlisted"
     },
     {
