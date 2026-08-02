@@ -33,7 +33,7 @@ export function SignatureRouteMapFallback({ tour, reason }: Props) {
 
   return (
     <div
-      className="w-full aspect-[16/11] md:aspect-[16/9] bg-[color:var(--sand)] relative"
+      className="w-full aspect-[4/3] md:aspect-[16/9] bg-[color:var(--sand)] relative"
       role="img"
       aria-label={`Route map (offline preview) for ${tour.title} — ${points.length} stops across ${tour.region}`}
     >

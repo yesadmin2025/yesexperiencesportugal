@@ -21,10 +21,12 @@ interface Props {
   surface?: "light" | "dark";
 }
 
-let CHIP_UID = 0;
+/**
+ * `useId` is SSR-stable — a module-level counter is not, and produced
+ * hydration mismatches when several chips render on one page.
+ */
 function useChipLabelId() {
-  const [id] = React.useState(() => `yes-price-chip-${++CHIP_UID}`);
-  return id;
+  return `yes-price-chip-${React.useId()}`;
 }
 
 export function PriceCurrencyChip({ className, align = "end", surface = "light" }: Props) {
