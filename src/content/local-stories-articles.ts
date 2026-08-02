@@ -1016,6 +1016,20 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/local-stories/private-wine-tour-lisbon", label: "Private wine tour from Lisbon" },
       { path: "/local-stories/setubal-wine-guide", label: "Local guide to Setúbal wine" },
     ],
+    faq: [
+      {
+        q: "Where is the best wine tasting near Lisbon?",
+        a: "South of the Tagus, in Azeitão, Setúbal and Arrábida. Azeitão is a village of small family cellars where Moscatel de Setúbal is the star; Setúbal adds the Livramento market and grilled fish; Arrábida adds the coastal landscape between them.",
+      },
+      {
+        q: "How far are the wineries from Lisbon?",
+        a: "Less than an hour. Azeitão and Setúbal sit just across the Tagus from Lisbon, which is why a tasting there works comfortably as a single private day.",
+      },
+      {
+        q: "What wine will I taste near Lisbon?",
+        a: "Mostly Moscatel de Setúbal and local Castelão reds, made by family producers who have been working these vineyards for generations.",
+      },
+    ],
     datePublished: "2026-07-10",
   },
   {
