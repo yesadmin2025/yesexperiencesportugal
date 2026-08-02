@@ -42,12 +42,13 @@ export const Route = createFileRoute("/pt/contact")({
       },
       { property: "og:locale", content: "pt_PT" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/pt/contact" },
-    ],
-    links: [
-      { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/contact" },
-      ...localeAlternateLinks("/contact"),
-    ],
-  }),
+      ],
+      links: [
+        { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/contact" },
+        ...localeAlternateLinks("/contact"),
+      ],
+    };
+  },
   component: PtContactPage,
 });
 
