@@ -17,9 +17,10 @@ import {
 } from "@/config/business-nap";
 
 export const Route = createFileRoute("/pt/contact")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    type: typeof search.type === "string" && search.type.length > 0 ? search.type : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { type?: string } => {
+    const raw = typeof search.type === "string" && search.type.length > 0 ? search.type : undefined;
+    return raw ? { type: raw } : {};
+  },
   head: (ctx) => {
     // Parity with /contact: `?type=` is only a preselection hint, so the
     // variant stays crawlable but out of the index while the canonical keeps
