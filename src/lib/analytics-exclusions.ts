@@ -32,7 +32,8 @@ export function isAdminPath(pathname: string): boolean {
 
 export function isExcludedHost(hostname: string): boolean {
   const h = hostname.toLowerCase();
-  if (h === "localhost" || h === "127.0.0.1" || h === "0.0.0.0" || h.endsWith(".local")) return true;
+  if (h === "localhost" || h === "127.0.0.1" || h === "0.0.0.0" || h.endsWith(".local"))
+    return true;
   if (h.startsWith("id-preview--")) return true;
   if (h.endsWith(".lovableproject.com")) return true;
   if (h.endsWith(".sandbox.lovable.dev")) return true;
