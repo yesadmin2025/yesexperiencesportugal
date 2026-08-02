@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { trackEvent } from "@/lib/analytics-events";
 import { StudioV3 } from "@/components/studio-v3/StudioV3";
 import { breadcrumbLd, studioServiceLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
 import { STUDIO_FAQ } from "@/content/seo-faq";
@@ -60,7 +62,20 @@ export const Route = createFileRoute("/studio-v3")({
   component: StudioV3Page,
 });
 
+const STUDIO_START_KEY = "yes.studio.started.v1";
+
 function StudioV3Page() {
+  // Studio start — once per browser session, no PII.
+  useEffect(() => {
+    try {
+      if (window.sessionStorage.getItem(STUDIO_START_KEY)) return;
+      window.sessionStorage.setItem(STUDIO_START_KEY, "1");
+    } catch {
+      /* storage blocked — still fire once per mount */
+    }
+    trackEvent("studio_started", { placement: "studio_v3" });
+  }, []);
+
   return (
     <>
       {/* SSR-visible intent for crawlers and no-JS users. */}
