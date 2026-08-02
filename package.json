@@ -26,12 +26,10 @@
     "test:e2e:grep:homepage-structure": "node scripts/playwright-run.mjs --grep \"homepage structure\"",
     "test:e2e:signature-map-and-images": "node scripts/playwright-run.mjs e2e/signature-map-and-images.spec.ts",
     "test:e2e:signature-a11y": "node scripts/playwright-run.mjs e2e/signature-a11y-axe.spec.ts",
-
     "qa:hero-copy": "node scripts/hero-copy-qa.mjs",
     "qa:hero-copy:watch": "node scripts/hero-copy-qa.mjs --watch",
     "check:css": "node scripts/check-css-braces.mjs",
     "test:sot-parity": "vitest run src/__tests__/sot-viator-parity.test.ts"
-
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.42.3",
@@ -116,7 +114,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
     "@eslint/js": "^9.32.0",
-    "@lovable.dev/vite-tanstack-config": "2.7.7",
+    "@lovable.dev/vite-tanstack-config": "2.8.5",
     "@playwright/test": "^1.59.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
