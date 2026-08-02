@@ -1,3 +1,4 @@
+import { trackEvent } from "@/lib/analytics-events";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
@@ -702,6 +703,13 @@ function TailorPage() {
       });
       item.price = estimatedPrice;
       gaBeginCheckout({ items: [item], valueEur: Math.round(estimatedPrice * details.guests) });
+      trackEvent("checkout_started", {
+        experience_id: tour.id,
+        experience_type: "tailor",
+        group_size: details.guests,
+        value: Math.round(estimatedPrice * details.guests),
+        currency: "EUR",
+      });
     } catch {
       /* silent */
     }
