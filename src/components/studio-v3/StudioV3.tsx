@@ -2994,7 +2994,7 @@ function ComposerRevealPanel({ state }: { state: StudioV3State }) {
   return (
     <div
       data-testid="studio-v3-composer-reveal-panel"
-      className="mt-8 sm:mt-10 max-w-[520px] mx-auto px-3 sm:px-1"
+      className="mt-8 sm:mt-10 max-w-[520px] mx-auto px-0 sm:px-1"
     >
       <p
         className="text-center text-[11px] font-semibold uppercase tracking-[0.22em] mb-3"
@@ -3775,7 +3775,7 @@ export function StoryboardHandoff({
         {editedStops.length > 0 ? (
           <div
             data-testid="studio-v3-stops-editor"
-            className="mt-8 sm:mt-10 max-w-[520px] mx-auto px-3 sm:px-1"
+            className="mt-8 sm:mt-10 max-w-[520px] mx-auto px-0 sm:px-1"
           >
             <p
               className="text-center text-[13px] font-medium mb-4 sm:mb-5"
@@ -3801,7 +3801,7 @@ export function StoryboardHandoff({
                       border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
                     }}
                   >
-                    <div className="flex items-start gap-3">
+                    <div className="flex flex-wrap items-start gap-x-3 gap-y-2">
                       <span
                         aria-hidden
                         className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
@@ -3845,7 +3845,7 @@ export function StoryboardHandoff({
                           </p>
                         ) : null}
                       </div>
-                      <div className="flex shrink-0 items-center gap-1">
+                      <div className="ml-auto flex w-full shrink-0 items-center justify-end gap-1 sm:w-auto">
                         <button
                           type="button"
                           aria-label={`Move ${s.label} earlier`}
@@ -3857,7 +3857,7 @@ export function StoryboardHandoff({
                               return n;
                             })
                           }
-                          className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          className="relative grid h-8 w-8 place-items-center rounded-full text-[14px] after:absolute after:-inset-[6px] after:content-[''] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                           style={{ color: "var(--charcoal)" }}
                         >
                           ↑
@@ -3873,7 +3873,7 @@ export function StoryboardHandoff({
                               return n;
                             })
                           }
-                          className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          className="relative grid h-8 w-8 place-items-center rounded-full text-[14px] after:absolute after:-inset-[6px] after:content-[''] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                           style={{ color: "var(--charcoal)" }}
                         >
                           ↓
@@ -3884,7 +3884,7 @@ export function StoryboardHandoff({
                             aria-label={`Swap ${s.label}`}
                             aria-expanded={swapOpen}
                             onClick={() => setSwapOpenIdx(swapOpen ? null : i)}
-                            className="grid h-8 w-8 place-items-center rounded-full text-[13px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                            className="relative grid h-8 w-8 place-items-center rounded-full text-[13px] after:absolute after:-inset-[6px] after:content-[''] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                             style={{ color: "var(--charcoal)" }}
                           >
                             ⇄
@@ -3895,7 +3895,7 @@ export function StoryboardHandoff({
                           aria-label={`Remove ${s.label}`}
                           disabled={editedStops.length <= 1}
                           onClick={() => setEdited((prev) => prev.filter((_, j) => j !== i))}
-                          className="grid h-8 w-8 place-items-center rounded-full text-[14px] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                          className="relative grid h-8 w-8 place-items-center rounded-full text-[14px] after:absolute after:-inset-[6px] after:content-[''] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                           style={{ color: "var(--charcoal)" }}
                         >
                           ✕
