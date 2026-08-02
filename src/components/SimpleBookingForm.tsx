@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { trackEvent } from "@/lib/analytics-events";
 import { Calendar, Sparkles, Lock, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { SignatureTour } from "@/data/signatureTours";
@@ -203,6 +204,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       });
       item.price = perPaxForSummary;
       gaBeginCheckout({ items: [item], valueEur: Math.round(perPaxForSummary * details.guests) });
+      trackEvent("checkout_started", {
+        experience_id: tour.id,
+        experience_type: "signature",
+        group_size: details.guests,
+        value: Math.round(perPaxForSummary * details.guests),
+        currency: "EUR",
+      });
     } catch {
       /* silent */
     }
@@ -497,6 +505,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         open={detailsOpen}
         onOpenChange={(o) => {
           setDetailsOpen(o);
+          if (o && !firedDrawer.current) {
+            firedDrawer.current = true;
+            trackEvent("availability_open", {
+              experience_id: tour.id,
+              experience_type: "signature",
+            });
+          }
           if (o && tour.id) {
             // Eager-prewarm Stripe on intent so the drawer opens instantly.
             // We don't yet know the PK, but loadStripe is cached so the first

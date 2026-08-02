@@ -14,10 +14,13 @@
 
 import { track, type AnalyticsParams } from "@/lib/analytics";
 import { utmParams } from "@/lib/utm";
+import { isTrackingDisabled } from "@/lib/analytics-exclusions";
 
 /* ─────────────────── Event catalogue (exact names) ─────────────────── */
 
 export type YesAnalyticsEvent =
+  // Lifecycle
+  | "page_view"
   // Homepage
   | "hero_open_studio"
   | "hero_choose_experience"
@@ -185,6 +188,7 @@ function dedupeKey(event: string, params: Record<string, unknown>): string {
 export function trackEvent(event: YesAnalyticsEvent, params: YesEventParams = {}): void {
   if (typeof window === "undefined") return;
   if (typeof process !== "undefined" && process.env?.VITEST) return;
+  if (isTrackingDisabled()) return;
 
   // Auto-enrichment
   const enriched: Record<string, unknown> = {

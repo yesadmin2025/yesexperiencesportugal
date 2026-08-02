@@ -12,6 +12,7 @@
  */
 
 import type { SignatureTour } from "@/data/signatureTours";
+import { isTrackingDisabled } from "@/lib/analytics-exclusions";
 
 export interface GA4Item {
   item_id: string;
@@ -41,7 +42,7 @@ function isTest(): boolean {
  * Exported for tests; call sites should use the typed helpers below.
  */
 export function pushEcommerce(event: string, ecommerce: Record<string, unknown>): void {
-  if (!isBrowser() || isTest()) return;
+  if (!isBrowser() || isTest() || isTrackingDisabled()) return;
   const w = window as DataLayerWindow;
   try {
     w.dataLayer = w.dataLayer ?? [];
@@ -54,7 +55,7 @@ export function pushEcommerce(event: string, ecommerce: Record<string, unknown>)
 
 /** Non-ecommerce dataLayer push (studio_start / studio_step / generate_lead). */
 function pushEvent(event: string, params: Record<string, unknown>): void {
-  if (!isBrowser() || isTest()) return;
+  if (!isBrowser() || isTest() || isTrackingDisabled()) return;
   const w = window as DataLayerWindow;
   try {
     w.dataLayer = w.dataLayer ?? [];

@@ -19,6 +19,8 @@
  * a client-only effect in the root route).
  */
 
+import { isTrackingDisabled } from "@/lib/analytics-exclusions";
+
 export type AnalyticsEvent =
   | "hero_open_studio_click"
   | "hero_choose_experience_click"
@@ -81,7 +83,7 @@ function inferDevice(): AnalyticsParams["device"] {
  * Fire an analytics event. Safe to call from anywhere.
  */
 export function track(event: AnalyticsEvent | string, params: AnalyticsParams = {}): void {
-  if (!isBrowser() || isTest()) return;
+  if (!isBrowser() || isTest() || isTrackingDisabled()) return;
   const w = window as AnalyticsWindow;
   const enriched: Record<string, unknown> = {
     event,
@@ -114,6 +116,7 @@ export function track(event: AnalyticsEvent | string, params: AnalyticsParams = 
 let installed = false;
 export function installAnalyticsAttrs(): void {
   if (!isBrowser() || isTest() || installed) return;
+  if (isTrackingDisabled()) return;
   installed = true;
 
   const handler = (ev: MouseEvent) => {

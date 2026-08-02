@@ -23,6 +23,7 @@ import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButto
 import { RouteFade } from "@/components/motion/RouteFade";
 import { pauseOffscreenLoops } from "@/lib/motion/pauseOffscreenLoops";
 import { Scene } from "@/components/motion/Scene";
+import { usePageViewTracking } from "@/lib/analytics-page-view";
 import { installAnalyticsAttrs } from "@/lib/analytics";
 import { setAnalyticsLocale } from "@/lib/analytics-events";
 import { captureUtmsFromLocation } from "@/lib/utm";
@@ -285,6 +286,7 @@ function RootComponent() {
   useEffect(() => installClientErrorLogger(), []);
   useEffect(() => installDevHardReload(), []);
   useEffect(() => installAnalyticsAttrs(), []);
+  usePageViewTracking();
   useEffect(() => {
     captureUtmsFromLocation();
   }, []);

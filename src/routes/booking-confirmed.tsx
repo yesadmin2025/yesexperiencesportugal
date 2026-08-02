@@ -14,6 +14,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { findTour } from "@/data/signatureTours";
 import { gaPurchase, buildTourItem } from "@/lib/analytics-ga4";
+import { trackEvent } from "@/lib/analytics-events";
 
 interface Search {
   session_id?: string;
@@ -114,6 +115,13 @@ function BookingConfirmedPage() {
       transactionId: session_id,
       valueEur,
       items: [item],
+      currency: state.data.currency ? state.data.currency.toUpperCase() : "EUR",
+    });
+    const isStudio = (tour ?? "").startsWith("studio");
+    trackEvent(isStudio ? "studio_checkout_completed" : "checkout_completed", {
+      experience_id: tour ?? null,
+      experience_type: isStudio ? "studio" : "signature",
+      value: valueEur,
       currency: state.data.currency ? state.data.currency.toUpperCase() : "EUR",
     });
   }, [state, session_id, tour]);

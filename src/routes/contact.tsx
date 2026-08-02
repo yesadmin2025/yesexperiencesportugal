@@ -1,4 +1,5 @@
 import { localeAlternateLinks } from "@/i18n/seo";
+import { trackEvent } from "@/lib/analytics-events";
 import { createFileRoute } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -234,6 +235,19 @@ function Page() {
                         requestType: parsed.data.requestType,
                       }),
                     );
+                    // Privacy-safe funnel events — request type only, no PII.
+                    trackEvent("contact_form_submitted", {
+                      placement: parsed.data.requestType,
+                    });
+                    if (parsed.data.requestType === "corporate") {
+                      trackEvent("corporate_lead", { placement: "contact_form" });
+                    }
+                    if (parsed.data.requestType === "multi_day") {
+                      trackEvent("travel_designer_lead", { placement: "contact_form" });
+                    }
+                    if (parsed.data.requestType === "proposal") {
+                      trackEvent("moments_lead", { placement: "contact_form" });
+                    }
                   } catch (err) {
                     console.error("[contact] submit failed", err);
                     setStatus("error");
