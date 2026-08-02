@@ -397,7 +397,6 @@ const HEADLINES: HeadlineSpec[] = [
     file: "src/components/home/CinematicHero.tsx",
     pattern:
       /<span\s+className="(block font-serif italic font-normal mt-3 sm:mt-4)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[1\]/,
-
   },
   {
     page: "home",
