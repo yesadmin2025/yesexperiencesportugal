@@ -29,19 +29,19 @@ export const Route = createFileRoute("/pt/contact")({
     return {
       meta: [
         ...(isParamVariant ? [{ name: "robots", content: "noindex, follow" }] : []),
-      { title: "Contactos — YES Experiences Portugal" },
-      {
-        name: "description",
-        content:
-          "Contacte a YES Experiences Portugal por WhatsApp, telefone ou email. Respondemos diariamente em português e inglês e ajudamos a planear a sua experiência.",
-      },
-      { property: "og:title", content: "Contactos — YES Experiences Portugal" },
-      {
-        property: "og:description",
-        content: "Fale connosco por WhatsApp, telefone ou email.",
-      },
-      { property: "og:locale", content: "pt_PT" },
-      { property: "og:url", content: "https://yesexperiencesportugal.com/pt/contact" },
+        { title: "Contactos — YES Experiences Portugal" },
+        {
+          name: "description",
+          content:
+            "Contacte a YES Experiences Portugal por WhatsApp, telefone ou email. Respondemos diariamente em português e inglês e ajudamos a planear a sua experiência.",
+        },
+        { property: "og:title", content: "Contactos — YES Experiences Portugal" },
+        {
+          property: "og:description",
+          content: "Fale connosco por WhatsApp, telefone ou email.",
+        },
+        { property: "og:locale", content: "pt_PT" },
+        { property: "og:url", content: "https://yesexperiencesportugal.com/pt/contact" },
       ],
       links: [
         { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/contact" },
