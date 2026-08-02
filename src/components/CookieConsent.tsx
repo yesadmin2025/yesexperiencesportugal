@@ -12,7 +12,7 @@
 
 import * as React from "react";
 import { useHydrated } from "@/hooks/use-hydrated";
-import { trackEvent } from "@/lib/analytics-events";
+import { trackEvent, setAnalyticsConsent } from "@/lib/analytics-events";
 
 const STORAGE_KEY = "yes.cookieConsent.v1";
 const OPEN_EVENT = "yes:open-cookie-consent";
@@ -68,10 +68,14 @@ export function CookieConsent() {
     if (!hydrated) return;
     const existing = readStored();
     if (!existing) {
+      // No decision yet — hold custom events in the queue until the guest
+      // chooses (they flush automatically on "granted").
+      setAnalyticsConsent("denied");
       setOpen(true);
     } else {
       // Re-apply on every mount so late-loading GTM sees the correct signals.
       applyConsent(existing);
+      setAnalyticsConsent(existing.analytics);
     }
     const onOpen = () => {
       const cur = readStored();
@@ -91,6 +95,7 @@ export function CookieConsent() {
       const full: ConsentChoice = { ...choice, decidedAt: new Date().toISOString(), version: 1 };
       persist(full);
       applyConsent(full);
+      setAnalyticsConsent(full.analytics);
       trackEvent("consent_choice", {
         source,
         analytics: full.analytics,
