@@ -865,9 +865,15 @@ function Block({
 }
 
 function RelatedTours({ currentId }: { currentId: string }) {
-  const others = signatureTours
-    .filter((t) => t.id !== currentId && isValidTourId(t.id))
-    .slice(0, 3);
+  // Relevance from existing metadata only: same region first (case-insensitive
+  // region string already on each Signature), then the rest of the collection
+  // in published order. Never links to the current page or a legacy slug —
+  // every href is built from the canonical `/tours/$tourId` route.
+  const current = signatureTours.find((t) => t.id === currentId);
+  const currentRegion = (current?.region ?? "").trim().toLowerCase();
+  const pool = signatureTours.filter((t) => t.id !== currentId && isValidTourId(t.id));
+  const sameRegion = pool.filter((t) => t.region.trim().toLowerCase() === currentRegion);
+  const others = [...sameRegion, ...pool.filter((t) => !sameRegion.includes(t))].slice(0, 3);
   const { resolveImg } = useImportedTourImages();
   if (others.length === 0) return null;
   return (
