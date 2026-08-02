@@ -984,11 +984,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "Best Wine Tasting Near Lisbon — by a Local",
     eyebrow: "Lisbon · Wine Tasting",
     standfirst:
-      "The most interesting wine tastings within an hour of Lisbon are not in the city — they are south, in Azeitão and Setúbal.",
+      "The most interesting wine tasting near Lisbon is not in the city — it is south of the Tagus, in Azeitão, Setúbal and Arrábida, all within about an hour of your hotel.",
     sections: [
       {
         heading: "Why the best tastings are south of the bridge.",
-        body: "Lisbon itself has good wine bars, but the wineries are across the Tagus. In less than an hour you reach Azeitão and Setúbal, where family producers have been making Moscatel and Castelão for generations. The cellars are small, the pours are generous, and the lunch that follows is part of the tasting.",
+        body: "Lisbon itself has good wine bars, but the wineries are across the Tagus. In less than an hour you reach Azeitão and Setúbal, where family producers have been making Moscatel and Castelão for generations. The cellars are small, the pours are generous, and the lunch that follows is part of the tasting.\n\nSo when travelers ask where to taste wine close to Lisbon, the honest answer is three neighbouring places rather than one: Azeitão for Moscatel and small cellars, Setúbal for the market and the fish, and Arrábida for the coastal road between them.",
       },
       {
         heading: "Azeitão — Moscatel and small cellars.",
