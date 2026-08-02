@@ -7149,13 +7149,15 @@ html {
   }
 }
 
-/* ── Signature route map — Leaflet zoom controls at a 44px touch target ── */
+/* ── Signature route map — Leaflet zoom controls at a 44px touch target ──
+   Leaflet's own stylesheet is injected at runtime (dynamic import), so it
+   lands after this file in the cascade; !important is required here. */
 .leaflet-container.leaflet-touch .leaflet-bar a,
 .leaflet-container .leaflet-control-zoom a {
-  width: 44px;
-  height: 44px;
-  line-height: 44px;
-  font-size: 20px;
+  width: 44px !important;
+  height: 44px !important;
+  line-height: 44px !important;
+  font-size: 20px !important;
   color: var(--teal);
   background: color-mix(in srgb, var(--ivory) 95%, transparent);
   border-bottom-color: color-mix(in srgb, var(--gold) 35%, transparent);
