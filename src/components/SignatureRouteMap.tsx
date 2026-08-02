@@ -25,6 +25,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { RouteLegend } from "@/components/studio-v3/RouteLegend";
 import { getSignatureTourRoute, type SignatureRoutePayload } from "@/lib/signature-route.functions";
+import { MAP_CANVAS_CLASS, MAP_FRAME_CLASS } from "@/components/SignatureRouteMapShell";
 
 /** Google encoded-polyline decoder (precision 5). */
 function decodePolyline(str: string): Array<[number, number]> {
@@ -195,14 +196,7 @@ function LeafletMap({
     };
   }, [stops, polylines, onFallback]);
 
-  return (
-    <div
-      ref={ref}
-      className="w-full aspect-[16/11] md:aspect-[16/9] bg-[color:var(--sand)]"
-      role="img"
-      aria-label={ariaLabel}
-    />
-  );
+  return <div ref={ref} className={MAP_CANVAS_CLASS} role="img" aria-label={ariaLabel} />;
 }
 
 export function SignatureRouteMap({ tour }: Props) {
@@ -229,7 +223,13 @@ export function SignatureRouteMap({ tour }: Props) {
     setFallbackReason((prev) => prev ?? reason);
   }, []);
 
-  if (stops.length === 0) return null;
+  // The map section must never disappear silently. When no stop can be
+  // geo-resolved we still render the section with the real stop labels and
+  // an honest message instead of dropping it from the page.
+  const unmappable = stops.length === 0;
+  const listStops: Array<{ label: string }> = unmappable
+    ? (tour.stops ?? []).map((s) => ({ label: s.label }))
+    : stops;
 
   const legMinutes = data?.legs?.map((l) => l.driveMinutes) ?? null;
   const legDistancesKm = data?.legs?.map((l) => l.distanceKm) ?? null;
@@ -244,13 +244,24 @@ export function SignatureRouteMap({ tour }: Props) {
             Where the <SectionTitle.Em>day goes</SectionTitle.Em>
           </SectionTitle>
           <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] max-w-lg mx-auto">
-            Real locations across {tour.region}. The map shows the drive between them — distances
-            only, so you get a feel for the ground you'll cover.
+            {unmappable
+              ? `Real locations across ${tour.region}, in the order you'll see them.`
+              : `Real locations across ${tour.region}. The map shows the drive between them — distances only, so you get a feel for the ground you'll cover.`}
           </p>
         </div>
 
-        <div className="relative overflow-hidden border border-[color:var(--gold)]/25 rounded-[6px] shadow-[0_2px_18px_rgba(46,46,46,0.06)]">
-          {fallbackReason ? (
+        <div className={MAP_FRAME_CLASS}>
+          {unmappable ? (
+            <div
+              className={`${MAP_CANVAS_CLASS} flex items-center justify-center px-6 text-center`}
+              role="status"
+            >
+              <p className="text-[13px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-sm">
+                The interactive map isn&apos;t available right now. The full stop list for this day
+                is below.
+              </p>
+            </div>
+          ) : fallbackReason ? (
             <SignatureRouteMapFallback tour={tour} reason={fallbackReason} />
           ) : (
             <LeafletMap
@@ -261,8 +272,9 @@ export function SignatureRouteMap({ tour }: Props) {
             />
           )}
 
-          <div className="absolute top-3 left-3 z-[400] pointer-events-none">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--ivory)]/95 backdrop-blur-sm px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] border border-[color:var(--gold)]/40 shadow-sm">
+          {/* Top-right so it never covers Leaflet's top-left zoom controls. */}
+          <div className="absolute top-3 right-3 z-[400] pointer-events-none max-w-[62%]">
+            <span className="inline-flex max-w-full items-center gap-1.5 truncate rounded-full bg-[color:var(--ivory)]/95 backdrop-blur-sm px-3 py-1.5 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal)] border border-[color:var(--gold)]/40 shadow-sm">
               <MapPin size={11} className="text-[color:var(--gold)]" aria-hidden />
               {tour.region}
             </span>
@@ -285,7 +297,7 @@ export function SignatureRouteMap({ tour }: Props) {
 
         {/* Plain numbered list of stops — labels only, matches Viator source. */}
         <ol className="mt-8 grid sm:grid-cols-2 gap-x-6 gap-y-2 list-none p-0">
-          {stops.map((p, i) => (
+          {listStops.map((p, i) => (
             <li
               key={`${p.label}-${i}`}
               className="flex items-baseline gap-3 text-[14px] text-[color:var(--charcoal)]"

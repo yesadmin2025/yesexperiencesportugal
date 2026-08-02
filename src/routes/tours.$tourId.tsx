@@ -25,7 +25,6 @@ import {
   logTourValidation,
 } from "@/lib/viatorValidation";
 import { useEffect, lazy, Suspense } from "react";
-import { snapStop, type StopCoord } from "@/data/stopCoords";
 import { SimpleBookingForm } from "@/components/SimpleBookingForm";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -51,6 +50,8 @@ import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { useAdminTourPhotos } from "@/lib/useAdminTourPhotos";
 // Lazy-loaded below the fold — keeps Leaflet (~140KB) out of the initial tour bundle
+import { SignatureRouteMapShell } from "@/components/SignatureRouteMapShell";
+
 const SignatureRouteMap = lazy(() =>
   import("@/components/SignatureRouteMap").then((m) => ({ default: m.SignatureRouteMap })),
 );
@@ -119,7 +120,7 @@ export const Route = createFileRoute("/tours/$tourId")({
         { property: "og:description", content: pageDescription },
 
         { property: "og:image", content: img },
-        { property: "twitter:image", content: img },
+        { name: "twitter:image", content: img },
         { property: "og:url", content: url },
         { property: "og:type", content: "product" },
       ],
@@ -255,7 +256,7 @@ function TourDetailPage() {
       <ItineraryTimeline tour={tour} meta={meta} />
 
       {/* ── 6 · MAP — real geographic map with driving route (lazy) ─ */}
-      <Suspense fallback={<div className="min-h-[420px]" aria-hidden="true" />}>
+      <Suspense fallback={<SignatureRouteMapShell />}>
         <SignatureRouteMap tour={tour} />
       </Suspense>
 
@@ -605,169 +606,6 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
             </li>
           ))}
         </Scene>
-      </div>
-    </section>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
- * 6 · ROUTE MAP — schematic Portugal w/ branded markers (real stops)
- * ════════════════════════════════════════════════════════════ */
-function RouteMap({ tour, meta }: { tour: SignatureTour; meta?: ViatorMeta }) {
-  const region = tour.seed.region ?? "lisbon";
-  // Mirror the itinerary timeline: project the Tailor blueprint into
-  // editorial chapters and use those for the numbered list + dots.
-  // Falls back to raw tour.stops when the tour has no blueprint.
-  const editorial = toEditorialChapters(tour.id) ?? [];
-  const source: { label: string; raw: TourStop }[] =
-    editorial.length > 0
-      ? editorial.map((c) => {
-          const match =
-            (tour.stops ?? []).find(
-              (s) =>
-                c.representativeStop &&
-                s.label.toLowerCase().includes(c.representativeStop.toLowerCase()),
-            ) ?? (tour.stops ?? [])[0];
-          return {
-            label: c.label,
-            raw: { ...(match ?? { label: c.label }), label: c.label } as TourStop,
-          };
-        })
-      : (tour.stops ?? []).map((s) => ({ label: s.label, raw: s }));
-
-  const points: (StopCoord & { idx: number; raw: TourStop })[] = source.map((s, i) => ({
-    ...snapStop(s.raw.label, region, i),
-    idx: i,
-    raw: s.raw,
-  }));
-
-  if (points.length === 0) return null;
-
-  // Compute viewbox centered on the route
-  const padX = 8;
-  const padY = 10;
-  const minX = Math.max(0, Math.min(...points.map((p) => p.x)) - padX);
-  const maxX = Math.min(100, Math.max(...points.map((p) => p.x)) + padX);
-  const minY = Math.max(0, Math.min(...points.map((p) => p.y)) - padY);
-  const maxY = Math.min(130, Math.max(...points.map((p) => p.y)) + padY);
-  const w = Math.max(40, maxX - minX);
-  const h = Math.max(40, maxY - minY);
-
-  const path = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
-
-  return (
-    <section className="py-14 md:py-20 reveal">
-      <div className="container-x max-w-5xl">
-        <div className="text-center mb-8">
-          <Eyebrow flank>The route</Eyebrow>
-          <SectionTitle size="compact">
-            Where the <SectionTitle.Em>day goes</SectionTitle.Em>
-          </SectionTitle>
-          <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] max-w-lg mx-auto">
-            Real stops, in the order you'll see them.
-          </p>
-        </div>
-
-        <div className="relative bg-[color:var(--charcoal-deep)] overflow-hidden border border-[color:var(--gold)]/20">
-          <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_30%_20%,rgba(201,169,106,0.10)_0%,transparent_55%),radial-gradient(110%_80%_at_70%_80%,rgba(41,91,97,0.45)_0%,transparent_60%)]" />
-
-          {/* Faint grid */}
-          <svg
-            className="absolute inset-0 w-full h-full opacity-[0.18]"
-            preserveAspectRatio="none"
-            viewBox="0 0 200 400"
-          >
-            <defs>
-              <pattern
-                id={`rmap-grid-${tour.id}`}
-                width="20"
-                height="20"
-                patternUnits="userSpaceOnUse"
-              >
-                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--gold)" strokeWidth="0.4" />
-              </pattern>
-            </defs>
-            <rect width="200" height="400" fill={`url(#rmap-grid-${tour.id})`} />
-          </svg>
-
-          <div className="relative aspect-[16/11] md:aspect-[16/9] p-6">
-            <svg
-              viewBox={`${minX} ${minY} ${w} ${h}`}
-              preserveAspectRatio="xMidYMid meet"
-              className="w-full h-full"
-              role="img"
-              aria-label={`Route map for ${tour.title}`}
-            >
-              <defs>
-                <linearGradient id={`rline-${tour.id}`} x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="var(--gold)" stopOpacity="0.95" />
-                  <stop offset="100%" stopColor="var(--gold)" stopOpacity="0.6" />
-                </linearGradient>
-              </defs>
-
-              {/* Route line */}
-              <path
-                d={path}
-                fill="none"
-                stroke={`url(#rline-${tour.id})`}
-                strokeWidth={Math.max(0.6, w / 80)}
-                strokeLinecap="round"
-                strokeDasharray={`${Math.max(1.2, w / 60)} ${Math.max(1, w / 80)}`}
-              />
-
-              {/* Branded markers */}
-              {points.map((p, i) => {
-                const r = Math.max(1.4, w / 50);
-                return (
-                  <g key={p.label + i}>
-                    {/* Soft halo */}
-                    <circle cx={p.x} cy={p.y} r={r * 2.2} fill="var(--gold)" opacity="0.12" />
-                    {/* Outer ring */}
-                    <circle
-                      cx={p.x}
-                      cy={p.y}
-                      r={r * 1.45}
-                      fill="var(--ivory)"
-                      stroke="var(--gold)"
-                      strokeWidth="0.35"
-                    />
-                    {/* Number */}
-                    <text
-                      x={p.x}
-                      y={p.y + r * 0.5}
-                      textAnchor="middle"
-                      fontSize={r * 1.3}
-                      fontWeight="600"
-                      fill="var(--teal)"
-                      fontFamily="ui-sans-serif, system-ui"
-                    >
-                      {i + 1}
-                    </text>
-                  </g>
-                );
-              })}
-            </svg>
-          </div>
-
-          {/* Stop legend */}
-          <div className="relative px-6 pb-6 pt-2">
-            <ol className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-[12.5px] text-[color:var(--ivory)]/90 list-none p-0">
-              {points.map((p, i) => (
-                <li key={p.label + i} className="flex items-baseline gap-3">
-                  <span className="text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)] shrink-0 w-6">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="leading-snug">{p.raw.label}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <p className="px-6 pb-6 pt-2 text-[13px] text-[color:var(--ivory)]/80 max-w-3xl leading-relaxed">
-            Your day is shaped from these stops — your guide sets the order and pace around you. Not
-            every stop, every time.
-          </p>
-        </div>
       </div>
     </section>
   );

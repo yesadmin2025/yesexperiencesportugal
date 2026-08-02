@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-02T00:29:18.663Z",
-  "filesScanned": 940,
+  "generatedAt": "2026-08-02T00:41:34.532Z",
+  "filesScanned": 943,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -323,7 +323,7 @@
     },
     {
       "file": "src/components/CookieConsent.tsx",
-      "line": 115,
+      "line": 120,
       "col": 144,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -332,7 +332,7 @@
     },
     {
       "file": "src/components/CookieConsent.tsx",
-      "line": 196,
+      "line": 201,
       "col": 152,
       "raw": "#1e4a4f",
       "normalized": "#1e4a4f",
@@ -341,7 +341,7 @@
     },
     {
       "file": "src/components/CookieConsent.tsx",
-      "line": 196,
+      "line": 201,
       "col": 365,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
@@ -350,7 +350,7 @@
     },
     {
       "file": "src/components/CookieConsent.tsx",
-      "line": 221,
+      "line": 226,
       "col": 152,
       "raw": "#1e4a4f",
       "normalized": "#1e4a4f",
@@ -359,7 +359,7 @@
     },
     {
       "file": "src/components/CookieConsent.tsx",
-      "line": 221,
+      "line": 226,
       "col": 365,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
