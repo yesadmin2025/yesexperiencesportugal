@@ -27,7 +27,7 @@ describe("StudioV3ProgressStepper — visual contract", () => {
     const { getByTestId } = render(<StudioV3ProgressStepper phase="feeling" />);
     const nav = getByTestId("studio-v3-progress-stepper");
     expect(nav.className).toMatchInlineSnapshot(
-      `"mt-4 mb-1 flex w-full items-center justify-between gap-2 pl-5 pr-12"`,
+      `"mt-4 mb-1 flex w-full items-center justify-between gap-2 pl-5 pr-16 sm:pr-12"`,
     );
     expect(nav.getAttribute("aria-label")).toBe("Studio progress");
   });
