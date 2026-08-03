@@ -76,7 +76,16 @@ export type StudioDirection = {
   strengths: ExperienceDimensionId[];
   /** Dimensions the traveller asked for that this direction does not carry. */
   gaps: ExperienceDimensionId[];
+  /**
+   * Dimensions this direction carries strongly that the chosen direction
+   * does not. Non-empty by construction — an alternative that adds nothing
+   * new is not offered at all.
+   */
+  distinctStrengths: ExperienceDimensionId[];
+  /** One grounded line explaining how this alternative differs. */
+  note: string;
 };
+
 
 export type StudioIntelligence = {
   /** Null when the traveller has not given enough to reason safely. */
