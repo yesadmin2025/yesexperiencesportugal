@@ -80,17 +80,21 @@ test("the Studio hydrates, survives a refresh and reaches the checkout summary",
 
   await expectNoInternalCopy(page);
 
-  await page.getByLabel(/full name|your name/i).first().fill("Studio QA");
+  await page
+    .getByLabel(/full name|your name/i)
+    .first()
+    .fill("Studio QA");
   await page.getByLabel(/email/i).first().fill("studio-qa@yesexperiences.test");
-  await page.getByLabel(/phone|whatsapp/i).first().fill("+351911111111");
+  await page
+    .getByLabel(/phone|whatsapp/i)
+    .first()
+    .fill("+351911111111");
   const pickup = page.getByLabel(/pickup address/i).first();
   if (await pickup.isVisible().catch(() => false)) {
     await pickup.fill("Hotel Avenida Palace, Lisbon");
   }
   // Unlisted winery / experience note.
-  const notes = page
-    .getByPlaceholder(/winery preferences|anything not shown/i)
-    .first();
+  const notes = page.getByPlaceholder(/winery preferences|anything not shown/i).first();
   if (await notes.isVisible().catch(() => false)) {
     await notes.fill("Prefer Quinta do Piloto and a vegetarian lunch.");
   }

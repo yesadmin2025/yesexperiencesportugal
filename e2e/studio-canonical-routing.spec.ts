@@ -55,7 +55,6 @@ test("homepage CTAs point at the new Studio", async ({ page }) => {
   ).toBe(0);
 });
 
-
 test("mobile navigation enters the new Studio", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/", { waitUntil: "domcontentloaded" });
