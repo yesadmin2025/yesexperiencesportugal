@@ -97,10 +97,15 @@ function receiverIsCanonical(receiver: ts.Expression, canonicalVariables: Set<st
   return false;
 }
 
-function propertyName(node: ts.PropertyAccessExpression | ts.ElementAccessExpression): string | null {
+function propertyName(
+  node: ts.PropertyAccessExpression | ts.ElementAccessExpression,
+): string | null {
   if (ts.isPropertyAccessExpression(node)) return node.name.text;
   const argument = node.argumentExpression;
-  if (!argument || (!ts.isStringLiteral(argument) && !ts.isNoSubstitutionTemplateLiteral(argument))) {
+  if (
+    !argument ||
+    (!ts.isStringLiteral(argument) && !ts.isNoSubstitutionTemplateLiteral(argument))
+  ) {
     return null;
   }
   return argument.text;
@@ -112,17 +117,29 @@ function directLegacyReads(absolute: string): string[] {
 
   const source = fs.readFileSync(absolute, "utf8");
   const scriptKind = absolute.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
-  const sourceFile = ts.createSourceFile(relative, source, ts.ScriptTarget.Latest, true, scriptKind);
+  const sourceFile = ts.createSourceFile(
+    relative,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    scriptKind,
+  );
   const canonicalVariables = collectCanonicalContentVariables(sourceFile);
   const violations: string[] = [];
 
   const visit = (node: ts.Node) => {
     if (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) {
       const field = propertyName(node);
-      if (field && LEGACY_FIELDS.has(field) && !receiverIsCanonical(node.expression, canonicalVariables)) {
+      if (
+        field &&
+        LEGACY_FIELDS.has(field) &&
+        !receiverIsCanonical(node.expression, canonicalVariables)
+      ) {
         const location = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
         const receiver = node.expression.getText(sourceFile);
-        violations.push(`${relative}:${location.line + 1}:${location.character + 1} ${receiver}.${field}`);
+        violations.push(
+          `${relative}:${location.line + 1}:${location.character + 1} ${receiver}.${field}`,
+        );
       }
     }
     ts.forEachChild(node, visit);
