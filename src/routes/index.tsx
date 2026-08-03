@@ -607,7 +607,7 @@ function HomePage() {
                 </ol>
 
                 <div className="mt-8 flex flex-wrap gap-x-5 gap-y-4">
-                  <CtaButton to="/studio-v3" variant="primary">
+                  <CtaButton to="/experience-studio" variant="primary">
                     Open the Studio
                   </CtaButton>
                 </div>
@@ -986,7 +986,7 @@ function HomePage() {
                     shape the rest.
                   </p>
                   <CtaPair className="mt-9" justify="center">
-                    <CtaButton to="/studio-v3" variant="primary">
+                    <CtaButton to="/experience-studio" variant="primary">
                       Open the Studio
                     </CtaButton>
                     <CtaButton

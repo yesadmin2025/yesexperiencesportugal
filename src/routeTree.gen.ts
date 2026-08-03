@@ -18,6 +18,7 @@ import { Route as StudioV3RouteImport } from './routes/studio-v3'
 import { Route as StudioV2RouteImport } from './routes/studio-v2'
 import { Route as StudioLivingAtlasPreviewRouteImport } from './routes/studio-living-atlas-preview'
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
+import { Route as StudioRouteImport } from './routes/studio'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
 import { Route as SearchRouteImport } from './routes/search'
@@ -44,6 +45,7 @@ import { Route as LocalStoriesRouteImport } from './routes/local-stories'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ExperiencesRouteImport } from './routes/experiences'
+import { Route as ExperienceStudioRouteImport } from './routes/experience-studio'
 import { Route as EvoraPrivateTourFromLisbonRouteImport } from './routes/evora-private-tour-from-lisbon'
 import { Route as EvoraAlentejoWineTourRouteImport } from './routes/evora-alentejo-wine-tour'
 import { Route as DayTripsFromLisbonRouteImport } from './routes/day-trips-from-lisbon'
@@ -193,6 +195,11 @@ const StudioDriftRoute = StudioDriftRouteImport.update({
   path: '/studio-drift',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudioRoute = StudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -321,6 +328,11 @@ const FaqRoute = FaqRouteImport.update({
 const ExperiencesRoute = ExperiencesRouteImport.update({
   id: '/experiences',
   path: '/experiences',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExperienceStudioRoute = ExperienceStudioRouteImport.update({
+  id: '/experience-studio',
+  path: '/experience-studio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EvoraPrivateTourFromLisbonRoute =
@@ -871,6 +883,7 @@ export interface FileRoutesByFullPath {
   '/day-trips-from-lisbon': typeof DayTripsFromLisbonRoute
   '/evora-alentejo-wine-tour': typeof EvoraAlentejoWineTourRoute
   '/evora-private-tour-from-lisbon': typeof EvoraPrivateTourFromLisbonRoute
+  '/experience-studio': typeof ExperienceStudioRoute
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
@@ -897,6 +910,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/studio': typeof StudioRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-living-atlas-preview': typeof StudioLivingAtlasPreviewRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
@@ -1010,6 +1024,7 @@ export interface FileRoutesByTo {
   '/day-trips-from-lisbon': typeof DayTripsFromLisbonRoute
   '/evora-alentejo-wine-tour': typeof EvoraAlentejoWineTourRoute
   '/evora-private-tour-from-lisbon': typeof EvoraPrivateTourFromLisbonRoute
+  '/experience-studio': typeof ExperienceStudioRoute
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
@@ -1034,6 +1049,7 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/studio': typeof StudioRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-living-atlas-preview': typeof StudioLivingAtlasPreviewRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
@@ -1148,6 +1164,7 @@ export interface FileRoutesById {
   '/day-trips-from-lisbon': typeof DayTripsFromLisbonRoute
   '/evora-alentejo-wine-tour': typeof EvoraAlentejoWineTourRoute
   '/evora-private-tour-from-lisbon': typeof EvoraPrivateTourFromLisbonRoute
+  '/experience-studio': typeof ExperienceStudioRoute
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
@@ -1174,6 +1191,7 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/studio': typeof StudioRoute
   '/studio-drift': typeof StudioDriftRoute
   '/studio-living-atlas-preview': typeof StudioLivingAtlasPreviewRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
@@ -1289,6 +1307,7 @@ export interface FileRouteTypes {
     | '/day-trips-from-lisbon'
     | '/evora-alentejo-wine-tour'
     | '/evora-private-tour-from-lisbon'
+    | '/experience-studio'
     | '/experiences'
     | '/faq'
     | '/hero-verify'
@@ -1315,6 +1334,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
+    | '/studio'
     | '/studio-drift'
     | '/studio-living-atlas-preview'
     | '/studio-v2'
@@ -1428,6 +1448,7 @@ export interface FileRouteTypes {
     | '/day-trips-from-lisbon'
     | '/evora-alentejo-wine-tour'
     | '/evora-private-tour-from-lisbon'
+    | '/experience-studio'
     | '/experiences'
     | '/faq'
     | '/hero-verify'
@@ -1452,6 +1473,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
+    | '/studio'
     | '/studio-drift'
     | '/studio-living-atlas-preview'
     | '/studio-v2'
@@ -1565,6 +1587,7 @@ export interface FileRouteTypes {
     | '/day-trips-from-lisbon'
     | '/evora-alentejo-wine-tour'
     | '/evora-private-tour-from-lisbon'
+    | '/experience-studio'
     | '/experiences'
     | '/faq'
     | '/hero-verify'
@@ -1591,6 +1614,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
+    | '/studio'
     | '/studio-drift'
     | '/studio-living-atlas-preview'
     | '/studio-v2'
@@ -1705,6 +1729,7 @@ export interface RootRouteChildren {
   DayTripsFromLisbonRoute: typeof DayTripsFromLisbonRoute
   EvoraAlentejoWineTourRoute: typeof EvoraAlentejoWineTourRoute
   EvoraPrivateTourFromLisbonRoute: typeof EvoraPrivateTourFromLisbonRoute
+  ExperienceStudioRoute: typeof ExperienceStudioRoute
   ExperiencesRoute: typeof ExperiencesRoute
   FaqRoute: typeof FaqRoute
   HeroVerifyRoute: typeof HeroVerifyRoute
@@ -1731,6 +1756,7 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   SintraDayTourFromLisbonRoute: typeof SintraDayTourFromLisbonRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StudioRoute: typeof StudioRoute
   StudioDriftRoute: typeof StudioDriftRoute
   StudioLivingAtlasPreviewRoute: typeof StudioLivingAtlasPreviewRoute
   StudioV2Route: typeof StudioV2RouteWithChildren
@@ -1870,6 +1896,13 @@ declare module '@tanstack/react-router' {
       path: '/studio-drift'
       fullPath: '/studio-drift'
       preLoaderRoute: typeof StudioDriftRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio': {
+      id: '/studio'
+      path: '/studio'
+      fullPath: '/studio'
+      preLoaderRoute: typeof StudioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -2052,6 +2085,13 @@ declare module '@tanstack/react-router' {
       path: '/experiences'
       fullPath: '/experiences'
       preLoaderRoute: typeof ExperiencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/experience-studio': {
+      id: '/experience-studio'
+      path: '/experience-studio'
+      fullPath: '/experience-studio'
+      preLoaderRoute: typeof ExperienceStudioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/evora-private-tour-from-lisbon': {
@@ -2865,6 +2905,7 @@ const rootRouteChildren: RootRouteChildren = {
   DayTripsFromLisbonRoute: DayTripsFromLisbonRoute,
   EvoraAlentejoWineTourRoute: EvoraAlentejoWineTourRoute,
   EvoraPrivateTourFromLisbonRoute: EvoraPrivateTourFromLisbonRoute,
+  ExperienceStudioRoute: ExperienceStudioRoute,
   ExperiencesRoute: ExperiencesRoute,
   FaqRoute: FaqRoute,
   HeroVerifyRoute: HeroVerifyRoute,
@@ -2891,6 +2932,7 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SintraDayTourFromLisbonRoute: SintraDayTourFromLisbonRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StudioRoute: StudioRoute,
   StudioDriftRoute: StudioDriftRoute,
   StudioLivingAtlasPreviewRoute: StudioLivingAtlasPreviewRoute,
   StudioV2Route: StudioV2RouteWithChildren,

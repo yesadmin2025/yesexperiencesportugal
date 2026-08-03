@@ -63,7 +63,7 @@ const PATHS: Path[] = [
     ),
     body: <>Shape your day on a living canvas — route, price, confirm.</>,
     cta: "Open the Studio",
-    href: "/studio-v3",
+    href: "/experience-studio",
     anchor: "Live price",
   },
   {

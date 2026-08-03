@@ -84,7 +84,7 @@ describe("LanguageSwitcher / pt-ready coverage", () => {
       "/multi-day",
       "/press",
       "/local-stories",
-      "/studio-v3",
+      "/experience-studio",
       "/builder",
       "/portugal-tours",
       "/luxury-tours-portugal",

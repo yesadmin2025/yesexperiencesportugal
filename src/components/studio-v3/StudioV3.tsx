@@ -4883,8 +4883,8 @@ function SaveSignatureButton({
   if (status === "saved" && token) {
     const link =
       typeof window !== "undefined"
-        ? `${window.location.origin}/studio-v3?saved=${token}`
-        : `/studio-v3?saved=${token}`;
+        ? `${window.location.origin}/experience-studio?saved=${token}`
+        : `/experience-studio?saved=${token}`;
     return (
       <div
         data-testid="studio-v3-saved-confirmation"

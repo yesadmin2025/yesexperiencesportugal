@@ -2,7 +2,7 @@ import { test, expect, request } from "@playwright/test";
 
 /**
  * Integration guard: fetch the actual rendered HTML for the homepage,
- * /studio-v3, and /multi-day and confirm every JSON-LD node the Rich
+ * /experience-studio, and /multi-day and confirm every JSON-LD node the Rich
  * Results contract depends on is present in the SSR output.
  *
  * The unit-tier guard (src/__tests__/jsonld-per-template.test.ts) checks
@@ -24,7 +24,7 @@ const CASES: Case[] = [
     requiredTypes: ["WebSite", "TravelAgency", "FAQPage", "ItemList", "Service"],
   },
   {
-    path: "/studio-v3",
+    path: "/experience-studio",
     requiredTypes: ["WebSite", "TravelAgency", "BreadcrumbList", "FAQPage", "Service"],
   },
   {

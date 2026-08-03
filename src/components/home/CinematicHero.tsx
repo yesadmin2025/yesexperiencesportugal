@@ -221,7 +221,7 @@ export function CinematicHero() {
       >
         <div className="flex flex-col items-center gap-3 sm:gap-4 lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-5 lg:w-full lg:max-w-[700px] hero-cta-group">
           <Link
-            to="/studio-v3"
+            to="/experience-studio"
             data-hero-field="primaryCta"
             data-analytics="hero_open_studio"
             data-analytics-placement="hero"

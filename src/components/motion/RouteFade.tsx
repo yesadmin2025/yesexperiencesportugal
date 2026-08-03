@@ -17,6 +17,7 @@ import { type ReactNode } from "react";
  */
 const EXCLUDE_PATTERNS: RegExp[] = [
   /^\/studio-v2(\/|$)/,
+  /^\/experience-studio(\/|$)/,
   /^\/studio-v3(\/|$)/,
   /^\/studio-drift(\/|$)/,
   /^\/builder(\/|$)/,

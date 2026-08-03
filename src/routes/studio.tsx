@@ -1,12 +1,13 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 /**
- * /builder → /experience-studio (canonical cinematic Studio).
+ * /studio — short legacy entry point. Permanently redirects to the
+ * canonical public Experience Studio, forwarding any search params.
  */
-export const Route = createFileRoute("/builder")({
+export const Route = createFileRoute("/studio")({
   head: () => ({
     meta: [
-      { title: "Experience Studio — Design Your Private Portugal Tour | YES" },
+      { title: "Studio — YES Experiences Portugal" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

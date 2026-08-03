@@ -45,7 +45,7 @@ const SERVICE_PAGES: SearchDoc[] = [
     title: "Studio — design your day",
     summary:
       "A guided, cinematic way to shape a private day in Portugal around how you want it to feel.",
-    path: "/studio-v3",
+    path: "/experience-studio",
     keywords: "studio design build custom day guided planner",
   },
   {

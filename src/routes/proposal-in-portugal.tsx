@@ -234,7 +234,7 @@ export function ProposalInPortugalPage() {
         title="Moments sit inside a wider set of private services."
         links={[
           {
-            to: "/studio-v3",
+            to: "/experience-studio",
             label: "Design the surrounding private day in the Studio",
             description:
               "Build the day around the moment — region, stops and rhythm, with the route and pricing updating as you choose.",
