@@ -206,15 +206,19 @@ export async function parsePartyTotalEur(page: Page): Promise<number | null> {
 export async function advanceRefineToStorytelling(
   page: import("@playwright/test").Page,
 ): Promise<void> {
-  const refineCta = page
-    .locator('[data-studio-v3-screen="refine"]')
-    .getByRole("button", { name: /^See my signature story/i })
-    .first();
-  if (!(await refineCta.isVisible().catch(() => false))) return;
-  await refineCta.scrollIntoViewIfNeeded().catch(() => undefined);
-  await refineCta.click({ timeout: 4_000 }).catch(() => undefined);
-  await page
-    .getByTestId("studio-v3-final-reveal")
-    .waitFor({ timeout: 8_000 })
-    .catch(() => undefined);
+  const refine = page.locator('[data-studio-v3-screen="refine"]');
+  await refine.first().waitFor({ state: "visible", timeout: 15_000 });
+
+  // Stable production contract: the Refine primary CTA always carries
+  // data-testid="studio-v3-handoff-primary". Label fallbacks exist only for
+  // older builds ("Continue" / "See my signature story").
+  const byTestId = refine.getByTestId("studio-v3-handoff-primary").first();
+  const refineCta = (await byTestId.count().catch(() => 0))
+    ? byTestId
+    : refine.getByRole("button", { name: /^(Continue|See my signature story)/i }).first();
+
+  await refineCta.waitFor({ state: "visible", timeout: 15_000 });
+  await refineCta.scrollIntoViewIfNeeded();
+  await refineCta.click({ timeout: 10_000 });
+  await page.getByTestId("studio-v3-final-reveal").waitFor({ timeout: 20_000 });
 }
