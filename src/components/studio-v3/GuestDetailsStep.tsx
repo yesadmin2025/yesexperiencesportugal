@@ -33,6 +33,10 @@ import {
 } from "@/lib/checkout/composition";
 import { ChargeSummaryLine, type ChargeQuote } from "@/components/checkout/ChargeSummaryLine";
 
+import {
+  isStudioBookingDateAllowed,
+  minimumStudioBookingDateIso,
+} from "@/components/studio-v3/dateGuards";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { GuestField, GuestFieldGroup, guestInputClass } from "@/components/checkout/guest-form-ui";
@@ -81,7 +85,9 @@ export function GuestDetailsStep({
   const [fullName, setFullName] = useState(initial?.fullName ?? "");
   const [email, setEmail] = useState(initial?.email ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
-  const [tourDate, setTourDate] = useState(initial?.tourDate ?? "");
+  const [tourDate, setTourDate] = useState(
+    initial?.tourDate && isStudioBookingDateAllowed(initial.tourDate) ? initial.tourDate : "",
+  );
   const [composition, setComposition] = useState<TravellerComposition>(() =>
     hydrateLegacyComposition(initial),
   );
@@ -119,7 +125,7 @@ export function GuestDetailsStep({
     if (!fullName.trim()) missing.push("full name");
     if (!email.trim() || !isEmail(email)) missing.push("email");
     if (!phone.trim()) missing.push("phone / WhatsApp");
-    if (!tourDate) missing.push("tour date");
+    if (!isStudioBookingDateAllowed(tourDate)) missing.push("tour date");
     if (!pickupAddress.trim()) missing.push("pickup address");
     if (!isCompositionComplete(composition)) missing.push("age for every child");
     if (missing.length) {
@@ -260,7 +266,7 @@ export function GuestDetailsStep({
             <input
               type="date"
               value={tourDate}
-              min={new Date().toISOString().split("T")[0]}
+              min={minimumStudioBookingDateIso()}
               onChange={(e) => setTourDate(e.target.value)}
               className={guestInputClass}
             />
@@ -343,13 +349,18 @@ export function GuestDetailsStep({
               className={guestInputClass}
             />
           </GuestField>
-          <GuestField label="Notes for the guide">
+          <GuestField label="Preferences for your day" hint="Optional">
             <textarea
               value={guideNotes}
               onChange={(e) => setGuideNotes(e.target.value)}
+              placeholder="Winery preferences or anything not shown in the Studio"
               rows={3}
               className={`${guestInputClass} resize-none`}
             />
+            <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+              We consider these preferences whenever possible. They do not delay payment or booking
+              confirmation.
+            </p>
           </GuestField>
         </GuestFieldGroup>
 

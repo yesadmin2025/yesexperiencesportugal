@@ -3,6 +3,7 @@
 // source the admin editor writes to). The client cannot influence price.
 
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
+import { isStudioCheckoutDateAllowed } from "../_shared/studio-booking-date.ts";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -167,6 +168,11 @@ Deno.serve(async (req) => {
     const flowError = validateFlow(body);
     if (flowError) return jsonError(flowError, 400);
 
+    const checkoutFlow = resolveFlow(body);
+    if (checkoutFlow === "studio" && !isStudioCheckoutDateAllowed(body.dateExact)) {
+      return jsonError("Selected Studio date is not available", 409);
+    }
+
     const uiMode: "hosted" | "embedded" = body.uiMode === "embedded" ? "embedded" : "hosted";
 
     const allowOrigin =
@@ -290,7 +296,7 @@ Deno.serve(async (req) => {
 
     const stripe = createStripeClient(body.environment);
 
-    const flow = resolveFlow(body);
+    const flow = checkoutFlow;
     const copy = FLOW_COPY[flow];
 
     // Build the Stripe line item from client-supplied tour data. Client-passed
@@ -470,6 +476,9 @@ Deno.serve(async (req) => {
         ...(body.guestDetails?.startTime
           ? { start_time: String(body.guestDetails.startTime).slice(0, 16) }
           : {}),
+        ...(typeof body.guestDetails?.guideNotes === "string" && body.guestDetails.guideNotes.trim()
+          ? { traveller_preferences: body.guestDetails.guideNotes.trim().slice(0, 480) }
+          : {}),
       },
     };
 
@@ -527,7 +536,7 @@ Deno.serve(async (req) => {
       }
 
       const notes = [
-        str(gd.guideNotes, 1200) ? `Guide notes: ${str(gd.guideNotes, 1200)}` : null,
+        str(gd.guideNotes, 1200) ? `Preferences: ${str(gd.guideNotes, 1200)}` : null,
         str(gd.notes, 1200) ? `Notes: ${str(gd.notes, 1200)}` : null,
         str(gd.dietary, 600) ? `Dietary: ${str(gd.dietary, 600)}` : null,
         str(gd.mobility, 600) ? `Mobility: ${str(gd.mobility, 600)}` : null,
