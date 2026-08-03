@@ -223,8 +223,8 @@ export function LivingAtlasJourneyPreview() {
               className="mt-1 text-[11px] leading-relaxed"
               style={{ color: "color-mix(in oklab, var(--ivory) 62%, transparent)" }}
             >
-              Compose a private Portugal day around the places, traditions and rhythm that matter
-              to you.
+              Compose a private Portugal day around the places, traditions and rhythm that matter to
+              you.
             </p>
           </div>
           {stage !== "entry" ? (
