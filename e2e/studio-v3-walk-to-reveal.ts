@@ -27,7 +27,7 @@ async function dismissReactionOverlay(page: Page): Promise<void> {
   const overlay = page.locator('button[aria-label="Continue"].fixed.inset-0').first();
   if (await overlay.isVisible({ timeout: 200 }).catch(() => false)) {
     await overlay.click({ timeout: 2_000 }).catch(() => undefined);
-    await page.waitForTimeout(350);
+    await page.waitForTimeout(250);
   }
 }
 
@@ -41,15 +41,16 @@ async function safeClick(page: Page, sel: string): Promise<boolean> {
   );
   if (clicked) return true;
   return el
-    .evaluate((n) => (n as HTMLElement).click())
+    .evaluate((node) => (node as HTMLElement).click())
     .then(
       () => true,
       () => false,
     );
 }
 
-// Steering picks — see the sibling spec for the rationale (Arrábida is
-// the add-on-rich region, Full rhythm unlocks minStops add-ons, …).
+// Steering picks — Arrábida is the add-on-rich region, Full rhythm unlocks
+// minStops add-ons, and the adaptive wine answer keeps the new refinement
+// phase deterministic instead of relying on the first generic option.
 const PREFERRED_OPTION_IDS = [
   "wine-food",
   "couple",
@@ -60,6 +61,8 @@ const PREFERRED_OPTION_IDS = [
   "wine",
   "gastronomy",
   "coast",
+  "wine-cellar-depth",
+  "coast-clifftop-views",
   "flexible",
 ];
 
@@ -73,15 +76,15 @@ async function walkOnce(page: Page): Promise<boolean> {
   if (contVisible && hasSelection) return safeClick(page, PHASE_CTA_CONTINUE_ENABLED);
 
   for (const id of PREFERRED_OPTION_IDS) {
-    const sel = `[data-option-id="${id}"]:not([data-selected="true"])`;
+    const selector = `[data-option-id="${id}"]:not([data-selected="true"])`;
     if (
       await page
-        .locator(sel)
+        .locator(selector)
         .first()
         .isVisible()
         .catch(() => false)
     ) {
-      return safeClick(page, sel);
+      return safeClick(page, selector);
     }
   }
 
@@ -89,15 +92,16 @@ async function walkOnce(page: Page): Promise<boolean> {
   if (await choice.isVisible().catch(() => false)) {
     const kind = await choice.getAttribute("data-phase-cta");
     if (kind === "continue") {
-      const nc = '[data-phase-cta]:not([data-phase-cta="continue"]):not([data-selected="true"])';
+      const nonContinue =
+        '[data-phase-cta]:not([data-phase-cta="continue"]):not([data-selected="true"])';
       if (
         await page
-          .locator(nc)
+          .locator(nonContinue)
           .first()
           .isVisible()
           .catch(() => false)
       ) {
-        return safeClick(page, nc);
+        return safeClick(page, nonContinue);
       }
     }
     return safeClick(page, PHASE_CTA_PRIMARY);
@@ -109,7 +113,7 @@ async function walkOnce(page: Page): Promise<boolean> {
 export async function walkToReveal(page: Page): Promise<void> {
   let lastPhase: string | null = null;
   let stuck = 0;
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 44; i++) {
     await dismissReactionOverlay(page);
     const phase = await currentPhase(page);
 
@@ -121,8 +125,8 @@ export async function walkToReveal(page: Page): Promise<void> {
         hold.evaluate((el) => {
           const wrap = el.closest("[aria-hidden]");
           const aria = wrap?.getAttribute("aria-hidden");
-          const cs = wrap ? window.getComputedStyle(wrap as Element) : null;
-          return aria !== "true" && cs?.pointerEvents !== "none" && cs?.opacity !== "0";
+          const styles = wrap ? window.getComputedStyle(wrap as Element) : null;
+          return aria !== "true" && styles?.pointerEvents !== "none" && styles?.opacity !== "0";
         });
       for (let j = 0; j < 30; j++) {
         if (await holdInteractive().catch(() => false)) break;
@@ -130,22 +134,22 @@ export async function walkToReveal(page: Page): Promise<void> {
         if (!isDisabled) {
           await nextMoment.click({ timeout: 1_000 }).catch(() => undefined);
         }
-        await page.waitForTimeout(400);
+        await page.waitForTimeout(300);
       }
-      await page.waitForTimeout(900);
+      await page.waitForTimeout(650);
       if (await holdInteractive().catch(() => false)) {
         await hold.click({ timeout: 4_000 }).catch(() => undefined);
-        await page.waitForTimeout(1_600);
+        await page.waitForTimeout(1_200);
       }
       if ((await currentPhase(page)) === "storyboard") break;
     }
 
     const clicked = await walkOnce(page);
     if (!clicked) {
-      await page.waitForTimeout(700);
+      await page.waitForTimeout(350);
       if (!(await walkOnce(page))) break;
     }
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(450);
     if (phase && phase === lastPhase) stuck++;
     else stuck = 0;
     lastPhase = phase;
@@ -162,11 +166,11 @@ export async function readInteractableAddons(page: Page): Promise<Addon[]> {
   const count = await buttons.count();
   const out: Addon[] = [];
   for (let i = 0; i < count; i++) {
-    const b = buttons.nth(i);
-    const id = (await b.getAttribute("data-addon-id")) ?? "";
-    const text = (await b.textContent()) ?? "";
-    const m = text.match(/\+€(\d+)/);
-    if (id && m) out.push({ id, eur: Number(m[1]) });
+    const button = buttons.nth(i);
+    const id = (await button.getAttribute("data-addon-id")) ?? "";
+    const text = (await button.textContent()) ?? "";
+    const match = text.match(/\+€(\d+)/);
+    if (id && match) out.push({ id, eur: Number(match[1]) });
   }
   return out;
 }
@@ -178,9 +182,9 @@ export async function addOnsTotalText(page: Page): Promise<string> {
 }
 
 export async function parseAddOnsTotalEur(page: Page): Promise<number | null> {
-  const t = await addOnsTotalText(page);
-  const m = t.match(/€\s?(\d+)/);
-  return m ? Number(m[1]) : null;
+  const text = await addOnsTotalText(page);
+  const match = text.match(/€\s?(\d+)/);
+  return match ? Number(match[1]) : null;
 }
 
 /** Party-total "investment" line — visible on the price card next to the
@@ -189,8 +193,8 @@ export async function parsePartyTotalEur(page: Page): Promise<number | null> {
   const node = page.locator('[data-testid="studio-v3-party-total"]').first();
   if (!(await node.isVisible().catch(() => false))) return null;
   const text = (await node.textContent()) ?? "";
-  const m = text.match(/€\s?(\d+)/);
-  return m ? Number(m[1]) : null;
+  const match = text.match(/€\s?(\d+)/);
+  return match ? Number(match[1]) : null;
 }
 
 /**
