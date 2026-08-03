@@ -118,6 +118,7 @@ export function LivingAtlasJourneyPreview() {
   );
   const composition = resolution?.composition ?? null;
   const alternativesBySlot = resolution?.alternativesBySlot ?? {};
+  const routePlan = resolution?.routePlan ?? null;
 
   useEffect(() => {
     if (!resolution) return;
@@ -274,7 +275,7 @@ export function LivingAtlasJourneyPreview() {
               />
             ) : null}
 
-            {stage === "shape" && selectedSignatureId && composition ? (
+            {stage === "shape" && selectedSignatureId && composition && routePlan ? (
               <ShapeStep
                 signatureId={selectedSignatureId}
                 signatureTitle={selectedTour?.title ?? selectedSignatureId}
@@ -282,6 +283,7 @@ export function LivingAtlasJourneyPreview() {
                 preferences={preferences}
                 onPreferencesChange={setPreferences}
                 composition={composition}
+                routePlan={routePlan}
                 alternativesBySlot={alternativesBySlot}
                 replacements={replacements}
                 isPersisted={hasHydrated}
