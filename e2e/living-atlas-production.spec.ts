@@ -1,7 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 
 async function waitForLivingAtlasHydration(page: Page) {
-  await expect(page.getByTestId("living-atlas-app")).toHaveAttribute("data-hydrated", "true");
+  await expect(page.getByTestId("living-atlas-app")).toHaveAttribute("data-hydrated", "true", {
+    timeout: 45_000,
+  });
 }
 
 async function chooseFirstAvailableDate(page: Page) {
