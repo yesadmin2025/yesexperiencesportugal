@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import {
-  LivingAtlasJourneyPreview,
-} from "@/components/studio-v3/LivingAtlasJourneyPreview";
+import { LivingAtlasJourneyPreview } from "@/components/studio-v3/LivingAtlasJourneyPreview";
 
 /**
  * The file-router plugin regenerates routeTree.gen.ts during Vite dev/build.
