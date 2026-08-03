@@ -735,10 +735,26 @@ function readPersistedStudioState(): StudioV3State | null {
         ? parsed.phase
         : "intro";
     if (phase === "intro") return null;
-    return { ...INITIAL_STATE, ...parsed, phase };
+    // Defence in depth: even if an older build (or a tampered tab) left personal
+    // data behind, it never re-enters application state.
+    return { ...INITIAL_STATE, ...parsed, phase, firstName: null, guestDraft: null };
   } catch {
     return null;
   }
+}
+
+/**
+ * Explicit allow-list of the non-personal composition answers we persist.
+ * Everything the traveller types about themselves (name, email, phone, pickup
+ * address, guide notes) is deliberately excluded — it is recovery convenience
+ * we do not need, and personal data we must not leave in browser storage.
+ */
+function toPersistableStudioState(state: StudioV3State): StudioV3State {
+  return {
+    ...state,
+    firstName: null,
+    guestDraft: null,
+  };
 }
 
 function writePersistedStudioState(state: StudioV3State): void {
@@ -748,7 +764,10 @@ function writePersistedStudioState(state: StudioV3State): void {
       window.sessionStorage.removeItem(STUDIO_V3_SESSION_KEY);
       return;
     }
-    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(state));
+    window.sessionStorage.setItem(
+      STUDIO_V3_SESSION_KEY,
+      JSON.stringify(toPersistableStudioState(state)),
+    );
   } catch {
     /* storage blocked — persistence is a convenience, never a requirement */
   }
