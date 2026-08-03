@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { trackEvent } from "@/lib/analytics-events";
 import { LivingAtlasJourney } from "@/components/studio-v3/LivingAtlasJourneyPreview";
 
@@ -14,7 +14,10 @@ import { LivingAtlasJourney } from "@/components/studio-v3/LivingAtlasJourneyPre
 const STUDIO_START_KEY = "yes.studio.started.v1";
 
 export function LivingAtlasStudioPage() {
+  const [hydrated, setHydrated] = useState(false);
+
   useEffect(() => {
+    setHydrated(true);
     try {
       if (window.sessionStorage.getItem(STUDIO_START_KEY)) return;
       window.sessionStorage.setItem(STUDIO_START_KEY, "1");
@@ -46,7 +49,14 @@ export function LivingAtlasStudioPage() {
           <a href="/trade">our travel trade partnerships</a>.
         </p>
       </header>
-      <LivingAtlasJourney />
+      <div
+        data-testid="living-atlas-app"
+        data-hydrated={hydrated ? "true" : "false"}
+        aria-busy={!hydrated}
+        className={hydrated ? undefined : "pointer-events-none"}
+      >
+        <LivingAtlasJourney />
+      </div>
     </>
   );
 }

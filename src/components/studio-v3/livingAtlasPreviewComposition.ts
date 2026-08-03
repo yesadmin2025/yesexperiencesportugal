@@ -62,6 +62,21 @@ const ARRABIDA_SIGNATURES = new Set<LivingAtlasSignatureId>([
   "azeitao-cheese",
 ]);
 
+/**
+ * Public geographic anchors used only for transparent planning estimates.
+ *
+ * Supplier-specific moments such as the final winery remain unlocated until
+ * confirmed. These four stable public places are enough to avoid a false
+ * "route unavailable" dead end while preserving a `partial` route whenever a
+ * supplier location is still pending.
+ */
+const VERIFIED_PUBLIC_PLANNING_COORDS: Readonly<Record<string, { lat: number; lng: number }>> = {
+  "mercado-do-livramento": { lat: 38.5230586463, lng: -8.8941629989 },
+  "parque-natural-arrabida": { lat: 38.48146, lng: -8.98934 },
+  "azeitao-village": { lat: 38.51868, lng: -9.01387 },
+  "sesimbra-village": { lat: 38.4436755, lng: -9.1004624 },
+};
+
 const DIMENSION_TYPE_PREFERENCES: Readonly<
   Record<ExperienceDimensionId, readonly OptionalStopType[]>
 > = {
@@ -76,6 +91,13 @@ const DIMENSION_TYPE_PREFERENCES: Readonly<
 
 function unique<T>(items: readonly T[]): T[] {
   return [...new Set(items)];
+}
+
+function withVerifiedPublicPlanningCoords(pool: readonly OptionalStop[]): OptionalStop[] {
+  return pool.map((stop) => {
+    const coords = VERIFIED_PUBLIC_PLANNING_COORDS[stop.id];
+    return coords && !stop.coords ? { ...stop, coords } : { ...stop };
+  });
 }
 
 function verifiedArrabidaBoatStop(): OptionalStop | null {
@@ -103,13 +125,14 @@ function verifiedArrabidaBoatStop(): OptionalStop | null {
   };
 }
 
-/** Preview-only inventory overlay. No Supabase or production mutation. */
+/** Production inventory overlay. No Supabase or supplier mutation. */
 export function getLivingAtlasPreviewPool(): OptionalStop[] {
+  const pool = withVerifiedPublicPlanningCoords(REGION_STOP_POOL);
   const boat = verifiedArrabidaBoatStop();
-  if (!boat || REGION_STOP_POOL.some((stop) => stop.id === boat.id)) {
-    return [...REGION_STOP_POOL];
+  if (!boat || pool.some((stop) => stop.id === boat.id)) {
+    return pool;
   }
-  return [...REGION_STOP_POOL, boat];
+  return [...pool, boat];
 }
 
 function poolForDate(pool: readonly OptionalStop[], selectedDate: string | null | undefined) {
