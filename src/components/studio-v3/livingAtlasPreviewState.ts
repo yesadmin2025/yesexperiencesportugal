@@ -43,7 +43,7 @@ const DESTINATION_INTENTS: readonly DestinationIntent[] = [
   "anywhere-special",
 ];
 
-const DIMENSION_IDS = new Set(EXPERIENCE_DIMENSIONS.map((item) => item.id));
+const DIMENSION_IDS = new Set<string>(EXPERIENCE_DIMENSIONS.map((item) => item.id));
 const DISCOVERY_SIGNAL_IDS = new Set<string>(LIVING_ATLAS_DISCOVERY_SIGNAL_IDS);
 const STAGE_IDS = new Set<string>(LIVING_ATLAS_PREVIEW_STAGES);
 const PATH_MODE_IDS = new Set<string>(LIVING_ATLAS_PREVIEW_PATH_MODES);
@@ -99,18 +99,19 @@ function safePreferences(value: unknown): LivingAtlasPreviewPreferences {
 
 function safeReplacements(value: unknown): LivingAtlasReplacementMap {
   if (!isRecord(value)) return {};
-  return Object.fromEntries(
-    Object.entries(value)
-      .filter(
-        ([slotId, stopId]) =>
-          slotId.length > 0 &&
-          slotId.length <= 120 &&
-          typeof stopId === "string" &&
-          stopId.length > 0 &&
-          stopId.length <= 120,
-      )
-      .slice(0, 20),
-  );
+  const replacements: LivingAtlasReplacementMap = {};
+  for (const [slotId, stopId] of Object.entries(value).slice(0, 20)) {
+    if (
+      slotId.length > 0 &&
+      slotId.length <= 120 &&
+      typeof stopId === "string" &&
+      stopId.length > 0 &&
+      stopId.length <= 120
+    ) {
+      replacements[slotId] = stopId;
+    }
+  }
+  return replacements;
 }
 
 function correctStage(input: {
