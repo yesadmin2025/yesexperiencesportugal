@@ -115,7 +115,21 @@ export async function walkToReveal(page: Page): Promise<void> {
   let stuck = 0;
   for (let i = 0; i < 44; i++) {
     await dismissReactionOverlay(page);
+    // The Refine screen IS the destination. Break as soon as it is mounted —
+    // otherwise the map/storyboard branch below can keep polling a
+    // "hold-journey" CTA that no longer exists on this screen.
+    if (
+      await page
+        .locator('[data-studio-v3-screen="refine"]')
+        .first()
+        .isVisible()
+        .catch(() => false)
+    ) {
+      break;
+    }
     const phase = await currentPhase(page);
+
+
 
     if (phase === "storyboard" || phase === "map") {
       await dismissReactionOverlay(page);
@@ -206,11 +220,14 @@ export async function parsePartyTotalEur(page: Page): Promise<number | null> {
 export async function advanceRefineToStorytelling(
   page: import("@playwright/test").Page,
 ): Promise<void> {
-  const refineCta = page
-    .locator('[data-studio-v3-screen="refine"]')
-    .getByRole("button", { name: /^See my signature story/i })
-    .first();
+  const refine = page.locator('[data-studio-v3-screen="refine"]');
+  // The Refine primary CTA has carried two labels across copy passes.
+  let refineCta = refine.getByRole("button", { name: /^See my signature story/i }).first();
+  if (!(await refineCta.isVisible().catch(() => false))) {
+    refineCta = refine.getByRole("button", { name: /^Continue$/i }).first();
+  }
   if (!(await refineCta.isVisible().catch(() => false))) return;
+
   await refineCta.scrollIntoViewIfNeeded().catch(() => undefined);
   await refineCta.click({ timeout: 4_000 }).catch(() => undefined);
   await page
