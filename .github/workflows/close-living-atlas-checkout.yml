@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
 
+# Temporary, branch-isolated validation. Removed after the product commit lands.
 jobs:
   patch-test-commit:
     if: github.actor != 'github-actions[bot]'
