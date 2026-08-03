@@ -53,13 +53,16 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Check Living Atlas formatting
-        run: |
-          FILES="src/components/studio-v3/LivingAtlas*.tsx src/components/studio-v3/StudioExperiencePage.tsx src/components/studio-v3/MapAwakens.tsx src/components/studio-v3/dateGuards.ts src/components/studio-v3/livingAtlas*.ts src/components/studio-v3/__tests__/living-atlas-*.test.ts src/components/studio-v3/__tests__/living-atlas-*.test.tsx src/routes/studio-living-atlas-preview.tsx"
-          if ! bunx prettier --check $FILES; then
-            bunx prettier --write $FILES
-            git diff -- $FILES
-            exit 1
-          fi
+        run: >-
+          bunx prettier --check
+          src/components/studio-v3/LivingAtlas*.tsx
+          src/components/studio-v3/StudioExperiencePage.tsx
+          src/components/studio-v3/MapAwakens.tsx
+          src/components/studio-v3/dateGuards.ts
+          src/components/studio-v3/livingAtlas*.ts
+          src/components/studio-v3/__tests__/living-atlas-*.test.ts
+          src/components/studio-v3/__tests__/living-atlas-*.test.tsx
+          src/routes/studio-living-atlas-preview.tsx
 
       - name: Lint Living Atlas production surface
         run: >-
