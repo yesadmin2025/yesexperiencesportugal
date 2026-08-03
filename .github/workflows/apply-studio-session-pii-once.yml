@@ -1,4 +1,4 @@
-# Final Studio V3 privacy-gate trigger. Remove before merge.
+# Final Studio V3 privacy-gate trigger, synchronized after the trusted target workflow was enabled.
 name: Apply Studio session privacy once
 
 on:
