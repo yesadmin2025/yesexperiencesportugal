@@ -1,0 +1,55 @@
+name: Apply Studio V3 session PII safety
+
+on:
+  push:
+    branches: [studio-v3-final-release-gate]
+    paths:
+      - ".github/workflows/apply-studio-v3-pii-safety.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: studio-v3-final-release-gate
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Strip personal information before session persistence
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("src/components/studio-v3/StudioV3.tsx")
+          text = path.read_text()
+          old = '''    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(state));'''
+          new = '''    // Persist composition only. Guest identity, contact details, pickup address
+    // and guide notes remain in React state for the current visit but never
+    // enter sessionStorage.
+    const safeState: StudioV3State = {
+      ...state,
+      firstName: null,
+      guestDraft: null,
+    };
+    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(safeState));'''
+          if old not in text:
+              raise SystemExit("Expected raw Studio session write was not found")
+          path.write_text(text.replace(old, new, 1))
+          PY
+      - name: Format and verify patch
+        run: |
+          bunx prettier --write src/components/studio-v3/StudioV3.tsx
+          bunx tsc --noEmit -p tsconfig.json
+      - name: Commit safe persistence
+        run: |
+          git config user.name "Studio V3 release gate"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/components/studio-v3/StudioV3.tsx
+          git commit -m "Keep personal data out of Studio session storage"
+          git push origin studio-v3-final-release-gate
