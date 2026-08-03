@@ -1,4 +1,5 @@
 import type { DestinationIntent } from "@/components/studio-v3/types";
+import { isStudioBookingDateAllowed } from "@/components/studio-v3/dateGuards";
 import {
   LIVING_ATLAS_DISCOVERY_SIGNAL_IDS,
   type LivingAtlasDiscoverySignal,
@@ -20,6 +21,7 @@ export const LIVING_ATLAS_PREVIEW_STORAGE_KEY = "yes.living-atlas-preview.v1";
 export const LIVING_ATLAS_PREVIEW_STAGES = [
   "entry",
   "destination",
+  "date",
   "interests",
   "priority",
   "result",
@@ -54,6 +56,7 @@ export type LivingAtlasPreviewPersistedState = {
   stage: LivingAtlasPreviewStage;
   pathMode: LivingAtlasPreviewPathMode | null;
   destinationIntent: DestinationIntent;
+  selectedDate: string | null;
   selected: ExperienceDimensionId[];
   leads: ExperienceDimensionId[];
   discoverySignal: LivingAtlasDiscoverySignal | null;
@@ -114,15 +117,21 @@ function safeReplacements(value: unknown): LivingAtlasReplacementMap {
   return replacements;
 }
 
+function safeSelectedDate(value: unknown): string | null {
+  return typeof value === "string" && isStudioBookingDateAllowed(value) ? value : null;
+}
+
 function correctStage(input: {
   requested: LivingAtlasPreviewStage;
+  selectedDate: string | null;
   selected: ExperienceDimensionId[];
   leads: ExperienceDimensionId[];
   pathMode: LivingAtlasPreviewPathMode | null;
 }): LivingAtlasPreviewStage {
   if (input.requested === "entry" || input.requested === "destination") return input.requested;
-  if (input.selected.length === 0)
-    return input.pathMode === "destination" ? "destination" : "entry";
+  if (!input.selectedDate) return "date";
+  if (input.requested === "date") return "date";
+  if (input.selected.length === 0) return "interests";
   if (["result", "shape"].includes(input.requested) && input.leads.length === 0) {
     return input.selected.length > 1 ? "priority" : "interests";
   }
@@ -137,6 +146,7 @@ export function parseLivingAtlasPreviewState(
     const parsed: unknown = JSON.parse(raw);
     if (!isRecord(parsed) || parsed.version !== 1) return null;
 
+    const selectedDate = safeSelectedDate(parsed.selectedDate);
     const selected = uniqueDimensions(parsed.selected, MAX_SELECTED_DIMENSIONS);
     const leads = uniqueDimensions(parsed.leads, MAX_LEAD_DIMENSIONS).filter((item) =>
       selected.includes(item),
@@ -159,13 +169,20 @@ export function parseLivingAtlasPreviewState(
         : DISCOVERY_SIGNAL_IDS.has(String(parsed.discoverySignal))
           ? (parsed.discoverySignal as LivingAtlasDiscoverySignal)
           : null;
-    const stage = correctStage({ requested: requestedStage, selected, leads, pathMode });
+    const stage = correctStage({
+      requested: requestedStage,
+      selectedDate,
+      selected,
+      leads,
+      pathMode,
+    });
 
     return {
       version: 1,
       stage,
       pathMode,
       destinationIntent,
+      selectedDate,
       selected,
       leads,
       discoverySignal,
