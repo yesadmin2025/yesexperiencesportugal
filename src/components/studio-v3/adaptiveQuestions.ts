@@ -1,24 +1,12 @@
 /**
  * Adaptive (conditional) refinement question for Studio V3.
  *
- * ONE extra question, asked only when the traveller's own answers make it
- * genuinely useful. When nothing relevant applies the phase is skipped
- * entirely (see `isPhaseRelevant` in curation.ts), so the Studio never
- * feels like a form.
+ * At most one extra question is asked, and only when the traveller's answers
+ * can safely distinguish between real Signature directions in the selected
+ * region. When nothing materially useful can be learned, the phase is skipped.
  *
- * Rules encoded here:
- *   - Boat / coast refinement only when Atlantic or coastal intent is present
- *     AND the chosen destination can actually reach the Atlantic.
- *   - Winery emphasis only when wine or the Portuguese table is selected or leads.
- *   - Market / local-life refinement only when local life is selected, with
- *     options limited to what the chosen region really offers.
- *   - Hands-on refinement only for the regions whose Signature routes include
- *     real workshops (Azeitão tiles, Azeitão cheese).
- *   - Child ages stay where they belong: the guest composition step, shown only
- *     when minors travel (pricing + suitability).
- *
- * Every answer maps to an existing Living Atlas discovery signal (or to
- * nothing at all). Nothing here invents a stop, a supplier or a price.
+ * Every answer maps to an existing Living Atlas discovery signal or to null.
+ * Nothing here creates a stop, supplier, inclusion, availability claim or price.
  */
 
 import type { LivingAtlasDiscoverySignal } from "@/components/studio-v3/livingAtlasDecision";
@@ -39,26 +27,29 @@ export interface AdaptiveQuestion {
   options: ChoiceOption<AdaptiveRefinementId>[];
 }
 
-/** Destinations whose Signature routes actually meet the Atlantic. */
-const COASTAL_DESTINATIONS = new Set([
+/**
+ * These questions currently distinguish real alternatives inside the Arrábida
+ * family of Signature routes. For fixed single-Signature destinations, asking
+ * them would add theatre without changing the composition, so they are skipped.
+ */
+const ARRABIDA_REFINEMENT_DESTINATIONS = new Set([
   "no-preference",
   "anywhere-special",
   "arrabida-setubal-azeitao",
-  "vicentine-coast",
+]);
+
+/** Local-life has one additional safe branch for Comporta/Tróia. */
+const LOCAL_REFINEMENT_DESTINATIONS = new Set([
+  ...ARRABIDA_REFINEMENT_DESTINATIONS,
   "comporta-troia",
-  "lisbon-sintra-cascais",
-  "spiritual-coast",
 ]);
 
-/** Destinations with a real hands-on workshop in the catalogue. */
-const HANDS_ON_DESTINATIONS = new Set([
+const RIVER_DESTINATIONS = new Set(["no-preference", "anywhere-special", "comporta-troia"]);
+const ARTISAN_DESTINATIONS = new Set([
   "no-preference",
   "anywhere-special",
   "arrabida-setubal-azeitao",
 ]);
-
-/** Destinations where rice fields and river villages are on the route. */
-const RIVER_DESTINATIONS = new Set(["no-preference", "anywhere-special", "comporta-troia"]);
 
 const REFINEMENT_TO_SIGNAL: Readonly<
   Record<AdaptiveRefinementId, LivingAtlasDiscoverySignal | null>
@@ -77,7 +68,6 @@ const REFINEMENT_TO_SIGNAL: Readonly<
   "local-artisans": "paint-azulejo",
 };
 
-/** Customer-safe short label used in the Travel File "what you asked for" list. */
 const REFINEMENT_SUMMARY: Readonly<Record<AdaptiveRefinementId, string>> = {
   "coast-from-the-water": "The coast seen from the water",
   "coast-wild-beaches": "Wild beaches and a long pause",
@@ -85,7 +75,7 @@ const REFINEMENT_SUMMARY: Readonly<Record<AdaptiveRefinementId, string>> = {
   "wine-cellar-depth": "Time inside the cellar",
   "wine-table-and-cheese": "The table, cheese and local produce",
   "wine-vineyard-views": "Vineyard views over tasting notes",
-  "hands-paint-tile": "Painting your own azulejo tile",
+  "hands-paint-tile": "Painting an azulejo tile",
   "hands-make-cheese": "Making Azeitão cheese by hand",
   "hands-just-watch": "Watching the craft, hands free",
   "local-river-and-rice": "Rice fields and river villages",
@@ -108,7 +98,7 @@ export function refinementSummaryLabel(
 }
 
 function coastRelevant(state: StudioV3State): boolean {
-  if (!COASTAL_DESTINATIONS.has(state.destinationIntent)) return false;
+  if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
   return (
     state.feeling === "coastal" ||
     state.feeling === "adventure" ||
@@ -117,6 +107,7 @@ function coastRelevant(state: StudioV3State): boolean {
 }
 
 function wineRelevant(state: StudioV3State): boolean {
+  if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
   return (
     state.feeling === "wine-food" ||
     state.interests.includes("wine") ||
@@ -125,9 +116,7 @@ function wineRelevant(state: StudioV3State): boolean {
 }
 
 function handsRelevant(state: StudioV3State): boolean {
-  if (!HANDS_ON_DESTINATIONS.has(state.destinationIntent)) return false;
-  // Hands-on only makes sense when the traveller leans local or heritage —
-  // it is never offered as a generic upsell.
+  if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
   return (
     state.interests.includes("local-life") ||
     state.interests.includes("heritage") ||
@@ -137,13 +126,10 @@ function handsRelevant(state: StudioV3State): boolean {
 }
 
 function localRelevant(state: StudioV3State): boolean {
+  if (!LOCAL_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
   return state.interests.includes("local-life") || state.feeling === "hidden";
 }
 
-/**
- * Priority: whatever the traveller said should LEAD the day gets refined
- * first. Only one question is ever asked.
- */
 function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
   const available: AdaptiveQuestionKind[] = [];
   if (coastRelevant(state)) available.push("coast");
@@ -163,14 +149,40 @@ function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
             : null;
 
   if (leadFirst && available.includes(leadFirst)) {
-    return [leadFirst, ...available.filter((k) => k !== leadFirst)];
+    return [leadFirst, ...available.filter((kind) => kind !== leadFirst)];
   }
   return available;
 }
 
+function localOptions(state: StudioV3State): ChoiceOption<AdaptiveRefinementId>[] {
+  const options: ChoiceOption<AdaptiveRefinementId>[] = [
+    {
+      id: "local-market-morning",
+      label: "A market morning",
+      whisper: "Food, conversation and the rhythm of a working town.",
+    },
+  ];
+
+  if (ARTISAN_DESTINATIONS.has(state.destinationIntent)) {
+    options.push({
+      id: "local-artisans",
+      label: "Artisans at work",
+      whisper: "A closer look at craft traditions still practised locally.",
+    });
+  }
+
+  if (RIVER_DESTINATIONS.has(state.destinationIntent)) {
+    options.push({
+      id: "local-river-and-rice",
+      label: "Rice fields and river villages",
+      whisper: "Water, open landscapes and low white houses.",
+    });
+  }
+
+  return options;
+}
+
 export function resolveAdaptiveQuestion(state: StudioV3State): AdaptiveQuestion | null {
-  // Nothing to refine before the traveller has told us how the day should
-  // feel and what belongs in it.
   if (!state.feeling && state.interests.length === 0) return null;
 
   const kind = orderedKinds(state)[0];
@@ -182,22 +194,22 @@ export function resolveAdaptiveQuestion(state: StudioV3State): AdaptiveQuestion 
       eyebrow: "The Atlantic",
       title: "How should the coast",
       titleAccent: "reach you?",
-      hint: "This shapes how the shoreline enters your day.",
+      hint: "This helps us choose the coastal direction that best fits your day.",
       options: [
         {
           id: "coast-from-the-water",
           label: "From the water",
-          whisper: "Caves and cliffs seen from a private boat.",
+          whisper: "Coastal caves and cliffs seen from the sea.",
         },
         {
           id: "coast-wild-beaches",
           label: "On a wild beach",
-          whisper: "Sand, a long pause, nobody around.",
+          whisper: "Sand, open space and time to slow down.",
         },
         {
           id: "coast-clifftop-views",
           label: "From above",
-          whisper: "Clifftop viewpoints, feet on solid ground.",
+          whisper: "Atlantic viewpoints with your feet on solid ground.",
         },
       ],
     };
@@ -209,22 +221,22 @@ export function resolveAdaptiveQuestion(state: StudioV3State): AdaptiveQuestion 
       eyebrow: "The table",
       title: "What should the wine",
       titleAccent: "be about?",
-      hint: "This shapes where the longest pause of the day happens.",
+      hint: "This helps us choose where the longest pause of the day belongs.",
       options: [
         {
           id: "wine-cellar-depth",
           label: "Inside the cellar",
-          whisper: "Barrels, the family, how it is really made.",
+          whisper: "The people, the process and how the wine is made.",
         },
         {
           id: "wine-table-and-cheese",
           label: "Around the table",
-          whisper: "Cheese, bread and local produce, unhurried.",
+          whisper: "Cheese, bread and regional produce, unhurried.",
         },
         {
           id: "wine-vineyard-views",
           label: "Out among the vines",
-          whisper: "The landscape first, the glass second.",
+          whisper: "The landscape first, with the tasting woven around it.",
         },
       ],
     };
@@ -236,55 +248,40 @@ export function resolveAdaptiveQuestion(state: StudioV3State): AdaptiveQuestion 
       eyebrow: "By hand",
       title: "Would you like to",
       titleAccent: "make something?",
-      hint: "Only offered where a real workshop is part of the route.",
+      hint: "Shown only where a supported hands-on experience can fit the route.",
       options: [
         {
           id: "hands-paint-tile",
           label: "Paint an azulejo",
-          whisper: "Your own tile, fired and sent to you.",
+          whisper: "Explore the tradition with a local maker.",
         },
         {
           id: "hands-make-cheese",
           label: "Make Azeitão cheese",
-          whisper: "Hands in the curd, with the producers.",
+          whisper: "Take part in the process with local producers.",
         },
         {
           id: "hands-just-watch",
           label: "Just watch",
-          whisper: "See the craft, keep your hands free.",
+          whisper: "See the craft without adding a workshop to your day.",
         },
       ],
     };
   }
 
-  const riverOption: ChoiceOption<AdaptiveRefinementId> = {
-    id: "local-river-and-rice",
-    label: "Rice fields and river villages",
-    whisper: "Water, storks and low white houses.",
-  };
+  const options = localOptions(state);
+  if (options.length < 2) return null;
+
   return {
     kind: "local",
     eyebrow: "Local life",
     title: "Where do you want to",
     titleAccent: "meet the everyday?",
-    hint: "This decides which quiet part of the region we build around.",
-    options: [
-      {
-        id: "local-market-morning",
-        label: "A market morning",
-        whisper: "Fish, fruit and the language of a working town.",
-      },
-      {
-        id: "local-artisans",
-        label: "Artisans at work",
-        whisper: "Workshops that still smell of clay and paint.",
-      },
-      ...(RIVER_DESTINATIONS.has(state.destinationIntent) ? [riverOption] : []),
-    ],
+    hint: "This helps us choose the quieter local thread of the day.",
+    options,
   };
 }
 
-/** True when the adaptive refinement step should be shown at all. */
 export function isAdaptiveQuestionRelevant(state: StudioV3State): boolean {
   return resolveAdaptiveQuestion(state) !== null;
 }
