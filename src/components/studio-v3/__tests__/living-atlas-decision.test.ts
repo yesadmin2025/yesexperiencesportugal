@@ -101,15 +101,17 @@ describe("Living Atlas decision engine", () => {
 
     expect(result.status).toBe("clear");
     expect(result.selectedSignatureId).toBe("arrabida-wine-allinclusive");
-    expect(result.ranked.every((candidate) =>
-      [
-        "arrabida-wine-allinclusive",
-        "arrabida-boat",
-        "wild-beaches-picnic",
-        "tiles-workshop",
-        "azeitao-cheese",
-      ].includes(candidate.signatureId),
-    )).toBe(true);
+    expect(
+      result.ranked.every((candidate) =>
+        [
+          "arrabida-wine-allinclusive",
+          "arrabida-boat",
+          "wild-beaches-picnic",
+          "tiles-workshop",
+          "azeitao-cheese",
+        ].includes(candidate.signatureId),
+      ),
+    ).toBe(true);
   });
 
   it("gives every canonical Signature a deterministic route when its contextual signal is known", () => {

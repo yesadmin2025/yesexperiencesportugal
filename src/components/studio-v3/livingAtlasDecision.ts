@@ -23,8 +23,7 @@ export const LIVING_ATLAS_DISCOVERY_SIGNAL_IDS = [
   "wild-vicentine-coast",
 ] as const;
 
-export type LivingAtlasDiscoverySignal =
-  (typeof LIVING_ATLAS_DISCOVERY_SIGNAL_IDS)[number];
+export type LivingAtlasDiscoverySignal = (typeof LIVING_ATLAS_DISCOVERY_SIGNAL_IDS)[number];
 
 export const DISCOVERY_SIGNAL_TARGET: Readonly<
   Record<LivingAtlasDiscoverySignal, LivingAtlasSignatureId>
@@ -133,10 +132,7 @@ function reportFor(
   }));
 
   let totalScore = leadCoverage.reduce((sum, item) => sum + leadPoints(item.strength), 0);
-  totalScore += supportingCoverage.reduce(
-    (sum, item) => sum + supportingPoints(item.strength),
-    0,
-  );
+  totalScore += supportingCoverage.reduce((sum, item) => sum + supportingPoints(item.strength), 0);
 
   if (leadCoverage.every((item) => item.strength >= 2)) totalScore += 10;
   if (leadCoverage.every((item) => item.strength === 3)) totalScore += 8;
@@ -173,9 +169,7 @@ function reportFor(
  * It does not evaluate date, duration, mobility, availability or price yet.
  * Those operational hard constraints are applied in the next engine layer.
  */
-export function decideLivingAtlasSignature(
-  input: LivingAtlasDecisionInput,
-): LivingAtlasDecision {
+export function decideLivingAtlasSignature(input: LivingAtlasDecisionInput): LivingAtlasDecision {
   const validation = validateExperienceProfile(input.profile);
   if (!validation.ok) {
     return {
@@ -230,9 +224,9 @@ export function decideLivingAtlasSignature(
       status: "precision-fork",
       selectedSignatureId: null,
       ranked,
-      forkCandidates: ranked.filter(
-        (candidate) => first.totalScore - candidate.totalScore <= 8,
-      ).slice(0, 3),
+      forkCandidates: ranked
+        .filter((candidate) => first.totalScore - candidate.totalScore <= 8)
+        .slice(0, 3),
     };
   }
 

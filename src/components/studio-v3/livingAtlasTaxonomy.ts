@@ -100,15 +100,12 @@ function hasDuplicates<T>(items: readonly T[]): boolean {
  * Two leads mean "share the day". A third selected dimension remains a
  * required supporting thread, but may not distort the geography or timing.
  */
-export function validateExperienceProfile(
-  profile: ExperienceProfile,
-): ExperienceProfileValidation {
+export function validateExperienceProfile(profile: ExperienceProfile): ExperienceProfileValidation {
   if (profile.selected.length < 1) return { ok: false, reason: "select-at-least-one" };
   if (profile.selected.length > MAX_SELECTED_DIMENSIONS)
     return { ok: false, reason: "select-at-most-three" };
   if (profile.leads.length < 1) return { ok: false, reason: "lead-at-least-one" };
-  if (profile.leads.length > MAX_LEAD_DIMENSIONS)
-    return { ok: false, reason: "lead-at-most-two" };
+  if (profile.leads.length > MAX_LEAD_DIMENSIONS) return { ok: false, reason: "lead-at-most-two" };
   if (hasDuplicates(profile.selected)) return { ok: false, reason: "duplicate-selection" };
   if (hasDuplicates(profile.leads)) return { ok: false, reason: "duplicate-lead" };
   if (profile.leads.some((lead) => !profile.selected.includes(lead)))
@@ -343,9 +340,7 @@ export const SIGNATURE_DISCOVERY_DOORS: readonly DiscoveryDoor[] = [
   },
 ] as const;
 
-export function discoveryDoorFor(
-  signatureId: LivingAtlasSignatureId,
-): DiscoveryDoor {
+export function discoveryDoorFor(signatureId: LivingAtlasSignatureId): DiscoveryDoor {
   const door = SIGNATURE_DISCOVERY_DOORS.find((item) => item.signatureId === signatureId);
   if (!door) throw new Error(`Missing Living Atlas discovery door for ${signatureId}`);
   return door;

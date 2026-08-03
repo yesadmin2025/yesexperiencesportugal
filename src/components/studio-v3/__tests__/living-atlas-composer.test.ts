@@ -113,7 +113,9 @@ describe("composeLivingAtlasDay", () => {
       pool,
     });
 
-    expect(result.moments.filter((moment) => moment.type === "beach").length).toBeLessThanOrEqual(1);
+    expect(result.moments.filter((moment) => moment.type === "beach").length).toBeLessThanOrEqual(
+      1,
+    );
   });
 
   it("reports missing coverage instead of decorating the explanation", () => {

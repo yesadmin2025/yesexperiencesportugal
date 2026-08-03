@@ -109,10 +109,7 @@ export function LivingAtlasPreview() {
   const [leads, setLeads] = useState<ExperienceDimensionId[]>([]);
   const [discoverySignal, setDiscoverySignal] = useState<LivingAtlasDiscoverySignal | null>(null);
 
-  const profile: ExperienceProfile = useMemo(
-    () => ({ selected, leads }),
-    [selected, leads],
-  );
+  const profile: ExperienceProfile = useMemo(() => ({ selected, leads }), [selected, leads]);
 
   const decision = useMemo(
     () =>
@@ -363,17 +360,27 @@ function PathCard({
         borderColor: "color-mix(in oklab, var(--gold) 36%, transparent)",
       }}
     >
-      <p className="text-[10px] font-bold uppercase tracking-[0.26em]" style={{ color: "var(--gold)" }}>
+      <p
+        className="text-[10px] font-bold uppercase tracking-[0.26em]"
+        style={{ color: "var(--gold)" }}
+      >
         {eyebrow}
       </p>
       <h2 className="mt-5 text-2xl font-semibold" style={{ fontFamily: "var(--font-editorial)" }}>
         {title}
       </h2>
       <div className="mt-3 flex items-end justify-between gap-4">
-        <p className="max-w-sm text-[13px] leading-6" style={{ color: "color-mix(in oklab, var(--ivory) 68%, transparent)" }}>
+        <p
+          className="max-w-sm text-[13px] leading-6"
+          style={{ color: "color-mix(in oklab, var(--ivory) 68%, transparent)" }}
+        >
           {whisper}
         </p>
-        <ArrowRight className="shrink-0 transition-transform group-hover:translate-x-1" size={18} aria-hidden />
+        <ArrowRight
+          className="shrink-0 transition-transform group-hover:translate-x-1"
+          size={18}
+          aria-hidden
+        />
       </div>
     </button>
   );
@@ -382,13 +389,22 @@ function PathCard({
 function StepHeading({ eyebrow, title, copy }: { eyebrow: string; title: string; copy: string }) {
   return (
     <div className="mx-auto max-w-3xl text-center">
-      <p className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: "var(--gold)" }}>
+      <p
+        className="text-[10px] font-bold uppercase tracking-[0.3em]"
+        style={{ color: "var(--gold)" }}
+      >
         {eyebrow}
       </p>
-      <h1 className="mt-4 text-[30px] font-semibold leading-tight sm:text-[46px]" style={{ fontFamily: "var(--font-editorial)" }}>
+      <h1
+        className="mt-4 text-[30px] font-semibold leading-tight sm:text-[46px]"
+        style={{ fontFamily: "var(--font-editorial)" }}
+      >
         {title}
       </h1>
-      <p className="mx-auto mt-4 max-w-2xl text-[13px] leading-6 sm:text-[15px]" style={{ color: "color-mix(in oklab, var(--ivory) 70%, transparent)" }}>
+      <p
+        className="mx-auto mt-4 max-w-2xl text-[13px] leading-6 sm:text-[15px]"
+        style={{ color: "color-mix(in oklab, var(--ivory) 70%, transparent)" }}
+      >
         {copy}
       </p>
     </div>
@@ -434,10 +450,18 @@ function DestinationStep({
               }}
             >
               <div className="flex items-start gap-3">
-                <MapPin size={16} className="mt-0.5 shrink-0" style={{ color: "var(--gold)" }} aria-hidden />
+                <MapPin
+                  size={16}
+                  className="mt-0.5 shrink-0"
+                  style={{ color: "var(--gold)" }}
+                  aria-hidden
+                />
                 <div>
                   <p className="text-[15px] font-semibold">{item.label}</p>
-                  <p className="mt-1 text-[12px] leading-5" style={{ color: "color-mix(in oklab, var(--ivory) 66%, transparent)" }}>
+                  <p
+                    className="mt-1 text-[12px] leading-5"
+                    style={{ color: "color-mix(in oklab, var(--ivory) 66%, transparent)" }}
+                  >
                     {item.whisper}
                   </p>
                 </div>
@@ -469,7 +493,10 @@ function InterestsStep({
         title="What belongs in your day?"
         copy="Choose up to three. Every selected thread must appear meaningfully in the final day, not merely in its description."
       />
-      <p className="mt-5 text-center text-[11px] font-semibold uppercase tracking-[0.22em]" style={{ color: "color-mix(in oklab, var(--ivory) 58%, transparent)" }}>
+      <p
+        className="mt-5 text-center text-[11px] font-semibold uppercase tracking-[0.22em]"
+        style={{ color: "color-mix(in oklab, var(--ivory) 58%, transparent)" }}
+      >
         {selected.length} of {MAX_SELECTED_DIMENSIONS} selected
       </p>
       <div className="mx-auto mt-7 grid max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -498,7 +525,9 @@ function InterestsStep({
                 <span
                   className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border"
                   style={{
-                    borderColor: active ? "var(--gold)" : "color-mix(in oklab, var(--ivory) 28%, transparent)",
+                    borderColor: active
+                      ? "var(--gold)"
+                      : "color-mix(in oklab, var(--ivory) 28%, transparent)",
                     background: active ? "var(--gold)" : "transparent",
                     color: "var(--charcoal)",
                   }}
@@ -506,7 +535,10 @@ function InterestsStep({
                   {active ? <Check size={12} strokeWidth={3} aria-hidden /> : null}
                 </span>
               </div>
-              <p className="mt-3 text-[12px] leading-5" style={{ color: "color-mix(in oklab, var(--ivory) 66%, transparent)" }}>
+              <p
+                className="mt-3 text-[12px] leading-5"
+                style={{ color: "color-mix(in oklab, var(--ivory) 66%, transparent)" }}
+              >
                 {item.whisper}
               </p>
             </button>
@@ -538,7 +570,10 @@ function PriorityStep({
         title="What should lead?"
         copy="Choose one clear lead, or two co-leads when they should share the day equally. A third selection remains a required supporting thread."
       />
-      <p className="mt-5 text-center text-[11px] font-semibold uppercase tracking-[0.22em]" style={{ color: "color-mix(in oklab, var(--ivory) 58%, transparent)" }}>
+      <p
+        className="mt-5 text-center text-[11px] font-semibold uppercase tracking-[0.22em]"
+        style={{ color: "color-mix(in oklab, var(--ivory) 58%, transparent)" }}
+      >
         {leads.length === 2 ? "Two interests will share the day" : "Choose one or two leaders"}
       </p>
       <div className="mx-auto mt-7 grid max-w-3xl gap-3 sm:grid-cols-2">
@@ -564,8 +599,13 @@ function PriorityStep({
               }}
             >
               <p className="text-[16px] font-semibold">{item.label}</p>
-              <p className="mt-2 text-[12px] leading-5" style={{ color: "color-mix(in oklab, var(--ivory) 66%, transparent)" }}>
-                {active ? "This will shape the Signature and the structure of the day." : "Keep this as a supporting thread, or let it lead."}
+              <p
+                className="mt-2 text-[12px] leading-5"
+                style={{ color: "color-mix(in oklab, var(--ivory) 66%, transparent)" }}
+              >
+                {active
+                  ? "This will shape the Signature and the structure of the day."
+                  : "Keep this as a supporting thread, or let it lead."}
               </p>
             </button>
           );
@@ -606,21 +646,43 @@ function ResultStep({
         }
       />
 
-      <div className="mt-8 rounded-2xl border p-5 sm:p-7" style={{ background: "color-mix(in oklab, var(--ivory) 5%, transparent)", borderColor: "color-mix(in oklab, var(--gold) 35%, transparent)" }}>
+      <div
+        className="mt-8 rounded-2xl border p-5 sm:p-7"
+        style={{
+          background: "color-mix(in oklab, var(--ivory) 5%, transparent)",
+          borderColor: "color-mix(in oklab, var(--gold) 35%, transparent)",
+        }}
+      >
         <div className="flex flex-wrap gap-2">
           {profile.leads.map((id) => (
-            <span key={id} className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em]" style={{ background: "var(--gold)", color: "var(--charcoal)" }}>
+            <span
+              key={id}
+              className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em]"
+              style={{ background: "var(--gold)", color: "var(--charcoal)" }}
+            >
               Leads · {dimensionLabel(id)}
             </span>
           ))}
-          {profile.selected.filter((id) => !profile.leads.includes(id)).map((id) => (
-            <span key={id} className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ borderColor: "color-mix(in oklab, var(--ivory) 22%, transparent)", color: "color-mix(in oklab, var(--ivory) 76%, transparent)" }}>
-              Supports · {dimensionLabel(id)}
-            </span>
-          ))}
+          {profile.selected
+            .filter((id) => !profile.leads.includes(id))
+            .map((id) => (
+              <span
+                key={id}
+                className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]"
+                style={{
+                  borderColor: "color-mix(in oklab, var(--ivory) 22%, transparent)",
+                  color: "color-mix(in oklab, var(--ivory) 76%, transparent)",
+                }}
+              >
+                Supports · {dimensionLabel(id)}
+              </span>
+            ))}
         </div>
         {destinationIntent !== "no-preference" ? (
-          <p className="mt-4 flex items-center gap-2 text-[12px]" style={{ color: "color-mix(in oklab, var(--ivory) 66%, transparent)" }}>
+          <p
+            className="mt-4 flex items-center gap-2 text-[12px]"
+            style={{ color: "color-mix(in oklab, var(--ivory) 66%, transparent)" }}
+          >
             <MapPin size={14} style={{ color: "var(--gold)" }} aria-hidden />
             Destination fixed as a hard boundary.
           </p>
@@ -642,18 +704,34 @@ function ResultStep({
                   borderColor: "color-mix(in oklab, var(--gold) 32%, transparent)",
                 }}
               >
-                <p className="text-[10px] font-bold uppercase tracking-[0.24em]" style={{ color: "var(--gold)" }}>
+                <p
+                  className="text-[10px] font-bold uppercase tracking-[0.24em]"
+                  style={{ color: "var(--gold)" }}
+                >
                   {SIGNATURE_REGION[candidate.signatureId]}
                 </p>
-                <h2 className="mt-3 text-xl font-semibold leading-snug" style={{ fontFamily: "var(--font-editorial)" }}>
+                <h2
+                  className="mt-3 text-xl font-semibold leading-snug"
+                  style={{ fontFamily: "var(--font-editorial)" }}
+                >
                   {tour?.title ?? candidate.signatureId}
                 </h2>
-                <p className="mt-3 text-[12px] leading-6" style={{ color: "color-mix(in oklab, var(--ivory) 68%, transparent)" }}>
+                <p
+                  className="mt-3 text-[12px] leading-6"
+                  style={{ color: "color-mix(in oklab, var(--ivory) 68%, transparent)" }}
+                >
                   {signatureDistinction(candidate.signatureId)}
                 </p>
-                <p className="mt-5 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: "var(--gold)" }}>
+                <p
+                  className="mt-5 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.2em]"
+                  style={{ color: "var(--gold)" }}
+                >
                   This is my direction
-                  <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" aria-hidden />
+                  <ArrowRight
+                    size={15}
+                    className="transition-transform group-hover:translate-x-1"
+                    aria-hidden
+                  />
                 </p>
               </button>
             );
@@ -662,36 +740,95 @@ function ResultStep({
       ) : null}
 
       {decision.status === "clear" && decision.selectedSignatureId ? (
-        <div className="mt-5 overflow-hidden rounded-2xl border" style={{ borderColor: "color-mix(in oklab, var(--gold) 40%, transparent)" }}>
-          <div className="p-6 sm:p-8" style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--gold) 17%, transparent), color-mix(in oklab, var(--ivory) 4%, transparent))" }}>
-            <p className="text-[10px] font-bold uppercase tracking-[0.26em]" style={{ color: "var(--gold)" }}>
+        <div
+          className="mt-5 overflow-hidden rounded-2xl border"
+          style={{ borderColor: "color-mix(in oklab, var(--gold) 40%, transparent)" }}
+        >
+          <div
+            className="p-6 sm:p-8"
+            style={{
+              background:
+                "linear-gradient(135deg, color-mix(in oklab, var(--gold) 17%, transparent), color-mix(in oklab, var(--ivory) 4%, transparent))",
+            }}
+          >
+            <p
+              className="text-[10px] font-bold uppercase tracking-[0.26em]"
+              style={{ color: "var(--gold)" }}
+            >
               {SIGNATURE_REGION[decision.selectedSignatureId]}
             </p>
-            <h2 className="mt-3 max-w-3xl text-[26px] font-semibold leading-tight sm:text-[38px]" style={{ fontFamily: "var(--font-editorial)" }}>
+            <h2
+              className="mt-3 max-w-3xl text-[26px] font-semibold leading-tight sm:text-[38px]"
+              style={{ fontFamily: "var(--font-editorial)" }}
+            >
               {selectedTourTitle ?? decision.selectedSignatureId}
             </h2>
-            <p className="mt-4 max-w-2xl text-[14px] leading-7" style={{ color: "color-mix(in oklab, var(--ivory) 74%, transparent)" }}>
+            <p
+              className="mt-4 max-w-2xl text-[14px] leading-7"
+              style={{ color: "color-mix(in oklab, var(--ivory) 74%, transparent)" }}
+            >
               {signatureDistinction(decision.selectedSignatureId)}
             </p>
           </div>
-          <div className="grid gap-px sm:grid-cols-3" style={{ background: "color-mix(in oklab, var(--ivory) 12%, transparent)" }}>
-            <EvidenceCell label="Decision confidence" value={top && decision.ranked[1] ? `${top.totalScore - decision.ranked[1].totalScore} point lead` : "Direct fit"} />
-            <EvidenceCell label="Leading interests covered" value={top ? `${top.leadCoverage.filter((item) => item.strength >= 2).length} of ${top.leadCoverage.length}` : "—"} />
-            <EvidenceCell label="Missing selected threads" value={top?.missingCoverage.length ? top.missingCoverage.map(dimensionLabel).join(", ") : "None"} />
+          <div
+            className="grid gap-px sm:grid-cols-3"
+            style={{ background: "color-mix(in oklab, var(--ivory) 12%, transparent)" }}
+          >
+            <EvidenceCell
+              label="Decision confidence"
+              value={
+                top && decision.ranked[1]
+                  ? `${top.totalScore - decision.ranked[1].totalScore} point lead`
+                  : "Direct fit"
+              }
+            />
+            <EvidenceCell
+              label="Leading interests covered"
+              value={
+                top
+                  ? `${top.leadCoverage.filter((item) => item.strength >= 2).length} of ${top.leadCoverage.length}`
+                  : "—"
+              }
+            />
+            <EvidenceCell
+              label="Missing selected threads"
+              value={
+                top?.missingCoverage.length
+                  ? top.missingCoverage.map(dimensionLabel).join(", ")
+                  : "None"
+              }
+            />
           </div>
         </div>
       ) : null}
 
       {decision.status === "weak" ? (
-        <div className="mt-5 rounded-2xl border p-6" style={{ background: "color-mix(in oklab, var(--ivory) 5%, transparent)", borderColor: "color-mix(in oklab, var(--gold) 30%, transparent)" }}>
-          <p className="text-[14px] leading-7" style={{ color: "color-mix(in oklab, var(--ivory) 74%, transparent)" }}>
-            The strongest available direction is {top ? findTour(top.signatureId)?.title ?? top.signatureId : "not yet clear"}, but at least one leading interest has no structural place in it. Go back and change the hierarchy rather than accepting a decorative compromise.
+        <div
+          className="mt-5 rounded-2xl border p-6"
+          style={{
+            background: "color-mix(in oklab, var(--ivory) 5%, transparent)",
+            borderColor: "color-mix(in oklab, var(--gold) 30%, transparent)",
+          }}
+        >
+          <p
+            className="text-[14px] leading-7"
+            style={{ color: "color-mix(in oklab, var(--ivory) 74%, transparent)" }}
+          >
+            The strongest available direction is{" "}
+            {top ? (findTour(top.signatureId)?.title ?? top.signatureId) : "not yet clear"}, but at
+            least one leading interest has no structural place in it. Go back and change the
+            hierarchy rather than accepting a decorative compromise.
           </p>
         </div>
       ) : null}
 
       <div className="mt-8 flex justify-start">
-        <button type="button" onClick={onBack} className="inline-flex min-h-11 items-center gap-2 rounded-full border px-5 text-[10px] font-bold uppercase tracking-[0.22em] transition-opacity hover:opacity-80" style={{ borderColor: "color-mix(in oklab, var(--ivory) 22%, transparent)" }}>
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex min-h-11 items-center gap-2 rounded-full border px-5 text-[10px] font-bold uppercase tracking-[0.22em] transition-opacity hover:opacity-80"
+          style={{ borderColor: "color-mix(in oklab, var(--ivory) 22%, transparent)" }}
+        >
           <ArrowLeft size={14} aria-hidden />
           Refine choices
         </button>
@@ -703,7 +840,10 @@ function ResultStep({
 function EvidenceCell({ label, value }: { label: string; value: string }) {
   return (
     <div className="p-4" style={{ background: "var(--charcoal)" }}>
-      <p className="text-[9px] font-bold uppercase tracking-[0.2em]" style={{ color: "color-mix(in oklab, var(--ivory) 50%, transparent)" }}>
+      <p
+        className="text-[9px] font-bold uppercase tracking-[0.2em]"
+        style={{ color: "color-mix(in oklab, var(--ivory) 50%, transparent)" }}
+      >
         {label}
       </p>
       <p className="mt-2 text-[12px] leading-5">{value}</p>

@@ -32,12 +32,7 @@ describe("Living Atlas experience taxonomy", () => {
   it("rejects a fourth selected dimension", () => {
     expect(
       validateExperienceProfile({
-        selected: [
-          "history-heritage",
-          "wine-table",
-          "local-life",
-          "atlantic-coast",
-        ],
+        selected: ["history-heritage", "wine-table", "local-life", "atlantic-coast"],
         leads: ["history-heritage"],
       }),
     ).toEqual({ ok: false, reason: "select-at-most-three" });

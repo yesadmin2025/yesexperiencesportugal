@@ -1,11 +1,5 @@
-import {
-  REGION_STOP_POOL,
-  type OptionalStop,
-  type OptionalStopType,
-} from "@/data/regionStopPool";
-import {
-  deriveLivingAtlasDimensions,
-} from "@/components/studio-v3/livingAtlasInventory";
+import { REGION_STOP_POOL, type OptionalStop, type OptionalStopType } from "@/data/regionStopPool";
+import { deriveLivingAtlasDimensions } from "@/components/studio-v3/livingAtlasInventory";
 import {
   type ExperienceDimensionId,
   type ExperienceProfile,
@@ -79,7 +73,9 @@ const DENSITY_RULES: Readonly<
 };
 
 function stopSourceTourIds(stop: OptionalStop): string[] {
-  return [...new Set([stop.signatureTourId, ...(stop.sourceTourIds ?? [])].filter(Boolean))] as string[];
+  return [
+    ...new Set([stop.signatureTourId, ...(stop.sourceTourIds ?? [])].filter(Boolean)),
+  ] as string[];
 }
 
 function coversDimension(stop: ScoredStop, dimension: ExperienceDimensionId): boolean {
@@ -144,9 +140,10 @@ function scoreStop(
   return { stop, dimensions, score, reasons, poolIndex };
 }
 
-function candidatePool(
-  request: LivingAtlasCompositionRequest,
-): { candidates: OptionalStop[]; anchorFound: boolean } {
+function candidatePool(request: LivingAtlasCompositionRequest): {
+  candidates: OptionalStop[];
+  anchorFound: boolean;
+} {
   const pool = request.pool ?? REGION_STOP_POOL;
   const active = pool.filter((stop) => stop.active);
   const anchors = active.filter((stop) =>

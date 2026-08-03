@@ -13,8 +13,7 @@ export const LIVING_ATLAS_BUILDER_REGION_KEYS = [
   "alentejo",
 ] as const;
 
-export type LivingAtlasBuilderRegionKey =
-  (typeof LIVING_ATLAS_BUILDER_REGION_KEYS)[number];
+export type LivingAtlasBuilderRegionKey = (typeof LIVING_ATLAS_BUILDER_REGION_KEYS)[number];
 
 /**
  * Canonical region ownership for every Signature.

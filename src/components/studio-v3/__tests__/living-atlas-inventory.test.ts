@@ -1,16 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  deriveLivingAtlasDimensions,
-  signatureBuilderRegion,
-} from "../livingAtlasInventory";
+import { deriveLivingAtlasDimensions, signatureBuilderRegion } from "../livingAtlasInventory";
 
 describe("Living Atlas inventory evidence", () => {
   it("corrects the legacy regional drift for Tomar and Fátima", () => {
     expect(signatureBuilderRegion("tomar-coimbra")).toBe("centro-tomar-coimbra");
-    expect(signatureBuilderRegion("fatima-nazare-obidos")).toBe(
-      "centro-fatima-nazare-obidos",
-    );
+    expect(signatureBuilderRegion("fatima-nazare-obidos")).toBe("centro-fatima-nazare-obidos");
   });
 
   it("recognises Fátima as faith and heritage without inventing wine", () => {
