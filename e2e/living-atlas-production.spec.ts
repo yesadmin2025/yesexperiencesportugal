@@ -1,9 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import {
-  advanceRefineToStorytelling,
-  STUDIO_ROOT,
-  walkToReveal,
-} from "./studio-v3-walk-to-reveal";
+import { advanceRefineToStorytelling, STUDIO_ROOT, walkToReveal } from "./studio-v3-walk-to-reveal";
 
 test.describe.configure({ timeout: 180_000 });
 
@@ -32,9 +28,7 @@ async function startStudio(page: Page) {
   const root = await waitForStudioHydration(page);
   if ((await root.getAttribute("data-phase")) === "intro") {
     await page.getByRole("button", { name: /^Begin$/i }).click();
-    await expect
-      .poll(() => root.getAttribute("data-phase"), { timeout: 15_000 })
-      .not.toBe("intro");
+    await expect.poll(() => root.getAttribute("data-phase"), { timeout: 15_000 }).not.toBe("intro");
   }
   return root;
 }
