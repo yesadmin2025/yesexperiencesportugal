@@ -5,27 +5,21 @@ on:
     branches:
       - studio/living-atlas
     paths:
-      - "src/components/studio-v3/LivingAtlasPreview.tsx"
-      - "src/components/studio-v3/LivingAtlasJourneyPreview.tsx"
+      - "src/components/studio-v3/LivingAtlas*.tsx"
       - "src/components/studio-v3/MapAwakens.tsx"
       - "src/components/studio-v3/livingAtlas*.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
       - "src/routes/studio-living-atlas-preview.tsx"
-      - "scripts/apply-living-atlas-product-layer.mjs"
-      - "scripts/fix-living-atlas-product-layer-script.mjs"
       - ".github/workflows/living-atlas-ci.yml"
   pull_request:
     paths:
-      - "src/components/studio-v3/LivingAtlasPreview.tsx"
-      - "src/components/studio-v3/LivingAtlasJourneyPreview.tsx"
+      - "src/components/studio-v3/LivingAtlas*.tsx"
       - "src/components/studio-v3/MapAwakens.tsx"
       - "src/components/studio-v3/livingAtlas*.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
       - "src/routes/studio-living-atlas-preview.tsx"
-      - "scripts/apply-living-atlas-product-layer.mjs"
-      - "scripts/fix-living-atlas-product-layer-script.mjs"
       - ".github/workflows/living-atlas-ci.yml"
 
 permissions:
@@ -53,16 +47,11 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Sanitize product-layer patch
-        run: node scripts/fix-living-atlas-product-layer-script.mjs
-
-      - name: Apply alternatives and persistence UI
-        run: node scripts/apply-living-atlas-product-layer.mjs
-
-      - name: Format Living Atlas sources
+      - name: Check Living Atlas formatting
         run: >-
-          bunx prettier --write
-          src/components/studio-v3/LivingAtlasJourneyPreview.tsx
+          bunx prettier --check
+          src/components/studio-v3/LivingAtlas*.tsx
+          src/components/studio-v3/MapAwakens.tsx
           src/components/studio-v3/livingAtlas*.ts
           src/components/studio-v3/__tests__/living-atlas-*.test.ts
           src/components/studio-v3/__tests__/living-atlas-*.test.tsx
@@ -82,11 +71,3 @@ jobs:
 
       - name: Typecheck project
         run: bunx tsc --noEmit
-
-      - name: Upload validated product layer
-        uses: actions/upload-artifact@v4
-        with:
-          name: living-atlas-product-layer
-          path: src/components/studio-v3/LivingAtlasJourneyPreview.tsx
-          if-no-files-found: error
-          retention-days: 3
