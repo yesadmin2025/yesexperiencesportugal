@@ -6,6 +6,7 @@ on:
       - studio/living-atlas
     paths:
       - "src/components/studio-v3/LivingAtlasPreview.tsx"
+      - "src/components/studio-v3/LivingAtlasJourneyPreview.tsx"
       - "src/components/studio-v3/MapAwakens.tsx"
       - "src/components/studio-v3/livingAtlas*.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
@@ -15,6 +16,7 @@ on:
   pull_request:
     paths:
       - "src/components/studio-v3/LivingAtlasPreview.tsx"
+      - "src/components/studio-v3/LivingAtlasJourneyPreview.tsx"
       - "src/components/studio-v3/MapAwakens.tsx"
       - "src/components/studio-v3/livingAtlas*.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
@@ -54,6 +56,7 @@ jobs:
           src/components/studio-v3/__tests__/living-atlas-decision.test.ts
           src/components/studio-v3/__tests__/living-atlas-inventory.test.ts
           src/components/studio-v3/__tests__/living-atlas-composer.test.ts
+          src/components/studio-v3/__tests__/living-atlas-preview-composition.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview.test.tsx
 
       - name: Typecheck project
@@ -63,6 +66,7 @@ jobs:
         run: >-
           bunx prettier --check
           src/components/studio-v3/LivingAtlasPreview.tsx
+          src/components/studio-v3/LivingAtlasJourneyPreview.tsx
           src/components/studio-v3/MapAwakens.tsx
           src/components/studio-v3/livingAtlas*.ts
           src/components/studio-v3/__tests__/living-atlas-*.test.ts
