@@ -161,6 +161,6 @@ test("the former Living Atlas preview redirects to the single canonical Studio",
   await expect(page).toHaveURL(/\/studio-v3\?source=qa$/);
   await waitForStudio(page);
   await expect(page.locator(STUDIO_ROOT).first()).toBeVisible();
-  await expect(page.getByTestId("living-atlas-app")).toHaveCount(0);
+  await expect(page.getByTestId("living-atlas-app")).toHaveAttribute("data-studio", "v3");
   await assertCustomerCopyIsClean(page);
 });
