@@ -143,19 +143,16 @@ test("the Studio composes a day, survives a refresh and reaches the checkout sum
     GUEST.wineryNote,
   );
 
-  // A tour date is required — the field is pre-filled from the Studio, but
-  // set it explicitly when the funnel left it flexible.
+  // A tour date is required and must respect the booking lead time, so always
+  // set one comfortably in the future.
   const dateInput = page.getByLabel(/selected tour date/i).first();
-  if (await dateInput.isVisible().catch(() => false)) {
-    const value = await dateInput.inputValue().catch(() => "");
-    if (!value) {
-      const future = new Date(Date.now() + 21 * 86_400_000).toISOString().slice(0, 10);
-      await dateInput.fill(future);
-    }
-  }
+  await expect(dateInput).toBeVisible({ timeout: 10_000 });
+  const future = new Date(Date.now() + 45 * 86_400_000).toISOString().slice(0, 10);
+  await dateInput.fill(future);
 
   await submit.scrollIntoViewIfNeeded();
   await submit.click();
+
 
   const summary = page.getByTestId("studio-v3-checkout-summary");
   await expect(summary).toBeVisible({ timeout: 30_000 });
