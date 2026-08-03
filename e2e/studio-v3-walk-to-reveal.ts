@@ -222,4 +222,3 @@ export async function advanceRefineToStorytelling(
   await refineCta.click({ timeout: 10_000 });
   await page.getByTestId("studio-v3-final-reveal").waitFor({ timeout: 20_000 });
 }
-

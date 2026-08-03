@@ -157,7 +157,6 @@ test("a restored composition reaches Guest Details and checkout exactly once", a
   expect(stored).toContain('"phase"');
   expect(stored).toContain(COMPOSED_STATE.tourId);
 
-
   const reserve = page.getByTestId("studio-v3-checkout-summary-reserve");
   await expect(reserve).toBeVisible();
   await reserve.click();
