@@ -104,7 +104,7 @@ const request: LivingAtlasCompositionRequest = {
     selected: ["wine-table", "atlantic-coast", "local-life"],
     leads: ["wine-table", "atlantic-coast"],
   },
-  density: "balanced",
+  density: "slow",
   requiredTypes: ["winery"],
   preferredTypes: ["nature", "beach", "viewpoint", "market"],
   maxByType: { winery: 1 },
@@ -170,9 +170,11 @@ describe("Living Atlas alternatives", () => {
 
     expect(natureAlternatives).toHaveLength(2);
     expect(natureAlternatives.map((item) => item.moment.stopId)).not.toContain("wrong-cluster");
-    expect(natureAlternatives.every((item) => item.moment.routeCluster === "arrabida-azeitao-sesimbra")).toBe(
-      true,
-    );
+    expect(
+      natureAlternatives.every(
+        (item) => item.moment.routeCluster === "arrabida-azeitao-sesimbra",
+      ),
+    ).toBe(true);
   });
 
   it("does not offer the exact market that was locked by a concrete answer for replacement", () => {
