@@ -114,8 +114,12 @@ describe("adaptive refinement question", () => {
       destinationIntent: "alentejo-evora-wine",
     });
 
-    const comportaIds = (resolveAdaptiveQuestion(comporta)?.options ?? []).map((option) => option.id);
-    const arrabidaIds = (resolveAdaptiveQuestion(arrabida)?.options ?? []).map((option) => option.id);
+    const comportaIds = (resolveAdaptiveQuestion(comporta)?.options ?? []).map(
+      (option) => option.id,
+    );
+    const arrabidaIds = (resolveAdaptiveQuestion(arrabida)?.options ?? []).map(
+      (option) => option.id,
+    );
 
     expect(comportaIds).toContain("local-river-and-rice");
     expect(comportaIds).not.toContain("local-artisans");
