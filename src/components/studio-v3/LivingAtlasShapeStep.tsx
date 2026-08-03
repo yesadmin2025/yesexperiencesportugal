@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { ArrowRight, Clock3, Compass, RefreshCw, Undo2, Waves, Wine } from "lucide-react";
+import {
+  ArrowRight,
+  CarFront,
+  Clock3,
+  Compass,
+  RefreshCw,
+  Undo2,
+  Waves,
+  Wine,
+} from "lucide-react";
 
 import {
   formatLivingAtlasDuration,
@@ -12,7 +21,11 @@ import {
   type LivingAtlasReplacementMap,
   type LivingAtlasResolvedComposition,
 } from "@/components/studio-v3/livingAtlasAlternatives";
-import type { ExperienceProfile, LivingAtlasSignatureId } from "@/components/studio-v3/livingAtlasTaxonomy";
+import type { LivingAtlasRoutePlan } from "@/components/studio-v3/livingAtlasRoutePlanner";
+import type {
+  ExperienceProfile,
+  LivingAtlasSignatureId,
+} from "@/components/studio-v3/livingAtlasTaxonomy";
 import {
   ARRABIDA_SIGNATURES,
   BackButton,
@@ -24,6 +37,10 @@ import {
   StepHeading,
   dimensionLabel,
 } from "@/components/studio-v3/LivingAtlasPreviewPrimitives";
+import {
+  incomingLivingAtlasRouteLeg,
+  LivingAtlasRouteSummary,
+} from "@/components/studio-v3/LivingAtlasRouteSummary";
 
 export function ShapeStep({
   signatureId,
@@ -32,6 +49,7 @@ export function ShapeStep({
   preferences,
   onPreferencesChange,
   composition,
+  routePlan,
   alternativesBySlot,
   replacements,
   isPersisted,
@@ -46,6 +64,7 @@ export function ShapeStep({
   preferences: LivingAtlasPreviewPreferences;
   onPreferencesChange: (preferences: LivingAtlasPreviewPreferences) => void;
   composition: LivingAtlasResolvedComposition;
+  routePlan: LivingAtlasRoutePlan;
   alternativesBySlot: LivingAtlasAlternativesBySlot;
   replacements: LivingAtlasReplacementMap;
   isPersisted: boolean;
@@ -56,7 +75,9 @@ export function ShapeStep({
 }) {
   const [expandedSlotId, setExpandedSlotId] = useState<string | null>(null);
   const isArrabida = ARRABIDA_SIGNATURES.has(signatureId);
-  const title = livingAtlasPreviewDayTitle(composition);
+  const orderedMoments = routePlan.orderedMoments;
+  const title = livingAtlasPreviewDayTitle({ moments: orderedMoments });
+
   return (
     <div className="mx-auto max-w-6xl">
       <StepHeading
@@ -91,6 +112,7 @@ export function ShapeStep({
       <div className="mt-8 grid gap-5 xl:grid-cols-[0.72fr_1.28fr]">
         <div className="space-y-4">
           <ReactivePortugalMap activeSignatureId={signatureId} candidates={[]} />
+          <LivingAtlasRouteSummary routePlan={routePlan} />
           <PreferencePanel
             label="How full should the day feel?"
             icon={<Clock3 size={16} aria-hidden />}
@@ -198,10 +220,12 @@ export function ShapeStep({
           <div className="p-5 sm:p-6">
             <CompositionStatus composition={composition} />
             <ol className="mt-6 space-y-3">
-              {composition.moments.map((moment, index) => {
+              {orderedMoments.map((moment, index) => {
                 const alternatives = alternativesBySlot[moment.slotId] ?? [];
                 const expanded = expandedSlotId === moment.slotId;
                 const changed = Boolean(replacements[moment.slotId]);
+                const incomingLeg = incomingLivingAtlasRouteLeg(routePlan, moment.stopId);
+
                 return (
                   <li
                     key={moment.slotId}
@@ -213,6 +237,19 @@ export function ShapeStep({
                       background: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
                     }}
                   >
+                    {incomingLeg ? (
+                      <div
+                        className="mb-3 flex items-center gap-2 border-b pb-3 text-[9px] font-bold uppercase tracking-[0.14em]"
+                        style={{
+                          borderColor: "color-mix(in oklab, var(--ivory) 10%, transparent)",
+                          color: "color-mix(in oklab, var(--ivory) 48%, transparent)",
+                        }}
+                      >
+                        <CarFront size={12} aria-hidden />
+                        Estimated transfer · {incomingLeg.estimatedDrivingMin} min ·{" "}
+                        {incomingLeg.estimatedRoadKm} km
+                      </div>
+                    ) : null}
                     <div className="grid grid-cols-[2rem_1fr_auto] gap-3">
                       <span
                         className="flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-bold"
@@ -376,7 +413,7 @@ export function ShapeStep({
                                   moment.label +
                                     " was replaced by " +
                                     alternative.moment.label +
-                                    ". The title, duration and coverage were recalculated.",
+                                    ". The title, duration, coverage and route were recalculated.",
                                 );
                               }}
                               className="mt-3 inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[9px] font-bold uppercase tracking-[0.14em]"
@@ -396,8 +433,9 @@ export function ShapeStep({
               className="mt-5 text-[11px] leading-5"
               style={{ color: "color-mix(in oklab, var(--ivory) 52%, transparent)" }}
             >
-              Selection is verified and region-contained. Geographic visit order, live supplier
-              availability, sea conditions and driving time remain the next operational layer.
+              The geographic sequence and internal transfers are planning estimates from verified
+              coordinates. Opening hours, live traffic, pickup routing, supplier availability and
+              sea conditions still require operational confirmation.
             </p>
           </div>
         </div>
