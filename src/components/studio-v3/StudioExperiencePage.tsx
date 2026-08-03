@@ -1,20 +1,18 @@
 import { useEffect } from "react";
 import { trackEvent } from "@/lib/analytics-events";
-import { StudioV3 } from "@/components/studio-v3/StudioV3";
+import { LivingAtlasJourneyPreview } from "@/components/studio-v3/LivingAtlasJourneyPreview";
 
 /**
  * Shared page body for the public Experience Studio.
  *
- * Mounted by the canonical route (`/experience-studio`) and by the legacy
- * alias (`/experience-studio`) so both URLs render the identical Studio V3 /
- * Living Atlas implementation. Route-level metadata (canonical, JSON-LD,
- * robots) lives in each route file, not here.
+ * Mounted by the canonical route (`/experience-studio`) and the legacy alias
+ * (`/studio-v3`). Both routes render the production Living Atlas journey.
+ * Route-level metadata (canonical, JSON-LD, robots) lives in each route file.
  */
 
 const STUDIO_START_KEY = "yes.studio.started.v1";
 
 export function StudioExperiencePage() {
-  // Studio start — once per browser session, no PII.
   useEffect(() => {
     try {
       if (window.sessionStorage.getItem(STUDIO_START_KEY)) return;
@@ -27,17 +25,17 @@ export function StudioExperiencePage() {
 
   return (
     <>
-      {/* SSR-visible intent for crawlers and no-JS users. */}
       <header className="sr-only">
         <h1>Design your private Portugal day.</h1>
         <p>
-          A cinematic composer in three quiet steps — choose how the day should feel, who is
-          travelling and the rhythm you want. The map and stops reveal themselves as you go.
+          Build a private day through the Living Atlas by choosing your date, destination and the
+          experiences that matter most to you. The route, moments and booking summary respond as
+          your choices take shape.
         </p>
         <p>
-          As you choose, the route, the stops and the price move with you. When the configuration is
-          standard you can reserve it directly; when it needs local judgement, the same team reviews
-          it and confirms before anything is charged.
+          Standard compositions can be reserved securely online. Preferences for wineries,
+          experiences or details not shown in the Studio travel with the reservation for the local
+          team to review.
         </p>
         <p>
           For a complete journey across Portugal rather than a single private day, a human designer
@@ -47,7 +45,9 @@ export function StudioExperiencePage() {
           <a href="/trade">our travel trade partnerships</a>.
         </p>
       </header>
-      <StudioV3 />
+      <div data-testid="studio-v3-root">
+        <LivingAtlasJourneyPreview />
+      </div>
     </>
   );
 }
