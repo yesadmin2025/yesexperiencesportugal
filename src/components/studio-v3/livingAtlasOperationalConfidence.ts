@@ -1,6 +1,10 @@
 import type { OptionalStopType } from "@/data/regionStopPool";
 import type { LivingAtlasDensity } from "@/components/studio-v3/livingAtlasComposer";
 import type { LivingAtlasRouteStatus } from "@/components/studio-v3/livingAtlasRoutePlanner";
+import {
+  isMercadoDoLivramentoOpenOn,
+  MERCADO_DO_LIVRAMENTO_STOP_ID,
+} from "@/components/studio-v3/dateGuards";
 
 export const LIVING_ATLAS_OPERATIONAL_CONDITION_IDS = [
   "verified-structure",
@@ -13,11 +17,31 @@ export const LIVING_ATLAS_OPERATIONAL_CONDITION_IDS = [
 export type LivingAtlasOperationalConditionId =
   (typeof LIVING_ATLAS_OPERATIONAL_CONDITION_IDS)[number];
 
+export const LIVING_ATLAS_OPERATIONAL_STATUSES = [
+  "confirmed",
+  "pending",
+  "unavailable",
+] as const;
+
+export type LivingAtlasOperationalStatus =
+  (typeof LIVING_ATLAS_OPERATIONAL_STATUSES)[number];
+
+export type LivingAtlasOperationalEvidence = Partial<
+  Record<LivingAtlasOperationalConditionId, LivingAtlasOperationalStatus>
+>;
+
+export type LivingAtlasOperationalContext = {
+  selectedDate?: string | null;
+  stopId?: string | null;
+  evidence?: LivingAtlasOperationalEvidence;
+};
+
 export type LivingAtlasOperationalCondition = {
   id: LivingAtlasOperationalConditionId;
   label: string;
   detail: string;
-  tone: "verified" | "check";
+  status: LivingAtlasOperationalStatus;
+  tone: "verified" | "check" | "unavailable";
 };
 
 export type LivingAtlasPaceStatus = "open" | "balanced" | "full" | "review" | "partial";
@@ -34,38 +58,59 @@ export type LivingAtlasPaceSummary = {
   transferLoadRatio: number | null;
 };
 
+type LivingAtlasOperationalConditionDefinition = {
+  id: LivingAtlasOperationalConditionId;
+  label: string;
+  detailByStatus: Readonly<Record<LivingAtlasOperationalStatus, string>>;
+};
+
 const CONDITION_CATALOG: Readonly<
-  Record<LivingAtlasOperationalConditionId, LivingAtlasOperationalCondition>
+  Record<LivingAtlasOperationalConditionId, LivingAtlasOperationalConditionDefinition>
 > = {
   "verified-structure": {
     id: "verified-structure",
     label: "Verified structure",
-    detail: "This moment comes from confirmed Studio or Signature inventory.",
-    tone: "verified",
+    detailByStatus: {
+      confirmed: "This moment comes from verified Studio or Signature inventory.",
+      pending: "The inventory structure still needs verification.",
+      unavailable: "The inventory structure is not available for this day.",
+    },
   },
   "supplier-confirmation": {
     id: "supplier-confirmation",
-    label: "Supplier confirmation",
-    detail: "The experience needs a real supplier or host confirmation before booking.",
-    tone: "check",
+    label: "Supplier",
+    detailByStatus: {
+      confirmed: "Current operational evidence confirms the supplier or host for this date.",
+      pending: "A real supplier or host confirmation is still required before the day is final.",
+      unavailable: "The supplier or host is unavailable for the selected date.",
+    },
   },
   "sea-conditions": {
     id: "sea-conditions",
-    label: "Sea conditions",
-    detail: "Operation depends on safe sea conditions and the confirmed maritime provider.",
-    tone: "check",
+    label: "Sea operation",
+    detailByStatus: {
+      confirmed: "Current operational evidence supports the maritime operation for this date.",
+      pending: "Safe sea conditions and the maritime provider still require confirmation.",
+      unavailable: "The maritime operation is unavailable for the selected date.",
+    },
   },
   "opening-hours": {
     id: "opening-hours",
     label: "Opening hours",
-    detail: "The visit must be checked against the selected date and opening schedule.",
-    tone: "check",
+    detailByStatus: {
+      confirmed: "Opening hours have been confirmed for the selected date.",
+      pending: "The selected date still needs a real opening-hours check.",
+      unavailable: "The place is unavailable under the selected date rule or current evidence.",
+    },
   },
   "weather-access": {
     id: "weather-access",
     label: "Weather & access",
-    detail: "Comfort or access may change with weather, season or local conditions.",
-    tone: "check",
+    detailByStatus: {
+      confirmed: "Current operational evidence supports comfortable access for this date.",
+      pending: "Weather, season or local access conditions still require a real check.",
+      unavailable: "Weather or access conditions make this moment unavailable for the selected date.",
+    },
   },
 };
 
@@ -87,8 +132,62 @@ function roundRatio(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
+function operationalTone(
+  status: LivingAtlasOperationalStatus,
+): LivingAtlasOperationalCondition["tone"] {
+  if (status === "confirmed") return "verified";
+  if (status === "unavailable") return "unavailable";
+  return "check";
+}
+
+function resolvedOperationalStatus(
+  id: LivingAtlasOperationalConditionId,
+  context: LivingAtlasOperationalContext,
+): LivingAtlasOperationalStatus {
+  if (id === "verified-structure") return "confirmed";
+
+  const explicit = context.evidence?.[id];
+  if (explicit) return explicit;
+
+  if (
+    id === "opening-hours" &&
+    context.stopId === MERCADO_DO_LIVRAMENTO_STOP_ID &&
+    context.selectedDate &&
+    !isMercadoDoLivramentoOpenOn(context.selectedDate)
+  ) {
+    return "unavailable";
+  }
+
+  return "pending";
+}
+
+function resolvedOperationalDetail(
+  definition: LivingAtlasOperationalConditionDefinition,
+  status: LivingAtlasOperationalStatus,
+  context: LivingAtlasOperationalContext,
+): string {
+  if (
+    definition.id === "opening-hours" &&
+    status === "unavailable" &&
+    context.stopId === MERCADO_DO_LIVRAMENTO_STOP_ID
+  ) {
+    return "Mercado do Livramento is closed on Mondays, so it cannot enter this selected day.";
+  }
+
+  return definition.detailByStatus[status];
+}
+
+export function livingAtlasOperationalStatusLabel(
+  status: LivingAtlasOperationalStatus,
+): string {
+  if (status === "confirmed") return "Confirmed";
+  if (status === "unavailable") return "Unavailable";
+  return "Pending";
+}
+
 export function livingAtlasOperationalConditions(
   type: OptionalStopType,
+  context: LivingAtlasOperationalContext = {},
 ): LivingAtlasOperationalCondition[] {
   const ids: LivingAtlasOperationalConditionId[] = ["verified-structure"];
 
@@ -97,7 +196,29 @@ export function livingAtlasOperationalConditions(
   if (OPENING_HOURS_TYPES.has(type)) ids.push("opening-hours");
   if (WEATHER_ACCESS_TYPES.has(type)) ids.push("weather-access");
 
-  return [...new Set(ids)].map((id) => CONDITION_CATALOG[id]);
+  return [...new Set(ids)].map((id) => {
+    const definition = CONDITION_CATALOG[id];
+    const status = resolvedOperationalStatus(id, context);
+    return {
+      id,
+      label: definition.label,
+      detail: resolvedOperationalDetail(definition, status, context),
+      status,
+      tone: operationalTone(status),
+    };
+  });
+}
+
+export function deriveLivingAtlasMomentOperationalStatus(
+  type: OptionalStopType,
+  context: LivingAtlasOperationalContext = {},
+): LivingAtlasOperationalStatus {
+  const statuses = livingAtlasOperationalConditions(type, context).map(
+    (condition) => condition.status,
+  );
+  if (statuses.includes("unavailable")) return "unavailable";
+  if (statuses.includes("pending")) return "pending";
+  return "confirmed";
 }
 
 export function deriveLivingAtlasPaceSummary(input: {
