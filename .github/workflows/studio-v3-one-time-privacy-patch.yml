@@ -1,7 +1,7 @@
 name: Studio V3 one-time privacy patch
 
 on:
-  push:
+  pull_request:
     branches: [main]
     paths:
       - ".github/studio-v3-privacy-trigger"
@@ -11,12 +11,13 @@ permissions:
 
 jobs:
   patch:
+    if: github.head_ref == 'studio-v3-pii-patch'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: studio-v3-pii-patch
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
@@ -57,4 +58,4 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add -A
           git commit -m "Keep personal data out of Studio session storage"
-          git push origin main
+          git push origin studio-v3-pii-patch
