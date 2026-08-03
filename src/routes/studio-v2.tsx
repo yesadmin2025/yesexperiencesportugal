@@ -20,6 +20,10 @@ export const Route = createFileRoute("/studio-v2")({
     ],
   }),
   beforeLoad: ({ search }) => {
-    throw redirect({ to: "/studio-v3", search: search as Record<string, unknown> });
+    throw redirect({
+      to: "/studio-v3",
+      search: search as Record<string, unknown>,
+      statusCode: 301,
+    });
   },
 });
