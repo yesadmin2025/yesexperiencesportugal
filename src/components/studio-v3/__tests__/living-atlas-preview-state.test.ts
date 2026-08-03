@@ -5,12 +5,15 @@ import {
   serializeLivingAtlasPreviewState,
 } from "../livingAtlasPreviewState";
 
+const FUTURE_DATE = "2099-08-10";
+
 describe("Living Atlas preview state", () => {
   it("round-trips a shaped day without storing personal data", () => {
     const raw = serializeLivingAtlasPreviewState({
       stage: "shape",
       pathMode: "discover",
       destinationIntent: "no-preference",
+      selectedDate: FUTURE_DATE,
       selected: ["wine-table", "atlantic-coast", "local-life"],
       leads: ["wine-table", "atlantic-coast"],
       discoverySignal: "arrabida-family-wine",
@@ -27,12 +30,13 @@ describe("Living Atlas preview state", () => {
     expect(restored).toMatchObject({
       version: 1,
       stage: "shape",
+      selectedDate: FUTURE_DATE,
       selected: ["wine-table", "atlantic-coast", "local-life"],
       leads: ["wine-table", "atlantic-coast"],
       replacements: { "parque-natural-arrabida": "portinho-arrabida" },
     });
     expect(raw).not.toContain("email");
-    expect(raw).not.toContain("name");
+    expect(raw).not.toContain("fullName");
   });
 
   it("sanitizes unknown dimensions, signals, preferences and replacement payloads", () => {
@@ -42,6 +46,7 @@ describe("Living Atlas preview state", () => {
         stage: "shape",
         pathMode: "discover",
         destinationIntent: "invented-place",
+        selectedDate: FUTURE_DATE,
         selected: ["wine-table", "not-real", "atlantic-coast", "local-life", "faith-reflection"],
         leads: ["not-real", "wine-table", "atlantic-coast", "local-life"],
         discoverySignal: "fabricated-signal",
@@ -62,6 +67,7 @@ describe("Living Atlas preview state", () => {
 
     expect(restored).toMatchObject({
       stage: "shape",
+      selectedDate: FUTURE_DATE,
       destinationIntent: "no-preference",
       selected: ["wine-table", "atlantic-coast", "local-life"],
       leads: ["wine-table", "atlantic-coast"],
@@ -76,13 +82,14 @@ describe("Living Atlas preview state", () => {
     });
   });
 
-  it("falls back to a safe earlier stage when a saved result has no valid choices", () => {
+  it("returns to the date step when a saved result has no valid date", () => {
     const restored = parseLivingAtlasPreviewState(
       JSON.stringify({
         version: 1,
         stage: "shape",
         pathMode: "destination",
         destinationIntent: "spiritual-coast",
+        selectedDate: "2020-01-01",
         selected: [],
         leads: [],
         discoverySignal: null,
@@ -92,7 +99,8 @@ describe("Living Atlas preview state", () => {
       }),
     );
 
-    expect(restored?.stage).toBe("destination");
+    expect(restored?.stage).toBe("date");
+    expect(restored?.selectedDate).toBeNull();
   });
 
   it("ignores malformed storage instead of breaking the preview", () => {
