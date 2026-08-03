@@ -13,6 +13,7 @@ on:
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
       - "src/routes/studio-living-atlas-preview.tsx"
       - "scripts/close-living-atlas-checkout.mjs"
+      - "scripts/fix-living-atlas-checkout-jsx.mjs"
       - ".github/workflows/living-atlas-ci.yml"
   pull_request:
     paths:
@@ -24,6 +25,7 @@ on:
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
       - "src/routes/studio-living-atlas-preview.tsx"
       - "scripts/close-living-atlas-checkout.mjs"
+      - "scripts/fix-living-atlas-checkout-jsx.mjs"
       - ".github/workflows/living-atlas-ci.yml"
 
 permissions:
@@ -67,7 +69,9 @@ jobs:
 
       - name: Apply final checkout handoff
         if: steps.handoff.outputs.complete != 'true'
-        run: node scripts/close-living-atlas-checkout.mjs
+        run: |
+          node scripts/close-living-atlas-checkout.mjs
+          node scripts/fix-living-atlas-checkout-jsx.mjs
 
       - name: Format product files
         if: steps.handoff.outputs.complete != 'true'
