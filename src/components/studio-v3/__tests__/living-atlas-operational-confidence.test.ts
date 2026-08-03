@@ -1,17 +1,27 @@
 import { describe, expect, it } from "vitest";
 
+import { MERCADO_DO_LIVRAMENTO_STOP_ID } from "../dateGuards";
 import {
+  deriveLivingAtlasMomentOperationalStatus,
   deriveLivingAtlasPaceSummary,
   livingAtlasOperationalConditions,
 } from "../livingAtlasOperationalConfidence";
 
 describe("Living Atlas operational confidence", () => {
   it("marks a boat as verified while exposing supplier and sea dependencies", () => {
-    expect(livingAtlasOperationalConditions("boat").map((condition) => condition.id)).toEqual([
+    const conditions = livingAtlasOperationalConditions("boat");
+
+    expect(conditions.map((condition) => condition.id)).toEqual([
       "verified-structure",
       "supplier-confirmation",
       "sea-conditions",
     ]);
+    expect(conditions.map((condition) => condition.status)).toEqual([
+      "confirmed",
+      "pending",
+      "pending",
+    ]);
+    expect(deriveLivingAtlasMomentOperationalStatus("boat")).toBe("pending");
   });
 
   it("maps opening schedules and outdoor access without inventing availability", () => {
@@ -23,6 +33,54 @@ describe("Living Atlas operational confidence", () => {
       "verified-structure",
       "weather-access",
     ]);
+    expect(
+      livingAtlasOperationalConditions("nature").find(
+        (condition) => condition.id === "weather-access",
+      )?.status,
+    ).toBe("pending");
+  });
+
+  it("marks Mercado do Livramento unavailable on Monday and pending on another day", () => {
+    const monday = livingAtlasOperationalConditions("market", {
+      selectedDate: "2026-08-03",
+      stopId: MERCADO_DO_LIVRAMENTO_STOP_ID,
+    });
+    const tuesday = livingAtlasOperationalConditions("market", {
+      selectedDate: "2026-08-04",
+      stopId: MERCADO_DO_LIVRAMENTO_STOP_ID,
+    });
+
+    expect(monday.find((condition) => condition.id === "opening-hours")).toMatchObject({
+      status: "unavailable",
+    });
+    expect(
+      deriveLivingAtlasMomentOperationalStatus("market", {
+        selectedDate: "2026-08-03",
+        stopId: MERCADO_DO_LIVRAMENTO_STOP_ID,
+      }),
+    ).toBe("unavailable");
+    expect(tuesday.find((condition) => condition.id === "opening-hours")).toMatchObject({
+      status: "pending",
+    });
+  });
+
+  it("requires explicit evidence before a real-world dependency becomes confirmed", () => {
+    const pending = livingAtlasOperationalConditions("winery");
+    const confirmed = livingAtlasOperationalConditions("winery", {
+      evidence: { "supplier-confirmation": "confirmed" },
+    });
+
+    expect(pending.find((condition) => condition.id === "supplier-confirmation")?.status).toBe(
+      "pending",
+    );
+    expect(confirmed.find((condition) => condition.id === "supplier-confirmation")?.status).toBe(
+      "confirmed",
+    );
+    expect(
+      deriveLivingAtlasMomentOperationalStatus("winery", {
+        evidence: { "supplier-confirmation": "confirmed" },
+      }),
+    ).toBe("confirmed");
   });
 
   it("requires supplier confirmation for hosted experiences", () => {
