@@ -66,6 +66,7 @@ jobs:
           src/components/studio-v3/__tests__/living-atlas-composer.test.ts
           src/components/studio-v3/__tests__/living-atlas-alternatives.test.ts
           src/components/studio-v3/__tests__/living-atlas-route-planner.test.ts
+          src/components/studio-v3/__tests__/living-atlas-operational-confidence.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview-composition.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview-state.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview.test.tsx
