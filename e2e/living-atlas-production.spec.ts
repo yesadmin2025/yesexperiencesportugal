@@ -145,10 +145,11 @@ test("the Studio composes a day, survives a refresh and reaches the checkout sum
 
   // A tour date is required and must respect the booking lead time, so always
   // set one comfortably in the future.
-  const dateInput = page.getByLabel(/selected tour date/i).first();
+  const dateInput = page.locator('input[type="date"]').first();
   await expect(dateInput).toBeVisible({ timeout: 10_000 });
   const future = new Date(Date.now() + 45 * 86_400_000).toISOString().slice(0, 10);
   await dateInput.fill(future);
+
 
   await submit.scrollIntoViewIfNeeded();
   await submit.click();
