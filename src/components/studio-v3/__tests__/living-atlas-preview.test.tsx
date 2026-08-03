@@ -6,7 +6,10 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { LivingAtlasPreview } from "../LivingAtlasPreview";
 
-afterEach(() => cleanup());
+afterEach(() => {
+  cleanup();
+  window.localStorage.clear();
+});
 
 function chooseFirstAvailableDate(): void {
   const day = Array.from(document.querySelectorAll<HTMLButtonElement>("button[data-day]")).find(
