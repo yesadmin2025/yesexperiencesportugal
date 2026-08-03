@@ -20,20 +20,18 @@ test("canonical /studio-v3 renders Studio V3", async ({ page }) => {
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", CANONICAL);
 });
 
-test("/studio-v3 alias renders the same Studio, noindex + canonicalised", async ({ page }) => {
-  await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
-  await expect(page.locator(STUDIO_ROOT).first()).toBeVisible({ timeout: 20_000 });
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", CANONICAL);
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
-});
-
-for (const legacy of ["/studio", "/studio-v2"]) {
+for (const legacy of ["/studio", "/studio-v2", "/experience-studio"]) {
   test(`legacy ${legacy} lands on the new Studio`, async ({ page }) => {
     await page.goto(legacy, { waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/\/studio-v3/);
     await expect(page.locator(STUDIO_ROOT).first()).toBeVisible({ timeout: 20_000 });
   });
 }
+
+test("legacy Studio redirects preserve query parameters", async ({ page }) => {
+  await page.goto("/studio?source=qa", { waitUntil: "domcontentloaded" });
+  await expect(page).toHaveURL(/\/studio-v3\?source=qa$/);
+});
 
 test("desktop navigation enters the new Studio", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
@@ -48,8 +46,15 @@ test("desktop navigation enters the new Studio", async ({ page }) => {
 test("homepage CTAs point at the new Studio", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   expect(await page.locator('a[href^="/studio-v3"]').count()).toBeGreaterThan(0);
-  expect(await page.locator('a[href^="/studio-v2"], a[href^="/studio-v3"]').count()).toBe(0);
+  expect(
+    await page
+      .locator(
+        'a[href^="/studio-v2"], a[href^="/experience-studio"], a[href^="/studio-living-atlas-preview"]',
+      )
+      .count(),
+  ).toBe(0);
 });
+
 
 test("mobile navigation enters the new Studio", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
