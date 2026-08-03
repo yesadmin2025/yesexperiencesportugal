@@ -36,6 +36,7 @@ import {
   InterestsStep,
   PriorityStep,
 } from "@/components/studio-v3/LivingAtlasDiscoverySteps";
+import { LivingAtlasDateStep } from "@/components/studio-v3/LivingAtlasDateStep";
 import { ResultStep } from "@/components/studio-v3/LivingAtlasResultStep";
 import { ShapeStep } from "@/components/studio-v3/LivingAtlasShapeStep";
 
@@ -43,6 +44,7 @@ export function LivingAtlasJourneyPreview() {
   const [stage, setStage] = useState<LivingAtlasPreviewStage>("entry");
   const [pathMode, setPathMode] = useState<LivingAtlasPreviewPathMode | null>(null);
   const [destinationIntent, setDestinationIntent] = useState<DestinationIntent>("no-preference");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selected, setSelected] = useState<ExperienceDimensionId[]>([]);
   const [leads, setLeads] = useState<ExperienceDimensionId[]>([]);
   const [discoverySignal, setDiscoverySignal] = useState<LivingAtlasDiscoverySignal | null>(null);
@@ -59,6 +61,7 @@ export function LivingAtlasJourneyPreview() {
       setStage(restored.stage);
       setPathMode(restored.pathMode);
       setDestinationIntent(restored.destinationIntent);
+      setSelectedDate(restored.selectedDate);
       setSelected(restored.selected);
       setLeads(restored.leads);
       setDiscoverySignal(restored.discoverySignal);
@@ -75,6 +78,7 @@ export function LivingAtlasJourneyPreview() {
       stage,
       pathMode,
       destinationIntent,
+      selectedDate,
       selected,
       leads,
       discoverySignal,
@@ -90,6 +94,7 @@ export function LivingAtlasJourneyPreview() {
     preferences,
     replacements,
     selected,
+    selectedDate,
     stage,
   ]);
 
@@ -106,15 +111,16 @@ export function LivingAtlasJourneyPreview() {
   const selectedTour = selectedSignatureId ? findTour(selectedSignatureId) : null;
   const resolution = useMemo(
     () =>
-      selectedSignatureId
+      selectedSignatureId && selectedDate
         ? resolveLivingAtlasPreviewDay({
             anchorSignatureId: selectedSignatureId,
             profile,
             preferences,
+            selectedDate,
             replacements,
           })
         : null,
-    [selectedSignatureId, profile, preferences, replacements],
+    [selectedSignatureId, selectedDate, profile, preferences, replacements],
   );
   const composition = resolution?.composition ?? null;
   const alternativesBySlot = resolution?.alternativesBySlot ?? {};
@@ -131,6 +137,7 @@ export function LivingAtlasJourneyPreview() {
     setStage("entry");
     setPathMode(null);
     setDestinationIntent("no-preference");
+    setSelectedDate(null);
     setSelected([]);
     setLeads([]);
     setDiscoverySignal(null);
@@ -142,7 +149,8 @@ export function LivingAtlasJourneyPreview() {
 
   const goBack = () => {
     if (stage === "destination") setStage("entry");
-    if (stage === "interests") setStage(pathMode === "destination" ? "destination" : "entry");
+    if (stage === "date") setStage(pathMode === "destination" ? "destination" : "entry");
+    if (stage === "interests") setStage("date");
     if (stage === "priority") setStage("interests");
     if (stage === "result") {
       setDiscoverySignal(null);
@@ -207,7 +215,7 @@ export function LivingAtlasJourneyPreview() {
                 onDiscover={() => {
                   setPathMode("discover");
                   setDestinationIntent("no-preference");
-                  setStage("interests");
+                  setStage("date");
                 }}
                 onDestination={() => {
                   setPathMode("destination");
@@ -220,6 +228,19 @@ export function LivingAtlasJourneyPreview() {
               <DestinationStep
                 value={destinationIntent}
                 onChange={setDestinationIntent}
+                onBack={goBack}
+                onContinue={() => setStage("date")}
+              />
+            ) : null}
+
+            {stage === "date" ? (
+              <LivingAtlasDateStep
+                selectedDate={selectedDate}
+                onChange={(iso) => {
+                  setSelectedDate(iso);
+                  setReplacements({});
+                  setStatusMessage("");
+                }}
                 onBack={goBack}
                 onContinue={() => setStage("interests")}
               />
@@ -275,10 +296,15 @@ export function LivingAtlasJourneyPreview() {
               />
             ) : null}
 
-            {stage === "shape" && selectedSignatureId && composition && routePlan ? (
+            {stage === "shape" &&
+            selectedSignatureId &&
+            selectedDate &&
+            composition &&
+            routePlan ? (
               <ShapeStep
                 signatureId={selectedSignatureId}
                 signatureTitle={selectedTour?.title ?? selectedSignatureId}
+                selectedDate={selectedDate}
                 profile={profile}
                 preferences={preferences}
                 onPreferencesChange={setPreferences}
