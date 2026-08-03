@@ -56,3 +56,25 @@ jobs:
 
       - name: Typecheck project
         run: bunx tsc --noEmit
+
+      - name: Produce formatted Living Atlas files
+        run: >-
+          bunx prettier --write
+          src/components/studio-v3/LivingAtlasPreview.tsx
+          src/components/studio-v3/livingAtlas*.ts
+          src/components/studio-v3/__tests__/living-atlas-*.test.ts
+          src/components/studio-v3/__tests__/living-atlas-*.test.tsx
+          src/routes/studio-living-atlas-preview.tsx
+
+      - name: Upload formatted sources
+        uses: actions/upload-artifact@v4
+        with:
+          name: living-atlas-formatted
+          path: |
+            src/components/studio-v3/LivingAtlasPreview.tsx
+            src/components/studio-v3/livingAtlas*.ts
+            src/components/studio-v3/__tests__/living-atlas-*.test.ts
+            src/components/studio-v3/__tests__/living-atlas-*.test.tsx
+            src/routes/studio-living-atlas-preview.tsx
+          if-no-files-found: error
+          retention-days: 3
