@@ -29,7 +29,7 @@ concurrency:
 
 jobs:
   validate:
-    name: Taxonomy, decision, inventory and preview
+    name: Taxonomy, decision, inventory, composer and preview
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -51,6 +51,7 @@ jobs:
           src/components/studio-v3/__tests__/living-atlas-taxonomy.test.ts
           src/components/studio-v3/__tests__/living-atlas-decision.test.ts
           src/components/studio-v3/__tests__/living-atlas-inventory.test.ts
+          src/components/studio-v3/__tests__/living-atlas-composer.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview.test.tsx
 
       - name: Typecheck project
