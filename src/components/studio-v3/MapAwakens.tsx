@@ -429,7 +429,6 @@ export function MapAwakens({
               renders that eyebrow inside the canvas at the same position,
               so the two literally overlapped on ≥sm (Studio audit). */}
 
-
           {/* Bottom-right footnote — clarifies status without alarming */}
           {revealed >= journey.moments.length ? (
             <div
