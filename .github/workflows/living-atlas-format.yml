@@ -21,6 +21,7 @@ concurrency:
 
 jobs:
   format:
+    name: Prettier and commit Living Atlas files
     if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
