@@ -55,14 +55,23 @@ jobs:
       - name: Typecheck project
         run: bunx tsc --noEmit
 
-      - name: Guard exact changed path
+      - name: Guard exact changed paths
         run: |
-          test "$(git diff --name-only)" = "src/components/studio-v3/LivingAtlasShapeStep.tsx"
+          git diff --name-only | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          src/components/studio-v3/LivingAtlasOperationalConfidence.tsx
+          src/components/studio-v3/LivingAtlasShapeStep.tsx
+          src/components/studio-v3/livingAtlasOperationalConfidence.ts
+          EOF
+          diff -u /tmp/expected.txt /tmp/actual.txt
 
       - name: Commit validated UI integration
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/components/studio-v3/LivingAtlasShapeStep.tsx
+          git add \
+            src/components/studio-v3/LivingAtlasOperationalConfidence.tsx \
+            src/components/studio-v3/LivingAtlasShapeStep.tsx \
+            src/components/studio-v3/livingAtlasOperationalConfidence.ts
           git commit -m "feat(studio): integrate operational confidence into the itinerary"
           git push origin HEAD:studio/living-atlas
