@@ -68,7 +68,10 @@ function unique<T>(items: readonly T[]): T[] {
 }
 
 function studioInterests(profile: ExperienceProfile): Interest[] {
-  return unique(profile.selected.flatMap((dimension) => DIMENSION_INTERESTS[dimension])).slice(0, 4);
+  return unique(profile.selected.flatMap((dimension) => DIMENSION_INTERESTS[dimension])).slice(
+    0,
+    4,
+  );
 }
 
 function studioRhythm(density: LivingAtlasPreviewPreferences["density"]): Rhythm {

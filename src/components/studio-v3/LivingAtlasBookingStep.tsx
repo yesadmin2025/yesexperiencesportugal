@@ -53,12 +53,7 @@ export function LivingAtlasBookingStep({
 
   const pricing = useMemo(() => {
     if (!tour || !guestDetails) return null;
-    return resolveJourneyPricing(
-      tour,
-      guestDetails.adults,
-      guestDetails.minorAges,
-      tourPriceTiers,
-    );
+    return resolveJourneyPricing(tour, guestDetails.adults, guestDetails.minorAges, tourPriceTiers);
   }, [guestDetails, tour, tourPriceTiers]);
 
   if (!tour) {

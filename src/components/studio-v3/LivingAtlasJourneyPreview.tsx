@@ -39,6 +39,7 @@ import {
 import { LivingAtlasDateStep } from "@/components/studio-v3/LivingAtlasDateStep";
 import { ResultStep } from "@/components/studio-v3/LivingAtlasResultStep";
 import { ShapeStep } from "@/components/studio-v3/LivingAtlasShapeStep";
+import { LivingAtlasBookingStep } from "@/components/studio-v3/LivingAtlasBookingStep";
 
 export function LivingAtlasJourneyPreview() {
   const [stage, setStage] = useState<LivingAtlasPreviewStage>("entry");
@@ -54,6 +55,7 @@ export function LivingAtlasJourneyPreview() {
   const [replacements, setReplacements] = useState<LivingAtlasReplacementMap>({});
   const [hasHydrated, setHasHydrated] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   useEffect(() => {
     const restored = loadLivingAtlasPreviewState();
@@ -125,6 +127,11 @@ export function LivingAtlasJourneyPreview() {
   const composition = resolution?.composition ?? null;
   const alternativesBySlot = resolution?.alternativesBySlot ?? {};
   const routePlan = resolution?.routePlan ?? null;
+  const checkoutBlocked =
+    composition?.status === "invalid" ||
+    composition?.status === "impossible" ||
+    routePlan?.status === "unavailable" ||
+    routePlan?.status === "over-budget";
 
   useEffect(() => {
     if (!resolution) return;
@@ -144,6 +151,7 @@ export function LivingAtlasJourneyPreview() {
     setPreferences(DEFAULT_LIVING_ATLAS_PREVIEW_PREFERENCES);
     setReplacements({});
     setStatusMessage("");
+    setBookingOpen(false);
     clearLivingAtlasPreviewState();
   };
 
@@ -169,6 +177,24 @@ export function LivingAtlasJourneyPreview() {
     setStage("priority");
   };
 
+  if (bookingOpen && selectedSignatureId && selectedDate && routePlan) {
+    return (
+      <main
+        className="min-h-[100dvh] w-full bg-[color:var(--ivory)] py-4 sm:py-8"
+        style={{ color: "var(--charcoal)" }}
+      >
+        <LivingAtlasBookingStep
+          signatureId={selectedSignatureId}
+          selectedDate={selectedDate}
+          profile={profile}
+          preferences={preferences}
+          routePlan={routePlan}
+          onBack={() => setBookingOpen(false)}
+        />
+      </main>
+    );
+  }
+
   return (
     <main
       className="min-h-[100dvh] w-full px-4 py-8 sm:px-6 sm:py-12"
@@ -191,8 +217,7 @@ export function LivingAtlasJourneyPreview() {
               className="mt-1 text-[11px] leading-relaxed"
               style={{ color: "color-mix(in oklab, var(--ivory) 62%, transparent)" }}
             >
-              Isolated, noindex and unbookable. No price, checkout or production behaviour is
-              changed.
+              Isolated, noindex and sandbox-only. Production prices and bookings remain unchanged.
             </p>
           </div>
           {stage !== "entry" ? (
@@ -301,33 +326,53 @@ export function LivingAtlasJourneyPreview() {
             selectedDate &&
             composition &&
             routePlan ? (
-              <ShapeStep
-                signatureId={selectedSignatureId}
-                signatureTitle={selectedTour?.title ?? selectedSignatureId}
-                selectedDate={selectedDate}
-                profile={profile}
-                preferences={preferences}
-                onPreferencesChange={setPreferences}
-                composition={composition}
-                routePlan={routePlan}
-                alternativesBySlot={alternativesBySlot}
-                replacements={replacements}
-                isPersisted={hasHydrated}
-                statusMessage={statusMessage}
-                onReplace={(slotId, stopId, message) => {
-                  setReplacements((current) => ({ ...current, [slotId]: stopId }));
-                  setStatusMessage(message);
-                }}
-                onUndo={(slotId, message) => {
-                  setReplacements((current) => {
-                    const next = { ...current };
-                    delete next[slotId];
-                    return next;
-                  });
-                  setStatusMessage(message);
-                }}
-                onBack={goBack}
-              />
+              <>
+                <ShapeStep
+                  signatureId={selectedSignatureId}
+                  signatureTitle={selectedTour?.title ?? selectedSignatureId}
+                  selectedDate={selectedDate}
+                  profile={profile}
+                  preferences={preferences}
+                  onPreferencesChange={setPreferences}
+                  composition={composition}
+                  routePlan={routePlan}
+                  alternativesBySlot={alternativesBySlot}
+                  replacements={replacements}
+                  isPersisted={hasHydrated}
+                  statusMessage={statusMessage}
+                  onReplace={(slotId, stopId, message) => {
+                    setReplacements((current) => ({ ...current, [slotId]: stopId }));
+                    setStatusMessage(message);
+                  }}
+                  onUndo={(slotId, message) => {
+                    setReplacements((current) => {
+                      const next = { ...current };
+                      delete next[slotId];
+                      return next;
+                    });
+                    setStatusMessage(message);
+                  }}
+                  onBack={goBack}
+                />
+                <div className="mx-auto mt-8 max-w-xl text-center">
+                  <button
+                    type="button"
+                    disabled={checkoutBlocked}
+                    onClick={() => setBookingOpen(true)}
+                    className="inline-flex min-h-12 w-full items-center justify-center rounded-full px-6 text-[11px] font-bold uppercase tracking-[0.2em] disabled:cursor-not-allowed disabled:opacity-40"
+                    style={{ background: "var(--gold)", color: "var(--charcoal)" }}
+                  >
+                    Continue to booking
+                  </button>
+                  <p
+                    className="mt-3 text-[11px] leading-5"
+                    style={{ color: "color-mix(in oklab, var(--ivory) 58%, transparent)" }}
+                  >
+                    Your selected date and composed moments continue with you. This isolated preview
+                    opens Stripe sandbox only.
+                  </p>
+                </div>
+              </>
             ) : null}
           </div>
         </section>

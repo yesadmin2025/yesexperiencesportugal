@@ -83,11 +83,7 @@ describe("Living Atlas checkout handoff", () => {
     });
 
     expect(handoff.selectedDate).toBe("2026-08-12");
-    expect(handoff.stopIds).toEqual([
-      "mercado-livramento",
-      "quinta-example",
-      "sesimbra-boat",
-    ]);
+    expect(handoff.stopIds).toEqual(["mercado-livramento", "quinta-example", "sesimbra-boat"]);
     expect(handoff.stopLabels).toContain("Selected winery in the region");
     expect(handoff.stopLabels.join(" ")).not.toContain("Quinta Example");
     expect(handoff.studioState.dateExact).toBe("2026-08-12");
