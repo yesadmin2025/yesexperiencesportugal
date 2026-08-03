@@ -70,9 +70,7 @@ const ARRABIDA_SIGNATURES = new Set<LivingAtlasSignatureId>([
  * "route unavailable" dead end while preserving a `partial` route whenever a
  * supplier location is still pending.
  */
-const VERIFIED_PUBLIC_PLANNING_COORDS: Readonly<
-  Record<string, { lat: number; lng: number }>
-> = {
+const VERIFIED_PUBLIC_PLANNING_COORDS: Readonly<Record<string, { lat: number; lng: number }>> = {
   "mercado-do-livramento": { lat: 38.5230586463, lng: -8.8941629989 },
   "parque-natural-arrabida": { lat: 38.48146, lng: -8.98934 },
   "azeitao-village": { lat: 38.51868, lng: -9.01387 },
