@@ -1,5 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 
+async function waitForLivingAtlasHydration(page: Page) {
+  await expect(page.getByTestId("living-atlas-app")).toHaveAttribute("data-hydrated", "true");
+}
+
 async function chooseFirstAvailableDate(page: Page) {
   const availableDay = page.locator(".rdp-day_button:not([disabled])").first();
   await expect(availableDay).toBeVisible();
@@ -8,6 +12,7 @@ async function chooseFirstAvailableDate(page: Page) {
 
 async function walkToShape(page: Page) {
   await page.goto("/studio-v3");
+  await waitForLivingAtlasHydration(page);
 
   await expect(
     page.getByRole("heading", { name: "There is more than one Portugal. Let's find yours." }),
@@ -42,6 +47,7 @@ test("Living Atlas reaches the checkout summary and restores the composed day", 
   await walkToShape(page);
 
   await page.reload();
+  await waitForLivingAtlasHydration(page);
   await expect(page.getByText("Your saved day has been restored.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Continue to booking" })).toBeEnabled();
 
@@ -70,5 +76,6 @@ test("the former Living Atlas preview resolves to the canonical public Studio", 
 }) => {
   await page.goto("/studio-living-atlas-preview?source=qa");
   await expect(page).toHaveURL(/\/studio-v3\?source=qa$/);
+  await waitForLivingAtlasHydration(page);
   await expect(page.getByText("YES Experience Studio", { exact: true })).toBeVisible();
 });
