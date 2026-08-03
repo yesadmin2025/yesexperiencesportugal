@@ -1,0 +1,12 @@
+# This file intentionally mirrors the one-time workflow on main.
+# It exists only to trigger the privacy patch for PR #8 and will be removed before merge.
+name: Trigger Studio session privacy patch
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  marker:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Privacy patch trigger"
