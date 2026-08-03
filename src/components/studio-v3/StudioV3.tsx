@@ -228,6 +228,8 @@ import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { Composition } from "./Composition";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { FinalRevealStory } from "./FinalRevealStory";
+import { WhyRouteWorks } from "./WhyRouteWorks";
+import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
 import { CheckoutSummary as CheckoutSummaryStep } from "./CheckoutSummary";
 import { GuestDetailsStep } from "./GuestDetailsStep";
 import { buildSignatureStorySnapshot } from "./signatureStorySnapshot";
@@ -759,6 +761,23 @@ export function StudioV3() {
   // Every UI surface (price card, reveal, checkout) reads from this — never
   // recompute pricing or stops downstream.
   const resolvedJourney = useResolvedJourney(state, selectedAddOnItems, tourPriceTiers);
+
+  /**
+   * Living Atlas intelligence for the current answers. Pure and memoized —
+   * used for customer-facing explanation only. The same reasoning already
+   * biases Signature selection inside `resolveStudioV3Route`, so the reveal
+   * explains the day the traveller is actually getting.
+   */
+  const livingAtlasReasons = useMemo(
+    () =>
+      deriveStudioIntelligence({
+        feeling: state.feeling,
+        interests: state.interests,
+        destinationIntent: state.destinationIntent,
+        rhythm: state.rhythm,
+      }).reasons,
+    [state.feeling, state.interests, state.destinationIntent, state.rhythm],
+  );
 
   // Guest Details snapshot — captured on Guest Details submit, then rendered
   // in CheckoutSummary before we open Stripe. Kept in local state (not the
@@ -2512,6 +2531,12 @@ export function StudioV3() {
 
       {state.phase === "confirmation" ? (
         <PhaseShell accent="ivory" exiting={exiting}>
+          {/* Living Atlas intelligence — grounded reasons for this direction. */}
+          <WhyRouteWorks
+            reasons={livingAtlasReasons}
+            testId="studio-v3-living-atlas-reasons"
+            className="mx-auto w-full max-w-[62ch] px-5"
+          />
           <FinalRevealStory
             state={state}
             selectedAddOns={resolvedJourney.addOns}

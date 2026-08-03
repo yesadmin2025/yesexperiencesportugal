@@ -1,3 +1,4 @@
+import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
 // Studio V3 — curation layer (regional pool).
 //
 // The base of every journey is ONE real Signature tour (chosen from the
@@ -1214,6 +1215,7 @@ export function pickPrimaryTour(
   destinationIntent: DestinationIntent | null,
   seed: number = 0,
   rhythm: Rhythm | null = null,
+  preferTourId: string | null = null,
 ): { tour: SignatureTour; alternates: SignatureTour[] } {
   const { tour, alternates } = pickPrimaryTourWithFit(
     feeling,
@@ -1223,6 +1225,7 @@ export function pickPrimaryTour(
     destinationIntent,
     seed,
     rhythm,
+    preferTourId,
   );
   return { tour, alternates };
 }
@@ -1245,6 +1248,8 @@ export function pickPrimaryTourWithFit(
   destinationIntent: DestinationIntent | null,
   seed: number = 0,
   rhythm: Rhythm | null = null,
+  /** Living Atlas preference — honoured only when eligible and competitive. */
+  preferTourId: string | null = null,
 ): {
   tour: SignatureTour;
   alternates: SignatureTour[];
@@ -1331,6 +1336,19 @@ export function pickPrimaryTourWithFit(
     }
   }
 
+  // Living Atlas preference — the intelligence layer may nominate a
+  // Signature it believes fits the traveller's leading dimensions better.
+  // It is honoured ONLY when that tour is already eligible here and within
+  // the same top band (Δ ≤ 12), so curation's hard constraints, companion
+  // coherence and operational filters always win. Never invents a tour.
+  if (preferTourId && sorted.length > 1) {
+    const top = sorted[0].fit.totalScore;
+    const preferred = sorted.find(
+      (s) => s.tour.id === preferTourId && top - s.fit.totalScore <= 12,
+    );
+    if (preferred) chosen = preferred;
+  }
+
   const alternates = sorted
     .filter((s) => s.tour.id !== chosen.tour.id)
     .slice(0, 2)
@@ -1365,6 +1383,8 @@ export function curateJourney(
      *  when several fit + gentle per-stop jitter so the day re-arranges
      *  without breaking any cap or inventing stops. */
     seed?: number | string;
+    /** Living Atlas preferred Signature id (preference, never an override). */
+    preferTourId?: string | null;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
@@ -1382,6 +1402,10 @@ export function curateJourney(
     pickup,
     destinationIntent,
     seedNum,
+    // rhythm intentionally null here — preserves the existing curation
+    // scoring contract; only the Living Atlas preference is new.
+    null,
+    options?.preferTourId ?? null,
   );
 
   // STRICT containment: pool = primary tour's own stops only.
@@ -1686,6 +1710,12 @@ export interface ResolvedStudioV3Route {
   whatToConfirm: string;
   /** Resolution confidence — drives the fallback messaging upstream. */
   confidence: RouteConfidence;
+  /**
+   * Living Atlas intelligence — grounded "why this direction fits you"
+   * lines derived from the traveller's leading dimensions. Empty when the
+   * profile is too thin to reason safely. Never used for pricing.
+   */
+  livingAtlasReasons: string[];
 }
 
 /**
@@ -1715,6 +1745,8 @@ export function resolveStudioV3Route(input: {
   /** ISO yyyy-mm-dd — forwarded to curateJourney so operational closures
    *  (e.g. Mercado do Livramento on Mondays) are respected end-to-end. */
   dateExact?: string | null;
+  /** Living Atlas preferred Signature id — preference only, filtered by curation. */
+  preferTourId?: string | null;
 }): ResolvedStudioV3Route {
   const { feeling, companions, rhythm, interests, pickup, occasion } = input;
   const investment = input.investment ?? null;
@@ -1732,11 +1764,22 @@ export function resolveStudioV3Route(input: {
       routePoints: [],
       journeyTitle: "Your private Portugal day",
       whyItFits: [],
+      livingAtlasReasons: [],
       refinements: [],
       whatToConfirm: "Availability and final details are confirmed before your experience.",
       confidence: "needs-human-refinement",
     };
   }
+
+  // Living Atlas intelligence layer. Runs once, here, so every Studio V3
+  // surface (map preview, reveal, Travel File, checkout) shares the same
+  // reasoning. It can only *prefer* an already-eligible Signature.
+  const intelligence = deriveStudioIntelligence({
+    feeling,
+    interests,
+    destinationIntent,
+    rhythm,
+  });
 
   const journey = curateJourney(feeling, companions, rhythm, {
     interests,
@@ -1744,6 +1787,7 @@ export function resolveStudioV3Route(input: {
     investment,
     destinationIntent,
     dateExact,
+    preferTourId: input.preferTourId ?? intelligence.preferredTourId,
   });
 
   // Fase 5 — telemetria de decisão. Fire-and-forget; nunca bloqueia.
@@ -1934,6 +1978,7 @@ export function resolveStudioV3Route(input: {
     refinements: finalRefinements,
     whatToConfirm: "Availability and final details are confirmed before your experience.",
     confidence,
+    livingAtlasReasons: intelligence.reasons,
   };
 }
 
