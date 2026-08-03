@@ -34,7 +34,14 @@ import {
   type ExperienceProfile,
   type LivingAtlasSignatureId,
 } from "@/components/studio-v3/livingAtlasTaxonomy";
-import type { DestinationIntent, Feeling, Interest, Rhythm } from "@/components/studio-v3/types";
+import { refinementToDiscoverySignal } from "@/components/studio-v3/adaptiveQuestions";
+import type {
+  AdaptiveRefinementId,
+  DestinationIntent,
+  Feeling,
+  Interest,
+  Rhythm,
+} from "@/components/studio-v3/types";
 
 const DIMENSION_LABEL = new Map<ExperienceDimensionId, string>(
   EXPERIENCE_DIMENSIONS.map((d) => [d.id, d.label]),
@@ -68,6 +75,12 @@ export type StudioIntelligenceInput = {
   interests: ReadonlyArray<Interest>;
   destinationIntent?: DestinationIntent | null;
   rhythm?: Rhythm | null;
+  /**
+   * Answer to the adaptive refinement question, when one was asked. It is
+   * translated into a real Living Atlas discovery signal (or ignored when
+   * the answer maps to nothing in the catalogue).
+   */
+  refinement?: AdaptiveRefinementId | null;
 };
 
 export type StudioDirection = {
@@ -196,6 +209,7 @@ export function deriveStudioIntelligence(input: StudioIntelligenceInput): Studio
   const decision = decideLivingAtlasSignature({
     profile,
     destinationIntent: input.destinationIntent ?? "no-preference",
+    discoverySignal: refinementToDiscoverySignal(input.refinement),
   });
 
   const ranked = decision.ranked;
