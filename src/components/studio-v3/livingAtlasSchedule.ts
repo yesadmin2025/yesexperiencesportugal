@@ -79,9 +79,7 @@ export function applyLivingAtlasSchedule(input: {
   const totalEstimatedRoadKm = round(legs.reduce((sum, leg) => sum + leg.estimatedRoadKm, 0));
   const totalEstimatedDrivingMin = legs.reduce((sum, leg) => sum + leg.estimatedDrivingMin, 0);
   const longestLeg = Math.max(0, ...legs.map((leg) => leg.estimatedRoadKm));
-  const warnings = routePlan.warnings.filter(
-    (warning) => !warning.startsWith("Schedule order:"),
-  );
+  const warnings = routePlan.warnings.filter((warning) => !warning.startsWith("Schedule order:"));
   warnings.unshift("Schedule order: Mercado do Livramento is placed in the morning.");
 
   const overBudget =

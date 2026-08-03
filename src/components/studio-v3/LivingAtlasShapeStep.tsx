@@ -444,7 +444,8 @@ export function ShapeStep({
                                 <span
                                   className="rounded-full border px-2 py-1 text-[8px] font-bold uppercase tracking-[0.12em]"
                                   style={{
-                                    borderColor: "color-mix(in oklab, var(--ivory) 16%, transparent)",
+                                    borderColor:
+                                      "color-mix(in oklab, var(--ivory) 16%, transparent)",
                                   }}
                                 >
                                   Checked

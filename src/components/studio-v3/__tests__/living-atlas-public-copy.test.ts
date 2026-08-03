@@ -9,7 +9,11 @@ import {
 describe("Living Atlas public itinerary copy", () => {
   it("never exposes a concrete winery identity", () => {
     expect(
-      livingAtlasPublicMomentLabel({ stopId: "quinta-example", label: "Quinta Example", type: "winery" }),
+      livingAtlasPublicMomentLabel({
+        stopId: "quinta-example",
+        label: "Quinta Example",
+        type: "winery",
+      }),
     ).toBe("Selected winery in the region");
     expect(
       livingAtlasPublicMomentLabel(

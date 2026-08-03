@@ -5,7 +5,11 @@ import type { LivingAtlasResolvedMoment } from "../livingAtlasAlternatives";
 import type { LivingAtlasRoutePlan } from "../livingAtlasRoutePlanner";
 import { applyLivingAtlasSchedule } from "../livingAtlasSchedule";
 
-function moment(stopId: string, label: string, type: LivingAtlasResolvedMoment["type"]): LivingAtlasResolvedMoment {
+function moment(
+  stopId: string,
+  label: string,
+  type: LivingAtlasResolvedMoment["type"],
+): LivingAtlasResolvedMoment {
   return {
     stopId,
     slotId: stopId,

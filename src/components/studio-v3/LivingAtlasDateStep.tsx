@@ -7,10 +7,7 @@ import {
   minimumStudioBookingDateIso,
 } from "@/components/studio-v3/dateGuards";
 import { formatExactLabel } from "@/components/studio-v3/DatePhase";
-import {
-  StepActions,
-  StepHeading,
-} from "@/components/studio-v3/LivingAtlasPreviewPrimitives";
+import { StepActions, StepHeading } from "@/components/studio-v3/LivingAtlasPreviewPrimitives";
 
 function dateFromIso(iso: string | null): Date | undefined {
   if (!iso) return undefined;
