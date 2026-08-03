@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
+import { isStudioBookingDateAllowed, minimumStudioBookingDateIso } from "./dateGuards";
 import type { DateMode } from "./types";
 
 /**
