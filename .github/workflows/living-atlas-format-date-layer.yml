@@ -1,0 +1,70 @@
+name: Living Atlas date layer formatting
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/living-atlas-format-date-layer.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  format-test-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout isolated branch
+        uses: actions/checkout@v4
+        with:
+          ref: studio/living-atlas
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Format exact date-aware files
+        run: >-
+          bunx prettier --write
+          src/components/studio-v3/LivingAtlasDateStep.tsx
+          src/components/studio-v3/LivingAtlasShapeStep.tsx
+          src/components/studio-v3/livingAtlasSchedule.ts
+          src/components/studio-v3/__tests__/living-atlas-public-copy.test.ts
+          src/components/studio-v3/__tests__/living-atlas-schedule.test.ts
+
+      - name: Run Living Atlas tests
+        run: >-
+          bunx vitest run
+          src/components/studio-v3/__tests__/living-atlas-*.test.ts
+          src/components/studio-v3/__tests__/living-atlas-*.test.tsx
+
+      - name: Typecheck project
+        run: bunx tsc --noEmit
+
+      - name: Guard exact changed paths
+        run: |
+          changed="$(git diff --name-only | sort)"
+          expected="$(printf '%s\n' \
+            'src/components/studio-v3/LivingAtlasDateStep.tsx' \
+            'src/components/studio-v3/LivingAtlasShapeStep.tsx' \
+            'src/components/studio-v3/__tests__/living-atlas-public-copy.test.ts' \
+            'src/components/studio-v3/__tests__/living-atlas-schedule.test.ts' \
+            'src/components/studio-v3/livingAtlasSchedule.ts' | sort)"
+          test "$changed" = "$expected"
+
+      - name: Commit validated formatting
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            src/components/studio-v3/LivingAtlasDateStep.tsx \
+            src/components/studio-v3/LivingAtlasShapeStep.tsx \
+            src/components/studio-v3/livingAtlasSchedule.ts \
+            src/components/studio-v3/__tests__/living-atlas-public-copy.test.ts \
+            src/components/studio-v3/__tests__/living-atlas-schedule.test.ts
+          git commit -m "style(studio): format date-aware Living Atlas layer"
+          git push origin HEAD:studio/living-atlas
