@@ -17,14 +17,9 @@ export const LIVING_ATLAS_OPERATIONAL_CONDITION_IDS = [
 export type LivingAtlasOperationalConditionId =
   (typeof LIVING_ATLAS_OPERATIONAL_CONDITION_IDS)[number];
 
-export const LIVING_ATLAS_OPERATIONAL_STATUSES = [
-  "confirmed",
-  "pending",
-  "unavailable",
-] as const;
+export const LIVING_ATLAS_OPERATIONAL_STATUSES = ["confirmed", "pending", "unavailable"] as const;
 
-export type LivingAtlasOperationalStatus =
-  (typeof LIVING_ATLAS_OPERATIONAL_STATUSES)[number];
+export type LivingAtlasOperationalStatus = (typeof LIVING_ATLAS_OPERATIONAL_STATUSES)[number];
 
 export type LivingAtlasOperationalEvidence = Partial<
   Record<LivingAtlasOperationalConditionId, LivingAtlasOperationalStatus>
@@ -109,7 +104,8 @@ const CONDITION_CATALOG: Readonly<
     detailByStatus: {
       confirmed: "Current operational evidence supports comfortable access for this date.",
       pending: "Weather, season or local access conditions still require a real check.",
-      unavailable: "Weather or access conditions make this moment unavailable for the selected date.",
+      unavailable:
+        "Weather or access conditions make this moment unavailable for the selected date.",
     },
   },
 };
@@ -177,9 +173,7 @@ function resolvedOperationalDetail(
   return definition.detailByStatus[status];
 }
 
-export function livingAtlasOperationalStatusLabel(
-  status: LivingAtlasOperationalStatus,
-): string {
+export function livingAtlasOperationalStatusLabel(status: LivingAtlasOperationalStatus): string {
   if (status === "confirmed") return "Confirmed";
   if (status === "unavailable") return "Unavailable";
   return "Pending";
