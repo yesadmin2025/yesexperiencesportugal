@@ -33,6 +33,10 @@ import {
 } from "@/lib/checkout/composition";
 import { ChargeSummaryLine, type ChargeQuote } from "@/components/checkout/ChargeSummaryLine";
 
+import {
+  isStudioBookingDateAllowed,
+  minimumStudioBookingDateIso,
+} from "@/components/studio-v3/dateGuards";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { GuestField, GuestFieldGroup, guestInputClass } from "@/components/checkout/guest-form-ui";
@@ -61,6 +65,10 @@ export interface GuestDetailsStepProps {
    * derived from the same math the flow sends to Stripe.
    */
   readonly priceQuote?: (c: { adults: number; minorAges: number[] }) => ChargeQuote | null;
+  /** Date already chosen in the Studio. When present it is shown, not asked again. */
+  readonly fixedTourDate?: string;
+  /** Allows each checkout path to describe the next action honestly. */
+  readonly submitLabel?: string;
   readonly className?: string;
   readonly testId?: string;
 }
@@ -75,13 +83,20 @@ export function GuestDetailsStep({
   onSubmit,
   onStorySubmit,
   priceQuote,
+  fixedTourDate,
+  submitLabel,
   className,
   testId,
 }: GuestDetailsStepProps) {
   const [fullName, setFullName] = useState(initial?.fullName ?? "");
   const [email, setEmail] = useState(initial?.email ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
-  const [tourDate, setTourDate] = useState(initial?.tourDate ?? "");
+  const fixedDate =
+    fixedTourDate && isStudioBookingDateAllowed(fixedTourDate) ? fixedTourDate : null;
+  const [tourDate, setTourDate] = useState(
+    fixedDate ??
+      (initial?.tourDate && isStudioBookingDateAllowed(initial.tourDate) ? initial.tourDate : ""),
+  );
   const [composition, setComposition] = useState<TravellerComposition>(() =>
     hydrateLegacyComposition(initial),
   );
@@ -104,6 +119,10 @@ export function GuestDetailsStep({
     prewarmStripeScript();
   }, []);
 
+  useEffect(() => {
+    if (fixedDate) setTourDate(fixedDate);
+  }, [fixedDate]);
+
   // P2 #16 — reset scroll to top on mount so travellers land on the
   // "Almost there" header, not mid-form.
   useEffect(() => {
@@ -119,7 +138,7 @@ export function GuestDetailsStep({
     if (!fullName.trim()) missing.push("full name");
     if (!email.trim() || !isEmail(email)) missing.push("email");
     if (!phone.trim()) missing.push("phone / WhatsApp");
-    if (!tourDate) missing.push("tour date");
+    if (!isStudioBookingDateAllowed(tourDate)) missing.push("tour date");
     if (!pickupAddress.trim()) missing.push("pickup address");
     if (!isCompositionComplete(composition)) missing.push("age for every child");
     if (missing.length) {
@@ -257,13 +276,28 @@ export function GuestDetailsStep({
 
         <GuestFieldGroup title="Your day">
           <GuestField label="Tour date" required>
-            <input
-              type="date"
-              value={tourDate}
-              min={new Date().toISOString().split("T")[0]}
-              onChange={(e) => setTourDate(e.target.value)}
-              className={guestInputClass}
-            />
+            {fixedDate ? (
+              <div
+                data-testid="studio-v3-fixed-tour-date"
+                className={guestInputClass + " flex items-center"}
+                aria-label="Selected tour date"
+              >
+                {new Intl.DateTimeFormat("en-GB", {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                }).format(new Date(fixedDate + "T00:00:00"))}
+              </div>
+            ) : (
+              <input
+                type="date"
+                value={tourDate}
+                min={minimumStudioBookingDateIso()}
+                onChange={(e) => setTourDate(e.target.value)}
+                className={guestInputClass}
+              />
+            )}
           </GuestField>
           <GuestField label="Who's travelling" required as="div">
             <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
@@ -343,13 +377,18 @@ export function GuestDetailsStep({
               className={guestInputClass}
             />
           </GuestField>
-          <GuestField label="Notes for the guide">
+          <GuestField label="Preferences for your day" hint="Optional">
             <textarea
               value={guideNotes}
               onChange={(e) => setGuideNotes(e.target.value)}
+              placeholder="Winery preferences or anything not shown in the Studio"
               rows={3}
               className={`${guestInputClass} resize-none`}
             />
+            <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+              We consider these preferences whenever possible. They do not delay payment or booking
+              confirmation.
+            </p>
           </GuestField>
         </GuestFieldGroup>
 
@@ -372,7 +411,7 @@ export function GuestDetailsStep({
                 iconLeading={<Lock size={14} aria-hidden />}
                 data-testid="studio-v3-guest-details-submit"
               >
-                Continue and email my Signature story
+                {submitLabel ?? "Continue and email my Signature story"}
               </CtaButton>
             )}
             <p className="mt-2 text-center text-[10px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]/80">
