@@ -1,0 +1,68 @@
+name: Living Atlas one-shot commit
+
+on:
+  push:
+    branches:
+      - studio/living-atlas
+    paths:
+      - ".github/workflows/living-atlas-one-shot.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: living-atlas-one-shot
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout isolated branch
+        uses: actions/checkout@v4
+        with:
+          ref: studio/living-atlas
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build product layer
+        run: |
+          node scripts/fix-living-atlas-product-layer-script.mjs
+          node scripts/apply-living-atlas-product-layer.mjs
+          bunx prettier --write src/components/studio-v3/LivingAtlasJourneyPreview.tsx
+
+      - name: Validate Living Atlas
+        run: >-
+          bunx vitest run
+          src/components/studio-v3/__tests__/living-atlas-taxonomy.test.ts
+          src/components/studio-v3/__tests__/living-atlas-decision.test.ts
+          src/components/studio-v3/__tests__/living-atlas-inventory.test.ts
+          src/components/studio-v3/__tests__/living-atlas-composer.test.ts
+          src/components/studio-v3/__tests__/living-atlas-alternatives.test.ts
+          src/components/studio-v3/__tests__/living-atlas-preview-composition.test.ts
+          src/components/studio-v3/__tests__/living-atlas-preview-state.test.ts
+          src/components/studio-v3/__tests__/living-atlas-preview.test.tsx
+
+      - name: Validate TypeScript
+        run: bunx tsc --noEmit
+
+      - name: Guard changed paths
+        run: |
+          changed="$(git diff --name-only)"
+          test "$changed" = "src/components/studio-v3/LivingAtlasJourneyPreview.tsx"
+
+      - name: Commit exact validated file
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/studio-v3/LivingAtlasJourneyPreview.tsx
+          git commit -m "feat(studio): add validated alternatives and autosave"
+          git push origin HEAD:studio/living-atlas
