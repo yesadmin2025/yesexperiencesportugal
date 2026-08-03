@@ -23,6 +23,7 @@ on:
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
       - "src/routes/studio-living-atlas-preview.tsx"
+      - "scripts/close-living-atlas-checkout.mjs"
       - ".github/workflows/living-atlas-ci.yml"
 
 permissions:
@@ -34,7 +35,6 @@ concurrency:
 
 jobs:
   validate:
-    if: github.event_name == 'push' && !contains(github.event.head_commit.message, 'close Living Atlas sandbox checkout loop')
     name: Living Atlas product layer
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -46,18 +46,31 @@ jobs:
           ref: studio/living-atlas
           fetch-depth: 0
 
+      - name: Detect completed handoff
+        id: handoff
+        run: |
+          if grep -q 'readonly fixedTourDate?: string' src/components/studio-v3/GuestDetailsStep.tsx; then
+            echo 'complete=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'complete=false' >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup Bun
+        if: steps.handoff.outputs.complete != 'true'
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
       - name: Install dependencies
+        if: steps.handoff.outputs.complete != 'true'
         run: bun install --frozen-lockfile
 
       - name: Apply final checkout handoff
+        if: steps.handoff.outputs.complete != 'true'
         run: node scripts/close-living-atlas-checkout.mjs
 
       - name: Format product files
+        if: steps.handoff.outputs.complete != 'true'
         run: >-
           bunx prettier --write
           src/components/studio-v3/GuestDetailsStep.tsx
@@ -67,12 +80,15 @@ jobs:
           src/components/studio-v3/__tests__/living-atlas-checkout-handoff.test.ts
 
       - name: Run Living Atlas tests
+        if: steps.handoff.outputs.complete != 'true'
         run: bunx vitest run src/components/studio-v3/__tests__/living-atlas-*.test.ts src/components/studio-v3/__tests__/living-atlas-*.test.tsx
 
       - name: Typecheck project
+        if: steps.handoff.outputs.complete != 'true'
         run: bunx tsc --noEmit
 
       - name: Lint changed product files
+        if: steps.handoff.outputs.complete != 'true'
         run: >-
           bunx eslint
           src/components/studio-v3/GuestDetailsStep.tsx
@@ -82,6 +98,7 @@ jobs:
           src/components/studio-v3/__tests__/living-atlas-checkout-handoff.test.ts
 
       - name: Guard exact product paths
+        if: steps.handoff.outputs.complete != 'true'
         run: |
           changed="$(git diff --name-only | sort)"
           printf '%s\n' "$changed"
@@ -94,6 +111,7 @@ jobs:
           test "$changed" = "$allowed"
 
       - name: Commit validated handoff
+        if: steps.handoff.outputs.complete != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
