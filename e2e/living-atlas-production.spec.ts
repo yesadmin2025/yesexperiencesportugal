@@ -52,6 +52,11 @@ async function walkToShape(page: Page) {
 
   await expect(page.getByRole("button", { name: /Shape this day/i })).toBeVisible();
   await page.getByRole("button", { name: /Shape this day/i }).click();
+
+  const waterMode = page.getByRole("button", { name: "From the water" });
+  await expect(waterMode).toBeVisible();
+  await waterMode.click();
+  await expect(waterMode).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("button", { name: "Continue to booking" })).toBeEnabled();
 }
 
