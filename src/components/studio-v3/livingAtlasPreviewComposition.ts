@@ -1,6 +1,10 @@
 import { REGION_STOP_POOL, type OptionalStop, type OptionalStopType } from "@/data/regionStopPool";
 import { ADD_ON_CATALOG } from "@/data/signatureAddOns";
 import {
+  MERCADO_DO_LIVRAMENTO_STOP_ID,
+  isMercadoDoLivramentoOpenOn,
+} from "@/components/studio-v3/dateGuards";
+import {
   applyLivingAtlasReplacements,
   buildLivingAtlasAlternatives,
   type LivingAtlasAlternativesBySlot,
@@ -17,6 +21,7 @@ import {
   planLivingAtlasRoute,
   type LivingAtlasRoutePlan,
 } from "@/components/studio-v3/livingAtlasRoutePlanner";
+import { applyLivingAtlasSchedule } from "@/components/studio-v3/livingAtlasSchedule";
 import type {
   ExperienceDimensionId,
   ExperienceProfile,
@@ -98,13 +103,7 @@ function verifiedArrabidaBoatStop(): OptionalStop | null {
   };
 }
 
-/**
- * Preview-only inventory overlay.
- *
- * It reuses the production optional-stop pool and adds one already verified
- * sibling-Signature experience that exists in the add-on catalogue. It does
- * not mutate Supabase or the live Studio inventory.
- */
+/** Preview-only inventory overlay. No Supabase or production mutation. */
 export function getLivingAtlasPreviewPool(): OptionalStop[] {
   const boat = verifiedArrabidaBoatStop();
   if (!boat || REGION_STOP_POOL.some((stop) => stop.id === boat.id)) {
@@ -113,13 +112,19 @@ export function getLivingAtlasPreviewPool(): OptionalStop[] {
   return [...REGION_STOP_POOL, boat];
 }
 
+function poolForDate(pool: readonly OptionalStop[], selectedDate: string | null | undefined) {
+  if (!selectedDate || isMercadoDoLivramentoOpenOn(selectedDate)) return [...pool];
+  return pool.filter((stop) => stop.id !== MERCADO_DO_LIVRAMENTO_STOP_ID);
+}
+
 export function deriveLivingAtlasPreviewRequest(input: {
   anchorSignatureId: LivingAtlasSignatureId;
   profile: ExperienceProfile;
   preferences: LivingAtlasPreviewPreferences;
+  selectedDate?: string | null;
   pool?: readonly OptionalStop[];
 }): LivingAtlasCompositionRequest {
-  const { anchorSignatureId, profile, preferences } = input;
+  const { anchorSignatureId, profile, preferences, selectedDate } = input;
   const isArrabida = ARRABIDA_SIGNATURES.has(anchorSignatureId);
   const requiredTypes: OptionalStopType[] = [];
   const preferredTypes = unique(
@@ -145,7 +150,11 @@ export function deriveLivingAtlasPreviewRequest(input: {
 
   if (profile.selected.includes("local-life") && isArrabida) {
     if (preferences.localMoment === "market") {
-      mustIncludeStopIds.push("mercado-do-livramento");
+      if (!selectedDate || isMercadoDoLivramentoOpenOn(selectedDate)) {
+        mustIncludeStopIds.push(MERCADO_DO_LIVRAMENTO_STOP_ID);
+      } else {
+        preferredTypes.push("village");
+      }
     } else {
       preferredTypes.push("village");
     }
@@ -169,10 +178,12 @@ export function resolveLivingAtlasPreviewDay(input: {
   anchorSignatureId: LivingAtlasSignatureId;
   profile: ExperienceProfile;
   preferences: LivingAtlasPreviewPreferences;
+  selectedDate?: string | null;
   replacements?: LivingAtlasReplacementMap;
   pool?: readonly OptionalStop[];
 }): LivingAtlasPreviewResolution {
-  const pool = input.pool ?? getLivingAtlasPreviewPool();
+  const rawPool = input.pool ?? getLivingAtlasPreviewPool();
+  const pool = poolForDate(rawPool, input.selectedDate);
   const request = deriveLivingAtlasPreviewRequest({ ...input, pool });
   const baseComposition = composeLivingAtlasDay(request);
   const composition = applyLivingAtlasReplacements({
@@ -188,7 +199,12 @@ export function resolveLivingAtlasPreviewDay(input: {
     replacements: composition.appliedReplacements,
     pool,
   });
-  const routePlan = planLivingAtlasRoute({ composition, pool });
+  const geographicRoute = planLivingAtlasRoute({ composition, pool });
+  const routePlan = applyLivingAtlasSchedule({
+    routePlan: geographicRoute,
+    pool,
+    selectedDate: input.selectedDate ?? null,
+  });
 
   return { request, baseComposition, composition, alternativesBySlot, routePlan };
 }
@@ -197,6 +213,7 @@ export function composeLivingAtlasPreviewDay(input: {
   anchorSignatureId: LivingAtlasSignatureId;
   profile: ExperienceProfile;
   preferences: LivingAtlasPreviewPreferences;
+  selectedDate?: string | null;
   replacements?: LivingAtlasReplacementMap;
   pool?: readonly OptionalStop[];
 }): LivingAtlasResolvedComposition {
