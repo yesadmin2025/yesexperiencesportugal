@@ -208,6 +208,7 @@ import {
   OCCASIONS,
   PICKUPS,
   RHYTHMS,
+  type AdaptiveRefinementId,
   type ChoiceOption,
   type Companions,
   type Consideration,
