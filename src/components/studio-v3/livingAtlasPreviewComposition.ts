@@ -1,6 +1,13 @@
 import { REGION_STOP_POOL, type OptionalStop, type OptionalStopType } from "@/data/regionStopPool";
 import { ADD_ON_CATALOG } from "@/data/signatureAddOns";
 import {
+  applyLivingAtlasReplacements,
+  buildLivingAtlasAlternatives,
+  type LivingAtlasAlternativesBySlot,
+  type LivingAtlasReplacementMap,
+  type LivingAtlasResolvedComposition,
+} from "@/components/studio-v3/livingAtlasAlternatives";
+import {
   composeLivingAtlasDay,
   type LivingAtlasComposition,
   type LivingAtlasCompositionRequest,
@@ -21,6 +28,13 @@ export type LivingAtlasPreviewPreferences = {
   wineEmphasis: LivingAtlasWineEmphasis;
   atlanticMode: LivingAtlasAtlanticMode;
   localMoment: LivingAtlasLocalMoment;
+};
+
+export type LivingAtlasPreviewResolution = {
+  request: LivingAtlasCompositionRequest;
+  baseComposition: LivingAtlasComposition;
+  composition: LivingAtlasResolvedComposition;
+  alternativesBySlot: LivingAtlasAlternativesBySlot;
 };
 
 export const DEFAULT_LIVING_ATLAS_PREVIEW_PREFERENCES: LivingAtlasPreviewPreferences = {
@@ -145,13 +159,41 @@ export function deriveLivingAtlasPreviewRequest(input: {
   };
 }
 
+export function resolveLivingAtlasPreviewDay(input: {
+  anchorSignatureId: LivingAtlasSignatureId;
+  profile: ExperienceProfile;
+  preferences: LivingAtlasPreviewPreferences;
+  replacements?: LivingAtlasReplacementMap;
+  pool?: readonly OptionalStop[];
+}): LivingAtlasPreviewResolution {
+  const pool = input.pool ?? getLivingAtlasPreviewPool();
+  const request = deriveLivingAtlasPreviewRequest({ ...input, pool });
+  const baseComposition = composeLivingAtlasDay(request);
+  const composition = applyLivingAtlasReplacements({
+    baseComposition,
+    request,
+    replacements: input.replacements,
+    pool,
+  });
+  const alternativesBySlot = buildLivingAtlasAlternatives({
+    baseComposition,
+    composition,
+    request,
+    replacements: composition.appliedReplacements,
+    pool,
+  });
+
+  return { request, baseComposition, composition, alternativesBySlot };
+}
+
 export function composeLivingAtlasPreviewDay(input: {
   anchorSignatureId: LivingAtlasSignatureId;
   profile: ExperienceProfile;
   preferences: LivingAtlasPreviewPreferences;
+  replacements?: LivingAtlasReplacementMap;
   pool?: readonly OptionalStop[];
-}): LivingAtlasComposition {
-  return composeLivingAtlasDay(deriveLivingAtlasPreviewRequest(input));
+}): LivingAtlasResolvedComposition {
+  return resolveLivingAtlasPreviewDay(input).composition;
 }
 
 const TYPE_TITLE: Partial<Record<OptionalStopType, string>> = {
@@ -169,7 +211,9 @@ const TYPE_TITLE: Partial<Record<OptionalStopType, string>> = {
 };
 
 /** The traveller-facing title comes from the composed day, never the hidden Signature title. */
-export function livingAtlasPreviewDayTitle(composition: LivingAtlasComposition): string {
+export function livingAtlasPreviewDayTitle(
+  composition: Pick<LivingAtlasComposition, "moments">,
+): string {
   const chapters = unique(
     composition.moments.map((moment) => TYPE_TITLE[moment.type] ?? moment.label),
   ).slice(0, 3);
