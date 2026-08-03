@@ -82,8 +82,7 @@ export function haversineDistanceKm(
   const fromLat = toRadians(from.lat);
   const toLat = toRadians(to.lat);
   const a =
-    Math.sin(latDelta / 2) ** 2 +
-    Math.cos(fromLat) * Math.cos(toLat) * Math.sin(lngDelta / 2) ** 2;
+    Math.sin(latDelta / 2) ** 2 + Math.cos(fromLat) * Math.cos(toLat) * Math.sin(lngDelta / 2) ** 2;
   return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
@@ -92,10 +91,7 @@ function roadDistanceKm(from: LocatedMoment, to: LocatedMoment): number {
 }
 
 function estimatedDrivingMinutes(estimatedRoadKm: number): number {
-  return Math.max(
-    MIN_TRANSFER_MINUTES,
-    Math.round((estimatedRoadKm / PLANNING_SPEED_KMH) * 60),
-  );
+  return Math.max(MIN_TRANSFER_MINUTES, Math.round((estimatedRoadKm / PLANNING_SPEED_KMH) * 60));
 }
 
 function routeDistanceKm(route: readonly LocatedMoment[]): number {
@@ -186,7 +182,7 @@ function buildLegs(route: readonly LocatedMoment[]): LivingAtlasRouteLeg[] {
 export function planLivingAtlasRoute(input: {
   composition: LivingAtlasResolvedComposition;
   pool: readonly OptionalStop[];
-  limits?: Partial<typeof LIVING_ATLAS_PREVIEW_ROUTING_LIMITS>;
+  limits?: Partial<Record<keyof typeof LIVING_ATLAS_PREVIEW_ROUTING_LIMITS, number>>;
 }): LivingAtlasRoutePlan {
   const limits = { ...LIVING_ATLAS_PREVIEW_ROUTING_LIMITS, ...input.limits };
   const stopById = new Map(input.pool.map((stop) => [stop.id, stop]));
@@ -218,13 +214,8 @@ export function planLivingAtlasRoute(input: {
 
   const orderedLocated = optimizedOrder(located);
   const legs = buildLegs(orderedLocated);
-  const totalEstimatedRoadKm = round(
-    legs.reduce((sum, leg) => sum + leg.estimatedRoadKm, 0),
-  );
-  const totalEstimatedDrivingMin = legs.reduce(
-    (sum, leg) => sum + leg.estimatedDrivingMin,
-    0,
-  );
+  const totalEstimatedRoadKm = round(legs.reduce((sum, leg) => sum + leg.estimatedRoadKm, 0));
+  const totalEstimatedDrivingMin = legs.reduce((sum, leg) => sum + leg.estimatedDrivingMin, 0);
   const warnings: string[] = [];
 
   if (unlocated.length > 0) {

@@ -69,7 +69,15 @@ export function decisionTitle(decision: LivingAtlasDecision): string {
   return "Your Portugal is beginning to take shape.";
 }
 
-export function StepHeading({ eyebrow, title, copy }: { eyebrow: string; title: string; copy: string }) {
+export function StepHeading({
+  eyebrow,
+  title,
+  copy,
+}: {
+  eyebrow: string;
+  title: string;
+  copy: string;
+}) {
   return (
     <div className="mx-auto max-w-3xl text-center">
       <p
@@ -301,7 +309,11 @@ export function SegmentedChoice<T extends string>({
   );
 }
 
-export function CompositionStatus({ composition }: { composition: LivingAtlasResolvedComposition }) {
+export function CompositionStatus({
+  composition,
+}: {
+  composition: LivingAtlasResolvedComposition;
+}) {
   const complete = composition.status === "complete";
   return (
     <div

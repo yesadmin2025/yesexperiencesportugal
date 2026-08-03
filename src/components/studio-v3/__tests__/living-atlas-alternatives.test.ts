@@ -171,9 +171,7 @@ describe("Living Atlas alternatives", () => {
     expect(natureAlternatives).toHaveLength(2);
     expect(natureAlternatives.map((item) => item.moment.stopId)).not.toContain("wrong-cluster");
     expect(
-      natureAlternatives.every(
-        (item) => item.moment.routeCluster === "arrabida-azeitao-sesimbra",
-      ),
+      natureAlternatives.every((item) => item.moment.routeCluster === "arrabida-azeitao-sesimbra"),
     ).toBe(true);
   });
 

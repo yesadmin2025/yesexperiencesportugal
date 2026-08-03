@@ -1,14 +1,5 @@
 import { useState } from "react";
-import {
-  ArrowRight,
-  CarFront,
-  Clock3,
-  Compass,
-  RefreshCw,
-  Undo2,
-  Waves,
-  Wine,
-} from "lucide-react";
+import { ArrowRight, CarFront, Clock3, Compass, RefreshCw, Undo2, Waves, Wine } from "lucide-react";
 
 import {
   formatLivingAtlasDuration,

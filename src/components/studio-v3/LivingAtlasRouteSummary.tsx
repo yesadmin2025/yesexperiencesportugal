@@ -6,10 +6,7 @@ import {
   type LivingAtlasRoutePlan,
 } from "@/components/studio-v3/livingAtlasRoutePlanner";
 
-const STATUS_COPY: Record<
-  LivingAtlasRoutePlan["status"],
-  { label: string; detail: string }
-> = {
+const STATUS_COPY: Record<LivingAtlasRoutePlan["status"], { label: string; detail: string }> = {
   ready: {
     label: "Geographic draft ready",
     detail: "All selected moments have verified planning coordinates.",
@@ -123,15 +120,7 @@ export function LivingAtlasRouteSummary({ routePlan }: { routePlan: LivingAtlasR
   );
 }
 
-function Metric({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-}) {
+function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div
       className="rounded-xl border p-2.5"

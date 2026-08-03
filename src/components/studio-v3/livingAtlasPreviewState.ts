@@ -121,7 +121,8 @@ function correctStage(input: {
   pathMode: LivingAtlasPreviewPathMode | null;
 }): LivingAtlasPreviewStage {
   if (input.requested === "entry" || input.requested === "destination") return input.requested;
-  if (input.selected.length === 0) return input.pathMode === "destination" ? "destination" : "entry";
+  if (input.selected.length === 0)
+    return input.pathMode === "destination" ? "destination" : "entry";
   if (["result", "shape"].includes(input.requested) && input.leads.length === 0) {
     return input.selected.length > 1 ? "priority" : "interests";
   }
@@ -170,7 +171,8 @@ export function parseLivingAtlasPreviewState(
       discoverySignal,
       preferences: safePreferences(parsed.preferences),
       replacements: safeReplacements(parsed.replacements),
-      updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : new Date(0).toISOString(),
+      updatedAt:
+        typeof parsed.updatedAt === "string" ? parsed.updatedAt : new Date(0).toISOString(),
     };
   } catch {
     return null;
@@ -189,7 +191,9 @@ export function serializeLivingAtlasPreviewState(input: LivingAtlasPreviewStateI
 export function loadLivingAtlasPreviewState(): LivingAtlasPreviewPersistedState | null {
   if (typeof window === "undefined") return null;
   try {
-    return parseLivingAtlasPreviewState(window.localStorage.getItem(LIVING_ATLAS_PREVIEW_STORAGE_KEY));
+    return parseLivingAtlasPreviewState(
+      window.localStorage.getItem(LIVING_ATLAS_PREVIEW_STORAGE_KEY),
+    );
   } catch {
     return null;
   }

@@ -36,11 +36,12 @@ export type LivingAtlasMomentAlternative = {
 
 export type LivingAtlasAlternativesBySlot = Record<string, LivingAtlasMomentAlternative[]>;
 
-const DENSITY_MAX_STOP_MINUTES: Readonly<Record<LivingAtlasCompositionRequest["density"], number>> = {
-  slow: 300,
-  balanced: 390,
-  rich: 480,
-};
+const DENSITY_MAX_STOP_MINUTES: Readonly<Record<LivingAtlasCompositionRequest["density"], number>> =
+  {
+    slow: 300,
+    balanced: 390,
+    rich: 480,
+  };
 
 function unique<T>(items: readonly T[]): T[] {
   return [...new Set(items)];
@@ -107,11 +108,13 @@ function validateMomentSet(input: {
   const stopById = new Map(pool.map((stop) => [stop.id, stop]));
   const ids = moments.map((moment) => moment.stopId);
 
-  if (new Set(ids).size !== ids.length) return { ok: false, status: "invalid", reason: "duplicate-stop" };
+  if (new Set(ids).size !== ids.length)
+    return { ok: false, status: "invalid", reason: "duplicate-stop" };
 
   for (const moment of moments) {
     const stop = stopById.get(moment.stopId);
-    if (!stop || !stop.active) return { ok: false, status: "invalid", reason: "inactive-or-missing-stop" };
+    if (!stop || !stop.active)
+      return { ok: false, status: "invalid", reason: "inactive-or-missing-stop" };
   }
 
   const groups = new Set<string>();
@@ -129,7 +132,8 @@ function validateMomentSet(input: {
   }
 
   for (const stopId of request.mustIncludeStopIds ?? []) {
-    if (!ids.includes(stopId)) return { ok: false, status: "impossible", reason: `required-stop:${stopId}` };
+    if (!ids.includes(stopId))
+      return { ok: false, status: "impossible", reason: `required-stop:${stopId}` };
   }
 
   for (const type of request.requiredTypes ?? []) {
@@ -285,7 +289,8 @@ function alternativeExplanation(input: {
   if (input.addsDimensions.length > 0) fragments.push("brings another selected thread forward");
   if (input.typeChanged) fragments.push("changes the texture of the day");
   if (input.durationDeltaMin === 0) fragments.push("without changing the timing");
-  else if (input.durationDeltaMin < 0) fragments.push(`frees ${Math.abs(input.durationDeltaMin)} minutes`);
+  else if (input.durationDeltaMin < 0)
+    fragments.push(`frees ${Math.abs(input.durationDeltaMin)} minutes`);
   else fragments.push(`uses ${input.durationDeltaMin} more minutes`);
   return `${fragments.join(", ")}.`;
 }

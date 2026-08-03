@@ -3,7 +3,10 @@ import { ArrowRight } from "lucide-react";
 import { findTour } from "@/data/signatureTours";
 import type { DestinationIntent } from "@/components/studio-v3/types";
 import type { LivingAtlasDecision } from "@/components/studio-v3/livingAtlasDecision";
-import type { ExperienceProfile, LivingAtlasSignatureId } from "@/components/studio-v3/livingAtlasTaxonomy";
+import type {
+  ExperienceProfile,
+  LivingAtlasSignatureId,
+} from "@/components/studio-v3/livingAtlasTaxonomy";
 import {
   BackButton,
   EvidenceCell,
