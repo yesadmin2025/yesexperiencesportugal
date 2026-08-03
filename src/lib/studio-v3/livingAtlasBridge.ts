@@ -86,7 +86,6 @@ export type StudioDirection = {
   note: string;
 };
 
-
 export type StudioIntelligence = {
   /** Null when the traveller has not given enough to reason safely. */
   profile: ExperienceProfile | null;
@@ -225,9 +224,14 @@ export function deriveStudioIntelligence(input: StudioIntelligenceInput): Studio
     const note = gaps.length
       ? `Leans further into ${labelList(distinctStrengths)}, with less ${labelList(gaps)}.`
       : `Leans further into ${labelList(distinctStrengths)}.`;
-    alternatives.push({ signatureId: candidate.signatureId, strengths, gaps, distinctStrengths, note });
+    alternatives.push({
+      signatureId: candidate.signatureId,
+      strengths,
+      gaps,
+      distinctStrengths,
+      note,
+    });
   }
-
 
   return {
     profile,
