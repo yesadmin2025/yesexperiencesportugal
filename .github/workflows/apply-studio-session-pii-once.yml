@@ -1,3 +1,4 @@
+# Clean final Studio V3 privacy-gate trigger. Remove before merge.
 name: Apply Studio session privacy once
 
 on:
