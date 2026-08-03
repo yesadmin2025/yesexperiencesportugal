@@ -13,6 +13,10 @@ import {
   type LivingAtlasCompositionRequest,
   type LivingAtlasDensity,
 } from "@/components/studio-v3/livingAtlasComposer";
+import {
+  planLivingAtlasRoute,
+  type LivingAtlasRoutePlan,
+} from "@/components/studio-v3/livingAtlasRoutePlanner";
 import type {
   ExperienceDimensionId,
   ExperienceProfile,
@@ -35,6 +39,7 @@ export type LivingAtlasPreviewResolution = {
   baseComposition: LivingAtlasComposition;
   composition: LivingAtlasResolvedComposition;
   alternativesBySlot: LivingAtlasAlternativesBySlot;
+  routePlan: LivingAtlasRoutePlan;
 };
 
 export const DEFAULT_LIVING_ATLAS_PREVIEW_PREFERENCES: LivingAtlasPreviewPreferences = {
@@ -78,6 +83,7 @@ function verifiedArrabidaBoatStop(): OptionalStop | null {
     subregion: "Sesimbra",
     name: addOn.label,
     type: "boat",
+    coords: { lat: 38.4444, lng: -9.1011 },
     suitsInterests: ["coast", "nature", "wonder"],
     suitsRhythm: ["slow", "balanced", "full", "immersive"],
     suitsCompanions: ["solo", "couple", "family", "friends"],
@@ -88,7 +94,7 @@ function verifiedArrabidaBoatStop(): OptionalStop | null {
     routeCluster: "arrabida-azeitao-sesimbra",
     active: true,
     notes:
-      "Verified sibling-Signature experience from the existing add-on catalogue. Sea and supplier conditions still require confirmation.",
+      "Verified sibling-Signature experience from the existing add-on catalogue. Sesimbra coordinates are used for planning orientation only; departure point, sea and supplier conditions still require confirmation.",
   };
 }
 
@@ -182,8 +188,9 @@ export function resolveLivingAtlasPreviewDay(input: {
     replacements: composition.appliedReplacements,
     pool,
   });
+  const routePlan = planLivingAtlasRoute({ composition, pool });
 
-  return { request, baseComposition, composition, alternativesBySlot };
+  return { request, baseComposition, composition, alternativesBySlot, routePlan };
 }
 
 export function composeLivingAtlasPreviewDay(input: {
