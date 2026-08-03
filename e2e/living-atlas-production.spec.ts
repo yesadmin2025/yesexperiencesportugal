@@ -1,9 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import {
-  advanceRefineToStorytelling,
-  STUDIO_ROOT,
-  walkToReveal,
-} from "./studio-v3-walk-to-reveal";
+import { advanceRefineToStorytelling, STUDIO_ROOT, walkToReveal } from "./studio-v3-walk-to-reveal";
 
 test.describe.configure({ timeout: 180_000 });
 
@@ -20,9 +16,7 @@ const INTERNAL_COPY = [
 async function waitForStudio(page: Page) {
   const root = page.locator(STUDIO_ROOT).first();
   await expect(root).toBeVisible({ timeout: 45_000 });
-  await expect
-    .poll(() => root.getAttribute("data-phase"), { timeout: 45_000 })
-    .not.toBeNull();
+  await expect.poll(() => root.getAttribute("data-phase"), { timeout: 45_000 }).not.toBeNull();
   return root;
 }
 
@@ -104,7 +98,10 @@ test("integrated Studio V3 reaches checkout and restores its intelligent composi
   await expect(page.getByTestId("studio-v3-checkout-summary-stops")).toBeVisible();
   await assertCustomerCopyIsClean(page);
 
-  const persistedRaw = await page.evaluate((key) => window.sessionStorage.getItem(key) ?? "", SESSION_KEY);
+  const persistedRaw = await page.evaluate(
+    (key) => window.sessionStorage.getItem(key) ?? "",
+    SESSION_KEY,
+  );
   expect(persistedRaw).not.toContain(fullName);
   expect(persistedRaw).not.toContain(email);
   expect(persistedRaw).not.toContain(phone);
@@ -156,7 +153,9 @@ test("irrelevant adaptive refinement is skipped rather than becoming another for
   expect(stored?.refinement ?? null).toBeNull();
 });
 
-test("the former Living Atlas preview redirects to the single canonical Studio", async ({ page }) => {
+test("the former Living Atlas preview redirects to the single canonical Studio", async ({
+  page,
+}) => {
   await page.goto("/studio-living-atlas-preview?source=qa", { waitUntil: "domcontentloaded" });
   await expect(page).toHaveURL(/\/studio-v3\?source=qa$/);
   await waitForStudio(page);
