@@ -31,6 +31,8 @@ import {
   type OptionalStop,
   type RegionId,
 } from "@/data/regionStopPool";
+import { isAdaptiveQuestionRelevant } from "@/components/studio-v3/adaptiveQuestions";
+import type { AdaptiveRefinementId } from "@/components/studio-v3/types";
 import type {
   ChoiceOption,
   Companions,
@@ -1716,6 +1718,22 @@ export interface ResolvedStudioV3Route {
    * profile is too thin to reason safely. Never used for pricing.
    */
   livingAtlasReasons: string[];
+  /**
+   * Up to 2 genuinely differentiated alternative directions, each carrying
+   * something the chosen day does not. Empty when nothing differs enough to
+   * be worth showing. Display-only — never affects pricing or availability.
+   */
+  livingAtlasAlternatives: StudioAlternativeDirection[];
+}
+
+/** Customer-safe shape of a Living Atlas alternative direction. */
+export interface StudioAlternativeDirection {
+  /** Real Signature tour id in the catalogue. */
+  tourId: string;
+  /** Customer-facing title of that Signature. */
+  title: string;
+  /** One grounded line explaining how it differs from the chosen day. */
+  note: string;
 }
 
 /**
@@ -1732,6 +1750,25 @@ export interface ResolvedStudioV3Route {
  *  - Hidden skeleton title is never exposed (skeletonTitleInternal only).
  *  - Falls back to a "Tailor-made by YES" object when nothing fits safely.
  */
+/**
+ * Map Living Atlas alternative directions onto real catalogue tours.
+ * Anything that does not resolve to a real Signature — or that duplicates
+ * the chosen day — is dropped rather than described.
+ */
+function toAlternativeDirections(
+  alternatives: ReadonlyArray<{ signatureId: string; note: string }>,
+  chosenTourId: string,
+): StudioAlternativeDirection[] {
+  const out: StudioAlternativeDirection[] = [];
+  for (const alternative of alternatives) {
+    if (alternative.signatureId === chosenTourId) continue;
+    const tour = signatureTours.find((t) => t.id === alternative.signatureId);
+    if (!tour) continue;
+    out.push({ tourId: tour.id, title: tour.title, note: alternative.note });
+  }
+  return out.slice(0, 2);
+}
+
 export function resolveStudioV3Route(input: {
   feeling: Feeling | null;
   companions: Companions | null;
@@ -1747,6 +1784,8 @@ export function resolveStudioV3Route(input: {
   dateExact?: string | null;
   /** Living Atlas preferred Signature id — preference only, filtered by curation. */
   preferTourId?: string | null;
+  /** Adaptive refinement answer — becomes a discovery signal, never a price input. */
+  refinement?: AdaptiveRefinementId | null;
 }): ResolvedStudioV3Route {
   const { feeling, companions, rhythm, interests, pickup, occasion } = input;
   const investment = input.investment ?? null;
@@ -1765,6 +1804,7 @@ export function resolveStudioV3Route(input: {
       journeyTitle: "Your private Portugal day",
       whyItFits: [],
       livingAtlasReasons: [],
+      livingAtlasAlternatives: [],
       refinements: [],
       whatToConfirm: "Availability and final details are confirmed before your experience.",
       confidence: "needs-human-refinement",
@@ -1779,6 +1819,7 @@ export function resolveStudioV3Route(input: {
     interests,
     destinationIntent,
     rhythm,
+    refinement: input.refinement ?? null,
   });
 
   const journey = curateJourney(feeling, companions, rhythm, {
@@ -1979,6 +2020,7 @@ export function resolveStudioV3Route(input: {
     whatToConfirm: "Availability and final details are confirmed before your experience.",
     confidence,
     livingAtlasReasons: intelligence.reasons,
+    livingAtlasAlternatives: toAlternativeDirections(intelligence.alternatives, journey.tour.id),
   };
 }
 
@@ -2451,6 +2493,13 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
     return false;
   }
 
+  // Adaptive refinement — one conditional question, asked only when the
+  // traveller's own answers make it useful, and never twice.
+  if (phase === "refinement") {
+    if (state.refinement != null) return false;
+    return isAdaptiveQuestionRelevant(state);
+  }
+
   // Fast path — traveller chose "Compose it quickly" on the intro.
   // Keep only the essentials, skipping date and investment as well.
   if (state.pathMode === "fast") {
@@ -2492,6 +2541,7 @@ const LINEAR_ORDER: StudioV3Phase[] = [
   "investment",
   "interests",
   "rhythm",
+  "refinement",
   "occasion",
   "date",
   "considerations",

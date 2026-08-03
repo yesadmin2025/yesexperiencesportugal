@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type Dispatch,
   type SetStateAction,
@@ -208,6 +209,7 @@ import {
   OCCASIONS,
   PICKUPS,
   RHYTHMS,
+  type AdaptiveRefinementId,
   type ChoiceOption,
   type Companions,
   type Consideration,
@@ -223,12 +225,17 @@ import {
   type StudioV3Phase,
   type StudioV3State,
 } from "./types";
+import {
+  refinementSummaryLabel,
+  resolveAdaptiveQuestion,
+} from "@/components/studio-v3/adaptiveQuestions";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { Composition } from "./Composition";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { FinalRevealStory } from "./FinalRevealStory";
 import { WhyRouteWorks } from "./WhyRouteWorks";
+import { OtherDirections } from "./OtherDirections";
 import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
 import { CheckoutSummary as CheckoutSummaryStep } from "./CheckoutSummary";
 import { GuestDetailsStep } from "./GuestDetailsStep";
@@ -268,6 +275,7 @@ const PHASE_ORDER: StudioV3Phase[] = [
   "investment",
   "interests",
   "rhythm",
+  "refinement",
   "occasion",
   "date",
   "considerations",
@@ -312,6 +320,11 @@ const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
   guests: ["Next, the investment", "Next, the comfort", "Next, how it's held"],
   interests: ["Next, we refine the rhythm", "Next, the pace", "Next, how it flows"],
   rhythm: ["Next, the occasion", "Next, the reason", "Next, what brings you here"],
+  refinement: [
+    "Next, the route takes shape",
+    "Next, the map awakens",
+    "Next, your day is composed",
+  ],
   considerations: ["Next, the voice", "Next, your language", "Next, how you hear it"],
   language: ["Next, the route takes shape", "Next, the map awakens", "Next, the journey forms"],
   investment: ["Next, we choose the moments", "Next, what draws you", "Next, the experiences"],
@@ -695,6 +708,52 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+/**
+ * Session persistence — a refresh mid-composition must not throw the
+ * traveller back to the intro. Stored in sessionStorage (tab-scoped, cleared
+ * when the tab closes), never localStorage, and never used for anything but
+ * restoring the answers already given. Payment and guest-detail data is NOT
+ * part of StudioV3State and is never written here.
+ */
+const STUDIO_V3_SESSION_KEY = "yes.studio-v3.session.v1";
+
+/** Phases we never restore into — they depend on live checkout state. */
+const NON_RESTORABLE_PHASES: ReadonlySet<StudioV3Phase> = new Set<StudioV3Phase>([
+  "guestDetails",
+  "checkoutSummary",
+]);
+
+function readPersistedStudioState(): StudioV3State | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.sessionStorage.getItem(STUDIO_V3_SESSION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<StudioV3State> & { phase?: StudioV3Phase };
+    if (!parsed || typeof parsed !== "object") return null;
+    const phase: StudioV3Phase =
+      parsed.phase && PHASE_ORDER.includes(parsed.phase) && !NON_RESTORABLE_PHASES.has(parsed.phase)
+        ? parsed.phase
+        : "intro";
+    if (phase === "intro") return null;
+    return { ...INITIAL_STATE, ...parsed, phase };
+  } catch {
+    return null;
+  }
+}
+
+function writePersistedStudioState(state: StudioV3State): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (state.phase === "intro") {
+      window.sessionStorage.removeItem(STUDIO_V3_SESSION_KEY);
+      return;
+    }
+    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(state));
+  } catch {
+    /* storage blocked — persistence is a convenience, never a requirement */
+  }
+}
+
 export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
   const isMobile = useIsMobile();
@@ -709,6 +768,25 @@ export function StudioV3() {
     return new URLSearchParams(window.location.search).has("saved");
   });
   const [hydrateError, setHydrateError] = useState<"not-found" | "failed" | null>(null);
+
+  // Restore an in-progress composition after a refresh. Skipped when a saved
+  // Signature token is being hydrated from the server — that is authoritative.
+  const restoredRef = useRef(false);
+  useEffect(() => {
+    if (restoredRef.current) return;
+    restoredRef.current = true;
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).has("saved")) {
+      return;
+    }
+    const persisted = readPersistedStudioState();
+    if (persisted) setState(persisted);
+  }, []);
+
+  // Persist every answered step so back/forward and refresh keep the day.
+  useEffect(() => {
+    if (!restoredRef.current) return;
+    writePersistedStudioState(state);
+  }, [state]);
 
   const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>({
     open: false,
@@ -775,9 +853,41 @@ export function StudioV3() {
         interests: state.interests,
         destinationIntent: state.destinationIntent,
         rhythm: state.rhythm,
+        refinement: state.refinement,
       }).reasons,
-    [state.feeling, state.interests, state.destinationIntent, state.rhythm],
+    [state.feeling, state.interests, state.destinationIntent, state.rhythm, state.refinement],
   );
+
+  /**
+   * Differentiated alternatives for the reveal. Empty whenever nothing in the
+   * catalogue adds something the chosen day lacks.
+   */
+  const otherDirections = useMemo(() => {
+    if (!state.feeling || !state.companions || !state.rhythm) return [];
+    return resolveStudioV3Route({
+      feeling: state.feeling,
+      companions: state.companions,
+      rhythm: state.rhythm,
+      interests: state.interests,
+      pickup: state.pickup,
+      occasion: state.occasion,
+      considerations: state.considerations,
+      investment: state.investment,
+      destinationIntent: state.destinationIntent,
+      refinement: state.refinement,
+    }).livingAtlasAlternatives;
+  }, [
+    state.feeling,
+    state.companions,
+    state.rhythm,
+    state.interests,
+    state.pickup,
+    state.occasion,
+    state.considerations,
+    state.investment,
+    state.destinationIntent,
+    state.refinement,
+  ]);
 
   // Guest Details snapshot — captured on Guest Details submit, then rendered
   // in CheckoutSummary before we open Stripe. Kept in local state (not the
@@ -1558,6 +1668,7 @@ export function StudioV3() {
         occasion: state.occasion,
         investment: state.investment,
         destinationIntent: state.destinationIntent,
+        refinement: state.refinement,
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
@@ -1609,6 +1720,27 @@ export function StudioV3() {
       holdMs: 4200,
     });
   };
+  // The single adaptive question, resolved from the traveller's own answers.
+  // Null when nothing is worth asking — the phase is then skipped entirely.
+  const adaptiveQuestion = useMemo(() => resolveAdaptiveQuestion(state), [state]);
+
+  /**
+   * Adaptive refinement — one conditional question. The answer becomes a
+   * real discovery signal inside the Living Atlas decision (never a price
+   * input, never an invented stop).
+   */
+  const onRefinement = (id: AdaptiveRefinementId) => {
+    const next = getNextPhase({ ...state, refinement: id }, "refinement");
+    const summary = refinementSummaryLabel(id);
+    pickAndAdvance("refinement", id, next, {
+      kind: "rhythm",
+      eyebrow: "Noted",
+      message: summary
+        ? `${summary}. We will build the day around that.`
+        : "Noted. We will build the day around that.",
+    });
+  };
+
   const onLanguage = (id: Language) => {
     const next = getNextPhase({ ...state, language: id }, "language");
     pickAndAdvance("language", id, next);
@@ -1738,6 +1870,7 @@ export function StudioV3() {
         occasion: state.occasion,
         investment: state.investment,
         destinationIntent: state.destinationIntent,
+        refinement: state.refinement,
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
@@ -2400,6 +2533,31 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
+      {state.phase === "refinement" && adaptiveQuestion ? (
+        <PhaseShell
+          accent="ivory"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
+          <BackLink onClick={() => back("rhythm")} />
+          <PhaseHeader
+            eyebrow={adaptiveQuestion.eyebrow}
+            title={adaptiveQuestion.title}
+            titleAccent={adaptiveQuestion.titleAccent}
+          />
+          <div data-testid="studio-v3-refinement">
+            <ChoiceGrid
+              options={adaptiveQuestion.options}
+              value={state.refinement}
+              onSelect={onRefinement}
+              columns={adaptiveQuestion.options.length > 2 ? 1 : 2}
+            />
+          </div>
+          <FooterHint>{adaptiveQuestion.hint}</FooterHint>
+        </PhaseShell>
+      ) : null}
+
       {state.phase === "considerations" ? (
         <PhaseShell
           accent="ivory"
@@ -2535,6 +2693,10 @@ export function StudioV3() {
           <WhyRouteWorks
             reasons={livingAtlasReasons}
             testId="studio-v3-living-atlas-reasons"
+            className="mx-auto w-full max-w-[62ch] px-5"
+          />
+          <OtherDirections
+            directions={otherDirections}
             className="mx-auto w-full max-w-[62ch] px-5"
           />
           <FinalRevealStory
@@ -3160,6 +3322,7 @@ export function StoryboardHandoff({
         considerations: state.considerations,
         investment: state.investment,
         destinationIntent: state.destinationIntent,
+        refinement: state.refinement,
       }),
     [
       state.feeling,
@@ -3171,6 +3334,7 @@ export function StoryboardHandoff({
       state.considerations,
       state.investment,
       state.destinationIntent,
+      state.refinement,
     ],
   );
 
@@ -3804,6 +3968,11 @@ export function StoryboardHandoff({
           testId="studio-v3-travel-file-reasons"
           className="mx-auto mt-8 max-w-[520px]"
         />
+        <OtherDirections
+          directions={resolved.livingAtlasAlternatives ?? []}
+          testId="studio-v3-travel-file-other-directions"
+          className="mx-auto max-w-[520px]"
+        />
 
         {/* ---------- Stops list (editable) ---------- */}
 
@@ -4425,6 +4594,7 @@ function ReactionOverlay({
             investment: state.investment,
             destinationIntent: state.destinationIntent,
             dateExact: state.dateExact,
+            refinement: state.refinement,
           });
           const tour = resolved?.skeletonTourKey
             ? signatureTours.find((t) => t.id === resolved.skeletonTourKey)

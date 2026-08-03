@@ -84,6 +84,26 @@ export type Consideration =
 
 export type Language = "en" | "pt" | "es" | "other";
 
+/**
+ * Adaptive refinement answers. One conditional question is asked (at most)
+ * after the rhythm step, and only when the traveller's own answers make it
+ * relevant — see `adaptiveQuestions.ts`. Each id maps either to a real
+ * discovery signal in the catalogue or to nothing at all.
+ */
+export type AdaptiveRefinementId =
+  | "coast-from-the-water"
+  | "coast-wild-beaches"
+  | "coast-clifftop-views"
+  | "wine-cellar-depth"
+  | "wine-table-and-cheese"
+  | "wine-vineyard-views"
+  | "hands-paint-tile"
+  | "hands-make-cheese"
+  | "hands-just-watch"
+  | "local-river-and-rice"
+  | "local-market-morning"
+  | "local-artisans";
+
 export type InvestmentTier = "considered" | "elevated" | "bespoke" | "open";
 
 export type StudioV3Phase =
@@ -97,6 +117,8 @@ export type StudioV3Phase =
   | "guests"
   | "interests"
   | "rhythm"
+  /** refinement — at most one adaptive question, skipped when irrelevant. */
+  | "refinement"
   | "considerations"
   | "language"
   | "investment"
@@ -250,6 +272,11 @@ export interface StudioV3State {
   minorAges: number[];
   interests: Interest[];
   rhythm: Rhythm | null;
+  /**
+   * Answer to the adaptive refinement question, when one was relevant.
+   * Null when the question was skipped or not yet answered.
+   */
+  refinement: AdaptiveRefinementId | null;
   considerations: Consideration[];
   language: Language | null;
   investment: InvestmentTier | null;
@@ -322,6 +349,7 @@ export const INITIAL_STATE: StudioV3State = {
   minorAges: [],
   interests: [],
   rhythm: null,
+  refinement: null,
   considerations: [],
   language: null,
   investment: null,
