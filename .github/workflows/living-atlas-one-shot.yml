@@ -8,10 +8,6 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: living-atlas-one-shot
-  cancel-in-progress: true
-
 jobs:
   apply:
     runs-on: ubuntu-latest
