@@ -12,9 +12,15 @@ concurrency:
 
 jobs:
   studio-v3-p0:
-    name: Studio V3 P0 regression (mobile)
+    name: Living Atlas P0 regression (${{ matrix.project }})
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - mobile-chromium
+          - desktop-chromium
     env:
       CI: "true"
     steps:
@@ -41,20 +47,17 @@ jobs:
       - name: Install Playwright Chromium
         run: bunx playwright install --with-deps chromium
 
-      - name: Run Studio V3 P0 + P1 regression specs
-        run: |
-          bunx playwright test \
-            e2e/studio-v3-p0-storytelling-reveal-mobile.spec.ts \
-            e2e/studio-v3-p0-typography-two-family-mobile.spec.ts \
-            e2e/studio-v3-p0-guest-details-footer-mobile.spec.ts \
-            e2e/studio-v3-p1-audit-fixes-mobile.spec.ts \
-            --project=mobile-chromium
+      - name: Run Living Atlas production journey
+        run: >-
+          bunx playwright test
+          e2e/living-atlas-production.spec.ts
+          --project=${{ matrix.project }}
 
       - name: Upload failed diffs
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: studio-v3-p0-failures
+          name: living-atlas-p0-${{ matrix.project }}-failures
           path: |
             test-results/
             playwright-report/
