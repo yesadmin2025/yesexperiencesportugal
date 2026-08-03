@@ -12,8 +12,6 @@ on:
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
       - "src/routes/studio-living-atlas-preview.tsx"
-      - "scripts/close-living-atlas-checkout.mjs"
-      - "scripts/fix-living-atlas-checkout-jsx.mjs"
       - ".github/workflows/living-atlas-ci.yml"
   pull_request:
     paths:
@@ -24,12 +22,10 @@ on:
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
       - "src/routes/studio-living-atlas-preview.tsx"
-      - "scripts/close-living-atlas-checkout.mjs"
-      - "scripts/fix-living-atlas-checkout-jsx.mjs"
       - ".github/workflows/living-atlas-ci.yml"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: living-atlas-${{ github.workflow }}-${{ github.ref }}
@@ -42,88 +38,45 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - name: Checkout isolated branch
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: studio/living-atlas
-          fetch-depth: 0
-
-      - name: Detect completed handoff
-        id: handoff
-        run: |
-          if grep -q 'readonly fixedTourDate?: string' src/components/studio-v3/GuestDetailsStep.tsx; then
-            echo 'complete=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'complete=false' >> "$GITHUB_OUTPUT"
-          fi
 
       - name: Setup Bun
-        if: steps.handoff.outputs.complete != 'true'
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
       - name: Install dependencies
-        if: steps.handoff.outputs.complete != 'true'
         run: bun install --frozen-lockfile
 
-      - name: Apply final checkout handoff
-        if: steps.handoff.outputs.complete != 'true'
-        run: |
-          node scripts/close-living-atlas-checkout.mjs
-          node scripts/fix-living-atlas-checkout-jsx.mjs
-
-      - name: Format product files
-        if: steps.handoff.outputs.complete != 'true'
+      - name: Check Living Atlas formatting
         run: >-
-          bunx prettier --write
-          src/components/studio-v3/GuestDetailsStep.tsx
-          src/components/studio-v3/LivingAtlasJourneyPreview.tsx
-          src/components/studio-v3/LivingAtlasBookingStep.tsx
-          src/components/studio-v3/livingAtlasCheckoutHandoff.ts
-          src/components/studio-v3/__tests__/living-atlas-checkout-handoff.test.ts
+          bunx prettier --check
+          src/components/studio-v3/LivingAtlas*.tsx
+          src/components/studio-v3/MapAwakens.tsx
+          src/components/studio-v3/dateGuards.ts
+          src/components/studio-v3/livingAtlas*.ts
+          src/components/studio-v3/__tests__/living-atlas-*.test.ts
+          src/components/studio-v3/__tests__/living-atlas-*.test.tsx
+          src/routes/studio-living-atlas-preview.tsx
 
       - name: Run Living Atlas tests
-        if: steps.handoff.outputs.complete != 'true'
-        run: bunx vitest run src/components/studio-v3/__tests__/living-atlas-*.test.ts src/components/studio-v3/__tests__/living-atlas-*.test.tsx
+        run: >-
+          bunx vitest run
+          src/components/studio-v3/__tests__/living-atlas-taxonomy.test.ts
+          src/components/studio-v3/__tests__/living-atlas-decision.test.ts
+          src/components/studio-v3/__tests__/living-atlas-inventory.test.ts
+          src/components/studio-v3/__tests__/living-atlas-composer.test.ts
+          src/components/studio-v3/__tests__/living-atlas-alternatives.test.ts
+          src/components/studio-v3/__tests__/living-atlas-route-planner.test.ts
+          src/components/studio-v3/__tests__/living-atlas-schedule.test.ts
+          src/components/studio-v3/__tests__/living-atlas-operational-confidence.test.ts
+          src/components/studio-v3/__tests__/living-atlas-date-rules.test.ts
+          src/components/studio-v3/__tests__/living-atlas-public-copy.test.ts
+          src/components/studio-v3/__tests__/living-atlas-preview-composition.test.ts
+          src/components/studio-v3/__tests__/living-atlas-preview-state.test.ts
+          src/components/studio-v3/__tests__/living-atlas-checkout-handoff.test.ts
+          src/components/studio-v3/__tests__/living-atlas-preview.test.tsx
 
       - name: Typecheck project
-        if: steps.handoff.outputs.complete != 'true'
         run: bunx tsc --noEmit
-
-      - name: Lint changed product files
-        if: steps.handoff.outputs.complete != 'true'
-        run: >-
-          bunx eslint
-          src/components/studio-v3/GuestDetailsStep.tsx
-          src/components/studio-v3/LivingAtlasJourneyPreview.tsx
-          src/components/studio-v3/LivingAtlasBookingStep.tsx
-          src/components/studio-v3/livingAtlasCheckoutHandoff.ts
-          src/components/studio-v3/__tests__/living-atlas-checkout-handoff.test.ts
-
-      - name: Guard exact product paths
-        if: steps.handoff.outputs.complete != 'true'
-        run: |
-          changed="$(git diff --name-only | sort)"
-          printf '%s\n' "$changed"
-          allowed="$(printf '%s\n' \
-            src/components/studio-v3/GuestDetailsStep.tsx \
-            src/components/studio-v3/LivingAtlasBookingStep.tsx \
-            src/components/studio-v3/LivingAtlasJourneyPreview.tsx \
-            src/components/studio-v3/__tests__/living-atlas-checkout-handoff.test.ts \
-            src/components/studio-v3/livingAtlasCheckoutHandoff.ts | sort)"
-          test "$changed" = "$allowed"
-
-      - name: Commit validated handoff
-        if: steps.handoff.outputs.complete != 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            src/components/studio-v3/GuestDetailsStep.tsx \
-            src/components/studio-v3/LivingAtlasBookingStep.tsx \
-            src/components/studio-v3/LivingAtlasJourneyPreview.tsx \
-            src/components/studio-v3/__tests__/living-atlas-checkout-handoff.test.ts \
-            src/components/studio-v3/livingAtlasCheckoutHandoff.ts
-          git commit -m "feat(studio): close Living Atlas sandbox checkout loop"
-          git push origin HEAD:studio/living-atlas
