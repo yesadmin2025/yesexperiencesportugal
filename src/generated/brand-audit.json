@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-03T18:13:10.622Z",
-  "filesScanned": 984,
+  "generatedAt": "2026-08-03T18:42:50.652Z",
+  "filesScanned": 986,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 422,
+    "total": 423,
     "approved": 102,
     "allowlisted": 71,
-    "mismatch": 249
+    "mismatch": 250
   },
   "findings": [
     {
@@ -1066,6 +1066,15 @@
       "raw": "#9a8f80",
       "normalized": "#9a8f80",
       "snippet": "<span className=\"inline-block h-2.5 w-2.5 rounded-full bg-[#9a8f80] opacity-60\" />{\" \"}",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/checkout/guest-form-ui.tsx",
+      "line": 88,
+      "col": 104,
+      "raw": "#9B2C2C",
+      "normalized": "#9b2c2c",
+      "snippet": "className=\"mt-1.5 block text-[12.5px] font-medium leading-snug text-[color:var(--destructive,#9B2C2C)]\"",
       "status": "mismatch"
     },
     {
