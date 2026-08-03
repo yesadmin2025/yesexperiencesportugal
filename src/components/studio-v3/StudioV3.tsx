@@ -224,6 +224,10 @@ import {
   type StudioV3Phase,
   type StudioV3State,
 } from "./types";
+import {
+  refinementSummaryLabel,
+  resolveAdaptiveQuestion,
+} from "@/components/studio-v3/adaptiveQuestions";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { Composition } from "./Composition";
