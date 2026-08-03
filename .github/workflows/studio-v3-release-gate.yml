@@ -1,0 +1,62 @@
+name: Studio V3 release gate
+
+on:
+  push:
+    branches: [studio-v3-release-gate]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: studio-v3-release-gate
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Typecheck, lint, tests and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: TypeScript
+        run: bunx tsgo --noEmit -p tsconfig.json
+      - name: ESLint
+        run: bunx eslint . --max-warnings=0
+      - name: Formatting
+        run: bunx prettier --check .
+      - name: Generated routes
+        run: bun run check:routes
+      - name: Full unit suite
+        run: bunx vitest run
+      - name: Production build
+        run: bun run build
+
+  browser:
+    name: Chromium Studio journeys
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Install Chromium
+        run: bunx playwright install --with-deps chromium
+      - name: Studio V3 desktop and mobile journeys
+        run: bunx playwright test "e2e/studio-v3-*.spec.ts" e2e/sitemap-robots-canonical.spec.ts --project=desktop-chromium --project=mobile-chromium
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-v3-playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
