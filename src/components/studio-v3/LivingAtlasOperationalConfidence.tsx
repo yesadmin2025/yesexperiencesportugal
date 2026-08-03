@@ -1,11 +1,24 @@
 import type { ReactNode } from "react";
-import { BadgeCheck, CalendarClock, CloudSun, Gauge, Handshake, Waves } from "lucide-react";
+import {
+  BadgeCheck,
+  Ban,
+  CalendarClock,
+  CheckCircle2,
+  Clock3,
+  CloudSun,
+  Gauge,
+  Handshake,
+  Waves,
+} from "lucide-react";
 
 import type { OptionalStopType } from "@/data/regionStopPool";
 import {
   livingAtlasOperationalConditions,
+  livingAtlasOperationalStatusLabel,
   type LivingAtlasOperationalCondition,
   type LivingAtlasOperationalConditionId,
+  type LivingAtlasOperationalEvidence,
+  type LivingAtlasOperationalStatus,
   type LivingAtlasPaceSummary,
 } from "@/components/studio-v3/livingAtlasOperationalConfidence";
 import { formatLivingAtlasDrivingTime } from "@/components/studio-v3/livingAtlasRoutePlanner";
@@ -18,12 +31,18 @@ const CONDITION_ICON: Readonly<Record<LivingAtlasOperationalConditionId, ReactNo
   "weather-access": <CloudSun size={11} aria-hidden />,
 };
 
+const STATUS_ICON: Readonly<Record<LivingAtlasOperationalStatus, ReactNode>> = {
+  confirmed: <CheckCircle2 size={10} aria-hidden />,
+  pending: <Clock3 size={10} aria-hidden />,
+  unavailable: <Ban size={10} aria-hidden />,
+};
+
 function conditionStyle(condition: LivingAtlasOperationalCondition): {
   borderColor: string;
   color: string;
   background: string;
 } {
-  if (condition.tone === "verified") {
+  if (condition.status === "confirmed") {
     return {
       borderColor: "color-mix(in oklab, var(--gold) 34%, transparent)",
       color: "var(--gold)",
@@ -31,24 +50,70 @@ function conditionStyle(condition: LivingAtlasOperationalCondition): {
     };
   }
 
+  if (condition.status === "unavailable") {
+    return {
+      borderColor: "color-mix(in oklab, #d78b62 58%, transparent)",
+      color: "#e2aa88",
+      background: "color-mix(in oklab, #d78b62 10%, transparent)",
+    };
+  }
+
   return {
     borderColor: "color-mix(in oklab, var(--ivory) 16%, transparent)",
-    color: "color-mix(in oklab, var(--ivory) 62%, transparent)",
+    color: "color-mix(in oklab, var(--ivory) 68%, transparent)",
     background: "color-mix(in oklab, var(--ivory) 3%, transparent)",
+  };
+}
+
+function statusStyle(status: LivingAtlasOperationalStatus): {
+  borderColor: string;
+  color: string;
+  background: string;
+} {
+  if (status === "confirmed") {
+    return {
+      borderColor: "color-mix(in oklab, var(--gold) 38%, transparent)",
+      color: "var(--gold)",
+      background: "color-mix(in oklab, var(--gold) 12%, transparent)",
+    };
+  }
+
+  if (status === "unavailable") {
+    return {
+      borderColor: "color-mix(in oklab, #d78b62 58%, transparent)",
+      color: "#e2aa88",
+      background: "color-mix(in oklab, #d78b62 12%, transparent)",
+    };
+  }
+
+  return {
+    borderColor: "color-mix(in oklab, var(--ivory) 20%, transparent)",
+    color: "color-mix(in oklab, var(--ivory) 74%, transparent)",
+    background: "color-mix(in oklab, var(--ivory) 5%, transparent)",
   };
 }
 
 export function LivingAtlasOperationalBadges({
   type,
   compact = false,
+  selectedDate = null,
+  stopId = null,
+  evidence,
 }: {
   type: OptionalStopType;
   compact?: boolean;
+  selectedDate?: string | null;
+  stopId?: string | null;
+  evidence?: LivingAtlasOperationalEvidence;
 }) {
-  const conditions = livingAtlasOperationalConditions(type);
+  const conditions = livingAtlasOperationalConditions(type, {
+    selectedDate,
+    stopId,
+    evidence,
+  });
 
   return (
-    <div className="flex flex-wrap gap-1.5" aria-label="Operational conditions">
+    <div className="flex flex-wrap gap-1.5" aria-label="Operational status">
       {conditions.map((condition) => (
         <span
           key={condition.id}
@@ -59,10 +124,24 @@ export function LivingAtlasOperationalBadges({
           }
           style={conditionStyle(condition)}
           title={condition.detail}
+          aria-label={
+            condition.label +
+            ": " +
+            livingAtlasOperationalStatusLabel(condition.status) +
+            ". " +
+            condition.detail
+          }
         >
           {CONDITION_ICON[condition.id]}
-          {condition.label}
-          <span className="sr-only">: {condition.detail}</span>
+          <span aria-hidden>{condition.label}</span>
+          <span
+            aria-hidden
+            className="inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[0.86em] tracking-[0.08em]"
+            style={statusStyle(condition.status)}
+          >
+            {STATUS_ICON[condition.status]}
+            {livingAtlasOperationalStatusLabel(condition.status)}
+          </span>
         </span>
       ))}
     </div>
