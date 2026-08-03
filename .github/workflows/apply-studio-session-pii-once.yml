@@ -11,13 +11,13 @@ permissions:
 
 jobs:
   patch:
-    if: github.head_ref == 'studio-v3-final-release-gate'
+    if: github.head_ref == 'studio-v3-final-gate-2'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: studio-v3-final-release-gate
+          ref: studio-v3-final-gate-2
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
@@ -59,4 +59,4 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add src/components/studio-v3/StudioV3.tsx
           git commit -m "Keep personal data out of Studio session storage"
-          git push origin studio-v3-final-release-gate
+          git push origin studio-v3-final-gate-2
