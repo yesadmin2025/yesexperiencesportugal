@@ -14,6 +14,7 @@
  */
 import { signatureTours } from "@/data/signatureTours";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
+import { getTourContent } from "@/lib/tourContent";
 
 export type SearchKind = "experience" | "story" | "page";
 
@@ -136,24 +137,27 @@ let cached: SearchDoc[] | null = null;
 export function getSearchIndex(): SearchDoc[] {
   if (cached) return cached;
 
-  const tours: SearchDoc[] = signatureTours.map((t) => ({
-    id: `tour-${t.id}`,
-    kind: "experience",
-    title: t.title,
-    summary: t.blurb,
-    path: `/tours/${t.id}`,
-    meta: `${t.region} · ${t.duration}`,
-    keywords: [
-      t.region,
-      t.theme,
-      t.fitsBest,
-      ...(t.pace ?? []),
-      ...(t.highlights ?? []),
-      ...(t.idealFor ?? []),
-    ]
-      .filter(Boolean)
-      .join(" "),
-  }));
+  const tours: SearchDoc[] = signatureTours.map((tour) => {
+    const content = getTourContent(tour.id);
+    return {
+      id: `tour-${tour.id}`,
+      kind: "experience",
+      title: tour.title,
+      summary: tour.blurb,
+      path: `/tours/${tour.id}`,
+      meta: `${tour.region} · ${tour.duration}`,
+      keywords: [
+        tour.region,
+        tour.theme,
+        tour.fitsBest,
+        ...(tour.pace ?? []),
+        ...content.highlights,
+        ...(tour.idealFor ?? []),
+      ]
+        .filter(Boolean)
+        .join(" "),
+    };
+  });
 
   const stories: SearchDoc[] = LOCAL_STORIES_ARTICLES.map((a) => ({
     id: `story-${a.slug}`,
