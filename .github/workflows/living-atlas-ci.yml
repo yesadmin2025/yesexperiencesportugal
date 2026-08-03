@@ -27,7 +27,7 @@ on:
       - ".github/workflows/living-atlas-ci.yml"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: living-atlas-${{ github.workflow }}-${{ github.ref }}
@@ -42,9 +42,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event_name == 'push' && 'studio/living-atlas' || github.ref }}
-          fetch-depth: 0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -55,7 +52,6 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Apply alternatives and persistence UI
-        if: ${{ github.event_name == 'push' && github.actor != 'github-actions[bot]' }}
         run: node scripts/apply-living-atlas-product-layer.mjs
 
       - name: Format Living Atlas sources
@@ -82,14 +78,10 @@ jobs:
       - name: Typecheck project
         run: bunx tsc --noEmit
 
-      - name: Commit validated product layer
-        if: ${{ github.event_name == 'push' && github.actor != 'github-actions[bot]' }}
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Upload validated product layer
+        uses: actions/upload-artifact@v4
         with:
-          commit_message: "feat(studio): add validated alternatives and autosave"
-          file_pattern: >-
-            src/components/studio-v3/LivingAtlasJourneyPreview.tsx
-            src/components/studio-v3/livingAtlas*.ts
-            src/components/studio-v3/__tests__/living-atlas-*.test.ts
-            src/components/studio-v3/__tests__/living-atlas-*.test.tsx
-            src/routes/studio-living-atlas-preview.tsx
+          name: living-atlas-product-layer
+          path: src/components/studio-v3/LivingAtlasJourneyPreview.tsx
+          if-no-files-found: error
+          retention-days: 3
