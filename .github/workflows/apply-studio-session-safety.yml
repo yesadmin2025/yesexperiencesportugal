@@ -1,0 +1,98 @@
+name: Apply Studio session safety patch
+
+on:
+  push:
+    branches: [studio-v3-release-gate]
+    paths:
+      - ".github/workflows/apply-studio-session-safety.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.event.head_commit.message == 'Apply Studio session safety patch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: studio-v3-release-gate
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Patch restoration ordering and strip personal data
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("src/components/studio-v3/StudioV3.tsx")
+          text = path.read_text()
+
+          old_write = '''    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(state));'''
+          new_write = '''    // Persist composition only. Names and Guest Details remain in React state
+    // for back-navigation during this visit, but never enter sessionStorage.
+    const safeState: StudioV3State = {
+      ...state,
+      firstName: null,
+      guestDraft: null,
+    };
+    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(safeState));'''
+          if old_write not in text:
+              raise SystemExit("Expected session write block not found")
+          text = text.replace(old_write, new_write, 1)
+
+          old_effects = '''  // Restore an in-progress composition after a refresh. Skipped when a saved
+  // Signature token is being hydrated from the server — that is authoritative.
+  const restoredRef = useRef(false);
+  useEffect(() => {
+    if (restoredRef.current) return;
+    restoredRef.current = true;
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).has("saved")) {
+      return;
+    }
+    const persisted = readPersistedStudioState();
+    if (persisted) setState(persisted);
+  }, []);
+
+  // Persist every answered step so back/forward and refresh keep the day.
+  useEffect(() => {
+    if (!restoredRef.current) return;
+    writePersistedStudioState(state);
+  }, [state]);'''
+
+          new_effects = '''  // Restore an in-progress composition after a refresh. Persistence remains
+  // disabled until that read has completed, so INITIAL_STATE can never erase
+  // the saved journey during the first effect cycle.
+  const [sessionHydrated, setSessionHydrated] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).has("saved")) {
+      setSessionHydrated(true);
+      return;
+    }
+    const persisted = readPersistedStudioState();
+    if (persisted) setState(persisted);
+    setSessionHydrated(true);
+  }, []);
+
+  // Persist every answered, non-personal step after restoration completes.
+  useEffect(() => {
+    if (!sessionHydrated) return;
+    writePersistedStudioState(state);
+  }, [sessionHydrated, state]);'''
+
+          if old_effects not in text:
+              raise SystemExit("Expected restoration effects not found")
+          text = text.replace(old_effects, new_effects, 1)
+          path.write_text(text)
+          PY
+      - name: Format patched file
+        run: bunx prettier --write src/components/studio-v3/StudioV3.tsx
+      - name: Commit patch
+        run: |
+          git config user.name "Studio release gate"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/components/studio-v3/StudioV3.tsx
+          git commit -m "Fix Studio session restore and strip PII"
+          git push origin studio-v3-release-gate
