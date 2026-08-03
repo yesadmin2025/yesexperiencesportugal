@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-02T21:03:48.680Z",
-  "filesScanned": 944,
+  "generatedAt": "2026-08-03T06:23:32.429Z",
+  "filesScanned": 981,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 404,
+    "total": 422,
     "approved": 102,
     "allowlisted": 71,
-    "mismatch": 231
+    "mismatch": 249
   },
   "findings": [
     {
@@ -1633,6 +1633,168 @@
       "raw": "#b3261e",
       "normalized": "#b3261e",
       "snippet": "style={{ color: \"#b3261e\" }}",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasOperationalConfidence.tsx",
+      "line": 55,
+      "col": 41,
+      "raw": "#d78b62",
+      "normalized": "#d78b62",
+      "snippet": "borderColor: \"color-mix(in oklab, #d78b62 58%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasOperationalConfidence.tsx",
+      "line": 56,
+      "col": 15,
+      "raw": "#e2aa88",
+      "normalized": "#e2aa88",
+      "snippet": "color: \"#e2aa88\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasOperationalConfidence.tsx",
+      "line": 57,
+      "col": 40,
+      "raw": "#d78b62",
+      "normalized": "#d78b62",
+      "snippet": "background: \"color-mix(in oklab, #d78b62 10%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasOperationalConfidence.tsx",
+      "line": 83,
+      "col": 41,
+      "raw": "#d78b62",
+      "normalized": "#d78b62",
+      "snippet": "borderColor: \"color-mix(in oklab, #d78b62 58%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasOperationalConfidence.tsx",
+      "line": 84,
+      "col": 15,
+      "raw": "#e2aa88",
+      "normalized": "#e2aa88",
+      "snippet": "color: \"#e2aa88\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasOperationalConfidence.tsx",
+      "line": 85,
+      "col": 40,
+      "raw": "#d78b62",
+      "normalized": "#d78b62",
+      "snippet": "background: \"color-mix(in oklab, #d78b62 12%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasOperationalConfidence.tsx",
+      "line": 160,
+      "col": 34,
+      "raw": "#d78b62",
+      "normalized": "#d78b62",
+      "snippet": "? \"color-mix(in oklab, #d78b62 56%, transparent)\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasOperationalConfidence.tsx",
+      "line": 163,
+      "col": 34,
+      "raw": "#d78b62",
+      "normalized": "#d78b62",
+      "snippet": "? \"color-mix(in oklab, #d78b62 8%, transparent)\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasOperationalConfidence.tsx",
+      "line": 173,
+      "col": 38,
+      "raw": "#d78b62",
+      "normalized": "#d78b62",
+      "snippet": "? \"color-mix(in oklab, #d78b62 18%, transparent)\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasOperationalConfidence.tsx",
+      "line": 175,
+      "col": 30,
+      "raw": "#e2aa88",
+      "normalized": "#e2aa88",
+      "snippet": "color: review ? \"#e2aa88\" : \"var(--gold)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasPreviewPrimitives.tsx",
+      "line": 324,
+      "col": 34,
+      "raw": "#d78b62",
+      "normalized": "#d78b62",
+      "snippet": ": \"color-mix(in oklab, #d78b62 55%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasPreviewPrimitives.tsx",
+      "line": 327,
+      "col": 34,
+      "raw": "#d78b62",
+      "normalized": "#d78b62",
+      "snippet": ": \"color-mix(in oklab, #d78b62 9%, transparent)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasPreviewPrimitives.tsx",
+      "line": 332,
+      "col": 53,
+      "raw": "#e2aa88",
+      "normalized": "#e2aa88",
+      "snippet": "style={{ color: complete ? \"var(--gold)\" : \"#e2aa88\" }}",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasRouteSummary.tsx",
+      "line": 44,
+      "col": 34,
+      "raw": "#d78b62",
+      "normalized": "#d78b62",
+      "snippet": "? \"color-mix(in oklab, #d78b62 56%, transparent)\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasRouteSummary.tsx",
+      "line": 47,
+      "col": 34,
+      "raw": "#d78b62",
+      "normalized": "#d78b62",
+      "snippet": "? \"color-mix(in oklab, #d78b62 8%, transparent)\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasRouteSummary.tsx",
+      "line": 57,
+      "col": 38,
+      "raw": "#d78b62",
+      "normalized": "#d78b62",
+      "snippet": "? \"color-mix(in oklab, #d78b62 18%, transparent)\"",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasRouteSummary.tsx",
+      "line": 59,
+      "col": 36,
+      "raw": "#e2aa88",
+      "normalized": "#e2aa88",
+      "snippet": "color: reviewNeeded ? \"#e2aa88\" : \"var(--gold)\",",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/components/studio-v3/LivingAtlasRouteSummary.tsx",
+      "line": 100,
+      "col": 36,
+      "raw": "#e2aa88",
+      "normalized": "#e2aa88",
+      "snippet": "color: reviewNeeded ? \"#e2aa88\" : \"color-mix(in oklab, var(--ivory) 60%, transparent)\",",
       "status": "mismatch"
     },
     {

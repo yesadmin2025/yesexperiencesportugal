@@ -16,6 +16,7 @@ import { Route as TradeRouteImport } from './routes/trade'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StudioV3RouteImport } from './routes/studio-v3'
 import { Route as StudioV2RouteImport } from './routes/studio-v2'
+import { Route as StudioLivingAtlasPreviewRouteImport } from './routes/studio-living-atlas-preview'
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
@@ -181,6 +182,12 @@ const StudioV2Route = StudioV2RouteImport.update({
   path: '/studio-v2',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudioLivingAtlasPreviewRoute =
+  StudioLivingAtlasPreviewRouteImport.update({
+    id: '/studio-living-atlas-preview',
+    path: '/studio-living-atlas-preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const StudioDriftRoute = StudioDriftRouteImport.update({
   id: '/studio-drift',
   path: '/studio-drift',
@@ -891,6 +898,7 @@ export interface FileRoutesByFullPath {
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
+  '/studio-living-atlas-preview': typeof StudioLivingAtlasPreviewRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
   '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
@@ -1027,6 +1035,7 @@ export interface FileRoutesByTo {
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
+  '/studio-living-atlas-preview': typeof StudioLivingAtlasPreviewRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
   '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
@@ -1166,6 +1175,7 @@ export interface FileRoutesById {
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio-drift': typeof StudioDriftRoute
+  '/studio-living-atlas-preview': typeof StudioLivingAtlasPreviewRoute
   '/studio-v2': typeof StudioV2RouteWithChildren
   '/studio-v3': typeof StudioV3Route
   '/terms': typeof TermsRoute
@@ -1306,6 +1316,7 @@ export interface FileRouteTypes {
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
     | '/studio-drift'
+    | '/studio-living-atlas-preview'
     | '/studio-v2'
     | '/studio-v3'
     | '/terms'
@@ -1442,6 +1453,7 @@ export interface FileRouteTypes {
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
     | '/studio-drift'
+    | '/studio-living-atlas-preview'
     | '/studio-v2'
     | '/studio-v3'
     | '/terms'
@@ -1580,6 +1592,7 @@ export interface FileRouteTypes {
     | '/sintra-day-tour-from-lisbon'
     | '/sitemap.xml'
     | '/studio-drift'
+    | '/studio-living-atlas-preview'
     | '/studio-v2'
     | '/studio-v3'
     | '/terms'
@@ -1719,6 +1732,7 @@ export interface RootRouteChildren {
   SintraDayTourFromLisbonRoute: typeof SintraDayTourFromLisbonRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudioDriftRoute: typeof StudioDriftRoute
+  StudioLivingAtlasPreviewRoute: typeof StudioLivingAtlasPreviewRoute
   StudioV2Route: typeof StudioV2RouteWithChildren
   StudioV3Route: typeof StudioV3Route
   TermsRoute: typeof TermsRoute
@@ -1842,6 +1856,13 @@ declare module '@tanstack/react-router' {
       path: '/studio-v2'
       fullPath: '/studio-v2'
       preLoaderRoute: typeof StudioV2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio-living-atlas-preview': {
+      id: '/studio-living-atlas-preview'
+      path: '/studio-living-atlas-preview'
+      fullPath: '/studio-living-atlas-preview'
+      preLoaderRoute: typeof StudioLivingAtlasPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/studio-drift': {
@@ -2871,6 +2892,7 @@ const rootRouteChildren: RootRouteChildren = {
   SintraDayTourFromLisbonRoute: SintraDayTourFromLisbonRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudioDriftRoute: StudioDriftRoute,
+  StudioLivingAtlasPreviewRoute: StudioLivingAtlasPreviewRoute,
   StudioV2Route: StudioV2RouteWithChildren,
   StudioV3Route: StudioV3Route,
   TermsRoute: TermsRoute,
