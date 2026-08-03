@@ -101,6 +101,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const firedComposition = useRef(false);
   const firedLanguage = useRef(false);
   const firedDrawer = useRef(false);
+  const firedAvailability = useRef(false);
 
   useEffect(() => {
     if (compositionReady && !firedComposition.current) {
