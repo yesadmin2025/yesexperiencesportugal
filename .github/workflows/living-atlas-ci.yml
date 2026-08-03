@@ -4,8 +4,10 @@ on:
   push:
     branches:
       - studio/living-atlas
+      - living-atlas-production-promotion
     paths:
       - "src/components/studio-v3/LivingAtlas*.tsx"
+      - "src/components/studio-v3/StudioExperiencePage.tsx"
       - "src/components/studio-v3/MapAwakens.tsx"
       - "src/components/studio-v3/dateGuards.ts"
       - "src/components/studio-v3/livingAtlas*.ts"
@@ -16,6 +18,7 @@ on:
   pull_request:
     paths:
       - "src/components/studio-v3/LivingAtlas*.tsx"
+      - "src/components/studio-v3/StudioExperiencePage.tsx"
       - "src/components/studio-v3/MapAwakens.tsx"
       - "src/components/studio-v3/dateGuards.ts"
       - "src/components/studio-v3/livingAtlas*.ts"
@@ -35,7 +38,7 @@ jobs:
   validate:
     name: Living Atlas product layer
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -53,11 +56,20 @@ jobs:
         run: >-
           bunx prettier --check
           src/components/studio-v3/LivingAtlas*.tsx
+          src/components/studio-v3/StudioExperiencePage.tsx
           src/components/studio-v3/MapAwakens.tsx
           src/components/studio-v3/dateGuards.ts
           src/components/studio-v3/livingAtlas*.ts
           src/components/studio-v3/__tests__/living-atlas-*.test.ts
           src/components/studio-v3/__tests__/living-atlas-*.test.tsx
+          src/routes/studio-living-atlas-preview.tsx
+
+      - name: Lint Living Atlas production surface
+        run: >-
+          bunx eslint
+          src/components/studio-v3/LivingAtlasBookingStep.tsx
+          src/components/studio-v3/LivingAtlasJourneyPreview.tsx
+          src/components/studio-v3/StudioExperiencePage.tsx
           src/routes/studio-living-atlas-preview.tsx
 
       - name: Run Living Atlas tests
@@ -77,6 +89,10 @@ jobs:
           src/components/studio-v3/__tests__/living-atlas-preview-state.test.ts
           src/components/studio-v3/__tests__/living-atlas-checkout-handoff.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview.test.tsx
+          src/components/studio-v3/__tests__/living-atlas-production-contract.test.ts
 
       - name: Typecheck project
         run: bunx tsc --noEmit
+
+      - name: Build production bundle
+        run: bun run build
