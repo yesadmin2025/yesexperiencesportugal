@@ -84,19 +84,35 @@ test("integrated Studio V3 reaches checkout and restores its intelligent composi
   await page.getByTestId("studio-v3-final-reveal-continue").click();
   await expect(page.getByTestId("studio-v3-guest-details")).toBeVisible({ timeout: 15_000 });
 
-  await page.getByLabel(/^Full name/).fill("Studio V3 Release Test");
-  await page.getByLabel(/^Email/).fill("studio-v3-release@example.com");
-  await page.getByLabel(/Phone \/ WhatsApp/).fill("+351 910 000 000");
+  const fullName = "Studio V3 Release Test";
+  const email = "studio-v3-release@example.com";
+  const phone = "+351 910 000 000";
+  const preference =
+    "Prefer Quinta do Piloto, or another winery not listed in the Studio, and vegetarian lunch.";
+
+  await page.getByLabel(/^Full name/).fill(fullName);
+  await page.getByLabel(/^Email/).fill(email);
+  await page.getByLabel(/Phone \/ WhatsApp/).fill(phone);
   await fillDateIfEditable(page);
   await page.getByLabel(/Pickup address \/ hotel/).fill("Lisbon release-gate hotel");
   await page
     .getByPlaceholder("Winery preferences or anything not shown in the Studio")
-    .fill("Prefer Quinta do Piloto, or another winery not listed in the Studio, and vegetarian lunch.");
+    .fill(preference);
 
   await page.getByTestId("studio-v3-guest-details-submit").click();
   await expect(page.getByTestId("studio-v3-checkout-summary")).toBeVisible({ timeout: 20_000 });
   await expect(page.getByTestId("studio-v3-checkout-summary-stops")).toBeVisible();
   await assertCustomerCopyIsClean(page);
+
+  const persistedRaw = await page.evaluate((key) => window.sessionStorage.getItem(key) ?? "", SESSION_KEY);
+  expect(persistedRaw).not.toContain(fullName);
+  expect(persistedRaw).not.toContain(email);
+  expect(persistedRaw).not.toContain(phone);
+  expect(persistedRaw).not.toContain(preference);
+
+  const persisted = persistedRaw ? (JSON.parse(persistedRaw) as Record<string, unknown>) : {};
+  expect(persisted.firstName ?? null).toBeNull();
+  expect(persisted.guestDraft ?? null).toBeNull();
 });
 
 test("irrelevant adaptive refinement is skipped rather than becoming another form step", async ({
