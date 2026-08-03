@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { execSync } from "node:child_process";
+import { describe, expect, it } from "vitest";
+import fs from "node:fs";
 import path from "node:path";
 
 /**
@@ -8,22 +8,9 @@ import path from "node:path";
  * off a signature-tour object. All UI/logic must go through
  * `getTourContent(tourId)` (src/lib/tourContent.ts).
  *
- * Approved exceptions (files allowed to touch the legacy fields):
- *   - src/lib/tourContent.ts                      — the helper itself
- *   - src/lib/checkout/inclusions.ts              — SoT-first w/ legacy fallback
- *   - src/lib/checkout/__tests__/                 — locked contract tests
- *   - src/lib/viatorValidation.ts                 — diffs legacy vs Viator meta
- *   - src/i18n/tour-i18n.ts                       — merges translation overlays
- *   - src/data/**                                 — source-of-truth data files
- *   - src/routes/admin.*                          — admin/import/validation tools
- *   - src/server/tourImporter.server.ts           — importer
- *   - Files already-swapped that keep inline SoT-empty fallbacks:
- *       src/routes/tours.$tourId.tsx
- *       src/components/SimpleBookingForm.tsx
- *       src/components/studio-v3/FinalRevealStory.tsx
- *       src/components/studio-v3/StudioV3.tsx
- *       src/components/studio-v3/signatureStorySnapshot.ts
- *   - This test file
+ * The scan is implemented with Node's filesystem APIs rather than an external
+ * command so the contract runs identically in Lovable, GitHub Actions and a
+ * clean local checkout.
  */
 
 const APPROVED = new Set<string>([
@@ -67,46 +54,58 @@ const PATTERN =
   FIELDS +
   String.raw`)\s*[,}:=])`;
 
-function rg(pattern: string): string[] {
-  try {
-    const out = execSync(
-      `rg -n --no-heading -g 'src/**/*.{ts,tsx}' -e ${JSON.stringify(pattern)}`,
-      { cwd: path.resolve(__dirname, "../.."), encoding: "utf8" },
-    );
-    return out.split("\n").filter(Boolean);
-  } catch (e) {
-    // rg exits 1 when no matches — treat as empty.
-    if ((e as { status?: number })?.status === 1) return [];
-    throw e;
+const DIRECT_READ_PATTERN = new RegExp(PATTERN, "i");
+const REPOSITORY_ROOT = path.resolve(__dirname, "../..");
+const SOURCE_ROOT = path.join(REPOSITORY_ROOT, "src");
+
+function sourceFiles(directory: string): string[] {
+  const files: string[] = [];
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const absolute = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...sourceFiles(absolute));
+      continue;
+    }
+    if (entry.isFile() && /\.tsx?$/.test(entry.name)) files.push(absolute);
   }
+  return files;
+}
+
+function directReadHits(): string[] {
+  const hits: string[] = [];
+  for (const absolute of sourceFiles(SOURCE_ROOT)) {
+    const relative = path.relative(REPOSITORY_ROOT, absolute).replace(/\\/g, "/");
+    const lines = fs.readFileSync(absolute, "utf8").split(/\r?\n/);
+    lines.forEach((line, index) => {
+      if (DIRECT_READ_PATTERN.test(line)) hits.push(`${relative}:${index + 1}:${line}`);
+    });
+  }
+  return hits;
 }
 
 function isApproved(file: string): boolean {
-  const norm = file.replace(/\\/g, "/");
-  if (APPROVED.has(norm)) return true;
-  return APPROVED_PREFIXES.some((p) => norm.startsWith(p));
+  const normalized = file.replace(/\\/g, "/");
+  if (APPROVED.has(normalized)) return true;
+  return APPROVED_PREFIXES.some((prefix) => normalized.startsWith(prefix));
 }
 
 describe("tour content — no unapproved direct legacy reads", () => {
   it("no file outside the approved list reads tour.overview/highlights/included/itinerary directly", () => {
-    const hits = rg(PATTERN);
-    const violations = hits.filter((line) => {
+    const violations = directReadHits().filter((line) => {
       const file = line.split(":")[0];
       if (isApproved(file)) return false;
-      // Only flag when the token appears alongside a tour-shaped context
-      // (a `tour`, `signature`, `SoT`, `content`, or `getTourContent` reference).
-      // Otherwise this pattern is too broad (every `overview` word matches).
-      // We narrow using the source line.
-      const rest = line.split(":").slice(2).join(":");
-      return /\b(tour|signature|sot|content|getTourContent)\b/i.test(rest);
+      const sourceLine = line.split(":").slice(2).join(":");
+      return /\b(tour|signature|sot|content|getTourContent)\b/i.test(sourceLine);
     });
+
     if (violations.length) {
-      const msg =
+      const message =
         "Direct legacy field reads found outside approved files. " +
         "Use getTourContent(tourId) from @/lib/tourContent instead.\n\n" +
-        violations.map((v) => "  " + v).join("\n");
-      throw new Error(msg);
+        violations.map((violation) => `  ${violation}`).join("\n");
+      throw new Error(message);
     }
+
     expect(violations).toEqual([]);
   });
 });
