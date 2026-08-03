@@ -66,7 +66,7 @@ describe("LivingAtlasPreview", () => {
     fireEvent.click(screen.getByRole("button", { name: /Wine & the Portuguese table/i }));
     fireEvent.click(screen.getByRole("button", { name: /^Continue/i }));
 
-    expect(screen.getByText(/Two directions fit you beautifully/i)).toBeTruthy();
+    expect(screen.getByText(/Two real directions remain/i)).toBeTruthy();
     expect(screen.getByRole("button", { name: /Évora & Alentejo Wine/i })).toBeTruthy();
     expect(screen.getByRole("button", { name: /Roman Heritage Wine/i })).toBeTruthy();
 
