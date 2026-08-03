@@ -707,6 +707,52 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+/**
+ * Session persistence — a refresh mid-composition must not throw the
+ * traveller back to the intro. Stored in sessionStorage (tab-scoped, cleared
+ * when the tab closes), never localStorage, and never used for anything but
+ * restoring the answers already given. Payment and guest-detail data is NOT
+ * part of StudioV3State and is never written here.
+ */
+const STUDIO_V3_SESSION_KEY = "yes.studio-v3.session.v1";
+
+/** Phases we never restore into — they depend on live checkout state. */
+const NON_RESTORABLE_PHASES: ReadonlySet<StudioV3Phase> = new Set<StudioV3Phase>([
+  "guestDetails",
+  "checkoutSummary",
+]);
+
+function readPersistedStudioState(): StudioV3State | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.sessionStorage.getItem(STUDIO_V3_SESSION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<StudioV3State> & { phase?: StudioV3Phase };
+    if (!parsed || typeof parsed !== "object") return null;
+    const phase: StudioV3Phase =
+      parsed.phase && PHASE_ORDER.includes(parsed.phase) && !NON_RESTORABLE_PHASES.has(parsed.phase)
+        ? parsed.phase
+        : "intro";
+    if (phase === "intro") return null;
+    return { ...INITIAL_STATE, ...parsed, phase };
+  } catch {
+    return null;
+  }
+}
+
+function writePersistedStudioState(state: StudioV3State): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (state.phase === "intro") {
+      window.sessionStorage.removeItem(STUDIO_V3_SESSION_KEY);
+      return;
+    }
+    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(state));
+  } catch {
+    /* storage blocked — persistence is a convenience, never a requirement */
+  }
+}
+
 export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
   const isMobile = useIsMobile();
@@ -721,6 +767,25 @@ export function StudioV3() {
     return new URLSearchParams(window.location.search).has("saved");
   });
   const [hydrateError, setHydrateError] = useState<"not-found" | "failed" | null>(null);
+
+  // Restore an in-progress composition after a refresh. Skipped when a saved
+  // Signature token is being hydrated from the server — that is authoritative.
+  const restoredRef = useRef(false);
+  useEffect(() => {
+    if (restoredRef.current) return;
+    restoredRef.current = true;
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).has("saved")) {
+      return;
+    }
+    const persisted = readPersistedStudioState();
+    if (persisted) setState(persisted);
+  }, []);
+
+  // Persist every answered step so back/forward and refresh keep the day.
+  useEffect(() => {
+    if (!restoredRef.current) return;
+    writePersistedStudioState(state);
+  }, [state]);
 
   const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>({
     open: false,
