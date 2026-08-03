@@ -268,6 +268,7 @@ const PHASE_ORDER: StudioV3Phase[] = [
   "investment",
   "interests",
   "rhythm",
+  "refinement",
   "occasion",
   "date",
   "considerations",
@@ -312,6 +313,11 @@ const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
   guests: ["Next, the investment", "Next, the comfort", "Next, how it's held"],
   interests: ["Next, we refine the rhythm", "Next, the pace", "Next, how it flows"],
   rhythm: ["Next, the occasion", "Next, the reason", "Next, what brings you here"],
+  refinement: [
+    "Next, the route takes shape",
+    "Next, the map awakens",
+    "Next, your day is composed",
+  ],
   considerations: ["Next, the voice", "Next, your language", "Next, how you hear it"],
   language: ["Next, the route takes shape", "Next, the map awakens", "Next, the journey forms"],
   investment: ["Next, we choose the moments", "Next, what draws you", "Next, the experiences"],
@@ -1558,6 +1564,7 @@ export function StudioV3() {
         occasion: state.occasion,
         investment: state.investment,
         destinationIntent: state.destinationIntent,
+        refinement: state.refinement,
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
@@ -1609,6 +1616,23 @@ export function StudioV3() {
       holdMs: 4200,
     });
   };
+  /**
+   * Adaptive refinement — one conditional question. The answer becomes a
+   * real discovery signal inside the Living Atlas decision (never a price
+   * input, never an invented stop).
+   */
+  const onRefinement = (id: AdaptiveRefinementId) => {
+    const next = getNextPhase({ ...state, refinement: id }, "refinement");
+    const summary = refinementSummaryLabel(id);
+    pickAndAdvance("refinement", id, next, {
+      kind: "rhythm",
+      eyebrow: "Noted",
+      message: summary
+        ? `${summary}. We will build the day around that.`
+        : "Noted. We will build the day around that.",
+    });
+  };
+
   const onLanguage = (id: Language) => {
     const next = getNextPhase({ ...state, language: id }, "language");
     pickAndAdvance("language", id, next);
@@ -1738,6 +1762,7 @@ export function StudioV3() {
         occasion: state.occasion,
         investment: state.investment,
         destinationIntent: state.destinationIntent,
+        refinement: state.refinement,
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
@@ -2397,6 +2422,31 @@ export function StudioV3() {
           ) : (
             <FooterHint>You can change pace at any stop.</FooterHint>
           )}
+        </PhaseShell>
+      ) : null}
+
+      {state.phase === "refinement" && adaptiveQuestion ? (
+        <PhaseShell
+          accent="ivory"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
+          <BackLink onClick={() => back("rhythm")} />
+          <PhaseHeader
+            eyebrow={adaptiveQuestion.eyebrow}
+            title={adaptiveQuestion.title}
+            titleAccent={adaptiveQuestion.titleAccent}
+          />
+          <div data-testid="studio-v3-refinement">
+            <ChoiceGrid
+              options={adaptiveQuestion.options}
+              value={state.refinement}
+              onSelect={onRefinement}
+              columns={adaptiveQuestion.options.length > 2 ? 1 : 2}
+            />
+          </div>
+          <FooterHint>{adaptiveQuestion.hint}</FooterHint>
         </PhaseShell>
       ) : null}
 
@@ -3160,6 +3210,7 @@ export function StoryboardHandoff({
         considerations: state.considerations,
         investment: state.investment,
         destinationIntent: state.destinationIntent,
+        refinement: state.refinement,
       }),
     [
       state.feeling,
@@ -3171,6 +3222,7 @@ export function StoryboardHandoff({
       state.considerations,
       state.investment,
       state.destinationIntent,
+      state.refinement,
     ],
   );
 
@@ -4425,6 +4477,7 @@ function ReactionOverlay({
             investment: state.investment,
             destinationIntent: state.destinationIntent,
             dateExact: state.dateExact,
+            refinement: state.refinement,
           });
           const tour = resolved?.skeletonTourKey
             ? signatureTours.find((t) => t.id === resolved.skeletonTourKey)
