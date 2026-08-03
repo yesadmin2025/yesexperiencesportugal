@@ -20,6 +20,17 @@ async function waitForStudio(page: Page) {
   return root;
 }
 
+async function startStudio(page: Page) {
+  const root = await waitForStudio(page);
+  if ((await root.getAttribute("data-phase")) === "intro") {
+    await page.getByRole("button", { name: /^Begin$/ }).click();
+    await expect
+      .poll(() => root.getAttribute("data-phase"), { timeout: 15_000 })
+      .not.toBe("intro");
+  }
+  return root;
+}
+
 async function assertCustomerCopyIsClean(page: Page) {
   const body = page.locator("body");
   for (const phrase of INTERNAL_COPY) {
@@ -45,7 +56,7 @@ test("integrated Studio V3 reaches checkout and restores its intelligent composi
   page,
 }) => {
   await page.goto("/studio-v3?e2e=1", { waitUntil: "domcontentloaded" });
-  await waitForStudio(page);
+  await startStudio(page);
   await walkToReveal(page);
 
   const refine = page.locator('[data-studio-v3-screen="refine"]').first();
