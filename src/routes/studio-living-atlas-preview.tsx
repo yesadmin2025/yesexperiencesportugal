@@ -4,11 +4,12 @@ import { LivingAtlasJourneyPreview } from "@/components/studio-v3/LivingAtlasJou
 
 /**
  * The file-router plugin regenerates routeTree.gen.ts during Vite dev/build.
- * This isolated branch route is intentionally not hand-written into the
- * generated file, so direct `tsc --noEmit` needs a temporary path cast until
- * the generated tree is refreshed by the normal router pipeline.
+ * The literal path must remain directly inside createFileRoute so the TanStack
+ * generator can discover it. The checked-in generated tree still reflects the
+ * production branch until this preview is intentionally integrated.
  */
-export const Route = createFileRoute("/studio-living-atlas-preview" as never)({
+// @ts-expect-error The isolated preview path is added to routeTree.gen.ts by the Vite router pipeline.
+export const Route = createFileRoute("/studio-living-atlas-preview")({
   head: () => ({
     meta: [
       { title: "Living Atlas Preview | YES Experience Studio" },
