@@ -25,7 +25,7 @@ on:
       - ".github/workflows/living-atlas-ci.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: living-atlas-${{ github.workflow }}-${{ github.ref }}
@@ -40,6 +40,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'push' && 'studio/living-atlas' || github.ref }}
+          fetch-depth: 0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -62,20 +65,19 @@ jobs:
       - name: Typecheck project
         run: bunx tsc --noEmit
 
-      - name: Produce formatted composed preview files
+      - name: Format composed preview files
         run: >-
           bunx prettier --write
           src/components/studio-v3/LivingAtlasJourneyPreview.tsx
           src/components/studio-v3/livingAtlasPreviewComposition.ts
           src/components/studio-v3/__tests__/living-atlas-preview-composition.test.ts
 
-      - name: Upload formatted composed preview files
-        uses: actions/upload-artifact@v4
+      - name: Commit validated formatting
+        if: ${{ github.event_name == 'push' && github.actor != 'github-actions[bot]' }}
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          name: living-atlas-composed-preview-formatted
-          path: |
+          commit_message: "style(studio): format composed Living Atlas preview"
+          file_pattern: >-
             src/components/studio-v3/LivingAtlasJourneyPreview.tsx
             src/components/studio-v3/livingAtlasPreviewComposition.ts
             src/components/studio-v3/__tests__/living-atlas-preview-composition.test.ts
-          if-no-files-found: error
-          retention-days: 3
