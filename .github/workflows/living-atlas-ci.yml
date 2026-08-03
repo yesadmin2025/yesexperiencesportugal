@@ -12,6 +12,7 @@ on:
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
       - "src/routes/studio-living-atlas-preview.tsx"
+      - "scripts/apply-living-atlas-product-layer.mjs"
       - ".github/workflows/living-atlas-ci.yml"
   pull_request:
     paths:
@@ -22,10 +23,11 @@ on:
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
       - "src/routes/studio-living-atlas-preview.tsx"
+      - "scripts/apply-living-atlas-product-layer.mjs"
       - ".github/workflows/living-atlas-ci.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: living-atlas-${{ github.workflow }}-${{ github.ref }}
@@ -33,13 +35,16 @@ concurrency:
 
 jobs:
   validate:
-    name: Living Atlas core, composition and preview
+    name: Living Atlas product layer
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'push' && 'studio/living-atlas' || github.ref }}
+          fetch-depth: 0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -49,6 +54,19 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Apply alternatives and persistence UI
+        if: ${{ github.event_name == 'push' && github.actor != 'github-actions[bot]' }}
+        run: node scripts/apply-living-atlas-product-layer.mjs
+
+      - name: Format Living Atlas sources
+        run: >-
+          bunx prettier --write
+          src/components/studio-v3/LivingAtlasJourneyPreview.tsx
+          src/components/studio-v3/livingAtlas*.ts
+          src/components/studio-v3/__tests__/living-atlas-*.test.ts
+          src/components/studio-v3/__tests__/living-atlas-*.test.tsx
+          src/routes/studio-living-atlas-preview.tsx
+
       - name: Run Living Atlas tests
         run: >-
           bunx vitest run
@@ -56,19 +74,22 @@ jobs:
           src/components/studio-v3/__tests__/living-atlas-decision.test.ts
           src/components/studio-v3/__tests__/living-atlas-inventory.test.ts
           src/components/studio-v3/__tests__/living-atlas-composer.test.ts
+          src/components/studio-v3/__tests__/living-atlas-alternatives.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview-composition.test.ts
+          src/components/studio-v3/__tests__/living-atlas-preview-state.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview.test.tsx
 
       - name: Typecheck project
         run: bunx tsc --noEmit
 
-      - name: Check Studio formatting
-        run: >-
-          bunx prettier --check
-          src/components/studio-v3/LivingAtlasPreview.tsx
-          src/components/studio-v3/LivingAtlasJourneyPreview.tsx
-          src/components/studio-v3/MapAwakens.tsx
-          src/components/studio-v3/livingAtlas*.ts
-          src/components/studio-v3/__tests__/living-atlas-*.test.ts
-          src/components/studio-v3/__tests__/living-atlas-*.test.tsx
-          src/routes/studio-living-atlas-preview.tsx
+      - name: Commit validated product layer
+        if: ${{ github.event_name == 'push' && github.actor != 'github-actions[bot]' }}
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "feat(studio): add validated alternatives and autosave"
+          file_pattern: >-
+            src/components/studio-v3/LivingAtlasJourneyPreview.tsx
+            src/components/studio-v3/livingAtlas*.ts
+            src/components/studio-v3/__tests__/living-atlas-*.test.ts
+            src/components/studio-v3/__tests__/living-atlas-*.test.tsx
+            src/routes/studio-living-atlas-preview.tsx
