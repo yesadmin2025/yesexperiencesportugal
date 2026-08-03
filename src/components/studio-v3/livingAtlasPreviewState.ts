@@ -209,7 +209,7 @@ export function loadLivingAtlasPreviewState(): LivingAtlasPreviewPersistedState 
   if (typeof window === "undefined") return null;
   try {
     return parseLivingAtlasPreviewState(
-      window.localStorage.getItem(LIVING_ATLAS_PREVIEW_STORAGE_KEY),
+      window.sessionStorage.getItem(LIVING_ATLAS_PREVIEW_STORAGE_KEY),
     );
   } catch {
     return null;
@@ -219,7 +219,7 @@ export function loadLivingAtlasPreviewState(): LivingAtlasPreviewPersistedState 
 export function saveLivingAtlasPreviewState(input: LivingAtlasPreviewStateInput): boolean {
   if (typeof window === "undefined") return false;
   try {
-    window.localStorage.setItem(
+    window.sessionStorage.setItem(
       LIVING_ATLAS_PREVIEW_STORAGE_KEY,
       serializeLivingAtlasPreviewState(input),
     );
@@ -232,7 +232,7 @@ export function saveLivingAtlasPreviewState(input: LivingAtlasPreviewStateInput)
 export function clearLivingAtlasPreviewState(): void {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.removeItem(LIVING_ATLAS_PREVIEW_STORAGE_KEY);
+    window.sessionStorage.removeItem(LIVING_ATLAS_PREVIEW_STORAGE_KEY);
   } catch {
     // Storage is a progressive enhancement. The preview still works without it.
   }

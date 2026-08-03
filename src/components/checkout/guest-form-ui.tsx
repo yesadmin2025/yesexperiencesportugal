@@ -48,12 +48,17 @@ export function GuestField({
   label,
   required,
   hint,
+  error,
+  errorId,
   children,
   as = "label",
 }: {
   label: string;
   required?: boolean;
   hint?: string;
+  /** Inline validation message. Rendered with role="alert" and links to the control via errorId. */
+  error?: string | null;
+  errorId?: string;
   children: React.ReactNode;
   /** Use "div" when the control is a button group rather than a single input. */
   as?: "label" | "div";
@@ -76,6 +81,15 @@ export function GuestField({
         </span>
       ) : null}
       {children}
+      {error ? (
+        <span
+          id={errorId}
+          role="alert"
+          className="mt-1.5 block text-[12.5px] font-medium leading-snug text-[color:var(--destructive,#9B2C2C)]"
+        >
+          {error}
+        </span>
+      ) : null}
     </Wrapper>
   );
 }

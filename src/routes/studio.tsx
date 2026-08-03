@@ -13,7 +13,7 @@ export const Route = createFileRoute("/studio")({
   }),
   beforeLoad: ({ search }) => {
     throw redirect({
-      to: "/experience-studio",
+      to: "/studio-v3",
       search: search as Record<string, unknown>,
       statusCode: 301,
     });

@@ -116,7 +116,7 @@ function PortugalTravelDesignerPage() {
           </Link>
           . Others adapt an existing experience or use the{" "}
           <Link
-            to="/experience-studio"
+            to="/studio-v3"
             className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)]"
           >
             Studio
@@ -224,7 +224,7 @@ function PortugalTravelDesignerPage() {
         title="Where travel design sits among our services."
         links={[
           {
-            to: "/experience-studio",
+            to: "/studio-v3",
             label: "Design a private day in the Experience Studio",
             description:
               "Build your own Portugal day online: choose the region, stops and rhythm and watch the route and pricing evolve, then reserve directly or ask for a local review.",
@@ -253,7 +253,7 @@ function PortugalTravelDesignerPage() {
       <section className="reveal py-16 md:py-20 bg-[color:var(--sand)]">
         <div className="container-x max-w-2xl text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <CtaButton to="/experience-studio" variant="primary">
+            <CtaButton to="/studio-v3" variant="primary">
               Open the Studio
             </CtaButton>
             <CtaButton to="/experiences" variant="ghost">

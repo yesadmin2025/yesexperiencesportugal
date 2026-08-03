@@ -156,7 +156,7 @@ export function AmbientPrologue({ locale, onLocaleChange, t, onAwaken, onExit }:
             production builder with full transparency (real stops, price per pax,
             shareable link). Intentionally tiny and at the very bottom. */}
         <a
-          href="/experience-studio?mode=pro"
+          href="/studio-v3?mode=pro"
           onClick={(e) => e.stopPropagation()}
           className={`inline-flex items-center min-h-[32px] px-2 text-[9.5px] tracking-[0.32em] uppercase font-medium text-[color:var(--text-on-dark-muted)] hover:text-[color:var(--charcoal)] transition-[opacity,color] duration-[1100ms] ease-out ${
             showContinue ? "opacity-100" : "opacity-0 pointer-events-none"

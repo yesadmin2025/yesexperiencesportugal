@@ -372,7 +372,7 @@ function HomePage() {
     build: "builder",
     builder: "builder",
     studio: "studio",
-    "experience-studio": "studio",
+    "studio-v3": "studio",
     // Signatures
     signature: "signatures",
     signatures: "signatures",
@@ -607,7 +607,7 @@ function HomePage() {
                 </ol>
 
                 <div className="mt-8 flex flex-wrap gap-x-5 gap-y-4">
-                  <CtaButton to="/experience-studio" variant="primary">
+                  <CtaButton to="/studio-v3" variant="primary">
                     Open the Studio
                   </CtaButton>
                 </div>
@@ -986,7 +986,7 @@ function HomePage() {
                     shape the rest.
                   </p>
                   <CtaPair className="mt-9" justify="center">
-                    <CtaButton to="/experience-studio" variant="primary">
+                    <CtaButton to="/studio-v3" variant="primary">
                       Open the Studio
                     </CtaButton>
                     <CtaButton

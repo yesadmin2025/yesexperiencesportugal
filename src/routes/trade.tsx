@@ -120,7 +120,7 @@ const WHAT_WE_DESIGN = [
   {
     label: "Experience Studio",
     body: "A private day shaped interactively by you or your client, from classic highlights to more local experiences, with the route, timings and price updating in real time — and reserved when it feels right.",
-    to: "/experience-studio",
+    to: "/studio-v3",
   },
   {
     label: "Travel Designer",

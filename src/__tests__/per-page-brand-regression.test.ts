@@ -45,13 +45,13 @@ const PAGES: PageSpec[] = [
     requiresPrimaryCta: true,
   },
   {
-    // `/builder` is a thin redirect to `/experience-studio`. The Builder
+    // `/builder` is a thin redirect to `/studio-v3`. The Builder
     // contract is enforced against the StudioV3 surface — that is
     // what users see when they land on /builder.
     label: "Builder",
     files: [
       resolve(__dirname, "../routes/builder.tsx"),
-      resolve(__dirname, "../routes/experience-studio.tsx"),
+      resolve(__dirname, "../routes/studio-v3.tsx"),
       resolve(__dirname, "../components/studio-v3/StudioV3.tsx"),
     ],
     requiresPrimaryCta: true,

@@ -104,7 +104,7 @@ function Page() {
               <CtaButton to="/experiences" variant="primary">
                 Explore Signature Tours
               </CtaButton>
-              <CtaButton to="/experience-studio" variant="ghost">
+              <CtaButton to="/studio-v3" variant="ghost">
                 Design your own
               </CtaButton>
             </div>

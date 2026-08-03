@@ -115,6 +115,21 @@ export function GuestDetailsStep({
   // journeyRevision-scoped idempotency key, but this guards the UI.
   const storyDispatchedForRef = useRef<string | null>(null);
 
+  // Duplicate-tap guard. The `submitting` prop is parent state and only
+  // flips after a render, so two taps in the same tick could both reach
+  // checkout. This ref closes that window synchronously.
+  const inFlightRef = useRef(false);
+
+  // Inline validation. Each key maps to a required control so we can render
+  // an accessible message, set aria-invalid and focus the first offender.
+  type FieldKey = "fullName" | "email" | "phone" | "tourDate" | "pickupAddress" | "composition";
+  const [errors, setErrors] = useState<Partial<Record<FieldKey, string>>>({});
+  const fieldRefs = useRef<Partial<Record<FieldKey, HTMLElement | null>>>({});
+  const errorProps = (key: FieldKey) =>
+    errors[key]
+      ? { "aria-invalid": true as const, "aria-describedby": `studio-v3-error-${key}` }
+      : {};
+
   useEffect(() => {
     prewarmStripeScript();
   }, []);
@@ -133,16 +148,50 @@ export function GuestDetailsStep({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submitting) return;
+    if (submitting || inFlightRef.current) return;
+    const nextErrors: Partial<Record<FieldKey, string>> = {};
     const missing: string[] = [];
-    if (!fullName.trim()) missing.push("full name");
-    if (!email.trim() || !isEmail(email)) missing.push("email");
-    if (!phone.trim()) missing.push("phone / WhatsApp");
-    if (!isStudioBookingDateAllowed(tourDate)) missing.push("tour date");
-    if (!pickupAddress.trim()) missing.push("pickup address");
-    if (!isCompositionComplete(composition)) missing.push("age for every child");
+    if (!fullName.trim()) {
+      nextErrors.fullName = "Please enter the name the reservation is under.";
+      missing.push("full name");
+    }
+    if (!email.trim() || !isEmail(email)) {
+      nextErrors.email = "Please enter a valid email so we can send your confirmation.";
+      missing.push("email");
+    }
+    if (!phone.trim()) {
+      nextErrors.phone = "Please add a phone or WhatsApp number for your host.";
+      missing.push("phone / WhatsApp");
+    }
+    if (!isStudioBookingDateAllowed(tourDate)) {
+      nextErrors.tourDate = `Please choose a date from ${minimumStudioBookingDateIso()} onwards — we need three days, counted in Lisbon time.`;
+      missing.push("tour date");
+    }
+    if (!pickupAddress.trim()) {
+      nextErrors.pickupAddress = "Please tell us where the day should start.";
+      missing.push("pickup address");
+    }
+    if (!isCompositionComplete(composition)) {
+      nextErrors.composition = "Please add an age for every child so we can price honestly.";
+      missing.push("age for every child");
+    }
+    setErrors(nextErrors);
     if (missing.length) {
       toast.error(`Please complete: ${missing.join(", ")}`);
+      const order: FieldKey[] = [
+        "fullName",
+        "email",
+        "phone",
+        "tourDate",
+        "composition",
+        "pickupAddress",
+      ];
+      const firstKey = order.find((k) => nextErrors[k]);
+      const target = firstKey ? fieldRefs.current[firstKey] : null;
+      if (target) {
+        target.focus({ preventScroll: true });
+        target.scrollIntoView?.({ block: "center", behavior: "smooth" });
+      }
       return;
     }
 
@@ -164,23 +213,28 @@ export function GuestDetailsStep({
       });
     }
 
-    await onSubmit({
-      fullName: fullName.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      tourDate,
-      guests: totalGuests(composition),
-      adults: composition.adults,
-      minorAges: [...composition.minorAges],
-      pickupAddress: pickupAddress.trim(),
-      language,
-      mainContact: mainContact.trim() || fullName.trim(),
-      dietary: dietary.trim() || undefined,
-      mobility: mobility.trim() || undefined,
-      children: children.trim() || undefined,
-      occasion: occasion.trim() || undefined,
-      guideNotes: guideNotes.trim() || undefined,
-    });
+    inFlightRef.current = true;
+    try {
+      await onSubmit({
+        fullName: fullName.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        tourDate,
+        guests: totalGuests(composition),
+        adults: composition.adults,
+        minorAges: [...composition.minorAges],
+        pickupAddress: pickupAddress.trim(),
+        language,
+        mainContact: mainContact.trim() || fullName.trim(),
+        dietary: dietary.trim() || undefined,
+        mobility: mobility.trim() || undefined,
+        children: children.trim() || undefined,
+        occasion: occasion.trim() || undefined,
+        guideNotes: guideNotes.trim() || undefined,
+      });
+    } finally {
+      inFlightRef.current = false;
+    }
   };
 
   const quote =
@@ -235,12 +289,21 @@ export function GuestDetailsStep({
 
       <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-7">
         <GuestFieldGroup title="Who's coming">
-          <GuestField label="Full name" required>
+          <GuestField
+            label="Full name"
+            required
+            error={errors.fullName}
+            errorId="studio-v3-error-fullName"
+          >
             <input
+              ref={(el) => {
+                fieldRefs.current.fullName = el;
+              }}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               className={guestInputClass}
               autoComplete="name"
+              {...errorProps("fullName")}
             />
           </GuestField>
           <GuestField label="Main contact person" hint="If different">
@@ -251,8 +314,12 @@ export function GuestDetailsStep({
               className={guestInputClass}
             />
           </GuestField>
-          <GuestField label="Email" required>
+          <GuestField label="Email" required error={errors.email} errorId="studio-v3-error-email">
             <input
+              ref={(el) => {
+                fieldRefs.current.email = el;
+              }}
+              {...errorProps("email")}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -261,8 +328,17 @@ export function GuestDetailsStep({
               inputMode="email"
             />
           </GuestField>
-          <GuestField label="Phone / WhatsApp" required>
+          <GuestField
+            label="Phone / WhatsApp"
+            required
+            error={errors.phone}
+            errorId="studio-v3-error-phone"
+          >
             <input
+              ref={(el) => {
+                fieldRefs.current.phone = el;
+              }}
+              {...errorProps("phone")}
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
@@ -275,7 +351,12 @@ export function GuestDetailsStep({
         </GuestFieldGroup>
 
         <GuestFieldGroup title="Your day">
-          <GuestField label="Tour date" required>
+          <GuestField
+            label="Tour date"
+            required
+            error={errors.tourDate}
+            errorId="studio-v3-error-tourDate"
+          >
             {fixedDate ? (
               <div
                 data-testid="studio-v3-fixed-tour-date"
@@ -291,6 +372,10 @@ export function GuestDetailsStep({
               </div>
             ) : (
               <input
+                ref={(el) => {
+                  fieldRefs.current.tourDate = el;
+                }}
+                {...errorProps("tourDate")}
                 type="date"
                 value={tourDate}
                 min={minimumStudioBookingDateIso()}
@@ -299,8 +384,20 @@ export function GuestDetailsStep({
               />
             )}
           </GuestField>
-          <GuestField label="Who's travelling" required as="div">
-            <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
+          <GuestField
+            label="Who's travelling"
+            required
+            as="div"
+            error={errors.composition}
+            errorId="studio-v3-error-composition"
+          >
+            <div
+              ref={(el) => {
+                fieldRefs.current.composition = el;
+              }}
+              tabIndex={-1}
+              className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3"
+            >
               <CompositionField value={composition} onChange={setComposition} compact />
             </div>
             <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
@@ -310,8 +407,17 @@ export function GuestDetailsStep({
             </p>
           </GuestField>
 
-          <GuestField label="Pickup address / hotel" required>
+          <GuestField
+            label="Pickup address / hotel"
+            required
+            error={errors.pickupAddress}
+            errorId="studio-v3-error-pickupAddress"
+          >
             <input
+              ref={(el) => {
+                fieldRefs.current.pickupAddress = el;
+              }}
+              {...errorProps("pickupAddress")}
               value={pickupAddress}
               onChange={(e) => setPickupAddress(e.target.value)}
               placeholder="Hotel, address or meeting point"

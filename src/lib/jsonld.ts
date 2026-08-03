@@ -172,7 +172,7 @@ export function organizationLd() {
         name: "YES Experience Studio — design and reserve your private day in real time",
         description:
           "Portugal's first in-house real-time private tour builder: choose the mood, rhythm and route, see the live price update, and reserve instantly. Private, personalized, local — designed by you, around you.",
-        url: `${SITE_URL}/experience-studio`,
+        url: `${SITE_URL}/studio-v3`,
         category: "Interactive private tour design",
       },
       {
@@ -1135,7 +1135,7 @@ export function serviceEntityListLd() {
         "Curated private day experiences across Portugal, ready to reserve with a dedicated local guide and vehicle.",
     },
     {
-      path: "/experience-studio",
+      path: "/studio-v3",
       name: "YES Experience Studio",
       description:
         "Design a private Portugal experience online in real time — route, stops and pricing evolve as you choose, then reserve directly or have it reviewed locally.",
