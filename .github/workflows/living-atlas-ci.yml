@@ -7,6 +7,7 @@ on:
     paths:
       - "src/components/studio-v3/LivingAtlas*.tsx"
       - "src/components/studio-v3/MapAwakens.tsx"
+      - "src/components/studio-v3/dateGuards.ts"
       - "src/components/studio-v3/livingAtlas*.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
@@ -16,6 +17,7 @@ on:
     paths:
       - "src/components/studio-v3/LivingAtlas*.tsx"
       - "src/components/studio-v3/MapAwakens.tsx"
+      - "src/components/studio-v3/dateGuards.ts"
       - "src/components/studio-v3/livingAtlas*.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
@@ -52,6 +54,7 @@ jobs:
           bunx prettier --check
           src/components/studio-v3/LivingAtlas*.tsx
           src/components/studio-v3/MapAwakens.tsx
+          src/components/studio-v3/dateGuards.ts
           src/components/studio-v3/livingAtlas*.ts
           src/components/studio-v3/__tests__/living-atlas-*.test.ts
           src/components/studio-v3/__tests__/living-atlas-*.test.tsx
@@ -66,7 +69,10 @@ jobs:
           src/components/studio-v3/__tests__/living-atlas-composer.test.ts
           src/components/studio-v3/__tests__/living-atlas-alternatives.test.ts
           src/components/studio-v3/__tests__/living-atlas-route-planner.test.ts
+          src/components/studio-v3/__tests__/living-atlas-schedule.test.ts
           src/components/studio-v3/__tests__/living-atlas-operational-confidence.test.ts
+          src/components/studio-v3/__tests__/living-atlas-date-rules.test.ts
+          src/components/studio-v3/__tests__/living-atlas-public-copy.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview-composition.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview-state.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview.test.tsx
