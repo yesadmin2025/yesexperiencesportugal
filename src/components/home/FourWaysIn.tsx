@@ -55,7 +55,7 @@ const PATHS: Path[] = [
     ),
     body: "Choose the mood, rhythm and route in real time. See the live price and reserve instantly, with local support if you need it.",
     cta: "Open the Studio",
-    href: "/studio-v3",
+    href: "/experience-studio",
     analyticsEvent: "five_ways_studio_click",
   },
   {

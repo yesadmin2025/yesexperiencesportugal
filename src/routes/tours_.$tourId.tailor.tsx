@@ -880,7 +880,7 @@ function TailorPage() {
             </p>
             <p className="text-[13px]">
               <Link
-                to="/studio-v3"
+                to="/experience-studio"
                 className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
               >
                 Build a journey from the beginning →
@@ -1820,7 +1820,7 @@ function TailorPage() {
                 <Info size={14} className="shrink-0 mt-0.5 text-[color:var(--gold)]" />
                 Looking for full freedom? You can{" "}
                 <Link
-                  to="/studio-v3"
+                  to="/experience-studio"
                   className="not-italic underline decoration-[color:var(--gold)] underline-offset-2 hover:text-[color:var(--teal)]"
                 >
                   open the Studio

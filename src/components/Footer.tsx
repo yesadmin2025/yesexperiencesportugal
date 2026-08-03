@@ -71,7 +71,7 @@ const NAV_COLUMNS: { title: string; links: FooterLink[] }[] = [
       { to: "/day-tours", label: "Day Experiences" },
       { to: "/portugal-travel-designer", label: "Travel Designer" },
       { to: "/multi-day", label: "Multi-Day Journeys" },
-      { to: "/studio-v3", label: "Experience Studio" },
+      { to: "/experience-studio", label: "Experience Studio" },
     ],
   },
   {

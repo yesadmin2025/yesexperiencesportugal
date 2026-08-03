@@ -353,7 +353,7 @@ export function StudioLivePreview(props: Props) {
                 €145+ /guest · {tt("preview.indicative", locale) || "indicative"}
               </span>
               <Link
-                to="/studio-v3"
+                to="/experience-studio"
                 search={{ legacy: "stepper" } as never}
                 onClick={() => {
                   onCtaBook?.();

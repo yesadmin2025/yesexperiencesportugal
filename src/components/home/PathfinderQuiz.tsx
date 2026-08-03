@@ -510,7 +510,7 @@ function buildResultContent(s: QuizState, r: ResultKey): ResultContent {
       title: "No exact match — let's build it.",
       subtitle: "Open the Studio and design your day in real time. Takes about 90 seconds.",
       pills: ["Custom", "Any mood", "Instant price"],
-      ctas: [{ label: "Open Studio", to: "/studio-v3", variant: "gold" }],
+      ctas: [{ label: "Open Studio", to: "/experience-studio", variant: "gold" }],
     };
   }
   return {

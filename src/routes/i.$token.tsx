@@ -37,7 +37,7 @@ function ErrorShell({ title }: { title: string }) {
         </p>
         <h1 className="serif mt-3 text-[1.8rem] font-semibold leading-tight">{title}</h1>
         <a
-          href="/studio-v3"
+          href="/experience-studio"
           className="mt-6 inline-block text-[12px] uppercase tracking-[0.22em] font-semibold underline underline-offset-4"
         >
           Construir um novo roteiro
@@ -259,7 +259,7 @@ function SharedItineraryPage() {
         {/* CTA — hidden in print */}
         <div className="mt-10 flex flex-col gap-3 print:hidden">
           <a
-            href={`/studio-v3?j=${token}`}
+            href={`/experience-studio?j=${token}`}
             className="inline-flex items-center justify-center gap-2 rounded-[2px] border border-[color:var(--charcoal)] bg-[color:var(--charcoal)] px-5 py-3 text-[12px] font-semibold uppercase tracking-[0.22em] text-[color:var(--ivory)] hover:bg-[color:var(--teal)] transition-colors"
           >
             <Check size={14} />

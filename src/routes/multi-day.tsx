@@ -264,7 +264,7 @@ function MultiDayPage() {
               </a>
               ,{" "}
               <a
-                href="/studio-v3"
+                href="/experience-studio"
                 className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
               >
                 begin with the YES Studio

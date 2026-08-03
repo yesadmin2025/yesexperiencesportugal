@@ -227,7 +227,7 @@ function CtaStrip() {
               constrói, dentro do que funciona melhor no terreno.
             </p>
           </div>
-          <CtaButton to="/studio-v3" variant="ghostDark" className="flex-shrink-0">
+          <CtaButton to="/experience-studio" variant="ghostDark" className="flex-shrink-0">
             Abrir o Studio
           </CtaButton>
         </div>
