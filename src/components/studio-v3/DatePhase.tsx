@@ -32,14 +32,16 @@ export function DatePhaseControls({
   onPickFlexible: () => void;
   onPickUndecided: () => void;
 }) {
-  const today = useMemo(() => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
+  // Earliest bookable day (Lisbon time, three calendar days ahead) — the same
+  // rule Guest Details and checkout enforce, applied here so travellers never
+  // compose a whole day around a date that gets rejected at payment.
+  const earliest = useMemo(() => {
+    const [y, m, d] = minimumStudioBookingDateIso().split("-").map(Number);
+    return new Date(y, (m ?? 1) - 1, d ?? 1);
   }, []);
 
   const initialSelected = useMemo(() => {
-    if (dateMode === "exact" && dateExact) {
+    if (dateMode === "exact" && dateExact && isStudioBookingDateAllowed(dateExact)) {
       const [y, m, d] = dateExact.split("-").map(Number);
       if (y && m && d) return new Date(y, m - 1, d);
     }
@@ -47,7 +49,7 @@ export function DatePhaseControls({
   }, [dateExact, dateMode]);
 
   const [selected, setSelected] = useState<Date | undefined>(initialSelected);
-  const [month, setMonth] = useState<Date>(initialSelected ?? today);
+  const [month, setMonth] = useState<Date>(initialSelected ?? earliest);
 
   const exactSelected = dateMode === "exact" && !!dateExact;
 
