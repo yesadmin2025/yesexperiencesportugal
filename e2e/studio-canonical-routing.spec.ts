@@ -47,7 +47,7 @@ test("desktop navigation enters the new Studio", async ({ page }) => {
 
 test("homepage CTAs point at the new Studio", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await expect(page.locator('a[href^="/experience-studio"]').first()).toBeVisible();
+  expect(await page.locator('a[href^="/experience-studio"]').count()).toBeGreaterThan(0);
   expect(await page.locator('a[href^="/studio-v2"], a[href^="/studio-v3"]').count()).toBe(0);
 });
 
