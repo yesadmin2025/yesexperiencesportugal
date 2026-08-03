@@ -65,6 +65,17 @@ export function DatePhaseControls({
         Choose a date
       </label>
 
+      <p
+        className="mt-1 text-[12px] leading-snug italic"
+        style={{
+          fontFamily: "var(--font-serif)",
+          color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+        }}
+      >
+        We need three days to prepare the day properly.
+      </p>
+
+
       {/* Inline calendar card — gentle fade/rise on mount with a quiet delay
           so it doesn't feel like it flashes away on iOS. */}
       <div
