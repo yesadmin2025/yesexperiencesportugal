@@ -13,6 +13,7 @@ on:
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
       - "src/routes/studio-living-atlas-preview.tsx"
       - "scripts/apply-living-atlas-product-layer.mjs"
+      - "scripts/fix-living-atlas-product-layer-script.mjs"
       - ".github/workflows/living-atlas-ci.yml"
   pull_request:
     paths:
@@ -24,6 +25,7 @@ on:
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
       - "src/routes/studio-living-atlas-preview.tsx"
       - "scripts/apply-living-atlas-product-layer.mjs"
+      - "scripts/fix-living-atlas-product-layer-script.mjs"
       - ".github/workflows/living-atlas-ci.yml"
 
 permissions:
@@ -50,6 +52,9 @@ jobs:
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
+      - name: Sanitize product-layer patch
+        run: node scripts/fix-living-atlas-product-layer-script.mjs
 
       - name: Apply alternatives and persistence UI
         run: node scripts/apply-living-atlas-product-layer.mjs
