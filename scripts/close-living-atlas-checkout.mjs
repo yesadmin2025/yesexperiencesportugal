@@ -43,7 +43,7 @@ guest = replaceOnce(
 guest = replaceOnce(
   guest,
   `          <GuestField label="Tour date" required>\n            <input\n              type="date"\n              value={tourDate}\n              min={minimumStudioBookingDateIso()}\n              onChange={(e) => setTourDate(e.target.value)}\n              className={guestInputClass}\n            />\n          </GuestField>`,
-  `          <GuestField label="Tour date" required>\n            {fixedDate ? (\n              <div\n                data-testid="studio-v3-fixed-tour-date"\n                className={\`${guestInputClass} flex items-center\`}\n                aria-label="Selected tour date"\n              >\n                {new Intl.DateTimeFormat("en-GB", {\n                  weekday: "long",\n                  day: "numeric",\n                  month: "long",\n                  year: "numeric",\n                }).format(new Date(\`${fixedDate}T00:00:00\`))}\n              </div>\n            ) : (\n              <input\n                type="date"\n                value={tourDate}\n                min={minimumStudioBookingDateIso()}\n                onChange={(e) => setTourDate(e.target.value)}\n                className={guestInputClass}\n              />\n            )}\n          </GuestField>`,
+  `          <GuestField label="Tour date" required>\n            {fixedDate ? (\n              <div\n                data-testid="studio-v3-fixed-tour-date"\n                className={guestInputClass + " flex items-center"}\n                aria-label="Selected tour date"\n              >\n                {new Intl.DateTimeFormat("en-GB", {\n                  weekday: "long",\n                  day: "numeric",\n                  month: "long",\n                  year: "numeric",\n                }).format(new Date(fixedDate + "T00:00:00"))}\n              </div>\n            ) : (\n              <input\n                type="date"\n                value={tourDate}\n                min={minimumStudioBookingDateIso()}\n                onChange={(e) => setTourDate(e.target.value)}\n                className={guestInputClass}\n              />\n            )}\n          </GuestField>`,
   "fixed date display",
 );
 
@@ -90,7 +90,7 @@ preview = replaceOnce(
 preview = replaceOnce(
   preview,
   `  return (\n    <main`,
-  `  if (\n    bookingOpen &&\n    selectedSignatureId &&\n    selectedDate &&\n    routePlan\n  ) {\n    return (\n      <main\n        className="min-h-[100dvh] w-full bg-[color:var(--ivory)] py-4 sm:py-8"\n        style={{ color: "var(--charcoal)" }}\n      >\n        <LivingAtlasBookingStep\n          signatureId={selectedSignatureId}\n          selectedDate={selectedDate}\n          profile={profile}\n          preferences={preferences}\n          routePlan={routePlan}\n          onBack={() => setBookingOpen(false)}\n        />\n      </main>\n    );\n  }\n\n  return (\n    <main`,
+  `  if (bookingOpen && selectedSignatureId && selectedDate && routePlan) {\n    return (\n      <main\n        className="min-h-[100dvh] w-full bg-[color:var(--ivory)] py-4 sm:py-8"\n        style={{ color: "var(--charcoal)" }}\n      >\n        <LivingAtlasBookingStep\n          signatureId={selectedSignatureId}\n          selectedDate={selectedDate}\n          profile={profile}\n          preferences={preferences}\n          routePlan={routePlan}\n          onBack={() => setBookingOpen(false)}\n        />\n      </main>\n    );\n  }\n\n  return (\n    <main`,
   "booking screen",
 );
 
