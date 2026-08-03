@@ -101,6 +101,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const firedComposition = useRef(false);
   const firedLanguage = useRef(false);
   const firedDrawer = useRef(false);
+  const firedAvailability = useRef(false);
 
   useEffect(() => {
     if (compositionReady && !firedComposition.current) {
@@ -505,8 +506,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         open={detailsOpen}
         onOpenChange={(o) => {
           setDetailsOpen(o);
-          if (o && !firedDrawer.current) {
-            firedDrawer.current = true;
+          if (o && !firedAvailability.current) {
+            firedAvailability.current = true;
             trackEvent("availability_open", {
               experience_id: tour.id,
               experience_type: "signature",
