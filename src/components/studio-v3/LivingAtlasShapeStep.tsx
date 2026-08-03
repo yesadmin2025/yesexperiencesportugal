@@ -12,6 +12,7 @@ import {
   type LivingAtlasReplacementMap,
   type LivingAtlasResolvedComposition,
 } from "@/components/studio-v3/livingAtlasAlternatives";
+import { deriveLivingAtlasPaceSummary } from "@/components/studio-v3/livingAtlasOperationalConfidence";
 import type { LivingAtlasRoutePlan } from "@/components/studio-v3/livingAtlasRoutePlanner";
 import type {
   ExperienceProfile,
@@ -28,6 +29,10 @@ import {
   StepHeading,
   dimensionLabel,
 } from "@/components/studio-v3/LivingAtlasPreviewPrimitives";
+import {
+  LivingAtlasOperationalBadges,
+  LivingAtlasPaceCard,
+} from "@/components/studio-v3/LivingAtlasOperationalConfidence";
 import {
   incomingLivingAtlasRouteLeg,
   LivingAtlasRouteSummary,
@@ -68,6 +73,12 @@ export function ShapeStep({
   const isArrabida = ARRABIDA_SIGNATURES.has(signatureId);
   const orderedMoments = routePlan.orderedMoments;
   const title = livingAtlasPreviewDayTitle({ moments: orderedMoments });
+  const paceSummary = deriveLivingAtlasPaceSummary({
+    density: preferences.density,
+    stopMinutes: composition.totalDurationMin,
+    transferMinutes: routePlan.totalEstimatedDrivingMin,
+    routeStatus: routePlan.status,
+  });
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -104,6 +115,7 @@ export function ShapeStep({
         <div className="space-y-4">
           <ReactivePortugalMap activeSignatureId={signatureId} candidates={[]} />
           <LivingAtlasRouteSummary routePlan={routePlan} />
+          <LivingAtlasPaceCard summary={paceSummary} />
           <PreferencePanel
             label="How full should the day feel?"
             icon={<Clock3 size={16} aria-hidden />}
@@ -287,6 +299,9 @@ export function ShapeStep({
                               </span>
                             ))}
                         </div>
+                        <div className="mt-3">
+                          <LivingAtlasOperationalBadges type={moment.type} />
+                        </div>
                       </div>
                       <span
                         className="pt-1 text-[11px]"
@@ -391,6 +406,12 @@ export function ShapeStep({
                             >
                               {alternative.explanation}
                             </p>
+                            <div className="mt-3">
+                              <LivingAtlasOperationalBadges
+                                type={alternative.moment.type}
+                                compact
+                              />
+                            </div>
                             <button
                               type="button"
                               aria-label={

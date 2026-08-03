@@ -69,26 +69,11 @@ const CONDITION_CATALOG: Readonly<
   },
 };
 
-const SUPPLIER_TYPES = new Set<OptionalStopType>([
-  "boat",
-  "winery",
-  "workshop",
-  "studio",
-  "table",
-]);
+const SUPPLIER_TYPES = new Set<OptionalStopType>(["boat", "winery", "workshop", "studio", "table"]);
 
-const OPENING_HOURS_TYPES = new Set<OptionalStopType>([
-  "market",
-  "monument",
-  "heritage",
-  "garden",
-]);
+const OPENING_HOURS_TYPES = new Set<OptionalStopType>(["market", "monument", "heritage", "garden"]);
 
-const WEATHER_ACCESS_TYPES = new Set<OptionalStopType>([
-  "beach",
-  "nature",
-  "viewpoint",
-]);
+const WEATHER_ACCESS_TYPES = new Set<OptionalStopType>(["beach", "nature", "viewpoint"]);
 
 const STOP_BUDGET_MINUTES: Readonly<Record<LivingAtlasDensity, number>> = {
   slow: 300,

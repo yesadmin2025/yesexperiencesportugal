@@ -1,12 +1,5 @@
 import type { ReactNode } from "react";
-import {
-  BadgeCheck,
-  CalendarClock,
-  CloudSun,
-  Gauge,
-  Handshake,
-  Waves,
-} from "lucide-react";
+import { BadgeCheck, CalendarClock, CloudSun, Gauge, Handshake, Waves } from "lucide-react";
 
 import type { OptionalStopType } from "@/data/regionStopPool";
 import {
@@ -117,7 +110,10 @@ export function LivingAtlasPaceCard({ summary }: { summary: LivingAtlasPaceSumma
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-2">
-        <Metric label="Visible plan" value={formatLivingAtlasDrivingTime(summary.visiblePlanningMinutes)} />
+        <Metric
+          label="Visible plan"
+          value={formatLivingAtlasDrivingTime(summary.visiblePlanningMinutes)}
+        />
         <Metric label="Moments" value={formatLivingAtlasDrivingTime(summary.stopMinutes)} />
         <Metric
           label="Transfers"
