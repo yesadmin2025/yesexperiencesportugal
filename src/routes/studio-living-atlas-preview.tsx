@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { LivingAtlasPreview } from "@/components/studio-v3/LivingAtlasPreview";
+import { LivingAtlasJourneyPreview } from "@/components/studio-v3/LivingAtlasJourneyPreview";
 
 /**
  * The file-router plugin regenerates routeTree.gen.ts during Vite dev/build.
@@ -15,10 +15,10 @@ export const Route = createFileRoute("/studio-living-atlas-preview" as never)({
       {
         name: "description",
         content:
-          "Private, noindex prototype of the YES Experience Studio Living Atlas decision flow.",
+          "Private, noindex prototype of the YES Experience Studio Living Atlas decision and itinerary composition flow.",
       },
       { name: "robots", content: "noindex,nofollow,noarchive" },
     ],
   }),
-  component: LivingAtlasPreview,
+  component: LivingAtlasJourneyPreview,
 });
