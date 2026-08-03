@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
+import { isStudioBookingDateAllowed, minimumStudioBookingDateIso } from "./dateGuards";
 import type { DateMode } from "./types";
 
 /**
@@ -31,14 +32,16 @@ export function DatePhaseControls({
   onPickFlexible: () => void;
   onPickUndecided: () => void;
 }) {
-  const today = useMemo(() => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
+  // Earliest bookable day (Lisbon time, three calendar days ahead) — the same
+  // rule Guest Details and checkout enforce, applied here so travellers never
+  // compose a whole day around a date that gets rejected at payment.
+  const earliest = useMemo(() => {
+    const [y, m, d] = minimumStudioBookingDateIso().split("-").map(Number);
+    return new Date(y, (m ?? 1) - 1, d ?? 1);
   }, []);
 
   const initialSelected = useMemo(() => {
-    if (dateMode === "exact" && dateExact) {
+    if (dateMode === "exact" && dateExact && isStudioBookingDateAllowed(dateExact)) {
       const [y, m, d] = dateExact.split("-").map(Number);
       if (y && m && d) return new Date(y, m - 1, d);
     }
@@ -46,7 +49,7 @@ export function DatePhaseControls({
   }, [dateExact, dateMode]);
 
   const [selected, setSelected] = useState<Date | undefined>(initialSelected);
-  const [month, setMonth] = useState<Date>(initialSelected ?? today);
+  const [month, setMonth] = useState<Date>(initialSelected ?? earliest);
 
   const exactSelected = dateMode === "exact" && !!dateExact;
 
@@ -61,6 +64,17 @@ export function DatePhaseControls({
       >
         Choose a date
       </label>
+
+      <p
+        className="mt-1 text-[12px] leading-snug italic"
+        style={{
+          fontFamily: "var(--font-serif)",
+          color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+        }}
+      >
+        We need three days to prepare the day properly.
+      </p>
+
 
       {/* Inline calendar card — gentle fade/rise on mount with a quiet delay
           so it doesn't feel like it flashes away on iOS. */}
@@ -84,14 +98,14 @@ export function DatePhaseControls({
           selected={selected}
           onSelect={(d) => {
             if (!d) return;
-            if (d < today) return;
+            const iso = toIso(d);
+            if (!isStudioBookingDateAllowed(iso)) return;
             setSelected(d);
-            const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
             onPickExact(iso);
           }}
           month={month}
           onMonthChange={setMonth}
-          disabled={{ before: today }}
+          disabled={{ before: earliest }}
           showOutsideDays={false}
           className="pointer-events-auto mx-auto"
         />
