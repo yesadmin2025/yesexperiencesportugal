@@ -234,6 +234,7 @@ import { Composition } from "./Composition";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { FinalRevealStory } from "./FinalRevealStory";
 import { WhyRouteWorks } from "./WhyRouteWorks";
+import { OtherDirections } from "./OtherDirections";
 import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
 import { CheckoutSummary as CheckoutSummaryStep } from "./CheckoutSummary";
 import { GuestDetailsStep } from "./GuestDetailsStep";
@@ -786,9 +787,47 @@ export function StudioV3() {
         interests: state.interests,
         destinationIntent: state.destinationIntent,
         rhythm: state.rhythm,
+        refinement: state.refinement,
       }).reasons,
-    [state.feeling, state.interests, state.destinationIntent, state.rhythm],
+    [
+      state.feeling,
+      state.interests,
+      state.destinationIntent,
+      state.rhythm,
+      state.refinement,
+    ],
   );
+
+  /**
+   * Differentiated alternatives for the reveal. Empty whenever nothing in the
+   * catalogue adds something the chosen day lacks.
+   */
+  const otherDirections = useMemo(() => {
+    if (!state.feeling || !state.companions || !state.rhythm) return [];
+    return resolveStudioV3Route({
+      feeling: state.feeling,
+      companions: state.companions,
+      rhythm: state.rhythm,
+      interests: state.interests,
+      pickup: state.pickup,
+      occasion: state.occasion,
+      considerations: state.considerations,
+      investment: state.investment,
+      destinationIntent: state.destinationIntent,
+      refinement: state.refinement,
+    }).livingAtlasAlternatives;
+  }, [
+    state.feeling,
+    state.companions,
+    state.rhythm,
+    state.interests,
+    state.pickup,
+    state.occasion,
+    state.considerations,
+    state.investment,
+    state.destinationIntent,
+    state.refinement,
+  ]);
 
   // Guest Details snapshot — captured on Guest Details submit, then rendered
   // in CheckoutSummary before we open Stripe. Kept in local state (not the
@@ -2596,6 +2635,10 @@ export function StudioV3() {
             testId="studio-v3-living-atlas-reasons"
             className="mx-auto w-full max-w-[62ch] px-5"
           />
+          <OtherDirections
+            directions={otherDirections}
+            className="mx-auto w-full max-w-[62ch] px-5"
+          />
           <FinalRevealStory
             state={state}
             selectedAddOns={resolvedJourney.addOns}
@@ -3864,6 +3907,11 @@ export function StoryboardHandoff({
           reasons={resolved.livingAtlasReasons ?? []}
           testId="studio-v3-travel-file-reasons"
           className="mx-auto mt-8 max-w-[520px]"
+        />
+        <OtherDirections
+          directions={resolved.livingAtlasAlternatives ?? []}
+          testId="studio-v3-travel-file-other-directions"
+          className="mx-auto max-w-[520px]"
         />
 
         {/* ---------- Stops list (editable) ---------- */}
