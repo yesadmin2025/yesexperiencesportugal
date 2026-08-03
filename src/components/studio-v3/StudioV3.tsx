@@ -735,10 +735,51 @@ function readPersistedStudioState(): StudioV3State | null {
         ? parsed.phase
         : "intro";
     if (phase === "intro") return null;
-    return { ...INITIAL_STATE, ...parsed, phase };
+    // Personal data is never persisted; defend against a stale/tampered
+    // payload by dropping it on read as well as on write.
+    return { ...INITIAL_STATE, ...parsed, phase, firstName: null, guestDraft: null };
   } catch {
     return null;
   }
+}
+
+/**
+ * Explicit allow-list projection of the composition answers we persist.
+ * Personal data (`firstName`, `guestDraft`: name, email, phone, pickup
+ * address, guide notes) is forced to null and never serialised.
+ */
+function toPersistableStudioState(state: StudioV3State): StudioV3State {
+  return {
+    phase: state.phase,
+    feeling: state.feeling,
+    companions: state.companions,
+    occasion: state.occasion,
+    dateMode: state.dateMode,
+    dateExact: state.dateExact,
+    pickup: state.pickup,
+    guests: state.guests,
+    adults: state.adults,
+    minorAges: [...state.minorAges],
+    interests: [...state.interests],
+    rhythm: state.rhythm,
+    refinement: state.refinement,
+    considerations: [...state.considerations],
+    language: state.language,
+    investment: state.investment,
+    tourId: state.tourId,
+    journeyTitle: state.journeyTitle,
+    guestsInferred: state.guestsInferred,
+    guestsPrivateEvent: state.guestsPrivateEvent,
+    editedRoutePoints: state.editedRoutePoints
+      ? state.editedRoutePoints.map((point) => ({ label: point.label, story: point.story }))
+      : null,
+    destinationIntent: state.destinationIntent,
+    pathMode: state.pathMode,
+    rerollCount: state.rerollCount,
+    // Never persisted.
+    firstName: null,
+    guestDraft: null,
+  };
 }
 
 function writePersistedStudioState(state: StudioV3State): void {
@@ -748,11 +789,15 @@ function writePersistedStudioState(state: StudioV3State): void {
       window.sessionStorage.removeItem(STUDIO_V3_SESSION_KEY);
       return;
     }
-    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(state));
+    window.sessionStorage.setItem(
+      STUDIO_V3_SESSION_KEY,
+      JSON.stringify(toPersistableStudioState(state)),
+    );
   } catch {
     /* storage blocked — persistence is a convenience, never a requirement */
   }
 }
+
 
 export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
