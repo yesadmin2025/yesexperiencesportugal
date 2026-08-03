@@ -855,13 +855,7 @@ export function StudioV3() {
         rhythm: state.rhythm,
         refinement: state.refinement,
       }).reasons,
-    [
-      state.feeling,
-      state.interests,
-      state.destinationIntent,
-      state.rhythm,
-      state.refinement,
-    ],
+    [state.feeling, state.interests, state.destinationIntent, state.rhythm, state.refinement],
   );
 
   /**

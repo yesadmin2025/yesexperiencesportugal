@@ -22,7 +22,11 @@
  */
 
 import type { LivingAtlasDiscoverySignal } from "@/components/studio-v3/livingAtlasDecision";
-import type { AdaptiveRefinementId, ChoiceOption, StudioV3State } from "@/components/studio-v3/types";
+import type {
+  AdaptiveRefinementId,
+  ChoiceOption,
+  StudioV3State,
+} from "@/components/studio-v3/types";
 
 export type AdaptiveQuestionKind = "coast" | "wine" | "hands" | "local";
 
