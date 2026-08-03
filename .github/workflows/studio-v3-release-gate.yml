@@ -3,13 +3,15 @@ name: Studio V3 release gate
 on:
   push:
     branches: [studio-v3-release-gate]
+  pull_request:
+    branches: [main]
   workflow_dispatch: {}
 
 permissions:
   contents: read
 
 concurrency:
-  group: studio-v3-release-gate
+  group: studio-v3-release-gate-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
