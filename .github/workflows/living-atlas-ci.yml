@@ -6,6 +6,7 @@ on:
       - studio/living-atlas
     paths:
       - "src/components/studio-v3/LivingAtlasPreview.tsx"
+      - "src/components/studio-v3/MapAwakens.tsx"
       - "src/components/studio-v3/livingAtlas*.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
@@ -14,6 +15,7 @@ on:
   pull_request:
     paths:
       - "src/components/studio-v3/LivingAtlasPreview.tsx"
+      - "src/components/studio-v3/MapAwakens.tsx"
       - "src/components/studio-v3/livingAtlas*.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.ts"
       - "src/components/studio-v3/__tests__/living-atlas-*.test.tsx"
@@ -60,10 +62,11 @@ jobs:
       - name: Typecheck project
         run: bunx tsc --noEmit
 
-      - name: Produce formatted Living Atlas files
+      - name: Produce formatted Studio files
         run: >-
           bunx prettier --write
           src/components/studio-v3/LivingAtlasPreview.tsx
+          src/components/studio-v3/MapAwakens.tsx
           src/components/studio-v3/livingAtlas*.ts
           src/components/studio-v3/__tests__/living-atlas-*.test.ts
           src/components/studio-v3/__tests__/living-atlas-*.test.tsx
@@ -74,18 +77,19 @@ jobs:
         shell: bash
         run: |
           if git diff --quiet; then
-            echo "Living Atlas files already formatted."
+            echo "Studio files already formatted."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
             src/components/studio-v3/LivingAtlasPreview.tsx \
+            src/components/studio-v3/MapAwakens.tsx \
             src/components/studio-v3/livingAtlas*.ts \
             src/components/studio-v3/__tests__/living-atlas-*.test.ts \
             src/components/studio-v3/__tests__/living-atlas-*.test.tsx \
             src/routes/studio-living-atlas-preview.tsx
-          git commit -m "style(studio): format validated Living Atlas files"
+          git commit -m "style(studio): format validated Studio files"
           git push origin HEAD:studio/living-atlas
 
       - name: Upload formatted sources
@@ -94,6 +98,7 @@ jobs:
           name: living-atlas-formatted
           path: |
             src/components/studio-v3/LivingAtlasPreview.tsx
+            src/components/studio-v3/MapAwakens.tsx
             src/components/studio-v3/livingAtlas*.ts
             src/components/studio-v3/__tests__/living-atlas-*.test.ts
             src/components/studio-v3/__tests__/living-atlas-*.test.tsx
