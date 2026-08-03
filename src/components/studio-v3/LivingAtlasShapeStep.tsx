@@ -1,5 +1,15 @@
 import { useState } from "react";
-import { ArrowRight, CarFront, Clock3, Compass, RefreshCw, Undo2, Waves, Wine } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  CarFront,
+  Clock3,
+  Compass,
+  RefreshCw,
+  Undo2,
+  Waves,
+  Wine,
+} from "lucide-react";
 
 import {
   formatLivingAtlasDuration,
@@ -12,7 +22,13 @@ import {
   type LivingAtlasReplacementMap,
   type LivingAtlasResolvedComposition,
 } from "@/components/studio-v3/livingAtlasAlternatives";
+import { formatExactLabel } from "@/components/studio-v3/DatePhase";
 import { deriveLivingAtlasPaceSummary } from "@/components/studio-v3/livingAtlasOperationalConfidence";
+import {
+  LIVING_ATLAS_TIMING_DISCLOSURE,
+  livingAtlasMomentDisclosure,
+  livingAtlasPublicMomentLabel,
+} from "@/components/studio-v3/livingAtlasPublicCopy";
 import type { LivingAtlasRoutePlan } from "@/components/studio-v3/livingAtlasRoutePlanner";
 import type {
   ExperienceProfile,
@@ -41,6 +57,7 @@ import {
 export function ShapeStep({
   signatureId,
   signatureTitle,
+  selectedDate,
   profile,
   preferences,
   onPreferencesChange,
@@ -56,6 +73,7 @@ export function ShapeStep({
 }: {
   signatureId: LivingAtlasSignatureId;
   signatureTitle: string;
+  selectedDate: string;
   profile: ExperienceProfile;
   preferences: LivingAtlasPreviewPreferences;
   onPreferencesChange: (preferences: LivingAtlasPreviewPreferences) => void;
@@ -73,6 +91,7 @@ export function ShapeStep({
   const isArrabida = ARRABIDA_SIGNATURES.has(signatureId);
   const orderedMoments = routePlan.orderedMoments;
   const title = livingAtlasPreviewDayTitle({ moments: orderedMoments });
+  const wineryCount = orderedMoments.filter((moment) => moment.type === "winery").length;
   const paceSummary = deriveLivingAtlasPaceSummary({
     density: preferences.density,
     stopMinutes: composition.totalDurationMin,
@@ -92,6 +111,15 @@ export function ShapeStep({
         role="status"
         aria-live="polite"
       >
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.16em]"
+          style={{
+            borderColor: "color-mix(in oklab, var(--ivory) 18%, transparent)",
+            color: "color-mix(in oklab, var(--ivory) 72%, transparent)",
+          }}
+        >
+          <CalendarDays size={11} aria-hidden /> {formatExactLabel(selectedDate)}
+        </span>
         {isPersisted ? (
           <span
             className="rounded-full border px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.16em]"
@@ -108,7 +136,7 @@ export function ShapeStep({
           style={{ color: "color-mix(in oklab, var(--ivory) 62%, transparent)" }}
         >
           {statusMessage ||
-            "Every change is checked against the region, timing and interests before it enters your day."}
+            "Every change is checked against the date, region, timing and interests before it enters your day."}
         </span>
       </div>
       <div className="mt-8 grid gap-5 xl:grid-cols-[0.72fr_1.28fr]">
@@ -206,7 +234,7 @@ export function ShapeStep({
                 style={{ color: "color-mix(in oklab, var(--ivory) 58%, transparent)" }}
               >
                 Operational skeleton: {signatureTitle}. Traveller-facing identity comes from the
-                composed moments above.
+                composed moments below.
               </p>
             </div>
             <div
@@ -228,6 +256,17 @@ export function ShapeStep({
                 const expanded = expandedSlotId === moment.slotId;
                 const changed = Boolean(replacements[moment.slotId]);
                 const incomingLeg = incomingLivingAtlasRouteLeg(routePlan, moment.stopId);
+                const wineryPosition =
+                  moment.type === "winery"
+                    ? orderedMoments.slice(0, index + 1).filter((item) => item.type === "winery")
+                        .length
+                    : 1;
+                const publicLabel = livingAtlasPublicMomentLabel(
+                  moment,
+                  wineryPosition,
+                  wineryCount,
+                );
+                const disclosure = livingAtlasMomentDisclosure(moment);
 
                 return (
                   <li
@@ -262,7 +301,7 @@ export function ShapeStep({
                       </span>
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <p className="text-[15px] font-semibold">{moment.label}</p>
+                          <p className="text-[15px] font-semibold">{publicLabel}</p>
                           {changed ? (
                             <span
                               className="rounded-full px-2 py-1 text-[8px] font-bold uppercase tracking-[0.16em]"
@@ -280,7 +319,7 @@ export function ShapeStep({
                             className="mt-1 text-[10px] leading-4"
                             style={{ color: "color-mix(in oklab, var(--ivory) 48%, transparent)" }}
                           >
-                            Replaces {moment.originalLabel}
+                            Replaces the previous moment
                           </p>
                         ) : null}
                         <div className="mt-2 flex flex-wrap gap-1.5">
@@ -302,6 +341,14 @@ export function ShapeStep({
                         <div className="mt-3">
                           <LivingAtlasOperationalBadges type={moment.type} />
                         </div>
+                        {disclosure ? (
+                          <p
+                            className="mt-2 text-[10px] leading-4"
+                            style={{ color: "color-mix(in oklab, var(--ivory) 54%, transparent)" }}
+                          >
+                            {disclosure}
+                          </p>
+                        ) : null}
                       </div>
                       <span
                         className="pt-1 text-[11px]"
@@ -331,7 +378,7 @@ export function ShapeStep({
                               setExpandedSlotId(null);
                               onUndo(
                                 moment.slotId,
-                                moment.label + " was removed and the original moment was restored.",
+                                `${publicLabel} was removed and the original moment was restored.`,
                               );
                             }}
                             className="inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-[9px] font-bold uppercase tracking-[0.14em]"
@@ -346,7 +393,7 @@ export function ShapeStep({
                           <button
                             type="button"
                             aria-expanded={expanded}
-                            aria-controls={"living-atlas-alternatives-" + moment.slotId}
+                            aria-controls={`living-atlas-alternatives-${moment.slotId}`}
                             onClick={() => setExpandedSlotId(expanded ? null : moment.slotId)}
                             className="inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-[9px] font-bold uppercase tracking-[0.14em]"
                             style={{
@@ -355,7 +402,7 @@ export function ShapeStep({
                             }}
                           >
                             <RefreshCw size={12} aria-hidden />
-                            {expanded ? "Hide alternatives" : alternatives.length + " alternatives"}
+                            {expanded ? "Hide alternatives" : `${alternatives.length} alternatives`}
                           </button>
                         ) : null}
                       </div>
@@ -363,78 +410,89 @@ export function ShapeStep({
 
                     {expanded ? (
                       <div
-                        id={"living-atlas-alternatives-" + moment.slotId}
+                        id={`living-atlas-alternatives-${moment.slotId}`}
                         className="mt-3 grid gap-2 sm:grid-cols-2"
                         role="region"
-                        aria-label={"Alternatives to " + moment.label}
+                        aria-label={`Alternatives to ${publicLabel}`}
                       >
-                        {alternatives.map((alternative) => (
-                          <article
-                            key={alternative.moment.stopId}
-                            className="rounded-xl border p-3"
-                            style={{
-                              borderColor: "color-mix(in oklab, var(--gold) 24%, transparent)",
-                              background: "color-mix(in oklab, var(--ivory) 4%, transparent)",
-                            }}
-                          >
-                            <div className="flex items-start justify-between gap-3">
-                              <div>
-                                <h3 className="text-[13px] font-semibold leading-5">
-                                  {alternative.moment.label}
-                                </h3>
-                                <p
-                                  className="mt-1 text-[10px] font-bold uppercase tracking-[0.13em]"
-                                  style={{ color: "var(--gold)" }}
+                        {alternatives.map((alternative) => {
+                          const alternativeLabel = livingAtlasPublicMomentLabel(alternative.moment);
+                          const alternativeDisclosure = livingAtlasMomentDisclosure(
+                            alternative.moment,
+                          );
+                          return (
+                            <article
+                              key={alternative.moment.stopId}
+                              className="rounded-xl border p-3"
+                              style={{
+                                borderColor: "color-mix(in oklab, var(--gold) 24%, transparent)",
+                                background: "color-mix(in oklab, var(--ivory) 4%, transparent)",
+                              }}
+                            >
+                              <div className="flex items-start justify-between gap-3">
+                                <div>
+                                  <h3 className="text-[13px] font-semibold leading-5">
+                                    {alternativeLabel}
+                                  </h3>
+                                  <p
+                                    className="mt-1 text-[10px] font-bold uppercase tracking-[0.13em]"
+                                    style={{ color: "var(--gold)" }}
+                                  >
+                                    {formatLivingAtlasDurationDelta(alternative.durationDeltaMin)}
+                                  </p>
+                                </div>
+                                <span
+                                  className="rounded-full border px-2 py-1 text-[8px] font-bold uppercase tracking-[0.12em]"
+                                  style={{
+                                    borderColor: "color-mix(in oklab, var(--ivory) 16%, transparent)",
+                                  }}
                                 >
-                                  {formatLivingAtlasDurationDelta(alternative.durationDeltaMin)}
-                                </p>
+                                  Checked
+                                </span>
                               </div>
-                              <span
-                                className="rounded-full border px-2 py-1 text-[8px] font-bold uppercase tracking-[0.12em]"
+                              <p
+                                className="mt-2 text-[11px] leading-5"
                                 style={{
-                                  borderColor: "color-mix(in oklab, var(--ivory) 16%, transparent)",
+                                  color: "color-mix(in oklab, var(--ivory) 62%, transparent)",
                                 }}
                               >
-                                Checked
-                              </span>
-                            </div>
-                            <p
-                              className="mt-2 text-[11px] leading-5"
-                              style={{
-                                color: "color-mix(in oklab, var(--ivory) 62%, transparent)",
-                              }}
-                            >
-                              {alternative.explanation}
-                            </p>
-                            <div className="mt-3">
-                              <LivingAtlasOperationalBadges
-                                type={alternative.moment.type}
-                                compact
-                              />
-                            </div>
-                            <button
-                              type="button"
-                              aria-label={
-                                "Replace " + moment.label + " with " + alternative.moment.label
-                              }
-                              onClick={() => {
-                                setExpandedSlotId(null);
-                                onReplace(
-                                  moment.slotId,
-                                  alternative.moment.stopId,
-                                  moment.label +
-                                    " was replaced by " +
-                                    alternative.moment.label +
-                                    ". The title, duration, coverage and route were recalculated.",
-                                );
-                              }}
-                              className="mt-3 inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[9px] font-bold uppercase tracking-[0.14em]"
-                              style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
-                            >
-                              Use this moment <ArrowRight size={12} aria-hidden />
-                            </button>
-                          </article>
-                        ))}
+                                {alternative.explanation}
+                              </p>
+                              <div className="mt-3">
+                                <LivingAtlasOperationalBadges
+                                  type={alternative.moment.type}
+                                  compact
+                                />
+                              </div>
+                              {alternativeDisclosure ? (
+                                <p
+                                  className="mt-2 text-[10px] leading-4"
+                                  style={{
+                                    color: "color-mix(in oklab, var(--ivory) 54%, transparent)",
+                                  }}
+                                >
+                                  {alternativeDisclosure}
+                                </p>
+                              ) : null}
+                              <button
+                                type="button"
+                                aria-label={`Replace ${publicLabel} with ${alternativeLabel}`}
+                                onClick={() => {
+                                  setExpandedSlotId(null);
+                                  onReplace(
+                                    moment.slotId,
+                                    alternative.moment.stopId,
+                                    `${publicLabel} was replaced by ${alternativeLabel}. The title, duration, coverage and route were recalculated.`,
+                                  );
+                                }}
+                                className="mt-3 inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[9px] font-bold uppercase tracking-[0.14em]"
+                                style={{ background: "var(--ivory)", color: "var(--charcoal)" }}
+                              >
+                                Use this moment <ArrowRight size={12} aria-hidden />
+                              </button>
+                            </article>
+                          );
+                        })}
                       </div>
                     ) : null}
                   </li>
@@ -443,11 +501,16 @@ export function ShapeStep({
             </ol>
             <p
               className="mt-5 text-[11px] leading-5"
-              style={{ color: "color-mix(in oklab, var(--ivory) 52%, transparent)" }}
+              style={{ color: "color-mix(in oklab, var(--ivory) 58%, transparent)" }}
             >
-              The geographic sequence and internal transfers are planning estimates from verified
-              coordinates. Opening hours, live traffic, pickup routing, supplier availability and
-              sea conditions still require operational confirmation.
+              {LIVING_ATLAS_TIMING_DISCLOSURE}
+            </p>
+            <p
+              className="mt-2 text-[10px] leading-5"
+              style={{ color: "color-mix(in oklab, var(--ivory) 46%, transparent)" }}
+            >
+              Internal transfers are planning estimates from verified coordinates. Live traffic,
+              supplier availability and sea conditions still require operational confirmation.
             </p>
           </div>
         </div>
