@@ -87,14 +87,14 @@ export function DatePhaseControls({
           selected={selected}
           onSelect={(d) => {
             if (!d) return;
-            if (d < today) return;
+            const iso = toIso(d);
+            if (!isStudioBookingDateAllowed(iso)) return;
             setSelected(d);
-            const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
             onPickExact(iso);
           }}
           month={month}
           onMonthChange={setMonth}
-          disabled={{ before: today }}
+          disabled={{ before: earliest }}
           showOutsideDays={false}
           className="pointer-events-auto mx-auto"
         />
