@@ -120,8 +120,13 @@ export function deriveLivingAtlasPreviewRequest(input: {
   }
 
   if (profile.selected.includes("atlantic-coast")) {
-    if (preferences.atlanticMode === "boat" && isArrabida) requiredTypes.push("boat");
-    if (preferences.atlanticMode === "coast") preferredTypes.push("beach", "viewpoint");
+    if (preferences.atlanticMode === "boat" && isArrabida) {
+      requiredTypes.push("boat");
+    }
+    if (preferences.atlanticMode === "coast") {
+      preferredTypes.push("beach", "viewpoint", "nature");
+      if (isArrabida) mustIncludeStopIds.push("parque-natural-arrabida");
+    }
   }
 
   if (profile.selected.includes("local-life") && isArrabida) {
@@ -141,7 +146,7 @@ export function deriveLivingAtlasPreviewRequest(input: {
     requiredTypes: unique(requiredTypes),
     preferredTypes: unique(preferredTypes),
     maxByType,
-    mustIncludeStopIds,
+    mustIncludeStopIds: unique(mustIncludeStopIds),
     pool: input.pool ?? getLivingAtlasPreviewPool(),
   };
 }
