@@ -1,23 +1,23 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-import { LivingAtlasJourneyPreview } from "@/components/studio-v3/LivingAtlasJourneyPreview";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 /**
- * The file-router plugin regenerates routeTree.gen.ts during Vite dev/build.
- * The literal path must remain directly inside createFileRoute so the TanStack
- * generator can discover it.
+ * Historical Living Atlas preview URL.
+ *
+ * The Living Atlas is now the production Experience Studio, so this route
+ * permanently forwards to the canonical public URL and preserves query data.
  */
 export const Route = createFileRoute("/studio-living-atlas-preview")({
   head: () => ({
     meta: [
-      { title: "Living Atlas Preview | YES Experience Studio" },
-      {
-        name: "description",
-        content:
-          "Private, noindex prototype of the YES Experience Studio Living Atlas decision and itinerary composition flow.",
-      },
-      { name: "robots", content: "noindex,nofollow,noarchive" },
+      { title: "Experience Studio | YES Experiences Portugal" },
+      { name: "robots", content: "noindex,nofollow" },
     ],
   }),
-  component: LivingAtlasJourneyPreview,
+  beforeLoad: ({ search }) => {
+    throw redirect({
+      to: "/experience-studio",
+      search: search as Record<string, unknown>,
+      statusCode: 301,
+    });
+  },
 });
