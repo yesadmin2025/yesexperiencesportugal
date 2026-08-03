@@ -191,9 +191,9 @@ test("adaptive refinement appears only when it can change a supported direction"
   await waitForStudioHydration(page);
   await page.locator('[data-option-id="balanced"]').click();
   await dismissReaction(page);
-  await expect.poll(async () => root.getAttribute("data-phase"), { timeout: 10_000 }).not.toBe(
-    "rhythm",
-  );
+  await expect
+    .poll(async () => root.getAttribute("data-phase"), { timeout: 10_000 })
+    .not.toBe("rhythm");
   await expect(root).not.toHaveAttribute("data-phase", "refinement");
   await expect(page.getByTestId("studio-v3-refinement")).toHaveCount(0);
 });
