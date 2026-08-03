@@ -145,7 +145,7 @@ const ALL_ROUTES = [
   "/",
   "/about",
   "/brand-qa",
-  "/experience-studio",
+  "/studio-v3",
   "/contact",
   "/corporate",
   "/day-tours",

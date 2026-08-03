@@ -1,20 +1,19 @@
 import { useEffect } from "react";
 import { trackEvent } from "@/lib/analytics-events";
-import { StudioV3 } from "@/components/studio-v3/StudioV3";
+import { LivingAtlasJourney } from "@/components/studio-v3/LivingAtlasJourneyPreview";
 
 /**
- * Shared page body for the public Experience Studio.
+ * Page body for the public Experience Studio at /studio-v3.
  *
- * Mounted by the canonical route (`/studio-v3`) and by the legacy
- * alias (`/studio-v3`) so both URLs render the identical Studio V3 /
- * Living Atlas implementation. Route-level metadata (canonical, JSON-LD,
- * robots) lives in each route file, not here.
+ * Wraps the Living Atlas journey with the SSR-visible intent copy crawlers
+ * and no-JS visitors need, plus the once-per-session `studio_started`
+ * analytics beat. Route metadata (canonical, JSON-LD, robots) lives in the
+ * route file, not here.
  */
 
 const STUDIO_START_KEY = "yes.studio.started.v1";
 
-export function StudioExperiencePage() {
-  // Studio start — once per browser session, no PII.
+export function LivingAtlasStudioPage() {
   useEffect(() => {
     try {
       if (window.sessionStorage.getItem(STUDIO_START_KEY)) return;
@@ -47,7 +46,9 @@ export function StudioExperiencePage() {
           <a href="/trade">our travel trade partnerships</a>.
         </p>
       </header>
-      <StudioV3 />
+      <LivingAtlasJourney />
     </>
   );
 }
+
+export default LivingAtlasStudioPage;

@@ -41,7 +41,7 @@ const KEY_COMPONENTS: ShadowSpec[] = [
     file: resolve(__dirname, "../components/home/StudioLivePreview.tsx"),
   },
   {
-    // `/builder` is a thin redirect to `/experience-studio` — the real Builder
+    // `/builder` is a thin redirect to `/studio-v3` — the real Builder
     // surface lives in the StudioV3 component tree. We scan a
     // representative file there so the editorial shadow contract still
     // applies to what users actually see when they land on /builder.

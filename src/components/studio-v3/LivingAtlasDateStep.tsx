@@ -69,6 +69,17 @@ export function LivingAtlasDateStep({
           showOutsideDays={false}
           className="pointer-events-auto mx-auto rounded-xl bg-[color:var(--ivory)] text-[color:var(--charcoal)]"
         />
+        <p
+          data-testid="living-atlas-min-date-note"
+          className="mt-3 text-center text-[11.5px] leading-relaxed"
+          style={{ color: "color-mix(in oklab, var(--ivory) 66%, transparent)" }}
+        >
+          Private days are confirmed with your host, so the earliest date we can take is{" "}
+          <strong style={{ color: "var(--ivory)", fontWeight: 600 }}>
+            {formatExactLabel(minimumIso)}
+          </strong>{" "}
+          — three days ahead, counted in Lisbon time. Checkout applies the same rule.
+        </p>
         {selectedDate ? (
           <p
             className="mt-3 text-center text-[13px] italic"

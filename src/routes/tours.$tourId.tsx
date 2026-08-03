@@ -829,7 +829,7 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
         <p className="mt-6 text-[13px] text-[color:var(--ivory)]/75">
           Want a different shape of day?{" "}
           <Link
-            to="/experience-studio"
+            to="/studio-v3"
             className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--gold)] transition-colors"
           >
             Design your own private Portugal day in the Studio

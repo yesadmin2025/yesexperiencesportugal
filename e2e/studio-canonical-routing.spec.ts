@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 /**
  * Canonical Studio routing guard.
  *
- * The public Experience Studio lives at /experience-studio and renders the
+ * The public Experience Studio lives at /studio-v3 and renders the
  * Studio V3 / Living Atlas implementation. This spec proves that:
  *  1. the canonical route mounts Studio V3 and self-canonicalises,
  *  2. homepage, desktop nav and mobile nav all enter it,
@@ -12,10 +12,10 @@ import { test, expect } from "@playwright/test";
  */
 
 const STUDIO_ROOT = '[data-testid="studio-v3-root"]';
-const CANONICAL = "https://yesexperiencesportugal.com/experience-studio";
+const CANONICAL = "https://yesexperiencesportugal.com/studio-v3";
 
-test("canonical /experience-studio renders Studio V3", async ({ page }) => {
-  await page.goto("/experience-studio", { waitUntil: "domcontentloaded" });
+test("canonical /studio-v3 renders Studio V3", async ({ page }) => {
+  await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
   await expect(page.locator(STUDIO_ROOT).first()).toBeVisible({ timeout: 20_000 });
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", CANONICAL);
 });
@@ -30,7 +30,7 @@ test("/studio-v3 alias renders the same Studio, noindex + canonicalised", async 
 for (const legacy of ["/studio", "/studio-v2"]) {
   test(`legacy ${legacy} lands on the new Studio`, async ({ page }) => {
     await page.goto(legacy, { waitUntil: "domcontentloaded" });
-    await expect(page).toHaveURL(/\/experience-studio/);
+    await expect(page).toHaveURL(/\/studio-v3/);
     await expect(page.locator(STUDIO_ROOT).first()).toBeVisible({ timeout: 20_000 });
   });
 }
@@ -38,16 +38,16 @@ for (const legacy of ["/studio", "/studio-v2"]) {
 test("desktop navigation enters the new Studio", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  const navLink = page.locator('header a[href^="/experience-studio"]').first();
+  const navLink = page.locator('header a[href^="/studio-v3"]').first();
   await expect(navLink).toBeVisible();
   await navLink.click();
-  await expect(page).toHaveURL(/\/experience-studio/);
+  await expect(page).toHaveURL(/\/studio-v3/);
   await expect(page.locator(STUDIO_ROOT).first()).toBeVisible({ timeout: 20_000 });
 });
 
 test("homepage CTAs point at the new Studio", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  expect(await page.locator('a[href^="/experience-studio"]').count()).toBeGreaterThan(0);
+  expect(await page.locator('a[href^="/studio-v3"]').count()).toBeGreaterThan(0);
   expect(await page.locator('a[href^="/studio-v2"], a[href^="/studio-v3"]').count()).toBe(0);
 });
 
@@ -60,9 +60,9 @@ test("mobile navigation enters the new Studio", async ({ page }) => {
     )
     .first();
   await toggle.click();
-  const link = page.locator('a[href^="/experience-studio"]:visible').first();
+  const link = page.locator('a[href^="/studio-v3"]:visible').first();
   await expect(link).toBeVisible();
   await link.click();
-  await expect(page).toHaveURL(/\/experience-studio/);
+  await expect(page).toHaveURL(/\/studio-v3/);
   await expect(page.locator(STUDIO_ROOT).first()).toBeVisible({ timeout: 20_000 });
 });

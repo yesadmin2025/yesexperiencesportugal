@@ -224,7 +224,7 @@ function Page() {
               </a>
               ,{" "}
               <a
-                href="/experience-studio"
+                href="/studio-v3"
                 className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
               >
                 build through the YES Studio
@@ -452,7 +452,7 @@ function Page() {
             <CtaButton to="/experiences" variant="primary">
               Start Your Private Experience
             </CtaButton>
-            <CtaButton to="/experience-studio" variant="ghost">
+            <CtaButton to="/studio-v3" variant="ghost">
               Open the Studio
             </CtaButton>
           </div>
@@ -470,7 +470,7 @@ function Page() {
               "Curated private days, ready to reserve with a dedicated guide and vehicle.",
           },
           {
-            to: "/experience-studio",
+            to: "/studio-v3",
             label: "Experience Studio — build your own Portugal experience",
             description:
               "Design a private day online and watch the route and pricing evolve before you reserve.",

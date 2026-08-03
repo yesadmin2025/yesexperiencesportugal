@@ -3,7 +3,7 @@
  *
  * Sits over the cinematic hero (desktop: bottom-left card; mobile:
  * collapsible bottom button). Three dropdowns (intent · group · pickup)
- * route to /experience-studio with searchParams, EXCEPT when the user picks a
+ * route to /studio-v3 with searchParams, EXCEPT when the user picks a
  * full multi-day journey → /multi-day, with an explicit override per spec.
  *
  * Strict rules respected:
@@ -70,7 +70,7 @@ export function ShapeYourDay() {
     // Spec: pickup = other → /studio-v2 (with note flag) - studio still
     // gets the intent/group so the rest of the prompt is honored.
     void navigate({
-      to: "/experience-studio",
+      to: "/studio-v3",
       search: { intent, group, pickup },
     });
   };

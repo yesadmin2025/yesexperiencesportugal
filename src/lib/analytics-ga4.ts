@@ -102,7 +102,7 @@ export function gaViewItem(args: {
   });
 }
 
-/** Custom: studio_start — Begin click on /experience-studio. */
+/** Custom: studio_start — Begin click on /studio-v3. */
 export function gaStudioStart(): void {
   pushEvent("studio_start", {});
 }

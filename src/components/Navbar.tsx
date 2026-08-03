@@ -13,7 +13,7 @@ function useDesktopLinks() {
   const t = useT();
   return [
     { to: "/experiences", label: t("nav.experiences"), hidden: false },
-    { to: "/experience-studio", label: t("nav.studio"), hidden: false },
+    { to: "/studio-v3", label: t("nav.studio"), hidden: false },
     { to: "/multi-day", label: t("nav.travel_designer"), hidden: false },
     { to: "/corporate", label: t("nav.corporate"), hidden: false },
     { to: "/proposal-in-portugal", label: t("nav.moments"), hidden: false },
@@ -147,7 +147,7 @@ export function Navbar() {
               <Globe size={13} strokeWidth={1.6} aria-hidden />
               <LanguageSwitcher variant="header" />
             </span>
-            <CtaButton to="/experience-studio" variant="primary" size="sm" className="ml-2">
+            <CtaButton to="/studio-v3" variant="primary" size="sm" className="ml-2">
               Design &amp; Book
             </CtaButton>
           </nav>
@@ -228,7 +228,7 @@ export function Navbar() {
           </div>
           <div className="container-x py-4 border-t border-[color:var(--charcoal)]/[0.06] shrink-0">
             <CtaButton
-              to="/experience-studio"
+              to="/studio-v3"
               onClick={() => setOpen(false)}
               variant="primary"
               size="sm"

@@ -25,7 +25,7 @@ const WA_DEFAULT_MESSAGE = "Hi YES Experiences Portugal — I'd like a hand with
 // the bubble never competes with the primary action.
 const HIDE_PATTERNS: RegExp[] = [
   /^\/checkout(\/|$)/i,
-  /^\/experience-studio(\/|$)/i,
+  /^\/studio-v3(\/|$)/i,
   /^\/studio-v3(\/|$)/i,
 ];
 

@@ -414,7 +414,7 @@ function StaticArticleView({
               <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
                 Or{" "}
                 <Link
-                  to="/experience-studio"
+                  to="/studio-v3"
                   className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
                 >
                   design your own private Portugal day in the Studio

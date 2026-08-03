@@ -44,7 +44,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           // targets (/about and /proposal-in-portugal). Sitemap URLs must be
           // final destinations (HTTP 200), never redirects.
           { path: "/experiences", changefreq: "weekly", priority: "0.9" },
-          { path: "/experience-studio", changefreq: "weekly", priority: "0.9" },
+          { path: "/studio-v3", changefreq: "weekly", priority: "0.9" },
           { path: "/day-tours", changefreq: "weekly", priority: "0.8" },
           { path: "/multi-day", changefreq: "weekly", priority: "0.9" },
           { path: "/portugal-travel-designer", changefreq: "monthly", priority: "0.85" },

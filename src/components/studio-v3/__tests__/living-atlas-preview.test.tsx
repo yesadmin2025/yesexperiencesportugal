@@ -8,6 +8,7 @@ import { LivingAtlasPreview } from "../LivingAtlasPreview";
 
 afterEach(() => {
   cleanup();
+  window.sessionStorage.clear();
   window.localStorage.clear();
 });
 
