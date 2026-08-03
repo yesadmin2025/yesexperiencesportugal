@@ -59,3 +59,30 @@ describe("livingAtlasBridge", () => {
     expect(deriveStudioIntelligence({ ...input })).toEqual(deriveStudioIntelligence({ ...input }));
   });
 });
+
+describe("deriveStudioIntelligence — differentiated alternatives", () => {
+  it("only offers alternatives that add a strength the chosen direction lacks", () => {
+    const intelligence = deriveStudioIntelligence({
+      feeling: "wine-food",
+      interests: ["wine", "coast", "heritage"],
+      rhythm: "balanced",
+    });
+
+    for (const alternative of intelligence.alternatives) {
+      expect(alternative.distinctStrengths.length).toBeGreaterThan(0);
+      expect(alternative.note.length).toBeGreaterThan(0);
+      expect(alternative.signatureId).not.toBe(intelligence.decision?.selectedSignatureId);
+    }
+    expect(intelligence.alternatives.length).toBeLessThanOrEqual(2);
+  });
+
+  it("never repeats the same differentiation twice", () => {
+    const intelligence = deriveStudioIntelligence({
+      feeling: "coastal",
+      interests: ["coast", "nature"],
+      rhythm: "slow",
+    });
+    const keys = intelligence.alternatives.map((a) => a.distinctStrengths.join("|"));
+    expect(new Set(keys).size).toBe(keys.length);
+  });
+});

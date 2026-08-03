@@ -76,6 +76,14 @@ export type StudioDirection = {
   strengths: ExperienceDimensionId[];
   /** Dimensions the traveller asked for that this direction does not carry. */
   gaps: ExperienceDimensionId[];
+  /**
+   * Dimensions this direction carries strongly that the chosen direction
+   * does not. Non-empty by construction — an alternative that adds nothing
+   * new is not offered at all.
+   */
+  distinctStrengths: ExperienceDimensionId[];
+  /** One grounded line explaining how this alternative differs. */
+  note: string;
 };
 
 export type StudioIntelligence = {
@@ -197,14 +205,33 @@ export function deriveStudioIntelligence(input: StudioIntelligenceInput): Studio
     ranked[0]?.signatureId ??
     null;
 
-  const alternatives: StudioDirection[] = ranked
-    .filter((candidate) => candidate.signatureId !== chosen)
-    .slice(0, 2)
-    .map((candidate) => ({
+  // Alternatives are only offered when they are genuinely differentiated:
+  // each must carry, strongly, at least one dimension the chosen direction
+  // does not. Near-duplicates of the chosen day are dropped rather than
+  // padded out to a fixed count.
+  const chosenStrengths = chosen ? strongDimensions(chosen, profile) : [];
+  const alternatives: StudioDirection[] = [];
+  for (const candidate of ranked) {
+    if (alternatives.length >= 2) break;
+    if (candidate.signatureId === chosen) continue;
+    const strengths = strongDimensions(candidate.signatureId, profile);
+    const distinctStrengths = strengths.filter((d) => !chosenStrengths.includes(d));
+    if (distinctStrengths.length === 0) continue;
+    if (alternatives.some((a) => a.distinctStrengths.join("|") === distinctStrengths.join("|"))) {
+      continue;
+    }
+    const gaps = missingDimensions(candidate.signatureId, profile);
+    const note = gaps.length
+      ? `Leans further into ${labelList(distinctStrengths)}, with less ${labelList(gaps)}.`
+      : `Leans further into ${labelList(distinctStrengths)}.`;
+    alternatives.push({
       signatureId: candidate.signatureId,
-      strengths: strongDimensions(candidate.signatureId, profile),
-      gaps: missingDimensions(candidate.signatureId, profile),
-    }));
+      strengths,
+      gaps,
+      distinctStrengths,
+      note,
+    });
+  }
 
   return {
     profile,
