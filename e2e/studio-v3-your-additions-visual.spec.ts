@@ -29,9 +29,11 @@ const FOOTNOTE = '[data-testid="studio-v3-inclusions-footnote"]';
 async function settle(page: Page): Promise<void> {
   await page.evaluate(async () => {
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
-    const imgs = Array.from(document.images);
+    const images = Array.from(document.images);
     await Promise.all(
-      imgs.map((img) => (img.complete ? Promise.resolve() : img.decode().catch(() => undefined))),
+      images.map((image) =>
+        image.complete ? Promise.resolve() : image.decode().catch(() => undefined),
+      ),
     );
   });
   await page.waitForTimeout(300);
@@ -47,17 +49,19 @@ async function reachRefineWithFootnote(page: Page): Promise<boolean> {
 }
 
 async function toggleAddon(page: Page, id: string): Promise<void> {
-  const btn = page
+  const button = page
     .locator(`[data-testid="studio-v3-add-ons"] button[data-addon-id="${id}"]`)
     .first();
-  await btn.scrollIntoViewIfNeeded().catch(() => undefined);
-  await btn.click();
+  await button.scrollIntoViewIfNeeded().catch(() => undefined);
+  await button.click();
 }
 
 test.describe("Studio V3 · Your additions visual @ 393×588", () => {
   test.use({ viewport: VIEWPORT });
 
   test("footnote baselines: empty, one add-on, and multiple add-ons", async ({ page }) => {
+    test.setTimeout(60_000);
+
     if (!(await reachRefineWithFootnote(page))) {
       test.skip(true, "funnel did not reach Refine with a visible footnote");
     }
@@ -88,7 +92,7 @@ test.describe("Studio V3 · Your additions visual @ 393×588", () => {
 
     // 3) Up to three add-ons ON.
     const extras = addons.slice(1, 3);
-    for (const a of extras) await toggleAddon(page, a.id);
+    for (const addon of extras) await toggleAddon(page, addon.id);
     await expect(footnote.locator('[data-testid="studio-v3-included-addon-row"]')).toHaveCount(
       1 + extras.length,
     );

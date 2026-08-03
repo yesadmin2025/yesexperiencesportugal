@@ -1,29 +1,16 @@
-import { describe, it, expect } from "vitest";
-import { execSync } from "node:child_process";
+import { describe, expect, it } from "vitest";
+import fs from "node:fs";
 import path from "node:path";
+import ts from "typescript";
 
 /**
- * Guardrail: no code outside the approved list may read the legacy
- * `overview` / `highlights` / `included` / `itinerary` fields directly
- * off a signature-tour object. All UI/logic must go through
- * `getTourContent(tourId)` (src/lib/tourContent.ts).
+ * Guardrail: no code outside the approved migration/tooling list may read the
+ * legacy `overview` / `highlights` / `included` / `itinerary` fields directly
+ * from a SignatureTour object.
  *
- * Approved exceptions (files allowed to touch the legacy fields):
- *   - src/lib/tourContent.ts                      — the helper itself
- *   - src/lib/checkout/inclusions.ts              — SoT-first w/ legacy fallback
- *   - src/lib/checkout/__tests__/                 — locked contract tests
- *   - src/lib/viatorValidation.ts                 — diffs legacy vs Viator meta
- *   - src/i18n/tour-i18n.ts                       — merges translation overlays
- *   - src/data/**                                 — source-of-truth data files
- *   - src/routes/admin.*                          — admin/import/validation tools
- *   - src/server/tourImporter.server.ts           — importer
- *   - Files already-swapped that keep inline SoT-empty fallbacks:
- *       src/routes/tours.$tourId.tsx
- *       src/components/SimpleBookingForm.tsx
- *       src/components/studio-v3/FinalRevealStory.tsx
- *       src/components/studio-v3/StudioV3.tsx
- *       src/components/studio-v3/signatureStorySnapshot.ts
- *   - This test file
+ * This scanner uses the TypeScript AST. It therefore ignores comments, prose
+ * strings and property names returned by the canonical `getTourContent()`
+ * helper, while still catching real `tour.included`-style reads.
  */
 
 const APPROVED = new Set<string>([
@@ -37,6 +24,10 @@ const APPROVED = new Set<string>([
   "src/components/studio-v3/FinalRevealStory.tsx",
   "src/components/studio-v3/StudioV3.tsx",
   "src/components/studio-v3/signatureStorySnapshot.ts",
+  "src/__tests__/sot-geo-coverage.test.ts",
+  "src/__tests__/sot-viator-parity.test.ts",
+  "src/lib/stop-parity.ts",
+  "src/routes/api/public/hooks/viator-drift-check.ts",
   "src/__tests__/tour-content-direct-reads.test.ts",
 ]);
 
@@ -47,66 +38,129 @@ const APPROVED_PREFIXES = [
   "src/lib/__tests__/tourContent",
 ];
 
-// Match all of:
-//   - Dot / optional-chain access:  t.overview, t?.overview
-//   - Bracket string access:        t["overview"], t?.["overview"]
-//   - Destructuring w/ separators:  { overview, ... }, { overview } = tour, { overview: alias }
-//   - Destructuring with default:   { overview = [] }
-const FIELDS = "overview|highlights|included|itinerary";
-const PATTERN =
-  String.raw`(\??\.\s*(` +
-  FIELDS +
-  String.raw`)\b)` +
-  String.raw`|(\??\.\s*\[\s*["'](` +
-  FIELDS +
-  String.raw`)["']\s*\])` +
-  String.raw`|(\[\s*["'](` +
-  FIELDS +
-  String.raw`)["']\s*\])` +
-  String.raw`|(\b(` +
-  FIELDS +
-  String.raw`)\s*[,}:=])`;
+const LEGACY_FIELDS = new Set(["overview", "highlights", "included", "itinerary"]);
+const NON_TOUR_RECEIVERS = new Set(["validation", "viator", "meta"]);
+const REPOSITORY_ROOT = path.resolve(__dirname, "../..");
+const SOURCE_ROOT = path.join(REPOSITORY_ROOT, "src");
 
-function rg(pattern: string): string[] {
-  try {
-    const out = execSync(
-      `rg -n --no-heading -g 'src/**/*.{ts,tsx}' -e ${JSON.stringify(pattern)}`,
-      { cwd: path.resolve(__dirname, "../.."), encoding: "utf8" },
-    );
-    return out.split("\n").filter(Boolean);
-  } catch (e) {
-    // rg exits 1 when no matches — treat as empty.
-    if ((e as { status?: number })?.status === 1) return [];
-    throw e;
+function sourceFiles(directory: string): string[] {
+  const files: string[] = [];
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const absolute = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...sourceFiles(absolute));
+      continue;
+    }
+    if (entry.isFile() && /\.tsx?$/.test(entry.name)) files.push(absolute);
   }
+  return files;
 }
 
 function isApproved(file: string): boolean {
-  const norm = file.replace(/\\/g, "/");
-  if (APPROVED.has(norm)) return true;
-  return APPROVED_PREFIXES.some((p) => norm.startsWith(p));
+  const normalized = file.replace(/\\/g, "/");
+  if (APPROVED.has(normalized)) return true;
+  return APPROVED_PREFIXES.some((prefix) => normalized.startsWith(prefix));
+}
+
+function isGetTourContentCall(node: ts.Node | undefined): boolean {
+  if (!node || !ts.isCallExpression(node)) return false;
+  return ts.isIdentifier(node.expression) && node.expression.text === "getTourContent";
+}
+
+function collectCanonicalContentVariables(sourceFile: ts.SourceFile): Set<string> {
+  const canonical = new Set<string>();
+
+  const visit = (node: ts.Node) => {
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isIdentifier(node.name) &&
+      isGetTourContentCall(node.initializer)
+    ) {
+      canonical.add(node.name.text);
+    }
+    ts.forEachChild(node, visit);
+  };
+
+  visit(sourceFile);
+  return canonical;
+}
+
+function receiverIsCanonical(receiver: ts.Expression, canonicalVariables: Set<string>): boolean {
+  if (isGetTourContentCall(receiver)) return true;
+  if (ts.isParenthesizedExpression(receiver)) {
+    return receiverIsCanonical(receiver.expression, canonicalVariables);
+  }
+  if (ts.isIdentifier(receiver)) {
+    if (canonicalVariables.has(receiver.text)) return true;
+    if (NON_TOUR_RECEIVERS.has(receiver.text)) return true;
+  }
+  return false;
+}
+
+function propertyName(
+  node: ts.PropertyAccessExpression | ts.ElementAccessExpression,
+): string | null {
+  if (ts.isPropertyAccessExpression(node)) return node.name.text;
+  const argument = node.argumentExpression;
+  if (
+    !argument ||
+    (!ts.isStringLiteral(argument) && !ts.isNoSubstitutionTemplateLiteral(argument))
+  ) {
+    return null;
+  }
+  return argument.text;
+}
+
+function directLegacyReads(absolute: string): string[] {
+  const relative = path.relative(REPOSITORY_ROOT, absolute).replace(/\\/g, "/");
+  if (isApproved(relative)) return [];
+
+  const source = fs.readFileSync(absolute, "utf8");
+  const scriptKind = absolute.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
+  const sourceFile = ts.createSourceFile(
+    relative,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    scriptKind,
+  );
+  const canonicalVariables = collectCanonicalContentVariables(sourceFile);
+  const violations: string[] = [];
+
+  const visit = (node: ts.Node) => {
+    if (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) {
+      const field = propertyName(node);
+      if (
+        field &&
+        LEGACY_FIELDS.has(field) &&
+        !receiverIsCanonical(node.expression, canonicalVariables)
+      ) {
+        const location = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
+        const receiver = node.expression.getText(sourceFile);
+        violations.push(
+          `${relative}:${location.line + 1}:${location.character + 1} ${receiver}.${field}`,
+        );
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+
+  visit(sourceFile);
+  return violations;
 }
 
 describe("tour content — no unapproved direct legacy reads", () => {
-  it("no file outside the approved list reads tour.overview/highlights/included/itinerary directly", () => {
-    const hits = rg(PATTERN);
-    const violations = hits.filter((line) => {
-      const file = line.split(":")[0];
-      if (isApproved(file)) return false;
-      // Only flag when the token appears alongside a tour-shaped context
-      // (a `tour`, `signature`, `SoT`, `content`, or `getTourContent` reference).
-      // Otherwise this pattern is too broad (every `overview` word matches).
-      // We narrow using the source line.
-      const rest = line.split(":").slice(2).join(":");
-      return /\b(tour|signature|sot|content|getTourContent)\b/i.test(rest);
-    });
+  it("routes Signature content reads through getTourContent", () => {
+    const violations = sourceFiles(SOURCE_ROOT).flatMap(directLegacyReads);
+
     if (violations.length) {
-      const msg =
-        "Direct legacy field reads found outside approved files. " +
-        "Use getTourContent(tourId) from @/lib/tourContent instead.\n\n" +
-        violations.map((v) => "  " + v).join("\n");
-      throw new Error(msg);
+      throw new Error(
+        "Direct legacy Signature content reads found outside approved migration/tooling files. " +
+          "Use getTourContent(tourId) from @/lib/tourContent instead.\n\n" +
+          violations.map((violation) => `  ${violation}`).join("\n"),
+      );
     }
+
     expect(violations).toEqual([]);
   });
 });

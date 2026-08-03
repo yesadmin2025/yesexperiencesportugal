@@ -99,7 +99,7 @@ export function LivingAtlasBookingStep({
           ? content.included
           : viator?.included && viator.included.length > 0
             ? viator.included
-            : (tour.included ?? []);
+            : [];
       const origin = typeof window !== "undefined" ? window.location.origin : "";
       const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
         body: {
