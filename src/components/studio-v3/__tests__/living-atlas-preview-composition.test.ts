@@ -46,9 +46,7 @@ describe("Living Atlas preview composition", () => {
     expect(composition.moments.some((moment) => moment.stopId === "mercado-do-livramento")).toBe(
       true,
     );
-    expect(composition.moments.some((moment) => moment.stopId === "coastal-boat-ride")).toBe(
-      true,
-    );
+    expect(composition.moments.some((moment) => moment.stopId === "coastal-boat-ride")).toBe(true);
     expect(composition.missingDimensions).toEqual([]);
     expect(livingAtlasPreviewDayTitle(composition)).not.toContain("Arrábida Wine");
   });
@@ -69,7 +67,8 @@ describe("Living Atlas preview composition", () => {
     expect(composition.moments.some((moment) => moment.type === "boat")).toBe(false);
     expect(
       composition.moments.some(
-        (moment) => moment.type === "beach" || moment.type === "viewpoint" || moment.type === "nature",
+        (moment) =>
+          moment.type === "beach" || moment.type === "viewpoint" || moment.type === "nature",
       ),
     ).toBe(true);
   });

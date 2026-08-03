@@ -1,8 +1,4 @@
-import {
-  REGION_STOP_POOL,
-  type OptionalStop,
-  type OptionalStopType,
-} from "@/data/regionStopPool";
+import { REGION_STOP_POOL, type OptionalStop, type OptionalStopType } from "@/data/regionStopPool";
 import { ADD_ON_CATALOG } from "@/data/signatureAddOns";
 import {
   composeLivingAtlasDay,
@@ -59,9 +55,7 @@ function unique<T>(items: readonly T[]): T[] {
 }
 
 function verifiedArrabidaBoatStop(): OptionalStop | null {
-  const addOn = ADD_ON_CATALOG["lisbon-arrabida"].find(
-    (item) => item.id === "coastal-boat-ride",
-  );
+  const addOn = ADD_ON_CATALOG["lisbon-arrabida"].find((item) => item.id === "coastal-boat-ride");
   if (!addOn) return null;
 
   return {
