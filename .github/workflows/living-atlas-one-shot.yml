@@ -1,11 +1,6 @@
 name: Living Atlas one-shot commit
 
 on:
-  push:
-    branches:
-      - studio/living-atlas
-    paths:
-      - ".github/workflows/living-atlas-one-shot.yml"
   pull_request:
     paths:
       - ".github/workflows/living-atlas-one-shot.yml"
