@@ -1,7 +1,7 @@
 name: Apply Studio session privacy once
 
 on:
-  push:
+  pull_request:
     branches: [main]
     paths:
       - ".github/workflows/apply-studio-session-pii-once.yml"
@@ -11,12 +11,13 @@ permissions:
 
 jobs:
   patch:
+    if: github.head_ref == 'studio-v3-final-release-gate'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: studio-v3-final-release-gate
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
@@ -48,11 +49,14 @@ jobs:
           bun install --frozen-lockfile
           bunx prettier --write src/components/studio-v3/StudioV3.tsx
           bunx tsc --noEmit -p tsconfig.json
-      - name: Remove one-time workflow and commit
+      - name: Commit safe persistence to the audit branch
         run: |
-          rm .github/workflows/apply-studio-session-pii-once.yml
+          if git diff --quiet; then
+            echo "Privacy patch already present"
+            exit 0
+          fi
           git config user.name "Studio V3 privacy gate"
           git config user.email "actions@users.noreply.github.com"
-          git add src/components/studio-v3/StudioV3.tsx .github/workflows/apply-studio-session-pii-once.yml
+          git add src/components/studio-v3/StudioV3.tsx
           git commit -m "Keep personal data out of Studio session storage"
-          git push origin main
+          git push origin studio-v3-final-release-gate
