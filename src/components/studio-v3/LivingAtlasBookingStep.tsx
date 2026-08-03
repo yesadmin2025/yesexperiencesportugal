@@ -16,6 +16,7 @@ import { getViatorMeta } from "@/data/signatureToursViator";
 import { resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { supabase } from "@/integrations/supabase/client";
+import { getStripeEnvironment } from "@/lib/stripe";
 import { getTourContent } from "@/lib/tourContent";
 
 export function LivingAtlasBookingStep({
@@ -120,7 +121,7 @@ export function LivingAtlasBookingStep({
           customerEmail: guestDetails.email,
           priceFromEur: tour.priceFrom ?? 180,
           returnUrl: `${origin}/booking-confirmed?tour=${tour.id}`,
-          environment: "sandbox",
+          environment: getStripeEnvironment(),
           flow: "studio",
           uiMode: "embedded",
           durationLabel: `${Math.round((handoff.durationMinutes / 60) * 10) / 10} hours of selected moments`,
@@ -132,7 +133,7 @@ export function LivingAtlasBookingStep({
       if (error) throw error;
       const response = (data ?? {}) as { clientSecret?: string; publishableKey?: string };
       if (!response.clientSecret || !response.publishableKey) {
-        throw new Error("Stripe sandbox checkout is unavailable");
+        throw new Error("Embedded checkout is unavailable");
       }
       setClientSecret(response.clientSecret);
       setPublishableKey(response.publishableKey);
@@ -153,7 +154,7 @@ export function LivingAtlasBookingStep({
           className="mx-auto mb-4 max-w-xl text-center text-[10px] font-bold uppercase tracking-[0.22em]"
           style={{ color: "var(--gold)" }}
         >
-          Isolated preview · Stripe sandbox
+          Secure booking · Stripe checkout
         </p>
         <GuestDetailsStep
           tourId={tour.id}
@@ -187,7 +188,7 @@ export function LivingAtlasBookingStep({
         className="mx-auto mb-4 max-w-xl text-center text-[10px] font-bold uppercase tracking-[0.22em]"
         style={{ color: "var(--gold)" }}
       >
-        Isolated preview · Stripe sandbox
+        Secure booking · Stripe checkout
       </p>
       <CheckoutSummary
         state={summaryState}
