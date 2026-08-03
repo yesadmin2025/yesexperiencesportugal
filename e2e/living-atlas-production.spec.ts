@@ -28,6 +28,8 @@ async function startStudio(page: Page) {
   const root = await waitForStudioHydration(page);
   if ((await root.getAttribute("data-phase")) === "intro") {
     await page.getByRole("button", { name: /^Begin$/i }).click();
+    await page.getByRole("button", { name: /^Skip$/i }).click();
+    await page.getByRole("button", { name: /Compose it with us/i }).click();
     await expect.poll(() => root.getAttribute("data-phase"), { timeout: 15_000 }).not.toBe("intro");
   }
   return root;
