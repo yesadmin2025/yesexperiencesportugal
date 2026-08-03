@@ -77,8 +77,8 @@ test("Living Atlas reaches the checkout summary and restores the composed day", 
   await expect(body).not.toContainText("Stripe sandbox");
   await expect(body).not.toContainText("Isolated preview");
 
-  await page.getByLabel("Full name", { exact: true }).fill("Living Atlas Test");
-  await page.getByLabel("Email", { exact: true }).fill("living-atlas@example.com");
+  await page.getByLabel(/^Full name/).fill("Living Atlas Test");
+  await page.getByLabel(/^Email/).fill("living-atlas@example.com");
   await page.getByLabel(/Phone \/ WhatsApp/).fill("+351 910 000 000");
   await page.getByLabel(/Pickup address \/ hotel/).fill("Lisbon test hotel");
   await page
