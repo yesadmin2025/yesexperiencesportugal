@@ -8,9 +8,10 @@ import ts from "typescript";
  * legacy `overview` / `highlights` / `included` / `itinerary` fields directly
  * from a SignatureTour object.
  *
- * This scanner uses the TypeScript AST. It therefore ignores comments, prose
- * strings and property names returned by the canonical `getTourContent()`
- * helper, while still catching real `tour.included`-style reads.
+ * This scanner uses the TypeScript AST. It ignores comments, prose strings,
+ * unrelated objects that happen to use the same property names, and content
+ * returned by the canonical `getTourContent()` helper. It still catches real
+ * `tour.included` / `selectedTour.highlights` style reads.
  */
 
 const APPROVED = new Set<string>([
@@ -39,7 +40,6 @@ const APPROVED_PREFIXES = [
 ];
 
 const LEGACY_FIELDS = new Set(["overview", "highlights", "included", "itinerary"]);
-const NON_TOUR_RECEIVERS = new Set(["validation", "viator", "meta"]);
 const REPOSITORY_ROOT = path.resolve(__dirname, "../..");
 const SOURCE_ROOT = path.join(REPOSITORY_ROOT, "src");
 
@@ -90,11 +90,19 @@ function receiverIsCanonical(receiver: ts.Expression, canonicalVariables: Set<st
   if (ts.isParenthesizedExpression(receiver)) {
     return receiverIsCanonical(receiver.expression, canonicalVariables);
   }
-  if (ts.isIdentifier(receiver)) {
-    if (canonicalVariables.has(receiver.text)) return true;
-    if (NON_TOUR_RECEIVERS.has(receiver.text)) return true;
-  }
-  return false;
+  return ts.isIdentifier(receiver) && canonicalVariables.has(receiver.text);
+}
+
+/**
+ * The four guarded property names are common in other domains too: a route
+ * handoff has an itinerary, an extraction has highlights, and winery rules
+ * have included counts. Only receivers whose identifier path explicitly
+ * denotes a tour/signature are candidates for this legacy-content rule.
+ */
+function receiverLooksLikeTour(receiver: ts.Expression, sourceFile: ts.SourceFile): boolean {
+  const text = receiver.getText(sourceFile);
+  const identifiers = text.match(/[A-Za-z_$][\w$]*/g) ?? [];
+  return identifiers.some((identifier) => /tour|signature/i.test(identifier));
 }
 
 function propertyName(
@@ -133,6 +141,7 @@ function directLegacyReads(absolute: string): string[] {
       if (
         field &&
         LEGACY_FIELDS.has(field) &&
+        receiverLooksLikeTour(node.expression, sourceFile) &&
         !receiverIsCanonical(node.expression, canonicalVariables)
       ) {
         const location = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
