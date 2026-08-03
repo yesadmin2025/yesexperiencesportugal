@@ -748,7 +748,16 @@ function writePersistedStudioState(state: StudioV3State): void {
       window.sessionStorage.removeItem(STUDIO_V3_SESSION_KEY);
       return;
     }
-    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(state));
+    // Never serialize personal data. `guestDraft` carries name, email, phone,
+    // pickup address and guide notes; `firstName` is the traveller's own name.
+    // Session persistence exists only to recover non-personal composition
+    // answers after a refresh.
+    const safeState: StudioV3State = {
+      ...state,
+      firstName: null,
+      guestDraft: null,
+    };
+    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(safeState));
   } catch {
     /* storage blocked — persistence is a convenience, never a requirement */
   }
