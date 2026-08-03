@@ -6,6 +6,9 @@ on:
       - studio/living-atlas
     paths:
       - ".github/workflows/living-atlas-one-shot.yml"
+  pull_request:
+    paths:
+      - ".github/workflows/living-atlas-one-shot.yml"
 
 permissions:
   contents: write
