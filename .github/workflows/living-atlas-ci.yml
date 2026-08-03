@@ -33,7 +33,7 @@ concurrency:
 
 jobs:
   format-operational-status:
-    if: github.event_name == 'push' && github.event.head_commit.message != 'style(studio): format operational status model'
+    if: "${{ github.event_name == 'push' && github.event.head_commit.message != 'style(studio): format operational status model' }}"
     name: Format operational status
     runs-on: ubuntu-latest
     timeout-minutes: 10
