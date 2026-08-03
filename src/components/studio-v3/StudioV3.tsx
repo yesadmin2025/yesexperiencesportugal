@@ -771,22 +771,33 @@ export function StudioV3() {
 
   // Restore an in-progress composition after a refresh. Skipped when a saved
   // Signature token is being hydrated from the server — that is authoritative.
+  //
+  // `restoredRef` only records that the restore effect has *run*. The persist
+  // effect must instead wait for restoration to be *applied to state*, which
+  // happens one render later: both effects fire in the same commit, so a
+  // ref-only gate lets the writer observe INITIAL_STATE and delete the saved
+  // key before the restored state ever lands. `hydratedState` is the explicit
+  // hydration-complete guard — it is set in the same batch as the restored
+  // state, so the persist effect first runs on the render that already has it.
   const restoredRef = useRef(false);
+  const [hydratedState, setHydratedState] = useState(false);
   useEffect(() => {
     if (restoredRef.current) return;
     restoredRef.current = true;
     if (typeof window !== "undefined" && new URLSearchParams(window.location.search).has("saved")) {
+      setHydratedState(true);
       return;
     }
     const persisted = readPersistedStudioState();
     if (persisted) setState(persisted);
+    setHydratedState(true);
   }, []);
 
   // Persist every answered step so back/forward and refresh keep the day.
   useEffect(() => {
-    if (!restoredRef.current) return;
+    if (!hydratedState) return;
     writePersistedStudioState(state);
-  }, [state]);
+  }, [hydratedState, state]);
 
   const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>({
     open: false,
