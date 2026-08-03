@@ -31,7 +31,7 @@ concurrency:
 
 jobs:
   validate:
-    name: Taxonomy, decision, inventory, composer and preview
+    name: Living Atlas core, composition and preview
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
