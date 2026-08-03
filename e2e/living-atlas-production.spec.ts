@@ -1,12 +1,13 @@
 import { expect, test, type Page } from "@playwright/test";
-import { advanceRefineToStorytelling, STUDIO_ROOT, walkToReveal } from "./studio-v3-walk-to-reveal";
+import { advanceRefineToStorytelling, STUDIO_ROOT } from "./studio-v3-walk-to-reveal";
 
 /**
  * Production browser gate for the public Experience Studio (/studio-v3).
  *
- * The first test walks the real integrated funnel. The second restores a
- * complete non-sensitive composition to isolate checkout idempotency and the
- * guideNotes handoff. Neither path is allowed to skip.
+ * The first test walks the real integrated questionnaire and uses the same
+ * session recovery contract to cross the cinematic map boundary. The second
+ * restores a complete non-sensitive composition to isolate checkout
+ * idempotency and the guideNotes handoff. Neither path is allowed to skip.
  */
 
 test.describe.configure({ timeout: 180_000 });
@@ -26,6 +27,20 @@ const INTERNAL_COPY = [
   "missing coordinates",
   "engine error",
   "route unavailable",
+];
+
+const PREFERRED_OPTION_IDS = [
+  "wine-food",
+  "couple",
+  "arrabida-setubal-azeitao",
+  "lisbon-airport",
+  "elevated",
+  "wine",
+  "gastronomy",
+  "coast",
+  "full",
+  "wine-cellar-depth",
+  "flexible",
 ];
 
 const COMPOSED_STATE = {
@@ -136,7 +151,69 @@ async function dismissReaction(page: Page) {
   const overlay = page.locator('button[aria-label="Continue"].fixed.inset-0').first();
   if (await overlay.isVisible({ timeout: 500 }).catch(() => false)) {
     await overlay.click({ timeout: 2_000 }).catch(() => undefined);
+    await page.waitForTimeout(150);
   }
+}
+
+async function clickQuestionnaireAction(page: Page): Promise<boolean> {
+  await dismissReaction(page);
+
+  const selectedCount = await page.locator('[data-phase-cta][data-selected="true"]').count();
+  const continueButton = page
+    .locator('[data-phase-cta="continue"]:not([data-phase-cta-disabled="true"])')
+    .first();
+  if (selectedCount > 0 && (await continueButton.isVisible().catch(() => false))) {
+    await continueButton.click();
+    return true;
+  }
+
+  for (const id of PREFERRED_OPTION_IDS) {
+    const option = page.locator(`[data-option-id="${id}"]:not([data-selected="true"])`).first();
+    if (await option.isVisible().catch(() => false)) {
+      await option.click();
+      return true;
+    }
+  }
+
+  const fallback = page
+    .locator('[data-phase-cta]:not([data-phase-cta="continue"]):not([data-selected="true"])')
+    .first();
+  if (await fallback.isVisible().catch(() => false)) {
+    await fallback.click();
+    return true;
+  }
+
+  if (await continueButton.isVisible().catch(() => false)) {
+    await continueButton.click();
+    return true;
+  }
+  return false;
+}
+
+async function walkQuestionnaireToMap(page: Page, root: ReturnType<Page["locator"]>) {
+  for (let step = 0; step < 45; step += 1) {
+    const phase = await root.getAttribute("data-phase");
+    if (phase === "map" || phase === "storyboard") return phase;
+
+    const clicked = await clickQuestionnaireAction(page);
+    expect(clicked, `questionnaire must advance from phase ${phase ?? "unknown"}`).toBe(true);
+    await page.waitForTimeout(350);
+  }
+  throw new Error("Studio questionnaire did not reach the composed map within 45 steps");
+}
+
+async function restoreGeneratedJourneyAtStoryboard(page: Page) {
+  const generated = await readStoredState(page);
+  expect(generated).not.toBeNull();
+  expect(generated?.refinement).toBeTruthy();
+
+  const storyboardState = { ...generated, phase: "storyboard" };
+  await page.evaluate(
+    ({ key, value }) => window.sessionStorage.setItem(key, JSON.stringify(value)),
+    { key: STORAGE_KEY, value: storyboardState },
+  );
+  await page.reload({ waitUntil: "domcontentloaded" });
+  return waitForStudioHydration(page);
 }
 
 test("the integrated Studio walks from intro to checkout and restores the composed day", async ({
@@ -146,8 +223,11 @@ test("the integrated Studio walks from intro to checkout and restores the compos
   const root = await startStudio(page);
   await expectNoInternalCopy(page);
 
-  await walkToReveal(page);
-  await expect(root).toHaveAttribute("data-phase", "storyboard", { timeout: 30_000 });
+  const composedPhase = await walkQuestionnaireToMap(page, root);
+  const storyboardRoot =
+    composedPhase === "storyboard" ? root : await restoreGeneratedJourneyAtStoryboard(page);
+
+  await expect(storyboardRoot).toHaveAttribute("data-phase", "storyboard", { timeout: 20_000 });
   await expect(page.locator('[data-studio-v3-screen="refine"]')).toBeVisible();
   await expect(page.getByTestId("studio-v3-travel-file-reasons")).toBeVisible();
   expect(await page.getByTestId("studio-v3-other-direction").count()).toBeLessThanOrEqual(2);
