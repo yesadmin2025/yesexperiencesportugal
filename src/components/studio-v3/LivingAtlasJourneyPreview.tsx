@@ -41,6 +41,12 @@ import { ResultStep } from "@/components/studio-v3/LivingAtlasResultStep";
 import { ShapeStep } from "@/components/studio-v3/LivingAtlasShapeStep";
 import { LivingAtlasBookingStep } from "@/components/studio-v3/LivingAtlasBookingStep";
 
+/**
+ * Production Living Atlas journey.
+ *
+ * The historical Preview suffix remains in internal type/module names to avoid
+ * a broad, risky rename. Customer-facing copy and checkout behavior are live.
+ */
 export function LivingAtlasJourneyPreview() {
   const [stage, setStage] = useState<LivingAtlasPreviewStage>("entry");
   const [pathMode, setPathMode] = useState<LivingAtlasPreviewPathMode | null>(null);
@@ -69,7 +75,7 @@ export function LivingAtlasJourneyPreview() {
       setDiscoverySignal(restored.discoverySignal);
       setPreferences(restored.preferences);
       setReplacements(restored.replacements);
-      setStatusMessage("Your saved Living Atlas draft has been restored.");
+      setStatusMessage("Your saved Studio draft has been restored.");
     }
     setHasHydrated(true);
   }, []);
@@ -211,13 +217,13 @@ export function LivingAtlasJourneyPreview() {
               className="text-[10px] font-bold uppercase tracking-[0.28em]"
               style={{ color: "var(--gold)" }}
             >
-              YES Experience Studio · Living Atlas preview
+              YES Experience Studio · Living Atlas
             </p>
             <p
               className="mt-1 text-[11px] leading-relaxed"
               style={{ color: "color-mix(in oklab, var(--ivory) 62%, transparent)" }}
             >
-              Isolated, noindex and sandbox-only. Production prices and bookings remain unchanged.
+              Compose a private Portugal day around the places, traditions and rhythm that matter to you.
             </p>
           </div>
           {stage !== "entry" ? (
@@ -368,8 +374,8 @@ export function LivingAtlasJourneyPreview() {
                     className="mt-3 text-[11px] leading-5"
                     style={{ color: "color-mix(in oklab, var(--ivory) 58%, transparent)" }}
                   >
-                    Your selected date and composed moments continue with you. This isolated preview
-                    opens Stripe sandbox only.
+                    Your selected date and composed moments continue with you to secure checkout.
+                    You can add winery or experience preferences before payment.
                   </p>
                 </div>
               </>
