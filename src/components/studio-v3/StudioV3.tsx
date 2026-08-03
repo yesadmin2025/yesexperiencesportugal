@@ -1616,6 +1616,10 @@ export function StudioV3() {
       holdMs: 4200,
     });
   };
+  // The single adaptive question, resolved from the traveller's own answers.
+  // Null when nothing is worth asking — the phase is then skipped entirely.
+  const adaptiveQuestion = useMemo(() => resolveAdaptiveQuestion(state), [state]);
+
   /**
    * Adaptive refinement — one conditional question. The answer becomes a
    * real discovery signal inside the Living Atlas decision (never a price
