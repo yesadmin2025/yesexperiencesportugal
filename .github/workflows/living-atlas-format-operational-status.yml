@@ -42,20 +42,14 @@ jobs:
       - name: Typecheck project
         run: bunx tsc --noEmit
 
-      - name: Guard exact changed paths
+      - name: Guard exact changed path
         run: |
-          changed="$(git diff --name-only | sort)"
-          expected="$(printf '%s\n' \
-            'src/components/studio-v3/LivingAtlasOperationalConfidence.tsx' \
-            'src/components/studio-v3/livingAtlasOperationalConfidence.ts' | sort)"
-          test "$changed" = "$expected"
+          test "$(git diff --name-only)" = "src/components/studio-v3/livingAtlasOperationalConfidence.ts"
 
       - name: Commit validated formatting
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            src/components/studio-v3/LivingAtlasOperationalConfidence.tsx \
-            src/components/studio-v3/livingAtlasOperationalConfidence.ts
+          git add src/components/studio-v3/livingAtlasOperationalConfidence.ts
           git commit -m "style(studio): format operational status layer"
           git push origin HEAD:studio/living-atlas
