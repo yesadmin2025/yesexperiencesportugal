@@ -62,13 +62,20 @@ jobs:
       - name: Typecheck project
         run: bunx tsc --noEmit
 
-      - name: Check Studio formatting
+      - name: Produce formatted composed preview files
         run: >-
-          bunx prettier --check
-          src/components/studio-v3/LivingAtlasPreview.tsx
+          bunx prettier --write
           src/components/studio-v3/LivingAtlasJourneyPreview.tsx
-          src/components/studio-v3/MapAwakens.tsx
-          src/components/studio-v3/livingAtlas*.ts
-          src/components/studio-v3/__tests__/living-atlas-*.test.ts
-          src/components/studio-v3/__tests__/living-atlas-*.test.tsx
-          src/routes/studio-living-atlas-preview.tsx
+          src/components/studio-v3/livingAtlasPreviewComposition.ts
+          src/components/studio-v3/__tests__/living-atlas-preview-composition.test.ts
+
+      - name: Upload formatted composed preview files
+        uses: actions/upload-artifact@v4
+        with:
+          name: living-atlas-composed-preview-formatted
+          path: |
+            src/components/studio-v3/LivingAtlasJourneyPreview.tsx
+            src/components/studio-v3/livingAtlasPreviewComposition.ts
+            src/components/studio-v3/__tests__/living-atlas-preview-composition.test.ts
+          if-no-files-found: error
+          retention-days: 3
