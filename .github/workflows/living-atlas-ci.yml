@@ -74,6 +74,7 @@ jobs:
           src/components/studio-v3/__tests__/living-atlas-date-rules.test.ts
           src/components/studio-v3/__tests__/living-atlas-public-copy.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview-composition.test.ts
+          src/components/studio-v3/__tests__/living-atlas-arrabida-route-anchors.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview-state.test.ts
           src/components/studio-v3/__tests__/living-atlas-checkout-handoff.test.ts
           src/components/studio-v3/__tests__/living-atlas-preview.test.tsx
