@@ -1,3 +1,4 @@
+# Registered separately so the branch push can execute this validator.
 name: Apply Living Atlas operational status
 
 on:
