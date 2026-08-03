@@ -8,9 +8,20 @@ import { LivingAtlasPreview } from "../LivingAtlasPreview";
 
 afterEach(() => cleanup());
 
+function chooseFirstAvailableDate(): void {
+  const day = Array.from(document.querySelectorAll<HTMLButtonElement>("button[data-day]")).find(
+    (button) => !button.disabled && button.getAttribute("aria-disabled") !== "true",
+  );
+  expect(day).toBeTruthy();
+  fireEvent.click(day!);
+  fireEvent.click(screen.getByRole("button", { name: /^Continue/i }));
+}
+
 function enterDiscovery(): void {
   render(<LivingAtlasPreview />);
   fireEvent.click(screen.getByRole("button", { name: /Help me find my day/i }));
+  expect(screen.getByText(/When should Portugal take shape/i)).toBeTruthy();
+  chooseFirstAvailableDate();
 }
 
 describe("LivingAtlasPreview", () => {
@@ -19,6 +30,15 @@ describe("LivingAtlasPreview", () => {
     expect(screen.getByText(/There is more than one Portugal/i)).toBeTruthy();
     expect(screen.getByRole("button", { name: /Help me find my day/i })).toBeTruthy();
     expect(screen.getByRole("button", { name: /I know where I want to go/i })).toBeTruthy();
+  });
+
+  it("asks for a valid date before interests", () => {
+    render(<LivingAtlasPreview />);
+    fireEvent.click(screen.getByRole("button", { name: /Help me find my day/i }));
+    expect(screen.getByText(/When should Portugal take shape/i)).toBeTruthy();
+    expect(screen.queryByText(/What belongs in your day/i)).toBeNull();
+    chooseFirstAvailableDate();
+    expect(screen.getByText(/What belongs in your day/i)).toBeTruthy();
   });
 
   it("allows at most three selected dimensions", () => {
@@ -57,6 +77,7 @@ describe("LivingAtlasPreview", () => {
     fireEvent.click(screen.getByRole("button", { name: /I know where I want to go/i }));
     fireEvent.click(screen.getByRole("button", { name: /Fátima, Nazaré & Óbidos/i }));
     fireEvent.click(screen.getByRole("button", { name: /^Continue/i }));
+    chooseFirstAvailableDate();
 
     fireEvent.click(screen.getByRole("button", { name: /Faith & reflection/i }));
     fireEvent.click(screen.getByRole("button", { name: /The Atlantic/i }));
