@@ -6,6 +6,7 @@ import {
   DEFAULT_LIVING_ATLAS_PREVIEW_PREFERENCES,
   getLivingAtlasPreviewPool,
   livingAtlasPreviewDayTitle,
+  resolveLivingAtlasPreviewDay,
 } from "../livingAtlasPreviewComposition";
 
 describe("Living Atlas preview composition", () => {
@@ -26,9 +27,10 @@ describe("Living Atlas preview composition", () => {
     });
   });
 
-  it("builds a real one-winery, market and boat day from the verified preview inventory", () => {
-    const composition = composeLivingAtlasPreviewDay({
+  it("builds a real one-winery, morning market and boat day on an open date", () => {
+    const resolution = resolveLivingAtlasPreviewDay({
       anchorSignatureId: "arrabida-wine-allinclusive",
+      selectedDate: "2026-08-04",
       profile: {
         selected: ["wine-table", "atlantic-coast", "local-life"],
         leads: ["wine-table", "atlantic-coast"],
@@ -40,20 +42,42 @@ describe("Living Atlas preview composition", () => {
         wineEmphasis: "one-winery",
       },
     });
+    const composition = resolution.composition;
 
     expect(composition.status).toBe("complete");
     expect(composition.moments.filter((moment) => moment.type === "winery")).toHaveLength(1);
     expect(composition.moments.some((moment) => moment.stopId === "mercado-do-livramento")).toBe(
       true,
     );
+    expect(resolution.routePlan.orderedMoments[0].stopId).toBe("mercado-do-livramento");
     expect(composition.moments.some((moment) => moment.stopId === "coastal-boat-ride")).toBe(true);
     expect(composition.missingDimensions).toEqual([]);
     expect(livingAtlasPreviewDayTitle(composition)).not.toContain("Arrábida Wine");
   });
 
+  it("removes Mercado do Livramento from Monday inventory and falls back honestly", () => {
+    const composition = composeLivingAtlasPreviewDay({
+      anchorSignatureId: "arrabida-wine-allinclusive",
+      selectedDate: "2026-08-03",
+      profile: {
+        selected: ["wine-table", "local-life"],
+        leads: ["wine-table"],
+      },
+      preferences: {
+        ...DEFAULT_LIVING_ATLAS_PREVIEW_PREFERENCES,
+        localMoment: "market",
+      },
+    });
+
+    expect(composition.moments.some((moment) => moment.stopId === "mercado-do-livramento")).toBe(
+      false,
+    );
+  });
+
   it("does not force the boat when the traveller chooses the coast from land", () => {
     const composition = composeLivingAtlasPreviewDay({
       anchorSignatureId: "arrabida-wine-allinclusive",
+      selectedDate: "2026-08-04",
       profile: {
         selected: ["wine-table", "atlantic-coast"],
         leads: ["wine-table"],
