@@ -32,6 +32,7 @@ import {
   type RegionId,
 } from "@/data/regionStopPool";
 import { isAdaptiveQuestionRelevant } from "@/components/studio-v3/adaptiveQuestions";
+import type { AdaptiveRefinementId } from "@/components/studio-v3/types";
 import type {
   ChoiceOption,
   Companions,
@@ -1761,7 +1762,7 @@ function toAlternativeDirections(
   const out: StudioAlternativeDirection[] = [];
   for (const alternative of alternatives) {
     if (alternative.signatureId === chosenTourId) continue;
-    const tour = TOURS.find((t) => t.id === alternative.signatureId);
+    const tour = signatureTours.find((t) => t.id === alternative.signatureId);
     if (!tour) continue;
     out.push({ tourId: tour.id, title: tour.title, note: alternative.note });
   }
