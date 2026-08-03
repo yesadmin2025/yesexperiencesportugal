@@ -1,5 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
+test.describe.configure({ timeout: 120_000 });
+
 async function waitForLivingAtlasHydration(page: Page) {
   await expect(page.getByTestId("living-atlas-app")).toHaveAttribute("data-hydrated", "true", {
     timeout: 45_000,
@@ -21,16 +23,26 @@ async function walkToShape(page: Page) {
   ).toBeVisible();
   await expect(page.getByText("YES Experience Studio", { exact: true })).toBeVisible();
 
-  await page.getByRole("button", { name: /Help me find my day/i }).click();
+  await page.getByRole("button", { name: /I know where I want to go/i }).click();
+  await expect(page.getByRole("heading", { name: "Where should the day live?" })).toBeVisible();
+  await page.getByRole("button", { name: /Arrábida, Setúbal & Azeitão/i }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+
   await expect(
     page.getByRole("heading", { name: "When should Portugal take shape?" }),
   ).toBeVisible();
-
   await chooseFirstAvailableDate(page);
   await page.getByRole("button", { name: "Continue", exact: true }).click();
 
   await expect(page.getByRole("heading", { name: "What belongs in your day?" })).toBeVisible();
   await page.getByRole("button", { name: /Wine & the Portuguese table/i }).click();
+  await page.getByRole("button", { name: /The Atlantic/i }).click();
+  await page.getByRole("button", { name: /Local life & quieter places/i }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+
+  await expect(page.getByRole("heading", { name: "What should lead?" })).toBeVisible();
+  await page.getByRole("button", { name: /Wine & the Portuguese table/i }).click();
+  await page.getByRole("button", { name: /The Atlantic/i }).click();
   await page.getByRole("button", { name: "Continue", exact: true }).click();
 
   const forkChoice = page.getByRole("button", { name: /This is my direction/i }).first();
