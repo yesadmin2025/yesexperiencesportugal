@@ -1,0 +1,125 @@
+name: Apply Living Atlas operational status
+
+on:
+  push:
+    branches:
+      - studio/living-atlas
+    paths:
+      - scripts/apply-living-atlas-operational-status.mjs
+      - .github/workflows/apply-living-atlas-operational-status.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply-test-commit:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout isolated branch
+        uses: actions/checkout@v4
+        with:
+          ref: studio/living-atlas
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Normalise embedded JSX in patch script
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("scripts/apply-living-atlas-operational-status.mjs")
+          source = path.read_text()
+          before = '''          aria-label={`${condition.label}: ${livingAtlasOperationalStatusLabel(condition.status)}. ${condition.detail}`}'''
+          after = '''          aria-label={condition.label + ": " + livingAtlasOperationalStatusLabel(condition.status) + ". " + condition.detail}'''
+          if before not in source:
+              raise SystemExit("Expected embedded aria-label snippet not found")
+          path.write_text(source.replace(before, after, 1))
+          PY
+
+      - name: Apply operational status language
+        run: node scripts/apply-living-atlas-operational-status.mjs
+
+      - name: Format exact changed files
+        run: |
+          bunx prettier --write \
+            src/components/studio-v3/livingAtlasOperationalConfidence.ts \
+            src/components/studio-v3/LivingAtlasOperationalConfidence.tsx \
+            src/components/studio-v3/LivingAtlasShapeStep.tsx \
+            src/components/studio-v3/__tests__/living-atlas-operational-confidence.test.ts
+
+      - name: Run Living Atlas tests
+        run: |
+          bunx vitest run \
+            src/components/studio-v3/__tests__/living-atlas-*.test.ts \
+            src/components/studio-v3/__tests__/living-atlas-*.test.tsx
+
+      - name: Typecheck project
+        run: bunx tsc --noEmit
+
+      - name: Guard implementation paths
+        run: |
+          python - <<'PY'
+          import subprocess
+
+          allowed = {
+              ".github/workflows/apply-living-atlas-operational-status.yml",
+              "scripts/apply-living-atlas-operational-status.mjs",
+              "src/components/studio-v3/livingAtlasOperationalConfidence.ts",
+              "src/components/studio-v3/LivingAtlasOperationalConfidence.tsx",
+              "src/components/studio-v3/LivingAtlasShapeStep.tsx",
+              "src/components/studio-v3/__tests__/living-atlas-operational-confidence.test.ts",
+          }
+          changed = set(subprocess.check_output(["git", "diff", "--name-only"], text=True).splitlines())
+          unexpected = changed - allowed
+          if unexpected:
+              raise SystemExit(f"Unexpected changed paths: {sorted(unexpected)}")
+          required = allowed - {
+              ".github/workflows/apply-living-atlas-operational-status.yml",
+              "scripts/apply-living-atlas-operational-status.mjs",
+          }
+          missing = required - changed
+          if missing:
+              raise SystemExit(f"Expected implementation paths did not change: {sorted(missing)}")
+          PY
+
+      - name: Remove temporary patch tooling
+        run: |
+          git rm scripts/apply-living-atlas-operational-status.mjs
+          git rm .github/workflows/apply-living-atlas-operational-status.yml
+
+      - name: Guard final committed paths
+        run: |
+          python - <<'PY'
+          import subprocess
+
+          expected = {
+              ".github/workflows/apply-living-atlas-operational-status.yml",
+              "scripts/apply-living-atlas-operational-status.mjs",
+              "src/components/studio-v3/livingAtlasOperationalConfidence.ts",
+              "src/components/studio-v3/LivingAtlasOperationalConfidence.tsx",
+              "src/components/studio-v3/LivingAtlasShapeStep.tsx",
+              "src/components/studio-v3/__tests__/living-atlas-operational-confidence.test.ts",
+          }
+          changed = set(subprocess.check_output(["git", "diff", "--name-only", "HEAD"], text=True).splitlines())
+          if changed != expected:
+              raise SystemExit(f"Final changed paths mismatch: {sorted(changed)}")
+          PY
+
+      - name: Commit validated operational status
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            src/components/studio-v3/livingAtlasOperationalConfidence.ts \
+            src/components/studio-v3/LivingAtlasOperationalConfidence.tsx \
+            src/components/studio-v3/LivingAtlasShapeStep.tsx \
+            src/components/studio-v3/__tests__/living-atlas-operational-confidence.test.ts
+          git commit -m "feat(studio): expose confirmed pending unavailable states"
+          git push origin HEAD:studio/living-atlas
