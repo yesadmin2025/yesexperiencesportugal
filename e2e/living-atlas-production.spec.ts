@@ -159,7 +159,7 @@ test("a restored composition reaches Guest Details and checkout exactly once", a
   expect(parsedStored.guestDraft).toBeNull();
   expect(parsedStored.firstName).toBeNull();
   // Non-personal composition answers still survive.
-  expect(parsedStored.phase).toBe("confirmation");
+  expect(parsedStored.phase).toBe("checkoutSummary");
   expect(parsedStored.tourId).toBe("arrabida-wine-allinclusive");
   expect(parsedStored.feeling).toBe("wine-food");
   expect(parsedStored.rhythm).toBe("balanced");
