@@ -3,10 +3,9 @@
  * just refined. Sits between the refine/storyboard phase and Guest Details.
  *
  * Story-first, admin-chrome-free. Add-ons and price live inside a single
- * collapsible "See what's included" details block. Two CTAs: primary
- * "Make this my story in Portugal" (advance to Guest Details), secondary
- * "Save my signature" (hand off to the parent's save handler). Tertiary
- * text link back to refine.
+ * collapsible "See what's included" details block. The primary CTA advances
+ * to Guest Details, the secondary saves the Signature, and a tertiary link
+ * returns to refine.
  *
  * Confirmation language: because date selection guarantees availability,
  * every stop and addition shown here is confirmed instantly. Never use
@@ -18,6 +17,7 @@ import { useEffect } from "react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { findTour } from "@/data/signatureTours";
 import { getTourContent } from "@/lib/tourContent";
+import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
 import { pickupCityLabel } from "./curation";
 import {
   CTA_BACK_TO_REFINE,
@@ -51,6 +51,11 @@ function regionLabelFor(intent: string | null | undefined): string {
   return REGION_LABELS[intent.toLowerCase()] ?? "Portugal";
 }
 
+function regionFactFor(region: string): string {
+  if (region.startsWith("the ")) return region.slice(4);
+  return region.charAt(0).toUpperCase() + region.slice(1);
+}
+
 // Deterministic intro paragraph — no invented facts, sets tone only.
 function introFor(feeling: string | null | undefined, region: string): string {
   const opener =
@@ -64,8 +69,46 @@ function introFor(feeling: string | null | undefined, region: string): string {
             ? `Your day in ${region} keeps to the quieter roads — small doors, unshowy places, nothing that performs.`
             : feeling === "slow-luxury"
               ? `Your day in ${region} moves gently — fewer moments, held longer, nothing asked of you.`
-              : `Your day in ${region} unfolds at its own pace — private, unhurried, made only for you.`;
+              : `Your day in ${region} unfolds at its own pace — private and unhurried.`;
   return opener + " Every moment below is confirmed and yours the second you say yes.";
+}
+
+/**
+ * Return only reasons that are grounded in the Signature actually composed.
+ * The Living Atlas bridge may express a preferred direction that Studio V3
+ * correctly declines when production curation or route eligibility wins. In
+ * that case, profile/rhythm reasons remain safe, while tour-affinity claims
+ * are withheld rather than describing a different Signature.
+ */
+export function finalRevealIntelligenceReasons(state: StudioV3State): string[] {
+  const intelligence = deriveStudioIntelligence({
+    feeling: state.feeling,
+    interests: state.interests,
+    destinationIntent: state.destinationIntent,
+    rhythm: state.rhythm,
+    refinement: state.refinement,
+  });
+
+  if (intelligence.reasons.length === 0) return [];
+  if (!state.tourId) return intelligence.reasons.slice(0, 3);
+
+  const atlasMatchesComposedTour =
+    intelligence.preferredTourId === state.tourId ||
+    intelligence.decision?.selectedSignatureId === state.tourId ||
+    intelligence.decision?.forkCandidates.some(
+      (candidate) => candidate.signatureId === state.tourId,
+    ) === true;
+
+  if (atlasMatchesComposedTour) return intelligence.reasons.slice(0, 3);
+
+  return intelligence.reasons
+    .filter(
+      (reason) =>
+        reason.startsWith("Built around") ||
+        reason.startsWith("Fewer moments") ||
+        reason.startsWith("A fuller day"),
+    )
+    .slice(0, 3);
 }
 
 // Rotating editorial connectives for middle stops. Kept short and quiet.
@@ -166,7 +209,6 @@ export function FinalRevealStory({
   composedStops,
 }: FinalRevealStoryProps) {
   const tour = state.tourId ? findTour(state.tourId) : null;
-  const title = state.journeyTitle ?? tour?.title ?? "Your private Portugal day";
 
   // Defensive: when this reveal mounts (phase transition into storytelling),
   // reset window scroll to the top so the parchment header is guaranteed to
@@ -190,7 +232,9 @@ export function FinalRevealStory({
   const stops = keptStops.map((s) => ({ label: s.label, story: s.story }));
 
   const region = regionLabelFor(state.destinationIntent);
+  const regionFact = regionFactFor(region);
   const intro = introFor(state.feeling, region);
+  const intelligenceReasons = finalRevealIntelligenceReasons(state);
 
   // Weave add-ons into the narrative. Distribute them evenly across stops
   // (after which stop each add-on appears). If we have more add-ons than
@@ -294,7 +338,7 @@ export function FinalRevealStory({
         <div className="px-6 pt-2 pb-10 sm:px-9">
           {/* Hero */}
           <header className="text-center">
-            <Eyebrow>The final story</Eyebrow>
+            <Eyebrow>Your Signature</Eyebrow>
             <h2
               id="studio-v3-final-reveal-title"
               className="mt-3 text-[26px] leading-[1.15] [text-wrap:balance]"
@@ -304,19 +348,23 @@ export function FinalRevealStory({
                 fontWeight: 500,
               }}
             >
-              Your private day in{" "}
-              <span className="italic" style={{ color: "var(--teal)" }}>
-                {region}
-              </span>
+              Your Portugal is ready.
             </h2>
-            {dateLabel || guestsLabel || pickupLabel ? (
-              <p
-                className="mt-3 text-[11px] uppercase tracking-[0.22em]"
-                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-              >
-                {[dateLabel, pickupLabel, guestsLabel].filter(Boolean).join(" · ")}
-              </p>
-            ) : null}
+            <p
+              className="mt-3 text-[14px] leading-[1.6] [text-wrap:balance]"
+              style={{
+                fontFamily: "var(--font-editorial)",
+                color: "color-mix(in oklab, var(--charcoal) 72%, transparent)",
+              }}
+            >
+              A private day shaped from what matters to you.
+            </p>
+            <p
+              className="mt-3 text-[11px] uppercase tracking-[0.22em]"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+            >
+              {[regionFact, dateLabel, pickupLabel, guestsLabel].filter(Boolean).join(" · ")}
+            </p>
             <span
               aria-hidden
               className="mt-6 inline-block h-px w-16"
@@ -324,7 +372,7 @@ export function FinalRevealStory({
             />
           </header>
 
-          {/* Narrative — one flowing story, no list, no chapter markers */}
+          {/* Narrative — one flowing story, no admin language. */}
           <div
             className="mt-8 space-y-5 mx-auto max-w-[54ch]"
             data-testid="studio-v3-final-reveal-timeline"
@@ -338,6 +386,27 @@ export function FinalRevealStory({
             >
               {intro}
             </p>
+            {intelligenceReasons.length > 0 ? (
+              <div
+                className="space-y-2 border-l pl-4"
+                style={{ borderColor: "color-mix(in oklab, var(--gold) 62%, transparent)" }}
+                data-testid="studio-v3-final-reveal-intelligence"
+              >
+                {intelligenceReasons.map((reason) => (
+                  <p
+                    key={reason}
+                    data-testid="studio-v3-final-reveal-reason"
+                    className="text-[13.5px] leading-[1.65] [text-wrap:pretty]"
+                    style={{
+                      fontFamily: "var(--font-body)",
+                      color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+                    }}
+                  >
+                    {reason}
+                  </p>
+                ))}
+              </div>
+            ) : null}
             {paragraphs.map((p) => (
               <p
                 key={p.key}
@@ -521,10 +590,7 @@ export function FinalRevealStory({
         </div>
       </details>
 
-      {/* CTAs — primary continue + ghost save (P1 audit #5: Save moves
-          from right-aligned gold underline to a peer ghost pill beside
-          the primary so both share the pill family and the primary
-          voice reads first). Back stays tertiary. */}
+      {/* CTAs — primary continue + ghost save. Back stays tertiary. */}
       <div className="mt-8 flex flex-col items-stretch gap-3">
         <div className="flex flex-col sm:flex-row gap-3">
           <button
