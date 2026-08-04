@@ -13,6 +13,12 @@ test.use({
   viewport: { width: 393, height: 588 },
 });
 
+// The walk to Refine drives the whole cinematic funnel and is slower than the
+// default budget on cold CI machines. The assertion that matters — the reveal
+// painting within 2500 ms — stays untouched below.
+test.setTimeout(120_000);
+
+
 test("storytelling reveal renders non-empty within 2500ms on mobile", async ({ page }) => {
   await page.goto("/studio-v3");
   await walkToReveal(page);
