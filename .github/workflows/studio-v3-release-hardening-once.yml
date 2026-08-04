@@ -1,0 +1,83 @@
+name: Apply Studio V3 release hardening once
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/studio-v3-release-hardening-once.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.head_ref == 'studio-final-release-hardening'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: studio-final-release-hardening
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Sanitize Studio persistence at the source
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("src/components/studio-v3/StudioV3.tsx")
+          text = path.read_text()
+          old = '''    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(state));'''
+          new = '''    // Persist composition only. Guest identity, contact details, pickup address
+    // and guide notes remain in React state for the current visit but never
+    // enter sessionStorage.
+    const safeState: StudioV3State = {
+      ...state,
+      firstName: null,
+      guestDraft: null,
+    };
+    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(safeState));'''
+          if old not in text:
+              if "JSON.stringify(safeState)" in text:
+                  print("Source persistence is already sanitized")
+              else:
+                  raise SystemExit("Expected raw Studio session write was not found")
+          else:
+              path.write_text(text.replace(old, new, 1))
+          PY
+      - name: Remove this one-time workflow
+        run: rm -f .github/workflows/studio-v3-release-hardening-once.yml
+      - name: Format and verify focused hardening
+        run: |
+          bun install --frozen-lockfile
+          bunx prettier --write \
+            src/components/studio-v3/StudioV3.tsx \
+            src/components/studio-v3/LivingAtlasStudioPage.tsx \
+            src/components/studio-v3/studioSessionPrivacy.ts \
+            src/components/studio-v3/__tests__/studio-session-privacy.test.ts \
+            src/components/studio-v3/DatePhase.tsx \
+            e2e/living-atlas-production.spec.ts
+          bunx tsgo --noEmit
+          bunx vitest run \
+            src/components/studio-v3/__tests__/studio-session-privacy.test.ts \
+            src/components/studio-v3/__tests__/date-guards.test.ts
+      - name: Commit release hardening to the PR branch
+        run: |
+          if git diff --quiet; then
+            echo "Nothing to commit"
+            exit 0
+          fi
+          git config user.name "Studio V3 release hardening"
+          git config user.email "actions@users.noreply.github.com"
+          git add \
+            src/components/studio-v3/StudioV3.tsx \
+            src/components/studio-v3/LivingAtlasStudioPage.tsx \
+            src/components/studio-v3/studioSessionPrivacy.ts \
+            src/components/studio-v3/__tests__/studio-session-privacy.test.ts \
+            src/components/studio-v3/DatePhase.tsx \
+            e2e/living-atlas-production.spec.ts \
+            .github/workflows/studio-v3-release-hardening-once.yml
+          git commit -m "Harden Studio privacy and booking date boundary"
+          git push origin studio-final-release-hardening
