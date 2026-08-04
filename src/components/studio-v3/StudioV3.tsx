@@ -2703,6 +2703,7 @@ export function StudioV3() {
           {/* Living Atlas intelligence — grounded reasons for this direction. */}
           <WhyRouteWorks
             reasons={livingAtlasReasons}
+            tourId={state.tourId ?? null}
             testId="studio-v3-living-atlas-reasons"
             className="mx-auto w-full max-w-[62ch] px-5"
           />

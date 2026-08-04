@@ -9,7 +9,7 @@
 // is stored in state and used lightly later (when present) to address the
 // traveller — it never blocks the flow and never reaches the backend.
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ArrowRight } from "lucide-react";
 
 import atmCoastal from "@/assets/studio/atm-coastal-cinematic.jpg";
@@ -31,6 +31,12 @@ export function StudioV3Intro({ onComplete }: Props) {
   const [step, setStep] = useState<IntroStep>("welcome");
   const [value, setValue] = useState("");
   const [pendingName, setPendingName] = useState<string | null>(null);
+
+  // Privacy-safe: fires once when the emotional opening paints. No payload.
+  useEffect(() => {
+    if (step !== "welcome") return;
+    void import("@/lib/analytics-ga4").then((m) => m.gaStudioOpeningViewed());
+  }, [step]);
 
   const handleNameSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -84,13 +90,13 @@ export function StudioV3Intro({ onComplete }: Props) {
               — Studio
             </p>
             <h2
+              data-testid="studio-v3-intro-headline"
               className="mt-5 text-[28px] sm:text-[34px] leading-[1.12] tracking-[-0.01em] font-bold"
               style={{
                 fontFamily: "var(--font-editorial)",
                 color: "var(--ivory)",
               }}
             >
-              Let’s compose your{" "}
               <span
                 style={{
                   fontFamily: "var(--font-editorial)",
@@ -99,8 +105,9 @@ export function StudioV3Intro({ onComplete }: Props) {
                   color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
                 }}
               >
-                Portugal day.
-              </span>
+                Portugal
+              </span>{" "}
+              is waiting…
             </h2>
             <p
               className="mt-5 text-[13px] leading-[1.6]"
@@ -109,7 +116,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                 fontFamily: "var(--font-body)",
               }}
             >
-              Not a form. A few quiet choices, and Portugal responds.
+              A few quiet choices, and Portugal begins to take your shape.
             </p>
 
             {/* Quiet meta line — was previously three bordered pills that

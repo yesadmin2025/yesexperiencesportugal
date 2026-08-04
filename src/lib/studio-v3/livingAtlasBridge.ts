@@ -34,7 +34,11 @@ import {
   type ExperienceProfile,
   type LivingAtlasSignatureId,
 } from "@/components/studio-v3/livingAtlasTaxonomy";
-import { refinementToDiscoverySignal } from "@/components/studio-v3/adaptiveQuestions";
+import {
+  refinementToDiscoverySignal,
+  resolveAdaptiveQuestion,
+} from "@/components/studio-v3/adaptiveQuestions";
+import type { StudioV3State } from "@/components/studio-v3/types";
 import type {
   AdaptiveRefinementId,
   DestinationIntent,
@@ -258,4 +262,45 @@ export function deriveStudioIntelligence(input: StudioIntelligenceInput): Studio
     alternatives,
     needsPrecision: decision.status === "precision-fork",
   };
+}
+
+/**
+ * Decision-value gate for the single adaptive refinement question.
+ *
+ * The question is worth a screen only when the answer can actually move the
+ * recommendation. Two cases qualify:
+ *   1. Living Atlas reports a genuine precision fork — two directions are
+ *      near-equal and one question settles them elegantly;
+ *   2. at least one available answer changes the direction the engine would
+ *      otherwise recommend.
+ *
+ * Anything already safely inferable from the traveller's earlier answers is
+ * not asked. Pure and deterministic; no I/O, no state mutation.
+ */
+export function adaptiveQuestionAddsValue(state: StudioV3State): boolean {
+  const question = resolveAdaptiveQuestion(state);
+  if (!question) return false;
+
+  const base = deriveStudioIntelligence({
+    feeling: state.feeling,
+    interests: state.interests,
+    destinationIntent: state.destinationIntent,
+    rhythm: state.rhythm,
+    refinement: null,
+  });
+  if (base.needsPrecision) return true;
+
+  const baseline = base.preferredTourId ?? base.decision?.ranked[0]?.signatureId ?? null;
+  return question.options.some((option) => {
+    const withAnswer = deriveStudioIntelligence({
+      feeling: state.feeling,
+      interests: state.interests,
+      destinationIntent: state.destinationIntent,
+      rhythm: state.rhythm,
+      refinement: option.id,
+    });
+    const settled =
+      withAnswer.preferredTourId ?? withAnswer.decision?.ranked[0]?.signatureId ?? null;
+    return settled !== baseline;
+  });
 }

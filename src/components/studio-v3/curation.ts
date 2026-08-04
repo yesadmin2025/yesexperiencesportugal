@@ -32,6 +32,7 @@ import {
   type RegionId,
 } from "@/data/regionStopPool";
 import { isAdaptiveQuestionRelevant } from "@/components/studio-v3/adaptiveQuestions";
+import { adaptiveQuestionAddsValue } from "@/lib/studio-v3/livingAtlasBridge";
 import type { AdaptiveRefinementId } from "@/components/studio-v3/types";
 import type {
   ChoiceOption,
@@ -2497,7 +2498,8 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
   // traveller's own answers make it useful, and never twice.
   if (phase === "refinement") {
     if (state.refinement != null) return false;
-    return isAdaptiveQuestionRelevant(state);
+    // Ask only when the answer can still move the recommendation.
+    return isAdaptiveQuestionRelevant(state) && adaptiveQuestionAddsValue(state);
   }
 
   // Fast path — traveller chose "Compose it quickly" on the intro.
