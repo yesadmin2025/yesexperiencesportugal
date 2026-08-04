@@ -145,8 +145,25 @@ test("a restored composition reaches Guest Details and checkout exactly once", a
   await expect(root).toHaveAttribute("data-phase", "checkoutSummary");
   await expectNoInternalCopy(page);
 
+  // The tab-scoped session key is composition-recovery only: it must never
+  // carry personal data. The guide note travels in the checkout payload
+  // (asserted below), not in browser storage.
   const stored = await page.evaluate((key) => window.sessionStorage.getItem(key), STORAGE_KEY);
-  expect(stored).toContain(GUIDE_NOTE);
+  expect(stored).not.toContain(GUIDE_NOTE);
+  expect(stored).not.toContain("Studio QA");
+  expect(stored).not.toContain("studio-qa@yesexperiences.test");
+  expect(stored).not.toContain("+351911111111");
+  expect(stored).not.toContain("Hotel Avenida Palace, Lisbon");
+
+  const parsedStored = JSON.parse(stored ?? "{}") as Record<string, unknown>;
+  expect(parsedStored.guestDraft).toBeNull();
+  expect(parsedStored.firstName).toBeNull();
+  // Non-personal composition answers still survive.
+  expect(parsedStored.phase).toBe("confirmation");
+  expect(parsedStored.tourId).toBe("arrabida-wine-allinclusive");
+  expect(parsedStored.feeling).toBe("wine-food");
+  expect(parsedStored.rhythm).toBe("balanced");
+  expect(parsedStored.interests).toEqual(["wine", "gastronomy", "coast"]);
 
   const reserve = page.getByTestId("studio-v3-checkout-summary-reserve");
   await expect(reserve).toBeVisible();
