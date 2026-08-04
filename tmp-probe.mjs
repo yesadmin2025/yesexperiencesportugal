@@ -1,0 +1,12 @@
+import { chromium } from "@playwright/test";
+const b = await chromium.launch();
+const c = await b.newContext({viewport:{width:393,height:800}});
+const pg = await c.newPage();
+pg.on("console", m=>console.log("CONSOLE", m.type(), m.text().slice(0,200)));
+pg.on("pageerror", e=>console.log("PAGEERROR", String(e).slice(0,300)));
+await pg.goto("http://localhost:8080/studio-v3", {waitUntil:"domcontentloaded"});
+await pg.waitForTimeout(2500);
+await pg.getByRole("button",{name:"Begin"}).click();
+await pg.waitForTimeout(2500);
+console.log("PHASE", await pg.locator('[data-testid="studio-v3-root"]').first().getAttribute("data-phase").catch(()=>null));
+await b.close();
