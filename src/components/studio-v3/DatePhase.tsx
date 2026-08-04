@@ -75,7 +75,6 @@ export function DatePhaseControls({
         We need three days to prepare the day properly.
       </p>
 
-
       {/* Inline calendar card — gentle fade/rise on mount with a quiet delay
           so it doesn't feel like it flashes away on iOS. */}
       <div
