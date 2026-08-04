@@ -90,7 +90,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                 color: "var(--ivory)",
               }}
             >
-              Let’s compose your{" "}
+              Portugal is{" "}
               <span
                 style={{
                   fontFamily: "var(--font-editorial)",
@@ -99,7 +99,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                   color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
                 }}
               >
-                Portugal day.
+                waiting…
               </span>
             </h2>
             <p
@@ -109,7 +109,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                 fontFamily: "var(--font-body)",
               }}
             >
-              Not a form. A few quiet choices, and Portugal responds.
+              A few quiet choices, and Portugal begins to take your shape.
             </p>
 
             {/* Quiet meta line — was previously three bordered pills that
