@@ -132,10 +132,14 @@ export function buildRevealNarrative(input: RevealNarrativeInput): RevealNarrati
     if (signals.length < MAX_SIGNALS) signals.push(text);
   };
 
-  const leadLabel = leads[0] ? DIMENSION_LABEL.get(leads[0]) : null;
-  if (leadLabel) push(`Led by ${leadLabel.toLowerCase()}`);
+  // Grounded reasons already composed by the single intelligence layer.
+  // These are the primary signals — we never re-reason here.
+  for (const reason of intelligence.reasons) push(reason);
 
   push(refinementSummaryLabel(input.refinement));
+
+  const leadLabel = leads[0] ? DIMENSION_LABEL.get(leads[0]) : null;
+  if (leadLabel) push(`Led by ${leadLabel.toLowerCase()}`);
 
   const secondLabel = secondary[0] ? DIMENSION_LABEL.get(secondary[0]) : null;
   if (secondLabel) push(`${secondLabel} woven in, without stretching the route`);
