@@ -19,12 +19,21 @@ export interface WhyRouteWorksProps {
   readonly reasons: ReadonlyArray<string>;
   readonly className?: string;
   readonly testId?: string;
+  /** Non-personal id of the recommended Signature, for analytics only. */
+  readonly tourId?: string | null;
 }
 
 const MAX_REASONS = 4;
 
-export function WhyRouteWorks({ reasons, className, testId }: WhyRouteWorksProps) {
+export function WhyRouteWorks({ reasons, className, testId, tourId }: WhyRouteWorksProps) {
   const shown = reasons.slice(0, MAX_REASONS).filter((r) => r.trim().length > 0);
+  const reasonCount = shown.length;
+  React.useEffect(() => {
+    if (reasonCount === 0) return;
+    void import("@/lib/analytics-ga4").then((m) =>
+      m.gaStudioRecommendationRevealed({ tourId: tourId ?? null, reasonCount }),
+    );
+  }, [tourId, reasonCount]);
   if (!shown.length) return null;
   return (
     <section

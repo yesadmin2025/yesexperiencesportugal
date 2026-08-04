@@ -107,6 +107,44 @@ export function gaStudioStart(): void {
   pushEvent("studio_start", {});
 }
 
+/**
+ * Custom: studio_opening_viewed — the emotional opening screen painted.
+ * Privacy-safe: no identifiers, no free text.
+ */
+export function gaStudioOpeningViewed(): void {
+  pushEvent("studio_opening_viewed", {});
+}
+
+/**
+ * Custom: studio_recommendation_revealed — Living Atlas settled on a
+ * direction and the traveller saw it. Only non-personal signal counts.
+ */
+export function gaStudioRecommendationRevealed(args: {
+  tourId: string | null;
+  reasonCount: number;
+}): void {
+  pushEvent("studio_recommendation_revealed", {
+    tour_id: args.tourId,
+    reason_count: args.reasonCount,
+  });
+}
+
+/** Custom: studio_final_reveal_viewed — "Your Portugal is ready." painted. */
+export function gaStudioFinalRevealViewed(args: {
+  tourId: string | null;
+  signalCount: number;
+}): void {
+  pushEvent("studio_final_reveal_viewed", {
+    tour_id: args.tourId,
+    signal_count: args.signalCount,
+  });
+}
+
+/** Custom: studio_final_cta_initiated — traveller advanced from the reveal. */
+export function gaStudioFinalCtaInitiated(args: { tourId: string | null }): void {
+  pushEvent("studio_final_cta_initiated", { tour_id: args.tourId });
+}
+
 /** Custom: studio_step — fired on each configurator step enter. */
 export function gaStudioStep(args: {
   stepNumber: number;

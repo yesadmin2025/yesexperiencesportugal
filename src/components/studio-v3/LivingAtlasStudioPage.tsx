@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { trackEvent } from "@/lib/analytics-events";
 import { StudioV3 } from "@/components/studio-v3/StudioV3";
-import { installStudioSessionPrivacyGuard } from "@/components/studio-v3/studioSessionPrivacy";
 
 /**
  * Page body for the public Experience Studio at /studio-v3.
@@ -18,10 +17,6 @@ import { installStudioSessionPrivacyGuard } from "@/components/studio-v3/studioS
 const STUDIO_START_KEY = "yes.studio.started.v1";
 
 export function LivingAtlasStudioPage() {
-  // Synchronous and idempotent: protects the Studio composition key before
-  // the child StudioV3 component can run its first persistence effect.
-  installStudioSessionPrivacyGuard();
-
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {

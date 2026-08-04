@@ -33,6 +33,7 @@ import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import { cn } from "@/lib/utils";
 import { formatGuestComposition } from "./formatGuests";
+import { buildRevealNarrative } from "@/lib/studio-v3/revealNarrative";
 import parchmentLetter from "@/assets/studio-v3/reveal-letter-parchment.jpg";
 
 // Friendly region label rendered in the reveal title.
@@ -51,22 +52,9 @@ function regionLabelFor(intent: string | null | undefined): string {
   return REGION_LABELS[intent.toLowerCase()] ?? "Portugal";
 }
 
-// Deterministic intro paragraph — no invented facts, sets tone only.
-function introFor(feeling: string | null | undefined, region: string): string {
-  const opener =
-    feeling === "wine-food"
-      ? `A slower rhythm shapes your day in ${region} — long tables, unhurried afternoons, Portugal felt without hurry.`
-      : feeling === "coastal" || feeling === "adventure"
-        ? `Your day in ${region} follows the Atlantic light — open roads, sea air, room for the country to breathe.`
-        : feeling === "romance"
-          ? `Your day in ${region} is built for two — soft pacing, quiet corners, the country meeting you gently.`
-          : feeling === "hidden"
-            ? `Your day in ${region} keeps to the quieter roads — small doors, unshowy places, nothing that performs.`
-            : feeling === "slow-luxury"
-              ? `Your day in ${region} moves gently — fewer moments, held longer, nothing asked of you.`
-              : `Your day in ${region} unfolds at its own pace — private, unhurried, made only for you.`;
-  return opener + " Every moment below is confirmed and yours the second you say yes.";
-}
+// The deterministic narrative now lives in `buildRevealNarrative`, which
+// reasons through the single Living Atlas bridge instead of branching on
+// one answer. See src/lib/studio-v3/revealNarrative.ts.
 
 // Rotating editorial connectives for middle stops. Kept short and quiet.
 const MIDDLE_OPENERS = [
@@ -190,7 +178,32 @@ export function FinalRevealStory({
   const stops = keptStops.map((s) => ({ label: s.label, story: s.story }));
 
   const region = regionLabelFor(state.destinationIntent);
-  const intro = introFor(state.feeling, region);
+  const narrative = buildRevealNarrative({
+    feeling: state.feeling,
+    interests: state.interests,
+    rhythm: state.rhythm,
+    destinationIntent: state.destinationIntent,
+    refinement: state.refinement,
+    region,
+    addOnLabels: selectedAddOns.map((a) => a.label),
+  });
+  const intro = narrative.intro;
+
+  // Privacy-safe reveal analytics: tour id + signal count only, never PII.
+  const signalCount = narrative.signals.length;
+  const analyticsTourId = state.tourId ?? null;
+  useEffect(() => {
+    void import("@/lib/analytics-ga4").then((m) =>
+      m.gaStudioFinalRevealViewed({ tourId: analyticsTourId, signalCount }),
+    );
+  }, [analyticsTourId, signalCount]);
+
+  const handleContinue = () => {
+    void import("@/lib/analytics-ga4").then((m) =>
+      m.gaStudioFinalCtaInitiated({ tourId: analyticsTourId }),
+    );
+    onContinue();
+  };
 
   // Weave add-ons into the narrative. Distribute them evenly across stops
   // (after which stop each add-on appears). If we have more add-ons than
@@ -294,9 +307,10 @@ export function FinalRevealStory({
         <div className="px-6 pt-2 pb-10 sm:px-9">
           {/* Hero */}
           <header className="text-center">
-            <Eyebrow>The final story</Eyebrow>
+            <Eyebrow>Your Signature</Eyebrow>
             <h2
               id="studio-v3-final-reveal-title"
+              data-testid="studio-v3-final-reveal-headline"
               className="mt-3 text-[26px] leading-[1.15] [text-wrap:balance]"
               style={{
                 fontFamily: "var(--font-editorial)",
@@ -304,18 +318,54 @@ export function FinalRevealStory({
                 fontWeight: 500,
               }}
             >
-              Your private day in{" "}
+              Your{" "}
               <span className="italic" style={{ color: "var(--teal)" }}>
-                {region}
-              </span>
+                Portugal
+              </span>{" "}
+              is ready.
             </h2>
+            <p
+              className="mt-3 text-[13.5px] leading-[1.6] mx-auto max-w-[38ch]"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
+            >
+              A private day shaped from what matters to you.
+            </p>
             {dateLabel || guestsLabel || pickupLabel ? (
               <p
-                className="mt-3 text-[11px] uppercase tracking-[0.22em]"
+                data-testid="studio-v3-final-reveal-facts"
+                className="mt-4 text-[11px] uppercase tracking-[0.22em]"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
               >
-                {[dateLabel, pickupLabel, guestsLabel].filter(Boolean).join(" · ")}
+                {[region, dateLabel, pickupLabel, guestsLabel].filter(Boolean).join(" · ")}
               </p>
+            ) : (
+              <p
+                data-testid="studio-v3-final-reveal-facts"
+                className="mt-4 text-[11px] uppercase tracking-[0.22em]"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+              >
+                {region}
+              </p>
+            )}
+            {narrative.signals.length > 0 ? (
+              <ul
+                data-testid="studio-v3-final-reveal-signals"
+                className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-2"
+              >
+                {narrative.signals.map((signal) => (
+                  <li
+                    key={signal}
+                    className="rounded-full border px-3 py-1.5 text-[11px] leading-[1.3]"
+                    style={{
+                      color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                      borderColor: "color-mix(in oklab, var(--gold) 50%, transparent)",
+                      background: "color-mix(in oklab, var(--gold) 7%, transparent)",
+                    }}
+                  >
+                    {signal}
+                  </li>
+                ))}
+              </ul>
             ) : null}
             <span
               aria-hidden
@@ -529,7 +579,7 @@ export function FinalRevealStory({
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             type="button"
-            onClick={onContinue}
+            onClick={handleContinue}
             data-testid="studio-v3-final-reveal-continue"
             className="flex-1 min-h-[52px] inline-flex items-center justify-center gap-2 rounded-full px-6 text-[13px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] transition-colors"
             style={{ background: "var(--gold)", color: "var(--charcoal)" }}
