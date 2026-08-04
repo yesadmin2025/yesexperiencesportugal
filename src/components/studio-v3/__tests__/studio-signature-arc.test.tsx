@@ -9,9 +9,7 @@ describe("Studio V3 Signature arc", () => {
   it("opens with the agreed emotional invitation", () => {
     render(<StudioV3Intro onComplete={() => {}} />);
 
-    expect(
-      screen.getByRole("heading", { name: "Portugal is waiting…" }),
-    ).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Portugal is waiting…" })).toBeVisible();
     expect(
       screen.getByText("A few quiet choices, and Portugal begins to take your shape."),
     ).toBeVisible();
@@ -39,13 +37,9 @@ describe("Studio V3 Signature arc", () => {
       />,
     );
 
-    expect(
-      screen.getByRole("heading", { name: "Your Portugal is ready." }),
-    ).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Your Portugal is ready." })).toBeVisible();
     expect(screen.getByText("Your Signature")).toBeVisible();
-    expect(
-      screen.getByText("A private day shaped from what matters to you."),
-    ).toBeVisible();
+    expect(screen.getByText("A private day shaped from what matters to you.")).toBeVisible();
 
     const reasons = screen.getAllByTestId("studio-v3-final-reveal-reason");
     expect(reasons.length).toBeGreaterThanOrEqual(2);
@@ -53,6 +47,6 @@ describe("Studio V3 Signature arc", () => {
     expect(reasons.some((node) => node.textContent?.includes("Fewer moments"))).toBe(true);
 
     expect(screen.getByText("€420")).toBeVisible();
-    expect(screen.getByText("Confirm & reserve")).toBeVisible();
+    expect(screen.getByRole("button", { name: /confirm & reserve/i })).toBeVisible();
   });
 });
