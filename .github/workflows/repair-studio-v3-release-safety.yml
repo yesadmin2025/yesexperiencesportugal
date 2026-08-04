@@ -1,0 +1,93 @@
+name: Repair Studio V3 release safety
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/repair-studio-v3-release-safety.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.head_ref == 'studio-v3-release-safety'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: studio-v3-release-safety
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Restore validated safety contracts
+        run: |
+          set -euo pipefail
+          BASE=fdfa57e36c984c321382bf32df64c83b802cb886
+          git fetch origin "$BASE"
+
+          for path in \
+            e2e/living-atlas-production.spec.ts \
+            e2e/studio-v3-walk-to-reveal.ts \
+            src/components/studio-v3/DatePhase.tsx \
+            src/components/studio-v3/LivingAtlasStudioPage.tsx \
+            src/components/studio-v3/studioSessionPrivacy.ts \
+            src/components/studio-v3/__tests__/studio-session-privacy.test.ts
+          do
+            mkdir -p "$(dirname "$path")"
+            git show "$BASE:$path" > "$path"
+          done
+
+          rm -f .github/workflows/apply-studio-session-pii-once.yml
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("src/components/studio-v3/StudioV3.tsx")
+          text = path.read_text()
+          unsafe = '''    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(state));'''
+          safe = '''    // Persist composition only. Guest identity, contact details, pickup address
+              // and guide notes remain in React state for the current visit but never
+              // enter sessionStorage.
+              const safeState: StudioV3State = {
+                ...state,
+                firstName: null,
+                guestDraft: null,
+              };
+              window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(safeState));'''
+          if unsafe in text:
+              text = text.replace(unsafe, safe, 1)
+          elif "JSON.stringify(safeState)" not in text:
+              raise SystemExit("Studio V3 session persistence anchor not found")
+          path.write_text(text)
+          PY
+      - name: Install and verify focused safety gates
+        run: |
+          bun install --frozen-lockfile
+          bunx prettier --write \
+            src/components/studio-v3/StudioV3.tsx \
+            src/components/studio-v3/DatePhase.tsx \
+            src/components/studio-v3/LivingAtlasStudioPage.tsx \
+            src/components/studio-v3/studioSessionPrivacy.ts \
+            src/components/studio-v3/__tests__/studio-session-privacy.test.ts \
+            e2e/living-atlas-production.spec.ts \
+            e2e/studio-v3-walk-to-reveal.ts
+          bunx tsc --noEmit -p tsconfig.json
+          bunx vitest run \
+            src/components/studio-v3/__tests__/studio-session-privacy.test.ts \
+            src/components/studio-v3/__tests__/date-guards.test.ts \
+            src/lib/studio-v3/__tests__/revealNarrative.test.ts \
+            src/components/studio-v3/__tests__/studio-v3-arc-headlines.test.ts
+      - name: Commit repaired tree
+        run: |
+          if git diff --quiet; then
+            echo "Safety contracts already restored"
+            exit 0
+          fi
+          git config user.name "Studio V3 release gate"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Restore Studio V3 release safety contracts"
+          git push origin studio-v3-release-safety
