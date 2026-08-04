@@ -56,7 +56,6 @@ function regionLabelFor(intent: string | null | undefined): string {
 // reasons through the single Living Atlas bridge instead of branching on
 // one answer. See src/lib/studio-v3/revealNarrative.ts.
 
-
 // Rotating editorial connectives for middle stops. Kept short and quiet.
 const MIDDLE_OPENERS = [
   "Then you'll continue towards",
@@ -205,8 +204,6 @@ export function FinalRevealStory({
     );
     onContinue();
   };
-
-
 
   // Weave add-ons into the narrative. Distribute them evenly across stops
   // (after which stop each add-on appears). If we have more add-ons than
