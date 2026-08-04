@@ -748,7 +748,15 @@ function writePersistedStudioState(state: StudioV3State): void {
       window.sessionStorage.removeItem(STUDIO_V3_SESSION_KEY);
       return;
     }
-    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(state));
+    // Persist composition only. Guest identity, contact details, pickup address
+    // and guide notes remain in React state for the current visit but never
+    // enter sessionStorage.
+    const safeState: StudioV3State = {
+      ...state,
+      firstName: null,
+      guestDraft: null,
+    };
+    window.sessionStorage.setItem(STUDIO_V3_SESSION_KEY, JSON.stringify(safeState));
   } catch {
     /* storage blocked — persistence is a convenience, never a requirement */
   }
