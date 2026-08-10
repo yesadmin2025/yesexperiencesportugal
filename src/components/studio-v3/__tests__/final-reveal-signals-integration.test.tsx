@@ -20,10 +20,10 @@ const ADD_ONS = [
   },
 ];
 
-type Answers = Pick<
-  StudioV3State,
-  "feeling" | "interests" | "rhythm" | "destinationIntent" | "refinement"
->;
+type Answers = Omit<
+  Pick<StudioV3State, "feeling" | "interests" | "rhythm" | "destinationIntent" | "refinement">,
+  "destinationIntent"
+> & { destinationIntent: StudioV3State["destinationIntent"] | null };
 
 const CASES: ReadonlyArray<{ name: string; answers: Answers }> = [
   {
@@ -51,7 +51,14 @@ const CASES: ReadonlyArray<{ name: string; answers: Answers }> = [
 function renderReveal(answers: Answers) {
   return render(
     <FinalRevealStory
-      state={{ ...INITIAL_STATE, ...answers, phase: "confirmation", guests: 2 }}
+      state={
+        {
+          ...INITIAL_STATE,
+          ...answers,
+          phase: "confirmation",
+          guests: 2,
+        } as StudioV3State
+      }
       selectedAddOns={ADD_ONS}
       perPaxEur={207}
       totalEur={414}
