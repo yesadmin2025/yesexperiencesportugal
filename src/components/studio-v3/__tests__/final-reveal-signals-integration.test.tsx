@@ -86,7 +86,7 @@ describe("FinalRevealStory — rendered signals match the reveal narrative modul
     });
   }
 
-  it("renders no signal list when the traveller answered nothing", () => {
+  it("still mirrors the module exactly when the traveller answered nothing", () => {
     const expected = buildRevealNarrative({
       feeling: null,
       interests: [],
@@ -94,6 +94,7 @@ describe("FinalRevealStory — rendered signals match the reveal narrative modul
       destinationIntent: null,
       refinement: null,
       region: regionLabelFor(null),
+      addOnLabels: ADD_ONS.map((a) => a.label),
     });
 
     renderReveal({
