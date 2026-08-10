@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { render, screen, within, cleanup } from "@testing-library/react";
 
 import { FinalRevealStory } from "../FinalRevealStory";
-import { INITIAL_STATE } from "../types";
+import { INITIAL_STATE, type StudioV3State } from "../types";
 import { buildRevealNarrative } from "@/lib/studio-v3/revealNarrative";
-import { regionLabelFor } from "../destinationIntents";
+import { regionLabelFor } from "../FinalRevealStory";
 
 const ADD_ONS = [
   {
@@ -20,7 +20,12 @@ const ADD_ONS = [
   },
 ];
 
-const CASES = [
+type Answers = Pick<
+  StudioV3State,
+  "feeling" | "interests" | "rhythm" | "destinationIntent" | "refinement"
+>;
+
+const CASES: ReadonlyArray<{ name: string; answers: Answers }> = [
   {
     name: "wine-led Alentejo day",
     answers: {
@@ -41,9 +46,9 @@ const CASES = [
       refinement: null,
     },
   },
-] as const;
+];
 
-function renderReveal(answers: (typeof CASES)[number]["answers"]) {
+function renderReveal(answers: Answers) {
   return render(
     <FinalRevealStory
       state={{ ...INITIAL_STATE, ...answers, phase: "confirmation", guests: 2 }}
@@ -62,7 +67,6 @@ describe("FinalRevealStory — rendered signals match the reveal narrative modul
     it(`renders exactly the unit-tested signals for the ${testCase.name}`, () => {
       const expected = buildRevealNarrative({
         ...testCase.answers,
-        interests: [...testCase.answers.interests],
         region: regionLabelFor(testCase.answers.destinationIntent),
         addOnLabels: ADD_ONS.map((a) => a.label),
       });
@@ -98,7 +102,7 @@ describe("FinalRevealStory — rendered signals match the reveal narrative modul
       rhythm: null,
       destinationIntent: null,
       refinement: null,
-    } as unknown as (typeof CASES)[number]["answers"]);
+    });
 
     if (expected.signals.length === 0) {
       expect(screen.queryByTestId("studio-v3-final-reveal-signals")).toBeNull();
