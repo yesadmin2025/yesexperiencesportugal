@@ -60,4 +60,73 @@ describe("buildRevealNarrative", () => {
     const unique = new Set(narrative.signals.map((s) => s.toLowerCase()));
     expect(unique.size).toBe(narrative.signals.length);
   });
+
+  it("is byte-identical across repeated runs for the same multi-answer input", () => {
+    const input = {
+      feeling: "wine-food",
+      interests: ["wine", "heritage", "nature"],
+      rhythm: "balanced",
+      destinationIntent: "alentejo-evora-wine",
+      refinement: null,
+      region: "Alentejo",
+      addOnLabels: ["Private picnic"],
+    } as const;
+
+    const runs = Array.from({ length: 5 }, () =>
+      buildRevealNarrative({
+        ...input,
+        interests: [...input.interests],
+        addOnLabels: [...input.addOnLabels],
+      }),
+    );
+
+    const first = JSON.stringify(runs[0]);
+    for (const run of runs) {
+      expect(JSON.stringify(run)).toBe(first);
+    }
+  });
+
+  it("never surfaces the same experience dimension in more than one signal", () => {
+    const cases = [
+      {
+        feeling: "wine-food",
+        interests: ["wine", "gastronomy", "heritage"],
+        rhythm: "slow",
+        destinationIntent: "alentejo-evora-wine",
+        refinement: null,
+        region: "Alentejo",
+      },
+      {
+        feeling: "coastal",
+        interests: ["coast", "nature", "local-life"],
+        rhythm: "full",
+        destinationIntent: null,
+        refinement: null,
+        region: "Arrábida",
+      },
+      {
+        feeling: "culture",
+        interests: ["heritage", "local-life"],
+        rhythm: "immersive",
+        destinationIntent: null,
+        refinement: null,
+        region: "Sintra",
+      },
+    ] as const;
+
+    for (const testCase of cases) {
+      const narrative = buildRevealNarrative({
+        ...testCase,
+        interests: [...testCase.interests],
+      });
+
+      for (const dimension of EXPERIENCE_DIMENSIONS) {
+        const needle = dimension.label.toLowerCase();
+        const hits = narrative.signals.filter((signal) => signal.toLowerCase().includes(needle));
+        expect(hits.length, `${dimension.id} repeated in: ${hits.join(" / ")}`).toBeLessThanOrEqual(
+          1,
+        );
+      }
+    }
+  });
 });
