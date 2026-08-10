@@ -47,7 +47,7 @@ const REGION_LABELS: Record<string, string> = {
   douro: "the Douro",
   centro: "central Portugal",
 };
-function regionLabelFor(intent: string | null | undefined): string {
+export function regionLabelFor(intent: string | null | undefined): string {
   if (!intent) return "Portugal";
   return REGION_LABELS[intent.toLowerCase()] ?? "Portugal";
 }
