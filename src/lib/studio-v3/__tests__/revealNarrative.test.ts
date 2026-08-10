@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { buildRevealNarrative } from "@/lib/studio-v3/revealNarrative";
 import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
+import { EXPERIENCE_DIMENSIONS } from "@/components/studio-v3/livingAtlasTaxonomy";
 
 describe("buildRevealNarrative", () => {
   it("keeps the opener grounded in the resolved region and never invents facts", () => {
