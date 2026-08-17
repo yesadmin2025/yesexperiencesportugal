@@ -122,15 +122,30 @@ export function buildRevealNarrative(input: RevealNarrativeInput): RevealNarrati
 
   const signals: string[] = [];
   const seen = new Set<string>();
+  const usedDimensions = new Set<ExperienceDimensionId>();
+
+  /** Which experience dimensions a candidate sentence already talks about. */
+  const dimensionsIn = (text: string): ExperienceDimensionId[] => {
+    const lower = text.toLowerCase();
+    return EXPERIENCE_DIMENSIONS.filter((d) => lower.includes(d.label.toLowerCase())).map(
+      (d) => d.id,
+    );
+  };
+
   const push = (value: string | null | undefined) => {
     if (!value) return;
     const text = value.trim().replace(/\.$/, "");
     if (!text) return;
     const key = text.toLowerCase();
     if (seen.has(key)) return;
+    // One idea per signal: never surface a dimension a previous signal owns.
+    const dimensions = dimensionsIn(text);
+    if (dimensions.some((d) => usedDimensions.has(d))) return;
     seen.add(key);
+    for (const d of dimensions) usedDimensions.add(d);
     if (signals.length < MAX_SIGNALS) signals.push(text);
   };
+
 
   // Grounded reasons already composed by the single intelligence layer.
   // These are the primary signals — we never re-reason here.
