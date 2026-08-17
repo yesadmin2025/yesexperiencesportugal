@@ -123,7 +123,10 @@ describe("FinalRevealStory — signals update when the traveller's answers chang
       for (const dimension of EXPERIENCE_DIMENSIONS) {
         const needle = dimension.label.toLowerCase();
         const hits = signals.filter((s) => s.toLowerCase().includes(needle));
-        expect(hits.length, `${step.name}: ${dimension.id} in ${hits.join(" / ")}`).toBeLessThanOrEqual(1);
+        expect(
+          hits.length,
+          `${step.name}: ${dimension.id} in ${hits.join(" / ")}`,
+        ).toBeLessThanOrEqual(1);
       }
     }
   });
