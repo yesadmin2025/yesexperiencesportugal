@@ -30,10 +30,19 @@ async function reachGuestDetails(page: Page): Promise<boolean> {
     return false;
   }
 
+  await page.waitForTimeout(800);
   const continueCta = page.getByTestId("studio-v3-final-reveal-continue");
   if (!(await continueCta.isVisible().catch(() => false))) return false;
-  await continueCta.scrollIntoViewIfNeeded().catch(() => undefined);
-  await continueCta.click({ timeout: 5_000 }).catch(() => undefined);
+  for (let i = 0; i < 3; i++) {
+    await continueCta.scrollIntoViewIfNeeded().catch(() => undefined);
+    await continueCta.click({ timeout: 5_000 }).catch(() => undefined);
+    const landed = await page
+      .getByTestId("studio-v3-guest-details")
+      .isVisible({ timeout: 6_000 })
+      .catch(() => false);
+    if (landed) return true;
+    await page.waitForTimeout(600);
+  }
 
   const ok = await page
     .getByTestId("studio-v3-guest-details")
