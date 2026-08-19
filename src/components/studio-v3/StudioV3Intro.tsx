@@ -144,6 +144,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                 setStep("name");
               }}
               data-phase-cta="intro-begin"
+              data-testid="studio-v3-intro-begin"
               className="mt-10 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-7 py-3 text-[11px] uppercase font-bold transition-colors hover:opacity-90"
               style={{
                 background: "var(--ivory)",
@@ -310,6 +311,7 @@ function PathCard({
       type="button"
       onClick={onClick}
       data-phase-cta="intro-path"
+      data-testid="studio-v3-intro-path-option"
       data-phase-cta-recommended={recommended ? "true" : "false"}
       className="group relative w-full rounded-[10px] px-5 py-4 text-left transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
       style={{

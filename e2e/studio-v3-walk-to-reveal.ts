@@ -107,8 +107,60 @@ async function walkOnce(page: Page): Promise<boolean> {
     return safeClick(page, PHASE_CTA_PRIMARY);
   }
   if (contVisible) return safeClick(page, PHASE_CTA_CONTINUE_ENABLED);
+  return advanceGeneric(page);
+}
+
+/**
+ * Selector-agnostic fallback. Some phases (intro, name form, interstitials)
+ * render CTAs without `data-phase-cta`. Rather than stall, look for the
+ * conventional forward affordance by testid, then by accessible name, and
+ * finally any single enabled button inside the live phase.
+ */
+export async function advanceGeneric(page: Page, extraTestIds?: string[]): Promise<boolean> {
+  const testIds = extraTestIds ?? ["studio-v3-intro-begin", "studio-v3-intro-path-option"];
+  for (const id of testIds) {
+    const sel = `[data-testid="${id}"]:not([disabled])`;
+    if (
+      await page
+        .locator(sel)
+        .first()
+        .isVisible()
+        .catch(() => false)
+    ) {
+      if (await safeClick(page, sel)) return true;
+    }
+  }
+
+  const names = [/^begin$/i, /^guided/i, /^continue$/i];
+  for (const name of names) {
+    const btn = page.getByRole("button", { name }).first();
+    if (await btn.isVisible().catch(() => false)) {
+      const disabled = await btn.isDisabled().catch(() => true);
+      if (!disabled) {
+        const ok = await btn.click({ timeout: 2_000 }).then(
+          () => true,
+          () => false,
+        );
+        if (ok) return true;
+      }
+    }
+  }
+
+  // Last resort: exactly one enabled, visible button in the phase surface.
+  const scope = page.locator(`${STUDIO_ROOT}, [data-studio-v3-screen]`).first();
+  const buttons = scope.locator("button:not([disabled]):visible");
+  if ((await buttons.count().catch(() => 0)) === 1) {
+    return buttons
+      .first()
+      .click({ timeout: 2_000 })
+      .then(
+        () => true,
+        () => false,
+      );
+  }
   return false;
 }
+
 
 export async function walkToReveal(page: Page): Promise<void> {
   let lastPhase: string | null = null;
