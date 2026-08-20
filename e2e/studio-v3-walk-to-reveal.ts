@@ -212,11 +212,24 @@ export async function advanceIntro(page: Page): Promise<boolean> {
 export async function walkToReveal(page: Page): Promise<void> {
   let lastPhase: string | null = null;
   let stuck = 0;
+  let momentRuns = 0;
   for (let i = 0; i < 52; i++) {
     await dismissReactionOverlay(page);
+    // Early exit — the Refine screen is the walk's destination.
+    if (
+      await page
+        .locator('[data-studio-v3-screen="refine"]')
+        .first()
+        .isVisible()
+        .catch(() => false)
+    ) {
+      return;
+    }
     const phase = await currentPhase(page);
 
     if (phase === "storyboard" || phase === "map") {
+      momentRuns += 1;
+      if (momentRuns > 3) break;
       await dismissReactionOverlay(page);
       const hold = page.locator('[data-phase-cta="hold-journey"]').first();
       const nextMoment = page.locator('button[aria-label="Next moment"]').first();
