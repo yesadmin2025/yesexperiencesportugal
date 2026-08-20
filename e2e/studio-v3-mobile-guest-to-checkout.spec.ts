@@ -16,21 +16,12 @@ import { walkToReveal, advanceRefineToStorytelling } from "./studio-v3-walk-to-r
 const VIEWPORT = { width: 393, height: 706 } as const;
 
 async function reachGuestDetails(page: Page): Promise<boolean> {
-  page.on("console", (m) => {
-    if (m.type() === "error" || m.type() === "warning") console.log("PAGE", m.type(), m.text().slice(0, 200));
-  });
-  page.on("pageerror", (e) => console.log("PAGEERROR", String(e).slice(0, 300)));
   await page.goto("/studio-v3");
   await walkToReveal(page);
   await advanceRefineToStorytelling(page);
 
   const reveal = page.getByTestId("studio-v3-final-reveal");
   if (!(await reveal.isVisible().catch(() => false))) {
-    await page.screenshot({ path: "/tmp/browser/studio/reveal-fail.png" });
-    console.log(
-      "DEBUG phase:",
-      await page.locator('[data-testid="studio-v3-root"]').first().getAttribute("data-phase"),
-    );
     return false;
   }
 
@@ -45,18 +36,6 @@ async function reachGuestDetails(page: Page): Promise<boolean> {
       .isVisible({ timeout: 6_000 })
       .catch(() => false);
     if (landed) return true;
-    const hit = await continueCta.evaluate((el) => {
-      const r = el.getBoundingClientRect();
-      const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-      return {
-        rect: [Math.round(r.top), Math.round(r.height)],
-        top: top ? `${top.tagName}.${(top.className || "").toString().slice(0, 60)}` : null,
-        phase: document
-          .querySelector('[data-testid="studio-v3-root"]')
-          ?.getAttribute("data-phase"),
-      };
-    });
-    console.log("DEBUG click attempt", i, JSON.stringify(hit));
     await page.waitForTimeout(600);
   }
 
@@ -64,13 +43,6 @@ async function reachGuestDetails(page: Page): Promise<boolean> {
     .getByTestId("studio-v3-guest-details")
     .isVisible({ timeout: 8_000 })
     .catch(() => false);
-  if (!ok) {
-    console.log(
-      "DEBUG post-continue phase:",
-      await page.locator('[data-testid="studio-v3-root"]').first().getAttribute("data-phase"),
-    );
-    await page.screenshot({ path: "/tmp/browser/studio/guest-fail.png" });
-  }
   return ok;
 }
 
