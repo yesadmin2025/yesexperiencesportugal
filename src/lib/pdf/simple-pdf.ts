@@ -112,6 +112,7 @@ export function renderSimplePdf(lines: PdfLine[]): string {
     const bold = font === "bold";
     const leading = size * 1.45;
     y -= line.spaceBefore ?? 0;
+    if (line.minSpace && y - line.minSpace < MARGIN_BOTTOM) newPage();
 
     if (line.rule) {
       if (y < MARGIN_BOTTOM) newPage();
@@ -122,8 +123,6 @@ export function renderSimplePdf(lines: PdfLine[]): string {
       y -= 8;
       continue;
     }
-
-    if (line.minSpace && y - line.minSpace < MARGIN_BOTTOM) newPage();
 
     const parts = wrap(line.text ?? "", size, bold, contentWidth);
     for (const part of parts) {
