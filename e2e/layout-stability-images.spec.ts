@@ -128,8 +128,11 @@ for (const route of ROUTES) {
     ).toEqual([]);
 
     // ── 3. Lazy images also decode async (keeps the main thread free) ───
+    // Third-party vendor markup (Trustindex certificate) is out of our
+    // control and is already injected lazily — only first-party images count.
     const lazyWithoutAsyncDecode = await page.evaluate(() =>
       Array.from(document.querySelectorAll('img[loading="lazy"]'))
+        .filter((img) => !/trustindex\.|stripe\.com|googletagmanager/i.test((img as HTMLImageElement).src))
         .filter((img) => img.getAttribute("decoding") !== "async")
         .map((img) => (img as HTMLImageElement).src.slice(-90)),
     );
@@ -137,5 +140,6 @@ for (const route of ROUTES) {
       lazyWithoutAsyncDecode,
       `${route.name}: lazy images missing decoding="async"`,
     ).toEqual([]);
+
   });
 }
