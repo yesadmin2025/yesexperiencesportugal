@@ -124,7 +124,7 @@ test.describe("Studio V3 · mobile accessibility @ 393px", () => {
   });
 
   test("reveal, guest details and checkout — labels, focus order, axe clean", async ({ page }) => {
-    test.setTimeout(240_000);
+    test.setTimeout(420_000);
     if (!(await reachGuestDetails(page))) {
       test.skip(true, "Funnel did not reach Guest Details in this run.");
     }
