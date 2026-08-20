@@ -74,6 +74,15 @@ function scoreAxes(
     case "adventure":
       s.adventure += 3;
       break;
+    case "faith":
+      s.culture += 3;
+      s.atmosphere += 2;
+      break;
+    case "hands-on":
+      s.culture += 2;
+      s.indulgence += 1;
+      s.atmosphere += 1;
+      break;
   }
 
   for (const i of interests) {

@@ -134,6 +134,8 @@ const FEELING_THEME: Record<Feeling, string> = {
   culture: "heritage",
   adventure: "Atlantic",
   "slow-luxury": "slow",
+  faith: "sacred",
+  "hands-on": "hands-on",
 };
 
 const INTEREST_THEME: Partial<Record<Interest, string>> = {
@@ -286,6 +288,10 @@ const FEELING_TO_TOURS: Record<Feeling, string[]> = {
     "troia-comporta",
     "arrabida-wine-allinclusive",
   ],
+  // Faith & reflection: the sanctuary day leads; heritage days support it.
+  faith: ["fatima-nazare-obidos", "tomar-coimbra", "evora-alentejo", "sintra-cascais"],
+  // Hands-on traditions: real workshops only — tiles and cheese.
+  "hands-on": ["tiles-workshop", "azeitao-cheese", "arrabida-wine-allinclusive", "evora-alentejo"],
 };
 
 /**
@@ -301,6 +307,8 @@ const FEELING_FALLBACK: Record<Feeling, string> = {
   culture: "tomar-coimbra",
   adventure: "southwest-vicentine-coast",
   "slow-luxury": "sintra-cascais",
+  faith: "fatima-nazare-obidos",
+  "hands-on": "tiles-workshop",
 };
 
 const INTEREST_TARGET_TOURS: Partial<Record<Interest, string[]>> = {
@@ -492,6 +500,30 @@ const FEELING_KEYWORDS: Record<Feeling, string[]> = {
     "golden",
     "quietly",
     "drift",
+  ],
+  faith: [
+    "sanctuary",
+    "fatima",
+    "basilica",
+    "chapel",
+    "convent",
+    "monastery",
+    "church",
+    "shrine",
+    "pilgrim",
+    "cloister",
+  ],
+  "hands-on": [
+    "workshop",
+    "tile",
+    "azulejo",
+    "paint",
+    "cheese",
+    "making",
+    "craft",
+    "artisan",
+    "hands",
+    "learn",
   ],
 };
 

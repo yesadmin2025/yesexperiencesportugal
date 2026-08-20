@@ -118,8 +118,10 @@ function wineRelevant(state: StudioV3State): boolean {
 function handsRelevant(state: StudioV3State): boolean {
   if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
   return (
+    state.interests.includes("hands-on") ||
     state.interests.includes("local-life") ||
     state.interests.includes("heritage") ||
+    state.feeling === "hands-on" ||
     state.feeling === "hidden" ||
     state.feeling === "culture"
   );
@@ -142,7 +144,7 @@ function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
       ? "coast"
       : state.feeling === "wine-food" || state.feeling === "slow-luxury"
         ? "wine"
-        : state.feeling === "culture"
+        : state.feeling === "culture" || state.feeling === "hands-on"
           ? "hands"
           : state.feeling === "hidden"
             ? "local"

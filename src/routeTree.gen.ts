@@ -42,6 +42,7 @@ import { Route as McpSigninRouteImport } from './routes/mcp-signin'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LuxuryToursPortugalRouteImport } from './routes/luxury-tours-portugal'
 import { Route as LocalStoriesRouteImport } from './routes/local-stories'
+import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ExperiencesRouteImport } from './routes/experiences'
@@ -135,6 +136,7 @@ import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/em
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
 import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
+import { Route as ApiPublicBookingItineraryDataRouteImport } from './routes/api/public/booking-itinerary-data'
 import { Route as ApiPublicBookingItineraryRouteImport } from './routes/api/public/booking-itinerary'
 import { Route as AdminBookingsIdRouteImport } from './routes/admin.bookings.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
@@ -315,6 +317,11 @@ const LuxuryToursPortugalRoute = LuxuryToursPortugalRouteImport.update({
 const LocalStoriesRoute = LocalStoriesRouteImport.update({
   id: '/local-stories',
   path: '/local-stories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ItineraryRoute = ItineraryRouteImport.update({
+  id: '/itinerary',
+  path: '/itinerary',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HeroVerifyRoute = HeroVerifyRouteImport.update({
@@ -791,6 +798,12 @@ const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   path: '/api/public/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBookingItineraryDataRoute =
+  ApiPublicBookingItineraryDataRouteImport.update({
+    id: '/api/public/booking-itinerary-data',
+    path: '/api/public/booking-itinerary-data',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicBookingItineraryRoute =
   ApiPublicBookingItineraryRouteImport.update({
     id: '/api/public/booking-itinerary',
@@ -901,6 +914,7 @@ export interface FileRoutesByFullPath {
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
+  '/itinerary': typeof ItineraryRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/mcp': typeof McpRoute
@@ -1001,6 +1015,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
+  '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1044,6 +1059,7 @@ export interface FileRoutesByTo {
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
+  '/itinerary': typeof ItineraryRoute
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/mcp': typeof McpRoute
   '/mcp-signin': typeof McpSigninRoute
@@ -1142,6 +1158,7 @@ export interface FileRoutesByTo {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
+  '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1186,6 +1203,7 @@ export interface FileRoutesById {
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
+  '/itinerary': typeof ItineraryRoute
   '/local-stories': typeof LocalStoriesRouteWithChildren
   '/luxury-tours-portugal': typeof LuxuryToursPortugalRoute
   '/mcp': typeof McpRoute
@@ -1286,6 +1304,7 @@ export interface FileRoutesById {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
+  '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1331,6 +1350,7 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/faq'
     | '/hero-verify'
+    | '/itinerary'
     | '/local-stories'
     | '/luxury-tours-portugal'
     | '/mcp'
@@ -1431,6 +1451,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
     | '/api/public/booking-itinerary'
+    | '/api/public/booking-itinerary-data'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
@@ -1474,6 +1495,7 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/faq'
     | '/hero-verify'
+    | '/itinerary'
     | '/luxury-tours-portugal'
     | '/mcp'
     | '/mcp-signin'
@@ -1572,6 +1594,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
     | '/api/public/booking-itinerary'
+    | '/api/public/booking-itinerary-data'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
@@ -1615,6 +1638,7 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/faq'
     | '/hero-verify'
+    | '/itinerary'
     | '/local-stories'
     | '/luxury-tours-portugal'
     | '/mcp'
@@ -1715,6 +1739,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
     | '/api/public/booking-itinerary'
+    | '/api/public/booking-itinerary-data'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
@@ -1759,6 +1784,7 @@ export interface RootRouteChildren {
   ExperiencesRoute: typeof ExperiencesRoute
   FaqRoute: typeof FaqRoute
   HeroVerifyRoute: typeof HeroVerifyRoute
+  ItineraryRoute: typeof ItineraryRoute
   LocalStoriesRoute: typeof LocalStoriesRouteWithChildren
   LuxuryToursPortugalRoute: typeof LuxuryToursPortugalRoute
   McpRoute: typeof McpRoute
@@ -1842,6 +1868,7 @@ export interface RootRouteChildren {
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   AdminBookingsIdRoute: typeof AdminBookingsIdRoute
   ApiPublicBookingItineraryRoute: typeof ApiPublicBookingItineraryRoute
+  ApiPublicBookingItineraryDataRoute: typeof ApiPublicBookingItineraryDataRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
@@ -2092,6 +2119,13 @@ declare module '@tanstack/react-router' {
       path: '/local-stories'
       fullPath: '/local-stories'
       preLoaderRoute: typeof LocalStoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/itinerary': {
+      id: '/itinerary'
+      path: '/itinerary'
+      fullPath: '/itinerary'
+      preLoaderRoute: typeof ItineraryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/hero-verify': {
@@ -2745,6 +2779,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/booking-itinerary-data': {
+      id: '/api/public/booking-itinerary-data'
+      path: '/api/public/booking-itinerary-data'
+      fullPath: '/api/public/booking-itinerary-data'
+      preLoaderRoute: typeof ApiPublicBookingItineraryDataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/booking-itinerary': {
       id: '/api/public/booking-itinerary'
       path: '/api/public/booking-itinerary'
@@ -2951,6 +2992,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExperiencesRoute: ExperiencesRoute,
   FaqRoute: FaqRoute,
   HeroVerifyRoute: HeroVerifyRoute,
+  ItineraryRoute: ItineraryRoute,
   LocalStoriesRoute: LocalStoriesRouteWithChildren,
   LuxuryToursPortugalRoute: LuxuryToursPortugalRoute,
   McpRoute: McpRoute,
@@ -3036,6 +3078,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   AdminBookingsIdRoute: AdminBookingsIdRoute,
   ApiPublicBookingItineraryRoute: ApiPublicBookingItineraryRoute,
+  ApiPublicBookingItineraryDataRoute: ApiPublicBookingItineraryDataRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,

@@ -61,6 +61,8 @@ const INTEREST_TO_DIMENSION: Readonly<Record<Interest, ExperienceDimensionId>> =
   photography: "nature-landscapes",
   wellness: "nature-landscapes",
   "local-life": "local-life",
+  faith: "faith-reflection",
+  "hands-on": "hands-on-traditions",
 };
 
 /** Studio V3 feeling → the dimension that should lead the day. */
@@ -72,6 +74,8 @@ const FEELING_TO_DIMENSION: Readonly<Record<Feeling, ExperienceDimensionId>> = {
   culture: "history-heritage",
   adventure: "atlantic-coast",
   "slow-luxury": "wine-table",
+  faith: "faith-reflection",
+  "hands-on": "hands-on-traditions",
 };
 
 export type StudioIntelligenceInput = {
