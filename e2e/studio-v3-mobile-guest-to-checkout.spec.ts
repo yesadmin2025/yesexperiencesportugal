@@ -10,36 +10,10 @@
  *     studio-v3-mobile-guest-to-checkout
  */
 
-import { test, expect, type Page } from "@playwright/test";
-import { walkToReveal, advanceRefineToStorytelling } from "./studio-v3-walk-to-reveal";
+import { test, expect } from "@playwright/test";
+import { reachGuestDetails, fillGuestDetails } from "./studio-v3-walk-to-reveal";
 
 const VIEWPORT = { width: 393, height: 706 } as const;
-
-async function reachGuestDetails(page: Page): Promise<boolean> {
-  await page.goto("/studio-v3");
-  await walkToReveal(page);
-  await advanceRefineToStorytelling(page);
-
-  const reveal = page.getByTestId("studio-v3-final-reveal");
-  await reveal.waitFor({ state: "visible", timeout: 20_000 }).catch(() => undefined);
-  if (!(await reveal.isVisible().catch(() => false))) return false;
-
-  const continueCta = page.getByTestId("studio-v3-final-reveal-continue");
-  const guestDetails = page.getByTestId("studio-v3-guest-details");
-
-  // The reveal runs a short dissolve before the CTA is interactive; retry the
-  // tap a couple of times rather than assuming a single click always lands.
-  for (let i = 0; i < 3; i++) {
-    await continueCta.scrollIntoViewIfNeeded().catch(() => undefined);
-    await continueCta.click({ timeout: 5_000 }).catch(() => undefined);
-    const landed = await guestDetails
-      .waitFor({ state: "visible", timeout: 8_000 })
-      .then(() => true)
-      .catch(() => false);
-    if (landed) return true;
-  }
-  return false;
-}
 
 test.describe("Studio V3 · guest details → checkout @ 393px", () => {
   test.use({ viewport: VIEWPORT });
@@ -53,30 +27,7 @@ test.describe("Studio V3 · guest details → checkout @ 393px", () => {
     const form = page.getByTestId("studio-v3-guest-details");
     await expect(form).toBeVisible();
 
-    await form
-      .getByLabel(/full name/i)
-      .first()
-      .fill("Ana Test");
-    await form
-      .getByLabel(/^email/i)
-      .first()
-      .fill("qa+studio@example.com");
-    const phone = form.getByLabel(/phone/i).first();
-    if (await phone.isVisible().catch(() => false)) await phone.fill("+351912345678");
-    const pickup = form.getByLabel(/pickup/i).first();
-    if (await pickup.isVisible().catch(() => false)) await pickup.fill("Hotel Avenida, Lisbon");
-
-    // Tour date — the Studio enforces a 3-day lead time, so pick a date well
-    // inside the allowed window (or accept the date already fixed upstream).
-    const dateInput = form.locator('input[type="date"]').first();
-    if (await dateInput.isVisible().catch(() => false)) {
-      const iso = await dateInput.evaluate((el: HTMLInputElement) => {
-        const min = el.min ? new Date(el.min + "T00:00:00") : new Date();
-        min.setDate(min.getDate() + 7);
-        return min.toISOString().slice(0, 10);
-      });
-      await dateInput.fill(iso);
-    }
+    await fillGuestDetails(page);
 
     // No horizontal overflow on the mobile form.
     const overflow = await page.evaluate(
