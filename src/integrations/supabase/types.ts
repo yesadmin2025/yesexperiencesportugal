@@ -1132,6 +1132,51 @@ export type Database = {
         }
         Relationships: []
       }
+      email_deferred_sends: {
+        Row: {
+          attempts: number
+          body_text: string
+          created_at: string
+          delivered_at: string | null
+          html: string
+          id: string
+          idempotency_key: string
+          last_error: string | null
+          message_id: string
+          recipient_email: string
+          subject: string
+          template_name: string
+        }
+        Insert: {
+          attempts?: number
+          body_text: string
+          created_at?: string
+          delivered_at?: string | null
+          html: string
+          id?: string
+          idempotency_key: string
+          last_error?: string | null
+          message_id: string
+          recipient_email: string
+          subject: string
+          template_name: string
+        }
+        Update: {
+          attempts?: number
+          body_text?: string
+          created_at?: string
+          delivered_at?: string | null
+          html?: string
+          id?: string
+          idempotency_key?: string
+          last_error?: string | null
+          message_id?: string
+          recipient_email?: string
+          subject?: string
+          template_name?: string
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string

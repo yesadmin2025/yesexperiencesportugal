@@ -12,6 +12,7 @@ import * as React from "react";
 import { render } from "react-email";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { TEMPLATES } from "@/lib/email-templates/registry";
+import { TEAM_NOTIFICATION_RECIPIENTS } from "@/lib/email/team-recipients";
 
 const SITE_NAME = "yesexperiencesportugal";
 const SENDER_DOMAIN = "notify.yesexperiencesportugal.com";
@@ -65,6 +66,137 @@ async function mirrorToSafeRecipient(args: {
       error: e instanceof Error ? e.message : String(e),
     });
   }
+}
+
+/**
+ * Raw Resend connector call. Used both by the live fallback path and by the
+ * deferred-mail flusher.
+ */
+async function resendSend(args: {
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+  idemKey: string;
+}): Promise<{ ok: boolean; status: number; body: string }> {
+  try {
+    const resp = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.LOVABLE_API_KEY}`,
+        "X-Connection-Api-Key": process.env.RESEND_API_KEY!,
+      },
+      body: JSON.stringify({
+        from: "YES Experiences <onboarding@resend.dev>",
+        to: [args.to],
+        reply_to: SANDBOX_SAFE_RECIPIENT,
+        subject: args.subject,
+        html: args.html,
+        text: args.text,
+        headers: { "X-Entity-Ref-ID": args.idemKey },
+      }),
+    });
+    return { ok: resp.ok, status: resp.status, body: resp.ok ? "" : await resp.text() };
+  } catch (e: unknown) {
+    return { ok: false, status: 0, body: e instanceof Error ? e.message : String(e) };
+  }
+}
+
+/**
+ * Park an undeliverable guest email so it is sent automatically as soon as
+ * the sender domain works again. Keyed by idempotency key so a retry of the
+ * same trigger never parks (or later sends) a duplicate.
+ */
+async function deferSend(args: {
+  supabase: typeof supabaseAdmin;
+  messageId: string;
+  templateName: string;
+  recipientEmail: string;
+  subject: string;
+  html: string;
+  plainText: string;
+  idemKey: string;
+  lastError: string;
+}): Promise<void> {
+  const { error } = await args.supabase.from("email_deferred_sends").upsert(
+    {
+      message_id: args.messageId,
+      template_name: args.templateName,
+      recipient_email: args.recipientEmail,
+      subject: args.subject,
+      html: args.html,
+      body_text: args.plainText,
+      idempotency_key: args.idemKey,
+      last_error: args.lastError.slice(0, 300),
+    },
+    { onConflict: "idempotency_key", ignoreDuplicates: true },
+  );
+  if (error) console.error("[email/internal] defer failed", { error: error.message });
+}
+
+let flushInFlight = false;
+
+/**
+ * Retry parked guest emails. Called opportunistically after any successful
+ * send (a success proves the provider is accepting mail again) and exposed
+ * for the internal flush endpoint / manual replays.
+ */
+export async function flushDeferredSends(limit = 10): Promise<{ attempted: number; sent: number }> {
+  if (flushInFlight) return { attempted: 0, sent: 0 };
+  flushInFlight = true;
+  const supabase = supabaseAdmin;
+  let sent = 0;
+  let attempted = 0;
+  try {
+    const { data: rows } = await supabase
+      .from("email_deferred_sends")
+      .select("id, message_id, template_name, recipient_email, subject, html, body_text, idempotency_key, attempts")
+      .is("delivered_at", null)
+      .lt("attempts", 8)
+      .order("created_at", { ascending: true })
+      .limit(limit);
+    for (const row of rows ?? []) {
+      attempted += 1;
+      const res = await resendSend({
+        to: row.recipient_email,
+        subject: row.subject,
+        html: row.html,
+        text: row.body_text,
+        idemKey: row.idempotency_key,
+      });
+      if (res.ok) {
+        sent += 1;
+        await supabase
+          .from("email_deferred_sends")
+          .update({ delivered_at: new Date().toISOString(), attempts: row.attempts + 1 })
+          .eq("id", row.id);
+        await supabase.from("email_send_log").insert({
+          message_id: row.message_id,
+          template_name: row.template_name,
+          recipient_email: row.recipient_email,
+          status: "sent",
+        });
+      } else {
+        await supabase
+          .from("email_deferred_sends")
+          .update({
+            attempts: row.attempts + 1,
+            last_error: `resend ${res.status}: ${res.body.slice(0, 200)}`,
+          })
+          .eq("id", row.id);
+        // Provider still refusing — stop early, the rest will fail the same way.
+        break;
+      }
+    }
+  } catch (e: unknown) {
+    console.error("[email/internal] flush failed", {
+      error: e instanceof Error ? e.message : String(e),
+    });
+  } finally {
+    flushInFlight = false;
+  }
+  return { attempted, sent };
 }
 
 
@@ -176,79 +308,74 @@ export async function sendTransactionalInternal(
       recipient_email: effectiveRecipient,
       status: "pending",
     });
-    try {
-      const resp = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.LOVABLE_API_KEY}`,
-          "X-Connection-Api-Key": process.env.RESEND_API_KEY!,
-        },
-        body: JSON.stringify({
-          from: "YES Experiences <onboarding@resend.dev>",
-          to: [effectiveRecipient],
-          reply_to: "yesexperiences@gmail.com",
-          subject,
-          html,
-          text: plainText,
-          headers: { "X-Entity-Ref-ID": idemKey },
-        }),
+    const res = await resendSend({
+      to: effectiveRecipient,
+      subject,
+      html,
+      text: plainText,
+      idemKey,
+    });
+    if (!res.ok) {
+      console.error("[email/internal] resend fallback failed", {
+        status: res.status,
+        recipient: redact(effectiveRecipient),
+        body: res.body.slice(0, 500),
       });
-      if (!resp.ok) {
-        const errBody = await resp.text();
-        console.error("[email/internal] resend fallback failed", {
-          status: resp.status,
-          recipient: redact(effectiveRecipient),
-          body: errBody.slice(0, 500),
-        });
-        await supabase.from("email_send_log").insert({
-          message_id: messageId,
-          template_name: templateName,
-          recipient_email: effectiveRecipient,
-          status: "failed",
-          error_message: `resend ${resp.status}: ${errBody.slice(0, 300)}`,
-        });
-        // Sandbox safety net: while the branded sender domain is unverified,
-        // Resend only accepts SANDBOX_SAFE_RECIPIENT. Mirror the undeliverable
-        // message there so the YES team still sees every guest email and can
-        // forward it manually. Never mirror twice for the same address.
-        if (
-          resp.status === 403 &&
-          normalizedEmail !== SANDBOX_SAFE_RECIPIENT.toLowerCase() &&
-          errBody.includes("testing emails")
-        ) {
-          await mirrorToSafeRecipient({
-            supabase,
-            templateName,
-            intendedRecipient: effectiveRecipient,
-            subject,
-            html,
-            plainText,
-            idemKey,
-          });
-        }
-        return { ok: false, reason: "resend_failed" };
-      }
-
-      await supabase.from("email_send_log").insert({
-        message_id: messageId,
-        template_name: templateName,
-        recipient_email: effectiveRecipient,
-        status: "sent",
-      });
-      return { ok: true };
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : String(e);
-      console.error("[email/internal] resend fallback exception", { error: msg });
       await supabase.from("email_send_log").insert({
         message_id: messageId,
         template_name: templateName,
         recipient_email: effectiveRecipient,
         status: "failed",
-        error_message: `resend exception: ${msg.slice(0, 300)}`,
+        error_message: `resend ${res.status}: ${res.body.slice(0, 300)}`,
       });
-      return { ok: false, reason: "resend_exception" };
+
+      const isTeamAddress = (TEAM_NOTIFICATION_RECIPIENTS as readonly string[])
+        .map((r) => r.toLowerCase())
+        .includes(normalizedEmail);
+
+      // Automatic fallback #1 — park the guest's message so it is delivered
+      // for real the moment the provider/domain starts accepting mail again.
+      if (!isTeamAddress) {
+        await deferSend({
+          supabase,
+          messageId,
+          templateName,
+          recipientEmail: effectiveRecipient,
+          subject,
+          html,
+          plainText,
+          idemKey,
+          lastError: `resend ${res.status}: ${res.body}`,
+        });
+      }
+
+      // Automatic fallback #2 — mirror the undeliverable message to the safe
+      // inbox so the team can forward it immediately, whatever the reason for
+      // the rejection (sandbox restriction, unverified domain, provider 4xx).
+      if (res.status !== 429 && normalizedEmail !== SANDBOX_SAFE_RECIPIENT.toLowerCase()) {
+        await mirrorToSafeRecipient({
+          supabase,
+          templateName,
+          intendedRecipient: effectiveRecipient,
+          subject,
+          html,
+          plainText,
+          idemKey,
+        });
+      }
+      return { ok: false, reason: "resend_failed" };
     }
+
+    await supabase.from("email_send_log").insert({
+      message_id: messageId,
+      template_name: templateName,
+      recipient_email: effectiveRecipient,
+      status: "sent",
+    });
+    // A successful send proves the provider is accepting mail — drain any
+    // guest confirmations that were parked while it was refusing.
+    await flushDeferredSends();
+    return { ok: true };
   }
   // ─── /RESEND FALLBACK ────────────────────────────────────────────────────
 
@@ -288,7 +415,39 @@ export async function sendTransactionalInternal(
       status: "failed",
       error_message: "Failed to enqueue email",
     });
+    // Branded queue unavailable — try the direct provider immediately, and
+    // park the message if that fails too, so the guest still gets it later.
+    if (process.env.RESEND_API_KEY && process.env.LOVABLE_API_KEY) {
+      const res = await resendSend({
+        to: effectiveRecipient,
+        subject,
+        html,
+        text: plainText,
+        idemKey,
+      });
+      if (res.ok) {
+        await supabase.from("email_send_log").insert({
+          message_id: messageId,
+          template_name: templateName,
+          recipient_email: effectiveRecipient,
+          status: "sent",
+        });
+        return { ok: true };
+      }
+      await deferSend({
+        supabase,
+        messageId,
+        templateName,
+        recipientEmail: effectiveRecipient,
+        subject,
+        html,
+        plainText,
+        idemKey,
+        lastError: `enqueue_failed; resend ${res.status}: ${res.body}`,
+      });
+    }
     return { ok: false, reason: "enqueue_failed" };
+
   }
 
   return { ok: true };
