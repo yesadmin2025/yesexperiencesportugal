@@ -37,7 +37,22 @@ export interface CheckoutReceiptProps {
   receiptUrl?: string | null;
   bookingStatusUrl?: string | null;
   pickup?: string | null;
+  /** Local start time captured at checkout, e.g. "09:00". */
+  startTime?: string | null;
+  durationLabel?: string | null;
+  /** The designed day, stop by stop (frozen booking snapshot). */
+  itinerary?: Array<{
+    order?: number | null;
+    label: string;
+    durationMinutes?: number | null;
+    note?: string | null;
+  }> | null;
+  includedItems?: string[] | null;
+  addOnLabels?: string[] | null;
+  removedOptions?: string[] | null;
+  customerNotes?: string[] | null;
 }
+
 
 /**
  * Age-band multipliers — imported from the single source of truth in
