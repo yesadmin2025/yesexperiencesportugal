@@ -346,11 +346,12 @@ export function localStoryArticleLd(args: {
   const author = args.authorName
     ? { "@type": "Person" as const, name: args.authorName }
     : {
+        // Reference-only (see publisher note below): the Person entity is
+        // defined by the founder node emitted elsewhere on the page.
         "@type": "Person" as const,
         "@id": FOUNDER_ID,
         name: "Nidia Almeida",
         url: `${SITE_URL}/about`,
-        sameAs: ["https://www.linkedin.com/in/nidiadealmeida"],
       };
   return {
     "@context": "https://schema.org",
@@ -367,15 +368,14 @@ export function localStoryArticleLd(args: {
       : {}),
     inLanguage: "en",
     author,
+    // Reference-only: the full Organization entity is defined once per page
+    // by __root.tsx. Re-defining it here produced two competing definitions
+    // for the same @id.
     publisher: {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
       name: "YES Experiences Portugal",
       url: SITE_URL,
-      logo: {
-        "@type": "ImageObject",
-        url: `${SITE_URL}/brand/png/yes-experiences-portugal-centered-full@2x.png`,
-      },
     },
   };
 }
