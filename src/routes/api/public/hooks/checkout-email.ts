@@ -96,6 +96,9 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
           addOnLabels: strList(body.addOnLabels),
           removedOptions: strList(body.removedOptions),
           customerNotes: strList(body.customerNotes),
+          itineraryUrl: `https://yesexperiencesportugal.com/itinerary?session_id=${encodeURIComponent(
+            String(body.bookingRef ?? sessionId),
+          )}`,
         };
 
         // Downloadable itinerary attached to BOTH confirmation emails.
