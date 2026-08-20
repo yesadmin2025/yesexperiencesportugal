@@ -379,13 +379,7 @@ export async function walkToReveal(page: Page): Promise<void> {
         continue;
       }
       idleActions = 0;
-      // The intro is one `data-phase` with three sub-steps, so its contract
-      // is "a sub-step was consumed" — the next iteration re-reads the DOM.
-      if (phase === "intro") {
-        await page.waitForTimeout(350);
-        landed = "intro";
-        break;
-      }
+
       // Short poll: a tap that only records an answer leaves the phase in
       // place, so fall through to the next action rather than burning the
       // full contract budget on it.
