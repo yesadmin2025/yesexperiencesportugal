@@ -119,7 +119,9 @@ test.describe("Studio V3 · Final Reveal + Guest Details @ 393×588", () => {
       "Add-on toggles must not appear on Storytelling",
     ).toBe(0);
 
-    // Continue to Guest Details, then trigger the story-sent auto-email.
+    // Continue to Guest Details. The Signature Story email is no longer sent
+    // on email blur — it fires once, on the explicit submit action — so the
+    // contract asserted here is the honest submit affordance, not a blur toast.
     await continueCta.click();
     const email = page.getByLabel(/email/i).first();
     await email.waitFor({ state: "visible", timeout: 5_000 });
@@ -129,9 +131,11 @@ test.describe("Studio V3 · Final Reveal + Guest Details @ 393×588", () => {
 
     await email.fill("qa+reveal@yesexperiences.pt");
     await email.blur();
-    const confirmation = page.getByText(/signature story.*on its way/i);
-    await expect(confirmation).toBeVisible({ timeout: 3_000 });
+    const submit = page.getByTestId("studio-v3-guest-details-submit");
+    await expect(submit).toBeVisible();
+    await expect(submit).toHaveText(/email my signature story/i);
   });
+
 
   test("visual — reveal and Guest Details baselines", async ({ page }) => {
     await page.goto("/studio-v3");
