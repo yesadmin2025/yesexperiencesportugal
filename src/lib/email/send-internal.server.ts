@@ -16,6 +16,57 @@ import { TEMPLATES } from "@/lib/email-templates/registry";
 const SITE_NAME = "yesexperiencesportugal";
 const SENDER_DOMAIN = "notify.yesexperiencesportugal.com";
 const FROM_DOMAIN = "notify.yesexperiencesportugal.com";
+/**
+ * The only address the sandbox Resend sender is allowed to deliver to while
+ * the branded domain is unverified. Undeliverable guest mail is mirrored here
+ * so nothing is silently lost.
+ */
+const SANDBOX_SAFE_RECIPIENT = "yesexperiences@gmail.com";
+
+async function mirrorToSafeRecipient(args: {
+  supabase: typeof supabaseAdmin;
+  templateName: string;
+  intendedRecipient: string;
+  subject: string;
+  html: string;
+  plainText: string;
+  idemKey: string;
+}): Promise<void> {
+  const { supabase, templateName, intendedRecipient, subject, html, plainText, idemKey } = args;
+  const mirrorId = crypto.randomUUID();
+  const notice = `<div style="font-family:Arial,sans-serif;font-size:13px;line-height:1.5;color:#2E2E2E;background:#F4EEE2;padding:12px 16px;margin-bottom:16px;border-left:3px solid #C9A96A;">Undeliverable copy — this message was meant for <strong>${intendedRecipient}</strong> but the sender domain is not verified yet. Please forward it manually.</div>`;
+  try {
+    const resp = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.LOVABLE_API_KEY}`,
+        "X-Connection-Api-Key": process.env.RESEND_API_KEY!,
+      },
+      body: JSON.stringify({
+        from: "YES Experiences <onboarding@resend.dev>",
+        to: [SANDBOX_SAFE_RECIPIENT],
+        reply_to: intendedRecipient,
+        subject: `[Forward to ${intendedRecipient}] ${subject}`,
+        html: `${notice}${html}`,
+        text: `Undeliverable copy — meant for ${intendedRecipient}. Please forward manually.\n\n${plainText}`,
+        headers: { "X-Entity-Ref-ID": `mirror-${idemKey}` },
+      }),
+    });
+    await supabase.from("email_send_log").insert({
+      message_id: mirrorId,
+      template_name: `${templateName}-mirror`,
+      recipient_email: SANDBOX_SAFE_RECIPIENT,
+      status: resp.ok ? "sent" : "failed",
+      error_message: resp.ok ? null : `mirror resend ${resp.status}`,
+    });
+  } catch (e: unknown) {
+    console.error("[email/internal] mirror failed", {
+      error: e instanceof Error ? e.message : String(e),
+    });
+  }
+}
+
 
 function redact(email: string): string {
   const [l, d] = email.split("@");
