@@ -47,7 +47,10 @@ export const sendSignatureStoryEmail = createServerFn({ method: "POST" })
   .inputValidator((data) => inputSchema.parse(data))
   .handler(async ({ data }) => {
     try {
-      const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
+      const [{ sendTransactionalInternal }, { TEAM_NOTIFICATION_RECIPIENTS }] = await Promise.all([
+        import("@/lib/email/send-internal.server"),
+        import("@/lib/email/team-recipients"),
+      ]);
       // Revision-scoped idempotency: repeated submits of the same journey
       // dedupe at the email_send_log layer; a refined journey (new revision)
       // sends a fresh copy.
@@ -59,6 +62,47 @@ export const sendSignatureStoryEmail = createServerFn({ method: "POST" })
         idempotencyKey: `signature-story-${key}`,
         templateData: data.snapshot as unknown as Record<string, unknown>,
       });
+
+      // Team copy — the YES team must see every designed day, even when the
+      // traveller never books. Same revision key so refining sends once more
+      // and re-typing the email never spams the inbox. Non-fatal.
+      try {
+        const s = data.snapshot;
+        const message = [
+          `Journey: ${s.title}`,
+          `Date: ${s.dateLabel ?? "not chosen yet"}`,
+          `Guests: ${s.guests}`,
+          `Pickup: ${s.pickupLabel}`,
+          data.tourId ? `Base tour: ${data.tourId}` : null,
+          "",
+          "Chapters:",
+          ...s.chapters.map((c, i) => `${i + 1}. ${c.title} — ${c.body}`),
+          "",
+          s.inclusions.length ? `Included: ${s.inclusions.join(", ")}` : null,
+        ]
+          .filter((line) => line !== null)
+          .join("\n");
+        await Promise.all(
+          TEAM_NOTIFICATION_RECIPIENTS.map((recipient) =>
+            sendTransactionalInternal({
+              templateName: "internal-lead",
+              recipientEmail: recipient,
+              idempotencyKey: `studio-design-${key}-${recipient}`,
+              templateData: {
+                firstName: "Studio",
+                lastName: "design (not booked yet)",
+                email: data.email,
+                message,
+                source: "studio-v3-design",
+                submittedAt: new Date().toISOString(),
+              },
+            }),
+          ),
+        );
+      } catch (teamErr) {
+        console.error("[sendSignatureStoryEmail] team copy failed", teamErr);
+      }
+
       return { ok: true } as const;
     } catch (err) {
       console.error("[sendSignatureStoryEmail] failed", err);
@@ -67,3 +111,4 @@ export const sendSignatureStoryEmail = createServerFn({ method: "POST" })
       return { ok: true } as const;
     }
   });
+
