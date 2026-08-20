@@ -49,7 +49,7 @@ function fillRequired() {
 }
 
 function setTourDate(iso: string) {
-  const input = screen.getByLabelText(/selected tour date/i) as HTMLInputElement;
+  const input = screen.getByLabelText(/tour date/i) as HTMLInputElement;
   fireEvent.change(input, { target: { value: iso } });
   return input;
 }
@@ -78,7 +78,7 @@ describe("tour date rules · guard layer", () => {
 describe("tour date rules · Guest Details entry point", () => {
   it("publishes the first allowed date as the input's native min", () => {
     render(<GuestDetailsStep onBack={() => {}} onSubmit={() => {}} />);
-    const input = screen.getByLabelText(/selected tour date/i) as HTMLInputElement;
+    const input = screen.getByLabelText(/tour date/i) as HTMLInputElement;
     expect(input.min).toBe(FIRST_ALLOWED);
     expect(input.getAttribute("max")).toBeNull();
   });
