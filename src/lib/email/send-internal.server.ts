@@ -67,6 +67,137 @@ async function mirrorToSafeRecipient(args: {
   }
 }
 
+/**
+ * Raw Resend connector call. Used both by the live fallback path and by the
+ * deferred-mail flusher.
+ */
+async function resendSend(args: {
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+  idemKey: string;
+}): Promise<{ ok: boolean; status: number; body: string }> {
+  try {
+    const resp = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.LOVABLE_API_KEY}`,
+        "X-Connection-Api-Key": process.env.RESEND_API_KEY!,
+      },
+      body: JSON.stringify({
+        from: "YES Experiences <onboarding@resend.dev>",
+        to: [args.to],
+        reply_to: SANDBOX_SAFE_RECIPIENT,
+        subject: args.subject,
+        html: args.html,
+        text: args.text,
+        headers: { "X-Entity-Ref-ID": args.idemKey },
+      }),
+    });
+    return { ok: resp.ok, status: resp.status, body: resp.ok ? "" : await resp.text() };
+  } catch (e: unknown) {
+    return { ok: false, status: 0, body: e instanceof Error ? e.message : String(e) };
+  }
+}
+
+/**
+ * Park an undeliverable guest email so it is sent automatically as soon as
+ * the sender domain works again. Keyed by idempotency key so a retry of the
+ * same trigger never parks (or later sends) a duplicate.
+ */
+async function deferSend(args: {
+  supabase: typeof supabaseAdmin;
+  messageId: string;
+  templateName: string;
+  recipientEmail: string;
+  subject: string;
+  html: string;
+  plainText: string;
+  idemKey: string;
+  lastError: string;
+}): Promise<void> {
+  const { error } = await args.supabase.from("email_deferred_sends").upsert(
+    {
+      message_id: args.messageId,
+      template_name: args.templateName,
+      recipient_email: args.recipientEmail,
+      subject: args.subject,
+      html: args.html,
+      body_text: args.plainText,
+      idempotency_key: args.idemKey,
+      last_error: args.lastError.slice(0, 300),
+    },
+    { onConflict: "idempotency_key", ignoreDuplicates: true },
+  );
+  if (error) console.error("[email/internal] defer failed", { error: error.message });
+}
+
+let flushInFlight = false;
+
+/**
+ * Retry parked guest emails. Called opportunistically after any successful
+ * send (a success proves the provider is accepting mail again) and exposed
+ * for the internal flush endpoint / manual replays.
+ */
+export async function flushDeferredSends(limit = 10): Promise<{ attempted: number; sent: number }> {
+  if (flushInFlight) return { attempted: 0, sent: 0 };
+  flushInFlight = true;
+  const supabase = supabaseAdmin;
+  let sent = 0;
+  let attempted = 0;
+  try {
+    const { data: rows } = await supabase
+      .from("email_deferred_sends")
+      .select("id, message_id, template_name, recipient_email, subject, html, body_text, idempotency_key, attempts")
+      .is("delivered_at", null)
+      .lt("attempts", 8)
+      .order("created_at", { ascending: true })
+      .limit(limit);
+    for (const row of rows ?? []) {
+      attempted += 1;
+      const res = await resendSend({
+        to: row.recipient_email,
+        subject: row.subject,
+        html: row.html,
+        text: row.body_text,
+        idemKey: row.idempotency_key,
+      });
+      if (res.ok) {
+        sent += 1;
+        await supabase
+          .from("email_deferred_sends")
+          .update({ delivered_at: new Date().toISOString(), attempts: row.attempts + 1 })
+          .eq("id", row.id);
+        await supabase.from("email_send_log").insert({
+          message_id: row.message_id,
+          template_name: row.template_name,
+          recipient_email: row.recipient_email,
+          status: "sent",
+        });
+      } else {
+        await supabase
+          .from("email_deferred_sends")
+          .update({
+            attempts: row.attempts + 1,
+            last_error: `resend ${res.status}: ${res.body.slice(0, 200)}`,
+          })
+          .eq("id", row.id);
+        // Provider still refusing — stop early, the rest will fail the same way.
+        break;
+      }
+    }
+  } catch (e: unknown) {
+    console.error("[email/internal] flush failed", {
+      error: e instanceof Error ? e.message : String(e),
+    });
+  } finally {
+    flushInFlight = false;
+  }
+  return { attempted, sent };
+}
+
 
 function redact(email: string): string {
   const [l, d] = email.split("@");
