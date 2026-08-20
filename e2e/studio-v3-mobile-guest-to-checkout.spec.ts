@@ -16,6 +16,10 @@ import { walkToReveal, advanceRefineToStorytelling } from "./studio-v3-walk-to-r
 const VIEWPORT = { width: 393, height: 706 } as const;
 
 async function reachGuestDetails(page: Page): Promise<boolean> {
+  page.on("console", (m) => {
+    if (m.type() === "error" || m.type() === "warning") console.log("PAGE", m.type(), m.text().slice(0, 200));
+  });
+  page.on("pageerror", (e) => console.log("PAGEERROR", String(e).slice(0, 300)));
   await page.goto("/studio-v3");
   await walkToReveal(page);
   await advanceRefineToStorytelling(page);
