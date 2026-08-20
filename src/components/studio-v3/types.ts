@@ -106,7 +106,13 @@ export type AdaptiveRefinementId =
   | "hands-just-watch"
   | "local-river-and-rice"
   | "local-market-morning"
-  | "local-artisans";
+  | "local-artisans"
+  | "faith-sanctuary-time"
+  | "faith-templar-heritage"
+  | "faith-quiet-reflection"
+  | "photo-golden-hour"
+  | "photo-landmarks"
+  | "photo-no-preference";
 
 export type InvestmentTier = "considered" | "elevated" | "bespoke" | "open";
 

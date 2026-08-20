@@ -16,7 +16,7 @@ import type {
   StudioV3State,
 } from "@/components/studio-v3/types";
 
-export type AdaptiveQuestionKind = "coast" | "wine" | "hands" | "local";
+export type AdaptiveQuestionKind = "coast" | "wine" | "hands" | "local" | "faith" | "photo";
 
 export interface AdaptiveQuestion {
   kind: AdaptiveQuestionKind;
@@ -44,6 +44,21 @@ const LOCAL_REFINEMENT_DESTINATIONS = new Set([
   "comporta-troia",
 ]);
 
+/** Faith only branches where a sanctuary or sacred-heritage route exists. */
+const FAITH_DESTINATIONS = new Set([
+  "no-preference",
+  "anywhere-special",
+  "spiritual-coast",
+  "central-portugal",
+]);
+
+/** Photography only branches where the landmark alternative is real. */
+const PHOTO_DESTINATIONS = new Set([
+  "no-preference",
+  "anywhere-special",
+  "lisbon-sintra-cascais",
+]);
+
 const RIVER_DESTINATIONS = new Set(["no-preference", "anywhere-special", "comporta-troia"]);
 const ARTISAN_DESTINATIONS = new Set([
   "no-preference",
@@ -66,6 +81,12 @@ const REFINEMENT_TO_SIGNAL: Readonly<
   "local-river-and-rice": "comporta-rice-fields",
   "local-market-morning": null,
   "local-artisans": "paint-azulejo",
+  "faith-sanctuary-time": "living-faith-and-coast",
+  "faith-templar-heritage": "templars-and-university",
+  "faith-quiet-reflection": null,
+  "photo-golden-hour": null,
+  "photo-landmarks": "palaces-and-atlantic",
+  "photo-no-preference": null,
 };
 
 const REFINEMENT_SUMMARY: Readonly<Record<AdaptiveRefinementId, string>> = {
@@ -81,6 +102,12 @@ const REFINEMENT_SUMMARY: Readonly<Record<AdaptiveRefinementId, string>> = {
   "local-river-and-rice": "Rice fields and river villages",
   "local-market-morning": "A market morning among locals",
   "local-artisans": "Artisans at work",
+  "faith-sanctuary-time": "Time inside the sanctuary",
+  "faith-templar-heritage": "Sacred heritage and its history",
+  "faith-quiet-reflection": "Quiet reflection, without a set programme",
+  "photo-golden-hour": "The day paced around the best light",
+  "photo-landmarks": "The landmarks, properly framed",
+  "photo-no-preference": "No photography preference",
 };
 
 export function refinementToDiscoverySignal(
@@ -127,6 +154,16 @@ function handsRelevant(state: StudioV3State): boolean {
   );
 }
 
+function faithRelevant(state: StudioV3State): boolean {
+  if (!FAITH_DESTINATIONS.has(state.destinationIntent)) return false;
+  return state.feeling === "faith" || state.interests.includes("faith");
+}
+
+function photoRelevant(state: StudioV3State): boolean {
+  if (!PHOTO_DESTINATIONS.has(state.destinationIntent)) return false;
+  return state.interests.includes("photography");
+}
+
 function localRelevant(state: StudioV3State): boolean {
   if (!LOCAL_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
   return state.interests.includes("local-life") || state.feeling === "hidden";
@@ -134,13 +171,17 @@ function localRelevant(state: StudioV3State): boolean {
 
 function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
   const available: AdaptiveQuestionKind[] = [];
+  if (faithRelevant(state)) available.push("faith");
   if (coastRelevant(state)) available.push("coast");
   if (wineRelevant(state)) available.push("wine");
   if (handsRelevant(state)) available.push("hands");
   if (localRelevant(state)) available.push("local");
+  if (photoRelevant(state)) available.push("photo");
 
   const leadFirst: AdaptiveQuestionKind | null =
-    state.feeling === "coastal" || state.feeling === "adventure"
+    state.feeling === "faith"
+      ? "faith"
+      : state.feeling === "coastal" || state.feeling === "adventure"
       ? "coast"
       : state.feeling === "wine-food" || state.feeling === "slow-luxury"
         ? "wine"
@@ -189,6 +230,60 @@ export function resolveAdaptiveQuestion(state: StudioV3State): AdaptiveQuestion 
 
   const kind = orderedKinds(state)[0];
   if (!kind) return null;
+
+  if (kind === "faith") {
+    return {
+      kind,
+      eyebrow: "Quiet ground",
+      title: "How should the sacred part",
+      titleAccent: "of the day feel?",
+      hint: "Shown only where a sanctuary or sacred-heritage route can hold it.",
+      options: [
+        {
+          id: "faith-sanctuary-time",
+          label: "Time in the sanctuary",
+          whisper: "Unhurried time where people come to pray.",
+        },
+        {
+          id: "faith-templar-heritage",
+          label: "Sacred heritage",
+          whisper: "Centuries of stone, orders and scholarship.",
+        },
+        {
+          id: "faith-quiet-reflection",
+          label: "Simply quiet",
+          whisper: "Space to reflect, with nothing scheduled around it.",
+        },
+      ],
+    };
+  }
+
+  if (kind === "photo") {
+    return {
+      kind,
+      eyebrow: "The light",
+      title: "What should the camera",
+      titleAccent: "come home with?",
+      hint: "This shapes pacing and where the longer pauses fall.",
+      options: [
+        {
+          id: "photo-golden-hour",
+          label: "The best light",
+          whisper: "We pace the day around golden hour.",
+        },
+        {
+          id: "photo-landmarks",
+          label: "The landmarks",
+          whisper: "Palaces and the Atlantic, properly framed.",
+        },
+        {
+          id: "photo-no-preference",
+          label: "No preference",
+          whisper: "Keep the day as it is — the light will come.",
+        },
+      ],
+    };
+  }
 
   if (kind === "coast") {
     return {
