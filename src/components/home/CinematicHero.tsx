@@ -233,7 +233,7 @@ export function CinematicHero() {
           >
             <span className="hero-cta__sheen" aria-hidden="true" />
             <span className="relative z-10 inline-flex items-center gap-2.5">
-              Create Your Story
+              Design your day
               <svg
                 className="hero-cta__arrow"
                 width="10"
