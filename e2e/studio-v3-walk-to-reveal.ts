@@ -162,10 +162,57 @@ export async function advanceGeneric(page: Page, extraTestIds?: string[]): Promi
 }
 
 
+/**
+ * Deterministic intro handler. The intro is a single `data-phase` ("intro")
+ * with three sub-steps (welcome → name → path), so the generic
+ * phase-changed heuristic can mis-read it as a stall. Detect the sub-step
+ * from the DOM and advance explicitly.
+ */
+export async function advanceIntro(page: Page): Promise<boolean> {
+  if (
+    await page
+      .locator('[data-phase-cta="intro-begin"]')
+      .first()
+      .isVisible()
+      .catch(() => false)
+  ) {
+    return safeClick(page, '[data-phase-cta="intro-begin"]');
+  }
+  if (
+    await page
+      .locator('[data-phase-cta="intro-name"]')
+      .first()
+      .isVisible()
+      .catch(() => false)
+  ) {
+    const input = page.locator('input[aria-label="Your first name (optional)"]').first();
+    if (await input.isVisible().catch(() => false)) {
+      await input.fill("Ana").catch(() => undefined);
+    }
+    return safeClick(page, '[data-phase-cta="intro-name"]');
+  }
+  const guided = page
+    .locator('[data-phase-cta="intro-path"][data-phase-cta-recommended="true"]')
+    .first();
+  if (await guided.isVisible().catch(() => false)) {
+    return safeClick(page, '[data-phase-cta="intro-path"][data-phase-cta-recommended="true"]');
+  }
+  if (
+    await page
+      .locator('[data-phase-cta="intro-path"]')
+      .first()
+      .isVisible()
+      .catch(() => false)
+  ) {
+    return safeClick(page, '[data-phase-cta="intro-path"]');
+  }
+  return false;
+}
+
 export async function walkToReveal(page: Page): Promise<void> {
   let lastPhase: string | null = null;
   let stuck = 0;
-  for (let i = 0; i < 44; i++) {
+  for (let i = 0; i < 52; i++) {
     await dismissReactionOverlay(page);
     const phase = await currentPhase(page);
 
@@ -196,6 +243,22 @@ export async function walkToReveal(page: Page): Promise<void> {
       if ((await currentPhase(page)) === "storyboard") break;
     }
 
+    if (
+      phase === "intro" ||
+      (await page
+        .locator('[data-phase-cta^="intro-"]')
+        .first()
+        .isVisible()
+        .catch(() => false))
+    ) {
+      if (await advanceIntro(page)) {
+        await page.waitForTimeout(450);
+        lastPhase = phase;
+        stuck = 0;
+        continue;
+      }
+    }
+
     const clicked = await walkOnce(page);
     if (!clicked) {
       await page.waitForTimeout(350);
@@ -205,7 +268,7 @@ export async function walkToReveal(page: Page): Promise<void> {
     if (phase && phase === lastPhase) stuck++;
     else stuck = 0;
     lastPhase = phase;
-    if (stuck > 4) break;
+    if (stuck > 6) break;
   }
 }
 
