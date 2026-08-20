@@ -157,8 +157,28 @@ export async function sendTransactionalInternal(
           status: "failed",
           error_message: `resend ${resp.status}: ${errBody.slice(0, 300)}`,
         });
+        // Sandbox safety net: while the branded sender domain is unverified,
+        // Resend only accepts SANDBOX_SAFE_RECIPIENT. Mirror the undeliverable
+        // message there so the YES team still sees every guest email and can
+        // forward it manually. Never mirror twice for the same address.
+        if (
+          resp.status === 403 &&
+          normalizedEmail !== SANDBOX_SAFE_RECIPIENT.toLowerCase() &&
+          errBody.includes("testing emails")
+        ) {
+          await mirrorToSafeRecipient({
+            supabase,
+            templateName,
+            intendedRecipient: effectiveRecipient,
+            subject,
+            html,
+            plainText,
+            idemKey,
+          });
+        }
         return { ok: false, reason: "resend_failed" };
       }
+
       await supabase.from("email_send_log").insert({
         message_id: messageId,
         template_name: templateName,
