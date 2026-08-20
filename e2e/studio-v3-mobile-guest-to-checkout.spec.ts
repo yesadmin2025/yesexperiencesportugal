@@ -41,7 +41,6 @@ async function reachGuestDetails(page: Page): Promise<boolean> {
   return false;
 }
 
-
 test.describe("Studio V3 · guest details → checkout @ 393px", () => {
   test.use({ viewport: VIEWPORT });
 
@@ -78,7 +77,6 @@ test.describe("Studio V3 · guest details → checkout @ 393px", () => {
       });
       await dateInput.fill(iso);
     }
-
 
     // No horizontal overflow on the mobile form.
     const overflow = await page.evaluate(
