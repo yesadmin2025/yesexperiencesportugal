@@ -7183,6 +7183,10 @@ html {
   body:has(.itinerary-doc) header,
   body:has(.itinerary-doc) footer,
   body:has(.itinerary-doc) .itinerary-actions,
+  /* Interactive-only chrome: the map and the search/jump rail carry no
+     information the printed stop list does not already state. */
+  body:has(.itinerary-doc) .itinerary-map,
+  body:has(.itinerary-doc) .itinerary-find,
   body:has(.itinerary-doc) .fixed {
     display: none !important;
   }

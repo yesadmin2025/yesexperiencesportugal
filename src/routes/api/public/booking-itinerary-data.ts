@@ -59,6 +59,9 @@ export const Route = createFileRoute("/api/public/booking-itinerary-data")({
           {
             ok: true,
             reference: sessionId,
+            // Non-PII: lets the itinerary map request the real Signature
+            // driving route instead of a straight dashed connector.
+            tourId: str(snapshot.tourId, 80),
             experienceName: str(snapshot.experienceName) ?? str(snapshot.tourTitle),
             customerName: str(snapshot.customerName, 160),
             dateLabel: str(snapshot.dateExact, 32),
