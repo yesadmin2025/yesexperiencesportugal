@@ -416,7 +416,11 @@ export async function sendTransactionalInternal(
       subject,
       html,
       text: plainText,
-      attachments: attachments ?? [],
+      attachments: (attachments ?? []).map((a) => ({
+        filename: a.filename,
+        content: a.content,
+        content_type: a.contentType ?? "application/octet-stream",
+      })),
       purpose: "transactional",
       label: templateName,
       idempotency_key: idemKey,
