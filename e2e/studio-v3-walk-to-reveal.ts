@@ -302,15 +302,43 @@ async function playMomentsReel(page: Page): Promise<boolean> {
 }
 
 /**
+ * Intro sub-step contract. The intro is a single `data-phase` ("intro") with
+ * three sub-steps (welcome → name → path), so its contract is expressed on
+ * the visible `data-phase-cta` instead of the phase index: consume each
+ * sub-step, waiting for the CTA identity to change, until the intro is done.
+ */
+async function introSubStep(page: Page): Promise<string | null> {
+  const cta = page.locator('[data-phase-cta^="intro-"]').first();
+  if (!(await cta.isVisible().catch(() => false))) return null;
+  return cta.getAttribute("data-phase-cta").catch(() => null);
+}
+
+async function advanceThroughIntro(page: Page): Promise<boolean> {
+  for (let step = 0; step < 4; step++) {
+    const before = await introSubStep(page);
+    if (before === null) return true; // intro fully consumed
+    if (!(await advanceIntro(page))) return false;
+    const deadline = Date.now() + 5_000;
+    while (Date.now() < deadline) {
+      const after = await introSubStep(page);
+      if (after !== before) break;
+      await page.waitForTimeout(120);
+    }
+  }
+  return (await introSubStep(page)) === null;
+}
+
+/**
  * Per-phase action contract. Each entry knows how to act on its phase; the
  * walker then asserts the expected transition instead of retrying blindly.
  * Phases without an entry fall back to the answer/continue heuristic.
  */
 const PHASE_ACTIONS: Partial<Record<string, (page: Page) => Promise<boolean>>> = {
-  intro: advanceIntro,
+  intro: advanceThroughIntro,
   map: playMomentsReel,
   storyboard: playMomentsReel,
 };
+
 
 /**
  * Walk the funnel to the Refine screen using explicit expected-next-phase
