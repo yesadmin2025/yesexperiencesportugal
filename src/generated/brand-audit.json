@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T02:57:23.472Z",
+  "generatedAt": "2026-08-20T12:13:02.196Z",
   "filesScanned": 1002,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,10 +18,10 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 423,
-    "approved": 102,
+    "total": 426,
+    "approved": 104,
     "allowlisted": 71,
-    "mismatch": 250
+    "mismatch": 251
   },
   "findings": [
     {
@@ -2282,6 +2282,33 @@
       "normalized": "#1f1f1f",
       "snippet": "\"charcoal-deep\": \"#1F1F1F\",",
       "status": "allowlisted"
+    },
+    {
+      "file": "src/lib/email/send-internal.server.ts",
+      "line": 37,
+      "col": 97,
+      "raw": "#2E2E2E",
+      "normalized": "#2e2e2e",
+      "snippet": "const notice = `<div style=\"font-family:Arial,sans-serif;font-size:13px;line-height:1.5;color:#2E2E2E;background:#F4EEE2;padding:12px 16px;margin-bottom:16px;bo",
+      "status": "approved"
+    },
+    {
+      "file": "src/lib/email/send-internal.server.ts",
+      "line": 37,
+      "col": 116,
+      "raw": "#F4EEE2",
+      "normalized": "#f4eee2",
+      "snippet": "const notice = `<div style=\"font-family:Arial,sans-serif;font-size:13px;line-height:1.5;color:#2E2E2E;background:#F4EEE2;padding:12px 16px;margin-bottom:16px;bo",
+      "status": "mismatch"
+    },
+    {
+      "file": "src/lib/email/send-internal.server.ts",
+      "line": 37,
+      "col": 183,
+      "raw": "#C9A96A",
+      "normalized": "#c9a96a",
+      "snippet": "const notice = `<div style=\"font-family:Arial,sans-serif;font-size:13px;line-height:1.5;color:#2E2E2E;background:#F4EEE2;padding:12px 16px;margin-bottom:16px;bo",
+      "status": "approved"
     },
     {
       "file": "src/lib/email-templates/booking-confirmation.tsx",
