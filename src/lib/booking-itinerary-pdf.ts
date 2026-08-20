@@ -80,12 +80,14 @@ export function buildItineraryPdfBase64(input: ItineraryPdfInput): string {
         size: 11.5,
         color: TEAL,
         spaceBefore: 8,
-        minSpace: stop.note ? 60 : 28,
+        // Title and its note travel together to the next page if needed.
+        keepWithNext: true,
       });
       if (stop.note) {
         lines.push({ text: stop.note, size: 10.5, color: CHARCOAL, spaceBefore: 2 });
       }
     });
+
   }
 
   section(lines, "Included", input.includedItems);
