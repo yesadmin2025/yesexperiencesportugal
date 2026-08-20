@@ -22,11 +22,6 @@ async function reachGuestDetails(page: Page): Promise<boolean> {
 
   const reveal = page.getByTestId("studio-v3-final-reveal");
   if (!(await reveal.isVisible().catch(() => false))) {
-    await page.screenshot({ path: "/tmp/browser/studio/reveal-fail.png" });
-    console.log(
-      "DEBUG phase:",
-      await page.locator('[data-testid="studio-v3-root"]').first().getAttribute("data-phase"),
-    );
     return false;
   }
 
@@ -48,13 +43,6 @@ async function reachGuestDetails(page: Page): Promise<boolean> {
     .getByTestId("studio-v3-guest-details")
     .isVisible({ timeout: 8_000 })
     .catch(() => false);
-  if (!ok) {
-    console.log(
-      "DEBUG post-continue phase:",
-      await page.locator('[data-testid="studio-v3-root"]').first().getAttribute("data-phase"),
-    );
-    await page.screenshot({ path: "/tmp/browser/studio/guest-fail.png" });
-  }
   return ok;
 }
 
@@ -70,8 +58,14 @@ test.describe("Studio V3 · guest details → checkout @ 393px", () => {
     const form = page.getByTestId("studio-v3-guest-details");
     await expect(form).toBeVisible();
 
-    await form.getByLabel(/full name/i).first().fill("Ana Test");
-    await form.getByLabel(/^email/i).first().fill("qa+studio@example.com");
+    await form
+      .getByLabel(/full name/i)
+      .first()
+      .fill("Ana Test");
+    await form
+      .getByLabel(/^email/i)
+      .first()
+      .fill("qa+studio@example.com");
     const phone = form.getByLabel(/phone/i).first();
     if (await phone.isVisible().catch(() => false)) await phone.fill("+351912345678");
     const pickup = form.getByLabel(/pickup/i).first();
