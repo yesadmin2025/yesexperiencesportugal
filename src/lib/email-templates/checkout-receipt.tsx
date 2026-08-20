@@ -55,6 +55,8 @@ export interface CheckoutReceiptProps {
   addOnLabels?: string[] | null;
   removedOptions?: string[] | null;
   customerNotes?: string[] | null;
+  /** Online, readable version of the attached itinerary PDF. */
+  itineraryUrl?: string | null;
 }
 
 
