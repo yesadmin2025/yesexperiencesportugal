@@ -41,13 +41,26 @@ for (const path of PUBLIC_ROUTES) {
     await page.goto(path, { waitUntil: "domcontentloaded" });
 
     const atFirstRender = await scriptSrcs(page);
+    // On a fast production response the document can already be `complete`
+    // by the time we sample — the idle-slot GTM boot is then legitimate.
+    // In that case only the async/defer contract applies.
+    const stillLoading = await page.evaluate(() => document.readyState !== "complete");
     for (const vendor of THIRD_PARTY) {
       const hits = atFirstRender.filter((s) => vendor.match.test(s.src));
+      if (!stillLoading && vendor.name === "GTM") {
+        for (const hit of hits) {
+          expect(hit.async || hit.defer, `${vendor.name} tag must be async/defer on ${path}`).toBe(
+            true,
+          );
+        }
+        continue;
+      }
       expect(
         hits.map((h) => h.src),
         `${vendor.name} must not be present at DOMContentLoaded on ${path}`,
       ).toEqual([]);
     }
+
 
     // No blocking third-party script may ever land on the page.
     await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => undefined);
