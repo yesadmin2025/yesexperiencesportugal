@@ -7,7 +7,7 @@
 import type React from "react";
 
 export const guestInputClass =
-  "w-full min-h-[48px] border border-[color:var(--border)] bg-[color:var(--ivory)] px-3.5 py-3 text-[16px] leading-snug text-[color:var(--charcoal)] placeholder:text-[color:var(--charcoal-soft)]/60 focus:border-[color:var(--gold)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/35 sm:text-[15px]";
+  "w-full min-h-[48px] border border-[color:var(--border)] bg-[color:var(--ivory)] px-3.5 py-3 text-[16px] leading-snug text-[color:var(--charcoal)] placeholder:text-[color:var(--charcoal-soft)] focus:border-[color:var(--gold)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/35 sm:text-[15px]";
 
 export function GuestFieldGroup({
   title,
@@ -27,7 +27,7 @@ export function GuestFieldGroup({
           {title}
         </h3>
         {optional ? (
-          <span className="shrink-0 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]/80">
+          <span className="shrink-0 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
             Optional
           </span>
         ) : null}

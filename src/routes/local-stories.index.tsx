@@ -170,6 +170,7 @@ function Page() {
                             src={p.hero_image_url}
                             alt={p.hero_image_alt ?? p.title}
                             loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal)]/55 via-transparent to-transparent" />

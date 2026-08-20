@@ -520,7 +520,7 @@ export function GuestDetailsStep({
                 {submitLabel ?? "Continue and email my Signature story"}
               </CtaButton>
             )}
-            <p className="mt-2 text-center text-[10px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]/80">
+            <p className="mt-2 text-center text-[10px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
               Secure checkout · Final price shown at payment
             </p>
           </div>

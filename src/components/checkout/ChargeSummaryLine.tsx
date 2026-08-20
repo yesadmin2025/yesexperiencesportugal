@@ -160,7 +160,7 @@ export function ChargeSummaryLine({
         </ul>
       ) : null}
 
-      <p className="mt-1 text-[9.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]/80">
+      <p className="mt-1 text-[9.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
         Charged securely in EUR · no hidden fees
       </p>
     </div>

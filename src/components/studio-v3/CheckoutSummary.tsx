@@ -197,7 +197,7 @@ export function CheckoutSummary({
           >
             <p
               className="text-[10px] uppercase tracking-[0.22em] mb-2"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+              style={{ color: "var(--charcoal-soft)" }}
             >
               Stops
             </p>
@@ -226,7 +226,7 @@ export function CheckoutSummary({
           >
             <p
               className="text-[10px] uppercase tracking-[0.22em] mb-2"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+              style={{ color: "var(--charcoal-soft)" }}
             >
               Your additions
             </p>
@@ -254,10 +254,7 @@ export function CheckoutSummary({
                   >
                     <span className="min-w-0">
                       · {a.label}
-                      <span
-                        className="ml-1 tabular-nums"
-                        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-                      >
+                      <span className="ml-1 tabular-nums" style={{ color: "var(--charcoal-soft)" }}>
                         {showQty ? `(${formatEur(a.perUnit)} × ${guests})` : `(${a.unitLabel})`}
                       </span>
                     </span>
@@ -293,7 +290,7 @@ export function CheckoutSummary({
         </div>
         <div
           className="flex justify-end text-[11px] uppercase tracking-[0.2em] text-right leading-[1.6]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+          style={{ color: "var(--charcoal-soft)" }}
         >
           <PerPersonBands
             journeyLines={journeyLines}
@@ -395,7 +392,7 @@ export function CheckoutSummary({
                 {CTA_RESERVE_AND_PAY}
               </CtaButton>
             )}
-            <p className="mt-2 text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
+            <p className="mt-2 text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
               Secure checkout · Final price shown before payment
             </p>
           </div>
@@ -410,7 +407,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
     <div className="flex justify-between gap-3 text-[13.5px]" style={{ color: "var(--charcoal)" }}>
       <span
         className="text-[11px] uppercase tracking-[0.22em]"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+        style={{ color: "var(--charcoal-soft)" }}
       >
         {label}
       </span>
