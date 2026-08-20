@@ -53,6 +53,25 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
     </section>
   );
 }
+function PreviewList({ label, items }: { label: string; items: string[] }) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+        {label}
+      </div>
+      {items.length === 0 ? (
+        <p className="text-[color:var(--charcoal-soft)]">— not included in the emails</p>
+      ) : (
+        <ul className="mt-1 space-y-1">
+          {items.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 
 function AdminBookingDetailPage() {
   const { id } = Route.useParams();
