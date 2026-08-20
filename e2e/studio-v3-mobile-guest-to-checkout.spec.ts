@@ -21,30 +21,26 @@ async function reachGuestDetails(page: Page): Promise<boolean> {
   await advanceRefineToStorytelling(page);
 
   const reveal = page.getByTestId("studio-v3-final-reveal");
-  if (!(await reveal.isVisible().catch(() => false))) {
-    return false;
-  }
+  await reveal.waitFor({ state: "visible", timeout: 20_000 }).catch(() => undefined);
+  if (!(await reveal.isVisible().catch(() => false))) return false;
 
-  await page.waitForTimeout(800);
   const continueCta = page.getByTestId("studio-v3-final-reveal-continue");
-  if (!(await continueCta.isVisible().catch(() => false))) return false;
+  const guestDetails = page.getByTestId("studio-v3-guest-details");
+
+  // The reveal runs a short dissolve before the CTA is interactive; retry the
+  // tap a couple of times rather than assuming a single click always lands.
   for (let i = 0; i < 3; i++) {
     await continueCta.scrollIntoViewIfNeeded().catch(() => undefined);
     await continueCta.click({ timeout: 5_000 }).catch(() => undefined);
-    const landed = await page
-      .getByTestId("studio-v3-guest-details")
-      .isVisible({ timeout: 6_000 })
+    const landed = await guestDetails
+      .waitFor({ state: "visible", timeout: 8_000 })
+      .then(() => true)
       .catch(() => false);
     if (landed) return true;
-    await page.waitForTimeout(600);
   }
-
-  const ok = await page
-    .getByTestId("studio-v3-guest-details")
-    .isVisible({ timeout: 8_000 })
-    .catch(() => false);
-  return ok;
+  return false;
 }
+
 
 test.describe("Studio V3 · guest details → checkout @ 393px", () => {
   test.use({ viewport: VIEWPORT });
