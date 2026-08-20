@@ -415,7 +415,39 @@ export async function sendTransactionalInternal(
       status: "failed",
       error_message: "Failed to enqueue email",
     });
+    // Branded queue unavailable — try the direct provider immediately, and
+    // park the message if that fails too, so the guest still gets it later.
+    if (process.env.RESEND_API_KEY && process.env.LOVABLE_API_KEY) {
+      const res = await resendSend({
+        to: effectiveRecipient,
+        subject,
+        html,
+        text: plainText,
+        idemKey,
+      });
+      if (res.ok) {
+        await supabase.from("email_send_log").insert({
+          message_id: messageId,
+          template_name: templateName,
+          recipient_email: effectiveRecipient,
+          status: "sent",
+        });
+        return { ok: true };
+      }
+      await deferSend({
+        supabase,
+        messageId,
+        templateName,
+        recipientEmail: effectiveRecipient,
+        subject,
+        html,
+        plainText,
+        idemKey,
+        lastError: `enqueue_failed; resend ${res.status}: ${res.body}`,
+      });
+    }
     return { ok: false, reason: "enqueue_failed" };
+
   }
 
   return { ok: true };
