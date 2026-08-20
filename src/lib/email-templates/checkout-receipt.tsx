@@ -37,7 +37,22 @@ export interface CheckoutReceiptProps {
   receiptUrl?: string | null;
   bookingStatusUrl?: string | null;
   pickup?: string | null;
+  /** Local start time captured at checkout, e.g. "09:00". */
+  startTime?: string | null;
+  durationLabel?: string | null;
+  /** The designed day, stop by stop (frozen booking snapshot). */
+  itinerary?: Array<{
+    order?: number | null;
+    label: string;
+    durationMinutes?: number | null;
+    note?: string | null;
+  }> | null;
+  includedItems?: string[] | null;
+  addOnLabels?: string[] | null;
+  removedOptions?: string[] | null;
+  customerNotes?: string[] | null;
 }
+
 
 /**
  * Age-band multipliers — imported from the single source of truth in
@@ -114,6 +129,14 @@ const CheckoutReceipt = ({
   receiptUrl,
   bookingStatusUrl,
   pickup,
+  startTime,
+  durationLabel,
+  itinerary,
+  includedItems,
+  addOnLabels,
+  removedOptions,
+  customerNotes,
+
 }: CheckoutReceiptProps) => {
   const firstName = customerName ? customerName.split(" ")[0] : null;
   const g = guests ?? 2;
@@ -174,6 +197,21 @@ const CheckoutReceipt = ({
                 <Text style={cardValue}>{pickup}</Text>
               </>
             ) : null}
+            {startTime ? (
+              <>
+                <Hr style={hr} />
+                <Text style={cardLabel}>Start time</Text>
+                <Text style={cardValue}>{startTime}</Text>
+              </>
+            ) : null}
+            {durationLabel ? (
+              <>
+                <Hr style={hr} />
+                <Text style={cardLabel}>Duration</Text>
+                <Text style={cardValue}>{durationLabel}</Text>
+              </>
+            ) : null}
+
             {amountFormatted ? (
               <>
                 <Hr style={hr} />
@@ -190,6 +228,79 @@ const CheckoutReceipt = ({
               </>
             ) : null}
           </Section>
+
+          {itinerary && itinerary.length > 0 ? (
+            <>
+              <Text style={sectionTitle}>Your day, stop by stop</Text>
+              <Section style={{ margin: "0 0 24px" }}>
+                {itinerary.map((stop, i) => (
+                  <Text key={`${stop.label}-${i}`} style={body}>
+                    <strong>{`${stop.order ?? i + 1}. ${stop.label}`}</strong>
+                    {stop.durationMinutes ? ` · ${stop.durationMinutes} min` : ""}
+                    {stop.note ? (
+                      <>
+                        <br />
+                        {stop.note}
+                      </>
+                    ) : null}
+                  </Text>
+                ))}
+              </Section>
+            </>
+          ) : null}
+
+          {includedItems && includedItems.length > 0 ? (
+            <>
+              <Text style={sectionTitle}>Included</Text>
+              <Section style={{ margin: "0 0 24px" }}>
+                {includedItems.map((item, i) => (
+                  <Text key={`inc-${i}`} style={body}>
+                    • {item}
+                  </Text>
+                ))}
+              </Section>
+            </>
+          ) : null}
+
+          {addOnLabels && addOnLabels.length > 0 ? (
+            <>
+              <Text style={sectionTitle}>Add-ons</Text>
+              <Section style={{ margin: "0 0 24px" }}>
+                {addOnLabels.map((item, i) => (
+                  <Text key={`add-${i}`} style={body}>
+                    • {item}
+                  </Text>
+                ))}
+              </Section>
+            </>
+          ) : null}
+
+          {removedOptions && removedOptions.length > 0 ? (
+            <>
+              <Text style={sectionTitle}>Adjusted for you</Text>
+              <Section style={{ margin: "0 0 24px" }}>
+                {removedOptions.map((item, i) => (
+                  <Text key={`rem-${i}`} style={body}>
+                    • {item}
+                  </Text>
+                ))}
+              </Section>
+            </>
+          ) : null}
+
+          {customerNotes && customerNotes.length > 0 ? (
+            <>
+              <Text style={sectionTitle}>Your notes</Text>
+              <Section style={{ margin: "0 0 24px" }}>
+                {customerNotes.map((item, i) => (
+                  <Text key={`note-${i}`} style={body}>
+                    • {item}
+                  </Text>
+                ))}
+              </Section>
+            </>
+          ) : null}
+
 
           {receiptUrl ? (
             <Section style={{ textAlign: "center" as const, margin: "0 0 20px" }}>

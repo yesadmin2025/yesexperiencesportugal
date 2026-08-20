@@ -161,10 +161,23 @@ export const recoverPaidBooking = createServerFn({ method: "POST" })
               currency: (session.currency ?? "eur").toUpperCase(),
             }).format(session.amount_total / 100)
           : null;
+      // Pull the frozen purchase snapshot so replayed emails carry the full
+      // designed day (stops, inclusions, add-ons, notes) — not just a title.
+      const { data: snapRow } = await supabaseAdmin
+        .from("booking_snapshots")
+        .select("payload")
+        .eq("stripe_session_id", session.id)
+        .maybeSingle();
+      const snap =
+        snapRow?.payload && typeof snapRow.payload === "object"
+          ? (snapRow.payload as Record<string, unknown>)
+          : {};
+      const arr = (v: unknown) => (Array.isArray(v) ? v : []);
       const templateData = {
         customerName,
         customerEmail,
         tourTitle: metadata.journey_title || metadata.tour_title || metadata.tour_id || null,
+        experienceName: (snap.experienceName as string | undefined) ?? null,
         bookingType,
         dateExact: metadata.date_exact || null,
         guests,
@@ -175,8 +188,28 @@ export const recoverPaidBooking = createServerFn({ method: "POST" })
         bookingRef: session.id,
         receiptUrl,
         bookingStatusUrl: `https://yesexperiencesportugal.com/booking-confirmed?session_id=${encodeURIComponent(session.id)}`,
-        pickup: metadata.pickup || null,
+        pickup: (snap.pickup as string | undefined) || metadata.pickup || null,
+        startTime: (snap.startTime as string | undefined) ?? null,
+        durationLabel: (snap.durationLabel as string | undefined) ?? null,
+        language: (snap.language as string | undefined) ?? null,
+        customerPhone:
+          (snap.customerPhone as string | undefined) ?? session.customer_details?.phone ?? null,
+        itinerary: arr(snap.itinerary),
+        includedItems: arr(snap.includedItems),
+        addOnLabels: arr(snap.addOns)
+          .map((a) => {
+            const item = a as { label?: string; priceEur?: number };
+            return item?.label
+              ? `${item.label}${item.priceEur ? ` · €${item.priceEur} pp` : ""}`
+              : "";
+          })
+          .filter(Boolean),
+        removedOptions: arr(snap.removedOptions),
+        customerNotes: arr(snap.notes),
+        adminUrl: `https://yesexperiencesportugal.com/admin/bookings/${bookingId}`,
+        bookingId,
       };
+
       const customerResult = await sendTransactionalInternal({
         templateName: "checkout-receipt",
         recipientEmail: customerEmail,

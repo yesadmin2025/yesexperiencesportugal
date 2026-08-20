@@ -38,6 +38,27 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
           return Response.json({ ok: false, error: "missing_fields" }, { status: 400 });
         }
 
+        const strList = (v: unknown) =>
+          Array.isArray(v)
+            ? (v as unknown[])
+                .map((s) => String(s ?? "").trim())
+                .filter((s) => s.length > 0)
+                .slice(0, 20)
+            : [];
+
+        const normalizeItinerary = (v: unknown) =>
+          Array.isArray(v)
+            ? (v as Array<Record<string, unknown>>)
+                .filter((s) => s && typeof s.label === "string" && s.label.trim())
+                .slice(0, 20)
+                .map((s, i) => ({
+                  order: Number(s.order) || i + 1,
+                  label: String(s.label).trim().slice(0, 160),
+                  durationMinutes: Number(s.durationMinutes) || null,
+                  note: typeof s.note === "string" && s.note.trim() ? s.note.trim().slice(0, 240) : null,
+                }))
+            : [];
+
         const templateData = {
           customerName: body.customerName ?? null,
           tourTitle: body.tourTitle ?? null,
@@ -67,6 +88,13 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
           receiptUrl: body.receiptUrl ?? null,
           bookingStatusUrl: body.bookingStatusUrl ?? null,
           pickup: body.pickup ?? null,
+          startTime: body.startTime ?? null,
+          durationLabel: body.durationLabel ?? null,
+          itinerary: normalizeItinerary(body.itinerary),
+          includedItems: strList(body.includedItems),
+          addOnLabels: strList(body.addOnLabels),
+          removedOptions: strList(body.removedOptions),
+          customerNotes: strList(body.customerNotes),
         };
 
         const result = await sendTransactionalInternal({
@@ -93,13 +121,6 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
         // Notify the YES team on every completed booking. Non-fatal — the
         // client receipt is the priority; internal alerts must never block it.
         try {
-          const strList = (v: unknown) =>
-            Array.isArray(v)
-              ? (v as unknown[])
-                  .map((s) => String(s ?? "").trim())
-                  .filter((s) => s.length > 0)
-                  .slice(0, 20)
-              : [];
           await Promise.all(
             TEAM_NOTIFICATION_RECIPIENTS.map((recipient) =>
               sendTransactionalInternal({
@@ -112,10 +133,8 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
                   bookingId: body.bookingId ?? null,
                   adminUrl: body.adminUrl ?? null,
                   experienceName: body.experienceName ?? templateData.tourTitle ?? null,
-                  durationLabel: body.durationLabel ?? null,
-                  addOnLabels: strList(body.addOnLabels),
-                  removedOptions: strList(body.removedOptions),
-                  customerNotes: strList(body.customerNotes),
+                  customerPhone: body.customerPhone ?? null,
+                  language: body.language ?? null,
                 },
               }),
             ),

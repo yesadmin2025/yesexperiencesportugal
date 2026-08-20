@@ -425,7 +425,14 @@ Deno.serve(async (req) => {
 
           receiptUrl,
           bookingStatusUrl: `${siteUrl}/booking-confirmed?session_id=${encodeURIComponent(session.id)}`,
-          pickup: meta.pickup || null,
+          pickup: (snapshot?.pickup as string | undefined) || meta.pickup || null,
+          startTime: (snapshot?.startTime as string | undefined) ?? null,
+          language: (snapshot?.language as string | undefined) ?? null,
+          customerPhone: (snapshot?.customerPhone as string | undefined) ?? customerPhone ?? null,
+          // Full designed day, frozen at checkout — so both the guest receipt
+          // and the internal alert carry every stop, not just the title.
+          itinerary: Array.isArray(snapshot?.itinerary) ? snapshot?.itinerary : [],
+          includedItems: Array.isArray(snapshot?.includedItems) ? snapshot?.includedItems : [],
           // Admin-only extras (used by the internal team template).
           bookingId,
           adminUrl: `${siteUrl}/admin/bookings/${bookingId}`,

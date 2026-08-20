@@ -29,6 +29,16 @@ export interface InternalBookingProps {
   durationLabel?: string | null;
 
   pickup?: string | null;
+  startTime?: string | null;
+  language?: string | null;
+  customerPhone?: string | null;
+  itinerary?: Array<{
+    order?: number | null;
+    label: string;
+    durationMinutes?: number | null;
+    note?: string | null;
+  }> | null;
+  includedItems?: string[] | null;
   addOnLabels?: string[] | null;
   removedOptions?: string[] | null;
   customerNotes?: string[] | null;
@@ -107,6 +117,19 @@ const InternalBooking: React.FC<InternalBookingProps> = (p) => {
           <Field label="Guests" value={p.compositionSummary ?? p.guests ?? null} />
           <Field label="Total paid" value={p.amountFormatted} />
           <Field label="Pickup" value={p.pickup} />
+          <Field label="Start time" value={p.startTime} />
+          <Field label="Phone" value={p.customerPhone} />
+          <Field label="Language" value={p.language} />
+          <ListField
+            label="Designed itinerary"
+            items={(p.itinerary ?? []).map(
+              (s, i) =>
+                `${s.order ?? i + 1}. ${s.label}` +
+                (s.durationMinutes ? ` · ${s.durationMinutes} min` : "") +
+                (s.note ? ` — ${s.note}` : ""),
+            )}
+          />
+          <ListField label="Included" items={p.includedItems} />
           <ListField label="Add-ons" items={p.addOnLabels} />
           <ListField label="Removed options" items={p.removedOptions} />
           <ListField label="Customer notes" items={p.customerNotes} />
@@ -155,6 +178,13 @@ export const template = {
     bookingRef: "cs_live_a1b2c3",
     adminUrl:
       "https://yesexperiencesportugal.com/admin/bookings/00000000-0000-0000-0000-000000000000",
+    startTime: "09:00",
+    customerPhone: "+351 911 889 000",
+    itinerary: [
+      { order: 1, label: "Pena Palace", durationMinutes: 90 },
+      { order: 2, label: "Quinta da Regaleira", durationMinutes: 75 },
+    ],
+    includedItems: ["Private driver-guide", "Hotel pickup & drop-off"],
     addOnLabels: ["Private photographer · €120 pp"],
     removedOptions: ["Included lunch removed (−€15 per person)"],
     customerNotes: ["Dietary: one vegetarian"],
