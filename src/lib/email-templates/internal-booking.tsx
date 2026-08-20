@@ -11,6 +11,7 @@ import {
   Text,
 } from "@react-email/components";
 import type { TemplateEntry } from "./registry";
+import { ITINERARY_FLEXIBILITY_NOTE } from "@/lib/booking-snapshot-contract";
 
 export interface InternalBookingProps {
   customerName?: string | null;
@@ -124,9 +125,7 @@ const InternalBooking: React.FC<InternalBookingProps> = (p) => {
             label="Designed itinerary"
             items={(p.itinerary ?? []).map(
               (s, i) =>
-                `${s.order ?? i + 1}. ${s.label}` +
-                (s.durationMinutes ? ` · ${s.durationMinutes} min` : "") +
-                (s.note ? ` — ${s.note}` : ""),
+                `${s.order ?? i + 1}. ${s.label}` + (s.note ? ` — ${s.note}` : ""),
             )}
           />
           <ListField label="Included" items={p.includedItems} />
@@ -142,7 +141,10 @@ const InternalBooking: React.FC<InternalBookingProps> = (p) => {
             </Section>
           ) : null}
 
-          <Text style={{ ...value, color: "#666", fontSize: 12, marginTop: 22 }}>
+          <Text style={{ ...value, color: "#666", fontSize: 12, marginTop: 18 }}>
+            {ITINERARY_FLEXIBILITY_NOTE}
+          </Text>
+          <Text style={{ ...value, color: "#666", fontSize: 12, marginTop: 12 }}>
             The guest has already received the branded receipt. Reach out to confirm the final
             logistics with the local host.
           </Text>

@@ -13,6 +13,10 @@ import {
 } from "@react-email/components";
 import type { TemplateEntry } from "./registry";
 import {
+  ITINERARY_FLEXIBILITY_NOTE,
+  CONFIRMATION_SUFFICIENCY_NOTE,
+} from "@/lib/booking-snapshot-contract";
+import {
   summarizeJourneyLines,
   type CheckoutJourneyLine,
   type JourneyBand,
@@ -236,7 +240,6 @@ const CheckoutReceipt = ({
                 {itinerary.map((stop, i) => (
                   <Text key={`${stop.label}-${i}`} style={body}>
                     <strong>{`${stop.order ?? i + 1}. ${stop.label}`}</strong>
-                    {stop.durationMinutes ? ` · ${stop.durationMinutes} min` : ""}
                     {stop.note ? (
                       <>
                         <br />
@@ -245,6 +248,9 @@ const CheckoutReceipt = ({
                     ) : null}
                   </Text>
                 ))}
+                <Text style={{ ...body, fontSize: "13px", color: "#5A5A5A" }}>
+                  {ITINERARY_FLEXIBILITY_NOTE}
+                </Text>
               </Section>
             </>
           ) : null}
@@ -326,6 +332,9 @@ const CheckoutReceipt = ({
             2. On the day, meet your host at the pickup point — everything else is taken care of.
             <br />
             3. Anything to adjust before then? Simply reply to this email.
+          </Text>
+          <Text style={{ ...body, fontSize: "13px", color: "#5A5A5A" }}>
+            {CONFIRMATION_SUFFICIENCY_NOTE}
           </Text>
 
           <Hr style={{ ...hr, margin: "32px 0 20px" }} />
