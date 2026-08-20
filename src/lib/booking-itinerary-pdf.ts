@@ -81,14 +81,15 @@ export function buildItineraryPdfBase64(input: ItineraryPdfInput): string {
         color: TEAL,
         spaceBefore: 8,
         // Title and its note travel together to the next page if needed.
-        keepWithNext: true,
+        keepWithNext: Boolean(stop.note),
+        minSpace: stop.note ? undefined : 28,
       });
       if (stop.note) {
         lines.push({ text: stop.note, size: 10.5, color: CHARCOAL, spaceBefore: 2 });
       }
     });
-
   }
+
 
   section(lines, "Included", input.includedItems);
   section(lines, "Add-ons", input.addOnLabels);
