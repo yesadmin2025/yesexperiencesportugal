@@ -41,6 +41,18 @@ async function reachGuestDetails(page: Page): Promise<boolean> {
       .isVisible({ timeout: 6_000 })
       .catch(() => false);
     if (landed) return true;
+    const hit = await continueCta.evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return {
+        rect: [Math.round(r.top), Math.round(r.height)],
+        top: top ? `${top.tagName}.${(top.className || "").toString().slice(0, 60)}` : null,
+        phase: document
+          .querySelector('[data-testid="studio-v3-root"]')
+          ?.getAttribute("data-phase"),
+      };
+    });
+    console.log("DEBUG click attempt", i, JSON.stringify(hit));
     await page.waitForTimeout(600);
   }
 
