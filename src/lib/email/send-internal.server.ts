@@ -375,20 +375,6 @@ export async function sendTransactionalInternal(
     // guest confirmations that were parked while it was refusing.
     await flushDeferredSends();
     return { ok: true };
-    try {
-
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : String(e);
-      console.error("[email/internal] resend fallback exception", { error: msg });
-      await supabase.from("email_send_log").insert({
-        message_id: messageId,
-        template_name: templateName,
-        recipient_email: effectiveRecipient,
-        status: "failed",
-        error_message: `resend exception: ${msg.slice(0, 300)}`,
-      });
-      return { ok: false, reason: "resend_exception" };
-    }
   }
   // ─── /RESEND FALLBACK ────────────────────────────────────────────────────
 
