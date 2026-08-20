@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-20T12:13:02.196Z",
-  "filesScanned": 1002,
+  "generatedAt": "2026-08-20T12:21:36.249Z",
+  "filesScanned": 1003,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -2285,7 +2285,7 @@
     },
     {
       "file": "src/lib/email/send-internal.server.ts",
-      "line": 37,
+      "line": 38,
       "col": 97,
       "raw": "#2E2E2E",
       "normalized": "#2e2e2e",
@@ -2294,7 +2294,7 @@
     },
     {
       "file": "src/lib/email/send-internal.server.ts",
-      "line": 37,
+      "line": 38,
       "col": 116,
       "raw": "#F4EEE2",
       "normalized": "#f4eee2",
@@ -2303,7 +2303,7 @@
     },
     {
       "file": "src/lib/email/send-internal.server.ts",
-      "line": 37,
+      "line": 38,
       "col": 183,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -2357,7 +2357,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 77,
+      "line": 92,
       "col": 15,
       "raw": "#295B61",
       "normalized": "#295b61",
@@ -2366,7 +2366,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 78,
+      "line": 93,
       "col": 15,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -2375,7 +2375,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 79,
+      "line": 94,
       "col": 19,
       "raw": "#2E2E2E",
       "normalized": "#2e2e2e",
@@ -2384,7 +2384,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 80,
+      "line": 95,
       "col": 15,
       "raw": "#F4EEE2",
       "normalized": "#f4eee2",
@@ -2393,7 +2393,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 262,
+      "line": 277,
       "col": 35,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2402,7 +2402,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 264,
+      "line": 279,
       "col": 21,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2411,7 +2411,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 350,
+      "line": 365,
       "col": 11,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2420,7 +2420,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 361,
+      "line": 376,
       "col": 21,
       "raw": "#ffffff",
       "normalized": "#ffffff",
