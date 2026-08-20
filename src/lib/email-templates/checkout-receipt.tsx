@@ -129,6 +129,14 @@ const CheckoutReceipt = ({
   receiptUrl,
   bookingStatusUrl,
   pickup,
+  startTime,
+  durationLabel,
+  itinerary,
+  includedItems,
+  addOnLabels,
+  removedOptions,
+  customerNotes,
+
 }: CheckoutReceiptProps) => {
   const firstName = customerName ? customerName.split(" ")[0] : null;
   const g = guests ?? 2;
