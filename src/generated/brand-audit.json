@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-20T15:17:46.567Z",
-  "filesScanned": 1010,
+  "generatedAt": "2026-08-20T18:17:51.323Z",
+  "filesScanned": 1013,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -18,8 +18,8 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 433,
-    "approved": 105,
+    "total": 436,
+    "approved": 108,
     "allowlisted": 74,
     "mismatch": 254
   },
@@ -1391,6 +1391,33 @@
       "normalized": "#eae2d6",
       "snippet": "className=\"reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] border border-[#EAE2D6] bg-[color:var(--ivory)] p-5 md:p-7 shadow-[0_1px_2px_r",
       "status": "mismatch"
+    },
+    {
+      "file": "src/components/itinerary/ItineraryRouteMap.tsx",
+      "line": 60,
+      "col": 32,
+      "raw": "#faf8f3",
+      "normalized": "#faf8f3",
+      "snippet": "background:var(--ivory,#faf8f3);",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/itinerary/ItineraryRouteMap.tsx",
+      "line": 61,
+      "col": 37,
+      "raw": "#c9a96a",
+      "normalized": "#c9a96a",
+      "snippet": "border:2px solid var(--gold,#c9a96a);",
+      "status": "approved"
+    },
+    {
+      "file": "src/components/itinerary/ItineraryRouteMap.tsx",
+      "line": 65,
+      "col": 26,
+      "raw": "#295b61",
+      "normalized": "#295b61",
+      "snippet": "color:var(--teal,#295b61);line-height:1;\">${order}</div>`,",
+      "status": "approved"
     },
     {
       "file": "src/components/maps/EditorialMap.tsx",
@@ -3896,7 +3923,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 7191,
+      "line": 7195,
       "col": 17,
       "raw": "#fff",
       "normalized": "#ffffff",
@@ -3905,7 +3932,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 7197,
+      "line": 7201,
       "col": 12,
       "raw": "#000",
       "normalized": "#000000",
@@ -3914,7 +3941,7 @@
     },
     {
       "file": "src/styles.css",
-      "line": 7206,
+      "line": 7210,
       "col": 12,
       "raw": "#000",
       "normalized": "#000000",
