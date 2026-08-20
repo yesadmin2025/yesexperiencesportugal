@@ -114,7 +114,7 @@ export function renderSimplePdf(lines: PdfLine[]): string {
       continue;
     }
 
-    const parts = wrap(line.text, size, bold, contentWidth);
+    const parts = wrap(line.text ?? "", size, bold, contentWidth);
     for (const part of parts) {
       if (y - leading < MARGIN_BOTTOM) newPage();
       const [r, g, b] = line.color ?? [0.18, 0.18, 0.18];
