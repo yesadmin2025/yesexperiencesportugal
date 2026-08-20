@@ -9,6 +9,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { getAdminBooking } from "@/lib/bookingsAdmin.functions";
+import {
+  buildSnapshotEmailPreview,
+  validateBookingSnapshot,
+} from "@/lib/booking-snapshot-contract";
 
 export const Route = createFileRoute("/admin/bookings/$id")({
   component: AdminBookingDetailPage,
