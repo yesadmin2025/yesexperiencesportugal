@@ -156,14 +156,25 @@ function BookingReceiptPage() {
           >
             <ArrowLeft size={14} /> Back to confirmation
           </Link>
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="inline-flex min-h-[44px] items-center gap-2 bg-[color:var(--teal)] px-5 text-[12px] uppercase tracking-[0.2em] text-[color:var(--ivory)] hover:bg-[color:var(--teal-2)]"
-          >
-            <Printer size={14} /> Print / save PDF
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            {session_id ? (
+              <a
+                href={`/api/public/booking-itinerary?session_id=${encodeURIComponent(session_id)}`}
+                className="inline-flex min-h-[44px] items-center gap-2 border border-[color:var(--charcoal)]/25 px-5 text-[12px] uppercase tracking-[0.2em] text-[color:var(--teal)] hover:border-[color:var(--gold)]"
+              >
+                <Download size={14} /> Download itinerary
+              </a>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="inline-flex min-h-[44px] items-center gap-2 bg-[color:var(--teal)] px-5 text-[12px] uppercase tracking-[0.2em] text-[color:var(--ivory)] hover:bg-[color:var(--teal-2)]"
+            >
+              <Printer size={14} /> Print / save PDF
+            </button>
+          </div>
         </div>
+
 
         <article className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-6 sm:p-9 print:border-0 print:p-0">
           <header className="border-b border-[color:var(--border)] pb-5">
