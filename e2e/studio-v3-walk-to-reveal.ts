@@ -364,9 +364,13 @@ export async function walkToReveal(page: Page): Promise<void> {
       landed = await waitForPhaseAfter(page, phase, attempt === maxActions - 1 ? 8_000 : 1_800);
     }
 
+    if (process.env["STUDIO_WALK_DEBUG"]) {
+      console.log(`[walk] ${phase} -> ${landed ?? "STALLED"}`);
+    }
     if (landed === null) return;
   }
 }
+
 
 
 export type Addon = { id: string; eur: number };
