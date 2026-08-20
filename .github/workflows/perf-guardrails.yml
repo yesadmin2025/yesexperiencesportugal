@@ -1,0 +1,45 @@
+name: Perf guardrails (CLS + third-party deferral)
+
+# Two guards that must never regress:
+#  • lazy-loading optimizations must not change visual spacing (CLS + every
+#    lazy image reserves its box before decode)
+#  • GTM / Trustindex / Stripe must stay off the critical render path
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: perf-guardrails-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  perf:
+    name: Layout stability + script deferral
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Playwright browser
+        run: bunx playwright install --with-deps chromium
+
+      - name: Layout shift + image loading contract
+        run: bun run test:e2e:perf
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: perf-guardrails-report
+          path: playwright-report/
+          retention-days: 14

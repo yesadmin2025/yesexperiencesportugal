@@ -12,7 +12,7 @@ import {
 
 // Stripe wrappers are not exercised here — the drawer renders the summary
 // even when clientSecret is null (skeleton path). Silence loadStripe.
-vi.mock("@stripe/stripe-js", () => ({ loadStripe: () => Promise.resolve(null) }));
+vi.mock("@stripe/stripe-js/pure", () => ({ loadStripe: () => Promise.resolve(null) }));
 vi.mock("@stripe/react-stripe-js", () => ({
   EmbeddedCheckoutProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   EmbeddedCheckout: () => <div data-testid="stripe-embedded" />,

@@ -12,21 +12,98 @@
       "numberOfRuns": 1,
       "settings": {
         "preset": "desktop",
-        "onlyCategories": ["performance", "accessibility", "best-practices"],
-        "skipAudits": ["uses-http2", "canonical"],
+        "onlyCategories": [
+          "performance",
+          "accessibility",
+          "best-practices"
+        ],
+        "skipAudits": [
+          "uses-http2",
+          "canonical"
+        ],
         "throttlingMethod": "simulate",
-        "chromeFlags": "--no-sandbox --headless=new"
+        "chromeFlags": "--no-sandbox --headless=new",
+        "budgetsPath": "./.lighthouse-budgets.json"
       }
     },
     "assert": {
       "assertions": {
-        "categories:performance": ["warn", { "minScore": 0.6 }],
-        "categories:accessibility": ["error", { "minScore": 0.9 }],
-        "categories:best-practices": ["warn", { "minScore": 0.85 }],
-        "total-blocking-time": ["warn", { "maxNumericValue": 600 }],
-        "largest-contentful-paint": ["warn", { "maxNumericValue": 4000 }],
-        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
-        "max-potential-fid": ["warn", { "maxNumericValue": 300 }]
+        "categories:performance": [
+          "warn",
+          {
+            "minScore": 0.6
+          }
+        ],
+        "categories:accessibility": [
+          "error",
+          {
+            "minScore": 0.9
+          }
+        ],
+        "categories:best-practices": [
+          "warn",
+          {
+            "minScore": 0.85
+          }
+        ],
+        "total-blocking-time": [
+          "warn",
+          {
+            "maxNumericValue": 600
+          }
+        ],
+        "largest-contentful-paint": [
+          "warn",
+          {
+            "maxNumericValue": 4000
+          }
+        ],
+        "cumulative-layout-shift": [
+          "error",
+          {
+            "maxNumericValue": 0.1
+          }
+        ],
+        "max-potential-fid": [
+          "warn",
+          {
+            "maxNumericValue": 300
+          }
+        ],
+        "resource-summary:third-party-count": [
+          "warn",
+          {
+            "maxNumericValue": 12
+          }
+        ],
+        "third-party-summary": [
+          "warn",
+          {
+            "maxNumericValue": 600
+          }
+        ],
+        "bootup-time": [
+          "warn",
+          {
+            "maxNumericValue": 2500
+          }
+        ],
+        "mainthread-work-breakdown": [
+          "warn",
+          {
+            "maxNumericValue": 3500
+          }
+        ],
+        "render-blocking-resources": [
+          "error",
+          {
+            "maxNumericValue": 300
+          }
+        ],
+        "performance-budget": [
+          "error",
+          {}
+        ]
       }
     },
     "upload": {
