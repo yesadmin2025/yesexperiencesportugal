@@ -67,6 +67,7 @@ function escapePdfText(text: string): string {
     .replace(/[\u201C\u201D]/g, '"')
     .replace(/\u2026/g, "...")
     .replace(/\u00D7/g, "x")
+    .replace(/[\u2022\u2212]/g, "-")
     // Strip anything outside Latin-1, which WinAnsiEncoding cannot render.
     .replace(/[^\x20-\x7E\xA0-\xFF]/g, "")
     .replace(/\\/g, "\\\\")

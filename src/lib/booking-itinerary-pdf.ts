@@ -36,7 +36,7 @@ function section(lines: PdfLine[], title: string, items: string[] | null | undef
   lines.push({ text: title.toUpperCase(), font: "bold", size: 9.5, color: GOLD, spaceBefore: 16 });
   lines.push({ rule: true, spaceBefore: 4 });
   for (const item of items) {
-    lines.push({ text: `•  ${item}`, size: 10.5, color: CHARCOAL, spaceBefore: 2 });
+    lines.push({ text: `-  ${item}`, size: 10.5, color: CHARCOAL, spaceBefore: 2 });
   }
 }
 
@@ -93,7 +93,7 @@ export function buildItineraryPdfBase64(input: ItineraryPdfInput): string {
   section(lines, "Adjusted for you", input.removedOptions);
   section(lines, "Your notes", input.customerNotes);
 
-  lines.push({ rule: true, spaceBefore: 22 });
+  lines.push({ rule: true, spaceBefore: 22, minSpace: 120 });
   lines.push({ text: ITINERARY_FLEXIBILITY_NOTE, size: 10, color: MUTED, spaceBefore: 8 });
   lines.push({ text: CONFIRMATION_SUFFICIENCY_NOTE, size: 10, color: MUTED, spaceBefore: 6 });
   lines.push({
