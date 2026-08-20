@@ -1,4 +1,8 @@
-# Fix guest + team emails (Studio design and booking confirmation)
+&nbsp;
+
+&nbsp;
+
+Fix guest + team emails (Studio design and booking confirmation)
 
 ## What I found
 
@@ -19,6 +23,7 @@ There is also one genuine gap in the code: when a guest enters their email in th
 ## The fix
 
 ### 1. Restore real deliverability (the blocker)
+
 Finish DNS verification for the branded sender domain, then switch the temporary fallback off so all mail goes out from `notify.yesexperiencesportugal.com`. Three DNS records are needed at your domain provider for `yesexperiencesportugal.com`:
 
 - TXT on `_lovable-email` with the verification value
@@ -26,13 +31,20 @@ Finish DNS verification for the branded sender domain, then switch the temporary
 
 I will give you the exact values to paste. Once the domain verifies, I remove the fallback flag and every guest and team address becomes deliverable. Until this is done, no code change can make emails reach guests.
 
+&nbsp;
+
+If it doesn't work, use the [Yesexperiences@gmail.com](mailto:Yesexperiences@gmail.com) address 
+
 ### 2. Send the team a copy of every Studio design
+
 Add a team notification alongside the guest's design email, so the moment a traveller enters their email in the Studio you receive the same designed day (tour, date, guests, pickup, chapters, inclusions) even if they never book. Deduplicated per design revision so a guest re-typing their email does not spam the inbox.
 
 ### 3. Recover the emails that already failed
+
 Re-issue the three failed messages for this morning's activity once sending works: the booking receipt and welcome to the booking guest, the team booking alert to `info@`, and the Studio design email to the traveller who designed but did not book.
 
 ### 4. Verify end to end
+
 After the domain is live, run one Studio design and one test checkout and confirm in the send log that guest receipt, guest design email, and both team addresses all show `sent`.
 
 ## Technical notes
