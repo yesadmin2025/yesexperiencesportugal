@@ -197,6 +197,21 @@ const CheckoutReceipt = ({
                 <Text style={cardValue}>{pickup}</Text>
               </>
             ) : null}
+            {startTime ? (
+              <>
+                <Hr style={hr} />
+                <Text style={cardLabel}>Start time</Text>
+                <Text style={cardValue}>{startTime}</Text>
+              </>
+            ) : null}
+            {durationLabel ? (
+              <>
+                <Hr style={hr} />
+                <Text style={cardLabel}>Duration</Text>
+                <Text style={cardValue}>{durationLabel}</Text>
+              </>
+            ) : null}
+
             {amountFormatted ? (
               <>
                 <Hr style={hr} />
