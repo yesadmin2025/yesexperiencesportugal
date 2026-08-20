@@ -133,7 +133,7 @@ function Page() {
                 src={founderAsset.url}
                 alt="Nídia Almeida a receber hóspedes numa experiência privada de vinho da YES Experiences Portugal."
                 loading="lazy"
-                  decoding="async"
+                decoding="async"
                 className="w-full aspect-[4/3] object-cover"
               />
               <figcaption className="mt-3 text-xs text-[color:var(--charcoal-soft)]/80 leading-relaxed italic">
@@ -166,7 +166,7 @@ function Page() {
               src={founderAsset.url}
               alt="Nídia Almeida a receber hóspedes numa experiência privada de vinho da YES Experiences Portugal."
               loading="lazy"
-                  decoding="async"
+              decoding="async"
               className="w-full aspect-[4/3] object-cover"
             />
             <figcaption className="mt-3 text-xs text-[color:var(--charcoal-soft)]/80 leading-relaxed italic">

@@ -254,10 +254,7 @@ export function CheckoutSummary({
                   >
                     <span className="min-w-0">
                       · {a.label}
-                      <span
-                        className="ml-1 tabular-nums"
-                        style={{ color: "var(--charcoal-soft)" }}
-                      >
+                      <span className="ml-1 tabular-nums" style={{ color: "var(--charcoal-soft)" }}>
                         {showQty ? `(${formatEur(a.perUnit)} × ${guests})` : `(${a.unitLabel})`}
                       </span>
                     </span>

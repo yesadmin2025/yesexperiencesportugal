@@ -456,7 +456,7 @@ function MultiDayPage() {
                     src={p.src}
                     alt={p.alt}
                     loading="lazy"
-                  decoding="async"
+                    decoding="async"
                     className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-[1.02]"
                   />
                   <span

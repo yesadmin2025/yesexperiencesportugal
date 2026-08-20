@@ -62,10 +62,7 @@ export function PriceBreakdownRows({
             <span className="min-w-0">
               · {row.label}
               {row.qty > 1 ? (
-                <span
-                  className="ml-1 tabular-nums"
-                  style={{ color: "var(--charcoal-soft)" }}
-                >
+                <span className="ml-1 tabular-nums" style={{ color: "var(--charcoal-soft)" }}>
                   ({fmt(row.unitEur)} × {row.qty})
                 </span>
               ) : null}
