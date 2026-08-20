@@ -314,9 +314,11 @@ const PHASE_ACTIONS: Partial<Record<string, (page: Page) => Promise<boolean>>> =
 
 /**
  * Walk the funnel to the Refine screen using explicit expected-next-phase
- * contracts: act on the current phase, then wait for a strictly later phase
- * (or Refine). A single retry covers a dropped click; two consecutive
- * unmet contracts on the same phase stop the walk instead of spinning.
+ * contracts: act on the current phase, then require the Studio to report a
+ * strictly later phase (or Refine) before moving on. Multi-tap phases
+ * (answer → continue) get a bounded number of actions; a phase that neither
+ * accepts an action nor satisfies its contract stops the walk instead of
+ * spinning through a generic retry loop.
  */
 export async function walkToReveal(page: Page): Promise<void> {
   let momentRuns = 0;
@@ -334,28 +336,38 @@ export async function walkToReveal(page: Page): Promise<void> {
     }
 
     const act = PHASE_ACTIONS[phase] ?? walkOnce;
+    // Answer phases need up to two taps (select an option, then Continue);
+    // the moments reel commits in one. Anything beyond that is a stall.
+    const maxActions = phase === "map" || phase === "storyboard" ? 2 : 3;
 
-    // Attempt → verify contract → single retry → give up.
     let landed: string | null = null;
-    for (let attempt = 0; attempt < 2 && landed === null; attempt++) {
+    let idleActions = 0;
+    for (let attempt = 0; attempt < maxActions && landed === null; attempt++) {
       const acted = await act(page);
-      if (!acted && attempt === 0) {
+      if (!acted) {
+        idleActions += 1;
+        if (idleActions >= 2) break;
         await page.waitForTimeout(300);
         continue;
       }
+      idleActions = 0;
       // The intro is one `data-phase` with three sub-steps, so its contract
-      // is "a sub-step was consumed", verified by the next loop iteration.
+      // is "a sub-step was consumed" — the next iteration re-reads the DOM.
       if (phase === "intro") {
         await page.waitForTimeout(350);
-        landed = acted ? "intro" : null;
-        continue;
+        landed = "intro";
+        break;
       }
-      landed = await waitForPhaseAfter(page, phase);
+      // Short poll: a tap that only records an answer leaves the phase in
+      // place, so fall through to the next action rather than burning the
+      // full contract budget on it.
+      landed = await waitForPhaseAfter(page, phase, attempt === maxActions - 1 ? 8_000 : 1_800);
     }
 
     if (landed === null) return;
   }
 }
+
 
 export type Addon = { id: string; eur: number };
 
