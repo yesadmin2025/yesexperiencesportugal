@@ -214,6 +214,25 @@ function AdminBookingDetailPage() {
         />
       </Card>
 
+      <Card title="Confirmation email preview">
+        <div className="space-y-4 pt-3 text-sm text-[color:var(--charcoal)]">
+          <p className="text-[color:var(--charcoal-soft)]">
+            Exactly what the guest receipt and the team alert render for this booking.
+          </p>
+          {snapshotCheck.ok ? null : (
+            <p className="rounded border border-red-200 bg-red-50 p-3 text-red-800">
+              Incomplete snapshot — these emails would be missing: {snapshotCheck.missing.join(", ")}
+              .
+            </p>
+          )}
+          <PreviewList label="Your day, stop by stop" items={emailPreview.itineraryLines} />
+          <PreviewList label="Included" items={emailPreview.includedItems} />
+          <PreviewList label="Add-ons" items={emailPreview.addOnLabels} />
+          <PreviewList label="Adjusted for you" items={emailPreview.removedOptions} />
+          <PreviewList label="Your notes" items={emailPreview.customerNotes} />
+        </div>
+      </Card>
+
       {!snapshot ? (
         <p className="mt-6 text-sm text-[color:var(--charcoal-soft)]">
           No purchase snapshot was captured for this booking (it predates snapshotting).
