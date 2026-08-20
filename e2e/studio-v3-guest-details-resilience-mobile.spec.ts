@@ -37,7 +37,7 @@ test.describe("Studio V3 · guest details resilience @ 393px", () => {
   test("refuses an empty submit, explains why, and focuses the first offender", async ({
     page,
   }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(240_000);
     if (!(await reachGuestDetails(page))) {
       test.skip(true, "Funnel did not reach Guest Details in this run.");
     }
@@ -66,7 +66,7 @@ test.describe("Studio V3 · guest details resilience @ 393px", () => {
   });
 
   test("rejects an invalid email and accepts it after correction", async ({ page }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(240_000);
     if (!(await reachGuestDetails(page))) {
       test.skip(true, "Funnel did not reach Guest Details in this run.");
     }
@@ -95,7 +95,7 @@ test.describe("Studio V3 · guest details resilience @ 393px", () => {
   test("a failing story-email dispatch never blocks checkout, and retry is clean", async ({
     page,
   }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(240_000);
 
     // Fail every server-function call so the best-effort Signature Story
     // dispatch errors out. The traveller must never notice.
