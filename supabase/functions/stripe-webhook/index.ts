@@ -346,11 +346,22 @@ Deno.serve(async (req) => {
       : null;
   try {
     if (!snapshot) {
-      const { data: snapRow } = await admin
-        .from("booking_snapshots")
-        .select("payload, frozen_at")
-        .eq("stripe_session_id", session.id)
-        .maybeSingle();
+      // Bounded wait: the snapshot is written at checkout-create, but the
+      // webhook can land first. Emails must never be sent before the designed
+      // day is stored, so re-read a few times before giving up.
+      let snapRow: { payload: unknown; frozen_at: string | null } | null = null;
+      for (let attempt = 0; attempt < 4; attempt++) {
+        const { data } = await admin
+          .from("booking_snapshots")
+          .select("payload, frozen_at")
+          .eq("stripe_session_id", session.id)
+          .maybeSingle();
+        if (data?.payload && typeof data.payload === "object") {
+          snapRow = data as { payload: unknown; frozen_at: string | null };
+          break;
+        }
+        if (attempt < 3) await new Promise((r) => setTimeout(r, 500));
+      }
       if (snapRow?.payload && typeof snapRow.payload === "object") {
         snapshot = {
           ...(snapRow.payload as Record<string, unknown>),
@@ -368,7 +379,13 @@ Deno.serve(async (req) => {
             .update({ frozen_at: new Date().toISOString() })
             .eq("stripe_session_id", session.id);
         }
+      } else {
+        console.error("no booking snapshot found before emailing:", session.id);
       }
+    }
+    const stops = Array.isArray(snapshot?.itinerary) ? (snapshot?.itinerary as unknown[]) : [];
+    if (stops.length === 0) {
+      console.error("booking snapshot has no itinerary — emails will be incomplete:", session.id);
     }
   } catch (e) {
     console.warn("snapshot freeze failed:", e instanceof Error ? e.message : e);

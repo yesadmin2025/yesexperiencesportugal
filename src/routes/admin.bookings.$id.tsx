@@ -9,6 +9,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { getAdminBooking } from "@/lib/bookingsAdmin.functions";
+import {
+  buildSnapshotEmailPreview,
+  validateBookingSnapshot,
+} from "@/lib/booking-snapshot-contract";
 
 export const Route = createFileRoute("/admin/bookings/$id")({
   component: AdminBookingDetailPage,
@@ -49,6 +53,24 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
     </section>
   );
 }
+function PreviewList({ label, items }: { label: string; items: string[] }) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+        {label}
+      </div>
+      {items.length === 0 ? (
+        <p className="text-[color:var(--charcoal-soft)]">— not included in the emails</p>
+      ) : (
+        <ul className="mt-1 space-y-1">
+          {items.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
 
 function AdminBookingDetailPage() {
   const { id } = Route.useParams();
@@ -83,6 +105,8 @@ function AdminBookingDetailPage() {
   const addOns = Array.isArray(snapshot?.addOns) ? snapshot!.addOns : [];
   const removed = Array.isArray(snapshot?.removedOptions) ? snapshot!.removedOptions : [];
   const notes = Array.isArray(snapshot?.notes) ? snapshot!.notes : [];
+  const emailPreview = buildSnapshotEmailPreview(snapshot);
+  const snapshotCheck = validateBookingSnapshot(snapshot);
   const composition = (snapshot?.composition ??
     booking.booking_details?.composition ??
     {}) as AnyRec;
@@ -212,6 +236,25 @@ function AdminBookingDetailPage() {
             (booking.amount_total || 0) / 100,
           )}
         />
+      </Card>
+
+      <Card title="Confirmation email preview">
+        <div className="space-y-4 pt-3 text-sm text-[color:var(--charcoal)]">
+          <p className="text-[color:var(--charcoal-soft)]">
+            Exactly what the guest receipt and the team alert render for this booking.
+          </p>
+          {snapshotCheck.ok ? null : (
+            <p className="rounded border border-red-200 bg-red-50 p-3 text-red-800">
+              Incomplete snapshot — these emails would be missing:{" "}
+              {snapshotCheck.missing.join(", ")}.
+            </p>
+          )}
+          <PreviewList label="Your day, stop by stop" items={emailPreview.itineraryLines} />
+          <PreviewList label="Included" items={emailPreview.includedItems} />
+          <PreviewList label="Add-ons" items={emailPreview.addOnLabels} />
+          <PreviewList label="Adjusted for you" items={emailPreview.removedOptions} />
+          <PreviewList label="Your notes" items={emailPreview.customerNotes} />
+        </div>
       </Card>
 
       {!snapshot ? (

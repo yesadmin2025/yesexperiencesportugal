@@ -589,14 +589,46 @@ Deno.serve(async (req) => {
         },
       };
 
-      const { error: snapErr } = await admin
-        .from("booking_snapshots")
-        .upsert(
-          { stripe_session_id: session.id, payload: snapshotPayload },
-          { onConflict: "stripe_session_id" },
+      // Contract check — the snapshot is what BOTH confirmation emails render.
+      // Anything missing here would produce a confirmation with a hole in it,
+      // so it is logged loudly (and shown in Admin → booking detail).
+      const missing: string[] = [];
+      if (!snapshotPayload.experienceName && !snapshotPayload.tourTitle)
+        missing.push("experienceName");
+      if (!snapshotPayload.dateExact) missing.push("dateExact");
+      if (snapshotPayload.itinerary.length === 0) missing.push("itinerary");
+      if (!snapshotPayload.composition.guests) missing.push("guests");
+      if (!snapshotPayload.pricing.totalEur) missing.push("totalEur");
+      if (missing.length > 0) {
+        console.error(
+          "[create-signature-checkout] incomplete booking snapshot:",
+          session.id,
+          missing.join(", "),
         );
+      }
+
+      // Written (and retried once) BEFORE checkout returns, so the snapshot is
+      // always in place ahead of any payment-success email.
+      let snapErr = (
+        await admin
+          .from("booking_snapshots")
+          .upsert(
+            { stripe_session_id: session.id, payload: snapshotPayload },
+            { onConflict: "stripe_session_id" },
+          )
+      ).error;
+      if (snapErr) {
+        snapErr = (
+          await admin
+            .from("booking_snapshots")
+            .upsert(
+              { stripe_session_id: session.id, payload: snapshotPayload },
+              { onConflict: "stripe_session_id" },
+            )
+        ).error;
+      }
       if (snapErr)
-        console.warn("[create-signature-checkout] snapshot write failed:", snapErr.message);
+        console.error("[create-signature-checkout] snapshot write failed:", snapErr.message);
     } catch (e) {
       // Snapshot is observability, never a checkout blocker.
       console.warn(
