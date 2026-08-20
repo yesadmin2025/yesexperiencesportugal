@@ -357,7 +357,6 @@ export async function walkToReveal(page: Page): Promise<void> {
   }
 }
 
-
 export type Addon = { id: string; eur: number };
 
 export async function readInteractableAddons(page: Page): Promise<Addon[]> {
