@@ -38,7 +38,7 @@ test.describe("Hero CTA — tablet parity (md: breakpoint and above)", () => {
         await gotoHero(page);
 
         const primary = page.getByRole("link", {
-          name: "Create Your Story",
+          name: "Design your day",
           exact: true,
         });
         const secondary = page.getByRole("link", {
@@ -62,7 +62,7 @@ test.describe("Hero CTA — tablet parity (md: breakpoint and above)", () => {
       test("both CTAs render an arrow icon (no decorative replacement)", async ({ page }) => {
         await gotoHero(page);
 
-        for (const name of ["Create Your Story", "Explore Signature Experiences"]) {
+        for (const name of ["Design your day", "Explore Signature Experiences"]) {
           const cta = page.getByRole("link", { name, exact: true });
           const svg = cta.locator("svg").first();
           await expect(svg).toBeVisible();

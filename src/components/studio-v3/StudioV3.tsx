@@ -2804,6 +2804,10 @@ export function StudioV3() {
                 adults: d.adults,
                 minorAges: [...d.minorAges],
                 guests: d.guests,
+                // Keep the confirmed date in state too, otherwise returning
+                // here via "Edit" on the checkout summary rehydrates an empty
+                // date field and the traveller has to pick it again.
+                dateExact: d.tourDate || s.dateExact,
                 guestDraft: {
                   fullName: d.fullName,
                   email: d.email,

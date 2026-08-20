@@ -347,3 +347,78 @@ export async function advanceRefineToStorytelling(
     .waitFor({ timeout: 8_000 })
     .catch(() => undefined);
 }
+
+/**
+ * Drive the funnel all the way to the Guest Details phase.
+ *
+ * Shared by every spec that needs the bottom of the funnel (checkout,
+ * resilience, a11y) so the navigation contract lives in exactly one place.
+ * Returns false when the funnel didn't get there — callers `test.skip`.
+ */
+export async function reachGuestDetails(page: Page): Promise<boolean> {
+  await page.goto("/studio-v3");
+  await walkToReveal(page);
+  await advanceRefineToStorytelling(page);
+
+  const reveal = page.getByTestId("studio-v3-final-reveal");
+  await reveal.waitFor({ state: "visible", timeout: 20_000 }).catch(() => undefined);
+  if (!(await reveal.isVisible().catch(() => false))) return false;
+
+  const continueCta = page.getByTestId("studio-v3-final-reveal-continue");
+  const guestDetails = page.getByTestId("studio-v3-guest-details");
+
+  // The reveal runs a short dissolve before the CTA is interactive; retry the
+  // tap a couple of times rather than assuming a single click always lands.
+  for (let i = 0; i < 3; i++) {
+    await continueCta.scrollIntoViewIfNeeded().catch(() => undefined);
+    await continueCta.click({ timeout: 5_000 }).catch(() => undefined);
+    const landed = await guestDetails
+      .waitFor({ state: "visible", timeout: 8_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (landed) return true;
+  }
+  return false;
+}
+
+export interface GuestFixture {
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  pickupAddress?: string;
+}
+
+/**
+ * Fill the required Guest Details fields with valid values, including a tour
+ * date that respects the Studio's three-day lead time (read from the input's
+ * own `min`, so the test can never drift from the production rule).
+ */
+export async function fillGuestDetails(page: Page, fixture: GuestFixture = {}): Promise<void> {
+  const form = page.getByTestId("studio-v3-guest-details");
+  await form
+    .getByLabel(/full name/i)
+    .first()
+    .fill(fixture.fullName ?? "Ana Test");
+  await form
+    .getByLabel(/^email/i)
+    .first()
+    .fill(fixture.email ?? "qa+studio@example.com");
+  const phone = form.getByLabel(/phone/i).first();
+  if (await phone.isVisible().catch(() => false)) {
+    await phone.fill(fixture.phone ?? "+351912345678");
+  }
+  const pickup = form.getByLabel(/pickup/i).first();
+  if (await pickup.isVisible().catch(() => false)) {
+    await pickup.fill(fixture.pickupAddress ?? "Hotel Avenida, Lisbon");
+  }
+
+  const dateInput = form.locator('input[type="date"]').first();
+  if (await dateInput.isVisible().catch(() => false)) {
+    const iso = await dateInput.evaluate((el: HTMLInputElement) => {
+      const min = el.min ? new Date(el.min + "T00:00:00") : new Date();
+      min.setDate(min.getDate() + 7);
+      return min.toISOString().slice(0, 10);
+    });
+    await dateInput.fill(iso);
+  }
+}

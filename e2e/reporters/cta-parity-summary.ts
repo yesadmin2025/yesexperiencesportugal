@@ -116,7 +116,7 @@ export default class CtaParitySummaryReporter implements Reporter {
     lines.push(`**Status:** ${overall}`);
     lines.push("");
     lines.push(
-      "Each row compares the **primary** CTA (Create Your Story) vs the **secondary** CTA (Explore Signature Experiences). The two buttons must mirror each other in geometry, typography, and icon layout — only fill/border/color may differ.",
+      "Each row compares the **primary** CTA (Design your day) vs the **secondary** CTA (Explore Signature Experiences). The two buttons must mirror each other in geometry, typography, and icon layout — only fill/border/color may differ.",
     );
     lines.push("");
 

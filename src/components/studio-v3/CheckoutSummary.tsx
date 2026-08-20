@@ -317,6 +317,8 @@ export function CheckoutSummary({
         </div>
         <button
           type="button"
+          data-testid="studio-v3-checkout-summary-edit-guest-details"
+          aria-label="Edit your details"
           onClick={onEditGuestDetails}
           className="text-[11px] uppercase tracking-[0.22em] min-h-[44px] px-3"
           style={{ color: "var(--teal)" }}

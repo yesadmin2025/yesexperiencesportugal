@@ -6,7 +6,7 @@ import { test, expect, type Locator, type Page } from "@playwright/test";
  * The homepage final-CTA card lives on an ivory surface (re-aligned to
  * the page's editorial system). Two buttons:
  *
- *   • Primary  ("Create Your Story")  — teal background
+ *   • Primary  ("Design your day")  — teal background
  *       arrow color : --gold-soft (#E1CFA6) at rest
  *       arrow color : --gold      (#C9A96A) on hover
  *

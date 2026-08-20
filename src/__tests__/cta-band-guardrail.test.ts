@@ -58,7 +58,7 @@ const CTA_LABEL_PATTERNS: { label: string; regex: RegExp }[] = [
   // `>Label<` framing so we hit rendered copy and not className strings,
   // comments, or aria-labels.
   { label: "Talk to a Local", regex: />\s*Talk to a Local\s*</g },
-  { label: "Create Your Story", regex: />\s*Create Your Story\s*</g },
+  { label: "Design your day", regex: />\s*Design your day\s*</g },
   { label: "Reserve instantly", regex: />\s*Reserve instantly\s*</g },
   { label: "Open the Studio", regex: />\s*Open the Studio\s*</g },
   { label: "Plan a Multi-Day Journey", regex: />\s*Plan a Multi-Day Journey\s*</g },
