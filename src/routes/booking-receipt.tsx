@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Printer, ArrowLeft, Loader2, AlertCircle } from "lucide-react";
+import { Printer, ArrowLeft, Loader2, AlertCircle, Download } from "lucide-react";
 import { BUSINESS_LEGAL_NAME, EMAIL, LICENSE_LABEL, PHONE_DISPLAY } from "@/config/business-nap";
 import { tourReservationLd } from "@/lib/jsonld";
 
