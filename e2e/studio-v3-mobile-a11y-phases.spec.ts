@@ -110,7 +110,9 @@ async function assertTapTargets(scope: Locator, phase: string) {
 }
 
 test.describe("Studio V3 · mobile accessibility @ 393px", () => {
-  test.use({ viewport: VIEWPORT });
+  // Reduced motion keeps the cinematic dissolves from stretching the walk to
+  // multiple minutes; the a11y contract is identical either way.
+  test.use({ viewport: VIEWPORT, reducedMotion: "reduce" });
 
   test("intro phase — named controls, tap targets, axe clean", async ({ page }) => {
     test.setTimeout(120_000);

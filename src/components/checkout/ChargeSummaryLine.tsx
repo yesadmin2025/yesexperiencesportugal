@@ -117,7 +117,7 @@ export function ChargeSummaryLine({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         data-testid="charge-summary-toggle"
-        className="mt-1 grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-2 py-1 text-left text-[10.5px] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+        className="mt-1 grid min-h-[44px] w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-2 py-2 text-left text-[10.5px] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
       >
         <span className="min-w-0 break-words leading-snug">
           {quote.adults} {quote.adults === 1 ? "adult" : "adults"}
