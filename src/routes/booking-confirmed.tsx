@@ -206,7 +206,7 @@ function BookingConfirmedPage() {
           ) : null}
 
           {session_id ? (
-            <div className="mt-6">
+            <div className="mt-6 flex flex-col items-center gap-4">
               <Link
                 to="/booking-receipt"
                 search={{ session_id }}
@@ -214,8 +214,15 @@ function BookingConfirmedPage() {
               >
                 <Receipt size={14} /> Printable receipt
               </Link>
+              <a
+                href={`/api/public/booking-itinerary?session_id=${encodeURIComponent(session_id)}`}
+                className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] border-b border-[color:var(--teal)]/40 hover:border-[color:var(--gold)] pb-1 min-h-[44px]"
+              >
+                <Download size={14} /> Download itinerary
+              </a>
             </div>
           ) : null}
+
 
           {state.kind === "ok" && state.data.receiptUrl ? (
             <div className="mt-4">
