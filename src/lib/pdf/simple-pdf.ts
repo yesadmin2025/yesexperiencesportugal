@@ -9,7 +9,7 @@
 export type PdfFont = "regular" | "bold" | "italic";
 
 export interface PdfLine {
-  text: string;
+  text?: string;
   font?: PdfFont;
   size?: number;
   /** Extra vertical space (pt) before this line. */
