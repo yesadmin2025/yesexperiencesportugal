@@ -208,79 +208,187 @@ export async function advanceIntro(page: Page): Promise<boolean> {
   return false;
 }
 
+/**
+ * Linear phase order — mirrors PHASE_ORDER in `src/components/studio-v3/StudioV3.tsx`.
+ * Phases can be skipped (irrelevant answers), so "advanced" means the live
+ * `data-phase` moved to a STRICTLY LATER index, never merely "changed".
+ */
+export const PHASE_SEQUENCE = [
+  "intro",
+  "who",
+  "feeling",
+  "destination",
+  "pickup",
+  "guests",
+  "investment",
+  "interests",
+  "rhythm",
+  "refinement",
+  "occasion",
+  "date",
+  "considerations",
+  "language",
+  "map",
+  "storyboard",
+  "confirmation",
+  "guestDetails",
+  "checkoutSummary",
+] as const;
+
+export type StudioWalkPhase = (typeof PHASE_SEQUENCE)[number];
+
+function phaseIndex(phase: string | null): number {
+  return phase ? (PHASE_SEQUENCE as readonly string[]).indexOf(phase) : -1;
+}
+
+async function refineVisible(page: Page): Promise<boolean> {
+  return page
+    .locator('[data-studio-v3-screen="refine"]')
+    .first()
+    .isVisible()
+    .catch(() => false);
+}
+
+/**
+ * Explicit expected-next-phase contract. After acting on `from`, poll until
+ * the Studio reports a later phase (or the Refine screen mounts, which is
+ * the walk's terminal state). Returns the phase we landed on, or null when
+ * the contract was not satisfied inside `timeout`.
+ */
+async function waitForPhaseAfter(
+  page: Page,
+  from: string | null,
+  timeout = 6_000,
+): Promise<string | null> {
+  const fromIdx = phaseIndex(from);
+  const deadline = Date.now() + timeout;
+  while (Date.now() < deadline) {
+    if (await refineVisible(page)) return "storyboard";
+    const now = await currentPhase(page);
+    if (phaseIndex(now) > fromIdx) return now;
+    await page.waitForTimeout(150);
+  }
+  return null;
+}
+
+/**
+ * Storyboard/map moments reel — advance through the moments until the
+ * "hold journey" CTA becomes interactive, then commit. Its contract is the
+ * Refine screen rather than a phase index bump.
+ */
+async function playMomentsReel(page: Page): Promise<boolean> {
+  await dismissReactionOverlay(page);
+  const hold = page.locator('[data-phase-cta="hold-journey"]').first();
+  const nextMoment = page.locator('button[aria-label="Next moment"]').first();
+  const holdInteractive = () =>
+    hold.evaluate((el) => {
+      const wrap = el.closest("[aria-hidden]");
+      const aria = wrap?.getAttribute("aria-hidden");
+      const styles = wrap ? window.getComputedStyle(wrap as Element) : null;
+      return aria !== "true" && styles?.pointerEvents !== "none" && styles?.opacity !== "0";
+    });
+  for (let j = 0; j < 30; j++) {
+    if (await holdInteractive().catch(() => false)) break;
+    const isDisabled = await nextMoment.isDisabled({ timeout: 200 }).catch(() => true);
+    if (!isDisabled) {
+      await nextMoment.click({ timeout: 1_000 }).catch(() => undefined);
+    }
+    await page.waitForTimeout(300);
+  }
+  await page.waitForTimeout(400);
+  if (!(await holdInteractive().catch(() => false))) return false;
+  await hold.click({ timeout: 4_000 }).catch(() => undefined);
+  return true;
+}
+
+/**
+ * Intro sub-step contract. The intro is a single `data-phase` ("intro") with
+ * three sub-steps (welcome → name → path), so its contract is expressed on
+ * the visible `data-phase-cta` instead of the phase index: consume each
+ * sub-step, waiting for the CTA identity to change, until the intro is done.
+ */
+async function introSubStep(page: Page): Promise<string | null> {
+  const cta = page.locator('[data-phase-cta^="intro-"]').first();
+  if (!(await cta.isVisible().catch(() => false))) return null;
+  return cta.getAttribute("data-phase-cta").catch(() => null);
+}
+
+async function advanceThroughIntro(page: Page): Promise<boolean> {
+  for (let step = 0; step < 4; step++) {
+    const before = await introSubStep(page);
+    if (before === null) return true; // intro fully consumed
+    if (!(await advanceIntro(page))) return false;
+    const deadline = Date.now() + 5_000;
+    while (Date.now() < deadline) {
+      const after = await introSubStep(page);
+      if (after !== before) break;
+      await page.waitForTimeout(120);
+    }
+  }
+  return (await introSubStep(page)) === null;
+}
+
+/**
+ * Per-phase action contract. Each entry knows how to act on its phase; the
+ * walker then asserts the expected transition instead of retrying blindly.
+ * Phases without an entry fall back to the answer/continue heuristic.
+ */
+const PHASE_ACTIONS: Partial<Record<string, (page: Page) => Promise<boolean>>> = {
+  intro: advanceThroughIntro,
+  map: playMomentsReel,
+  storyboard: playMomentsReel,
+};
+
+/**
+ * Walk the funnel to the Refine screen using explicit expected-next-phase
+ * contracts: act on the current phase, then require the Studio to report a
+ * strictly later phase (or Refine) before moving on. Multi-tap phases
+ * (answer → continue) get a bounded number of actions; a phase that neither
+ * accepts an action nor satisfies its contract stops the walk instead of
+ * spinning through a generic retry loop.
+ */
 export async function walkToReveal(page: Page): Promise<void> {
-  let lastPhase: string | null = null;
-  let stuck = 0;
   let momentRuns = 0;
-  for (let i = 0; i < 52; i++) {
+
+  for (let i = 0; i < PHASE_SEQUENCE.length * 3; i++) {
     await dismissReactionOverlay(page);
-    // Early exit — the Refine screen is the walk's destination.
-    if (
-      await page
-        .locator('[data-studio-v3-screen="refine"]')
-        .first()
-        .isVisible()
-        .catch(() => false)
-    ) {
-      return;
-    }
+    if (await refineVisible(page)) return;
+
     const phase = await currentPhase(page);
+    if (!phase) return;
 
-    if (phase === "storyboard" || phase === "map") {
+    if (phase === "map" || phase === "storyboard") {
       momentRuns += 1;
-      if (momentRuns > 3) break;
-      await dismissReactionOverlay(page);
-      const hold = page.locator('[data-phase-cta="hold-journey"]').first();
-      const nextMoment = page.locator('button[aria-label="Next moment"]').first();
-      const holdInteractive = () =>
-        hold.evaluate((el) => {
-          const wrap = el.closest("[aria-hidden]");
-          const aria = wrap?.getAttribute("aria-hidden");
-          const styles = wrap ? window.getComputedStyle(wrap as Element) : null;
-          return aria !== "true" && styles?.pointerEvents !== "none" && styles?.opacity !== "0";
-        });
-      for (let j = 0; j < 30; j++) {
-        if (await holdInteractive().catch(() => false)) break;
-        const isDisabled = await nextMoment.isDisabled({ timeout: 200 }).catch(() => true);
-        if (!isDisabled) {
-          await nextMoment.click({ timeout: 1_000 }).catch(() => undefined);
-        }
-        await page.waitForTimeout(300);
-      }
-      await page.waitForTimeout(650);
-      if (await holdInteractive().catch(() => false)) {
-        await hold.click({ timeout: 4_000 }).catch(() => undefined);
-        await page.waitForTimeout(1_200);
-      }
-      if ((await currentPhase(page)) === "storyboard") break;
+      if (momentRuns > 3) return;
     }
 
-    if (
-      phase === "intro" ||
-      (await page
-        .locator('[data-phase-cta^="intro-"]')
-        .first()
-        .isVisible()
-        .catch(() => false))
-    ) {
-      if (await advanceIntro(page)) {
-        await page.waitForTimeout(450);
-        lastPhase = phase;
-        stuck = 0;
+    const act = PHASE_ACTIONS[phase] ?? walkOnce;
+    // Answer phases need up to two taps (select an option, then Continue);
+    // the moments reel commits in one. Anything beyond that is a stall.
+    const maxActions = phase === "map" || phase === "storyboard" ? 2 : 3;
+
+    let landed: string | null = null;
+    let idleActions = 0;
+    for (let attempt = 0; attempt < maxActions && landed === null; attempt++) {
+      const acted = await act(page);
+      if (!acted) {
+        idleActions += 1;
+        if (idleActions >= 2) break;
+        await page.waitForTimeout(300);
         continue;
       }
+      idleActions = 0;
+
+      // Short poll: a tap that only records an answer leaves the phase in
+      // place, so fall through to the next action rather than burning the
+      // full contract budget on it.
+      landed = await waitForPhaseAfter(page, phase, attempt === maxActions - 1 ? 8_000 : 1_800);
     }
 
-    const clicked = await walkOnce(page);
-    if (!clicked) {
-      await page.waitForTimeout(350);
-      if (!(await walkOnce(page))) break;
+    if (process.env["STUDIO_WALK_DEBUG"]) {
+      console.log(`[walk] ${phase} -> ${landed ?? "STALLED"}`);
     }
-    await page.waitForTimeout(450);
-    if (phase && phase === lastPhase) stuck++;
-    else stuck = 0;
-    lastPhase = phase;
-    if (stuck > 6) break;
+    if (landed === null) return;
   }
 }
 
