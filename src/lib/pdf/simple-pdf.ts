@@ -19,6 +19,12 @@ export interface PdfLine {
   rule?: boolean;
   /** Start a new page if less than this much vertical space (pt) remains. */
   minSpace?: number;
+  /**
+   * Bind this line to the following one so the pair (or chain) is never split
+   * across a page break — used for a stop title and its note.
+   */
+  keepWithNext?: boolean;
+
 }
 
 const PAGE_W = 595.28; // A4
