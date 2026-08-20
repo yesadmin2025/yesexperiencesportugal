@@ -40,6 +40,20 @@ interface ItineraryData {
   sufficiencyNote: string;
 }
 
+function formatDateLabel(value: string | null): string | null {
+  if (!value) return null;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
+  if (!m) return value;
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("en-US", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export const Route = createFileRoute("/itinerary")({
   validateSearch: (search: Record<string, unknown>): Search => ({
     session_id: typeof search.session_id === "string" ? search.session_id : undefined,
@@ -133,8 +147,8 @@ function ItineraryPage() {
   const facts: Array<[string, string | null]> = data
     ? [
         ["Guest", data.customerName],
-        ["Date", data.dateLabel],
-        ["Travellers", data.guestsLabel],
+        ["Date", formatDateLabel(data.dateLabel)],
+        ["Travelers", data.guestsLabel],
         ["Pickup", data.pickup],
         ["Duration", data.durationLabel],
         ["Total paid", data.amountFormatted],
