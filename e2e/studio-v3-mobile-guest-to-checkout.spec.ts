@@ -67,6 +67,19 @@ test.describe("Studio V3 · guest details → checkout @ 393px", () => {
     const pickup = form.getByLabel(/pickup/i).first();
     if (await pickup.isVisible().catch(() => false)) await pickup.fill("Hotel Avenida, Lisbon");
 
+    // Tour date — the Studio enforces a 3-day lead time, so pick a date well
+    // inside the allowed window (or accept the date already fixed upstream).
+    const dateInput = form.locator('input[type="date"]').first();
+    if (await dateInput.isVisible().catch(() => false)) {
+      const iso = await dateInput.evaluate((el: HTMLInputElement) => {
+        const min = el.min ? new Date(el.min + "T00:00:00") : new Date();
+        min.setDate(min.getDate() + 7);
+        return min.toISOString().slice(0, 10);
+      });
+      await dateInput.fill(iso);
+    }
+
+
     // No horizontal overflow on the mobile form.
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
