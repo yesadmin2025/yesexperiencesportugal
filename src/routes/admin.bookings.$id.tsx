@@ -83,6 +83,8 @@ function AdminBookingDetailPage() {
   const addOns = Array.isArray(snapshot?.addOns) ? snapshot!.addOns : [];
   const removed = Array.isArray(snapshot?.removedOptions) ? snapshot!.removedOptions : [];
   const notes = Array.isArray(snapshot?.notes) ? snapshot!.notes : [];
+  const emailPreview = buildSnapshotEmailPreview(snapshot);
+  const snapshotCheck = validateBookingSnapshot(snapshot);
   const composition = (snapshot?.composition ??
     booking.booking_details?.composition ??
     {}) as AnyRec;
