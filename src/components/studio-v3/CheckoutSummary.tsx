@@ -9,7 +9,8 @@
 
 import * as React from "react";
 import { ArrowLeft, Lock } from "lucide-react";
-import { loadStripe, type Stripe } from "@stripe/stripe-js/pure";
+import type { Stripe } from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js/pure";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
