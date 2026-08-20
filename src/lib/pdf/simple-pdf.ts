@@ -17,6 +17,8 @@ export interface PdfLine {
   color?: [number, number, number];
   /** Draw a thin horizontal rule instead of text. */
   rule?: boolean;
+  /** Start a new page if less than this much vertical space (pt) remains. */
+  minSpace?: number;
 }
 
 const PAGE_W = 595.28; // A4
@@ -58,7 +60,13 @@ function textWidth(text: string, size: number, bold: boolean): number {
 /** Latin-1 escape — PDF string literals need (, ) and \ escaped. */
 function escapePdfText(text: string): string {
   return text
-    .normalize("NFKD")
+    .normalize("NFC")
+    .replace(/\u20AC/g, "EUR ")
+    .replace(/[\u2013\u2014]/g, "-")
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/\u2026/g, "...")
+    .replace(/\u00D7/g, "x")
     // Strip anything outside Latin-1, which WinAnsiEncoding cannot render.
     .replace(/[^\x20-\x7E\xA0-\xFF]/g, "")
     .replace(/\\/g, "\\\\")
@@ -113,6 +121,8 @@ export function renderSimplePdf(lines: PdfLine[]): string {
       y -= 8;
       continue;
     }
+
+    if (line.minSpace && y - line.minSpace < MARGIN_BOTTOM) newPage();
 
     const parts = wrap(line.text ?? "", size, bold, contentWidth);
     for (const part of parts) {

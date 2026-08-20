@@ -80,6 +80,7 @@ export function buildItineraryPdfBase64(input: ItineraryPdfInput): string {
         size: 11.5,
         color: TEAL,
         spaceBefore: 8,
+        minSpace: stop.note ? 60 : 28,
       });
       if (stop.note) {
         lines.push({ text: stop.note, size: 10.5, color: CHARCOAL, spaceBefore: 2 });
