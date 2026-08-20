@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T15:02:34.390Z",
+  "generatedAt": "2026-08-20T15:17:46.567Z",
   "filesScanned": 1010,
   "approvedPalette": {
     "teal": "#295B61",
@@ -18,9 +18,9 @@
     "#cccccc"
   ],
   "counts": {
-    "total": 430,
+    "total": 433,
     "approved": 105,
-    "allowlisted": 71,
+    "allowlisted": 74,
     "mismatch": 254
   },
   "findings": [
@@ -3893,6 +3893,33 @@
       "normalized": "#8a611f",
       "snippet": "color: #8a611f !important;",
       "status": "mismatch"
+    },
+    {
+      "file": "src/styles.css",
+      "line": 7191,
+      "col": 17,
+      "raw": "#fff",
+      "normalized": "#ffffff",
+      "snippet": "background: #fff !important;",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/styles.css",
+      "line": 7197,
+      "col": 12,
+      "raw": "#000",
+      "normalized": "#000000",
+      "snippet": "color: #000 !important;",
+      "status": "allowlisted"
+    },
+    {
+      "file": "src/styles.css",
+      "line": 7206,
+      "col": 12,
+      "raw": "#000",
+      "normalized": "#000000",
+      "snippet": "color: #000 !important;",
+      "status": "allowlisted"
     }
   ]
 }
