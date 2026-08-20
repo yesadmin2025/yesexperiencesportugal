@@ -212,6 +212,8 @@ function PageLightbox({
           key={page.src}
           src={page.src}
           alt={page.alt}
+          loading="lazy"
+          decoding="async"
           className="mx-auto max-h-full w-auto max-w-full object-contain shadow-[0_30px_60px_-30px_rgba(46,46,46,0.5)] ring-1 ring-[color:var(--charcoal)]/10 bg-white"
           style={{ touchAction: "pinch-zoom" }}
           draggable={false}

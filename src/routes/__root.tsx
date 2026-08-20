@@ -207,6 +207,10 @@ export const Route = createRootRoute({
       { rel: "manifest", href: "/site.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      // Perf: GTM boots late (idle / first interaction), so we only warm DNS —
+      // a preconnect here would open a socket nobody uses during LCP.
+      { rel: "dns-prefetch", href: "https://www.googletagmanager.com" },
+
       // Perf: pruned to the two families actually rendered on-screen.
       // --font-serif (Georgia, "Cormorant Garamond", "Newsreader", serif)
       // resolves to Georgia (system) first, so the Google-hosted fallbacks
@@ -234,9 +238,16 @@ export const Route = createRootRoute({
           "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=window.gtag||gtag;gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500});",
       },
       {
+        // Perf (TBT): GTM is deferred off the critical path. It boots on the
+        // first genuine user intent (pointer/keyboard/scroll) or, failing
+        // that, at the first idle slot after `load` — never competing with
+        // hydration or LCP. Consent Mode defaults above still run inline, and
+        // every dataLayer.push before boot is queued by the array above, so
+        // no event is lost and no tag behaviour changes.
         children:
-          "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-M82SQS79');",
+          "(function(w,d,i){var l='dataLayer',started=false;function boot(){if(started)return;started=true;w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName('script')[0],j=d.createElement('script');j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f);cleanup();}var evts=['pointerdown','keydown','touchstart','scroll'];function cleanup(){evts.forEach(function(e){w.removeEventListener(e,boot,{passive:true});});}evts.forEach(function(e){w.addEventListener(e,boot,{passive:true,once:true});});function idle(){if(w.requestIdleCallback){w.requestIdleCallback(boot,{timeout:5000});}else{setTimeout(boot,3000);}}if(d.readyState==='complete'){idle();}else{w.addEventListener('load',idle,{once:true});}})(window,document,'GTM-M82SQS79');",
       },
+
       jsonLdScript(organizationLd()),
       jsonLdScript(websiteLd()),
     ],

@@ -99,21 +99,25 @@ export function organizationLd() {
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Private personalized day tours across Portugal — local hidden gems, designed around you",
+      // Each entry references the TouristTrip entity by @id only (plus a
+      // human label). The full TouristTrip definition lives on the tour page
+      // and in the homepage ItemList — defining it twice with different
+      // `url`/`description` values created conflicting entities for the same
+      // @id. Descriptive copy therefore lives on the Offer node here, and
+      // every URL points at the canonical (HTTP 200) tour route.
       itemListElement: [
         {
           "@type": "Offer",
           position: 1,
-          url: `${SITE_URL}/arrabida-wine-tour`,
+          url: `${SITE_URL}/tours/arrabida-wine-allinclusive`,
           category: "Private day tour",
+          name: "Arrábida Private Wine Tour from Lisbon",
+          description:
+            "Best-seller. Private, personalized day in the Arrábida Natural Park with local family wineries in Azeitão, cliff-top hidden viewpoints and a slow lunch. YES's most-recognised experience across Tripadvisor, Viator and GetYourGuide.",
           itemOffered: {
             "@type": "TouristTrip",
             "@id": `${SITE_URL}/tours/arrabida-wine-allinclusive#trip`,
             name: "Arrábida Private Wine Tour from Lisbon",
-            description:
-              "Best-seller. Private, personalized day in the Arrábida Natural Park with local family wineries in Azeitão, cliff-top hidden viewpoints and a slow lunch. YES's most-recognised experience across Tripadvisor, Viator and GetYourGuide.",
-            url: `${SITE_URL}/arrabida-wine-tour`,
-            touristType: ["Wine lovers", "Couples", "Small private groups"],
-            provider: { "@id": `${SITE_URL}/#organization` },
           },
         },
         {
@@ -121,15 +125,13 @@ export function organizationLd() {
           position: 2,
           url: `${SITE_URL}/tours/southwest-vicentine-coast`,
           category: "Private day tour",
+          name: "Southwest Vicentine Coast — Secret Paradise from Lisbon",
+          description:
+            "One of the most unique private day tours in Portugal — Porto Covo, Vila Nova de Milfontes, the Natural Park of Southwest Alentejo and Costa Vicentina, and Odeceixe. Raw, quiet Atlantic hidden gems rarely reached from Lisbon.",
           itemOffered: {
             "@type": "TouristTrip",
             "@id": `${SITE_URL}/tours/southwest-vicentine-coast#trip`,
             name: "Southwest Vicentine Coast — Secret Paradise from Lisbon",
-            description:
-              "One of the most unique private day tours in Portugal — Porto Covo, Vila Nova de Milfontes, the Natural Park of Southwest Alentejo and Costa Vicentina, and Odeceixe. Raw, quiet Atlantic hidden gems rarely reached from Lisbon.",
-            url: `${SITE_URL}/tours/southwest-vicentine-coast`,
-            touristType: ["Slow travellers", "Nature and coastal scenery lovers"],
-            provider: { "@id": `${SITE_URL}/#organization` },
           },
         },
         {
@@ -137,15 +139,13 @@ export function organizationLd() {
           position: 3,
           url: `${SITE_URL}/tours/roman-heritage-alentejo`,
           category: "Private day tour",
+          name: "Vinho de Talha — Ancient Clay-Amphora Wine Tour in the Alentejo",
+          description:
+            "Private, personalized day inside one of Portugal's rarest local wine traditions — vinho de talha, fermented in Roman-style clay amphorae in the Alentejo. Family cellars, long lunches and living heritage — a hidden gem for wine and culture travellers.",
           itemOffered: {
             "@type": "TouristTrip",
             "@id": `${SITE_URL}/tours/roman-heritage-alentejo#trip`,
             name: "Vinho de Talha — Ancient Clay-Amphora Wine Tour in the Alentejo",
-            description:
-              "Private, personalized day inside one of Portugal's rarest local wine traditions — vinho de talha, fermented in Roman-style clay amphorae in the Alentejo. Family cellars, long lunches and living heritage — a hidden gem for wine and culture travellers.",
-            url: `${SITE_URL}/tours/roman-heritage-alentejo`,
-            touristType: ["Wine travellers", "Heritage travellers"],
-            provider: { "@id": `${SITE_URL}/#organization` },
           },
         },
         {
@@ -153,18 +153,17 @@ export function organizationLd() {
           position: 4,
           url: `${SITE_URL}/tours/troia-comporta`,
           category: "Private day tour",
+          name: "Tróia & Comporta Private Day from Lisbon",
+          description:
+            "Private, personalized day across the Sado estuary to Tróia and Comporta — rice fields, pine forests, hidden white-sand beaches and Portugal's quiet luxury coast.",
           itemOffered: {
             "@type": "TouristTrip",
             "@id": `${SITE_URL}/tours/troia-comporta#trip`,
             name: "Tróia & Comporta Private Day from Lisbon",
-            description:
-              "Private, personalized day across the Sado estuary to Tróia and Comporta — rice fields, pine forests, hidden white-sand beaches and Portugal's quiet luxury coast.",
-            url: `${SITE_URL}/tours/troia-comporta`,
-            touristType: ["Beach lovers", "Quiet-luxury travellers", "Couples"],
-            provider: { "@id": `${SITE_URL}/#organization` },
           },
         },
       ],
+
     },
     makesOffer: [
       {
