@@ -12,6 +12,7 @@ import * as React from "react";
 import { render } from "react-email";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { TEMPLATES } from "@/lib/email-templates/registry";
+import { TEAM_NOTIFICATION_RECIPIENTS } from "@/lib/email/team-recipients";
 
 const SITE_NAME = "yesexperiencesportugal";
 const SENDER_DOMAIN = "notify.yesexperiencesportugal.com";
