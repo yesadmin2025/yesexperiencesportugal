@@ -58,8 +58,14 @@ test.describe("Studio V3 · guest details → checkout @ 393px", () => {
     const form = page.getByTestId("studio-v3-guest-details");
     await expect(form).toBeVisible();
 
-    await form.getByLabel(/full name/i).first().fill("Ana Test");
-    await form.getByLabel(/^email/i).first().fill("qa+studio@example.com");
+    await form
+      .getByLabel(/full name/i)
+      .first()
+      .fill("Ana Test");
+    await form
+      .getByLabel(/^email/i)
+      .first()
+      .fill("qa+studio@example.com");
     const phone = form.getByLabel(/phone/i).first();
     if (await phone.isVisible().catch(() => false)) await phone.fill("+351912345678");
     const pickup = form.getByLabel(/pickup/i).first();

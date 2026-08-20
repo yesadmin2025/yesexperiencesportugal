@@ -161,7 +161,6 @@ export async function advanceGeneric(page: Page, extraTestIds?: string[]): Promi
   return false;
 }
 
-
 /**
  * Deterministic intro handler. The intro is a single `data-phase` ("intro")
  * with three sub-steps (welcome → name → path), so the generic
