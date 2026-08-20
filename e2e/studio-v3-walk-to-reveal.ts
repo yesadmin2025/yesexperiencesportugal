@@ -208,7 +208,6 @@ export async function advanceIntro(page: Page): Promise<boolean> {
   return false;
 }
 
-export async function walkToReveal(page: Page): Promise<void> {
 /**
  * Linear phase order — mirrors PHASE_ORDER in `src/components/studio-v3/StudioV3.tsx`.
  * Phases can be skipped (irrelevant answers), so "advanced" means the live
