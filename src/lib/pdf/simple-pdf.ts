@@ -61,7 +61,7 @@ function textWidth(text: string, size: number, bold: boolean): number {
 function escapePdfText(text: string): string {
   return text
     .normalize("NFC")
-    .replace(/\u20AC/g, "EUR ")
+    .replace(/\u20AC\s*/g, "EUR ")
     .replace(/[\u2013\u2014]/g, "-")
     .replace(/[\u2018\u2019]/g, "'")
     .replace(/[\u201C\u201D]/g, '"')
