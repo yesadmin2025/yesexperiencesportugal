@@ -19,6 +19,12 @@ export interface PdfLine {
   rule?: boolean;
   /** Start a new page if less than this much vertical space (pt) remains. */
   minSpace?: number;
+  /**
+   * Bind this line to the following one so the pair (or chain) is never split
+   * across a page break — used for a stop title and its note.
+   */
+  keepWithNext?: boolean;
+
 }
 
 const PAGE_W = 595.28; // A4
@@ -93,26 +99,52 @@ function wrap(text: string, size: number, bold: boolean, maxWidth: number): stri
   return lines;
 }
 
+/** Vertical space a line consumes, including its leading space. */
+function measureLine(line: PdfLine, contentWidth: number): number {
+  const size = line.size ?? 10.5;
+  const before = line.spaceBefore ?? 0;
+  if (line.rule) return before + 8;
+  const parts = wrap(line.text ?? "", size, (line.font ?? "regular") === "bold", contentWidth);
+  return before + parts.length * size * 1.45;
+}
+
 /** Build a PDF from a flat list of lines and return it base64-encoded. */
 export function renderSimplePdf(lines: PdfLine[]): string {
   const contentWidth = PAGE_W - MARGIN_X * 2;
   const pages: string[] = [];
   let ops: string[] = [];
-  let y = PAGE_H - MARGIN_TOP;
+  const pageTop = PAGE_H - MARGIN_TOP;
+  let y = pageTop;
 
   const newPage = () => {
     pages.push(ops.join("\n"));
     ops = [];
-    y = PAGE_H - MARGIN_TOP;
+    y = pageTop;
   };
 
-  for (const line of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
     const size = line.size ?? 10.5;
     const font = line.font ?? "regular";
     const bold = font === "bold";
     const leading = size * 1.45;
+
+    // Keep-together: a line flagged `keepWithNext` is measured together with
+    // every line it is chained to (e.g. a stop title plus its note) and moved
+    // whole to the next page when the block would otherwise split.
+    if (line.keepWithNext) {
+      let blockHeight = 0;
+      for (let j = i; j < lines.length; j++) {
+        blockHeight += measureLine(lines[j], contentWidth);
+        if (!lines[j].keepWithNext) break;
+      }
+      // Never open a blank page for a block taller than a full page.
+      const fitsOnAFreshPage = blockHeight <= pageTop - MARGIN_BOTTOM;
+      if (fitsOnAFreshPage && y - blockHeight < MARGIN_BOTTOM && y < pageTop) newPage();
+    }
+
     y -= line.spaceBefore ?? 0;
-    if (line.minSpace && y - line.minSpace < MARGIN_BOTTOM) newPage();
+    if (line.minSpace && y - line.minSpace < MARGIN_BOTTOM && y < pageTop) newPage();
 
     if (line.rule) {
       if (y < MARGIN_BOTTOM) newPage();
@@ -134,6 +166,7 @@ export function renderSimplePdf(lines: PdfLine[]): string {
       y -= leading;
     }
   }
+
   pages.push(ops.join("\n"));
 
   // ── Assemble objects ────────────────────────────────────────────────────

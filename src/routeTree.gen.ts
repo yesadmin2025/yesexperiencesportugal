@@ -135,6 +135,7 @@ import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/em
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
 import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
+import { Route as ApiPublicBookingItineraryRouteImport } from './routes/api/public/booking-itinerary'
 import { Route as AdminBookingsIdRouteImport } from './routes/admin.bookings.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -790,6 +791,12 @@ const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   path: '/api/public/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBookingItineraryRoute =
+  ApiPublicBookingItineraryRouteImport.update({
+    id: '/api/public/booking-itinerary',
+    path: '/api/public/booking-itinerary',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminBookingsIdRoute = AdminBookingsIdRouteImport.update({
   id: '/admin/bookings/$id',
   path: '/admin/bookings/$id',
@@ -993,6 +1000,7 @@ export interface FileRoutesByFullPath {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
+  '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1133,6 +1141,7 @@ export interface FileRoutesByTo {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
+  '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1276,6 +1285,7 @@ export interface FileRoutesById {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
+  '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1420,6 +1430,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
+    | '/api/public/booking-itinerary'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
@@ -1560,6 +1571,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
+    | '/api/public/booking-itinerary'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
@@ -1702,6 +1714,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/bookings/$id'
+    | '/api/public/booking-itinerary'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
@@ -1828,6 +1841,7 @@ export interface RootRouteChildren {
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   AdminBookingsIdRoute: typeof AdminBookingsIdRoute
+  ApiPublicBookingItineraryRoute: typeof ApiPublicBookingItineraryRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
@@ -2731,6 +2745,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/booking-itinerary': {
+      id: '/api/public/booking-itinerary'
+      path: '/api/public/booking-itinerary'
+      fullPath: '/api/public/booking-itinerary'
+      preLoaderRoute: typeof ApiPublicBookingItineraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/bookings/$id': {
       id: '/admin/bookings/$id'
       path: '/admin/bookings/$id'
@@ -3014,6 +3035,7 @@ const rootRouteChildren: RootRouteChildren = {
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   AdminBookingsIdRoute: AdminBookingsIdRoute,
+  ApiPublicBookingItineraryRoute: ApiPublicBookingItineraryRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,
