@@ -344,7 +344,7 @@ function ExperienceSummaryCard({
             {summarizeJourneyLines(summary.journeyLines!).map((row) => (
               <li
                 key={row.key}
-                className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]/80 font-sans"
+                className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)] font-sans"
               >
                 <span className="truncate">
                   {row.label}
@@ -376,7 +376,7 @@ function ExperienceSummaryCard({
               return (
                 <li
                   key={a.id}
-                  className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)]/80 font-sans"
+                  className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)] font-sans"
                 >
                   <span className="truncate">
                     • {a.label}

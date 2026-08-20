@@ -345,7 +345,7 @@ export function FinalDetailsDialog({
                 Continue to secure checkout
               </CtaButton>
             )}
-            <p className="text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
+            <p className="text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
               Secure checkout · Final price shown before payment
             </p>
           </DialogFooter>
