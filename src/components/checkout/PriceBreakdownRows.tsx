@@ -44,7 +44,7 @@ export function PriceBreakdownRows({
     >
       <p
         className="text-[10px] uppercase tracking-[0.22em] mb-2"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+        style={{ color: "var(--charcoal-soft)" }}
       >
         {label}
       </p>
@@ -64,7 +64,7 @@ export function PriceBreakdownRows({
               {row.qty > 1 ? (
                 <span
                   className="ml-1 tabular-nums"
-                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                  style={{ color: "var(--charcoal-soft)" }}
                 >
                   ({fmt(row.unitEur)} × {row.qty})
                 </span>
