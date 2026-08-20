@@ -5,7 +5,7 @@
  * can open it on a phone without downloading anything.
  */
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
-import { AlertCircle, Download, Loader2, Receipt } from "lucide-react";
+import { AlertCircle, Download, Loader2, Printer, Receipt } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -82,19 +82,24 @@ export const Route = createFileRoute("/itinerary")({
 function Section({ title, items }: { title: string; items: string[] }) {
   if (items.length === 0) return null;
   return (
-    <section className="mt-10">
+    <section className="itinerary-block mt-12">
       <h2 className="text-[11px] uppercase tracking-[0.24em] text-[color:var(--gold-ink)]">
         {title}
       </h2>
       <div className="mt-3 h-px w-full bg-[color:var(--gold)]/25" />
-      <ul className="mt-4 space-y-2">
+      <ul className="mt-6 space-y-3">
         {items.map((item) => (
           <li
             key={item}
-            className="text-[15px] leading-relaxed text-[color:var(--charcoal)] pl-4 relative"
+            className="itinerary-row grid grid-cols-[12px_minmax(0,1fr)] items-start gap-x-3"
           >
-            <span className="absolute left-0 top-[0.7em] h-px w-2 bg-[color:var(--gold)]" />
-            {item}
+            <span
+              aria-hidden
+              className="mt-[0.72em] h-px w-2 bg-[color:var(--gold)]"
+            />
+            <span className="min-w-0 break-words text-[15px] leading-relaxed text-[color:var(--charcoal)]">
+              {item}
+            </span>
           </li>
         ))}
       </ul>
@@ -157,7 +162,7 @@ function ItineraryPage() {
 
   return (
     <SiteLayout>
-      <main className="mx-auto w-full max-w-[720px] px-5 pb-24 pt-14 sm:pt-20">
+      <main className="itinerary-doc mx-auto w-full max-w-[720px] px-5 pb-24 pt-14 sm:pt-20">
         <Eyebrow>Your designed day</Eyebrow>
         <SectionTitle as="h1">{data?.experienceName ?? "Your YES experience"}</SectionTitle>
 
@@ -182,39 +187,46 @@ function ItineraryPage() {
 
         {data ? (
           <>
-            <dl className="mt-8 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
+            <dl className="itinerary-block mt-9 grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-2">
               {facts
                 .filter(([, value]) => Boolean(value))
                 .map(([label, value]) => (
-                  <div key={label} className="flex flex-col">
+                  <div key={label} className="itinerary-row flex min-w-0 flex-col">
                     <dt className="text-[10.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
                       {label}
                     </dt>
-                    <dd className="mt-1 text-[15px] text-[color:var(--charcoal)]">{value}</dd>
+                    <dd className="mt-1.5 break-words text-[15px] leading-relaxed text-[color:var(--charcoal)]">
+                      {value}
+                    </dd>
                   </div>
                 ))}
             </dl>
 
             {data.itinerary.length > 0 ? (
-              <section className="mt-12">
+              <section className="itinerary-block mt-12">
                 <h2 className="text-[11px] uppercase tracking-[0.24em] text-[color:var(--gold-ink)]">
                   Your day, stop by stop
                 </h2>
                 <div className="mt-3 h-px w-full bg-[color:var(--gold)]/25" />
                 <ol className="mt-6 space-y-7">
                   {data.itinerary.map((stop, index) => (
-                    <li key={`${stop.label}-${index}`} className="relative pl-10">
-                      <span className="absolute left-0 top-0 flex h-7 w-7 items-center justify-center rounded-full border border-[color:var(--gold)]/45 text-[11px] text-[color:var(--gold-ink)]">
+                    <li
+                      key={`${stop.label}-${index}`}
+                      className="itinerary-row grid grid-cols-[28px_minmax(0,1fr)] items-start gap-x-4"
+                    >
+                      <span className="mt-[0.15em] flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[color:var(--gold)]/45 text-[11px] leading-none text-[color:var(--gold-ink)]">
                         {stop.order ?? index + 1}
                       </span>
-                      <h3 className="text-[18px] leading-snug text-[color:var(--teal)]">
-                        {stop.label}
-                      </h3>
-                      {stop.note ? (
-                        <p className="mt-2 text-[15px] leading-relaxed text-[color:var(--charcoal)]">
-                          {stop.note}
-                        </p>
-                      ) : null}
+                      <div className="min-w-0">
+                        <h3 className="serif break-words text-[18px] leading-snug text-[color:var(--teal)]">
+                          {stop.label}
+                        </h3>
+                        {stop.note ? (
+                          <p className="mt-2 break-words text-[15px] leading-relaxed text-[color:var(--charcoal)]">
+                            {stop.note}
+                          </p>
+                        ) : null}
+                      </div>
                     </li>
                   ))}
                 </ol>
@@ -226,7 +238,7 @@ function ItineraryPage() {
             <Section title="Adjusted for you" items={data.removedOptions} />
             <Section title="Your notes" items={data.customerNotes} />
 
-            <div className="mt-14 h-px w-full bg-[color:var(--gold)]/25" />
+            <div className="itinerary-block mt-14 h-px w-full bg-[color:var(--gold)]/25" />
             <p className="mt-6 text-[14px] leading-relaxed text-[color:var(--charcoal-soft)]">
               {data.flexibilityNote}
             </p>
@@ -238,7 +250,14 @@ function ItineraryPage() {
               Reference · {data.reference.slice(-12)}
             </p>
 
-            <div className="mt-8 flex flex-col gap-4">
+            <div className="itinerary-actions mt-10 flex flex-col gap-4">
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="inline-flex min-h-[44px] items-center gap-2 self-start border-b border-[color:var(--teal)]/40 pb-1 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:border-[color:var(--gold)] hover:text-[color:var(--charcoal)]"
+              >
+                <Printer size={14} /> Print itinerary
+              </button>
               <a
                 href={`/api/public/booking-itinerary?session_id=${encodeURIComponent(data.reference)}`}
                 className="inline-flex min-h-[44px] items-center gap-2 border-b border-[color:var(--teal)]/40 pb-1 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:border-[color:var(--gold)] hover:text-[color:var(--charcoal)] self-start"
