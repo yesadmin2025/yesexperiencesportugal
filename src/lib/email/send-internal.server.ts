@@ -72,12 +72,20 @@ async function mirrorToSafeRecipient(args: {
  * Raw Resend connector call. Used both by the live fallback path and by the
  * deferred-mail flusher.
  */
+export interface EmailAttachment {
+  filename: string;
+  /** base64-encoded file content. */
+  content: string;
+  contentType?: string;
+}
+
 async function resendSend(args: {
   to: string;
   subject: string;
   html: string;
   text: string;
   idemKey: string;
+  attachments?: EmailAttachment[];
 }): Promise<{ ok: boolean; status: number; body: string }> {
   try {
     const resp = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
@@ -94,6 +102,15 @@ async function resendSend(args: {
         subject: args.subject,
         html: args.html,
         text: args.text,
+        ...(args.attachments && args.attachments.length > 0
+          ? {
+              attachments: args.attachments.map((a) => ({
+                filename: a.filename,
+                content: a.content,
+                ...(a.contentType ? { content_type: a.contentType } : {}),
+              })),
+            }
+          : {}),
         headers: { "X-Entity-Ref-ID": args.idemKey },
       }),
     });
@@ -217,12 +234,14 @@ export interface SendInternalArgs {
   recipientEmail: string;
   templateData?: Record<string, unknown>;
   idempotencyKey?: string;
+  /** Files attached to the outgoing message (e.g. the itinerary PDF). */
+  attachments?: EmailAttachment[];
 }
 
 export async function sendTransactionalInternal(
   args: SendInternalArgs,
 ): Promise<{ ok: boolean; reason?: string }> {
-  const { templateName, recipientEmail, templateData = {}, idempotencyKey } = args;
+  const { templateName, recipientEmail, templateData = {}, idempotencyKey, attachments } = args;
   const supabase = supabaseAdmin;
   const messageId = crypto.randomUUID();
   const idemKey = idempotencyKey || messageId;
@@ -314,6 +333,7 @@ export async function sendTransactionalInternal(
       html,
       text: plainText,
       idemKey,
+      attachments,
     });
     if (!res.ok) {
       console.error("[email/internal] resend fallback failed", {
@@ -396,6 +416,11 @@ export async function sendTransactionalInternal(
       subject,
       html,
       text: plainText,
+      attachments: (attachments ?? []).map((a) => ({
+        filename: a.filename,
+        content: a.content,
+        content_type: a.contentType ?? "application/octet-stream",
+      })),
       purpose: "transactional",
       label: templateName,
       idempotency_key: idemKey,

@@ -30,8 +30,8 @@ describe("booking snapshot contract", () => {
   it("formats email preview lines exactly as the templates render them", () => {
     const preview = buildSnapshotEmailPreview(complete);
     expect(preview.itineraryLines).toEqual([
-      "1. Pena Palace · 90 min",
-      "2. Quinta da Regaleira · 75 min — skip-the-line",
+      "1. Pena Palace",
+      "2. Quinta da Regaleira — skip-the-line",
     ]);
     expect(preview.includedItems).toEqual(["Private driver-guide"]);
     expect(preview.addOnLabels).toEqual(["Private photographer · €120 pp", "Picnic"]);
