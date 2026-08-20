@@ -119,29 +119,15 @@ export const Route = createFileRoute("/contact")({
           inLanguage: "en",
           isPartOf: { "@id": "https://yesexperiencesportugal.com/#website" },
           about: { "@id": "https://yesexperiencesportugal.com/#organization" },
+          // Reference only — the Organization entity (with address, phone,
+          // email and contact points) is defined once per page by __root.tsx.
           mainEntity: {
             "@type": "Organization",
             "@id": "https://yesexperiencesportugal.com/#organization",
             name: BUSINESS_LEGAL_NAME,
             url: "https://yesexperiencesportugal.com",
-            email: EMAIL,
-            telephone: PHONE_DISPLAY,
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: CITY,
-              addressCountry: COUNTRY_CODE,
-            },
-            contactPoint: [
-              {
-                "@type": "ContactPoint",
-                contactType: "customer service",
-                telephone: PHONE_DISPLAY,
-                email: EMAIL,
-                areaServed: COUNTRY_CODE,
-                availableLanguage: ["en", "pt"],
-              },
-            ],
           },
+
         }),
       ],
     };

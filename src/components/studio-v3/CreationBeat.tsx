@@ -67,6 +67,8 @@ export function AtmosphereBeat({ imageSrc, videoSrc, eyebrow, line }: Atmosphere
           src={imageSrc}
           alt=""
           aria-hidden
+          loading="lazy"
+          decoding="async"
           onLoad={() => setImgReady(true)}
           onError={() => setImgReady(true)}
           className="absolute inset-0 w-full h-full object-cover sv3-kenburns"

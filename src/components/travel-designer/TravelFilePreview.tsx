@@ -183,6 +183,8 @@ export function TravelFilePreview({ className, onEngage }: TravelFilePreviewProp
           <img
             src={page.src}
             alt={page.alt}
+            loading="lazy"
+            decoding="async"
             onClick={(e) => e.stopPropagation()}
             className="max-h-[88vh] w-auto max-w-full object-contain shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)]"
           />
