@@ -18,8 +18,38 @@ import { describeRoute, type ItineraryGeoStop } from "@/lib/itinerary-view";
 
 interface Props {
   stops: ItineraryGeoStop[];
-  /** Decoded OSRM geometry — drawn only when it matches these stops. */
-  polylines?: Array<Array<[number, number]>>;
+  /** Encoded OSRM geometry — drawn only when it matches these stops. */
+  polylines?: readonly string[];
+}
+
+/** Google encoded-polyline decoder (precision 5). */
+function decodePolyline(str: string): Array<[number, number]> {
+  let index = 0;
+  const len = str.length;
+  let lat = 0;
+  let lng = 0;
+  const coords: Array<[number, number]> = [];
+  while (index < len) {
+    let b: number;
+    let shift = 0;
+    let result = 0;
+    do {
+      b = str.charCodeAt(index++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    lat += result & 1 ? ~(result >> 1) : result >> 1;
+    shift = 0;
+    result = 0;
+    do {
+      b = str.charCodeAt(index++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    lng += result & 1 ? ~(result >> 1) : result >> 1;
+    coords.push([lat * 1e-5, lng * 1e-5]);
+  }
+  return coords;
 }
 
 function makeGoldPin(L: typeof import("leaflet"), order: number) {
@@ -77,7 +107,8 @@ export default function ItineraryRouteMap({ stops, polylines = [] }: Props) {
         primary.addTo(map);
 
         if (polylines.length > 0) {
-          polylines.forEach((coords) => {
+          polylines.forEach((encoded) => {
+            const coords = decodePolyline(encoded);
             if (coords.length < 2) return;
             L.polyline(coords, {
               color: "var(--teal)",
