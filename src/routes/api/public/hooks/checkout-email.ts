@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { sendTransactionalInternal } from "@/lib/email/send-internal.server";
 import { TEAM_NOTIFICATION_RECIPIENTS } from "@/lib/email/team-recipients";
+import { buildItineraryPdfBase64, itineraryPdfFilename } from "@/lib/booking-itinerary-pdf";
 
 /**
  * Internal endpoint invoked by the Supabase Stripe webhook (Deno) after a
@@ -97,8 +98,43 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
           customerNotes: strList(body.customerNotes),
         };
 
+        // Downloadable itinerary attached to BOTH confirmation emails.
+        let attachments: Array<{ filename: string; content: string; contentType?: string }> = [];
+        try {
+          if (templateData.itinerary.length > 0) {
+            attachments = [
+              {
+                filename: itineraryPdfFilename(String(templateData.bookingRef ?? "")),
+                contentType: "application/pdf",
+                content: buildItineraryPdfBase64({
+                  experienceName:
+                    (body.experienceName as string | null) ??
+                    (templateData.tourTitle as string | null),
+                  customerName: templateData.customerName as string | null,
+                  dateLabel: templateData.dateExact as string | null,
+                  guestsLabel: templateData.guests ? `${templateData.guests} guests` : null,
+                  pickup: templateData.pickup as string | null,
+                  durationLabel: templateData.durationLabel as string | null,
+                  bookingRef: templateData.bookingRef as string | null,
+                  amountFormatted: templateData.amountFormatted as string | null,
+                  itinerary: templateData.itinerary,
+                  includedItems: templateData.includedItems,
+                  addOnLabels: templateData.addOnLabels,
+                  removedOptions: templateData.removedOptions,
+                  customerNotes: templateData.customerNotes,
+                }),
+              },
+            ];
+          }
+        } catch (e) {
+          console.error("[checkout-email] itinerary pdf failed", {
+            error: e instanceof Error ? e.message : e,
+          });
+        }
+
         const result = await sendTransactionalInternal({
           templateName: "checkout-receipt",
+          attachments,
           recipientEmail,
           idempotencyKey: `checkout-receipt-${sessionId}`,
           templateData,
@@ -127,6 +163,7 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
                 templateName: "internal-booking",
                 recipientEmail: recipient,
                 idempotencyKey: `internal-booking-${sessionId}-${recipient}`,
+                attachments,
                 templateData: {
                   ...templateData,
                   customerEmail: recipientEmail,
