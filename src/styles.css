@@ -7166,3 +7166,74 @@ html {
   outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
+
+/* ------------------------------------------------------------------
+   Printable itinerary (/itinerary)
+   Scoped with :has() so no other route's print output changes.
+   One stop per block: a title never separates from its note, mirroring
+   the keepWithNext rule used by the emailed PDF builder.
+------------------------------------------------------------------- */
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm 14mm;
+  }
+
+  body:has(.itinerary-doc) nav,
+  body:has(.itinerary-doc) header,
+  body:has(.itinerary-doc) footer,
+  body:has(.itinerary-doc) .itinerary-actions,
+  body:has(.itinerary-doc) [data-floating-actions],
+  body:has(.itinerary-doc) [data-cookie-consent],
+  body:has(.itinerary-doc) [data-qa-panel] {
+    display: none !important;
+  }
+
+  body:has(.itinerary-doc) {
+    background: #fff !important;
+  }
+
+  .itinerary-doc {
+    max-width: none !important;
+    padding: 0 !important;
+    color: #000 !important;
+  }
+
+  .itinerary-doc h1,
+  .itinerary-doc h2,
+  .itinerary-doc h3,
+  .itinerary-doc p,
+  .itinerary-doc dd,
+  .itinerary-doc span {
+    color: #000 !important;
+  }
+
+  .itinerary-doc h1 {
+    font-size: 22pt !important;
+    line-height: 1.15 !important;
+  }
+
+  .itinerary-doc h3 {
+    font-size: 12.5pt !important;
+  }
+
+  .itinerary-doc p,
+  .itinerary-doc dd,
+  .itinerary-doc li span {
+    font-size: 10.5pt !important;
+  }
+
+  .itinerary-block {
+    break-inside: auto;
+  }
+
+  .itinerary-row {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .itinerary-doc h2 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+}
