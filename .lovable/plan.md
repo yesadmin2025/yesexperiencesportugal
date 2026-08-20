@@ -1,43 +1,47 @@
-Goal
+# Studio V3 test hardening + hero CTA fix
 
-Make Playwright runs deterministic in this sandbox and CI, then run the full suite and validate checkout + Signature maps.
+Two independent pieces: deeper mobile test coverage for the Studio, and one copy change on the homepage hero.
 
-## 1. Pin the browser path
+## 1. Hero CTA — remove the echo
 
-- Add `scripts/playwright-env.mjs` that resolves a usable browsers root in this order: existing `PLAYWRIGHT_BROWSERS_PATH`, `/opt/ms-playwright` (present here, contains `chromium-1194` and `chromium_headless_shell-1194`), then `~/.cache/ms-playwright`.
-- Export the resolved value from `playwright.config.ts` and `playwright.local.config.ts` before `defineConfig`, so every worker inherits it (same pattern already used for the asset ESM hook via `NODE_OPTIONS`).
-- Add `package.json` scripts: `test:e2e` and the per-suite scripts run through a small wrapper (`node scripts/playwright-run.mjs …`) that sets the env and forwards args, so no caller can forget the pin.
+The hero already delivers the metaphor ("Portugal is the stage. You write the story."), so a "Create Your Story" button repeats it instead of advancing it. The CTA becomes:
 
-## 2. Preflight: chrome-headless-shell present or auto-install
+- Primary CTA: **Design your day**
+- Secondary CTA unchanged: "Explore Signature Experiences"
 
-- Extend `scripts/check-playwright-libs.mjs` (already wired as Playwright `globalSetup`) into a real preflight:
-  - resolve browsers root (step 1),
-  - check for `chrome-headless-shell` and the Chromium build Playwright's installed version expects,
-  - if missing, run `bunx playwright install chromium chromium-headless-shell` once (guarded by a lockfile so parallel workers don't race), and keep the existing missing-system-libs `ldd` warning,
-  - stay non-blocking on warnings, but fail fast with a clear message if install fails.
+Sentence case matches the brand voice rules. "Design your day" names the actual promise — a private day designed in real time — and pairs cleanly with the Studio's own language once the visitor arrives.
 
-## 3. Full suite run
+Because the hero strings are byte-locked (SSR probe, hero verify route, copy-diff overlay, A/B variants, e2e copy locks), the change is made once in the single source of truth and every lock/assertion referencing the old label is updated in the same pass, including the hero content-hash consumers.
 
-- Run `bun run test:e2e` across the three configured projects (mobile / tablet / desktop Chromium) against the dev server.
-- Triage every failure; where the failure is a legitimate visual drift from the recent typography and sticky-CTA changes, refresh only those snapshots with `--update-snapshots` for the affected specs. Report the final pass/fail counts.
-- All typography and copy consistency all over the site and right spacing and brand pallet, on mobile specially 
-- No repeated images anywhere on the website (exclude signature pages) 
+## 2. Guest details — error and retry coverage
 
-## 4. Checkout validation (mobile + tablet)
+New mobile spec covering the failure paths the current tests never touch:
 
-- Run `e2e/checkout-price-parity.spec.ts`, `e2e/instant-booking-checkout.spec.ts` and `e2e/instant-booking-checkout-negative.spec.ts`.
-- Extend the price-parity spec so it also asserts, for mobile and tablet viewports: per-person and party totals match `resolveJourneyPricing`, the tax/VAT line matches what the pricing library returns, and the final confirmation copy on the review step matches the checkout copy constants.
+- Submitting with missing/invalid required fields shows field-level messages, sets `aria-invalid`, moves focus to the first offending field, and does not advance the phase.
+- A simulated network failure on the submit call (route interception) surfaces an error, leaves the form filled, and keeps the user on guest details.
+- Retrying after the failure succeeds: no duplicate submissions, no lost answers, the Studio state and reveal data stay intact, and the flow continues to checkout.
 
-## 5. Signature route maps
+## 3. Accessibility assertions on the mobile Studio specs
 
-- Run `e2e/signature-map-and-images.spec.ts` (already covers all 11 tours, asserts a `[role="img"][aria-label^="Route map"]` tile with non-zero size).
-- If any tour fails, fix the underlying cause in `SignatureRouteMap` / its stop resolver rather than loosening the assertion.
+Targeted assertions plus an automated axe scan at each key phase (intro, reveal, guest details, checkout):
 
-## 6. SEO re-check
+- Every button and input has a stable, non-empty accessible name; icon-only controls carry labels.
+- Every input is programmatically associated with its label.
+- Tab order follows visual order through the guest form; focus is visible on each stop.
+- Primary tap targets meet 44x44.
+- axe-core scan per phase, run against serious/critical violations.
 
-- Re-run `e2e/sitemap-robots-canonical.spec.ts` and `e2e/jsonld-rendered.spec.ts` last, after all code changes, to confirm nothing regressed.
+Pre-existing violations the scan surfaces get fixed where they are genuine accessibility defects in Studio markup. If any turn out to be broad, pre-existing issues outside the Studio, they are reported rather than silently suppressed, and the scan is scoped to the Studio container so the suite stays meaningful and green.
+
+## 4. Tour date rules + checkout never stalls
+
+- Integration tests for the date boundaries: the minimum lead time is enforced (a date inside the window is rejected with a clear message), the first allowed date is accepted, and any upper bound is respected. Covered both at initial date selection and at the guest-details date field, so the two entry points cannot drift apart.
+- The mobile checkout leg asserts a bounded, deterministic transition: after a valid submit, the checkout summary with price and reserve CTA appears within a fixed budget, with no infinite spinner and no silent no-op. No live payment is taken.
 
 ## Technical notes
 
-- No app behaviour changes are planned; edits are limited to test infra, scripts, and (if a real defect surfaces) the specific component at fault.
-- Snapshot refreshes will be scoped per-spec, never a blanket update.
+- Copy source of truth: `src/content/hero-copy.ts` (`HERO_COPY.primaryCta`); update dependent locks in the hero copy tests/specs, the SSR verify route and any e2e asserting the old string.
+- New specs live beside the existing ones in `e2e/`, reusing `walkToReveal` and the hardened `reachGuestDetails` helper rather than duplicating navigation logic.
+- Accessibility scans use `@axe-core/playwright`, added as a dev dependency if not already present.
+- Network-failure simulation uses Playwright request interception on the submit/checkout endpoint — no real Stripe, Supabase or email side effects.
+- Focused verification: Prettier, TypeScript, the affected unit tests and the Studio mobile e2e specs. No deploy.
