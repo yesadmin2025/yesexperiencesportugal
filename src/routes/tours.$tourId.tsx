@@ -781,9 +781,12 @@ function FinalCta({ tour }: { tour: SignatureTour }) {
           src={tour.img}
           alt=""
           aria-hidden
+          loading="lazy"
+          decoding="async"
           style={{ objectPosition: tour.focal ?? "50% 50%" }}
           className="w-full h-full object-cover"
         />
+
         <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--charcoal-deep)]/95 via-[color:var(--charcoal-deep)]/75 to-[color:var(--charcoal-deep)]/55" />
       </div>
 
