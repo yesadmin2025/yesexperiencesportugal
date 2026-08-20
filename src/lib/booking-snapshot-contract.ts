@@ -57,14 +57,24 @@ export function normalizeSnapshotItinerary(value: unknown): SnapshotStop[] {
     }));
 }
 
-/** One itinerary line, formatted exactly as both email templates render it. */
+/**
+ * One itinerary line, formatted exactly as both email templates render it.
+ * Deliberately time-free — stops are ordered, never clock-stamped.
+ */
 export function formatStopLine(stop: SnapshotStop): string {
-  return (
-    `${stop.order}. ${stop.label}` +
-    (stop.durationMinutes ? ` · ${stop.durationMinutes} min` : "") +
-    (stop.note ? ` — ${stop.note}` : "")
-  );
+  return `${stop.order}. ${stop.label}` + (stop.note ? ` — ${stop.note}` : "");
 }
+
+/**
+ * Shown on the guest receipt, the internal alert and the attached PDF so the
+ * order of the day reads as curated rather than contractual.
+ */
+export const ITINERARY_FLEXIBILITY_NOTE =
+  "Wineries and partner estates may vary with their availability on the day, and the pacing of your day may shift slightly with the weather, traffic and how long you want to linger. Nothing in your itinerary is skipped.";
+
+/** Makes clear no further voucher or document is needed. */
+export const CONFIRMATION_SUFFICIENCY_NOTE =
+  "This confirmation is all you need — no separate voucher is issued. Keep this email (and the attached itinerary) with you on the day.";
 
 export function buildSnapshotEmailPreview(
   snapshot: AnyRec | null | undefined,
