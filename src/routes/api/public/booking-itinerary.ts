@@ -87,7 +87,8 @@ export const Route = createFileRoute("/api/public/booking-itinerary")({
         };
 
         const pdf = bytesFromBase64(buildItineraryPdfBase64(input));
-        return new Response(pdf, {
+        return new Response(pdf.buffer as ArrayBuffer, {
+
           status: 200,
           headers: {
             "content-type": "application/pdf",
