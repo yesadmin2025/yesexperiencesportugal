@@ -339,7 +339,6 @@ const PHASE_ACTIONS: Partial<Record<string, (page: Page) => Promise<boolean>>> =
   storyboard: playMomentsReel,
 };
 
-
 /**
  * Walk the funnel to the Refine screen using explicit expected-next-phase
  * contracts: act on the current phase, then require the Studio to report a
@@ -392,8 +391,6 @@ export async function walkToReveal(page: Page): Promise<void> {
     if (landed === null) return;
   }
 }
-
-
 
 export type Addon = { id: string; eur: number };
 
