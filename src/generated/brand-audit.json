@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-20T12:21:36.249Z",
-  "filesScanned": 1003,
+  "generatedAt": "2026-08-20T12:28:23.906Z",
+  "filesScanned": 1004,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -2393,7 +2393,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 277,
+      "line": 373,
       "col": 35,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2402,7 +2402,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 279,
+      "line": 375,
       "col": 21,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2411,7 +2411,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 365,
+      "line": 461,
       "col": 11,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2420,7 +2420,7 @@
     },
     {
       "file": "src/lib/email-templates/checkout-receipt.tsx",
-      "line": 376,
+      "line": 472,
       "col": 21,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2546,7 +2546,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 37,
+      "line": 47,
       "col": 34,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2555,7 +2555,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 39,
+      "line": 49,
       "col": 22,
       "raw": "#295B61",
       "normalized": "#295b61",
@@ -2564,7 +2564,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 41,
+      "line": 51,
       "col": 11,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -2573,7 +2573,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 49,
+      "line": 59,
       "col": 11,
       "raw": "#888",
       "normalized": "#888888",
@@ -2582,7 +2582,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 55,
+      "line": 65,
       "col": 25,
       "raw": "#111",
       "normalized": "#111111",
@@ -2591,7 +2591,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 57,
+      "line": 67,
       "col": 21,
       "raw": "#295B61",
       "normalized": "#295b61",
@@ -2600,7 +2600,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 58,
+      "line": 68,
       "col": 11,
       "raw": "#ffffff",
       "normalized": "#ffffff",
@@ -2609,7 +2609,7 @@
     },
     {
       "file": "src/lib/email-templates/internal-booking.tsx",
-      "line": 122,
+      "line": 145,
       "col": 44,
       "raw": "#666",
       "normalized": "#666666",
