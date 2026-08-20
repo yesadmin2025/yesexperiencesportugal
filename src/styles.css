@@ -7183,9 +7183,7 @@ html {
   body:has(.itinerary-doc) header,
   body:has(.itinerary-doc) footer,
   body:has(.itinerary-doc) .itinerary-actions,
-  body:has(.itinerary-doc) [data-floating-actions],
-  body:has(.itinerary-doc) [data-cookie-consent],
-  body:has(.itinerary-doc) [data-qa-panel] {
+  body:has(.itinerary-doc) .fixed {
     display: none !important;
   }
 
