@@ -136,7 +136,6 @@ test.describe("Studio V3 · Final Reveal + Guest Details @ 393×588", () => {
     await expect(submit).toHaveText(/email my signature story/i);
   });
 
-
   test("visual — reveal and Guest Details baselines", async ({ page }) => {
     await page.goto("/studio-v3");
     await walkToReveal(page);
