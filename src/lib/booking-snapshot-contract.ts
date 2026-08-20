@@ -66,7 +66,9 @@ export function formatStopLine(stop: SnapshotStop): string {
   );
 }
 
-export function buildSnapshotEmailPreview(snapshot: AnyRec | null | undefined): SnapshotEmailPreview {
+export function buildSnapshotEmailPreview(
+  snapshot: AnyRec | null | undefined,
+): SnapshotEmailPreview {
   const snap = snapshot ?? {};
   const addOns = Array.isArray(snap.addOns) ? (snap.addOns as AnyRec[]) : [];
   return {

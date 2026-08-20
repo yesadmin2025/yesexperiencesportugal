@@ -72,7 +72,6 @@ function PreviewList({ label, items }: { label: string; items: string[] }) {
   );
 }
 
-
 function AdminBookingDetailPage() {
   const { id } = Route.useParams();
   const get = useServerFn(getAdminBooking);
@@ -246,8 +245,8 @@ function AdminBookingDetailPage() {
           </p>
           {snapshotCheck.ok ? null : (
             <p className="rounded border border-red-200 bg-red-50 p-3 text-red-800">
-              Incomplete snapshot — these emails would be missing: {snapshotCheck.missing.join(", ")}
-              .
+              Incomplete snapshot — these emails would be missing:{" "}
+              {snapshotCheck.missing.join(", ")}.
             </p>
           )}
           <PreviewList label="Your day, stop by stop" items={emailPreview.itineraryLines} />
