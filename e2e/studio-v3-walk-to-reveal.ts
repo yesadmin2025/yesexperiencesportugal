@@ -209,80 +209,155 @@ export async function advanceIntro(page: Page): Promise<boolean> {
 }
 
 export async function walkToReveal(page: Page): Promise<void> {
-  let lastPhase: string | null = null;
-  let stuck = 0;
+/**
+ * Linear phase order — mirrors PHASE_ORDER in `src/components/studio-v3/StudioV3.tsx`.
+ * Phases can be skipped (irrelevant answers), so "advanced" means the live
+ * `data-phase` moved to a STRICTLY LATER index, never merely "changed".
+ */
+export const PHASE_SEQUENCE = [
+  "intro",
+  "who",
+  "feeling",
+  "destination",
+  "pickup",
+  "guests",
+  "investment",
+  "interests",
+  "rhythm",
+  "refinement",
+  "occasion",
+  "date",
+  "considerations",
+  "language",
+  "map",
+  "storyboard",
+  "confirmation",
+  "guestDetails",
+  "checkoutSummary",
+] as const;
+
+export type StudioWalkPhase = (typeof PHASE_SEQUENCE)[number];
+
+function phaseIndex(phase: string | null): number {
+  return phase ? (PHASE_SEQUENCE as readonly string[]).indexOf(phase) : -1;
+}
+
+async function refineVisible(page: Page): Promise<boolean> {
+  return page
+    .locator('[data-studio-v3-screen="refine"]')
+    .first()
+    .isVisible()
+    .catch(() => false);
+}
+
+/**
+ * Explicit expected-next-phase contract. After acting on `from`, poll until
+ * the Studio reports a later phase (or the Refine screen mounts, which is
+ * the walk's terminal state). Returns the phase we landed on, or null when
+ * the contract was not satisfied inside `timeout`.
+ */
+async function waitForPhaseAfter(
+  page: Page,
+  from: string | null,
+  timeout = 6_000,
+): Promise<string | null> {
+  const fromIdx = phaseIndex(from);
+  const deadline = Date.now() + timeout;
+  while (Date.now() < deadline) {
+    if (await refineVisible(page)) return "storyboard";
+    const now = await currentPhase(page);
+    if (phaseIndex(now) > fromIdx) return now;
+    await page.waitForTimeout(150);
+  }
+  return null;
+}
+
+/**
+ * Storyboard/map moments reel — advance through the moments until the
+ * "hold journey" CTA becomes interactive, then commit. Its contract is the
+ * Refine screen rather than a phase index bump.
+ */
+async function playMomentsReel(page: Page): Promise<boolean> {
+  await dismissReactionOverlay(page);
+  const hold = page.locator('[data-phase-cta="hold-journey"]').first();
+  const nextMoment = page.locator('button[aria-label="Next moment"]').first();
+  const holdInteractive = () =>
+    hold.evaluate((el) => {
+      const wrap = el.closest("[aria-hidden]");
+      const aria = wrap?.getAttribute("aria-hidden");
+      const styles = wrap ? window.getComputedStyle(wrap as Element) : null;
+      return aria !== "true" && styles?.pointerEvents !== "none" && styles?.opacity !== "0";
+    });
+  for (let j = 0; j < 30; j++) {
+    if (await holdInteractive().catch(() => false)) break;
+    const isDisabled = await nextMoment.isDisabled({ timeout: 200 }).catch(() => true);
+    if (!isDisabled) {
+      await nextMoment.click({ timeout: 1_000 }).catch(() => undefined);
+    }
+    await page.waitForTimeout(300);
+  }
+  await page.waitForTimeout(400);
+  if (!(await holdInteractive().catch(() => false))) return false;
+  await hold.click({ timeout: 4_000 }).catch(() => undefined);
+  return true;
+}
+
+/**
+ * Per-phase action contract. Each entry knows how to act on its phase; the
+ * walker then asserts the expected transition instead of retrying blindly.
+ * Phases without an entry fall back to the answer/continue heuristic.
+ */
+const PHASE_ACTIONS: Partial<Record<string, (page: Page) => Promise<boolean>>> = {
+  intro: advanceIntro,
+  map: playMomentsReel,
+  storyboard: playMomentsReel,
+};
+
+/**
+ * Walk the funnel to the Refine screen using explicit expected-next-phase
+ * contracts: act on the current phase, then wait for a strictly later phase
+ * (or Refine). A single retry covers a dropped click; two consecutive
+ * unmet contracts on the same phase stop the walk instead of spinning.
+ */
+export async function walkToReveal(page: Page): Promise<void> {
   let momentRuns = 0;
-  for (let i = 0; i < 52; i++) {
+
+  for (let i = 0; i < PHASE_SEQUENCE.length * 3; i++) {
     await dismissReactionOverlay(page);
-    // Early exit — the Refine screen is the walk's destination.
-    if (
-      await page
-        .locator('[data-studio-v3-screen="refine"]')
-        .first()
-        .isVisible()
-        .catch(() => false)
-    ) {
-      return;
-    }
+    if (await refineVisible(page)) return;
+
     const phase = await currentPhase(page);
+    if (!phase) return;
 
-    if (phase === "storyboard" || phase === "map") {
+    if (phase === "map" || phase === "storyboard") {
       momentRuns += 1;
-      if (momentRuns > 3) break;
-      await dismissReactionOverlay(page);
-      const hold = page.locator('[data-phase-cta="hold-journey"]').first();
-      const nextMoment = page.locator('button[aria-label="Next moment"]').first();
-      const holdInteractive = () =>
-        hold.evaluate((el) => {
-          const wrap = el.closest("[aria-hidden]");
-          const aria = wrap?.getAttribute("aria-hidden");
-          const styles = wrap ? window.getComputedStyle(wrap as Element) : null;
-          return aria !== "true" && styles?.pointerEvents !== "none" && styles?.opacity !== "0";
-        });
-      for (let j = 0; j < 30; j++) {
-        if (await holdInteractive().catch(() => false)) break;
-        const isDisabled = await nextMoment.isDisabled({ timeout: 200 }).catch(() => true);
-        if (!isDisabled) {
-          await nextMoment.click({ timeout: 1_000 }).catch(() => undefined);
-        }
-        await page.waitForTimeout(300);
-      }
-      await page.waitForTimeout(650);
-      if (await holdInteractive().catch(() => false)) {
-        await hold.click({ timeout: 4_000 }).catch(() => undefined);
-        await page.waitForTimeout(1_200);
-      }
-      if ((await currentPhase(page)) === "storyboard") break;
+      if (momentRuns > 3) return;
     }
 
-    if (
-      phase === "intro" ||
-      (await page
-        .locator('[data-phase-cta^="intro-"]')
-        .first()
-        .isVisible()
-        .catch(() => false))
-    ) {
-      if (await advanceIntro(page)) {
-        await page.waitForTimeout(450);
-        lastPhase = phase;
-        stuck = 0;
+    const act = PHASE_ACTIONS[phase] ?? walkOnce;
+
+    // Attempt → verify contract → single retry → give up.
+    let landed: string | null = null;
+    for (let attempt = 0; attempt < 2 && landed === null; attempt++) {
+      const acted = await act(page);
+      if (!acted && attempt === 0) {
+        await page.waitForTimeout(300);
         continue;
       }
+      // The intro is one `data-phase` with three sub-steps, so its contract
+      // is "a sub-step was consumed", verified by the next loop iteration.
+      if (phase === "intro") {
+        await page.waitForTimeout(350);
+        landed = acted ? "intro" : null;
+        continue;
+      }
+      landed = await waitForPhaseAfter(page, phase);
     }
 
-    const clicked = await walkOnce(page);
-    if (!clicked) {
-      await page.waitForTimeout(350);
-      if (!(await walkOnce(page))) break;
-    }
-    await page.waitForTimeout(450);
-    if (phase && phase === lastPhase) stuck++;
-    else stuck = 0;
-    lastPhase = phase;
-    if (stuck > 6) break;
+    if (landed === null) return;
   }
 }
+
 
 export type Addon = { id: string; eur: number };
 
