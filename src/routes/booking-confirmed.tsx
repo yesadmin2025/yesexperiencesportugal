@@ -8,6 +8,7 @@ import {
   Loader2,
   AlertCircle,
   Download,
+  Map,
 
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -215,6 +216,13 @@ function BookingConfirmedPage() {
                 className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] border-b border-[color:var(--teal)]/40 hover:border-[color:var(--gold)] pb-1 min-h-[44px]"
               >
                 <Receipt size={14} /> Printable receipt
+              </Link>
+              <Link
+                to="/itinerary"
+                search={{ session_id }}
+                className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] border-b border-[color:var(--teal)]/40 hover:border-[color:var(--gold)] pb-1 min-h-[44px]"
+              >
+                <Map size={14} /> View itinerary online
               </Link>
               <a
                 href={`/api/public/booking-itinerary?session_id=${encodeURIComponent(session_id)}`}

@@ -76,6 +76,10 @@ export function videoForFeeling(feeling: string | null | undefined): string | un
       return STUDIO_SCENE_CLIPS.viewpoint;
     case "slow-luxury":
       return STUDIO_SCENE_CLIPS.table;
+    case "faith":
+      return STUDIO_SCENE_CLIPS.hiddenStreet;
+    case "hands-on":
+      return STUDIO_SCENE_CLIPS.localTable;
     default:
       return STUDIO_SCENE_CLIPS.viewpoint;
   }

@@ -71,6 +71,10 @@ function openerFor(feeling: Feeling | null, region: string): string {
       return `Your day in ${region} moves gently — fewer moments, held longer, nothing asked of you.`;
     case "culture":
       return `Your day in ${region} reads the country through what was built and kept — old stone, old streets, real context.`;
+    case "faith":
+      return `Your day in ${region} makes room for the sacred — sanctuaries, silence, and time to stand still in it.`;
+    case "hands-on":
+      return `Your day in ${region} is spent with your hands in it — local makers, real workshops, something learned rather than watched.`;
     default:
       return `Your day in ${region} unfolds at its own pace — private, unhurried, shaped around your answers.`;
   }

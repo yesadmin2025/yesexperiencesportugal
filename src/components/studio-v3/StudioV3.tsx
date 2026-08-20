@@ -174,6 +174,8 @@ const FEELING_IMAGE: Record<string, string> = {
   culture: atmCultural,
   adventure: atmCoastal,
   "slow-luxury": atmScenic,
+  faith: atmCultural,
+  "hands-on": atmCultural,
 };
 
 const INTEREST_IMAGE: Record<string, string> = {
@@ -438,6 +440,10 @@ function feelingReactionMessage(id: Feeling): string {
       return "Fewer stops, deeper moments, nothing rushed.\nThe route begins with space.";
     case "coastal":
       return "Atlantic light, salt on the wind, the cliffs ahead.\nThe route begins facing the sea.";
+    case "faith":
+      return "Sanctuaries, candlelight, and space to simply stand there.\nThe day begins in silence.";
+    case "hands-on":
+      return "Local hands, a workshop table, something made with you.\nThe day begins by doing.";
     case "culture":
       return "Old stones, long stories, footsteps that linger.\nThe day begins with depth.";
     default:

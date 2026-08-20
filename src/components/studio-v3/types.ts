@@ -15,6 +15,8 @@ export const FEELING_IDS = [
   "culture",
   "adventure",
   "slow-luxury",
+  "faith",
+  "hands-on",
 ] as const;
 export type Feeling = (typeof FEELING_IDS)[number];
 
@@ -68,6 +70,8 @@ export const INTEREST_IDS = [
   "photography",
   "wellness",
   "local-life",
+  "faith",
+  "hands-on",
 ] as const;
 export type Interest = (typeof INTEREST_IDS)[number];
 
@@ -379,6 +383,12 @@ export const FEELINGS: ChoiceOption<Feeling>[] = [
   { id: "culture", label: "Culture & heritage", whisper: "Stones, stories, centuries." },
   { id: "adventure", label: "Adventure", whisper: "Cliffs, currents, open horizons." },
   { id: "slow-luxury", label: "Slow luxury", whisper: "Few stops, deeply lived." },
+  { id: "faith", label: "Faith & reflection", whisper: "Fátima, sanctuaries, space to pause." },
+  {
+    id: "hands-on",
+    label: "Hands-on traditions",
+    whisper: "Paint a tile, make cheese, learn by doing.",
+  },
 ];
 
 export const COMPANIONS: ChoiceOption<Companions>[] = [
@@ -451,6 +461,8 @@ export const INTERESTS: ChoiceOption<Interest>[] = [
   { id: "photography", label: "Photography", whisper: "Light worth chasing." },
   { id: "wellness", label: "Wellness", whisper: "Quiet body, quiet mind." },
   { id: "local-life", label: "Local life", whisper: "Markets, makers, neighbours." },
+  { id: "faith", label: "Faith & reflection", whisper: "Sanctuaries, pilgrimage, quiet time." },
+  { id: "hands-on", label: "Workshops", whisper: "Tiles, cheese, craft with local hands." },
 ];
 
 export const CONSIDERATIONS: ChoiceOption<Consideration>[] = [

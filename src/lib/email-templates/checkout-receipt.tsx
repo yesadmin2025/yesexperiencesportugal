@@ -7,6 +7,7 @@ import {
   Heading,
   Hr,
   Html,
+  Link,
   Preview,
   Section,
   Text,
@@ -55,6 +56,8 @@ export interface CheckoutReceiptProps {
   addOnLabels?: string[] | null;
   removedOptions?: string[] | null;
   customerNotes?: string[] | null;
+  /** Online, readable version of the attached itinerary PDF. */
+  itineraryUrl?: string | null;
 }
 
 
@@ -140,7 +143,7 @@ const CheckoutReceipt = ({
   addOnLabels,
   removedOptions,
   customerNotes,
-
+  itineraryUrl,
 }: CheckoutReceiptProps) => {
   const firstName = customerName ? customerName.split(" ")[0] : null;
   const g = guests ?? 2;
@@ -251,6 +254,13 @@ const CheckoutReceipt = ({
                 <Text style={{ ...body, fontSize: "13px", color: "#5A5A5A" }}>
                   {ITINERARY_FLEXIBILITY_NOTE}
                 </Text>
+                {itineraryUrl ? (
+                  <Text style={body}>
+                    <Link href={itineraryUrl} style={{ color: "#295B61" }}>
+                      View your itinerary online
+                    </Link>
+                  </Text>
+                ) : null}
               </Section>
             </>
           ) : null}
