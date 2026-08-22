@@ -32,10 +32,10 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 };
 
 // Configuration
-const SITE_NAME = "yesexperiencesportugal";
-const SENDER_DOMAIN = "notify.yesexperiencesportugal.com";
+const SITE_NAME = "yesexperiences";
+const SENDER_DOMAIN = "notify.yesexperiences.pt";
 const ROOT_DOMAIN = "yesexperiencesportugal.com";
-const FROM_DOMAIN = "notify.yesexperiencesportugal.com";
+const FROM_DOMAIN = "notify.yesexperiences.pt";
 
 function redactEmail(email: string | null | undefined): string {
   if (!email) return "***";
