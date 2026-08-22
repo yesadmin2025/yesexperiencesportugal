@@ -107,16 +107,17 @@ function Page() {
 
   return (
     <SiteLayout>
-      <SiteBreadcrumbs
-        className="bg-[color:var(--sand)] pt-36 pb-0 md:pt-44"
-        crumbs={[
-          { name: "Home", path: "/" },
-          { name: "Local Stories", path: "/local-stories" },
-        ]}
-      />
       {/* Header */}
       <section className="pt-40 pb-16 md:pt-48 md:pb-20 bg-[color:var(--sand)] text-center">
         <div className="container-x">
+            <SiteBreadcrumbs
+              containerClassName=""
+              className="bg-transparent pt-0 pb-6 text-left"
+              crumbs={[
+                { name: "Home", path: "/" },
+                { name: "Local Stories", path: "/local-stories" },
+              ]}
+            />
           <Scene>
             <div className="scene-atmosphere">
               <Eyebrow flank>Local Stories</Eyebrow>

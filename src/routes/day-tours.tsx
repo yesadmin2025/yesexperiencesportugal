@@ -72,15 +72,16 @@ function DayToursPage() {
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>
-      <SiteBreadcrumbs
-        className="bg-[color:var(--sand)] pt-28 pb-0"
-        crumbs={[
-          { name: "Home", path: "/" },
-          { name: "Day Tours", path: "/day-tours" },
-        ]}
-      />
       <section className="reveal pt-32 pb-12 bg-[color:var(--sand)] text-center">
         <div className="container-x">
+            <SiteBreadcrumbs
+              containerClassName=""
+              className="bg-transparent pt-0 pb-6 text-left"
+              crumbs={[
+                { name: "Home", path: "/" },
+                { name: "Day Tours", path: "/day-tours" },
+              ]}
+            />
           <ParallaxLayer amount="sm">
             <Eyebrow flank>Half &amp; Full Day</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">

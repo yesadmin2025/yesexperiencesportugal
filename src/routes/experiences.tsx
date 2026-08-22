@@ -81,19 +81,20 @@ function ExperiencesPage() {
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>
-      <SiteBreadcrumbs
-        className="bg-[color:var(--sand)] pt-28 pb-0"
-        crumbs={[
-          { name: "Home", path: "/" },
-          { name: "Signature Experiences", path: "/experiences" },
-        ]}
-      />
       <Scene
         as="section"
         data-audit="experiences-hero"
         className="pt-32 pb-[var(--section-y-sm)] bg-[color:var(--sand)] text-center"
       >
         <div className="container-x">
+            <SiteBreadcrumbs
+              containerClassName=""
+              className="bg-transparent pt-0 pb-6 text-left"
+              crumbs={[
+                { name: "Home", path: "/" },
+                { name: "Signature Experiences", path: "/experiences" },
+              ]}
+            />
           <ParallaxLayer amount="sm">
             <div className="scene-atmosphere">
               <Eyebrow flank>Signature Collection</Eyebrow>
