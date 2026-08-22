@@ -158,13 +158,13 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "what-to-do-in-sesimbra",
-    title: "What to Do in Sesimbra — A Fishing Town Worth the Drive",
+    title: "Things to Do in Sesimbra, Portugal — A Local's Day Guide",
     metaDescription:
-      "A local's guide to Sesimbra — the fort, the beach, the fish lunch, and the wild Arrábida coast next door. Why this small fishing town is worth a day.",
-    h1: "What to Do in Sesimbra — A Fishing Town Worth the Drive",
+      "Things to do in Sesimbra, Portugal, by locals who live here: the castle, the beach, the fish lunch, the wild Arrábida coast — and how to get there from Lisbon.",
+    h1: "Things to Do in Sesimbra, Portugal — A Fishing Town Worth the Drive",
     eyebrow: "Sesimbra · Coast",
     standfirst:
-      "Our home town. Here is how we would spend a day in Sesimbra — slowly, and by the sea.",
+      "Sesimbra is our home town, about 40 kilometres south of Lisbon. Here is how we would spend a day here — slowly, and by the sea.",
     sections: [
       {
         heading: "The fishing port and the fort",
