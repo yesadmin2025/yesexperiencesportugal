@@ -35,22 +35,25 @@ test.describe("sitemap route coverage", () => {
     const paths = await fetchSitemapPaths(baseURL!);
     expect(paths.length).toBeGreaterThan(20);
 
-    const api = await request.newContext({ baseURL });
+    const api = await request.newContext({ baseURL, timeout: 60_000 });
     const bad: string[] = [];
 
-    // Sequential-ish batching keeps the dev/preview server responsive.
-    const BATCH = 6;
-    for (let i = 0; i < paths.length; i += BATCH) {
-      const batch = paths.slice(i, i + BATCH);
-      const results = await Promise.all(
-        batch.map(async (p) => {
+    // Sequential with one retry: SSR-rendering ~70 routes in parallel can hang
+    // up the dev server socket, which is a harness artefact, not a route bug.
+    for (const p of paths) {
+      let status = 0;
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        try {
           const res = await api.get(p, { maxRedirects: 0 });
-          return { path: p, status: res.status() };
-        }),
-      );
-      for (const r of results) {
-        if (r.status !== 200) bad.push(`${r.path} → ${r.status}`);
+          status = res.status();
+          break;
+        } catch (err) {
+          if (attempt === 1) {
+            bad.push(`${p} → request failed (${(err as Error).message})`);
+          }
+        }
       }
+      if (status && status !== 200) bad.push(`${p} → ${status}`);
     }
 
     await api.dispose();
