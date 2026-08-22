@@ -3,8 +3,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   getEmailAdminOverview,
+  listEmailTemplates,
+  previewEmailTemplate,
   retryDeferredEmails,
+  sendTemplateTest,
   type EmailAdminOverview,
+  type TemplatePreview,
+  type TemplateSummary,
 } from "@/lib/emailAdmin.functions";
 
 export const Route = createFileRoute("/admin/emails")({
@@ -22,7 +27,7 @@ export const Route = createFileRoute("/admin/emails")({
 });
 
 type StatusFilter = "all" | "sent" | "failed" | "suppressed";
-type Tab = "log" | "suppressions" | "deferred";
+type Tab = "log" | "suppressions" | "deferred" | "templates";
 
 const RANGES = [
   { label: "24h", days: 1 },
@@ -69,6 +74,8 @@ function AdminEmailsPage() {
   const [page, setPage] = useState(0);
   const [retrying, setRetrying] = useState(false);
   const [retryMsg, setRetryMsg] = useState<string | null>(null);
+  const [live, setLive] = useState(false);
+  const [liveAt, setLiveAt] = useState<string | null>(null);
 
   const load = useCallback(async (d: number) => {
     setLoading(true);
@@ -90,6 +97,32 @@ function AdminEmailsPage() {
   useEffect(() => {
     setPage(0);
   }, [template, status, days, tab]);
+
+  // Live monitoring — refresh as soon as a send, bounce or park is recorded.
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const refresh = () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        void load(days);
+        setLiveAt(new Date().toISOString());
+      }, 1200);
+    };
+    const channel = supabase
+      .channel("admin-email-delivery")
+      .on("postgres_changes", { event: "*", schema: "public", table: "email_send_log" }, refresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "suppressed_emails" }, refresh)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "email_deferred_sends" },
+        refresh,
+      )
+      .subscribe((s) => setLive(s === "SUBSCRIBED"));
+    return () => {
+      if (timer) clearTimeout(timer);
+      void supabase.removeChannel(channel);
+    };
+  }, [days, load]);
 
   const filtered = useMemo(() => {
     if (!data) return [];
@@ -140,10 +173,18 @@ function AdminEmailsPage() {
         Sends, bounces and parked deliveries for {data?.senderDomain ?? "notify.yesexperiences.pt"}.
         Contains guest addresses — admin access only.
       </p>
-      <p className="mt-1 text-xs text-[color:var(--charcoal)]/70">
+      <p className="mt-1 flex flex-wrap items-center gap-3 text-xs text-[color:var(--charcoal)]/70">
         <Link to="/admin" className="underline">
           Back to admin
         </Link>
+        <span className="inline-flex items-center gap-1.5">
+          <span
+            aria-hidden
+            className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-emerald-600" : "bg-[color:var(--gold-soft)]"}`}
+          />
+          {live ? "Live" : "Connecting…"}
+          {liveAt ? ` · updated ${fmt(liveAt)}` : ""}
+        </span>
       </p>
 
       {/* Range */}
@@ -202,6 +243,7 @@ function AdminEmailsPage() {
             ["log", `Send log (${data?.logs.length ?? 0})`],
             ["suppressions", `Bounces (${data?.suppressions.length ?? 0})`],
             ["deferred", `Parked queue (${data?.deferred.length ?? 0})`],
+            ["templates", "Templates"],
           ] as Array<[Tab, string]>
         ).map(([id, label]) => (
           <button
@@ -381,6 +423,150 @@ function AdminEmailsPage() {
           </ul>
         </>
       ) : null}
+
+      {tab === "templates" ? <TemplateStudio /> : null}
     </main>
+  );
+}
+
+function TemplateStudio() {
+  const [templates, setTemplates] = useState<TemplateSummary[] | null>(null);
+  const [selected, setSelected] = useState<string>("");
+  const [preview, setPreview] = useState<TemplatePreview | null>(null);
+  const [device, setDevice] = useState<"mobile" | "desktop">("mobile");
+  const [recipient, setRecipient] = useState("");
+  const [sending, setSending] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const list = await listEmailTemplates({ data: undefined });
+        setTemplates(list);
+        if (list.length > 0) setSelected(list[0]!.name);
+      } catch (e) {
+        setErr(e instanceof Error ? e.message : "Could not load templates.");
+      }
+    })();
+    void supabase.auth.getUser().then(({ data }) => {
+      if (data.user?.email) setRecipient(data.user.email);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!selected) return;
+    setPreview(null);
+    void (async () => {
+      try {
+        setPreview(await previewEmailTemplate({ data: { name: selected } }));
+      } catch (e) {
+        setErr(e instanceof Error ? e.message : "Could not render this template.");
+      }
+    })();
+  }, [selected]);
+
+  async function handleTest() {
+    setSending(true);
+    setMsg(null);
+    setErr(null);
+    try {
+      const res = await sendTemplateTest({ data: { name: selected, recipient } });
+      setMsg(
+        res.ok
+          ? `Test queued to ${res.recipient}. It should arrive within a minute.`
+          : `Not sent (${res.reason ?? "unknown"}).`,
+      );
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Test send failed.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <section className="mt-6">
+      <p className="max-w-2xl text-sm text-[color:var(--charcoal)]/80">
+        Preview any email exactly as a guest receives it, then send yourself a live test through the
+        verified sender domain.
+      </p>
+
+      <div className="mt-5 flex flex-wrap gap-3">
+        <label className="flex items-center gap-2 text-xs text-[color:var(--charcoal)]">
+          Template
+          <select
+            value={selected}
+            onChange={(e) => setSelected(e.target.value)}
+            className="min-h-[44px] max-w-[16rem] rounded-sm border border-[color:var(--gold-soft)] px-2"
+          >
+            {(templates ?? []).map((t) => (
+              <option key={t.name} value={t.name}>
+                {t.displayName}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div className="flex items-center gap-2">
+          {(["mobile", "desktop"] as const).map((d) => (
+            <button
+              key={d}
+              type="button"
+              onClick={() => setDevice(d)}
+              className={`min-h-[44px] rounded-sm border px-4 text-xs uppercase tracking-[0.16em] ${
+                device === d
+                  ? "border-[color:var(--teal)] bg-[color:var(--teal)] text-white"
+                  : "border-[color:var(--gold-soft)] text-[color:var(--charcoal)]"
+              }`}
+            >
+              {d}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <label className="flex flex-1 items-center gap-2 text-xs text-[color:var(--charcoal)]">
+          Send test to
+          <input
+            type="email"
+            value={recipient}
+            onChange={(e) => setRecipient(e.target.value)}
+            className="min-h-[44px] w-full rounded-sm border border-[color:var(--gold-soft)] px-3"
+          />
+        </label>
+        <button
+          type="button"
+          onClick={handleTest}
+          disabled={sending || !selected || !recipient}
+          className="min-h-[44px] rounded-sm bg-[color:var(--teal)] px-5 text-xs uppercase tracking-[0.16em] text-white disabled:opacity-40"
+        >
+          {sending ? "Sending…" : "Send test"}
+        </button>
+      </div>
+      {msg ? <p className="mt-2 text-xs text-emerald-800">{msg}</p> : null}
+      {err ? <p className="mt-2 text-xs text-red-700">{err}</p> : null}
+
+      {preview ? (
+        <div className="mt-6">
+          <p className="text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--teal)]">
+            Subject
+          </p>
+          <p className="mt-1 text-sm font-semibold text-[color:var(--charcoal)]">
+            {preview.subject}
+          </p>
+          <div className="mt-4 overflow-x-auto rounded-sm border border-[color:var(--gold-soft)] bg-[color:var(--sand)]/40 p-3">
+            <iframe
+              title={`Preview of ${preview.displayName}`}
+              srcDoc={preview.html}
+              sandbox=""
+              className="mx-auto block h-[720px] w-full border-0 bg-white"
+              style={{ maxWidth: device === "mobile" ? "390px" : "720px" }}
+            />
+          </div>
+        </div>
+      ) : selected ? (
+        <p className="mt-6 text-sm text-[color:var(--charcoal)]/70">Rendering preview…</p>
+      ) : null}
+    </section>
   );
 }
