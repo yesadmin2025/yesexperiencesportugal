@@ -15,18 +15,24 @@ export const Route = createFileRoute("/api/public/hooks/email-flush")({
     handlers: {
       POST: async ({ request }) => {
         const secret = process.env.EMAIL_INTERNAL_SECRET;
-        if (!secret) {
+        const schedulerKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        if (!secret && !schedulerKey) {
           return Response.json({ ok: false, error: "not_configured" }, { status: 500 });
         }
         const auth = request.headers.get("authorization") || "";
         const provided = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-        if (provided.length !== secret.length || provided !== secret) {
+        const matches = (expected?: string) =>
+          !!expected && provided.length === expected.length && provided === expected;
+        // Either the shared internal secret (manual replays) or the scheduler
+        // credential used by the every-5-minutes retry job.
+        if (!matches(secret) && !matches(schedulerKey)) {
           return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
         }
 
         const result = await flushDeferredSends(25);
         return Response.json({ ok: true, ...result });
       },
+
     },
   },
 });
