@@ -798,7 +798,17 @@ function TailorPage() {
   return (
     <SiteLayout>
       {/* ── Breadcrumb ──────────────────────────────────────── */}
-      <section className="pt-24 pb-3">
+      <SiteBreadcrumbs
+        containerClassName="container-x max-w-6xl"
+        className="bg-transparent pt-24 pb-0"
+        crumbs={[
+          { name: "Home", path: "/" },
+          { name: "Signature Experiences", path: "/experiences" },
+          { name: tour.title, path: `/tours/${tour.id}` },
+          { name: "Tailor this day", path: `/tours/${tour.id}/tailor` },
+        ]}
+      />
+      <section className="pt-3 pb-3">
         <div className="container-x max-w-6xl">
           <Link
             to="/tours/$tourId"
