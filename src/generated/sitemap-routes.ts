@@ -9,6 +9,7 @@ export interface SitemapRoute {
 export const SITEMAP_STATIC_ROUTES: SitemapRoute[] = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
   { path: "/about", changefreq: "monthly", priority: "0.6" },
+  { path: "/contact", changefreq: "monthly", priority: "0.6" },
   { path: "/cookies", changefreq: "yearly", priority: "0.4" },
   { path: "/corporate", changefreq: "monthly", priority: "0.7" },
   { path: "/day-tours", changefreq: "weekly", priority: "0.8" },

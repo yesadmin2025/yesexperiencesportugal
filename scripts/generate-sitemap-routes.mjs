@@ -103,7 +103,21 @@ for (const file of walk(ROUTES_DIR)) {
   if (EXCLUDED_PATHS.has(routePath)) continue;
   if (routePath !== "/" && EXCLUDED_PREFIXES.some((p) => routePath.startsWith(p))) continue;
   if (/throw\s+redirect\s*\(/.test(source)) continue;
-  if (/content\s*:\s*["'`][^"'`]*noindex/.test(source)) continue;
+  // Unconditional noindex only — routes that noindex a query-param variant
+  // (`...(isParamVariant ? [{ robots: noindex }] : [])`) stay indexable at
+  // their clean URL and belong in the sitemap.
+  const noindexLine = source
+    .split("\n")
+    .find((line) => /content\s*:\s*["'`][^"'`]*noindex/.test(line));
+  if (noindexLine && !/\.\.\.\(|\?/.test(noindexLine)) continue;
+  // Cross-canonical routes point search engines at another URL, so the
+  // sitemap must list that canonical instead of this alias.
+  const canonical = /rel:\s*["']canonical["']\s*,\s*href:\s*["'`]([^"'`$]+)["'`]/.exec(source);
+  if (canonical) {
+    const href = canonical[1].replace(/\/$/, "");
+    const self = routePath === "/" ? "" : routePath;
+    if (!href.endsWith(self)) continue;
+  }
   rows.push({ path: routePath, ...(OVERRIDES[routePath] ?? DEFAULT) });
 }
 
