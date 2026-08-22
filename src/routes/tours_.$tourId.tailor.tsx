@@ -13,6 +13,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { findTour, type SignatureTour, type TourStop } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
