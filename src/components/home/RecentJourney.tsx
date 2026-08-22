@@ -499,7 +499,7 @@ function BookFlip() {
               aria-selected={active}
               aria-label={`Page ${i + 1} — ${p.label}`}
               onClick={() => goTo(i)}
-              className={`group relative block shrink-0 snap-start h-14 w-[42px] md:h-16 md:w-12 overflow-hidden rounded-[2px] border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] ${
+              className={`group relative block shrink-0 snap-start h-14 w-11 md:h-16 md:w-12 overflow-hidden rounded-[2px] border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] ${
                 active
                   ? "border-[color:var(--gold-deep)] shadow-[0_6px_18px_-8px_rgba(184,148,82,0.6)] scale-[1.08]"
                   : "border-[color:var(--charcoal)]/15 opacity-60 hover:opacity-100 hover:border-[color:var(--charcoal)]/40"
