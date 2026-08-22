@@ -94,7 +94,7 @@ function ExperiencesPage() {
               Uma coleção editada de dias privados em Portugal — Sintra, Arrábida, Évora e mais.
               Reserve como desenhado, ou ajuste discretamente alguns detalhes.
             </p>
-            <p className="mt-4 mx-auto max-w-xl text-[12px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]/75">
+            <p className="mt-4 mx-auto max-w-xl text-[12px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
               As páginas detalhadas de cada tour estão, para já, disponíveis em inglês. A tradução
               editorial está em curso.
             </p>

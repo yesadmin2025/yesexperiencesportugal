@@ -491,6 +491,7 @@ function StaticArticleView({
                       <li key={r.id} className="border-l-2 border-[color:var(--gold-soft)]/60 pl-5">
                         {r.ratingValue !== null && (
                           <div
+                            role="img"
                             className="text-[color:var(--gold-ink)] text-[13px] tracking-[0.2em] mb-2"
                             aria-label={`Rated ${r.ratingValue} out of 5`}
                           >

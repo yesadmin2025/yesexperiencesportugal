@@ -113,7 +113,7 @@ function SearchPage() {
                 autoComplete="off"
                 placeholder="Wine tour, Sintra, proposal…"
                 onChange={(event) => setDraft(event.target.value)}
-                className="min-h-[44px] w-full bg-transparent text-[16px] text-[color:var(--charcoal)] outline-none placeholder:text-[color:var(--charcoal-soft)]/70"
+                className="min-h-[44px] w-full bg-transparent text-[16px] text-[color:var(--charcoal)] outline-none placeholder:text-[color:var(--charcoal-soft)]"
               />
               <button
                 type="submit"
