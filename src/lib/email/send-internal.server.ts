@@ -324,14 +324,27 @@ export async function sendTransactionalInternal(
     return { ok: false, reason: "email_suppressed" };
   }
 
-  // Render template.
-  const element = React.createElement(template.component, templateData as Record<string, unknown>);
-  const html = await render(element);
-  const plainText = await render(element, { plainText: true });
-  const subject =
-    typeof template.subject === "function"
-      ? template.subject(templateData as Record<string, unknown>)
-      : template.subject;
+  // Render template (or use pre-rendered content supplied by the caller).
+  let html: string;
+  let plainText: string;
+  let subject: string;
+  if (args.rendered) {
+    html = args.rendered.html;
+    plainText = args.rendered.text;
+    subject = args.rendered.subject;
+  } else {
+    const element = React.createElement(
+      template!.component,
+      templateData as Record<string, unknown>,
+    );
+    html = await render(element);
+    plainText = await render(element, { plainText: true });
+    subject =
+      typeof template!.subject === "function"
+        ? template!.subject(templateData as Record<string, unknown>)
+        : template!.subject;
+  }
+
 
   // ─── TEMPORARY RESEND FALLBACK ───────────────────────────────────────────
   // While notify.yesexperiences.pt DNS is not verified, send directly
