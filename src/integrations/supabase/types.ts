@@ -1138,12 +1138,16 @@ export type Database = {
           body_text: string
           created_at: string
           delivered_at: string | null
+          failure_kind: string
           html: string
           id: string
           idempotency_key: string
+          last_attempt_at: string | null
           last_error: string | null
           message_id: string
+          next_attempt_at: string
           recipient_email: string
+          state: string
           subject: string
           template_name: string
         }
@@ -1152,12 +1156,16 @@ export type Database = {
           body_text: string
           created_at?: string
           delivered_at?: string | null
+          failure_kind?: string
           html: string
           id?: string
           idempotency_key: string
+          last_attempt_at?: string | null
           last_error?: string | null
           message_id: string
+          next_attempt_at?: string
           recipient_email: string
+          state?: string
           subject: string
           template_name: string
         }
@@ -1166,12 +1174,16 @@ export type Database = {
           body_text?: string
           created_at?: string
           delivered_at?: string | null
+          failure_kind?: string
           html?: string
           id?: string
           idempotency_key?: string
+          last_attempt_at?: string | null
           last_error?: string | null
           message_id?: string
+          next_attempt_at?: string
           recipient_email?: string
+          state?: string
           subject?: string
           template_name?: string
         }
