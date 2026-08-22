@@ -15,7 +15,10 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 export const Route = createFileRoute("/studio-living-atlas-preview")({
   head: () => ({
     meta: [
-      { title: "Experience Studio — YES Experiences Portugal" },
+      { title: "Living Atlas preview (moved) — YES Experiences Portugal" },
+      { name: "description", content: "The Living Atlas prototype is now the live Experience Studio. This URL redirects to the current studio." },
+      { property: "og:title", content: "Living Atlas preview (moved) — YES Experiences Portugal" },
+      { property: "og:description", content: "The Living Atlas prototype is now the live Experience Studio. This URL redirects to the current studio." },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
