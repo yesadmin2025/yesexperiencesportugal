@@ -7,7 +7,10 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 export const Route = createFileRoute("/studio")({
   head: () => ({
     meta: [
-      { title: "Studio — YES Experiences Portugal" },
+      { title: "Studio shortcut (moved) — YES Experiences Portugal" },
+      { name: "description", content: "Short legacy studio link. This URL redirects to the current YES Experiences Portugal Experience Studio." },
+      { property: "og:title", content: "Studio shortcut (moved) — YES Experiences Portugal" },
+      { property: "og:description", content: "Short legacy studio link. This URL redirects to the current YES Experiences Portugal Experience Studio." },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
