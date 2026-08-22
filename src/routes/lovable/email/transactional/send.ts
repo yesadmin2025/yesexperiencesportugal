@@ -273,6 +273,7 @@ export const Route = createFileRoute("/lovable/email/transactional/send")({
             to: effectiveRecipient,
             from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
             sender_domain: SENDER_DOMAIN,
+            reply_to: "info@yesexperiencesportugal.com",
             subject: resolvedSubject,
             html,
             text: plainText,
