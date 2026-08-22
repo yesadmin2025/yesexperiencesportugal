@@ -60,33 +60,50 @@ function extractHeadBlock(source) {
   return null;
 }
 
+/** Collect `const NAME = "literal";` bindings declared inside the head block. */
+function collectLocals(head) {
+  const locals = new Map();
+  const re = /\bconst\s+([A-Za-z_$][\w$]*)\s*=\s*("(?:\\.|[^"])*"|'(?:\\.|[^'])*')\s*;/g;
+  let m;
+  while ((m = re.exec(head)) !== null) {
+    locals.set(m[1], m[2].slice(1, -1).replace(/\\(["'])/g, "$1"));
+  }
+  return locals;
+}
+
 /** Read a string-literal value, or DYNAMIC when it is computed. */
-function readValue(raw) {
+function readValue(raw, locals) {
   const trimmed = raw.trim();
   const literal = /^(["'])((?:\\.|(?!\1).)*)\1$/.exec(trimmed);
   if (literal) return literal[2].replace(/\\(["'])/g, "$1");
+  if (locals?.has(trimmed)) return locals.get(trimmed);
   return DYNAMIC;
 }
 
-function findTitle(head) {
+function findTitle(head, locals) {
   const m = /\btitle\s*:\s*(`[^`]*`|"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^,}\n]+)/.exec(head);
-  return m ? readValue(m[1]) : null;
+  if (m) return readValue(m[1], locals);
+  // Shorthand `{ title }` inside the meta array.
+  if (/\{\s*title\s*[,}]/.test(head)) return locals?.get("title") ?? DYNAMIC;
+  return null;
 }
 
-function findMeta(head, kind, key) {
+function findMeta(head, kind, key, locals) {
   const re = new RegExp(
     `${kind}\\s*:\\s*["']${key}["']\\s*,\\s*content\\s*:\\s*(\`[^\`]*\`|"(?:\\\\.|[^"])*"|'(?:\\\\.|[^'])*'|[^,}\\n]+)`,
   );
   const m = re.exec(head);
-  return m ? readValue(m[1]) : null;
+  return m ? readValue(m[1], locals) : null;
 }
 
 const files = walk(ROUTES_DIR)
   .map((f) => relative(ROUTES_DIR, f))
+  .filter((f) => f.endsWith(".tsx"))
   .filter((f) => !EXEMPT_PATTERNS.some((p) => p.test(f)))
   .sort();
 
 const errors = [];
+const warnings = [];
 const routes = [];
 
 for (const file of files) {
@@ -95,24 +112,29 @@ for (const file of files) {
 
   const head = extractHeadBlock(source);
   if (!head) {
-    errors.push(`${file}: route has no head() metadata — add title, description and og tags.`);
+    // Pure 301 redirect stubs and layout-only routes render no indexable
+    // surface of their own, so they legitimately carry no metadata.
+    const isRedirect = /throw\s+redirect\s*\(/.test(source);
+    const isLayout = /<Outlet\s*\/>/.test(source);
+    if (!isRedirect && !isLayout) {
+      warnings.push(`${file}: route has no head() metadata — add title, description and og tags.`);
+    }
     continue;
   }
 
   const noindex = /content\s*:\s*["'][^"']*noindex/.test(head);
+  const locals = collectLocals(head);
   const entry = {
     file,
     noindex,
-    title: findTitle(head),
-    description: findMeta(head, "name", "description"),
-    ogTitle: findMeta(head, "property", "og:title"),
-    ogDescription: findMeta(head, "property", "og:description"),
+    title: findTitle(head, locals),
+    description: findMeta(head, "name", "description", locals),
+    ogTitle: findMeta(head, "property", "og:title", locals),
+    ogDescription: findMeta(head, "property", "og:description", locals),
   };
   routes.push(entry);
 
-  const required = noindex
-    ? ["title", "description"]
-    : ["title", "description", "ogTitle", "ogDescription"];
+  const required = noindex ? ["title"] : ["title", "description", "ogTitle", "ogDescription"];
   for (const field of required) {
     if (entry[field] == null) errors.push(`${file}: missing ${field}.`);
   }
@@ -149,4 +171,5 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
+for (const w of warnings) console.warn(`  ! ${w}`);
 console.log(`✔ route meta check passed — ${routes.length} routes, no duplicate or missing tags.`);
