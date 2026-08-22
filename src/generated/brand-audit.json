@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-22T22:07:57.604Z",
+  "generatedAt": "2026-08-22T22:52:03.408Z",
   "filesScanned": 1019,
   "approvedPalette": {
     "teal": "#295B61",
@@ -333,37 +333,37 @@
     {
       "file": "src/components/CookieConsent.tsx",
       "line": 201,
-      "col": 152,
+      "col": 201,
       "raw": "#1e4a4f",
       "normalized": "#1e4a4f",
-      "snippet": "className=\"tap text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors",
+      "snippet": "className=\"tap inline-flex min-h-11 items-center justify-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:b",
       "status": "mismatch"
     },
     {
       "file": "src/components/CookieConsent.tsx",
       "line": 201,
-      "col": 365,
+      "col": 414,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "className=\"tap text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors",
+      "snippet": "className=\"tap inline-flex min-h-11 items-center justify-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:b",
       "status": "approved"
     },
     {
       "file": "src/components/CookieConsent.tsx",
       "line": 226,
-      "col": 152,
+      "col": 201,
       "raw": "#1e4a4f",
       "normalized": "#1e4a4f",
-      "snippet": "className=\"tap text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors",
+      "snippet": "className=\"tap inline-flex min-h-11 items-center justify-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:b",
       "status": "mismatch"
     },
     {
       "file": "src/components/CookieConsent.tsx",
       "line": 226,
-      "col": 365,
+      "col": 414,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
-      "snippet": "className=\"tap text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:bg-[color:var(--teal-2,#1e4a4f)] transition-colors",
+      "snippet": "className=\"tap inline-flex min-h-11 items-center justify-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] bg-[color:var(--teal)] hover:b",
       "status": "approved"
     },
     {
