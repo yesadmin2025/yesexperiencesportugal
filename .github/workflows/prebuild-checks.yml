@@ -23,6 +23,9 @@ jobs:
       - name: Check unused route imports
         run: bun run check:routes
 
+      - name: Check route meta tags (duplicate/missing titles, descriptions, OG)
+        run: bun run check:route-meta
+
       - name: Check hero scene ID variant coverage
         run: bun run check:hero-scene-ids
 
