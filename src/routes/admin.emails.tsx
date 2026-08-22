@@ -118,8 +118,14 @@ function AdminEmailsPage() {
         refresh,
       )
       .subscribe((s) => setLive(s === "SUBSCRIBED"));
+    // Safety net: realtime can be unavailable, so still refresh periodically.
+    const poll = setInterval(() => {
+      void load(days);
+      setLiveAt(new Date().toISOString());
+    }, 60_000);
     return () => {
       if (timer) clearTimeout(timer);
+      clearInterval(poll);
       void supabase.removeChannel(channel);
     };
   }, [days, load]);
