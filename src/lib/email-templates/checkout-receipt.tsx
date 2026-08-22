@@ -328,6 +328,46 @@ const CheckoutReceipt = ({
             </>
           ) : null}
 
+          {itineraryUrl || pdfUrl || manageUrl || experienceUrl ? (
+            <>
+              <Text style={sectionTitle}>Your booking</Text>
+              <Section style={{ margin: "0 0 24px" }}>
+                {itineraryUrl ? (
+                  <Text style={{ ...body, margin: "0 0 8px" }}>
+                    <Link href={itineraryUrl} style={link}>
+                      View your itinerary online
+                    </Link>
+                  </Text>
+                ) : null}
+                {pdfUrl ? (
+                  <Text style={{ ...body, margin: "0 0 8px" }}>
+                    <Link href={pdfUrl} style={link}>
+                      Download the itinerary (PDF)
+                    </Link>
+                  </Text>
+                ) : null}
+                {manageUrl ? (
+                  <Text style={{ ...body, margin: "0 0 8px" }}>
+                    <Link href={manageUrl} style={link}>
+                      Manage or cancel this booking
+                    </Link>
+                  </Text>
+                ) : null}
+                {experienceUrl ? (
+                  <Text style={{ ...body, margin: "0 0 8px" }}>
+                    <Link href={experienceUrl} style={link}>
+                      Revisit the experience page
+                    </Link>
+                  </Text>
+                ) : null}
+                {bookingRef ? (
+                  <Text style={{ ...body, margin: "8px 0 0", fontSize: "13px", color: "#5A5A5A" }}>
+                    Keep this reference at hand: <strong>{bookingRef}</strong>
+                  </Text>
+                ) : null}
+              </Section>
+            </>
+          ) : null}
 
           {receiptUrl ? (
             <Section style={{ textAlign: "center" as const, margin: "0 0 20px" }}>
@@ -337,13 +377,14 @@ const CheckoutReceipt = ({
             </Section>
           ) : null}
 
-          {bookingStatusUrl ? (
+          {manageUrl || bookingStatusUrl ? (
             <Section style={{ textAlign: "center" as const, margin: "0 0 28px" }}>
-              <Button href={bookingStatusUrl} style={btnGhost}>
-                View booking details
+              <Button href={manageUrl || bookingStatusUrl!} style={btnGhost}>
+                {manageUrl ? "Manage my booking" : "View booking details"}
               </Button>
             </Section>
           ) : null}
+
 
           <Text style={sectionTitle}>What happens next</Text>
           <Text style={body}>
