@@ -51,7 +51,7 @@ const EYEBROW_CLASS =
   "font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)]";
 
 const LINK_CLASS =
-  "link-hairline-gold tap inline-flex min-h-[28px] items-center text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]";
+  "link-hairline-gold tap inline-flex min-h-11 md:min-h-[28px] items-center text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]";
 
 const ICON_LINK_CLASS =
   "tap inline-flex h-11 w-11 items-center justify-center rounded-full ring-1 ring-[color:var(--gold-warm)]/40 text-[color:var(--ivory)]/85 hover:text-[color:var(--gold-soft)] hover:ring-[color:var(--gold-warm)]/70 transition-colors duration-[var(--dur-quick)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]";
@@ -416,7 +416,7 @@ function FooterLinkGroup({ title, links }: { title: string; links: FooterLink[] 
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls={id}
-        className="flex w-full items-center justify-between gap-3 py-2 text-left md:pointer-events-none md:py-0"
+        className="flex min-h-11 w-full items-center justify-between gap-3 py-2 text-left md:min-h-0 md:pointer-events-none md:py-0"
       >
         <h2 className={EYEBROW_CLASS} style={{ fontWeight: 600 }}>
           {title}

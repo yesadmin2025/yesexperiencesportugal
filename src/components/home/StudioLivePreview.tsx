@@ -367,7 +367,7 @@ export function StudioLivePreview() {
           </div>
           <Link
             to="/studio-v3"
-            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-[3px] bg-[color:var(--teal)] px-3.5 py-2 text-[11px] uppercase tracking-[0.16em] font-semibold text-[color:var(--ivory)] shadow-[0_4px_14px_-6px_rgba(41,91,97,0.55)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+            className="inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-[3px] bg-[color:var(--teal)] px-3.5 py-2 text-[11px] uppercase tracking-[0.16em] font-semibold text-[color:var(--ivory)] shadow-[0_4px_14px_-6px_rgba(41,91,97,0.55)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
           >
             Resume your draft
             <ArrowRight size={12} aria-hidden="true" />
@@ -382,7 +382,7 @@ export function StudioLivePreview() {
           </p>
           <Link
             to="/experiences"
-            className="inline-flex items-center min-h-[24px] py-1 text-[10px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--charcoal)] transition-colors duration-200 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
+            className="inline-flex items-center min-h-11 py-1 text-[10px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--charcoal)] transition-colors duration-200 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
           >
             See sample day
           </Link>

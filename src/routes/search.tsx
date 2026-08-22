@@ -130,7 +130,7 @@ function SearchPage() {
                 key={s}
                 type="button"
                 onClick={() => submit(s)}
-                className="rounded-full border border-[color:var(--sand)] px-3 py-2 text-[12px] text-[color:var(--charcoal-soft)] transition-colors hover:border-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
+                className="inline-flex min-h-11 items-center rounded-full border border-[color:var(--sand)] px-3 py-2 text-[12px] text-[color:var(--charcoal-soft)] transition-colors hover:border-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
               >
                 {s}
               </button>

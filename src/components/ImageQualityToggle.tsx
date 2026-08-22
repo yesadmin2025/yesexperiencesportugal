@@ -20,7 +20,7 @@ export function ImageQualityToggle({ className = "" }: { className?: string }) {
         title={hint}
         onClick={() => setQuality(value)}
         className={[
-          "flex items-center gap-1.5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] transition-colors",
+          "flex min-h-11 items-center gap-1.5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] transition-colors",
           active
             ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
             : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
