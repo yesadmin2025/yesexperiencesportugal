@@ -26,6 +26,9 @@ jobs:
       - name: Check route meta tags (duplicate/missing titles, descriptions, OG)
         run: bun run check:route-meta
 
+      - name: Check generated sitemap routes are in sync with the route tree
+        run: bun run sitemap:check
+
       - name: Check hero scene ID variant coverage
         run: bun run check:hero-scene-ids
 

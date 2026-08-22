@@ -4,6 +4,7 @@ import { signatureTours } from "@/data/signatureTours";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { supabase } from "@/integrations/supabase/client";
 import { PT_PAIRED_PATHS } from "@/i18n/pt-ready";
+import { SITEMAP_STATIC_ROUTES } from "@/generated/sitemap-routes";
 
 const BASE_URL = "https://yesexperiencesportugal.com";
 
@@ -35,54 +36,15 @@ export const Route = createFileRoute("/sitemap.xml")({
         //   by LOCAL_STORIES_ARTICLES and the journal_posts query.
         // - /auth, /booking-confirmed: both have robots noindex/nofollow and are Disallow'd in
         //   robots.txt; they must not appear in the sitemap.
-        const staticEntries: SitemapEntry[] = [
-          { path: "/", changefreq: "weekly", priority: "1.0" },
-          { path: "/about", changefreq: "monthly", priority: "0.6" },
-          { path: "/press", changefreq: "monthly", priority: "0.5" },
-          { path: "/contact", changefreq: "monthly", priority: "0.6" },
-          // /faq and /moments intentionally omitted — both 301 to canonical
-          // targets (/about and /proposal-in-portugal). Sitemap URLs must be
-          // final destinations (HTTP 200), never redirects.
-          { path: "/experiences", changefreq: "weekly", priority: "0.9" },
-          { path: "/studio-v3", changefreq: "weekly", priority: "0.9" },
-          { path: "/day-tours", changefreq: "weekly", priority: "0.8" },
-          { path: "/multi-day", changefreq: "weekly", priority: "0.9" },
-          { path: "/portugal-travel-designer", changefreq: "monthly", priority: "0.85" },
-
-          { path: "/proposal-in-portugal", changefreq: "monthly", priority: "0.8" },
-          { path: "/corporate", changefreq: "monthly", priority: "0.7" },
-          { path: "/trade", changefreq: "monthly", priority: "0.7" },
-          { path: "/local-stories", changefreq: "weekly", priority: "0.7" },
-          {
-            path: "/itineraries/10-day-private-portugal-tour",
-            changefreq: "monthly",
-            priority: "0.8",
-          },
-          { path: "/portugal-tours", changefreq: "monthly", priority: "0.9" },
-          { path: "/luxury-tours-portugal", changefreq: "monthly", priority: "0.85" },
-          { path: "/private-tours-portugal", changefreq: "monthly", priority: "0.85" },
-          // High-intent SEO landing routes (/arrabida-wine-tour,
-          // /arrabida-day-trip-from-lisbon, /alentejo-wine-tour-from-lisbon,
-          // /evora-alentejo-wine-tour) intentionally omitted — all 301 to
-          // their /local-stories/… canonicals (already emitted by
-          // LOCAL_STORIES_ARTICLES). Sitemap URLs must be HTTP 200.
-          // NOTE: /local-stories/* entries below were previously hard-coded
-          // here AND also emitted by `staticArticleEntries` (from
-          // LOCAL_STORIES_ARTICLES), producing duplicate <loc> pairs in
-          // sitemap.xml (flagged by Google Search Console). Source of truth
-          // for Local Stories is LOCAL_STORIES_ARTICLES — do not re-add
-          // /local-stories/* here.
-
-          // /reviews is a real, indexable page (robots: index,follow with a
-          // self-canonical) and backs the AggregateRating entity, so it must
-          // be listed here — an indexable page missing from the sitemap is an
-          // inconsistency crawlers flag.
-          { path: "/reviews", changefreq: "monthly", priority: "0.5" },
-
-          { path: "/terms", changefreq: "yearly", priority: "0.4" },
-          { path: "/privacy", changefreq: "yearly", priority: "0.4" },
-          { path: "/cookies", changefreq: "yearly", priority: "0.4" },
-        ];
+        // Static EN routes are generated from the route tree by
+        // scripts/generate-sitemap-routes.mjs (redirects, noindex pages,
+        // cross-canonical aliases and internal surfaces are filtered out
+        // automatically). Run `bun run sitemap:generate` after route changes;
+        // CI fails when the generated file drifts.
+        // Static entries omit <lastmod> on purpose — a rolling "today" trains
+        // crawlers to ignore the field. Dynamic DB posts keep their real
+        // published_at.
+        const staticEntries: SitemapEntry[] = SITEMAP_STATIC_ROUTES.map((r) => ({ ...r }));
 
         // Bump SEO focus tours so they surface ahead of the rest of the Signature
         // catalog for crawlers. Arrábida = best-seller / brand-recognition anchor.

@@ -1,0 +1,46 @@
+name: Sitemap integrity
+
+# Guarantees that sitemap.xml stays in sync with the route tree and that every
+# URL it advertises is a live, direct HTTP 200 (never a redirect or 404).
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: sitemap-integrity-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sitemap:
+    name: Generated routes in sync + all sitemap URLs return 200
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Generated sitemap routes are up to date
+        run: bun run sitemap:check
+
+      - name: Install Playwright browser
+        run: bunx playwright install --with-deps chromium
+
+      - name: Sitemap coverage + HTTP 200 contract
+        run: bun run test:e2e:sitemap
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sitemap-integrity-report
+          path: playwright-report/
+          retention-days: 14
