@@ -603,6 +603,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         path: "/local-stories/best-wine-tasting-near-lisbon",
         label: "Best wine tasting near Lisbon",
       },
+      { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
     ],
     datePublished: "2026-07-01",
   },
