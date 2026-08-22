@@ -250,8 +250,10 @@ function AdminEmailsPage() {
             ["suppressions", `Bounces (${data?.suppressions.length ?? 0})`],
             ["deferred", `Parked queue (${data?.deferred.length ?? 0})`],
             ["templates", "Templates"],
+            ...(data?.access.canManageRoles ? ([["access", "Access"]] as Array<[Tab, string]>) : []),
           ] as Array<[Tab, string]>
         ).map(([id, label]) => (
+
           <button
             key={id}
             type="button"
