@@ -4,9 +4,9 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "predev": "node scripts/check-css-braces.mjs && node scripts/check-motion-budget.mjs && node scripts/check-route-imports.mjs && node scripts/check-route-meta.mjs && node scripts/check-hero-scene-ids.mjs && node scripts/site-brand-audit.mjs && node scripts/chrome-runtime-contrast.mjs && node scripts/brand-audit.mjs",
+    "predev": "node scripts/check-css-braces.mjs && node scripts/check-motion-budget.mjs && node scripts/check-route-imports.mjs && node scripts/check-route-meta.mjs && node scripts/generate-sitemap-routes.mjs --check && node scripts/check-hero-scene-ids.mjs && node scripts/site-brand-audit.mjs && node scripts/chrome-runtime-contrast.mjs && node scripts/brand-audit.mjs",
     "dev": "vite dev",
-    "prebuild": "node scripts/check-css-braces.mjs && node scripts/check-motion-budget.mjs && node scripts/check-route-imports.mjs && node scripts/check-route-meta.mjs && node scripts/check-hero-scene-ids.mjs && node scripts/site-brand-audit.mjs && node scripts/chrome-runtime-contrast.mjs && node scripts/brand-audit.mjs && bunx vitest run src/__tests__/hero-a11y-axe.test.tsx --reporter=dot",
+    "prebuild": "node scripts/check-css-braces.mjs && node scripts/check-motion-budget.mjs && node scripts/check-route-imports.mjs && node scripts/check-route-meta.mjs && node scripts/generate-sitemap-routes.mjs --check && node scripts/check-hero-scene-ids.mjs && node scripts/site-brand-audit.mjs && node scripts/chrome-runtime-contrast.mjs && node scripts/brand-audit.mjs && bunx vitest run src/__tests__/hero-a11y-axe.test.tsx --reporter=dot",
     "a11y:hero": "vitest run src/__tests__/hero-a11y-axe.test.tsx",
     "build": "vite build",
     "build:dev": "vite build --mode development",
@@ -16,6 +16,8 @@
     "brand:audit:chrome": "node scripts/chrome-runtime-contrast.mjs",
     "check:routes": "node scripts/check-route-imports.mjs",
     "check:route-meta": "node scripts/check-route-meta.mjs",
+    "sitemap:generate": "node scripts/generate-sitemap-routes.mjs",
+    "sitemap:check": "node scripts/generate-sitemap-routes.mjs --check",
     "check:hero-scene-ids": "node scripts/check-hero-scene-ids.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -33,6 +35,7 @@
     "test:sot-parity": "vitest run src/__tests__/sot-viator-parity.test.ts",
     "perf:lhci": "lhci autorun --config=./.lighthouserc.json",
     "perf:lhci:mobile": "lhci autorun --config=./.lighthouserc.mobile.json",
+    "test:e2e:sitemap": "node scripts/playwright-run.mjs e2e/sitemap-routes-200.spec.ts e2e/sitemap-robots-canonical.spec.ts",
     "test:e2e:perf": "node scripts/playwright-run.mjs e2e/layout-stability-images.spec.ts e2e/third-party-script-deferral.spec.ts"
   },
   "dependencies": {
