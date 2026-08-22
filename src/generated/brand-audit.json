@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-22T00:15:52.443Z",
+  "generatedAt": "2026-08-22T01:05:16.590Z",
   "filesScanned": 1013,
   "approvedPalette": {
     "teal": "#295B61",
@@ -2312,7 +2312,7 @@
     },
     {
       "file": "src/lib/email/send-internal.server.ts",
-      "line": 40,
+      "line": 46,
       "col": 84,
       "raw": "#2E2E2E",
       "normalized": "#2e2e2e",
@@ -2321,7 +2321,7 @@
     },
     {
       "file": "src/lib/email/send-internal.server.ts",
-      "line": 40,
+      "line": 46,
       "col": 103,
       "raw": "#F4EEE2",
       "normalized": "#f4eee2",
@@ -2330,7 +2330,7 @@
     },
     {
       "file": "src/lib/email/send-internal.server.ts",
-      "line": 40,
+      "line": 46,
       "col": 170,
       "raw": "#C9A96A",
       "normalized": "#c9a96a",
@@ -2339,7 +2339,7 @@
     },
     {
       "file": "src/lib/email/send-internal.server.ts",
-      "line": 45,
+      "line": 51,
       "col": 110,
       "raw": "#295B61",
       "normalized": "#295b61",
@@ -2348,7 +2348,7 @@
     },
     {
       "file": "src/lib/email/send-internal.server.ts",
-      "line": 45,
+      "line": 51,
       "col": 124,
       "raw": "#FAF8F3",
       "normalized": "#faf8f3",
