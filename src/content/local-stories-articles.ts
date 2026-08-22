@@ -179,14 +179,26 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         body: "Beyond Sesimbra, the Arrábida coast becomes quieter and more dramatic. Limestone hills descend towards clear Atlantic water, creating coves and beaches protected by the natural park.\n\nSome beaches are easily reached, while others require a short walk, seasonal transport or local knowledge. Conditions also change throughout the year, so the right stop depends on weather, access and how much time guests want to spend by the sea.\n\nThe water can be cold even in summer, but the landscape is exceptional. A beach stop here is less about organised entertainment and more about swimming, walking, watching the cliffs and enjoying a part of the Portuguese coast that still feels remarkably untouched.",
       },
       {
+        heading: "Getting to Sesimbra from Lisbon",
+        body: "Sesimbra sits roughly 40 kilometres south of Lisbon. By car it is usually around 40 minutes, crossing the 25 de Abril bridge and then turning off towards the Arrábida hills — the last stretch drops down to the sea and is the best part of the drive.\n\nPublic transport is possible via bus from Lisbon, but connections are limited and the wild beaches inside the natural park are difficult to reach without a car. Most travelers who want the coast as well as the town end up driving or booking a private day.\n\nIf you would rather not drive, Sesimbra is part of our [Wild Beaches & Picnic Signature](/tours/wild-beaches-picnic), and it can also close an [Arrábida private wine day](/tours/arrabida-wine-allinclusive) with Atlantic light over the harbour.",
+      },
+      {
         heading: "A quiet half-day option",
-        body: "Sesimbra also works well when a full sightseeing day feels unnecessary. A relaxed half-day can include a coastal drive through Arrábida, time beside the harbour, a walk through the old centre and a long seafood lunch.\n\nIt is particularly suitable for travelers staying in Lisbon who want to see another side of the region without beginning early or returning late. The town offers enough to feel like a genuine escape, but not so much that the visit becomes another demanding itinerary.\n\nFor a slower version, combine Sesimbra with a viewpoint or quiet beach. For a fuller day, add wineries in Azeitão, Setúbal or more of the Arrábida coast.",
+        body: "Sesimbra also works well when a full sightseeing day feels unnecessary. A relaxed half-day can include a coastal drive through Arrábida, time beside the harbour, a walk through the old centre and a long seafood lunch.\n\nIt is particularly suitable for travelers staying in Lisbon who want to see another side of the region without beginning early or returning late. The town offers enough to feel like a genuine escape, but not so much that the visit becomes another demanding itinerary.\n\nFor a slower version, combine Sesimbra with a viewpoint or quiet beach. For a fuller day, add wineries in Azeitão or Setúbal — our guide to the [best wine tasting near Lisbon](/local-stories/best-wine-tasting-near-lisbon) compares them, and you can shape either version yourself in the [Experience Studio](/studio-v3).",
       },
     ],
     ctaLead:
       "Most guests reach Sesimbra through our Wild Beaches & Picnic Signature — a slow, private day on the Arrábida coast.",
     ctaLabel: "See the Wild Beaches Signature",
     signatureSlug: "wild-beaches-picnic",
+    relatedSignatures: [
+      { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic Signature" },
+      { slug: "arrabida-wine-allinclusive", label: "Arrábida Wine Signature" },
+    ],
+    relatedReads: [
+      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/local-stories/best-wine-tasting-near-lisbon", label: "Where to taste wine near Lisbon" },
+    ],
     datePublished: "2026-06-04",
   },
   {
