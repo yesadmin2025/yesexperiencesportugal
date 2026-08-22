@@ -2,6 +2,7 @@ import type React from "react";
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
+import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
