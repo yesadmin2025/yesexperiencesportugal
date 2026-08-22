@@ -153,6 +153,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { path: "/local-stories/arrabida-wine-tour", label: "Arrábida wine tour from Lisbon" },
       { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
       { path: "/local-stories/best-wineries-near-lisbon", label: "Best wineries near Lisbon" },
+      { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
     ],
     datePublished: "2026-06-03",
   },
