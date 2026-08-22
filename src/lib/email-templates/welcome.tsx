@@ -2,6 +2,7 @@ import * as React from "react";
 import {
   Body,
   Container,
+  Button,
   Head,
   Heading,
   Hr,
@@ -14,14 +15,18 @@ import type { TemplateEntry } from "./registry";
 
 export interface WelcomeProps {
   contactName?: string;
+  /** Where the guest starts exploring. Defaults to the Signature collection. */
+  exploreUrl?: string;
 }
+
+const DEFAULT_EXPLORE_URL = "https://yesexperiencesportugal.com/experiences";
 
 const TEAL = "#295B61";
 const GOLD = "#C9A96A";
 const CHARCOAL = "#2E2E2E";
 const SAND = "#F4EEE2";
 
-const Welcome = ({ contactName }: WelcomeProps) => {
+const Welcome = ({ contactName, exploreUrl }: WelcomeProps) => {
   const first = contactName ? contactName.split(" ")[0] : null;
   return (
     <Html lang="en" dir="ltr">
@@ -73,6 +78,12 @@ const Welcome = ({ contactName }: WelcomeProps) => {
             </Section>
           </Section>
 
+          <Section style={{ textAlign: "center" as const, margin: "32px 0 8px" }}>
+            <Button href={exploreUrl || DEFAULT_EXPLORE_URL} style={btnPrimary}>
+              Start exploring experiences
+            </Button>
+          </Section>
+
           <Hr style={{ ...hr, margin: "32px 0 20px" }} />
           <Text style={footer}>
             If anything feels unclear, just reply to this email — a real person reads every message.
@@ -91,7 +102,10 @@ export const template = {
     return name ? `${name}, welcome to YES Experiences` : "Welcome to YES Experiences";
   },
   displayName: "Welcome to YES",
-  previewData: { contactName: "Sofia Martins" } satisfies WelcomeProps,
+  previewData: {
+    contactName: "Sofia Martins",
+    exploreUrl: DEFAULT_EXPLORE_URL,
+  } satisfies WelcomeProps,
 } satisfies TemplateEntry;
 
 export default Welcome;
@@ -200,4 +214,16 @@ const signoff = {
   fontStyle: "italic" as const,
   color: TEAL,
   margin: 0,
+} as const;
+const btnPrimary = {
+  backgroundColor: TEAL,
+  color: "#ffffff",
+  padding: "13px 26px",
+  borderRadius: "2px",
+  fontFamily: "Arial, sans-serif",
+  fontSize: "13px",
+  letterSpacing: "0.14em",
+  textTransform: "uppercase" as const,
+  fontWeight: 700 as const,
+  textDecoration: "none" as const,
 } as const;
