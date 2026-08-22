@@ -10,16 +10,26 @@ import { EmailChangeEmail } from "@/lib/email-templates/email-change";
 import { ReauthenticationEmail } from "@/lib/email-templates/reauthentication";
 import { sendTransactionalInternal } from "@/lib/email/send-internal.server";
 import {
+  buildSnapshotEmailPreview,
+  normalizeSnapshotItinerary,
+} from "@/lib/booking-snapshot-contract";
+import {
   dedupeByMessageId,
   EMAIL_SENDER_DOMAIN,
+  type BookingOption,
   type DeferredRow,
+  type EmailAccess,
   type EmailAdminOverview,
   type EmailLogRow,
+  type EmailRole,
+  type LinkCheck,
+  type RoleMember,
   type SuppressionRow,
   type TemplatePreview,
   type TemplateSummary,
   type TestSendResult,
 } from "@/lib/email/admin-types";
+
 
 const SITE_URL = "https://yesexperiencesportugal.com";
 const SAMPLE_LINK = `${SITE_URL}/auth`;
