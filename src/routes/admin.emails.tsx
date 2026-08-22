@@ -404,7 +404,8 @@ function AdminEmailsPage() {
         <>
           <p className="mt-5 max-w-2xl text-sm text-[color:var(--charcoal)]/80">
             Temporary failures retry themselves automatically with a widening delay (1 min up to 12
-            h, 7 attempts, 48 h). Permanent failures stop immediately and wait for you here.
+            h, 7 attempts, over a two-day window). Permanent failures stop immediately and wait for
+            you here.
           </p>
           {data.access.canRetryQueue ? (
             <div className="mt-4 flex flex-wrap items-center gap-3">
