@@ -31,7 +31,7 @@ export function LandingTourCredibility({
       aria-labelledby="landing-reviews-heading"
     >
       <div className="container-x max-w-3xl text-center">
-        <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-3">
+        <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-3">
           {headline}
         </span>
         <h2

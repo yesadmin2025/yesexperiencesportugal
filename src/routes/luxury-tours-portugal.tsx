@@ -151,7 +151,7 @@ function Page() {
             </div>
 
             <aside className="mt-16 pt-12 border-t border-[color:var(--gold-soft)]/40 text-center">
-              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
+              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-4">
                 Also popular
               </span>
               <ul className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">

@@ -354,7 +354,7 @@ function StaticArticleView({
             ]}
           />
           <div className="container-x max-w-3xl text-center">
-            <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5">
+            <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-5">
               {article.eyebrow}
             </span>
             <h1 className="font-display font-bold text-[2rem] md:text-[2.6rem] leading-[1.15] tracking-[-0.01em] text-[color:var(--charcoal)]">
@@ -388,7 +388,7 @@ function StaticArticleView({
                 aria-label="Frequently asked questions"
                 className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 reveal"
               >
-                <span className="block text-center font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-8">
+                <span className="block text-center font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-8">
                   Frequently asked
                 </span>
                 <dl className="space-y-8">
@@ -407,7 +407,7 @@ function StaticArticleView({
             )}
 
             <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
-              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
+              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-4">
                 Travel this story
               </span>
               <p className="text-[15px] text-[color:var(--charcoal-soft)] mb-6 max-w-xl mx-auto leading-[1.75]">
@@ -469,7 +469,7 @@ function StaticArticleView({
                 aria-label="Guest notes from this experience"
                 className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 reveal"
               >
-                <span className="block text-center font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-8">
+                <span className="block text-center font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-8">
                   Guest notes
                 </span>
                 <ul className="space-y-8">
@@ -491,7 +491,7 @@ function StaticArticleView({
                       <li key={r.id} className="border-l-2 border-[color:var(--gold-soft)]/60 pl-5">
                         {r.ratingValue !== null && (
                           <div
-                            className="text-[color:var(--gold-warm)] text-[13px] tracking-[0.2em] mb-2"
+                            className="text-[color:var(--gold-ink)] text-[13px] tracking-[0.2em] mb-2"
                             aria-label={`Rated ${r.ratingValue} out of 5`}
                           >
                             {"★".repeat(r.ratingValue)}
@@ -554,7 +554,7 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
           />
           <div className="container-x max-w-3xl text-center">
             {post.region && (
-              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5">
+              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-5">
                 {post.region}
               </span>
             )}
@@ -603,7 +603,7 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
                 as="aside"
                 className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center"
               >
-                <span className="scene-atmosphere block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-4">
+                <span className="scene-atmosphere block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-4">
                   Travel this story
                 </span>
                 <p className="scene-title text-[15px] text-[color:var(--charcoal-soft)] mb-6">
