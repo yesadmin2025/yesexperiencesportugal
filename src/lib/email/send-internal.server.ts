@@ -23,6 +23,12 @@ const FROM_DOMAIN = "notify.yesexperiences.pt";
  * so nothing is silently lost.
  */
 const SANDBOX_SAFE_RECIPIENT = "yesexperiences@gmail.com";
+/**
+ * Public brand address. Mail is *sent* through the technical sender domain
+ * (notify.yesexperiences.pt) but every reply must land in the inbox guests
+ * already know: info@yesexperiencesportugal.com.
+ */
+const REPLY_TO_ADDRESS = "info@yesexperiencesportugal.com";
 
 async function mirrorToSafeRecipient(args: {
   supabase: typeof supabaseAdmin;
