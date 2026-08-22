@@ -14,9 +14,9 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { TEMPLATES } from "@/lib/email-templates/registry";
 import { TEAM_NOTIFICATION_RECIPIENTS } from "@/lib/email/team-recipients";
 
-const SITE_NAME = "yesexperiencesportugal";
-const SENDER_DOMAIN = "notify.yesexperiencesportugal.com";
-const FROM_DOMAIN = "notify.yesexperiencesportugal.com";
+const SITE_NAME = "yesexperiences";
+const SENDER_DOMAIN = "notify.yesexperiences.pt";
+const FROM_DOMAIN = "notify.yesexperiences.pt";
 /**
  * The only address the sandbox Resend sender is allowed to deliver to while
  * the branded domain is unverified. Undeliverable guest mail is mirrored here
