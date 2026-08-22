@@ -479,6 +479,8 @@ export async function sendTransactionalInternal(
           plainText,
           idemKey,
           lastError: `resend ${res.status}: ${res.body}`,
+          failureKind: classifyFailure(res.status, res.body),
+
         });
       }
 
