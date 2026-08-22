@@ -184,22 +184,23 @@ function BookingConfirmedPage() {
           <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
             {state.kind === "loading" && "Confirming your payment with our secure processor…"}
             {state.kind === "error" &&
-              "If your card was charged, you'll still receive a confirmation email shortly. Reach out via WhatsApp if anything looks off."}
+              "If your card was charged, your booking is safe. Open your itinerary below, or reach out via WhatsApp if anything looks off."}
             {state.kind === "ok" &&
               (paid ? (
                 <>
-                  Payment received{amountLabel ? ` · ${amountLabel}` : ""}. A confirmation email is
-                  on its way to{" "}
+                  Payment received{amountLabel ? ` · ${amountLabel}` : ""}. Your full plan — stop by
+                  stop, pickup details and your host's direct WhatsApp — is ready below, and a copy
+                  is on its way to{" "}
                   <span className="text-[color:var(--charcoal)]">
                     {state.data.customerEmail ?? "your inbox"}
-                  </span>{" "}
-                  with your itinerary, pickup details and your host's direct WhatsApp.
+                  </span>
+                  .
                 </>
               ) : (
-                "Your session is still being processed. Refresh in a moment or check your email for the confirmation."
+                "Your session is still being processed. Refresh in a moment — your itinerary link below stays valid either way."
               ))}
             {state.kind === "idle" &&
-              "Payment received. A confirmation email is on its way with your itinerary, pickup details and your host's direct WhatsApp."}
+              "Payment received. Your full plan — stop by stop, pickup details and your host's direct WhatsApp — is ready below."}
           </p>
 
           {session_id ? (
@@ -209,30 +210,38 @@ function BookingConfirmedPage() {
           ) : null}
 
           {session_id ? (
-            <div className="mt-6 flex flex-col items-center gap-4">
+            <div className="mt-8 border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] p-6 sm:p-7 text-left">
+              <p className="text-[10.5px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
+                Your day, in full
+              </p>
+              <p className="mt-2 text-[14px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                Everything is already here — you don't need the email to have your plan. Keep this
+                link; it stays valid for your booking reference.
+              </p>
+              <div className="mt-5 flex flex-col sm:flex-row gap-3">
+                <Link
+                  to="/itinerary"
+                  search={{ session_id }}
+                  className="inline-flex items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-6 py-3 text-[12px] uppercase tracking-[0.22em] min-h-[48px]"
+                >
+                  <Map size={14} /> View itinerary
+                </Link>
+                <a
+                  href={`/api/public/booking-itinerary?session_id=${encodeURIComponent(session_id)}`}
+                  className="inline-flex items-center justify-center gap-2 border border-[color:var(--charcoal)]/25 hover:border-[color:var(--gold)] px-6 py-3 text-[12px] uppercase tracking-[0.22em] min-h-[48px]"
+                >
+                  <Download size={14} /> Download PDF
+                </a>
+              </div>
               <Link
                 to="/booking-receipt"
                 search={{ session_id }}
-                className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] border-b border-[color:var(--teal)]/40 hover:border-[color:var(--gold)] pb-1 min-h-[44px]"
+                className="mt-5 inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] border-b border-[color:var(--teal)]/40 hover:border-[color:var(--gold)] pb-1 min-h-[44px]"
               >
                 <Receipt size={14} /> Printable receipt
               </Link>
-              <Link
-                to="/itinerary"
-                search={{ session_id }}
-                className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] border-b border-[color:var(--teal)]/40 hover:border-[color:var(--gold)] pb-1 min-h-[44px]"
-              >
-                <Map size={14} /> View itinerary online
-              </Link>
-              <a
-                href={`/api/public/booking-itinerary?session_id=${encodeURIComponent(session_id)}`}
-                className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] border-b border-[color:var(--teal)]/40 hover:border-[color:var(--gold)] pb-1 min-h-[44px]"
-              >
-                <Download size={14} /> Download itinerary
-              </a>
             </div>
           ) : null}
-
 
           {state.kind === "ok" && state.data.receiptUrl ? (
             <div className="mt-4">
@@ -250,8 +259,8 @@ function BookingConfirmedPage() {
           <ul className="mt-10 grid sm:grid-cols-3 gap-4 text-left">
             <NextStep
               icon={<Mail size={14} />}
-              title="Check your inbox"
-              body="Confirmation email with the full plan, in minutes."
+              title="Email copy"
+              body="A confirmation with the same plan follows by email."
             />
             <NextStep
               icon={<MessageCircle size={14} />}
@@ -261,9 +270,10 @@ function BookingConfirmedPage() {
             <NextStep
               icon={<ArrowRight size={14} />}
               title="Anything to adjust"
-              body="Dietary, pickup, occasion — just reply to the email."
+              body="Dietary, pickup, occasion — write to us and we'll adapt."
             />
           </ul>
+
 
           <div className="mt-12 flex flex-col sm:flex-row gap-3 justify-center">
             {tour ? (
