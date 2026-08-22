@@ -112,7 +112,7 @@ async function resendSend(args: {
       body: JSON.stringify({
         from: "YES Experiences <onboarding@resend.dev>",
         to: [args.to],
-        reply_to: SANDBOX_SAFE_RECIPIENT,
+        reply_to: REPLY_TO_ADDRESS,
         subject: args.subject,
         html: args.html,
         text: args.text,
