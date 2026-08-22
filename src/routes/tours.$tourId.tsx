@@ -243,6 +243,15 @@ function TourDetailPage() {
       {/* ── 1 · HERO ─────────────────────────────────────────────── */}
       <TourHero tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
 
+      {/* ── 1b · BREADCRUMBS (mirrors BreadcrumbList JSON-LD) ──── */}
+      <SiteBreadcrumbs
+        crumbs={[
+          { name: "Home", path: "/" },
+          { name: "Signature Experiences", path: "/experiences" },
+          { name: tour.title, path: `/tours/${tour.id}` },
+        ]}
+      />
+
       {/* ── 2 · TRUST MICROCOPY ─────────────────────────────────── */}
       <TrustStrip meta={meta} />
 
