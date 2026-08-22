@@ -298,9 +298,9 @@ export function Footer() {
 
             {/* Also listed on */}
             <div className="min-w-0">
-              <h4 className={`${EYEBROW_CLASS} mb-3`} style={{ fontWeight: 600 }}>
+              <h2 className={`${EYEBROW_CLASS} mb-3`} style={{ fontWeight: 600 }}>
                 Also listed on
-              </h4>
+              </h2>
               <ul className="flex items-center gap-2.5" aria-label="Distribution partners">
                 {[
                   {
@@ -382,9 +382,9 @@ export function Footer() {
 function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
   return (
     <div className="min-w-0">
-      <h4 className={`${EYEBROW_CLASS} mb-4`} style={{ fontWeight: 600 }}>
+      <h2 className={`${EYEBROW_CLASS} mb-4`} style={{ fontWeight: 600 }}>
         {title}
-      </h4>
+      </h2>
       <ul
         className="space-y-2 font-[family-name:var(--font-sans)] text-[14px]"
         style={{ fontWeight: 400 }}
@@ -418,9 +418,9 @@ function FooterLinkGroup({ title, links }: { title: string; links: FooterLink[] 
         aria-controls={id}
         className="flex w-full items-center justify-between gap-3 py-2 text-left md:pointer-events-none md:py-0"
       >
-        <h4 className={EYEBROW_CLASS} style={{ fontWeight: 600 }}>
+        <h2 className={EYEBROW_CLASS} style={{ fontWeight: 600 }}>
           {title}
-        </h4>
+        </h2>
         <ChevronDown
           size={16}
           aria-hidden="true"

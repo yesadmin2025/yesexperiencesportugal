@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
+import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Clock, MapPin, ArrowLeft, Check, Sparkles, Info, Heart, Shield, Star } from "lucide-react";
 import {
   signatureTours,
@@ -242,6 +243,15 @@ function TourDetailPage() {
     <SiteLayout>
       {/* ── 1 · HERO ─────────────────────────────────────────────── */}
       <TourHero tour={tour} resolveImg={resolveImg} meta={meta} adminPhotos={adminPhotos} />
+
+      {/* ── 1b · BREADCRUMBS (mirrors BreadcrumbList JSON-LD) ──── */}
+      <SiteBreadcrumbs
+        crumbs={[
+          { name: "Home", path: "/" },
+          { name: "Signature Experiences", path: "/experiences" },
+          { name: tour.title, path: `/tours/${tour.id}` },
+        ]}
+      />
 
       {/* ── 2 · TRUST MICROCOPY ─────────────────────────────────── */}
       <TrustStrip meta={meta} />

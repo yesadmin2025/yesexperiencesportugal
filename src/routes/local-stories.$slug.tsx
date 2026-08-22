@@ -2,6 +2,7 @@ import type React from "react";
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/SiteLayout";
+import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
@@ -343,6 +344,15 @@ function StaticArticleView({
     <SiteLayout>
       <article className="local-stories-scope">
         <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)]">
+          <SiteBreadcrumbs
+            containerClassName="container-x max-w-3xl"
+            className="bg-transparent pt-0 pb-6"
+            crumbs={[
+              { name: "Home", path: "/" },
+              { name: "Local Stories", path: "/local-stories" },
+              { name: article.h1, path: `/local-stories/${article.slug}` },
+            ]}
+          />
           <div className="container-x max-w-3xl text-center">
             <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5">
               {article.eyebrow}
@@ -533,6 +543,15 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
       <ReadingProgress />
       <article>
         <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)]">
+          <SiteBreadcrumbs
+            containerClassName="container-x max-w-3xl"
+            className="bg-transparent pt-0 pb-6"
+            crumbs={[
+              { name: "Home", path: "/" },
+              { name: "Local Stories", path: "/local-stories" },
+              { name: post.title, path: `/local-stories/${post.slug}` },
+            ]}
+          />
           <div className="container-x max-w-3xl text-center">
             {post.region && (
               <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-5">

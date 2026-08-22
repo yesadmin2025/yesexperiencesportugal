@@ -2,6 +2,7 @@ import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
+import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Clock, MapPin, Star } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
@@ -73,6 +74,14 @@ function DayToursPage() {
     <SiteLayout>
       <section className="reveal pt-32 pb-12 bg-[color:var(--sand)] text-center">
         <div className="container-x">
+            <SiteBreadcrumbs
+              containerClassName=""
+              className="bg-transparent pt-0 pb-6 text-left"
+              crumbs={[
+                { name: "Home", path: "/" },
+                { name: "Day Tours", path: "/day-tours" },
+              ]}
+            />
           <ParallaxLayer amount="sm">
             <Eyebrow flank>Half &amp; Full Day</Eyebrow>
             <SectionTitle as="h1" size="anchor" spacing="loose">
