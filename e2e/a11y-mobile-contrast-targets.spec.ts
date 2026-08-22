@@ -39,7 +39,9 @@ async function settle(page: import("@playwright/test").Page) {
 }
 
 test.describe("mobile a11y — contrast, labels, tap targets", () => {
-  test.use({ viewport: MOBILE });
+  // Reduced motion pins reveal animations to their final opacity so contrast is
+  // measured on settled colors rather than mid-fade values.
+  test.use({ viewport: MOBILE, reducedMotion: "reduce" });
 
   for (const route of ROUTES) {
     test(`${route} passes axe (wcag2a/2aa) on mobile`, async ({ page }) => {
