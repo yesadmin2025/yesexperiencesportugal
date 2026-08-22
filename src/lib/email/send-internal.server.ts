@@ -58,7 +58,7 @@ async function mirrorToSafeRecipient(args: {
         reply_to: intendedRecipient,
         subject: `[Forward to ${intendedRecipient}] ${subject}`,
         html: `${notice}${html}`,
-        text: `Undeliverable copy — meant for ${intendedRecipient}. Please forward manually.\n\n${plainText}`,
+        text: `Action needed — forward to the guest.\nIntended recipient: ${intendedRecipient}\nEmail type: ${templateName}\n\n${plainText}`,
         headers: { "X-Entity-Ref-ID": `mirror-${idemKey}` },
       }),
     });
