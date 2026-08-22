@@ -2,6 +2,7 @@ import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
+import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Clock, MapPin, Star } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
@@ -71,6 +72,13 @@ function DayToursPage() {
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>
+      <SiteBreadcrumbs
+        className="bg-[color:var(--sand)] pt-28 pb-0"
+        crumbs={[
+          { name: "Home", path: "/" },
+          { name: "Day Tours", path: "/day-tours" },
+        ]}
+      />
       <section className="reveal pt-32 pb-12 bg-[color:var(--sand)] text-center">
         <div className="container-x">
           <ParallaxLayer amount="sm">

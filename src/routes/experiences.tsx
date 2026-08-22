@@ -2,6 +2,7 @@ import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
+import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Clock, MapPin, Star, UtensilsCrossed } from "lucide-react";
 import { signatureTours } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
@@ -80,6 +81,13 @@ function ExperiencesPage() {
   const { resolveImg } = useImportedTourImages();
   return (
     <SiteLayout>
+      <SiteBreadcrumbs
+        className="bg-[color:var(--sand)] pt-28 pb-0"
+        crumbs={[
+          { name: "Home", path: "/" },
+          { name: "Signature Experiences", path: "/experiences" },
+        ]}
+      />
       <Scene
         as="section"
         data-audit="experiences-hero"

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
+import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Scene } from "@/components/motion/Scene";
 import { supabase } from "@/integrations/supabase/client";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -106,6 +107,13 @@ function Page() {
 
   return (
     <SiteLayout>
+      <SiteBreadcrumbs
+        className="bg-[color:var(--sand)] pt-36 pb-0 md:pt-44"
+        crumbs={[
+          { name: "Home", path: "/" },
+          { name: "Local Stories", path: "/local-stories" },
+        ]}
+      />
       {/* Header */}
       <section className="pt-40 pb-16 md:pt-48 md:pb-20 bg-[color:var(--sand)] text-center">
         <div className="container-x">
