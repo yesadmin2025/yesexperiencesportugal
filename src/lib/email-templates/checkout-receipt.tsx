@@ -151,6 +151,10 @@ const CheckoutReceipt = ({
   removedOptions,
   customerNotes,
   itineraryUrl,
+  pdfUrl,
+  manageUrl,
+  experienceUrl,
+
 }: CheckoutReceiptProps) => {
   const firstName = customerName ? customerName.split(" ")[0] : null;
   const g = guests ?? 2;
