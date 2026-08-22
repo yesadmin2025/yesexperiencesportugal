@@ -468,7 +468,7 @@ function AdminEmailsPage() {
 }
 
 
-function TemplateStudio() {
+function TemplateStudio({ access }: { access: EmailAccess }) {
   const [templates, setTemplates] = useState<TemplateSummary[] | null>(null);
   const [selected, setSelected] = useState<string>("");
   const [preview, setPreview] = useState<TemplatePreview | null>(null);
@@ -477,6 +477,20 @@ function TemplateStudio() {
   const [sending, setSending] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
+
+  // Variable source: invented sample values or a real booking's frozen snapshot.
+  const [source, setSource] = useState<"sample" | "booking">("sample");
+  const [bookings, setBookings] = useState<BookingOption[]>([]);
+  const [bookingRef, setBookingRef] = useState("");
+
+  // Link validation
+  const [links, setLinks] = useState<LinkCheck[] | null>(null);
+  const [checking, setChecking] = useState(false);
+
+  const previewArgs = useMemo(
+    () => ({ source, bookingRef: source === "booking" ? bookingRef : null }),
+    [source, bookingRef],
+  );
 
   useEffect(() => {
     void (async () => {
@@ -491,26 +505,63 @@ function TemplateStudio() {
     void supabase.auth.getUser().then(({ data }) => {
       if (data.user?.email) setRecipient(data.user.email);
     });
-  }, []);
+    if (access.canSendTests) {
+      void listPreviewBookings({ data: undefined })
+        .then((rows) => {
+          setBookings(rows);
+          if (rows.length > 0) setBookingRef(rows[0]!.ref);
+        })
+        .catch(() => setBookings([]));
+    }
+  }, [access.canSendTests]);
 
   useEffect(() => {
     if (!selected) return;
+    if (source === "booking" && !bookingRef) return;
     setPreview(null);
+    setLinks(null);
     void (async () => {
       try {
-        setPreview(await previewEmailTemplate({ data: { name: selected } }));
+        setPreview(
+          await previewEmailTemplate({ data: { name: selected, ...previewArgs } }),
+        );
       } catch (e) {
         setErr(e instanceof Error ? e.message : "Could not render this template.");
       }
     })();
-  }, [selected]);
+  }, [selected, previewArgs, source, bookingRef]);
+
+  async function handleCheckLinks() {
+    setChecking(true);
+    setLinks(null);
+    setErr(null);
+    try {
+      setLinks(await checkTemplateLinks({ data: { name: selected, ...previewArgs } }));
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Link check failed.");
+    } finally {
+      setChecking(false);
+    }
+  }
+
+  const brokenLinks = (links ?? []).filter(
+    (l) => l.state === "broken" || l.state === "invalid" || l.state === "timeout",
+  );
 
   async function handleTest() {
+    if (brokenLinks.length > 0) {
+      const proceed = window.confirm(
+        `${brokenLinks.length} link${brokenLinks.length === 1 ? "" : "s"} did not resolve. Send the test anyway?`,
+      );
+      if (!proceed) return;
+    }
     setSending(true);
     setMsg(null);
     setErr(null);
     try {
-      const res = await sendTemplateTest({ data: { name: selected, recipient } });
+      const res = await sendTemplateTest({
+        data: { name: selected, recipient, ...previewArgs },
+      });
       setMsg(
         res.ok
           ? `Test queued to ${res.recipient}. It should arrive within a minute.`
@@ -526,8 +577,8 @@ function TemplateStudio() {
   return (
     <section className="mt-6">
       <p className="max-w-2xl text-sm text-[color:var(--charcoal)]/80">
-        Preview any email exactly as a guest receives it, then send yourself a live test through the
-        verified sender domain.
+        Preview any email exactly as a guest receives it — with sample values or a real booking —
+        check every link, then send a live test through the verified sender domain.
       </p>
 
       <div className="mt-5 flex flex-wrap gap-3">
@@ -563,36 +614,137 @@ function TemplateStudio() {
         </div>
       </div>
 
-      <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <label className="flex flex-1 items-center gap-2 text-xs text-[color:var(--charcoal)]">
-          Send test to
-          <input
-            type="email"
-            value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
-            className="min-h-[44px] w-full rounded-sm border border-[color:var(--gold-soft)] px-3"
-          />
-        </label>
-        <button
-          type="button"
-          onClick={handleTest}
-          disabled={sending || !selected || !recipient}
-          className="min-h-[44px] rounded-sm bg-[color:var(--teal)] px-5 text-xs uppercase tracking-[0.16em] text-white disabled:opacity-40"
-        >
-          {sending ? "Sending…" : "Send test"}
-        </button>
-      </div>
+      {/* Variable source */}
+      {access.canSendTests ? (
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            {(
+              [
+                ["sample", "Sample data"],
+                ["booking", "Real booking"],
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setSource(id)}
+                className={`min-h-[44px] rounded-sm border px-4 text-xs uppercase tracking-[0.16em] ${
+                  source === id
+                    ? "border-[color:var(--gold)] bg-[color:var(--sand)] text-[color:var(--charcoal)]"
+                    : "border-[color:var(--gold-soft)] text-[color:var(--charcoal)]/80"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          {source === "booking" ? (
+            <label className="flex flex-1 items-center gap-2 text-xs text-[color:var(--charcoal)]">
+              Booking
+              <select
+                value={bookingRef}
+                onChange={(e) => setBookingRef(e.target.value)}
+                className="min-h-[44px] w-full max-w-[22rem] rounded-sm border border-[color:var(--gold-soft)] px-2"
+              >
+                {bookings.length === 0 ? <option value="">No bookings yet</option> : null}
+                {bookings.map((b) => (
+                  <option key={b.ref} value={b.ref}>
+                    {b.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : null}
+        </div>
+      ) : null}
+
+      {/* Test send */}
+      {access.canSendTests ? (
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <label className="flex flex-1 items-center gap-2 text-xs text-[color:var(--charcoal)]">
+            Send test to
+            <input
+              type="email"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              className="min-h-[44px] w-full rounded-sm border border-[color:var(--gold-soft)] px-3"
+            />
+          </label>
+          <button
+            type="button"
+            onClick={handleCheckLinks}
+            disabled={checking || !selected}
+            className="min-h-[44px] rounded-sm border border-[color:var(--teal)] px-5 text-xs uppercase tracking-[0.16em] text-[color:var(--teal)] disabled:opacity-40"
+          >
+            {checking ? "Checking…" : "Check links"}
+          </button>
+          <button
+            type="button"
+            onClick={handleTest}
+            disabled={sending || !selected || !recipient}
+            className="min-h-[44px] rounded-sm bg-[color:var(--teal)] px-5 text-xs uppercase tracking-[0.16em] text-white disabled:opacity-40"
+          >
+            {sending ? "Sending…" : "Send test"}
+          </button>
+        </div>
+      ) : (
+        <p className="mt-5 text-xs text-[color:var(--charcoal)]/70">
+          Your access level can preview templates but not send tests.
+        </p>
+      )}
       {msg ? <p className="mt-2 text-xs text-emerald-800">{msg}</p> : null}
       {err ? <p className="mt-2 text-xs text-red-700">{err}</p> : null}
+
+      {/* Link report */}
+      {links ? (
+        <div className="mt-5 rounded-sm border border-[color:var(--gold-soft)] p-4">
+          <p className="text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--teal)]">
+            Links · {links.length} found · {brokenLinks.length} need attention
+          </p>
+          <ul className="mt-3 space-y-2">
+            {links.map((l, i) => (
+              <li key={`${l.url}-${i}`} className="text-xs">
+                <span
+                  className={`mr-2 inline-block rounded-sm border px-2 py-0.5 ${
+                    l.state === "ok"
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                      : l.state === "redirect"
+                        ? "border-amber-200 bg-amber-50 text-amber-900"
+                        : l.state === "skipped"
+                          ? "border-[color:var(--gold-soft)] text-[color:var(--charcoal)]/70"
+                          : "border-red-200 bg-red-50 text-red-800"
+                  }`}
+                >
+                  {l.state}
+                  {l.status ? ` ${l.status}` : ""}
+                </span>
+                <span className="font-semibold text-[color:var(--charcoal)]">{l.label}</span>
+                <span className="ml-2 break-all text-[color:var(--charcoal)]/70">{l.url}</span>
+                {l.note ? <span className="ml-2 text-red-700">{l.note}</span> : null}
+              </li>
+            ))}
+            {links.length === 0 ? (
+              <li className="text-xs text-[color:var(--charcoal)]/70">
+                This template has no links.
+              </li>
+            ) : null}
+          </ul>
+        </div>
+      ) : null}
 
       {preview ? (
         <div className="mt-6">
           <p className="text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--teal)]">
-            Subject
+            Subject · {preview.dataSource === "booking" ? "real booking data" : "sample data"}
           </p>
           <p className="mt-1 text-sm font-semibold text-[color:var(--charcoal)]">
             {preview.subject}
           </p>
+          {preview.missingFields.length > 0 ? (
+            <p className="mt-2 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800">
+              Empty in a real send: {preview.missingFields.join(", ")}
+            </p>
+          ) : null}
           <div className="mt-4 overflow-x-auto rounded-sm border border-[color:var(--gold-soft)] bg-[color:var(--sand)]/40 p-3">
             <iframe
               title={`Preview of ${preview.displayName}`}
@@ -606,6 +758,122 @@ function TemplateStudio() {
       ) : selected ? (
         <p className="mt-6 text-sm text-[color:var(--charcoal)]/70">Rendering preview…</p>
       ) : null}
+    </section>
+  );
+}
+
+const ROLE_LABEL: Record<string, string> = {
+  admin: "Admin",
+  email_operator: "Email operator",
+  email_viewer: "Email viewer",
+};
+
+function AccessPanel() {
+  const [members, setMembers] = useState<RoleMember[] | null>(null);
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState<"email_operator" | "email_viewer">("email_operator");
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      setMembers(await listEmailRoles({ data: undefined }));
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Could not load access list.");
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  async function change(targetEmail: string, targetRole: "email_operator" | "email_viewer", grant: boolean) {
+    setBusy(true);
+    setMsg(null);
+    try {
+      const res = await updateEmailRole({ data: { email: targetEmail, role: targetRole, grant } });
+      setMsg(
+        res.ok
+          ? `${grant ? "Granted" : "Removed"} ${ROLE_LABEL[targetRole]} for ${targetEmail}.`
+          : res.reason === "no_such_user"
+            ? "No account with that email yet — they must sign in once first."
+            : `Failed: ${res.reason ?? "unknown"}`,
+      );
+      if (res.ok) await load();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Update failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="mt-6">
+      <p className="max-w-2xl text-sm text-[color:var(--charcoal)]/80">
+        Operators can view delivery and send tests. Viewers can only read the log, with guest
+        addresses partly hidden. Admin access is managed elsewhere.
+      </p>
+
+      <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <label className="flex flex-1 items-center gap-2 text-xs text-[color:var(--charcoal)]">
+          Email
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="person@yesexperiences.pt"
+            className="min-h-[44px] w-full rounded-sm border border-[color:var(--gold-soft)] px-3"
+          />
+        </label>
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value as "email_operator" | "email_viewer")}
+          className="min-h-[44px] rounded-sm border border-[color:var(--gold-soft)] px-2 text-xs"
+        >
+          <option value="email_operator">Email operator</option>
+          <option value="email_viewer">Email viewer</option>
+        </select>
+        <button
+          type="button"
+          disabled={busy || !email}
+          onClick={() => void change(email.trim().toLowerCase(), role, true)}
+          className="min-h-[44px] rounded-sm bg-[color:var(--teal)] px-5 text-xs uppercase tracking-[0.16em] text-white disabled:opacity-40"
+        >
+          Grant
+        </button>
+      </div>
+      {msg ? <p className="mt-2 text-xs text-[color:var(--charcoal)]/80">{msg}</p> : null}
+
+      <ul className="mt-6 space-y-3">
+        {(members ?? []).map((m) => (
+          <li
+            key={`${m.userId}-${m.role}`}
+            className="flex flex-wrap items-center justify-between gap-3 rounded-sm border border-[color:var(--gold-soft)] p-4"
+          >
+            <div>
+              <p className="break-all text-sm text-[color:var(--charcoal)]">{m.email}</p>
+              <p className="text-xs text-[color:var(--charcoal)]/70">
+                {ROLE_LABEL[m.role] ?? m.role}
+              </p>
+            </div>
+            {m.role !== "admin" ? (
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() =>
+                  void change(m.email, m.role as "email_operator" | "email_viewer", false)
+                }
+                className="min-h-[44px] rounded-sm border border-red-200 px-4 text-xs uppercase tracking-[0.16em] text-red-700 disabled:opacity-40"
+              >
+                Remove
+              </button>
+            ) : null}
+          </li>
+        ))}
+        {members && members.length === 0 ? (
+          <li className="text-sm text-[color:var(--charcoal)]/70">No roles assigned yet.</li>
+        ) : null}
+      </ul>
     </section>
   );
 }
