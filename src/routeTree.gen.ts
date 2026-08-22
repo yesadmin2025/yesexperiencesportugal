@@ -120,6 +120,7 @@ import { Route as AdminImageSwapRouteImport } from './routes/admin.image-swap'
 import { Route as AdminGscRouteImport } from './routes/admin.gsc'
 import { Route as AdminGbpLegacyRemovalRouteImport } from './routes/admin.gbp-legacy-removal'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
+import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
 import { Route as AdminDriftBehaviorRouteImport } from './routes/admin.drift-behavior'
 import { Route as AdminDomainsHealthRouteImport } from './routes/admin.domains-health'
@@ -715,6 +716,11 @@ const AdminErrorLogsRoute = AdminErrorLogsRouteImport.update({
   path: '/admin/error-logs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminEmailsRoute = AdminEmailsRouteImport.update({
+  id: '/admin/emails',
+  path: '/admin/emails',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminDriftBibleRoute = AdminDriftBibleRouteImport.update({
   id: '/admin/drift-bible',
   path: '/admin/drift-bible',
@@ -957,6 +963,7 @@ export interface FileRoutesByFullPath {
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
+  '/admin/emails': typeof AdminEmailsRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
@@ -1100,6 +1107,7 @@ export interface FileRoutesByTo {
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
+  '/admin/emails': typeof AdminEmailsRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
@@ -1246,6 +1254,7 @@ export interface FileRoutesById {
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
+  '/admin/emails': typeof AdminEmailsRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
@@ -1393,6 +1402,7 @@ export interface FileRouteTypes {
     | '/admin/domains-health'
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
+    | '/admin/emails'
     | '/admin/error-logs'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
@@ -1536,6 +1546,7 @@ export interface FileRouteTypes {
     | '/admin/domains-health'
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
+    | '/admin/emails'
     | '/admin/error-logs'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
@@ -1681,6 +1692,7 @@ export interface FileRouteTypes {
     | '/admin/domains-health'
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
+    | '/admin/emails'
     | '/admin/error-logs'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
@@ -1827,6 +1839,7 @@ export interface RootRouteChildren {
   AdminDomainsHealthRoute: typeof AdminDomainsHealthRoute
   AdminDriftBehaviorRoute: typeof AdminDriftBehaviorRoute
   AdminDriftBibleRoute: typeof AdminDriftBibleRoute
+  AdminEmailsRoute: typeof AdminEmailsRoute
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
   AdminGscRoute: typeof AdminGscRoute
@@ -2667,6 +2680,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminErrorLogsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/emails': {
+      id: '/admin/emails'
+      path: '/admin/emails'
+      fullPath: '/admin/emails'
+      preLoaderRoute: typeof AdminEmailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/drift-bible': {
       id: '/admin/drift-bible'
       path: '/admin/drift-bible'
@@ -3036,6 +3056,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminDomainsHealthRoute: AdminDomainsHealthRoute,
   AdminDriftBehaviorRoute: AdminDriftBehaviorRoute,
   AdminDriftBibleRoute: AdminDriftBibleRoute,
+  AdminEmailsRoute: AdminEmailsRoute,
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
   AdminGscRoute: AdminGscRoute,
