@@ -321,7 +321,7 @@ export async function sendTransactionalInternal(
       : template.subject;
 
   // ─── TEMPORARY RESEND FALLBACK ───────────────────────────────────────────
-  // While notify.yesexperiencesportugal.com DNS is not verified, send directly
+  // While notify.yesexperiences.pt DNS is not verified, send directly
   // through the Resend connector gateway using their onboarding sender domain.
   // Disable by unsetting EMAIL_USE_RESEND_FALLBACK once notify. is verified.
   const useResendFallback =
