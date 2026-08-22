@@ -133,7 +133,9 @@ export const updateEmailRole = createServerFn({ method: "POST" })
     if (data.role !== "email_operator" && data.role !== "email_viewer") {
       throw new Error("Unsupported role");
     }
-    return { email, role: data.role, grant: !!data.grant };
+    const role: "email_operator" | "email_viewer" = data.role;
+    return { email, role, grant: !!data.grant };
+
   })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context, data }): Promise<{ ok: boolean; reason?: string }> => {
