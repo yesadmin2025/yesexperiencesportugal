@@ -58,7 +58,14 @@ export interface CheckoutReceiptProps {
   customerNotes?: string[] | null;
   /** Online, readable version of the attached itinerary PDF. */
   itineraryUrl?: string | null;
+  /** Direct download of the itinerary PDF tied to this booking reference. */
+  pdfUrl?: string | null;
+  /** Self-service page: view, adjust or cancel this booking. */
+  manageUrl?: string | null;
+  /** Public page of the Signature experience behind this booking. */
+  experienceUrl?: string | null;
 }
+
 
 
 /**
@@ -144,6 +151,10 @@ const CheckoutReceipt = ({
   removedOptions,
   customerNotes,
   itineraryUrl,
+  pdfUrl,
+  manageUrl,
+  experienceUrl,
+
 }: CheckoutReceiptProps) => {
   const firstName = customerName ? customerName.split(" ")[0] : null;
   const g = guests ?? 2;
@@ -254,13 +265,6 @@ const CheckoutReceipt = ({
                 <Text style={{ ...body, fontSize: "13px", color: "#5A5A5A" }}>
                   {ITINERARY_FLEXIBILITY_NOTE}
                 </Text>
-                {itineraryUrl ? (
-                  <Text style={body}>
-                    <Link href={itineraryUrl} style={{ color: "#295B61" }}>
-                      View your itinerary online
-                    </Link>
-                  </Text>
-                ) : null}
               </Section>
             </>
           ) : null}
@@ -317,6 +321,46 @@ const CheckoutReceipt = ({
             </>
           ) : null}
 
+          {itineraryUrl || pdfUrl || manageUrl || experienceUrl ? (
+            <>
+              <Text style={sectionTitle}>Your booking</Text>
+              <Section style={{ margin: "0 0 24px" }}>
+                {itineraryUrl ? (
+                  <Text style={{ ...body, margin: "0 0 8px" }}>
+                    <Link href={itineraryUrl} style={link}>
+                      View your itinerary online
+                    </Link>
+                  </Text>
+                ) : null}
+                {pdfUrl ? (
+                  <Text style={{ ...body, margin: "0 0 8px" }}>
+                    <Link href={pdfUrl} style={link}>
+                      Download the itinerary (PDF)
+                    </Link>
+                  </Text>
+                ) : null}
+                {manageUrl ? (
+                  <Text style={{ ...body, margin: "0 0 8px" }}>
+                    <Link href={manageUrl} style={link}>
+                      Manage or cancel this booking
+                    </Link>
+                  </Text>
+                ) : null}
+                {experienceUrl ? (
+                  <Text style={{ ...body, margin: "0 0 8px" }}>
+                    <Link href={experienceUrl} style={link}>
+                      Revisit the experience page
+                    </Link>
+                  </Text>
+                ) : null}
+                {bookingRef ? (
+                  <Text style={{ ...body, margin: "8px 0 0", fontSize: "13px", color: "#5A5A5A" }}>
+                    Keep this reference at hand: <strong>{bookingRef}</strong>
+                  </Text>
+                ) : null}
+              </Section>
+            </>
+          ) : null}
 
           {receiptUrl ? (
             <Section style={{ textAlign: "center" as const, margin: "0 0 20px" }}>
@@ -326,13 +370,14 @@ const CheckoutReceipt = ({
             </Section>
           ) : null}
 
-          {bookingStatusUrl ? (
+          {manageUrl || bookingStatusUrl ? (
             <Section style={{ textAlign: "center" as const, margin: "0 0 28px" }}>
-              <Button href={bookingStatusUrl} style={btnGhost}>
-                View booking details
+              <Button href={manageUrl || bookingStatusUrl!} style={btnGhost}>
+                {manageUrl ? "Manage my booking" : "View booking details"}
               </Button>
             </Section>
           ) : null}
+
 
           <Text style={sectionTitle}>What happens next</Text>
           <Text style={body}>

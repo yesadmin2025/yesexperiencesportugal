@@ -207,8 +207,12 @@ export const recoverPaidBooking = createServerFn({ method: "POST" })
         removedOptions: arr(snap.removedOptions),
         customerNotes: arr(snap.notes),
         adminUrl: `https://yesexperiencesportugal.com/admin/bookings/${bookingId}`,
+        itineraryUrl: `https://yesexperiencesportugal.com/itinerary?session_id=${encodeURIComponent(session.id)}`,
+        pdfUrl: `https://yesexperiencesportugal.com/api/public/booking-itinerary?session_id=${encodeURIComponent(session.id)}`,
+        manageUrl: `https://yesexperiencesportugal.com/booking-confirmed?session_id=${encodeURIComponent(session.id)}`,
         bookingId,
       };
+
 
       const customerResult = await sendTransactionalInternal({
         templateName: "checkout-receipt",

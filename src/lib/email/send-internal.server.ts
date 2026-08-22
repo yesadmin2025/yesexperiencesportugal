@@ -250,6 +250,12 @@ export interface SendInternalArgs {
   idempotencyKey?: string;
   /** Files attached to the outgoing message (e.g. the itinerary PDF). */
   attachments?: EmailAttachment[];
+  /**
+   * Pre-rendered content. Used by the admin template studio to test-send
+   * templates that live outside the transactional registry (auth emails).
+   * When present the registry lookup and render step are skipped.
+   */
+  rendered?: { subject: string; html: string; text: string };
 }
 
 export async function sendTransactionalInternal(
@@ -261,13 +267,14 @@ export async function sendTransactionalInternal(
   const idemKey = idempotencyKey || messageId;
 
   const template = TEMPLATES[templateName];
-  if (!template) {
+  if (!template && !args.rendered) {
     console.error("[email/internal] template not found", { templateName });
     return { ok: false, reason: "template_not_found" };
   }
 
-  const effectiveRecipient = template.to || recipientEmail;
+  const effectiveRecipient = template?.to || recipientEmail;
   if (!effectiveRecipient) return { ok: false, reason: "no_recipient" };
+
   const normalizedEmail = effectiveRecipient.toLowerCase();
 
   // Suppression check (fail-closed).
@@ -317,14 +324,27 @@ export async function sendTransactionalInternal(
     return { ok: false, reason: "email_suppressed" };
   }
 
-  // Render template.
-  const element = React.createElement(template.component, templateData as Record<string, unknown>);
-  const html = await render(element);
-  const plainText = await render(element, { plainText: true });
-  const subject =
-    typeof template.subject === "function"
-      ? template.subject(templateData as Record<string, unknown>)
-      : template.subject;
+  // Render template (or use pre-rendered content supplied by the caller).
+  let html: string;
+  let plainText: string;
+  let subject: string;
+  if (args.rendered) {
+    html = args.rendered.html;
+    plainText = args.rendered.text;
+    subject = args.rendered.subject;
+  } else {
+    const element = React.createElement(
+      template!.component,
+      templateData as Record<string, unknown>,
+    );
+    html = await render(element);
+    plainText = await render(element, { plainText: true });
+    subject =
+      typeof template!.subject === "function"
+        ? template!.subject(templateData as Record<string, unknown>)
+        : template!.subject;
+  }
+
 
   // ─── TEMPORARY RESEND FALLBACK ───────────────────────────────────────────
   // While notify.yesexperiences.pt DNS is not verified, send directly

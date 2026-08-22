@@ -99,7 +99,18 @@ export const Route = createFileRoute("/api/public/hooks/checkout-email")({
           itineraryUrl: `https://yesexperiencesportugal.com/itinerary?session_id=${encodeURIComponent(
             String(body.bookingRef ?? sessionId),
           )}`,
+          pdfUrl: `https://yesexperiencesportugal.com/api/public/booking-itinerary?session_id=${encodeURIComponent(
+            String(body.bookingRef ?? sessionId),
+          )}`,
+          manageUrl: `https://yesexperiencesportugal.com/booking-confirmed?session_id=${encodeURIComponent(
+            String(sessionId),
+          )}`,
+          experienceUrl:
+            typeof body.experienceUrl === "string" && body.experienceUrl.startsWith("https://")
+              ? body.experienceUrl
+              : null,
         };
+
 
         // Downloadable itinerary attached to BOTH confirmation emails.
         let attachments: Array<{ filename: string; content: string; contentType?: string }> = [];
