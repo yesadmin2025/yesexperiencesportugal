@@ -2,15 +2,24 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
+  checkTemplateLinks,
   getEmailAdminOverview,
+  listEmailRoles,
   listEmailTemplates,
+  listPreviewBookings,
   previewEmailTemplate,
   retryDeferredEmails,
   sendTemplateTest,
+  updateEmailRole,
+  type BookingOption,
+  type EmailAccess,
   type EmailAdminOverview,
+  type LinkCheck,
+  type RoleMember,
   type TemplatePreview,
   type TemplateSummary,
 } from "@/lib/emailAdmin.functions";
+
 
 export const Route = createFileRoute("/admin/emails")({
   head: () => ({
