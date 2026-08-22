@@ -546,6 +546,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           alt=""
           width={1080}
           height={1440}
+          loading="eager"
           fetchPriority="high"
           decoding="async"
           className="absolute inset-0 h-full w-full object-cover"

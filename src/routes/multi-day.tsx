@@ -399,6 +399,8 @@ function MultiDayPage() {
                   alt={SAMPLE_PAGES[0].alt}
                   loading="lazy"
                   decoding="async"
+                  width={800}
+                  height={1067}
                   className="w-full h-auto object-contain"
                 />
               </a>
@@ -457,6 +459,8 @@ function MultiDayPage() {
                     alt={p.alt}
                     loading="lazy"
                     decoding="async"
+                    width={450}
+                    height={600}
                     className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-[1.02]"
                   />
                   <span
