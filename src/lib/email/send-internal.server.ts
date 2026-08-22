@@ -427,6 +427,7 @@ export async function sendTransactionalInternal(
       to: effectiveRecipient,
       from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
       sender_domain: SENDER_DOMAIN,
+      reply_to: REPLY_TO_ADDRESS,
       subject,
       html,
       text: plainText,
