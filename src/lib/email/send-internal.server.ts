@@ -250,6 +250,12 @@ export interface SendInternalArgs {
   idempotencyKey?: string;
   /** Files attached to the outgoing message (e.g. the itinerary PDF). */
   attachments?: EmailAttachment[];
+  /**
+   * Pre-rendered content. Used by the admin template studio to test-send
+   * templates that live outside the transactional registry (auth emails).
+   * When present the registry lookup and render step are skipped.
+   */
+  rendered?: { subject: string; html: string; text: string };
 }
 
 export async function sendTransactionalInternal(
@@ -261,13 +267,14 @@ export async function sendTransactionalInternal(
   const idemKey = idempotencyKey || messageId;
 
   const template = TEMPLATES[templateName];
-  if (!template) {
+  if (!template && !args.rendered) {
     console.error("[email/internal] template not found", { templateName });
     return { ok: false, reason: "template_not_found" };
   }
 
-  const effectiveRecipient = template.to || recipientEmail;
+  const effectiveRecipient = template?.to || recipientEmail;
   if (!effectiveRecipient) return { ok: false, reason: "no_recipient" };
+
   const normalizedEmail = effectiveRecipient.toLowerCase();
 
   // Suppression check (fail-closed).
