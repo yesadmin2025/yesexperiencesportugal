@@ -147,7 +147,7 @@ function Page() {
                     className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2"
                   >
                     <div>
-                      <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-3">
+                      <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-3">
                         {a.eyebrow}
                       </span>
                       <h2 className="font-display text-[1.5rem] md:text-[1.7rem] leading-[1.2] text-[color:var(--charcoal)] mb-3 group-hover:text-[color:var(--teal)] transition-colors duration-300">
@@ -190,7 +190,7 @@ function Page() {
                       )}
                       <div>
                         {p.region && (
-                          <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-warm)] mb-3">
+                          <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-3">
                             {p.region}
                           </span>
                         )}

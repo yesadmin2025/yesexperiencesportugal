@@ -204,7 +204,7 @@ function BookingConfirmedPage() {
           </p>
 
           {session_id ? (
-            <p className="mt-4 text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]/70">
+            <p className="mt-4 text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
               Reference · {session_id.slice(-12)}
             </p>
           ) : null}

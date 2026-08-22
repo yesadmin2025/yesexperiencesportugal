@@ -339,7 +339,7 @@ function Field({
           required={required}
           maxLength={4000}
           autoComplete={autoComplete}
-          className="mt-2 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base resize-none transition-colors"
+          className="mt-2 min-h-11 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base resize-none transition-colors"
         />
       ) : (
         <input
@@ -349,7 +349,7 @@ function Field({
           min={min}
           maxLength={type === "email" ? 254 : 80}
           autoComplete={autoComplete}
-          className="mt-2 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base transition-colors"
+          className="mt-2 min-h-11 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base transition-colors"
         />
       )}
     </label>
@@ -376,7 +376,7 @@ function SelectField({
         name={name}
         required
         defaultValue={defaultValue ?? ""}
-        className="mt-2 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base transition-colors appearance-none"
+        className="mt-2 min-h-11 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base transition-colors appearance-none"
       >
         <option value="" disabled>
           Choose one…
