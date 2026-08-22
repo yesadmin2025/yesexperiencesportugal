@@ -82,6 +82,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "sintra-cascais", label: "Sintra & Cascais Signature" },
       { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
     ],
+    relatedReads: [
+      { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
+      { path: "/local-stories/arrabida-vs-sintra", label: "Arrábida vs Sintra" },
+    ],
     datePublished: "2026-06-01",
   },
   {
