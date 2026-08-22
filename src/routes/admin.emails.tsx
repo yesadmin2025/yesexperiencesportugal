@@ -27,7 +27,7 @@ export const Route = createFileRoute("/admin/emails")({
 });
 
 type StatusFilter = "all" | "sent" | "failed" | "suppressed";
-type Tab = "log" | "suppressions" | "deferred" | "templates";
+type Tab = "log" | "suppressions" | "deferred" | "templates" | "access";
 
 const RANGES = [
   { label: "24h", days: 1 },
