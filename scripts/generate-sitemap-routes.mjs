@@ -112,9 +112,16 @@ for (const file of walk(ROUTES_DIR)) {
   if (noindexLine && !/\.\.\.\(|\?/.test(noindexLine)) continue;
   // Cross-canonical routes point search engines at another URL, so the
   // sitemap must list that canonical instead of this alias.
-  const canonical = /rel:\s*["']canonical["']\s*,\s*href:\s*["'`]([^"'`$]+)["'`]/.exec(source);
+  const canonicalRaw =
+    /rel:\s*["']canonical["']\s*,\s*href:\s*([A-Za-z_$][\w$]*|["'`][^"'`$]+["'`])/.exec(source);
+  const canonical = canonicalRaw
+    ? /^["'`]/.test(canonicalRaw[1])
+      ? canonicalRaw[1].slice(1, -1)
+      : (new RegExp(`const\\s+${canonicalRaw[1]}\\s*=\\s*["'\`]([^"'\`$]+)["'\`]`).exec(source)?.[1] ??
+        null)
+    : null;
   if (canonical) {
-    const href = canonical[1].replace(/\/$/, "");
+    const href = canonical.replace(/\/$/, "");
     const self = routePath === "/" ? "" : routePath;
     if (!href.endsWith(self)) continue;
   }

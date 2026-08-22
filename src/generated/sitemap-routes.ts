@@ -24,7 +24,6 @@ export const SITEMAP_STATIC_ROUTES: SitemapRoute[] = [
   { path: "/privacy", changefreq: "yearly", priority: "0.4" },
   { path: "/private-tours-portugal", changefreq: "monthly", priority: "0.85" },
   { path: "/proposal-in-portugal", changefreq: "monthly", priority: "0.8" },
-  { path: "/proposals", changefreq: "monthly", priority: "0.7" },
   { path: "/reviews", changefreq: "monthly", priority: "0.5" },
   { path: "/studio-v3", changefreq: "weekly", priority: "0.9" },
   { path: "/terms", changefreq: "yearly", priority: "0.4" },
