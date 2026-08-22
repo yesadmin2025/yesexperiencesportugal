@@ -22,6 +22,11 @@ export interface DeferredRow {
   attempts: number;
   last_error: string | null;
   created_at: string;
+  /** Retry state: waiting for the next attempt, permanently failed, or abandoned. */
+  state?: string | null;
+  failure_kind?: string | null;
+  next_attempt_at?: string | null;
+  last_attempt_at?: string | null;
 }
 
 export interface EmailAdminOverview {
@@ -31,6 +36,7 @@ export interface EmailAdminOverview {
   suppressions: SuppressionRow[];
   deferred: DeferredRow[];
   senderDomain: string;
+  access: EmailAccess;
 }
 
 export interface TemplateSummary {
@@ -46,12 +52,53 @@ export interface TemplatePreview {
   displayName: string;
   subject: string;
   html: string;
+  /** Where the variables came from: sample values or a real booking. */
+  dataSource: "sample" | "booking";
+  /** Booking reference used when dataSource is "booking". */
+  bookingRef?: string | null;
+  /** Variables that would render empty in a real send. */
+  missingFields: string[];
 }
 
 export interface TestSendResult {
   ok: boolean;
   reason?: string;
   recipient: string;
+}
+
+/** Roles allowed anywhere near the email console. */
+export type EmailRole = "admin" | "email_operator" | "email_viewer";
+
+export interface EmailAccess {
+  role: EmailRole;
+  canView: boolean;
+  canSendTests: boolean;
+  canRetryQueue: boolean;
+  canManageRoles: boolean;
+  /** Viewers never see full guest addresses. */
+  maskRecipients: boolean;
+}
+
+export interface LinkCheck {
+  label: string;
+  url: string;
+  kind: "internal" | "external" | "mailto" | "anchor" | "invalid";
+  status: number | null;
+  state: "ok" | "redirect" | "broken" | "timeout" | "skipped" | "invalid";
+  finalUrl?: string | null;
+  note?: string | null;
+}
+
+export interface BookingOption {
+  ref: string;
+  label: string;
+  createdAt: string;
+}
+
+export interface RoleMember {
+  userId: string;
+  email: string;
+  role: EmailRole;
 }
 
 /** Latest row per message_id — one email should read as one entry. */

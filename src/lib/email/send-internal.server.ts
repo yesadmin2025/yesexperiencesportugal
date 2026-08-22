@@ -135,6 +135,42 @@ async function resendSend(args: {
 }
 
 /**
+ * Retry policy for parked mail. Only *transient* provider failures are worth
+ * retrying; a malformed address or a rejected payload will fail identically
+ * forever, so it is marked permanent and surfaced for human action instead.
+ */
+export const RETRY_BACKOFF_MINUTES = [1, 5, 15, 60, 180, 360, 720] as const;
+export const MAX_RETRY_ATTEMPTS = RETRY_BACKOFF_MINUTES.length;
+/** After this long a parked message is abandoned, whatever the failure kind. */
+export const RETRY_TTL_HOURS = 48;
+
+export type FailureKind = "transient" | "permanent";
+
+/** Classify a provider rejection so only recoverable failures are retried. */
+export function classifyFailure(status: number, body: string): FailureKind {
+  const text = (body || "").toLowerCase();
+  // Network error / timeout — always worth another go.
+  if (status === 0) return "transient";
+  if (status === 429 || status >= 500) return "transient";
+  if (status === 403 && (text.includes("verify") || text.includes("domain"))) return "transient";
+  if (status >= 400 && status < 500) {
+    // Domain still verifying is reported as a 4xx by the provider.
+    if (text.includes("not verified") || text.includes("domain is not") || text.includes("verify a domain")) {
+      return "transient";
+    }
+    return "permanent";
+  }
+  return "transient";
+}
+
+function nextAttemptAt(attempts: number): string {
+  const minutes = RETRY_BACKOFF_MINUTES[Math.min(attempts, MAX_RETRY_ATTEMPTS - 1)] ?? 720;
+  // Jitter ±20% so parallel workers never stampede the provider together.
+  const jittered = minutes * (0.8 + Math.random() * 0.4);
+  return new Date(Date.now() + jittered * 60_000).toISOString();
+}
+
+/**
  * Park an undeliverable guest email so it is sent automatically as soon as
  * the sender domain works again. Keyed by idempotency key so a retry of the
  * same trigger never parks (or later sends) a duplicate.
@@ -149,7 +185,9 @@ async function deferSend(args: {
   plainText: string;
   idemKey: string;
   lastError: string;
+  failureKind?: FailureKind;
 }): Promise<void> {
+  const kind = args.failureKind ?? "transient";
   const { error } = await args.supabase.from("email_deferred_sends").upsert(
     {
       message_id: args.messageId,
@@ -160,6 +198,9 @@ async function deferSend(args: {
       body_text: args.plainText,
       idempotency_key: args.idemKey,
       last_error: args.lastError.slice(0, 300),
+      failure_kind: kind,
+      state: kind === "permanent" ? "failed" : "pending",
+      next_attempt_at: nextAttemptAt(0),
     },
     { onConflict: "idempotency_key", ignoreDuplicates: true },
   );
@@ -169,25 +210,43 @@ async function deferSend(args: {
 let flushInFlight = false;
 
 /**
- * Retry parked guest emails. Called opportunistically after any successful
- * send (a success proves the provider is accepting mail again) and exposed
- * for the internal flush endpoint / manual replays.
+ * Retry parked guest emails that are due. Called opportunistically after any
+ * successful send (a success proves the provider is accepting mail again) and
+ * driven every few minutes by the scheduler through the internal flush route.
  */
-export async function flushDeferredSends(limit = 10): Promise<{ attempted: number; sent: number }> {
-  if (flushInFlight) return { attempted: 0, sent: 0 };
+export async function flushDeferredSends(
+  limit = 10,
+  options: { force?: boolean } = {},
+): Promise<{ attempted: number; sent: number; abandoned: number }> {
+  if (flushInFlight) return { attempted: 0, sent: 0, abandoned: 0 };
   flushInFlight = true;
   const supabase = supabaseAdmin;
   let sent = 0;
   let attempted = 0;
+  let abandoned = 0;
   try {
-    const { data: rows } = await supabase
+    let query = supabase
       .from("email_deferred_sends")
-      .select("id, message_id, template_name, recipient_email, subject, html, body_text, idempotency_key, attempts")
+      .select(
+        "id, message_id, template_name, recipient_email, subject, html, body_text, idempotency_key, attempts, created_at",
+      )
       .is("delivered_at", null)
-      .lt("attempts", 8)
-      .order("created_at", { ascending: true })
-      .limit(limit);
+      .eq("state", "pending")
+      .lt("attempts", MAX_RETRY_ATTEMPTS);
+    if (!options.force) query = query.lte("next_attempt_at", new Date().toISOString());
+    const { data: rows } = await query.order("created_at", { ascending: true }).limit(limit);
+
     for (const row of rows ?? []) {
+      const ageHours = (Date.now() - new Date(row.created_at).getTime()) / 3_600_000;
+      if (ageHours > RETRY_TTL_HOURS) {
+        abandoned += 1;
+        await supabase
+          .from("email_deferred_sends")
+          .update({ state: "abandoned", last_attempt_at: new Date().toISOString() })
+          .eq("id", row.id);
+        continue;
+      }
+
       attempted += 1;
       const res = await resendSend({
         to: row.recipient_email,
@@ -196,11 +255,17 @@ export async function flushDeferredSends(limit = 10): Promise<{ attempted: numbe
         text: row.body_text,
         idemKey: row.idempotency_key,
       });
+      const now = new Date().toISOString();
       if (res.ok) {
         sent += 1;
         await supabase
           .from("email_deferred_sends")
-          .update({ delivered_at: new Date().toISOString(), attempts: row.attempts + 1 })
+          .update({
+            delivered_at: now,
+            last_attempt_at: now,
+            attempts: row.attempts + 1,
+            state: "delivered",
+          })
           .eq("id", row.id);
         await supabase.from("email_send_log").insert({
           message_id: row.message_id,
@@ -209,13 +274,26 @@ export async function flushDeferredSends(limit = 10): Promise<{ attempted: numbe
           status: "sent",
         });
       } else {
+        const kind = classifyFailure(res.status, res.body);
+        const attempts = row.attempts + 1;
+        const exhausted = attempts >= MAX_RETRY_ATTEMPTS;
         await supabase
           .from("email_deferred_sends")
           .update({
-            attempts: row.attempts + 1,
+            attempts,
+            last_attempt_at: now,
             last_error: `resend ${res.status}: ${res.body.slice(0, 200)}`,
+            failure_kind: kind,
+            state: kind === "permanent" ? "failed" : exhausted ? "abandoned" : "pending",
+            next_attempt_at: nextAttemptAt(attempts),
           })
           .eq("id", row.id);
+        if (kind === "permanent" || exhausted) {
+          abandoned += 1;
+          // A permanent failure says nothing about the provider's health —
+          // keep draining the rest of the queue.
+          continue;
+        }
         // Provider still refusing — stop early, the rest will fail the same way.
         break;
       }
@@ -227,8 +305,9 @@ export async function flushDeferredSends(limit = 10): Promise<{ attempted: numbe
   } finally {
     flushInFlight = false;
   }
-  return { attempted, sent };
+  return { attempted, sent, abandoned };
 }
+
 
 
 function redact(email: string): string {
@@ -400,6 +479,8 @@ export async function sendTransactionalInternal(
           plainText,
           idemKey,
           lastError: `resend ${res.status}: ${res.body}`,
+          failureKind: classifyFailure(res.status, res.body),
+
         });
       }
 
