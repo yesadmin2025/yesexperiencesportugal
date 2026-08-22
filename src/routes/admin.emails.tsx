@@ -393,36 +393,65 @@ function AdminEmailsPage() {
 
       {!loading && !error && data && tab === "deferred" ? (
         <>
-          <div className="mt-5 flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={handleRetry}
-              disabled={retrying || data.deferred.length === 0}
-              className="min-h-[44px] rounded-sm bg-[color:var(--teal)] px-5 text-xs uppercase tracking-[0.16em] text-white disabled:opacity-40"
-            >
-              {retrying ? "Reprocessing…" : "Reprocess parked queue"}
-            </button>
-            {retryMsg ? (
-              <span className="text-xs text-[color:var(--charcoal)]/80">{retryMsg}</span>
-            ) : null}
-          </div>
+          <p className="mt-5 max-w-2xl text-sm text-[color:var(--charcoal)]/80">
+            Temporary failures retry themselves automatically with a widening delay (1 min up to 12
+            h, 7 attempts, 48 h). Permanent failures stop immediately and wait for you here.
+          </p>
+          {data.access.canRetryQueue ? (
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={handleRetry}
+                disabled={retrying || data.deferred.length === 0}
+                className="min-h-[44px] rounded-sm bg-[color:var(--teal)] px-5 text-xs uppercase tracking-[0.16em] text-white disabled:opacity-40"
+              >
+                {retrying ? "Reprocessing…" : "Retry now"}
+              </button>
+              {retryMsg ? (
+                <span className="text-xs text-[color:var(--charcoal)]/80">{retryMsg}</span>
+              ) : null}
+            </div>
+          ) : null}
           <ul className="mt-5 space-y-3">
-            {data.deferred.map((d) => (
-              <li key={d.id} className="rounded-sm border border-[color:var(--gold-soft)] p-4">
-                <p className="text-sm font-semibold text-[color:var(--charcoal)]">
-                  {d.template_name}
-                </p>
-                <p className="break-all text-sm text-[color:var(--charcoal)]/85">
-                  {d.recipient_email}
-                </p>
-                <p className="text-xs text-[color:var(--charcoal)]/70">
-                  {d.attempts} attempt{d.attempts === 1 ? "" : "s"} · {fmt(d.created_at)}
-                </p>
-                {d.last_error ? (
-                  <p className="mt-1 break-words text-xs text-red-700">{d.last_error}</p>
-                ) : null}
-              </li>
-            ))}
+            {data.deferred.map((d) => {
+              const state = d.state ?? "pending";
+              const stateLabel =
+                state === "pending"
+                  ? d.next_attempt_at && new Date(d.next_attempt_at) > new Date()
+                    ? `Retrying ${fmt(d.next_attempt_at)}`
+                    : "Retry due"
+                  : state === "failed"
+                    ? "Permanent failure"
+                    : state === "abandoned"
+                      ? "Abandoned — needs you"
+                      : state;
+              const tone =
+                state === "pending"
+                  ? "bg-amber-50 text-amber-900 border-amber-200"
+                  : "bg-red-50 text-red-800 border-red-200";
+              return (
+                <li key={d.id} className="rounded-sm border border-[color:var(--gold-soft)] p-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-sm font-semibold text-[color:var(--charcoal)]">
+                      {d.template_name}
+                    </p>
+                    <span className={`rounded-sm border px-2 py-0.5 text-[10.5px] ${tone}`}>
+                      {stateLabel}
+                    </span>
+                  </div>
+                  <p className="break-all text-sm text-[color:var(--charcoal)]/85">
+                    {d.recipient_email}
+                  </p>
+                  <p className="text-xs text-[color:var(--charcoal)]/70">
+                    {d.attempts} attempt{d.attempts === 1 ? "" : "s"} · {d.failure_kind ?? "transient"} ·{" "}
+                    {fmt(d.created_at)}
+                  </p>
+                  {d.last_error ? (
+                    <p className="mt-1 break-words text-xs text-red-700">{d.last_error}</p>
+                  ) : null}
+                </li>
+              );
+            })}
             {data.deferred.length === 0 ? (
               <li className="text-sm text-[color:var(--charcoal)]/70">
                 Nothing parked — every queued email has been delivered.
@@ -432,10 +461,12 @@ function AdminEmailsPage() {
         </>
       ) : null}
 
-      {tab === "templates" ? <TemplateStudio /> : null}
+      {tab === "templates" && data ? <TemplateStudio access={data.access} /> : null}
+      {tab === "access" && data?.access.canManageRoles ? <AccessPanel /> : null}
     </main>
   );
 }
+
 
 function TemplateStudio() {
   const [templates, setTemplates] = useState<TemplateSummary[] | null>(null);
