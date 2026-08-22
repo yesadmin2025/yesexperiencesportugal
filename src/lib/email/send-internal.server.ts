@@ -35,7 +35,15 @@ async function mirrorToSafeRecipient(args: {
 }): Promise<void> {
   const { supabase, templateName, intendedRecipient, subject, html, plainText, idemKey } = args;
   const mirrorId = crypto.randomUUID();
-  const notice = `<div style="font-family:Arial,sans-serif;font-size:13px;line-height:1.5;color:#2E2E2E;background:#F4EEE2;padding:12px 16px;margin-bottom:16px;border-left:3px solid #C9A96A;">Undeliverable copy — this message was meant for <strong>${intendedRecipient}</strong> but the sender domain is not verified yet. Please forward it manually.</div>`;
+  const forwardHref = `mailto:${encodeURIComponent(intendedRecipient)}?subject=${encodeURIComponent(subject)}`;
+  const notice =
+    `<div style="font-family:Arial,sans-serif;font-size:13px;line-height:1.6;color:#2E2E2E;background:#F4EEE2;padding:14px 16px;margin-bottom:16px;border-left:3px solid #C9A96A;">` +
+    `<strong>Action needed — forward this to the guest.</strong><br />` +
+    `Intended recipient: <strong>${intendedRecipient}</strong><br />` +
+    `Email type: ${templateName}<br />` +
+    `The branded sender domain is not verified yet, so this copy came to the team instead.` +
+    `<br /><a href="${forwardHref}" style="display:inline-block;margin-top:10px;padding:10px 16px;background:#295B61;color:#FAF8F3;text-decoration:none;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;">Write to ${intendedRecipient}</a>` +
+    `</div>`;
   try {
     const resp = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
       method: "POST",
@@ -50,7 +58,7 @@ async function mirrorToSafeRecipient(args: {
         reply_to: intendedRecipient,
         subject: `[Forward to ${intendedRecipient}] ${subject}`,
         html: `${notice}${html}`,
-        text: `Undeliverable copy — meant for ${intendedRecipient}. Please forward manually.\n\n${plainText}`,
+        text: `Action needed — forward to the guest.\nIntended recipient: ${intendedRecipient}\nEmail type: ${templateName}\n\n${plainText}`,
         headers: { "X-Entity-Ref-ID": `mirror-${idemKey}` },
       }),
     });
