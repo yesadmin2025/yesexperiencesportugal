@@ -53,7 +53,7 @@ export function SiteBreadcrumbs({
                 </span>
               ) : (
                 <Link
-                  to={c.path}
+                  to={c.path as never}
                   className="rounded-sm underline-offset-4 transition-colors hover:text-[color:var(--teal)] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--teal)]"
                 >
                   {c.name}
