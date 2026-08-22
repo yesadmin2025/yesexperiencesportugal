@@ -318,6 +318,13 @@ function AdminOverviewPage() {
               Reservas, mensagens de contacto e pedidos do Studio em tempo real. Atualiza
               automaticamente a cada 30 s e a cada nova entrada.
             </p>
+            <Link
+              to="/admin/emails"
+              className="mt-3 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-[color:var(--teal)] underline underline-offset-4"
+            >
+              Entrega de emails
+            </Link>
+
           </div>
           <div className="flex items-center gap-3">
             {lastRefresh && (
