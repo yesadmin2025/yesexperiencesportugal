@@ -58,7 +58,14 @@ export interface CheckoutReceiptProps {
   customerNotes?: string[] | null;
   /** Online, readable version of the attached itinerary PDF. */
   itineraryUrl?: string | null;
+  /** Direct download of the itinerary PDF tied to this booking reference. */
+  pdfUrl?: string | null;
+  /** Self-service page: view, adjust or cancel this booking. */
+  manageUrl?: string | null;
+  /** Public page of the Signature experience behind this booking. */
+  experienceUrl?: string | null;
 }
+
 
 
 /**
