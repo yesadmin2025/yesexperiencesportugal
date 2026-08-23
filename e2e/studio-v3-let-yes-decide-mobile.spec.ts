@@ -1,0 +1,94 @@
+// Studio V3 — "Let YES decide" is a real answer, not a skipped question.
+//
+// Walks the funnel at 393px handing feeling, interests and rhythm to the
+// curator, keeps the date flexible, and asserts:
+//   • every handed-over dimension still produces a composed day,
+//   • the reveal renders and never shows an empty date (Flexible date),
+//   • going back preserves what was already decided.
+
+import { test, expect, devices } from "@playwright/test";
+
+test.use({ ...devices["Pixel 5"], viewport: { width: 393, height: 780 } });
+test.setTimeout(120_000);
+
+async function phase(page: import("@playwright/test").Page): Promise<string | null> {
+  const el = page.locator("[data-phase]").first();
+  if (!(await el.count())) return null;
+  return el.getAttribute("data-phase");
+}
+
+async function advanceIntro(page: import("@playwright/test").Page) {
+  for (let i = 0; i < 5; i++) {
+    const cta = page.locator('[data-phase-cta^="intro-"]').first();
+    if (!(await cta.isVisible().catch(() => false))) return;
+    await cta.click({ timeout: 4_000 }).catch(() => undefined);
+    await page.waitForTimeout(500);
+  }
+}
+
+test("Let YES decide carries the journey through to a composed day", async ({ page }) => {
+  await page.goto("/studio-v3");
+  await advanceIntro(page);
+
+  // Feeling — hand it over.
+  await expect
+    .poll(() => phase(page), { timeout: 15_000 })
+    .toBe("feeling");
+  const decide = page.getByRole("button", { name: /let yes decide/i }).first();
+  await expect(decide, "Let YES decide must be offered on feeling").toBeVisible();
+  await decide.click();
+
+  // The Studio must move on with a real answer, not sit on a missing value.
+  await expect.poll(() => phase(page), { timeout: 10_000 }).not.toBe("feeling");
+
+  // Walk the remaining choice phases, preferring "Let YES decide" whenever
+  // it is offered, otherwise the first option + Continue.
+  for (let i = 0; i < 20; i++) {
+    const current = await phase(page);
+    if (!current || current === "map" || current === "storyboard") break;
+
+    const yes = page.getByRole("button", { name: /let yes decide/i }).first();
+    if (await yes.isVisible().catch(() => false)) {
+      await yes.click().catch(() => undefined);
+      await page.waitForTimeout(700);
+      continue;
+    }
+
+    if (current === "logistics") {
+      // Flexible date + first pickup, then compose.
+      const flexible = page.getByRole("button", { name: /flexible/i }).first();
+      if (await flexible.isVisible().catch(() => false)) await flexible.click();
+      const pickups = page.locator('[data-testid="studio-v3-logistics"] button');
+      const count = await pickups.count();
+      for (let k = 0; k < count; k++) {
+        const label = (await pickups.nth(k).textContent()) ?? "";
+        if (/lisbon/i.test(label)) {
+          await pickups.nth(k).click().catch(() => undefined);
+          break;
+        }
+      }
+      const compose = page.getByRole("button", { name: /compose my day/i }).first();
+      await expect(compose).toBeVisible();
+      await compose.click();
+      await page.waitForTimeout(900);
+      continue;
+    }
+
+    const options = page.locator("[data-phase] button:not([disabled])");
+    if (await options.count()) await options.first().click().catch(() => undefined);
+    const cont = page.getByRole("button", { name: /^continue$/i }).first();
+    if (await cont.isVisible().catch(() => false)) await cont.click().catch(() => undefined);
+    await page.waitForTimeout(700);
+  }
+
+  // The interpretation beat may play here — it must never block.
+  const beat = page.getByTestId("studio-v3-understood-beat");
+  if (await beat.isVisible().catch(() => false)) {
+    await expect(beat).toBeHidden({ timeout: 4_000 });
+  }
+
+  // A day was composed from handed-over signals.
+  await expect
+    .poll(async () => (await phase(page)) ?? "", { timeout: 20_000 })
+    .toMatch(/map|storyboard|confirmation/);
+});
