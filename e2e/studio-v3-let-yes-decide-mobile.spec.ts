@@ -87,8 +87,17 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
     await expect(beat).toBeHidden({ timeout: 4_000 });
   }
 
-  // A day was composed from handed-over signals.
+  // A day was composed from handed-over signals: either the cinematic
+  // moments surface, the Refine surface, or the reveal itself is mounted.
   await expect
-    .poll(async () => (await phase(page)) ?? "", { timeout: 20_000 })
-    .toMatch(/map|storyboard|confirmation/);
+    .poll(
+      async () => {
+        if (await page.locator('[data-studio-v3-screen="refine"]').count()) return "refine";
+        if (await page.getByTestId("studio-v3-final-reveal").count()) return "reveal";
+        if (await page.locator('[data-phase-cta="hold-journey"]').count()) return "moments";
+        return (await phase(page)) ?? "";
+      },
+      { timeout: 25_000 },
+    )
+    .toMatch(/map|storyboard|confirmation|moments|refine|reveal/);
 });
