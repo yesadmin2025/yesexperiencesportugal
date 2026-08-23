@@ -4349,7 +4349,66 @@ export function StoryboardHandoff({
             >
               Your stops
             </p>
+
+            {/* Contextual refine intents — rendered only when the engine can
+                really execute them on this day. No decorative chips. */}
+            {refineIntents.length > 0 ? (
+              <div data-testid="studio-v3-refine-intents" className="mb-4 sm:mb-5">
+                <p
+                  className="text-center text-[10px] uppercase tracking-[0.24em] font-semibold mb-2.5"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                >
+                  Shift the mood
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {refineIntents.map((intent) => (
+                    <button
+                      key={intent.id}
+                      type="button"
+                      data-refine-intent={intent.id}
+                      onClick={() => applyRefineIntent(intent)}
+                      title={intent.detail}
+                      aria-label={`${intent.label} — ${intent.detail}`}
+                      className="min-h-[44px] rounded-full px-4 py-2 text-[12px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                      style={{
+                        border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                        color: "var(--charcoal)",
+                        background: "transparent",
+                      }}
+                    >
+                      {intent.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {/* Discreet feedback of the last real change + single-step undo. */}
+            {intentFeedback ? (
+              <div
+                data-testid="studio-v3-refine-feedback"
+                role="status"
+                aria-live="polite"
+                className="mb-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[12px]"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+              >
+                <span style={{ fontFamily: "var(--font-editorial)" }}>{intentFeedback}</span>
+                {undoSnapshot ? (
+                  <button
+                    type="button"
+                    onClick={undoRefine}
+                    data-testid="studio-v3-refine-undo"
+                    className="min-h-[44px] px-2 text-[11px] uppercase tracking-[0.22em] font-semibold underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                    style={{ color: "var(--teal)" }}
+                  >
+                    Undo
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
+
             <ol className="space-y-3 sm:space-y-3">
+
               {editedStops.map((s, i) => {
                 const isFirst = i === 0;
                 const isLast = i === editedStops.length - 1;
