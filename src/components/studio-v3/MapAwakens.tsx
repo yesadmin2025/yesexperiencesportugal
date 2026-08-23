@@ -597,11 +597,18 @@ export function MapAwakens({
               read as checkout intent. This is the moment the guest previews
               the full itinerary and pricing before reserving. `data-phase-cta`
               kept as "hold-journey" so downstream analytics/E2E stay stable. */}
+          {/* The continue affordance is ALWAYS interactive. It used to be
+              gated behind `isLast` (opacity-0 + pointer-events-none +
+              aria-hidden), which meant the guest could only leave this
+              screen after the autoplay reel had walked every moment — and
+              if autoplay never ran (paused tab, reduced motion, a single
+              moment, a slow mount) the journey stalled here with no way
+              forward. Emphasis still ramps when the reel completes, but the
+              door is never locked. */}
           <div
             className={`mt-5 text-center transition-opacity duration-[520ms] ${
-              isLast ? "opacity-100" : "opacity-0 pointer-events-none"
+              isLast ? "opacity-100" : "opacity-80"
             }`}
-            aria-hidden={!isLast}
           >
             <button
               type="button"
@@ -613,6 +620,7 @@ export function MapAwakens({
             >
               Personalise a few details <ArrowRight size={14} aria-hidden />
             </button>
+
 
             {/* Reshape / secondary CTAs intentionally removed here per the
                 approved flow plan — this screen is the silent cinematic
