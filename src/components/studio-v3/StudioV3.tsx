@@ -3771,6 +3771,96 @@ export function StoryboardHandoff({
     [onStateChange, baseStops],
   );
 
+  // ── Refine undo (single step, deterministic) ───────────────────────────
+  // Holds the exact stop list as it was immediately before the last
+  // supported refine action. Restoring it is a pure assignment — no
+  // recomposition, no invented state.
+  const [undoSnapshot, setUndoSnapshot] = useState<{
+    stops: Array<{ label: string; story: string }>;
+    summary: string;
+  } | null>(null);
+
+  // Contextual refine intents — only the ones the engine can really execute
+  // on this day, built from the SAME validated replacement pool as Swap.
+  const intentCandidates = useMemo<RefineIntentCandidate[]>(() => {
+    if (!resolved.skeletonTourKey || !state.companions || !state.rhythm) return [];
+    const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
+    const out: RefineIntentCandidate[] = [];
+    for (const c of selectReplacementCandidates({
+      skeletonTourId: resolved.skeletonTourKey,
+      interests: state.interests,
+      rhythm: state.rhythm,
+      companions: state.companions,
+      investment: state.investment,
+      considerations: state.considerations,
+      existingRoutePointLabels: editedStops.map((s) => s.label),
+    })) {
+      if (inUse.has(c.name.toLowerCase())) continue;
+      out.push({
+        label: c.name,
+        story: customerStopBlurb(c),
+        type: c.type,
+        suitsInterests: c.suitsInterests,
+      });
+    }
+    return out;
+  }, [
+    resolved.skeletonTourKey,
+    state.companions,
+    state.rhythm,
+    state.interests,
+    state.investment,
+    state.considerations,
+    editedStops,
+  ]);
+
+  const refineIntents = useMemo(
+    () => resolveRefineIntents({ stops: editedStops, candidates: intentCandidates }),
+    [editedStops, intentCandidates],
+  );
+
+  const [intentFeedback, setIntentFeedback] = useState<string | null>(null);
+
+  const applyRefineIntent = useCallback(
+    (intent: (typeof refineIntents)[number]) => {
+      const before = editedStops.map((s) => ({ label: s.label, story: s.story }));
+      const result = intent.apply();
+      setUndoSnapshot({ stops: before, summary: result.summary });
+      setEdited(() => result.stops);
+      setIntentFeedback(result.summary);
+      trackStudio("refine_intent_selected", {
+        phase: "storyboard",
+        intentId: intent.id,
+        added: result.addedLabel,
+        removed: result.removedLabel,
+        stops: result.stops.length,
+      });
+      if (result.removedLabel && !result.addedLabel) {
+        trackStudio("moment_removed", {
+          phase: "storyboard",
+          via: "intent",
+          intentId: intent.id,
+        });
+      } else if (result.addedLabel) {
+        trackStudio("moment_swapped", {
+          phase: "storyboard",
+          via: "intent",
+          intentId: intent.id,
+        });
+      }
+    },
+    [editedStops, setEdited],
+  );
+
+  const undoRefine = useCallback(() => {
+    if (!undoSnapshot) return;
+    const restore = undoSnapshot.stops;
+    setEdited(() => restore.map((s) => ({ ...s })));
+    setUndoSnapshot(null);
+    setIntentFeedback(null);
+  }, [undoSnapshot, setEdited]);
+
+
   const origin = pickupCityLabel(state.pickup);
   const shortLabels: string[] = [];
   const seenShort = new Set<string>();
