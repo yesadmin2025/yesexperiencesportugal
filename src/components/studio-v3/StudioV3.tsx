@@ -245,8 +245,10 @@ import {
 import { trackStudio } from "@/lib/studio-analytics";
 import {
   resolveRefineIntents,
+  REFINE_MIN_STOPS,
   type RefineIntentCandidate,
 } from "./refineIntents";
+
 
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { Composition } from "./Composition";
