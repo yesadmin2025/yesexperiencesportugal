@@ -2400,6 +2400,120 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
+      {state.phase === "logistics" ? (
+        <PhaseShell
+          accent="teal"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
+          <BackLink onClick={() => back("rhythm")} />
+          <PhaseHeader
+            eyebrow="Making it real"
+            title="Three details and"
+            titleAccent="we compose your day"
+          />
+          {interpretationLine(state) ? (
+            <p
+              data-testid="studio-v3-interpretation"
+              className="mt-1 mb-2 max-w-[38ch] mx-auto text-center text-[14px] leading-[1.55]"
+              style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
+            >
+              {interpretationLine(state)}
+            </p>
+          ) : null}
+          <p
+            className="mt-1 mb-6 max-w-[36ch] mx-auto text-center text-[13px] leading-[1.55]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+          >
+            We only need this to make your day real. Everything is editable later.
+          </p>
+
+          <div
+            data-testid="studio-v3-logistics"
+            className="w-full max-w-[520px] mx-auto flex flex-col items-center gap-8"
+          >
+            <section className="w-full" aria-label="Date">
+              <DatePhaseControls
+                dateExact={state.dateExact}
+                dateMode={state.dateMode}
+                onPickExact={(iso) => setState((s) => ({ ...s, dateExact: iso, dateMode: "exact" }))}
+                onPickFlexible={() =>
+                  setState((s) => ({ ...s, dateExact: null, dateMode: "flexible" }))
+                }
+                onPickUndecided={() =>
+                  setState((s) => ({ ...s, dateExact: null, dateMode: "undecided" }))
+                }
+              />
+            </section>
+
+            <section className="w-full" aria-label="Where the day begins">
+              <p
+                className="mb-3 text-[11px] uppercase tracking-[0.22em]"
+                style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+              >
+                Where the day begins
+              </p>
+              <ChoiceGrid
+                options={PICKUPS}
+                value={state.pickup}
+                onSelect={(id) => setState((s) => ({ ...s, pickup: id }))}
+                columns={1}
+              />
+            </section>
+
+            <section className="w-full" aria-label="Your party">
+              <p
+                className="mb-3 text-[11px] uppercase tracking-[0.22em]"
+                style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+              >
+                Your party
+              </p>
+              <Composition
+                adults={state.adults ?? state.guests}
+                adultsInferred={state.guestsInferred}
+                minorAges={state.minorAges ?? []}
+                onAdultsChange={onGuestsChange}
+                onAddMinor={onAddMinor}
+                onRemoveMinor={onRemoveMinor}
+                onMinorAgeChange={onMinorAgeChange}
+              />
+            </section>
+          </div>
+
+          <ContinueCta
+            disabled={!state.dateMode || !state.pickup}
+            onClick={() => {
+              const committedAdults = state.adults ?? state.guests ?? 2;
+              const committedMinors = state.minorAges ?? [];
+              const committedTotal = committedAdults + committedMinors.length;
+              const forward: StudioV3State = {
+                ...state,
+                adults: committedAdults,
+                minorAges: committedMinors,
+                guests: committedTotal,
+                guestsPrivateEvent: committedTotal >= 11,
+              };
+              setState(() => forward);
+              trackStudio("logistics_completed", {
+                phase: "logistics",
+                stepNumber: stepOf("logistics"),
+                date_mode: forward.dateMode,
+                guests: committedTotal,
+              });
+              window.setTimeout(() => advance(getNextPhase(forward, "logistics")), 60);
+            }}
+            label={
+              !state.dateMode
+                ? "Pick a date, or tell us you're flexible"
+                : !state.pickup
+                  ? "Where does the day begin?"
+                  : "Compose my day"
+            }
+          />
+        </PhaseShell>
+      ) : null}
+
       {state.phase === "date" ? (
         <PhaseShell
           accent="teal"
