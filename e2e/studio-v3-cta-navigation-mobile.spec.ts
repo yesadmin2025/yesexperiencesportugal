@@ -4,7 +4,7 @@
  * Locks the three primary transitions users take on Refine + Storytelling:
  *
  *   Refine        --[See my signature story]-->      Storytelling
- *   Storytelling  --[Confirm & reserve]-->   Guest Details
+ *   Storytelling  --[Continue to guest details]-->   Guest Details
  *   Storytelling  --[Save my signature]-->           (stays on Storytelling)
  *   Storytelling  --[← Back to refine]-->            Refine (state preserved)
  *
@@ -44,13 +44,13 @@ test.describe("Studio V3 · CTA navigation @ 393×588", () => {
     expect(await page.locator('[data-studio-v3-screen="refine"]').count()).toBe(0);
   });
 
-  test("Storytelling → Guest Details via 'Confirm & reserve'", async ({ page }) => {
+  test("Storytelling → Guest Details via 'Continue to guest details'", async ({ page }) => {
     if (!(await reachRefine(page))) test.skip(true, "funnel did not reach Refine");
     await advanceRefineToStorytelling(page);
 
     const cont = page.getByTestId("studio-v3-final-reveal-continue");
     await expect(cont).toBeVisible();
-    await expect(cont).toHaveText(/Confirm & reserve/i);
+    await expect(cont).toHaveText(/Continue to guest details/i);
     await cont.scrollIntoViewIfNeeded().catch(() => undefined);
     await cont.click();
 
