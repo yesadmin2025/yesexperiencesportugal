@@ -70,6 +70,7 @@ import {
   pickupRegionKey,
   resolveStudioV3Route,
   selectReplacementCandidates,
+  STUDIO_V3_PHASE_ORDER,
 } from "./curation";
 import { findTour, signatureTours } from "@/data/signatureTours";
 import { getTourContent } from "@/lib/tourContent";
