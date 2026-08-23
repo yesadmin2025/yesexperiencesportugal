@@ -44,8 +44,15 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
   // Walk the remaining choice phases, preferring "Let YES decide" whenever
   // it is offered, otherwise the first option + Continue.
   for (let i = 0; i < 20; i++) {
+    // The interpretation beat is a full-screen skippable overlay; wait it out
+    // before touching anything underneath it.
+    const overlay = page.getByTestId("studio-v3-understood-beat");
+    if (await overlay.isVisible().catch(() => false)) {
+      await overlay.click().catch(() => undefined);
+      await overlay.waitFor({ state: "hidden", timeout: 8_000 }).catch(() => undefined);
+    }
+
     const current = await phase(page);
-    console.log(`[decide] phase=${current} url=${page.url()}`);
     if (!current || current === "map" || current === "storyboard") break;
 
     const yes = page.getByRole("button", { name: /let yes decide/i }).first();
