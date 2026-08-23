@@ -403,14 +403,20 @@ export function MapAwakens({
         <ArrowLeft size={14} aria-hidden /> Back
       </button>
 
-      {/* Eyebrow — hidden on mobile to declutter (EditorialMap already
-          carries the "Suggested route" eyebrow inside the canvas). */}
-      <div
-        className="hidden sm:block absolute left-1/2 top-5 -translate-x-1/2 z-20 text-[10px] uppercase tracking-[0.28em] font-semibold whitespace-nowrap"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-      >
-        <span style={{ color: "var(--gold)" }}>—</span> Suggested route · taking shape
-      </div>
+      {/* Unified `Your Day` framing — identical eyebrow/title treatment on
+          map, storyboard and refine so the guest reads one surface instead
+          of three more wizard steps. */}
+      <YourDayFrame
+        className="px-6 pt-14 sm:pt-16"
+        title={
+          <>
+            Your day,{" "}
+            <span className="italic" style={{ color: "var(--teal)" }}>
+              moment by moment
+            </span>
+          </>
+        }
+      />
 
       {/* Polite live-region — narrates the silhouette → map → first stop
           arc to assistive tech so blind users get the same emotional beat
@@ -422,9 +428,13 @@ export function MapAwakens({
       {/* Map stage — normal flow on mobile (so the moment card sits underneath
           and the map fully unfolds), absolute upper portion on ≥sm. */}
       <section
-        aria-label="Suggested route map"
-        aria-busy={!mounted || anticipating}
-        className="relative w-full h-[52dvh] sm:absolute sm:inset-x-0 sm:top-0 sm:h-[62dvh] z-10 px-3 pt-14 pb-3"
+        aria-label={showGeographicMap ? "Your day, on the map" : "Your day, moment by moment"}
+        aria-busy={showGeographicMap ? !mounted || anticipating : false}
+        data-your-day-mode={mapTruth.mode}
+        data-testid="studio-v3-your-day-stage"
+        className={`relative w-full z-10 px-3 pb-3 pt-4 ${
+          showGeographicMap ? "h-[300px] sm:h-[52dvh]" : ""
+        }`}
       >
         {/* Anticipation layer — Portugal silhouette + gold pulse holds the
             stage while the real map silently boots underneath. Fades out
