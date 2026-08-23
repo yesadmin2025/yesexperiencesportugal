@@ -96,7 +96,7 @@ describe("StudioV3ProgressStepper", () => {
     spy.mockClear();
 
     const { rerender } = render(<StudioV3ProgressStepper phase="feeling" />);
-    rerender(<StudioV3ProgressStepper phase="rhythm" />);
+    rerender(<StudioV3ProgressStepper phase="interests" />);
     rerender(<StudioV3ProgressStepper phase="date" />);
     rerender(<StudioV3ProgressStepper phase="map" />);
 
