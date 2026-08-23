@@ -513,7 +513,7 @@ export function studioV3Progress(
   const hasInterests = state.interests.length > 0;
   const hasRhythm = state.rhythm != null;
   const hasGuests = state.guests != null;
-  const hasDate = state.dateExact != null || state.dateWindow != null;
+  const hasDate = state.dateExact != null || state.dateMode != null;
 
   // Walk milestones from highest reached down. Each milestone owns a
   // phrase + percent. The first match wins, so progress is monotonic with
