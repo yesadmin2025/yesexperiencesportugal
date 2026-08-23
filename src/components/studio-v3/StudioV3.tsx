@@ -4494,14 +4494,24 @@ export function StoryboardHandoff({
                             <button
                               type="button"
                               onClick={() => {
+                                const before = editedStops.map((p) => ({ ...p }));
+                                const summary = `${cand.label} replaces ${s.label}.`;
+                                setUndoSnapshot({ stops: before, summary });
                                 setEdited((prev) =>
                                   prev.map((p, j) =>
                                     j === i ? { label: cand.label, story: cand.story } : p,
                                   ),
                                 );
                                 setSwapOpenIdx(null);
+                                setIntentFeedback(summary);
+                                trackStudio("moment_swapped", {
+                                  phase: "storyboard",
+                                  via: "card",
+                                  source: cand.source,
+                                });
                               }}
-                              className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                              className="w-full min-h-[44px] text-left px-2 py-2.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+
                               style={{ color: "var(--charcoal)" }}
                             >
                               <span className="font-semibold">{cand.label}</span>
