@@ -35,6 +35,8 @@ import { cn } from "@/lib/utils";
 import { formatGuestComposition } from "./formatGuests";
 import { buildRevealNarrative } from "@/lib/studio-v3/revealNarrative";
 import { trackStudio } from "@/lib/studio-analytics";
+import { resolvePriceChangeFactors } from "./priceChangeFactors";
+
 
 import parchmentLetter from "@/assets/studio-v3/reveal-letter-parchment.jpg";
 
