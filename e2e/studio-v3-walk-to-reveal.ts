@@ -17,6 +17,34 @@ export const PHASE_CTA_CONTINUE_ENABLED =
   '[data-phase-cta="continue"]:not([data-phase-cta-disabled="true"])';
 export const STUDIO_ROOT = '[data-testid="studio-v3-root"]';
 
+/**
+ * Test isolation only: wipe any Studio V3 state persisted by a previous spec
+ * in the same worker (session/local storage) and reload from a clean intro.
+ * This does not change app behaviour — it just guarantees each spec starts
+ * from a first-visit state instead of inheriting a partially-walked funnel.
+ */
+export async function resetStudioV3State(page: Page): Promise<void> {
+  await page.goto("/studio-v3");
+  await page.evaluate(() => {
+    const wipe = (store: Storage) => {
+      for (const key of Object.keys(store)) {
+        if (/studio|yes[-_]?studio|atlas|reveal/i.test(key)) store.removeItem(key);
+      }
+    };
+    try {
+      wipe(window.sessionStorage);
+    } catch {
+      /* storage unavailable */
+    }
+    try {
+      wipe(window.localStorage);
+    } catch {
+      /* storage unavailable */
+    }
+  });
+  await page.reload({ waitUntil: "domcontentloaded" });
+}
+
 async function currentPhase(page: Page): Promise<string | null> {
   const root = page.locator(STUDIO_ROOT).first();
   if ((await root.count()) === 0) return "intro";
@@ -482,7 +510,7 @@ export async function advanceRefineToStorytelling(
  * Returns false when the funnel didn't get there — callers `test.skip`.
  */
 export async function reachGuestDetails(page: Page): Promise<boolean> {
-  await page.goto("/studio-v3");
+  await resetStudioV3State(page);
   await walkToReveal(page);
   await advanceRefineToStorytelling(page);
 

@@ -6,8 +6,8 @@
  *      horizontal overflow, and continuing lands on Guest Details cleanly.
  *   2. Copy lock — no "to be confirmed / pending / tbc" language leaks onto
  *      either screen, the instant-confirmation reassurance is present, the
- *      parchment "letter" image renders, and the email-blur confirmation line
- *      appears after typing an address. Also asserts the Storytelling CTA
+ *      parchment "letter" image renders, and the Guest Details submit carries
+ *      the approved "Continue to summary" label. Also asserts the Storytelling CTA
  *      contract: primary "Continue to guest details", secondary "Save my
  *      signature", and NO Refine-only affordances (See my signature story,
  *      add-on toggles).
@@ -28,7 +28,11 @@
  */
 
 import { test, expect, type Page } from "@playwright/test";
-import { walkToReveal, advanceRefineToStorytelling } from "./studio-v3-walk-to-reveal";
+import {
+  walkToReveal,
+  advanceRefineToStorytelling,
+  resetStudioV3State,
+} from "./studio-v3-walk-to-reveal";
 
 const VIEWPORT = { width: 393, height: 588 } as const;
 const FORBIDDEN_COPY = /to be confirmed|pending confirmation|\btbc\b/i;
@@ -57,7 +61,7 @@ test.describe("Studio V3 · Final Reveal + Guest Details @ 393×588", () => {
   test("smoke — reveal reachable, no overflow, continue lands on Guest Details", async ({
     page,
   }) => {
-    await page.goto("/studio-v3");
+    await resetStudioV3State(page);
     await walkToReveal(page);
     await advanceRefineToStorytelling(page);
 
@@ -83,7 +87,7 @@ test.describe("Studio V3 · Final Reveal + Guest Details @ 393×588", () => {
   test("copy lock — no 'to be confirmed', letter image renders, email blur confirms", async ({
     page,
   }) => {
-    await page.goto("/studio-v3");
+    await resetStudioV3State(page);
     await walkToReveal(page);
     await advanceRefineToStorytelling(page);
 
@@ -119,9 +123,9 @@ test.describe("Studio V3 · Final Reveal + Guest Details @ 393×588", () => {
       "Add-on toggles must not appear on Storytelling",
     ).toBe(0);
 
-    // Continue to Guest Details. The Signature Story email is no longer sent
-    // on email blur — it fires once, on the explicit submit action — so the
-    // contract asserted here is the honest submit affordance, not a blur toast.
+    // Continue to Guest Details. Guest Details is not the end of the funnel:
+    // its submit hands off to the checkout summary, so the approved label is
+    // "Continue to summary" (no email promise is made on this screen).
     await continueCta.click();
     const email = page.getByLabel(/email/i).first();
     await email.waitFor({ state: "visible", timeout: 5_000 });
@@ -133,11 +137,11 @@ test.describe("Studio V3 · Final Reveal + Guest Details @ 393×588", () => {
     await email.blur();
     const submit = page.getByTestId("studio-v3-guest-details-submit");
     await expect(submit).toBeVisible();
-    await expect(submit).toHaveText(/email my signature story/i);
+    await expect(submit).toHaveText(/continue to summary/i);
   });
 
   test("visual — reveal and Guest Details baselines", async ({ page }) => {
-    await page.goto("/studio-v3");
+    await resetStudioV3State(page);
     await walkToReveal(page);
     await advanceRefineToStorytelling(page);
 
