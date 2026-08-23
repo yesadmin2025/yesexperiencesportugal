@@ -9,6 +9,7 @@
  *      names/copy.
  */
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { MapAwakens } from "../MapAwakens";
@@ -46,17 +47,24 @@ describe("YourDayTimeline — editorial fallback", () => {
   });
 });
 
-describe("MapAwakens — map vs timeline", () => {
-  it("resolves to exactly one truthful mode and never fakes a map", () => {
-    render(
+function renderMapAwakens() {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return render(
+    <QueryClientProvider client={client}>
       <MapAwakens
         feeling="wine-food"
         companions="couple"
         rhythm="slow"
         onBack={() => {}}
         onContinue={() => {}}
-      />,
-    );
+      />
+    </QueryClientProvider>,
+  );
+}
+
+describe("MapAwakens — map vs timeline", () => {
+  it("resolves to exactly one truthful mode and never fakes a map", () => {
+    renderMapAwakens();
 
     const stage = screen.getByTestId("studio-v3-your-day-stage");
     const mode = stage.getAttribute("data-your-day-mode");
@@ -73,15 +81,7 @@ describe("MapAwakens — map vs timeline", () => {
   });
 
   it("keeps the continue CTA reachable before any autoplay completes", () => {
-    render(
-      <MapAwakens
-        feeling="wine-food"
-        companions="couple"
-        rhythm="slow"
-        onBack={() => {}}
-        onContinue={() => {}}
-      />,
-    );
+    renderMapAwakens();
     const cta = screen.getByRole("button", { name: /Personalise a few details/i });
     expect(cta).toBeEnabled();
   });
