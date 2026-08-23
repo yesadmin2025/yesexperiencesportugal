@@ -34,6 +34,8 @@ import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import { cn } from "@/lib/utils";
 import { formatGuestComposition } from "./formatGuests";
 import { buildRevealNarrative } from "@/lib/studio-v3/revealNarrative";
+import { trackStudio } from "@/lib/studio-analytics";
+
 import parchmentLetter from "@/assets/studio-v3/reveal-letter-parchment.jpg";
 
 // Friendly region label rendered in the reveal title.
