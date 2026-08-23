@@ -2519,12 +2519,18 @@ export function filterDestinationIntents(
  */
 export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boolean {
   // Product correction: Studio now asks only client-useful questions before
-  // revealing a real Signature. Occasion / care / language / investment made
-  // the flow feel like a poetic quiz and created price confusion, so they are
-  // left for the human confirmation step instead of the builder.
+  // revealing a real Signature. Occasion / care / language made the flow feel
+  // like a poetic quiz, so they are left for the human confirmation step.
   if (phase === "occasion" || phase === "considerations" || phase === "language") {
     return false;
   }
+
+  // Studio reform (2026-08): the investment tier is no longer ASKED. Money
+  // framing before desire framing was the single largest conversion leak in
+  // the funnel. The tier stays a soft scoring signal (see
+  // `investmentPremiumScore`) and remains editable inside price disclosure;
+  // it is simply never a question the traveller has to answer to progress.
+  if (phase === "investment") return false;
 
   // Adaptive refinement — one conditional question, asked only when the
   // traveller's own answers make it useful, and never twice.
@@ -2535,10 +2541,8 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
   }
 
   // Fast path — traveller chose "Compose it quickly" on the intro.
-  // Keep only the essentials, skipping date and investment as well.
   if (state.pathMode === "fast") {
     if (phase === "date") return false;
-    if (phase === "investment") return false;
   }
   switch (phase) {
     case "guests": {
@@ -2553,31 +2557,40 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
   }
 }
 
-// Reordered (Studio V3 hybrid funnel): Investment is now positioned BETWEEN
-// Destination and Interests — the traveller first sees a partial reveal of
-// the region (hero + ghost stops), THEN commits to a tier (anchored by the
-// reveal), THEN refines via Interests/Rhythm. Logistics (date/pickup/guests)
-// follow tier so financial + temporal friction land together. Occasion,
-// considerations and language remain skipped (not asked in builder).
-// Destination first (partial reveal of the region), then logistics that
-// determine real per-pax pricing — pickup + guests — so when the traveller
-// reaches the Investment tier we can show the REAL per-person price for
-// their chosen group size (Viator tiers), not just a "from" anchor. Then
-// interests / rhythm refine the day, occasion / date close it out. Add-ons
-// only appear at the final Reveal.
-const LINEAR_ORDER: StudioV3Phase[] = [
+/**
+ * STUDIO_V3_PHASE_ORDER — the single source of truth for phase sequence.
+ *
+ * Studio reform (2026-08). Psychological ordering: emotion → place →
+ * context → taste → rhythm → logistics → composition → story → close.
+ *
+ *   1. feeling      — the first real decision, purely emotional
+ *   2. destination  — Portugal is FELT early (partial reveal of the region)
+ *   3. who          — context in one tap; infers guests, occasion, tier floor
+ *   4. interests    — desire, not spec
+ *   5. rhythm       — emotional pacing; derives stop count / duration
+ *   6. refinement   — at most one adaptive question, usually skipped
+ *   7. date / pickup / guests — logistics grouped together and asked LAST,
+ *      only because the day has to become real. Never before desire exists.
+ *
+ * `investment` stays in the array (saved states and the stepper still
+ * reference it) but `isPhaseRelevant` always returns false, so it is never
+ * asked. Both `StudioV3.tsx` (transition guard) and `getNextPhase` read
+ * THIS array — there is no second copy to drift out of sync.
+ */
+export const STUDIO_V3_PHASE_ORDER: StudioV3Phase[] = [
   "intro",
-  "who",
   "feeling",
   "destination",
-  "pickup",
-  "guests",
-  "investment",
+  "who",
   "interests",
   "rhythm",
   "refinement",
-  "occasion",
   "date",
+  "pickup",
+  "guests",
+  // Never asked (isPhaseRelevant === false) — kept for state hydration only.
+  "investment",
+  "occasion",
   "considerations",
   "language",
   "map",
@@ -2586,6 +2599,9 @@ const LINEAR_ORDER: StudioV3Phase[] = [
   "guestDetails",
   "checkoutSummary",
 ];
+
+const LINEAR_ORDER: StudioV3Phase[] = STUDIO_V3_PHASE_ORDER;
+
 
 /**
  * getNextPhase — adaptive next-phase resolver. Walks forward from the

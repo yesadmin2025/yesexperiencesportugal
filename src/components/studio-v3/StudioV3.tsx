@@ -70,6 +70,7 @@ import {
   pickupRegionKey,
   resolveStudioV3Route,
   selectReplacementCandidates,
+  STUDIO_V3_PHASE_ORDER,
 } from "./curation";
 import { findTour, signatureTours } from "@/data/signatureTours";
 import { getTourContent } from "@/lib/tourContent";
@@ -262,32 +263,11 @@ import {
 
 const TOTAL_STEPS = 14;
 
-// Keep this aligned with LINEAR_ORDER in curation.ts — the advance() guard
-// uses PHASE_ORDER indices to reject out-of-sequence transitions, and
-// getNextPhase() walks LINEAR_ORDER to decide the next step. If the two
-// disagree (e.g. investment placed before guests here but after guests
-// there), valid transitions get silently dropped and the funnel dead-ends.
-const PHASE_ORDER: StudioV3Phase[] = [
-  "intro",
-  "who",
-  "feeling",
-  "destination",
-  "pickup",
-  "guests",
-  "investment",
-  "interests",
-  "rhythm",
-  "refinement",
-  "occasion",
-  "date",
-  "considerations",
-  "language",
-  "map",
-  "storyboard",
-  "confirmation",
-  "guestDetails",
-  "checkoutSummary",
-];
+// Single source of truth — imported from curation.ts so the advance() guard
+// and getNextPhase() can never disagree about ordering (that disagreement
+// used to silently drop valid transitions and dead-end the funnel).
+const PHASE_ORDER: StudioV3Phase[] = STUDIO_V3_PHASE_ORDER;
+
 
 function stepOf(phase: StudioV3Phase): number {
   return PHASE_ORDER.indexOf(phase) + 1;
@@ -532,41 +512,51 @@ export function studioV3Progress(
   const hasPickup = state.pickup != null;
   const hasInterests = state.interests.length > 0;
   const hasRhythm = state.rhythm != null;
-  const hasInvestment = state.investment != null;
+  const hasGuests = state.guests != null;
+  const hasDate = state.dateExact != null || state.dateMode != null;
 
   // Walk milestones from highest reached down. Each milestone owns a
   // phrase + percent. The first match wins, so progress is monotonic with
   // user effort regardless of which phases got skipped.
-  if (hasInvestment) {
+  //
+  // Studio reform (2026-08): the ladder follows the new order — desire
+  // first (feeling → destination → who → interests → rhythm), logistics
+  // last (date → pickup → guests). Investment is no longer asked, so it
+  // no longer appears as a milestone.
+  if (hasGuests && hasPickup) {
     return { percent: 92, phrase: "The shape is almost complete." };
+  }
+  if (hasPickup) {
+    return { percent: 86, phrase: "Your starting point is placed on the map." };
+  }
+  if (hasDate) {
+    return { percent: 82, phrase: "The day has a place in the calendar." };
   }
   if (hasRhythm) {
     return {
-      percent: 78,
+      percent: 74,
       phrase: name
         ? `${name}, your private Portugal is coming into focus.`
         : "Your private Portugal is coming into focus.",
     };
   }
   if (hasInterests) {
-    return { percent: 64, phrase: "The route begins to find its rhythm." };
-  }
-  if (hasPickup) {
-    return { percent: 48, phrase: "Your starting point is placed on the map." };
+    return { percent: 60, phrase: "The route begins to find its rhythm." };
   }
   if (hasCompanions) {
-    return { percent: 34, phrase: "The company is set." };
+    return { percent: 44, phrase: "The company is set." };
   }
   const hasDestination =
     state.destinationIntent != null && state.destinationIntent !== "no-preference";
   if (hasDestination) {
-    return { percent: 28, phrase: "A direction begins to emerge." };
+    return { percent: 30, phrase: "A direction begins to emerge." };
   }
   if (hasFeeling) {
     return { percent: 22, phrase: "A direction settles in." };
   }
   return { percent: 8, phrase: "The day begins to take shape." };
 }
+
 
 /**
  * Reaction beat — a short cinematic punctuation shown between phases.

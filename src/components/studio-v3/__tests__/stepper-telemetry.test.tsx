@@ -40,12 +40,12 @@ describe("StudioV3ProgressStepper · telemetry contract", () => {
     const { rerender } = render(<StudioV3ProgressStepper phase="feeling" />);
     expect(recordMock).toHaveBeenCalledTimes(1);
 
-    rerender(<StudioV3ProgressStepper phase="rhythm" />);
+    rerender(<StudioV3ProgressStepper phase="interests" />);
     expect(recordMock).toHaveBeenCalledTimes(2);
     expect(recordMock).toHaveBeenLastCalledWith({
       step: "rhythm",
       stepIndex: 1,
-      phase: "rhythm",
+      phase: "interests",
     });
 
     rerender(<StudioV3ProgressStepper phase="date" />);

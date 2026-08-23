@@ -177,12 +177,17 @@ const MUTATORS: Mutator[] = [
   },
 ];
 
+// Studio reform (2026-08): a missing hero image is reported but is NOT a
+// blocking failure — the reveal is text-first and must never be withheld
+// for a cosmetic gap.
+const NON_BLOCKING_KEYS = new Set(["tour-no-image"]);
+
 describe("validateResolvedSignature — single-field mutations", () => {
   for (const m of MUTATORS) {
     it(`flags ${m.key} → ${m.expected.join(",")}`, () => {
       const { resolved, tour } = m.apply(baseResolved, baseTour);
       const r = validateResolvedSignature(resolved, tour);
-      expect(r.ok).toBe(false);
+      expect(r.ok).toBe(NON_BLOCKING_KEYS.has(m.key));
       for (const f of m.expected) {
         expect(r.missing).toContain(f);
       }
@@ -235,10 +240,11 @@ describe("validateResolvedSignature — randomized permutations (seeded)", () =>
           expect(r.ok, `trial ${trial} empty subset should pass`).toBe(true);
           expect(r.missing).toEqual([]);
         } else {
+          const allNonBlocking = subset.every((s) => NON_BLOCKING_KEYS.has(s.key));
           expect(
             r.ok,
-            `trial ${trial} subset ${subset.map((s) => s.key).join("+")} should fail`,
-          ).toBe(false);
+            `trial ${trial} subset ${subset.map((s) => s.key).join("+")} blocking mismatch`,
+          ).toBe(allNonBlocking);
           for (const f of expected) {
             expect(r.missing, `trial ${trial} expected ${f} in ${r.missing.join(",")}`).toContain(
               f,

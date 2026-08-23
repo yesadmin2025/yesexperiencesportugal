@@ -22,10 +22,10 @@ const PHASE_TO_BEAT: Record<StudioV3Phase, number | null> = {
   destination: 0,
   who: 0,
   occasion: 1,
-  pickup: 0,
-  guests: 0,
+  pickup: 2,
+  guests: 2,
   interests: 1,
-  rhythm: 1,
+  rhythm: 2,
   refinement: 1,
   considerations: 1,
   language: 1,
@@ -96,7 +96,7 @@ describe("StudioV3ProgressStepper", () => {
     spy.mockClear();
 
     const { rerender } = render(<StudioV3ProgressStepper phase="feeling" />);
-    rerender(<StudioV3ProgressStepper phase="rhythm" />);
+    rerender(<StudioV3ProgressStepper phase="interests" />);
     rerender(<StudioV3ProgressStepper phase="date" />);
     rerender(<StudioV3ProgressStepper phase="map" />);
 
