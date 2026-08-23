@@ -355,7 +355,16 @@ const PHASE_ACTIONS: Partial<Record<string, (page: Page) => Promise<boolean>>> =
  * accepts an action nor satisfies its contract stops the walk instead of
  * spinning through a generic retry loop.
  */
-export async function walkToReveal(page: Page): Promise<void> {
+export interface WalkOptions {
+  /**
+   * Stop as soon as the cinematic moments surface is on screen instead of
+   * committing it. Lets a spec assert the reel's own behaviour (completion,
+   * no loop, interactive CTA) before leaving for Refine.
+   */
+  stopAtMoments?: boolean;
+}
+
+export async function walkToReveal(page: Page, options: WalkOptions = {}): Promise<void> {
   let momentRuns = 0;
 
   for (let i = 0; i < PHASE_SEQUENCE.length * 3; i++) {
@@ -366,6 +375,7 @@ export async function walkToReveal(page: Page): Promise<void> {
     if (!phase) return;
 
     if (phase === "map" || phase === "storyboard") {
+      if (options.stopAtMoments) return;
       momentRuns += 1;
       if (momentRuns > 3) return;
     }
