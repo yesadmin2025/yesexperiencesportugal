@@ -27,6 +27,13 @@ interface Props {
    * summation misleading.
    */
   hideTotals?: boolean;
+  /**
+   * Suppress the "N driving · N walking" tally. On the Studio `Your Day`
+   * surface a bare "1 driving" badge reads as an unexplained code rather
+   * than information, so that surface opts out. Per-leg minutes and
+   * distances (real, labelled) stay.
+   */
+  hideModeSummary?: boolean;
 }
 
 function formatKm(km: number): string {
@@ -42,6 +49,7 @@ export function RouteLegend({
   legModes,
   className,
   hideTotals = false,
+  hideModeSummary = false,
 }: Props) {
   if (!legMinutes || legMinutes.length === 0) return null;
 
@@ -68,7 +76,7 @@ export function RouteLegend({
           <RouteIcon size={12} aria-hidden="true" />
           Route breakdown
         </span>
-        {!hideTotals && (
+        {!hideTotals && !hideModeSummary && (
           <span className="text-[11px] text-[color:var(--charcoal)]/65">
             {Math.round(totalMin)} min in transit
             {totalKm !== null ? ` · ${formatKm(totalKm)}` : ""}

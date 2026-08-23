@@ -3209,6 +3209,7 @@ function RevealRouteMap({
         legMinutes={legMinutes}
         legDistancesKm={legDistancesKm}
         legModes={legModes}
+        hideModeSummary
       />
     </div>
   );
