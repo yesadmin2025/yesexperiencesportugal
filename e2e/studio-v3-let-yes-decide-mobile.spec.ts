@@ -75,8 +75,18 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
       continue;
     }
 
-    const options = page.locator("[data-phase] button:not([disabled])");
-    if (await options.count()) await options.first().click().catch(() => undefined);
+    // Never touch close/exit/back chrome — those leave the Studio.
+    const options = page.locator(
+      '[data-phase] button:not([disabled])' +
+        ':not([aria-label*="lose" i]):not([aria-label*="xit" i]):not([aria-label*="ack" i])',
+    );
+    const optionCount = await options.count();
+    for (let k = 0; k < optionCount; k++) {
+      const text = ((await options.nth(k).textContent()) ?? "").trim();
+      if (!text || /back|close|exit|skip/i.test(text)) continue;
+      await options.nth(k).click().catch(() => undefined);
+      break;
+    }
     const cont = page.getByRole("button", { name: /^continue$/i }).first();
     if (await cont.isVisible().catch(() => false)) await cont.click().catch(() => undefined);
     await page.waitForTimeout(700);
