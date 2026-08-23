@@ -18,6 +18,7 @@
 
 import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { trackEvent, type YesAnalyticsEvent } from "@/lib/analytics-events";
 
 const SESSION_KEY = "studio-v3.funnel.session.v1";
 const VARIANT_KEY = "studio-v3.funnel.variant.v1";
@@ -104,9 +105,39 @@ function beaconTarget(): { url: string; key: string } | null {
   };
 }
 
+/**
+ * GA4 mirror — the internal table answers "where do sessions die?", but
+ * marketing needs the same funnel inside GA4. Mapping lives here (one
+ * place) so no call site has to double-instrument.
+ */
+const GA_MIRROR: Partial<Record<StudioFunnelEvent, YesAnalyticsEvent>> = {
+  enter: "studio_phase_view",
+  select: "studio_choice_selected",
+  back: "studio_back_navigation",
+  abandon: "studio_abandon_by_phase",
+  reveal_seen: "studio_story_reveal_viewed",
+  tier_chosen: "studio_price_expanded",
+  secure_open: "studio_guest_details_started",
+};
+
+function mirrorToGa(input: TrackInput): void {
+  const name = GA_MIRROR[input.event];
+  if (!name) return;
+  try {
+    trackEvent(name, {
+      step_key: input.stepKey,
+      step_number: input.stepNumber,
+      ...(input.value ?? {}),
+    } as never);
+  } catch {
+    /* analytics must never break the Studio */
+  }
+}
+
 /** Fire one event. Never awaits, never throws. */
 export function trackStep(input: TrackInput): void {
   if (!isBrowser() || isTest()) return;
+  mirrorToGa(input);
   const session_id = getFunnelSessionId();
   const variant = getFunnelVariant();
   const row = {

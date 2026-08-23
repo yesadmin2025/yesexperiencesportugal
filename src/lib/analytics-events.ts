@@ -47,6 +47,14 @@ export type YesAnalyticsEvent =
   | "studio_checkout_started"
   | "studio_checkout_completed"
   | "studio_abandoned"
+  // Studio V3 funnel (mirrored from studio-v3-funnel trackStep)
+  | "studio_phase_view"
+  | "studio_choice_selected"
+  | "studio_back_navigation"
+  | "studio_story_reveal_viewed"
+  | "studio_price_expanded"
+  | "studio_guest_details_started"
+  | "studio_abandon_by_phase"
   // Lead gen
   | "whatsapp_click"
   | "contact_form_started"
