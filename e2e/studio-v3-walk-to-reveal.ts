@@ -223,6 +223,10 @@ export const PHASE_SEQUENCE = [
   "interests",
   "rhythm",
   "refinement",
+  // Consolidated logistics beat (date + pickup + party). The legacy
+  // standalone phases stay listed after it so saved/deep-linked states that
+  // still report them keep a monotonic index for the transition contract.
+  "logistics",
   "date",
   "pickup",
   "guests",
@@ -236,6 +240,7 @@ export const PHASE_SEQUENCE = [
   "guestDetails",
   "checkoutSummary",
 ] as const;
+
 
 
 export type StudioWalkPhase = (typeof PHASE_SEQUENCE)[number];

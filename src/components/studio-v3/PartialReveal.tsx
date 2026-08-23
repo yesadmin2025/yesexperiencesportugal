@@ -129,7 +129,7 @@ export function PartialReveal({ intent }: { intent: DestinationIntent | null }) 
               key={name}
               className="text-[13.5px] leading-[1.55]"
               style={{
-                fontFamily: "Georgia, serif",
+                fontFamily: "var(--font-editorial)",
                 fontStyle: "italic",
                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 opacity: mounted ? 0.55 : 0,
@@ -147,7 +147,7 @@ export function PartialReveal({ intent }: { intent: DestinationIntent | null }) 
       <p
         className="mt-4 text-[12px] leading-[1.55]"
         style={{
-          fontFamily: "Georgia, serif",
+          fontFamily: "var(--font-editorial)",
           fontStyle: "italic",
           color: "color-mix(in oklab, var(--teal) 78%, transparent)",
         }}

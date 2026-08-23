@@ -233,6 +233,14 @@ import {
   resolveAdaptiveQuestion,
 } from "@/components/studio-v3/adaptiveQuestions";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
+import {
+  decideFeeling,
+  decideInterests,
+  decideRhythm,
+  decisionWhisper,
+  type DecidedForMeKey,
+} from "./letYesDecide";
+import { trackStudio } from "@/lib/studio-analytics";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { Composition } from "./Composition";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
@@ -297,6 +305,11 @@ const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
     "Next, the starting point",
   ],
   occasion: ["Next, the when", "Next, your timing", "Next, the season"],
+  logistics: [
+    "Next, we compose your day",
+    "Next, the route takes shape",
+    "Next, your day is drawn",
+  ],
   date: ["Next, we choose the route", "Next, the map awakens", "Next, the journey forms"],
   pickup: ["Next, the party size", "Next, your group", "Next, how many guests"],
   guests: ["Next, the investment", "Next, the comfort", "Next, how it's held"],
@@ -1643,6 +1656,35 @@ export function StudioV3() {
     });
   };
 
+  /**
+   * "Let YES decide" — the traveller hands one dimension to the curator.
+   * We commit a REAL value inferred from their own answers (deterministic,
+   * taxonomy-bound) and continue exactly as if they had chosen it.
+   */
+  const onLetYesDecide = (key: DecidedForMeKey) => {
+    trackStudio("surprise_me_selected", { phase: key, stepNumber: stepOf(state.phase) });
+    if (key === "feeling") {
+      const id = decideFeeling(state);
+      setState((s) => ({ ...s, decidedForMe: [...new Set([...s.decidedForMe, key])] }));
+      onFeeling(id);
+      return;
+    }
+    if (key === "interests") {
+      const ids = decideInterests(state);
+      const forward: StudioV3State = {
+        ...state,
+        interests: ids,
+        decidedForMe: [...new Set([...state.decidedForMe, key])],
+      };
+      setState(() => forward);
+      window.setTimeout(() => advance(getNextPhase(forward, "interests")), 80);
+      return;
+    }
+    const rhythmId = decideRhythm(state);
+    setState((s) => ({ ...s, decidedForMe: [...new Set([...s.decidedForMe, key])] }));
+    onRhythm(rhythmId);
+  };
+
   const onRhythm = (id: Rhythm) => {
     const name = state.firstName?.trim() || null;
     const baseHint =
@@ -2199,7 +2241,7 @@ export function StudioV3() {
       <StudioV3Intro
         onComplete={(name, pathMode) => {
           setState((s) => ({ ...s, firstName: name, pathMode }));
-          advance("who");
+          advance("feeling");
         }}
       />
     );
@@ -2270,6 +2312,9 @@ export function StudioV3() {
             <NextTeaser>{contextualTeaser("feeling", state)}</NextTeaser>
           ) : (
             <FooterHint>One choice. You can shape the rest later.</FooterHint>
+          )}
+          {state.feeling ? null : (
+            <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("feeling")} />
           )}
         </PhaseShell>
       ) : null}
@@ -2352,6 +2397,120 @@ export function StudioV3() {
           ) : (
             <FooterHint>If yes, we'll quietly tilt the day towards it.</FooterHint>
           )}
+        </PhaseShell>
+      ) : null}
+
+      {state.phase === "logistics" ? (
+        <PhaseShell
+          accent="teal"
+          exiting={exiting}
+          progress={studioV3Progress(state, state.phase)}
+          anticipation={anticipation}
+        >
+          <BackLink onClick={() => back("rhythm")} />
+          <PhaseHeader
+            eyebrow="Making it real"
+            title="Three details and"
+            titleAccent="we compose your day"
+          />
+          {interpretationLine(state) ? (
+            <p
+              data-testid="studio-v3-interpretation"
+              className="mt-1 mb-2 max-w-[38ch] mx-auto text-center text-[14px] leading-[1.55]"
+              style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
+            >
+              {interpretationLine(state)}
+            </p>
+          ) : null}
+          <p
+            className="mt-1 mb-6 max-w-[36ch] mx-auto text-center text-[13px] leading-[1.55]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
+          >
+            We only need this to make your day real. Everything is editable later.
+          </p>
+
+          <div
+            data-testid="studio-v3-logistics"
+            className="w-full max-w-[520px] mx-auto flex flex-col items-center gap-8"
+          >
+            <section className="w-full" aria-label="Date">
+              <DatePhaseControls
+                dateExact={state.dateExact}
+                dateMode={state.dateMode}
+                onPickExact={(iso) => setState((s) => ({ ...s, dateExact: iso, dateMode: "exact" }))}
+                onPickFlexible={() =>
+                  setState((s) => ({ ...s, dateExact: null, dateMode: "flexible" }))
+                }
+                onPickUndecided={() =>
+                  setState((s) => ({ ...s, dateExact: null, dateMode: "undecided" }))
+                }
+              />
+            </section>
+
+            <section className="w-full" aria-label="Where the day begins">
+              <p
+                className="mb-3 text-[11px] uppercase tracking-[0.22em]"
+                style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+              >
+                Where the day begins
+              </p>
+              <ChoiceGrid
+                options={PICKUPS}
+                value={state.pickup}
+                onSelect={(id) => setState((s) => ({ ...s, pickup: id }))}
+                columns={1}
+              />
+            </section>
+
+            <section className="w-full" aria-label="Your party">
+              <p
+                className="mb-3 text-[11px] uppercase tracking-[0.22em]"
+                style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+              >
+                Your party
+              </p>
+              <Composition
+                adults={state.adults ?? state.guests}
+                adultsInferred={state.guestsInferred}
+                minorAges={state.minorAges ?? []}
+                onAdultsChange={onGuestsChange}
+                onAddMinor={onAddMinor}
+                onRemoveMinor={onRemoveMinor}
+                onMinorAgeChange={onMinorAgeChange}
+              />
+            </section>
+          </div>
+
+          <ContinueCta
+            disabled={!state.dateMode || !state.pickup}
+            onClick={() => {
+              const committedAdults = state.adults ?? state.guests ?? 2;
+              const committedMinors = state.minorAges ?? [];
+              const committedTotal = committedAdults + committedMinors.length;
+              const forward: StudioV3State = {
+                ...state,
+                adults: committedAdults,
+                minorAges: committedMinors,
+                guests: committedTotal,
+                guestsPrivateEvent: committedTotal >= 11,
+              };
+              setState(() => forward);
+              trackStudio("logistics_completed", {
+                phase: "logistics",
+                stepNumber: stepOf("logistics"),
+                date_mode: forward.dateMode,
+                guests: committedTotal,
+              });
+              window.setTimeout(() => advance(getNextPhase(forward, "logistics")), 60);
+            }}
+            label={
+              !state.dateMode
+                ? "Pick a date, or tell us you're flexible"
+                : !state.pickup
+                  ? "Where does the day begin?"
+                  : "Compose my day"
+            }
+          />
         </PhaseShell>
       ) : null}
 
@@ -2514,6 +2673,9 @@ export function StudioV3() {
             onClick={continueFromInterests}
             label={state.interests.length < 1 ? "Choose at least one" : "Continue"}
           />
+          {state.interests.length < 1 ? (
+            <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("interests")} />
+          ) : null}
         </PhaseShell>
       ) : null}
 
@@ -2536,6 +2698,9 @@ export function StudioV3() {
             <NextTeaser>{contextualTeaser("rhythm", state)}</NextTeaser>
           ) : (
             <FooterHint>You can change pace at any stop.</FooterHint>
+          )}
+          {state.rhythm ? null : (
+            <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("rhythm")} />
           )}
         </PhaseShell>
       ) : null}
@@ -3021,6 +3186,63 @@ function RevealRouteMap({
       />
     </div>
   );
+}
+
+/**
+ * LetYesDecide — first-class "decide for me" affordance. Not a skip: the
+ * curator commits to a real, deterministic choice derived from the
+ * traveller's own answers (see `letYesDecide.ts`).
+ */
+function LetYesDecide({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      data-testid="studio-v3-let-yes-decide"
+      onClick={onClick}
+      className="mt-5 mx-auto flex min-h-[44px] items-center justify-center px-5 text-[11px] uppercase tracking-[0.22em]"
+      style={{
+        fontFamily: "var(--font-display)",
+        color: "var(--charcoal)",
+        border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+        borderRadius: 999,
+        background: "transparent",
+      }}
+    >
+      <span aria-hidden style={{ color: "var(--gold)", marginRight: 8 }}>
+        —
+      </span>
+      {label}
+    </button>
+  );
+}
+
+/**
+ * interpretationLine — one short sentence built ONLY from real answers.
+ * Never introduces a place, stop or theme the traveller did not choose.
+ */
+export function interpretationLine(state: StudioV3State): string | null {
+  const parts: string[] = [];
+  const pace =
+    state.rhythm === "slow"
+      ? "slow"
+      : state.rhythm === "full" || state.rhythm === "immersive"
+        ? "full"
+        : state.rhythm === "balanced"
+          ? "balanced"
+          : null;
+  const feelingLabel = getOptionLabel(FEELINGS, state.feeling)?.toLowerCase() ?? null;
+  const interestLabels = state.interests
+    .map((i) => getOptionLabel(INTERESTS, i)?.toLowerCase())
+    .filter((x): x is string => !!x)
+    .slice(0, 3);
+  if (!feelingLabel && interestLabels.length === 0) return null;
+  if (pace) parts.push(`a ${pace} day`);
+  else parts.push("a day");
+  if (feelingLabel) parts.push(`shaped around ${feelingLabel}`);
+  if (interestLabels.length > 0) parts.push(`with ${interestLabels.join(", ")}`);
+  const who = getOptionLabel(COMPANIONS, state.companions)?.toLowerCase();
+  const tail = who && who !== "solo" ? `, for a ${who} party` : "";
+  return `You're leaning toward ${parts.join(" ")}${tail}.`;
 }
 
 function PhaseHeader({
@@ -4356,10 +4578,10 @@ export function StoryboardHandoff({
             variant="primary"
             size="md"
             className="w-full max-w-[380px]"
-            aria-label="Continue"
+            aria-label="See my signature story"
             data-testid="studio-v3-handoff-primary"
           >
-            Continue
+            See my signature story
           </CtaButton>
         )}
 

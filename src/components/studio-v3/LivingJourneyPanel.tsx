@@ -648,7 +648,7 @@ function JourneyDraftDrawer({
                   className="mt-2 text-[13.5px] leading-[1.55] animate-in fade-in duration-[400ms] motion-reduce:animate-none"
                   style={{
                     color: "color-mix(in oklab, var(--charcoal) 88%, transparent)",
-                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    fontFamily: "var(--font-editorial)",
                     fontStyle: "italic",
                   }}
                 >
@@ -779,7 +779,7 @@ function JourneyDraftDrawer({
                 <p
                   className="mt-2 text-[11px] italic"
                   style={{
-                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    fontFamily: "var(--font-editorial)",
                     color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                   }}
                 >

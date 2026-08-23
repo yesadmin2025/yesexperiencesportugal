@@ -241,7 +241,15 @@ export function FinalRevealStory({
     });
   });
 
-  const dateLabel = formatDate(state.dateExact);
+  // Never show an empty date. When the traveller stayed flexible we say so
+  // explicitly — silence reads as a bug, "Flexible date" reads as a choice.
+  const dateLabel =
+    formatDate(state.dateExact) ??
+    (state.dateMode === "flexible"
+      ? "Flexible date"
+      : state.dateMode === "undecided"
+        ? "Date to confirm"
+        : null);
   const pickupLabel = pickupCityLabel(state.pickup);
   const guestsLabel = formatGuestComposition(state.adults, state.minorAges, state.guests);
 
