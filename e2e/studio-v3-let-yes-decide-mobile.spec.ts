@@ -45,6 +45,7 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
   // it is offered, otherwise the first option + Continue.
   for (let i = 0; i < 20; i++) {
     const current = await phase(page);
+    console.log(`[decide] phase=${current} url=${page.url()}`);
     if (!current || current === "map" || current === "storyboard") break;
 
     const yes = page.getByRole("button", { name: /let yes decide/i }).first();
