@@ -34,11 +34,11 @@ describe("price_expanded analytics", () => {
     }
     const el = details as HTMLDetailsElement;
     el.open = true;
-    fireEvent.toggle(el);
+    fireEvent(el, new Event("toggle", { bubbles: false }));
     el.open = false;
-    fireEvent.toggle(el);
+    fireEvent(el, new Event("toggle", { bubbles: false }));
     el.open = true;
-    fireEvent.toggle(el);
+    fireEvent(el, new Event("toggle", { bubbles: false }));
     expect(trackStudio.mock.calls.filter((c) => c[0] === "price_expanded")).toHaveLength(1);
   });
 });
