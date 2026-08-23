@@ -9,6 +9,10 @@ import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette"
 import { EditorialMap, type EditorialMapStop } from "@/components/maps/EditorialMap";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
+import { resolveYourDayMapTruth } from "./yourDayMapTruth";
+import { YourDayTimeline } from "./YourDayTimeline";
+import { YourDayFrame } from "./YourDayFrame";
+import { trackStudio } from "@/lib/studio-analytics";
 import type {
   Companions,
   DestinationIntent,
@@ -289,6 +293,45 @@ export function MapAwakens({
       lng: typeof m.lng === "number" ? m.lng : undefined,
     }));
   }, [journey]);
+
+  // Map truth gate. A geographic map is only earned when every moment we
+  // would plot carries real, coherent coordinates. Otherwise the surface
+  // becomes an editorial timeline — never a silhouette standing in for a
+  // map we cannot honestly draw.
+  //
+  // `hasRouteGeometry` stays false: we hold real OSRM leg *minutes*, not a
+  // routed polyline, so no line is drawn. The minutes still appear on the
+  // moment card, where they are labelled for what they are.
+  const mapTruth = useMemo(
+    () =>
+      resolveYourDayMapTruth(
+        journey.moments.map((m) => ({
+          label: m.label,
+          lat: m.lat,
+          lng: m.lng,
+          location: journey.tour.region ?? null,
+          story: m.story ?? null,
+        })),
+      ),
+    [journey],
+  );
+  const showGeographicMap = mapTruth.mode === "map";
+
+  // `map_viewed` fires once, and only for a real geographic map.
+  const mapViewTracked = useRef(false);
+  useEffect(() => {
+    if (!showGeographicMap || !mounted || mapViewTracked.current) return;
+    mapViewTracked.current = true;
+    trackStudio("map_viewed", {
+      phase: "map",
+      tourId: journey.tour.id,
+      stops: mapTruth.stops.length,
+      routeGeometry: mapTruth.hasRouteGeometry,
+    });
+  }, [showGeographicMap, mounted, journey.tour.id, mapTruth]);
+  useEffect(() => {
+    mapViewTracked.current = false;
+  }, [rerollCount]);
 
   // Real OSRM driving minutes — origin (pickup city) + each moment with
   // resolved coordinates. Falls back silently when offline.
