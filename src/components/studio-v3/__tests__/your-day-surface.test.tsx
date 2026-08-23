@@ -11,7 +11,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import { MapAwakens } from "../MapAwakens";
 import { YourDayTimeline } from "../YourDayTimeline";
 
@@ -45,6 +45,22 @@ describe("YourDayTimeline — editorial fallback", () => {
     render(<YourDayTimeline moments={moments} />);
     expect(screen.getByLabelText("Your day, moment by moment").tagName).toBe("OL");
   });
+});
+
+beforeAll(() => {
+  // jsdom has no matchMedia; the surface reads it for reduced-motion.
+  if (!window.matchMedia) {
+    window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })) as unknown as typeof window.matchMedia;
+  }
 });
 
 function renderMapAwakens() {
