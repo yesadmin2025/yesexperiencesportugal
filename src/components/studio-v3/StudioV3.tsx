@@ -243,6 +243,11 @@ import {
   type DecidedForMeKey,
 } from "./letYesDecide";
 import { trackStudio } from "@/lib/studio-analytics";
+import {
+  resolveRefineIntents,
+  type RefineIntentCandidate,
+} from "./refineIntents";
+
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { Composition } from "./Composition";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
