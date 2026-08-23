@@ -444,7 +444,7 @@ export function FinalRevealStory({
             className="text-[10px] uppercase tracking-[0.24em] font-semibold"
             style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
           >
-            Final investment
+            {`Estimated for ${partySize} ${partySize === 1 ? "guest" : "guests"}`}
           </p>
           <p
             className="mt-1 text-[25px] leading-none tabular-nums"
@@ -462,8 +462,47 @@ export function FinalRevealStory({
               testId="studio-v3-reveal-final-per-person"
             />
           </div>
+
+          <details
+            data-testid="studio-v3-price-change-factors"
+            className="mt-3 text-left"
+            onToggle={(e) => {
+              if ((e.currentTarget as HTMLDetailsElement).open) {
+                trackStudio("price_expanded", { phase: "confirmation", guests: partySize });
+              }
+            }}
+          >
+            <summary
+              className="min-h-[44px] flex items-center justify-center cursor-pointer text-[11px] uppercase tracking-[0.2em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+              style={{ color: "var(--teal)" }}
+            >
+              What can change this price
+            </summary>
+            <ul
+              className="mt-2 space-y-1.5 text-[12px] leading-[1.6] list-disc pl-5"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 74%, transparent)" }}
+            >
+              <li>Party size — the per-person rate follows the size of your group.</li>
+              <li>
+                Traveller ages — under 3 travel free, ages 3–10 at 50%, ages 11–17 at 75%.
+              </li>
+              {selectedAddOns.length > 0 ? (
+                <li>
+                  Additions you keep — {selectedAddOns.map((a) => a.label).join(", ")} are
+                  charged {selectedAddOns.some((a) => a.unit === "per_person")
+                    ? "per guest or per group"
+                    : "per group"}
+                  .
+                </li>
+              ) : (
+                <li>Any addition you choose later is priced per guest or per group.</li>
+              )}
+              <li>Confirmed on the summary screen — nothing is charged before you reserve.</li>
+            </ul>
+          </details>
         </div>
       ) : null}
+
 
       {/* Collapsible inclusions + price */}
       <details
