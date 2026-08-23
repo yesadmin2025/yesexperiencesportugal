@@ -246,6 +246,33 @@ export function MapAwakens({
     };
   }, [active, revealed, playing, mounted, journey.moments.length]);
 
+  // Deterministic completion fallback.
+  //
+  // The reel is choreography, not a gate: `mounted` (1400 ms), `first-stop`
+  // (2100 ms) and the 3400 ms autoplay tick are all wall-clock timers, and any
+  // of them can be starved (backgrounded tab, throttled mobile CPU, an aborted
+  // image/route fetch, a paused rAF). When that happens the sequence used to
+  // sit forever mid-reel: `isLast` never became true, the completion layer
+  // never faded in, and the journey looked stuck. This safety timer concludes
+  // the beat exactly once, so the completed state is reached in bounded time
+  // no matter what the animation did. It never runs while the guest has
+  // deliberately paused — that is their control, not a stall.
+  useEffect(() => {
+    if (!playing) return;
+    const total = journey.moments.length;
+    if (total === 0) return;
+    if (mounted && active >= total - 1 && revealed >= total) return;
+    const ceiling = Math.min(14_000, 2_600 + total * AUTO_INTERVAL_MS);
+    const t = window.setTimeout(() => {
+      setMounted(true);
+      setAnticipating(false);
+      setActive(total - 1);
+      setRevealed(total);
+      setSrStatus("Your day is fully revealed.");
+    }, ceiling);
+    return () => window.clearTimeout(t);
+  }, [playing, mounted, active, revealed, journey.moments.length, rerollCount]);
+
   const step = (dir: -1 | 1) => {
     setPlaying(false);
     const next = Math.max(0, Math.min(journey.moments.length - 1, active + dir));
@@ -606,6 +633,8 @@ export function MapAwakens({
               forward. Emphasis still ramps when the reel completes, but the
               door is never locked. */}
           <div
+            data-testid="studio-v3-moments-continue"
+            data-moments-complete={isLast ? "true" : "false"}
             className={`mt-5 text-center transition-opacity duration-[520ms] ${
               isLast ? "opacity-100" : "opacity-80"
             }`}
