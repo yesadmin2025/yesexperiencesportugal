@@ -1656,6 +1656,35 @@ export function StudioV3() {
     });
   };
 
+  /**
+   * "Let YES decide" — the traveller hands one dimension to the curator.
+   * We commit a REAL value inferred from their own answers (deterministic,
+   * taxonomy-bound) and continue exactly as if they had chosen it.
+   */
+  const onLetYesDecide = (key: DecidedForMeKey) => {
+    trackStudio("surprise_me_selected", { phase: key, stepNumber: stepOf(state.phase) });
+    if (key === "feeling") {
+      const id = decideFeeling(state);
+      setState((s) => ({ ...s, decidedForMe: [...new Set([...s.decidedForMe, key])] }));
+      onFeeling(id);
+      return;
+    }
+    if (key === "interests") {
+      const ids = decideInterests(state);
+      const forward: StudioV3State = {
+        ...state,
+        interests: ids,
+        decidedForMe: [...new Set([...state.decidedForMe, key])],
+      };
+      setState(() => forward);
+      window.setTimeout(() => advance(getNextPhase(forward, "interests")), 80);
+      return;
+    }
+    const rhythmId = decideRhythm(state);
+    setState((s) => ({ ...s, decidedForMe: [...new Set([...s.decidedForMe, key])] }));
+    onRhythm(rhythmId);
+  };
+
   const onRhythm = (id: Rhythm) => {
     const name = state.firstName?.trim() || null;
     const baseHint =
@@ -2284,6 +2313,9 @@ export function StudioV3() {
           ) : (
             <FooterHint>One choice. You can shape the rest later.</FooterHint>
           )}
+          {state.feeling ? null : (
+            <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("feeling")} />
+          )}
         </PhaseShell>
       ) : null}
 
@@ -2527,6 +2559,9 @@ export function StudioV3() {
             onClick={continueFromInterests}
             label={state.interests.length < 1 ? "Choose at least one" : "Continue"}
           />
+          {state.interests.length < 1 ? (
+            <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("interests")} />
+          ) : null}
         </PhaseShell>
       ) : null}
 
@@ -2549,6 +2584,9 @@ export function StudioV3() {
             <NextTeaser>{contextualTeaser("rhythm", state)}</NextTeaser>
           ) : (
             <FooterHint>You can change pace at any stop.</FooterHint>
+          )}
+          {state.rhythm ? null : (
+            <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("rhythm")} />
           )}
         </PhaseShell>
       ) : null}
