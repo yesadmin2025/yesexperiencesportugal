@@ -119,7 +119,7 @@ export function CheckoutSummary({
 }: CheckoutSummaryProps) {
   // Last mile: the summary always opens at its own top. Arriving mid-scroll
   // from guest details hides the price line and reads as a broken step.
-  useEffect(() => {
+  React.useEffect(() => {
     if (typeof window === "undefined") return;
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, []);
