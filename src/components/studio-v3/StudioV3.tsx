@@ -4578,10 +4578,10 @@ export function StoryboardHandoff({
             variant="primary"
             size="md"
             className="w-full max-w-[380px]"
-            aria-label="Continue"
+            aria-label="See my signature story"
             data-testid="studio-v3-handoff-primary"
           >
-            Continue
+            See my signature story
           </CtaButton>
         )}
 

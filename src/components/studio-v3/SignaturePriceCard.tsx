@@ -1301,7 +1301,7 @@ export function SignaturePriceCard({
                     "0 14px 36px -18px color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 }}
               >
-                {isRefine ? "Continue" : "See my signature story"}
+                {"See my signature story"}
                 <ArrowRight
                   size={14}
                   aria-hidden
