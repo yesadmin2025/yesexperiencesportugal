@@ -84,14 +84,14 @@ describe("StudioV3ProgressStepper · accessibility", () => {
     fireEvent.click(region);
     expect(onJump).toHaveBeenCalledWith("region", "feeling");
 
-    const rhythm = screen.getByRole("button", { name: /return to shape/i });
-    fireEvent.click(rhythm);
-    expect(onJump).toHaveBeenCalledWith("rhythm", "rhythm");
+    const taste = screen.getByRole("button", { name: /return to taste/i });
+    fireEvent.click(taste);
+    expect(onJump).toHaveBeenCalledWith("rhythm", "interests");
   });
 
   it("never moves focus forward past the active beat", () => {
-    render(<StudioV3ProgressStepper phase="rhythm" onJumpToBeat={() => {}} />);
-    // Only region is a button (done). Active=rhythm is a div.
+    render(<StudioV3ProgressStepper phase="interests" onJumpToBeat={() => {}} />);
+    // Only region is a button (done). Active=taste is a div.
     const buttons = screen.getAllByRole("button");
     expect(buttons).toHaveLength(1);
     buttons[0].focus();
