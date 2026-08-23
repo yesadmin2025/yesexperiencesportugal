@@ -2550,21 +2550,7 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
     return isAdaptiveQuestionRelevant(state) && adaptiveQuestionAddsValue(state);
   }
 
-  // Fast path — traveller chose "Compose it quickly" on the intro.
-  if (state.pathMode === "fast") {
-    if (phase === "date") return false;
-  }
-  switch (phase) {
-    case "guests": {
-      // Skip when guests is already known (inferred from companions/occasion
-      // or set explicitly via the stepper).
-      if (state.guests != null) return false;
-      const inferred = inferGuests(state.companions, state.occasion, state.feeling);
-      return inferred == null;
-    }
-    default:
-      return true;
-  }
+  return true;
 }
 
 /**
