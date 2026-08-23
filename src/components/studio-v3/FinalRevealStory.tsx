@@ -252,6 +252,11 @@ export function FinalRevealStory({
         : null);
   const pickupLabel = pickupCityLabel(state.pickup);
   const guestsLabel = formatGuestComposition(state.adults, state.minorAges, state.guests);
+  const partySize =
+    typeof state.guests === "number" && state.guests > 0
+      ? state.guests
+      : (state.adults ?? 0) + (state.minorAges?.length ?? 0) || 1;
+
 
   const included: string[] = (() => {
     if (tour?.id) {
