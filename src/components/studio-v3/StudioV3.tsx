@@ -4454,13 +4454,28 @@ export function StoryboardHandoff({
                         <button
                           type="button"
                           aria-label={`Remove ${s.label}`}
-                          disabled={editedStops.length <= 1}
-                          onClick={() => setEdited((prev) => prev.filter((_, j) => j !== i))}
+                          disabled={editedStops.length <= REFINE_MIN_STOPS}
+                          onClick={() => {
+                            const before = editedStops.map((p) => ({ ...p }));
+                            const removed = s.label;
+                            setUndoSnapshot({
+                              stops: before,
+                              summary: `${removed} steps out of your day.`,
+                            });
+                            setEdited((prev) => prev.filter((_, j) => j !== i));
+                            setIntentFeedback(`${removed} steps out of your day.`);
+                            trackStudio("moment_removed", {
+                              phase: "storyboard",
+                              via: "card",
+                              stops: editedStops.length - 1,
+                            });
+                          }}
                           className="relative grid h-8 w-8 place-items-center rounded-full text-[14px] after:absolute after:-inset-[6px] after:content-[''] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                           style={{ color: "var(--charcoal)" }}
                         >
                           ✕
                         </button>
+
                       </div>
                     </div>
 
