@@ -286,3 +286,19 @@ The database is already enabled through the Lovable project. No production datab
 - mobile-first QA at 393px;
 - keyboard, screen-reader and reduced-motion support;
 - no merge to `main` without reviewed preview and passing regression suite.
+
+## Current flow (verified at 393px, 2026-08-23)
+
+Observed phase order from a real mobile walkthrough:
+
+```text
+intro → feeling → who → interests → rhythm → refinement → logistics
+      → storyboard (Your Day: map or timeline) → confirmation (reveal)
+      → guestDetails → checkoutSummary
+```
+
+Honest note on the interpretation beat: it is **not** a dedicated timed
+screen in the current build. `UnderstoodBeat` is rendered inline on the
+logistics→composition transition and is always skippable; the
+`interpretation_viewed` event fires from that inline transition in
+`StudioV3.tsx`. Treat it as an inline interstitial, not a phase.
