@@ -345,6 +345,13 @@ export interface StudioV3State {
    * checkoutSummary/finalReveal preserves what the traveller already typed.
    * Null until the guestDetails phase captures anything.
    */
+  /**
+   * Dimensions the traveller explicitly handed to the curator via
+   * "Let YES decide". Never means "missing" — the value in state is real
+   * and inferred deterministically (see `letYesDecide.ts`). Used to label
+   * the choice honestly in the UI and to keep the reveal explainable.
+   */
+  decidedForMe: Array<"feeling" | "interests" | "rhythm">;
   guestDraft: {
     fullName?: string;
     email?: string;
@@ -380,6 +387,7 @@ export const INITIAL_STATE: StudioV3State = {
   destinationIntent: "no-preference",
   pathMode: "guided",
   rerollCount: 0,
+  decidedForMe: [],
   guestDraft: null,
 };
 
