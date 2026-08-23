@@ -297,6 +297,11 @@ const NEXT_TEASERS: Record<StudioV3Phase, string[]> = {
     "Next, the starting point",
   ],
   occasion: ["Next, the when", "Next, your timing", "Next, the season"],
+  logistics: [
+    "Next, we compose your day",
+    "Next, the route takes shape",
+    "Next, your day is drawn",
+  ],
   date: ["Next, we choose the route", "Next, the map awakens", "Next, the journey forms"],
   pickup: ["Next, the party size", "Next, your group", "Next, how many guests"],
   guests: ["Next, the investment", "Next, the comfort", "Next, how it's held"],
