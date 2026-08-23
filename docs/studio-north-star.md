@@ -79,3 +79,17 @@ Regression cover:
 `CheckoutSummary` scrolls itself to the top on mount, so the summary never
 opens mid-scroll with the price line off-screen. The guest-details CTA reads
 "Continue to summary" — it names the next screen, not a side effect.
+
+## Validated contracts (2026-08-23)
+
+- **Refine is executable-only.** A refine intent may only appear when it can
+  actually mutate the composed day using real stops (`refineIntents.ts`).
+  Contextual intents are truth-backed: no intent is offered that the current
+  composition cannot honour.
+- **Presentation never owns pricing math.** The reveal disclosure renders
+  factors resolved by `priceChangeFactors.ts` from `signatureTourPricing`
+  truth (tier table, `AGE_BAND_PCT`) plus real selected add-ons. Empty set →
+  no disclosure. No generic "prices may vary" copy.
+- **Map truth → timeline fallback.** `yourDayMapTruth.ts` validates stop
+  geography; when it cannot, `MapAwakens` renders the timeline instead. The
+  reveal never blocks on a map or an image.
