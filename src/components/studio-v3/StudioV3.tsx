@@ -4672,7 +4672,13 @@ function ReactionOverlay({
     const t = window.setTimeout(() => setClickThrough(true), Math.min(900, hold * 0.35));
     return () => window.clearTimeout(t);
   }, [hold, reaction]);
+  // `pointerEvents: none` on the overlay root is NOT enough: the cinematic
+  // beats render their own interactive children (map pins carry
+  // `pointer-events-auto`), which keep swallowing taps aimed at the phase
+  // already mounted underneath. `inert` neutralises the whole subtree —
+  // pointer events, focus and the a11y tree — the moment the beat surrenders.
   const passThroughStyle = clickThrough ? { pointerEvents: "none" as const } : {};
+  const inertWhenPassThrough = (clickThrough ? { inert: true } : {}) as { inert?: boolean };
 
   // Atmosphere beat — Creation Storytelling layer (Phase 1). Renders a
   // full-bleed image wash with a single italic line, no postcard chrome.
@@ -4682,6 +4688,7 @@ function ReactionOverlay({
         type="button"
         onClick={onDismiss}
         aria-label="Continue"
+        {...inertWhenPassThrough}
         key={`${reaction.eyebrow}-${reaction.message}`}
         className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer focus:outline-none"
         style={{
@@ -4726,6 +4733,7 @@ function ReactionOverlay({
           }
         }}
         aria-label="Continue"
+        {...inertWhenPassThrough}
         key={`${reaction.eyebrow}-${reaction.message}`}
         className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer focus:outline-none"
         style={{
@@ -4791,6 +4799,7 @@ function ReactionOverlay({
       type="button"
       onClick={onDismiss}
       aria-label="Continue"
+      {...inertWhenPassThrough}
       key={`${reaction.eyebrow}-${reaction.message}`}
       className="fixed inset-0 z-40 flex items-center justify-center px-6 cursor-pointer focus:outline-none"
       style={{
