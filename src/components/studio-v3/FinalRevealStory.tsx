@@ -35,6 +35,8 @@ import { cn } from "@/lib/utils";
 import { formatGuestComposition } from "./formatGuests";
 import { buildRevealNarrative } from "@/lib/studio-v3/revealNarrative";
 import { trackStudio } from "@/lib/studio-analytics";
+import { resolvePriceChangeFactors } from "./priceChangeFactors";
+
 
 import parchmentLetter from "@/assets/studio-v3/reveal-letter-parchment.jpg";
 
@@ -259,6 +261,14 @@ export function FinalRevealStory({
       ? state.guests
       : (state.adults ?? 0) + (state.minorAges?.length ?? 0) || 1;
 
+  // Only real, product-backed price factors are disclosed.
+  const priceFactors = React.useMemo(
+    () => resolvePriceChangeFactors({ tour, selectedAddOns }),
+    [tour, selectedAddOns],
+  );
+  // `price_expanded` is a once-per-mounted-reveal signal, not a toggle count.
+  const priceExpandedTracked = React.useRef(false);
+
 
   const included: string[] = (() => {
     if (tour?.id) {
@@ -470,43 +480,36 @@ export function FinalRevealStory({
             />
           </div>
 
-          <details
-            data-testid="studio-v3-price-change-factors"
-            className="mt-3 text-left"
-            onToggle={(e) => {
-              if ((e.currentTarget as HTMLDetailsElement).open) {
+          {priceFactors.length > 0 ? (
+            <details
+              data-testid="studio-v3-price-change-factors"
+              className="mt-3 text-left"
+              onToggle={(e) => {
+                if (!(e.currentTarget as HTMLDetailsElement).open) return;
+                if (priceExpandedTracked.current) return;
+                priceExpandedTracked.current = true;
                 trackStudio("price_expanded", { phase: "confirmation", guests: partySize });
-              }
-            }}
-          >
-            <summary
-              className="min-h-[44px] flex items-center justify-center cursor-pointer text-[11px] uppercase tracking-[0.2em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-              style={{ color: "var(--teal)" }}
+              }}
             >
-              What can change this price
-            </summary>
-            <ul
-              className="mt-2 space-y-1.5 text-[12px] leading-[1.6] list-disc pl-5"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 74%, transparent)" }}
-            >
-              <li>Party size — the per-person rate follows the size of your group.</li>
-              <li>
-                Traveller ages — under 3 travel free, ages 3–10 at 50%, ages 11–17 at 75%.
-              </li>
-              {selectedAddOns.length > 0 ? (
-                <li>
-                  Additions you keep — {selectedAddOns.map((a) => a.label).join(", ")} are
-                  charged {selectedAddOns.some((a) => a.unit === "per_person")
-                    ? "per guest or per group"
-                    : "per group"}
-                  .
-                </li>
-              ) : (
-                <li>Any addition you choose later is priced per guest or per group.</li>
-              )}
-              <li>Confirmed on the summary screen — nothing is charged before you reserve.</li>
-            </ul>
-          </details>
+              <summary
+                className="min-h-[44px] flex items-center justify-center cursor-pointer text-[11px] uppercase tracking-[0.2em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                style={{ color: "var(--teal)" }}
+              >
+                What can change this price
+              </summary>
+              <ul
+                className="mt-2 space-y-1.5 text-[12px] leading-[1.6] list-disc pl-5"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 74%, transparent)" }}
+              >
+                {priceFactors.map((f) => (
+                  <li key={f.id} data-price-factor={f.id}>
+                    {f.text}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ) : null}
+
         </div>
       ) : null}
 

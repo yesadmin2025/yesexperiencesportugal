@@ -15,6 +15,17 @@
 import { trackEvent, type YesAnalyticsEvent } from "@/lib/analytics-events";
 import { trackStep, type StudioFunnelEvent } from "@/lib/studio-v3-funnel";
 
+/**
+ * Implemented call-sites (verified 2026-08-23):
+ *   • studio_enter / phase_view / choice_selected / surprise_me_selected /
+ *     logistics_completed / interpretation_viewed / map_viewed → StudioV3.tsx, MapAwakens.tsx
+ *   • moment_swapped, moment_removed, refine_intent_selected → StudioV3.tsx (refine surface)
+ *   • price_expanded → FinalRevealStory.tsx (once per mounted reveal)
+ *
+ * `moment_kept` is intentionally part of the vocabulary but has NO call-site:
+ * the current refine UI has no explicit "Keep" action. Do not add a
+ * synthetic call-site; wire it only if a real Keep action ships.
+ */
 export type StudioAnalyticsEvent =
   | "studio_enter"
   | "phase_view"
