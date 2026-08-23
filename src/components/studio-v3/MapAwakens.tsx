@@ -9,6 +9,10 @@ import { PortugalSilhouette, type SilhouetteRegion } from "./PortugalSilhouette"
 import { EditorialMap, type EditorialMapStop } from "@/components/maps/EditorialMap";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
+import { resolveYourDayMapTruth } from "./yourDayMapTruth";
+import { YourDayTimeline } from "./YourDayTimeline";
+import { YourDayFrame } from "./YourDayFrame";
+import { trackStudio } from "@/lib/studio-analytics";
 import type {
   Companions,
   DestinationIntent,
@@ -290,6 +294,45 @@ export function MapAwakens({
     }));
   }, [journey]);
 
+  // Map truth gate. A geographic map is only earned when every moment we
+  // would plot carries real, coherent coordinates. Otherwise the surface
+  // becomes an editorial timeline — never a silhouette standing in for a
+  // map we cannot honestly draw.
+  //
+  // `hasRouteGeometry` stays false: we hold real OSRM leg *minutes*, not a
+  // routed polyline, so no line is drawn. The minutes still appear on the
+  // moment card, where they are labelled for what they are.
+  const mapTruth = useMemo(
+    () =>
+      resolveYourDayMapTruth(
+        journey.moments.map((m) => ({
+          label: m.label,
+          lat: m.lat,
+          lng: m.lng,
+          location: journey.tour.region ?? null,
+          story: m.story ?? null,
+        })),
+      ),
+    [journey],
+  );
+  const showGeographicMap = mapTruth.mode === "map";
+
+  // `map_viewed` fires once, and only for a real geographic map.
+  const mapViewTracked = useRef(false);
+  useEffect(() => {
+    if (!showGeographicMap || !mounted || mapViewTracked.current) return;
+    mapViewTracked.current = true;
+    trackStudio("map_viewed", {
+      phase: "map",
+      tourId: journey.tour.id,
+      stops: mapTruth.stops.length,
+      routeGeometry: mapTruth.hasRouteGeometry,
+    });
+  }, [showGeographicMap, mounted, journey.tour.id, mapTruth]);
+  useEffect(() => {
+    mapViewTracked.current = false;
+  }, [rerollCount]);
+
   // Real OSRM driving minutes — origin (pickup city) + each moment with
   // resolved coordinates. Falls back silently when offline.
   const originCoord = useMemo(() => pickupOriginCoord(pickup ?? null), [pickup]);
@@ -325,28 +368,9 @@ export function MapAwakens({
   }, [legMinutes, routeStops, active]);
   const activeDwellMin = dwellByIndex[active];
 
-  // Per-moment-to-moment drive minutes (moments[i] → moments[i+1]).
-  // `routeStops` may prepend the pickup origin, so we skip the pickup leg
-  // and align the remainder with the moments sequence.
-  const momentLegMinutes: (number | null)[] = useMemo(() => {
-    const out: (number | null)[] = [];
-    if (!legMinutes || legMinutes.length === 0) return out;
-    for (let i = 0; i < journey.moments.length - 1; i += 1) {
-      const fromIdx = routeStops.findIndex((s) => s.key === `m-${i}`);
-      const toIdx = routeStops.findIndex((s) => s.key === `m-${i + 1}`);
-      if (fromIdx < 0 || toIdx < 0 || toIdx !== fromIdx + 1) {
-        out.push(null);
-        continue;
-      }
-      const m = legMinutes[toIdx - 1];
-      out.push(typeof m === "number" ? m : null);
-    }
-    return out;
-  }, [legMinutes, routeStops, journey.moments.length]);
-
   return (
     <div
-      className="relative w-full min-h-[100dvh] flex flex-col sm:block"
+      className="relative w-full min-h-[100dvh] flex flex-col"
       style={{ background: "var(--ivory)" }}
     >
       {/* Back */}
@@ -360,14 +384,20 @@ export function MapAwakens({
         <ArrowLeft size={14} aria-hidden /> Back
       </button>
 
-      {/* Eyebrow — hidden on mobile to declutter (EditorialMap already
-          carries the "Suggested route" eyebrow inside the canvas). */}
-      <div
-        className="hidden sm:block absolute left-1/2 top-5 -translate-x-1/2 z-20 text-[10px] uppercase tracking-[0.28em] font-semibold whitespace-nowrap"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-      >
-        <span style={{ color: "var(--gold)" }}>—</span> Suggested route · taking shape
-      </div>
+      {/* Unified `Your Day` framing — identical eyebrow/title treatment on
+          map, storyboard and refine so the guest reads one surface instead
+          of three more wizard steps. */}
+      <YourDayFrame
+        className="px-6 pt-14 sm:pt-16"
+        title={
+          <>
+            Your day,{" "}
+            <span className="italic" style={{ color: "var(--teal)" }}>
+              moment by moment
+            </span>
+          </>
+        }
+      />
 
       {/* Polite live-region — narrates the silhouette → map → first stop
           arc to assistive tech so blind users get the same emotional beat
@@ -379,98 +409,125 @@ export function MapAwakens({
       {/* Map stage — normal flow on mobile (so the moment card sits underneath
           and the map fully unfolds), absolute upper portion on ≥sm. */}
       <section
-        aria-label="Suggested route map"
-        aria-busy={!mounted || anticipating}
-        className="relative w-full h-[52dvh] sm:absolute sm:inset-x-0 sm:top-0 sm:h-[62dvh] z-10 px-3 pt-14 pb-3"
+        aria-label={showGeographicMap ? "Your day, on the map" : "Your day, moment by moment"}
+        aria-busy={showGeographicMap ? !mounted || anticipating : false}
+        data-your-day-mode={mapTruth.mode}
+        data-testid="studio-v3-your-day-stage"
+        className={`relative w-full z-10 px-3 pb-3 pt-4 ${
+          showGeographicMap ? "h-[300px] sm:h-[52dvh]" : ""
+        }`}
       >
-        {/* Anticipation layer — Portugal silhouette + gold pulse holds the
-            stage while the real map silently boots underneath. Fades out
-            as the map fades in: the two never visually overlap. */}
-        <div
-          aria-hidden="true"
-          data-testid="studio-v3-map-anticipation"
-          className={`pointer-events-none absolute inset-0 px-3 pt-14 pb-3 z-20 transition-opacity duration-[700ms] ease-out ${
-            anticipating ? "opacity-100" : "opacity-0"
-          }`}
-        >
+        {showGeographicMap ? (
+          <>
+          {/* Anticipation layer — Portugal silhouette + gold pulse holds the
+              stage while the real map silently boots underneath. Fades out
+              as the map fades in: the two never visually overlap. */}
           <div
-            className="relative w-full h-full overflow-hidden rounded-[4px]"
-            style={{
-              background: "var(--ivory)",
-              animation: anticipating
-                ? "studioV3AnticipationBreath 1400ms ease-out both"
-                : undefined,
-            }}
+            aria-hidden="true"
+            data-testid="studio-v3-map-anticipation"
+            className={`pointer-events-none absolute inset-0 px-3 pt-14 pb-3 z-20 transition-opacity duration-[700ms] ease-out ${
+              anticipating ? "opacity-100" : "opacity-0"
+            }`}
           >
-            <PortugalSilhouette fill={1} region={silhouetteRegion} />
             <div
-              className="absolute inset-x-0 bottom-5 text-center text-[10px] uppercase tracking-[0.32em] font-semibold"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
-            >
-              <span style={{ color: "var(--gold)" }}>—</span>{" "}
-              {silhouetteRegion ? "The day takes shape" : "Composing your route"}
-            </div>
-          </div>
-        </div>
-
-        {/* Map wrapper — hidden from AT and tab order while anticipating
-            so screen readers and keyboard users never land on an empty
-            invisible map. `inert` removes focusability entirely on
-            supported browsers; `tabIndex={-1}` is the safe fallback. */}
-        <div
-          className={`relative w-full h-full overflow-hidden rounded-[4px] border border-[color:var(--charcoal)]/15 shadow-[0_24px_60px_-32px_rgba(46,46,46,0.45)] transition-opacity duration-[700ms] ${
-            mounted ? "opacity-100" : "opacity-0"
-          }`}
-          aria-hidden={anticipating}
-          inert={anticipating}
-          tabIndex={anticipating ? -1 : undefined}
-        >
-          <EditorialMap
-            stops={mapStops}
-            activeCount={revealed}
-            tone="dark"
-            eyebrow="Suggested route"
-            meta={journey.tour.region ?? "Portugal"}
-            caption={current?.label}
-            footerRight={`${journey.moments.length} stop${journey.moments.length === 1 ? "" : "s"} · 1 day`}
-            ariaLabel={`Suggested route ${journey.tour.region ? `in ${journey.tour.region}` : ""} with ${journey.moments.length} moments.`}
-            className="w-full h-full"
-            aspectRatio="auto"
-            showLabels={false}
-            legMinutes={momentLegMinutes}
-          />
-
-          {/* Cinematic vignette — soft dark wash at top + bottom for a
-              premium, Homepage-Studio-Preview feel. Pins and route stay
-              fully legible because the centre stays untouched. */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(46,46,46,0.32) 0%, rgba(46,46,46,0) 22%, rgba(46,46,46,0) 70%, rgba(46,46,46,0.38) 100%)",
-            }}
-          />
-
-          {/* Top-left "Suggested route" chip removed — EditorialMap already
-              renders that eyebrow inside the canvas at the same position,
-              so the two literally overlapped on ≥sm (Studio audit). */}
-
-          {/* Bottom-right footnote — clarifies status without alarming */}
-          {revealed >= journey.moments.length ? (
-            <div
-              className="absolute right-3 bottom-3 z-10 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+              className="relative w-full h-full overflow-hidden rounded-[4px]"
               style={{
-                background: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
-                color: "var(--ivory)",
-                borderRadius: "2px",
-                animation: "studioV3RiseIn 520ms ease-out both",
+                background: "var(--ivory)",
+                animation: anticipating
+                  ? "studioV3AnticipationBreath 1400ms ease-out both"
+                  : undefined,
               }}
             >
-              Your Signature route
+              <PortugalSilhouette fill={1} region={silhouetteRegion} />
+              <div
+                className="absolute inset-x-0 bottom-5 text-center text-[10px] uppercase tracking-[0.32em] font-semibold"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+              >
+                <span style={{ color: "var(--gold)" }}>—</span>{" "}
+                {silhouetteRegion ? "The day takes shape" : "Composing your route"}
+              </div>
             </div>
-          ) : null}
-        </div>
+          </div>
+
+          {/* Map wrapper — hidden from AT and tab order while anticipating
+              so screen readers and keyboard users never land on an empty
+              invisible map. `inert` removes focusability entirely on
+              supported browsers; `tabIndex={-1}` is the safe fallback. */}
+          <div
+            className={`relative w-full h-full overflow-hidden rounded-[4px] border border-[color:var(--charcoal)]/15 shadow-[0_24px_60px_-32px_rgba(46,46,46,0.45)] transition-opacity duration-[700ms] ${
+              mounted ? "opacity-100" : "opacity-0"
+            }`}
+            aria-hidden={anticipating}
+            inert={anticipating}
+            tabIndex={anticipating ? -1 : undefined}
+          >
+            <EditorialMap
+              stops={mapStops}
+              activeCount={revealed}
+              tone="dark"
+              // No routed polyline is available, so no line is drawn: pins
+              // in real order, and nothing that implies a driven path we
+              // have not actually routed.
+              showRoute={false}
+              eyebrow="Your day"
+              meta={journey.tour.region ?? "Portugal"}
+              caption={current?.label}
+              footerRight={`${journey.moments.length} stop${journey.moments.length === 1 ? "" : "s"} · 1 day`}
+              ariaLabel={`Suggested route ${journey.tour.region ? `in ${journey.tour.region}` : ""} with ${journey.moments.length} moments.`}
+              className="w-full h-full"
+              aspectRatio="auto"
+              showLabels={false}
+            />
+
+            {/* Cinematic vignette — soft dark wash at top + bottom for a
+                premium, Homepage-Studio-Preview feel. Pins and route stay
+                fully legible because the centre stays untouched. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(46,46,46,0.32) 0%, rgba(46,46,46,0) 22%, rgba(46,46,46,0) 70%, rgba(46,46,46,0.38) 100%)",
+              }}
+            />
+
+            {/* Top-left "Suggested route" chip removed — EditorialMap already
+                renders that eyebrow inside the canvas at the same position,
+                so the two literally overlapped on ≥sm (Studio audit). */}
+
+            {/* Bottom-right footnote — clarifies status without alarming */}
+            {revealed >= journey.moments.length ? (
+              <div
+                className="absolute right-3 bottom-3 z-10 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.22em] font-semibold"
+                style={{
+                  background: "color-mix(in oklab, var(--charcoal) 80%, transparent)",
+                  color: "var(--ivory)",
+                  borderRadius: "2px",
+                  animation: "studioV3RiseIn 520ms ease-out both",
+                }}
+              >
+                Your Signature route
+              </div>
+            ) : null}
+          </div>
+          </>
+        ) : (
+          /* Editorial fallback — no coordinates, so no map. A numbered
+             timeline is the honest shape of what we know: real moment names
+             in their real order. Deliberate composition, not a loading or
+             error state. */
+          <div className="pt-2 pb-1">
+            <YourDayTimeline
+              moments={journey.moments.map((m) => ({
+                label: m.label,
+                location: journey.tour.region ?? null,
+                story: m.story ?? null,
+              }))}
+              activeCount={revealed}
+              activeIndex={active}
+            />
+          </div>
+        )}
       </section>
 
       {/* Editorial moment card — normal flow on mobile (below the map so it
@@ -478,7 +535,7 @@ export function MapAwakens({
           portion on ≥sm as before. */}
       <div
         data-testid="studio-v3-moments-card"
-        className="relative sm:absolute inset-x-0 sm:bottom-0 z-20 px-4 pb-6 pt-4"
+        className="relative inset-x-0 z-20 px-4 pb-6 pt-4"
       >
         <div className="mx-auto max-w-[560px]">
           {/* Progress dots */}

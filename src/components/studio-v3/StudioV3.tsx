@@ -107,6 +107,7 @@ import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
 import { RouteLegend } from "@/components/studio-v3/RouteLegend";
+import { YourDayFrame } from "@/components/studio-v3/YourDayFrame";
 import { ApprovalBadge } from "@/components/studio-v3/ApprovalBadge";
 import { validateItinerary, type ValidationStatus } from "@/lib/studio-v3/itinerary-validation";
 
@@ -3209,6 +3210,7 @@ function RevealRouteMap({
         legMinutes={legMinutes}
         legDistancesKm={legDistancesKm}
         legModes={legModes}
+        hideModeSummary
       />
     </div>
   );
@@ -4129,23 +4131,21 @@ export function StoryboardHandoff({
 
       <BackLink onClick={onBack} />
 
-      {/* ---------- 1. Header — clear decision-page title ---------- */}
-      <header
-        className="text-center pt-10"
-        style={{ animation: "studioV3RiseIn 720ms ease-out both" }}
-      >
-        <h2
-          className="text-[26px] sm:text-[32px] leading-[1.15] tracking-[-0.012em] font-medium text-balance"
-          style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
-          data-testid="studio-v3-signature-hero"
-        >
-          Your day is ready.
-          <br />
-          <span className="italic" style={{ color: "var(--teal)" }}>
-            Now you can refine it.
+      {/* ---------- 1. Header — same `Your Day` framing as the map beat ----------
+        Refine is not a new wizard step; it is the same surface, now editable.
+        Shared eyebrow + title treatment via YourDayFrame. */}
+      <YourDayFrame
+        className="pt-10"
+        title={
+          <span data-testid="studio-v3-signature-hero">
+            Your day is ready.
+            <br />
+            <span className="italic" style={{ color: "var(--teal)" }}>
+              Now you can refine it.
+            </span>
           </span>
-        </h2>
-      </header>
+        }
+      />
 
       {/* ---------- Unified "Your Signature" card (map · story · edit · DNA · price · add-ons) ----------
         Mobile-first ≤560px column. Desktop widens to give journey copy real

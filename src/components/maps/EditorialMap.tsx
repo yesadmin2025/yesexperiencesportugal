@@ -57,6 +57,13 @@ export interface EditorialMapProps {
    * chip is rendered near the midpoint of each visible leg, e.g. "35 min".
    */
   legMinutes?: ReadonlyArray<number | null | undefined>;
+  /**
+   * Draw the connecting line between pins. Defaults to true for the
+   * schematic/editorial surfaces that have always shown it. Pass `false`
+   * when the caller only holds pin coordinates: a curve through the pins is
+   * a drawing, not a driven route, and must not be presented as one.
+   */
+  showRoute?: boolean;
 }
 
 const VB_W = 200;
@@ -130,13 +137,14 @@ export function EditorialMap({
   aspectRatio = "200 / 400",
   className,
   showLabels = true,
+  showRoute = true,
   ariaLabel,
   legMinutes,
 }: EditorialMapProps) {
   const points = useMemo(() => resolveStopPoints(stops), [stops]);
   const visible = Math.max(0, Math.min(points.length, activeCount ?? points.length));
   const shown = points.slice(0, visible);
-  const routeD = useMemo(() => buildRouteD(shown), [shown]);
+  const routeD = useMemo(() => (showRoute ? buildRouteD(shown) : ""), [shown, showRoute]);
 
   const ref = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
@@ -373,7 +381,7 @@ export function EditorialMap({
       {/* Drive-time chips — small gold-outlined pills near each leg midpoint
           along the visible route. Only rendered when legMinutes are provided
           and the corresponding leg is currently visible. */}
-      {legMinutes && shown.length >= 2 ? (
+      {showRoute && legMinutes && shown.length >= 2 ? (
         <ul className="pointer-events-none absolute inset-0 m-0 list-none p-0">
           {shown.slice(1).map((b, i) => {
             const a = shown[i];
