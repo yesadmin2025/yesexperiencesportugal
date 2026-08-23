@@ -66,15 +66,8 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
       // Flexible date + first pickup, then compose.
       const flexible = page.getByRole("button", { name: /flexible/i }).first();
       if (await flexible.isVisible().catch(() => false)) await flexible.click();
-      const pickups = page.locator('[data-testid="studio-v3-logistics"] button');
-      const count = await pickups.count();
-      for (let k = 0; k < count; k++) {
-        const label = (await pickups.nth(k).textContent()) ?? "";
-        if (/lisbon/i.test(label)) {
-          await pickups.nth(k).click().catch(() => undefined);
-          break;
-        }
-      }
+      const pickups = page.locator('section[aria-label="Where the day begins"] button');
+      await pickups.first().click();
       const compose = page.getByRole("button", { name: /compose my day/i }).first();
       await expect(compose).toBeVisible();
       await compose.click();
