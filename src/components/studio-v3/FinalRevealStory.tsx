@@ -261,6 +261,14 @@ export function FinalRevealStory({
       ? state.guests
       : (state.adults ?? 0) + (state.minorAges?.length ?? 0) || 1;
 
+  // Only real, product-backed price factors are disclosed.
+  const priceFactors = React.useMemo(
+    () => resolvePriceChangeFactors({ tour, selectedAddOns }),
+    [tour, selectedAddOns],
+  );
+  // `price_expanded` is a once-per-mounted-reveal signal, not a toggle count.
+  const priceExpandedTracked = React.useRef(false);
+
 
   const included: string[] = (() => {
     if (tour?.id) {
