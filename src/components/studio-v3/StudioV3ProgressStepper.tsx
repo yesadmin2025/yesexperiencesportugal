@@ -11,14 +11,15 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { StudioV3Phase } from "./types";
 import { recordStudioV3BuilderStep } from "@/lib/studio-v3-telemetry";
 
-// P1 audit fix #1: labels rewritten so each beat maps 1:1 to a real
-// group of `data-phase` values (see `beatIndexForPhase` below). IDs are
-// kept for telemetry/back-compat; only labels + reassurance changed.
+// Studio reform (2026-08): the beats now map 1:1 onto the real phase groups
+// in STUDIO_V3_PHASE_ORDER — FEEL → TASTE → SHAPE → YOUR DAY. Progress that
+// lies about how much is left costs more completions than a longer honest
+// one. IDs are kept for telemetry/back-compat; only labels + grouping moved.
 export const STUDIO_V3_BEATS = [
   { id: "region", label: "Feel" },
-  { id: "rhythm", label: "Shape" },
-  { id: "dates", label: "Time" },
-  { id: "compose", label: "Compose" },
+  { id: "rhythm", label: "Taste" },
+  { id: "dates", label: "Shape" },
+  { id: "compose", label: "Your day" },
 ] as const;
 
 export type StudioV3BeatId = (typeof STUDIO_V3_BEATS)[number]["id"];
@@ -27,15 +28,15 @@ export type StudioV3BeatId = (typeof STUDIO_V3_BEATS)[number]["id"];
  *  mobile header stays calm. Desktop keeps the same line for parity. */
 const BEAT_REASSURANCE: Record<StudioV3BeatId, string> = {
   region: "Beat 1 of 4 — Feel",
-  rhythm: "Beat 2 of 4 — Shape",
-  dates: "Beat 3 of 4 — Time",
-  compose: "Beat 4 of 4 — Compose",
+  rhythm: "Beat 2 of 4 — Taste",
+  dates: "Beat 3 of 4 — Shape",
+  compose: "Beat 4 of 4 — Your day",
 };
 
 /** First phase associated with each beat — used as jump-back target. */
 const BEAT_ENTRY_PHASE: Record<StudioV3BeatId, StudioV3Phase> = {
   region: "feeling",
-  rhythm: "rhythm",
+  rhythm: "interests",
   dates: "date",
   compose: "map",
 };
@@ -46,22 +47,26 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
   switch (phase) {
     case "intro":
       return null;
+    // Beat 1 — FEEL: emotion + place + who.
     case "feeling":
     case "destination":
     case "who":
-    case "pickup":
-    case "guests":
       return 0;
+    // Beat 2 — TASTE: what the day is made of.
     case "interests":
-    case "rhythm":
     case "refinement":
+    case "investment":
     case "occasion":
     case "considerations":
     case "language":
-    case "investment":
       return 1;
+    // Beat 3 — SHAPE: rhythm + the logistics that make it real.
+    case "rhythm":
     case "date":
+    case "pickup":
+    case "guests":
       return 2;
+    // Beat 4 — YOUR DAY: composition, story, close.
     case "map":
     case "storyboard":
     case "confirmation":
@@ -72,6 +77,7 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
       return null;
   }
 }
+
 
 export interface StudioV3ProgressStepperProps {
   phase: StudioV3Phase;
