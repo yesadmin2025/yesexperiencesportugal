@@ -213,19 +213,21 @@ export async function advanceIntro(page: Page): Promise<boolean> {
  * Phases can be skipped (irrelevant answers), so "advanced" means the live
  * `data-phase` moved to a STRICTLY LATER index, never merely "changed".
  */
+// Mirrors STUDIO_V3_PHASE_ORDER in src/components/studio-v3/curation.ts.
+// Studio reform (2026-08): desire before logistics; investment never asked.
 export const PHASE_SEQUENCE = [
   "intro",
-  "who",
   "feeling",
   "destination",
-  "pickup",
-  "guests",
-  "investment",
+  "who",
   "interests",
   "rhythm",
   "refinement",
-  "occasion",
   "date",
+  "pickup",
+  "guests",
+  "investment",
+  "occasion",
   "considerations",
   "language",
   "map",
@@ -234,6 +236,7 @@ export const PHASE_SEQUENCE = [
   "guestDetails",
   "checkoutSummary",
 ] as const;
+
 
 export type StudioWalkPhase = (typeof PHASE_SEQUENCE)[number];
 
