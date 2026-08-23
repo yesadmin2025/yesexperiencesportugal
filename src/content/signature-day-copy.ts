@@ -52,7 +52,7 @@ export const REVEAL_TITLE = "Your story in Portugal" as const;
 // Primary CTA on Storytelling — advances to Guest Details / checkout.
 // Uses transactional language so the user feels the reservation is one
 // tap away, not another "next step".
-export const CTA_CONTINUE_TO_GUEST_DETAILS = "Confirm & reserve" as const;
+export const CTA_CONTINUE_TO_GUEST_DETAILS = "Continue to guest details" as const;
 /**
  * @deprecated Retired P1 (audit fix #5). The same string used to appear
  * on both Refine and Storytelling — Refine now says "See my signature

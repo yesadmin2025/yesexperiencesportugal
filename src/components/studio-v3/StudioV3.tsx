@@ -243,6 +243,13 @@ import {
   type DecidedForMeKey,
 } from "./letYesDecide";
 import { trackStudio } from "@/lib/studio-analytics";
+import {
+  resolveRefineIntents,
+  REFINE_MIN_STOPS,
+  type RefineIntentCandidate,
+} from "./refineIntents";
+
+
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { Composition } from "./Composition";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
@@ -3771,6 +3778,96 @@ export function StoryboardHandoff({
     [onStateChange, baseStops],
   );
 
+  // ── Refine undo (single step, deterministic) ───────────────────────────
+  // Holds the exact stop list as it was immediately before the last
+  // supported refine action. Restoring it is a pure assignment — no
+  // recomposition, no invented state.
+  const [undoSnapshot, setUndoSnapshot] = useState<{
+    stops: Array<{ label: string; story: string }>;
+    summary: string;
+  } | null>(null);
+
+  // Contextual refine intents — only the ones the engine can really execute
+  // on this day, built from the SAME validated replacement pool as Swap.
+  const intentCandidates = useMemo<RefineIntentCandidate[]>(() => {
+    if (!resolved.skeletonTourKey || !state.companions || !state.rhythm) return [];
+    const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
+    const out: RefineIntentCandidate[] = [];
+    for (const c of selectReplacementCandidates({
+      skeletonTourId: resolved.skeletonTourKey,
+      interests: state.interests,
+      rhythm: state.rhythm,
+      companions: state.companions,
+      investment: state.investment,
+      considerations: state.considerations,
+      existingRoutePointLabels: editedStops.map((s) => s.label),
+    })) {
+      if (inUse.has(c.name.toLowerCase())) continue;
+      out.push({
+        label: c.name,
+        story: customerStopBlurb(c),
+        type: c.type,
+        suitsInterests: c.suitsInterests,
+      });
+    }
+    return out;
+  }, [
+    resolved.skeletonTourKey,
+    state.companions,
+    state.rhythm,
+    state.interests,
+    state.investment,
+    state.considerations,
+    editedStops,
+  ]);
+
+  const refineIntents = useMemo(
+    () => resolveRefineIntents({ stops: editedStops, candidates: intentCandidates }),
+    [editedStops, intentCandidates],
+  );
+
+  const [intentFeedback, setIntentFeedback] = useState<string | null>(null);
+
+  const applyRefineIntent = useCallback(
+    (intent: (typeof refineIntents)[number]) => {
+      const before = editedStops.map((s) => ({ label: s.label, story: s.story }));
+      const result = intent.apply();
+      setUndoSnapshot({ stops: before, summary: result.summary });
+      setEdited(() => result.stops);
+      setIntentFeedback(result.summary);
+      trackStudio("refine_intent_selected", {
+        phase: "storyboard",
+        intentId: intent.id,
+        added: result.addedLabel,
+        removed: result.removedLabel,
+        stops: result.stops.length,
+      });
+      if (result.removedLabel && !result.addedLabel) {
+        trackStudio("moment_removed", {
+          phase: "storyboard",
+          via: "intent",
+          intentId: intent.id,
+        });
+      } else if (result.addedLabel) {
+        trackStudio("moment_swapped", {
+          phase: "storyboard",
+          via: "intent",
+          intentId: intent.id,
+        });
+      }
+    },
+    [editedStops, setEdited],
+  );
+
+  const undoRefine = useCallback(() => {
+    if (!undoSnapshot) return;
+    const restore = undoSnapshot.stops;
+    setEdited(() => restore.map((s) => ({ ...s })));
+    setUndoSnapshot(null);
+    setIntentFeedback(null);
+  }, [undoSnapshot, setEdited]);
+
+
   const origin = pickupCityLabel(state.pickup);
   const shortLabels: string[] = [];
   const seenShort = new Set<string>();
@@ -4252,7 +4349,66 @@ export function StoryboardHandoff({
             >
               Your stops
             </p>
+
+            {/* Contextual refine intents — rendered only when the engine can
+                really execute them on this day. No decorative chips. */}
+            {refineIntents.length > 0 ? (
+              <div data-testid="studio-v3-refine-intents" className="mb-4 sm:mb-5">
+                <p
+                  className="text-center text-[10px] uppercase tracking-[0.24em] font-semibold mb-2.5"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
+                >
+                  Shift the mood
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {refineIntents.map((intent) => (
+                    <button
+                      key={intent.id}
+                      type="button"
+                      data-refine-intent={intent.id}
+                      onClick={() => applyRefineIntent(intent)}
+                      title={intent.detail}
+                      aria-label={`${intent.label} — ${intent.detail}`}
+                      className="min-h-[44px] rounded-full px-4 py-2 text-[12px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                      style={{
+                        border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                        color: "var(--charcoal)",
+                        background: "transparent",
+                      }}
+                    >
+                      {intent.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {/* Discreet feedback of the last real change + single-step undo. */}
+            {intentFeedback ? (
+              <div
+                data-testid="studio-v3-refine-feedback"
+                role="status"
+                aria-live="polite"
+                className="mb-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[12px]"
+                style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+              >
+                <span style={{ fontFamily: "var(--font-editorial)" }}>{intentFeedback}</span>
+                {undoSnapshot ? (
+                  <button
+                    type="button"
+                    onClick={undoRefine}
+                    data-testid="studio-v3-refine-undo"
+                    className="min-h-[44px] px-2 text-[11px] uppercase tracking-[0.22em] font-semibold underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                    style={{ color: "var(--teal)" }}
+                  >
+                    Undo
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
+
             <ol className="space-y-3 sm:space-y-3">
+
               {editedStops.map((s, i) => {
                 const isFirst = i === 0;
                 const isLast = i === editedStops.length - 1;
@@ -4359,13 +4515,28 @@ export function StoryboardHandoff({
                         <button
                           type="button"
                           aria-label={`Remove ${s.label}`}
-                          disabled={editedStops.length <= 1}
-                          onClick={() => setEdited((prev) => prev.filter((_, j) => j !== i))}
+                          disabled={editedStops.length <= REFINE_MIN_STOPS}
+                          onClick={() => {
+                            const before = editedStops.map((p) => ({ ...p }));
+                            const removed = s.label;
+                            setUndoSnapshot({
+                              stops: before,
+                              summary: `${removed} steps out of your day.`,
+                            });
+                            setEdited((prev) => prev.filter((_, j) => j !== i));
+                            setIntentFeedback(`${removed} steps out of your day.`);
+                            trackStudio("moment_removed", {
+                              phase: "storyboard",
+                              via: "card",
+                              stops: editedStops.length - 1,
+                            });
+                          }}
                           className="relative grid h-8 w-8 place-items-center rounded-full text-[14px] after:absolute after:-inset-[6px] after:content-[''] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                           style={{ color: "var(--charcoal)" }}
                         >
                           ✕
                         </button>
+
                       </div>
                     </div>
 
@@ -4382,14 +4553,24 @@ export function StoryboardHandoff({
                             <button
                               type="button"
                               onClick={() => {
+                                const before = editedStops.map((p) => ({ ...p }));
+                                const summary = `${cand.label} replaces ${s.label}.`;
+                                setUndoSnapshot({ stops: before, summary });
                                 setEdited((prev) =>
                                   prev.map((p, j) =>
                                     j === i ? { label: cand.label, story: cand.story } : p,
                                   ),
                                 );
                                 setSwapOpenIdx(null);
+                                setIntentFeedback(summary);
+                                trackStudio("moment_swapped", {
+                                  phase: "storyboard",
+                                  via: "card",
+                                  source: cand.source,
+                                });
                               }}
-                              className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                              className="w-full min-h-[44px] text-left px-2 py-2.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+
                               style={{ color: "var(--charcoal)" }}
                             >
                               <span className="font-semibold">{cand.label}</span>

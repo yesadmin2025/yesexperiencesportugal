@@ -8,7 +8,7 @@
  *      either screen, the instant-confirmation reassurance is present, the
  *      parchment "letter" image renders, and the email-blur confirmation line
  *      appears after typing an address. Also asserts the Storytelling CTA
- *      contract: primary "Confirm & reserve", secondary "Save my
+ *      contract: primary "Continue to guest details", secondary "Save my
  *      signature", and NO Refine-only affordances (See my signature story,
  *      add-on toggles).
  *   3. Visual — screenshot baselines for the reveal and Guest Details at
@@ -104,11 +104,11 @@ test.describe("Studio V3 · Final Reveal + Guest Details @ 393×588", () => {
     const naturalWidth = await parchment.evaluate((n) => (n as HTMLImageElement).naturalWidth);
     expect(naturalWidth, "parchment image loaded").toBeGreaterThan(200);
 
-    // Storytelling CTA contract — primary Confirm & reserve,
+    // Storytelling CTA contract — primary Continue to guest details,
     // secondary Save my signature, no Refine-only affordances.
     const continueCta = page.getByTestId("studio-v3-final-reveal-continue");
     await expect(continueCta).toBeVisible();
-    await expect(continueCta).toHaveText(/Confirm & reserve/i);
+    await expect(continueCta).toHaveText(/Continue to guest details/i);
     await expect(page.getByTestId("studio-v3-final-reveal-save")).toBeVisible();
     expect(
       await reveal.getByRole("button", { name: /See my signature story/i }).count(),
