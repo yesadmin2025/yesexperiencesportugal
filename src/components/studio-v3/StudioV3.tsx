@@ -4799,6 +4799,7 @@ function ReactionOverlay({
       type="button"
       onClick={onDismiss}
       aria-label="Continue"
+      {...inertWhenPassThrough}
       key={`${reaction.eyebrow}-${reaction.message}`}
       className="fixed inset-0 z-40 flex items-center justify-center px-6 cursor-pointer focus:outline-none"
       style={{
