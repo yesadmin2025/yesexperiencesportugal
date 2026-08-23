@@ -233,6 +233,14 @@ import {
   resolveAdaptiveQuestion,
 } from "@/components/studio-v3/adaptiveQuestions";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
+import {
+  decideFeeling,
+  decideInterests,
+  decideRhythm,
+  decisionWhisper,
+  type DecidedForMeKey,
+} from "./letYesDecide";
+import { trackStudio } from "@/lib/studio-analytics";
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { Composition } from "./Composition";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
@@ -2204,7 +2212,7 @@ export function StudioV3() {
       <StudioV3Intro
         onComplete={(name, pathMode) => {
           setState((s) => ({ ...s, firstName: name, pathMode }));
-          advance("who");
+          advance("feeling");
         }}
       />
     );
@@ -3026,6 +3034,63 @@ function RevealRouteMap({
       />
     </div>
   );
+}
+
+/**
+ * LetYesDecide — first-class "decide for me" affordance. Not a skip: the
+ * curator commits to a real, deterministic choice derived from the
+ * traveller's own answers (see `letYesDecide.ts`).
+ */
+function LetYesDecide({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      data-testid="studio-v3-let-yes-decide"
+      onClick={onClick}
+      className="mt-5 mx-auto flex min-h-[44px] items-center justify-center px-5 text-[11px] uppercase tracking-[0.22em]"
+      style={{
+        fontFamily: "var(--font-display)",
+        color: "var(--charcoal)",
+        border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+        borderRadius: 999,
+        background: "transparent",
+      }}
+    >
+      <span aria-hidden style={{ color: "var(--gold)", marginRight: 8 }}>
+        —
+      </span>
+      {label}
+    </button>
+  );
+}
+
+/**
+ * interpretationLine — one short sentence built ONLY from real answers.
+ * Never introduces a place, stop or theme the traveller did not choose.
+ */
+export function interpretationLine(state: StudioV3State): string | null {
+  const parts: string[] = [];
+  const pace =
+    state.rhythm === "slow"
+      ? "slow"
+      : state.rhythm === "full" || state.rhythm === "immersive"
+        ? "full"
+        : state.rhythm === "balanced"
+          ? "balanced"
+          : null;
+  const feelingLabel = getOptionLabel(FEELINGS, state.feeling)?.toLowerCase() ?? null;
+  const interestLabels = state.interests
+    .map((i) => getOptionLabel(INTERESTS, i)?.toLowerCase())
+    .filter((x): x is string => !!x)
+    .slice(0, 3);
+  if (!feelingLabel && interestLabels.length === 0) return null;
+  if (pace) parts.push(`a ${pace} day`);
+  else parts.push("a day");
+  if (feelingLabel) parts.push(`shaped around ${feelingLabel}`);
+  if (interestLabels.length > 0) parts.push(`with ${interestLabels.join(", ")}`);
+  const who = getOptionLabel(COMPANIONS, state.companions)?.toLowerCase();
+  const tail = who && who !== "solo" ? `, for a ${who} party` : "";
+  return `You're leaning toward ${parts.join(" ")}${tail}.`;
 }
 
 function PhaseHeader({
