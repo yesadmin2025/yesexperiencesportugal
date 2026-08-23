@@ -54,3 +54,28 @@ Kept in the array for hydration of saved states/deep links, never asked:
 `src/lib/studio-analytics.ts` is the only place Studio product events are
 named. It routes through the existing funnel writer where a funnel event
 already exists (no double counting) and to GA4 otherwise.
+
+## The reveal is never a trap
+
+The moments/map surface (`MapAwakens.tsx`) autoplays a reel, but its continue
+CTA (`[data-phase-cta="hold-journey"]`) is ALWAYS interactive. Emphasis ramps
+when the reel completes; the door is never locked. Gating it behind reel
+completion previously stalled the journey whenever autoplay did not run
+(paused tab, reduced motion, one moment, slow mount).
+
+The interpretation beat (`UnderstoodBeat.tsx`) is a short, skippable
+full-screen overlay between logistics and the composed day. It must always
+dismiss itself, and it must never be the only way forward.
+
+Regression cover:
+- `e2e/studio-v3-no-moments-loop-mobile.spec.ts` — CTA interactive on mount,
+  reveal paints within 2500 ms of the final Refine action, and still paints
+  with every image request blocked.
+- `e2e/studio-v3-let-yes-decide-mobile.spec.ts` — handing feeling / interests /
+  rhythm to "Let YES decide" plus a flexible date still composes a real day.
+
+## Last mile
+
+`CheckoutSummary` scrolls itself to the top on mount, so the summary never
+opens mid-scroll with the price line off-screen. The guest-details CTA reads
+"Continue to summary" — it names the next screen, not a side effect.

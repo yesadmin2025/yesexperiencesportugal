@@ -16,6 +16,7 @@ import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
 import { loadStudioV3Signature } from "@/lib/studio-v3/load-signature.functions";
 import { ChoiceGrid } from "./ChoiceGrid";
+import { UnderstoodBeat } from "./UnderstoodBeat";
 import { InvestmentTierPicker } from "./InvestmentTierPicker";
 import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
@@ -768,6 +769,7 @@ export function StudioV3() {
   const isMobile = useIsMobile();
   const { data: tourPriceTiers } = useTourPriceTiers();
   const [exiting, setExiting] = useState(false);
+  const [understood, setUnderstood] = useState<{ line: string; next: StudioV3Phase } | null>(null);
   const [reaction, setReaction] = useState<Reaction | null>(null);
   const [mobileReveal, setMobileReveal] = useState<{ beat: StudioV3BeatId; index: number } | null>(
     null,
@@ -2400,7 +2402,21 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
+      {/* Interpretation beat — plays over the logistics screen on the way to
+          the composition. Skippable, self-dismissing, never blocking. */}
+      {understood ? (
+        <UnderstoodBeat
+          line={understood.line}
+          onDone={() => {
+            const next = understood.next;
+            setUnderstood(null);
+            advance(next);
+          }}
+        />
+      ) : null}
+
       {state.phase === "logistics" ? (
+
         <PhaseShell
           accent="teal"
           exiting={exiting}
@@ -2501,7 +2517,17 @@ export function StudioV3() {
                 date_mode: forward.dateMode,
                 guests: committedTotal,
               });
-              window.setTimeout(() => advance(getNextPhase(forward, "logistics")), 60);
+              const nextPhase = getNextPhase(forward, "logistics");
+              const line = interpretationLine(forward);
+              if (line) {
+                trackStudio("interpretation_viewed", {
+                  phase: "logistics",
+                  stepNumber: stepOf("logistics"),
+                });
+                setUnderstood({ line, next: nextPhase });
+              } else {
+                window.setTimeout(() => advance(nextPhase), 60);
+              }
             }}
             label={
               !state.dateMode

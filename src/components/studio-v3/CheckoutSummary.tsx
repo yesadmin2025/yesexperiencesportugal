@@ -117,6 +117,13 @@ export function CheckoutSummary({
   className,
   testId,
 }: CheckoutSummaryProps) {
+  // Last mile: the summary always opens at its own top. Arriving mid-scroll
+  // from guest details hides the price line and reads as a broken step.
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, []);
+
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your Signature";
   const dateLabel = formatDate(guestDetails.tourDate ?? state.dateExact);

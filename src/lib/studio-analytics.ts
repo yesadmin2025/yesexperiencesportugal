@@ -21,6 +21,8 @@ export type StudioAnalyticsEvent =
   | "choice_selected"
   | "surprise_me_selected"
   | "logistics_completed"
+  | "interpretation_viewed"
+  | "refine_intent_selected"
   | "composition_generated"
   | "map_viewed"
   | "moment_kept"

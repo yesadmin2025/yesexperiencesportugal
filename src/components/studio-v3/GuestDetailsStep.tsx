@@ -517,7 +517,7 @@ export function GuestDetailsStep({
                 iconLeading={<Lock size={14} aria-hidden />}
                 data-testid="studio-v3-guest-details-submit"
               >
-                {submitLabel ?? "Continue and email my Signature story"}
+                {submitLabel ?? "Continue to summary"}
               </CtaButton>
             )}
             <p className="mt-2 text-center text-[10px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
