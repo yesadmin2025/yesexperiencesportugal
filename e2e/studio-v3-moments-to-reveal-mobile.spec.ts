@@ -39,19 +39,17 @@ async function revealFromRefine(page: Page): Promise<number> {
 
 test("moments complete, then the signature story reveals in <=2.5s", async ({ page }) => {
   await page.goto("/studio-v3");
-  await walkToReveal(page);
+  await walkToReveal(page, { stopAtMoments: true });
 
-  // The moments surface, when it is on screen, must reach a completed state
-  // and offer an interactive continue — no infinite reel.
+  // The moments surface must reach a completed state on its own and offer an
+  // interactive continue throughout — no reel that has to be babysat.
   const momentsBlock = page.getByTestId("studio-v3-moments-continue");
-  if (await momentsBlock.count()) {
-    await expect(momentsBlock).toHaveAttribute("data-moments-complete", "true", {
-      timeout: 16_000,
-    });
-    const holdCta = page.locator('[data-phase-cta="hold-journey"]').first();
-    await expect(holdCta).toBeEnabled();
-  }
+  await expect(momentsBlock).toBeVisible({ timeout: 20_000 });
+  const holdCta = page.locator('[data-phase-cta="hold-journey"]').first();
+  await expect(holdCta).toBeEnabled();
+  await expect(momentsBlock).toHaveAttribute("data-moments-complete", "true", { timeout: 20_000 });
 
+  await holdCta.click();
   const elapsed = await revealFromRefine(page);
   expect(elapsed).toBeLessThanOrEqual(2500);
 
@@ -73,10 +71,10 @@ test("same reveal contract with every image blocked", async ({ page }) => {
 
 test("the moments reel does not loop back to its first moment", async ({ page }) => {
   await page.goto("/studio-v3");
-  await walkToReveal(page);
+  await walkToReveal(page, { stopAtMoments: true });
 
   const momentsBlock = page.getByTestId("studio-v3-moments-continue");
-  if (!(await momentsBlock.count())) test.skip(true, "moments surface not on screen");
+  await expect(momentsBlock).toBeVisible({ timeout: 20_000 });
 
   await expect(momentsBlock).toHaveAttribute("data-moments-complete", "true", { timeout: 16_000 });
   // Once complete it stays complete: no restart cycle.
