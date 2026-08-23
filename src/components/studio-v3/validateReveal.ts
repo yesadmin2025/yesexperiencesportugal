@@ -76,9 +76,14 @@ export function validateResolvedSignature(
     missing.push("missing-journey-title");
   }
 
+  // Non-blocking failures: cosmetic gaps that must never suppress a reveal
+  // whose narrative content is complete and true.
+  const NON_BLOCKING: ReadonlySet<RevealValidationFailure> = new Set(["tour-missing-image"]);
+
   return {
-    ok: missing.length === 0,
+    ok: missing.every((m) => NON_BLOCKING.has(m)),
     missing,
     tourId: resolved.skeletonTourKey ?? null,
   };
 }
+
