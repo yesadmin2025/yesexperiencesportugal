@@ -50,7 +50,7 @@ describe("MapAwakens — map vs timeline", () => {
   it("resolves to exactly one truthful mode and never fakes a map", () => {
     render(
       <MapAwakens
-        feeling="wine"
+        feeling="wine-food"
         companions="couple"
         rhythm="slow"
         onBack={() => {}}
@@ -75,7 +75,7 @@ describe("MapAwakens — map vs timeline", () => {
   it("keeps the continue CTA reachable before any autoplay completes", () => {
     render(
       <MapAwakens
-        feeling="wine"
+        feeling="wine-food"
         companions="couple"
         rhythm="slow"
         onBack={() => {}}
