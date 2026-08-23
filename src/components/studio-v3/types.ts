@@ -129,6 +129,14 @@ export type StudioV3Phase =
   | "rhythm"
   /** refinement — at most one adaptive question, skipped when irrelevant. */
   | "refinement"
+  /**
+   * logistics — Studio reform (2026-08). ONE consolidated screen that asks
+   * for date + pickup + party in a single beat, with everything already
+   * inferred pre-filled and editable. Replaces the three separate
+   * date/pickup/guests questions (those ids stay in the union so saved
+   * states, deep links and older tests still hydrate).
+   */
+  | "logistics"
   | "considerations"
   | "language"
   | "investment"
