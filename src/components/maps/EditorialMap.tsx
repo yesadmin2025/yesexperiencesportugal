@@ -381,7 +381,7 @@ export function EditorialMap({
       {/* Drive-time chips — small gold-outlined pills near each leg midpoint
           along the visible route. Only rendered when legMinutes are provided
           and the corresponding leg is currently visible. */}
-      {legMinutes && shown.length >= 2 ? (
+      {showRoute && legMinutes && shown.length >= 2 ? (
         <ul className="pointer-events-none absolute inset-0 m-0 list-none p-0">
           {shown.slice(1).map((b, i) => {
             const a = shown[i];
