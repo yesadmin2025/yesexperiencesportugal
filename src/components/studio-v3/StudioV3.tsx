@@ -2402,7 +2402,21 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
+      {/* Interpretation beat — plays over the logistics screen on the way to
+          the composition. Skippable, self-dismissing, never blocking. */}
+      {understood ? (
+        <UnderstoodBeat
+          line={understood.line}
+          onDone={() => {
+            const next = understood.next;
+            setUnderstood(null);
+            advance(next);
+          }}
+        />
+      ) : null}
+
       {state.phase === "logistics" ? (
+
         <PhaseShell
           accent="teal"
           exiting={exiting}
