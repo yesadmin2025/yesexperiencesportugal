@@ -61,6 +61,21 @@ beforeAll(() => {
       dispatchEvent: vi.fn(),
     })) as unknown as typeof window.matchMedia;
   }
+  if (!("IntersectionObserver" in window)) {
+    class IO {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+      takeRecords() {
+        return [];
+      }
+      root = null;
+      rootMargin = "";
+      thresholds = [];
+    }
+    window.IntersectionObserver = IO as unknown as typeof window.IntersectionObserver;
+    globalThis.IntersectionObserver = window.IntersectionObserver;
+  }
 });
 
 function renderMapAwakens() {
