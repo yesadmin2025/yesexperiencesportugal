@@ -59,10 +59,15 @@ export function validateResolvedSignature(
     if (!tour) {
       missing.push("tour-not-found");
     } else {
+      // Studio reform (2026-08): a missing hero image is a PRESENTATION
+      // problem, never a reason to withhold the reveal. The reveal renders
+      // text-first; imagery is progressive enhancement. We still report the
+      // gap so telemetry can flag it, but it no longer sets `ok: false`.
       if (!tour.img || !tour.img.trim()) missing.push("tour-missing-image");
       if (!tour.title || !tour.title.trim()) missing.push("tour-missing-title");
     }
   }
+
 
   if (!resolved.suggestedRouteLabel || !resolved.suggestedRouteLabel.trim()) {
     missing.push("missing-suggested-route");
