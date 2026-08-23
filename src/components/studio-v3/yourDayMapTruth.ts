@@ -97,7 +97,12 @@ export function resolveYourDayMapTruth(
   options: ResolveOptions = {},
 ): YourDayMapTruth {
   const timeline = (reason: Exclude<YourDayMapTruth, { mode: "map" }>["reason"]) =>
-    ({ mode: "timeline", stops: [], hasRouteGeometry: false, reason }) as const;
+    ({
+      mode: "timeline",
+      stops: [],
+      hasRouteGeometry: false,
+      reason,
+    }) satisfies YourDayMapTruth;
 
   if (moments.length === 0) return timeline("no-moments");
 
