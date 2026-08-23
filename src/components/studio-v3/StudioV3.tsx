@@ -262,32 +262,11 @@ import {
 
 const TOTAL_STEPS = 14;
 
-// Keep this aligned with LINEAR_ORDER in curation.ts — the advance() guard
-// uses PHASE_ORDER indices to reject out-of-sequence transitions, and
-// getNextPhase() walks LINEAR_ORDER to decide the next step. If the two
-// disagree (e.g. investment placed before guests here but after guests
-// there), valid transitions get silently dropped and the funnel dead-ends.
-const PHASE_ORDER: StudioV3Phase[] = [
-  "intro",
-  "who",
-  "feeling",
-  "destination",
-  "pickup",
-  "guests",
-  "investment",
-  "interests",
-  "rhythm",
-  "refinement",
-  "occasion",
-  "date",
-  "considerations",
-  "language",
-  "map",
-  "storyboard",
-  "confirmation",
-  "guestDetails",
-  "checkoutSummary",
-];
+// Single source of truth — imported from curation.ts so the advance() guard
+// and getNextPhase() can never disagree about ordering (that disagreement
+// used to silently drop valid transitions and dead-end the funnel).
+const PHASE_ORDER: StudioV3Phase[] = STUDIO_V3_PHASE_ORDER;
+
 
 function stepOf(phase: StudioV3Phase): number {
   return PHASE_ORDER.indexOf(phase) + 1;
