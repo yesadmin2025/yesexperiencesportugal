@@ -37,7 +37,7 @@ const BEAT_REASSURANCE: Record<StudioV3BeatId, string> = {
 const BEAT_ENTRY_PHASE: Record<StudioV3BeatId, StudioV3Phase> = {
   region: "feeling",
   rhythm: "interests",
-  dates: "date",
+  dates: "logistics",
   compose: "map",
 };
 
@@ -62,6 +62,7 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
       return 1;
     // Beat 3 — SHAPE: rhythm + the logistics that make it real.
     case "rhythm":
+    case "logistics":
     case "date":
     case "pickup":
     case "guests":

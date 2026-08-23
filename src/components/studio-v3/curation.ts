@@ -2532,6 +2532,16 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
   // it is simply never a question the traveller has to answer to progress.
   if (phase === "investment") return false;
 
+  // Studio reform (2026-08): destination is INFERRED from feeling, interests
+  // and curation rather than asked. `destinationIntent` remains a real soft
+  // scoring signal (settable via deep link / saved state), it is simply no
+  // longer a question standing between desire and the day.
+  if (phase === "destination") return false;
+
+  // Logistics consolidation — date, pickup and party are asked once, on the
+  // single `logistics` screen, prefilled with everything already inferred.
+  if (phase === "date" || phase === "pickup" || phase === "guests") return false;
+
   // Adaptive refinement — one conditional question, asked only when the
   // traveller's own answers make it useful, and never twice.
   if (phase === "refinement") {
@@ -2580,11 +2590,15 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
 export const STUDIO_V3_PHASE_ORDER: StudioV3Phase[] = [
   "intro",
   "feeling",
-  "destination",
   "who",
   "interests",
   "rhythm",
   "refinement",
+  // ONE consolidated logistics beat (date + pickup + party), prefilled.
+  "logistics",
+  // Never asked as standalone questions any more — kept for hydration of
+  // saved states/deep links and for back-compat with older tests.
+  "destination",
   "date",
   "pickup",
   "guests",
