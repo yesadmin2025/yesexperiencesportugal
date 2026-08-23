@@ -30,7 +30,7 @@ afterEach(() => cleanup());
 // the final compose phase.
 const JOURNEY: StudioV3Phase[] = [
   "feeling", // Region
-  "rhythm", // Rhythm
+  "interests", // Taste
   "date", // Dates
   "storyboard", // Compose
 ];
