@@ -73,8 +73,9 @@ beforeAll(() => {
       rootMargin = "";
       thresholds = [];
     }
-    window.IntersectionObserver = IO as unknown as typeof window.IntersectionObserver;
-    globalThis.IntersectionObserver = window.IntersectionObserver;
+    const ctor = IO as unknown as typeof globalThis.IntersectionObserver;
+    (window as Window & typeof globalThis).IntersectionObserver = ctor;
+    globalThis.IntersectionObserver = ctor;
   }
 });
 
