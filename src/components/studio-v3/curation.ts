@@ -3137,6 +3137,8 @@ export function selectReplacementCandidates(input: {
     if (!stop.active) return false;
     if (stop.region !== skeleton.region) return false;
     if (stop.routeCluster !== skeleton.routeCluster) return false;
+    if (!allowWinery && stop.type === "winery") return false;
+
 
     // Tour-isolation gate — a candidate is eligible when AT LEAST ONE holds:
     //   (a) signatureTourId matches the resolved skeleton, OR
