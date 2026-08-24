@@ -7,6 +7,12 @@ test.setTimeout(180_000);
 test("capture your day + reveal", async ({ page }) => {
   await walkToReveal(page);
   await page.waitForTimeout(2000);
+  const screens = await page.locator("[data-studio-v3-screen]").evaluateAll((els) =>
+    els.map((e) => ({ s: e.getAttribute("data-studio-v3-screen"), v: (e as HTMLElement).offsetParent !== null })),
+  );
+  console.log("SCREENS", JSON.stringify(screens));
+  const el = page.locator('[data-studio-v3-screen="refine"]');
+  console.log("refineCount", await el.count());
   await page.screenshot({ path: "/tmp/browser/reveal/yourday.png" });
   const cta = page.getByTestId("studio-v3-handoff-primary").first();
   await cta.scrollIntoViewIfNeeded();
