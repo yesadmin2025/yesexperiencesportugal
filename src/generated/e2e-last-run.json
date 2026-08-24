@@ -1,0 +1,11 @@
+{
+  "generatedAt": null,
+  "startedAt": null,
+  "durationMs": 0,
+  "total": 0,
+  "passed": 0,
+  "failed": 0,
+  "flaky": 0,
+  "skipped": 0,
+  "tests": []
+}
