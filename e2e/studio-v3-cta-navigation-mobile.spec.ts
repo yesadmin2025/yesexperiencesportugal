@@ -17,13 +17,16 @@ import { test, expect, type Page } from "@playwright/test";
 import {
   advanceRefineToStorytelling,
   readInteractableAddons,
+  resetStudioV3State,
   walkToReveal,
 } from "./studio-v3-walk-to-reveal";
 
 const VIEWPORT = { width: 393, height: 588 } as const;
 
 async function reachRefine(page: Page): Promise<boolean> {
-  await page.goto("/studio-v3");
+  // Reset persisted Studio state so a prior spec in the same worker cannot
+  // resume mid-funnel and stall this walk.
+  await resetStudioV3State(page);
   await walkToReveal(page);
   const refine = page.locator('[data-studio-v3-screen="refine"]').first();
   return refine.isVisible().catch(() => false);
