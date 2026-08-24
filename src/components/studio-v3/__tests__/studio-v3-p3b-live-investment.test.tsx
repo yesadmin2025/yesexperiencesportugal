@@ -333,3 +333,98 @@ describe("P3B — checkout summary parity", () => {
     expect(screen.getByTestId("studio-v3-checkout-summary-reserve")).toBeTruthy();
   });
 });
+
+describe("P3B — ribbon live delta (canonical only)", () => {
+  function Ribbon({ total }: { total: number | null }) {
+    return (
+      <RunningInvestmentRibbon
+        state={{
+          ...INITIAL_STATE,
+          phase: "storyboard",
+          tourId: pricedTour.id,
+          guests: 2,
+          adults: 2,
+        }}
+        totalEur={total}
+        adultUnitEur={pricedTour.priceFrom!}
+        guests={2}
+      />
+    );
+  }
+
+  it("shows exact signed deltas for real canonical changes, and none otherwise", () => {
+    vi.useFakeTimers();
+    try {
+      const { rerender } = render(<Ribbon total={500} />);
+      // No delta on first canonical value.
+      expect(screen.queryByTestId("studio-v3-investment-delta")).toBeNull();
+
+      act(() => {
+        rerender(<Ribbon total={620} />);
+      });
+      expect(screen.getByTestId("studio-v3-investment-delta").textContent).toBe("Updated +€120");
+
+      act(() => {
+        rerender(<Ribbon total={540} />);
+      });
+      expect(screen.getByTestId("studio-v3-investment-delta").textContent).toBe("Updated −€80");
+
+      // Same value → no new delta once the previous one has cleared.
+      act(() => {
+        vi.advanceTimersByTime(1700);
+      });
+      expect(screen.queryByTestId("studio-v3-investment-delta")).toBeNull();
+      act(() => {
+        rerender(<Ribbon total={540} />);
+      });
+      expect(screen.queryByTestId("studio-v3-investment-delta")).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("never shows a delta before a canonical total exists", () => {
+    const { rerender } = render(<Ribbon total={null} />);
+    act(() => {
+      rerender(<Ribbon total={null} />);
+    });
+    expect(screen.queryByTestId("studio-v3-investment-delta")).toBeNull();
+  });
+
+  it("keeps the Hide target at a comfortable 44px tap height", () => {
+    render(<Ribbon total={500} />);
+    const hide = screen.getByTestId("studio-v3-investment-ribbon-hide");
+    expect(hide.style.minHeight).toBe("44px");
+  });
+});
+
+describe("P3B — canonical per-person truth", () => {
+  it("never invents an average from the canonical party total", () => {
+    const canonicalTotal = 1000; // includes minors + additions
+    render(
+      <SignaturePriceCard
+        variant="refine"
+        tour={pricedTour}
+        stopCount={pricedTour.stops?.length ?? 0}
+        dateExact={null}
+        onSecure={() => {}}
+        onRefine={() => {}}
+        guests={4}
+        resolvedPerPaxEur={null}
+        resolvedTotalEur={canonicalTotal}
+        resolvedBaseTotalEur={880}
+        resolvedAddOnsTotalEur={120}
+        showAddOns={false}
+      />,
+    );
+    // 1000 / 4 = 250 must NOT be claimed as a per-person figure.
+    const base = screen.getByTestId("studio-v3-base-price");
+    expect(base.getAttribute("data-per-pax-eur")).not.toBe("250");
+    expect(base.textContent).not.toContain("€250");
+    // Canonical party total is still shown verbatim.
+    expect(Number(screen.getByTestId("studio-v3-final-total").getAttribute("data-final-eur"))).toBe(
+      canonicalTotal,
+    );
+  });
+});
+
