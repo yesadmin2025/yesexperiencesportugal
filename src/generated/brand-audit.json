@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-24T04:00:11.603Z",
+  "generatedAt": "2026-08-23T23:09:53.615Z",
   "filesScanned": 1032,
   "approvedPalette": {
     "teal": "#295B61",
@@ -1421,7 +1421,7 @@
     },
     {
       "file": "src/components/maps/EditorialMap.tsx",
-      "line": 187,
+      "line": 179,
       "col": 29,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1430,7 +1430,7 @@
     },
     {
       "file": "src/components/maps/EditorialMap.tsx",
-      "line": 419,
+      "line": 411,
       "col": 65,
       "raw": "#14181a",
       "normalized": "#14181a",

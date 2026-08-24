@@ -34,6 +34,8 @@ import {
 import { isAdaptiveQuestionRelevant } from "@/components/studio-v3/adaptiveQuestions";
 import { adaptiveQuestionAddsValue } from "@/lib/studio-v3/livingAtlasBridge";
 import type { AdaptiveRefinementId } from "@/components/studio-v3/types";
+import { hasExplicitWineIntent, interestsImplyWine } from "./studioWineIntent";
+
 import type {
   ChoiceOption,
   Companions,
@@ -1123,14 +1125,16 @@ export function scoreTourFit(
     boosts.push("family-friendly-copy");
   }
 
-  // ---- Wine coherence (subsumes the guard shipped last turn) ----
+  // ---- Wine coherence ----
+  // Wine intent is EXPLICIT only (see studioWineIntent.ts). `gastronomy` is
+  // food, not wine; the Arrábida/Setúbal/Azeitão region also resolves to
+  // boat, wild-beach, cheese and tile routes, so geography is not a wine
+  // choice either.
   const explicitWineFeeling = feeling === "wine-food";
-  const wineIsTopInterest = interests[0] === "wine" || interests[0] === "gastronomy";
-  const wineIsAnyInterest = interests.includes("wine") || interests.includes("gastronomy");
+  const wineIsTopInterest = interests[0] === "wine";
+  const wineIsAnyInterest = interests.includes("wine");
   const wineIntent =
-    destinationIntent === "alentejo-evora-wine" ||
-    destinationIntent === "alentejo-roman-talha" ||
-    destinationIntent === "arrabida-setubal-azeitao";
+    destinationIntent === "alentejo-evora-wine" || destinationIntent === "alentejo-roman-talha";
   const wineBoost =
     explicitWineFeeling || wineIntent ? 3 : wineIsTopInterest ? 2.5 : wineIsAnyInterest ? 1.5 : 0;
   const wantsWine = wineBoost > 0;
@@ -1153,6 +1157,7 @@ export function scoreTourFit(
     wineScore -= 4;
     penalties.push("wine-asked-but-tour-has-no-wine");
   }
+
 
   // ---- Existing pickup / intent / discovery boosts (kept, re-weighted for
   // the new score scale — interest coverage now dominates, so the
@@ -1545,20 +1550,11 @@ export function curateJourney(
   const minStops = allowTwoStop ? 2 : 3;
   const target = Math.max(minStops, Math.min(rhythmTarget, scored.length));
 
-  // Semantic dedupe: strip common suffixes/words and accents so e.g.
-  // "Bacalhôa" and "Bacalhôa Palace & Winery" are treated as the same
-  // location and never appear together in the same day.
-  const normalizeSemantic = (label: string): string =>
-    label
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(
-        /\b(winery|wineries|tasting|tastings|adega|adegas|palace|estate|quinta|vineyard|visit|stop|cellar|garden|gardens|museum|workshop|chapel)\b/g,
-        "",
-      )
-      .replace(/[^a-z0-9]+/g, " ")
-      .trim();
+  // Place-identity dedupe (see `semanticStopKey`): curated aliases first,
+  // then a conservative normalization. Deliberately NOT a broad generic-noun
+  // stripper — that merged unrelated places.
+  const normalizeSemantic = (label: string): string => semanticStopKey(label);
+
 
   // Anchor on the tour's opening stop so the narrative arc is intact.
   const anchor = scored.find((s) => s.stop.label === primary.stops[0]?.label);
@@ -1639,11 +1635,12 @@ export function curateJourney(
   // picked coast/culture with no wine interest must never have a named winery
   // pushed into (or swapped into) their day. The two Alentejo intents stay
   // because the traveller-visible label itself names the wine tradition.
-  const wineSignal =
-    feeling === "wine-food" ||
-    interests.includes("wine") ||
-    options?.destinationIntent === "alentejo-evora-wine" ||
-    options?.destinationIntent === "alentejo-roman-talha";
+  const wineSignal = hasExplicitWineIntent({
+    feeling,
+    interests,
+    destinationIntent: options?.destinationIntent ?? null,
+  });
+
 
   let wineSwapApplied = false;
   if (wineSignal && !picks.some((p) => WINE_STOP_RE.test(`${p.stop.label} ${p.stop.story}`))) {
@@ -1908,7 +1905,9 @@ export function resolveStudioV3Route(input: {
   // stops with same-type candidates from REGION_STOP_POOL). Flag-gated and
   // OFF in committed code, so this branch is a no-op today. When enabled,
   // mutates `routePoints` in place to preserve order and downstream wiring.
+  const routeWineIntent = hasExplicitWineIntent({ feeling, interests, destinationIntent });
   if (STUDIO_V3_ROUTE_COMPOSITION_ENABLED) {
+
     // Phase 7A — mobility safety: if the traveller flagged reduced mobility
     // or asked to avoid long walks, replace or drop original skeleton stops
     // whose label/story suggests cliffs, coves, caves, trails, hikes, steep
@@ -1927,6 +1926,7 @@ export function resolveStudioV3Route(input: {
         companions,
         investment,
         considerations: input.considerations ?? [],
+        wineIntent: routeWineIntent,
       });
       routePoints.length = 0;
       for (const p of safe) routePoints.push(p);
@@ -1939,6 +1939,7 @@ export function resolveStudioV3Route(input: {
       companions,
       investment,
       considerations: input.considerations ?? [],
+      wineIntent: routeWineIntent,
     });
     routePoints.length = 0;
     for (const p of composed) routePoints.push(p);
@@ -1951,6 +1952,7 @@ export function resolveStudioV3Route(input: {
       companions,
       investment,
       considerations: input.considerations ?? [],
+      wineIntent: routeWineIntent,
     });
     routePoints.length = 0;
     for (const p of withExtra) routePoints.push(p);
@@ -2241,7 +2243,7 @@ export function composePersonalizedMoments(input: {
   } else if (hasHeritage && hasWine) {
     out.push("A heritage moment may take the place of one tasting, subject to availability.");
   } else if (hasGastro && !hasWine) {
-    out.push("A long table moment may anchor the day instead of a tasting stop.");
+    out.push("Regional food is given room in the day, subject to availability.");
   } else if (hasCoast && input.feeling !== "coastal") {
     out.push("A coastal pause may be added, depending on the day's conditions.");
   } else if (
@@ -2813,25 +2815,43 @@ function normalizeLabel(s: string): string {
 }
 
 /**
+ * Curated aliases for places the catalogs genuinely name two ways.
+ * Explicit and audited — we do NOT guess by stripping generic nouns, because
+ * that merges unrelated places ("Adega Regional de Colares" vs "Adega
+ * Cooperativa de Palmela", "Casa do Rio" vs "Casa das Artes"…).
+ */
+const STOP_ALIASES: ReadonlyArray<{ test: RegExp; key: string }> = [
+  { test: /\bcatralvos\b/, key: "alias:catralvos" },
+  { test: /\bbacalhoa\b/, key: "alias:bacalhoa" },
+];
+
+/** Particles and legal forms only — never a descriptive noun. */
+const STOP_PARTICLE_RE = /\b(de|da|do|dos|das|d|e|of|the|and|crl|lda|sa)\b/g;
+
+/**
  * Identity key for a physical place, independent of how a catalog names it.
- * The Signature source of truth and the region pool sometimes label the same
- * winery differently ("Farm Catralvos" vs "Quinta de Catralvos"), and the
- * plain `normalizeLabel` comparison never caught that, so both could be
- * offered — or added — inside one day. Stripping the generic place words and
- * Portuguese particles collapses them onto the same key.
+ *
+ * Strategy, in order:
+ *   1. curated alias table for verified duplicate names;
+ *   2. conservative normalization (accents, punctuation, particles/legal
+ *      forms) — nothing descriptive is stripped, so distinct places with
+ *      similar shapes stay distinct.
  */
 export function semanticStopKey(label: string): string {
-  return label
+  const base = label
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(
-      /\b(winery|wineries|wines|vinhos|tasting|tastings|adega|adegas|cooperativa|coop|crl|palace|palacio|estate|farm|quinta|herdade|monte|casa|house|museum|museu|vineyard|vineyards|visit|stop|cellar|cellars|garden|gardens|workshop|chapel|regional|nacional|portugal|de|da|do|dos|das|d|e|of|the|and)\b/g,
-      " ",
-    )
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
+
+  for (const alias of STOP_ALIASES) {
+    if (alias.test.test(base)) return alias.key;
+  }
+
+  return base.replace(STOP_PARTICLE_RE, " ").replace(/\s+/g, " ").trim();
 }
+
 
 
 /** Both dedupe keys for a label: the literal one and the place-identity one. */
@@ -3046,8 +3066,11 @@ const REPLACEMENT_FAMILY: Record<InferredRoutePointKind, ReadonlyArray<OptionalS
   studio: ["studio"],
   boat: ["boat"],
   heritage: ["heritage", "monument"],
-  scenic: ["beach", "viewpoint", "nature", "village", "winery"],
-  village: ["village", "market", "monument", "winery"],
+  // A scenic or village point is NOT a wine point: a winery must never enter
+  // the day merely because the replacement family structurally allowed it.
+  scenic: ["beach", "viewpoint", "nature", "village"],
+  village: ["village", "market", "monument"],
+
 };
 
 function isCompatibleCandidate(kind: InferredRoutePointKind, cand: OptionalStop): boolean {
@@ -3100,16 +3123,27 @@ export function selectReplacementCandidates(input: {
   investment: InvestmentTier | null;
   considerations: ReadonlyArray<string>;
   existingRoutePointLabels: ReadonlyArray<string>;
+  /**
+   * Explicit wine intent (see studioWineIntent.ts). When false, winery
+   * candidates are excluded outright: a non-wine traveller must never be
+   * offered — nor silently given — a cellar they did not ask for.
+   * Defaults conservatively to the `wine` interest alone.
+   */
+  wineIntent?: boolean;
 }): OptionalStop[] {
   const skeleton = input.skeletonTourId ? SKELETON_TO_CLUSTER[input.skeletonTourId] : undefined;
   if (!skeleton) return [];
 
+  const allowWinery = input.wineIntent ?? interestsImplyWine(input.interests);
   const existing = new Set(input.existingRoutePointLabels.flatMap((l) => stopKeys(l)));
+
 
   const eligible = REGION_STOP_POOL.filter((stop) => {
     if (!stop.active) return false;
     if (stop.region !== skeleton.region) return false;
     if (stop.routeCluster !== skeleton.routeCluster) return false;
+    if (!allowWinery && stop.type === "winery") return false;
+
 
     // Tour-isolation gate — a candidate is eligible when AT LEAST ONE holds:
     //   (a) signatureTourId matches the resolved skeleton, OR
@@ -3174,6 +3208,8 @@ export function applyReplacementCandidates(
     companions: Companions;
     investment: InvestmentTier | null;
     considerations: ReadonlyArray<string>;
+    /** Explicit wine intent — gates winery candidates. See studioWineIntent.ts. */
+    wineIntent?: boolean;
   },
 ): ResolvedRoutePoint[] {
   const out = routePoints.map((p) => ({ ...p }));
@@ -3193,6 +3229,7 @@ export function applyReplacementCandidates(
     investment: input.investment,
     considerations: input.considerations,
     existingRoutePointLabels: out.map((p) => p.label),
+    wineIntent: input.wineIntent,
   });
   if (candidates.length === 0) return out;
 
@@ -3339,6 +3376,8 @@ export function applyExtraMoment(
     companions: Companions;
     investment: InvestmentTier | null;
     considerations: ReadonlyArray<string>;
+    /** Explicit wine intent — gates winery candidates. See studioWineIntent.ts. */
+    wineIntent?: boolean;
   },
 ): ResolvedRoutePoint[] {
   const out = routePoints.map((p) => ({ ...p }));
@@ -3357,6 +3396,7 @@ export function applyExtraMoment(
     investment: input.investment,
     considerations: input.considerations,
     existingRoutePointLabels: out.map((p) => p.label),
+    wineIntent: input.wineIntent,
   });
   if (candidates.length === 0) return out;
 
@@ -3392,8 +3432,11 @@ export function applyExtraMoment(
       return a.cand.id.localeCompare(b.cand.id);
     });
 
-  const pick = scored[0]?.cand;
-  if (!pick) return out;
+  // Never add an extra moment just to fill a slot: a non-positive contextual
+  // score means nothing in the pool actually relates to what was asked for.
+  const best = scored[0];
+  if (!best || best.score <= 0) return out;
+  const pick = best.cand;
 
   const lastKind = inferRoutePointType(out[out.length - 1].label, out[out.length - 1].story);
   const insertAt = lastKind === "table" ? out.length - 1 : Math.min(2, out.length);
@@ -3441,6 +3484,8 @@ export function applyMobilitySafety(
     companions: Companions;
     investment: InvestmentTier | null;
     considerations: ReadonlyArray<string>;
+    /** Explicit wine intent — gates winery candidates. See studioWineIntent.ts. */
+    wineIntent?: boolean;
   },
 ): ResolvedRoutePoint[] {
   const out = routePoints.map((p) => ({ ...p }));
@@ -3454,6 +3499,7 @@ export function applyMobilitySafety(
     investment: input.investment,
     considerations: input.considerations,
     existingRoutePointLabels: out.map((p) => p.label),
+    wineIntent: input.wineIntent,
   });
 
   const usedIds = new Set<string>();

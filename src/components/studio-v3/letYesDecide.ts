@@ -23,13 +23,20 @@ const DEFAULT_RHYTHM: Rhythm = "balanced";
 const DEFAULT_INTERESTS: Interest[] = ["coast", "gastronomy"];
 
 /**
+ * Wine is NEVER inferred. Romance, slow-luxury and gastronomy are not wine
+ * signals (see studioWineIntent.ts) — only an explicit `wine` interest or the
+ * `wine-food` feeling may put wine into a day.
+ */
+
+/**
  * decideFeeling — infer the mood from interests and company.
- * Falls back to the coastal default (Portugal's most universally loved
- * signature and the widest Signature coverage in the catalogue).
+ * Falls back to a neutral coastal default. This is an operational default
+ * only — it is NOT evidence of popularity or customer preference.
  */
 export function decideFeeling(state: StudioV3State): Feeling {
   const i = new Set(state.interests);
-  if (i.has("wine") || i.has("gastronomy")) return "wine-food";
+  if (i.has("wine")) return "wine-food";
+  if (i.has("gastronomy")) return "culture";
   if (i.has("coast")) return "coastal";
   if (i.has("heritage")) return "culture";
   if (i.has("faith")) return "faith";
@@ -51,10 +58,10 @@ export function decideInterests(state: StudioV3State): Interest[] {
     coastal: ["coast", "nature", "gastronomy"],
     "wine-food": ["wine", "gastronomy", "local-life"],
     hidden: ["local-life", "nature", "gastronomy"],
-    romance: ["coast", "wine", "photography"],
+    romance: ["coast", "photography", "gastronomy"],
     culture: ["heritage", "local-life", "gastronomy"],
     adventure: ["nature", "coast", "photography"],
-    "slow-luxury": ["wine", "wellness", "gastronomy"],
+    "slow-luxury": ["wellness", "gastronomy", "nature"],
     faith: ["faith", "heritage", "local-life"],
     "hands-on": ["hands-on", "local-life", "gastronomy"],
   };
@@ -81,7 +88,7 @@ export function decideRhythm(state: StudioV3State): Rhythm {
 export function decisionWhisper(key: DecidedForMeKey, state: StudioV3State): string {
   const hasSignal =
     state.interests.length > 0 || state.feeling != null || state.companions != null;
-  if (!hasSignal) return "We start from our most-loved shape and refine it with you.";
+  if (!hasSignal) return "We start from a balanced shape and refine it with you.";
   if (key === "feeling") return "Chosen from what you've already told us.";
   if (key === "interests") return "Shaped around the mood you picked.";
   return "Paced for how your day is taking form.";

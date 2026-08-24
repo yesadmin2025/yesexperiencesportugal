@@ -9,7 +9,9 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
+import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
+
 import { useServerFn } from "@tanstack/react-start";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
@@ -3990,13 +3992,21 @@ export function StoryboardHandoff({
 
   // Story of the day — generated only from real composed route points.
   const cleanLabel = (s: string) => s.split(/[—–-]/)[0].split(",")[0].trim();
-  const firstStop = editedStops[0] ? cleanLabel(editedStops[0].label) : null;
+  // A catalog winery name is an assignment candidate, not a confirmed
+  // supplier, so traveller-facing surfaces show a generic winery label.
+  const wineryDisplayLabels = buildWineryDisplayLabels(editedStops);
+  const displayLabel = (label: string) => {
+    const generic = studioDisplayLabel(label, wineryDisplayLabels);
+    return generic === label ? cleanLabel(label) : generic;
+  };
+  const firstStop = editedStops[0] ? displayLabel(editedStops[0].label) : null;
   const lastStop =
-    editedStops.length > 1 ? cleanLabel(editedStops[editedStops.length - 1].label) : null;
+    editedStops.length > 1 ? displayLabel(editedStops[editedStops.length - 1].label) : null;
   const middleStop =
     editedStops.length >= 3
-      ? cleanLabel(editedStops[Math.floor(editedStops.length / 2)].label)
+      ? displayLabel(editedStops[Math.floor(editedStops.length / 2)].label)
       : null;
+
 
   const hasNamedPickup = !!pickupCity && pickupCity !== "your chosen starting point";
   const regionForStory = skeletonTour?.region?.trim() || null;
@@ -4314,7 +4324,7 @@ export function StoryboardHandoff({
                         color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
                       }}
                     >
-                      {cleanLabel(s.label)}
+                      {displayLabel(s.label)}
                     </span>
                   </li>
                 );
