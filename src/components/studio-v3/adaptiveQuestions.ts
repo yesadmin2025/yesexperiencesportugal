@@ -104,11 +104,11 @@ const REFINEMENT_SUMMARY: Readonly<Record<AdaptiveRefinementId, string>> = {
   "wine-vineyard-views": "Vineyard views over tasting notes",
   "hands-paint-tile": "Painting an azulejo tile",
   "hands-make-cheese": "Making Azeitão cheese by hand",
-  "hands-just-watch": "Watching the craft, hands free",
+  "hands-just-watch": "No workshop — observing only",
   "local-river-and-rice": "Rice fields and river villages",
   "local-market-morning": "A market morning among locals",
   "local-artisans": "Artisans at work",
-  "faith-sanctuary-time": "Time inside the sanctuary",
+  "faith-sanctuary-time": "Sanctuary time",
   "faith-templar-heritage": "Sacred heritage and its history",
   "faith-quiet-reflection": "Quiet reflection, without a set programme",
   "photo-golden-hour": "The day paced around the best light",
@@ -298,7 +298,7 @@ export function resolveAdaptiveQuestion(
       eyebrow: "The light",
       title: "What should the camera",
       titleAccent: "come home with?",
-      hint: "This shapes pacing and where the longer pauses fall.",
+      hint: "",
       options: [
         {
           id: "photo-golden-hour",
@@ -325,7 +325,7 @@ export function resolveAdaptiveQuestion(
       eyebrow: "The Atlantic",
       title: "How should the coast",
       titleAccent: "reach you?",
-      hint: "This helps us choose the coastal direction that best fits your day.",
+      hint: "",
       options: [
         {
           id: "coast-from-the-water",
@@ -352,7 +352,7 @@ export function resolveAdaptiveQuestion(
       eyebrow: "The table",
       title: "What should the wine",
       titleAccent: "be about?",
-      hint: "This helps us choose the wine direction that best fits your day.",
+      hint: "",
       options: [
         {
           id: "wine-cellar-depth",
@@ -377,9 +377,9 @@ export function resolveAdaptiveQuestion(
     return {
       kind,
       eyebrow: "By hand",
-      title: "Would you like to",
-      titleAccent: "make something?",
-      hint: "Shown only where a supported hands-on experience can fit the route.",
+      title: "Which craft would you rather",
+      titleAccent: "get your hands into?",
+      hint: "",
       options: [
         {
           id: "hands-paint-tile",
@@ -393,8 +393,8 @@ export function resolveAdaptiveQuestion(
         },
         {
           id: "hands-just-watch",
-          label: "Just watch",
-          whisper: "See the craft without adding a workshop to your day.",
+          label: "No workshop — I'd rather observe",
+          whisper: "No workshop is added to your day.",
         },
       ],
     };
@@ -408,7 +408,7 @@ export function resolveAdaptiveQuestion(
     eyebrow: "Local life",
     title: "Where do you want to",
     titleAccent: "meet the everyday?",
-    hint: "This helps us choose the quieter local thread of the day.",
+    hint: "",
     options,
   };
 }
