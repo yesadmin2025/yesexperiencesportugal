@@ -32,7 +32,7 @@ test.describe("Studio V3 — P1 audit fixes (mobile)", () => {
   });
 
 
-  test("stepper: Feel/Shape/Time/Compose, no truncation", async ({ page }) => {
+  test("stepper: Feel/Taste/Shape/Your day, no truncation", async ({ page }) => {
     await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
     await walkToReveal(page);
 
@@ -41,7 +41,7 @@ test.describe("Studio V3 — P1 audit fixes (mobile)", () => {
 
     const beats = stepper.locator('[data-testid="studio-v3-phase-tab"]');
     const labels = (await beats.allInnerTexts()).map((s) => s.trim());
-    expect(labels).toEqual(["Feel", "Shape", "Time", "Compose"]);
+    expect(labels).toEqual(["Feel", "Taste", "Shape", "Your day"]);
 
     // #2 — no beat label ellipsised on 393 px.
     for (const label of labels) {
