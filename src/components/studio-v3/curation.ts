@@ -1905,7 +1905,9 @@ export function resolveStudioV3Route(input: {
   // stops with same-type candidates from REGION_STOP_POOL). Flag-gated and
   // OFF in committed code, so this branch is a no-op today. When enabled,
   // mutates `routePoints` in place to preserve order and downstream wiring.
+  const routeWineIntent = hasExplicitWineIntent({ feeling, interests, destinationIntent });
   if (STUDIO_V3_ROUTE_COMPOSITION_ENABLED) {
+
     // Phase 7A — mobility safety: if the traveller flagged reduced mobility
     // or asked to avoid long walks, replace or drop original skeleton stops
     // whose label/story suggests cliffs, coves, caves, trails, hikes, steep
