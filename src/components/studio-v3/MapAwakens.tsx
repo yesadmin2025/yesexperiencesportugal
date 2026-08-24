@@ -414,7 +414,11 @@ export function MapAwakens({
         data-your-day-mode={mapTruth.mode}
         data-testid="studio-v3-your-day-stage"
         className={`relative w-full z-10 px-3 pb-3 pt-4 ${
-          showGeographicMap ? "h-[300px] sm:h-[52dvh]" : ""
+          // The schematic map is authored portrait (200×400) and crops to
+          // fill: a short, wide frame slices the country so aggressively
+          // that the stops fall outside the canvas and the map reads empty.
+          // A taller mobile stage keeps the real pins inside the frame.
+          showGeographicMap ? "h-[420px] sm:h-[56dvh]" : ""
         }`}
       >
         {showGeographicMap ? (
