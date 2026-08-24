@@ -1803,6 +1803,10 @@ export function StudioV3() {
       message: summary
         ? `${summary}. We will build the day around that.`
         : "Noted. We will build the day around that.",
+      // Copy-only beat: no schematic panel, and short enough that the
+      // logistics screen underneath is reachable almost immediately.
+      hidePanel: true,
+      holdMs: 1600,
     });
   };
 
