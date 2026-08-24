@@ -150,9 +150,11 @@ export function CheckoutSummary({
       data-testid={testId ?? "studio-v3-checkout-summary"}
       aria-labelledby="studio-v3-checkout-summary-title"
       className={cn(
-        // Bottom padding clears the fixed reserve bar with margin, so the
-        // Total row is never partly covered at the end of the scroll.
-        "w-full max-w-[560px] mx-auto px-5 pt-8 pb-[calc(env(safe-area-inset-bottom)+9.5rem)]",
+        // Bottom padding clears the fixed reserve bar (measured 122px at
+        // 393px) with a ≥12px margin, so the Total row is never partly
+        // covered at the end of the scroll.
+        "w-full max-w-[560px] mx-auto px-5 pt-8 pb-[calc(env(safe-area-inset-bottom)+8.5rem)]",
+
         className,
       )}
     >
