@@ -3208,6 +3208,8 @@ export function applyReplacementCandidates(
     companions: Companions;
     investment: InvestmentTier | null;
     considerations: ReadonlyArray<string>;
+    /** Explicit wine intent — gates winery candidates. See studioWineIntent.ts. */
+    wineIntent?: boolean;
   },
 ): ResolvedRoutePoint[] {
   const out = routePoints.map((p) => ({ ...p }));
@@ -3227,6 +3229,7 @@ export function applyReplacementCandidates(
     investment: input.investment,
     considerations: input.considerations,
     existingRoutePointLabels: out.map((p) => p.label),
+    wineIntent: input.wineIntent,
   });
   if (candidates.length === 0) return out;
 
@@ -3373,6 +3376,8 @@ export function applyExtraMoment(
     companions: Companions;
     investment: InvestmentTier | null;
     considerations: ReadonlyArray<string>;
+    /** Explicit wine intent — gates winery candidates. See studioWineIntent.ts. */
+    wineIntent?: boolean;
   },
 ): ResolvedRoutePoint[] {
   const out = routePoints.map((p) => ({ ...p }));
@@ -3391,6 +3396,7 @@ export function applyExtraMoment(
     investment: input.investment,
     considerations: input.considerations,
     existingRoutePointLabels: out.map((p) => p.label),
+    wineIntent: input.wineIntent,
   });
   if (candidates.length === 0) return out;
 
@@ -3426,8 +3432,11 @@ export function applyExtraMoment(
       return a.cand.id.localeCompare(b.cand.id);
     });
 
-  const pick = scored[0]?.cand;
-  if (!pick) return out;
+  // Never add an extra moment just to fill a slot: a non-positive contextual
+  // score means nothing in the pool actually relates to what was asked for.
+  const best = scored[0];
+  if (!best || best.score <= 0) return out;
+  const pick = best.cand;
 
   const lastKind = inferRoutePointType(out[out.length - 1].label, out[out.length - 1].story);
   const insertAt = lastKind === "table" ? out.length - 1 : Math.min(2, out.length);
@@ -3475,6 +3484,8 @@ export function applyMobilitySafety(
     companions: Companions;
     investment: InvestmentTier | null;
     considerations: ReadonlyArray<string>;
+    /** Explicit wine intent — gates winery candidates. See studioWineIntent.ts. */
+    wineIntent?: boolean;
   },
 ): ResolvedRoutePoint[] {
   const out = routePoints.map((p) => ({ ...p }));
@@ -3488,6 +3499,7 @@ export function applyMobilitySafety(
     investment: input.investment,
     considerations: input.considerations,
     existingRoutePointLabels: out.map((p) => p.label),
+    wineIntent: input.wineIntent,
   });
 
   const usedIds = new Set<string>();
