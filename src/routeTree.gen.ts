@@ -121,6 +121,7 @@ import { Route as AdminGscRouteImport } from './routes/admin.gsc'
 import { Route as AdminGbpLegacyRemovalRouteImport } from './routes/admin.gbp-legacy-removal'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
+import { Route as AdminE2eReportRouteImport } from './routes/admin.e2e-report'
 import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
 import { Route as AdminDriftBehaviorRouteImport } from './routes/admin.drift-behavior'
 import { Route as AdminDomainsHealthRouteImport } from './routes/admin.domains-health'
@@ -721,6 +722,11 @@ const AdminEmailsRoute = AdminEmailsRouteImport.update({
   path: '/admin/emails',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminE2eReportRoute = AdminE2eReportRouteImport.update({
+  id: '/admin/e2e-report',
+  path: '/admin/e2e-report',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminDriftBibleRoute = AdminDriftBibleRouteImport.update({
   id: '/admin/drift-bible',
   path: '/admin/drift-bible',
@@ -963,6 +969,7 @@ export interface FileRoutesByFullPath {
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
+  '/admin/e2e-report': typeof AdminE2eReportRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
@@ -1107,6 +1114,7 @@ export interface FileRoutesByTo {
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
+  '/admin/e2e-report': typeof AdminE2eReportRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
@@ -1254,6 +1262,7 @@ export interface FileRoutesById {
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
   '/admin/drift-bible': typeof AdminDriftBibleRoute
+  '/admin/e2e-report': typeof AdminE2eReportRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
@@ -1402,6 +1411,7 @@ export interface FileRouteTypes {
     | '/admin/domains-health'
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
+    | '/admin/e2e-report'
     | '/admin/emails'
     | '/admin/error-logs'
     | '/admin/gbp-legacy-removal'
@@ -1546,6 +1556,7 @@ export interface FileRouteTypes {
     | '/admin/domains-health'
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
+    | '/admin/e2e-report'
     | '/admin/emails'
     | '/admin/error-logs'
     | '/admin/gbp-legacy-removal'
@@ -1692,6 +1703,7 @@ export interface FileRouteTypes {
     | '/admin/domains-health'
     | '/admin/drift-behavior'
     | '/admin/drift-bible'
+    | '/admin/e2e-report'
     | '/admin/emails'
     | '/admin/error-logs'
     | '/admin/gbp-legacy-removal'
@@ -1839,6 +1851,7 @@ export interface RootRouteChildren {
   AdminDomainsHealthRoute: typeof AdminDomainsHealthRoute
   AdminDriftBehaviorRoute: typeof AdminDriftBehaviorRoute
   AdminDriftBibleRoute: typeof AdminDriftBibleRoute
+  AdminE2eReportRoute: typeof AdminE2eReportRoute
   AdminEmailsRoute: typeof AdminEmailsRoute
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
@@ -2687,6 +2700,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEmailsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/e2e-report': {
+      id: '/admin/e2e-report'
+      path: '/admin/e2e-report'
+      fullPath: '/admin/e2e-report'
+      preLoaderRoute: typeof AdminE2eReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/drift-bible': {
       id: '/admin/drift-bible'
       path: '/admin/drift-bible'
@@ -3056,6 +3076,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminDomainsHealthRoute: AdminDomainsHealthRoute,
   AdminDriftBehaviorRoute: AdminDriftBehaviorRoute,
   AdminDriftBibleRoute: AdminDriftBibleRoute,
+  AdminE2eReportRoute: AdminE2eReportRoute,
   AdminEmailsRoute: AdminEmailsRoute,
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
