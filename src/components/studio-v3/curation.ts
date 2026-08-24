@@ -2238,7 +2238,7 @@ export function composePersonalizedMoments(input: {
   } else if (hasHeritage && hasWine) {
     out.push("A heritage moment may take the place of one tasting, subject to availability.");
   } else if (hasGastro && !hasWine) {
-    out.push("A long table moment may anchor the day instead of a tasting stop.");
+    out.push("Regional food is given room in the day, subject to availability.");
   } else if (hasCoast && input.feeling !== "coastal") {
     out.push("A coastal pause may be added, depending on the day's conditions.");
   } else if (
