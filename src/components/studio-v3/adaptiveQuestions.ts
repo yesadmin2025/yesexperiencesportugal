@@ -10,6 +10,7 @@
  */
 
 import type { LivingAtlasDiscoverySignal } from "@/components/studio-v3/livingAtlasDecision";
+import { deriveStudioSemanticMemory } from "./semanticMemory";
 import { hasExplicitWineIntent } from "./studioWineIntent";
 import type {
   AdaptiveRefinementId,
@@ -99,13 +100,13 @@ const REFINEMENT_SUMMARY: Readonly<Record<AdaptiveRefinementId, string>> = {
   "wine-vineyard-views": "Vineyard views over tasting notes",
   "hands-paint-tile": "Painting an azulejo tile",
   "hands-make-cheese": "Making Azeitão cheese by hand",
-  "hands-just-watch": "Watching the craft, hands free",
+  "hands-just-watch": "No workshop — observation only",
   "local-river-and-rice": "Rice fields and river villages",
   "local-market-morning": "A market morning among locals",
   "local-artisans": "Artisans at work",
-  "faith-sanctuary-time": "Time inside the sanctuary",
+  "faith-sanctuary-time": "Sanctuary time",
   "faith-templar-heritage": "Sacred heritage and its history",
-  "faith-quiet-reflection": "Quiet reflection, without a set programme",
+  "faith-quiet-reflection": "Quiet reflection, without a specific religious stop",
   "photo-golden-hour": "The day paced around the best light",
   "photo-landmarks": "The landmarks, properly framed",
   "photo-no-preference": "No photography preference",
@@ -127,17 +128,17 @@ export function refinementSummaryLabel(
 
 function coastRelevant(state: StudioV3State): boolean {
   if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
-  return (
-    state.feeling === "coastal" ||
-    state.feeling === "adventure" ||
-    state.interests.includes("coast")
-  );
+  // Coast must already be a known theme. Adventure alone is not permission to
+  // assume a coastal preference.
+  return deriveStudioSemanticMemory(state).known.has("theme.coast");
 }
 
 function wineRelevant(state: StudioV3State): boolean {
   if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
+  const memory = deriveStudioSemanticMemory(state);
+  if (!memory.known.has("theme.wine")) return false;
   // Explicit wine intent ONLY. Gastronomy is food, not wine; coast, nature,
-  // heritage and slow-luxury never earn a cellar/vines question.
+  // heritage, romance and slow-luxury never earn a cellar/vines question.
   return hasExplicitWineIntent({
     feeling: state.feeling,
     interests: state.interests,
@@ -147,29 +148,24 @@ function wineRelevant(state: StudioV3State): boolean {
 
 function handsRelevant(state: StudioV3State): boolean {
   if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
-  return (
-    state.interests.includes("hands-on") ||
-    state.interests.includes("local-life") ||
-    state.interests.includes("heritage") ||
-    state.feeling === "hands-on" ||
-    state.feeling === "hidden" ||
-    state.feeling === "culture"
-  );
+  // Workshop intent is explicit-only. Culture, heritage, local-life and hidden
+  // places do not imply that somebody wants to make something themselves.
+  return deriveStudioSemanticMemory(state).known.has("activity.hands-on");
 }
 
 function faithRelevant(state: StudioV3State): boolean {
   if (!FAITH_DESTINATIONS.has(state.destinationIntent)) return false;
-  return state.feeling === "faith" || state.interests.includes("faith");
+  return deriveStudioSemanticMemory(state).known.has("theme.faith");
 }
 
 function photoRelevant(state: StudioV3State): boolean {
   if (!PHOTO_DESTINATIONS.has(state.destinationIntent)) return false;
-  return state.interests.includes("photography");
+  return deriveStudioSemanticMemory(state).known.has("intent.photography");
 }
 
 function localRelevant(state: StudioV3State): boolean {
   if (!LOCAL_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
-  return state.interests.includes("local-life") || state.feeling === "hidden";
+  return deriveStudioSemanticMemory(state).known.has("interest.local-life");
 }
 
 function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
@@ -184,15 +180,15 @@ function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
   const leadFirst: AdaptiveQuestionKind | null =
     state.feeling === "faith"
       ? "faith"
-      : state.feeling === "coastal" || state.feeling === "adventure"
-      ? "coast"
-      : state.feeling === "wine-food"
-        ? "wine"
-        : state.feeling === "culture" || state.feeling === "hands-on"
-          ? "hands"
-          : state.feeling === "hidden"
-            ? "local"
-            : null;
+      : state.feeling === "coastal"
+        ? "coast"
+        : state.feeling === "wine-food"
+          ? "wine"
+          : state.feeling === "hands-on"
+            ? "hands"
+            : state.feeling === "hidden"
+              ? "local"
+              : null;
 
   if (leadFirst && available.includes(leadFirst)) {
     return [leadFirst, ...available.filter((kind) => kind !== leadFirst)];
@@ -240,31 +236,33 @@ export function resolveAdaptiveQuestion(
   if (!state.feeling && state.interests.length === 0) return null;
 
   const available = orderedKinds(state);
+  // AI preference is only a ranking hint. It can never resurrect a question
+  // that deterministic eligibility has already removed.
   const kind = preferredKind && available.includes(preferredKind) ? preferredKind : available[0];
   if (!kind) return null;
 
   if (kind === "faith") {
     return {
       kind,
-      eyebrow: "Quiet ground",
-      title: "How should the sacred part",
-      titleAccent: "of the day feel?",
-      hint: "Shown only where a sanctuary or sacred-heritage route can hold it.",
+      eyebrow: "A reflective thread",
+      title: "You chose a more reflective day.",
+      titleAccent: "Which thread matters more?",
+      hint: "",
       options: [
         {
           id: "faith-sanctuary-time",
-          label: "Time in the sanctuary",
-          whisper: "Unhurried time where people come to pray.",
+          label: "Sanctuary time",
+          whisper: "Unhurried time in a place people still come to pray.",
         },
         {
           id: "faith-templar-heritage",
           label: "Sacred heritage",
-          whisper: "Centuries of stone, orders and scholarship.",
+          whisper: "History, architecture and the traditions held in the place.",
         },
         {
           id: "faith-quiet-reflection",
-          label: "Simply quiet",
-          whisper: "Space to reflect, with nothing scheduled around it.",
+          label: "Keep it simply quiet",
+          whisper: "No specific religious stop — just space to reflect.",
         },
       ],
     };
@@ -274,24 +272,24 @@ export function resolveAdaptiveQuestion(
     return {
       kind,
       eyebrow: "The light",
-      title: "What should the camera",
-      titleAccent: "come home with?",
-      hint: "This shapes pacing and where the longer pauses fall.",
+      title: "For the photographs,",
+      titleAccent: "what matters most?",
+      hint: "",
       options: [
         {
           id: "photo-golden-hour",
           label: "The best light",
-          whisper: "We pace the day around golden hour.",
+          whisper: "Pace the day around golden hour.",
         },
         {
           id: "photo-landmarks",
           label: "The landmarks",
-          whisper: "Palaces and the Atlantic, properly framed.",
+          whisper: "Give the strongest views more room.",
         },
         {
           id: "photo-no-preference",
           label: "No preference",
-          whisper: "Keep the day as it is — the light will come.",
+          whisper: "Keep photography from steering the route.",
         },
       ],
     };
@@ -301,14 +299,14 @@ export function resolveAdaptiveQuestion(
     return {
       kind,
       eyebrow: "The Atlantic",
-      title: "How should the coast",
-      titleAccent: "reach you?",
-      hint: "This helps us choose the coastal direction that best fits your day.",
+      title: "You chose the coast.",
+      titleAccent: "How should you meet it?",
+      hint: "",
       options: [
         {
           id: "coast-from-the-water",
           label: "From the water",
-          whisper: "Coastal caves and cliffs seen from the sea.",
+          whisper: "Caves and cliffs seen from the sea.",
         },
         {
           id: "coast-wild-beaches",
@@ -327,15 +325,15 @@ export function resolveAdaptiveQuestion(
   if (kind === "wine") {
     return {
       kind,
-      eyebrow: "The table",
-      title: "What should the wine",
-      titleAccent: "be about?",
-      hint: "This helps us choose the wine direction that best fits your day.",
+      eyebrow: "The wine",
+      title: "You put wine in the day.",
+      titleAccent: "What should lead?",
+      hint: "",
       options: [
         {
           id: "wine-cellar-depth",
           label: "Inside the cellar",
-          whisper: "The people, the process and how the wine is made.",
+          whisper: "People, process and how the wine is made.",
         },
         {
           id: "wine-table-and-cheese",
@@ -345,7 +343,7 @@ export function resolveAdaptiveQuestion(
         {
           id: "wine-vineyard-views",
           label: "Out among the vines",
-          whisper: "The landscape first, with the tasting woven around it.",
+          whisper: "Landscape first, with tasting woven around it.",
         },
       ],
     };
@@ -355,14 +353,14 @@ export function resolveAdaptiveQuestion(
     return {
       kind,
       eyebrow: "By hand",
-      title: "Would you like to",
-      titleAccent: "make something?",
-      hint: "Shown only where a supported hands-on experience can fit the route.",
+      title: "You want to make something.",
+      titleAccent: "Which craft would you rather get your hands into?",
+      hint: "",
       options: [
         {
           id: "hands-paint-tile",
           label: "Paint an azulejo",
-          whisper: "Explore the tradition with a local maker.",
+          whisper: "Work with the tile tradition alongside a local maker.",
         },
         {
           id: "hands-make-cheese",
@@ -371,8 +369,8 @@ export function resolveAdaptiveQuestion(
         },
         {
           id: "hands-just-watch",
-          label: "Just watch",
-          whisper: "See the craft without adding a workshop to your day.",
+          label: "No workshop — I’d rather observe",
+          whisper: "Keep the craft in the day without making it an activity.",
         },
       ],
     };
@@ -384,9 +382,9 @@ export function resolveAdaptiveQuestion(
   return {
     kind: "local",
     eyebrow: "Local life",
-    title: "Where do you want to",
-    titleAccent: "meet the everyday?",
-    hint: "This helps us choose the quieter local thread of the day.",
+    title: "You want the everyday Portugal.",
+    titleAccent: "Which thread should lead?",
+    hint: "",
     options,
   };
 }
