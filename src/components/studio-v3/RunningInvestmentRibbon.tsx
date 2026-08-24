@@ -91,8 +91,8 @@ export function RunningInvestmentRibbon({
     formatGuestComposition(state.adults, state.minorAges, partyGuests) ??
     (partyGuests != null ? `party of ${partyGuests}` : null);
 
-  const isResolvedTotal = state.tourId != null && totalEur != null && totalEur > 0;
   const fromAnchorEur = !isResolvedTotal ? (adultUnitEur ?? tour?.priceFrom ?? null) : null;
+
 
   let line: string;
   if (isResolvedTotal) {
