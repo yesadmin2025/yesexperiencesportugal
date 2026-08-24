@@ -16,7 +16,7 @@ test.describe("Studio V3 — P1 audit fixes (mobile)", () => {
     await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
 
     // P2 — the opening reads like a travel director, not onboarding.
-    const h1Text = await page.locator("h2, h1").first().innerText();
+    const h1Text = await page.getByTestId("studio-v3-intro-headline").innerText();
     expect(h1Text).toContain("Portugal is the stage");
 
     // P2 — the technical capability strip is gone for good.
