@@ -11,6 +11,11 @@
 
 import type { LivingAtlasDiscoverySignal } from "@/components/studio-v3/livingAtlasDecision";
 import { hasExplicitWineIntent } from "./studioWineIntent";
+import {
+  deriveSemanticMemory,
+  type StudioSemanticMemory,
+  type StudioSemanticTheme,
+} from "./studioSemanticMemory";
 import type {
   AdaptiveRefinementId,
   ChoiceOption,
