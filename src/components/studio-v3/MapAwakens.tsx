@@ -476,7 +476,10 @@ export function MapAwakens({
               eyebrow="Your day"
               meta={journey.tour.region ?? "Portugal"}
               caption={current?.label}
-              footerRight={`${journey.moments.length} stop${journey.moments.length === 1 ? "" : "s"} · 1 day`}
+              // Portrait viewBox inside a short, wide Studio frame: fit the
+              // whole country instead of cropping it (pins would fall out).
+              preserveAspectRatio="xMidYMid meet"
+
               ariaLabel={`Suggested route ${journey.tour.region ? `in ${journey.tour.region}` : ""} with ${journey.moments.length} moments.`}
               className="w-full h-full"
               aspectRatio="auto"
