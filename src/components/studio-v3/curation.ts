@@ -2813,25 +2813,43 @@ function normalizeLabel(s: string): string {
 }
 
 /**
+ * Curated aliases for places the catalogs genuinely name two ways.
+ * Explicit and audited — we do NOT guess by stripping generic nouns, because
+ * that merges unrelated places ("Adega Regional de Colares" vs "Adega
+ * Cooperativa de Palmela", "Casa do Rio" vs "Casa das Artes"…).
+ */
+const STOP_ALIASES: ReadonlyArray<{ test: RegExp; key: string }> = [
+  { test: /\bcatralvos\b/, key: "alias:catralvos" },
+  { test: /\bbacalhoa\b/, key: "alias:bacalhoa" },
+];
+
+/** Particles and legal forms only — never a descriptive noun. */
+const STOP_PARTICLE_RE = /\b(de|da|do|dos|das|d|e|of|the|and|crl|lda|sa)\b/g;
+
+/**
  * Identity key for a physical place, independent of how a catalog names it.
- * The Signature source of truth and the region pool sometimes label the same
- * winery differently ("Farm Catralvos" vs "Quinta de Catralvos"), and the
- * plain `normalizeLabel` comparison never caught that, so both could be
- * offered — or added — inside one day. Stripping the generic place words and
- * Portuguese particles collapses them onto the same key.
+ *
+ * Strategy, in order:
+ *   1. curated alias table for verified duplicate names;
+ *   2. conservative normalization (accents, punctuation, particles/legal
+ *      forms) — nothing descriptive is stripped, so distinct places with
+ *      similar shapes stay distinct.
  */
 export function semanticStopKey(label: string): string {
-  return label
+  const base = label
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(
-      /\b(winery|wineries|wines|vinhos|tasting|tastings|adega|adegas|cooperativa|coop|crl|palace|palacio|estate|farm|quinta|herdade|monte|casa|house|museum|museu|vineyard|vineyards|visit|stop|cellar|cellars|garden|gardens|workshop|chapel|regional|nacional|portugal|de|da|do|dos|das|d|e|of|the|and)\b/g,
-      " ",
-    )
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
+
+  for (const alias of STOP_ALIASES) {
+    if (alias.test.test(base)) return alias.key;
+  }
+
+  return base.replace(STOP_PARTICLE_RE, " ").replace(/\s+/g, " ").trim();
 }
+
 
 
 /** Both dedupe keys for a label: the literal one and the place-identity one. */
