@@ -9,7 +9,7 @@
 import { test, expect, devices } from "@playwright/test";
 
 test.use({ ...devices["Pixel 5"], viewport: { width: 393, height: 780 } });
-test.setTimeout(120_000);
+test.setTimeout(200_000);
 
 async function phase(page: import("@playwright/test").Page): Promise<string | null> {
   const el = page.locator("[data-phase]").first();
@@ -17,10 +17,53 @@ async function phase(page: import("@playwright/test").Page): Promise<string | nu
   return el.getAttribute("data-phase");
 }
 
+async function waitForStablePointerTarget(
+  locator: import("@playwright/test").Locator,
+) {
+  // On a cold Vite graph the button can be visible before the page finishes
+  // settling around it. Wait until its centre is genuinely hit-testable and its
+  // bounding box is stable across animation frames, rather than forcing a click.
+  await expect
+    .poll(
+      async () => {
+        if (!(await locator.isVisible().catch(() => false))) return false;
+        return locator
+          .evaluate(async (node) => {
+            const el = node as HTMLElement;
+            const sample = () => {
+              const rect = el.getBoundingClientRect();
+              if (rect.width <= 0 || rect.height <= 0) return null;
+              const x = rect.left + rect.width / 2;
+              const y = rect.top + rect.height / 2;
+              const hit = document.elementFromPoint(x, y);
+              return {
+                rect,
+                hit: hit === el || (hit instanceof Node && el.contains(hit)),
+              };
+            };
+
+            const first = sample();
+            if (!first?.hit) return false;
+            await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+            await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+            const second = sample();
+            if (!second?.hit) return false;
+
+            return (
+              Math.abs(first.rect.left - second.rect.left) < 1 &&
+              Math.abs(first.rect.top - second.rect.top) < 1 &&
+              Math.abs(first.rect.width - second.rect.width) < 1 &&
+              Math.abs(first.rect.height - second.rect.height) < 1
+            );
+          })
+          .catch(() => false);
+      },
+      { timeout: 60_000, intervals: [100, 250, 500, 1_000] },
+    )
+    .toBe(true);
+}
+
 async function advanceIntro(page: import("@playwright/test").Page) {
-  // A cold Vite graph can take several seconds before the first cinematic CTA
-  // becomes actionable. Wait for the real Studio contract instead of swallowing
-  // short click timeouts and continuing with a stale phase.
   await expect.poll(() => phase(page), { timeout: 30_000 }).toBe("intro");
 
   for (let i = 0; i < 5 && (await phase(page)) === "intro"; i++) {
@@ -28,7 +71,8 @@ async function advanceIntro(page: import("@playwright/test").Page) {
     await cta.waitFor({ state: "visible", timeout: 30_000 });
     const currentCta = await cta.getAttribute("data-phase-cta");
 
-    await cta.click({ timeout: 30_000 });
+    await waitForStablePointerTarget(cta);
+    await cta.click({ timeout: 60_000 });
 
     // Intro has several cinematic beats while data-phase remains "intro".
     // Wait until either the phase advances or the active intro CTA changes.
@@ -87,10 +131,15 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
     }
 
     if (current === "logistics") {
-      // Use the Studio's stable interaction contracts rather than text locators.
+      // A phase transition can begin between the loop's phase read and a later
+      // assertion. Re-check the live phase around each interaction so a DOM that
+      // is correctly unmounting is never mistaken for a missing control.
+      if ((await phase(page)) !== "logistics") continue;
+
       const flexible = page.locator('button[data-phase-cta="date-secondary"]').first();
       await expect(flexible).toBeVisible({ timeout: 15_000 });
       await flexible.click();
+      if ((await phase(page)) !== "logistics") continue;
       await expect(flexible).toHaveAttribute("data-selected", "true");
 
       const pickup = page
@@ -98,14 +147,20 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
         .first();
       await expect(pickup).toBeVisible({ timeout: 15_000 });
       await pickup.click();
+      if ((await phase(page)) !== "logistics") continue;
       await expect(pickup).toHaveAttribute("data-selected", "true");
 
       const compose = page.locator('button[data-phase-cta="continue"]').first();
       await expect(compose).toHaveText(/compose my day/i, { timeout: 15_000 });
       await expect(compose).toBeEnabled();
       await compose.click();
-      await page.waitForTimeout(900);
-      continue;
+
+      // Compose is asynchronous. Do not spin the generic walk again while the
+      // logistics DOM is legitimately being replaced by Your Day.
+      await expect
+        .poll(() => phase(page), { timeout: 20_000 })
+        .not.toBe("logistics");
+      break;
     }
 
     // Never touch close/exit/back chrome — those leave the Studio.
