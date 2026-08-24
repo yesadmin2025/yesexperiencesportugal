@@ -4860,7 +4860,7 @@ function ReactionOverlay({
   const [clickThrough, setClickThrough] = useState(false);
   useEffect(() => {
     setClickThrough(false);
-    const t = window.setTimeout(() => setClickThrough(true), Math.min(900, hold * 0.35));
+    const t = window.setTimeout(() => setClickThrough(true), Math.min(700, hold * 0.35));
     return () => window.clearTimeout(t);
   }, [hold, reaction]);
   // `pointerEvents: none` on the overlay root is NOT enough: the cinematic
