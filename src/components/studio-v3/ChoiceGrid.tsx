@@ -48,7 +48,7 @@ export function ChoiceGrid<T extends string>({
       : false;
   return (
     <ul
-      className={`mt-8 grid w-full max-w-[520px] gap-3 ${
+      className={`mt-8 grid w-full max-w-[520px] gap-x-6 gap-y-0 ${
         columns === 2 ? "grid-cols-2" : "grid-cols-1"
       }`}
       role={isMulti ? "group" : "radiogroup"}
