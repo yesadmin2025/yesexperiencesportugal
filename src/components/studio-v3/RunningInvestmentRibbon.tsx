@@ -14,6 +14,8 @@ import { resolveStudioV3Route } from "./curation";
 import { signatureTours } from "@/data/signatureTours";
 import { regionalVoiceFor } from "./regionalVoice";
 import { formatGuestComposition } from "./formatGuests";
+import { useInvestmentDelta, InvestmentDelta } from "./InvestmentLedger";
+
 
 const DISMISS_KEY = "studio-v3-investment-ribbon-dismissed";
 
