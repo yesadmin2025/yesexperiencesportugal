@@ -24,13 +24,12 @@ export const STUDIO_V3_BEATS = [
 
 export type StudioV3BeatId = (typeof STUDIO_V3_BEATS)[number]["id"];
 
-/** Quiet reassurance line under the stepper — short and uniform so the
- *  mobile header stays calm. Desktop keeps the same line for parity. */
+/** Quiet editorial reassurance under the stepper. */
 const BEAT_REASSURANCE: Record<StudioV3BeatId, string> = {
-  region: "Beat 1 of 4 — Feel",
-  rhythm: "Beat 2 of 4 — Taste",
-  dates: "Beat 3 of 4 — Shape",
-  compose: "Beat 4 of 4 — Your day",
+  region: "Start with the feeling",
+  rhythm: "Now, what draws you",
+  dates: "Now, make it real",
+  compose: "Your day is taking shape",
 };
 
 /** First phase associated with each beat — used as jump-back target. */
@@ -78,7 +77,6 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
       return null;
   }
 }
-
 
 export interface StudioV3ProgressStepperProps {
   phase: StudioV3Phase;
