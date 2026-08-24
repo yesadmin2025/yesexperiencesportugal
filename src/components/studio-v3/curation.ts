@@ -2813,6 +2813,28 @@ function normalizeLabel(s: string): string {
 }
 
 /**
+ * Identity key for a physical place, independent of how a catalog names it.
+ * The Signature source of truth and the region pool sometimes label the same
+ * winery differently ("Farm Catralvos" vs "Quinta de Catralvos"), and the
+ * plain `normalizeLabel` comparison never caught that, so both could be
+ * offered — or added — inside one day. Stripping the generic place words and
+ * Portuguese particles collapses them onto the same key.
+ */
+export function semanticStopKey(label: string): string {
+  return label
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(
+      /\b(winery|wineries|wines|vinhos|tasting|tastings|adega|adegas|cooperativa|coop|crl|palace|palacio|estate|farm|quinta|herdade|monte|casa|house|museum|museu|vineyard|vineyards|visit|stop|cellar|cellars|garden|gardens|workshop|chapel|de|da|do|dos|das|d|e|of|the|and)\b/g,
+      " ",
+    )
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+
+/**
  * Pure selector. Reads from REGION_STOP_POOL and returns stop names only.
  * Does NOT consult the feature flag — the call site in
  * `resolveStudioV3Route` gates it. This keeps the selector unit-testable
