@@ -1,0 +1,3 @@
+# Target Studio V3 stabilization commit. HEAD must contain this commit
+# before the core E2E group is trusted (platform auto-commits above it are OK).
+652a4f5bf8c04fde158a19cd345b6416c5289c66
