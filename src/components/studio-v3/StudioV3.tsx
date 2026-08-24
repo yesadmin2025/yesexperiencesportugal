@@ -1792,7 +1792,12 @@ export function StudioV3() {
   };
   // The single adaptive question, resolved from the traveller's own answers.
   // Null when nothing is worth asking — the phase is then skipped entirely.
-  const adaptiveQuestion = useMemo(() => resolveAdaptiveQuestion(state), [state]);
+  const availableAdaptiveKinds = useMemo(() => availableAdaptiveQuestionKinds(state), [state]);
+  const advisor = useStudioIntentAdvisor(state, availableAdaptiveKinds);
+  const adaptiveQuestion = useMemo(
+    () => resolveAdaptiveQuestion(state, advisor.interpretation?.preferredAdaptiveKind ?? null),
+    [state, advisor.interpretation?.preferredAdaptiveKind],
+  );
 
   /**
    * Adaptive refinement — one conditional question. The answer becomes a
