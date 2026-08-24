@@ -13,7 +13,7 @@ test("map stage measurement", async ({ page }) => {
     const b = await stage.boundingBox();
     const mode = await stage.getAttribute("data-your-day-mode");
     console.log("MEASURE_MAP", JSON.stringify({ h: b?.height, mode }));
-    await page.screenshot({ path: "/tmp/browser/map-393.png" });
+    await stage.screenshot({ path: "/tmp/browser/map-393.png" });
   } else console.log("MEASURE_MAP none");
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   console.log("MEASURE_OVERFLOW", overflow);
