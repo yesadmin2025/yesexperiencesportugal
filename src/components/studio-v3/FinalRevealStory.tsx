@@ -181,6 +181,23 @@ export function FinalRevealStory({
         : (tour?.stops ?? []).map((s) => ({ label: s.label, story: s.story ?? "" }));
   const stops = keptStops.map((s) => ({ label: s.label, story: s.story }));
 
+  // One real photograph opens the reveal: the first kept moment when the
+  // catalog holds an image for it, otherwise the tour's own hero. Never a
+  // stock or generated image, and never a blocker — if nothing resolves,
+  // the reveal simply stays text-first.
+  const openingStopLabel = stops[0]?.label ?? null;
+  const openingCatalogStop = openingStopLabel
+    ? (tour?.stops ?? []).find(
+        (s) => s.label.toLowerCase().trim() === openingStopLabel.toLowerCase().trim(),
+      )
+    : undefined;
+  const openingImage = openingCatalogStop ? stopImage(openingCatalogStop) : (tour?.img ?? null);
+  const openingAlt = openingCatalogStop
+    ? `${openingCatalogStop.label}, ${tour?.region ?? "Portugal"}`
+    : tour
+      ? `${tour.title}, ${tour.region ?? "Portugal"}`
+      : "";
+
   const region = regionLabelFor(state.destinationIntent);
   const narrative = buildRevealNarrative({
     feeling: state.feeling,
