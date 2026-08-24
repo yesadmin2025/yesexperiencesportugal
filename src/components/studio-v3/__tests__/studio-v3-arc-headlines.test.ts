@@ -10,7 +10,7 @@ const read = (p: string) => readFileSync(resolve(process.cwd(), p), "utf8");
  * source so a refactor of either component cannot silently reword them.
  */
 describe("Studio V3 emotional arc headlines", () => {
-  it("opens with `Portugal is waiting…`", () => {
+  it("opens with `Portugal is the stage. You write the story.`", () => {
     const src = read("src/components/studio-v3/StudioV3Intro.tsx");
     const headline = src
       .slice(src.indexOf('data-testid="studio-v3-intro-headline"'))
@@ -18,8 +18,11 @@ describe("Studio V3 emotional arc headlines", () => {
       .replace(/<[^>]*>/g, " ")
       .replace(/\{[^}]*\}/g, " ")
       .replace(/\s+/g, " ");
-    expect(headline).toContain("Portugal is waiting…");
-    expect(src).toContain("A few quiet choices, and Portugal begins to take your shape.");
+    expect(headline).toContain("Portugal");
+    expect(headline).toContain("is the stage. You write the story.");
+    expect(src).toContain(
+      "A few quiet choices, then we shape a private day around your pace, people and",
+    );
   });
 
   it("closes with `Your Portugal is ready.`", () => {

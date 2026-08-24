@@ -145,7 +145,7 @@ async function walkOnce(page: Page): Promise<boolean> {
  * finally any single enabled button inside the live phase.
  */
 export async function advanceGeneric(page: Page, extraTestIds?: string[]): Promise<boolean> {
-  const testIds = extraTestIds ?? ["studio-v3-intro-begin", "studio-v3-intro-path-option"];
+  const testIds = extraTestIds ?? ["studio-v3-intro-begin"];
   for (const id of testIds) {
     const sel = `[data-testid="${id}"]:not([disabled])`;
     if (
@@ -218,23 +218,9 @@ export async function advanceIntro(page: Page): Promise<boolean> {
     }
     return safeClick(page, '[data-phase-cta="intro-name"]');
   }
-  const guided = page
-    .locator('[data-phase-cta="intro-path"][data-phase-cta-recommended="true"]')
-    .first();
-  if (await guided.isVisible().catch(() => false)) {
-    return safeClick(page, '[data-phase-cta="intro-path"][data-phase-cta-recommended="true"]');
-  }
-  if (
-    await page
-      .locator('[data-phase-cta="intro-path"]')
-      .first()
-      .isVisible()
-      .catch(() => false)
-  ) {
-    return safeClick(page, '[data-phase-cta="intro-path"]');
-  }
   return false;
 }
+
 
 /**
  * Linear phase order — mirrors PHASE_ORDER in `src/components/studio-v3/StudioV3.tsx`.
