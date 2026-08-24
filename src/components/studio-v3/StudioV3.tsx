@@ -19,6 +19,7 @@ import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions"
 import { loadStudioV3Signature } from "@/lib/studio-v3/load-signature.functions";
 import { ChoiceGrid } from "./ChoiceGrid";
 import { UnderstoodBeat } from "./UnderstoodBeat";
+import { understoodSummary } from "./studioSemanticMemory";
 import { InvestmentTierPicker } from "./InvestmentTierPicker";
 import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
@@ -2457,15 +2458,7 @@ export function StudioV3() {
             title="Three details and"
             titleAccent="we compose your day"
           />
-          {interpretationLine(state) ? (
-            <p
-              data-testid="studio-v3-interpretation"
-              className="mt-1 mb-2 max-w-[38ch] mx-auto text-center text-[14px] leading-[1.55]"
-              style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
-            >
-              {interpretationLine(state)}
-            </p>
-          ) : null}
+          {adaptiveQuestion ? null : <UnderstoodSummaryLine state={state} />}
           <p
             className="mt-1 mb-6 max-w-[36ch] mx-auto text-center text-[13px] leading-[1.55]"
             style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
@@ -2767,6 +2760,7 @@ export function StudioV3() {
           anticipation={anticipation}
         >
           <BackLink onClick={() => back("rhythm")} />
+          <UnderstoodSummaryLine state={state} />
           <PhaseHeader
             eyebrow={adaptiveQuestion.eyebrow}
             title={adaptiveQuestion.title}
@@ -2780,7 +2774,7 @@ export function StudioV3() {
               columns={adaptiveQuestion.options.length > 2 ? 1 : 2}
             />
           </div>
-          <FooterHint>{adaptiveQuestion.hint}</FooterHint>
+          {adaptiveQuestion.hint ? <FooterHint>{adaptiveQuestion.hint}</FooterHint> : null}
         </PhaseShell>
       ) : null}
 
@@ -3298,6 +3292,35 @@ export function interpretationLine(state: StudioV3State): string | null {
   const who = getOptionLabel(COMPANIONS, state.companions)?.toLowerCase();
   const tail = who && who !== "solo" ? `, for a ${who} party` : "";
   return `You're leaning toward ${parts.join(" ")}${tail}.`;
+}
+
+/**
+ * Short deterministic acknowledgement of what the traveller has already told
+ * us. Built only from explicit selections (max three positive signals) — never
+ * a destination, stop, supplier, price or a negative ("no wine assumed").
+ */
+function UnderstoodSummaryLine({ state }: { state: StudioV3State }) {
+  const summary = understoodSummary(state);
+  if (!summary) return null;
+  return (
+    <div
+      data-testid="studio-v3-understood-summary"
+      className="w-full max-w-[520px] mx-auto mb-1 text-center"
+    >
+      <p
+        className="text-[15px] leading-[1.35]"
+        style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
+      >
+        {summary.lead}
+      </p>
+      <p
+        className="mt-1 text-[11px] uppercase tracking-[0.2em]"
+        style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+      >
+        {summary.detail}
+      </p>
+    </div>
+  );
 }
 
 function PhaseHeader({

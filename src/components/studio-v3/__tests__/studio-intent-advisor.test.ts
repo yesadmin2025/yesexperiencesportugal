@@ -342,7 +342,7 @@ describe("resolveAdaptiveQuestion — preferred kind is advisory only", () => {
   const arrabidaCulture = stateWith({
     feeling: "culture",
     companions: "couple",
-    interests: ["heritage", "coast"],
+    interests: ["heritage", "coast", "local-life"],
     rhythm: "balanced",
     destinationIntent: "arrabida-setubal-azeitao",
   });

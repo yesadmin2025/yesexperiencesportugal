@@ -11,6 +11,11 @@
 
 import type { LivingAtlasDiscoverySignal } from "@/components/studio-v3/livingAtlasDecision";
 import { hasExplicitWineIntent } from "./studioWineIntent";
+import {
+  deriveSemanticMemory,
+  type StudioSemanticMemory,
+  type StudioSemanticTheme,
+} from "./studioSemanticMemory";
 import type {
   AdaptiveRefinementId,
   ChoiceOption,
@@ -99,11 +104,11 @@ const REFINEMENT_SUMMARY: Readonly<Record<AdaptiveRefinementId, string>> = {
   "wine-vineyard-views": "Vineyard views over tasting notes",
   "hands-paint-tile": "Painting an azulejo tile",
   "hands-make-cheese": "Making Azeitão cheese by hand",
-  "hands-just-watch": "Watching the craft, hands free",
+  "hands-just-watch": "No workshop — observing only",
   "local-river-and-rice": "Rice fields and river villages",
   "local-market-morning": "A market morning among locals",
   "local-artisans": "Artisans at work",
-  "faith-sanctuary-time": "Time inside the sanctuary",
+  "faith-sanctuary-time": "Sanctuary time",
   "faith-templar-heritage": "Sacred heritage and its history",
   "faith-quiet-reflection": "Quiet reflection, without a set programme",
   "photo-golden-hour": "The day paced around the best light",
@@ -125,13 +130,30 @@ export function refinementSummaryLabel(
   return REFINEMENT_SUMMARY[refinement] ?? null;
 }
 
+/**
+ * Semantic gate. A question is only eligible when it asks for a genuinely NEW
+ * dimension of an already-known theme (which direction, how, which thread) —
+ * never to reconfirm a theme the traveller has already stated, and never for a
+ * theme they never stated at all.
+ */
+const KIND_THEME: Readonly<Record<AdaptiveQuestionKind, StudioSemanticTheme>> = {
+  coast: "theme.coast",
+  wine: "theme.wine",
+  hands: "activity.hands-on",
+  local: "interest.local-life",
+  faith: "theme.faith",
+  photo: "intent.photography",
+};
+
+function addsNewDimension(memory: StudioSemanticMemory, kind: AdaptiveQuestionKind): boolean {
+  // Every supported question refines a known theme's direction. If the theme is
+  // unknown, asking it would be an invented interest, not a refinement.
+  return memory.has(KIND_THEME[kind]);
+}
+
 function coastRelevant(state: StudioV3State): boolean {
   if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
-  return (
-    state.feeling === "coastal" ||
-    state.feeling === "adventure" ||
-    state.interests.includes("coast")
-  );
+  return state.feeling === "coastal" || state.interests.includes("coast");
 }
 
 function wineRelevant(state: StudioV3State): boolean {
@@ -147,14 +169,9 @@ function wineRelevant(state: StudioV3State): boolean {
 
 function handsRelevant(state: StudioV3State): boolean {
   if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
-  return (
-    state.interests.includes("hands-on") ||
-    state.interests.includes("local-life") ||
-    state.interests.includes("heritage") ||
-    state.feeling === "hands-on" ||
-    state.feeling === "hidden" ||
-    state.feeling === "culture"
-  );
+  // EXPLICIT hands-on intent only. Heritage, culture, local life and hidden
+  // Portugal are never workshop intent.
+  return state.feeling === "hands-on" || state.interests.includes("hands-on");
 }
 
 function faithRelevant(state: StudioV3State): boolean {
@@ -173,6 +190,7 @@ function localRelevant(state: StudioV3State): boolean {
 }
 
 function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
+  const memory = deriveSemanticMemory(state);
   const available: AdaptiveQuestionKind[] = [];
   if (faithRelevant(state)) available.push("faith");
   if (coastRelevant(state)) available.push("coast");
@@ -181,24 +199,27 @@ function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
   if (localRelevant(state)) available.push("local");
   if (photoRelevant(state)) available.push("photo");
 
+  const eligible = available.filter((kind) => addsNewDimension(memory, kind));
+
   const leadFirst: AdaptiveQuestionKind | null =
     state.feeling === "faith"
       ? "faith"
-      : state.feeling === "coastal" || state.feeling === "adventure"
-      ? "coast"
-      : state.feeling === "wine-food"
-        ? "wine"
-        : state.feeling === "culture" || state.feeling === "hands-on"
-          ? "hands"
-          : state.feeling === "hidden"
-            ? "local"
-            : null;
+      : state.feeling === "coastal"
+        ? "coast"
+        : state.feeling === "wine-food"
+          ? "wine"
+          : state.feeling === "hands-on"
+            ? "hands"
+            : state.feeling === "hidden"
+              ? "local"
+              : null;
 
-  if (leadFirst && available.includes(leadFirst)) {
-    return [leadFirst, ...available.filter((kind) => kind !== leadFirst)];
+  if (leadFirst && eligible.includes(leadFirst)) {
+    return [leadFirst, ...eligible.filter((kind) => kind !== leadFirst)];
   }
-  return available;
+  return eligible;
 }
+
 
 function localOptions(state: StudioV3State): ChoiceOption<AdaptiveRefinementId>[] {
   const options: ChoiceOption<AdaptiveRefinementId>[] = [
@@ -247,13 +268,13 @@ export function resolveAdaptiveQuestion(
     return {
       kind,
       eyebrow: "Quiet ground",
-      title: "How should the sacred part",
-      titleAccent: "of the day feel?",
-      hint: "Shown only where a sanctuary or sacred-heritage route can hold it.",
+      title: "You chose a more reflective day.",
+      titleAccent: "Which thread matters more?",
+      hint: "",
       options: [
         {
           id: "faith-sanctuary-time",
-          label: "Time in the sanctuary",
+          label: "Sanctuary time",
           whisper: "Unhurried time where people come to pray.",
         },
         {
@@ -263,12 +284,13 @@ export function resolveAdaptiveQuestion(
         },
         {
           id: "faith-quiet-reflection",
-          label: "Simply quiet",
-          whisper: "Space to reflect, with nothing scheduled around it.",
+          label: "Keep it simply quiet",
+          whisper: "No religious stop or programme — just space to reflect.",
         },
       ],
     };
   }
+
 
   if (kind === "photo") {
     return {
@@ -276,7 +298,7 @@ export function resolveAdaptiveQuestion(
       eyebrow: "The light",
       title: "What should the camera",
       titleAccent: "come home with?",
-      hint: "This shapes pacing and where the longer pauses fall.",
+      hint: "",
       options: [
         {
           id: "photo-golden-hour",
@@ -303,7 +325,7 @@ export function resolveAdaptiveQuestion(
       eyebrow: "The Atlantic",
       title: "How should the coast",
       titleAccent: "reach you?",
-      hint: "This helps us choose the coastal direction that best fits your day.",
+      hint: "",
       options: [
         {
           id: "coast-from-the-water",
@@ -330,7 +352,7 @@ export function resolveAdaptiveQuestion(
       eyebrow: "The table",
       title: "What should the wine",
       titleAccent: "be about?",
-      hint: "This helps us choose the wine direction that best fits your day.",
+      hint: "",
       options: [
         {
           id: "wine-cellar-depth",
@@ -355,9 +377,9 @@ export function resolveAdaptiveQuestion(
     return {
       kind,
       eyebrow: "By hand",
-      title: "Would you like to",
-      titleAccent: "make something?",
-      hint: "Shown only where a supported hands-on experience can fit the route.",
+      title: "Which craft would you rather",
+      titleAccent: "get your hands into?",
+      hint: "",
       options: [
         {
           id: "hands-paint-tile",
@@ -371,8 +393,8 @@ export function resolveAdaptiveQuestion(
         },
         {
           id: "hands-just-watch",
-          label: "Just watch",
-          whisper: "See the craft without adding a workshop to your day.",
+          label: "No workshop — I'd rather observe",
+          whisper: "No workshop is added to your day.",
         },
       ],
     };
@@ -386,7 +408,7 @@ export function resolveAdaptiveQuestion(
     eyebrow: "Local life",
     title: "Where do you want to",
     titleAccent: "meet the everyday?",
-    hint: "This helps us choose the quieter local thread of the day.",
+    hint: "",
     options,
   };
 }

@@ -84,13 +84,20 @@ describe("adaptive refinement question", () => {
     expect(resolveAdaptiveQuestion(fixedAlentejo)?.kind).not.toBe("wine");
   });
 
-  it("offers hands-on only where supported workshops can fit the route", () => {
-    const arrabida = stateWith({
+  it("offers hands-on only from explicit hands-on intent", () => {
+    const explicit = stateWith({
+      feeling: "hands-on",
+      destinationIntent: "arrabida-setubal-azeitao",
+    });
+    expect(resolveAdaptiveQuestion(explicit)?.kind).toBe("hands");
+
+    // Culture, heritage and local life are never workshop intent.
+    const inferred = stateWith({
       feeling: "culture",
       interests: ["local-life"],
       destinationIntent: "arrabida-setubal-azeitao",
     });
-    expect(resolveAdaptiveQuestion(arrabida)?.kind).toBe("hands");
+    expect(resolveAdaptiveQuestion(inferred)?.kind).not.toBe("hands");
 
     const evora = stateWith({
       feeling: "culture",
@@ -146,8 +153,8 @@ describe("adaptive refinement question", () => {
       stateWith({ feeling: "coastal", destinationIntent: "arrabida-setubal-azeitao" }),
       stateWith({ feeling: "wine-food", destinationIntent: "no-preference" }),
       stateWith({
-        feeling: "culture",
-        interests: ["local-life"],
+        feeling: "hands-on",
+        interests: ["hands-on"],
         destinationIntent: "arrabida-setubal-azeitao",
       }),
       stateWith({ feeling: "hidden", destinationIntent: "comporta-troia" }),
