@@ -1792,7 +1792,6 @@ export function StudioV3() {
   };
   // The single adaptive question, resolved from the traveller's own answers.
   // Null when nothing is worth asking — the phase is then skipped entirely.
-  // The advisor may suggest a preferred kind, but never override validity.
   const availableAdaptiveKinds = useMemo(() => availableAdaptiveQuestionKinds(state), [state]);
   const advisor = useStudioIntentAdvisor(state, availableAdaptiveKinds);
   const adaptiveQuestion = useMemo(
@@ -3596,9 +3595,6 @@ export function StoryboardHandoff({
 
   const shapingLine = investmentShapingLine(state.investment);
 
-  const availableAdaptiveKinds = useMemo(() => availableAdaptiveQuestionKinds(state), [state]);
-  const advisor = useStudioIntentAdvisor(state, availableAdaptiveKinds);
-
   // --- Phase 7B: inline editable route -----------------------------------
   // Source of truth: resolveStudioV3Route → routePoints. The user may
   // reorder/remove/swap stops; pool is restricted to the SAME resolved
@@ -3845,6 +3841,8 @@ export function StoryboardHandoff({
     editedStops,
   ]);
 
+  const handoffAdaptiveKinds = useMemo(() => availableAdaptiveQuestionKinds(state), [state]);
+  const advisor = useStudioIntentAdvisor(state, handoffAdaptiveKinds);
   const refineIntents = useMemo(
     () =>
       prioritiseResolvedRefineIntents(

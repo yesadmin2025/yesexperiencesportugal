@@ -1,53 +1,118 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
 import { adviseStudioIntent } from "@/lib/studio-v3/studioIntentAdvisor.functions";
 import {
   buildStudioIntentAdvisorInput,
+  studioIntentAdvisorKey,
   type StudioIntentAdvisorResult,
+  type StudioIntentInterpretation,
 } from "./studioIntentAdvisor";
 import type { AdaptiveQuestionKind } from "./adaptiveQuestions";
+import type { RefineIntentId } from "./refineIntents";
 import type { StudioV3State } from "./types";
 
-const FALLBACK: StudioIntentAdvisorResult = { interpretation: null, source: "fallback" };
+const SESSION_KEY = "yes.studio-v3.intent-advisor.session.v1";
+const resultCache = new Map<string, StudioIntentAdvisorResult>();
+const inflight = new Map<string, Promise<StudioIntentAdvisorResult>>();
+
+function sessionId(): string {
+  if (typeof window === "undefined") return "studio-server-session";
+  try {
+    const existing = window.sessionStorage.getItem(SESSION_KEY);
+    if (existing && existing.length >= 8 && existing.length <= 64) return existing;
+    const next =
+      typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `studio-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
+    window.sessionStorage.setItem(SESSION_KEY, next);
+    return next;
+  } catch {
+    return `studio-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
+  }
+}
+
+export async function requestStudioIntentAdviceCached(
+  key: string,
+  request: () => Promise<StudioIntentAdvisorResult>,
+): Promise<StudioIntentAdvisorResult> {
+  const cached = resultCache.get(key);
+  if (cached) return cached;
+  const pending = inflight.get(key);
+  if (pending) return pending;
+
+  const promise = request()
+    .then((result) => {
+      resultCache.set(key, result);
+      return result;
+    })
+    .finally(() => {
+      inflight.delete(key);
+    });
+  inflight.set(key, promise);
+  return promise;
+}
+
+/** Test-only reset for cache/dedupe contracts. */
+export function resetStudioIntentAdvisorCache(): void {
+  resultCache.clear();
+  inflight.clear();
+}
 
 /**
- * Client hook for the Studio intent advisor.
- *
- * Calls the server-side advisor only when a stable, non-identifying payload
- * can be built. The result is deterministic fallback until the server responds,
- * so UI wiring never blocks on network.
+ * Non-blocking advisory hook. The deterministic Studio renders immediately;
+ * when a validated classification arrives, only choice priority may change.
  */
 export function useStudioIntentAdvisor(
   state: StudioV3State,
   availableAdaptiveKinds: ReadonlyArray<AdaptiveQuestionKind>,
-): StudioIntentAdvisorResult {
-  const sessionId = useBuilderSessionId();
+  allowedRefineIntentIds: ReadonlyArray<RefineIntentId> = ["more-ocean", "less-wine", "slower"],
+): {
+  interpretation: StudioIntentInterpretation | null;
+  source: StudioIntentAdvisorResult["source"] | "idle";
+} {
   const advise = useServerFn(adviseStudioIntent);
-  const [result, setResult] = useState<StudioIntentAdvisorResult>(FALLBACK);
-
-  const input = buildStudioIntentAdvisorInput(
-    state,
-    availableAdaptiveKinds,
-    ["more-ocean", "less-wine", "slower"],
+  const input = useMemo(
+    () => buildStudioIntentAdvisorInput(state, availableAdaptiveKinds, allowedRefineIntentIds),
+    [
+      state.feeling,
+      state.companions,
+      state.interests,
+      state.rhythm,
+      state.destinationIntent,
+      state.refinement,
+      availableAdaptiveKinds,
+      allowedRefineIntentIds,
+    ],
+  );
+  const key = useMemo(() => (input ? studioIntentAdvisorKey(input) : null), [input]);
+  const [result, setResult] = useState<StudioIntentAdvisorResult | null>(() =>
+    key ? resultCache.get(key) ?? null : null,
   );
 
   useEffect(() => {
-    if (!input || !sessionId) return;
+    if (!input || !key) {
+      setResult(null);
+      return;
+    }
+    const cached = resultCache.get(key);
+    if (cached) {
+      setResult(cached);
+      return;
+    }
 
     let cancelled = false;
-    advise({ data: { sessionId, input } })
-      .then((res) => {
-        if (!cancelled) setResult(res);
-      })
-      .catch(() => {
-        if (!cancelled) setResult(FALLBACK);
-      });
-
+    void requestStudioIntentAdviceCached(key, () =>
+      advise({ data: { sessionId: sessionId(), input } }),
+    ).then((next) => {
+      if (!cancelled) setResult(next);
+    });
     return () => {
       cancelled = true;
     };
-  }, [advise, input, sessionId]);
+  }, [advise, input, key]);
 
-  return result;
+  return {
+    interpretation: result?.interpretation ?? null,
+    source: result?.source ?? "idle",
+  };
 }
