@@ -2318,7 +2318,13 @@ export function StudioV3() {
           }}
         />
       ) : null}
-      <RunningInvestmentRibbon state={state} hidden={composerHidden} />
+      <RunningInvestmentRibbon
+        state={state}
+        hidden={composerHidden}
+        totalEur={resolvedJourney.totalEur}
+        adultUnitEur={resolvedJourney.adultUnitEur}
+        guests={resolvedJourney.guests}
+      />
       {isMobile ? (
         <MobileBeatReveal
           beat={mobileReveal?.beat ?? null}
@@ -2822,6 +2828,8 @@ export function StudioV3() {
               onAddOnsChange={handleAddOnsChange}
               resolvedPerPaxEur={resolvedJourney.perPaxEur}
               resolvedTotalEur={resolvedJourney.totalEur}
+              resolvedBaseTotalEur={resolvedJourney.baseTotalEur}
+              resolvedAddOnsTotalEur={resolvedJourney.addOnsPartyTotalEur}
             />
           </PhaseShell>
         </>
@@ -3382,6 +3390,8 @@ export function StoryboardHandoff({
   onAddOnsChange,
   resolvedPerPaxEur = null,
   resolvedTotalEur = null,
+  resolvedBaseTotalEur = null,
+  resolvedAddOnsTotalEur = null,
 }: {
   state: StudioV3State;
   onStateChange: Dispatch<SetStateAction<StudioV3State>>;
@@ -3394,6 +3404,8 @@ export function StoryboardHandoff({
   onAddOnsChange?: (summary: SelectedAddOnSummary) => void;
   resolvedPerPaxEur?: number | null;
   resolvedTotalEur?: number | null;
+  resolvedBaseTotalEur?: number | null;
+  resolvedAddOnsTotalEur?: number | null;
 }) {
   const pickupCity = pickupCityLabel(state.pickup);
 
@@ -4552,6 +4564,8 @@ export function StoryboardHandoff({
           onAddOnsChange={onAddOnsChange}
           resolvedPerPaxEur={resolvedPerPaxEur}
           resolvedTotalEur={resolvedTotalEur}
+          resolvedBaseTotalEur={resolvedBaseTotalEur}
+          resolvedAddOnsTotalEur={resolvedAddOnsTotalEur}
           remainingMinutes={
             revealLegsLoading
               ? null

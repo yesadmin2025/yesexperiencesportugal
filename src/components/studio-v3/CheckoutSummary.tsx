@@ -193,10 +193,13 @@ export function CheckoutSummary({
 
       {/* Summary card — Date · Guests · Stops · Add-ons · Total */}
       <div
-        className="mt-8 border p-5 space-y-4"
+        data-testid="studio-v3-checkout-summary-ledger"
+        className="mt-8 px-1 py-5 space-y-4"
         style={{
-          borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
-          background: "color-mix(in oklab, var(--sand) 40%, var(--ivory))",
+          borderTop: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
+          borderBottom: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
+          background: "transparent",
+          boxShadow: "none",
         }}
       >
         <Row label="Date" value={dateLabel ?? "Flexible"} />
@@ -285,23 +288,24 @@ export function CheckoutSummary({
 
         <div
           className="pt-3 border-t flex justify-between items-baseline"
-          style={{ borderColor: "color-mix(in oklab, var(--charcoal) 14%, transparent)" }}
+          style={{ borderColor: "color-mix(in oklab, var(--gold) 55%, transparent)" }}
         >
           <span
-            className="text-[11px] uppercase tracking-[0.22em]"
+            className="text-[11px] uppercase tracking-[0.22em] font-semibold"
             style={{ color: "var(--charcoal)" }}
           >
-            Total
+            Your total
           </span>
           <span
-            className="text-[22px] tabular-nums"
+            className="text-[26px] tabular-nums font-semibold"
             style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
+            data-testid="studio-v3-checkout-summary-total"
           >
             {formatEur(totalEur)}
           </span>
         </div>
         <div
-          className="flex justify-end text-[11px] uppercase tracking-[0.2em] text-right leading-[1.6]"
+          className="flex justify-end text-[11.5px] uppercase tracking-[0.2em] text-right leading-[1.6]"
           style={{ color: "var(--charcoal-soft)" }}
         >
           <PerPersonBands

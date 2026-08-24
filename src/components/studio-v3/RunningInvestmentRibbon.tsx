@@ -1,14 +1,12 @@
-// Studio V3 — Running Investment Ribbon (Track 3 fusion).
+// Studio V3 — Running Investment whisper (P3B).
 //
-// Thin sand-tinted strip that lives just under the stepper from beat 2
-// onward. Shows real, live investment data — never invented. Honours
-// TEST MODE booking guardrails (no "total", no "price", no payment copy
-// — "investment" voice only). Dismissible per session.
-//
-// Source of truth: the same resolveStudioV3Route helper the map uses,
-// matched against signatureTours for `priceFrom`. If nothing resolves
-// yet, the ribbon stays in its quiet "shaped with you" state. It never
-// fabricates a number, partner, total, or savings claim.
+// A hairline editorial whisper under the stepper, not a card and not a
+// dashboard widget. It NEVER computes a price: every euro figure it can
+// show is passed in from the canonical `useResolvedJourney` values that
+// the reveal and checkout already use, so the three surfaces can never
+// disagree. Before a canonical total exists it shows no party total at
+// all — no approximations, no rounded "K" shorthand, no multiplication
+// of a `from` anchor. Dismissible per session.
 
 import { useEffect, useState } from "react";
 import type { StudioV3State } from "./types";
@@ -22,9 +20,25 @@ const DISMISS_KEY = "studio-v3-investment-ribbon-dismissed";
 interface RunningInvestmentRibbonProps {
   state: StudioV3State;
   hidden?: boolean;
+  /** Canonical party total from `useResolvedJourney`. Never recomputed here. */
+  totalEur?: number | null;
+  /** Canonical adult unit price from `useResolvedJourney`. */
+  adultUnitEur?: number | null;
+  /** Effective party size behind the canonical total. */
+  guests?: number | null;
 }
 
-export function RunningInvestmentRibbon({ state, hidden = false }: RunningInvestmentRibbonProps) {
+function eur(n: number): string {
+  return `€${Math.round(n).toLocaleString("en-GB")}`;
+}
+
+export function RunningInvestmentRibbon({
+  state,
+  hidden = false,
+  totalEur = null,
+  adultUnitEur = null,
+  guests = null,
+}: RunningInvestmentRibbonProps) {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
@@ -37,9 +51,10 @@ export function RunningInvestmentRibbon({ state, hidden = false }: RunningInvest
 
   if (hidden || dismissed) return null;
 
-  // Beat 1 ("feeling") is too early — ribbon enters from beat 2 onward.
+  // Beat 1 ("feeling") is too early — the whisper enters from beat 2 onward.
   if (state.phase === "feeling" || state.phase === "intro") return null;
 
+  // Region voice only — this resolution is never used for pricing.
   const canResolve = !!state.feeling && !!state.companions && !!state.rhythm;
   const resolved = canResolve
     ? resolveStudioV3Route({
@@ -58,25 +73,25 @@ export function RunningInvestmentRibbon({ state, hidden = false }: RunningInvest
   const tour = resolved?.skeletonTourKey
     ? (signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null)
     : null;
-  const priceFromEur = tour?.priceFrom ?? null;
-  const guests = state.guests ?? null;
-  const partyTotalEur =
-    priceFromEur != null && guests != null && guests > 0 ? priceFromEur * guests : null;
-
   const voice = tour ? regionalVoiceFor(tour.region) : null;
 
-  // Compose the live line.
+  // Canonical total wins. Otherwise: a clearly labelled "from" per-guest
+  // anchor, never multiplied into a party figure. Otherwise: silence.
+  const partyGuests = guests ?? state.guests ?? null;
   const partyLabel =
-    formatGuestComposition(state.adults, state.minorAges, guests) ??
-    (guests != null ? `party of ${guests}` : null);
+    formatGuestComposition(state.adults, state.minorAges, partyGuests) ??
+    (partyGuests != null ? `party of ${partyGuests}` : null);
+
+  const isResolvedTotal = state.tourId != null && totalEur != null && totalEur > 0;
+  const fromAnchorEur = !isResolvedTotal ? (adultUnitEur ?? tour?.priceFrom ?? null) : null;
+
   let line: string;
-  if (priceFromEur != null && guests != null && partyTotalEur != null && partyLabel) {
-    const totalK = (partyTotalEur / 1000).toFixed(partyTotalEur >= 10000 ? 0 : 1);
-    line = `from €${priceFromEur} / guest · ${partyLabel} · ~€${totalK}K`;
-  } else if (priceFromEur != null) {
-    line = `from €${priceFromEur} / guest · shaped with you`;
+  if (isResolvedTotal) {
+    line = partyLabel ? `${eur(totalEur!)} · ${partyLabel}` : eur(totalEur!);
+  } else if (fromAnchorEur != null && fromAnchorEur > 0) {
+    line = `from ${eur(fromAnchorEur)} / guest`;
   } else {
-    line = "shaped with you, never invented";
+    line = "Investment takes shape with your day";
   }
 
   const dismiss = () => {
@@ -93,21 +108,30 @@ export function RunningInvestmentRibbon({ state, hidden = false }: RunningInvest
       className="w-full px-3 pt-1.5"
       data-testid="studio-v3-investment-ribbon"
       data-region-voice={voice?.eyebrow ?? ""}
+      data-total-eur={isResolvedTotal ? Math.round(totalEur!) : ""}
+      data-resolved={isResolvedTotal ? "true" : "false"}
     >
+      <style>{`
+        @keyframes sv3RibbonRise {
+          from { opacity: 0; transform: translateY(2px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .sv3-ribbon-line { animation: sv3RibbonRise 240ms ease-out both; }
+        @media (prefers-reduced-motion: reduce) {
+          .sv3-ribbon-line { animation: none; opacity: 1; transform: none; }
+        }
+      `}</style>
       <div
-        className="mx-auto flex w-full max-w-[480px] flex-col gap-0.5 rounded-[4px] border px-3 py-1.5 transition-opacity duration-[220ms] motion-reduce:transition-none"
-        style={{
-          background: "color-mix(in oklab, var(--sand) 55%, var(--ivory))",
-          borderColor: "color-mix(in oklab, var(--gold) 22%, transparent)",
-        }}
+        className="mx-auto flex w-full max-w-[480px] flex-col gap-0.5 border-t px-1 pt-1.5"
+        style={{ borderColor: "color-mix(in oklab, var(--gold) 35%, transparent)" }}
       >
         <div className="flex items-center justify-between gap-3">
           <span
-            className="text-[10px] uppercase font-semibold tracking-[0.22em] inline-flex items-center gap-1.5 truncate"
+            className="text-[11px] uppercase font-semibold tracking-[0.2em] inline-flex items-center gap-1.5 truncate"
             style={{ color: "var(--charcoal)" }}
           >
             <span
-              className="font-bold tracking-[0.30em] shrink-0"
+              className="font-bold tracking-[0.28em] shrink-0"
               style={{ color: "var(--teal)" }}
               data-testid="studio-v3-voice-mark"
             >
@@ -122,19 +146,24 @@ export function RunningInvestmentRibbon({ state, hidden = false }: RunningInvest
             >
               Investment
             </span>
-            <span className="truncate" style={{ color: "var(--charcoal)" }}>
+            <span
+              key={line}
+              className="truncate normal-case tracking-normal text-[12.5px] sv3-ribbon-line"
+              style={{ color: "var(--charcoal)" }}
+              data-testid="studio-v3-investment-ribbon-line"
+            >
               {line}
             </span>
           </span>
-          {/* dismiss button moved below */}
           <button
             type="button"
             onClick={dismiss}
-            aria-label="Hide investment ribbon for this session"
-            className="shrink-0 text-[10px] uppercase tracking-[0.22em] font-semibold rounded-full px-2 py-1 motion-reduce:transition-none transition-colors duration-150 hover:bg-[color:color-mix(in_oklab,var(--gold)_18%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            aria-label="Hide investment whisper for this session"
+            className="shrink-0 text-[10.5px] uppercase tracking-[0.2em] font-semibold px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 60%, var(--ivory))",
               minHeight: 28,
+              borderBottom: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
             }}
           >
             Hide
