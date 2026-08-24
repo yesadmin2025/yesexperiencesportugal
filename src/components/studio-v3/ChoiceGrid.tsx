@@ -48,7 +48,7 @@ export function ChoiceGrid<T extends string>({
       : false;
   return (
     <ul
-      className={`mt-8 grid w-full max-w-[520px] gap-3 ${
+      className={`mt-8 grid w-full max-w-[520px] gap-x-6 gap-y-0 ${
         columns === 2 ? "grid-cols-2" : "grid-cols-1"
       }`}
       role={isMulti ? "group" : "radiogroup"}
@@ -76,17 +76,16 @@ export function ChoiceGrid<T extends string>({
                 if (isMulti) onToggle?.(opt.id);
                 else onSelect?.(opt.id);
               }}
-              className="group relative w-full text-left px-4 py-3.5 min-h-[64px] border transition-[transform,border-color,background-color,box-shadow,opacity] duration-[220ms] ease-out motion-reduce:transition-none hover:-translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:hover:translate-y-0 disabled:cursor-not-allowed"
+              className="group relative w-full text-left pr-3 pl-4 py-4 min-h-[64px] border-0 border-b transition-[border-color,background-color,opacity] duration-[220ms] ease-out motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:cursor-not-allowed"
               style={{
                 background: selected
-                  ? "color-mix(in oklab, var(--teal) 6%, var(--ivory))"
-                  : "var(--ivory)",
-                borderColor: selected
-                  ? "var(--teal)"
-                  : "color-mix(in oklab, var(--charcoal) 14%, transparent)",
-                boxShadow: selected
-                  ? "0 14px 30px -18px color-mix(in oklab, var(--teal) 50%, transparent)"
-                  : "0 6px 18px -14px rgba(46,46,46,0.18)",
+                  ? "color-mix(in oklab, var(--teal) 4%, transparent)"
+                  : "transparent",
+                borderBottomColor: selected
+                  ? "color-mix(in oklab, var(--teal) 65%, transparent)"
+                  : "color-mix(in oklab, var(--charcoal) 12%, transparent)",
+                borderBottomWidth: selected ? "2px" : "1px",
+                boxShadow: "none",
                 opacity: lockedByCap ? 0.45 : 1,
                 animation: `studioV3RiseIn 420ms ease-out ${60 + i * 45}ms both`,
               }}

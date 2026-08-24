@@ -29,8 +29,8 @@ export function PhaseShell({
   children,
   accent = "ivory",
   exiting = false,
-  step,
-  totalSteps,
+  // `step` / `totalSteps` remain in the public interface for caller
+  // compatibility, but never render numeric progress UI.
   progress,
   anticipation = null,
 }: PhaseShellProps) {
@@ -86,47 +86,29 @@ export function PhaseShell({
         <RegionAnticipationLayer fill={anticipation.fill} region={anticipation.region} />
       ) : null}
 
-      {/* Adaptive progress whisper — emotional phrase + soft percent.
-          Calm, not loud; never a bar, never "step X of Y". */}
+      {/* Adaptive reassurance whisper — the editorial phrase only.
+          No percentage, no bar, no "step X of Y", no numeric fallback. */}
       {progress ? (
         <div
           data-testid="studio-v3-progress"
           className="hidden sm:block absolute left-1/2 top-4 -translate-x-1/2 w-[min(92vw,520px)] px-1 select-none"
-          aria-label={`${Math.round(progress.percent)}% shaped`}
+          aria-label={progress.phrase}
           style={{ animation: "studioV3RiseIn 520ms cubic-bezier(0.22, 0.61, 0.36, 1) both" }}
         >
-          <div className="flex items-baseline justify-between gap-3">
-            <p
-              className="text-[12.5px] sm:text-[13.5px] leading-[1.35] truncate"
-              style={{
-                fontFamily: "var(--font-sans, Inter, system-ui, sans-serif)",
-                color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
-              }}
-            >
-              {progress.phrase}
-            </p>
-            <p
-              className="shrink-0 text-[9.5px] uppercase tracking-[0.26em] font-semibold"
-              style={{ color: "var(--gold)" }}
-            >
-              — {Math.round(progress.percent)}% shaped
-            </p>
-          </div>
+          <p
+            className="text-[12.5px] sm:text-[13.5px] leading-[1.35] truncate"
+            style={{
+              fontFamily: "var(--font-sans, Inter, system-ui, sans-serif)",
+              color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
+            }}
+          >
+            {progress.phrase}
+          </p>
           <div
             aria-hidden
             className="mt-2 h-px w-full"
             style={{ background: "color-mix(in oklab, var(--gold) 35%, transparent)" }}
           />
-        </div>
-      ) : step && totalSteps ? (
-        <div
-          className="hidden sm:block absolute left-1/2 top-5 -translate-x-1/2 text-[9.5px] uppercase tracking-[0.3em] font-semibold select-none"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 30%, transparent)" }}
-          aria-label={`Step ${step} of ${totalSteps}`}
-        >
-          {String(step).padStart(2, "0")}{" "}
-          <span style={{ color: "color-mix(in oklab, var(--gold) 70%, transparent)" }}>·</span>{" "}
-          {String(totalSteps).padStart(2, "0")}
         </div>
       ) : null}
 
