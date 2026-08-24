@@ -1548,20 +1548,11 @@ export function curateJourney(
   const minStops = allowTwoStop ? 2 : 3;
   const target = Math.max(minStops, Math.min(rhythmTarget, scored.length));
 
-  // Semantic dedupe: strip common suffixes/words and accents so e.g.
-  // "Bacalhôa" and "Bacalhôa Palace & Winery" are treated as the same
-  // location and never appear together in the same day.
-  const normalizeSemantic = (label: string): string =>
-    label
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(
-        /\b(winery|wineries|tasting|tastings|adega|adegas|palace|estate|quinta|vineyard|visit|stop|cellar|garden|gardens|museum|workshop|chapel)\b/g,
-        "",
-      )
-      .replace(/[^a-z0-9]+/g, " ")
-      .trim();
+  // Place-identity dedupe (see `semanticStopKey`): curated aliases first,
+  // then a conservative normalization. Deliberately NOT a broad generic-noun
+  // stripper — that merged unrelated places.
+  const normalizeSemantic = (label: string): string => semanticStopKey(label);
+
 
   // Anchor on the tour's opening stop so the narrative arc is intact.
   const anchor = scored.find((s) => s.stop.label === primary.stops[0]?.label);
