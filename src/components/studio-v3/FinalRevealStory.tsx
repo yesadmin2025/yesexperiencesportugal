@@ -16,7 +16,7 @@
 import * as React from "react";
 import { useEffect } from "react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { findTour } from "@/data/signatureTours";
+import { findTour, stopImage } from "@/data/signatureTours";
 import { getTourContent } from "@/lib/tourContent";
 import { pickupCityLabel } from "./curation";
 import {
@@ -181,6 +181,23 @@ export function FinalRevealStory({
         : (tour?.stops ?? []).map((s) => ({ label: s.label, story: s.story ?? "" }));
   const stops = keptStops.map((s) => ({ label: s.label, story: s.story }));
 
+  // One real photograph opens the reveal: the first kept moment when the
+  // catalog holds an image for it, otherwise the tour's own hero. Never a
+  // stock or generated image, and never a blocker — if nothing resolves,
+  // the reveal simply stays text-first.
+  const openingStopLabel = stops[0]?.label ?? null;
+  const openingCatalogStop = openingStopLabel
+    ? (tour?.stops ?? []).find(
+        (s) => s.label.toLowerCase().trim() === openingStopLabel.toLowerCase().trim(),
+      )
+    : undefined;
+  const openingImage = openingCatalogStop ? stopImage(openingCatalogStop) : (tour?.img ?? null);
+  const openingAlt = openingCatalogStop
+    ? `${openingCatalogStop.label}, ${tour?.region ?? "Portugal"}`
+    : tour
+      ? `${tour.title}, ${tour.region ?? "Portugal"}`
+      : "";
+
   const region = regionLabelFor(state.destinationIntent);
   const narrative = buildRevealNarrative({
     feeling: state.feeling,
@@ -213,7 +230,7 @@ export function FinalRevealStory({
   // (after which stop each add-on appears). If we have more add-ons than
   // stops, remaining ones tail the final stop.
   type Paragraph =
-    | { kind: "stop"; text: string; key: string }
+    | { kind: "stop"; text: string; key: string; stopIndex: number; label: string }
     | { kind: "addon"; text: string; key: string };
   const paragraphs: Paragraph[] = [];
   const addOnQueue = selectedAddOns.map((a, i) => ({ a, i }));
@@ -233,6 +250,8 @@ export function FinalRevealStory({
       kind: "stop",
       text: stopSentence(i, isLast, s.label, s.story),
       key: `stop-${i}-${s.label}`,
+      stopIndex: i,
+      label: s.label,
     });
     addOnQueue.forEach(({ a, i: ai }, qIdx) => {
       if (insertionPoints[qIdx] === i) {
@@ -399,13 +418,34 @@ export function FinalRevealStory({
             />
           </header>
 
-          {/* Narrative — one flowing story, no list, no chapter markers */}
+          {/* One real photograph of the opening moment. Never blocks the
+              reveal: it lazy-loads and simply stays absent if unresolved. */}
+          {openingImage ? (
+            <figure
+              className="mt-7 mx-auto max-w-[54ch]"
+              data-testid="studio-v3-final-reveal-image"
+            >
+              <img
+                src={openingImage}
+                alt={openingAlt}
+                loading="lazy"
+                decoding="async"
+                width={1200}
+                height={800}
+                className="w-full h-auto object-cover"
+                style={{ aspectRatio: "3 / 2", borderRadius: "2px" }}
+              />
+            </figure>
+          ) : null}
+
+          {/* Narrative — numbered moments so the day stays scannable while
+              the prose keeps its editorial voice. */}
           <div
-            className="mt-8 space-y-5 mx-auto max-w-[54ch]"
+            className="mt-8 space-y-6 mx-auto max-w-[54ch]"
             data-testid="studio-v3-final-reveal-timeline"
           >
             <p
-              className="text-[15.5px] leading-[1.75] [text-wrap:pretty]"
+              className="text-[16px] leading-[1.75] [text-wrap:pretty]"
               style={{
                 fontFamily: "var(--font-editorial)",
                 color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
@@ -414,22 +454,34 @@ export function FinalRevealStory({
               {intro}
             </p>
             {paragraphs.map((p) => (
-              <p
-                key={p.key}
-                className={cn(
-                  "text-[15px] leading-[1.75] [text-wrap:pretty]",
-                  p.kind === "addon" && "italic",
-                )}
-                style={{
-                  fontFamily: "var(--font-editorial)",
-                  color:
-                    p.kind === "addon"
-                      ? "var(--teal)"
-                      : "color-mix(in oklab, var(--charcoal) 78%, transparent)",
-                }}
-              >
-                {p.text}
-              </p>
+              <div key={p.key}>
+                {p.kind === "stop" ? (
+                  <p
+                    className="mb-1.5 text-[10.5px] uppercase tracking-[0.26em] font-semibold"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
+                  >
+                    <span style={{ color: "var(--gold-ink, var(--gold))" }}>
+                      {String(p.stopIndex + 1).padStart(2, "0")}
+                    </span>{" "}
+                    {p.label}
+                  </p>
+                ) : null}
+                <p
+                  className={cn(
+                    "text-[15.5px] leading-[1.75] [text-wrap:pretty]",
+                    p.kind === "addon" && "italic",
+                  )}
+                  style={{
+                    fontFamily: "var(--font-editorial)",
+                    color:
+                      p.kind === "addon"
+                        ? "var(--teal)"
+                        : "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                  }}
+                >
+                  {p.text}
+                </p>
+              </div>
             ))}
           </div>
         </div>

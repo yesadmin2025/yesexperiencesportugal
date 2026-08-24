@@ -635,6 +635,12 @@ type Reaction = {
   regionKey?: RegionKey;
   /** Explicit origin lat/lng — overrides regionKey-derived origin. */
   originCoord?: { lat: number; lng: number } | null;
+  /**
+   * Suppress the abstract map/postcard panel. Used by short acknowledgement
+   * beats ("Noted") where an empty schematic card reads as a loading state
+   * rather than a cinematic moment — copy alone is stronger there.
+   */
+  hidePanel?: boolean;
 };
 
 /** Context-aware atmosphere copy for the Who step. Sentence case, no superlatives. */
@@ -1797,6 +1803,10 @@ export function StudioV3() {
       message: summary
         ? `${summary}. We will build the day around that.`
         : "Noted. We will build the day around that.",
+      // Copy-only beat: no schematic panel, and short enough that the
+      // logistics screen underneath is reachable almost immediately.
+      hidePanel: true,
+      holdMs: 1600,
     });
   };
 
@@ -4850,7 +4860,7 @@ function ReactionOverlay({
   const [clickThrough, setClickThrough] = useState(false);
   useEffect(() => {
     setClickThrough(false);
-    const t = window.setTimeout(() => setClickThrough(true), Math.min(900, hold * 0.35));
+    const t = window.setTimeout(() => setClickThrough(true), Math.min(700, hold * 0.35));
     return () => window.clearTimeout(t);
   }, [hold, reaction]);
   // `pointerEvents: none` on the overlay root is NOT enough: the cinematic
@@ -5107,6 +5117,8 @@ function ReactionOverlay({
  * now BuilderMap internals must not change, so we render this locally.
  */
 function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbackBg: string }) {
+  // Short acknowledgement beats opt out of the schematic canvas entirely.
+  if (reaction.hidePanel) return null;
   const isInterests = reaction.kind === "interests" && reaction.chips && reaction.chips.length > 0;
   const showMap =
     reaction.kind === "pickup" ||

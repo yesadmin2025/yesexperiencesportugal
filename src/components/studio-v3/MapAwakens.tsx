@@ -414,7 +414,11 @@ export function MapAwakens({
         data-your-day-mode={mapTruth.mode}
         data-testid="studio-v3-your-day-stage"
         className={`relative w-full z-10 px-3 pb-3 pt-4 ${
-          showGeographicMap ? "h-[300px] sm:h-[52dvh]" : ""
+          // The schematic map is authored portrait (200×400) and crops to
+          // fill: a short, wide frame slices the country so aggressively
+          // that the stops fall outside the canvas and the map reads empty.
+          // A taller mobile stage keeps the real pins inside the frame.
+          showGeographicMap ? "h-[420px] sm:h-[56dvh]" : ""
         }`}
       >
         {showGeographicMap ? (
@@ -425,7 +429,10 @@ export function MapAwakens({
           <div
             aria-hidden="true"
             data-testid="studio-v3-map-anticipation"
-            className={`pointer-events-none absolute inset-0 px-3 pt-14 pb-3 z-20 transition-opacity duration-[700ms] ease-out ${
+            // Same insets as the map wrapper: a mismatched top pad made the
+            // anticipation caption and the map caption cross during the
+            // crossfade, which read as overlapping labels on 393px.
+            className={`pointer-events-none absolute inset-0 px-3 pt-4 pb-3 z-20 transition-opacity duration-[420ms] ease-out ${
               anticipating ? "opacity-100" : "opacity-0"
             }`}
           >
