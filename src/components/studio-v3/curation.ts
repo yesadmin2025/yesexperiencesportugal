@@ -3118,11 +3118,20 @@ export function selectReplacementCandidates(input: {
   investment: InvestmentTier | null;
   considerations: ReadonlyArray<string>;
   existingRoutePointLabels: ReadonlyArray<string>;
+  /**
+   * Explicit wine intent (see studioWineIntent.ts). When false, winery
+   * candidates are excluded outright: a non-wine traveller must never be
+   * offered — nor silently given — a cellar they did not ask for.
+   * Defaults conservatively to the `wine` interest alone.
+   */
+  wineIntent?: boolean;
 }): OptionalStop[] {
   const skeleton = input.skeletonTourId ? SKELETON_TO_CLUSTER[input.skeletonTourId] : undefined;
   if (!skeleton) return [];
 
+  const allowWinery = input.wineIntent ?? interestsImplyWine(input.interests);
   const existing = new Set(input.existingRoutePointLabels.flatMap((l) => stopKeys(l)));
+
 
   const eligible = REGION_STOP_POOL.filter((stop) => {
     if (!stop.active) return false;
