@@ -3061,8 +3061,11 @@ const REPLACEMENT_FAMILY: Record<InferredRoutePointKind, ReadonlyArray<OptionalS
   studio: ["studio"],
   boat: ["boat"],
   heritage: ["heritage", "monument"],
-  scenic: ["beach", "viewpoint", "nature", "village", "winery"],
-  village: ["village", "market", "monument", "winery"],
+  // A scenic or village point is NOT a wine point: a winery must never enter
+  // the day merely because the replacement family structurally allowed it.
+  scenic: ["beach", "viewpoint", "nature", "village"],
+  village: ["village", "market", "monument"],
+
 };
 
 function isCompatibleCandidate(kind: InferredRoutePointKind, cand: OptionalStop): boolean {
