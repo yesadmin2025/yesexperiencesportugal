@@ -14,6 +14,8 @@ import { resolveStudioV3Route } from "./curation";
 import { signatureTours } from "@/data/signatureTours";
 import { regionalVoiceFor } from "./regionalVoice";
 import { formatGuestComposition } from "./formatGuests";
+import { useInvestmentDelta, InvestmentDelta } from "./InvestmentLedger";
+
 
 const DISMISS_KEY = "studio-v3-investment-ribbon-dismissed";
 
@@ -49,7 +51,14 @@ export function RunningInvestmentRibbon({
     }
   }, []);
 
+  // Canonical-only delta source. Computed before any early return so the hook
+  // order stays stable. Never a local approximation — when no canonical total
+  // exists we feed null and the hook reports no change.
+  const isResolvedTotal = state.tourId != null && totalEur != null && totalEur > 0;
+  const delta = useInvestmentDelta(isResolvedTotal ? totalEur! : null);
+
   if (hidden || dismissed) return null;
+
 
   // Beat 1 ("feeling") is too early — the whisper enters from beat 2 onward.
   if (state.phase === "feeling" || state.phase === "intro") return null;
@@ -82,8 +91,8 @@ export function RunningInvestmentRibbon({
     formatGuestComposition(state.adults, state.minorAges, partyGuests) ??
     (partyGuests != null ? `party of ${partyGuests}` : null);
 
-  const isResolvedTotal = state.tourId != null && totalEur != null && totalEur > 0;
   const fromAnchorEur = !isResolvedTotal ? (adultUnitEur ?? tour?.priceFrom ?? null) : null;
+
 
   let line: string;
   if (isResolvedTotal) {
@@ -154,20 +163,30 @@ export function RunningInvestmentRibbon({
             >
               {line}
             </span>
+            <span className="shrink-0" data-testid="studio-v3-ribbon-delta">
+              <InvestmentDelta delta={delta} />
+            </span>
           </span>
           <button
             type="button"
             onClick={dismiss}
             aria-label="Hide investment whisper for this session"
-            className="shrink-0 text-[10.5px] uppercase tracking-[0.2em] font-semibold px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            data-testid="studio-v3-investment-ribbon-hide"
+            className="shrink-0 text-[10.5px] uppercase tracking-[0.2em] font-semibold px-1 inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 60%, var(--ivory))",
-              minHeight: 28,
-              borderBottom: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
+              minHeight: 44,
             }}
           >
-            Hide
+            <span
+              style={{
+                borderBottom: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
+              }}
+            >
+              Hide
+            </span>
           </button>
+
         </div>
         {voice ? (
           <span

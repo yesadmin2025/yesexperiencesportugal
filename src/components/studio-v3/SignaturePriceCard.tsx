@@ -506,14 +506,16 @@ export function SignaturePriceCard({
   // locally computed preview so the picker keeps showing "at N guests" hints.
   const usingResolved = previewGuests === null && resolvedTotalEur != null;
   const partyTotalEur = usingResolved ? resolvedTotalEur : localPartyTotalEur;
+  // Canonical branch: the ONLY per-person figure we may show is the canonical
+  // adult unit price. Never divide the canonical party total by guests — that
+  // total can include discounted minors and party-level additions, so the
+  // quotient matches nothing the traveller actually pays. Absent unit → omit.
   const perPersonDerived = usingResolved
-    ? (resolvedPerPaxEur ??
-      (effectiveGuests && effectiveGuests > 0
-        ? Math.round((resolvedTotalEur ?? 0) / effectiveGuests)
-        : null))
+    ? (resolvedPerPaxEur ?? null)
     : partyTotalEur != null && effectiveGuests != null && effectiveGuests > 0
       ? Math.round(partyTotalEur / effectiveGuests)
       : (displayPerPaxEur ?? null);
+
 
   // ---- P3B live investment presentation values (no new pricing math) ----
   // Delta is derived from the SAME number the card displays, so it can only
@@ -537,9 +539,21 @@ export function SignaturePriceCard({
     [tour, selectedAddOns, priceEur, summaryGuests],
   );
 
-  // Dev-only invariant: perPerson × guests must equal total (±rounding).
-  if (import.meta.env.DEV && partyTotalEur != null && effectiveGuests && effectiveGuests > 0) {
-    const drift = Math.abs((perPersonDerived ?? 0) * effectiveGuests - partyTotalEur);
+  // Dev-only invariant — ONLY valid in the local flat-preview branch, where the
+  // displayed total really is perPerson × guests. In the canonical branch the
+  // total legitimately includes age-banded minors and party-level additions, so
+  // that multiplication is meaningless and must not be asserted.
+  if (
+    import.meta.env.DEV &&
+    !usingResolved &&
+    perPersonDerived != null &&
+    partyTotalEur != null &&
+    addOnsDisplayPartyEur === 0 &&
+    (journeyLines == null || journeyLines.length === 0) &&
+    effectiveGuests &&
+    effectiveGuests > 0
+  ) {
+    const drift = Math.abs(perPersonDerived * effectiveGuests - partyTotalEur);
     if (drift > effectiveGuests) {
       console.error("[studio-v3] price mismatch", {
         partyTotalEur,
@@ -549,6 +563,7 @@ export function SignaturePriceCard({
       });
     }
   }
+
 
   // Tier rows for the picker — real per-pax when available, "from" anchor otherwise.
   const tierRows = useMemo(() => {
