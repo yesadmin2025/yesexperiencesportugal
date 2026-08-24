@@ -1,8 +1,4 @@
 import {
-import {
-  buildWineryDisplayLabels,
-  studioDisplayLabel,
-} from "./studioWineryPresentation";
   lazy,
   Suspense,
   useCallback,
@@ -13,7 +9,9 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
+import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
+
 import { useServerFn } from "@tanstack/react-start";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
