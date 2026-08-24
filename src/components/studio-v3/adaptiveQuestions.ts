@@ -228,10 +228,19 @@ function localOptions(state: StudioV3State): ChoiceOption<AdaptiveRefinementId>[
   return options;
 }
 
-export function resolveAdaptiveQuestion(state: StudioV3State): AdaptiveQuestion | null {
+/** Adaptive question kinds currently available for this state. */
+export function availableAdaptiveQuestionKinds(state: StudioV3State): AdaptiveQuestionKind[] {
+  return orderedKinds(state);
+}
+
+export function resolveAdaptiveQuestion(
+  state: StudioV3State,
+  preferredKind: AdaptiveQuestionKind | null = null,
+): AdaptiveQuestion | null {
   if (!state.feeling && state.interests.length === 0) return null;
 
-  const kind = orderedKinds(state)[0];
+  const available = orderedKinds(state);
+  const kind = preferredKind && available.includes(preferredKind) ? preferredKind : available[0];
   if (!kind) return null;
 
   if (kind === "faith") {
