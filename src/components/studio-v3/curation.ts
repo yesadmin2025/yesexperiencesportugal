@@ -2826,7 +2826,7 @@ export function semanticStopKey(label: string): string {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(
-      /\b(winery|wineries|wines|vinhos|tasting|tastings|adega|adegas|cooperativa|coop|crl|palace|palacio|estate|farm|quinta|herdade|monte|casa|house|museum|museu|vineyard|vineyards|visit|stop|cellar|cellars|garden|gardens|workshop|chapel|de|da|do|dos|das|d|e|of|the|and)\b/g,
+      /\b(winery|wineries|wines|vinhos|tasting|tastings|adega|adegas|cooperativa|coop|crl|palace|palacio|estate|farm|quinta|herdade|monte|casa|house|museum|museu|vineyard|vineyards|visit|stop|cellar|cellars|garden|gardens|workshop|chapel|regional|nacional|portugal|de|da|do|dos|das|d|e|of|the|and)\b/g,
       " ",
     )
     .replace(/[^a-z0-9]+/g, " ")
