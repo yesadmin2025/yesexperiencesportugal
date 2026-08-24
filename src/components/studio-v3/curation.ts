@@ -1123,14 +1123,16 @@ export function scoreTourFit(
     boosts.push("family-friendly-copy");
   }
 
-  // ---- Wine coherence (subsumes the guard shipped last turn) ----
+  // ---- Wine coherence ----
+  // Wine intent is EXPLICIT only (see studioWineIntent.ts). `gastronomy` is
+  // food, not wine; the Arrábida/Setúbal/Azeitão region also resolves to
+  // boat, wild-beach, cheese and tile routes, so geography is not a wine
+  // choice either.
   const explicitWineFeeling = feeling === "wine-food";
-  const wineIsTopInterest = interests[0] === "wine" || interests[0] === "gastronomy";
-  const wineIsAnyInterest = interests.includes("wine") || interests.includes("gastronomy");
+  const wineIsTopInterest = interests[0] === "wine";
+  const wineIsAnyInterest = interests.includes("wine");
   const wineIntent =
-    destinationIntent === "alentejo-evora-wine" ||
-    destinationIntent === "alentejo-roman-talha" ||
-    destinationIntent === "arrabida-setubal-azeitao";
+    destinationIntent === "alentejo-evora-wine" || destinationIntent === "alentejo-roman-talha";
   const wineBoost =
     explicitWineFeeling || wineIntent ? 3 : wineIsTopInterest ? 2.5 : wineIsAnyInterest ? 1.5 : 0;
   const wantsWine = wineBoost > 0;
@@ -1153,6 +1155,7 @@ export function scoreTourFit(
     wineScore -= 4;
     penalties.push("wine-asked-but-tour-has-no-wine");
   }
+
 
   // ---- Existing pickup / intent / discovery boosts (kept, re-weighted for
   // the new score scale — interest coverage now dominates, so the
