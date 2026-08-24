@@ -16,7 +16,7 @@
 import * as React from "react";
 import { useEffect } from "react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { findTour } from "@/data/signatureTours";
+import { findTour, stopImage } from "@/data/signatureTours";
 import { getTourContent } from "@/lib/tourContent";
 import { pickupCityLabel } from "./curation";
 import {
