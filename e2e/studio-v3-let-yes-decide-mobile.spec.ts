@@ -17,9 +17,7 @@ async function phase(page: import("@playwright/test").Page): Promise<string | nu
   return el.getAttribute("data-phase");
 }
 
-async function waitForStablePointerTarget(
-  locator: import("@playwright/test").Locator,
-) {
+async function waitForStablePointerTarget(locator: import("@playwright/test").Locator) {
   // On a cold Vite graph the button can be visible before the page finishes
   // settling around it. Wait until its centre is genuinely hit-testable and its
   // bounding box is stable across animation frames, rather than forcing a click.
@@ -99,9 +97,7 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
   await advanceIntro(page);
 
   // Feeling — hand it over.
-  await expect
-    .poll(() => phase(page), { timeout: 15_000 })
-    .toBe("feeling");
+  await expect.poll(() => phase(page), { timeout: 15_000 }).toBe("feeling");
   const decide = page.getByRole("button", { name: /let yes decide/i }).first();
   await expect(decide, "Let YES decide must be offered on feeling").toBeVisible();
   await decide.click();
@@ -112,14 +108,6 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
   // Walk the remaining choice phases, preferring "Let YES decide" whenever
   // it is offered, otherwise the first option + Continue.
   for (let i = 0; i < 20; i++) {
-    // The interpretation beat is a full-screen skippable overlay; wait it out
-    // before touching anything underneath it.
-    const overlay = page.getByTestId("studio-v3-understood-beat");
-    if (await overlay.isVisible().catch(() => false)) {
-      await overlay.click();
-      await overlay.waitFor({ state: "hidden", timeout: 8_000 });
-    }
-
     const current = await phase(page);
     if (!current || current === "map" || current === "storyboard") break;
 
@@ -131,41 +119,46 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
     }
 
     if (current === "logistics") {
-      // A phase transition can begin between the loop's phase read and a later
-      // assertion. Re-check the live phase around each interaction so a DOM that
-      // is correctly unmounting is never mistaken for a missing control.
-      if ((await phase(page)) !== "logistics") continue;
+      // One phase, four quiet moments: when → where → who → review.
+      const moment = () =>
+        page.locator("[data-logistics-moment]").first().getAttribute("data-logistics-moment");
+      const cta = page.locator('button[data-phase-cta="continue"]').first();
 
+      await expect.poll(moment, { timeout: 15_000 }).toBe("when");
       const flexible = page.locator('button[data-phase-cta="date-secondary"]').first();
       await expect(flexible).toBeVisible({ timeout: 15_000 });
       await flexible.click();
-      if ((await phase(page)) !== "logistics") continue;
       await expect(flexible).toHaveAttribute("data-selected", "true");
+      await expect(cta).toBeEnabled();
+      await cta.click();
 
+      await expect.poll(moment, { timeout: 15_000 }).toBe("where");
       const pickup = page
-        .locator('section[aria-label="Where the day begins"] button')
+        .locator('section[aria-label="Where the day begins"] [data-testid="studio-v3-choice"]')
         .first();
       await expect(pickup).toBeVisible({ timeout: 15_000 });
       await pickup.click();
-      if ((await phase(page)) !== "logistics") continue;
       await expect(pickup).toHaveAttribute("data-selected", "true");
+      await cta.click();
 
-      const compose = page.locator('button[data-phase-cta="continue"]').first();
-      await expect(compose).toHaveText(/compose my day/i, { timeout: 15_000 });
-      await expect(compose).toBeEnabled();
-      await compose.click();
+      await expect.poll(moment, { timeout: 15_000 }).toBe("who");
+      await expect(cta).toBeEnabled();
+      await cta.click();
+
+      await expect.poll(moment, { timeout: 15_000 }).toBe("review");
+      await expect(cta).toHaveText(/compose my day/i, { timeout: 15_000 });
+      await expect(cta).toBeEnabled();
+      await cta.click();
 
       // Compose is asynchronous. Do not spin the generic walk again while the
       // logistics DOM is legitimately being replaced by Your Day.
-      await expect
-        .poll(() => phase(page), { timeout: 20_000 })
-        .not.toBe("logistics");
+      await expect.poll(() => phase(page), { timeout: 20_000 }).not.toBe("logistics");
       break;
     }
 
     // Never touch close/exit/back chrome — those leave the Studio.
     const options = page.locator(
-      '[data-phase] button:not([disabled])' +
+      "[data-phase] button:not([disabled])" +
         ':not([aria-label*="lose" i]):not([aria-label*="xit" i]):not([aria-label*="ack" i])',
     );
     const optionCount = await options.count();
@@ -180,11 +173,9 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
     await page.waitForTimeout(700);
   }
 
-  // The interpretation beat may play here — it must never block.
-  const beat = page.getByTestId("studio-v3-understood-beat");
-  if (await beat.isVisible().catch(() => false)) {
-    await expect(beat).toBeHidden({ timeout: 4_000 });
-  }
+  // The blocking interpretation overlay no longer exists: the acknowledgement
+  // is a single inline line, so nothing may cover the journey here.
+  await expect(page.getByTestId("studio-v3-understood-beat")).toHaveCount(0);
 
   // A day was composed from handed-over signals: either the cinematic
   // moments surface, the Refine surface, or the reveal itself is mounted.
