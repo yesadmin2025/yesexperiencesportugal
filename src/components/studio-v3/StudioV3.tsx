@@ -233,9 +233,12 @@ import {
   type StudioV3State,
 } from "./types";
 import {
+  availableAdaptiveQuestionKinds,
   refinementSummaryLabel,
   resolveAdaptiveQuestion,
 } from "@/components/studio-v3/adaptiveQuestions";
+import { useStudioIntentAdvisor } from "./useStudioIntentAdvisor";
+import { prioritiseResolvedRefineIntents } from "./studioIntentAdvisor";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import {
   decideFeeling,
