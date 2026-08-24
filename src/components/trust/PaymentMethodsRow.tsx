@@ -4,7 +4,7 @@
  * Single canonical block used site-wide via the shared Footer (which
  * every route reaches through SiteLayout). Shows the real methods a
  * guest can use at Stripe checkout: Visa, Mastercard, American Express,
- * PayPal, Klarna, Multibanco, MB WAY, Revolut Pay, Apple Pay, Google Pay.
+ * PayPal, Klarna, Multibanco, Revolut Pay, Apple Pay, Google Pay.
  *
  * Palette (locked):
  *   - Badge background: var(--ivory) (Warm Ivory var(--ivory))
