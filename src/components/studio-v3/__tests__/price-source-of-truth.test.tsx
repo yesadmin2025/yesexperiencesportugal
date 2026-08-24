@@ -202,7 +202,11 @@ describe("Studio V3 price card — source-of-truth pricing", () => {
 
     const finalTotal = screen.getByTestId("studio-v3-final-total");
     expect(Number(finalTotal.getAttribute("data-final-eur"))).toBeGreaterThan(baseParty);
-    expect(screen.getByTestId("studio-v3-add-ons-total")).toHaveTextContent("Updated price");
+    // P3B copy: the refine running line is explicitly per-adult, so it can
+    // never be misread as the party total shown next to the CTA.
+    expect(screen.getByTestId("studio-v3-add-ons-total")).toHaveTextContent(
+      "Per adult, with additions",
+    );
     expect(finalTotal).toHaveTextContent("/ adult");
   });
 });
