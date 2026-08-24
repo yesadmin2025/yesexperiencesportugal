@@ -3455,8 +3455,6 @@ function ContinueCta({
 function ComposerRevealPanel({ state }: { state: StudioV3State }) {
   const journey = useMemo(() => composeFromState(state), [state]);
   const composerInput = useMemo(() => adaptStateToComposeInput(state), [state]);
-  const availableAdaptiveKinds = useMemo(() => availableAdaptiveQuestionKinds(state), [state]);
-  const advisor = useStudioIntentAdvisor(state, availableAdaptiveKinds);
   const { data: tourPriceTiers } = useTourPriceTiers();
   const composerPrice = useMemo(() => {
     if (!composerInput) return null;
