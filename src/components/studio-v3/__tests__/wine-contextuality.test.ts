@@ -17,7 +17,7 @@ describe("wine is contextual, never forced by a region choice", () => {
     });
     // The resolved Signature may legitimately contain a cellar of its own,
     // but curation must never *swap a stop out* to insert one.
-    expect(journey.rejections?.some((r) => r.reason === "swapped-for-wine")).not.toBe(true);
+    expect(journey.audit.rejections.some((r) => r.reason === "swapped-for-wine")).toBe(false);
   });
 
   it("still honours wine when the traveller actually asked for it", () => {
