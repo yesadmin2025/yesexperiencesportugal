@@ -45,6 +45,10 @@ export interface ResolvedJourney {
    * read `adultUnitEur` directly and render minor bands from `journeyLines`.
    */
   readonly perPaxEur: number | null;
+  /** Canonical journey total before optional enhancements. */
+  readonly baseTotalEur: number | null;
+  /** Canonical unit-aware party total for selected enhancements. */
+  readonly addOnsPartyTotalEur: number;
   readonly totalEur: number | null;
   /**
    * Canonical age-banded per-traveller lines. Populated only when
@@ -164,6 +168,8 @@ export function useResolvedJourney(
       addOns: selectedAddOns,
       adultUnitEur,
       perPaxEur,
+      baseTotalEur,
+      addOnsPartyTotalEur,
       totalEur,
       journeyLines: journey ? journey.lines : null,
       journeyTotalEur: journey ? Math.round(journey.totalEur) : null,
