@@ -268,13 +268,13 @@ export function resolveAdaptiveQuestion(
     return {
       kind,
       eyebrow: "Quiet ground",
-      title: "How should the sacred part",
-      titleAccent: "of the day feel?",
-      hint: "Shown only where a sanctuary or sacred-heritage route can hold it.",
+      title: "You chose a more reflective day.",
+      titleAccent: "Which thread matters more?",
+      hint: "",
       options: [
         {
           id: "faith-sanctuary-time",
-          label: "Time in the sanctuary",
+          label: "Sanctuary time",
           whisper: "Unhurried time where people come to pray.",
         },
         {
@@ -284,12 +284,13 @@ export function resolveAdaptiveQuestion(
         },
         {
           id: "faith-quiet-reflection",
-          label: "Simply quiet",
-          whisper: "Space to reflect, with nothing scheduled around it.",
+          label: "Keep it simply quiet",
+          whisper: "No religious stop or programme — just space to reflect.",
         },
       ],
     };
   }
+
 
   if (kind === "photo") {
     return {
