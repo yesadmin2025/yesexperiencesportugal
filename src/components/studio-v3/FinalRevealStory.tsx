@@ -418,13 +418,34 @@ export function FinalRevealStory({
             />
           </header>
 
-          {/* Narrative — one flowing story, no list, no chapter markers */}
+          {/* One real photograph of the opening moment. Never blocks the
+              reveal: it lazy-loads and simply stays absent if unresolved. */}
+          {openingImage ? (
+            <figure
+              className="mt-7 mx-auto max-w-[54ch]"
+              data-testid="studio-v3-final-reveal-image"
+            >
+              <img
+                src={openingImage}
+                alt={openingAlt}
+                loading="lazy"
+                decoding="async"
+                width={1200}
+                height={800}
+                className="w-full h-auto object-cover"
+                style={{ aspectRatio: "3 / 2", borderRadius: "2px" }}
+              />
+            </figure>
+          ) : null}
+
+          {/* Narrative — numbered moments so the day stays scannable while
+              the prose keeps its editorial voice. */}
           <div
-            className="mt-8 space-y-5 mx-auto max-w-[54ch]"
+            className="mt-8 space-y-6 mx-auto max-w-[54ch]"
             data-testid="studio-v3-final-reveal-timeline"
           >
             <p
-              className="text-[15.5px] leading-[1.75] [text-wrap:pretty]"
+              className="text-[16px] leading-[1.75] [text-wrap:pretty]"
               style={{
                 fontFamily: "var(--font-editorial)",
                 color: "color-mix(in oklab, var(--charcoal) 82%, transparent)",
@@ -433,22 +454,34 @@ export function FinalRevealStory({
               {intro}
             </p>
             {paragraphs.map((p) => (
-              <p
-                key={p.key}
-                className={cn(
-                  "text-[15px] leading-[1.75] [text-wrap:pretty]",
-                  p.kind === "addon" && "italic",
-                )}
-                style={{
-                  fontFamily: "var(--font-editorial)",
-                  color:
-                    p.kind === "addon"
-                      ? "var(--teal)"
-                      : "color-mix(in oklab, var(--charcoal) 78%, transparent)",
-                }}
-              >
-                {p.text}
-              </p>
+              <div key={p.key}>
+                {p.kind === "stop" ? (
+                  <p
+                    className="mb-1.5 text-[10.5px] uppercase tracking-[0.26em] font-semibold"
+                    style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
+                  >
+                    <span style={{ color: "var(--gold-ink, var(--gold))" }}>
+                      {String(p.stopIndex + 1).padStart(2, "0")}
+                    </span>{" "}
+                    {p.label}
+                  </p>
+                ) : null}
+                <p
+                  className={cn(
+                    "text-[15.5px] leading-[1.75] [text-wrap:pretty]",
+                    p.kind === "addon" && "italic",
+                  )}
+                  style={{
+                    fontFamily: "var(--font-editorial)",
+                    color:
+                      p.kind === "addon"
+                        ? "var(--teal)"
+                        : "color-mix(in oklab, var(--charcoal) 78%, transparent)",
+                  }}
+                >
+                  {p.text}
+                </p>
+              </div>
             ))}
           </div>
         </div>
