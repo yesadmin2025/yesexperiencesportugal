@@ -10,6 +10,7 @@
  */
 
 import type { LivingAtlasDiscoverySignal } from "@/components/studio-v3/livingAtlasDecision";
+import { hasExplicitWineIntent } from "./studioWineIntent";
 import type {
   AdaptiveRefinementId,
   ChoiceOption,
@@ -135,11 +136,13 @@ function coastRelevant(state: StudioV3State): boolean {
 
 function wineRelevant(state: StudioV3State): boolean {
   if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
-  return (
-    state.feeling === "wine-food" ||
-    state.interests.includes("wine") ||
-    state.interests.includes("gastronomy")
-  );
+  // Explicit wine intent ONLY. Gastronomy is food, not wine; coast, nature,
+  // heritage and slow-luxury never earn a cellar/vines question.
+  return hasExplicitWineIntent({
+    feeling: state.feeling,
+    interests: state.interests,
+    destinationIntent: state.destinationIntent,
+  });
 }
 
 function handsRelevant(state: StudioV3State): boolean {
@@ -183,7 +186,7 @@ function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
       ? "faith"
       : state.feeling === "coastal" || state.feeling === "adventure"
       ? "coast"
-      : state.feeling === "wine-food" || state.feeling === "slow-luxury"
+      : state.feeling === "wine-food"
         ? "wine"
         : state.feeling === "culture" || state.feeling === "hands-on"
           ? "hands"
@@ -318,7 +321,7 @@ export function resolveAdaptiveQuestion(state: StudioV3State): AdaptiveQuestion 
       eyebrow: "The table",
       title: "What should the wine",
       titleAccent: "be about?",
-      hint: "This helps us choose where the longest pause of the day belongs.",
+      hint: "This helps us choose the wine direction that best fits your day.",
       options: [
         {
           id: "wine-cellar-depth",
