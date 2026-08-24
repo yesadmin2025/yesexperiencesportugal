@@ -18,12 +18,36 @@ async function phase(page: import("@playwright/test").Page): Promise<string | nu
 }
 
 async function advanceIntro(page: import("@playwright/test").Page) {
-  for (let i = 0; i < 5; i++) {
+  // A cold Vite graph can take several seconds before the first cinematic CTA
+  // becomes actionable. Wait for the real Studio contract instead of swallowing
+  // short click timeouts and continuing with a stale phase.
+  await expect.poll(() => phase(page), { timeout: 30_000 }).toBe("intro");
+
+  for (let i = 0; i < 5 && (await phase(page)) === "intro"; i++) {
     const cta = page.locator('[data-phase-cta^="intro-"]').first();
-    if (!(await cta.isVisible().catch(() => false))) return;
-    await cta.click({ timeout: 4_000 }).catch(() => undefined);
-    await page.waitForTimeout(500);
+    await cta.waitFor({ state: "visible", timeout: 30_000 });
+    const currentCta = await cta.getAttribute("data-phase-cta");
+
+    await cta.click({ timeout: 30_000 });
+
+    // Intro has several cinematic beats while data-phase remains "intro".
+    // Wait until either the phase advances or the active intro CTA changes.
+    await expect
+      .poll(
+        async () => {
+          if ((await phase(page)) !== "intro") return "advanced";
+          const next = page.locator('[data-phase-cta^="intro-"]').first();
+          if (!(await next.count())) return "waiting";
+          return (await next.getAttribute("data-phase-cta")) !== currentCta
+            ? "advanced"
+            : "waiting";
+        },
+        { timeout: 15_000 },
+      )
+      .toBe("advanced");
   }
+
+  await expect.poll(() => phase(page), { timeout: 15_000 }).not.toBe("intro");
 }
 
 test("Let YES decide carries the journey through to a composed day", async ({ page }) => {
@@ -48,8 +72,8 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
     // before touching anything underneath it.
     const overlay = page.getByTestId("studio-v3-understood-beat");
     if (await overlay.isVisible().catch(() => false)) {
-      await overlay.click().catch(() => undefined);
-      await overlay.waitFor({ state: "hidden", timeout: 8_000 }).catch(() => undefined);
+      await overlay.click();
+      await overlay.waitFor({ state: "hidden", timeout: 8_000 });
     }
 
     const current = await phase(page);
@@ -57,19 +81,28 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
 
     const yes = page.getByRole("button", { name: /let yes decide/i }).first();
     if (await yes.isVisible().catch(() => false)) {
-      await yes.click().catch(() => undefined);
+      await yes.click();
       await page.waitForTimeout(700);
       continue;
     }
 
     if (current === "logistics") {
-      // Flexible date + first pickup, then compose.
-      const flexible = page.getByRole("button", { name: /flexible/i }).first();
-      if (await flexible.isVisible().catch(() => false)) await flexible.click();
-      const pickups = page.locator('section[aria-label="Where the day begins"] button');
-      await pickups.first().click();
-      const compose = page.getByRole("button", { name: /compose my day/i }).first();
-      await expect(compose).toBeVisible();
+      // Use the Studio's stable interaction contracts rather than text locators.
+      const flexible = page.locator('button[data-phase-cta="date-secondary"]').first();
+      await expect(flexible).toBeVisible({ timeout: 15_000 });
+      await flexible.click();
+      await expect(flexible).toHaveAttribute("data-selected", "true");
+
+      const pickup = page
+        .locator('section[aria-label="Where the day begins"] button')
+        .first();
+      await expect(pickup).toBeVisible({ timeout: 15_000 });
+      await pickup.click();
+      await expect(pickup).toHaveAttribute("data-selected", "true");
+
+      const compose = page.locator('button[data-phase-cta="continue"]').first();
+      await expect(compose).toHaveText(/compose my day/i, { timeout: 15_000 });
+      await expect(compose).toBeEnabled();
       await compose.click();
       await page.waitForTimeout(900);
       continue;
@@ -84,11 +117,11 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
     for (let k = 0; k < optionCount; k++) {
       const text = ((await options.nth(k).textContent()) ?? "").trim();
       if (!text || /back|close|exit|skip/i.test(text)) continue;
-      await options.nth(k).click().catch(() => undefined);
+      await options.nth(k).click();
       break;
     }
     const cont = page.getByRole("button", { name: /^continue$/i }).first();
-    if (await cont.isVisible().catch(() => false)) await cont.click().catch(() => undefined);
+    if (await cont.isVisible().catch(() => false)) await cont.click();
     await page.waitForTimeout(700);
   }
 
