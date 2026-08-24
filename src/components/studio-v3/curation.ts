@@ -1633,11 +1633,12 @@ export function curateJourney(
   // picked coast/culture with no wine interest must never have a named winery
   // pushed into (or swapped into) their day. The two Alentejo intents stay
   // because the traveller-visible label itself names the wine tradition.
-  const wineSignal =
-    feeling === "wine-food" ||
-    interests.includes("wine") ||
-    options?.destinationIntent === "alentejo-evora-wine" ||
-    options?.destinationIntent === "alentejo-roman-talha";
+  const wineSignal = hasExplicitWineIntent({
+    feeling,
+    interests,
+    destinationIntent: options?.destinationIntent ?? null,
+  });
+
 
   let wineSwapApplied = false;
   if (wineSignal && !picks.some((p) => WINE_STOP_RE.test(`${p.stop.label} ${p.stop.story}`))) {
