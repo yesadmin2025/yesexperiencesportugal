@@ -1926,6 +1926,7 @@ export function resolveStudioV3Route(input: {
         companions,
         investment,
         considerations: input.considerations ?? [],
+        wineIntent: routeWineIntent,
       });
       routePoints.length = 0;
       for (const p of safe) routePoints.push(p);
@@ -1938,6 +1939,7 @@ export function resolveStudioV3Route(input: {
       companions,
       investment,
       considerations: input.considerations ?? [],
+      wineIntent: routeWineIntent,
     });
     routePoints.length = 0;
     for (const p of composed) routePoints.push(p);
@@ -1950,6 +1952,7 @@ export function resolveStudioV3Route(input: {
       companions,
       investment,
       considerations: input.considerations ?? [],
+      wineIntent: routeWineIntent,
     });
     routePoints.length = 0;
     for (const p of withExtra) routePoints.push(p);
