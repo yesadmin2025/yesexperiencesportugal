@@ -42,6 +42,13 @@ import { CANCELLATION, LICENSE_LABEL } from "@/config/business-nap";
 import { recordStudioV3RevealPremium, recordStudioV3RevealAddOns } from "@/lib/studio-v3-telemetry";
 import { CTA_ASK_CURATOR, INCLUDED_HEADER_REFINE } from "@/content/signature-day-copy";
 import { formatGuestComposition } from "./formatGuests";
+import { resolvePriceChangeFactors } from "./priceChangeFactors";
+import {
+  InvestmentDelta,
+  InvestmentFactors,
+  InvestmentLedger,
+  useInvestmentDelta,
+} from "./InvestmentLedger";
 
 /** Fixed USD→EUR conversion. We don't show "live FX" or hide behind decimals
  *  — this is a "from" anchor, rounded to the nearest €5 so it reads premium. */
@@ -159,6 +166,13 @@ export interface SignaturePriceCardProps {
    */
   resolvedPerPaxEur?: number | null;
   resolvedTotalEur?: number | null;
+  /**
+   * Canonical base (pre-additions) party total and unit-aware additions
+   * party total from `useResolvedJourney`. Presentation only — used for
+   * the investment ledger so it can never reconstruct a number.
+   */
+  resolvedBaseTotalEur?: number | null;
+  resolvedAddOnsTotalEur?: number | null;
 }
 
 export function SignaturePriceCard({
@@ -183,6 +197,8 @@ export function SignaturePriceCard({
   variant = "full",
   resolvedPerPaxEur = null,
   resolvedTotalEur = null,
+  resolvedBaseTotalEur = null,
+  resolvedAddOnsTotalEur = null,
 }: SignaturePriceCardProps) {
   const isRefine = variant === "refine";
 
@@ -499,6 +515,28 @@ export function SignaturePriceCard({
       ? Math.round(partyTotalEur / effectiveGuests)
       : (displayPerPaxEur ?? null);
 
+  // ---- P3B live investment presentation values (no new pricing math) ----
+  // Delta is derived from the SAME number the card displays, so it can only
+  // ever describe a real change the traveller just caused.
+  const displayedTotalEur = partyTotalEur ?? totalEur ?? null;
+  const investmentDelta = useInvestmentDelta(displayedTotalEur);
+  // Ledger inputs: canonical values when we're showing canonical totals,
+  // otherwise the local preview values already computed above. Never
+  // reconstructed or inferred.
+  const ledgerBaseEur = usingResolved ? resolvedBaseTotalEur : partyBaseEur;
+  const ledgerAdditionsEur = usingResolved ? resolvedAddOnsTotalEur : addOnsDisplayPartyEur;
+  const priceFactors = useMemo(
+    () =>
+      resolvePriceChangeFactors({
+        tour,
+        selectedAddOns: selectedAddOns.map((a) => ({
+          label: a.label,
+          unit: addOnEurFor({ addOn: a, baseEur: priceEur ?? 0, guests: summaryGuests }).unit,
+        })),
+      }),
+    [tour, selectedAddOns, priceEur, summaryGuests],
+  );
+
   // Dev-only invariant: perPerson × guests must equal total (±rounding).
   if (import.meta.env.DEV && partyTotalEur != null && effectiveGuests && effectiveGuests > 0) {
     const drift = Math.abs((perPersonDerived ?? 0) * effectiveGuests - partyTotalEur);
@@ -645,11 +683,11 @@ export function SignaturePriceCard({
       `}</style>
       <div
         data-sv3-stagger
-        className="relative overflow-hidden rounded-[6px] px-5 py-6 text-center"
+        className="relative overflow-hidden px-1 py-7 text-center sm:px-2"
         style={{
-          background: "color-mix(in oklab, var(--ivory) 88%, var(--sand))",
-          border: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
-          boxShadow: "0 18px 44px -28px rgba(46,46,46,0.32)",
+          background: "color-mix(in oklab, var(--ivory) 96%, var(--sand))",
+          borderTop: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
+          borderBottom: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
         }}
       >
         <span
@@ -712,7 +750,7 @@ export function SignaturePriceCard({
                         className="mt-2 block text-[10.5px] uppercase tracking-[0.22em] font-semibold"
                         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
                       >
-                        total for your group
+                        Your investment
                       </span>
                     </p>
                   ) : null}
@@ -898,7 +936,7 @@ export function SignaturePriceCard({
                   );
                 })()
               : null}
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-col gap-0">
               {availableAddOns.map((a) => {
                 const line = addOnEurFor({
                   addOn: a,
@@ -926,16 +964,20 @@ export function SignaturePriceCard({
                       onClick={() => toggleAddOn(a.id)}
                       data-addon-id={a.id}
                       data-state={state}
-                      className="addon-chip flex w-full items-start gap-3 rounded-[4px] px-3 py-2.5 text-left transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:cursor-not-allowed"
+                      className="addon-chip flex w-full items-start gap-3 px-1 py-3 min-h-[56px] text-left transition-colors duration-200 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:cursor-not-allowed"
                       style={{
                         background: selected
-                          ? "color-mix(in oklab, var(--gold) 12%, var(--ivory))"
-                          : "color-mix(in oklab, var(--ivory) 92%, var(--sand))",
-                        borderWidth: 1,
-                        borderStyle: "solid",
-                        borderColor: selected
+                          ? "color-mix(in oklab, var(--teal) 4%, transparent)"
+                          : "transparent",
+                        borderTopWidth: 0,
+                        borderLeftWidth: 0,
+                        borderRightWidth: 0,
+                        borderBottomStyle: "solid",
+                        borderBottomWidth: selected ? 2 : 1,
+                        borderBottomColor: selected
                           ? "color-mix(in oklab, var(--gold) 70%, transparent)"
                           : "color-mix(in oklab, var(--charcoal) 12%, transparent)",
+                        boxShadow: "none",
                         opacity: disabled ? 0.45 : 1,
                       }}
                     >
@@ -956,7 +998,7 @@ export function SignaturePriceCard({
                       </span>
                       <span className="flex-1 min-w-0">
                         <span
-                          className="block text-[12.5px]"
+                          className="block text-[13.5px]"
                           style={{
                             color: "var(--charcoal)",
                             fontWeight: selected ? 600 : 500,
@@ -983,7 +1025,7 @@ export function SignaturePriceCard({
                         ) : null}
                       </span>
                       <span
-                        className="shrink-0 flex flex-col items-end text-[12px] font-semibold tabular-nums whitespace-nowrap"
+                        className="shrink-0 flex flex-col items-end text-[13px] font-semibold tabular-nums whitespace-nowrap"
                         style={{ color: "var(--charcoal)", maxWidth: 92 }}
                       >
                         <span className="whitespace-nowrap">
@@ -1024,7 +1066,7 @@ export function SignaturePriceCard({
             >
               {selectedAddOnIds.length > 0 && totalEur != null ? (
                 <>
-                  {isRefine ? "Updated price" : "Additions"}{" "}
+                  {isRefine ? "Per adult, with additions" : "Additions"}{" "}
                   <span style={{ color: "var(--gold)" }}>—</span> €{totalEur}
                   <span className="ml-1 text-[9.5px] tracking-[0.18em] opacity-60">total</span>
                 </>
@@ -1117,17 +1159,17 @@ export function SignaturePriceCard({
             <div
               data-testid="studio-v3-final-total"
               data-final-eur={totalForDisplay}
-              className="mt-4 mx-auto max-w-[380px] rounded-[4px] px-3 py-3 text-center"
+              className="mt-5 mx-auto max-w-[380px] px-1 pt-4 text-center"
               style={{
-                background: "color-mix(in oklab, var(--gold) 10%, var(--ivory))",
-                border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                background: "transparent",
+                borderTop: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
               }}
             >
               <p
-                className="text-[10px] uppercase tracking-[0.24em] font-bold"
+                className="text-[11px] uppercase tracking-[0.24em] font-bold"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
               >
-                Total for your group
+                Your day, resolved
               </p>
               <p
                 className="mt-1 text-[24px] font-bold tabular-nums leading-none"
@@ -1150,6 +1192,13 @@ export function SignaturePriceCard({
                   testId="studio-v3-price-card-final-per-person"
                 />
               </div>
+              <InvestmentDelta delta={investmentDelta} />
+              <InvestmentLedger
+                baseTotalEur={ledgerBaseEur}
+                additionsTotalEur={ledgerAdditionsEur}
+                totalEur={totalForDisplay}
+              />
+              <InvestmentFactors factors={priceFactors} />
             </div>
           );
         })()}

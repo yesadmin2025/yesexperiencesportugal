@@ -45,7 +45,16 @@ export interface ResolvedJourney {
    * read `adultUnitEur` directly and render minor bands from `journeyLines`.
    */
   readonly perPaxEur: number | null;
+  /**
+   * Base journey total for the party BEFORE additions — the exact value
+   * already computed inside this hook. Exposed for presentation only
+   * (the P3B investment ledger). No new calculation.
+   */
+  readonly baseTotalEur: number | null;
+  /** Unit-aware party total of the selected additions (sum of `amount`). */
+  readonly addOnsPartyTotalEur: number;
   readonly totalEur: number | null;
+
   /**
    * Canonical age-banded per-traveller lines. Populated only when
    * composition (adults + minor ages) is complete. `null` for legacy
@@ -164,7 +173,10 @@ export function useResolvedJourney(
       addOns: selectedAddOns,
       adultUnitEur,
       perPaxEur,
+      baseTotalEur,
+      addOnsPartyTotalEur: Math.round(addOnsPartyTotalEur),
       totalEur,
+
       journeyLines: journey ? journey.lines : null,
       journeyTotalEur: journey ? Math.round(journey.totalEur) : null,
     };
