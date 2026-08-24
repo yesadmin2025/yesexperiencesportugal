@@ -250,6 +250,8 @@ export function FinalRevealStory({
       kind: "stop",
       text: stopSentence(i, isLast, s.label, s.story),
       key: `stop-${i}-${s.label}`,
+      stopIndex: i,
+      label: s.label,
     });
     addOnQueue.forEach(({ a, i: ai }, qIdx) => {
       if (insertionPoints[qIdx] === i) {
