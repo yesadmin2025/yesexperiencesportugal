@@ -1633,12 +1633,18 @@ export function curateJourney(
     addPick(s);
   }
 
+  // Wine is only forced into a day when the traveller actually asked for it.
+  // A region choice is NOT a wine choice: "Arrábida, Setúbal & Azeitão" also
+  // resolves to boat, wild-beach, cheese and tile routes, and a traveller who
+  // picked coast/culture with no wine interest must never have a named winery
+  // pushed into (or swapped into) their day. The two Alentejo intents stay
+  // because the traveller-visible label itself names the wine tradition.
   const wineSignal =
     feeling === "wine-food" ||
     interests.includes("wine") ||
     options?.destinationIntent === "alentejo-evora-wine" ||
-    options?.destinationIntent === "alentejo-roman-talha" ||
-    options?.destinationIntent === "arrabida-setubal-azeitao";
+    options?.destinationIntent === "alentejo-roman-talha";
+
   let wineSwapApplied = false;
   if (wineSignal && !picks.some((p) => WINE_STOP_RE.test(`${p.stop.label} ${p.stop.story}`))) {
     const winePick = scored.find(
