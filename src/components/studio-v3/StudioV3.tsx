@@ -635,6 +635,12 @@ type Reaction = {
   regionKey?: RegionKey;
   /** Explicit origin lat/lng — overrides regionKey-derived origin. */
   originCoord?: { lat: number; lng: number } | null;
+  /**
+   * Suppress the abstract map/postcard panel. Used by short acknowledgement
+   * beats ("Noted") where an empty schematic card reads as a loading state
+   * rather than a cinematic moment — copy alone is stronger there.
+   */
+  hidePanel?: boolean;
 };
 
 /** Context-aware atmosphere copy for the Who step. Sentence case, no superlatives. */
