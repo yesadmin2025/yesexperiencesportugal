@@ -429,7 +429,10 @@ export function MapAwakens({
           <div
             aria-hidden="true"
             data-testid="studio-v3-map-anticipation"
-            className={`pointer-events-none absolute inset-0 px-3 pt-14 pb-3 z-20 transition-opacity duration-[700ms] ease-out ${
+            // Same insets as the map wrapper: a mismatched top pad made the
+            // anticipation caption and the map caption cross during the
+            // crossfade, which read as overlapping labels on 393px.
+            className={`pointer-events-none absolute inset-0 px-3 pt-4 pb-3 z-20 transition-opacity duration-[420ms] ease-out ${
               anticipating ? "opacity-100" : "opacity-0"
             }`}
           >
