@@ -3841,9 +3841,15 @@ export function StoryboardHandoff({
     editedStops,
   ]);
 
+  const handoffAdaptiveKinds = useMemo(() => availableAdaptiveQuestionKinds(state), [state]);
+  const advisor = useStudioIntentAdvisor(state, handoffAdaptiveKinds);
   const refineIntents = useMemo(
-    () => resolveRefineIntents({ stops: editedStops, candidates: intentCandidates }),
-    [editedStops, intentCandidates],
+    () =>
+      prioritiseResolvedRefineIntents(
+        resolveRefineIntents({ stops: editedStops, candidates: intentCandidates }),
+        advisor.interpretation?.suggestedRefineIntentIds ?? [],
+      ),
+    [editedStops, intentCandidates, advisor.interpretation?.suggestedRefineIntentIds],
   );
 
   const [intentFeedback, setIntentFeedback] = useState<string | null>(null);
