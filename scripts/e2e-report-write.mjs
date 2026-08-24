@@ -38,7 +38,7 @@ function walkSuite(suite, filePath) {
         .filter(Boolean);
       tests.push({
         file: file.replace(/^.*?e2e\//, "e2e/"),
-        title: [...(spec.titlePath?.() ?? []), spec.title].filter(Boolean).join(" › ") || spec.title,
+        title: spec.title,
         status: test.status ?? last.status ?? "unknown",
         durationMs: last.duration ?? 0,
         retries: Math.max(0, (test.results ?? []).length - 1),
