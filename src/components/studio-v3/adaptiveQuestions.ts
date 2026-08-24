@@ -200,6 +200,11 @@ function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
   return available;
 }
 
+/** Expose the currently available adaptive question kinds for the advisor. */
+export function availableAdaptiveQuestionKinds(state: StudioV3State): AdaptiveQuestionKind[] {
+  return orderedKinds(state);
+}
+
 function localOptions(state: StudioV3State): ChoiceOption<AdaptiveRefinementId>[] {
   const options: ChoiceOption<AdaptiveRefinementId>[] = [
     {
