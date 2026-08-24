@@ -269,8 +269,6 @@ export const PHASE_SEQUENCE = [
   "checkoutSummary",
 ] as const;
 
-
-
 export type StudioWalkPhase = (typeof PHASE_SEQUENCE)[number];
 
 function phaseIndex(phase: string | null): number {
@@ -365,12 +363,52 @@ async function advanceThroughIntro(page: Page): Promise<boolean> {
 }
 
 /**
+ * Logistics sub-step contract. `logistics` is ONE `data-phase` presented as
+ * four local moments (when → where → who → review), reported on
+ * `data-logistics-moment`. Consume them in order, then commit on review.
+ */
+async function logisticsMoment(page: Page): Promise<string | null> {
+  return page
+    .locator("[data-logistics-moment]")
+    .first()
+    .getAttribute("data-logistics-moment")
+    .catch(() => null);
+}
+
+async function advanceThroughLogistics(page: Page): Promise<boolean> {
+  const cta = page.locator('button[data-phase-cta="continue"]').first();
+  for (let step = 0; step < 6; step++) {
+    const moment = await logisticsMoment(page);
+    if (moment === null) return false;
+    if (moment === "when") {
+      // "I'm flexible" keeps the walk independent of the booking window.
+      await safeClick(page, 'button[data-phase-cta="date-secondary"]');
+    } else if (moment === "where") {
+      await safeClick(
+        page,
+        'section[aria-label="Where the day begins"] [data-testid="studio-v3-choice"]',
+      );
+    }
+    if (!(await cta.isEnabled().catch(() => false))) return false;
+    await cta.click({ timeout: 4_000 }).catch(() => undefined);
+    if (moment === "review") return true;
+    const deadline = Date.now() + 4_000;
+    while (Date.now() < deadline) {
+      if ((await logisticsMoment(page)) !== moment) break;
+      await page.waitForTimeout(120);
+    }
+  }
+  return false;
+}
+
+/**
  * Per-phase action contract. Each entry knows how to act on its phase; the
  * walker then asserts the expected transition instead of retrying blindly.
  * Phases without an entry fall back to the answer/continue heuristic.
  */
 const PHASE_ACTIONS: Partial<Record<string, (page: Page) => Promise<boolean>>> = {
   intro: advanceThroughIntro,
+  logistics: advanceThroughLogistics,
   map: playMomentsReel,
   storyboard: playMomentsReel,
 };

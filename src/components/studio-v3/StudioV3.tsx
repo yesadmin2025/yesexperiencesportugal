@@ -18,8 +18,16 @@ import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { saveStudioV3Signature } from "@/lib/studio-v3/save-signature.functions";
 import { loadStudioV3Signature } from "@/lib/studio-v3/load-signature.functions";
 import { ChoiceGrid } from "./ChoiceGrid";
-import { UnderstoodBeat } from "./UnderstoodBeat";
-import { understoodSummary } from "./studioSemanticMemory";
+import {
+  BackLink,
+  ContinueCta,
+  FooterHint,
+  NextTeaser,
+  PhaseHeader,
+  UnderstoodSummaryLine,
+} from "./PhaseChrome";
+import { LogisticsPhase } from "./LogisticsPhase";
+
 import { InvestmentTierPicker } from "./InvestmentTierPicker";
 import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
@@ -255,7 +263,6 @@ import {
   type RefineIntentCandidate,
 } from "./refineIntents";
 
-
 import { GuestStepper, guestBucketLabel } from "./GuestStepper";
 import { Composition } from "./Composition";
 import { type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
@@ -290,7 +297,6 @@ const TOTAL_STEPS = 14;
 // and getNextPhase() can never disagree about ordering (that disagreement
 // used to silently drop valid transitions and dead-end the funnel).
 const PHASE_ORDER: StudioV3Phase[] = STUDIO_V3_PHASE_ORDER;
-
 
 function stepOf(phase: StudioV3Phase): number {
   return PHASE_ORDER.indexOf(phase) + 1;
@@ -585,7 +591,6 @@ export function studioV3Progress(
   return { percent: 8, phrase: "The day begins to take shape." };
 }
 
-
 /**
  * Reaction beat — a short cinematic punctuation shown between phases.
  * It overlays the next phase, holds for ~1.1s (or ~0.35s for
@@ -789,7 +794,7 @@ export function StudioV3() {
   const isMobile = useIsMobile();
   const { data: tourPriceTiers } = useTourPriceTiers();
   const [exiting, setExiting] = useState(false);
-  const [understood, setUnderstood] = useState<{ line: string; next: StudioV3Phase } | null>(null);
+
   const [reaction, setReaction] = useState<Reaction | null>(null);
   const [mobileReveal, setMobileReveal] = useState<{ beat: StudioV3BeatId; index: number } | null>(
     null,
@@ -2431,96 +2436,26 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
-      {/* Interpretation beat — plays over the logistics screen on the way to
-          the composition. Skippable, self-dismissing, never blocking. */}
-      {understood ? (
-        <UnderstoodBeat
-          line={understood.line}
-          onDone={() => {
-            const next = understood.next;
-            setUnderstood(null);
-            advance(next);
-          }}
-        />
-      ) : null}
+      {/* The blocking interpretation overlay was removed: the acknowledgement is
+          now a single inline line shown once, before Logistics. */}
 
       {state.phase === "logistics" ? (
-
         <PhaseShell
           accent="teal"
           exiting={exiting}
           progress={studioV3Progress(state, state.phase)}
           anticipation={anticipation}
         >
-          <BackLink onClick={() => back("rhythm")} />
-          <PhaseHeader
-            eyebrow="Making it real"
-            title="Three details and"
-            titleAccent="we compose your day"
-          />
-          {adaptiveQuestion ? null : <UnderstoodSummaryLine state={state} />}
-          <p
-            className="mt-1 mb-6 max-w-[36ch] mx-auto text-center text-[13px] leading-[1.55]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 65%, transparent)" }}
-          >
-            We only need this to make your day real. Everything is editable later.
-          </p>
-
-          <div
-            data-testid="studio-v3-logistics"
-            className="w-full max-w-[520px] mx-auto flex flex-col items-center gap-8"
-          >
-            <section className="w-full" aria-label="Date">
-              <DatePhaseControls
-                dateExact={state.dateExact}
-                dateMode={state.dateMode}
-                onPickExact={(iso) => setState((s) => ({ ...s, dateExact: iso, dateMode: "exact" }))}
-                onPickFlexible={() =>
-                  setState((s) => ({ ...s, dateExact: null, dateMode: "flexible" }))
-                }
-                onPickUndecided={() =>
-                  setState((s) => ({ ...s, dateExact: null, dateMode: "undecided" }))
-                }
-              />
-            </section>
-
-            <section className="w-full" aria-label="Where the day begins">
-              <p
-                className="mb-3 text-[11px] uppercase tracking-[0.22em]"
-                style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
-              >
-                Where the day begins
-              </p>
-              <ChoiceGrid
-                options={PICKUPS}
-                value={state.pickup}
-                onSelect={(id) => setState((s) => ({ ...s, pickup: id }))}
-                columns={1}
-              />
-            </section>
-
-            <section className="w-full" aria-label="Your party">
-              <p
-                className="mb-3 text-[11px] uppercase tracking-[0.22em]"
-                style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
-              >
-                Your party
-              </p>
-              <Composition
-                adults={state.adults ?? state.guests}
-                adultsInferred={state.guestsInferred}
-                minorAges={state.minorAges ?? []}
-                onAdultsChange={onGuestsChange}
-                onAddMinor={onAddMinor}
-                onRemoveMinor={onRemoveMinor}
-                onMinorAgeChange={onMinorAgeChange}
-              />
-            </section>
-          </div>
-
-          <ContinueCta
-            disabled={!state.dateMode || !state.pickup}
-            onClick={() => {
+          <LogisticsPhase
+            state={state}
+            setState={setState}
+            onAdultsChange={onGuestsChange}
+            onAddMinor={onAddMinor}
+            onRemoveMinor={onRemoveMinor}
+            onMinorAgeChange={onMinorAgeChange}
+            acknowledgementShownEarlier={Boolean(adaptiveQuestion)}
+            onBackPhase={() => back("rhythm")}
+            onCompose={() => {
               const committedAdults = state.adults ?? state.guests ?? 2;
               const committedMinors = state.minorAges ?? [];
               const committedTotal = committedAdults + committedMinors.length;
@@ -2538,25 +2473,10 @@ export function StudioV3() {
                 date_mode: forward.dateMode,
                 guests: committedTotal,
               });
-              const nextPhase = getNextPhase(forward, "logistics");
-              const line = interpretationLine(forward);
-              if (line) {
-                trackStudio("interpretation_viewed", {
-                  phase: "logistics",
-                  stepNumber: stepOf("logistics"),
-                });
-                setUnderstood({ line, next: nextPhase });
-              } else {
-                window.setTimeout(() => advance(nextPhase), 60);
-              }
+              // No blocking interpretation overlay: the acknowledgement already
+              // happened inline, so we move straight into the composition.
+              window.setTimeout(() => advance(getNextPhase(forward, "logistics")), 60);
             }}
-            label={
-              !state.dateMode
-                ? "Pick a date, or tell us you're flexible"
-                : !state.pickup
-                  ? "Where does the day begin?"
-                  : "Compose my day"
-            }
           />
         </PhaseShell>
       ) : null}
@@ -3295,115 +3215,6 @@ export function interpretationLine(state: StudioV3State): string | null {
 }
 
 /**
- * Short deterministic acknowledgement of what the traveller has already told
- * us. Built only from explicit selections (max three positive signals) — never
- * a destination, stop, supplier, price or a negative ("no wine assumed").
- */
-function UnderstoodSummaryLine({ state }: { state: StudioV3State }) {
-  const summary = understoodSummary(state);
-  if (!summary) return null;
-  return (
-    <div
-      data-testid="studio-v3-understood-summary"
-      className="w-full max-w-[520px] mx-auto mb-1 text-center"
-    >
-      <p
-        className="text-[15px] leading-[1.35]"
-        style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
-      >
-        {summary.lead}
-      </p>
-      <p
-        className="mt-1 text-[11px] uppercase tracking-[0.2em]"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
-      >
-        {summary.detail}
-      </p>
-    </div>
-  );
-}
-
-function PhaseHeader({
-  eyebrow,
-  title,
-  titleAccent,
-}: {
-  eyebrow: string;
-  title: string;
-  titleAccent: string;
-}) {
-  return (
-    <header className="w-full max-w-[520px] text-center">
-      <p
-        className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 58%, transparent)" }}
-      >
-        <span style={{ color: "var(--gold)" }}>—</span> {eyebrow}
-      </p>
-      <h2
-        className="mt-5 text-[28px] sm:text-[34px] leading-[1.08] tracking-[-0.012em] font-bold"
-        style={{
-          fontFamily: "var(--font-display)",
-          color: "var(--charcoal)",
-          animation: "studioV3RiseIn 520ms ease-out 60ms both",
-        }}
-      >
-        {title}{" "}
-        <span
-          className="italic font-normal"
-          style={{ fontFamily: "var(--font-serif)", color: "var(--teal)" }}
-        >
-          {titleAccent}
-        </span>
-      </h2>
-    </header>
-  );
-}
-
-function FooterHint({ children }: { children: React.ReactNode }) {
-  return (
-    <p
-      className="mt-8 text-center text-[12px] max-w-[320px]"
-      style={{
-        fontFamily: "var(--font-body)",
-        color: "color-mix(in oklab, var(--charcoal) 52%, transparent)",
-        animation: "studioV3RiseIn 600ms ease-out 320ms both",
-      }}
-    >
-      {children}
-    </p>
-  );
-}
-
-function NextTeaser({ children }: { children: React.ReactNode }) {
-  return (
-    <p
-      className="mt-5 text-center text-[11.5px] uppercase tracking-[0.22em] font-semibold max-w-[320px]"
-      style={{
-        color: "color-mix(in oklab, var(--gold) 70%, var(--charcoal))",
-        animation: "studioV3RiseIn 340ms ease-out both",
-      }}
-    >
-      <span style={{ color: "var(--gold)" }}>→</span> {children}
-    </p>
-  );
-}
-
-function BackLink({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="absolute left-4 top-4 inline-flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-      style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
-      aria-label="Back to previous step"
-    >
-      <ArrowLeft size={14} aria-hidden /> Back
-    </button>
-  );
-}
-
-/**
  * CloseStudio — a discreet exit affordance pinned to the top-right of
  * the Studio. With unsaved progress it asks for confirmation before
  * leaving so the traveller doesn't lose the journey they were composing.
@@ -3436,34 +3247,6 @@ function CloseStudio({ hasProgress }: { hasProgress: boolean }) {
       aria-label="Close the Studio"
     >
       <X size={16} aria-hidden />
-    </button>
-  );
-}
-
-/** Dark continue CTA used by the two multi-select screens. Inline styles
- *  intentionally mirror the StoryboardHandoff CTA — no new component. */
-function ContinueCta({
-  disabled,
-  onClick,
-  label,
-}: {
-  disabled: boolean;
-  onClick: () => void;
-  label: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      data-phase-cta="continue"
-      data-phase-cta-disabled={disabled ? "true" : "false"}
-      className={`mt-6 inline-flex items-center gap-2 px-6 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] ${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
-      }`}
-      style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
-    >
-      {label} <ArrowRight size={14} aria-hidden />
     </button>
   );
 }
@@ -3916,7 +3699,6 @@ export function StoryboardHandoff({
     setIntentFeedback(null);
   }, [undoSnapshot, setEdited]);
 
-
   const origin = pickupCityLabel(state.pickup);
   const shortLabels: string[] = [];
   const seenShort = new Set<string>();
@@ -4043,7 +3825,6 @@ export function StoryboardHandoff({
     editedStops.length >= 3
       ? displayLabel(editedStops[Math.floor(editedStops.length / 2)].label)
       : null;
-
 
   const hasNamedPickup = !!pickupCity && pickupCity !== "your chosen starting point";
   const regionForStory = skeletonTour?.region?.trim() || null;
@@ -4465,7 +4246,6 @@ export function StoryboardHandoff({
             ) : null}
 
             <ol className="space-y-3 sm:space-y-3">
-
               {editedStops.map((s, i) => {
                 const isFirst = i === 0;
                 const isLast = i === editedStops.length - 1;
@@ -4593,7 +4373,6 @@ export function StoryboardHandoff({
                         >
                           ✕
                         </button>
-
                       </div>
                     </div>
 
@@ -4627,7 +4406,6 @@ export function StoryboardHandoff({
                                 });
                               }}
                               className="w-full min-h-[44px] text-left px-2 py-2.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-
                               style={{ color: "var(--charcoal)" }}
                             >
                               <span className="font-semibold">{cand.label}</span>
