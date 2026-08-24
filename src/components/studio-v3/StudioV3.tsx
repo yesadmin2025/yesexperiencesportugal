@@ -1,4 +1,8 @@
 import {
+import {
+  buildWineryDisplayLabels,
+  studioDisplayLabel,
+} from "./studioWineryPresentation";
   lazy,
   Suspense,
   useCallback,
@@ -4322,7 +4326,7 @@ export function StoryboardHandoff({
                         color: "color-mix(in oklab, var(--charcoal) 78%, transparent)",
                       }}
                     >
-                      {cleanLabel(s.label)}
+                      {displayLabel(s.label)}
                     </span>
                   </li>
                 );
