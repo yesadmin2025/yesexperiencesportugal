@@ -29,8 +29,8 @@ export function PhaseShell({
   children,
   accent = "ivory",
   exiting = false,
-  step,
-  totalSteps,
+  // `step` / `totalSteps` remain in the public interface for caller
+  // compatibility, but never render numeric progress UI.
   progress,
   anticipation = null,
 }: PhaseShellProps) {
