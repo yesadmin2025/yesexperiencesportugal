@@ -200,10 +200,7 @@ function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
   return available;
 }
 
-/**
- * Public read-only allowlist for the intent advisor. It exposes only question
- * kinds that the deterministic relevance rules have already approved.
- */
+/** Expose the currently available adaptive question kinds for the advisor. */
 export function availableAdaptiveQuestionKinds(state: StudioV3State): AdaptiveQuestionKind[] {
   return orderedKinds(state);
 }
@@ -242,8 +239,8 @@ export function resolveAdaptiveQuestion(
 ): AdaptiveQuestion | null {
   if (!state.feeling && state.interests.length === 0) return null;
 
-  const kinds = orderedKinds(state);
-  const kind = preferredKind && kinds.includes(preferredKind) ? preferredKind : kinds[0];
+  const available = orderedKinds(state);
+  const kind = preferredKind && available.includes(preferredKind) ? preferredKind : available[0];
   if (!kind) return null;
 
   if (kind === "faith") {

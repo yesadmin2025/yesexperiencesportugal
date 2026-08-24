@@ -233,9 +233,12 @@ import {
   type StudioV3State,
 } from "./types";
 import {
+  availableAdaptiveQuestionKinds,
   refinementSummaryLabel,
   resolveAdaptiveQuestion,
 } from "@/components/studio-v3/adaptiveQuestions";
+import { useStudioIntentAdvisor } from "./useStudioIntentAdvisor";
+import { prioritiseResolvedRefineIntents } from "./studioIntentAdvisor";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import {
   decideFeeling,
@@ -1789,7 +1792,13 @@ export function StudioV3() {
   };
   // The single adaptive question, resolved from the traveller's own answers.
   // Null when nothing is worth asking — the phase is then skipped entirely.
-  const adaptiveQuestion = useMemo(() => resolveAdaptiveQuestion(state), [state]);
+  // The advisor may suggest a preferred kind, but never override validity.
+  const availableAdaptiveKinds = useMemo(() => availableAdaptiveQuestionKinds(state), [state]);
+  const advisor = useStudioIntentAdvisor(state, availableAdaptiveKinds);
+  const adaptiveQuestion = useMemo(
+    () => resolveAdaptiveQuestion(state, advisor.interpretation?.preferredAdaptiveKind ?? null),
+    [state, advisor.interpretation?.preferredAdaptiveKind],
+  );
 
   /**
    * Adaptive refinement — one conditional question. The answer becomes a
@@ -3587,6 +3596,9 @@ export function StoryboardHandoff({
 
   const shapingLine = investmentShapingLine(state.investment);
 
+  const availableAdaptiveKinds = useMemo(() => availableAdaptiveQuestionKinds(state), [state]);
+  const advisor = useStudioIntentAdvisor(state, availableAdaptiveKinds);
+
   // --- Phase 7B: inline editable route -----------------------------------
   // Source of truth: resolveStudioV3Route → routePoints. The user may
   // reorder/remove/swap stops; pool is restricted to the SAME resolved
@@ -3834,8 +3846,12 @@ export function StoryboardHandoff({
   ]);
 
   const refineIntents = useMemo(
-    () => resolveRefineIntents({ stops: editedStops, candidates: intentCandidates }),
-    [editedStops, intentCandidates],
+    () =>
+      prioritiseResolvedRefineIntents(
+        resolveRefineIntents({ stops: editedStops, candidates: intentCandidates }),
+        advisor.interpretation?.suggestedRefineIntentIds ?? [],
+      ),
+    [editedStops, intentCandidates, advisor.interpretation?.suggestedRefineIntentIds],
   );
 
   const [intentFeedback, setIntentFeedback] = useState<string | null>(null);
