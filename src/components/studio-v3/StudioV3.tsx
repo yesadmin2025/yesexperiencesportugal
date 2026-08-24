@@ -3598,6 +3598,9 @@ export function StoryboardHandoff({
 
   const shapingLine = investmentShapingLine(state.investment);
 
+  const availableAdaptiveKinds = useMemo(() => availableAdaptiveQuestionKinds(state), [state]);
+  const advisor = useStudioIntentAdvisor(state, availableAdaptiveKinds);
+
   // --- Phase 7B: inline editable route -----------------------------------
   // Source of truth: resolveStudioV3Route → routePoints. The user may
   // reorder/remove/swap stops; pool is restricted to the SAME resolved
