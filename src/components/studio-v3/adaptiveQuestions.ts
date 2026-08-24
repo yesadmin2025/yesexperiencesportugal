@@ -125,13 +125,30 @@ export function refinementSummaryLabel(
   return REFINEMENT_SUMMARY[refinement] ?? null;
 }
 
+/**
+ * Semantic gate. A question is only eligible when it asks for a genuinely NEW
+ * dimension of an already-known theme (which direction, how, which thread) —
+ * never to reconfirm a theme the traveller has already stated, and never for a
+ * theme they never stated at all.
+ */
+const KIND_THEME: Readonly<Record<AdaptiveQuestionKind, StudioSemanticTheme>> = {
+  coast: "theme.coast",
+  wine: "theme.wine",
+  hands: "activity.hands-on",
+  local: "interest.local-life",
+  faith: "theme.faith",
+  photo: "intent.photography",
+};
+
+function addsNewDimension(memory: StudioSemanticMemory, kind: AdaptiveQuestionKind): boolean {
+  // Every supported question refines a known theme's direction. If the theme is
+  // unknown, asking it would be an invented interest, not a refinement.
+  return memory.has(KIND_THEME[kind]);
+}
+
 function coastRelevant(state: StudioV3State): boolean {
   if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
-  return (
-    state.feeling === "coastal" ||
-    state.feeling === "adventure" ||
-    state.interests.includes("coast")
-  );
+  return state.feeling === "coastal" || state.interests.includes("coast");
 }
 
 function wineRelevant(state: StudioV3State): boolean {
@@ -147,14 +164,9 @@ function wineRelevant(state: StudioV3State): boolean {
 
 function handsRelevant(state: StudioV3State): boolean {
   if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
-  return (
-    state.interests.includes("hands-on") ||
-    state.interests.includes("local-life") ||
-    state.interests.includes("heritage") ||
-    state.feeling === "hands-on" ||
-    state.feeling === "hidden" ||
-    state.feeling === "culture"
-  );
+  // EXPLICIT hands-on intent only. Heritage, culture, local life and hidden
+  // Portugal are never workshop intent.
+  return state.feeling === "hands-on" || state.interests.includes("hands-on");
 }
 
 function faithRelevant(state: StudioV3State): boolean {
@@ -173,6 +185,7 @@ function localRelevant(state: StudioV3State): boolean {
 }
 
 function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
+  const memory = deriveSemanticMemory(state);
   const available: AdaptiveQuestionKind[] = [];
   if (faithRelevant(state)) available.push("faith");
   if (coastRelevant(state)) available.push("coast");
@@ -181,24 +194,27 @@ function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
   if (localRelevant(state)) available.push("local");
   if (photoRelevant(state)) available.push("photo");
 
+  const eligible = available.filter((kind) => addsNewDimension(memory, kind));
+
   const leadFirst: AdaptiveQuestionKind | null =
     state.feeling === "faith"
       ? "faith"
-      : state.feeling === "coastal" || state.feeling === "adventure"
-      ? "coast"
-      : state.feeling === "wine-food"
-        ? "wine"
-        : state.feeling === "culture" || state.feeling === "hands-on"
-          ? "hands"
-          : state.feeling === "hidden"
-            ? "local"
-            : null;
+      : state.feeling === "coastal"
+        ? "coast"
+        : state.feeling === "wine-food"
+          ? "wine"
+          : state.feeling === "hands-on"
+            ? "hands"
+            : state.feeling === "hidden"
+              ? "local"
+              : null;
 
-  if (leadFirst && available.includes(leadFirst)) {
-    return [leadFirst, ...available.filter((kind) => kind !== leadFirst)];
+  if (leadFirst && eligible.includes(leadFirst)) {
+    return [leadFirst, ...eligible.filter((kind) => kind !== leadFirst)];
   }
-  return available;
+  return eligible;
 }
+
 
 function localOptions(state: StudioV3State): ChoiceOption<AdaptiveRefinementId>[] {
   const options: ChoiceOption<AdaptiveRefinementId>[] = [
