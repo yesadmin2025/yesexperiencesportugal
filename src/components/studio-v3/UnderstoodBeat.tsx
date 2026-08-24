@@ -1,16 +1,12 @@
 /**
- * UnderstoodBeat — the short "YES understood me" moment between logistics
- * and the composition.
- *
- * It is a beat, not a phase: it holds for ~2s, is skippable with any tap or
- * key, and never blocks. The sentence it shows is produced deterministically
- * from answers the traveller actually gave (see `interpretationLine`), so it
- * can never claim wine, sea or romance that was never chosen.
+ * UnderstoodBeat — a brief acknowledgement between preference collection and
+ * composition. It is a beat, not a phase: skippable, never blocking, and fed
+ * only by deterministic wording derived from choices the traveller actually made.
  */
 
 import { useEffect, useRef } from "react";
 
-const HOLD_MS = 2000;
+const HOLD_MS = 1600;
 
 export function UnderstoodBeat({
   line,
@@ -30,7 +26,7 @@ export function UnderstoodBeat({
     const reduced =
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(finish, reduced ? 900 : HOLD_MS);
+    const timer = window.setTimeout(finish, reduced ? 650 : HOLD_MS);
     const onKey = () => finish();
     window.addEventListener("keydown", onKey);
     return () => {
@@ -50,14 +46,14 @@ export function UnderstoodBeat({
       style={{ background: "var(--ivory)" }}
     >
       <p
-        className="text-[10.5px] uppercase tracking-[0.28em] font-semibold"
+        className="text-[12px] uppercase tracking-[0.18em] font-semibold"
         style={{ color: "var(--gold-ink, var(--gold))" }}
       >
-        YES understood you
+        I’ve got it.
       </p>
       <p
         data-testid="studio-v3-understood-line"
-        className="mt-4 max-w-[24ch] text-[22px] leading-[1.25]"
+        className="mt-4 max-w-[28ch] text-[22px] leading-[1.3]"
         style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
       >
         {line}
@@ -65,10 +61,10 @@ export function UnderstoodBeat({
       <button
         type="button"
         onClick={finish}
-        className="mt-8 min-h-[44px] px-4 text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+        className="mt-7 min-h-[44px] px-4 text-[12px] uppercase tracking-[0.16em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
         style={{ color: "color-mix(in oklab, var(--charcoal) 55%, transparent)" }}
       >
-        Skip
+        Continue
       </button>
     </div>
   );
