@@ -1,9 +1,8 @@
 // Studio V3 — Opening intro.
 //
-// Three quiet screens:
-//   1. Welcome — single line of intent + Begin
-//   2. Name (optional) — input + Continue + Skip
-//   3. Path — guided ("Construir contigo") vs fast ("Construir rápido")
+// Two quiet moments:
+//   1. Welcome — editorial invitation + Begin
+//   2. Name (optional) — guided by default, with a quiet quick-version escape hatch
 //
 // The Studio counts no progress here: this is mood-setting only. The name
 // is stored in state and used lightly later (when present) to address the
@@ -19,7 +18,7 @@ interface Props {
   onComplete: (firstName: string | null, pathMode: "guided" | "fast") => void;
 }
 
-type IntroStep = "welcome" | "name" | "path";
+type IntroStep = "welcome" | "name";
 
 const NAME_PATTERN = /[^A-Za-zÀ-ÿ' -]/g;
 
@@ -30,7 +29,6 @@ function sanitiseName(raw: string): string {
 export function StudioV3Intro({ onComplete }: Props) {
   const [step, setStep] = useState<IntroStep>("welcome");
   const [value, setValue] = useState("");
-  const [pendingName, setPendingName] = useState<string | null>(null);
 
   // Privacy-safe: fires once when the emotional opening paints. No payload.
   useEffect(() => {
@@ -38,11 +36,14 @@ export function StudioV3Intro({ onComplete }: Props) {
     void import("@/lib/analytics-ga4").then((m) => m.gaStudioOpeningViewed());
   }, [step]);
 
+  const currentName = (): string | null => {
+    const clean = sanitiseName(value);
+    return clean.length > 0 ? clean : null;
+  };
+
   const handleNameSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const clean = sanitiseName(value);
-    setPendingName(clean.length > 0 ? clean : null);
-    setStep("path");
+    onComplete(currentName(), "guided");
   };
 
   return (
@@ -107,34 +108,18 @@ export function StudioV3Intro({ onComplete }: Props) {
               >
                 Portugal
               </span>{" "}
-              is waiting…
+              is the stage.
+              <br />
+              You write the story.
             </h2>
             <p
-              className="mt-5 text-[13px] leading-[1.6]"
+              className="mx-auto mt-5 max-w-[34ch] text-[13px] leading-[1.6]"
               style={{
                 color: "color-mix(in oklab, var(--ivory) 78%, transparent)",
                 fontFamily: "var(--font-body)",
               }}
             >
-              A few quiet choices, and Portugal begins to take your shape.
-            </p>
-
-            {/* Quiet meta line — was previously three bordered pills that
-               read as fake CTAs on mobile (audit P1 #4). Now a single
-               inline strip that describes what Studio does without
-               competing with the real BEGIN button below. */}
-            <p
-              aria-label="Studio preview updates now active"
-              data-testid="studio-v3-intro-meta"
-              className="mx-auto mt-6 max-w-[22rem] text-center text-[10.5px] font-semibold uppercase leading-[1.6]"
-              style={{
-                color: "color-mix(in oklab, var(--ivory) 72%, transparent)",
-                letterSpacing: "0.22em",
-                fontFamily: "var(--font-body)",
-              }}
-            >
-              Live route map <span style={{ color: "var(--gold)" }}>·</span> Drive-time checks{" "}
-              <span style={{ color: "var(--gold)" }}>·</span> Region-aware moments
+              A few quiet choices, then we shape a private day around your pace, people and interests.
             </p>
 
             <button
@@ -156,9 +141,10 @@ export function StudioV3Intro({ onComplete }: Props) {
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.4} aria-hidden />
             </button>
           </div>
-        ) : step === "name" ? (
+        ) : (
           <form
             onSubmit={handleNameSubmit}
+            data-testid="studio-v3-intro-name"
             className="w-full animate-in fade-in slide-in-from-bottom-2 duration-[700ms] motion-reduce:animate-none"
           >
             <p
@@ -214,6 +200,7 @@ export function StudioV3Intro({ onComplete }: Props) {
             <button
               type="submit"
               data-phase-cta="intro-name"
+              data-testid="studio-v3-intro-continue"
               className="mt-8 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-7 py-3 text-[11px] uppercase font-bold transition-colors hover:opacity-90"
               style={{
                 background: "var(--ivory)",
@@ -227,146 +214,33 @@ export function StudioV3Intro({ onComplete }: Props) {
 
             <button
               type="button"
-              onClick={() => {
-                setPendingName(null);
-                setStep("path");
-              }}
-              className="mt-4 inline-flex min-h-[40px] items-center justify-center px-3 text-[10.5px] uppercase font-semibold transition-colors hover:opacity-100"
+              onClick={() => onComplete(currentName(), "fast")}
+              data-phase-cta="intro-fast"
+              data-testid="studio-v3-intro-fast"
+              className="mt-2 inline-flex min-h-[44px] items-center justify-center px-3 text-[11px] font-semibold transition-colors hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
               style={{
-                color: "color-mix(in oklab, var(--ivory) 55%, transparent)",
+                color: "color-mix(in oklab, var(--ivory) 72%, transparent)",
+                fontFamily: "var(--font-body)",
+              }}
+            >
+              Use the quick version
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onComplete(null, "guided")}
+              data-testid="studio-v3-intro-skip"
+              className="mt-1 inline-flex min-h-[44px] items-center justify-center px-3 text-[10.5px] uppercase font-semibold transition-colors hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+              style={{
+                color: "color-mix(in oklab, var(--ivory) 52%, transparent)",
                 letterSpacing: "0.24em",
               }}
             >
               Skip
             </button>
           </form>
-        ) : (
-          <div
-            data-testid="studio-v3-intro-path"
-            className="w-full animate-in fade-in slide-in-from-bottom-2 duration-[700ms] motion-reduce:animate-none"
-          >
-            <p
-              className="text-[10.5px] uppercase font-bold"
-              style={{ color: "var(--gold)", letterSpacing: "0.28em" }}
-            >
-              — How would you like to compose it
-            </p>
-            <h2
-              className="mt-5 text-[22px] sm:text-[28px] leading-[1.18] tracking-[-0.01em] font-bold"
-              style={{
-                fontFamily: "var(--font-editorial)",
-                color: "var(--ivory)",
-              }}
-            >
-              {pendingName ? `${pendingName}, ` : ""}
-              <span
-                style={{
-                  fontFamily: "var(--font-editorial)",
-                  fontStyle: "italic",
-                  fontWeight: 400,
-                  color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
-                }}
-              >
-                choose your pace.
-              </span>
-            </h2>
-
-            <div className="mt-7 grid gap-3">
-              <PathCard
-                eyebrow="Guided"
-                title="Compose it with us"
-                whisper="A few quiet choices. About five minutes."
-                onClick={() => onComplete(pendingName, "guided")}
-                recommended
-              />
-              <PathCard
-                eyebrow="Fast"
-                title="Compose it quickly"
-                whisper="Only the essentials. Under two minutes."
-                onClick={() => onComplete(pendingName, "fast")}
-              />
-            </div>
-          </div>
         )}
       </div>
     </main>
-  );
-}
-
-function PathCard({
-  eyebrow,
-  title,
-  whisper,
-  onClick,
-  recommended,
-}: {
-  eyebrow: string;
-  title: string;
-  whisper: string;
-  onClick: () => void;
-  recommended?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      data-phase-cta="intro-path"
-      data-testid="studio-v3-intro-path-option"
-      data-phase-cta-recommended={recommended ? "true" : "false"}
-      className="group relative w-full rounded-[10px] px-5 py-4 text-left transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-      style={{
-        background: "color-mix(in oklab, var(--ivory) 6%, transparent)",
-        borderWidth: 1,
-        borderStyle: "solid",
-        borderColor: `color-mix(in oklab, var(--gold) ${recommended ? 55 : 28}%, transparent)`,
-      }}
-    >
-      <div className="flex items-center justify-between gap-3">
-        <p
-          className="text-[10px] uppercase font-bold"
-          style={{
-            color: "var(--gold)",
-            letterSpacing: "0.26em",
-          }}
-        >
-          — {eyebrow}
-        </p>
-        {recommended ? (
-          <span
-            className="text-[9.5px] uppercase font-semibold"
-            style={{
-              color: "color-mix(in oklab, var(--ivory) 65%, transparent)",
-              letterSpacing: "0.22em",
-            }}
-          >
-            Recommended
-          </span>
-        ) : null}
-      </div>
-      <h3
-        className="mt-2 text-[16px] sm:text-[18px] leading-[1.2] font-bold"
-        style={{
-          fontFamily: "var(--font-editorial)",
-          color: "var(--ivory)",
-        }}
-      >
-        {title}
-      </h3>
-      <p
-        className="mt-1.5 text-[12.5px] leading-[1.5]"
-        style={{
-          color: "color-mix(in oklab, var(--ivory) 70%, transparent)",
-          fontFamily: "var(--font-body)",
-        }}
-      >
-        {whisper}
-      </p>
-      <ArrowRight
-        className="absolute right-4 top-1/2 h-3.5 w-3.5 -translate-y-1/2 transition-transform group-hover:translate-x-0.5"
-        strokeWidth={2.2}
-        aria-hidden
-        style={{ color: "var(--gold)" }}
-      />
-    </button>
   );
 }
