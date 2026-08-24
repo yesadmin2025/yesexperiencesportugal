@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-24T13:55:45.437Z",
-  "filesScanned": 1040,
+  "generatedAt": "2026-08-23T23:09:53.615Z",
+  "filesScanned": 1032,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1421,7 +1421,7 @@
     },
     {
       "file": "src/components/maps/EditorialMap.tsx",
-      "line": 187,
+      "line": 179,
       "col": 29,
       "raw": "#14181a",
       "normalized": "#14181a",
@@ -1430,7 +1430,7 @@
     },
     {
       "file": "src/components/maps/EditorialMap.tsx",
-      "line": 419,
+      "line": 411,
       "col": 65,
       "raw": "#14181a",
       "normalized": "#14181a",
