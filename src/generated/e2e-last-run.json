@@ -1,11 +1,30 @@
 {
-  "generatedAt": null,
-  "startedAt": null,
-  "durationMs": 0,
-  "total": 0,
-  "passed": 0,
-  "failed": 0,
+  "generatedAt": "2026-08-24T16:21:32.943Z",
+  "startedAt": "2026-08-24T10:00:00.000Z",
+  "durationMs": 12345,
+  "total": 2,
+  "passed": 1,
+  "failed": 1,
   "flaky": 0,
   "skipped": 0,
-  "tests": []
+  "tests": [
+    {
+      "file": "e2e/studio-v3-cta-navigation-mobile.spec.ts",
+      "title": "passes",
+      "status": "expected",
+      "durationMs": 900,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "file": "e2e/studio-v3-cta-navigation-mobile.spec.ts",
+      "title": "fails",
+      "status": "unexpected",
+      "durationMs": 1500,
+      "retries": 0,
+      "errors": [
+        "expect(x).toBe(1)"
+      ]
+    }
+  ]
 }
