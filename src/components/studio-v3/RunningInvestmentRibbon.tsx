@@ -163,20 +163,30 @@ export function RunningInvestmentRibbon({
             >
               {line}
             </span>
+            <span className="shrink-0" data-testid="studio-v3-ribbon-delta">
+              <InvestmentDelta delta={delta} />
+            </span>
           </span>
           <button
             type="button"
             onClick={dismiss}
             aria-label="Hide investment whisper for this session"
-            className="shrink-0 text-[10.5px] uppercase tracking-[0.2em] font-semibold px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            data-testid="studio-v3-investment-ribbon-hide"
+            className="shrink-0 text-[10.5px] uppercase tracking-[0.2em] font-semibold px-1 inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{
               color: "color-mix(in oklab, var(--charcoal) 60%, var(--ivory))",
-              minHeight: 28,
-              borderBottom: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
+              minHeight: 44,
             }}
           >
-            Hide
+            <span
+              style={{
+                borderBottom: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
+              }}
+            >
+              Hide
+            </span>
           </button>
+
         </div>
         {voice ? (
           <span
