@@ -3,13 +3,14 @@ import type { ChoiceOption } from "./types";
 /**
  * ChoiceGrid — the editorial selector used by every Studio V3 question phase.
  *
- * Renders a sentence-case label (editorial) + an Inter whisper subtitle inside a
- * tactile tile. No checkboxes, no dropdowns. Tiles fade-rise on mount in a
- * staggered cadence (max ~360ms total) and respect prefers-reduced-motion.
+ * Renders a sentence-case label (editorial) + an Inter whisper subtitle on a
+ * quiet page-like surface. No checkboxes, no dropdowns, no floating cards.
+ * Options fade-rise on mount in a staggered cadence (max ~360ms total) and
+ * respect prefers-reduced-motion.
  *
  * Single-select (default): pass `value` + `onSelect`.
  * Multi-select: pass `mode="multi"`, `values`, `onToggle`. Visual language is
- * identical — the gold dot indicator simply reflects each tile's selected
+ * identical — the gold dot indicator simply reflects each option's selected
  * state. No badges, no counts, no checkboxes.
  */
 interface ChoiceGridProps<T extends string> {
@@ -25,7 +26,7 @@ interface ChoiceGridProps<T extends string> {
   mode?: "single" | "multi";
   columns?: 1 | 2;
   /**
-   * Multi-select cap. When reached, unselected tiles render disabled (dimmed,
+   * Multi-select cap. When reached, unselected options render disabled (dimmed,
    * not interactive) so the user sees the ceiling without a toast.
    */
   maxSelected?: number;
@@ -46,9 +47,10 @@ export function ChoiceGrid<T extends string>({
     isMulti && typeof maxSelected === "number" && Array.isArray(values)
       ? values.length >= maxSelected
       : false;
+
   return (
     <ul
-      className={`mt-8 grid w-full max-w-[520px] gap-3 ${
+      className={`mt-8 grid w-full max-w-[520px] gap-x-4 gap-y-0 ${
         columns === 2 ? "grid-cols-2" : "grid-cols-1"
       }`}
       role={isMulti ? "group" : "radiogroup"}
@@ -58,6 +60,7 @@ export function ChoiceGrid<T extends string>({
           ? Array.isArray(values) && values.includes(opt.id)
           : value === opt.id;
         const lockedByCap = isMulti && atCap && !selected;
+
         return (
           <li key={opt.id}>
             <button
@@ -76,17 +79,14 @@ export function ChoiceGrid<T extends string>({
                 if (isMulti) onToggle?.(opt.id);
                 else onSelect?.(opt.id);
               }}
-              className="group relative w-full text-left px-4 py-3.5 min-h-[64px] border transition-[transform,border-color,background-color,box-shadow,opacity] duration-[220ms] ease-out motion-reduce:transition-none hover:-translate-y-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:hover:translate-y-0 disabled:cursor-not-allowed"
+              className="group relative w-full min-h-[64px] border-0 border-b px-3 py-4 text-left transition-[border-color,background-color,opacity] duration-[220ms] ease-out motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:cursor-not-allowed"
               style={{
                 background: selected
-                  ? "color-mix(in oklab, var(--teal) 6%, var(--ivory))"
-                  : "var(--ivory)",
+                  ? "color-mix(in oklab, var(--teal) 5%, transparent)"
+                  : "transparent",
                 borderColor: selected
-                  ? "var(--teal)"
-                  : "color-mix(in oklab, var(--charcoal) 14%, transparent)",
-                boxShadow: selected
-                  ? "0 14px 30px -18px color-mix(in oklab, var(--teal) 50%, transparent)"
-                  : "0 6px 18px -14px rgba(46,46,46,0.18)",
+                  ? "color-mix(in oklab, var(--teal) 78%, transparent)"
+                  : "color-mix(in oklab, var(--charcoal) 16%, transparent)",
                 opacity: lockedByCap ? 0.45 : 1,
                 animation: `studioV3RiseIn 420ms ease-out ${60 + i * 45}ms both`,
               }}
@@ -113,7 +113,7 @@ export function ChoiceGrid<T extends string>({
               {selected ? (
                 <span
                   aria-hidden
-                  className="absolute right-3 top-3 inline-block h-1.5 w-1.5 rounded-full"
+                  className="absolute right-3 top-4 inline-block h-1.5 w-1.5 rounded-full"
                   style={{ background: "var(--gold)" }}
                 />
               ) : null}
