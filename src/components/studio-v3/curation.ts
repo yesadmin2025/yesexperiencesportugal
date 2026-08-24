@@ -34,6 +34,8 @@ import {
 import { isAdaptiveQuestionRelevant } from "@/components/studio-v3/adaptiveQuestions";
 import { adaptiveQuestionAddsValue } from "@/lib/studio-v3/livingAtlasBridge";
 import type { AdaptiveRefinementId } from "@/components/studio-v3/types";
+import { hasExplicitWineIntent, interestsImplyWine } from "./studioWineIntent";
+
 import type {
   ChoiceOption,
   Companions,
