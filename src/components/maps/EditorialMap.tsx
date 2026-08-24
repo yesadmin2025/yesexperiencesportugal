@@ -64,6 +64,13 @@ export interface EditorialMapProps {
    * a drawing, not a driven route, and must not be presented as one.
    */
   showRoute?: boolean;
+  /**
+   * SVG fit mode for the silhouette and route/pin layers. Defaults to
+   * "xMidYMid slice" (the original homepage/builder behaviour). Callers that
+   * render the portrait viewBox inside a short, wide frame should pass
+   * "xMidYMid meet" so the country and its pins are never cropped away.
+   */
+  preserveAspectRatio?: "xMidYMid slice" | "xMidYMid meet";
 }
 
 const VB_W = 200;
@@ -138,6 +145,7 @@ export function EditorialMap({
   className,
   showLabels = true,
   showRoute = true,
+  preserveAspectRatio = "xMidYMid slice",
   ariaLabel,
   legMinutes,
 }: EditorialMapProps) {
@@ -236,7 +244,7 @@ export function EditorialMap({
         aria-hidden
         className="absolute inset-0 h-full w-full"
         viewBox={`0 0 ${VB_W} ${VB_H}`}
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio={preserveAspectRatio}
       >
         <path
           d="M 78 12 C 96 10 118 14 138 18 C 146 46 148 78 150 108 C 152 148 154 188 152 226 C 150 262 148 296 142 326 C 136 354 126 376 112 388 C 96 398 78 396 66 388 C 54 378 48 358 46 336 C 42 300 44 262 46 224 C 48 184 50 144 54 108 C 58 74 64 44 78 12 Z"
@@ -259,7 +267,7 @@ export function EditorialMap({
       <svg
         className="absolute inset-0 h-full w-full"
         viewBox={`0 0 ${VB_W} ${VB_H}`}
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio={preserveAspectRatio}
       >
         <defs>
           <linearGradient id="em-route" x1="0" y1="0" x2="0" y2="1">
