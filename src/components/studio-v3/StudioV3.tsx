@@ -5117,6 +5117,8 @@ function ReactionOverlay({
  * now BuilderMap internals must not change, so we render this locally.
  */
 function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbackBg: string }) {
+  // Short acknowledgement beats opt out of the schematic canvas entirely.
+  if (reaction.hidePanel) return null;
   const isInterests = reaction.kind === "interests" && reaction.chips && reaction.chips.length > 0;
   const showMap =
     reaction.kind === "pickup" ||
