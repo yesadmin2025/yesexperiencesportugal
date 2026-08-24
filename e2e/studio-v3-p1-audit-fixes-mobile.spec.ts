@@ -40,8 +40,9 @@ test.describe("Studio V3 — P1 audit fixes (mobile)", () => {
     if ((await stepper.count()) === 0) test.skip(true, "Walker did not reach a stepper phase.");
 
     const beats = stepper.locator('[data-testid="studio-v3-phase-tab"]');
-    const labels = (await beats.allInnerTexts()).map((s) => s.trim());
-    expect(labels).toEqual(["Feel", "Taste", "Shape", "Your day"]);
+    // Rendered uppercase via CSS; compare case-insensitively.
+    const labels = (await beats.allInnerTexts()).map((s) => s.trim().toLowerCase());
+    expect(labels).toEqual(["feel", "taste", "shape", "your day"]);
 
     // #2 — no beat label ellipsised on 393 px.
     for (const label of labels) {
