@@ -230,7 +230,7 @@ export function FinalRevealStory({
   // (after which stop each add-on appears). If we have more add-ons than
   // stops, remaining ones tail the final stop.
   type Paragraph =
-    | { kind: "stop"; text: string; key: string }
+    | { kind: "stop"; text: string; key: string; stopIndex: number; label: string }
     | { kind: "addon"; text: string; key: string };
   const paragraphs: Paragraph[] = [];
   const addOnQueue = selectedAddOns.map((a, i) => ({ a, i }));
