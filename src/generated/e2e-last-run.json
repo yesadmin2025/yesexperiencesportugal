@@ -1,108 +1,11 @@
 {
-  "generatedAt": "2026-08-24T17:52:09.750Z",
-  "startedAt": "2026-08-24T17:46:48.747Z",
-  "durationMs": 320860,
-  "total": 12,
-  "passed": 12,
+  "generatedAt": null,
+  "startedAt": null,
+  "durationMs": 0,
+  "total": 0,
+  "passed": 0,
   "failed": 0,
   "flaky": 0,
   "skipped": 0,
-  "tests": [
-    {
-      "file": "studio-v3-cta-navigation-mobile.spec.ts",
-      "title": "Refine → Storytelling via 'See my signature story'",
-      "status": "expected",
-      "durationMs": 30990,
-      "retries": 0,
-      "errors": []
-    },
-    {
-      "file": "studio-v3-cta-navigation-mobile.spec.ts",
-      "title": "Storytelling → Guest Details via 'Continue to guest details'",
-      "status": "expected",
-      "durationMs": 29343,
-      "retries": 0,
-      "errors": []
-    },
-    {
-      "file": "studio-v3-cta-navigation-mobile.spec.ts",
-      "title": "'Save my signature' fires the save handler and STAYS on Storytelling",
-      "status": "expected",
-      "durationMs": 29058,
-      "retries": 0,
-      "errors": []
-    },
-    {
-      "file": "studio-v3-cta-navigation-mobile.spec.ts",
-      "title": "'← Back to refine' returns to Refine and preserves selected add-ons",
-      "status": "expected",
-      "durationMs": 24780,
-      "retries": 0,
-      "errors": []
-    },
-    {
-      "file": "studio-v3-let-yes-decide-mobile.spec.ts",
-      "title": "Let YES decide carries the journey through to a composed day",
-      "status": "expected",
-      "durationMs": 19673,
-      "retries": 0,
-      "errors": []
-    },
-    {
-      "file": "studio-v3-mobile-guest-to-checkout.spec.ts",
-      "title": "fills guest details and lands on the checkout summary",
-      "status": "expected",
-      "durationMs": 27003,
-      "retries": 0,
-      "errors": []
-    },
-    {
-      "file": "studio-v3-no-moments-loop-mobile.spec.ts",
-      "title": "moments reel never traps the journey and the reveal paints in <=2.5s",
-      "status": "expected",
-      "durationMs": 27644,
-      "retries": 0,
-      "errors": []
-    },
-    {
-      "file": "studio-v3-no-moments-loop-mobile.spec.ts",
-      "title": "reveal still paints when every image request is blocked",
-      "status": "expected",
-      "durationMs": 27872,
-      "retries": 0,
-      "errors": []
-    },
-    {
-      "file": "studio-v3-p0-storytelling-reveal-mobile.spec.ts",
-      "title": "storytelling reveal renders non-empty within 2500ms on mobile",
-      "status": "expected",
-      "durationMs": 28568,
-      "retries": 0,
-      "errors": []
-    },
-    {
-      "file": "studio-v3-reveal-and-guest-details-mobile.spec.ts",
-      "title": "smoke — reveal reachable, no overflow, continue lands on Guest Details",
-      "status": "expected",
-      "durationMs": 22798,
-      "retries": 0,
-      "errors": []
-    },
-    {
-      "file": "studio-v3-reveal-and-guest-details-mobile.spec.ts",
-      "title": "copy lock — no 'to be confirmed', letter image renders, email blur confirms",
-      "status": "expected",
-      "durationMs": 23595,
-      "retries": 0,
-      "errors": []
-    },
-    {
-      "file": "studio-v3-reveal-and-guest-details-mobile.spec.ts",
-      "title": "visual — reveal and Guest Details baselines",
-      "status": "expected",
-      "durationMs": 24891,
-      "retries": 0,
-      "errors": []
-    }
-  ]
+  "tests": []
 }
