@@ -51,7 +51,14 @@ export function RunningInvestmentRibbon({
     }
   }, []);
 
+  // Canonical-only delta source. Computed before any early return so the hook
+  // order stays stable. Never a local approximation — when no canonical total
+  // exists we feed null and the hook reports no change.
+  const isResolvedTotal = state.tourId != null && totalEur != null && totalEur > 0;
+  const delta = useInvestmentDelta(isResolvedTotal ? totalEur! : null);
+
   if (hidden || dismissed) return null;
+
 
   // Beat 1 ("feeling") is too early — the whisper enters from beat 2 onward.
   if (state.phase === "feeling" || state.phase === "intro") return null;
