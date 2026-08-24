@@ -2,10 +2,9 @@
  * Studio V3 — P1 audit fixes (audit `.lovable/studio-v3-audit.md` §P1).
  *
  * Verifies:
- *   #1  Stepper labels rewritten to Feel / Shape / Time / Compose
+ *   #1  Stepper labels rewritten to Feel / Taste / Shape / Your day
  *   #2  No beat label truncated on 393 px (close-button overlap fix)
- *   #4  Intro chip row is a single meta line (`<p>`), not three fake CTAs
- *   #4  Intro H1 uses curly apostrophe (’)
+ *   #4  Intro opening is editorial — no technical capability strip
  *   #8  Global WhatsApp bubble hidden inside Studio V3
  */
 
@@ -13,28 +12,27 @@ import { test, expect } from "@playwright/test";
 import { walkToReveal } from "./studio-v3-walk-to-reveal";
 
 test.describe("Studio V3 — P1 audit fixes (mobile)", () => {
-  test("intro polish: curly apostrophe, single meta line, no WhatsApp", async ({ page }) => {
+  test("intro polish: editorial opening, no feature strip, no WhatsApp", async ({ page }) => {
     await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
 
-    // #4 — H1 uses curly apostrophe, not the straight ASCII one.
-    const h1Text = await page.locator("h2, h1").first().innerText();
-    expect(h1Text).toContain("Let’s");
-    expect(h1Text).not.toContain("Let's");
+    // P2 — the opening reads like a travel director, not onboarding.
+    const h1Text = await page.getByTestId("studio-v3-intro-headline").innerText();
+    expect(h1Text).toContain("Portugal is the stage");
 
-    // #4 — chip row collapsed to a single meta line, not three pills.
-    const meta = page.getByTestId("studio-v3-intro-meta");
-    await expect(meta).toBeVisible();
-    const metaText = (await meta.innerText()).toLowerCase();
-    expect(metaText).toContain("live route map");
-    expect(metaText).toContain("drive-time checks");
-    expect(metaText).toContain("region-aware moments");
-    expect(await meta.evaluate((el) => el.tagName.toLowerCase())).toBe("p");
+    // P2 — the technical capability strip is gone for good.
+    await expect(page.getByTestId("studio-v3-intro-meta")).toHaveCount(0);
+    const bodyText = (await page.locator("body").innerText()).toLowerCase();
+    expect(bodyText).not.toContain("live route map");
+    expect(bodyText).not.toContain("drive-time checks");
+    expect(bodyText).not.toContain("region-aware moments");
+    expect(bodyText).not.toContain("recommended");
 
     // #8 — global WhatsApp bubble hidden under /studio-v3.
     await expect(page.getByTestId("whatsapp-support-button")).toHaveCount(0);
   });
 
-  test("stepper: Feel/Shape/Time/Compose, no truncation", async ({ page }) => {
+
+  test("stepper: Feel/Taste/Shape/Your day, no truncation", async ({ page }) => {
     await page.goto("/studio-v3", { waitUntil: "domcontentloaded" });
     await walkToReveal(page);
 
@@ -42,8 +40,9 @@ test.describe("Studio V3 — P1 audit fixes (mobile)", () => {
     if ((await stepper.count()) === 0) test.skip(true, "Walker did not reach a stepper phase.");
 
     const beats = stepper.locator('[data-testid="studio-v3-phase-tab"]');
-    const labels = (await beats.allInnerTexts()).map((s) => s.trim());
-    expect(labels).toEqual(["Feel", "Shape", "Time", "Compose"]);
+    // Rendered uppercase via CSS; compare case-insensitively.
+    const labels = (await beats.allInnerTexts()).map((s) => s.trim().toLowerCase());
+    expect(labels).toEqual(["feel", "taste", "shape", "your day"]);
 
     // #2 — no beat label ellipsised on 393 px.
     for (const label of labels) {
