@@ -1633,12 +1633,18 @@ export function curateJourney(
     addPick(s);
   }
 
+  // Wine is only forced into a day when the traveller actually asked for it.
+  // A region choice is NOT a wine choice: "Arrábida, Setúbal & Azeitão" also
+  // resolves to boat, wild-beach, cheese and tile routes, and a traveller who
+  // picked coast/culture with no wine interest must never have a named winery
+  // pushed into (or swapped into) their day. The two Alentejo intents stay
+  // because the traveller-visible label itself names the wine tradition.
   const wineSignal =
     feeling === "wine-food" ||
     interests.includes("wine") ||
     options?.destinationIntent === "alentejo-evora-wine" ||
-    options?.destinationIntent === "alentejo-roman-talha" ||
-    options?.destinationIntent === "arrabida-setubal-azeitao";
+    options?.destinationIntent === "alentejo-roman-talha";
+
   let wineSwapApplied = false;
   if (wineSignal && !picks.some((p) => WINE_STOP_RE.test(`${p.stop.label} ${p.stop.story}`))) {
     const winePick = scored.find(
@@ -2807,6 +2813,46 @@ function normalizeLabel(s: string): string {
 }
 
 /**
+ * Identity key for a physical place, independent of how a catalog names it.
+ * The Signature source of truth and the region pool sometimes label the same
+ * winery differently ("Farm Catralvos" vs "Quinta de Catralvos"), and the
+ * plain `normalizeLabel` comparison never caught that, so both could be
+ * offered — or added — inside one day. Stripping the generic place words and
+ * Portuguese particles collapses them onto the same key.
+ */
+export function semanticStopKey(label: string): string {
+  return label
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(
+      /\b(winery|wineries|wines|vinhos|tasting|tastings|adega|adegas|cooperativa|coop|crl|palace|palacio|estate|farm|quinta|herdade|monte|casa|house|museum|museu|vineyard|vineyards|visit|stop|cellar|cellars|garden|gardens|workshop|chapel|regional|nacional|portugal|de|da|do|dos|das|d|e|of|the|and)\b/g,
+      " ",
+    )
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+
+/** Both dedupe keys for a label: the literal one and the place-identity one. */
+function stopKeys(label: string): string[] {
+  const semantic = semanticStopKey(label);
+  return semantic ? [normalizeLabel(label), semantic] : [normalizeLabel(label)];
+}
+
+function rememberStop(set: Set<string>, label: string): void {
+  for (const key of stopKeys(label)) set.add(key);
+}
+
+function forgetStop(set: Set<string>, label: string): void {
+  for (const key of stopKeys(label)) set.delete(key);
+}
+
+function alreadyUsed(set: Set<string>, label: string): boolean {
+  return stopKeys(label).some((key) => set.has(key));
+}
+
+/**
  * Pure selector. Reads from REGION_STOP_POOL and returns stop names only.
  * Does NOT consult the feature flag — the call site in
  * `resolveStudioV3Route` gates it. This keeps the selector unit-testable
@@ -2824,7 +2870,7 @@ export function selectOptionalRefinements(input: {
   const skeleton = input.skeletonTourId ? SKELETON_TO_CLUSTER[input.skeletonTourId] : undefined;
   if (!skeleton) return [];
 
-  const existing = new Set(input.existingRoutePointLabels.map((l) => normalizeLabel(l)));
+  const existing = new Set(input.existingRoutePointLabels.flatMap((l) => stopKeys(l)));
 
   // Eligibility filter
   const eligible = REGION_STOP_POOL.filter((stop) => {
@@ -2846,7 +2892,7 @@ export function selectOptionalRefinements(input: {
     }
 
     // Dedupe vs existing route points
-    if (existing.has(normalizeLabel(stop.name))) return false;
+    if (alreadyUsed(existing, stop.name)) return false;
 
     // Considerations deny
     if (isDeniedByConsiderations(stop, input.considerations)) return false;
@@ -3058,7 +3104,7 @@ export function selectReplacementCandidates(input: {
   const skeleton = input.skeletonTourId ? SKELETON_TO_CLUSTER[input.skeletonTourId] : undefined;
   if (!skeleton) return [];
 
-  const existing = new Set(input.existingRoutePointLabels.map((l) => normalizeLabel(l)));
+  const existing = new Set(input.existingRoutePointLabels.flatMap((l) => stopKeys(l)));
 
   const eligible = REGION_STOP_POOL.filter((stop) => {
     if (!stop.active) return false;
@@ -3078,7 +3124,7 @@ export function selectReplacementCandidates(input: {
       !stop.signatureTourId && (!stop.sourceTourIds || stop.sourceTourIds.length === 0);
     if (!sigOk && !srcOk && !generic) return false;
 
-    if (existing.has(normalizeLabel(stop.name))) return false;
+    if (alreadyUsed(existing, stop.name)) return false;
     if (isReplacementDeniedByConsiderations(stop, input.considerations)) {
       return false;
     }
@@ -3152,7 +3198,7 @@ export function applyReplacementCandidates(
 
   const usedIds = new Set<string>();
   const usedGroups = new Set<string>();
-  const usedLabels = new Set(out.map((p) => normalizeLabel(p.label)));
+  const usedLabels = new Set(out.flatMap((p) => stopKeys(p.label)));
 
   const baselineTotal = out.length * ROUTE_POINT_BASELINE_MIN;
   let runningTotal = baselineTotal;
@@ -3172,7 +3218,7 @@ export function applyReplacementCandidates(
       if (usedIds.has(cand.id)) continue;
       if (!isCompatibleCandidate(kind, cand)) continue;
       if (cand.oneOfGroup && usedGroups.has(cand.oneOfGroup)) continue;
-      if (usedLabels.has(normalizeLabel(cand.name))) continue;
+      if (alreadyUsed(usedLabels, cand.name)) continue;
 
       const projectedTotal = runningTotal - ROUTE_POINT_BASELINE_MIN + cand.durationMin;
       if (projectedTotal < minTotal || projectedTotal > maxTotal) continue;
@@ -3188,8 +3234,8 @@ export function applyReplacementCandidates(
       };
       usedIds.add(cand.id);
       if (cand.oneOfGroup) usedGroups.add(cand.oneOfGroup);
-      usedLabels.delete(normalizeLabel(current.label));
-      usedLabels.add(normalizeLabel(cand.name));
+      forgetStop(usedLabels, current.label);
+      rememberStop(usedLabels, cand.name);
       runningTotal = projectedTotal;
       replacedCount += 1;
       break;
@@ -3411,7 +3457,7 @@ export function applyMobilitySafety(
   });
 
   const usedIds = new Set<string>();
-  const usedLabels = new Set(out.map((p) => normalizeLabel(p.label)));
+  const usedLabels = new Set(out.flatMap((p) => stopKeys(p.label)));
   const result: ResolvedRoutePoint[] = [];
 
   for (const p of out) {
@@ -3424,14 +3470,14 @@ export function applyMobilitySafety(
       ? candidates.find(
           (c) =>
             !usedIds.has(c.id) &&
-            !usedLabels.has(normalizeLabel(c.name)) &&
+            !alreadyUsed(usedLabels, c.name) &&
             isCompatibleCandidate(kind, c),
         )
       : undefined;
     if (cand) {
       usedIds.add(cand.id);
-      usedLabels.delete(normalizeLabel(p.label));
-      usedLabels.add(normalizeLabel(cand.name));
+      forgetStop(usedLabels, p.label);
+      rememberStop(usedLabels, cand.name);
       result.push({
         index: p.index,
         label: cand.name,
