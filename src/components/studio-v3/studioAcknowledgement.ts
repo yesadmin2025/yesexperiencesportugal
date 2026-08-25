@@ -27,6 +27,7 @@ import type { Feeling, Interest, Rhythm } from "./types";
 export const ACKNOWLEDGEMENT_SURFACE_ORDER = [
   "interests",
   "refinement",
+  "directorsRead",
   "logistics",
   "reveal",
 ] as const;
@@ -43,7 +44,17 @@ export interface AcknowledgementContext {
   readonly state: AcknowledgementState;
   /** True only when the adaptive refinement question is actually rendered. */
   readonly refinementShown: boolean;
+  /**
+   * P7 Director's Read. When the beat is rendered it voices the themes it
+   * lists here, so every later surface must treat them as already heard.
+   * Absent / `shown: false` leaves the P6 behaviour exactly as it was.
+   */
+  readonly directorsRead?: {
+    readonly shown: boolean;
+    readonly themes: ReadonlyArray<StudioSemanticTheme>;
+  };
 }
+
 
 /** Interests that the Feeling phase can inherit, and the theme each stands for. */
 const INHERITED_INTEREST_THEME: Readonly<Partial<Record<Interest, StudioSemanticTheme>>> = {
