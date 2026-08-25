@@ -2596,8 +2596,31 @@ export function StudioV3() {
         >
           <BackLink onClick={() => back(state.guestsInferred ? "pickup" : "guests")} />
           <PhaseHeader eyebrow="The moments" title="What" titleAccent="pulls you in?" />
+          {inheritedIntent.labels.length > 0 ? (
+            <div
+              data-testid="studio-v3-inherited-intent"
+              data-inherited={inheritedIntent.interestIds.join(",")}
+              className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1 self-start"
+            >
+              <span
+                className="text-[10.5px] uppercase tracking-[0.22em] font-semibold"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  color: "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+                }}
+              >
+                Already understood
+              </span>
+              <span
+                className="text-[13px]"
+                style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
+              >
+                {inheritedIntent.labels.join(" · ")}
+              </span>
+            </div>
+          ) : null}
           {(() => {
-            const n = state.interests.length;
+            const n = countableSelectedInterests.length;
             const max = 4;
             const atCap = n >= max;
             const label =
@@ -2643,21 +2666,21 @@ export function StudioV3() {
           <ChoiceGrid
             mode="multi"
             options={orderedInterests}
-            values={state.interests}
+            values={countableSelectedInterests}
             onToggle={toggleInterest}
             maxSelected={4}
           />
-          {state.interests.length > 0 ? (
+          {countableSelectedInterests.length > 0 ? (
             <NextTeaser>{contextualTeaser("interests", state)}</NextTeaser>
           ) : (
             <FooterHint>Four moments make a day that breathes. Pick what calls you.</FooterHint>
           )}
           <ContinueCta
-            disabled={state.interests.length < 1}
+            disabled={countableSelectedInterests.length < 1}
             onClick={continueFromInterests}
-            label={state.interests.length < 1 ? "Choose at least one" : "Continue"}
+            label={countableSelectedInterests.length < 1 ? "Choose at least one" : "Continue"}
           />
-          {state.interests.length < 1 ? (
+          {countableSelectedInterests.length < 1 ? (
             <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("interests")} />
           ) : null}
         </PhaseShell>
