@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-24T18:06:43.010Z",
-  "filesScanned": 1044,
+  "generatedAt": "2026-08-25T18:50:21.758Z",
+  "filesScanned": 1052,
   "approvedPalette": {
     "teal": "#295B61",
     "teal-2": "#2A7C82",
@@ -1835,7 +1835,7 @@
     },
     {
       "file": "src/components/studio-v3/SignaturePriceCard.tsx",
-      "line": 845,
+      "line": 898,
       "col": 44,
       "raw": "#b8541a",
       "normalized": "#b8541a",
@@ -1844,7 +1844,7 @@
     },
     {
       "file": "src/components/studio-v3/SignaturePriceCard.tsx",
-      "line": 867,
+      "line": 920,
       "col": 51,
       "raw": "#b8541a",
       "normalized": "#b8541a",
