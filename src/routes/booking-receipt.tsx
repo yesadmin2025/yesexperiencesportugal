@@ -19,10 +19,10 @@ interface SessionReceipt {
   paymentStatus: "paid" | "unpaid" | "no_payment_required";
   amountTotal: number | null;
   currency: string | null;
-  customerEmail: string | null;
-  customerName: string | null;
-  receiptUrl: string | null;
-  created: number | null;
+  customerEmail?: string | null;
+  customerName?: string | null;
+  receiptUrl?: string | null;
+  created?: number | null;
   lineItems?: LineItem[];
   metadata?: Record<string, string>;
 }
@@ -100,7 +100,8 @@ function BookingReceiptPage() {
   }, [session_id]);
 
   const data = state.kind === "ok" ? state.data : null;
-  const meta = data?.metadata ?? {};
+  const paid = data?.paymentStatus === "paid";
+  const meta = paid ? (data?.metadata ?? {}) : {};
   const addOns: Array<{ label: string; priceEur: number }> = (() => {
     try {
       const parsed = JSON.parse(meta.add_ons ?? "[]");
@@ -114,26 +115,28 @@ function BookingReceiptPage() {
     }
   })();
 
-  const total = data?.amountTotal != null ? data.amountTotal / 100 : null;
-  const journeyLines = (data?.lineItems ?? []).filter((l) => !/^Add-on —/.test(l.description));
-  const addOnLines = (data?.lineItems ?? []).filter((l) => /^Add-on —/.test(l.description));
+  const total = paid && data?.amountTotal != null ? data.amountTotal / 100 : null;
+  const journeyLines = paid
+    ? (data?.lineItems ?? []).filter((l) => !/^Add-on —/.test(l.description))
+    : [];
+  const addOnLines = paid
+    ? (data?.lineItems ?? []).filter((l) => /^Add-on —/.test(l.description))
+    : [];
 
-  // Machine-readable receipt. Emitted only once real Stripe data has
-  // loaded — never with placeholder values. The page is noindex, so this
-  // serves receipt/assistant parsers rather than search snippets.
+  // Machine-readable receipt is emitted only for a verified paid session.
   const reservationLd =
-    data && session_id
+    paid && data && session_id
       ? tourReservationLd({
           reservationId: session_id,
           name:
             journeyLines[0]?.description ??
             meta.tour_title ??
             "Private Portugal experience — YES Experiences",
-          status: data.paymentStatus === "paid" ? "confirmed" : "pending",
+          status: "confirmed",
           totalPrice: total,
           currency: data.currency,
-          customerName: data.customerName,
-          customerEmail: data.customerEmail,
+          customerName: data.customerName ?? null,
+          customerEmail: data.customerEmail ?? null,
           bookingTime: data.created ? new Date(data.created * 1000).toISOString() : null,
         })
       : null;
@@ -156,25 +159,26 @@ function BookingReceiptPage() {
           >
             <ArrowLeft size={14} /> Back to confirmation
           </Link>
-          <div className="flex flex-wrap items-center gap-3">
-            {session_id ? (
-              <a
-                href={`/api/public/booking-itinerary?session_id=${encodeURIComponent(session_id)}`}
-                className="inline-flex min-h-[44px] items-center gap-2 border border-[color:var(--charcoal)]/25 px-5 text-[12px] uppercase tracking-[0.2em] text-[color:var(--teal)] hover:border-[color:var(--gold)]"
+          {paid ? (
+            <div className="flex flex-wrap items-center gap-3">
+              {session_id ? (
+                <a
+                  href={`/api/public/booking-itinerary?session_id=${encodeURIComponent(session_id)}`}
+                  className="inline-flex min-h-[44px] items-center gap-2 border border-[color:var(--charcoal)]/25 px-5 text-[12px] uppercase tracking-[0.2em] text-[color:var(--teal)] hover:border-[color:var(--gold)]"
+                >
+                  <Download size={14} /> Download itinerary
+                </a>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="inline-flex min-h-[44px] items-center gap-2 bg-[color:var(--teal)] px-5 text-[12px] uppercase tracking-[0.2em] text-[color:var(--ivory)] hover:bg-[color:var(--teal-2)]"
               >
-                <Download size={14} /> Download itinerary
-              </a>
-            ) : null}
-            <button
-              type="button"
-              onClick={() => window.print()}
-              className="inline-flex min-h-[44px] items-center gap-2 bg-[color:var(--teal)] px-5 text-[12px] uppercase tracking-[0.2em] text-[color:var(--ivory)] hover:bg-[color:var(--teal-2)]"
-            >
-              <Printer size={14} /> Print / save PDF
-            </button>
-          </div>
+                <Printer size={14} /> Print / save PDF
+              </button>
+            </div>
+          ) : null}
         </div>
-
 
         <article className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-6 sm:p-9 print:border-0 print:p-0">
           <header className="border-b border-[color:var(--border)] pb-5">
@@ -191,7 +195,7 @@ function BookingReceiptPage() {
 
           {state.kind === "loading" ? (
             <p className="flex items-center gap-2 py-10 text-[14px] text-[color:var(--charcoal-soft)]">
-              <Loader2 size={16} className="animate-spin" /> Loading your receipt…
+              <Loader2 size={16} className="animate-spin" /> Verifying your payment…
             </p>
           ) : null}
 
@@ -207,7 +211,23 @@ function BookingReceiptPage() {
             </p>
           ) : null}
 
-          {data ? (
+          {data && !paid ? (
+            <div className="py-10">
+              <p className="text-[14px] leading-relaxed text-[color:var(--charcoal)]">
+                Your payment is still being processed.
+              </p>
+              <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                The printable receipt and Travel File will unlock here as soon as Stripe confirms the payment.
+              </p>
+              {session_id ? (
+                <p className="mt-4 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                  Reference · {session_id.slice(-12)}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+
+          {data && paid ? (
             <>
               <dl className="grid grid-cols-1 gap-x-8 gap-y-3 border-b border-[color:var(--border)] py-5 sm:grid-cols-2">
                 <Meta label="Reference" value={session_id ? session_id.slice(-12) : "—"} />
@@ -241,10 +261,7 @@ function BookingReceiptPage() {
                     }`}
                   />
                 ) : null}
-                <Meta
-                  label="Payment status"
-                  value={data.paymentStatus === "paid" ? "Paid in full" : data.paymentStatus}
-                />
+                <Meta label="Payment status" value="Paid in full" />
               </dl>
 
               <section className="py-5">
