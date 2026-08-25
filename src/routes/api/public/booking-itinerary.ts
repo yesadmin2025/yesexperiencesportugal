@@ -1,11 +1,12 @@
 /**
  * Guest-facing itinerary download.
  *
- * Returns the exact same PDF that is attached to the confirmation emails,
- * rebuilt from the frozen booking snapshot for a given Stripe checkout
- * session id (the guest's booking reference). The reference is a long,
- * unguessable Stripe id and nothing sensitive beyond the guest's own
- * designed day is returned.
+ * Returns the same PDF attached to the confirmation emails, rebuilt from the
+ * frozen snapshot stored on the paid booking. The opaque Stripe session id is
+ * the private booking reference, but it is not treated as proof of payment by
+ * itself: this route only serves a Travel File after the verified webhook has
+ * marked the booking paid and frozen its snapshot. The PDF may include the
+ * guest's name, pickup and first-party notes.
  */
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -14,6 +15,7 @@ import {
   type ItineraryPdfInput,
 } from "@/lib/booking-itinerary-pdf";
 import { normalizeSnapshotItinerary } from "@/lib/booking-snapshot-contract";
+import { loadPaidFrozenBookingSnapshot } from "@/lib/public-booking-access.server";
 
 type AnyRec = Record<string, unknown>;
 
@@ -45,18 +47,21 @@ export const Route = createFileRoute("/api/public/booking-itinerary")({
           return Response.json({ ok: false, error: "invalid_reference" }, { status: 400 });
         }
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { data: row } = await supabaseAdmin
-          .from("booking_snapshots")
-          .select("payload")
-          .eq("stripe_session_id", sessionId)
-          .maybeSingle();
-
-        const snapshot = (row?.payload ?? null) as AnyRec | null;
-        if (!snapshot || typeof snapshot !== "object") {
-          return Response.json({ ok: false, error: "not_found" }, { status: 404 });
+        const access = await loadPaidFrozenBookingSnapshot(sessionId);
+        if (!access.ok) {
+          return Response.json(
+            { ok: false, error: access.error },
+            {
+              status: access.status,
+              headers: {
+                "cache-control": "private, max-age=0, no-store",
+                "x-robots-tag": "noindex, nofollow",
+              },
+            },
+          );
         }
 
+        const snapshot = access.snapshot;
         const composition = (snapshot.composition ?? {}) as AnyRec;
         const pricing = (snapshot.pricing ?? {}) as AnyRec;
         const addOns = Array.isArray(snapshot.addOns) ? (snapshot.addOns as AnyRec[]) : [];
@@ -88,7 +93,6 @@ export const Route = createFileRoute("/api/public/booking-itinerary")({
 
         const pdf = bytesFromBase64(buildItineraryPdfBase64(input));
         return new Response(pdf.buffer as ArrayBuffer, {
-
           status: 200,
           headers: {
             "content-type": "application/pdf",
