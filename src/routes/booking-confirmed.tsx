@@ -9,7 +9,6 @@ import {
   AlertCircle,
   Download,
   Map,
-
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -29,9 +28,9 @@ interface SessionStatus {
   paymentStatus: "paid" | "unpaid" | "no_payment_required";
   amountTotal: number | null;
   currency: string | null;
-  customerEmail: string | null;
-  customerName: string | null;
-  receiptUrl: string | null;
+  customerEmail?: string | null;
+  customerName?: string | null;
+  receiptUrl?: string | null;
   environment: "sandbox" | "live";
 }
 
@@ -174,9 +173,13 @@ function BookingConfirmedPage() {
               <>
                 We couldn't verify your <SectionTitle.Em>booking yet</SectionTitle.Em>
               </>
-            ) : (
+            ) : paid ? (
               <>
                 Your day in Portugal is <SectionTitle.Em>reserved</SectionTitle.Em>
+              </>
+            ) : (
+              <>
+                We're confirming <SectionTitle.Em>your booking</SectionTitle.Em>
               </>
             )}
           </SectionTitle>
@@ -184,7 +187,7 @@ function BookingConfirmedPage() {
           <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
             {state.kind === "loading" && "Confirming your payment with our secure processor…"}
             {state.kind === "error" &&
-              "If your card was charged, your booking is safe. Open your itinerary below, or reach out via WhatsApp if anything looks off."}
+              "We couldn't verify the payment just yet. If your card was charged, keep this page and try again shortly, or reach out via WhatsApp if anything looks off."}
             {state.kind === "ok" &&
               (paid ? (
                 <>
@@ -197,10 +200,10 @@ function BookingConfirmedPage() {
                   .
                 </>
               ) : (
-                "Your session is still being processed. Refresh in a moment — your itinerary link below stays valid either way."
+                "Your payment is still being processed. Your Travel File will unlock here as soon as the payment is confirmed."
               ))}
             {state.kind === "idle" &&
-              "Payment received. Your full plan — stop by stop, pickup details and your host's direct WhatsApp — is ready below."}
+              "Open this page from your secure booking confirmation link to verify your payment."}
           </p>
 
           {session_id ? (
@@ -209,7 +212,7 @@ function BookingConfirmedPage() {
             </p>
           ) : null}
 
-          {session_id ? (
+          {session_id && paid ? (
             <div className="mt-8 border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] p-6 sm:p-7 text-left">
               <p className="text-[10.5px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
                 Your day, in full
@@ -243,7 +246,7 @@ function BookingConfirmedPage() {
             </div>
           ) : null}
 
-          {state.kind === "ok" && state.data.receiptUrl ? (
+          {paid && state.kind === "ok" && state.data.receiptUrl ? (
             <div className="mt-4">
               <a
                 href={state.data.receiptUrl}
@@ -256,24 +259,25 @@ function BookingConfirmedPage() {
             </div>
           ) : null}
 
-          <ul className="mt-10 grid sm:grid-cols-3 gap-4 text-left">
-            <NextStep
-              icon={<Mail size={14} />}
-              title="Email copy"
-              body="A confirmation with the same plan follows by email."
-            />
-            <NextStep
-              icon={<MessageCircle size={14} />}
-              title="Local host"
-              body="Your guide will introduce themselves on WhatsApp within 24h."
-            />
-            <NextStep
-              icon={<ArrowRight size={14} />}
-              title="Anything to adjust"
-              body="Dietary, pickup, occasion — write to us and we'll adapt."
-            />
-          </ul>
-
+          {paid ? (
+            <ul className="mt-10 grid sm:grid-cols-3 gap-4 text-left">
+              <NextStep
+                icon={<Mail size={14} />}
+                title="Email copy"
+                body="A confirmation with the same plan follows by email."
+              />
+              <NextStep
+                icon={<MessageCircle size={14} />}
+                title="Local host"
+                body="Your guide will introduce themselves on WhatsApp within 24h."
+              />
+              <NextStep
+                icon={<ArrowRight size={14} />}
+                title="Anything to adjust"
+                body="Dietary, pickup, occasion — write to us and we'll adapt."
+              />
+            </ul>
+          ) : null}
 
           <div className="mt-12 flex flex-col sm:flex-row gap-3 justify-center">
             {tour ? (
