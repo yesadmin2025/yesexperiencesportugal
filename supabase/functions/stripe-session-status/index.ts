@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
         paymentStatus: session.payment_status,
         environment: env,
         amountTotal: null,
-        currency: session.currency ?? null,
+        currency: null,
         customerEmail: null,
         customerName: null,
         receiptUrl: null,
