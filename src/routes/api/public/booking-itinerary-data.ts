@@ -4,8 +4,11 @@
  * Serves exactly the same fields the itinerary PDF is built from, so the
  * online itinerary page at /itinerary mirrors the emailed PDF one-for-one.
  * Keyed by the guest's own Stripe checkout session id (long, unguessable).
- * Deliberately excludes contact PII (email, phone, address) — only the
- * designed day, the guest's first-party name and the paid total.
+ *
+ * SECURITY: data is served only from the frozen snapshot copied into a paid
+ * booking by the verified Stripe webhook. The response intentionally omits
+ * email/phone/address, but it can include the guest's own name, pickup and
+ * notes after the paid + frozen guard succeeds.
  */
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -13,6 +16,7 @@ import {
   ITINERARY_FLEXIBILITY_NOTE,
   CONFIRMATION_SUFFICIENCY_NOTE,
 } from "@/lib/booking-snapshot-contract";
+import { resolvePaidFrozenBookingSnapshot } from "@/lib/paid-booking-snapshot.server";
 
 type AnyRec = Record<string, unknown>;
 
@@ -27,6 +31,11 @@ const strList = (v: unknown): string[] =>
         .slice(0, 20)
     : [];
 
+const privateHeaders = {
+  "cache-control": "private, max-age=0, no-store",
+  "x-robots-tag": "noindex, nofollow",
+};
+
 export const Route = createFileRoute("/api/public/booking-itinerary-data")({
   server: {
     handlers: {
@@ -34,19 +43,27 @@ export const Route = createFileRoute("/api/public/booking-itinerary-data")({
         const url = new URL(request.url);
         const sessionId = (url.searchParams.get("session_id") || "").trim();
         if (!/^cs_[A-Za-z0-9_]{20,255}$/.test(sessionId)) {
-          return Response.json({ ok: false, error: "invalid_reference" }, { status: 400 });
+          return Response.json(
+            { ok: false, error: "invalid_reference" },
+            { status: 400, headers: privateHeaders },
+          );
         }
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { data: row } = await supabaseAdmin
-          .from("booking_snapshots")
-          .select("payload")
-          .eq("stripe_session_id", sessionId)
-          .maybeSingle();
+        let snapshot: AnyRec | null = null;
+        try {
+          snapshot = await resolvePaidFrozenBookingSnapshot(sessionId);
+        } catch {
+          return Response.json(
+            { ok: false, error: "temporarily_unavailable" },
+            { status: 503, headers: privateHeaders },
+          );
+        }
 
-        const snapshot = (row?.payload ?? null) as AnyRec | null;
-        if (!snapshot || typeof snapshot !== "object") {
-          return Response.json({ ok: false, error: "not_found" }, { status: 404 });
+        if (!snapshot) {
+          return Response.json(
+            { ok: false, error: "not_ready" },
+            { status: 404, headers: privateHeaders },
+          );
         }
 
         const composition = (snapshot.composition ?? {}) as AnyRec;
@@ -59,8 +76,8 @@ export const Route = createFileRoute("/api/public/booking-itinerary-data")({
           {
             ok: true,
             reference: sessionId,
-            // Non-PII: lets the itinerary map request the real Signature
-            // driving route instead of a straight dashed connector.
+            // Non-contact data: lets the itinerary map request the real
+            // Signature driving route instead of a straight dashed connector.
             tourId: str(snapshot.tourId, 80),
             experienceName: str(snapshot.experienceName) ?? str(snapshot.tourTitle),
             customerName: str(snapshot.customerName, 160),
@@ -84,12 +101,7 @@ export const Route = createFileRoute("/api/public/booking-itinerary-data")({
             flexibilityNote: ITINERARY_FLEXIBILITY_NOTE,
             sufficiencyNote: CONFIRMATION_SUFFICIENCY_NOTE,
           },
-          {
-            headers: {
-              "cache-control": "private, max-age=0, no-store",
-              "x-robots-tag": "noindex, nofollow",
-            },
-          },
+          { headers: privateHeaders },
         );
       },
     },
