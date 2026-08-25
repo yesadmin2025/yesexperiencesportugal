@@ -2524,7 +2524,35 @@ export function StudioV3() {
       {/* The blocking interpretation overlay was removed: the acknowledgement is
           now a single inline line shown once, before Logistics. */}
 
-      {state.phase === "logistics" ? (
+      {/* P7 — Director's Read. Sits in the Logistics slot for exactly one tap,
+          then hands over. Never a gate: one visible CTA continues, and Back
+          still walks the normal phase order. */}
+      {showDirectorsRead ? (
+        <PhaseShell accent="ivory" exiting={exiting}>
+          <DirectorsRead
+            read={directorsRead}
+            onView={(signature) =>
+              trackStudio("interpretation_viewed", {
+                phase: "directors_read",
+                stepNumber: stepOf("logistics"),
+                // Privacy-safe: shape of the read only, never answers or PII.
+                read_kind: directorsRead.neutral ? "neutral" : "interpreted",
+                lines: directorsRead.body.length,
+                themes: directorsRead.themes.length,
+                signature_length: signature.length,
+              })
+            }
+            onBack={() => {
+              setDirectorsReadSeen(directorsRead.signature);
+              back("rhythm");
+            }}
+            onContinue={() => setDirectorsReadSeen(directorsRead.signature)}
+          />
+        </PhaseShell>
+      ) : null}
+
+      {state.phase === "logistics" && !showDirectorsRead ? (
+
         <PhaseShell
           accent="teal"
           exiting={exiting}
