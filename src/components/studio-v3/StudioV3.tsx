@@ -242,6 +242,11 @@ import {
   type StudioV3State,
 } from "./types";
 import {
+  countableInterests,
+  deriveInheritedIntent,
+  pruneInheritedInterests,
+} from "./studioInheritedIntent";
+import {
   availableAdaptiveQuestionKinds,
   refinementSummaryLabel,
   resolveAdaptiveQuestion,
