@@ -2544,7 +2544,7 @@ export function StudioV3() {
             }
             onBack={() => {
               setDirectorsReadSeen(directorsRead.signature);
-              back("rhythm");
+              back(directorsReadBackTarget(Boolean(adaptiveQuestion)));
             }}
             onContinue={() => setDirectorsReadSeen(directorsRead.signature)}
           />
