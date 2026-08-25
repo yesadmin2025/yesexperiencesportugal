@@ -7,8 +7,7 @@
  * P6 acknowledgement ledger honest, so nothing it says is repeated later.
  */
 
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { DirectorsRead } from "../DirectorsRead";
 import { composeDirectorsRead, type DirectorsReadState } from "../directorsRead";
@@ -183,8 +182,7 @@ describe("P6 ledger — the read counts as an acknowledgement", () => {
 });
 
 describe("DirectorsRead — presentation", () => {
-  it("renders eyebrow, headline and body with an accessible continue action", async () => {
-    const user = userEvent.setup();
+  it("renders eyebrow, headline and body with an accessible continue action", () => {
     const onContinue = vi.fn();
     const read = composeDirectorsRead(coastalCouple);
     render(<DirectorsRead read={read} onContinue={onContinue} />);
@@ -197,7 +195,7 @@ describe("DirectorsRead — presentation", () => {
     // Keyboard reachable and tappable in one action — never a forced wait.
     cta.focus();
     expect(document.activeElement).toBe(cta);
-    await user.click(cta);
+    fireEvent.click(cta);
     expect(onContinue).toHaveBeenCalledTimes(1);
   });
 
