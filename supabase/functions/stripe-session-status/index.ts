@@ -23,6 +23,21 @@ Deno.serve(async (req) => {
       expand: ["payment_intent.latest_charge"],
     });
 
+    const baseStatus = {
+      status: session.status,
+      paymentStatus: session.payment_status,
+      amountTotal: session.amount_total,
+      currency: session.currency,
+      environment: env,
+    };
+
+    // SECURITY: until Stripe reports the session as paid, return only the
+    // minimal fields required by the confirmation page. Do not expose buyer
+    // PII, booking metadata, line items or receipt URLs from unpaid sessions.
+    if (session.payment_status !== "paid") {
+      return json(baseStatus);
+    }
+
     // deno-lint-ignore no-explicit-any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pi = session.payment_intent as any;
@@ -31,8 +46,6 @@ Deno.serve(async (req) => {
     const charge = pi && typeof pi === "object" ? (pi.latest_charge as any) : null;
     const receiptUrl = charge && typeof charge === "object" ? (charge.receipt_url ?? null) : null;
 
-    // Line items + a whitelisted slice of metadata power the printable
-    // receipt page. No PII beyond what the buyer already submitted.
     let lineItems: Array<{ description: string; quantity: number; amountEur: number }> = [];
     try {
       const li = await stripe.checkout.sessions.listLineItems(sessionId, { limit: 25 });
@@ -70,17 +83,13 @@ Deno.serve(async (req) => {
     for (const k of pick) if (md[k]) meta[k] = md[k];
 
     return json({
+      ...baseStatus,
       lineItems,
       metadata: meta,
       created: session.created ?? null,
-      status: session.status, // open | complete | expired
-      paymentStatus: session.payment_status, // paid | unpaid | no_payment_required
-      amountTotal: session.amount_total,
-      currency: session.currency,
       customerEmail: session.customer_details?.email ?? session.customer_email ?? null,
       customerName: session.customer_details?.name ?? null,
       receiptUrl,
-      environment: env,
     });
   } catch (e) {
     console.error("stripe-session-status error:", e);
