@@ -3,7 +3,7 @@
  *
  * The guest-facing Travel File contains real booking data (guest name, pickup,
  * notes, the designed day and the paid total). It is protected by two things:
- *  1. the opaque, unguessable Stripe checkout session id used as the reference;
+ *  1. the opaque Stripe checkout session id used as the reference;
  *  2. this authorization: the booking must be PAID and its snapshot FROZEN.
  *
  * The authoritative post-payment source is `bookings.booking_details.snapshot`,
@@ -16,10 +16,8 @@ export type AnyRec = Record<string, unknown>;
 
 export type PublicBookingAccess =
   | { kind: "granted"; snapshot: AnyRec; frozenAt: string }
-  /** Non-disclosing: unpaid, unknown or malformed reference. */
-  | { kind: "not_found" }
-  /** Paid, but the frozen snapshot has not landed yet. */
-  | { kind: "not_ready" };
+  /** Non-disclosing: unknown, unpaid, malformed, or not frozen yet. */
+  | { kind: "denied" };
 
 export interface BookingAccessRow {
   status?: unknown;
@@ -29,24 +27,25 @@ export interface BookingAccessRow {
 /**
  * Pure resolver — the single decision point. Access is granted ONLY for a
  * paid booking whose frozen snapshot exists and carries a non-empty `frozenAt`.
+ * Every other lifecycle state collapses to the same opaque denial.
  */
 export function resolvePublicBookingAccess(
   row: BookingAccessRow | null | undefined,
 ): PublicBookingAccess {
-  if (!row || typeof row !== "object") return { kind: "not_found" };
-  if (row.status !== "paid") return { kind: "not_found" };
+  if (!row || typeof row !== "object") return { kind: "denied" };
+  if (row.status !== "paid") return { kind: "denied" };
 
   const details = row.booking_details;
   if (!details || typeof details !== "object" || Array.isArray(details)) {
-    return { kind: "not_ready" };
+    return { kind: "denied" };
   }
   const snapshot = (details as AnyRec).snapshot;
   if (!snapshot || typeof snapshot !== "object" || Array.isArray(snapshot)) {
-    return { kind: "not_ready" };
+    return { kind: "denied" };
   }
   const frozenAt = (snapshot as AnyRec).frozenAt;
   if (typeof frozenAt !== "string" || frozenAt.trim() === "") {
-    return { kind: "not_ready" };
+    return { kind: "denied" };
   }
   return { kind: "granted", snapshot: snapshot as AnyRec, frozenAt };
 }
@@ -57,23 +56,30 @@ export function isValidBookingReference(sessionId: string): boolean {
 }
 
 /**
- * DB loader: reads the paid booking row by Stripe session id and applies the
- * pure resolver. Never touches `booking_snapshots`.
+ * DB loader: reads the authoritative booking row by Stripe session id and
+ * applies the pure resolver. Never touches `booking_snapshots`.
  */
 export async function loadPublicBookingAccess(sessionId: string): Promise<PublicBookingAccess> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data } = await supabaseAdmin
+  const { data, error } = await supabaseAdmin
     .from("bookings")
     .select("status, booking_details")
     .eq("stripe_session_id", sessionId)
     .maybeSingle();
+
+  if (error) {
+    console.error("public booking access lookup failed", { code: error.code });
+    throw new Error("public_booking_access_lookup_failed");
+  }
+
   return resolvePublicBookingAccess(data as BookingAccessRow | null);
 }
 
-/** Uniform, non-disclosing HTTP response for a denied Travel File request. */
-export function publicBookingDenialResponse(access: PublicBookingAccess): Response {
-  if (access.kind === "not_ready") {
-    return Response.json({ ok: false, error: "not_ready" }, { status: 409 });
-  }
+/**
+ * Uniform non-disclosing response for every denied valid booking reference.
+ * Unknown, unpaid, paid-but-unfrozen and malformed booking rows are
+ * intentionally indistinguishable to public callers.
+ */
+export function publicBookingDenialResponse(_access: PublicBookingAccess): Response {
   return Response.json({ ok: false, error: "not_found" }, { status: 404 });
 }
