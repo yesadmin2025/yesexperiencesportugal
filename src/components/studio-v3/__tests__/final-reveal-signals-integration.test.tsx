@@ -69,6 +69,8 @@ function renderReveal(answers: Answers) {
   );
 }
 
+import { filterRevealSignals } from "../studioAcknowledgement";
+
 describe("FinalRevealStory — rendered signals match the reveal narrative module", () => {
   for (const testCase of CASES) {
     it(`renders exactly the unit-tested signals for the ${testCase.name}`, () => {
@@ -85,8 +87,18 @@ describe("FinalRevealStory — rendered signals match the reveal narrative modul
         .getAllByRole("listitem")
         .map((li) => li.textContent?.trim() ?? "");
 
-      // Same signals, same order, no extras, no omissions.
-      expect(rendered).toEqual([...expected.signals]);
+      // P6 "acknowledge once": the reveal renders the narrative signals minus
+      // the themes the traveller already heard earlier in the flow — same
+      // module, same order, no extras, no invented prose.
+      const expectedShown = filterRevealSignals([...expected.signals], {
+        state: {
+          feeling: testCase.answers.feeling,
+          interests: [...testCase.answers.interests],
+          rhythm: testCase.answers.rhythm,
+        },
+        refinementShown: testCase.answers.refinement != null,
+      });
+      expect(rendered).toEqual(expectedShown);
       expect(rendered.length).toBeGreaterThanOrEqual(2);
       expect(rendered.length).toBeLessThanOrEqual(3);
       expect(new Set(rendered).size).toBe(rendered.length);

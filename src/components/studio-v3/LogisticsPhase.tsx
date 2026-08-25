@@ -15,11 +15,11 @@
  * reads like a human question rather than an operations dropdown.
  */
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { ChoiceGrid } from "./ChoiceGrid";
 import { Composition } from "./Composition";
 import { DatePhaseControls, dateDisplayLabel } from "./DatePhase";
-import { BackLink, ContinueCta, PhaseHeader, UnderstoodSummaryLine } from "./PhaseChrome";
+import { BackLink, ContinueCta, PhaseHeader } from "./PhaseChrome";
 import { formatGuestComposition } from "./formatGuests";
 import type { ChoiceOption, Pickup, StudioV3State } from "./types";
 
@@ -102,9 +102,9 @@ interface Props {
   onBackPhase: () => void;
   /** Commit the same fields as before and advance to the next real phase. */
   onCompose: () => void;
-  /** True when the adaptive refinement question already carried the
-   *  acknowledgement, so Logistics must not repeat it. */
-  acknowledgementShownEarlier: boolean;
+  /** P6: the acknowledgement line, already de-duplicated by the Studio-level
+   *  "acknowledge once" ledger. Null when everything here was heard earlier. */
+  acknowledgement?: ReactNode;
 }
 
 export function LogisticsPhase({
@@ -116,7 +116,7 @@ export function LogisticsPhase({
   onMinorAgeChange,
   onBackPhase,
   onCompose,
-  acknowledgementShownEarlier,
+  acknowledgement = null,
 }: Props) {
   const [moment, setMoment] = useState<LogisticsMoment>(() => initialLogisticsMoment(state));
 
@@ -151,10 +151,8 @@ export function LogisticsPhase({
         titleAccent={HEADINGS[moment].accent}
       />
 
-      {moment === "when" && !acknowledgementShownEarlier ? (
-        <div className="mt-4">
-          <UnderstoodSummaryLine state={state} />
-        </div>
+      {moment === "when" && acknowledgement ? (
+        <div className="mt-4">{acknowledgement}</div>
       ) : null}
 
       <div

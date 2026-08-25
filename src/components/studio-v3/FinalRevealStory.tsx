@@ -34,6 +34,7 @@ import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import { cn } from "@/lib/utils";
 import { formatGuestComposition } from "./formatGuests";
 import { buildRevealNarrative } from "@/lib/studio-v3/revealNarrative";
+import { filterRevealSignals } from "./studioAcknowledgement";
 import { trackStudio } from "@/lib/studio-analytics";
 import { resolvePriceChangeFactors } from "./priceChangeFactors";
 
@@ -193,8 +194,17 @@ export function FinalRevealStory({
   });
   const intro = narrative.intro;
 
+  // P6 "acknowledge once": the reveal drops reason signals whose theme the
+  // traveller already heard on Interests / refinement / Logistics. Protected
+  // by a floor so the payoff is quietened, never emptied. Operational facts
+  // (region, date, pickup, party) are never suppressed.
+  const revealSignals = filterRevealSignals(narrative.signals, {
+    state: { feeling: state.feeling, interests: state.interests, rhythm: state.rhythm },
+    refinementShown: state.refinement != null,
+  });
+
   // Privacy-safe reveal analytics: tour id + signal count only, never PII.
-  const signalCount = narrative.signals.length;
+  const signalCount = revealSignals.length;
   const analyticsTourId = state.tourId ?? null;
   useEffect(() => {
     void import("@/lib/analytics-ga4").then((m) =>
@@ -372,12 +382,12 @@ export function FinalRevealStory({
                 {region}
               </p>
             )}
-            {narrative.signals.length > 0 ? (
+            {revealSignals.length > 0 ? (
               <ul
                 data-testid="studio-v3-final-reveal-signals"
                 className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-2"
               >
-                {narrative.signals.map((signal) => (
+                {revealSignals.map((signal) => (
                   <li
                     key={signal}
                     className="rounded-full border px-3 py-1.5 text-[11px] leading-[1.3]"

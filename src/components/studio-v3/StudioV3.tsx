@@ -24,7 +24,6 @@ import {
   FooterHint,
   NextTeaser,
   PhaseHeader,
-  UnderstoodSummaryLine,
 } from "./PhaseChrome";
 import { LogisticsPhase } from "./LogisticsPhase";
 
@@ -246,6 +245,10 @@ import {
   deriveInheritedIntent,
   pruneInheritedInterests,
 } from "./studioInheritedIntent";
+import {
+  acknowledgementSummaryFor,
+  type AcknowledgementContext,
+} from "./studioAcknowledgement";
 import {
   availableAdaptiveQuestionKinds,
   refinementSummaryLabel,
@@ -2103,6 +2106,41 @@ export function StudioV3() {
     inheritedIntent,
   );
   const countableSelectedInterests = countableInterests(state.interests, inheritedIntent);
+
+  // P6 "acknowledge once": one deterministic ledger decides which surface may
+  // still acknowledge a taste / emotion / rhythm signal. Interests owns the
+  // first echo (P5); later surfaces show only what is genuinely new, and
+  // render nothing at all when everything has already been heard. Operational
+  // facts (date, pickup, party, region) are not acknowledgements and are never
+  // suppressed. Derived every render — no stored acknowledgement state.
+  const acknowledgementContext: AcknowledgementContext = {
+    state: { feeling: state.feeling, interests: state.interests, rhythm: state.rhythm },
+    refinementShown: Boolean(adaptiveQuestion),
+  };
+  const renderAcknowledgement = (surface: "refinement" | "logistics") => {
+    const summary = acknowledgementSummaryFor(surface, acknowledgementContext);
+    if (!summary) return null;
+    return (
+      <div
+        data-testid="studio-v3-understood-summary"
+        data-acknowledgement-surface={surface}
+        className="w-full max-w-[520px] mx-auto mb-1 text-center"
+      >
+        <p
+          className="text-[15px] leading-[1.35]"
+          style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
+        >
+          {summary.lead}
+        </p>
+        <p
+          className="mt-1 text-[11px] uppercase tracking-[0.2em]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+        >
+          {summary.detail}
+        </p>
+      </div>
+    );
+  };
   const orderedRhythms = prioritiseOptions(RHYTHMS, rhythmPriority);
   const orderedInvestment = prioritiseOptions(INVESTMENT_TIERS, investmentPriority);
   const orderedConsiderations = prioritiseOptions(
@@ -2470,7 +2508,7 @@ export function StudioV3() {
             onAddMinor={onAddMinor}
             onRemoveMinor={onRemoveMinor}
             onMinorAgeChange={onMinorAgeChange}
-            acknowledgementShownEarlier={Boolean(adaptiveQuestion)}
+            acknowledgement={renderAcknowledgement("logistics")}
             onBackPhase={() => back("rhythm")}
             onCompose={() => {
               const committedAdults = state.adults ?? state.guests ?? 2;
@@ -2720,7 +2758,7 @@ export function StudioV3() {
           anticipation={anticipation}
         >
           <BackLink onClick={() => back("rhythm")} />
-          <UnderstoodSummaryLine state={state} />
+          {renderAcknowledgement("refinement")}
           <PhaseHeader
             eyebrow={adaptiveQuestion.eyebrow}
             title={adaptiveQuestion.title}
