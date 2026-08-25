@@ -23,6 +23,23 @@ Deno.serve(async (req) => {
       expand: ["payment_intent.latest_charge"],
     });
 
+    // A checkout session reference is not proof of payment. Before Stripe says
+    // the session is paid, return only the verification state needed by the
+    // confirmation page and expose no customer identity, receipt, itinerary,
+    // line items or booking metadata.
+    if (session.payment_status !== "paid") {
+      return json({
+        status: session.status,
+        paymentStatus: session.payment_status,
+        amountTotal: null,
+        currency: session.currency,
+        customerEmail: null,
+        customerName: null,
+        receiptUrl: null,
+        environment: env,
+      });
+    }
+
     // deno-lint-ignore no-explicit-any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pi = session.payment_intent as any;
@@ -31,8 +48,8 @@ Deno.serve(async (req) => {
     const charge = pi && typeof pi === "object" ? (pi.latest_charge as any) : null;
     const receiptUrl = charge && typeof charge === "object" ? (charge.receipt_url ?? null) : null;
 
-    // Line items + a whitelisted slice of metadata power the printable
-    // receipt page. No PII beyond what the buyer already submitted.
+    // Paid sessions only: line items + a whitelisted metadata slice power the
+    // printable receipt page.
     let lineItems: Array<{ description: string; quantity: number; amountEur: number }> = [];
     try {
       const li = await stripe.checkout.sessions.listLineItems(sessionId, { limit: 25 });
@@ -74,7 +91,7 @@ Deno.serve(async (req) => {
       metadata: meta,
       created: session.created ?? null,
       status: session.status, // open | complete | expired
-      paymentStatus: session.payment_status, // paid | unpaid | no_payment_required
+      paymentStatus: session.payment_status, // paid
       amountTotal: session.amount_total,
       currency: session.currency,
       customerEmail: session.customer_details?.email ?? session.customer_email ?? null,
