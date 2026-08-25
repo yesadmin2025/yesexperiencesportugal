@@ -214,6 +214,24 @@ function BookingReceiptPage() {
             </p>
           ) : null}
 
+          {notPaid ? (
+            <div data-testid="receipt-not-confirmed" className="py-10">
+              <p className="text-[14px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                This booking is not confirmed yet, so there is no receipt to issue. As soon as the
+                payment clears, your receipt and itinerary appear here.
+              </p>
+              <Link
+                to="/booking-confirmed"
+                search={session_id ? { session_id } : {}}
+                className="mt-5 inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.24em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)] print:hidden"
+              >
+                <ArrowLeft size={14} /> Back to booking confirmation
+              </Link>
+            </div>
+          ) : null}
+
+
+
           {data ? (
             <>
               <dl className="grid grid-cols-1 gap-x-8 gap-y-3 border-b border-[color:var(--border)] py-5 sm:grid-cols-2">
