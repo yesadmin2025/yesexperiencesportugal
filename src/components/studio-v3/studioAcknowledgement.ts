@@ -200,7 +200,7 @@ export interface AcknowledgementSummary {
 
 /** Null whenever the surface has nothing new to acknowledge. */
 export function acknowledgementSummaryFor(
-  surface: Exclude<AcknowledgementSurface, "interests" | "reveal">,
+  surface: Exclude<AcknowledgementSurface, "interests" | "directorsRead" | "reveal">,
   ctx: AcknowledgementContext,
 ): AcknowledgementSummary | null {
   const signals = acknowledgementSignalsFor(surface, ctx);
