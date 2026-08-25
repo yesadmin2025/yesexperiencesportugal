@@ -91,7 +91,7 @@ const COMPANY_PHRASE: Readonly<Record<Companions, string>> = {
 
 /** What the day should make room for. Intent only — never a stop or supplier. */
 const INTEREST_PHRASE: Readonly<Partial<Record<Interest, string>>> = {
-  wine: "time in a cellar",
+  wine: "wine with room to linger",
   gastronomy: "a lunch nobody has to hurry",
   nature: "green ground and open sky",
   coast: "the shoreline",
