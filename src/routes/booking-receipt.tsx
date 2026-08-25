@@ -99,7 +99,11 @@ function BookingReceiptPage() {
     };
   }, [session_id]);
 
-  const data = state.kind === "ok" ? state.data : null;
+  // Paid-only: a session that exists but is not paid must not disclose the
+  // buyer, the line items, the metadata or the itinerary download.
+  const paid = state.kind === "ok" && state.data.paymentStatus === "paid";
+  const notPaid = state.kind === "ok" && !paid;
+  const data = paid && state.kind === "ok" ? state.data : null;
   const meta = data?.metadata ?? {};
   const addOns: Array<{ label: string; priceEur: number }> = (() => {
     try {
@@ -118,9 +122,10 @@ function BookingReceiptPage() {
   const journeyLines = (data?.lineItems ?? []).filter((l) => !/^Add-on —/.test(l.description));
   const addOnLines = (data?.lineItems ?? []).filter((l) => /^Add-on —/.test(l.description));
 
-  // Machine-readable receipt. Emitted only once real Stripe data has
-  // loaded — never with placeholder values. The page is noindex, so this
-  // serves receipt/assistant parsers rather than search snippets.
+  // Machine-readable receipt. Emitted only once a PAID Stripe session has
+  // loaded — never for a pending session and never with placeholder values.
+  // The page is noindex, so this serves receipt/assistant parsers rather
+  // than search snippets.
   const reservationLd =
     data && session_id
       ? tourReservationLd({
@@ -129,7 +134,7 @@ function BookingReceiptPage() {
             journeyLines[0]?.description ??
             meta.tour_title ??
             "Private Portugal experience — YES Experiences",
-          status: data.paymentStatus === "paid" ? "confirmed" : "pending",
+          status: "confirmed",
           totalPrice: total,
           currency: data.currency,
           customerName: data.customerName,
@@ -137,6 +142,7 @@ function BookingReceiptPage() {
           bookingTime: data.created ? new Date(data.created * 1000).toISOString() : null,
         })
       : null;
+
 
   return (
     <main className="min-h-screen bg-[color:var(--sand)]/30 py-10 print:bg-white print:py-0">
