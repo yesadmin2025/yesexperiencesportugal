@@ -97,19 +97,19 @@ export function FooterHint({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function NextTeaser({ children }: { children: React.ReactNode }) {
-  return (
-    <p
-      className="mt-5 text-center text-[11.5px] uppercase tracking-[0.22em] font-semibold max-w-[320px]"
-      style={{
-        color: "color-mix(in oklab, var(--gold) 70%, var(--charcoal))",
-        animation: "studioV3RiseIn 340ms ease-out both",
-      }}
-    >
-      <span style={{ color: "var(--gold)" }}>→</span> {children}
-    </p>
-  );
+/**
+ * NextTeaser — intentionally renders nothing (P4).
+ *
+ * Progression is now communicated by movement itself: the reaction beats and
+ * auto-advance already tell the traveller the journey moved forward. Stacking
+ * another "Next…" copy layer on top made the chain feel slower and more
+ * form-like. The component and its props are kept so existing call-sites
+ * compile unchanged; if the teaser is ever reinstated it happens here only.
+ */
+export function NextTeaser(_props: { children: React.ReactNode }) {
+  return null;
 }
+
 
 export function BackLink({ onClick }: { onClick: () => void }) {
   return (
