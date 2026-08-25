@@ -14,39 +14,37 @@ const snapshot = {
 
 describe("resolvePublicBookingAccess", () => {
   it("denies a missing row without disclosing anything", () => {
-    expect(resolvePublicBookingAccess(null)).toEqual({ kind: "not_found" });
-    expect(resolvePublicBookingAccess(undefined)).toEqual({ kind: "not_found" });
+    expect(resolvePublicBookingAccess(null)).toEqual({ kind: "denied" });
+    expect(resolvePublicBookingAccess(undefined)).toEqual({ kind: "denied" });
   });
 
   it("denies an unpaid row even when it already carries a frozen snapshot", () => {
     for (const status of ["pending", "failed", "cancelled", "refunded"]) {
-      expect(
-        resolvePublicBookingAccess({ status, booking_details: { snapshot } }),
-      ).toEqual({ kind: "not_found" });
+      expect(resolvePublicBookingAccess({ status, booking_details: { snapshot } })).toEqual({
+        kind: "denied",
+      });
     }
   });
 
-  it("reports not_ready for a paid row whose snapshot is missing or malformed", () => {
-    expect(resolvePublicBookingAccess({ status: "paid" })).toEqual({ kind: "not_ready" });
+  it("denies paid rows whose snapshot is missing, malformed, or not frozen", () => {
+    expect(resolvePublicBookingAccess({ status: "paid" })).toEqual({ kind: "denied" });
     expect(resolvePublicBookingAccess({ status: "paid", booking_details: {} })).toEqual({
-      kind: "not_ready",
+      kind: "denied",
     });
     expect(
       resolvePublicBookingAccess({ status: "paid", booking_details: { snapshot: [] } }),
-    ).toEqual({ kind: "not_ready" });
-  });
+    ).toEqual({ kind: "denied" });
 
-  it("reports not_ready for a paid snapshot without a non-empty frozenAt", () => {
     const { frozenAt: _drop, ...unfrozen } = snapshot;
     expect(
       resolvePublicBookingAccess({ status: "paid", booking_details: { snapshot: unfrozen } }),
-    ).toEqual({ kind: "not_ready" });
+    ).toEqual({ kind: "denied" });
     expect(
       resolvePublicBookingAccess({
         status: "paid",
         booking_details: { snapshot: { ...snapshot, frozenAt: "   " } },
       }),
-    ).toEqual({ kind: "not_ready" });
+    ).toEqual({ kind: "denied" });
   });
 
   it("grants access for a paid row with a frozen snapshot and returns it exactly", () => {
@@ -66,9 +64,10 @@ describe("booking reference + denial responses", () => {
     expect(isValidBookingReference("1")).toBe(false);
   });
 
-  it("uses 404 for not_found and 409 for not_ready", () => {
-    expect(publicBookingDenialResponse({ kind: "not_found" }).status).toBe(404);
-    expect(publicBookingDenialResponse({ kind: "not_ready" }).status).toBe(409);
+  it("makes every denied valid reference externally indistinguishable", async () => {
+    const denied = publicBookingDenialResponse({ kind: "denied" });
+    expect(denied.status).toBe(404);
+    await expect(denied.json()).resolves.toEqual({ ok: false, error: "not_found" });
   });
 });
 
