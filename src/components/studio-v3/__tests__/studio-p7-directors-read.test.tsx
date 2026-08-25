@@ -10,7 +10,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { DirectorsRead } from "../DirectorsRead";
-import { composeDirectorsRead, type DirectorsReadState } from "../directorsRead";
+import {
+  composeDirectorsRead,
+  directorsReadBackTarget,
+  type DirectorsReadState,
+} from "../directorsRead";
 import {
   acknowledgementSignalsFor,
   themesAcknowledgedBefore,
@@ -218,5 +222,55 @@ describe("DirectorsRead — presentation", () => {
     const changed = composeDirectorsRead({ ...coastalCouple, rhythm: "full" });
     rerender(<DirectorsRead read={changed} onContinue={() => {}} onView={onView} />);
     expect(onView).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("composeDirectorsRead — wine intent stays intent-only", () => {
+  const forbidden = [
+    "cellar",
+    "winery",
+    "vineyard",
+    "estate",
+    "quinta",
+    "tasting room",
+    "Douro",
+    "Alentejo",
+    "Setúbal",
+    "Azeitão",
+    "Lisbon",
+  ];
+
+  it("never promises a stop, supplier, setting or region for wine", () => {
+    for (const rhythm of RHYTHMS) {
+      const copy = copyOf({
+        feeling: "wine-food",
+        companions: "couple",
+        interests: ["wine", "gastronomy"],
+        rhythm: rhythm.id,
+      }).toLowerCase();
+      for (const word of forbidden) {
+        expect(copy).not.toContain(word.toLowerCase());
+      }
+    }
+  });
+
+  it("still voices the wine intent when the feeling does not carry it", () => {
+    const read = composeDirectorsRead({
+      feeling: "coastal",
+      companions: "couple",
+      interests: ["wine"],
+      rhythm: "slow",
+    });
+    expect(read.body.some((l) => l.includes("wine with room to linger"))).toBe(true);
+  });
+});
+
+describe("directorsReadBackTarget", () => {
+  it("returns to refinement when an adaptive question was shown", () => {
+    expect(directorsReadBackTarget(true)).toBe("refinement");
+  });
+
+  it("returns to rhythm when no adaptive question exists", () => {
+    expect(directorsReadBackTarget(false)).toBe("rhythm");
   });
 });
