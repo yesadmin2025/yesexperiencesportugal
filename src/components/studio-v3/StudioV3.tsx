@@ -1917,7 +1917,9 @@ export function StudioV3() {
       if (has) {
         return { ...s, interests: s.interests.filter((x) => x !== id) };
       }
-      if (s.interests.length >= MAX_INTERESTS) return s;
+      // P5: inherited themes (already stated in Feeling) never consume a slot.
+      const countable = countableInterests(s.interests, deriveInheritedIntent(s));
+      if (countable.length >= MAX_INTERESTS) return s;
       return { ...s, interests: [...s.interests, id] };
     });
   };
