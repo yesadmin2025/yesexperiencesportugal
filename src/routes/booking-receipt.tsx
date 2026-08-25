@@ -163,7 +163,7 @@ function BookingReceiptPage() {
             <ArrowLeft size={14} /> Back to confirmation
           </Link>
           <div className="flex flex-wrap items-center gap-3">
-            {session_id ? (
+            {session_id && paid ? (
               <a
                 href={`/api/public/booking-itinerary?session_id=${encodeURIComponent(session_id)}`}
                 className="inline-flex min-h-[44px] items-center gap-2 border border-[color:var(--charcoal)]/25 px-5 text-[12px] uppercase tracking-[0.2em] text-[color:var(--teal)] hover:border-[color:var(--gold)]"
@@ -171,6 +171,7 @@ function BookingReceiptPage() {
                 <Download size={14} /> Download itinerary
               </a>
             ) : null}
+
             <button
               type="button"
               onClick={() => window.print()}
