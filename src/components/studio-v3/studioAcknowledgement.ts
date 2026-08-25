@@ -161,6 +161,13 @@ export function themesAcknowledgedBefore(
       if (theme) seen.add(theme);
     }
   }
+  if (surface === "directorsRead") return seen;
+
+  // P7: the Director's Read speaks its themes in prose. Whatever it voiced is
+  // already heard, so Logistics and the reveal must not repeat it.
+  if (ctx.directorsRead?.shown) {
+    for (const theme of ctx.directorsRead.themes) seen.add(theme);
+  }
   if (surface === "logistics") return seen;
 
   // Reveal: whatever Logistics showed also counts as already heard.
@@ -177,7 +184,7 @@ export function themesAcknowledgedBefore(
  * nothing rather than a placeholder.
  */
 export function acknowledgementSignalsFor(
-  surface: Exclude<AcknowledgementSurface, "interests" | "reveal">,
+  surface: Exclude<AcknowledgementSurface, "interests" | "directorsRead" | "reveal">,
   ctx: AcknowledgementContext,
 ): string[] {
   const seen = themesAcknowledgedBefore(surface, ctx);
