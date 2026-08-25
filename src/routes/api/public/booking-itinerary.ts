@@ -2,10 +2,12 @@
  * Guest-facing itinerary download.
  *
  * Returns the exact same PDF that is attached to the confirmation emails,
- * rebuilt from the frozen booking snapshot for a given Stripe checkout
- * session id (the guest's booking reference). The reference is a long,
- * unguessable Stripe id and nothing sensitive beyond the guest's own
- * designed day is returned.
+ * rebuilt from the frozen booking snapshot on the paid booking row.
+ *
+ * This IS guest-facing booking data (guest name, pickup, notes, paid total).
+ * It is protected by the opaque, unguessable Stripe checkout session id used
+ * as the booking reference, plus paid-and-frozen authorization — nothing is
+ * served before payment is confirmed.
  */
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -41,27 +43,23 @@ export const Route = createFileRoute("/api/public/booking-itinerary")({
       GET: async ({ request }) => {
         const url = new URL(request.url);
         const sessionId = (url.searchParams.get("session_id") || "").trim();
-        if (!/^cs_[A-Za-z0-9_]{20,255}$/.test(sessionId)) {
+        const access = await import("@/lib/public-booking-access.server");
+        if (!access.isValidBookingReference(sessionId)) {
           return Response.json({ ok: false, error: "invalid_reference" }, { status: 400 });
         }
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { data: row } = await supabaseAdmin
-          .from("booking_snapshots")
-          .select("payload")
-          .eq("stripe_session_id", sessionId)
-          .maybeSingle();
-
-        const snapshot = (row?.payload ?? null) as AnyRec | null;
-        if (!snapshot || typeof snapshot !== "object") {
-          return Response.json({ ok: false, error: "not_found" }, { status: 404 });
+        const result = await access.loadPublicBookingAccess(sessionId);
+        if (result.kind !== "granted") {
+          return access.publicBookingDenialResponse(result);
         }
+        const snapshot = result.snapshot as AnyRec;
 
         const composition = (snapshot.composition ?? {}) as AnyRec;
         const pricing = (snapshot.pricing ?? {}) as AnyRec;
         const addOns = Array.isArray(snapshot.addOns) ? (snapshot.addOns as AnyRec[]) : [];
         const guests = Number(composition.guests) || null;
         const totalEur = Number(pricing.totalEur) || null;
+
 
         const input: ItineraryPdfInput = {
           experienceName: str(snapshot.experienceName) ?? str(snapshot.tourTitle),

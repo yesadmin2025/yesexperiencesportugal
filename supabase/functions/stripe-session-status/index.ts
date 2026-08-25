@@ -23,6 +23,25 @@ Deno.serve(async (req) => {
       expand: ["payment_intent.latest_charge"],
     });
 
+    // Guardrail: before payment is confirmed, disclose nothing about the
+    // buyer or the purchase. Only the minimal verification fields the
+    // confirmation page needs to decide what to render.
+    if (session.payment_status !== "paid") {
+      return json({
+        status: session.status,
+        paymentStatus: session.payment_status,
+        environment: env,
+        amountTotal: null,
+        currency: session.currency ?? null,
+        customerEmail: null,
+        customerName: null,
+        receiptUrl: null,
+        created: null,
+        lineItems: [],
+        metadata: {},
+      });
+    }
+
     // deno-lint-ignore no-explicit-any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pi = session.payment_intent as any;
@@ -82,6 +101,7 @@ Deno.serve(async (req) => {
       receiptUrl,
       environment: env,
     });
+
   } catch (e) {
     console.error("stripe-session-status error:", e);
     return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);

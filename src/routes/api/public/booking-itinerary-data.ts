@@ -3,9 +3,12 @@
  *
  * Serves exactly the same fields the itinerary PDF is built from, so the
  * online itinerary page at /itinerary mirrors the emailed PDF one-for-one.
- * Keyed by the guest's own Stripe checkout session id (long, unguessable).
- * Deliberately excludes contact PII (email, phone, address) — only the
- * designed day, the guest's first-party name and the paid total.
+ *
+ * This IS guest-facing booking data — it may include the guest's own name,
+ * pickup point and notes. It is protected by two layers: the opaque,
+ * unguessable Stripe checkout session id used as the booking reference, and
+ * paid-and-frozen authorization (see public-booking-access.server). Nothing
+ * is served before payment is confirmed.
  */
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -33,21 +36,16 @@ export const Route = createFileRoute("/api/public/booking-itinerary-data")({
       GET: async ({ request }) => {
         const url = new URL(request.url);
         const sessionId = (url.searchParams.get("session_id") || "").trim();
-        if (!/^cs_[A-Za-z0-9_]{20,255}$/.test(sessionId)) {
+        const access = await import("@/lib/public-booking-access.server");
+        if (!access.isValidBookingReference(sessionId)) {
           return Response.json({ ok: false, error: "invalid_reference" }, { status: 400 });
         }
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { data: row } = await supabaseAdmin
-          .from("booking_snapshots")
-          .select("payload")
-          .eq("stripe_session_id", sessionId)
-          .maybeSingle();
-
-        const snapshot = (row?.payload ?? null) as AnyRec | null;
-        if (!snapshot || typeof snapshot !== "object") {
-          return Response.json({ ok: false, error: "not_found" }, { status: 404 });
+        const result = await access.loadPublicBookingAccess(sessionId);
+        if (result.kind !== "granted") {
+          return access.publicBookingDenialResponse(result);
         }
+        const snapshot = result.snapshot as AnyRec;
 
         const composition = (snapshot.composition ?? {}) as AnyRec;
         const pricing = (snapshot.pricing ?? {}) as AnyRec;
@@ -55,12 +53,14 @@ export const Route = createFileRoute("/api/public/booking-itinerary-data")({
         const guests = Number(composition.guests) || null;
         const totalEur = Number(pricing.totalEur) || null;
 
+
         return Response.json(
           {
             ok: true,
             reference: sessionId,
-            // Non-PII: lets the itinerary map request the real Signature
-            // driving route instead of a straight dashed connector.
+            // Lets the itinerary map request the real Signature driving
+            // route instead of a straight dashed connector.
+
             tourId: str(snapshot.tourId, 80),
             experienceName: str(snapshot.experienceName) ?? str(snapshot.tourTitle),
             customerName: str(snapshot.customerName, 160),
