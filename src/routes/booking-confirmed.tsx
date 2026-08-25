@@ -9,7 +9,6 @@ import {
   AlertCircle,
   Download,
   Map,
-
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -184,7 +183,7 @@ function BookingConfirmedPage() {
           <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
             {state.kind === "loading" && "Confirming your payment with our secure processor…"}
             {state.kind === "error" &&
-              "If your card was charged, your booking is safe. Open your itinerary below, or reach out via WhatsApp if anything looks off."}
+              "We could not verify the payment yet. If your card was charged, refresh in a moment or reach out via WhatsApp and we will check the booking reference."}
             {state.kind === "ok" &&
               (paid ? (
                 <>
@@ -197,10 +196,10 @@ function BookingConfirmedPage() {
                   .
                 </>
               ) : (
-                "Your session is still being processed. Refresh in a moment — your itinerary link below stays valid either way."
+                "Your payment is still being processed. Refresh in a moment. Your Travel File will appear here as soon as payment is confirmed."
               ))}
             {state.kind === "idle" &&
-              "Payment received. Your full plan — stop by stop, pickup details and your host's direct WhatsApp — is ready below."}
+              "Open this page from your secure checkout confirmation so we can verify the booking reference."}
           </p>
 
           {session_id ? (
@@ -209,7 +208,7 @@ function BookingConfirmedPage() {
             </p>
           ) : null}
 
-          {session_id ? (
+          {session_id && paid ? (
             <div className="mt-8 border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] p-6 sm:p-7 text-left">
               <p className="text-[10.5px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
                 Your day, in full
@@ -243,7 +242,7 @@ function BookingConfirmedPage() {
             </div>
           ) : null}
 
-          {state.kind === "ok" && state.data.receiptUrl ? (
+          {paid && state.kind === "ok" && state.data.receiptUrl ? (
             <div className="mt-4">
               <a
                 href={state.data.receiptUrl}
@@ -273,7 +272,6 @@ function BookingConfirmedPage() {
               body="Dietary, pickup, occasion — write to us and we'll adapt."
             />
           </ul>
-
 
           <div className="mt-12 flex flex-col sm:flex-row gap-3 justify-center">
             {tour ? (
