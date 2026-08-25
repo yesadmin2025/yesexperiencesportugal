@@ -87,14 +87,26 @@ function readSignals(): string[] {
 }
 
 function expected(answers: Answers): string[] {
-  return [
+  const signals = [
     ...buildRevealNarrative({
       ...answers,
       region: regionLabelFor(answers.destinationIntent),
       addOnLabels: ADD_ONS.map((a) => a.label),
     }).signals,
   ];
+  // P6 "acknowledge once": the reveal drops reasons the traveller already
+  // heard earlier in the flow. Same module, same order — just quieter.
+  return filterRevealSignals(signals, {
+    state: {
+      feeling: answers.feeling,
+      interests: [...answers.interests],
+      rhythm: answers.rhythm,
+    },
+    refinementShown: answers.refinement != null,
+  });
 }
+
+import { filterRevealSignals } from "../studioAcknowledgement";
 
 describe("FinalRevealStory — signals update when the traveller's answers change", () => {
   it("re-renders the exact narrative signals for each new answer set", () => {

@@ -54,7 +54,7 @@ function renderPhase(state: StudioV3State, onCompose = vi.fn(), onBackPhase = vi
       onMinorAgeChange={vi.fn()}
       onBackPhase={onBackPhase}
       onCompose={onCompose}
-      acknowledgementShownEarlier={false}
+      acknowledgement={null}
     />,
   );
   rerenderRef.current = (s) =>
@@ -68,7 +68,7 @@ function renderPhase(state: StudioV3State, onCompose = vi.fn(), onBackPhase = vi
         onMinorAgeChange={vi.fn()}
         onBackPhase={onBackPhase}
         onCompose={onCompose}
-        acknowledgementShownEarlier={false}
+        acknowledgement={null}
       />,
     );
   return {
