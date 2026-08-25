@@ -55,9 +55,7 @@ export const DIRECTORS_READ_EYEBROW = "The director's read";
  * so it must walk back to whatever the traveller actually saw last: the
  * adaptive refinement question when one was shown, otherwise rhythm.
  */
-export function directorsReadBackTarget(
-  hasAdaptiveQuestion: boolean,
-): "refinement" | "rhythm" {
+export function directorsReadBackTarget(hasAdaptiveQuestion: boolean): "refinement" | "rhythm" {
   return hasAdaptiveQuestion ? "refinement" : "rhythm";
 }
 
