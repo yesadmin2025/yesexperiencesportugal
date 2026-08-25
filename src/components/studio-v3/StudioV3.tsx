@@ -26,7 +26,7 @@ import {
   PhaseHeader,
 } from "./PhaseChrome";
 import { LogisticsPhase } from "./LogisticsPhase";
-import { composeDirectorsRead } from "./directorsRead";
+import { composeDirectorsRead, directorsReadBackTarget } from "./directorsRead";
 import { DirectorsRead } from "./DirectorsRead";
 
 import { InvestmentTierPicker } from "./InvestmentTierPicker";
