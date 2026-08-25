@@ -43,6 +43,8 @@ async function walkToWhenMoment(page: Page) {
   }
 
   await expect.poll(() => phase(page), { timeout: 30_000 }).toBe("logistics");
+  // P7: clear the non-blocking Director's Read beat before the logistics moments.
+  await domClick(page, '[data-testid="studio-v3-directors-read-continue"]');
   await expect.poll(() => moment(page), { timeout: 15_000 }).toBe("when");
 }
 
