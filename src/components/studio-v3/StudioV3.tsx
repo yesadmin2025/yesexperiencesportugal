@@ -26,6 +26,8 @@ import {
   PhaseHeader,
 } from "./PhaseChrome";
 import { LogisticsPhase } from "./LogisticsPhase";
+import { composeDirectorsRead } from "./directorsRead";
+import { DirectorsRead } from "./DirectorsRead";
 
 import { InvestmentTierPicker } from "./InvestmentTierPicker";
 import { StudioV3Intro } from "./StudioV3Intro";
