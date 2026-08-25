@@ -1,103 +1,114 @@
-# Studio V3 — P6 audit and next slice
+# YES Studio V3 — Post-P6 Product Audit and P7+ Roadmap
 
-Read-only audit of current main (HEAD `7f7e93c1f`). Nothing was edited.
+Read-only audit of current main after P6 "Acknowledge once". No code was changed.
 
-## 1. Current-state diagnosis
+## 1. Executive diagnosis
 
-**The question chain is already short.** `STUDIO_V3_PHASE_ORDER` (`curation.ts:2584-2609`) still lists 20 phases, but `isPhaseRelevant` (`curation.ts:2528-2562`) hard-disables `destination`, `date`, `pickup`, `guests`, `investment`, `occasion`, `considerations`, `language`. What a traveller actually answers is:
+### What is now genuinely excellent
+
+- **Honest, short flow.** `STUDIO_V3_PHASE_ORDER` (curation.ts:2584) plus `isPhaseRelevant` (curation.ts:2528) turn off `occasion`, `considerations`, `language`, `investment`, `destination`, and the split `date`/`pickup`/`guests`. Real asked path is `intro → feeling → who → interests → rhythm → [refinement] → logistics → map → storyboard → confirmation`. That is 5–6 real decisions.
+- **Truth discipline is unusually strong.** Curation sources every stop from real Signature data in one region; `refineIntents.ts` only offers an intent when it is executable; `letYesDecide.ts` never infers wine; pricing/Stripe/Travel File paths are isolated and test-guarded.
+- **Inference layers exist and work.** `inferGuests`, `studioInheritedIntent`, `studioSemanticMemory`, `adaptiveQuestionAddsValue`, and now `studioAcknowledgement` mean the Studio really does know things without asking.
+- **Repetition is solved.** P6 removed the four-times echo of feeling/taste/rhythm and protects the reveal with a 2-signal floor.
+
+### What is still weak
+
+1. **Intelligence is invisible.** All the inference happens silently; the traveller has no moment where the Studio demonstrably *reads them back* in fresh language. The Studio feels short, not smart. `NextTeaser` was nulled in P4, so between choices there is now literally nothing.
+2. **The choice screens are still a form in editorial clothing.** `feeling`, `who`, `interests`, `rhythm` are four near-identical grids rendered from the same `PhaseShell` in StudioV3.tsx (2385–2752). Portugal does not appear until `map`. Time-to-first-visual-payoff is 5 taps.
+3. **Reveal is fragmented into three screens.** `map` (MapAwakens) → `storyboard` (StoryboardHandoff) → `confirmation` (WhyRouteWorks + OtherDirections + FinalRevealStory). The payoff is spread thin and the traveller crosses two CTAs to see the whole day. `WhyRouteWorks` and `OtherDirections` sit *above* the reveal, explaining before there is anything to explain.
+4. **"Let YES decide" is a per-question shortcut, not a mode.** `letYesDecide.ts` resolves one key at a time; tapping it three times still costs three taps and three screens.
+5. **No continuity.** State lives only in `sessionStorage` (StudioV3.tsx:756-794). A closed tab loses everything; there is no shareable preview.
+6. **Analytics vocabulary is richer than its call-sites.** `studio-analytics.ts` defines `interpretation_viewed`, `moment_kept`, `moment_swapped`, `abandon_by_phase`; several have no or weak call-sites, so per-phase completion and drop-off are not reliably measurable today.
+7. **StudioV3.tsx is 5550 lines.** Every slice below pays an orchestration tax until some of it is extracted.
+
+## 2. Target experience (screen by screen)
 
 ```text
-intro → feeling → who → interests → rhythm → [refinement ×1] → logistics(date+pickup+party+review)
-      → map → storyboard → confirmation → guestDetails → checkoutSummary
+1  Invitation      one line, one image, one tap. Portugal already breathing.
+2  Feeling         emotion grid. On answer, the backdrop shifts to that mood.
+3  Who             one tap. Party inferred silently.
+4  Interests       inherited themes shown as "already understood", not asked.
+5  Rhythm          pacing. Backdrop resolves to a real region.
+6  Director's read one short screen: "So — a slow coastal day for two,
+                   with the table at the centre." Fresh prose, not labels.
+7  Logistics       date + pickup + party, all prefilled, one screen.
+8  Your Day        ONE surface: map (or timeline), ordered moments, story,
+                   two or three executable refine intents, price revealed
+                   after the day is understood.
+9  Guest details   short form, price stays visible.
+10 Summary         confirmation ledger, Stripe.
 ```
 
-So P6 is **not** "remove another question" — there is almost nothing safe left to cut. The remaining problem is different:
+## 3. Prioritized roadmap
 
-**The same three facts are re-stated four to five times.** Feeling, top interest and rhythm are surfaced as:
-1. the reaction beat after Feeling (`StudioV3.tsx:448-471`)
-2. the "Already understood" row on Interests (`StudioV3.tsx:2599-2620`, P5)
-3. `UnderstoodSummaryLine` on refinement, and again on Logistics "when" (`StudioV3.tsx:2723`, `LogisticsPhase.tsx:154-158`) — already patched defensively with `acknowledgementShownEarlier` (`StudioV3.tsx:2473`)
-4. the reveal's signal pills (`FinalRevealStory.tsx:375-394`), built from the same inputs as `understoodSignals`
-5. Date/pickup/party shown in the Logistics review rows (`LogisticsPhase.tsx:259-276`) and repeated verbatim in the reveal facts line (`FinalRevealStory.tsx:358-365`)
+### P7 — Director's Read (highest impact, low risk)
 
-That is what makes the flow feel like a questionnaire that keeps reading its own notes back, rather than a director who remembers once and then moves.
+- **Intent.** Convert silent inference into perceived intelligence. This is the single moment where the Studio stops feeling like a form.
+- **Problem it solves.** Diagnosis #1. Nothing today speaks back in the Studio's own voice.
+- **Behaviour.** After `rhythm` (and after `refinement` when shown), one full-width beat renders 2–3 sentences composed deterministically from `feeling + companions + interests + rhythm + inherited intent`, using a phrase table — never the option labels verbatim, never AI. Auto-advances on tap; also auto-dismissible like `UnderstoodBeat`. Registers with `studioAcknowledgement` so P6 keeps downstream surfaces quiet.
+- **Files.** New `directorsRead.ts` (pure composer) + `DirectorsRead.tsx`; `StudioV3.tsx` (render + one new relevance branch); `studioAcknowledgement.ts` (add `directorsRead` to `ACKNOWLEDGEMENT_SURFACE_ORDER`); new test file.
+- **Non-goals.** No AI, no new question, no phase-order change beyond inserting one non-blocking beat, no pricing/curation touch.
+- **Acceptance.** Deterministic for a given state; never repeats an option label verbatim; skippable in one tap; downstream Logistics/reveal acknowledgements shrink accordingly; ≤2500 ms on screen at 393px without truncation.
+- **Tests/analytics.** Pure composer tests over the feeling × rhythm matrix; assert no verbatim label leakage; wire the existing `interpretation_viewed` event to its first real call-site.
+- **Risk.** Low. **Depends on** nothing.
 
-**Three parallel mechanisms reason over the identical signal.** `hasExplicitWineIntent` feeds (a) `studioInheritedIntent` pruning, (b) `deriveSemanticMemory` / `addsNewDimension` suppression (`adaptiveQuestions.ts:148-152`), and (c) the wine refinement question's own `wineRelevant` gate (`adaptiveQuestions.ts:159-168`). They agree today, but there is no single contract asserting they cannot diverge.
+### P8 — Unified "Your Day" surface
 
-**The AI advisor is correctly caged.** `useStudioIntentAdvisor` may only reorder — which of the eligible adaptive questions is asked, and refine-chip order (`studioIntentAdvisor.ts:159-222`). It cannot create, gate, or price. No change proposed there.
+- **Intent.** One payoff, not three.
+- **Problem.** Diagnosis #3.
+- **Behaviour.** Merge `map` + `storyboard` + `confirmation` into a single scrolling surface: map-or-timeline (already truth-gated by `yourDayMapTruth.ts`), ordered moments, story, refine intents, then price. `WhyRouteWorks` moves *below* the moments as a one-line confidence cue. `OtherDirections` becomes a quiet footer link, not a pre-reveal fork. Legacy phases stay in `STUDIO_V3_PHASE_ORDER` for hydration and redirect into the unified surface.
+- **Files.** `StudioV3.tsx`, `MapAwakens.tsx`, `StoryboardHandoff`, `FinalRevealStory.tsx`, `curation.ts` (relevance only).
+- **Non-goals.** No change to composition, map truth rules, pricing, or the CheckoutSummary handoff.
+- **Acceptance.** Reveal paints within existing 2500 ms budget; the `no-moments-loop` and `let-yes-decide` e2e specs still pass unchanged; one CTA from day to guest details.
+- **Risk.** Medium-high — largest test surface. **Depends on** P7 shipping first (so the pre-reveal beat exists) and on extracting reveal rendering out of StudioV3.tsx.
 
-**Test surface that locks current behaviour:** `studio-reform-flow.test.ts`, `adaptive-questions.test.ts`, `studio-semantic-memory.test.ts`, `studio-p5-inherited-intent.test.ts`, `studio-intent-advisor.test.ts`, `studio-v3-arc-headlines.test.ts`, `progress-stepper.test.tsx`, `reveal-section-order.test.ts`, `final-reveal-signals-*.test.tsx`.
+### P9 — Price after value
 
-## 2. P6 recommendation — "Acknowledge once"
+- **Intent.** Editorial price reveal following the day, not preceding it.
+- **Behaviour.** `RunningInvestmentRibbon` stays quiet ("Investment takes shape with your day") until the unified surface renders the composed day, then the canonical total resolves in place with the existing `InvestmentDelta` pulse. Pricing math untouched.
+- **Files.** `RunningInvestmentRibbon.tsx`, `StudioV3.tsx` (visibility condition only).
+- **Risk.** Low. **Depends on** P8.
 
-**One acknowledgement authority for the whole Studio.** Instead of five surfaces each independently re-deriving and re-printing what the traveller said, introduce a deterministic ledger of *what has already been acknowledged on screen*, and let each surface show only what is genuinely new at that moment.
+### P10 — "Let YES decide" as a delegation mode
 
-Behaviour:
-- A pure module derives, per phase, the set of signals worth acknowledging **minus** those already shown earlier in the session. Derived from state only; no AI, no persistence beyond the session state already held.
-- Interests keeps the P5 "Already understood" row (it is the first acknowledgement and it earns its place).
-- Refinement and Logistics stop re-printing signals that Interests already showed; if nothing is new, they render nothing (silence, not a placeholder).
-- Logistics review keeps date/pickup/party (it is a confirmation of just-entered data), but the reveal facts line and the reveal signal pills drop any signal already acknowledged verbatim earlier — the reveal keeps only the operational facts (region/date/pickup/party) plus signals that first appear there.
-- Replaces the ad-hoc `acknowledgementShownEarlier` boolean with the ledger, so the rule is one place instead of a defensive flag.
+- **Intent.** Make trust a first-class path.
+- **Behaviour.** A single "Let YES design it" affordance on the Feeling screen resolves feeling, interests and rhythm together via existing `letYesDecide.ts` deciders, jumps straight to the Director's Read (which then explains every decision made on the traveller's behalf), and each decision remains one tap to change.
+- **Files.** `letYesDecide.ts` (add a whole-state resolver over the existing per-key deciders), `StudioV3.tsx`, `directorsRead.ts`.
+- **Acceptance.** Delegated path composes the same real day the manual path would; every delegated value is named and reversible.
+- **Risk.** Low-medium. **Depends on** P7.
 
-Why this over the alternatives: cutting another phase would break operational truth (logistics is required) or the locked phase-order tests for no felt gain; contextual microcopy without a ledger just adds a sixth place that says the same thing. This slice is the only one that makes the flow *feel* shorter without asking less.
+### P11 — Funnel observability
 
-**Allowed files**
-- new `src/components/studio-v3/studioAcknowledgement.ts`
-- `src/components/studio-v3/StudioV3.tsx` (wiring + interests/refinement rows)
-- `src/components/studio-v3/LogisticsPhase.tsx` (acknowledgement row only)
-- `src/components/studio-v3/FinalRevealStory.tsx` (signal pills filtering only)
-- new `src/components/studio-v3/__tests__/studio-p6-acknowledge-once.test.ts`
-- possible minimal touch: the reveal-narrative signals module, only if pill filtering must happen there to keep `final-reveal-signals-*` in lockstep
+- **Intent.** Be able to measure and later A/B test.
+- **Behaviour.** Give every declared `StudioAnalyticsEvent` a real call-site or delete it; emit `phase_view` on every rendered phase including the new beats; emit `abandon_by_phase` on unload.
+- **Files.** `studio-analytics.ts`, `StudioV3.tsx`, funnel writer.
+- **Risk.** Low, but must not double-count through `VIA_FUNNEL`. **Depends on** P7/P8 landing so phase names are stable.
 
-**Non-goals (do not touch)**
-Pricing, `signatureTourPricing`, `AGE_BAND_PCT`, `resolveJourneyPricing`/`resolvePerPaxEur`, add-on formulas, Stripe edge functions, webhooks, checkout creators, Travel File / booking access, curation route composition, stops, suppliers, maps and map truth, `STUDIO_V3_PHASE_ORDER` and `isPhaseRelevant` (unchanged), the advisor trust boundary, analytics event names, Supabase, generated files, brand audit.
+### P12 — Continuity (draft resume + share)
 
-## 3. Acceptance criteria + focused tests
+- **Intent.** Remove the cost of leaving.
+- **Behaviour.** Promote the existing session snapshot to a durable draft keyed by an opaque id, resumable by link. No PII in the draft, no login. Share link renders a read-only preview of the composed day only.
+- **Files.** StudioV3 persistence block, a new server function, one new table with RLS + GRANTs.
+- **Non-goals.** No email capture gate, no account.
+- **Risk.** Medium — first slice here that touches the backend. **Depends on** P8 (stable day shape).
 
-Criteria
-- No signal string is rendered twice across Interests → refinement → Logistics → reveal for the same state.
-- Removing all duplicates never removes the *only* acknowledgement — every traveller with at least one explicit signal sees it exactly once.
-- Operational facts (date, pickup, party, region) are exempt: they may appear in both Logistics review and the reveal.
-- When nothing new exists for a surface, it renders nothing — no empty container, no filler copy.
-- Back-navigation and changing Feeling recompute the ledger deterministically; no stale acknowledgements.
-- Phase order, gating, stepper beats, reveal section order and locked headline copy are byte-identical to today.
-- Keyboard, focus order, 44×44 targets and analytics unchanged.
+### Not recommended as a stage
 
-Tests (`studio-p6-acknowledge-once.test.ts`)
-- same state → union of acknowledged signals across all surfaces has no duplicates
-- single-signal state → that signal appears exactly once, on Interests
-- signal that first becomes true at refinement → appears at refinement, not repeated at reveal
-- operational facts still appear at both Logistics review and reveal
-- empty acknowledgement set → surface returns nothing
-- changing feeling recomputes with no stale entries
-- ledger never mutates `state.interests` or any state field
+- **B) A general next-best-question engine.** The flow is already 5–6 questions with one adaptive slot. A general engine adds machinery and unpredictability with almost no question left to optimise. Keep `adaptiveQuestions.ts` as-is.
+- **C) Progressive map morphing per choice.** Real geography before a resolved Signature would either be fake or expensive. P7's mood backdrop gets 80% of the feeling at 5% of the cost.
+- **J) Post-reveal "one more thing".** Only revisit once add-on attach rates are measurable (post-P11), and only for enhancements already in the catalog.
 
-Plus existing suites must stay green: the semantic-memory, adaptive-question, P5, advisor, arc-headline, stepper and reveal-section-order files, the Studio V3 unit suite, and `bunx tsgo --noEmit`. No brand audit.
+## 4. Analytics / experimentation
 
-## 4. Checkout / payment findings (separate)
+Per-phase funnel: `phase_view` → `choice_selected` → `logistics_completed` → `composition_generated` → `story_reveal_viewed` → `guest_details_started` → `guest_details_completed`. Completion rate by phase and median time-per-phase are the two headline metrics. Reuse the existing hero A/B harness pattern for Studio copy variants — vary copy only, never composition, pricing or truth.
 
-**Neither checkout creator requests any payment method at all.**
+## 5. Do not build
 
-- `supabase/functions/create-signature-checkout/index.ts:426-483` builds `sessionParams` with `mode: "payment"`, `locale`, `submit_type`, `billing_address_collection`, `phone_number_collection`, `allow_promotion_codes`, `custom_text`, `consent_collection`, `payment_intent_data`, `metadata`. There is **no** `payment_method_types` and **no** `automatic_payment_methods`.
-- `supabase/functions/create-builder-checkout/index.ts:129-155` — same: `mode: "payment"`, `ui_mode: "embedded_page"`, no `payment_method_types`, no `automatic_payment_methods`.
-- A repo-wide search for `payment_method_types`, `automatic_payment_methods`, `payment_method_options`, `payment_method_configuration` returns **zero** hits in `supabase/functions`, `src/lib` and `src/routes`.
-- Studio, Signature and Tailor all funnel into `create-signature-checkout` (`StudioV3.tsx`, `GuestDetailsStep.tsx`, `tours_.$tourId.tailor.tsx`, `SimpleBookingForm.tsx`, `FinalDetailsDialog.tsx`); only the Builder uses the second creator. The two diverge in `ui_mode` and metadata, **not** in payment methods.
-- `supabase/functions/_shared/stripe.ts:12-17` prefers `STRIPE_RESTRICTED_API_KEY` (`rk_live_…`) over `STRIPE_LIVE_API_KEY` in live mode.
-- `src/components/trust/PaymentMethodsRow.tsx:7,77-132` advertises PayPal, Klarna, Multibanco, MB WAY, Revolut Pay, Apple Pay and Google Pay to guests — a promise the session parameters do not make.
+Fake scarcity, countdowns, streaks, progress bars that lie, autoplay audio, a second competing product surface, per-stop upsell chips, AI-written itinerary facts, a login wall, chat input as the primary interface, gamified badges, or any parallax/glass effect outside the homepage scope.
 
-**Likely reason only card appears:** because no methods are specified, Stripe Checkout falls back entirely to the account's **dashboard payment-method configuration for live mode**. If only card is enabled/activated there (Multibanco, MB WAY, Klarna and PayPal each need explicit activation, and some require business-country/currency eligibility review), Checkout shows card only — exactly the symptom reported. Contributing possibilities worth confirming, in likelihood order:
-1. live-mode payment methods not activated on the Stripe account (most likely — matches "sandbox shows more, live shows card")
-2. the restricted key's payment-method-configuration permissions, if it cannot read the configuration
-3. per-method eligibility rules at run time (currency, amount, customer country) silently filtering methods out
+## 6. Recommended first slice
 
-This is a Stripe **account configuration** matter first, a code matter second. A future code slice could set `automatic_payment_methods: { enabled: true }` (or an explicit `payment_method_configuration`) so behaviour is declared in code rather than inherited — but that must be its own reviewed slice, and it will still surface nothing that is not enabled on the account. No Stripe call was made and no payment code was read for modification.
+**P7 — Director's Read.** Highest perceived-intelligence gain per line changed, no dependency, no truth surface touched.
 
-## 5. Risks and dependencies
-
-- **Test coupling.** `final-reveal-signals-*.test.tsx` asserts rendered pills match the narrative module exactly; filtering at the component would break that lockstep. Filter in the signals module, or update both together.
-- **Over-silencing.** Aggressive de-duplication could leave a surface blank where the traveller expected reassurance. The "exactly once" test is the guard; if a surface reads too empty in review, prefer keeping the first occurrence and cutting later ones, never the reverse.
-- **Stepper fragility.** `beatIndexForPhase` returns `null` for unmapped phases and hides the stepper — P6 does not change phase identity, so this stays safe, but any later merge must update that switch.
-- **Three-gate divergence.** Inherited intent, semantic memory and adaptive gating agree today by construction; P6 could add a cheap contract test asserting they cannot disagree for the wine/coast/faith/hands-on themes.
-- **Dependency:** none outside the Studio; no migration, no backend, no Stripe change.
-
-Nothing implemented. Approve to proceed with P6, or redirect.
+- **Allowed files:** new `src/components/studio-v3/directorsRead.ts`, new `src/components/studio-v3/DirectorsRead.tsx`, `src/components/studio-v3/StudioV3.tsx`, `src/components/studio-v3/studioAcknowledgement.ts`, new `src/components/studio-v3/__tests__/studio-p7-directors-read.test.ts`.
+- **Test plan:** pure composer determinism; no verbatim option-label echo; acknowledgement themes registered so Logistics/reveal de-duplicate; beat is skippable and never blocking; full Studio V3 unit suite + `bunx tsgo --noEmit`.
