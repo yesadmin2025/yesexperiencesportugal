@@ -50,6 +50,15 @@ export interface DirectorsReadContent {
 
 export const DIRECTORS_READ_EYEBROW = "The director's read";
 
+/**
+ * Where Back from the read should land. The beat sits in the Logistics slot,
+ * so it must walk back to whatever the traveller actually saw last: the
+ * adaptive refinement question when one was shown, otherwise rhythm.
+ */
+export function directorsReadBackTarget(hasAdaptiveQuestion: boolean): "refinement" | "rhythm" {
+  return hasAdaptiveQuestion ? "refinement" : "rhythm";
+}
+
 /** Opening acknowledgement. Chosen by feeling so it never reads generic. */
 const HEADLINE_BY_FEELING: Readonly<Record<Feeling, string>> = {
   coastal: "I can already see the shape of this.",
@@ -91,7 +100,7 @@ const COMPANY_PHRASE: Readonly<Record<Companions, string>> = {
 
 /** What the day should make room for. Intent only — never a stop or supplier. */
 const INTEREST_PHRASE: Readonly<Partial<Record<Interest, string>>> = {
-  wine: "time in a cellar",
+  wine: "wine with room to linger",
   gastronomy: "a lunch nobody has to hurry",
   nature: "green ground and open sky",
   coast: "the shoreline",
