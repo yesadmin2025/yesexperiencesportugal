@@ -4688,10 +4688,13 @@ function ReactionOverlay({
   // lingers past the moment the underlying phase becomes the focus.
   const rawHold = reaction.holdMs ?? 2400;
   const ceiling =
-    reaction.kind === "map-beat" || reaction.kind === "interests" || reaction.kind === "rhythm"
-      ? 3800
-      : 2400;
+    reaction.kind === "map-beat"
+      ? 2600
+      : reaction.kind === "interests" || reaction.kind === "rhythm"
+        ? 2200
+        : 1400;
   const hold = Math.min(rawHold, ceiling);
+
 
   // Surrender pointer events shortly after the beat lands so taps fall through
   // to the next phase already mounted underneath. This fixes the mobile bug
