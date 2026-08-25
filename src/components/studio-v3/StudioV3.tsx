@@ -2107,6 +2107,27 @@ export function StudioV3() {
   );
   const countableSelectedInterests = countableInterests(state.interests, inheritedIntent);
 
+  // P7 "Director's Read": one non-blocking interpretation beat rendered in
+  // place of Logistics the first time a given reading is reached. It is NOT a
+  // phase — the phase model, gating, curation and pricing are untouched. The
+  // copy is composed deterministically from state, so back-navigation and
+  // changed answers recompute with no stale text. Once a reading has been
+  // acknowledged (one tap) the same reading never interrupts again; changing a
+  // meaningful answer produces a new signature and a new read.
+  const directorsRead = useMemo(
+    () =>
+      composeDirectorsRead({
+        feeling: state.feeling,
+        companions: state.companions,
+        interests: state.interests,
+        rhythm: state.rhythm,
+      }),
+    [state.feeling, state.companions, state.interests, state.rhythm],
+  );
+  const [directorsReadSeen, setDirectorsReadSeen] = useState<string | null>(null);
+  const showDirectorsRead =
+    state.phase === "logistics" && directorsReadSeen !== directorsRead.signature;
+
   // P6 "acknowledge once": one deterministic ledger decides which surface may
   // still acknowledge a taste / emotion / rhythm signal. Interests owns the
   // first echo (P5); later surfaces show only what is genuinely new, and
@@ -2116,7 +2137,14 @@ export function StudioV3() {
   const acknowledgementContext: AcknowledgementContext = {
     state: { feeling: state.feeling, interests: state.interests, rhythm: state.rhythm },
     refinementShown: Boolean(adaptiveQuestion),
+    // The read voices its themes in prose, so Logistics/reveal stay quiet
+    // about them. Only counts once the traveller has actually seen it.
+    directorsRead: {
+      shown: showDirectorsRead || directorsReadSeen === directorsRead.signature,
+      themes: directorsRead.themes,
+    },
   };
+
   const renderAcknowledgement = (surface: "refinement" | "logistics") => {
     const summary = acknowledgementSummaryFor(surface, acknowledgementContext);
     if (!summary) return null;
