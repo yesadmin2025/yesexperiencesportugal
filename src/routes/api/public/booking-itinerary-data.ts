@@ -3,9 +3,11 @@
  *
  * Serves exactly the same fields the itinerary PDF is built from, so the
  * online itinerary page at /itinerary mirrors the emailed PDF one-for-one.
- * Keyed by the guest's own Stripe checkout session id (long, unguessable).
- * Deliberately excludes contact PII (email, phone, address) — only the
- * designed day, the guest's first-party name and the paid total.
+ * Keyed by the guest's own opaque Stripe checkout session id, but access is
+ * granted only after the verified payment webhook has frozen the snapshot
+ * into the paid booking. The payload may include the guest's name, pickup and
+ * first-party notes, so the booking reference is treated as a private access
+ * capability rather than as proof of payment by itself.
  */
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -13,6 +15,7 @@ import {
   ITINERARY_FLEXIBILITY_NOTE,
   CONFIRMATION_SUFFICIENCY_NOTE,
 } from "@/lib/booking-snapshot-contract";
+import { loadPaidFrozenBookingSnapshot } from "@/lib/public-booking-access.server";
 
 type AnyRec = Record<string, unknown>;
 
@@ -37,18 +40,21 @@ export const Route = createFileRoute("/api/public/booking-itinerary-data")({
           return Response.json({ ok: false, error: "invalid_reference" }, { status: 400 });
         }
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { data: row } = await supabaseAdmin
-          .from("booking_snapshots")
-          .select("payload")
-          .eq("stripe_session_id", sessionId)
-          .maybeSingle();
-
-        const snapshot = (row?.payload ?? null) as AnyRec | null;
-        if (!snapshot || typeof snapshot !== "object") {
-          return Response.json({ ok: false, error: "not_found" }, { status: 404 });
+        const access = await loadPaidFrozenBookingSnapshot(sessionId);
+        if (!access.ok) {
+          return Response.json(
+            { ok: false, error: access.error },
+            {
+              status: access.status,
+              headers: {
+                "cache-control": "private, max-age=0, no-store",
+                "x-robots-tag": "noindex, nofollow",
+              },
+            },
+          );
         }
 
+        const snapshot = access.snapshot;
         const composition = (snapshot.composition ?? {}) as AnyRec;
         const pricing = (snapshot.pricing ?? {}) as AnyRec;
         const addOns = Array.isArray(snapshot.addOns) ? (snapshot.addOns as AnyRec[]) : [];
@@ -59,8 +65,8 @@ export const Route = createFileRoute("/api/public/booking-itinerary-data")({
           {
             ok: true,
             reference: sessionId,
-            // Non-PII: lets the itinerary map request the real Signature
-            // driving route instead of a straight dashed connector.
+            // Non-PII operational id: lets the itinerary map request the real
+            // Signature driving route instead of a straight dashed connector.
             tourId: str(snapshot.tourId, 80),
             experienceName: str(snapshot.experienceName) ?? str(snapshot.tourTitle),
             customerName: str(snapshot.customerName, 160),
