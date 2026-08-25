@@ -167,9 +167,11 @@ describe("P6 — determinism and purity", () => {
   });
 
   it("orders surfaces the way the flow does", () => {
+    // P7 inserted the Director's Read between refinement and Logistics.
     expect([...ACKNOWLEDGEMENT_SURFACE_ORDER]).toEqual([
       "interests",
       "refinement",
+      "directorsRead",
       "logistics",
       "reveal",
     ]);

@@ -119,6 +119,10 @@ test("Let YES decide carries the journey through to a composed day", async ({ pa
     }
 
     if (current === "logistics") {
+      // P7: a non-blocking Director's Read may precede the logistics moments.
+      const read = page.locator('[data-testid="studio-v3-directors-read-continue"]').first();
+      if (await read.isVisible().catch(() => false)) await read.click();
+
       // One phase, four quiet moments: when → where → who → review.
       const moment = () =>
         page.locator("[data-logistics-moment]").first().getAttribute("data-logistics-moment");

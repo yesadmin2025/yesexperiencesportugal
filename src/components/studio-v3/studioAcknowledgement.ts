@@ -27,6 +27,7 @@ import type { Feeling, Interest, Rhythm } from "./types";
 export const ACKNOWLEDGEMENT_SURFACE_ORDER = [
   "interests",
   "refinement",
+  "directorsRead",
   "logistics",
   "reveal",
 ] as const;
@@ -43,7 +44,17 @@ export interface AcknowledgementContext {
   readonly state: AcknowledgementState;
   /** True only when the adaptive refinement question is actually rendered. */
   readonly refinementShown: boolean;
+  /**
+   * P7 Director's Read. When the beat is rendered it voices the themes it
+   * lists here, so every later surface must treat them as already heard.
+   * Absent / `shown: false` leaves the P6 behaviour exactly as it was.
+   */
+  readonly directorsRead?: {
+    readonly shown: boolean;
+    readonly themes: ReadonlyArray<StudioSemanticTheme>;
+  };
 }
+
 
 /** Interests that the Feeling phase can inherit, and the theme each stands for. */
 const INHERITED_INTEREST_THEME: Readonly<Partial<Record<Interest, StudioSemanticTheme>>> = {
@@ -150,6 +161,13 @@ export function themesAcknowledgedBefore(
       if (theme) seen.add(theme);
     }
   }
+  if (surface === "directorsRead") return seen;
+
+  // P7: the Director's Read speaks its themes in prose. Whatever it voiced is
+  // already heard, so Logistics and the reveal must not repeat it.
+  if (ctx.directorsRead?.shown) {
+    for (const theme of ctx.directorsRead.themes) seen.add(theme);
+  }
   if (surface === "logistics") return seen;
 
   // Reveal: whatever Logistics showed also counts as already heard.
@@ -166,7 +184,7 @@ export function themesAcknowledgedBefore(
  * nothing rather than a placeholder.
  */
 export function acknowledgementSignalsFor(
-  surface: Exclude<AcknowledgementSurface, "interests" | "reveal">,
+  surface: Exclude<AcknowledgementSurface, "interests" | "directorsRead" | "reveal">,
   ctx: AcknowledgementContext,
 ): string[] {
   const seen = themesAcknowledgedBefore(surface, ctx);
@@ -182,7 +200,7 @@ export interface AcknowledgementSummary {
 
 /** Null whenever the surface has nothing new to acknowledge. */
 export function acknowledgementSummaryFor(
-  surface: Exclude<AcknowledgementSurface, "interests" | "reveal">,
+  surface: Exclude<AcknowledgementSurface, "interests" | "directorsRead" | "reveal">,
   ctx: AcknowledgementContext,
 ): AcknowledgementSummary | null {
   const signals = acknowledgementSignalsFor(surface, ctx);

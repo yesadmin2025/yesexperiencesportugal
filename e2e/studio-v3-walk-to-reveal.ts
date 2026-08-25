@@ -361,7 +361,23 @@ async function logisticsMoment(page: Page): Promise<string | null> {
     .catch(() => null);
 }
 
+/**
+ * P7 "Director's Read": a non-blocking interpretation beat rendered in the
+ * logistics slot before the logistics moments appear. One tap continues.
+ */
+async function dismissDirectorsRead(page: Page): Promise<boolean> {
+  const cta = page.locator('[data-testid="studio-v3-directors-read-continue"]').first();
+  if (!(await cta.isVisible().catch(() => false))) return false;
+  await cta.click({ timeout: 4_000 }).catch(() => undefined);
+  await page
+    .locator('[data-testid="studio-v3-directors-read"]')
+    .waitFor({ state: "detached", timeout: 8_000 })
+    .catch(() => undefined);
+  return true;
+}
+
 async function advanceThroughLogistics(page: Page): Promise<boolean> {
+  await dismissDirectorsRead(page);
   const cta = page.locator('button[data-phase-cta="continue"]').first();
   for (let step = 0; step < 6; step++) {
     const moment = await logisticsMoment(page);
