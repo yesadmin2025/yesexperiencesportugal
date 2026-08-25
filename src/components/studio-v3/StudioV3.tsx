@@ -2096,10 +2096,13 @@ export function StudioV3() {
       : [];
 
   // Phase 4: filter first (hide irrelevant options entirely), then prioritise.
-  const orderedInterests = prioritiseOptions(
-    filterInterests(INTERESTS, state.companions),
-    interestsPriority,
+  // P5: then prune themes already stated in Feeling — derived, never mutated.
+  const inheritedIntent = deriveInheritedIntent(state);
+  const orderedInterests = pruneInheritedInterests(
+    prioritiseOptions(filterInterests(INTERESTS, state.companions), interestsPriority),
+    inheritedIntent,
   );
+  const countableSelectedInterests = countableInterests(state.interests, inheritedIntent);
   const orderedRhythms = prioritiseOptions(RHYTHMS, rhythmPriority);
   const orderedInvestment = prioritiseOptions(INVESTMENT_TIERS, investmentPriority);
   const orderedConsiderations = prioritiseOptions(
