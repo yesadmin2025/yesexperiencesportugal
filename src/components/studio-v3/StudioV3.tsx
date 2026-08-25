@@ -1356,13 +1356,14 @@ export function StudioV3() {
         return;
       }
       // Atmosphere beats are mood-setters — keep them brief so the next
-      // question is reachable quickly. Map/interest/rhythm beats stay a
-      // touch longer to register the cinematic moment. Capped to avoid the
-      // overlay ever lingering and blocking taps on the next phase.
+      // question is reachable quickly. The ceiling is the authority here:
+      // legacy handler holdMs values stay untouched and the cap makes the
+      // whole question chain feel fast (P4).
       const rawHold = r.holdMs ?? 2400;
       const ceiling =
-        r.kind === "map-beat" || r.kind === "interests" || r.kind === "rhythm" ? 3800 : 2400;
+        r.kind === "map-beat" ? 2600 : r.kind === "interests" || r.kind === "rhythm" ? 2200 : 1400;
       const hold = Math.min(rawHold, ceiling);
+
       setExiting(true);
       window.setTimeout(() => {
         setState((s) => {
@@ -4687,10 +4688,13 @@ function ReactionOverlay({
   // lingers past the moment the underlying phase becomes the focus.
   const rawHold = reaction.holdMs ?? 2400;
   const ceiling =
-    reaction.kind === "map-beat" || reaction.kind === "interests" || reaction.kind === "rhythm"
-      ? 3800
-      : 2400;
+    reaction.kind === "map-beat"
+      ? 2600
+      : reaction.kind === "interests" || reaction.kind === "rhythm"
+        ? 2200
+        : 1400;
   const hold = Math.min(rawHold, ceiling);
+
 
   // Surrender pointer events shortly after the beat lands so taps fall through
   // to the next phase already mounted underneath. This fixes the mobile bug
