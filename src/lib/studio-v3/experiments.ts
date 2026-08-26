@@ -1,0 +1,82 @@
+import {
+  getFunnelSessionId,
+  getFunnelVariant,
+  setFunnelVariant,
+  trackStep,
+} from "@/lib/studio-v3-funnel";
+import { STUDIO_FUNNEL_STEPS } from "@/lib/studio-v3/funnelMetrics";
+
+export const P14_YOUR_DAY_CTA_EXPERIMENT = "p14_your_day_cta_v1";
+export const P14_YOUR_DAY_CTA_TEST_ID = "studio-v3-handoff-primary";
+export const P14_YOUR_DAY_CTA_CLICK_EVENT = "p14_your_day_cta_click";
+
+export const P14_YOUR_DAY_CTA_VARIANTS = {
+  control: "p14_your_day_cta_control",
+  story: "p14_your_day_cta_story",
+} as const;
+
+export type P14YourDayCtaVariant =
+  (typeof P14_YOUR_DAY_CTA_VARIANTS)[keyof typeof P14_YOUR_DAY_CTA_VARIANTS];
+
+const CTA_COPY: Record<P14YourDayCtaVariant, string> = {
+  [P14_YOUR_DAY_CTA_VARIANTS.control]: "Continue to guest details",
+  [P14_YOUR_DAY_CTA_VARIANTS.story]: "Make this my day in Portugal",
+};
+
+export function isP14YourDayCtaVariant(value: string | null): value is P14YourDayCtaVariant {
+  return (
+    value === P14_YOUR_DAY_CTA_VARIANTS.control || value === P14_YOUR_DAY_CTA_VARIANTS.story
+  );
+}
+
+/** Small deterministic FNV-1a hash. No identity or PII enters assignment. */
+export function stableExperimentHash(value: string): number {
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return hash >>> 0;
+}
+
+export function assignP14YourDayCtaVariant(sessionId: string): P14YourDayCtaVariant {
+  return stableExperimentHash(`${P14_YOUR_DAY_CTA_EXPERIMENT}:${sessionId}`) % 2 === 0
+    ? P14_YOUR_DAY_CTA_VARIANTS.control
+    : P14_YOUR_DAY_CTA_VARIANTS.story;
+}
+
+/**
+ * Enrol once per funnel session. An existing P14 arm wins. An unrelated
+ * experiment is never overwritten, which keeps the single variant slot safe
+ * until a future multi-experiment registry is deliberately introduced.
+ */
+export function ensureP14YourDayCtaVariant(): P14YourDayCtaVariant | null {
+  const existing = getFunnelVariant();
+  if (isP14YourDayCtaVariant(existing)) return existing;
+  if (existing) return null;
+
+  const assigned = assignP14YourDayCtaVariant(getFunnelSessionId());
+  setFunnelVariant(assigned);
+  return assigned;
+}
+
+export function p14YourDayCtaLabelForVariant(variant: string | null): string {
+  return isP14YourDayCtaVariant(variant) ? CTA_COPY[variant] : CTA_COPY[P14_YOUR_DAY_CTA_VARIANTS.control];
+}
+
+export function currentP14YourDayCtaLabel(): string {
+  return p14YourDayCtaLabelForVariant(ensureP14YourDayCtaVariant());
+}
+
+export function trackP14YourDayCtaClick(): void {
+  const stepIndex = STUDIO_FUNNEL_STEPS.findIndex((step) => step.key === "storyboard");
+  trackStep({
+    stepNumber: stepIndex >= 0 ? stepIndex + 1 : 0,
+    stepKey: "storyboard",
+    event: "milestone",
+    value: {
+      studio_event: P14_YOUR_DAY_CTA_CLICK_EVENT,
+      experiment_id: P14_YOUR_DAY_CTA_EXPERIMENT,
+    },
+  });
+}
