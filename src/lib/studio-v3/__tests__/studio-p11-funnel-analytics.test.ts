@@ -4,10 +4,7 @@ import {
   STUDIO_FUNNEL_STEPS,
   type StudioFunnelMetricRow,
 } from "../funnelMetrics";
-import {
-  enrichStudioFunnelTiming,
-  resetStudioFunnelTimingForTests,
-} from "../funnelTiming";
+import { enrichStudioFunnelTiming, resetStudioFunnelTimingForTests } from "../funnelTiming";
 import { stripStudioAnalyticsPii } from "@/lib/studio-analytics";
 
 function row(
