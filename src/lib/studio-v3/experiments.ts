@@ -18,9 +18,7 @@ const CTA_COPY: Record<P14YourDayCtaVariant, string> = {
 };
 
 export function isP14YourDayCtaVariant(value: string | null): value is P14YourDayCtaVariant {
-  return (
-    value === P14_YOUR_DAY_CTA_VARIANTS.control || value === P14_YOUR_DAY_CTA_VARIANTS.story
-  );
+  return value === P14_YOUR_DAY_CTA_VARIANTS.control || value === P14_YOUR_DAY_CTA_VARIANTS.story;
 }
 
 /** Small deterministic FNV-1a hash. No identity or PII enters assignment. */
