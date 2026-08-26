@@ -1,4 +1,4 @@
-export type FunnelTimedEvent = "enter" | "continue" | "back" | "abandon";
+export type FunnelTimedEvent = "enter" | "continue" | "back" | "abandon" | "secure_confirm";
 
 export interface FunnelTimingInput {
   sessionId: string;
@@ -23,7 +23,7 @@ function timerKey(sessionId: string, stepKey: string): string {
  * An explicit `ms_on_step` supplied by a caller always wins.
  *
  * `abandon` deliberately keeps the timer alive because visibility can return;
- * `continue` and `back` end the current visit to the phase.
+ * `continue`, `back` and terminal `secure_confirm` end the current visit.
  */
 export function enrichStudioFunnelTiming({
   sessionId,
@@ -39,7 +39,12 @@ export function enrichStudioFunnelTiming({
     return value;
   }
 
-  if (event !== "continue" && event !== "back" && event !== "abandon") {
+  if (
+    event !== "continue" &&
+    event !== "back" &&
+    event !== "abandon" &&
+    event !== "secure_confirm"
+  ) {
     return value;
   }
 
@@ -52,7 +57,9 @@ export function enrichStudioFunnelTiming({
         ? Math.max(0, now - started)
         : null;
 
-  if (event === "continue" || event === "back") enteredAt.delete(key);
+  if (event === "continue" || event === "back" || event === "secure_confirm") {
+    enteredAt.delete(key);
+  }
 
   return elapsed == null ? value : { ...value, ms_on_step: elapsed };
 }
