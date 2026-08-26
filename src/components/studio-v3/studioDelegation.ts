@@ -166,8 +166,75 @@ export function takeBackDelegatedDimension(
   };
 }
 
-export function delegationAcknowledgement(
+/**
+ * Recompute ONLY the taste dimensions YES still owns after the traveller
+ * changes an explicit anchor such as Feeling or Who. Delegation remains
+ * active: trust is persistent, while the delegated outputs stay fresh.
+ *
+ * Explicit taste dimensions are preserved verbatim. Operational facts are
+ * copied untouched because the patch is deliberately limited to the two
+ * explicit taste anchors that are allowed to reshape delegated defaults.
+ */
+export function recomputeActiveDelegationAfterExplicitChange(
+  state: StudioV3State,
+  patch: Partial<Pick<StudioV3State, "feeling" | "companions">>,
+): StudioV3State {
+  const patched: StudioV3State = { ...state, ...patch };
+  if (!isDelegationActive(state)) return patched;
 
+  const decided = new Set(state.decidedForMe ?? []);
+  const ownsInterests = decided.has("interests");
+  const ownsRhythm = decided.has("rhythm");
+  if (!ownsInterests && !ownsRhythm) {
+    return { ...patched, delegationMode: null };
+  }
+
+  let forward: StudioV3State = {
+    ...patched,
+    interests: ownsInterests ? [] : patched.interests,
+    rhythm: ownsRhythm ? null : patched.rhythm,
+    delegationMode: DELEGATION_MODE,
+  };
+  if (ownsInterests) {
+    forward = { ...forward, interests: decideInterests(forward) };
+  }
+  if (ownsRhythm) {
+    forward = { ...forward, rhythm: decideRhythm(forward) };
+  }
+  return forward;
+}
+
+/**
+ * Manual Interests edit transfers ownership of the VISIBLE interest set to
+ * the traveller. The supplied set is already the current UI set with the
+ * user's toggle applied, so we never erase the rest or immediately re-infer
+ * the item they just removed. If Rhythm is still delegated, recompute only
+ * Rhythm from these newly explicit interests.
+ */
+export function takeBackDelegatedInterests(
+  state: StudioV3State,
+  explicitInterests: StudioV3State["interests"],
+): StudioV3State {
+  const decided = state.decidedForMe ?? [];
+  if (!decided.includes("interests")) {
+    return { ...state, interests: [...explicitInterests] };
+  }
+
+  const remaining = decided.filter((k) => k !== "interests");
+  const rhythmRemains = remaining.includes("rhythm");
+  let forward: StudioV3State = {
+    ...state,
+    interests: [...explicitInterests],
+    decidedForMe: remaining,
+    delegationMode: rhythmRemains ? state.delegationMode : null,
+  };
+  if (rhythmRemains) {
+    forward = { ...forward, rhythm: decideRhythm(forward) };
+  }
+  return forward;
+}
+
+export function delegationAcknowledgement(
   delegated: ReadonlyArray<DelegatableDimension>,
 ): string {
   if (delegated.length === 0) return "We have enough to shape it.";

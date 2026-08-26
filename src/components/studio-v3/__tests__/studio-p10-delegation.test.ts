@@ -20,8 +20,10 @@ import {
   isDelegationActive,
   isDelegationEligible,
   isDelegationOffered,
+  recomputeActiveDelegationAfterExplicitChange,
   releaseDelegatedTaste,
   takeBackDelegatedDimension,
+  takeBackDelegatedInterests,
 } from "../studioDelegation";
 
 const read = (p: string) => readFileSync(resolve(process.cwd(), p), "utf8");
@@ -298,17 +300,18 @@ describe("P10 hardening · Feeling back-edit", () => {
     expect(forward.delegationMode).not.toBe("yes-designs");
   });
 
-  it("the handler computes next from the released forward state, not a stale snapshot", () => {
-    expect(STUDIO).toContain("const base = changed ? releaseDelegatedTaste(state) : state;");
+  it("the handler recomputes active delegation and routes from the same forward state", () => {
+    expect(STUDIO).toContain("recomputeActiveDelegationAfterExplicitChange(state, { feeling: id })");
     expect(STUDIO).toContain('const next = getNextPhase(forward, "feeling");');
     expect(STUDIO).not.toContain('getNextPhase({ ...state, feeling: id }, "feeling")');
   });
 });
 
 describe("P10 hardening · Companions back-edit", () => {
-  it("releases delegated taste before downstream guest inference", () => {
+  it("recomputes delegated taste before downstream guest inference", () => {
     expect(STUDIO).toContain("const changed = state.companions !== id;");
-    expect(STUDIO).toContain("const inferred = inferGuests(id, base.occasion, base.feeling);");
+    expect(STUDIO).toContain("recomputeActiveDelegationAfterExplicitChange(state, { companions: id })");
+    expect(STUDIO).toContain("const inferred = inferGuests(id, tasteBase.occasion, tasteBase.feeling);");
     expect(STUDIO).not.toContain("inferGuests(id, state.occasion, state.feeling)");
   });
 
@@ -397,5 +400,103 @@ describe("P10 hardening · Rhythm offer eligibility", () => {
     });
     expect(isDelegationOffered(manual, "rhythm")).toBe(true);
     expect(isDelegationOffered({ ...manual, rhythm: "slow" }, "rhythm")).toBe(false);
+  });
+});
+
+
+/* ---------------------------------------------------------------------------
+ * P10 persistence — trust persists across Back-edits of explicit anchors.
+ * ------------------------------------------------------------------------ */
+
+describe("P10 persistence · active delegation recomputes, it does not disappear", () => {
+  it("keeps mode and ownership while recomputing after Feeling changes", () => {
+    const delegated = applyDelegation(ready).state;
+    const recomputed = recomputeActiveDelegationAfterExplicitChange(delegated, {
+      feeling: "wine-food",
+    });
+    expect(recomputed.delegationMode).toBe("yes-designs");
+    expect(recomputed.decidedForMe).toEqual(delegated.decidedForMe);
+    expect(recomputed.interests).toContain("wine");
+    expect(recomputed.interests).not.toEqual(delegated.interests);
+    expect(recomputed.rhythm).not.toBeNull();
+    expect(isDelegationOffered(recomputed, "interests")).toBe(false);
+    expect(isDelegationOffered(recomputed, "rhythm")).toBe(false);
+  });
+
+  it("is deterministic for the same changed explicit anchor", () => {
+    const delegated = applyDelegation(ready).state;
+    const a = recomputeActiveDelegationAfterExplicitChange(delegated, { feeling: "wine-food" });
+    const b = recomputeActiveDelegationAfterExplicitChange(delegated, { feeling: "wine-food" });
+    expect(a.interests).toEqual(b.interests);
+    expect(a.rhythm).toBe(b.rhythm);
+    expect(a.decidedForMe).toEqual(b.decidedForMe);
+  });
+
+  it("keeps operational fields untouched when Who changes", () => {
+    const delegated = applyDelegation(
+      state({
+        ...ready,
+        dateMode: "exact",
+        dateExact: "2026-06-15",
+        pickup: "lisbon",
+        guests: 4,
+        adults: 2,
+        minorAges: [7, 9],
+        considerations: ["reduced-mobility"],
+        language: "en",
+      }),
+    ).state;
+    const recomputed = recomputeActiveDelegationAfterExplicitChange(delegated, {
+      companions: "family",
+    });
+    expect(recomputed.delegationMode).toBe("yes-designs");
+    expect(recomputed.decidedForMe).toEqual(delegated.decidedForMe);
+    expect(recomputed.dateMode).toBe("exact");
+    expect(recomputed.dateExact).toBe("2026-06-15");
+    expect(recomputed.pickup).toBe("lisbon");
+    expect(recomputed.guests).toBe(4);
+    expect(recomputed.adults).toBe(2);
+    expect(recomputed.minorAges).toEqual([7, 9]);
+    expect(recomputed.considerations).toEqual(["reduced-mobility"]);
+    expect(recomputed.language).toBe("en");
+  });
+
+  it("manual Interest edit takes only Interests back and recomputes delegated Rhythm", () => {
+    const delegated = applyDelegation(ready).state;
+    const visible = delegated.interests;
+    expect(visible.length).toBeGreaterThan(0);
+    const explicit = visible.slice(1);
+    const taken = takeBackDelegatedInterests(delegated, explicit);
+    expect(taken.interests).toEqual(explicit);
+    expect(taken.decidedForMe).not.toContain("interests");
+    expect(taken.decidedForMe).toContain("rhythm");
+    expect(taken.delegationMode).toBe("yes-designs");
+
+    const expected = applyDelegation(
+      state({
+        ...taken,
+        interests: explicit,
+        rhythm: null,
+        delegationMode: null,
+        decidedForMe: [],
+      }),
+    ).state.rhythm;
+    expect(taken.rhythm).toBe(expected);
+  });
+
+  it("manual takeover of the last remaining delegated dimension ends delegation", () => {
+    const delegated = applyDelegation(ready).state;
+    const interestsExplicit = takeBackDelegatedInterests(delegated, delegated.interests);
+    expect(interestsExplicit.decidedForMe).toEqual(["rhythm"]);
+    expect(interestsExplicit.delegationMode).toBe("yes-designs");
+    const fullyExplicit = takeBackDelegatedDimension(interestsExplicit, "rhythm");
+    expect(fullyExplicit.decidedForMe).toEqual([]);
+    expect(fullyExplicit.delegationMode).toBeNull();
+  });
+
+  it("Studio handlers use persistent recomputation and visible-set takeover", () => {
+    expect(STUDIO).toContain("recomputeActiveDelegationAfterExplicitChange(state, { feeling: id })");
+    expect(STUDIO).toContain("recomputeActiveDelegationAfterExplicitChange(state, { companions: id })");
+    expect(STUDIO).toContain("takeBackDelegatedInterests(s, explicitInterests)");
   });
 });
