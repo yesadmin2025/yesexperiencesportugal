@@ -7,6 +7,7 @@ import {
   P14_YOUR_DAY_CTA_VARIANTS,
   assignP14YourDayCtaVariant,
   p14YourDayCtaLabelForVariant,
+  readStoredP14YourDayCtaVariant,
 } from "../experiments";
 import { getFunnelVariant } from "@/lib/studio-v3-funnel";
 import { computeStudioFunnelStats, type StudioFunnelMetricRow } from "../funnelMetrics";
@@ -68,6 +69,17 @@ describe("P14 · Your Day CTA experiment assignment", () => {
     expect(getFunnelVariant()).toBe(expected);
     expect(window.sessionStorage.getItem(VARIANT_KEY)).toBe(expected);
     expect(getFunnelVariant()).toBe(expected);
+  });
+
+  it("lets presentation read only P14 arms without creating or hijacking assignment", () => {
+    expect(readStoredP14YourDayCtaVariant()).toBeNull();
+
+    window.sessionStorage.setItem(VARIANT_KEY, P14_YOUR_DAY_CTA_VARIANTS.story);
+    expect(readStoredP14YourDayCtaVariant()).toBe(P14_YOUR_DAY_CTA_VARIANTS.story);
+
+    window.sessionStorage.setItem(VARIANT_KEY, "future_experiment_control");
+    expect(readStoredP14YourDayCtaVariant()).toBeNull();
+    expect(window.sessionStorage.getItem(VARIANT_KEY)).toBe("future_experiment_control");
   });
 
   it("keeps the two CTA promises exact and non-transactional", () => {
@@ -132,7 +144,7 @@ describe("P14 · experiment conversion truth", () => {
 });
 
 describe("P14 · presentation isolation", () => {
-  it("targets only the unified Your Day handoff and lazy-loads the Studio runtime", () => {
+  it("targets only the unified Your Day handoff, assigns before child render and lazy-loads click analytics", () => {
     const ctaSource = fs.readFileSync(
       path.join(process.cwd(), "src/components/ui/CtaButton.tsx"),
       "utf8",
@@ -141,11 +153,17 @@ describe("P14 · presentation isolation", () => {
       path.join(process.cwd(), "src/components/studio-v3/StudioV3.tsx"),
       "utf8",
     );
+    const pageSource = fs.readFileSync(
+      path.join(process.cwd(), "src/components/studio-v3/LivingAtlasStudioPage.tsx"),
+      "utf8",
+    );
 
     expect(P14_YOUR_DAY_CTA_TEST_ID).toBe("studio-v3-handoff-primary");
     expect(ctaSource).toContain('testId === P14_YOUR_DAY_CTA_TEST_ID');
+    expect(ctaSource).toContain("readStoredP14YourDayCtaVariant()");
     expect(ctaSource).toContain('import("@/lib/studio-v3/experimentRuntime")');
-    expect(ctaSource).not.toContain('from "@/lib/studio-v3/experimentRuntime"');
+    expect(ctaSource).not.toContain("currentP14YourDayCtaLabel");
+    expect(pageSource).toContain("getFunnelVariant();");
     expect(storySource).toContain('data-testid="studio-v3-handoff-primary"');
     expect(storySource).toContain('onSecure={() => advance("guestDetails")}');
   });
