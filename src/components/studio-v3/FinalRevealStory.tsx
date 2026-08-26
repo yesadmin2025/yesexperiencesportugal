@@ -120,6 +120,14 @@ export interface FinalRevealStoryProps {
    * listing every stop in the wider Signature catalog.
    */
   readonly composedStops?: ReadonlyArray<{ label: string; story: string }>;
+  /**
+   * P8 — "inline" renders the story as one chapter of the unified
+   * "Your Day" surface: headline, facts, signals and narrative only. The
+   * surface owns the canonical price card, inclusions and the single
+   * primary CTA, so those are not repeated here. "standalone" keeps the
+   * original full-page reveal (saved-link deep entry, legacy tests).
+   */
+  readonly variant?: "standalone" | "inline";
 }
 
 function formatEur(n: number | null): string {
@@ -157,7 +165,9 @@ export function FinalRevealStory({
   className,
   testId,
   composedStops,
+  variant = "standalone",
 }: FinalRevealStoryProps) {
+  const inline = variant === "inline";
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your private Portugal day";
 
@@ -166,9 +176,9 @@ export function FinalRevealStory({
   // paint above the fold on mobile — regression fix for the "reveal renders
   // blank on 393×588" audit finding (walker landed scrolled below the letter).
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || inline) return;
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }, []);
+  }, [inline]);
 
   // Editorial timeline — always reflect the traveller's kept set.
   // Priority: refined stops (editedRoutePoints) → composed stops (what
@@ -458,7 +468,7 @@ export function FinalRevealStory({
 
       {/* The investment is a decision-critical fact, so it stays visible.
           Detailed inclusions remain progressive disclosure below. */}
-      {totalEur != null ? (
+      {!inline && totalEur != null ? (
         <div
           data-testid="studio-v3-final-reveal-investment"
           className="mt-7 px-4 py-4 text-center rounded-[4px]"
@@ -524,7 +534,9 @@ export function FinalRevealStory({
       ) : null}
 
 
-      {/* Collapsible inclusions + price */}
+      {/* Collapsible inclusions + price — owned by the unified surface's
+          price card in `inline` mode, so the story never repeats it. */}
+      {inline ? null : (
       <details
         className="mt-8 border-t border-b py-4"
         style={{ borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)" }}
@@ -637,12 +649,18 @@ export function FinalRevealStory({
           </div>
         </div>
       </details>
+      )}
 
       {/* CTAs — primary continue + ghost save (P1 audit #5: Save moves
           from right-aligned gold underline to a peer ghost pill beside
           the primary so both share the pill family and the primary
-          voice reads first). Back stays tertiary. */}
+          voice reads first). Back stays tertiary.
+          P8: in `inline` mode the unified "Your Day" surface owns the
+          single primary CTA, save and back chrome, so the story renders
+          none of its own. */}
+      {inline ? null : (
       <div className="mt-8 flex flex-col items-stretch gap-3">
+
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             type="button"
@@ -681,6 +699,7 @@ export function FinalRevealStory({
           ← {CTA_BACK_TO_REFINE}
         </button>
       </div>
+      )}
     </section>
   );
 }

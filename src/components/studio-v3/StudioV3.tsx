@@ -32,7 +32,6 @@ import { DirectorsRead } from "./DirectorsRead";
 import { InvestmentTierPicker } from "./InvestmentTierPicker";
 import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
-import { MapAwakens } from "./MapAwakens";
 import { MobileBeatReveal } from "./MobileBeatReveal";
 import type { StudioV3BeatId } from "./StudioV3ProgressStepper";
 import { LivingJourneyPanel } from "./LivingJourneyPanel";
@@ -242,6 +241,7 @@ import {
   type StudioV3Phase,
   type StudioV3State,
 } from "./types";
+import { canonicalStudioPhase } from "./studioPhaseCanonical";
 import {
   countableInterests,
   deriveInheritedIntent,
@@ -775,9 +775,12 @@ function readPersistedStudioState(): StudioV3State | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<StudioV3State> & { phase?: StudioV3Phase };
     if (!parsed || typeof parsed !== "object") return null;
+    // P8: legacy `map` / `confirmation` sessions canonicalize to the unified
+    // "Your Day" surface in the SAME commit as the restore — no flicker, no
+    // redirect loop, no second render pass.
     const phase: StudioV3Phase =
       parsed.phase && PHASE_ORDER.includes(parsed.phase) && !NON_RESTORABLE_PHASES.has(parsed.phase)
-        ? parsed.phase
+        ? canonicalStudioPhase(parsed.phase)
         : "intro";
     if (phase === "intro") return null;
     return { ...INITIAL_STATE, ...parsed, phase };
@@ -2586,6 +2589,43 @@ export function StudioV3() {
                 date_mode: forward.dateMode,
                 guests: committedTotal,
               });
+              // P8: the standalone `map` beat no longer runs, so the Signature
+              // identity it used to commit (tourId + journeyTitle) is resolved
+              // here, from the same authority (`resolveStudioV3Route`). Pricing
+              // and every downstream resolution stay byte-identical.
+              const composedRoute = resolveStudioV3Route({
+                feeling: forward.feeling,
+                companions: forward.companions,
+                rhythm: forward.rhythm,
+                interests: forward.interests,
+                pickup: forward.pickup,
+                occasion: forward.occasion,
+                considerations: forward.considerations,
+                investment: forward.investment,
+                destinationIntent: forward.destinationIntent,
+                dateExact: forward.dateExact,
+                refinement: forward.refinement,
+              });
+              const composedTour = composedRoute.skeletonTourKey
+                ? findTour(composedRoute.skeletonTourKey)
+                : null;
+              const composedTourId = composedTour?.id ?? forward.tourId ?? null;
+              const composedTitle =
+                forward.journeyTitle ??
+                composeJourneyTitle({
+                  feeling: forward.feeling,
+                  companions: forward.companions,
+                  occasion: forward.occasion,
+                  pickup: forward.pickup,
+                  interests: forward.interests,
+                  rhythm: forward.rhythm,
+                  region: composedTour?.region ?? null,
+                });
+              setState((s) => ({
+                ...s,
+                tourId: composedTourId ?? s.tourId,
+                journeyTitle: composedTitle,
+              }));
               // No blocking interpretation overlay: the acknowledgement already
               // happened inline, so we move straight into the composition.
               window.setTimeout(() => advance(getNextPhase(forward, "logistics")), 60);
@@ -2906,36 +2946,9 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
-      {state.phase === "map" && state.feeling && state.companions && state.rhythm ? (
-        <MapAwakens
-          feeling={state.feeling}
-          companions={state.companions}
-          rhythm={state.rhythm}
-          interests={state.interests}
-          pickup={state.pickup}
-          investment={state.investment}
-          destinationIntent={state.destinationIntent}
-          dateExact={state.dateExact}
-          rerollCount={state.rerollCount ?? 0}
-          studioState={state}
-          onReshape={() => setState((s) => ({ ...s, rerollCount: (s.rerollCount ?? 0) + 1 }))}
-          onBack={() => back("rhythm")}
-          onContinue={(tourId) => {
-            const tour = findTour(tourId);
-            const title = composeJourneyTitle({
-              feeling: state.feeling,
-              companions: state.companions,
-              occasion: state.occasion,
-              pickup: state.pickup,
-              interests: state.interests,
-              rhythm: state.rhythm,
-              region: tour?.region ?? null,
-            });
-            setState((s) => ({ ...s, tourId, journeyTitle: title }));
-            advance("storyboard");
-          }}
-        />
-      ) : null}
+      {/* P8: the standalone cinematic `map` phase is retired — its route
+          reveal and moments now open the unified "Your Day" surface below.
+          The id stays hydratable via `canonicalStudioPhase`. */}
 
       {state.phase === "storyboard" ? (
         <>
@@ -2949,8 +2962,8 @@ export function StudioV3() {
             <StoryboardHandoff
               state={state}
               onStateChange={setState}
-              onBack={() => back("map")}
-              onSecure={() => advance("confirmation")}
+              onBack={() => back("logistics")}
+              onSecure={() => advance("guestDetails")}
               onRefine={() => openLeadSheet("refine")}
               pending={checkoutPending}
               tourPriceTiers={tourPriceTiers}
@@ -2960,38 +2973,36 @@ export function StudioV3() {
               resolvedTotalEur={resolvedJourney.totalEur}
               resolvedBaseTotalEur={resolvedJourney.baseTotalEur}
               resolvedAddOnsTotalEur={resolvedJourney.addOnsPartyTotalEur}
+              storySlot={
+                <FinalRevealStory
+                  variant="inline"
+                  state={state}
+                  selectedAddOns={resolvedJourney.addOns}
+                  composedStops={resolvedJourney.stops}
+                  perPaxEur={resolvedJourney.perPaxEur}
+                  totalEur={resolvedJourney.totalEur}
+                  journeyLines={resolvedJourney.journeyLines}
+                  saving={savingSignature}
+                  onContinue={() => advance("guestDetails")}
+                  onSaveSignature={handleSaveSignature}
+                  onBack={() => back("logistics")}
+                />
+              }
+              footerSlot={
+                <OtherDirections
+                  directions={otherDirections}
+                  testId="studio-v3-your-day-other-directions"
+                  className="mx-auto w-full max-w-[62ch] px-5"
+                />
+              }
             />
           </PhaseShell>
         </>
       ) : null}
 
-      {state.phase === "confirmation" ? (
-        <PhaseShell accent="ivory" exiting={exiting}>
-          {/* Living Atlas intelligence — grounded reasons for this direction. */}
-          <WhyRouteWorks
-            reasons={livingAtlasReasons}
-            tourId={state.tourId ?? null}
-            testId="studio-v3-living-atlas-reasons"
-            className="mx-auto w-full max-w-[62ch] px-5"
-          />
-          <OtherDirections
-            directions={otherDirections}
-            className="mx-auto w-full max-w-[62ch] px-5"
-          />
-          <FinalRevealStory
-            state={state}
-            selectedAddOns={resolvedJourney.addOns}
-            composedStops={resolvedJourney.stops}
-            perPaxEur={resolvedJourney.perPaxEur}
-            totalEur={resolvedJourney.totalEur}
-            journeyLines={resolvedJourney.journeyLines}
-            saving={savingSignature}
-            onContinue={() => advance("guestDetails")}
-            onSaveSignature={handleSaveSignature}
-            onBack={() => back("storyboard")}
-          />
-        </PhaseShell>
-      ) : null}
+      {/* P8: the standalone `confirmation` reveal is retired — its story,
+          facts and reasons are chapters of the unified "Your Day" surface.
+          The id stays hydratable via `canonicalStudioPhase`. */}
 
       {state.phase === "guestDetails" ? (
         <PhaseShell accent="ivory" exiting={exiting}>
@@ -3034,7 +3045,7 @@ export function StudioV3() {
               phone: state.guestDraft?.phone ?? null,
               guideNotes: state.guestDraft?.guideNotes ?? null,
             }}
-            onBack={() => back("confirmation")}
+            onBack={() => back("storyboard")}
             onStorySubmit={async (email: string) => {
               try {
                 const snapshot = buildSignatureStorySnapshot(state, {
@@ -3522,6 +3533,8 @@ export function StoryboardHandoff({
   resolvedTotalEur = null,
   resolvedBaseTotalEur = null,
   resolvedAddOnsTotalEur = null,
+  storySlot = null,
+  footerSlot = null,
 }: {
   state: StudioV3State;
   onStateChange: Dispatch<SetStateAction<StudioV3State>>;
@@ -3536,6 +3549,10 @@ export function StoryboardHandoff({
   resolvedTotalEur?: number | null;
   resolvedBaseTotalEur?: number | null;
   resolvedAddOnsTotalEur?: number | null;
+  /** P8 — the editorial story chapter of the unified "Your Day" surface. */
+  storySlot?: React.ReactNode;
+  /** P8 — quiet secondary footer (other directions). */
+  footerSlot?: React.ReactNode;
 }) {
   const pickupCity = pickupCityLabel(state.pickup);
 
@@ -4293,8 +4310,14 @@ export function StoryboardHandoff({
           </div>
         ) : null}
 
-        {/* Daypart timeline, story-of-day intentionally removed on Refine —
-            this is a decision page, not the cinematic reveal. */}
+        {/* ---------- 3. The story of the day (P8 unified surface) ----------
+            One lightweight editorial chapter, directly after the ordered
+            moments, before any control. Never repeats Director's Read. */}
+        {storySlot ? (
+          <div data-testid="studio-v3-your-day-story" className="mx-auto mt-8 max-w-[560px]">
+            {storySlot}
+          </div>
+        ) : null}
 
         {/* Phase C: composer rationale is now merged inline into each stop row
             below (no separate panel). Flag still gates the inline rendering. */}
@@ -4306,11 +4329,6 @@ export function StoryboardHandoff({
           reasons={resolved.livingAtlasReasons ?? []}
           testId="studio-v3-travel-file-reasons"
           className="mx-auto mt-8 max-w-[520px]"
-        />
-        <OtherDirections
-          directions={resolved.livingAtlasAlternatives ?? []}
-          testId="studio-v3-travel-file-other-directions"
-          className="mx-auto max-w-[520px]"
         />
 
         {/* ---------- Stops list (editable) ---------- */}
@@ -4764,15 +4782,18 @@ export function StoryboardHandoff({
             variant="primary"
             size="md"
             className="w-full max-w-[380px]"
-            aria-label="See my signature story"
+            aria-label="Continue to guest details"
             data-testid="studio-v3-handoff-primary"
           >
-            See my signature story
+            Continue to guest details
           </CtaButton>
         )}
 
         <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
       </div>
+
+      {/* ---------- Quiet secondary footer — other directions ---------- */}
+      {footerSlot ? <div className="mt-12">{footerSlot}</div> : null}
     </div>
   );
 }

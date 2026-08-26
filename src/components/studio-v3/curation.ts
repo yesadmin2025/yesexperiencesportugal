@@ -2533,6 +2533,13 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
     return false;
   }
 
+  // P8 — the reveal is ONE unified "Your Day" surface hosted on the
+  // canonical `storyboard` phase. `map` and `confirmation` remain in the
+  // phase union/order for hydration of older saved states, but they are
+  // never navigated to any more (see `studioPhaseCanonical.ts`).
+  if (phase === "map" || phase === "confirmation") return false;
+
+
   // Studio reform (2026-08): the investment tier is no longer ASKED. Money
   // framing before desire framing was the single largest conversion leak in
   // the funnel. The tier stays a soft scoring signal (see
