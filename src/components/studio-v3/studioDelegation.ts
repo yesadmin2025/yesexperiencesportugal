@@ -130,7 +130,31 @@ export function releaseDelegatedTaste(state: StudioV3State): StudioV3State {
 }
 
 /** One short, human acknowledgement. Never a second Director's Read. */
+/**
+ * The traveller takes one delegated dimension back by answering it
+ * themselves. Their explicit value is preserved; only the delegated MARK is
+ * removed. Delegation mode survives ONLY while another taste dimension is
+ * still owned by YES — once nothing is delegated, the Studio is fully
+ * traveller-answered again and the adaptive refinement returns to its normal
+ * relevance rules.
+ */
+export function takeBackDelegatedDimension(
+  state: StudioV3State,
+  dimension: DelegatableDimension,
+): StudioV3State {
+  const decided = state.decidedForMe ?? [];
+  if (!decided.includes(dimension)) return state;
+  const remaining = decided.filter((k) => k !== dimension);
+  const tasteRemains = remaining.some((k) => k === "interests" || k === "rhythm");
+  return {
+    ...state,
+    decidedForMe: remaining,
+    delegationMode: tasteRemains ? state.delegationMode : null,
+  };
+}
+
 export function delegationAcknowledgement(
+
   delegated: ReadonlyArray<DelegatableDimension>,
 ): string {
   if (delegated.length === 0) return "We have enough to shape it.";
