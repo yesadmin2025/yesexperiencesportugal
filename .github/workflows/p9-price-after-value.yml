@@ -1,0 +1,101 @@
+name: P9 Price After Value
+
+on:
+  push:
+    branches:
+      - p9-price-after-value
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  apply-test-commit:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout P9 branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: p9-price-after-value
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Apply deterministic P9 patch
+        run: node scripts/p9-price-after-value.mjs
+
+      - name: Scope gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Changed after patch:"
+          git diff --name-only
+          if git diff --name-only | grep -E '(^src/data/signatureTourPricing|^src/lib/checkout/|stripe|supabase|travel-file|src/generated/brand-audit|\.env|package(-lock)?\.json|bun\.lock)' ; then
+            echo "Forbidden P9 scope drift detected"
+            exit 1
+          fi
+
+      - name: Diff hygiene
+        run: git diff --check
+
+      - name: Focused P9 contract
+        run: bunx vitest run src/components/studio-v3/__tests__/studio-p9-price-after-value.test.tsx
+
+      - name: P5-P8 regression focus
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(find src/components/studio-v3/__tests__ -maxdepth 1 -type f \( -name '*p5*' -o -name '*p6*' -o -name '*p7*' -o -name '*p8*' \) | sort)
+          if [ "${#files[@]}" -gt 0 ]; then
+            printf 'Regression files:\n%s\n' "${files[@]}"
+            bunx vitest run "${files[@]}"
+          fi
+
+      - name: Full Studio V3 suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          bunx vitest run src/components/studio-v3/__tests__ src/lib/studio-v3
+
+      - name: Typecheck
+        run: bunx tsgo --noEmit
+
+      - name: Final scope verification against P8 checkpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=9dde0ac0095788686c88bde891d00fcdd34fb31b
+          git diff --name-only "$BASE"...HEAD > /tmp/committed_before.txt
+          git diff --name-only >> /tmp/working.txt
+          cat /tmp/committed_before.txt /tmp/working.txt | sort -u > /tmp/all_changed.txt
+          echo "All P9 branch paths:"
+          cat /tmp/all_changed.txt
+          if grep -E '(^src/data/signatureTourPricing|^src/lib/checkout/|stripe|supabase|travel-file|src/generated/brand-audit|\.env)' /tmp/all_changed.txt ; then
+            echo "Forbidden P9 scope drift detected"
+            exit 1
+          fi
+
+      - name: Commit validated P9 production changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            src/components/studio-v3/StudioV3.tsx \
+            src/components/studio-v3/ComposerMap.tsx \
+            src/components/studio-v3/LivingJourneyPanel.tsx \
+            src/components/studio-v3/SignaturePriceCard.tsx
+          git diff --cached --stat
+          git commit -m "P9 Price After Value"
+          git push origin HEAD:p9-price-after-value
