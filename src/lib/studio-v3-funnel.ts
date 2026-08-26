@@ -10,6 +10,7 @@
 //   continue     — moved to next step (value: { ms_on_step })
 //   back         — moved to previous step (value: { ms_on_step })
 //   abandon      — left the page mid-step (value: { ms_on_step })
+//   milestone    — named Studio product event (value: { studio_event, ... })
 //   reshape      — tapped "Reshape day"
 //   tab_switch   — configurator tab change (value: { tab })
 //   addon_toggle — add-on selected/removed (value: { addon_id, on })
@@ -29,6 +30,7 @@ export type StudioFunnelEvent =
   | "continue"
   | "back"
   | "abandon"
+  | "milestone"
   | "reshape"
   | "tab_switch"
   | "addon_toggle"
