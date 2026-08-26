@@ -51,7 +51,7 @@ describe("card-only checkout", () => {
   it("only reports success from the Stripe embedded onComplete callback", () => {
     // No fabricated success path: onPaymentComplete is reachable solely from
     // the provider callback.
-    const completions = checkoutSummary.match(/onPaymentComplete\?\(/g) ?? [];
+    const completions = checkoutSummary.match(/onPaymentComplete\?\.\(/g) ?? [];
     expect(completions).toHaveLength(1);
     expect(checkoutSummary).toContain("onComplete: () => {");
   });
