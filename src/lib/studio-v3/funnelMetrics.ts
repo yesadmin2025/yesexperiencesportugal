@@ -53,9 +53,13 @@ export interface StudioFunnelVariantStat {
   variant: string;
   sessions: number;
   yourDayReached: number;
+  handoffClicked: number;
+  guestDetailsReached: number;
   checkoutReached: number;
   confirmed: number;
   yourDayRate: number;
+  handoffRate: number;
+  guestDetailsRate: number;
   checkoutRate: number;
   confirmedRate: number;
 }
@@ -154,6 +158,7 @@ export function computeStudioFunnelStats(
   }
 
   const yourDaySessions = sessionSetForStep(rows, "storyboard");
+  const handoffClickedSessions = sessionSetForStudioEvent(rows, "p14_your_day_cta_click");
   const guestDetailsSessions = sessionSetForStep(rows, "guestDetails");
   const checkoutSessions = sessionSetForStep(rows, "checkoutSummary");
   const confirmedSessions = new Set(
@@ -194,15 +199,21 @@ export function computeStudioFunnelStats(
   const variants = Array.from(variantSessions.entries())
     .map(([variant, sessions]) => {
       const yourDayReached = intersectionSize(sessions, yourDaySessions);
+      const handoffClicked = intersectionSize(sessions, handoffClickedSessions);
+      const guestDetailsReached = intersectionSize(sessions, guestDetailsSessions);
       const checkoutReached = intersectionSize(sessions, checkoutSessions);
       const confirmed = intersectionSize(sessions, confirmedSessions);
       return {
         variant,
         sessions: sessions.size,
         yourDayReached,
+        handoffClicked,
+        guestDetailsReached,
         checkoutReached,
         confirmed,
         yourDayRate: rate(yourDayReached, sessions.size),
+        handoffRate: rate(handoffClicked, yourDayReached),
+        guestDetailsRate: rate(guestDetailsReached, yourDayReached),
         checkoutRate: rate(checkoutReached, sessions.size),
         confirmedRate: rate(confirmed, sessions.size),
       };
