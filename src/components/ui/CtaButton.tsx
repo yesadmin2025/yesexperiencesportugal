@@ -3,10 +3,6 @@ import { ArrowRight, Loader2 } from "lucide-react";
 import { Link, type LinkProps } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { P14_YOUR_DAY_CTA_TEST_ID } from "@/lib/studio-v3/experiments";
-import {
-  currentP14YourDayCtaLabel,
-  trackP14YourDayCtaClick,
-} from "@/lib/studio-v3/experimentRuntime";
 
 /**
  * CtaButton — site-wide primary / ghost CTA, with the canonical arrow
@@ -174,9 +170,17 @@ export function CtaButton(props: CtaButtonProps) {
 
   React.useEffect(() => {
     if (!isP14YourDayTarget) return;
-    // Deliberately resolve after mount: server markup stays on the control
-    // wording, while the browser session already has a stable funnel arm.
-    setP14Label(currentP14YourDayCtaLabel());
+    let cancelled = false;
+    // Runtime funnel code is loaded only for the single Studio experiment CTA;
+    // the site-wide button component does not pull analytics/Supabase eagerly.
+    void import("@/lib/studio-v3/experimentRuntime")
+      .then(({ currentP14YourDayCtaLabel }) => {
+        if (!cancelled) setP14Label(currentP14YourDayCtaLabel());
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
   }, [isP14YourDayTarget]);
 
   const isHairline = variant === "hairline";
@@ -336,7 +340,11 @@ export function CtaButton(props: CtaButtonProps) {
       {...rest}
       {...experimentAttrs}
       onClick={(event) => {
-        if (isP14YourDayTarget) trackP14YourDayCtaClick();
+        if (isP14YourDayTarget) {
+          void import("@/lib/studio-v3/experimentRuntime")
+            .then(({ trackP14YourDayCtaClick }) => trackP14YourDayCtaClick())
+            .catch(() => undefined);
+        }
         onClick?.(event);
       }}
     >
