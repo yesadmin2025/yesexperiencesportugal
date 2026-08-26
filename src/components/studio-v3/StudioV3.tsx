@@ -3261,8 +3261,10 @@ function RevealRouteMap({
   skeletonTour,
   statePickup,
   revealedStops,
+  showRoute = true,
 }: {
   editedStops: ReadonlyArray<{ label: string }>;
+  showRoute?: boolean;
   resolved: {
     routePoints: ReadonlyArray<{ label: string; lat?: number | null; lng?: number | null }>;
   };
@@ -3291,6 +3293,7 @@ function RevealRouteMap({
         activeCount={revealedStops}
         originLabel={originLabelResolved}
         aspectRatio="16 / 11"
+        showRoute={showRoute}
         legMinutes={legMinutes}
         ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
       />
