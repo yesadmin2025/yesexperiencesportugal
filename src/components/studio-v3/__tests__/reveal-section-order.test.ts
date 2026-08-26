@@ -30,11 +30,15 @@ const REVEAL_SRC = readFileSync(
 // stops editor, DNA, price and add-ons under `studio-v3-signature-card`.
 // Only the durable outer anchors are locked; card-internal sections are
 // asserted in their own component tests (StopsEditor / SignatureDNA / etc).
+// The route surface is asserted as `studio-v3-unified-route` — NOT as a map.
+// A truthful day may legitimately render as pins OR as the timeline fallback
+// when a moment has no approved coordinate, so this contract must not demand
+// geography that may not exist.
 const EXPECTED_ORDER = [
   "studio-v3-reveal",
   "studio-v3-signature-hero",
   "studio-v3-signature-card",
-  "studio-v3-reveal-map",
+  "studio-v3-unified-route",
   "studio-v3-stops-editor",
 ];
 
@@ -66,15 +70,15 @@ describe("Studio V3 reveal — section order & hierarchy", () => {
     }
   });
 
-  it("map renders below (or inside) the signature hero block", () => {
-    const heroIdx = indexOfTestId(REVEAL_SRC, "studio-v3-signature-hero");
-    const mapIdx = indexOfTestId(REVEAL_SRC, "studio-v3-reveal-map");
-    expect(mapIdx).toBeGreaterThan(heroIdx);
+  it("route surface renders below the signature hero block", () => {
+    expect(indexOfTestId(REVEAL_SRC, "studio-v3-unified-route")).toBeGreaterThan(
+      indexOfTestId(REVEAL_SRC, "studio-v3-signature-hero"),
+    );
   });
 
-  it("stops editor renders after the reveal map so users see the route before edits", () => {
+  it("stops editor renders after the route so users see the day before edits", () => {
     expect(indexOfTestId(REVEAL_SRC, "studio-v3-stops-editor")).toBeGreaterThan(
-      indexOfTestId(REVEAL_SRC, "studio-v3-reveal-map"),
+      indexOfTestId(REVEAL_SRC, "studio-v3-unified-route"),
     );
   });
 });
