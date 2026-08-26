@@ -55,6 +55,7 @@ const VIA_FUNNEL: Partial<Record<StudioAnalyticsEvent, StudioFunnelEvent>> = {
 /** Direct GA4 names for Studio events that have a dedicated catalogue name. */
 const DIRECT_GA: Partial<Record<StudioAnalyticsEvent, YesAnalyticsEvent>> = {
   studio_enter: "studio_started",
+  price_expanded: "studio_price_expanded",
   guest_details_completed: "studio_checkout_started",
 };
 
