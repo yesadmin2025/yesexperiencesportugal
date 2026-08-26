@@ -14,6 +14,12 @@ import { useEffect, useState, type FormEvent } from "react";
 import { ArrowRight } from "lucide-react";
 
 import atmCoastal from "@/assets/studio/atm-coastal-cinematic.jpg";
+import {
+  getFunnelSessionId,
+  setFunnelVariant,
+  trackStep,
+} from "@/lib/studio-v3-funnel";
+import { p14IntroCtaExperimentForSession } from "@/lib/studio-v3/experiments";
 
 interface Props {
   /** Called once the intro completes. */
@@ -31,12 +37,27 @@ function sanitiseName(raw: string): string {
 export function StudioV3Intro({ onComplete }: Props) {
   const [step, setStep] = useState<IntroStep>("welcome");
   const [value, setValue] = useState("");
+  const [ctaExperiment] = useState(() =>
+    p14IntroCtaExperimentForSession(getFunnelSessionId()),
+  );
 
-  // Privacy-safe: fires once when the emotional opening paints. No payload.
+  // Privacy-safe: fires once when the emotional opening paints. P14 also
+  // makes Invitation a real funnel step, with the assigned arm attached to
+  // the anonymous session before any downstream Studio event can fire.
   useEffect(() => {
     if (step !== "welcome") return;
+    setFunnelVariant(ctaExperiment.analyticsVariant);
+    trackStep({
+      stepNumber: 0,
+      stepKey: "intro",
+      event: "enter",
+      value: {
+        experiment_id: ctaExperiment.id,
+        experiment_arm: ctaExperiment.arm,
+      },
+    });
     void import("@/lib/analytics-ga4").then((m) => m.gaStudioOpeningViewed());
-  }, [step]);
+  }, [step, ctaExperiment]);
 
   const cleanName = (): string | null => {
     const clean = sanitiseName(value);
@@ -126,11 +147,26 @@ export function StudioV3Intro({ onComplete }: Props) {
             <button
               type="button"
               onClick={() => {
+                // Re-assert the same arm immediately before the click event so
+                // even privacy-mode storage failures cannot mislabel the action.
+                setFunnelVariant(ctaExperiment.analyticsVariant);
+                trackStep({
+                  stepNumber: 0,
+                  stepKey: "intro",
+                  event: "continue",
+                  value: {
+                    experiment_id: ctaExperiment.id,
+                    experiment_arm: ctaExperiment.arm,
+                    cta: "intro-begin",
+                  },
+                });
                 void import("@/lib/analytics-ga4").then((m) => m.gaStudioStart());
                 setStep("name");
               }}
               data-phase-cta="intro-begin"
               data-testid="studio-v3-intro-begin"
+              data-experiment={ctaExperiment.id}
+              data-experiment-arm={ctaExperiment.arm}
               className="mt-10 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-7 py-3 text-[11px] uppercase font-bold transition-colors hover:opacity-90"
               style={{
                 background: "var(--ivory)",
@@ -138,7 +174,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                 letterSpacing: "0.24em",
               }}
             >
-              Begin
+              {ctaExperiment.label}
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.4} aria-hidden />
             </button>
           </div>
