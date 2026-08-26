@@ -110,15 +110,20 @@ test("a restored composition reaches Guest Details and checkout exactly once", a
 
   await restoreStudioState(page, COMPOSED_STATE);
   const root = page.locator('[data-testid="studio-v3-root"]').first();
-  await expect(root).toHaveAttribute("data-phase", "confirmation");
+  // P12 deliberately resumes checkout-adjacent legacy phases at the unified
+  // Your Day surface so a returning traveller regains context before details.
+  await expect(root).toHaveAttribute("data-phase", "storyboard");
   await expectNoInternalCopy(page);
 
-  // Prove the restored composition survives another real refresh.
+  // Prove the restored composition survives another real refresh and remains
+  // anchored at Your Day rather than jumping back into confirmation/checkout.
   await page.reload();
   await waitForStudioHydration(page);
-  await expect(root).toHaveAttribute("data-phase", "confirmation");
+  await expect(root).toHaveAttribute("data-phase", "storyboard");
 
-  await page.getByTestId("studio-v3-final-reveal-continue").click();
+  // P8 retired the standalone reveal CTA inside the main funnel. The unified
+  // Your Day surface owns the canonical handoff into Guest Details.
+  await page.getByTestId("studio-v3-handoff-primary").click();
   await expect(root).toHaveAttribute("data-phase", "guestDetails", { timeout: 10_000 });
   const submit = page.getByTestId("studio-v3-guest-details-submit");
   await expect(submit).toBeVisible({ timeout: 10_000 });
