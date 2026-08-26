@@ -43,7 +43,13 @@ const EXPECTED_ORDER = [
 ];
 
 function indexOfTestId(src: string, id: string): number {
-  return src.indexOf(`data-testid="${id}"`);
+  // Anchors are declared either directly (`data-testid=`) or forwarded to a
+  // presentational child through an explicit `testId=` prop.
+  const direct = src.indexOf(`data-testid="${id}"`);
+  const forwarded = src.indexOf(`testId="${id}"`);
+  if (direct === -1) return forwarded;
+  if (forwarded === -1) return direct;
+  return Math.min(direct, forwarded);
 }
 
 describe("Studio V3 reveal — section order & hierarchy", () => {
