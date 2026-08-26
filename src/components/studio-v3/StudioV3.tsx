@@ -2839,9 +2839,13 @@ export function StudioV3() {
           ) : (
             <FooterHint>You can change pace at any stop.</FooterHint>
           )}
-          {state.rhythm ? null : (
-            <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("rhythm")} />
-          )}
+          {isDelegationOffered(state, "rhythm") ? (
+            <StudioDelegationCard
+              onDelegate={() => onDelegateToYes("rhythm")}
+              acknowledgement={delegationNote}
+            />
+          ) : null}
+
         </PhaseShell>
       ) : null}
 
