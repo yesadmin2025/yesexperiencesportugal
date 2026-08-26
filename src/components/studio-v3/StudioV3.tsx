@@ -281,6 +281,7 @@ import {
   isDelegationEligible,
   isDelegationOffered,
   releaseDelegatedTaste,
+  takeBackDelegatedDimension,
 } from "./studioDelegation";
 import { StudioDelegationCard } from "./StudioDelegationCard";
 
@@ -1458,13 +1459,19 @@ export function StudioV3() {
   const onFeeling = (id: Feeling) => {
     const label = getOptionLabel(FEELINGS, id);
     // P10 — changing an explicit answer must never leave a stale delegated
-    // taste behind. Release what YES decided so delegation recomputes from
-    // the new explicit state when it is applied again.
-    if (state.feeling !== id) {
+    // taste behind. Release what YES decided FIRST, then build ONE forward
+    // state from that released base, so the phase we advance to is resolved
+    // from the same truth we commit (a cleared interests/rhythm must be asked
+    // again, never skipped because the pre-release snapshot still had them).
+    const changed = state.feeling !== id;
+    const base = changed ? releaseDelegatedTaste(state) : state;
+    const forward: StudioV3State = { ...base, feeling: id };
+    if (changed) {
       setDelegationNote(null);
-      setState((s) => (s.feeling === id ? s : releaseDelegatedTaste(s)));
+      setState(() => base);
     }
-    const next = getNextPhase({ ...state, feeling: id }, "feeling");
+    const next = getNextPhase(forward, "feeling");
+
 
     pickAndAdvance("feeling", id, next, {
       kind: "feeling",
@@ -1502,27 +1509,35 @@ export function StudioV3() {
   const onCompanions = (id: Companions) => {
     // Compute forward state (with possible guest inference) so we can both
     // commit it and resolve the next phase adaptively.
-    const inferred = inferGuests(id, state.occasion, state.feeling);
+    // P10 — companions feeds deterministic rhythm inference, so a CHANGED
+    // explicit answer releases delegated taste first; guest inference then
+    // runs on that released base. Operational facts (date, pickup, guests,
+    // considerations, language) are untouched by the release.
+    const changed = state.companions !== id;
+    const base = changed ? releaseDelegatedTaste(state) : state;
+    if (changed) setDelegationNote(null);
+    const inferred = inferGuests(id, base.occasion, base.feeling);
     let forward: StudioV3State;
-    if (inferred != null && (state.guestsInferred || state.guests == null)) {
+    if (inferred != null && (base.guestsInferred || base.guests == null)) {
       forward = {
-        ...state,
+        ...base,
         companions: id,
         guests: inferred,
         guestsInferred: true,
         guestsPrivateEvent: inferred >= 11,
       };
-    } else if (inferred == null && state.guestsInferred) {
+    } else if (inferred == null && base.guestsInferred) {
       forward = {
-        ...state,
+        ...base,
         companions: id,
         guests: null,
         guestsInferred: false,
         guestsPrivateEvent: false,
       };
     } else {
-      forward = { ...state, companions: id };
+      forward = { ...base, companions: id };
     }
+
     setState(() => forward);
     const next = getNextPhase(forward, "who");
     window.setTimeout(() => {
@@ -1764,7 +1779,18 @@ export function StudioV3() {
             ? "More discovery, still shaped into one realistic day."
             : "A fuller arc, carefully held.";
     const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
-    const next = getNextPhase({ ...state, rhythm: id }, "rhythm");
+    // P10 — an explicitly chosen rhythm is no longer delegated. Take the mark
+    // back (explicit interests untouched) and resolve the next phase from the
+    // SAME forward state we commit, so refinement returns to its normal
+    // relevance once nothing is delegated any more.
+    const base = takeBackDelegatedDimension(state, "rhythm");
+    const forward: StudioV3State = { ...base, rhythm: id };
+    if (base !== state) {
+      setDelegationNote(null);
+      setState(() => base);
+    }
+    const next = getNextPhase(forward, "rhythm");
+
 
     if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
       const resolved = resolveStudioV3Route({

@@ -21,6 +21,7 @@ import {
   isDelegationEligible,
   isDelegationOffered,
   releaseDelegatedTaste,
+  takeBackDelegatedDimension,
 } from "../studioDelegation";
 
 const read = (p: string) => readFileSync(resolve(process.cwd(), p), "utf8");
@@ -270,5 +271,131 @@ describe("P10 · single visible delegation affordance", () => {
   it("delegation flows through the existing advance path, not a new resolver", () => {
     expect(STUDIO).toContain("applyDelegation(state)");
     expect(STUDIO).toContain('advance(getNextPhase(forward, "rhythm"))');
+  });
+});
+
+/* ---------------------------------------------------------------------------
+ * P10 hardening — back/change safety. Editing an explicit answer must never
+ * leave a stale delegated taste, and answering a delegated dimension
+ * yourself must hand it back.
+ * ------------------------------------------------------------------------ */
+
+describe("P10 hardening · Feeling back-edit", () => {
+  const delegated = applyDelegation(ready).state;
+
+  it("releases delegated taste and does not skip the taste path", () => {
+    const base = releaseDelegatedTaste(delegated);
+    const forward: StudioV3State = { ...base, feeling: "wine-food" };
+    expect(forward.delegationMode).toBeNull();
+    expect(forward.interests).toEqual([]);
+    expect(forward.rhythm).toBeNull();
+    expect(forward.decidedForMe).not.toContain("interests");
+    expect(forward.decidedForMe).not.toContain("rhythm");
+    // The taste path must still be reachable from the released forward state.
+    expect(isPhaseRelevant("interests", forward)).toBe(true);
+    expect(isPhaseRelevant("rhythm", forward)).toBe(true);
+    // Refinement is no longer skipped by a stale delegation flag.
+    expect(forward.delegationMode).not.toBe("yes-designs");
+  });
+
+  it("the handler computes next from the released forward state, not a stale snapshot", () => {
+    expect(STUDIO).toContain("const base = changed ? releaseDelegatedTaste(state) : state;");
+    expect(STUDIO).toContain('const next = getNextPhase(forward, "feeling");');
+    expect(STUDIO).not.toContain('getNextPhase({ ...state, feeling: id }, "feeling")');
+  });
+});
+
+describe("P10 hardening · Companions back-edit", () => {
+  it("releases delegated taste before downstream guest inference", () => {
+    expect(STUDIO).toContain("const changed = state.companions !== id;");
+    expect(STUDIO).toContain("const inferred = inferGuests(id, base.occasion, base.feeling);");
+    expect(STUDIO).not.toContain("inferGuests(id, state.occasion, state.feeling)");
+  });
+
+  it("preserves operational facts while clearing delegated taste", () => {
+    const operational = applyDelegation(
+      state({
+        ...ready,
+        dateMode: "exact",
+        dateExact: "2026-06-15",
+        pickup: "lisbon",
+        considerations: ["reduced-mobility"],
+        language: "en",
+      }),
+    ).state;
+    const released = releaseDelegatedTaste(operational);
+    expect(released.dateMode).toBe("exact");
+    expect(released.dateExact).toBe("2026-06-15");
+    expect(released.pickup).toBe("lisbon");
+    expect(released.considerations).toEqual(["reduced-mobility"]);
+    expect(released.language).toBe("en");
+    expect(released.delegationMode).toBeNull();
+  });
+});
+
+describe("P10 hardening · explicit rhythm after delegation", () => {
+  it("keeps delegation active when delegated Interests still remain", () => {
+    const both = applyDelegation(ready).state;
+    const taken = takeBackDelegatedDimension({ ...both, rhythm: "slow" }, "rhythm");
+    expect(taken.decidedForMe).toEqual(["interests"]);
+    expect(taken.delegationMode).toBe("yes-designs");
+    expect(taken.rhythm).toBe("slow");
+    expect(taken.interests).toEqual(both.interests);
+    // Interests are still owned by YES, so refinement stays skipped.
+    expect(isPhaseRelevant("refinement", taken)).toBe(false);
+  });
+
+  it("clears delegation entirely when only Rhythm was delegated", () => {
+    const manualInterests = state({
+      phase: "rhythm",
+      feeling: "coastal",
+      companions: "couple",
+      interests: ["heritage", "photography"],
+    });
+    const delegatedRhythm = applyDelegation(manualInterests).state;
+    expect(delegatedRhythm.decidedForMe).toEqual(["rhythm"]);
+    const taken = takeBackDelegatedDimension({ ...delegatedRhythm, rhythm: "slow" }, "rhythm");
+    expect(taken.decidedForMe).toEqual([]);
+    expect(taken.delegationMode).toBeNull();
+    expect(taken.interests).toEqual(["heritage", "photography"]);
+    // Refinement now follows normal, non-delegated relevance.
+    expect(isPhaseRelevant("refinement", taken)).toBe(
+      isPhaseRelevant("refinement", { ...taken, delegationMode: null }),
+    );
+  });
+
+  it("is a no-op for a rhythm the traveller always owned", () => {
+    const explicit = state({ ...ready, rhythm: "full" });
+    expect(takeBackDelegatedDimension(explicit, "rhythm")).toBe(explicit);
+  });
+
+  it("onRhythm commits and routes from the same corrected forward state", () => {
+    expect(STUDIO).toContain('takeBackDelegatedDimension(state, "rhythm")');
+    expect(STUDIO).toContain('const next = getNextPhase(forward, "rhythm");');
+    expect(STUDIO).not.toContain('getNextPhase({ ...state, rhythm: id }, "rhythm")');
+  });
+});
+
+describe("P10 hardening · Rhythm offer eligibility", () => {
+  it("is not offered with empty interests", () => {
+    expect(isDelegationOffered(state({ ...ready, phase: "rhythm" }), "rhythm")).toBe(false);
+  });
+
+  it("is not offered when interests were delegated", () => {
+    const delegated = applyDelegation(ready).state;
+    expect(
+      isDelegationOffered({ ...delegated, delegationMode: null, rhythm: null }, "rhythm"),
+    ).toBe(false);
+  });
+
+  it("is offered once for explicit interests with no rhythm yet", () => {
+    const manual = state({
+      phase: "rhythm",
+      feeling: "coastal",
+      companions: "couple",
+      interests: ["heritage"],
+    });
+    expect(isDelegationOffered(manual, "rhythm")).toBe(true);
+    expect(isDelegationOffered({ ...manual, rhythm: "slow" }, "rhythm")).toBe(false);
   });
 });
