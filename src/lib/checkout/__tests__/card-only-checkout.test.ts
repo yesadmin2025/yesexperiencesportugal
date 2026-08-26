@@ -45,7 +45,7 @@ describe("card-only checkout", () => {
       "affirm",
       "customer_balance",
     ]) {
-      expect(edgeFn.toLowerCase()).not.toContain(rail);
+      expect(code).not.toContain(rail);
     }
   });
 
