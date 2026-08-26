@@ -1778,7 +1778,18 @@ export function StudioV3() {
             ? "More discovery, still shaped into one realistic day."
             : "A fuller arc, carefully held.";
     const pickupLabel = getOptionLabel(PICKUPS, state.pickup);
-    const next = getNextPhase({ ...state, rhythm: id }, "rhythm");
+    // P10 — an explicitly chosen rhythm is no longer delegated. Take the mark
+    // back (explicit interests untouched) and resolve the next phase from the
+    // SAME forward state we commit, so refinement returns to its normal
+    // relevance once nothing is delegated any more.
+    const base = takeBackDelegatedDimension(state, "rhythm");
+    const forward: StudioV3State = { ...base, rhythm: id };
+    if (base !== state) {
+      setDelegationNote(null);
+      setState(() => base);
+    }
+    const next = getNextPhase(forward, "rhythm");
+
 
     if (STUDIO_V3_MAP_BEATS_ENABLED && state.feeling && state.companions) {
       const resolved = resolveStudioV3Route({
