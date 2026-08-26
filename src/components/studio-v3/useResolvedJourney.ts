@@ -19,6 +19,11 @@ import {
 } from "@/data/signatureTourPricing";
 import type { TourPriceTiersMap } from "@/hooks/use-tour-price-tiers";
 import { resolveStudioV3Route } from "./curation";
+import {
+  resolveAuthoritativeRouteStops,
+  studioRouteShapingInput,
+} from "./studioRouteAuthority";
+
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 
