@@ -146,7 +146,11 @@ export function installStudioSessionPrivacyGuard(): void {
     // Returning all the way to Intro is an explicit reset in the normal Studio
     // flow. Keep a local saved-link viewer isolated for the same reason as the
     // setItem branch above.
-    if (this === window.sessionStorage && key === STUDIO_V3_SESSION_KEY && !isSavedSignatureView()) {
+    if (
+      this === window.sessionStorage &&
+      key === STUDIO_V3_SESSION_KEY &&
+      !isSavedSignatureView()
+    ) {
       try {
         originalRemoveItem.call(window.localStorage, STUDIO_V3_DURABLE_DRAFT_KEY);
       } catch {
