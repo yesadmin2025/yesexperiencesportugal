@@ -154,7 +154,7 @@ describe("P10 · operational facts are never delegated", () => {
       minorAges: [7, 9],
       guestsPrivateEvent: true,
       guestsInferred: true,
-      considerations: ["mobility"],
+      considerations: ["reduced-mobility"],
       language: "en",
     });
     const out = applyDelegation(operational).state;
@@ -171,7 +171,7 @@ describe("P10 · operational facts are never delegated", () => {
       expect(out[key]).toEqual(operational[key]);
     }
     expect(out.minorAges).toEqual([7, 9]);
-    expect(out.considerations).toEqual(["mobility"]);
+    expect(out.considerations).toEqual(["reduced-mobility"]);
   });
 
   it("does not mutate the input state", () => {
