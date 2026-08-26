@@ -4255,16 +4255,35 @@ export function StoryboardHandoff({
           boxShadow: "0 24px 60px -36px rgba(0,0,0,0.25)",
         }}
       >
-        {/* ---------- 2. Live route map ---------- */}
+        {/* ---------- 2. Truthful route surface (map OR timeline) ----------
+            P8 hardening: the unified Your Day only claims a map when every
+            kept moment holds a real, coherent coordinate. Otherwise the same
+            moments read as the editorial timeline. One map instance only, and
+            no driven route line unless real routed geometry exists. */}
         {editedStops.length > 0 ? (
-          <div data-testid="studio-v3-reveal-map" className="mt-8 mx-auto w-full max-w-[520px]">
-            <RevealRouteMap
-              editedStops={editedStops}
-              resolved={resolved}
-              skeletonTour={skeletonTour ?? null}
-              statePickup={state.pickup}
-              revealedStops={revealedStops}
-            />
+          <UnifiedYourDayRoute
+            moments={unifiedRouteMoments}
+            className="mt-8 mx-auto w-full max-w-[520px]"
+            mapSlot={
+              <div data-testid="studio-v3-reveal-map">
+                <RevealRouteMap
+                  editedStops={editedStops}
+                  resolved={resolved}
+                  skeletonTour={skeletonTour ?? null}
+                  statePickup={state.pickup}
+                  revealedStops={revealedStops}
+                  showRoute={false}
+                />
+              </div>
+            }
+          />
+        ) : null}
+
+        {editedStops.length > 0 ? (
+          <div className="mx-auto w-full max-w-[520px]">
+            {/* Numbered legend — full names live here so the map stays clean
+              and labels never overlap at 393px mobile. */}
+
 
             {/* Numbered legend — full names live here so the map stays clean
               and labels never overlap at 393px mobile. */}
