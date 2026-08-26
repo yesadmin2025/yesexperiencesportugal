@@ -20,6 +20,7 @@
 import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent, type YesAnalyticsEvent } from "@/lib/analytics-events";
+import { enrichStudioFunnelTiming } from "@/lib/studio-v3/funnelTiming";
 
 const SESSION_KEY = "studio-v3.funnel.session.v1";
 const VARIANT_KEY = "studio-v3.funnel.variant.v1";
@@ -139,15 +140,23 @@ function mirrorToGa(input: TrackInput): void {
 /** Fire one event. Never awaits, never throws. */
 export function trackStep(input: TrackInput): void {
   if (!isBrowser() || isTest()) return;
-  mirrorToGa(input);
   const session_id = getFunnelSessionId();
+  const value = enrichStudioFunnelTiming({
+    sessionId: session_id,
+    stepKey: input.stepKey,
+    event: input.event,
+    value: input.value,
+  });
+  const enrichedInput: TrackInput = { ...input, value };
+  mirrorToGa(enrichedInput);
+
   const variant = getFunnelVariant();
   const row = {
     session_id,
     step_number: input.stepNumber,
     step_key: input.stepKey,
     event: input.event,
-    value: (input.value ?? null) as never,
+    value: (Object.keys(value).length > 0 ? value : null) as never,
     variant,
     user_agent: window.navigator?.userAgent?.slice(0, 256) ?? null,
   };
@@ -171,12 +180,19 @@ function trackBeacon(input: TrackInput): void {
     trackStep(input);
     return;
   }
+  const session_id = getFunnelSessionId();
+  const value = enrichStudioFunnelTiming({
+    sessionId: session_id,
+    stepKey: input.stepKey,
+    event: input.event,
+    value: input.value,
+  });
   const row = {
-    session_id: getFunnelSessionId(),
+    session_id,
     step_number: input.stepNumber,
     step_key: input.stepKey,
     event: input.event,
-    value: input.value ?? null,
+    value: Object.keys(value).length > 0 ? value : null,
     variant: getFunnelVariant(),
     user_agent: window.navigator?.userAgent?.slice(0, 256) ?? null,
   };
