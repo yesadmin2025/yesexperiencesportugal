@@ -34,7 +34,6 @@ describe("card-only checkout", () => {
     expect(edgeFn).toMatch(/wallet_options:\s*\{\s*link:\s*\{\s*display:\s*"never"\s*\}\s*\}/);
   });
 
-
   it("never enables a non-card rail server-side", () => {
     // Comments may name the rails we deliberately exclude; only executable
     // code is scanned.
@@ -64,11 +63,13 @@ describe("card-only checkout", () => {
     }
   });
 
-  it("only reports success from the Stripe embedded onComplete callback", () => {
-    // No fabricated success path: onPaymentComplete is reachable solely from
-    // the provider callback.
-    const completions = checkoutSummary.match(/onPaymentComplete\?\.\(/g) ?? [];
-    expect(completions).toHaveLength(1);
-    expect(checkoutSummary).toContain("onComplete: () => {");
+  it("lets Stripe redirect completion with the real Checkout Session id", () => {
+    // Embedded Checkout defaults redirect_on_completion to `always`. The
+    // server-authored return_url carries Stripe's template variable, so Stripe
+    // substitutes the real session id before booking-confirmed verifies it.
+    expect(edgeFn).toContain("session_id={CHECKOUT_SESSION_ID}");
+    expect(edgeFn).not.toContain('redirect_on_completion: "never"');
+    expect(checkoutSummary).not.toContain("onComplete:");
+    expect(checkoutSummary).not.toContain("onPaymentComplete?.(");
   });
 });
