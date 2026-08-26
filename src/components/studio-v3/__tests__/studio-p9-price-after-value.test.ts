@@ -11,6 +11,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { isPhaseRelevant } from "../curation";
+import { INITIAL_STATE } from "../types";
 
 const read = (p: string) => readFileSync(resolve(process.cwd(), p), "utf8");
 
@@ -88,6 +89,6 @@ describe("P9 · canonical price boundary stays inside Your Day", () => {
 
 describe("P9 · investment is never an asked phase", () => {
   it("investment stays non-relevant in the modern path", () => {
-    expect(isPhaseRelevant("investment")).toBe(false);
+    expect(isPhaseRelevant("investment", INITIAL_STATE)).toBe(false);
   });
 });
