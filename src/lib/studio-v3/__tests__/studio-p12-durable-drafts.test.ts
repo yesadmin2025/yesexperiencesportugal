@@ -111,10 +111,7 @@ describe("P12 durable Studio draft privacy boundary", () => {
     const serialized = serializeDurableStudioDraft(JSON.stringify(SAFE_PROGRESS), NOW);
     expect(serialized).not.toBeNull();
 
-    const beforeExpiry = parseDurableStudioDraft(
-      serialized,
-      NOW + STUDIO_V3_DRAFT_MAX_AGE_MS - 1,
-    );
+    const beforeExpiry = parseDurableStudioDraft(serialized, NOW + STUDIO_V3_DRAFT_MAX_AGE_MS - 1);
     expect(beforeExpiry?.state.feeling).toBe("wine-food");
     expect(beforeExpiry?.state.phase).toBe("rhythm");
 
