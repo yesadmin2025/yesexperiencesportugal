@@ -3147,6 +3147,13 @@ export function selectReplacementCandidates(input: {
    * Defaults conservatively to the `wine` interest alone.
    */
   wineIntent?: boolean;
+  /**
+   * ISO yyyy-mm-dd of the day being composed. P8 hardening: candidates whose
+   * operational registry says they are closed on that date are removed here,
+   * so no post-curation replacement or extra moment can re-introduce a stop
+   * the traveller could not actually visit.
+   */
+  dateExact?: string | null;
 }): OptionalStop[] {
   const skeleton = input.skeletonTourId ? SKELETON_TO_CLUSTER[input.skeletonTourId] : undefined;
   if (!skeleton) return [];
@@ -3160,6 +3167,8 @@ export function selectReplacementCandidates(input: {
     if (stop.region !== skeleton.region) return false;
     if (stop.routeCluster !== skeleton.routeCluster) return false;
     if (!allowWinery && stop.type === "winery") return false;
+    // Operational truth — same rule curateJourney applies to the base pool.
+    if (isStopClosedOn(`${stop.name} ${stop.notes ?? ""}`, input.dateExact ?? null)) return false;
 
 
     // Tour-isolation gate — a candidate is eligible when AT LEAST ONE holds:
@@ -3227,6 +3236,8 @@ export function applyReplacementCandidates(
     considerations: ReadonlyArray<string>;
     /** Explicit wine intent — gates winery candidates. See studioWineIntent.ts. */
     wineIntent?: boolean;
+    /** ISO yyyy-mm-dd — keeps operationally closed candidates out. */
+    dateExact?: string | null;
   },
 ): ResolvedRoutePoint[] {
   const out = routePoints.map((p) => ({ ...p }));
@@ -3247,6 +3258,7 @@ export function applyReplacementCandidates(
     considerations: input.considerations,
     existingRoutePointLabels: out.map((p) => p.label),
     wineIntent: input.wineIntent,
+    dateExact: input.dateExact ?? null,
   });
   if (candidates.length === 0) return out;
 
@@ -3395,12 +3407,21 @@ export function applyExtraMoment(
     considerations: ReadonlyArray<string>;
     /** Explicit wine intent — gates winery candidates. See studioWineIntent.ts. */
     wineIntent?: boolean;
+    /** ISO yyyy-mm-dd — keeps operationally closed candidates out. */
+    dateExact?: string | null;
+    /**
+     * Upper bound for the resulting route length. Defaults to 4 (the compact
+     * Journey-Card projection); the FULL composed route passes its own length
+     * so a rich 5–6 moment day is never truncated to four.
+     */
+    maxPoints?: number;
   },
 ): ResolvedRoutePoint[] {
+  const maxPoints = Math.max(1, input.maxPoints ?? 4);
   const out = routePoints.map((p) => ({ ...p }));
   if (input.rhythm === "slow") return out;
   if (out.length === 0) return out;
-  if (out.length >= 4) return out;
+  if (out.length >= maxPoints) return out;
 
   const skeleton = input.skeletonTourId ? SKELETON_TO_CLUSTER[input.skeletonTourId] : undefined;
   if (!skeleton) return out;
@@ -3414,6 +3435,7 @@ export function applyExtraMoment(
     considerations: input.considerations,
     existingRoutePointLabels: out.map((p) => p.label),
     wineIntent: input.wineIntent,
+    dateExact: input.dateExact ?? null,
   });
   if (candidates.length === 0) return out;
 
@@ -3468,7 +3490,7 @@ export function applyExtraMoment(
 
   const next = [...out.slice(0, insertAt), inserted, ...out.slice(insertAt)];
   // Re-number indices to keep ResolvedRoutePoint contract.
-  return next.slice(0, 4).map((p, i) => ({ ...p, index: i }));
+  return next.slice(0, maxPoints).map((p, i) => ({ ...p, index: i }));
 }
 
 /* ---------------------------------------------------------------------------
@@ -3503,6 +3525,8 @@ export function applyMobilitySafety(
     considerations: ReadonlyArray<string>;
     /** Explicit wine intent — gates winery candidates. See studioWineIntent.ts. */
     wineIntent?: boolean;
+    /** ISO yyyy-mm-dd — keeps operationally closed candidates out. */
+    dateExact?: string | null;
   },
 ): ResolvedRoutePoint[] {
   const out = routePoints.map((p) => ({ ...p }));
@@ -3517,6 +3541,7 @@ export function applyMobilitySafety(
     considerations: input.considerations,
     existingRoutePointLabels: out.map((p) => p.label),
     wineIntent: input.wineIntent,
+    dateExact: input.dateExact ?? null,
   });
 
   const usedIds = new Set<string>();
