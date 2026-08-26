@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { trackEvent } from "@/lib/analytics-events";
+import { getFunnelVariant } from "@/lib/studio-v3-funnel";
 import { StudioV3 } from "@/components/studio-v3/StudioV3";
 import {
   clearStudioDraftPersistence,
@@ -28,6 +29,11 @@ export function LivingAtlasStudioPage() {
   // also restores a privacy-safe durable draft into that same session channel
   // before StudioV3 mounts, so there is no parallel hydration state machine.
   installStudioSessionPrivacyGuard();
+
+  // P14 assignment is session-scoped and deterministic. Resolve it before
+  // StudioV3 mounts so the experiment CTA never paints the control copy first
+  // and swaps text after an async analytics import.
+  getFunnelVariant();
 
   const [hydrated, setHydrated] = useState(false);
 
