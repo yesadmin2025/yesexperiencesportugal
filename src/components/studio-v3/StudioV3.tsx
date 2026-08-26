@@ -1457,7 +1457,15 @@ export function StudioV3() {
   // Considerations, Investment. The other steps get quiet auto-advance.
   const onFeeling = (id: Feeling) => {
     const label = getOptionLabel(FEELINGS, id);
+    // P10 — changing an explicit answer must never leave a stale delegated
+    // taste behind. Release what YES decided so delegation recomputes from
+    // the new explicit state when it is applied again.
+    if (state.feeling !== id) {
+      setDelegationNote(null);
+      setState((s) => (s.feeling === id ? s : releaseDelegatedTaste(s)));
+    }
     const next = getNextPhase({ ...state, feeling: id }, "feeling");
+
     pickAndAdvance("feeling", id, next, {
       kind: "feeling",
       eyebrow: "The feeling",
