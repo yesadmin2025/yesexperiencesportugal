@@ -92,31 +92,30 @@ async function advanceIntro(page: import("@playwright/test").Page) {
   await expect.poll(() => phase(page), { timeout: 15_000 }).not.toBe("intro");
 }
 
-test("Let YES decide carries the journey through to a composed day", async ({ page }) => {
+test("Delegation carries the journey through to a composed day", async ({ page }) => {
   await page.goto("/studio-v3");
   await advanceIntro(page);
 
-  // Feeling — hand it over.
+  // P10: Feeling is always answered personally — no delegation before the
+  // traveller has told us how the day should feel and who it is for.
   await expect.poll(() => phase(page), { timeout: 15_000 }).toBe("feeling");
-  const decide = page.getByRole("button", { name: /let yes decide/i }).first();
-  await expect(decide, "Let YES decide must be offered on feeling").toBeVisible();
-  await decide.click();
-
-  // The Studio must move on with a real answer, not sit on a missing value.
+  await expect(page.getByRole("button", { name: /let yes decide/i })).toHaveCount(0);
+  await page.locator("[data-option]").first().click();
   await expect.poll(() => phase(page), { timeout: 10_000 }).not.toBe("feeling");
 
-  // Walk the remaining choice phases, preferring "Let YES decide" whenever
-  // it is offered, otherwise the first option + Continue.
+  // Walk the remaining choice phases, taking the single concierge delegation
+  // moment as soon as it is offered, otherwise the first option + Continue.
   for (let i = 0; i < 20; i++) {
     const current = await phase(page);
     if (!current || current === "map" || current === "storyboard") break;
 
-    const yes = page.getByRole("button", { name: /let yes decide/i }).first();
-    if (await yes.isVisible().catch(() => false)) {
-      await yes.click();
-      await page.waitForTimeout(700);
+    const delegate = page.getByTestId("studio-v3-delegation-cta").first();
+    if (await delegate.isVisible().catch(() => false)) {
+      await delegate.click();
+      await page.waitForTimeout(900);
       continue;
     }
+
 
     if (current === "logistics") {
       // P7: a non-blocking Director's Read may precede the logistics moments.
