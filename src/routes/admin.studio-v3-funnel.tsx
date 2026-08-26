@@ -86,15 +86,15 @@ function StudioV3FunnelPage() {
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-[720px]">
             <p className="text-[10px] uppercase tracking-[0.26em] font-semibold text-[color:var(--gold)]">
-              Internal · Studio V3 · P11
+              Internal · Studio V3 · P11 + P14
             </p>
             <h1 className="mt-1 text-3xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
               Funnel intelligence
             </h1>
             <p className="mt-2 text-sm leading-6 text-[color:var(--charcoal)]/70">
               The live Studio journey from Invitation to confirmed payment. Director&apos;s Read,
-              delegation, refine actions and price engagement are measured as semantic milestones,
-              not fake form steps.
+              delegation, refine actions, price engagement and controlled CRO experiments are
+              measured as semantic milestones, not fake form steps.
               <Link
                 to="/admin/studio-v3-audit"
                 className="ml-2 underline underline-offset-4 text-[color:var(--teal)]"
@@ -278,18 +278,22 @@ function StudioV3FunnelPage() {
                 <h2 className="text-sm font-semibold uppercase tracking-[0.18em]">
                   Experiment variants
                 </h2>
-                <p className="mt-1 text-xs text-[color:var(--charcoal)]/55">
-                  P14-ready session conversion. “Unassigned” is the current default until an
-                  experiment calls setFunnelVariant().
+                <p className="mt-1 text-xs leading-5 text-[color:var(--charcoal)]/55">
+                  P14 Your Day CTA. Primary signal is Handoff / Your Day: the share of travellers
+                  who reached the composed day and tapped the experiment&apos;s final handoff CTA.
+                  Guest details / Your Day verifies the actual transition; Checkout and Confirmed
+                  remain downstream business outcomes.
                 </p>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[650px] text-sm">
+                <table className="w-full min-w-[940px] text-sm">
                   <thead className="bg-[color:var(--sand)]/40 text-left text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal)]/60">
                     <tr>
                       <th className="px-3 py-2">Variant</th>
                       <th className="px-3 py-2 text-right">Sessions</th>
                       <th className="px-3 py-2 text-right">Your Day</th>
+                      <th className="px-3 py-2 text-right">Handoff / Your Day</th>
+                      <th className="px-3 py-2 text-right">Guest details / Your Day</th>
                       <th className="px-3 py-2 text-right">Checkout</th>
                       <th className="px-3 py-2 text-right">Confirmed</th>
                     </tr>
@@ -305,6 +309,12 @@ function StudioV3FunnelPage() {
                         <td className="px-3 py-2 text-right tabular-nums">
                           {variant.yourDayReached} · {variant.yourDayRate}%
                         </td>
+                        <td className="px-3 py-2 text-right tabular-nums font-semibold text-[color:var(--teal)]">
+                          {variant.handoffClicked} · {variant.handoffRate}%
+                        </td>
+                        <td className="px-3 py-2 text-right tabular-nums">
+                          {variant.guestDetailsReached} · {variant.guestDetailsRate}%
+                        </td>
                         <td className="px-3 py-2 text-right tabular-nums">
                           {variant.checkoutReached} · {variant.checkoutRate}%
                         </td>
@@ -319,9 +329,10 @@ function StudioV3FunnelPage() {
             </section>
 
             <p className="text-xs leading-5 text-[color:var(--charcoal)]/50">
-              Showing up to 20,000 events. Funnel rows are session-deduped. Drop-off over 25% with
-              at least five reached sessions is highlighted. SELECT remains admin-only via Supabase
-              RLS. P11 semantic milestones strip PII before insertion.
+              Showing up to 20,000 events. Funnel and experiment rows are session-deduped. P14
+              handoff rate uses Your Day reach as its denominator; repeated clicks do not inflate
+              it. Drop-off over 25% with at least five reached sessions is highlighted. SELECT
+              remains admin-only via Supabase RLS; semantic milestones strip PII before insertion.
             </p>
           </>
         ) : null}
