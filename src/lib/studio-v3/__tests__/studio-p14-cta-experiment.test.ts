@@ -139,7 +139,11 @@ describe("P14 · experiment conversion truth", () => {
   it("returns zero instead of inventing a rate when a variant never reached Your Day", () => {
     const variant = P14_YOUR_DAY_CTA_VARIANTS.story;
     const stats = computeStudioFunnelStats([row("s1", "intro", "enter", variant)]);
-    expect(stats.variants[0]).toMatchObject({ yourDayReached: 0, handoffClicked: 0, handoffRate: 0 });
+    expect(stats.variants[0]).toMatchObject({
+      yourDayReached: 0,
+      handoffClicked: 0,
+      handoffRate: 0,
+    });
   });
 });
 
@@ -159,7 +163,7 @@ describe("P14 · presentation isolation", () => {
     );
 
     expect(P14_YOUR_DAY_CTA_TEST_ID).toBe("studio-v3-handoff-primary");
-    expect(ctaSource).toContain('testId === P14_YOUR_DAY_CTA_TEST_ID');
+    expect(ctaSource).toContain("testId === P14_YOUR_DAY_CTA_TEST_ID");
     expect(ctaSource).toContain("readStoredP14YourDayCtaVariant()");
     expect(ctaSource).toContain('import("@/lib/studio-v3/experimentRuntime")');
     expect(ctaSource).not.toContain("currentP14YourDayCtaLabel");
