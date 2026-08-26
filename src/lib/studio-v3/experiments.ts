@@ -1,11 +1,3 @@
-import {
-  getFunnelSessionId,
-  getFunnelVariant,
-  setFunnelVariant,
-  trackStep,
-} from "@/lib/studio-v3-funnel";
-import { STUDIO_FUNNEL_STEPS } from "@/lib/studio-v3/funnelMetrics";
-
 export const P14_YOUR_DAY_CTA_EXPERIMENT = "p14_your_day_cta_v1";
 export const P14_YOUR_DAY_CTA_TEST_ID = "studio-v3-handoff-primary";
 export const P14_YOUR_DAY_CTA_CLICK_EVENT = "p14_your_day_cta_click";
@@ -45,38 +37,8 @@ export function assignP14YourDayCtaVariant(sessionId: string): P14YourDayCtaVari
     : P14_YOUR_DAY_CTA_VARIANTS.story;
 }
 
-/**
- * Enrol once per funnel session. An existing P14 arm wins. An unrelated
- * experiment is never overwritten, which keeps the single variant slot safe
- * until a future multi-experiment registry is deliberately introduced.
- */
-export function ensureP14YourDayCtaVariant(): P14YourDayCtaVariant | null {
-  const existing = getFunnelVariant();
-  if (isP14YourDayCtaVariant(existing)) return existing;
-  if (existing) return null;
-
-  const assigned = assignP14YourDayCtaVariant(getFunnelSessionId());
-  setFunnelVariant(assigned);
-  return assigned;
-}
-
 export function p14YourDayCtaLabelForVariant(variant: string | null): string {
-  return isP14YourDayCtaVariant(variant) ? CTA_COPY[variant] : CTA_COPY[P14_YOUR_DAY_CTA_VARIANTS.control];
-}
-
-export function currentP14YourDayCtaLabel(): string {
-  return p14YourDayCtaLabelForVariant(ensureP14YourDayCtaVariant());
-}
-
-export function trackP14YourDayCtaClick(): void {
-  const stepIndex = STUDIO_FUNNEL_STEPS.findIndex((step) => step.key === "storyboard");
-  trackStep({
-    stepNumber: stepIndex >= 0 ? stepIndex + 1 : 0,
-    stepKey: "storyboard",
-    event: "milestone",
-    value: {
-      studio_event: P14_YOUR_DAY_CTA_CLICK_EVENT,
-      experiment_id: P14_YOUR_DAY_CTA_EXPERIMENT,
-    },
-  });
+  return isP14YourDayCtaVariant(variant)
+    ? CTA_COPY[variant]
+    : CTA_COPY[P14_YOUR_DAY_CTA_VARIANTS.control];
 }
