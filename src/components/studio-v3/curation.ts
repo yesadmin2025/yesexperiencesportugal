@@ -2571,9 +2571,14 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
   // traveller's own answers make it useful, and never twice.
   if (phase === "refinement") {
     if (state.refinement != null) return false;
+    // P10 — delegation mode: the traveller handed the taste layer to YES, so
+    // the optional nuance question is simply irrelevant. It is SKIPPED, never
+    // answered on their behalf (`refinement` stays null).
+    if (state.delegationMode === "yes-designs") return false;
     // Ask only when the answer can still move the recommendation.
     return isAdaptiveQuestionRelevant(state) && adaptiveQuestionAddsValue(state);
   }
+
 
   return true;
 }
