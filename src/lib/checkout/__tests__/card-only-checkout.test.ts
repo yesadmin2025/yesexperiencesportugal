@@ -6,9 +6,13 @@ import { describe, expect, it } from "vitest";
  * Card-only checkout contract.
  *
  * Studio V3 (and every Signature surface that shares the same session
- * factory) must present exactly ONE payment rail: card. This test locks the
- * server-side pin so no dashboard change or future edit can silently
- * reintroduce Klarna, MB Way, bank debits, Link or any other wallet.
+ * factory) pins the Stripe session to the card payment method type, so
+ * non-card rails (Klarna, MB Way/Multibanco, SEPA/bank debits, PayPal…)
+ * cannot be presented, and hides Stripe Link via wallet_options.
+ *
+ * Scope note: Apple Pay / Google Pay are card wallets that Stripe Checkout
+ * may still surface depending on account/browser/device context. This
+ * contract does NOT claim they are disabled.
  */
 
 const edgeFn = readFileSync(
@@ -25,6 +29,11 @@ describe("card-only checkout", () => {
   it("pins the Stripe session to card payments", () => {
     expect(edgeFn).toContain('payment_method_types: ["card"]');
   });
+
+  it("explicitly hides Stripe Link on the session", () => {
+    expect(edgeFn).toMatch(/wallet_options:\s*\{\s*link:\s*\{\s*display:\s*"never"\s*\}\s*\}/);
+  });
+
 
   it("never enables a non-card rail server-side", () => {
     // Comments may name the rails we deliberately exclude; only executable
