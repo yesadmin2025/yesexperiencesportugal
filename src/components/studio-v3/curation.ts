@@ -1736,8 +1736,16 @@ export interface ResolvedStudioV3Route {
   routeAreaLabel: string;
   /** Customer-facing route sentence: "Origin → A · B · C → Origin". */
   suggestedRouteLabel: string;
-  /** Ordered route points, max 4 main points, all from the same Signature. */
+  /** Compact legacy/Journey-Card projection — max 4 points, presentation only. */
   routePoints: ResolvedRoutePoint[];
+  /**
+   * The FULL ordered composed route — never presentation-capped. This is the
+   * itinerary authority: every consumer that shows the traveller's day (reveal,
+   * story snapshot, resolved journey, checkout-facing state) must prefer this
+   * over `routePoints`, which exists only for the compact 4-slot card.
+   */
+  composedRoutePoints: ResolvedRoutePoint[];
+
   /** Deterministic editorial title for the journey card. */
   journeyTitle: string;
   /** 2–3 short reasons grounded in the actual answers. */
