@@ -67,17 +67,17 @@ describe("P11 · live Studio funnel shape", () => {
     expect(intro?.medianMs).toBe(2100);
   });
 
-  it("treats secure_confirm as Checkout completion", () => {
+  it("treats secure_confirm as Checkout completion and terminal timing", () => {
     const rows = [
       row("paid", "checkoutSummary", "enter"),
-      row("paid", "checkoutSummary", "secure_confirm"),
+      row("paid", "checkoutSummary", "secure_confirm", { ms_on_step: 2500 }),
       row("left", "checkoutSummary", "enter"),
     ];
     const stats = computeStudioFunnelStats(rows);
     const checkout = stats.perStep.find((step) => step.key === "checkoutSummary");
     expect(stats.checkoutReached).toBe(2);
     expect(stats.confirmed).toBe(1);
-    expect(checkout).toMatchObject({ reached: 2, completed: 1, dropPct: 50 });
+    expect(checkout).toMatchObject({ reached: 2, completed: 1, dropPct: 50, medianMs: 2500 });
   });
 
   it("counts semantic milestones once per session", () => {
@@ -140,7 +140,7 @@ describe("P11 · live Studio funnel shape", () => {
 describe("P11 · central phase timing", () => {
   beforeEach(() => resetStudioFunnelTimingForTests());
 
-  it("adds elapsed time to continue/back/abandon without overwriting explicit timing", () => {
+  it("adds elapsed time to exits without overwriting explicit timing", () => {
     expect(
       enrichStudioFunnelTiming({
         sessionId: "s",
@@ -181,6 +181,21 @@ describe("P11 · central phase timing", () => {
         now: 9000,
       }),
     ).toEqual({ ms_on_step: 777, to: "feeling" });
+
+    enrichStudioFunnelTiming({
+      sessionId: "s",
+      stepKey: "checkoutSummary",
+      event: "enter",
+      now: 10000,
+    });
+    expect(
+      enrichStudioFunnelTiming({
+        sessionId: "s",
+        stepKey: "checkoutSummary",
+        event: "secure_confirm",
+        now: 12500,
+      }),
+    ).toEqual({ ms_on_step: 2500 });
   });
 });
 
