@@ -1830,6 +1830,9 @@ export function resolveStudioV3Route(input: {
   preferTourId?: string | null;
   /** Adaptive refinement answer — becomes a discovery signal, never a price input. */
   refinement?: AdaptiveRefinementId | null;
+  /** Reshape/reroll seed (usually `state.rerollCount`). 0 = original curation. */
+  seed?: number | string;
+
 }): ResolvedStudioV3Route {
   const { feeling, companions, rhythm, interests, pickup, occasion } = input;
   const investment = input.investment ?? null;
