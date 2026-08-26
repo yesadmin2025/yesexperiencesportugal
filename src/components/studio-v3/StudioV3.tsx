@@ -280,8 +280,10 @@ import {
   isDelegationActive,
   isDelegationEligible,
   isDelegationOffered,
+  recomputeActiveDelegationAfterExplicitChange,
   releaseDelegatedTaste,
   takeBackDelegatedDimension,
+  takeBackDelegatedInterests,
 } from "./studioDelegation";
 import { StudioDelegationCard } from "./StudioDelegationCard";
 
@@ -1458,17 +1460,19 @@ export function StudioV3() {
   // Considerations, Investment. The other steps get quiet auto-advance.
   const onFeeling = (id: Feeling) => {
     const label = getOptionLabel(FEELINGS, id);
-    // P10 — changing an explicit answer must never leave a stale delegated
-    // taste behind. Release what YES decided FIRST, then build ONE forward
-    // state from that released base, so the phase we advance to is resolved
-    // from the same truth we commit (a cleared interests/rhythm must be asked
-    // again, never skipped because the pre-release snapshot still had them).
+    // P10 — trust persists. If YES still owns taste dimensions, a changed
+    // Feeling recomputes only those dimensions from the new explicit anchor.
+    // Pre-P10/legacy decidedForMe marks without active mode still use the
+    // release fallback so stale historical defaults cannot survive.
     const changed = state.feeling !== id;
-    const base = changed ? releaseDelegatedTaste(state) : state;
-    const forward: StudioV3State = { ...base, feeling: id };
+    const forward: StudioV3State = changed
+      ? isDelegationActive(state)
+        ? recomputeActiveDelegationAfterExplicitChange(state, { feeling: id })
+        : { ...releaseDelegatedTaste(state), feeling: id }
+      : { ...state, feeling: id };
     if (changed) {
       setDelegationNote(null);
-      setState(() => base);
+      setState(() => forward);
     }
     const next = getNextPhase(forward, "feeling");
 
@@ -1509,33 +1513,36 @@ export function StudioV3() {
   const onCompanions = (id: Companions) => {
     // Compute forward state (with possible guest inference) so we can both
     // commit it and resolve the next phase adaptively.
-    // P10 — companions feeds deterministic rhythm inference, so a CHANGED
-    // explicit answer releases delegated taste first; guest inference then
-    // runs on that released base. Operational facts (date, pickup, guests,
-    // considerations, language) are untouched by the release.
+    // P10 — changing Who keeps active delegation, but recomputes only the
+    // taste dimensions YES owns before the existing operational guest
+    // inference runs. Legacy delegated marks without active mode are released.
     const changed = state.companions !== id;
-    const base = changed ? releaseDelegatedTaste(state) : state;
+    const tasteBase: StudioV3State = changed
+      ? isDelegationActive(state)
+        ? recomputeActiveDelegationAfterExplicitChange(state, { companions: id })
+        : { ...releaseDelegatedTaste(state), companions: id }
+      : { ...state, companions: id };
     if (changed) setDelegationNote(null);
-    const inferred = inferGuests(id, base.occasion, base.feeling);
+    const inferred = inferGuests(id, tasteBase.occasion, tasteBase.feeling);
     let forward: StudioV3State;
-    if (inferred != null && (base.guestsInferred || base.guests == null)) {
+    if (inferred != null && (tasteBase.guestsInferred || tasteBase.guests == null)) {
       forward = {
-        ...base,
+        ...tasteBase,
         companions: id,
         guests: inferred,
         guestsInferred: true,
         guestsPrivateEvent: inferred >= 11,
       };
-    } else if (inferred == null && base.guestsInferred) {
+    } else if (inferred == null && tasteBase.guestsInferred) {
       forward = {
-        ...base,
+        ...tasteBase,
         companions: id,
         guests: null,
         guestsInferred: false,
         guestsPrivateEvent: false,
       };
     } else {
-      forward = { ...base, companions: id };
+      forward = tasteBase;
     }
 
     setState(() => forward);
@@ -1965,20 +1972,23 @@ export function StudioV3() {
   const MAX_INTERESTS = 4;
   const toggleInterest = (id: Interest) => {
     setState((s) => {
-      // P10 — an explicit taste choice always beats delegated defaults: taking
-      // one back releases YES's decided taste values (never the operational
-      // facts) so nothing downstream stays stale.
-      const base = (s.decidedForMe ?? []).includes("interests")
-        ? releaseDelegatedTaste(s)
-        : s;
-      const has = base.interests.includes(id);
+      const has = s.interests.includes(id);
+      let explicitInterests: StudioV3State["interests"];
       if (has) {
-        return { ...base, interests: base.interests.filter((x) => x !== id) };
+        explicitInterests = s.interests.filter((x) => x !== id);
+      } else {
+        // P5: inherited themes (already stated in Feeling) never consume a slot.
+        const countable = countableInterests(s.interests, deriveInheritedIntent(s));
+        if (countable.length >= MAX_INTERESTS) return s;
+        explicitInterests = [...s.interests, id];
       }
-      // P5: inherited themes (already stated in Feeling) never consume a slot.
-      const countable = countableInterests(base.interests, deriveInheritedIntent(base));
-      if (countable.length >= MAX_INTERESTS) return base;
-      return { ...base, interests: [...base.interests, id] };
+
+      // If Interests were delegated, the visible set now becomes explicit as
+      // edited by the traveller. Keep delegation only for any remaining YES-
+      // owned dimension, and recompute delegated Rhythm from this explicit set.
+      return (s.decidedForMe ?? []).includes("interests")
+        ? takeBackDelegatedInterests(s, explicitInterests)
+        : { ...s, interests: explicitInterests };
     });
   };
 
