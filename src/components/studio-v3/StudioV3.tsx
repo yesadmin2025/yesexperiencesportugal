@@ -1508,27 +1508,35 @@ export function StudioV3() {
   const onCompanions = (id: Companions) => {
     // Compute forward state (with possible guest inference) so we can both
     // commit it and resolve the next phase adaptively.
-    const inferred = inferGuests(id, state.occasion, state.feeling);
+    // P10 — companions feeds deterministic rhythm inference, so a CHANGED
+    // explicit answer releases delegated taste first; guest inference then
+    // runs on that released base. Operational facts (date, pickup, guests,
+    // considerations, language) are untouched by the release.
+    const changed = state.companions !== id;
+    const base = changed ? releaseDelegatedTaste(state) : state;
+    if (changed) setDelegationNote(null);
+    const inferred = inferGuests(id, base.occasion, base.feeling);
     let forward: StudioV3State;
-    if (inferred != null && (state.guestsInferred || state.guests == null)) {
+    if (inferred != null && (base.guestsInferred || base.guests == null)) {
       forward = {
-        ...state,
+        ...base,
         companions: id,
         guests: inferred,
         guestsInferred: true,
         guestsPrivateEvent: inferred >= 11,
       };
-    } else if (inferred == null && state.guestsInferred) {
+    } else if (inferred == null && base.guestsInferred) {
       forward = {
-        ...state,
+        ...base,
         companions: id,
         guests: null,
         guestsInferred: false,
         guestsPrivateEvent: false,
       };
     } else {
-      forward = { ...state, companions: id };
+      forward = { ...base, companions: id };
     }
+
     setState(() => forward);
     const next = getNextPhase(forward, "who");
     window.setTimeout(() => {
