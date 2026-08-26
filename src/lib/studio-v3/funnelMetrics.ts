@@ -76,9 +76,7 @@ function median(values: number[]): number {
   if (values.length === 0) return 0;
   const sorted = [...values].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2
-    ? sorted[mid]
-    : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+  return sorted.length % 2 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
 }
 
 function studioEvent(row: StudioFunnelMetricRow): string | null {
@@ -86,10 +84,7 @@ function studioEvent(row: StudioFunnelMetricRow): string | null {
   return typeof value?.studio_event === "string" ? value.studio_event : null;
 }
 
-function sessionSetForStep(
-  rows: readonly StudioFunnelMetricRow[],
-  stepKey: string,
-): Set<string> {
+function sessionSetForStep(rows: readonly StudioFunnelMetricRow[], stepKey: string): Set<string> {
   return new Set(rows.filter((row) => row.step_key === stepKey).map((row) => row.session_id));
 }
 
@@ -97,9 +92,7 @@ function sessionSetForStudioEvent(
   rows: readonly StudioFunnelMetricRow[],
   event: string,
 ): Set<string> {
-  return new Set(
-    rows.filter((row) => studioEvent(row) === event).map((row) => row.session_id),
-  );
+  return new Set(rows.filter((row) => studioEvent(row) === event).map((row) => row.session_id));
 }
 
 function unionSessionSets(...sets: ReadonlyArray<Set<string>>): Set<string> {
@@ -118,9 +111,7 @@ function rate(part: number, whole: number): number {
   return whole > 0 ? Math.round((part / whole) * 100) : 0;
 }
 
-function latestVariantBySession(
-  rows: readonly StudioFunnelMetricRow[],
-): Map<string, string> {
+function latestVariantBySession(rows: readonly StudioFunnelMetricRow[]): Map<string, string> {
   const latest = new Map<string, { variant: string; at: number }>();
   for (const row of rows) {
     const variant = row.variant?.trim();
