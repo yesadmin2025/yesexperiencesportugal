@@ -128,7 +128,7 @@ jobs:
       - name: Full Studio V3 and Studio lib suite
         run: bunx vitest run src/components/studio-v3 src/lib/studio-v3 --reporter=dot
       - name: TypeScript no-emit
-        run: bunx tsgo --noEmit
+        run: bunx tsc --noEmit -p tsconfig.json
       - name: Diff hygiene
         run: git diff --check
       - name: Commit validated product patch to isolated branch
