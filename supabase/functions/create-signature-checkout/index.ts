@@ -428,6 +428,12 @@ Deno.serve(async (req) => {
       line_items: [...tourLineItems, ...addOnLineItems],
 
       mode: "payment",
+      // CARD ONLY — hard product requirement. Pinning payment_method_types
+      // stops Stripe from surfacing dashboard-enabled alternatives (Klarna,
+      // MB Way, bank debits, Link, other wallets) inside the embedded
+      // checkout. Apple Pay / Google Pay remain card credentials under this
+      // type, so no non-card rail can ever be presented or charged.
+      payment_method_types: ["card"],
       locale: "auto",
       submit_type: "book",
       billing_address_collection: "auto",
