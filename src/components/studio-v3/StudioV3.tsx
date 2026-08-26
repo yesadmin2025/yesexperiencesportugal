@@ -32,7 +32,6 @@ import { DirectorsRead } from "./DirectorsRead";
 import { InvestmentTierPicker } from "./InvestmentTierPicker";
 import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
-import { MapAwakens } from "./MapAwakens";
 import { MobileBeatReveal } from "./MobileBeatReveal";
 import type { StudioV3BeatId } from "./StudioV3ProgressStepper";
 import { LivingJourneyPanel } from "./LivingJourneyPanel";
