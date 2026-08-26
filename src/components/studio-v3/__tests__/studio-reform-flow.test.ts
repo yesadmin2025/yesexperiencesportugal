@@ -10,7 +10,10 @@ describe("Studio reform — phase model", () => {
     const asked = STUDIO_V3_PHASE_ORDER.filter((p) => isPhaseRelevant(p, base));
     expect(asked.slice(0, 5)).toEqual(["intro", "feeling", "who", "interests", "rhythm"]);
     expect(asked).toContain("logistics");
-    expect(asked.indexOf("logistics")).toBeLessThan(asked.indexOf("map"));
+    // P8: the reveal is ONE surface on the canonical `storyboard` phase.
+    expect(asked.indexOf("logistics")).toBeLessThan(asked.indexOf("storyboard"));
+    expect(asked).not.toContain("map");
+    expect(asked).not.toContain("confirmation");
   });
 
   it("never asks destination, date, pickup, guests, investment as standalone phases", () => {
@@ -28,10 +31,10 @@ describe("Studio reform — phase model", () => {
     }
   });
 
-  it("walks rhythm → logistics → map", () => {
+  it("walks rhythm → logistics → the unified storyboard surface", () => {
     const s: StudioV3State = { ...base, feeling: "coastal", companions: "couple", refinement: "coast-wild-beaches" };
     expect(getNextPhase(s, "rhythm")).toBe("logistics");
-    expect(getNextPhase(s, "logistics")).toBe("map");
+    expect(getNextPhase(s, "logistics")).toBe("storyboard");
   });
 });
 
