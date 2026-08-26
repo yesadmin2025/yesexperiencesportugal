@@ -274,6 +274,16 @@ import {
   decisionWhisper,
   type DecidedForMeKey,
 } from "./letYesDecide";
+import {
+  applyDelegation,
+  delegationAcknowledgement,
+  isDelegationActive,
+  isDelegationEligible,
+  isDelegationOffered,
+  releaseDelegatedTaste,
+} from "./studioDelegation";
+import { StudioDelegationCard } from "./StudioDelegationCard";
+
 import { trackStudio } from "@/lib/studio-analytics";
 import {
   resolveRefineIntents,
@@ -1447,7 +1457,15 @@ export function StudioV3() {
   // Considerations, Investment. The other steps get quiet auto-advance.
   const onFeeling = (id: Feeling) => {
     const label = getOptionLabel(FEELINGS, id);
+    // P10 — changing an explicit answer must never leave a stale delegated
+    // taste behind. Release what YES decided so delegation recomputes from
+    // the new explicit state when it is applied again.
+    if (state.feeling !== id) {
+      setDelegationNote(null);
+      setState((s) => (s.feeling === id ? s : releaseDelegatedTaste(s)));
+    }
     const next = getNextPhase({ ...state, feeling: id }, "feeling");
+
     pickAndAdvance("feeling", id, next, {
       kind: "feeling",
       eyebrow: "The feeling",
@@ -1706,33 +1724,25 @@ export function StudioV3() {
   };
 
   /**
-   * "Let YES decide" — the traveller hands one dimension to the curator.
-   * We commit a REAL value inferred from their own answers (deterministic,
-   * taxonomy-bound) and continue exactly as if they had chosen it.
+   * P10 — premium delegation mode. The traveller has personally answered
+   * Feeling and Who; from Interests (or once more on Rhythm) they may hand
+   * the remaining TASTE layer to YES in one gesture. Deterministic, taxonomy
+   * bound, explicit choices preserved, operational facts untouched, and the
+   * adaptive refinement is skipped rather than fabricated.
    */
-  const onLetYesDecide = (key: DecidedForMeKey) => {
-    trackStudio("surprise_me_selected", { phase: key, stepNumber: stepOf(state.phase) });
-    if (key === "feeling") {
-      const id = decideFeeling(state);
-      setState((s) => ({ ...s, decidedForMe: [...new Set([...s.decidedForMe, key])] }));
-      onFeeling(id);
-      return;
-    }
-    if (key === "interests") {
-      const ids = decideInterests(state);
-      const forward: StudioV3State = {
-        ...state,
-        interests: ids,
-        decidedForMe: [...new Set([...state.decidedForMe, key])],
-      };
-      setState(() => forward);
-      window.setTimeout(() => advance(getNextPhase(forward, "interests")), 80);
-      return;
-    }
-    const rhythmId = decideRhythm(state);
-    setState((s) => ({ ...s, decidedForMe: [...new Set([...s.decidedForMe, key])] }));
-    onRhythm(rhythmId);
+  const [delegationNote, setDelegationNote] = useState<string | null>(null);
+  const onDelegateToYes = (from: "interests" | "rhythm") => {
+    if (!isDelegationEligible(state)) return;
+    const { state: forward, delegated } = applyDelegation(state);
+    if (delegated.length === 0 && !isDelegationActive(forward)) return;
+    trackStudio("surprise_me_selected", { phase: from, stepNumber: stepOf(state.phase) });
+    setState(() => forward);
+    setDelegationNote(delegationAcknowledgement(delegated));
+    // Delegation completes interests AND rhythm, so we continue from rhythm:
+    // refinement is irrelevant in delegation mode and Logistics follows.
+    window.setTimeout(() => advance(getNextPhase(forward, "rhythm")), 220);
   };
+
 
   const onRhythm = (id: Rhythm) => {
     const name = state.firstName?.trim() || null;
@@ -1929,16 +1939,23 @@ export function StudioV3() {
   const MAX_INTERESTS = 4;
   const toggleInterest = (id: Interest) => {
     setState((s) => {
-      const has = s.interests.includes(id);
+      // P10 — an explicit taste choice always beats delegated defaults: taking
+      // one back releases YES's decided taste values (never the operational
+      // facts) so nothing downstream stays stale.
+      const base = (s.decidedForMe ?? []).includes("interests")
+        ? releaseDelegatedTaste(s)
+        : s;
+      const has = base.interests.includes(id);
       if (has) {
-        return { ...s, interests: s.interests.filter((x) => x !== id) };
+        return { ...base, interests: base.interests.filter((x) => x !== id) };
       }
       // P5: inherited themes (already stated in Feeling) never consume a slot.
-      const countable = countableInterests(s.interests, deriveInheritedIntent(s));
-      if (countable.length >= MAX_INTERESTS) return s;
-      return { ...s, interests: [...s.interests, id] };
+      const countable = countableInterests(base.interests, deriveInheritedIntent(base));
+      if (countable.length >= MAX_INTERESTS) return base;
+      return { ...base, interests: [...base.interests, id] };
     });
   };
+
   const toggleConsideration = (id: Consideration) => {
     setState((s) => {
       const has = s.considerations.includes(id);
@@ -2438,9 +2455,9 @@ export function StudioV3() {
           ) : (
             <FooterHint>One choice. You can shape the rest later.</FooterHint>
           )}
-          {state.feeling ? null : (
-            <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("feeling")} />
-          )}
+          {/* P10 — Feeling is answered personally. Delegation is offered once,
+              later, as one concierge moment (see StudioDelegationCard). */}
+
         </PhaseShell>
       ) : null}
 
@@ -2817,9 +2834,13 @@ export function StudioV3() {
             onClick={continueFromInterests}
             label={countableSelectedInterests.length < 1 ? "Choose at least one" : "Continue"}
           />
-          {countableSelectedInterests.length < 1 ? (
-            <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("interests")} />
+          {isDelegationOffered(state, "interests") ? (
+            <StudioDelegationCard
+              onDelegate={() => onDelegateToYes("interests")}
+              acknowledgement={delegationNote}
+            />
           ) : null}
+
         </PhaseShell>
       ) : null}
 
@@ -2843,9 +2864,13 @@ export function StudioV3() {
           ) : (
             <FooterHint>You can change pace at any stop.</FooterHint>
           )}
-          {state.rhythm ? null : (
-            <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("rhythm")} />
-          )}
+          {isDelegationOffered(state, "rhythm") ? (
+            <StudioDelegationCard
+              onDelegate={() => onDelegateToYes("rhythm")}
+              acknowledgement={delegationNote}
+            />
+          ) : null}
+
         </PhaseShell>
       ) : null}
 
@@ -3310,32 +3335,13 @@ function RevealRouteMap({
 }
 
 /**
- * LetYesDecide — first-class "decide for me" affordance. Not a skip: the
- * curator commits to a real, deterministic choice derived from the
- * traveller's own answers (see `letYesDecide.ts`).
+ * P10 — the per-question "Let YES decide" affordance has been retired from
+ * the modern path. Being asked three times to delegate read as a survey
+ * escape hatch; delegation is now ONE concierge moment rendered by
+ * `StudioDelegationCard` (see `studioDelegation.ts`). The deterministic
+ * inference primitives in `letYesDecide.ts` are unchanged and still power it.
  */
-function LetYesDecide({ label, onClick }: { label: string; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      data-testid="studio-v3-let-yes-decide"
-      onClick={onClick}
-      className="mt-5 mx-auto flex min-h-[44px] items-center justify-center px-5 text-[11px] uppercase tracking-[0.22em]"
-      style={{
-        fontFamily: "var(--font-display)",
-        color: "var(--charcoal)",
-        border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
-        borderRadius: 999,
-        background: "transparent",
-      }}
-    >
-      <span aria-hidden style={{ color: "var(--gold)", marginRight: 8 }}>
-        —
-      </span>
-      {label}
-    </button>
-  );
-}
+
 
 /**
  * interpretationLine — one short sentence built ONLY from real answers.

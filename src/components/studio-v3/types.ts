@@ -352,6 +352,16 @@ export interface StudioV3State {
    * the choice honestly in the UI and to keep the reveal explainable.
    */
   decidedForMe: Array<"feeling" | "interests" | "rhythm">;
+  /**
+   * P10 — premium delegation mode. Set to "yes-designs" when the traveller
+   * hands the remaining TASTE layer (interests + rhythm, and the optional
+   * adaptive refinement) to YES after answering Feeling and Who themselves.
+   * Operational facts are never delegated. Null (default) = the traveller is
+   * answering every taste question personally, exactly as before, so older
+   * saved sessions hydrate unchanged.
+   */
+  delegationMode: "yes-designs" | null;
+
   guestDraft: {
     fullName?: string;
     email?: string;
@@ -388,6 +398,8 @@ export const INITIAL_STATE: StudioV3State = {
   pathMode: "guided",
   rerollCount: 0,
   decidedForMe: [],
+  delegationMode: null,
+
   guestDraft: null,
 };
 
