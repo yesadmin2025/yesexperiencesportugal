@@ -130,7 +130,9 @@ function StudioV3ExperimentsPage() {
           </div>
         ) : null}
 
-        {!rows && !error ? <p className="text-sm text-[color:var(--charcoal)]/60">Loading…</p> : null}
+        {!rows && !error ? (
+          <p className="text-sm text-[color:var(--charcoal)]/60">Loading…</p>
+        ) : null}
 
         {stats ? (
           <section className="overflow-hidden rounded-lg border border-[color:var(--charcoal)]/10 bg-white">
@@ -158,18 +160,27 @@ function StudioV3ExperimentsPage() {
                 <tbody>
                   {experimentRows.length ? (
                     experimentRows.map((variant) => (
-                      <tr key={variant.variant} className="border-t border-[color:var(--charcoal)]/5">
+                      <tr
+                        key={variant.variant}
+                        className="border-t border-[color:var(--charcoal)]/5"
+                      >
                         <td className="px-3 py-2 font-medium">{variant.variant}</td>
                         <td className="px-3 py-2 text-right tabular-nums">{variant.sessions}</td>
-                        <td className="px-3 py-2 text-right tabular-nums">{variant.yourDayReached}</td>
-                        <td className="px-3 py-2 text-right tabular-nums">{variant.handoffClicked}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">
+                          {variant.yourDayReached}
+                        </td>
+                        <td className="px-3 py-2 text-right tabular-nums">
+                          {variant.handoffClicked}
+                        </td>
                         <td className="px-3 py-2 text-right tabular-nums font-semibold text-[color:var(--teal)]">
                           {variant.handoffRate}%
                         </td>
                         <td className="px-3 py-2 text-right tabular-nums">
                           {variant.guestDetailsReached} · {variant.guestDetailsRate}%
                         </td>
-                        <td className="px-3 py-2 text-right tabular-nums">{variant.checkoutReached}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">
+                          {variant.checkoutReached}
+                        </td>
                         <td className="px-3 py-2 text-right tabular-nums font-semibold">
                           {variant.confirmed}
                         </td>
@@ -177,7 +188,10 @@ function StudioV3ExperimentsPage() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={8} className="px-4 py-8 text-center text-sm text-[color:var(--charcoal)]/55">
+                      <td
+                        colSpan={8}
+                        className="px-4 py-8 text-center text-sm text-[color:var(--charcoal)]/55"
+                      >
                         No P14 experiment sessions in this date range yet.
                       </td>
                     </tr>
