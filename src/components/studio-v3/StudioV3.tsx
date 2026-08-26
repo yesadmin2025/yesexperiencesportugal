@@ -1939,16 +1939,23 @@ export function StudioV3() {
   const MAX_INTERESTS = 4;
   const toggleInterest = (id: Interest) => {
     setState((s) => {
-      const has = s.interests.includes(id);
+      // P10 — an explicit taste choice always beats delegated defaults: taking
+      // one back releases YES's decided taste values (never the operational
+      // facts) so nothing downstream stays stale.
+      const base = (s.decidedForMe ?? []).includes("interests")
+        ? releaseDelegatedTaste(s)
+        : s;
+      const has = base.interests.includes(id);
       if (has) {
-        return { ...s, interests: s.interests.filter((x) => x !== id) };
+        return { ...base, interests: base.interests.filter((x) => x !== id) };
       }
       // P5: inherited themes (already stated in Feeling) never consume a slot.
-      const countable = countableInterests(s.interests, deriveInheritedIntent(s));
-      if (countable.length >= MAX_INTERESTS) return s;
-      return { ...s, interests: [...s.interests, id] };
+      const countable = countableInterests(base.interests, deriveInheritedIntent(base));
+      if (countable.length >= MAX_INTERESTS) return base;
+      return { ...base, interests: [...base.interests, id] };
     });
   };
+
   const toggleConsideration = (id: Consideration) => {
     setState((s) => {
       const has = s.considerations.includes(id);
