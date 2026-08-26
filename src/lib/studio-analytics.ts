@@ -38,6 +38,10 @@ export type StudioAnalyticsEvent =
 /**
  * Events the funnel already owns end-to-end (table row + GA4 mirror).
  * Routing them through `trackStep` avoids a duplicate GA4 hit.
+ *
+ * Important: `price_expanded` is NOT a tier choice. P11 deliberately keeps
+ * it as a semantic milestone so opening the price details can never pollute
+ * investment/tier analysis.
  */
 const VIA_FUNNEL: Partial<Record<StudioAnalyticsEvent, StudioFunnelEvent>> = {
   phase_view: "enter",
@@ -45,7 +49,6 @@ const VIA_FUNNEL: Partial<Record<StudioAnalyticsEvent, StudioFunnelEvent>> = {
   back_navigation: "back",
   abandon_by_phase: "abandon",
   story_reveal_viewed: "reveal_seen",
-  price_expanded: "tier_chosen",
   guest_details_started: "secure_open",
 };
 
@@ -61,12 +64,44 @@ export interface StudioAnalyticsParams {
   [key: string]: unknown;
 }
 
+const STUDIO_PII_KEYS = new Set([
+  "email",
+  "e_mail",
+  "phone",
+  "tel",
+  "telephone",
+  "name",
+  "full_name",
+  "given_name",
+  "family_name",
+  "message",
+  "notes",
+  "address",
+  "pickup_address",
+  "customer_email",
+  "user_id",
+]);
+
+/** P11 defence-in-depth: internal funnel milestones must never store PII. */
+export function stripStudioAnalyticsPii(
+  params: Record<string, unknown>,
+): Record<string, unknown> {
+  const clean: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null) continue;
+    if (STUDIO_PII_KEYS.has(key.toLowerCase())) continue;
+    clean[key] = value;
+  }
+  return clean;
+}
+
 /** Fire one Studio product event. Never throws, never blocks the journey. */
 export function trackStudio(
   event: StudioAnalyticsEvent,
   params: StudioAnalyticsParams = {},
 ): void {
   const { phase = "unknown", stepNumber = 0, ...rest } = params;
+  const safeRest = stripStudioAnalyticsPii(rest);
   try {
     const funnel = VIA_FUNNEL[event];
     if (funnel) {
@@ -74,7 +109,7 @@ export function trackStudio(
         stepNumber,
         stepKey: phase,
         event: funnel,
-        value: { studio_event: event, ...rest },
+        value: { studio_event: event, ...safeRest },
       });
       return;
     }
@@ -86,7 +121,7 @@ export function trackStudio(
       stepNumber,
       stepKey: phase,
       event: "milestone",
-      value: { studio_event: event, ...rest },
+      value: { studio_event: event, ...safeRest },
     });
 
     const ga = DIRECT_GA[event];
@@ -94,7 +129,7 @@ export function trackStudio(
       experience_type: "studio",
       studio_event: event,
       phase,
-      ...rest,
+      ...safeRest,
     });
   } catch {
     /* analytics must never break the Studio */
