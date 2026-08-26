@@ -63,7 +63,7 @@ export function PhaseHeader({
         <span style={{ color: "var(--gold)" }}>—</span> {eyebrow}
       </p>
       <h2
-        className="mt-5 text-[28px] sm:text-[34px] leading-[1.08] tracking-[-0.012em] font-bold"
+        className="mt-4 text-balance text-[30px] sm:mt-5 sm:text-[34px] leading-[1.08] tracking-[-0.012em] font-bold"
         style={{
           fontFamily: "var(--font-display)",
           color: "var(--charcoal)",
@@ -85,7 +85,7 @@ export function PhaseHeader({
 export function FooterHint({ children }: { children: React.ReactNode }) {
   return (
     <p
-      className="mt-8 text-center text-[12px] max-w-[320px]"
+      className="mt-7 text-center text-[12.5px] leading-[1.5] max-w-[340px] sm:mt-8 sm:text-[12px]"
       style={{
         fontFamily: "var(--font-body)",
         color: "color-mix(in oklab, var(--charcoal) 52%, transparent)",
@@ -110,14 +110,13 @@ export function NextTeaser(_props: { children: React.ReactNode }) {
   return null;
 }
 
-
 export function BackLink({ onClick }: { onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
       data-testid="studio-v3-back"
-      className="absolute left-4 top-4 inline-flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+      className="absolute left-3 top-[max(10px,env(safe-area-inset-top))] sm:left-4 sm:top-4 inline-flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
       style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
       aria-label="Back to previous step"
     >
@@ -144,12 +143,12 @@ export function ContinueCta({
       disabled={disabled}
       data-phase-cta="continue"
       data-phase-cta-disabled={disabled ? "true" : "false"}
-      className={`mt-6 inline-flex items-center gap-2 px-6 py-3.5 min-h-[44px] text-[11px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] ${
+      className={`mt-7 inline-flex w-full max-w-[520px] items-center justify-center gap-2 px-5 py-3.5 min-h-[52px] text-center text-[11px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] sm:mt-6 sm:w-auto sm:min-h-[44px] sm:px-6 sm:tracking-[0.24em] ${
         disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
       style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
     >
-      {label} <ArrowRight size={14} aria-hidden />
+      <span>{label}</span> <ArrowRight size={14} aria-hidden className="shrink-0" />
     </button>
   );
 }

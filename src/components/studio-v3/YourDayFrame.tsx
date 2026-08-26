@@ -23,7 +23,7 @@ export function YourDayFrame({ eyebrow = YOUR_DAY_EYEBROW, title, support, class
   return (
     <header
       data-testid="studio-v3-your-day-frame"
-      className={`text-center ${className ?? ""}`}
+      className={`w-full text-center ${className ?? ""}`}
       style={{ animation: "studioV3RiseIn 620ms ease-out both" }}
     >
       <p
@@ -33,14 +33,14 @@ export function YourDayFrame({ eyebrow = YOUR_DAY_EYEBROW, title, support, class
         <span style={{ color: "var(--gold)" }}>—</span> {eyebrow}
       </p>
       <h2
-        className="mt-3 text-[24px] sm:text-[30px] leading-[1.15] tracking-[-0.012em] font-medium text-balance"
+        className="mx-auto mt-3 max-w-[520px] text-balance text-[27px] sm:text-[30px] leading-[1.12] sm:leading-[1.15] tracking-[-0.012em] font-medium"
         style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
       >
         {title}
       </h2>
       {support ? (
         <p
-          className="mx-auto mt-3 max-w-[420px] text-[13px] leading-relaxed [text-wrap:pretty]"
+          className="mx-auto mt-3 max-w-[440px] text-[14px] sm:text-[13px] leading-[1.6] sm:leading-relaxed [text-wrap:pretty]"
           style={{
             fontFamily: "var(--font-body)",
             color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",

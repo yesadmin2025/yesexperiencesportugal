@@ -48,8 +48,8 @@ export function ChoiceGrid<T extends string>({
       : false;
   return (
     <ul
-      className={`mt-8 grid w-full max-w-[520px] gap-x-6 gap-y-0 ${
-        columns === 2 ? "grid-cols-2" : "grid-cols-1"
+      className={`mt-7 grid w-full max-w-[520px] gap-x-6 gap-y-1 sm:mt-8 sm:gap-y-0 ${
+        columns === 2 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"
       }`}
       role={isMulti ? "group" : "radiogroup"}
     >
@@ -76,7 +76,7 @@ export function ChoiceGrid<T extends string>({
                 if (isMulti) onToggle?.(opt.id);
                 else onSelect?.(opt.id);
               }}
-              className="group relative w-full text-left pr-3 pl-4 py-4 min-h-[64px] border-0 border-b transition-[border-color,background-color,opacity] duration-[220ms] ease-out motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:cursor-not-allowed"
+              className="group relative w-full text-left px-4 py-4 min-h-[68px] sm:min-h-[64px] border-0 border-b transition-[border-color,background-color,opacity] duration-[220ms] ease-out motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] disabled:cursor-not-allowed"
               style={{
                 background: selected
                   ? "color-mix(in oklab, var(--teal) 4%, transparent)"
@@ -91,7 +91,7 @@ export function ChoiceGrid<T extends string>({
               }}
             >
               <span
-                className="block text-[15px] leading-tight font-semibold"
+                className="block pr-4 text-[15.5px] leading-tight font-semibold"
                 style={{
                   fontFamily: "var(--font-editorial)",
                   color: "var(--charcoal)",
@@ -101,7 +101,7 @@ export function ChoiceGrid<T extends string>({
                 {opt.label}
               </span>
               <span
-                className="mt-1 block text-[12.5px] leading-snug"
+                className="mt-1.5 block pr-3 text-[13px] leading-[1.4] sm:mt-1 sm:text-[12.5px] sm:leading-snug"
                 style={{
                   fontFamily: "var(--font-body)",
                   color: "color-mix(in oklab, var(--charcoal) 74%, transparent)",
@@ -112,7 +112,7 @@ export function ChoiceGrid<T extends string>({
               {selected ? (
                 <span
                   aria-hidden
-                  className="absolute right-3 top-3 inline-block h-1.5 w-1.5 rounded-full"
+                  className="absolute right-3 top-4 inline-block h-1.5 w-1.5 rounded-full sm:top-3"
                   style={{ background: "var(--gold)" }}
                 />
               ) : null}
