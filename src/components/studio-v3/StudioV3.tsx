@@ -3320,32 +3320,13 @@ function RevealRouteMap({
 }
 
 /**
- * LetYesDecide — first-class "decide for me" affordance. Not a skip: the
- * curator commits to a real, deterministic choice derived from the
- * traveller's own answers (see `letYesDecide.ts`).
+ * P10 — the per-question "Let YES decide" affordance has been retired from
+ * the modern path. Being asked three times to delegate read as a survey
+ * escape hatch; delegation is now ONE concierge moment rendered by
+ * `StudioDelegationCard` (see `studioDelegation.ts`). The deterministic
+ * inference primitives in `letYesDecide.ts` are unchanged and still power it.
  */
-function LetYesDecide({ label, onClick }: { label: string; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      data-testid="studio-v3-let-yes-decide"
-      onClick={onClick}
-      className="mt-5 mx-auto flex min-h-[44px] items-center justify-center px-5 text-[11px] uppercase tracking-[0.22em]"
-      style={{
-        fontFamily: "var(--font-display)",
-        color: "var(--charcoal)",
-        border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
-        borderRadius: 999,
-        background: "transparent",
-      }}
-    >
-      <span aria-hidden style={{ color: "var(--gold)", marginRight: 8 }}>
-        —
-      </span>
-      {label}
-    </button>
-  );
-}
+
 
 /**
  * interpretationLine — one short sentence built ONLY from real answers.
