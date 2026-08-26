@@ -1845,6 +1845,8 @@ export function resolveStudioV3Route(input: {
       routeAreaLabel: "Tailor-made by YES",
       suggestedRouteLabel: "To be refined with YES",
       routePoints: [],
+      composedRoutePoints: [],
+
       journeyTitle: "Your private Portugal day",
       whyItFits: [],
       livingAtlasReasons: [],
