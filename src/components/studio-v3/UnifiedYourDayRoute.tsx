@@ -84,7 +84,10 @@ export function UnifiedYourDayRoute({
             background: "color-mix(in oklab, var(--ivory) 88%, transparent)",
           }}
         >
-          Edit moments <span aria-hidden className="ml-1.5">↓</span>
+          Edit moments{" "}
+          <span aria-hidden className="ml-1.5">
+            ↓
+          </span>
         </button>
       </div>
     </div>
