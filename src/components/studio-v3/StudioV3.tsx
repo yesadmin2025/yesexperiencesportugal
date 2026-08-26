@@ -2605,9 +2605,12 @@ export function StudioV3() {
                 investment: forward.investment,
                 destinationIntent: forward.destinationIntent,
                 dateExact: forward.dateExact,
-                rerollCount: forward.rerollCount ?? 0,
+                refinement: forward.refinement,
               });
-              const composedTourId = composedRoute.skeletonTour?.id ?? forward.tourId ?? null;
+              const composedTour = composedRoute.skeletonTourKey
+                ? findTour(composedRoute.skeletonTourKey)
+                : null;
+              const composedTourId = composedTour?.id ?? forward.tourId ?? null;
               const composedTitle =
                 forward.journeyTitle ??
                 composeJourneyTitle({
@@ -2617,7 +2620,7 @@ export function StudioV3() {
                   pickup: forward.pickup,
                   interests: forward.interests,
                   rhythm: forward.rhythm,
-                  region: composedRoute.skeletonTour?.region ?? null,
+                  region: composedTour?.region ?? null,
                 });
               setState((s) => ({
                 ...s,
