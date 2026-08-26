@@ -7,7 +7,7 @@
 //      CTA, or browser chrome.
 //   2. A near-fullscreen Journey Draft drawer opened on tap, showing the
 //      working title, Experience DNA pills (max 4), route line, up to 3
-//      moments, investment tier (only once selected), and a stylised
+//      moments, and a stylised
 //      editorial route preview rendered as inline SVG (no real map lib,
 //      no images, no invented stops — geometry only).
 //
@@ -17,7 +17,10 @@
 //   - Hidden on "feeling" / "map" / "storyboard" phases and while a
 //     reaction beat plays (via `hidden` prop from StudioV3).
 //   - No pill until at least one meaningful DNA choice exists.
-//   - No route placeholder paragraphs, no investment placeholder.
+//   - No route placeholder paragraphs.
+//   - P9: no money and no investment framing anywhere in this pre-value
+//     surface — including the AI story input. Investment may still feed the
+//     internal curation call, but never the narrative shown to the traveller.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -241,7 +244,6 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
       state.destinationIntent ?? "",
       (state.interests ?? []).join("|"),
       state.rhythm ?? "",
-      state.investment ?? "",
     ].join("·");
   }, [
     state.firstName,
@@ -252,7 +254,6 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     state.destinationIntent,
     state.interests,
     state.rhythm,
-    state.investment,
   ]);
 
   useEffect(() => {
@@ -274,7 +275,6 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
           destinationIntent: state.destinationIntent,
           interests: state.interests,
           rhythm: state.rhythm,
-          investment: state.investment,
           sessionId,
         },
       })
