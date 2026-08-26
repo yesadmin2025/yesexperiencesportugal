@@ -1,20 +1,19 @@
 /**
- * Studio V3 — saveable Signature (Phase 7A).
+ * Studio V3 — saveable Signature.
  *
  * Persists a composed Studio V3 draft as a "saved" signature with a short
- * share token so the user can reopen it later. No PII required — name and
- * email are optional. Reuses the existing studio_v3_leads table with
- * status='saved' (see migration adding share_token + saved_at).
+ * share token so the traveller can reopen it later. P12 treats this endpoint
+ * as a public privacy boundary: the server accepts only a durable allow-list
+ * of Studio composition fields and never persists identity/contact fields.
  */
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { isMeaningfulStudioDraft, sanitizeStudioDurableState } from "./draftSnapshot";
 
 const schema = z.object({
   journeyTitle: z.string().trim().max(200).nullable().optional(),
   skeletonTourKey: z.string().trim().max(120).nullable().optional(),
-  contactName: z.string().trim().max(120).optional(),
-  contactEmail: z.string().trim().email().max(255).optional().or(z.literal("")),
   state: z.record(z.string(), z.unknown()).default({}),
 });
 
@@ -35,6 +34,11 @@ export const saveStudioV3Signature = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const safeState = sanitizeStudioDurableState(data.state);
+
+    if (!isMeaningfulStudioDraft(safeState)) {
+      throw new Error("There is not enough Studio progress to save yet.");
+    }
 
     // Try up to 3 times to avoid the (extremely unlikely) token collision.
     for (let attempt = 0; attempt < 3; attempt++) {
@@ -45,11 +49,14 @@ export const saveStudioV3Signature = createServerFn({ method: "POST" })
           intent: "refine",
           journey_title: data.journeyTitle ?? null,
           skeleton_tour_key: data.skeletonTourKey ?? null,
-          contact_name: data.contactName ?? "Anonymous traveller",
-          contact_email: data.contactEmail || "anonymous@studio-v3.local",
+          // The table predates anonymous saved Signatures and keeps these
+          // columns required. Fixed internal placeholders satisfy that legacy
+          // shape without turning a share action into lead capture.
+          contact_name: "Anonymous traveller",
+          contact_email: "anonymous@studio-v3.local",
           contact_phone: null,
           contact_note: null,
-          state: data.state as never,
+          state: safeState as never,
           status: "saved",
           share_token: token,
           saved_at: new Date().toISOString(),
