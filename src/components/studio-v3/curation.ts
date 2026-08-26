@@ -1907,71 +1907,64 @@ export function resolveStudioV3Route(input: {
     /* telemetry must never break curation */
   }
 
-  // Hard cap at 4 main route points on the Journey Card (per brief).
-  const routePoints: ResolvedRoutePoint[] = journey.moments.slice(0, 4).map((m, i) => ({
+  const toRoutePoint = (
+    m: { label: string; story: string; lat: number | null; lng: number | null },
+    i: number,
+  ): ResolvedRoutePoint => ({
     index: i,
     label: m.label,
     story: m.story,
     lat: m.lat,
     lng: m.lng,
-  }));
+  });
 
-  // Phase 5E — controlled route composition (replace up to 3 non-critical
-  // stops with same-type candidates from REGION_STOP_POOL). Flag-gated and
-  // OFF in committed code, so this branch is a no-op today. When enabled,
-  // mutates `routePoints` in place to preserve order and downstream wiring.
+  // Phase 5E — controlled route composition (replace non-critical stops with
+  // same-type candidates from REGION_STOP_POOL, optionally add one extra).
+  // P8 hardening: `dateExact` travels with every candidate selection so an
+  // operationally closed stop (e.g. Mercado do Livramento on a Monday) can
+  // never be re-introduced AFTER curateJourney's closure filter.
   const routeWineIntent = hasExplicitWineIntent({ feeling, interests, destinationIntent });
-  if (STUDIO_V3_ROUTE_COMPOSITION_ENABLED) {
+  const mobilityConcern = (input.considerations ?? []).some((c) => MOBILITY_CONSIDERATIONS.has(c));
+  const composeOptions = {
+    skeletonTourId: journey.tour.id,
+    interests,
+    rhythm,
+    companions,
+    investment,
+    considerations: input.considerations ?? [],
+    wineIntent: routeWineIntent,
+    dateExact,
+  };
 
-    // Phase 7A — mobility safety: if the traveller flagged reduced mobility
-    // or asked to avoid long walks, replace or drop original skeleton stops
-    // whose label/story suggests cliffs, coves, caves, trails, hikes, steep
-    // access or other difficult terrain — even though the skeleton itself
-    // is "approved". Replacement uses the same safety-filtered candidate
-    // pool as composition (mobility deny + viewpoint deny already applied),
-    // so swapped stops are guaranteed safe.
-    const mobilityConcern = (input.considerations ?? []).some((c) =>
-      MOBILITY_CONSIDERATIONS.has(c),
-    );
-    if (mobilityConcern) {
-      const safe = applyMobilitySafety(routePoints, {
-        skeletonTourId: journey.tour.id,
-        interests,
-        rhythm,
-        companions,
-        investment,
-        considerations: input.considerations ?? [],
-        wineIntent: routeWineIntent,
-      });
-      routePoints.length = 0;
-      for (const p of safe) routePoints.push(p);
-    }
-
-    const composed = applyReplacementCandidates(routePoints, {
-      skeletonTourId: journey.tour.id,
-      interests,
-      rhythm,
-      companions,
-      investment,
-      considerations: input.considerations ?? [],
-      wineIntent: routeWineIntent,
-    });
-    routePoints.length = 0;
-    for (const p of composed) routePoints.push(p);
-
+  const composeRoute = (
+    points: ReadonlyArray<ResolvedRoutePoint>,
+    maxPoints: number,
+  ): ResolvedRoutePoint[] => {
+    let next: ResolvedRoutePoint[] = points.map((p) => ({ ...p }));
+    if (!STUDIO_V3_ROUTE_COMPOSITION_ENABLED) return next;
+    // Phase 7A — mobility safety on original skeleton stops.
+    if (mobilityConcern) next = applyMobilitySafety(next, composeOptions);
+    next = applyReplacementCandidates(next, composeOptions);
     // Phase 5G — optionally append ONE extra moment when safe.
-    const withExtra = applyExtraMoment(routePoints, {
-      skeletonTourId: journey.tour.id,
-      interests,
-      rhythm,
-      companions,
-      investment,
-      considerations: input.considerations ?? [],
-      wineIntent: routeWineIntent,
-    });
-    routePoints.length = 0;
-    for (const p of withExtra) routePoints.push(p);
-  }
+    next = applyExtraMoment(next, { ...composeOptions, maxPoints });
+    return next;
+  };
+
+  // Compact projection — hard cap at 4 points for the Journey Card only.
+  const routePoints: ResolvedRoutePoint[] = composeRoute(
+    journey.moments.slice(0, 4).map(toRoutePoint),
+    4,
+  );
+
+  // Full itinerary authority — the traveller's complete composed day. Rhythm
+  // targets can legitimately reach 5–6 moments; this is never capped to 4.
+  const fullMoments = journey.moments.map(toRoutePoint);
+  const composedRoutePoints: ResolvedRoutePoint[] = composeRoute(
+    fullMoments,
+    Math.max(4, fullMoments.length),
+  );
+
+
 
   // Short route sentence, derived only from the same Signature's stops.
   const shortLabels: string[] = [];
