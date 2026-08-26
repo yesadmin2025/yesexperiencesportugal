@@ -274,6 +274,16 @@ import {
   decisionWhisper,
   type DecidedForMeKey,
 } from "./letYesDecide";
+import {
+  applyDelegation,
+  delegationAcknowledgement,
+  isDelegationActive,
+  isDelegationEligible,
+  isDelegationOffered,
+  releaseDelegatedTaste,
+} from "./studioDelegation";
+import { StudioDelegationCard } from "./StudioDelegationCard";
+
 import { trackStudio } from "@/lib/studio-analytics";
 import {
   resolveRefineIntents,
