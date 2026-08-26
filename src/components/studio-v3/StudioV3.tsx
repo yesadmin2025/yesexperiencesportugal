@@ -281,6 +281,7 @@ import {
   isDelegationEligible,
   isDelegationOffered,
   releaseDelegatedTaste,
+  takeBackDelegatedDimension,
 } from "./studioDelegation";
 import { StudioDelegationCard } from "./StudioDelegationCard";
 
