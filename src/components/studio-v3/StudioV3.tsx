@@ -4276,6 +4276,8 @@ export function StoryboardHandoff({
             no driven route line unless real routed geometry exists. */}
         {editedStops.length > 0 ? (
           <UnifiedYourDayRoute
+            data-testid="studio-v3-unified-route"
+            testId="studio-v3-unified-route"
             moments={unifiedRouteMoments}
             className="mt-8 mx-auto w-full max-w-[520px]"
             mapSlot={

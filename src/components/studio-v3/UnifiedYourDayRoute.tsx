@@ -28,11 +28,14 @@ export function UnifiedYourDayRoute({
   moments,
   mapSlot,
   className,
+  testId = "studio-v3-unified-route",
 }: {
   moments: ReadonlyArray<UnifiedYourDayMoment>;
   /** The single map instance, rendered only when geography is complete. */
   mapSlot: React.ReactNode;
   className?: string;
+  /** Durable anchor for the reveal-order contract and E2E specs. */
+  testId?: string;
 }) {
   const truth = resolveYourDayMapTruth(
     moments.map((m) => ({ label: m.label, lat: m.lat, lng: m.lng })),
@@ -40,7 +43,7 @@ export function UnifiedYourDayRoute({
 
   return (
     <div
-      data-testid="studio-v3-unified-route"
+      data-testid={testId}
       data-route-mode={truth.mode}
       data-route-reason={truth.reason}
       className={className}
