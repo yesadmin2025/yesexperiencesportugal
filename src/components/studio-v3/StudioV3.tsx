@@ -3568,33 +3568,17 @@ export function StoryboardHandoff({
   // Source of truth: resolveStudioV3Route → routePoints. The user may
   // reorder/remove/swap stops; pool is restricted to the SAME resolved
   // Signature tour's own `stops` (no invented stops, per memory rule).
+  // One projection of ALL route-shaping state (including dateExact and the
+  // reshape seed) so this surface, the story snapshot, CurtainRise and the
+  // resolved journey can never describe different days.
+  const routeShaping = studioRouteShapingInput(state);
+  const routeShapingKey = JSON.stringify(routeShaping);
   const resolved = useMemo(
-    () =>
-      resolveStudioV3Route({
-        feeling: state.feeling,
-        companions: state.companions,
-        rhythm: state.rhythm,
-        interests: state.interests,
-        pickup: state.pickup,
-        occasion: state.occasion,
-        considerations: state.considerations,
-        investment: state.investment,
-        destinationIntent: state.destinationIntent,
-        refinement: state.refinement,
-      }),
-    [
-      state.feeling,
-      state.companions,
-      state.rhythm,
-      state.interests,
-      state.pickup,
-      state.occasion,
-      state.considerations,
-      state.investment,
-      state.destinationIntent,
-      state.refinement,
-    ],
+    () => resolveStudioV3Route(routeShaping),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [routeShapingKey],
   );
+
 
   // The traveller's day is the FULL composed route — never the compact
   // 4-slot Journey-Card projection, and never the base Signature stops while
