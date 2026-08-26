@@ -275,10 +275,8 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
         ) : null}
 
         {/* Informative scope strip — only shown once a Signature resolves.
-            Real data only (region · stops · duration · From €N/guest).
-            On mobile: one condensed line, no italic whisper, no price chip
-            (price appears at the dedicated investment beat). On sm+:
-            full editorial treatment. */}
+            Real data only (region · moments · duration). No money here:
+            price appears only in the canonical price card inside Your Day. */}
         {tour ? (
           <div
             data-testid="studio-v3-composer-scope"
