@@ -41,7 +41,10 @@ import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { validateResolvedSignature } from "./validateReveal";
 import { recordStudioV3RevealValidation } from "@/lib/studio-v3-telemetry";
 import { StudioV3ProgressStepper } from "./StudioV3ProgressStepper";
-import { RunningInvestmentRibbon } from "./RunningInvestmentRibbon";
+// P9 — Price after value: no pre-reveal money surface in the main funnel.
+// RunningInvestmentRibbon is intentionally NOT mounted here; the canonical
+// SignaturePriceCard inside Your Day is the first numeric price the
+// traveller sees. The component itself is kept for legacy/component tests.
 import { CurtainRise } from "./CurtainRise";
 import { SignaturePriceCard, type SelectedAddOnSummary } from "./SignaturePriceCard";
 import { useResolvedJourney } from "./useResolvedJourney";
@@ -2405,13 +2408,6 @@ export function StudioV3() {
           }}
         />
       ) : null}
-      <RunningInvestmentRibbon
-        state={state}
-        hidden={composerHidden}
-        totalEur={resolvedJourney.totalEur}
-        adultUnitEur={resolvedJourney.adultUnitEur}
-        guests={resolvedJourney.guests}
-      />
       {isMobile ? (
         <MobileBeatReveal
           beat={mobileReveal?.beat ?? null}

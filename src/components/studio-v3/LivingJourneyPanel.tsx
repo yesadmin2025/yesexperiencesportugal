@@ -35,7 +35,6 @@ import {
   COMPANIONS,
   FEELINGS,
   INTERESTS,
-  INVESTMENT_TIERS,
   PICKUPS,
   RHYTHMS,
   type StudioV3State,
@@ -184,23 +183,16 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   const overBudgetNote = daySummary.overBudget
     ? "This day is shaping into a long one. Consider easing the pace before checkout."
     : null;
-  const investmentLabel = state.investment
-    ? getOptionLabel(INVESTMENT_TIERS, state.investment)
-    : null;
   const originLabel = state.pickup ? getOptionLabel(PICKUPS, state.pickup) : null;
 
-  // -------- Scope strip (reference-builder DNA) --------
-  // Pull the real Signature behind the resolved route so we can show
-  // region · stops · duration · "from €N / guest" — never invented.
+  // -------- Scope strip (value only, P9) --------
+  // Region · moments · duration. No money, ever: the Journey Draft sits
+  // before the traveller has felt the composed day, and the canonical
+  // SignaturePriceCard inside Your Day is the first numeric price surface.
 
   const scopeRegion = resolvedTour?.region ?? null;
   const scopeDuration = resolvedTour?.durationHours ?? null;
   const scopeStops = routePoints.length;
-  const scopePriceFromEur =
-    resolvedTour?.priceFrom && resolvedTour.priceFrom > 0 ? resolvedTour.priceFrom : null;
-  const partyCount = state.guests && state.guests >= 2 ? state.guests : null;
-  const scopePartyTotalEur =
-    scopePriceFromEur && partyCount ? scopePriceFromEur * partyCount : null;
 
   // Memory of the day — narrates the choices already made in past tense,
   // so returning to the drawer feels like reading the day's diary back.
@@ -328,13 +320,12 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   if (hidden) return null;
   if (dna.length === 0) return null; // No meaningful pick yet → no pill.
 
-  // Collapsed copy: prefer scope (region · from €N) when a Signature has
-  // resolved — that's the reference-builder clarity. Otherwise fall back
-  // to the storytelling cue.
+  // Collapsed copy: a non-monetary value cue — region and shape of the day.
   const dnaSummary = dna.slice(0, 2).join(" · ");
-  const scopeTrailing = scopePriceFromEur
-    ? `${scopeRegion ?? "Your day"} · from €${scopePriceFromEur} / guest`
-    : null;
+  const scopeTrailing =
+    scopeRegion && scopeStops > 0
+      ? `${scopeRegion} · ${scopeStops} ${scopeStops === 1 ? "moment" : "moments"}`
+      : (scopeRegion ?? null);
   const collapsedTrailing = storyLoading
     ? "Composing…"
     : scopeTrailing
@@ -409,16 +400,12 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
               durationLabel={scopeDuration}
               originLabel={originLabel}
               paceLabel={state.rhythm ? getOptionLabel(RHYTHMS, state.rhythm) : null}
-              investmentLabel={investmentLabel}
               storyText={aiStory?.text ?? null}
               storyLoading={storyLoading}
               storySource={aiStory?.source ?? null}
               scopeRegion={scopeRegion}
               scopeDuration={scopeDuration}
               scopeStops={scopeStops}
-              scopePriceFromEur={scopePriceFromEur}
-              scopePartyCount={partyCount}
-              scopePartyTotalEur={scopePartyTotalEur}
               memoryLine={memoryLine}
               tourId={resolved?.skeletonTourKey ?? null}
               stopCount={routePoints.length}
@@ -450,17 +437,13 @@ interface DrawerProps {
   durationLabel: string | null;
   originLabel: string | null;
   paceLabel: string | null;
-  investmentLabel: string | null;
   storyText: string | null;
   storyLoading: boolean;
   storySource: "ai" | "fallback" | null;
-  /** Scope strip — fuses Bible storytelling with the reference builder's clarity. */
+  /** Scope strip — value only (region · moments · duration). Never money. */
   scopeRegion: string | null;
   scopeDuration: string | null;
   scopeStops: number;
-  scopePriceFromEur: number | null;
-  scopePartyCount: number | null;
-  scopePartyTotalEur: number | null;
   memoryLine: string | null;
   tourId: string | null;
   stopCount: number;
@@ -485,16 +468,12 @@ function JourneyDraftDrawer({
   durationLabel,
   originLabel,
   paceLabel,
-  investmentLabel,
   storyText,
   storyLoading,
   storySource,
   scopeRegion,
   scopeDuration,
   scopeStops,
-  scopePriceFromEur,
-  scopePartyCount,
-  scopePartyTotalEur,
   memoryLine,
   tourId,
   stopCount,
@@ -676,11 +655,9 @@ function JourneyDraftDrawer({
             </ul>
           ) : null}
 
-          {/* Scope strip — reference-builder DNA: region · stops · hours ·
-              Experience Investment from. Real data only; nothing invented.
-              Renders the moment a Signature resolves; before that, the
-              dnaSummary above is the only "what you're building" cue. */}
-          {scopeRegion || scopeDuration || scopeStops > 0 || scopePriceFromEur ? (
+          {/* Scope strip — region · moments · hours. Value only: no money
+              appears before the traveller has felt the composed day. */}
+          {scopeRegion || scopeDuration || scopeStops > 0 ? (
             <div
               data-testid="studio-v3-journey-scope"
               className="mt-3 rounded-[4px] border px-3 py-2.5"
@@ -752,40 +729,6 @@ function JourneyDraftDrawer({
                   </li>
                 ) : null}
               </ul>
-              {scopePriceFromEur ? (
-                <p className="mt-2 text-[12px] tabular-nums" style={{ color: "var(--charcoal)" }}>
-                  <span
-                    className="mr-1.5 text-[9px] uppercase tracking-[0.24em] font-bold"
-                    style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
-                  >
-                    Experience Investment
-                  </span>
-                  <span className="font-semibold">from €{scopePriceFromEur}</span>{" "}
-                  <span className="text-[10px] uppercase tracking-[0.18em] opacity-70">
-                    / guest
-                  </span>
-                  {scopePartyTotalEur && scopePartyCount ? (
-                    <>
-                      {" "}
-                      <span style={{ color: "var(--gold)" }}>·</span>{" "}
-                      <span>
-                        party of {scopePartyCount}{" "}
-                        <span className="font-semibold">~€{scopePartyTotalEur}</span>
-                      </span>
-                    </>
-                  ) : null}
-                </p>
-              ) : (
-                <p
-                  className="mt-2 text-[11px] italic"
-                  style={{
-                    fontFamily: "var(--font-editorial)",
-                    color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-                  }}
-                >
-                  Experience Investment — shaped with you.
-                </p>
-              )}
             </div>
           ) : null}
 
@@ -919,21 +862,6 @@ function JourneyDraftDrawer({
             </div>
           ) : null}
 
-          {/* Investment — label only, only after selection */}
-          {investmentLabel ? (
-            <p
-              className="mt-3 text-[12px] leading-snug"
-              style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
-            >
-              <span
-                className="mr-1.5 text-[9.5px] uppercase tracking-[0.22em] font-bold"
-                style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
-              >
-                Investment
-              </span>
-              {investmentLabel}
-            </p>
-          ) : null}
 
           {/* CTA */}
           <button
