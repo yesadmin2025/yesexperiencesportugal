@@ -641,8 +641,12 @@ export function FinalRevealStory({
       {/* CTAs — primary continue + ghost save (P1 audit #5: Save moves
           from right-aligned gold underline to a peer ghost pill beside
           the primary so both share the pill family and the primary
-          voice reads first). Back stays tertiary. */}
-      <div className="mt-8 flex flex-col items-stretch gap-3">
+          voice reads first). Back stays tertiary.
+          P8: in `inline` mode the unified "Your Day" surface owns the
+          single primary CTA, save and back chrome, so the story renders
+          none of its own. */}
+      <div className={cn("mt-8 flex flex-col items-stretch gap-3", inline && "hidden")}>
+
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             type="button"
