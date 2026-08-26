@@ -3199,16 +3199,13 @@ function resolveRevealRouteStops(
     ? { lat: REGION_ORIGIN[rk].lat, lng: REGION_ORIGIN[rk].lng }
     : null;
 
-  let lastKnown: { lat: number; lng: number } | null = originCoord;
   const stopsDetailed = editedStops.map((s) => {
     const rp = byLabel.get(s.label.toLowerCase());
     if (rp && rp.lat != null && rp.lng != null) {
-      lastKnown = { lat: rp.lat, lng: rp.lng };
       return { label: s.label, lat: rp.lat, lng: rp.lng };
     }
     const geo = lookupStopGeo(s.label);
     if (geo) {
-      lastKnown = { lat: geo.lat, lng: geo.lng };
       return {
         label: s.label,
         lat: geo.lat,
@@ -3217,11 +3214,13 @@ function resolveRevealRouteStops(
         kind: geo.kind,
       };
     }
-    if (lastKnown) {
-      return { label: s.label, lat: lastKnown.lat, lng: lastKnown.lng };
-    }
+    // No approved coordinate for this moment. We leave it empty on purpose:
+    // borrowing the previous stop's position would put a pin somewhere the
+    // traveller is not going. The unified surface reads this gap and shows
+    // the truthful timeline instead of a map.
     return { label: s.label } as { label: string; lat?: number; lng?: number };
   });
+
 
   const allGeo =
     originCoord &&
