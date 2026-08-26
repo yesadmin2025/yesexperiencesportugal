@@ -1877,7 +1877,9 @@ export function resolveStudioV3Route(input: {
     investment,
     destinationIntent,
     dateExact,
+    seed: input.seed ?? 0,
     preferTourId: input.preferTourId ?? intelligence.preferredTourId,
+
   });
 
   // Fase 5 — telemetria de decisão. Fire-and-forget; nunca bloqueia.
