@@ -64,30 +64,30 @@ replace_once(
 test_path = "src/components/studio-v3/__tests__/studio-p8-route-truth.test.tsx"
 replace_once(
     test_path,
-    '        describe("P8 hardening — truthful Your Day cartography", () => {\n',
-    '''        describe("P8 hardening — truthful Your Day cartography", () => {
-          const installMatchMedia = () => {
-            Object.defineProperty(window, "matchMedia", {
-              writable: true,
-              configurable: true,
-              value: (query: string) => ({
-                matches: query.includes("prefers-reduced-motion"),
-                media: query,
-                onchange: null,
-                addListener: () => undefined,
-                removeListener: () => undefined,
-                addEventListener: () => undefined,
-                removeEventListener: () => undefined,
-                dispatchEvent: () => false,
-              }),
-            });
-          };
+    'describe("P8 hardening — truthful Your Day cartography", () => {\n',
+    '''describe("P8 hardening — truthful Your Day cartography", () => {
+  const installMatchMedia = () => {
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      configurable: true,
+      value: (query: string) => ({
+        matches: query.includes("prefers-reduced-motion"),
+        media: query,
+        onchange: null,
+        addListener: () => undefined,
+        removeListener: () => undefined,
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+        dispatchEvent: () => false,
+      }),
+    });
+  };
 ''',
 )
 replace_once(
     test_path,
-    '          it("earns map mode only when every moment has real coherent coordinates", () => {\n            const resolved =',
-    '          it("earns map mode only when every moment has real coherent coordinates", () => {\n            installMatchMedia();\n            const resolved =',
+    '  it("earns map mode only when every moment has real coherent coordinates", () => {\n    const resolved =',
+    '  it("earns map mode only when every moment has real coherent coordinates", () => {\n    installMatchMedia();\n    const resolved =',
 )
 
 print("P8 hardening follow-up applied")
