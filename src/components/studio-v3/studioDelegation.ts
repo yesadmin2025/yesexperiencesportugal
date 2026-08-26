@@ -59,14 +59,27 @@ export function isDelegationActive(
  * or Your Day, and never twice once delegation is active.
  */
 export function isDelegationOffered(
-  state: Pick<StudioV3State, "feeling" | "companions" | "delegationMode" | "rhythm">,
+  state: Pick<
+    StudioV3State,
+    "feeling" | "companions" | "delegationMode" | "rhythm" | "interests" | "decidedForMe"
+  >,
   phase: "interests" | "rhythm",
 ): boolean {
   if (!isDelegationEligible(state)) return false;
   if (isDelegationActive(state)) return false;
-  if (phase === "rhythm") return state.rhythm == null;
+  if (phase === "rhythm") {
+    // The Rhythm offer exists ONLY for travellers who chose their own tastes
+    // and want the pace handed over. With no interests (a direct or legacy
+    // landing on Rhythm) we would be fabricating the taste layer, and with
+    // delegated interests the offer would repeat what YES already owns.
+    if (state.rhythm != null) return false;
+    const interests = state.interests ?? [];
+    if (interests.length === 0) return false;
+    return !(state.decidedForMe ?? []).includes("interests");
+  }
   return true;
 }
+
 
 export interface DelegationResult {
   /** New state with the remaining taste layer completed. */
