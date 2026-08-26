@@ -46,9 +46,14 @@ describe("P13 Studio mobile presentation contract", () => {
 
   it("strengthens the Your Day hierarchy specifically on the narrow surface", () => {
     const yourDay = source("YourDayFrame.tsx");
+    const timeline = source("YourDayTimeline.tsx");
 
     expect(yourDay).toContain("text-[27px] sm:text-[30px]");
     expect(yourDay).toContain("text-[14px] sm:text-[13px]");
     expect(yourDay).toContain("max-w-[440px]");
+
+    expect(timeline).toContain("pl-10 sm:pl-8");
+    expect(timeline).toContain("h-[30px] w-[30px] sm:h-[26px] sm:w-[26px]");
+    expect(timeline).toContain("text-[13.5px] sm:text-[13px]");
   });
 });
