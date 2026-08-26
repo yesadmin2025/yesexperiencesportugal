@@ -49,7 +49,7 @@ export function PhaseShell({
 
   return (
     <div
-      className={`relative min-h-[100dvh] w-full overflow-hidden transition-opacity duration-[var(--dur-slow)] ease-[cubic-bezier(0.22,0.61,0.36,1)] motion-reduce:transition-none ${
+      className={`relative min-h-[100dvh] w-full overflow-x-hidden transition-opacity duration-[var(--dur-slow)] ease-[cubic-bezier(0.22,0.61,0.36,1)] motion-reduce:transition-none ${
         entered && !exiting ? "opacity-100" : "opacity-0"
       }`}
       style={{ background: "var(--ivory)" }}
@@ -72,10 +72,11 @@ export function PhaseShell({
           background: `radial-gradient(120% 80% at 50% 0%, ${accentColor} 0%, transparent 65%)`,
         }}
       />
-      {/* Hairline gold horizon. */}
+      {/* Hairline gold horizon. Kept for the wide cinematic stage; on a phone
+          the Back control and title need this vertical band to themselves. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-[18%] z-[2] h-px w-12 -translate-x-1/2"
+        className="pointer-events-none absolute left-1/2 top-[18%] z-[2] hidden h-px w-12 -translate-x-1/2 sm:block"
         style={{ background: "var(--gold)" }}
       />
 
@@ -114,7 +115,7 @@ export function PhaseShell({
 
       <div
         data-testid="studio-v3-content-layer"
-        className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-start px-5 pt-14 pb-28 sm:pt-28 sm:justify-center sm:py-20"
+        className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-start px-5 pt-[max(80px,calc(env(safe-area-inset-top)+64px))] pb-[max(112px,calc(env(safe-area-inset-bottom)+96px))] sm:justify-center sm:py-20 sm:pt-28"
       >
         {children}
       </div>
