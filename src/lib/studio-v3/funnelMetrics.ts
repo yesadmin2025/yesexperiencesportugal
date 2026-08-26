@@ -139,7 +139,12 @@ export function computeStudioFunnelStats(
       if (!continued.has(row.step_key)) continued.set(row.step_key, new Set());
       continued.get(row.step_key)!.add(row.session_id);
     }
-    if (row.event === "continue" || row.event === "back" || row.event === "abandon") {
+    if (
+      row.event === "continue" ||
+      row.event === "back" ||
+      row.event === "abandon" ||
+      row.event === "secure_confirm"
+    ) {
       const ms = typeof row.value?.ms_on_step === "number" ? row.value.ms_on_step : null;
       if (ms != null && ms >= 0 && ms < 10 * 60 * 1000) {
         if (!msByStep.has(row.step_key)) msByStep.set(row.step_key, []);
