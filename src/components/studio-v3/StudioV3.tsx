@@ -2809,9 +2809,13 @@ export function StudioV3() {
             onClick={continueFromInterests}
             label={countableSelectedInterests.length < 1 ? "Choose at least one" : "Continue"}
           />
-          {countableSelectedInterests.length < 1 ? (
-            <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("interests")} />
+          {isDelegationOffered(state, "interests") ? (
+            <StudioDelegationCard
+              onDelegate={() => onDelegateToYes("interests")}
+              acknowledgement={delegationNote}
+            />
           ) : null}
+
         </PhaseShell>
       ) : null}
 
