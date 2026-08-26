@@ -14,7 +14,6 @@ import {
   COMPANIONS,
   FEELINGS,
   INTERESTS,
-  INVESTMENT_TIERS,
   RHYTHMS,
   type StudioV3State,
 } from "./types";
@@ -86,7 +85,6 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
   const scopeStops = tour?.stops.length ?? 0;
   const scopeDuration = tour?.durationHours ?? null;
   const scopeRegion = tour?.region ?? resolved?.routeAreaLabel ?? null;
-  const scopePriceFromEur = tour?.priceFrom ?? null;
 
   // -------- Adaptive progress (milestone-based, not question-based) --------
   // The Studio is adaptive — some phases get skipped or inferred. So we
@@ -119,14 +117,9 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
             ? `${pct}% shaped`
             : "Just started";
 
-  const investmentLabel = state.investment
-    ? getOptionLabel(INVESTMENT_TIERS, state.investment)
-    : null;
-  const statusLabel = state.rhythm
-    ? "Draft ready"
-    : investmentLabel
-      ? `Investment direction: ${investmentLabel}`
-      : "Composing your day";
+  // P9 — price after value: the composer never frames the day in money.
+  // Status stays value-first; investment stays internal to curation only.
+  const statusLabel = state.rhythm ? "Draft ready" : "Composing your day";
 
   // Build aria summary.
   const ariaParts: string[] = ["Journey composer"];
@@ -314,14 +307,6 @@ export function ComposerMap({ state, hidden = false }: ComposerMapProps) {
                   {scopeDuration ? ` · ~${scopeDuration}` : ""}
                 </span>
               </span>
-              {scopePriceFromEur != null ? (
-                <span
-                  className="hidden sm:inline text-[9.5px] uppercase tracking-[0.22em] font-bold"
-                  style={{ color: "var(--gold)" }}
-                >
-                  From €{scopePriceFromEur} / guest
-                </span>
-              ) : null}
             </div>
             <p
               className="hidden sm:block text-[10.5px] italic leading-tight"
