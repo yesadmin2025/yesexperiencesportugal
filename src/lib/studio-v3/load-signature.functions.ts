@@ -1,13 +1,16 @@
 /**
- * Studio V3 — load a saved Signature by share token (Phase 7A hydration).
+ * Studio V3 — load a saved Signature by share token.
  *
- * Public server fn (no auth) — relies on supabaseAdmin to filter strictly
- * by status='saved' + token match. Returns the persisted Studio V3 state
- * snapshot so the client can rehydrate the reveal.
+ * Public server fn (no auth) — relies on supabaseAdmin to filter strictly by
+ * status='saved' + token match. P12 re-sanitizes the stored state on every
+ * read so historical saved rows created before the durable privacy boundary
+ * cannot leak identity/contact or sensitive-consideration fields back to the
+ * browser.
  */
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { sanitizeStudioDurableState } from "./draftSnapshot";
 
 const schema = z.object({
   token: z
@@ -43,7 +46,6 @@ export const loadStudioV3Signature = createServerFn({ method: "POST" })
       journeyTitle: (row.journey_title as string | null) ?? null,
       skeletonTourKey: (row.skeleton_tour_key as string | null) ?? null,
       savedAt: (row.saved_at as string | null) ?? null,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      state: (row.state ?? {}) as any,
+      state: sanitizeStudioDurableState(row.state),
     };
   });
