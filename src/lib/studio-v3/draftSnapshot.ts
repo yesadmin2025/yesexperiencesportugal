@@ -240,8 +240,9 @@ export function sanitizeStudioDurableState(value: unknown): SafeStudioDraftState
   }
   if (Array.isArray(source.interests)) {
     out.interests = source.interests
-      .filter((item): item is StudioV3State["interests"][number] =>
-        typeof item === "string" && INTERESTS.has(item),
+      .filter(
+        (item): item is StudioV3State["interests"][number] =>
+          typeof item === "string" && INTERESTS.has(item),
       )
       .slice(0, 10);
   }
@@ -301,8 +302,9 @@ export function sanitizeStudioDurableState(value: unknown): SafeStudioDraftState
 
   if (Array.isArray(source.decidedForMe)) {
     out.decidedForMe = source.decidedForMe
-      .filter((item): item is StudioV3State["decidedForMe"][number] =>
-        typeof item === "string" && DECIDED_FOR_ME.has(item),
+      .filter(
+        (item): item is StudioV3State["decidedForMe"][number] =>
+          typeof item === "string" && DECIDED_FOR_ME.has(item),
       )
       .slice(0, 3);
   }
@@ -319,10 +321,10 @@ export function isMeaningfulStudioDraft(state: SafeStudioDraftState): boolean {
   if (!state.phase || state.phase === "intro") return false;
   return Boolean(
     state.feeling ||
-      state.companions ||
-      (state.interests && state.interests.length > 0) ||
-      state.rhythm ||
-      state.tourId,
+    state.companions ||
+    (state.interests && state.interests.length > 0) ||
+    state.rhythm ||
+    state.tourId,
   );
 }
 
