@@ -85,7 +85,10 @@ import {
   STUDIO_V3_PHASE_ORDER,
 } from "./curation";
 import { UnifiedYourDayRoute } from "./UnifiedYourDayRoute";
-import { resolveAuthoritativeRouteStops } from "./studioRouteAuthority";
+import {
+  resolveAuthoritativeRouteStops,
+  studioRouteShapingInput,
+} from "./studioRouteAuthority";
 import { findTour, signatureTours } from "@/data/signatureTours";
 import { getTourContent } from "@/lib/tourContent";
 import {
