@@ -27,6 +27,13 @@ describe("card-only checkout", () => {
   });
 
   it("never enables a non-card rail server-side", () => {
+    // Comments may name the rails we deliberately exclude; only executable
+    // code is scanned.
+    const code = edgeFn
+      .split("\n")
+      .filter((line) => !line.trim().startsWith("//"))
+      .join("\n")
+      .toLowerCase();
     for (const rail of [
       "klarna",
       "paypal",
