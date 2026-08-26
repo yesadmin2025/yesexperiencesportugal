@@ -2063,6 +2063,8 @@ export function resolveStudioV3Route(input: {
     routeAreaLabel: journey.tour.region,
     suggestedRouteLabel,
     routePoints,
+    composedRoutePoints,
+
     journeyTitle,
     whyItFits,
     refinements: finalRefinements,
