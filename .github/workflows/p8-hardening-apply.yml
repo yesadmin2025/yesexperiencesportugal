@@ -25,11 +25,15 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Validate patch runner
-        run: python -m py_compile .github/p8-hardening-patch.py
+      - name: Validate patch runners
+        run: |
+          python -m py_compile .github/p8-hardening-patch.py
+          python -m py_compile .github/p8-hardening-fix.py
 
-      - name: Apply P8 hardening patch
-        run: python .github/p8-hardening-patch.py
+      - name: Apply P8 hardening patches
+        run: |
+          python .github/p8-hardening-patch.py
+          python .github/p8-hardening-fix.py
 
       - name: Focused P8 and route-truth tests
         run: |
