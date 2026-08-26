@@ -84,9 +84,7 @@ const STUDIO_PII_KEYS = new Set([
 ]);
 
 /** P11 defence-in-depth: internal funnel milestones must never store PII. */
-export function stripStudioAnalyticsPii(
-  params: Record<string, unknown>,
-): Record<string, unknown> {
+export function stripStudioAnalyticsPii(params: Record<string, unknown>): Record<string, unknown> {
   const clean: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(params)) {
     if (value === undefined || value === null) continue;
@@ -97,10 +95,7 @@ export function stripStudioAnalyticsPii(
 }
 
 /** Fire one Studio product event. Never throws, never blocks the journey. */
-export function trackStudio(
-  event: StudioAnalyticsEvent,
-  params: StudioAnalyticsParams = {},
-): void {
+export function trackStudio(event: StudioAnalyticsEvent, params: StudioAnalyticsParams = {}): void {
   const { phase = "unknown", stepNumber = 0, ...rest } = params;
   const safeRest = stripStudioAnalyticsPii(rest);
   try {
