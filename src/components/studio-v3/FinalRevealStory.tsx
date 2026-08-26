@@ -392,7 +392,10 @@ export function FinalRevealStory({
                 {region}
               </p>
             )}
-            {revealSignals.length > 0 ? (
+            {/* P8: inside the unified "Your Day" the traveller has already read
+              the ordered moments above, so the chip wall of signals would only
+              restate them. One quiet cue is kept below the intro instead. */}
+            {revealSignals.length > 0 && !inline ? (
               <ul
                 data-testid="studio-v3-final-reveal-signals"
                 className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-2"
@@ -433,7 +436,21 @@ export function FinalRevealStory({
             >
               {intro}
             </p>
-            {paragraphs.map((p) => (
+            {inline && revealSignals.length > 0 ? (
+              <p
+                data-testid="studio-v3-inline-why-this-fits"
+                className="text-[13px] italic leading-[1.7]"
+                style={{
+                  fontFamily: "var(--font-editorial)",
+                  color: "color-mix(in oklab, var(--charcoal) 66%, transparent)",
+                }}
+              >
+                {revealSignals[0]}
+              </p>
+            ) : null}
+            {/* Inline mode stays a lightweight chapter — no stop-by-stop
+              re-enumeration of a route the traveller has just seen. */}
+            {(inline ? [] : paragraphs).map((p) => (
               <p
                 key={p.key}
                 className={cn(
