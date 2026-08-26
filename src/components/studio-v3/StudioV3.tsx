@@ -2430,9 +2430,9 @@ export function StudioV3() {
           ) : (
             <FooterHint>One choice. You can shape the rest later.</FooterHint>
           )}
-          {state.feeling ? null : (
-            <LetYesDecide label="Let YES decide" onClick={() => onLetYesDecide("feeling")} />
-          )}
+          {/* P10 — Feeling is answered personally. Delegation is offered once,
+              later, as one concierge moment (see StudioDelegationCard). */}
+
         </PhaseShell>
       ) : null}
 
