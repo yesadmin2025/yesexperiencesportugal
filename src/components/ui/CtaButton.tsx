@@ -2,7 +2,11 @@ import * as React from "react";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { Link, type LinkProps } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
-import { P14_YOUR_DAY_CTA_TEST_ID } from "@/lib/studio-v3/experiments";
+import {
+  P14_YOUR_DAY_CTA_TEST_ID,
+  p14YourDayCtaLabelForVariant,
+  readStoredP14YourDayCtaVariant,
+} from "@/lib/studio-v3/experiments";
 
 /**
  * CtaButton — site-wide primary / ghost CTA, with the canonical arrow
@@ -166,22 +170,9 @@ export function CtaButton(props: CtaButtonProps) {
 
   const testId = (props as { "data-testid"?: string })["data-testid"];
   const isP14YourDayTarget = testId === P14_YOUR_DAY_CTA_TEST_ID;
-  const [p14Label, setP14Label] = React.useState<string | null>(null);
-
-  React.useEffect(() => {
-    if (!isP14YourDayTarget) return;
-    let cancelled = false;
-    // Runtime funnel code is loaded only for the single Studio experiment CTA;
-    // the site-wide button component does not pull analytics/Supabase eagerly.
-    void import("@/lib/studio-v3/experimentRuntime")
-      .then(({ currentP14YourDayCtaLabel }) => {
-        if (!cancelled) setP14Label(currentP14YourDayCtaLabel());
-      })
-      .catch(() => undefined);
-    return () => {
-      cancelled = true;
-    };
-  }, [isP14YourDayTarget]);
+  const p14Variant = isP14YourDayTarget ? readStoredP14YourDayCtaVariant() : null;
+  const isP14ExperimentActive = isP14YourDayTarget && p14Variant !== null;
+  const p14Label = isP14ExperimentActive ? p14YourDayCtaLabelForVariant(p14Variant) : null;
 
   const isHairline = variant === "hairline";
   const isKinetic = variant === "primary" || variant === "ghostDark";
@@ -214,7 +205,7 @@ export function CtaButton(props: CtaButtonProps) {
     );
 
   const baseLabelNode = loading && loadingLabel !== undefined ? loadingLabel : children;
-  const labelNode = isP14YourDayTarget && !loading && p14Label ? p14Label : baseLabelNode;
+  const labelNode = isP14ExperimentActive && !loading && p14Label ? p14Label : baseLabelNode;
 
   const content = (
     <>
@@ -327,7 +318,7 @@ export function CtaButton(props: CtaButtonProps) {
     ...rest
   } = props;
 
-  const experimentAttrs = isP14YourDayTarget
+  const experimentAttrs = isP14ExperimentActive
     ? { "aria-label": p14Label ?? "Continue to guest details" }
     : {};
 
@@ -340,7 +331,7 @@ export function CtaButton(props: CtaButtonProps) {
       {...rest}
       {...experimentAttrs}
       onClick={(event) => {
-        if (isP14YourDayTarget) {
+        if (isP14ExperimentActive) {
           void import("@/lib/studio-v3/experimentRuntime")
             .then(({ trackP14YourDayCtaClick }) => trackP14YourDayCtaClick())
             .catch(() => undefined);
