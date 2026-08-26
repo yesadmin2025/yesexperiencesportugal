@@ -19,7 +19,7 @@ import { buildSignatureStorySnapshot } from "../signatureStorySnapshot";
 import { resolveYourDayMapTruth } from "../yourDayMapTruth";
 import { INITIAL_STATE, type StudioV3State } from "../types";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
-import { SIGNATURE_TOURS } from "@/data/signatureTours";
+import { signatureTours } from "@/data/signatureTours";
 
 const MONDAY = "2026-06-15";
 const TUESDAY = "2026-06-16";
@@ -31,7 +31,7 @@ function state(patch: Partial<StudioV3State>): StudioV3State {
 /** Every label a truthful day may contain: Signature stops + region pool. */
 const APPROVED_LABELS = new Set<string>(
   [
-    ...SIGNATURE_TOURS.flatMap((t) => t.stops.map((s) => s.label)),
+    ...signatureTours.flatMap((t) => t.stops.map((s) => s.label)),
     ...REGION_STOP_POOL.map((s) => s.name),
   ].map((l) => l.toLowerCase()),
 );
@@ -119,7 +119,7 @@ describe("P8 — authority chain", () => {
     rhythm: "balanced",
     interests: ["coast"],
     pickup: "lisbon",
-    tourId: SIGNATURE_TOURS[0].id,
+    tourId: signatureTours[0].id,
   });
 
   it("edited points beat the composed route AND a changed technical tourId", () => {
@@ -127,7 +127,7 @@ describe("P8 — authority chain", () => {
     const stops = resolveAuthoritativeRouteStops({
       editedRoutePoints: edited,
       resolved: resolveStudioV3Route(studioRouteShapingInput(base)),
-      catalogStops: SIGNATURE_TOURS[1].stops,
+      catalogStops: signatureTours[1].stops,
     });
     expect(stops.map((s) => s.label)).toEqual(["My own stop"]);
   });
@@ -144,9 +144,9 @@ describe("P8 — authority chain", () => {
     const stops = resolveAuthoritativeRouteStops({
       editedRoutePoints: null,
       resolved: { composedRoutePoints: [], routePoints: [] },
-      catalogStops: SIGNATURE_TOURS[0].stops,
+      catalogStops: signatureTours[0].stops,
     });
-    expect(stops.length).toBe(SIGNATURE_TOURS[0].stops.length);
+    expect(stops.length).toBe(signatureTours[0].stops.length);
   });
 });
 
