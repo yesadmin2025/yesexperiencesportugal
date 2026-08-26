@@ -398,6 +398,8 @@ export const INITIAL_STATE: StudioV3State = {
   pathMode: "guided",
   rerollCount: 0,
   decidedForMe: [],
+  delegationMode: null,
+
   guestDraft: null,
 };
 
