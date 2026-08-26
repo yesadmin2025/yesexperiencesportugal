@@ -26,7 +26,6 @@ import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { cn } from "@/lib/utils";
-import { trackStep } from "@/lib/studio-v3-funnel";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import { PerPersonBands } from "@/components/checkout/PerPersonBands";
 
@@ -114,7 +113,6 @@ export function CheckoutSummary({
   onReserve,
   clientSecret = null,
   publishableKey = null,
-  onPaymentComplete,
   className,
   testId,
 }: CheckoutSummaryProps) {
@@ -377,17 +375,11 @@ export function CheckoutSummary({
           >
             <EmbeddedCheckoutProvider
               stripe={getStripePromise(publishableKey)}
-              options={{
-                clientSecret,
-                onComplete: () => {
-                  trackStep({
-                    stepNumber: 0,
-                    stepKey: "checkoutSummary",
-                    event: "secure_confirm",
-                  });
-                  onPaymentComplete?.(null);
-                },
-              }}
+              // Stripe owns completion and redirects through the server-authored
+              // return_url. That URL contains {CHECKOUT_SESSION_ID}, so the
+              // confirmation route receives the real session id and can verify
+              // payment instead of trusting a client-only success callback.
+              options={{ clientSecret }}
             >
               <EmbeddedCheckout />
             </EmbeddedCheckoutProvider>
