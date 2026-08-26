@@ -88,10 +88,7 @@ function StudioV3FunnelPage() {
             <p className="text-[10px] uppercase tracking-[0.26em] font-semibold text-[color:var(--gold)]">
               Internal · Studio V3 · P11
             </p>
-            <h1
-              className="mt-1 text-3xl font-bold"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
+            <h1 className="mt-1 text-3xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
               Funnel intelligence
             </h1>
             <p className="mt-2 text-sm leading-6 text-[color:var(--charcoal)]/70">
@@ -142,9 +139,7 @@ function StudioV3FunnelPage() {
           </div>
         ) : null}
 
-        {!rows && !err ? (
-          <p className="text-sm text-[color:var(--charcoal)]/60">Loading…</p>
-        ) : null}
+        {!rows && !err ? <p className="text-sm text-[color:var(--charcoal)]/60">Loading…</p> : null}
 
         {stats ? (
           <>
@@ -194,13 +189,9 @@ function StudioV3FunnelPage() {
                   </thead>
                   <tbody>
                     {stats.perStep.map((step) => {
-                      const danger =
-                        step.dropPct != null && step.dropPct > 25 && step.reached >= 5;
+                      const danger = step.dropPct != null && step.dropPct > 25 && step.reached >= 5;
                       return (
-                        <tr
-                          key={step.key}
-                          className="border-t border-[color:var(--charcoal)]/5"
-                        >
+                        <tr key={step.key} className="border-t border-[color:var(--charcoal)]/5">
                           <td className="px-3 py-2 font-medium">
                             {step.label}
                             {step.optional ? (
@@ -310,9 +301,7 @@ function StudioV3FunnelPage() {
                         className="border-t border-[color:var(--charcoal)]/5"
                       >
                         <td className="px-3 py-2 font-medium">{variant.variant}</td>
-                        <td className="px-3 py-2 text-right tabular-nums">
-                          {variant.sessions}
-                        </td>
+                        <td className="px-3 py-2 text-right tabular-nums">{variant.sessions}</td>
                         <td className="px-3 py-2 text-right tabular-nums">
                           {variant.yourDayReached} · {variant.yourDayRate}%
                         </td>
@@ -330,9 +319,9 @@ function StudioV3FunnelPage() {
             </section>
 
             <p className="text-xs leading-5 text-[color:var(--charcoal)]/50">
-              Showing up to 20,000 events. Funnel rows are session-deduped. Drop-off over 25%
-              with at least five reached sessions is highlighted. SELECT remains admin-only via
-              Supabase RLS. P11 semantic milestones strip PII before insertion.
+              Showing up to 20,000 events. Funnel rows are session-deduped. Drop-off over 25% with
+              at least five reached sessions is highlighted. SELECT remains admin-only via Supabase
+              RLS. P11 semantic milestones strip PII before insertion.
             </p>
           </>
         ) : null}
