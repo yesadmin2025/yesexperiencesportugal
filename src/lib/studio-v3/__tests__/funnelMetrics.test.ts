@@ -77,7 +77,7 @@ describe("P11 · current Studio funnel model", () => {
       row("b", "interests", "milestone", { studio_event: "surprise_me_selected" }),
       row("a", "logistics", "milestone", { studio_event: "logistics_completed" }),
       row("a", "storyboard", "milestone", { studio_event: "moment_swapped" }),
-      row("a", "storyboard", "tier_chosen", { studio_event: "price_expanded" }),
+      row("a", "storyboard", "milestone", { studio_event: "price_expanded" }),
     ]);
     expect(stats.milestones).toEqual({
       directorsRead: 1,
@@ -123,17 +123,27 @@ describe("P11 · instrumentation contract", () => {
     "utf8",
   );
 
-  it("persists non-native semantic events as funnel milestones without changing GA routing", () => {
+  it("persists semantic events as funnel milestones without changing GA routing", () => {
     expect(funnel).toContain('| "milestone"');
     expect(analytics).toContain('event: "milestone"');
-    expect(analytics).toContain('value: { studio_event: event, ...rest }');
+    expect(analytics).toContain('value: { studio_event: event, ...safeRest }');
     expect(analytics).toContain('trackEvent((ga ?? "studio_step_completed")');
   });
 
-  it("keeps native funnel events on their existing single-write route", () => {
-    expect(analytics).toContain('price_expanded: "tier_chosen"');
+  it("keeps true native funnel events single-write and never treats price expansion as a tier choice", () => {
     expect(analytics).toContain('guest_details_started: "secure_open"');
+    expect(analytics).not.toContain('price_expanded: "tier_chosen"');
     expect(analytics).toContain("if (funnel)");
+  });
+
+  it("strips contact/identity fields before internal funnel persistence", () => {
+    expect(analytics).toContain("STUDIO_PII_KEYS");
+    expect(analytics).toContain('"email"');
+    expect(analytics).toContain('"phone"');
+    expect(analytics).toContain('"full_name"');
+    expect(analytics).toContain('"pickup_address"');
+    expect(analytics).toContain("stripStudioAnalyticsPii");
+    expect(analytics).toContain("safeRest");
   });
 
   it("dashboard consumes the pure current-flow aggregator", () => {
