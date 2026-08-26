@@ -1,4 +1,4 @@
-// Studio V3 — "Let YES decide" is a real answer, not a skipped question.
+// Studio V3 — P10 delegation ("Let YES design the rest") is a real answer, not a skipped question.
 //
 // Walks the funnel at 393px handing feeling, interests and rhythm to the
 // curator, keeps the date flexible, and asserts:
