@@ -1706,33 +1706,25 @@ export function StudioV3() {
   };
 
   /**
-   * "Let YES decide" — the traveller hands one dimension to the curator.
-   * We commit a REAL value inferred from their own answers (deterministic,
-   * taxonomy-bound) and continue exactly as if they had chosen it.
+   * P10 — premium delegation mode. The traveller has personally answered
+   * Feeling and Who; from Interests (or once more on Rhythm) they may hand
+   * the remaining TASTE layer to YES in one gesture. Deterministic, taxonomy
+   * bound, explicit choices preserved, operational facts untouched, and the
+   * adaptive refinement is skipped rather than fabricated.
    */
-  const onLetYesDecide = (key: DecidedForMeKey) => {
-    trackStudio("surprise_me_selected", { phase: key, stepNumber: stepOf(state.phase) });
-    if (key === "feeling") {
-      const id = decideFeeling(state);
-      setState((s) => ({ ...s, decidedForMe: [...new Set([...s.decidedForMe, key])] }));
-      onFeeling(id);
-      return;
-    }
-    if (key === "interests") {
-      const ids = decideInterests(state);
-      const forward: StudioV3State = {
-        ...state,
-        interests: ids,
-        decidedForMe: [...new Set([...state.decidedForMe, key])],
-      };
-      setState(() => forward);
-      window.setTimeout(() => advance(getNextPhase(forward, "interests")), 80);
-      return;
-    }
-    const rhythmId = decideRhythm(state);
-    setState((s) => ({ ...s, decidedForMe: [...new Set([...s.decidedForMe, key])] }));
-    onRhythm(rhythmId);
+  const [delegationNote, setDelegationNote] = useState<string | null>(null);
+  const onDelegateToYes = (from: "interests" | "rhythm") => {
+    if (!isDelegationEligible(state)) return;
+    const { state: forward, delegated } = applyDelegation(state);
+    if (delegated.length === 0 && !isDelegationActive(forward)) return;
+    trackStudio("surprise_me_selected", { phase: from, stepNumber: stepOf(state.phase) });
+    setState(() => forward);
+    setDelegationNote(delegationAcknowledgement(delegated));
+    // Delegation completes interests AND rhythm, so we continue from rhythm:
+    // refinement is irrelevant in delegation mode and Logistics follows.
+    window.setTimeout(() => advance(getNextPhase(forward, "rhythm")), 220);
   };
+
 
   const onRhythm = (id: Rhythm) => {
     const name = state.firstName?.trim() || null;
