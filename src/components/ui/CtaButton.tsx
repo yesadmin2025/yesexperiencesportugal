@@ -2,6 +2,11 @@ import * as React from "react";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { Link, type LinkProps } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import {
+  P14_YOUR_DAY_CTA_TEST_ID,
+  p14YourDayCtaLabelForVariant,
+  readStoredP14YourDayCtaVariant,
+} from "@/lib/studio-v3/experiments";
 
 /**
  * CtaButton — site-wide primary / ghost CTA, with the canonical arrow
@@ -163,6 +168,12 @@ export function CtaButton(props: CtaButtonProps) {
     children,
   } = props;
 
+  const testId = (props as { "data-testid"?: string })["data-testid"];
+  const isP14YourDayTarget = testId === P14_YOUR_DAY_CTA_TEST_ID;
+  const p14Variant = isP14YourDayTarget ? readStoredP14YourDayCtaVariant() : null;
+  const isP14ExperimentActive = isP14YourDayTarget && p14Variant !== null;
+  const p14Label = isP14ExperimentActive ? p14YourDayCtaLabelForVariant(p14Variant) : null;
+
   const isHairline = variant === "hairline";
   const isKinetic = variant === "primary" || variant === "ghostDark";
 
@@ -193,7 +204,8 @@ export function CtaButton(props: CtaButtonProps) {
       (icon ?? <KineticArrow tone={variant === "primary" ? "gold" : "goldSoft"} />)
     );
 
-  const labelNode = loading && loadingLabel !== undefined ? loadingLabel : children;
+  const baseLabelNode = loading && loadingLabel !== undefined ? loadingLabel : children;
+  const labelNode = isP14ExperimentActive && !loading && p14Label ? p14Label : baseLabelNode;
 
   const content = (
     <>
@@ -302,8 +314,14 @@ export function CtaButton(props: CtaButtonProps) {
     className: _c,
     children: _ch,
     disabled: disabledProp,
+    onClick,
     ...rest
   } = props;
+
+  const experimentAttrs = isP14ExperimentActive
+    ? { "aria-label": p14Label ?? "Continue to guest details" }
+    : {};
+
   return (
     <button
       className={sharedClassName}
@@ -311,6 +329,15 @@ export function CtaButton(props: CtaButtonProps) {
       disabled={disabledProp || loading}
       {...stateAttrs}
       {...rest}
+      {...experimentAttrs}
+      onClick={(event) => {
+        if (isP14ExperimentActive) {
+          void import("@/lib/studio-v3/experimentRuntime")
+            .then(({ trackP14YourDayCtaClick }) => trackP14YourDayCtaClick())
+            .catch(() => undefined);
+        }
+        onClick?.(event);
+      }}
     >
       {content}
     </button>

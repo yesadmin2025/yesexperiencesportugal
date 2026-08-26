@@ -21,6 +21,7 @@ import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent, type YesAnalyticsEvent } from "@/lib/analytics-events";
 import { enrichStudioFunnelTiming } from "@/lib/studio-v3/funnelTiming";
+import { assignP14YourDayCtaVariant } from "@/lib/studio-v3/experiments";
 
 const SESSION_KEY = "studio-v3.funnel.session.v1";
 const VARIANT_KEY = "studio-v3.funnel.variant.v1";
@@ -71,7 +72,15 @@ export function getFunnelSessionId(): string {
 export function getFunnelVariant(): string | null {
   if (!isBrowser()) return null;
   try {
-    return window.sessionStorage.getItem(VARIANT_KEY);
+    const existing = window.sessionStorage.getItem(VARIANT_KEY);
+    if (existing) return existing;
+
+    // P14 is the first live Studio experiment. Assignment happens lazily at
+    // the first funnel read, before that event row is built, so every event in
+    // the session carries the same arm without mutating render or using PII.
+    const assigned = assignP14YourDayCtaVariant(getFunnelSessionId());
+    window.sessionStorage.setItem(VARIANT_KEY, assigned);
+    return assigned;
   } catch {
     return null;
   }
