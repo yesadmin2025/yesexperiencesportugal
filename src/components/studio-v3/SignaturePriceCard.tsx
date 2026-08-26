@@ -740,10 +740,13 @@ export function SignaturePriceCard({
               style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
               data-testid="studio-v3-price-card-guests"
             >
-              {formatGuestComposition(adults, minorAges, partyCount) ??
-                (partyCount != null
-                  ? `For ${partyCount} ${partyCount === 1 ? "guest" : "guests"}`
-                  : "Per guest")}
+              {(() => {
+                const composition = formatGuestComposition(adults, minorAges, partyCount);
+                if (composition) return `Estimated for ${composition}`;
+                if (partyCount != null)
+                  return `Estimated for ${partyCount} ${partyCount === 1 ? "guest" : "guests"}`;
+                return "Estimated per guest";
+              })()}
             </p>
             {(() => {
               const bands = bandRowsFromJourney(journeyLines);

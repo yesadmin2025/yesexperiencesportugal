@@ -92,3 +92,79 @@ describe("P9 · investment is never an asked phase", () => {
     expect(isPhaseRelevant("investment", INITIAL_STATE)).toBe(false);
   });
 });
+
+/* -------------------------------------------------------------------------
+ * P9 hardening — pre-value surfaces carry no money/investment framing, the
+ * unified Your Day order ends in value → reasons → price, and the price card
+ * never invents a per-person average.
+ * ---------------------------------------------------------------------- */
+
+const COMPOSER = read("src/components/studio-v3/ComposerMap.tsx");
+const PRICE_CARD = read("src/components/studio-v3/SignaturePriceCard.tsx");
+
+describe("P9 · ComposerMap is a pre-value surface", () => {
+  it("has no price projection or visible money", () => {
+    expect(COMPOSER).not.toContain("scopePriceFromEur");
+    expect(COMPOSER).not.toContain("From €");
+  });
+
+  it("has no investment tier framing", () => {
+    expect(COMPOSER).not.toContain("INVESTMENT_TIERS");
+    expect(COMPOSER).not.toContain("investmentLabel");
+    expect(COMPOSER).not.toContain("Investment direction");
+  });
+
+  it("keeps the value-first status labels", () => {
+    expect(COMPOSER).toContain('"Draft ready"');
+    expect(COMPOSER).toContain('"Composing your day"');
+  });
+
+  it("still passes investment into internal curation truth", () => {
+    expect(COMPOSER).toContain("investment: state.investment");
+  });
+});
+
+describe("P9 · Journey Draft AI story is not budget-framed", () => {
+  it("storyKey and request omit investment", () => {
+    const storyKeyBlock = PANEL.slice(PANEL.indexOf("storyKey"), PANEL.indexOf("sessionId,"));
+    expect(storyKeyBlock).not.toContain("state.investment");
+  });
+
+  it("internal curation may still read investment", () => {
+    expect(PANEL).toContain("investment: state.investment");
+  });
+});
+
+describe("P9 · unified Your Day order ends value → reasons → price", () => {
+  it("route < stops editor < reasons < price card", () => {
+    const route = STUDIO.indexOf("studio-v3-unified-route");
+    const stops = STUDIO.indexOf("studio-v3-stops-editor");
+    const reasons = STUDIO.indexOf("studio-v3-travel-file-reasons");
+    const price = STUDIO.indexOf("<SignaturePriceCard");
+    expect(route).toBeGreaterThan(-1);
+    expect(stops).toBeGreaterThan(route);
+    expect(reasons).toBeGreaterThan(stops);
+    expect(price).toBeGreaterThan(reasons);
+  });
+
+  it("renders the reasons block exactly once", () => {
+    const matches = STUDIO.match(/studio-v3-travel-file-reasons/g) ?? [];
+    expect(matches).toHaveLength(1);
+  });
+});
+
+describe("P9 · SignaturePriceCard guest context reads as an estimate", () => {
+  it("uses the estimated copy", () => {
+    expect(PRICE_CARD).toContain("Estimated for ");
+    expect(PRICE_CARD).toContain("Estimated per guest");
+  });
+
+  it("keeps canonical resolved pricing paths", () => {
+    expect(PRICE_CARD).toContain("resolvedTotalEur");
+    expect(PRICE_CARD).toContain("resolvedPerPaxEur");
+  });
+
+  it("never invents a per-person average from the canonical total", () => {
+    expect(PRICE_CARD).not.toMatch(/resolvedTotalEur\s*\/\s*/);
+  });
+});

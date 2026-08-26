@@ -4352,15 +4352,6 @@ export function StoryboardHandoff({
         {/* Phase C: composer rationale is now merged inline into each stop row
             below (no separate panel). Flag still gates the inline rendering. */}
 
-        {/* Living Atlas intelligence — the same grounded reasoning that biased
-            the Signature choice, shown in the Travel File before the stops so
-            the traveller understands the day they are about to shape. */}
-        <WhyRouteWorks
-          reasons={resolved.livingAtlasReasons ?? []}
-          testId="studio-v3-travel-file-reasons"
-          className="mx-auto mt-8 max-w-[520px]"
-        />
-
         {/* ---------- Stops list (editable) ---------- */}
 
         {editedStops.length > 0 ? (
@@ -4719,6 +4710,15 @@ export function StoryboardHandoff({
 
         {/* Signature DNA + Shaping direction removed on Refine — decorative
             content belongs to the final reveal, not the decision page. */}
+
+        {/* Living Atlas intelligence — the grounded reasoning that biased the
+            Signature choice, shown after the traveller has seen and shaped the
+            day, immediately before the first price surface (P9). */}
+        <WhyRouteWorks
+          reasons={resolved.livingAtlasReasons ?? []}
+          testId="studio-v3-travel-file-reasons"
+          className="mx-auto mt-8 max-w-[520px]"
+        />
 
         {/* ---------- Add-ons + Total (SignaturePriceCard refine variant) ---------- */}
         <SignaturePriceCard
