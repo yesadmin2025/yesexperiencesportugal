@@ -84,6 +84,11 @@ import {
   selectReplacementCandidates,
   STUDIO_V3_PHASE_ORDER,
 } from "./curation";
+import { UnifiedYourDayRoute } from "./UnifiedYourDayRoute";
+import {
+  resolveAuthoritativeRouteStops,
+  studioRouteShapingInput,
+} from "./studioRouteAuthority";
 import { findTour, signatureTours } from "@/data/signatureTours";
 import { getTourContent } from "@/lib/tourContent";
 import {
@@ -3199,16 +3204,13 @@ function resolveRevealRouteStops(
     ? { lat: REGION_ORIGIN[rk].lat, lng: REGION_ORIGIN[rk].lng }
     : null;
 
-  let lastKnown: { lat: number; lng: number } | null = originCoord;
   const stopsDetailed = editedStops.map((s) => {
     const rp = byLabel.get(s.label.toLowerCase());
     if (rp && rp.lat != null && rp.lng != null) {
-      lastKnown = { lat: rp.lat, lng: rp.lng };
       return { label: s.label, lat: rp.lat, lng: rp.lng };
     }
     const geo = lookupStopGeo(s.label);
     if (geo) {
-      lastKnown = { lat: geo.lat, lng: geo.lng };
       return {
         label: s.label,
         lat: geo.lat,
@@ -3217,11 +3219,13 @@ function resolveRevealRouteStops(
         kind: geo.kind,
       };
     }
-    if (lastKnown) {
-      return { label: s.label, lat: lastKnown.lat, lng: lastKnown.lng };
-    }
+    // No approved coordinate for this moment. We leave it empty on purpose:
+    // borrowing the previous stop's position would put a pin somewhere the
+    // traveller is not going. The unified surface reads this gap and shows
+    // the truthful timeline instead of a map.
     return { label: s.label } as { label: string; lat?: number; lng?: number };
   });
+
 
   const allGeo =
     originCoord &&
@@ -3261,8 +3265,10 @@ function RevealRouteMap({
   skeletonTour,
   statePickup,
   revealedStops,
+  showRoute = true,
 }: {
   editedStops: ReadonlyArray<{ label: string }>;
+  showRoute?: boolean;
   resolved: {
     routePoints: ReadonlyArray<{ label: string; lat?: number | null; lng?: number | null }>;
   };
@@ -3291,6 +3297,7 @@ function RevealRouteMap({
         activeCount={revealedStops}
         originLabel={originLabelResolved}
         aspectRatio="16 / 11"
+        showRoute={showRoute}
         legMinutes={legMinutes}
         ariaLabel={`Your Signature route — ${editedStops.length} stop${editedStops.length === 1 ? "" : "s"}.`}
       />
@@ -3564,41 +3571,48 @@ export function StoryboardHandoff({
   // Source of truth: resolveStudioV3Route → routePoints. The user may
   // reorder/remove/swap stops; pool is restricted to the SAME resolved
   // Signature tour's own `stops` (no invented stops, per memory rule).
+  // One projection of ALL route-shaping state (including dateExact and the
+  // reshape seed) so this surface, the story snapshot, CurtainRise and the
+  // resolved journey can never describe different days.
+  const routeShaping = studioRouteShapingInput(state);
+  const routeShapingKey = JSON.stringify(routeShaping);
   const resolved = useMemo(
-    () =>
-      resolveStudioV3Route({
-        feeling: state.feeling,
-        companions: state.companions,
-        rhythm: state.rhythm,
-        interests: state.interests,
-        pickup: state.pickup,
-        occasion: state.occasion,
-        considerations: state.considerations,
-        investment: state.investment,
-        destinationIntent: state.destinationIntent,
-        refinement: state.refinement,
-      }),
-    [
-      state.feeling,
-      state.companions,
-      state.rhythm,
-      state.interests,
-      state.pickup,
-      state.occasion,
-      state.considerations,
-      state.investment,
-      state.destinationIntent,
-      state.refinement,
-    ],
+    () => resolveStudioV3Route(routeShaping),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [routeShapingKey],
   );
 
+
+  // The traveller's day is the FULL composed route — never the compact
+  // 4-slot Journey-Card projection, and never the base Signature stops while
+  // a composed route exists. `tourId` stays a pricing/geography anchor only.
   const baseStops = useMemo(
-    () => resolved.routePoints.map((p) => ({ label: p.label, story: p.story })),
-    [resolved.routePoints],
+    () =>
+      resolveAuthoritativeRouteStops({
+        editedRoutePoints: null,
+        resolved,
+        catalogStops: null,
+      }),
+    [resolved],
   );
 
   const editedStops = state.editedRoutePoints ?? baseStops;
   const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
+
+  // Real coordinates for the unified route surface — or gaps, honestly kept.
+  const unifiedRouteMoments = useMemo(
+    () =>
+      resolveRevealRouteStops(editedStops, resolved, skeletonTour ?? null).stopsDetailed.map(
+        (s, i) => ({
+          label: s.label,
+          story: editedStops[i]?.story ?? null,
+          lat: (s as { lat?: number }).lat ?? null,
+          lng: (s as { lng?: number }).lng ?? null,
+        }),
+      ),
+    [editedStops, resolved, skeletonTour],
+  );
+
 
   // Phase C: composer rationales, indexed by stop position. Merged inline
   // into each stop row below when the flag is on. Never affects pricing,
@@ -4255,16 +4269,36 @@ export function StoryboardHandoff({
           boxShadow: "0 24px 60px -36px rgba(0,0,0,0.25)",
         }}
       >
-        {/* ---------- 2. Live route map ---------- */}
+        {/* ---------- 2. Truthful route surface (map OR timeline) ----------
+            P8 hardening: the unified Your Day only claims a map when every
+            kept moment holds a real, coherent coordinate. Otherwise the same
+            moments read as the editorial timeline. One map instance only, and
+            no driven route line unless real routed geometry exists. */}
         {editedStops.length > 0 ? (
-          <div data-testid="studio-v3-reveal-map" className="mt-8 mx-auto w-full max-w-[520px]">
-            <RevealRouteMap
-              editedStops={editedStops}
-              resolved={resolved}
-              skeletonTour={skeletonTour ?? null}
-              statePickup={state.pickup}
-              revealedStops={revealedStops}
-            />
+          <UnifiedYourDayRoute
+            testId="studio-v3-unified-route"
+            moments={unifiedRouteMoments}
+            className="mt-8 mx-auto w-full max-w-[520px]"
+            mapSlot={
+              <div data-testid="studio-v3-reveal-map">
+                <RevealRouteMap
+                  editedStops={editedStops}
+                  resolved={resolved}
+                  skeletonTour={skeletonTour ?? null}
+                  statePickup={state.pickup}
+                  revealedStops={revealedStops}
+                  showRoute={false}
+                />
+              </div>
+            }
+          />
+        ) : null}
+
+        {editedStops.length > 0 ? (
+          <div className="mx-auto w-full max-w-[520px]">
+            {/* Numbered legend — full names live here so the map stays clean
+              and labels never overlap at 393px mobile. */}
+
 
             {/* Numbered legend — full names live here so the map stays clean
               and labels never overlap at 393px mobile. */}

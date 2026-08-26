@@ -59,6 +59,12 @@ export interface StudioV3SignatureMapProps {
   legMinutes?: ReadonlyArray<number> | null;
   /** Optional inferred Portugal region — renders a faint silhouette anchor behind the map. */
   silhouetteRegion?: SilhouetteRegion;
+  /**
+   * Draw the connecting route line. Pass `false` where we only know WHERE the
+   * moments are, not how the day is actually driven — pins stay truthful, an
+   * invented polyline would not.
+   */
+  showRoute?: boolean;
 }
 
 const VB_W = 200;
@@ -201,6 +207,7 @@ export function StudioV3SignatureMap({
   ariaLabel,
   legMinutes,
   silhouetteRegion = null,
+  showRoute = true,
 }: StudioV3SignatureMapProps) {
   const cleaned = useMemo(() => stops.map(cleanLabel).filter(Boolean), [stops]);
   const visible = Math.max(0, Math.min(cleaned.length, activeCount ?? cleaned.length));
@@ -604,7 +611,7 @@ export function StudioV3SignatureMap({
 
           {/* Per-segment progressive draw — each leg animates ONLY when it
             becomes the newest revealed segment. Earlier legs stay solid. */}
-          {segments.map((seg, i) => {
+          {(showRoute ? segments : []).map((seg, i) => {
             const drawn = i < revealedCount;
             return (
               <g key={`seg-${i}`}>

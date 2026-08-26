@@ -8,6 +8,7 @@
 
 import { useEffect, useState } from "react";
 import { resolveStudioV3Route } from "./curation";
+import { studioRouteShapingInput } from "./studioRouteAuthority";
 import { signatureTours } from "@/data/signatureTours";
 import { regionalVoiceFor } from "./regionalVoice";
 import { COMPANIONS, FEELINGS, INTERESTS, RHYTHMS, type StudioV3State } from "./types";
@@ -49,17 +50,7 @@ export function CurtainRise({ state, onDone }: CurtainRiseProps) {
   // Resolve region voice from the about-to-be-revealed Signature.
   const resolved =
     state.feeling && state.companions && state.rhythm
-      ? resolveStudioV3Route({
-          feeling: state.feeling,
-          companions: state.companions,
-          rhythm: state.rhythm,
-          interests: state.interests,
-          pickup: state.pickup,
-          occasion: state.occasion,
-          investment: state.investment,
-          destinationIntent: state.destinationIntent,
-          dateExact: state.dateExact,
-        })
+      ? resolveStudioV3Route(studioRouteShapingInput(state))
       : null;
   const tour = resolved?.skeletonTourKey
     ? (signatureTours.find((t) => t.id === resolved.skeletonTourKey) ?? null)

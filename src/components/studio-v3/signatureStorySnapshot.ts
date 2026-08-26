@@ -11,7 +11,11 @@
  * hard-coded generic copy.
  */
 
-import { resolveStudioV3Route, pickupCityLabel } from "./curation";
+import { pickupCityLabel } from "./curation";
+import {
+  resolveAuthoritativeRouteStops,
+  resolveStudioRouteFromState,
+} from "./studioRouteAuthority";
 import { findTour } from "@/data/signatureTours";
 import { getTourContent } from "@/lib/tourContent";
 import type { StudioV3State } from "./types";
@@ -50,22 +54,14 @@ export function buildSignatureStorySnapshot(
 ): SignatureStorySnapshot {
   const tour = state.tourId ? findTour(state.tourId) : null;
 
-  const resolved = resolveStudioV3Route({
-    feeling: state.feeling,
-    companions: state.companions,
-    rhythm: state.rhythm,
-    interests: state.interests,
-    pickup: state.pickup,
-    occasion: state.occasion,
-    considerations: state.considerations,
-    investment: state.investment,
-    destinationIntent: state.destinationIntent,
+  // Same complete projection + authority chain as the reveal, so the email
+  // story can never describe a different day (or lose dateExact / refinement /
+  // reshape seed) than the one the traveller approved.
+  const routePoints = resolveAuthoritativeRouteStops({
+    editedRoutePoints: state.editedRoutePoints,
+    resolved: resolveStudioRouteFromState(state),
+    catalogStops: tour?.stops ?? null,
   });
-
-  const routePoints =
-    state.editedRoutePoints && state.editedRoutePoints.length > 0
-      ? state.editedRoutePoints.map((p, i) => ({ label: p.label, story: p.story, index: i }))
-      : resolved.routePoints.map((p) => ({ label: p.label, story: p.story, index: p.index }));
 
   const chapters: SignatureStoryChapter[] = routePoints.map((p) => ({
     title: p.label,
@@ -119,20 +115,10 @@ export function buildJourneyRevision(
   state: StudioV3State,
   extras?: { addOnIds?: readonly string[]; adults?: number; minorAges?: readonly number[] },
 ): string {
-  const routeLabels =
-    state.editedRoutePoints && state.editedRoutePoints.length > 0
-      ? state.editedRoutePoints.map((p) => p.label)
-      : resolveStudioV3Route({
-          feeling: state.feeling,
-          companions: state.companions,
-          rhythm: state.rhythm,
-          interests: state.interests,
-          pickup: state.pickup,
-          occasion: state.occasion,
-          considerations: state.considerations,
-          investment: state.investment,
-          destinationIntent: state.destinationIntent,
-        }).routePoints.map((p) => p.label);
+  const routeLabels = resolveAuthoritativeRouteStops({
+    editedRoutePoints: state.editedRoutePoints,
+    resolved: resolveStudioRouteFromState(state),
+  }).map((p) => p.label);
 
   const addOnPart = (extras?.addOnIds ?? []).slice().sort().join(",");
   const minorPart = (extras?.minorAges ?? [])

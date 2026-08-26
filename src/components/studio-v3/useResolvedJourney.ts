@@ -19,6 +19,11 @@ import {
 } from "@/data/signatureTourPricing";
 import type { TourPriceTiersMap } from "@/hooks/use-tour-price-tiers";
 import { resolveStudioV3Route } from "./curation";
+import {
+  resolveAuthoritativeRouteStops,
+  studioRouteShapingInput,
+} from "./studioRouteAuthority";
+
 import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 
@@ -81,36 +86,15 @@ export function useResolvedJourney(
     const guests =
       typeof state.guests === "number" && state.guests > 0 ? state.guests : (fromComposition ?? 2);
 
-    // Stops priority chain — same as reveal + checkout share.
-    const stops: ResolvedJourneyStop[] = (() => {
-      if (state.editedRoutePoints && state.editedRoutePoints.length > 0) {
-        return state.editedRoutePoints.map((p) => ({
-          label: p.label,
-          story: p.story ?? "",
-        }));
-      }
-      const resolved = resolveStudioV3Route({
-        feeling: state.feeling,
-        companions: state.companions,
-        rhythm: state.rhythm,
-        interests: state.interests,
-        pickup: state.pickup,
-        occasion: state.occasion,
-        considerations: state.considerations,
-        investment: state.investment,
-        destinationIntent: state.destinationIntent,
-      });
-      if (resolved.routePoints.length > 0) {
-        return resolved.routePoints.map((p) => ({
-          label: p.label,
-          story: p.story,
-        }));
-      }
-      return (tour?.stops ?? []).map((s) => ({
-        label: s.label,
-        story: s.story ?? "",
-      }));
-    })();
+    // Stops priority chain — the single authority shared with the reveal,
+    // the story snapshot and checkout. `tourId` anchors pricing only; it can
+    // never overwrite an edited or composed route.
+    const stops: ResolvedJourneyStop[] = resolveAuthoritativeRouteStops({
+      editedRoutePoints: state.editedRoutePoints,
+      resolved: resolveStudioV3Route(studioRouteShapingInput(state)),
+      catalogStops: tour?.stops ?? null,
+    });
+
 
     const tiers = tourPriceTiers ?? null;
     const basePerPaxEur = tour
