@@ -2,6 +2,11 @@ import * as React from "react";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { Link, type LinkProps } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { P14_YOUR_DAY_CTA_TEST_ID } from "@/lib/studio-v3/experiments";
+import {
+  currentP14YourDayCtaLabel,
+  trackP14YourDayCtaClick,
+} from "@/lib/studio-v3/experimentRuntime";
 
 /**
  * CtaButton — site-wide primary / ghost CTA, with the canonical arrow
@@ -163,6 +168,17 @@ export function CtaButton(props: CtaButtonProps) {
     children,
   } = props;
 
+  const testId = (props as { "data-testid"?: string })["data-testid"];
+  const isP14YourDayTarget = testId === P14_YOUR_DAY_CTA_TEST_ID;
+  const [p14Label, setP14Label] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (!isP14YourDayTarget) return;
+    // Deliberately resolve after mount: server markup stays on the control
+    // wording, while the browser session already has a stable funnel arm.
+    setP14Label(currentP14YourDayCtaLabel());
+  }, [isP14YourDayTarget]);
+
   const isHairline = variant === "hairline";
   const isKinetic = variant === "primary" || variant === "ghostDark";
 
@@ -193,7 +209,8 @@ export function CtaButton(props: CtaButtonProps) {
       (icon ?? <KineticArrow tone={variant === "primary" ? "gold" : "goldSoft"} />)
     );
 
-  const labelNode = loading && loadingLabel !== undefined ? loadingLabel : children;
+  const baseLabelNode = loading && loadingLabel !== undefined ? loadingLabel : children;
+  const labelNode = isP14YourDayTarget && !loading && p14Label ? p14Label : baseLabelNode;
 
   const content = (
     <>
@@ -302,8 +319,14 @@ export function CtaButton(props: CtaButtonProps) {
     className: _c,
     children: _ch,
     disabled: disabledProp,
+    onClick,
     ...rest
   } = props;
+
+  const experimentAttrs = isP14YourDayTarget
+    ? { "aria-label": p14Label ?? "Continue to guest details" }
+    : {};
+
   return (
     <button
       className={sharedClassName}
@@ -311,6 +334,11 @@ export function CtaButton(props: CtaButtonProps) {
       disabled={disabledProp || loading}
       {...stateAttrs}
       {...rest}
+      {...experimentAttrs}
+      onClick={(event) => {
+        if (isP14YourDayTarget) trackP14YourDayCtaClick();
+        onClick?.(event);
+      }}
     >
       {content}
     </button>
