@@ -1,0 +1,108 @@
+name: Checkout session-id hardening
+
+on:
+  push:
+    branches: [checkout-session-id-hardening]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: checkout-session-id-hardening
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Apply deterministic checkout completion patch
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          checkout = Path('src/components/studio-v3/CheckoutSummary.tsx')
+          s = checkout.read_text()
+          s = s.replace('import { trackStep } from "@/lib/studio-v3-funnel";\n', '')
+          s = s.replace('  onPaymentComplete,\n', '')
+          old = '''              options={{
+                clientSecret,
+                onComplete: () => {
+                  trackStep({
+                    stepNumber: 0,
+                    stepKey: "checkoutSummary",
+                    event: "secure_confirm",
+                  });
+                  onPaymentComplete?.(null);
+                },
+              }}'''
+          new = '''              // Stripe owns completion and redirects through the server-authored
+              // return_url. That URL contains {CHECKOUT_SESSION_ID}, so the
+              // confirmation route receives the real session id and can verify
+              // payment instead of trusting a client-only success callback.
+              options={{ clientSecret }}'''
+          if old not in s:
+              if 'options={{ clientSecret }}' not in s:
+                  raise SystemExit('CheckoutSummary completion block did not match expected source')
+          else:
+              s = s.replace(old, new, 1)
+          checkout.write_text(s)
+
+          test = Path('src/lib/checkout/__tests__/card-only-checkout.test.ts')
+          t = test.read_text()
+          old_test = '''  it("only reports success from the Stripe embedded onComplete callback", () => {
+    // No fabricated success path: onPaymentComplete is reachable solely from
+    // the provider callback.
+    const completions = checkoutSummary.match(/onPaymentComplete\\?\\.\\(/g) ?? [];
+    expect(completions).toHaveLength(1);
+    expect(checkoutSummary).toContain("onComplete: () => {");
+  });'''
+          new_test = '''  it("lets Stripe redirect completion with the real Checkout Session id", () => {
+    // Embedded Checkout defaults redirect_on_completion to `always`. The
+    // server-authored return_url carries Stripe's template variable, so Stripe
+    // substitutes the real session id before booking-confirmed verifies it.
+    expect(edgeFn).toContain("session_id={CHECKOUT_SESSION_ID}");
+    expect(edgeFn).not.toContain('redirect_on_completion: "never"');
+    expect(checkoutSummary).not.toContain("onComplete:");
+    expect(checkoutSummary).not.toContain("onPaymentComplete?.(");
+  });'''
+          if old_test not in t:
+              if 'lets Stripe redirect completion with the real Checkout Session id' not in t:
+                  raise SystemExit('Card-only completion contract did not match expected source')
+          else:
+              t = t.replace(old_test, new_test, 1)
+          test.write_text(t)
+          PY
+
+      - name: Verify generated audit did not change
+        run: git diff --exit-code -- src/generated/brand-audit.json
+
+      - name: Typecheck
+        run: bunx tsgo --noEmit
+
+      - name: Focused checkout contract
+        run: bunx vitest run src/lib/checkout/__tests__/card-only-checkout.test.ts --reporter=verbose
+
+      - name: Studio V3 suite
+        run: bunx vitest run src/components/studio-v3 src/lib/studio-v3 --reporter=dot
+
+      - name: Commit verified patch
+        run: |
+          if git diff --quiet -- src/components/studio-v3/CheckoutSummary.tsx src/lib/checkout/__tests__/card-only-checkout.test.ts; then
+            echo 'Patch already applied; nothing to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/components/studio-v3/CheckoutSummary.tsx src/lib/checkout/__tests__/card-only-checkout.test.ts
+          git commit -m 'Fix embedded checkout session-id continuity'
+          git push origin HEAD:checkout-session-id-hardening
