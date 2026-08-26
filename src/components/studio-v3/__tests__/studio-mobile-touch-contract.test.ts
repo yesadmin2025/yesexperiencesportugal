@@ -40,7 +40,7 @@ describe("Studio V3 mobile UX hardening", () => {
 
   it("does not repeat stop descriptions in the timeline overview", () => {
     expect(route).toContain(
-      '<YourDayTimeline moments={moments.map((m) => ({ label: m.label }))} />',
+      "<YourDayTimeline moments={moments.map((m) => ({ label: m.label }))} />",
     );
     expect(route).not.toContain("story: m.story ?? null");
   });
