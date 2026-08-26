@@ -3594,13 +3594,36 @@ export function StoryboardHandoff({
     ],
   );
 
+  // The traveller's day is the FULL composed route — never the compact
+  // 4-slot Journey-Card projection, and never the base Signature stops while
+  // a composed route exists. `tourId` stays a pricing/geography anchor only.
   const baseStops = useMemo(
-    () => resolved.routePoints.map((p) => ({ label: p.label, story: p.story })),
-    [resolved.routePoints],
+    () =>
+      resolveAuthoritativeRouteStops({
+        editedRoutePoints: null,
+        resolved,
+        catalogStops: null,
+      }),
+    [resolved],
   );
 
   const editedStops = state.editedRoutePoints ?? baseStops;
   const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
+
+  // Real coordinates for the unified route surface — or gaps, honestly kept.
+  const unifiedRouteMoments = useMemo(
+    () =>
+      resolveRevealRouteStops(editedStops, resolved, skeletonTour ?? null).stopsDetailed.map(
+        (s, i) => ({
+          label: s.label,
+          story: editedStops[i]?.story ?? null,
+          lat: (s as { lat?: number }).lat ?? null,
+          lng: (s as { lng?: number }).lng ?? null,
+        }),
+      ),
+    [editedStops, resolved, skeletonTour],
+  );
+
 
   // Phase C: composer rationales, indexed by stop position. Merged inline
   // into each stop row below when the flag is on. Never affects pricing,
