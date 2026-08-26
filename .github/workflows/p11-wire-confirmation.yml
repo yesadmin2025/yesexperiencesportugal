@@ -1,0 +1,69 @@
+name: P11 one-shot confirmation gate
+
+on:
+  push:
+    branches:
+      - p11-studio-funnel-analytics
+    paths:
+      - .github/workflows/p11-wire-confirmation.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p11-studio-funnel-analytics
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Wire confirmed payment into the Studio funnel
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('src/components/studio-v3/CheckoutSummary.tsx')
+          text = path.read_text()
+
+          import_anchor = 'import { cn } from "@/lib/utils";\n'
+          import_line = 'import { trackStep } from "@/lib/studio-v3-funnel";\n'
+          if import_line not in text:
+              if import_anchor not in text:
+                  raise SystemExit('CheckoutSummary import anchor not found')
+              text = text.replace(import_anchor, import_anchor + import_line, 1)
+
+          old = '''                onComplete: () => {\n                  onPaymentComplete?.(null);\n                },'''
+          new = '''                onComplete: () => {\n                  trackStep({\n                    stepNumber: 0,\n                    stepKey: "checkoutSummary",\n                    event: "secure_confirm",\n                  });\n                  onPaymentComplete?.(null);\n                },'''
+          if new not in text:
+              if old not in text:
+                  raise SystemExit('CheckoutSummary onComplete anchor not found')
+              text = text.replace(old, new, 1)
+
+          path.write_text(text)
+          PY
+      - name: P11 focused tests
+        run: bunx vitest run src/lib/studio-v3/__tests__/studio-p11-funnel-analytics.test.ts
+      - name: Studio analytics regression tests
+        run: bunx vitest run src/components/studio-v3/__tests__/studio-p10-delegation.test.ts src/components/studio-v3/__tests__/studio-p9-price-after-value.test.ts
+      - name: TypeScript
+        run: bunx tsc --noEmit -p tsconfig.json
+      - name: Diff hygiene
+        run: git diff --check
+      - name: Commit validated product patch and remove one-shot workflow
+        run: |
+          rm .github/workflows/p11-wire-confirmation.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/studio-v3/CheckoutSummary.tsx .github/workflows/p11-wire-confirmation.yml
+          if git diff --cached --quiet; then
+            echo "No product changes to commit"
+            exit 0
+          fi
+          git commit -m "Wire P11 confirmed checkout milestone"
+          git push origin HEAD:p11-studio-funnel-analytics
