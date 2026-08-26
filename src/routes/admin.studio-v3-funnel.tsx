@@ -1,20 +1,16 @@
-// Studio V3 — Funnel analytics dashboard.
+// Studio V3 — internal funnel analytics dashboard.
 //
-// Visualises `studio_v3_funnel_events` to measure conversion + drop-off
-// per step after the Investment-tier reordering. Gated by Supabase auth;
-// RLS policy `admins read funnel` enforces admin-only access at the DB
-// level (returns empty set for non-admins).
-//
-// Features:
-//   - Per-step funnel (sessions that reached / completed each step)
-//   - Drop-off % per step (highlighted when > 25%)
-//   - Median time on step (ms_on_step from continue/back/abandon)
-//   - Tier distribution + downstream conversion to `secure_confirm`
-//   - Date range filter (compare before/after a deploy)
+// P11 aligns this page with the live P5-P10 traveller journey and the
+// session-scoped `studio_v3_funnel_events` table. Calculations live in the
+// pure funnelMetrics module so tests and UI always share one truth.
 
 import { createFileRoute, redirect, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  computeStudioFunnelStats,
+  type StudioFunnelMetricRow,
+} from "@/lib/studio-v3/funnelMetrics";
 
 export const Route = createFileRoute("/admin/studio-v3-funnel")({
   head: () => ({
@@ -30,43 +26,20 @@ export const Route = createFileRoute("/admin/studio-v3-funnel")({
   component: StudioV3FunnelPage,
 });
 
-interface FunnelRow {
+interface FunnelRow extends StudioFunnelMetricRow {
   id: string;
-  session_id: string;
-  step_number: number;
-  step_key: string;
-  event: string;
-  value: Record<string, unknown> | null;
-  variant: string | null;
-  created_at: string;
-}
-
-const STEP_ORDER: Array<{ n: number; key: string; label: string }> = [
-  { n: 1, key: "feeling", label: "Feeling" },
-  { n: 2, key: "companions", label: "Companions" },
-  { n: 3, key: "rhythm", label: "Rhythm" },
-  { n: 4, key: "destination", label: "Destination" },
-  { n: 5, key: "investment", label: "Investment" },
-  { n: 6, key: "interests", label: "Interests" },
-  { n: 7, key: "addons", label: "Add-ons" },
-  { n: 8, key: "date", label: "Date" },
-  { n: 9, key: "configurator", label: "Configurator" },
-  { n: 10, key: "secure", label: "Secure" },
-];
-
-function median(arr: number[]): number {
-  if (arr.length === 0) return 0;
-  const s = [...arr].sort((a, b) => a - b);
-  const mid = Math.floor(s.length / 2);
-  return s.length % 2 ? s[mid] : Math.round((s[mid - 1] + s[mid]) / 2);
 }
 
 function fmtMs(ms: number): string {
   if (!ms) return "—";
   if (ms < 1000) return `${ms}ms`;
-  const s = ms / 1000;
-  if (s < 60) return `${s.toFixed(1)}s`;
-  return `${(s / 60).toFixed(1)}min`;
+  const seconds = ms / 1000;
+  if (seconds < 60) return `${seconds.toFixed(1)}s`;
+  return `${(seconds / 60).toFixed(1)}min`;
+}
+
+function pct(part: number, whole: number): number {
+  return whole > 0 ? Math.round((part / whole) * 100) : 0;
 }
 
 function StudioV3FunnelPage() {
@@ -74,7 +47,7 @@ function StudioV3FunnelPage() {
   const [err, setErr] = useState<string | null>(null);
   const [since, setSince] = useState<string>(() => {
     const d = new Date();
-    d.setDate(d.getDate() - 7);
+    d.setDate(d.getDate() - 14);
     return d.toISOString().slice(0, 10);
   });
   const [until, setUntil] = useState<string>(() => new Date().toISOString().slice(0, 10));
@@ -91,6 +64,7 @@ function StudioV3FunnelPage() {
       .lte("created_at", untilIso)
       .order("created_at", { ascending: false })
       .limit(20000);
+
     if (error) {
       setErr(error.message);
       setRows([]);
@@ -104,115 +78,32 @@ function StudioV3FunnelPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const stats = useMemo(() => {
-    if (!rows) return null;
-
-    // Sessions per step (any event with that step_key counts as "reached")
-    const reached = new Map<string, Set<string>>();
-    const completed = new Map<string, Set<string>>();
-    const msByStep = new Map<string, number[]>();
-
-    for (const r of rows) {
-      if (!reached.has(r.step_key)) reached.set(r.step_key, new Set());
-      reached.get(r.step_key)!.add(r.session_id);
-
-      if (r.event === "continue") {
-        if (!completed.has(r.step_key)) completed.set(r.step_key, new Set());
-        completed.get(r.step_key)!.add(r.session_id);
-      }
-
-      if (r.event === "continue" || r.event === "back" || r.event === "abandon") {
-        const v = r.value as Record<string, unknown> | null;
-        const ms = typeof v?.ms_on_step === "number" ? (v.ms_on_step as number) : null;
-        if (ms != null && ms >= 0 && ms < 10 * 60 * 1000) {
-          if (!msByStep.has(r.step_key)) msByStep.set(r.step_key, []);
-          msByStep.get(r.step_key)!.push(ms);
-        }
-      }
-    }
-
-    const totalSessions = new Set(rows.map((r) => r.session_id)).size;
-
-    const perStep = STEP_ORDER.map((s) => {
-      const r = reached.get(s.key)?.size ?? 0;
-      const c = completed.get(s.key)?.size ?? 0;
-      const dropPct = r > 0 ? Math.round(((r - c) / r) * 100) : 0;
-      const reachPct = totalSessions > 0 ? Math.round((r / totalSessions) * 100) : 0;
-      const med = median(msByStep.get(s.key) ?? []);
-      return { ...s, reached: r, completed: c, dropPct, reachPct, medianMs: med };
-    });
-
-    // Tier distribution + conversion
-    const tierCounts = new Map<string, number>();
-    const tierConverted = new Map<string, Set<string>>();
-    const sessionsConfirmed = new Set<string>();
-
-    for (const r of rows) {
-      if (r.event === "secure_confirm") sessionsConfirmed.add(r.session_id);
-      if (r.event === "tier_chosen" || r.step_key === "investment") {
-        const v = r.value as Record<string, unknown> | null;
-        const tier = (v?.tier as string) || (v?.selection as string) || null;
-        if (tier) {
-          tierCounts.set(tier, (tierCounts.get(tier) ?? 0) + 1);
-          if (!tierConverted.has(tier)) tierConverted.set(tier, new Set());
-        }
-      }
-    }
-    // Second pass: assign confirmed sessions to their last-chosen tier
-    const sessionTier = new Map<string, string>();
-    for (const r of rows) {
-      if (r.event === "tier_chosen" || r.step_key === "investment") {
-        const v = r.value as Record<string, unknown> | null;
-        const tier = (v?.tier as string) || (v?.selection as string) || null;
-        if (tier) sessionTier.set(r.session_id, tier);
-      }
-    }
-    for (const sid of sessionsConfirmed) {
-      const tier = sessionTier.get(sid);
-      if (tier) {
-        if (!tierConverted.has(tier)) tierConverted.set(tier, new Set());
-        tierConverted.get(tier)!.add(sid);
-      }
-    }
-
-    const tiers = Array.from(tierCounts.entries())
-      .map(([tier, n]) => {
-        const confirmed = tierConverted.get(tier)?.size ?? 0;
-        const rate = n > 0 ? Math.round((confirmed / n) * 100) : 0;
-        return { tier, picks: n, confirmed, rate };
-      })
-      .sort((a, b) => b.picks - a.picks);
-
-    return {
-      totalSessions,
-      totalEvents: rows.length,
-      confirmed: sessionsConfirmed.size,
-      perStep,
-      tiers,
-    };
-  }, [rows]);
+  const stats = useMemo(() => (rows ? computeStudioFunnelStats(rows) : null), [rows]);
 
   return (
-    <main className="min-h-screen bg-[color:var(--ivory)] px-5 py-8">
-      <div className="mx-auto max-w-[1100px]">
+    <main className="min-h-screen bg-[color:var(--ivory)] px-5 py-8 text-[color:var(--charcoal)]">
+      <div className="mx-auto max-w-[1180px]">
         <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
-          <div>
+          <div className="max-w-[720px]">
             <p className="text-[10px] uppercase tracking-[0.26em] font-semibold text-[color:var(--gold)]">
-              Internal · Studio V3
+              Internal · Studio V3 · P11
             </p>
-            <h1
-              className="mt-1 text-3xl font-bold text-[color:var(--charcoal)]"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              Funnel & drop-off
+            <h1 className="mt-1 text-3xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
+              Funnel intelligence
             </h1>
-            <p className="mt-1 text-sm text-[color:var(--charcoal)]/70">
-              Per-step conversion across the 10-beat Studio V3 sequence.
-              <Link to="/admin/studio-v3-audit" className="ml-2 underline text-[color:var(--teal)]">
+            <p className="mt-2 text-sm leading-6 text-[color:var(--charcoal)]/70">
+              The live Studio journey from Invitation to confirmed payment. Director&apos;s Read,
+              delegation, refine actions and price engagement are measured as semantic milestones,
+              not fake form steps.
+              <Link
+                to="/admin/studio-v3-audit"
+                className="ml-2 underline underline-offset-4 text-[color:var(--teal)]"
+              >
                 Audit buffer →
               </Link>
             </p>
           </div>
+
           <div className="flex flex-wrap items-end gap-3">
             <label className="text-xs flex flex-col gap-1 text-[color:var(--charcoal)]/70">
               From
@@ -235,83 +126,100 @@ function StudioV3FunnelPage() {
             <button
               type="button"
               onClick={() => void load()}
-              className="rounded bg-[color:var(--teal)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+              className="min-h-[40px] rounded bg-[color:var(--teal)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
             >
               Refresh
             </button>
           </div>
         </header>
 
-        {err && (
+        {err ? (
           <div className="mb-4 rounded border border-red-300 bg-red-50 p-3 text-sm text-red-800">
             {err}
           </div>
-        )}
+        ) : null}
 
-        {!rows && !err && <p className="text-sm text-[color:var(--charcoal)]/60">Loading…</p>}
+        {!rows && !err ? <p className="text-sm text-[color:var(--charcoal)]/60">Loading…</p> : null}
 
-        {stats && (
+        {stats ? (
           <>
-            <section className="mb-6 grid grid-cols-3 gap-3">
+            <section className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
               <KpiCard label="Sessions" value={stats.totalSessions.toString()} />
-              <KpiCard label="Events" value={stats.totalEvents.toString()} />
+              <KpiCard
+                label="Your Day"
+                value={`${stats.yourDayReached} · ${pct(stats.yourDayReached, stats.totalSessions)}%`}
+              />
+              <KpiCard
+                label="Guest details"
+                value={`${stats.guestDetailsReached} · ${pct(stats.guestDetailsReached, stats.totalSessions)}%`}
+              />
+              <KpiCard
+                label="Checkout"
+                value={`${stats.checkoutReached} · ${pct(stats.checkoutReached, stats.totalSessions)}%`}
+              />
               <KpiCard
                 label="Confirmed"
-                value={`${stats.confirmed} (${
-                  stats.totalSessions > 0
-                    ? Math.round((stats.confirmed / stats.totalSessions) * 100)
-                    : 0
-                }%)`}
+                value={`${stats.confirmed} · ${pct(stats.confirmed, stats.totalSessions)}%`}
               />
+              <KpiCard label="Events" value={stats.totalEvents.toString()} />
             </section>
 
-            <section className="mb-8 rounded-lg border border-[color:var(--charcoal)]/10 bg-white">
-              <h2 className="border-b border-[color:var(--charcoal)]/10 px-4 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)]/80">
-                Per-step funnel
-              </h2>
+            <section className="mb-8 overflow-hidden rounded-lg border border-[color:var(--charcoal)]/10 bg-white">
+              <div className="border-b border-[color:var(--charcoal)]/10 px-4 py-3">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.18em]">
+                  Live traveller funnel
+                </h2>
+                <p className="mt-1 text-xs text-[color:var(--charcoal)]/55">
+                  Refinement is adaptive and optional. Checkout completion means a real
+                  <code className="mx-1">secure_confirm</code> event.
+                </p>
+              </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full min-w-[780px] text-sm">
                   <thead className="bg-[color:var(--sand)]/40 text-left text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal)]/60">
                     <tr>
-                      <th className="px-3 py-2">#</th>
                       <th className="px-3 py-2">Step</th>
                       <th className="px-3 py-2 text-right">Reached</th>
-                      <th className="px-3 py-2 text-right">Continued</th>
+                      <th className="px-3 py-2 text-right">Completed</th>
                       <th className="px-3 py-2 text-right">Drop-off</th>
-                      <th className="px-3 py-2 text-right">% of sessions</th>
+                      <th className="px-3 py-2 text-right">Reach</th>
                       <th className="px-3 py-2 text-right">Median time</th>
-                      <th className="px-3 py-2">Reach</th>
+                      <th className="px-3 py-2">Progress</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {stats.perStep.map((s) => {
-                      const danger = s.dropPct > 25 && s.reached >= 5;
+                    {stats.perStep.map((step) => {
+                      const danger = step.dropPct != null && step.dropPct > 25 && step.reached >= 5;
                       return (
-                        <tr key={s.key} className="border-t border-[color:var(--charcoal)]/5">
-                          <td className="px-3 py-2 tabular-nums text-[color:var(--charcoal)]/60">
-                            {s.n}
+                        <tr key={step.key} className="border-t border-[color:var(--charcoal)]/5">
+                          <td className="px-3 py-2 font-medium">
+                            {step.label}
+                            {step.optional ? (
+                              <span className="ml-2 text-[10px] uppercase tracking-[0.14em] text-[color:var(--charcoal)]/45">
+                                adaptive
+                              </span>
+                            ) : null}
                           </td>
-                          <td className="px-3 py-2 font-medium">{s.label}</td>
-                          <td className="px-3 py-2 text-right tabular-nums">{s.reached}</td>
-                          <td className="px-3 py-2 text-right tabular-nums">{s.completed}</td>
+                          <td className="px-3 py-2 text-right tabular-nums">{step.reached}</td>
+                          <td className="px-3 py-2 text-right tabular-nums">{step.completed}</td>
                           <td
                             className={`px-3 py-2 text-right tabular-nums font-semibold ${
                               danger ? "text-red-600" : "text-[color:var(--charcoal)]/70"
                             }`}
                           >
-                            {s.dropPct}%
+                            {step.dropPct == null ? "—" : `${step.dropPct}%`}
                           </td>
                           <td className="px-3 py-2 text-right tabular-nums text-[color:var(--charcoal)]/60">
-                            {s.reachPct}%
+                            {step.reachPct}%
                           </td>
                           <td className="px-3 py-2 text-right tabular-nums text-[color:var(--charcoal)]/60">
-                            {fmtMs(s.medianMs)}
+                            {fmtMs(step.medianMs)}
                           </td>
-                          <td className="px-3 py-2 w-[160px]">
+                          <td className="w-[170px] px-3 py-2">
                             <div className="h-2 w-full rounded-full bg-[color:var(--charcoal)]/10">
                               <div
                                 className="h-full rounded-full bg-[color:var(--gold)]"
-                                style={{ width: `${s.reachPct}%` }}
+                                style={{ width: `${step.reachPct}%` }}
                               />
                             </div>
                           </td>
@@ -323,47 +231,100 @@ function StudioV3FunnelPage() {
               </div>
             </section>
 
-            <section className="mb-8 rounded-lg border border-[color:var(--charcoal)]/10 bg-white">
-              <h2 className="border-b border-[color:var(--charcoal)]/10 px-4 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--charcoal)]/80">
-                Investment tier → confirmation
+            <section className="mb-8 rounded-lg border border-[color:var(--charcoal)]/10 bg-white p-4">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.18em]">
+                Intelligence & engagement milestones
               </h2>
-              {stats.tiers.length === 0 ? (
-                <p className="px-4 py-6 text-sm text-[color:var(--charcoal)]/50">
-                  No tier picks recorded in this range.
+              <p className="mt-1 text-xs text-[color:var(--charcoal)]/55">
+                Unique sessions, not click counts. These describe behaviour without storing answers
+                or personal details.
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+                <MiniMetric
+                  label="Director’s Read"
+                  value={stats.milestones.directorsRead}
+                  total={stats.totalSessions}
+                />
+                <MiniMetric
+                  label="YES designs it"
+                  value={stats.milestones.delegated}
+                  total={stats.totalSessions}
+                />
+                <MiniMetric
+                  label="Logistics done"
+                  value={stats.milestones.logisticsCompleted}
+                  total={stats.totalSessions}
+                />
+                <MiniMetric
+                  label="Map viewed"
+                  value={stats.milestones.mapViewed}
+                  total={stats.totalSessions}
+                />
+                <MiniMetric
+                  label="Refined day"
+                  value={stats.milestones.refined}
+                  total={stats.totalSessions}
+                />
+                <MiniMetric
+                  label="Price expanded"
+                  value={stats.milestones.priceExpanded}
+                  total={stats.totalSessions}
+                />
+              </div>
+            </section>
+
+            <section className="mb-8 overflow-hidden rounded-lg border border-[color:var(--charcoal)]/10 bg-white">
+              <div className="border-b border-[color:var(--charcoal)]/10 px-4 py-3">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.18em]">
+                  Experiment variants
+                </h2>
+                <p className="mt-1 text-xs text-[color:var(--charcoal)]/55">
+                  P14-ready session conversion. “Unassigned” is the current default until an
+                  experiment calls setFunnelVariant().
                 </p>
-              ) : (
-                <table className="w-full text-sm">
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[650px] text-sm">
                   <thead className="bg-[color:var(--sand)]/40 text-left text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal)]/60">
                     <tr>
-                      <th className="px-3 py-2">Tier</th>
-                      <th className="px-3 py-2 text-right">Picks</th>
+                      <th className="px-3 py-2">Variant</th>
+                      <th className="px-3 py-2 text-right">Sessions</th>
+                      <th className="px-3 py-2 text-right">Your Day</th>
+                      <th className="px-3 py-2 text-right">Checkout</th>
                       <th className="px-3 py-2 text-right">Confirmed</th>
-                      <th className="px-3 py-2 text-right">Conversion</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {stats.tiers.map((t) => (
-                      <tr key={t.tier} className="border-t border-[color:var(--charcoal)]/5">
-                        <td className="px-3 py-2 font-medium capitalize">{t.tier}</td>
-                        <td className="px-3 py-2 text-right tabular-nums">{t.picks}</td>
-                        <td className="px-3 py-2 text-right tabular-nums">{t.confirmed}</td>
+                    {stats.variants.map((variant) => (
+                      <tr
+                        key={variant.variant}
+                        className="border-t border-[color:var(--charcoal)]/5"
+                      >
+                        <td className="px-3 py-2 font-medium">{variant.variant}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{variant.sessions}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">
+                          {variant.yourDayReached} · {variant.yourDayRate}%
+                        </td>
+                        <td className="px-3 py-2 text-right tabular-nums">
+                          {variant.checkoutReached} · {variant.checkoutRate}%
+                        </td>
                         <td className="px-3 py-2 text-right tabular-nums font-semibold text-[color:var(--teal)]">
-                          {t.rate}%
+                          {variant.confirmed} · {variant.confirmedRate}%
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-              )}
+              </div>
             </section>
 
-            <p className="text-xs text-[color:var(--charcoal)]/50">
-              Showing up to 20 000 events. Drop-off &gt; 25% (with ≥5 reached) highlighted in red.
-              Non-admin viewers will see empty data — RLS restricts SELECT to{" "}
-              <code>has_role(admin)</code>.
+            <p className="text-xs leading-5 text-[color:var(--charcoal)]/50">
+              Showing up to 20,000 events. Funnel rows are session-deduped. Drop-off over 25% with
+              at least five reached sessions is highlighted. SELECT remains admin-only via Supabase
+              RLS. P11 semantic milestones strip PII before insertion.
             </p>
           </>
-        )}
+        ) : null}
       </div>
     </main>
   );
@@ -376,10 +337,26 @@ function KpiCard({ label, value }: { label: string; value: string }) {
         {label}
       </p>
       <p
-        className="mt-1 text-2xl font-bold text-[color:var(--charcoal)] tabular-nums"
+        className="mt-1 text-2xl font-bold tabular-nums"
         style={{ fontFamily: "var(--font-display)" }}
       >
         {value}
+      </p>
+    </div>
+  );
+}
+
+function MiniMetric({ label, value, total }: { label: string; value: number; total: number }) {
+  return (
+    <div className="rounded-md bg-[color:var(--sand)]/35 px-3 py-3">
+      <p className="text-[10px] uppercase tracking-[0.16em] text-[color:var(--charcoal)]/55">
+        {label}
+      </p>
+      <p className="mt-1 text-lg font-semibold tabular-nums">
+        {value}
+        <span className="ml-1 text-xs font-normal text-[color:var(--charcoal)]/50">
+          · {pct(value, total)}%
+        </span>
       </p>
     </div>
   );

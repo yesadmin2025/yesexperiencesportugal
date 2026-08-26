@@ -2,23 +2,25 @@
 //
 // Fire-and-forget INSERT into `studio_v3_funnel_events` via the anon
 // publishable key. Never blocks the UI, never throws. Captures abandon
-// via pagehide/visibilitychange using sendBeacon when available.
+// via pagehide/visibilitychange using a keepalive request.
 //
 // Events:
-//   enter        — step mounted
-//   select       — user picked an option (value: { selection })
-//   continue     — moved to next step (value: { ms_on_step })
-//   back         — moved to previous step (value: { ms_on_step })
-//   abandon      — left the page mid-step (value: { ms_on_step })
-//   reshape      — tapped "Reshape day"
-//   tab_switch   — configurator tab change (value: { tab })
-//   addon_toggle — add-on selected/removed (value: { addon_id, on })
-//   secure_open  — opened secure modal
-//   secure_confirm — confirmed reservation
+//   enter          — step mounted
+//   select         — user picked an option (value: { selection })
+//   continue       — moved to next step (value: { ms_on_step })
+//   back           — moved to previous step (value: { ms_on_step })
+//   abandon        — left the page mid-step (value: { ms_on_step })
+//   milestone      — named Studio product event (value: { studio_event, ... })
+//   reshape        — tapped "Reshape day"
+//   tab_switch     — configurator tab change (value: { tab })
+//   addon_toggle   — add-on selected/removed (value: { addon_id, on })
+//   secure_open    — opened secure modal
+//   secure_confirm — confirmed reservation/payment
 
 import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent, type YesAnalyticsEvent } from "@/lib/analytics-events";
+import { enrichStudioFunnelTiming } from "@/lib/studio-v3/funnelTiming";
 
 const SESSION_KEY = "studio-v3.funnel.session.v1";
 const VARIANT_KEY = "studio-v3.funnel.variant.v1";
@@ -29,6 +31,7 @@ export type StudioFunnelEvent =
   | "continue"
   | "back"
   | "abandon"
+  | "milestone"
   | "reshape"
   | "tab_switch"
   | "addon_toggle"
@@ -90,12 +93,18 @@ interface TrackInput {
   value?: Record<string, unknown>;
 }
 
-/**
- * Resolve the Supabase REST URL + anon key for sendBeacon. We use the
- * publishable env vars exposed to the client; falls back to the imported
- * client config when env vars are missing in unusual builds.
- */
-function beaconTarget(): { url: string; key: string } | null {
+interface FunnelRow {
+  session_id: string;
+  step_number: number;
+  step_key: string;
+  event: StudioFunnelEvent;
+  value: Record<string, unknown> | null;
+  variant: string | null;
+  user_agent: string | null;
+}
+
+/** Resolve the PostgREST target used by navigation-safe keepalive events. */
+function keepaliveTarget(): { url: string; key: string } | null {
   const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
   const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
   if (!url || !key) return null;
@@ -118,6 +127,7 @@ const GA_MIRROR: Partial<Record<StudioFunnelEvent, YesAnalyticsEvent>> = {
   reveal_seen: "studio_story_reveal_viewed",
   tier_chosen: "studio_price_expanded",
   secure_open: "studio_guest_details_started",
+  secure_confirm: "studio_checkout_completed",
 };
 
 function mirrorToGa(input: TrackInput): void {
@@ -134,57 +144,57 @@ function mirrorToGa(input: TrackInput): void {
   }
 }
 
-/** Fire one event. Never awaits, never throws. */
-export function trackStep(input: TrackInput): void {
-  if (!isBrowser() || isTest()) return;
-  mirrorToGa(input);
+function enrichedRow(input: TrackInput): { input: TrackInput; row: FunnelRow } {
   const session_id = getFunnelSessionId();
-  const variant = getFunnelVariant();
-  const row = {
-    session_id,
-    step_number: input.stepNumber,
-    step_key: input.stepKey,
+  const value = enrichStudioFunnelTiming({
+    sessionId: session_id,
+    stepKey: input.stepKey,
     event: input.event,
-    value: (input.value ?? null) as never,
-    variant,
-    user_agent: window.navigator?.userAgent?.slice(0, 256) ?? null,
+    value: input.value,
+  });
+  const enrichedInput: TrackInput = { ...input, value };
+  return {
+    input: enrichedInput,
+    row: {
+      session_id,
+      step_number: input.stepNumber,
+      step_key: input.stepKey,
+      event: input.event,
+      value: Object.keys(value).length > 0 ? value : null,
+      variant: getFunnelVariant(),
+      user_agent: window.navigator?.userAgent?.slice(0, 256) ?? null,
+    },
   };
-  // Use the Supabase client — it handles auth header rotation. The .then()
-  // swallows promise rejections so a failed insert never bubbles.
+}
+
+function persistViaSupabase(row: FunnelRow): void {
   try {
     void supabase
       .from("studio_v3_funnel_events")
-      .insert(row)
+      .insert(row as never)
       .then(() => undefined);
   } catch {
     /* silent */
   }
 }
 
-/** sendBeacon path — only used for abandon on pagehide/visibilitychange. */
-function trackBeacon(input: TrackInput): void {
+/**
+ * Navigation-safe path for abandon and terminal conversion events. When the
+ * publishable REST target is unavailable, falls back to the normal client.
+ */
+function trackKeepalive(input: TrackInput): void {
   if (!isBrowser() || isTest()) return;
-  const target = beaconTarget();
-  if (!target || !navigator?.sendBeacon) {
-    trackStep(input);
+  const { input: enrichedInput, row } = enrichedRow(input);
+  mirrorToGa(enrichedInput);
+
+  const target = keepaliveTarget();
+  if (!target) {
+    persistViaSupabase(row);
     return;
   }
-  const row = {
-    session_id: getFunnelSessionId(),
-    step_number: input.stepNumber,
-    step_key: input.stepKey,
-    event: input.event,
-    value: input.value ?? null,
-    variant: getFunnelVariant(),
-    user_agent: window.navigator?.userAgent?.slice(0, 256) ?? null,
-  };
+
   try {
-    const blob = new Blob([JSON.stringify(row)], {
-      type: "application/json",
-    });
-    // Beacon does not let us add custom headers; PostgREST requires apikey
-    // + Authorization. Fall back to a keepalive fetch which does.
-    void fetch(`${target.url}`, {
+    void fetch(target.url, {
       method: "POST",
       keepalive: true,
       headers: {
@@ -193,11 +203,27 @@ function trackBeacon(input: TrackInput): void {
         authorization: `Bearer ${target.key}`,
         prefer: "return=minimal",
       },
-      body: blob,
+      body: JSON.stringify(row),
     }).catch(() => undefined);
   } catch {
-    /* silent */
+    persistViaSupabase(row);
   }
+}
+
+/** Fire one event. Never awaits, never throws. */
+export function trackStep(input: TrackInput): void {
+  if (!isBrowser() || isTest()) return;
+
+  // The browser may navigate immediately after payment success. Persist this
+  // terminal event with keepalive rather than relying on a cancellable request.
+  if (input.event === "secure_confirm") {
+    trackKeepalive(input);
+    return;
+  }
+
+  const { input: enrichedInput, row } = enrichedRow(input);
+  mirrorToGa(enrichedInput);
+  persistViaSupabase(row);
 }
 
 /**
@@ -220,16 +246,14 @@ export function useStepTimer(
     trackStep({ stepNumber, stepKey, event: "enter" });
 
     const onHide = () => {
-      // Only fire once per hide cycle.
-      if (document.visibilityState === "hidden") {
-        const ms = Date.now() - enteredAt.current;
-        trackBeacon({
-          stepNumber,
-          stepKey,
-          event: "abandon",
-          value: { ms_on_step: ms },
-        });
-      }
+      if (document.visibilityState !== "hidden") return;
+      const ms = Date.now() - enteredAt.current;
+      trackKeepalive({
+        stepNumber,
+        stepKey,
+        event: "abandon",
+        value: { ms_on_step: ms },
+      });
     };
     window.addEventListener("visibilitychange", onHide);
     window.addEventListener("pagehide", onHide);
