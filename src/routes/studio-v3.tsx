@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LivingAtlasStudioPage } from "@/components/studio-v3/LivingAtlasStudioPage";
 import { breadcrumbLd, studioServiceLd, faqPageLd, jsonLdScript } from "@/lib/jsonld";
+import { ensureP14YourDayCtaVariant } from "@/lib/studio-v3/experiments";
 import { STUDIO_FAQ } from "@/content/seo-faq";
 import ogImg from "@/assets/decision-studio.jpg";
 
@@ -15,6 +16,14 @@ import ogImg from "@/assets/decision-studio.jpg";
  */
 
 const CANONICAL_URL = "https://yesexperiencesportugal.com/studio-v3";
+
+function StudioV3Route() {
+  // P14 assigns before the child Studio mounts, so the very first funnel row
+  // for this session already carries its experiment arm. No traveller answers,
+  // saved links or durable drafts participate in assignment.
+  ensureP14YourDayCtaVariant();
+  return <LivingAtlasStudioPage />;
+}
 
 export const Route = createFileRoute("/studio-v3")({
   head: () => ({
@@ -58,5 +67,5 @@ export const Route = createFileRoute("/studio-v3")({
       jsonLdScript(faqPageLd(STUDIO_FAQ)),
     ],
   }),
-  component: LivingAtlasStudioPage,
+  component: StudioV3Route,
 });
