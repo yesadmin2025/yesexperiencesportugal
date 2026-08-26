@@ -10,6 +10,8 @@ export const P14_YOUR_DAY_CTA_VARIANTS = {
 export type P14YourDayCtaVariant =
   (typeof P14_YOUR_DAY_CTA_VARIANTS)[keyof typeof P14_YOUR_DAY_CTA_VARIANTS];
 
+const FUNNEL_VARIANT_KEY = "studio-v3.funnel.variant.v1";
+
 const CTA_COPY: Record<P14YourDayCtaVariant, string> = {
   [P14_YOUR_DAY_CTA_VARIANTS.control]: "Continue to guest details",
   [P14_YOUR_DAY_CTA_VARIANTS.story]: "Make this my day in Portugal",
@@ -41,4 +43,18 @@ export function p14YourDayCtaLabelForVariant(variant: string | null): string {
   return isP14YourDayCtaVariant(variant)
     ? CTA_COPY[variant]
     : CTA_COPY[P14_YOUR_DAY_CTA_VARIANTS.control];
+}
+
+/**
+ * Presentation-only read. Assignment remains owned by studio-v3-funnel;
+ * this helper never creates or replaces an experiment arm.
+ */
+export function readStoredP14YourDayCtaVariant(): P14YourDayCtaVariant | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = window.sessionStorage.getItem(FUNNEL_VARIANT_KEY);
+    return isP14YourDayCtaVariant(stored) ? stored : null;
+  } catch {
+    return null;
+  }
 }
