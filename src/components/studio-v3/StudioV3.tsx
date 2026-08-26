@@ -1458,13 +1458,19 @@ export function StudioV3() {
   const onFeeling = (id: Feeling) => {
     const label = getOptionLabel(FEELINGS, id);
     // P10 — changing an explicit answer must never leave a stale delegated
-    // taste behind. Release what YES decided so delegation recomputes from
-    // the new explicit state when it is applied again.
-    if (state.feeling !== id) {
+    // taste behind. Release what YES decided FIRST, then build ONE forward
+    // state from that released base, so the phase we advance to is resolved
+    // from the same truth we commit (a cleared interests/rhythm must be asked
+    // again, never skipped because the pre-release snapshot still had them).
+    const changed = state.feeling !== id;
+    const base = changed ? releaseDelegatedTaste(state) : state;
+    const forward: StudioV3State = { ...base, feeling: id };
+    if (changed) {
       setDelegationNote(null);
-      setState((s) => (s.feeling === id ? s : releaseDelegatedTaste(s)));
+      setState(() => base);
     }
-    const next = getNextPhase({ ...state, feeling: id }, "feeling");
+    const next = getNextPhase(forward, "feeling");
+
 
     pickAndAdvance("feeling", id, next, {
       kind: "feeling",
