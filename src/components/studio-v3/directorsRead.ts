@@ -2,9 +2,9 @@
  * Studio V3 — P7 "Director's Read".
  *
  * One non-blocking interpretation beat, rendered immediately before Logistics.
- * It turns the Studio's silent inference (feeling, company, taste, rhythm,
- * inherited intent) into two or three short editorial sentences, so the
- * traveller feels read rather than processed.
+ * It turns the Studio's silent inference (feeling, company, taste, inherited
+ * intent) into one or two short editorial sentences, so the traveller feels
+ * read rather than processed.
  *
  * Hard rules (non-negotiable):
  *   - Pure and deterministic. Same state in, same words out. No AI, no LLM
@@ -18,12 +18,14 @@
  *     `types.ts`, so no surface can degrade into "Coastal · Wine · Slow".
  *   - Themes already acknowledged by the Interests "Already understood" row
  *     are not narrated again with synonyms here.
+ *   - Pace is deliberately not narrated here. Refinement or Logistics owns the
+ *     rhythm acknowledgement once, so the read cannot paraphrase it again.
  *   - Too little signal → a short neutral bridge, never invented detail.
  *
  * The themes the read actually voices are returned alongside the copy, so the
- * P6 acknowledgement ledger can keep refinement / Logistics / reveal quiet
- * about anything already said here. Operational facts (date, pickup, party,
- * region) are NOT acknowledgements and are never expressed by this module.
+ * P6 acknowledgement ledger can keep Logistics / reveal quiet about anything
+ * already said here. Operational facts (date, pickup, party, region) are NOT
+ * acknowledgements and are never expressed by this module.
  */
 
 import { interestsAcknowledgedThemes } from "./studioAcknowledgement";
@@ -41,7 +43,7 @@ export interface DirectorsReadState {
 export interface DirectorsReadContent {
   readonly eyebrow: string;
   readonly headline: string;
-  /** Two or three short sentences. Never a list, never labels. */
+  /** One or two short sentences. Never a list, never labels. */
   readonly body: ReadonlyArray<string>;
   /** Semantic themes this read has already voiced on screen. */
   readonly themes: ReadonlyArray<StudioSemanticTheme>;
@@ -126,15 +128,6 @@ const INTEREST_PHRASE: Readonly<Partial<Record<Interest, string>>> = {
   "local-life": "somewhere Portugal still feels lived-in",
   faith: "somewhere quiet enough to reflect",
   "hands-on": "something made by hand",
-};
-
-/** How it should move. */
-const RHYTHM_PHRASE: Readonly<Record<Rhythm, string>> = {
-  slow: "Nothing about it should feel rushed — fewer places, longer in each.",
-  balanced:
-    "It should move without hurrying: enough places to feel varied, enough time to settle into each.",
-  full: "You want a full day, so we'll keep it moving without letting it turn into a schedule.",
-  immersive: "You want the whole arc of it, from the early light to the last of the evening.",
 };
 
 /** Theme each expressible signal stands for, mirroring `studioSemanticMemory`. */
@@ -227,22 +220,17 @@ export function composeDirectorsRead(state: DirectorsReadState): DirectorsReadCo
     for (const id of spokenInterests.slice(0, 2)) addTheme(INTEREST_THEME[id]);
   }
 
-  // 3 — rhythm.
-  if (rhythm) {
-    body.push(RHYTHM_PHRASE[rhythm]);
-    addTheme("pace.rhythm");
-  }
-
   const neutral = body.length === 0;
   if (neutral) {
     body.push("There's little to go on yet, so let's make the day real first.");
   }
 
+  // Rhythm no longer changes the copy, so it must not manufacture a new read
+  // identity when the traveller only changes pace on Back navigation.
   const signature = JSON.stringify({
     f: feeling,
     c: companions,
     i: [...interests].sort(),
-    r: rhythm,
     a: [...acknowledgedBeforeRead].sort(),
   });
 
