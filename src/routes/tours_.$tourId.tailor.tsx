@@ -670,7 +670,13 @@ function TailorPage() {
     return { extra, hasManualSupplier };
   }, [blueprint, choiceSelected]);
 
-  const requiresManualConfirmation = wineExtension.extra > 0 || wineExtension.hasManualSupplier;
+  // An extra winery only blocks instant checkout when it is NOT covered by
+  // an approved supplement ladder. Arrábida Wine's +€20 pp extras are
+  // priced, so they stay instantly bookable (exact estate assignment is
+  // operational and never promised here).
+  const requiresManualConfirmation =
+    (wineExtension.extra > 0 && !rules.wineries) || wineExtension.hasManualSupplier;
+
 
   // Blueprint contains a winery selection surface (choice or core).
   const hasWinerySurface = useMemo(() => {
