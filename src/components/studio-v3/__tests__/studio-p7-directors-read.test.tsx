@@ -112,19 +112,41 @@ describe("composeDirectorsRead — never a label dump", () => {
 });
 
 describe("composeDirectorsRead — inherited intent woven, not repeated", () => {
-  it("does not list an interest the feeling already carries", () => {
-    // `coastal` inherits the coast interest (P5), so the read must not add a
-    // separate shoreline clause on top of the coastal atmosphere sentence.
+  it("does not narrate a feeling theme that Interests already acknowledged", () => {
     const read = composeDirectorsRead({
       feeling: "coastal",
       companions: "couple",
       interests: ["coast"],
       rhythm: "slow",
     });
+    const copy = [read.headline, ...read.body].join(" ");
     const taste = read.body.filter((l) => l.startsWith("There should be room for"));
+
     expect(taste).toHaveLength(0);
-    // The theme is still acknowledged — it was voiced by the feeling sentence.
-    expect(read.themes).toContain("theme.coast");
+    expect(copy).not.toMatch(/Atlantic|shoreline/i);
+    expect(read.themes).not.toContain("theme.coast");
+    expect(read.body).toContain("This is for the two of you.");
+  });
+
+  it("does the same semantic de-duplication for wine, faith and hands-on", () => {
+    const cases = [
+      { feeling: "wine-food" as const, theme: "theme.wine", echo: /wine|table/i },
+      { feeling: "faith" as const, theme: "theme.faith", echo: /stillness|pause|reflect/i },
+      { feeling: "hands-on" as const, theme: "activity.hands-on", echo: /hands|made by hand/i },
+    ];
+
+    for (const c of cases) {
+      const read = composeDirectorsRead({
+        feeling: c.feeling,
+        companions: "couple",
+        interests: [],
+        rhythm: "slow",
+      });
+      const copy = [read.headline, ...read.body].join(" ");
+      expect(copy).not.toMatch(c.echo);
+      expect(read.themes).not.toContain(c.theme);
+      expect(read.body).toContain("This is for the two of you.");
+    }
   });
 
   it("still voices interests the feeling does not cover", () => {
@@ -135,7 +157,9 @@ describe("composeDirectorsRead — inherited intent woven, not repeated", () => 
       rhythm: "slow",
     });
     expect(read.body.some((l) => l.startsWith("There should be room for"))).toBe(true);
+    expect(read.body.some((l) => l.includes("wine with room to linger"))).toBe(true);
     expect(read.themes).toContain("theme.wine");
+    expect(read.themes).not.toContain("theme.coast");
   });
 });
 

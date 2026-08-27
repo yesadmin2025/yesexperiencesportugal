@@ -16,6 +16,8 @@
  *   - Never echoes the visible option labels. The copy is written in lowercase
  *     prose that deliberately avoids the capitalised label vocabulary in
  *     `types.ts`, so no surface can degrade into "Coastal · Wine · Slow".
+ *   - Themes already acknowledged by the Interests "Already understood" row
+ *     are not narrated again with synonyms here.
  *   - Too little signal → a short neutral bridge, never invented detail.
  *
  * The themes the read actually voices are returned alongside the copy, so the
@@ -24,6 +26,7 @@
  * region) are NOT acknowledgements and are never expressed by this module.
  */
 
+import { interestsAcknowledgedThemes } from "./studioAcknowledgement";
 import { deriveInheritedIntent } from "./studioInheritedIntent";
 import type { StudioSemanticTheme } from "./studioSemanticMemory";
 import type { Companions, Feeling, Interest, Rhythm } from "./types";
@@ -70,6 +73,19 @@ const HEADLINE_BY_FEELING: Readonly<Record<Feeling, string>> = {
   "slow-luxury": "This should be short, and very well made.",
   faith: "This asks for stillness more than distance.",
   "hands-on": "This one should leave something in your hands.",
+};
+
+/**
+ * When Interests has already acknowledged the feeling's inherited theme, the
+ * read still needs an editorial opening — but not another synonym for coast,
+ * wine, faith or hands-on. These lines preserve personality without replaying
+ * the signal the traveller has already heard.
+ */
+const HEADLINE_AFTER_INHERITED_ACK: Readonly<Partial<Record<Feeling, string>>> = {
+  coastal: "The direction is clear. I can work with this.",
+  "wine-food": "The direction is clear. I know how to hold it.",
+  faith: "The direction is clear. Nothing more needs adding.",
+  "hands-on": "The direction is clear. Now it can become a day.",
 };
 
 const NEUTRAL_HEADLINE = "Let me read this back to you.";
@@ -159,12 +175,26 @@ export function composeDirectorsRead(state: DirectorsReadState): DirectorsReadCo
   const rhythm = state.rhythm ?? null;
   const interests = state.interests ?? [];
 
-  // Inherited themes are already carried by the feeling sentence, so they are
-  // woven in semantically instead of being listed a second time.
-  const inherited = deriveInheritedIntent({ feeling, interests, rhythm });
-  const spokenInterests = interests.filter(
-    (id) => !inherited.interestIds.includes(id) && INTEREST_PHRASE[id],
+  // The read always sits after Interests in the modern flow. Treat the themes
+  // that row already surfaced as heard, otherwise "Already understood: coast"
+  // can become "a day returning to the Atlantic" a few seconds later.
+  const acknowledgedBeforeRead = new Set(
+    interestsAcknowledgedThemes({ feeling, interests, rhythm }),
   );
+  const feelingTheme = feeling ? FEELING_THEME[feeling] : undefined;
+  const feelingAlreadyAcknowledged = Boolean(
+    feelingTheme && acknowledgedBeforeRead.has(feelingTheme),
+  );
+
+  // Inherited themes are already carried by Feeling/Interests, so they are
+  // woven in semantically instead of being listed a second time. Explicit
+  // interests remain available unless their semantic theme was already heard.
+  const inherited = deriveInheritedIntent({ feeling, interests, rhythm });
+  const spokenInterests = interests.filter((id) => {
+    if (inherited.interestIds.includes(id) || !INTEREST_PHRASE[id]) return false;
+    const theme = INTEREST_THEME[id];
+    return !theme || !acknowledgedBeforeRead.has(theme);
+  });
 
   const themes: StudioSemanticTheme[] = [];
   const addTheme = (theme: StudioSemanticTheme | undefined) => {
@@ -173,17 +203,20 @@ export function composeDirectorsRead(state: DirectorsReadState): DirectorsReadCo
 
   const body: string[] = [];
 
-  // 1 — atmosphere + company.
-  if (feeling) {
+  // 1 — atmosphere + company. If the atmosphere theme has already been
+  // acknowledged, keep only the new human reading of who the day is for.
+  if (feeling && !feelingAlreadyAcknowledged) {
     const phrase = FEELING_PHRASE[feeling];
     body.push(
       companions
         ? `${sentenceCase(phrase)}, ${COMPANY_PHRASE[companions]}.`
         : `${sentenceCase(phrase)}.`,
     );
-    addTheme(FEELING_THEME[feeling]);
+    addTheme(feelingTheme);
   } else if (companions) {
-    body.push(`${sentenceCase(COMPANY_PHRASE[companions])}, and Portugal around it.`);
+    body.push(`This is ${COMPANY_PHRASE[companions]}.`);
+  } else if (feeling) {
+    body.push("The direction is already clear; now it needs a real route.");
   }
 
   // 2 — taste, at most two clauses so it stays a sentence and not a list.
@@ -210,11 +243,18 @@ export function composeDirectorsRead(state: DirectorsReadState): DirectorsReadCo
     c: companions,
     i: [...interests].sort(),
     r: rhythm,
+    a: [...acknowledgedBeforeRead].sort(),
   });
+
+  const headline = feeling
+    ? feelingAlreadyAcknowledged
+      ? (HEADLINE_AFTER_INHERITED_ACK[feeling] ?? "The direction is clear now.")
+      : HEADLINE_BY_FEELING[feeling]
+    : NEUTRAL_HEADLINE;
 
   return {
     eyebrow: DIRECTORS_READ_EYEBROW,
-    headline: feeling ? HEADLINE_BY_FEELING[feeling] : NEUTRAL_HEADLINE,
+    headline,
     body,
     themes,
     signature,
