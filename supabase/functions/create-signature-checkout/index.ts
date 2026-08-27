@@ -253,9 +253,23 @@ Deno.serve(async (req) => {
     // Every euro amount is re-derived server-side from the per-Signature
     // entitlement tables — never taken from the client.
     const isTailorFlow = (body.flow ?? (body.tailored ? "tailor" : "signature")) === "tailor";
-    const principalsRemoved = isTailorFlow
-      ? Math.min(8, Math.max(0, Number(body.principalsRemoved ?? 0) | 0))
-      : 0;
+    // −5% ladder count. When the client sends stable stop ids we re-derive
+    // the count ourselves and drop the dedicated included-lunch stop: that
+    // removal is priced by the flat −€15 pp credit and must never also earn
+    // the principal-stop reduction (no double credit for the same lunch).
+    const skippedCoreStopIds = Array.isArray(body.skippedCoreStopIds)
+      ? body.skippedCoreStopIds.filter((id): id is string => typeof id === "string")
+      : null;
+    const claimedPrincipals = Math.min(8, Math.max(0, Number(body.principalsRemoved ?? 0) | 0));
+    const derivedPrincipals = skippedCoreStopIds
+      ? Math.min(8, serverPrincipalRemovalCount(body.tourId, skippedCoreStopIds))
+      : // No ids supplied: a lunch-removal booking may still be carrying the
+        // lunch inside its claimed count, so cap it conservatively.
+        lunchRemovedFromBody(body)
+        ? Math.max(0, claimedPrincipals - 1)
+        : claimedPrincipals;
+    const principalsRemoved = isTailorFlow ? Math.min(claimedPrincipals, derivedPrincipals) : 0;
+
     const tailorSupplements = isTailorFlow
       ? serverTailorSupplementsEur(
           body.tourId,
