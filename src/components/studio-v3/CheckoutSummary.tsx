@@ -123,6 +123,35 @@ export function CheckoutSummary({
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, []);
 
+  const [reserveAttempted, setReserveAttempted] = React.useState(false);
+  const [checkoutError, setCheckoutError] = React.useState(false);
+  const wasSubmittingRef = React.useRef(false);
+
+  // The parent owns the Stripe request. This surface can still tell whether
+  // that request finished without producing an embedded session: submitting
+  // went true → false, Reserve was explicitly pressed, and no clientSecret
+  // arrived. Keep the traveller here and turn the same CTA into a retry.
+  React.useEffect(() => {
+    if (submitting) {
+      wasSubmittingRef.current = true;
+      setCheckoutError(false);
+      return;
+    }
+    if (!wasSubmittingRef.current) return;
+    wasSubmittingRef.current = false;
+    if (reserveAttempted && !clientSecret) setCheckoutError(true);
+  }, [submitting, reserveAttempted, clientSecret]);
+
+  React.useEffect(() => {
+    if (clientSecret) setCheckoutError(false);
+  }, [clientSecret]);
+
+  const handleReserve = React.useCallback(() => {
+    setReserveAttempted(true);
+    setCheckoutError(false);
+    onReserve();
+  }, [onReserve]);
+
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your Signature";
   const dateLabel = formatDate(guestDetails.tourDate ?? state.dateExact);
@@ -391,6 +420,16 @@ export function CheckoutSummary({
           data-testid="studio-v3-checkout-summary-cta-bar"
         >
           <div className="max-w-[560px] mx-auto">
+            {checkoutError ? (
+              <p
+                role="alert"
+                data-testid="studio-v3-checkout-summary-error"
+                className="mb-2 text-center text-[12px] leading-[1.45]"
+                style={{ color: "var(--charcoal)" }}
+              >
+                Secure checkout couldn't open. Your details and total are still here.
+              </p>
+            ) : null}
             {submitting ? (
               <BookingCtaSkeleton className="w-full" label="Opening secure checkout…" />
             ) : (
@@ -400,10 +439,10 @@ export function CheckoutSummary({
                 size="md"
                 className="w-full"
                 iconLeading={<Lock size={14} aria-hidden />}
-                onClick={onReserve}
+                onClick={handleReserve}
                 data-testid="studio-v3-checkout-summary-reserve"
               >
-                {CTA_RESERVE_AND_PAY}
+                {checkoutError ? "Try secure checkout again" : CTA_RESERVE_AND_PAY}
               </CtaButton>
             )}
             <p className="mt-2 text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">

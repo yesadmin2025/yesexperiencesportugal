@@ -9,7 +9,6 @@ import {
   AlertCircle,
   Download,
   Map,
-
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -45,7 +44,7 @@ export const Route = createFileRoute("/booking-confirmed")({
   }),
   head: () => ({
     meta: [
-      { title: "Booking confirmed — YES experiences Portugal" },
+      { title: "Booking status — YES experiences Portugal" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
@@ -130,6 +129,7 @@ function BookingConfirmedPage() {
   }, [state, session_id, tour]);
 
   const paid = state.kind === "ok" && state.data.paymentStatus === "paid";
+  const pending = state.kind === "ok" && !paid;
   const amountLabel =
     state.kind === "ok" && state.data.amountTotal != null && state.data.currency
       ? new Intl.NumberFormat("en-GB", {
@@ -144,52 +144,66 @@ function BookingConfirmedPage() {
         <div className="container-x max-w-2xl text-center">
           <div
             className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-6 ${
-              state.kind === "loading"
-                ? "bg-[color:var(--charcoal)]/10 text-[color:var(--charcoal-soft)]"
-                : state.kind === "error"
-                  ? "bg-[color:var(--charcoal)]/10 text-[color:var(--charcoal)]"
-                  : "bg-[color:var(--teal)] text-[color:var(--ivory)]"
+              paid
+                ? "bg-[color:var(--teal)] text-[color:var(--ivory)]"
+                : "bg-[color:var(--charcoal)]/10 text-[color:var(--charcoal-soft)]"
             }`}
           >
             {state.kind === "loading" ? (
               <Loader2 size={28} strokeWidth={2.2} className="animate-spin" />
-            ) : state.kind === "error" ? (
-              <AlertCircle size={28} strokeWidth={2.2} />
-            ) : (
+            ) : paid ? (
               <Check size={28} strokeWidth={2.2} className="motion-check-in" />
+            ) : (
+              <AlertCircle size={28} strokeWidth={2.2} />
             )}
           </div>
 
           <Eyebrow>
             {state.kind === "loading"
               ? "Verifying"
-              : state.kind === "error"
-                ? "Awaiting confirmation"
-                : paid
-                  ? "Confirmed"
-                  : "Received"}
+              : state.kind === "idle"
+                ? "Confirmation link required"
+                : state.kind === "error"
+                  ? "Verification needed"
+                  : paid
+                    ? "Confirmed"
+                    : "Payment pending"}
           </Eyebrow>
           <SectionTitle>
-            {state.kind === "error" ? (
+            {paid ? (
               <>
-                We couldn't verify your <SectionTitle.Em>booking yet</SectionTitle.Em>
+                Your day in Portugal is <SectionTitle.Em>reserved</SectionTitle.Em>
+              </>
+            ) : state.kind === "loading" ? (
+              <>
+                We’re checking your <SectionTitle.Em>booking</SectionTitle.Em>
+              </>
+            ) : state.kind === "idle" ? (
+              <>
+                We can’t verify this booking <SectionTitle.Em>from this link</SectionTitle.Em>
+              </>
+            ) : state.kind === "error" ? (
+              <>
+                We couldn’t verify your <SectionTitle.Em>booking yet</SectionTitle.Em>
               </>
             ) : (
               <>
-                Your day in Portugal is <SectionTitle.Em>reserved</SectionTitle.Em>
+                Your payment is still <SectionTitle.Em>processing</SectionTitle.Em>
               </>
             )}
           </SectionTitle>
 
           <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
             {state.kind === "loading" && "Confirming your payment with our secure processor…"}
+            {state.kind === "idle" &&
+              "This page only confirms a booking when it includes a valid secure payment reference. Please use the confirmation link returned after checkout."}
             {state.kind === "error" &&
-              "If your card was charged, your booking is safe. Refresh in a moment, or reach out via WhatsApp if anything looks off — we'll confirm it personally."}
+              "We could not verify the payment reference right now. If your card was charged, keep this link and try again shortly, or contact us and we’ll check the payment directly."}
             {state.kind === "ok" &&
               (paid ? (
                 <>
                   Payment received{amountLabel ? ` · ${amountLabel}` : ""}. Your full plan — stop by
-                  stop, pickup details and your host's direct WhatsApp — is ready below, and a copy
+                  stop, pickup details and your host’s direct WhatsApp — is ready below, and a copy
                   is on its way to{" "}
                   <span className="text-[color:var(--charcoal)]">
                     {state.data.customerEmail ?? "your inbox"}
@@ -197,10 +211,8 @@ function BookingConfirmedPage() {
                   .
                 </>
               ) : (
-                "Your payment is still being processed. As soon as it clears, your full plan appears on this page — refresh in a moment."
+                "Your payment has not been confirmed yet. As soon as it clears, your booking and full plan will appear on this page."
               ))}
-            {state.kind === "idle" &&
-              "Open this page from your confirmation link to see your full plan."}
           </p>
 
           {session_id ? (
@@ -215,7 +227,7 @@ function BookingConfirmedPage() {
                 Your day, in full
               </p>
               <p className="mt-2 text-[14px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                Everything is already here — you don't need the email to have your plan. Keep this
+                Everything is already here — you don’t need the email to have your plan. Keep this
                 link; it stays valid for your booking reference.
               </p>
               <div className="mt-5 flex flex-col sm:flex-row gap-3">
@@ -243,8 +255,7 @@ function BookingConfirmedPage() {
             </div>
           ) : null}
 
-
-          {state.kind === "ok" && state.data.receiptUrl ? (
+          {state.kind === "ok" && paid && state.data.receiptUrl ? (
             <div className="mt-4">
               <a
                 href={state.data.receiptUrl}
@@ -257,24 +268,41 @@ function BookingConfirmedPage() {
             </div>
           ) : null}
 
-          <ul className="mt-10 grid sm:grid-cols-3 gap-4 text-left">
-            <NextStep
-              icon={<Mail size={14} />}
-              title="Email copy"
-              body="A confirmation with the same plan follows by email."
-            />
-            <NextStep
-              icon={<MessageCircle size={14} />}
-              title="Local host"
-              body="Your guide will introduce themselves on WhatsApp within 24h."
-            />
-            <NextStep
-              icon={<ArrowRight size={14} />}
-              title="Anything to adjust"
-              body="Dietary, pickup, occasion — write to us and we'll adapt."
-            />
-          </ul>
+          {paid ? (
+            <ul className="mt-10 grid sm:grid-cols-3 gap-4 text-left">
+              <NextStep
+                icon={<Mail size={14} />}
+                title="Email copy"
+                body="A confirmation with the same plan follows by email."
+              />
+              <NextStep
+                icon={<MessageCircle size={14} />}
+                title="Local host"
+                body="Your guide will introduce themselves on WhatsApp within 24h."
+              />
+              <NextStep
+                icon={<ArrowRight size={14} />}
+                title="Anything to adjust"
+                body="Dietary, pickup, occasion — write to us and we’ll adapt."
+              />
+            </ul>
+          ) : null}
 
+          {!paid && state.kind !== "loading" ? (
+            <div
+              data-testid="booking-status-unverified-help"
+              className="mt-9 border border-[color:var(--charcoal)]/15 bg-[color:var(--ivory)] p-5 text-left"
+            >
+              <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal)]">
+                No booking confirmation shown
+              </p>
+              <p className="mt-2 text-[13.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                {pending
+                  ? "Keep this payment link. Once Stripe confirms the payment, refreshing this page will reveal the confirmed booking details."
+                  : "A booking reference and confirmed itinerary appear here only after we can verify the secure payment session."}
+              </p>
+            </div>
+          ) : null}
 
           <div className="mt-12 flex flex-col sm:flex-row gap-3 justify-center">
             {tour ? (
