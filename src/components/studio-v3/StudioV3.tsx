@@ -5089,6 +5089,7 @@ function ReactionOverlay({
           eyebrow={reaction.eyebrow}
           line={reaction.message}
         />
+        <ReactionContextFooter line={reaction.contextLine} tone="dark" />
         <style>{`
           @keyframes studioV3ReactionFade {
             0% { opacity: 0; }
@@ -5138,6 +5139,7 @@ function ReactionOverlay({
           eyebrow={reaction.eyebrow}
           line={reaction.message}
         />
+        <ReactionContextFooter line={reaction.contextLine} tone="dark" />
 
         <style>{`
           @keyframes studioV3ReactionFade {
@@ -5292,19 +5294,7 @@ function ReactionOverlay({
             here as a quiet closing line inside the beat that is already on
             screen — NextTeaser stays silent (P4), so no persistent copy
             layer is reintroduced. */}
-        {reaction.contextLine ? (
-          <p
-            data-testid="studio-v3-reaction-context"
-            className="mt-6 text-[11.5px] leading-[1.5]"
-            style={{
-              fontFamily: "var(--font-body)",
-              color: "color-mix(in oklab, var(--charcoal) 48%, transparent)",
-              animation: "studioV3RiseIn 560ms ease-out 420ms both",
-            }}
-          >
-            {reaction.contextLine}
-          </p>
-        ) : null}
+        <ReactionContextFooter line={reaction.contextLine} tone="light" />
       </div>
 
       <style>{`
@@ -5316,6 +5306,42 @@ function ReactionOverlay({
         }
       `}</style>
     </button>
+  );
+}
+
+/**
+ * ReactionContextFooter — the single place the beat's anticipation line is
+ * rendered. One quiet footer, one testid, whichever mutually-exclusive beat
+ * variant is on screen. Brand tokens only, never interactive.
+ */
+function ReactionContextFooter({
+  line,
+  tone,
+}: {
+  line?: string | null;
+  tone: "dark" | "light";
+}) {
+  if (!line) return null;
+  return (
+    <p
+      data-testid="studio-v3-reaction-context"
+      aria-hidden={false}
+      className={
+        tone === "dark"
+          ? "pointer-events-none absolute inset-x-0 bottom-7 mx-auto max-w-[420px] px-6 text-center text-[11.5px] leading-[1.5]"
+          : "mt-6 text-[11.5px] leading-[1.5]"
+      }
+      style={{
+        fontFamily: "var(--font-body)",
+        color:
+          tone === "dark"
+            ? "color-mix(in oklab, var(--ivory) 62%, transparent)"
+            : "color-mix(in oklab, var(--charcoal) 48%, transparent)",
+        animation: "studioV3RiseIn 560ms ease-out 420ms both",
+      }}
+    >
+      {line}
+    </p>
   );
 }
 
