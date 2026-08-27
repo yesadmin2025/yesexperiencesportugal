@@ -51,6 +51,10 @@ interface Body {
   /** Number of principal stops the guest removed in Tailor. Used to apply
    *  the SSOT tailor reduction to the resolved per-pax price. */
   principalsRemoved?: number;
+  /** Stable ids of the removed core stops — lets the server re-derive the
+   *  −5% ladder itself and exclude the dedicated included-lunch stop. */
+  skippedCoreStopIds?: string[];
+
   /** Tailor: guest added the +€35pp lunch (only on lunch-excluded Signatures). */
   tailorLunchAdded?: boolean;
   /** Tailor: wineries selected beyond the Signature baseline (+€20pp each). */
