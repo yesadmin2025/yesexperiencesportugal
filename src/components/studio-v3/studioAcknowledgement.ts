@@ -68,9 +68,7 @@ const INHERITED_INTEREST_THEME: Readonly<Partial<Record<Interest, StudioSemantic
  * gastronomy, nature, heritage and wellness have prose in the read but no P6
  * semantic theme, so they must never be suppressed later by guesswork.
  */
-const DIRECTORS_READ_FEELING_THEME: Readonly<
-  Partial<Record<Feeling, StudioSemanticTheme>>
-> = {
+const DIRECTORS_READ_FEELING_THEME: Readonly<Partial<Record<Feeling, StudioSemanticTheme>>> = {
   coastal: "theme.coast",
   "wine-food": "theme.wine",
   faith: "theme.faith",
@@ -78,9 +76,7 @@ const DIRECTORS_READ_FEELING_THEME: Readonly<
   hidden: "interest.local-life",
 };
 
-const DIRECTORS_READ_INTEREST_THEME: Readonly<
-  Partial<Record<Interest, StudioSemanticTheme>>
-> = {
+const DIRECTORS_READ_INTEREST_THEME: Readonly<Partial<Record<Interest, StudioSemanticTheme>>> = {
   coast: "theme.coast",
   wine: "theme.wine",
   faith: "theme.faith",
@@ -159,9 +155,7 @@ export function interestsAcknowledgedThemes(state: AcknowledgementState): Studio
  * or Logistics acknowledges it once, which avoids a "slow rhythm" label being
  * paraphrased again a moment later.
  */
-export function inferredDirectorsReadThemes(
-  state: AcknowledgementState,
-): StudioSemanticTheme[] {
+export function inferredDirectorsReadThemes(state: AcknowledgementState): StudioSemanticTheme[] {
   const acknowledgedBeforeRead = new Set(interestsAcknowledgedThemes(state));
   const inherited = deriveInheritedIntent({
     feeling: state.feeling ?? null,
