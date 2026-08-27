@@ -854,6 +854,23 @@ export function SignaturePriceCard({
               </ul>
             ) : null}
           </>
+        ) : tierUnavailable ? (
+          <div data-testid="studio-v3-price-unavailable">
+            <p
+              className="mt-3 text-[20px] sm:text-[22px] leading-tight font-semibold"
+              style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+            >
+              Confirmed by a curator
+            </p>
+            <p
+              className="mt-2 text-[12.5px] leading-snug"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+            >
+              {effectiveGuests === 1
+                ? "This Signature isn't published for a single traveller. A YES curator confirms the exact investment before anything is reserved."
+                : `This Signature isn't published for a party of ${effectiveGuests}. A YES curator confirms the exact investment before anything is reserved.`}
+            </p>
+          </div>
         ) : (
           <>
             <p
@@ -874,6 +891,7 @@ export function SignaturePriceCard({
             </p>
           </>
         )}
+
 
         {/* "Why this works" bullets removed — the itinerary spine below
             ("Your day includes") already surfaces the real inclusions, so
