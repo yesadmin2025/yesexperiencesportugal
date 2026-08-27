@@ -40,10 +40,13 @@ import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPri
 import { tailorAdjustedPerPax, tailorFinalPerPax } from "@/config/pricing";
 import {
   canSelectWineries,
+  dedicatedLunchStopId,
   lunchRemovalEur,
+  principalRemovalCount,
   tailorRules,
   tailorSupplementsEur,
 } from "@/data/tailorRules";
+
 import { TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR, TAILOR_LUNCH_SUPPLEMENT_EUR } from "@/config/pricing";
 
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
@@ -325,7 +328,13 @@ function TailorPage() {
       }
     }
     setSkippedCore(next);
+    // The dedicated included-lunch stop and the "Remove included lunch"
+    // action are ONE decision in two places. Keep them in lockstep so the
+    // itinerary and the −€15 pp credit can never disagree — and so the
+    // lunch is never counted again by the −5% ladder.
+    if (id === dedicatedLunchStopId(tour.id)) setLunchRemoved(isSkipping);
   };
+
 
   const tryToggleChoice = (id: string) => {
     const on = choiceSelected.has(id);
@@ -490,10 +499,35 @@ function TailorPage() {
    */
   const [lunchRemoved, setLunchRemoved] = useState(false);
 
+  /**
+   * Single entry point for the included-lunch decision. Drives BOTH the
+   * dedicated −€15 pp credit and the itinerary stop, so the same lunch can
+   * never be represented twice (and never earn the −5% ladder as well).
+   */
+  const toggleIncludedLunch = () => {
+    const stopId = dedicatedLunchStopId(tour.id);
+    if (stopId && blueprint?.core.some((s) => s.id === stopId)) {
+      tryToggleSkippedCore(stopId);
+      return;
+    }
+    setLunchRemoved((v) => !v);
+  };
+
+
+
+  /**
+   * −5% ladder count. The dedicated included-lunch stop is EXCLUDED: its
+   * removal is priced by the flat −€15 pp credit only, so the same lunch
+   * can never earn both credits.
+   */
   const principalsRemoved = useMemo(
-    () => (blueprint ? skippedCore.size : skipped.size),
-    [blueprint, skippedCore, skipped],
+    () =>
+      blueprint
+        ? principalRemovalCount(tour.id, skippedCore)
+        : principalRemovalCount(tour.id, skipped),
+    [blueprint, skippedCore, skipped, tour.id],
   );
+
 
   // ─── Authorized Tailor supplements (Canonical Bible v1.1) ───
   // Only two levers exist beyond stop removal: "add lunch" (+€35 pp, and
@@ -740,6 +774,12 @@ function TailorPage() {
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
           priceFromEur: basePerPax,
           principalsRemoved,
+          // Stable stop ids so the server can re-derive the −5% ladder
+          // itself and exclude the dedicated included-lunch stop.
+          skippedCoreStopIds: blueprint
+            ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.id)
+            : [],
+
           tailorLunchAdded: lunchAdded,
           tailorExtraWineries: rules.wineries
             ? Math.max(0, wineriesSelected - rules.wineries.included)
@@ -1653,7 +1693,7 @@ function TailorPage() {
                   {rules.allowRemoveLunch && (
                     <button
                       type="button"
-                      onClick={() => setLunchRemoved((v) => !v)}
+                      onClick={() => toggleIncludedLunch()}
                       aria-pressed={lunchRemoved}
                       data-testid="tailor-remove-lunch"
                       className={[

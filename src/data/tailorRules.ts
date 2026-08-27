@@ -185,3 +185,38 @@ export function tailorSupplementsEur(
     opts.wineriesSelected === undefined ? 0 : winerySupplementEur(tourId, opts.wineriesSelected);
   return lunch + wine;
 }
+
+/**
+ * The included-lunch stop governed by the dedicated "Remove included lunch"
+ * action (−€15 pp flat). Owner-approved meaning: this removal is NOT a
+ * principal-stop removal, so the same lunch must never earn the −5% stop
+ * reduction as well. Skipping this stop and toggling the dedicated action
+ * are two representations of ONE decision.
+ *
+ * Mirrored server-side in `supabase/functions/_shared/pricing.ts`
+ * (`TAILOR_DEDICATED_LUNCH_STOP_ID`) — parity is enforced by a unit test.
+ */
+export const TAILOR_DEDICATED_LUNCH_STOP_ID: Readonly<Record<string, string>> = {
+  "arrabida-wine-allinclusive": "lunch-azeitao",
+};
+
+/** Stop id whose removal is priced by the dedicated lunch credit, if any. */
+export function dedicatedLunchStopId(tourId: string): string | null {
+  if (!allowsLunchRemoval(tourId)) return null;
+  return TAILOR_DEDICATED_LUNCH_STOP_ID[tourId] ?? null;
+}
+
+/**
+ * Count of principal-stop removals eligible for the −5% ladder.
+ * Excludes the dedicated included-lunch stop, which is priced solely by
+ * the flat −€15 pp credit. Never double-counts the same lunch.
+ */
+export function principalRemovalCount(tourId: string, skippedStopIds: Iterable<string>): number {
+  const lunchId = dedicatedLunchStopId(tourId);
+  let count = 0;
+  for (const id of skippedStopIds) {
+    if (lunchId && id === lunchId) continue;
+    count += 1;
+  }
+  return count;
+}

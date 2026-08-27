@@ -182,3 +182,22 @@ export function serverAddOnLine(
         : 1;
   return { perUnitEur, quantity, unit: entry.pricingUnit };
 }
+
+/**
+ * Included-lunch stop governed by the dedicated −€15 pp removal credit.
+ * Server mirror of `TAILOR_DEDICATED_LUNCH_STOP_ID` in
+ * `src/data/tailorRules.ts`. Removing this stop is NOT a principal-stop
+ * removal, so it can never also earn the −5% ladder reduction.
+ */
+export const TAILOR_DEDICATED_LUNCH_STOP_ID: Readonly<Record<string, string>> = {
+  "arrabida-wine-allinclusive": "lunch-azeitao",
+};
+
+/** Server-authoritative principal-removal count from skipped stop ids. */
+export function serverPrincipalRemovalCount(
+  tourId: string,
+  skippedStopIds: readonly string[],
+): number {
+  const lunchId = TAILOR_DEDICATED_LUNCH_STOP_ID[tourId] ?? null;
+  return skippedStopIds.filter((id) => typeof id === "string" && id !== lunchId).length;
+}

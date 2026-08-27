@@ -51,6 +51,10 @@ interface Body {
   /** Number of principal stops the guest removed in Tailor. Used to apply
    *  the SSOT tailor reduction to the resolved per-pax price. */
   principalsRemoved?: number;
+  /** Stable ids of the removed core stops — lets the server re-derive the
+   *  −5% ladder itself and exclude the dedicated included-lunch stop. */
+  skippedCoreStopIds?: string[];
+
   /** Tailor: guest added the +€35pp lunch (only on lunch-excluded Signatures). */
   tailorLunchAdded?: boolean;
   /** Tailor: wineries selected beyond the Signature baseline (+€20pp each). */
@@ -94,6 +98,8 @@ import {
   serverTailorSupplementsEur,
   TAILOR_LUNCH_REMOVAL_ELIGIBLE,
   serverAddOnLine,
+  serverPrincipalRemovalCount,
+
   tailorFinalPerPax,
   type AgeBand,
 } from "../_shared/pricing.ts";
@@ -253,9 +259,27 @@ Deno.serve(async (req) => {
     // Every euro amount is re-derived server-side from the per-Signature
     // entitlement tables — never taken from the client.
     const isTailorFlow = (body.flow ?? (body.tailored ? "tailor" : "signature")) === "tailor";
-    const principalsRemoved = isTailorFlow
-      ? Math.min(8, Math.max(0, Number(body.principalsRemoved ?? 0) | 0))
-      : 0;
+    // −5% ladder count. When the client sends stable stop ids we re-derive
+    // the count ourselves and drop the dedicated included-lunch stop: that
+    // removal is priced by the flat −€15 pp credit and must never also earn
+    // the principal-stop reduction (no double credit for the same lunch).
+    const skippedCoreStopIds = Array.isArray(body.skippedCoreStopIds)
+      ? body.skippedCoreStopIds.filter((id): id is string => typeof id === "string")
+      : null;
+    const claimedPrincipals = Math.min(8, Math.max(0, Number(body.principalsRemoved ?? 0) | 0));
+    const lunchRemovalClaimed =
+      body.tailorLunchRemoved === true && TAILOR_LUNCH_REMOVAL_ELIGIBLE.has(body.tourId);
+    const derivedPrincipals = skippedCoreStopIds
+      ? Math.min(8, serverPrincipalRemovalCount(body.tourId, skippedCoreStopIds))
+      : // No ids (stale or tampered client): a lunch-removal booking may be
+        // carrying the lunch inside its claimed count, so drop one removal
+        // rather than risk paying the same lunch twice.
+        lunchRemovalClaimed
+        ? Math.max(0, claimedPrincipals - 1)
+        : claimedPrincipals;
+    const principalsRemoved = isTailorFlow ? Math.min(claimedPrincipals, derivedPrincipals) : 0;
+
+
     const tailorSupplements = isTailorFlow
       ? serverTailorSupplementsEur(
           body.tourId,
