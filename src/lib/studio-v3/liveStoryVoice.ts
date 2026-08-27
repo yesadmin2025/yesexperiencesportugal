@@ -51,12 +51,15 @@ const INTEREST_READ: Readonly<Record<string, string>> = {
   "hands-on": "something made by hand",
 };
 
-const FEELING_OWNS_INTEREST: Readonly<Partial<Record<string, string>>> = {
-  "wine-food": "wine",
-  coastal: "coast",
-  faith: "faith",
-  "hands-on": "hands-on",
-  hidden: "local-life",
+const FEELING_OWNS_INTERESTS: Readonly<Partial<Record<string, readonly string[]>>> = {
+  "wine-food": ["wine", "gastronomy"],
+  coastal: ["coast"],
+  hidden: ["local-life"],
+  culture: ["heritage"],
+  adventure: ["nature"],
+  "slow-luxury": ["wellness"],
+  faith: ["faith"],
+  "hands-on": ["hands-on"],
 };
 
 function sentenceCase(text: string): string {
@@ -68,9 +71,11 @@ function lowerFirst(text: string): string {
 }
 
 function firstDistinctInterest(profile: LiveStoryProfile): string | null {
-  const owned = profile.feeling ? FEELING_OWNS_INTEREST[profile.feeling] : undefined;
+  const owned = new Set(
+    profile.feeling ? (FEELING_OWNS_INTERESTS[profile.feeling] ?? []) : [],
+  );
   for (const id of profile.interests ?? []) {
-    if (id === owned) continue;
+    if (owned.has(id)) continue;
     if (INTEREST_READ[id]) return id;
   }
   return null;
