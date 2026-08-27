@@ -11,15 +11,34 @@ import { useEffect, useRef } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { DirectorsReadContent } from "./directorsRead";
 
+/**
+ * P10 concierge visibility: when "Let YES design the rest" is active, the read
+ * names what YES chose ONCE and offers one quiet way back. Presentation only —
+ * the parent owns the labels, the state and the navigation.
+ */
+export interface DirectorsReadDelegation {
+  /** Already-resolved, human labels. e.g. "coast and the table, unhurried". */
+  readonly line: string;
+  readonly onAdjust: () => void;
+  readonly adjustLabel: string;
+}
+
 export interface DirectorsReadProps {
   readonly read: DirectorsReadContent;
   readonly onContinue: () => void;
   readonly onBack?: () => void;
+  readonly delegation?: DirectorsReadDelegation | null;
   /** Fired once per distinct read signature, for `interpretation_viewed`. */
   readonly onView?: (signature: string) => void;
 }
 
-export function DirectorsRead({ read, onContinue, onBack, onView }: DirectorsReadProps) {
+export function DirectorsRead({
+  read,
+  onContinue,
+  onBack,
+  onView,
+  delegation = null,
+}: DirectorsReadProps) {
   const seenRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -78,6 +97,35 @@ export function DirectorsRead({ read, onContinue, onBack, onView }: DirectorsRea
           </p>
         ))}
       </div>
+
+      {delegation ? (
+        <div
+          data-testid="studio-v3-delegation-read"
+          className="mt-7 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 pt-4"
+          style={{ borderTop: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)" }}
+        >
+          <p
+            data-testid="studio-v3-delegation-read-line"
+            className="text-[13px] leading-[1.6] italic"
+            style={{
+              fontFamily: "var(--font-editorial)",
+              color: "color-mix(in oklab, var(--charcoal) 66%, transparent)",
+            }}
+          >
+            {delegation.line}
+          </p>
+          <button
+            type="button"
+            onClick={delegation.onAdjust}
+            data-testid="studio-v3-delegation-adjust"
+            aria-label={delegation.adjustLabel}
+            className="-mr-2 inline-flex items-center min-h-[44px] px-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            style={{ color: "var(--teal)" }}
+          >
+            Adjust
+          </button>
+        </div>
+      ) : null}
 
       <button
         type="button"
