@@ -63,6 +63,10 @@ function sentenceCase(text: string): string {
   return text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
 }
 
+function lowerFirst(text: string): string {
+  return text ? text.charAt(0).toLowerCase() + text.slice(1) : text;
+}
+
 function firstDistinctInterest(profile: LiveStoryProfile): string | null {
   const owned = profile.feeling ? FEELING_OWNS_INTEREST[profile.feeling] : undefined;
   for (const id of profile.interests ?? []) {
@@ -88,15 +92,17 @@ export function deterministicLiveStoryFallback(profile: LiveStoryProfile): strin
   const sentences: string[] = [];
 
   if (feeling) {
+    const lead = name ? `${name}, ${lowerFirst(feeling)}` : feeling;
     const secondary = interest ? `, with ${interest}` : "";
-    sentences.push(`${feeling}${secondary}.`);
+    sentences.push(`${lead}${secondary}.`);
   } else if (interest) {
-    sentences.push(`${sentenceCase(interest)} is starting to give the day its character.`);
+    const lead = `${sentenceCase(interest)} is starting to give the day its character`;
+    sentences.push(`${name ? `${name}, ${lowerFirst(lead)}` : lead}.`);
   }
 
   const humanParts = [company, rhythm].filter((part): part is string => Boolean(part));
   if (humanParts.length > 0) {
-    sentences.push(`${name ? `${name}, this is` : "This is"} ${humanParts.join(", ")}.`);
+    sentences.push(`${sentenceCase(humanParts.join(" and "))}.`);
   }
 
   if (sentences.length === 0) {
