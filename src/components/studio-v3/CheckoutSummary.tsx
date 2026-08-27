@@ -65,6 +65,12 @@ export interface CheckoutSummaryProps {
   readonly composedStops?: ReadonlyArray<{ label: string }>;
   readonly submitting?: boolean;
   readonly onEditGuestDetails: () => void;
+  /**
+   * Localized route/stops edit. Optional: when the host has no existing
+   * storyboard return path, the affordance is simply not rendered — we never
+   * fabricate navigation here.
+   */
+  readonly onEditStops?: () => void;
   readonly onBack: () => void;
   readonly onReserve: () => void;
   readonly clientSecret?: string | null;
@@ -109,6 +115,7 @@ export function CheckoutSummary({
   composedStops,
   submitting = false,
   onEditGuestDetails,
+  onEditStops,
   onBack,
   onReserve,
   clientSecret = null,
@@ -230,20 +237,44 @@ export function CheckoutSummary({
           boxShadow: "none",
         }}
       >
-        <Row label="Date" value={dateLabel ?? "Flexible"} />
-        <Row label="Guests" value={guestsLabel} />
+        {/* Localized edits: each recap area routes back through the step that
+            already owns it, so a wrong date never traps the traveller here.
+            No new phase or state machinery — existing callbacks only. */}
+        <Row
+          label="Date"
+          value={dateLabel ?? "Flexible"}
+          onEdit={onEditGuestDetails}
+          editLabel="Edit your date"
+          editTestId="studio-v3-checkout-summary-edit-date"
+        />
+        <Row
+          label="Guests"
+          value={guestsLabel}
+          onEdit={onEditGuestDetails}
+          editLabel="Edit your party"
+          editTestId="studio-v3-checkout-summary-edit-guests"
+        />
 
         {stopLabels.length > 0 ? (
           <div
             className="pt-3 border-t"
             style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
           >
-            <p
-              className="text-[10px] uppercase tracking-[0.22em] mb-2"
-              style={{ color: "var(--charcoal-soft)" }}
-            >
-              Stops
-            </p>
+            <div className="mb-2 flex items-baseline justify-between gap-3">
+              <p
+                className="text-[10px] uppercase tracking-[0.22em]"
+                style={{ color: "var(--charcoal-soft)" }}
+              >
+                Stops
+              </p>
+              {onEditStops ? (
+                <RecapEdit
+                  onClick={onEditStops}
+                  label="Edit your stops"
+                  testId="studio-v3-checkout-summary-edit-stops"
+                />
+              ) : null}
+            </div>
             <ul
               className="space-y-1 text-[13.5px]"
               style={{ color: "var(--charcoal)" }}
@@ -455,16 +486,60 @@ export function CheckoutSummary({
   );
 }
 
-function Row({ label, value }: { label: string; value: React.ReactNode }) {
+/** Quiet, 44px-tall text affordance. Secondary by weight, never a second CTA. */
+function RecapEdit({
+  onClick,
+  label,
+  testId,
+}: {
+  onClick: () => void;
+  label: string;
+  testId: string;
+}) {
   return (
-    <div className="flex justify-between gap-3 text-[13.5px]" style={{ color: "var(--charcoal)" }}>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      data-testid={testId}
+      className="-mr-2 inline-flex items-center min-h-[44px] px-2 text-[10.5px] uppercase tracking-[0.22em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+      style={{ color: "var(--teal)" }}
+    >
+      Edit
+    </button>
+  );
+}
+
+function Row({
+  label,
+  value,
+  onEdit,
+  editLabel,
+  editTestId,
+}: {
+  label: string;
+  value: React.ReactNode;
+  onEdit?: () => void;
+  editLabel?: string;
+  editTestId?: string;
+}) {
+  return (
+    <div
+      className="flex items-center justify-between gap-3 text-[13.5px]"
+      style={{ color: "var(--charcoal)" }}
+    >
       <span
         className="text-[11px] uppercase tracking-[0.22em]"
         style={{ color: "var(--charcoal-soft)" }}
       >
         {label}
       </span>
-      <span className="text-right">{value}</span>
+      <span className="flex items-center gap-1 text-right">
+        <span>{value}</span>
+        {onEdit && editLabel && editTestId ? (
+          <RecapEdit onClick={onEdit} label={editLabel} testId={editTestId} />
+        ) : null}
+      </span>
     </div>
   );
 }

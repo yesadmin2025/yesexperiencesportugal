@@ -29,7 +29,8 @@
  */
 
 import { decideInterests, decideRhythm, type DecidedForMeKey } from "./letYesDecide";
-import type { StudioV3State } from "./types";
+import { getOptionLabel } from "./curation";
+import { INTERESTS, RHYTHMS, type StudioV3State } from "./types";
 
 /** The single delegation mode. Additive, defaults to null. */
 export const DELEGATION_MODE = "yes-designs" as const;
@@ -242,4 +243,51 @@ export function delegationAcknowledgement(
     return "Your tastes stay. We'll set the pace.";
   }
   return "Leave the rest with us.";
+}
+
+/**
+ * P10 concierge visibility (presentation only).
+ *
+ * Names, once, what YES actually chose while delegation is active — built
+ * strictly from the resolved labels already on state. It reads nothing new,
+ * decides nothing, and never changes what was delegated.
+ */
+export function delegatedChoiceSummary(state: StudioV3State): {
+  line: string;
+  adjustPhase: "interests" | "rhythm";
+  adjustLabel: string;
+} | null {
+  if (!isDelegationActive(state)) return null;
+  const delegated = state.decidedForMe ?? [];
+  const interestsDelegated = delegated.includes("interests");
+  const rhythmDelegated = delegated.includes("rhythm");
+  if (!interestsDelegated && !rhythmDelegated) return null;
+
+  const interestLabels = interestsDelegated
+    ? (state.interests ?? [])
+        .map((id) => getOptionLabel(INTERESTS, id))
+        .filter((l): l is string => Boolean(l))
+        .map((l) => l.toLowerCase())
+    : [];
+  const rhythmLabel = rhythmDelegated
+    ? (getOptionLabel(RHYTHMS, state.rhythm) ?? null)?.toLowerCase()
+    : null;
+
+  const parts: string[] = [];
+  if (interestLabels.length > 0) {
+    const list =
+      interestLabels.length === 1
+        ? interestLabels[0]
+        : `${interestLabels.slice(0, -1).join(", ")} and ${interestLabels[interestLabels.length - 1]}`;
+    parts.push(list);
+  }
+  if (rhythmLabel) parts.push(`a ${rhythmLabel} pace`);
+  if (parts.length === 0) return null;
+
+  const adjustPhase: "interests" | "rhythm" = interestLabels.length > 0 ? "interests" : "rhythm";
+  return {
+    line: `Chosen for you — ${parts.join(", at ")}.`,
+    adjustPhase,
+    adjustLabel: adjustPhase === "interests" ? "Adjust the chosen moments" : "Adjust the pace",
+  };
 }
