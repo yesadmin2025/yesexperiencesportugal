@@ -1459,6 +1459,35 @@ export function StudioV3() {
   );
 
   /**
+   * jumpBackToPhase — narrow, protected variant of `back()` used ONLY by the
+   * delegation "Adjust" action on the Director's Read. `back()` deliberately
+   * ignores its hint and walks the chain one step; this helper lands directly
+   * on an explicit earlier phase. It changes nothing but `phase`: every answer
+   * and every delegated mark is preserved, so the existing take-back logic
+   * still owns release when the traveller makes an explicit choice.
+   */
+  const jumpBackToPhase = useCallback(
+    (target: StudioV3Phase) => {
+      const fromIdx = PHASE_ORDER.indexOf(state.phase);
+      const toIdx = PHASE_ORDER.indexOf(target);
+      if (toIdx < 0 || fromIdx < 0 || toIdx >= fromIdx) return;
+      setReaction(null);
+      setExiting(true);
+      trackStep({
+        stepNumber: stepOf(state.phase),
+        stepKey: state.phase,
+        event: "back",
+        value: { to: target, source: "delegation-adjust" },
+      });
+      window.setTimeout(() => {
+        setState((s) => ({ ...s, phase: target }));
+        setExiting(false);
+      }, 280);
+    },
+    [state.phase],
+  );
+
+  /**
    * Show a reaction beat, then land on the next phase. The phase is
    * advanced silently beneath the overlay so when the beat dissolves the
    * next question is already mounted and ready. Users can tap the overlay
@@ -2681,10 +2710,10 @@ export function StudioV3() {
             onContinue={() => setDirectorsReadSeen(directorsRead.signature)}
             delegation={(() => {
               // P10 — concierge visibility. Named once, here, with one quiet
-              // way back into the delegated phase. Existing navigation and
-              // existing take-back semantics only: `back()` walks the normal
-              // chain and the phase itself releases the delegated mark when
-              // the traveller makes an explicit choice.
+              // way back into the delegated phase. Navigation only:
+              // `jumpBackToPhase` sets the phase and nothing else, and the
+              // phase itself releases the delegated mark when the traveller
+              // makes an explicit choice.
               const summary = delegatedChoiceSummary(state);
               if (!summary) return null;
               return {
@@ -2692,7 +2721,7 @@ export function StudioV3() {
                 adjustLabel: summary.adjustLabel,
                 onAdjust: () => {
                   setDirectorsReadSeen(directorsRead.signature);
-                  back(summary.adjustPhase);
+                  jumpBackToPhase(summary.adjustPhase);
                 },
               };
             })()}
