@@ -79,7 +79,6 @@ export function beatIndexForPhase(phase: StudioV3Phase): number | null {
   }
 }
 
-
 export interface StudioV3ProgressStepperProps {
   phase: StudioV3Phase;
   /** When provided, completed beats become buttons that jump back to that beat's entry phase. */
@@ -216,7 +215,7 @@ export function StudioV3ProgressStepper({
                 onClick={() => onJumpToBeat?.(beat.id, BEAT_ENTRY_PHASE[beat.id])}
                 onKeyDown={(e) => handleKeyDown(e, i)}
                 aria-label={`Return to ${beat.label}`}
-                className="group flex flex-1 flex-col items-center gap-1.5 rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
+                className="group flex min-h-[44px] flex-1 flex-col items-center justify-center gap-1.5 rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)]"
                 {...sharedProps}
               >
                 {bar}
@@ -228,7 +227,7 @@ export function StudioV3ProgressStepper({
           return (
             <div
               key={beat.id}
-              className="flex flex-1 flex-col items-center gap-1.5"
+              className="flex min-h-[44px] flex-1 flex-col items-center justify-center gap-1.5"
               {...sharedProps}
             >
               {bar}

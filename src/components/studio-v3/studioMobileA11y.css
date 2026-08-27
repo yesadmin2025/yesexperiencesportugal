@@ -1,0 +1,38 @@
+/* Studio V3 mobile interaction hardening.
+ *
+ * Scoped to the unified Your Day editor so legacy 32px icon controls expose
+ * a real 44x44 CSS box, not merely an invisible pseudo-element hit area.
+ */
+
+[data-testid="studio-v3-stops-editor"] {
+  scroll-margin-top: 6rem;
+}
+
+[data-testid="studio-v3-stops-editor"] button {
+  min-height: 44px;
+}
+
+[data-testid="studio-v3-stops-editor"] button[aria-label^="Move "],
+[data-testid="studio-v3-stops-editor"] button[aria-label^="Swap "],
+[data-testid="studio-v3-stops-editor"] button[aria-label^="Remove "] {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+
+/* The old inline buttons enlarged their hit box with ::after. Once the
+ * physical control itself is 44px, that extension would overlap neighbours. */
+[data-testid="studio-v3-stops-editor"] button[aria-label^="Move "]::after,
+[data-testid="studio-v3-stops-editor"] button[aria-label^="Swap "]::after,
+[data-testid="studio-v3-stops-editor"] button[aria-label^="Remove "]::after {
+  inset: 0 !important;
+}
+
+/* In timeline fallback mode the ordered timeline is already the route
+ * overview. Hide the sibling mini-legend so the same stop names are not
+ * repeated immediately underneath. The legend stays visible with a real map. */
+[data-testid="studio-v3-signature-card"]:has([data-route-mode="timeline"])
+  [aria-label="Route stops in order"] {
+  display: none;
+}
