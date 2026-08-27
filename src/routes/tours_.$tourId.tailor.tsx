@@ -774,6 +774,12 @@ function TailorPage() {
           journeyTitle: `Tailored — ${tour.title.split("—")[0].trim()}`,
           priceFromEur: basePerPax,
           principalsRemoved,
+          // Stable stop ids so the server can re-derive the −5% ladder
+          // itself and exclude the dedicated included-lunch stop.
+          skippedCoreStopIds: blueprint
+            ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.id)
+            : [],
+
           tailorLunchAdded: lunchAdded,
           tailorExtraWineries: rules.wineries
             ? Math.max(0, wineriesSelected - rules.wineries.included)
