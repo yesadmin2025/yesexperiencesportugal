@@ -11,6 +11,7 @@
  * hardcodes amounts, it only declares which actions exist.
  */
 
+import { TAILOR_BLUEPRINTS } from "./tailorBlueprints";
 import {
   TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR,
   TAILOR_LUNCH_SUPPLEMENT_EUR,
