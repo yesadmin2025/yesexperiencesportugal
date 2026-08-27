@@ -500,6 +500,22 @@ function TailorPage() {
   const [lunchRemoved, setLunchRemoved] = useState(false);
 
   /**
+   * Single entry point for the included-lunch decision. Drives BOTH the
+   * dedicated −€15 pp credit and the itinerary stop, so the same lunch can
+   * never be represented twice (and never earn the −5% ladder as well).
+   */
+  const toggleIncludedLunch = () => {
+    const stopId = dedicatedLunchStopId(tour.id);
+    if (stopId && blueprint?.core.some((s) => s.id === stopId)) {
+      tryToggleSkippedCore(stopId);
+      return;
+    }
+    setLunchRemoved((v) => !v);
+  };
+
+
+
+  /**
    * −5% ladder count. The dedicated included-lunch stop is EXCLUDED: its
    * removal is priced by the flat −€15 pp credit only, so the same lunch
    * can never earn both credits.
