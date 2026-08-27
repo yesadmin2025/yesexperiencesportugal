@@ -298,3 +298,70 @@ describe("directorsReadBackTarget", () => {
     expect(directorsReadBackTarget(false)).toBe("rhythm");
   });
 });
+
+describe("Director's Read — P10 delegation disclosure (render contract)", () => {
+  const read = composeDirectorsRead({
+    feeling: "coastal",
+    companions: "couple",
+    interests: ["coast"],
+    rhythm: "slow",
+  });
+
+  it("renders no delegation disclosure by default", () => {
+    render(<DirectorsRead read={read} onContinue={() => {}} />);
+    expect(screen.queryByTestId("studio-v3-delegation-read")).toBeNull();
+    expect(screen.queryByTestId("studio-v3-delegation-adjust")).toBeNull();
+  });
+
+  it("renders the disclosure exactly once with an accessible 44px Adjust", () => {
+    const onAdjust = vi.fn();
+    render(
+      <DirectorsRead
+        read={read}
+        onContinue={() => {}}
+        delegation={{
+          line: "Chosen for you — the coast, at a slow pace.",
+          onAdjust,
+          adjustLabel: "Adjust the chosen moments",
+        }}
+      />,
+    );
+    expect(screen.getAllByTestId("studio-v3-delegation-read-line")).toHaveLength(1);
+    const adjust = screen.getByTestId("studio-v3-delegation-adjust");
+    expect(adjust.tagName).toBe("BUTTON");
+    expect(adjust.className).toContain("min-h-[44px]");
+    expect(adjust.getAttribute("aria-label")).toBe("Adjust the chosen moments");
+  });
+
+  it("calls onAdjust exactly once per click and once per keyboard activation", () => {
+    const onAdjust = vi.fn();
+    render(
+      <DirectorsRead
+        read={read}
+        onContinue={() => {}}
+        delegation={{ line: "Chosen for you — the coast.", onAdjust, adjustLabel: "Adjust" }}
+      />,
+    );
+    const adjust = screen.getByTestId("studio-v3-delegation-adjust");
+    fireEvent.click(adjust);
+    expect(onAdjust).toHaveBeenCalledTimes(1);
+    // Native <button> activates on Enter/Space via a synthesised click.
+    adjust.focus();
+    expect(document.activeElement).toBe(adjust);
+    fireEvent.keyDown(adjust, { key: "Enter" });
+    fireEvent.click(adjust);
+    expect(onAdjust).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps Continue as the only phase CTA on the read", () => {
+    render(
+      <DirectorsRead
+        read={read}
+        onContinue={() => {}}
+        delegation={{ line: "Chosen for you — the coast.", onAdjust: () => {}, adjustLabel: "Adjust" }}
+      />,
+    );
+    expect(document.querySelectorAll("[data-phase-cta]")).toHaveLength(1);
+    expect(screen.getAllByTestId("studio-v3-directors-read-continue")).toHaveLength(1);
+  });
+});
