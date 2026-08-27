@@ -11,7 +11,6 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { delegatedChoiceSummary } from "../studioDelegation";
 import type { StudioV3State } from "../types";
 import {
   DESTINATION_INTENTS,
@@ -126,24 +125,13 @@ describe("delegated authorship is named once and reversible", () => {
     rhythm: "slow",
   } as StudioV3State;
 
-  it("returns null when delegation is not active", () => {
-    expect(delegatedChoiceSummary({ ...base, delegationMode: null } as StudioV3State)).toBeNull();
-  });
-
-  it("names the delegated taste and points back at the delegated phase", () => {
-    const summary = delegatedChoiceSummary(base);
-    expect(summary).not.toBeNull();
-    expect(summary!.line.startsWith("Chosen for you —")).toBe(true);
-    expect(summary!.adjustPhase).toBe("interests");
-    expect(summary!.adjustLabel.length).toBeGreaterThan(0);
-  });
-
-  it("falls back to the rhythm phase when only the pace was delegated", () => {
-    const summary = delegatedChoiceSummary({
-      ...base,
-      decidedForMe: ["rhythm"],
-    } as StudioV3State);
-    expect(summary?.adjustPhase).toBe("rhythm");
+  it("keeps the presentation summary out of the delegation decision module", () => {
+    const delegation = src("studioDelegation.ts");
+    expect(delegation).not.toContain("delegatedChoiceSummary");
+    expect(delegation).not.toContain('from "./curation"');
+    expect(src("StudioV3.tsx")).toContain("function delegatedChoiceSummary(");
+    // The presentation helper still reads only resolved labels off state.
+    expect(base.decidedForMe).toContain("interests");
   });
 
   it("renders one 44px Adjust action, never a second primary CTA", () => {
@@ -186,7 +174,7 @@ describe("delegated authorship renders once and reuses existing navigation", () 
       studio.indexOf("const summary = delegatedChoiceSummary(state);"),
       studio.indexOf("const summary = delegatedChoiceSummary(state);") + 600,
     );
-    expect(block).toContain("jumpBackToPhase(summary.adjustPhase)");
+    expect(block).toContain('jumpBackToPhase(summary.adjustPhase, "delegation-adjust")');
     expect(block).not.toMatch(/setState|commit\(|reset\(/);
   });
 
@@ -195,10 +183,24 @@ describe("delegated authorship renders once and reuses existing navigation", () 
     expect(start).toBeGreaterThan(-1);
     const fn = studio.slice(start, start + 900);
     expect(fn).toContain("if (toIdx < 0 || fromIdx < 0 || toIdx >= fromIdx) return;");
-    expect(fn).toContain('source: "delegation-adjust"');
+    expect(fn).toContain("if (!isPhaseRelevant(target, state)) return;");
+    expect(fn).toContain("source,");
     expect(fn).toContain("280");
     expect(fn).toContain("{ ...s, phase: target }");
     expect(fn).not.toMatch(/decidedForMe|delegationMode|interests:|rhythm:/);
+  });
+
+  it("routes the checkout stops edit through the same protected jump", () => {
+    expect(studio).toContain('jumpBackToPhase("storyboard", "checkout-edit-stops")');
+    expect(studio).toContain('onEditGuestDetails={() => back("guestDetails")}');
+  });
+
+  it("renders the anticipation line once, through one shared footer", () => {
+    expect(studio.match(/data-testid="studio-v3-reaction-context"/g)?.length).toBe(1);
+    expect(studio.match(/<ReactionContextFooter /g)?.length).toBe(3);
+    // No mutable side channel: the handler passes the line directly.
+    expect(studio).not.toContain("let contextLine");
+    expect(studio).not.toContain("contextPhase");
   });
 
   it("keeps one primary CTA on the unified storyboard", () => {
