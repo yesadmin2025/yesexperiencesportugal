@@ -55,6 +55,17 @@
   display: none;
 }
 
+/* The resolved block already states the canonical final total immediately
+ * above the ledger. Keep the ledger's useful Journey + Enhancements rows, but
+ * hide its repeated total row so sighted and assistive-tech users hear the
+ * same final amount once on this surface. The ledger data attributes remain
+ * intact for parity checks and pricing diagnostics. */
+[data-testid="studio-v3-final-total"]
+  [data-testid="studio-v3-investment-ledger"]
+  > div:has([data-testid="studio-v3-ledger-total"]) {
+  display: none;
+}
+
 /* The running per-adult add-on output still announces changes through its
  * aria-live region, but it no longer adds a third visible price between the
  * selected additions and the canonical final total. */
