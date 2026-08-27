@@ -13,6 +13,11 @@
 
 import { TAILOR_BLUEPRINTS } from "./tailorBlueprints";
 import {
+  classEarnsPrincipalCredit,
+  classifyTailorCoreStop,
+  maxRemovalsForMinViable,
+} from "./tailorStopPricing";
+import {
   TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR,
   TAILOR_LUNCH_SUPPLEMENT_EUR,
   lunchRemovalDiscountEur,
@@ -209,19 +214,27 @@ export function dedicatedLunchStopId(tourId: string): string | null {
 
 /**
  * AUTHORITATIVE per-Signature set of Tailor core stop ids that may earn the
- * −5% principal-removal reduction. Derived from the blueprint core:
+ * −5% principal-removal reduction.
+ *
+ * NOT derived from `!lock`. Eligibility comes from the explicit pricing
+ * classification in `src/data/tailorStopPricing.ts`:
  *   - locked stops (product-defining, mandatory transfers…) are NOT eligible
+ *   - descriptive / free viewpoints / drive-bys are removable for TIME but
+ *     are NOT eligible (skipping them never changes the price)
  *   - the dedicated included-lunch stop is NOT eligible (flat −€15 credit)
+ *   - stops still awaiting owner classification keep the pre-classification
+ *     behaviour (eligible), and are reported by
+ *     `tailorStopsPendingOwnerReview()`
  * Mirrored server-side in `supabase/functions/_shared/pricing.ts`
  * (`TAILOR_PRINCIPAL_ELIGIBLE_STOP_IDS`); parity is enforced by a unit test.
  */
 export function principalEligibleStopIds(tourId: string): ReadonlySet<string> {
   const bp = TAILOR_BLUEPRINTS[tourId];
-  const lunchId = dedicatedLunchStopId(tourId);
+  const dedicatedCreditStopId = dedicatedLunchStopId(tourId);
   const ids = new Set<string>();
   for (const stop of bp?.core ?? []) {
-    if (stop.lock) continue;
-    if (lunchId && stop.id === lunchId) continue;
+    const pricing = classifyTailorCoreStop(tourId, stop.id, { dedicatedCreditStopId });
+    if (!pricing || !classEarnsPrincipalCredit(pricing)) continue;
     ids.add(stop.id);
   }
   return ids;
@@ -229,9 +242,10 @@ export function principalEligibleStopIds(tourId: string): ReadonlySet<string> {
 
 /**
  * Count of principal-stop removals eligible for the −5% ladder.
- * Counts UNIQUE, whitelisted ids only: invented ids, duplicates and locked
- * anchors never earn a reduction. Excludes the dedicated included-lunch
- * stop, which is priced solely by the flat −€15 pp credit.
+ * Counts UNIQUE, whitelisted ids only: invented ids, duplicates, locked
+ * anchors and descriptive/free stops never earn a reduction. Excludes the
+ * dedicated included-lunch stop, which is priced solely by the flat −€15 pp
+ * credit. Capped by any declared minimum viable composition.
  */
 export function principalRemovalCount(tourId: string, skippedStopIds: Iterable<string>): number {
   const eligible = principalEligibleStopIds(tourId);
@@ -240,5 +254,6 @@ export function principalRemovalCount(tourId: string, skippedStopIds: Iterable<s
     if (typeof id !== "string" || !eligible.has(id)) continue;
     seen.add(id);
   }
-  return seen.size;
+  return Math.min(seen.size, maxRemovalsForMinViable(tourId));
 }
+
