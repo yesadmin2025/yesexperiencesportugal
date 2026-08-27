@@ -280,6 +280,7 @@ import {
   isDelegationActive,
   isDelegationEligible,
   isDelegationOffered,
+  delegatedChoiceSummary,
   recomputeActiveDelegationAfterExplicitChange,
   releaseDelegatedTaste,
   takeBackDelegatedDimension,
@@ -2691,6 +2692,23 @@ export function StudioV3() {
               back(directorsReadBackTarget(Boolean(adaptiveQuestion)));
             }}
             onContinue={() => setDirectorsReadSeen(directorsRead.signature)}
+            delegation={(() => {
+              // P10 — concierge visibility. Named once, here, with one quiet
+              // way back into the delegated phase. Existing navigation and
+              // existing take-back semantics only: `back()` walks the normal
+              // chain and the phase itself releases the delegated mark when
+              // the traveller makes an explicit choice.
+              const summary = delegatedChoiceSummary(state);
+              if (!summary) return null;
+              return {
+                line: summary.line,
+                adjustLabel: summary.adjustLabel,
+                onAdjust: () => {
+                  setDirectorsReadSeen(directorsRead.signature);
+                  back(summary.adjustPhase);
+                },
+              };
+            })()}
           />
         </PhaseShell>
       ) : null}
