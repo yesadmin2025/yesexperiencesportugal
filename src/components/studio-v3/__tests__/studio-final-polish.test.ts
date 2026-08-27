@@ -86,9 +86,10 @@ describe("checkout recap offers localized edits without inventing navigation", (
   const checkout = src("CheckoutSummary.tsx");
 
   it("exposes date / guests / stops edits with 44px targets", () => {
-    expect(checkout).toContain('data-testid="studio-v3-checkout-summary-edit-date"');
-    expect(checkout).toContain('data-testid="studio-v3-checkout-summary-edit-guests"');
-    expect(checkout).toContain('data-testid="studio-v3-checkout-summary-edit-stops"');
+    expect(checkout).toContain('editTestId="studio-v3-checkout-summary-edit-date"');
+    expect(checkout).toContain('editTestId="studio-v3-checkout-summary-edit-guests"');
+    expect(checkout).toContain('testId="studio-v3-checkout-summary-edit-stops"');
+    expect(checkout).toContain('data-testid={testId}');
     expect(checkout).toContain("min-h-[44px]");
   });
 
