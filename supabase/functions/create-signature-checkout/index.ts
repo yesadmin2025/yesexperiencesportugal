@@ -349,10 +349,10 @@ Deno.serve(async (req) => {
     const pickupLine = body.pickupLabel ? ` · pickup ${body.pickupLabel}` : "";
     const submitMessage = copy.submit;
 
-    // Validate + cap reveal add-ons. Price is flat per booking (matches the
-    // reveal price card). Client-declared euros are trusted as an anchor but
-    // clamped to [0..1000] per item and 6 items max so a tampered client
-    // can't stuff arbitrary charges into the Stripe session.
+    // Reveal add-ons. The client may only NAME an add-on: every euro amount
+    // is re-derived server-side from the approved catalog percentage and the
+    // tour's own approved 8-pax anchor, so a tampered client can neither
+    // under-pay a real add-on nor invent a cheap one. Unknown ids are dropped.
     const rawAddOns = Array.isArray(body.addOns) ? body.addOns : [];
     const validatedAddOns = rawAddOns
       .filter(
@@ -363,20 +363,26 @@ Deno.serve(async (req) => {
           a.id.length > 0 &&
           a.id.length <= 64 &&
           typeof a.label === "string" &&
-          a.label.length > 0 &&
-          Number.isFinite(a.priceEur) &&
-          a.priceEur >= 0 &&
-          a.priceEur <= 1000,
+          a.label.length > 0,
       )
       .slice(0, 6)
-      .map((a) => ({
-        id: a.id,
-        label: a.label.slice(0, 120),
-        priceEur: Math.round(a.priceEur),
-        durationMinutes: Number.isFinite(a.durationMinutes)
-          ? Math.max(0, Math.min(480, Math.round(a.durationMinutes as number)))
-          : 0,
-      }));
+      .map((a) => {
+        const line = approvedAnchorEur
+          ? serverAddOnLine(a.id, approvedAnchorEur, body.guests)
+          : null;
+        return line
+          ? {
+              id: a.id,
+              label: a.label.slice(0, 120),
+              priceEur: line.perUnitEur,
+              quantity: line.quantity,
+              durationMinutes: Number.isFinite(a.durationMinutes)
+                ? Math.max(0, Math.min(480, Math.round(a.durationMinutes as number)))
+                : 0,
+            }
+          : null;
+      })
+      .filter((a): a is NonNullable<typeof a> => a !== null);
 
     const addOnLineItems = validatedAddOns
       .filter((a) => a.priceEur > 0)
@@ -386,8 +392,9 @@ Deno.serve(async (req) => {
           product_data: { name: `Add-on — ${a.label}`.slice(0, 180) },
           unit_amount: a.priceEur * 100,
         },
-        quantity: body.guests,
+        quantity: a.quantity,
       }));
+
 
     // Build a Stripe line item per age band (grouped) so the guest sees
     // "Adult × 2 · €279", "Youth × 1 · €209", etc. — never a single
