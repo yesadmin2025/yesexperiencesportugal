@@ -40,10 +40,13 @@ import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPri
 import { tailorAdjustedPerPax, tailorFinalPerPax } from "@/config/pricing";
 import {
   canSelectWineries,
+  dedicatedLunchStopId,
   lunchRemovalEur,
+  principalRemovalCount,
   tailorRules,
   tailorSupplementsEur,
 } from "@/data/tailorRules";
+
 import { TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR, TAILOR_LUNCH_SUPPLEMENT_EUR } from "@/config/pricing";
 
 import { jsonLdScript, breadcrumbLd, tourTailorProductLd } from "@/lib/jsonld";
