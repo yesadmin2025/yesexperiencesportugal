@@ -125,6 +125,10 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   // Live tier resolution — DB-backed, falls back to code defaults.
   const { data: tierOverrides } = useTourPriceTiers();
   const perPax = resolvePerPaxEur(tour, guests, tierOverrides);
+  // An exact party size with no approved tier is genuinely unpublished — we
+  // never substitute the generic `priceFrom` anchor for it (that anchor is the
+  // 8+ rate) and we never open checkout on a price we cannot honour.
+  const priceUnavailable = guests >= 1 && perPax == null;
   const displayPerPaxEur = perPax?.eurPerPax ?? tour.priceFrom;
   const displayIsReal = perPax?.real === true;
   // Age-band aware party total — matches server pricing when minors present.
@@ -151,12 +155,18 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
   const handleReserve = async (details: GuestDetails) => {
     if (pending) return;
+    const resolved = resolvePerPaxEur(tour, details.guests, tierOverrides);
+    // No approved tier for this exact party size — never quote the generic
+    // anchor, and never open checkout on a price we cannot honour.
+    if (resolved == null) {
+      toast.error("We price this party size personally — our curator will confirm it for you.");
+      return;
+    }
     setPending(true);
     // Open the drawer immediately so the user sees a branded skeleton
     // while the edge function is in flight (saves the "blank" feeling).
     const meta = getViatorMeta(tour.id);
-    const resolved = resolvePerPaxEur(tour, details.guests, tierOverrides);
-    const perPaxForSummary = resolved?.eurPerPax ?? tour.priceFrom;
+    const perPaxForSummary = resolved.eurPerPax;
     // Age-band aware total — mirrors the server pricing so the summary
     // and Stripe line items agree for families with minors.
     const summaryJourney = resolveJourneyPricing(
@@ -395,6 +405,18 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
       {/* Price for chosen party — tier-resolved when we have real data. */}
       <div className="mt-6 border-t border-[color:var(--border)] pt-4 space-y-1.5">
+        {priceUnavailable ? (
+          <div data-testid="signature-price-unavailable" className="space-y-1.5">
+            <span className="block text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+              Exact price on request
+            </span>
+            <p className="text-[12px] leading-snug text-[color:var(--charcoal)]">
+              We don't publish a rate for {guests} guest{guests > 1 ? "s" : ""} on this journey. Our
+              curator will confirm the exact price for your party.
+            </p>
+          </div>
+        ) : (
+        <>
         <div className="flex items-baseline justify-between">
           <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
             {displayIsReal
@@ -438,8 +460,26 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             Smaller parties are priced per tier — pick your guests to see the exact per-person rate.
           </p>
         ) : null}
+        </>
+        )}
       </div>
 
+      {priceUnavailable ? (
+        <>
+          <Link
+            to="/contact"
+            search={{ type: undefined }}
+            data-testid="signature-price-unavailable-cta"
+            className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
+          >
+            <Sparkles size={15} /> Ask our curator for this party size
+          </Link>
+          <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
+            We reply the same day with the exact price.
+          </p>
+        </>
+      ) : (
+        <>
       <button
         type="button"
         onClick={() => {
@@ -474,6 +514,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
         <Lock size={10} /> Secure checkout
       </p>
+        </>
+      )}
 
       <div className="mt-5 pt-4 border-t border-[color:var(--border)] text-center">
         <p className="text-[12px] text-[color:var(--charcoal-soft)]">
