@@ -399,6 +399,17 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
       {/* Price for chosen party — tier-resolved when we have real data. */}
       <div className="mt-6 border-t border-[color:var(--border)] pt-4 space-y-1.5">
+        {priceUnavailable ? (
+          <div data-testid="signature-price-unavailable" className="space-y-1.5">
+            <span className="block text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+              Exact price on request
+            </span>
+            <p className="text-[12px] leading-snug text-[color:var(--charcoal)]">
+              We don't publish a rate for {guests} guest{guests > 1 ? "s" : ""} on this journey. Our
+              curator will confirm the exact price for your party.
+            </p>
+          </div>
+        ) : (
         <div className="flex items-baseline justify-between">
           <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
             {displayIsReal
