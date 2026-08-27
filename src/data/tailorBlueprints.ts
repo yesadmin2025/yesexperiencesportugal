@@ -248,6 +248,11 @@ const wildBeachesPicnic: TailorBlueprint = {
       blurb: "Galapinhos, Portinho or a quieter alternative — your guide reads the day.",
       category: "picnic",
       dwellMinutesOverride: 120,
+      lock: {
+        reasonCode: "product_defining",
+        customerFacingReason: "The cove picnic is the Signature itself.",
+        source: 'Viator PDP · product title "Arrábida, Sesimbra & Beach Picnic"',
+      },
     },
     {
       id: "sesimbra-village",
