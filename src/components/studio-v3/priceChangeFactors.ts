@@ -90,7 +90,9 @@ export function resolvePriceChangeFactors({
 
   // Age banding only exists when the tour has a resolvable anchor price:
   // that is the same precondition `resolveJourneyPricing` requires.
-  const anchor = resolvePerPaxEur(tour, 1);
+  // Generic anchor (no party size) — solo may have no approved tier.
+  const anchor = resolvePerPaxEur(tour, null);
+
   const rules = minorBandRules().filter((r) => r.pct !== 1);
   if (anchor && rules.length > 0) {
     factors.push({
