@@ -90,8 +90,8 @@ export function LivingAtlasStudioPage() {
             reviews it and confirms before anything is charged.
           </p>
           <p>
-            For a complete journey across Portugal rather than a single private day, a human designer
-            composes it with you —{" "}
+            For a complete journey across Portugal rather than a single private day, a human
+            designer composes it with you —{" "}
             <a href="/portugal-travel-designer">work with our Portugal Travel Designer</a>. Advisors
             and agencies planning for clients can work with us directly through{" "}
             <a href="/trade">our travel trade partnerships</a>.
