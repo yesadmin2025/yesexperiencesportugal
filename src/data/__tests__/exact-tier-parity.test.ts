@@ -2,16 +2,16 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { resolvePerPaxEur, hasApprovedTier } from "@/data/signatureTourPricing";
-import { SIGNATURE_TOURS } from "@/data/signatureTours";
-import { VIATOR_META } from "@/data/viatorMeta";
+import { signatureTours } from "@/data/signatureTours";
+import { VIATOR_META } from "@/data/signatureToursViator";
 import { tailorRules } from "@/data/tailorRules";
 import { TAILOR_BLUEPRINTS } from "@/data/tailorBlueprints";
 
 /** A tour that has an approved solo (tier 1) price in code metadata. */
-const withTier1 = SIGNATURE_TOURS.find((t) => VIATOR_META[t.id]?.priceTiersEUR?.[1] != null)!;
+const withTier1 = signatureTours.find((t: { id: string }) => VIATOR_META[t.id]?.priceTiersEUR?.[1] != null)!;
 /** A tour that has NO approved solo price. */
-const withoutTier1 = SIGNATURE_TOURS.find(
-  (t) => VIATOR_META[t.id]?.priceTiersEUR != null && VIATOR_META[t.id]?.priceTiersEUR?.[1] == null,
+const withoutTier1 = signatureTours.find(
+  (t: { id: string }) => VIATOR_META[t.id]?.priceTiersEUR != null && VIATOR_META[t.id]?.priceTiersEUR?.[1] == null,
 )!;
 
 describe("exact-tier parity — client resolver", () => {
@@ -91,7 +91,7 @@ describe("winery quantity stays inside the authorized ladder", () => {
   it("Arrábida keeps 2 included, +€20 pp extras up to 4", () => {
     const w = tailorRules("arrabida-wine-allinclusive").wineries!;
     expect(w.included).toBe(2);
-    expect(w.extraPerPaxEur).toBe(20);
+    expect(w.supplementEur).toBe(20);
     expect(w.max).toBe(4);
   });
 
