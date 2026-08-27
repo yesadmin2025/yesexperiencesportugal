@@ -1,0 +1,53 @@
+name: checkout-recovery-patch
+
+on:
+  push:
+    branches:
+      - checkout-confirmation-recovery
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: checkout-confirmation-recovery
+          fetch-depth: 0
+      - name: Patch checkout recovery
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path("src/components/studio-v3/StudioV3.tsx")
+          source = path.read_text()
+          old = '''        console.error("Stripe checkout failed", e);
+          toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
+          setClientSecret(null);
+          openLeadSheet("book");'''
+          new = '''        console.error("Stripe checkout failed", e);
+          toast.error("Secure checkout couldn't open. Your details and selections are still here — try again.");
+          setClientSecret(null);'''
+          count = source.count(old)
+          if count != 1:
+              raise SystemExit(f"Expected checkout failure block exactly once, found {count}")
+          path.write_text(source.replace(old, new, 1))
+      - name: Verify patch contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -F "Secure checkout couldn't open. Your details and selections are still here — try again." src/components/studio-v3/StudioV3.tsx
+          ! grep -F "Checkout unavailable right now. We've opened a private enquiry instead." src/components/studio-v3/StudioV3.tsx
+      - name: Commit patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/studio-v3/StudioV3.tsx
+          git diff --cached --quiet && exit 0
+          git commit -m "Keep checkout state available for retry"
+          git push origin HEAD:checkout-confirmation-recovery
