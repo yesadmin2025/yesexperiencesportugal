@@ -80,12 +80,26 @@ async function logisticsMoment(page: Page) {
   return page.getByTestId("studio-v3-logistics").getAttribute("data-logistics-moment");
 }
 
-test("mixed-age family survives edit → review with exact composition", async ({ page }) => {
-  await restoreStudioState(page, { ...BASE_STATE });
-
+async function enterLogisticsReview(page: Page) {
   const root = page.locator('[data-testid="studio-v3-root"]').first();
   await expect(root).toHaveAttribute("data-phase", "logistics");
+
+  // P7 deliberately occupies the Logistics slot with a one-tap Director's
+  // Read before the practical moments mount. A restored valid state should
+  // honour that layer rather than bypass it just for browser tests.
+  const logistics = page.getByTestId("studio-v3-logistics");
+  if (!(await logistics.isVisible())) {
+    await expect(page.getByText("The director's read", { exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
+  }
+
+  await expect(logistics).toBeVisible({ timeout: 10_000 });
   await expect.poll(() => logisticsMoment(page)).toBe("review");
+}
+
+test("mixed-age family survives edit → review with exact composition", async ({ page }) => {
+  await restoreStudioState(page, { ...BASE_STATE });
+  await enterLogisticsReview(page);
 
   const guestReview = page.locator('[data-review-row="who"]');
   await expect(guestReview).toContainText("4 guests (2 adults, 2 children)");
@@ -127,10 +141,9 @@ test("delegation survives real Back navigation and recomputes after a personal b
     decidedForMe: ["interests", "rhythm"],
     delegationMode: "yes-designs",
   });
+  await enterLogisticsReview(page);
 
   const root = page.locator('[data-testid="studio-v3-root"]').first();
-  await expect(root).toHaveAttribute("data-phase", "logistics");
-  await expect.poll(() => logisticsMoment(page)).toBe("review");
 
   // Review → who → where → when are local Logistics moments. The fourth Back
   // leaves Logistics through the real phase-navigation handler.
