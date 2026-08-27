@@ -13,7 +13,7 @@ import { describe, expect, it } from "vitest";
 
 import { delegatedChoiceSummary } from "../studioDelegation";
 import type { StudioV3State } from "../types";
-import { DEFAULT_STATE } from "../types";
+import { INITIAL_STATE } from "../types";
 
 const src = (f: string) => readFileSync(join(process.cwd(), "src/components/studio-v3", f), "utf8");
 
@@ -45,7 +45,7 @@ describe("unified Your Day does not repeat each stop's story", () => {
 
 describe("delegated authorship is named once and reversible", () => {
   const base: StudioV3State = {
-    ...DEFAULT_STATE,
+    ...INITIAL_STATE,
     feeling: "coastal",
     companions: "couple",
     delegationMode: "yes-designs",
