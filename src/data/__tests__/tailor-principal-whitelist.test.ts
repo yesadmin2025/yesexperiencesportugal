@@ -7,6 +7,12 @@ import {
   principalRemovalCount,
 } from "@/data/tailorRules";
 import {
+  TAILOR_CORE_STOP_PRICING,
+  classEarnsPrincipalCredit,
+  classifyTailorCoreStop,
+  tailorStopsPendingOwnerReview,
+} from "@/data/tailorStopPricing";
+import {
   TAILOR_PRINCIPAL_ELIGIBLE_STOP_IDS,
   serverPrincipalRemovalCount,
 } from "../../../supabase/functions/_shared/pricing";
@@ -52,10 +58,59 @@ describe("Tailor principal-removal whitelist", () => {
     expect(serverPrincipalRemovalCount("troia-comporta", ["sado-ferry"])).toBe(0);
   });
 
-  it("counts genuine removals", () => {
-    const ids = ["livramento", "arrabida-park"];
+  it("counts genuine principal removals", () => {
+    const ids = ["livramento", "azeitao-tiles"];
     expect(principalRemovalCount("arrabida-wine-allinclusive", ids)).toBe(2);
     expect(serverPrincipalRemovalCount("arrabida-wine-allinclusive", ids)).toBe(2);
+  });
+
+  it("descriptive / free viewpoints are removable for time but earn nothing", () => {
+    for (const [tourId, stopId] of [
+      ["arrabida-wine-allinclusive", "arrabida-park"],
+      ["wild-beaches-picnic", "arrabida-drive"],
+      ["arrabida-boat", "arrabida-drive"],
+      ["sintra-cascais", "cabo-da-roca"],
+      ["fatima-nazare-obidos", "nazare-beach"],
+      ["roman-heritage-alentejo", "vila-alva"],
+    ] as const) {
+      expect(classifyTailorCoreStop(tourId, stopId)).toBe("descriptive");
+      expect(principalEligibleStopIds(tourId).has(stopId)).toBe(false);
+      expect(principalRemovalCount(tourId, [stopId]), `${tourId}/${stopId}`).toBe(0);
+      expect(serverPrincipalRemovalCount(tourId, [stopId]), `${tourId}/${stopId}`).toBe(0);
+      // still a real, removable stop in the blueprint (time only)
+      const stop = TAILOR_BLUEPRINTS[tourId].core.find((s) => s.id === stopId);
+      expect(stop?.lock).toBeUndefined();
+    }
+  });
+
+  it("eligibility is the explicit classification, never merely `!lock`", () => {
+    for (const [tourId, bp] of Object.entries(TAILOR_BLUEPRINTS)) {
+      const eligible = principalEligibleStopIds(tourId);
+      for (const stop of bp.core) {
+        const pricing = classifyTailorCoreStop(tourId, stop.id, {
+          dedicatedCreditStopId: dedicatedLunchStopId(tourId),
+        });
+        expect(pricing, `${tourId}/${stop.id} must be classified`).not.toBeNull();
+        expect(eligible.has(stop.id)).toBe(classEarnsPrincipalCredit(pricing!));
+      }
+    }
+  });
+
+  it("every classified stop carries evidence", () => {
+    for (const stops of Object.values(TAILOR_CORE_STOP_PRICING)) {
+      for (const entry of Object.values(stops)) {
+        expect(entry.evidence.length).toBeGreaterThan(10);
+      }
+    }
+  });
+
+  it("weak-evidence stops are reported for owner review, not silently repriced", () => {
+    const pending = tailorStopsPendingOwnerReview();
+    expect(pending.length).toBeGreaterThan(0);
+    for (const item of pending) {
+      // unchanged baseline behaviour: still eligible until the owner rules
+      expect(principalEligibleStopIds(item.tourId).has(item.stopId)).toBe(true);
+    }
   });
 
   it("dedicated Arrábida lunch never counts as a principal removal", () => {
