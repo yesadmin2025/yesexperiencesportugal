@@ -697,7 +697,16 @@ function TailorPage() {
 
   const handleReserve = async (details: GuestDetails) => {
     if (checkoutPending) return;
+    // Exact-tier truth gate — the server refuses this party size, so never
+    // open a checkout against the generic "from" anchor.
+    if (tierUnavailable) {
+      toast.error(
+        "This Signature isn't published for this party size — a YES curator will confirm your investment.",
+      );
+      return;
+    }
     setCheckoutPending(true);
+
     // Open the drawer immediately so a branded skeleton appears while
     // the edge function is in flight — avoids "blank screen" feel.
     const metaForSummary = getViatorMeta(tour.id);
