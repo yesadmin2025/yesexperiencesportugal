@@ -13,6 +13,11 @@
 
 import { TAILOR_BLUEPRINTS } from "./tailorBlueprints";
 import {
+  classEarnsPrincipalCredit,
+  classifyTailorCoreStop,
+  maxRemovalsForMinViable,
+} from "./tailorStopPricing";
+import {
   TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR,
   TAILOR_LUNCH_SUPPLEMENT_EUR,
   lunchRemovalDiscountEur,
