@@ -16,6 +16,10 @@ const src = readFileSync(
   resolve(process.cwd(), "src/components/studio-v3/StudioV3Intro.tsx"),
   "utf8",
 );
+const shellSrc = readFileSync(
+  resolve(process.cwd(), "src/components/studio-v3/LivingAtlasStudioPage.tsx"),
+  "utf8",
+);
 
 afterEach(cleanup);
 
@@ -38,10 +42,17 @@ describe("StudioV3Intro — P2 opening", () => {
     expect(document.body.textContent).not.toMatch(/region-aware moments/i);
   });
 
-  it("Begin opens the optional-name moment", () => {
+  it("Begin opens the optional-name moment with one click", () => {
     openNameStep();
     expect(screen.getByTestId("studio-v3-intro-name")).toBeTruthy();
     expect(screen.getByLabelText("Your first name (optional)")).toBeTruthy();
+  });
+
+  it("keeps crawler-only links out of the live Studio focus order after hydration", () => {
+    expect(shellSrc).toContain("{!hydrated && (");
+    expect(shellSrc).toContain('data-testid="studio-v3-ssr-intent"');
+    expect(shellSrc).toContain('data-hydrated={hydrated ? "true" : "false"}');
+    expect(shellSrc).toContain('className={hydrated ? undefined : "pointer-events-none"}');
   });
 
   it("has no third path screen and no Guided/Fast/Recommended cards", () => {
