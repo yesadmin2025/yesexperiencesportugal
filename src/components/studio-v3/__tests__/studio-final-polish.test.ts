@@ -13,7 +13,12 @@ import { describe, expect, it } from "vitest";
 
 import { delegatedChoiceSummary } from "../studioDelegation";
 import type { StudioV3State } from "../types";
-import { INITIAL_STATE } from "../types";
+import {
+  DESTINATION_INTENTS,
+  FEELINGS,
+  INITIAL_STATE,
+  INVESTMENT_TIERS,
+} from "../types";
 
 const src = (f: string) => readFileSync(join(process.cwd(), "src/components/studio-v3", f), "utf8");
 
