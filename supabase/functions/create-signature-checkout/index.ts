@@ -98,6 +98,8 @@ import {
   serverTailorSupplementsEur,
   TAILOR_LUNCH_REMOVAL_ELIGIBLE,
   serverAddOnLine,
+  serverPrincipalRemovalCount,
+
   tailorFinalPerPax,
   type AgeBand,
 } from "../_shared/pricing.ts";
