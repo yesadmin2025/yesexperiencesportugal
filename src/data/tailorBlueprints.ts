@@ -309,6 +309,11 @@ const arrabidaBoat: TailorBlueprint = {
         "Into the protected coves, including Lapa de Santa Margarida sea cave. Swim stop weather-permitting.",
       category: "boat",
       dwellMinutesOverride: 150,
+      lock: {
+        reasonCode: "product_defining",
+        customerFacingReason: "The coastal boat ride is the Signature itself.",
+        source: 'Viator PDP · product title "Private Tour with Coastal Boat Ride"',
+      },
     },
     {
       id: "sesimbra-village",
