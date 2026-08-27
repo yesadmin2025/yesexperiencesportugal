@@ -496,6 +496,79 @@ function feelingReactionMessage(id: Feeling): string {
   }
 }
 
+/**
+ * Paraphrased beat copy — deterministic, local, and deliberately NOT the
+ * option label the traveller just tapped. Repeating the button back reads as
+ * a form confirming a click; naming what we now hold reads as authorship.
+ */
+function feelingCaptionLine(id: Feeling): string {
+  switch (id) {
+    case "wine-food":
+      return "The table leads";
+    case "romance":
+      return "Two, unhurried";
+    case "hidden":
+      return "Off the obvious road";
+    case "adventure":
+      return "Air and movement";
+    case "slow-luxury":
+      return "Space kept open";
+    case "coastal":
+      return "Facing the Atlantic";
+    case "faith":
+      return "A reflective day";
+    case "hands-on":
+      return "Made with local hands";
+    case "culture":
+      return "Old stones, long stories";
+    default:
+      return "The tone is set";
+  }
+}
+
+/** Paraphrased direction copy — never echoes the destination label. */
+function destinationReactionMessage(id: DestinationIntent): string {
+  switch (id) {
+    case "no-preference":
+    case "anywhere-special":
+      return "No fixed direction. The route can find its own.";
+    case "lisbon-sintra-cascais":
+      return "Palace air and Atlantic edge. The shape begins to lean west.";
+    case "arrabida-setubal-azeitao":
+      return "Coves, cellars and a quieter coast. The shape begins to lean south.";
+    case "alentejo-evora-wine":
+      return "Open plains and long lunches. The shape begins to slow down.";
+    case "alentejo-roman-talha":
+      return "Clay, cellars and a very old way of making wine. The shape begins to deepen.";
+    case "vicentine-coast":
+      return "Wild cliffs and untouched shore. The shape begins to open.";
+    case "spiritual-coast":
+      return "Sanctuaries, walls and sea light. The shape begins to settle.";
+    case "central-portugal":
+      return "Templar stone and scholarly streets. The shape begins inland.";
+    case "comporta-troia":
+      return "Pine, rice fields and white sand. The shape begins to soften.";
+    default:
+      return "A direction begins to emerge.";
+  }
+}
+
+/** Paraphrased tone copy for the investment beat — no tier label, no price. */
+function investmentReactionLine(id: InvestmentTier): string {
+  switch (id) {
+    case "considered":
+      return "It refines around what matters, and lets the rest go.";
+    case "elevated":
+      return "It refines around fewer, better moments.";
+    case "bespoke":
+      return "It refines around access most days never get.";
+    case "open":
+      return "We'll shape it around everything else you've told us.";
+    default:
+      return "Its shape is becoming yours.";
+  }
+}
+
 /** Inferred-guests note shown subtly on the final reveal. */
 function inferredGuestsNote(state: StudioV3State): string | null {
   if (!state.guestsInferred || state.guests == null) return null;
@@ -661,6 +734,15 @@ type Reaction = {
   postcardSubline?: string;
   /** Phase the user lands on once the beat dissolves. */
   nextPhase: StudioV3Phase;
+  /**
+   * Phase the traveller just answered. When set, the beat renders the
+   * already-computed `contextualTeaser` for that phase as one quiet closing
+   * line, so anticipation lives inside the existing transition instead of a
+   * second persistent copy layer (NextTeaser stays silent — P4).
+   */
+  contextPhase?: StudioV3Phase;
+  /** Resolved anticipation line. Filled in by `playReaction`, never by hand. */
+  contextLine?: string | null;
   /** How long the beat holds before auto-dissolving. Capped at 3400ms. */
   holdMs?: number;
   /** Optional atmospheric background image rendered inside the postcard. */
@@ -1399,6 +1481,10 @@ export function StudioV3() {
 
       setExiting(true);
       window.setTimeout(() => {
+        // Captured from the committed state so the anticipation line reflects
+        // the answer that was just given. Assignment is idempotent, so a
+        // double-invoked updater (StrictMode) produces the same value.
+        let contextLine: string | null = null;
         setState((s) => {
           trackStep({
             stepNumber: stepOf(s.phase),
@@ -1406,12 +1492,14 @@ export function StudioV3() {
             event: "continue",
             value: { to: r.nextPhase, viaReaction: r.kind },
           });
+          contextLine = r.contextPhase ? contextualTeaser(r.contextPhase, s) : null;
           return { ...s, phase: r.nextPhase };
         });
         setExiting(false);
-        setReaction(r);
+        const shown: Reaction = contextLine ? { ...r, contextLine } : r;
+        setReaction(shown);
         window.setTimeout(() => {
-          setReaction((current) => (current === r ? null : current));
+          setReaction((current) => (current === shown ? null : current));
         }, hold);
       }, 220);
     },
@@ -1458,7 +1546,6 @@ export function StudioV3() {
   // Strong reaction beats live only on: Feeling, Pickup, Interests,
   // Considerations, Investment. The other steps get quiet auto-advance.
   const onFeeling = (id: Feeling) => {
-    const label = getOptionLabel(FEELINGS, id);
     // P10 — trust persists. If YES still owns taste dimensions, a changed
     // Feeling recomputes only those dimensions from the new explicit anchor.
     // Pre-P10/legacy decidedForMe marks without active mode still use the
@@ -1480,7 +1567,10 @@ export function StudioV3() {
       kind: "feeling",
       eyebrow: "The feeling",
       message: feelingReactionMessage(id),
-      postcardCaption: label ? `Atmosphere · ${label}` : "Atmosphere selected",
+      // Paraphrase, never the tapped label: the caption names the tone we
+      // now hold, not the button the traveller pressed.
+      postcardCaption: feelingCaptionLine(id),
+      contextPhase: "feeling",
       holdMs: 4400,
       bgImage: FEELING_IMAGE[id],
       bgVideo: videoForFeeling(id),
@@ -1490,13 +1580,8 @@ export function StudioV3() {
     const forward: StudioV3State = { ...state, destinationIntent: id };
     setState(() => forward);
     const next = getNextPhase(forward, "destination");
-    const destLabel = getOptionLabel(DESTINATION_INTENTS, id);
-    const message =
-      id === "no-preference"
-        ? "No fixed direction. The route can find its own."
-        : destLabel
-          ? `${destLabel} enters the story. The shape begins to lean.`
-          : "A direction begins to emerge.";
+    // Paraphrase the direction instead of repeating the chosen label back.
+    const message = destinationReactionMessage(id);
     window.setTimeout(() => {
       playReaction({
         kind: "atmosphere",
@@ -1551,6 +1636,7 @@ export function StudioV3() {
         kind: "atmosphere",
         eyebrow: "The company",
         message: companionsAtmosphereLine(id),
+        contextPhase: "who",
         bgImage: companionsAtmosphereImage(id, state.feeling),
         bgVideo: videoForCompanions(id) ?? videoForFeeling(state.feeling),
         nextPhase: next,
@@ -1635,7 +1721,6 @@ export function StudioV3() {
     playDateReaction("undecided", null);
   };
   const onPickup = (id: Pickup) => {
-    const label = getOptionLabel(PICKUPS, id);
     // Build a forward-looking state so getNextPhase can decide whether
     // guests should be asked or skipped based on inference.
     const inferred = inferGuests(state.companions, state.occasion, state.feeling);
@@ -1669,6 +1754,7 @@ export function StudioV3() {
         eyebrow: "The beginning",
         message: line,
         mapMode: "origin",
+        contextPhase: "pickup",
         originLabel,
         originCoord: pickupOriginCoord(id),
         regionKey: pickupRegionKey(id) ?? undefined,
@@ -1679,10 +1765,13 @@ export function StudioV3() {
     pickAndAdvance("pickup", id, nextAfterPickup, {
       kind: "pickup",
       eyebrow: "The beginning",
-      message: label
-        ? `It starts here.\nFrom ${label}, the day begins to open.`
+      // Operational truth (the city the day starts from), not the label of
+      // the option that was tapped.
+      message: originLabel
+        ? `It starts here.\nFrom ${originLabel}, the day begins to open.`
         : "It starts here.\nThe day begins to open.",
-      originLabel: label,
+      contextPhase: "pickup",
+      originLabel: originLabel || undefined,
       postcardSubline: "Route forming",
       holdMs: 4800,
       bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
@@ -1934,9 +2023,7 @@ export function StudioV3() {
         pickAndAdvance("investment", id, next, {
           kind: "map-beat",
           eyebrow: "The shape",
-          message: label
-            ? `The route is no longer a template. It refines around ${label.toLowerCase()}.`
-            : "The route is no longer a template. Its shape is becoming yours.",
+          message: `The route is no longer a template. ${investmentReactionLine(id)}`,
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           originCoord: pickupOriginCoord(state.pickup),
@@ -1958,8 +2045,8 @@ export function StudioV3() {
     pickAndAdvance("investment", id, next, {
       kind: "investment",
       eyebrow: "The shape",
-      message: "This sets the tone.\nThe day will be shaped around it.",
-      postcardCaption: label ? `Direction · ${label}` : "Direction set",
+      message: `This sets the tone.\n${investmentReactionLine(id)}`,
+      postcardCaption: "The shape is set",
       postcardSubline: "The moments will follow from here.",
       holdMs: 4200,
     });

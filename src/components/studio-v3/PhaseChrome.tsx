@@ -1,7 +1,7 @@
 /**
  * PhaseChrome — the shared editorial chrome used by every Studio V3 question
- * screen: eyebrow + headline, quiet footer hint, next teaser, back link, the
- * dark continue CTA and the single "understood" acknowledgement line.
+ * screen: eyebrow + headline, quiet footer hint, next teaser, back link and
+ * the dark continue CTA.
  *
  * These lived inside StudioV3.tsx until the Logistics phase became a
  * progressive-disclosure surface of its own. Extracting them keeps ONE source
@@ -11,39 +11,6 @@
  */
 
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { understoodSummary } from "./studioSemanticMemory";
-import type { StudioV3State } from "./types";
-
-/**
- * Short deterministic acknowledgement of what the traveller has already told
- * us. Built only from explicit selections (max three positive signals) — never
- * a destination, stop, supplier, price or a negative ("no wine assumed").
- *
- * This is the ONLY acknowledgement moment in the journey.
- */
-export function UnderstoodSummaryLine({ state }: { state: StudioV3State }) {
-  const summary = understoodSummary(state);
-  if (!summary) return null;
-  return (
-    <div
-      data-testid="studio-v3-understood-summary"
-      className="w-full max-w-[520px] mx-auto mb-1 text-center"
-    >
-      <p
-        className="text-[15px] leading-[1.35]"
-        style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
-      >
-        {summary.lead}
-      </p>
-      <p
-        className="mt-1 text-[11px] uppercase tracking-[0.2em]"
-        style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
-      >
-        {summary.detail}
-      </p>
-    </div>
-  );
-}
 
 export function PhaseHeader({
   eyebrow,
