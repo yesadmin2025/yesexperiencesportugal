@@ -196,17 +196,20 @@ export const TAILOR_DEDICATED_LUNCH_STOP_ID: Readonly<Record<string, string>> = 
 /**
  * AUTHORITATIVE whitelist of Tailor core stop ids that may earn the −5%
  * principal-removal reduction, per Signature. Server mirror of
- * `principalEligibleStopIds()` in `src/data/tailorRules.ts` (blueprint core
- * minus locked anchors minus the dedicated included-lunch stop). Parity is
- * enforced by a unit test. A tour absent from this table earns no reduction.
+ * `principalEligibleStopIds()` in `src/data/tailorRules.ts`, which is driven
+ * by the explicit pricing classification in `src/data/tailorStopPricing.ts`
+ * (principal + pending-owner-review only). Locked anchors, the dedicated
+ * included-lunch stop and descriptive/free stops (viewpoints, drive-bys —
+ * removable for time, never for money) are excluded. Parity is enforced by a
+ * unit test. A tour absent from this table earns no reduction.
  */
 export const TAILOR_PRINCIPAL_ELIGIBLE_STOP_IDS: Readonly<Record<string, readonly string[]>> = {
-  "arrabida-wine-allinclusive": ["livramento", "arrabida-park", "azeitao-tiles"],
-  "wild-beaches-picnic": ["livramento", "arrabida-drive", "sesimbra-village"],
-  "arrabida-boat": ["livramento", "arrabida-drive", "sesimbra-village"],
+  "arrabida-wine-allinclusive": ["livramento", "azeitao-tiles"],
+  "wild-beaches-picnic": ["livramento", "sesimbra-village"],
+  "arrabida-boat": ["livramento", "sesimbra-village"],
   "tiles-workshop": ["livramento", "lunch-azeitao"],
   "azeitao-cheese": ["livramento", "lunch-azeitao"],
-  "sintra-cascais": ["sintra-vila", "lunch-azenhas", "cabo-da-roca", "cascais"],
+  "sintra-cascais": ["sintra-vila", "lunch-azenhas", "cascais"],
   "troia-comporta": ["troia-ruins", "herdade-comporta", "comporta-lunch", "comporta-beach"],
   "evora-alentejo": ["evora-old-town", "templo-romano", "chapel-of-bones", "evora-lunch"],
   "tomar-coimbra": [
@@ -216,15 +219,10 @@ export const TAILOR_PRINCIPAL_ELIGIBLE_STOP_IDS: Readonly<Record<string, readonl
     "coimbra-uni",
     "biblioteca-joanina",
   ],
-  "fatima-nazare-obidos": ["fatima", "nazare-beach", "nazare-lunch", "obidos"],
-  "roman-heritage-alentejo": [
-    "sao-cucufate",
-    "vinho-talha",
-    "vila-alva",
-    "mestre-daniel",
-    "talha-lunch",
-  ],
+  "fatima-nazare-obidos": ["fatima", "nazare-lunch", "obidos"],
+  "roman-heritage-alentejo": ["sao-cucufate", "vinho-talha", "mestre-daniel", "talha-lunch"],
 };
+
 
 /**
  * Server-authoritative principal-removal count from client-supplied ids.
