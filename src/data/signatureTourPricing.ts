@@ -26,10 +26,18 @@ export type PerPaxResolution = {
 
 /**
  * Resolve the per-pax EUR price for a tour + party size.
- *  - When `guests` is null/undefined, returns the 8+ "from" anchor (real=false).
- *  - When `guests` >= 8, clamps to tier 8 (=== priceFrom).
- *  - When real tier data exists for the resolved tier, returns it (real=true).
- *  - Otherwise returns priceFrom (real=false).
+ *
+ * TRUTH RULE (owner-approved): a price is only shown for an EXACT approved
+ * party-size tier.
+ *  - `guests` null/undefined → generic pre-composition "from" anchor
+ *    (real=false). This is the only legitimate use of `priceFrom`.
+ *  - `guests` >= 8 → clamps to tier 8, which IS the approved anchor tier.
+ *  - `guests` 1..7 with an approved tier → that exact tier (real=true).
+ *  - `guests` 1..7 WITHOUT an approved tier → **null** (unavailable).
+ *    We never fabricate a tier, never reuse a neighbouring tier and never
+ *    fall back to the 8-pax anchor: that would show a solo traveller the
+ *    group rate and fail later at checkout (the server already returns
+ *    409 `owner_data_missing` for the same case).
  */
 export function resolvePerPaxEur(
   tour: Pick<SignatureTour, "id" | "priceFrom"> | null | undefined,
@@ -52,8 +60,17 @@ export function resolvePerPaxEur(
       ? (tiers[tier as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8] as number)
       : null;
 
+  const exactGuests = knownGuestCount(guests);
+  // A tour WITH an approved tier table is priced by tier authority: an exact
+  // party size that is absent from that table is genuinely not published, so
+  // we refuse rather than quote a neighbouring/anchor rate. A tour with no
+  // tier table at all is priced solely by its approved `priceFrom`.
+  const hasTierTable = tiers != null && Object.keys(tiers).length > 0;
+  if (hasTierTable && exactGuests != null && exactGuests < 8 && real == null) return null;
+
+
   const eurPerPax = real ?? anchor;
-  const partyGuests = typeof guests === "number" && guests > 0 ? guests : 1;
+  const partyGuests = exactGuests ?? 1;
   return {
     eurPerPax,
     real: real != null,
@@ -61,6 +78,26 @@ export function resolvePerPaxEur(
     partyTotalEur: eurPerPax * partyGuests,
   };
 }
+
+/** The exact party size, or null when the caller has not composed one yet. */
+function knownGuestCount(guests: number | null | undefined): number | null {
+  if (typeof guests !== "number" || !Number.isFinite(guests) || guests < 1) return null;
+  return Math.round(guests);
+}
+
+/**
+ * True when an EXACT approved tier exists for this party size — i.e. the
+ * traveller can be shown a real total and allowed into checkout.
+ * `guests` null/undefined counts as available (generic "from" anchor).
+ */
+export function hasApprovedTier(
+  tour: Pick<SignatureTour, "id" | "priceFrom"> | null | undefined,
+  guests: number | null | undefined,
+  overrides?: Record<string, PriceTiersEUR | undefined> | null,
+): boolean {
+  return resolvePerPaxEur(tour, guests, overrides) != null;
+}
+
 
 function clampTier(guests: number | null | undefined): number {
   if (typeof guests !== "number" || !Number.isFinite(guests) || guests < 1) return 8;

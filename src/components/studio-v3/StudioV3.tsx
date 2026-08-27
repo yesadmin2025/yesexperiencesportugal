@@ -1101,11 +1101,20 @@ export function StudioV3() {
         openLeadSheet("book");
         return;
       }
+      // Exact-tier truth gate: no approved tier for this exact party size
+      // means we have no price to charge. Never fall back to the generic
+      // "from" anchor (that is the 8-guest rate) — hand the traveller to a
+      // curator instead of opening a checkout the server would refuse.
+      const resolvedPerPax = resolvePerPaxEur(tour, details.guests, tourPriceTiers);
+      if (!resolvedPerPax) {
+        openLeadSheet("book");
+        return;
+      }
       setCheckoutPending(true);
       // Open the drawer immediately with a branded skeleton.
       const stopLabels = (tour.stops ?? []).map((s) => s.label).slice(0, 6);
-      const perPaxBase =
-        resolvePerPaxEur(tour, details.guests, tourPriceTiers)?.eurPerPax ?? tour.priceFrom ?? 180;
+      const perPaxBase = resolvedPerPax.eurPerPax;
+
       // Unit-aware party total for add-ons — mirrors `addOnEurFor` in the
       // price card so per_person, per_group, per_vehicle and fixed add-ons
       // all resolve to the same amount the traveler sees in the reveal.

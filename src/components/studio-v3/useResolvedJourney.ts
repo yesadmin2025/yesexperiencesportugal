@@ -97,9 +97,10 @@ export function useResolvedJourney(
 
 
     const tiers = tourPriceTiers ?? null;
-    const basePerPaxEur = tour
-      ? (resolvePerPaxEur(tour, guests, tiers)?.eurPerPax ?? tour.priceFrom ?? null)
-      : null;
+    // No `priceFrom` fallback: once an exact party size is known, an absent
+    // approved tier means "unavailable", not "charge the 8-guest rate".
+    const basePerPaxEur = tour ? (resolvePerPaxEur(tour, guests, tiers)?.eurPerPax ?? null) : null;
+
 
     // Age-band branch — full itemised lines when composition is complete.
     let journey: ReturnType<typeof resolveJourneyPricing> | null = null;

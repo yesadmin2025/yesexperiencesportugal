@@ -352,6 +352,21 @@ function TailorPage() {
       next.add(id);
       // Canonical winery ladder: max 4, and the 4th needs a stop removed.
       const option0 = blueprint?.choice?.options.find((o) => o.id === id);
+      // Only Signatures with an owner-approved winery supplement ladder may
+      // INCREASE the winery count. Everywhere else the traveller swaps at
+      // the blueprint baseline — we never hand out an unpriced extra stop.
+      if (
+        option0?.category === "winery" &&
+        !rules.wineries &&
+        blueprint?.choice &&
+        choiceSelected.size >= blueprint.choice.pickMin
+      ) {
+        toast.error(
+          `This Signature includes ${blueprint.choice.pickMin} — swap one instead of adding another.`,
+        );
+        return;
+      }
+
       if (option0?.category === "winery") {
         const coreWineries = (blueprint?.core ?? []).filter(
           (s) => s.category === "winery" && !skippedCore.has(s.id),
@@ -486,10 +501,17 @@ function TailorPage() {
   // additions no longer inflate the base price — they're handled as
   // add-ons / manual confirmation lines.
   const { data: tierOverrides } = useTourPriceTiers();
-  const basePerPax = useMemo(() => {
-    const r = resolvePerPaxEur(tour, guests, tierOverrides);
-    return r?.eurPerPax ?? tour.priceFrom;
-  }, [tour, guests, tierOverrides]);
+  const baseResolution = useMemo(
+    () => resolvePerPaxEur(tour, guests, tierOverrides),
+    [tour, guests, tierOverrides],
+  );
+  /**
+   * No approved tier for this EXACT party size. `priceFrom` is only a
+   * generic pre-composition anchor, so we must not quote or charge it.
+   */
+  const tierUnavailable = baseResolution == null;
+  const basePerPax = baseResolution?.eurPerPax ?? tour.priceFrom;
+
 
   const [lunchAdded, setLunchAdded] = useState(false);
   /**
@@ -648,7 +670,13 @@ function TailorPage() {
     return { extra, hasManualSupplier };
   }, [blueprint, choiceSelected]);
 
-  const requiresManualConfirmation = wineExtension.extra > 0 || wineExtension.hasManualSupplier;
+  // An extra winery only blocks instant checkout when it is NOT covered by
+  // an approved supplement ladder. Arrábida Wine's +€20 pp extras are
+  // priced, so they stay instantly bookable (exact estate assignment is
+  // operational and never promised here).
+  const requiresManualConfirmation =
+    (wineExtension.extra > 0 && !rules.wineries) || wineExtension.hasManualSupplier;
+
 
   // Blueprint contains a winery selection surface (choice or core).
   const hasWinerySurface = useMemo(() => {
@@ -690,7 +718,16 @@ function TailorPage() {
 
   const handleReserve = async (details: GuestDetails) => {
     if (checkoutPending) return;
+    // Exact-tier truth gate — the server refuses this party size, so never
+    // open a checkout against the generic "from" anchor.
+    if (tierUnavailable) {
+      toast.error(
+        "This Signature isn't published for this party size — a YES curator will confirm your investment.",
+      );
+      return;
+    }
     setCheckoutPending(true);
+
     // Open the drawer immediately so a branded skeleton appears while
     // the edge function is in flight — avoids "blank screen" feel.
     const metaForSummary = getViatorMeta(tour.id);
@@ -1255,11 +1292,16 @@ function TailorPage() {
                       <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
                         {blueprint.choice.options.map((o) => {
                           const on = choiceSelected.has(o.id);
-                          // Soft cap: only hard-disable at pickMax. Between
-                          // pickMin and pickMax the feasibility engine (via
-                          // tryToggleChoice) decides whether the day absorbs
-                          // the extra winery.
-                          const atLimit = !on && choiceSelected.size >= blueprint.choice!.pickMax;
+                          // Soft cap: only hard-disable at the authorized
+                          // ceiling. Wineries may only exceed the blueprint
+                          // baseline when an approved supplement ladder
+                          // exists (Arrábida Wine); otherwise it's swap-only.
+                          const ceiling =
+                            o.category === "winery" && !rules.wineries
+                              ? blueprint.choice!.pickMin
+                              : blueprint.choice!.pickMax;
+                          const atLimit = !on && choiceSelected.size >= ceiling;
+
                           return (
                             <li key={o.id}>
                               <button

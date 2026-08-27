@@ -216,7 +216,37 @@ export function SignaturePriceCard({
         : "missing";
 
   const durationLabel = tour?.durationHours ?? tour?.duration ?? null;
-  const hasPrice = priceEur != null;
+
+  // Real per-pax (approved tier) resolution. When the tour has tier data AND
+  // we know the guest count, `realPerPax.real === true` and we display the
+  // exact per-person rate; otherwise we keep the generic "from" anchor.
+  const { data: tierOverrides } = useTourPriceTiers();
+  const effectiveOverrides = useMemo(() => {
+    if (!previewTiers || !tour) return tierOverrides ?? null;
+    return { ...(tierOverrides ?? {}), [tour.id]: previewTiers };
+  }, [tierOverrides, previewTiers, tour]);
+
+  // Hidden picker — lets the traveller preview the per-pax rate for any
+  // group size 1..8+ before checkout. Defaults to the funnel's `guests`.
+  // `previewGuests === null` means "use the funnel guests value as-is".
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [previewGuests, setPreviewGuests] = useState<number | null>(null);
+  const effectiveGuests = previewGuests ?? guests ?? null;
+
+  const realPerPax = useMemo(
+    () => resolvePerPaxEur(tour, effectiveGuests, effectiveOverrides),
+    [tour, effectiveGuests, effectiveOverrides],
+  );
+
+  /**
+   * No approved tier for this EXACT party size. `priceFrom` is a generic
+   * pre-composition anchor only — showing it here would quote a solo
+   * traveller the 8-guest rate and then fail at checkout. We refuse to
+   * price, and the card falls back to the curator contact path.
+   */
+  const tierUnavailable = tour != null && effectiveGuests != null && realPerPax == null;
+  const hasPrice = priceEur != null && !tierUnavailable;
+
 
   // Budget-aware add-on pool: every eligible option stays visible so the
   // traveller can read it, but ones that wouldn't fit the regional rhythm
@@ -417,26 +447,9 @@ export function SignaturePriceCard({
     }, 180);
   };
 
-  // Real per-pax (Viator tier) resolution. When the tour has tier data AND
-  // we know the guest count, `realPerPax.real === true` and we display the
-  // exact per-person rate; otherwise we keep the "from" anchor.
-  const { data: tierOverrides } = useTourPriceTiers();
-  const effectiveOverrides = useMemo(() => {
-    if (!previewTiers || !tour) return tierOverrides ?? null;
-    return { ...(tierOverrides ?? {}), [tour.id]: previewTiers };
-  }, [tierOverrides, previewTiers, tour]);
+  // Tier resolution + party-size picker state now live above (they gate
+  // `hasPrice`, which earlier memos depend on).
 
-  // Hidden picker — lets the traveller preview the per-pax rate for any
-  // group size 1..8+ before checkout. Defaults to the funnel's `guests`.
-  // `previewGuests === null` means "use the funnel guests value as-is".
-  const [pickerOpen, setPickerOpen] = useState(false);
-  const [previewGuests, setPreviewGuests] = useState<number | null>(null);
-  const effectiveGuests = previewGuests ?? guests ?? null;
-
-  const realPerPax = useMemo(
-    () => resolvePerPaxEur(tour, effectiveGuests, effectiveOverrides),
-    [tour, effectiveGuests, effectiveOverrides],
-  );
 
   const displayPerPaxEur = realPerPax?.real ? realPerPax.eurPerPax : priceEur;
   const partyCount = effectiveGuests && effectiveGuests >= 2 ? effectiveGuests : null;
@@ -841,6 +854,23 @@ export function SignaturePriceCard({
               </ul>
             ) : null}
           </>
+        ) : tierUnavailable ? (
+          <div data-testid="studio-v3-price-unavailable">
+            <p
+              className="mt-3 text-[20px] sm:text-[22px] leading-tight font-semibold"
+              style={{ fontFamily: "var(--font-display)", color: "var(--charcoal)" }}
+            >
+              Confirmed by a curator
+            </p>
+            <p
+              className="mt-2 text-[12.5px] leading-snug"
+              style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+            >
+              {effectiveGuests === 1
+                ? "This Signature isn't published for a single traveller. A YES curator confirms the exact investment before anything is reserved."
+                : `This Signature isn't published for a party of ${effectiveGuests}. A YES curator confirms the exact investment before anything is reserved.`}
+            </p>
+          </div>
         ) : (
           <>
             <p
@@ -861,6 +891,7 @@ export function SignaturePriceCard({
             </p>
           </>
         )}
+
 
         {/* "Why this works" bullets removed — the itinerary spine below
             ("Your day includes") already surfaces the real inclusions, so
