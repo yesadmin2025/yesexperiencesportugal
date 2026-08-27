@@ -679,9 +679,11 @@ const evoraAlentejo: TailorBlueprint = {
     },
   ],
   choice: {
+    // No owner-approved extra-winery supplement exists for this Signature,
+    // so the pool is an ALTERNATIVES list, not a way to add free visits.
     pickMin: 1,
-    pickMax: 4,
-    label: "Choose 1 to 4 Alentejo wineries to visit",
+    pickMax: 1,
+    label: "Choose the Alentejo winery to visit",
     note: "Your guide confirms the winery the day before based on availability.",
     options: [
       {
