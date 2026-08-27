@@ -61,8 +61,13 @@ export function resolvePerPaxEur(
       : null;
 
   const exactGuests = knownGuestCount(guests);
-  // Exact party size known but no approved tier for it → unavailable.
-  if (exactGuests != null && exactGuests < 8 && real == null) return null;
+  // A tour WITH an approved tier table is priced by tier authority: an exact
+  // party size that is absent from that table is genuinely not published, so
+  // we refuse rather than quote a neighbouring/anchor rate. A tour with no
+  // tier table at all is priced solely by its approved `priceFrom`.
+  const hasTierTable = tiers != null && Object.keys(tiers).length > 0;
+  if (hasTierTable && exactGuests != null && exactGuests < 8 && real == null) return null;
+
 
   const eurPerPax = real ?? anchor;
   const partyGuests = exactGuests ?? 1;
