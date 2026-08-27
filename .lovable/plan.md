@@ -1,98 +1,168 @@
-# P8 — Unified "Your Day" surface (read-only architecture audit)
+# Experience Studio V3 — final polish audit (product design + interaction intelligence)
 
-HEAD verified: `aad17ed51b9c509711fd51322376229cc1c8d6b9`. Working tree clean except platform-generated `src/generated/brand-audit.json` (out of scope, untouched). Nothing was edited; this is the plan only.
+Audit performed against current `main` (`e7afc95ae`) by reading the live source, not
+prior plans. Every claim below is backed by a file read. No code was changed.
 
-## 1. Current fragmentation (file/line)
+## Already solved — do not re-open
 
-After Logistics the traveller is promoted through **three** full screens.
+- **Repeated final total on the refine surface.** Both totals still render in the DOM,
+  but `studioMobileA11y.css:40-67` makes them mutually exclusive (party total before
+  add-ons, resolved total after) and hides the ledger's third total row. Protected by
+  `studio-price-echo-contract.test.ts`. Working as intended.
+- **Acknowledgement echo across screens.** `studioAcknowledgement.ts` is a real
+  deterministic theme ledger across `interests → refinement → directorsRead →
+  logistics → reveal`, with a 2-signal floor on the reveal. It paraphrases themes and
+  never echoes raw option labels.
+- **Combinatorial intelligence exists** in `directorsRead.ts:172-263` (feeling +
+  companions + up to 2 interests + rhythm) and `revealNarrative.ts:114-173`.
+- **Reaction pacing ceilings** (`StudioV3.tsx:4911-4917`), CTA non-competition on the
+  Your Day surface (single primary + Save), truthful confirmation, checkout retry-in-place,
+  route authority chain, price-after-value ordering, delegation take-back logic.
+- **Route/stop *labels*** are not duplicated: legend shows labels only, timeline is an
+  overview by design (`UnifiedYourDayRoute.tsx:12-14`).
 
-- `src/components/studio-v3/curation.ts:2584-2609` — `STUDIO_V3_PHASE_ORDER` contains `"map"`, `"storyboard"`, `"confirmation"` as three consecutive relevant phases.
-- `curation.ts:2528-2562` — `isPhaseRelevant` returns `false` for occasion/considerations/language/investment/destination/date/pickup/guests, `true` for map, storyboard, confirmation. So `getNextPhase(state, "logistics")` (`curation.ts:2619-2627`) resolves to `"map"`, then `"storyboard"`, then `"confirmation"`.
-- `StudioV3.tsx:2909-2938` — phase `map` renders `MapAwakens` (750 LOC) with its own `YourDayFrame` (`MapAwakens.tsx:390`), map-or-timeline stage (`:415`, `:529`), moments card (`:546`), timings (`:611`) and its own CTA "Personalise a few details" (`:702-716`) → `advance("storyboard")`.
-- `StudioV3.tsx:2940-2966` — phase `storyboard` renders `CurtainRise` + `StoryboardHandoff` (`StudioV3.tsx:3511`+, render body `4107-4800`): a **second** `YourDayFrame` with a second title (`4214-4225`), a second map `studio-v3-reveal-map` (`4243`) + legend (`4254-4292`), `WhyRouteWorks` (`4305`), `OtherDirections` (`4310`), stops editor (`4318`), refine intents (`4335`), price/investment UI, and CTA `studio-v3-handoff-primary` (`4768`) → `advance("confirmation")`.
-- `StudioV3.tsx:2968-2994` — phase `confirmation` renders **again** `WhyRouteWorks` (`2971`) and `OtherDirections` (`2977`) plus `FinalRevealStory` (688 LOC): third headline (`FinalRevealStory.tsx:346`), third facts/signals block (`:370-387`), third timeline (`:415`), third investment block (`:463`), inclusions (`:531`), CTA (`:650`) → `advance("guestDetails")`, back → `storyboard` (`:674`).
+---
 
-Net duplication: two "Your Day" headers, two maps/timelines, two moment lists, two investment surfaces, `WhyRouteWorks` + `OtherDirections` rendered twice, three CTAs before Guest Details.
+## Ranked remaining issues
 
-Supporting truth modules (unchanged by P8): `yourDayMapTruth.ts` (map vs timeline resolver), `YourDayTimeline.tsx`, `YourDayFrame.tsx`, `WhyRouteWorks.tsx` (caps 4 reasons, fires `gaStudioRecommendationRevealed`), `OtherDirections.tsx`, `filterRevealSignals` from `studioAcknowledgement.ts` (`FinalRevealStory.tsx:37,201`).
+### 1. Reaction beats echo the option label the traveller just tapped — HIGH value, LOW risk
 
-## 2. Canonical phase: `"storyboard"`
+- **File:** `src/components/studio-v3/StudioV3.tsx:1460-1500`, `:1638`, `:1787`, `:1899`
+- **Current:** Every reaction overlay caption/message is built from `getOptionLabel(...)`
+  of the answer just given: `Atmosphere · Coastal`, `` `${destLabel} enters the story` ``,
+  the pickup label, the investment label. These reactions are outside the
+  `studioAcknowledgement` ledger entirely, so the one surface the traveller sees
+  *immediately after answering* is the one that parrots them most literally.
+- **Why it matters:** This is the exact "questionnaire confirming your click" feeling the
+  product intent forbids, and it is the first impression of Studio intelligence.
+- **Smallest safe change:** Route the reaction message through the existing
+  `studioSemanticMemory` paraphrase vocabulary instead of the raw label, and drop the
+  `Atmosphere · <Label>` caption pattern in favour of the paraphrased theme. No new copy
+  system, no state change, no new module — reuse `understoodSignals` phrasing.
+- **Risk:** Low (presentational strings only).
+- **Protected by:** `studio-p6-acknowledge-once.test.ts`, `studio-semantic-memory.test.ts`,
+  `studio-p4-faster-intelligence.test.tsx`.
+- **New contract:** unit test asserting no reaction message/caption contains a verbatim
+  `FEELINGS`/`DESTINATION_INTENTS`/`PICKUPS` option label.
 
-- It already owns the executable refine controls, stops editor, canonical price/investment UI, `data-testid="studio-v3-reveal"` and `data-studio-v3-screen="refine"` — the surfaces P8 must NOT change mathematically.
-- `getNextPhase` already falls back to `"storyboard"` (`curation.ts:2621,2626`), so a broken/unknown saved phase lands on the unified surface with no extra code path.
-- `StudioV3ProgressStepper` already groups `map | storyboard | confirmation` into the single `compose` / "Your day" beat (`StudioV3ProgressStepper.tsx:41,71-73`), so the stepper needs no relabelling.
-- `map` and `confirmation` remain in the `StudioV3Phase` union and in `STUDIO_V3_PHASE_ORDER`; they simply become never-asked (`isPhaseRelevant → false`), exactly like `investment`/`destination` today.
+### 2. `contextualTeaser` intelligence is computed and then thrown away — HIGH value, LOW risk
 
-## 3. Hydration, back-navigation, stepper rules
+- **Files:** `StudioV3.tsx:395-451` (60 lines of combination-aware copy),
+  `PhaseChrome.tsx:100-111` (`NextTeaser` returns `null` since P4)
+- **Current:** 13 call sites render `<NextTeaser>{contextualTeaser(...)}</NextTeaser>`;
+  the component renders nothing. The only genuinely combination-aware per-phase copy in
+  the funnel is invisible.
+- **Why it matters:** The middle of the funnel (Who → Feeling → Interests → Rhythm) is
+  where the traveller decides whether the Studio is "thinking". Right now that stretch is
+  silent between beats. P4 was right that a persistent "Next…" copy layer was clutter —
+  but deleting the signal entirely is why the middle feels flat.
+- **Smallest safe change:** Do not resurrect `NextTeaser`. Instead pass the
+  `contextualTeaser` line as the *footer line of the reaction overlay* that already
+  plays after that phase, so it appears once inside an existing cinematic beat with zero
+  new layout. Delete the dead `UnderstoodSummaryLine` (`PhaseChrome.tsx:24-46`, zero
+  importers) in the same pass.
+- **Risk:** Low. Keeps P4's "no recurring copy layer" contract intact.
+- **Protected by:** `studio-p4-faster-intelligence.test.tsx` (must stay green —
+  `NextTeaser` stays silent), `phase-shell-anticipation.test.tsx`.
+- **New contract:** unit test that the reaction overlay carries the contextual line and
+  that `NextTeaser` still renders nothing.
 
-1. `isPhaseRelevant`: add `if (phase === "map" || phase === "confirmation") return false;` — `getNextPhase(state, "logistics")` then resolves to `"storyboard"` in one hop. No new ordering array.
-2. Hydration canonicalization: in `readPersistedStudioState` (`StudioV3.tsx:771-787`), after the existing `PHASE_ORDER.includes` + `NON_RESTORABLE_PHASES` checks, map `"map" | "confirmation" → "storyboard"` via one pure helper `canonicalStudioPhase(phase)`. Old sessions and deep links hydrate directly onto the unified surface — single state write, no transient render of a removed screen, therefore no flicker.
-3. Same helper is applied inside `advance()` (`:1290-1325`) so any legacy call site or test that requests `map`/`confirmation` is normalized before the forward-only index guard runs. Guard stays forward-only, so `storyboard → storyboard` is a no-op, not a loop.
-4. `back()` (`:1327-1345`) already walks backwards skipping non-relevant phases, so from `storyboard` it lands on `logistics` (or the last relevant question) automatically once map/confirmation are non-relevant. The unified surface's Back keeps calling `back()` with no hint.
-5. Forward CTA on the unified surface goes straight to `advance("guestDetails")`. `guestDetails` back target is switched from `"confirmation"` to `"storyboard"` (via the same canonicalizer).
-6. `NON_RESTORABLE_PHASES` unchanged. `studioV3Progress` (`:544-560`) keeps treating storyboard as the composition beat; the `intro/storyboard/map` special-case there is left intact.
+### 3. Delegated mode is invisible after the tap — HIGH value, LOW risk
 
-## 4. Component disposition
+- **Files:** `StudioV3.tsx:2873`, `:2903`, `:1754-1761`; `types.ts:354`
+- **Current:** After "Yes, design it for me", a one-line acknowledgement shows on the
+  same card, then the flow advances. `decidedForMe` is written to state but **never
+  rendered anywhere** (verified: no read outside logic). The traveller never sees which
+  tastes and pace YES chose, and there is no visible way to take them back.
+- **Why it matters:** This is precisely item 6 — delegation currently reads as *skipping
+  questions*, not as concierge authorship. Reversibility exists in code
+  (`takeBackDelegatedDimension`) but has no affordance.
+- **Smallest safe change:** On the Director's Read beat (and/or the Your Day header),
+  render a quiet single line naming the delegated dimensions using existing labels —
+  e.g. "Chosen for you: coast and table, at an unhurried pace" — with one ghost
+  "Adjust" action that navigates back to the delegated phase. No new state, no change to
+  `studioDelegation.ts` decision logic.
+- **Risk:** Low (read-only presentation of existing state + existing navigation).
+- **Protected by:** `studio-p10-delegation.test.ts` (38 assertions),
+  `studio-v3-let-yes-decide-mobile.spec.ts`, `studio-p7-directors-read.test.tsx`.
+- **New contract:** unit test that delegated dimensions are named exactly once and that
+  the Adjust action routes to the delegated phase; browser test that delegated mode
+  surfaces the line and that Adjust restores explicit choice.
 
-Retained, unchanged behaviour:
-- `yourDayMapTruth.ts`, `YourDayTimeline`, `YourDayFrame`, `RevealRouteMap` + `StudioV3SignatureMap`, stops editor / `RefineStopCard` / refine intents, `SignaturePriceCard`, `RunningInvestmentRibbon`, `InvestmentLedger`, `useResolvedJourney`, `CurtainRise`, `GuestDetailsStep`, `CheckoutSummary`.
+### 4. Stop story prose is printed twice on one scroll — MEDIUM value, LOW risk
 
-Moved into the single `storyboard` render path:
-- Map-or-timeline stage + ordered moments + timings from `MapAwakens` (`MapAwakens.tsx:415-640`) become the top of the unified surface, replacing the duplicate `studio-v3-reveal-map` header block; `studio-v3-reveal-map` testid is kept on the map container.
-- Lightweight story: the letter/headline + facts + filtered signals part of `FinalRevealStory` (`:308-415`) renders below the moments, once. Director's Read themes stay suppressed through `filterRevealSignals`.
+- **Files:** `FinalRevealStory.tsx:73-80, 250-266` (embeds `s.story` into narrative
+  sentences) and `StudioV3.tsx:4506-4515` (renders the same `s.story` verbatim under each
+  stop card), both from the same source array, ~one screen apart.
+- **Why it matters:** The single largest block of literal repetition left on the Your Day
+  surface, and it undercuts the reveal's editorial weight — the letter says it, then the
+  list says it again word for word.
+- **Smallest safe change:** In the editable stop list only, suppress `s.story` when that
+  same story already appears in the inline narrative, keeping label + composer rationale
+  (which is genuinely new information). Purely presentational; the story text stays in
+  state, in the snapshot, and at checkout.
+- **Risk:** Low–Medium. Touches the reveal surface, which has snapshot coverage.
+- **Protected by:** `reveal-section-order.test.ts`, `your-day-surface.test.tsx`,
+  `studio-v3-p0-storytelling-reveal-mobile.spec.ts`,
+  `studio-v3-unified-signature-card-visual.spec.ts` (visual snapshot will need review).
+- **New contract:** unit test that no stop's story string renders twice in the storyboard tree.
 
-Reduced:
-- `MapAwakens` loses its own `YourDayFrame`, its own CTA (`:702-716`) and its autoplay-gated continue; it becomes a presentational stage used by the unified surface (or its stage is extracted into `YourDaySurface`). Its `data-testid`s (`studio-v3-your-day-stage`, `studio-v3-moments-card`, `studio-v3-moment-timings`) are preserved.
-- `FinalRevealStory` loses its duplicate investment block (`:463-529`), duplicate timeline (`:415`) and its own back/continue chrome; canonical price UI on the unified surface is the only money surface. `studio-v3-final-reveal-*` testids that survive keep their names.
-- `WhyRouteWorks`: rendered exactly once, immediately after the ordered moments (`testId="studio-v3-travel-file-reasons"` kept; the `studio-v3-living-atlas-reasons` instance at `:2971` is removed). `gaStudioRecommendationRevealed` therefore fires once per journey instead of twice.
-- `OtherDirections`: single quiet footer instance, below the primary CTA, secondary weight.
+### 5. Checkout summary has no localized edits for date / guests / stops — MEDIUM value, LOW risk
 
-Removed from the render path (files kept for hydration/back-compat, no deletions of phase union values):
-- phase blocks `StudioV3.tsx:2909-2938` (map) and `:2968-2994` (confirmation).
-- second `YourDayFrame` title (`:4214-4225`) and the intermediate CTA `studio-v3-handoff-primary` become one primary CTA to Guest Details.
+- **File:** `CheckoutSummary.tsx:189-196, 233-257, 359-368`
+- **Current:** Only guest identity has an `Edit` link; date, guests, stops and add-ons are
+  read-only rows, so correcting a date means the generic top "Back" or the guest-details
+  form.
+- **Why it matters:** The stated recap contract is a localized edit per logical area. It is
+  the last confidence moment before payment; a read-only row with a wrong date creates
+  abandonment rather than a correction.
+- **Smallest safe change:** Add a quiet text "Edit" affordance on the date/guests rows that
+  calls the existing `onEditGuestDetails` handler, and on the stops row one that returns to
+  the storyboard phase. Reuses existing navigation only — no new state, no new phase.
+- **Risk:** Low. No pricing, Stripe or snapshot change.
+- **Protected by:** `checkout-confirmation-honesty.test.ts`,
+  `studio-v3-mobile-guest-to-checkout.spec.ts`, `studio-v3-checkout-retry-desktop.spec.ts`.
+- **New contract:** unit test that each recap area exposes exactly one edit affordance
+  routing to the correct phase, and that state survives the round trip.
 
-Final content order on the one surface: journey title/region → map (if `resolveYourDayMapTruth().mode === "map"`) else timeline → ordered moments → lightweight story → refine controls (stops, swap/add, refine intents) → one `Why this fits` cue → canonical investment UI (unchanged math, no P9 ribbon-timing change) → one primary CTA to Guest Details → quiet `OtherDirections` footer.
+### 6. `SignaturePriceCard` non-competition depends on three separate boolean gates — LOW value, LOW risk (hardening only)
 
-## 5. Allowed P8 files
+- **Files:** `SignaturePriceCard.tsx:1353, 1428, 1461`, `FinalRevealStory.tsx:488, 678`
+- **Current:** No competing primary CTA today. But the card ships a full second CTA stack
+  plus a sticky mobile CTA that are only suppressed by `isRefine`/`inline` flags across
+  two files. A future edit that forgets one gate produces two primaries instantly.
+- **Smallest safe change:** No UI change. Add a regression test that asserts exactly one
+  primary CTA in the storyboard tree.
+- **Risk:** None.
 
-Production:
-- `src/components/studio-v3/StudioV3.tsx`
-- `src/components/studio-v3/curation.ts` (only `isPhaseRelevant`, plus the comment on the order array)
-- `src/components/studio-v3/MapAwakens.tsx`
-- `src/components/studio-v3/FinalRevealStory.tsx`
-- `src/components/studio-v3/SignatureDayReveal.tsx` (re-export only, if the reveal body is hoisted)
-- one new pure module `src/components/studio-v3/studioPhaseCanonical.ts` (`canonicalStudioPhase`)
-- optionally one new presentational `src/components/studio-v3/YourDaySurface.tsx` if the moved stage needs a home outside the 5.6k-line file
+### 7. Orphaned components — no action recommended
 
-Tests / E2E: `src/components/studio-v3/__tests__/studio-p8-unified-your-day.test.tsx` (new), plus intentional updates to `reveal-section-order.test.ts`, `map-awakens-cta-contract.test.tsx`, `your-day-surface.test.tsx`, `phase-7d-hydration.test.ts`, `progress-stepper*.test.tsx`, `stepper-telemetry.test.tsx`, `final-reveal-*.test.tsx`, `e2e/studio-v3-walk-to-reveal.ts`, `e2e/studio-v3-reveal-walkthrough.spec.ts`, `e2e/studio-v3-moments-to-reveal-mobile.spec.ts`, `e2e/studio-v3-map-legend.spec.ts`, `e2e/studio-v3-exit-intent.spec.ts`, `e2e/studio-v3-let-yes-decide-mobile.spec.ts`, `e2e/studio-v3-add-ons-total.spec.ts`.
+`DesignedForYou`, `DayAtGlance`, `RefineAccordion` are built, tested and exported from
+`src/index.ts` but not mounted in the live tree. Mounting them would re-add surface area to
+a page we are trying to compress. Recommendation: leave them; revisit only with explicit
+product intent.
 
-Explicitly untouched: pricing config/functions, `signatureTourPricing`, add-on formulas, `resolveJourneyPricing`, Stripe edge functions/checkout, Supabase, Travel File security, `RunningInvestmentRibbon` timing, `directorsRead*`, `studioAcknowledgement.ts`, analytics taxonomy, generated files, brand audit, dependencies.
+---
 
-## 6. Acceptance criteria
+## Recommended single implementation batch
 
-- Logistics → exactly one screen before Guest Details; no `map`/`confirmation` render.
-- Content order matches §4; each of title, map/timeline, moments, story, why-this-fits, investment, primary CTA appears exactly once in the DOM.
-- Director's Read themes never repeated (existing P6/P7 tests stay green).
-- Pricing DOM values byte-identical to pre-P8 for the same state (base, add-ons, total, per-person).
-- Hydrating a saved session with `phase: "map"` or `"confirmation"` renders the unified surface on first paint; no second render of a removed screen (assert single state commit), no back/forward loop.
-- 393px: single column, no horizontal scroll, all interactive targets ≥44px, map legend does not overlap.
-- a11y: one `h1`/`h2` hierarchy without duplicates, ordered moments remain an `ol`, focus moves to the surface heading on entry, visible focus rings, reduced-motion honoured (no autoplay dependency for CTA reachability).
-- Perf: no additional map instance mounted (one map, not two); CTA interactive before any autoplay/reel completes.
+**Batch A — "The Studio thinks out loud" (items 1, 2, 3, plus the item 6 test).**
 
-## 7. Tests
+These four share one theme (make intelligence and authorship *felt* in the middle of the
+funnel), touch only presentational strings and read-only renders of existing state, add no
+new modules, and carry no pricing, route, snapshot or checkout exposure. Concretely:
 
-New focused (`studio-p8-unified-your-day.test.tsx`):
-- `canonicalStudioPhase`: `map|confirmation → storyboard`; every other union value unchanged.
-- `isPhaseRelevant("map"|"confirmation") === false`; `getNextPhase(state, "logistics") === "storyboard"`.
-- `back()` from `storyboard` lands on the last relevant question (logistics), never on `map`.
-- Unified surface renders exactly one of each: `studio-v3-your-day-stage`/timeline, moments list, `studio-v3-travel-file-reasons`, investment block, primary CTA; zero `studio-v3-living-atlas-reasons`.
-- Hydration from `{phase:"confirmation"}` mounts the unified surface directly.
+1. Paraphrase reaction copy through the existing semantic vocabulary; remove verbatim
+   option-label echoes.
+2. Move the already-computed `contextualTeaser` line into the existing reaction beat;
+   delete the dead `UnderstoodSummaryLine`; keep `NextTeaser` silent.
+3. Surface delegated dimensions once with a single quiet "Adjust" action.
+4. Add the single-primary-CTA regression test.
 
-Intentional updates: `reveal-section-order.test.ts` expected order extended with moments/story/why anchors; `map-awakens-cta-contract.test.tsx` retargeted to the unified CTA; `your-day-surface.test.tsx` asserts the single-surface mode contract; E2E walkers drop the two intermediate clicks.
+Items 4 and 5 are both worth doing, but each touches a snapshot-covered surface (reveal
+visual snapshot; checkout flow) and should be a separate, individually validated batch so a
+visual diff is never mixed with copy changes.
 
-## 8. Risks & rollback
-
-- **Largest risk**: `StoryboardHandoff` is a ~1300-line render inside a 5.6k-line file; moving the map stage and story into it can disturb the price/add-on wiring. Mitigation: move JSX only, keep every prop and testid name, run the pricing parity suites (`price-source-of-truth`, `add-ons-*`, `studio-v3-p3b-live-investment`) unchanged.
-- **Second risk**: hidden `phase === "map" | "storyboard" | "confirmation"` conditionals at `StudioV3.tsx:549`, `1221`, `1237-1238`, `2206-2208`, `2243-2245` gate exit-intent, lead-sheet and chrome behaviour. Each must be re-read and reduced to `storyboard` deliberately, not blanket-replaced.
-- **Third risk**: E2E specs that click the intermediate CTAs will fail loudly (intended) — they are updated in the same slice, not skipped.
-- Rollback: single-commit revert. Because no phase union values, pricing code, or persisted-state shape change, reverting restores the three-screen flow with old sessions still hydratable.
+Validation for Batch A: focused P4/P6/P7/P10 suites, the full
+`src/components/studio-v3` + `src/lib/studio-v3` Vitest run, `bunx tsgo --noEmit`, and the
+mobile 393×852 plus desktop 1440×900 browser specs. No deploy.
