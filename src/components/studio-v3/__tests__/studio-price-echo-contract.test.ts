@@ -13,7 +13,7 @@ const studio = readFileSync(
 
 describe("Studio V3 price handoff", () => {
   it("keeps the public Your Day price card on the refine surface", () => {
-    expect(studio).toContain('<SignaturePriceCard');
+    expect(studio).toContain("<SignaturePriceCard");
     expect(studio).toContain('variant="refine"');
   });
 
