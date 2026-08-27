@@ -3282,6 +3282,7 @@ export function StudioV3() {
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}
+            onEditStops={() => back("storyboard")}
             clientSecret={clientSecret}
             publishableKey={publishableKey}
             onPaymentComplete={(sid) => {
