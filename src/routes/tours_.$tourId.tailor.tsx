@@ -490,10 +490,19 @@ function TailorPage() {
    */
   const [lunchRemoved, setLunchRemoved] = useState(false);
 
+  /**
+   * −5% ladder count. The dedicated included-lunch stop is EXCLUDED: its
+   * removal is priced by the flat −€15 pp credit only, so the same lunch
+   * can never earn both credits.
+   */
   const principalsRemoved = useMemo(
-    () => (blueprint ? skippedCore.size : skipped.size),
-    [blueprint, skippedCore, skipped],
+    () =>
+      blueprint
+        ? principalRemovalCount(tour.id, skippedCore)
+        : principalRemovalCount(tour.id, skipped),
+    [blueprint, skippedCore, skipped, tour.id],
   );
+
 
   // ─── Authorized Tailor supplements (Canonical Bible v1.1) ───
   // Only two levers exist beyond stop removal: "add lunch" (+€35 pp, and
