@@ -176,7 +176,9 @@ test("delegation survives real Back navigation and recomputes after a personal b
   // and Interests remain real, revisitable surfaces so the traveller can take
   // control back. Walk one completed phase transition at a time, rather than
   // firing Back repeatedly while the 280ms exit animation is still active.
-  const visitedPhases: string[] = [];
+  const firstTastePhase = await root.getAttribute("data-phase");
+  expect(firstTastePhase).not.toBeNull();
+  const visitedPhases: string[] = [firstTastePhase!];
   for (let i = 0; i < 10; i++) {
     const phase = await root.getAttribute("data-phase");
     if (phase === "feeling") break;
