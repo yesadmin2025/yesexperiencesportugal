@@ -193,11 +193,57 @@ export const TAILOR_DEDICATED_LUNCH_STOP_ID: Readonly<Record<string, string>> = 
   "arrabida-wine-allinclusive": "lunch-azeitao",
 };
 
-/** Server-authoritative principal-removal count from skipped stop ids. */
+/**
+ * AUTHORITATIVE whitelist of Tailor core stop ids that may earn the −5%
+ * principal-removal reduction, per Signature. Server mirror of
+ * `principalEligibleStopIds()` in `src/data/tailorRules.ts` (blueprint core
+ * minus locked anchors minus the dedicated included-lunch stop). Parity is
+ * enforced by a unit test. A tour absent from this table earns no reduction.
+ */
+export const TAILOR_PRINCIPAL_ELIGIBLE_STOP_IDS: Readonly<Record<string, readonly string[]>> = {
+  "arrabida-wine-allinclusive": ["livramento", "arrabida-park", "azeitao-tiles"],
+  "wild-beaches-picnic": ["livramento", "arrabida-drive", "sesimbra-village"],
+  "arrabida-boat": ["livramento", "arrabida-drive", "sesimbra-village"],
+  "tiles-workshop": ["livramento", "lunch-azeitao"],
+  "azeitao-cheese": ["livramento", "lunch-azeitao"],
+  "sintra-cascais": ["sintra-vila", "lunch-azenhas", "cabo-da-roca", "cascais"],
+  "troia-comporta": ["troia-ruins", "herdade-comporta", "comporta-lunch", "comporta-beach"],
+  "evora-alentejo": ["evora-old-town", "templo-romano", "chapel-of-bones", "evora-lunch"],
+  "tomar-coimbra": [
+    "convento-cristo",
+    "tomar-town",
+    "tomar-lunch",
+    "coimbra-uni",
+    "biblioteca-joanina",
+  ],
+  "fatima-nazare-obidos": ["fatima", "nazare-beach", "nazare-lunch", "obidos"],
+  "roman-heritage-alentejo": [
+    "sao-cucufate",
+    "vinho-talha",
+    "vila-alva",
+    "mestre-daniel",
+    "talha-lunch",
+  ],
+};
+
+/**
+ * Server-authoritative principal-removal count from client-supplied ids.
+ * Counts UNIQUE whitelisted ids only — invented ids, duplicated ids, locked
+ * anchors and the dedicated included-lunch stop are all ignored, so a
+ * tampered payload can never manufacture the −15% Tailor reduction.
+ */
 export function serverPrincipalRemovalCount(
   tourId: string,
   skippedStopIds: readonly string[],
 ): number {
+  const eligible = new Set(TAILOR_PRINCIPAL_ELIGIBLE_STOP_IDS[tourId] ?? []);
   const lunchId = TAILOR_DEDICATED_LUNCH_STOP_ID[tourId] ?? null;
-  return skippedStopIds.filter((id) => typeof id === "string" && id !== lunchId).length;
+  const seen = new Set<string>();
+  for (const id of skippedStopIds) {
+    if (typeof id !== "string") continue;
+    if (lunchId && id === lunchId) continue;
+    if (!eligible.has(id)) continue;
+    seen.add(id);
+  }
+  return seen.size;
 }
