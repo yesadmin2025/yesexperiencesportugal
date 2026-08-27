@@ -109,6 +109,7 @@ export function CheckoutSummary({
   composedStops,
   submitting = false,
   onEditGuestDetails,
+  onEditStops,
   onBack,
   onReserve,
   clientSecret = null,
@@ -230,20 +231,44 @@ export function CheckoutSummary({
           boxShadow: "none",
         }}
       >
-        <Row label="Date" value={dateLabel ?? "Flexible"} />
-        <Row label="Guests" value={guestsLabel} />
+        {/* Localized edits: each recap area routes back through the step that
+            already owns it, so a wrong date never traps the traveller here.
+            No new phase or state machinery — existing callbacks only. */}
+        <Row
+          label="Date"
+          value={dateLabel ?? "Flexible"}
+          onEdit={onEditGuestDetails}
+          editLabel="Edit your date"
+          editTestId="studio-v3-checkout-summary-edit-date"
+        />
+        <Row
+          label="Guests"
+          value={guestsLabel}
+          onEdit={onEditGuestDetails}
+          editLabel="Edit your party"
+          editTestId="studio-v3-checkout-summary-edit-guests"
+        />
 
         {stopLabels.length > 0 ? (
           <div
             className="pt-3 border-t"
             style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
           >
-            <p
-              className="text-[10px] uppercase tracking-[0.22em] mb-2"
-              style={{ color: "var(--charcoal-soft)" }}
-            >
-              Stops
-            </p>
+            <div className="mb-2 flex items-baseline justify-between gap-3">
+              <p
+                className="text-[10px] uppercase tracking-[0.22em]"
+                style={{ color: "var(--charcoal-soft)" }}
+              >
+                Stops
+              </p>
+              {onEditStops ? (
+                <RecapEdit
+                  onClick={onEditStops}
+                  label="Edit your stops"
+                  testId="studio-v3-checkout-summary-edit-stops"
+                />
+              ) : null}
+            </div>
             <ul
               className="space-y-1 text-[13.5px]"
               style={{ color: "var(--charcoal)" }}
