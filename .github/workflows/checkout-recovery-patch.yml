@@ -21,20 +21,26 @@ jobs:
         shell: python
         run: |
           from pathlib import Path
+          import re
 
           path = Path("src/components/studio-v3/StudioV3.tsx")
           source = path.read_text()
-          old = '''        console.error("Stripe checkout failed", e);
-          toast.error("Checkout unavailable right now. We've opened a private enquiry instead.");
-          setClientSecret(null);
-          openLeadSheet("book");'''
-          new = '''        console.error("Stripe checkout failed", e);
-          toast.error("Secure checkout couldn't open. Your details and selections are still here — try again.");
-          setClientSecret(null);'''
-          count = source.count(old)
-          if count != 1:
-              raise SystemExit(f"Expected checkout failure block exactly once, found {count}")
-          path.write_text(source.replace(old, new, 1))
+          pattern = re.compile(
+              r'(?m)^(?P<indent>\s*)console\.error\("Stripe checkout failed", e\);\n'
+              r'(?P=indent)toast\.error\("Checkout unavailable right now\. We\x27ve opened a private enquiry instead\."\);\n'
+              r'(?P=indent)setClientSecret\(null\);\n'
+              r'(?P=indent)openLeadSheet\("book"\);$'
+          )
+          matches = list(pattern.finditer(source))
+          if len(matches) != 1:
+              raise SystemExit(f"Expected checkout failure block exactly once, found {len(matches)}")
+          indent = matches[0].group("indent")
+          replacement = (
+              f'{indent}console.error("Stripe checkout failed", e);\n'
+              f'{indent}toast.error("Secure checkout couldn\x27t open. Your details and selections are still here — try again.");\n'
+              f'{indent}setClientSecret(null);'
+          )
+          path.write_text(pattern.sub(replacement, source, count=1))
       - name: Verify patch contract
         shell: bash
         run: |
