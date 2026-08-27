@@ -106,9 +106,7 @@ async function backOneStudioPhase(page: Page): Promise<string> {
   await expect(back).toBeVisible({ timeout: 10_000 });
   await back.click();
 
-  await expect
-    .poll(() => root.getAttribute("data-phase"), { timeout: 15_000 })
-    .not.toBe(from);
+  await expect.poll(() => root.getAttribute("data-phase"), { timeout: 15_000 }).not.toBe(from);
 
   const to = await root.getAttribute("data-phase");
   expect(to).not.toBeNull();
