@@ -61,6 +61,13 @@ jobs:
           e2e/studio-v3-family-backedit-mobile.spec.ts
           --project=mobile-chromium
 
+      - name: Run checkout recovery journey
+        if: matrix.project == 'desktop-1440-chromium'
+        run: >-
+          bunx playwright test
+          e2e/studio-v3-checkout-retry-desktop.spec.ts
+          --project=desktop-1440-chromium
+
       - name: Upload failed diffs
         if: failure()
         uses: actions/upload-artifact@v4
