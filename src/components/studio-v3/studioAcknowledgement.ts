@@ -3,9 +3,9 @@
  *
  * Studio surfaces the same three facts (feeling, taste, rhythm) on several
  * screens: the P5 "Already understood" row on Interests, the understood line
- * on the refinement question, the same line again before Logistics, and the
- * reason signals on the final reveal. Each surface used to re-derive its copy
- * independently, so the traveller heard their own answers read back four
+ * on the refinement question, the Director's Read, Logistics, and the reason
+ * signals on the final reveal. Each surface used to re-derive its copy
+ * independently, so the traveller heard their own answers read back several
  * times. This module is the single authority for what has ALREADY been
  * acknowledged on screen, so every later surface can show only what is new.
  *
@@ -16,6 +16,8 @@
  *     analytics or checkout.
  *   - Operational facts (date, pickup, party, region) are NOT acknowledgements
  *     and are never suppressed — confirming them twice is correct.
+ *   - Once the Director's Read has been shown, Logistics is operational only:
+ *     it never starts another taste/rhythm recap immediately afterwards.
  *   - Silence over filler: when nothing new remains, a surface renders nothing.
  */
 
@@ -54,7 +56,6 @@ export interface AcknowledgementContext {
     readonly themes: ReadonlyArray<StudioSemanticTheme>;
   };
 }
-
 
 /** Interests that the Feeling phase can inherit, and the theme each stands for. */
 const INHERITED_INTEREST_THEME: Readonly<Partial<Record<Interest, StudioSemanticTheme>>> = {
@@ -187,6 +188,13 @@ export function acknowledgementSignalsFor(
   surface: Exclude<AcknowledgementSurface, "interests" | "directorsRead" | "reveal">,
   ctx: AcknowledgementContext,
 ): string[] {
+  // The Director's Read is the final taste-level interpretation before
+  // Logistics. After it has been seen, Logistics must move the conversation
+  // forward into practical facts rather than opening another "I've got it"
+  // recap. If the read was never shown (legacy/direct usage), prior P6
+  // behaviour remains unchanged.
+  if (surface === "logistics" && ctx.directorsRead?.shown) return [];
+
   const seen = themesAcknowledgedBefore(surface, ctx);
   return dropAcknowledged(understoodSignals(memoryInput(ctx.state)), seen).slice(0, 3);
 }

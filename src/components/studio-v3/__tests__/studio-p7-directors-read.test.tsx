@@ -1,10 +1,10 @@
 /**
  * Studio V3 — P7 "Director's Read".
  *
- * The read must feel like a human travel director, which means three things
- * are non-negotiable: it is deterministic, it never dumps the option labels
- * back at the traveller, and it never invents a fact. It also has to keep the
- * P6 acknowledgement ledger honest, so nothing it says is repeated later.
+ * The read must feel like a human travel director, which means it connects
+ * choices rather than reading them back. Reaction beats already acknowledge
+ * Feeling, Who, Interests and Rhythm; this surface earns its place only by
+ * adding an interpretation that was not already on screen.
  */
 
 import { fireEvent, render, screen } from "@testing-library/react";
@@ -37,7 +37,7 @@ function copyOf(state: DirectorsReadState): string {
 describe("composeDirectorsRead — determinism", () => {
   it("produces identical copy for identical state", () => {
     const a = composeDirectorsRead(coastalCouple);
-    const b = composeDirectorsRead({ ...coastalCouple, interests: ["gastronomy", "local-life"] });
+    const b = composeDirectorsRead({ ...coastalCouple });
     expect(a.headline).toBe(b.headline);
     expect(a.body).toEqual(b.body);
     expect(a.signature).toBe(b.signature);
@@ -51,29 +51,40 @@ describe("composeDirectorsRead — determinism", () => {
     expect(JSON.stringify(state)).toBe(snapshot);
   });
 
-  it("recomputes when a meaningful answer changes (back-navigation)", () => {
+  it("recomputes when a choice that changes the interpretation changes", () => {
     const before = composeDirectorsRead(coastalCouple);
     const after = composeDirectorsRead({ ...coastalCouple, rhythm: "immersive" });
     expect(after.signature).not.toBe(before.signature);
     expect(after.body).not.toEqual(before.body);
+  });
+
+  it("does not interrupt again for an interest-only back-edit", () => {
+    const before = composeDirectorsRead(coastalCouple);
+    const after = composeDirectorsRead({
+      ...coastalCouple,
+      interests: ["wine", "photography", "wellness"],
+    });
+    expect(after.signature).toBe(before.signature);
+    expect(after.headline).toBe(before.headline);
+    expect(after.body).toEqual(before.body);
   });
 });
 
 describe("composeDirectorsRead — meaningfully different reads", () => {
   const feelings = ["coastal", "wine-food", "faith", "hands-on"] as const;
 
-  it("writes a distinct read for each feeling", () => {
+  it("writes a distinct editorial judgement for each feeling", () => {
     const copies = feelings.map((feeling) => copyOf({ ...coastalCouple, feeling }));
     expect(new Set(copies).size).toBe(feelings.length);
   });
 
-  it("writes a distinct read for slow vs full rhythm", () => {
+  it("interprets slow vs full rhythm differently without replaying the labels", () => {
     expect(copyOf({ ...coastalCouple, rhythm: "slow" })).not.toBe(
       copyOf({ ...coastalCouple, rhythm: "full" }),
     );
   });
 
-  it("writes a distinct read for different company", () => {
+  it("interprets different company differently", () => {
     expect(copyOf({ ...coastalCouple, companions: "family" })).not.toBe(
       copyOf({ ...coastalCouple, companions: "couple" }),
     );
@@ -111,55 +122,59 @@ describe("composeDirectorsRead — never a label dump", () => {
   });
 });
 
-describe("composeDirectorsRead — inherited intent woven, not repeated", () => {
-  it("does not narrate a feeling theme that Interests already acknowledged", () => {
-    const read = composeDirectorsRead({
-      feeling: "coastal",
-      companions: "couple",
-      interests: ["coast"],
-      rhythm: "slow",
-    });
-    const copy = [read.headline, ...read.body].join(" ");
-    const taste = read.body.filter((l) => l.startsWith("There should be room for"));
+describe("composeDirectorsRead — reaction beats are not narrated twice", () => {
+  const reactionEchoCases: ReadonlyArray<{
+    feeling: DirectorsReadState["feeling"];
+    forbidden: RegExp;
+  }> = [
+    { feeling: "coastal", forbidden: /Atlantic|salt|cliffs|facing the sea/i },
+    { feeling: "wine-food", forbidden: /wine|bottles|around the table/i },
+    { feeling: "hidden", forbidden: /quiet roads|small doors|obvious/i },
+    { feeling: "romance", forbidden: /soft light|space for two|two of you/i },
+    { feeling: "culture", forbidden: /old stones|long stories|depth/i },
+    { feeling: "adventure", forbidden: /open edges|open air|horizon|energy/i },
+    { feeling: "slow-luxury", forbidden: /fewer stops|deeper moments|nothing rushed/i },
+    { feeling: "faith", forbidden: /sanctuar|candlelight|silence|pause/i },
+    { feeling: "hands-on", forbidden: /workshop|local hands|made with you|doing/i },
+  ];
 
-    expect(taste).toHaveLength(0);
-    expect(copy).not.toMatch(/Atlantic|shoreline/i);
-    expect(read.themes).not.toContain("theme.coast");
-    expect(read.body).toContain("This is for the two of you.");
-  });
-
-  it("does the same semantic de-duplication for wine, faith and hands-on", () => {
-    const cases = [
-      { feeling: "wine-food" as const, theme: "theme.wine", echo: /wine|table/i },
-      { feeling: "faith" as const, theme: "theme.faith", echo: /stillness|pause|reflect/i },
-      { feeling: "hands-on" as const, theme: "activity.hands-on", echo: /hands|made by hand/i },
-    ];
-
-    for (const c of cases) {
-      const read = composeDirectorsRead({
+  it("uses Feeling only for editorial judgement, never a synonym-heavy replay", () => {
+    for (const c of reactionEchoCases) {
+      const copy = copyOf({
         feeling: c.feeling,
         companions: "couple",
         interests: [],
         rhythm: "slow",
       });
-      const copy = [read.headline, ...read.body].join(" ");
-      expect(copy).not.toMatch(c.echo);
-      expect(read.themes).not.toContain(c.theme);
-      expect(read.body).toContain("This is for the two of you.");
+      expect(copy).not.toMatch(c.forbidden);
     }
   });
 
-  it("still voices interests the feeling does not cover", () => {
-    const read = composeDirectorsRead({
+  it("does not repeat Interests because the Interests reaction already showed them", () => {
+    const withoutInterests = composeDirectorsRead({
       feeling: "coastal",
       companions: "couple",
-      interests: ["coast", "wine"],
+      interests: [],
       rhythm: "slow",
     });
-    expect(read.body.some((l) => l.startsWith("There should be room for"))).toBe(true);
-    expect(read.body.some((l) => l.includes("wine with room to linger"))).toBe(true);
-    expect(read.themes).toContain("theme.wine");
-    expect(read.themes).not.toContain("theme.coast");
+    const withInterests = composeDirectorsRead({
+      feeling: "coastal",
+      companions: "couple",
+      interests: ["wine", "local-life", "photography"],
+      rhythm: "slow",
+    });
+    expect(withInterests.signature).toBe(withoutInterests.signature);
+    expect(withInterests.body).toEqual(withoutInterests.body);
+    expect(withInterests.headline).toBe(withoutInterests.headline);
+  });
+
+  it("turns Rhythm into an editing consequence, not another pace label", () => {
+    const slow = copyOf({ ...coastalCouple, rhythm: "slow" });
+    const full = copyOf({ ...coastalCouple, rhythm: "full" });
+    expect(slow).not.toMatch(/slow|fewer stops|more time in place|unhurried/i);
+    expect(full).not.toMatch(/full day|more discovery|richer arc/i);
+    expect(slow).toContain("The edit matters more than the count");
+    expect(full).toContain("The order will matter");
   });
 });
 
@@ -189,13 +204,15 @@ describe("P6 ledger — the read counts as an acknowledgement", () => {
     };
   }
 
-  it("suppresses downstream repeats of what the read already said", () => {
-    const withRead = acknowledgementSignalsFor("logistics", ctx(true));
-    const withoutRead = acknowledgementSignalsFor("logistics", ctx(false));
-    expect(withRead.length).toBeLessThan(withoutRead.length);
-    for (const theme of composeDirectorsRead({ ...state, companions: "couple" }).themes) {
-      expect(themesAcknowledgedBefore("logistics", ctx(true)).has(theme)).toBe(true);
-    }
+  it("marks the structural rhythm interpretation as heard", () => {
+    const read = composeDirectorsRead({ ...state, companions: "couple" });
+    expect(read.themes).toContain("pace.rhythm");
+    expect(themesAcknowledgedBefore("logistics", ctx(true))).toContain("pace.rhythm");
+  });
+
+  it("keeps Logistics silent on taste/rhythm once the read has been shown", () => {
+    expect(acknowledgementSignalsFor("logistics", ctx(true))).toEqual([]);
+    expect(acknowledgementSignalsFor("logistics", ctx(false)).length).toBeGreaterThan(0);
   });
 
   it("leaves P6 behaviour untouched when the read was never shown", () => {
@@ -220,7 +237,6 @@ describe("DirectorsRead — presentation", () => {
 
     const cta = screen.getByTestId("studio-v3-directors-read-continue");
     expect(cta).toBeEnabled();
-    // Keyboard reachable and tappable in one action — never a forced wait.
     cta.focus();
     expect(document.activeElement).toBe(cta);
     fireEvent.click(cta);
@@ -243,13 +259,17 @@ describe("DirectorsRead — presentation", () => {
     rerender(<DirectorsRead read={read} onContinue={() => {}} onView={onView} />);
     expect(onView).toHaveBeenCalledTimes(1);
 
+    const interestOnly = composeDirectorsRead({ ...coastalCouple, interests: ["wine"] });
+    rerender(<DirectorsRead read={interestOnly} onContinue={() => {}} onView={onView} />);
+    expect(onView).toHaveBeenCalledTimes(1);
+
     const changed = composeDirectorsRead({ ...coastalCouple, rhythm: "full" });
     rerender(<DirectorsRead read={changed} onContinue={() => {}} onView={onView} />);
     expect(onView).toHaveBeenCalledTimes(2);
   });
 });
 
-describe("composeDirectorsRead — wine intent stays intent-only", () => {
+describe("composeDirectorsRead — wine stays intent-only and non-repetitive", () => {
   const forbidden = [
     "cellar",
     "winery",
@@ -264,7 +284,7 @@ describe("composeDirectorsRead — wine intent stays intent-only", () => {
     "Lisbon",
   ];
 
-  it("never promises a stop, supplier, setting or region for wine", () => {
+  it("never promises a stop, supplier, setting or region", () => {
     for (const rhythm of RHYTHMS) {
       const copy = copyOf({
         feeling: "wine-food",
@@ -278,14 +298,22 @@ describe("composeDirectorsRead — wine intent stays intent-only", () => {
     }
   });
 
-  it("still voices the wine intent when the feeling does not carry it", () => {
-    const read = composeDirectorsRead({
+  it("does not repeat explicit wine after the Interests reaction", () => {
+    const base = composeDirectorsRead({
+      feeling: "coastal",
+      companions: "couple",
+      interests: [],
+      rhythm: "slow",
+    });
+    const wine = composeDirectorsRead({
       feeling: "coastal",
       companions: "couple",
       interests: ["wine"],
       rhythm: "slow",
     });
-    expect(read.body.some((l) => l.includes("wine with room to linger"))).toBe(true);
+    expect(wine.signature).toBe(base.signature);
+    expect(wine.body).toEqual(base.body);
+    expect(wine.body.join(" ")).not.toMatch(/wine/i);
   });
 });
 
