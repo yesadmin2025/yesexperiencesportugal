@@ -280,7 +280,6 @@ import {
   isDelegationActive,
   isDelegationEligible,
   isDelegationOffered,
-  delegatedChoiceSummary,
   recomputeActiveDelegationAfterExplicitChange,
   releaseDelegatedTaste,
   takeBackDelegatedDimension,
@@ -736,13 +735,12 @@ type Reaction = {
   /** Phase the user lands on once the beat dissolves. */
   nextPhase: StudioV3Phase;
   /**
-   * Phase the traveller just answered. When set, the beat renders the
-   * already-computed `contextualTeaser` for that phase as one quiet closing
-   * line, so anticipation lives inside the existing transition instead of a
-   * second persistent copy layer (NextTeaser stays silent — P4).
+   * Anticipation line for the beat — the already-computed `contextualTeaser`
+   * for the phase just answered, resolved by the handler from the FORWARD
+   * state. Rendered once inside the beat, so anticipation lives in the
+   * existing transition instead of a second persistent copy layer
+   * (NextTeaser stays silent — P4).
    */
-  contextPhase?: StudioV3Phase;
-  /** Resolved anticipation line. Filled in by `playReaction`, never by hand. */
   contextLine?: string | null;
   /** How long the beat holds before auto-dissolving. Capped at 3400ms. */
   holdMs?: number;
@@ -1460,31 +1458,34 @@ export function StudioV3() {
 
   /**
    * jumpBackToPhase — narrow, protected variant of `back()` used ONLY by the
-   * delegation "Adjust" action on the Director's Read. `back()` deliberately
-   * ignores its hint and walks the chain one step; this helper lands directly
-   * on an explicit earlier phase. It changes nothing but `phase`: every answer
-   * and every delegated mark is preserved, so the existing take-back logic
-   * still owns release when the traveller makes an explicit choice.
+   * localized "edit this" affordances (delegation Adjust, checkout stops
+   * edit). `back()` deliberately ignores its hint and walks the chain one
+   * step; this helper lands directly on an explicit earlier phase. It changes
+   * nothing but `phase`: every answer, the delegation flag, guests, date and
+   * pickup are preserved, so the existing take-back logic still owns release
+   * when the traveller makes an explicit choice.
    */
   const jumpBackToPhase = useCallback(
-    (target: StudioV3Phase) => {
+    (target: StudioV3Phase, source: "delegation-adjust" | "checkout-edit-stops") => {
       const fromIdx = PHASE_ORDER.indexOf(state.phase);
       const toIdx = PHASE_ORDER.indexOf(target);
+      // Strictly earlier, known, and still relevant under the current answers.
       if (toIdx < 0 || fromIdx < 0 || toIdx >= fromIdx) return;
+      if (!isPhaseRelevant(target, state)) return;
       setReaction(null);
       setExiting(true);
       trackStep({
         stepNumber: stepOf(state.phase),
         stepKey: state.phase,
         event: "back",
-        value: { to: target, source: "delegation-adjust" },
+        value: { to: target, source },
       });
       window.setTimeout(() => {
         setState((s) => ({ ...s, phase: target }));
         setExiting(false);
       }, 280);
     },
-    [state.phase],
+    [state],
   );
 
   /**
@@ -1511,10 +1512,6 @@ export function StudioV3() {
 
       setExiting(true);
       window.setTimeout(() => {
-        // Captured from the committed state so the anticipation line reflects
-        // the answer that was just given. Assignment is idempotent, so a
-        // double-invoked updater (StrictMode) produces the same value.
-        let contextLine: string | null = null;
         setState((s) => {
           trackStep({
             stepNumber: stepOf(s.phase),
@@ -1522,14 +1519,14 @@ export function StudioV3() {
             event: "continue",
             value: { to: r.nextPhase, viaReaction: r.kind },
           });
-          contextLine = r.contextPhase ? contextualTeaser(r.contextPhase, s) : null;
           return { ...s, phase: r.nextPhase };
         });
         setExiting(false);
-        const shown: Reaction = contextLine ? { ...r, contextLine } : r;
-        setReaction(shown);
+        // The beat is shown exactly as the handler composed it — including
+        // its `contextLine`, computed from the FORWARD state before the beat.
+        setReaction(r);
         window.setTimeout(() => {
-          setReaction((current) => (current === shown ? null : current));
+          setReaction((current) => (current === r ? null : current));
         }, hold);
       }, 220);
     },
@@ -1600,7 +1597,7 @@ export function StudioV3() {
       // Paraphrase, never the tapped label: the caption names the tone we
       // now hold, not the button the traveller pressed.
       postcardCaption: feelingCaptionLine(id),
-      contextPhase: "feeling",
+      contextLine: contextualTeaser("feeling", forward),
       holdMs: 4400,
       bgImage: FEELING_IMAGE[id],
       bgVideo: videoForFeeling(id),
@@ -1617,6 +1614,7 @@ export function StudioV3() {
         kind: "atmosphere",
         eyebrow: "The direction",
         message,
+        contextLine: contextualTeaser("destination", forward),
         bgImage: state.feeling ? FEELING_IMAGE[state.feeling] : undefined,
         bgVideo: videoForDestination(id) ?? videoForFeeling(state.feeling),
         nextPhase: next,
@@ -1666,7 +1664,7 @@ export function StudioV3() {
         kind: "atmosphere",
         eyebrow: "The company",
         message: companionsAtmosphereLine(id),
-        contextPhase: "who",
+        contextLine: contextualTeaser("who", forward),
         bgImage: companionsAtmosphereImage(id, state.feeling),
         bgVideo: videoForCompanions(id) ?? videoForFeeling(state.feeling),
         nextPhase: next,
@@ -1703,6 +1701,7 @@ export function StudioV3() {
         kind: "atmosphere",
         eyebrow: "The occasion",
         message: occasionAtmosphereLine(id, state.companions),
+        contextLine: contextualTeaser("occasion", forward),
         bgImage: occasionAtmosphereImage(id, state.feeling),
         bgVideo: videoForFeeling(state.feeling),
         nextPhase: next,
@@ -1786,7 +1785,7 @@ export function StudioV3() {
         eyebrow: "The beginning",
         message: line,
         mapMode: "origin",
-        contextPhase: "pickup",
+        contextLine: contextualTeaser("pickup", forwardState),
         originLabel,
         originCoord: pickupOriginCoord(id),
         regionKey: pickupRegionKey(id) ?? undefined,
@@ -1800,7 +1799,7 @@ export function StudioV3() {
       // Operational truth (the city the day starts from), not the label of
       // the option that was tapped.
       message: "It starts here.\nThe day begins to open.",
-      contextPhase: "pickup",
+      contextLine: contextualTeaser("pickup", forwardState),
       originLabel: originLabel || undefined,
       postcardSubline: "Route forming",
       holdMs: 4800,
@@ -1943,6 +1942,7 @@ export function StudioV3() {
           kind: "map-beat",
           eyebrow: "The rhythm",
           message: paceHint,
+          contextLine: contextualTeaser("rhythm", forward),
           mapMode: "pace",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           originCoord: pickupOriginCoord(state.pickup),
@@ -1966,7 +1966,7 @@ export function StudioV3() {
       kind: "rhythm",
       eyebrow: "The rhythm",
       message: hint,
-      contextPhase: "rhythm",
+      contextLine: contextualTeaser("rhythm", forward),
       originLabel: pickupLabel ?? undefined,
       // Non-echo caption: the pace is held, not read back as its label.
       postcardCaption: "Pace held",
@@ -2051,6 +2051,7 @@ export function StudioV3() {
           eyebrow: "The shape",
           message:
             "The route is no longer a template. The level of care is shaping its texture.",
+          contextLine: contextualTeaser("investment", { ...state, investment: id }),
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           originCoord: pickupOriginCoord(state.pickup),
@@ -2073,6 +2074,7 @@ export function StudioV3() {
       kind: "investment",
       eyebrow: "The shape",
       message: `This sets the tone.\n${investmentReactionLine(id)}`,
+      contextLine: contextualTeaser("investment", { ...state, investment: id }),
       postcardCaption: "Direction set",
       postcardSubline: "The moments will follow from here.",
       holdMs: 4200,
@@ -2159,6 +2161,7 @@ export function StudioV3() {
           kind: "map-beat",
           eyebrow: "The moments",
           message,
+          contextLine: contextualTeaser("interests", state),
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           originCoord: pickupOriginCoord(state.pickup),
@@ -2185,7 +2188,7 @@ export function StudioV3() {
       chips: chips.length > 0 ? chips : undefined,
       chipsLabel: chips.length > 0 ? "Chosen moments" : undefined,
       chipsTail: tail,
-      contextPhase: "interests",
+      contextLine: contextualTeaser("interests", state),
       nextPhase: next,
       holdMs: 4600,
       bgImage: state.interests[0] ? INTEREST_IMAGE[state.interests[0]] : undefined,
@@ -2721,7 +2724,7 @@ export function StudioV3() {
                 adjustLabel: summary.adjustLabel,
                 onAdjust: () => {
                   setDirectorsReadSeen(directorsRead.signature);
-                  jumpBackToPhase(summary.adjustPhase);
+                  jumpBackToPhase(summary.adjustPhase, "delegation-adjust");
                 },
               };
             })()}
@@ -3298,7 +3301,7 @@ export function StudioV3() {
             submitting={checkoutPending}
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}
-            onEditStops={() => back("storyboard")}
+            onEditStops={() => jumpBackToPhase("storyboard", "checkout-edit-stops")}
             clientSecret={clientSecret}
             publishableKey={publishableKey}
             onPaymentComplete={(sid) => {
@@ -5085,6 +5088,7 @@ function ReactionOverlay({
           eyebrow={reaction.eyebrow}
           line={reaction.message}
         />
+        <ReactionContextFooter line={reaction.contextLine} tone="dark" />
         <style>{`
           @keyframes studioV3ReactionFade {
             0% { opacity: 0; }
@@ -5134,6 +5138,7 @@ function ReactionOverlay({
           eyebrow={reaction.eyebrow}
           line={reaction.message}
         />
+        <ReactionContextFooter line={reaction.contextLine} tone="dark" />
 
         <style>{`
           @keyframes studioV3ReactionFade {
@@ -5288,19 +5293,7 @@ function ReactionOverlay({
             here as a quiet closing line inside the beat that is already on
             screen — NextTeaser stays silent (P4), so no persistent copy
             layer is reintroduced. */}
-        {reaction.contextLine ? (
-          <p
-            data-testid="studio-v3-reaction-context"
-            className="mt-6 text-[11.5px] leading-[1.5]"
-            style={{
-              fontFamily: "var(--font-body)",
-              color: "color-mix(in oklab, var(--charcoal) 48%, transparent)",
-              animation: "studioV3RiseIn 560ms ease-out 420ms both",
-            }}
-          >
-            {reaction.contextLine}
-          </p>
-        ) : null}
+        <ReactionContextFooter line={reaction.contextLine} tone="light" />
       </div>
 
       <style>{`
@@ -5312,6 +5305,89 @@ function ReactionOverlay({
         }
       `}</style>
     </button>
+  );
+}
+
+/**
+ * P10 concierge visibility (presentation only).
+ *
+ * Names, once, what YES actually chose while delegation is active — built
+ * strictly from the resolved labels already on state. It reads nothing new,
+ * decides nothing, and never changes what was delegated.
+ */
+function delegatedChoiceSummary(state: StudioV3State): {
+  line: string;
+  adjustPhase: "interests" | "rhythm";
+  adjustLabel: string;
+} | null {
+  if (!isDelegationActive(state)) return null;
+  const delegated = state.decidedForMe ?? [];
+  const interestsDelegated = delegated.includes("interests");
+  const rhythmDelegated = delegated.includes("rhythm");
+  if (!interestsDelegated && !rhythmDelegated) return null;
+
+  const interestLabels = interestsDelegated
+    ? (state.interests ?? [])
+        .map((id) => getOptionLabel(INTERESTS, id))
+        .filter((l): l is string => Boolean(l))
+        .map((l) => l.toLowerCase())
+    : [];
+  const rhythmLabel = rhythmDelegated
+    ? (getOptionLabel(RHYTHMS, state.rhythm) ?? null)?.toLowerCase()
+    : null;
+
+  const parts: string[] = [];
+  if (interestLabels.length > 0) {
+    const list =
+      interestLabels.length === 1
+        ? interestLabels[0]
+        : `${interestLabels.slice(0, -1).join(", ")} and ${interestLabels[interestLabels.length - 1]}`;
+    parts.push(list);
+  }
+  if (rhythmLabel) parts.push(`a ${rhythmLabel} pace`);
+  if (parts.length === 0) return null;
+
+  const adjustPhase: "interests" | "rhythm" = interestLabels.length > 0 ? "interests" : "rhythm";
+  return {
+    line: `Chosen for you — ${parts.join(", at ")}.`,
+    adjustPhase,
+    adjustLabel: adjustPhase === "interests" ? "Adjust the chosen moments" : "Adjust the pace",
+  };
+}
+
+/**
+ * ReactionContextFooter — the single place the beat's anticipation line is
+ * rendered. One quiet footer, one testid, whichever mutually-exclusive beat
+ * variant is on screen. Brand tokens only, never interactive.
+ */
+function ReactionContextFooter({
+  line,
+  tone,
+}: {
+  line?: string | null;
+  tone: "dark" | "light";
+}) {
+  if (!line) return null;
+  return (
+    <p
+      data-testid="studio-v3-reaction-context"
+      aria-hidden={false}
+      className={
+        tone === "dark"
+          ? "pointer-events-none absolute inset-x-0 bottom-7 mx-auto max-w-[420px] px-6 text-center text-[11.5px] leading-[1.5]"
+          : "mt-6 text-[11.5px] leading-[1.5]"
+      }
+      style={{
+        fontFamily: "var(--font-body)",
+        color:
+          tone === "dark"
+            ? "color-mix(in oklab, var(--ivory) 62%, transparent)"
+            : "color-mix(in oklab, var(--charcoal) 48%, transparent)",
+        animation: "studioV3RiseIn 560ms ease-out 420ms both",
+      }}
+    >
+      {line}
+    </p>
   );
 }
 
