@@ -2,9 +2,10 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import {
-  SIGNATURE_ADD_ONS_BY_REGION,
+  ADD_ON_CATALOG,
   addOnEurFor,
   roundEur5,
+  type SignatureAddOn,
 } from "@/data/signatureAddOns";
 import {
   SIGNATURE_ADD_ON_CATALOG,
@@ -18,7 +19,7 @@ const CHECKOUT_FN = readFileSync(
 );
 
 describe("server add-on catalog parity", () => {
-  const clientAddOns = Object.values(SIGNATURE_ADD_ONS_BY_REGION).flat();
+  const clientAddOns: SignatureAddOn[] = Object.values(ADD_ON_CATALOG).flat();
 
   it("mirrors every client add-on id, percentage and pricing unit", () => {
     for (const addOn of clientAddOns) {
