@@ -34,7 +34,7 @@ describe("reaction copy paraphrases instead of parroting", () => {
   });
 
   it("keeps anticipation inside the beat and NextTeaser silent", () => {
-    expect(studio).toContain("contextPhase?: StudioV3Phase");
+    expect(studio).toContain("contextLine?: string | null;");
     expect(studio).toContain("contextualTeaser(r.contextPhase, s)");
     expect(studio).toContain('data-testid="studio-v3-reaction-context"');
     expect(src("PhaseChrome.tsx")).toMatch(/function NextTeaser[\s\S]{0,600}?return null/);
@@ -184,7 +184,7 @@ describe("delegated authorship renders once and reuses existing navigation", () 
     const fn = studio.slice(start, start + 900);
     expect(fn).toContain("if (toIdx < 0 || fromIdx < 0 || toIdx >= fromIdx) return;");
     expect(fn).toContain("if (!isPhaseRelevant(target, state)) return;");
-    expect(fn).toContain("source,");
+    expect(fn).toContain("{ to: target, source }");
     expect(fn).toContain("280");
     expect(fn).toContain("{ ...s, phase: target }");
     expect(fn).not.toMatch(/decidedForMe|delegationMode|interests:|rhythm:/);
