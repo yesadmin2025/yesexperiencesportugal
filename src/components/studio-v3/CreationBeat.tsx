@@ -33,6 +33,19 @@ interface AtmosphereBeatProps {
   line: string;
 }
 
+/**
+ * A reaction beat should interpret the choice, not read the button back to
+ * the traveller. Keep the source line untouched unless it matches one of the
+ * known label-echo templates authored by StudioV3.
+ */
+export function editorialAtmosphereLine(line: string): string {
+  const trimmed = line.trim();
+  if (/^.+ enters the story\. The shape begins to lean\.$/.test(trimmed)) {
+    return "A direction settles in. The shape begins to lean.";
+  }
+  return line;
+}
+
 export function AtmosphereBeat({ imageSrc, videoSrc, eyebrow, line }: AtmosphereBeatProps) {
   // Gate the italic reveal on image-load so the line never appears over an
   // unpainted hero on slow networks. If there is no image, or the image
@@ -41,6 +54,7 @@ export function AtmosphereBeat({ imageSrc, videoSrc, eyebrow, line }: Atmosphere
   const [imgReady, setImgReady] = useState<boolean>(!imageSrc);
   const [videoReady, setVideoReady] = useState<boolean>(!videoSrc);
   const ready = imgReady || videoReady;
+  const editorialLine = editorialAtmosphereLine(line);
   return (
     <div
       className="relative w-full h-full flex items-center justify-center px-6 overflow-hidden"
@@ -135,7 +149,7 @@ export function AtmosphereBeat({ imageSrc, videoSrc, eyebrow, line }: Atmosphere
             transition: "opacity 360ms ease",
           }}
         >
-          {line}
+          {editorialLine}
         </p>
       </div>
     </div>
@@ -180,6 +194,39 @@ function pinCountForRhythm(rhythm: MapBeatProps["rhythm"]): number {
   }
 }
 
+/**
+ * Map beats already show the factual choice visually through the origin,
+ * route pins and pace density. The prose can therefore do the more valuable
+ * job: explain what that choice changes about the day.
+ */
+export function editorialMapLine(
+  mode: MapBeatMode,
+  rhythm: MapBeatProps["rhythm"],
+  line: string,
+): string {
+  if (mode === "origin") {
+    return "The first chapter is anchored. From here, the route can breathe.";
+  }
+  if (/^The route is no longer a template\. It refines around .+\.$/i.test(line.trim())) {
+    return "The route is no longer a template. Its shape is becoming yours.";
+  }
+  if (mode === "pace") {
+    switch (rhythm) {
+      case "slow":
+        return "Fewer transitions. More room to notice where you are.";
+      case "balanced":
+        return "Enough shape to feel complete, enough space to stay present.";
+      case "full":
+        return "A fuller arc, paced so the day still has room to breathe.";
+      case "immersive":
+        return "The day leans deeper, with the route doing more of the work.";
+      default:
+        return line;
+    }
+  }
+  return line;
+}
+
 export function MapBeat({
   mode,
   originLabel,
@@ -198,6 +245,7 @@ export function MapBeat({
       : mode === "pins"
         ? Math.min(4, labels.length)
         : Math.min(pinCountForRhythm(rhythm), labels.length);
+  const editorialLine = editorialMapLine(mode, rhythm, line);
 
   const paceLabel =
     mode === "pace"
@@ -360,7 +408,7 @@ export function MapBeat({
             animation: "studioV3RiseIn 680ms ease-out 480ms both",
           }}
         >
-          {line}
+          {editorialLine}
         </p>
       </div>
     </div>
