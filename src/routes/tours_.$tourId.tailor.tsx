@@ -352,6 +352,21 @@ function TailorPage() {
       next.add(id);
       // Canonical winery ladder: max 4, and the 4th needs a stop removed.
       const option0 = blueprint?.choice?.options.find((o) => o.id === id);
+      // Only Signatures with an owner-approved winery supplement ladder may
+      // INCREASE the winery count. Everywhere else the traveller swaps at
+      // the blueprint baseline — we never hand out an unpriced extra stop.
+      if (
+        option0?.category === "winery" &&
+        !rules.wineries &&
+        blueprint?.choice &&
+        choiceSelected.size >= blueprint.choice.pickMin
+      ) {
+        toast.error(
+          `This Signature includes ${blueprint.choice.pickMin} — swap one instead of adding another.`,
+        );
+        return;
+      }
+
       if (option0?.category === "winery") {
         const coreWineries = (blueprint?.core ?? []).filter(
           (s) => s.category === "winery" && !skippedCore.has(s.id),
