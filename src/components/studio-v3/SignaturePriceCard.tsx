@@ -417,26 +417,9 @@ export function SignaturePriceCard({
     }, 180);
   };
 
-  // Real per-pax (Viator tier) resolution. When the tour has tier data AND
-  // we know the guest count, `realPerPax.real === true` and we display the
-  // exact per-person rate; otherwise we keep the "from" anchor.
-  const { data: tierOverrides } = useTourPriceTiers();
-  const effectiveOverrides = useMemo(() => {
-    if (!previewTiers || !tour) return tierOverrides ?? null;
-    return { ...(tierOverrides ?? {}), [tour.id]: previewTiers };
-  }, [tierOverrides, previewTiers, tour]);
+  // Tier resolution + party-size picker state now live above (they gate
+  // `hasPrice`, which earlier memos depend on).
 
-  // Hidden picker — lets the traveller preview the per-pax rate for any
-  // group size 1..8+ before checkout. Defaults to the funnel's `guests`.
-  // `previewGuests === null` means "use the funnel guests value as-is".
-  const [pickerOpen, setPickerOpen] = useState(false);
-  const [previewGuests, setPreviewGuests] = useState<number | null>(null);
-  const effectiveGuests = previewGuests ?? guests ?? null;
-
-  const realPerPax = useMemo(
-    () => resolvePerPaxEur(tour, effectiveGuests, effectiveOverrides),
-    [tour, effectiveGuests, effectiveOverrides],
-  );
 
   const displayPerPaxEur = realPerPax?.real ? realPerPax.eurPerPax : priceEur;
   const partyCount = effectiveGuests && effectiveGuests >= 2 ? effectiveGuests : null;
