@@ -93,6 +93,7 @@ import {
   serverLunchRemovalEur,
   serverTailorSupplementsEur,
   TAILOR_LUNCH_REMOVAL_ELIGIBLE,
+  serverAddOnLine,
   tailorFinalPerPax,
   type AgeBand,
 } from "../_shared/pricing.ts";
@@ -225,18 +226,26 @@ Deno.serve(async (req) => {
     const tier = Math.min(8, Math.max(1, headcount));
     const tiers = (tierRow?.tiers ?? null) as Record<string, number> | null;
     const real = tiers && typeof tiers[String(tier)] === "number" ? tiers[String(tier)] : null;
-    // Guardrail: NEVER price minors against the anchor "from" price.
-    // If a Signature has no approved per-tier row, we cannot honestly
-    // price a child at 50% of an unknown per-pax rate — surface an
-    // explicit owner-data error and refuse the checkout. Adults-only
-    // bookings continue to fall back to `priceFromEur` as before.
-    if (real == null && minorAges.length > 0) {
+    // Guardrail: NEVER price a booking against the anchor "from" price.
+    // `priceFromEur` is the 8-pax lowest anchor AND is client-supplied, so
+    // falling back to it silently under-charges every smaller party (e.g.
+    // a solo guest on a Signature with no approved tier-1 row). If the
+    // owner has not approved a per-tier price for this party size we
+    // refuse the checkout instead of inventing one.
+    if (real == null) {
       return jsonError(
-        `owner_data_missing: Child pricing not yet configured for ${body.tourId}. Please book adults only or contact us to price this family day.`,
+        minorAges.length > 0
+          ? `owner_data_missing: Child pricing not yet configured for ${body.tourId}. Please book adults only or contact us to price this family day.`
+          : `owner_data_missing: This Signature is not yet priced for ${headcount} ${headcount === 1 ? "traveller" : "travellers"}. Contact us and we will confirm the exact price for your party.`,
         409,
       );
     }
-    const resolvedPerPax = real ?? body.priceFromEur;
+    const resolvedPerPax = real;
+    // Approved 8-pax anchor for this Signature — the server-authoritative
+    // base for add-on percentages. Never `body.priceFromEur` (client input).
+    const approvedAnchorEur =
+      tiers && typeof tiers["8"] === "number" && tiers["8"] > 0 ? tiers["8"] : null;
+
 
     // Tailor flow only: apply SSOT reduction based on principal stops the
     // guest removed, then add the authorized flat supplements (add lunch,
@@ -341,10 +350,10 @@ Deno.serve(async (req) => {
     const pickupLine = body.pickupLabel ? ` · pickup ${body.pickupLabel}` : "";
     const submitMessage = copy.submit;
 
-    // Validate + cap reveal add-ons. Price is flat per booking (matches the
-    // reveal price card). Client-declared euros are trusted as an anchor but
-    // clamped to [0..1000] per item and 6 items max so a tampered client
-    // can't stuff arbitrary charges into the Stripe session.
+    // Reveal add-ons. The client may only NAME an add-on: every euro amount
+    // is re-derived server-side from the approved catalog percentage and the
+    // tour's own approved 8-pax anchor, so a tampered client can neither
+    // under-pay a real add-on nor invent a cheap one. Unknown ids are dropped.
     const rawAddOns = Array.isArray(body.addOns) ? body.addOns : [];
     const validatedAddOns = rawAddOns
       .filter(
@@ -355,20 +364,26 @@ Deno.serve(async (req) => {
           a.id.length > 0 &&
           a.id.length <= 64 &&
           typeof a.label === "string" &&
-          a.label.length > 0 &&
-          Number.isFinite(a.priceEur) &&
-          a.priceEur >= 0 &&
-          a.priceEur <= 1000,
+          a.label.length > 0,
       )
       .slice(0, 6)
-      .map((a) => ({
-        id: a.id,
-        label: a.label.slice(0, 120),
-        priceEur: Math.round(a.priceEur),
-        durationMinutes: Number.isFinite(a.durationMinutes)
-          ? Math.max(0, Math.min(480, Math.round(a.durationMinutes as number)))
-          : 0,
-      }));
+      .map((a) => {
+        const line = approvedAnchorEur
+          ? serverAddOnLine(a.id, approvedAnchorEur, body.guests)
+          : null;
+        return line
+          ? {
+              id: a.id,
+              label: a.label.slice(0, 120),
+              priceEur: line.perUnitEur,
+              quantity: line.quantity,
+              durationMinutes: Number.isFinite(a.durationMinutes)
+                ? Math.max(0, Math.min(480, Math.round(a.durationMinutes as number)))
+                : 0,
+            }
+          : null;
+      })
+      .filter((a): a is NonNullable<typeof a> => a !== null);
 
     const addOnLineItems = validatedAddOns
       .filter((a) => a.priceEur > 0)
@@ -378,8 +393,9 @@ Deno.serve(async (req) => {
           product_data: { name: `Add-on — ${a.label}`.slice(0, 180) },
           unit_amount: a.priceEur * 100,
         },
-        quantity: body.guests,
+        quantity: a.quantity,
       }));
+
 
     // Build a Stripe line item per age band (grouped) so the guest sees
     // "Adult × 2 · €279", "Youth × 1 · €209", etc. — never a single
