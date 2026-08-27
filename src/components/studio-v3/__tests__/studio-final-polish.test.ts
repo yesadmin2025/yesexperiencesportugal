@@ -33,7 +33,7 @@ describe("reaction copy paraphrases instead of parroting", () => {
     expect(studio).toContain("contextPhase?: StudioV3Phase");
     expect(studio).toContain("contextualTeaser(r.contextPhase, s)");
     expect(studio).toContain('data-testid="studio-v3-reaction-context"');
-    expect(src("NextTeaser.tsx")).toContain("return null");
+    expect(src("PhaseChrome.tsx")).toMatch(/function NextTeaser[\s\S]{0,600}?return null/);
   });
 });
 
