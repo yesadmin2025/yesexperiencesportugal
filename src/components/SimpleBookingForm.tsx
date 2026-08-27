@@ -462,6 +462,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         <>
           <Link
             to="/contact"
+            search={{}}
             data-testid="signature-price-unavailable-cta"
             className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
           >
