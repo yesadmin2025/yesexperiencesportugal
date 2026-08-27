@@ -341,7 +341,7 @@ function BookingReceiptPage() {
                   </span>
                 </div>
                 <p className="mt-2 text-[12px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                  Amount charged, taxes included. Paid by card via our secure processor.
+                  Amount charged, taxes included. Paid via our secure processor.
                 </p>
               </section>
 
