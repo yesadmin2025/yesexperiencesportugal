@@ -35,7 +35,7 @@ describe("reaction copy paraphrases instead of parroting", () => {
 
   it("keeps anticipation inside the beat and NextTeaser silent", () => {
     expect(studio).toContain("contextLine?: string | null;");
-    expect(studio).toContain("contextualTeaser(r.contextPhase, s)");
+    expect(studio).toContain("contextLine: contextualTeaser(");
     expect(studio).toContain('data-testid="studio-v3-reaction-context"');
     expect(src("PhaseChrome.tsx")).toMatch(/function NextTeaser[\s\S]{0,600}?return null/);
   });
@@ -156,7 +156,7 @@ describe("checkout recap offers localized edits without inventing navigation", (
   it("only renders the stops edit when the host supplies a real callback", () => {
     expect(checkout).toContain("onEditStops ? (");
     expect(checkout).toContain("readonly onEditStops?: () => void;");
-    expect(src("StudioV3.tsx")).toContain('onEditStops={() => back("storyboard")}');
+    expect(src("StudioV3.tsx")).toContain('jumpBackToPhase("storyboard", "checkout-edit-stops")');
   });
 });
 
