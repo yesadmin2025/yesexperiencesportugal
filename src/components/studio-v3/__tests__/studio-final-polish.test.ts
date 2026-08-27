@@ -50,7 +50,7 @@ describe("delegated authorship is named once and reversible", () => {
     companions: "couple",
     delegationMode: "yes-designs",
     decidedForMe: ["interests", "rhythm"],
-    interests: ["ocean-view"],
+    interests: ["coast"],
     rhythm: "slow",
   } as StudioV3State;
 
