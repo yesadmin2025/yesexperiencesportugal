@@ -248,6 +248,11 @@ const wildBeachesPicnic: TailorBlueprint = {
       blurb: "Galapinhos, Portinho or a quieter alternative — your guide reads the day.",
       category: "picnic",
       dwellMinutesOverride: 120,
+      lock: {
+        reasonCode: "product_defining",
+        customerFacingReason: "The cove picnic is the Signature itself.",
+        source: 'Viator PDP · product title "Arrábida, Sesimbra & Beach Picnic"',
+      },
     },
     {
       id: "sesimbra-village",
@@ -309,6 +314,11 @@ const arrabidaBoat: TailorBlueprint = {
         "Into the protected coves, including Lapa de Santa Margarida sea cave. Swim stop weather-permitting.",
       category: "boat",
       dwellMinutesOverride: 150,
+      lock: {
+        reasonCode: "product_defining",
+        customerFacingReason: "The coastal boat ride is the Signature itself.",
+        source: 'Viator PDP · product title "Private Tour with Coastal Boat Ride"',
+      },
     },
     {
       id: "sesimbra-village",
@@ -379,9 +389,11 @@ const tilesWorkshop: TailorBlueprint = {
     },
   ],
   choice: {
+    // No owner-approved extra-winery supplement exists for this Signature,
+    // so the pool is an ALTERNATIVES list, not a way to add free visits.
     pickMin: 1,
-    pickMax: 2,
-    label: "Choose 1 or 2 wineries to visit after lunch",
+    pickMax: 1,
+    label: "Choose the winery to visit after lunch",
     note: "Your guide confirms the winery the day before based on availability.",
     options: [
       {
@@ -596,6 +608,11 @@ const troiaComporta: TailorBlueprint = {
       blurb: "Short ferry over the Sado estuary — dolphins are sometimes seen.",
       category: "drive-by",
       dwellMinutesOverride: 30,
+      lock: {
+        reasonCode: "mandatory_transfer",
+        customerFacingReason: "The ferry is how the day reaches the Tróia peninsula.",
+        source: "Viator PDP · Tróia & Comporta itinerary (Setúbal–Tróia ferry crossing)",
+      },
     },
     {
       id: "troia-ruins",
@@ -679,9 +696,11 @@ const evoraAlentejo: TailorBlueprint = {
     },
   ],
   choice: {
+    // No owner-approved extra-winery supplement exists for this Signature,
+    // so the pool is an ALTERNATIVES list, not a way to add free visits.
     pickMin: 1,
-    pickMax: 4,
-    label: "Choose 1 to 4 Alentejo wineries to visit",
+    pickMax: 1,
+    label: "Choose the Alentejo winery to visit",
     note: "Your guide confirms the winery the day before based on availability.",
     options: [
       {

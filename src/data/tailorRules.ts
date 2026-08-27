@@ -11,6 +11,7 @@
  * hardcodes amounts, it only declares which actions exist.
  */
 
+import { TAILOR_BLUEPRINTS } from "./tailorBlueprints";
 import {
   TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR,
   TAILOR_LUNCH_SUPPLEMENT_EUR,
@@ -207,16 +208,37 @@ export function dedicatedLunchStopId(tourId: string): string | null {
 }
 
 /**
+ * AUTHORITATIVE per-Signature set of Tailor core stop ids that may earn the
+ * −5% principal-removal reduction. Derived from the blueprint core:
+ *   - locked stops (product-defining, mandatory transfers…) are NOT eligible
+ *   - the dedicated included-lunch stop is NOT eligible (flat −€15 credit)
+ * Mirrored server-side in `supabase/functions/_shared/pricing.ts`
+ * (`TAILOR_PRINCIPAL_ELIGIBLE_STOP_IDS`); parity is enforced by a unit test.
+ */
+export function principalEligibleStopIds(tourId: string): ReadonlySet<string> {
+  const bp = TAILOR_BLUEPRINTS[tourId];
+  const lunchId = dedicatedLunchStopId(tourId);
+  const ids = new Set<string>();
+  for (const stop of bp?.core ?? []) {
+    if (stop.lock) continue;
+    if (lunchId && stop.id === lunchId) continue;
+    ids.add(stop.id);
+  }
+  return ids;
+}
+
+/**
  * Count of principal-stop removals eligible for the −5% ladder.
- * Excludes the dedicated included-lunch stop, which is priced solely by
- * the flat −€15 pp credit. Never double-counts the same lunch.
+ * Counts UNIQUE, whitelisted ids only: invented ids, duplicates and locked
+ * anchors never earn a reduction. Excludes the dedicated included-lunch
+ * stop, which is priced solely by the flat −€15 pp credit.
  */
 export function principalRemovalCount(tourId: string, skippedStopIds: Iterable<string>): number {
-  const lunchId = dedicatedLunchStopId(tourId);
-  let count = 0;
+  const eligible = principalEligibleStopIds(tourId);
+  const seen = new Set<string>();
   for (const id of skippedStopIds) {
-    if (lunchId && id === lunchId) continue;
-    count += 1;
+    if (typeof id !== "string" || !eligible.has(id)) continue;
+    seen.add(id);
   }
-  return count;
+  return seen.size;
 }
