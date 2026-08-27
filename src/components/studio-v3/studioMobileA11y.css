@@ -29,6 +29,27 @@
   inset: 0 !important;
 }
 
+/* The editorial reveal already tells each stop's story a few pixels above
+ * the editor. Keep the editor task-focused: stop label, controls and the
+ * genuinely new composer rationale. The story remains in state/snapshots and
+ * downstream checkout/email data; only the duplicate visual paragraph yields. */
+[data-testid="studio-v3-stop-row"] p[class~="mt-0.5"][class~="text-[12px]"] {
+  display: none;
+}
+
+/* A little more chapter rhythm without introducing another card layer. The
+ * editor rows stay tactile, but their vertical cadence reads as a considered
+ * sequence rather than a dense form stack. */
+[data-testid="studio-v3-stops-editor"] [data-testid="studio-v3-stop-row"] +
+[data-testid="studio-v3-stop-row"] {
+  margin-top: 0.875rem;
+}
+
+[data-testid="studio-v3-stops-editor"] [data-testid="studio-v3-stop-rationale"] {
+  max-width: 42rem;
+  opacity: 0.88;
+}
+
 /* In timeline fallback mode the ordered timeline is already the route
  * overview. Hide the sibling mini-legend so the same stop names are not
  * repeated immediately underneath. The legend stays visible with a real map. */
