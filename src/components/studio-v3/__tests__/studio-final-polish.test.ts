@@ -78,6 +78,37 @@ describe("reaction copy paraphrases instead of parroting", () => {
   });
 });
 
+describe("reaction beats never read operational option labels back as prose", () => {
+  const studio = src("StudioV3.tsx");
+
+  it("pickup keeps the origin on the map but not in the reaction prose", () => {
+    expect(studio).toContain("Your starting point is placed. The route can open from here.");
+    expect(studio).toContain('message: "It starts here.\\nThe day begins to open.",');
+    expect(studio).not.toContain("the day begins in ${originLabel}");
+    expect(studio).not.toContain("From ${originLabel}, the day begins to open");
+    // the map still carries the real origin (operational fact)
+    expect(studio).toContain("originLabel,");
+  });
+
+  it("rhythm postcard caption no longer prints the raw pace label", () => {
+    expect(studio).toContain('postcardCaption: "Pace held"');
+    expect(studio).not.toContain('? "Slow"');
+    expect(studio).toContain('reaction.rhythmBucket === "slow"');
+  });
+
+  it("investment beats stay editorial and never interpolate the tier label", () => {
+    expect(studio).toContain(
+      "The route is no longer a template. The level of care is shaping its texture.",
+    );
+    expect(studio).toContain('postcardCaption: "Direction set"');
+  });
+
+  it("interests map beat speaks generically, chips carry the explicit selection", () => {
+    expect(studio).toContain("your priorities are being matched to one real route.");
+    expect(studio).not.toContain("we are matching ${interestPhrase}");
+  });
+});
+
 describe("unified Your Day does not repeat each stop's story", () => {
   it("gates the editable stop prose while the inline reveal is mounted", () => {
     expect(src("StudioV3.tsx")).toContain("{s.story && !storySlot ? (");
@@ -150,13 +181,24 @@ describe("delegated authorship renders once and reuses existing navigation", () 
     expect(studio.match(/delegatedChoiceSummary\(state\)/g)?.length).toBe(1);
   });
 
-  it("Adjust routes through the existing back() chain without mutating state", () => {
+  it("Adjust jumps back to the delegated phase without mutating state", () => {
     const block = studio.slice(
       studio.indexOf("const summary = delegatedChoiceSummary(state);"),
       studio.indexOf("const summary = delegatedChoiceSummary(state);") + 600,
     );
-    expect(block).toContain("back(summary.adjustPhase)");
+    expect(block).toContain("jumpBackToPhase(summary.adjustPhase)");
     expect(block).not.toMatch(/setState|commit\(|reset\(/);
+  });
+
+  it("only allows a strictly earlier phase and preserves every answer", () => {
+    const start = studio.indexOf("const jumpBackToPhase = useCallback(");
+    expect(start).toBeGreaterThan(-1);
+    const fn = studio.slice(start, start + 900);
+    expect(fn).toContain("if (toIdx < 0 || fromIdx < 0 || toIdx >= fromIdx) return;");
+    expect(fn).toContain('source: "delegation-adjust"');
+    expect(fn).toContain("280");
+    expect(fn).toContain("{ ...s, phase: target }");
+    expect(fn).not.toMatch(/decidedForMe|delegationMode|interests:|rhythm:/);
   });
 
   it("keeps one primary CTA on the unified storyboard", () => {

@@ -1459,6 +1459,35 @@ export function StudioV3() {
   );
 
   /**
+   * jumpBackToPhase — narrow, protected variant of `back()` used ONLY by the
+   * delegation "Adjust" action on the Director's Read. `back()` deliberately
+   * ignores its hint and walks the chain one step; this helper lands directly
+   * on an explicit earlier phase. It changes nothing but `phase`: every answer
+   * and every delegated mark is preserved, so the existing take-back logic
+   * still owns release when the traveller makes an explicit choice.
+   */
+  const jumpBackToPhase = useCallback(
+    (target: StudioV3Phase) => {
+      const fromIdx = PHASE_ORDER.indexOf(state.phase);
+      const toIdx = PHASE_ORDER.indexOf(target);
+      if (toIdx < 0 || fromIdx < 0 || toIdx >= fromIdx) return;
+      setReaction(null);
+      setExiting(true);
+      trackStep({
+        stepNumber: stepOf(state.phase),
+        stepKey: state.phase,
+        event: "back",
+        value: { to: target, source: "delegation-adjust" },
+      });
+      window.setTimeout(() => {
+        setState((s) => ({ ...s, phase: target }));
+        setExiting(false);
+      }, 280);
+    },
+    [state.phase],
+  );
+
+  /**
    * Show a reaction beat, then land on the next phase. The phase is
    * advanced silently beneath the overlay so when the beat dissolves the
    * next question is already mounted and ready. Users can tap the overlay
@@ -1747,9 +1776,11 @@ export function StudioV3() {
     const originLabel = pickupCityLabel(id);
     const name = state.firstName?.trim() || null;
     if (STUDIO_V3_MAP_BEATS_ENABLED && originLabel) {
+      // The origin stays on the map (operational fact); the prose does not
+      // repeat the tapped pickup label back at the traveller.
       const line = name
-        ? `${name}, the day begins in ${originLabel}.`
-        : `The day begins in ${originLabel}.`;
+        ? `${name}, your starting point is placed. The route can open from here.`
+        : "Your starting point is placed. The route can open from here.";
       pickAndAdvance("pickup", id, nextAfterPickup, {
         kind: "map-beat",
         eyebrow: "The beginning",
@@ -1768,9 +1799,7 @@ export function StudioV3() {
       eyebrow: "The beginning",
       // Operational truth (the city the day starts from), not the label of
       // the option that was tapped.
-      message: originLabel
-        ? `It starts here.\nFrom ${originLabel}, the day begins to open.`
-        : "It starts here.\nThe day begins to open.",
+      message: "It starts here.\nThe day begins to open.",
       contextPhase: "pickup",
       originLabel: originLabel || undefined,
       postcardSubline: "Route forming",
@@ -1939,14 +1968,9 @@ export function StudioV3() {
       message: hint,
       contextPhase: "rhythm",
       originLabel: pickupLabel ?? undefined,
-      postcardCaption:
-        id === "slow"
-          ? "Slow"
-          : id === "balanced"
-            ? "Balanced"
-            : id === "full"
-              ? "Full"
-              : "Immersive",
+      // Non-echo caption: the pace is held, not read back as its label.
+      postcardCaption: "Pace held",
+      rhythmBucket: id,
       postcardSubline: "The route keeps forming.",
       holdMs: 4200,
     });
@@ -2025,7 +2049,8 @@ export function StudioV3() {
         pickAndAdvance("investment", id, next, {
           kind: "map-beat",
           eyebrow: "The shape",
-          message: `The route is no longer a template. ${investmentReactionLine(id)}`,
+          message:
+            "The route is no longer a template. The level of care is shaping its texture.",
           mapMode: "pins",
           originLabel: pickupCityLabel(state.pickup) || undefined,
           originCoord: pickupOriginCoord(state.pickup),
@@ -2048,7 +2073,7 @@ export function StudioV3() {
       kind: "investment",
       eyebrow: "The shape",
       message: `This sets the tone.\n${investmentReactionLine(id)}`,
-      postcardCaption: "The shape is set",
+      postcardCaption: "Direction set",
       postcardSubline: "The moments will follow from here.",
       holdMs: 4200,
     });
@@ -2125,20 +2150,11 @@ export function StudioV3() {
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
         const name = state.firstName?.trim() || null;
-        const interestLabels = state.interests
-          .slice(0, 2)
-          .map((iid) => getOptionLabel(INTERESTS, iid)?.toLowerCase())
-          .filter((l): l is string => Boolean(l));
-        const interestPhrase =
-          interestLabels.length === 2
-            ? `${interestLabels[0]} and ${interestLabels[1]}`
-            : (interestLabels[0] ?? null);
-        const message =
-          name && interestPhrase
-            ? `${name}, we are matching ${interestPhrase} to one real route.`
-            : interestPhrase
-              ? `Matching ${interestPhrase} to one real route.`
-              : "Matching your choices to one real route.";
+        // No raw interest labels in the prose — the chips already carry the
+        // explicit selection; the beat speaks about what is being done.
+        const message = name
+          ? `${name}, your priorities are being matched to one real route.`
+          : "Your priorities are being matched to one real route.";
         playReaction({
           kind: "map-beat",
           eyebrow: "The moments",
@@ -2694,10 +2710,10 @@ export function StudioV3() {
             onContinue={() => setDirectorsReadSeen(directorsRead.signature)}
             delegation={(() => {
               // P10 — concierge visibility. Named once, here, with one quiet
-              // way back into the delegated phase. Existing navigation and
-              // existing take-back semantics only: `back()` walks the normal
-              // chain and the phase itself releases the delegated mark when
-              // the traveller makes an explicit choice.
+              // way back into the delegated phase. Navigation only:
+              // `jumpBackToPhase` sets the phase and nothing else, and the
+              // phase itself releases the delegated mark when the traveller
+              // makes an explicit choice.
               const summary = delegatedChoiceSummary(state);
               if (!summary) return null;
               return {
@@ -2705,7 +2721,7 @@ export function StudioV3() {
                 adjustLabel: summary.adjustLabel,
                 onAdjust: () => {
                   setDirectorsReadSeen(directorsRead.signature);
-                  back(summary.adjustPhase);
+                  jumpBackToPhase(summary.adjustPhase);
                 },
               };
             })()}
@@ -5337,11 +5353,11 @@ function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbac
   // Rhythm preview — number of soft stop dots along the route.
   const rhythmDots =
     reaction.kind === "rhythm"
-      ? reaction.postcardCaption === "Slow"
+      ? reaction.rhythmBucket === "slow"
         ? 2
-        : reaction.postcardCaption === "Balanced"
+        : reaction.rhythmBucket === "balanced"
           ? 3
-          : reaction.postcardCaption === "Full"
+          : reaction.rhythmBucket === "full"
             ? 5
             : 4
       : 0;
