@@ -25,7 +25,7 @@ export function livingAtlasPublicMomentLabel(
 
 export function livingAtlasMomentDisclosure(moment: LivingAtlasPublicMoment): string | null {
   if (moment.type === "winery") {
-    return "The winery is selected and confirmed according to availability. You may add winery preferences at checkout.";
+    return "An accredited winery in the region is included and confirmed with your booking. You can add winery preferences at checkout.";
   }
   if (moment.type === "boat") {
     return "Subject to sea and weather conditions.";
