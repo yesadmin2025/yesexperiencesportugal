@@ -1286,11 +1286,16 @@ function TailorPage() {
                       <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
                         {blueprint.choice.options.map((o) => {
                           const on = choiceSelected.has(o.id);
-                          // Soft cap: only hard-disable at pickMax. Between
-                          // pickMin and pickMax the feasibility engine (via
-                          // tryToggleChoice) decides whether the day absorbs
-                          // the extra winery.
-                          const atLimit = !on && choiceSelected.size >= blueprint.choice!.pickMax;
+                          // Soft cap: only hard-disable at the authorized
+                          // ceiling. Wineries may only exceed the blueprint
+                          // baseline when an approved supplement ladder
+                          // exists (Arrábida Wine); otherwise it's swap-only.
+                          const ceiling =
+                            o.category === "winery" && !rules.wineries
+                              ? blueprint.choice!.pickMin
+                              : blueprint.choice!.pickMax;
+                          const atLimit = !on && choiceSelected.size >= ceiling;
+
                           return (
                             <li key={o.id}>
                               <button
