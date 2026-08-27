@@ -40,6 +40,39 @@ describe("reaction copy paraphrases instead of parroting", () => {
     expect(studio).toContain('data-testid="studio-v3-reaction-context"');
     expect(src("PhaseChrome.tsx")).toMatch(/function NextTeaser[\s\S]{0,600}?return null/);
   });
+
+  it("surfaces the contextual teaser exactly once, inside the beat", () => {
+    expect(studio.match(/data-testid="studio-v3-reaction-context"/g)?.length).toBe(1);
+    expect(src("PhaseChrome.tsx")).not.toContain("studio-v3-reaction-context");
+  });
+
+  const body = (name: string): string => {
+    const start = studio.indexOf(`function ${name}(`);
+    expect(start).toBeGreaterThan(-1);
+    return studio.slice(start, studio.indexOf("\n}", start));
+  };
+
+  const assertNoParroting = (name: string, labels: readonly string[]) => {
+    const text = body(name).toLowerCase();
+    for (const label of labels) {
+      expect(text.includes(label.toLowerCase())).toBe(false);
+    }
+  };
+
+  it("never echoes the tapped option label back verbatim", () => {
+    assertNoParroting(
+      "feelingCaptionLine",
+      FEELINGS.map((o) => o.label),
+    );
+    assertNoParroting(
+      "destinationReactionMessage",
+      DESTINATION_INTENTS.map((o) => o.label),
+    );
+    assertNoParroting(
+      "investmentReactionLine",
+      INVESTMENT_TIERS.map((o) => o.label),
+    );
+  });
 });
 
 describe("unified Your Day does not repeat each stop's story", () => {
