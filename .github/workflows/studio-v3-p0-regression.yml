@@ -21,6 +21,7 @@ jobs:
         project:
           - mobile-chromium
           - desktop-chromium
+          - desktop-1440-chromium
     env:
       CI: "true"
     steps:
