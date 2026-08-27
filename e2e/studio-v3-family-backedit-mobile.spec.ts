@@ -97,6 +97,24 @@ async function enterLogisticsReview(page: Page) {
   await expect.poll(() => logisticsMoment(page)).toBe("review");
 }
 
+async function backOneStudioPhase(page: Page): Promise<string> {
+  const root = page.locator('[data-testid="studio-v3-root"]').first();
+  const from = await root.getAttribute("data-phase");
+  expect(from).not.toBeNull();
+
+  const back = page.getByTestId("studio-v3-back");
+  await expect(back).toBeVisible({ timeout: 10_000 });
+  await back.click();
+
+  await expect
+    .poll(() => root.getAttribute("data-phase"), { timeout: 15_000 })
+    .not.toBe(from);
+
+  const to = await root.getAttribute("data-phase");
+  expect(to).not.toBeNull();
+  return to!;
+}
+
 test("mixed-age family survives edit → review with exact composition", async ({ page }) => {
   await restoreStudioState(page, { ...BASE_STATE });
   await enterLogisticsReview(page);
@@ -156,14 +174,19 @@ test("delegation survives real Back navigation and recomputes after a personal b
     .poll(() => root.getAttribute("data-phase"), { timeout: 15_000 })
     .not.toBe("logistics");
 
-  // With Taste delegated, backward navigation must skip YES-owned taste
-  // questions. Keep walking only through real Back controls until Feeling.
-  for (let i = 0; i < 5 && (await root.getAttribute("data-phase")) !== "feeling"; i++) {
-    const back = page.getByTestId("studio-v3-back");
-    await expect(back).toBeVisible({ timeout: 10_000 });
-    await back.click();
+  // Active delegation does not hide Taste when travelling backwards. Rhythm
+  // and Interests remain real, revisitable surfaces so the traveller can take
+  // control back. Walk one completed phase transition at a time, rather than
+  // firing Back repeatedly while the 280ms exit animation is still active.
+  const visitedPhases: string[] = [];
+  for (let i = 0; i < 10; i++) {
+    const phase = await root.getAttribute("data-phase");
+    if (phase === "feeling") break;
+    visitedPhases.push(await backOneStudioPhase(page));
   }
   await expect(root).toHaveAttribute("data-phase", "feeling", { timeout: 15_000 });
+  expect(visitedPhases).toContain("rhythm");
+  expect(visitedPhases).toContain("interests");
 
   const beforeEdit = await storedStudioState(page);
   expect(beforeEdit.delegationMode).toBe("yes-designs");
