@@ -328,7 +328,13 @@ function TailorPage() {
       }
     }
     setSkippedCore(next);
+    // The dedicated included-lunch stop and the "Remove included lunch"
+    // action are ONE decision in two places. Keep them in lockstep so the
+    // itinerary and the −€15 pp credit can never disagree — and so the
+    // lunch is never counted again by the −5% ladder.
+    if (id === dedicatedLunchStopId(tour.id)) setLunchRemoved(isSkipping);
   };
+
 
   const tryToggleChoice = (id: string) => {
     const on = choiceSelected.has(id);
