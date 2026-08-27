@@ -454,6 +454,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             Smaller parties are priced per tier — pick your guests to see the exact per-person rate.
           </p>
         ) : null}
+        </>
+        )}
       </div>
 
       <button
