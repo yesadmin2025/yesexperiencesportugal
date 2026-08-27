@@ -32,6 +32,14 @@ describe("Studio V3 price handoff", () => {
     expect(css).toContain('[data-testid="studio-v3-party-total"]');
   });
 
+  it("keeps the ledger breakdown without repeating the final total", () => {
+    const ledgerRule = css.slice(
+      css.indexOf('[data-testid="studio-v3-final-total"]\n  [data-testid="studio-v3-investment-ledger"]'),
+    );
+    expect(ledgerRule).toContain('div:has([data-testid="studio-v3-ledger-total"])');
+    expect(ledgerRule).toContain("display: none");
+  });
+
   it("keeps the intermediate add-on total accessible but not visually repetitive", () => {
     expect(css).toContain('[data-testid="studio-v3-add-ons-total"]');
     expect(css).toContain("position: absolute !important");
