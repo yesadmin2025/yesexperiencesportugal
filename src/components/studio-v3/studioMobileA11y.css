@@ -37,6 +37,15 @@
   display: none;
 }
 
+/* The inline story cue and "Why this route works" are fed by the same Living
+ * Atlas reasoning. When the fuller rationale is present on Refine, keep it as
+ * the single explanation and suppress only the repeated one-line cue. If no
+ * rationale renders, the inline cue remains available as the fallback. */
+[data-studio-v3-screen="refine"]:has([data-testid="studio-v3-travel-file-reasons"])
+  [data-testid="studio-v3-inline-why-this-fits"] {
+  display: none;
+}
+
 /* Price handoff on the public Refine surface: one party total at a time.
  *
  * Before additions, the price anchor at the top is enough, so the lower
