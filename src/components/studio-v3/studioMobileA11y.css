@@ -36,3 +36,36 @@
   [aria-label="Route stops in order"] {
   display: none;
 }
+
+/* Price handoff on the public Refine surface: one party total at a time.
+ *
+ * Before additions, the price anchor at the top is enough, so the lower
+ * resolved-total block stays out of the visual flow. Once the traveller adds
+ * something, the base /adult anchor remains while the top party total yields
+ * to the itemised final total below. Pricing values and DOM truth are untouched;
+ * this only removes the repeated visual echo.
+ */
+[data-testid="studio-v3-signature-card"]:not(:has([data-testid="studio-v3-add-on-lines-refine"]))
+  [data-testid="studio-v3-final-total"] {
+  display: none;
+}
+
+[data-testid="studio-v3-signature-card"]:has([data-testid="studio-v3-add-on-lines-refine"])
+  [data-testid="studio-v3-party-total"] {
+  display: none;
+}
+
+/* The running per-adult add-on output still announces changes through its
+ * aria-live region, but it no longer adds a third visible price between the
+ * selected additions and the canonical final total. */
+[data-testid="studio-v3-signature-card"] [data-testid="studio-v3-add-ons-total"] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
