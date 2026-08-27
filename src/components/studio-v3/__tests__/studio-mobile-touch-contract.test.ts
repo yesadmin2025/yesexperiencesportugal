@@ -10,6 +10,10 @@ const route = readFileSync(
   resolve(process.cwd(), "src/components/studio-v3/UnifiedYourDayRoute.tsx"),
   "utf8",
 );
+const finalReveal = readFileSync(
+  resolve(process.cwd(), "src/components/studio-v3/FinalRevealStory.tsx"),
+  "utf8",
+);
 const mobileCss = readFileSync(
   resolve(process.cwd(), "src/components/studio-v3/studioMobileA11y.css"),
   "utf8",
@@ -49,5 +53,13 @@ describe("Studio V3 mobile UX hardening", () => {
     expect(mobileCss).toContain('[data-route-mode="timeline"]');
     expect(mobileCss).toContain('[aria-label="Route stops in order"]');
     expect(mobileCss).toContain("display: none");
+  });
+
+  it("keeps Living Atlas rationale on one visible surface inside Your Day", () => {
+    expect(finalReveal).toContain('data-testid="studio-v3-inline-why-this-fits"');
+    expect(mobileCss).toContain(
+      '[data-testid="studio-v3-signature-card"] [data-testid="studio-v3-inline-why-this-fits"]',
+    );
+    expect(mobileCss).toContain("dedicated \"Why this route works\" block");
   });
 });
