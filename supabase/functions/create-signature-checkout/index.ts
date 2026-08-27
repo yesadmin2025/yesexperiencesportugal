@@ -225,18 +225,26 @@ Deno.serve(async (req) => {
     const tier = Math.min(8, Math.max(1, headcount));
     const tiers = (tierRow?.tiers ?? null) as Record<string, number> | null;
     const real = tiers && typeof tiers[String(tier)] === "number" ? tiers[String(tier)] : null;
-    // Guardrail: NEVER price minors against the anchor "from" price.
-    // If a Signature has no approved per-tier row, we cannot honestly
-    // price a child at 50% of an unknown per-pax rate — surface an
-    // explicit owner-data error and refuse the checkout. Adults-only
-    // bookings continue to fall back to `priceFromEur` as before.
-    if (real == null && minorAges.length > 0) {
+    // Guardrail: NEVER price a booking against the anchor "from" price.
+    // `priceFromEur` is the 8-pax lowest anchor AND is client-supplied, so
+    // falling back to it silently under-charges every smaller party (e.g.
+    // a solo guest on a Signature with no approved tier-1 row). If the
+    // owner has not approved a per-tier price for this party size we
+    // refuse the checkout instead of inventing one.
+    if (real == null) {
       return jsonError(
-        `owner_data_missing: Child pricing not yet configured for ${body.tourId}. Please book adults only or contact us to price this family day.`,
+        minorAges.length > 0
+          ? `owner_data_missing: Child pricing not yet configured for ${body.tourId}. Please book adults only or contact us to price this family day.`
+          : `owner_data_missing: This Signature is not yet priced for ${headcount} ${headcount === 1 ? "traveller" : "travellers"}. Contact us and we will confirm the exact price for your party.`,
         409,
       );
     }
-    const resolvedPerPax = real ?? body.priceFromEur;
+    const resolvedPerPax = real;
+    // Approved 8-pax anchor for this Signature — the server-authoritative
+    // base for add-on percentages. Never `body.priceFromEur` (client input).
+    const approvedAnchorEur =
+      tiers && typeof tiers["8"] === "number" && tiers["8"] > 0 ? tiers["8"] : null;
+
 
     // Tailor flow only: apply SSOT reduction based on principal stops the
     // guest removed, then add the authorized flat supplements (add lunch,
