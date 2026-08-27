@@ -74,26 +74,30 @@ export function LivingAtlasStudioPage() {
 
   return (
     <>
-      {/* SSR-visible intent for crawlers and no-JS users. */}
-      <header className="sr-only">
-        <h1>Design your private Portugal day.</h1>
-        <p>
-          A cinematic composer that reads how you want the day to feel, who is travelling and the
-          rhythm you want, then proposes a private Portugal day built from real Signature routes.
-        </p>
-        <p>
-          As you choose, the route, the stops and the price move with you. When the configuration is
-          standard you can reserve it directly; when it needs local judgement, the same team reviews
-          it and confirms before anything is charged.
-        </p>
-        <p>
-          For a complete journey across Portugal rather than a single private day, a human designer
-          composes it with you —{" "}
-          <a href="/portugal-travel-designer">work with our Portugal Travel Designer</a>. Advisors
-          and agencies planning for clients can work with us directly through{" "}
-          <a href="/trade">our travel trade partnerships</a>.
-        </p>
-      </header>
+      {/* SSR crawler intent only. It deliberately disappears the same moment
+       * the Studio becomes interactive so invisible SEO links can never sit in
+       * the live keyboard/focus order behind the real experience. */}
+      {!hydrated && (
+        <header className="sr-only" data-testid="studio-v3-ssr-intent">
+          <h1>Design your private Portugal day.</h1>
+          <p>
+            A cinematic composer that reads how you want the day to feel, who is travelling and the
+            rhythm you want, then proposes a private Portugal day built from real Signature routes.
+          </p>
+          <p>
+            As you choose, the route, the stops and the price move with you. When the configuration
+            is standard you can reserve it directly; when it needs local judgement, the same team
+            reviews it and confirms before anything is charged.
+          </p>
+          <p>
+            For a complete journey across Portugal rather than a single private day, a human designer
+            composes it with you —{" "}
+            <a href="/portugal-travel-designer">work with our Portugal Travel Designer</a>. Advisors
+            and agencies planning for clients can work with us directly through{" "}
+            <a href="/trade">our travel trade partnerships</a>.
+          </p>
+        </header>
+      )}
       <div
         data-testid="living-atlas-app"
         data-studio="v3"
