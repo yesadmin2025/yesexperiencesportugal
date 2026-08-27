@@ -1665,7 +1665,7 @@ function TailorPage() {
                   {rules.allowRemoveLunch && (
                     <button
                       type="button"
-                      onClick={() => setLunchRemoved((v) => !v)}
+                      onClick={() => toggleIncludedLunch()}
                       aria-pressed={lunchRemoved}
                       data-testid="tailor-remove-lunch"
                       className={[
