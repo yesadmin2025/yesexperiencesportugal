@@ -55,13 +55,34 @@ export interface AcknowledgementContext {
   };
 }
 
-
 /** Interests that the Feeling phase can inherit, and the theme each stands for. */
 const INHERITED_INTEREST_THEME: Readonly<Partial<Record<Interest, StudioSemanticTheme>>> = {
   faith: "theme.faith",
   "hands-on": "activity.hands-on",
   coast: "theme.coast",
   wine: "theme.wine",
+};
+
+/**
+ * Themes the Director's Read can genuinely voice. Keep this vocabulary narrow:
+ * gastronomy, nature, heritage and wellness have prose in the read but no P6
+ * semantic theme, so they must never be suppressed later by guesswork.
+ */
+const DIRECTORS_READ_FEELING_THEME: Readonly<Partial<Record<Feeling, StudioSemanticTheme>>> = {
+  coastal: "theme.coast",
+  "wine-food": "theme.wine",
+  faith: "theme.faith",
+  "hands-on": "activity.hands-on",
+  hidden: "interest.local-life",
+};
+
+const DIRECTORS_READ_INTEREST_THEME: Readonly<Partial<Record<Interest, StudioSemanticTheme>>> = {
+  coast: "theme.coast",
+  wine: "theme.wine",
+  faith: "theme.faith",
+  "hands-on": "activity.hands-on",
+  "local-life": "interest.local-life",
+  photography: "intent.photography",
 };
 
 /** Exact labels produced by `understoodSignals`, mapped to their theme. */
@@ -121,6 +142,46 @@ export function interestsAcknowledgedThemes(state: AcknowledgementState): Studio
   return themes;
 }
 
+/**
+ * Deterministically reconstruct the semantic themes the Director's Read owns.
+ *
+ * The live Studio keeps a transient `shown` ledger, but the final reveal is
+ * also reachable through saved/deep entries where that transient flag is not
+ * persisted. Reconstructing only the themes that the read can actually voice
+ * lets the terminal reveal stay conservative and non-repetitive without
+ * storing UI history in the traveller state.
+ *
+ * Rhythm is intentionally absent. The Director no longer owns pace: refinement
+ * or Logistics acknowledges it once, which avoids a "slow rhythm" label being
+ * paraphrased again a moment later.
+ */
+export function inferredDirectorsReadThemes(state: AcknowledgementState): StudioSemanticTheme[] {
+  const acknowledgedBeforeRead = new Set(interestsAcknowledgedThemes(state));
+  const inherited = deriveInheritedIntent({
+    feeling: state.feeling ?? null,
+    interests: state.interests ?? [],
+    rhythm: state.rhythm ?? null,
+  });
+  const themes: StudioSemanticTheme[] = [];
+  const add = (theme: StudioSemanticTheme | undefined) => {
+    if (theme && !acknowledgedBeforeRead.has(theme) && !themes.includes(theme)) {
+      themes.push(theme);
+    }
+  };
+
+  const feeling = state.feeling ?? null;
+  if (feeling) add(DIRECTORS_READ_FEELING_THEME[feeling]);
+
+  const spokenInterests = (state.interests ?? []).filter((id) => {
+    if (inherited.interestIds.includes(id)) return false;
+    const theme = DIRECTORS_READ_INTEREST_THEME[id];
+    return !theme || !acknowledgedBeforeRead.has(theme);
+  });
+  for (const id of spokenInterests.slice(0, 2)) add(DIRECTORS_READ_INTEREST_THEME[id]);
+
+  return themes;
+}
+
 function memoryInput(state: AcknowledgementState) {
   return {
     feeling: state.feeling ?? null,
@@ -167,6 +228,11 @@ export function themesAcknowledgedBefore(
   // already heard, so Logistics and the reveal must not repeat it.
   if (ctx.directorsRead?.shown) {
     for (const theme of ctx.directorsRead.themes) seen.add(theme);
+  } else if (surface === "reveal" && ctx.directorsRead == null) {
+    // FinalRevealStory is also used by saved/deep entries that do not persist
+    // the transient `directorsReadSeen` flag. At the terminal surface, rebuild
+    // the deterministic read themes rather than risk replaying them.
+    for (const theme of inferredDirectorsReadThemes(ctx.state)) seen.add(theme);
   }
   if (surface === "logistics") return seen;
 
@@ -209,25 +275,16 @@ export function acknowledgementSummaryFor(
 }
 
 /**
- * Reveal reason signals with echoes of earlier acknowledgements removed.
+ * Reveal reason signals with every earlier semantic echo removed.
  *
- * The reveal is the payoff, so it is protected by a floor: it never renders
- * fewer than `minKeep` signals while the composed narrative offers that many.
- * De-duplication may quieten the reveal; it may never empty it.
+ * The reveal already has its editorial intro, operational facts and composed
+ * route narrative. When no genuinely new reason remains, silence is more
+ * intelligent than restoring copy the traveller has already heard.
  */
 export function filterRevealSignals(
   signals: ReadonlyArray<string>,
   ctx: AcknowledgementContext,
-  minKeep = 2,
 ): string[] {
   const seen = themesAcknowledgedBefore("reveal", ctx);
-  const kept = dropAcknowledged(signals, seen);
-  if (kept.length >= Math.min(minKeep, signals.length)) return kept;
-  // Floor: restore, in original order, until the reveal reads as a reveal.
-  const restored = [...kept];
-  for (const signal of signals) {
-    if (restored.length >= Math.min(minKeep, signals.length)) break;
-    if (!restored.includes(signal)) restored.push(signal);
-  }
-  return signals.filter((s) => restored.includes(s));
+  return dropAcknowledged(signals, seen);
 }
