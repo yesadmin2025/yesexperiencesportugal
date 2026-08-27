@@ -37,6 +37,16 @@
   display: none;
 }
 
+/* The grounded Living Atlas rationale is already surfaced once in the
+ * dedicated "Why this route works" block immediately around Your Day. The
+ * inline FinalRevealStory derives its quiet "why this fits" line from the same
+ * intelligence reasons, so showing it here would repeat the same explanation
+ * in a second voice. Keep that cue available to the standalone/deep-link
+ * reveal, but suppress it inside the unified Your Day surface. */
+[data-testid="studio-v3-signature-card"] [data-testid="studio-v3-inline-why-this-fits"] {
+  display: none;
+}
+
 /* Price handoff on the public Refine surface: one party total at a time.
  *
  * Before additions, the price anchor at the top is enough, so the lower
