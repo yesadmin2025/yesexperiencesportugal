@@ -410,6 +410,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             </p>
           </div>
         ) : (
+        <>
         <div className="flex items-baseline justify-between">
           <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
             {displayIsReal
