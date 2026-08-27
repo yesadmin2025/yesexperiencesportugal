@@ -486,10 +486,17 @@ function TailorPage() {
   // additions no longer inflate the base price — they're handled as
   // add-ons / manual confirmation lines.
   const { data: tierOverrides } = useTourPriceTiers();
-  const basePerPax = useMemo(() => {
-    const r = resolvePerPaxEur(tour, guests, tierOverrides);
-    return r?.eurPerPax ?? tour.priceFrom;
-  }, [tour, guests, tierOverrides]);
+  const baseResolution = useMemo(
+    () => resolvePerPaxEur(tour, guests, tierOverrides),
+    [tour, guests, tierOverrides],
+  );
+  /**
+   * No approved tier for this EXACT party size. `priceFrom` is only a
+   * generic pre-composition anchor, so we must not quote or charge it.
+   */
+  const tierUnavailable = baseResolution == null;
+  const basePerPax = baseResolution?.eurPerPax ?? tour.priceFrom;
+
 
   const [lunchAdded, setLunchAdded] = useState(false);
   /**
