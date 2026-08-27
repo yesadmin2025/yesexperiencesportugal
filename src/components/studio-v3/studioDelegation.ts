@@ -29,7 +29,8 @@
  */
 
 import { decideInterests, decideRhythm, type DecidedForMeKey } from "./letYesDecide";
-import { getOptionLabel, INTERESTS, RHYTHMS, type StudioV3State } from "./types";
+import { getOptionLabel } from "./curation";
+import { INTERESTS, RHYTHMS, type StudioV3State } from "./types";
 
 /** The single delegation mode. Additive, defaults to null. */
 export const DELEGATION_MODE = "yes-designs" as const;
