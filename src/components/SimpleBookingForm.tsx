@@ -155,12 +155,18 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
   const handleReserve = async (details: GuestDetails) => {
     if (pending) return;
+    const resolved = resolvePerPaxEur(tour, details.guests, tierOverrides);
+    // No approved tier for this exact party size — never quote the generic
+    // anchor, and never open checkout on a price we cannot honour.
+    if (resolved == null) {
+      toast.error("We price this party size personally — our curator will confirm it for you.");
+      return;
+    }
     setPending(true);
     // Open the drawer immediately so the user sees a branded skeleton
     // while the edge function is in flight (saves the "blank" feeling).
     const meta = getViatorMeta(tour.id);
-    const resolved = resolvePerPaxEur(tour, details.guests, tierOverrides);
-    const perPaxForSummary = resolved?.eurPerPax ?? tour.priceFrom;
+    const perPaxForSummary = resolved.eurPerPax;
     // Age-band aware total — mirrors the server pricing so the summary
     // and Stripe line items agree for families with minors.
     const summaryJourney = resolveJourneyPricing(
