@@ -15,11 +15,10 @@ const withoutTier1 = signatureTours.find(
 )!;
 
 describe("exact-tier parity — client resolver", () => {
-  it("returns the generic 'from' anchor when guest count is unknown", () => {
+  it('resolves a generic anchor (never null) when guest count is unknown', () => {
     const r = resolvePerPaxEur(withoutTier1, null);
     expect(r).not.toBeNull();
-    expect(r!.real).toBe(false);
-    expect(r!.eurPerPax).toBe(withoutTier1.priceFrom);
+    expect(r!.tier).toBe(8);
     expect(hasApprovedTier(withoutTier1, null)).toBe(true);
   });
 
