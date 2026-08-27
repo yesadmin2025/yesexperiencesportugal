@@ -1936,6 +1936,7 @@ export function StudioV3() {
       kind: "rhythm",
       eyebrow: "The rhythm",
       message: hint,
+      contextPhase: "rhythm",
       originLabel: pickupLabel ?? undefined,
       postcardCaption:
         id === "slow"
@@ -2167,7 +2168,7 @@ export function StudioV3() {
       chips: chips.length > 0 ? chips : undefined,
       chipsLabel: chips.length > 0 ? "Chosen moments" : undefined,
       chipsTail: tail,
-      postcardSubline: "These will guide the route.",
+      contextPhase: "interests",
       nextPhase: next,
       holdMs: 4600,
       bgImage: state.interests[0] ? INTEREST_IMAGE[state.interests[0]] : undefined,
@@ -4590,7 +4591,11 @@ export function StoryboardHandoff({
                         >
                           {s.label}
                         </p>
-                        {s.story ? (
+                        {/* The inline reveal above already tells each stop's
+                            story in prose. Printing the same sentence again
+                            here made one scroll read it twice; the label,
+                            controls and the (new) composer rationale stay. */}
+                        {s.story && !storySlot ? (
                           <p
                             className="mt-0.5 text-[12px] leading-[1.45]"
                             style={{
@@ -5241,6 +5246,24 @@ function ReactionOverlay({
             }}
           >
             <span style={{ color: "var(--gold)" }}>—</span> {reaction.detail}
+          </p>
+        ) : null}
+
+        {/* Anticipation, once. The already-computed contextualTeaser lands
+            here as a quiet closing line inside the beat that is already on
+            screen — NextTeaser stays silent (P4), so no persistent copy
+            layer is reintroduced. */}
+        {reaction.contextLine ? (
+          <p
+            data-testid="studio-v3-reaction-context"
+            className="mt-6 text-[11.5px] leading-[1.5]"
+            style={{
+              fontFamily: "var(--font-body)",
+              color: "color-mix(in oklab, var(--charcoal) 48%, transparent)",
+              animation: "studioV3RiseIn 560ms ease-out 420ms both",
+            }}
+          >
+            {reaction.contextLine}
           </p>
         ) : null}
       </div>
