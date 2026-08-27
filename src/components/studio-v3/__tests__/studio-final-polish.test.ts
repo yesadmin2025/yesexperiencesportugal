@@ -208,3 +208,27 @@ describe("delegated authorship renders once and reuses existing navigation", () 
     expect(read.match(/data-testid="studio-v3-directors-read-continue"/g)?.length ?? 1).toBe(1);
   });
 });
+
+describe("exactly one primary booking CTA per surface", () => {
+  const priceCard = src("SignaturePriceCard.tsx");
+  const checkout = src("CheckoutSummary.tsx");
+  const studio = src("StudioV3.tsx");
+
+  it("the value/price surface owns a single primary booking CTA", () => {
+    // The storyboard's booking CTA lives in SignaturePriceCard and nowhere else.
+    expect(priceCard.match(/data-testid="studio-v3-cta-primary"/g)?.length).toBe(1);
+    expect(studio).not.toContain('data-testid="studio-v3-cta-primary"');
+  });
+
+  it("checkout exposes a single reserve action, edits are secondary", () => {
+    expect(checkout.match(/data-testid="studio-v3-checkout-summary-reserve"/g)?.length).toBe(1);
+    // Localized edits are text/ghost affordances, never a second reserve CTA.
+    expect(checkout).not.toMatch(/data-testid="studio-v3-checkout-summary-reserve-\w+"/);
+  });
+
+  it("Adjust is never counted as a booking CTA", () => {
+    const read = src("DirectorsRead.tsx");
+    expect(read).toContain('data-testid="studio-v3-delegation-adjust"');
+    expect(read.match(/data-phase-cta=/g)?.length).toBe(1);
+  });
+});
