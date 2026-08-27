@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { createStudioV3Lead } from "@/lib/studio-v3/leads.functions";
 import { CONSIDERATIONS, LANGUAGES, PICKUPS, type StudioV3State } from "./types";
 
@@ -31,6 +32,18 @@ interface Props {
  */
 export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
   const submit = useServerFn(createStudioV3Lead);
+  const isCheckoutRecovery = open && intent === "book" && state.phase === "checkoutSummary";
+
+  // A transient Stripe/session-creation failure is not a new lead intent.
+  // Legacy Studio code may still request the book sheet from its catch path;
+  // intercept that request here so the traveller stays on the reviewed
+  // checkout summary and can retry without re-entering any details.
+  useEffect(() => {
+    if (!isCheckoutRecovery) return;
+    toast.dismiss();
+    toast.error("Secure checkout couldn't open. Your details are still here — try again.");
+    onClose();
+  }, [isCheckoutRecovery, onClose]);
 
   // Prefills from Studio state
   const prefillPickupArea = useMemo(() => {
@@ -73,7 +86,7 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
   const firstFieldRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    if (open) {
+    if (open && !isCheckoutRecovery) {
       setErrorMsg(null);
       setDone(false);
       // Re-sync prefills each time the sheet opens.
@@ -93,18 +106,18 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, isCheckoutRecovery]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || isCheckoutRecovery) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape" && !submitting) onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, submitting, onClose]);
+  }, [open, isCheckoutRecovery, submitting, onClose]);
 
-  if (!open) return null;
+  if (!open || isCheckoutRecovery) return null;
 
   const isBook = intent === "book";
 
