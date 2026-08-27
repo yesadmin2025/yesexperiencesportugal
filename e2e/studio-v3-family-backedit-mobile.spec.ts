@@ -139,7 +139,9 @@ test("delegation survives real Back navigation and recomputes after a personal b
     await expect.poll(() => logisticsMoment(page)).toBe(expected);
   }
   await page.getByTestId("studio-v3-back").click();
-  await expect.poll(() => root.getAttribute("data-phase"), { timeout: 15_000 }).not.toBe("logistics");
+  await expect
+    .poll(() => root.getAttribute("data-phase"), { timeout: 15_000 })
+    .not.toBe("logistics");
 
   // With Taste delegated, backward navigation must skip YES-owned taste
   // questions. Keep walking only through real Back controls until Feeling.
@@ -178,7 +180,7 @@ test("delegation survives real Back navigation and recomputes after a personal b
 
   // At least one delegated taste value must be recomputed from the new feeling
   // instead of remaining the exact stale pair restored above.
-  expect(
-    JSON.stringify({ interests: afterEdit.interests, rhythm: afterEdit.rhythm }),
-  ).not.toBe(JSON.stringify({ interests: ["coast", "photography"], rhythm: "slow" }));
+  expect(JSON.stringify({ interests: afterEdit.interests, rhythm: afterEdit.rhythm })).not.toBe(
+    JSON.stringify({ interests: ["coast", "photography"], rhythm: "slow" }),
+  );
 });
