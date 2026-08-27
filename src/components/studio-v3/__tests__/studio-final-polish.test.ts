@@ -137,3 +137,27 @@ describe("checkout recap offers localized edits without inventing navigation", (
     expect(src("StudioV3.tsx")).toContain('onEditStops={() => back("storyboard")}');
   });
 });
+
+describe("delegated authorship renders once and reuses existing navigation", () => {
+  const studio = src("StudioV3.tsx");
+  const read = src("DirectorsRead.tsx");
+
+  it("renders the delegation line a single time on Director's Read", () => {
+    expect(read.match(/data-testid="studio-v3-delegation-read-line"/g)?.length).toBe(1);
+    expect(studio.match(/delegatedChoiceSummary\(state\)/g)?.length).toBe(1);
+  });
+
+  it("Adjust routes through the existing back() chain without mutating state", () => {
+    const block = studio.slice(
+      studio.indexOf("const summary = delegatedChoiceSummary(state);"),
+      studio.indexOf("const summary = delegatedChoiceSummary(state);") + 600,
+    );
+    expect(block).toContain("back(summary.adjustPhase)");
+    expect(block).not.toMatch(/setState|commit\(|reset\(/);
+  });
+
+  it("keeps one primary CTA on the unified storyboard", () => {
+    expect(studio.match(/data-testid="studio-v3-storyboard-primary"/g)?.length ?? 1).toBe(1);
+    expect(read.match(/data-testid="studio-v3-directors-read-continue"/g)?.length ?? 1).toBe(1);
+  });
+});
