@@ -34,7 +34,9 @@ describe("Studio V3 price handoff", () => {
 
   it("keeps the ledger breakdown without repeating the final total", () => {
     const ledgerRule = css.slice(
-      css.indexOf('[data-testid="studio-v3-final-total"]\n  [data-testid="studio-v3-investment-ledger"]'),
+      css.indexOf(
+        '[data-testid="studio-v3-final-total"]\n  [data-testid="studio-v3-investment-ledger"]',
+      ),
     );
     expect(ledgerRule).toContain('div:has([data-testid="studio-v3-ledger-total"])');
     expect(ledgerRule).toContain("display: none");
