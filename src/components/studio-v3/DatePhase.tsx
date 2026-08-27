@@ -106,7 +106,8 @@ export function DatePhaseControls({
           onMonthChange={setMonth}
           disabled={{ before: earliest }}
           showOutsideDays={false}
-          className="pointer-events-auto mx-auto"
+          // Mobile tap targets: day cells and month nav must stay >= 44px.
+          className="pointer-events-auto mx-auto [--cell-size:2.75rem]"
         />
         {exactSelected && selected ? (
           <p

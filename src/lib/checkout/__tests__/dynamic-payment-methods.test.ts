@@ -61,6 +61,23 @@ describe("dynamic payment methods", () => {
     expect(sources[0].code).toContain("unit_amount: Math.round(");
   });
 
+  it("no site checkout entry point requests a restricted payment method set", () => {
+    const callers = [
+      "src/components/studio-v3/StudioV3.tsx",
+      "src/components/studio-v3/LivingAtlasBookingStep.tsx",
+      "src/components/SimpleBookingForm.tsx",
+      "src/routes/tours_.$tourId.tailor.tsx",
+    ];
+    for (const file of callers) {
+      const code = readFileSync(resolve(process.cwd(), file), "utf8");
+      expect(code).toContain('invoke("create-signature-checkout"');
+      expect(code).not.toMatch(/payment_method_types/);
+      expect(code).not.toMatch(/wallet_options/);
+      // No client-side card-restricted Elements integration.
+      expect(code).not.toMatch(/CardElement|CardNumberElement/);
+    }
+  });
+
   it("does not imply card-only in traveller-facing checkout copy", () => {
     const ui = readFileSync(
       resolve(process.cwd(), "src/components/studio-v3/CheckoutSummary.tsx"),

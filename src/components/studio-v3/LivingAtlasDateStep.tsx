@@ -67,7 +67,8 @@ export function LivingAtlasDateStep({
             if (isStudioBookingDateAllowed(iso)) onChange(iso);
           }}
           showOutsideDays={false}
-          className="pointer-events-auto mx-auto rounded-xl bg-[color:var(--ivory)] text-[color:var(--charcoal)]"
+          // Mobile tap targets: day cells and month nav must stay >= 44px.
+          className="pointer-events-auto mx-auto rounded-xl bg-[color:var(--ivory)] text-[color:var(--charcoal)] [--cell-size:2.75rem]"
         />
         <p
           data-testid="living-atlas-min-date-note"
