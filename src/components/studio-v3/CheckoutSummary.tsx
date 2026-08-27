@@ -182,7 +182,6 @@ export function CheckoutSummary({
         // 393px) with a ≥12px margin, so the Total row is never partly
         // covered at the end of the scroll.
         "w-full max-w-[560px] mx-auto px-5 pt-8 pb-[calc(env(safe-area-inset-bottom)+8.5rem)]",
-
         className,
       )}
     >
@@ -222,7 +221,7 @@ export function CheckoutSummary({
       {/* Summary card — Date · Guests · Stops · Add-ons · Total */}
       <div
         data-testid="studio-v3-checkout-summary-ledger"
-        className="mt-8 px-1 py-5 space-y-4"
+        className="mt-9 px-1 py-6 space-y-5"
         style={{
           borderTop: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
           borderBottom: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
@@ -230,22 +229,34 @@ export function CheckoutSummary({
           boxShadow: "none",
         }}
       >
-        <Row label="Date" value={dateLabel ?? "Flexible"} />
-        <Row label="Guests" value={guestsLabel} />
+        <Row
+          label="Date"
+          value={dateLabel ?? "Flexible"}
+          onEdit={onEditGuestDetails}
+          editLabel="Edit date"
+          testId="studio-v3-checkout-summary-edit-date"
+        />
+        <Row
+          label="Guests"
+          value={guestsLabel}
+          onEdit={onEditGuestDetails}
+          editLabel="Edit party details"
+          testId="studio-v3-checkout-summary-edit-guests"
+        />
 
         {stopLabels.length > 0 ? (
           <div
-            className="pt-3 border-t"
+            className="pt-4 border-t"
             style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
           >
             <p
-              className="text-[10px] uppercase tracking-[0.22em] mb-2"
+              className="text-[10px] uppercase tracking-[0.22em] mb-2.5"
               style={{ color: "var(--charcoal-soft)" }}
             >
               Stops
             </p>
             <ul
-              className="space-y-1 text-[13.5px]"
+              className="space-y-1.5 text-[13.5px] leading-[1.45]"
               style={{ color: "var(--charcoal)" }}
               data-testid="studio-v3-checkout-summary-stops"
             >
@@ -264,17 +275,17 @@ export function CheckoutSummary({
 
         {selectedAddOns.length > 0 ? (
           <div
-            className="pt-3 border-t"
+            className="pt-4 border-t"
             style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
           >
             <p
-              className="text-[10px] uppercase tracking-[0.22em] mb-2"
+              className="text-[10px] uppercase tracking-[0.22em] mb-2.5"
               style={{ color: "var(--charcoal-soft)" }}
             >
               Your additions
             </p>
             <ul
-              className="space-y-1 text-[13.5px]"
+              className="space-y-1.5 text-[13.5px]"
               style={{ color: "var(--charcoal)" }}
               data-testid="studio-v3-add-on-lines"
             >
@@ -315,7 +326,7 @@ export function CheckoutSummary({
         ) : null}
 
         <div
-          className="pt-3 border-t flex justify-between items-baseline"
+          className="pt-4 border-t flex justify-between items-baseline"
           style={{ borderColor: "color-mix(in oklab, var(--gold) 55%, transparent)" }}
         >
           <span
@@ -325,7 +336,7 @@ export function CheckoutSummary({
             Your total
           </span>
           <span
-            className="text-[26px] tabular-nums font-semibold"
+            className="text-[27px] tabular-nums font-semibold"
             style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
             data-testid="studio-v3-checkout-summary-total"
           >
@@ -333,7 +344,7 @@ export function CheckoutSummary({
           </span>
         </div>
         <div
-          className="flex justify-end text-[11.5px] uppercase tracking-[0.2em] text-right leading-[1.6]"
+          className="flex justify-end text-[11px] uppercase tracking-[0.2em] text-right leading-[1.6]"
           style={{ color: "var(--charcoal-soft)" }}
         >
           <PerPersonBands
@@ -345,15 +356,15 @@ export function CheckoutSummary({
       </div>
 
       {/* Guest identity recap — who is booking (not pricing) */}
-      <div className="mt-6 flex items-center justify-between">
+      <div className="mt-7 flex items-center justify-between gap-5">
         <div
-          className="text-[12.5px]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
+          className="min-w-0 text-[12.5px] leading-[1.55]"
+          style={{ color: "color-mix(in oklab, var(--charcoal) 72%, transparent)" }}
         >
           <div className="font-medium" style={{ color: "var(--charcoal)" }}>
             {guestDetails.fullName}
           </div>
-          <div>{guestDetails.email}</div>
+          <div className="break-all">{guestDetails.email}</div>
           <div>{guestDetails.phone}</div>
         </div>
         <button
@@ -361,7 +372,7 @@ export function CheckoutSummary({
           data-testid="studio-v3-checkout-summary-edit-guest-details"
           aria-label="Edit your details"
           onClick={onEditGuestDetails}
-          className="text-[11px] uppercase tracking-[0.22em] min-h-[44px] px-3"
+          className="shrink-0 text-[10.5px] uppercase tracking-[0.22em] min-h-[44px] px-3 underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
           style={{ color: "var(--teal)" }}
         >
           Edit
@@ -369,10 +380,10 @@ export function CheckoutSummary({
       </div>
 
       <p
-        className="mt-6 text-center text-[12.5px] italic"
+        className="mt-7 text-center text-[12.5px] leading-[1.55] italic"
         style={{
           fontFamily: "var(--font-editorial)",
-          color: "color-mix(in oklab, var(--charcoal) 68%, transparent)",
+          color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
         }}
       >
         {INSTANT_CONFIRMATION}
@@ -455,16 +466,45 @@ export function CheckoutSummary({
   );
 }
 
-function Row({ label, value }: { label: string; value: React.ReactNode }) {
+function Row({
+  label,
+  value,
+  onEdit,
+  editLabel,
+  testId,
+}: {
+  label: string;
+  value: React.ReactNode;
+  onEdit?: () => void;
+  editLabel?: string;
+  testId?: string;
+}) {
   return (
-    <div className="flex justify-between gap-3 text-[13.5px]" style={{ color: "var(--charcoal)" }}>
+    <div
+      className="flex items-center justify-between gap-4 text-[13.5px]"
+      style={{ color: "var(--charcoal)" }}
+    >
       <span
         className="text-[11px] uppercase tracking-[0.22em]"
         style={{ color: "var(--charcoal-soft)" }}
       >
         {label}
       </span>
-      <span className="text-right">{value}</span>
+      <div className="flex min-w-0 items-center justify-end gap-2.5 text-right">
+        <span className="min-w-0">{value}</span>
+        {onEdit ? (
+          <button
+            type="button"
+            onClick={onEdit}
+            aria-label={editLabel ?? `Edit ${label.toLowerCase()}`}
+            data-testid={testId}
+            className="shrink-0 min-h-[44px] px-2 text-[10px] uppercase tracking-[0.2em] underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            style={{ color: "var(--teal)" }}
+          >
+            Edit
+          </button>
+        ) : null}
+      </div>
     </div>
   );
 }
