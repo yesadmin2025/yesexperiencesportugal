@@ -198,7 +198,7 @@ function BookingConfirmedPage() {
             {state.kind === "idle" &&
               "This page only confirms a booking when it includes a valid secure payment reference. Please use the confirmation link returned after checkout."}
             {state.kind === "error" &&
-              "We could not verify the payment reference right now. If your card was charged, keep this link and try again shortly, or contact us and we’ll check the payment directly."}
+              "We could not verify the payment reference right now. If you were charged, keep this link and try again shortly, or contact us and we’ll check the payment directly."}
             {state.kind === "ok" &&
               (paid ? (
                 <>
