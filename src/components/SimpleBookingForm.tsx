@@ -125,6 +125,10 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   // Live tier resolution — DB-backed, falls back to code defaults.
   const { data: tierOverrides } = useTourPriceTiers();
   const perPax = resolvePerPaxEur(tour, guests, tierOverrides);
+  // An exact party size with no approved tier is genuinely unpublished — we
+  // never substitute the generic `priceFrom` anchor for it (that anchor is the
+  // 8+ rate) and we never open checkout on a price we cannot honour.
+  const priceUnavailable = guests >= 1 && perPax == null;
   const displayPerPaxEur = perPax?.eurPerPax ?? tour.priceFrom;
   const displayIsReal = perPax?.real === true;
   // Age-band aware party total — matches server pricing when minors present.
