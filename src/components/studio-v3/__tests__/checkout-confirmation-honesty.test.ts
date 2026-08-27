@@ -30,9 +30,7 @@ describe("checkout confirmation honesty and recovery", () => {
 
   it("gates paid-only itinerary, receipts and next steps behind verified payment", () => {
     expect(bookingConfirmed).toContain("{session_id && paid ? (");
-    expect(bookingConfirmed).toContain(
-      'state.kind === "ok" && paid && state.data.receiptUrl',
-    );
+    expect(bookingConfirmed).toContain('state.kind === "ok" && paid && state.data.receiptUrl');
     expect(bookingConfirmed).toContain("{paid ? (");
   });
 
