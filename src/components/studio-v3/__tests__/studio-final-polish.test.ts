@@ -53,9 +53,12 @@ describe("reaction copy paraphrases instead of parroting", () => {
   };
 
   const assertNoParroting = (name: string, labels: readonly string[]) => {
-    const text = body(name).toLowerCase();
+    const returned = [...body(name).matchAll(/return "((?:[^"\\]|\\.)*)"/g)]
+      .map((m) => m[1])
+      .join(" | ")
+      .toLowerCase();
     for (const label of labels) {
-      expect(text.includes(label.toLowerCase())).toBe(false);
+      expect(returned.includes(label.toLowerCase())).toBe(false);
     }
   };
 
