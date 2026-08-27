@@ -261,14 +261,18 @@ Deno.serve(async (req) => {
       ? body.skippedCoreStopIds.filter((id): id is string => typeof id === "string")
       : null;
     const claimedPrincipals = Math.min(8, Math.max(0, Number(body.principalsRemoved ?? 0) | 0));
+    const lunchRemovalClaimed =
+      body.tailorLunchRemoved === true && TAILOR_LUNCH_REMOVAL_ELIGIBLE.has(body.tourId);
     const derivedPrincipals = skippedCoreStopIds
       ? Math.min(8, serverPrincipalRemovalCount(body.tourId, skippedCoreStopIds))
-      : // No ids supplied: a lunch-removal booking may still be carrying the
-        // lunch inside its claimed count, so cap it conservatively.
-        lunchRemovedFromBody(body)
+      : // No ids (stale or tampered client): a lunch-removal booking may be
+        // carrying the lunch inside its claimed count, so drop one removal
+        // rather than risk paying the same lunch twice.
+        lunchRemovalClaimed
         ? Math.max(0, claimedPrincipals - 1)
         : claimedPrincipals;
     const principalsRemoved = isTailorFlow ? Math.min(claimedPrincipals, derivedPrincipals) : 0;
+
 
     const tailorSupplements = isTailorFlow
       ? serverTailorSupplementsEur(
