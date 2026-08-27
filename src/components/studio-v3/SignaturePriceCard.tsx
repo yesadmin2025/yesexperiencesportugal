@@ -216,7 +216,37 @@ export function SignaturePriceCard({
         : "missing";
 
   const durationLabel = tour?.durationHours ?? tour?.duration ?? null;
-  const hasPrice = priceEur != null;
+
+  // Real per-pax (approved tier) resolution. When the tour has tier data AND
+  // we know the guest count, `realPerPax.real === true` and we display the
+  // exact per-person rate; otherwise we keep the generic "from" anchor.
+  const { data: tierOverrides } = useTourPriceTiers();
+  const effectiveOverrides = useMemo(() => {
+    if (!previewTiers || !tour) return tierOverrides ?? null;
+    return { ...(tierOverrides ?? {}), [tour.id]: previewTiers };
+  }, [tierOverrides, previewTiers, tour]);
+
+  // Hidden picker — lets the traveller preview the per-pax rate for any
+  // group size 1..8+ before checkout. Defaults to the funnel's `guests`.
+  // `previewGuests === null` means "use the funnel guests value as-is".
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [previewGuests, setPreviewGuests] = useState<number | null>(null);
+  const effectiveGuests = previewGuests ?? guests ?? null;
+
+  const realPerPax = useMemo(
+    () => resolvePerPaxEur(tour, effectiveGuests, effectiveOverrides),
+    [tour, effectiveGuests, effectiveOverrides],
+  );
+
+  /**
+   * No approved tier for this EXACT party size. `priceFrom` is a generic
+   * pre-composition anchor only — showing it here would quote a solo
+   * traveller the 8-guest rate and then fail at checkout. We refuse to
+   * price, and the card falls back to the curator contact path.
+   */
+  const tierUnavailable = tour != null && effectiveGuests != null && realPerPax == null;
+  const hasPrice = priceEur != null && !tierUnavailable;
+
 
   // Budget-aware add-on pool: every eligible option stays visible so the
   // traveller can read it, but ones that wouldn't fit the regional rhythm
