@@ -92,6 +92,13 @@ const WINERY_IDENTITY_KEYS: ReadonlySet<string> = (() => {
  * entry for the label. Deliberately narrow: it must name a wine facility,
  * not merely mention wine in passing.
  */
+/**
+ * Labels that name a place/moment which is categorically not a winery visit.
+ * Only consulted to veto the fuzzy geo match — never the structural identity.
+ */
+const NON_WINERY_LABEL_RE =
+  /\b(village|town|square|market|mercado|lunch|dinner|picnic|beach|praia|viewpoint|miradouro|centro interpretativo)\b/i;
+
 const WINERY_LABEL_FALLBACK_RE =
   /\b(winery|wineries|wine cellar|wine estate|vineyard|vineyards|adega|adegas|caves?)\b/i;
 
@@ -120,11 +127,16 @@ export function isWineryStopLabel(label: string): boolean {
   if (WINERY_IDENTITY_KEYS.has(normName(label))) return true;
   const semantic = semanticStopKey(label);
   if (semantic && WINERY_IDENTITY_KEYS.has(semantic)) return true;
-  // 2) Geo catalog kind (fuzzy match) — only ever confirms, never denies.
+  // 2) Guard against the fuzzy geo lookup below: a settlement, market,
+  //    lunch or interpretive centre near a winery is NOT a winery, even
+  //    though the fuzzy name match can land on one. Exact structural
+  //    identity (step 1) already ran, so a real supplier never reaches here.
+  if (NON_WINERY_LABEL_RE.test(label)) return false;
+  // 3) Geo catalog kind (fuzzy match) — only ever confirms, never denies.
   const geo = lookupStopGeo(label);
   if (geo && WINERY_KINDS.has(geo.kind)) return true;
   if (geo) return false;
-  // 3) Narrow keyword fallback for labels absent from every catalog.
+  // 4) Narrow keyword fallback for labels absent from every catalog.
   return WINERY_LABEL_FALLBACK_RE.test(label);
 }
 
