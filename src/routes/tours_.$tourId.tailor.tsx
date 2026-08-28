@@ -704,25 +704,19 @@ function TailorPage() {
 
   // ─── Wine-extension state ───────────────────────────────────
   // A "wine extension" = the traveller picked MORE wineries than the
-  // Signature's baseline `pickMin`. Because per-winery extension pricing
-  // has not been supplier-approved for every estate, extended selections
-  // fall to the manual-confirmation path — we don't invent a delta.
+  // Signature's baseline `pickMin`. Without an approved supplement ladder
+  // there is no price for it, so it can't be sold instantly.
   const wineExtension = useMemo(() => {
-    if (!blueprint?.choice) return { extra: 0, hasManualSupplier: false };
-    const extra = Math.max(0, choiceSelected.size - blueprint.choice.pickMin);
-    // Any selected option that explicitly requires manual confirmation.
-    const hasManualSupplier = blueprint.choice.options.some(
-      (o) => choiceSelected.has(o.id) && o.confirmationStatus === "manual",
-    );
-    return { extra, hasManualSupplier };
+    if (!blueprint?.choice) return { extra: 0 };
+    return { extra: Math.max(0, choiceSelected.size - blueprint.choice.pickMin) };
   }, [blueprint, choiceSelected]);
 
-  // An extra winery only blocks instant checkout when it is NOT covered by
-  // an approved supplement ladder. Arrábida Wine's +€20 pp extras are
-  // priced, so they stay instantly bookable (exact estate assignment is
-  // operational and never promised here).
-  const requiresManualConfirmation =
-    (wineExtension.extra > 0 && !rules.wineries) || wineExtension.hasManualSupplier;
+  // Only the ABSENCE of an approved price blocks instant checkout. A
+  // generic winery visit is the entire public promise — which estate runs
+  // it is operational, so an estate's internal confirmation status never
+  // gates the guest.
+  const requiresManualConfirmation = wineExtension.extra > 0 && !rules.wineries;
+
 
 
   // Blueprint contains a winery selection surface (choice or core).
