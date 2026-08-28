@@ -169,6 +169,8 @@ export function FinalDetailsDialog({
       phone: phone.trim(),
       tourDate,
       startTime: startTime || undefined,
+      guests: totalGuests(composition),
+
 
       adults: composition.adults,
       minorAges: [...composition.minorAges],
