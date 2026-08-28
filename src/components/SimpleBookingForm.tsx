@@ -571,6 +571,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           adults: composition.adults,
           minorAges: [...composition.minorAges],
           language,
+          // Trip preferences selection must survive into checkout.
+          startTime: pickup,
         }}
         onConfirm={async (details) => {
           await handleReserve(details);

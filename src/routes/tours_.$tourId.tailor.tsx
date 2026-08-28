@@ -398,18 +398,21 @@ function TailorPage() {
         return;
       }
       // Consequence preview — surface the estimated time cost so the
-      // traveller sees WHY the day just changed. Uses approved supplier
-      // visit + tasting minutes when populated, else the category default.
+      // traveller sees WHY the day just changed. Winery estates are
+      // operational data: the guest only ever hears "Winery visit".
       const option = blueprint?.choice?.options.find((o) => o.id === id);
       if (option) {
         const approved = (option.visitMinutes ?? 0) + (option.tastingMinutes ?? 0);
-        const added = approved > 0 ? approved : DWELL_MINIMUM_MIN[option.category];
-        toast.success(
-          `Adding ${option.label} adds about ${added} min to your day.${
-            approved > 0 ? "" : " Estimated — supplier will confirm timing."
-          }`,
-        );
+        if (option.category === "winery") {
+          toast.success(
+            approved > 0 ? `Winery visit added · about ${approved} min.` : "Winery visit added.",
+          );
+        } else {
+          const added = approved > 0 ? approved : DWELL_MINIMUM_MIN[option.category];
+          toast.success(`Adding ${option.label} adds about ${added} min to your day.`);
+        }
       }
+
     }
     setChoiceSelected(next);
   };
@@ -464,12 +467,10 @@ function TailorPage() {
 
   /**
    * Accessibility / dietary / free-form notes are collected in the shared
-   * FinalDetailsDialog ("Anything we should know?"), not on the editor.
-   * Kept in state so any value already carried by Tailor still reaches the
-   * checkout payload unchanged.
+   * FinalDetailsDialog ("Anything we should know?"). The editor keeps no
+   * stale local copies — the FinalDetails payload is the single source.
    */
-  const [accessibility] = useState<Set<string>>(new Set());
-  const [notes] = useState("");
+
 
 
   // ─── Derived live summary values ────────────────────────────
@@ -703,25 +704,19 @@ function TailorPage() {
 
   // ─── Wine-extension state ───────────────────────────────────
   // A "wine extension" = the traveller picked MORE wineries than the
-  // Signature's baseline `pickMin`. Because per-winery extension pricing
-  // has not been supplier-approved for every estate, extended selections
-  // fall to the manual-confirmation path — we don't invent a delta.
+  // Signature's baseline `pickMin`. Without an approved supplement ladder
+  // there is no price for it, so it can't be sold instantly.
   const wineExtension = useMemo(() => {
-    if (!blueprint?.choice) return { extra: 0, hasManualSupplier: false };
-    const extra = Math.max(0, choiceSelected.size - blueprint.choice.pickMin);
-    // Any selected option that explicitly requires manual confirmation.
-    const hasManualSupplier = blueprint.choice.options.some(
-      (o) => choiceSelected.has(o.id) && o.confirmationStatus === "manual",
-    );
-    return { extra, hasManualSupplier };
+    if (!blueprint?.choice) return { extra: 0 };
+    return { extra: Math.max(0, choiceSelected.size - blueprint.choice.pickMin) };
   }, [blueprint, choiceSelected]);
 
-  // An extra winery only blocks instant checkout when it is NOT covered by
-  // an approved supplement ladder. Arrábida Wine's +€20 pp extras are
-  // priced, so they stay instantly bookable (exact estate assignment is
-  // operational and never promised here).
-  const requiresManualConfirmation =
-    (wineExtension.extra > 0 && !rules.wineries) || wineExtension.hasManualSupplier;
+  // Only the ABSENCE of an approved price blocks instant checkout. A
+  // generic winery visit is the entire public promise — which estate runs
+  // it is operational, so an estate's internal confirmation status never
+  // gates the guest.
+  const requiresManualConfirmation = wineExtension.extra > 0 && !rules.wineries;
+
 
 
   // Blueprint contains a winery selection surface (choice or core).
@@ -760,7 +755,25 @@ function TailorPage() {
     () => (blueprint?.choice?.options ?? []).filter((o) => o.category === "winery"),
     [blueprint],
   );
+  /**
+   * Optional additions we may sell. Winery-category optionals are
+   * suppressed unless an owner-approved commercial ladder exists — an
+   * extra winery visit is never given away for free.
+   */
+  const publicOptional = useMemo(
+    () => (blueprint?.optional ?? []).filter((o) => o.category !== "winery"),
+    [blueprint],
+  );
+
   const canAdjustWineryCount = Boolean(rules.wineries) && wineryOptions.length > 0;
+  /** Real bounds — the control is disabled, never a toast at the edges. */
+  const wineryMin = rules.wineries?.included ?? 0;
+  const wineryMax = rules.wineries?.max ?? 0;
+  const canRemoveWineryVisit = canAdjustWineryCount && wineriesSelected > wineryMin;
+  const canAddWineryVisit =
+    canAdjustWineryCount &&
+    wineriesSelected < wineryMax &&
+    wineryOptions.some((o) => !choiceSelected.has(o.id));
   const addWineryVisit = () => {
     const next = wineryOptions.find((o) => !choiceSelected.has(o.id));
     if (next) tryToggleChoice(next.id);
@@ -769,6 +782,34 @@ function TailorPage() {
     const last = [...wineryOptions].reverse().find((o) => choiceSelected.has(o.id));
     if (last) tryToggleChoice(last.id);
   };
+
+  /**
+   * Customer-facing labels for the CURRENT selection, in day order.
+   * Winery estates are operational data — always shown generically.
+   */
+  const publicSelectionLabels = useMemo<string[]>(() => {
+    if (!blueprint) return keptStops.map((s: TourStop) => s.label);
+    let w = 0;
+    const label = (s: { label: string; category: string }) =>
+      s.category === "winery" ? wineryLabel((w += 1)) : s.label;
+    return [
+      ...blueprint.core.filter((s) => !skippedCore.has(s.id)).map(label),
+      ...(blueprint.choice
+        ? blueprint.choice.options.filter((o) => choiceSelected.has(o.id)).map(label)
+        : []),
+      ...blueprint.optional.filter((o) => optionalSelected.has(o.id)).map(label),
+    ];
+  }, [blueprint, keptStops, skippedCore, choiceSelected, optionalSelected]);
+
+  /** Removed moments, with the same generic winery vocabulary. */
+  const skippedPublicLabels = useMemo<string[]>(() => {
+    if (!blueprint) return [];
+    let w = 0;
+    return blueprint.core
+      .filter((s) => skippedCore.has(s.id))
+      .map((s) => (s.category === "winery" ? wineryLabel((w += 1)) : s.label));
+  }, [blueprint, skippedCore]);
+
 
   /**
    * The day as an ordered list of moments. Core stops keep blueprint
@@ -843,8 +884,10 @@ function TailorPage() {
     // Open the drawer immediately so a branded skeleton appears while
     // the edge function is in flight — avoids "blank screen" feel.
     const metaForSummary = getViatorMeta(tour.id);
-    const stopLabels = keptStops.map((s: TourStop) => s.label);
-    [...added].forEach((label) => stopLabels.push(label));
+    // Display labels come from the ACTUAL current selection, with every
+    // winery genericised. Server pricing still keys off stable stop ids.
+    const stopLabels = [...publicSelectionLabels];
+
     // Age-band aware total — mirrors the server pricing so summary and
     // Stripe line items agree for families with minors. Tailored uses
     // estimatedPrice (adult tier + selection deltas) as the adult unit;
@@ -912,11 +955,10 @@ function TailorPage() {
           // Never priced — the server re-derives every euro itself.
           itinerary: stopLabels.slice(0, 20).map((label: string) => ({ label })),
           removedOptions: [
-            ...(blueprint
-              ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.label)
-              : []),
+            ...skippedPublicLabels,
             ...(rules.allowRemoveLunch === true && lunchRemoved ? ["Included lunch removed"] : []),
           ],
+
 
           pickupLabel: details.pickupAddress || pickup,
           dateExact: details.tourDate || null,
@@ -942,14 +984,12 @@ function TailorPage() {
           flow: "tailor",
           uiMode: "embedded",
           guestDetails: {
+            // FinalDetails is the single source of truth for every
+            // operational preference — never overwrite it with defaults.
             ...details,
             hotelPickupIncluded: true,
             pace,
-            accessibility: [...accessibility],
-            notes,
-            skippedCoreStops: blueprint
-              ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.label)
-              : [],
+            skippedCoreStops: skippedPublicLabels,
           },
         },
       });
@@ -1033,9 +1073,9 @@ function TailorPage() {
                 <SectionTitle.Em>your version</SectionTitle.Em>
               </SectionTitle>
               <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                Keep the day as designed, or change a few moments. Your guide, route order and
-                region stay as they are.
+                Keep the character of this Signature, then shape a few moments and the rhythm.
               </p>
+
             </div>
 
             <div className="relative aspect-[16/9] overflow-hidden border border-[color:var(--border)]">
@@ -1323,7 +1363,7 @@ function TailorPage() {
               {(rules.allowAddLunch ||
                 rules.allowRemoveLunch ||
                 canAdjustWineryCount ||
-                (blueprint?.optional.length ?? 0) > 0) && (
+                publicOptional.length > 0) && (
                 <Group title="Enhance">
                   <div data-testid="tailor-enhance" className="space-y-2.5">
                     {canAdjustWineryCount && (
@@ -1345,9 +1385,10 @@ function TailorPage() {
                           <button
                             type="button"
                             onClick={removeWineryVisit}
+                            disabled={!canRemoveWineryVisit}
                             aria-label="One winery visit fewer"
                             data-testid="tailor-winery-decrease"
-                            className="h-11 w-11 border border-[color:var(--border)] text-[color:var(--charcoal)]"
+                            className="h-11 w-11 border border-[color:var(--border)] text-[color:var(--charcoal)] disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             −
                           </button>
@@ -1360,12 +1401,14 @@ function TailorPage() {
                           <button
                             type="button"
                             onClick={addWineryVisit}
+                            disabled={!canAddWineryVisit}
                             aria-label="One winery visit more"
                             data-testid="tailor-winery-increase"
-                            className="h-11 w-11 border border-[color:var(--border)] text-[color:var(--charcoal)]"
+                            className="h-11 w-11 border border-[color:var(--border)] text-[color:var(--charcoal)] disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             +
                           </button>
+
                         </span>
                       </div>
                     )}
@@ -1434,7 +1477,7 @@ function TailorPage() {
                       </button>
                     )}
 
-                    {(blueprint?.optional ?? []).map((o) => {
+                    {publicOptional.map((o) => {
                       const on = optionalSelected.has(o.id);
                       return (
                         <button
@@ -1595,6 +1638,9 @@ function TailorPage() {
           tourDate: date,
           adults: composition.adults,
           minorAges: [...composition.minorAges],
+          // Default start time — adjustable in "Anything we should know?".
+          startTime: pickup,
+
           language,
         }}
         onConfirm={async (d) => {

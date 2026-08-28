@@ -77,7 +77,13 @@ export interface FinalDetailsInitial {
   email?: string | null;
   phone?: string | null;
   guideNotes?: string | null;
+  /** "HH:mm" preferred start time already chosen upstream. */
+  startTime?: string | null;
 }
+
+/** The only start times the operation runs. */
+const START_TIMES = ["08:00", "09:00", "10:00"] as const;
+
 
 interface Props {
   open: boolean;
@@ -114,6 +120,7 @@ export function FinalDetailsDialog({
   );
   const [pickupAddress, setPickupAddress] = useState(initial?.pickupAddress ?? "");
   const [language, setLanguage] = useState<GuestDetails["language"]>(initial?.language ?? "en");
+  const [startTime, setStartTime] = useState<string>(initial?.startTime ?? "");
   const [mainContact, setMainContact] = useState("");
   const [dietary, setDietary] = useState("");
   const [mobility, setMobility] = useState("");
@@ -132,8 +139,10 @@ export function FinalDetailsDialog({
     if (initial) setComposition(hydrateLegacyComposition(initial));
     if (initial?.pickupAddress) setPickupAddress(initial.pickupAddress);
     if (initial?.language) setLanguage(initial.language);
+    if (initial?.startTime) setStartTime(initial.startTime);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
 
   const compositionComplete = isCompositionComplete(composition);
   const quote =
@@ -159,7 +168,10 @@ export function FinalDetailsDialog({
       email: email.trim(),
       phone: phone.trim(),
       tourDate,
+      startTime: startTime || undefined,
       guests: totalGuests(composition),
+
+
       adults: composition.adults,
       minorAges: [...composition.minorAges],
       pickupAddress: pickupAddress.trim(),
@@ -342,7 +354,31 @@ export function FinalDetailsDialog({
                     />
                   </GuestField>
                 </GuestRow>
+                <GuestField label="Preferred start time" as="div">
+                  <div
+                    data-testid="final-details-start-time"
+                    className="grid grid-cols-3 border border-[color:var(--border)]"
+                  >
+                    {START_TIMES.map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setStartTime(t)}
+                        aria-pressed={startTime === t}
+                        className={[
+                          "min-h-[44px] py-2.5 text-xs tracking-[0.14em] transition-colors",
+                          startTime === t
+                            ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
+                            : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
+                        ].join(" ")}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </GuestField>
                 <GuestField label="Preferred tour language" as="div">
+
                   <div className="grid grid-cols-2 border border-[color:var(--border)]">
                     {(["en", "pt"] as const).map((l) => (
                       <button
