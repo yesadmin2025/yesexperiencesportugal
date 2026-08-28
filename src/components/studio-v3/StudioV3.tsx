@@ -2418,8 +2418,14 @@ export function StudioV3() {
   };
 
   const renderAcknowledgement = (surface: "refinement" | "logistics") => {
+    // Pass 2C — on Logistics the Living Day is on screen and already shows the
+    // same taste / rhythm signals, so reading them back is narration. The line
+    // still renders whenever the Living Day is not visible there. Refinement
+    // is untouched: no persistent artefact accompanies that question.
+    if (surface === "logistics" && !livingDayHidden) return null;
     const summary = acknowledgementSummaryFor(surface, acknowledgementContext);
     if (!summary) return null;
+
     return (
       <div
         data-testid="studio-v3-understood-summary"
