@@ -108,8 +108,9 @@ describe("Tailor principal-removal whitelist", () => {
     const pending = tailorStopsPendingOwnerReview();
     expect(pending.length).toBeGreaterThan(0);
     for (const item of pending) {
-      // unchanged baseline behaviour: still eligible until the owner rules
-      expect(principalEligibleStopIds(item.tourId).has(item.stopId)).toBe(true);
+      // FAIL-CLOSED: removable for time, but earns nothing until classified
+      // `principal` by the owner.
+      expect(principalEligibleStopIds(item.tourId).has(item.stopId)).toBe(false);
     }
   });
 

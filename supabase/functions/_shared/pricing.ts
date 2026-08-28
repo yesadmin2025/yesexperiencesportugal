@@ -136,21 +136,93 @@ export type AddOnPricingUnit = "per_person" | "per_group" | "per_vehicle" | "fix
 
 export const SIGNATURE_ADD_ON_CATALOG: Record<
   string,
-  { pricePctOfBase: number; pricingUnit: AddOnPricingUnit }
+  {
+    pricePctOfBase: number;
+    pricingUnit: AddOnPricingUnit;
+    /** CANONICAL commercial label. A client-supplied label is never trusted. */
+    label: string;
+    /** CANONICAL duration promise, minutes. A client value is never trusted. */
+    durationMinutes: number;
+  }
 > = {
-  "hidden-cove-picnic": { pricePctOfBase: 0.18, pricingUnit: "per_person" },
-  "coastal-boat-ride": { pricePctOfBase: 0.22, pricingUnit: "per_person" },
-  "azulejo-workshop": { pricePctOfBase: 0.16, pricingUnit: "per_person" },
-  "azeitao-cheese": { pricePctOfBase: 0.14, pricingUnit: "per_person" },
-  "sintra-detour": { pricePctOfBase: 0.2, pricingUnit: "per_person" },
-  "chapel-of-bones": { pricePctOfBase: 0.16, pricingUnit: "per_person" },
-  "talha-amphora": { pricePctOfBase: 0.18, pricingUnit: "per_person" },
-  "roman-ruins-trail": { pricePctOfBase: 0.12, pricingUnit: "per_person" },
-  "roman-troia": { pricePctOfBase: 0.14, pricingUnit: "per_person" },
-  "herdade-tasting": { pricePctOfBase: 0.2, pricingUnit: "per_person" },
-  "templar-tomar": { pricePctOfBase: 0.18, pricingUnit: "per_person" },
-  "obidos-walls": { pricePctOfBase: 0.14, pricingUnit: "per_person" },
-  "nazare-cliffs": { pricePctOfBase: 0.16, pricingUnit: "per_person" },
+  "hidden-cove-picnic": {
+    pricePctOfBase: 0.18,
+    pricingUnit: "per_person",
+    label: "Hidden-cove beach picnic",
+    durationMinutes: 90,
+  },
+  "coastal-boat-ride": {
+    pricePctOfBase: 0.22,
+    pricingUnit: "per_person",
+    label: "Coastal boat ride from Sesimbra",
+    durationMinutes: 75,
+  },
+  "azulejo-workshop": {
+    pricePctOfBase: 0.16,
+    pricingUnit: "per_person",
+    label: "Hand-painted azulejo workshop",
+    durationMinutes: 90,
+  },
+  "azeitao-cheese": {
+    pricePctOfBase: 0.14,
+    pricingUnit: "per_person",
+    label: "Azeitão cheese-making session",
+    durationMinutes: 60,
+  },
+  "sintra-detour": {
+    pricePctOfBase: 0.2,
+    pricingUnit: "per_person",
+    label: "Sintra detour — Pena & Cabo da Roca",
+    durationMinutes: 120,
+  },
+  "chapel-of-bones": {
+    pricePctOfBase: 0.16,
+    pricingUnit: "per_person",
+    label: "Chapel of Bones, after the queue",
+    durationMinutes: 60,
+  },
+  "talha-amphora": {
+    pricePctOfBase: 0.18,
+    pricingUnit: "per_person",
+    label: "Talha amphora wine tasting",
+    durationMinutes: 75,
+  },
+  "roman-ruins-trail": {
+    pricePctOfBase: 0.12,
+    pricingUnit: "per_person",
+    label: "Roman heritage stop",
+    durationMinutes: 45,
+  },
+  "roman-troia": {
+    pricePctOfBase: 0.14,
+    pricingUnit: "per_person",
+    label: "Roman ruins of Tróia",
+    durationMinutes: 60,
+  },
+  "herdade-tasting": {
+    pricePctOfBase: 0.2,
+    pricingUnit: "per_person",
+    label: "Herdade da Comporta wine tasting",
+    durationMinutes: 75,
+  },
+  "templar-tomar": {
+    pricePctOfBase: 0.18,
+    pricingUnit: "per_person",
+    label: "Templar Convent of Tomar",
+    durationMinutes: 75,
+  },
+  "obidos-walls": {
+    pricePctOfBase: 0.14,
+    pricingUnit: "per_person",
+    label: "Walled town of Óbidos",
+    durationMinutes: 60,
+  },
+  "nazare-cliffs": {
+    pricePctOfBase: 0.16,
+    pricingUnit: "per_person",
+    label: "Nazaré giant-wave cliffs",
+    durationMinutes: 45,
+  },
 };
 
 /** Round to nearest €5, floor €5 — mirrors `roundEur5` in the client catalog. */
@@ -168,7 +240,13 @@ export function serverAddOnLine(
   baseEur: number,
   guests: number,
   vehicleCapacity = 4,
-): { perUnitEur: number; quantity: number; unit: AddOnPricingUnit } | null {
+): {
+  perUnitEur: number;
+  quantity: number;
+  unit: AddOnPricingUnit;
+  label: string;
+  durationMinutes: number;
+} | null {
   const entry = SIGNATURE_ADD_ON_CATALOG[id];
   if (!entry || !Number.isFinite(baseEur) || baseEur <= 0) return null;
   const perUnitEur = serverRoundEur5(baseEur * entry.pricePctOfBase);
@@ -180,7 +258,14 @@ export function serverAddOnLine(
       : entry.pricingUnit === "per_vehicle"
         ? Math.ceil(guestsSafe / cap)
         : 1;
-  return { perUnitEur, quantity, unit: entry.pricingUnit };
+  // Commercial identity (label + duration promise) is owned by the catalog.
+  return {
+    perUnitEur,
+    quantity,
+    unit: entry.pricingUnit,
+    label: entry.label,
+    durationMinutes: entry.durationMinutes,
+  };
 }
 
 /**
@@ -197,29 +282,24 @@ export const TAILOR_DEDICATED_LUNCH_STOP_ID: Readonly<Record<string, string>> = 
  * AUTHORITATIVE whitelist of Tailor core stop ids that may earn the −5%
  * principal-removal reduction, per Signature. Server mirror of
  * `principalEligibleStopIds()` in `src/data/tailorRules.ts`, which is driven
- * by the explicit pricing classification in `src/data/tailorStopPricing.ts`
- * (principal + pending-owner-review only). Locked anchors, the dedicated
- * included-lunch stop and descriptive/free stops (viewpoints, drive-bys —
- * removable for time, never for money) are excluded. Parity is enforced by a
- * unit test. A tour absent from this table earns no reduction.
+ * by the explicit pricing classification in `src/data/tailorStopPricing.ts`.
+ * ONLY stops explicitly classified `principal` appear here: locked anchors,
+ * the dedicated included-lunch stop, descriptive/free stops (viewpoints,
+ * drive-bys — removable for time, never for money) and `needs-owner-review`
+ * stops are FAIL-CLOSED and earn nothing. Parity is enforced by a unit test.
+ * A tour absent from this table earns no reduction.
  */
 export const TAILOR_PRINCIPAL_ELIGIBLE_STOP_IDS: Readonly<Record<string, readonly string[]>> = {
   "arrabida-wine-allinclusive": ["livramento", "azeitao-tiles"],
-  "wild-beaches-picnic": ["livramento", "sesimbra-village"],
-  "arrabida-boat": ["livramento", "sesimbra-village"],
+  "wild-beaches-picnic": ["livramento"],
+  "arrabida-boat": ["livramento"],
   "tiles-workshop": ["livramento", "lunch-azeitao"],
   "azeitao-cheese": ["livramento", "lunch-azeitao"],
-  "sintra-cascais": ["sintra-vila", "lunch-azenhas", "cascais"],
-  "troia-comporta": ["troia-ruins", "herdade-comporta", "comporta-lunch", "comporta-beach"],
-  "evora-alentejo": ["evora-old-town", "templo-romano", "chapel-of-bones", "evora-lunch"],
-  "tomar-coimbra": [
-    "convento-cristo",
-    "tomar-town",
-    "tomar-lunch",
-    "coimbra-uni",
-    "biblioteca-joanina",
-  ],
-  "fatima-nazare-obidos": ["fatima", "nazare-lunch", "obidos"],
+  "sintra-cascais": ["lunch-azenhas"],
+  "troia-comporta": ["troia-ruins", "herdade-comporta", "comporta-lunch"],
+  "evora-alentejo": ["templo-romano", "chapel-of-bones", "evora-lunch"],
+  "tomar-coimbra": ["convento-cristo", "tomar-lunch", "coimbra-uni", "biblioteca-joanina"],
+  "fatima-nazare-obidos": ["fatima", "nazare-lunch"],
   "roman-heritage-alentejo": ["sao-cucufate", "vinho-talha", "mestre-daniel", "talha-lunch"],
 };
 

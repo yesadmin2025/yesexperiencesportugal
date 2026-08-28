@@ -83,9 +83,8 @@ describe("server mirrors the same exclusion", () => {
   it("re-derives the ladder in the edge function and never trusts a higher claim", () => {
     expect(CHECKOUT_FN).toContain("serverPrincipalRemovalCount(body.tourId, skippedCoreStopIds)");
     expect(CHECKOUT_FN).toContain("Math.min(claimedPrincipals, derivedPrincipals)");
-    // Stale/tampered clients that omit ids lose one removal instead of
-    // double-crediting the lunch.
-    expect(CHECKOUT_FN).toContain("Math.max(0, claimedPrincipals - 1)");
+    // FAIL-CLOSED: clients that omit stable ids earn no ladder credit at all.
+    expect(CHECKOUT_FN).not.toContain("Math.max(0, claimedPrincipals - 1)");
   });
 });
 
