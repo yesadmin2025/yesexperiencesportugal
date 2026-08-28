@@ -304,12 +304,9 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       <SectionTitle size="compact" spacing="tight">
         Book the Signature, <SectionTitle.Em>as designed</SectionTitle.Em>
       </SectionTitle>
-      <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
-        The full Signature — route, story and local guide intact. Pick a day, confirm instantly.
-      </p>
 
-      {/* Date + pickup */}
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {/* Date */}
+      <div className="mt-6">
         <Field label="Date" icon={<Calendar size={14} />}>
           <input
             type="date"
@@ -343,34 +340,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
               }
             }}
             min={minDateISO}
-            className="w-full border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-sm focus:border-[color:var(--gold)] focus:outline-none"
+            className="w-full min-h-[48px] border border-[color:var(--border)] bg-[color:var(--ivory)] px-3 py-2.5 text-[16px] sm:text-sm focus:border-[color:var(--gold)] focus:outline-none"
           />
-        </Field>
-        <Field label="Pickup time">
-          <div className="grid grid-cols-3 border border-[color:var(--border)]">
-            {(["08:00", "09:00", "10:00"] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => {
-                  setPickup(t);
-                  if (!firedTime.current) {
-                    firedTime.current = true;
-                    gaBookingTimeSelected({ tourId: tour.id, surface: "signature", pickupTime: t });
-                  }
-                }}
-                aria-pressed={pickup === t}
-                className={[
-                  "py-2.5 text-xs tracking-wide transition-colors",
-                  pickup === t
-                    ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
-                    : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
-                ].join(" ")}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
         </Field>
       </div>
 
@@ -380,45 +351,98 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
           <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
             <CompositionField value={composition} onChange={setComposition} compact />
           </div>
-          <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
-            {compositionReady
-              ? formatCompositionSummary(composition)
-              : "Add an age for every child so we can price honestly."}
-          </p>
+          {!compositionReady ? (
+            <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+              Add an age for every child so we can price honestly.
+            </p>
+          ) : null}
         </Field>
       </div>
 
-      {/* Language */}
-      <div className="mt-3">
-        <Field label="Guide language">
-          <div className="grid grid-cols-2 border border-[color:var(--border)]">
-            {(["en", "pt"] as const).map((l) => (
-              <button
-                key={l}
-                type="button"
-                onClick={() => setLanguage(l)}
-                aria-pressed={language === l}
-                className={[
-                  "py-2.5 text-xs uppercase tracking-[0.18em] transition-colors",
-                  language === l
-                    ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
-                    : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
-                ].join(" ")}
-              >
-                {l}
-              </button>
-            ))}
+      {/* Trip preferences — out of the primary decision hierarchy. */}
+      <div className="mt-4 border-t border-[color:var(--border)] pt-2">
+        <button
+          type="button"
+          onClick={() => setPrefsOpen((v) => !v)}
+          aria-expanded={prefsOpen}
+          data-testid="signature-trip-preferences-toggle"
+          className="flex min-h-[44px] w-full items-center justify-between gap-3 text-left text-[12px] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+        >
+          <span>
+            Trip preferences · {pickup} · {language.toUpperCase()}
+          </span>
+          <ChevronDown
+            size={14}
+            aria-hidden
+            className={prefsOpen ? "rotate-180 transition-transform" : "transition-transform"}
+          />
+        </button>
+        {prefsOpen ? (
+          <div className="pb-2 pt-1 space-y-3" data-testid="signature-trip-preferences">
+            <Field label="Pickup time">
+              <div className="grid grid-cols-3 border border-[color:var(--border)]">
+                {(["08:00", "09:00", "10:00"] as const).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => {
+                      setPickup(t);
+                      if (!firedTime.current) {
+                        firedTime.current = true;
+                        gaBookingTimeSelected({
+                          tourId: tour.id,
+                          surface: "signature",
+                          pickupTime: t,
+                        });
+                      }
+                    }}
+                    aria-pressed={pickup === t}
+                    className={[
+                      "min-h-[44px] py-2.5 text-xs tracking-wide transition-colors",
+                      pickup === t
+                        ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
+                        : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
+                    ].join(" ")}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </Field>
+            <Field label="Guide language">
+              <div className="grid grid-cols-2 border border-[color:var(--border)]">
+                {(["en", "pt"] as const).map((l) => (
+                  <button
+                    key={l}
+                    type="button"
+                    onClick={() => setLanguage(l)}
+                    aria-pressed={language === l}
+                    className={[
+                      "min-h-[44px] py-2.5 text-xs uppercase tracking-[0.18em] transition-colors",
+                      language === l
+                        ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
+                        : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
+                    ].join(" ")}
+                  >
+                    {l}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-1.5 text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                Spanish available on request — subject to guide availability.
+              </p>
+            </Field>
           </div>
-          <p className="mt-1.5 text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
-            Spanish available on request — subject to guide availability.
-          </p>
-        </Field>
+        ) : null}
       </div>
 
-      {/* Price for chosen party — tier-resolved when we have real data. */}
-      <div className="mt-6 border-t border-[color:var(--border)] pt-4 space-y-1.5">
+      {/* Price — total first, everything else behind Price details. */}
+      <div className="mt-5">
         {priceUnavailable ? (
-          <div data-testid="signature-price-unavailable" className="space-y-1.5">
+          <div
+            data-testid="signature-price-unavailable"
+            className="space-y-1.5 border-t border-[color:var(--border)] pt-4"
+          >
             <span className="block text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
               Exact price on request
             </span>
@@ -427,120 +451,85 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
               curator will confirm the exact price for your party.
             </p>
           </div>
-        ) : (
-        <>
-        <div className="flex items-baseline justify-between">
-          <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-            {displayIsReal
-              ? `For ${guests} guest${guests > 1 ? "s" : ""} · per person`
-              : hasTierData
-                ? "From · 8+ guests · per person"
-                : "From · per person"}
-          </span>
-          <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
-            €{Math.round(displayPerPaxEur).toLocaleString("en-GB")}
-          </span>
-        </div>
-        {displayIsReal && hasMinors && journeyPricing?.lines?.length ? (
-          <PerPersonBands
-            journeyLines={journeyPricing.lines}
-            className="block pt-1"
-            rowClassName="flex items-baseline justify-between text-[12px] tracking-wide text-[color:var(--charcoal)]"
+        ) : !compositionReady ? (
+          <ChargeSummaryLine quote={null} />
+        ) : displayIsReal && journeyPricing ? (
+          <ChargeSummaryLine
+            quote={{
+              totalEur: journeyPricing.totalEur,
+              perPaxAdultEur: journeyPricing.perPaxAdultEur,
+              hasMinors,
+              adults: composition.adults,
+              minors: composition.minorAges.length,
+              journeySubtotalEur: journeyPricing.totalEur,
+              addOnsEur: 0,
+            }}
           />
-        ) : null}
-        {displayIsReal && guests > 1 ? (
-          <div className="flex items-baseline justify-between">
+        ) : (
+          <div
+            data-testid="signature-price-anchor"
+            className="flex items-baseline justify-between border-t border-[color:var(--border)] pt-4"
+          >
             <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
-              Party total (indicative)
+              {hasTierData ? "From · 8+ guests · per person" : "From · per person"}
             </span>
-            <span className="serif text-[1.05rem] text-[color:var(--charcoal)]">
-              €{Math.round(partyTotalEur).toLocaleString("en-GB")}
-              {!hasMinors ? (
-                <span className="ml-1.5 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans not-italic">
-                  €{Math.round(displayPerPaxEur)} × {guests}
-                </span>
-              ) : (
-                <span className="ml-1.5 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans not-italic">
-                  age-based pricing
-                </span>
-              )}
+            <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
+              €{Math.round(displayPerPaxEur).toLocaleString("en-GB")}
             </span>
           </div>
-        ) : null}
-        {!displayIsReal && hasTierData ? (
-          <p className="pt-1 text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
-            Smaller parties are priced per tier — pick your guests to see the exact per-person rate.
-          </p>
-        ) : null}
-        </>
         )}
       </div>
 
       {priceUnavailable ? (
-        <>
-          <Link
-            to="/contact"
-            search={{ type: undefined }}
-            data-testid="signature-price-unavailable-cta"
-            className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
-          >
-            <Sparkles size={15} /> Ask our curator for this party size
-          </Link>
-          <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-            We reply the same day with the exact price.
-          </p>
-        </>
+        <Link
+          to="/contact"
+          search={{ type: undefined }}
+          data-testid="signature-price-unavailable-cta"
+          className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
+        >
+          <Sparkles size={15} /> Ask our curator for this party size
+        </Link>
       ) : (
-        <>
-      <button
-        type="button"
-        onClick={() => {
-          if (!canReserve) {
-            const reason = !dateValid ? "date_missing_or_past" : "composition_incomplete";
-            gaBookingValidationBlocked({ tourId: tour.id, surface: "signature", reason });
-            toast.error(
-              !dateValid ? "Pick a date at least 24h from now." : "Add an age for every child.",
-            );
-            return;
-          }
-          setDetailsOpen(true);
-        }}
-        disabled={pending}
-        aria-disabled={!canReserve}
-        className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
-      >
-        {pending ? (
-          <>
-            <Loader2 size={15} className="animate-spin" /> Opening checkout…
-          </>
-        ) : (
-          <>
-            <Sparkles size={15} /> Reserve securely
-          </>
-        )}
-      </button>
-
-      <p className="mt-2 text-[11px] text-[color:var(--charcoal-soft)] text-center">
-        Instant confirmation
-      </p>
-      <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]/80">
-        <Lock size={10} /> Secure checkout
-      </p>
-        </>
+        <button
+          type="button"
+          data-testid="signature-reserve-cta"
+          onClick={() => {
+            if (!canReserve) {
+              const reason = !dateValid ? "date_missing_or_past" : "composition_incomplete";
+              gaBookingValidationBlocked({ tourId: tour.id, surface: "signature", reason });
+              toast.error(
+                !dateValid ? "Pick a date at least 24h from now." : "Add an age for every child.",
+              );
+              return;
+            }
+            setDetailsOpen(true);
+          }}
+          disabled={pending}
+          aria-disabled={!canReserve}
+          className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-3.5 text-sm tracking-wide transition-all min-h-[52px]"
+        >
+          {pending ? (
+            <>
+              <Loader2 size={15} className="animate-spin" /> Opening checkout…
+            </>
+          ) : (
+            <>
+              <Sparkles size={15} /> Reserve securely
+            </>
+          )}
+        </button>
       )}
 
-      <div className="mt-5 pt-4 border-t border-[color:var(--border)] text-center">
-        <p className="text-[12px] text-[color:var(--charcoal-soft)]">
-          Want to adjust a few details?
-        </p>
+      <div className="mt-3 text-center">
         <Link
           to="/tours/$tourId/tailor"
           params={{ tourId: tour.id }}
-          className="mt-1 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
+          className="inline-flex min-h-[44px] items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
         >
           Tailor this day
         </Link>
       </div>
+
 
       <FinalDetailsDialog
         priceQuote={({ adults, minorAges }) => {
