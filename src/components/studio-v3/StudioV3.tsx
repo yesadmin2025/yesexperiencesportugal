@@ -4929,7 +4929,7 @@ export function StoryboardHandoff({
                   region: skeletonTour?.region ?? null,
                 }).remainingMin
           }
-          itineraryStops={editedStops.map((p) => (p as { label: string }).label)}
+          itineraryStops={editedStops.map((p) => revealLabel((p as { label: string }).label))}
           dwellHours={(() => {
             if (revealLegsLoading) return null;
             const sum = summarizeDay({
