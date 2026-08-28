@@ -266,17 +266,18 @@ Deno.serve(async (req) => {
     const skippedCoreStopIds = Array.isArray(body.skippedCoreStopIds)
       ? body.skippedCoreStopIds.filter((id): id is string => typeof id === "string")
       : null;
+    // Telemetry / consistency upper bound ONLY — never price authority.
     const claimedPrincipals = Math.min(8, Math.max(0, Number(body.principalsRemoved ?? 0) | 0));
     const lunchRemovalClaimed =
       body.tailorLunchRemoved === true && TAILOR_LUNCH_REMOVAL_ELIGIBLE.has(body.tourId);
-    const derivedPrincipals = skippedCoreStopIds
-      ? Math.min(8, serverPrincipalRemovalCount(body.tourId, skippedCoreStopIds))
-      : // No ids (stale or tampered client): a lunch-removal booking may be
-        // carrying the lunch inside its claimed count, so drop one removal
-        // rather than risk paying the same lunch twice.
-        lunchRemovalClaimed
-        ? Math.max(0, claimedPrincipals - 1)
-        : claimedPrincipals;
+    // FAIL-CLOSED: without stable skipped stop ids there is no server-verifiable
+    // removal, so the −5% ladder count is 0. With ids, only UNIQUE whitelisted
+    // ids count (invented ids, duplicates, locked anchors and the dedicated
+    // included-lunch stop earn nothing).
+    const derivedPrincipals =
+      skippedCoreStopIds && skippedCoreStopIds.length > 0
+        ? Math.min(8, serverPrincipalRemovalCount(body.tourId, skippedCoreStopIds))
+        : 0;
     const principalsRemoved = isTailorFlow ? Math.min(claimedPrincipals, derivedPrincipals) : 0;
 
 
