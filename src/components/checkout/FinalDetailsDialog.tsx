@@ -120,6 +120,7 @@ export function FinalDetailsDialog({
   );
   const [pickupAddress, setPickupAddress] = useState(initial?.pickupAddress ?? "");
   const [language, setLanguage] = useState<GuestDetails["language"]>(initial?.language ?? "en");
+  const [startTime, setStartTime] = useState<string>(initial?.startTime ?? "");
   const [mainContact, setMainContact] = useState("");
   const [dietary, setDietary] = useState("");
   const [mobility, setMobility] = useState("");
@@ -138,8 +139,10 @@ export function FinalDetailsDialog({
     if (initial) setComposition(hydrateLegacyComposition(initial));
     if (initial?.pickupAddress) setPickupAddress(initial.pickupAddress);
     if (initial?.language) setLanguage(initial.language);
+    if (initial?.startTime) setStartTime(initial.startTime);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
 
   const compositionComplete = isCompositionComplete(composition);
   const quote =
