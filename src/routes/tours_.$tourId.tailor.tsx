@@ -755,6 +755,16 @@ function TailorPage() {
     () => (blueprint?.choice?.options ?? []).filter((o) => o.category === "winery"),
     [blueprint],
   );
+  /**
+   * Optional additions we may sell. Winery-category optionals are
+   * suppressed unless an owner-approved commercial ladder exists — an
+   * extra winery visit is never given away for free.
+   */
+  const publicOptional = useMemo(
+    () => (blueprint?.optional ?? []).filter((o) => o.category !== "winery"),
+    [blueprint],
+  );
+
   const canAdjustWineryCount = Boolean(rules.wineries) && wineryOptions.length > 0;
   /** Real bounds — the control is disabled, never a toast at the edges. */
   const wineryMin = rules.wineries?.included ?? 0;
