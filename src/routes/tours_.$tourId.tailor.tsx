@@ -1353,7 +1353,7 @@ function TailorPage() {
               {(rules.allowAddLunch ||
                 rules.allowRemoveLunch ||
                 canAdjustWineryCount ||
-                (blueprint?.optional.length ?? 0) > 0) && (
+                publicOptional.length > 0) && (
                 <Group title="Enhance">
                   <div data-testid="tailor-enhance" className="space-y-2.5">
                     {canAdjustWineryCount && (
