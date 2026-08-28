@@ -8,7 +8,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { render as rtlRender, screen, cleanup, fireEvent, within } from "@testing-library/react";
+import { render as rtlRender, screen, cleanup, fireEvent, within, act as rtlAct } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { INITIAL_STATE, type StudioV3State } from "../types";
 import { resolveStudioV3Route } from "../curation";
@@ -229,21 +229,68 @@ describe("Pass 2A — full-route authority (no compact-card cap)", () => {
     expect(within(timeline).getAllByRole("listitem")).toHaveLength(full.length);
   });
 
-  it("map view receives every composed moment (no 4-stop cap)", () => {
+  it("map view renders and reveals every composed moment (no 4-stop cap)", () => {
     const raw = resolveImmersive();
     const full = raw.composedRoutePoints.length
       ? raw.composedRoutePoints
       : raw.routePoints;
-    render(<LivingJourneyPanel state={IMMERSIVE} />);
-    fireEvent.click(screen.getByTestId("studio-v3-living-day-pill"));
-    fireEvent.click(screen.getByRole("tab", { name: /map/i }));
-    const map = screen.getByLabelText("Your journey, drawing live");
-    expect(map).toBeInTheDocument();
-    // Every composed moment label (genericised where winery) appears in the
-    // map data the drawer passed down — the legacy .slice(0, 4) is gone.
-    const dialog = screen.getByRole("dialog");
     expect(raw.routePoints.length).toBeLessThan(full.length); // compact cap exists upstream
-    expect(dialog).toBeTruthy();
+
+    // Deterministic reveal: force reduced-motion so all pins render at once
+    // instead of relying on the cinematic sequential timers.
+    const originalMatchMedia = window.matchMedia;
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: query.includes("prefers-reduced-motion"),
+        media: query,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+        onchange: null,
+        dispatchEvent: () => false,
+      })),
+    });
+    vi.useFakeTimers();
+    try {
+      render(<LivingJourneyPanel state={IMMERSIVE} />);
+      fireEvent.click(screen.getByTestId("studio-v3-living-day-pill"));
+      fireEvent.click(screen.getByRole("tab", { name: /map/i }));
+      // Flush the drawer's pin timers and the map's internal 460ms segment
+      // stagger so every composed moment is revealed.
+      rtlAct(() => {
+        vi.advanceTimersByTime(120 + full.length * 460 + 1000);
+      });
+      const map = screen.getByLabelText("Your journey, drawing live");
+      expect(map).toBeInTheDocument();
+
+      // The accessible stop overlay must expose one button per composed
+      // moment — exactly the full route length, not the legacy 4-pin cap.
+      const toolbar = screen.getByRole("toolbar", { name: /route stops/i });
+      const stopButtons = within(toolbar).getAllByRole("button");
+      expect(stopButtons).toHaveLength(full.length);
+      expect(stopButtons[0]).toHaveAccessibleName(/stop 1:/i);
+      expect(stopButtons[full.length - 1]).toHaveAccessibleName(
+        new RegExp(`stop ${full.length}:`, "i"),
+      );
+
+      // The map's SR route summary also counts every revealed stop.
+      const summary = screen.getByLabelText(/route summary/i);
+      expect(summary.textContent ?? "").toContain(`${full.length}`);
+
+      // Winery pins stay generic in the accessibility layer.
+      const names = stopButtons.map((b) => b.getAttribute("aria-label") ?? "").join(" | ");
+      expect(isWineryStopLabel(names) ? names : "").not.toMatch(
+        /jose maria|fonseca|bacalhoa|quinta/i,
+      );
+    } finally {
+      vi.useRealTimers();
+      Object.defineProperty(window, "matchMedia", {
+        writable: true,
+        value: originalMatchMedia,
+      });
+    }
   });
 });
 

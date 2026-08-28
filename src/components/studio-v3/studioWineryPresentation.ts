@@ -21,7 +21,26 @@
  */
 
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
+import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { semanticStopKey } from "./curation";
+
+/**
+ * Curated catalog wineries by normalized name. Some real catalog wineries
+ * (e.g. "House & Museum José Maria da Fonseca") carry no winery keyword in
+ * their customer label and are absent from the geo index, so the curated
+ * pool is the truthful source that they ARE winery visits.
+ */
+const normName = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9 ]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+const CATALOG_WINERY_NAMES: ReadonlySet<string> = new Set(
+  REGION_STOP_POOL.filter((s) => s.type === "winery").map((s) => normName(s.name)),
+);
 
 /** Canonical stop metadata kinds that are a winery visit. */
 const WINERY_KINDS: ReadonlySet<string> = new Set(["winery", "cellar"]);
@@ -56,6 +75,7 @@ export interface WineryPresentationStop {
 export function isWineryStopLabel(label: string): boolean {
   const geo = lookupStopGeo(label);
   if (geo) return WINERY_KINDS.has(geo.kind);
+  if (CATALOG_WINERY_NAMES.has(normName(label))) return true;
   return WINERY_LABEL_FALLBACK_RE.test(label);
 }
 

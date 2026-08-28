@@ -581,7 +581,9 @@ function JourneyDraftDrawer({
   fullState,
   overBudgetNote,
 }: DrawerProps) {
-  const totalPins = Math.max(0, Math.min(4, moments.length));
+  // The full composed route is the authority — never cap the map reveal at
+  // the compact 4-slot card size; immersive days show all 5–6 pins.
+  const totalPins = Math.max(0, moments.length);
   const [view, setView] = useState<"story" | "timeline" | "map">("story");
 
   // Real OSRM driving minutes for the drawer's "Map" view. We only fetch
