@@ -1375,9 +1375,10 @@ function TailorPage() {
                           <button
                             type="button"
                             onClick={removeWineryVisit}
+                            disabled={!canRemoveWineryVisit}
                             aria-label="One winery visit fewer"
                             data-testid="tailor-winery-decrease"
-                            className="h-11 w-11 border border-[color:var(--border)] text-[color:var(--charcoal)]"
+                            className="h-11 w-11 border border-[color:var(--border)] text-[color:var(--charcoal)] disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             −
                           </button>
@@ -1390,12 +1391,14 @@ function TailorPage() {
                           <button
                             type="button"
                             onClick={addWineryVisit}
+                            disabled={!canAddWineryVisit}
                             aria-label="One winery visit more"
                             data-testid="tailor-winery-increase"
-                            className="h-11 w-11 border border-[color:var(--border)] text-[color:var(--charcoal)]"
+                            className="h-11 w-11 border border-[color:var(--border)] text-[color:var(--charcoal)] disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             +
                           </button>
+
                         </span>
                       </div>
                     )}
