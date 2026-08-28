@@ -1467,7 +1467,7 @@ function TailorPage() {
                       </button>
                     )}
 
-                    {(blueprint?.optional ?? []).map((o) => {
+                    {publicOptional.map((o) => {
                       const on = optionalSelected.has(o.id);
                       return (
                         <button
