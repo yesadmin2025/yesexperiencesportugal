@@ -30,6 +30,10 @@ import { toast } from "sonner";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
+  ChargeSummaryLine,
+  type ChargeQuote,
+} from "@/components/checkout/ChargeSummaryLine";
+import {
   BrandedCheckoutDrawer,
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
