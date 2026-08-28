@@ -22,10 +22,10 @@
  *                        NO price change
  *   locked             — product-defining or mandatory; not removable
  *   dedicated-credit   — priced by its own flat credit, never by the ladder
- *   needs-owner-review — evidence is weak. Behaviour is UNCHANGED from the
- *                        pre-classification baseline (still eligible) so this
- *                        pass alters no approved amount, but the stop is
- *                        reported for owner confirmation.
+ *   needs-owner-review — evidence is weak. FAIL-CLOSED for pricing: still
+ *                        removable for time where the UI permits, but earns
+ *                        NO −5% until the owner classifies it `principal`.
+ *                        Reported by `tailorStopsPendingOwnerReview()`.
  */
 
 import { TAILOR_BLUEPRINTS } from "@/data/tailorBlueprints";
