@@ -1538,6 +1538,7 @@ export function StudioV3() {
       if (toIdx < 0 || fromIdx < 0 || toIdx >= fromIdx) return;
       if (!isPhaseRelevant(target, state)) return;
       setReaction(null);
+      setWhisper(null);
       setExiting(true);
       trackStep({
         stepNumber: stepOf(state.phase),
