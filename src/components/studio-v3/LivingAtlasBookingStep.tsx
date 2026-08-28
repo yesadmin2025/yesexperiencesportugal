@@ -16,6 +16,7 @@ import { getViatorMeta } from "@/data/signatureToursViator";
 import { resolveJourneyPricing } from "@/data/signatureTourPricing";
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import { supabase } from "@/integrations/supabase/client";
+import { trackEvent } from "@/lib/analytics-events";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getTourContent } from "@/lib/tourContent";
 
@@ -137,8 +138,20 @@ export function LivingAtlasBookingStep({
       }
       setClientSecret(response.clientSecret);
       setPublishableKey(response.publishableKey);
+      trackEvent("checkout_session_created", {
+        experience_id: tour.id,
+        experience_type: "studio",
+        group_size: guestDetails.guests,
+        value: resolvedPricing.totalEur ? Math.round(resolvedPricing.totalEur) : undefined,
+        currency: "EUR",
+      });
     } catch (error) {
       console.error("[LivingAtlasBookingStep] checkout failed", error);
+      trackEvent("checkout_session_failed", {
+        experience_id: tour.id,
+        experience_type: "studio",
+        group_size: guestDetails.guests,
+      });
       toast.error("Secure checkout is unavailable right now. Please try again.");
       setClientSecret(null);
       setPublishableKey(null);
