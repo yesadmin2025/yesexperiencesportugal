@@ -136,21 +136,93 @@ export type AddOnPricingUnit = "per_person" | "per_group" | "per_vehicle" | "fix
 
 export const SIGNATURE_ADD_ON_CATALOG: Record<
   string,
-  { pricePctOfBase: number; pricingUnit: AddOnPricingUnit }
+  {
+    pricePctOfBase: number;
+    pricingUnit: AddOnPricingUnit;
+    /** CANONICAL commercial label. A client-supplied label is never trusted. */
+    label: string;
+    /** CANONICAL duration promise, minutes. A client value is never trusted. */
+    durationMinutes: number;
+  }
 > = {
-  "hidden-cove-picnic": { pricePctOfBase: 0.18, pricingUnit: "per_person" },
-  "coastal-boat-ride": { pricePctOfBase: 0.22, pricingUnit: "per_person" },
-  "azulejo-workshop": { pricePctOfBase: 0.16, pricingUnit: "per_person" },
-  "azeitao-cheese": { pricePctOfBase: 0.14, pricingUnit: "per_person" },
-  "sintra-detour": { pricePctOfBase: 0.2, pricingUnit: "per_person" },
-  "chapel-of-bones": { pricePctOfBase: 0.16, pricingUnit: "per_person" },
-  "talha-amphora": { pricePctOfBase: 0.18, pricingUnit: "per_person" },
-  "roman-ruins-trail": { pricePctOfBase: 0.12, pricingUnit: "per_person" },
-  "roman-troia": { pricePctOfBase: 0.14, pricingUnit: "per_person" },
-  "herdade-tasting": { pricePctOfBase: 0.2, pricingUnit: "per_person" },
-  "templar-tomar": { pricePctOfBase: 0.18, pricingUnit: "per_person" },
-  "obidos-walls": { pricePctOfBase: 0.14, pricingUnit: "per_person" },
-  "nazare-cliffs": { pricePctOfBase: 0.16, pricingUnit: "per_person" },
+  "hidden-cove-picnic": {
+    pricePctOfBase: 0.18,
+    pricingUnit: "per_person",
+    label: "Hidden-cove beach picnic",
+    durationMinutes: 90,
+  },
+  "coastal-boat-ride": {
+    pricePctOfBase: 0.22,
+    pricingUnit: "per_person",
+    label: "Coastal boat ride from Sesimbra",
+    durationMinutes: 75,
+  },
+  "azulejo-workshop": {
+    pricePctOfBase: 0.16,
+    pricingUnit: "per_person",
+    label: "Hand-painted azulejo workshop",
+    durationMinutes: 90,
+  },
+  "azeitao-cheese": {
+    pricePctOfBase: 0.14,
+    pricingUnit: "per_person",
+    label: "Azeitão cheese-making session",
+    durationMinutes: 60,
+  },
+  "sintra-detour": {
+    pricePctOfBase: 0.2,
+    pricingUnit: "per_person",
+    label: "Sintra detour — Pena & Cabo da Roca",
+    durationMinutes: 120,
+  },
+  "chapel-of-bones": {
+    pricePctOfBase: 0.16,
+    pricingUnit: "per_person",
+    label: "Chapel of Bones, after the queue",
+    durationMinutes: 60,
+  },
+  "talha-amphora": {
+    pricePctOfBase: 0.18,
+    pricingUnit: "per_person",
+    label: "Talha amphora wine tasting",
+    durationMinutes: 75,
+  },
+  "roman-ruins-trail": {
+    pricePctOfBase: 0.12,
+    pricingUnit: "per_person",
+    label: "Roman heritage stop",
+    durationMinutes: 45,
+  },
+  "roman-troia": {
+    pricePctOfBase: 0.14,
+    pricingUnit: "per_person",
+    label: "Roman ruins of Tróia",
+    durationMinutes: 60,
+  },
+  "herdade-tasting": {
+    pricePctOfBase: 0.2,
+    pricingUnit: "per_person",
+    label: "Herdade da Comporta wine tasting",
+    durationMinutes: 75,
+  },
+  "templar-tomar": {
+    pricePctOfBase: 0.18,
+    pricingUnit: "per_person",
+    label: "Templar Convent of Tomar",
+    durationMinutes: 75,
+  },
+  "obidos-walls": {
+    pricePctOfBase: 0.14,
+    pricingUnit: "per_person",
+    label: "Walled town of Óbidos",
+    durationMinutes: 60,
+  },
+  "nazare-cliffs": {
+    pricePctOfBase: 0.16,
+    pricingUnit: "per_person",
+    label: "Nazaré giant-wave cliffs",
+    durationMinutes: 45,
+  },
 };
 
 /** Round to nearest €5, floor €5 — mirrors `roundEur5` in the client catalog. */
