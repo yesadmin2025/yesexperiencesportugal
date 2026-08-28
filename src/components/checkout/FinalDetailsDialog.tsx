@@ -118,6 +118,10 @@ export function FinalDetailsDialog({
   const [children, setChildren] = useState("");
   const [occasion, setOccasion] = useState("");
   const [guideNotes, setGuideNotes] = useState("");
+  const [editDay, setEditDay] = useState(false);
+  const [altContact, setAltContact] = useState(false);
+  const [extrasOpen, setExtrasOpen] = useState(false);
+
 
   useEffect(() => {
     if (!open) return;
