@@ -1,4 +1,6 @@
+import type React from "react";
 import { useEffect, useState } from "react";
+
 import { Lock } from "lucide-react";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
