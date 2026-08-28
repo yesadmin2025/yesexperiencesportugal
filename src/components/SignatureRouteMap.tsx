@@ -21,6 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import { MapPin } from "lucide-react";
 import type { SignatureTour } from "@/data/signatureTours";
 import { resolveSignatureMapStops } from "@/lib/signature-map-stops";
+import { sanitizePublicMapStopLabels } from "@/lib/publicItineraryProjection";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { RouteLegend } from "@/components/studio-v3/RouteLegend";
