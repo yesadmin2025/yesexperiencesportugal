@@ -285,6 +285,7 @@ describe("Pass 2A — full-route authority (no compact-card cap)", () => {
         /jose maria|fonseca|bacalhoa|quinta/i,
       );
     } finally {
+      vi.useRealTimers();
       Object.defineProperty(window, "matchMedia", {
         writable: true,
         value: originalMatchMedia,
