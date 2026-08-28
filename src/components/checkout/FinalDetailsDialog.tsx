@@ -77,7 +77,13 @@ export interface FinalDetailsInitial {
   email?: string | null;
   phone?: string | null;
   guideNotes?: string | null;
+  /** "HH:mm" preferred start time already chosen upstream. */
+  startTime?: string | null;
 }
+
+/** The only start times the operation runs. */
+const START_TIMES = ["08:00", "09:00", "10:00"] as const;
+
 
 interface Props {
   open: boolean;
