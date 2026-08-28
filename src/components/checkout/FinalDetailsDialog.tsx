@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { prewarmStripeScript } from "@/components/checkout/BrandedCheckoutDrawer";
 import { CompositionField } from "@/components/booking/CompositionField";
