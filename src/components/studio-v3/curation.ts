@@ -55,6 +55,7 @@ import type {
   StudioV3Phase,
   StudioV3State,
 } from "./types";
+import { applyHybridComposition } from "@/components/studio-v3/studioHybridComposition";
 
 /* ---------- Adaptive intelligence: guest inference ---------- */
 
@@ -1980,7 +1981,7 @@ export function resolveStudioV3Route(input: {
       dateExact,
       maxPoints: Math.max(
         baseComposedRoutePoints.length,
-        RHYTHM_STOP_COUNT[rhythm] + (investment ? investmentStopDelta(investment) : 0),
+        RHYTHM_STOP_COUNT[rhythm] + (investment ? INVESTMENT_STOP_DELTA[investment] : 0),
       ),
       buildStory: customerStopBlurb,
     },
