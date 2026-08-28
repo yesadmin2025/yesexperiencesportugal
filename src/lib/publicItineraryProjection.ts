@@ -52,6 +52,21 @@ export function genericWineryPoolStory(count: number): string {
     : `${countWord(count)} local winery visits are included within your private route.`;
 }
 
+function toPublicChapter(c: SotItineraryChapter): PublicItineraryChapter {
+  return {
+    order: c.order,
+    label: c.label,
+    description: c.description,
+    durationMinutes: c.durationMinutes,
+    travelToNextMinutes: c.travelToNextMinutes,
+    optional: c.optional,
+    stopType: c.stopType,
+    isDefault: c.isDefault,
+    ...(c.poolId ? { poolId: c.poolId } : {}),
+  };
+}
+
+
 /**
  * Project a tour's SoT itinerary for public display.
  * Returns `undefined` when the tour has no SoT entry (callers keep their
