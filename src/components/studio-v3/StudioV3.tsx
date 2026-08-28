@@ -1493,6 +1493,8 @@ export function StudioV3() {
   const back = useCallback(
     (_hint?: StudioV3Phase) => {
       setReaction(null);
+      // A whisper is feedback for a forward choice — it never replays on back.
+      setWhisper(null);
       setExiting(true);
       // Robust to phase reordering: walk backwards from the CURRENT phase
       // through PHASE_ORDER, skipping anything that isPhaseRelevant rules
