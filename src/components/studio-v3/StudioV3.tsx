@@ -4677,10 +4677,13 @@ export function StoryboardHandoff({
                     total={editedStops.length}
                     label={authorLabel(s.label)}
                     story={s.story && !storySlot ? authorText(s.story) : undefined}
-                    reason={resolveMomentReason(s.label, {
-                      interests: state.interests,
-                      feeling: state.feeling,
-                    })}
+                    reason={
+                      resolveMomentReason(s.label, {
+                        interests: state.interests,
+                        feeling: state.feeling,
+                      }) ??
+                      (composerRationales[i] ? authorText(composerRationales[i]) : null)
+                    }
                     minStops={REFINE_MIN_STOPS}
                     canSwap={swapPoolPublic.length > 0}
                     swapPool={swapPoolPublic}
