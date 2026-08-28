@@ -202,7 +202,7 @@ export const SIGNATURE_ADD_ON_CATALOG: Record<
   "herdade-tasting": {
     pricePctOfBase: 0.2,
     pricingUnit: "per_person",
-    label: "Herdade da Comporta wine tasting",
+    label: "Comporta winery tasting",
     durationMinutes: 75,
   },
   "templar-tomar": {
