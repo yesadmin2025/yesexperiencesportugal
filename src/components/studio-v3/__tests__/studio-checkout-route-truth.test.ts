@@ -31,7 +31,7 @@ function checkoutLabels(state: StudioV3State, catalogStops: Array<{ label: strin
 
 const BASE_STATE = {
   phase: "storyboard",
-  feeling: "wine-and-table",
+  feeling: "wine-food",
   companions: "couple",
   rhythm: "immersive",
   interests: ["wine", "food"],
