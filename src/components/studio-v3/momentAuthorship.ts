@@ -98,7 +98,8 @@ export function resolveMomentReason(
   for (const rule of REASON_RULES) {
     if (!rule.kinds.includes(kind)) continue;
     const interestMatch = rule.interests.some((i) => interests.has(i));
-    const feelingMatch = !!feeling && rule.feelings.includes(feeling);
+    const feelingMatch =
+      !!feeling && (rule.feelings as ReadonlyArray<string>).includes(feeling);
     if (interestMatch || feelingMatch) return rule.reason;
   }
   return null;
