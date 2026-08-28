@@ -1564,6 +1564,39 @@ export function StudioV3() {
         advance(r.nextPhase);
         return;
       }
+      // Pass 2C — beat tiering. Only two moments still earn a full takeover:
+      // the Feeling (first emotional commitment) and the first route-bearing
+      // map beat (the first time the day exists as a place). Everything else
+      // is already visible in the Living Day, so it whispers there instead of
+      // blocking progression.
+      const isRouteMapBeat = r.kind === "map-beat" && r.mapMode !== "origin";
+      const cinematic = r.kind === "feeling" || (isRouteMapBeat && !firstRouteBeatShownRef.current);
+      if (cinematic && isRouteMapBeat) firstRouteBeatShownRef.current = true;
+      if (!cinematic) {
+        const line = (r.message ?? "").split("\n")[0]?.trim();
+        if (line) {
+          whisperSeq.current += 1;
+          setWhisper({ text: line, id: whisperSeq.current });
+        }
+        // Same continue semantics as the beat it replaces — including the
+        // `viaReaction` value, so analytics keys/payloads do not change.
+        setReaction(null);
+        setExiting(true);
+        window.setTimeout(() => {
+          setState((s) => {
+            trackStep({
+              stepNumber: stepOf(s.phase),
+              stepKey: s.phase,
+              event: "continue",
+              value: { to: r.nextPhase, viaReaction: r.kind },
+            });
+            return { ...s, phase: r.nextPhase };
+          });
+          setExiting(false);
+        }, 220);
+        return;
+      }
+
       // Atmosphere beats are mood-setters — keep them brief so the next
       // question is reachable quickly. The ceiling is the authority here:
       // legacy handler holdMs values stay untouched and the cap makes the
