@@ -4652,193 +4652,73 @@ export function StoryboardHandoff({
               </div>
             ) : null}
 
-            <ol className="space-y-3 sm:space-y-3">
-              {editedStops.map((s, i) => {
-                const isFirst = i === 0;
-                const isLast = i === editedStops.length - 1;
-                const swapOpen = swapOpenIdx === i;
-                return (
-                  <li
+            {/* Pass 2B — refinement lives INSIDE Your Day, through the shared
+                RefineAccordion + RefineStopCard pair. One authority: the
+                same authored route feeds list, timeline and map. */}
+            <RefineAccordion
+              open={refineOpen}
+              onOpenChange={setRefineOpen}
+              count={editedStops.length}
+            >
+              <ol className="space-y-3 sm:space-y-3">
+                {editedStops.map((s, i) => (
+                  <RefineStopCard
                     key={`${s.label}-${i}`}
-                    data-testid="studio-v3-stop-row"
-                    className="rounded-[10px] px-4 py-3.5 sm:px-4 sm:py-3.5"
-                    style={{
-                      background: "color-mix(in oklab, var(--sand) 45%, transparent)",
-                      border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
+                    testId="studio-v3-stop-row"
+                    index={i}
+                    total={editedStops.length}
+                    label={authorLabel(s.label)}
+                    story={s.story && !storySlot ? authorText(s.story) : undefined}
+                    reason={resolveMomentReason(s.label, {
+                      interests: state.interests,
+                      feeling: state.feeling,
+                    })}
+                    minStops={REFINE_MIN_STOPS}
+                    canSwap={swapPoolPublic.length > 0}
+                    swapPool={swapPoolPublic}
+                    swapOpen={swapOpenIdx === i}
+                    onToggleSwap={() => setSwapOpenIdx(swapOpenIdx === i ? null : i)}
+                    onMoveEarlier={() => {
+                      const next = editedStops.map((p) => ({ ...p }));
+                      [next[i - 1], next[i]] = [next[i], next[i - 1]];
+                      applyAuthoredChange("earlier", next);
                     }}
-                  >
-                    <div className="flex flex-wrap items-start gap-x-3 gap-y-2">
-                      <span
-                        aria-hidden
-                        className="mt-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
-                        style={{
-                          background: "color-mix(in oklab, var(--gold) 25%, transparent)",
-                          color: "var(--charcoal)",
-                        }}
-                      >
-                        {i + 1}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <p
-                          className="text-[13.5px] font-semibold leading-[1.3]"
-                          style={{
-                            fontFamily: "var(--font-display)",
-                            color: "var(--charcoal)",
-                          }}
-                        >
-                          {s.label}
-                        </p>
-                        {/* The inline reveal above already tells each stop's
-                            story in prose. Printing the same sentence again
-                            here made one scroll read it twice; the label,
-                            controls and the (new) composer rationale stay. */}
-                        {s.story && !storySlot ? (
-                          <p
-                            className="mt-0.5 text-[12px] leading-[1.45]"
-                            style={{
-                              color: "color-mix(in oklab, var(--charcoal) 65%, transparent)",
-                            }}
-                          >
-                            {s.story}
-                          </p>
-                        ) : null}
-                        {composerRationales[i] ? (
-                          <p
-                            data-testid="studio-v3-stop-rationale"
-                            className="mt-1 text-[11.5px] leading-[1.4] italic"
-                            style={{
-                              fontFamily: "var(--font-editorial)",
-                              color: "var(--gold)",
-                            }}
-                          >
-                            {composerRationales[i]}
-                          </p>
-                        ) : null}
-                      </div>
-                      <div className="ml-auto flex w-full shrink-0 items-center justify-end gap-1 sm:w-auto">
-                        <button
-                          type="button"
-                          aria-label={`Move ${s.label} earlier`}
-                          disabled={isFirst}
-                          onClick={() =>
-                            setEdited((prev) => {
-                              const n = [...prev];
-                              [n[i - 1], n[i]] = [n[i], n[i - 1]];
-                              return n;
-                            })
-                          }
-                          className="relative grid h-8 w-8 place-items-center rounded-full text-[14px] after:absolute after:-inset-[6px] after:content-[''] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                          style={{ color: "var(--charcoal)" }}
-                        >
-                          ↑
-                        </button>
-                        <button
-                          type="button"
-                          aria-label={`Move ${s.label} later`}
-                          disabled={isLast}
-                          onClick={() =>
-                            setEdited((prev) => {
-                              const n = [...prev];
-                              [n[i], n[i + 1]] = [n[i + 1], n[i]];
-                              return n;
-                            })
-                          }
-                          className="relative grid h-8 w-8 place-items-center rounded-full text-[14px] after:absolute after:-inset-[6px] after:content-[''] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                          style={{ color: "var(--charcoal)" }}
-                        >
-                          ↓
-                        </button>
-                        {swapPool.length > 0 ? (
-                          <button
-                            type="button"
-                            aria-label={`Swap ${s.label}`}
-                            aria-expanded={swapOpen}
-                            onClick={() => setSwapOpenIdx(swapOpen ? null : i)}
-                            className="relative grid h-8 w-8 place-items-center rounded-full text-[13px] after:absolute after:-inset-[6px] after:content-[''] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                            style={{ color: "var(--charcoal)" }}
-                          >
-                            ⇄
-                          </button>
-                        ) : null}
-                        <button
-                          type="button"
-                          aria-label={`Remove ${s.label}`}
-                          disabled={editedStops.length <= REFINE_MIN_STOPS}
-                          onClick={() => {
-                            const before = editedStops.map((p) => ({ ...p }));
-                            const removed = s.label;
-                            setUndoSnapshot({
-                              stops: before,
-                              summary: `${removed} steps out of your day.`,
-                            });
-                            setEdited((prev) => prev.filter((_, j) => j !== i));
-                            setIntentFeedback(`${removed} steps out of your day.`);
-                            trackStudio("moment_removed", {
-                              phase: "storyboard",
-                              via: "card",
-                              stops: editedStops.length - 1,
-                            });
-                          }}
-                          className="relative grid h-8 w-8 place-items-center rounded-full text-[14px] after:absolute after:-inset-[6px] after:content-[''] disabled:opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                          style={{ color: "var(--charcoal)" }}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </div>
-
-                    {swapOpen ? (
-                      <ul
-                        data-testid="studio-v3-swap-pool"
-                        className="mt-2.5 space-y-1 border-t pt-2"
-                        style={{
-                          borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)",
-                        }}
-                      >
-                        {swapPool.map((cand) => (
-                          <li key={cand.label}>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const before = editedStops.map((p) => ({ ...p }));
-                                const summary = `${cand.label} replaces ${s.label}.`;
-                                setUndoSnapshot({ stops: before, summary });
-                                setEdited((prev) =>
-                                  prev.map((p, j) =>
-                                    j === i ? { label: cand.label, story: cand.story } : p,
-                                  ),
-                                );
-                                setSwapOpenIdx(null);
-                                setIntentFeedback(summary);
-                                trackStudio("moment_swapped", {
-                                  phase: "storyboard",
-                                  via: "card",
-                                  source: cand.source,
-                                });
-                              }}
-                              className="w-full min-h-[44px] text-left px-2 py-2.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                              style={{ color: "var(--charcoal)" }}
-                            >
-                              <span className="font-semibold">{cand.label}</span>
-                              {cand.story ? (
-                                <span
-                                  className="block text-[11.5px]"
-                                  style={{
-                                    color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
-                                  }}
-                                >
-                                  {cand.story}
-                                </span>
-                              ) : null}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </li>
-                );
-              })}
-            </ol>
+                    onMoveLater={() => {
+                      const next = editedStops.map((p) => ({ ...p }));
+                      [next[i], next[i + 1]] = [next[i + 1], next[i]];
+                      applyAuthoredChange("later", next);
+                    }}
+                    onRemove={() => {
+                      applyAuthoredChange(
+                        "remove",
+                        editedStops.filter((_, j) => j !== i).map((p) => ({ ...p })),
+                      );
+                      trackStudio("moment_removed", {
+                        phase: "storyboard",
+                        via: "card",
+                        stops: editedStops.length - 1,
+                      });
+                    }}
+                    onPickSwap={(cand) => {
+                      const canonical = swapPool.find((c) => c.label === cand.id);
+                      if (!canonical) return;
+                      applyAuthoredChange(
+                        "swap",
+                        editedStops.map((p, j) =>
+                          j === i ? { label: canonical.label, story: canonical.story } : { ...p },
+                        ),
+                      );
+                      setSwapOpenIdx(null);
+                      trackStudio("moment_swapped", {
+                        phase: "storyboard",
+                        via: "card",
+                        source: canonical.source,
+                      });
+                    }}
+                  />
+                ))}
+              </ol>
+            </RefineAccordion>
 
             {/* Add a moment — capped by rhythm; pool stays inside the same Signature. */}
             {canAddMoment ? (
