@@ -759,6 +759,14 @@ function TailorPage() {
     [blueprint],
   );
   const canAdjustWineryCount = Boolean(rules.wineries) && wineryOptions.length > 0;
+  /** Real bounds — the control is disabled, never a toast at the edges. */
+  const wineryMin = rules.wineries?.included ?? 0;
+  const wineryMax = rules.wineries?.max ?? 0;
+  const canRemoveWineryVisit = canAdjustWineryCount && wineriesSelected > wineryMin;
+  const canAddWineryVisit =
+    canAdjustWineryCount &&
+    wineriesSelected < wineryMax &&
+    wineryOptions.some((o) => !choiceSelected.has(o.id));
   const addWineryVisit = () => {
     const next = wineryOptions.find((o) => !choiceSelected.has(o.id));
     if (next) tryToggleChoice(next.id);
@@ -767,6 +775,34 @@ function TailorPage() {
     const last = [...wineryOptions].reverse().find((o) => choiceSelected.has(o.id));
     if (last) tryToggleChoice(last.id);
   };
+
+  /**
+   * Customer-facing labels for the CURRENT selection, in day order.
+   * Winery estates are operational data — always shown generically.
+   */
+  const publicSelectionLabels = useMemo<string[]>(() => {
+    if (!blueprint) return keptStops.map((s: TourStop) => s.label);
+    let w = 0;
+    const label = (s: { label: string; category: string }) =>
+      s.category === "winery" ? wineryLabel((w += 1)) : s.label;
+    return [
+      ...blueprint.core.filter((s) => !skippedCore.has(s.id)).map(label),
+      ...(blueprint.choice
+        ? blueprint.choice.options.filter((o) => choiceSelected.has(o.id)).map(label)
+        : []),
+      ...blueprint.optional.filter((o) => optionalSelected.has(o.id)).map(label),
+    ];
+  }, [blueprint, keptStops, skippedCore, choiceSelected, optionalSelected]);
+
+  /** Removed moments, with the same generic winery vocabulary. */
+  const skippedPublicLabels = useMemo<string[]>(() => {
+    if (!blueprint) return [];
+    let w = 0;
+    return blueprint.core
+      .filter((s) => skippedCore.has(s.id))
+      .map((s) => (s.category === "winery" ? wineryLabel((w += 1)) : s.label));
+  }, [blueprint, skippedCore]);
+
 
   /**
    * The day as an ordered list of moments. Core stops keep blueprint
