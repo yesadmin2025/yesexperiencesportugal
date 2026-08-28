@@ -135,6 +135,7 @@ const GA_MIRROR: Partial<Record<StudioFunnelEvent, YesAnalyticsEvent>> = {
   abandon: "studio_abandon_by_phase",
   reveal_seen: "studio_story_reveal_viewed",
   tier_chosen: "studio_price_expanded",
+  addon_toggle: "add_on_attached",
   secure_open: "studio_guest_details_started",
   secure_confirm: "studio_checkout_completed",
 };

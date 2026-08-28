@@ -37,6 +37,12 @@ export type YesAnalyticsEvent =
   | "date_selected"
   | "participants_selected"
   | "checkout_started"
+  // Stripe session lifecycle — fired on every booking surface (Signature,
+  // Tailor, Studio) so the funnel can separate "pressed Reserve" from
+  // "payment surface actually opened".
+  | "checkout_session_created"
+  | "checkout_session_failed"
+  | "add_on_attached"
   | "checkout_completed"
   // Studio
   | "studio_started"
