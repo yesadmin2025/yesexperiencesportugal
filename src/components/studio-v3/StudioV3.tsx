@@ -4553,6 +4553,8 @@ export function StoryboardHandoff({
                   statePickup={state.pickup}
                   revealedStops={revealedStops}
                   showRoute={false}
+                  displayLabels={revealDisplayLabels}
+
                 />
               </div>
             }
