@@ -119,6 +119,7 @@ import { Route as AdminImportToursRouteImport } from './routes/admin.import-tour
 import { Route as AdminImageSwapRouteImport } from './routes/admin.image-swap'
 import { Route as AdminGscRouteImport } from './routes/admin.gsc'
 import { Route as AdminGbpLegacyRemovalRouteImport } from './routes/admin.gbp-legacy-removal'
+import { Route as AdminExperiencesRouteImport } from './routes/admin.experiences'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as AdminE2eReportRouteImport } from './routes/admin.e2e-report'
@@ -713,6 +714,11 @@ const AdminGbpLegacyRemovalRoute = AdminGbpLegacyRemovalRouteImport.update({
   path: '/admin/gbp-legacy-removal',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminExperiencesRoute = AdminExperiencesRouteImport.update({
+  id: '/admin/experiences',
+  path: '/admin/experiences',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminErrorLogsRoute = AdminErrorLogsRouteImport.update({
   id: '/admin/error-logs',
   path: '/admin/error-logs',
@@ -979,6 +985,7 @@ export interface FileRoutesByFullPath {
   '/admin/e2e-report': typeof AdminE2eReportRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
+  '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/image-swap': typeof AdminImageSwapRoute
@@ -1125,6 +1132,7 @@ export interface FileRoutesByTo {
   '/admin/e2e-report': typeof AdminE2eReportRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
+  '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/image-swap': typeof AdminImageSwapRoute
@@ -1274,6 +1282,7 @@ export interface FileRoutesById {
   '/admin/e2e-report': typeof AdminE2eReportRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
+  '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
   '/admin/image-swap': typeof AdminImageSwapRoute
@@ -1424,6 +1433,7 @@ export interface FileRouteTypes {
     | '/admin/e2e-report'
     | '/admin/emails'
     | '/admin/error-logs'
+    | '/admin/experiences'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
     | '/admin/image-swap'
@@ -1570,6 +1580,7 @@ export interface FileRouteTypes {
     | '/admin/e2e-report'
     | '/admin/emails'
     | '/admin/error-logs'
+    | '/admin/experiences'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
     | '/admin/image-swap'
@@ -1718,6 +1729,7 @@ export interface FileRouteTypes {
     | '/admin/e2e-report'
     | '/admin/emails'
     | '/admin/error-logs'
+    | '/admin/experiences'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
     | '/admin/image-swap'
@@ -1867,6 +1879,7 @@ export interface RootRouteChildren {
   AdminE2eReportRoute: typeof AdminE2eReportRoute
   AdminEmailsRoute: typeof AdminEmailsRoute
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
+  AdminExperiencesRoute: typeof AdminExperiencesRoute
   AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
   AdminGscRoute: typeof AdminGscRoute
   AdminImageSwapRoute: typeof AdminImageSwapRoute
@@ -2699,6 +2712,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminGbpLegacyRemovalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/experiences': {
+      id: '/admin/experiences'
+      path: '/admin/experiences'
+      fullPath: '/admin/experiences'
+      preLoaderRoute: typeof AdminExperiencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/error-logs': {
       id: '/admin/error-logs'
       path: '/admin/error-logs'
@@ -3100,6 +3120,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminE2eReportRoute: AdminE2eReportRoute,
   AdminEmailsRoute: AdminEmailsRoute,
   AdminErrorLogsRoute: AdminErrorLogsRoute,
+  AdminExperiencesRoute: AdminExperiencesRoute,
   AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
   AdminGscRoute: AdminGscRoute,
   AdminImageSwapRoute: AdminImageSwapRoute,
