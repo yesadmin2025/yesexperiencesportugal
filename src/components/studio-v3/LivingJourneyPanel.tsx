@@ -378,12 +378,22 @@ export function LivingJourneyPanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [snapshot, stage]);
 
+  // Pass 2C — a whisper from a demoted beat takes the same slot as derived
+  // feedback. It is the newest thing said, so it wins while it lives.
+  const whisperId = whisper?.id ?? null;
+  useEffect(() => {
+    if (whisperId == null || !whisper?.text) return;
+    setFeedback(whisper.text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [whisperId]);
+
   // Feedback disappears on its own — never a modal, never a phase.
   useEffect(() => {
     if (!feedback) return;
     const t = window.setTimeout(() => setFeedback(null), 4200);
     return () => window.clearTimeout(t);
   }, [feedback]);
+
 
   // Escape closes drawer; lock body scroll while open.
   useEffect(() => {
