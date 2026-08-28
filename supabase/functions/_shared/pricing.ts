@@ -282,29 +282,24 @@ export const TAILOR_DEDICATED_LUNCH_STOP_ID: Readonly<Record<string, string>> = 
  * AUTHORITATIVE whitelist of Tailor core stop ids that may earn the −5%
  * principal-removal reduction, per Signature. Server mirror of
  * `principalEligibleStopIds()` in `src/data/tailorRules.ts`, which is driven
- * by the explicit pricing classification in `src/data/tailorStopPricing.ts`
- * (principal + pending-owner-review only). Locked anchors, the dedicated
- * included-lunch stop and descriptive/free stops (viewpoints, drive-bys —
- * removable for time, never for money) are excluded. Parity is enforced by a
- * unit test. A tour absent from this table earns no reduction.
+ * by the explicit pricing classification in `src/data/tailorStopPricing.ts`.
+ * ONLY stops explicitly classified `principal` appear here: locked anchors,
+ * the dedicated included-lunch stop, descriptive/free stops (viewpoints,
+ * drive-bys — removable for time, never for money) and `needs-owner-review`
+ * stops are FAIL-CLOSED and earn nothing. Parity is enforced by a unit test.
+ * A tour absent from this table earns no reduction.
  */
 export const TAILOR_PRINCIPAL_ELIGIBLE_STOP_IDS: Readonly<Record<string, readonly string[]>> = {
   "arrabida-wine-allinclusive": ["livramento", "azeitao-tiles"],
-  "wild-beaches-picnic": ["livramento", "sesimbra-village"],
-  "arrabida-boat": ["livramento", "sesimbra-village"],
+  "wild-beaches-picnic": ["livramento"],
+  "arrabida-boat": ["livramento"],
   "tiles-workshop": ["livramento", "lunch-azeitao"],
   "azeitao-cheese": ["livramento", "lunch-azeitao"],
-  "sintra-cascais": ["sintra-vila", "lunch-azenhas", "cascais"],
-  "troia-comporta": ["troia-ruins", "herdade-comporta", "comporta-lunch", "comporta-beach"],
-  "evora-alentejo": ["evora-old-town", "templo-romano", "chapel-of-bones", "evora-lunch"],
-  "tomar-coimbra": [
-    "convento-cristo",
-    "tomar-town",
-    "tomar-lunch",
-    "coimbra-uni",
-    "biblioteca-joanina",
-  ],
-  "fatima-nazare-obidos": ["fatima", "nazare-lunch", "obidos"],
+  "sintra-cascais": ["lunch-azenhas"],
+  "troia-comporta": ["troia-ruins", "herdade-comporta", "comporta-lunch"],
+  "evora-alentejo": ["templo-romano", "chapel-of-bones", "evora-lunch"],
+  "tomar-coimbra": ["convento-cristo", "tomar-lunch", "coimbra-uni", "biblioteca-joanina"],
+  "fatima-nazare-obidos": ["fatima", "nazare-lunch"],
   "roman-heritage-alentejo": ["sao-cucufate", "vinho-talha", "mestre-daniel", "talha-lunch"],
 };
 
