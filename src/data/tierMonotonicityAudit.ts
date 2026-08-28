@@ -84,9 +84,9 @@ export function auditSignatureTierMonotonicity(): TourMonotonicityFinding[] {
 export const ACKNOWLEDGED_NON_MONOTONIC_STEPS: Readonly<
   Record<string, readonly number[]>
 > = {
-  "arrabida-boat-sesimbra": [5],
+  "arrabida-boat": [5],
   "arrabida-wine-allinclusive": [6],
-  "azeitao-cheese-wine": [4, 7],
+  "azeitao-cheese": [4, 7],
   "evora-alentejo": [4],
   "southwest-vicentine-coast": [6],
   "tiles-workshop": [6],
