@@ -456,8 +456,15 @@ function TailorPage() {
   const editsUsed = skipped.size + added.size;
   const editsLeft = Math.max(0, MAX_EDITS - editsUsed);
 
-  const [accessibility, setAccessibility] = useState<Set<string>>(new Set());
-  const [notes, setNotes] = useState("");
+  /**
+   * Accessibility / dietary / free-form notes are collected in the shared
+   * FinalDetailsDialog ("Anything we should know?"), not on the editor.
+   * Kept in state so any value already carried by Tailor still reaches the
+   * checkout payload unchanged.
+   */
+  const [accessibility] = useState<Set<string>>(new Set());
+  const [notes] = useState("");
+
 
   // ─── Derived live summary values ────────────────────────────
   const keptStops = useMemo(
