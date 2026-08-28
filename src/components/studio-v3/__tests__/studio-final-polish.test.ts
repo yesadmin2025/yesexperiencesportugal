@@ -110,7 +110,10 @@ describe("reaction beats never read operational option labels back as prose", ()
 
 describe("unified Your Day does not repeat each stop's story", () => {
   it("gates the editable stop prose while the inline reveal is mounted", () => {
-    expect(src("StudioV3.tsx")).toContain("{s.story && !storySlot ? (");
+    // Pass 2B: the same gate now lives on the shared RefineStopCard prop.
+    expect(src("StudioV3.tsx")).toContain(
+      "story={s.story && !storySlot ? authorText(s.story) : undefined}",
+    );
   });
 });
 

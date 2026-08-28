@@ -22,6 +22,8 @@ import { ArrowUp, ArrowDown, ArrowLeftRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface RefineStopCandidate {
+  /** Stable canonical identity — the parent maps this back to real data. */
+  readonly id?: string;
   readonly label: string;
   readonly story?: string;
 }
@@ -31,6 +33,8 @@ export interface RefineStopCardProps {
   readonly total: number;
   readonly label: string;
   readonly story?: string;
+  /** Pass 2B — one short truthful "why this fits you" line, or omitted. */
+  readonly reason?: string | null;
   readonly minStops?: number; // default 1
   readonly canSwap?: boolean; // false when swap pool empty
   readonly swapPool?: ReadonlyArray<RefineStopCandidate>;
@@ -51,6 +55,7 @@ export function RefineStopCard({
   total,
   label,
   story,
+  reason,
   minStops = 1,
   canSwap = false,
   swapPool,
@@ -98,6 +103,20 @@ export function RefineStopCard({
           {label}
         </h3>
       </div>
+
+      {/* Pass 2B — one discreet, truthful reason. Absent when none is true. */}
+      {reason ? (
+        <p
+          data-testid="studio-v3-moment-reason"
+          className="mt-1.5 pl-9 text-[11.5px] leading-[1.4]"
+          style={{
+            fontFamily: "var(--font-editorial)",
+            color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
+          }}
+        >
+          {reason}
+        </p>
+      ) : null}
 
       {/* Row 2 — full-width paragraph */}
       {story ? (
