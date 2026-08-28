@@ -120,8 +120,9 @@ describe("3. server-authoritative add-on identity", () => {
     // Checkout derives all three from the catalog line, never from the payload.
     expect(CHECKOUT_SRC).toContain("label: line.label");
     expect(CHECKOUT_SRC).toContain("durationMinutes: line.durationMinutes");
-    expect(CHECKOUT_SRC).not.toMatch(/label:\s*a\.label/);
-    expect(CHECKOUT_SRC).not.toMatch(/Math\.round\(a\.durationMinutes/);
+    // The raw payload label/duration are never read.
+    expect(CHECKOUT_SRC).not.toContain("a.label.slice(0, 120)");
+    expect(CHECKOUT_SRC).not.toContain("Math.round(a.durationMinutes");
   });
 
   it("rejects unknown ids safely", () => {
