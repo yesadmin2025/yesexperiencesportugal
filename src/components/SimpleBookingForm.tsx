@@ -15,7 +15,7 @@ import {
 import { CompositionField } from "@/components/booking/CompositionField";
 import { ChargeSummaryLine } from "@/components/checkout/ChargeSummaryLine";
 import {
-  formatCompositionSummary,
+  
   isCompositionComplete,
   totalGuests,
   type TravellerComposition,
