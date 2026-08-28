@@ -4,6 +4,7 @@
 
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
 import { isStudioCheckoutDateAllowed } from "../_shared/studio-booking-date.ts";
+import { checkTourOperatingRule } from "../_shared/tour-operating-rules.ts";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -193,6 +194,32 @@ Deno.serve(async (req) => {
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
       auth: { persistSession: false },
     });
+
+    // Server-authoritative operating-rule gate — runs BEFORE any Stripe
+    // session is created. No row => no new restriction (production has
+    // zero rows today). `cutoff_local_time` is deliberately not enforced.
+    // The Studio 3-day gate above stays independent; whichever is stricter
+    // wins naturally.
+    const operatingGate = await checkTourOperatingRule({
+      tourId: body.tourId,
+      dateExact: body.dateExact ?? null,
+      lookup: async (tourId) => {
+        const { data, error } = await admin
+          .from("tour_operating_rules")
+          .select("weekdays,blackout_dates,min_lead_hours,cutoff_local_time")
+          .eq("tour_id", tourId)
+          .maybeSingle();
+        if (error) return { error };
+        return { row: data };
+      },
+    });
+    if (operatingGate.status === "rejected") {
+      return jsonError(`date_unavailable:${operatingGate.reason}`, 409);
+    }
+    if (operatingGate.status === "unavailable") {
+      return jsonError("availability_check_unavailable", 503);
+    }
+
 
     const { data: tierRow } = await admin
       .from("tour_price_tiers")
