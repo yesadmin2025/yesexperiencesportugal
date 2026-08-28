@@ -354,7 +354,10 @@ describe("Pass 2A — visibility rules", () => {
   });
 
   it("StudioV3 gates the Living Day separately from the ComposerMap", () => {
-    expect(STUDIO_SRC).toContain("<LivingJourneyPanel state={state} hidden={livingDayHidden} />");
+    // P2C added the presentation-only `whisper` prop; the gate is unchanged.
+    expect(STUDIO_SRC).toMatch(
+      /<LivingJourneyPanel[\s\S]{0,160}state=\{state\}[\s\S]{0,160}hidden=\{livingDayHidden\}/,
+    );
     expect(STUDIO_SRC).toContain("<ComposerMap state={state} hidden={composerHidden} />");
     // ComposerMap keeps its later, stricter gate (chromeReady / pickup).
     expect(STUDIO_SRC).toMatch(/const composerHidden =[\s\S]{0,120}!chromeReady/);
