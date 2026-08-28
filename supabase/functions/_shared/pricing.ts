@@ -240,7 +240,13 @@ export function serverAddOnLine(
   baseEur: number,
   guests: number,
   vehicleCapacity = 4,
-): { perUnitEur: number; quantity: number; unit: AddOnPricingUnit } | null {
+): {
+  perUnitEur: number;
+  quantity: number;
+  unit: AddOnPricingUnit;
+  label: string;
+  durationMinutes: number;
+} | null {
   const entry = SIGNATURE_ADD_ON_CATALOG[id];
   if (!entry || !Number.isFinite(baseEur) || baseEur <= 0) return null;
   const perUnitEur = serverRoundEur5(baseEur * entry.pricePctOfBase);
@@ -252,7 +258,14 @@ export function serverAddOnLine(
       : entry.pricingUnit === "per_vehicle"
         ? Math.ceil(guestsSafe / cap)
         : 1;
-  return { perUnitEur, quantity, unit: entry.pricingUnit };
+  // Commercial identity (label + duration promise) is owned by the catalog.
+  return {
+    perUnitEur,
+    quantity,
+    unit: entry.pricingUnit,
+    label: entry.label,
+    durationMinutes: entry.durationMinutes,
+  };
 }
 
 /**
