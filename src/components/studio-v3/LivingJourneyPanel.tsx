@@ -51,6 +51,15 @@ import { SmartRecommendation } from "./SmartRecommendation";
 import { signatureTours } from "@/data/signatureTours";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { regionalVoiceFor } from "./regionalVoice";
+import {
+  buildLivingDaySnapshot,
+  genericiseRouteLine,
+  livingDayFeedback,
+  livingDaySnapshotKey,
+  type LivingDaySnapshot,
+} from "./livingDaySpine";
+import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
+import { trackStudio } from "@/lib/studio-analytics";
 
 /** Local copy of the Signature-region → RegionKey mapping. Keeps this
  *  panel decoupled from StudioV3.tsx while preserving the same logic. */
@@ -103,28 +112,27 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     [state.feeling, state.companions, state.occasion, state.pickup, state.interests, state.rhythm],
   );
 
-  // DNA pills (max 4) — feeling · companions · rhythm · top interest.
-  const dna = useMemo(() => {
-    const pills: string[] = [];
-    if (state.feeling) pills.push(getOptionLabel(FEELINGS, state.feeling));
-    if (state.companions) pills.push(getOptionLabel(COMPANIONS, state.companions));
-    if (state.rhythm) pills.push(getOptionLabel(RHYTHMS, state.rhythm));
-    if (state.interests && state.interests.length > 0) {
-      pills.push(getOptionLabel(INTERESTS, state.interests[0]));
-    }
-    return pills.slice(0, 4);
-  }, [state.feeling, state.companions, state.rhythm, state.interests]);
+  // ---- Pass 2A: Living Day spine -------------------------------------
+  // One deterministic snapshot drives the pill, the drawer and the causal
+  // feedback line. `direction` is DNA-only (no stops, no counts), `draft`
+  // previews a real route with a PRESENTATION-ONLY balanced rhythm, and
+  // `shaped` resolves from the traveller's actual rhythm.
+  const snapshot = useMemo(
+    () => buildLivingDaySnapshot(state, { reactionActive: hidden }),
+    [state, hidden],
+  );
+  const stage = snapshot.stage;
+  const dna = snapshot.dna;
+  const hasRoute = snapshot.momentCount > 0;
 
-  const meaningfulRoute =
-    !!(state.feeling && state.companions && state.rhythm) &&
-    !!(state.pickup || (state.interests && state.interests.length > 0));
-
+  // Raw resolver output — needed for geo/timeline/map. Same inputs as the
+  // snapshot (tentative balanced rhythm in draft), so labels stay in sync.
   const resolved = useMemo(() => {
-    if (!meaningfulRoute) return null;
+    if (stage !== "draft" && stage !== "shaped") return null;
     return resolveStudioV3Route({
       feeling: state.feeling!,
       companions: state.companions!,
-      rhythm: state.rhythm!,
+      rhythm: state.rhythm ?? "balanced",
       interests: state.interests,
       pickup: state.pickup,
       occasion: state.occasion,
@@ -133,7 +141,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
       dateExact: state.dateExact,
     });
   }, [
-    meaningfulRoute,
+    stage,
     state.feeling,
     state.companions,
     state.rhythm,
@@ -145,9 +153,17 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     state.dateExact,
   ]);
 
-  const routeLine = resolved?.suggestedRouteLabel ?? null;
   const routePoints = (resolved?.routePoints ?? []).slice(0, 4);
-  const moments = routePoints.map((p) => p.label);
+  // Customer-safe labels — winery supplier names never leak to any surface.
+  const displayLabels = useMemo(
+    () => buildWineryDisplayLabels(routePoints.map((p) => ({ label: p.label }))),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [routePoints.map((p) => p.label).join("|")],
+  );
+  const safeLabel = (label: string) => studioDisplayLabel(label, displayLabels);
+
+  const routeLine = genericiseRouteLine(resolved?.suggestedRouteLabel ?? null, displayLabels);
+  const moments = routePoints.map((p) => safeLabel(p.label));
   const timelineMoments = routePoints.map((p, i) => {
     const kind = inferKind(p.label);
     const prev = i > 0 ? routePoints[i - 1] : null;
@@ -156,7 +172,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
         ? haversineDriveMinutes({ lat: prev.lat, lng: prev.lng }, { lat: p.lat, lng: p.lng })
         : null;
     return {
-      label: p.label,
+      label: safeLabel(p.label),
       story: p.story,
       durationMin: stopDurationMinutes({ label: p.label, kind }),
       kindLabel: kind ? kindLabel(kind) : null,
@@ -258,7 +274,9 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
 
   useEffect(() => {
     if (hidden) return;
-    if (!state.feeling || !state.companions) {
+    // Pass 2A: the story is atmosphere on top of a real resolved route —
+    // it never leads the early drawer, and never fires in DNA-only state.
+    if (!hasRoute || !state.feeling || !state.companions) {
       setAiStory(null);
       return;
     }
@@ -294,7 +312,59 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     return () => clearTimeout(t);
     // storyKey captures the dependency surface deterministically.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storyKey, hidden]);
+  }, [storyKey, hidden, hasRoute]);
+
+  // ---- Causal feedback (derived, never invented) ----------------------
+  // One quiet, short-lived line reacting to a REAL structural transition.
+  const prevRef = useRef<{ state: StudioV3State; snap: LivingDaySnapshot } | null>(null);
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const seenRef = useRef(false);
+  const lastKeyRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const previous = prevRef.current;
+    prevRef.current = { state, snap: snapshot };
+    if (stage === "hidden") return;
+
+    // living_day_seen — once per session, when the artefact first appears.
+    if (!seenRef.current) {
+      seenRef.current = true;
+      lastKeyRef.current = livingDaySnapshotKey(snapshot);
+      trackStudio("living_day_seen", {
+        phase: state.phase,
+        stage,
+        moment_count: snapshot.momentCount,
+      });
+      return;
+    }
+
+    const key = livingDaySnapshotKey(snapshot);
+    const changed = key !== lastKeyRef.current;
+    if (!previous) return;
+
+    const next = livingDayFeedback(previous.state, state, previous.snap, snapshot);
+
+    if (changed) {
+      lastKeyRef.current = key;
+      trackStudio("living_day_changed", {
+        phase: state.phase,
+        stage,
+        moment_count: snapshot.momentCount,
+        delta_count: next?.deltaCount ?? 0,
+        trigger: next?.trigger ?? "other",
+      });
+    }
+
+    if (next) setFeedback(next.text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [snapshot, stage]);
+
+  // Feedback disappears on its own — never a modal, never a phase.
+  useEffect(() => {
+    if (!feedback) return;
+    const t = window.setTimeout(() => setFeedback(null), 4200);
+    return () => window.clearTimeout(t);
+  }, [feedback]);
 
   // Escape closes drawer; lock body scroll while open.
   useEffect(() => {
@@ -318,33 +388,35 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
   }, [hidden, open]);
 
   if (hidden) return null;
-  if (dna.length === 0) return null; // No meaningful pick yet → no pill.
+  if (stage === "hidden" || dna.length === 0) return null; // Nothing real to say yet.
 
-  // Collapsed copy: a non-monetary value cue — region and shape of the day.
+  // Collapsed copy — truthful per stage. `direction` shows DNA only: no
+  // stop names, no moment count, no route.
   const dnaSummary = dna.slice(0, 2).join(" · ");
-  const scopeTrailing =
-    scopeRegion && scopeStops > 0
-      ? `${scopeRegion} · ${scopeStops} ${scopeStops === 1 ? "moment" : "moments"}`
-      : (scopeRegion ?? null);
-  const collapsedTrailing = storyLoading
-    ? "Composing…"
-    : scopeTrailing
-      ? scopeTrailing
-      : aiStory?.text
-        ? "Tap to read"
-        : routeLine
-          ? "Route forming"
-          : dnaSummary || "forming";
+  const eyebrow =
+    stage === "direction"
+      ? "Your day · forming"
+      : stage === "draft"
+        ? "Your day · first draft"
+        : "Your day";
+  const collapsedTrailing =
+    stage === "direction"
+      ? dnaSummary
+      : snapshot.region && snapshot.momentCount > 0
+        ? `${snapshot.region} · ${snapshot.momentCount} ${snapshot.momentCount === 1 ? "moment" : "moments"}`
+        : (snapshot.region ?? dnaSummary);
 
   return (
     <>
-      <div className="w-full flex justify-center px-3 pt-2">
+      <div className="w-full flex flex-col items-center px-3 pt-2">
         <button
           type="button"
           onClick={() => setOpen(true)}
           aria-expanded={open}
-          aria-label="Open your journey draft"
-          className="group inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-1.5 transition-[transform,box-shadow,background-color] duration-[220ms] ease-out motion-reduce:transition-none hover:-translate-y-[1px]"
+          aria-label="Open your living day"
+          data-testid="studio-v3-living-day-pill"
+          data-stage={stage}
+          className="group inline-flex max-w-full min-h-[44px] items-center gap-2 rounded-full border px-3 py-2 transition-[transform,box-shadow,background-color] duration-[220ms] ease-out motion-reduce:transition-none hover:-translate-y-[1px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
           style={{
             background: "color-mix(in oklab, var(--ivory) 94%, transparent)",
             borderColor: "color-mix(in oklab, var(--charcoal) 12%, transparent)",
@@ -360,7 +432,7 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
             className="text-[9px] uppercase tracking-[0.24em] font-bold leading-none whitespace-nowrap"
             style={{ color: "var(--gold)" }}
           >
-            Your journey · forming
+            {eyebrow}
           </span>
           <span
             className="text-[10.5px] leading-none truncate max-w-[55vw]"
@@ -376,12 +448,25 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
             ›
           </span>
         </button>
+        {feedback ? (
+          <p
+            data-testid="studio-v3-living-day-feedback"
+            aria-live="polite"
+            className="mt-1.5 text-[10.5px] leading-none animate-in fade-in duration-300 motion-reduce:animate-none"
+            style={{ color: "color-mix(in oklab, var(--teal) 82%, transparent)" }}
+          >
+            {feedback}
+          </p>
+        ) : null}
       </div>
+
 
       {open
         ? createPortal(
             <JourneyDraftDrawer
               onClose={() => setOpen(false)}
+              stage={stage}
+              feedback={feedback}
               title={title}
               dna={dna}
               routeLine={routeLine}
@@ -426,6 +511,10 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
 
 interface DrawerProps {
   onClose: () => void;
+  /** Living Day stage — direction (DNA only) · draft · shaped. */
+  stage: LivingDaySnapshot["stage"];
+  /** Short-lived causal line, mirrored inside the drawer while it shows. */
+  feedback: string | null;
   title: string;
   dna: string[];
   routeLine: string | null;
@@ -457,6 +546,8 @@ interface DrawerProps {
 
 function JourneyDraftDrawer({
   onClose,
+  stage,
+  feedback,
   title,
   dna,
   routeLine,
@@ -566,7 +657,11 @@ function JourneyDraftDrawer({
                 className="text-[9.5px] uppercase tracking-[0.28em] font-bold"
                 style={{ color: "var(--gold)" }}
               >
-                Your journey draft
+                {stage === "direction"
+                  ? "Your day · forming"
+                  : stage === "draft"
+                    ? "A first draft · before rhythm"
+                    : "Your day"}
               </p>
               <h2
                 className="mt-1 text-[18px] leading-tight font-semibold"
@@ -575,6 +670,16 @@ function JourneyDraftDrawer({
                 {title}
               </h2>
               {memoryLine ? <MemoryRewriteLine line={memoryLine} /> : null}
+              {feedback ? (
+                <p
+                  data-testid="studio-v3-living-day-drawer-feedback"
+                  aria-live="polite"
+                  className="mt-1.5 text-[11px] leading-snug"
+                  style={{ color: "color-mix(in oklab, var(--teal) 82%, transparent)" }}
+                >
+                  {feedback}
+                </p>
+              ) : null}
             </div>
             <button
               type="button"
@@ -590,52 +695,6 @@ function JourneyDraftDrawer({
             </button>
           </div>
 
-          {/* AI live story — generated by Lovable AI from the current profile.
-              Tone & atmosphere only, never invents facts. Falls back to a
-              deterministic whisper on any error so the UI stays cinematic. */}
-          {storyText || storyLoading ? (
-            <div className="mt-4">
-              <p
-                className="text-[9px] uppercase tracking-[0.26em] font-bold"
-                style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
-              >
-                {storySource === "ai" ? "Composed for you" : "A quiet read"}
-              </p>
-              {storyLoading && !storyText ? (
-                <div
-                  className="mt-2 space-y-1.5"
-                  aria-busy="true"
-                  aria-label="Composing your whisper"
-                >
-                  <div
-                    className="h-3 rounded-sm animate-pulse"
-                    style={{
-                      background: "color-mix(in oklab, var(--charcoal) 8%, transparent)",
-                      width: "92%",
-                    }}
-                  />
-                  <div
-                    className="h-3 rounded-sm animate-pulse"
-                    style={{
-                      background: "color-mix(in oklab, var(--charcoal) 8%, transparent)",
-                      width: "76%",
-                    }}
-                  />
-                </div>
-              ) : (
-                <p
-                  className="mt-2 text-[13.5px] leading-[1.55] animate-in fade-in duration-[400ms] motion-reduce:animate-none"
-                  style={{
-                    color: "color-mix(in oklab, var(--charcoal) 88%, transparent)",
-                    fontFamily: "var(--font-editorial)",
-                    fontStyle: "italic",
-                  }}
-                >
-                  {storyText}
-                </p>
-              )}
-            </div>
-          ) : null}
 
           {/* DNA pills */}
           {dna.length > 0 ? (
@@ -729,6 +788,53 @@ function JourneyDraftDrawer({
                   </li>
                 ) : null}
               </ul>
+            </div>
+          ) : null}
+
+          {/* AI live story — generated by Lovable AI from the current profile.
+              Tone & atmosphere only, never invents facts. Falls back to a
+              deterministic whisper on any error so the UI stays cinematic. */}
+          {storyText || storyLoading ? (
+            <div className="mt-4">
+              <p
+                className="text-[9px] uppercase tracking-[0.26em] font-bold"
+                style={{ color: "color-mix(in oklab, var(--teal) 85%, transparent)" }}
+              >
+                {storySource === "ai" ? "Composed for you" : "A quiet read"}
+              </p>
+              {storyLoading && !storyText ? (
+                <div
+                  className="mt-2 space-y-1.5"
+                  aria-busy="true"
+                  aria-label="Composing your whisper"
+                >
+                  <div
+                    className="h-3 rounded-sm animate-pulse"
+                    style={{
+                      background: "color-mix(in oklab, var(--charcoal) 8%, transparent)",
+                      width: "92%",
+                    }}
+                  />
+                  <div
+                    className="h-3 rounded-sm animate-pulse"
+                    style={{
+                      background: "color-mix(in oklab, var(--charcoal) 8%, transparent)",
+                      width: "76%",
+                    }}
+                  />
+                </div>
+              ) : (
+                <p
+                  className="mt-2 text-[13.5px] leading-[1.55] animate-in fade-in duration-[400ms] motion-reduce:animate-none"
+                  style={{
+                    color: "color-mix(in oklab, var(--charcoal) 88%, transparent)",
+                    fontFamily: "var(--font-editorial)",
+                    fontStyle: "italic",
+                  }}
+                >
+                  {storyText}
+                </p>
+              )}
             </div>
           ) : null}
 

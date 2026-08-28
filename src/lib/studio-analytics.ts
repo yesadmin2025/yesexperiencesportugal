@@ -32,6 +32,8 @@ export type StudioAnalyticsEvent =
   | "price_expanded"
   | "guest_details_started"
   | "guest_details_completed"
+  | "living_day_seen"
+  | "living_day_changed"
   | "back_navigation"
   | "abandon_by_phase";
 

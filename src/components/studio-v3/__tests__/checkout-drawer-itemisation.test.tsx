@@ -2,7 +2,7 @@
 // and itemises adults/minors so the guest sees exactly what's charged.
 
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import {
   BrandedCheckoutDrawer,
   summarizeJourneyLines,
@@ -68,6 +68,8 @@ describe("BrandedCheckoutDrawer summary", () => {
         summary={summary}
       />,
     );
+    // Compact drawer (Pass 1B): per-band rows live inside the "Details" disclosure.
+    fireEvent.click(screen.getByTestId("checkout-drawer-details-toggle"));
     const lines = screen.getByTestId("checkout-drawer-journey-lines");
     expect(within(lines).getByText(/Adults/)).toBeInTheDocument();
     expect(within(lines).getByText(/Child \(age 8\)/)).toBeInTheDocument();

@@ -63,6 +63,7 @@ import {
 import { computeQualityScore } from "@/lib/studio-v3-quality";
 import { inferKind, summarizeDay } from "@/lib/studio/timing";
 import { PartialReveal } from "./PartialReveal";
+import { isLivingDayPhaseAllowed, livingDayStageFor } from "./livingDaySpine";
 
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -2389,18 +2390,17 @@ export function StudioV3() {
         ? prioritiseOptions(filteredOccasions, ["corporate", "celebration", "none"])
         : filteredOccasions;
 
-  // Living Journey Panel (heavy editorial text) — keep hidden during the
-  // question chain to avoid competing with the active phase. Reveals on
-  // map/storyboard where it owns the surface.
-  const livingPanelHidden =
+  // Pass 2A — the Living Day is the persistent, lightweight artefact. Its
+  // visibility rule is deliberately SEPARATE from the ComposerMap gate:
+  // the map stays late and strict (never a large dark canvas above an
+  // early question), while the compact Living Day pill may appear as soon
+  // as there is something real to say. It never renders on the intro, on
+  // takeover phases, or while a reaction beat plays; the component itself
+  // stays hidden until the state qualifies for a truthful stage.
+  const livingDayHidden =
     !!reaction ||
-    state.phase === "intro" ||
-    state.phase === "feeling" ||
-    state.phase === "map" ||
-    state.phase === "storyboard" ||
-    state.phase === "confirmation" ||
-    state.phase === "guestDetails" ||
-    state.phase === "checkoutSummary";
+    !isLivingDayPhaseAllowed(state.phase) ||
+    livingDayStageFor(state) === "hidden";
 
   // ComposerMap — Studio Bible §4 "live map updates as stops change".
   // Lightweight, peripheral, progressive: renders the moment the traveller
@@ -2578,7 +2578,7 @@ export function StudioV3() {
         composerHidden={composerHidden}
         reactionActive={!!reaction}
       />
-      <LivingJourneyPanel state={state} hidden={composerHidden} />
+      <LivingJourneyPanel state={state} hidden={livingDayHidden} />
       <ComposerMap state={state} hidden={composerHidden} />
       <CloseStudio hasProgress={state.phase !== "who"} />
       {chromeReady ? (
@@ -2656,7 +2656,7 @@ export function StudioV3() {
               columns={1}
             />
           </div>
-          <PartialReveal intent={state.destinationIntent} />
+          <PartialReveal intent={state.destinationIntent} compact={!livingDayHidden} />
           {state.destinationIntent && state.destinationIntent !== "no-preference" ? (
             <NextTeaser>Portugal is starting to open in the right direction.</NextTeaser>
           ) : (
