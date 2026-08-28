@@ -8,7 +8,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { render as rtlRender, screen, cleanup, fireEvent, within } from "@testing-library/react";
+import { render as rtlRender, screen, cleanup, fireEvent, within, act as rtlAct } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { INITIAL_STATE, type StudioV3State } from "../types";
 import { resolveStudioV3Route } from "../curation";
