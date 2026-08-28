@@ -22,28 +22,70 @@
 
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
+import { REGION_STOPS, type StopKind } from "@/data/regionStops";
+import { TAILOR_BLUEPRINTS } from "@/data/tailorBlueprints";
 import { semanticStopKey } from "./curation";
 
-/**
- * Curated catalog wineries by normalized name. Some real catalog wineries
- * (e.g. "House & Museum José Maria da Fonseca") carry no winery keyword in
- * their customer label and are absent from the geo index, so the curated
- * pool is the truthful source that they ARE winery visits.
- */
 const normName = (s: string) =>
   s
     .toLowerCase()
     .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9 ]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-const CATALOG_WINERY_NAMES: ReadonlySet<string> = new Set(
-  REGION_STOP_POOL.filter((s) => s.type === "winery").map((s) => normName(s.name)),
-);
+
+/**
+ * Verified aliases of EXISTING source-of-truth winery entries. Signature
+ * catalog labels occasionally differ in wording from the blueprint /
+ * region-pool name for the very same supplier. Centralised here — never
+ * scattered across UI components — and each entry names the source-of-truth
+ * record it aliases. Catalog data itself stays untouched.
+ */
+const VERIFIED_WINERY_ALIASES: ReadonlyArray<readonly [alias: string, sourceOfTruth: string]> = [
+  ["Farm Catralvos", "Quinta de Catralvos"], // TAILOR_BLUEPRINTS · arrabida choice `catralvos`
+  ["Adega Cartuxa", "Enoturismo Cartuxa"], // REGION_STOP_POOL · alentejo winery
+  ["Adega Ervideira", "Ervideira"], // REGION_STOP_POOL · alentejo winery
+  ["Quinta S. José de Peramanca", "Pera-Grave / Quinta S. José de Peramanca"],
+];
 
 /** Canonical stop metadata kinds that are a winery visit. */
-const WINERY_KINDS: ReadonlySet<string> = new Set(["winery", "cellar"]);
+const WINERY_KINDS: ReadonlySet<StopKind> = new Set<StopKind>(["winery", "cellar"]);
+
+/**
+ * Canonical winery identities, derived ONLY from typed existing truth:
+ *   - `REGION_STOP_POOL` entries typed `type: "winery"`
+ *   - `REGION_STOPS` entries typed `kind: "winery" | "cellar"`
+ *   - `TAILOR_BLUEPRINTS` core/choice/optional stops typed `category: "winery"`
+ *   - the verified alias table above
+ * Each identity is indexed twice: by normalized name AND by the shared
+ * `semanticStopKey`, so accent/case/wording variants of the SAME supplier
+ * resolve without any risk of matching a different place.
+ */
+function collectBlueprintWineryLabels(): string[] {
+  const out: string[] = [];
+  for (const bp of Object.values(TAILOR_BLUEPRINTS)) {
+    for (const stop of [...bp.core, ...(bp.choice?.options ?? []), ...bp.optional]) {
+      if (stop.category === "winery") out.push(stop.label);
+    }
+  }
+  return out;
+}
+
+const WINERY_IDENTITY_KEYS: ReadonlySet<string> = (() => {
+  const keys = new Set<string>();
+  const add = (name: string) => {
+    const n = normName(name);
+    if (n) keys.add(n);
+    const semantic = semanticStopKey(name);
+    if (semantic) keys.add(semantic);
+  };
+  for (const s of REGION_STOP_POOL) if (s.type === "winery") add(s.name);
+  for (const s of REGION_STOPS) if (WINERY_KINDS.has(s.kind)) add(s.name);
+  for (const label of collectBlueprintWineryLabels()) add(label);
+  for (const [alias] of VERIFIED_WINERY_ALIASES) add(alias);
+  return keys;
+})();
 
 /**
  * Conservative label fallback, used ONLY when the canonical catalog has no
@@ -73,9 +115,16 @@ export interface WineryPresentationStop {
 }
 
 export function isWineryStopLabel(label: string): boolean {
+  if (!label) return false;
+  // 1) Structural truth first — exact identity from typed catalogs/aliases.
+  if (WINERY_IDENTITY_KEYS.has(normName(label))) return true;
+  const semantic = semanticStopKey(label);
+  if (semantic && WINERY_IDENTITY_KEYS.has(semantic)) return true;
+  // 2) Geo catalog kind (fuzzy match) — only ever confirms, never denies.
   const geo = lookupStopGeo(label);
-  if (geo) return WINERY_KINDS.has(geo.kind);
-  if (CATALOG_WINERY_NAMES.has(normName(label))) return true;
+  if (geo && WINERY_KINDS.has(geo.kind)) return true;
+  if (geo) return false;
+  // 3) Narrow keyword fallback for labels absent from every catalog.
   return WINERY_LABEL_FALLBACK_RE.test(label);
 }
 
