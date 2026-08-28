@@ -404,12 +404,28 @@ Deno.serve(async (req) => {
     // and the tour's own approved 8-pax anchor. A tampered client can neither
     // under-pay a real add-on, invent a cheap one, nor pair a cheap id with a
     // premium label/duration. Unknown ids are dropped.
+    //
+    // In addition, a known id must be STRUCTURALLY eligible for this base
+    // Signature (region bucket / Lisbon sub-region / not the tour's own
+    // source / no inclusion conflict). A known-but-unauthorised selection is
+    // rejected explicitly rather than silently dropped, so a manipulated
+    // request can never create a checkout that differs from its payload
+    // without notice. Dynamic day-shape rules stay UI-side.
     const rawAddOns = Array.isArray(body.addOns) ? body.addOns : [];
-    const validatedAddOns = rawAddOns
+    const candidateAddOns = rawAddOns
       .filter(
         (a) => a && typeof a === "object" && typeof a.id === "string" && a.id.length > 0 && a.id.length <= 64,
       )
-      .slice(0, 6)
+      .slice(0, 6);
+
+    for (const a of candidateAddOns) {
+      const known = serverAddOnLine(a.id, approvedAnchorEur || 1, 1) !== null;
+      if (known && !serverAddOnAllowedForTour(a.id, body.tourId)) {
+        return jsonError(`invalid_add_on_for_tour:${a.id}`, 409);
+      }
+    }
+
+    const validatedAddOns = candidateAddOns
       .map((a) => {
         const line = approvedAnchorEur
           ? serverAddOnLine(a.id, approvedAnchorEur, body.guests)
@@ -426,6 +442,7 @@ Deno.serve(async (req) => {
           : null;
       })
       .filter((a): a is NonNullable<typeof a> => a !== null);
+
 
     const addOnLineItems = validatedAddOns
       .filter((a) => a.priceEur > 0)
