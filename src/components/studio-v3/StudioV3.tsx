@@ -316,6 +316,7 @@ import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
 import { CheckoutSummary as CheckoutSummaryStep } from "./CheckoutSummary";
 import { GuestDetailsStep } from "./GuestDetailsStep";
 import { buildSignatureStorySnapshot } from "./signatureStorySnapshot";
+import { INSTANT_CONFIRMATION } from "@/content/signature-day-copy";
 import { sendSignatureStoryEmail } from "@/lib/emails/sendSignatureStoryEmail.functions";
 import {
   BrandedCheckoutDrawer,
