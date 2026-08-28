@@ -10,13 +10,17 @@
  * Legacy CTA strings that must NEVER appear on any public surface.
  * Adding a new legacy string here immediately extends the guard to
  * every route both specs cover.
+ *
+ * NOTE: "Reserve this day" was previously listed here. It is now the
+ * approved primary label of the Signature booking card (Pass 1A
+ * conversion surgery), so it is intentionally NOT legacy.
  */
 export const LEGACY_CTAS = [
-  "Reserve this day",
   "Tailor this Signature",
   "Continue draft",
   "Design & Book",
 ] as const;
+
 
 /**
  * Small canonical sample of Signature product routes used by

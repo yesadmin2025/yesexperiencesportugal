@@ -302,7 +302,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
 
   return (
     <div className="border border-[color:var(--border)] bg-[color:var(--card)] p-5 sm:p-7">
-      <Eyebrow>Reserve this day</Eyebrow>
+      <Eyebrow>Availability</Eyebrow>
       <SectionTitle size="compact" spacing="tight">
         Book the Signature, <SectionTitle.Em>as designed</SectionTitle.Em>
       </SectionTitle>
@@ -516,7 +516,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             </>
           ) : (
             <>
-              <Sparkles size={15} /> Reserve securely
+              <Sparkles size={15} /> Reserve this day
             </>
           )}
         </button>

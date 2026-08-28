@@ -1,18 +1,20 @@
 /**
- * CTA vocabulary lock — Phase 3 Priority 1.
+ * CTA vocabulary lock.
  *
- * The five approved CTA strings are the ONLY conversion labels allowed
- * on public surfaces. If a legacy string (Reserve this day, Tailor this
- * Signature, Continue draft, Design & Book) resurfaces on any surveyed
- * route, this suite fails so we catch the regression before ship.
+ * The approved CTA strings are the ONLY conversion labels allowed on
+ * public surfaces. If a legacy string (Tailor this Signature, Continue
+ * draft, Design & Book) resurfaces on any surveyed route, this suite
+ * fails so we catch the regression before ship.
  *
  * Locked strings:
- *   - "Check availability & reserve"   (Signature primary)
+ *   - "Check availability & reserve"   (Signature marketing entry)
+ *   - "Reserve this day"                (Signature booking card primary)
  *   - "Tailor this day"                 (Signature secondary)
  *   - "Review route & price"            (Studio V3 step 1 — future)
  *   - "Reserve securely"                (Studio V3 / bespoke final)
  *   - "Resume your draft"               (Studio draft return)
  */
+
 import { test, expect, type Page } from "@playwright/test";
 import { LEGACY_CTAS } from "./copy-parity-constants";
 
