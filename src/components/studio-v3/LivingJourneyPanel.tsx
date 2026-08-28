@@ -916,7 +916,7 @@ function JourneyDraftDrawer({
                     className="mt-1.5 space-y-1 text-[12px] leading-snug"
                     style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
                   >
-                    {moments.slice(0, 3).map((m, i) => (
+                    {moments.map((m, i) => (
                       <li key={`${m}-${i}`} className="flex gap-2">
                         <span
                           className="mt-[7px] inline-block h-1 w-1 rounded-full shrink-0"
