@@ -3813,19 +3813,33 @@ export function StoryboardHandoff({
   const editedStops = state.editedRoutePoints ?? baseStops;
   const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
 
+  // Output sanitation: canonical labels stay in `editedStops` for geo lookup,
+  // route authority, dedupe and editing identity. Everything a traveller can
+  // READ (timeline, map pins, legend, accessibility, price card spine) goes
+  // through this centralized winery presentation map first.
+  const revealDisplayLabels = useMemo(
+    () => buildWineryDisplayLabels(editedStops.map((s) => ({ label: s.label }))),
+    [editedStops],
+  );
+  const revealLabel = useCallback(
+    (label: string) => studioDisplayLabel(label, revealDisplayLabels),
+    [revealDisplayLabels],
+  );
+
   // Real coordinates for the unified route surface — or gaps, honestly kept.
   const unifiedRouteMoments = useMemo(
     () =>
       resolveRevealRouteStops(editedStops, resolved, skeletonTour ?? null).stopsDetailed.map(
         (s, i) => ({
-          label: s.label,
-          story: editedStops[i]?.story ?? null,
+          label: studioDisplayLabel(s.label, revealDisplayLabels),
+          story: genericiseWineryText(editedStops[i]?.story ?? "", revealDisplayLabels) || null,
           lat: (s as { lat?: number }).lat ?? null,
           lng: (s as { lng?: number }).lng ?? null,
         }),
       ),
-    [editedStops, resolved, skeletonTour],
+    [editedStops, resolved, skeletonTour, revealDisplayLabels],
   );
+
 
 
   // Phase C composer rationales were indexed by ORIGINAL stop position and
