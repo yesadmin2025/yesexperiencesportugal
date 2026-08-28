@@ -92,6 +92,7 @@ import {
 import { UnifiedYourDayRoute } from "./UnifiedYourDayRoute";
 import {
   resolveAuthoritativeRouteStops,
+  resolveStudioRouteFromState,
   studioRouteShapingInput,
 } from "./studioRouteAuthority";
 import { findTour, signatureTours } from "@/data/signatureTours";
@@ -1123,7 +1124,22 @@ export function StudioV3() {
       }
       setCheckoutPending(true);
       // Open the drawer immediately with a branded skeleton.
-      const stopLabels = (tour.stops ?? []).map((s) => s.label).slice(0, 6);
+      // ITINERARY AUTHORITY (checkout continuity): the labels frozen into
+      // Stripe metadata and `booking_snapshot.payload.itinerary` must be the
+      // SAME authored/composed route the traveller saw in Your Day —
+      // editedRoutePoints > full composed route > compact route > catalog.
+      // Never the base catalog Signature stops while a composed route exists,
+      // and never capped to the legacy 4-slot card projection.
+      const checkoutStops = resolveAuthoritativeRouteStops({
+        editedRoutePoints: currentState.editedRoutePoints ?? null,
+        resolved: resolveStudioRouteFromState(currentState),
+        catalogStops: tour.stops ?? null,
+      });
+      // Supplier privacy guard — persisted/customer-facing labels stay generic.
+      const checkoutWineryLabels = buildWineryDisplayLabels(checkoutStops);
+      const stopLabels = checkoutStops.map((s) =>
+        studioDisplayLabel(s.label, checkoutWineryLabels),
+      );
       const perPaxBase = resolvedPerPax.eurPerPax;
 
       // Unit-aware party total for add-ons — mirrors `addOnEurFor` in the
@@ -1230,6 +1246,10 @@ export function StudioV3() {
             guests: details.guests,
             ...(compositionSupplied ? { adults: composedAdults, minorAges: composedMinors } : {}),
             stopLabels,
+            // Display-only, never priced. Explicit itinerary so the frozen
+            // booking snapshot keeps the authored order verbatim instead of
+            // relying on the metadata-truncated stopLabels fallback.
+            itinerary: stopLabels.map((label) => ({ label })),
 
             includedItems: (() => {
               const c = getTourContent(tour.id);
