@@ -940,14 +940,12 @@ function TailorPage() {
           flow: "tailor",
           uiMode: "embedded",
           guestDetails: {
+            // FinalDetails is the single source of truth for every
+            // operational preference — never overwrite it with defaults.
             ...details,
             hotelPickupIncluded: true,
             pace,
-            accessibility: [...accessibility],
-            notes,
-            skippedCoreStops: blueprint
-              ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.label)
-              : [],
+            skippedCoreStops: skippedPublicLabels,
           },
         },
       });
