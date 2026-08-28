@@ -1246,6 +1246,10 @@ export function StudioV3() {
             guests: details.guests,
             ...(compositionSupplied ? { adults: composedAdults, minorAges: composedMinors } : {}),
             stopLabels,
+            // Display-only, never priced. Explicit itinerary so the frozen
+            // booking snapshot keeps the authored order verbatim instead of
+            // relying on the metadata-truncated stopLabels fallback.
+            itinerary: stopLabels.map((label) => ({ label })),
 
             includedItems: (() => {
               const c = getTourContent(tour.id);
