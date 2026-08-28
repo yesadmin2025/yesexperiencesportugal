@@ -168,7 +168,8 @@ export function FinalDetailsDialog({
       email: email.trim(),
       phone: phone.trim(),
       tourDate,
-      guests: totalGuests(composition),
+      startTime: startTime || undefined,
+
       adults: composition.adults,
       minorAges: [...composition.minorAges],
       pickupAddress: pickupAddress.trim(),
