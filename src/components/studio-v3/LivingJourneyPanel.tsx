@@ -153,7 +153,13 @@ export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanel
     state.dateExact,
   ]);
 
-  const routePoints = (resolved?.routePoints ?? []).slice(0, 4);
+  // The FULL composed route is the itinerary authority. `routePoints` is the
+  // compact 4-slot card projection — never cap the Living Day to it.
+  const routePoints = resolved
+    ? resolved.composedRoutePoints.length > 0
+      ? resolved.composedRoutePoints
+      : resolved.routePoints
+    : [];
   // Customer-safe labels — winery supplier names never leak to any surface.
   const displayLabels = useMemo(
     () => buildWineryDisplayLabels(routePoints.map((p) => ({ label: p.label }))),
@@ -910,7 +916,7 @@ function JourneyDraftDrawer({
                     className="mt-1.5 space-y-1 text-[12px] leading-snug"
                     style={{ color: "color-mix(in oklab, var(--charcoal) 80%, transparent)" }}
                   >
-                    {moments.slice(0, 3).map((m, i) => (
+                    {moments.map((m, i) => (
                       <li key={`${m}-${i}`} className="flex gap-2">
                         <span
                           className="mt-[7px] inline-block h-1 w-1 rounded-full shrink-0"

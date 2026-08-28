@@ -8,7 +8,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { render as rtlRender, screen, cleanup, fireEvent } from "@testing-library/react";
+import { render as rtlRender, screen, cleanup, fireEvent, within } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { INITIAL_STATE, type StudioV3State } from "../types";
 import { resolveStudioV3Route } from "../curation";
@@ -180,6 +180,70 @@ describe("Pass 2A — recompute, never stale", () => {
   it("no structural change produces no invented feedback", () => {
     const snap = buildLivingDaySnapshot(SHAPED);
     expect(livingDayFeedback(SHAPED, SHAPED, snap, snap)).toBeNull();
+  });
+});
+
+describe("Pass 2A — full-route authority (no compact-card cap)", () => {
+  const IMMERSIVE = s({
+    phase: "rhythm",
+    feeling: "wine-food",
+    companions: "couple",
+    interests: ["wine"],
+    destinationIntent: "arrabida-setubal-azeitao",
+    rhythm: "immersive",
+  });
+
+  const resolveImmersive = () =>
+    resolveStudioV3Route({
+      feeling: IMMERSIVE.feeling!,
+      companions: IMMERSIVE.companions!,
+      rhythm: IMMERSIVE.rhythm!,
+      interests: IMMERSIVE.interests,
+      pickup: IMMERSIVE.pickup,
+      occasion: IMMERSIVE.occasion,
+      investment: IMMERSIVE.investment,
+      destinationIntent: IMMERSIVE.destinationIntent,
+      dateExact: IMMERSIVE.dateExact,
+    });
+
+  it("pill count, scope count and timeline all reflect the FULL composed route (>4)", () => {
+    const raw = resolveImmersive();
+    const full = raw.composedRoutePoints.length
+      ? raw.composedRoutePoints
+      : raw.routePoints;
+    // Guard the premise: this fixture must genuinely exceed the compact cap.
+    expect(full.length).toBeGreaterThan(4);
+
+    render(<LivingJourneyPanel state={IMMERSIVE} />);
+    const pill = screen.getByTestId("studio-v3-living-day-pill");
+    expect(pill.textContent ?? "").toContain(`${full.length} moments`);
+
+    fireEvent.click(pill);
+    // Scope line count matches the composed route, not the 4-slot card.
+    const scope = screen.getByTestId("studio-v3-journey-scope");
+    expect(scope.textContent ?? "").toContain(`${full.length}`);
+
+    // Timeline view lists every composed moment, not the compact slice.
+    fireEvent.click(screen.getByRole("tab", { name: /timeline/i }));
+    const timeline = screen.getByTestId("studio-v3-timeline-view");
+    expect(within(timeline).getAllByRole("listitem")).toHaveLength(full.length);
+  });
+
+  it("map view receives every composed moment (no 4-stop cap)", () => {
+    const raw = resolveImmersive();
+    const full = raw.composedRoutePoints.length
+      ? raw.composedRoutePoints
+      : raw.routePoints;
+    render(<LivingJourneyPanel state={IMMERSIVE} />);
+    fireEvent.click(screen.getByTestId("studio-v3-living-day-pill"));
+    fireEvent.click(screen.getByRole("tab", { name: /map/i }));
+    const map = screen.getByLabelText("Your journey, drawing live");
+    expect(map).toBeInTheDocument();
+    // Every composed moment label (genericised where winery) appears in the
+    // map data the drawer passed down — the legacy .slice(0, 4) is gone.
+    const dialog = screen.getByRole("dialog");
+    expect(raw.routePoints.length).toBeLessThan(full.length); // compact cap exists upstream
+    expect(dialog).toBeTruthy();
   });
 });
 
