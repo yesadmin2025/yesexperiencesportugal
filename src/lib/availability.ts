@@ -51,10 +51,29 @@ export function getOperatingRule(tourId: string): Promise<OperatingRule> {
   return p;
 }
 
-/** Minimum bookable ISO date given lead-hours from now. */
-export function computeMinDateISO(leadHours: number): string {
-  const d = new Date(Date.now() + leadHours * 3_600_000);
-  return d.toISOString().split("T")[0];
+/** YES operational timezone — must match the server operating-rule gate. */
+export const OPERATING_TIME_ZONE = "Europe/Lisbon";
+
+const lisbonDateParts = new Intl.DateTimeFormat("en-CA", {
+  timeZone: OPERATING_TIME_ZONE,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+/**
+ * Minimum bookable ISO date given lead-hours from now.
+ *
+ * Parity with `supabase/functions/_shared/tour-operating-rules.ts`:
+ * `min_lead_hours` is an actual elapsed-hours instant (`now + leadHours`),
+ * floored to the resulting calendar date in Europe/Lisbon — never UTC,
+ * so dates near local midnight cannot drift a day early.
+ */
+export function computeMinDateISO(leadHours: number, now: Date = new Date()): string {
+  const d = new Date(now.getTime() + leadHours * 3_600_000);
+  const parts = lisbonDateParts.formatToParts(d);
+  const v = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+  return `${v.year}-${v.month}-${v.day}`;
 }
 
 export type DateInvalidReason = "before_min" | "weekday_closed" | "blackout";
