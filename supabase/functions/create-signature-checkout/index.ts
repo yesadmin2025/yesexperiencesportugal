@@ -333,8 +333,7 @@ Deno.serve(async (req) => {
 
     // Build the Stripe line item from client-supplied tour data. Client-passed
     // stopLabels are intentionally NOT shown in the line-item description for
-    // tailored bookings — those are pending operator review and could mislead
-    // the customer.
+    // tailored bookings.
     const isTailored = flow === "tailor";
     const productName = `${copy.label} — ${body.tourTitle}${isTailored ? " (tailored)" : ""}`.slice(
       0,
@@ -355,9 +354,9 @@ Deno.serve(async (req) => {
       lunchRemovalCredit > 0
         ? `Included lunch removed — €${lunchRemovalCredit} per person credited`
         : null;
-    const tailoredNote = isTailored
-      ? "Tailored adjustments confirmed by our team within 2 hours after payment."
-      : null;
+    // A Tailor configuration allowed into Stripe is instantly booked: no
+    // post-payment operator-review language.
+    const tailoredNote = isTailored ? "Instant confirmation by email." : null;
 
     const description = [
       guestsLine + " · Hotel pickup included",
@@ -373,21 +372,15 @@ Deno.serve(async (req) => {
     const pickupLine = body.pickupLabel ? ` · pickup ${body.pickupLabel}` : "";
     const submitMessage = copy.submit;
 
-    // Reveal add-ons. The client may only NAME an add-on: every euro amount
-    // is re-derived server-side from the approved catalog percentage and the
-    // tour's own approved 8-pax anchor, so a tampered client can neither
-    // under-pay a real add-on nor invent a cheap one. Unknown ids are dropped.
+    // Reveal add-ons. The client may only NAME an add-on by id: price, label
+    // and duration are all re-derived server-side from the approved catalog
+    // and the tour's own approved 8-pax anchor. A tampered client can neither
+    // under-pay a real add-on, invent a cheap one, nor pair a cheap id with a
+    // premium label/duration. Unknown ids are dropped.
     const rawAddOns = Array.isArray(body.addOns) ? body.addOns : [];
     const validatedAddOns = rawAddOns
       .filter(
-        (a) =>
-          a &&
-          typeof a === "object" &&
-          typeof a.id === "string" &&
-          a.id.length > 0 &&
-          a.id.length <= 64 &&
-          typeof a.label === "string" &&
-          a.label.length > 0,
+        (a) => a && typeof a === "object" && typeof a.id === "string" && a.id.length > 0 && a.id.length <= 64,
       )
       .slice(0, 6)
       .map((a) => {
@@ -397,12 +390,11 @@ Deno.serve(async (req) => {
         return line
           ? {
               id: a.id,
-              label: a.label.slice(0, 120),
+              // Canonical commercial identity — client label/duration ignored.
+              label: line.label,
               priceEur: line.perUnitEur,
               quantity: line.quantity,
-              durationMinutes: Number.isFinite(a.durationMinutes)
-                ? Math.max(0, Math.min(480, Math.round(a.durationMinutes as number)))
-                : 0,
+              durationMinutes: line.durationMinutes,
             }
           : null;
       })
