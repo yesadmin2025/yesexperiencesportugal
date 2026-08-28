@@ -316,6 +316,7 @@ import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
 import { CheckoutSummary as CheckoutSummaryStep } from "./CheckoutSummary";
 import { GuestDetailsStep } from "./GuestDetailsStep";
 import { buildSignatureStorySnapshot } from "./signatureStorySnapshot";
+import { INSTANT_CONFIRMATION } from "@/content/signature-day-copy";
 import { sendSignatureStoryEmail } from "@/lib/emails/sendSignatureStoryEmail.functions";
 import {
   BrandedCheckoutDrawer,
@@ -4491,7 +4492,7 @@ export function StoryboardHandoff({
               transition: "opacity 600ms ease-out, transform 600ms ease-out",
             }}
           >
-            We confirm everything before you book
+            {INSTANT_CONFIRMATION}
           </p>
 
           <span
