@@ -924,6 +924,16 @@ export function StudioV3() {
   const [exiting, setExiting] = useState(false);
 
   const [reaction, setReaction] = useState<Reaction | null>(null);
+  // Pass 2C — non-blocking whisper. A demoted beat no longer takes the screen:
+  // its paraphrase is handed to the Living Day, which is the feedback surface.
+  // Presentation only: never persisted, never replayed on back/edit, never a
+  // phase, and never an input to curation, pricing or analytics values.
+  const [whisper, setWhisper] = useState<{ text: string; id: number } | null>(null);
+  const whisperSeq = useRef(0);
+  // The FIRST route-bearing map beat stays cinematic (the moment Portugal
+  // first appears). Every later map beat is a repeat of something the Living
+  // Day already shows, so it whispers instead.
+  const firstRouteBeatShownRef = useRef(false);
   const [mobileReveal, setMobileReveal] = useState<{ beat: StudioV3BeatId; index: number } | null>(
     null,
   );
