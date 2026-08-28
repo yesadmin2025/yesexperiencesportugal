@@ -334,8 +334,8 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
     {
       id: "herdade-tasting",
       sourceTourId: "troia-comporta",
-      label: "Herdade da Comporta wine tasting",
-      blurb: "A relaxed tasting at the estate that defined Comporta — vines, dunes, long horizons.",
+      label: "Comporta winery tasting",
+      blurb: "A relaxed tasting at a local Comporta winery — vines, dunes, long horizons.",
       pricePctOfBase: 0.2,
       pricingUnit: "per_person",
       durationMinutes: 75,
