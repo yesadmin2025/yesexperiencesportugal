@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "@/lib/analytics-events";
-import { Calendar, Sparkles, Lock, Loader2 } from "lucide-react";
+import { Calendar, Sparkles, Loader2, ChevronDown } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { SignatureTour } from "@/data/signatureTours";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -13,7 +13,7 @@ import {
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
 import { CompositionField } from "@/components/booking/CompositionField";
-import { PerPersonBands } from "@/components/checkout/PerPersonBands";
+import { ChargeSummaryLine } from "@/components/checkout/ChargeSummaryLine";
 import {
   formatCompositionSummary,
   isCompositionComplete,
@@ -66,6 +66,8 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
   const [language, setLanguage] = useState<"en" | "pt">("en");
   const [pending, setPending] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [prefsOpen, setPrefsOpen] = useState(false);
+
 
   // Availability rule from public.tour_operating_rules (with safe defaults).
   const [rule, setRule] = useState<OperatingRule | null>(null);
