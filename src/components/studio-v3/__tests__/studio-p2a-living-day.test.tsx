@@ -247,6 +247,7 @@ describe("Pass 2A — full-route authority (no compact-card cap)", () => {
   });
 });
 
+describe("Pass 2A — winery names are always generic", () => {
   it("no snapshot moment or route line exposes a supplier winery name", () => {
     const states = [
       SHAPED,
