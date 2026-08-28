@@ -213,17 +213,17 @@ export function BrandedCheckoutDrawer({
           <SheetDescription className="sr-only">
             Secure checkout for {summary.tourTitle}.
           </SheetDescription>
-          {/* Payment surface: one quiet reassurance line only. Cancellation
-              and credentials are decision-surface content, shown before the
-              guest reaches payment. */}
-          <p className="mt-2 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-            {CANCELLATION.signature.en} · Instant confirmation
+          {/* The ONLY trust line in the drawer. Truthful text only — there
+              is no policy page to link to. */}
+          <p
+            data-testid="checkout-drawer-trust-line"
+            className="mt-2 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]"
+          >
+            Instant confirmation · Secure payment · {CANCELLATION.signature.en}
           </p>
         </div>
 
-
         <div className="overflow-y-auto flex-1">
-          {/* Premium experience summary card */}
           <ExperienceSummaryCard summary={summary} total={total} />
 
           {/* Stripe Embedded Checkout */}
@@ -240,12 +240,6 @@ export function BrandedCheckoutDrawer({
           </div>
         </div>
 
-        {/* Trust footer */}
-        <div className="px-5 sm:px-7 py-3 border-t border-[color:var(--border)] bg-[color:var(--sand)]/40">
-          <p className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-            <Lock size={11} /> Secure checkout · 256-bit encrypted
-          </p>
-        </div>
       </SheetContent>
     </Sheet>
   );
