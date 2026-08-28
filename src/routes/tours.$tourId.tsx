@@ -144,17 +144,17 @@ export const Route = createFileRoute("/tours/$tourId")({
               // Prefer the SoT itinerary (verified against Viator) for JSON-LD.
               // Falls back to legacy tour.stops when SoT is not populated for a tour.
               const content = getTourContent(params.tourId);
-              const projected = projectPublicSotItinerary(params.tourId);
-              const sotStops = (
-                projected ??
+              const projected: Array<{ label: string; description: string; optional: boolean }> =
+                projectPublicSotItinerary(params.tourId) ??
                 content.itinerary.map((c) => ({
                   label: c.label,
                   description: c.description,
                   optional: c.optional,
-                }))
-              )
+                }));
+              const sotStops = projected
                 .filter((c) => !c.optional)
                 .map((c) => ({ label: c.label, story: c.description }));
+
 
               const stops =
                 sotStops.length > 0
