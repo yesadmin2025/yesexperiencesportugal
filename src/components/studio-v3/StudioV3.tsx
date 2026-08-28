@@ -4237,7 +4237,7 @@ export function StoryboardHandoff({
   const cleanLabel = (s: string) => s.split(/[—–-]/)[0].split(",")[0].trim();
   // A catalog winery name is an assignment candidate, not a confirmed
   // supplier, so traveller-facing surfaces show a generic winery label.
-  const wineryDisplayLabels = buildWineryDisplayLabels(editedStops);
+  const wineryDisplayLabels = revealDisplayLabels;
   const displayLabel = (label: string) => {
     const generic = studioDisplayLabel(label, wineryDisplayLabels);
     return generic === label ? cleanLabel(label) : generic;
