@@ -30,6 +30,10 @@ import { toast } from "sonner";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { FinalDetailsDialog, type GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import {
+  ChargeSummaryLine,
+  type ChargeQuote,
+} from "@/components/checkout/ChargeSummaryLine";
+import {
   BrandedCheckoutDrawer,
   type CheckoutSummary,
 } from "@/components/checkout/BrandedCheckoutDrawer";
@@ -42,10 +46,12 @@ import {
   canSelectWineries,
   dedicatedLunchStopId,
   lunchRemovalEur,
+  principalEligibleStopIds,
   principalRemovalCount,
   tailorRules,
   tailorSupplementsEur,
 } from "@/data/tailorRules";
+
 
 import { TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR, TAILOR_LUNCH_SUPPLEMENT_EUR } from "@/config/pricing";
 
@@ -235,7 +241,12 @@ function TailorPage() {
   }, [tour.id]);
   const minDateISO = computeMinDateISO(rule?.minLeadHours ?? 24);
 
-  const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
+  /**
+   * Operational defaults. Pickup time, guide language and every other
+   * operational preference are collected in the shared FinalDetailsDialog
+   * after reserve intent — they are not decisions for the editor surface.
+   */
+  const [pickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
   const [pace, setPace] = useState<"relaxed" | "balanced" | "full">("balanced");
   const [composition, setComposition] = useState<TravellerComposition>({
     adults: 2,
@@ -243,7 +254,8 @@ function TailorPage() {
   });
   const guests = totalGuests(composition);
   const compositionReady = isCompositionComplete(composition);
-  const [language, setLanguage] = useState<"en" | "pt">("en");
+  const [language] = useState<"en" | "pt">("en");
+
 
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
   const [added, setAdded] = useState<Set<string>>(new Set());
@@ -450,8 +462,15 @@ function TailorPage() {
   const editsUsed = skipped.size + added.size;
   const editsLeft = Math.max(0, MAX_EDITS - editsUsed);
 
-  const [accessibility, setAccessibility] = useState<Set<string>>(new Set());
-  const [notes, setNotes] = useState("");
+  /**
+   * Accessibility / dietary / free-form notes are collected in the shared
+   * FinalDetailsDialog ("Anything we should know?"), not on the editor.
+   * Kept in state so any value already carried by Tailor still reaches the
+   * checkout payload unchanged.
+   */
+  const [accessibility] = useState<Set<string>>(new Set());
+  const [notes] = useState("");
+
 
   // ─── Derived live summary values ────────────────────────────
   const keptStops = useMemo(
@@ -655,6 +674,33 @@ function TailorPage() {
     composition.minorAges.length > 0 && hasCompleteJourneyPricing(journeyLines);
   const displayTotalEur = journeyPricing?.totalEur ?? estimatedPrice * guests;
 
+  /**
+   * Canonical total-first quote for "Your version". Pure presentation of
+   * the same numbers the reserve handler sends to Stripe — no new math.
+   */
+  const versionQuote = useMemo<ChargeQuote | null>(() => {
+    if (!compositionReady || !minorAgesComplete) return null;
+    return {
+      totalEur: displayTotalEur,
+      perPaxAdultEur: estimatedPrice,
+      hasMinors: composition.minorAges.length > 0,
+      adults: composition.adults,
+      minors: composition.minorAges.length,
+      adjustments: lunchRemovalPerPax
+        ? [{ label: "Included lunch removed", amountEur: -lunchRemovalPerPax * guests }]
+        : undefined,
+    };
+  }, [
+    compositionReady,
+    minorAgesComplete,
+    displayTotalEur,
+    estimatedPrice,
+    composition.adults,
+    composition.minorAges.length,
+    lunchRemovalPerPax,
+    guests,
+  ]);
+
   // ─── Wine-extension state ───────────────────────────────────
   // A "wine extension" = the traveller picked MORE wineries than the
   // Signature's baseline `pickMin`. Because per-winery extension pricing
@@ -694,6 +740,72 @@ function TailorPage() {
     if (!blueprint) return [] as string[];
     return blueprint.core.filter((s) => !s.lock && !skippedCore.has(s.id)).map((s) => s.label);
   }, [blueprint, skippedCore]);
+
+  /* ── Presentation truth (no pricing or eligibility changes) ──
+   * `principalEligibleStopIds` is the SAME authoritative set the −5%
+   * ladder uses, so a moment only advertises a reduction when removing it
+   * genuinely earns one. Everything else removes time, never money.
+   */
+  const principalEligible = useMemo(() => principalEligibleStopIds(tour.id), [tour.id]);
+
+  /**
+   * Public winery vocabulary. Estate names are operational data — the
+   * traveller chooses how MANY winery visits the day holds, never which
+   * partner. Assignment happens after booking.
+   */
+  const wineryLabel = (index: number) => `Winery visit ${index}`;
+
+  /** Ordered winery options, so count ↔ selection stays deterministic. */
+  const wineryOptions = useMemo(
+    () => (blueprint?.choice?.options ?? []).filter((o) => o.category === "winery"),
+    [blueprint],
+  );
+  const canAdjustWineryCount = Boolean(rules.wineries) && wineryOptions.length > 0;
+  const addWineryVisit = () => {
+    const next = wineryOptions.find((o) => !choiceSelected.has(o.id));
+    if (next) tryToggleChoice(next.id);
+  };
+  const removeWineryVisit = () => {
+    const last = [...wineryOptions].reverse().find((o) => choiceSelected.has(o.id));
+    if (last) tryToggleChoice(last.id);
+  };
+
+  /**
+   * The day as an ordered list of moments. Core stops keep blueprint
+   * order; chosen options follow. Winery entries are shown generically.
+   */
+  const moments = useMemo(() => {
+    if (!blueprint) return [];
+    let wineryIndex = 0;
+    const core = blueprint.core.map((s) => {
+      const isWinery = s.category === "winery";
+      if (isWinery) wineryIndex += 1;
+      return {
+        id: s.id,
+        label: isWinery ? wineryLabel(wineryIndex) : s.label,
+        locked: Boolean(s.lock),
+        lockReason: s.lock?.customerFacingReason ?? null,
+        removed: skippedCore.has(s.id),
+        earnsReduction: principalEligible.has(s.id),
+      };
+    });
+    const chosen = (blueprint.choice?.options ?? [])
+      .filter((o) => choiceSelected.has(o.id))
+      .map((o) => {
+        const isWinery = o.category === "winery";
+        if (isWinery) wineryIndex += 1;
+        return {
+          id: o.id,
+          label: isWinery ? wineryLabel(wineryIndex) : o.label,
+          locked: true,
+          lockReason: isWinery ? null : "Chosen for this day.",
+          removed: false,
+          earnsReduction: false,
+        };
+      });
+    return [...core, ...chosen];
+  }, [blueprint, skippedCore, choiceSelected, principalEligible]);
+
 
   // ─── Helpers ────────────────────────────────────────────────
   const toggle = <T extends string>(setter: (s: Set<T>) => void, current: Set<T>, val: T) => {
@@ -910,28 +1022,23 @@ function TailorPage() {
         </div>
       </section>
 
-      {/* ── 1 · INTRO ───────────────────────────────────────── */}
-      <section className="pb-8">
+      {/* ── 1 · INTRO — one line of context, then the editor ── */}
+      <section className="pb-6">
         <div className="container-x max-w-6xl">
-          <div className="grid lg:grid-cols-[1fr_1.4fr] gap-6 lg:gap-10 items-end">
+          <div className="grid gap-5 lg:grid-cols-[1fr_1.1fr] lg:items-end lg:gap-10">
             <div>
               <Eyebrow>Tailor this Signature</Eyebrow>
-              <SectionTitle as="h1" size="default" spacing="normal">
-                Keep the heart of this journey,{" "}
-                <SectionTitle.Em>adjust selected details</SectionTitle.Em> to match your rhythm.
+              <SectionTitle as="h1" size="default" spacing="tight">
+                {tour.title.split("—")[0].trim()},{" "}
+                <SectionTitle.Em>your version</SectionTitle.Em>
               </SectionTitle>
-              <p className="mt-5 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed max-w-lg">
-                You're tailoring{" "}
-                <span className="text-[color:var(--charcoal)]">
-                  {tour.title.split("—")[0].trim()}
-                </span>
-                . The route, story and trusted local guide remain intact — only the details below
-                can be adjusted.
+              <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                Keep the day as designed, or change a few moments. Your guide, route order and
+                region stay as they are.
               </p>
             </div>
 
-            {/* Tour mini card — visual anchor */}
-            <div className="relative aspect-[16/9] sm:aspect-[16/8] overflow-hidden border border-[color:var(--border)]">
+            <div className="relative aspect-[16/9] overflow-hidden border border-[color:var(--border)]">
               <img
                 src={tour.img}
                 alt={tour.title}
@@ -940,512 +1047,156 @@ function TailorPage() {
                 fetchPriority="high"
                 decoding="async"
                 style={{ objectPosition: tour.focal ?? "50% 50%" }}
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
               <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[color:var(--charcoal-deep)]/60 to-transparent" />
-              <div className="absolute bottom-3 left-3 right-3 text-[color:var(--ivory)]">
-                <span className="text-[12px] uppercase tracking-[0.12em] bg-[color:var(--gold)]/95 text-[color:var(--charcoal)] px-2.5 py-1">
-                  Signature
+              <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-x-3 gap-y-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--ivory)]/90">
+                <span className="inline-flex items-center gap-1.5">
+                  <MapPin size={11} /> {tour.region}
                 </span>
-                <div className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--ivory)]/90">
-                  <span className="inline-flex items-center gap-1.5">
-                    <MapPin size={11} /> {tour.region}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <Clock size={11} /> {signatureDurationLabel(tour.id, tour.durationHours)}
-                  </span>
-                </div>
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock size={11} /> {signatureDurationLabel(tour.id, tour.durationHours)}
+                </span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── 2 · TAILOR EXPLAINER (indexable, one-time) ───────── */}
-      <section aria-label="About Tailor" className="pb-6">
-        <div className="container-x max-w-3xl">
-          <div className="space-y-4 text-[14.5px] text-[color:var(--charcoal-soft)] leading-relaxed">
-            <p>
-              A Signature gives you a complete private day. Tailor allows you to keep its central
-              story while adjusting selected parts of the experience.
-            </p>
-            <p>
-              Depending on the Signature and current availability, travellers may be able to change
-              a stop, add an activity, adjust the rhythm or refine the balance between wine, coast,
-              food, heritage and local culture.
-            </p>
-            <p>
-              Tailor is designed for focused adjustments rather than building an entirely new
-              itinerary. For a journey beginning from a blank page, use the YES Studio.
-            </p>
-            <p className="text-[13px]">
-              <Link
-                to="/studio-v3"
-                className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
-              >
-                Build a journey from the beginning →
-              </Link>
-              <span className="mx-3 text-[color:var(--charcoal-soft)]/50">·</span>
-              <Link
-                to="/portugal-travel-designer"
-                className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
-              >
-                Discover our Portugal travel design →
-              </Link>
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 3 · WHAT STAYS / WHAT YOU CAN ADJUST ──────────────
-          Two-column reassurance block. The user must understand:
-          "I can adjust this tour a little, without starting from
-          zero." Tailored = selected adjustments INSIDE this one
-          Signature — never a new itinerary, never stops from other
-          tours, never a mix of regions. */}
-      <section
-        className="py-10 md:py-12 bg-[color:var(--ivory)] border-y border-[color:var(--border)] reveal"
-        aria-labelledby="tailor-scope-title"
-      >
+      {/* ── 2 · EDITOR (Moments · Rhythm · Enhance) + YOUR VERSION ── */}
+      <section className="py-8 md:py-12 reveal">
         <div className="container-x max-w-6xl">
-          <h2 id="tailor-scope-title" className="sr-only">
-            What stays the same and what you can adjust
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-            {/* What stays the same */}
-            <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-5 md:p-6">
-              <div className="flex items-center gap-2.5">
-                <Lock size={14} className="text-[color:var(--gold)] shrink-0" aria-hidden="true" />
-                <span className="text-[12px] uppercase tracking-[0.12em] font-semibold text-[color:var(--charcoal)]">
-                  What stays the same
-                </span>
-              </div>
-              <p className="mt-3 text-[14px] leading-[1.6] text-[color:var(--charcoal)]">
-                The core route, quality and local flow remain intact.
-              </p>
-              <ul className="mt-4 flex flex-col gap-2 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
-                {[
-                  "The real route and order of stops",
-                  "The trusted local guide and driver",
-                  "The quality of every stop and partner",
-                  "The region — only this Signature, no mixing",
-                ].map((line) => (
-                  <li key={line} className="flex items-start gap-2.5">
-                    <Check
-                      size={13}
-                      className="mt-[3px] text-[color:var(--teal)] shrink-0"
-                      aria-hidden="true"
-                    />
-                    <span>{line}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* What you can adjust */}
-            <div className="border border-[color:var(--border)] bg-[color:var(--sand)] p-5 md:p-6">
-              <div className="flex items-center gap-2.5">
-                <Sparkles
-                  size={14}
-                  className="text-[color:var(--teal)] shrink-0"
-                  aria-hidden="true"
-                />
-                <span className="text-[12px] uppercase tracking-[0.12em] font-semibold text-[color:var(--charcoal)]">
-                  What you can adjust
-                </span>
-              </div>
-              <p className="mt-3 text-[14px] leading-[1.6] text-[color:var(--charcoal)]">
-                Selected details available inside this specific experience.
-              </p>
-              <ul className="mt-4 flex flex-col gap-2 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
-                {[
-                  "Pace and timing",
-                  "Optional stops, when available",
-                  "Available add-ons for this tour",
-                  "Lunch preference, when applicable",
-                  "Group size, language and accessibility needs",
-                ].map((line) => (
-                  <li key={line} className="flex items-start gap-2.5">
-                    <span
-                      aria-hidden="true"
-                      className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[color:var(--gold)]"
-                    />
-                    <span>{line}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Plain-language clarification — sets the right mental model
-              before the user touches any control. */}
-          <p className="mt-5 text-[12.5px] leading-[1.6] text-[color:var(--charcoal-soft)] italic max-w-2xl">
-            You're adjusting this tour a little — not starting from zero. To design a day from
-            scratch, open the Studio.
-          </p>
-        </div>
-      </section>
-
-      {/* ── 2 · ADJUSTABLE OPTIONS + 4 · LIVE SUMMARY ─────── */}
-      <section className="py-12 md:py-16 reveal">
-        <div className="container-x max-w-6xl">
-          <div className="grid lg:grid-cols-[1fr_22rem] gap-8 lg:gap-12 items-start">
-            {/* ─── Adjustments column ──────────────────── */}
+          <div className="grid items-start gap-8 lg:grid-cols-[1fr_22rem] lg:gap-12">
+            {/* ─── Editor column ─────────────────────────── */}
             <div className="space-y-10">
-              {/* Date + Pickup */}
-              <Group title="When">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Field label="Date">
-                    <input
-                      type="date"
-                      value={date}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        if (v && rule) {
-                          const check = validateDateISO(v, rule);
-                          if (!check.ok) {
-                            gaBookingValidationBlocked({
-                              tourId: tour.id,
-                              surface: "tailor",
-                              reason: `date_${check.reason}`,
-                            });
-                            const msg =
-                              check.reason === "weekday_closed"
-                                ? "This tour doesn't run on that day. Please pick another date."
-                                : check.reason === "blackout"
-                                  ? "That date is unavailable. Please pick another."
-                                  : "Please choose a date at least 24 hours from now.";
-                            toast.error(msg);
-                            return;
-                          }
-                        }
-                        setDate(v);
-                        if (v)
-                          gaBookingDateSelected({ tourId: tour.id, surface: "tailor", dateISO: v });
-                      }}
-                      min={minDateISO}
-                      className="w-full bg-transparent border border-[color:var(--border)] px-3 py-3 text-sm focus:outline-none focus:border-[color:var(--gold)] min-h-[48px]"
-                    />
-                  </Field>
-                  <Field label="Pickup time">
-                    <Segmented
-                      value={pickup}
-                      onChange={setPickup}
-                      options={[
-                        { v: "08:00", l: "08:00" },
-                        { v: "09:00", l: "09:00" },
-                        { v: "10:00", l: "10:00" },
-                      ]}
-                    />
-                  </Field>
-                </div>
-              </Group>
-
-              {/* Pace */}
-              <Group title="Pace">
-                <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-3 -mt-1">
-                  How the day breathes. The stops stay; only the rhythm changes.
-                </p>
-                <Segmented
-                  value={pace}
-                  onChange={setPace}
-                  options={[
-                    { v: "relaxed", l: "Relaxed" },
-                    { v: "balanced", l: "Balanced" },
-                    { v: "full", l: "Full" },
-                  ]}
+              {/* Booking context — compact, not a form wall */}
+              <div
+                data-testid="tailor-booking-context"
+                className="grid gap-3 border border-[color:var(--border)] bg-[color:var(--ivory)] p-3 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:items-center"
+              >
+                <input
+                  type="date"
+                  aria-label="Date"
+                  value={date}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    if (v && rule) {
+                      const check = validateDateISO(v, rule);
+                      if (!check.ok) {
+                        gaBookingValidationBlocked({
+                          tourId: tour.id,
+                          surface: "tailor",
+                          reason: `date_${check.reason}`,
+                        });
+                        const msg =
+                          check.reason === "weekday_closed"
+                            ? "This tour doesn't run on that day. Please pick another date."
+                            : check.reason === "blackout"
+                              ? "That date is unavailable. Please pick another."
+                              : "Please choose a date at least 24 hours from now.";
+                        toast.error(msg);
+                        return;
+                      }
+                    }
+                    setDate(v);
+                    if (v) gaBookingDateSelected({ tourId: tour.id, surface: "tailor", dateISO: v });
+                  }}
+                  min={minDateISO}
+                  className="min-h-[48px] w-full border border-[color:var(--border)] bg-transparent px-3 py-3 text-sm focus:border-[color:var(--gold)] focus:outline-none"
                 />
-              </Group>
-
-              {/* Group */}
-              <Group title="Your group">
-                <div className="space-y-4">
-                  <Field label="Who's travelling">
-                    <div className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3">
-                      <CompositionField
-                        value={composition}
-                        onChange={(next) => {
-                          setComposition(next);
-                          gaBookingCompositionSet({
-                            tourId: tour.id,
-                            surface: "tailor",
-                            adults: next.adults,
-                            minors: next.minorAges.length,
-                          });
-                        }}
-                        compact
-                      />
-                    </div>
+                <div className="min-w-0">
+                  <CompositionField
+                    value={composition}
+                    onChange={(next) => {
+                      setComposition(next);
+                      gaBookingCompositionSet({
+                        tourId: tour.id,
+                        surface: "tailor",
+                        adults: next.adults,
+                        minors: next.minorAges.length,
+                      });
+                    }}
+                    compact
+                  />
+                  {!compositionReady && (
                     <p className="mt-1.5 text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
-                      {compositionReady
-                        ? formatCompositionSummary(composition)
-                        : "Add an age for every child so we can price honestly."}
+                      Add an age for every child so we can price honestly.
                     </p>
-                  </Field>
-                  <Field label="Guide language">
-                    <Segmented
-                      value={language}
-                      onChange={setLanguage}
-                      options={[
-                        { v: "en", l: "EN" },
-                        { v: "pt", l: "PT" },
-                      ]}
-                    />
-                    <p className="mt-1.5 text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
-                      Spanish available on request — subject to guide availability.
-                    </p>
-                  </Field>
+                  )}
                 </div>
-              </Group>
+              </div>
 
-              {/* Truthful Blueprint — replaces the legacy "Stop variations"
-                  panel when we have an accurate Core / Choice / Optional
-                  breakdown for this tour. */}
-              {blueprint && (
-                <Group title="What's included">
-                  <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-4 -mt-1">
-                    {blueprint.copy?.footnote}
-                  </p>
-
-                  {/* Core (default-included; markets, viewpoints & lunches
-                      can be skipped so the guide re-shapes the day). */}
-                  <p className="mb-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--teal)]">
-                    Included by default
-                  </p>
-                  <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
-                    Skip any stop you'd rather trade for time elsewhere — your guide will suggest an
-                    alternative or extend the next stop.
-                  </p>
-                  <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
-                    {blueprint.core.map((s) => {
-                      const canSkip = !s.lock;
-                      const isSkipped = skippedCore.has(s.id);
-                      if (!canSkip && s.lock) {
-                        const reason = s.lock.customerFacingReason;
+              {/* ── MOMENTS ─────────────────────────────── */}
+              <Group title="Moments">
+                {blueprint ? (
+                  <ol data-testid="tailor-moments" className="m-0 list-none space-y-2 p-0">
+                    {moments.map((m, i) => {
+                      const index = String(i + 1).padStart(2, "0");
+                      if (m.locked) {
                         return (
                           <li
-                            key={s.id}
-                            className="flex items-stretch gap-3 border border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5 min-h-[56px]"
-                            data-lock-reason={s.lock.reasonCode}
+                            key={m.id}
+                            className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 border border-[color:var(--border)] px-3 py-3"
                           >
-                            <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
-                              <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
-                                {s.label}
-                              </span>
-                              <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] mt-1">
-                                Signature anchor
-                              </span>
-                              <span className="text-[12.5px] leading-snug text-[color:var(--charcoal-soft)] mt-1">
-                                {reason}
-                              </span>
+                            <span className="shrink-0 text-[11px] tabular-nums text-[color:var(--charcoal-soft)]">
+                              {index}
                             </span>
-                            <span
-                              className="w-9 flex items-center justify-center bg-[color:var(--teal)] text-[color:var(--ivory)]"
-                              aria-label={reason}
-                              title={reason}
-                            >
-                              <Lock size={12} />
+                            <span className="min-w-0">
+                              <span className="block text-[13.5px] leading-snug text-[color:var(--charcoal)]">
+                                {m.label}
+                              </span>
+                              <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
+                                Part of this Signature
+                              </span>
                             </span>
                           </li>
                         );
                       }
                       return (
-                        <li key={s.id}>
+                        <li key={m.id}>
                           <button
                             type="button"
-                            onClick={() => tryToggleSkippedCore(s.id)}
-                            aria-pressed={!isSkipped}
+                            onClick={() => tryToggleSkippedCore(m.id)}
+                            aria-pressed={m.removed}
+                            data-testid="tailor-moment-toggle"
                             className={[
-                              "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
-                              isSkipped
+                              "grid min-h-[56px] w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border px-3 py-2.5 text-left transition-colors",
+                              m.removed
                                 ? "border-[color:var(--border)] bg-transparent"
                                 : "border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5",
                             ].join(" ")}
                           >
-                            <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
+                            <span className="shrink-0 text-[11px] tabular-nums text-[color:var(--charcoal-soft)]">
+                              {index}
+                            </span>
+                            <span className="min-w-0">
                               <span
                                 className={[
-                                  "text-[13px] leading-snug",
-                                  isSkipped
+                                  "block text-[13.5px] leading-snug",
+                                  m.removed
                                     ? "text-[color:var(--charcoal-soft)] line-through"
                                     : "text-[color:var(--charcoal)]",
                                 ].join(" ")}
                               >
-                                {s.label}
+                                {m.label}
                               </span>
-                              <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] mt-1">
-                                {isSkipped ? "Skipped · time freed" : "Tap to skip"}
-                              </span>
+                              {m.removed && (
+                                <span className="mt-0.5 block text-[12px] text-[color:var(--teal)]">
+                                  More time elsewhere
+                                  {m.earnsReduction ? " · −5%" : ""}
+                                </span>
+                              )}
                             </span>
-                            <span
-                              className={[
-                                "w-9 flex items-center justify-center text-[color:var(--ivory)]",
-                                isSkipped ? "bg-[color:var(--border)]" : "bg-[color:var(--teal)]",
-                              ].join(" ")}
-                              aria-hidden
-                            >
-                              {isSkipped ? "+" : <Check size={14} />}
+                            <span className="shrink-0 text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
+                              {m.removed ? "Undo" : "Remove"}
                             </span>
                           </button>
                         </li>
                       );
                     })}
-                  </ul>
-
-                  {/* Choice pool */}
-                  {blueprint.choice && (
-                    <>
-                      <p className="mb-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal)]">
-                        {blueprint.choice.label}
-                      </p>
-                      <p className="text-[12px] text-[color:var(--charcoal-soft)] mb-2">
-                        {blueprint.choice.note}
-                      </p>
-                      <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0 mb-5">
-                        {blueprint.choice.options.map((o) => {
-                          const on = choiceSelected.has(o.id);
-                          // Soft cap: only hard-disable at the authorized
-                          // ceiling. Wineries may only exceed the blueprint
-                          // baseline when an approved supplement ladder
-                          // exists (Arrábida Wine); otherwise it's swap-only.
-                          const ceiling =
-                            o.category === "winery" && !rules.wineries
-                              ? blueprint.choice!.pickMin
-                              : blueprint.choice!.pickMax;
-                          const atLimit = !on && choiceSelected.size >= ceiling;
-
-                          return (
-                            <li key={o.id}>
-                              <button
-                                type="button"
-                                disabled={atLimit}
-                                onClick={() => tryToggleChoice(o.id)}
-                                aria-pressed={on}
-                                className={[
-                                  "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
-                                  on
-                                    ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
-                                    : "border-[color:var(--border)]",
-                                  atLimit ? "opacity-50 cursor-not-allowed" : "",
-                                ].join(" ")}
-                              >
-                                <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
-                                  <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
-                                    {o.label}
-                                  </span>
-                                  {o.blurb && (
-                                    <span className="text-[12px] text-[color:var(--charcoal-soft)] mt-0.5">
-                                      {o.blurb}
-                                    </span>
-                                  )}
-                                </span>
-                                <span
-                                  className={[
-                                    "w-9 flex items-center justify-center text-[color:var(--ivory)]",
-                                    on ? "bg-[color:var(--gold)]" : "bg-[color:var(--border)]",
-                                  ].join(" ")}
-                                  aria-hidden
-                                >
-                                  {on ? <Check size={14} /> : "+"}
-                                </span>
-                              </button>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </>
-                  )}
-
-                  {/* Optional (subject to time & availability) */}
-                  {blueprint.optional.length > 0 && (
-                    <>
-                      <p className="mb-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-                        Optional · subject to time & availability
-                      </p>
-                      <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0">
-                        {blueprint.optional.map((o) => {
-                          const on = optionalSelected.has(o.id);
-                          return (
-                            <li key={o.id}>
-                              <button
-                                type="button"
-                                onClick={() => tryToggleOptional(o.id)}
-                                aria-pressed={on}
-                                className={[
-                                  "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
-                                  on
-                                    ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
-                                    : "border-[color:var(--border)]",
-                                ].join(" ")}
-                              >
-                                <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
-                                  <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
-                                    {o.label}
-                                  </span>
-                                  {o.blurb && (
-                                    <span className="text-[12px] text-[color:var(--charcoal-soft)] mt-0.5">
-                                      {o.blurb}
-                                    </span>
-                                  )}
-                                </span>
-                                <span
-                                  className={[
-                                    "w-9 flex items-center justify-center text-[color:var(--ivory)]",
-                                    on ? "bg-[color:var(--gold)]" : "bg-[color:var(--border)]",
-                                  ].join(" ")}
-                                  aria-hidden
-                                >
-                                  {on ? <Check size={14} /> : "+"}
-                                </span>
-                              </button>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </>
-                  )}
-
-                  {/* Day timing strip */}
-                  {blueprintFeasibility && (
-                    <div
-                      className={[
-                        "mt-5 border px-3 py-2.5 text-[12px]",
-                        blueprintFeasibility.feasible
-                          ? "border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5 text-[color:var(--charcoal)]"
-                          : "border-[color:var(--gold)] bg-[color:var(--gold)]/10 text-[color:var(--charcoal)]",
-                      ].join(" ")}
-                    >
-                      <p>
-                        <span className="uppercase tracking-[0.12em] text-[12px] mr-2 text-[color:var(--charcoal-soft)]">
-                          Day timing
-                        </span>
-                        ~{Math.round(blueprintFeasibility.totalMinutes / 60)}h of experience
-                        {blueprintFeasibility.feasible ? " · fits a full day" : ""}
-                      </p>
-                      {blueprintFeasibility.warnings.length > 0 && (
-                        <ul className="mt-1.5 list-disc pl-4 text-[12.5px] text-[color:var(--charcoal-soft)]">
-                          {blueprintFeasibility.warnings.map((w, i) => (
-                            <li key={i}>{w}</li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
-                </Group>
-              )}
-
-              {/* Stops — legacy panel, hidden when a blueprint is present */}
-              {!blueprint && (tour.stops ?? []).length > 0 && (
-                <Group title="Stop variations">
-                  <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-1 -mt-1">
-                    Remove a stop you'd rather trade for time elsewhere, or add an optional one
-                    listed by the local guide.
-                  </p>
-                  <p className="mb-3 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal)]">
-                    Up to {MAX_EDITS} changes · {editsLeft} left
-                  </p>
-
-                  <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0">
+                  </ol>
+                ) : (
+                  <ol data-testid="tailor-moments" className="m-0 list-none space-y-2 p-0">
                     {(tour.stops ?? []).map((s: TourStop, i: number) => {
                       const kept = !skipped.has(s.label);
                       const disabled = kept && editsLeft === 0;
@@ -1456,18 +1207,22 @@ function TailorPage() {
                             disabled={disabled}
                             onClick={() => toggle(setSkipped, skipped, s.label)}
                             aria-pressed={!kept}
+                            data-testid="tailor-moment-toggle"
                             className={[
-                              "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
+                              "grid min-h-[56px] w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border px-3 py-2.5 text-left transition-colors",
                               kept
-                                ? "border-[color:var(--teal)]/50 bg-[color:var(--teal)]/5"
-                                : "border-[color:var(--border)] opacity-60",
-                              disabled ? "cursor-not-allowed" : "",
+                                ? "border-[color:var(--teal)]/40 bg-[color:var(--teal)]/5"
+                                : "border-[color:var(--border)]",
+                              disabled ? "cursor-not-allowed opacity-60" : "",
                             ].join(" ")}
                           >
-                            <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
+                            <span className="shrink-0 text-[11px] tabular-nums text-[color:var(--charcoal-soft)]">
+                              {String(i + 1).padStart(2, "0")}
+                            </span>
+                            <span className="min-w-0">
                               <span
                                 className={[
-                                  "text-[13px] leading-snug",
+                                  "block text-[13.5px] leading-snug",
                                   kept
                                     ? "text-[color:var(--charcoal)]"
                                     : "text-[color:var(--charcoal-soft)] line-through",
@@ -1475,467 +1230,332 @@ function TailorPage() {
                               >
                                 {s.label}
                               </span>
-                              <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] mt-1">
-                                {kept ? "Included" : "Removed"}
-                              </span>
+                              {!kept && (
+                                <span className="mt-0.5 block text-[12px] text-[color:var(--teal)]">
+                                  More time elsewhere
+                                </span>
+                              )}
                             </span>
-                            <span
-                              className={[
-                                "w-9 flex items-center justify-center text-[color:var(--ivory)]",
-                                kept ? "bg-[color:var(--teal)]" : "bg-[color:var(--border)]",
-                              ].join(" ")}
-                              aria-hidden
-                            >
-                              {kept ? <Check size={14} /> : "–"}
+                            <span className="shrink-0 text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
+                              {kept ? "Remove" : "Undo"}
                             </span>
                           </button>
                         </li>
                       );
                     })}
-                  </ul>
+                  </ol>
+                )}
 
-                  {/* Optional add-able stops from Viator (passBy=true) */}
-                  {optionalStops.length > 0 && (
-                    <>
-                      <p className="mt-5 mb-2 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-                        Curated add-ons for this journey
+                {/* Non-winery choice pools stay a real, named choice
+                    (public monuments), presented as one swap. */}
+                {blueprint?.choice &&
+                  blueprint.choice.options.some((o) => o.category !== "winery") && (
+                    <div className="mt-4">
+                      <p className="mb-2 text-[12px] text-[color:var(--charcoal-soft)]">
+                        {blueprint.choice.label}
                       </p>
-                      <ul className="grid sm:grid-cols-2 gap-2.5 list-none p-0">
-                        {optionalStops.map((label) => {
-                          const on = added.has(label);
-                          const disabled = !on && editsLeft === 0;
-                          return (
-                            <li key={"add:" + label}>
-                              <button
-                                type="button"
-                                disabled={disabled}
-                                onClick={() => toggle(setAdded, added, label)}
-                                aria-pressed={on}
-                                className={[
-                                  "w-full flex items-stretch gap-3 border text-left transition-colors min-h-[56px]",
-                                  on
-                                    ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
-                                    : "border-[color:var(--border)]",
-                                  disabled ? "opacity-50 cursor-not-allowed" : "",
-                                ].join(" ")}
-                              >
-                                <span className="flex-1 px-3 py-2.5 flex flex-col justify-center">
-                                  <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
-                                    {label}
-                                  </span>
-                                  <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)] mt-1">
-                                    {on ? "Added" : "Optional"}
-                                  </span>
-                                </span>
-                                <span
+                      <ul className="grid list-none gap-2.5 p-0 sm:grid-cols-2">
+                        {blueprint.choice.options
+                          .filter((o) => o.category !== "winery")
+                          .map((o) => {
+                            const on = choiceSelected.has(o.id);
+                            const atLimit = !on && choiceSelected.size >= blueprint.choice!.pickMax;
+                            return (
+                              <li key={o.id}>
+                                <button
+                                  type="button"
+                                  disabled={atLimit}
+                                  onClick={() => tryToggleChoice(o.id)}
+                                  aria-pressed={on}
                                   className={[
-                                    "w-9 flex items-center justify-center text-[color:var(--ivory)]",
-                                    on ? "bg-[color:var(--gold)]" : "bg-[color:var(--border)]",
+                                    "grid min-h-[56px] w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border px-3 py-2.5 text-left transition-colors",
+                                    on
+                                      ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
+                                      : "border-[color:var(--border)]",
+                                    atLimit ? "cursor-not-allowed opacity-50" : "",
                                   ].join(" ")}
-                                  aria-hidden
                                 >
-                                  {on ? <Check size={14} /> : "+"}
-                                </span>
-                              </button>
-                            </li>
-                          );
-                        })}
+                                  <span className="min-w-0 text-[13.5px] leading-snug text-[color:var(--charcoal)]">
+                                    {o.label}
+                                  </span>
+                                  <span className="shrink-0 text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
+                                    {on ? "Chosen" : "Swap"}
+                                  </span>
+                                </button>
+                              </li>
+                            );
+                          })}
                       </ul>
-                    </>
+                    </div>
                   )}
+
+                {blueprintFeasibility && (
+                  <p className="mt-3 text-[12px] text-[color:var(--charcoal-soft)]">
+                    ~{Math.round(blueprintFeasibility.totalMinutes / 60)}h of experience
+                    {blueprintFeasibility.feasible ? " · fits the day" : ""}
+                  </p>
+                )}
+              </Group>
+
+              {/* ── RHYTHM ──────────────────────────────── */}
+              <Group title="Rhythm">
+                <div data-testid="tailor-rhythm">
+                  <Segmented
+                    value={pace}
+                    onChange={setPace}
+                    options={[
+                      { v: "relaxed", l: "Relaxed" },
+                      { v: "balanced", l: "Balanced" },
+                      { v: "full", l: "Full" },
+                    ]}
+                  />
+                  <p className="mt-2 text-[12.5px] text-[color:var(--charcoal-soft)]">
+                    {pace === "relaxed"
+                      ? "Longer stays, fewer transitions."
+                      : pace === "full"
+                        ? "More moments, tighter timing."
+                        : "A natural flow through the day."}
+                  </p>
+                </div>
+              </Group>
+
+              {/* ── ENHANCE ─────────────────────────────── */}
+              {(rules.allowAddLunch ||
+                rules.allowRemoveLunch ||
+                canAdjustWineryCount ||
+                (blueprint?.optional.length ?? 0) > 0) && (
+                <Group title="Enhance">
+                  <div data-testid="tailor-enhance" className="space-y-2.5">
+                    {canAdjustWineryCount && (
+                      <div className="grid min-h-[56px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border border-[color:var(--border)] px-3 py-2.5">
+                        <span className="min-w-0">
+                          <span className="block text-[13.5px] leading-snug text-[color:var(--charcoal)]">
+                            Winery visits
+                          </span>
+                          <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
+                            {rules.wineries!.included} included · each extra +
+                            <PriceEur
+                              amountEur={rules.wineries!.supplementEur}
+                              role="per-person"
+                            />{" "}
+                            pp
+                          </span>
+                        </span>
+                        <span className="flex shrink-0 items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={removeWineryVisit}
+                            aria-label="One winery visit fewer"
+                            data-testid="tailor-winery-decrease"
+                            className="h-11 w-11 border border-[color:var(--border)] text-[color:var(--charcoal)]"
+                          >
+                            −
+                          </button>
+                          <span
+                            data-testid="tailor-winery-count"
+                            className="w-8 text-center text-[14px] tabular-nums text-[color:var(--charcoal)]"
+                          >
+                            {wineriesSelected}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={addWineryVisit}
+                            aria-label="One winery visit more"
+                            data-testid="tailor-winery-increase"
+                            className="h-11 w-11 border border-[color:var(--border)] text-[color:var(--charcoal)]"
+                          >
+                            +
+                          </button>
+                        </span>
+                      </div>
+                    )}
+
+                    {rules.allowAddLunch && (
+                      <button
+                        type="button"
+                        onClick={() => setLunchAdded((v) => !v)}
+                        aria-pressed={lunchAdded}
+                        data-testid="tailor-add-lunch"
+                        className={[
+                          "grid min-h-[56px] w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border px-3 py-2.5 text-left transition-colors",
+                          lunchAdded
+                            ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
+                            : "border-[color:var(--border)]",
+                        ].join(" ")}
+                      >
+                        <span className="min-w-0">
+                          <span className="block text-[13.5px] leading-snug text-[color:var(--charcoal)]">
+                            {lunchAdded ? "Lunch added" : "Add a seated lunch"}
+                          </span>
+                          <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
+                            +
+                            <PriceEur
+                              amountEur={TAILOR_LUNCH_SUPPLEMENT_EUR}
+                              role="per-person"
+                            />{" "}
+                            pp
+                          </span>
+                        </span>
+                        <span className="shrink-0 text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
+                          {lunchAdded ? "Remove" : "Add"}
+                        </span>
+                      </button>
+                    )}
+
+                    {rules.allowRemoveLunch && (
+                      <button
+                        type="button"
+                        onClick={() => toggleIncludedLunch()}
+                        aria-pressed={lunchRemoved}
+                        data-testid="tailor-remove-lunch"
+                        className={[
+                          "grid min-h-[56px] w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border px-3 py-2.5 text-left transition-colors",
+                          lunchRemoved
+                            ? "border-[color:var(--teal)] bg-[color:var(--teal)]/10"
+                            : "border-[color:var(--border)]",
+                        ].join(" ")}
+                      >
+                        <span className="min-w-0">
+                          <span className="block text-[13.5px] leading-snug text-[color:var(--charcoal)]">
+                            {lunchRemoved ? "Lunch removed" : "Included lunch"}
+                          </span>
+                          <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
+                            −
+                            <PriceEur
+                              amountEur={TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR}
+                              role="per-person"
+                            />{" "}
+                            pp if removed
+                          </span>
+                        </span>
+                        <span className="shrink-0 text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
+                          {lunchRemoved ? "Restore" : "Remove"}
+                        </span>
+                      </button>
+                    )}
+
+                    {(blueprint?.optional ?? []).map((o) => {
+                      const on = optionalSelected.has(o.id);
+                      return (
+                        <button
+                          key={o.id}
+                          type="button"
+                          onClick={() => tryToggleOptional(o.id)}
+                          aria-pressed={on}
+                          data-testid="tailor-optional-toggle"
+                          className={[
+                            "grid min-h-[56px] w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border px-3 py-2.5 text-left transition-colors",
+                            on
+                              ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
+                              : "border-[color:var(--border)]",
+                          ].join(" ")}
+                        >
+                          <span className="min-w-0">
+                            <span className="block text-[13.5px] leading-snug text-[color:var(--charcoal)]">
+                              {o.label}
+                            </span>
+                            {o.blurb && (
+                              <span className="mt-0.5 block text-[12px] text-[color:var(--charcoal-soft)]">
+                                {o.blurb}
+                              </span>
+                            )}
+                          </span>
+                          <span className="shrink-0 text-[11px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]">
+                            {on ? "Remove" : "Add"}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </Group>
               )}
 
-              {/* Included service only — optional products must come from
-                  explicit supplier data, never title/keyword heuristics. */}
-              <Group title="Pickup">
-                <div className="mb-3 inline-flex items-center gap-2 border border-[color:var(--teal)]/40 bg-[color:var(--teal)]/8 px-2.5 py-1.5 text-[12px] uppercase tracking-[0.12em] text-[color:var(--teal)]">
-                  <Check size={12} /> Hotel pickup included
-                </div>
-              </Group>
-
-              {/* Accessibility / comfort */}
-              <Group title="Accessibility & comfort">
-                <p className="text-[12.5px] text-[color:var(--charcoal-soft)] mb-3 -mt-1">
-                  Tell us anything that helps your guide prepare.
+              {showMinorsWineAdvisory && (
+                <p className="text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                  Wine tasting is offered to adults only — minors visit the estate without tasting.
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    { id: "mobility", l: "Mobility support" },
-                    { id: "stroller", l: "Stroller / pram" },
-                    { id: "child-seat", l: "Child seat" },
-                    { id: "vegetarian", l: "Vegetarian / vegan" },
-                    { id: "allergies", l: "Allergies" },
-                    { id: "quiet", l: "Quiet pace" },
-                  ].map((c) => {
-                    const on = accessibility.has(c.id);
-                    return (
-                      <button
-                        key={c.id}
-                        type="button"
-                        onClick={() => toggle(setAccessibility, accessibility, c.id)}
-                        aria-pressed={on}
-                        className={[
-                          "px-3 py-2 text-[12px] border transition-colors min-h-[40px]",
-                          on
-                            ? "border-[color:var(--teal)] bg-[color:var(--teal)]/10 text-[color:var(--teal)]"
-                            : "border-[color:var(--border)] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
-                        ].join(" ")}
-                      >
-                        {c.l}
-                      </button>
-                    );
-                  })}
-                </div>
-              </Group>
-
-              {/* Notes */}
-              <Group title="Anything else?">
-                <textarea
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  rows={4}
-                  placeholder="Anniversary, kids' ages, mobility needs, languages spoken at home…"
-                  className="w-full bg-transparent border border-[color:var(--border)] px-3 py-3 text-sm focus:outline-none focus:border-[color:var(--gold)] resize-none"
-                />
-              </Group>
-
-              {/* 5 · Human guidance */}
-              <div className="bg-[color:var(--sand)]/60 border border-[color:var(--border)] p-5">
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-full bg-[color:var(--ivory)] border border-[color:var(--gold)] text-[color:var(--gold)] shrink-0">
-                    <MessageCircle size={14} />
-                  </span>
-                  <div>
-                    <p className="serif text-[17px] leading-snug">Need help deciding?</p>
-                    <p className="text-[13px] text-[color:var(--charcoal-soft)] mt-1 leading-relaxed">
-                      A local is available in real time. We'll suggest the right pace and add-ons
-                      for your group.
-                    </p>
-                    <a
-                      href={whatsappHref(
-                        `Hi YES — I'd like to talk to a local about the ${tour.title}.`,
-                      )}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() =>
-                        gaGenerateLead({ leadSource: "tailor_talk_to_local", method: "whatsapp" })
-                      }
-                      className="mt-3 inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.12em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
-                    >
-                      <MessageCircle size={13} /> Talk to a local
-                    </a>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
 
-            {/* ─── 4 · LIVE SUMMARY (sticky on desktop) ─── */}
+            {/* ─── YOUR VERSION ──────────────────────────── */}
             <aside className="lg:sticky lg:top-24">
               {import.meta.env?.DEV && validation.hasViatorMeta && validation.issueCount > 0 && (
                 <div className="mb-3 border border-[color:var(--gold)]/40 bg-[color:var(--gold-soft)]/40 p-3 text-[12px] text-[color:var(--charcoal)]">
-                  <p className="font-semibold uppercase tracking-[0.12em] text-[12px] text-[color:var(--charcoal-soft)] mb-1">
+                  <p className="mb-1 text-[12px] font-semibold uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
                     Viator validation · {validation.issueCount} mismatch
                     {validation.issueCount === 1 ? "" : "es"}
                   </p>
-                  {validation.stops.onlyInternal.length > 0 && (
-                    <p>Stops not on Viator: {validation.stops.onlyInternal.join(", ")}</p>
-                  )}
-                  {validation.stops.onlyViator.length > 0 && (
-                    <p>Stops missing from tour: {validation.stops.onlyViator.join(", ")}</p>
-                  )}
-                  {validation.included.onlyInternal.length > 0 && (
-                    <p>Inclusions not on Viator: {validation.included.onlyInternal.join(", ")}</p>
-                  )}
-                  {validation.included.onlyViator.length > 0 && (
-                    <p>Inclusions missing from tour: {validation.included.onlyViator.join(", ")}</p>
-                  )}
                   <Link to="/admin/viator-validation" className="mt-1 inline-block underline">
                     Open full report →
                   </Link>
                 </div>
               )}
-              <div className="bg-[color:var(--card)] border border-[color:var(--border)] overflow-hidden">
-                <div className="px-5 py-4 bg-[color:var(--charcoal-deep)] text-[color:var(--ivory)] flex items-center justify-between">
-                  <Eyebrow tone="onDark">Live summary</Eyebrow>
-                  <span className="inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.12em] text-[color:var(--gold-soft)]">
-                    <span className="relative inline-flex h-1.5 w-1.5">
-                      <span className="absolute inline-flex h-full w-full rounded-full bg-[color:var(--gold)] opacity-60 animate-ping" />
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[color:var(--gold)]" />
-                    </span>
-                    Updating
-                  </span>
-                </div>
 
-                <div className="p-5 space-y-4 text-[13px]">
-                  <SummaryRow label="Date" value={date || "Flexible — confirm with guide"} />
-                  <SummaryRow
-                    label="Timing"
-                    value={`${pickup} → ~${estimatedReturn} · ~${formatHours(estimatedHours)}`}
-                  />
-                  <SummaryRow label="Pace" value={cap(pace)} />
-                  <SummaryRow
-                    label="Guests"
-                    value={`${formatCompositionSummary(composition)} · ${language.toUpperCase()}`}
-                  />
+              <div
+                data-testid="tailor-your-version"
+                className="border border-[color:var(--border)] bg-[color:var(--card)] p-4"
+              >
+                <Eyebrow>Your version</Eyebrow>
+                <p className="mt-2 text-[13px] leading-snug text-[color:var(--charcoal)]">
+                  {summaryStops.length} {summaryStops.length === 1 ? "moment" : "moments"} ·{" "}
+                  {cap(pace)} rhythm
+                </p>
+                <p className="mt-1 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                  {date || "Date to choose"} · {formatCompositionSummary(composition)}
+                </p>
 
-                  <div>
-                    <p className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-                      Itinerary ({summaryStops.length} of {summaryTotal})
-                    </p>
-                    <ol className="mt-2 space-y-1.5 list-none p-0">
-                      {summaryStops.map((s, i) => (
-                        <li key={s.label + i} className="flex gap-2.5">
-                          <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal)] w-5 shrink-0 mt-0.5">
-                            {String(i + 1).padStart(2, "0")}
-                          </span>
-                          <span className="text-[13px] leading-snug">{s.label}</span>
-                        </li>
-                      ))}
-                      {summaryStops.length === 0 && (
-                        <li className="text-[12px] italic text-[color:var(--charcoal-soft)]">
-                          Add at least one stop back.
-                        </li>
-                      )}
-                    </ol>
-                  </div>
+                <ChargeSummaryLine className="mt-3" quote={versionQuote} />
 
-                  {showBandBreakdown && (
-                    <PriceBreakdownRows
-                      journeyLines={journeyLines}
-                      label="Travellers"
-                      testId="tailor-price-breakdown"
-                    />
-                  )}
-
-                  {/* Add lunch — offered only where the canonical product
-                      genuinely excludes it (never on the picnic, the winery
-                      lunch or the all-inclusive wine day). */}
-                  {rules.allowAddLunch && (
-                    <button
-                      type="button"
-                      onClick={() => setLunchAdded((v) => !v)}
-                      aria-pressed={lunchAdded}
-                      data-testid="tailor-add-lunch"
-                      className={[
-                        "w-full flex items-center justify-between gap-3 border px-3 py-2.5 text-left transition-colors min-h-[52px]",
-                        lunchAdded
-                          ? "border-[color:var(--gold)] bg-[color:var(--gold)]/10"
-                          : "border-[color:var(--border)]",
-                      ].join(" ")}
-                    >
-                      <span className="flex flex-col">
-                        <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
-                          Add lunch
-                        </span>
-                        <span className="text-[12px] text-[color:var(--charcoal-soft)] mt-0.5">
-                          {lunchAdded
-                            ? "Added to your day"
-                            : "Lunch is not included in this Signature"}
-                        </span>
-                      </span>
-                      <span className="text-[12px] tabular-nums text-[color:var(--charcoal)] whitespace-nowrap">
-                        +<PriceEur amountEur={TAILOR_LUNCH_SUPPLEMENT_EUR} role="per-person" /> pp
-                      </span>
-                    </button>
-                  )}
-
-                  {/* Remove the INCLUDED lunch — Arrábida Wine only.
-                      Rendered outside the stop list on purpose: this is a
-                      flat −€15 pp credit, not a −5% stop removal, and it
-                      never unlocks the 4th winery. */}
-                  {rules.allowRemoveLunch && (
-                    <button
-                      type="button"
-                      onClick={() => toggleIncludedLunch()}
-                      aria-pressed={lunchRemoved}
-                      data-testid="tailor-remove-lunch"
-                      className={[
-                        "w-full flex items-center justify-between gap-3 border px-3 py-2.5 text-left transition-colors min-h-[52px]",
-                        lunchRemoved
-                          ? "border-[color:var(--teal)] bg-[color:var(--teal)]/10"
-                          : "border-[color:var(--border)]",
-                      ].join(" ")}
-                    >
-                      <span className="flex flex-col">
-                        <span className="text-[13px] leading-snug text-[color:var(--charcoal)]">
-                          {lunchRemoved ? "Restore included lunch" : "Remove included lunch"}
-                        </span>
-                        <span className="text-[12px] text-[color:var(--charcoal-soft)] mt-0.5">
-                          {lunchRemoved
-                            ? "The day runs without the seated lunch."
-                            : (rules.lunchIncludedNote ??
-                              "A seated lunch is included in this Signature.")}
-                        </span>
-                      </span>
-                      <span className="text-[12px] tabular-nums text-[color:var(--teal)] whitespace-nowrap">
-                        −
-                        <PriceEur
-                          amountEur={TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR}
-                          role="per-person"
-                        />{" "}
-                        pp
-                      </span>
-                    </button>
-                  )}
-
-                  {/* Truthful per-person + party-total split. "Indicative
-                      total / adult" was misread as a party total; use the
-                      same two-line shape as the Signature price card. */}
-                  <div className="pt-3 border-t border-[color:var(--border)] space-y-1.5">
-                    <div className="flex items-center justify-end">
-                      <PriceCurrencyChip align="end" />
-                    </div>
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-                        For {guests} {guests === 1 ? "guest" : "guests"} · per person
-                      </span>
-                      <span className="serif text-[1.15rem] text-[color:var(--charcoal)] tabular-nums inline-flex items-baseline gap-2">
-                        {savingsEur > 0 && (
-                          <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--teal)] not-italic">
-                            −<PriceEur amountEur={savingsEur} role="per-person" /> pp
-                          </span>
-                        )}
-                        <PriceEur
-                          amountEur={Math.round(displayTotalEur / Math.max(1, guests))}
-                          role="per-person"
-                        />
-                        <span className="ml-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-                          / pp
-                        </span>
-                      </span>
-                    </div>
-                    {supplementsPerPax > 0 && (
-                      <p className="text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
-                        Includes <PriceEur amountEur={supplementsPerPax} role="per-person" /> pp of
-                        additions.
-                      </p>
-                    )}
-                    {principalsRemoved > 0 && (
-                      <p className="text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
-                        Adjusted from <PriceEur amountEur={basePerPax} role="per-person" /> —{" "}
-                        {principalsRemoved} stop{principalsRemoved === 1 ? "" : "s"} removed.
-                      </p>
-                    )}
-                    {lunchRemovalPerPax > 0 && (
-                      <p
-                        data-testid="tailor-lunch-removal-line"
-                        className="text-[12px] leading-snug text-[color:var(--teal)]"
-                      >
-                        Included lunch removed — −
-                        <PriceEur amountEur={lunchRemovalPerPax} role="per-person" /> pp (
-                        <PriceEur amountEur={lunchRemovalPerPax * guests} role="party-total" /> for
-                        your party).
-                      </p>
-                    )}
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-                        Party total (indicative)
-                      </span>
-                      <span className="serif text-[1.4rem] text-[color:var(--charcoal)] tabular-nums">
-                        <PriceEur amountEur={Math.round(displayTotalEur)} role="party-total" />
-                      </span>
-                    </div>
-                    <p className="text-[12px] leading-snug text-[color:var(--charcoal-soft)]">
-                      Final total confirmed at checkout in euros.
-                    </p>
-                  </div>
-
-                  {/* Confirmation status is always instant on Tailor —
-                      manual gate retired per owner (test-mode + memory:
-                      instant confirmation everywhere except Corporate). */}
-                  <p className="text-[12px] uppercase tracking-[0.12em] text-[color:var(--teal)] inline-flex items-center gap-1.5">
-                    <Check size={12} /> Confirmation status: ready
-                  </p>
-
-                  {wineExtension.extra > 0 && removableCoreLabels.length > 0 && (
-                    <p className="mt-2 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
-                      To fit this longer wine day you can remove{" "}
-                      <span className="text-[color:var(--charcoal)]">
-                        {removableCoreLabels.slice(0, 3).join(", ")}
-                      </span>{" "}
-                      — or keep them and we'll confirm timing with your guide.
-                    </p>
-                  )}
-
-                  {showMinorsWineAdvisory && (
-                    <p className="mt-2 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
-                      Wine tasting is offered to adults only — minors visit the estate without
-                      tasting.
-                    </p>
-                  )}
-                </div>
-
-                {/* 6 · CTA — instant Stripe checkout, or request confirmation
-                    when the selection is beyond the Signature baseline. */}
-                <div className="p-5 pt-0">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      gaReserveCtaClick({
+                <button
+                  type="button"
+                  data-testid="tailor-reserve-cta"
+                  onClick={() => {
+                    gaReserveCtaClick({
+                      tourId: tour.id,
+                      surface: "tailor",
+                      ctaLocation: "final",
+                    });
+                    if (!compositionReady) {
+                      gaBookingValidationBlocked({
                         tourId: tour.id,
                         surface: "tailor",
-                        ctaLocation: "final",
+                        reason: "composition_incomplete",
                       });
-                      if (!compositionReady) {
-                        gaBookingValidationBlocked({
-                          tourId: tour.id,
-                          surface: "tailor",
-                          reason: "composition_incomplete",
-                        });
-                        return;
-                      }
-                      if (summaryStops.length === 0) {
-                        gaBookingValidationBlocked({
-                          tourId: tour.id,
-                          surface: "tailor",
-                          reason: "no_stops",
-                        });
-                        return;
-                      }
-                      gaCheckoutDrawerOpened({ tourId: tour.id, surface: "tailor" });
-                      setDetailsOpen(true);
-                    }}
-                    disabled={checkoutPending || summaryStops.length === 0 || !compositionReady}
-                    className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--teal)] hover:bg-[color:var(--teal-2)] disabled:opacity-60 disabled:cursor-not-allowed text-[color:var(--ivory)] px-5 py-4 text-sm tracking-wide transition-all min-h-[52px]"
-                  >
-                    {checkoutPending ? (
-                      <>
-                        <Loader2 size={15} className="animate-spin" /> Opening checkout…
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles size={15} /> Reserve securely
-                      </>
-                    )}
-                  </button>
-                  <p className="mt-2 text-[12px] text-[color:var(--charcoal-soft)] text-center">
-                    Instant confirmation
-                  </p>
-                  <p className="mt-1 inline-flex w-full items-center justify-center gap-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]/80">
-                    <Lock size={10} /> Secure checkout
-                  </p>
-                  <p className="mt-2 text-[12px] text-[color:var(--charcoal-soft)] text-center leading-relaxed">
-                    {CANCELLATION.custom.en}
-                  </p>
-                </div>
-              </div>
-
-              <p className="mt-4 text-[12px] italic text-[color:var(--charcoal-soft)] leading-relaxed flex gap-2">
-                <Info size={14} className="shrink-0 mt-0.5 text-[color:var(--gold)]" />
-                Looking for full freedom? You can{" "}
-                <Link
-                  to="/studio-v3"
-                  className="not-italic underline decoration-[color:var(--gold)] underline-offset-2 hover:text-[color:var(--teal)]"
+                      return;
+                    }
+                    if (summaryStops.length === 0) {
+                      gaBookingValidationBlocked({
+                        tourId: tour.id,
+                        surface: "tailor",
+                        reason: "no_stops",
+                      });
+                      return;
+                    }
+                    gaCheckoutDrawerOpened({ tourId: tour.id, surface: "tailor" });
+                    setDetailsOpen(true);
+                  }}
+                  disabled={checkoutPending || summaryStops.length === 0 || !compositionReady}
+                  className="mt-3 inline-flex min-h-[52px] w-full items-center justify-center gap-2 bg-[color:var(--teal)] px-5 py-4 text-sm tracking-wide text-[color:var(--ivory)] transition-all hover:bg-[color:var(--teal-2)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  open the Studio
-                </Link>{" "}
-                and build a day from scratch instead.
-              </p>
+                  {checkoutPending ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" /> Opening checkout…
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles size={15} /> Reserve this version
+                    </>
+                  )}
+                </button>
+                <p className="mt-2 text-center text-[12px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                  Instant confirmation · {CANCELLATION.custom.en}
+                </p>
+              </div>
             </aside>
           </div>
         </div>
       </section>
+
       <FinalDetailsDialog
         priceQuote={({ adults, minorAges }) => {
           // Never quote a price we can't charge instantly.
