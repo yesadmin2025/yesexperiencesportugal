@@ -1,168 +1,126 @@
-# Experience Studio V3 — final polish audit (product design + interaction intelligence)
+# YES Studio — Audit and Next-Phase Roadmap (plan only)
 
-Audit performed against current `main` (`e7afc95ae`) by reading the live source, not
-prior plans. Every claim below is backed by a file read. No code was changed.
+Base inspected: main at `41aa0068c` (post pricing closure). No code, data or deployment changes in this pass.
 
-## Already solved — do not re-open
+## 0. What is already good and must be preserved
 
-- **Repeated final total on the refine surface.** Both totals still render in the DOM,
-  but `studioMobileA11y.css:40-67` makes them mutually exclusive (party total before
-  add-ons, resolved total after) and hides the ledger's third total row. Protected by
-  `studio-price-echo-contract.test.ts`. Working as intended.
-- **Acknowledgement echo across screens.** `studioAcknowledgement.ts` is a real
-  deterministic theme ledger across `interests → refinement → directorsRead →
-  logistics → reveal`, with a 2-signal floor on the reveal. It paraphrases themes and
-  never echoes raw option labels.
-- **Combinatorial intelligence exists** in `directorsRead.ts:172-263` (feeling +
-  companions + up to 2 interests + rhythm) and `revealNarrative.ts:114-173`.
-- **Reaction pacing ceilings** (`StudioV3.tsx:4911-4917`), CTA non-competition on the
-  Your Day surface (single primary + Save), truthful confirmation, checkout retry-in-place,
-  route authority chain, price-after-value ordering, delegation take-back logic.
-- **Route/stop *labels*** are not duplicated: legend shows labels only, timeline is an
-  overview by design (`UnifiedYourDayRoute.tsx:12-14`).
+- Phase truth is centralised: `STUDIO_V3_PHASE_ORDER` + `isPhaseRelevant` in `curation.ts` already suppress occasion, considerations, language, investment, destination, date, pickup, guests, map, confirmation. The visible flow is genuinely short.
+- P6–P10 work holds: acknowledge-once ledger, unified `storyboard` Your Day, value-before-price, delegation with take-back, route authority.
+- Pricing truth is now server-authoritative: exact-tier fail-closed, principal-removal whitelist, canonical add-on identity, instant-confirmation copy.
+- Price tiers already live in Supabase (`tour_price_tiers`) with an admin editor at `/admin/pricing`.
 
----
+## 1. Studio experience audit
 
-## Ranked remaining issues
+### Asked vs. declared
+Declared 21 phases; actually asked: `intro → feeling → who → interests → rhythm → [refinement] → logistics → storyboard → guestDetails → checkoutSummary`. That is 6 questions max. The problem is no longer question count — it is **beat weight and causality**.
 
-### 1. Reaction beats echo the option label the traveller just tapped — HIGH value, LOW risk
+### Findings
+- **Weight concentration.** `StudioV3.tsx` is 5,930 lines and `curation.ts` 3,591; `SignaturePriceCard.tsx` 1,639 and `StudioV3SignatureMap.tsx` 1,251. Any Studio change is high-blast-radius, and the initial route chunk is large.
+- **Causality gap.** Feeling / who / interests / rhythm each play a reaction beat, but the day itself (map, moments, duration) is not visible until `storyboard`. The traveller answers into a black box and only then sees a day. This is the main reason it still reads as a configurator.
+- **Logistics still precedes desire payoff.** Date + pickup + party sit between the last taste question and the reveal. Emotionally the reveal should arrive first, logistics second, as a confirmation of a day already felt.
+- **Copy overload at the seams.** Reaction beats, Director's Read, unified Your Day story, WhyRouteWorks and the price card each restate the same rationale in different words.
+- **Refine is buried.** Swaps exist (`RefineAccordion`, `RefineStopCard`, route authority) but only after the reveal, so authorship reads as "editing YES's plan", not "I made this".
 
-- **File:** `src/components/studio-v3/StudioV3.tsx:1460-1500`, `:1638`, `:1787`, `:1899`
-- **Current:** Every reaction overlay caption/message is built from `getOptionLabel(...)`
-  of the answer just given: `Atmosphere · Coastal`, `` `${destLabel} enters the story` ``,
-  the pickup label, the investment label. These reactions are outside the
-  `studioAcknowledgement` ledger entirely, so the one surface the traveller sees
-  *immediately after answering* is the one that parrots them most literally.
-- **Why it matters:** This is the exact "questionnaire confirming your click" feeling the
-  product intent forbids, and it is the first impression of Studio intelligence.
-- **Smallest safe change:** Route the reaction message through the existing
-  `studioSemanticMemory` paraphrase vocabulary instead of the raw label, and drop the
-  `Atmosphere · <Label>` caption pattern in favour of the paraphrased theme. No new copy
-  system, no state change, no new module — reuse `understoodSignals` phrasing.
-- **Risk:** Low (presentational strings only).
-- **Protected by:** `studio-p6-acknowledge-once.test.ts`, `studio-semantic-memory.test.ts`,
-  `studio-p4-faster-intelligence.test.tsx`.
-- **New contract:** unit test asserting no reaction message/caption contains a verbatim
-  `FEELINGS`/`DESTINATION_INTENTS`/`PICKUPS` option label.
+### Ideal interaction model (no rhythm/stop-count changes)
+1. **Persistent living day strip** from the first answer: a thin, always-present map + moment rail that mutates on every meaningful choice. Pins appear/dim, duration counter moves, one moment card flips. Rhythm keeps driving `RHYTHM_STOP_COUNT` and dwell exactly as today.
+2. **Delta micro-confirmation** instead of prose: on each answer, one line + one visible change ("Coast added · 2 moments moved"), replacing the current longer reaction copy.
+3. **Reveal earlier**: storyboard renders straight after rhythm/refinement; logistics becomes an inline "make it real" block inside Your Day, prefilled, not a gate.
+4. **Ask / infer / skip**: ask feeling, who, interests, rhythm; infer destination, investment, occasion (already done); make refinement explicitly skippable with visible cost ("skip — YES decides"); defer language and considerations to guest details.
+5. **Authorship gestures inside the reveal**: swap a moment, drop a moment, reorder pace — each with a before/after delta chip and undo. Only from real curated candidates.
 
-### 2. `contextualTeaser` intelligence is computed and then thrown away — HIGH value, LOW risk
+Mobile: 393px first, one primary action per screen, map strip ≤ 30vh, no gamified counters or badges.
 
-- **Files:** `StudioV3.tsx:395-451` (60 lines of combination-aware copy),
-  `PhaseChrome.tsx:100-111` (`NextTeaser` returns `null` since P4)
-- **Current:** 13 call sites render `<NextTeaser>{contextualTeaser(...)}</NextTeaser>`;
-  the component renders nothing. The only genuinely combination-aware per-phase copy in
-  the funnel is invisible.
-- **Why it matters:** The middle of the funnel (Who → Feeling → Interests → Rhythm) is
-  where the traveller decides whether the Studio is "thinking". Right now that stretch is
-  silent between beats. P4 was right that a persistent "Next…" copy layer was clutter —
-  but deleting the signal entirely is why the middle feels flat.
-- **Smallest safe change:** Do not resurrect `NextTeaser`. Instead pass the
-  `contextualTeaser` line as the *footer line of the reaction overlay* that already
-  plays after that phase, so it appears once inside an existing cinematic beat with zero
-  new layout. Delete the dead `UnderstoodSummaryLine` (`PhaseChrome.tsx:24-46`, zero
-  importers) in the same pass.
-- **Risk:** Low. Keeps P4's "no recurring copy layer" contract intact.
-- **Protected by:** `studio-p4-faster-intelligence.test.tsx` (must stay green —
-  `NextTeaser` stays silent), `phase-shell-anticipation.test.tsx`.
-- **New contract:** unit test that the reaction overlay carries the contextual line and
-  that `NextTeaser` still renders nothing.
+## 2. Conversion audit — Signature / Tailor / Studio / checkout
 
-### 3. Delegated mode is invisible after the tap — HIGH value, LOW risk
+### Concrete duplication and friction found
+- Age/child explanation appears in at least five surfaces: `PriceBreakdownRows.tsx`, `PerPersonBands.tsx`, `ChargeSummaryLine.tsx` ("add an age for every child so we can price honestly"), `FinalDetailsDialog.tsx`, `BrandedCheckoutDrawer.tsx` ("age-based pricing" + composition sentence).
+- Trust/cancellation repeats: `TrustStrip.tsx` renders on three placements and is repeated again inside the drawer.
+- `tours_.$tourId.tailor.tsx` is 2,179 lines and carries its own price explanation surface distinct from `SignaturePriceCard`, so Signature and Tailor say the same things differently.
+- Studio `CheckoutSummary.tsx` (547) restates itinerary, guests and price already shown on Your Day.
 
-- **Files:** `StudioV3.tsx:2873`, `:2903`, `:1754-1761`; `types.ts:354`
-- **Current:** After "Yes, design it for me", a one-line acknowledgement shows on the
-  same card, then the flow advances. `decidedForMe` is written to state but **never
-  rendered anywhere** (verified: no read outside logic). The traveller never sees which
-  tastes and pace YES chose, and there is no visible way to take them back.
-- **Why it matters:** This is precisely item 6 — delegation currently reads as *skipping
-  questions*, not as concierge authorship. Reversibility exists in code
-  (`takeBackDelegatedDimension`) but has no affordance.
-- **Smallest safe change:** On the Director's Read beat (and/or the Your Day header),
-  render a quiet single line naming the delegated dimensions using existing labels —
-  e.g. "Chosen for you: coast and table, at an unhurried pace" — with one ghost
-  "Adjust" action that navigates back to the delegated phase. No new state, no change to
-  `studioDelegation.ts` decision logic.
-- **Risk:** Low (read-only presentation of existing state + existing navigation).
-- **Protected by:** `studio-p10-delegation.test.ts` (38 assertions),
-  `studio-v3-let-yes-decide-mobile.spec.ts`, `studio-p7-directors-read.test.tsx`.
-- **New contract:** unit test that delegated dimensions are named exactly once and that
-  the Adjust action routes to the delegated phase; browser test that delegated mode
-  surfaces the line and that Adjust restores explicit choice.
+### Single decision hierarchy (all three surfaces)
+Main surface answers exactly five things, in this order:
+1. What am I getting — title, 1 line, 3 moment chips.
+2. When — date + start.
+3. For how many — "4 guests · 2 adults, 2 children" with an Edit affordance.
+4. Total — **total first**, per-guest as secondary muted line.
+5. What happens on Reserve — one line: "Instant confirmation by email. Secure payment by Stripe."
 
-### 4. Stop story prose is printed twice on one scroll — MEDIUM value, LOW risk
+Everything else moves behind two disclosures only: **"How this price works"** (tiers, age bands, direct-price advantage, Tailor credits/supplements) and **"What's included / cancellation"**. Amounts and math unchanged.
 
-- **Files:** `FinalRevealStory.tsx:73-80, 250-266` (embeds `s.story` into narrative
-  sentences) and `StudioV3.tsx:4506-4515` (renders the same `s.story` verbatim under each
-  stop card), both from the same source array, ~one screen apart.
-- **Why it matters:** The single largest block of literal repetition left on the Your Day
-  surface, and it undercuts the reveal's editorial weight — the letter says it, then the
-  list says it again word for word.
-- **Smallest safe change:** In the editable stop list only, suppress `s.story` when that
-  same story already appears in the inline narrative, keeping label + composer rationale
-  (which is genuinely new information). Purely presentational; the story text stays in
-  state, in the snapshot, and at checkout.
-- **Risk:** Low–Medium. Touches the reveal surface, which has snapshot coverage.
-- **Protected by:** `reveal-section-order.test.ts`, `your-day-surface.test.tsx`,
-  `studio-v3-p0-storytelling-reveal-mobile.spec.ts`,
-  `studio-v3-unified-signature-card-visual.spec.ts` (visual snapshot will need review).
-- **New contract:** unit test that no stop's story string renders twice in the storyboard tree.
+### CTA and payment handoff
+- One primary CTA per screen. Labels: Signature `Reserve this day` → Studio `Continue to guest details` → `Continue to summary` → `Pay securely`.
+- Sticky CTA on mobile shows total + label only, never explanations; never covers content (existing budget test stays the gate).
+- Stripe takes over at the summary, embedded, after guest details validate. No extra interstitial.
+- Target path: Signature 3 screens (card → guest details → summary/Stripe); Studio 4 (Your Day → guest details → summary → Stripe).
 
-### 5. Checkout summary has no localized edits for date / guests / stops — MEDIUM value, LOW risk
+## 3. Admin / CMS architecture roadmap
 
-- **File:** `CheckoutSummary.tsx:189-196, 233-257, 359-368`
-- **Current:** Only guest identity has an `Edit` link; date, guests, stops and add-ons are
-  read-only rows, so correcting a date means the generic top "Back" or the guest-details
-  form.
-- **Why it matters:** The stated recap contract is a localized edit per logical area. It is
-  the last confidence moment before payment; a read-only row with a wrong date creates
-  abandonment rather than a correction.
-- **Smallest safe change:** Add a quiet text "Edit" affordance on the date/guests rows that
-  calls the existing `onEditGuestDetails` handler, and on the stops row one that returns to
-  the storyboard phase. Reuses existing navigation only — no new state, no new phase.
-- **Risk:** Low. No pricing, Stripe or snapshot change.
-- **Protected by:** `checkout-confirmation-honesty.test.ts`,
-  `studio-v3-mobile-guest-to-checkout.spec.ts`, `studio-v3-checkout-retry-desktop.spec.ts`.
-- **New contract:** unit test that each recap area exposes exactly one edit affordance
-  routing to the correct phase, and that state survives the round trip.
+Today: pricing tiers, photos, reviews, imported tours, builder images are DB-backed; **Signature content, add-on catalog, Tailor rules and Studio taxonomy are code-owned** (`signatureTours.ts`, `signatureToursSourceOfTruth.ts`, `signatureAddOns.ts`, `tailorRules.ts`, `tailorBlueprints.ts`, `tailorStopPricing.ts`, `livingAtlasTaxonomy.ts`).
 
-### 6. `SignaturePriceCard` non-competition depends on three separate boolean gates — LOW value, LOW risk (hardening only)
+### Migrate to DB (editable)
+| Table | Owns |
+|---|---|
+| `signature_products` | title, subtitle, region, duration, description, status, ordering/featured, SEO fields, tailor_eligible |
+| `signature_stops` | ordered stops, duration, notes, customer label, `pricing_class` (principal / descriptive / locked / dedicated-credit), `is_locked` |
+| `signature_inclusions` | included / excluded / pickup rules |
+| `signature_media` | hero + gallery refs (reuse `tour-photos`) |
+| `add_on_catalog` | label, category, pricing rule (pct/fixed), unit, duration, eligible tours/regions, max selections, active |
+| `tailor_rule_sets` | lunch supplement/removal, winery ladder pickMin/pickMax, credit caps, customer labels |
+| `studio_taxonomy` | feelings, interests, rhythms, adaptive question copy, destination intents (copy + weights only) |
+| `availability_closures` | scope (global / tour / add-on), date or range, recurrence, reason, capacity, internal note |
+| `content_versions` + `admin_audit_log` | draft/publish, diff, rollback, who changed what |
 
-- **Files:** `SignaturePriceCard.tsx:1353, 1428, 1461`, `FinalRevealStory.tsx:488, 678`
-- **Current:** No competing primary CTA today. But the card ships a full second CTA stack
-  plus a sticky mobile CTA that are only suppressed by `isRefine`/`inline` flags across
-  two files. A future edit that forgets one gate produces two primaries instantly.
-- **Smallest safe change:** No UI change. Add a regression test that asserts exactly one
-  primary CTA in the storyboard tree.
-- **Risk:** None.
+### Stays code-owned (safety/algorithm)
+Curation scoring, route authority, rhythm→stop-count mapping, principal-credit semantics, exact-tier fail-closed rules, server add-on identity, checkout math. Admin edits **data**, never contracts.
 
-### 7. Orphaned components — no action recommended
+### Anti-dual-truth rule
+One resolver per domain (`resolveSignatureProduct`, `resolveAddOnCatalog`, `resolveTailorRules`) that reads DB and falls back to the code seed only when a row is absent, plus a parity test asserting DB rows validate against the code schema. Code files become seed + schema, not runtime truth.
 
-`DesignedForYou`, `DayAtGlance`, `RefineAccordion` are built, tested and exported from
-`src/index.ts` but not mounted in the live tree. Mounting them would re-add surface area to
-a page we are trying to compress. Recommendation: leave them; revisit only with explicit
-product intent.
+### Availability — critical gap
+`src/lib/availability.ts` reads `tour_operating_rules` **client-side only**; `create-signature-checkout` contains no availability check (verified: no `blackout` / `weekday` / `min_lead` reference in the function or shared modules). A closed date can be booked by replaying a request. Availability must become server-authoritative and fail closed, sharing the same `availability_closures` source as the ops dashboard.
 
----
+### RLS / authorization
+All new tables: `GRANT` explicitly; public read limited to published rows; writes only via `has_role(auth.uid(),'admin')`; drafts never readable by `anon`; audit log insert-only.
 
-## Recommended single implementation batch
+## 4. Analytics and experimentation
 
-**Batch A — "The Studio thinks out loud" (items 1, 2, 3, plus the item 6 test).**
+Existing: `analytics-events.ts` taxonomy plus `studio_v3_funnel_events` with GA mirror. Missing: reserve-intent on Signature/Tailor, Stripe session created, payment success/failure keyed to session, add-on attach, Tailor rule usage, availability-block exits, price-unavailable/contact exits, refine/swap usage, delegation usage.
 
-These four share one theme (make intelligence and authorship *felt* in the middle of the
-funnel), touch only presentational strings and read-only renders of existing state, add no
-new modules, and carry no pricing, route, snapshot or checkout exposure. Concretely:
+Proposed spine (one name per step, source + device + tour on every event):
+`view_product → reserve_intent → guest_details_start → guest_details_valid → checkout_session_created → payment_success | payment_failed`, plus Studio `studio_start → beat_view → beat_answer → refine_used → delegation_used → reveal_seen`.
 
-1. Paraphrase reaction copy through the existing semantic vocabulary; remove verbatim
-   option-label echoes.
-2. Move the already-computed `contextualTeaser` line into the existing reaction beat;
-   delete the dead `UnderstoodSummaryLine`; keep `NextTeaser` silent.
-3. Surface delegated dimensions once with a single quiet "Adjust" action.
-4. Add the single-primary-CTA regression test.
+Dashboard metrics: start rate, per-beat completion and drop, refine/delegation usage, back-navigation rate, guest-details abandonment, checkout-start rate, payment success, add-on attach rate, Tailor usage, availability-exit rate, conversion by device/source/tour. No scarcity or urgency patterns.
 
-Items 4 and 5 are both worth doing, but each touches a snapshot-covered surface (reveal
-visual snapshot; checkout flow) and should be a separate, individually validated batch so a
-visual diff is never mixed with copy changes.
+## 5. Performance and design system
 
-Validation for Batch A: focused P4/P6/P7/P10 suites, the full
-`src/components/studio-v3` + `src/lib/studio-v3` Vitest run, `bunx tsgo --noEmit`, and the
-mobile 393×852 plus desktop 1440×900 browser specs. No deploy.
+Risks: `StudioV3.tsx` 5.9k lines + `curation.ts` 3.6k in the Studio entry chunk; two large map components; hero/scene video; per-surface duplicated price components.
+
+Plan: split curation/scoring into lazily-imported modules, lazy-load the map behind the living-day strip with a static pin fallback, memoise curation results per state hash, and share one `DecisionSurface` primitive (header / facts / total / CTA / disclosure) used by Signature, Tailor and Studio so density, spacing and sticky behaviour are defined once.
+
+## 6. Implementation plan
+
+**QUICK WINS (low risk, presentational)**
+1. Collapse duplicated age/trust/cancellation copy into two disclosures; one primary CTA per screen; total-first hierarchy.
+2. CTA label alignment across Signature / Tailor / Studio.
+3. Add missing funnel events (reserve intent, session created, payment result, add-on attach).
+
+**STRUCTURAL**
+4. `DecisionSurface` primitive + adopt in Signature, Tailor, Studio summary.
+5. Persistent living-day strip and delta micro-confirmations; reveal before logistics; logistics inline in Your Day.
+6. Studio bundle split and map lazy-load.
+7. Admin/CMS phase 1: `signature_products` / `signature_stops` / `signature_media` with resolver + parity tests, draft/publish, audit log.
+8. Admin/CMS phase 2: add-on catalog and Tailor rule sets behind the same resolver pattern.
+
+**HIGH RISK (own phase, own gates)**
+9. Server-authoritative availability (`availability_closures` + fail-closed checkout) — must land before Admin can close dates.
+10. Any change touching curation scoring or route authority.
+
+**DO NOT TOUCH YET**
+Pricing math, tier values, age bands, rhythm→stop-count, principal-credit semantics, Stripe/webhook/idempotency, Travel File paid-only guard, generated files.
+
+Regression gates for every phase: `tsgo --noEmit`, pricing/checkout suites, full Studio/lib suite, Playwright at 393×852 and 1440×900 with zero page errors and no overflow, CTA-viewport budget, and no-deploy until explicitly approved.
+
+## Inspected
+
+`src/components/studio-v3/*` (StudioV3, curation, SignaturePriceCard, CheckoutSummary, GuestDetailsStep, MapAwakens, FinalRevealStory, LivingJourneyPanel, StudioV3SignatureMap), `src/components/checkout/*`, `src/routes/` (studio-v3, tours.$tourId, tours_.$tourId.tailor, checkout.$token, admin.*), `src/data/` (signatureTours, signatureToursSourceOfTruth, signatureToursViator, signatureTourPricing, signatureAddOns, tailorRules, tailorBlueprints, tailorStopPricing, tierMonotonicityAudit), `src/lib/availability.ts`, `src/lib/analytics-events.ts`, `src/lib/studio-v3-funnel.ts`, `supabase/functions/create-signature-checkout/index.ts`, `supabase/functions/_shared/*`, tables `tour_price_tiers`, `tour_operating_rules`, `studio_v3_funnel_events`, `bookings`.
