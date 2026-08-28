@@ -39,7 +39,7 @@ const BASE_STATE = {
   occasion: null,
   considerations: [],
   investment: null,
-  destinationIntent: null,
+  destinationIntent: "arrabida-setubal-azeitao",
   dateExact: null,
   refinement: null,
   rerollCount: 0,
