@@ -261,6 +261,13 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       }
       setClientSecret(resp.clientSecret);
       setPublishableKey(resp.publishableKey);
+      trackEvent("checkout_session_created", {
+        experience_id: tour.id,
+        experience_type: "signature",
+        group_size: details.guests,
+        value: Math.round(perPaxForSummary * details.guests),
+        currency: "EUR",
+      });
       // GA4 add_payment_info — payment surface ready.
       try {
         const item = buildTourItem(tour, {
@@ -279,6 +286,11 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       }
     } catch (e) {
       console.error("Signature checkout failed", e);
+      trackEvent("checkout_session_failed", {
+        experience_id: tour.id,
+        experience_type: "signature",
+        group_size: details.guests,
+      });
       toast.error("Checkout unavailable right now. Please try again in a moment.");
       setCheckoutOpen(false);
     } finally {
