@@ -41,6 +41,7 @@ import { getFaqForTour } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { sotItinerary } from "@/data/signatureToursSourceOfTruth";
+import { projectPublicSotItinerary } from "@/lib/publicItineraryProjection";
 import { TourReviews } from "@/components/TourReviews";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
