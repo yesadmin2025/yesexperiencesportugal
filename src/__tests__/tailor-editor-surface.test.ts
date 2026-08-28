@@ -43,12 +43,26 @@ describe("Tailor removes operational clutter from the editor", () => {
     expect(src).toContain("<FinalDetailsDialog");
   });
 
-  it("still carries pickup, language, accessibility and notes into the payload", () => {
-    for (const field of ["pickup", "language", "accessibility", "notes"]) {
-      expect(src).toMatch(new RegExp(`\\b${field}\\b`));
-    }
+  it("lets FinalDetailsDialog own every operational field, verbatim", () => {
+    // The checkout payload spreads the dialog result untouched…
+    const start = src.indexOf("guestDetails: {");
+    expect(start).toBeGreaterThan(-1);
+    const block = src.slice(start, start + 420);
+    expect(block).toContain("...details,");
+    // …and adds only non-conflicting Tailor-specific fields.
+    expect(block).toContain("hotelPickupIncluded: true,");
+    expect(block).toContain("pace,");
+    expect(block).toContain("skippedCoreStops: skippedPublicLabels,");
+  });
+
+  it("keeps no stale local accessibility/notes state to overwrite with", () => {
+    expect(src).not.toMatch(/const \[accessibility[,\]]/);
+    expect(src).not.toMatch(/const \[notes[,\]]/);
+    expect(src).not.toMatch(/accessibility: \[\.\.\.accessibility\]/);
+    expect(src).not.toMatch(/^\s*notes,$/m);
   });
 });
+
 
 describe("Tailor customer copy stays truthful", () => {
   it("drops internal system vocabulary", () => {
