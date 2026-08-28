@@ -80,7 +80,18 @@ function ghostStopsFor(intent: DestinationIntent): string[] {
   return out;
 }
 
-export function PartialReveal({ intent }: { intent: DestinationIntent | null }) {
+/**
+ * Pass 2A: when the persistent Living Day is on screen it already owns the
+ * "here is your day forming" job. To avoid two competing previews, this
+ * reveal drops its ghost-stop list and stays a light region cue only.
+ */
+export function PartialReveal({
+  intent,
+  compact = false,
+}: {
+  intent: DestinationIntent | null;
+  compact?: boolean;
+}) {
   const stops = useMemo(() => (intent ? ghostStopsFor(intent) : []), [intent]);
   const label =
     intent && intent !== "no-preference" && intent !== "anywhere-special"
@@ -112,6 +123,7 @@ export function PartialReveal({ intent }: { intent: DestinationIntent | null }) 
   return (
     <div
       data-testid="studio-v3-partial-reveal"
+      data-compact={compact ? "1" : "0"}
       className="mx-auto mt-5 max-w-[34ch] text-center"
       aria-live="polite"
     >
@@ -121,6 +133,7 @@ export function PartialReveal({ intent }: { intent: DestinationIntent | null }) 
       >
         {label}
       </div>
+      {compact ? null : (
       <ul className="mt-3 space-y-1.5">
         {stops.map((name, i) => {
           const showAt = prefersReduced ? 0 : 120 + i * 180;
@@ -144,8 +157,9 @@ export function PartialReveal({ intent }: { intent: DestinationIntent | null }) 
           );
         })}
       </ul>
+      )}
       <p
-        className="mt-4 text-[12px] leading-[1.55]"
+        className={compact ? "mt-2 text-[12px] leading-[1.55]" : "mt-4 text-[12px] leading-[1.55]"}
         style={{
           fontFamily: "var(--font-editorial)",
           fontStyle: "italic",
