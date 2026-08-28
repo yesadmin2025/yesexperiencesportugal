@@ -93,21 +93,10 @@ function tourRegionToRegionKey(region: string | undefined | null): RegionKey {
 interface LivingJourneyPanelProps {
   state: StudioV3State;
   hidden?: boolean;
-  /**
-   * Pass 2C — transient whisper handed down by StudioV3 when a beat is
-   * demoted from a blocking overlay. Presentation only: it shares the
-   * existing derived-feedback slot, fades on its own, and is never stored,
-   * never persisted and never replayed on back/edit. `id` changes so the
-   * same sentence can whisper again after a genuinely new choice.
-   */
-  whisper?: { text: string; id: number } | null;
 }
 
-export function LivingJourneyPanel({
-  state,
-  hidden = false,
-  whisper = null,
-}: LivingJourneyPanelProps) {
+export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanelProps) {
+
 
   const [open, setOpen] = useState(false);
 
@@ -378,14 +367,6 @@ export function LivingJourneyPanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [snapshot, stage]);
 
-  // Pass 2C — a whisper from a demoted beat takes the same slot as derived
-  // feedback. It is the newest thing said, so it wins while it lives.
-  const whisperId = whisper?.id ?? null;
-  useEffect(() => {
-    if (whisperId == null || !whisper?.text) return;
-    setFeedback(whisper.text);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [whisperId]);
 
   // Feedback disappears on its own — never a modal, never a phase.
   useEffect(() => {
@@ -480,8 +461,8 @@ export function LivingJourneyPanel({
         {feedback ? (
           <p
             data-testid="studio-v3-living-day-feedback"
-            data-whisper={feedback === whisper?.text ? "true" : undefined}
             aria-live="polite"
+
             className="mt-1.5 max-w-[280px] px-3 text-center text-[10.5px] leading-snug animate-in fade-in duration-300 motion-reduce:animate-none"
             style={{ color: "color-mix(in oklab, var(--teal) 82%, transparent)" }}
           >

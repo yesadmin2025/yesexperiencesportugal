@@ -89,6 +89,8 @@ import {
   selectReplacementCandidates,
   STUDIO_V3_PHASE_ORDER,
 } from "./curation";
+import { hasSeenFirstRouteBeat } from "./studioFirstRouteBeat";
+
 import { UnifiedYourDayRoute } from "./UnifiedYourDayRoute";
 import {
   resolveAuthoritativeRouteStops,
@@ -924,16 +926,13 @@ export function StudioV3() {
   const [exiting, setExiting] = useState(false);
 
   const [reaction, setReaction] = useState<Reaction | null>(null);
-  // Pass 2C — non-blocking whisper. A demoted beat no longer takes the screen:
-  // its paraphrase is handed to the Living Day, which is the feedback surface.
-  // Presentation only: never persisted, never replayed on back/edit, never a
-  // phase, and never an input to curation, pricing or analytics values.
-  const [whisper, setWhisper] = useState<{ text: string; id: number } | null>(null);
-  const whisperSeq = useRef(0);
   // The FIRST route-bearing map beat stays cinematic (the moment Portugal
   // first appears). Every later map beat is a repeat of something the Living
-  // Day already shows, so it whispers instead.
+  // Day already shows, so it advances without blocking. Presentation-only ref:
+  // never persisted, never reset by back/edit, and marked as already seen when
+  // a restored session proves the route was reached (see hasSeenFirstRouteBeat).
   const firstRouteBeatShownRef = useRef(false);
+
   const [mobileReveal, setMobileReveal] = useState<{ beat: StudioV3BeatId; index: number } | null>(
     null,
   );
@@ -959,13 +958,24 @@ export function StudioV3() {
     if (restoredRef.current) return;
     restoredRef.current = true;
     if (typeof window !== "undefined" && new URLSearchParams(window.location.search).has("saved")) {
+      // A saved Signature hydrates straight into the storyboard — the route
+      // already exists there, so the first cinematic reveal is spent.
+      firstRouteBeatShownRef.current = true;
       setHydratedState(true);
       return;
     }
     const persisted = readPersistedStudioState();
-    if (persisted) setState(persisted);
+    if (persisted) {
+      setState(persisted);
+      // Acknowledge-once across refresh: a restored session that already
+      // reached the route-shaping part of the flow must not replay the first
+      // cinematic route beat. Derived from the restored state — nothing new
+      // is persisted.
+      if (hasSeenFirstRouteBeat(persisted)) firstRouteBeatShownRef.current = true;
+    }
     setHydratedState(true);
   }, []);
+
 
   // Persist every answered step so back/forward and refresh keep the day.
   useEffect(() => {
@@ -1493,8 +1503,6 @@ export function StudioV3() {
   const back = useCallback(
     (_hint?: StudioV3Phase) => {
       setReaction(null);
-      // A whisper is feedback for a forward choice — it never replays on back.
-      setWhisper(null);
       setExiting(true);
       // Robust to phase reordering: walk backwards from the CURRENT phase
       // through PHASE_ORDER, skipping anything that isPhaseRelevant rules
@@ -1538,7 +1546,7 @@ export function StudioV3() {
       if (toIdx < 0 || fromIdx < 0 || toIdx >= fromIdx) return;
       if (!isPhaseRelevant(target, state)) return;
       setReaction(null);
-      setWhisper(null);
+      
       setExiting(true);
       trackStep({
         stepNumber: stepOf(state.phase),
@@ -1570,21 +1578,18 @@ export function StudioV3() {
       // Pass 2C — beat tiering. Only two moments still earn a full takeover:
       // the Feeling (first emotional commitment) and the first route-bearing
       // map beat (the first time the day exists as a place). Everything else
-      // is already visible in the Living Day, so it whispers there instead of
-      // blocking progression.
+      // is already visible in the Living Day — its own causal feedback engine
+      // is the single acknowledgement authority, so no beat prose is copied
+      // anywhere; the demoted beat simply advances.
       const isRouteMapBeat = r.kind === "map-beat" && r.mapMode !== "origin";
       const cinematic = r.kind === "feeling" || (isRouteMapBeat && !firstRouteBeatShownRef.current);
       if (cinematic && isRouteMapBeat) firstRouteBeatShownRef.current = true;
       if (!cinematic) {
-        const line = (r.message ?? "").split("\n")[0]?.trim();
-        if (line) {
-          whisperSeq.current += 1;
-          setWhisper({ text: line, id: whisperSeq.current });
-        }
         // Same continue semantics as the beat it replaces — including the
         // `viaReaction` value, so analytics keys/payloads do not change.
         setReaction(null);
         setExiting(true);
+
         window.setTimeout(() => {
           setState((s) => {
             trackStep({
@@ -2660,11 +2665,8 @@ export function StudioV3() {
         composerHidden={composerHidden}
         reactionActive={!!reaction}
       />
-      <LivingJourneyPanel
-        state={state}
-        hidden={livingDayHidden}
-        whisper={whisper ? { text: whisper.text, id: whisper.id } : null}
-      />
+      <LivingJourneyPanel state={state} hidden={livingDayHidden} />
+
 
       <ComposerMap state={state} hidden={composerHidden} />
       <CloseStudio hasProgress={state.phase !== "who"} />
