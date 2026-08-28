@@ -212,7 +212,13 @@ export function SignatureRouteMap({ tour }: Props) {
     refetchOnWindowFocus: false,
   });
 
-  const stops: ResolvedStop[] = data?.stops?.length ? data.stops : baseStops;
+  // Display-level truth guard: unresolved winery pool candidates keep their
+  // canonical geo identity but never show a supplier name to the public.
+  const stops: ResolvedStop[] = sanitizePublicMapStopLabels(
+    tour.id,
+    data?.stops?.length ? data.stops : baseStops,
+  );
+
   const polylines = useMemo(
     () => (data?.legs ?? []).map((l) => decodePolyline(l.polyline)),
     [data],
