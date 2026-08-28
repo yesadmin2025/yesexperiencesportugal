@@ -1063,9 +1063,9 @@ function TailorPage() {
                 <SectionTitle.Em>your version</SectionTitle.Em>
               </SectionTitle>
               <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                Keep the day as designed, or change a few moments. Your guide, route order and
-                region stay as they are.
+                Keep the character of this Signature, then shape a few moments and the rhythm.
               </p>
+
             </div>
 
             <div className="relative aspect-[16/9] overflow-hidden border border-[color:var(--border)]">
