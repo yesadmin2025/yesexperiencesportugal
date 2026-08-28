@@ -52,16 +52,22 @@ describe("Tailor removes operational clutter from the editor", () => {
 
 describe("Tailor customer copy stays truthful", () => {
   it("drops internal system vocabulary", () => {
+    // Comments may describe internals; customer-visible source must not.
+    const visible = src
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/^\s*\/\/.*$/gm, "")
+      .toLowerCase();
     for (const phrase of [
-      "Confirmation status",
+      "confirmation status",
       "manual confirmation",
       "subject to supplier availability",
       "principal stop",
       "the stops stay",
     ]) {
-      expect(src.toLowerCase()).not.toContain(phrase.toLowerCase());
+      expect(visible).not.toContain(phrase);
     }
   });
+
 
   it("only advertises a −5% delta for genuinely eligible removals", () => {
     expect(src).toMatch(/earnsReduction: principalEligible\.has\(s\.id\)/);
