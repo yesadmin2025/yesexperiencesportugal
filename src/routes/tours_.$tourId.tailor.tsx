@@ -708,6 +708,72 @@ function TailorPage() {
     return blueprint.core.filter((s) => !s.lock && !skippedCore.has(s.id)).map((s) => s.label);
   }, [blueprint, skippedCore]);
 
+  /* ── Presentation truth (no pricing or eligibility changes) ──
+   * `principalEligibleStopIds` is the SAME authoritative set the −5%
+   * ladder uses, so a moment only advertises a reduction when removing it
+   * genuinely earns one. Everything else removes time, never money.
+   */
+  const principalEligible = useMemo(() => principalEligibleStopIds(tour.id), [tour.id]);
+
+  /**
+   * Public winery vocabulary. Estate names are operational data — the
+   * traveller chooses how MANY winery visits the day holds, never which
+   * partner. Assignment happens after booking.
+   */
+  const wineryLabel = (index: number) => `Winery visit ${index}`;
+
+  /** Ordered winery options, so count ↔ selection stays deterministic. */
+  const wineryOptions = useMemo(
+    () => (blueprint?.choice?.options ?? []).filter((o) => o.category === "winery"),
+    [blueprint],
+  );
+  const canAdjustWineryCount = Boolean(rules.wineries) && wineryOptions.length > 0;
+  const addWineryVisit = () => {
+    const next = wineryOptions.find((o) => !choiceSelected.has(o.id));
+    if (next) tryToggleChoice(next.id);
+  };
+  const removeWineryVisit = () => {
+    const last = [...wineryOptions].reverse().find((o) => choiceSelected.has(o.id));
+    if (last) tryToggleChoice(last.id);
+  };
+
+  /**
+   * The day as an ordered list of moments. Core stops keep blueprint
+   * order; chosen options follow. Winery entries are shown generically.
+   */
+  const moments = useMemo(() => {
+    if (!blueprint) return [];
+    let wineryIndex = 0;
+    const core = blueprint.core.map((s) => {
+      const isWinery = s.category === "winery";
+      if (isWinery) wineryIndex += 1;
+      return {
+        id: s.id,
+        label: isWinery ? wineryLabel(wineryIndex) : s.label,
+        locked: Boolean(s.lock),
+        lockReason: s.lock?.customerFacingReason ?? null,
+        removed: skippedCore.has(s.id),
+        earnsReduction: principalEligible.has(s.id),
+      };
+    });
+    const chosen = (blueprint.choice?.options ?? [])
+      .filter((o) => choiceSelected.has(o.id))
+      .map((o) => {
+        const isWinery = o.category === "winery";
+        if (isWinery) wineryIndex += 1;
+        return {
+          id: o.id,
+          label: isWinery ? wineryLabel(wineryIndex) : o.label,
+          locked: true,
+          lockReason: isWinery ? null : "Chosen for this day.",
+          removed: false,
+          earnsReduction: false,
+        };
+      });
+    return [...core, ...chosen];
+  }, [blueprint, skippedCore, choiceSelected, principalEligible]);
+
+
   // ─── Helpers ────────────────────────────────────────────────
   const toggle = <T extends string>(setter: (s: Set<T>) => void, current: Set<T>, val: T) => {
     const next = new Set(current);
