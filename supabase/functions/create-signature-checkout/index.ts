@@ -149,7 +149,7 @@ const FLOW_COPY: Record<Flow, { label: string; eyebrow: string; submit: string }
   tailor: {
     label: "YES Tailored",
     eyebrow: "Tailored stops applied",
-    submit: "We'll confirm the adjusted stops by email within 2 hours.",
+    submit: "Instant confirmation by email.",
   },
 };
 
