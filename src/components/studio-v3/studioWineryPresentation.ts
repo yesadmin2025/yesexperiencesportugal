@@ -115,9 +115,16 @@ export interface WineryPresentationStop {
 }
 
 export function isWineryStopLabel(label: string): boolean {
+  if (!label) return false;
+  // 1) Structural truth first — exact identity from typed catalogs/aliases.
+  if (WINERY_IDENTITY_KEYS.has(normName(label))) return true;
+  const semantic = semanticStopKey(label);
+  if (semantic && WINERY_IDENTITY_KEYS.has(semantic)) return true;
+  // 2) Geo catalog kind (fuzzy match) — only ever confirms, never denies.
   const geo = lookupStopGeo(label);
-  if (geo) return WINERY_KINDS.has(geo.kind);
-  if (CATALOG_WINERY_NAMES.has(normName(label))) return true;
+  if (geo && WINERY_KINDS.has(geo.kind)) return true;
+  if (geo) return false;
+  // 3) Narrow keyword fallback for labels absent from every catalog.
   return WINERY_LABEL_FALLBACK_RE.test(label);
 }
 
