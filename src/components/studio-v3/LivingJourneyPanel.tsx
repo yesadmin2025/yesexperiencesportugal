@@ -480,12 +480,14 @@ export function LivingJourneyPanel({
         {feedback ? (
           <p
             data-testid="studio-v3-living-day-feedback"
+            data-whisper={feedback === whisper?.text ? "true" : undefined}
             aria-live="polite"
-            className="mt-1.5 text-[10.5px] leading-none animate-in fade-in duration-300 motion-reduce:animate-none"
+            className="mt-1.5 max-w-[42ch] text-center text-[10.5px] leading-snug animate-in fade-in duration-300 motion-reduce:animate-none"
             style={{ color: "color-mix(in oklab, var(--teal) 82%, transparent)" }}
           >
             {feedback}
           </p>
+
         ) : null}
       </div>
 
