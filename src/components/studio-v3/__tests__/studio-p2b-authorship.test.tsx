@@ -114,12 +114,12 @@ describe("Pass 2B · pure gestures + exact undo", () => {
 
 describe("Pass 2B · truthful reasons only", () => {
   it("returns null when no selected signal justifies the moment", () => {
-    expect(resolveMomentReason("Quinta do Piloto", { interests: [], feeling: null })).toBeNull();
+    expect(resolveMomentReason("Family winery in Azeitão", { interests: [], feeling: null })).toBeNull();
     expect(resolveMomentReason("Not A Real Stop At All", { interests: ["wine"] })).toBeNull();
   });
 
   it("returns one short reason when the signal was really selected", () => {
-    const reason = resolveMomentReason("Quinta do Piloto", { interests: ["wine"] });
+    const reason = resolveMomentReason("Family winery in Azeitão", { interests: ["wine"] });
     expect(reason).toBe("Because you chose wine.");
     expect(reason!.length).toBeLessThan(48);
   });
@@ -131,7 +131,7 @@ describe("Pass 2B · truthful reasons only", () => {
 });
 
 describe("Pass 2B · winery supplier names stay generic", () => {
-  const canonical = ["Quinta do Piloto", "José Maria da Fonseca"];
+  const canonical = ["Family winery in Azeitão", "Moscatel cellar, Azeitão"];
   const labels = buildWineryDisplayLabels(canonical.map((label) => ({ label })));
 
   it("generic labels are used for moments and swap candidates", () => {
@@ -143,7 +143,7 @@ describe("Pass 2B · winery supplier names stay generic", () => {
   });
 
   it("feedback and reason text cannot leak a supplier name", () => {
-    const leak = "Quinta do Piloto replaces José Maria da Fonseca";
+    const leak = "Family winery in Azeitão replaces Moscatel cellar, Azeitão";
     const safe = genericiseWineryText(leak, labels);
     for (const label of canonical) expect(safe).not.toContain(label);
   });
@@ -195,7 +195,7 @@ describe("Pass 2B · accessible authorship affordances", () => {
           reason="Because you chose wine."
           canSwap
           swapOpen
-          swapPool={[{ id: "Quinta do Piloto", label: "A second local winery" }]}
+          swapPool={[{ id: "Family winery in Azeitão", label: "A second local winery" }]}
           onToggleSwap={() => {}}
           onPickSwap={onSwap}
           onMoveEarlier={() => {}}
@@ -218,8 +218,8 @@ describe("Pass 2B · accessible authorship affordances", () => {
     }
     fireEvent.click(within(card).getByText("A second local winery"));
     expect(onSwap).toHaveBeenCalledWith(
-      expect.objectContaining({ id: "Quinta do Piloto", label: "A second local winery" }),
+      expect.objectContaining({ id: "Family winery in Azeitão", label: "A second local winery" }),
     );
-    expect(card.textContent).not.toContain("Quinta do Piloto");
+    expect(card.textContent).not.toContain("Family winery in Azeitão");
   });
 });
