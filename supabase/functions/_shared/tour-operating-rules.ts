@@ -105,8 +105,10 @@ export function normalizeOperatingRuleRow(row: OperatingRuleRow | null | undefin
 
 /**
  * Evaluate a normalized rule against an exact ISO date.
- * `min_lead_hours` is applied as a calendar-day floor in Lisbon so a
- * date-only booking behaves deterministically (24h => tomorrow).
+ * `min_lead_hours` mirrors the client rule: it is an actual elapsed-hours
+ * instant (`now + leadHours`), floored to the resulting calendar date in
+ * Europe/Lisbon. Date-only semantics: a requested date on or after that
+ * Lisbon date passes (no start-time comparison is invented at this layer).
  */
 export function evaluateOperatingRule(
   dateExact: string,
@@ -115,7 +117,8 @@ export function evaluateOperatingRule(
 ): OperatingRuleCheck {
   if (!isIsoCalendarDate(dateExact)) return { ok: false, reason: "invalid_date" };
 
-  const minDate = addCalendarDays(todayInLisbon(now), Math.ceil(rule.minLeadHours / 24));
+  const leadInstant = new Date(now.getTime() + rule.minLeadHours * 3_600_000);
+  const minDate = todayInLisbon(leadInstant);
   if (dateExact < minDate) return { ok: false, reason: "min_lead" };
   if (!rule.weekdays.includes(isoWeekday(dateExact))) return { ok: false, reason: "weekday_closed" };
   if (rule.blackoutDates.includes(dateExact)) return { ok: false, reason: "blackout" };
