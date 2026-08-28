@@ -10,7 +10,7 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import { FinalDetailsDialog } from "../FinalDetailsDialog";
 
 vi.mock("sonner", () => ({
@@ -52,7 +52,7 @@ const BASE = {
   adults: 2,
   minorAges: [],
   pickupAddress: "Ritz Lisbon",
-} as const;
+};
 
 describe("FinalDetailsDialog carries the full operational payload", () => {
   it("submits every operational field with a non-empty value", async () => {
@@ -123,5 +123,3 @@ describe("FinalDetailsDialog carries the full operational payload", () => {
     ]);
   });
 });
-
-import { within } from "@testing-library/react";
