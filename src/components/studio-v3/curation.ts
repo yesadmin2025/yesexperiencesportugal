@@ -55,6 +55,7 @@ import type {
   StudioV3Phase,
   StudioV3State,
 } from "./types";
+import { applyHybridComposition } from "@/components/studio-v3/studioHybridComposition";
 
 /* ---------- Adaptive intelligence: guest inference ---------- */
 
@@ -1959,9 +1960,31 @@ export function resolveStudioV3Route(input: {
   // Full itinerary authority — the traveller's complete composed day. Rhythm
   // targets can legitimately reach 5–6 moments; this is never capped to 4.
   const fullMoments = journey.moments.map(toRoutePoint);
-  const composedRoutePoints: ResolvedRoutePoint[] = composeRoute(
+  const baseComposedRoutePoints: ResolvedRoutePoint[] = composeRoute(
     fullMoments,
     Math.max(4, fullMoments.length),
+  );
+
+  // Hybrid moment composition — the Studio is NOT fixed-tour selection. When
+  // the anchor Signature does not cover a dimension the traveller explicitly
+  // asked for, insert a real, region-contained, verified moment from
+  // `composeLivingAtlasDay`. Additive only, bounded by the rhythm target, so
+  // pricing, add-ons, checkout and persistence are untouched.
+  const composedRoutePoints: ResolvedRoutePoint[] = applyHybridComposition(
+    baseComposedRoutePoints,
+    {
+      skeletonTourId: journey.tour.id,
+      feeling,
+      interests,
+      rhythm,
+      wineIntent: routeWineIntent,
+      dateExact,
+      maxPoints: Math.max(
+        baseComposedRoutePoints.length,
+        RHYTHM_STOP_COUNT[rhythm] + (investment ? INVESTMENT_STOP_DELTA[investment] : 0),
+      ),
+      buildStory: customerStopBlurb,
+    },
   );
 
 
