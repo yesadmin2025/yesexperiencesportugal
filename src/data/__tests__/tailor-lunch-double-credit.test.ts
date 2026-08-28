@@ -39,7 +39,9 @@ describe("dedicated lunch stop is not a principal removal", () => {
   it("excludes the lunch stop from the −5% ladder count", () => {
     expect(principalRemovalCount(WINE, [LUNCH])).toBe(0);
     expect(principalRemovalCount(WINE, [LUNCH, "azeitao-tiles"])).toBe(1);
-    expect(principalRemovalCount(WINE, ["azeitao-tiles", "arrabida-park"])).toBe(2);
+    // `arrabida-park` is classified descriptive (free viewpoint): removable
+    // for time, never for money. See src/data/tailorStopPricing.ts.
+    expect(principalRemovalCount(WINE, ["azeitao-tiles", "arrabida-park"])).toBe(1);
   });
 
   it("still counts lunch stops on Signatures without the dedicated credit", () => {
