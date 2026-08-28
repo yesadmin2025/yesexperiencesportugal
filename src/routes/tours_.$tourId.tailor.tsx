@@ -1638,6 +1638,9 @@ function TailorPage() {
           tourDate: date,
           adults: composition.adults,
           minorAges: [...composition.minorAges],
+          // Default start time — adjustable in "Anything we should know?".
+          startTime: pickup,
+
           language,
         }}
         onConfirm={async (d) => {
