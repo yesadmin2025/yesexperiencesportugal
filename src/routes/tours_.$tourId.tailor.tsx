@@ -464,12 +464,10 @@ function TailorPage() {
 
   /**
    * Accessibility / dietary / free-form notes are collected in the shared
-   * FinalDetailsDialog ("Anything we should know?"), not on the editor.
-   * Kept in state so any value already carried by Tailor still reaches the
-   * checkout payload unchanged.
+   * FinalDetailsDialog ("Anything we should know?"). The editor keeps no
+   * stale local copies — the FinalDetails payload is the single source.
    */
-  const [accessibility] = useState<Set<string>>(new Set());
-  const [notes] = useState("");
+
 
 
   // ─── Derived live summary values ────────────────────────────
