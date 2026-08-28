@@ -252,10 +252,16 @@ describe("Pass 2A — full-route authority (no compact-card cap)", () => {
         dispatchEvent: () => false,
       })),
     });
+    vi.useFakeTimers();
     try {
       render(<LivingJourneyPanel state={IMMERSIVE} />);
       fireEvent.click(screen.getByTestId("studio-v3-living-day-pill"));
       fireEvent.click(screen.getByRole("tab", { name: /map/i }));
+      // Flush the drawer's pin timers and the map's internal 460ms segment
+      // stagger so every composed moment is revealed.
+      rtlAct(() => {
+        vi.advanceTimersByTime(120 + full.length * 460 + 1000);
+      });
       const map = screen.getByLabelText("Your journey, drawing live");
       expect(map).toBeInTheDocument();
 
