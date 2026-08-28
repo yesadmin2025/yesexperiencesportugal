@@ -4492,7 +4492,7 @@ export function StoryboardHandoff({
               transition: "opacity 600ms ease-out, transform 600ms ease-out",
             }}
           >
-            We confirm everything before you book
+            {INSTANT_CONFIRMATION}
           </p>
 
           <span
