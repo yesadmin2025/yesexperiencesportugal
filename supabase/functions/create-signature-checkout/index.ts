@@ -4,6 +4,7 @@
 
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
 import { isStudioCheckoutDateAllowed } from "../_shared/studio-booking-date.ts";
+import { checkTourOperatingRule } from "../_shared/tour-operating-rules.ts";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
