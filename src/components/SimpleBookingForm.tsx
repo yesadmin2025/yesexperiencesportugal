@@ -516,7 +516,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             </>
           ) : (
             <>
-              <Sparkles size={15} /> Reserve securely
+              <Sparkles size={15} /> Reserve this day
             </>
           )}
         </button>
