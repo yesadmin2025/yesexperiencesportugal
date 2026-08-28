@@ -9,6 +9,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
+import { trackEvent } from "@/lib/analytics-events";
 import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 
