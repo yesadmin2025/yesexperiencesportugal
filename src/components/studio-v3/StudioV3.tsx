@@ -2654,7 +2654,12 @@ export function StudioV3() {
         composerHidden={composerHidden}
         reactionActive={!!reaction}
       />
-      <LivingJourneyPanel state={state} hidden={livingDayHidden} />
+      <LivingJourneyPanel
+        state={state}
+        hidden={livingDayHidden}
+        whisper={whisper ? { text: whisper.text, id: whisper.id } : null}
+      />
+
       <ComposerMap state={state} hidden={composerHidden} />
       <CloseStudio hasProgress={state.phase !== "who"} />
       {chromeReady ? (
