@@ -99,6 +99,7 @@ import {
   serverTailorSupplementsEur,
   TAILOR_LUNCH_REMOVAL_ELIGIBLE,
   serverAddOnLine,
+  serverAddOnAllowedForTour,
   serverPrincipalRemovalCount,
 
   tailorFinalPerPax,
