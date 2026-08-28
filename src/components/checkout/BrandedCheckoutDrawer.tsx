@@ -251,6 +251,13 @@ export function BrandedCheckoutDrawer({
   );
 }
 
+/**
+ * Compact payment summary: date + party on one line, total prominent,
+ * and everything else (traveller bands, add-ons, day beats) behind a
+ * single `Details` disclosure so Stripe paints immediately below.
+ * Hero, region and duration are decision-surface content and are not
+ * rendered here.
+ */
 function ExperienceSummaryCard({
   summary,
   total,
@@ -258,159 +265,161 @@ function ExperienceSummaryCard({
   summary: CheckoutSummary;
   total: number | null;
 }) {
+  const [open, setOpen] = useState(false);
+
+  const partyLine =
+    summary.adults != null && summary.minorAges
+      ? buildCompositionLine(summary.adults, summary.minorAges, summary.guests)
+      : `${summary.guests} guest${summary.guests > 1 ? "s" : ""}`;
+
+  const metaLine = [
+    summary.dateExact
+      ? `${formatDate(summary.dateExact)}${summary.startTime ? ` · ${summary.startTime}` : ""}`
+      : null,
+    partyLine,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  const hasBands = hasCompleteJourneyPricing(summary.journeyLines);
+  const hasAddOns = !!summary.addOns && summary.addOns.length > 0;
+  const hasBeats = !!summary.beats && summary.beats.length > 0;
+  const hasDetails = hasBands || hasAddOns || hasBeats;
+
   return (
-    <div className="px-5 sm:px-7 pt-5 pb-6 border-b border-[color:var(--border)] bg-[color:var(--sand)]/30">
-      <div className="flex gap-4">
-        {summary.heroSrc ? (
-          <div className="relative w-20 h-24 sm:w-24 sm:h-28 shrink-0 overflow-hidden">
-            <img
-              src={summary.heroSrc}
-              alt=""
-              aria-hidden
-              className="w-full h-full object-cover"
-              loading="eager"
-              decoding="async"
-            />
-            <div className="absolute inset-0 ring-1 ring-[color:var(--gold)]/40" />
-          </div>
-        ) : null}
-        <div className="flex-1 min-w-0">
-          <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
-            Your day
-          </p>
-          <h3 className="serif text-[1.05rem] leading-snug text-[color:var(--charcoal)] mt-1 truncate">
-            {summary.tourTitle}
-          </h3>
-          <ul className="mt-2.5 space-y-1 text-[12.5px] text-[color:var(--charcoal-soft)]">
-            {summary.region ? <Meta icon={<MapPin size={11} />}>{summary.region}</Meta> : null}
-            {summary.durationHours ? (
-              <Meta icon={<Clock size={11} />}>{summary.durationHours}h</Meta>
-            ) : null}
-            {summary.dateExact ? (
-              <Meta icon={<Calendar size={11} />}>
-                {formatDate(summary.dateExact)}
-                {summary.startTime ? ` · ${summary.startTime}` : ""}
-              </Meta>
-            ) : null}
-            <Meta icon={<Users size={11} />}>
-              {summary.adults != null && summary.minorAges
-                ? buildCompositionLine(summary.adults, summary.minorAges, summary.guests)
-                : `${summary.guests} guest${summary.guests > 1 ? "s" : ""}`}
-            </Meta>
-          </ul>
-        </div>
-      </div>
-
-      {summary.beats && summary.beats.length > 0 ? (
-        <ul className="mt-4 grid grid-cols-1 gap-1.5">
-          {summary.beats.map((b) => (
-            <li
-              key={b}
-              className="flex gap-2 text-[12.5px] leading-snug text-[color:var(--charcoal)]"
-            >
-              <span className="mt-1.5 w-1 h-1 rounded-full bg-[color:var(--gold)] shrink-0" />
-              <span>{b}</span>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-
-      {hasCompleteJourneyPricing(summary.journeyLines) ? (
-        <div
-          className="mt-4 pt-3 border-t border-[color:var(--border)]"
-          data-testid="checkout-drawer-journey-lines"
-        >
-          <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
-            Travellers
-          </p>
-          <ul className="mt-2 space-y-1">
-            {summarizeJourneyLines(summary.journeyLines!).map((row) => (
-              <li
-                key={row.key}
-                className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)] font-sans"
-              >
-                <span className="truncate">
-                  {row.label}
-                  {row.qty > 1 ? (
-                    <span className="ml-1 text-[color:var(--charcoal-soft)]">
-                      (€{Math.round(row.unitEur).toLocaleString("en-GB")} × {row.qty})
-                    </span>
-                  ) : null}
-                </span>
-                <span className="tabular-nums text-[color:var(--charcoal-soft)]">
-                  €{Math.round(row.subtotalEur).toLocaleString("en-GB")}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-
-      {summary.addOns && summary.addOns.length > 0 ? (
-        <div className="mt-4 pt-3 border-t border-[color:var(--border)]">
-          <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
-            Add-ons
-          </p>
-          <ul className="mt-2 space-y-1">
-            {summary.addOns.map((a) => {
-              const lineAmount = a.amount != null ? a.amount : a.priceEur * summary.guests;
-              const perUnit = a.perUnit != null ? a.perUnit : a.priceEur;
-              const isPerPerson = a.unit == null || a.unit === "per_person";
-              return (
-                <li
-                  key={a.id}
-                  className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)] font-sans"
-                >
-                  <span className="truncate">
-                    • {a.label}
-                    {isPerPerson && summary.guests > 1 ? (
-                      <span className="ml-1 text-[color:var(--charcoal-soft)]">
-                        (€{Math.round(perUnit).toLocaleString("en-GB")} × {summary.guests})
-                      </span>
-                    ) : a.unitLabel ? (
-                      <span className="ml-1 text-[color:var(--charcoal-soft)]">
-                        ({a.unitLabel})
-                      </span>
-                    ) : null}
-                  </span>
-                  <span className="tabular-nums text-[color:var(--charcoal-soft)]">
-                    €{Math.round(lineAmount).toLocaleString("en-GB")}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ) : null}
+    <div
+      className="px-5 sm:px-7 pt-4 pb-3 border-b border-[color:var(--border)] bg-[color:var(--sand)]/30"
+      data-testid="checkout-drawer-summary"
+    >
+      <p
+        className="text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]"
+        data-testid="checkout-drawer-meta"
+      >
+        {metaLine}
+      </p>
 
       {total != null ? (
         <div
-          className="mt-4 pt-3 border-t border-[color:var(--border)] flex items-baseline justify-between"
+          className="mt-2 flex items-baseline justify-between gap-3"
           data-testid="checkout-drawer-total"
         >
           <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
             Total
           </span>
-          <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
+          <span className="serif text-[1.5rem] leading-none text-[color:var(--charcoal)]">
             €{total.toLocaleString("en-GB")}
-            {hasCompleteJourneyPricing(summary.journeyLines) ? null : summary.pricePerPaxEur !=
-                null &&
-              summary.guests > 1 &&
-              (summary.minorAges?.length ?? 0) === 0 ? (
-              <span className="ml-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans">
-                €{Math.round(summary.pricePerPaxEur).toLocaleString("en-GB")} × {summary.guests}
-              </span>
-            ) : (summary.minorAges?.length ?? 0) > 0 ? (
-              <span className="ml-2 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] font-sans">
-                age-based pricing
-              </span>
-            ) : null}
           </span>
         </div>
+      ) : null}
+
+      {hasDetails ? (
+        <>
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            data-testid="checkout-drawer-details-toggle"
+            className="mt-1 flex min-h-[44px] w-full items-center justify-between gap-2 text-left text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+          >
+            <span>Details</span>
+            <ChevronDown
+              size={14}
+              aria-hidden
+              className={open ? "rotate-180 transition-transform" : "transition-transform"}
+            />
+          </button>
+
+          {open ? (
+            <div className="pb-2" data-testid="checkout-drawer-details">
+              {hasBands ? (
+                <div
+                  className="pt-1 border-t border-[color:var(--border)]"
+                  data-testid="checkout-drawer-journey-lines"
+                >
+                  <p className="mt-2 text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
+                    Travellers
+                  </p>
+                  <ul className="mt-1.5 space-y-1">
+                    {summarizeJourneyLines(summary.journeyLines!).map((row) => (
+                      <li
+                        key={row.key}
+                        className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)] font-sans"
+                      >
+                        <span className="truncate">
+                          {row.label}
+                          {row.qty > 1 ? (
+                            <span className="ml-1 text-[color:var(--charcoal-soft)]">
+                              (€{Math.round(row.unitEur).toLocaleString("en-GB")} × {row.qty})
+                            </span>
+                          ) : null}
+                        </span>
+                        <span className="tabular-nums text-[color:var(--charcoal-soft)]">
+                          €{Math.round(row.subtotalEur).toLocaleString("en-GB")}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              {hasAddOns ? (
+                <div className="mt-3 pt-2 border-t border-[color:var(--border)]">
+                  <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
+                    Add-ons
+                  </p>
+                  <ul className="mt-1.5 space-y-1">
+                    {summary.addOns!.map((a) => {
+                      const lineAmount = a.amount != null ? a.amount : a.priceEur * summary.guests;
+                      const perUnit = a.perUnit != null ? a.perUnit : a.priceEur;
+                      const isPerPerson = a.unit == null || a.unit === "per_person";
+                      return (
+                        <li
+                          key={a.id}
+                          className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--charcoal)] font-sans"
+                        >
+                          <span className="truncate">
+                            • {a.label}
+                            {isPerPerson && summary.guests > 1 ? (
+                              <span className="ml-1 text-[color:var(--charcoal-soft)]">
+                                (€{Math.round(perUnit).toLocaleString("en-GB")} × {summary.guests})
+                              </span>
+                            ) : a.unitLabel ? (
+                              <span className="ml-1 text-[color:var(--charcoal-soft)]">
+                                ({a.unitLabel})
+                              </span>
+                            ) : null}
+                          </span>
+                          <span className="tabular-nums text-[color:var(--charcoal-soft)]">
+                            €{Math.round(lineAmount).toLocaleString("en-GB")}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ) : null}
+
+              {hasBeats ? (
+                <ul className="mt-3 pt-2 border-t border-[color:var(--border)] space-y-1">
+                  {summary.beats!.slice(0, 4).map((b) => (
+                    <li
+                      key={b}
+                      className="flex gap-2 text-[12px] leading-snug text-[color:var(--charcoal)]"
+                    >
+                      <span className="mt-1.5 w-1 h-1 rounded-full bg-[color:var(--gold)] shrink-0" />
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          ) : null}
+        </>
       ) : null}
     </div>
   );
 }
+
 
 function Meta({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
