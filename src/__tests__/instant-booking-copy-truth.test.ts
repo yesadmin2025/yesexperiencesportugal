@@ -36,13 +36,7 @@ describe("instant-booking copy truth", () => {
   });
 
   it("non-winery choice pools keep their legitimate note", () => {
-    const sintra = Object.entries({ sintra: "sintra-palaces-allinclusive" });
-    void sintra;
-    const ids = [
-      "sintra-palaces-allinclusive",
-      "sintra-royal-allinclusive",
-      "sintra-cascais-allinclusive",
-    ];
+    const ids = ["sintra-cascais", "evora-alentejo", "tiles-workshop"];
     let checked = 0;
     for (const id of ids) {
       const bp = getTailorBlueprint(id);
