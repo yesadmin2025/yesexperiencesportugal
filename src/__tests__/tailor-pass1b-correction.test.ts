@@ -73,14 +73,21 @@ describe("Tailor Enhance offers nothing unpriced", () => {
     expect(src).toContain("{publicOptional.map((o) => {");
   });
 
-  it("Sintra's optional Colares winery is not a public enhancement", () => {
-    const sintra = TAILOR_BLUEPRINTS["sintra-lisboa-wine"];
-    if (!sintra) return;
-    const wineryOptionals = sintra.optional.filter((o) => o.category === "winery");
-    expect(wineryOptionals.length).toBeGreaterThan(0);
-    // No approved ladder → nothing to sell.
-    expect(tailorRules("sintra-lisboa-wine").wineries).toBeUndefined();
+  it("Sintra's internal Colares winery optional is never a public enhancement", () => {
+    const sintra = TAILOR_BLUEPRINTS["sintra-cascais"];
+    expect(sintra).toBeDefined();
+    const wineryOptionals = sintra!.optional.filter((o) => o.category === "winery");
+    // The blueprint really does carry a winery-category optional…
+    expect(wineryOptionals.length).toBe(1);
+    expect(wineryOptionals[0]!.id).toBe("colares-winery");
+    // …and there is no owner-approved winery ladder to price it with,
+    // so the public Enhance filter must drop it.
+    expect(tailorRules("sintra-cascais").wineries).toBeUndefined();
+    const publicOptional = sintra!.optional.filter((o) => o.category !== "winery");
+    expect(publicOptional).toHaveLength(sintra!.optional.length - 1);
+    expect(publicOptional.some((o) => o.id === "colares-winery")).toBe(false);
   });
+
 
   it("Tiles and Évora have no extra winery ladder", () => {
     expect(tailorRules("tiles-workshop").wineries).toBeUndefined();
