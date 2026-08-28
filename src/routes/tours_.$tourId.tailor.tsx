@@ -948,11 +948,10 @@ function TailorPage() {
           // Never priced — the server re-derives every euro itself.
           itinerary: stopLabels.slice(0, 20).map((label: string) => ({ label })),
           removedOptions: [
-            ...(blueprint
-              ? blueprint.core.filter((s) => skippedCore.has(s.id)).map((s) => s.label)
-              : []),
+            ...skippedPublicLabels,
             ...(rules.allowRemoveLunch === true && lunchRemoved ? ["Included lunch removed"] : []),
           ],
+
 
           pickupLabel: details.pickupAddress || pickup,
           dateExact: details.tourDate || null,
