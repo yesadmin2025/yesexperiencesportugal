@@ -21,6 +21,7 @@
  *  - Pure and deterministic: no pricing, no add-ons, no persistence, no I/O.
  */
 
+import { REGION_STOP_POOL, type OptionalStop } from "@/data/regionStopPool";
 import { isStopClosedOn } from "@/data/stopOperational";
 import { deriveLivingAtlasDimensions } from "@/components/studio-v3/livingAtlasInventory";
 import { composeLivingAtlasDay } from "@/components/studio-v3/livingAtlasComposer";
@@ -45,6 +46,12 @@ export interface HybridCompositionInput {
   dateExact?: string | null;
   /** Hard upper bound on route length (rhythm stop target). */
   maxPoints: number;
+  /**
+   * Customer-facing blurb builder for an inserted moment. Injected by the
+   * caller (production passes `customerStopBlurb`) so this module never
+   * imports back into `curation.ts`.
+   */
+  buildStory?: (stop: OptionalStop) => string;
 }
 
 function isLivingAtlasSignatureId(id: string): id is LivingAtlasSignatureId {
@@ -129,13 +136,14 @@ export function applyHybridComposition(
     if (!moment) continue;
 
     usedLabels.add(normalize(moment.label));
+    const poolStop = REGION_STOP_POOL.find((stop) => stop.id === moment.stopId) ?? null;
     const insertAt = Math.min(2, out.length);
     out.splice(insertAt, 0, {
       index: insertAt,
       label: moment.label,
-      story: "",
-      lat: null,
-      lng: null,
+      story: poolStop && input.buildStory ? input.buildStory(poolStop) : "",
+      lat: poolStop?.coords?.lat ?? null,
+      lng: poolStop?.coords?.lng ?? null,
     });
   }
 
