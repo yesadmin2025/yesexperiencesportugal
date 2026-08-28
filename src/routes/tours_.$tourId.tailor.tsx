@@ -670,6 +670,33 @@ function TailorPage() {
     composition.minorAges.length > 0 && hasCompleteJourneyPricing(journeyLines);
   const displayTotalEur = journeyPricing?.totalEur ?? estimatedPrice * guests;
 
+  /**
+   * Canonical total-first quote for "Your version". Pure presentation of
+   * the same numbers the reserve handler sends to Stripe — no new math.
+   */
+  const versionQuote = useMemo<ChargeQuote | null>(() => {
+    if (!compositionReady || !minorAgesComplete) return null;
+    return {
+      totalEur: displayTotalEur,
+      perPaxAdultEur: estimatedPrice,
+      hasMinors: composition.minorAges.length > 0,
+      adults: composition.adults,
+      minors: composition.minorAges.length,
+      adjustments: lunchRemovalPerPax
+        ? [{ label: "Included lunch removed", amountEur: -lunchRemovalPerPax * guests }]
+        : undefined,
+    };
+  }, [
+    compositionReady,
+    minorAgesComplete,
+    displayTotalEur,
+    estimatedPrice,
+    composition.adults,
+    composition.minorAges.length,
+    lunchRemovalPerPax,
+    guests,
+  ]);
+
   // ─── Wine-extension state ───────────────────────────────────
   // A "wine extension" = the traveller picked MORE wineries than the
   // Signature's baseline `pickMin`. Because per-winery extension pricing
