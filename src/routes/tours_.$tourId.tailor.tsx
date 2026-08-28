@@ -235,7 +235,12 @@ function TailorPage() {
   }, [tour.id]);
   const minDateISO = computeMinDateISO(rule?.minLeadHours ?? 24);
 
-  const [pickup, setPickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
+  /**
+   * Operational defaults. Pickup time, guide language and every other
+   * operational preference are collected in the shared FinalDetailsDialog
+   * after reserve intent — they are not decisions for the editor surface.
+   */
+  const [pickup] = useState<"08:00" | "09:00" | "10:00">("09:00");
   const [pace, setPace] = useState<"relaxed" | "balanced" | "full">("balanced");
   const [composition, setComposition] = useState<TravellerComposition>({
     adults: 2,
@@ -243,7 +248,8 @@ function TailorPage() {
   });
   const guests = totalGuests(composition);
   const compositionReady = isCompositionComplete(composition);
-  const [language, setLanguage] = useState<"en" | "pt">("en");
+  const [language] = useState<"en" | "pt">("en");
+
 
   const [skipped, setSkipped] = useState<Set<string>>(new Set());
   const [added, setAdded] = useState<Set<string>>(new Set());
