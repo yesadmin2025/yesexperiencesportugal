@@ -268,8 +268,6 @@ Deno.serve(async (req) => {
       : null;
     // Telemetry / consistency upper bound ONLY — never price authority.
     const claimedPrincipals = Math.min(8, Math.max(0, Number(body.principalsRemoved ?? 0) | 0));
-    const lunchRemovalClaimed =
-      body.tailorLunchRemoved === true && TAILOR_LUNCH_REMOVAL_ELIGIBLE.has(body.tourId);
     // FAIL-CLOSED: without stable skipped stop ids there is no server-verifiable
     // removal, so the −5% ladder count is 0. With ids, only UNIQUE whitelisted
     // ids count (invented ids, duplicates, locked anchors and the dedicated
