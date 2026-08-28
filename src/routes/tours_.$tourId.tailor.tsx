@@ -42,10 +42,12 @@ import {
   canSelectWineries,
   dedicatedLunchStopId,
   lunchRemovalEur,
+  principalEligibleStopIds,
   principalRemovalCount,
   tailorRules,
   tailorSupplementsEur,
 } from "@/data/tailorRules";
+
 
 import { TAILOR_LUNCH_REMOVAL_DISCOUNT_EUR, TAILOR_LUNCH_SUPPLEMENT_EUR } from "@/config/pricing";
 
