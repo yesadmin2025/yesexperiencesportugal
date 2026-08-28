@@ -354,7 +354,31 @@ export function FinalDetailsDialog({
                     />
                   </GuestField>
                 </GuestRow>
+                <GuestField label="Preferred start time" as="div">
+                  <div
+                    data-testid="final-details-start-time"
+                    className="grid grid-cols-3 border border-[color:var(--border)]"
+                  >
+                    {START_TIMES.map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setStartTime(t)}
+                        aria-pressed={startTime === t}
+                        className={[
+                          "min-h-[44px] py-2.5 text-xs tracking-[0.14em] transition-colors",
+                          startTime === t
+                            ? "bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
+                            : "text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]",
+                        ].join(" ")}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </GuestField>
                 <GuestField label="Preferred tour language" as="div">
+
                   <div className="grid grid-cols-2 border border-[color:var(--border)]">
                     {(["en", "pt"] as const).map((l) => (
                       <button
