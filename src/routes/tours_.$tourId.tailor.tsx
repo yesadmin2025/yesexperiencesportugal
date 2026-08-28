@@ -398,18 +398,21 @@ function TailorPage() {
         return;
       }
       // Consequence preview — surface the estimated time cost so the
-      // traveller sees WHY the day just changed. Uses approved supplier
-      // visit + tasting minutes when populated, else the category default.
+      // traveller sees WHY the day just changed. Winery estates are
+      // operational data: the guest only ever hears "Winery visit".
       const option = blueprint?.choice?.options.find((o) => o.id === id);
       if (option) {
         const approved = (option.visitMinutes ?? 0) + (option.tastingMinutes ?? 0);
-        const added = approved > 0 ? approved : DWELL_MINIMUM_MIN[option.category];
-        toast.success(
-          `Adding ${option.label} adds about ${added} min to your day.${
-            approved > 0 ? "" : " Estimated — supplier will confirm timing."
-          }`,
-        );
+        if (option.category === "winery") {
+          toast.success(
+            approved > 0 ? `Winery visit added · about ${approved} min.` : "Winery visit added.",
+          );
+        } else {
+          const added = approved > 0 ? approved : DWELL_MINIMUM_MIN[option.category];
+          toast.success(`Adding ${option.label} adds about ${added} min to your day.`);
+        }
       }
+
     }
     setChoiceSelected(next);
   };
