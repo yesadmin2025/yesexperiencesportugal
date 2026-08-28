@@ -124,16 +124,24 @@ export function toEditorialChapters(tourId: string): EditorialChapter[] | null {
     const categoryLabel =
       cat === "winery"
         ? n === 1
-          ? "family winery"
-          : `family wineries`
+          ? "local winery"
+          : `local wineries`
         : cat === "monument"
           ? n === 1
             ? "palace or monument"
             : "palaces or monuments"
           : "stops";
+    const count = n === 1 ? "One" : n === 2 ? "Two" : n === 3 ? "Three" : String(n);
+    // Winery pools never expose supplier identity or post-booking
+    // confirmation language on public surfaces — the traveller books a
+    // winery slot, not a named estate.
+    const story =
+      cat === "winery"
+        ? `${count} local winery ${n === 1 ? "visit is" : "visits are"} included, arranged within your private route.`
+        : bp.choice.note;
     chapters.push({
-      label: `${n === 1 ? "One" : n === 2 ? "Two" : n === 3 ? "Three" : String(n)} ${categoryLabel}`,
-      story: bp.choice.note,
+      label: `${count} ${categoryLabel}`,
+      story,
       representativeStop: repFor(bp.choice.options[0]),
     });
   }
