@@ -102,11 +102,11 @@ export function ChargeSummaryLine({
     >
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3">
         <span className="min-w-0 text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-          Final price
+          Total
         </span>
         <span
           key={Math.round(quote.totalEur)}
-          className="serif shrink-0 text-[1.15rem] leading-none text-[color:var(--charcoal)] motion-safe:animate-in motion-safe:fade-in motion-safe:duration-200"
+          className="serif shrink-0 text-[1.35rem] leading-none text-[color:var(--charcoal)] motion-safe:animate-in motion-safe:fade-in motion-safe:duration-200"
         >
           {eur(quote.totalEur)}
         </span>
@@ -117,20 +117,23 @@ export function ChargeSummaryLine({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         data-testid="charge-summary-toggle"
-        className="mt-1 grid min-h-[44px] w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-2 py-2 text-left text-[10.5px] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+        className="mt-1 grid min-h-[44px] w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-2 py-2 text-left text-[11px] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
       >
         <span className="min-w-0 break-words leading-snug">
-          {quote.adults} {quote.adults === 1 ? "adult" : "adults"}
-          {minors > 0 ? ` · ${minors} ${minors === 1 ? "child" : "children"}` : ""} ·{" "}
-          {eur(quote.perPaxAdultEur)} per adult
+          {eur(quote.perPaxAdultEur)} / adult · {quote.adults}{" "}
+          {quote.adults === 1 ? "adult" : "adults"}
+          {minors > 0 ? `, ${minors} ${minors === 1 ? "child" : "children"}` : ""}
         </span>
-        <ChevronDown
-          className={[
-            "h-3.5 w-3.5 shrink-0 transition-transform duration-200",
-            open ? "rotate-180" : "",
-          ].join(" ")}
-          aria-hidden="true"
-        />
+        <span className="flex shrink-0 items-center gap-1 text-[10.5px] text-[color:var(--charcoal-soft)]">
+          Price details
+          <ChevronDown
+            className={[
+              "h-3.5 w-3.5 shrink-0 transition-transform duration-200",
+              open ? "rotate-180" : "",
+            ].join(" ")}
+            aria-hidden="true"
+          />
+        </span>
       </button>
 
       {open ? (
@@ -144,7 +147,7 @@ export function ChargeSummaryLine({
           />
           {minors > 0 ? (
             <Row
-              label={`Children · youth 75% · child 50% · infants free`}
+              label={minors === 1 ? "Child" : "Children"}
               value={eur(Math.max(0, journey - quote.perPaxAdultEur * quote.adults))}
             />
           ) : null}
@@ -159,10 +162,7 @@ export function ChargeSummaryLine({
           <Row label="Party total" value={eur(quote.totalEur)} />
         </ul>
       ) : null}
-
-      <p className="mt-1 text-[9.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-        Charged securely in EUR · no hidden fees
-      </p>
     </div>
   );
 }
+

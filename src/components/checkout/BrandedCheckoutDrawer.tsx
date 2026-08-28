@@ -5,7 +5,7 @@ import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe
 import { Lock, X, MapPin, Clock, Users, Calendar } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { CredentialStrip } from "@/components/ui/CredentialStrip";
+
 import { CANCELLATION } from "@/config/business-nap";
 import {
   summarizeJourneyLines as summarizeJourneyLinesShared,
@@ -213,32 +213,14 @@ export function BrandedCheckoutDrawer({
           <SheetDescription className="sr-only">
             Secure checkout for {summary.tourTitle}.
           </SheetDescription>
-          {/* Trust row — conversion-focused: three claims true across the
-              brand (see booking-truth-model memory: TEST MODE + free
-              cancellation policy + payments encrypted). Sits right under
-              the title so the guest sees them before the payment iframe
-              paints. */}
-          <ul className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-            <li className="flex items-center gap-1.5">
-              <span aria-hidden className="w-1 h-1 rounded-full bg-[color:var(--gold)]" />
-              {CANCELLATION.signature.en}
-            </li>
-            <li className="flex items-center gap-1.5">
-              <span aria-hidden className="w-1 h-1 rounded-full bg-[color:var(--gold)]" />
-              Instant confirmation
-            </li>
-            <li className="flex items-center gap-1.5">
-              <span aria-hidden className="w-1 h-1 rounded-full bg-[color:var(--gold)]" />
-              Secure payment
-            </li>
-          </ul>
+          {/* Payment surface: one quiet reassurance line only. Cancellation
+              and credentials are decision-surface content, shown before the
+              guest reaches payment. */}
+          <p className="mt-2 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+            {CANCELLATION.signature.en} · Instant confirmation
+          </p>
         </div>
 
-        {/* Credential microstrip — operator legitimacy above the summary,
-             lands before doubt. Reviews/popularity are covered elsewhere. */}
-        <div className="px-5 sm:px-7 py-2.5 border-b border-[color:var(--border)] bg-[color:var(--ivory)]">
-          <CredentialStrip variant="light" compact />
-        </div>
 
         <div className="overflow-y-auto flex-1">
           {/* Premium experience summary card */}
