@@ -75,6 +75,7 @@ export interface WineryPresentationStop {
 export function isWineryStopLabel(label: string): boolean {
   const geo = lookupStopGeo(label);
   if (geo) return WINERY_KINDS.has(geo.kind);
+  if (CATALOG_WINERY_NAMES.has(normName(label))) return true;
   return WINERY_LABEL_FALLBACK_RE.test(label);
 }
 
