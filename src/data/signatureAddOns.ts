@@ -334,8 +334,8 @@ export const ADD_ON_CATALOG: Record<RegionBucket, SignatureAddOn[]> = {
     {
       id: "herdade-tasting",
       sourceTourId: "troia-comporta",
-      label: "Herdade da Comporta wine tasting",
-      blurb: "A relaxed tasting at the estate that defined Comporta — vines, dunes, long horizons.",
+      label: "Comporta winery tasting",
+      blurb: "A relaxed tasting at a local Comporta winery — vines, dunes, long horizons.",
       pricePctOfBase: 0.2,
       pricingUnit: "per_person",
       durationMinutes: 75,
@@ -528,7 +528,48 @@ export function deriveAnchorStop(addOn: SignatureAddOn): {
  *   6. time-of-day: after (5), drop later add-ons that would double-book
  *      the same derived slot ("flexible" never conflicts)
  *   7. cap at 3
+  */
+export type StructuralEligibilityTour = Pick<SignatureTour, "id" | "region"> & {
+  included?: ReadonlyArray<string> | null;
+};
+
+/**
+ * MAXIMUM STRUCTURAL eligibility of an add-on for a resolved Signature.
+ *
+ * This is the *composition-independent* subset of the selector's rules:
+ *   1. same region bucket (the add-on must live in the tour's bucket pool)
+ *   2. inside "lisbon-arrabida", same declared Lisbon sub-region
+ *   3. the add-on's `sourceTourId` is NOT the resolved tour itself
+ *   4. `conflictsWith` does not intersect the tour's inclusion tags
+ *
+ * Deliberately EXCLUDES dynamic/day-shape rules (minStops, minHours,
+ * remaining minutes, capacity, time-of-day, cap of 3) — those depend on
+ * the composed itinerary and stay a UI-side concern. The server mirrors
+ * only this structural layer.
  */
+export function isAddOnStructurallyEligible(
+  addOn: SignatureAddOn,
+  resolvedTour: StructuralEligibilityTour | null | undefined,
+): boolean {
+  if (!resolvedTour) return false;
+  const bucket = regionBucket(resolvedTour.region);
+  const pool = ADD_ON_CATALOG[bucket] ?? [];
+  if (!pool.some((a) => a.id === addOn.id)) return false;
+  if (addOn.sourceTourId === resolvedTour.id) return false;
+  if (bucket === "lisbon-arrabida") {
+    const anchorSub = LISBON_SUBREGION_BY_TOUR_ID[resolvedTour.id];
+    if (anchorSub && addOn.lisbonSubRegion && addOn.lisbonSubRegion !== anchorSub) return false;
+  }
+  if (addOn.conflictsWith && addOn.conflictsWith.length > 0) {
+    const inclusionTags = deriveInclusionTags({
+      id: resolvedTour.id,
+      included: resolvedTour.included ?? null,
+    });
+    if (addOn.conflictsWith.some((tag) => inclusionTags.has(tag))) return false;
+  }
+  return true;
+}
+
 export function selectSignatureAddOns(opts: {
   resolvedTour:
     | (Pick<SignatureTour, "id" | "region"> & { included?: ReadonlyArray<string> })
@@ -542,30 +583,16 @@ export function selectSignatureAddOns(opts: {
   const bucket = regionBucket(opts.resolvedTour.region);
   const hours = parseDurationLowerHours(opts.durationLabel);
   const pool = ADD_ON_CATALOG[bucket] ?? [];
-  const anchorSub: LisbonSubRegion | undefined =
-    bucket === "lisbon-arrabida" ? LISBON_SUBREGION_BY_TOUR_ID[opts.resolvedTour.id] : undefined;
-  const inclusionTags = deriveInclusionTags({
-    id: opts.resolvedTour.id,
-    included: opts.resolvedTour.included ?? null,
-  });
   const guests = Math.max(1, Math.floor(opts.guests ?? 1));
   const filtered = pool
-    .filter((a) => a.sourceTourId !== opts.resolvedTour!.id)
-    .filter((a) => {
-      if (bucket !== "lisbon-arrabida") return true;
-      if (!anchorSub || !a.lisbonSubRegion) return true;
-      return a.lisbonSubRegion === anchorSub;
-    })
-    .filter((a) => {
-      if (!a.conflictsWith || a.conflictsWith.length === 0) return true;
-      return !a.conflictsWith.some((tag) => inclusionTags.has(tag));
-    })
+    .filter((a) => isAddOnStructurallyEligible(a, opts.resolvedTour))
     .filter((a) => (a.minStops ? opts.stopCount >= a.minStops : true))
     .filter((a) => (a.minHours ? hours >= a.minHours : true))
     .filter((a) => {
       const cap = deriveMaxGuests(a);
       return cap == null ? true : guests <= cap;
     });
+
 
   // Time-of-day de-duplication: keep the first add-on per non-flexible slot.
   const usedSlots = new Set<TimeOfDaySlot>();

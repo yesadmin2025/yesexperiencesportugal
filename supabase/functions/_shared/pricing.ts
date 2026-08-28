@@ -202,7 +202,7 @@ export const SIGNATURE_ADD_ON_CATALOG: Record<
   "herdade-tasting": {
     pricePctOfBase: 0.2,
     pricingUnit: "per_person",
-    label: "Herdade da Comporta wine tasting",
+    label: "Comporta winery tasting",
     durationMinutes: 75,
   },
   "templar-tomar": {
@@ -225,10 +225,73 @@ export const SIGNATURE_ADD_ON_CATALOG: Record<
   },
 };
 
+/* ------------------------------------------------------------------ *
+ * STRUCTURAL ELIGIBILITY MIRROR                                      *
+ *                                                                    *
+ * The MAXIMUM set of base Signature tour ids each add-on may ever be *
+ * attached to. Derived from the client's composition-independent     *
+ * structural rules (`isAddOnStructurallyEligible`):                  *
+ *   - same region bucket                                             *
+ *   - same Lisbon sub-region (when both declare one)                 *
+ *   - add-on's own `sourceTourId` is never its own base tour         *
+ *   - `conflictsWith` must not intersect the tour's inclusion tags   *
+ *                                                                    *
+ * Deliberately NOT enforced here: minStops / minHours / remaining    *
+ * minutes / capacity / time-of-day. Those depend on the composed     *
+ * itinerary and stay stricter UI-side filters — client-supplied      *
+ * route facts are never treated as server authority.                 *
+ *                                                                    *
+ * An empty array means the add-on is currently DORMANT: no live      *
+ * Signature can carry it, and the server rejects it everywhere.      *
+ * Parity with the client data is enforced by a unit test.            *
+ * ------------------------------------------------------------------ */
+export const SIGNATURE_ADD_ON_ALLOWED_TOURS: Record<string, readonly string[]> = {
+  "hidden-cove-picnic": [],
+  "coastal-boat-ride": [
+    "arrabida-wine-allinclusive",
+    "wild-beaches-picnic",
+    "tiles-workshop",
+    "azeitao-cheese",
+  ],
+  "azulejo-workshop": [
+    "arrabida-wine-allinclusive",
+    "wild-beaches-picnic",
+    "arrabida-boat",
+    "azeitao-cheese",
+  ],
+  "azeitao-cheese": ["arrabida-wine-allinclusive", "wild-beaches-picnic", "arrabida-boat"],
+  "sintra-detour": [],
+  "chapel-of-bones": ["roman-heritage-alentejo", "southwest-vicentine-coast"],
+  "talha-amphora": ["southwest-vicentine-coast"],
+  "roman-ruins-trail": ["evora-alentejo", "southwest-vicentine-coast"],
+  "roman-troia": [],
+  "herdade-tasting": [],
+  "templar-tomar": ["fatima-nazare-obidos"],
+  "obidos-walls": ["tomar-coimbra"],
+  "nazare-cliffs": ["tomar-coimbra"],
+};
+
+/**
+ * Server-authoritative MAXIMUM structural eligibility check. Returns true
+ * only when the add-on id exists in the approved catalog AND the resolved
+ * base Signature is on its structural whitelist.
+ */
+export function serverAddOnAllowedForTour(
+  addOnId: string,
+  tourId: string | null | undefined,
+): boolean {
+  if (!addOnId || !tourId) return false;
+  if (!SIGNATURE_ADD_ON_CATALOG[addOnId]) return false;
+  const allowed = SIGNATURE_ADD_ON_ALLOWED_TOURS[addOnId];
+  if (!allowed) return false;
+  return allowed.includes(tourId);
+}
+
 /** Round to nearest €5, floor €5 — mirrors `roundEur5` in the client catalog. */
 export function serverRoundEur5(eur: number): number {
   return Math.max(5, Math.round(eur / 5) * 5);
 }
+
 
 /**
  * Server-authoritative add-on line. `baseEur` MUST be the tour's approved
