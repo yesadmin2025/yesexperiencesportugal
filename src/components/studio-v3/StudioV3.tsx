@@ -3499,6 +3499,7 @@ function RevealRouteMap({
   statePickup,
   revealedStops,
   showRoute = true,
+  displayLabels,
 }: {
   editedStops: ReadonlyArray<{ label: string }>;
   showRoute?: boolean;
@@ -3508,6 +3509,12 @@ function RevealRouteMap({
   skeletonTour: { region?: string | null } | null;
   statePickup: StudioV3State["pickup"];
   revealedStops: number;
+  /**
+   * Canonical → customer-facing display labels (winery presentation guard).
+   * Geo/routing keeps using the canonical labels in `editedStops`; only the
+   * pins, legend and accessibility strings read the display labels.
+   */
+  displayLabels?: ReadonlyMap<string, string> | null;
 }) {
   const { stopsDetailed, originCoord, routeStops } = resolveRevealRouteStops(
     editedStops,
@@ -3520,11 +3527,12 @@ function RevealRouteMap({
   );
 
   const originLabelResolved = pickupCityLabel(statePickup) || (skeletonTour?.region ?? null);
+  const publicLabel = (label: string) => studioDisplayLabel(label, displayLabels);
 
   return (
     <div className="space-y-4">
       <StudioV3SignatureMap
-        stops={editedStops.map((s) => s.label)}
+        stops={editedStops.map((s) => publicLabel(s.label))}
         stopsDetailed={stopsDetailed}
         originCoord={originCoord}
         activeCount={revealedStops}
@@ -3536,7 +3544,7 @@ function RevealRouteMap({
       />
       <RouteLegend
         originLabel={originLabelResolved}
-        stopLabels={editedStops.slice(0, revealedStops).map((s) => s.label)}
+        stopLabels={editedStops.slice(0, revealedStops).map((s) => publicLabel(s.label))}
         legMinutes={legMinutes}
         legDistancesKm={legDistancesKm}
         legModes={legModes}
@@ -3545,6 +3553,7 @@ function RevealRouteMap({
     </div>
   );
 }
+
 
 /**
  * P10 — the per-question "Let YES decide" affordance has been retired from
@@ -3813,19 +3822,33 @@ export function StoryboardHandoff({
   const editedStops = state.editedRoutePoints ?? baseStops;
   const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
 
+  // Output sanitation: canonical labels stay in `editedStops` for geo lookup,
+  // route authority, dedupe and editing identity. Everything a traveller can
+  // READ (timeline, map pins, legend, accessibility, price card spine) goes
+  // through this centralized winery presentation map first.
+  const revealDisplayLabels = useMemo(
+    () => buildWineryDisplayLabels(editedStops.map((s) => ({ label: s.label }))),
+    [editedStops],
+  );
+  const revealLabel = useCallback(
+    (label: string) => studioDisplayLabel(label, revealDisplayLabels),
+    [revealDisplayLabels],
+  );
+
   // Real coordinates for the unified route surface — or gaps, honestly kept.
   const unifiedRouteMoments = useMemo(
     () =>
       resolveRevealRouteStops(editedStops, resolved, skeletonTour ?? null).stopsDetailed.map(
         (s, i) => ({
-          label: s.label,
-          story: editedStops[i]?.story ?? null,
+          label: studioDisplayLabel(s.label, revealDisplayLabels),
+          story: genericiseWineryText(editedStops[i]?.story ?? "", revealDisplayLabels) || null,
           lat: (s as { lat?: number }).lat ?? null,
           lng: (s as { lng?: number }).lng ?? null,
         }),
       ),
-    [editedStops, resolved, skeletonTour],
+    [editedStops, resolved, skeletonTour, revealDisplayLabels],
   );
+
 
 
   // Phase C composer rationales were indexed by ORIGINAL stop position and
@@ -4214,7 +4237,7 @@ export function StoryboardHandoff({
   const cleanLabel = (s: string) => s.split(/[—–-]/)[0].split(",")[0].trim();
   // A catalog winery name is an assignment candidate, not a confirmed
   // supplier, so traveller-facing surfaces show a generic winery label.
-  const wineryDisplayLabels = buildWineryDisplayLabels(editedStops);
+  const wineryDisplayLabels = revealDisplayLabels;
   const displayLabel = (label: string) => {
     const generic = studioDisplayLabel(label, wineryDisplayLabels);
     return generic === label ? cleanLabel(label) : generic;
@@ -4530,6 +4553,8 @@ export function StoryboardHandoff({
                   statePickup={state.pickup}
                   revealedStops={revealedStops}
                   showRoute={false}
+                  displayLabels={revealDisplayLabels}
+
                 />
               </div>
             }
@@ -4904,7 +4929,7 @@ export function StoryboardHandoff({
                   region: skeletonTour?.region ?? null,
                 }).remainingMin
           }
-          itineraryStops={editedStops.map((p) => (p as { label: string }).label)}
+          itineraryStops={editedStops.map((p) => revealLabel((p as { label: string }).label))}
           dwellHours={(() => {
             if (revealLegsLoading) return null;
             const sum = summarizeDay({

@@ -37,6 +37,8 @@ import { buildRevealNarrative } from "@/lib/studio-v3/revealNarrative";
 import { filterRevealSignals } from "./studioAcknowledgement";
 import { trackStudio } from "@/lib/studio-analytics";
 import { resolvePriceChangeFactors } from "./priceChangeFactors";
+import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
+import { genericiseWineryText } from "./momentAuthorship";
 
 
 import parchmentLetter from "@/assets/studio-v3/reveal-letter-parchment.jpg";
@@ -190,7 +192,16 @@ export function FinalRevealStory({
       : composedStops && composedStops.length > 0
         ? composedStops
         : (tour?.stops ?? []).map((s) => ({ label: s.label, story: s.story ?? "" }));
-  const stops = keptStops.map((s) => ({ label: s.label, story: s.story }));
+  // Customer-facing narrative only: canonical route state is untouched, but
+  // supplier names are replaced by the centralized generic winery labels —
+  // in the stop label AND inside its story text.
+  const revealDisplayLabels = buildWineryDisplayLabels(
+    keptStops.map((s) => ({ label: s.label })),
+  );
+  const stops = keptStops.map((s) => ({
+    label: studioDisplayLabel(s.label, revealDisplayLabels),
+    story: genericiseWineryText(s.story ?? "", revealDisplayLabels),
+  }));
 
   const region = regionLabelFor(state.destinationIntent);
   const narrative = buildRevealNarrative({

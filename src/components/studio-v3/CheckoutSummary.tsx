@@ -16,6 +16,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { findTour } from "@/data/signatureTours";
+import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
 import { formatGuestComposition } from "./formatGuests";
 import {
   CHECKOUT_HEADER,
@@ -170,15 +171,22 @@ export function CheckoutSummary({
     ) ?? "—";
 
   // Same priority chain as FinalRevealStory — labels only, no stories.
+  // Canonical labels are resolved first (order/count are authoritative), then
+  // passed through the centralized winery presentation guard for DISPLAY only.
   const stopLabels: string[] = (() => {
-    if (state.editedRoutePoints && state.editedRoutePoints.length > 0) {
-      return state.editedRoutePoints.map((p) => p.label);
-    }
-    if (composedStops && composedStops.length > 0) {
-      return composedStops.map((p) => p.label);
-    }
-    return (tour?.stops ?? []).map((s) => s.label);
+    const canonical = (() => {
+      if (state.editedRoutePoints && state.editedRoutePoints.length > 0) {
+        return state.editedRoutePoints.map((p) => p.label);
+      }
+      if (composedStops && composedStops.length > 0) {
+        return composedStops.map((p) => p.label);
+      }
+      return (tour?.stops ?? []).map((s) => s.label);
+    })();
+    const displayLabels = buildWineryDisplayLabels(canonical.map((label) => ({ label })));
+    return canonical.map((label) => studioDisplayLabel(label, displayLabels));
   })();
+
 
   return (
     <section

@@ -17,6 +17,8 @@ import {
   resolveStudioRouteFromState,
 } from "./studioRouteAuthority";
 import { findTour } from "@/data/signatureTours";
+import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
+import { genericiseWineryText } from "./momentAuthorship";
 import { getTourContent } from "@/lib/tourContent";
 import type { StudioV3State } from "./types";
 
@@ -63,9 +65,16 @@ export function buildSignatureStorySnapshot(
     catalogStops: tour?.stops ?? null,
   });
 
+  // The email is a customer surface: keep the authoritative route order and
+  // count exactly, but never print a winery supplier name (label or story).
+  // `buildJourneyRevision` below still hashes canonical labels, so email
+  // idempotency is unaffected by this presentation mapping.
+  const storyDisplayLabels = buildWineryDisplayLabels(
+    routePoints.map((p) => ({ label: p.label })),
+  );
   const chapters: SignatureStoryChapter[] = routePoints.map((p) => ({
-    title: p.label,
-    body: p.story,
+    title: studioDisplayLabel(p.label, storyDisplayLabels),
+    body: genericiseWineryText(p.story ?? "", storyDisplayLabels),
   }));
 
   const includedResolved = tour?.id ? getTourContent(tour.id).included : [];
