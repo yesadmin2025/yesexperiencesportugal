@@ -271,6 +271,7 @@ import { prioritiseResolvedRefineIntents } from "./studioIntentAdvisor";
 import { RefineAccordion } from "./RefineAccordion";
 import { RefineStopCard } from "./RefineStopCard";
 import {
+  applyGesture,
   describeStructuralDelta,
   genericiseWineryText,
   resolveMomentReason,
@@ -4689,20 +4690,16 @@ export function StoryboardHandoff({
                     swapPool={swapPoolPublic}
                     swapOpen={swapOpenIdx === i}
                     onToggleSwap={() => setSwapOpenIdx(swapOpenIdx === i ? null : i)}
-                    onMoveEarlier={() => {
-                      const next = editedStops.map((p) => ({ ...p }));
-                      [next[i - 1], next[i]] = [next[i], next[i - 1]];
-                      applyAuthoredChange("earlier", next);
-                    }}
-                    onMoveLater={() => {
-                      const next = editedStops.map((p) => ({ ...p }));
-                      [next[i], next[i + 1]] = [next[i + 1], next[i]];
-                      applyAuthoredChange("later", next);
-                    }}
+                    onMoveEarlier={() =>
+                      applyAuthoredChange("earlier", applyGesture(editedStops, i, "earlier"))
+                    }
+                    onMoveLater={() =>
+                      applyAuthoredChange("later", applyGesture(editedStops, i, "later"))
+                    }
                     onRemove={() => {
                       applyAuthoredChange(
                         "remove",
-                        editedStops.filter((_, j) => j !== i).map((p) => ({ ...p })),
+                        applyGesture(editedStops, i, "remove", { minStops: REFINE_MIN_STOPS }),
                       );
                       trackStudio("moment_removed", {
                         phase: "storyboard",
@@ -4715,9 +4712,9 @@ export function StoryboardHandoff({
                       if (!canonical) return;
                       applyAuthoredChange(
                         "swap",
-                        editedStops.map((p, j) =>
-                          j === i ? { label: canonical.label, story: canonical.story } : { ...p },
-                        ),
+                        applyGesture(editedStops, i, "swap", {
+                          replacement: { label: canonical.label, story: canonical.story },
+                        }),
                       );
                       setSwapOpenIdx(null);
                       trackStudio("moment_swapped", {

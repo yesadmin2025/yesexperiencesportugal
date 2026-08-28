@@ -136,3 +136,48 @@ export function genericiseWineryText(
   }
   return out;
 }
+
+export interface AuthoredStop {
+  readonly label: string;
+  readonly story: string;
+}
+
+/**
+ * Pure route gesture. Returns a NEW array; never mutates the input, never
+ * consults pricing, rhythm or curation. Invalid gestures (out of bounds,
+ * below the minimum, missing replacement) return the input array unchanged
+ * so callers cannot produce an untruthful route.
+ */
+export function applyGesture(
+  stops: ReadonlyArray<AuthoredStop>,
+  index: number,
+  gesture: StructuralDelta,
+  options?: { readonly replacement?: AuthoredStop | null; readonly minStops?: number },
+): AuthoredStop[] {
+  const current = stops.map((s) => ({ ...s }));
+  if (index < 0 || index >= current.length) return current;
+  const minStops = options?.minStops ?? 1;
+
+  switch (gesture) {
+    case "earlier": {
+      if (index === 0) return current;
+      [current[index - 1], current[index]] = [current[index], current[index - 1]];
+      return current;
+    }
+    case "later": {
+      if (index >= current.length - 1) return current;
+      [current[index], current[index + 1]] = [current[index + 1], current[index]];
+      return current;
+    }
+    case "remove": {
+      if (current.length <= minStops) return current;
+      return current.filter((_, i) => i !== index);
+    }
+    case "swap": {
+      const replacement = options?.replacement;
+      if (!replacement) return current;
+      current[index] = { label: replacement.label, story: replacement.story };
+      return current;
+    }
+  }
+}
