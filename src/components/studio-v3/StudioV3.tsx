@@ -268,6 +268,14 @@ import {
 } from "@/components/studio-v3/adaptiveQuestions";
 import { useStudioIntentAdvisor } from "./useStudioIntentAdvisor";
 import { prioritiseResolvedRefineIntents } from "./studioIntentAdvisor";
+import { RefineAccordion } from "./RefineAccordion";
+import { RefineStopCard } from "./RefineStopCard";
+import {
+  describeStructuralDelta,
+  genericiseWineryText,
+  resolveMomentReason,
+  type StructuralDelta,
+} from "./momentAuthorship";
 import { DatePhaseControls, dateNextTeaser } from "./DatePhase";
 import {
   decideFeeling,
@@ -4057,6 +4065,21 @@ export function StoryboardHandoff({
     setIntentFeedback(null);
   }, [undoSnapshot, setEdited]);
 
+  // ── Pass 2B authorship gesture ────────────────────────────────────────
+  // One entry point for move / swap / remove so every gesture produces the
+  // same structural delta chip and the same single-step undo snapshot
+  // (exact previous order AND stop identity). No pricing side effects.
+  const applyAuthoredChange = useCallback(
+    (delta: StructuralDelta, next: Array<{ label: string; story: string }>) => {
+      const before = editedStops.map((p) => ({ ...p }));
+      const chip = describeStructuralDelta(delta);
+      setUndoSnapshot({ stops: before, summary: chip });
+      setEdited(() => next);
+      setIntentFeedback(chip);
+    },
+    [editedStops, setEdited],
+  );
+
   const origin = pickupCityLabel(state.pickup);
   const shortLabels: string[] = [];
   const seenShort = new Set<string>();
@@ -4183,6 +4206,20 @@ export function StoryboardHandoff({
     editedStops.length >= 3
       ? displayLabel(editedStops[Math.floor(editedStops.length / 2)].label)
       : null;
+
+  // Pass 2B — one generic-label map covering BOTH the authored route and the
+  // swap pool, so a supplier name cannot leak through a candidate either.
+  const authorDisplayLabels = buildWineryDisplayLabels([
+    ...editedStops.map((p) => ({ label: p.label })),
+    ...swapPool.map((c) => ({ label: c.label })),
+  ]);
+  const authorLabel = (label: string) => studioDisplayLabel(label, authorDisplayLabels);
+  const authorText = (text: string) => genericiseWineryText(text, authorDisplayLabels);
+  const swapPoolPublic = swapPool.map((c) => ({
+    id: c.label,
+    label: authorLabel(c.label),
+    story: authorText(c.story ?? ""),
+  }));
 
   const hasNamedPickup = !!pickupCity && pickupCity !== "your chosen starting point";
   const regionForStory = skeletonTour?.region?.trim() || null;
