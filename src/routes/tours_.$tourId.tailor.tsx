@@ -877,8 +877,10 @@ function TailorPage() {
     // Open the drawer immediately so a branded skeleton appears while
     // the edge function is in flight — avoids "blank screen" feel.
     const metaForSummary = getViatorMeta(tour.id);
-    const stopLabels = keptStops.map((s: TourStop) => s.label);
-    [...added].forEach((label) => stopLabels.push(label));
+    // Display labels come from the ACTUAL current selection, with every
+    // winery genericised. Server pricing still keys off stable stop ids.
+    const stopLabels = [...publicSelectionLabels];
+
     // Age-band aware total — mirrors the server pricing so summary and
     // Stripe line items agree for families with minors. Tailored uses
     // estimatedPrice (adult tier + selection deltas) as the adult unit;
