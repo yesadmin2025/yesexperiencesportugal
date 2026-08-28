@@ -9,6 +9,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
+import { trackEvent } from "@/lib/analytics-events";
 import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 
@@ -1247,6 +1248,13 @@ export function StudioV3() {
         }
         setClientSecret(resp.clientSecret);
         setPublishableKey(resp.publishableKey);
+        trackEvent("checkout_session_created", {
+          experience_id: tour.id,
+          experience_type: "studio",
+          group_size: details.guests,
+          value: totalEur,
+          currency: "EUR",
+        });
         // GA4 add_payment_info — payment surface (Stripe embedded) is ready.
         try {
           const item = buildTourItem(
@@ -1259,6 +1267,11 @@ export function StudioV3() {
         }
       } catch (e) {
         console.error("Stripe checkout failed", e);
+        trackEvent("checkout_session_failed", {
+          experience_id: tour.id,
+          experience_type: "studio",
+          group_size: details.guests,
+        });
         toast.error("Secure checkout couldn't open. Your details and selections are still here — try again.");
         setClientSecret(null);
       } finally {
