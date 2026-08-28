@@ -4699,11 +4699,15 @@ export function StoryboardHandoff({
                     label={authorLabel(s.label)}
                     story={s.story && !storySlot ? authorText(s.story) : undefined}
                     reason={
+                      /* Pass 2B hardening: derived from the CURRENT stop
+                         identity only. The former `composerRationales[i]`
+                         fallback was positional and became untruthful after
+                         a move/swap/remove. No reason is better than a
+                         reason attached to the wrong moment. */
                       resolveMomentReason(s.label, {
                         interests: state.interests,
                         feeling: state.feeling,
-                      }) ??
-                      (composerRationales[i] ? authorText(composerRationales[i]) : null)
+                      })
                     }
                     minStops={REFINE_MIN_STOPS}
                     canSwap={swapPoolPublic.length > 0}
