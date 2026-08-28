@@ -924,6 +924,16 @@ export function StudioV3() {
   const [exiting, setExiting] = useState(false);
 
   const [reaction, setReaction] = useState<Reaction | null>(null);
+  // Pass 2C — non-blocking whisper. A demoted beat no longer takes the screen:
+  // its paraphrase is handed to the Living Day, which is the feedback surface.
+  // Presentation only: never persisted, never replayed on back/edit, never a
+  // phase, and never an input to curation, pricing or analytics values.
+  const [whisper, setWhisper] = useState<{ text: string; id: number } | null>(null);
+  const whisperSeq = useRef(0);
+  // The FIRST route-bearing map beat stays cinematic (the moment Portugal
+  // first appears). Every later map beat is a repeat of something the Living
+  // Day already shows, so it whispers instead.
+  const firstRouteBeatShownRef = useRef(false);
   const [mobileReveal, setMobileReveal] = useState<{ beat: StudioV3BeatId; index: number } | null>(
     null,
   );
@@ -1483,6 +1493,8 @@ export function StudioV3() {
   const back = useCallback(
     (_hint?: StudioV3Phase) => {
       setReaction(null);
+      // A whisper is feedback for a forward choice — it never replays on back.
+      setWhisper(null);
       setExiting(true);
       // Robust to phase reordering: walk backwards from the CURRENT phase
       // through PHASE_ORDER, skipping anything that isPhaseRelevant rules
@@ -1526,6 +1538,7 @@ export function StudioV3() {
       if (toIdx < 0 || fromIdx < 0 || toIdx >= fromIdx) return;
       if (!isPhaseRelevant(target, state)) return;
       setReaction(null);
+      setWhisper(null);
       setExiting(true);
       trackStep({
         stepNumber: stepOf(state.phase),
@@ -1554,6 +1567,39 @@ export function StudioV3() {
         advance(r.nextPhase);
         return;
       }
+      // Pass 2C — beat tiering. Only two moments still earn a full takeover:
+      // the Feeling (first emotional commitment) and the first route-bearing
+      // map beat (the first time the day exists as a place). Everything else
+      // is already visible in the Living Day, so it whispers there instead of
+      // blocking progression.
+      const isRouteMapBeat = r.kind === "map-beat" && r.mapMode !== "origin";
+      const cinematic = r.kind === "feeling" || (isRouteMapBeat && !firstRouteBeatShownRef.current);
+      if (cinematic && isRouteMapBeat) firstRouteBeatShownRef.current = true;
+      if (!cinematic) {
+        const line = (r.message ?? "").split("\n")[0]?.trim();
+        if (line) {
+          whisperSeq.current += 1;
+          setWhisper({ text: line, id: whisperSeq.current });
+        }
+        // Same continue semantics as the beat it replaces — including the
+        // `viaReaction` value, so analytics keys/payloads do not change.
+        setReaction(null);
+        setExiting(true);
+        window.setTimeout(() => {
+          setState((s) => {
+            trackStep({
+              stepNumber: stepOf(s.phase),
+              stepKey: s.phase,
+              event: "continue",
+              value: { to: r.nextPhase, viaReaction: r.kind },
+            });
+            return { ...s, phase: r.nextPhase };
+          });
+          setExiting(false);
+        }, 220);
+        return;
+      }
+
       // Atmosphere beats are mood-setters — keep them brief so the next
       // question is reachable quickly. The ceiling is the authority here:
       // legacy handler holdMs values stay untouched and the cap makes the
@@ -2372,8 +2418,14 @@ export function StudioV3() {
   };
 
   const renderAcknowledgement = (surface: "refinement" | "logistics") => {
+    // Pass 2C — on Logistics the Living Day is on screen and already shows the
+    // same taste / rhythm signals, so reading them back is narration. The line
+    // still renders whenever the Living Day is not visible there. Refinement
+    // is untouched: no persistent artefact accompanies that question.
+    if (surface === "logistics" && !livingDayHidden) return null;
     const summary = acknowledgementSummaryFor(surface, acknowledgementContext);
     if (!summary) return null;
+
     return (
       <div
         data-testid="studio-v3-understood-summary"
@@ -2608,7 +2660,12 @@ export function StudioV3() {
         composerHidden={composerHidden}
         reactionActive={!!reaction}
       />
-      <LivingJourneyPanel state={state} hidden={livingDayHidden} />
+      <LivingJourneyPanel
+        state={state}
+        hidden={livingDayHidden}
+        whisper={whisper ? { text: whisper.text, id: whisper.id } : null}
+      />
+
       <ComposerMap state={state} hidden={composerHidden} />
       <CloseStudio hasProgress={state.phase !== "who"} />
       {chromeReady ? (
