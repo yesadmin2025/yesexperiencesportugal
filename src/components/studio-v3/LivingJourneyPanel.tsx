@@ -93,9 +93,22 @@ function tourRegionToRegionKey(region: string | undefined | null): RegionKey {
 interface LivingJourneyPanelProps {
   state: StudioV3State;
   hidden?: boolean;
+  /**
+   * Pass 2C — transient whisper handed down by StudioV3 when a beat is
+   * demoted from a blocking overlay. Presentation only: it shares the
+   * existing derived-feedback slot, fades on its own, and is never stored,
+   * never persisted and never replayed on back/edit. `id` changes so the
+   * same sentence can whisper again after a genuinely new choice.
+   */
+  whisper?: { text: string; id: number } | null;
 }
 
-export function LivingJourneyPanel({ state, hidden = false }: LivingJourneyPanelProps) {
+export function LivingJourneyPanel({
+  state,
+  hidden = false,
+  whisper = null,
+}: LivingJourneyPanelProps) {
+
   const [open, setOpen] = useState(false);
 
   const title = useMemo(
