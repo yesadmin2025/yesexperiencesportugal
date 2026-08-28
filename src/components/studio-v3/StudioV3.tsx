@@ -3499,6 +3499,7 @@ function RevealRouteMap({
   statePickup,
   revealedStops,
   showRoute = true,
+  displayLabels,
 }: {
   editedStops: ReadonlyArray<{ label: string }>;
   showRoute?: boolean;
@@ -3508,6 +3509,12 @@ function RevealRouteMap({
   skeletonTour: { region?: string | null } | null;
   statePickup: StudioV3State["pickup"];
   revealedStops: number;
+  /**
+   * Canonical → customer-facing display labels (winery presentation guard).
+   * Geo/routing keeps using the canonical labels in `editedStops`; only the
+   * pins, legend and accessibility strings read the display labels.
+   */
+  displayLabels?: ReadonlyMap<string, string> | null;
 }) {
   const { stopsDetailed, originCoord, routeStops } = resolveRevealRouteStops(
     editedStops,
@@ -3520,11 +3527,12 @@ function RevealRouteMap({
   );
 
   const originLabelResolved = pickupCityLabel(statePickup) || (skeletonTour?.region ?? null);
+  const publicLabel = (label: string) => studioDisplayLabel(label, displayLabels);
 
   return (
     <div className="space-y-4">
       <StudioV3SignatureMap
-        stops={editedStops.map((s) => s.label)}
+        stops={editedStops.map((s) => publicLabel(s.label))}
         stopsDetailed={stopsDetailed}
         originCoord={originCoord}
         activeCount={revealedStops}
@@ -3536,7 +3544,7 @@ function RevealRouteMap({
       />
       <RouteLegend
         originLabel={originLabelResolved}
-        stopLabels={editedStops.slice(0, revealedStops).map((s) => s.label)}
+        stopLabels={editedStops.slice(0, revealedStops).map((s) => publicLabel(s.label))}
         legMinutes={legMinutes}
         legDistancesKm={legDistancesKm}
         legModes={legModes}
@@ -3545,6 +3553,7 @@ function RevealRouteMap({
     </div>
   );
 }
+
 
 /**
  * P10 — the per-question "Let YES decide" affordance has been retired from
