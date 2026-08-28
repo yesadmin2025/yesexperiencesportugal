@@ -156,11 +156,13 @@ export function tailorStopsPendingOwnerReview(): { tourId: string; stopId: strin
 }
 
 /**
- * Classes that earn the −5% ladder. `needs-owner-review` is included so this
- * classification pass changes NO approved amount for unresolved stops.
+ * Classes that earn the −5% ladder. FAIL-CLOSED: only an explicitly
+ * classified `principal` stop earns money. `needs-owner-review` stays
+ * removable for time where the UI permits, but earns NO reduction until the
+ * owner classifies it `principal`.
  */
 export function classEarnsPrincipalCredit(pricing: TailorStopPricingClass): boolean {
-  return pricing === "principal" || pricing === "needs-owner-review";
+  return pricing === "principal";
 }
 
 /**
