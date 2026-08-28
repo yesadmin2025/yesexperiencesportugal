@@ -64,6 +64,60 @@ describe("tour operating-rule gate", () => {
     expect(gate).toEqual({ status: "rejected", reason: "min_lead" });
   });
 
+  it("36h lead uses elapsed-hours parity, not ceil(days) — 2026-09-02 stays bookable", async () => {
+    // NOW = 2026-09-01T10:00Z (11:00 Lisbon). +36h = 2026-09-02T22:00Z,
+    // still 2026-09-02 in Lisbon. Old ceil(36/24)=+2 days floor wrongly
+    // demanded 2026-09-03.
+    const row = { min_lead_hours: 36 };
+    const onFloor = await checkTourOperatingRule({
+      tourId: "t",
+      dateExact: "2026-09-02",
+      lookup: async () => ({ row }),
+      now: NOW,
+    });
+    expect(onFloor.status).toBe("allowed");
+    const beforeFloor = await checkTourOperatingRule({
+      tourId: "t",
+      dateExact: "2026-09-01",
+      lookup: async () => ({ row }),
+      now: NOW,
+    });
+    expect(beforeFloor).toEqual({ status: "rejected", reason: "min_lead" });
+  });
+
+  it("lead hours crossing a Lisbon midnight move the floor by one local day", async () => {
+    // 2026-06-30T22:30Z = 23:30 Lisbon; +2h = 01:30 Lisbon on 2026-07-01.
+    const lateEvening = new Date("2026-06-30T22:30:00Z");
+    const row = { min_lead_hours: 2 };
+    const nextDay = await checkTourOperatingRule({
+      tourId: "t",
+      dateExact: "2026-07-01",
+      lookup: async () => ({ row }),
+      now: lateEvening,
+    });
+    expect(nextDay.status).toBe("allowed");
+    const sameDay = await checkTourOperatingRule({
+      tourId: "t",
+      dateExact: "2026-06-30",
+      lookup: async () => ({ row }),
+      now: lateEvening,
+    });
+    expect(sameDay).toEqual({ status: "rejected", reason: "min_lead" });
+  });
+
+  it("DST fallback does not shift the floor date", async () => {
+    // EU DST ends 2026-10-25: 00:30Z is still UTC+1 (01:30 Lisbon); +3h =
+    // 03:30Z, after the fallback Lisbon is UTC+0 → 03:30, same local date.
+    const dstBoundary = new Date("2026-10-25T00:30:00Z");
+    const gate = await checkTourOperatingRule({
+      tourId: "t",
+      dateExact: "2026-10-25",
+      lookup: async () => ({ row: { min_lead_hours: 3 } }),
+      now: dstBoundary,
+    });
+    expect(gate.status).toBe("allowed");
+  });
+
   it("Lisbon calendar/weekday boundary is deterministic", () => {
     // 23:30 UTC on 2026-06-30 is already 2026-07-01 in Lisbon (UTC+1).
     expect(todayInLisbon(new Date("2026-06-30T23:30:00Z"))).toBe("2026-07-01");
