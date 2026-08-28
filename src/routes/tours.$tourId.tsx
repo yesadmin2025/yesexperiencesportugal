@@ -40,7 +40,7 @@ import { withAggregateAndReviews } from "@/lib/aggregate-review-schema";
 import { getFaqForTour } from "@/content/seo-faq";
 import { getTourGallery, getHeroAlt } from "@/lib/tour-gallery";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
-import { sotItinerary } from "@/data/signatureToursSourceOfTruth";
+import { projectPublicSotItinerary } from "@/lib/publicItineraryProjection";
 import { TourReviews } from "@/components/TourReviews";
 import { RecognisedByGuides } from "@/components/RecognisedByGuides";
 import { CredentialStrip } from "@/components/ui/CredentialStrip";
@@ -144,9 +144,18 @@ export const Route = createFileRoute("/tours/$tourId")({
               // Prefer the SoT itinerary (verified against Viator) for JSON-LD.
               // Falls back to legacy tour.stops when SoT is not populated for a tour.
               const content = getTourContent(params.tourId);
-              const sotStops = content.itinerary
+              const projected: Array<{ label: string; description: string; optional: boolean }> =
+                projectPublicSotItinerary(params.tourId) ??
+                content.itinerary.map((c) => ({
+                  label: c.label,
+                  description: c.description,
+                  optional: c.optional,
+                }));
+              const sotStops = projected
                 .filter((c) => !c.optional)
                 .map((c) => ({ label: c.label, story: c.description }));
+
+
               const stops =
                 sotStops.length > 0
                   ? sotStops
@@ -545,12 +554,11 @@ function ItineraryTimeline({ tour, meta }: { tour: SignatureTour; meta?: ViatorM
   //   3. Raw Viator stops (passBy excluded)
   //   4. Internal tour.stops — last resort
   type Chapter = { label: string; story?: string; optional?: boolean };
-  const sot = sotItinerary(tour.id) ?? [];
+  const sot = projectPublicSotItinerary(tour.id) ?? [];
   const fromSot = sot
-    .slice()
-    .sort((a, b) => a.order - b.order)
     .filter((c) => c.stopType !== "pass-by")
     .map((c) => ({ label: c.label, story: c.description, optional: c.optional }));
+
   const fromBlueprint = toEditorialChapters(tour.id);
   const viator = meta?.stops?.filter((s) => !s.passBy) ?? [];
   const chapters: Chapter[] =

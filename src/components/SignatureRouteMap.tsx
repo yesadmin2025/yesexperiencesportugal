@@ -21,6 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import { MapPin } from "lucide-react";
 import type { SignatureTour } from "@/data/signatureTours";
 import { resolveSignatureMapStops } from "@/lib/signature-map-stops";
+import { sanitizePublicMapStopLabels } from "@/lib/publicItineraryProjection";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { RouteLegend } from "@/components/studio-v3/RouteLegend";
@@ -212,7 +213,13 @@ export function SignatureRouteMap({ tour }: Props) {
     refetchOnWindowFocus: false,
   });
 
-  const stops: ResolvedStop[] = data?.stops?.length ? data.stops : baseStops;
+  // Display-level truth guard: unresolved winery pool candidates keep their
+  // canonical geo identity but never show a supplier name to the public.
+  const stops: ResolvedStop[] = sanitizePublicMapStopLabels(
+    tour.id,
+    data?.stops?.length ? data.stops : baseStops,
+  );
+
   const polylines = useMemo(
     () => (data?.legs ?? []).map((l) => decodePolyline(l.polyline)),
     [data],

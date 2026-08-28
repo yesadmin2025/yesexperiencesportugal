@@ -30,6 +30,8 @@ const APPROVED = new Set<string>([
   "src/lib/stop-parity.ts",
   "src/routes/api/public/hooks/viator-drift-check.ts",
   "src/__tests__/tour-content-direct-reads.test.ts",
+  "src/lib/publicItineraryProjection.ts",
+  "src/__tests__/public-itinerary-winery-pool.test.ts",
 ]);
 
 const APPROVED_PREFIXES = [
