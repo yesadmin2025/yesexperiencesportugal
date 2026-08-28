@@ -1,9 +1,9 @@
 // Admin price-tier editor.
 //
 // Source of truth: the `tour_price_tiers` table in Supabase. Public site
-// reads via `useTourPriceTiers()`. This page lets any signed-in user
-// upsert the per-pax EUR tiers for guest counts 1..8 per tour. The code
-// file `signatureToursViator.ts` no longer needs hand-edits for pricing.
+// reads via `useTourPriceTiers()`. This page lets admins upsert the per-pax
+// EUR tiers for guest counts 1..8 per tour. The public "from" anchor is
+// derived from the approved tier-8 value, not maintained as a second edit.
 
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
@@ -16,6 +16,11 @@ import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { TOUR_PRICE_TIERS_QUERY_KEY, useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
 import type { PriceTiersEUR } from "@/data/signatureToursViator";
 import { SignaturePriceCard } from "@/components/studio-v3/SignaturePriceCard";
+import {
+  partyTotalForTier,
+  pricingGuardrailSummary,
+  type PricingTier,
+} from "@/lib/admin-pricing-guardrails";
 
 function AdminPricingErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
@@ -59,7 +64,7 @@ export const Route = createFileRoute("/admin/pricing")({
   ),
 });
 
-const TIERS: ReadonlyArray<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8> = [1, 2, 3, 4, 5, 6, 7, 8];
+const TIERS: ReadonlyArray<PricingTier> = [1, 2, 3, 4, 5, 6, 7, 8];
 
 type TierFormState = Record<string, string>; // "1".."8" → input string
 
@@ -190,9 +195,10 @@ function AdminPricingPage() {
           <header className="flex items-end justify-between gap-4 flex-wrap">
             <div>
               <h1 className="text-3xl tracking-tight">Price tier editor</h1>
-              <p className="mt-2 text-sm text-[color:var(--charcoal-soft)] max-w-xl">
-                Real per-pax EUR price by group size (1–8). Tier 8 is the public &ldquo;from&rdquo;
-                anchor. Leave a cell blank to clear that tier. Changes go live as soon as you save.
+              <p className="mt-2 text-sm text-[color:var(--charcoal-soft)] max-w-2xl">
+                Real per-pax EUR price by group size (1–8). The public &ldquo;from&rdquo; is derived
+                from tier 8. Group totals and suspicious tier drops are shown before you save;
+                nothing is corrected automatically.
               </p>
             </div>
             <div className="text-xs text-[color:var(--charcoal-soft)]">
@@ -239,7 +245,7 @@ function TourRow({
   initialTiers: PriceTiersEUR | undefined;
   onSaved: () => Promise<void> | void;
 }) {
-  const { id: tourId, title, region, priceFrom } = tour;
+  const { id: tourId, title, region } = tour;
   const [form, setForm] = useState<TierFormState>(() => toFormState(initialTiers));
   const [busy, setBusy] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
@@ -253,9 +259,7 @@ function TourRow({
 
   const parsed = useMemo(() => parseFormState(form), [form]);
   const dirty = !tiersEqual(initialTiers, parsed);
-
-  const tier8 = parsed[8];
-  const anchorMismatch = typeof tier8 === "number" && tier8 !== priceFrom;
+  const guardrails = useMemo(() => pricingGuardrailSummary(parsed), [parsed]);
 
   async function save() {
     setBusy(true);
@@ -287,7 +291,7 @@ function TourRow({
         <div>
           <h2 className="text-base font-semibold leading-snug">{title}</h2>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-            {region} · id: {tourId} · priceFrom €{priceFrom}
+            {region} · id: {tourId} · From {guardrails.publicFromEur != null ? `€${guardrails.publicFromEur}` : "— (tier 8 missing)"}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -313,36 +317,52 @@ function TourRow({
       </header>
 
       <div className="mt-4 grid grid-cols-4 sm:grid-cols-8 gap-2">
-        {TIERS.map((tier) => (
-          <label key={tier} className="block">
-            <span className="block text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-              {tier} pax
-            </span>
-            <div className="mt-1 relative">
-              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-[color:var(--charcoal-soft)]">
-                €
+        {TIERS.map((tier) => {
+          const partyTotal = partyTotalForTier(parsed, tier);
+          return (
+            <label key={tier} className="block">
+              <span className="block text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                {tier} pax
               </span>
-              <input
-                type="number"
-                inputMode="numeric"
-                min={0}
-                step={1}
-                value={form[String(tier)] ?? ""}
-                onChange={(e) => setForm((prev) => ({ ...prev, [String(tier)]: e.target.value }))}
-                placeholder="—"
-                className="w-full border border-[color:var(--border)] bg-white pl-5 pr-2 py-1.5 text-sm tabular-nums focus:outline-none focus:border-[color:var(--gold)]"
-              />
-            </div>
-          </label>
-        ))}
+              <div className="mt-1 relative">
+                <span className="absolute left-2 top-[0.95rem] -translate-y-1/2 text-xs text-[color:var(--charcoal-soft)]">
+                  €
+                </span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  step={1}
+                  value={form[String(tier)] ?? ""}
+                  onChange={(e) => setForm((prev) => ({ ...prev, [String(tier)]: e.target.value }))}
+                  placeholder="—"
+                  className="w-full border border-[color:var(--border)] bg-white pl-5 pr-2 py-1.5 text-sm tabular-nums focus:outline-none focus:border-[color:var(--gold)]"
+                />
+              </div>
+              <span className="mt-1 block text-[10px] tabular-nums text-[color:var(--charcoal-soft)]">
+                {partyTotal != null ? `total €${partyTotal}` : "no tier"}
+              </span>
+            </label>
+          );
+        })}
       </div>
 
-      {anchorMismatch ? (
-        <p className="mt-3 inline-flex items-center gap-2 text-[11px] text-amber-700">
-          <AlertTriangle size={12} />
-          Tier 8 (€{tier8}) differs from the public &ldquo;from&rdquo; anchor (€{priceFrom}). Update
-          the tour&rsquo;s `priceFrom` in code to match, or set tier 8 to €{priceFrom}.
-        </p>
+      {guardrails.hasInversions ? (
+        <div className="mt-4 rounded-sm border border-amber-300 bg-amber-50 px-3 py-3 text-amber-900">
+          <p className="flex items-center gap-2 text-xs font-medium">
+            <AlertTriangle size={14} /> Group-total warning
+          </p>
+          <div className="mt-2 space-y-1.5 text-[11px] leading-relaxed">
+            {guardrails.inversions.map((issue) => (
+              <p key={`${issue.fromGuests}-${issue.toGuests}`}>
+                {issue.fromGuests} pax = €{issue.fromPartyTotalEur} total, but {issue.toGuests} pax = €{issue.toPartyTotalEur}. The larger group is €{issue.shortfallEur} cheaper. Minimum {issue.toGuests}-pax rate to avoid the drop: €{issue.minimumNonDecreasingPerPaxEur} pp.
+              </p>
+            ))}
+          </div>
+          <p className="mt-2 text-[10px] leading-relaxed text-amber-800">
+            Informational only. Saving remains available and no price is changed automatically.
+          </p>
+        </div>
       ) : null}
 
       {previewOpen ? (
