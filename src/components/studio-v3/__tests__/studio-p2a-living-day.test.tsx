@@ -272,7 +272,7 @@ describe("Pass 2A — full-route authority (no compact-card cap)", () => {
       expect(stopButtons).toHaveLength(full.length);
       expect(stopButtons[0]).toHaveAccessibleName(/stop 1:/i);
       expect(stopButtons[full.length - 1]).toHaveAccessibleName(
-        new RegExp(`stop ${full.length}:`),
+        new RegExp(`stop ${full.length}:`, "i"),
       );
 
       // The map's SR route summary also counts every revealed stop.
