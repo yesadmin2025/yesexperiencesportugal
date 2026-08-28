@@ -394,3 +394,44 @@ export function FinalDetailsDialog({
     </Dialog>
   );
 }
+
+function formatKnownDate(iso: string): string {
+  const d = new Date(`${iso}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "long" });
+}
+
+function Disclosure({
+  label,
+  open,
+  onToggle,
+  testId,
+  children,
+}: {
+  label: string;
+  open: boolean;
+  onToggle: () => void;
+  testId: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="border-t border-[color:var(--border)] pt-2">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        data-testid={`${testId}-toggle`}
+        className="flex min-h-[44px] w-full items-center justify-between gap-3 text-left text-[12.5px] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+      >
+        <span>{label}</span>
+        <ChevronDown
+          size={14}
+          aria-hidden
+          className={open ? "rotate-180 transition-transform" : "transition-transform"}
+        />
+      </button>
+      {open ? <div data-testid={testId}>{children}</div> : null}
+    </div>
+  );
+}
+
