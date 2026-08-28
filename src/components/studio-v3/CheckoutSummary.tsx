@@ -16,6 +16,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { BookingCtaSkeleton } from "@/components/ui/BookingCtaSkeleton";
 import { findTour } from "@/data/signatureTours";
+import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
 import { formatGuestComposition } from "./formatGuests";
 import {
   CHECKOUT_HEADER,
