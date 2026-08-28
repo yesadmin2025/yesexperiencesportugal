@@ -17,6 +17,7 @@
  */
 
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
+import type { StopKind } from "@/data/regionStops";
 import type { Feeling, Interest } from "./types";
 
 export interface MomentReasonSignals {
@@ -25,9 +26,10 @@ export interface MomentReasonSignals {
 }
 
 interface ReasonRule {
-  readonly kinds: ReadonlyArray<string>;
-  readonly interests: ReadonlyArray<string>;
-  readonly feelings: ReadonlyArray<string>;
+  /** Typed against the real catalog taxonomy so drift fails at compile time. */
+  readonly kinds: ReadonlyArray<StopKind>;
+  readonly interests: ReadonlyArray<Interest>;
+  readonly feelings: ReadonlyArray<Feeling>;
   readonly reason: string;
 }
 
@@ -88,7 +90,7 @@ export function resolveMomentReason(
   label: string,
   signals: MomentReasonSignals,
 ): string | null {
-  const kind = lookupStopGeo(label)?.kind ?? null;
+  const kind: StopKind | null = lookupStopGeo(label)?.kind ?? null;
   if (!kind) return null;
   const interests = new Set((signals.interests ?? []).map(String));
   const feeling = signals.feeling ? String(signals.feeling) : null;
