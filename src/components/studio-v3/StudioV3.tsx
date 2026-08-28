@@ -4103,6 +4103,9 @@ export function StoryboardHandoff({
 
   const [swapOpenIdx, setSwapOpenIdx] = useState<number | null>(null);
   const [addOpen, setAddOpen] = useState<boolean>(false);
+  // Pass 2B — the refinement accordion is discoverable and open by default
+  // inside Your Day; the traveller can collapse it.
+  const [refineOpen, setRefineOpen] = useState<boolean>(true);
 
   // ---------- Cinematic 3-beat composing reveal (Fase 4) ----------
   // Beat 1 (0–900ms):   hero photo of the resolved Signature fades in over ivory.
@@ -4637,7 +4640,12 @@ export function StoryboardHandoff({
                 className="mb-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[12px]"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
               >
-                <span style={{ fontFamily: "var(--font-editorial)" }}>{intentFeedback}</span>
+                <span
+                  data-testid="studio-v3-refine-delta"
+                  style={{ fontFamily: "var(--font-editorial)" }}
+                >
+                  {authorText(intentFeedback)}
+                </span>
                 {undoSnapshot ? (
                   <button
                     type="button"
@@ -4767,7 +4775,7 @@ export function StoryboardHandoff({
                           className="w-full text-left px-2 py-1.5 rounded-[6px] text-[12.5px] leading-[1.4] hover:bg-[color:var(--ivory)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                           style={{ color: "var(--charcoal)" }}
                         >
-                          <span className="font-semibold">+ {cand.label}</span>
+                          <span className="font-semibold">+ {authorLabel(cand.label)}</span>
                           {cand.story ? (
                             <span
                               className="block text-[11.5px]"
@@ -4775,7 +4783,7 @@ export function StoryboardHandoff({
                                 color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                               }}
                             >
-                              {cand.story}
+                              {authorText(cand.story)}
                             </span>
                           ) : null}
                         </button>
