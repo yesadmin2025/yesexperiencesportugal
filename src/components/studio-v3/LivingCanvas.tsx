@@ -13,7 +13,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { LivingCanvasModel } from "@/lib/studio-v3/livingCanvasModel";
 import type { StudioMedia } from "@/lib/studio-v3/studioMediaResolver";
-import { buildWineryDisplayLabels, studioDisplayLabel } from "../studio-v3/studioWineryPresentation";
+import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
 
 const STATUS_STYLE: Record<string, { opacity: number; line: string }> = {
   active: { opacity: 1, line: "var(--gold)" },
@@ -45,6 +45,14 @@ export function LivingCanvas({
     [model.moments.map((m) => m.label).join("|")],
   );
   const safeLabel = (label: string) => studioDisplayLabel(label, displayLabels);
+  /** Strip any supplier name the editorial line may still carry. */
+  const safeStory = (story: string) => {
+    let out = story;
+    for (const [raw, generic] of displayLabels) {
+      if (raw && out.includes(raw)) out = out.split(raw).join(generic.toLowerCase());
+    }
+    return out;
+  };
   const safeMedia = (media: StudioMedia, label: string): StudioMedia => {
     const safe = safeLabel(label);
     return safe === label || media.alt !== label ? media : { ...media, alt: safe };
@@ -167,7 +175,7 @@ export function LivingCanvas({
                 className="text-[13px] leading-relaxed"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
               >
-                {moment.story}
+                {safeStory(moment.story)}
               </span>
               </div>
             </li>
