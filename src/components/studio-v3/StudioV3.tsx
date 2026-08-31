@@ -1279,6 +1279,8 @@ export function StudioV3() {
         committedRoutePoints: currentState.committedRoutePoints ?? null,
         resolved: checkoutResolved,
         catalogStops: tour.stops ?? null,
+        // P0-A — a raw catalogue fallback is projected to canonical cardinality.
+        anchorTourId: currentState.tourId ?? tour.id ?? null,
       });
       // Supplier privacy guard — persisted/customer-facing labels stay generic.
       const checkoutWineryLabels = buildWineryDisplayLabels(checkoutStops);
@@ -1697,6 +1699,7 @@ export function StudioV3() {
         editedRoutePoints: s.editedRoutePoints ?? null,
         resolved: resolvedNow,
         catalogStops: anchorTour?.stops ?? null,
+        anchorTourId: anchorTour?.id ?? null,
       });
       if (shown.length === 0) return s;
       return {
@@ -4959,10 +4962,10 @@ export function StoryboardHandoff({
   useEffect(() => {
     if (reducedMotionInitial) return;
     const timers = [
-      window.setTimeout(() => setComposeBeat(1), 60),
-      window.setTimeout(() => setComposeBeat(2), 900),
-      window.setTimeout(() => setComposeBeat(3), 1800),
-      window.setTimeout(() => setComposeBeat(4), 2600),
+      window.setTimeout(() => setComposeBeat(1), 40),
+      window.setTimeout(() => setComposeBeat(2), 520),
+      window.setTimeout(() => setComposeBeat(3), 1000),
+      window.setTimeout(() => setComposeBeat(4), 1400),
     ];
     return () => timers.forEach(window.clearTimeout);
   }, [reducedMotionInitial]);
