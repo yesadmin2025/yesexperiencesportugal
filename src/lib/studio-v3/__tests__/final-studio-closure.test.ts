@@ -117,6 +117,7 @@ describe("the live Studio surface wires both final seams to this authority", () 
     expect(STUDIO).toContain("judgeFinalDayTime");
     expect(STUDIO).toContain("finalDayGate.bookable");
     expect(STUDIO).toContain("disabled={!canReserve}");
+    expect(STUDIO).toContain('data-reserve-blocked=');
   });
 
   it("re-derives and re-judges the exact route before any Stripe session", () => {
