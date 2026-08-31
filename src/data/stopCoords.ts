@@ -85,8 +85,13 @@ const norm = (s: string) =>
     .replace(/\s+/g, " ")
     .trim();
 
-/** Snap a free-text stop label to a real coord, or fall back to region centroid. */
-export function snapStop(rawLabel: string, region: string, indexInRoute = 0): StopCoord {
+/**
+ * Resolve a free-text stop label to a REAL gazetteer coordinate, or `null`
+ * when the label is unknown. Diagnostic-friendly: unlike `snapStop`, this
+ * never invents a fallback position, so coverage audits can tell a genuine
+ * hit apart from a region-centroid guess. Read-only, pure.
+ */
+export function resolveStopCoord(rawLabel: string): StopCoord | null {
   const key = norm(rawLabel);
   // Direct hit
   if (STOP_COORDS[key]) return STOP_COORDS[key];
@@ -95,6 +100,14 @@ export function snapStop(rawLabel: string, region: string, indexInRoute = 0): St
     .filter((k) => key.includes(k))
     .sort((a, b) => b.length - a.length);
   if (candidates.length) return STOP_COORDS[candidates[0]];
+  return null;
+}
+
+/** Snap a free-text stop label to a real coord, or fall back to region centroid. */
+export function snapStop(rawLabel: string, region: string, indexInRoute = 0): StopCoord {
+  const exact = resolveStopCoord(rawLabel);
+  if (exact) return exact;
+
 
   // Fallback: region centroid + small deterministic jitter
   const c = REGION_CENTROIDS[region] ?? REGION_CENTROIDS.lisbon;

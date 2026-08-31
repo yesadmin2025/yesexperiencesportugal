@@ -13,8 +13,21 @@ import type { StudioV3Phase } from "./types";
  * still hydrate — they are simply canonicalized to `storyboard` at the
  * boundary, in one commit, so there is no flicker and no redirect loop.
  */
-export const LEGACY_UNIFIED_PHASES: ReadonlyArray<StudioV3Phase> = ["map", "confirmation"];
+/**
+ * PASS 4 — `logistics` joins the canonicalized set for HYDRATION ONLY. A
+ * draft saved mid-admin reopens on the reward surface (Your Day); every fact
+ * already entered stays in state and `initialLogisticsMoment` re-opens
+ * logistics on the first unanswered moment, never from zero.
+ */
+export const LEGACY_UNIFIED_PHASES: ReadonlyArray<StudioV3Phase> = [
+  "map",
+  "confirmation",
+  "logistics",
+];
 
 export function canonicalStudioPhase(phase: StudioV3Phase): StudioV3Phase {
-  return phase === "map" || phase === "confirmation" ? "storyboard" : phase;
+  return phase === "map" || phase === "confirmation" || phase === "logistics"
+    ? "storyboard"
+    : phase;
 }
+

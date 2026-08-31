@@ -324,3 +324,248 @@ export function deriveLivingAtlasPaceSummary(input: {
     transferLoadRatio,
   };
 }
+
+/* ------------------------------------------------------------------ *
+ * BUILD 1 / Pass 3 — STRUCTURED OPERATIONAL VALIDATION
+ *
+ * One clean internal status machine for the composed day. It never competes
+ * with the Pass-2 composer: TIME conflicts / tradeoffs stay composer
+ * authority and are surfaced here only as reason codes, never as a parallel
+ * "over-budget" state. `unverified` is a reason/confidence signal, not a
+ * status. Route and schedule may change operational ORDER only — never the
+ * composition membership.
+ * ------------------------------------------------------------------ */
+
+export const LIVING_ATLAS_VALIDATION_STATUSES = [
+  "valid",
+  "route-review",
+  "schedule-review",
+  "invalid",
+] as const;
+
+export type LivingAtlasValidationStatus = (typeof LIVING_ATLAS_VALIDATION_STATUSES)[number];
+
+export type LivingAtlasValidationReasonCode =
+  | "composition-invalid"
+  | "composition-empty"
+  | "composition-tradeoff"
+  | "missing-coords"
+  | "unverified-node"
+  | "distance-exceeds-plan"
+  | "driving-exceeds-plan"
+  | "leg-exceeds-plan"
+  | "window-conflict"
+  | "schedule-reordered"
+  | "identity-set-mutated"
+  /** A declared mobility concern that inventory cannot structurally disprove. */
+  | "mobility-review"
+  /** A mandatory connector with no verified duration. */
+  | "connector-unverified";
+
+/**
+ * Internal composition-stage signals handed to the ONE validator so review
+ * status has a single owner. They never change membership.
+ */
+export type LivingAtlasPreValidationIssue = {
+  code: "mobility-unproven" | "connector-unverified";
+  detail: string;
+  stopIds?: string[];
+};
+
+
+export type LivingAtlasValidationReason = {
+  code: LivingAtlasValidationReasonCode;
+  detail: string;
+  stopIds?: string[];
+};
+
+export type LivingAtlasValidationResult = {
+  status: LivingAtlasValidationStatus;
+  reasons: LivingAtlasValidationReason[];
+  /** Frozen sold identity set, sorted — proof that validation never mutates it. */
+  compositionStopIds: string[];
+};
+
+type ValidationCompositionInput = {
+  status: string;
+  moments: ReadonlyArray<{ stopId: string }>;
+};
+
+type ValidationRoutePlanInput = {
+  status: LivingAtlasRouteStatus;
+  orderedMoments: ReadonlyArray<{ stopId: string }>;
+  locatedMomentCount: number;
+  totalMomentCount: number;
+  totalEstimatedRoadKm: number;
+  totalEstimatedDrivingMin: number;
+  maxTotalKm: number;
+  maxDrivingMin: number;
+  maxLegKm: number;
+  legs: ReadonlyArray<{ estimatedRoadKm: number }>;
+};
+
+/**
+ * Validate a frozen composition against route and schedule output.
+ *
+ * @param composition frozen sold identity set (composer authority)
+ * @param routePlan   geographic plan for that exact set
+ * @param scheduledPlan optional plan after internal time-window constraints
+ */
+export function validateLivingAtlasOperations(input: {
+  composition: ValidationCompositionInput;
+  routePlan: ValidationRoutePlanInput;
+  scheduledPlan?: ValidationRoutePlanInput | null;
+  selectedDate?: string | null;
+  /** Composition-stage internal signals. Additive; never a membership change. */
+  preValidationIssues?: ReadonlyArray<LivingAtlasPreValidationIssue>;
+}): LivingAtlasValidationResult {
+  const { composition, routePlan, scheduledPlan, selectedDate } = input;
+
+  const compositionStopIds = [...composition.moments.map((moment) => moment.stopId)].sort((a, b) =>
+    a.localeCompare(b),
+  );
+  const reasons: LivingAtlasValidationReason[] = [];
+
+  if (composition.status === "invalid" || composition.status === "impossible") {
+    return {
+      status: "invalid",
+      reasons: [
+        {
+          code: "composition-invalid",
+          detail: "The composition authority could not produce a valid day.",
+        },
+      ],
+      compositionStopIds,
+    };
+  }
+
+  if (composition.moments.length === 0) {
+    return {
+      status: "invalid",
+      reasons: [{ code: "composition-empty", detail: "No real moments were selected." }],
+      compositionStopIds,
+    };
+  }
+
+  // Time conflicts remain composer authority — recorded, never re-decided.
+  if (composition.status === "tradeoff") {
+    reasons.push({
+      code: "composition-tradeoff",
+      detail: "The composer reported a truthful time tradeoff for this envelope.",
+    });
+  }
+
+  const effective = scheduledPlan ?? routePlan;
+
+  // Route/schedule may only reorder. Membership drift is a hard failure.
+  const effectiveIds = [...effective.orderedMoments.map((moment) => moment.stopId)].sort((a, b) =>
+    a.localeCompare(b),
+  );
+  const membershipPreserved =
+    effectiveIds.length === compositionStopIds.length &&
+    effectiveIds.every((id, index) => id === compositionStopIds[index]);
+  if (!membershipPreserved) {
+    return {
+      status: "invalid",
+      reasons: [
+        {
+          code: "identity-set-mutated",
+          detail: "Route or schedule changed the sold composition identity set.",
+        },
+      ],
+      compositionStopIds,
+    };
+  }
+
+  // Coordinate confidence is a ROUTE certification concern: without verified
+  // coordinates the internal route cannot be certified, so it is honestly
+  // surfaced as route-review (never as a time/over-budget state).
+  let routeReview = false;
+
+  // Composition-stage internal signals map deterministically onto the ONE
+  // status machine. They are review-only: membership is never touched.
+  for (const issue of input.preValidationIssues ?? []) {
+    routeReview = true;
+    reasons.push({
+      code: issue.code === "mobility-unproven" ? "mobility-review" : "connector-unverified",
+      detail: issue.detail,
+      ...(issue.stopIds ? { stopIds: issue.stopIds } : {}),
+    });
+  }
+
+
+  if (effective.locatedMomentCount < effective.totalMomentCount) {
+    routeReview = true;
+    reasons.push({
+      code: "missing-coords",
+      detail: "At least one selected moment has no verified coordinates yet.",
+    });
+  }
+  if (effective.status === "unavailable" || effective.status === "partial") {
+    routeReview = true;
+    reasons.push({
+      code: "unverified-node",
+      detail: "Not enough verified coordinates to certify the internal route.",
+    });
+  }
+
+
+  // Schedule-only concerns.
+  let scheduleReview = false;
+  if (
+    selectedDate &&
+    composition.moments.some((moment) => moment.stopId === MERCADO_DO_LIVRAMENTO_STOP_ID) &&
+    !isMercadoDoLivramentoOpenOn(selectedDate)
+  ) {
+    scheduleReview = true;
+    reasons.push({
+      code: "window-conflict",
+      detail: "A selected moment falls outside its real operating window on this date.",
+      stopIds: [MERCADO_DO_LIVRAMENTO_STOP_ID],
+    });
+  }
+
+  if (scheduledPlan) {
+    const before = routePlan.orderedMoments.map((moment) => moment.stopId).join("|");
+    const after = scheduledPlan.orderedMoments.map((moment) => moment.stopId).join("|");
+    if (before !== after) {
+      reasons.push({
+        code: "schedule-reordered",
+        detail: "Operational time windows changed the visit order only.",
+      });
+    }
+  }
+
+  // Route-only concerns from the geographic plan.
+  const longestLeg = Math.max(0, ...effective.legs.map((leg) => leg.estimatedRoadKm));
+
+  if (effective.totalEstimatedRoadKm > effective.maxTotalKm) {
+    routeReview = true;
+    reasons.push({
+      code: "distance-exceeds-plan",
+      detail: "Estimated internal distance exceeds the planning cap.",
+    });
+  }
+  if (effective.totalEstimatedDrivingMin > effective.maxDrivingMin) {
+    routeReview = true;
+    reasons.push({
+      code: "driving-exceeds-plan",
+      detail: "Estimated internal driving exceeds the planning cap.",
+    });
+  }
+  if (longestLeg > effective.maxLegKm) {
+    routeReview = true;
+    reasons.push({
+      code: "leg-exceeds-plan",
+      detail: "At least one transfer exceeds the leg cap.",
+    });
+  }
+
+  const status: LivingAtlasValidationStatus = routeReview
+    ? "route-review"
+    : scheduleReview
+      ? "schedule-review"
+      : "valid";
+
+  return { status, reasons, compositionStopIds };
+}

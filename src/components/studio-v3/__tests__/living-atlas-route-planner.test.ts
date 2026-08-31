@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import type { OptionalStop } from "@/data/regionStopPool";
 import type { LivingAtlasResolvedComposition } from "../livingAtlasAlternatives";
 import { planLivingAtlasRoute } from "../livingAtlasRoutePlanner";
+import { resolveTimeBudget } from "@/lib/studio-v3/resolveTimeBudget";
+import { projectPlanningTiming } from "@/lib/studio-v3/timingProjection";
 
 const pool: OptionalStop[] = [
   {
@@ -91,6 +93,12 @@ function composition(stopIds: string[]): LivingAtlasResolvedComposition {
       0,
     ),
     targetMomentCount: stopIds.length,
+    planningTiming: projectPlanningTiming({
+      moments: [],
+      budget: resolveTimeBudget({}),
+      rhythm: "balanced",
+    }),
+    conflict: null,
     missingDimensions: [],
     missingRequiredTypes: [],
     rejected: [],

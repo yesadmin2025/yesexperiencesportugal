@@ -100,8 +100,12 @@ interface Props {
   onMinorAgeChange: (index: number, age: number) => void;
   /** Leave Logistics backwards, to the previous real Studio phase. */
   onBackPhase: () => void;
-  /** Commit the same fields as before and advance to the next real phase. */
+  /** PASS 4 — commit the practical facts and continue. Never recomposes the
+   *  day: the itinerary was already frozen at the Your Day seam. */
   onCompose: () => void;
+  /** PASS 4 — honest, concise message when the exact date cannot honour the
+   *  committed day. Presentation only; the day is never silently mutated. */
+  conflict?: string | null;
   /** P6: the acknowledgement line, already de-duplicated by the Studio-level
    *  "acknowledge once" ledger. Null when everything here was heard earlier. */
   acknowledgement?: ReactNode;
@@ -116,6 +120,7 @@ export function LogisticsPhase({
   onMinorAgeChange,
   onBackPhase,
   onCompose,
+  conflict = null,
   acknowledgement = null,
 }: Props) {
   const [moment, setMoment] = useState<LogisticsMoment>(() => initialLogisticsMoment(state));
@@ -146,7 +151,7 @@ export function LogisticsPhase({
     <>
       <BackLink onClick={goBack} />
       <PhaseHeader
-        eyebrow="The practical part"
+        eyebrow="Make it real"
         title={HEADINGS[moment].title}
         titleAccent={HEADINGS[moment].accent}
       />
@@ -279,14 +284,25 @@ export function LogisticsPhase({
                 color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
               }}
             >
-              That's enough for us to shape the route.
+              Your day is already set. This is what makes it real.
             </p>
           </section>
         ) : null}
       </div>
 
+      {conflict ? (
+        <p
+          data-testid="studio-v3-logistics-conflict"
+          role="status"
+          className="w-full max-w-[520px] mx-auto mt-5 text-[13px] leading-relaxed text-center"
+          style={{ color: "var(--charcoal)" }}
+        >
+          {conflict}
+        </p>
+      ) : null}
+
       {moment === "review" ? (
-        <ContinueCta disabled={false} onClick={onCompose} label="Compose my day" />
+        <ContinueCta disabled={false} onClick={onCompose} label="Continue to guest details" />
       ) : (
         <ContinueCta
           disabled={!canLeave(moment, state)}

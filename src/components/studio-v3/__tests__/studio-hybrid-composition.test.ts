@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { applyHybridComposition } from "../studioHybridComposition";
+import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { resolveStudioV3Route, type ResolvedRoutePoint } from "../curation";
 
 function point(index: number, label: string, story = ""): ResolvedRoutePoint {
@@ -24,29 +25,34 @@ describe("applyHybridComposition", () => {
     expect(JSON.stringify(input)).toBe(before);
   });
 
-  it("never exceeds the rhythm stop target", () => {
-    const out = applyHybridComposition(BASE, {
+  // BUILD 1 / Pass 3 — the legacy "never exceeds the rhythm stop target" and
+  // "untouched when the cap is reached" rules are RETIRED. Time is the only
+  // authority and the number of moments is an OUTPUT, never a target.
+  it("treats maxPoints as behaviour-free", () => {
+    const args = {
       skeletonTourId: "arrabida-wine-allinclusive",
-      feeling: "wine-food",
-      interests: ["gastronomy", "coast", "heritage"],
-      rhythm: "slow",
+      feeling: "wine-food" as const,
+      interests: ["gastronomy", "coast", "heritage"] as const,
+      rhythm: "slow" as const,
       wineIntent: true,
-      maxPoints: 3,
-    });
-    expect(out.length).toBeLessThanOrEqual(3);
+    };
+    expect(applyHybridComposition(BASE, { ...args, maxPoints: 3 })).toEqual(
+      applyHybridComposition(BASE, { ...args, maxPoints: 30 }),
+    );
   });
 
-  it("returns the route untouched when the cap is already reached", () => {
+  it("preserves authored operational nodes it cannot match to real inventory", () => {
     const full = [point(0, "A"), point(1, "B"), point(2, "C"), point(3, "D")];
-    expect(
-      applyHybridComposition(full, {
-        skeletonTourId: "arrabida-wine-allinclusive",
-        feeling: "wine-food",
-        interests: ["gastronomy"],
-        rhythm: "balanced",
-        maxPoints: 4,
-      }),
-    ).toEqual(full);
+    const out = applyHybridComposition(full, {
+      skeletonTourId: "arrabida-wine-allinclusive",
+      feeling: "wine-food",
+      interests: ["gastronomy"],
+      rhythm: "balanced",
+      maxPoints: 4,
+    });
+    for (const authored of full) {
+      expect(out.map((p) => p.label)).toContain(authored.label);
+    }
   });
 
   it("returns the route untouched for a non Living Atlas anchor", () => {
@@ -99,9 +105,12 @@ describe("applyHybridComposition", () => {
       wineIntent: false,
       maxPoints: 6,
     });
+    // Type-based, not name-based: "Quinta Velha" is a cheese workshop, not a
+    // winery, so a name regex would be untruthful evidence.
     const added = out.filter((p) => !BASE.some((b) => b.label === p.label));
     for (const moment of added) {
-      expect(moment.label.toLowerCase()).not.toMatch(/adega|quinta|winery|wine estate/);
+      const stop = REGION_STOP_POOL.find((entry) => entry.name === moment.label);
+      expect(stop?.type).not.toBe("winery");
     }
   });
 
@@ -129,10 +138,10 @@ describe("resolveStudioV3Route with hybrid composition", () => {
     pickup: "lisbon" as const,
   };
 
-  it("keeps the composed route within the rhythm target and free of duplicates", () => {
+  it("keeps the composed route free of duplicates and correctly indexed", () => {
     const resolved = resolveStudioV3Route({ ...input, interests: [...input.interests] });
     expect(resolved.composedRoutePoints.length).toBeGreaterThan(0);
-    expect(resolved.composedRoutePoints.length).toBeLessThanOrEqual(6);
+    // No count cap: length is an output of the time budget.
     const labels = resolved.composedRoutePoints.map((p) => p.label);
     expect(new Set(labels).size).toBe(labels.length);
     expect(resolved.composedRoutePoints.map((p) => p.index)).toEqual(labels.map((_, i) => i));

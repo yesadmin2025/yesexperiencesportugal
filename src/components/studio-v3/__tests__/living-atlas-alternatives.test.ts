@@ -6,6 +6,7 @@ import {
   buildLivingAtlasAlternatives,
 } from "../livingAtlasAlternatives";
 import { composeLivingAtlasDay, type LivingAtlasCompositionRequest } from "../livingAtlasComposer";
+import { resolveTimeBudget } from "@/lib/studio-v3/resolveTimeBudget";
 
 const pool: OptionalStop[] = [
   {
@@ -110,6 +111,9 @@ const request: LivingAtlasCompositionRequest = {
   maxByType: { winery: 1 },
   mustIncludeStopIds: ["market-anchor"],
   pool,
+  // BUILD 1 / Pass 2: composition size is governed by TIME, so this fixture
+  // states its truthful medium-day budget instead of relying on a count target.
+  timeBudget: resolveTimeBudget({ explicitMinutes: 330 }),
 };
 
 function baseComposition() {

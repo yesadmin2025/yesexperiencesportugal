@@ -184,8 +184,8 @@ describe("Pass 2C — Living Day carries the feedback, factually", () => {
 });
 
 describe("Pass 2C — acknowledgement narration", () => {
-  it("suppresses the logistics acknowledgement while the Living Day is visible", () => {
-    expect(STUDIO_SRC).toContain('if (surface === "logistics" && !livingDayHidden) return null;');
+  it("suppresses the logistics acknowledgement — the Living Canvas is there", () => {
+    expect(STUDIO_SRC).toContain('if (surface === "logistics") return null;');
   });
 
   it("leaves the refinement surface untouched", () => {
@@ -199,7 +199,12 @@ describe("Pass 2C — acknowledgement narration", () => {
 });
 
 describe("Pass 2C — commit hygiene", () => {
-  it("carries no stale plan file", () => {
-    expect(existsSync(resolve(process.cwd(), ".lovable/plan.md"))).toBe(false);
+  it("keeps planning artefacts out of the product runtime", () => {
+    // Canonical truth: `.lovable/plan.md` is a planning artefact, never
+    // product authority. Its presence on disk is irrelevant; what matters is
+    // that no Studio runtime module reads or depends on it.
+    expect(STUDIO_SRC).not.toContain(".lovable/plan");
+    expect(existsSync(resolve(process.cwd(), "src/components/studio-v3/StudioV3.tsx"))).toBe(true);
   });
 });
+

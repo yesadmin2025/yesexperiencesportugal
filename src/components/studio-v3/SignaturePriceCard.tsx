@@ -43,6 +43,7 @@ import { recordStudioV3RevealPremium, recordStudioV3RevealAddOns } from "@/lib/s
 import { CTA_ASK_CURATOR, INCLUDED_HEADER_REFINE } from "@/content/signature-day-copy";
 import { formatGuestComposition } from "./formatGuests";
 import { resolvePriceChangeFactors } from "./priceChangeFactors";
+import { resolveAddOnBudget } from "@/lib/studio-v3/addOnBudget";
 import {
   InvestmentDelta,
   InvestmentFactors,
@@ -173,7 +174,16 @@ export interface SignaturePriceCardProps {
    */
   resolvedBaseTotalEur?: number | null;
   resolvedAddOnsTotalEur?: number | null;
+  /**
+   * PASS 5 — Studio parity. When provided, add-on euro amounts are derived
+   * ONLY from this approved runtime tier-8 anchor (exactly what the Stripe
+   * function charges). `null` means the approved anchor is missing, so the
+   * card must not present a chargeable numeric add-on amount. When the prop
+   * is omitted entirely, legacy behaviour (the `priceFrom` anchor) applies.
+   */
+  addOnAnchorEur?: number | null;
 }
+
 
 export function SignaturePriceCard({
   tour,
@@ -199,7 +209,9 @@ export function SignaturePriceCard({
   resolvedTotalEur = null,
   resolvedBaseTotalEur = null,
   resolvedAddOnsTotalEur = null,
+  addOnAnchorEur,
 }: SignaturePriceCardProps) {
+
   const isRefine = variant === "refine";
 
   const meta = tour ? VIATOR_META[tour.id] : null;
@@ -208,6 +220,13 @@ export function SignaturePriceCard({
     if (!meta?.priceFromUSD || meta.priceFromUSD <= 0) return null;
     return usdToEurAnchor(meta.priceFromUSD);
   }, [meta, tour?.priceFrom]);
+  // PASS 5 — Studio add-on parity: the euro anchor add-ons are derived from.
+  // When the parent supplies `addOnAnchorEur` (Studio), that approved runtime
+  // tier-8 value is the ONLY anchor; `null` means fail closed (no chargeable
+  // numeric add-on). Omitted prop keeps legacy behaviour.
+  const addOnBaseEur = addOnAnchorEur !== undefined ? addOnAnchorEur : priceEur;
+  const hasAddOnPrice = addOnBaseEur != null && addOnBaseEur > 0;
+
   const priceSource =
     tour?.priceFrom && tour.priceFrom > 0
       ? "signature"
@@ -266,11 +285,14 @@ export function SignaturePriceCard({
     () => addOnPool.map((e) => e.addOn),
     [addOnPool],
   );
-  const fitsBudgetById = useMemo(() => {
+  // Catalogue's STATIC structural verdict ("does this fit an empty day?").
+  // It is a veto only — the cumulative budget below is the real gate.
+  const staticFitsById = useMemo(() => {
     const m: Record<string, boolean> = {};
     for (const e of addOnPool) m[e.addOn.id] = e.fitsBudget;
     return m;
   }, [addOnPool]);
+
   // Fire-and-forget telemetry: snapshot the anchor region + filtered pool so
   // future region/sub-region mismatches (e.g. Arrábida on Sintra) are caught
   // in audit. No PII; just the surface, tour id, bucket, and pool ids.
@@ -338,9 +360,12 @@ export function SignaturePriceCard({
     [availableAddOns, selectedAddOnIds],
   );
   const addOnsTotalEur = useMemo(() => {
-    if (!hasPrice || !priceEur) return 0;
-    return selectedAddOns.reduce((sum, a) => sum + addOnEurFromBase(priceEur, a.pricePctOfBase), 0);
-  }, [selectedAddOns, hasPrice, priceEur]);
+    if (!hasAddOnPrice || !addOnBaseEur) return 0;
+    return selectedAddOns.reduce(
+      (sum, a) => sum + addOnEurFromBase(addOnBaseEur, a.pricePctOfBase),
+      0,
+    );
+  }, [selectedAddOns, hasAddOnPrice, addOnBaseEur]);
   const addOnsMinutes = useMemo(
     () => selectedAddOns.reduce((sum, a) => sum + (a.durationMinutes || 0), 0),
     [selectedAddOns],
@@ -350,14 +375,32 @@ export function SignaturePriceCard({
   // Used by the "Final estimated total" line and by the Reserve CTA when
   // the guest count is known. Never scaled a second time by the caller.
   const addOnsPartyTotalEur = useMemo(() => {
-    if (!hasPrice || !priceEur) return 0;
+    if (!hasAddOnPrice || !addOnBaseEur) return 0;
     const partyGuests = Math.max(1, guests ?? 1);
     return selectedAddOns.reduce(
-      (sum, a) => sum + addOnEurFor({ addOn: a, baseEur: priceEur, guests: partyGuests }).amount,
+      (sum, a) => sum + addOnEurFor({ addOn: a, baseEur: addOnBaseEur, guests: partyGuests }).amount,
       0,
     );
-  }, [selectedAddOns, hasPrice, priceEur, guests]);
-  const freeMinutes = remainingMinutes != null ? remainingMinutes - addOnsMinutes : null;
+  }, [selectedAddOns, hasAddOnPrice, addOnBaseEur, guests]);
+  // FINAL CERTIFICATION — the add-on budget is CUMULATIVE. Each unselected
+  // add-on is judged against the minutes genuinely still free after the ones
+  // already chosen, never against an empty day.
+  const addOnBudget = useMemo(
+    () =>
+      resolveAddOnBudget({
+        pool: availableAddOns.map((a) => ({
+          id: a.id,
+          durationMinutes: a.durationMinutes || 0,
+          fitsBudget: staticFitsById[a.id] !== false,
+        })),
+        selectedIds: selectedAddOnIds,
+        remainingMinutes: remainingMinutes ?? null,
+      }),
+    [availableAddOns, staticFitsById, selectedAddOnIds, remainingMinutes],
+  );
+  const fitsBudgetById = addOnBudget.fitsById;
+  const freeMinutes = addOnBudget.freeMinutes;
+
 
   // Notify the parent whenever the effective add-on selection or its resolved
   // euro/minute totals change. Kept as an effect so both controlled and
@@ -369,7 +412,7 @@ export function SignaturePriceCard({
 
   const summaryGuests = Math.max(1, guests ?? 1);
   const buildSummary = (ids: string[]): SelectedAddOnSummary => {
-    const base = priceEur ?? 0;
+    const base = addOnBaseEur ?? 0;
     const selected = availableAddOns.filter((a) => ids.includes(a.id));
     const items: SelectedAddOnSummaryItem[] = selected.map((a) => {
       const line = addOnEurFor({
@@ -457,12 +500,12 @@ export function SignaturePriceCard({
   // in the visible "Final estimated total" so the picker updates it live.
   const displayGuests = Math.max(1, effectiveGuests ?? guests ?? 1);
   const addOnsDisplayPartyEur = useMemo(() => {
-    if (!hasPrice || !priceEur) return 0;
+    if (!hasAddOnPrice || !addOnBaseEur) return 0;
     return selectedAddOns.reduce(
-      (sum, a) => sum + addOnEurFor({ addOn: a, baseEur: priceEur, guests: displayGuests }).amount,
+      (sum, a) => sum + addOnEurFor({ addOn: a, baseEur: addOnBaseEur, guests: displayGuests }).amount,
       0,
     );
-  }, [selectedAddOns, hasPrice, priceEur, displayGuests]);
+  }, [selectedAddOns, hasAddOnPrice, addOnBaseEur, displayGuests]);
   const totalEur = hasPrice && priceEur ? priceEur + addOnsTotalEur : null;
 
   // Age-band journey pricing — matches BrandedCheckoutDrawer exactly. Only
@@ -546,7 +589,7 @@ export function SignaturePriceCard({
         tour,
         selectedAddOns: selectedAddOns.map((a) => ({
           label: a.label,
-          unit: addOnEurFor({ addOn: a, baseEur: priceEur ?? 0, guests: summaryGuests }).unit,
+          unit: addOnEurFor({ addOn: a, baseEur: addOnBaseEur ?? 0, guests: summaryGuests }).unit,
         })),
       }),
     [tour, selectedAddOns, priceEur, summaryGuests],
@@ -606,14 +649,22 @@ export function SignaturePriceCard({
   // from a real sibling Signature in the same region.
   const [suggestionDismissed, setSuggestionDismissed] = useState(false);
   const suggestion = useMemo<SignatureAddOn | null>(() => {
-    if (!showAddOns || !hasPrice) return null;
+    if (!showAddOns || !hasPrice || !hasAddOnPrice) return null;
     if (suggestionDismissed) return null;
     const first = availableAddOns[0];
     if (!first) return null;
     if (selectedAddOnIds.includes(first.id)) return null;
     if (atCap) return null;
     return first;
-  }, [availableAddOns, selectedAddOnIds, atCap, hasPrice, suggestionDismissed, showAddOns]);
+  }, [
+    availableAddOns,
+    selectedAddOnIds,
+    atCap,
+    hasPrice,
+    hasAddOnPrice,
+    suggestionDismissed,
+    showAddOns,
+  ]);
 
   // S3 — "Why this works": three short lines pulled from the resolved
   // Signature's real `included[]`. Pure data, never invented copy.
@@ -904,7 +955,7 @@ export function SignaturePriceCard({
             The same item is already in the chip list, so the suggestion
             was pure duplication. Selection state on the chip is enough. */}
 
-        {showAddOns && hasPrice && availableAddOns.length > 0 ? (
+        {showAddOns && hasPrice && hasAddOnPrice && availableAddOns.length > 0 ? (
           <fieldset
             data-testid="studio-v3-add-ons"
             data-count={availableAddOns.length}
@@ -989,7 +1040,7 @@ export function SignaturePriceCard({
               {availableAddOns.map((a) => {
                 const line = addOnEurFor({
                   addOn: a,
-                  baseEur: priceEur ?? 0,
+                  baseEur: addOnBaseEur ?? 0,
                   guests: summaryGuests,
                 });
                 const selected = selectedAddOnIds.includes(a.id);
@@ -1146,7 +1197,7 @@ export function SignaturePriceCard({
               {selectedAddOns.map((a) => {
                 const line = addOnEurFor({
                   addOn: a,
-                  baseEur: priceEur ?? 0,
+                  baseEur: addOnBaseEur ?? 0,
                   guests: summaryGuests,
                 });
                 const isPerPerson = line.unit === "per_person";
@@ -1304,7 +1355,7 @@ export function SignaturePriceCard({
                   {selectedAddOns.map((a) => {
                     const line = addOnEurFor({
                       addOn: a,
-                      baseEur: priceEur ?? 0,
+                      baseEur: addOnBaseEur ?? 0,
                       guests: summaryGuests,
                     });
                     const isPerPerson = line.unit === "per_person";

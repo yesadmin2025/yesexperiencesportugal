@@ -10,8 +10,9 @@ describe("Studio reform — phase model", () => {
     const asked = STUDIO_V3_PHASE_ORDER.filter((p) => isPhaseRelevant(p, base));
     expect(asked.slice(0, 5)).toEqual(["intro", "feeling", "who", "interests", "rhythm"]);
     expect(asked).toContain("logistics");
-    // P8: the reveal is ONE surface on the canonical `storyboard` phase.
-    expect(asked.indexOf("logistics")).toBeLessThan(asked.indexOf("storyboard"));
+    // PASS 4: REWARD BEFORE ADMIN — the composed day is revealed first, and
+    // logistics ("Make it real") is the admin beat that follows it.
+    expect(asked.indexOf("storyboard")).toBeLessThan(asked.indexOf("logistics"));
     expect(asked).not.toContain("map");
     expect(asked).not.toContain("confirmation");
   });
@@ -31,10 +32,11 @@ describe("Studio reform — phase model", () => {
     }
   });
 
-  it("walks rhythm → logistics → the unified storyboard surface", () => {
+  it("walks rhythm → the unified storyboard surface → logistics", () => {
     const s: StudioV3State = { ...base, feeling: "coastal", companions: "couple", refinement: "coast-wild-beaches" };
-    expect(getNextPhase(s, "rhythm")).toBe("logistics");
-    expect(getNextPhase(s, "logistics")).toBe("storyboard");
+    expect(getNextPhase(s, "rhythm")).toBe("storyboard");
+    expect(getNextPhase(s, "storyboard")).toBe("logistics");
+    expect(getNextPhase(s, "logistics")).toBe("guestDetails");
   });
 });
 

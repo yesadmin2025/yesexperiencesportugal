@@ -4,7 +4,9 @@
 // software onboarding:
 //   1. Welcome — editorial invitation + Begin
 //   2. Name (optional) — input + Continue (guided) + Skip (guided)
-//      with one quiet secondary text action for the quick version (fast).
+//
+// There is ONE modern flow: every new completion uses the canonical guided
+// path mode. `pathMode` survives in the type only for backward hydration.
 //
 // The Studio counts no progress here: this is mood-setting only. The name
 // is stored in state and used lightly later (when present) to address the
@@ -225,22 +227,8 @@ export function StudioV3Intro({ onComplete }: Props) {
               Skip
             </button>
 
-            {/* Quiet way into the shorter route — a text action, never a card. */}
-            <div>
-              <button
-                type="button"
-                onClick={() => onComplete(cleanName(), "fast")}
-                data-phase-cta="intro-quick"
-                data-testid="studio-v3-intro-quick"
-                className="mt-1 inline-flex min-h-[44px] items-center justify-center px-3 text-[11px] italic transition-colors hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-                style={{
-                  fontFamily: "var(--font-editorial)",
-                  color: "color-mix(in oklab, var(--ivory) 62%, transparent)",
-                }}
-              >
-                Use the quick version
-              </button>
-            </div>
+            {/* There is ONE modern flow. No second "quick" path is offered. */}
+
           </form>
         )}
       </div>

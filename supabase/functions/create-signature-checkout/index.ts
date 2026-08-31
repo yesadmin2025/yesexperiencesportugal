@@ -99,6 +99,7 @@ import {
   serverTailorSupplementsEur,
   TAILOR_LUNCH_REMOVAL_ELIGIBLE,
   serverAddOnLine,
+  serverAddOnsChargedTotalEur,
   serverAddOnAllowedForTour,
   serverPrincipalRemovalCount,
 
@@ -438,11 +439,21 @@ Deno.serve(async (req) => {
               label: line.label,
               priceEur: line.perUnitEur,
               quantity: line.quantity,
+              unit: line.unit,
               durationMinutes: line.durationMinutes,
             }
           : null;
       })
       .filter((a): a is NonNullable<typeof a> => a !== null);
+
+    // PARTY TRUTH — the ONE add-on total. Exactly the canonical unit price ×
+    // canonical quantity Stripe is charging, for every pricing unit
+    // (per_person / per_group / per_vehicle / fixed). Metadata and the booking
+    // snapshot read this, so neither can diverge from the charged lines.
+    const addOnsChargedTotalEur = serverAddOnsChargedTotalEur(
+      validatedAddOns.map((a) => ({ perUnitEur: a.priceEur, quantity: a.quantity })),
+    );
+
 
 
     const addOnLineItems = validatedAddOns
@@ -551,9 +562,15 @@ Deno.serve(async (req) => {
         tailor_lunch_removed: lunchRemovalCredit > 0 ? "1" : "0",
         tailor_lunch_removal_eur_pp: String(lunchRemovalCredit),
         add_ons: JSON.stringify(
-          validatedAddOns.map((a) => ({ id: a.id, label: a.label, priceEur: a.priceEur })),
+          validatedAddOns.map((a) => ({
+            id: a.id,
+            label: a.label,
+            priceEur: a.priceEur,
+            quantity: a.quantity,
+            unit: a.unit,
+          })),
         ).slice(0, 480),
-        add_ons_total_eur: String(validatedAddOns.reduce((s, a) => s + a.priceEur, 0)),
+        add_ons_total_eur: String(addOnsChargedTotalEur),
 
         ui_mode: uiMode,
         ...(body.guestDetails?.startTime
@@ -627,7 +644,8 @@ Deno.serve(async (req) => {
         str(gd.occasion, 600) ? `Occasion: ${str(gd.occasion, 600)}` : null,
       ].filter(Boolean) as string[];
 
-      const addOnsTotalEur = validatedAddOns.reduce((s, a) => s + a.priceEur, 0) * body.guests;
+      // Same party truth as the charged Stripe lines — never guests × unit.
+      const addOnsTotalEur = addOnsChargedTotalEur;
 
       const snapshotPayload = {
         version: 1,

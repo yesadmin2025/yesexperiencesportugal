@@ -2,18 +2,21 @@ import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
 // Studio V3 — curation layer (regional pool).
 //
 // The base of every journey is ONE real Signature tour (chosen from the
-// existing catalog). To keep the experience feeling personal, individual
-// stops can come from OTHER Signature tours in the same region — as long
-// as they fit the traveller's profile (feeling + companions). Nothing is
-// invented: every stop, story and image is sourced from a real tour
-// already on the site.
+// existing catalog). Current truth: LEGACY curation is strict
+// anchor-contained — legacy `curateJourney` moments come ONLY from the
+// single primary tour's own `stops` array, with no cross-tour borrowing.
+// Authorized Living Atlas hybrid composition is separate: it is
+// same-region / same-corridor only and structurally gated. Nothing is
+// invented anywhere: every stop, story and image is sourced from a real
+// tour already on the site.
 //
-// Algorithm:
+// Algorithm (regional pool scoring — used for discovery/boosts, not for
+// borrowing legacy stops):
 //   1. Pick the primary tour for the chosen feeling.
 //   2. Build a regional stop pool from every tour sharing seed.region.
 //   3. Score each pool stop by feeling/companions keyword affinity.
 //   4. Anchor the journey with the base tour's first stop, then fill the
-//      remaining slots with the highest-scored stops, deduped by label,
+//      remaining slots from the anchor tour's own stops, deduped by label,
 //      preferring stops with resolvable map coordinates.
 
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
@@ -31,9 +34,10 @@ import {
   type OptionalStop,
   type RegionId,
 } from "@/data/regionStopPool";
-import { isAdaptiveQuestionRelevant } from "@/components/studio-v3/adaptiveQuestions";
-import { adaptiveQuestionAddsValue } from "@/lib/studio-v3/livingAtlasBridge";
+import { presentDirectorQuestion } from "@/components/studio-v3/directorQuestionPresentation";
+import { deriveStudioDirectorRuntime } from "@/lib/studio-v3/studioDirectorRuntime";
 import type { AdaptiveRefinementId } from "@/components/studio-v3/types";
+import type { QuestionAnswerEvent } from "@/lib/studio-v3/questionHistory";
 import { hasExplicitWineIntent, interestsImplyWine } from "./studioWineIntent";
 
 import type {
@@ -55,7 +59,42 @@ import type {
   StudioV3Phase,
   StudioV3State,
 } from "./types";
-import { applyHybridComposition } from "@/components/studio-v3/studioHybridComposition";
+import {
+  applyHybridComposition,
+  composeHybridDay,
+  type HybridCompositionResult,
+  type HybridInternalIssue,
+  type HybridPassthroughReason,
+} from "@/components/studio-v3/studioHybridComposition";
+import {
+  LIVING_ATLAS_SIGNATURE_IDS,
+  type LivingAtlasSignatureId,
+} from "@/components/studio-v3/livingAtlasTaxonomy";
+import type { LivingAtlasComposition } from "@/components/studio-v3/livingAtlasComposer";
+import type { LivingAtlasResolvedComposition } from "@/components/studio-v3/livingAtlasAlternatives";
+import {
+  planLivingAtlasRoute,
+  type LivingAtlasRoutePlan,
+} from "@/components/studio-v3/livingAtlasRoutePlanner";
+import { applyLivingAtlasSchedule } from "@/components/studio-v3/livingAtlasSchedule";
+import {
+  validateLivingAtlasOperations,
+  type LivingAtlasValidationResult,
+} from "@/components/studio-v3/livingAtlasOperationalConfidence";
+import {
+  resolveCompositionIdentities,
+  type CompositionIdentityReport,
+} from "@/lib/studio-v3/compositionIdentity";
+import {
+  buildCommercialLedger,
+  type CommercialLedger,
+} from "@/lib/studio-v3/commercialLedger";
+import { getTailorBlueprint } from "@/data/tailorBlueprints";
+import type { ComposedTiming, DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
+import { hasMinuteTruth, judgeAdmission, stopHasMinuteTruth } from "@/lib/studio-v3/timeAuthority";
+
+
+
 
 /* ---------- Adaptive intelligence: guest inference ---------- */
 
@@ -346,6 +385,14 @@ const INTEREST_TARGET_TOURS: Partial<Record<Interest, string[]>> = {
   nature: ["southwest-vicentine-coast", "wild-beaches-picnic", "arrabida-boat", "troia-comporta"],
 };
 
+/* ---------- PASS 2 · LEGACY COUNT HEURISTIC — NOT THE AUTHORITY ----------
+ * RHYTHM_STOP_COUNT is a SHAPING PREFERENCE and a SAFETY FALLBACK, never a
+ * ceiling. Wherever truthful minutes exist (see `@/lib/studio-v3/timeAuthority`)
+ * the Time Authority decides whether a day/candidate is accepted, and this
+ * count must not override a proven time fit. It still decides only when
+ * minute truth is genuinely unavailable (unknown dwell / pathological data),
+ * and it remains valid as non-authoritative display metadata.
+ */
 const RHYTHM_STOP_COUNT: Record<Rhythm, number> = {
   slow: 3,
   balanced: 4,
@@ -353,13 +400,18 @@ const RHYTHM_STOP_COUNT: Record<Rhythm, number> = {
   immersive: 6,
 };
 
+
 /* ---------- Phase 4.5: investment as a soft shaping signal ----------
  * Tiny, deterministic. Never invents stops, never crosses regions, never
  * changes the Signature skeleton. Only nudges:
  *   - target stop count inside the already-resolved Signature
  *   - relevance score for premium-feeling stops vs efficient ones
  * "open" is neutral on both axes — best fit from the existing profile.
+ *
+ * PASS 2: like RHYTHM_STOP_COUNT, this delta is a legacy count heuristic and
+ * a fallback only. It can never reject a day that truthful minutes prove.
  */
+
 const INVESTMENT_STOP_DELTA: Record<InvestmentTier, number> = {
   considered: -1, // efficient — fewer extras
   elevated: 0, // balanced premium
@@ -562,13 +614,14 @@ export interface CuratedJourney {
   tour: SignatureTour;
   /** Up to 2 alternates from the same feeling family. */
   alternates: SignatureTour[];
-  /** Ordered moments, possibly mixing stops from sibling regional tours. */
+  /** Ordered moments. On the legacy path these come ONLY from the anchor
+   *  tour's own stops (strict anchor containment); authorized Living Atlas
+   *  hybrid composition is same-region/same-corridor and structurally gated. */
   moments: CuratedMoment[];
   /** Region center for the map — first geo-resolvable moment, or null. */
   center: { lat: number; lng: number } | null;
-  /** Fase 5 — audit trail (rejections, swaps, pool sizes). Never shown
-   *  to users; consumed by `resolveStudioV3Route` to emit the
-   *  `studio-v3:curation.decision` telemetry event. */
+  /** Legacy-path audit trail (rejections, swaps, pool sizes). Never shown
+   *  to users; emitted only when `curateJourney` is the active authority. */
   audit: CurationAudit;
 }
 
@@ -1403,8 +1456,8 @@ export function pickPrimaryTourWithFit(
 /**
  * curateJourney — route-contained. Returns moments drawn ONLY from the
  * single primary Signature tour's own `stops`. No cross-tour borrowing,
- * no mixed-region routes. The map preview, MapAwakens stage and the
- * Journey Card all consume this single source via resolveStudioV3Route.
+ * no mixed-region routes. The Living Canvas, the unified Your Day surface
+ * and checkout all consume this single source via resolveStudioV3Route.
  */
 export function curateJourney(
   feeling: Feeling,
@@ -1415,9 +1468,8 @@ export function curateJourney(
     pickup?: Pickup | null;
     investment?: InvestmentTier | null;
     destinationIntent?: DestinationIntent | null;
-    /** ISO yyyy-mm-dd — when present, stops closed on that weekday
-     *  (e.g. Mercado do Livramento on Mondays) are removed from the
-     *  pool so we never propose a stop that won't be open. */
+    /** ISO yyyy-mm-dd — on this legacy-only path, stops closed on that
+     *  weekday are removed from the curated pool. */
     dateExact?: string | null;
     /** Reshape counter. 0 = original deterministic curation (test contract
      *  preserved). > 0 = seeded variation: alternate eligible Signature
@@ -1630,6 +1682,17 @@ export function curateJourney(
     addPick(s);
   }
 
+  // ---- PASS 2.1 · TIME AUTHORITY BOUNDARY --------------------------------
+  // Signature route stops carry NO structural dwell provenance, so certified
+  // minute truth does not exist here. Label inference (`inferKind` +
+  // DWELL_BY_KIND) is a generic average, never structural duration truth, and
+  // must not grow a legacy day. The explicit legacy count fallback
+  // (RHYTHM_STOP_COUNT + INVESTMENT_STOP_DELTA) therefore remains the shaping
+  // authority for `curateJourney`. This is correct and safe, not a gap.
+
+
+
+
   // Wine is only forced into a day when the traveller actually asked for it.
   // A region choice is NOT a wine choice: "Arrábida, Setúbal & Azeitão" also
   // resolves to boat, wild-beach, cheese and tile routes, and a traveller who
@@ -1652,10 +1715,14 @@ export function curateJourney(
         WINE_STOP_RE.test(`${s.stop.label} ${s.stop.story}`),
     );
     if (winePick) {
+      // PASS 2.1 — no certified minute truth exists for Signature route
+      // stops, so the legacy count gate (below) keeps prior wine behaviour.
       if (picks.length < target) {
         addPick(winePick);
         wineSwapApplied = true;
       } else if (picks.length > 1) {
+
+
         // Swap a non-anchor pick out so wine fits without growing the day.
         const swapIndex = picks.length - 1;
         const removed = picks.splice(swapIndex, 1)[0];
@@ -1726,7 +1793,18 @@ export interface ResolvedRoutePoint {
   /** Geo coordinates when resolvable; null = render label only, no pin. */
   lat: number | null;
   lng: number | null;
+  /**
+   * PASS 3A — STRUCTURAL identity of the underlying inventory moment, when
+   * one genuinely exists upstream. Never derived from label, index or order,
+   * and never a timing/commercial certification on its own.
+   */
+  inventoryStopId?: string | null;
+  /** VERIFIED per-point media the source already holds. Never invented. */
+  image?: string | null;
+  /** Existing catalogue focal format (CSS object-position, e.g. "50% 40%"). */
+  focal?: string | null;
 }
+
 
 export interface ResolvedStudioV3Route {
   /** INTERNAL only — id of the Signature skeleton chosen. Never shown. */
@@ -1769,7 +1847,127 @@ export interface ResolvedStudioV3Route {
    * be worth showing. Display-only — never affects pricing or availability.
    */
   livingAtlasAlternatives: StudioAlternativeDirection[];
+  /**
+   * BUILD 1 / Pass 4 — INTERNAL Living Atlas block. Additive: every existing
+   * public field above is unchanged. Null on the legacy / flag-off path.
+   *
+   * It carries NO scores, NO supplier identities, NO raw pricing internals and
+   * NO exact public timetable — only the smallest truthful structure Build 2
+   * needs.
+   */
+  livingAtlasLive: LivingAtlasLiveBlock | null;
 }
+
+/** How the public/live bookable route was resolved on the Living Atlas branch. */
+export type LivingAtlasLiveResolution = "composed" | "authored-fallback";
+
+/**
+ * Did the composition authority finish a structurally real day?
+ * `unresolved` forbids route/schedule/validation/identity certification.
+ */
+export type LivingAtlasCompositionResolution = "complete" | "unresolved";
+
+/** Minimal structural contract the gate actually reads. `LivingAtlasComposition`
+ *  is naturally assignable to this, so the production call site needs no cast. */
+export type LivingAtlasCompositionResolutionInput = {
+  status: LivingAtlasComposition["status"];
+  moments: readonly unknown[];
+} | null;
+
+/** Pure structural gate used by the production certification chain. */
+export function resolveLivingAtlasCompositionResolution(
+  composition: LivingAtlasCompositionResolutionInput,
+): LivingAtlasCompositionResolution {
+  return composition?.status === "complete" && composition.moments.length > 0
+    ? "complete"
+    : "unresolved";
+}
+
+
+export type LivingAtlasLiveBlock = {
+  anchorTourId: LivingAtlasSignatureId;
+  /** Composer authority output — the single membership authority. */
+  composition: LivingAtlasComposition | null;
+  conflict: TimingConflict | null;
+  /** Explicit branch reason when the adapter did not project a hybrid day. */
+  passthroughReason: HybridPassthroughReason | null;
+  /** Structural resolution gate — certification only ever runs on `complete`. */
+  compositionResolution: LivingAtlasCompositionResolution;
+  /** What the traveller actually sees as the bookable route. */
+  liveResolution: LivingAtlasLiveResolution;
+  /** Why the authored anchor was projected instead of the composition. */
+  fallbackReason:
+    | "none"
+    | "passthrough"
+    | "commercial-gate"
+    | "validation-invalid";
+  /** FROZEN identity set — immutable after composition. */
+  compositionStopIds: string[];
+  identity: CompositionIdentityReport | null;
+  /** Approximate planning timing. No exact public HH:MM is ever derived here. */
+  planningTiming: ComposedTiming | null;
+  approximateDurationClass: string | null;
+  /** VERIFIED mandatory connector minutes. Never dwell, never spendable. */
+  internalTransitMinutes: number;
+  /**
+   * Truthful internal total: experience planning minutes PLUS verified internal
+   * transit. Excludes pickup/drop-off. Null when there is no planning timing.
+   */
+  totalPlannedMinutesIncludingInternalTransit: number | null;
+
+  routePlan: LivingAtlasRoutePlan | null;
+  /** Order after operational windows — identity only, never membership. */
+  scheduledStopIds: string[];
+  validation: LivingAtlasValidationResult | null;
+  commercialLedger: CommercialLedger | null;
+  commercialDisposition: CommercialLedger["disposition"] | null;
+  internalIssues: HybridInternalIssue[];
+};
+
+type UncertifiedLivingAtlasBlockInput = Pick<
+  LivingAtlasLiveBlock,
+  | "anchorTourId"
+  | "composition"
+  | "conflict"
+  | "passthroughReason"
+  | "compositionResolution"
+  | "fallbackReason"
+  | "compositionStopIds"
+  | "planningTiming"
+  | "approximateDurationClass"
+  | "internalTransitMinutes"
+  | "totalPlannedMinutesIncludingInternalTransit"
+  | "internalIssues"
+>;
+
+/** Build the fail-closed envelope shared by unresolved and fallback states. */
+export function buildUncertifiedLivingAtlasBlock(
+  input: UncertifiedLivingAtlasBlockInput,
+): LivingAtlasLiveBlock {
+  return {
+    ...input,
+    liveResolution: "authored-fallback",
+    identity: null,
+    routePlan: null,
+    scheduledStopIds: [],
+    validation: null,
+    commercialLedger: null,
+    commercialDisposition: null,
+  };
+}
+
+export function resolveStudioV3CurationAuthority<T>(
+  anchorTourId: string,
+  resolveLegacy: () => T,
+): { path: "living-atlas"; legacy: null } | { path: "legacy"; legacy: T } {
+  const isLivingAtlas =
+    STUDIO_V3_ROUTE_COMPOSITION_ENABLED &&
+    (LIVING_ATLAS_SIGNATURE_IDS as readonly string[]).includes(anchorTourId);
+  return isLivingAtlas
+    ? { path: "living-atlas", legacy: null }
+    : { path: "legacy", legacy: resolveLegacy() };
+}
+
 
 /** Customer-safe shape of a Living Atlas alternative direction. */
 export interface StudioAlternativeDirection {
@@ -1784,9 +1982,9 @@ export interface StudioAlternativeDirection {
 /**
  * resolveStudioV3Route — the SINGLE source of route truth for Studio V3.
  *
- * Progressive previews, the MapAwakens stage and the final Journey Card
- * must all consume the object returned by this function. There must not
- * be separate route logic anywhere else in Studio V3.
+ * The Living Canvas, the unified Your Day (storyboard) surface and
+ * checkout must all consume the object returned by this function. There
+ * must not be separate route logic anywhere else in Studio V3.
  *
  * Guarantees:
  *  - Picks ONE Signature skeleton based on feeling + interests + pickup.
@@ -1824,13 +2022,18 @@ export function resolveStudioV3Route(input: {
   considerations?: ReadonlyArray<string>;
   investment?: InvestmentTier | null;
   destinationIntent?: DestinationIntent | null;
-  /** ISO yyyy-mm-dd — forwarded to curateJourney so operational closures
-   *  (e.g. Mercado do Livramento on Mondays) are respected end-to-end. */
+  /** ISO yyyy-mm-dd — carried to the active authority: legacy filtering on
+   *  legacy routes, or validation truth on Living Atlas routes. */
   dateExact?: string | null;
   /** Living Atlas preferred Signature id — preference only, filtered by curation. */
   preferTourId?: string | null;
-  /** Adaptive refinement answer — becomes a discovery signal, never a price input. */
+  /** Adaptive refinement answer — legacy compatibility fallback only. */
   refinement?: AdaptiveRefinementId | null;
+  /**
+   * Canonical Director question history. When present it is the authority for
+   * discovery signals; `refinement` is only read when this is empty.
+   */
+  questionHistory?: readonly QuestionAnswerEvent[];
   /** Reshape/reroll seed (usually `state.rerollCount`). 0 = original curation. */
   seed?: number | string;
 
@@ -1855,6 +2058,8 @@ export function resolveStudioV3Route(input: {
       whyItFits: [],
       livingAtlasReasons: [],
       livingAtlasAlternatives: [],
+      livingAtlasLive: null,
+
       refinements: [],
       whatToConfirm: "Availability and final details are confirmed before your experience.",
       confidence: "needs-human-refinement",
@@ -1870,46 +2075,70 @@ export function resolveStudioV3Route(input: {
     destinationIntent,
     rhythm,
     refinement: input.refinement ?? null,
+    questionHistory: input.questionHistory ?? [],
   });
 
-  const journey = curateJourney(feeling, companions, rhythm, {
+  // Select the anchor before choosing an authority. This exactly mirrors the
+  // legacy selector arguments, but does not execute legacy membership logic.
+  const seed = hashSeed(input.seed ?? 0);
+  const preferredTourId = input.preferTourId ?? intelligence.preferredTourId;
+  const selectedTour = pickPrimaryTour(
+    feeling,
+    companions,
     interests,
     pickup,
-    investment,
     destinationIntent,
-    dateExact,
-    seed: input.seed ?? 0,
-    preferTourId: input.preferTourId ?? intelligence.preferredTourId,
-
-  });
-
-  // Fase 5 — telemetria de decisão. Fire-and-forget; nunca bloqueia.
-  // Consumimos `journey.audit` (rejections, pool sizes, wine swap) e
-  // emitimos um único `studio-v3:curation.decision` por resolução.
-  try {
-    recordStudioV3CurationDecision({
-      tourId: journey.tour.id,
-      tourTitleInternal: journey.tour.title,
-      region: journey.tour.region ?? null,
-      feeling,
-      companions,
-      rhythm,
-      dateExact,
-      destinationIntent,
+    seed,
+    null,
+    preferredTourId,
+  ).tour;
+  const authority = resolveStudioV3CurationAuthority(selectedTour.id, () =>
+    curateJourney(feeling, companions, rhythm, {
+      interests,
+      pickup,
       investment,
-      poolSizeRaw: journey.audit.poolSizeRaw,
-      poolSizeAfterClosures: journey.audit.poolSizeAfterClosures,
-      picked: journey.moments.map((m) => m.label),
-      rejections: journey.audit.rejections,
-      wineSwapApplied: journey.audit.wineSwapApplied,
-      target: journey.audit.target,
-    });
-  } catch {
-    /* telemetry must never break curation */
+      destinationIntent,
+      dateExact,
+      seed: input.seed ?? 0,
+      preferTourId: preferredTourId,
+    }),
+  );
+  const journey = authority.legacy;
+
+  // Legacy telemetry is emitted only when legacy curation actually ran.
+  if (journey) {
+    try {
+      recordStudioV3CurationDecision({
+        tourId: journey.tour.id,
+        tourTitleInternal: journey.tour.title,
+        region: journey.tour.region ?? null,
+        feeling,
+        companions,
+        rhythm,
+        dateExact,
+        destinationIntent,
+        investment,
+        poolSizeRaw: journey.audit.poolSizeRaw,
+        poolSizeAfterClosures: journey.audit.poolSizeAfterClosures,
+        picked: journey.moments.map((m) => m.label),
+        rejections: journey.audit.rejections,
+        wineSwapApplied: journey.audit.wineSwapApplied,
+        target: journey.audit.target,
+      });
+    } catch {
+      /* telemetry must never break legacy curation */
+    }
   }
 
   const toRoutePoint = (
-    m: { label: string; story: string; lat: number | null; lng: number | null },
+    m: {
+      label: string;
+      story: string;
+      lat: number | null;
+      lng: number | null;
+      image?: string;
+      focal?: string;
+    },
     i: number,
   ): ResolvedRoutePoint => ({
     index: i,
@@ -1917,7 +2146,12 @@ export function resolveStudioV3Route(input: {
     story: m.story,
     lat: m.lat,
     lng: m.lng,
+    // Legacy Signature curation already knows the real stop photo and focal.
+    // Carry them instead of losing them and re-guessing downstream.
+    image: m.image ?? null,
+    focal: m.focal ?? null,
   });
+
 
   // Phase 5E — controlled route composition (replace non-critical stops with
   // same-type candidates from REGION_STOP_POOL, optionally add one extra).
@@ -1927,7 +2161,7 @@ export function resolveStudioV3Route(input: {
   const routeWineIntent = hasExplicitWineIntent({ feeling, interests, destinationIntent });
   const mobilityConcern = (input.considerations ?? []).some((c) => MOBILITY_CONSIDERATIONS.has(c));
   const composeOptions = {
-    skeletonTourId: journey.tour.id,
+    skeletonTourId: selectedTour.id,
     interests,
     rhythm,
     companions,
@@ -1935,7 +2169,10 @@ export function resolveStudioV3Route(input: {
     considerations: input.considerations ?? [],
     wineIntent: routeWineIntent,
     dateExact,
+    // PASS 2 — region feeds the Time Authority's regional day/drive caps.
+    region: selectedTour.region ?? null,
   };
+
 
   const composeRoute = (
     points: ReadonlyArray<ResolvedRoutePoint>,
@@ -1951,41 +2188,72 @@ export function resolveStudioV3Route(input: {
     return next;
   };
 
-  // Compact projection — hard cap at 4 points for the Journey Card only.
-  const routePoints: ResolvedRoutePoint[] = composeRoute(
-    journey.moments.slice(0, 4).map(toRoutePoint),
-    4,
-  );
+  // ---------------------------------------------------------------------
+  // BUILD 1 / Pass 4 — LIVE LIVING ATLAS BRANCH.
+  //
+  // ONE membership authority. On a Living Atlas anchor the composer decides
+  // membership from the RAW structural Signature stops; `curateJourney`'s
+  // legacy shaping (wine swap, replacement candidates, extra moment, mobility
+  // rewrites) is deliberately BYPASSED so two authorities can never disagree.
+  // ---------------------------------------------------------------------
+  const anchorTourId = selectedTour.id;
+  const livingAtlasLiveEnabled = authority.path === "living-atlas";
 
-  // Full itinerary authority — the traveller's complete composed day. Rhythm
-  // targets can legitimately reach 5–6 moments; this is never capped to 4.
-  const fullMoments = journey.moments.map(toRoutePoint);
-  const baseComposedRoutePoints: ResolvedRoutePoint[] = composeRoute(
-    fullMoments,
-    Math.max(4, fullMoments.length),
-  );
+  const live = livingAtlasLiveEnabled
+    ? resolveLivingAtlasLiveDay({
+        anchorTourId: anchorTourId as LivingAtlasSignatureId,
+        rawStops: selectedTour.stops,
+        feeling,
+        companions,
+        interests,
+        rhythm,
+        investment,
+        considerations: input.considerations ?? [],
+        wineIntent: routeWineIntent,
+        mobilityConcern,
+        dateExact,
+      })
 
-  // Hybrid moment composition — the Studio is NOT fixed-tour selection. When
-  // the anchor Signature does not cover a dimension the traveller explicitly
-  // asked for, insert a real, region-contained, verified moment from
-  // `composeLivingAtlasDay`. Additive only, bounded by the rhythm target, so
-  // pricing, add-ons, checkout and persistence are untouched.
-  const composedRoutePoints: ResolvedRoutePoint[] = applyHybridComposition(
-    baseComposedRoutePoints,
-    {
+    : null;
+
+  let routePoints: ResolvedRoutePoint[];
+  let composedRoutePoints: ResolvedRoutePoint[];
+
+  if (live) {
+    // LIVING ATLAS BRANCH — the legacy mini-composers are NOT executed at all,
+    // not even for the fallback. The public route is either the safe projected
+    // Living Atlas day or the RAW authored Signature skeleton.
+    composedRoutePoints = live.publicPoints.map((p, i) => ({ ...p, index: i }));
+    // ROUTE OUTPUT INVARIANT: the compact projection is a STRICT prefix slice
+    // of the full composed route — never a separately composed list.
+    routePoints = composedRoutePoints.slice(0, 4);
+  } else {
+    // Legacy / non-Living-Atlas path — unchanged public contract.
+    if (!journey) throw new Error("Legacy curation path resolved without a journey");
+    const fullMoments = journey.moments.map(toRoutePoint);
+    const baseComposedRoutePoints = composeRoute(fullMoments, Math.max(4, fullMoments.length));
+    composedRoutePoints = applyHybridComposition(baseComposedRoutePoints, {
       skeletonTourId: journey.tour.id,
       feeling,
       interests,
       rhythm,
       wineIntent: routeWineIntent,
       dateExact,
+      // NON-AUTHORITATIVE (PASS 2). `applyHybridComposition` treats
+      // `maxPoints` as behaviour-free; this value is legacy metadata only and
+      // decides nothing. Time is the composition authority.
       maxPoints: Math.max(
         baseComposedRoutePoints.length,
         RHYTHM_STOP_COUNT[rhythm] + (investment ? INVESTMENT_STOP_DELTA[investment] : 0),
       ),
+
       buildStory: customerStopBlurb,
-    },
-  );
+    });
+    routePoints = composeRoute(journey.moments.slice(0, 4).map(toRoutePoint), 4);
+  }
+
+
+
 
 
 
@@ -2012,7 +2280,7 @@ export function resolveStudioV3Route(input: {
     pickup,
     interests,
     rhythm,
-    region: journey.tour.region,
+    region: selectedTour.region,
   });
 
   const whyItFits = composeJourneyReasons({
@@ -2033,7 +2301,7 @@ export function resolveStudioV3Route(input: {
 
   // If any selected interest has no match inside the chosen Signature
   // area, add the safe note instead of pulling stops from other tours.
-  const tourHay = `${journey.tour.title} ${journey.tour.theme} ${journey.tour.stops
+  const tourHay = `${selectedTour.title} ${selectedTour.theme} ${selectedTour.stops
     .map((s) => `${s.label} ${s.story}`)
     .join(" ")}`.toLowerCase();
   const unmatched = interests.filter((i) => {
@@ -2048,7 +2316,7 @@ export function resolveStudioV3Route(input: {
   // Confidence: high when we have ≥3 real geo points AND a matched
   // pickup affinity; medium otherwise; refinement when we have 0 points.
   const geoCount = routePoints.filter((p) => p.lat !== null && p.lng !== null).length;
-  const affinity = pickupAffinity(journey.tour, pickup);
+  const affinity = pickupAffinity(selectedTour, pickup);
   const confidence: RouteConfidence =
     routePoints.length === 0
       ? "needs-human-refinement"
@@ -2067,7 +2335,7 @@ export function resolveStudioV3Route(input: {
   let finalRefinements = baseRefinements;
   if (STUDIO_V3_OPTIONAL_STOPS_ENABLED) {
     const optional = selectOptionalRefinements({
-      skeletonTourId: journey.tour.id,
+      skeletonTourId: selectedTour.id,
       interests,
       rhythm,
       companions,
@@ -2081,9 +2349,9 @@ export function resolveStudioV3Route(input: {
   }
 
   return {
-    skeletonTourKey: journey.tour.id,
-    skeletonTitleInternal: journey.tour.title,
-    routeAreaLabel: journey.tour.region,
+    skeletonTourKey: selectedTour.id,
+    skeletonTitleInternal: selectedTour.title,
+    routeAreaLabel: selectedTour.region,
     suggestedRouteLabel,
     routePoints,
     composedRoutePoints,
@@ -2094,9 +2362,203 @@ export function resolveStudioV3Route(input: {
     whatToConfirm: "Availability and final details are confirmed before your experience.",
     confidence,
     livingAtlasReasons: intelligence.reasons,
-    livingAtlasAlternatives: toAlternativeDirections(intelligence.alternatives, journey.tour.id),
+    livingAtlasAlternatives: toAlternativeDirections(intelligence.alternatives, selectedTour.id),
+    livingAtlasLive: live?.block ?? null,
   };
 }
+
+/* ---------- BUILD 1 / Pass 4 — Living Atlas live day resolution ---------- */
+
+/**
+ * Resolve the live Living Atlas day from RAW structural Signature stops.
+ *
+ * Order of authority, and nothing may jump it:
+ *   composer (membership) → identity → route → schedule → validation →
+ *   commercial gate → public projection.
+ *
+ * Identity is FROZEN at composition. Route, schedule, validation and the
+ * commercial ledger may only describe that set — never add to it, remove from
+ * it or replace inside it.
+ */
+function resolveLivingAtlasLiveDay(input: {
+  anchorTourId: LivingAtlasSignatureId;
+  rawStops: ReadonlyArray<{ label: string; story: string; image?: string; focal?: string }>;
+  feeling: Feeling;
+  companions: Companions;
+  interests: ReadonlyArray<Interest>;
+  rhythm: Rhythm;
+  investment: InvestmentTier | null;
+  considerations: ReadonlyArray<string>;
+  wineIntent: boolean;
+  mobilityConcern: boolean;
+  dateExact: string | null;
+}): { block: LivingAtlasLiveBlock; publicPoints: ResolvedRoutePoint[] } {
+  // RAW structural stops — the ONLY input to the membership authority.
+  // No date-closure membership filter, no mobility rewrite, no wine swap, no
+  // replacement candidates, no extra moment, no rhythm/investment count
+  // shaping. Operational truth (closures, mobility) is validation truth and is
+  // carried forward as review, never as a silent membership mutation.
+  const authored: ResolvedRoutePoint[] = input.rawStops.map((stop, index) => {
+    const geo = lookupStop(stop.label);
+    return {
+      index,
+      label: stop.label,
+      story: stop.story,
+      lat: geo?.lat ?? null,
+      lng: geo?.lng ?? null,
+      // VERIFIED authored Signature media travels with its own point.
+      image: stop.image ?? null,
+      focal: stop.focal ?? null,
+    };
+  });
+
+
+
+  // VERIFIED connector truth only. A mandatory transfer (e.g. the Sado ferry)
+  // is INTERNAL TRANSIT, never an experience: its verified minutes are withheld
+  // from the experience budget and it is never scored, ranked or replaced.
+  const blueprint = getTailorBlueprint(input.anchorTourId);
+  const connectors = (blueprint?.core ?? []).filter(
+    (stop) => stop.lock?.reasonCode === "mandatory_transfer",
+  );
+  const internalTransitMinutes = connectors.reduce(
+    (sum, stop) => sum + (stop.dwellMinutesOverride ?? 0),
+    0,
+  );
+  const unverifiedConnectorLabels = connectors
+    .filter((stop) => stop.dwellMinutesOverride == null)
+    .map((stop) => stop.label);
+
+  const hybrid: HybridCompositionResult = composeHybridDay(authored, {
+    skeletonTourId: input.anchorTourId,
+    feeling: input.feeling,
+    interests: input.interests,
+    rhythm: input.rhythm,
+    wineIntent: input.wineIntent,
+    dateExact: input.dateExact,
+    mandatoryOperationalLabels: connectors.map((stop) => stop.label),
+    internalTransitMinutes,
+    unverifiedConnectorLabels,
+    mobilityConcern: input.mobilityConcern,
+    buildStory: customerStopBlurb,
+  });
+
+  const composition = hybrid.composition;
+  const authoredPoints = authored.map((p, i) => ({ ...p, index: i }));
+
+  // STRUCTURAL RESOLUTION GATE. `complete` means the composition authority
+  // finished a real day. A date closure does NOT unfinish it — it only stops
+  // the PUBLIC projection. Anything else (tradeoff / partial / impossible /
+  // invalid / empty) is UNRESOLVED and must never be certified by the route
+  // planner, scheduler, validator or identity ledger.
+  const compositionResolution = resolveLivingAtlasCompositionResolution(composition);
+
+  const emptyBlock = buildUncertifiedLivingAtlasBlock({
+    anchorTourId: input.anchorTourId,
+    composition,
+    conflict: composition?.conflict ?? null,
+    passthroughReason: hybrid.passthroughReason,
+    compositionResolution,
+    fallbackReason: hybrid.passthrough ? "passthrough" : "none",
+    compositionStopIds: composition ? composition.moments.map((m) => m.stopId) : [],
+    planningTiming: composition?.planningTiming ?? null,
+    approximateDurationClass: composition?.planningTiming?.budget.durationClass ?? null,
+    internalTransitMinutes: hybrid.internalTransitMinutes,
+    totalPlannedMinutesIncludingInternalTransit:
+      composition?.planningTiming
+        ? composition.planningTiming.totalMinutes + hybrid.internalTransitMinutes
+        : null,
+    internalIssues: hybrid.internalIssues,
+  });
+
+  if (!composition || compositionResolution === "unresolved") {
+    return { block: emptyBlock, publicPoints: authoredPoints };
+  }
+
+
+  // FROZEN identity set — every later stage describes exactly this.
+  const identity = resolveCompositionIdentities({
+    anchorTourId: input.anchorTourId,
+    moments: composition.moments.map((moment) => ({
+      label: moment.label,
+      inventoryStopId: moment.stopId,
+    })),
+  });
+  const omittedIdentity = resolveCompositionIdentities({
+    anchorTourId: input.anchorTourId,
+    moments: hybrid.omitted.map((moment) => ({
+      label: moment.label,
+      inventoryStopId: moment.stopId,
+    })),
+  });
+
+  const resolvedComposition = {
+    ...composition,
+    moments: composition.moments.map((moment) => ({
+      ...moment,
+      slotId: moment.stopId,
+      replacedStopId: null,
+      originalLabel: null,
+    })),
+    appliedReplacements: {},
+    ignoredReplacements: [],
+  } satisfies LivingAtlasResolvedComposition;
+
+  const routePlan = planLivingAtlasRoute({
+    composition: resolvedComposition,
+    pool: REGION_STOP_POOL,
+  });
+  const scheduledPlan = applyLivingAtlasSchedule({
+    routePlan,
+    pool: REGION_STOP_POOL,
+    selectedDate: input.dateExact,
+  });
+
+  // SINGLE validator owns every review status, including composition-stage
+  // internal signals (mobility, unverified connector). Nothing else re-decides.
+  const validation = validateLivingAtlasOperations({
+    composition,
+    routePlan,
+    scheduledPlan,
+    selectedDate: input.dateExact,
+    preValidationIssues: hybrid.internalIssues,
+  });
+
+
+  const commercialLedger = buildCommercialLedger({
+    anchorTourId: input.anchorTourId,
+    kept: identity.records,
+    omitted: omittedIdentity.records,
+  });
+
+  // COMMERCIAL SAFETY GATE — fail closed. Only an anchor-price-safe day may be
+  // projected publicly; anything else falls back to the authored anchor. This
+  // never invents a zero-euro semantic, it only refuses to project.
+  const commerciallySafe = commercialLedger.disposition === "anchor-price-safe";
+  const validationBlocks = validation.status === "invalid";
+  const projectable = !hybrid.passthrough && commerciallySafe && !validationBlocks;
+
+  const block: LivingAtlasLiveBlock = {
+    ...emptyBlock,
+    identity,
+    routePlan,
+    scheduledStopIds: scheduledPlan.orderedMoments.map((moment) => moment.stopId),
+    validation,
+    commercialLedger,
+    commercialDisposition: commercialLedger.disposition,
+    liveResolution: projectable ? "composed" : "authored-fallback",
+    fallbackReason: projectable
+      ? "none"
+      : hybrid.passthrough
+        ? "passthrough"
+        : !commerciallySafe
+          ? "commercial-gate"
+          : "validation-invalid",
+  };
+
+  return { block, publicPoints: projectable ? hybrid.points : authoredPoints };
+}
+
 
 /* ---------- Phase 1D: customer-facing journey draft helpers ---------- */
 /*
@@ -2590,17 +3052,25 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
   // single `logistics` screen, prefilled with everything already inferred.
   if (phase === "date" || phase === "pickup" || phase === "guests") return false;
 
-  // Adaptive refinement — one conditional question, asked only when the
-  // traveller's own answers make it useful, and never twice.
+  // BUILD 2 / Pass 4 — the LIVE Director is the only authority for whether
+  // another material question exists. There is NO numeric cap: the phase
+  // hosts 0..N sequential questions and ends when nothing material is left.
   if (phase === "refinement") {
-    if (state.refinement != null) return false;
     // P10 — delegation mode: the traveller handed the taste layer to YES, so
     // the optional nuance question is simply irrelevant. It is SKIPPED, never
-    // answered on their behalf (`refinement` stays null).
+    // answered on their behalf.
     if (state.delegationMode === "yes-designs") return false;
-    // Ask only when the answer can still move the recommendation.
-    return isAdaptiveQuestionRelevant(state) && adaptiveQuestionAddsValue(state);
+    const decision = deriveStudioDirectorRuntime({
+      feeling: state.feeling,
+      interests: state.interests,
+      rhythm: state.rhythm,
+      destinationIntent: state.destinationIntent,
+      questionHistory: state.questionHistory,
+    }).decision;
+    // Fail closed: an unpresentable question is never shown to a traveller.
+    return presentDirectorQuestion(decision) !== null;
   }
+
 
 
   return true;
@@ -2609,22 +3079,30 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
 /**
  * STUDIO_V3_PHASE_ORDER — the single source of truth for phase sequence.
  *
- * Studio reform (2026-08). Psychological ordering: emotion → place →
- * context → taste → rhythm → logistics → composition → story → close.
+ * Canonical live flow (see docs/studio-north-star.md):
  *
- *   1. feeling      — the first real decision, purely emotional
- *   2. destination  — Portugal is FELT early (partial reveal of the region)
+ *   1. intro        — single canonical guided entry
+ *   2. feeling      — the first real decision, purely emotional
  *   3. who          — context in one tap; infers guests, occasion, tier floor
  *   4. interests    — desire, not spec
- *   5. rhythm       — emotional pacing; derives stop count / duration
- *   6. refinement   — at most one adaptive question, usually skipped
- *   7. date / pickup / guests — logistics grouped together and asked LAST,
- *      only because the day has to become real. Never before desire exists.
+ *   5. rhythm       — emotional pacing (pace/depth, not stop counts)
+ *   6. refinement   — the adaptive Director beat; repeats 0→N times based
+ *      on genuine uncertainty (NO product cap of one question)
+ *   7. storyboard   — "Your Day": the unified editable itinerary surface,
+ *      including its inline story/reveal chapter (reward before admin)
+ *   8. logistics    — ONE consolidated screen (date + pickup + party),
+ *      "Make it real", asked AFTER the reward
+ *   9. guestDetails → checkoutSummary / payment
  *
- * `investment` stays in the array (saved states and the stepper still
- * reference it) but `isPhaseRelevant` always returns false, so it is never
- * asked. Both `StudioV3.tsx` (transition guard) and `getNextPhase` read
- * THIS array — there is no second copy to drift out of sync.
+ * Legacy ids (`destination`, `date`, `pickup`, `guests`, `investment`,
+ * `occasion`, `considerations`, `language`, `map`, `confirmation`) stay in
+ * this array so saved states, deep links and older tests hydrate, but
+ * `isPhaseRelevant` skips them — they are never asked as standalone live
+ * screens. `map` and `confirmation` canonicalize to `storyboard` via
+ * `studioPhaseCanonical.ts`.
+ *
+ * Both `StudioV3.tsx` (transition guard) and `getNextPhase` read THIS
+ * array — there is no second copy to drift out of sync.
  */
 export const STUDIO_V3_PHASE_ORDER: StudioV3Phase[] = [
   "intro",
@@ -2633,7 +3111,11 @@ export const STUDIO_V3_PHASE_ORDER: StudioV3Phase[] = [
   "interests",
   "rhythm",
   "refinement",
+  // PASS 4 — REWARD BEFORE ADMIN. The composed day ("Your Day", canonical
+  // `storyboard`) is revealed immediately after the last Director question.
+  "storyboard",
   // ONE consolidated logistics beat (date + pickup + party), prefilled.
+  // It is ADMIN AFTER THE REWARD ("Make it real"), never a composer.
   "logistics",
   // Never asked as standalone questions any more — kept for hydration of
   // saved states/deep links and for back-compat with older tests.
@@ -2647,11 +3129,11 @@ export const STUDIO_V3_PHASE_ORDER: StudioV3Phase[] = [
   "considerations",
   "language",
   "map",
-  "storyboard",
   "confirmation",
   "guestDetails",
   "checkoutSummary",
 ];
+
 
 const LINEAR_ORDER: StudioV3Phase[] = STUDIO_V3_PHASE_ORDER;
 
@@ -3438,18 +3920,57 @@ export function applyExtraMoment(
     /** ISO yyyy-mm-dd — keeps operationally closed candidates out. */
     dateExact?: string | null;
     /**
-     * Upper bound for the resulting route length. Defaults to 4 (the compact
-     * Journey-Card projection); the FULL composed route passes its own length
-     * so a rich 5–6 moment day is never truncated to four.
+     * LEGACY SAFETY CEILING ONLY (PASS 2). Upper bound for the resulting
+     * route length, applied ONLY when truthful minutes are unavailable for
+     * the current route or the candidate. When minute truth exists, the Time
+     * Authority decides and this count never rejects a proven fit.
      */
     maxPoints?: number;
+    /** Anchor region — resolves the regional day/drive caps for time fit. */
+    region?: string | null;
+    /**
+     * Minutes committed by SELECTED add-ons. Counted against the budget and
+     * never zeroed or dropped to force a fit.
+     */
+    selectedAddOnMinutes?: number;
   },
 ): ResolvedRoutePoint[] {
   const maxPoints = Math.max(1, input.maxPoints ?? 4);
   const out = routePoints.map((p) => ({ ...p }));
   if (input.rhythm === "slow") return out;
   if (out.length === 0) return out;
-  if (out.length >= maxPoints) return out;
+
+  // PASS 2.1 · TIME AUTHORITY BOUNDARY (provenance-safe).
+  // Certified minutes present -> the count cap is inert; fit decides per candidate.
+  // Certified minutes absent  -> explicit legacy count fallback, unchanged.
+  // A route point only counts as certified when it carries an explicit
+  // positive duration with authoritative provenance (`inventory` /
+  // `sot-chapter` / `addon-catalog`). Label inference is never used here.
+  const existingTimeStops = out.map((p) => {
+    const carrier = p as ResolvedRoutePoint & {
+      stopId?: string | null;
+      durationMinutes?: number | null;
+      durationSource?: DwellSource | null;
+    };
+    return {
+      // Legacy resolved route points carry no structural timing identity.
+      // Never synthesize an id from label/index/order: only a genuine
+      // structural `stopId` may certify. Absent identity stays empty so
+      // `stopHasMinuteTruth` returns false for legacy carriers.
+      stopId: carrier.stopId ?? "",
+      label: p.label,
+      lat: p.lat,
+      lng: p.lng,
+      durationMinutes: carrier.durationMinutes ?? null,
+      durationSource: carrier.durationSource ?? null,
+    };
+  });
+
+  const timeEvaluable = hasMinuteTruth(existingTimeStops);
+  if (!timeEvaluable && out.length >= maxPoints) return out;
+
+
+
 
   const skeleton = input.skeletonTourId ? SKELETON_TO_CLUSTER[input.skeletonTourId] : undefined;
   if (!skeleton) return out;
@@ -3516,9 +4037,46 @@ export function applyExtraMoment(
     lng: pick.coords?.lng ?? null,
   };
 
+  // PASS 2.1 · TIME AUTHORITY — a certified, fitting addition is accepted even
+  // at the legacy count ceiling; a candidate that pushes the day (including
+  // SELECTED add-on minutes, never zeroed) over budget is rejected even below
+  // it. REGION_STOP_POOL candidates carry a structural `durationMin`, so their
+  // provenance is `inventory`.
+  if (timeEvaluable) {
+    const candidateStop = {
+      stopId: pick.id,
+      label: pick.name,
+      lat: pick.coords?.lat ?? null,
+      lng: pick.coords?.lng ?? null,
+      durationMinutes: pick.durationMin > 0 ? pick.durationMin : null,
+      durationSource: "inventory" as DwellSource,
+    };
+    if (!stopHasMinuteTruth(candidateStop)) {
+      // Unknown candidate minutes — legacy count safety applies.
+      if (out.length >= maxPoints) return out;
+    } else {
+      const verdict = judgeAdmission(
+        {
+          stops: existingTimeStops,
+          skeletonTourId: input.skeletonTourId ?? null,
+          rhythm: input.rhythm,
+          addOnsMinutes: input.selectedAddOnMinutes ?? 0,
+        },
+        candidateStop,
+        { insertAt },
+      );
+      if (!verdict.fits) return out;
+    }
+
+  }
+
+
   const next = [...out.slice(0, insertAt), inserted, ...out.slice(insertAt)];
-  // Re-number indices to keep ResolvedRoutePoint contract.
-  return next.slice(0, maxPoints).map((p, i) => ({ ...p, index: i }));
+  // Re-number indices to keep ResolvedRoutePoint contract. The count slice is
+  // a LEGACY SAFETY CEILING only — a time-proven route is never truncated.
+  const capped = timeEvaluable ? next : next.slice(0, maxPoints);
+  return capped.map((p, i) => ({ ...p, index: i }));
+
 }
 
 /* ---------------------------------------------------------------------------

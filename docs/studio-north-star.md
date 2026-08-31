@@ -1,95 +1,179 @@
-# Experience Studio — North Star (non-negotiable)
+# Studio V3 — Canonical North Star (current, binding)
 
-The Studio is **cinematic discovery**, not a configurator, quiz or planner.
-Every change is judged against the principles below before it ships.
+**Product promise:** *"You are not choosing a tour. You are shaping a day in Portugal."*
 
-## Principles
+This document is the **single canonical current Studio V3 product and
+engineering North Star**, matching the live, release-certified implementation.
+The source of truth is the current live code plus this document. **All older
+planning docs, audits, comparison reports and pass plans are historical only**
+and must never be used as current authority.
 
-1. **Desire before logistics.** Emotion, company and taste are asked first.
-   Date, pickup and party exist only to make the day real — never as a gate
-   in front of desire.
-2. **Fewer questions, more inference.** If the Studio can derive it, it must
-   not ask it. `destination`, `investment`, `occasion`, `considerations` and
-   `language` are inferred or deferred, never blocking phases.
-3. **Honest progress.** The visible progress model is `FEEL → TASTE → SHAPE
-   → YOUR DAY` and maps 1:1 onto real phase groups. No inflated totals.
-4. **"Let YES decide" is a decision, not a gap.** It commits a real,
-   deterministic value derived from the traveller's own answers.
-5. **No invention, ever.** Stops, partners, inclusions, prices, drive times
-   and itineraries come from real project data. AI is voice only.
-6. **Pricing truth is untouchable.** Composition and reveal may present the
-   validated composition; the financial handoff stays anchored to the current
-   Signature/pricing truth path.
-7. **Text first, images as enhancement.** A missing image never blocks the
-   reveal. The reveal must render meaningful text fast on mobile.
-8. **Mobile-first at 393px.** No truncation, no overlap, 44×44 targets,
-   visible focus, CTAs never covering content.
-9. **Two families only.** Fraunces for editorial emphasis, Inter for UI/meta.
-   No Georgia, no Montserrat.
+---
 
-## Phase model (source of truth)
+## 1. Conceptual architecture
 
-`STUDIO_V3_PHASE_ORDER` in `src/components/studio-v3/curation.ts` is the ONLY
-ordering. `isPhaseRelevant` decides what is actually asked.
+- **Studio V3 chassis** — the cinematic funnel shell (`src/components/studio-v3/StudioV3.tsx`,
+  `PhaseShell.tsx`, `STUDIO_V3_PHASE_ORDER` in `curation.ts`).
+- **Living Atlas** — the curation brain: resolves the real Signature hidden
+  skeleton/anchor and composes the day from authorized data only.
+- **Adaptive deterministic Director (0→N)** — asks only material uncertainties,
+  from none to as many as needed; no product hard cap.
+- **Living Canvas** — the single persistent visual manifestation of the day
+  taking shape before YOUR DAY.
+- **Time Authority** — structural dwell + travel/buffer truth.
+- **Commercial Truth** — structural commercial identity through to
+  server/DB-authoritative pricing and Stripe.
+- **YOUR DAY** — the authorship/editor culmination on the frozen committed
+  route.
+
+## 2. Canonical experiential flow
 
 ```text
-intro → feeling → who → interests → rhythm → [refinement*] → logistics
-      → map → storyboard → confirmation (reveal) → guestDetails → checkoutSummary
+Invitation/intro → Feeling → [conditional discovery surfaces as currently
+implemented] → Who → Interests → Rhythm → 0..N Director questions
+→ YOUR DAY (storyboard) → Make it real / logistics → guestDetails
+→ checkoutSummary / payment
 ```
 
-`* refinement` is at most one adaptive question, asked only when it can still
-move the recommendation.
+- **Reward before admin:** the traveller always reaches YOUR DAY before any
+  administrative step (date, pickup, party, guest details). Admin exists only
+  to make the day real — never as a gate in front of desire.
+- Legacy phase ids (`destination`, `date`, `pickup`, `guests`, `investment`,
+  `occasion`, `considerations`, `language`, and retired discovery ids) may
+  remain in `STUDIO_V3_PHASE_ORDER` for **hydration of saved states and deep
+  links only**. They are not product authority and are never asked.
+- The visible progress model is honest: `FEEL → TASTE → SHAPE → YOUR DAY`,
+  mapped 1:1 onto real phase groups.
 
-Kept in the array for hydration of saved states/deep links, never asked:
-`destination`, `date`, `pickup`, `guests`, `investment`, `occasion`,
-`considerations`, `language`.
+## 3. Director (adaptive questions)
 
-- `logistics` is one screen: date (exact / flexible / undecided) + pickup +
-  party, all prefilled from what is already known and editable.
-- Progress beats live in `StudioV3ProgressStepper.tsx`
-  (`Feel`, `Taste`, `Shape`, `Your day`).
+- True **0→N**: asks only material uncertainties; terminates when nothing
+  material remains. No fixed question count and no product hard cap.
+- **Deterministic semantics and options**: closed option catalog, explicit
+  uncertainty detectors, cycle protection, sequential causal state
+  re-derivation each step. Reachability for all 12 Signature directions is
+  certified by sequential simulation.
+- **AI is wording/voice only**, where currently allowed; it never decides
+  what is asked, never invents stops or facts, and has a deterministic
+  fallback.
+- **Explicit exclusions win**: traveller negations (including free-text
+  interpreter exclusions) can never be overridden by AI or inference.
+- Semantic profile is a **derived projection** of canonical inputs and
+  question history — never a second persisted truth, with no silent loss in
+  top-N projections (boundary honesty).
 
-## Analytics
+## 4. Living Atlas (curation)
 
-`src/lib/studio-analytics.ts` is the only place Studio product events are
-named. It routes through the existing funnel writer where a funnel event
-already exists (no double counting) and to GA4 otherwise.
+- Every direction resolves to a **real Signature tour as hidden
+  skeleton/anchor**.
+- Hybrid composition is authorized **same-region / same-corridor only**.
+  **No geographic cluster mixing.**
+- Capability intent is explicit: e.g. an Arrábida anchor does not imply wine
+  intent. Intent must come from traveller signals, not geography.
+- **No invention, ever.** Stops, partners, inclusions, prices, drive times and
+  itineraries come from real project data. AI is voice only.
 
-## The reveal is never a trap
+## 5. Living Canvas (pre-YOUR-DAY manifestation)
 
-The moments/map surface (`MapAwakens.tsx`) autoplays a reel, but its continue
-CTA (`[data-phase-cta="hold-journey"]`) is ALWAYS interactive. Emphasis ramps
-when the reel completes; the door is never locked. Gating it behind reel
-completion previously stalled the journey whenever autoplay did not run
-(paused tab, reduced motion, one moment, slow mount).
+- The **only** persistent visual manifestation of the day before YOUR DAY.
+- **At most one** `data-testid="studio-living-canvas"` mounted on any phase
+  path; it lives in normal document flow directly under the active decision —
+  no sticky/fixed positioning, no side-by-side squeeze on mobile.
+- Present through the meaningful shaping sequence (feeling, conditional
+  discovery surfaces, who, occasion, interests, rhythm, each Director
+  question) and in logistics; **storyboard uses the assembled treatment
+  only**; guestDetails/checkoutSummary have no discovery Canvas.
+- Media is **real/verified** via the media resolver with graceful truthful
+  fallback; missing image or coordinates never blocks progression and never
+  fabricates geography.
+- **Retired from the current path:** `LivingJourneyPanel` (journey-draft
+  pill/drawer with its Story/Timeline/Map tabs and its server AI story call)
+  and `ComposerMap` as parallel pre-reveal surfaces. Their modules may remain
+  for legacy paths; they must never mount in the modern flow.
 
-The interpretation beat (`UnderstoodBeat.tsx`) is a short, skippable
-full-screen overlay between logistics and the composed day. It must always
-dismiss itself, and it must never be the only way forward.
+## 6. YOUR DAY (authorship culmination)
 
-Regression cover:
-- `e2e/studio-v3-no-moments-loop-mobile.spec.ts` — CTA interactive on mount,
-  reveal paints within 2500 ms of the final Refine action, and still paints
-  with every image request blocked.
-- `e2e/studio-v3-let-yes-decide-mobile.spec.ts` — handing feeling / interests /
-  rhythm to "Let YES decide" plus a flexible date still composes a real day.
+- The route is **frozen (committed snapshot) before logistics**; going back
+  and changing a shaping answer clears the snapshot only where canonical
+  rules require and lets the day re-shape.
+- **Keep / Swap / Remove / Add / Reorder / Undo** all preserve structural
+  identity, media/focal, coordinates and duration truth.
+- Authored edits and commercial identity remain aligned at all times.
+- Candidate fit is validated per candidate (time admission, regional
+  coherence, cumulative add-on time budget); nothing is silently shortened
+  or removed.
 
-## Last mile
+## 7. Time Authority
 
-`CheckoutSummary` scrolls itself to the top on mount, so the summary never
-opens mid-scroll with the price line off-screen. The guest-details CTA reads
-"Continue to summary" — it names the next screen, not a side effect.
+- **Authoritative structural dwell + travel/buffer truth** when evaluable
+  from structural stop identities (`timeAuthority.ts` over canonical V3
+  timing).
+- Legacy heuristic timing is an **explicit fallback only** when structural
+  minute truth is absent — legacy routes without structural identity are
+  non-evaluable, never guessed.
+- **No silent shortening or removal** of stops to make times fit.
 
-## Validated contracts (2026-08-23)
+## 8. Commercial Truth
 
-- **Refine is executable-only.** A refine intent may only appear when it can
-  actually mutate the composed day using real stops (`refineIntents.ts`).
-  Contextual intents are truth-backed: no intent is offered that the current
-  composition cannot honour.
-- **Presentation never owns pricing math.** The reveal disclosure renders
-  factors resolved by `priceChangeFactors.ts` from `signatureTourPricing`
-  truth (tier table, `AGE_BAND_PCT`) plus real selected add-ons. Empty set →
-  no disclosure. No generic "prices may vary" copy.
-- **Map truth → timeline fallback.** `yourDayMapTruth.ts` validates stop
-  geography; when it cannot, `MapAwakens` renders the timeline instead. The
-  reveal never blocks on a map or an image.
+- Chain of authority: **Inventory/Blueprint ID → Route Point → Commercial
+  Identity → Approved Pricing Action → server/DB pricing**.
+- Exact party tiers are **DB-authoritative and fail closed**; missing tier
+  means no exact price, never a guess.
+- Before party confirmation, no exact price is presented as confirmed.
+- The current edited/frozen route is the checkout commercial authority;
+  unresolved identity cannot be charged as a guessed product.
+- **Stripe/server is the final authority**: checkout totals use canonical
+  `perUnitEur × quantity`; UI add-on amounts and server quantity/total parity
+  are maintained; the commercial ledger is deduplicated.
+- Operational approval is fail-closed: only a real `approved` status enables
+  Reserve; `review` never proceeds as if approved.
+
+## 9. Operational & privacy rules
+
+- Minimum lead time **3 days**.
+- Mercado experiences: **morning only, closed Mondays**.
+- **No supplier winery names** on any public Studio surface.
+- **No exact public times** presented to travellers.
+- Unresolved combinations **fail closed** to review/curator — never silently
+  mutate route membership.
+
+## 10. Approved commercial rules (locked)
+
+The commercial rules currently encoded in the live implementation — including
+removal rules, add-lunch rules and winery rules — are **owner-approved and
+must be preserved**. They must not be reinterpreted, relaxed or "corrected"
+from older documents. Any change requires an explicit owner decision.
+
+## 11. Design contracts (unchanged)
+
+- Brand palette tokens, Fraunces + Inter two-family typography, sentence
+  case, gold as micro-detail.
+- **Mobile-first at 393px**: no horizontal overflow, normal-flow Canvas,
+  CTA/question primary, ≥44px touch targets, visible focus.
+- Motion is subtle and reduced-motion safe; content never depends on
+  animation to appear.
+- Supplier-name privacy preserved in all media/copy surfaces.
+
+## 12. Certification status
+
+- **Experience Unification complete**: Living Canvas is the single
+  pre-YOUR-DAY manifestation; retired panels/maps do not mount.
+- **Release certification**: full Studio V3 unit suite green at certification
+  (1458 tests / 147 files at unification; targeted release-certification
+  suite green), 393px mobile contract certified, typecheck clean.
+- Protected baseline: `src/integrations/supabase/types.ts` with
+  `PostgrestVersion: "14.17"`, plus `.lovable/mcp/manifest.json` and
+  `src/generated/brand-audit.json` — never modified by feature work.
+- Legacy e2e specs that assert the retired flow are **stale** and must not be
+  trusted until rewritten.
+
+## 13. For future agents
+
+1. Read the live code and this document. Ignore superseded planning docs for
+   current authority (they carry a SUPERSEDED banner).
+2. Do not resurrect retired surfaces (LivingJourneyPanel, ComposerMap,
+   journey-draft drawer, refinement caps, hard question caps, heuristic-first
+   timing).
+3. Any change to flow, Director semantics, Atlas composition, Time Authority
+   or Commercial Truth requires an explicit owner instruction — and an update
+   to this document in the same change.

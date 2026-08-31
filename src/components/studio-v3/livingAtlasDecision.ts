@@ -5,6 +5,7 @@ import {
   type ExperienceDimensionId,
   type ExperienceProfile,
   type LivingAtlasSignatureId,
+  validateDecisionProfile,
   validateExperienceProfile,
 } from "@/components/studio-v3/livingAtlasTaxonomy";
 
@@ -48,6 +49,11 @@ export const DISCOVERY_SIGNAL_BY_SIGNATURE: Readonly<
   Object.entries(DISCOVERY_SIGNAL_TARGET).map(([signal, signatureId]) => [signatureId, signal]),
 ) as Record<LivingAtlasSignatureId, LivingAtlasDiscoverySignal>;
 
+/**
+ * SINGLE SEMANTIC AUTHORITY for "which commercial directions does this
+ * destination intent allow?". Diagnostics must read it through
+ * `livingAtlasCandidatesForDestination` rather than re-declaring the map.
+ */
 const DESTINATION_CANDIDATES: Readonly<
   Record<DestinationIntent, readonly LivingAtlasSignatureId[]>
 > = {
@@ -69,13 +75,39 @@ const DESTINATION_CANDIDATES: Readonly<
   "central-portugal": ["tomar-coimbra"],
 };
 
+/** Every destination intent the decision engine understands. */
+export const LIVING_ATLAS_DESTINATION_INTENTS = Object.keys(
+  DESTINATION_CANDIDATES,
+) as DestinationIntent[];
+
+/** Read-only candidate set for a destination intent. */
+export function livingAtlasCandidatesForDestination(
+  intent: DestinationIntent,
+): readonly LivingAtlasSignatureId[] {
+  return DESTINATION_CANDIDATES[intent] ?? LIVING_ATLAS_SIGNATURE_IDS;
+}
+
+
 export type LivingAtlasDecisionInput = {
   profile: ExperienceProfile;
   /** Explicit destination acts as a hard filter. */
   destinationIntent?: DestinationIntent;
   /** Answer to a contextual question or Precision Fork. */
   discoverySignal?: LivingAtlasDiscoverySignal | null;
+  /**
+   * BUILD 2 / Pass 4 — EVERY discovery answer the traveller really gave, from
+   * canonical question history. Deduped deterministically; `discoverySignal`
+   * stays supported as a single-answer compatibility input.
+   */
+  discoverySignals?: readonly LivingAtlasDiscoverySignal[];
+  /**
+   * `legacy` (default) enforces the BUILD-0 max-three contract.
+   * `full-decision` accepts the uncapped decision profile, so every demanded
+   * dimension participates in coverage, evidence and score.
+   */
+  profileContract?: "legacy" | "full-decision";
 };
+
 
 export type LivingAtlasCandidateReport = {
   signatureId: LivingAtlasSignatureId;
@@ -92,13 +124,36 @@ export type LivingAtlasCandidateReport = {
   evidence: string[];
 };
 
+/**
+ * Score window inside which two directions are considered materially tied.
+ *
+ * A tie is an ambiguity, never a race that array order wins. When more than
+ * one candidate sits inside this window and no explicit destination narrowed
+ * the field to a single product, the engine refuses to choose and returns a
+ * precision fork instead.
+ */
+export const LIVING_ATLAS_TIE_EPSILON = 8;
+
 export type LivingAtlasDecision = {
   status: "clear" | "precision-fork" | "weak" | "invalid";
   selectedSignatureId: LivingAtlasSignatureId | null;
   ranked: LivingAtlasCandidateReport[];
   forkCandidates: LivingAtlasCandidateReport[];
   validationError?: string;
+  /**
+   * Diagnostic detail about the top of the ranking. `tiedSignatureIds` lists
+   * every candidate within `epsilon` of the leader — length > 1 means the
+   * ranking order at the top is presentational only and carries no authority.
+   */
+  ambiguity: {
+    epsilon: number;
+    topScore: number | null;
+    tiedSignatureIds: LivingAtlasSignatureId[];
+    /** What broke the ambiguity, when anything did. */
+    resolvedBy: "explicit-destination" | "score-margin" | null;
+  };
 };
+
 
 function leadPoints(strength: 0 | 1 | 2 | 3): number {
   if (strength === 3) return 40;
@@ -117,7 +172,7 @@ function supportingPoints(strength: 0 | 1 | 2 | 3): number {
 function reportFor(
   signatureId: LivingAtlasSignatureId,
   profile: ExperienceProfile,
-  discoverySignal: LivingAtlasDiscoverySignal | null,
+  discoverySignals: readonly LivingAtlasDiscoverySignal[],
 ): LivingAtlasCandidateReport {
   const affinity = SIGNATURE_DIMENSION_AFFINITY[signatureId];
   const supporting = profile.selected.filter((dimension) => !profile.leads.includes(dimension));
@@ -137,9 +192,11 @@ function reportFor(
   if (leadCoverage.every((item) => item.strength >= 2)) totalScore += 10;
   if (leadCoverage.every((item) => item.strength === 3)) totalScore += 8;
 
-  if (discoverySignal && DISCOVERY_SIGNAL_TARGET[discoverySignal] === signatureId) {
-    totalScore += 80;
-  }
+  // Every real discovery answer that targets this direction counts.
+  const matchingSignals = discoverySignals.filter(
+    (signal) => DISCOVERY_SIGNAL_TARGET[signal] === signatureId,
+  );
+  totalScore += 80 * matchingSignals.length;
 
   const missingCoverage = [...leadCoverage, ...supportingCoverage]
     .filter((item) => item.strength === 0)
@@ -148,10 +205,8 @@ function reportFor(
   const evidence = [
     ...leadCoverage.map((item) => `lead:${item.dimension}:${item.strength}`),
     ...supportingCoverage.map((item) => `support:${item.dimension}:${item.strength}`),
+    ...matchingSignals.map((signal) => `signal:${signal}`),
   ];
-  if (discoverySignal && DISCOVERY_SIGNAL_TARGET[discoverySignal] === signatureId) {
-    evidence.push(`signal:${discoverySignal}`);
-  }
 
   return {
     signatureId,
@@ -163,14 +218,31 @@ function reportFor(
   };
 }
 
+
+const EMPTY_AMBIGUITY: LivingAtlasDecision["ambiguity"] = {
+  epsilon: LIVING_ATLAS_TIE_EPSILON,
+  topScore: null,
+  tiedSignatureIds: [],
+  resolvedBy: null,
+};
+
 /**
  * Pure deterministic shortlist for the future Living Atlas flow.
  *
  * It does not evaluate date, duration, mobility, availability or price yet.
  * Those operational hard constraints are applied in the next engine layer.
+ *
+ * ORDERING CONTRACT: `ranked` is sorted by score, then alphabetically by id.
+ * The alphabetical step exists solely so reports and UI lists are stable — it
+ * is never semantic authority. `LIVING_ATLAS_SIGNATURE_IDS` array order is
+ * deliberately NOT consulted, so no commercial direction can win a tie merely
+ * by being declared earlier in the catalogue.
  */
 export function decideLivingAtlasSignature(input: LivingAtlasDecisionInput): LivingAtlasDecision {
-  const validation = validateExperienceProfile(input.profile);
+  const validation =
+    input.profileContract === "full-decision"
+      ? validateDecisionProfile(input.profile)
+      : validateExperienceProfile(input.profile);
   if (!validation.ok) {
     return {
       status: "invalid",
@@ -178,33 +250,48 @@ export function decideLivingAtlasSignature(input: LivingAtlasDecisionInput): Liv
       ranked: [],
       forkCandidates: [],
       validationError: validation.reason,
+      ambiguity: EMPTY_AMBIGUITY,
     };
   }
 
   const destination = input.destinationIntent ?? "no-preference";
   const allowed = new Set(DESTINATION_CANDIDATES[destination]);
-  const signal = input.discoverySignal ?? null;
+  // Deterministic dedupe, first-seen order. Nothing is invented.
+  const signals: LivingAtlasDiscoverySignal[] = [];
+  for (const signal of [...(input.discoverySignals ?? []), input.discoverySignal ?? null]) {
+    if (signal && !signals.includes(signal)) signals.push(signal);
+  }
 
   const ranked = LIVING_ATLAS_SIGNATURE_IDS.filter((signatureId) => allowed.has(signatureId))
-    .map((signatureId) => reportFor(signatureId, validation.profile, signal))
+    .map((signatureId) => reportFor(signatureId, validation.profile, signals))
+
+    // Display-only determinism. See ORDERING CONTRACT above.
     .sort((a, b) => {
       if (b.totalScore !== a.totalScore) return b.totalScore - a.totalScore;
-      return (
-        LIVING_ATLAS_SIGNATURE_IDS.indexOf(a.signatureId) -
-        LIVING_ATLAS_SIGNATURE_IDS.indexOf(b.signatureId)
-      );
+      return a.signatureId.localeCompare(b.signatureId);
     });
 
   const first = ranked[0] ?? null;
-  const second = ranked[1] ?? null;
   if (!first) {
     return {
       status: "weak",
       selectedSignatureId: null,
       ranked,
       forkCandidates: [],
+      ambiguity: EMPTY_AMBIGUITY,
     };
   }
+
+  const nearTied = ranked.filter(
+    (candidate) => first.totalScore - candidate.totalScore <= LIVING_ATLAS_TIE_EPSILON,
+  );
+  const directDestination = allowed.size === 1;
+  const ambiguity: LivingAtlasDecision["ambiguity"] = {
+    epsilon: LIVING_ATLAS_TIE_EPSILON,
+    topScore: first.totalScore,
+    tiedSignatureIds: nearTied.map((candidate) => candidate.signatureId),
+    resolvedBy: null,
+  };
 
   if (first.totalScore < 0 || first.leadCoverage.some((item) => item.strength === 0)) {
     return {
@@ -212,21 +299,20 @@ export function decideLivingAtlasSignature(input: LivingAtlasDecisionInput): Liv
       selectedSignatureId: null,
       ranked,
       forkCandidates: ranked.slice(0, 2),
+      ambiguity,
     };
   }
 
-  const delta = second ? first.totalScore - second.totalScore : Number.POSITIVE_INFINITY;
-  const hasExplicitSignal = Boolean(signal);
-  const directDestination = allowed.size === 1;
-
-  if (!hasExplicitSignal && !directDestination && second && delta <= 8) {
+  // A materially tied top is an unresolved question, not a winner. The only
+  // thing allowed to settle it without a score margin is an explicit
+  // destination that leaves exactly one commercial product standing.
+  if (nearTied.length > 1 && !directDestination) {
     return {
       status: "precision-fork",
       selectedSignatureId: null,
       ranked,
-      forkCandidates: ranked
-        .filter((candidate) => first.totalScore - candidate.totalScore <= 8)
-        .slice(0, 3),
+      forkCandidates: nearTied.slice(0, 3),
+      ambiguity,
     };
   }
 
@@ -235,5 +321,10 @@ export function decideLivingAtlasSignature(input: LivingAtlasDecisionInput): Liv
     selectedSignatureId: first.signatureId,
     ranked,
     forkCandidates: [],
+    ambiguity: {
+      ...ambiguity,
+      resolvedBy: directDestination && nearTied.length > 1 ? "explicit-destination" : "score-margin",
+    },
   };
 }
+

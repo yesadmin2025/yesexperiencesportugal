@@ -353,14 +353,13 @@ describe("Pass 2A — visibility rules", () => {
     expect(buildLivingDaySnapshot(SHAPED, { reactionActive: false }).stage).toBe("shaped");
   });
 
-  it("StudioV3 gates the Living Day separately from the ComposerMap", () => {
-    // P2C added the presentation-only `whisper` prop; the gate is unchanged.
-    expect(STUDIO_SRC).toMatch(
-      /<LivingJourneyPanel[\s\S]{0,160}state=\{state\}[\s\S]{0,160}hidden=\{livingDayHidden\}/,
-    );
-    expect(STUDIO_SRC).toContain("<ComposerMap state={state} hidden={composerHidden} />");
-    // ComposerMap keeps its later, stricter gate (chromeReady / pickup).
-    expect(STUDIO_SRC).toMatch(/const composerHidden =[\s\S]{0,120}!chromeReady/);
+  it("retires the Living Journey pill and ComposerMap from the modern Studio path", () => {
+    // EXPERIENCE UNIFICATION — the Living Canvas is the single live
+    // manifestation; no competing pill/drawer or second map surface renders.
+    expect(STUDIO_SRC).not.toMatch(/<LivingJourneyPanel/);
+    expect(STUDIO_SRC).not.toMatch(/<ComposerMap/);
+    expect(STUDIO_SRC).not.toContain('from "./LivingJourneyPanel"');
+    expect(STUDIO_SRC).toContain("<LivingCanvas model={livingCanvas} />");
   });
 });
 

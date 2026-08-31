@@ -61,6 +61,8 @@ function momentFromStop(
   const dimensions = deriveLivingAtlasDimensions({
     label: stop.name,
     intentionTags: stop.suitsInterests,
+    // Pass 3: verified capabilities are authoritative for hands-on semantics.
+    capabilities: stop.capabilities ?? [],
   });
 
   return {
@@ -304,6 +306,7 @@ function alternativeScore(input: {
   const dimensions = deriveLivingAtlasDimensions({
     label: input.candidate.name,
     intentionTags: input.candidate.suitsInterests,
+    capabilities: input.candidate.capabilities ?? [],
   });
   let score = 0;
 

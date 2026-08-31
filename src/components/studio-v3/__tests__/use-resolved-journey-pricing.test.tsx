@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { signatureTours } from "@/data/signatureTours";
-import { resolvePerPaxEur } from "@/data/signatureTourPricing";
 import { INITIAL_STATE } from "../types";
 import { useResolvedJourney } from "../useResolvedJourney";
 
@@ -11,6 +10,7 @@ describe("useResolvedJourney pricing", () => {
       (candidate) => candidate.priceFrom && candidate.priceFrom > 0,
     )!;
     const guests = 3;
+    const perPax = 220;
     const addOnPartyAmount = 75;
     const { result } = renderHook(() =>
       useResolvedJourney(
@@ -20,6 +20,7 @@ describe("useResolvedJourney pricing", () => {
           tourId: tour.id,
           guests,
           adults: guests,
+          guestsInferred: false,
         },
         [
           {
@@ -34,16 +35,15 @@ describe("useResolvedJourney pricing", () => {
             unitLabel: "per group",
           },
         ],
-        null,
+        // PASS 5 — pricing comes only from the approved runtime tier rows.
+        { [tour.id]: { 3: perPax } },
       ),
     );
 
-    const expectedPerPax = resolvePerPaxEur(tour, guests, null)?.eurPerPax ?? tour.priceFrom!;
-    const expectedBase = expectedPerPax * guests;
-    expect(result.current.totalEur).toBe(expectedBase + addOnPartyAmount);
+    expect(result.current.totalEur).toBe(perPax * guests + addOnPartyAmount);
     // perPaxEur is the real adult unit price (never a blended
     // total/guests average that matches nothing the traveller pays).
-    expect(result.current.perPaxEur).toBe(Math.round(expectedPerPax));
+    expect(result.current.perPaxEur).toBe(perPax);
     expect(result.current.adultUnitEur).toBe(result.current.perPaxEur);
   });
 });

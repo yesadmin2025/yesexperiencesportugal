@@ -27,8 +27,6 @@ import {
 } from "@/components/studio-v3/livingAtlasDecision";
 import {
   EXPERIENCE_DIMENSIONS,
-  MAX_LEAD_DIMENSIONS,
-  MAX_SELECTED_DIMENSIONS,
   SIGNATURE_DIMENSION_AFFINITY,
   type ExperienceDimensionId,
   type ExperienceProfile,
@@ -39,6 +37,13 @@ import {
   resolveAdaptiveQuestion,
 } from "@/components/studio-v3/adaptiveQuestions";
 import type { StudioV3State } from "@/components/studio-v3/types";
+import {
+  deriveSemanticProfile,
+  type StudioSemanticProfile,
+} from "@/lib/studio-v3/semanticProfile";
+import { projectSemanticProfile } from "@/lib/studio-v3/semanticProfileProjection";
+import type { QuestionAnswerEvent } from "@/lib/studio-v3/questionHistory";
+import { deriveDirectorAnswerProjection } from "@/lib/studio-v3/directorAnswerProjection";
 import type {
   AdaptiveRefinementId,
   DestinationIntent,
@@ -89,6 +94,12 @@ export type StudioIntelligenceInput = {
    * the answer maps to nothing in the catalogue).
    */
   refinement?: AdaptiveRefinementId | null;
+  /**
+   * BUILD 2 / Pass 4 — the CANONICAL answer store. When present, the
+   * discovery signal is derived from it; `refinement` is only read as a
+   * legacy fallback for drafts saved before the canonical store existed.
+   */
+  questionHistory?: readonly QuestionAnswerEvent[];
 };
 
 export type StudioDirection = {
@@ -125,33 +136,43 @@ export type StudioIntelligence = {
 };
 
 /**
- * Build a Living Atlas ExperienceProfile from Studio V3 answers.
+ * BUILD 2 / Pass 4 — the FULL structured semantic profile for these answers.
+ *
+ * This is the product-authoritative model: every explicit interest survives
+ * here, with no top-3 truncation. Five or more interests stay structurally
+ * present.
+ */
+export function buildStudioSemanticProfile(
+  input: Pick<StudioIntelligenceInput, "feeling" | "interests"> &
+    Partial<Pick<StudioIntelligenceInput, "rhythm" | "destinationIntent">>,
+): StudioSemanticProfile {
+  return deriveSemanticProfile({
+    feeling: input.feeling,
+    interests: input.interests,
+    rhythm: input.rhythm ?? null,
+    destinationIntent: input.destinationIntent ?? null,
+  });
+}
+
+/**
+ * COMPATIBILITY-ONLY projection onto the BUILD-0 Living Atlas
+ * `ExperienceProfile` contract, which structurally accepts at most
+ * `MAX_SELECTED_DIMENSIONS` dimensions.
+ *
+ * BUILD 2 / Pass 4: the truncation is no longer implemented here and is no
+ * longer a semantic authority. It is delegated to the Pass-1 NO-LOSS
+ * projection, which reports every dimension that could not fit instead of
+ * silently dropping it. Read `buildStudioSemanticProfile()` (or
+ * `projectSemanticProfile().deferred`) for the real, untruncated demand.
+ *
  * Returns null when there is nothing to lead the day with.
  */
 export function buildExperienceProfile(
   input: Pick<StudioIntelligenceInput, "feeling" | "interests">,
 ): ExperienceProfile | null {
-  const lead = input.feeling ? FEELING_TO_DIMENSION[input.feeling] : null;
-
-  const fromInterests: ExperienceDimensionId[] = [];
-  for (const interest of input.interests) {
-    const dimension = INTEREST_TO_DIMENSION[interest];
-    if (dimension && !fromInterests.includes(dimension)) fromInterests.push(dimension);
-  }
-
-  const selected: ExperienceDimensionId[] = [];
-  if (lead) selected.push(lead);
-  for (const dimension of fromInterests) {
-    if (selected.length >= MAX_SELECTED_DIMENSIONS) break;
-    if (!selected.includes(dimension)) selected.push(dimension);
-  }
-
-  if (selected.length === 0) return null;
-
-  // The feeling leads. Without a feeling, the first interest leads.
-  const leads = (lead ? [lead] : selected.slice(0, 1)).slice(0, MAX_LEAD_DIMENSIONS);
-  return { selected, leads };
+  return projectSemanticProfile(buildStudioSemanticProfile(input)).legacyCompatibilityProjection;
 }
+
 
 function strongDimensions(signatureId: LivingAtlasSignatureId, profile: ExperienceProfile) {
   const affinity = SIGNATURE_DIMENSION_AFFINITY[signatureId];
@@ -201,8 +222,22 @@ function composeReasons(
   return reasons.slice(0, 3);
 }
 
+/**
+ * Canonical history is the authority. The legacy `refinement` field is a
+ * fallback only, so an old draft still resolves to the same direction.
+ */
+function canonicalDiscoverySignals(input: StudioIntelligenceInput) {
+  const derived = deriveDirectorAnswerProjection(input.questionHistory ?? []);
+  if (derived.selectedDiscoverySignals.length > 0) return derived.selectedDiscoverySignals;
+  const legacy = refinementToDiscoverySignal(input.refinement);
+  return legacy ? [legacy] : [];
+}
+
 export function deriveStudioIntelligence(input: StudioIntelligenceInput): StudioIntelligence {
-  const profile = buildExperienceProfile(input);
+  // BUILD 2 / Pass 4 — the UNCAPPED decision profile is the scoring
+  // authority. The legacy top-3 projection is only a display fallback.
+  const projection = projectSemanticProfile(buildStudioSemanticProfile(input));
+  const profile = projection.fullDecisionProfile ?? projection.legacyCompatibilityProjection;
   if (!profile) {
     return {
       profile: null,
@@ -217,7 +252,8 @@ export function deriveStudioIntelligence(input: StudioIntelligenceInput): Studio
   const decision = decideLivingAtlasSignature({
     profile,
     destinationIntent: input.destinationIntent ?? "no-preference",
-    discoverySignal: refinementToDiscoverySignal(input.refinement),
+    discoverySignals: canonicalDiscoverySignals(input),
+    profileContract: "full-decision",
   });
 
   const ranked = decision.ranked;

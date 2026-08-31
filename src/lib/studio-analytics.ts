@@ -35,7 +35,25 @@ export type StudioAnalyticsEvent =
   | "living_day_seen"
   | "living_day_changed"
   | "back_navigation"
-  | "abandon_by_phase";
+  | "abandon_by_phase"
+  // TURBO 1 — Living Canvas + Shape. Structural only, never raw free text.
+  | "studio_thread_added"
+  | "studio_thread_removed"
+  | "studio_question_generated"
+  | "studio_fork_answered"
+  | "studio_composition_changed"
+  | "studio_tradeoff_shown"
+  | "studio_tradeoff_resolved"
+  | "studio_swap"
+  | "studio_undo"
+  // FINAL CLOSURE — product outcome seams. Structural identifiers only.
+  | "studio_signature_candidate"
+  | "studio_final_skeleton"
+  | "studio_checkout_started"
+  // PASS 4 — the committed day cannot honour the exact date chosen. Structural
+  // only: never the stop, never the date.
+  | "logistics_date_conflict";
+
 
 /**
  * Events the funnel already owns end-to-end (table row + GA4 mirror).
@@ -59,6 +77,7 @@ const DIRECT_GA: Partial<Record<StudioAnalyticsEvent, YesAnalyticsEvent>> = {
   studio_enter: "studio_started",
   price_expanded: "studio_price_expanded",
   guest_details_completed: "studio_checkout_started",
+  studio_checkout_started: "studio_checkout_started",
 };
 
 export interface StudioAnalyticsParams {

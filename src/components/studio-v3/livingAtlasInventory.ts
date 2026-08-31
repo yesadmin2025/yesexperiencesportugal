@@ -1,7 +1,9 @@
+import type { StopCapability } from "@/data/regionStopPool";
 import type {
   ExperienceDimensionId,
   LivingAtlasSignatureId,
 } from "@/components/studio-v3/livingAtlasTaxonomy";
+
 
 export const LIVING_ATLAS_BUILDER_REGION_KEYS = [
   "arrabida-setubal",
@@ -44,7 +46,20 @@ export type LivingAtlasStopEvidenceInput = {
   label: string;
   tag?: string | null;
   intentionTags?: readonly string[] | null;
+  /**
+   * Verified structural capabilities of a REAL inventory stop.
+   *
+   * Presence of this key (even as an empty array) switches the derivation
+   * into AUTHORITATIVE INVENTORY MODE: `hands-on-traditions` is then decided
+   * exclusively by `participatory` and the legacy label regex can no longer
+   * promote an observational stop into hands-on Studio inventory.
+   *
+   * Free-text callers (route point labels, stories) omit it and keep the
+   * legacy, non-authoritative label evidence.
+   */
+  capabilities?: readonly StopCapability[];
 };
+
 
 const LABEL_RULES: ReadonlyArray<{
   dimension: ExperienceDimensionId;
@@ -100,30 +115,64 @@ const LEGACY_TAG_RULES: Readonly<Record<string, readonly ExperienceDimensionId[]
 };
 
 /**
+ * Capabilities that authoritatively PROVE a dimension for real inventory.
+ * Deterministic, inventory-bound, no labels, no AI.
+ */
+const CAPABILITY_RULES: Readonly<Record<StopCapability, readonly ExperienceDimensionId[]>> = {
+  participatory: ["hands-on-traditions"],
+  "from-water": ["atlantic-coast"],
+};
+
+/**
+ * Dimensions that may ONLY be produced by verified capabilities when the
+ * caller supplies inventory capabilities. The legacy label regex is demoted
+ * to non-authoritative evidence for these.
+ */
+const CAPABILITY_ONLY_DIMENSIONS: ReadonlySet<ExperienceDimensionId> = new Set([
+  "hands-on-traditions",
+]);
+
+/**
  * Translate a real Builder stop into the Living Atlas vocabulary.
  *
- * Evidence comes from existing tags and the verified stop label only. It does
- * not generate content, infer a new stop or call AI. The result is deliberately
- * multi-label: Fátima can be faith + heritage; Nazaré can be coast + local life.
+ * Evidence comes from verified structural capabilities, existing tags and the
+ * verified stop label. It does not generate content, infer a new stop or call
+ * AI. The result is deliberately multi-label: Fátima can be faith + heritage;
+ * Nazaré can be coast + local life.
+ *
+ * BUILD 1 / Pass 3 — CAPABILITY AUTHORITY. When `capabilities` is supplied
+ * (authoritative inventory mode), `hands-on-traditions` requires an explicit
+ * verified `participatory` capability. A `type: "workshop"` stop or a craft
+ * keyword in the name can NEVER make an observational moment hands-on.
  */
 export function deriveLivingAtlasDimensions(
   stop: LivingAtlasStopEvidenceInput,
 ): ExperienceDimensionId[] {
   const dimensions = new Set<ExperienceDimensionId>();
+  const inventoryMode = stop.capabilities !== undefined;
   const legacyTags = [stop.tag, ...(stop.intentionTags ?? [])]
     .filter((value): value is string => Boolean(value))
     .map((value) => value.trim().toLowerCase());
 
   for (const tag of legacyTags) {
-    for (const dimension of LEGACY_TAG_RULES[tag] ?? []) dimensions.add(dimension);
+    for (const dimension of LEGACY_TAG_RULES[tag] ?? []) {
+      if (inventoryMode && CAPABILITY_ONLY_DIMENSIONS.has(dimension)) continue;
+      dimensions.add(dimension);
+    }
   }
 
   for (const rule of LABEL_RULES) {
+    if (inventoryMode && CAPABILITY_ONLY_DIMENSIONS.has(rule.dimension)) continue;
     if (rule.pattern.test(stop.label)) dimensions.add(rule.dimension);
+  }
+
+  for (const capability of stop.capabilities ?? []) {
+    for (const dimension of CAPABILITY_RULES[capability] ?? []) dimensions.add(dimension);
   }
 
   return [...dimensions];
 }
+
 
 export function signatureBuilderRegion(
   signatureId: LivingAtlasSignatureId,
