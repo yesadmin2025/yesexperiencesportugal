@@ -10,9 +10,10 @@
  * Desktop: the same story, wider and progressively canvas-dominant.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { LivingCanvasModel } from "@/lib/studio-v3/livingCanvasModel";
 import type { StudioMedia } from "@/lib/studio-v3/studioMediaResolver";
+import { buildWineryDisplayLabels, studioDisplayLabel } from "../studio-v3/studioWineryPresentation";
 
 const STATUS_STYLE: Record<string, { opacity: number; line: string }> = {
   active: { opacity: 1, line: "var(--gold)" },
@@ -34,6 +35,20 @@ export function LivingCanvas({
   variant?: "full" | "assembled";
 }) {
   const visibleThreads = model.threads.filter((thread) => thread.status !== "excluded");
+
+  // Customer-safe labels — a winery supplier name is an operational assignment
+  // candidate, never traveller-facing truth. Presentation only: the model's
+  // canonical labels, ids and media identities are untouched.
+  const displayLabels = useMemo(
+    () => buildWineryDisplayLabels(model.moments.map((m) => ({ label: m.label }))),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [model.moments.map((m) => m.label).join("|")],
+  );
+  const safeLabel = (label: string) => studioDisplayLabel(label, displayLabels);
+  const safeMedia = (media: StudioMedia, label: string): StudioMedia => {
+    const safe = safeLabel(label);
+    return safe === label || media.alt !== label ? media : { ...media, alt: safe };
+  };
 
   if (variant === "assembled") {
     return (
@@ -68,7 +83,7 @@ export function LivingCanvas({
             {assembledRail(model).map((moment) => (
               <li key={moment.id} data-moment-id={moment.id} className="shrink-0">
                 <CrossfadeImage
-                  media={moment.image}
+                  media={safeMedia(moment.image, moment.label)}
                   className="h-[56px] w-[76px] rounded-[3px] overflow-hidden"
                 />
               </li>
@@ -138,7 +153,7 @@ export function LivingCanvas({
           {model.moments.map((moment) => (
             <li key={moment.id} data-moment-id={moment.id} className="flex items-start gap-3">
               <CrossfadeImage
-                media={moment.image}
+                media={safeMedia(moment.image, moment.label)}
                 className="h-[64px] w-[84px] shrink-0 rounded-[3px] overflow-hidden"
               />
               <div className="flex min-w-0 flex-col gap-1">
@@ -146,7 +161,7 @@ export function LivingCanvas({
                 className="text-[15px]"
                 style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
               >
-                {moment.label}
+                {safeLabel(moment.label)}
               </span>
               <span
                 className="text-[13px] leading-relaxed"
