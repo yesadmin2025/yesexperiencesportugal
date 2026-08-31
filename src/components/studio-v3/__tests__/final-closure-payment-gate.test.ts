@@ -108,7 +108,7 @@ describe("time truth at the payment seam", () => {
         lat: 38.52,
         lng: -9.02,
         durationMinutes: 90,
-        durationSource: "verified" as const,
+        durationSource: "inventory" as const,
       })),
       addOnsMinutes: 100000,
     });
