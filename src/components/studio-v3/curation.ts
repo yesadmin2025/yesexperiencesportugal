@@ -90,6 +90,8 @@ import {
   type CommercialLedger,
 } from "@/lib/studio-v3/commercialLedger";
 import { getTailorBlueprint } from "@/data/tailorBlueprints";
+import { projectAuthoredAnchorStops } from "./authoredAnchorProjection";
+
 import type { ComposedTiming, DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
 import { hasMinuteTruth, judgeAdmission, stopHasMinuteTruth } from "@/lib/studio-v3/timeAuthority";
 
