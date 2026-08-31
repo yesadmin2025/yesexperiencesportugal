@@ -2444,7 +2444,14 @@ function resolveLivingAtlasLiveDay(input: {
   });
 
   const composition = hybrid.composition;
-  const authoredPoints = authored.map((p, i) => ({ ...p, index: i }));
+  // P0-A COMPOSITION TRUTH — the RAW catalogue list is never a sellable day.
+  // An anchor with an alternative pool lists every candidate; the fallback
+  // projects it down to the canonical cardinality before it can ever reach a
+  // traveller, a validator or a checkout.
+  const authoredPoints = projectAuthoredAnchorStops(input.anchorTourId, authored).points.map(
+    (p, i) => ({ ...p, index: i }),
+  );
+
 
   // STRUCTURAL RESOLUTION GATE. `complete` means the composition authority
   // finished a real day. A date closure does NOT unfinish it — it only stops
