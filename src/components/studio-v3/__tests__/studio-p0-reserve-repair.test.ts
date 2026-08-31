@@ -3,7 +3,7 @@ import { projectAuthoredAnchorStops, anchorWineryPickMin } from "../authoredAnch
 import { resolveAuthoritativeRouteStops } from "../studioRouteAuthority";
 import { alignRouteLegsToItinerary } from "@/lib/studio-v3/itineraryLegAlignment";
 import { isWineryStopLabel } from "../studioWineryPresentation";
-import { findTour } from "@/data/tours";
+import { findTour } from "@/data/signatureTours";
 
 const ARRABIDA = "arrabida-wine-allinclusive";
 
