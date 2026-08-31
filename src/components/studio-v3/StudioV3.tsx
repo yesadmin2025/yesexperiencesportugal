@@ -140,6 +140,7 @@ import { validateItinerary, type ValidationStatus } from "@/lib/studio-v3/itiner
 import { alignRouteLegsToItinerary } from "@/lib/studio-v3/itineraryLegAlignment";
 import type { DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
 import { judgeRouteTimeFit } from "@/lib/studio-v3/timeAuthority";
+import { judgeFinalDayTime } from "@/lib/studio-v3/finalTimeGate";
 import {
   requiresCuratorParty,
   curatorPartyMessage,
@@ -1297,6 +1298,26 @@ export function StudioV3() {
         return;
       }
 
+      // FINAL STUDIO CLOSURE — the SAME canonical Time Authority answers again
+      // here, independently, on the EXACT route being booked (re-derived from
+      // `currentState` above, structural identity + duration provenance
+      // intact) plus the CURRENT add-on minutes counted exactly once. This
+      // protects stale, hydrated and deep-linked checkout states that never
+      // passed through the reveal gate. Anything other than a certified fit
+      // fails closed to the existing curator path — no Stripe session.
+      const checkoutTimeGate = judgeFinalDayTime({
+        points: checkoutStops,
+        addOnsMinutes: selectedAddOnMinutes,
+        skeletonTourId: currentState.tourId ?? tour.id ?? null,
+        rhythm: currentState.rhythm ?? null,
+      });
+      if (!checkoutTimeGate.bookable) {
+        setCheckoutPending(false);
+        openLeadSheet("book");
+        return;
+      }
+
+
       // COMMERCIAL PARITY — the structural ledger for THIS composition,
       // reconciled with the current basket. Quantities only; no euros are
       // derived here. An add-on already carried by the route is charged once,
@@ -1536,7 +1557,7 @@ export function StudioV3() {
         setCheckoutPending(false);
       }
     },
-    [checkoutPending, openLeadSheet, tourPriceTiers, selectedAddOnItems],
+    [checkoutPending, openLeadSheet, tourPriceTiers, selectedAddOnItems, selectedAddOnMinutes],
   );
 
   // Phase 7D — hydrate a saved Signature directly into the final reveal.
@@ -5146,13 +5167,31 @@ export function StoryboardHandoff({
     [anchorTourKey, skeletonTour, editedStops],
   );
 
+  // FINAL STUDIO CLOSURE — the canonical Time Authority is BOOKING truth, not
+  // an editing hint. The day being reserved is the CURRENT authoritative
+  // authored/frozen route plus the CURRENT add-on minutes, counted exactly
+  // once. Anything other than a certified in-budget fit (including
+  // `not-evaluable`) fails closed to the existing curator-review path — the
+  // itinerary is never silently compressed, re-timed or trimmed to fit.
+  const finalDayGate = useMemo(
+    () =>
+      judgeFinalDayTime({
+        points: editedStops,
+        addOnsMinutes: selectedAddOnMinutes,
+        skeletonTourId: anchorTourKey,
+        rhythm: state.rhythm ?? null,
+      }),
+    [editedStops, selectedAddOnMinutes, anchorTourKey, state.rhythm],
+  );
+
   // FINAL CLOSURE — Reserve is only a booking action when the authoritative
   // composition is actually bookable. Review/reject/unresolved states go to
   // the existing curator enquiry path instead of Stripe.
   const canReserve =
     editedStops.length >= REFINE_MIN_STOPS &&
     revealValidation.ok &&
-    approvalStatus === "approved";
+    approvalStatus === "approved" &&
+    finalDayGate.bookable;
 
   // P0-D — when Reserve is blocked, say why, truthfully and in one line.
   // Derived from the SAME facts that block it; never invented, never
@@ -5167,7 +5206,10 @@ export function StoryboardHandoff({
           ? "Checking real driving times for this day…"
           : approvalStatus === "reject"
             ? "This day doesn't fit comfortably in one day yet — remove or swap a moment."
-            : "This day needs a quick human check before we can confirm it instantly.";
+            : finalDayGate.fit.verdict === "over-day-budget"
+              ? "This day doesn't fit comfortably in one day yet — remove or swap a moment."
+              : "This day needs a quick human check before we can confirm it instantly.";
+
 
 
   // Canvas → YOUR DAY continuity. Same derived model, same media identities,
@@ -6082,6 +6124,7 @@ export function StoryboardHandoff({
             data-testid="studio-v3-handoff-primary"
             disabled={!canReserve}
             data-reserve-blocked={canReserve ? "false" : "true"}
+
           >
             {CTA_RESERVE_YOUR_DAY}
           </CtaButton>
