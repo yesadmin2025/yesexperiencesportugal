@@ -238,7 +238,9 @@ export async function flushDeferredSends(
 
     for (const row of rows ?? []) {
       const ageHours = (Date.now() - new Date(row.created_at).getTime()) / 3_600_000;
-      if (ageHours > RETRY_TTL_HOURS) {
+      // A forced (operator-initiated) replay overrides the TTL: the whole point
+      // is recovering mail that was parked while the sender was unverified.
+      if (!options.force && ageHours > RETRY_TTL_HOURS) {
         abandoned += 1;
         await supabase
           .from("email_deferred_sends")
@@ -248,16 +250,46 @@ export async function flushDeferredSends(
       }
 
       attempted += 1;
-      const res = await resendSend({
-        to: row.recipient_email,
-        subject: row.subject,
-        html: row.html,
-        text: row.body_text,
-        idemKey: row.idempotency_key,
+      // Re-send through the verified branded queue (notify.yesexperiences.pt) —
+      // the same path live sends use. The old direct-Resend flush was stuck in
+      // sandbox mode and rejected every guest address.
+      const unsubscribeToken = await ensureUnsubscribeToken(supabase, row.recipient_email);
+      if (!unsubscribeToken) {
+        // Recipient unsubscribed (or token unusable) — do not replay.
+        await supabase
+          .from("email_deferred_sends")
+          .update({ state: "abandoned", last_attempt_at: new Date().toISOString(), last_error: "recipient_unsubscribed" })
+          .eq("id", row.id);
+        abandoned += 1;
+        continue;
+      }
+      const { error: enqErr } = await supabase.rpc("enqueue_email", {
+        queue_name: "transactional_emails",
+        payload: {
+          message_id: row.message_id,
+          to: row.recipient_email,
+          from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+          sender_domain: SENDER_DOMAIN,
+          reply_to: REPLY_TO_ADDRESS,
+          subject: row.subject,
+          html: row.html,
+          text: row.body_text,
+          attachments: [],
+          purpose: "transactional",
+          label: row.template_name,
+          // Fresh key per replay: the provider permanently poisons keys whose
+          // first attempt failed, so reusing the original key gets a 409.
+          // Dedupe is still guaranteed by email_deferred_sends.delivered_at.
+          idempotency_key: `${row.idempotency_key}-r${row.attempts + 1}`,
+          unsubscribe_token: unsubscribeToken,
+          queued_at: new Date().toISOString(),
+        },
       });
       const now = new Date().toISOString();
-      if (res.ok) {
+      if (!enqErr) {
         sent += 1;
+        // Handed off to the queue dispatcher, which logs the final
+        // sent/failed outcome against this message_id.
         await supabase
           .from("email_deferred_sends")
           .update({
@@ -271,10 +303,9 @@ export async function flushDeferredSends(
           message_id: row.message_id,
           template_name: row.template_name,
           recipient_email: row.recipient_email,
-          status: "sent",
+          status: "pending",
         });
       } else {
-        const kind = classifyFailure(res.status, res.body);
         const attempts = row.attempts + 1;
         const exhausted = attempts >= MAX_RETRY_ATTEMPTS;
         await supabase
@@ -282,19 +313,17 @@ export async function flushDeferredSends(
           .update({
             attempts,
             last_attempt_at: now,
-            last_error: `resend ${res.status}: ${res.body.slice(0, 200)}`,
-            failure_kind: kind,
-            state: kind === "permanent" ? "failed" : exhausted ? "abandoned" : "pending",
+            last_error: `enqueue_failed: ${enqErr.message}`.slice(0, 300),
+            failure_kind: "transient",
+            state: exhausted ? "abandoned" : "pending",
             next_attempt_at: nextAttemptAt(attempts),
           })
           .eq("id", row.id);
-        if (kind === "permanent" || exhausted) {
+        if (exhausted) {
           abandoned += 1;
-          // A permanent failure says nothing about the provider's health —
-          // keep draining the rest of the queue.
           continue;
         }
-        // Provider still refusing — stop early, the rest will fail the same way.
+        // Queue unavailable — stop early, the rest will fail the same way.
         break;
       }
     }
@@ -320,6 +349,33 @@ function generateToken(): string {
   const bytes = new Uint8Array(32);
   crypto.getRandomValues(bytes);
   return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** One unsubscribe token per address; reused across sends. */
+async function ensureUnsubscribeToken(
+  supabase: typeof supabaseAdmin,
+  email: string,
+): Promise<string | undefined> {
+  const normalized = email.trim().toLowerCase();
+  const { data: existing } = await supabase
+    .from("email_unsubscribe_tokens")
+    .select("token, used_at")
+    .eq("email", normalized)
+    .maybeSingle();
+  if (existing && !existing.used_at) return existing.token;
+  if (existing) return undefined; // already unsubscribed
+  await supabase
+    .from("email_unsubscribe_tokens")
+    .upsert(
+      { token: generateToken(), email: normalized },
+      { onConflict: "email", ignoreDuplicates: true },
+    );
+  const { data: stored } = await supabase
+    .from("email_unsubscribe_tokens")
+    .select("token")
+    .eq("email", normalized)
+    .maybeSingle();
+  return stored?.token;
 }
 
 export interface SendInternalArgs {

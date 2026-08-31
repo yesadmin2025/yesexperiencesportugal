@@ -29,7 +29,15 @@ export const Route = createFileRoute("/api/public/hooks/email-flush")({
           return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
         }
 
-        const result = await flushDeferredSends(25);
+        // {"force": true} = manual replay: ignores backoff and the parking TTL.
+        let force = false;
+        try {
+          const body = await request.json();
+          force = body?.force === true;
+        } catch {
+          // empty body — scheduled drain
+        }
+        const result = await flushDeferredSends(25, { force });
         return Response.json({ ok: true, ...result });
       },
 
