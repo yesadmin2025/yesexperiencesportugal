@@ -281,6 +281,7 @@ export async function flushDeferredSends(
           // first attempt failed, so reusing the original key gets a 409.
           // Dedupe is still guaranteed by email_deferred_sends.delivered_at.
           idempotency_key: `${row.idempotency_key}-r${row.attempts + 1}`,
+          unsubscribe_token: unsubscribeToken,
           queued_at: new Date().toISOString(),
         },
       });
