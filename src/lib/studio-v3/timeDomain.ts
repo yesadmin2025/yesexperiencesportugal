@@ -133,6 +133,25 @@ export const RHYTHM_TIMING_POLICY: Readonly<Record<Rhythm, RhythmTimingPolicy>> 
  */
 export const FIXED_OPERATIONAL_SLACK_MIN = 15 as const;
 
+/* ------------------------------------------------------------------ *
+ * Owner-defined Studio door-to-door ceiling
+ * ------------------------------------------------------------------ */
+
+/**
+ * HARD MAX for a Studio customer day, measured DOOR TO DOOR (pickup ->
+ * drop-off): 9 hours. Legacy Signature catalogue durations of 570/600 minutes
+ * are historical product metadata and never permission for a Studio day to
+ * exceed this ceiling. Public Signature pages are unaffected.
+ */
+export const STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN = 540 as const;
+
+/**
+ * Lower edge of the target full-day envelope (8h). A day below this is still
+ * VALID when the traveller's real content makes it shorter — it must never be
+ * padded with irrelevant moments to reach 480.
+ */
+export const STUDIO_DOOR_TO_DOOR_TARGET_MIN_MIN = 480 as const;
+
 /**
  * Canonical stored `travelToNextMinutes` already carries operational padding,
  * so per-transition slack is halved on those legs to avoid double padding.
