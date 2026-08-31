@@ -267,7 +267,10 @@ export async function flushDeferredSends(
           attachments: [],
           purpose: "transactional",
           label: row.template_name,
-          idempotency_key: row.idempotency_key,
+          // Fresh key per replay: the provider permanently poisons keys whose
+          // first attempt failed, so reusing the original key gets a 409.
+          // Dedupe is still guaranteed by email_deferred_sends.delivered_at.
+          idempotency_key: `${row.idempotency_key}-r${row.attempts + 1}`,
           queued_at: new Date().toISOString(),
         },
       });
