@@ -137,6 +137,7 @@ import { RouteLegend } from "@/components/studio-v3/RouteLegend";
 import { YourDayFrame } from "@/components/studio-v3/YourDayFrame";
 import { ApprovalBadge } from "@/components/studio-v3/ApprovalBadge";
 import { validateItinerary, type ValidationStatus } from "@/lib/studio-v3/itinerary-validation";
+import { alignRouteLegsToItinerary } from "@/lib/studio-v3/itineraryLegAlignment";
 import type { DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
 import { judgeRouteTimeFit } from "@/lib/studio-v3/timeAuthority";
 import {
