@@ -87,8 +87,10 @@ import {
 } from "@/lib/studio-v3/compositionIdentity";
 import {
   buildCommercialLedger,
+  isKnownPriceAction,
   type CommercialLedger,
 } from "@/lib/studio-v3/commercialLedger";
+
 import { getTailorBlueprint } from "@/data/tailorBlueprints";
 import { projectAuthoredAnchorStops } from "./authoredAnchorProjection";
 
