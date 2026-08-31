@@ -2,10 +2,14 @@ import { describe, it, expect } from "vitest";
 import { projectAuthoredAnchorStops, anchorWineryPickMin } from "../authoredAnchorProjection";
 import { resolveAuthoritativeRouteStops } from "../studioRouteAuthority";
 import { alignRouteLegsToItinerary } from "@/lib/studio-v3/itineraryLegAlignment";
-import { isWineryStopLabel } from "../studioWineryPresentation";
 import { findTour } from "@/data/signatureTours";
 
 const ARRABIDA = "arrabida-wine-allinclusive";
+
+/** Pool candidates of THIS anchor, per the source of truth. */
+const POOL = ["fonseca", "piloto", "palmela", "bacalh", "catralvos"];
+const isPoolWinery = (label: string) =>
+  POOL.some((k) => label.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").includes(k));
 
 describe("P0-A — authored anchor projection (no raw catalogue day)", () => {
   it("knows the canonical pool minimum from existing truth", () => {
@@ -16,16 +20,16 @@ describe("P0-A — authored anchor projection (no raw catalogue day)", () => {
   it("collapses the Arrábida catalogue to the canonical winery cardinality", () => {
     const stops = findTour(ARRABIDA)?.stops ?? [];
     expect(stops.length).toBeGreaterThan(4);
-    const raw = stops.filter((s) => isWineryStopLabel(s.label)).length;
+    const raw = stops.filter((s) => isPoolWinery(s.label)).length;
     expect(raw).toBeGreaterThan(2);
 
     const projected = projectAuthoredAnchorStops(ARRABIDA, stops);
     expect(projected.projected).toBe(true);
-    expect(projected.points.filter((s) => isWineryStopLabel(s.label))).toHaveLength(2);
+    expect(projected.points.filter((s) => isPoolWinery(s.label))).toHaveLength(2);
     expect(projected.droppedLabels).toHaveLength(raw - 2);
     // Non-pool moments survive untouched, in order.
     const nonPool = (list: ReadonlyArray<{ label: string }>) =>
-      list.filter((s) => !isWineryStopLabel(s.label)).map((s) => s.label);
+      list.filter((s) => !isPoolWinery(s.label)).map((s) => s.label);
     expect(nonPool(projected.points)).toEqual(nonPool(stops));
   });
 
@@ -41,7 +45,7 @@ describe("P0-A — authored anchor projection (no raw catalogue day)", () => {
       catalogStops: stops,
       anchorTourId: ARRABIDA,
     });
-    expect(withAnchor.filter((s) => isWineryStopLabel(s.label))).toHaveLength(2);
+    expect(withAnchor.filter((s) => isPoolWinery(s.label))).toHaveLength(2);
     // Higher links in the chain are never projected — a composed/edited route
     // is already the authority.
     const composed = resolveAuthoritativeRouteStops({
