@@ -140,7 +140,7 @@ import { validateItinerary, type ValidationStatus } from "@/lib/studio-v3/itiner
 import { alignRouteLegsToItinerary } from "@/lib/studio-v3/itineraryLegAlignment";
 import type { DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
 import { judgeRouteTimeFit } from "@/lib/studio-v3/timeAuthority";
-import { judgeFinalDayTime } from "@/lib/studio-v3/finalTimeGate";
+import { describeRouteIdentity, judgeFinalDayTime } from "@/lib/studio-v3/finalTimeGate";
 import {
   requiresCuratorParty,
   curatorPartyMessage,
@@ -1222,6 +1222,17 @@ export function StudioV3() {
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsState, setDetailsState] = useState<StudioV3State | null>(null);
+  // FINAL CLOSURE — the operational approval truth for the day currently on
+  // screen, published to this seam through a ref because the checkout callback
+  // is declared before the gate is derived. Checkout only trusts it when the
+  // day being paid for is the SAME day that was gated (structural identity,
+  // order included). Default is fail-closed: unproven and unsigned.
+  const operationalGateRef = useRef<{
+    proven: boolean;
+    status: ValidationStatus;
+    identity: string;
+  }>({ proven: false, status: "review", identity: "" });
+
   const requestStripeCheckout = useCallback(
     (currentState: StudioV3State) => {
       const tour = currentState.tourId ? findTour(currentState.tourId) : null;
@@ -1312,6 +1323,22 @@ export function StudioV3() {
         rhythm: currentState.rhythm ?? null,
       });
       if (!checkoutTimeGate.bookable) {
+        setCheckoutPending(false);
+        openLeadSheet("book");
+        return;
+      }
+
+      // FINAL CLOSURE — the operational approval truth must ALSO hold at the
+      // payment seam, independently of the CTA. A day that was never scored on
+      // proven road data (`proven === false`), a HARD operational rejection, or
+      // a route that is not the exact day the gate certified (stale, hydrated
+      // or deep-linked state) can never open Stripe. Existing curator path.
+      const operationalTruth = operationalGateRef.current;
+      if (
+        !operationalTruth.proven ||
+        operationalTruth.status === "reject" ||
+        operationalTruth.identity !== describeRouteIdentity(checkoutStops)
+      ) {
         setCheckoutPending(false);
         openLeadSheet("book");
         return;
@@ -4687,6 +4714,13 @@ export function StoryboardHandoff({
     };
   }, [revealLegsLoading, skeletonTour, editedStops, revealLegMinutes, revealRouteStops]);
   const approvalStatus: ValidationStatus = operationalGate.status;
+  // Publish the gate to the payment seam. Read-only projection of facts that
+  // already exist above; it never changes what the traveller sees.
+  operationalGateRef.current = {
+    proven: operationalGate.proven,
+    status: operationalGate.status,
+    identity: describeRouteIdentity(editedStops),
+  };
 
 
 
