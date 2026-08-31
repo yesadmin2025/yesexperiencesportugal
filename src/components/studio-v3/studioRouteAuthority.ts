@@ -160,7 +160,10 @@ export function resolveAuthoritativeRouteStops(args: {
   if (compact && compact.length > 0) return normalize(compact);
 
   const catalog = args.catalogStops ?? null;
-  if (catalog && catalog.length > 0) return normalize(catalog);
+  if (catalog && catalog.length > 0) {
+    return normalize(projectAuthoredAnchorStops(args.anchorTourId ?? null, catalog).points);
+  }
+
 
   return [];
 }
