@@ -6125,6 +6125,7 @@ export function StoryboardHandoff({
             disabled={!canReserve}
             data-reserve-blocked={canReserve ? "false" : "true"}
             data-reserve-time-verdict={finalDayGate.fit.verdict}
+            data-tmp-debug={editedStops.map((p)=>`${p.inventoryStopId??p.blueprintStopId??"NOID"}|${p.durationMinutes??"NOMIN"}|${p.durationSource??"NOSRC"}`).join(" ;; ")}
 
           >
             {CTA_RESERVE_YOUR_DAY}

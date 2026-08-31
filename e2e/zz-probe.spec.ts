@@ -12,6 +12,7 @@ test("probe reserve gate", async ({ page }) => {
   if (await primary.count()) {
     console.log("blocked attr:", await primary.first().getAttribute("data-reserve-blocked"), "verdict:", await primary.first().getAttribute("data-reserve-time-verdict"));
   }
+  console.log("dbgstops:", await page.getByTestId("studio-v3-handoff-primary").getAttribute("data-tmp-debug"));
   console.log("reason:", await page.getByTestId("studio-v3-reserve-blocked-reason").innerText().catch(() => "<none>"));
   const dbg = await page.evaluate(() => (window as any).__studioDebug ?? null);
   console.log("dbg:", JSON.stringify(dbg));
