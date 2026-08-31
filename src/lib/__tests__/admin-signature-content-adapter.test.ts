@@ -52,7 +52,7 @@ describe("Admin vNext Signature content migration adapter", () => {
 
     const mutableHighlights = seed.content.highlights as string[];
     mutableHighlights.push("temporary test-only change");
-    const mutableItinerary = seed.itinerary as Array<{ label: string }>;
+    const mutableItinerary = seed.itinerary as unknown as Array<{ label: string }>;
     mutableItinerary[0]!.label = "temporary test-only stop";
 
     expect(JSON.stringify(source)).toBe(before);
