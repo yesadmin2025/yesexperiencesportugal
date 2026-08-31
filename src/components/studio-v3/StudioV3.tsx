@@ -6087,6 +6087,16 @@ export function StoryboardHandoff({
           </CtaButton>
         )}
 
+        {!canReserve && reserveBlockedReason ? (
+          <p
+            data-testid="studio-v3-reserve-blocked-reason"
+            className="max-w-[380px] text-center text-[12.5px] leading-relaxed"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+          >
+            {reserveBlockedReason}
+          </p>
+        ) : null}
+
         {!canReserve ? (
           <button
             type="button"
