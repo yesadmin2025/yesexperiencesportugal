@@ -276,9 +276,16 @@ describe("Pass 2 — real inventory protections", () => {
 
 
 
-  it("keeps the real 600-minute evora-alentejo skeleton budget exact", () => {
+  it("clamps the legacy 600-minute evora-alentejo skeleton to the Studio 9h ceiling", () => {
+    // OWNER RULE: a legacy Signature duration is historical metadata, never
+    // permission for a live Studio day to exceed 540 minutes door-to-door.
     const budget = resolveTimeBudget({ skeletonTourId: "evora-alentejo" });
-    expect(budget.availableExperienceMinutes).toBe(600);
+    expect(budget.availableExperienceMinutes).toBe(540);
+    // Catalogue reads still see the verbatim canonical value.
+    expect(
+      resolveTimeBudget({ skeletonTourId: "evora-alentejo", allowLegacyExtendedDuration: true })
+        .availableExperienceMinutes,
+    ).toBe(600);
 
     const result = composeLivingAtlasDay({
       anchorSignatureId: "evora-alentejo",
@@ -289,8 +296,7 @@ describe("Pass 2 — real inventory protections", () => {
     });
 
     expect(result.planningTiming.budget.source).toBe("signature-skeleton-truth");
-    // Exact canonical minutes — never rounded to a class target.
-    expect(result.planningTiming.budget.availableExperienceMinutes).toBe(600);
+    expect(result.planningTiming.budget.availableExperienceMinutes).toBe(540);
   });
 });
 
