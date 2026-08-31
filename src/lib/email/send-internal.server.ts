@@ -253,6 +253,16 @@ export async function flushDeferredSends(
       // Re-send through the verified branded queue (notify.yesexperiences.pt) —
       // the same path live sends use. The old direct-Resend flush was stuck in
       // sandbox mode and rejected every guest address.
+      const unsubscribeToken = await ensureUnsubscribeToken(supabase, row.recipient_email);
+      if (!unsubscribeToken) {
+        // Recipient unsubscribed (or token unusable) — do not replay.
+        await supabase
+          .from("email_deferred_sends")
+          .update({ state: "abandoned", last_attempt_at: new Date().toISOString(), last_error: "recipient_unsubscribed" })
+          .eq("id", row.id);
+        abandoned += 1;
+        continue;
+      }
       const { error: enqErr } = await supabase.rpc("enqueue_email", {
         queue_name: "transactional_emails",
         payload: {
