@@ -19,6 +19,8 @@ import type { DwellSource } from "@/lib/studio-v3/timeDomain";
  */
 
 import { resolveStudioV3Route, type ResolvedStudioV3Route } from "./curation";
+import { projectAuthoredAnchorStops } from "./authoredAnchorProjection";
+
 import type { StudioV3State } from "./types";
 
 /** Exact input shape `resolveStudioV3Route` consumes. */
