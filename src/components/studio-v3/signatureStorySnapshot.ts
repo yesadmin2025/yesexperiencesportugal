@@ -64,6 +64,7 @@ export function buildSignatureStorySnapshot(
     committedRoutePoints: state.committedRoutePoints,
     resolved: resolveStudioRouteFromState(state),
     catalogStops: tour?.stops ?? null,
+    anchorTourId: tour?.id ?? null,
   });
 
   // The email is a customer surface: keep the authoritative route order and

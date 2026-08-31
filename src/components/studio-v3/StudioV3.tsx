@@ -137,6 +137,7 @@ import { RouteLegend } from "@/components/studio-v3/RouteLegend";
 import { YourDayFrame } from "@/components/studio-v3/YourDayFrame";
 import { ApprovalBadge } from "@/components/studio-v3/ApprovalBadge";
 import { validateItinerary, type ValidationStatus } from "@/lib/studio-v3/itinerary-validation";
+import { alignRouteLegsToItinerary } from "@/lib/studio-v3/itineraryLegAlignment";
 import type { DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
 import { judgeRouteTimeFit } from "@/lib/studio-v3/timeAuthority";
 import {
@@ -1279,6 +1280,8 @@ export function StudioV3() {
         committedRoutePoints: currentState.committedRoutePoints ?? null,
         resolved: checkoutResolved,
         catalogStops: tour.stops ?? null,
+        // P0-A — a raw catalogue fallback is projected to canonical cardinality.
+        anchorTourId: currentState.tourId ?? tour.id ?? null,
       });
       // Supplier privacy guard — persisted/customer-facing labels stay generic.
       const checkoutWineryLabels = buildWineryDisplayLabels(checkoutStops);
@@ -1697,6 +1700,7 @@ export function StudioV3() {
         editedRoutePoints: s.editedRoutePoints ?? null,
         resolved: resolvedNow,
         catalogStops: anchorTour?.stops ?? null,
+        anchorTourId: anchorTour?.id ?? null,
       });
       if (shown.length === 0) return s;
       return {
@@ -4629,21 +4633,33 @@ export function StoryboardHandoff({
   // all "not proven approved": they resolve to `review`, which keeps the
   // existing curator/review path instead of enabling Reserve. Only a real
   // `validateItinerary(...).status === "approved"` may approve the day.
+  //
+  // P0-C — routing legs include the pickup leg and collapse deduped
+  // coordinates, so they never matched `stops.length - 1`. They are realigned
+  // to the itinerary geometry first; alignment failure stays `null`, which the
+  // validator still reads as incomplete (fail closed).
   const approvalStatus: ValidationStatus = useMemo(() => {
     if (revealLegsLoading) return "review";
     if (!skeletonTour) return "review";
     const region = tourRegionToRegionKey(skeletonTour.region);
+    const itineraryStopKeys = editedStops.map((s, i) => `${i}-${s.label}`);
+    const alignedLegMinutes = alignRouteLegsToItinerary({
+      routeStopKeys: (revealRouteStops ?? []).map((s) => s.key),
+      legMinutes: revealLegMinutes ?? null,
+      itineraryStopKeys,
+    });
     const result = validateItinerary({
       region,
       stops: editedStops.map((s, i) => ({
-        key: `${i}-${s.label}`,
+        key: itineraryStopKeys[i]!,
         label: s.label,
         category: "village",
       })),
-      legMinutes: revealLegMinutes ?? null,
+      legMinutes: alignedLegMinutes,
     });
     return result.status === "incomplete" ? "review" : result.status;
-  }, [revealLegsLoading, skeletonTour, editedStops, revealLegMinutes]);
+  }, [revealLegsLoading, skeletonTour, editedStops, revealLegMinutes, revealRouteStops]);
+
 
   // ---------- Fase 4 reveal guard ----------------------------------------
   // The cinematic reveal must only run when the resolved Signature is
@@ -4959,10 +4975,10 @@ export function StoryboardHandoff({
   useEffect(() => {
     if (reducedMotionInitial) return;
     const timers = [
-      window.setTimeout(() => setComposeBeat(1), 60),
-      window.setTimeout(() => setComposeBeat(2), 900),
-      window.setTimeout(() => setComposeBeat(3), 1800),
-      window.setTimeout(() => setComposeBeat(4), 2600),
+      window.setTimeout(() => setComposeBeat(1), 40),
+      window.setTimeout(() => setComposeBeat(2), 520),
+      window.setTimeout(() => setComposeBeat(3), 1000),
+      window.setTimeout(() => setComposeBeat(4), 1400),
     ];
     return () => timers.forEach(window.clearTimeout);
   }, [reducedMotionInitial]);
@@ -5137,6 +5153,22 @@ export function StoryboardHandoff({
     editedStops.length >= REFINE_MIN_STOPS &&
     revealValidation.ok &&
     approvalStatus === "approved";
+
+  // P0-D — when Reserve is blocked, say why, truthfully and in one line.
+  // Derived from the SAME facts that block it; never invented, never
+  // reassuring. Null whenever the day is bookable.
+  const reserveBlockedReason: string | null = canReserve
+    ? null
+    : editedStops.length < REFINE_MIN_STOPS
+      ? `A day needs at least ${REFINE_MIN_STOPS} moments — add one to continue.`
+      : !revealValidation.ok
+        ? "We're still grounding this day in real tour details."
+        : revealLegsLoading
+          ? "Checking real driving times for this day…"
+          : approvalStatus === "reject"
+            ? "This day doesn't fit comfortably in one day yet — remove or swap a moment."
+            : "This day needs a quick human check before we can confirm it instantly.";
+
 
   // Canvas → YOUR DAY continuity. Same derived model, same media identities,
   // matched on STRUCTURAL identity from the CURRENT authored route.
@@ -6054,6 +6086,16 @@ export function StoryboardHandoff({
             {CTA_RESERVE_YOUR_DAY}
           </CtaButton>
         )}
+
+        {!canReserve && reserveBlockedReason ? (
+          <p
+            data-testid="studio-v3-reserve-blocked-reason"
+            className="max-w-[380px] text-center text-[12.5px] leading-relaxed"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
+          >
+            {reserveBlockedReason}
+          </p>
+        ) : null}
 
         {!canReserve ? (
           <button

@@ -19,6 +19,8 @@ import type { DwellSource } from "@/lib/studio-v3/timeDomain";
  */
 
 import { resolveStudioV3Route, type ResolvedStudioV3Route } from "./curation";
+import { projectAuthoredAnchorStops } from "./authoredAnchorProjection";
+
 import type { StudioV3State } from "./types";
 
 /** Exact input shape `resolveStudioV3Route` consumes. */
@@ -123,7 +125,14 @@ export function resolveAuthoritativeRouteStops(args: {
     routePoints?: ReadonlyArray<RoutePointLike>;
   } | null;
   catalogStops?: ReadonlyArray<RoutePointLike> | null;
+  /**
+   * P0-A — when the anchor is known, the RAW catalogue fallback is projected
+   * down to the anchor's canonical pool cardinality before it can become an
+   * itinerary. Omit it and the fallback stays byte-identical to today.
+   */
+  anchorTourId?: string | null;
 }): StudioRouteStop[] {
+
   // Identity passes through UNTOUCHED — a moment that knew its structural or
   // media identity must never lose it by travelling through the chain.
   const normalize = (points: ReadonlyArray<RoutePointLike>): StudioRouteStop[] =>
@@ -153,7 +162,10 @@ export function resolveAuthoritativeRouteStops(args: {
   if (compact && compact.length > 0) return normalize(compact);
 
   const catalog = args.catalogStops ?? null;
-  if (catalog && catalog.length > 0) return normalize(catalog);
+  if (catalog && catalog.length > 0) {
+    return normalize(projectAuthoredAnchorStops(args.anchorTourId ?? null, catalog).points);
+  }
+
 
   return [];
 }
@@ -194,8 +206,10 @@ export function isProvablyUntouchedCanonicalAnchor(args: {
     composedRoutePoints?: ReadonlyArray<RoutePointLike>;
     routePoints?: ReadonlyArray<RoutePointLike>;
     livingAtlasLive?: { liveResolution?: string | null } | null;
+    skeletonTourKey?: string | null;
   } | null;
   catalogStops?: ReadonlyArray<RoutePointLike> | null;
+  anchorTourId?: string | null;
 }): boolean {
   // 1. Any manual edit disqualifies immediately.
   if ((args.editedRoutePoints?.length ?? 0) > 0) return false;
@@ -209,7 +223,16 @@ export function isProvablyUntouchedCanonicalAnchor(args: {
 
 
   // 3. Prove equality with the real catalog Signature stops.
-  const catalog = args.catalogStops ?? null;
+  //    P0-A: the canonical anchor is the PROJECTED catalogue (surplus pool
+  //    candidates removed) — the same day the fallback actually emits — not
+  //    the raw candidate list, which is never sellable.
+  const rawCatalog = args.catalogStops ?? null;
+  const catalog = rawCatalog
+    ? projectAuthoredAnchorStops(
+        args.anchorTourId ?? args.resolved?.skeletonTourKey ?? null,
+        rawCatalog,
+      ).points
+    : null;
   if (!catalog || catalog.length === 0) return false;
 
   const current = resolveAuthoritativeRouteStops({
@@ -217,6 +240,7 @@ export function isProvablyUntouchedCanonicalAnchor(args: {
     committedRoutePoints: args.committedRoutePoints ?? null,
     resolved: args.resolved ?? null,
     catalogStops: catalog,
+    anchorTourId: args.anchorTourId ?? args.resolved?.skeletonTourKey ?? null,
   });
 
   if (current.length === 0) return false;

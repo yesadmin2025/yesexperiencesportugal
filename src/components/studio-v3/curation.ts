@@ -87,9 +87,13 @@ import {
 } from "@/lib/studio-v3/compositionIdentity";
 import {
   buildCommercialLedger,
+  isKnownPriceAction,
   type CommercialLedger,
 } from "@/lib/studio-v3/commercialLedger";
+
 import { getTailorBlueprint } from "@/data/tailorBlueprints";
+import { projectAuthoredAnchorStops } from "./authoredAnchorProjection";
+
 import type { ComposedTiming, DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
 import { hasMinuteTruth, judgeAdmission, stopHasMinuteTruth } from "@/lib/studio-v3/timeAuthority";
 
@@ -2444,7 +2448,14 @@ function resolveLivingAtlasLiveDay(input: {
   });
 
   const composition = hybrid.composition;
-  const authoredPoints = authored.map((p, i) => ({ ...p, index: i }));
+  // P0-A COMPOSITION TRUTH — the RAW catalogue list is never a sellable day.
+  // An anchor with an alternative pool lists every candidate; the fallback
+  // projects it down to the canonical cardinality before it can ever reach a
+  // traveller, a validator or a checkout.
+  const authoredPoints = projectAuthoredAnchorStops(input.anchorTourId, authored).points.map(
+    (p, i) => ({ ...p, index: i }),
+  );
+
 
   // STRUCTURAL RESOLUTION GATE. `complete` means the composition authority
   // finished a real day. A date closure does NOT unfinish it — it only stops
@@ -2531,12 +2542,21 @@ function resolveLivingAtlasLiveDay(input: {
     omitted: omittedIdentity.records,
   });
 
-  // COMMERCIAL SAFETY GATE — fail closed. Only an anchor-price-safe day may be
-  // projected publicly; anything else falls back to the authored anchor. This
-  // never invents a zero-euro semantic, it only refuses to project.
-  const commerciallySafe = commercialLedger.disposition === "anchor-price-safe";
+  // COMMERCIAL SAFETY GATE — fail closed, but not blind.
+  //
+  // P0-B CONTINUITY: a composition that triggers ONLY price actions an
+  // existing approved authority can price (`known-price-action-required`,
+  // e.g. the Arrábida extra-winery ladder) is commercially resolved — the
+  // checkout ledger rebuild carries those actions to the exact same rules.
+  // Discarding such a day used to throw away a good composition and fall
+  // back to the raw anchor. Only `commercial-unresolved` still falls back.
+  const commerciallySafe =
+    commercialLedger.disposition === "anchor-price-safe" ||
+    (commercialLedger.disposition === "known-price-action-required" &&
+      commercialLedger.actions.every((action) => isKnownPriceAction(action.priceAction)));
   const validationBlocks = validation.status === "invalid";
   const projectable = !hybrid.passthrough && commerciallySafe && !validationBlocks;
+
 
   const block: LivingAtlasLiveBlock = {
     ...emptyBlock,

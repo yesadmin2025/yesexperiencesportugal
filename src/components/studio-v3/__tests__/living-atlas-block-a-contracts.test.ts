@@ -41,10 +41,14 @@ function resolve(overrides: Record<string, unknown> = {}) {
   } as Parameters<typeof resolveStudioV3Route>[0]);
 }
 
+import { projectAuthoredAnchorStops } from "../authoredAnchorProjection";
+
 function authoredLabels(tourId: string): string[] {
   const tour = signatureTours.find((candidate) => candidate.id === tourId);
   if (!tour) throw new Error(`missing anchor ${tourId}`);
-  return tour.stops.map((stop) => stop.label);
+  // P0-A: the authored fallback is the PROJECTED anchor (surplus alternative
+  // pool candidates removed) — the raw candidate list is never sellable.
+  return projectAuthoredAnchorStops(tourId, tour.stops).points.map((stop) => stop.label);
 }
 
 const ARRABIDA = "arrabida-wine-allinclusive";
