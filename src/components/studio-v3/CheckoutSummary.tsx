@@ -20,7 +20,7 @@ import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPres
 import { formatGuestComposition } from "./formatGuests";
 import {
   CHECKOUT_HEADER,
-  CTA_RESERVE_AND_PAY,
+  CTA_RESERVE_YOUR_DAY,
   INSTANT_CONFIRMATION,
 } from "@/content/signature-day-copy";
 import type { StudioV3State } from "./types";
@@ -481,7 +481,7 @@ export function CheckoutSummary({
                 onClick={handleReserve}
                 data-testid="studio-v3-checkout-summary-reserve"
               >
-                {checkoutError ? "Try secure checkout again" : CTA_RESERVE_AND_PAY}
+                {checkoutError ? "Try secure checkout again" : CTA_RESERVE_YOUR_DAY}
               </CtaButton>
             )}
             <p className="mt-2 text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">

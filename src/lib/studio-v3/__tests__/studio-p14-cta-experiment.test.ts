@@ -169,6 +169,8 @@ describe("P14 · presentation isolation", () => {
     expect(ctaSource).not.toContain("currentP14YourDayCtaLabel");
     expect(pageSource).toContain("getFunnelVariant();");
     expect(storySource).toContain('data-testid="studio-v3-handoff-primary"');
-    expect(storySource).toContain('onSecure={() => advance("guestDetails")}');
+    // Canonical CTA flow: Your Day → make it real (logistics) → guest details.
+    expect(storySource).toContain('onSecure={() => advance("logistics")}');
+
   });
 });

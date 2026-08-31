@@ -332,6 +332,20 @@ export function serverAddOnLine(
 }
 
 /**
+ * THE add-on total, for every pricing unit. Exactly the canonical per-unit
+ * price × the canonical quantity Stripe is charging — never guests × unit.
+ * Checkout metadata and the booking snapshot both read this single helper,
+ * so they cannot diverge from the charged Stripe lines.
+ *
+ * Pure. Adds no pricing rule of its own.
+ */
+export function serverAddOnsChargedTotalEur(
+  lines: ReadonlyArray<{ perUnitEur: number; quantity: number }>,
+): number {
+  return lines.reduce((sum, line) => sum + line.perUnitEur * line.quantity, 0);
+}
+
+/**
  * Included-lunch stop governed by the dedicated −€15 pp removal credit.
  * Server mirror of `TAILOR_DEDICATED_LUNCH_STOP_ID` in
  * `src/data/tailorRules.ts`. Removing this stop is NOT a principal-stop

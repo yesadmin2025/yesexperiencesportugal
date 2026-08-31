@@ -1,5 +1,11 @@
-// Studio v2 — content for the 5-stage guided consultation.
+// LEGACY — Studio v2 content for the retired 5-stage guided consultation.
+// /studio-v2 permanently redirects into /studio-v3, so nothing here is
+// traveller-facing. In particular the "Four stops / Five stops" pace copy
+// below is NOT the live rhythm contract — the canonical rhythm copy lives in
+// `src/components/studio-v3/types.ts` (RHYTHMS) and describes pace/depth
+// without promising a stop count. Kept only for legacy hydration/compat.
 // Copy is intentionally professional, concierge tone. Edit here, not in components.
+
 
 import type {
   IntentAtmosphere,

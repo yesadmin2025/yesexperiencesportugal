@@ -72,15 +72,44 @@ const ARTISAN_DESTINATIONS = new Set([
   "arrabida-setubal-azeitao",
 ]);
 
-const REFINEMENT_TO_SIGNAL: Readonly<
+/**
+ * TEMPORARY BRIDGE WIRING (BUILD 0). The three refinements below
+ * (`wine-monumental-estates`, `wine-clay-talha`, `coast-remote-southwest`)
+ * exist so that Évora, Roman Talha and the southwest Vicentine coast have a
+ * real traveller-facing door and can be certified as publicly reachable.
+ * They are fixed-question compatibility wiring only and are expected to be
+ * REPLACED by the AI Question Director in BUILD 2. Do not add further fixed
+ * questions here and do not redesign these cosmetically in the meantime.
+ *
+ * Alentejo wine has two genuinely different products: monumental Évora with
+ * classic estates, and the intimate Roman/clay-talha family cellar. Without
+ * these two answers neither direction had any traveller-facing door. Only
+ * offered while the destination is still open; the fixed Alentejo intents
+ * already resolve a single product, so asking would be theatre.
+ */
+const ALENTEJO_WINE_DESTINATIONS = new Set(["no-preference", "anywhere-special"]);
+
+/**
+ * The remote southwest coast is a real alternative to the Arrábida beaches.
+ * Only offered where the destination is still open — a traveller who already
+ * chose the Vicentine coast has nothing left to separate.
+ */
+const REMOTE_COAST_DESTINATIONS = new Set(["no-preference", "anywhere-special"]);
+
+
+export const REFINEMENT_TO_SIGNAL: Readonly<
   Record<AdaptiveRefinementId, LivingAtlasDiscoverySignal | null>
 > = {
+
   "coast-from-the-water": "arrabida-from-water",
   "coast-wild-beaches": "arrabida-beach-picnic",
   "coast-clifftop-views": null,
+  "coast-remote-southwest": "wild-vicentine-coast",
   "wine-cellar-depth": "arrabida-family-wine",
   "wine-table-and-cheese": "make-azeitao-cheese",
   "wine-vineyard-views": null,
+  "wine-monumental-estates": "monumental-alentejo",
+  "wine-clay-talha": "roman-talha-family",
   "hands-paint-tile": "paint-azulejo",
   "hands-make-cheese": "make-azeitao-cheese",
   "hands-just-watch": null,
@@ -99,9 +128,12 @@ const REFINEMENT_SUMMARY: Readonly<Record<AdaptiveRefinementId, string>> = {
   "coast-from-the-water": "The coast seen from the water",
   "coast-wild-beaches": "Wild beaches and a long pause",
   "coast-clifftop-views": "Clifftop views over the Atlantic",
+  "coast-remote-southwest": "A remote, wild stretch of southwest coast",
   "wine-cellar-depth": "Time inside the cellar",
   "wine-table-and-cheese": "The table, cheese and local produce",
   "wine-vineyard-views": "Vineyard views over tasting notes",
+  "wine-monumental-estates": "Monumental Évora and its classic estates",
+  "wine-clay-talha": "A family cellar and its clay talhas",
   "hands-paint-tile": "Painting an azulejo tile",
   "hands-make-cheese": "Making Azeitão cheese by hand",
   "hands-just-watch": "No workshop — observing only",
@@ -131,6 +163,20 @@ export function refinementSummaryLabel(
 }
 
 /**
+ * Diagnostic (read-only): every public refinement answer that emits the given
+ * Living Atlas discovery signal. An empty array means the signal exists in the
+ * catalogue but no traveller-facing question can currently produce it.
+ */
+export function refinementIdsForSignal(
+  signal: LivingAtlasDiscoverySignal,
+): AdaptiveRefinementId[] {
+  return (Object.keys(REFINEMENT_TO_SIGNAL) as AdaptiveRefinementId[]).filter(
+    (id) => REFINEMENT_TO_SIGNAL[id] === signal,
+  );
+}
+
+
+/**
  * Semantic gate. A question is only eligible when it asks for a genuinely NEW
  * dimension of an already-known theme (which direction, how, which thread) —
  * never to reconfirm a theme the traveller has already stated, and never for a
@@ -152,12 +198,22 @@ function addsNewDimension(memory: StudioSemanticMemory, kind: AdaptiveQuestionKi
 }
 
 function coastRelevant(state: StudioV3State): boolean {
-  if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
+  if (
+    !ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent) &&
+    !REMOTE_COAST_DESTINATIONS.has(state.destinationIntent)
+  ) {
+    return false;
+  }
   return state.feeling === "coastal" || state.interests.includes("coast");
 }
 
 function wineRelevant(state: StudioV3State): boolean {
-  if (!ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) return false;
+  if (
+    !ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent) &&
+    !ALENTEJO_WINE_DESTINATIONS.has(state.destinationIntent)
+  ) {
+    return false;
+  }
   // Explicit wine intent ONLY. Gastronomy is food, not wine; coast, nature,
   // heritage and slow-luxury never earn a cellar/vines question.
   return hasExplicitWineIntent({
@@ -220,6 +276,89 @@ function orderedKinds(state: StudioV3State): AdaptiveQuestionKind[] {
   return eligible;
 }
 
+
+/**
+ * Coast answers. The Arrábida trio is offered wherever those routes exist; the
+ * remote southwest is only offered where the Vicentine product is reachable.
+ */
+function coastOptions(state: StudioV3State): ChoiceOption<AdaptiveRefinementId>[] {
+  const options: ChoiceOption<AdaptiveRefinementId>[] = [];
+
+  if (ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) {
+    options.push(
+      {
+        id: "coast-from-the-water",
+        label: "From the water",
+        whisper: "Coastal caves and cliffs seen from the sea.",
+      },
+      {
+        id: "coast-wild-beaches",
+        label: "On a wild beach",
+        whisper: "Sand, open space and time to slow down.",
+      },
+      {
+        id: "coast-clifftop-views",
+        label: "From above",
+        whisper: "Atlantic viewpoints with your feet on solid ground.",
+      },
+    );
+  }
+
+  if (REMOTE_COAST_DESTINATIONS.has(state.destinationIntent)) {
+    options.push({
+      id: "coast-remote-southwest",
+      label: "Far from everything",
+      whisper: "The wild southwest: river mouths, villages and open Atlantic.",
+    });
+  }
+
+  return options;
+}
+
+/**
+ * Wine answers. Arrábida asks how the wine is met; Alentejo asks which
+ * Alentejo — monumental estates or an intimate clay-talha family cellar.
+ */
+function wineOptions(state: StudioV3State): ChoiceOption<AdaptiveRefinementId>[] {
+  const options: ChoiceOption<AdaptiveRefinementId>[] = [];
+
+  if (ARRABIDA_REFINEMENT_DESTINATIONS.has(state.destinationIntent)) {
+    options.push(
+      {
+        id: "wine-cellar-depth",
+        label: "Inside the cellar",
+        whisper: "The people, the process and how the wine is made.",
+      },
+      {
+        id: "wine-table-and-cheese",
+        label: "Around the table",
+        whisper: "Cheese, bread and regional produce, unhurried.",
+      },
+      {
+        id: "wine-vineyard-views",
+        label: "Out among the vines",
+        whisper: "The landscape first, with the tasting woven around it.",
+      },
+    );
+  }
+
+  if (ALENTEJO_WINE_DESTINATIONS.has(state.destinationIntent)) {
+    options.push(
+      {
+        id: "wine-monumental-estates",
+        label: "Évora and its estates",
+        whisper: "A monumental town and the classic houses of Alentejo wine.",
+      },
+      {
+        id: "wine-clay-talha",
+        label: "Clay talhas, one family",
+        whisper: "Roman roots, amphora wine and a cellar still run by hand.",
+      },
+    );
+  }
+
+  return options;
+}
 
 function localOptions(state: StudioV3State): ChoiceOption<AdaptiveRefinementId>[] {
   const options: ChoiceOption<AdaptiveRefinementId>[] = [
@@ -320,56 +459,28 @@ export function resolveAdaptiveQuestion(
   }
 
   if (kind === "coast") {
+    const options = coastOptions(state);
+    if (options.length < 2) return null;
     return {
       kind,
       eyebrow: "The Atlantic",
       title: "How should the coast",
       titleAccent: "reach you?",
       hint: "",
-      options: [
-        {
-          id: "coast-from-the-water",
-          label: "From the water",
-          whisper: "Coastal caves and cliffs seen from the sea.",
-        },
-        {
-          id: "coast-wild-beaches",
-          label: "On a wild beach",
-          whisper: "Sand, open space and time to slow down.",
-        },
-        {
-          id: "coast-clifftop-views",
-          label: "From above",
-          whisper: "Atlantic viewpoints with your feet on solid ground.",
-        },
-      ],
+      options,
     };
   }
 
   if (kind === "wine") {
+    const options = wineOptions(state);
+    if (options.length < 2) return null;
     return {
       kind,
       eyebrow: "The table",
       title: "What should the wine",
       titleAccent: "be about?",
       hint: "",
-      options: [
-        {
-          id: "wine-cellar-depth",
-          label: "Inside the cellar",
-          whisper: "The people, the process and how the wine is made.",
-        },
-        {
-          id: "wine-table-and-cheese",
-          label: "Around the table",
-          whisper: "Cheese, bread and regional produce, unhurried.",
-        },
-        {
-          id: "wine-vineyard-views",
-          label: "Out among the vines",
-          whisper: "The landscape first, with the tasting woven around it.",
-        },
-      ],
+      options,
     };
   }
 

@@ -48,9 +48,21 @@ describe("Studio V3 curation — operational truth", () => {
         pickup: "sesimbra-setubal-arrabida",
         destinationIntent: "arrabida-setubal-azeitao",
         dateExact: MONDAY,
+        preferTourId: "arrabida-wine-allinclusive",
       });
-      expect(route.routePoints.some((p) => LIVRAMENTO_RE.test(p.label))).toBe(false);
+      // Block A: the closure is carried as an explicit date-closure decision
+      // (public projection refused) rather than a silent membership drop.
+      const live = route.livingAtlasLive;
+      expect(live).not.toBeNull();
+      expect(live!.anchorTourId).toBe("arrabida-wine-allinclusive");
+      expect(live!.compositionResolution).toBe("complete");
+      expect(live!.compositionStopIds).toContain("mercado-do-livramento");
+      expect(live!.passthroughReason).toBe("date-closure");
+      expect(live!.liveResolution).toBe("authored-fallback");
+      expect(live!.validation).not.toBeNull();
+      expect(live!.validation!.reasons.map((r) => r.code)).toContain("window-conflict");
     });
+
 
     it("ignores malformed dateExact (returns the unfiltered pool)", () => {
       const journey = curateJourney("wine-food", "couple", "immersive", {

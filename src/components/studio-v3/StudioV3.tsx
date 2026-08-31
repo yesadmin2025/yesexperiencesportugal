@@ -27,16 +27,13 @@ import {
   PhaseHeader,
 } from "./PhaseChrome";
 import { LogisticsPhase } from "./LogisticsPhase";
-import { composeDirectorsRead, directorsReadBackTarget } from "./directorsRead";
-import { DirectorsRead } from "./DirectorsRead";
+import { composeDirectorsRead } from "./directorsRead";
 
 import { InvestmentTierPicker } from "./InvestmentTierPicker";
 import { StudioV3Intro } from "./StudioV3Intro";
 import { PhaseShell } from "./PhaseShell";
 import { MobileBeatReveal } from "./MobileBeatReveal";
 import type { StudioV3BeatId } from "./StudioV3ProgressStepper";
-import { LivingJourneyPanel } from "./LivingJourneyPanel";
-import { ComposerMap } from "./ComposerMap";
 import { AtmosphereBeat, MapBeat, type MapBeatMode } from "./CreationBeat";
 import { StudioV3SignatureMap } from "./StudioV3SignatureMap";
 import { validateResolvedSignature } from "./validateReveal";
@@ -63,7 +60,6 @@ import {
 import { computeQualityScore } from "@/lib/studio-v3-quality";
 import { inferKind, summarizeDay } from "@/lib/studio/timing";
 import { PartialReveal } from "./PartialReveal";
-import { isLivingDayPhaseAllowed, livingDayStageFor } from "./livingDaySpine";
 
 import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -93,6 +89,7 @@ import { hasSeenFirstRouteBeat } from "./studioFirstRouteBeat";
 
 import { UnifiedYourDayRoute } from "./UnifiedYourDayRoute";
 import {
+  isProvablyUntouchedCanonicalAnchor,
   resolveAuthoritativeRouteStops,
   resolveStudioRouteFromState,
   studioRouteShapingInput,
@@ -106,7 +103,12 @@ import {
 } from "@/lib/studio-v3/composerAdapter";
 import { priceComposedJourney } from "@/lib/studio-v3/composerPricing";
 import { getViatorMeta } from "@/data/signatureToursViator";
-import { resolvePerPaxEur, resolveJourneyPricing } from "@/data/signatureTourPricing";
+import {
+  resolveStudioAddOnAnchorEur,
+  resolveStudioStrictJourneyPricing,
+  resolveStudioStrictPerPaxEur,
+} from "@/lib/studio-v3/studioStrictTier";
+
 import { addOnPartyAmount, addOnsPartyTotal } from "@/lib/checkout/studio-charge";
 
 import { useTourPriceTiers } from "@/hooks/use-tour-price-tiers";
@@ -127,6 +129,7 @@ const SIGNATURE_MIN_PRICE_EUR: number = (() => {
 })();
 import { regionalVoiceFor } from "./regionalVoice";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
+import { isStopClosedOn } from "@/data/stopOperational";
 import { REGION_ORIGIN, type RegionKey } from "@/data/regionStops";
 import { lookupStopGeo } from "@/lib/studio/stop-lookup";
 import { useRouteLegMinutes, type RouteLegStop } from "@/hooks/use-route-leg-minutes";
@@ -134,6 +137,12 @@ import { RouteLegend } from "@/components/studio-v3/RouteLegend";
 import { YourDayFrame } from "@/components/studio-v3/YourDayFrame";
 import { ApprovalBadge } from "@/components/studio-v3/ApprovalBadge";
 import { validateItinerary, type ValidationStatus } from "@/lib/studio-v3/itinerary-validation";
+import type { DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
+import { judgeRouteTimeFit } from "@/lib/studio-v3/timeAuthority";
+import {
+  requiresCuratorParty,
+  curatorPartyMessage,
+} from "@/lib/studio-v3/selfServiceParty";
 
 // Lazy — Leaflet ships only when the reveal mounts.
 const BuilderMap = lazy(() =>
@@ -242,6 +251,7 @@ import {
   type ChoiceOption,
   type Companions,
   type Consideration,
+  type AuthoredRoutePoint,
   type DateMode,
   type DestinationIntent,
   type Feeling,
@@ -267,7 +277,6 @@ import {
 import {
   availableAdaptiveQuestionKinds,
   refinementSummaryLabel,
-  resolveAdaptiveQuestion,
 } from "@/components/studio-v3/adaptiveQuestions";
 import { useStudioIntentAdvisor } from "./useStudioIntentAdvisor";
 import { prioritiseResolvedRefineIntents } from "./studioIntentAdvisor";
@@ -315,10 +324,54 @@ import { FinalRevealStory } from "./FinalRevealStory";
 import { WhyRouteWorks } from "./WhyRouteWorks";
 import { OtherDirections } from "./OtherDirections";
 import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
+import {
+  appendLiveDirectorAnswer,
+  hydrateStudioQuestionHistory,
+} from "@/lib/studio-v3/studioQuestionHistoryBridge";
+import { adaptDirectorQuestion } from "@/lib/studio-v3/questionPresentationAdapter";
+import { useDirectorVoice } from "@/lib/studio-v3/useDirectorVoice";
+import { useBuilderSessionId } from "@/hooks/useBuilderSessionId";
+import { deriveStudioDirectorRuntime } from "@/lib/studio-v3/studioDirectorRuntime";
+import { LivingCanvas } from "@/components/studio-v3/LivingCanvas";
+import { ForkChoiceCards } from "@/components/studio-v3/ForkChoiceCards";
+import { resolveForkMedia } from "@/lib/studio-v3/forkMedia";
+import { useBuilderRouteImages } from "@/hooks/useBuilderImages";
+import { StudioFreeTextNote } from "@/components/studio-v3/StudioFreeTextNote";
+import { deriveLivingCanvas, type LivingCanvasModel } from "@/lib/studio-v3/livingCanvasModel";
+import {
+  canOfferAdditionalMoment,
+  resolveMomentOptionality,
+} from "@/lib/studio-v3/momentOptionality";
+import { evaluateCandidateFit, evaluatePoolFit, fitByLabel } from "@/lib/studio-v3/candidateFit";
+import { resolveCheckoutCommercialState } from "@/lib/studio-v3/checkoutCommercialState";
+import { rebuildLiveCommercialAuthority } from "@/lib/studio-v3/liveCommercialAuthority";
+import { resolveYourDayVisuals, yourDayMediaFor } from "@/lib/studio-v3/yourDayCanvasContinuity";
+
+/**
+ * FINAL CLOSURE §8 — the phases where a resolved composition is legitimately
+ * part of the traveller's journey. A fallback resolver being *able* to
+ * produce a route earlier is never a reason to show one.
+ */
+const COMPOSITION_READY_PHASES: ReadonlySet<string> = new Set([
+  "map",
+  "storyboard",
+  // PASS 4.1 — the day has already been shown and frozen before logistics;
+  // the Canvas must stay present during "Make it real", never blink away.
+  "logistics",
+  "confirmation",
+  "guestDetails",
+  "checkout",
+]);
+
+import { upsertFreeTextAnswer } from "@/lib/studio-v3/freeTextAnswer";
+import { interpretFreeText } from "@/lib/studio-v3/freeTextInterpreter";
+import { interpretFreeTextWithAi } from "@/lib/studio-v3/interpret-free-text.functions";
+import type { SemanticSourceEvent } from "@/lib/studio-v3/semanticSourceEvents";
+
 import { CheckoutSummary as CheckoutSummaryStep } from "./CheckoutSummary";
 import { GuestDetailsStep } from "./GuestDetailsStep";
 import { buildSignatureStorySnapshot } from "./signatureStorySnapshot";
-import { INSTANT_CONFIRMATION } from "@/content/signature-day-copy";
+import { INSTANT_CONFIRMATION, CTA_RESERVE_YOUR_DAY } from "@/content/signature-day-copy";
 import { sendSignatureStoryEmail } from "@/lib/emails/sendSignatureStoryEmail.functions";
 import {
   BrandedCheckoutDrawer,
@@ -919,10 +972,44 @@ function writePersistedStudioState(state: StudioV3State): void {
   }
 }
 
+/**
+ * FINAL TRUTH CERTIFICATION — the ONE live timing-conflict source.
+ *
+ * The genuine, synchronously available conflict is the canonical composition
+ * authority's own `TimingConflict`, surfaced on the resolved route's Living
+ * Atlas block. Nothing is fabricated here: when the composition produces none
+ * (or the state cannot resolve a route yet) the Director sees `null`.
+ *
+ * Exported so BOTH the live derivation and the post-answer forward derivation
+ * read it from THEIR OWN state — a post-answer decision can never be taken on
+ * a stale pre-answer conflict.
+ */
+export function deriveLiveTimingConflict(state: StudioV3State): TimingConflict | null {
+  if (!state.feeling || !state.companions || !state.rhythm) return null;
+  return (
+    resolveStudioV3Route({
+      feeling: state.feeling,
+      companions: state.companions,
+      rhythm: state.rhythm,
+      interests: state.interests,
+      pickup: state.pickup,
+      occasion: state.occasion,
+      considerations: state.considerations,
+      investment: state.investment,
+      destinationIntent: state.destinationIntent,
+      questionHistory: state.questionHistory,
+    }).livingAtlasLive?.conflict ?? null
+  );
+}
+
+
 export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
   const isMobile = useIsMobile();
   const { data: tourPriceTiers } = useTourPriceTiers();
+  // TURBO 1 — raw note is LOCAL DRAFT ONLY. Its semantics live in
+  // `state.questionHistory`; the sentence itself is never persisted or sent.
+  const [freeTextDraft, setFreeTextDraft] = useState("");
   const [exiting, setExiting] = useState(false);
 
   const [reaction, setReaction] = useState<Reaction | null>(null);
@@ -966,7 +1053,9 @@ export function StudioV3() {
     }
     const persisted = readPersistedStudioState();
     if (persisted) {
-      setState(persisted);
+      // Backward hydration: an old draft's legacy refinement becomes exactly
+      // one compatibility event in the canonical question history.
+      setState(hydrateStudioQuestionHistory(persisted));
       // Acknowledge-once across refresh: a restored session that already
       // reached the route-shaping part of the flow must not replay the first
       // cinematic route beat. Derived from the restored state — nothing new
@@ -1004,6 +1093,9 @@ export function StudioV3() {
   const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
   const [checkoutTourId, setCheckoutTourId] = useState<string | null>(null);
   const [checkoutPending, setCheckoutPending] = useState(false);
+  // PASS 4 — a concise, honest message when an exact date cannot honour the
+  // committed day. Never a silent mutation of the itinerary.
+  const [logisticsConflict, setLogisticsConflict] = useState<string | null>(null);
 
   // Lifted add-on selection so the checkout drawer summary AND the Stripe
   // session both see exactly what the traveller picked on the reveal.
@@ -1024,6 +1116,12 @@ export function StudioV3() {
       return same ? prev : summary.items;
     });
   }, []);
+  // Minutes committed by the CURRENT basket — recomputed on every add-on
+  // change so the candidate-fit gate never judges against an emptier day.
+  const selectedAddOnMinutes = useMemo(
+    () => selectedAddOnItems.reduce((sum, i) => sum + (i.durationMinutes || 0), 0),
+    [selectedAddOnItems],
+  );
   // Reset add-ons when the resolved tour changes (fresh reveal ⇒ clean slate).
   useEffect(() => {
     setSelectedAddOnIds([]);
@@ -1049,8 +1147,16 @@ export function StudioV3() {
         destinationIntent: state.destinationIntent,
         rhythm: state.rhythm,
         refinement: state.refinement,
+        questionHistory: state.questionHistory,
       }).reasons,
-    [state.feeling, state.interests, state.destinationIntent, state.rhythm, state.refinement],
+    [
+      state.feeling,
+      state.interests,
+      state.destinationIntent,
+      state.rhythm,
+      state.refinement,
+      state.questionHistory,
+    ],
   );
 
   /**
@@ -1069,7 +1175,7 @@ export function StudioV3() {
       considerations: state.considerations,
       investment: state.investment,
       destinationIntent: state.destinationIntent,
-      refinement: state.refinement,
+      questionHistory: state.questionHistory,
     }).livingAtlasAlternatives;
   }, [
     state.feeling,
@@ -1081,7 +1187,7 @@ export function StudioV3() {
     state.considerations,
     state.investment,
     state.destinationIntent,
-    state.refinement,
+    state.questionHistory,
   ]);
 
   // Guest Details snapshot — captured on Guest Details submit, then rendered
@@ -1129,20 +1235,32 @@ export function StudioV3() {
   const handleStripeCheckout = useCallback(
     async (currentState: StudioV3State, details: GuestDetails) => {
       if (checkoutPending) return;
+      // PARTY TRUTH — a private group above self-service size can never invoke
+      // Stripe, even from a stale/hydrated deep state. Curator path instead.
+      const partyTotal =
+        details.guests ??
+        (currentState.adults ?? currentState.guests ?? 0) +
+          (currentState.minorAges?.length ?? 0);
+      if (requiresCuratorParty(partyTotal)) {
+        openLeadSheet("book");
+        return;
+      }
       const tour = currentState.tourId ? findTour(currentState.tourId) : null;
       if (!tour) {
         openLeadSheet("book");
         return;
       }
-      // Exact-tier truth gate: no approved tier for this exact party size
-      // means we have no price to charge. Never fall back to the generic
-      // "from" anchor (that is the 8-guest rate) — hand the traveller to a
+
+      // Exact-tier truth gate: no APPROVED RUNTIME tier for this exact party
+      // size means we have no price to charge. Never fall back to the generic
+      // "from" anchor or the static Viator tiers — hand the traveller to a
       // curator instead of opening a checkout the server would refuse.
-      const resolvedPerPax = resolvePerPaxEur(tour, details.guests, tourPriceTiers);
+      const resolvedPerPax = resolveStudioStrictPerPaxEur(tour.id, details.guests, tourPriceTiers);
       if (!resolvedPerPax) {
         openLeadSheet("book");
         return;
       }
+
       setCheckoutPending(true);
       // Open the drawer immediately with a branded skeleton.
       // ITINERARY AUTHORITY (checkout continuity): the labels frozen into
@@ -1151,9 +1269,15 @@ export function StudioV3() {
       // editedRoutePoints > full composed route > compact route > catalog.
       // Never the base catalog Signature stops while a composed route exists,
       // and never capped to the legacy 4-slot card projection.
+      // The route is re-derived from `currentState` at checkout time, never
+      // from a closure captured before the traveller edited their day.
+      const checkoutResolved = resolveStudioRouteFromState(currentState);
       const checkoutStops = resolveAuthoritativeRouteStops({
         editedRoutePoints: currentState.editedRoutePoints ?? null,
-        resolved: resolveStudioRouteFromState(currentState),
+        // PASS 4 — the frozen day shown in Your Day is the itinerary being
+        // reserved. Logistics facts never trigger a second composition.
+        committedRoutePoints: currentState.committedRoutePoints ?? null,
+        resolved: checkoutResolved,
         catalogStops: tour.stops ?? null,
       });
       // Supplier privacy guard — persisted/customer-facing labels stay generic.
@@ -1161,7 +1285,73 @@ export function StudioV3() {
       const stopLabels = checkoutStops.map((s) =>
         studioDisplayLabel(s.label, checkoutWineryLabels),
       );
-      const perPaxBase = resolvedPerPax.eurPerPax;
+      // FAIL CLOSED — a partial or unresolved composition is never bookable.
+      // Fewer than two real moments means there is no day to reserve; hand the
+      // traveller to a curator instead of starting a checkout.
+      if (checkoutStops.length < 2) {
+        setCheckoutPending(false);
+        openLeadSheet("book");
+        return;
+      }
+
+      // COMMERCIAL PARITY — the structural ledger for THIS composition,
+      // reconciled with the current basket. Quantities only; no euros are
+      // derived here. An add-on already carried by the route is charged once,
+      // and an unattributable commercial action fails closed before payment.
+      // The ledger is REBUILT from the exact route being reserved, not read
+      // from a resolution computed before the traveller edited the day. A
+      // stale ledger would charge for moments that no longer exist and miss
+      // the ones the current day does trigger.
+      const liveAuthority = rebuildLiveCommercialAuthority({
+        anchorTourId: currentState.tourId ?? tour.id ?? null,
+        moments: checkoutStops.map((s) => ({
+          label: s.label,
+          inventoryStopId: s.inventoryStopId ?? null,
+          blueprintStopId: s.blueprintStopId ?? null,
+        })),
+        // Manual edits are NOT the only way a day leaves the canonical anchor:
+        // the resolver can automatically compose / replace / add moments while
+        // `editedRoutePoints` is still null. Only a route provably identical to
+        // the untouched canonical anchor may claim the authored-fallback path.
+        edited: !isProvablyUntouchedCanonicalAnchor({
+          editedRoutePoints: currentState.editedRoutePoints ?? null,
+          committedRoutePoints: currentState.committedRoutePoints ?? null,
+          resolved: checkoutResolved,
+          catalogStops: tour.stops ?? null,
+        }),
+      });
+      // FAIL CLOSED — any route whose current commercial truth cannot be
+      // certified goes to the curator path. Never a stale ledger, never a
+      // base-pricing fallback.
+      if (!liveAuthority.safe) {
+        setCheckoutPending(false);
+        openLeadSheet("book");
+        return;
+      }
+      const commercial = resolveCheckoutCommercialState({
+        ledger: liveAuthority.ledger,
+        liveResolution: liveAuthority.liveResolution,
+        selectedAddOnIds: selectedAddOnItems.map((i) => i.id),
+        authoredLabels: checkoutStops.map((s) => s.label),
+        authoredIdentityKeys: liveAuthority.identityKeys,
+      });
+      if (commercial.blocked) {
+        setCheckoutPending(false);
+        openLeadSheet("book");
+        return;
+      }
+      const chargeableAddOnIds = new Set(commercial.chargeableAddOnIds);
+
+
+
+      trackStudio("studio_checkout_started", {
+        phase: "checkoutSummary",
+        tour_id: tour.id,
+        moment_count: checkoutStops.length,
+        guests: details.guests,
+      });
+
+      const perPaxBase = resolvedPerPax;
 
       // Unit-aware party total for add-ons — mirrors `addOnEurFor` in the
       // price card so per_person, per_group, per_vehicle and fixed add-ons
@@ -1176,14 +1366,18 @@ export function StudioV3() {
       // line is per_person. All current catalog entries are per_person; warn
       // loudly if a non-per_person add-on ever slips through so we catch it
       // before the payment is off by (guests - 1) × price.
-      const nonPerPerson = selectedAddOnItems.filter((i) => i.unit !== "per_person");
+      // Only add-ons the ledger did NOT already attribute to the authored
+      // route may be charged as basket lines — one add-on, one charge. The
+      // traveller's selection itself is never silently altered.
+      const chargeableAddOnItems = selectedAddOnItems.filter((i) => chargeableAddOnIds.has(i.id));
+      const nonPerPerson = chargeableAddOnItems.filter((i) => i.unit !== "per_person");
       if (nonPerPerson.length > 0 && typeof console !== "undefined") {
         console.warn(
           "[studio-v3 price-parity] Non per_person add-on(s) reached checkout:",
           nonPerPerson.map((i) => ({ id: i.id, unit: i.unit })),
         );
       }
-      const addOnsForCheckout = selectedAddOnItems.map((i) => ({
+      const addOnsForCheckout = chargeableAddOnItems.map((i) => ({
         id: i.id,
         label: i.label,
         priceEur: Math.round(i.priceEur),
@@ -1194,8 +1388,9 @@ export function StudioV3() {
         unitLabel: i.unitLabel,
       }));
       const addOnsPartyTotalEur = Math.round(
-        selectedAddOnItems.reduce((sum, i) => sum + partyAmountFor(i), 0),
+        chargeableAddOnItems.reduce((sum, i) => sum + partyAmountFor(i), 0),
       );
+
       // Canonical age-banded lines when composition is present — drives the
       // drawer's itemised breakdown and total. Falls back to flat pricing.
       const composedMinors = currentState.minorAges ?? [];
@@ -1207,8 +1402,17 @@ export function StudioV3() {
             : null;
       const journey =
         composedAdults != null
-          ? resolveJourneyPricing(tour, composedAdults, composedMinors, tourPriceTiers)
+          ? resolveStudioStrictJourneyPricing(
+              tour.id,
+              {
+                adults: composedAdults,
+                minorAges: composedMinors,
+                guests: composedAdults + composedMinors.length,
+              },
+              tourPriceTiers,
+            )
           : null;
+
       const journeyLines = journey ? journey.lines : undefined;
       const journeyTotalEur = journey ? Math.round(journey.totalEur) : undefined;
       const totalEur = journey
@@ -1359,7 +1563,7 @@ export function StudioV3() {
                 ? "no-preference"
                 : (raw.destinationIntent ?? INITIAL_STATE.destinationIntent),
           };
-          setState(restored);
+          setState(hydrateStudioQuestionHistory(restored));
           setHydrateError(null);
         } else {
           setHydrateError("not-found");
@@ -1464,6 +1668,71 @@ export function StudioV3() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.phase]);
 
+  /**
+   * PASS 4 — FREEZE THE SHOWN DAY.
+   *
+   * On the FIRST canonical `storyboard` entry the current authoritative route
+   * is resolved ONCE (no new resolver — the same authority chain every other
+   * surface reads) and snapshotted, together with the anchor `tourId` and the
+   * journey title. From that instant the traveller's day is frozen: logistics
+   * facts, guest details and checkout all read this exact ordered set of
+   * moments, with their structural ids, media and geography intact.
+   *
+   * The snapshot is NOT a manual edit — `editedRoutePoints` stays reserved for
+   * genuine traveller edits.
+   */
+  useEffect(() => {
+    if (state.phase !== "storyboard") return;
+    if ((state.committedRoutePoints?.length ?? 0) > 0) return;
+    setState((s) => {
+      if (s.phase !== "storyboard") return s;
+      if ((s.committedRoutePoints?.length ?? 0) > 0) return s;
+      const resolvedNow = resolveStudioRouteFromState(s);
+      const anchorTour = s.tourId
+        ? findTour(s.tourId)
+        : resolvedNow.skeletonTourKey
+          ? findTour(resolvedNow.skeletonTourKey)
+          : null;
+      const shown = resolveAuthoritativeRouteStops({
+        editedRoutePoints: s.editedRoutePoints ?? null,
+        resolved: resolvedNow,
+        catalogStops: anchorTour?.stops ?? null,
+      });
+      if (shown.length === 0) return s;
+      return {
+        ...s,
+        committedRoutePoints: shown.map((point) => ({
+          label: point.label,
+          story: point.story,
+          inventoryStopId: point.inventoryStopId ?? null,
+          blueprintStopId: point.blueprintStopId ?? null,
+          image: point.image ?? null,
+          focal: point.focal ?? null,
+          lat: point.lat ?? null,
+          lng: point.lng ?? null,
+          // FINAL CLOSURE — the frozen day carries the COMPLETE structural
+          // timing tuple (id + minutes + provenance + geo). Duration is never
+          // re-inferred from a label after the freeze seam.
+          durationMinutes: point.durationMinutes ?? null,
+          durationSource: point.durationSource ?? null,
+        })),
+
+        tourId: s.tourId ?? anchorTour?.id ?? resolvedNow.skeletonTourKey ?? null,
+        journeyTitle:
+          s.journeyTitle ??
+          composeJourneyTitle({
+            feeling: s.feeling,
+            companions: s.companions,
+            occasion: s.occasion,
+            pickup: s.pickup,
+            interests: s.interests,
+            rhythm: s.rhythm,
+            region: anchorTour?.region ?? null,
+          }),
+      };
+    });
+  }, [state.phase, state.committedRoutePoints]);
+
   const advance = useCallback((next: StudioV3Phase) => {
     // If a previous cinematic beat is still dissolving, remove it before any
     // explicit CTA transition. Otherwise mobile users can see the next screen
@@ -1521,8 +1790,27 @@ export function StudioV3() {
         event: "back",
         value: { to: target },
       });
+      // PASS 4 — going BACK from the reward surface into the taste / Director
+      // phases means the traveller is reshaping their answers, so the frozen
+      // day (and its stale anchor) is released and the next Your Day is
+      // resolved fresh. Logistics → Your Day and checkout "Edit stops" →
+      // Your Day are NOT this path and keep the committed day intact.
+      const reshaping =
+        state.phase === "storyboard" &&
+        PHASE_ORDER.indexOf(target) < PHASE_ORDER.indexOf("storyboard");
       window.setTimeout(() => {
-        setState((s) => ({ ...s, phase: target }));
+        setState((s) =>
+          reshaping
+            ? {
+                ...s,
+                phase: target,
+                committedRoutePoints: null,
+                editedRoutePoints: null,
+                tourId: null,
+                journeyTitle: null,
+              }
+            : { ...s, phase: target },
+        );
         setExiting(false);
       }, 280);
     },
@@ -2030,7 +2318,7 @@ export function StudioV3() {
         occasion: state.occasion,
         investment: state.investment,
         destinationIntent: state.destinationIntent,
-        refinement: state.refinement,
+        questionHistory: state.questionHistory,
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
@@ -2079,24 +2367,385 @@ export function StudioV3() {
       holdMs: 4200,
     });
   };
-  // The single adaptive question, resolved from the traveller's own answers.
-  // Null when nothing is worth asking — the phase is then skipped entirely.
+  // BUILD 2 / Pass 4 — the LIVE Director decides whether a question exists,
+  // which one, and the exact ordered options. `resolveAdaptiveQuestion` is
+  // retained for presentation lookups and diagnostics only.
   const availableAdaptiveKinds = useMemo(() => availableAdaptiveQuestionKinds(state), [state]);
   const advisor = useStudioIntentAdvisor(state, availableAdaptiveKinds);
-  const adaptiveQuestion = useMemo(
-    () => resolveAdaptiveQuestion(state, advisor.interpretation?.preferredAdaptiveKind ?? null),
-    [state, advisor.interpretation?.preferredAdaptiveKind],
+  // FINAL TRUTH CLOSURE — the ONLY genuine, synchronously available timing
+  // conflict producer in the live path: the canonical composition authority's
+  // own `TimingConflict`, surfaced on the resolved route's Living Atlas block.
+  // Nothing is synthesized here; when the composition produces none, the
+  // Director sees `null` and its semantics are unchanged.
+  const liveTimingConflict = useMemo(() => deriveLiveTimingConflict(state), [state]);
+  const directorRuntime = useMemo(
+    () =>
+      deriveStudioDirectorRuntime({
+        feeling: state.feeling,
+        interests: state.interests,
+        rhythm: state.rhythm,
+        destinationIntent: state.destinationIntent,
+        questionHistory: state.questionHistory,
+        timingConflict: liveTimingConflict,
+      }),
+    [
+      state.feeling,
+      state.interests,
+      state.rhythm,
+      state.destinationIntent,
+      state.questionHistory,
+      liveTimingConflict,
+    ],
+  );
+  // TURBO 2 — the live seam. Wording always travels through the removable
+  // adapter; with no candidate it returns the deterministic presentation
+  // unchanged, so the Director's decision and option order are untouchable.
+  const directorVoiceSessionId = useBuilderSessionId();
+  const directorBaseQuestion = useMemo(
+    () => adaptDirectorQuestion(directorRuntime.decision, null)?.presentation ?? null,
+    [directorRuntime.decision],
+  );
+  // AI VOICE — wording only, and only if it survives the fail-closed
+  // validator. The deterministic question is already on screen while this
+  // resolves, so a slow, rate-limited or absent model changes nothing.
+  const directorVoiceCandidate = useDirectorVoice({
+    sessionId: directorVoiceSessionId,
+    base: directorBaseQuestion,
+    signals: {
+      feeling: state.feeling,
+      companions: state.companions,
+      rhythm: state.rhythm,
+      interests: state.interests ?? [],
+    },
+  });
+  const directorQuestion = useMemo(
+    () =>
+      adaptDirectorQuestion(directorRuntime.decision, directorVoiceCandidate)?.presentation ?? null,
+    [directorRuntime.decision, directorVoiceCandidate],
+  );
+
+  /** Image-led only when every option owns a distinct, honest photograph. */
+  const directorForkMedia = useMemo(
+    () => (directorQuestion ? resolveForkMedia(directorQuestion.offeredOptionIds) : null),
+    [directorQuestion],
   );
 
   /**
-   * Adaptive refinement — one conditional question. The answer becomes a
-   * real discovery signal inside the Living Atlas decision (never a price
-   * input, never an invented stop).
+   * TURBO 1 — the optional note. Editing it REPLACES the single canonical
+   * free-text event (empty input removes it), and the Director / Canvas /
+   * composition are recomputed from that history on the very next render.
    */
-  const onRefinement = (id: AdaptiveRefinementId) => {
-    const next = getNextPhase({ ...state, refinement: id }, "refinement");
-    const summary = refinementSummaryLabel(id);
-    pickAndAdvance("refinement", id, next, {
+  const onFreeTextChange = (next: string) => {
+    setFreeTextDraft(next);
+    setState((current) => ({
+      ...current,
+      questionHistory: upsertFreeTextAnswer(current.questionHistory ?? [], next),
+    }));
+  };
+
+  /**
+   * AI-AWARE FREE TEXT — additive only. The deterministic reading is already
+   * recorded above; when the model finds an extra signal INSIDE the closed
+   * vocabulary, the single canonical event is replaced with the merged one.
+   * An explicit negation is never overridden: the merge drops any candidate
+   * whose key the traveller ruled out, and AI signals are positive-only.
+   */
+  const interpretNoteWithAi = useServerFn(interpretFreeTextWithAi);
+  const aiNoteRef = useRef<string>("");
+  useEffect(() => {
+    const raw = freeTextDraft.trim();
+    if (!directorVoiceSessionId || raw.length < 12) return;
+    if (aiNoteRef.current === raw) return;
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      void (async () => {
+        try {
+          const result = await interpretNoteWithAi({
+            data: { sessionId: directorVoiceSessionId, text: raw },
+          });
+          const events = (result?.events ?? []) as SemanticSourceEvent[];
+          aiNoteRef.current = raw;
+          if (cancelled || events.length === 0) return;
+          setState((current) => ({
+            ...current,
+            questionHistory: upsertFreeTextAnswer(current.questionHistory ?? [], raw, events),
+          }));
+        } catch {
+          // Deterministic reading already stands.
+        }
+      })();
+    }, 900);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [freeTextDraft, directorVoiceSessionId, interpretNoteWithAi, setState]);
+
+  const freeTextUnderstood = useMemo(() => {
+    const interpretation = interpretFreeText(freeTextDraft);
+    if (interpretation.empty) return null;
+    const positives = interpretation.effects.filter((e) => e.polarity === "positive").length;
+    const negatives = interpretation.effects.filter((e) => e.polarity === "negative").length;
+    const excluded = interpretation.excludedOptionIds.length + negatives;
+    if (positives > 0 && excluded > 0) return "Understood — and we will leave the rest out.";
+    if (excluded > 0) return "Understood — we will leave that out.";
+    return "Understood.";
+  }, [freeTextDraft]);
+
+  // TURBO 1 — structural canvas analytics. Never raw text, never a name.
+  const canvasThreadsRef = useRef<string[]>([]);
+  const generatedQuestionRef = useRef<string | null>(null);
+  const signatureCandidateRef = useRef<string | null>(null);
+  const finalSkeletonRef = useRef<string | null>(null);
+
+  /**
+   * TURBO 2 — the composition the canvas is allowed to show. It is the SAME
+   * route authority the reveal and pricing read (`resolveStudioV3Route`), so
+   * the canvas can never show a day the traveller will not be offered.
+   */
+  const liveComposition = useMemo(() => {
+    if (!state.feeling || !state.companions || !state.rhythm) return null;
+    // FINAL CLOSURE §8 — a composition is only legitimately available once the
+    // traveller has actually reached the composed part of the journey. Before
+    // that the Canvas stays on mood/threads/direction, never a full route.
+    if (!COMPOSITION_READY_PHASES.has(state.phase)) return null;
+    const resolvedLive = resolveStudioV3Route({
+      feeling: state.feeling,
+      companions: state.companions,
+      rhythm: state.rhythm,
+      interests: state.interests,
+      pickup: state.pickup,
+      occasion: state.occasion,
+      considerations: state.considerations,
+      investment: state.investment,
+      destinationIntent: state.destinationIntent,
+      questionHistory: state.questionHistory,
+    });
+    // PASS 3A.1 — the Canvas must read the CURRENT AUTHORITATIVE ROUTE:
+    // editedRoutePoints > composedRoutePoints > routePoints. Same authority
+    // chain the reveal and pricing already use; no new resolver.
+    const points = resolveAuthoritativeRouteStops({
+      editedRoutePoints: state.editedRoutePoints ?? null,
+      // PASS 4 — once the day has been shown it is frozen; the Canvas shows
+      // exactly that day for the rest of the flow.
+      committedRoutePoints: state.committedRoutePoints ?? null,
+      resolved: resolvedLive,
+      catalogStops: null,
+    });
+    if (points.length === 0) return null;
+    // PASS 4.1 — when a frozen snapshot exists, the Canvas metadata must stay
+    // on the anchor the traveller was actually shown. A later fresh resolver
+    // identity is presentation drift, never a new truth.
+    const frozen = (state.committedRoutePoints?.length ?? 0) > 0;
+    const frozenAnchorKey = frozen ? (state.tourId ?? resolvedLive.skeletonTourKey ?? null) : null;
+    const frozenTour = frozenAnchorKey ? (findTour(frozenAnchorKey) ?? null) : null;
+    const anchorKey = frozen ? frozenAnchorKey : (resolvedLive.skeletonTourKey ?? null);
+    const anchorTour = frozenTour ?? (anchorKey ? (findTour(anchorKey) ?? null) : null);
+    return {
+      tourKey: anchorKey,
+      regionLabel: frozenTour?.region ?? resolvedLive.routeAreaLabel,
+      regionKey:
+        tourRegionToRegionKey(anchorTour?.region ?? null) ??
+        pickupRegionKey(state.pickup) ??
+        undefined,
+
+      points: points.map((point) => ({
+        label: point.label,
+        story: point.story,
+        // PASS 3A — genuine structural identity and VERIFIED per-point media
+        // travel with the point. Never derived from label, index or order.
+        stopId: point.inventoryStopId ?? point.blueprintStopId ?? null,
+        image: point.image ?? null,
+        focal: point.focal ?? null,
+        // PASS 3A.2 — real operational geography travels through the
+        // authority chain unchanged; absent stays absent, never invented.
+        lat: point.lat ?? null,
+        lng: point.lng ?? null,
+      })),
+    };
+  }, [
+    state.feeling,
+    state.companions,
+    state.rhythm,
+    state.interests,
+    state.pickup,
+    state.occasion,
+    state.considerations,
+    state.investment,
+    state.destinationIntent,
+    state.questionHistory,
+    state.editedRoutePoints,
+    state.committedRoutePoints,
+    state.tourId,
+    state.phase,
+
+  ]);
+
+  /**
+   * Real imagery for those stops, from the EXISTING image authority. Missing
+   * stops simply fall down the resolver hierarchy — never a borrowed photo.
+   */
+  const canvasStopKeys = useMemo(
+    () => (liveComposition ? liveComposition.points.map((point) => point.label) : []),
+    [liveComposition],
+  );
+  const canvasImages = useBuilderRouteImages({
+    regionKey: liveComposition?.regionKey,
+    stopKeys: canvasStopKeys,
+    mood: state.feeling ?? undefined,
+    occasion: state.occasion ?? undefined,
+  });
+  const canvasStopImages = useMemo(() => {
+    const out: Record<string, { id: string; src: string; alt: string } | null> = {};
+    for (const [key, value] of Object.entries(canvasImages.stopImages)) {
+      out[key.toLowerCase()] = value
+        ? { id: `stop:${key.toLowerCase()}`, src: value.url, alt: value.alt }
+        : null;
+    }
+    return out;
+  }, [canvasImages.stopImages]);
+
+  const livingCanvas = useMemo(
+    () =>
+      deriveLivingCanvas({
+        feeling: state.feeling,
+        interests: state.interests,
+        questionHistory: state.questionHistory,
+        composition: liveComposition
+          ? { regionLabel: liveComposition.regionLabel, points: liveComposition.points }
+          : null,
+        shaped: state.phase === "storyboard" || state.phase === "confirmation",
+        stopImages: canvasStopImages,
+      }),
+    [
+      state.feeling,
+      state.interests,
+      state.questionHistory,
+      state.phase,
+      liveComposition,
+      canvasStopImages,
+    ],
+  );
+
+  useEffect(() => {
+    const ids = livingCanvas.threads
+      .filter((thread) => thread.status !== "excluded")
+      .map((thread) => thread.id);
+    const previous = canvasThreadsRef.current;
+    for (const id of ids) {
+      if (!previous.includes(id)) {
+        trackStudio("studio_thread_added", { phase: state.phase, thread_id: id });
+      }
+    }
+    for (const id of previous) {
+      if (!ids.includes(id)) {
+        trackStudio("studio_thread_removed", { phase: state.phase, thread_id: id });
+      }
+    }
+    canvasThreadsRef.current = ids;
+  }, [livingCanvas, state.phase]);
+
+  useEffect(() => {
+    const key = directorRuntime.decision.shouldAsk
+      ? (directorRuntime.decision.questionKey ?? null)
+      : null;
+    if (key && key !== generatedQuestionRef.current) {
+      trackStudio("studio_question_generated", {
+        phase: state.phase,
+        question_key: key,
+        option_count: directorRuntime.decision.choiceKeys?.length ?? 0,
+      });
+    }
+    generatedQuestionRef.current = key;
+  }, [directorRuntime.decision, state.phase]);
+
+  /**
+   * FINAL CLOSURE — product outcome seams.
+   *
+   * `studio_signature_candidate` fires once a real Signature candidate is
+   * materially resolved (a real tour key with a real route), and again only
+   * if the candidate itself changes. `studio_final_skeleton` fires when that
+   * composition is committed for the reveal (YOUR DAY). Structural values
+   * only — never a name, never free text.
+   */
+  useEffect(() => {
+    const candidate = liveComposition?.tourKey ?? null;
+    if (!candidate || !liveComposition || liveComposition.points.length < 2) return;
+    if (candidate === signatureCandidateRef.current) return;
+    signatureCandidateRef.current = candidate;
+    trackStudio("studio_signature_candidate", {
+      phase: state.phase,
+      tour_id: candidate,
+      moment_count: liveComposition.points.length,
+    });
+  }, [liveComposition, state.phase]);
+
+  useEffect(() => {
+    if (state.phase !== "storyboard") return;
+    const tourKey = state.tourId ?? liveComposition?.tourKey ?? null;
+    const momentCount =
+      state.editedRoutePoints?.length ?? liveComposition?.points.length ?? 0;
+    if (!tourKey || momentCount < 2) return;
+    const fingerprint = `${tourKey}:${momentCount}`;
+    if (fingerprint === finalSkeletonRef.current) return;
+    finalSkeletonRef.current = fingerprint;
+    trackStudio("studio_final_skeleton", {
+      phase: "storyboard",
+      tour_id: tourKey,
+      moment_count: momentCount,
+    });
+  }, [state.phase, state.tourId, state.editedRoutePoints, liveComposition]);
+
+  /**
+   * TRUE 0→N — the Director's answer handler.
+   *
+   * The answer is written to the canonical store, then the Director is asked
+   * again over the UPDATED history. If it still has a material question we
+   * stay in `refinement` and render the next one; only when it is done does
+   * the flow advance. There is no numeric question cap anywhere.
+   */
+  const onDirectorAnswer = (choiceKey: string) => {
+    const decision = directorRuntime.decision;
+    if (!decision.shouldAsk || !decision.questionKey || !decision.uncertaintyKey) return;
+    if (!directorQuestion?.offeredOptionIds.includes(choiceKey)) return;
+
+    const nextHistory = appendLiveDirectorAnswer(state.questionHistory ?? [], {
+      questionKey: decision.questionKey,
+      uncertaintyKey: decision.uncertaintyKey,
+      dependencyFingerprint: decision.dependencyFingerprint ?? "",
+      offeredOptionIds: directorQuestion.offeredOptionIds,
+      selectedOptionId: choiceKey,
+    });
+
+    trackStudio("studio_fork_answered", {
+      phase: state.phase,
+      question_key: decision.questionKey,
+      option_id: choiceKey,
+      option_count: directorQuestion.offeredOptionIds.length,
+    });
+
+    const forward: StudioV3State = { ...state, questionHistory: nextHistory };
+    const stillAsking =
+      adaptDirectorQuestion(
+        deriveStudioDirectorRuntime({
+          feeling: forward.feeling,
+          interests: forward.interests,
+          rhythm: forward.rhythm,
+          destinationIntent: forward.destinationIntent,
+          questionHistory: nextHistory,
+          // The SAME canonical source, re-derived from the FORWARD state, so
+          // the next decision is never taken on a stale pre-answer conflict.
+          timingConflict: deriveLiveTimingConflict(forward),
+        }).decision,
+        null,
+      ) !== null;
+
+    setState(forward);
+    if (stillAsking) return;
+
+    const next = getNextPhase(forward, "refinement");
+    const summary = refinementSummaryLabel(choiceKey as AdaptiveRefinementId);
+    pickAndAdvance("questionHistory", nextHistory, next, {
       kind: "rhythm",
       eyebrow: "Noted",
       message: summary
@@ -2108,6 +2757,7 @@ export function StudioV3() {
       holdMs: 1600,
     });
   };
+
 
   const onLanguage = (id: Language) => {
     const next = getNextPhase({ ...state, language: id }, "language");
@@ -2186,9 +2836,10 @@ export function StudioV3() {
   };
 
   // Multi-select toggles.
-  // Interests are capped at MAX_INTERESTS — four moments is the sweet spot
-  // for a 1-day rhythm and matches the dwell-budget logic downstream.
-  const MAX_INTERESTS = 4;
+  // BUILD 2 / Pass 4 — there is NO interest cap. Every taste the traveller
+  // states is kept as real semantic demand; what a single day can physically
+  // hold is decided downstream by feasibility and the dwell budget, never by
+  // silently refusing to hear the traveller.
   const toggleInterest = (id: Interest) => {
     setState((s) => {
       const has = s.interests.includes(id);
@@ -2196,9 +2847,6 @@ export function StudioV3() {
       if (has) {
         explicitInterests = s.interests.filter((x) => x !== id);
       } else {
-        // P5: inherited themes (already stated in Feeling) never consume a slot.
-        const countable = countableInterests(s.interests, deriveInheritedIntent(s));
-        if (countable.length >= MAX_INTERESTS) return s;
         explicitInterests = [...s.interests, id];
       }
 
@@ -2251,7 +2899,7 @@ export function StudioV3() {
         occasion: state.occasion,
         investment: state.investment,
         destinationIntent: state.destinationIntent,
-        refinement: state.refinement,
+        questionHistory: state.questionHistory,
       });
       const labels = resolved.routePoints.map((p) => p.label);
       if (labels.length > 0) {
@@ -2402,8 +3050,11 @@ export function StudioV3() {
     [state.feeling, state.companions, state.interests, state.rhythm],
   );
   const [directorsReadSeen, setDirectorsReadSeen] = useState<string | null>(null);
-  const showDirectorsRead =
-    state.phase === "logistics" && directorsReadSeen !== directorsRead.signature;
+  // PASS 4 — REWARD BEFORE ADMIN. The Director's Read no longer stands between
+  // Your Day and logistics: the composed day itself is the interpretation. The
+  // primitives stay (composeDirectorsRead / DirectorsRead) for legacy surfaces
+  // and tests, but the live modern path never renders the blocking beat.
+  void setDirectorsReadSeen;
 
   // P6 "acknowledge once": one deterministic ledger decides which surface may
   // still acknowledge a taste / emotion / rhythm signal. Interests owns the
@@ -2413,11 +3064,11 @@ export function StudioV3() {
   // suppressed. Derived every render — no stored acknowledgement state.
   const acknowledgementContext: AcknowledgementContext = {
     state: { feeling: state.feeling, interests: state.interests, rhythm: state.rhythm },
-    refinementShown: Boolean(adaptiveQuestion),
+    refinementShown: Boolean(directorQuestion),
     // The read voices its themes in prose, so Logistics/reveal stay quiet
     // about them. Only counts once the traveller has actually seen it.
     directorsRead: {
-      shown: showDirectorsRead || directorsReadSeen === directorsRead.signature,
+      shown: directorsReadSeen === directorsRead.signature,
       themes: directorsRead.themes,
     },
   };
@@ -2427,7 +3078,10 @@ export function StudioV3() {
     // same taste / rhythm signals, so reading them back is narration. The line
     // still renders whenever the Living Day is not visible there. Refinement
     // is untouched: no persistent artefact accompanies that question.
-    if (surface === "logistics" && !livingDayHidden) return null;
+    // EXPERIENCE UNIFICATION — the Living Canvas is the single live
+    // manifestation and is present on Logistics, so reading the same taste /
+    // rhythm signals back in prose would be narration.
+    if (surface === "logistics") return null;
     const summary = acknowledgementSummaryFor(surface, acknowledgementContext);
     if (!summary) return null;
 
@@ -2477,19 +3131,11 @@ export function StudioV3() {
         ? prioritiseOptions(filteredOccasions, ["corporate", "celebration", "none"])
         : filteredOccasions;
 
-  // Pass 2A — the Living Day is the persistent, lightweight artefact. Its
-  // visibility rule is deliberately SEPARATE from the ComposerMap gate:
-  // the map stays late and strict (never a large dark canvas above an
-  // early question), while the compact Living Day pill may appear as soon
-  // as there is something real to say. It never renders on the intro, on
-  // takeover phases, or while a reaction beat plays; the component itself
-  // stays hidden until the state qualifies for a truthful stage.
-  const livingDayHidden =
-    !!reaction ||
-    !isLivingDayPhaseAllowed(state.phase) ||
-    livingDayStageFor(state) === "hidden";
-
-  // ComposerMap — Studio Bible §4 "live map updates as stops change".
+  // EXPERIENCE UNIFICATION — the Living Journey pill/drawer and the
+  // ComposerMap are retired from the live modern path. The Living Canvas,
+  // rendered in normal flow directly under the active decision, is the single
+  // live manifestation of the day taking shape. `composerHidden` survives only
+  // as a debug-overlay signal.
   // Lightweight, peripheral, progressive: renders the moment the traveller
   // has made any meaningful pick (feeling/companions/rhythm) so the day
   // is *visibly* taking shape between every question. Hidden only on:
@@ -2665,11 +3311,7 @@ export function StudioV3() {
         composerHidden={composerHidden}
         reactionActive={!!reaction}
       />
-      <LivingJourneyPanel state={state} hidden={livingDayHidden} />
-
-
-      <ComposerMap state={state} hidden={composerHidden} />
-      <CloseStudio hasProgress={state.phase !== "who"} />
+      <CloseStudio hasProgress={hasMeaningfulStudioProgress(state)} />
       {chromeReady ? (
         <StudioV3ProgressStepper
           phase={state.phase}
@@ -2689,6 +3331,7 @@ export function StudioV3() {
 
       {state.phase === "feeling" ? (
         <PhaseShell
+          canvas={<LivingCanvas model={livingCanvas} />}
           accent="ivory"
           exiting={exiting}
           progress={studioV3Progress(state, state.phase)}
@@ -2717,6 +3360,7 @@ export function StudioV3() {
 
       {state.phase === "destination" ? (
         <PhaseShell
+          canvas={<LivingCanvas model={livingCanvas} />}
           accent="teal"
           exiting={exiting}
           progress={studioV3Progress(state, state.phase)}
@@ -2745,7 +3389,7 @@ export function StudioV3() {
               columns={1}
             />
           </div>
-          <PartialReveal intent={state.destinationIntent} compact={!livingDayHidden} />
+          <PartialReveal intent={state.destinationIntent} compact />
           {state.destinationIntent && state.destinationIntent !== "no-preference" ? (
             <NextTeaser>Portugal is starting to open in the right direction.</NextTeaser>
           ) : (
@@ -2758,6 +3402,7 @@ export function StudioV3() {
 
       {state.phase === "who" ? (
         <PhaseShell
+          canvas={<LivingCanvas model={livingCanvas} />}
           accent="gold"
           exiting={exiting}
           progress={studioV3Progress(state, state.phase)}
@@ -2780,6 +3425,7 @@ export function StudioV3() {
 
       {state.phase === "occasion" ? (
         <PhaseShell
+          canvas={<LivingCanvas model={livingCanvas} />}
           accent="ivory"
           exiting={exiting}
           progress={studioV3Progress(state, state.phase)}
@@ -2799,53 +3445,13 @@ export function StudioV3() {
       {/* The blocking interpretation overlay was removed: the acknowledgement is
           now a single inline line shown once, before Logistics. */}
 
-      {/* P7 — Director's Read. Sits in the Logistics slot for exactly one tap,
-          then hands over. Never a gate: one visible CTA continues, and Back
-          still walks the normal phase order. */}
-      {showDirectorsRead ? (
-        <PhaseShell accent="ivory" exiting={exiting}>
-          <DirectorsRead
-            read={directorsRead}
-            onView={(signature) =>
-              trackStudio("interpretation_viewed", {
-                phase: "directors_read",
-                stepNumber: stepOf("logistics"),
-                // Privacy-safe: shape of the read only, never answers or PII.
-                read_kind: directorsRead.neutral ? "neutral" : "interpreted",
-                lines: directorsRead.body.length,
-                themes: directorsRead.themes.length,
-                signature_length: signature.length,
-              })
-            }
-            onBack={() => {
-              setDirectorsReadSeen(directorsRead.signature);
-              back(directorsReadBackTarget(Boolean(adaptiveQuestion)));
-            }}
-            onContinue={() => setDirectorsReadSeen(directorsRead.signature)}
-            delegation={(() => {
-              // P10 — concierge visibility. Named once, here, with one quiet
-              // way back into the delegated phase. Navigation only:
-              // `jumpBackToPhase` sets the phase and nothing else, and the
-              // phase itself releases the delegated mark when the traveller
-              // makes an explicit choice.
-              const summary = delegatedChoiceSummary(state);
-              if (!summary) return null;
-              return {
-                line: summary.line,
-                adjustLabel: summary.adjustLabel,
-                onAdjust: () => {
-                  setDirectorsReadSeen(directorsRead.signature);
-                  jumpBackToPhase(summary.adjustPhase, "delegation-adjust");
-                },
-              };
-            })()}
-          />
-        </PhaseShell>
-      ) : null}
+      {/* PASS 4 — the blocking Director's Read beat is retired from the live
+          path. Your Day is the reward; logistics is the admin that follows. */}
 
-      {state.phase === "logistics" && !showDirectorsRead ? (
+      {state.phase === "logistics" ? (
 
         <PhaseShell
+          canvas={<LivingCanvas model={livingCanvas} />}
           accent="teal"
           exiting={exiting}
           progress={studioV3Progress(state, state.phase)}
@@ -2859,7 +3465,17 @@ export function StudioV3() {
             onRemoveMinor={onRemoveMinor}
             onMinorAgeChange={onMinorAgeChange}
             acknowledgement={renderAcknowledgement("logistics")}
-            onBackPhase={() => back("rhythm")}
+            // PASS 4 — Back from admin returns to the reward surface.
+            onBackPhase={() => back("storyboard")}
+            // PARTY TRUTH — 13–14 travellers are a curator-confirmed private
+            // group. Say so BEFORE the traveller taps Continue, so the fail
+            // closed is a premium hand-off, not an error after the click.
+            conflict={
+              logisticsConflict ??
+              (requiresCuratorParty((state.adults ?? state.guests ?? 2) + (state.minorAges?.length ?? 0))
+                ? curatorPartyMessage((state.adults ?? state.guests ?? 2) + (state.minorAges?.length ?? 0))
+                : null)
+            }
             onCompose={() => {
               const committedAdults = state.adults ?? state.guests ?? 2;
               const committedMinors = state.minorAges ?? [];
@@ -2869,54 +3485,62 @@ export function StudioV3() {
                 adults: committedAdults,
                 minorAges: committedMinors,
                 guests: committedTotal,
+                // PASS 5 — Continue is the traveller's explicit confirmation
+                // of the visible party; exact pricing unlocks from here.
+                guestsInferred: false,
+
                 guestsPrivateEvent: committedTotal >= 11,
               };
               setState(() => forward);
+              // PARTY TRUTH — the Studio composes for up to 14, but 13–14 is a
+              // curator-confirmed private group. Fail closed BEFORE any Stripe
+              // path: no broken checkout, no fake price, no silent down-clamp.
+              if (requiresCuratorParty(committedTotal)) {
+                trackStudio("logistics_date_conflict", {
+                  phase: "logistics",
+                  stepNumber: stepOf("logistics"),
+                  date_mode: forward.dateMode,
+                });
+                setLogisticsConflict(curatorPartyMessage(committedTotal));
+                openLeadSheet("book");
+                return;
+              }
+
               trackStudio("logistics_completed", {
                 phase: "logistics",
                 stepNumber: stepOf("logistics"),
                 date_mode: forward.dateMode,
                 guests: committedTotal,
               });
-              // P8: the standalone `map` beat no longer runs, so the Signature
-              // identity it used to commit (tourId + journeyTitle) is resolved
-              // here, from the same authority (`resolveStudioV3Route`). Pricing
-              // and every downstream resolution stay byte-identical.
-              const composedRoute = resolveStudioV3Route({
-                feeling: forward.feeling,
-                companions: forward.companions,
-                rhythm: forward.rhythm,
-                interests: forward.interests,
-                pickup: forward.pickup,
-                occasion: forward.occasion,
-                considerations: forward.considerations,
-                investment: forward.investment,
-                destinationIntent: forward.destinationIntent,
-                dateExact: forward.dateExact,
-                refinement: forward.refinement,
-              });
-              const composedTour = composedRoute.skeletonTourKey
-                ? findTour(composedRoute.skeletonTourKey)
-                : null;
-              const composedTourId = composedTour?.id ?? forward.tourId ?? null;
-              const composedTitle =
-                forward.journeyTitle ??
-                composeJourneyTitle({
-                  feeling: forward.feeling,
-                  companions: forward.companions,
-                  occasion: forward.occasion,
-                  pickup: forward.pickup,
-                  interests: forward.interests,
-                  rhythm: forward.rhythm,
-                  region: composedTour?.region ?? null,
+              // PASS 4 — LOGISTICS IS ADMIN, NOT A COMPOSER. The Signature
+              // identity and the itinerary were already committed at the Your
+              // Day seam. Nothing is recomposed here: the exact day the
+              // traveller was shown is the day that continues to checkout.
+              //
+              // FAIL CLOSED: if the exact date chosen makes a committed or
+              // edited moment operationally closed, we never silently replace
+              // or drop that moment — the day goes to a curator instead.
+              const committedDay =
+                forward.editedRoutePoints ?? forward.committedRoutePoints ?? null;
+              const closedMoment =
+                forward.dateMode === "exact" && forward.dateExact
+                  ? (committedDay ?? []).find((point) =>
+                      isStopClosedOn(`${point.label} ${point.story ?? ""}`, forward.dateExact),
+                    )
+                  : undefined;
+              if (closedMoment) {
+                trackStudio("logistics_date_conflict", {
+                  phase: "logistics",
+                  stepNumber: stepOf("logistics"),
+                  date_mode: forward.dateMode,
                 });
-              setState((s) => ({
-                ...s,
-                tourId: composedTourId ?? s.tourId,
-                journeyTitle: composedTitle,
-              }));
-              // No blocking interpretation overlay: the acknowledgement already
-              // happened inline, so we move straight into the composition.
+                setLogisticsConflict(
+                  `${closedMoment.label} is closed on that exact date. A curator will confirm the day with you rather than quietly change it.`,
+                );
+                openLeadSheet("book");
+                return;
+              }
+              setLogisticsConflict(null);
               window.setTimeout(() => advance(getNextPhase(forward, "logistics")), 60);
             }}
           />
@@ -3014,6 +3638,7 @@ export function StudioV3() {
 
       {state.phase === "interests" ? (
         <PhaseShell
+          canvas={<LivingCanvas model={livingCanvas} />}
           accent="teal"
           exiting={exiting}
           progress={studioV3Progress(state, state.phase)}
@@ -3046,14 +3671,8 @@ export function StudioV3() {
           ) : null}
           {(() => {
             const n = countableSelectedInterests.length;
-            const max = 4;
-            const atCap = n >= max;
-            const label =
-              n === 0
-                ? `Choose up to ${max} moments`
-                : atCap
-                  ? `${max} of ${max} · perfectly paced`
-                  : `${n} of ${max} · room for more`;
+            const atCap = false;
+            const label = n === 0 ? "Choose the moments that matter" : `${n} selected`;
             return (
               <div
                 data-testid="studio-v3-interests-counter"
@@ -3093,12 +3712,16 @@ export function StudioV3() {
             options={orderedInterests}
             values={countableSelectedInterests}
             onToggle={toggleInterest}
-            maxSelected={4}
+          />
+          <StudioFreeTextNote
+            value={freeTextDraft}
+            onChange={onFreeTextChange}
+            understood={freeTextUnderstood}
           />
           {countableSelectedInterests.length > 0 ? (
             <NextTeaser>{contextualTeaser("interests", state)}</NextTeaser>
           ) : (
-            <FooterHint>Four moments make a day that breathes. Pick what calls you.</FooterHint>
+            <FooterHint>Pick what calls you — YES shapes the pacing around it.</FooterHint>
           )}
           <ContinueCta
             disabled={countableSelectedInterests.length < 1}
@@ -3117,6 +3740,7 @@ export function StudioV3() {
 
       {state.phase === "rhythm" ? (
         <PhaseShell
+          canvas={<LivingCanvas model={livingCanvas} />}
           accent="gold"
           exiting={exiting}
           progress={studioV3Progress(state, state.phase)}
@@ -3145,8 +3769,9 @@ export function StudioV3() {
         </PhaseShell>
       ) : null}
 
-      {state.phase === "refinement" && adaptiveQuestion ? (
+      {state.phase === "refinement" && directorQuestion ? (
         <PhaseShell
+          canvas={<LivingCanvas model={livingCanvas} />}
           accent="ivory"
           exiting={exiting}
           progress={studioV3Progress(state, state.phase)}
@@ -3155,24 +3780,36 @@ export function StudioV3() {
           <BackLink onClick={() => back("rhythm")} />
           {renderAcknowledgement("refinement")}
           <PhaseHeader
-            eyebrow={adaptiveQuestion.eyebrow}
-            title={adaptiveQuestion.title}
-            titleAccent={adaptiveQuestion.titleAccent}
+            eyebrow={directorQuestion.eyebrow}
+            title={directorQuestion.title}
+            titleAccent={directorQuestion.titleAccent}
           />
           <div data-testid="studio-v3-refinement">
-            <ChoiceGrid
-              options={adaptiveQuestion.options}
-              value={state.refinement}
-              onSelect={onRefinement}
-              columns={adaptiveQuestion.options.length > 2 ? 1 : 2}
-            />
+            {directorForkMedia ? (
+              <ForkChoiceCards
+                key={directorQuestion.questionKey}
+                options={directorQuestion.options}
+                media={directorForkMedia}
+                onSelect={onDirectorAnswer}
+              />
+            ) : (
+              <ChoiceGrid
+                key={directorQuestion.questionKey}
+                options={directorQuestion.options}
+                // A rendered Director question is by definition unanswered.
+                value={null}
+                onSelect={onDirectorAnswer}
+                columns={directorQuestion.options.length > 2 ? 1 : 2}
+              />
+            )}
           </div>
-          {adaptiveQuestion.hint ? <FooterHint>{adaptiveQuestion.hint}</FooterHint> : null}
+          {directorQuestion.hint ? <FooterHint>{directorQuestion.hint}</FooterHint> : null}
         </PhaseShell>
       ) : null}
 
       {state.phase === "considerations" ? (
         <PhaseShell
+          canvas={<LivingCanvas model={livingCanvas} />}
           accent="ivory"
           exiting={exiting}
           progress={studioV3Progress(state, state.phase)}
@@ -3256,15 +3893,25 @@ export function StudioV3() {
             progress={studioV3Progress(state, state.phase)}
             anticipation={anticipation}
           >
+            {/* FINAL CLOSURE — the Canvas does not vanish at the finish line.
+                Same derived model, same media identities, compressed into a
+                continuity ribbon that hands over to the existing reveal. */}
+            <div className="mx-auto mb-6 w-full max-w-[560px] px-5">
+              <LivingCanvas model={livingCanvas} variant="assembled" />
+            </div>
             <StoryboardHandoff
+              canvasModel={livingCanvas}
               state={state}
               onStateChange={setState}
               onBack={() => back("logistics")}
-              onSecure={() => advance("guestDetails")}
+              // PASS 4 — REWARD BEFORE ADMIN: Your Day hands over to
+            // logistics ("Make it real"), never straight to guest details.
+            onSecure={() => advance("logistics")}
               onRefine={() => openLeadSheet("refine")}
               pending={checkoutPending}
               tourPriceTiers={tourPriceTiers}
               selectedAddOnIds={selectedAddOnIds}
+              selectedAddOnMinutes={selectedAddOnMinutes}
               onAddOnsChange={handleAddOnsChange}
               resolvedPerPaxEur={resolvedJourney.perPaxEur}
               resolvedTotalEur={resolvedJourney.totalEur}
@@ -3280,7 +3927,7 @@ export function StudioV3() {
                   totalEur={resolvedJourney.totalEur}
                   journeyLines={resolvedJourney.journeyLines}
                   saving={savingSignature}
-                  onContinue={() => advance("guestDetails")}
+                  onContinue={() => advance("logistics")}
                   onSaveSignature={handleSaveSignature}
                   onBack={() => back("logistics")}
                 />
@@ -3310,7 +3957,12 @@ export function StudioV3() {
               const t = state.tourId ? findTour(state.tourId) : null;
               if (!t) return null;
               const guests = adults + minorAges.length;
-              const j = resolveJourneyPricing(t, adults, minorAges, tourPriceTiers);
+              const j = resolveStudioStrictJourneyPricing(
+                t.id,
+                { adults, minorAges, guests },
+                tourPriceTiers,
+              );
+
               if (!j) return null;
               const addOns = addOnsPartyTotal(selectedAddOnItems, guests);
               return {
@@ -3485,7 +4137,7 @@ export function StudioV3() {
  * can share the same coord resolution and the same OSRM cache key.
  */
 function resolveRevealRouteStops(
-  editedStops: ReadonlyArray<{ label: string }>,
+  editedStops: ReadonlyArray<{ label: string; lat?: number | null; lng?: number | null }>,
   resolved: {
     routePoints: ReadonlyArray<{ label: string; lat?: number | null; lng?: number | null }>;
   },
@@ -3498,10 +4150,17 @@ function resolveRevealRouteStops(
     : null;
 
   const stopsDetailed = editedStops.map((s) => {
+    // PASS 4.1 — the CURRENT stop's own real coordinates are the truth. They
+    // travelled through the authority chain (PASS 3A.2) and must survive both
+    // logistics and Add/Swap; a fresh resolver never overrides them.
+    if (Number.isFinite(s.lat) && Number.isFinite(s.lng)) {
+      return { label: s.label, lat: s.lat as number, lng: s.lng as number };
+    }
     const rp = byLabel.get(s.label.toLowerCase());
     if (rp && rp.lat != null && rp.lng != null) {
       return { label: s.label, lat: rp.lat, lng: rp.lng };
     }
+
     const geo = lookupStopGeo(s.label);
     if (geo) {
       return {
@@ -3654,15 +4313,37 @@ export function interpretationLine(state: StudioV3State): string | null {
 }
 
 /**
+ * Meaningful progress = the traveller actually answered something, not merely
+ * moved past the first screen. Phase alone is not progress.
+ */
+export function hasMeaningfulStudioProgress(state: StudioV3State): boolean {
+  return Boolean(
+    state.feeling ||
+      state.companions ||
+      state.rhythm ||
+      state.occasion ||
+      state.dateMode ||
+      state.pickup ||
+      (state.interests?.length ?? 0) > 0 ||
+      state.tourId ||
+      (state.editedRoutePoints?.length ?? 0) > 0 ||
+      (state.committedRoutePoints?.length ?? 0) > 0,
+  );
+}
+
+/**
  * CloseStudio — a discreet exit affordance pinned to the top-right of
- * the Studio. With unsaved progress it asks for confirmation before
- * leaving so the traveller doesn't lose the journey they were composing.
+ * the Studio. With meaningful progress it confirms before leaving, and tells
+ * the truth: progress is kept in this browser session (never an account).
  */
 function CloseStudio({ hasProgress }: { hasProgress: boolean }) {
   const handleClose = useCallback(() => {
     if (typeof window === "undefined") return;
     if (hasProgress) {
-      const ok = window.confirm("Leave the Studio? Your journey so far won't be saved.");
+      const ok = window.confirm(
+        "Leave the Studio? Your progress stays in this browser tab, so you can pick the day back up while this session is open.",
+      );
+
       if (!ok) return;
     }
     window.location.assign("/");
@@ -3818,6 +4499,7 @@ export function StoryboardHandoff({
   pending,
   tourPriceTiers,
   selectedAddOnIds,
+  selectedAddOnMinutes = 0,
   onAddOnsChange,
   resolvedPerPaxEur = null,
   resolvedTotalEur = null,
@@ -3825,6 +4507,7 @@ export function StoryboardHandoff({
   resolvedAddOnsTotalEur = null,
   storySlot = null,
   footerSlot = null,
+  canvasModel = null,
 }: {
   state: StudioV3State;
   onStateChange: Dispatch<SetStateAction<StudioV3State>>;
@@ -3834,6 +4517,8 @@ export function StoryboardHandoff({
   pending?: boolean;
   tourPriceTiers?: import("@/hooks/use-tour-price-tiers").TourPriceTiersMap;
   selectedAddOnIds?: ReadonlyArray<string>;
+  /** Minutes already committed by the CURRENT add-on basket. */
+  selectedAddOnMinutes?: number;
   onAddOnsChange?: (summary: SelectedAddOnSummary) => void;
   resolvedPerPaxEur?: number | null;
   resolvedTotalEur?: number | null;
@@ -3843,6 +4528,8 @@ export function StoryboardHandoff({
   storySlot?: React.ReactNode;
   /** P8 — quiet secondary footer (other directions). */
   footerSlot?: React.ReactNode;
+  /** FINAL CLOSURE — the derived Living Canvas, for media continuity only. */
+  canvasModel?: LivingCanvasModel | null;
 }) {
   const pickupCity = pickupCityLabel(state.pickup);
 
@@ -3873,14 +4560,21 @@ export function StoryboardHandoff({
     () =>
       resolveAuthoritativeRouteStops({
         editedRoutePoints: null,
+        // PASS 4 — the committed snapshot IS the shown day; a fresh resolution
+        // can never silently replace it behind the traveller.
+        committedRoutePoints: state.committedRoutePoints ?? null,
         resolved,
         catalogStops: null,
       }),
-    [resolved],
+    [resolved, state.committedRoutePoints],
   );
 
   const editedStops = state.editedRoutePoints ?? baseStops;
-  const skeletonTour = resolved.skeletonTourKey ? findTour(resolved.skeletonTourKey) : null;
+  // PASS 4 — FROZEN ANCHOR. Once the day has been shown and committed, the
+  // Signature anchor is `state.tourId`. Returning from logistics or checkout
+  // can never silently switch it to a freshly resolved skeleton.
+  const anchorTourKey = state.tourId ?? resolved.skeletonTourKey ?? null;
+  const skeletonTour = anchorTourKey ? findTour(anchorTourKey) : null;
 
   // Output sanitation: canonical labels stay in `editedStops` for geo lookup,
   // route authority, dedupe and editing identity. Everything a traveller can
@@ -3929,16 +4623,15 @@ export function StoryboardHandoff({
     !!revealRouteStops && revealRouteStops.length >= 2,
   );
 
-  // ── Plan §H approval state machine ────────────────────────────────
-  // The trust mark below is driven by real itinerary validation. Never
-  // renders "YES Approved" unless validateItinerary() returns "approved".
-  // While OSRM leg data is still loading, we stay optimistic (approved)
-  // because the reveal already gates on baseline data readiness; a
-  // definite "incomplete" from thin data is treated as approved rather
-  // than flashing a muted "Preliminary itinerary" during hydration.
+  // ── Plan §H approval state machine — FAIL CLOSED ──────────────────
+  // Operational approval is a real fact, never an optimistic default.
+  // Loading legs, a missing skeleton, or an `incomplete` validation are
+  // all "not proven approved": they resolve to `review`, which keeps the
+  // existing curator/review path instead of enabling Reserve. Only a real
+  // `validateItinerary(...).status === "approved"` may approve the day.
   const approvalStatus: ValidationStatus = useMemo(() => {
-    if (revealLegsLoading) return "approved";
-    if (!skeletonTour) return "approved";
+    if (revealLegsLoading) return "review";
+    if (!skeletonTour) return "review";
     const region = tourRegionToRegionKey(skeletonTour.region);
     const result = validateItinerary({
       region,
@@ -3949,7 +4642,7 @@ export function StoryboardHandoff({
       })),
       legMinutes: revealLegMinutes ?? null,
     });
-    return result.status === "incomplete" ? "approved" : result.status;
+    return result.status === "incomplete" ? "review" : result.status;
   }, [revealLegsLoading, skeletonTour, editedStops, revealLegMinutes]);
 
   // ---------- Fase 4 reveal guard ----------------------------------------
@@ -3961,7 +4654,7 @@ export function StoryboardHandoff({
     () =>
       validateResolvedSignature(
         {
-          skeletonTourKey: resolved.skeletonTourKey,
+          skeletonTourKey: anchorTourKey,
           routePoints: resolved.routePoints,
           suggestedRouteLabel: resolved.suggestedRouteLabel,
           journeyTitle: resolved.journeyTitle,
@@ -3969,7 +4662,7 @@ export function StoryboardHandoff({
         skeletonTour ?? null,
       ),
     [
-      resolved.skeletonTourKey,
+      anchorTourKey,
       resolved.routePoints,
       resolved.suggestedRouteLabel,
       resolved.journeyTitle,
@@ -3993,13 +4686,35 @@ export function StoryboardHandoff({
   );
   const swapPool = useMemo(() => {
     const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
-    const pool: Array<{ label: string; story: string; source: "skeleton" | "region-pool" }> = [];
+    const pool: Array<{
+      label: string;
+      story: string;
+      source: "skeleton" | "region-pool";
+      durationMinutes?: number | null;
+      /** Provenance of `durationMinutes` — only set when the source owns it. */
+      durationSource?: DwellSource | null;
+      lat?: number | null;
+      lng?: number | null;
+      // NORTH-STAR CLOSURE — identity travels with the candidate so an
+      // add/swap keeps structural commercial truth AND stable media.
+      inventoryStopId?: string | null;
+      blueprintStopId?: string | null;
+      image?: string | null;
+      focal?: string | null;
+    }> = [];
+
 
     // 1) Same Signature skeleton's own stops (always safe, anchor narrative).
     if (skeletonTour) {
       for (const s of skeletonTour.stops) {
         if (!inUse.has(s.label.toLowerCase())) {
-          pool.push({ label: s.label, story: s.story, source: "skeleton" });
+          pool.push({
+            label: s.label,
+            story: s.story,
+            source: "skeleton",
+            image: s.image ?? null,
+            focal: s.focal ?? null,
+          });
         }
       }
     }
@@ -4008,7 +4723,7 @@ export function StoryboardHandoff({
     //    tour-isolation respected, considerations honoured, deduped vs
     //    editedStops. We also defend oneOfGroup against existing edited
     //    labels (an edited stop may already represent a oneOfGroup member).
-    if (resolved.skeletonTourKey && state.companions && state.rhythm) {
+    if (anchorTourKey && state.companions && state.rhythm) {
       const editedLabelsLower = new Set(editedStops.map((s) => s.label.toLowerCase()));
       const usedGroups = new Set<string>();
       for (const stop of REGION_STOP_POOL) {
@@ -4017,7 +4732,7 @@ export function StoryboardHandoff({
         }
       }
       const cands = selectReplacementCandidates({
-        skeletonTourId: resolved.skeletonTourKey,
+        skeletonTourId: anchorTourKey,
         interests: state.interests,
         rhythm: state.rhythm,
         companions: state.companions,
@@ -4036,7 +4751,14 @@ export function StoryboardHandoff({
           label: c.name,
           story: customerStopBlurb(c),
           source: "region-pool",
+          durationMinutes: c.durationMin ?? null,
+          // REGION_STOP_POOL candidates carry a structural inventory duration.
+          durationSource: c.durationMin > 0 ? ("inventory" as DwellSource) : null,
+          lat: c.coords?.lat ?? null,
+          lng: c.coords?.lng ?? null,
+          inventoryStopId: (c as { id?: string | null }).id ?? null,
         });
+
       }
     }
 
@@ -4044,7 +4766,7 @@ export function StoryboardHandoff({
   }, [
     skeletonTour,
     editedStops,
-    resolved.skeletonTourKey,
+    anchorTourKey,
     state.companions,
     state.rhythm,
     state.interests,
@@ -4053,11 +4775,7 @@ export function StoryboardHandoff({
   ]);
 
   const setEdited = useCallback(
-    (
-      updater: (
-        prev: Array<{ label: string; story: string }>,
-      ) => Array<{ label: string; story: string }>,
-    ) => {
+    (updater: (prev: AuthoredRoutePoint[]) => AuthoredRoutePoint[]) => {
       onStateChange((s) => {
         const current = s.editedRoutePoints ?? baseStops;
         const next = updater(current);
@@ -4074,19 +4792,24 @@ export function StoryboardHandoff({
   // Holds the exact stop list as it was immediately before the last
   // supported refine action. Restoring it is a pure assignment — no
   // recomposition, no invented state.
+  //
+  // The snapshot is typed as full `AuthoredRoutePoint[]`: undo must return the
+  // WHOLE structural truth of each moment (identity, coordinates, media,
+  // duration + provenance), not just its label and story. The runtime already
+  // stored complete points; this makes the contract explicit and type-checked.
   const [undoSnapshot, setUndoSnapshot] = useState<{
-    stops: Array<{ label: string; story: string }>;
+    stops: AuthoredRoutePoint[];
     summary: string;
   } | null>(null);
 
   // Contextual refine intents — only the ones the engine can really execute
   // on this day, built from the SAME validated replacement pool as Swap.
   const intentCandidates = useMemo<RefineIntentCandidate[]>(() => {
-    if (!resolved.skeletonTourKey || !state.companions || !state.rhythm) return [];
+    if (!anchorTourKey || !state.companions || !state.rhythm) return [];
     const inUse = new Set(editedStops.map((s) => s.label.toLowerCase()));
     const out: RefineIntentCandidate[] = [];
     for (const c of selectReplacementCandidates({
-      skeletonTourId: resolved.skeletonTourKey,
+      skeletonTourId: anchorTourKey,
       interests: state.interests,
       rhythm: state.rhythm,
       companions: state.companions,
@@ -4104,7 +4827,7 @@ export function StoryboardHandoff({
     }
     return out;
   }, [
-    resolved.skeletonTourKey,
+    anchorTourKey,
     state.companions,
     state.rhythm,
     state.interests,
@@ -4128,7 +4851,7 @@ export function StoryboardHandoff({
 
   const applyRefineIntent = useCallback(
     (intent: (typeof refineIntents)[number]) => {
-      const before = editedStops.map((s) => ({ label: s.label, story: s.story }));
+      const before = editedStops.map((s) => ({ ...s }));
       const result = intent.apply();
       setUndoSnapshot({ stops: before, summary: result.summary });
       setEdited(() => result.stops);
@@ -4163,6 +4886,13 @@ export function StoryboardHandoff({
     setEdited(() => restore.map((s) => ({ ...s })));
     setUndoSnapshot(null);
     setIntentFeedback(null);
+    // TURBO 2 — structural only. Never a label, never free text.
+    trackStudio("studio_undo", { phase: "storyboard", moment_count: restore.length });
+    trackStudio("studio_composition_changed", {
+      phase: "storyboard",
+      change: "undo",
+      moment_count: restore.length,
+    });
   }, [undoSnapshot, setEdited]);
 
   // ── Pass 2B authorship gesture ────────────────────────────────────────
@@ -4170,12 +4900,20 @@ export function StoryboardHandoff({
   // same structural delta chip and the same single-step undo snapshot
   // (exact previous order AND stop identity). No pricing side effects.
   const applyAuthoredChange = useCallback(
-    (delta: StructuralDelta, next: Array<{ label: string; story: string }>) => {
+    (delta: StructuralDelta, next: AuthoredRoutePoint[]) => {
       const before = editedStops.map((p) => ({ ...p }));
       const chip = describeStructuralDelta(delta);
       setUndoSnapshot({ stops: before, summary: chip });
       setEdited(() => next);
       setIntentFeedback(chip);
+      if (delta === "swap") {
+        trackStudio("studio_swap", { phase: "storyboard", moment_count: next.length });
+      }
+      trackStudio("studio_composition_changed", {
+        phase: "storyboard",
+        change: delta,
+        moment_count: next.length,
+      });
     },
     [editedStops, setEdited],
   );
@@ -4246,17 +4984,175 @@ export function StoryboardHandoff({
     return () => timers.forEach(window.clearTimeout);
   }, [composing, totalStops, reducedMotionInitial]);
 
-  // Max moments by rhythm — used by the reveal editor to allow ONE safe
-  // extra moment when the user wants to enrich the day. Composition itself
-  // remains conservative; this is user-controlled fine-tuning only.
-  const maxMoments =
-    state.rhythm === "slow"
-      ? editedStops.length // slow: locked to current — no add
-      : state.rhythm === "balanced" || state.rhythm === "full" || state.rhythm === "immersive"
-        ? 5
-        : 4;
-  const canAddMoment = editedStops.length < maxMoments && swapPool.length > 0;
-  const isRouteComplete = editedStops.length >= maxMoments;
+  // FINAL CLOSURE — ONE TIME AUTHORITY. The canonical V3 Time Authority
+  // (`judgeRouteTimeFit`) answers first whenever the current authored route
+  // carries certified minute truth (structural id + duration + provenance).
+  // The legacy `summarizeDay + inferKind(label)` path survives ONLY as the
+  // explicit backward-compatible fallback for thin/old drafts, where the
+  // canonical authority reports `not-evaluable`. No new arithmetic here.
+  const canonicalTimingStops = useMemo(
+    () =>
+      editedStops.map((p) => ({
+        stopId: p.inventoryStopId ?? p.blueprintStopId ?? "",
+        label: p.label,
+        lat: p.lat ?? null,
+        lng: p.lng ?? null,
+        durationMinutes: p.durationMinutes ?? null,
+        durationSource: p.durationSource ?? null,
+      })),
+    [editedStops],
+  );
+
+  /** Base route, BEFORE any selected add-on minutes. */
+  const canonicalBaseFit = useMemo(
+    () =>
+      judgeRouteTimeFit({
+        stops: canonicalTimingStops,
+        skeletonTourId: anchorTourKey,
+        ...(state.rhythm ? { rhythm: state.rhythm } : {}),
+      }),
+    [canonicalTimingStops, anchorTourKey, state.rhythm],
+  );
+
+  /** The day as it stands, counting the selected add-on minutes exactly once. */
+  const canonicalDayFit = useMemo(
+    () =>
+      judgeRouteTimeFit({
+        stops: canonicalTimingStops,
+        addOnsMinutes: selectedAddOnMinutes,
+        skeletonTourId: anchorTourKey,
+        ...(state.rhythm ? { rhythm: state.rhythm } : {}),
+      }),
+    [canonicalTimingStops, selectedAddOnMinutes, anchorTourKey, state.rhythm],
+  );
+
+  // FINAL CLOSURE — route length is NOT a rhythm/count product rule any more.
+  // Whether one more moment may be offered is proven by the existing timing
+  // truth (remaining minutes) plus the existing itinerary validation. When
+  // that cannot be proven we fail closed and simply do not offer it.
+  const dayRemainingMinutes = useMemo(() => {
+    if (revealLegsLoading) return null;
+    if (canonicalDayFit.evaluable) return canonicalDayFit.remainingMin;
+    return summarizeDay({
+      stops: editedStops.map((p) => {
+        const ep = p as { label: string; lat?: number | null; lng?: number | null };
+        return {
+          label: ep.label,
+          lat: ep.lat ?? null,
+          lng: ep.lng ?? null,
+          kind: inferKind(ep.label),
+        };
+      }),
+      drivesMin: revealLegMinutes ?? undefined,
+      region: skeletonTour?.region ?? null,
+      // The add-ons the traveller already chose are real minutes of the day.
+      addOnsMin: selectedAddOnMinutes,
+    }).remainingMin;
+  }, [
+    revealLegsLoading,
+    canonicalDayFit,
+    editedStops,
+    revealLegMinutes,
+    skeletonTour,
+    selectedAddOnMinutes,
+  ]);
+
+
+  // The exact day every candidate must be projected into: the authored route
+  // AND the minutes already committed by the current add-on basket. Shared by
+  // the add pool and the swap gate so neither can read a stale closure.
+  //
+  // FINAL TRUTH CLOSURE — structural identity and duration provenance travel
+  // with the day, so the canonical V3 time authority decides whenever it can.
+  // Nothing is invented: a stop without genuine minute truth simply carries
+  // none, and the explicit legacy fallback answers instead.
+  const fitDayInput = useMemo(
+    () => ({
+      stops: editedStops.map((p) => ({
+        label: p.label,
+        lat: p.lat ?? null,
+        lng: p.lng ?? null,
+        stopId: p.inventoryStopId ?? p.blueprintStopId ?? null,
+        durationMinutes: p.durationMinutes ?? null,
+        durationSource: p.durationSource ?? null,
+      })),
+      region: skeletonTour?.region ?? null,
+      addOnsMinutes: selectedAddOnMinutes,
+      skeletonTourId: anchorTourKey,
+      ...(state.rhythm ? { rhythm: state.rhythm } : {}),
+    }),
+    [editedStops, skeletonTour, selectedAddOnMinutes, anchorTourKey, state.rhythm],
+  );
+
+  // FINAL CERTIFICATION — fit is proven PER CANDIDATE, never pool-wide. A
+  // 25-minute viewpoint and a 90-minute winery are not interchangeable when
+  // the day has 40 minutes left, so every candidate is projected into the
+  // day it would actually create before it may be offered.
+  const addCandidateFits = useMemo(() => {
+    if (dayRemainingMinutes === null) return {} as Record<string, boolean>;
+    return fitByLabel(
+      evaluatePoolFit(
+        fitDayInput,
+        swapPool.map((c) => ({
+          label: c.label,
+          lat: c.lat ?? null,
+          lng: c.lng ?? null,
+          durationMinutes: c.durationMinutes ?? null,
+          durationSource: c.durationSource ?? null,
+          stopId: c.inventoryStopId ?? c.blueprintStopId ?? null,
+        })),
+      ),
+    );
+  }, [dayRemainingMinutes, fitDayInput, swapPool]);
+
+
+  const addablePool = useMemo(
+    () => swapPool.filter((c) => addCandidateFits[c.label] === true),
+    [swapPool, addCandidateFits],
+  );
+
+  const canAddMoment = canOfferAdditionalMoment({
+    poolSize: addablePool.length,
+    remainingMinutes: dayRemainingMinutes,
+    validationStatus: approvalStatus,
+  });
+
+
+  // FINAL CLOSURE — removal is a commercial/operational fact, proven per
+  // moment against the anchor Signature's blueprint. Unproven ⇒ not removable.
+  const momentOptionality = useMemo(
+    () =>
+      resolveMomentOptionality({
+        tourId: anchorTourKey ?? skeletonTour?.id ?? null,
+        labels: editedStops.map((s) => s.label),
+        minStops: REFINE_MIN_STOPS,
+      }),
+    [anchorTourKey, skeletonTour, editedStops],
+  );
+
+  // FINAL CLOSURE — Reserve is only a booking action when the authoritative
+  // composition is actually bookable. Review/reject/unresolved states go to
+  // the existing curator enquiry path instead of Stripe.
+  const canReserve =
+    editedStops.length >= REFINE_MIN_STOPS &&
+    revealValidation.ok &&
+    approvalStatus === "approved";
+
+  // Canvas → YOUR DAY continuity. Same derived model, same media identities,
+  // matched on STRUCTURAL identity from the CURRENT authored route.
+  const yourDayVisuals = useMemo(
+    () =>
+      resolveYourDayVisuals(
+        canvasModel ?? null,
+        editedStops.map((s) => ({
+          label: s.label,
+          stopId: s.inventoryStopId ?? null,
+          blueprintStopId: s.blueprintStopId ?? null,
+        })),
+      ),
+    [canvasModel, editedStops],
+  );
+
 
   // Story themes — derived from the user's choices, used in hero subhead
   // and the "heart of the day" chapter. No invented facts.
@@ -4278,6 +5174,14 @@ export function StoryboardHandoff({
           : "a thoughtful rhythm";
 
   // ---------- Phase 6E: Signature Story copy ----------
+  const yourDayEditorialTitle = (() => {
+    const region = skeletonTour?.region?.trim() || null;
+    const themes = themeBits.slice(0, 2);
+    if (region && themes.length >= 1) return `${region}, through ${themes.join(" and ")}.`;
+    if (region) return `A private ${region} day.`;
+    return "One private day, in order.";
+  })();
+
   const heroLead = name ? `${name}, this is your Signature.` : "This is your Signature.";
   const heroThemes = themeBits.slice(0, 3);
   const regionName = skeletonTour?.region?.trim() || null;
@@ -4453,13 +5357,16 @@ export function StoryboardHandoff({
     );
   }
 
-  // Product-flow contract (approved plan): this component owns the
-  // Refine screen. Three screens, one job each:
-  //   map        → MapAwakens              (cinematic route reveal)
-  //   storyboard → Refine (this component) (edit stops + add-ons + live price)
-  //   confirmation → Storytelling Signature (FinalRevealStory)
+  // Product-flow contract (canonical — see docs/studio-north-star.md):
+  //   storyboard   → "Your Day" (this component): the UNIFIED surface that
+  //                  owns edit moments + add-ons AND its inline story/reveal
+  //                  chapter, with the single Living Canvas as the live
+  //                  manifestation. `map` and `confirmation` are legacy
+  //                  hydration aliases canonicalized to storyboard — they are
+  //                  NOT separate live phases.
   // Testid `studio-v3-reveal` is preserved for backward compatibility;
   // `data-studio-v3-screen="refine"` is the stable product-level hook.
+
   return (
     <div
       className="relative w-full max-w-[640px] px-5 pb-12"
@@ -4571,14 +5478,32 @@ export function StoryboardHandoff({
         className="pt-10"
         title={
           <span data-testid="studio-v3-signature-hero">
-            Your day is ready.
+            {name ? `${name}\u2019s day.` : "Your day."}
             <br />
             <span className="italic" style={{ color: "var(--teal)" }}>
-              Now you can refine it.
+              {yourDayEditorialTitle}
             </span>
           </span>
         }
       />
+
+      {/* FINAL CLOSURE — the principal visual is the SAME media identity the
+          Living Canvas already resolved. Nothing is re-resolved for the end. */}
+      {yourDayVisuals.backdrop ? (
+        <figure
+          data-testid="studio-v3-your-day-hero-media"
+          className="mt-6 mx-auto w-full max-w-[560px] lg:max-w-[860px] overflow-hidden rounded-[10px] px-0"
+        >
+          <img
+            src={yourDayVisuals.backdrop.src}
+            alt={yourDayVisuals.backdrop.alt}
+            data-media-id={yourDayVisuals.backdrop.id}
+            loading="lazy"
+            decoding="async"
+            className="h-[190px] w-full object-cover sm:h-[280px]"
+          />
+        </figure>
+      ) : null}
 
       {/* ---------- Unified "Your Signature" card (map · story · edit · DNA · price · add-ons) ----------
         Mobile-first ≤560px column. Desktop widens to give journey copy real
@@ -4619,6 +5544,37 @@ export function StoryboardHandoff({
               </div>
             }
           />
+        ) : null}
+
+        {editedStops.length > 0 &&
+        (yourDayVisuals.byId.size > 0 || yourDayVisuals.byLabel.size > 0) ? (
+          <ul
+            data-testid="studio-v3-your-day-moment-media"
+            className="mx-auto mt-4 flex w-full max-w-[520px] gap-2 overflow-x-auto pb-1"
+          >
+            {editedStops.map((s, i) => {
+              const media = yourDayMediaFor(yourDayVisuals, {
+                label: s.label,
+                stopId: s.inventoryStopId ?? null,
+                blueprintStopId: s.blueprintStopId ?? null,
+              });
+              if (!media) return null;
+              return (
+                <li key={`${s.label}-media-${i}`} className="shrink-0">
+                  <img
+                    src={media.src}
+                    alt={media.alt}
+                    data-media-id={media.id}
+                    data-moment-label={s.label}
+                    loading="lazy"
+                    decoding="async"
+                    style={media.focal ? { objectPosition: media.focal } : undefined}
+                    className="h-[56px] w-[76px] rounded-[3px] object-cover"
+                  />
+                </li>
+              );
+            })}
+          </ul>
         ) : null}
 
         {editedStops.length > 0 ? (
@@ -4791,6 +5747,7 @@ export function StoryboardHandoff({
                       })
                     }
                     minStops={REFINE_MIN_STOPS}
+                    removable={momentOptionality[i]?.removable ?? false}
                     canSwap={swapPoolPublic.length > 0}
                     swapPool={swapPoolPublic}
                     swapOpen={swapOpenIdx === i}
@@ -4802,6 +5759,8 @@ export function StoryboardHandoff({
                       applyAuthoredChange("later", applyGesture(editedStops, i, "later"))
                     }
                     onRemove={() => {
+                      // Fail closed: only a proven-optional moment may leave.
+                      if (!momentOptionality[i]?.removable) return;
                       applyAuthoredChange(
                         "remove",
                         applyGesture(editedStops, i, "remove", { minStops: REFINE_MIN_STOPS }),
@@ -4815,10 +5774,39 @@ export function StoryboardHandoff({
                     onPickSwap={(cand) => {
                       const canonical = swapPool.find((c) => c.label === cand.id);
                       if (!canonical) return;
+                      // FINAL CERTIFICATION — a swap must be proven against
+                      // the day it would create at THIS position, not against
+                      // the pool as a whole. Unproven ⇒ refused.
+                      const swapFit = evaluateCandidateFit(
+                        fitDayInput,
+                        {
+                          label: canonical.label,
+                          lat: canonical.lat ?? null,
+                          lng: canonical.lng ?? null,
+                          durationMinutes: canonical.durationMinutes ?? null,
+                          durationSource: canonical.durationSource ?? null,
+                          stopId:
+                            canonical.inventoryStopId ?? canonical.blueprintStopId ?? null,
+                        },
+                        { replaceAt: i },
+                      );
+                      if (!swapFit.fits) return;
+
                       applyAuthoredChange(
                         "swap",
                         applyGesture(editedStops, i, "swap", {
-                          replacement: { label: canonical.label, story: canonical.story },
+                          replacement: {
+                            label: canonical.label,
+                            story: canonical.story,
+                            inventoryStopId: canonical.inventoryStopId ?? null,
+                            blueprintStopId: canonical.blueprintStopId ?? null,
+                            image: canonical.image ?? null,
+                            focal: canonical.focal ?? null,
+                            lat: canonical.lat ?? null,
+                            lng: canonical.lng ?? null,
+                            durationMinutes: canonical.durationMinutes ?? null,
+                            durationSource: canonical.durationSource ?? null,
+                          },
                         }),
                       );
                       setSwapOpenIdx(null);
@@ -4866,14 +5854,27 @@ export function StoryboardHandoff({
                       border: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
                     }}
                   >
-                    {swapPool.slice(0, 6).map((cand) => (
+                    {addablePool.slice(0, 6).map((cand) => (
                       <li key={cand.label}>
                         <button
                           type="button"
                           onClick={() => {
                             setEdited((prev) => [
                               ...prev,
-                              { label: cand.label, story: cand.story },
+                              {
+                                label: cand.label,
+                                story: cand.story,
+                                inventoryStopId: cand.inventoryStopId ?? null,
+                                blueprintStopId: cand.blueprintStopId ?? null,
+                                image: cand.image ?? null,
+                                focal: cand.focal ?? null,
+                                lat: cand.lat ?? null,
+                                lng: cand.lng ?? null,
+                                // Real duration + provenance travel with the
+                                // moment when the source already owns them.
+                                durationMinutes: cand.durationMinutes ?? null,
+                                durationSource: cand.durationSource ?? null,
+                              },
                             ]);
                             setAddOpen(false);
                           }}
@@ -4897,15 +5898,14 @@ export function StoryboardHandoff({
                   </ul>
                 ) : null}
               </div>
-            ) : isRouteComplete && swapPool.length > 0 ? (
+            ) : swapPool.length > 0 ? (
               <p
                 className="mt-3 text-center text-[12px] leading-[1.5]"
                 style={{
                   color: "color-mix(in oklab, var(--charcoal) 60%, transparent)",
                 }}
               >
-                This Signature is already complete for the rhythm you chose. Try swapping a moment
-                instead.
+                The day is full as it stands. Swap a moment instead of adding one.
               </p>
             ) : null}
 
@@ -4946,7 +5946,11 @@ export function StoryboardHandoff({
         {/* ---------- Add-ons + Total (SignaturePriceCard refine variant) ---------- */}
         <SignaturePriceCard
           variant="refine"
+          // PASS 5 — add-ons are priced from the SAME approved runtime tier-8
+          // anchor the Stripe function uses. Missing row => no numeric add-on.
+          addOnAnchorEur={resolveStudioAddOnAnchorEur(skeletonTour?.id ?? null, tourPriceTiers)}
           tour={skeletonTour ?? null}
+
           stopCount={editedStops.length}
           dateExact={safeDate.dateExact}
           onSecure={onSecure}
@@ -4970,7 +5974,36 @@ export function StoryboardHandoff({
           remainingMinutes={
             revealLegsLoading
               ? null
-              : summarizeDay({
+              : canonicalBaseFit.evaluable
+                ? // BASE route remaining minutes, BEFORE selected add-ons —
+                  // the card's own cumulative add-on budget subtracts those.
+                  canonicalBaseFit.remainingMin
+                : summarizeDay({
+                    stops: editedStops.map((p) => {
+                      const ep = p as {
+                        label: string;
+                        story: string;
+                        lat?: number | null;
+                        lng?: number | null;
+                      };
+                      return {
+                        label: ep.label,
+                        lat: ep.lat ?? null,
+                        lng: ep.lng ?? null,
+                        kind: inferKind(ep.label),
+                      };
+                    }),
+                    drivesMin: revealLegMinutes ?? undefined,
+                    region: skeletonTour?.region ?? null,
+                  }).remainingMin
+          }
+          itineraryStops={editedStops.map((p) => revealLabel((p as { label: string }).label))}
+          dwellHours={(() => {
+            if (revealLegsLoading) return null;
+            // Same canonical base-route total the remaining time comes from.
+            const totalMin = canonicalBaseFit.evaluable
+              ? canonicalBaseFit.totalMin
+              : (summarizeDay({
                   stops: editedStops.map((p) => {
                     const ep = p as {
                       label: string;
@@ -4987,32 +6020,10 @@ export function StoryboardHandoff({
                   }),
                   drivesMin: revealLegMinutes ?? undefined,
                   region: skeletonTour?.region ?? null,
-                }).remainingMin
-          }
-          itineraryStops={editedStops.map((p) => revealLabel((p as { label: string }).label))}
-          dwellHours={(() => {
-            if (revealLegsLoading) return null;
-            const sum = summarizeDay({
-              stops: editedStops.map((p) => {
-                const ep = p as {
-                  label: string;
-                  story: string;
-                  lat?: number | null;
-                  lng?: number | null;
-                };
-                return {
-                  label: ep.label,
-                  lat: ep.lat ?? null,
-                  lng: ep.lng ?? null,
-                  kind: inferKind(ep.label),
-                };
-              }),
-              drivesMin: revealLegMinutes ?? undefined,
-              region: skeletonTour?.region ?? null,
-            });
-            const totalMin = sum.totalMin ?? 0;
+                }).totalMin ?? 0);
             return totalMin > 0 ? Math.round((totalMin / 60) * 10) / 10 : null;
           })()}
+
           onGuestsChange={(n) =>
             onStateChange((s) => ({
               ...s,
@@ -5035,11 +6046,35 @@ export function StoryboardHandoff({
             variant="primary"
             size="md"
             className="w-full max-w-[380px]"
-            aria-label="Continue to guest details"
+            aria-label={CTA_RESERVE_YOUR_DAY}
             data-testid="studio-v3-handoff-primary"
+            disabled={!canReserve}
+            data-reserve-blocked={canReserve ? "false" : "true"}
           >
-            Continue to guest details
+            {CTA_RESERVE_YOUR_DAY}
           </CtaButton>
+        )}
+
+        {!canReserve ? (
+          <button
+            type="button"
+            onClick={onRefine}
+            data-testid="studio-v3-reserve-review-path"
+            className="min-h-[44px] px-3 text-[11px] font-semibold uppercase tracking-[0.22em] underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            style={{ color: "var(--teal)" }}
+          >
+            Have a curator confirm this day
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setRefineOpen(true)}
+            data-testid="studio-v3-your-day-edit"
+            className="min-h-[44px] px-3 text-[11px] font-semibold uppercase tracking-[0.22em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+            style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+          >
+            Edit your day
+          </button>
         )}
 
         <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
@@ -5304,7 +6339,7 @@ function ReactionOverlay({
             investment: state.investment,
             destinationIntent: state.destinationIntent,
             dateExact: state.dateExact,
-            refinement: state.refinement,
+            questionHistory: state.questionHistory,
           });
           const tour = resolved?.skeletonTourKey
             ? signatureTours.find((t) => t.id === resolved.skeletonTourKey)
@@ -5478,16 +6513,15 @@ function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbac
     { x: 38, y: 70 },
   ];
 
-  // Rhythm preview — number of soft stop dots along the route.
-  const rhythmDots =
+  // FINAL CLOSURE — rhythm shapes PACING, never route length. No stop-count
+  // dots: the beat now reads as spacing along one continuous line.
+  const rhythmGapPx =
     reaction.kind === "rhythm"
       ? reaction.rhythmBucket === "slow"
-        ? 2
+        ? 26
         : reaction.rhythmBucket === "balanced"
-          ? 3
-          : reaction.rhythmBucket === "full"
-            ? 5
-            : 4
+          ? 18
+          : 12
       : 0;
 
   return (
@@ -5704,9 +6738,12 @@ function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbac
         </>
       ) : null}
 
-      {/* ---------- Rhythm: origin + density-aware stop dots ---------- */}
+      {/* ---------- Rhythm: origin + pacing (spacing, never stop count) ---------- */}
       {reaction.kind === "rhythm" ? (
-        <div className="absolute inset-x-5 bottom-5 flex items-center gap-2">
+        <div
+          data-testid="studio-v3-rhythm-pacing"
+          className="absolute inset-x-5 bottom-5 flex items-center gap-2"
+        >
           <span
             aria-hidden
             className="inline-block shrink-0"
@@ -5720,39 +6757,16 @@ function MapPreviewPanel({ reaction, fallbackBg }: { reaction: Reaction; fallbac
           />
           <span
             aria-hidden
-            className="h-px w-4"
-            style={{ background: "color-mix(in oklab, var(--charcoal) 30%, transparent)" }}
-          />
-          {Array.from({ length: rhythmDots }).map((_, i) => (
-            <span key={i} aria-hidden className="flex items-center gap-2">
-              <span
-                style={{
-                  width: 5,
-                  height: 5,
-                  borderRadius: "999px",
-                  background: "color-mix(in oklab, var(--teal) 70%, transparent)",
-                  display: "inline-block",
-                }}
-              />
-              {i < rhythmDots - 1 ? (
-                <span
-                  aria-hidden
-                  className="h-px w-3"
-                  style={{
-                    background: "color-mix(in oklab, var(--charcoal) 22%, transparent)",
-                  }}
-                />
-              ) : null}
-            </span>
-          ))}
-          <span
-            aria-hidden
-            className="flex-1 h-px"
+            className="flex-1"
             style={{
-              background:
-                "linear-gradient(to right, color-mix(in oklab, var(--charcoal) 18%, transparent), transparent)",
+              height: 1,
+              backgroundImage:
+                "linear-gradient(to right, color-mix(in oklab, var(--teal) 60%, transparent) 0 6px, transparent 6px)",
+              backgroundSize: `${rhythmGapPx}px 1px`,
+              backgroundRepeat: "repeat-x",
             }}
           />
+
           {reaction.postcardCaption ? (
             <span
               className="ml-2 text-[10px] uppercase tracking-[0.22em] font-semibold"

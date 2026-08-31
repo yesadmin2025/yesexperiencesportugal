@@ -61,6 +61,7 @@ export function buildSignatureStorySnapshot(
   // reshape seed) than the one the traveller approved.
   const routePoints = resolveAuthoritativeRouteStops({
     editedRoutePoints: state.editedRoutePoints,
+    committedRoutePoints: state.committedRoutePoints,
     resolved: resolveStudioRouteFromState(state),
     catalogStops: tour?.stops ?? null,
   });
@@ -126,6 +127,7 @@ export function buildJourneyRevision(
 ): string {
   const routeLabels = resolveAuthoritativeRouteStops({
     editedRoutePoints: state.editedRoutePoints,
+    committedRoutePoints: state.committedRoutePoints,
     resolved: resolveStudioRouteFromState(state),
   }).map((p) => p.label);
 

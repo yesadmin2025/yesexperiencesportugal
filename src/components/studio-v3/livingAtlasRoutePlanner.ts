@@ -1,4 +1,9 @@
 import type { OptionalStop, RegionId } from "@/data/regionStopPool";
+import {
+  MIN_TRANSFER_MINUTES,
+  PLANNING_SPEED_KMH,
+  ROAD_DISTANCE_FACTOR,
+} from "@/lib/studio-v3/routePlanningConstants";
 import type {
   LivingAtlasResolvedComposition,
   LivingAtlasResolvedMoment,
@@ -42,9 +47,8 @@ export const LIVING_ATLAS_PREVIEW_ROUTING_LIMITS = {
   maxLegKm: 60,
 } as const;
 
-const ROAD_DISTANCE_FACTOR = 1.24;
-const PLANNING_SPEED_KMH = 44;
-const MIN_TRANSFER_MINUTES = 7;
+// Route-planning constants are shared with the Pass-1 timing projection so the
+// two estimates can never drift apart. Values unchanged.
 
 /** Regional orientation points from the existing Builder region inventory. */
 const REGION_ORIENTATION: Partial<Record<RegionId, { lat: number; lng: number }>> = {

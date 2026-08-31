@@ -56,7 +56,8 @@ describe("Studio checkout route truth — source contract", () => {
   it("checkout derives stopLabels from the authoritative route, not tour.stops", () => {
     expect(SRC).toMatch(/const checkoutStops = resolveAuthoritativeRouteStops\(\{/);
     expect(SRC).toMatch(/editedRoutePoints: currentState\.editedRoutePoints \?\? null/);
-    expect(SRC).toMatch(/resolved: resolveStudioRouteFromState\(currentState\)/);
+    expect(SRC).toMatch(/const checkoutResolved = resolveStudioRouteFromState\(currentState\);/);
+    expect(SRC).toMatch(/resolved: checkoutResolved,/);
     // The old catalog-only derivation must be gone.
     expect(SRC).not.toMatch(
       /const stopLabels = \(tour\.stops \?\? \[\]\)\.map\(\(s\) => s\.label\)\.slice\(0, 6\)/,
@@ -66,7 +67,7 @@ describe("Studio checkout route truth — source contract", () => {
   it("does not cap the authored route to the legacy 4-slot / 6-stop projection", () => {
     const block = SRC.slice(
       SRC.indexOf("const checkoutStops = resolveAuthoritativeRouteStops"),
-      SRC.indexOf("const perPaxBase = resolvedPerPax.eurPerPax"),
+      SRC.indexOf("const perPaxBase = resolvedPerPax;"),
     );
     expect(block).not.toMatch(/slice\(0,\s*\d+\)/);
   });
@@ -83,11 +84,15 @@ describe("Studio checkout route truth — source contract", () => {
   it("touches no pricing / rhythm / curation authority", () => {
     const block = SRC.slice(
       SRC.indexOf("const checkoutStops = resolveAuthoritativeRouteStops"),
-      SRC.indexOf("const perPaxBase = resolvedPerPax.eurPerPax"),
+      SRC.indexOf("const perPaxBase = resolvedPerPax;"),
     );
     expect(block).not.toMatch(/price|tier|RHYTHM_STOP_COUNT|score/i);
-    // Server pricing inputs unchanged: composition + tour id still drive it.
-    expect(SRC).toMatch(/const resolvedPerPax = resolvePerPaxEur\(tour, details\.guests, tourPriceTiers\)/);
+    // PASS 5 — server pricing inputs still come from composition + tour id,
+    // now resolved through the STRICT runtime-tier authority (no priceFrom).
+    expect(SRC).toMatch(
+      /const resolvedPerPax = resolveStudioStrictPerPaxEur\(tour\.id, details\.guests, tourPriceTiers\)/,
+    );
+
   });
 });
 

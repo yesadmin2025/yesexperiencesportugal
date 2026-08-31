@@ -143,6 +143,18 @@ export function genericiseWineryText(
 export interface AuthoredStop {
   readonly label: string;
   readonly story: string;
+  /** Structural identity, carried verbatim through every gesture. */
+  readonly inventoryStopId?: string | null;
+  readonly blueprintStopId?: string | null;
+  /** Stable media identity, carried verbatim through every gesture. */
+  readonly image?: string | null;
+  readonly focal?: string | null;
+  /** Operational geography, carried verbatim through every gesture. */
+  readonly lat?: number | null;
+  readonly lng?: number | null;
+  /** Structural dwell truth, carried verbatim when the source owns it. */
+  readonly durationMinutes?: number | null;
+  readonly durationSource?: import("@/lib/studio-v3/timeDomain").DwellSource | null;
 }
 
 /**
@@ -179,7 +191,8 @@ export function applyGesture(
     case "swap": {
       const replacement = options?.replacement;
       if (!replacement) return current;
-      current[index] = { label: replacement.label, story: replacement.story };
+      // Identity (structural + media) travels WITH the replacement moment.
+      current[index] = { ...replacement };
       return current;
     }
   }

@@ -20,13 +20,14 @@ const UNSAFE_RE =
 const CORPORATE_PENALTY_RE = /picnic|cove|wild beach|sunset|candlelit|romantic|swim|snorkel/i;
 
 describe("Phase 7A — mobility safety filter on skeleton stops", () => {
-  it("replaces or removes unsafe original skeleton stops when reduced mobility", () => {
+  it("carries an unproven mobility concern as review, never as a membership rewrite", () => {
     const baseInput = {
-      feeling: "coastal" as const,
+      feeling: "wine-food" as const,
       companions: "couple" as const,
       rhythm: "balanced" as const,
-      interests: ["coast"] as const,
-      pickup: "lisbon" as const,
+      interests: ["wine", "gastronomy"] as const,
+      pickup: "sesimbra-setubal-arrabida" as const,
+      preferTourId: "arrabida-wine-allinclusive",
     };
     const unrestricted = resolveStudioV3Route(baseInput);
     const restricted = resolveStudioV3Route({
@@ -34,17 +35,26 @@ describe("Phase 7A — mobility safety filter on skeleton stops", () => {
       considerations: ["reduced-mobility"],
     });
 
-    // Whatever the skeleton chose, the restricted route must contain no
-    // unsafe label / story patterns at all.
-    for (const p of restricted.routePoints) {
-      const hay = `${p.label} ${p.story}`;
-      expect(UNSAFE_RE.test(hay), `restricted route still contains unsafe stop: "${p.label}"`).toBe(
-        false,
-      );
-    }
-    // Sanity: control case at least exists (no false-positive if both empty).
+    // Block A: current inventory cannot structurally prove incompatibility, so
+    // membership is preserved and the concern becomes a review signal.
+    const liveA = unrestricted.livingAtlasLive;
+    const liveB = restricted.livingAtlasLive;
+    expect(liveA).not.toBeNull();
+    expect(liveB).not.toBeNull();
+    expect(liveA!.anchorTourId).toBe("arrabida-wine-allinclusive");
+    expect(liveB!.anchorTourId).toBe("arrabida-wine-allinclusive");
+    expect(liveA!.compositionResolution).toBe("complete");
+    expect(liveB!.compositionResolution).toBe("complete");
+    // The contract: composition membership is identical.
+    expect(liveB!.compositionStopIds).toEqual(liveA!.compositionStopIds);
+    expect(restricted.routePoints.map((p) => p.label)).toEqual(
+      unrestricted.routePoints.map((p) => p.label),
+    );
+    expect(liveB!.internalIssues.map((i) => i.code)).toContain("mobility-unproven");
+    expect(liveB!.validation?.reasons.map((r) => r.code)).toContain("mobility-review");
     expect(unrestricted.routePoints.length).toBeGreaterThan(0);
   });
+
 
   it("applyMobilitySafety is a pure no-op when route has no unsafe stops", () => {
     const safeRoute = [

@@ -1,3 +1,4 @@
+import type { DwellSource } from "@/lib/studio-v3/timeDomain";
 /**
  * studioRouteAuthority — ONE projection of route-shaping state, and ONE
  * authority chain for the traveller's itinerary.
@@ -27,6 +28,32 @@ export type StudioRouteShapingInput = Parameters<typeof resolveStudioV3Route>[0]
 export interface StudioRouteStop {
   readonly label: string;
   readonly story: string;
+  /** Structural identity when the source knew it. Never invented here. */
+  readonly inventoryStopId?: string | null;
+  readonly blueprintStopId?: string | null;
+  /** Stable media identity when the source knew it. Never invented here. */
+  readonly image?: string | null;
+  readonly focal?: string | null;
+  /** Operational geography known upstream. Never invented here. */
+  readonly lat?: number | null;
+  readonly lng?: number | null;
+  /** Structural dwell truth known upstream. Never inferred here. */
+  readonly durationMinutes?: number | null;
+  readonly durationSource?: DwellSource | null;
+}
+
+/** The optional identity fields a route point may carry through the chain. */
+interface RoutePointLike {
+  label: string;
+  story?: string | null;
+  inventoryStopId?: string | null;
+  blueprintStopId?: string | null;
+  image?: string | null;
+  focal?: string | null;
+  lat?: number | null;
+  lng?: number | null;
+  durationMinutes?: number | null;
+  durationSource?: DwellSource | null;
 }
 
 /**
@@ -48,7 +75,8 @@ export function studioRouteShapingInput(
     | "dateExact"
     | "refinement"
     | "rerollCount"
-  >,
+  > &
+    Partial<Pick<StudioV3State, "questionHistory">>,
 ): StudioRouteShapingInput {
   return {
     feeling: state.feeling,
@@ -62,6 +90,7 @@ export function studioRouteShapingInput(
     destinationIntent: state.destinationIntent ?? null,
     dateExact: state.dateExact ?? null,
     refinement: state.refinement ?? null,
+    questionHistory: state.questionHistory ?? [],
     seed: state.rerollCount ?? 0,
   };
 }
@@ -74,26 +103,48 @@ export function resolveStudioRouteFromState(state: StudioV3State): ResolvedStudi
 /**
  * The non-negotiable itinerary authority chain:
  *
- *   editedRoutePoints  >  FULL composed route  >  compact legacy route
+ *   editedRoutePoints  >  committedRoutePoints (the day actually SHOWN)
+ *   >  FULL composed route  >  compact legacy route
  *   >  catalog Signature stops (final fallback only)
  *
- * `tourId` is deliberately absent from the first three links: it anchors
+ * `tourId` is deliberately absent from the first links: it anchors
  * pricing, region and source truth, and can never replace custom moments.
+ *
+ * PASS 4: `committedRoutePoints` is the snapshot taken once, on the first
+ * reveal of Your Day. It sits BELOW traveller edits and ABOVE any fresh
+ * resolver output, so logistics facts (date/pickup/party) can never cause a
+ * second composition to replace the itinerary the traveller was shown.
  */
 export function resolveAuthoritativeRouteStops(args: {
-  editedRoutePoints?: ReadonlyArray<{ label: string; story?: string | null }> | null;
+  editedRoutePoints?: ReadonlyArray<RoutePointLike> | null;
+  committedRoutePoints?: ReadonlyArray<RoutePointLike> | null;
   resolved?: {
-    composedRoutePoints?: ReadonlyArray<{ label: string; story?: string | null }>;
-    routePoints?: ReadonlyArray<{ label: string; story?: string | null }>;
+    composedRoutePoints?: ReadonlyArray<RoutePointLike>;
+    routePoints?: ReadonlyArray<RoutePointLike>;
   } | null;
-  catalogStops?: ReadonlyArray<{ label: string; story?: string | null }> | null;
+  catalogStops?: ReadonlyArray<RoutePointLike> | null;
 }): StudioRouteStop[] {
-  const normalize = (
-    points: ReadonlyArray<{ label: string; story?: string | null }>,
-  ): StudioRouteStop[] => points.map((p) => ({ label: p.label, story: p.story ?? "" }));
+  // Identity passes through UNTOUCHED — a moment that knew its structural or
+  // media identity must never lose it by travelling through the chain.
+  const normalize = (points: ReadonlyArray<RoutePointLike>): StudioRouteStop[] =>
+    points.map((p) => ({
+      label: p.label,
+      story: p.story ?? "",
+      inventoryStopId: p.inventoryStopId ?? null,
+      blueprintStopId: p.blueprintStopId ?? null,
+      image: p.image ?? null,
+      focal: p.focal ?? null,
+      lat: p.lat ?? null,
+      lng: p.lng ?? null,
+      durationMinutes: p.durationMinutes ?? null,
+      durationSource: p.durationSource ?? null,
+    }));
 
   const edited = args.editedRoutePoints ?? null;
   if (edited && edited.length > 0) return normalize(edited);
+
+  const committed = args.committedRoutePoints ?? null;
+  if (committed && committed.length > 0) return normalize(committed);
 
   const composed = args.resolved?.composedRoutePoints ?? null;
   if (composed && composed.length > 0) return normalize(composed);
@@ -106,3 +157,109 @@ export function resolveAuthoritativeRouteStops(args: {
 
   return [];
 }
+
+
+/**
+ * Is the EXACT current route provably the untouched canonical anchor?
+ *
+ * This is the only question the commercial layer may ask before granting the
+ * legacy "no blueprint" authored-fallback exception. It fails closed: it
+ * returns TRUE only when the current authoritative route is provably the
+ * unchanged canonical Signature route.
+ *
+ * FALSE whenever:
+ *  - the traveller manually edited the route (`editedRoutePoints`), OR
+ *  - Living Atlas explicitly reports `liveResolution === "composed"`, OR
+ *  - the authoritative route differs in membership or order from the catalog
+ *    Signature stops (this covers automatic legacy composition, replacement,
+ *    addition and removal while `editedRoutePoints` is still null), OR
+ *  - equality simply cannot be proven (thin/unknown data).
+ *
+ * Structural ids are preferred whenever BOTH sides genuinely carry them.
+ * Where legacy catalog stops have no structural ids, exact normalized
+ * label/order equality proves equality WITH THE CANONICAL ANCHOR ONLY. It is
+ * not commercial identity inference and must never be reused to infer a
+ * price action.
+ */
+export function isProvablyUntouchedCanonicalAnchor(args: {
+  editedRoutePoints?: ReadonlyArray<RoutePointLike> | null;
+  /**
+   * PASS 4 — the frozen day actually shown. A snapshot is NOT a manual edit,
+   * so it does not disqualify on its own; it simply becomes the current route
+   * that must still prove exact equality with the canonical anchor. A
+   * committed composed/different route therefore fails closed.
+   */
+  committedRoutePoints?: ReadonlyArray<RoutePointLike> | null;
+  resolved?: {
+    composedRoutePoints?: ReadonlyArray<RoutePointLike>;
+    routePoints?: ReadonlyArray<RoutePointLike>;
+    livingAtlasLive?: { liveResolution?: string | null } | null;
+  } | null;
+  catalogStops?: ReadonlyArray<RoutePointLike> | null;
+}): boolean {
+  // 1. Any manual edit disqualifies immediately.
+  if ((args.editedRoutePoints?.length ?? 0) > 0) return false;
+
+  // 2. PASS 4.1 — a NONEMPTY committed snapshot is the frozen itinerary the
+  // traveller was shown, so it is the current authority. A resolver run AFTER
+  // the freeze can no longer overrule it; its "composed" signal is only
+  // sovereign while no snapshot exists.
+  const hasCommitted = (args.committedRoutePoints?.length ?? 0) > 0;
+  if (!hasCommitted && args.resolved?.livingAtlasLive?.liveResolution === "composed") return false;
+
+
+  // 3. Prove equality with the real catalog Signature stops.
+  const catalog = args.catalogStops ?? null;
+  if (!catalog || catalog.length === 0) return false;
+
+  const current = resolveAuthoritativeRouteStops({
+    editedRoutePoints: null,
+    committedRoutePoints: args.committedRoutePoints ?? null,
+    resolved: args.resolved ?? null,
+    catalogStops: catalog,
+  });
+
+  if (current.length === 0) return false;
+  if (current.length !== catalog.length) return false;
+
+  for (let i = 0; i < current.length; i += 1) {
+    const a = current[i]!;
+    const b = catalog[i]!;
+    const aStructural = a.inventoryStopId ?? a.blueprintStopId ?? null;
+    const bStructural = b.inventoryStopId ?? b.blueprintStopId ?? null;
+    if (aStructural && bStructural) {
+      // Both sides genuinely have identity — structural equality is required.
+      if (a.inventoryStopId && b.inventoryStopId) {
+        if (a.inventoryStopId !== b.inventoryStopId) return false;
+        continue;
+      }
+      if (a.blueprintStopId && b.blueprintStopId) {
+        if (a.blueprintStopId !== b.blueprintStopId) return false;
+        continue;
+      }
+      // Mixed identity kinds — equality cannot be proven structurally.
+      return false;
+    }
+    // Legacy boundary: canonical-anchor equality by exact normalized label.
+    const aLabel = normalizeCanonicalRouteLabel(a.label);
+    const bLabel = normalizeCanonicalRouteLabel(b.label);
+    if (!aLabel || !bLabel) return false;
+    if (aLabel !== bLabel) return false;
+  }
+
+  return true;
+}
+
+/**
+ * Canonical INTERNAL label normalization, used only to prove equality with the
+ * untouched canonical anchor. Never a commercial identity.
+ */
+function normalizeCanonicalRouteLabel(value: string | null | undefined): string {
+  return (value ?? "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+

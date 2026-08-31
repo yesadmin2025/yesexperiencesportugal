@@ -18,7 +18,8 @@ describe("P8 — unified Your Day surface", () => {
     for (const phase of STUDIO_V3_PHASE_ORDER) {
       const once = canonicalStudioPhase(phase);
       expect(canonicalStudioPhase(once)).toBe(once);
-      if (phase !== "map" && phase !== "confirmation") expect(once).toBe(phase);
+      // PASS 4 adds `logistics` to the canonicalized set (hydration only).
+      if (!LEGACY_UNIFIED_PHASES.includes(phase)) expect(once).toBe(phase);
     }
   });
 
@@ -33,9 +34,10 @@ describe("P8 — unified Your Day surface", () => {
     expect(isPhaseRelevant("storyboard", base)).toBe(true);
   });
 
-  it("routes logistics straight into the unified surface, and onward to guest details", () => {
+  it("reveals the unified surface first, then logistics, then guest details", () => {
     const s: StudioV3State = { ...base, feeling: "coastal", companions: "couple", refinement: "coast-wild-beaches" };
-    expect(getNextPhase(s, "logistics")).toBe("storyboard");
-    expect(getNextPhase(s, "storyboard")).toBe("guestDetails");
+    expect(getNextPhase(s, "refinement")).toBe("storyboard");
+    expect(getNextPhase(s, "storyboard")).toBe("logistics");
+    expect(getNextPhase(s, "logistics")).toBe("guestDetails");
   });
 });

@@ -12,11 +12,12 @@
 
 import { useMemo } from "react";
 import { findTour } from "@/data/signatureTours";
+import { type JourneyPriceLine } from "@/data/signatureTourPricing";
 import {
-  resolveJourneyPricing,
-  resolvePerPaxEur,
-  type JourneyPriceLine,
-} from "@/data/signatureTourPricing";
+  resolveConfirmedStudioParty,
+  resolveStudioStrictJourneyPricing,
+} from "@/lib/studio-v3/studioStrictTier";
+
 import type { TourPriceTiersMap } from "@/hooks/use-tour-price-tiers";
 import { resolveStudioV3Route } from "./curation";
 import {
@@ -91,30 +92,38 @@ export function useResolvedJourney(
     // never overwrite an edited or composed route.
     const stops: ResolvedJourneyStop[] = resolveAuthoritativeRouteStops({
       editedRoutePoints: state.editedRoutePoints,
+      // PASS 4 — the frozen day shown in Your Day outranks any fresh
+      // resolution triggered by logistics facts.
+      committedRoutePoints: state.committedRoutePoints,
       resolved: resolveStudioV3Route(studioRouteShapingInput(state)),
       catalogStops: tour?.stops ?? null,
     });
 
 
+
     const tiers = tourPriceTiers ?? null;
-    // No `priceFrom` fallback: once an exact party size is known, an absent
-    // approved tier means "unavailable", not "charge the 8-guest rate".
-    const basePerPaxEur = tour ? (resolvePerPaxEur(tour, guests, tiers)?.eurPerPax ?? null) : null;
 
+    // PASS 5 — commercial confirmation gate. Exact Studio pricing exists only
+    // after the traveller confirms an explicit, coherent party. The `2`
+    // fallback above stays a display/operational value; it never prices.
+    const confirmedParty = resolveConfirmedStudioParty({
+      adults,
+      minorAges,
+      guests: state.guests ?? null,
+      guestsInferred: state.guestsInferred,
+    });
 
-    // Age-band branch — full itemised lines when composition is complete.
-    let journey: ReturnType<typeof resolveJourneyPricing> | null = null;
-    if (tour && typeof adults === "number" && adults >= 1) {
-      journey = resolveJourneyPricing(tour, adults, minorAges, tiers);
-    }
+    // PASS 5 — strict runtime tier authority (same rows the server charges
+    // from). No VIATOR_META tiers, no `priceFrom` anchor.
+    const strictJourney = resolveStudioStrictJourneyPricing(
+      state.tourId ?? null,
+      confirmedParty,
+      tiers,
+    );
+    const journey = strictJourney;
+    const basePerPaxEur = strictJourney ? strictJourney.perPaxAdultEur : null;
 
-    // Base total — prefer age-band, fall back to flat.
-    let baseTotalEur: number | null = null;
-    if (journey) {
-      baseTotalEur = Math.round(journey.totalEur);
-    } else if (basePerPaxEur != null) {
-      baseTotalEur = Math.round(basePerPaxEur * guests);
-    }
+    const baseTotalEur = strictJourney ? Math.round(strictJourney.totalEur) : null;
 
     // Add-on items already carry their unit-aware party amount. Summing those
     // values keeps per-person, per-group, per-vehicle and fixed additions
@@ -127,14 +136,9 @@ export function useResolvedJourney(
     // Real adult unit price. Never a total/guests blend — averaging adults
     // with discounted minors produces a per-person number that matches
     // nothing the traveller actually pays.
-    const adultUnitEur = (() => {
-      if (journey) {
-        const adultLine = journey.lines.find((l) => l.band === "adult");
-        if (adultLine) return Math.round(adultLine.unitEur);
-      }
-      return basePerPaxEur != null ? Math.round(basePerPaxEur) : null;
-    })();
+    const adultUnitEur = basePerPaxEur != null ? Math.round(basePerPaxEur) : null;
     const perPaxEur = adultUnitEur;
+
 
     // Dev-only guardrails.
     if (import.meta.env.DEV) {

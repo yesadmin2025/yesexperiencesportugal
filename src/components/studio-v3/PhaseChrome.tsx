@@ -83,7 +83,7 @@ export function BackLink({ onClick }: { onClick: () => void }) {
       type="button"
       onClick={onClick}
       data-testid="studio-v3-back"
-      className="absolute left-3 top-[max(10px,env(safe-area-inset-top))] sm:left-4 sm:top-4 inline-flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+      className="absolute z-30 left-3 top-[max(10px,env(safe-area-inset-top))] sm:left-4 sm:top-4 inline-flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-2 text-[10.5px] uppercase tracking-[0.24em] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
       style={{ color: "color-mix(in oklab, var(--charcoal) 60%, transparent)" }}
       aria-label="Back to previous step"
     >

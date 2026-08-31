@@ -36,6 +36,13 @@ export interface RefineStopCardProps {
   /** Pass 2B — one short truthful "why this fits you" line, or omitted. */
   readonly reason?: string | null;
   readonly minStops?: number; // default 1
+  /**
+   * FINAL CLOSURE — proven commercial/operational optionality. When provided
+   * it is the authority: `false` hides removal even on a long day. Omitted
+   * keeps the legacy floor behaviour for non-Studio callers.
+   */
+  readonly removable?: boolean;
+
   readonly canSwap?: boolean; // false when swap pool empty
   readonly swapPool?: ReadonlyArray<RefineStopCandidate>;
   readonly swapOpen?: boolean;
@@ -57,6 +64,7 @@ export function RefineStopCard({
   story,
   reason,
   minStops = 1,
+  removable,
   canSwap = false,
   swapPool,
   swapOpen = false,
@@ -71,13 +79,14 @@ export function RefineStopCard({
   const [expanded, setExpanded] = React.useState(false);
   const isFirst = index === 0;
   const isLast = index === total - 1;
-  const canRemove = total > minStops;
+  const canRemove = (removable ?? true) && total > minStops;
   const showReadMore = !!story && story.length > 140;
 
   return (
     <li
       data-testid={testId ?? "studio-v3-refine-stop-card"}
       data-index={index}
+      data-removable={canRemove ? "true" : "false"}
       className={cn("w-full rounded-[10px] px-4 py-4", className)}
       style={{
         background: "color-mix(in oklab, var(--sand) 45%, transparent)",

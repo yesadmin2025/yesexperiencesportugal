@@ -163,22 +163,16 @@ describe("checkout recap offers localized edits without inventing navigation", (
   });
 });
 
-describe("delegated authorship renders once and reuses existing navigation", () => {
+describe("delegated authorship reuses existing navigation", () => {
   const studio = src("StudioV3.tsx");
   const read = src("DirectorsRead.tsx");
 
-  it("renders the delegation line a single time on Director's Read", () => {
+  it("keeps the delegation line as a single primitive", () => {
+    // PASS 4 — the blocking Director's Read beat is retired from the live
+    // path (Your Day is the reward, logistics the admin that follows), but
+    // the primitive stays intact for legacy surfaces.
     expect(read.match(/data-testid="studio-v3-delegation-read-line"/g)?.length).toBe(1);
-    expect(studio.match(/delegatedChoiceSummary\(state\)/g)?.length).toBe(1);
-  });
-
-  it("Adjust jumps back to the delegated phase without mutating state", () => {
-    const block = studio.slice(
-      studio.indexOf("const summary = delegatedChoiceSummary(state);"),
-      studio.indexOf("const summary = delegatedChoiceSummary(state);") + 600,
-    );
-    expect(block).toContain('jumpBackToPhase(summary.adjustPhase, "delegation-adjust")');
-    expect(block).not.toMatch(/setState|commit\(|reset\(/);
+    expect(studio).not.toContain("<DirectorsRead");
   });
 
   it("only allows a strictly earlier phase and preserves every answer", () => {

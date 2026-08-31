@@ -205,7 +205,11 @@ export function CtaButton(props: CtaButtonProps) {
     );
 
   const baseLabelNode = loading && loadingLabel !== undefined ? loadingLabel : children;
-  const labelNode = isP14ExperimentActive && !loading && p14Label ? p14Label : baseLabelNode;
+  // FINAL CLOSURE — the YOUR DAY primary action has ONE canonical label
+  // ("Reserve your day", owned by the caller). The P14 experiment keeps its
+  // assignment + click telemetry but no longer rewrites the copy.
+  void p14Label;
+  const labelNode = baseLabelNode;
 
   const content = (
     <>
@@ -318,9 +322,7 @@ export function CtaButton(props: CtaButtonProps) {
     ...rest
   } = props;
 
-  const experimentAttrs = isP14ExperimentActive
-    ? { "aria-label": p14Label ?? "Continue to guest details" }
-    : {};
+  const experimentAttrs = {};
 
   return (
     <button

@@ -140,8 +140,9 @@ describe("P10 · refinement is skipped, never fabricated", () => {
     expect(isPhaseRelevant("refinement", out)).toBe(false);
   });
 
-  it("continues from rhythm into logistics", () => {
-    expect(getNextPhase(out, "rhythm")).toBe("logistics");
+  it("continues from rhythm into the composed day (reward before admin)", () => {
+    expect(getNextPhase(out, "rhythm")).toBe("storyboard");
+    expect(getNextPhase(out, "storyboard")).toBe("logistics");
   });
 });
 

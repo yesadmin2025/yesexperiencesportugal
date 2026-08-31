@@ -47,8 +47,23 @@ export type OptionalStopType =
 
 export type OptionalStopSource = "signature-core" | "research-link" | "operator-confirmed";
 
+/**
+ * Verified structural capabilities of a real inventory moment.
+ *
+ * These are NEVER inferred from `type`, from the stop name, or from AI. A
+ * capability may only be added when structural product truth (Tailor
+ * Blueprint / canonical Signature source of truth) explicitly proves it.
+ *
+ * - `participatory` — the traveller actively makes/does something
+ *   (tile painting, cheese making). A `type: "workshop"` stop can be purely
+ *   observational or interpretive, so the type alone proves nothing.
+ * - `from-water` — the experience happens on the water.
+ */
+export type StopCapability = "participatory" | "from-water";
+
 export interface OptionalStop {
   id: string;
+
   region: RegionId;
   subregion?: string;
   name: string;
@@ -65,7 +80,10 @@ export interface OptionalStop {
   sourceTourIds?: string[];
   routeCluster?: string;
   oneOfGroup?: string;
+  /** Verified structural capabilities — see `StopCapability`. */
+  capabilities?: readonly StopCapability[];
   active: boolean;
+
 }
 
 /**
@@ -933,6 +951,9 @@ export const REGION_STOP_POOL: OptionalStop[] = [
       "Source-verified itinerary stop from P12 and P1. Sea cave / coastal heritage context. May not suit reduced-mobility guests.",
   },
   {
+    // Tile FACTORY / STUDIO VISIT only — NOT a guaranteed participatory class.
+    // Structural truth: tailorBlueprints.ts `arrabida-wine-allinclusive` core
+    // `azeitao-tiles` ("Azulejos de Azeitão tile factory", dwell 45).
     id: "azulejos-de-azeitao",
     region: "arrabida-setubal",
     subregion: "Azeitão",
@@ -942,14 +963,38 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     suitsRhythm: ["slow", "balanced"],
     suitsCompanions: ["solo", "couple", "family", "friends", "corporate"],
     suitsInvestment: ["elevated", "bespoke"],
-    durationMin: 60,
+    durationMin: 45,
     source: "signature-core",
-    sourceTourIds: ["arrabida-wine-allinclusive", "tiles-workshop"],
+    sourceTourIds: ["arrabida-wine-allinclusive"],
     routeCluster: "arrabida-azeitao-sesimbra",
-    oneOfGroup: "azeitao-workshop-choice",
+    oneOfGroup: "azeitao-tile-experience-choice",
     active: true,
     notes:
-      "Source-verified itinerary stop from P3 and P4. Tile workshop / studio context. Treat as one-of-N Azeitão workshop option.",
+      "Source-verified working tile factory visit (P3). Observational: painting is not guaranteed, so it carries NO participatory capability. One-of with the private tile-painting workshop — same tile location/slot.",
+  },
+  {
+    // Private tile-painting class — structurally distinct from the factory
+    // visit. Structural truth: tailorBlueprints.ts `tiles-workshop` core
+    // `azulejos-workshop` ("Private tile-painting workshop", dwell 90,
+    // product-defining). No invented coordinates.
+    id: "azulejos-painting-workshop",
+    region: "arrabida-setubal",
+    subregion: "Azeitão",
+    name: "Private tile-painting workshop",
+    type: "workshop",
+    suitsInterests: ["heritage", "local-life", "photography"],
+    suitsRhythm: ["slow", "balanced"],
+    suitsCompanions: ["solo", "couple", "family", "friends", "corporate"],
+    suitsInvestment: ["elevated", "bespoke"],
+    durationMin: 90,
+    source: "signature-core",
+    sourceTourIds: ["tiles-workshop"],
+    routeCluster: "arrabida-azeitao-sesimbra",
+    oneOfGroup: "azeitao-tile-experience-choice",
+    capabilities: ["participatory"],
+    active: true,
+    notes:
+      "Source-verified from P4 Tailor structural truth: the traveller paints and takes the tile home, so participation is proven. One-of with the generic tile factory visit.",
   },
   {
     id: "quinta-velha-cheese-workshop",
@@ -965,11 +1010,12 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     source: "signature-core",
     signatureTourId: "azeitao-cheese",
     routeCluster: "arrabida-azeitao-sesimbra",
-    oneOfGroup: "azeitao-workshop-choice",
+    capabilities: ["participatory"],
     active: true,
     notes:
-      "Source-verified itinerary stop from P9. Cheese workshop context. Treat as one-of-N Azeitão workshop option.",
+      "Source-verified from P9 Tailor structural truth (`quinta-velha`, private cheese-making workshop, dwell 75, product-defining). Participation is proven. NOT mutually exclusive with the tile experiences — structural truth never says a traveller must choose between cheese-making and tile painting.",
   },
+
   {
     id: "azeitao-village",
     region: "arrabida-setubal",
@@ -1122,6 +1168,42 @@ export const REGION_STOP_POOL: OptionalStop[] = [
     routeCluster: "arrabida-azeitao-sesimbra",
     active: true,
     notes: "Source-verified itinerary stop from P12, P4 and P1. Fishing village / coast context.",
+  },
+  {
+    // REAL Arrábida boat moment. Structural truth: tailorBlueprints.ts
+    // `arrabida-boat` core `boat-arrabida` ("Private boat in Arrábida bay",
+    // dwellMinutesOverride 150, product-defining, "~2h30 with boarding").
+    //
+    // Timing-source authority (do NOT deviate):
+    //   A. Tailor Blueprint `dwellMinutesOverride` for the matching structural stop
+    //   B. canonical itinerary chapter ONLY when it describes that stop alone
+    //   C. verified existing RegionStopPool duration
+    //   D. never split a composite chapter by guesswork
+    // The 240-minute canonical chapter is a COMPOSITE (boat + time in town +
+    // own-expense lunch) and must never be used as pure boat dwell. The
+    // 75-minute `coastal-boat-ride` add-on is a commercial day-cost
+    // abstraction and never overrides this structural dwell.
+    //
+    // It is deliberately NOT one-of with `sesimbra-village`: the same Tailor
+    // blueprint carries both as separate core moments, so they may coexist.
+    // No coordinates: the boarding point is not verified yet (honest gap).
+    id: "arrabida-bay-boat",
+    region: "arrabida-setubal",
+    subregion: "Sesimbra",
+    name: "Private boat in Arrábida bay",
+    type: "boat",
+    suitsInterests: ["coast", "nature", "photography"],
+    suitsRhythm: ["slow", "balanced", "full"],
+    suitsCompanions: ["solo", "couple", "family", "friends", "corporate"],
+    suitsInvestment: ["elevated", "bespoke"],
+    durationMin: 150,
+    source: "signature-core",
+    sourceTourIds: ["arrabida-boat"],
+    routeCluster: "arrabida-azeitao-sesimbra",
+    capabilities: ["from-water"],
+    active: true,
+    notes:
+      "Source-verified from P12 Tailor structural truth: protected coves and the Lapa de Santa Margarida sea cave, ~2h30 including boarding. Sea-dependent; boarding coordinates are not verified yet.",
   },
   {
     id: "cabo-espichel",

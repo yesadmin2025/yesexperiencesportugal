@@ -1,6 +1,10 @@
 // Studio V3 — Cinematic Journey Composer
 // Shared types for the phased journey state.
 
+// Type-only import (erased at build time) — BUILD 1 / Pass 1 time domain.
+import type { QuestionAnswerEvent } from "@/lib/studio-v3/questionHistory";
+import type { TravellerDurationClass } from "@/lib/studio-v3/timeDomain";
+
 /**
  * Canonical id tuples for Studio V3 taxonomy. Exported `as const` so tests
  * and iteration sites get a type-safe list AND the union type is derived
@@ -89,18 +93,25 @@ export type Consideration =
 export type Language = "en" | "pt" | "es" | "other";
 
 /**
- * Adaptive refinement answers. One conditional question is asked (at most)
- * after the rhythm step, and only when the traveller's own answers make it
- * relevant — see `adaptiveQuestions.ts`. Each id maps either to a real
- * discovery signal in the catalogue or to nothing at all.
+ * Adaptive refinement answer ids — LEGACY HYDRATION CONTRACT.
+ *
+ * The live Studio runs the 0→N Question Director (`studioDirectorRuntime.ts`):
+ * it may ask zero, one or many questions depending on genuine uncertainty.
+ * These ids remain so saved states, deep links and older tests hydrate; they
+ * are read back into the canonical question history exactly once. See
+ * `docs/studio-north-star.md` for the current authority.
  */
+
 export type AdaptiveRefinementId =
   | "coast-from-the-water"
   | "coast-wild-beaches"
   | "coast-clifftop-views"
+  | "coast-remote-southwest"
   | "wine-cellar-depth"
   | "wine-table-and-cheese"
   | "wine-vineyard-views"
+  | "wine-monumental-estates"
+  | "wine-clay-talha"
   | "hands-paint-tile"
   | "hands-make-cheese"
   | "hands-just-watch"
@@ -116,41 +127,73 @@ export type AdaptiveRefinementId =
 
 export type InvestmentTier = "considered" | "elevated" | "bespoke" | "open";
 
+/**
+ * Studio phases. The CURRENT canonical live order is:
+ * intro → feeling → who → interests → rhythm → 0..N Director questions
+ * ("refinement") → storyboard (YOUR DAY) → logistics (Make it real)
+ * → guestDetails → checkoutSummary / payment.
+ *
+ * `confirmation` is NOT a separate live step: `map` and `confirmation` are
+ * legacy unified ids canonicalized to `storyboard` by `studioPhaseCanonical.ts`.
+ * The cinematic story is rendered within the unified Your Day surface where
+ * applicable.
+ *
+ * Ids marked LEGACY below are hydration aliases only — no modern UI routes
+ * to them; they remain so saved states, deep links and older tests hydrate.
+ */
 export type StudioV3Phase =
   | "intro"
   | "feeling"
+  /**
+   * LEGACY — non-live hydration / deep-link signal only. Current
+   * `isPhaseRelevant` skips it; soft intent lives in `destinationIntent`.
+   */
   | "destination"
   | "who"
+  /** LEGACY non-live phase id/state — retained for hydration and other confirmation context (NOT folded into logistics). */
   | "occasion"
+  /** LEGACY hydration alias — folded into `logistics`. */
   | "date"
+  /** LEGACY hydration alias — folded into `logistics`. */
   | "pickup"
+  /** LEGACY hydration alias — folded into `logistics`. */
   | "guests"
   | "interests"
   | "rhythm"
-  /** refinement — at most one adaptive question, skipped when irrelevant. */
+  /**
+   * refinement — the adaptive Director beat. It repeats 0→N times based on
+   * genuine uncertainty; there is no product cap of one question.
+   */
   | "refinement"
   /**
-   * logistics — Studio reform (2026-08). ONE consolidated screen that asks
-   * for date + pickup + party in a single beat, with everything already
-   * inferred pre-filled and editable. Replaces the three separate
-   * date/pickup/guests questions (those ids stay in the union so saved
-   * states, deep links and older tests still hydrate).
+   * logistics — ONE consolidated screen (date + pickup + party), pre-filled
+   * from what was already inferred and editable. It runs AFTER Your Day
+   * (reward before admin).
    */
   | "logistics"
+  /** LEGACY non-live phase id/state — retained for hydration and other confirmation context (NOT folded into logistics). */
   | "considerations"
+  /** LEGACY non-live phase id/state — retained for hydration and other confirmation context (NOT folded into logistics). */
   | "language"
+  /** LEGACY hydration alias — no modern investment phase. */
   | "investment"
+  /** LEGACY hydration alias — canonicalized to `storyboard`; the modern live map surface is the Living Canvas. */
   | "map"
+  /**
+   * storyboard — "Your Day": the unified editable canonical itinerary
+   * surface, including its inline story/reveal chapter.
+   */
   | "storyboard"
   /**
-   * finalReveal — cinematic editorial presentation of the day the traveller
-   * just refined (kept under the legacy `"confirmation"` string so saved
-   * signatures and existing tests continue to hydrate without migration).
+   * LEGACY hydration alias — canonicalized to `storyboard`. NOT a separate
+   * live step; kept under the legacy `"confirmation"` string so saved
+   * signatures and existing tests continue to hydrate without migration.
    */
   | "confirmation"
   | "guestDetails"
   /** checkoutSummary — compact recap + downloadable one-pager, before payment. */
   | "checkoutSummary";
+
 
 /** Operational date mode (Phase 2): exact ISO date, flexible window, or undecided. */
 export type DateMode = "exact" | "flexible" | "undecided";
@@ -291,10 +334,28 @@ export interface StudioV3State {
   interests: Interest[];
   rhythm: Rhythm | null;
   /**
-   * Answer to the adaptive refinement question, when one was relevant.
-   * Null when the question was skipped or not yet answered.
+   * Additive signal, NOT a traveller-facing UI choice: no modern Studio
+   * surface writes it. Explicit day-length class, independent of `rhythm`
+   * (rhythm is pace/depth). Null means "not chosen" — the budget resolver
+   * then falls back to Signature skeleton truth and finally to the neutral
+   * one-day default.
+   */
+  experienceDurationClass: TravellerDurationClass | null;
+  /**
+   * LEGACY hydration field: the single adaptive answer written by the old
+   * one-question refinement step. The live Director records answers in
+   * `questionHistory`; this stays read-only for old drafts.
    */
   refinement: AdaptiveRefinementId | null;
+
+  /**
+   * BUILD 2 / Pass 4 — CANONICAL live answer store for the Studio question
+   * flow. `refinement` above stays only as a read-only legacy contract field
+   * (old drafts, Living Atlas decision input); this array is the one place
+   * new question answers are recorded. Not persisted: restored drafts hydrate
+   * it back from `refinement` exactly once.
+   */
+  questionHistory: QuestionAnswerEvent[];
   considerations: Consideration[];
   language: Language | null;
   investment: InvestmentTier | null;
@@ -314,8 +375,24 @@ export interface StudioV3State {
    * `resolveStudioV3Route` is used as-is. When non-null, this overrides the
    * displayed route in the reveal. Only labels/stories from the resolved
    * Signature tour's own `stops` may appear here (no invented stops).
+   *
+   * NORTH-STAR CLOSURE: an authored point also carries the STRUCTURAL
+   * identity (`inventoryStopId` / `blueprintStopId`) and the stable media
+   * identity (`image` / `focal`) of the moment it came from, so an edit can
+   * never degrade the day to labels only. Both are optional for backward
+   * hydration of saved sessions written before this contract existed.
    */
-  editedRoutePoints: Array<{ label: string; story: string }> | null;
+  editedRoutePoints: Array<AuthoredRoutePoint> | null;
+  /**
+   * PASS 4 — FREEZE THE SHOWN DAY. The exact ordered route resolved ONCE on
+   * the first canonical `storyboard` entry. It is NOT a manual edit: it is
+   * the day the traveller was actually shown, so logistics, guest details and
+   * checkout can never silently recompose a different itinerary. Cleared only
+   * when the traveller goes BACK into the taste/Director phases to reshape
+   * their answers. Null for drafts saved before this contract existed.
+   */
+  committedRoutePoints: Array<AuthoredRoutePoint> | null;
+
   /**
    * Soft destination intent (Phase: between Feeling and Companions).
    * Default "no-preference" keeps prior pickup-driven behaviour unchanged.
@@ -324,12 +401,13 @@ export interface StudioV3State {
    */
   destinationIntent: DestinationIntent;
   /**
-   * Path mode chosen on the intro. "guided" runs the full Studio with every
-   * optional phase; "fast" skips occasion, date, considerations, language
-   * and investment so the traveller reaches the Signature reveal sooner.
-   * Defaults to "guided" to preserve prior behaviour.
+   * LEGACY hydration field. The modern intro no longer exposes a "quick
+   * version" action — every new session enters the single canonical guided
+   * Studio, so this is always "guided" for new drafts. The `"fast"` member
+   * remains only so older saved states hydrate without a migration.
    */
   pathMode: "guided" | "fast";
+
   /**
    * How many times the traveller has tapped "Reshape this day" on the map
    * reveal. Starts at 0 (deterministic first render — preserves the
@@ -384,7 +462,9 @@ export const INITIAL_STATE: StudioV3State = {
   minorAges: [],
   interests: [],
   rhythm: null,
+  experienceDurationClass: null,
   refinement: null,
+  questionHistory: [],
   considerations: [],
   language: null,
   investment: null,
@@ -394,6 +474,7 @@ export const INITIAL_STATE: StudioV3State = {
   guestsPrivateEvent: false,
   firstName: null,
   editedRoutePoints: null,
+  committedRoutePoints: null,
   destinationIntent: "no-preference",
   pathMode: "guided",
   rerollCount: 0,
@@ -436,11 +517,13 @@ export const COMPANIONS: ChoiceOption<Companions>[] = [
 ];
 
 export const RHYTHMS: ChoiceOption<Rhythm>[] = [
-  { id: "slow", label: "Slow", whisper: "Three stops. Long pauses." },
-  { id: "balanced", label: "Balanced", whisper: "Four stops. Room to breathe." },
-  { id: "full", label: "Full", whisper: "Five stops. Rich and varied." },
-  { id: "immersive", label: "Immersive", whisper: "Dawn to candlelight." },
+  // Pace and depth only — rhythm never promises a number of stops.
+  { id: "slow", label: "Slow", whisper: "Fewer transitions. More time inside each moment." },
+  { id: "balanced", label: "Balanced", whisper: "Depth and variety, with room to breathe." },
+  { id: "full", label: "Full", whisper: "A richer day, with more movement and discovery." },
+  { id: "immersive", label: "Immersive", whisper: "Go deep. Let the day unfold fully." },
 ];
+
 
 export const OCCASIONS: ChoiceOption<Occasion>[] = [
   { id: "none", label: "Just because", whisper: "No reason needed." },
@@ -588,3 +671,33 @@ export const DESTINATION_INTENTS: ChoiceOption<DestinationIntent>[] = [
     whisper: "Surprise me — go where it's most special.",
   },
 ];
+
+/**
+ * NORTH-STAR CLOSURE — one authored moment of the traveller's day.
+ *
+ * `label` / `story` are presentation. `inventoryStopId` / `blueprintStopId`
+ * are the STRUCTURAL identity that commercial truth is resolved from, and
+ * `image` / `focal` are the stable media identity so the same moment shows
+ * the same verified photograph in the canvas and in Your Day.
+ *
+ * Every field beyond `label` / `story` is optional: sessions saved before
+ * this contract hydrate unchanged and simply resolve identity by scoped label.
+ */
+export interface AuthoredRoutePoint {
+  label: string;
+  story: string;
+  inventoryStopId?: string | null;
+  blueprintStopId?: string | null;
+  image?: string | null;
+  focal?: string | null;
+  /** Operational geography known upstream. Never invented downstream. */
+  lat?: number | null;
+  lng?: number | null;
+  /**
+   * Structural dwell minutes, ONLY when the source already owns them.
+   * Never inferred from a label and never invented downstream.
+   */
+  durationMinutes?: number | null;
+  /** Provenance of `durationMinutes`. Only authoritative sources certify. */
+  durationSource?: import("@/lib/studio-v3/timeDomain").DwellSource | null;
+}

@@ -82,27 +82,13 @@ describe("StudioV3Intro — P2 opening", () => {
     expect(onComplete).toHaveBeenCalledWith(null, "guided");
   });
 
-  it("'Use the quick version' completes in fast mode, keeping a typed name", () => {
-    const onComplete = openNameStep();
-    fireEvent.change(screen.getByLabelText("Your first name (optional)"), {
-      target: { value: "Nidia" },
-    });
-    fireEvent.click(screen.getByTestId("studio-v3-intro-quick"));
-    expect(onComplete).toHaveBeenCalledWith("Nidia", "fast");
-  });
-
-  it("'Use the quick version' passes null when the field is empty", () => {
-    const onComplete = openNameStep();
-    fireEvent.click(screen.getByTestId("studio-v3-intro-quick"));
-    expect(onComplete).toHaveBeenCalledWith(null, "fast");
-  });
-
-  it("quick action keeps a 44px tap target and stays a quiet text action", () => {
+  it("offers no 'quick version' action — there is one modern flow", () => {
     openNameStep();
-    const quick = screen.getByTestId("studio-v3-intro-quick");
-    expect(quick.className).toContain("min-h-[44px]");
-    expect(quick.className).not.toMatch(/border|rounded-full|bg-/);
+    expect(screen.queryByTestId("studio-v3-intro-quick")).toBeNull();
+    expect(document.body.textContent ?? "").not.toMatch(/quick version/i);
+    expect(src).not.toContain("Use the quick version");
   });
+
 
   it("progress reassurance uses editorial phrases, not 'Beat 1 of 4'", () => {
     const stepper = readFileSync(

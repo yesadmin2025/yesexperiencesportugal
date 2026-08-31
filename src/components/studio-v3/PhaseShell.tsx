@@ -23,6 +23,13 @@ interface PhaseShellProps {
    *  ambiguous. When `region` is null, no pulse is rendered — only the
    *  layer itself, so layout stays stable. */
   anticipation?: { fill: number; region: string | null } | null;
+  /**
+   * TURBO 2 — the persistent Living Canvas. It is rendered directly UNDER the
+   * decision so the consequence of a choice is the next thing the traveller
+   * sees, on mobile as a vertical story and on desktop as the wider stage.
+   * Never sticky, never a second column squeezed beside the decision.
+   */
+  canvas?: ReactNode;
 }
 
 export function PhaseShell({
@@ -33,6 +40,7 @@ export function PhaseShell({
   // compatibility, but never render numeric progress UI.
   progress,
   anticipation = null,
+  canvas = null,
 }: PhaseShellProps) {
   const [entered, setEntered] = useState(false);
   useEffect(() => {
@@ -118,6 +126,9 @@ export function PhaseShell({
         className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-start px-5 pt-[max(80px,calc(env(safe-area-inset-top)+64px))] pb-[max(112px,calc(env(safe-area-inset-bottom)+96px))] sm:justify-center sm:py-20 sm:pt-28"
       >
         {children}
+        {canvas ? (
+          <div className="w-full max-w-[520px] sm:max-w-[760px]">{canvas}</div>
+        ) : null}
       </div>
 
       {/* Local keyframes — scoped via style tag to avoid polluting global CSS. */}

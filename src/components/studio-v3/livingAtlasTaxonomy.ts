@@ -113,6 +113,38 @@ export function validateExperienceProfile(profile: ExperienceProfile): Experienc
   return { ok: true, profile };
 }
 
+export type DecisionProfileValidation =
+  | { ok: true; profile: ExperienceProfile }
+  | {
+      ok: false;
+      reason:
+        | "select-at-least-one"
+        | "lead-at-least-one"
+        | "lead-at-most-two"
+        | "lead-must-be-selected"
+        | "duplicate-selection"
+        | "duplicate-lead";
+    };
+
+/**
+ * BUILD 2 / Pass 4 — validator for the FULL decision profile.
+ *
+ * Identical to the legacy contract except that there is deliberately NO
+ * max-selected limit: a traveller who asked for six things is never silently
+ * reduced to three before scoring.
+ */
+export function validateDecisionProfile(profile: ExperienceProfile): DecisionProfileValidation {
+  if (profile.selected.length < 1) return { ok: false, reason: "select-at-least-one" };
+  if (profile.leads.length < 1) return { ok: false, reason: "lead-at-least-one" };
+  if (profile.leads.length > MAX_LEAD_DIMENSIONS) return { ok: false, reason: "lead-at-most-two" };
+  if (hasDuplicates(profile.selected)) return { ok: false, reason: "duplicate-selection" };
+  if (hasDuplicates(profile.leads)) return { ok: false, reason: "duplicate-lead" };
+  if (profile.leads.some((lead) => !profile.selected.includes(lead)))
+    return { ok: false, reason: "lead-must-be-selected" };
+  return { ok: true, profile };
+}
+
+
 export const LIVING_ATLAS_SIGNATURE_IDS = [
   "arrabida-wine-allinclusive",
   "arrabida-boat",

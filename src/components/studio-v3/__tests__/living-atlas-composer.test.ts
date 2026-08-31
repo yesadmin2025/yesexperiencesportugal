@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { OptionalStop, OptionalStopType } from "@/data/regionStopPool";
+import { resolveTimeBudget } from "@/lib/studio-v3/resolveTimeBudget";
 import { composeLivingAtlasDay } from "../livingAtlasComposer";
 
 function stop(
@@ -134,16 +135,22 @@ describe("composeLivingAtlasDay", () => {
     expect(result.missingDimensions).toContain("hands-on-traditions");
   });
 
-  it("keeps non-mandatory filling inside the duration budget", () => {
+  it("keeps non-mandatory filling inside the truthful time envelope", () => {
+    // BUILD 1 / Pass 2: `maxStopMinutes` is retired as an authority. Fit is
+    // decided by the resolved time budget, including travel and slack.
+    const budget = resolveTimeBudget({ explicitMinutes: 240 });
     const result = composeLivingAtlasDay({
       anchorSignatureId: "arrabida-wine-allinclusive",
       profile: { selected: ["wine-table"], leads: ["wine-table"] },
       density: "rich",
       maxStopMinutes: 150,
+      timeBudget: budget,
       pool: ARRABIDA_POOL,
     });
 
-    expect(result.totalDurationMin).toBeLessThanOrEqual(150);
+    expect(result.planningTiming.totalMinutes).toBeLessThanOrEqual(
+      budget.availableExperienceMinutes,
+    );
   });
 
   it("is deterministic for identical input", () => {
