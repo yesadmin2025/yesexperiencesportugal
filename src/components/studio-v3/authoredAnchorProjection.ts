@@ -1,30 +1,53 @@
 /**
- * authoredAnchorProjection — P0-A COMPOSITION TRUTH.
+ * authoredAnchorProjection — P0-A CANONICAL OPERATIONAL FALLBACK.
  *
  * The RAW catalogue stop list of a Signature is NOT a sellable itinerary.
- * For anchors that declare an alternative pool ("choose 2 of 5 wineries"),
- * the catalogue lists every CANDIDATE. Emitting that list wholesale invents
- * a day nobody sells: five winery visits in one afternoon, a duration and a
- * price that do not exist, and a commercially unresolvable composition.
+ * It is an inventory: every alternative-pool candidate, every optional
+ * route stop, every pass-by. Emitting it wholesale invents a day nobody
+ * sells (five wineries in one afternoon) AND breaks the sovereign
+ * operational validator (`REGION_RULES.<region>.maxStops`).
  *
- * This module projects the authored anchor down to its canonical
- * cardinality, using ONLY existing per-anchor truth:
- *   - `signatureToursSourceOfTruth` — itinerary entries typed
- *     `alternative-pool`, and `poolPick.<pool>.min`
- *   - `tailorBlueprints` — `choice.options` and `choice.pickMin`
+ * This module projects the authored anchor down to the canonical
+ * OPERATIONAL day, using ONLY existing structural authorities:
  *
- * It never invents a stop, never reorders, never renames, and never touches
- * a core moment: only SURPLUS pool candidates beyond the canonical minimum
- * are dropped, keeping the first ones in authored route order. When the
- * anchor declares no pool, or carries no more candidates than the minimum,
- * the points pass through untouched.
+ *   - `signatureToursSourceOfTruth` — per-stop `stopType`
+ *     (`origin` / `pass-by` / `core` / `optional` / `alternative-pool`)
+ *     and `poolPick.<pool>.min`
+ *   - `tailorBlueprints` — `core[]` (with `category`, which is where the
+ *     included table/lunch moment is structurally provable),
+ *     `choice.options[]` and `choice.pickMin`
+ *   - `REGION_RULES[region].maxStops` — the hard operational cap the
+ *     itinerary validator already enforces
+ *   - the authored ordering itself — the only ordering truth that exists
  *
- * Deliberately depends on DATA modules only (no curation / presentation
- * imports) so it can be used from inside the curation authority itself.
+ * Selection is a strict structural priority, never a tourism guess:
+ *   1. the included table/lunch moment (never dropped)
+ *   2. exactly `poolPick.min` pool candidates, in authored order
+ *   3. remaining core moments, in authored order, until the cap is reached
+ *   4. unclassified moments, only if slots remain
+ *   5. `optional` / `pass-by` / `origin` moments are never part of the
+ *      canonical base day
+ *
+ * Output keeps the ORIGINAL point objects (ids, coordinates, durations,
+ * provenance, media) in authored order — this filters, never rewrites.
+ *
+ * Fail-closed: when an anchor carries no provable structural truth
+ * (no source-of-truth entry and no blueprint) the points pass through
+ * untouched and `provable` is false. The downstream validator then
+ * refuses an over-cap day as it always has — better a visible review
+ * than a silently invented itinerary.
+ *
+ * Depends on DATA modules only (no curation / presentation imports) so it
+ * can be used from inside the curation authority itself.
  */
 
 import { getSot } from "@/data/signatureToursSourceOfTruth";
 import { getTailorBlueprint } from "@/data/tailorBlueprints";
+import { findTour } from "@/data/signatureTours";
+import { REGION_RULES } from "@/data/regionRules";
+import type { RegionKey } from "@/data/regionStops";
+
+/* ── label matching ─────────────────────────────────────────── */
 
 const GENERIC_TOKENS = new Set([
   "adega",
@@ -48,6 +71,13 @@ const GENERIC_TOKENS = new Set([
   "caves",
   "tasting",
   "visit",
+  "national",
+  "nacional",
+  "santuario",
+  "parque",
+  "natural",
+  "traditional",
+  "factory",
 ]);
 
 const norm = (s: string) =>
@@ -65,54 +95,115 @@ const distinctiveTokens = (s: string): string[] =>
     .filter((t) => t.length >= 5 && !GENERIC_TOKENS.has(t));
 
 /**
- * Do two labels name the SAME place? Conservative: exact normalized match,
- * one containing the other, or a shared distinctive (non-generic) token.
+ * How strongly do two labels name the SAME place?
+ *   3 — identical once normalized
+ *   2 — one label contains the other
+ *   1+ — shared distinctive (non-generic) tokens, one point each
+ *   0 — unrelated
  * Catalogue wording differs from source-of-truth wording for the same
- * supplier ("Adega Coop. de Palmela, C.R.L." / "Adega Cooperativa de
- * Palmela"), which is exactly what this resolves — and nothing more.
+ * moment ("Azeitao — long traditional lunch" / "Long lunch in Azeitão"),
+ * which is exactly what this resolves — and nothing more. Scores are
+ * compared so the BEST structural match wins, never the first.
  */
-function sameplace(a: string, b: string): boolean {
+function matchScore(a: string, b: string): number {
   const na = norm(a);
   const nb = norm(b);
-  if (!na || !nb) return false;
-  if (na === nb) return true;
-  if (na.includes(nb) || nb.includes(na)) return true;
+  if (!na || !nb) return 0;
+  if (na === nb) return 3;
+  if (na.includes(nb) || nb.includes(na)) return 2;
   const ta = new Set(distinctiveTokens(a));
-  return distinctiveTokens(b).some((t) => ta.has(t));
+  return distinctiveTokens(b).filter((t) => ta.has(t)).length;
 }
 
-interface AnchorPoolTruth {
-  /** Canonical labels of the anchor's alternative-pool candidates. */
-  readonly candidateLabels: string[];
-  /** Canonical labels of moments the anchor always includes. */
+/* ── structural truth ───────────────────────────────────────── */
+
+type StructuralRole = "table" | "pool" | "core" | "optional" | "unknown";
+
+interface AnchorStructure {
+  /** True when at least one structural authority describes this anchor. */
+  readonly provable: boolean;
+  readonly tableLabels: string[];
+  readonly poolLabels: string[];
   readonly coreLabels: string[];
-  /** How many candidates the base product actually includes. */
+  readonly optionalLabels: string[];
+  /** Pool candidates the base product actually includes. */
   readonly pickMin: number | null;
+  /** Hard operational cap for the anchor's region. */
+  readonly maxStops: number | null;
 }
 
-function anchorPoolTruth(anchorTourId: string | null | undefined): AnchorPoolTruth {
-  const empty: AnchorPoolTruth = { candidateLabels: [], coreLabels: [], pickMin: null };
+/** Same mapping the Studio uses to pick BuilderMap / REGION_ORIGIN. */
+function tourRegionKey(region: string | null | undefined): RegionKey {
+  const r = (region ?? "").toLowerCase();
+  if (r.includes("alentejo") || r.includes("comporta") || r.includes("evora") || r.includes("évora"))
+    return "alentejo";
+  if (
+    r.includes("centro") ||
+    r.includes("coimbra") ||
+    r.includes("fátima") ||
+    r.includes("fatima") ||
+    r.includes("nazaré") ||
+    r.includes("nazare") ||
+    r.includes("óbidos") ||
+    r.includes("obidos")
+  )
+    return "centro";
+  if (r.includes("sintra") || r.includes("cascais") || r.includes("coast") || r.includes("lisbon"))
+    return "lisbon-coast";
+  return "arrabida";
+}
+
+const TABLE_CATEGORIES = new Set(["lunch", "table", "dining", "restaurant", "meal"]);
+
+function anchorStructure(anchorTourId: string | null | undefined): AnchorStructure {
+  const empty: AnchorStructure = {
+    provable: false,
+    tableLabels: [],
+    poolLabels: [],
+    coreLabels: [],
+    optionalLabels: [],
+    pickMin: null,
+    maxStops: null,
+  };
   if (!anchorTourId) return empty;
 
   const sot = getSot(anchorTourId);
   const blueprint = getTailorBlueprint(anchorTourId);
+  if (!sot && !blueprint) return empty;
 
-  const candidateLabels = [
-    ...(sot?.itinerary ?? [])
-      .filter((entry) => entry.stopType === "alternative-pool")
-      .map((entry) => entry.label),
-    ...(blueprint?.choice?.options ?? []).map((option) => option.label),
-  ];
-  const coreLabels = [
-    ...(sot?.itinerary ?? [])
-      .filter((entry) => entry.stopType !== "alternative-pool")
-      .map((entry) => entry.label),
-    ...(blueprint?.core ?? []).map((stop) => stop.label),
-  ];
+  const tableLabels: string[] = [];
+  const poolLabels: string[] = [];
+  const coreLabels: string[] = [];
+  const optionalLabels: string[] = [];
+
+  for (const entry of blueprint?.core ?? []) {
+    if (TABLE_CATEGORIES.has(String(entry.category))) tableLabels.push(entry.label);
+    else coreLabels.push(entry.label);
+  }
+  for (const option of blueprint?.choice?.options ?? []) poolLabels.push(option.label);
+
+  for (const entry of sot?.itinerary ?? []) {
+    switch (entry.stopType) {
+      case "alternative-pool":
+      case "beach-option":
+        poolLabels.push(entry.label);
+        break;
+      case "core":
+        coreLabels.push(entry.label);
+        break;
+      case "optional":
+      case "pass-by":
+      case "origin":
+        optionalLabels.push(entry.label);
+        break;
+      default:
+        break;
+    }
+  }
 
   const poolMins = Object.values(sot?.poolPick ?? {})
     .map((pool) => pool.min)
-    .filter((min) => typeof min === "number" && min > 0);
+    .filter((min): min is number => typeof min === "number" && min > 0);
   const pickMin =
     poolMins.length > 0
       ? Math.min(...poolMins)
@@ -120,55 +211,118 @@ function anchorPoolTruth(anchorTourId: string | null | undefined): AnchorPoolTru
         ? blueprint.choice.pickMin
         : null;
 
-  return { candidateLabels, coreLabels, pickMin };
+  const tour = findTour(anchorTourId);
+  const maxStops = REGION_RULES[tourRegionKey(tour?.region ?? null)]?.maxStops ?? null;
+
+  return {
+    provable: poolLabels.length > 0 || coreLabels.length > 0 || tableLabels.length > 0,
+    tableLabels,
+    poolLabels,
+    coreLabels,
+    optionalLabels,
+    pickMin,
+    maxStops,
+  };
 }
+
+/** Classify one authored label against the anchor's structural authorities. */
+function classify(label: string, structure: AnchorStructure): StructuralRole {
+  const best = (labels: string[]) => labels.reduce((max, l) => Math.max(max, matchScore(l, label)), 0);
+  const scores: Array<[StructuralRole, number]> = [
+    ["table", best(structure.tableLabels)],
+    ["pool", best(structure.poolLabels)],
+    ["core", best(structure.coreLabels)],
+    ["optional", best(structure.optionalLabels)],
+  ];
+  let role: StructuralRole = "unknown";
+  let top = 0;
+  for (const [candidate, score] of scores) {
+    if (score > top) {
+      top = score;
+      role = candidate;
+    }
+  }
+  return top > 0 ? role : "unknown";
+}
+
+/* ── public API ─────────────────────────────────────────────── */
 
 /** Canonical number of pool picks the base product actually includes. */
 export function anchorWineryPickMin(anchorTourId: string | null | undefined): number | null {
-  return anchorPoolTruth(anchorTourId).pickMin;
+  return anchorStructure(anchorTourId).pickMin;
+}
+
+/** Hard operational cap (region rules) that the fallback must respect. */
+export function anchorMaxStops(anchorTourId: string | null | undefined): number | null {
+  return anchorStructure(anchorTourId).maxStops;
 }
 
 export interface AuthoredAnchorProjection<T> {
-  /** The canonical authored day — surplus pool candidates removed. */
+  /** The canonical operational day. */
   readonly points: T[];
-  /** Canonical labels dropped as surplus candidates. Diagnostics only. */
+  /** Labels removed from the raw catalogue. Diagnostics only. */
   readonly droppedLabels: string[];
-  /** True when the raw list was over-cardinal and had to be projected. */
+  /** True when the raw list had to be projected. */
   readonly projected: boolean;
+  /** False when no structural authority describes this anchor. */
+  readonly provable: boolean;
 }
 
 /**
- * Collapse an authored anchor stop list to its canonical pool cardinality.
+ * Project an authored anchor stop list onto its canonical operational day.
  * Generic over any object carrying a `label`; identity fields untouched.
  */
 export function projectAuthoredAnchorStops<T extends { label: string }>(
   anchorTourId: string | null | undefined,
   points: ReadonlyArray<T>,
 ): AuthoredAnchorProjection<T> {
-  const truth = anchorPoolTruth(anchorTourId);
-  const pickMin = truth.pickMin;
-  if (!pickMin || points.length === 0 || truth.candidateLabels.length === 0) {
-    return { points: [...points], droppedLabels: [], projected: false };
+  const structure = anchorStructure(anchorTourId);
+  if (!structure.provable || points.length === 0) {
+    return { points: [...points], droppedLabels: [], projected: false, provable: false };
   }
 
-  const isCandidate = (label: string) =>
-    // A core moment is never a pool candidate, even if the wording is close.
-    !truth.coreLabels.some((core) => sameplace(core, label)) &&
-    truth.candidateLabels.some((candidate) => sameplace(candidate, label));
+  const roles = points.map((p) => classify(p.label, structure));
+  const cap = structure.maxStops ?? points.length;
+  const pickMin = structure.pickMin;
 
-  const candidateIndexes = points.map((p, i) => (isCandidate(p.label) ? i : -1)).filter((i) => i >= 0);
+  const keep = new Set<number>();
+  const take = (index: number) => {
+    keep.add(index);
+  };
 
-  // Nothing surplus to drop — the authored day is already canonical, or the
-  // catalogue carries fewer candidates than the product includes (in which
-  // case dropping anything would UNDER-deliver).
-  if (candidateIndexes.length <= pickMin) {
-    return { points: [...points], droppedLabels: [], projected: false };
+  // 1 · the included table/lunch moment — commercial truth, never dropped.
+  const tableIndexes = points.map((_, i) => i).filter((i) => roles[i] === "table");
+  if (tableIndexes.length > 0) take(tableIndexes[0]!);
+
+  // 2 · exactly the included number of pool candidates, authored order.
+  const poolIndexes = points.map((_, i) => i).filter((i) => roles[i] === "pool");
+  const poolQuota = pickMin ?? poolIndexes.length;
+  for (const index of poolIndexes.slice(0, poolQuota)) take(index);
+
+  // 3 · remaining core moments, authored order, while the cap allows.
+  for (const index of points.map((_, i) => i).filter((i) => roles[i] === "core")) {
+    if (keep.size >= cap) break;
+    take(index);
   }
 
-  const dropped = new Set(candidateIndexes.slice(pickMin));
+  // 4 · unclassified moments only if the canonical day still has room.
+  for (const index of points.map((_, i) => i).filter((i) => roles[i] === "unknown")) {
+    if (keep.size >= cap) break;
+    take(index);
+  }
+
+  // 5 · optional / pass-by / origin never join the canonical base day,
+  //     unless nothing else could be proven at all (empty day guard).
+  if (keep.size === 0) {
+    return { points: [...points], droppedLabels: [], projected: false, provable: true };
+  }
+
+  const kept = points.filter((_, i) => keep.has(i));
+  const droppedLabels = points.filter((_, i) => !keep.has(i)).map((p) => p.label);
   return {
-    points: points.filter((_, i) => !dropped.has(i)),
-    droppedLabels: points.filter((_, i) => dropped.has(i)).map((p) => p.label),
-    projected: true,
+    points: kept,
+    droppedLabels,
+    projected: droppedLabels.length > 0,
+    provable: true,
   };
 }
