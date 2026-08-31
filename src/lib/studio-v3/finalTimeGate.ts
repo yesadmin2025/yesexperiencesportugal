@@ -45,7 +45,23 @@ export interface FinalDayTimeGate {
   readonly requiresReview: boolean;
 }
 
+/**
+ * A stable, order-sensitive identity for one authored day.
+ *
+ * Used ONLY to prove that the day reaching payment is the exact same day the
+ * operational gate certified on screen. Structural identity first, label as
+ * the last resort; nothing here re-times, re-prices or mutates a route.
+ */
+export function describeRouteIdentity(
+  points: ReadonlyArray<FinalGateRoutePoint>,
+): string {
+  return points
+    .map((p) => `${p.inventoryStopId ?? p.blueprintStopId ?? ""}|${p.label}`)
+    .join(">");
+}
+
 /** Project authored route points into canonical Time Authority stops. */
+
 export function toTimeAuthorityStops(
   points: ReadonlyArray<FinalGateRoutePoint>,
 ): TimeAuthorityStop[] {

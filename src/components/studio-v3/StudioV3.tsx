@@ -140,7 +140,11 @@ import { validateItinerary, type ValidationStatus } from "@/lib/studio-v3/itiner
 import { alignRouteLegsToItinerary } from "@/lib/studio-v3/itineraryLegAlignment";
 import type { DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
 import { judgeRouteTimeFit } from "@/lib/studio-v3/timeAuthority";
-import { judgeFinalDayTime } from "@/lib/studio-v3/finalTimeGate";
+import { describeRouteIdentity, judgeFinalDayTime } from "@/lib/studio-v3/finalTimeGate";
+import {
+  isOperationallyBookable,
+  publishOperationalGate,
+} from "@/lib/studio-v3/operationalGateChannel";
 import {
   requiresCuratorParty,
   curatorPartyMessage,
@@ -1312,6 +1316,17 @@ export function StudioV3() {
         rhythm: currentState.rhythm ?? null,
       });
       if (!checkoutTimeGate.bookable) {
+        setCheckoutPending(false);
+        openLeadSheet("book");
+        return;
+      }
+
+      // FINAL CLOSURE — the operational approval truth must ALSO hold at the
+      // payment seam, independently of the CTA. A day that was never scored on
+      // proven road data (`proven === false`), a HARD operational rejection, or
+      // a route that is not the exact day the gate certified (stale, hydrated
+      // or deep-linked state) can never open Stripe. Existing curator path.
+      if (!isOperationallyBookable(describeRouteIdentity(checkoutStops))) {
         setCheckoutPending(false);
         openLeadSheet("book");
         return;
@@ -4687,6 +4702,13 @@ export function StoryboardHandoff({
     };
   }, [revealLegsLoading, skeletonTour, editedStops, revealLegMinutes, revealRouteStops]);
   const approvalStatus: ValidationStatus = operationalGate.status;
+  // Publish the gate to the payment seam. Read-only projection of facts that
+  // already exist above; it never changes what the traveller sees.
+  publishOperationalGate({
+    proven: operationalGate.proven,
+    status: operationalGate.status,
+    identity: describeRouteIdentity(editedStops),
+  });
 
 
 
