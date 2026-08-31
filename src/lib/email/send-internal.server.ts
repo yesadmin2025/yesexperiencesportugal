@@ -340,6 +340,33 @@ function generateToken(): string {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+/** One unsubscribe token per address; reused across sends. */
+async function ensureUnsubscribeToken(
+  supabase: typeof supabaseAdmin,
+  email: string,
+): Promise<string | undefined> {
+  const normalized = email.trim().toLowerCase();
+  const { data: existing } = await supabase
+    .from("email_unsubscribe_tokens")
+    .select("token, used_at")
+    .eq("email", normalized)
+    .maybeSingle();
+  if (existing && !existing.used_at) return existing.token;
+  if (existing) return undefined; // already unsubscribed
+  await supabase
+    .from("email_unsubscribe_tokens")
+    .upsert(
+      { token: generateToken(), email: normalized },
+      { onConflict: "email", ignoreDuplicates: true },
+    );
+  const { data: stored } = await supabase
+    .from("email_unsubscribe_tokens")
+    .select("token")
+    .eq("email", normalized)
+    .maybeSingle();
+  return stored?.token;
+}
+
 export interface SendInternalArgs {
   templateName: string;
   recipientEmail: string;
