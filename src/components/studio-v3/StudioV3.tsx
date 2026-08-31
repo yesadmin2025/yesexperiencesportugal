@@ -5154,6 +5154,22 @@ export function StoryboardHandoff({
     revealValidation.ok &&
     approvalStatus === "approved";
 
+  // P0-D — when Reserve is blocked, say why, truthfully and in one line.
+  // Derived from the SAME facts that block it; never invented, never
+  // reassuring. Null whenever the day is bookable.
+  const reserveBlockedReason: string | null = canReserve
+    ? null
+    : editedStops.length < REFINE_MIN_STOPS
+      ? `A day needs at least ${REFINE_MIN_STOPS} moments — add one to continue.`
+      : !revealValidation.ok
+        ? "We're still grounding this day in real tour details."
+        : revealLegsLoading
+          ? "Checking real driving times for this day…"
+          : approvalStatus === "reject"
+            ? "This day doesn't fit comfortably in one day yet — remove or swap a moment."
+            : "This day needs a quick human check before we can confirm it instantly.";
+
+
   // Canvas → YOUR DAY continuity. Same derived model, same media identities,
   // matched on STRUCTURAL identity from the CURRENT authored route.
   const yourDayVisuals = useMemo(
