@@ -97,6 +97,7 @@ export function useResolvedJourney(
       committedRoutePoints: state.committedRoutePoints,
       resolved: resolveStudioV3Route(studioRouteShapingInput(state)),
       catalogStops: tour?.stops ?? null,
+      anchorTourId: tour?.id ?? null,
     });
 
 
