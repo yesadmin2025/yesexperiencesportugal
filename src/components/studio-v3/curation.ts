@@ -1809,6 +1809,13 @@ export interface ResolvedRoutePoint {
   image?: string | null;
   /** Existing catalogue focal format (CSS object-position, e.g. "50% 40%"). */
   focal?: string | null;
+  /**
+   * VERIFIED structural dwell of the underlying inventory moment, carried
+   * verbatim from the pool row. Never guessed from a label, never defaulted.
+   */
+  durationMinutes?: number | null;
+  /** Provenance of `durationMinutes`. Absent when no proven dwell exists. */
+  durationSource?: import("@/lib/studio-v3/timeDomain").DwellSource | null;
 }
 
 
@@ -2467,6 +2474,9 @@ function resolveLivingAtlasLiveDay(input: {
     unverifiedConnectorLabels,
     mobilityConcern: input.mobilityConcern,
     pickupCoord: input.pickupCoord,
+    // LIVE self-service branch: only moments an existing commercial authority
+    // can already price may enter a day the traveller can book unattended.
+    commercialContainment: true,
     buildStory: customerStopBlurb,
   });
 
@@ -2520,10 +2530,16 @@ function resolveLivingAtlasLiveDay(input: {
   });
   const omittedIdentity = resolveCompositionIdentities({
     anchorTourId: input.anchorTourId,
-    moments: hybrid.omitted.map((moment) => ({
-      label: moment.label,
-      inventoryStopId: moment.stopId,
-    })),
+    // A skeleton label with NO inventory identity is scenery copy, not a
+    // structurally identified inclusion, so it cannot be claimed as a priced
+    // removal. Only identity-bearing omissions reach the commercial ledger;
+    // unidentified ones stay unclaimed (no credit, no charge).
+    moments: hybrid.omitted
+      .filter((moment) => Boolean(moment.stopId))
+      .map((moment) => ({
+        label: moment.label,
+        inventoryStopId: moment.stopId,
+      })),
   });
 
   const resolvedComposition = {

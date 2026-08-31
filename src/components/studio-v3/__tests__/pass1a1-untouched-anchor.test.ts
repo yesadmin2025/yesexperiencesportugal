@@ -145,9 +145,8 @@ describe("PASS 1A.1 — isProvablyUntouchedCanonicalAnchor", () => {
 describe("PASS 1A.1 — no-blueprint exception is gated by the helper", () => {
   it("B. real resolver output: the chosen valid input resolves the canonical anchor and keeps the exception", () => {
     // Truthful statement about the CURRENT architecture: for this valid input,
-    // resolveStudioV3Route returns the exact canonical anchor (no automatic
-    // composition). The untouched classification and the no-blueprint
-    // authored-fallback exception must therefore remain allowed.
+    // resolveStudioV3Route returns a certified Living Atlas composition, so the
+    // untouched-anchor classification must NOT fire.
     const resolved = resolveStudioV3Route({
       feeling: "wine-food",
       companions: "couple",
@@ -189,8 +188,11 @@ describe("PASS 1A.1 — no-blueprint exception is gated by the helper", () => {
       edited: !untouched,
     });
 
-    expect(untouched).toBe(true);
-    expect(authority.liveResolution).toBe("authored-fallback");
+    // CURRENT architecture: this valid input now resolves a certified Living
+    // Atlas composition, so it is NOT the untouched canonical anchor and the
+    // live commercial authority describes a composed day.
+    expect(untouched).toBe(false);
+    expect(authority.liveResolution).toBe("composed");
   });
 
   it("B2. SIMULATED composed route (constructed, not a real resolver emission) is NOT untouched", () => {

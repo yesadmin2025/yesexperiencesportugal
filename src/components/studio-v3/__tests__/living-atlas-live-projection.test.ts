@@ -60,7 +60,11 @@ describe("Living Atlas live projection", () => {
     for (const rhythm of ["slow", "balanced", "full"] as const) {
       const live = resolve({ rhythm }).livingAtlasLive;
       if (!live || live.liveResolution !== "composed") continue;
-      expect(live.commercialDisposition).toBe("anchor-price-safe");
+      // Fail closed: either fully anchor-priced, or priced only through
+      // existing approved price actions (e.g. the extra-winery ladder).
+      expect(["anchor-price-safe", "known-price-action-required"]).toContain(
+        live.commercialDisposition,
+      );
       expect(live.validation?.status).not.toBe("invalid");
       expect(live.passthroughReason).toBeNull();
     }

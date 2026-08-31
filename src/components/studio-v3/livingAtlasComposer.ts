@@ -1,5 +1,8 @@
 import { REGION_STOP_POOL, type OptionalStop, type OptionalStopType } from "@/data/regionStopPool";
 import { corridorForSignature } from "@/data/signatureCorridors";
+import { getTailorBlueprint } from "@/data/tailorBlueprints";
+import { bridgedBlueprintStopId } from "@/data/structuralStopBridge";
+import { resolveCommercialActionId } from "@/lib/studio-v3/compositionIdentity";
 import {
   certifyDoorToDoor,
   certifyDoorToDoorAdmission,
@@ -104,6 +107,21 @@ export type LivingAtlasCompositionRequest = {
    * origin keeps the certification explicitly PROVISIONAL.
    */
   originIsExactAddress?: boolean;
+  /**
+   * SELF-SERVICE COMMERCIAL CONTAINMENT (opt-in, fail-closed).
+   *
+   * When true, a candidate is only admissible if an EXISTING commercial
+   * authority can already price it for this anchor: it is declared in the
+   * anchor's Tailor blueprint (core / choice / optional) — proven through the
+   * structural stop bridge — or it carries an eligible add-on catalogue
+   * identity. Nothing new is priced or invented here; moments without an
+   * approved commercial identity simply stay out of the self-service day and
+   * remain available to the curator path.
+   *
+   * When false/absent (curator, previews, existing callers) behaviour is
+   * unchanged.
+   */
+  commercialContainment?: boolean;
 };
 
 
@@ -505,6 +523,56 @@ export function composeLivingAtlasDay(
   };
 
 
+  /* ---- ANCHOR STRUCTURAL TRUTH (Tailor blueprint), read-only ---- */
+  const blueprint = getTailorBlueprint(request.anchorSignatureId) ?? null;
+  const anchorChoiceIds = new Set((blueprint?.choice?.options ?? []).map((option) => option.id));
+  const anchorChoicePick = blueprint?.choice
+    ? { min: blueprint.choice.pickMin, max: blueprint.choice.pickMax }
+    : null;
+  const anchorBlueprintIds = new Set(
+    blueprint
+      ? [
+          ...blueprint.core.map((stop) => stop.id),
+          ...(blueprint.choice?.options ?? []).map((stop) => stop.id),
+          ...blueprint.optional.map((stop) => stop.id),
+        ]
+      : [],
+  );
+  /** Declared blueprint identity of an inventory stop inside this anchor. */
+  const anchorBlueprintIdOf = (stop: OptionalStop): string | null => {
+    const bridged = bridgedBlueprintStopId(request.anchorSignatureId, stop.id);
+    return bridged && anchorBlueprintIds.has(bridged) ? bridged : null;
+  };
+  const isAnchorChoice = (stop: OptionalStop): boolean => {
+    const bpId = anchorBlueprintIdOf(stop);
+    return Boolean(bpId && anchorChoiceIds.has(bpId));
+  };
+  const selectedChoiceCount = (): number => selected.filter((item) => isAnchorChoice(item.stop)).length;
+  const anchorIncludedIds = new Set(
+    blueprint
+      ? [
+          ...blueprint.core.map((stop) => stop.id),
+          ...(blueprint.choice?.options ?? []).map((stop) => stop.id),
+        ]
+      : [],
+  );
+  /**
+   * An existing commercial authority can already price this moment: it is part
+   * of what the anchor already includes (core / choice), or an eligible add-on
+   * catalogue identity attaches to it. A blueprint OPTIONAL moment proves
+   * membership, never inclusion, so it needs the add-on action too.
+   */
+  const commerciallyPriceable = (stop: OptionalStop): boolean => {
+    const bpId = anchorBlueprintIdOf(stop);
+    if (bpId && anchorIncludedIds.has(bpId)) return true;
+    return Boolean(
+      resolveCommercialActionId(request.anchorSignatureId, {
+        inventoryStopId: stop.id,
+        blueprintStopId: bpId,
+      }),
+    );
+  };
+
   /**
    * Structural constraints are evaluated FIRST and are independent of time:
    * duplicates, one-of groups and per-type caps.
@@ -512,9 +580,36 @@ export function composeLivingAtlasDay(
   const structuralReason = (candidate: ScoredStop): string | null => {
     if (selected.some((item) => item.stop.id === candidate.stop.id)) return "already-selected";
 
+    // SELF-SERVICE COMMERCIAL CONTAINMENT — fail closed, opt-in only.
+    if (request.commercialContainment && !commerciallyPriceable(candidate.stop)) {
+      return "no-approved-commercial-identity";
+    }
+
     const group = candidate.stop.oneOfGroup;
     if (group && selected.some((item) => item.stop.oneOfGroup === group)) {
-      return `one-of-group:${group}`;
+      // The anchor's OWN choice group is a declared multi-pick set
+      // (`pickMin`..`pickMax`). Inside that set the pool's generic one-of ban
+      // must not override the Signature's structural cardinality.
+      const bothInAnchorChoice =
+        isAnchorChoice(candidate.stop) &&
+        selected
+          .filter((item) => item.stop.oneOfGroup === group)
+          .every((item) => isAnchorChoice(item.stop));
+      if (!bothInAnchorChoice || !anchorChoicePick) return `one-of-group:${group}`;
+      // Only the anchor's REQUIRED cardinality (`pickMin`) may override the
+      // pool's one-of ban. Anything above the minimum stays banned, so caps
+      // and alternative-stacking invariants are untouched.
+      if (selectedChoiceCount() >= Math.max(1, anchorChoicePick.min)) {
+        return `one-of-group:${group}`;
+      }
+    }
+
+    if (
+      anchorChoicePick &&
+      isAnchorChoice(candidate.stop) &&
+      selectedChoiceCount() >= anchorChoicePick.max
+    ) {
+      return `anchor-choice-max:${anchorChoicePick.max}`;
     }
 
     const cap = request.maxByType?.[candidate.stop.type];
@@ -668,6 +763,32 @@ export function composeLivingAtlasDay(
 
   // Obligation costs (steps 1–4) were already frozen at their failure points,
   // so discretionary filler below can never inflate a reported conflict.
+
+  // 4b · ANCHOR CHOICE CARDINALITY. The Signature blueprint declares how many
+  //      moments must come from its own choice pool (e.g. "2 to 4 wineries").
+  //      That is existing structural truth of the commercial anchor, so the
+  //      composed day must satisfy `pickMin` before any discretionary filler.
+  //      Excluded types (e.g. no-wine intent) are never forced back in.
+  if (anchorChoicePick && !(request.excludedTypes ?? []).length) {
+    let guard = 0;
+    while (selectedChoiceCount() < anchorChoicePick.min && guard < anchorChoicePick.max) {
+      guard += 1;
+      const attempt = attemptObligation((item) => isAnchorChoice(item.stop));
+      if (!attempt.added) {
+        if (attempt.eligible.length > 0) {
+          timeBlocked.push({
+            dimension: attempt.eligible[0]?.dimensions[0] ?? null,
+            candidates: attempt.eligible,
+            candidateCosts: attempt.costs,
+            origin: "required-type",
+          });
+        }
+        break;
+      }
+    }
+  }
+
+
 
 
 

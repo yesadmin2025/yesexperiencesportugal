@@ -282,12 +282,15 @@ describe("B · the Director's timing conflict is the genuine canonical source", 
 
 describe("C · operational approval fails closed", () => {
   it("C1 · loading legs and a missing skeleton can never approve", () => {
-    expect(STUDIO_SRC).toContain('if (revealLegsLoading) return "review";');
-    expect(STUDIO_SRC).toContain('if (!skeletonTour) return "review";');
+    expect(STUDIO_SRC).toContain('if (revealLegsLoading) return { status: "review" as ValidationStatus, proven: false };');
+    expect(STUDIO_SRC).toContain('if (!skeletonTour) return { status: "review" as ValidationStatus, proven: false };');
   });
 
   it("C2 · an incomplete validation is demoted to review", () => {
-    expect(STUDIO_SRC).toContain('return result.status === "incomplete" ? "review" : result.status;');
+    expect(STUDIO_SRC).toContain('status: (result.status === "incomplete" ? "review" : result.status) as ValidationStatus,');
+    // An unscoreable day stays fail-closed: `proven` is the booking condition.
+    expect(STUDIO_SRC).toContain('proven: result.status !== "incomplete",');
+    expect(STUDIO_SRC).toContain("operationalGate.proven &&");
   });
 
   it("C3 · validateItinerary really reports incomplete without leg minutes", () => {
