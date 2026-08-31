@@ -24,6 +24,8 @@
 
 import { REGION_STOP_POOL, type OptionalStop, type OptionalStopType } from "@/data/regionStopPool";
 import { isStopClosedOn } from "@/data/stopOperational";
+import { lookupStop } from "@/data/stopGeo";
+
 import { deriveLivingAtlasDimensions } from "@/components/studio-v3/livingAtlasInventory";
 import {
   composeLivingAtlasDay,
@@ -102,6 +104,12 @@ export interface HybridCompositionInput {
    * composition is reported door-to-door UNCERTIFIED, never certified.
    */
   pickupCoord?: { lat: number; lng: number } | null;
+  /**
+   * Self-service commercial containment. Passed straight through to the single
+   * composition authority: only moments an EXISTING commercial authority can
+   * already price for this anchor are admitted. Absent → unchanged behaviour.
+   */
+  commercialContainment?: boolean;
   /**
    * Customer-facing blurb builder for an inserted moment. Injected by the
    * caller (production passes `customerStopBlurb`) so this module never
@@ -336,6 +344,7 @@ export function composeHybridDay(
     excludedTypes: input.wineIntent ? [] : ["winery"],
     mustIncludeStopIds,
     pickupCoord: input.pickupCoord ?? null,
+    commercialContainment: input.commercialContainment === true,
   });
 
   // ONLY a COMPLETE composition may be projected as a finished hybrid day.
@@ -403,6 +412,21 @@ export function composeHybridDay(
   //     the composer and are kept only if the time authority kept them.
   for (const entry of classified) {
     if (!entry.stop) {
+      // SELF-SERVICE CONTAINMENT: a skeleton default with no inventory identity
+      // carries no structural minute truth, so it can never be part of a day
+      // the traveller books unattended. Verified mandatory operational nodes
+      // still pass through — their minutes arrive as internal transit.
+      if (input.commercialContainment && !entry.mandatory) {
+        omittedSlots.push(entry.point.label);
+        omitted.push({
+          stopId: null,
+          label: entry.point.label,
+          role: "omitted",
+          replacedLabel: null,
+          sourceTourIds: [],
+        });
+        continue;
+      }
       out.push({ ...entry.point, index: out.length });
       moments.push({
         stopId: null,
@@ -429,7 +453,13 @@ export function composeHybridDay(
     if (selectedIds.has(entry.stop.id)) {
       // Structural inventory identity, proven by the pool match — never a
       // label/index derivation.
-      out.push({ ...entry.point, inventoryStopId: entry.stop.id, index: out.length });
+      out.push({
+        ...entry.point,
+        inventoryStopId: entry.stop.id,
+        durationMinutes: entry.stop.durationMin,
+        durationSource: "inventory",
+        index: out.length,
+      });
       moments.push({
         stopId: entry.stop.id,
         label: entry.point.label,
@@ -466,8 +496,16 @@ export function composeHybridDay(
       inventoryStopId: moment.stopId,
       label: moment.label,
       story: stop && input.buildStory ? input.buildStory(stop) : "",
-      lat: stop?.coords?.lat ?? null,
-      lng: stop?.coords?.lng ?? null,
+      // Geography: the inventory coordinate first, then the curated stopGeo
+      // gazetteer for the SAME canonical label. Both are verified authorities;
+      // nothing is geocoded, guessed or invented here.
+      lat: stop?.coords?.lat ?? lookupStop(moment.label)?.lat ?? null,
+      lng: stop?.coords?.lng ?? lookupStop(moment.label)?.lng ?? null,
+
+      // Structural minute truth travels WITH the moment: verified inventory
+      // dwell only, never a label guess and never a default.
+      durationMinutes: stop ? stop.durationMin : null,
+      durationSource: stop ? "inventory" : null,
     });
     emittedStopIds.add(moment.stopId);
     moments.push({

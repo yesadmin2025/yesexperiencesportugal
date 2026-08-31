@@ -13,6 +13,9 @@
  */
 import { describe, expect, it } from "vitest";
 
+import { getTailorBlueprint } from "@/data/tailorBlueprints";
+import { bridgedBlueprintStopId } from "@/data/structuralStopBridge";
+
 import { REGION_STOP_POOL, type OptionalStop } from "@/data/regionStopPool";
 import { SIGNATURE_CORRIDORS, corridorForSignature } from "@/data/signatureCorridors";
 import { STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN } from "@/lib/studio-v3/timeDomain";
@@ -244,7 +247,12 @@ describe("G · time, not legacy maxStops, is the membership authority", () => {
 });
 
 describe("H · oneOfGroup alternatives are never stacked", () => {
-  it("keeps at most one member of each one-of group", () => {
+  /**
+   * The pool's one-of ban is absolute EXCEPT inside the commercial anchor's
+   * own declared choice pool, whose `pickMin`..`pickMax` cardinality is the
+   * Signature's structural truth (e.g. "at least two wineries").
+   */
+  it("keeps at most one member of each one-of group outside the anchor choice pool", () => {
     const result = compose({
       profile: {
         selected: ["wine-table", "atlantic-coast", "local-life"],
@@ -260,7 +268,18 @@ describe("H · oneOfGroup alternatives are never stacked", () => {
       if (!group) continue;
       groups.set(group, (groups.get(group) ?? 0) + 1);
     }
-    for (const count of groups.values()) expect(count).toBeLessThanOrEqual(1);
+    const anchorChoiceIds = new Set(
+      (getTailorBlueprint("arrabida-wine-allinclusive")?.choice?.options ?? []).map((o) => o.id),
+    );
+    const anchorChoiceMax = getTailorBlueprint("arrabida-wine-allinclusive")?.choice?.pickMin ?? 1;
+    for (const [group, count] of groups.entries()) {
+      const groupIsAnchorChoice = activePool
+        .filter((stop) => stop.oneOfGroup === group)
+        .some((stop) =>
+          anchorChoiceIds.has(bridgedBlueprintStopId("arrabida-wine-allinclusive", stop.id) ?? ""),
+        );
+      expect(count).toBeLessThanOrEqual(groupIsAnchorChoice ? Math.max(1, anchorChoiceMax) : 1);
+    }
   });
 });
 

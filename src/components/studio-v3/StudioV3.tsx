@@ -4659,9 +4659,9 @@ export function StoryboardHandoff({
   // coordinates, so they never matched `stops.length - 1`. They are realigned
   // to the itinerary geometry first; alignment failure stays `null`, which the
   // validator still reads as incomplete (fail closed).
-  const approvalStatus: ValidationStatus = useMemo(() => {
-    if (revealLegsLoading) return "review";
-    if (!skeletonTour) return "review";
+  const operationalGate = useMemo(() => {
+    if (revealLegsLoading) return { status: "review" as ValidationStatus, proven: false };
+    if (!skeletonTour) return { status: "review" as ValidationStatus, proven: false };
     const region = tourRegionToRegionKey(skeletonTour.region);
     const itineraryStopKeys = editedStops.map((s, i) => `${i}-${s.label}`);
     const alignedLegMinutes = alignRouteLegsToItinerary({
@@ -4678,8 +4678,17 @@ export function StoryboardHandoff({
       })),
       legMinutes: alignedLegMinutes,
     });
-    return result.status === "incomplete" ? "review" : result.status;
+    // `incomplete` means the day could NOT be scored (no proven road data):
+    // it stays fail-closed. A scored `review` is a SOFT advisory only — the
+    // canonical Time Authority remains the booking truth for those days.
+    return {
+      status: (result.status === "incomplete" ? "review" : result.status) as ValidationStatus,
+      proven: result.status !== "incomplete",
+    };
   }, [revealLegsLoading, skeletonTour, editedStops, revealLegMinutes, revealRouteStops]);
+  const approvalStatus: ValidationStatus = operationalGate.status;
+
+
 
 
   // ---------- Fase 4 reveal guard ----------------------------------------
@@ -5184,14 +5193,20 @@ export function StoryboardHandoff({
     [editedStops, selectedAddOnMinutes, anchorTourKey, state.rhythm],
   );
 
+
+
   // FINAL CLOSURE — Reserve is only a booking action when the authoritative
-  // composition is actually bookable. Review/reject/unresolved states go to
-  // the existing curator enquiry path instead of Stripe.
+  // composition is actually bookable. A HARD operational rejection, or a day
+  // that could not be scored at all (no proven road data), still goes to the
+  // existing curator enquiry path instead of Stripe. A scored SOFT advisory
+  // (`review`) does not block: the canonical Time Authority owns fit truth.
   const canReserve =
     editedStops.length >= REFINE_MIN_STOPS &&
     revealValidation.ok &&
-    approvalStatus === "approved" &&
+    operationalGate.proven &&
+    approvalStatus !== "reject" &&
     finalDayGate.bookable;
+
 
   // P0-D — when Reserve is blocked, say why, truthfully and in one line.
   // Derived from the SAME facts that block it; never invented, never

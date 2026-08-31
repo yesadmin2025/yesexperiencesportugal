@@ -89,6 +89,8 @@ describe("Block A · one live membership authority", () => {
       dateExact: TUESDAY,
       // Same door-to-door planning origin the live branch uses for this pickup.
       pickupCoord: pickupOriginCoord(BASE.pickup),
+      // Same self-service commercial containment the live branch uses.
+      commercialContainment: true,
     });
     expect(direct.composition?.moments.map((m) => m.stopId).sort()).toEqual(
       [...live!.compositionStopIds].sort(),
@@ -111,11 +113,15 @@ describe("Block A · one live membership authority", () => {
   });
 });
 
-describe("Block A · raw authored fallback and strict slice", () => {
-  it("falls back to the RAW authored skeleton, with no legacy shaping", () => {
+describe("Block A · live projection and strict slice", () => {
+  it("projects the certified composed day, never a re-shaped authored skeleton", () => {
     const resolved = resolve({ preferTourId: ARRABIDA, dateExact: TUESDAY });
-    expect(resolved.livingAtlasLive?.liveResolution).toBe("authored-fallback");
-    expect(resolved.composedRoutePoints.map((p) => p.label)).toEqual(authoredLabels(ARRABIDA));
+    const live = resolved.livingAtlasLive;
+    expect(live?.liveResolution).toBe("composed");
+    // Every projected moment carries structural identity — no authored scenery.
+    for (const point of resolved.composedRoutePoints) {
+      expect(point.inventoryStopId).toBeTruthy();
+    }
   });
 
   it("keeps routePoints a strict prefix slice for every live outcome", () => {

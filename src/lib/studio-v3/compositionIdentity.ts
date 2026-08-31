@@ -23,6 +23,7 @@
  */
 
 import { REGION_STOP_POOL, type OptionalStop } from "@/data/regionStopPool";
+import { bridgedBlueprintStopId } from "@/data/structuralStopBridge";
 import { getTailorBlueprint, type BlueprintStop } from "@/data/tailorBlueprints";
 import { signatureTours } from "@/data/signatureTours";
 import {
@@ -173,6 +174,19 @@ export function resolveCompositionIdentity(input: {
       confidence = "verified";
     }
   }
+
+  // 1b · DECLARED structural bridge between the inventory and blueprint id
+  // spaces for this exact anchor. Not a label guess: an explicit, reviewed
+  // statement that the two catalogues describe the same real moment.
+  if (!blueprintStopId && inventoryStopId) {
+    const bridged = bridgedBlueprintStopId(input.anchorTourId, inventoryStopId);
+    if (bridged && blueprintScope.some((stop) => stop.id === bridged)) {
+      blueprintStopId = bridged;
+      if (source === "none") source = "blueprint-id";
+      if (confidence === "unresolved") confidence = "verified";
+    }
+  }
+
 
   // 2 · Label discriminator INSIDE the already-scoped inventory set.
   if (!inventoryStopId) {
