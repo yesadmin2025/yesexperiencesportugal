@@ -55,10 +55,11 @@ describe("resolveTimeBudget", () => {
     expect(budget.availableExperienceMinutes).toBe(DURATION_ENVELOPES["half-day"].targetMinutes);
   });
 
-  it("B. uses the skeleton's EXACT canonical minutes, never a rounded class target", () => {
+  it("B. uses the skeleton's EXACT canonical minutes for catalogue reads", () => {
     const budget = resolveTimeBudget({
       skeletonTourId: "verified-long-day",
       skeletonDurationMinutes: 570,
+      allowLegacyExtendedDuration: true,
     });
     expect(budget.source).toBe("signature-skeleton-truth");
     expect(budget.availableExperienceMinutes).toBe(570);
@@ -69,9 +70,20 @@ describe("resolveTimeBudget", () => {
   });
 
   it("B. represents a real 600-minute catalogue day without truncation", () => {
-    const budget = resolveTimeBudget({ skeletonDurationMinutes: 600 });
+    const budget = resolveTimeBudget({
+      skeletonDurationMinutes: 600,
+      allowLegacyExtendedDuration: true,
+    });
     expect(budget.availableExperienceMinutes).toBe(600);
     expect(budget.maxMinutes).toBeGreaterThanOrEqual(600);
+  });
+
+  it("B. the LIVE Studio budget is clamped to the owner's 9h door-to-door ceiling", () => {
+    for (const minutes of [570, 600]) {
+      const budget = resolveTimeBudget({ skeletonDurationMinutes: minutes });
+      expect(budget.availableExperienceMinutes).toBe(540);
+      expect(budget.maxMinutes).toBeGreaterThanOrEqual(540);
+    }
   });
 
   it("C. falls back to the neutral one-day default with no choice and no skeleton", () => {
