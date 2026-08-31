@@ -32,20 +32,34 @@ type SourceHit = {
   allowlisted: boolean;
 };
 
-// Load every project source file as raw text at build time. Cast keeps
-// TS happy across Vite versions.
-const RAW_SOURCES = import.meta.glob(
-  ["/src/**/*.{ts,tsx,js,jsx,md,mdx,json,html,css}", "!/src/routeTree.gen.ts", "!/src/**/*.d.ts"],
-  { query: "?raw", import: "default", eager: true },
-) as Record<string, string>;
-const RAW_PUBLIC = import.meta.glob("/public/**/*.{html,xml,txt,json,md}", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-}) as Record<string, string>;
+// Inlining every project source file as raw text produced a ~9.5 MB chunk that
+// crashed the bundler (out of memory). The source sweep is a local maintenance
+// tool, so it is opt-in: set VITE_LEGACY_SCAN_SOURCES=1 locally to embed the
+// raw text. Otherwise only the database scan runs.
+const SOURCE_SCAN_ENABLED = import.meta.env.VITE_LEGACY_SCAN_SOURCES === "1";
+
+const RAW_SOURCES = SOURCE_SCAN_ENABLED
+  ? (import.meta.glob(
+      [
+        "/src/**/*.{ts,tsx,js,jsx,md,mdx,json,html,css}",
+        "!/src/routeTree.gen.ts",
+        "!/src/**/*.d.ts",
+      ],
+      { query: "?raw", import: "default", eager: true },
+    ) as Record<string, string>)
+  : ({} as Record<string, string>);
+const RAW_PUBLIC = SOURCE_SCAN_ENABLED
+  ? (import.meta.glob("/public/**/*.{html,xml,txt,json,md}", {
+      query: "?raw",
+      import: "default",
+      eager: true,
+    }) as Record<string, string>)
+  : ({} as Record<string, string>);
+
 
 function scanSource(): SourceHit[] {
   const files = { ...RAW_SOURCES, ...RAW_PUBLIC };
+
   const hits: SourceHit[] = [];
   for (const [absPath, contents] of Object.entries(files)) {
     // Normalise to project-relative
