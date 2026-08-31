@@ -20,6 +20,7 @@ import {
   resolveStudioV3CurationAuthority,
   resolveStudioV3Route,
 } from "../curation";
+import { pickupOriginCoord } from "../curation";
 import { composeHybridDay } from "../studioHybridComposition";
 import { validateLivingAtlasOperations } from "../livingAtlasOperationalConfidence";
 import { MERCADO_DO_LIVRAMENTO_STOP_ID } from "../dateGuards";
@@ -86,6 +87,8 @@ describe("Block A · one live membership authority", () => {
       rhythm: BASE.rhythm,
       wineIntent: true,
       dateExact: TUESDAY,
+      // Same door-to-door planning origin the live branch uses for this pickup.
+      pickupCoord: pickupOriginCoord(BASE.pickup),
     });
     expect(direct.composition?.moments.map((m) => m.stopId).sort()).toEqual(
       [...live!.compositionStopIds].sort(),

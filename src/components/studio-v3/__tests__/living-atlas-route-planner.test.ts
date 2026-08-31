@@ -1,3 +1,4 @@
+import { certifyDoorToDoor } from "@/lib/studio-v3/doorToDoorAuthority";
 import { describe, expect, it } from "vitest";
 
 import type { OptionalStop } from "@/data/regionStopPool";
@@ -105,6 +106,8 @@ function composition(stopIds: string[]): LivingAtlasResolvedComposition {
     routeOrderReady: false,
     appliedReplacements: {},
     ignoredReplacements: [],
+    doorToDoor: certifyDoorToDoor({ stops: [], pickupCoord: null }),
+    requiresCuratorReview: false,
   };
 }
 
