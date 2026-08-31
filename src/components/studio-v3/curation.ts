@@ -2540,12 +2540,21 @@ function resolveLivingAtlasLiveDay(input: {
     omitted: omittedIdentity.records,
   });
 
-  // COMMERCIAL SAFETY GATE — fail closed. Only an anchor-price-safe day may be
-  // projected publicly; anything else falls back to the authored anchor. This
-  // never invents a zero-euro semantic, it only refuses to project.
-  const commerciallySafe = commercialLedger.disposition === "anchor-price-safe";
+  // COMMERCIAL SAFETY GATE — fail closed, but not blind.
+  //
+  // P0-B CONTINUITY: a composition that triggers ONLY price actions an
+  // existing approved authority can price (`known-price-action-required`,
+  // e.g. the Arrábida extra-winery ladder) is commercially resolved — the
+  // checkout ledger rebuild carries those actions to the exact same rules.
+  // Discarding such a day used to throw away a good composition and fall
+  // back to the raw anchor. Only `commercial-unresolved` still falls back.
+  const commerciallySafe =
+    commercialLedger.disposition === "anchor-price-safe" ||
+    (commercialLedger.disposition === "known-price-action-required" &&
+      commercialLedger.actions.every((action) => isKnownPriceAction(action.priceAction)));
   const validationBlocks = validation.status === "invalid";
   const projectable = !hybrid.passthrough && commerciallySafe && !validationBlocks;
+
 
   const block: LivingAtlasLiveBlock = {
     ...emptyBlock,
