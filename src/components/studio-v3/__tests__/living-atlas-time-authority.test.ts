@@ -6,6 +6,7 @@
  * OUTPUT of truthful dwell + internal travel + internal slack.
  */
 
+import { certifyDoorToDoor } from "@/lib/studio-v3/doorToDoorAuthority";
 import { describe, expect, it } from "vitest";
 
 import { REGION_STOP_POOL, type OptionalStop } from "@/data/regionStopPool";
@@ -32,7 +33,7 @@ const ANCHOR = "arrabida-boat" as const;
 function fixtureStop(overrides: Partial<OptionalStop> & Pick<OptionalStop, "id" | "type">): OptionalStop {
   return {
     region: "arrabida-setubal",
-    routeCluster: "fixture-cluster",
+    routeCluster: "arrabida-azeitao-sesimbra",
     name: `Fixture ${overrides.id}`,
     suitsInterests: [],
     suitsRhythm: ["slow", "balanced", "full"],
@@ -439,6 +440,8 @@ describe("Pass 2 — routing constant centralization regression", () => {
       routeOrderReady: false,
       appliedReplacements: {},
       ignoredReplacements: [],
+      doorToDoor: certifyDoorToDoor({ stops: [], pickupCoord: null }),
+      requiresCuratorReview: false,
     } as LivingAtlasResolvedComposition;
 
     const route = planLivingAtlasRoute({ composition, pool: routePool });

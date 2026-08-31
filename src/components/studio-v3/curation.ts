@@ -92,6 +92,8 @@ import {
 } from "@/lib/studio-v3/commercialLedger";
 
 import { getTailorBlueprint } from "@/data/tailorBlueprints";
+import { SIGNATURE_CORRIDORS } from "@/data/signatureCorridors";
+import type { DoorToDoorCertification } from "@/lib/studio-v3/doorToDoorAuthority";
 import { projectAuthoredAnchorStops } from "./authoredAnchorProjection";
 
 import type { ComposedTiming, DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
@@ -1926,6 +1928,15 @@ export type LivingAtlasLiveBlock = {
   commercialLedger: CommercialLedger | null;
   commercialDisposition: CommercialLedger["disposition"] | null;
   internalIssues: HybridInternalIssue[];
+  /**
+   * TRUE when the day is NOT certified bespoke-bookable under the existing
+   * authorities and belongs with a curator. Whenever the authored Signature
+   * itinerary is projected instead of a certified bespoke composition, the day
+   * is explicitly flagged here rather than silently presented as "their day".
+   */
+  requiresCuratorReview: boolean;
+  /** Owner door-to-door certification of the projected day, when composed. */
+  doorToDoor: DoorToDoorCertification | null;
 };
 
 type UncertifiedLivingAtlasBlockInput = Pick<
@@ -1957,6 +1968,10 @@ export function buildUncertifiedLivingAtlasBlock(
     validation: null,
     commercialLedger: null,
     commercialDisposition: null,
+    // An uncertified/authored-fallback day is by definition not a certified
+    // bespoke composition, so it always belongs with a curator.
+    requiresCuratorReview: true,
+    doorToDoor: input.composition?.doorToDoor ?? null,
   };
 }
 
@@ -2216,6 +2231,7 @@ export function resolveStudioV3Route(input: {
         wineIntent: routeWineIntent,
         mobilityConcern,
         dateExact,
+        pickupCoord: pickupOriginCoord(input.pickup),
       })
 
     : null;
@@ -2396,6 +2412,12 @@ function resolveLivingAtlasLiveDay(input: {
   wineIntent: boolean;
   mobilityConcern: boolean;
   dateExact: string | null;
+  /**
+   * DOOR-TO-DOOR PLANNING ORIGIN. The pickup zone centroid is used until an
+   * exact address exists, so certification stays provisional but truthful.
+   * `null` means the day cannot be door-to-door certified at all.
+   */
+  pickupCoord: { lat: number; lng: number } | null;
 }): { block: LivingAtlasLiveBlock; publicPoints: ResolvedRoutePoint[] } {
   // RAW structural stops — the ONLY input to the membership authority.
   // No date-closure membership filter, no mobility rewrite, no wine swap, no
@@ -2444,6 +2466,7 @@ function resolveLivingAtlasLiveDay(input: {
     internalTransitMinutes,
     unverifiedConnectorLabels,
     mobilityConcern: input.mobilityConcern,
+    pickupCoord: input.pickupCoord,
     buildStory: customerStopBlurb,
   });
 
@@ -2567,6 +2590,10 @@ function resolveLivingAtlasLiveDay(input: {
     commercialLedger,
     commercialDisposition: commercialLedger.disposition,
     liveResolution: projectable ? "composed" : "authored-fallback",
+    doorToDoor: composition?.doorToDoor ?? null,
+    // Composed AND door-to-door certified = a real bespoke bookable day.
+    // Anything else keeps the curator flag raised.
+    requiresCuratorReview: !projectable || (composition?.requiresCuratorReview ?? true),
     fallbackReason: projectable
       ? "none"
       : hybrid.passthrough
@@ -3196,81 +3223,16 @@ export function getNextPhase(state: StudioV3State, current: StudioV3Phase): Stud
  * --------------------------------------------------------------------------- */
 
 /**
- * Explicit skeleton → cluster map. Keyed by existing Signature tour ids
- * only. Unknown skeleton ids return an empty refinement list — we never
- * guess a region or cluster.
+ * Explicit skeleton → corridor map. SINGLE SOURCE OF TRUTH now lives in
+ * `@/data/signatureCorridors` so the composer can enforce corridor
+ * containment without importing this module (cycle-free). Unknown skeleton
+ * ids resolve to nothing — we never guess a region or cluster.
  */
 export const SKELETON_TO_CLUSTER: Record<
   string,
   { region: RegionId; routeCluster: string; signatureTourId: string }
-> = {
-  "troia-comporta": {
-    region: "comporta-troia",
-    routeCluster: "troia-comporta-coast",
-    signatureTourId: "troia-comporta",
-  },
-  "tomar-coimbra": {
-    region: "tomar-coimbra",
-    routeCluster: "tomar-coimbra-heritage",
-    signatureTourId: "tomar-coimbra",
-  },
-  "fatima-nazare-obidos": {
-    region: "fatima-nazare-obidos",
-    routeCluster: "fatima-nazare-obidos-spirit-coast",
-    signatureTourId: "fatima-nazare-obidos",
-  },
-  "sintra-cascais": {
-    region: "sintra-cascais",
-    routeCluster: "sintra-cascais-coast-heritage",
-    signatureTourId: "sintra-cascais",
-  },
-  "evora-alentejo": {
-    region: "alentejo-evora",
-    routeCluster: "evora-city-classical-wineries",
-    signatureTourId: "evora-alentejo",
-  },
-  // Arrábida / Azeitão / Sesimbra cluster — five Signature skeletons all
-  // share the same region + routeCluster. Optional stops in the pool may
-  // gate on either signatureTourId (single-tour stop) or sourceTourIds
-  // (shared-source stop).
-  "arrabida-wine-allinclusive": {
-    region: "arrabida-setubal",
-    routeCluster: "arrabida-azeitao-sesimbra",
-    signatureTourId: "arrabida-wine-allinclusive",
-  },
-  "wild-beaches-picnic": {
-    region: "arrabida-setubal",
-    routeCluster: "arrabida-azeitao-sesimbra",
-    signatureTourId: "wild-beaches-picnic",
-  },
-  "arrabida-boat": {
-    region: "arrabida-setubal",
-    routeCluster: "arrabida-azeitao-sesimbra",
-    signatureTourId: "arrabida-boat",
-  },
-  "tiles-workshop": {
-    region: "arrabida-setubal",
-    routeCluster: "arrabida-azeitao-sesimbra",
-    signatureTourId: "tiles-workshop",
-  },
-  "azeitao-cheese": {
-    region: "arrabida-setubal",
-    routeCluster: "arrabida-azeitao-sesimbra",
-    signatureTourId: "azeitao-cheese",
-  },
-  // Vidigueira / Vila de Frades — Roman heritage + talha-wine cluster.
-  "roman-heritage-alentejo": {
-    region: "alentejo-evora",
-    routeCluster: "vidigueira-roman-talha",
-    signatureTourId: "roman-heritage-alentejo",
-  },
-  // Southwest Vicentine Coast — Porto Covo → Milfontes → Odeceixe corridor.
-  "southwest-vicentine-coast": {
-    region: "other",
-    routeCluster: "vicentine-coast",
-    signatureTourId: "southwest-vicentine-coast",
-  },
-};
+> = SIGNATURE_CORRIDORS;
+
 
 /**
  * Considerations that imply difficult terrain. We avoid blindly excluding

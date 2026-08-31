@@ -1,4 +1,36 @@
 import { REGION_STOP_POOL, type OptionalStop, type OptionalStopType } from "@/data/regionStopPool";
+import { corridorForSignature } from "@/data/signatureCorridors";
+import {
+  certifyDoorToDoor,
+  certifyDoorToDoorAdmission,
+  type DoorToDoorCertification,
+  type LatLng,
+} from "@/lib/studio-v3/doorToDoorAuthority";
+import type { TimeAuthorityStop } from "@/lib/studio-v3/timeAuthority";
+
+/**
+ * Verified pool inventory carries structural minute truth (`inventory` dwell
+ * provenance). Coordinates are used only when the inventory row really has
+ * them; a missing coordinate keeps the time authority's conservative
+ * missing-geo travel rather than inventing a location.
+ */
+/** Explicit "no origin, therefore no certification" result. */
+const UNCERTIFIED_DOOR_TO_DOOR: DoorToDoorCertification = certifyDoorToDoor({
+  stops: [],
+  pickupCoord: null,
+});
+
+function toTimeAuthorityStop(stop: OptionalStop): TimeAuthorityStop {
+  return {
+    stopId: stop.id,
+    label: stop.name,
+    sourceTourIds: stop.sourceTourIds ?? (stop.signatureTourId ? [stop.signatureTourId] : []),
+    lat: stop.coords?.lat ?? null,
+    lng: stop.coords?.lng ?? null,
+    durationMinutes: stop.durationMin,
+    durationSource: "inventory",
+  };
+}
 import { deriveLivingAtlasDimensions } from "@/components/studio-v3/livingAtlasInventory";
 import {
   type ExperienceDimensionId,
@@ -57,7 +89,23 @@ export type LivingAtlasCompositionRequest = {
    * absent it is derived from `density` for backward compatibility.
    */
   rhythm?: Rhythm;
+  /**
+   * DOOR-TO-DOOR PLANNING ORIGIN. When present, every admission is additionally
+   * certified against the owner's 540-minute pickup→drop-off ceiling by
+   * `certifyDoorToDoor`. When absent, only the internal experience envelope
+   * applies and the composition is reported as door-to-door UNCERTIFIED —
+   * never as certified.
+   */
+  pickupCoord?: LatLng | null;
+  /** Defaults to `pickupCoord` (same zone) when omitted. */
+  dropoffCoord?: LatLng | null;
+  /**
+   * True once an exact address (not a zone centroid) backs the origin. A zone
+   * origin keeps the certification explicitly PROVISIONAL.
+   */
+  originIsExactAddress?: boolean;
 };
+
 
 export type LivingAtlasComposedMoment = {
   stopId: string;
@@ -97,6 +145,18 @@ export type LivingAtlasComposition = {
   /** Selection is valid, but geographic visit order is a later routing step. */
   routeOrderReady: false;
   validationError?: string;
+  /**
+   * Owner door-to-door certification (pickup → drop-off, hard max 540 min).
+   * `not-evaluable` whenever no planning origin was supplied — an unknown
+   * pickup is never reported as a pass.
+   */
+  doorToDoor: DoorToDoorCertification;
+  /**
+   * True when the day cannot be certified bookable under the existing
+   * authorities and must go to a curator instead of silently falling back to
+   * an authored Signature itinerary.
+   */
+  requiresCuratorReview: boolean;
 };
 
 type ScoredStop = {
@@ -212,6 +272,16 @@ function scoreStop(
   return { stop, dimensions, score, reasons, poolIndex };
 }
 
+/**
+ * CORRIDOR CONTAINMENT — the Signature is a geographic scaffold only.
+ *
+ * The boundary is the `routeCluster` (corridor), NEVER the region. Inside the
+ * corridor, a verified ACTIVE moment owned by a DIFFERENT Signature is a fully
+ * legitimate candidate: `signatureTourId` / `sourceTourIds` is provenance, not
+ * a membership ban. Outside the corridor nothing is admissible, even when the
+ * anchor Signature itself happens to own the stop (that is how Évora city
+ * would otherwise leak into Vidigueira: same `RegionId`, different corridor).
+ */
 function candidatePool(request: LivingAtlasCompositionRequest): {
   candidates: OptionalStop[];
   anchorFound: boolean;
@@ -223,22 +293,35 @@ function candidatePool(request: LivingAtlasCompositionRequest): {
   );
   if (anchors.length === 0) return { candidates: [], anchorFound: false };
 
-  const anchorRegions = new Set(anchors.map((stop) => stop.region));
+  // Declared corridor is the highest authority; the anchor's own stops are the
+  // fallback evidence when a scaffold is not mapped yet.
+  const corridor = corridorForSignature(request.anchorSignatureId);
+  const anchorRegions = new Set(
+    corridor ? [corridor.region] : anchors.map((stop) => stop.region),
+  );
   const anchorClusters = new Set(
-    anchors.map((stop) => stop.routeCluster).filter((value): value is string => Boolean(value)),
+    corridor
+      ? [corridor.routeCluster as string]
+      : anchors
+          .map((stop) => stop.routeCluster)
+          .filter((value): value is string => Boolean(value)),
   );
 
   const candidates = active.filter((stop) => {
     if ((request.excludedTypes ?? []).includes(stop.type)) return false;
     if (!anchorRegions.has(stop.region)) return false;
 
-    const belongsToAnchor = stopSourceTourIds(stop).includes(request.anchorSignatureId);
-    if (anchorClusters.size === 0) return belongsToAnchor;
-    return belongsToAnchor || Boolean(stop.routeCluster && anchorClusters.has(stop.routeCluster));
+    // STRICT corridor containment whenever a corridor is known.
+    if (anchorClusters.size > 0) {
+      return Boolean(stop.routeCluster && anchorClusters.has(stop.routeCluster));
+    }
+    // No corridor is provable at all — fall back to anchor provenance only.
+    return stopSourceTourIds(stop).includes(request.anchorSignatureId);
   });
 
   return { candidates, anchorFound: true };
 }
+
 /**
  * @deprecated BUILD 1 / Pass 2 — compatibility output only.
  *
@@ -344,6 +427,8 @@ export function composeLivingAtlasDay(
       rejected: [],
       routeOrderReady: false,
       validationError: validation.reason,
+      doorToDoor: UNCERTIFIED_DOOR_TO_DOOR,
+      requiresCuratorReview: true,
     };
   }
 
@@ -362,6 +447,8 @@ export function composeLivingAtlasDay(
       rejected: [],
       routeOrderReady: false,
       validationError: "anchor-has-no-verified-stops",
+      doorToDoor: UNCERTIFIED_DOOR_TO_DOOR,
+      requiresCuratorReview: true,
     };
   }
 
@@ -381,6 +468,42 @@ export function composeLivingAtlasDay(
     if (rejected.some((entry) => entry.stopId === stopId && entry.reason === reason)) return;
     rejected.push({ stopId, reason });
   };
+
+  /** Door-to-door planning origin (zone centroid until an address is known). */
+  const pickupCoord = request.pickupCoord ?? null;
+  const dropoffCoord = request.dropoffCoord ?? pickupCoord;
+
+  const doorToDoorInputFor = (stops: readonly ScoredStop[]) => ({
+    stops: stops.map((item) => toTimeAuthorityStop(item.stop)),
+    pickupCoord,
+    dropoffCoord,
+    ...(request.rhythm ? { rhythm: request.rhythm } : {}),
+    originIsExactAddress: request.originIsExactAddress === true,
+  });
+
+  /**
+   * True only when admitting `candidate` would PROVABLY break the owner's
+   * 540-minute door-to-door ceiling. Without a planning origin nothing is
+   * blocked here — an unknown origin is reported as uncertified, never
+   * silently treated as either a pass or a fail.
+   */
+  // Deterministic memo keyed by the exact frozen selection + candidate, so the
+  // repeated obligation passes never recertify the same admission.
+  const doorToDoorMemo = new Map<string, boolean>();
+  const doorToDoorBlocks = (candidate: ScoredStop): boolean => {
+    if (!pickupCoord) return false;
+    const key = `${selected.map((item) => item.stop.id).join(">")}|${candidate.stop.id}`;
+    const cached = doorToDoorMemo.get(key);
+    if (cached !== undefined) return cached;
+    const cert = certifyDoorToDoorAdmission(
+      doorToDoorInputFor(selected),
+      toTimeAuthorityStop(candidate.stop),
+    );
+    const blocked = cert.evaluable && !cert.fitsHardMax;
+    doorToDoorMemo.set(key, blocked);
+    return blocked;
+  };
+
 
   /**
    * Structural constraints are evaluated FIRST and are independent of time:
@@ -402,8 +525,14 @@ export function composeLivingAtlasDay(
       return `type-cap:${candidate.stop.type}`;
     }
 
+    // DOOR-TO-DOOR CEILING (owner authority, 540 min pickup → drop-off).
+    // This is a TIME authority, not a stop-count heuristic: a 6-moment day is
+    // admissible when it certifies, and a 3-moment day can already be full.
+    if (doorToDoorBlocks(candidate)) return "door-to-door-hard-max";
+
     return null;
   };
+
 
   const projectedMinutesWith = (candidate: ScoredStop): number =>
     projectSelection([...selected, candidate], budget, rhythm).totalMinutes;
@@ -588,6 +717,16 @@ export function composeLivingAtlasDay(
         ? "partial"
         : "complete";
 
+  // FINAL DOOR-TO-DOOR TRUTH. With no planning origin this is `not-evaluable`
+  // and the day is explicitly sent to curator review rather than presented as
+  // a certified bookable composition.
+  const doorToDoor = certifyDoorToDoor(doorToDoorInputFor(selected));
+  const requiresCuratorReview =
+    status === "impossible" ||
+    selected.length === 0 ||
+    !doorToDoor.evaluable ||
+    !doorToDoor.fitsHardMax;
+
   const moments = [...selected]
     .sort((a, b) => a.poolIndex - b.poolIndex)
     .map<LivingAtlasComposedMoment>((item) => ({
@@ -615,6 +754,8 @@ export function composeLivingAtlasDay(
     missingRequiredTypes,
     rejected,
     routeOrderReady: false,
+    doorToDoor,
+    requiresCuratorReview,
   };
 }
 

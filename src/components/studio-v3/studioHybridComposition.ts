@@ -97,6 +97,12 @@ export interface HybridCompositionInput {
    */
   mobilityConcern?: boolean;
   /**
+   * Door-to-door planning origin handed to the composer so the owner's
+   * 540-minute pickup → drop-off ceiling governs admission. Absent → the
+   * composition is reported door-to-door UNCERTIFIED, never certified.
+   */
+  pickupCoord?: { lat: number; lng: number } | null;
+  /**
    * Customer-facing blurb builder for an inserted moment. Injected by the
    * caller (production passes `customerStopBlurb`) so this module never
    * imports back into `curation.ts`.
@@ -329,6 +335,7 @@ export function composeHybridDay(
     requiredTypes: [...(input.requiredTypes ?? [])],
     excludedTypes: input.wineIntent ? [] : ["winery"],
     mustIncludeStopIds,
+    pickupCoord: input.pickupCoord ?? null,
   });
 
   // ONLY a COMPLETE composition may be projected as a finished hybrid day.
