@@ -123,7 +123,14 @@ export function resolveAuthoritativeRouteStops(args: {
     routePoints?: ReadonlyArray<RoutePointLike>;
   } | null;
   catalogStops?: ReadonlyArray<RoutePointLike> | null;
+  /**
+   * P0-A — when the anchor is known, the RAW catalogue fallback is projected
+   * down to the anchor's canonical pool cardinality before it can become an
+   * itinerary. Omit it and the fallback stays byte-identical to today.
+   */
+  anchorTourId?: string | null;
 }): StudioRouteStop[] {
+
   // Identity passes through UNTOUCHED — a moment that knew its structural or
   // media identity must never lose it by travelling through the chain.
   const normalize = (points: ReadonlyArray<RoutePointLike>): StudioRouteStop[] =>
