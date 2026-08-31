@@ -117,15 +117,26 @@ export function resolveTimeBudget(input: ResolveTimeBudgetInput = {}): ResolvedT
         : null;
 
   if (typeof skeletonMinutes === "number" && skeletonMinutes > 0) {
-    const durationClass = classifyMinutes(skeletonMinutes);
+    // OWNER RULE: a legacy 570/600-minute Signature duration is historical
+    // product metadata, never permission for a Studio day to exceed the 9h
+    // door-to-door ceiling. Public Signature pages are untouched; only the
+    // live Studio budget is clamped (opt out explicitly for catalogue reads).
+    const clamped =
+      input.allowLegacyExtendedDuration === true
+        ? skeletonMinutes
+        : Math.min(skeletonMinutes, STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN);
+    const durationClass = classifyMinutes(clamped);
     return {
       durationClass,
       // Exact canonical value — never rounded to the class target.
-      availableExperienceMinutes: skeletonMinutes,
-      ...envelopeContaining(durationClass, skeletonMinutes),
+      availableExperienceMinutes: clamped,
+      ...envelopeContaining(durationClass, clamped),
       source: "signature-skeleton-truth",
       ...(skeletonTourId ? { skeletonTourId } : {}),
-      notes: "Canonical Signature source-of-truth duration.",
+      notes:
+        clamped === skeletonMinutes
+          ? "Canonical Signature source-of-truth duration."
+          : "Canonical Signature duration clamped to the Studio 9h door-to-door ceiling.",
     };
   }
 
