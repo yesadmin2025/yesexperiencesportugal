@@ -17,6 +17,7 @@ import { sotDurationMinutes } from "@/data/signatureToursSourceOfTruth";
 import {
   DURATION_ENVELOPES,
   LEGACY_NEUTRAL_DEFAULT_MINUTES,
+  STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN,
   type ResolvedDurationClass,
   type ResolvedTimeBudget,
   type TravellerDurationClass,
