@@ -4632,21 +4632,33 @@ export function StoryboardHandoff({
   // all "not proven approved": they resolve to `review`, which keeps the
   // existing curator/review path instead of enabling Reserve. Only a real
   // `validateItinerary(...).status === "approved"` may approve the day.
+  //
+  // P0-C — routing legs include the pickup leg and collapse deduped
+  // coordinates, so they never matched `stops.length - 1`. They are realigned
+  // to the itinerary geometry first; alignment failure stays `null`, which the
+  // validator still reads as incomplete (fail closed).
   const approvalStatus: ValidationStatus = useMemo(() => {
     if (revealLegsLoading) return "review";
     if (!skeletonTour) return "review";
     const region = tourRegionToRegionKey(skeletonTour.region);
+    const itineraryStopKeys = editedStops.map((s, i) => `${i}-${s.label}`);
+    const alignedLegMinutes = alignRouteLegsToItinerary({
+      routeStopKeys: (revealRouteStops ?? []).map((s) => s.key),
+      legMinutes: revealLegMinutes ?? null,
+      itineraryStopKeys,
+    });
     const result = validateItinerary({
       region,
       stops: editedStops.map((s, i) => ({
-        key: `${i}-${s.label}`,
+        key: itineraryStopKeys[i]!,
         label: s.label,
         category: "village",
       })),
-      legMinutes: revealLegMinutes ?? null,
+      legMinutes: alignedLegMinutes,
     });
     return result.status === "incomplete" ? "review" : result.status;
-  }, [revealLegsLoading, skeletonTour, editedStops, revealLegMinutes]);
+  }, [revealLegsLoading, skeletonTour, editedStops, revealLegMinutes, revealRouteStops]);
+
 
   // ---------- Fase 4 reveal guard ----------------------------------------
   // The cinematic reveal must only run when the resolved Signature is
