@@ -1,88 +1,53 @@
-# Studio V3 — Living Atlas Recovery Plan
+# Studio V3 — first-time customer audit (preview, 393px + 1280px)
 
-No code was edited in this turn. Read-only inspection only. No deploy, no DB writes, no pricing changes.
+Read-only. Nothing was edited, deployed or changed. Evidence comes from driving the current project preview at `/studio-v3` as a real guest (2 adults, wine & table, couple, Arrábida/Setúbal, elevated, full day).
 
-## 1. Current-state diagnosis (grounded in files)
+## What actually happens
 
-- `src/components/studio-v3/curation.ts` (3,614 lines) is the live decision authority: `scoreTourFit` (l.1057), interest→tour maps (l.297), `RHYTHM_STOP_COUNT` (l.349) + `INVESTMENT_STOP_DELTA` (l.363) drive a **moment count**, not a time budget. Line 1546 `rhythmTarget = RHYTHM_STOP_COUNT[rhythm] + delta` is composition authority today.
-- Workshop→Sintra regression: `"hands-on"` is mapped in the interest table (l.297) but has no discriminating score contribution, so tours tie and array order decides. `curation.ts:141` and `livingAtlasBridge.ts:65/78` duplicate the interest→dimension mapping.
-- `livingAtlasTaxonomy.ts:19` `MAX_SELECTED_DIMENSIONS = 3` silently discards extra interests; `livingAtlasBridge.ts:201` `reasons.slice(0,3)` compounds it. Style (feeling) and content (interests) collapse into the same dimension vector.
-- Discovery gaps: `adaptiveQuestions.ts` is hard-scoped to Arrábida/Comporta/faith destination sets and documents "at most one extra question". Roman Talha, Tomar/Coimbra, Fátima have no public fork.
-- `livingAtlasComposer.ts` is real, deterministic, region-contained — but count-driven (`targetMomentCount`, l.50/187/303) and reports `routeOrderReady: false`.
-- `studioHybridComposition.ts` (latest) is additive-only and bounded by `maxPoints` derived from rhythm counts. Seam is good, policy is wrong.
-- Time truth exists but is unused as authority: `signatureTours.ts` `durationHours` ("7–9h", "8–9h"), stop `durationMin` (used only for tie-breaks at l.2981/3231), `livingAtlasSchedule.ts` (haversine × 1.24, 44 km/h, 7-min floor), `livingAtlasRoutePlanner.ts` limits, and real OSRM legs via `use-route-leg-minutes.ts` → `route-legs.functions.ts`.
-- Media infra exists and is unused by Studio: `builderImages.functions.ts` (`pickImagesForRoute`, `pickMoodCardImages`, `listExperienceImages`), `useBuilderImages.ts` (`useBuilderRouteImages`, `useBuilderMoodImages`), `admin.builder-images*`, `admin.image-swap`.
-- UI: `StudioV3.tsx` is 5,973 lines and owns phases, beats, refinement, checkout handoff. `LivingJourneyPanel.tsx` (1,058) is the pill+drawer pattern. Duplicate authorities remain across `livingDaySpine.ts`, `studioAcknowledgement.ts`, `studioInheritedIntent.ts`, `PartialReveal.tsx`, `MapAwakens.tsx`, `DesignedForYou.tsx`, `SmartRecommendation.tsx`, `QualityScore.tsx`, `AffinityBars.tsx`.
-- Dead/parallel product: `LivingAtlasStudioPage.tsx` + `LivingAtlas*Step.tsx` preview surfaces are not the production path.
+The funnel completes in 8 steps and lands on "Your Day" with a fully composed 11-moment Arrábida day, price shown (€366 / €183 per adult). Then it stops:
 
-## 2. Target architecture (text)
+- `RESERVE YOUR DAY` renders with the native `disabled` attribute and `data-reserve-blocked="true"`. It can never be clicked, in any run.
+- The only live path is `HAVE A CURATOR CONFIRM THIS DAY`.
+- Guest Details, Checkout Summary and Stripe are unreachable — no `create-signature-checkout` call is ever attempted, so no server-side or Stripe blocker could even be observed.
+- No console errors, no failed network requests. The block is purely a client gate.
 
-```text
-StudioState (content interests | style | social | occasion | destination | exclusions)
-        │
-        ▼
- SemanticMemory ──► UncertaintyModel ──► QuestionDirector (0..3 forks, info-gain)
-        │                                     │ allowed option IDs only
-        │                                     ▼
-        │                         AI phrasing (schema-validated, fallback)
-        ▼
- TruthEngine (geo · time · closures · commercial · availability · privacy)
-        │
-        ▼
- TimeBudgetComposer  ◄── livingAtlasComposer candidates + Signature skeleton
-        │  envelope 4h/6h/8-9h · dwell · transfer · buffer
-        ▼
- RoutePlanner (livingAtlasSchedule estimate → OSRM legs authoritative)
-        │
-        ├──► CommercialLedger (source, commercialId, pricingEffect, replacementOf)
-        ├──► StudioMediaResolver (experience_images)
-        └──► Living Canvas UI (mood → threads → direction → composition → shaped)
-                              │
-                              ▼
-              existing pricing/snapshot/checkout/Travel File (unchanged)
-```
+## P0 — Reserve is structurally impossible (route-leg shape mismatch, confirmed)
 
-## 3. KEEP / REWORK / RETIRE
+`canReserve` (StudioV3.tsx:5136) requires `approvalStatus === "approved"`, which comes from `validateItinerary({ stops: editedStops, legMinutes: revealLegMinutes })`.
 
-**KEEP unchanged:** `signatureTourPricing.ts`, `priceChangeFactors.ts`, `composerPricing.ts`, `create-signature-checkout` + `_shared/tour-operating-rules.ts`, `availability.ts`, `save/load-signature.functions.ts`, `signatureStorySnapshot.ts`, `studioWineryPresentation.ts`, `studioRouteAuthority.ts` (authority chain), `studio-analytics.ts`, `yourDayMapTruth.ts`, `use-route-leg-minutes.ts`, `route-legs.functions.ts`, `builderImages.*`, `useBuilderImages.ts`, RevealImage/motion + reduced-motion contracts, brand tokens.
+- `validateItinerary` (itinerary-validation.ts:158-177) requires `legMinutes.length === stops.length - 1`, i.e. **10** legs for 11 moments.
+- `revealLegMinutes` comes from `useRouteLegMinutes(revealRouteStops)`, and `resolveRevealRouteStops` prepends an **origin** point: `[origin, ...11 stops]` → **11** legs.
+- 11 ≠ 10 ⇒ `missing_leg_data` ⇒ status `incomplete` ⇒ mapped to `review` ⇒ Reserve disabled. Always. For every composed day.
+- A second failure mode compounds it: `routeStops` is `null` unless *every* moment has approved coordinates, and it also de-duplicates consecutive identical coords — both change the leg count again, so even an off-by-one patch must reconcile counts, not assume them.
 
-**REWORK:** `curation.ts` (scoring → separated signal model; counts → time budget; keep exports as shims), `livingAtlasComposer.ts` (`targetMomentCount` → time budget; enable ordering), `studioHybridComposition.ts` (keep the seam, replace additive-only/maxPoints with replace/reorder-capable time-aware policy), `livingAtlasTaxonomy.ts` (`MAX_SELECTED_DIMENSIONS` → leads + supporting, nothing dropped), `livingAtlasBridge.ts` (single mapping source, remove style→content assumptions), `adaptiveQuestions.ts` → QuestionDirector, `studioSemanticMemory.ts` (extend to all signal classes), `LivingJourneyPanel.tsx` → Living Canvas, `StudioV3.tsx` (decompose per chapter), `MapAwakens.tsx`/`ComposerMap.tsx` (progressive geography), `FinalRevealStory.tsx`/`UnifiedYourDayRoute.tsx`/`CheckoutSummary.tsx` (one payoff).
+This is not a data or content problem; the day is valid and priced. The gate compares two arrays that are defined against different geometries.
 
-**RETIRE (behind removal after parity):** `LivingAtlasStudioPage.tsx` and `LivingAtlas{Discovery,Shape,Result,Booking,Date}Step*.tsx` preview product, `QualityScore.tsx`, `AffinityBars.tsx`, `SmartRecommendation.tsx`, `DesignedForYou.tsx` match-style surfaces, `NextTeaser`/repeated acknowledgement paths, `studioInheritedIntent.ts` restatements, `compose-live-story` as anything but voice.
+**Fix direction (one bounded change):** feed validation the leg set that matches its contract — either drop the origin leg before validating (`legMinutes.slice(1)` when the origin point is present), or pass the origin as a stop so both sides count identically. Must be derived from the actual route-stop array, not hard-coded, and must stay fail-closed when `routeStops` is `null`.
 
-## 4. Data model / state
+## P0 — the dead end is silent
 
-New pure modules under `src/components/studio-v3/`:
-- `studioSignals.ts` — `{ contentInterests[], leads[1..2], style, social, occasion, destinationIntent, exclusions[] }`. No cap; leads ranked, rest supporting.
-- `timeBudget.ts` — envelopes (`half≈240`, `extended≈360`, `full≈480–540`), dwell/buffer per stop kind, pickup/dropoff excluded from customer-facing budget.
-- `truthEngine.ts` — validates geo/closure/commercial/availability for a candidate set.
-- `commercialLedger.ts` — per-moment `{ source, commercialId, pricingEffect, includedBySkeleton, replacementOf, availabilityRequirement }`.
-- `studioMediaResolver.ts` — stop image > region+activity > mood/interest > brand fallback.
-`types.ts` gains these as additive optional fields; existing persisted state hydrates unchanged.
+When Reserve is blocked the user gets a greyed-out primary CTA and no explanation. Nothing says why, nothing says what a curator path means for price or speed, and the page above still promises "Instant confirmation. Your date is held the moment you reserve." That contradiction is visible on screen at the same time as an unclickable Reserve. Even after the P0 fix, a blocked state needs an honest one-line reason next to the CTA.
 
-## 5. AI boundaries
+## P1 — composition density undermines the promise
 
-Server functions only, under `src/lib/studio-v3/`:
-- `questionPhrasing.functions.ts` — input: allowed option IDs + labels + ambiguity code. Output schema: `{ title, hint, options: [{ id, label, subtitle }] }`; IDs must match input exactly or the deterministic copy is used.
-- `revealVoice.functions.ts` — reuse `compose-live-story` for editorial voice only.
-No AI touches selection, price, geography, availability. Outage ⇒ deterministic path (scenario G).
+- 11 moments including **five** wineries ("A local winery" … "A fifth local winery") for a single day with 2 guests. It reads as a list, not a curated day, and the generic labels make five consecutive entries indistinguishable.
+- Both add-ons show `WON'T FIT THIS DAY (75M / 90M)` — the day is self-evidently over-full, which is consistent with the validator refusing to approve it for time reasons too.
+- Recommendation: cap same-kind repetition (wineries) in the composer and let the freed time make add-ons reachable — the add-on rail is currently pure dead weight on this configuration.
 
-## 6. Build sequence (each gated)
+## P1 — the compose overlay holds the screen too long
 
-- **BUILD 0 — Truth + Reachability.** New `src/lib/studio-v3/capabilityMatrix.ts` + `admin.studio-v3-capability.tsx` (read-only) + `__tests__/studio-capability-matrix.test.ts` reachability simulator over plausible state combinations for all 12 directions, top-1/top-3 frequency diagnostics, negative-selection tests, and a read-only media coverage audit. **Gate:** every direction reachable; workshop never yields Sintra; no order-dependent wins.
-- **BUILD 1 — Signals + Time + Composer.** `studioSignals.ts`, `timeBudget.ts`, `truthEngine.ts`; rework `curation.ts` scoring + `livingAtlasComposer.ts` + `studioHybridComposition.ts` to time-budgeted, replace/reorder-capable; keep `RHYTHM_STOP_COUNT` exported as compat only. **Gate:** scenarios E, F, J; pricing/checkout suites unchanged.
-- **BUILD 2 — Adaptive Question Director.** `questionDirector.ts` + AI phrasing fn; retire `adaptiveQuestions.ts` one-question rule; add Fátima/Tomar, Évora/Roman Talha, Arrábida/Vicentine, tile/cheese forks. **Gate:** B, C, D, G.
-- **BUILD 3 — Media + Living Canvas.** `studioMediaResolver.ts` over `useBuilderRouteImages`/`pickMoodCardImages`; `LivingCanvas.tsx` replacing pill+drawer; threads morph in place. **Gate:** H; 393×852 one dominant decision per viewport.
-- **BUILD 4 — Map + Shape + Manipulation.** Progressive geography, OSRM validation, swap/remove/undo through `commercialLedger.ts`. **Gate:** A, I; no repeat upsell of an already-composed paid moment.
-- **BUILD 5 — Your Day + Conversion.** Single payoff reveal reusing chosen imagery; edit/undo; Reserve. **Gate:** K, L; instant-checkout semantics intact.
+`studio-v3-compose-overlay` (fixed, `inset-0`, `z-40`) is still painted over Your Day several seconds after the content is behind it, and it intercepts pointer events at the CTA position (`elementFromPoint` returns the overlay, not the button). It does clear eventually. On mobile this reads as a frozen screen.
 
-## 7. Tests
+## P2 — Your Day density and hierarchy at 393px
 
-Vitest: capability matrix, signal separation, time budget vs envelopes, truth engine rejections, ledger idempotency, media resolver hierarchy, AI schema validation + fallback. Playwright at 393×852 and desktop: scenarios A–L, plus offline-AI and blocked-images runs. CI: extend `.github/workflows/studio-v3-p0-regression.yml` and `living-atlas-ci.yml`.
+- The same 11 stops are listed **twice** (hero timeline + "ADJUST THE MOMENTS" accordion) with the reasons only on the second pass. Long scroll, little new information.
+- "Because you chose wine." appears on stops 8 and 10 only — sparse reasoning reads arbitrary rather than intelligent.
+- Price, add-ons and CTAs all sit below that double list; the commercial moment is a long way from the reveal.
 
-## 8. Risks / compatibility
+## Verdict as a customer
 
-- `curation.ts` is load-bearing for checkout labels — every rework keeps `resolveStudioV3Route`'s output contract (`routePoints`, `composedRoutePoints`) and the `studioRouteAuthority` chain.
-- Persisted/saved Signatures must hydrate: new state fields optional, old counts tolerated.
-- Time-budget composition can change composed days; BUILD 1 ships behind a build-time flag with a parity diff report before flipping.
-- OSRM latency: estimate first, OSRM refines; never gate UI.
+Up to the reveal it feels genuinely cinematic and unlike a configurator — the pacing, the whispers and the Living Canvas earn trust. Then it collapses: the day it just built for me is one I am not allowed to book, with no reason given, and the only door left is "ask a human". P0 is a single-cause bug, not an architecture problem.
+
+## Next step
+
+Say the word and I will implement the P0 leg-count reconciliation plus the blocked-state reason line, with a regression that asserts an 11-moment composed day reaches `approved` and enables Reserve.
