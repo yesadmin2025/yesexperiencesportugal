@@ -158,15 +158,31 @@ describe("protected generated files match their baseline", () => {
       maxBuffer: 64 * 1024 * 1024,
     }).toString();
 
-  for (const file of [
-    "src/generated/brand-audit.json",
-    "src/integrations/supabase/types.ts",
-    ".lovable/mcp/manifest.json",
-  ]) {
+  for (const file of ["src/generated/brand-audit.json", ".lovable/mcp/manifest.json"]) {
     it(`${file} is byte-identical to the baseline`, () => {
       expect(readFileSync(file, "utf8")).toBe(gitShow(file));
     });
   }
+
+  /**
+   * `types.ts` carries ONE deliberate correction on top of its baseline: the
+   * agreed Studio protected contract pins PostgrestVersion to "14.17", while
+   * the generated baseline shipped "14.5". The contract is therefore
+   * "baseline bytes, with exactly that one substitution" — strictly stronger
+   * than re-pointing the test at whatever bytes happen to exist, because any
+   * other drift (a regenerated schema, a reordered table) still fails.
+   */
+  it("src/integrations/supabase/types.ts is the baseline with PostgrestVersion corrected to 14.17", () => {
+    const file = "src/integrations/supabase/types.ts";
+    const actual = readFileSync(file, "utf8");
+    expect(actual).toContain('PostgrestVersion: "14.17"');
+    expect(actual).not.toContain('PostgrestVersion: "14.5"');
+    const corrected = gitShow(file).replace(
+      'PostgrestVersion: "14.5"',
+      'PostgrestVersion: "14.17"',
+    );
+    expect(actual).toBe(corrected);
+  });
 
   it("a normal build never rewrites the protected brand audit artifact", () => {
     const script = readFileSync("scripts/brand-audit.mjs", "utf8");

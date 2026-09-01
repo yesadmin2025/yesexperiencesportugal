@@ -20,6 +20,7 @@ import {
 
 import type { TourPriceTiersMap } from "@/hooks/use-tour-price-tiers";
 import { resolveStudioV3Route } from "./curation";
+import { studioComposedSupplementPerPaxEur } from "./studioWineryPresentation";
 import {
   resolveAuthoritativeRouteStops,
   studioRouteShapingInput,
@@ -116,10 +117,20 @@ export function useResolvedJourney(
 
     // PASS 5 — strict runtime tier authority (same rows the server charges
     // from). No VIATOR_META tiers, no `priceFrom` anchor.
+    // Composed-day commercial truth: the bespoke day may hold more wineries
+    // than the Signature skeleton includes. The supplement comes from the one
+    // approved authority (`tailorRules(...).wineries`) that the server mirrors,
+    // so Your Day, the Checkout Summary and Stripe all show the same total.
+    const composedSupplementPerPax = studioComposedSupplementPerPaxEur(
+      state.tourId ?? null,
+      stops.map((s) => s.label),
+    );
+
     const strictJourney = resolveStudioStrictJourneyPricing(
       state.tourId ?? null,
       confirmedParty,
       tiers,
+      composedSupplementPerPax,
     );
     const journey = strictJourney;
     const basePerPaxEur = strictJourney ? strictJourney.perPaxAdultEur : null;

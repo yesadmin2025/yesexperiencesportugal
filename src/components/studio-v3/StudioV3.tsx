@@ -10,7 +10,13 @@ import {
   type SetStateAction,
 } from "react";
 import { trackEvent } from "@/lib/analytics-events";
-import { buildWineryDisplayLabels, studioDisplayLabel } from "./studioWineryPresentation";
+import {
+  buildWineryDisplayLabels,
+  publicMomentAltText,
+  publicSafeText,
+  studioDisplayLabel,
+  studioExtraWineryCount,
+} from "./studioWineryPresentation";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 
 import { useServerFn } from "@tanstack/react-start";
@@ -1530,6 +1536,14 @@ export function StudioV3() {
             environment: getStripeEnvironment(),
             flow: "studio",
             uiMode: "embedded",
+            // COMPOSED-DAY COMMERCIAL TRUTH: a bespoke Studio day may hold
+            // more wineries than the Signature skeleton includes. We NAME the
+            // count only — the server clamps it to the approved entitlement
+            // and re-derives the euro supplement from its own table. No
+            // client euro value is ever sent for this action.
+            tailorExtraWineries: studioExtraWineryCount(tour.id, stopLabels),
+            // Prefill Stripe with the email already captured in Guest Details.
+            customerEmail: details.email ?? undefined,
             guestDetails: { ...details, hotelPickupIncluded: true },
             addOns: addOnsForCheckout,
           },
@@ -5607,7 +5621,7 @@ export function StoryboardHandoff({
         >
           <img
             src={yourDayVisuals.backdrop.src}
-            alt={yourDayVisuals.backdrop.alt}
+            alt={publicSafeText(yourDayVisuals.backdrop.alt, "A Portuguese landscape")}
             data-media-id={yourDayVisuals.backdrop.id}
             loading="lazy"
             decoding="async"
@@ -5674,7 +5688,7 @@ export function StoryboardHandoff({
                 <li key={`${s.label}-media-${i}`} className="shrink-0">
                   <img
                     src={media.src}
-                    alt={media.alt}
+                    alt={publicMomentAltText(s.label, media.alt)}
                     data-media-id={media.id}
                     data-moment-label={studioDisplayLabel(s.label, revealDisplayLabels)}
                     loading="lazy"
