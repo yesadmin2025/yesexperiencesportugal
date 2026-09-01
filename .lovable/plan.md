@@ -1,53 +1,71 @@
-# Studio V3 — first-time customer audit (preview, 393px + 1280px)
+# Curator booking panel + Studio intelligence pass
 
-Read-only. Nothing was edited, deployed or changed. Evidence comes from driving the current project preview at `/studio-v3` as a real guest (2 adults, wine & table, couple, Arrábida/Setúbal, elevated, full day).
+Two workstreams. The booking panel is small and shippable first. The Studio pass is large, so it is broken into ordered stages, each verified before the next starts. Nothing is published until you say so.
 
-## What actually happens
+---
 
-The funnel completes in 8 steps and lands on "Your Day" with a fully composed 11-moment Arrábida day, price shown (€366 / €183 per adult). Then it stops:
+## Part 1 — Curator booking panel
 
-- `RESERVE YOUR DAY` renders with the native `disabled` attribute and `data-reserve-blocked="true"`. It can never be clicked, in any run.
-- The only live path is `HAVE A CURATOR CONFIRM THIS DAY`.
-- Guest Details, Checkout Summary and Stripe are unreachable — no `create-signature-checkout` call is ever attempted, so no server-side or Stripe blocker could even be observed.
-- No console errors, no failed network requests. The block is purely a client gate.
+The list at `/admin/bookings` already shows day, guests, amount and status, and the detail page already shows the frozen purchase snapshot (13 paid reservations in the database today). What is missing is control and context.
 
-## P0 — Reserve is structurally impossible (route-leg shape mismatch, confirmed)
+**List page**
+- Status filters: all / paid / pending / cancelled / refunded, plus a toggle to sort by upcoming travel day instead of newest booked.
+- CSV export of exactly what is filtered on screen, for accounting.
+- Cancel button per row, with a confirmation dialog.
 
-`canReserve` (StudioV3.tsx:5136) requires `approvalStatus === "approved"`, which comes from `validateItinerary({ stops: editedStops, legMinutes: revealLegMinutes })`.
+**Cancel dialog**
+- Always sets the reservation to cancelled.
+- Optional "also refund the payment in full" checkbox. When ticked, the refund is issued through the payment provider and the status becomes refunded. Refunds are irreversible, so the dialog states the exact amount and requires an explicit confirm.
+- A required short reason, stored on the booking, so there is always a record of why.
 
-- `validateItinerary` (itinerary-validation.ts:158-177) requires `legMinutes.length === stops.length - 1`, i.e. **10** legs for 11 moments.
-- `revealLegMinutes` comes from `useRouteLegMinutes(revealRouteStops)`, and `resolveRevealRouteStops` prepends an **origin** point: `[origin, ...11 stops]` → **11** legs.
-- 11 ≠ 10 ⇒ `missing_leg_data` ⇒ status `incomplete` ⇒ mapped to `review` ⇒ Reserve disabled. Always. For every composed day.
-- A second failure mode compounds it: `routeStops` is `null` unless *every* moment has approved coordinates, and it also de-duplicates consecutive identical coords — both change the leg count again, so even an off-by-one patch must reconcile counts, not assume them.
+**Detail page additions**
+- The guest's own itinerary (the composed day as bought) and any notes the client left at checkout, shown in full rather than buried.
+- A curator notes field you can write in and save at any time, with the last edit time. Free text, saved separately from anything the guest sees, never included in guest emails.
 
-This is not a data or content problem; the day is valid and priced. The gate compares two arrays that are defined against different geometries.
+**Database**
+- One migration adding curator notes, cancellation reason, cancelled-at and refund reference to the bookings table. Access stays admin-only.
 
-**Fix direction (one bounded change):** feed validation the leg set that matches its contract — either drop the origin leg before validating (`legMinutes.slice(1)` when the origin point is present), or pass the origin as a stop so both sides count identically. Must be derived from the actual route-stop array, not hard-coded, and must stay fail-closed when `routeStops` is `null`.
+---
 
-## P0 — the dead end is silent
+## Part 2 — Studio: intelligent days, true prices, no friction
 
-When Reserve is blocked the user gets a greyed-out primary CTA and no explanation. Nothing says why, nothing says what a curator path means for price or speed, and the page above still promises "Instant confirmation. Your date is held the moment you reserve." That contradiction is visible on screen at the same time as an unclickable Reserve. Even after the P0 fix, a blocked state needs an honest one-line reason next to the CTA.
+Ordered stages. Each ends with a mobile check at 393px and the Studio test suite green.
 
-## P1 — composition density undermines the promise
+**Stage 1 — Reality audit (no code changes)**
+Walk the live Studio on mobile as a real guest for several distinct profiles (wine, no-wine, family, hands-on, romance, culture) and record, per profile: which questions were asked, whether any repeated or felt generic, the composed day, per-stop prices, distances and timings versus reality, every field the guest is asked twice, and each image against the activity it claims to show. This produces a defect list with evidence instead of guesswork, and it decides the order of stages 2–6.
 
-- 11 moments including **five** wineries ("A local winery" … "A fifth local winery") for a single day with 2 guests. It reads as a list, not a curated day, and the generic labels make five consecutive entries indistinguishable.
-- Both add-ons show `WON'T FIT THIS DAY (75M / 90M)` — the day is self-evidently over-full, which is consistent with the validator refusing to approve it for time reasons too.
-- Recommendation: cap same-kind repetition (wineries) in the composer and let the freed time make add-ons reachable — the add-on rail is currently pure dead weight on this configuration.
+**Stage 2 — Checkout friction (highest conversion impact)**
+- Guest details captured once and carried forward; nothing already answered in Studio is asked again at checkout.
+- Party size, date and pickup flow straight through from the composed day.
+- Payment step verified end-to-end on mobile for at least three profiles, including the certified Arrábida day.
 
-## P1 — the compose overlay holds the screen too long
+**Stage 3 — Mobile flow**
+- Single primary action visible at every step, thumb-reachable, never covered by the map or sticky bars.
+- Steps fit the viewport without horizontal scroll or layout jumps between phases.
+- Back and edit always available without losing the composed day.
 
-`studio-v3-compose-overlay` (fixed, `inset-0`, `z-40`) is still painted over Your Day several seconds after the content is behind it, and it intercepts pointer events at the CTA position (`elementFromPoint` returns the overlay, not the button). It does clear eventually. On mobile this reads as a frozen screen.
+**Stage 4 — Price, distance and time truth**
+- Every stop in the composed day carries its real price contribution from existing approved pricing data; anything unpriceable fails closed to curator review as it does today.
+- The displayed total equals the amount actually charged, for every profile tested.
+- Distances and drive times come from the existing road-data authority; anything unproven is not shown as fact.
+- No invented tours, stops, prices, inclusions or timings at any point.
 
-## P2 — Your Day density and hierarchy at 393px
+**Stage 5 — Smarter questions, no repetition**
+- Questions adapt to what the guest already revealed; nothing already known is asked again, and no acknowledgement is repeated.
+- Each question changes the day in a visible way; questions that cannot change the outcome are not asked.
+- Copy stays in the Studio voice: guided, cinematic, never a quiz.
 
-- The same 11 stops are listed **twice** (hero timeline + "ADJUST THE MOMENTS" accordion) with the reasons only on the second pass. Long scroll, little new information.
-- "Because you chose wine." appears on stops 8 and 10 only — sparse reasoning reads arbitrary rather than intelligent.
-- Price, add-ons and CTAs all sit below that double list; the commercial moment is a long way from the reveal.
+**Stage 6 — Images loyal to activity, conversion polish**
+- Each moment shows a real image of that activity from existing verified assets; no stock, no reused image standing in for a different stop.
+- Reveal rhythm and final call to action tightened for conversion: value before price, one clear next step, no duplicate calls to action.
 
-## Verdict as a customer
+---
 
-Up to the reveal it feels genuinely cinematic and unlike a configurator — the pacing, the whispers and the Living Canvas earn trust. Then it collapses: the day it just built for me is one I am not allowed to book, with no reason given, and the only door left is "ask a human". P0 is a single-cause bug, not an architecture problem.
+## Technical notes
 
-## Next step
-
-Say the word and I will implement the P0 leg-count reconciliation plus the blocked-state reason line, with a regression that asserts an 11-moment composed day reaches `approved` and enables Reserve.
+- Booking panel: new admin-only server functions for cancel-with-optional-refund and save-curator-notes, both re-verifying the admin role server-side and validating input with zod. Refunds go through the existing payment integration; no new payment path.
+- Migration adds columns only, with admin-only access; existing rows and the frozen snapshot contract are untouched.
+- Studio work stays inside the existing authorities: composition, route truth, time gate, commercial ledger and fail-closed booking gate are reused, not replaced. No second pricing or timing engine.
+- Locked and untouched: approved Tailor rules and amounts, rhythm stop counts, exact-tier pricing, generic winery presentation, Travel File paid-only access, protected generated files.
+- Verification per stage: focused Studio tests, full typecheck, and a real mobile pass in a headless browser with screenshots.
+- Nothing is published until you approve the result.
