@@ -5676,7 +5676,7 @@ export function StoryboardHandoff({
                     src={media.src}
                     alt={media.alt}
                     data-media-id={media.id}
-                    data-moment-label={s.label}
+                    data-moment-label={studioDisplayLabel(s.label, revealDisplayLabels)}
                     loading="lazy"
                     decoding="async"
                     style={media.focal ? { objectPosition: media.focal } : undefined}

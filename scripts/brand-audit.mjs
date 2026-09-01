@@ -124,7 +124,29 @@ try {
 }
 
 const report = { generatedAt, ...body };
-writeFileSync(OUT_FILE, JSON.stringify(report, null, 2));
+const serialized = JSON.stringify(report, null, 2);
+
+// PROTECTED ARTIFACT CONTRACT.
+// `src/generated/brand-audit.json` is a committed, byte-protected artifact.
+// A normal `predev` / `prebuild` run must therefore NEVER write it: the audit
+// runs in CHECK mode and only reports. Regenerating the committed baseline is
+// an explicit, deliberate act: `bun run brand:audit -- --write`.
+const WRITE = process.argv.includes("--write");
+let drifted = false;
+try {
+  drifted = readFileSync(OUT_FILE, "utf8") !== serialized;
+} catch {
+  drifted = true; // no artifact yet
+}
+
+if (WRITE) {
+  writeFileSync(OUT_FILE, serialized);
+} else if (drifted) {
+  console.log(
+    `[brand-audit] report drift vs committed artifact (line numbers / files scanned). ` +
+      `Not written — run \`bun run brand:audit -- --write\` to refresh it deliberately.`,
+  );
+}
 
 const tag = counts.mismatch === 0 ? "PASS" : "MISMATCH";
 console.log(

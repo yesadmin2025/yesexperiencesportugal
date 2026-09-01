@@ -12,6 +12,7 @@
  */
 
 import { INTERESTS, type Feeling, type Interest } from "@/components/studio-v3/types";
+import { publicMomentAltText } from "@/components/studio-v3/studioWineryPresentation";
 import { deriveDirectorAnswerProjection } from "@/lib/studio-v3/directorAnswerProjection";
 import type { QuestionAnswerEvent } from "@/lib/studio-v3/questionHistory";
 import { deriveSemanticProfile } from "@/lib/studio-v3/semanticProfile";
@@ -236,7 +237,7 @@ export function deriveLivingCanvas(input: LivingCanvasInput): LivingCanvasModel 
               ? {
                   id: stopId ? `stop:${stopId}` : `stop-media:${point.image.trim()}`,
                   src: point.image.trim(),
-                  alt: point.imageAlt?.trim() || point.label,
+                  alt: point.imageAlt?.trim() || publicMomentAltText(point.label),
                   focal: point.focal ?? null,
                 }
               : null;

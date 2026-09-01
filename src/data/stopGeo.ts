@@ -37,6 +37,30 @@ export const STOP_LATLNG: Record<string, StopLatLng> = {
   sintra: { lat: 38.7972, lng: -9.3906, label: "Sintra", region: "lisbon" },
   cascais: { lat: 38.6979, lng: -9.4215, label: "Cascais", region: "lisbon" },
   "cabo da roca": { lat: 38.7805, lng: -9.4989, label: "Cabo da Roca", region: "lisbon" },
+  // --- CANONICAL GEO CLOSURE (Studio V3) -------------------------------
+  // Verified coordinates for active self-service moments that previously had
+  // no exact identity and were therefore resolved by unsafe fuzzy matching.
+  "parque natural da arrabida": { lat: 38.4833, lng: -8.9833, label: "Parque Natural da Arrábida", region: "lisbon" },
+  "serra da arrabida": { lat: 38.4833, lng: -8.9833, label: "Serra da Arrábida", region: "lisbon" },
+  "mercado do livramento": { lat: 38.5249, lng: -8.892, label: "Mercado do Livramento", region: "lisbon" },
+  "azulejos de azeitao": { lat: 38.5166, lng: -9.0104, label: "Azulejos de Azeitão", region: "lisbon" },
+  "tile painting workshop sesimbra": { lat: 38.4438, lng: -9.1013, label: "Tile painting workshop, Sesimbra", region: "lisbon" },
+  "castelo de sesimbra": { lat: 38.4478, lng: -9.1075, label: "Castelo de Sesimbra", region: "lisbon" },
+  "sesimbra castle": { lat: 38.4478, lng: -9.1075, label: "Castelo de Sesimbra", region: "lisbon" },
+  "troia ferry terminal": { lat: 38.4893, lng: -8.8925, label: "Tróia ferry terminal", region: "lisbon" },
+  // Ferry/boat connectors resolve to the BOARDING point, never to a nearby
+  // place that merely shares a word (the Sado crossing is not the market).
+  "setubal ferry terminal": { lat: 38.5202, lng: -8.8942, label: "Setúbal ferry terminal", region: "lisbon" },
+  "sado ferry crossing": { lat: 38.5202, lng: -8.8942, label: "Setúbal ferry terminal", region: "lisbon" },
+  "baia de setubal sado ferry crossing": { lat: 38.5202, lng: -8.8942, label: "Setúbal ferry terminal", region: "lisbon" },
+  // Sintra culture
+  "park and national palace of pena": { lat: 38.7876, lng: -9.3906, label: "Park and National Palace of Pena", region: "lisbon" },
+  "national palace of pena": { lat: 38.7876, lng: -9.3906, label: "Pena Palace", region: "lisbon" },
+  "pena palace": { lat: 38.7876, lng: -9.3904, label: "Pena Palace", region: "lisbon" },
+  "palacio da pena": { lat: 38.7876, lng: -9.3906, label: "Palácio da Pena", region: "lisbon" },
+  // Évora
+  "templo romano de evora": { lat: 38.5729, lng: -7.9075, label: "Templo Romano de Évora", region: "alentejo" },
+  "roman temple of evora": { lat: 38.5729, lng: -7.9075, label: "Templo Romano de Évora", region: "alentejo" },
   "house museum jose maria da fonseca": {
     lat: 38.5178738,
     lng: -9.0156895,
@@ -261,7 +285,6 @@ export const STOP_LATLNG: Record<string, StopLatLng> = {
     label: "Lagoa de Albufeira",
     region: "lisbon",
   },
-  "pena palace": { lat: 38.7876, lng: -9.3904, label: "Pena Palace", region: "lisbon" },
   "quinta da regaleira": {
     lat: 38.7963,
     lng: -9.3963,
