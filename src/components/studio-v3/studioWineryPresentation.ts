@@ -25,7 +25,6 @@ import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { REGION_STOPS, type StopKind } from "@/data/regionStops";
 import { TAILOR_BLUEPRINTS } from "@/data/tailorBlueprints";
 import { semanticStopKey } from "./curation";
-import { findTour } from "@/data/signatureTours";
 import { tailorRules } from "@/data/tailorRules";
 
 const normName = (s: string) =>
