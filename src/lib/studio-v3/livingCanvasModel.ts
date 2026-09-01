@@ -237,7 +237,7 @@ export function deriveLivingCanvas(input: LivingCanvasInput): LivingCanvasModel 
               ? {
                   id: stopId ? `stop:${stopId}` : `stop-media:${point.image.trim()}`,
                   src: point.image.trim(),
-                  alt: point.imageAlt?.trim() || publicMomentAltText(point.label),
+                  alt: publicMomentAltText(point.label, point.imageAlt),
                   focal: point.focal ?? null,
                 }
               : null;

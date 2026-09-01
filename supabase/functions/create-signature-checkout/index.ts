@@ -287,7 +287,8 @@ Deno.serve(async (req) => {
     // extra wineries) and subtract the flat lunch-removal credit.
     // Every euro amount is re-derived server-side from the per-Signature
     // entitlement tables — never taken from the client.
-    const isTailorFlow = (body.flow ?? (body.tailored ? "tailor" : "signature")) === "tailor";
+    const flowInput = body.flow ?? (body.tailored ? "tailor" : "signature");
+    const isTailorFlow = flowInput === "tailor";
     // −5% ladder count. When the client sends stable stop ids we re-derive
     // the count ourselves and drop the dedicated included-lunch stop: that
     // removal is priced by the flat −€15 pp credit and must never also earn
@@ -308,10 +309,22 @@ Deno.serve(async (req) => {
     const principalsRemoved = isTailorFlow ? Math.min(claimedPrincipals, derivedPrincipals) : 0;
 
 
-    const tailorSupplements = isTailorFlow
+    // COMPOSED-DAY COMMERCIAL TRUTH.
+    // A Studio day is bespoke: it may legitimately compose a 3rd or 4th
+    // winery beyond the Signature baseline. That is the SAME commercial
+    // action the Tailor flow already sells, priced by the SAME server table
+    // (`serverTailorSupplementsEur`) — no second pricing engine, and no
+    // client euro value is ever read. The client may only NAME how many
+    // extra wineries its composition contains; the server clamps that count
+    // to the per-Signature entitlement (`TAILOR_MAX_EXTRA_WINERIES`) and
+    // derives the amount itself. Lunch add/remove and the −5% principal
+    // ladder stay Tailor-only.
+    const isStudioFlow = flowInput === "studio";
+    const supplementsFlow = isTailorFlow || isStudioFlow;
+    const tailorSupplements = supplementsFlow
       ? serverTailorSupplementsEur(
           body.tourId,
-          body.tailorLunchAdded === true,
+          isTailorFlow && body.tailorLunchAdded === true,
           Number(body.tailorExtraWineries ?? 0),
         )
       : 0;
@@ -331,7 +344,7 @@ Deno.serve(async (req) => {
     }
     const lunchRemovalCredit = isTailorFlow ? serverLunchRemovalEur(body.tourId, lunchRemoved) : 0;
 
-    const eurPerPax = isTailorFlow
+    const eurPerPax = supplementsFlow
       ? tailorFinalPerPax(resolvedPerPax, principalsRemoved, tailorSupplements, lunchRemovalCredit)
       : resolvedPerPax;
 
@@ -364,7 +377,14 @@ Deno.serve(async (req) => {
     // stopLabels are intentionally NOT shown in the line-item description for
     // tailored bookings.
     const isTailored = flow === "tailor";
-    const productName = `${copy.label} — ${body.tourTitle}${isTailored ? " (tailored)" : ""}`.slice(
+    // Studio sells a BESPOKE day. The traveller must never see the hidden
+    // Signature skeleton title on the Stripe line item; the skeleton `tourId`
+    // stays in metadata and remains the server's pricing authority.
+    const journeyName =
+      flow === "studio" && typeof body.journeyTitle === "string" && body.journeyTitle.trim()
+        ? body.journeyTitle.trim()
+        : body.tourTitle;
+    const productName = `${copy.label} — ${journeyName}${isTailored ? " (tailored)" : ""}`.slice(
       0,
       180,
     );
@@ -525,7 +545,14 @@ Deno.serve(async (req) => {
       locale: "auto",
       submit_type: "book",
       billing_address_collection: "auto",
-      phone_number_collection: { enabled: true },
+      // Never ask again for a phone number Guest Details already validated.
+      // The number stays in the booking snapshot / Stripe metadata.
+      phone_number_collection: {
+        enabled: !(
+          typeof body.guestDetails?.["phone"] === "string" &&
+          (body.guestDetails["phone"] as string).trim().length >= 6
+        ),
+      },
       allow_promotion_codes: true,
       custom_text: {
         submit: { message: submitMessage.slice(0, 1200) },
@@ -539,7 +566,13 @@ Deno.serve(async (req) => {
         statement_descriptor_suffix: "YES EXPERIENCES",
         description: `${productName}${dateLine}${pickupLine}`.slice(0, 1000),
       },
-      ...(body.customerEmail && { customer_email: body.customerEmail }),
+      // Prefill Stripe with the email the traveller already gave us in Guest
+      // Details, so the checkout never asks for a fact we already hold.
+      ...((): Record<string, string> => {
+        const raw = body.customerEmail ?? (body.guestDetails?.["email"] as string | undefined);
+        const email = typeof raw === "string" ? raw.trim() : "";
+        return email ? { customer_email: email } : {};
+      })(),
       metadata: {
         booking_type: "signature",
         flow,

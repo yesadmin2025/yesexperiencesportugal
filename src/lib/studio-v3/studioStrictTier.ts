@@ -111,10 +111,24 @@ export function resolveStudioStrictJourneyPricing(
   tourId: string | null | undefined,
   party: ConfirmedStudioParty | null,
   tiers: StudioTiersMap,
+  /**
+   * Authorized composed-day supplement in EUR per person (currently the
+   * extra-winery action). Mirrors the server's `tailorFinalPerPax`: it is
+   * added to the ADULT per-pax before age bands are applied, so the client
+   * total and the Stripe total are derived by the same arithmetic. The value
+   * itself always comes from the shared approved constant — never invented,
+   * never taken from a payload.
+   */
+  supplementPerPaxEur = 0,
 ): StudioStrictJourneyPricing | null {
   if (!party) return null;
-  const adultEur = resolveStudioStrictPerPaxEur(tourId, party.guests, tiers);
-  if (adultEur == null) return null;
+  const base = resolveStudioStrictPerPaxEur(tourId, party.guests, tiers);
+  if (base == null) return null;
+  const supplement =
+    Number.isFinite(supplementPerPaxEur) && supplementPerPaxEur > 0
+      ? Math.round(supplementPerPaxEur)
+      : 0;
+  const adultEur = base + supplement;
 
   const lines: JourneyPriceLine[] = [];
   for (let i = 0; i < party.adults; i += 1) {

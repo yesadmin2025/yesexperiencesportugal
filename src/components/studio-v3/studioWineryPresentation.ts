@@ -25,6 +25,7 @@ import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { REGION_STOPS, type StopKind } from "@/data/regionStops";
 import { TAILOR_BLUEPRINTS } from "@/data/tailorBlueprints";
 import { semanticStopKey } from "./curation";
+import { tailorRules } from "@/data/tailorRules";
 
 const normName = (s: string) =>
   s
@@ -86,6 +87,43 @@ const WINERY_IDENTITY_KEYS: ReadonlySet<string> = (() => {
   for (const [alias] of VERIFIED_WINERY_ALIASES) add(alias);
   return keys;
 })();
+
+/**
+ * Raw supplier NAMES (not normalized keys) of every canonical winery identity.
+ * Used to scrub supplier identity out of arbitrary client-facing strings —
+ * `alt`, `title`, captions, aria labels and data attributes — which the
+ * generic visible label alone does not cover.
+ */
+const WINERY_IDENTITY_NAMES: readonly string[] = (() => {
+  const names = new Set<string>();
+  const add = (name: string) => {
+    const trimmed = (name ?? "").trim();
+    // Two chars or fewer cannot identify a supplier and would over-match.
+    if (trimmed.length >= 4) names.add(trimmed);
+  };
+  for (const s of REGION_STOP_POOL) if (s.type === "winery") add(s.name);
+  for (const s of REGION_STOPS) if (WINERY_KINDS.has(s.kind)) add(s.name);
+  for (const label of collectBlueprintWineryLabels()) add(label);
+  for (const [alias, sourceOfTruth] of VERIFIED_WINERY_ALIASES) {
+    add(alias);
+    add(sourceOfTruth);
+  }
+  return [...names].sort((a, b) => b.length - a.length);
+})();
+
+/**
+ * True when an arbitrary client-facing string names a canonical winery
+ * supplier. Normalized, accent- and case-insensitive containment.
+ */
+export function containsWinerySupplierName(text: string | null | undefined): boolean {
+  if (!text) return false;
+  const haystack = normName(text);
+  if (!haystack) return false;
+  return WINERY_IDENTITY_NAMES.some((name) => {
+    const needle = normName(name);
+    return needle.length >= 4 && haystack.includes(needle);
+  });
+}
 
 /**
  * Conservative label fallback, used ONLY when the canonical catalog has no
@@ -191,8 +229,66 @@ export function studioDisplayLabel(
  * label therefore leaks the supplier identity the visible label deliberately
  * keeps generic. Non-winery moments keep their real, truthful name.
  */
-export function publicMomentAltText(label: string): string {
+export const GENERIC_WINERY_ALT = "A local winery in the Portuguese countryside.";
+
+export function publicMomentAltText(label: string, suppliedAlt?: string | null): string {
+  const alt = (suppliedAlt ?? "").trim();
+  // A supplied `alt` is NOT trusted: catalog media frequently carries the real
+  // supplier name ("House & Museum Jose Maria Da Fonseca") while the visible
+  // label is deliberately generic. Scrub it before it reaches the DOM.
+  if (alt) {
+    if (containsWinerySupplierName(alt)) return GENERIC_WINERY_ALT;
+    return alt;
+  }
   if (!label) return "";
-  if (isWineryStopLabel(label)) return "A local winery in the Portuguese countryside.";
+  if (isWineryStopLabel(label) || containsWinerySupplierName(label)) return GENERIC_WINERY_ALT;
   return label;
+}
+
+/**
+ * Scrub supplier identity out of ANY client-facing string surface
+ * (title, caption, aria-label, data attribute, metadata).
+ */
+export function publicSafeText(text: string | null | undefined, fallback = "A local winery"): string {
+  const value = (text ?? "").trim();
+  if (!value) return "";
+  return containsWinerySupplierName(value) ? fallback : value;
+}
+
+/**
+ * How many wineries the composed day holds BEYOND the Signature's approved
+ * included baseline (`tailorRules(tourId).wineries.included`).
+ *
+ * This is a COUNT, never a price. It is the only thing the client is allowed
+ * to state about the extra-winery commercial action: the server clamps it to
+ * the approved entitlement and derives the euro supplement from its own table
+ * (`serverTailorSupplementsEur`). The baseline is the commercial entitlement,
+ * not the catalogue — the catalogue lists selectable options, several of
+ * which are alternatives to one another.
+ */
+export function studioExtraWineryCount(
+  anchorTourId: string | null | undefined,
+  composedLabels: readonly string[],
+): number {
+  if (!anchorTourId) return 0;
+  const rules = tailorRules(anchorTourId).wineries;
+  if (!rules) return 0;
+
+  const composed = new Set<string>();
+  for (const label of composedLabels) {
+    if (!isWineryStopLabel(label)) continue;
+    composed.add(semanticStopKey(label) || normName(label));
+  }
+  const maxExtra = Math.max(0, rules.max - rules.included);
+  return Math.min(maxExtra, Math.max(0, composed.size - rules.included));
+}
+
+export function studioComposedSupplementPerPaxEur(
+  anchorTourId: string | null | undefined,
+  composedLabels: readonly string[],
+): number {
+  if (!anchorTourId) return 0;
+  const rules = tailorRules(anchorTourId).wineries;
+  if (!rules) return 0;
+  return studioExtraWineryCount(anchorTourId, composedLabels) * rules.supplementEur;
 }
