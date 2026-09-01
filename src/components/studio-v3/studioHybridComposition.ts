@@ -22,6 +22,7 @@
  *  - Pure and deterministic: no pricing, no add-ons, no persistence, no I/O.
  */
 
+import { isSelfServiceComposable } from "@/lib/studio-v3/selfServiceResolution";
 import { REGION_STOP_POOL, type OptionalStop, type OptionalStopType } from "@/data/regionStopPool";
 import { isStopClosedOn } from "@/data/stopOperational";
 import { lookupStop } from "@/data/stopGeo";
@@ -355,7 +356,9 @@ export function composeHybridDay(
   if (composition.moments.length === 0) {
     return { ...passthrough("composition-empty"), composition };
   }
-  if (composition.status !== "complete") {
+  // SELF-SERVICE TRUTH (shared rule). A `partial` day whose only gap is a
+  // discretionary taste dimension is still a truthful, priceable day.
+  if (!isSelfServiceComposable(composition)) {
     const reason: HybridPassthroughReason =
       composition.status === "tradeoff"
         ? "composition-tradeoff"
