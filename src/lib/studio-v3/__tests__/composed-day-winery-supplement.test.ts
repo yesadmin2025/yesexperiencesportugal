@@ -26,7 +26,7 @@ const TOUR = "arrabida-wine-allinclusive";
 
 /** Real winery labels drawn from the Arrábida wine catalogue. */
 const W1 = "Quinta de Catralvos";
-const W2 = "Casa Ermelinda Freitas";
+const W2 = "House & Museum José Maria Da Fonseca";
 const W3 = "Adega de Palmela";
 const W4 = "Quinta do Piloto";
 const NON_WINERY = "Cabo Espichel";

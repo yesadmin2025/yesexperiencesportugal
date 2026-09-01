@@ -257,46 +257,33 @@ export function publicSafeText(text: string | null | undefined, fallback = "A lo
 }
 
 /**
- * How many wineries the composed day holds BEYOND the Signature skeleton's
- * own included baseline.
+ * How many wineries the composed day holds BEYOND the Signature's approved
+ * included baseline (`tailorRules(tourId).wineries.included`).
  *
  * This is a COUNT, never a price. It is the only thing the client is allowed
  * to state about the extra-winery commercial action: the server clamps it to
- * the approved per-Signature entitlement and derives the euro supplement from
- * its own table (`serverTailorSupplementsEur`). Baseline is read from the
- * anchor tour's own catalog stops, so it can never drift from the product.
+ * the approved entitlement and derives the euro supplement from its own table
+ * (`serverTailorSupplementsEur`). The baseline is the commercial entitlement,
+ * not the catalogue — the catalogue lists selectable options, several of
+ * which are alternatives to one another.
  */
 export function studioExtraWineryCount(
   anchorTourId: string | null | undefined,
   composedLabels: readonly string[],
 ): number {
+  if (!anchorTourId) return 0;
+  const rules = tailorRules(anchorTourId).wineries;
+  if (!rules) return 0;
+
   const composed = new Set<string>();
   for (const label of composedLabels) {
     if (!isWineryStopLabel(label)) continue;
     composed.add(semanticStopKey(label) || normName(label));
   }
-  if (composed.size === 0) return 0;
-
-  const tour = anchorTourId ? findTour(anchorTourId) : null;
-  const baseline = new Set<string>();
-  for (const stop of tour?.stops ?? []) {
-    const label = typeof stop === "string" ? stop : (stop as { label?: string }).label;
-    if (!label || !isWineryStopLabel(label)) continue;
-    baseline.add(semanticStopKey(label) || normName(label));
-  }
-  return Math.max(0, composed.size - baseline.size);
+  const maxExtra = Math.max(0, rules.max - rules.included);
+  return Math.min(maxExtra, Math.max(0, composed.size - rules.included));
 }
 
-/**
- * Authorized composed-day supplement, in EUR per person, for the extra
- * wineries the bespoke day holds beyond the Signature baseline.
- *
- * SINGLE AUTHORITY: the amount and the entitlement ceiling both come from
- * `tailorRules(tourId).wineries` — the same approved table the server mirrors
- * in `serverTailorSupplementsEur`. Nothing here invents or re-derives a
- * price; this exists only so Your Day, the Checkout Summary and Stripe show
- * the identical number.
- */
 export function studioComposedSupplementPerPaxEur(
   anchorTourId: string | null | undefined,
   composedLabels: readonly string[],
@@ -304,7 +291,5 @@ export function studioComposedSupplementPerPaxEur(
   if (!anchorTourId) return 0;
   const rules = tailorRules(anchorTourId).wineries;
   if (!rules) return 0;
-  const maxExtra = Math.max(0, rules.max - rules.included);
-  const extra = Math.min(maxExtra, studioExtraWineryCount(anchorTourId, composedLabels));
-  return extra * rules.supplementEur;
+  return studioExtraWineryCount(anchorTourId, composedLabels) * rules.supplementEur;
 }
