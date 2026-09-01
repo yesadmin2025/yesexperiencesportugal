@@ -19,7 +19,8 @@ import {
   studioExtraWineryCount,
 } from "@/components/studio-v3/studioWineryPresentation";
 import { resolveStudioStrictJourneyPricing } from "@/lib/studio-v3/studioStrictTier";
-import { TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR, tailorRules } from "@/data/tailorRules";
+import { tailorRules } from "@/data/tailorRules";
+import { TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR } from "@/config/pricing";
 
 const TOUR = "arrabida-wine-allinclusive";
 
