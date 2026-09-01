@@ -1322,7 +1322,7 @@ export function StudioV3() {
       }
 
       // FINAL CLOSURE — the operational approval truth must ALSO hold at the
-      // payment seam, independently of the CTA. A day that was never scored on
+      // payment seam, independently of the CTA. A day that was never judged on
       // proven road data (`proven === false`), a HARD operational rejection, or
       // a route that is not the exact day the gate certified (stale, hydrated
       // or deep-linked state) can never open Stripe. Existing curator path.

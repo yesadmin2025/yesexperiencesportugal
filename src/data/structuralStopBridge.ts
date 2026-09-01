@@ -77,6 +77,9 @@ export const STRUCTURAL_STOP_BRIDGE: Readonly<
   },
   "troia-comporta": {
     "roman-ruins-troia": "troia-ruins",
+    // The blueprint core stop is published as "Comporta or Carvalhal beach",
+    // so BOTH beaches are the same declared moment of this Signature.
+    "praia-do-carvalhal": "comporta-beach",
     "herdade-da-comporta": "herdade-comporta",
     "comporta-beach": "comporta-beach",
     "cais-palafitico-carrasqueira": "carrasqueira",

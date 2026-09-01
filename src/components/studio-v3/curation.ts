@@ -19,6 +19,7 @@ import { deriveStudioIntelligence } from "@/lib/studio-v3/livingAtlasBridge";
 //      remaining slots from the anchor tour's own stops, deduped by label,
 //      preferring stops with resolvable map coordinates.
 
+import { isSelfServiceComposable } from "@/lib/studio-v3/selfServiceResolution";
 import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import {
   assertStopIntentSchema,
@@ -92,6 +93,7 @@ import {
 } from "@/lib/studio-v3/commercialLedger";
 
 import { getTailorBlueprint } from "@/data/tailorBlueprints";
+import { STRUCTURAL_STOP_BRIDGE } from "@/data/structuralStopBridge";
 import { SIGNATURE_CORRIDORS } from "@/data/signatureCorridors";
 import type { DoorToDoorCertification } from "@/lib/studio-v3/doorToDoorAuthority";
 import { projectAuthoredAnchorStops } from "./authoredAnchorProjection";
@@ -1113,6 +1115,25 @@ function isPickupReachable(
  *   −4   wine-coherence penalty (wine asked, tour has zero wine)
  *   −6   family-coded-for-couple / romantic-only-for-corporate
  */
+/**
+ * True when a Signature's own blueprint REQUIRES winery picks — i.e. it has a
+ * choice group with `pickMin >= 1` whose every option is a winery in the
+ * existing inventory (resolved through the declared structural bridge).
+ * Purely structural: no copy parsing, no invented product facts.
+ */
+function signatureRequiresWineryPicks(tourId: string): boolean {
+  const blueprint = getTailorBlueprint(tourId);
+  const choice = blueprint?.choice;
+  if (!choice || choice.pickMin < 1 || choice.options.length === 0) return false;
+  const bridge = STRUCTURAL_STOP_BRIDGE[tourId] ?? {};
+  const typeByBlueprintId = new Map<string, string>();
+  for (const stop of REGION_STOP_POOL) {
+    const blueprintId = bridge[stop.id];
+    if (blueprintId) typeByBlueprintId.set(blueprintId, stop.type);
+  }
+  return choice.options.every((option) => typeByBlueprintId.get(option.id) === "winery");
+}
+
 export function scoreTourFit(
   tour: SignatureTour,
   intent: {
@@ -1216,6 +1237,16 @@ export function scoreTourFit(
   if (wineIsAnyInterest && !nonWineDestinationIntent && !tourHasWineContent) {
     wineScore -= 4;
     penalties.push("wine-asked-but-tour-has-no-wine");
+  }
+  // STRUCTURAL WINE OBLIGATION. Some Signatures are commercially DEFINED by
+  // their winery pool ("choose 2 to 4 wineries"): the visits are part of the
+  // product, not an option. Anchoring a traveller with no wine intent to such
+  // a product either forces wine on them or leaves the day unpriceable, so the
+  // scaffold is strongly deprioritised in favour of the region's non-wine
+  // Signatures. Read from the existing blueprint — never inferred from copy.
+  if (!wantsWine && signatureRequiresWineryPicks(tour.id)) {
+    wineScore -= 5;
+    penalties.push("wine-required-by-product-but-not-wanted");
   }
 
 
@@ -1885,15 +1916,30 @@ export type LivingAtlasCompositionResolution = "complete" | "unresolved";
 export type LivingAtlasCompositionResolutionInput = {
   status: LivingAtlasComposition["status"];
   moments: readonly unknown[];
+  /** Structural obligations of the anchor that were NOT met. Always fatal. */
+  missingRequiredTypes?: readonly unknown[];
+  /** A timing tradeoff is never silently self-served. */
+  conflict?: unknown;
+  /** Composer's own operational verdict. Curator review is always fatal. */
+  requiresCuratorReview?: boolean;
 } | null;
 
-/** Pure structural gate used by the production certification chain. */
+/**
+ * Pure structural gate used by the production certification chain.
+ *
+ * SELF-SERVICE TRUTH. A `complete` day always resolves. A `partial` day
+ * resolves ONLY when nothing structural or operational is missing — every
+ * anchor obligation met, no timing conflict, no curator verdict, and a real
+ * multi-moment day. In that case the only thing "partial" means is that a
+ * DISCRETIONARY taste dimension found no verified moment inside the anchor's
+ * own commercially containable inventory; the day is still truthful and
+ * bookable, it simply does not claim to express that taste. Anything else —
+ * tradeoff, impossible, empty, invalid — stays unresolved and fails closed.
+ */
 export function resolveLivingAtlasCompositionResolution(
   composition: LivingAtlasCompositionResolutionInput,
 ): LivingAtlasCompositionResolution {
-  return composition?.status === "complete" && composition.moments.length > 0
-    ? "complete"
-    : "unresolved";
+  return isSelfServiceComposable(composition) ? "complete" : "unresolved";
 }
 
 
