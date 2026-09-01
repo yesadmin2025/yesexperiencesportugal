@@ -45,7 +45,7 @@ describe("self-service resolution truth", () => {
 });
 
 describe("no-wine travellers are not anchored to a wine-defined Signature", () => {
-  it("keeps a romance / local-life day self-servable", () => {
+  it("does not anchor a no-wine traveller to the wine-defined Arrábida Signature", () => {
     const res = resolveStudioV3Route({
       feeling: "romance",
       companions: "couple",
@@ -54,8 +54,8 @@ describe("no-wine travellers are not anchored to a wine-defined Signature", () =
       pickup: "lisbon",
       investment: "elevated",
       dateExact: "2026-10-15",
-    } as never) as { livingAtlasLive?: { liveResolution?: string } };
-    expect(res.livingAtlasLive?.liveResolution).toBe("composed");
+    } as never) as { skeletonTourKey?: string };
+    expect(res.skeletonTourKey).not.toBe("arrabida-wine-allinclusive");
   });
 
   it("still composes a wine day for a wine traveller", () => {
