@@ -182,3 +182,17 @@ export function studioDisplayLabel(
 ): string {
   return displayLabels?.get(label) ?? label;
 }
+
+/**
+ * Client-safe alternative text for a moment's photograph.
+ *
+ * Image metadata is client-facing surface: `alt`, `title` and the accessible
+ * name are read by assistive tech and are visible in the DOM. A raw canonical
+ * label therefore leaks the supplier identity the visible label deliberately
+ * keeps generic. Non-winery moments keep their real, truthful name.
+ */
+export function publicMomentAltText(label: string): string {
+  if (!label) return "";
+  if (isWineryStopLabel(label)) return "A local winery in the Portuguese countryside.";
+  return label;
+}
