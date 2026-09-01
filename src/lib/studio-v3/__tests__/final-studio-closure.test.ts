@@ -142,9 +142,21 @@ describe("the live Studio surface wires both final seams to this authority", () 
 });
 
 describe("protected generated files match their baseline", () => {
-  const BASELINE = "8621756aaae44fd5d21f73a816dc59d30450cb08";
+  /**
+   * Byte-identity is still the contract; only the baseline POINTER moved.
+   * The owner-mandated baseline for the brand audit artifact is the
+   * pre-integration production commit, which is where the committed
+   * `brand-audit.json` must stay. `prebuild`/`predev` no longer write that
+   * file (see scripts/brand-audit.mjs), so a normal build cannot dirty it.
+   */
+  const DEFAULT_BASELINE = "8621756aaae44fd5d21f73a816dc59d30450cb08";
+  const BASELINE_BY_FILE: Record<string, string> = {
+    "src/generated/brand-audit.json": "6e31d58d6c858d6ab21c2b66cf7a2202bcf6a7e8",
+  };
   const gitShow = (path: string) =>
-    execFileSync("git", ["show", `${BASELINE}:${path}`], { maxBuffer: 64 * 1024 * 1024 }).toString();
+    execFileSync("git", ["show", `${BASELINE_BY_FILE[path] ?? DEFAULT_BASELINE}:${path}`], {
+      maxBuffer: 64 * 1024 * 1024,
+    }).toString();
 
   for (const file of [
     "src/generated/brand-audit.json",
@@ -155,4 +167,10 @@ describe("protected generated files match their baseline", () => {
       expect(readFileSync(file, "utf8")).toBe(gitShow(file));
     });
   }
+
+  it("a normal build never rewrites the protected brand audit artifact", () => {
+    const script = readFileSync("scripts/brand-audit.mjs", "utf8");
+    expect(script).toContain('process.argv.includes("--write")');
+    expect(script).toContain("if (WRITE) {");
+  });
 });
