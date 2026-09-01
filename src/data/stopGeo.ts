@@ -56,6 +56,7 @@ export const STOP_LATLNG: Record<string, StopLatLng> = {
   // Sintra culture
   "park and national palace of pena": { lat: 38.7876, lng: -9.3906, label: "Park and National Palace of Pena", region: "lisbon" },
   "national palace of pena": { lat: 38.7876, lng: -9.3906, label: "Pena Palace", region: "lisbon" },
+  "pena palace": { lat: 38.7876, lng: -9.3904, label: "Pena Palace", region: "lisbon" },
   "palacio da pena": { lat: 38.7876, lng: -9.3906, label: "Palácio da Pena", region: "lisbon" },
   // Évora
   "templo romano de evora": { lat: 38.5729, lng: -7.9075, label: "Templo Romano de Évora", region: "alentejo" },
