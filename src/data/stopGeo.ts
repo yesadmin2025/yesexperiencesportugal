@@ -47,28 +47,19 @@ export const STOP_LATLNG: Record<string, StopLatLng> = {
   "tile painting workshop sesimbra": { lat: 38.4438, lng: -9.1013, label: "Tile painting workshop, Sesimbra", region: "lisbon" },
   "castelo de sesimbra": { lat: 38.4478, lng: -9.1075, label: "Castelo de Sesimbra", region: "lisbon" },
   "sesimbra castle": { lat: 38.4478, lng: -9.1075, label: "Castelo de Sesimbra", region: "lisbon" },
-  "marina de troia": { lat: 38.4899, lng: -8.8931, label: "Marina de Tróia", region: "lisbon" },
-  troia: { lat: 38.4899, lng: -8.8931, label: "Tróia", region: "lisbon" },
   "troia ferry terminal": { lat: 38.4893, lng: -8.8925, label: "Tróia ferry terminal", region: "lisbon" },
   // Ferry/boat connectors resolve to the BOARDING point, never to a nearby
   // place that merely shares a word (the Sado crossing is not the market).
   "setubal ferry terminal": { lat: 38.5202, lng: -8.8942, label: "Setúbal ferry terminal", region: "lisbon" },
   "sado ferry crossing": { lat: 38.5202, lng: -8.8942, label: "Setúbal ferry terminal", region: "lisbon" },
   "baia de setubal sado ferry crossing": { lat: 38.5202, lng: -8.8942, label: "Setúbal ferry terminal", region: "lisbon" },
-  "comporta": { lat: 38.3809, lng: -8.7856, label: "Comporta", region: "lisbon" },
-  "praia do carvalhal": { lat: 38.3106, lng: -8.7847, label: "Praia do Carvalhal", region: "lisbon" },
   // Sintra culture
   "park and national palace of pena": { lat: 38.7876, lng: -9.3906, label: "Park and National Palace of Pena", region: "lisbon" },
   "national palace of pena": { lat: 38.7876, lng: -9.3906, label: "Pena Palace", region: "lisbon" },
-  "pena palace": { lat: 38.7876, lng: -9.3906, label: "Pena Palace", region: "lisbon" },
   "palacio da pena": { lat: 38.7876, lng: -9.3906, label: "Palácio da Pena", region: "lisbon" },
-  "quinta da regaleira": { lat: 38.7965, lng: -9.3963, label: "Quinta da Regaleira", region: "lisbon" },
   // Évora
   "templo romano de evora": { lat: 38.5729, lng: -7.9075, label: "Templo Romano de Évora", region: "alentejo" },
   "roman temple of evora": { lat: 38.5729, lng: -7.9075, label: "Templo Romano de Évora", region: "alentejo" },
-  "capela dos ossos": { lat: 38.5687, lng: -7.9089, label: "Capela dos Ossos", region: "alentejo" },
-  "chapel of bones": { lat: 38.5687, lng: -7.9089, label: "Capela dos Ossos", region: "alentejo" },
-  "evora": { lat: 38.5713, lng: -7.9135, label: "Évora", region: "alentejo" },
   "house museum jose maria da fonseca": {
     lat: 38.5178738,
     lng: -9.0156895,
@@ -293,7 +284,6 @@ export const STOP_LATLNG: Record<string, StopLatLng> = {
     label: "Lagoa de Albufeira",
     region: "lisbon",
   },
-  "pena palace": { lat: 38.7876, lng: -9.3904, label: "Pena Palace", region: "lisbon" },
   "quinta da regaleira": {
     lat: 38.7963,
     lng: -9.3963,
