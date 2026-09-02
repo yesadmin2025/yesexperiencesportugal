@@ -69,6 +69,12 @@ export const CHECKOUT_HEADER = "Ready to reserve" as const;
 export const CTA_RESERVE_AND_PAY = "Reserve and pay" as const;
 /** Final booking seam CTA — the day the traveller shaped, not a generic cart. */
 export const CTA_RESERVE_YOUR_DAY = "Reserve your day" as const;
+/**
+ * Your Day → Logistics CTA. The reveal commits the day; the practical facts
+ * (when, pickup, party) are collected next. It is deliberately NOT a booking
+ * verb: nothing is reserved until the final seam.
+ */
+export const CTA_MAKE_IT_REAL = "Make it real" as const;
 export const INSTANT_CONFIRMATION =
   "Instant confirmation. Your date is held the moment you reserve." as const;
 

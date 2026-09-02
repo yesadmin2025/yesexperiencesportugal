@@ -385,7 +385,7 @@ import type { SemanticSourceEvent } from "@/lib/studio-v3/semanticSourceEvents";
 import { CheckoutSummary as CheckoutSummaryStep } from "./CheckoutSummary";
 import { GuestDetailsStep } from "./GuestDetailsStep";
 import { buildSignatureStorySnapshot } from "./signatureStorySnapshot";
-import { INSTANT_CONFIRMATION, CTA_RESERVE_YOUR_DAY } from "@/content/signature-day-copy";
+import { INSTANT_CONFIRMATION, CTA_MAKE_IT_REAL } from "@/content/signature-day-copy";
 import { sendSignatureStoryEmail } from "@/lib/emails/sendSignatureStoryEmail.functions";
 import {
   BrandedCheckoutDrawer,
@@ -5221,23 +5221,35 @@ export function StoryboardHandoff({
 
 
 
-  // FINAL CLOSURE — Reserve is only a booking action when the authoritative
-  // composition is actually bookable. A HARD operational rejection, or a day
-  // that could not be scored at all (no proven road data), still goes to the
-  // existing curator enquiry path instead of Stripe. A scored SOFT advisory
-  // (`review`) does not block: the canonical Time Authority owns fit truth.
+  // P0-A — TWO DIFFERENT QUESTIONS, TWO DIFFERENT GATES.
+  //
+  // "Make it real" only asks: is this visible day structurally honest enough
+  // to commit and then collect the practical facts? Door-to-door certification
+  // CANNOT be part of that question, because it depends on pickup, date and
+  // party — facts the traveller is only offered AFTER this CTA. Gating the
+  // reward on them created a circular dead end that read as "needs a human".
+  //
+  // Only a TRUE hard reject — an operationally impossible day, or one the
+  // canonical Time Authority scored and found over the one-day budget — blocks
+  // progression.
+  const dayHardRejected =
+    approvalStatus === "reject" || finalDayGate.fit.verdict === "over-day-budget";
+
+  const canProceedToLogistics =
+    editedStops.length >= REFINE_MIN_STOPS && revealValidation.ok && !dayHardRejected;
+
+  // FINAL CLOSURE — booking truth, unchanged and unweakened. Evaluated with
+  // the full picture (after logistics) and independently re-checked at the
+  // Stripe seam; a day that could not be scored at all still fails closed to
+  // the existing curator path.
   const canReserve =
-    editedStops.length >= REFINE_MIN_STOPS &&
-    revealValidation.ok &&
-    operationalGate.proven &&
-    approvalStatus !== "reject" &&
-    finalDayGate.bookable;
+    canProceedToLogistics && operationalGate.proven && finalDayGate.bookable;
 
 
-  // P0-D — when Reserve is blocked, say why, truthfully and in one line.
-  // Derived from the SAME facts that block it; never invented, never
-  // reassuring. Null whenever the day is bookable.
-  const reserveBlockedReason: string | null = canReserve
+  // When progression is blocked, say why, truthfully and in one line. Derived
+  // from the SAME facts that block it; a missing practical fact is never
+  // reported as "needs a human check" — it is simply asked for next.
+  const reserveBlockedReason: string | null = canProceedToLogistics
     ? null
     : editedStops.length < REFINE_MIN_STOPS
       ? `A day needs at least ${REFINE_MIN_STOPS} moments — add one to continue.`
@@ -5245,11 +5257,7 @@ export function StoryboardHandoff({
         ? "We're still grounding this day in real tour details."
         : revealLegsLoading
           ? "Checking real driving times for this day…"
-          : approvalStatus === "reject"
-            ? "This day doesn't fit comfortably in one day yet — remove or swap a moment."
-            : finalDayGate.fit.verdict === "over-day-budget"
-              ? "This day doesn't fit comfortably in one day yet — remove or swap a moment."
-              : "This day needs a quick human check before we can confirm it instantly.";
+          : "This day doesn't fit comfortably in one day yet — remove or swap a moment.";
 
 
 
@@ -6072,6 +6080,7 @@ export function StoryboardHandoff({
           onRefine={onRefine}
           journeyTitle={state.journeyTitle}
           guests={state.guests}
+          partyConfirmed={state.guests != null}
           adults={state.adults ?? null}
           minorAges={state.minorAges ?? []}
           included={(() => {
@@ -6161,20 +6170,17 @@ export function StoryboardHandoff({
             variant="primary"
             size="md"
             className="w-full max-w-[380px]"
-            aria-label={CTA_RESERVE_YOUR_DAY}
+            aria-label={CTA_MAKE_IT_REAL}
             data-testid="studio-v3-handoff-primary"
-            data-reserve-blocked={canReserve ? "false" : "true"}
-            disabled={!canReserve}
-
-
-
-
+            data-reserve-blocked={canProceedToLogistics ? "false" : "true"}
+            data-day-certified={canReserve ? "true" : "false"}
+            disabled={!canProceedToLogistics}
           >
-            {CTA_RESERVE_YOUR_DAY}
+            {CTA_MAKE_IT_REAL}
           </CtaButton>
         )}
 
-        {!canReserve && reserveBlockedReason ? (
+        {!canProceedToLogistics && reserveBlockedReason ? (
           <p
             data-testid="studio-v3-reserve-blocked-reason"
             className="max-w-[380px] text-center text-[12.5px] leading-relaxed"
@@ -6184,7 +6190,7 @@ export function StoryboardHandoff({
           </p>
         ) : null}
 
-        {!canReserve ? (
+        {!canProceedToLogistics ? (
           <button
             type="button"
             onClick={onRefine}

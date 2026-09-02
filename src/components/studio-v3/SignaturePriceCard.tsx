@@ -103,6 +103,13 @@ export interface SignaturePriceCardProps {
   journeyTitle?: string | null;
   /** Number of travellers — when ≥2, party total is shown alongside per-pp. */
   guests?: number | null;
+  /**
+   * P0-E — TRUE when the traveller has explicitly confirmed the party size.
+   * Until then any total on screen is indicative and must be labelled as such;
+   * the exact tier total is only shown once the party is known. Defaults to
+   * true so legacy/test callers keep their current behaviour.
+   */
+  partyConfirmed?: boolean;
   /** Adult count (18+) for guest-composition transparency in the header label. */
   adults?: number | null;
   /** Minor ages (0–17) for guest-composition transparency in the header label. */
@@ -194,6 +201,7 @@ export function SignaturePriceCard({
   journeyTitle,
   guests,
   adults = null,
+  partyConfirmed = true,
   minorAges = null,
   included,
   showAddOns = true,
@@ -1269,7 +1277,7 @@ export function SignaturePriceCard({
                 className="text-[11px] uppercase tracking-[0.24em] font-bold"
                 style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
               >
-                Your day, resolved
+                {partyConfirmed ? "Your day, resolved" : "Indicative, from"}
               </p>
               <p
                 className="mt-1 text-[24px] font-bold tabular-nums leading-none"
@@ -1292,6 +1300,15 @@ export function SignaturePriceCard({
                   testId="studio-v3-price-card-final-per-person"
                 />
               </div>
+              {partyConfirmed ? null : (
+                <p
+                  data-testid="studio-v3-price-indicative-note"
+                  className="mt-1 text-[11px] leading-relaxed"
+                  style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+                >
+                  Your exact total is confirmed once you tell us your party size.
+                </p>
+              )}
               <InvestmentDelta delta={investmentDelta} />
               <InvestmentLedger
                 baseTotalEur={ledgerBaseEur}
