@@ -101,6 +101,7 @@ import {
   ageBand,
   serverLunchRemovalEur,
   serverTailorSupplementsEur,
+  serverExtraWineriesAllowed,
   TAILOR_LUNCH_REMOVAL_ELIGIBLE,
   serverAddOnLine,
   serverAddOnsChargedTotalEur,
