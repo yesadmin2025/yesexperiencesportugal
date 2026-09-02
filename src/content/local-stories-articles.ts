@@ -165,16 +165,17 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "what-to-do-in-sesimbra",
     title: "Things to Do in Sesimbra: A Local's Day Guide (2026)",
     metaDescription:
-      "A Sesimbra local's guide: castle views, the harbour fish lunch, wild Arrábida coves, best time to go, and how to do the 40-minute day trip from Lisbon.",
+      "Things to do in Sesimbra, by locals who live here: castle viewpoint, harbour seafood lunch, wild Arrábida coves, when to go, and the 40-minute drive from Lisbon.",
 
 
     h1: "Things to Do in Sesimbra, Portugal — A Fishing Town Worth the Drive",
     eyebrow: "Sesimbra · Coast",
     standfirst:
-      "Sesimbra is our home town, about 40 kilometres south of Lisbon. Here is how we would spend a day here — slowly, and by the sea.",
+      "Sesimbra is our home town, 40 minutes south of Lisbon. The short answer: the castle viewpoint, the harbour, a long seafood lunch and a wild Arrábida cove — half a day for the town, a full day with the coast.",
     sections: [
       {
-        heading: "The fishing port and the fort",
+        heading: "Sesimbra harbour and the castle viewpoint",
+
         body: "Sesimbra still feels like a fishing town because fishing remains part of its daily life. Boats return to the harbour, seafood restaurants prepare the morning’s catch, and the waterfront becomes livelier as families arrive for lunch and an evening walk beside the beach.\n\nAbove the town, Sesimbra Castle looks across the roofs, the bay and the surrounding hills. The climb reveals how naturally the town is protected between the sea and the Arrábida landscape. Closer to the water, the old centre is compact and easy to explore on foot.\n\nSesimbra is not a place built around a checklist of monuments. Its appeal lies in watching the harbour, walking through the narrow streets and allowing the pace of the coast to replace the rhythm of Lisbon.",
       },
       {
