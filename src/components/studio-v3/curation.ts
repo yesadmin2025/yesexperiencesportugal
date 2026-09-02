@@ -1405,6 +1405,13 @@ export function pickPrimaryTourWithFit(
   fit: FitReport;
   topReports: Array<{ tour: SignatureTour; fit: FitReport }>;
   filtered: Array<{ tour: SignatureTour; reason: string }>;
+  /**
+   * Explicit high-signal interests the chosen candidate cannot truthfully
+   * satisfy. Non-empty means Studio must ask ONE material trade-off instead
+   * of revealing a partially-matching day.
+   */
+  unsatisfiedHighSignal: Interest[];
+
 } {
   assertStopIntentSchema();
   // Build the candidate pool from every axis the guest touched. FEELING_TO_TOURS
