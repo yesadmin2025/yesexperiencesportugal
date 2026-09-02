@@ -3735,6 +3735,11 @@ export function selectReplacementCandidates(input: {
     if (stop.region !== skeleton.region) return false;
     if (stop.routeCluster !== skeleton.routeCluster) return false;
     if (!allowWinery && stop.type === "winery") return false;
+    // An INCLUDED midday table is the Signature's own published lunch, not an
+    // alternative moment. It may be placed by the composer, but it must never
+    // be offered as a replacement for another table: swapping one included
+    // lunch for another would invent a change that does not exist.
+    if (stop.type === "table" && stop.source === "signature-core") return false;
     // Operational truth — same rule curateJourney applies to the base pool.
     if (isStopClosedOn(`${stop.name} ${stop.notes ?? ""}`, input.dateExact ?? null)) return false;
 

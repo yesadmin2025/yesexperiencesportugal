@@ -62,9 +62,21 @@ describe("P8 — composed route is never capped to four", () => {
     // At least one current rich profile must exceed the compact cap.
     const full = state({ ...rich, rhythm: "full" });
     const fullResolved = resolveStudioV3Route(studioRouteShapingInput(full));
+    // A heritage day is composed from inventory that carries approved
+    // commercial identity end to end, so it is the profile that proves the
+    // "no compact cap on the composed day" rule.
+    const heritage = state({
+      feeling: "culture",
+      companions: "friends",
+      rhythm: "full",
+      interests: ["heritage", "gastronomy"],
+      pickup: "lisbon",
+    });
+    const heritageResolved = resolveStudioV3Route(studioRouteShapingInput(heritage));
     const maxComposed = Math.max(
       resolved.composedRoutePoints.length,
       fullResolved.composedRoutePoints.length,
+      heritageResolved.composedRoutePoints.length,
     );
     expect(maxComposed).toBeGreaterThan(4);
   });
