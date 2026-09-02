@@ -1165,7 +1165,99 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     datePublished: "2026-07-24",
   },
+  {
+    slug: "portugal-coastal-drives-from-lisbon",
+    title: "Portugal Coastal Drives from Lisbon — 4 Routes Worth the Day",
+    metaDescription:
+      "Four coastal drives from Lisbon, by a local operator: Arrábida's cliff road, Cabo da Roca and Cascais, Tróia to Comporta, and the wild Vicentine Coast.",
+    h1: "Portugal Coastal Drives from Lisbon",
+    eyebrow: "Portugal · Coastal Drives",
+    standfirst:
+      "Four Atlantic routes within reach of a single day — and what each one actually feels like from the passenger seat.",
+    sections: [
+      {
+        heading: "The Arrábida ridge road — the shortest drama in Portugal.",
+        body: "Twenty minutes south of the 25 de Abril Bridge the road climbs into the Arrábida Natural Park and then runs along a limestone ridge with the Atlantic directly below. Turquoise water, white cliffs, no billboards. Pull-offs let you stop for the view, and the coves below — Portinho da Arrábida, Galapinhos — are a short descent away. It pairs naturally with wine and a long lunch on the same [Arrábida day](/tours/arrabida-wine-allinclusive).",
+      },
+      {
+        heading: "Cabo da Roca to Cascais — the westernmost edge of Europe.",
+        body: "From Sintra the road drops through pine and windswept heath to Cabo da Roca, the western tip of continental Europe, then follows the cliffs south past Praia do Guincho to Cascais. Late afternoon is the hour to drive it: the light comes off the ocean sideways and the surf at Guincho is at its most theatrical. Most travelers combine it with palaces on a [Sintra and Cascais day](/tours/sintra-cascais).",
+      },
+      {
+        heading: "Tróia to Comporta — pine, rice fields and empty sand.",
+        body: "Cross the Sado estuary by ferry from Setúbal and the landscape changes completely: a low sand peninsula, umbrella pines, rice paddies and 60 kilometres of beach with almost nothing built on it. Dolphins live in the estuary year-round. It is the calmest of the four drives and the one guests describe as the biggest surprise. See the [Tróia and Comporta day](/tours/troia-comporta).",
+      },
+      {
+        heading: "The Vicentine Coast — the wild one.",
+        body: "Further south, the Southwest Alentejo and Vicentine Coast Natural Park is the least developed stretch of coastline in western Europe: cliffs, storks nesting on sea stacks, fishing villages, and beaches you reach on foot. It is a longer day and it earns it. See the [Vicentine Coast day](/tours/southwest-vicentine-coast).",
+      },
+      {
+        heading: "How to drive them well.",
+        body: "Start early or go late — midday flattens the light and fills the viewpoints. Build in more stopping time than the map suggests; the point of a coastal drive is the unscheduled pull-off. And keep one meal loose, because the best table on the Portuguese coast is usually the one you find at the moment you get hungry. On a private day the route flexes with the weather and the light rather than a coach timetable.",
+      },
+    ],
+    ctaLead:
+      "Each of these drives exists as a private Signature day — door-to-door from Lisbon, paced around you.",
+    ctaLabel: "See the Arrábida Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "sintra-cascais", label: "Sintra & Cascais" },
+      { slug: "troia-comporta", label: "Tróia & Comporta" },
+      { slug: "southwest-vicentine-coast", label: "Southwest Vicentine Coast" },
+    ],
+    relatedReads: [
+      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/portugal-travel-designer", label: "Design your own Portugal journey" },
+    ],
+    datePublished: "2026-07-26",
+  },
+  {
+    slug: "portugal-heritage-sites-near-lisbon",
+    title: "Heritage Sites Near Lisbon — Roman, Moorish & Royal Portugal",
+    metaDescription:
+      "A local guide to heritage sites near Lisbon: Évora's Roman temple, Sintra's palaces, Moorish castles and Alentejo talha wine cellars. Private day trips.",
+    h1: "Heritage Sites Near Lisbon",
+    eyebrow: "Portugal · Heritage",
+    standfirst:
+      "Two thousand years of Roman, Moorish and royal Portugal sit within a day's drive of the capital. Here is what is worth the journey.",
+    sections: [
+      {
+        heading: "Évora — Roman Portugal, still standing.",
+        body: "Ninety minutes east of Lisbon, Évora is a UNESCO World Heritage city inside medieval walls. The Roman temple stands in the middle of it, the cathedral looks over the plains, and the Chapel of Bones remains one of the most unusual interiors in Europe. It is a walking city — compact, warm-stoned, and best seen before the afternoon heat. See the [Évora and Alentejo day](/tours/evora-alentejo).",
+      },
+      {
+        heading: "Sintra — royal Portugal in the mist.",
+        body: "Sintra's estates were built by kings and eccentrics on a forested hill that makes its own weather. Pena Palace sits above the treeline in colour; Quinta da Regaleira hides initiation wells and grottoes below ground; the Moorish Castle ruins trace the ridge. Go early, book timed entry, and treat it as a half-day rather than a checklist. See the [Sintra and Cascais day](/tours/sintra-cascais).",
+      },
+      {
+        heading: "Talha wine — heritage you can taste.",
+        body: "In small Alentejo villages, wine is still fermented in clay amphorae — talha — using a method the Romans brought here. A handful of cellars keep it alive, and tasting from the clay is closer to an archaeological site than a tasting room. See the [Roman heritage day](/tours/roman-heritage-alentejo).",
+      },
+      {
+        heading: "Azeitão and Setúbal — working heritage, not museum heritage.",
+        body: "Closer to Lisbon, the Setúbal Peninsula preserves living traditions rather than monuments: the tile workshops of Azeitão, the sheep's cheese made the same way for centuries, Moscatel cellars with generations of casks, and the Livramento market under its azulejo panels. It is heritage you eat and drink rather than photograph.",
+      },
+      {
+        heading: "How to fit heritage into one day.",
+        body: "Pick one anchor — Évora, Sintra, or a talha cellar — and let everything else be light. Heritage days fail when they become three monuments and a rushed lunch. On a private day we hold entry times, drive between them without a coach queue, and leave the afternoon open so the visit ends on a long table rather than a car park.",
+      },
+    ],
+    ctaLead:
+      "Our heritage days are private, licensed, and built around one anchor rather than a checklist.",
+    ctaLabel: "See the Évora & Alentejo Signature",
+    signatureSlug: "evora-alentejo",
+    relatedSignatures: [
+      { slug: "roman-heritage-alentejo", label: "Roman Heritage & Talha Wines" },
+      { slug: "sintra-cascais", label: "Sintra & Cascais" },
+    ],
+    relatedReads: [
+      { path: "/local-stories/arrabida-vs-sintra", label: "Arrábida vs Sintra" },
+      { path: "/experiences", label: "Browse all Signature Experiences" },
+    ],
+    datePublished: "2026-07-27",
+  },
 ];
+
 
 export const LOCAL_STORIES_ARTICLES_BY_SLUG: Record<string, LocalStoryArticle> = Object.fromEntries(
   LOCAL_STORIES_ARTICLES.map((a) => [a.slug, a]),
