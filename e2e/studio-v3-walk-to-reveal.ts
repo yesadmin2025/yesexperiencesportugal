@@ -383,14 +383,28 @@ async function advanceThroughLogistics(page: Page): Promise<boolean> {
     const moment = await logisticsMoment(page);
     if (moment === null) return false;
     if (moment === "when") {
-      // "I'm flexible" keeps the walk independent of the booking window.
-      await safeClick(page, 'button[data-phase-cta="date-secondary"]');
+      // The instant-bookable preflight hides the flexible / undecided escapes,
+      // so pick a real enabled calendar day. Outside the preflight the
+      // secondary option keeps the walk independent of the booking window.
+      const days = page.locator(
+        '[data-testid="studio-v3-logistics"] button[data-day]:not([disabled])',
+      );
+      const dayCount = await days.count().catch(() => 0);
+      if (dayCount > 0) {
+        await days
+          .nth(Math.min(6, dayCount - 1))
+          .click({ timeout: 4_000, force: true })
+          .catch(() => undefined);
+      } else {
+        await safeClick(page, 'button[data-phase-cta="date-secondary"]');
+      }
     } else if (moment === "where") {
       await safeClick(
         page,
         'section[aria-label="Where the day begins"] [data-testid="studio-v3-choice"]',
       );
     }
+
     if (!(await cta.isEnabled().catch(() => false))) return false;
     await cta.click({ timeout: 4_000 }).catch(() => undefined);
     if (moment === "review") return true;
