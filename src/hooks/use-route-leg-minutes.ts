@@ -1,6 +1,13 @@
 /**
  * useRouteLegMinutes — real OSRM-backed drive minutes + distances + travel
- * mode per leg for a Studio V3 reveal route (origin + ordered stops).
+ * mode per leg for a Studio V3 reveal route.
+ *
+ * Door-to-door contract:
+ *  - when the first point is the Studio `origin`, the query route is closed by
+ *    appending that same coordinate as an explicit return/drop-off point;
+ *  - if the caller already supplied a return point, it is never duplicated;
+ *  - therefore N route points always produce N−1 legs, including the final
+ *    last-moment → pickup/drop-off leg.
  *
  * Improvements:
  *  - Exponential-backoff retry (up to 3 attempts, 400ms base, jitter) so a
@@ -38,20 +45,51 @@ export interface RouteLegsResult {
   isError: boolean;
 }
 
+function sameCoord(a: RouteLegStop, b: RouteLegStop): boolean {
+  return Math.abs(a.lat - b.lat) < 1e-7 && Math.abs(a.lng - b.lng) < 1e-7;
+}
+
+/**
+ * Pure route normalizer shared by runtime + tests.
+ *
+ * Studio reveal callers historically supplied `[origin, ...moments]`, which
+ * made OSRM omit the return/drop-off leg even though the canonical Time
+ * Authority already counted it. Close that loop here, at the single network
+ * seam used by the reveal map and route legend.
+ */
+export function normalizeDoorToDoorRouteStops(
+  stops: ReadonlyArray<RouteLegStop> | null | undefined,
+): RouteLegStop[] {
+  const filtered = (stops ?? []).filter(
+    (s): s is RouteLegStop =>
+      !!s && Number.isFinite(s.lat) && Number.isFinite(s.lng) && !!s.key,
+  );
+
+  if (filtered.length < 2) return filtered;
+
+  const origin = filtered[0];
+  const last = filtered[filtered.length - 1];
+  const isStudioOrigin = origin.key === "origin" || origin.key.startsWith("origin:");
+
+  if (!isStudioOrigin || sameCoord(origin, last)) return filtered;
+
+  return [
+    ...filtered,
+    {
+      key: "return-to-origin",
+      lat: origin.lat,
+      lng: origin.lng,
+    },
+  ];
+}
+
 export function useRouteLegMinutes(
   stops: ReadonlyArray<RouteLegStop> | null | undefined,
   enabled = true,
 ): RouteLegsResult {
   const call = useServerFn(getStudioV3RouteLegs);
 
-  const safeStops = useMemo(
-    () =>
-      (stops ?? []).filter(
-        (s): s is RouteLegStop =>
-          !!s && Number.isFinite(s.lat) && Number.isFinite(s.lng) && !!s.key,
-      ),
-    [stops],
-  );
+  const safeStops = useMemo(() => normalizeDoorToDoorRouteStops(stops), [stops]);
   const queryKey = useMemo(
     () => [
       "studio-v3-route-legs",
