@@ -228,30 +228,30 @@ export const Route = createFileRoute("/")({
   }),
   head: () => ({
     meta: [
-      { title: "Private Portugal Tours, Designed With a Local | YES" },
+      { title: "Private Portugal Tours, Designed Live With You | YES" },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
       {
         name: "description",
         content:
-          "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team based in Sesimbra. Instantly confirmed.",
+          "Design your private Portugal day live on an interactive map and watch it confirm instantly. Signature wine days from Lisbon, plus a dedicated travel designer for full journeys.",
       },
       {
         property: "og:title",
-        content: "Private Portugal Tours, Designed With a Local | YES",
+        content: "Private Portugal Tours, Designed Live With You | YES",
       },
       {
         property: "og:description",
         content:
-          "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team based in Sesimbra. Instantly confirmed.",
+          "Design your private Portugal day live on an interactive map and watch it confirm instantly. Signature wine days from Lisbon, plus a dedicated travel designer for full journeys.",
       },
       {
         property: "twitter:title",
-        content: "Private Portugal Tours, Designed With a Local | YES",
+        content: "Private Portugal Tours, Designed Live With You | YES",
       },
       {
         property: "twitter:description",
         content:
-          "Private day tours, live-designed experiences and full Portugal journeys — shaped by a licensed local team based in Sesimbra. Instantly confirmed.",
+          "Design your private Portugal day live on an interactive map and watch it confirm instantly. Signature wine days from Lisbon, plus a dedicated travel designer for full journeys.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
