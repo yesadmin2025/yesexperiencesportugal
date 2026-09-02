@@ -137,7 +137,11 @@ describe("Studio checkout route truth — behaviour", () => {
       ),
       // Checkout labels are always genericised for guest-facing output, so the
       // expectation compares the same presentation of the reordered moments.
-    ).toEqual([base[1].label, base[0].label].map((l) => studioDisplayLabel(l)));
+    ).toEqual(
+      [base[1].label, base[0].label].map((l) =>
+        studioDisplayLabel(l, buildWineryDisplayLabels([base[1].label, base[0].label])),
+      ),
+    );
 
     // swap a moment
     const swapped = base.map((s, i) => (i === 1 ? { label: "Sesimbra", story: "" } : s));
