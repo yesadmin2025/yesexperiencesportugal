@@ -90,7 +90,7 @@ describe("Your Day has no customer-visible curator CTA", () => {
 
   it("does not weaken the final checkout gates", () => {
     expect(studio).toContain("judgeFinalDayTime");
-    expect(studio).toContain("isOperationallyBookable");
+    expect(studio).toContain("frozenDayAllowsCheckout");
     expect(studio).toContain("certifyFrozenDayFromPickup");
   });
 });
