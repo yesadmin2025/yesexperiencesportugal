@@ -125,5 +125,5 @@ export function describePickupDoorToDoorConflict(
 ): string | null {
   if (!cert.evaluable) return null;
   if (cert.fitsHardMax) return null;
-  return `${cert.reason} We won't quietly cut moments — a curator will confirm the trade-off with you.`;
+  return `${cert.reason} Change the pickup area or remove/swap a moment to keep the day instantly bookable.`;
 }

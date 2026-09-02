@@ -5433,20 +5433,26 @@ export function StoryboardHandoff({
 
 
 
-  // When progression is blocked, say why, truthfully and in one line. Derived
-  // from the SAME facts that block it; a missing practical fact is never
-  // reported as "needs a human check" — it is simply asked for next.
-  const reserveBlockedReason: string | null = canProceedToLogistics
+  // When the booking gate is closed, say why, truthfully and in one line.
+  // Derived from the SAME facts that block it; every state is actionable
+  // inside Studio — a missing practical fact is never "needs a human".
+  const reserveBlockedReason: string | null = canReserve
     ? null
     : editedStops.length < REFINE_MIN_STOPS
       ? `A day needs at least ${REFINE_MIN_STOPS} moments — add one to continue.`
       : closedMomentConflict
         ? closedMomentConflict
         : !revealValidation.ok
-        ? "We're still grounding this day in real tour details."
-        : revealLegsLoading
-          ? "Checking real driving times for this day…"
-          : "This day doesn't fit comfortably in one day yet — remove or swap a moment.";
+          ? "We're still grounding this day in real tour details."
+          : revealLegsLoading
+            ? "Checking real driving times…"
+            : !operationalGate.proven
+              ? "We're confirming the driving for this exact route…"
+              : pickupDoorToDoorConflict
+                ? pickupDoorToDoorConflict
+                : !finalDayGate.fit.evaluable
+                  ? "One moment still needs verified timing — swap or adjust the day."
+                  : "This day doesn't fit comfortably in one day yet — remove or swap a moment.";
 
 
 
@@ -6355,21 +6361,24 @@ export function StoryboardHandoff({
         ) : (
           <CtaButton
             type="button"
-            onClick={onSecure}
+            onClick={() => {
+              if (!canReserve) return;
+              onSecure();
+            }}
             variant="primary"
             size="md"
             className="w-full max-w-[380px]"
             aria-label={CTA_MAKE_IT_REAL}
             data-testid="studio-v3-handoff-primary"
-            data-reserve-blocked={canProceedToLogistics ? "false" : "true"}
+            data-reserve-blocked={!canReserve}
             data-day-certified={canReserve ? "true" : "false"}
-            disabled={!canProceedToLogistics}
+            disabled={!canReserve}
           >
             {CTA_MAKE_IT_REAL}
           </CtaButton>
         )}
 
-        {!canProceedToLogistics && reserveBlockedReason ? (
+        {!canReserve && reserveBlockedReason ? (
           <p
             data-testid="studio-v3-reserve-blocked-reason"
             className="max-w-[380px] text-center text-[12.5px] leading-relaxed"
@@ -6379,7 +6388,7 @@ export function StoryboardHandoff({
           </p>
         ) : null}
 
-        {!canProceedToLogistics ? (
+        {!canReserve ? (
           <button
             type="button"
             onClick={onRefine}

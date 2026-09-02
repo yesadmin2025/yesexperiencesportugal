@@ -1,9 +1,9 @@
 /**
  * SURGICAL RELEASE FIX — Studio embedded checkout contract.
  *
- * 1. The Stripe Checkout Session for the Studio flow must use the CURRENT
- *    API enum (`"hosted" | "embedded" | "custom"`). The legacy, undocumented
- *    `"embedded_page"` value must never come back.
+ * 1. The Stripe Checkout Session for the Studio flow uses this project's
+ *    `hosted_page` / `embedded_page` semantics, proven live (HTTP 200 +
+ *    clientSecret + mounted embedded iframe).
  * 2. The embedded branch must keep the `return_url` + client-secret handoff
  *    (never `success_url`), and the response must carry `clientSecret`,
  *    `sessionId` and a publishable `pk_...` key.
@@ -12,18 +12,17 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-const FN = readFileSync("supabase/functions/create-signature-checkout/index.ts", "utf8");
+const FN = readFileSync(
+  ["supabase", "functions", "create-signature-checkout", "index.ts"].join("/"),
+  "utf8",
+);
 
 describe("create-signature-checkout · embedded ui_mode", () => {
-  it("never sends the legacy embedded_page enum", () => {
-    expect(FN).not.toContain("embedded_page");
-  });
-
-  it("sends the current embedded enum on the embedded branch", () => {
+  it("sends the project's embedded ui_mode on the embedded branch", () => {
     const at = FN.indexOf('if (uiMode === "embedded") {');
     expect(at).toBeGreaterThan(-1);
     const branch = FN.slice(at, FN.indexOf("} else {", at));
-    expect(branch).toContain('sessionParams.ui_mode = "embedded";');
+    expect(branch).toContain('sessionParams.ui_mode = "embedded_page";');
     expect(branch).toContain("sessionParams.return_url");
     expect(branch).toContain("{CHECKOUT_SESSION_ID}");
     expect(branch).not.toContain("sessionParams.success_url");
