@@ -1469,6 +1469,8 @@ export function pickPrimaryTourWithFit(
       fit,
       topReports: [{ tour: fallback, fit }],
       filtered: [],
+      unsatisfiedHighSignal: interests.filter((i) => HIGH_SIGNAL_INTERESTS.includes(i)),
+
     };
   }
 
