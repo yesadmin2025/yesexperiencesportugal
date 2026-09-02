@@ -148,7 +148,8 @@ describe("E — 12 is self-service, 13–14 are curator-confirmed", () => {
       STUDIO.indexOf("if (requiresCuratorParty(committedTotal))") + 500,
     );
     expect(block).toContain("setLogisticsConflict(curatorPartyMessage(committedTotal))");
-    expect(block).toContain('openLeadSheet("book")');
+    // P0-7 — the 13–14 hand-off is the explicit premium private-group intent.
+    expect(block).toContain('openLeadSheet("private-group")');
     expect(block).toContain("return;");
   });
 

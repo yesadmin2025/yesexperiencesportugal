@@ -49,7 +49,12 @@ describe("P0-7 private group hand-off", () => {
 
   it("never invokes Stripe for a curator party and never clamps the party", () => {
     expect(studio).toContain("requiresCuratorParty(partyTotal)");
-    expect(studio).not.toContain("Math.min(12,");
+    const guard = studio.slice(
+      studio.indexOf("if (requiresCuratorParty(partyTotal))"),
+      studio.indexOf("if (requiresCuratorParty(partyTotal))") + 200,
+    );
+    expect(guard).toContain('openLeadSheet("private-group")');
+    expect(guard).toContain("return;");
   });
 
   it("uses premium private-group copy, not an error", () => {

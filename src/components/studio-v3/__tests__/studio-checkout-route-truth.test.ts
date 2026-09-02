@@ -67,7 +67,7 @@ describe("Studio checkout route truth — source contract", () => {
   it("does not cap the authored route to the legacy 4-slot / 6-stop projection", () => {
     const block = SRC.slice(
       SRC.indexOf("const checkoutStops = resolveAuthoritativeRouteStops"),
-      SRC.indexOf("const perPaxBase = resolvedPerPax;"),
+      SRC.indexOf("const perPaxBase = resolvedPerPax +"),
     );
     expect(block).not.toMatch(/slice\(0,\s*\d+\)/);
   });
@@ -84,7 +84,7 @@ describe("Studio checkout route truth — source contract", () => {
   it("touches no pricing / rhythm / curation authority", () => {
     const block = SRC.slice(
       SRC.indexOf("const checkoutStops = resolveAuthoritativeRouteStops"),
-      SRC.indexOf("const perPaxBase = resolvedPerPax;"),
+      SRC.indexOf("const perPaxBase = resolvedPerPax +"),
     );
     expect(block).not.toMatch(/price|tier|RHYTHM_STOP_COUNT|score/i);
     // PASS 5 — server pricing inputs still come from composition + tour id,
