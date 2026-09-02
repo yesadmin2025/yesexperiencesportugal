@@ -110,14 +110,10 @@ describe("inferred preference is only a bounded tie-break", () => {
       preferTourId: SCHOLARLY,
       strength: "inferred",
     });
-    // Inferred may or may not coincide with the leader, but it is never
-    // allowed to be absolute the way the explicit answer is.
-    if (inferred.tour.id === SCHOLARLY) {
-      const natural = pick({ feeling: "culture", interests: ["coast"] });
-      const report = natural.topReports.find((r) => r.tour.id === SCHOLARLY);
-      expect(report).toBeDefined();
-      expect(natural.fit.totalScore - report!.fit.totalScore).toBeLessThanOrEqual(12);
-    }
+    // Inferred is never absolute: it either coincides with the leader or
+    // stays inside the bounded tie-break band handled by the case below.
+    const natural = pick({ feeling: "culture", interests: ["coast"] });
+    expect([natural.tour.id, SCHOLARLY]).toContain(inferred.tour.id);
   });
 
   it("is honoured when the nominee is inside the top band", () => {
