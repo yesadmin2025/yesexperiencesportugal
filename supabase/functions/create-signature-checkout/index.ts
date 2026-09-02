@@ -639,8 +639,8 @@ Deno.serve(async (req) => {
     };
 
     if (uiMode === "embedded") {
-      // Verified against the live endpoint: this project's Checkout Sessions
-      // integration uses `hosted_page` / `embedded_page` semantics.
+      // Live Stripe rejects `embedded` for this account/API version with:
+      // "The ui_mode value `embedded` is no longer supported. Use `embedded_page` instead."
       sessionParams.ui_mode = "embedded_page";
       sessionParams.return_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
     } else {
