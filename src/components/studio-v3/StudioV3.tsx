@@ -1396,7 +1396,20 @@ export function StudioV3() {
         guests: details.guests,
       });
 
-      const perPaxBase = resolvedPerPax;
+      // P0-2 — ONE composed-day supplement authority, counted from the
+      // STRUCTURAL identity of the exact route being booked (before generic
+      // public winery labels are applied). Generic labels are display only and
+      // must never act as commercial identity.
+      const composedSupplementPerPax = studioComposedSupplementFromMoments(
+        tour.id,
+        checkoutStops,
+      );
+      const composedExtraWineries = studioExtraWineryCountFromMoments(tour.id, checkoutStops);
+      // Structural EVIDENCE of the trade-off the 4th winery requires. The
+      // server validates these ids against its own whitelist and refuses the
+      // supplement when nothing was really given up.
+      const tradedStopIds = studioTradedBlueprintStopIds(tour.id, checkoutStops);
+      const perPaxBase = resolvedPerPax + composedSupplementPerPax;
 
       // Unit-aware party total for add-ons — mirrors `addOnEurFor` in the
       // price card so per_person, per_group, per_vehicle and fixed add-ons
@@ -1455,6 +1468,7 @@ export function StudioV3() {
                 guests: composedAdults + composedMinors.length,
               },
               tourPriceTiers,
+              composedSupplementPerPax,
             )
           : null;
 
@@ -1541,7 +1555,8 @@ export function StudioV3() {
             // count only — the server clamps it to the approved entitlement
             // and re-derives the euro supplement from its own table. No
             // client euro value is ever sent for this action.
-            tailorExtraWineries: studioExtraWineryCount(tour.id, stopLabels),
+            tailorExtraWineries: composedExtraWineries,
+            tradedStopIds,
             // Prefill Stripe with the email already captured in Guest Details.
             customerEmail: details.email ?? undefined,
             guestDetails: { ...details, hotelPickupIncluded: true },
@@ -4011,10 +4026,14 @@ export function StudioV3() {
               const t = state.tourId ? findTour(state.tourId) : null;
               if (!t) return null;
               const guests = adults + minorAges.length;
+              // P0-2 PRICE PARITY — the SAME composed-day supplement authority
+              // Your Day and the Checkout Summary use. Omitting it here made
+              // the quote €20/€40pp cheaper than the day the guest approved.
               const j = resolveStudioStrictJourneyPricing(
                 t.id,
                 { adults, minorAges, guests },
                 tourPriceTiers,
+                resolvedJourney.composedSupplementPerPaxEur,
               );
 
               if (!j) return null;
