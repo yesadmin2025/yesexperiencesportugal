@@ -1420,16 +1420,34 @@ export function pickPrimaryTourWithFit(
   const mergedIds = Array.from(
     new Set([...candidateIds, ...intentTargets, ...interestTargets, ...discoveryTargets]),
   );
-  const allowed =
-    eligibleTourIds && eligibleTourIds.length > 0 ? new Set(eligibleTourIds) : null;
+  // PREFLIGHT CEILING — when preflight resolved an eligible pool, that pool
+  // is an ABSOLUTE ceiling. If the taste-derived intersection is empty we
+  // widen only to the eligible pool itself (so semantic scoring still runs),
+  // never back to `mergedIds`, which may contain products that are not
+  // sellable for this date / pickup / party.
+  const allowed = eligibleTourIds && eligibleTourIds.length > 0 ? new Set(eligibleTourIds) : null;
   const constrainedIds = allowed ? mergedIds.filter((id) => allowed.has(id)) : mergedIds;
-  const candidates = (constrainedIds.length > 0 ? constrainedIds : mergedIds)
+  const poolIds =
+    constrainedIds.length > 0
+      ? constrainedIds
+      : allowed
+        ? Array.from(allowed)
+        : mergedIds;
+  const candidates = poolIds
     .map((id) => signatureTours.find((t) => t.id === id))
     .filter((t): t is SignatureTour => Boolean(t));
 
   if (candidates.length === 0) {
+    // Fallback must also respect the ceiling: only ever a product preflight
+    // declared sellable, otherwise the feeling fallback.
     const fallbackId = FEELING_FALLBACK[feeling];
-    const fallback = signatureTours.find((t) => t.id === fallbackId) ?? signatureTours[0];
+    const fallback =
+      (allowed
+        ? (signatureTours.find((t) => allowed.has(t.id) && t.id === fallbackId) ??
+          signatureTours.find((t) => allowed.has(t.id)))
+        : signatureTours.find((t) => t.id === fallbackId)) ??
+      signatureTours.find((t) => t.id === fallbackId) ??
+      signatureTours[0];
     const fit = scoreTourFit(fallback, {
       feeling,
       companions,
@@ -1446,6 +1464,7 @@ export function pickPrimaryTourWithFit(
       filtered: [],
     };
   }
+
 
   // Score every candidate with the FitReport model.
   const reported = candidates.map((tour, order) => ({
