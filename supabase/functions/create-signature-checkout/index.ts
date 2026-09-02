@@ -639,8 +639,9 @@ Deno.serve(async (req) => {
     };
 
     if (uiMode === "embedded") {
-      // Current Checkout Sessions API enum: "hosted" | "embedded" | "custom".
-      sessionParams.ui_mode = "embedded";
+      // Verified against the live endpoint: this project's Checkout Sessions
+      // integration uses `hosted_page` / `embedded_page` semantics.
+      sessionParams.ui_mode = "embedded_page";
       sessionParams.return_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
     } else {
       sessionParams.success_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;

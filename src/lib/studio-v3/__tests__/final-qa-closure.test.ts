@@ -41,7 +41,7 @@ describe("1 — the final reveal is YOUR DAY with one dominant reserve action", 
 
 describe("2 — an unresolved composition can never start checkout", () => {
   it("gates the CTA and fails closed before the checkout call", () => {
-    expect(STUDIO).toContain("disabled={!canProceedToLogistics}");
+    expect(STUDIO).toContain("disabled={!canReserve}");
     expect(STUDIO).toContain("if (checkoutStops.length < 2) {");
     expect(STUDIO).toContain("returnToPreflight(");
     expect(STUDIO).toContain('data-testid="studio-v3-reserve-review-path"');

@@ -116,7 +116,7 @@ describe("the live Studio surface wires both final seams to this authority", () 
   it("gates Your Day Reserve on the canonical day fit", () => {
     expect(STUDIO).toContain("judgeFinalDayTime");
     expect(STUDIO).toContain("finalDayGate.bookable");
-    expect(STUDIO).toContain("disabled={!canProceedToLogistics}");
+    expect(STUDIO).toContain("disabled={!canReserve}");
     expect(STUDIO).toContain('data-reserve-blocked=');
   });
 

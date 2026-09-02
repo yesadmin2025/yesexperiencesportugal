@@ -34,10 +34,10 @@ describe("Your Day progression gate", () => {
     expect(rule).toContain('finalDayGate.fit.verdict === "over-day-budget"');
   });
 
-  it("labels the primary CTA as the reward hand-off, not a booking verb", () => {
+  it("gates the primary CTA on the SAME final reserve truth as checkout", () => {
     expect(STUDIO).toContain("CTA_MAKE_IT_REAL");
-    expect(STUDIO).toContain("disabled={!canProceedToLogistics}");
-    expect(STUDIO).not.toContain("disabled={!canReserve}");
+    expect(STUDIO).toContain("disabled={!canReserve}");
+    expect(STUDIO).not.toContain("disabled={!canProceedToLogistics}");
   });
 
   it("never reports a missing practical fact as needing a human", () => {
