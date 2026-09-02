@@ -52,9 +52,12 @@ const PROBES: Probe[] = [
   { table: "booking_quotes", idCol: "id", cols: ["notes"] },
 ];
 
-export const scanDatabaseLegacy = createServerFn({ method: "POST" }).handler(
-  async (): Promise<{ hits: DbHit[]; skipped: string[]; scanned: number }> => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+export const scanDatabaseLegacy = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(
+    async ({ context }): Promise<{ hits: DbHit[]; skipped: string[]; scanned: number }> => {
+      await assertAdmin(context);
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const hits: DbHit[] = [];
     const skipped: string[] = [];
     let scanned = 0;
