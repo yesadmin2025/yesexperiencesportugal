@@ -1619,6 +1619,8 @@ export function curateJourney(
     seed?: number | string;
     /** Living Atlas preferred Signature id (preference, never an override). */
     preferTourId?: string | null;
+    /** PREFLIGHT CEILING — sellable product ids; never widened. */
+    eligibleTourIds?: ReadonlyArray<string> | null;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
@@ -1640,6 +1642,7 @@ export function curateJourney(
     // scoring contract; only the Living Atlas preference is new.
     null,
     options?.preferTourId ?? null,
+    options?.eligibleTourIds ?? null,
   );
 
   // STRICT containment: pool = primary tour's own stops only.
@@ -1983,6 +1986,13 @@ export interface ResolvedStudioV3Route {
   whatToConfirm: string;
   /** Resolution confidence — drives the fallback messaging upstream. */
   confidence: RouteConfidence;
+  /**
+   * Explicit high-signal interests (faith / hands-on / wine) that NO
+   * currently eligible candidate can truthfully satisfy together. When
+   * non-empty, Studio must ask one material trade-off instead of revealing
+   * a partially-matching day. Never routes to a curator/lead sheet.
+   */
+  unsatisfiedHighSignal?: Interest[];
   /**
    * Living Atlas intelligence — grounded "why this direction fits you"
    * lines derived from the traveller's leading dimensions. Empty when the
