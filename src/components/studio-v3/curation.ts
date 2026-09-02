@@ -1348,6 +1348,14 @@ export function scoreTourFit(
  *  deterministic `scoreTourFit` FitReport model. Kept as a thin wrapper
  *  so all existing call sites (route resolver, tests, storyboard,
  *  reshape) get the improved matching without a signature change. */
+/**
+ * How much authority a preferred Signature id carries.
+ * "explicit" = the traveller's own discriminative answer (absolute after
+ * the hard gates). "inferred" = the intelligence layer's guess (bounded
+ * tie-break only).
+ */
+export type PreferenceStrength = "explicit" | "inferred";
+
 export function pickPrimaryTour(
   feeling: Feeling,
   companions: Companions,
@@ -1358,6 +1366,7 @@ export function pickPrimaryTour(
   rhythm: Rhythm | null = null,
   preferTourId: string | null = null,
   eligibleTourIds: ReadonlyArray<string> | null = null,
+  preferStrength: PreferenceStrength = "explicit",
 ): { tour: SignatureTour; alternates: SignatureTour[] } {
   const { tour, alternates } = pickPrimaryTourWithFit(
     feeling,
@@ -1369,6 +1378,7 @@ export function pickPrimaryTour(
     rhythm,
     preferTourId,
     eligibleTourIds,
+    preferStrength,
   );
   return { tour, alternates };
 }
@@ -1399,6 +1409,17 @@ export function pickPrimaryTourWithFit(
    * and leaves selection exactly as before. Never widens the pool.
    */
   eligibleTourIds: ReadonlyArray<string> | null = null,
+  /**
+   * How much authority the preference carries.
+   *  - "explicit": the traveller answered a deliberate, discriminative
+   *    Director / discovery question (e.g. "Sacred heritage" →
+   *    `templars-and-university` → `tomar-coimbra`). Honoured absolutely,
+   *    but ONLY after the eligibility ceiling and the high-signal gate.
+   *  - "inferred": the intelligence layer merely guessed a leading
+   *    dimension. It is a bounded tie-break (Δ ≤ 12 from the leader) and
+   *    must never bulldoze a materially better semantic fit.
+   */
+  preferStrength: PreferenceStrength = "explicit",
 ): {
   tour: SignatureTour;
   alternates: SignatureTour[];
@@ -1564,16 +1585,27 @@ export function pickPrimaryTourWithFit(
     }
   }
 
-  // Living Atlas preference — the intelligence layer may nominate a
-  // Signature it believes fits the traveller's leading dimensions better
-  // (e.g. the scholarly "Sacred heritage" Director answer →
-  // `templars-and-university` → `tomar-coimbra`). It is honoured whenever
-  // that tour survived every hard constraint, the preflight ceiling and the
-  // high-signal gate above — a deliberate, discriminative answer must not be
-  // outvoted by generic scoring. Never invents a tour, never widens the pool.
+  // PREFERENCE — two strengths, deliberately asymmetric.
+  //
+  // An EXPLICIT preference comes from a discriminative answer the traveller
+  // actually gave (the scholarly "Sacred heritage" Director option →
+  // `templars-and-university` → `tomar-coimbra`). Once that product has
+  // survived every hard constraint, the preflight ceiling and the
+  // high-signal gate, generic scoring must not outvote it.
+  //
+  // An INFERRED preference is only the intelligence layer's guess. It acts
+  // as a bounded tie-break: honoured while it stays within the top band
+  // (Δ ≤ 12) of the leader, never strong enough to jump over a materially
+  // better semantic fit. Neither strength invents a tour or widens the pool.
   if (preferTourId && sorted.length > 1) {
     const preferred = sorted.find((s) => s.tour.id === preferTourId);
-    if (preferred) chosen = preferred;
+    if (preferred) {
+      if (preferStrength === "explicit") {
+        chosen = preferred;
+      } else if (chosen.fit.totalScore - preferred.fit.totalScore <= 12) {
+        chosen = preferred;
+      }
+    }
   }
 
   const alternates = sorted
@@ -1621,6 +1653,8 @@ export function curateJourney(
     preferTourId?: string | null;
     /** PREFLIGHT CEILING — sellable product ids; never widened. */
     eligibleTourIds?: ReadonlyArray<string> | null;
+    /** Authority of `preferTourId`. Inferred preferences stay a tie-break. */
+    preferStrength?: PreferenceStrength;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
@@ -1643,6 +1677,7 @@ export function curateJourney(
     null,
     options?.preferTourId ?? null,
     options?.eligibleTourIds ?? null,
+    options?.preferStrength ?? "explicit",
   );
 
   // STRICT containment: pool = primary tour's own stops only.
@@ -2273,7 +2308,11 @@ export function resolveStudioV3Route(input: {
   // Select the anchor before choosing an authority. This exactly mirrors the
   // legacy selector arguments, but does not execute legacy membership logic.
   const seed = hashSeed(input.seed ?? 0);
-  const preferredTourId = input.preferTourId ?? intelligence.preferredTourId;
+  // EXPLICIT (traveller answered it) outranks INFERRED (we guessed it).
+  // Only the explicit one may be absolute after the hard gates.
+  const explicitPreferTourId = input.preferTourId ?? null;
+  const preferredTourId = explicitPreferTourId ?? intelligence.preferredTourId;
+  const preferStrength: PreferenceStrength = explicitPreferTourId ? "explicit" : "inferred";
   const selection = pickPrimaryTourWithFit(
     feeling,
     companions,
@@ -2284,6 +2323,7 @@ export function resolveStudioV3Route(input: {
     null,
     preferredTourId,
     input.eligibleTourIds ?? null,
+    preferStrength,
   );
   const selectedTour = selection.tour;
   const unsatisfiedHighSignal = selection.unsatisfiedHighSignal;
@@ -2296,6 +2336,7 @@ export function resolveStudioV3Route(input: {
       dateExact,
       seed: input.seed ?? 0,
       preferTourId: preferredTourId,
+      preferStrength,
       // PREFLIGHT CEILING also applies on the legacy curation path.
       eligibleTourIds: input.eligibleTourIds ?? null,
     }),
