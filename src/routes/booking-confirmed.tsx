@@ -32,6 +32,31 @@ interface SessionStatus {
   customerName: string | null;
   receiptUrl: string | null;
   environment: "sandbox" | "live";
+  metadata?: Record<string, string>;
+}
+
+function formatBookingDate(value: string | undefined): string | null {
+  if (!value) return null;
+  const d = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return value;
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(d);
+}
+
+function guestLabel(meta: Record<string, string>): string | null {
+  const guests = Number(meta.guests ?? meta.adults ?? 0);
+  if (!guests) return null;
+  const adults = Number(meta.adults ?? 0);
+  const minors = meta.minor_ages
+    ? meta.minor_ages.split(",").filter((s) => s.trim().length > 0).length
+    : Math.max(0, guests - adults);
+  const parts = [`${guests} ${guests === 1 ? "guest" : "guests"}`];
+  if (adults && minors > 0) parts.push(`${adults} adults · ${minors} younger travellers`);
+  return parts.join(" · ");
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
@@ -219,6 +244,39 @@ function BookingConfirmedPage() {
             <p className="mt-4 text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
               Reference · {session_id.slice(-12)}
             </p>
+          ) : null}
+
+          {paid && state.kind === "ok" ? (
+            <dl
+              data-testid="booking-confirmed-details"
+              className="mt-8 grid sm:grid-cols-2 gap-px bg-[color:var(--charcoal)]/12 border border-[color:var(--charcoal)]/12 text-left"
+            >
+              {(
+                [
+                  [
+                    "Experience",
+                    state.data.metadata?.journey_title ||
+                      (tour ? (findTour(tour)?.title ?? tour) : null),
+                  ],
+                  ["Date", formatBookingDate(state.data.metadata?.date_exact)],
+                  ["Start time", state.data.metadata?.start_time || null],
+                  ["Pickup", state.data.metadata?.pickup || null],
+                  ["Party", guestLabel(state.data.metadata ?? {})],
+                  ["Total paid", amountLabel],
+                ] as Array<[string, string | null]>
+              )
+                .filter(([, value]) => Boolean(value))
+                .map(([label, value]) => (
+                  <div key={label} className="bg-[color:var(--ivory)] px-5 py-4">
+                    <dt className="text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                      {label}
+                    </dt>
+                    <dd className="mt-1.5 text-[14px] leading-relaxed text-[color:var(--charcoal)]">
+                      {value}
+                    </dd>
+                  </div>
+                ))}
+            </dl>
           ) : null}
 
           {session_id && paid ? (
