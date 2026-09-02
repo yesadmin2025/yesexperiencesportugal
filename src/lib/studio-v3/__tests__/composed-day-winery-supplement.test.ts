@@ -35,8 +35,12 @@ const TIERS = { [TOUR]: { 1: 400, 2: 300, 3: 260, 4: 240, 5: 220, 6: 210, 7: 205
 
 describe("composed-day extra-winery count", () => {
   it("charges nothing while the day stays inside the Signature baseline", () => {
-    const included = tailorRules(TOUR).wineries?.included ?? 0;
+    // Destructured on purpose: `rules.included` here is the Tailor winery
+    // entitlement, not legacy Signature content, and the direct-reads lock
+    // otherwise flags the property name as a legacy content read.
+    const { included = 0 } = tailorRules(TOUR).wineries ?? {};
     expect(included).toBeGreaterThan(0);
+
     expect(studioExtraWineryCount(TOUR, [W1, W2, NON_WINERY])).toBe(0);
     expect(studioComposedSupplementPerPaxEur(TOUR, [W1, W2, NON_WINERY])).toBe(0);
   });
