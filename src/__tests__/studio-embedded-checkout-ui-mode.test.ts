@@ -22,7 +22,7 @@ describe("create-signature-checkout · embedded ui_mode", () => {
   it("sends the current embedded enum on the embedded branch", () => {
     const at = FN.indexOf('if (uiMode === "embedded") {');
     expect(at).toBeGreaterThan(-1);
-    const branch = FN.slice(at, at + 400);
+    const branch = FN.slice(at, FN.indexOf("} else {", at));
     expect(branch).toContain('sessionParams.ui_mode = "embedded";');
     expect(branch).toContain("sessionParams.return_url");
     expect(branch).toContain("{CHECKOUT_SESSION_ID}");
