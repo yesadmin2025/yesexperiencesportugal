@@ -2264,7 +2264,7 @@ export function resolveStudioV3Route(input: {
   // legacy selector arguments, but does not execute legacy membership logic.
   const seed = hashSeed(input.seed ?? 0);
   const preferredTourId = input.preferTourId ?? intelligence.preferredTourId;
-  const selectedTour = pickPrimaryTour(
+  const selection = pickPrimaryTourWithFit(
     feeling,
     companions,
     interests,
@@ -2274,7 +2274,9 @@ export function resolveStudioV3Route(input: {
     null,
     preferredTourId,
     input.eligibleTourIds ?? null,
-  ).tour;
+  );
+  const selectedTour = selection.tour;
+  const unsatisfiedHighSignal = selection.unsatisfiedHighSignal;
   const authority = resolveStudioV3CurationAuthority(selectedTour.id, () =>
     curateJourney(feeling, companions, rhythm, {
       interests,
@@ -2284,8 +2286,11 @@ export function resolveStudioV3Route(input: {
       dateExact,
       seed: input.seed ?? 0,
       preferTourId: preferredTourId,
+      // PREFLIGHT CEILING also applies on the legacy curation path.
+      eligibleTourIds: input.eligibleTourIds ?? null,
     }),
   );
+
   const journey = authority.legacy;
 
   // Legacy telemetry is emitted only when legacy curation actually ran.
