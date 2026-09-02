@@ -139,7 +139,7 @@ describe("Studio checkout route truth — behaviour", () => {
       // expectation compares the same presentation of the reordered moments.
     ).toEqual(
       [base[1].label, base[0].label].map((l) =>
-        studioDisplayLabel(l, buildWineryDisplayLabels([base[1].label, base[0].label])),
+        studioDisplayLabel(l, buildWineryDisplayLabels([{ label: base[1].label }, { label: base[0].label }])),
       ),
     );
 
