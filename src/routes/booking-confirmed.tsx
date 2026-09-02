@@ -246,6 +246,39 @@ function BookingConfirmedPage() {
             </p>
           ) : null}
 
+          {paid && state.kind === "ok" ? (
+            <dl
+              data-testid="booking-confirmed-details"
+              className="mt-8 grid sm:grid-cols-2 gap-px bg-[color:var(--charcoal)]/12 border border-[color:var(--charcoal)]/12 text-left"
+            >
+              {(
+                [
+                  [
+                    "Experience",
+                    state.data.metadata?.journey_title ||
+                      (tour ? (findTour(tour)?.title ?? tour) : null),
+                  ],
+                  ["Date", formatBookingDate(state.data.metadata?.date_exact)],
+                  ["Start time", state.data.metadata?.start_time || null],
+                  ["Pickup", state.data.metadata?.pickup || null],
+                  ["Party", guestLabel(state.data.metadata ?? {})],
+                  ["Total paid", amountLabel],
+                ] as Array<[string, string | null]>
+              )
+                .filter(([, value]) => Boolean(value))
+                .map(([label, value]) => (
+                  <div key={label} className="bg-[color:var(--ivory)] px-5 py-4">
+                    <dt className="text-[10.5px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+                      {label}
+                    </dt>
+                    <dd className="mt-1.5 text-[14px] leading-relaxed text-[color:var(--charcoal)]">
+                      {value}
+                    </dd>
+                  </div>
+                ))}
+            </dl>
+          ) : null}
+
           {session_id && paid ? (
             <div className="mt-8 border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] p-6 sm:p-7 text-left">
               <p className="text-[10.5px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
