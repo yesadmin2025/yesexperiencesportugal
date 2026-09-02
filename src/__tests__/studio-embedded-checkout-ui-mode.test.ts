@@ -42,8 +42,8 @@ describe("create-signature-checkout · embedded ui_mode", () => {
   });
 
   it("keeps pricing, date and commercial validation intact", () => {
-    expect(FN).toContain("resolveTourOperatingRules");
-    expect(FN).toContain("isAddOnStructurallyEligible");
+    expect(FN).toContain("checkTourOperatingRule");
+    expect(FN).toContain("serverAddOnAllowedForTour");
     expect(FN).toContain("price_source");
   });
 });
