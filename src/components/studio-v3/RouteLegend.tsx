@@ -3,7 +3,8 @@
  *
  * Renders alongside the map so travellers can see exactly HOW the day
  * connects: origin → stop 1 (12 min · driving · 8.4km), stop 1 → stop 2
- * (3 min · walking · 0.2km), plus the day totals.
+ * (3 min · walking · 0.2km), and, when the Studio route is closed door-to-door,
+ * the final stop → pickup/drop-off return leg.
  *
  * Falls back gracefully:
  *  - `legMinutes` missing → skip the per-leg breakdown, keep the header.
@@ -59,8 +60,17 @@ export function RouteLegend({
   const drivingCount = (legModes ?? []).filter((m) => m === "driving").length;
   const walkingCount = (legModes ?? []).filter((m) => m === "walking").length;
 
-  // origin is the first anchor; each leg is between waypoint i and i+1
-  const points: string[] = [originLabel ?? "Pickup", ...stopLabels];
+  const origin = originLabel ?? "Pickup";
+  // Door-to-door route normalization adds one more leg than there are public
+  // moment labels: the last moment returns to the origin/drop-off. Append the
+  // origin label only in that exact contract so the legend never invents a
+  // destination for malformed leg arrays.
+  const hasExplicitReturnLeg = legMinutes.length === stopLabels.length + 1;
+  const points: string[] = [
+    origin,
+    ...stopLabels,
+    ...(hasExplicitReturnLeg ? [origin] : []),
+  ];
 
   return (
     <figure
