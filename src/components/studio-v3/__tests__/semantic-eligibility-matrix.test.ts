@@ -25,7 +25,7 @@ import { pickPrimaryTourWithFit } from "../curation";
 import type { Companions, Feeling, Interest, Pickup } from "../types";
 
 const COUPLE: Companions = "couple";
-const PICKUP: Pickup = "lisbon-center";
+const PICKUP: Pickup = "lisbon";
 
 function pick(args: {
   feeling: Feeling;
