@@ -292,3 +292,106 @@ export function studioComposedSupplementPerPaxEur(
   if (!rules) return 0;
   return studioExtraWineryCount(anchorTourId, composedLabels) * rules.supplementEur;
 }
+
+/* ─────────────────────────────────────────────────────────────── *
+ * STRUCTURAL COMMERCIAL AUTHORITY (P0-2).
+ *
+ * Generic PUBLIC labels ("A local winery", "A second local winery") are a
+ * presentation artefact. They must NEVER be the commercial identity or the
+ * count authority: two distinct suppliers can share one generic wording and
+ * collapse into a single key, silently under-charging the day.
+ *
+ * These helpers count wineries from the STRUCTURAL identity of the authored
+ * moment (`blueprintStopId` / `inventoryStopId`) and only fall back to the
+ * canonical label when a moment carries no structural id at all. One
+ * authority, used by Your Day, the Guest Details quote, the local Checkout
+ * Summary and the Stripe payload.
+ * ─────────────────────────────────────────────────────────────── */
+
+export interface StudioStructuralMoment {
+  readonly label: string;
+  readonly inventoryStopId?: string | null;
+  readonly blueprintStopId?: string | null;
+}
+
+/** Structural blueprint ids that ARE a winery visit (typed catalogue truth). */
+const WINERY_BLUEPRINT_IDS: ReadonlySet<string> = (() => {
+  const ids = new Set<string>();
+  for (const bp of Object.values(TAILOR_BLUEPRINTS)) {
+    for (const stop of [...bp.core, ...(bp.choice?.options ?? []), ...bp.optional]) {
+      if (stop.category === "winery") ids.add(stop.id);
+    }
+  }
+  return ids;
+})();
+
+function structuralWineryKey(moment: StudioStructuralMoment): string | null {
+  const id = (moment.blueprintStopId ?? moment.inventoryStopId ?? "").trim();
+  const label = moment.label ?? "";
+  const winery =
+    (id.length > 0 && WINERY_BLUEPRINT_IDS.has(id)) ||
+    isWineryStopLabel(label) ||
+    containsWinerySupplierName(label);
+  if (!winery) return null;
+  if (id.length > 0) return `id:${id}`;
+  const key = semanticStopKey(label) || normName(label);
+  return key ? `label:${key}` : null;
+}
+
+/** Distinct wineries in the authored day, by structural identity. */
+export function studioStructuralWineryCount(
+  moments: readonly StudioStructuralMoment[],
+): number {
+  const keys = new Set<string>();
+  for (const m of moments) {
+    const key = structuralWineryKey(m);
+    if (key) keys.add(key);
+  }
+  return keys.size;
+}
+
+/** Extra wineries beyond the approved included baseline — structural count. */
+export function studioExtraWineryCountFromMoments(
+  anchorTourId: string | null | undefined,
+  moments: readonly StudioStructuralMoment[],
+): number {
+  if (!anchorTourId) return 0;
+  const rules = tailorRules(anchorTourId).wineries;
+  if (!rules) return 0;
+  const maxExtra = Math.max(0, rules.max - rules.included);
+  return Math.min(maxExtra, Math.max(0, studioStructuralWineryCount(moments) - rules.included));
+}
+
+/** Per-pax supplement for the composed day — structural count × approved rate. */
+export function studioComposedSupplementFromMoments(
+  anchorTourId: string | null | undefined,
+  moments: readonly StudioStructuralMoment[],
+): number {
+  if (!anchorTourId) return 0;
+  const rules = tailorRules(anchorTourId).wineries;
+  if (!rules) return 0;
+  return studioExtraWineryCountFromMoments(anchorTourId, moments) * rules.supplementEur;
+}
+
+/**
+ * Structural evidence that a real blueprint moment was traded away to make
+ * room for the 4th winery. Returns stable blueprint stop ids present in the
+ * Signature skeleton but ABSENT from the authored day. Non-winery only —
+ * swapping one winery for another is not a trade-off.
+ */
+export function studioTradedBlueprintStopIds(
+  anchorTourId: string | null | undefined,
+  moments: readonly StudioStructuralMoment[],
+): string[] {
+  if (!anchorTourId) return [];
+  const bp = TAILOR_BLUEPRINTS[anchorTourId];
+  if (!bp) return [];
+  const present = new Set<string>();
+  for (const m of moments) {
+    const id = (m.blueprintStopId ?? m.inventoryStopId ?? "").trim();
+    if (id) present.add(id);
+  }
+  return bp.core
+    .filter((s) => s.category !== "winery" && !present.has(s.id))
+    .map((s) => s.id);
+}
