@@ -47,6 +47,32 @@ import { signatureTours, isValidTourId } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 
+/** Homepage Journal row — three evergreen Local Stories guides. */
+const homepageJournalLinks: { slug: string; eyebrow: string; title: string; blurb: string }[] = [
+  {
+    slug: "best-wine-tours-from-lisbon",
+    eyebrow: "Wine",
+    title: "The best wine tours from Lisbon",
+    blurb:
+      "Three real wine regions within 90 minutes of the city — Arrábida, Azeitão and the Alentejo — and how to choose between them.",
+  },
+  {
+    slug: "portugal-coastal-drives-from-lisbon",
+    eyebrow: "Coast",
+    title: "Portugal coastal drives from Lisbon",
+    blurb:
+      "The Arrábida ridge road, Cabo da Roca to Cascais, Tróia to Comporta and the wild Vicentine Coast.",
+  },
+  {
+    slug: "portugal-heritage-sites-near-lisbon",
+    eyebrow: "Heritage",
+    title: "Heritage sites near Lisbon",
+    blurb:
+      "Roman Évora, the palaces of Sintra, Moorish walls and Alentejo cellars still fermenting wine in clay.",
+  },
+];
+
+
 /* ──────────────────────────────────────────────────────────────────
  * Featured Signature tours — exactly 4 real tours, in display order.
  * Each id MUST exist in `signatureTours` (validated below).
