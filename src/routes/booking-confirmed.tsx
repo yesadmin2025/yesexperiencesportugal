@@ -32,6 +32,31 @@ interface SessionStatus {
   customerName: string | null;
   receiptUrl: string | null;
   environment: "sandbox" | "live";
+  metadata?: Record<string, string>;
+}
+
+function formatBookingDate(value: string | undefined): string | null {
+  if (!value) return null;
+  const d = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return value;
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(d);
+}
+
+function guestLabel(meta: Record<string, string>): string | null {
+  const guests = Number(meta.guests ?? meta.adults ?? 0);
+  if (!guests) return null;
+  const adults = Number(meta.adults ?? 0);
+  const minors = meta.minor_ages
+    ? meta.minor_ages.split(",").filter((s) => s.trim().length > 0).length
+    : Math.max(0, guests - adults);
+  const parts = [`${guests} ${guests === 1 ? "guest" : "guests"}`];
+  if (adults && minors > 0) parts.push(`${adults} adults · ${minors} younger travellers`);
+  return parts.join(" · ");
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
