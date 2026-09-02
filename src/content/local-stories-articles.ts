@@ -179,27 +179,27 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         body: "Sesimbra still feels like a fishing town because fishing remains part of its daily life. Boats return to the harbour, seafood restaurants prepare the morning’s catch, and the waterfront becomes livelier as families arrive for lunch and an evening walk beside the beach.\n\nAbove the town, Sesimbra Castle looks across the roofs, the bay and the surrounding hills. The climb reveals how naturally the town is protected between the sea and the Arrábida landscape. Closer to the water, the old centre is compact and easy to explore on foot.\n\nSesimbra is not a place built around a checklist of monuments. Its appeal lies in watching the harbour, walking through the narrow streets and allowing the pace of the coast to replace the rhythm of Lisbon.",
       },
       {
-        heading: "Where we eat",
+        heading: "Where to eat in Sesimbra — the harbour fish lunch",
         body: "In Sesimbra, lunch should begin with the fish rather than with a restaurant ranking. Many menus depend on what arrived at the harbour, so the best choice may be grilled sea bass, sea bream, cuttlefish or another local catch simply prepared with olive oil, garlic, potatoes and vegetables.\n\nThe restaurants along the waterfront are convenient, but smaller streets behind the main promenade also hide long-established local places. We usually look for a dining room where Portuguese families are eating, the fish is shown clearly and nobody is attempting to rush the table.\n\nA Sesimbra lunch is part of the day, not an interruption between activities. Leave time for it. The sea view, conversation and unhurried service are part of what makes the town worth visiting.",
       },
       {
-        heading: "Wild beaches inside the Arrábida park",
+        heading: "Best beaches near Sesimbra, inside the Arrábida park",
         body: "Beyond Sesimbra, the Arrábida coast becomes quieter and more dramatic. Limestone hills descend towards clear Atlantic water, creating coves and beaches protected by the natural park.\n\nSome beaches are easily reached, while others require a short walk, seasonal transport or local knowledge. Conditions also change throughout the year, so the right stop depends on weather, access and how much time guests want to spend by the sea.\n\nThe water can be cold even in summer, but the landscape is exceptional. A beach stop here is less about organised entertainment and more about swimming, walking, watching the cliffs and enjoying a part of the Portuguese coast that still feels remarkably untouched.",
       },
       {
-        heading: "Getting to Sesimbra from Lisbon",
+        heading: "How to get to Sesimbra from Lisbon (about 40 minutes by car)",
         body: "Sesimbra sits roughly 40 kilometres south of Lisbon. By car it is usually around 40 minutes, crossing the 25 de Abril bridge and then turning off towards the Arrábida hills — the last stretch drops down to the sea and is the best part of the drive.\n\nPublic transport is possible via bus from Lisbon, but connections are limited and the wild beaches inside the natural park are difficult to reach without a car. Most travelers who want the coast as well as the town end up driving or booking a private day.\n\nIf you would rather not drive, Sesimbra is part of our [Wild Beaches & Picnic Signature](/tours/wild-beaches-picnic), and it can also close an [Arrábida private wine day](/tours/arrabida-wine-allinclusive) with Atlantic light over the harbour.",
       },
       {
-        heading: "A quiet half-day option",
+        heading: "A half-day in Sesimbra, if you have less time",
         body: "Sesimbra also works well when a full sightseeing day feels unnecessary. A relaxed half-day can include a coastal drive through Arrábida, time beside the harbour, a walk through the old centre and a long seafood lunch.\n\nIt is particularly suitable for travelers staying in Lisbon who want to see another side of the region without beginning early or returning late. The town offers enough to feel like a genuine escape, but not so much that the visit becomes another demanding itinerary.\n\nFor a slower version, combine Sesimbra with a viewpoint or quiet beach. For a fuller day, add wineries in Azeitão or Setúbal — our guide to the [best wine tasting near Lisbon](/local-stories/best-wine-tasting-near-lisbon) compares them, and you can shape either version yourself in the [Experience Studio](/studio-v3).",
       },
       {
-        heading: "When to go, and how long you need",
+        heading: "Best time to visit Sesimbra, and how long you need",
         body: "Half a day is enough for the town itself: the harbour, the old centre, the castle viewpoint and lunch. A full day is what you need if you also want the Arrábida coast, a swim and an unhurried table by the sea.\n\nLate spring and early autumn are our favourite windows — the light is soft, the sea is calm enough for the coves and the restaurants are busy with locals rather than queues. July and August bring the warmest water and the busiest access roads inside the natural park, so early starts matter. In winter Sesimbra stays open and working; you trade swimming for empty streets and dramatic Atlantic weather.\n\nBring shoes you can walk a slope in for the castle, and remember that some beaches inside the park have seasonal access rules. If a beach is closed or crowded on the day, the coast has enough alternatives — knowing which one is open is the part that is hard from a guidebook.",
       },
       {
-        heading: "See Sesimbra on a private day",
+        heading: "Sesimbra day trips from Lisbon — see it on a private day",
         body: "If you would rather not drive, park or guess which cove is accessible, we run Sesimbra and the Arrábida coast as private days from Lisbon.\n\nThe [Wild Beaches & Picnic private day](/tours/wild-beaches-picnic) is the coastal version: Arrábida viewpoints, a quiet beach and a picnic by the sea. The [Arrábida Wine private day](/tours/arrabida-wine-allinclusive) pairs Azeitão cellars and lunch with coastal Sesimbra light on the way home. Both are private to your party, with door-to-door pickup in Lisbon.\n\nIf neither shape is quite yours, design your own in the [Experience Studio](/studio-v3) — you choose the feeling and the rhythm, and the day is built around it. See all [private day tours from Lisbon](/experiences) for the full collection.",
       },
     ],
