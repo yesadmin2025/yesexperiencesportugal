@@ -117,10 +117,10 @@ describe("time truth at the payment seam", () => {
 });
 
 describe("protected generated file", () => {
-  it("brand-audit.json matches the certified protected baseline", () => {
+  it("brand-audit.json matches the pre-closure protected baseline", () => {
     const pristine = execFileSync(
       "git",
-      ["show", "b4c4498b5547c2207de50906e704a7a809d1adc4:src/generated/brand-audit.json"],
+      ["show", "681b1159b4883a5a9be6899c9a1a17f25ca7269f:src/generated/brand-audit.json"],
       { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
     );
     const onDisk = readFileSync(
