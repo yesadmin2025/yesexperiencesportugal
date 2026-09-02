@@ -639,9 +639,8 @@ Deno.serve(async (req) => {
     };
 
     if (uiMode === "embedded") {
-      // Verified against the live endpoint: this project's Checkout Sessions
-      // integration uses `hosted_page` / `embedded_page` semantics.
-      sessionParams.ui_mode = "embedded_page";
+      // Stripe Checkout Sessions API (2026-03-25.dahlia) enum: hosted | embedded | custom.
+      sessionParams.ui_mode = "embedded";
       sessionParams.return_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;
     } else {
       sessionParams.success_url = `${body.returnUrl}${body.returnUrl.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`;

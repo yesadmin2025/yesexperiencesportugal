@@ -1,9 +1,8 @@
 /**
  * SURGICAL RELEASE FIX — Studio embedded checkout contract.
  *
- * 1. The Stripe Checkout Session for the Studio flow uses this project's
- *    `hosted_page` / `embedded_page` semantics, proven live (HTTP 200 +
- *    clientSecret + mounted embedded iframe).
+ * 1. The Stripe Checkout Session for the Studio flow must send the current
+ *    Stripe enum value `ui_mode: "embedded"` (API 2026-03-25.dahlia).
  * 2. The embedded branch must keep the `return_url` + client-secret handoff
  *    (never `success_url`), and the response must carry `clientSecret`,
  *    `sessionId` and a publishable `pk_...` key.
@@ -18,14 +17,20 @@ const FN = readFileSync(
 );
 
 describe("create-signature-checkout · embedded ui_mode", () => {
-  it("sends the project's embedded ui_mode on the embedded branch", () => {
+  it("sends exactly ui_mode: embedded on the embedded branch", () => {
     const at = FN.indexOf('if (uiMode === "embedded") {');
     expect(at).toBeGreaterThan(-1);
     const branch = FN.slice(at, FN.indexOf("} else {", at));
-    expect(branch).toContain('sessionParams.ui_mode = "embedded_page";');
+    expect(branch).toContain('sessionParams.ui_mode = "embedded";');
+    expect(branch).not.toContain("embedded_page");
     expect(branch).toContain("sessionParams.return_url");
     expect(branch).toContain("{CHECKOUT_SESSION_ID}");
     expect(branch).not.toContain("sessionParams.success_url");
+  });
+
+  it("never sends a non-enum ui_mode anywhere in the function", () => {
+    expect(FN).not.toContain("embedded_page");
+    expect(FN).not.toContain("hosted_page");
   });
 
   it("resolves uiMode from the request without widening the enum", () => {

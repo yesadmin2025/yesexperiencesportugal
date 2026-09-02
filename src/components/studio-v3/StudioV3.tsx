@@ -69,7 +69,6 @@ import { computeQualityScore } from "@/lib/studio-v3-quality";
 import { inferKind, summarizeDay } from "@/lib/studio/timing";
 import { PartialReveal } from "./PartialReveal";
 
-import { LeadCaptureSheet, type LeadIntent } from "./LeadCaptureSheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { whatsappHref } from "@/components/WhatsAppFab";
 import {
@@ -1099,15 +1098,7 @@ export function StudioV3() {
     writePersistedStudioState(state);
   }, [hydratedState, state]);
 
-  const [leadSheet, setLeadSheet] = useState<{ open: boolean; intent: LeadIntent }>({
-    open: false,
-    intent: "book",
-  });
-  const openLeadSheet = useCallback(
-    (intent: LeadIntent) => setLeadSheet({ open: true, intent }),
-    [],
-  );
-  const closeLeadSheet = useCallback(() => setLeadSheet((s) => ({ ...s, open: false })), []);
+  // Studio is instant-bookable: there is no lead-capture / curator exit.
 
   /**
    * INSTANT-BOOKABLE TRUTH — the Studio never ends at a curator hand-off.
@@ -4327,12 +4318,6 @@ export function StudioV3() {
         }}
       />
 
-      <LeadCaptureSheet
-        open={leadSheet.open}
-        intent={leadSheet.intent}
-        state={state}
-        onClose={closeLeadSheet}
-      />
 
       {reaction ? (
         <ReactionOverlay reaction={reaction} state={state} onDismiss={() => setReaction(null)} />
