@@ -1371,6 +1371,26 @@ export function StudioV3() {
         return;
       }
 
+      // P0 — DEFENCE IN DEPTH AT THE PAYMENT SEAM. In ADDITION to every gate
+      // above (commercial, operational, route identity, pricing, party size,
+      // final time), the EXACT route being reserved plus the CURRENT add-on
+      // minutes (counted exactly once) and the CURRENT pickup/drop-off truth
+      // must pass the ONE canonical door-to-door certification. Unknown pickup
+      // (including "other", which has no proven coordinate and no approved
+      // exact-address resolution) is `not-evaluable` and fails closed to the
+      // curator path — Stripe is never opened on an uncertified day.
+      const checkoutDoorToDoor = certifyFrozenDayFromPickup({
+        points: checkoutStops,
+        pickupCoord: pickupOriginCoord(currentState.pickup),
+        addOnsMinutes: selectedAddOnMinutes,
+        rhythm: currentState.rhythm ?? null,
+      });
+      if (!frozenDayAllowsCheckout(checkoutDoorToDoor)) {
+        setCheckoutPending(false);
+        openLeadSheet("book");
+        return;
+      }
+
 
       // COMMERCIAL PARITY — the structural ledger for THIS composition,
       // reconciled with the current basket. Quantities only; no euros are
