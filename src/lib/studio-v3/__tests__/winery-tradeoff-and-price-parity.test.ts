@@ -9,6 +9,8 @@
  * from the generic public labels, and one value feeds Your Day, the Guest
  * Details quote, the local Checkout Summary and the Stripe payload count.
  */
+import { readFileSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
 
 import {
@@ -158,5 +160,42 @@ describe("P0-2 local totals equal server arithmetic (2 adults)", () => {
     expect(serverExtraWineriesAllowed(TOUR, extra, traded)).toBe(extra);
     const priced = resolveStudioStrictJourneyPricing(TOUR, party, TIERS, supplement);
     expect(priced?.totalEur).toBe(serverTotal(extra));
+  });
+});
+
+
+describe("P0-1/P0-2 the client never prices this action", () => {
+  const CHECKOUT_FN = readFileSync("supabase/functions/create-signature-checkout/index.ts", "utf8");
+  const STUDIO = readFileSync("src/components/studio-v3/StudioV3.tsx", "utf8");
+  const JOURNEY = readFileSync("src/components/studio-v3/useResolvedJourney.ts", "utf8");
+
+  it("sends a COUNT and structural ids only - no euro amount for the supplement", () => {
+    expect(STUDIO).toContain("tailorExtraWineries: composedExtraWineries");
+    expect(STUDIO).toContain("tradedStopIds,");
+    expect(STUDIO).not.toMatch(/tailorSupplementEur|composedSupplementEur:/);
+  });
+
+  it("re-derives the euro supplement server-side from its own approved table", () => {
+    expect(CHECKOUT_FN).toContain("serverExtraWineriesAllowed(");
+    expect(CHECKOUT_FN).toContain("serverTailorSupplementsEur(");
+    const gateAt = CHECKOUT_FN.indexOf("serverExtraWineriesAllowed(");
+    const sessionAt = CHECKOUT_FN.indexOf("checkout.sessions.create");
+    expect(gateAt).toBeGreaterThan(-1);
+    expect(sessionAt).toBeGreaterThan(gateAt);
+  });
+
+  it("ignores any euro value a tampered payload might carry", () => {
+    const claimed = 99999;
+    expect(serverTailorSupplementsEur(TOUR, false, 1)).toBe(TAILOR_EXTRA_WINERY_SUPPLEMENT_EUR);
+    expect(serverTailorSupplementsEur(TOUR, false, 1)).not.toBe(claimed);
+  });
+
+  it("feeds Your Day, the Guest Details quote, the Checkout Summary and Stripe from one authority", () => {
+    expect(JOURNEY).toContain("studioComposedSupplementFromMoments(");
+    expect(JOURNEY).toContain("composedSupplementPerPaxEur: composedSupplementPerPax");
+    expect(STUDIO).toContain("resolvedJourney.composedSupplementPerPaxEur");
+    expect(STUDIO).toContain("studioComposedSupplementFromMoments(");
+    expect(STUDIO).toContain("studioExtraWineryCountFromMoments(tour.id, checkoutStops)");
+    expect(STUDIO).not.toMatch(/studioComposedSupplementPerPaxEur\(/);
   });
 });
