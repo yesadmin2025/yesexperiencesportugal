@@ -6,6 +6,7 @@ import {
   doorToDoorAllowsCheckout,
   transferMinutes,
 } from "@/lib/studio-v3/doorToDoorAuthority";
+import { normalizeDoorToDoorRouteStops } from "@/hooks/use-route-leg-minutes";
 import { resolveTimeBudget } from "@/lib/studio-v3/resolveTimeBudget";
 import {
   STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN,
@@ -148,6 +149,47 @@ describe("door-to-door authority — edits recompute", () => {
       replaceAt: 1,
     });
     expect(swapped.evaluable).toBe(true);
+  });
+});
+
+describe("Studio reveal route — explicit return leg", () => {
+  const origin = { key: "origin", lat: LISBON.lat, lng: LISBON.lng };
+  const first = { key: "first", lat: 38.5157, lng: -9.0128 };
+  const second = { key: "second", lat: 38.4425, lng: -9.1017 };
+
+  it("closes origin + ordered moments with the pickup/drop-off return", () => {
+    const points = normalizeDoorToDoorRouteStops([origin, first, second]);
+    expect(points).toHaveLength(4);
+    expect(points.at(-1)).toEqual({
+      key: "return-to-origin",
+      lat: origin.lat,
+      lng: origin.lng,
+    });
+    // N points => N-1 route legs, including the final return.
+    expect(points.length - 1).toBe(3);
+  });
+
+  it("does not duplicate a return already present", () => {
+    const points = normalizeDoorToDoorRouteStops([
+      origin,
+      first,
+      { key: "dropoff", lat: origin.lat, lng: origin.lng },
+    ]);
+    expect(points).toHaveLength(3);
+    expect(points.at(-1)?.key).toBe("dropoff");
+  });
+
+  it("filters invalid coordinates before route certification", () => {
+    const points = normalizeDoorToDoorRouteStops([
+      origin,
+      { key: "bad", lat: Number.NaN, lng: -9.0 },
+      first,
+    ]);
+    expect(points.map((point) => point.key)).toEqual([
+      "origin",
+      "first",
+      "return-to-origin",
+    ]);
   });
 });
 
