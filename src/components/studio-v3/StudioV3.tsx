@@ -6387,7 +6387,7 @@ export function StoryboardHandoff({
             className="min-h-[44px] px-3 text-[11px] font-semibold uppercase tracking-[0.22em] underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{ color: "var(--teal)" }}
           >
-            Have a curator confirm this day
+            Adjust this day
           </button>
         ) : (
           <button
