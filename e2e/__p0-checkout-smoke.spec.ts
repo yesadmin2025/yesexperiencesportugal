@@ -5,7 +5,12 @@ test.describe("P0 · Studio V3 checkout smoke @393px", () => {
   test.use({ viewport: { width: 393, height: 780 } });
 
   test("Your Day gate → Guest Details → Summary → Stripe", async ({ page }) => {
-    test.setTimeout(240_000);
+    test.setTimeout(600_000);
+    const t0 = Date.now();
+    setInterval(async () => {
+      const p = await page.locator("[data-testid=\"studio-v3-root\"]").first().getAttribute("data-phase").catch(() => null);
+      console.log("[p0] t=", Math.round((Date.now() - t0) / 1000), "phase=", p);
+    }, 5000);
 
     const consoleErrors: string[] = [];
     page.on("console", (m) => {
