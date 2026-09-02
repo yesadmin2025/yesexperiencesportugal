@@ -1405,6 +1405,13 @@ export function pickPrimaryTourWithFit(
   fit: FitReport;
   topReports: Array<{ tour: SignatureTour; fit: FitReport }>;
   filtered: Array<{ tour: SignatureTour; reason: string }>;
+  /**
+   * Explicit high-signal interests the chosen candidate cannot truthfully
+   * satisfy. Non-empty means Studio must ask ONE material trade-off instead
+   * of revealing a partially-matching day.
+   */
+  unsatisfiedHighSignal: Interest[];
+
 } {
   assertStopIntentSchema();
   // Build the candidate pool from every axis the guest touched. FEELING_TO_TOURS
@@ -1420,16 +1427,34 @@ export function pickPrimaryTourWithFit(
   const mergedIds = Array.from(
     new Set([...candidateIds, ...intentTargets, ...interestTargets, ...discoveryTargets]),
   );
-  const allowed =
-    eligibleTourIds && eligibleTourIds.length > 0 ? new Set(eligibleTourIds) : null;
+  // PREFLIGHT CEILING — when preflight resolved an eligible pool, that pool
+  // is an ABSOLUTE ceiling. If the taste-derived intersection is empty we
+  // widen only to the eligible pool itself (so semantic scoring still runs),
+  // never back to `mergedIds`, which may contain products that are not
+  // sellable for this date / pickup / party.
+  const allowed = eligibleTourIds && eligibleTourIds.length > 0 ? new Set(eligibleTourIds) : null;
   const constrainedIds = allowed ? mergedIds.filter((id) => allowed.has(id)) : mergedIds;
-  const candidates = (constrainedIds.length > 0 ? constrainedIds : mergedIds)
+  const poolIds =
+    constrainedIds.length > 0
+      ? constrainedIds
+      : allowed
+        ? Array.from(allowed)
+        : mergedIds;
+  const candidates = poolIds
     .map((id) => signatureTours.find((t) => t.id === id))
     .filter((t): t is SignatureTour => Boolean(t));
 
   if (candidates.length === 0) {
+    // Fallback must also respect the ceiling: only ever a product preflight
+    // declared sellable, otherwise the feeling fallback.
     const fallbackId = FEELING_FALLBACK[feeling];
-    const fallback = signatureTours.find((t) => t.id === fallbackId) ?? signatureTours[0];
+    const fallback =
+      (allowed
+        ? (signatureTours.find((t) => allowed.has(t.id) && t.id === fallbackId) ??
+          signatureTours.find((t) => allowed.has(t.id)))
+        : signatureTours.find((t) => t.id === fallbackId)) ??
+      signatureTours.find((t) => t.id === fallbackId) ??
+      signatureTours[0];
     const fit = scoreTourFit(fallback, {
       feeling,
       companions,
@@ -1444,8 +1469,11 @@ export function pickPrimaryTourWithFit(
       fit,
       topReports: [{ tour: fallback, fit }],
       filtered: [],
+      unsatisfiedHighSignal: interests.filter((i) => HIGH_SIGNAL_INTERESTS.includes(i)),
+
     };
   }
+
 
   // Score every candidate with the FitReport model.
   const reported = candidates.map((tour, order) => ({
@@ -1472,24 +1500,52 @@ export function pickPrimaryTourWithFit(
   if (eligible.length === 0) eligible = reported;
 
   // SEMANTIC GATE — a HIGH-SIGNAL interest is one the traveller could only
-  // have chosen deliberately (faith, hands-on workshops, wine). When one is
-  // present, a candidate that provides NO evidence for ANY of them is not a
-  // match, it is a coincidence of generic scoring. Never drops the last
-  // remaining candidate.
+  // have chosen deliberately (faith, hands-on workshops, wine). Satisfying
+  // ONE of them is not a match: every explicitly selected high-signal
+  // interest must be covered by VERIFIED stop-intent evidence (keyword-only
+  // "satisfied" rows carry strength "none" and do not count). When no
+  // candidate covers them all we keep the maximum-coverage set and report
+  // the unsatisfied interests so Studio can ask one material trade-off
+  // instead of revealing an unrelated day.
   const highSignal = interests.filter((i) => HIGH_SIGNAL_INTERESTS.includes(i));
+  const verifiedHighSignal = (r: (typeof eligible)[number]): string[] =>
+    r.fit.coverage.interests
+      .filter(
+        (c) =>
+          c.satisfied &&
+          c.strength !== "none" &&
+          (highSignal as ReadonlyArray<string>).includes(c.interest),
+      )
+      .map((c) => c.interest);
+  let unsatisfiedHighSignal: Interest[] = [];
   if (highSignal.length > 0) {
-    const withEvidence = eligible.filter((r) =>
-      r.fit.coverage.interests.some((c) => c.satisfied && (highSignal as string[]).includes(c.interest)),
-    );
-    if (withEvidence.length > 0) {
+    const covered = eligible.map((r) => ({ r, hit: verifiedHighSignal(r) }));
+    const best = Math.max(...covered.map((c) => c.hit.length));
+    if (best > 0) {
+      const keep = covered.filter((c) => c.hit.length === best);
+      const keepSet = new Set(keep.map((c) => c.r));
       for (const r of eligible) {
-        if (!withEvidence.includes(r)) {
-          filtered.push({ tour: r.tour, reason: "no-high-signal-interest-evidence" });
+        if (!keepSet.has(r)) {
+          filtered.push({
+            tour: r.tour,
+            reason:
+              best === highSignal.length
+                ? "does-not-cover-all-high-signal-interests"
+                : "no-high-signal-interest-evidence",
+          });
         }
       }
-      eligible = withEvidence;
+      eligible = keep.map((c) => c.r);
+      if (best < highSignal.length) {
+        const bestHit = new Set(keep[0]?.hit ?? []);
+        unsatisfiedHighSignal = highSignal.filter((i) => !bestHit.has(i));
+      }
+    } else {
+      unsatisfiedHighSignal = [...highSignal];
     }
   }
+
+
 
   const sorted = eligible.sort((a, b) => {
     if (b.fit.totalScore !== a.fit.totalScore) return b.fit.totalScore - a.fit.totalScore;
@@ -1509,15 +1565,14 @@ export function pickPrimaryTourWithFit(
   }
 
   // Living Atlas preference — the intelligence layer may nominate a
-  // Signature it believes fits the traveller's leading dimensions better.
-  // It is honoured ONLY when that tour is already eligible here and within
-  // the same top band (Δ ≤ 12), so curation's hard constraints, companion
-  // coherence and operational filters always win. Never invents a tour.
+  // Signature it believes fits the traveller's leading dimensions better
+  // (e.g. the scholarly "Sacred heritage" Director answer →
+  // `templars-and-university` → `tomar-coimbra`). It is honoured whenever
+  // that tour survived every hard constraint, the preflight ceiling and the
+  // high-signal gate above — a deliberate, discriminative answer must not be
+  // outvoted by generic scoring. Never invents a tour, never widens the pool.
   if (preferTourId && sorted.length > 1) {
-    const top = sorted[0].fit.totalScore;
-    const preferred = sorted.find(
-      (s) => s.tour.id === preferTourId && top - s.fit.totalScore <= 12,
-    );
+    const preferred = sorted.find((s) => s.tour.id === preferTourId);
     if (preferred) chosen = preferred;
   }
 
@@ -1528,7 +1583,15 @@ export function pickPrimaryTourWithFit(
 
   const topReports = sorted.slice(0, 3).map(({ tour, fit }) => ({ tour, fit }));
 
-  return { tour: chosen.tour, alternates, fit: chosen.fit, topReports, filtered };
+  return {
+    tour: chosen.tour,
+    alternates,
+    fit: chosen.fit,
+    topReports,
+    filtered,
+    unsatisfiedHighSignal,
+  };
+
 }
 
 /**
@@ -1556,6 +1619,8 @@ export function curateJourney(
     seed?: number | string;
     /** Living Atlas preferred Signature id (preference, never an override). */
     preferTourId?: string | null;
+    /** PREFLIGHT CEILING — sellable product ids; never widened. */
+    eligibleTourIds?: ReadonlyArray<string> | null;
   },
 ): CuratedJourney {
   const interests = options?.interests ?? [];
@@ -1577,6 +1642,7 @@ export function curateJourney(
     // scoring contract; only the Living Atlas preference is new.
     null,
     options?.preferTourId ?? null,
+    options?.eligibleTourIds ?? null,
   );
 
   // STRICT containment: pool = primary tour's own stops only.
@@ -1921,6 +1987,13 @@ export interface ResolvedStudioV3Route {
   /** Resolution confidence — drives the fallback messaging upstream. */
   confidence: RouteConfidence;
   /**
+   * Explicit high-signal interests (faith / hands-on / wine) that NO
+   * currently eligible candidate can truthfully satisfy together. When
+   * non-empty, Studio must ask one material trade-off instead of revealing
+   * a partially-matching day. Never routes to a curator/lead sheet.
+   */
+  unsatisfiedHighSignal?: Interest[];
+  /**
    * Living Atlas intelligence — grounded "why this direction fits you"
    * lines derived from the traveller's leading dimensions. Empty when the
    * profile is too thin to reason safely. Never used for pricing.
@@ -2201,7 +2274,7 @@ export function resolveStudioV3Route(input: {
   // legacy selector arguments, but does not execute legacy membership logic.
   const seed = hashSeed(input.seed ?? 0);
   const preferredTourId = input.preferTourId ?? intelligence.preferredTourId;
-  const selectedTour = pickPrimaryTour(
+  const selection = pickPrimaryTourWithFit(
     feeling,
     companions,
     interests,
@@ -2211,7 +2284,9 @@ export function resolveStudioV3Route(input: {
     null,
     preferredTourId,
     input.eligibleTourIds ?? null,
-  ).tour;
+  );
+  const selectedTour = selection.tour;
+  const unsatisfiedHighSignal = selection.unsatisfiedHighSignal;
   const authority = resolveStudioV3CurationAuthority(selectedTour.id, () =>
     curateJourney(feeling, companions, rhythm, {
       interests,
@@ -2221,8 +2296,11 @@ export function resolveStudioV3Route(input: {
       dateExact,
       seed: input.seed ?? 0,
       preferTourId: preferredTourId,
+      // PREFLIGHT CEILING also applies on the legacy curation path.
+      eligibleTourIds: input.eligibleTourIds ?? null,
     }),
   );
+
   const journey = authority.legacy;
 
   // Legacy telemetry is emitted only when legacy curation actually ran.
@@ -2485,6 +2563,8 @@ export function resolveStudioV3Route(input: {
     livingAtlasReasons: intelligence.reasons,
     livingAtlasAlternatives: toAlternativeDirections(intelligence.alternatives, selectedTour.id),
     livingAtlasLive: live?.block ?? null,
+    unsatisfiedHighSignal,
+
   };
 }
 
