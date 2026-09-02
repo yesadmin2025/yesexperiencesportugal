@@ -325,11 +325,29 @@ Deno.serve(async (req) => {
     // ladder stay Tailor-only.
     const isStudioFlow = flowInput === "studio";
     const supplementsFlow = isTailorFlow || isStudioFlow;
+    // FAIL CLOSED — the 4th winery is only sold when a real moment was traded
+    // away for it (`requiresRemovalFrom` in the approved entitlement). The
+    // server proves that from stable structural ids against its own whitelist;
+    // a boolean, a euro value, an invented id or a duplicated id proves
+    // nothing. 3 wineries need no trade-off; 4 do.
+    const extraWineriesAllowed = supplementsFlow
+      ? serverExtraWineriesAllowed(
+          body.tourId,
+          Number(body.tailorExtraWineries ?? 0),
+          Array.isArray(body.tradedStopIds) ? body.tradedStopIds : undefined,
+        )
+      : 0;
+    if (extraWineriesAllowed === null) {
+      return jsonError(
+        "This winery count requires removing another moment from the day.",
+        400,
+      );
+    }
     const tailorSupplements = supplementsFlow
       ? serverTailorSupplementsEur(
           body.tourId,
           isTailorFlow && body.tailorLunchAdded === true,
-          Number(body.tailorExtraWineries ?? 0),
+          extraWineriesAllowed,
         )
       : 0;
 
