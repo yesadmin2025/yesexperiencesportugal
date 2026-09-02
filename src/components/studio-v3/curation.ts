@@ -1556,15 +1556,14 @@ export function pickPrimaryTourWithFit(
   }
 
   // Living Atlas preference — the intelligence layer may nominate a
-  // Signature it believes fits the traveller's leading dimensions better.
-  // It is honoured ONLY when that tour is already eligible here and within
-  // the same top band (Δ ≤ 12), so curation's hard constraints, companion
-  // coherence and operational filters always win. Never invents a tour.
+  // Signature it believes fits the traveller's leading dimensions better
+  // (e.g. the scholarly "Sacred heritage" Director answer →
+  // `templars-and-university` → `tomar-coimbra`). It is honoured whenever
+  // that tour survived every hard constraint, the preflight ceiling and the
+  // high-signal gate above — a deliberate, discriminative answer must not be
+  // outvoted by generic scoring. Never invents a tour, never widens the pool.
   if (preferTourId && sorted.length > 1) {
-    const top = sorted[0].fit.totalScore;
-    const preferred = sorted.find(
-      (s) => s.tour.id === preferTourId && top - s.fit.totalScore <= 12,
-    );
+    const preferred = sorted.find((s) => s.tour.id === preferTourId);
     if (preferred) chosen = preferred;
   }
 
@@ -1575,7 +1574,15 @@ export function pickPrimaryTourWithFit(
 
   const topReports = sorted.slice(0, 3).map(({ tour, fit }) => ({ tour, fit }));
 
-  return { tour: chosen.tour, alternates, fit: chosen.fit, topReports, filtered };
+  return {
+    tour: chosen.tour,
+    alternates,
+    fit: chosen.fit,
+    topReports,
+    filtered,
+    unsatisfiedHighSignal,
+  };
+
 }
 
 /**
