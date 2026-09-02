@@ -54,10 +54,9 @@ const PROBES: Probe[] = [
 
 export const scanDatabaseLegacy = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(
-    async ({ context }): Promise<{ hits: DbHit[]; skipped: string[]; scanned: number }> => {
-      await assertAdmin(context);
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  .handler(async ({ context }): Promise<{ hits: DbHit[]; skipped: string[]; scanned: number }> => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const hits: DbHit[] = [];
     const skipped: string[] = [];
     let scanned = 0;
@@ -109,5 +108,4 @@ export const scanDatabaseLegacy = createServerFn({ method: "POST" })
     }
 
     return { hits, skipped, scanned };
-  },
-);
+  });
