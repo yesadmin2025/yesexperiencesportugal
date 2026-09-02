@@ -1,10 +1,12 @@
 /**
  * SURGICAL RELEASE FIX — Studio embedded checkout contract.
  *
- * 1. The Stripe Checkout Session for the Studio flow must send the current
- *    Stripe enum value `ui_mode: "embedded"` (API 2026-03-25.dahlia).
- * 2. The embedded branch must keep the `return_url` + client-secret handoff
- *    (never `success_url`), and the response must carry `clientSecret`,
+ * 1. The Studio Checkout Session must send `ui_mode: "embedded_page"` — the
+ *    only value live Stripe accepts for this account/API version. Sending
+ *    `embedded` was verified live and returns HTTP 500:
+ *    "The ui_mode value `embedded` is no longer supported. Use `embedded_page` instead."
+ * 2. The embedded branch keeps the `return_url` + client-secret handoff
+ *    (never `success_url`), and the response carries `clientSecret`,
  *    `sessionId` and a publishable `pk_...` key.
  * 3. Pricing / date / commercial validation must stay in place.
  */
@@ -17,20 +19,15 @@ const FN = readFileSync(
 );
 
 describe("create-signature-checkout · embedded ui_mode", () => {
-  it("sends exactly ui_mode: embedded on the embedded branch", () => {
+  it("sends the live-accepted embedded ui_mode on the embedded branch", () => {
     const at = FN.indexOf('if (uiMode === "embedded") {');
     expect(at).toBeGreaterThan(-1);
     const branch = FN.slice(at, FN.indexOf("} else {", at));
-    expect(branch).toContain('sessionParams.ui_mode = "embedded";');
-    expect(branch).not.toContain("embedded_page");
+    expect(branch).toContain('sessionParams.ui_mode = "embedded_page";');
+    expect(branch).not.toContain('sessionParams.ui_mode = "embedded";');
     expect(branch).toContain("sessionParams.return_url");
     expect(branch).toContain("{CHECKOUT_SESSION_ID}");
     expect(branch).not.toContain("sessionParams.success_url");
-  });
-
-  it("never sends a non-enum ui_mode anywhere in the function", () => {
-    expect(FN).not.toContain("embedded_page");
-    expect(FN).not.toContain("hosted_page");
   });
 
   it("resolves uiMode from the request without widening the enum", () => {
