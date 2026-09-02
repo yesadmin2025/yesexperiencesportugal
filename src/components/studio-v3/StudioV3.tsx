@@ -5627,7 +5627,7 @@ export function StoryboardHandoff({
       <div
         role="status"
         aria-live="polite"
-        aria-label="Signature needs a human touch"
+        aria-label="This day needs one more adjustment"
         data-testid="studio-v3-reveal-fallback"
         data-missing={revealValidation.missing.join(",")}
         className="relative w-full max-w-[560px] px-5 pb-12 pt-10 text-center"
@@ -5643,18 +5643,18 @@ export function StoryboardHandoff({
           className="mt-3 text-[1.55rem] sm:text-[1.8rem] font-semibold leading-tight"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          Your Signature needs a human touch.
+          This day needs one more adjustment.
         </h2>
         <p
           className="mt-4 text-[14px] leading-[1.6]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
         >
-          We won't show a Signature that isn't fully grounded in a real tour. A YES curator will
-          compose this one with you — same care, no guesswork.
+          We won't show a day that isn't fully grounded in a real, bookable tour. Let's re-check
+          your practical details and design it again — your answers are kept.
         </p>
         <div className="mt-7 flex flex-col items-center gap-3">
           <CtaButton onClick={onRefine} variant="primary">
-            Continue with a curator
+            Adjust this day
           </CtaButton>
           <button
             type="button"
@@ -6387,7 +6387,7 @@ export function StoryboardHandoff({
             className="min-h-[44px] px-3 text-[11px] font-semibold uppercase tracking-[0.22em] underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
             style={{ color: "var(--teal)" }}
           >
-            Have a curator confirm this day
+            Adjust this day
           </button>
         ) : (
           <button
