@@ -4,7 +4,13 @@ import { useServerFn } from "@tanstack/react-start";
 import { createStudioV3Lead } from "@/lib/studio-v3/leads.functions";
 import { CONSIDERATIONS, LANGUAGES, PICKUPS, type StudioV3State } from "./types";
 
-export type LeadIntent = "book" | "refine";
+/**
+ * P0-7 — `private-group` is the ONE normal group-size hand-off: 13–14
+ * travellers are a premium private group that YES confirms personally. It is
+ * NOT an error state and never a silent down-clamp to 12; the composed day and
+ * the guest's details travel with it. Ordinary 1–12 stays self-service.
+ */
+export type LeadIntent = "book" | "refine" | "private-group";
 
 interface Props {
   open: boolean;
@@ -106,12 +112,19 @@ export function LeadCaptureSheet({ open, intent, state, onClose }: Props) {
 
   if (!open) return null;
 
-  const isBook = intent === "book";
+  const isPrivateGroup = intent === "private-group";
+  const isBook = intent === "book" || isPrivateGroup;
 
-  const headline = isBook ? "Say YES to this Signature" : "Refine with YES first";
-  const intro = isBook
-    ? "Leave your details and confirm a few practicalities. Nothing is reserved until YES confirms availability with you."
-    : "Tell YES what you'd like to adjust. We'll come back with options.";
+  const headline = isPrivateGroup
+    ? "A private group of this size is confirmed personally"
+    : isBook
+      ? "Say YES to this Signature"
+      : "Refine with YES first";
+  const intro = isPrivateGroup
+    ? "Your day is composed and saved exactly as you approved it. For 13 or 14 travellers YES confirms vehicles, hosts and each partner with you directly — leave your details and we come back with the final confirmation."
+    : isBook
+      ? "Leave your details and confirm a few practicalities. Nothing is reserved until YES confirms availability with you."
+      : "Tell YES what you'd like to adjust. We'll come back with options.";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

@@ -1256,7 +1256,7 @@ export function StudioV3() {
         (currentState.adults ?? currentState.guests ?? 0) +
           (currentState.minorAges?.length ?? 0);
       if (requiresCuratorParty(partyTotal)) {
-        openLeadSheet("book");
+        openLeadSheet("private-group");
         return;
       }
       const tour = currentState.tourId ? findTour(currentState.tourId) : null;
@@ -3573,7 +3573,7 @@ export function StudioV3() {
                   date_mode: forward.dateMode,
                 });
                 setLogisticsConflict(curatorPartyMessage(committedTotal));
-                openLeadSheet("book");
+                openLeadSheet("private-group");
                 return;
               }
 
