@@ -154,13 +154,15 @@ function ExperiencesPage() {
                     </Link>
                   </MaskReveal>
 
-                  <Link
-                    to="/tours/$tourId"
-                    params={{ tourId: t.id }}
-                    className="serif text-2xl text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
-                  >
-                    {t.title}
-                  </Link>
+                  <h3 className="serif text-2xl">
+                    <Link
+                      to="/tours/$tourId"
+                      params={{ tourId: t.id }}
+                      className="text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
+                    >
+                      {t.title}
+                    </Link>
+                  </h3>
                   {/* Teaser — emotional lead BEFORE meta/price.
                       Hierarchy: title → story → highlights → fit →
                       duration/price (subdued) → CTAs. Price is
