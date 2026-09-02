@@ -2563,6 +2563,8 @@ export function resolveStudioV3Route(input: {
     livingAtlasReasons: intelligence.reasons,
     livingAtlasAlternatives: toAlternativeDirections(intelligence.alternatives, selectedTour.id),
     livingAtlasLive: live?.block ?? null,
+    unsatisfiedHighSignal,
+
   };
 }
 
