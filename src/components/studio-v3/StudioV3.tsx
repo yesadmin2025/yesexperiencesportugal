@@ -94,6 +94,7 @@ import {
   STUDIO_V3_PHASE_ORDER,
 } from "./curation";
 import { hasSeenFirstRouteBeat } from "./studioFirstRouteBeat";
+import { resolveHighSignalConflict } from "./highSignalConflict";
 
 import { UnifiedYourDayRoute } from "./UnifiedYourDayRoute";
 import {
@@ -1202,6 +1203,23 @@ export function StudioV3() {
   const resolvedJourney = useResolvedJourney(state, selectedAddOnItems, tourPriceTiers);
 
   /**
+   * EXPLICIT-PRIORITY GUARD (live flow).
+   *
+   * When no eligible Signature can truthfully satisfy every explicit
+   * high-signal priority the traveller chose, a partially-matching day must
+   * never be committed or revealed as YOUR DAY. We stay inside Studio and
+   * return the traveller to Interests with a precise trade-off message —
+   * nothing is silently dropped, and there is no curator / lead-sheet exit.
+   */
+  const highSignalConflict = useMemo(() => resolveHighSignalConflict(state), [state]);
+  const highSignalConflictRef = useRef(highSignalConflict);
+  highSignalConflictRef.current = highSignalConflict;
+  const [priorityConflictNotice, setPriorityConflictNotice] = useState<string | null>(null);
+  useEffect(() => {
+    if (!highSignalConflict) setPriorityConflictNotice(null);
+  }, [highSignalConflict]);
+
+  /**
    * Living Atlas intelligence for the current answers. Pure and memoized —
    * used for customer-facing explanation only. The same reasoning already
    * biases Signature selection inside `resolveStudioV3Route`, so the reveal
@@ -1887,6 +1905,17 @@ export function StudioV3() {
   }, [state.phase, state.committedRoutePoints]);
 
   const advance = useCallback((next: StudioV3Phase) => {
+    // EXPLICIT-PRIORITY GUARD — the reward surface is the one thing a
+    // partially-matching day must never reach. Returning to Interests keeps
+    // date / pickup / party and every other answer intact.
+    const conflict = highSignalConflictRef.current;
+    if (next === "storyboard" && conflict) {
+      setReaction(null);
+      setExiting(false);
+      setPriorityConflictNotice(conflict.message);
+      setState((s) => (s.phase === "interests" ? s : { ...s, phase: "interests" }));
+      return;
+    }
     // If a previous cinematic beat is still dissolving, remove it before any
     // explicit CTA transition. Otherwise mobile users can see the next screen
     // but taps still hit the old overlay, which feels like the builder froze.
@@ -3101,6 +3130,12 @@ export function StudioV3() {
   // Continue handlers for the two multi-select screens — reaction fires
   // on Continue only, never on each toggle.
   const continueFromInterests = () => {
+    // Do not walk into a day that cannot honour every explicit priority.
+    if (highSignalConflict) {
+      setPriorityConflictNotice(highSignalConflict.message);
+      return;
+    }
+    setPriorityConflictNotice(null);
     const allChips = state.interests
       .map((id) => getOptionLabel(INTERESTS, id))
       .filter((l): l is string => Boolean(l));
@@ -3878,6 +3913,17 @@ export function StudioV3() {
           ) : (
             <FooterHint>Pick what calls you — YES shapes the pacing around it.</FooterHint>
           )}
+          {priorityConflictNotice ? (
+            <p
+              role="status"
+              aria-live="polite"
+              data-testid="studio-v3-priority-conflict"
+              className="mt-4 max-w-[46ch] text-[13.5px] leading-relaxed"
+              style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
+            >
+              {priorityConflictNotice}
+            </p>
+          ) : null}
           <ContinueCta
             disabled={countableSelectedInterests.length < 1}
             onClick={continueFromInterests}
