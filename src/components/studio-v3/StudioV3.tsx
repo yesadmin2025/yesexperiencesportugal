@@ -6165,6 +6165,16 @@ export function StoryboardHandoff({
             data-testid="studio-v3-handoff-primary"
             disabled={!canReserve}
             data-reserve-blocked={canReserve ? "false" : "true"}
+            data-gate-stops={String(editedStops.length)}
+            data-gate-fb2={`${(resolved.livingAtlasLive?.commercialLedger?.notes ?? []).join("|")}#${(resolved.livingAtlasLive?.commercialLedger?.entries ?? []).filter((e) => e.classification !== "anchor-included").map((e) => `${e.kind}:${e.inventoryStopId ?? "?"}:${e.blueprintStopId ?? "?"}:${e.classification}:${e.structuralNote ?? "-"}`).join("|")}`}
+            data-gate-fb={`${resolved.livingAtlasLive?.fallbackReason ?? "none"}/${resolved.livingAtlasLive?.commercialDisposition ?? "none"}/${resolved.livingAtlasLive?.validation?.status ?? "none"}/${(resolved.livingAtlasLive?.validation?.reasons ?? []).map((r) => `${r.code}:${(r.stopIds ?? []).join("+")}`).join("~")}`}
+            data-gate-reveal={revealValidation.ok ? "ok" : "missing"}
+            data-gate-operational={operationalGate.proven ? "proven" : operationalGate.status}
+            data-gate-time={`${finalDayGate.fit.verdict}:${finalDayGate.fit.evaluable ? "evaluable" : "not-evaluable"}`}
+            data-gate-stopdebug={`${resolved.livingAtlasLive?.liveResolution ?? "none"}/${resolved.livingAtlasLive?.passthroughReason ?? "none"}/${resolved.livingAtlasLive?.compositionResolution ?? "none"}/${resolved.livingAtlasLive?.fallbackReason ?? "none"}/${resolved.livingAtlasLive?.commercialDisposition ?? "none"}/${resolved.livingAtlasLive?.validation?.status ?? "none"}/${resolved.skeletonTourKey ?? "notour"}/${(resolved.livingAtlasLive?.commercialLedger?.notes ?? []).join("~")}/${(resolved.livingAtlasLive?.commercialLedger?.entries ?? []).filter((e) => e.classification !== "anchor-included").map((e) => `${e.kind}:${e.inventoryStopId ?? "?"}:${e.blueprintStopId ?? "?"}:${e.classification}:${e.structuralNote ?? "-"}`).join("~")}`}
+
+
+
 
           >
             {CTA_RESERVE_YOUR_DAY}

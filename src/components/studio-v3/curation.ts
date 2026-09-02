@@ -2621,10 +2621,24 @@ function resolveLivingAtlasLiveDay(input: {
   });
 
 
+  // A blueprint moment that IS delivered by the composed day was never
+  // removed, even when a different inventory stop fulfils it (the published
+  // "Comporta OR Carvalhal beach" core is one declared moment served by two
+  // real stops). Claiming it as an omission would invent a removal that did
+  // not happen and push an otherwise price-safe day into curator review.
+  const deliveredBlueprintStopIds = new Set(
+    identity.records
+      .map((record) => record.blueprintStopId)
+      .filter((id): id is string => Boolean(id)),
+  );
+  const genuinelyOmittedRecords = omittedIdentity.records.filter(
+    (record) => !record.blueprintStopId || !deliveredBlueprintStopIds.has(record.blueprintStopId),
+  );
+
   const commercialLedger = buildCommercialLedger({
     anchorTourId: input.anchorTourId,
     kept: identity.records,
-    omitted: omittedIdentity.records,
+    omitted: genuinelyOmittedRecords,
   });
 
   // COMMERCIAL SAFETY GATE — fail closed, but not blind.
