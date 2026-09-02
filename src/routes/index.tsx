@@ -233,7 +233,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Design your private Portugal day live on an interactive map and watch it confirm instantly. Signature wine days from Lisbon, plus a dedicated travel designer for full journeys.",
+          "Design your private Portugal day live on an interactive map — confirmed instantly. Plus a dedicated travel designer for full Portugal journeys.",
       },
       {
         property: "og:title",
@@ -242,7 +242,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Design your private Portugal day live on an interactive map and watch it confirm instantly. Signature wine days from Lisbon, plus a dedicated travel designer for full journeys.",
+          "Design your private Portugal day live on an interactive map — confirmed instantly. Plus a dedicated travel designer for full Portugal journeys.",
       },
       {
         property: "twitter:title",
@@ -251,7 +251,7 @@ export const Route = createFileRoute("/")({
       {
         property: "twitter:description",
         content:
-          "Design your private Portugal day live on an interactive map and watch it confirm instantly. Signature wine days from Lisbon, plus a dedicated travel designer for full journeys.",
+          "Design your private Portugal day live on an interactive map — confirmed instantly. Plus a dedicated travel designer for full Portugal journeys.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
