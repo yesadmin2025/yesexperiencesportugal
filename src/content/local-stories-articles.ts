@@ -163,9 +163,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "what-to-do-in-sesimbra",
-    title: "Things to Do in Sesimbra — Private Local Day Guide | YES",
+    title: "Things to Do in Sesimbra: A Local's Day Guide (2026)",
     metaDescription:
-      "Things to do in Sesimbra by locals who live here: the castle, the fish lunch, the wild Arrábida coast — and how to see it on a private day from Lisbon.",
+      "A Sesimbra local's guide: castle views, the harbour fish lunch, wild Arrábida coves, best time to go, and how to do the 40-minute day trip from Lisbon.",
+
 
     h1: "Things to Do in Sesimbra, Portugal — A Fishing Town Worth the Drive",
     eyebrow: "Sesimbra · Coast",
@@ -192,6 +193,14 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
         heading: "A quiet half-day option",
         body: "Sesimbra also works well when a full sightseeing day feels unnecessary. A relaxed half-day can include a coastal drive through Arrábida, time beside the harbour, a walk through the old centre and a long seafood lunch.\n\nIt is particularly suitable for travelers staying in Lisbon who want to see another side of the region without beginning early or returning late. The town offers enough to feel like a genuine escape, but not so much that the visit becomes another demanding itinerary.\n\nFor a slower version, combine Sesimbra with a viewpoint or quiet beach. For a fuller day, add wineries in Azeitão or Setúbal — our guide to the [best wine tasting near Lisbon](/local-stories/best-wine-tasting-near-lisbon) compares them, and you can shape either version yourself in the [Experience Studio](/studio-v3).",
       },
+      {
+        heading: "When to go, and how long you need",
+        body: "Half a day is enough for the town itself: the harbour, the old centre, the castle viewpoint and lunch. A full day is what you need if you also want the Arrábida coast, a swim and an unhurried table by the sea.\n\nLate spring and early autumn are our favourite windows — the light is soft, the sea is calm enough for the coves and the restaurants are busy with locals rather than queues. July and August bring the warmest water and the busiest access roads inside the natural park, so early starts matter. In winter Sesimbra stays open and working; you trade swimming for empty streets and dramatic Atlantic weather.\n\nBring shoes you can walk a slope in for the castle, and remember that some beaches inside the park have seasonal access rules. If a beach is closed or crowded on the day, the coast has enough alternatives — knowing which one is open is the part that is hard from a guidebook.",
+      },
+      {
+        heading: "See Sesimbra on a private day",
+        body: "If you would rather not drive, park or guess which cove is accessible, we run Sesimbra and the Arrábida coast as private days from Lisbon.\n\nThe [Wild Beaches & Picnic private day](/tours/wild-beaches-picnic) is the coastal version: Arrábida viewpoints, a quiet beach and a picnic by the sea. The [Arrábida Wine private day](/tours/arrabida-wine-allinclusive) pairs Azeitão cellars and lunch with coastal Sesimbra light on the way home. Both are private to your party, with door-to-door pickup in Lisbon.\n\nIf neither shape is quite yours, design your own in the [Experience Studio](/studio-v3) — you choose the feeling and the rhythm, and the day is built around it. See all [private day tours from Lisbon](/experiences) for the full collection.",
+      },
     ],
     ctaLead:
       "Most guests reach Sesimbra through our Wild Beaches & Picnic Signature — a slow, private day on the Arrábida coast.",
@@ -202,9 +211,12 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       { slug: "arrabida-wine-allinclusive", label: "Arrábida Wine Signature" },
     ],
     relatedReads: [
+      { path: "/tours/wild-beaches-picnic", label: "Wild Beaches & Picnic — private day" },
+      { path: "/tours/arrabida-wine-allinclusive", label: "Arrábida Wine — All Inclusive" },
       { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
       { path: "/local-stories/best-wine-tasting-near-lisbon", label: "Where to taste wine near Lisbon" },
     ],
+
     datePublished: "2026-06-04",
   },
   {
