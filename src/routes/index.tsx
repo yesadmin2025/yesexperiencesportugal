@@ -233,7 +233,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Private day tours in Portugal, designed with you in minutes and confirmed instantly. Licensed operator, 700+ 5-star reviews, plus a travel designer for multi-day journeys.",
+          "Private day tours in Portugal, designed with you in minutes and confirmed instantly. Licensed operator, 700+ 5-star reviews, plus multi-day travel design.",
       },
       {
         property: "og:title",
@@ -242,7 +242,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Private day tours in Portugal, designed with you in minutes and confirmed instantly. Licensed operator, 700+ 5-star reviews, plus a travel designer for multi-day journeys.",
+          "Private day tours in Portugal, designed with you in minutes and confirmed instantly. Licensed operator, 700+ 5-star reviews, plus multi-day travel design.",
       },
       {
         property: "twitter:title",
@@ -251,7 +251,7 @@ export const Route = createFileRoute("/")({
       {
         property: "twitter:description",
         content:
-          "Private day tours in Portugal, designed with you in minutes and confirmed instantly. Licensed operator, 700+ 5-star reviews, plus a travel designer for multi-day journeys.",
+          "Private day tours in Portugal, designed with you in minutes and confirmed instantly. Licensed operator, 700+ 5-star reviews, plus multi-day travel design.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
