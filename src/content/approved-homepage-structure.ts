@@ -72,7 +72,7 @@ export interface ApprovedSection {
 }
 
 /**
- * The approved 9-block structure (v5 — Travel Designer row added).
+ * The approved 10-block structure (v6 — Journal row added).
  *
  * Order:
  *   1.  Hero
