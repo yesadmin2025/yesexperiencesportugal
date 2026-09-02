@@ -8,6 +8,10 @@
  *   - `legDistancesKm` road distance per leg (haversine when OSRM misses)
  *   - `legModes`       "walking" for legs < 0.4km, else "driving"
  *
+ * The client closes Studio reveal routes door-to-door by appending the
+ * pickup/drop-off origin as the final point. The schema therefore allows one
+ * extra waypoint for that explicit return leg.
+ *
  * OSRM outages fall back to haversine gracefully — never throws.
  */
 
@@ -21,7 +25,7 @@ const ptSchema = z.object({
 });
 
 const inputSchema = z.object({
-  stops: z.array(ptSchema).min(2).max(12),
+  stops: z.array(ptSchema).min(2).max(13),
 });
 
 export type RouteLegMode = "driving" | "walking";
