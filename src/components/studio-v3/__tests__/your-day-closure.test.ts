@@ -9,7 +9,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-import { CTA_RESERVE_YOUR_DAY } from "@/content/signature-day-copy";
+import { CTA_MAKE_IT_REAL } from "@/content/signature-day-copy";
 import {
   canOfferAdditionalMoment,
   resolveMomentOptionality,
@@ -24,19 +24,19 @@ const blueprint = Object.values(
   TAILOR_BLUEPRINTS as unknown as Record<string, (typeof TAILOR_BLUEPRINTS)[number]>,
 )[0];
 
-describe("B — the final primary action is Reserve your day", () => {
+describe("B — the final primary action is Make it real", () => {
   it("uses the canonical CTA string and the existing guest-details path", () => {
-    expect(CTA_RESERVE_YOUR_DAY).toBe("Reserve your day");
-    expect(STUDIO_SOURCE).toContain("{CTA_RESERVE_YOUR_DAY}");
+    expect(CTA_MAKE_IT_REAL).toBe("Make it real");
+    expect(STUDIO_SOURCE).toContain("{CTA_MAKE_IT_REAL}");
     expect(STUDIO_SOURCE).not.toContain("Continue to guest details");
   });
 });
 
 describe("C — Reserve fails closed on unresolved operational state", () => {
   it("gates the primary action on validation + approval", () => {
-    expect(STUDIO_SOURCE).toContain("disabled={!canReserve}");
+    expect(STUDIO_SOURCE).toContain("disabled={!canProceedToLogistics}");
     expect(STUDIO_SOURCE).toContain("operationalGate.proven &&");
-    expect(STUDIO_SOURCE).toContain('approvalStatus !== "reject"');
+    expect(STUDIO_SOURCE).toContain('approvalStatus === "reject"');
     expect(STUDIO_SOURCE).toContain("studio-v3-reserve-review-path");
   });
 });

@@ -37,6 +37,7 @@ import {
   type LivingAtlasSignatureId,
 } from "@/components/studio-v3/livingAtlasTaxonomy";
 import { buildExperienceProfile } from "@/lib/studio-v3/livingAtlasBridge";
+import { scheduleMealAtMidday } from "@/lib/studio-v3/mealDaypartAuthority";
 import type { ResolvedRoutePoint } from "@/components/studio-v3/curation";
 import type { Feeling, Interest, Rhythm } from "@/components/studio-v3/types";
 import type { ResolvedTimeBudget } from "@/lib/studio-v3/timeDomain";
@@ -524,8 +525,21 @@ export function composeHybridDay(
     });
   }
 
+  // P0-C — MEAL DAYPART AUTHORITY. Composition decides WHICH moments exist;
+  // this single central rule decides WHEN the table sits inside the day, so a
+  // verified meal lands around the believable middle and never as the closing
+  // moment. Nothing is added, removed or re-timed.
+  const scheduled = scheduleMealAtMidday(out, {
+    isMeal: (p) => {
+      const id = (p as { inventoryStopId?: string | null }).inventoryStopId ?? null;
+      const stop = id ? (stopById.get(id) ?? null) : null;
+      return stop ? stop.type === "table" : false;
+    },
+    minutesOf: (p) => (p as { durationMinutes?: number | null }).durationMinutes ?? null,
+  });
+
   return {
-    points: out.map((p, i) => ({ ...p, index: i })),
+    points: scheduled.map((p, i) => ({ ...p, index: i })),
     moments,
     omitted,
     composition,

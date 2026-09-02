@@ -100,6 +100,7 @@ import { projectAuthoredAnchorStops } from "./authoredAnchorProjection";
 
 import type { ComposedTiming, DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
 import { hasMinuteTruth, judgeAdmission, stopHasMinuteTruth } from "@/lib/studio-v3/timeAuthority";
+import { middayInsertIndex } from "@/lib/studio-v3/mealDaypartAuthority";
 
 
 
@@ -4089,8 +4090,23 @@ export function applyExtraMoment(
   if (!best || best.score <= 0) return out;
   const pick = best.cand;
 
+  // P0-C — daypart truth, not a fixed slot. A verified table belongs at the
+  // cumulative-time middle of the day (never last); anything else keeps the
+  // existing behaviour of joining early, and never after a closing meal.
   const lastKind = inferRoutePointType(out[out.length - 1].label, out[out.length - 1].story);
-  const insertAt = lastKind === "table" ? out.length - 1 : Math.min(2, out.length);
+  const insertAt =
+    pick.type === "table"
+      ? middayInsertIndex(
+          out.map((p) => {
+            const match = REGION_STOP_POOL.find(
+              (s) => normalizeLabel(s.name) === normalizeLabel(p.label),
+            );
+            return match && match.durationMin > 0 ? match.durationMin : 60;
+          }),
+        )
+      : lastKind === "table"
+        ? out.length - 1
+        : Math.min(2, out.length);
 
   const inserted: ResolvedRoutePoint = {
     index: insertAt,

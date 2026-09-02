@@ -9,7 +9,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-import { CTA_RESERVE_YOUR_DAY } from "@/content/signature-day-copy";
+import { CTA_MAKE_IT_REAL } from "@/content/signature-day-copy";
 import { YOUR_DAY_EYEBROW } from "@/components/studio-v3/YourDayFrame";
 
 const STUDIO = readFileSync("src/components/studio-v3/StudioV3.tsx", "utf8");
@@ -20,10 +20,10 @@ describe("1 — the final reveal is YOUR DAY with one dominant reserve action", 
     expect(STUDIO).toContain("<YourDayFrame");
   });
 
-  it("renders exactly one primary CTA, and it is Reserve your day", () => {
-    expect(CTA_RESERVE_YOUR_DAY).toBe("Reserve your day");
+  it("renders exactly one primary CTA, and it is Make it real", () => {
+    expect(CTA_MAKE_IT_REAL).toBe("Make it real");
     expect(STUDIO.split('data-testid="studio-v3-handoff-primary"').length - 1).toBe(1);
-    expect(STUDIO).toContain("{CTA_RESERVE_YOUR_DAY}");
+    expect(STUDIO).toContain("{CTA_MAKE_IT_REAL}");
     expect(STUDIO).toContain('data-testid="studio-v3-handoff-primary"');
   });
 
@@ -41,7 +41,7 @@ describe("1 — the final reveal is YOUR DAY with one dominant reserve action", 
 
 describe("2 — an unresolved composition can never start checkout", () => {
   it("gates the CTA and fails closed before the checkout call", () => {
-    expect(STUDIO).toContain("disabled={!canReserve}");
+    expect(STUDIO).toContain("disabled={!canProceedToLogistics}");
     expect(STUDIO).toContain("if (checkoutStops.length < 2) {");
     expect(STUDIO).toContain('openLeadSheet("book")');
     expect(STUDIO).toContain('data-testid="studio-v3-reserve-review-path"');
