@@ -296,11 +296,13 @@ export const signatureTours: SignatureTour[] = [
       },
     ],
     highlights: [
-      "Up to three private tastings at family-run wineries",
-      "Cristo Rei panorama over Lisbon",
+      "2 or 3 private tastings at family-run wineries in Azeitão and Setúbal",
+      "Taste Moscatel de Setúbal and small-producer reds",
+      "Cristo Rei panorama over Lisbon and the Tagus",
       "Traditional Portuguese lunch with paired wines",
-      "Stop at the Livramento tile-clad market",
-      "All driving and pours handled — you only sip",
+      "Visit to the Livramento tile-clad market",
+      "Panoramic drive through Arrábida Natural Park",
+      "Door-to-door private transfers from Lisbon",
     ],
     included: [
       "Visit 2 or 3 wineries (depending on the experience you choose)",
