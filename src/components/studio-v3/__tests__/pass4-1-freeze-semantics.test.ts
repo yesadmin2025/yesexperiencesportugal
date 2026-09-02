@@ -34,7 +34,7 @@ describe("A — logistics is composition-ready, taste phases are not", () => {
   });
 
   it("logistics really comes after the reward surface, so no route leaks early", () => {
-    expect(STUDIO_V3_PHASE_ORDER.indexOf("logistics")).toBeGreaterThan(
+    expect(STUDIO_V3_PHASE_ORDER.indexOf("logistics")).toBeLessThan(
       STUDIO_V3_PHASE_ORDER.indexOf("storyboard"),
     );
   });

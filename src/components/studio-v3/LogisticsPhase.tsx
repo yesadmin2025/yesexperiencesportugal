@@ -47,7 +47,6 @@ export const PICKUP_GROUPS: ChoiceOption<PickupGroup>[] = [
     whisper: "South of the river.",
   },
   { id: "comporta-troia", label: "Comporta & Tróia", whisper: "By request." },
-  { id: "other", label: "Somewhere else", whisper: "We'll work it out together." },
 ];
 
 /** Lisbon arrival refinements — existing operational ids, never deleted. */
@@ -106,6 +105,14 @@ interface Props {
   /** PASS 4 — honest, concise message when the exact date cannot honour the
    *  committed day. Presentation only; the day is never silently mutated. */
   conflict?: string | null;
+  /**
+   * INSTANT-BOOKABLE PREFLIGHT — when true this screen runs BEFORE the taste
+   * questions: the exact date, a supported pickup area and the party decide
+   * what can actually be sold, so the Studio never designs an unsellable day.
+   */
+  preflight?: boolean;
+  /** True while the eligible-product set is being resolved. */
+  checking?: boolean;
   /** P6: the acknowledgement line, already de-duplicated by the Studio-level
    *  "acknowledge once" ledger. Null when everything here was heard earlier. */
   acknowledgement?: ReactNode;
@@ -122,6 +129,8 @@ export function LogisticsPhase({
   onCompose,
   conflict = null,
   acknowledgement = null,
+  preflight = false,
+  checking = false,
 }: Props) {
   const [moment, setMoment] = useState<LogisticsMoment>(() => initialLogisticsMoment(state));
 
@@ -129,7 +138,14 @@ export function LogisticsPhase({
   const showLisbonArrivals = group === "lisbon";
 
   const guestsLabel = useMemo(
-    () => formatGuestComposition(state.adults ?? state.guests, state.minorAges ?? [], state.guests),
+    () =>
+      // The stepper always shows a real party (2 by default), so the recap
+      // must never read as an em dash before the traveller changes it.
+      formatGuestComposition(
+        state.adults ?? state.guests ?? 2,
+        state.minorAges ?? [],
+        state.guests ?? (state.adults ?? 2) + (state.minorAges?.length ?? 0),
+      ),
     [state.adults, state.guests, state.minorAges],
   );
 
@@ -151,7 +167,7 @@ export function LogisticsPhase({
     <>
       <BackLink onClick={goBack} />
       <PhaseHeader
-        eyebrow="Make it real"
+        eyebrow={preflight ? "First, the practical part" : "Make it real"}
         title={HEADINGS[moment].title}
         titleAccent={HEADINGS[moment].accent}
       />
@@ -168,6 +184,7 @@ export function LogisticsPhase({
         {moment === "when" ? (
           <section className="w-full" aria-label="When">
             <DatePhaseControls
+              exactDateOnly={preflight}
               dateExact={state.dateExact}
               dateMode={state.dateMode}
               onPickExact={(iso) => setState((s) => ({ ...s, dateExact: iso, dateMode: "exact" }))}
@@ -284,7 +301,9 @@ export function LogisticsPhase({
                 color: "color-mix(in oklab, var(--charcoal) 62%, transparent)",
               }}
             >
-              Your day is already set. This is what makes it real.
+              {preflight
+                ? "With this, everything we design next is genuinely bookable."
+                : "Your day is already set. This is what makes it real."}
             </p>
           </section>
         ) : null}
@@ -302,12 +321,22 @@ export function LogisticsPhase({
       ) : null}
 
       {moment === "review" ? (
-        <ContinueCta disabled={false} onClick={onCompose} label="Continue to guest details" />
+        <ContinueCta
+          disabled={checking || (preflight && state.dateMode !== "exact")}
+          onClick={onCompose}
+          label={
+            checking
+              ? "Checking availability…"
+              : preflight
+                ? "Start designing your day"
+                : "Continue to guest details"
+          }
+        />
       ) : (
         <ContinueCta
-          disabled={!canLeave(moment, state)}
+          disabled={!canLeave(moment, state, preflight)}
           onClick={goNext}
-          label={continueLabel(moment, state)}
+          label={continueLabel(moment, state, preflight)}
         />
       )}
 
@@ -323,15 +352,25 @@ const HEADINGS: Record<LogisticsMoment, { title: string; accent: string }> = {
   review: { title: "This is", accent: "your day's frame" },
 };
 
-function canLeave(moment: LogisticsMoment, state: StudioV3State): boolean {
-  if (moment === "when") return Boolean(state.dateMode);
+function canLeave(
+  moment: LogisticsMoment,
+  state: StudioV3State,
+  preflight = false,
+): boolean {
+  if (moment === "when") return preflight ? state.dateMode === "exact" : Boolean(state.dateMode);
   if (moment === "where") return Boolean(state.pickup);
   return true;
 }
 
-function continueLabel(moment: LogisticsMoment, state: StudioV3State): string {
-  if (moment === "when")
+function continueLabel(
+  moment: LogisticsMoment,
+  state: StudioV3State,
+  preflight = false,
+): string {
+  if (moment === "when") {
+    if (preflight) return state.dateMode === "exact" ? "Continue" : "Pick the exact day";
     return state.dateMode ? "Continue" : "Pick a date, or tell us you're flexible";
+  }
   if (moment === "where") return state.pickup ? "Continue" : "Where does the day begin?";
   return "Continue";
 }

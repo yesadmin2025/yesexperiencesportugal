@@ -128,7 +128,7 @@ describe("D — add-on minutes are counted exactly once", () => {
 describe("E — 12 is self-service, 13–14 are curator-confirmed", () => {
   it("classifies party sizes with one product truth", () => {
     expect(SELF_SERVICE_MAX_PARTY).toBe(12);
-    expect(STUDIO_MAX_PARTY).toBe(14);
+    expect(STUDIO_MAX_PARTY).toBe(12);
     expect(requiresCuratorParty(12)).toBe(false);
     expect(requiresCuratorParty(13)).toBe(true);
     expect(requiresCuratorParty(14)).toBe(true);
@@ -142,24 +142,14 @@ describe("E — 12 is self-service, 13–14 are curator-confirmed", () => {
     expect(msg).not.toMatch(/€|eur/i);
   });
 
-  it("logistics fails closed to the curator path before advancing", () => {
+  it("the preflight refuses an unsupported party in place, never via a lead sheet", () => {
     const block = STUDIO.slice(
-      STUDIO.indexOf("if (requiresCuratorParty(committedTotal))"),
-      STUDIO.indexOf("if (requiresCuratorParty(committedTotal))") + 500,
+      STUDIO.indexOf("if (!isSupportedStudioParty(committedTotal))"),
+      STUDIO.indexOf("if (!isSupportedStudioParty(committedTotal))") + 400,
     );
-    expect(block).toContain("setLogisticsConflict(curatorPartyMessage(committedTotal))");
-    // P0-7 — the 13–14 hand-off is the explicit premium private-group intent.
-    expect(block).toContain('openLeadSheet("private-group")');
+    expect(block).toContain("setLogisticsConflict(");
     expect(block).toContain("return;");
-  });
-
-  it("announces the curator hand-off on the logistics surface before the tap", () => {
-    const props = STUDIO.slice(
-      STUDIO.indexOf("conflict={\n              logisticsConflict ??"),
-      STUDIO.indexOf("onCompose={() => {"),
-    );
-    expect(props).toContain("requiresCuratorParty(");
-    expect(props).toContain("curatorPartyMessage(");
+    expect(STUDIO).not.toContain("openLeadSheet(");
   });
 
 

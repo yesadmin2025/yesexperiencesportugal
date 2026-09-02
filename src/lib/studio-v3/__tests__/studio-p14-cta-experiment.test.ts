@@ -170,7 +170,7 @@ describe("P14 · presentation isolation", () => {
     expect(pageSource).toContain("getFunnelVariant();");
     expect(storySource).toContain('data-testid="studio-v3-handoff-primary"');
     // Canonical CTA flow: Your Day → make it real (logistics) → guest details.
-    expect(storySource).toContain('onSecure={() => advance("logistics")}');
+    expect(storySource).toContain('onSecure={() => advance("guestDetails")}');
 
   });
 });

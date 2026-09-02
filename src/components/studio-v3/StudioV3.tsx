@@ -149,6 +149,13 @@ import { alignRouteLegsToItinerary } from "@/lib/studio-v3/itineraryLegAlignment
 import type { DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
 import { judgeRouteTimeFit } from "@/lib/studio-v3/timeAuthority";
 import { describeRouteIdentity, judgeFinalDayTime } from "@/lib/studio-v3/finalTimeGate";
+import { resolveEligibleTours } from "@/lib/studio-v3/resolveEligibleTours";
+import {
+  isEligibilityStale,
+  isSupportedStudioParty,
+  isSupportedStudioPickup,
+} from "@/lib/studio-v3/instantBookableEligibility";
+import { SELF_SERVICE_MAX_PARTY } from "@/lib/studio-v3/selfServiceParty";
 import {
   certifyFrozenDayFromPickup,
   describePickupDoorToDoorConflict,
@@ -1101,6 +1108,22 @@ export function StudioV3() {
   );
   const closeLeadSheet = useCallback(() => setLeadSheet((s) => ({ ...s, open: false })), []);
 
+  /**
+   * INSTANT-BOOKABLE TRUTH — the Studio never ends at a curator hand-off.
+   * When a practical fact makes the day unsellable (stale availability, a
+   * party the checkout cannot complete, an unsupported pickup, a day that no
+   * longer fits door-to-door) the traveller is returned to the ONE screen
+   * where they can change that fact, with an honest reason. The site-wide
+   * support channel stays available independently.
+   */
+  const [bookingBlock, setBookingBlock] = useState<string | null>(null);
+  const returnToPreflight = useCallback((reason: string) => {
+    setBookingBlock(reason);
+    setLogisticsConflict(reason);
+    setState((s) => ({ ...s, phase: "logistics", eligibleTourIds: null, eligibilityRevision: null }));
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
+  }, []);
+
   // Stripe sandbox checkout — Say YES on the Signature reveal. Prices and
   // tour identity are validated server-side; the client only passes the
   // resolved tour id and party size. On success we redirect to Stripe's
@@ -1269,13 +1292,13 @@ export function StudioV3() {
     (currentState: StudioV3State) => {
       const tour = currentState.tourId ? findTour(currentState.tourId) : null;
       if (!tour) {
-        openLeadSheet("book");
+        returnToPreflight("Let's re-check the practical details and design your day again.");
         return;
       }
       setDetailsState(currentState);
       setDetailsOpen(true);
     },
-    [openLeadSheet],
+    [returnToPreflight],
   );
   const handleStripeCheckout = useCallback(
     async (currentState: StudioV3State, details: GuestDetails) => {
@@ -1287,12 +1310,14 @@ export function StudioV3() {
         (currentState.adults ?? currentState.guests ?? 0) +
           (currentState.minorAges?.length ?? 0);
       if (requiresCuratorParty(partyTotal)) {
-        openLeadSheet("private-group");
+        returnToPreflight(
+          `The Studio books parties of up to ${SELF_SERVICE_MAX_PARTY} instantly. Adjust the party and your day stays exactly as designed.`,
+        );
         return;
       }
       const tour = currentState.tourId ? findTour(currentState.tourId) : null;
       if (!tour) {
-        openLeadSheet("book");
+        returnToPreflight("Let's re-check the practical details and design your day again.");
         return;
       }
 
@@ -1302,7 +1327,9 @@ export function StudioV3() {
       // curator instead of opening a checkout the server would refuse.
       const resolvedPerPax = resolveStudioStrictPerPaxEur(tour.id, details.guests, tourPriceTiers);
       if (!resolvedPerPax) {
-        openLeadSheet("book");
+        returnToPreflight(
+          "That exact party can't be confirmed for this day. Adjust it and we continue instantly.",
+        );
         return;
       }
 
@@ -1337,7 +1364,7 @@ export function StudioV3() {
       // traveller to a curator instead of starting a checkout.
       if (checkoutStops.length < 2) {
         setCheckoutPending(false);
-        openLeadSheet("book");
+        returnToPreflight("Your day needs at least two moments. Let's design it again from your details.");
         return;
       }
 
@@ -1356,7 +1383,9 @@ export function StudioV3() {
       });
       if (!checkoutTimeGate.bookable) {
         setCheckoutPending(false);
-        openLeadSheet("book");
+        returnToPreflight(
+          "This day runs past the nine hours we can drive door to door. Change the pickup area or remove a moment and it books instantly.",
+        );
         return;
       }
 
@@ -1367,7 +1396,7 @@ export function StudioV3() {
       // or deep-linked state) can never open Stripe. Existing curator path.
       if (!isOperationallyBookable(describeRouteIdentity(checkoutStops))) {
         setCheckoutPending(false);
-        openLeadSheet("book");
+        returnToPreflight("Let's re-confirm your date and pickup — then this day books instantly.");
         return;
       }
 
@@ -1387,7 +1416,9 @@ export function StudioV3() {
       });
       if (!frozenDayAllowsCheckout(checkoutDoorToDoor)) {
         setCheckoutPending(false);
-        openLeadSheet("book");
+        returnToPreflight(
+          "We need a supported pickup area to certify the driving time. Choose one and this day books instantly.",
+        );
         return;
       }
 
@@ -1423,7 +1454,7 @@ export function StudioV3() {
       // base-pricing fallback.
       if (!liveAuthority.safe) {
         setCheckoutPending(false);
-        openLeadSheet("book");
+        returnToPreflight("Let's re-confirm your details so this day is exact again.");
         return;
       }
       const commercial = resolveCheckoutCommercialState({
@@ -1435,7 +1466,7 @@ export function StudioV3() {
       });
       if (commercial.blocked) {
         setCheckoutPending(false);
-        openLeadSheet("book");
+        returnToPreflight("Let's re-confirm your details so this day is exact again.");
         return;
       }
       const chargeableAddOnIds = new Set(commercial.chargeableAddOnIds);
@@ -1654,7 +1685,7 @@ export function StudioV3() {
         setCheckoutPending(false);
       }
     },
-    [checkoutPending, openLeadSheet, tourPriceTiers, selectedAddOnItems, selectedAddOnMinutes],
+    [checkoutPending, returnToPreflight, tourPriceTiers, selectedAddOnItems, selectedAddOnMinutes],
   );
 
   // Phase 7D — hydrate a saved Signature directly into the final reveal.
@@ -1940,6 +1971,76 @@ export function StudioV3() {
   );
 
   /**
+   * PREFLIGHT — commit the practical facts, resolve what is genuinely
+   * sellable for them, and only then let the Studio start designing. No
+   * curator hand-off exists here: an unsellable combination is stated
+   * honestly on this same screen so the traveller can change it.
+   */
+  const [preflightChecking, setPreflightChecking] = useState(false);
+  const runPreflight = useCallback(async () => {
+    if (preflightChecking) return;
+    const committedAdults = state.adults ?? state.guests ?? 2;
+    const committedMinors = state.minorAges ?? [];
+    const committedTotal = committedAdults + committedMinors.length;
+
+    if (!state.dateExact || state.dateMode !== "exact") {
+      setLogisticsConflict("Choose the exact day so we only design what is genuinely bookable.");
+      return;
+    }
+    if (!isSupportedStudioPickup(state.pickup)) {
+      setLogisticsConflict("Choose one of the pickup areas we serve so we can plan the driving honestly.");
+      return;
+    }
+    if (!isSupportedStudioParty(committedTotal)) {
+      setLogisticsConflict(
+        `The Studio books parties of up to ${SELF_SERVICE_MAX_PARTY} instantly. Adjust the party to continue.`,
+      );
+      return;
+    }
+
+    setPreflightChecking(true);
+    try {
+      const result = await resolveEligibleTours(
+        signatureTours.map((t) => t.id),
+        {
+          dateExact: state.dateExact,
+          pickup: state.pickup,
+          partyTotal: committedTotal,
+        },
+        tourPriceTiers,
+      );
+      if (result.eligibleTourIds.length === 0) {
+        setLogisticsConflict(
+          "Nothing is open for that exact combination. Try another date, or a different pickup area — we'll design around it immediately.",
+        );
+        return;
+      }
+      setBookingBlock(null);
+      setLogisticsConflict(null);
+      const forward: StudioV3State = {
+        ...state,
+        adults: committedAdults,
+        minorAges: committedMinors,
+        guests: committedTotal,
+        guestsInferred: false,
+        guestsPrivateEvent: committedTotal >= 11,
+        eligibleTourIds: result.eligibleTourIds,
+        eligibilityRevision: result.revision,
+      };
+      setState(() => forward);
+      trackStudio("logistics_completed", {
+        phase: "logistics",
+        stepNumber: stepOf("logistics"),
+        date_mode: forward.dateMode,
+        guests: committedTotal,
+      });
+      window.setTimeout(() => advance(getNextPhase(forward, "logistics")), 60);
+    } finally {
+      setPreflightChecking(false);
+    }
+  }, [advance, preflightChecking, state, tourPriceTiers]);
+
+  /**
    * jumpBackToPhase — narrow, protected variant of `back()` used ONLY by the
    * localized "edit this" affordances (delegation Adjust, checkout stops
    * edit). `back()` deliberately ignores its hint and walks the chain one
@@ -1949,7 +2050,7 @@ export function StudioV3() {
    * when the traveller makes an explicit choice.
    */
   const jumpBackToPhase = useCallback(
-    (target: StudioV3Phase, source: "delegation-adjust" | "checkout-edit-stops") => {
+    (target: StudioV3Phase, source: "delegation-adjust" | "checkout-edit-stops" | "checkout-edit-operational") => {
       const fromIdx = PHASE_ORDER.indexOf(state.phase);
       const toIdx = PHASE_ORDER.indexOf(target);
       // Strictly earlier, known, and still relevant under the current answers.
@@ -3404,7 +3505,9 @@ export function StudioV3() {
       <StudioV3Intro
         onComplete={(name, pathMode) => {
           setState((s) => ({ ...s, firstName: name, pathMode }));
-          advance("feeling");
+          // PREFLIGHT FIRST — the practical facts decide what is sellable
+          // before the Studio spends the traveller's time designing.
+          advance("logistics");
         }}
       />
     );
@@ -3582,92 +3685,18 @@ export function StudioV3() {
           <LogisticsPhase
             state={state}
             setState={setState}
+            preflight
+            checking={preflightChecking}
             onAdultsChange={onGuestsChange}
             onAddMinor={onAddMinor}
             onRemoveMinor={onRemoveMinor}
             onMinorAgeChange={onMinorAgeChange}
             acknowledgement={renderAcknowledgement("logistics")}
-            // PASS 4 — Back from admin returns to the reward surface.
-            onBackPhase={() => back("storyboard")}
-            // PARTY TRUTH — 13–14 travellers are a curator-confirmed private
-            // group. Say so BEFORE the traveller taps Continue, so the fail
-            // closed is a premium hand-off, not an error after the click.
-            conflict={
-              logisticsConflict ??
-              // P0 — once the pickup zone is known, the frozen day is re-judged
-              // door to door. Over 540 minutes is stated as an explicit trade-off,
-              // never absorbed by silently trimming the day.
-              pickupDoorToDoorConflict ??
-              (requiresCuratorParty((state.adults ?? state.guests ?? 2) + (state.minorAges?.length ?? 0))
-                ? curatorPartyMessage((state.adults ?? state.guests ?? 2) + (state.minorAges?.length ?? 0))
-                : null)
-            }
+            // PREFLIGHT — this is now the first screen after the invitation.
+            onBackPhase={() => back("intro")}
+            conflict={logisticsConflict ?? bookingBlock ?? pickupDoorToDoorConflict}
             onCompose={() => {
-              const committedAdults = state.adults ?? state.guests ?? 2;
-              const committedMinors = state.minorAges ?? [];
-              const committedTotal = committedAdults + committedMinors.length;
-              const forward: StudioV3State = {
-                ...state,
-                adults: committedAdults,
-                minorAges: committedMinors,
-                guests: committedTotal,
-                // PASS 5 — Continue is the traveller's explicit confirmation
-                // of the visible party; exact pricing unlocks from here.
-                guestsInferred: false,
-
-                guestsPrivateEvent: committedTotal >= 11,
-              };
-              setState(() => forward);
-              // PARTY TRUTH — the Studio composes for up to 14, but 13–14 is a
-              // curator-confirmed private group. Fail closed BEFORE any Stripe
-              // path: no broken checkout, no fake price, no silent down-clamp.
-              if (requiresCuratorParty(committedTotal)) {
-                trackStudio("logistics_date_conflict", {
-                  phase: "logistics",
-                  stepNumber: stepOf("logistics"),
-                  date_mode: forward.dateMode,
-                });
-                setLogisticsConflict(curatorPartyMessage(committedTotal));
-                openLeadSheet("private-group");
-                return;
-              }
-
-              trackStudio("logistics_completed", {
-                phase: "logistics",
-                stepNumber: stepOf("logistics"),
-                date_mode: forward.dateMode,
-                guests: committedTotal,
-              });
-              // PASS 4 — LOGISTICS IS ADMIN, NOT A COMPOSER. The Signature
-              // identity and the itinerary were already committed at the Your
-              // Day seam. Nothing is recomposed here: the exact day the
-              // traveller was shown is the day that continues to checkout.
-              //
-              // FAIL CLOSED: if the exact date chosen makes a committed or
-              // edited moment operationally closed, we never silently replace
-              // or drop that moment — the day goes to a curator instead.
-              const committedDay =
-                forward.editedRoutePoints ?? forward.committedRoutePoints ?? null;
-              const closedMoment =
-                forward.dateMode === "exact" && forward.dateExact
-                  ? (committedDay ?? []).find((point) =>
-                      isStopClosedOn(`${point.label} ${point.story ?? ""}`, forward.dateExact),
-                    )
-                  : undefined;
-              if (closedMoment) {
-                trackStudio("logistics_date_conflict", {
-                  phase: "logistics",
-                  stepNumber: stepOf("logistics"),
-                  date_mode: forward.dateMode,
-                });
-                setLogisticsConflict(
-                  `${closedMoment.label} is closed on that exact date. A curator will confirm the day with you rather than quietly change it.`,
-                );
-                openLeadSheet("book");
-                return;
-              }
-              setLogisticsConflict(null);
-              window.setTimeout(() => advance(getNextPhase(forward, "logistics")), 60);
+              void runPreflight();
             }}
           />
         </PhaseShell>
@@ -4029,11 +4058,11 @@ export function StudioV3() {
               canvasModel={livingCanvas}
               state={state}
               onStateChange={setState}
-              onBack={() => back("logistics")}
-              // PASS 4 — REWARD BEFORE ADMIN: Your Day hands over to
-            // logistics ("Make it real"), never straight to guest details.
-            onSecure={() => advance("logistics")}
-              onRefine={() => openLeadSheet("refine")}
+              onBack={() => back("refinement")}
+              // PRACTICAL FACTS ARE ALREADY KNOWN (preflight): the reward
+              // hands straight over to contact details, then payment.
+            onSecure={() => advance("guestDetails")}
+              onRefine={() => jumpBackToPhase("logistics", "checkout-edit-operational")}
               pending={checkoutPending}
               tourPriceTiers={tourPriceTiers}
               selectedAddOnIds={selectedAddOnIds}
@@ -4108,6 +4137,18 @@ export function StudioV3() {
             tourId={state.tourId ?? undefined}
             journeyTitle={state.journeyTitle ?? undefined}
             submitting={false}
+            // PREFLIGHT-OWNED FACTS — never asked twice.
+            fixedTourDate={state.dateExact ?? undefined}
+            lockedComposition={{
+              adults:
+                typeof state.adults === "number" && state.adults >= 1
+                  ? state.adults
+                  : typeof state.guests === "number" && state.guests >= 1
+                    ? state.guests
+                    : 2,
+              minorAges: state.minorAges ? [...state.minorAges] : [],
+            }}
+            onEditOperational={() => jumpBackToPhase("logistics", "checkout-edit-operational")}
             initial={{
               tourDate: state.dateExact ?? null,
               adults:
@@ -4195,6 +4236,7 @@ export function StudioV3() {
             onBack={() => back("guestDetails")}
             onEditGuestDetails={() => back("guestDetails")}
             onEditStops={() => jumpBackToPhase("storyboard", "checkout-edit-stops")}
+            onEditOperational={() => jumpBackToPhase("logistics", "checkout-edit-operational")}
             clientSecret={clientSecret}
             publishableKey={publishableKey}
             onPaymentComplete={(sid) => {
@@ -5312,8 +5354,24 @@ export function StoryboardHandoff({
   const dayHardRejected =
     approvalStatus === "reject" || finalDayGate.fit.verdict === "over-day-budget";
 
+  /**
+   * EXACT-DATE CLOSURE — the date is already known before the day is
+   * composed, so a moment the registry closes on that date is a real
+   * blocker, stated on the same surface (never a curator hand-off).
+   */
+  const closedMomentConflict = useMemo(() => {
+    if (!state.dateExact) return null;
+    const closed = editedStops.find((s) => isStopClosedOn(s.label, state.dateExact as string));
+    return closed
+      ? `${closed.label} is closed on that date — swap it, or change the date, and this day books instantly.`
+      : null;
+  }, [editedStops, state.dateExact]);
+
   const canProceedToLogistics =
-    editedStops.length >= REFINE_MIN_STOPS && revealValidation.ok && !dayHardRejected;
+    editedStops.length >= REFINE_MIN_STOPS &&
+    revealValidation.ok &&
+    !dayHardRejected &&
+    !closedMomentConflict;
 
   // FINAL CLOSURE — booking truth, unchanged and unweakened. Evaluated with
   // the full picture (after logistics) and independently re-checked at the
@@ -5336,7 +5394,9 @@ export function StoryboardHandoff({
     ? null
     : editedStops.length < REFINE_MIN_STOPS
       ? `A day needs at least ${REFINE_MIN_STOPS} moments — add one to continue.`
-      : !revealValidation.ok
+      : closedMomentConflict
+        ? closedMomentConflict
+        : !revealValidation.ok
         ? "We're still grounding this day in real tour details."
         : revealLegsLoading
           ? "Checking real driving times for this day…"

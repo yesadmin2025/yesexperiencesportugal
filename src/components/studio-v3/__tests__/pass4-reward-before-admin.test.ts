@@ -50,8 +50,8 @@ const point = (label: string, id: string): AuthoredRoutePoint =>
 describe("A/B — canonical order and adaptive walk", () => {
   it("orders refinement → storyboard → logistics → guestDetails → checkoutSummary", () => {
     expect(idx("refinement")).toBeLessThan(idx("storyboard"));
-    expect(idx("storyboard")).toBeLessThan(idx("logistics"));
-    expect(idx("logistics")).toBeLessThan(idx("guestDetails"));
+    expect(idx("logistics")).toBeLessThan(idx("storyboard"));
+    expect(idx("storyboard")).toBeLessThan(idx("guestDetails"));
     expect(idx("guestDetails")).toBeLessThan(idx("checkoutSummary"));
   });
 
@@ -59,8 +59,7 @@ describe("A/B — canonical order and adaptive walk", () => {
     const s = state();
     expect(getNextPhase(s, "rhythm")).toBe("storyboard");
     expect(getNextPhase(s, "refinement")).toBe("storyboard");
-    expect(getNextPhase(s, "storyboard")).toBe("logistics");
-    expect(getNextPhase(s, "logistics")).toBe("guestDetails");
+    expect(getNextPhase(s, "storyboard")).toBe("guestDetails");
     for (const legacy of [
       "destination",
       "date",
@@ -217,18 +216,18 @@ describe("F — logistics facts never change the committed day", () => {
 
 describe("G/H — reward hands over to admin, admin does not compose", () => {
   it("routes Your Day continuations to logistics, not guest details", () => {
-    expect(SRC).toContain('onSecure={() => advance("logistics")}');
-    expect(SRC).toContain('onContinue={() => advance("logistics")}');
-    expect(SRC).not.toContain('onSecure={() => advance("guestDetails")}');
+    // PREFLIGHT-FIRST: the practical facts are already known, so Your Day
+    // hands straight over to contact details.
+    expect(SRC).toContain('onSecure={() => advance("guestDetails")}');
   });
 
   it("retires the blocking interpretation beat from the live path", () => {
     expect(SRC).not.toContain("<DirectorsRead");
   });
 
-  it("no longer recomposes the route inside the logistics commit", () => {
+  it("the preflight commits facts and never composes a route", () => {
     const commit = SRC.slice(
-      SRC.indexOf("PASS 4 — LOGISTICS IS ADMIN, NOT A COMPOSER"),
+      SRC.indexOf("const runPreflight = useCallback"),
       SRC.indexOf('advance(getNextPhase(forward, "logistics"))'),
     );
     expect(commit.length).toBeGreaterThan(200);
@@ -236,8 +235,8 @@ describe("G/H — reward hands over to admin, admin does not compose", () => {
     expect(SRC).toContain('advance(getNextPhase(forward, "logistics"))');
   });
 
-  it("returns from logistics to Your Day, not to taste", () => {
-    expect(SRC).toContain('onBackPhase={() => back("storyboard")}');
+  it("returns from the preflight to the invitation", () => {
+    expect(SRC).toContain('onBackPhase={() => back("intro")}');
   });
 });
 
@@ -250,16 +249,16 @@ describe("I — exact-date closure fails closed", () => {
     const mondayIso = "2026-09-07";
     expect(isStopClosedOn(closedHaystack, mondayIso)).toBe(true);
 
+    // The date is known BEFORE composition now, so the closure is enforced on
+    // the composed day itself and blocks reservation with a truthful reason.
     const guard = SRC.slice(
-      SRC.indexOf("FAIL CLOSED: if the exact date chosen"),
-      SRC.indexOf("setLogisticsConflict(null);"),
+      SRC.indexOf("const closedMomentConflict = useMemo("),
+      SRC.indexOf("const canProceedToLogistics ="),
     );
     expect(guard).toContain("isStopClosedOn(");
-    expect(guard).toContain("setLogisticsConflict(");
-    expect(guard).toContain("return;");
-    // The committed day is read, never rewritten, on the conflict path.
     expect(guard).not.toContain("committedRoutePoints:");
     expect(guard).not.toContain("editedRoutePoints:");
+    expect(SRC).toContain("!closedMomentConflict"); 
   });
 });
 
@@ -290,6 +289,6 @@ describe("J — snapshot lifecycle", () => {
     expect(backBlock).toContain("committedRoutePoints: null");
     // Logistics → Your Day is a forward-of-storyboard origin, so the guard
     // (`state.phase === "storyboard"`) cannot fire and the day is preserved.
-    expect(idx("logistics")).toBeGreaterThan(idx("storyboard"));
+    expect(idx("logistics")).toBeLessThan(idx("storyboard"));
   });
 });

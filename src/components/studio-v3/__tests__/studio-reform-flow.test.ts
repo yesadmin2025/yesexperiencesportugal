@@ -8,11 +8,17 @@ const base: StudioV3State = { ...INITIAL_STATE, phase: "feeling" };
 describe("Studio reform — phase model", () => {
   it("orders the flow desire-first, logistics last", () => {
     const asked = STUDIO_V3_PHASE_ORDER.filter((p) => isPhaseRelevant(p, base));
-    expect(asked.slice(0, 5)).toEqual(["intro", "feeling", "who", "interests", "rhythm"]);
-    expect(asked).toContain("logistics");
-    // PASS 4: REWARD BEFORE ADMIN — the composed day is revealed first, and
-    // logistics ("Make it real") is the admin beat that follows it.
-    expect(asked.indexOf("storyboard")).toBeLessThan(asked.indexOf("logistics"));
+    // INSTANT-BOOKABLE PREFLIGHT — the practical facts that decide what can
+    // be sold are collected BEFORE the Studio spends time designing a day.
+    expect(asked.slice(0, 6)).toEqual([
+      "intro",
+      "logistics",
+      "feeling",
+      "who",
+      "interests",
+      "rhythm",
+    ]);
+    expect(asked.indexOf("logistics")).toBeLessThan(asked.indexOf("storyboard"));
     expect(asked).not.toContain("map");
     expect(asked).not.toContain("confirmation");
   });
@@ -35,8 +41,8 @@ describe("Studio reform — phase model", () => {
   it("walks rhythm → the unified storyboard surface → logistics", () => {
     const s: StudioV3State = { ...base, feeling: "coastal", companions: "couple", refinement: "coast-wild-beaches" };
     expect(getNextPhase(s, "rhythm")).toBe("storyboard");
-    expect(getNextPhase(s, "storyboard")).toBe("logistics");
-    expect(getNextPhase(s, "logistics")).toBe("guestDetails");
+    expect(getNextPhase(s, "storyboard")).toBe("guestDetails");
+    expect(getNextPhase(s, "intro")).toBe("logistics");
   });
 });
 

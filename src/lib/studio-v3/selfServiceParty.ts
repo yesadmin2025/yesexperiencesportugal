@@ -12,8 +12,10 @@
 /** Largest party the existing self-service checkout can complete. */
 export const SELF_SERVICE_MAX_PARTY = 12;
 
-/** Largest party the Studio may compose for. */
-export const STUDIO_MAX_PARTY = 14;
+/** Largest party the Studio may compose for. Instant-bookable product truth:
+ *  the Studio never composes a day it cannot sell, so this equals the
+ *  self-service ceiling. Larger groups use the site-wide support channel. */
+export const STUDIO_MAX_PARTY = SELF_SERVICE_MAX_PARTY;
 
 /** True when the party must be confirmed by a curator instead of Stripe. */
 export function requiresCuratorParty(total: number | null | undefined): boolean {

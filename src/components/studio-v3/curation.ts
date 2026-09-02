@@ -362,6 +362,9 @@ const FEELING_FALLBACK: Record<Feeling, string> = {
   "hands-on": "tiles-workshop",
 };
 
+/** Interests that can only be a deliberate, discriminative choice. */
+const HIGH_SIGNAL_INTERESTS: ReadonlyArray<Interest> = ["faith", "hands-on", "wine"];
+
 const INTEREST_TARGET_TOURS: Partial<Record<Interest, string[]>> = {
   wine: [
     "arrabida-wine-allinclusive",
@@ -392,6 +395,10 @@ const INTEREST_TARGET_TOURS: Partial<Record<Interest, string[]>> = {
     "southwest-vicentine-coast",
   ],
   nature: ["southwest-vicentine-coast", "wild-beaches-picnic", "arrabida-boat", "troia-comporta"],
+  // SEMANTIC CLOSURE — these two interests previously had no target pool, so
+  // a coast day could win "faith + workshops" purely on generic score.
+  faith: ["fatima-nazare-obidos", "tomar-coimbra", "evora-alentejo"],
+  "hands-on": ["tiles-workshop", "azeitao-cheese"],
 };
 
 /* ---------- PASS 2 · LEGACY COUNT HEURISTIC — NOT THE AUTHORITY ----------
@@ -931,6 +938,8 @@ const INTEREST_TOUR_KEYWORDS: Partial<Record<Interest, string[]>> = {
   photography: ["viewpoint", "sunset", "golden", "view", "dusk"],
   wellness: ["slow", "quiet", "garden", "patio", "courtyard"],
   "local-life": ["village", "market", "local", "workshop", "neighbour"],
+  faith: ["sanctuary", "santuario", "santuário", "fatima", "fátima", "pilgrim", "convent", "monastery", "shrine", "spiritual", "chapel", "basilica"],
+  "hands-on": ["workshop", "hands-on", "tile", "azulejo", "craft", "artisan", "painting", "cheese-making", "atelier"],
 };
 
 /* ============================================================
@@ -1348,6 +1357,7 @@ export function pickPrimaryTour(
   seed: number = 0,
   rhythm: Rhythm | null = null,
   preferTourId: string | null = null,
+  eligibleTourIds: ReadonlyArray<string> | null = null,
 ): { tour: SignatureTour; alternates: SignatureTour[] } {
   const { tour, alternates } = pickPrimaryTourWithFit(
     feeling,
@@ -1358,6 +1368,7 @@ export function pickPrimaryTour(
     seed,
     rhythm,
     preferTourId,
+    eligibleTourIds,
   );
   return { tour, alternates };
 }
@@ -1382,6 +1393,12 @@ export function pickPrimaryTourWithFit(
   rhythm: Rhythm | null = null,
   /** Living Atlas preference — honoured only when eligible and competitive. */
   preferTourId: string | null = null,
+  /**
+   * PREFLIGHT TRUTH — the product ids that are actually sellable for the
+   * traveller's exact date / pickup / party. `null` means "not resolved yet"
+   * and leaves selection exactly as before. Never widens the pool.
+   */
+  eligibleTourIds: ReadonlyArray<string> | null = null,
 ): {
   tour: SignatureTour;
   alternates: SignatureTour[];
@@ -1403,7 +1420,10 @@ export function pickPrimaryTourWithFit(
   const mergedIds = Array.from(
     new Set([...candidateIds, ...intentTargets, ...interestTargets, ...discoveryTargets]),
   );
-  const candidates = mergedIds
+  const allowed =
+    eligibleTourIds && eligibleTourIds.length > 0 ? new Set(eligibleTourIds) : null;
+  const constrainedIds = allowed ? mergedIds.filter((id) => allowed.has(id)) : mergedIds;
+  const candidates = (constrainedIds.length > 0 ? constrainedIds : mergedIds)
     .map((id) => signatureTours.find((t) => t.id === id))
     .filter((t): t is SignatureTour => Boolean(t));
 
@@ -1450,6 +1470,26 @@ export function pickPrimaryTourWithFit(
     return true;
   });
   if (eligible.length === 0) eligible = reported;
+
+  // SEMANTIC GATE — a HIGH-SIGNAL interest is one the traveller could only
+  // have chosen deliberately (faith, hands-on workshops, wine). When one is
+  // present, a candidate that provides NO evidence for ANY of them is not a
+  // match, it is a coincidence of generic scoring. Never drops the last
+  // remaining candidate.
+  const highSignal = interests.filter((i) => HIGH_SIGNAL_INTERESTS.includes(i));
+  if (highSignal.length > 0) {
+    const withEvidence = eligible.filter((r) =>
+      r.fit.coverage.interests.some((c) => c.satisfied && (highSignal as string[]).includes(c.interest)),
+    );
+    if (withEvidence.length > 0) {
+      for (const r of eligible) {
+        if (!withEvidence.includes(r)) {
+          filtered.push({ tour: r.tour, reason: "no-high-signal-interest-evidence" });
+        }
+      }
+      eligible = withEvidence;
+    }
+  }
 
   const sorted = eligible.sort((a, b) => {
     if (b.fit.totalScore !== a.fit.totalScore) return b.fit.totalScore - a.fit.totalScore;
@@ -2109,6 +2149,12 @@ export function resolveStudioV3Route(input: {
   questionHistory?: readonly QuestionAnswerEvent[];
   /** Reshape/reroll seed (usually `state.rerollCount`). 0 = original curation. */
   seed?: number | string;
+  /**
+   * PREFLIGHT TRUTH — products that are actually sellable for this traveller's
+   * exact date / pickup / party. Narrows candidate selection only; `null` or
+   * empty leaves the historical behaviour untouched.
+   */
+  eligibleTourIds?: ReadonlyArray<string> | null;
 
 }): ResolvedStudioV3Route {
   const { feeling, companions, rhythm, interests, pickup, occasion } = input;
@@ -2164,6 +2210,7 @@ export function resolveStudioV3Route(input: {
     seed,
     null,
     preferredTourId,
+    input.eligibleTourIds ?? null,
   ).tour;
   const authority = resolveStudioV3CurationAuthority(selectedTour.id, () =>
     curateJourney(feeling, companions, rhythm, {
@@ -3230,6 +3277,10 @@ export function isPhaseRelevant(phase: StudioV3Phase, state: StudioV3State): boo
  */
 export const STUDIO_V3_PHASE_ORDER: StudioV3Phase[] = [
   "intro",
+  // INSTANT-BOOKABLE TRUTH — the practical facts that decide what can be
+  // SOLD (exact date, supported pickup area, party) are collected BEFORE the
+  // Studio spends the traveller's time designing. One compact screen.
+  "logistics",
   "feeling",
   "who",
   "interests",
@@ -3238,9 +3289,6 @@ export const STUDIO_V3_PHASE_ORDER: StudioV3Phase[] = [
   // PASS 4 — REWARD BEFORE ADMIN. The composed day ("Your Day", canonical
   // `storyboard`) is revealed immediately after the last Director question.
   "storyboard",
-  // ONE consolidated logistics beat (date + pickup + party), prefilled.
-  // It is ADMIN AFTER THE REWARD ("Make it real"), never a composer.
-  "logistics",
   // Never asked as standalone questions any more — kept for hydration of
   // saved states/deep links and for back-compat with older tests.
   "destination",

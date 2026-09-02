@@ -78,7 +78,7 @@ export function studioRouteShapingInput(
     | "refinement"
     | "rerollCount"
   > &
-    Partial<Pick<StudioV3State, "questionHistory">>,
+    Partial<Pick<StudioV3State, "questionHistory" | "eligibleTourIds">>,
 ): StudioRouteShapingInput {
   return {
     feeling: state.feeling,
@@ -94,6 +94,7 @@ export function studioRouteShapingInput(
     refinement: state.refinement ?? null,
     questionHistory: state.questionHistory ?? [],
     seed: state.rerollCount ?? 0,
+    eligibleTourIds: state.eligibleTourIds ?? null,
   };
 }
 

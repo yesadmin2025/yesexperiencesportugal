@@ -36,28 +36,29 @@ describe("P0-6 Your Day first reveal", () => {
   });
 });
 
-describe("P0-7 private group hand-off", () => {
+/**
+ * INSTANT-BOOKABLE PRODUCT TRUTH — the Studio never ends at a curator or
+ * lead sheet. An unsellable fact (party above self-service, unsupported
+ * pickup, stale availability) returns the traveller to the preflight, where
+ * that fact can be changed, with an honest reason.
+ */
+describe("Instant-bookable closure", () => {
   const studio = read("StudioV3.tsx");
-  const sheet = read("LeadCaptureSheet.tsx");
 
-  it("routes 13–14 travellers to the explicit private-group intent", () => {
-    expect(sheet).toContain('"private-group"');
-    const guarded = studio.split("requiresCuratorParty").slice(1);
-    expect(guarded.length).toBeGreaterThan(0);
-    expect(studio).toContain('openLeadSheet("private-group")');
+  it("never opens a lead sheet from the Studio flow", () => {
+    expect(studio).not.toContain("openLeadSheet(");
   });
 
-  it("never invokes Stripe for a curator party and never clamps the party", () => {
+  it("returns an oversized party to the preflight instead of Stripe", () => {
     expect(studio).toContain("requiresCuratorParty(partyTotal)");
-    const guard = studio.slice(
-      studio.indexOf("if (requiresCuratorParty(partyTotal))"),
-      studio.indexOf("if (requiresCuratorParty(partyTotal))") + 200,
-    );
-    expect(guard).toContain('openLeadSheet("private-group")');
+    const at = studio.indexOf("if (requiresCuratorParty(partyTotal))");
+    const guard = studio.slice(at, at + 300);
+    expect(guard).toContain("returnToPreflight(");
     expect(guard).toContain("return;");
   });
 
-  it("uses premium private-group copy, not an error", () => {
-    expect(sheet).toContain("A private group of this size is confirmed personally");
+  it("keeps a single in-Studio recovery path", () => {
+    expect(studio).toContain("const returnToPreflight = useCallback");
+    expect(studio).toContain('phase: "logistics"');
   });
 });

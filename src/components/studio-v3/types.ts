@@ -440,6 +440,15 @@ export interface StudioV3State {
    */
   delegationMode: "yes-designs" | null;
 
+  /**
+   * PREFLIGHT — product ids proven sellable for the exact date, pickup area
+   * and party collected before the taste questions. Null until the preflight
+   * resolves (older drafts hydrate as null and behave exactly as before).
+   */
+  eligibleTourIds: string[] | null;
+  /** Stable token of the facts `eligibleTourIds` was resolved from. */
+  eligibilityRevision: string | null;
+
   guestDraft: {
     fullName?: string;
     email?: string;
@@ -465,6 +474,8 @@ export const INITIAL_STATE: StudioV3State = {
   experienceDurationClass: null,
   refinement: null,
   questionHistory: [],
+  eligibleTourIds: null,
+  eligibilityRevision: null,
   considerations: [],
   language: null,
   investment: null,
