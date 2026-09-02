@@ -4676,8 +4676,8 @@ export function StoryboardHandoff({
   // to the itinerary geometry first; alignment failure stays `null`, which the
   // validator still reads as incomplete (fail closed).
   const operationalGate = useMemo(() => {
-    if (revealLegsLoading) return { status: "review" as ValidationStatus, proven: false, debug: "legs-loading" };
-    if (!skeletonTour) return { status: "review" as ValidationStatus, proven: false, debug: "no-skeleton" };
+    if (revealLegsLoading) return { status: "review" as ValidationStatus, proven: false };
+    if (!skeletonTour) return { status: "review" as ValidationStatus, proven: false };
     const region = tourRegionToRegionKey(skeletonTour.region);
     const itineraryStopKeys = editedStops.map((s, i) => `${i}-${s.label}`);
     const alignedLegMinutes = alignRouteLegsToItinerary({
@@ -4700,7 +4700,6 @@ export function StoryboardHandoff({
     return {
       status: (result.status === "incomplete" ? "review" : result.status) as ValidationStatus,
       proven: result.status !== "incomplete",
-      debug: `${result.status}|legs:${alignedLegMinutes ? alignedLegMinutes.length : "null"}|stops:${itineraryStopKeys.length}|route:${(revealRouteStops ?? []).length}|raw:${revealLegMinutes ? revealLegMinutes.length : "null"}`,
     };
   }, [revealLegsLoading, skeletonTour, editedStops, revealLegMinutes, revealRouteStops]);
   const approvalStatus: ValidationStatus = operationalGate.status;
@@ -6165,14 +6164,6 @@ export function StoryboardHandoff({
             aria-label={CTA_RESERVE_YOUR_DAY}
             data-testid="studio-v3-handoff-primary"
             disabled={!canReserve}
-            data-reserve-blocked={canReserve ? "false" : "true"}
-            data-gate-stops={String(editedStops.length)}
-            data-gate-fb2={`${(resolved.livingAtlasLive?.commercialLedger?.notes ?? []).join("|")}#${(resolved.livingAtlasLive?.commercialLedger?.entries ?? []).filter((e) => e.classification !== "anchor-included").map((e) => `${e.kind}:${e.inventoryStopId ?? "?"}:${e.blueprintStopId ?? "?"}:${e.classification}:${e.structuralNote ?? "-"}`).join("|")}`}
-            data-gate-fb={`${resolved.livingAtlasLive?.fallbackReason ?? "none"}/${resolved.livingAtlasLive?.commercialDisposition ?? "none"}/${resolved.livingAtlasLive?.validation?.status ?? "none"}/${(resolved.livingAtlasLive?.validation?.reasons ?? []).map((r) => `${r.code}:${(r.stopIds ?? []).join("+")}`).join("~")}`}
-            data-gate-reveal={revealValidation.ok ? "ok" : "missing"}
-            data-gate-operational={`${operationalGate.proven ? "proven" : operationalGate.status}/${operationalGate.debug ?? ""}`}
-            data-gate-time={`${finalDayGate.fit.verdict}:${finalDayGate.fit.evaluable ? "evaluable" : "not-evaluable"}`}
-            data-gate-stopdebug={`${resolved.livingAtlasLive?.liveResolution ?? "none"}/${resolved.livingAtlasLive?.passthroughReason ?? "none"}/${resolved.livingAtlasLive?.compositionResolution ?? "none"}/${resolved.livingAtlasLive?.fallbackReason ?? "none"}/${resolved.livingAtlasLive?.commercialDisposition ?? "none"}/${resolved.livingAtlasLive?.validation?.status ?? "none"}/${resolved.skeletonTourKey ?? "notour"}/${(resolved.livingAtlasLive?.commercialLedger?.notes ?? []).join("~")}/${(resolved.livingAtlasLive?.commercialLedger?.entries ?? []).filter((e) => e.classification !== "anchor-included").map((e) => `${e.kind}:${e.inventoryStopId ?? "?"}:${e.blueprintStopId ?? "?"}:${e.classification}:${e.structuralNote ?? "-"}`).join("~")}`}
 
 
 
