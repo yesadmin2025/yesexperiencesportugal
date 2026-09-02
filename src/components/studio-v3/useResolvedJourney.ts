@@ -120,10 +120,14 @@ export function useResolvedJourney(
     // Composed-day commercial truth: the bespoke day may hold more wineries
     // than the Signature skeleton includes. The supplement comes from the one
     // approved authority (`tailorRules(...).wineries`) that the server mirrors,
-    // so Your Day, the Checkout Summary and Stripe all show the same total.
-    const composedSupplementPerPax = studioComposedSupplementPerPaxEur(
+    // so Your Day, the Guest Details quote, the Checkout Summary and Stripe all
+    // show the same total.
+    // P0-2 — counted from STRUCTURAL identity, never from the generic public
+    // labels ("A second local winery"), which can collapse two distinct
+    // suppliers into one key and silently under-charge the day.
+    const composedSupplementPerPax = studioComposedSupplementFromMoments(
       state.tourId ?? null,
-      stops.map((s) => s.label),
+      stops,
     );
 
     const strictJourney = resolveStudioStrictJourneyPricing(
