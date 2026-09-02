@@ -50,7 +50,7 @@ describe("Your Day progression gate", () => {
 describe("booking truth is unweakened", () => {
   it("still fails closed at the Stripe seam", () => {
     expect(STUDIO).toContain("if (!checkoutTimeGate.bookable) {");
-    expect(STUDIO).toContain("isOperationallyBookable");
+    expect(STUDIO).toContain("if (!frozenDayAllowsCheckout(checkoutDoorToDoor)) {");
   });
 });
 

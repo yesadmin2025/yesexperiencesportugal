@@ -161,10 +161,8 @@ import {
   describePickupDoorToDoorConflict,
   frozenDayAllowsCheckout,
 } from "@/lib/studio-v3/pickupDoorToDoor";
-import {
-  isOperationallyBookable,
-  publishOperationalGate,
-} from "@/lib/studio-v3/operationalGateChannel";
+import { publishOperationalGate } from "@/lib/studio-v3/operationalGateChannel";
+
 import {
   requiresCuratorParty,
   curatorPartyMessage,
@@ -1398,16 +1396,15 @@ export function StudioV3() {
         return;
       }
 
-      // FINAL CLOSURE — the operational approval truth must ALSO hold at the
-      // payment seam, independently of the CTA. A day that was never judged on
-      // proven road data (`proven === false`), a HARD operational rejection, or
-      // a route that is not the exact day the gate certified (stale, hydrated
-      // or deep-linked state) can never open Stripe. Existing curator path.
-      if (!isOperationallyBookable(describeRouteIdentity(checkoutStops))) {
-        setCheckoutPending(false);
-        returnToPreflight("Let's re-confirm your date and pickup — then this day books instantly.");
-        return;
-      }
+      // CLOSURE — the payment seam no longer consults the mutable global
+      // operational snapshot (`operationalGateChannel`), which could be stale
+      // for the exact route being reserved. Instead, the gates that run here
+      // are all DIRECT and deterministic on `checkoutStops`: the canonical
+      // Time Authority (`judgeFinalDayTime`), door-to-door certification from
+      // the current pickup (`certifyFrozenDayFromPickup`), exact-tier pricing,
+      // commercial authority, and server-side Stripe validation. Nothing is
+      // weakened; the truth is simply derived from the route in hand.
+
 
       // P0 — DEFENCE IN DEPTH AT THE PAYMENT SEAM. In ADDITION to every gate
       // above (commercial, operational, route identity, pricing, party size,
@@ -5371,19 +5368,17 @@ export function StoryboardHandoff({
   /** Truthful trade-off line when the chosen pickup breaks the 9-hour limit. */
   const pickupDoorToDoorConflict = describePickupDoorToDoorConflict(frozenDayDoorToDoor);
 
-  // P0-A — TWO DIFFERENT QUESTIONS, TWO DIFFERENT GATES.
+  // PREFLIGHT-FIRST TRUTH — date, pickup and party are collected BEFORE the
+  // day is composed, so "Make it real" can and must ask the full question:
+  // is this exact route certifiable right now, on this date, from this pickup,
+  // for this party? `canProceedToLogistics` remains the structural half of
+  // that truth; the door-to-door and time gates below complete it.
   //
-  // "Make it real" only asks: is this visible day structurally honest enough
-  // to commit and then collect the practical facts? Door-to-door certification
-  // CANNOT be part of that question, because it depends on pickup, date and
-  // party — facts the traveller is only offered AFTER this CTA. Gating the
-  // reward on them created a circular dead end that read as "needs a human".
-  //
-  // Only a TRUE hard reject — an operationally impossible day, or one the
-  // canonical Time Authority scored and found over the one-day budget — blocks
-  // progression.
+  // A TRUE hard reject — an operationally impossible day, or one the canonical
+  // Time Authority scored and found over the one-day budget — blocks it.
   const dayHardRejected =
     approvalStatus === "reject" || finalDayGate.fit.verdict === "over-day-budget";
+
 
   /**
    * EXACT-DATE CLOSURE — the date is already known before the day is
@@ -5404,12 +5399,12 @@ export function StoryboardHandoff({
     !dayHardRejected &&
     !closedMomentConflict;
 
-  // FINAL CLOSURE — booking truth, unchanged and unweakened. Evaluated with
-  // the full picture (after logistics) and independently re-checked at the
-  // Stripe seam; a day that could not be scored at all still fails closed to
-  // the existing curator path. Once pickup is known, the day must ALSO pass
-  // the canonical door-to-door certification — never instead of the existing
-  // gates, always in addition to them.
+  // BOOKING TRUTH — unchanged and unweakened, now evaluated directly on the
+  // exact route with the already-known date, pickup and party, and
+  // independently re-derived at the Stripe seam. A day that could not be
+  // scored at all stays blocked inside Studio with an actionable reason; there
+  // is no curator hand-off.
+
   const canReserve =
     canProceedToLogistics &&
     operationalGate.proven &&

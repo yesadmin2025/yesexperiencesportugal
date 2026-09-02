@@ -68,20 +68,20 @@ describe("payment seam re-asks the operational truth", () => {
     expect(isOperationallyBookable(IDENTITY)).toBe(true);
   });
 
-  it("wires that same question into handleStripeCheckout, before Stripe", () => {
-    expect(STUDIO_SRC).toContain(
-      "if (!isOperationallyBookable(describeRouteIdentity(checkoutStops))) {",
+  it("keeps DIRECT deterministic gates in handleStripeCheckout, before Stripe", () => {
+    // The payment seam no longer consults the mutable global snapshot.
+    expect(STUDIO_SRC).not.toContain(
+      "isOperationallyBookable(describeRouteIdentity(checkoutStops))",
     );
-    const gateAt = STUDIO_SRC.indexOf("isOperationallyBookable(describeRouteIdentity(checkoutStops))");
     const stripeAt = STUDIO_SRC.indexOf("create-signature-checkout");
-    expect(gateAt).toBeGreaterThan(-1);
-    expect(stripeAt).toBeGreaterThan(gateAt);
+    expect(stripeAt).toBeGreaterThan(-1);
     // Existing fail-closed gates are preserved, all ahead of Stripe.
     for (const guard of [
       "if (requiresCuratorParty(partyTotal)) {",
       "if (!resolvedPerPax) {",
       "if (checkoutStops.length < 2) {",
       "if (!checkoutTimeGate.bookable) {",
+      "if (!frozenDayAllowsCheckout(checkoutDoorToDoor)) {",
       "if (!liveAuthority.safe) {",
       "if (commercial.blocked) {",
     ]) {
@@ -91,6 +91,7 @@ describe("payment seam re-asks the operational truth", () => {
     }
   });
 });
+
 
 describe("time truth at the payment seam", () => {
   it("refuses an unevaluable day", () => {
