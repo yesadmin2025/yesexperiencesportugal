@@ -4454,19 +4454,6 @@ function CloseStudio({ hasProgress }: { hasProgress: boolean }) {
  */
 function ComposerRevealPanel({ state }: { state: StudioV3State }) {
   const journey = useMemo(() => composeFromState(state), [state]);
-  const composerInput = useMemo(() => adaptStateToComposeInput(state), [state]);
-  const { data: tourPriceTiers } = useTourPriceTiers();
-  const composerPrice = useMemo(() => {
-    if (!composerInput) return null;
-    const adults = typeof state.adults === "number" && state.adults >= 1 ? state.adults : 2;
-    return priceComposedJourney({
-      region: composerInput.region,
-      budgetTier: composerInput.budgetTier,
-      adults,
-      minorAges: composerInput.minorAges ?? [],
-      overrides: tourPriceTiers ?? null,
-    });
-  }, [composerInput, state.adults, tourPriceTiers]);
   if (!journey || journey.stops.length === 0) return null;
   return (
     <div
