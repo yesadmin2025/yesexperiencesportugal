@@ -184,13 +184,16 @@ describe("Pass 2A — recompute, never stale", () => {
 });
 
 describe("Pass 2A — full-route authority (no compact-card cap)", () => {
+  // A Sintra heritage day is the profile whose inventory composes past the
+  // compact 4-slot card (the Arrábida wine day now spends part of its budget
+  // on its own included midday table), so it is the fixture that proves the
+  // panel never caps the composed route.
   const IMMERSIVE = s({
     phase: "rhythm",
-    feeling: "wine-food",
-    companions: "couple",
-    interests: ["wine"],
-    destinationIntent: "arrabida-setubal-azeitao",
-    rhythm: "immersive",
+    feeling: "heritage",
+    companions: "friends",
+    interests: ["heritage", "gastronomy"],
+    rhythm: "full",
   });
 
   const resolveImmersive = () =>
