@@ -17,6 +17,7 @@ import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
 import { signatureDurationLabel } from "@/lib/tourContent";
+import ogSocialImg from "@/assets/hero-coast.jpg";
 
 export const Route = createFileRoute("/day-tours")({
   head: () => ({
@@ -34,6 +35,10 @@ export const Route = createFileRoute("/day-tours")({
           "Private day experiences across Portugal — Arrábida, Setúbal, Sintra, Évora, Douro and more.",
       },
       { property: "og:url", content: "https://yesexperiencesportugal.com/day-tours" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${ogSocialImg}` },
+      { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogSocialImg}` },
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/day-tours" },

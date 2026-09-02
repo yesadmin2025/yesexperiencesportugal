@@ -15,6 +15,7 @@ import { itemListLd, jsonLdScript, studioServiceLd } from "@/lib/jsonld";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { signatureDurationLabel } from "@/lib/tourContent";
+import ogSocialImg from "@/assets/hero-coast.jpg";
 
 /**
  * Portuguese homepage (`/pt`). Editorial European Portuguese, mirroring
@@ -33,6 +34,9 @@ export const Route = createFileRoute("/pt/")({
       { property: "og:title", content: PT_TITLE },
       { property: "og:description", content: PT_DESCRIPTION },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${ogSocialImg}` },
+      { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogSocialImg}` },
       { property: "og:locale", content: "pt_PT" },
       { property: "og:locale:alternate", content: "en_US" },
       { property: "og:url", content: "https://yesexperiencesportugal.com/pt" },

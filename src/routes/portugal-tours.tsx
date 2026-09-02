@@ -5,6 +5,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { jsonLdScript, breadcrumbLd } from "@/lib/jsonld";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
+import ogSocialImg from "@/assets/hero-coast.jpg";
 
 const BASE_URL = "https://yesexperiencesportugal.com";
 const PAGE_PATH = "/portugal-tours";
@@ -40,6 +41,9 @@ export const Route = createFileRoute("/portugal-tours")({
       { property: "og:description", content: DESCRIPTION },
       { property: "og:url", content: PAGE_URL },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${ogSocialImg}` },
+      { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogSocialImg}` },
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [

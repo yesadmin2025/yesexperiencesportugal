@@ -6,6 +6,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { jsonLdScript, breadcrumbLd, tripItineraryLd, SITE_URL } from "@/lib/jsonld";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
+import ogSocialImg from "@/assets/cat-multiday.jpg";
 
 /**
  * /itineraries/10-day-private-portugal-tour
@@ -77,6 +78,9 @@ export const Route = createFileRoute("/itineraries/10-day-private-portugal-tour"
       { property: "og:description", content: DESCRIPTION },
       { property: "og:url", content: PAGE_URL },
       { property: "og:type", content: "article" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${ogSocialImg}` },
+      { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogSocialImg}` },
     ],
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [

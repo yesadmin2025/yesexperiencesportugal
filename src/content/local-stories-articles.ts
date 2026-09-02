@@ -163,9 +163,10 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "what-to-do-in-sesimbra",
-    title: "Things to Do in Sesimbra, Portugal — A Local's Day Guide",
+    title: "Things to Do in Sesimbra — Private Local Day Guide | YES",
     metaDescription:
-      "Things to do in Sesimbra, Portugal, by locals who live here: the castle, the beach, the fish lunch, the wild Arrábida coast — and how to get there from Lisbon.",
+      "Things to do in Sesimbra by locals who live here: the castle, the fish lunch, the wild Arrábida coast — and how to see it on a private day from Lisbon.",
+
     h1: "Things to Do in Sesimbra, Portugal — A Fishing Town Worth the Drive",
     eyebrow: "Sesimbra · Coast",
     standfirst:
