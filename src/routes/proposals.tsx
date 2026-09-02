@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ProposalInPortugalPage } from "./proposal-in-portugal";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
+import ogSocialImg from "@/assets/cat-proposals.jpg";
 
 /**
  * /proposals renders the same page as /proposal-in-portugal so the short
@@ -22,6 +23,9 @@ export const Route = createFileRoute("/proposals")({
       { property: "og:description", content: DESCRIPTION },
       { property: "og:url", content: CANONICAL },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: `https://yesexperiencesportugal.com${ogSocialImg}` },
+      { name: "twitter:image", content: `https://yesexperiencesportugal.com${ogSocialImg}` },
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
     scripts: [
