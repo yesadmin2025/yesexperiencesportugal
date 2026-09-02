@@ -6164,7 +6164,9 @@ export function StoryboardHandoff({
             aria-label={CTA_RESERVE_YOUR_DAY}
             data-testid="studio-v3-handoff-primary"
             disabled={!canReserve}
-            data-reserve-blocked={canReserve ? "false" : "true"}
+
+
+
 
           >
             {CTA_RESERVE_YOUR_DAY}

@@ -35,8 +35,15 @@ export function alignRouteLegsToItinerary(input: AlignRouteLegsInput): number[] 
   if (!legs) return null;
   if (itineraryStopKeys.length < 2) return null;
   if (routeStopKeys.length < 2) return null;
-  if (legs.length !== routeStopKeys.length - 1) return null;
-  if (!legs.every((m) => typeof m === "number" && Number.isFinite(m))) return null;
+  // The routing seam closes the loop (`[origin, …moments, origin]`), so it
+  // returns ONE leg more than there are route keys minus one: the final
+  // return-to-origin leg. That leg is real door-to-door time, but it sits
+  // outside the itinerary geometry the validator scores, so it is dropped
+  // here rather than misaligning every internal leg.
+  const internalLegs =
+    legs.length === routeStopKeys.length ? legs.slice(0, routeStopKeys.length - 1) : legs;
+  if (internalLegs.length !== routeStopKeys.length - 1) return null;
+  if (!internalLegs.every((m) => typeof m === "number" && Number.isFinite(m))) return null;
 
   const positionOf = new Map<string, number>();
   routeStopKeys.forEach((key, i) => {
@@ -66,7 +73,7 @@ export function alignRouteLegsToItinerary(input: AlignRouteLegsInput): number[] 
   const out: number[] = [];
   for (let i = 1; i < positions.length; i += 1) {
     let sum = 0;
-    for (let p = positions[i - 1]!; p < positions[i]!; p += 1) sum += legs[p]!;
+    for (let p = positions[i - 1]!; p < positions[i]!; p += 1) sum += internalLegs[p]!;
     out.push(sum);
   }
   return out.length === itineraryStopKeys.length - 1 ? out : null;

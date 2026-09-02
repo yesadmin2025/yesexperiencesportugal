@@ -28,6 +28,7 @@ export const STRUCTURAL_STOP_BRIDGE: Readonly<
   Record<string, Readonly<Record<string, string>>>
 > = {
   "arrabida-wine-allinclusive": {
+    "lunch-azeitao-table": "lunch-azeitao",
     "mercado-do-livramento": "livramento",
     "parque-natural-arrabida": "arrabida-park",
     "azulejos-de-azeitao": "azeitao-tiles",
@@ -52,6 +53,7 @@ export const STRUCTURAL_STOP_BRIDGE: Readonly<
     "cabo-espichel": "cabo-espichel",
   },
   "tiles-workshop": {
+    "lunch-azeitao-table": "lunch-azeitao",
     "mercado-do-livramento": "livramento",
     "azulejos-painting-workshop": "azulejos-workshop",
     "jose-maria-da-fonseca": "jmf",
@@ -61,12 +63,14 @@ export const STRUCTURAL_STOP_BRIDGE: Readonly<
     "sesimbra-village": "sesimbra-village",
   },
   "azeitao-cheese": {
+    "lunch-azeitao-table": "lunch-azeitao",
     "mercado-do-livramento": "livramento",
     "quinta-velha-cheese-workshop": "quinta-velha",
     "quinta-de-catralvos": "catralvos",
     "castelo-de-sesimbra": "sesimbra-castle",
   },
   "sintra-cascais": {
+    "lunch-azenhas-table": "lunch-azenhas",
     "sintra-town": "sintra-vila",
     "sintra-national-palace": "sintra-palace",
     "pena-palace": "pena",
@@ -76,6 +80,7 @@ export const STRUCTURAL_STOP_BRIDGE: Readonly<
     "adega-regional-de-colares": "colares-winery",
   },
   "troia-comporta": {
+    "lunch-comporta-table": "comporta-lunch",
     "roman-ruins-troia": "troia-ruins",
     // The blueprint core stop is published as "Comporta or Carvalhal beach",
     // so BOTH beaches are the same declared moment of this Signature.
@@ -85,6 +90,7 @@ export const STRUCTURAL_STOP_BRIDGE: Readonly<
     "cais-palafitico-carrasqueira": "carrasqueira",
   },
   "evora-alentejo": {
+    "lunch-evora-table": "evora-lunch",
     "evora-city": "evora-old-town",
     "templo-romano-evora": "templo-romano",
     "capela-dos-ossos": "chapel-of-bones",
@@ -96,17 +102,20 @@ export const STRUCTURAL_STOP_BRIDGE: Readonly<
     "corticarte-cork-workshop": "corticarte",
   },
   "tomar-coimbra": {
+    "lunch-tomar-table": "tomar-lunch",
     "convento-de-cristo": "convento-cristo",
     "tomar-historic-center": "tomar-town",
     "universidade-de-coimbra": "coimbra-uni",
     "biblioteca-joanina": "biblioteca-joanina",
   },
   "fatima-nazare-obidos": {
+    "lunch-nazare-table": "nazare-lunch",
     "fatima-sanctuary": "fatima",
     "praia-da-nazare": "nazare-beach",
     "obidos-medieval-town": "obidos",
   },
   "roman-heritage-alentejo": {
+    "lunch-talha-table": "talha-lunch",
     "villa-romana-sao-cucufate": "sao-cucufate",
     "centro-interpretativo-vinho-talha": "vinho-talha",
     "vila-alva": "vila-alva",
