@@ -60,6 +60,10 @@ interface Body {
   tailorLunchAdded?: boolean;
   /** Tailor: wineries selected beyond the Signature baseline (+€20pp each). */
   tailorExtraWineries?: number;
+  /** Stable blueprint stop ids the composed day traded away. Structural
+   *  EVIDENCE for the 4th-winery entitlement — never a boolean, never a
+   *  euro amount. Validated against the server whitelist. */
+  tradedStopIds?: string[];
   /** Tailor: guest removed the included lunch (−€15pp, Arrábida Wine only).
    *  Boolean intent only — the euro amount is always derived server-side. */
   tailorLunchRemoved?: boolean;
