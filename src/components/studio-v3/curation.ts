@@ -1491,24 +1491,52 @@ export function pickPrimaryTourWithFit(
   if (eligible.length === 0) eligible = reported;
 
   // SEMANTIC GATE — a HIGH-SIGNAL interest is one the traveller could only
-  // have chosen deliberately (faith, hands-on workshops, wine). When one is
-  // present, a candidate that provides NO evidence for ANY of them is not a
-  // match, it is a coincidence of generic scoring. Never drops the last
-  // remaining candidate.
+  // have chosen deliberately (faith, hands-on workshops, wine). Satisfying
+  // ONE of them is not a match: every explicitly selected high-signal
+  // interest must be covered by VERIFIED stop-intent evidence (keyword-only
+  // "satisfied" rows carry strength "none" and do not count). When no
+  // candidate covers them all we keep the maximum-coverage set and report
+  // the unsatisfied interests so Studio can ask one material trade-off
+  // instead of revealing an unrelated day.
   const highSignal = interests.filter((i) => HIGH_SIGNAL_INTERESTS.includes(i));
+  const verifiedHighSignal = (r: (typeof eligible)[number]): string[] =>
+    r.fit.coverage.interests
+      .filter(
+        (c) =>
+          c.satisfied &&
+          c.strength !== "none" &&
+          (highSignal as ReadonlyArray<string>).includes(c.interest),
+      )
+      .map((c) => c.interest);
+  let unsatisfiedHighSignal: Interest[] = [];
   if (highSignal.length > 0) {
-    const withEvidence = eligible.filter((r) =>
-      r.fit.coverage.interests.some((c) => c.satisfied && (highSignal as string[]).includes(c.interest)),
-    );
-    if (withEvidence.length > 0) {
+    const covered = eligible.map((r) => ({ r, hit: verifiedHighSignal(r) }));
+    const best = Math.max(...covered.map((c) => c.hit.length));
+    if (best > 0) {
+      const keep = covered.filter((c) => c.hit.length === best);
+      const keepSet = new Set(keep.map((c) => c.r));
       for (const r of eligible) {
-        if (!withEvidence.includes(r)) {
-          filtered.push({ tour: r.tour, reason: "no-high-signal-interest-evidence" });
+        if (!keepSet.has(r)) {
+          filtered.push({
+            tour: r.tour,
+            reason:
+              best === highSignal.length
+                ? "does-not-cover-all-high-signal-interests"
+                : "no-high-signal-interest-evidence",
+          });
         }
       }
-      eligible = withEvidence;
+      eligible = keep.map((c) => c.r);
+      if (best < highSignal.length) {
+        const bestHit = new Set(keep[0]?.hit ?? []);
+        unsatisfiedHighSignal = highSignal.filter((i) => !bestHit.has(i));
+      }
+    } else {
+      unsatisfiedHighSignal = [...highSignal];
     }
   }
+
+
 
   const sorted = eligible.sort((a, b) => {
     if (b.fit.totalScore !== a.fit.totalScore) return b.fit.totalScore - a.fit.totalScore;
