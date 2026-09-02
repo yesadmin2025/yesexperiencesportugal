@@ -52,11 +52,25 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
       - name: Run Studio specs
+        id: studio-tests
+        continue-on-error: true
         run: |
           bunx vitest run \
             src/components/studio-v3 \
             src/lib/drift \
-            --reporter=verbose
+            --reporter=json \
+            --outputFile=studio-v3-results.json
+      - name: Upload Studio diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-v3-results-${{ github.sha }}
+          path: studio-v3-results.json
+          if-no-files-found: error
+          retention-days: 1
+      - name: Preserve Studio failure status
+        if: steps.studio-tests.outcome == 'failure'
+        run: exit 1
 
   homepage-suite:
     name: Homepage suite — vitest
