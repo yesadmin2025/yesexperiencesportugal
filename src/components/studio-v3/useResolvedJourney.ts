@@ -20,7 +20,7 @@ import {
 
 import type { TourPriceTiersMap } from "@/hooks/use-tour-price-tiers";
 import { resolveStudioV3Route } from "./curation";
-import { studioComposedSupplementPerPaxEur } from "./studioWineryPresentation";
+import { studioComposedSupplementFromMoments } from "./studioWineryPresentation";
 import {
   resolveAuthoritativeRouteStops,
   studioRouteShapingInput,
@@ -32,6 +32,9 @@ import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 export interface ResolvedJourneyStop {
   readonly label: string;
   readonly story: string;
+  /** Structural identity when the source knew it. Commercial count authority. */
+  readonly inventoryStopId?: string | null;
+  readonly blueprintStopId?: string | null;
 }
 
 export interface ResolvedJourney {
@@ -61,6 +64,13 @@ export interface ResolvedJourney {
   /** Unit-aware party total of the selected additions (sum of `amount`). */
   readonly addOnsPartyTotalEur: number;
   readonly totalEur: number | null;
+  /**
+   * THE single composed-day per-pax supplement (extra wineries beyond the
+   * Signature entitlement). Every price surface — Your Day, Guest Details
+   * quote, local Checkout Summary and the Stripe payload count — must read
+   * this one value instead of recomputing from customer-facing labels.
+   */
+  readonly composedSupplementPerPaxEur: number;
 
   /**
    * Canonical age-banded per-traveller lines. Populated only when
@@ -181,6 +191,7 @@ export function useResolvedJourney(
       baseTotalEur,
       addOnsPartyTotalEur: Math.round(addOnsPartyTotalEur),
       totalEur,
+      composedSupplementPerPaxEur: composedSupplementPerPax,
 
       journeyLines: journey ? journey.lines : null,
       journeyTotalEur: journey ? Math.round(journey.totalEur) : null,
