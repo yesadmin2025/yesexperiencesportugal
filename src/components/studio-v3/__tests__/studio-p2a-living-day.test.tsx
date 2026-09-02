@@ -190,7 +190,7 @@ describe("Pass 2A — full-route authority (no compact-card cap)", () => {
   // panel never caps the composed route.
   const IMMERSIVE = s({
     phase: "rhythm",
-    feeling: "heritage",
+    feeling: "culture",
     companions: "friends",
     interests: ["heritage", "gastronomy"],
     rhythm: "full",

@@ -66,7 +66,7 @@ describe("P8 — composed route is never capped to four", () => {
     // commercial identity end to end, so it is the profile that proves the
     // "no compact cap on the composed day" rule.
     const heritage = state({
-      feeling: "heritage",
+      feeling: "culture",
       companions: "friends",
       rhythm: "full",
       interests: ["heritage", "gastronomy"],
