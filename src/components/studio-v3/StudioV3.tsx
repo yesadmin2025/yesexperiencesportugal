@@ -150,6 +150,11 @@ import type { DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
 import { judgeRouteTimeFit } from "@/lib/studio-v3/timeAuthority";
 import { describeRouteIdentity, judgeFinalDayTime } from "@/lib/studio-v3/finalTimeGate";
 import {
+  certifyFrozenDayFromPickup,
+  describePickupDoorToDoorConflict,
+  frozenDayAllowsCheckout,
+} from "@/lib/studio-v3/pickupDoorToDoor";
+import {
   isOperationallyBookable,
   publishOperationalGate,
 } from "@/lib/studio-v3/operationalGateChannel";
@@ -1136,6 +1141,32 @@ export function StudioV3() {
     () => selectedAddOnItems.reduce((sum, i) => sum + (i.durationMinutes || 0), 0),
     [selectedAddOnItems],
   );
+
+  // P0 — DOOR-TO-DOOR RECERTIFICATION OF THE FROZEN DAY (logistics seam).
+  //
+  // The committed/edited route is re-judged, never recomposed, against the ONE
+  // canonical 540-minute door-to-door authority from the canonical pickup ZONE
+  // coordinate (drop-off defaults to the same zone — existing product truth).
+  // Before pickup is known this is `not-evaluable`: a legitimate state that
+  // must never be shown as certified and never blocks entry to Logistics.
+  const frozenDayDoorToDoor = useMemo(
+    () =>
+      certifyFrozenDayFromPickup({
+        points: state.editedRoutePoints ?? state.committedRoutePoints ?? [],
+        pickupCoord: pickupOriginCoord(state.pickup),
+        addOnsMinutes: selectedAddOnMinutes,
+        rhythm: state.rhythm ?? null,
+      }),
+    [
+      state.editedRoutePoints,
+      state.committedRoutePoints,
+      state.pickup,
+      state.rhythm,
+      selectedAddOnMinutes,
+    ],
+  );
+  /** Truthful trade-off line when the chosen pickup breaks the 9-hour limit. */
+  const pickupDoorToDoorConflict = describePickupDoorToDoorConflict(frozenDayDoorToDoor);
   // Reset add-ons when the resolved tour changes (fresh reveal ⇒ clean slate).
   useEffect(() => {
     setSelectedAddOnIds([]);
@@ -1335,6 +1366,26 @@ export function StudioV3() {
       // a route that is not the exact day the gate certified (stale, hydrated
       // or deep-linked state) can never open Stripe. Existing curator path.
       if (!isOperationallyBookable(describeRouteIdentity(checkoutStops))) {
+        setCheckoutPending(false);
+        openLeadSheet("book");
+        return;
+      }
+
+      // P0 — DEFENCE IN DEPTH AT THE PAYMENT SEAM. In ADDITION to every gate
+      // above (commercial, operational, route identity, pricing, party size,
+      // final time), the EXACT route being reserved plus the CURRENT add-on
+      // minutes (counted exactly once) and the CURRENT pickup/drop-off truth
+      // must pass the ONE canonical door-to-door certification. Unknown pickup
+      // (including "other", which has no proven coordinate and no approved
+      // exact-address resolution) is `not-evaluable` and fails closed to the
+      // curator path — Stripe is never opened on an uncertified day.
+      const checkoutDoorToDoor = certifyFrozenDayFromPickup({
+        points: checkoutStops,
+        pickupCoord: pickupOriginCoord(currentState.pickup),
+        addOnsMinutes: selectedAddOnMinutes,
+        rhythm: currentState.rhythm ?? null,
+      });
+      if (!frozenDayAllowsCheckout(checkoutDoorToDoor)) {
         setCheckoutPending(false);
         openLeadSheet("book");
         return;
@@ -3543,6 +3594,10 @@ export function StudioV3() {
             // closed is a premium hand-off, not an error after the click.
             conflict={
               logisticsConflict ??
+              // P0 — once the pickup zone is known, the frozen day is re-judged
+              // door to door. Over 540 minutes is stated as an explicit trade-off,
+              // never absorbed by silently trimming the day.
+              pickupDoorToDoorConflict ??
               (requiresCuratorParty((state.adults ?? state.guests ?? 2) + (state.minorAges?.length ?? 0))
                 ? curatorPartyMessage((state.adults ?? state.guests ?? 2) + (state.minorAges?.length ?? 0))
                 : null)
@@ -5221,6 +5276,28 @@ export function StoryboardHandoff({
 
 
 
+  // P0 — DOOR-TO-DOOR RECERTIFICATION OF THE FROZEN DAY.
+  //
+  // ONE authority (`doorToDoorAuthority`), reached through the pickup adapter.
+  // The frozen route is never mutated here: a pickup change only re-judges the
+  // SAME day against the 540-minute door-to-door clock, from the canonical
+  // pickup ZONE coordinate (drop-off defaults to the same zone). Before pickup
+  // is known this is `not-evaluable` — a legitimate state that must never be
+  // presented as "certified" and must never block entry to Logistics.
+  const frozenDayDoorToDoor = useMemo(
+    () =>
+      certifyFrozenDayFromPickup({
+        points: editedStops,
+        pickupCoord: pickupOriginCoord(state.pickup),
+        addOnsMinutes: selectedAddOnMinutes,
+        rhythm: state.rhythm ?? null,
+      }),
+    [editedStops, state.pickup, selectedAddOnMinutes, state.rhythm],
+  );
+
+  /** Truthful trade-off line when the chosen pickup breaks the 9-hour limit. */
+  const pickupDoorToDoorConflict = describePickupDoorToDoorConflict(frozenDayDoorToDoor);
+
   // P0-A — TWO DIFFERENT QUESTIONS, TWO DIFFERENT GATES.
   //
   // "Make it real" only asks: is this visible day structurally honest enough
@@ -5241,9 +5318,15 @@ export function StoryboardHandoff({
   // FINAL CLOSURE — booking truth, unchanged and unweakened. Evaluated with
   // the full picture (after logistics) and independently re-checked at the
   // Stripe seam; a day that could not be scored at all still fails closed to
-  // the existing curator path.
+  // the existing curator path. Once pickup is known, the day must ALSO pass
+  // the canonical door-to-door certification — never instead of the existing
+  // gates, always in addition to them.
   const canReserve =
-    canProceedToLogistics && operationalGate.proven && finalDayGate.bookable;
+    canProceedToLogistics &&
+    operationalGate.proven &&
+    finalDayGate.bookable &&
+    frozenDayAllowsCheckout(frozenDayDoorToDoor);
+
 
 
   // When progression is blocked, say why, truthfully and in one line. Derived
