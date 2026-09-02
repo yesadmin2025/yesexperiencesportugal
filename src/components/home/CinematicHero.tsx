@@ -165,6 +165,7 @@ export function CinematicHero() {
             animation, correct document semantics. Each line stays a
             block so the two-line cadence is unchanged. */}
         <h1 className="text-center m-0" data-hero-stanza="true">
+          <span className="sr-only">Private Portugal Tours & Luxury Experiences — </span>
           <span
             className="block font-serif italic font-normal m-0"
             style={{
