@@ -113,6 +113,73 @@ export const TAILOR_MAX_EXTRA_WINERIES: Record<string, number> = {
   "arrabida-wine-allinclusive": 2, // 2 included, up to 4
 };
 
+/**
+ * Winery entitlement mirror — server copy of `tailorRules(...).wineries`.
+ * `included` is the baseline the anchor price already covers, `max` the hard
+ * ceiling, `requiresRemovalFrom` the winery count from which the guest must
+ * TRADE AWAY another moment to make room. Parity with the client table is
+ * enforced by a unit test.
+ */
+export const TAILOR_WINERY_ENTITLEMENT: Readonly<
+  Record<string, { included: number; max: number; requiresRemovalFrom?: number }>
+> = {
+  "arrabida-wine-allinclusive": { included: 2, max: 4, requiresRemovalFrom: 4 },
+};
+
+/**
+ * AUTHORITATIVE whitelist of blueprint core stop ids that may be TRADED AWAY
+ * to make room for an extra winery, per Signature. Server mirror of the
+ * non-winery `core` stops in `src/data/tailorBlueprints.ts`. This is NOT the
+ * −5% principal ladder: a moment may legitimately be traded for time without
+ * earning a price credit, so the two whitelists are deliberately distinct.
+ */
+export const TAILOR_TRADEABLE_STOP_IDS: Readonly<Record<string, readonly string[]>> = {
+  "arrabida-wine-allinclusive": ["livramento", "arrabida-park", "azeitao-tiles", "lunch-azeitao"],
+};
+
+/**
+ * Server-authoritative count of provably traded moments. Counts UNIQUE
+ * whitelisted ids only — invented ids and duplicates earn nothing, so a
+ * tampered payload can never manufacture the 4th-winery entitlement.
+ */
+export function serverWineryTradeOffCount(
+  tourId: string,
+  tradedStopIds: readonly string[] | undefined,
+): number {
+  if (!tradedStopIds || tradedStopIds.length === 0) return 0;
+  const eligible = new Set(TAILOR_TRADEABLE_STOP_IDS[tourId] ?? []);
+  const seen = new Set<string>();
+  for (const id of tradedStopIds) {
+    if (typeof id !== "string") continue;
+    if (!eligible.has(id)) continue;
+    seen.add(id);
+  }
+  return seen.size;
+}
+
+/**
+ * FAIL-CLOSED entitlement gate for extra wineries.
+ * Returns the number of extra wineries the server is willing to price, or
+ * `null` when the composition claims a winery count that requires a trade-off
+ * the payload cannot prove structurally.
+ */
+export function serverExtraWineriesAllowed(
+  tourId: string,
+  extraWineriesClaimed: number,
+  tradedStopIds: readonly string[] | undefined,
+): number | null {
+  const maxExtra = TAILOR_MAX_EXTRA_WINERIES[tourId] ?? 0;
+  const extra = Math.min(maxExtra, Math.max(0, Number(extraWineriesClaimed) | 0));
+  if (extra === 0) return 0;
+  const entitlement = TAILOR_WINERY_ENTITLEMENT[tourId];
+  if (!entitlement) return extra;
+  const threshold = entitlement.requiresRemovalFrom;
+  if (threshold === undefined) return extra;
+  const wineries = entitlement.included + extra;
+  if (wineries < threshold) return extra;
+  return serverWineryTradeOffCount(tourId, tradedStopIds) >= 1 ? extra : null;
+}
+
 export function serverTailorSupplementsEur(
   tourId: string,
   lunchAdded: boolean,

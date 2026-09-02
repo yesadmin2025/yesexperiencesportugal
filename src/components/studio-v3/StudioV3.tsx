@@ -15,7 +15,9 @@ import {
   publicMomentAltText,
   publicSafeText,
   studioDisplayLabel,
-  studioExtraWineryCount,
+  studioComposedSupplementFromMoments,
+  studioExtraWineryCountFromMoments,
+  studioTradedBlueprintStopIds,
 } from "./studioWineryPresentation";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 
@@ -1254,7 +1256,7 @@ export function StudioV3() {
         (currentState.adults ?? currentState.guests ?? 0) +
           (currentState.minorAges?.length ?? 0);
       if (requiresCuratorParty(partyTotal)) {
-        openLeadSheet("book");
+        openLeadSheet("private-group");
         return;
       }
       const tour = currentState.tourId ? findTour(currentState.tourId) : null;
@@ -1396,7 +1398,20 @@ export function StudioV3() {
         guests: details.guests,
       });
 
-      const perPaxBase = resolvedPerPax;
+      // P0-2 — ONE composed-day supplement authority, counted from the
+      // STRUCTURAL identity of the exact route being booked (before generic
+      // public winery labels are applied). Generic labels are display only and
+      // must never act as commercial identity.
+      const composedSupplementPerPax = studioComposedSupplementFromMoments(
+        tour.id,
+        checkoutStops,
+      );
+      const composedExtraWineries = studioExtraWineryCountFromMoments(tour.id, checkoutStops);
+      // Structural EVIDENCE of the trade-off the 4th winery requires. The
+      // server validates these ids against its own whitelist and refuses the
+      // supplement when nothing was really given up.
+      const tradedStopIds = studioTradedBlueprintStopIds(tour.id, checkoutStops);
+      const perPaxBase = resolvedPerPax + composedSupplementPerPax;
 
       // Unit-aware party total for add-ons — mirrors `addOnEurFor` in the
       // price card so per_person, per_group, per_vehicle and fixed add-ons
@@ -1455,6 +1470,7 @@ export function StudioV3() {
                 guests: composedAdults + composedMinors.length,
               },
               tourPriceTiers,
+              composedSupplementPerPax,
             )
           : null;
 
@@ -1541,7 +1557,8 @@ export function StudioV3() {
             // count only — the server clamps it to the approved entitlement
             // and re-derives the euro supplement from its own table. No
             // client euro value is ever sent for this action.
-            tailorExtraWineries: studioExtraWineryCount(tour.id, stopLabels),
+            tailorExtraWineries: composedExtraWineries,
+            tradedStopIds,
             // Prefill Stripe with the email already captured in Guest Details.
             customerEmail: details.email ?? undefined,
             guestDetails: { ...details, hotelPickupIncluded: true },
@@ -3556,7 +3573,7 @@ export function StudioV3() {
                   date_mode: forward.dateMode,
                 });
                 setLogisticsConflict(curatorPartyMessage(committedTotal));
-                openLeadSheet("book");
+                openLeadSheet("private-group");
                 return;
               }
 
@@ -4011,10 +4028,14 @@ export function StudioV3() {
               const t = state.tourId ? findTour(state.tourId) : null;
               if (!t) return null;
               const guests = adults + minorAges.length;
+              // P0-2 PRICE PARITY — the SAME composed-day supplement authority
+              // Your Day and the Checkout Summary use. Omitting it here made
+              // the quote €20/€40pp cheaper than the day the guest approved.
               const j = resolveStudioStrictJourneyPricing(
                 t.id,
                 { adults, minorAges, guests },
                 tourPriceTiers,
+                resolvedJourney.composedSupplementPerPaxEur,
               );
 
               if (!j) return null;
@@ -4433,19 +4454,6 @@ function CloseStudio({ hasProgress }: { hasProgress: boolean }) {
  */
 function ComposerRevealPanel({ state }: { state: StudioV3State }) {
   const journey = useMemo(() => composeFromState(state), [state]);
-  const composerInput = useMemo(() => adaptStateToComposeInput(state), [state]);
-  const { data: tourPriceTiers } = useTourPriceTiers();
-  const composerPrice = useMemo(() => {
-    if (!composerInput) return null;
-    const adults = typeof state.adults === "number" && state.adults >= 1 ? state.adults : 2;
-    return priceComposedJourney({
-      region: composerInput.region,
-      budgetTier: composerInput.budgetTier,
-      adults,
-      minorAges: composerInput.minorAges ?? [],
-      overrides: tourPriceTiers ?? null,
-    });
-  }, [composerInput, state.adults, tourPriceTiers]);
   if (!journey || journey.stops.length === 0) return null;
   return (
     <div
@@ -4467,27 +4475,6 @@ function ComposerRevealPanel({ state }: { state: StudioV3State }) {
       >
         Why these stops fit your day
       </p>
-      {composerPrice ? (
-        <p
-          data-testid="studio-v3-composer-price-preview"
-          className="text-center text-[12px] mb-4"
-          style={{
-            fontFamily: "var(--font-body)",
-            color: "color-mix(in oklab, var(--charcoal) 70%, transparent)",
-          }}
-        >
-          Composer preview:{" "}
-          <span style={{ color: "var(--charcoal)", fontWeight: 600 }}>
-            from €{composerPrice.perPax.eurPerPax} pp
-          </span>
-          <span
-            className="ml-1"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 50%, transparent)" }}
-          >
-            · booking price shown above
-          </span>
-        </p>
-      ) : null}
       <ol className="space-y-2.5">
         {journey.stops.map((s, i) => (
           <li
@@ -5025,7 +5012,10 @@ export function StoryboardHandoff({
   const [addOpen, setAddOpen] = useState<boolean>(false);
   // Pass 2B — the refinement accordion is discoverable and open by default
   // inside Your Day; the traveller can collapse it.
-  const [refineOpen, setRefineOpen] = useState<boolean>(true);
+  // P0-6 — the first reveal is a REWARD, not an editor. Editing is secondary
+  // and collapsed until the traveller asks for it ("Edit your day"), which
+  // matters most at 393px where an open editor buried the day and the CTA.
+  const [refineOpen, setRefineOpen] = useState<boolean>(false);
 
   // ---------- Cinematic 3-beat composing reveal (Fase 4) ----------
   // Beat 1 (0–900ms):   hero photo of the resolved Signature fades in over ivory.
