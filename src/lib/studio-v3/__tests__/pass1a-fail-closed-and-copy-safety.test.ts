@@ -42,7 +42,7 @@ describe("A — edited route with no structural authority is not bookable", () =
     expect(STUDIO_SOURCE).not.toContain("!liveAuthority.safe && liveAuthority.evaluable");
     // The curator/review path is the existing lead sheet.
     const gateIndex = STUDIO_SOURCE.indexOf("if (!liveAuthority.safe) {");
-    expect(STUDIO_SOURCE.slice(gateIndex, gateIndex + 220)).toContain('openLeadSheet("book")');
+    expect(STUDIO_SOURCE.slice(gateIndex, gateIndex + 320)).toContain("returnToPreflight(");
   });
 });
 

@@ -129,7 +129,7 @@ describe("the live Studio surface wires both final seams to this authority", () 
     expect(gateIdx).toBeGreaterThan(-1);
     expect(invokeIdx).toBeGreaterThan(gateIdx);
     // Fails closed to the EXISTING curator/lead path, never to Stripe.
-    expect(STUDIO.slice(gateIdx, gateIdx + 220)).toContain('openLeadSheet("book")');
+    expect(STUDIO.slice(gateIdx, gateIdx + 320)).toContain("returnToPreflight(");
   });
 
   it("counts the add-on minutes exactly once at the checkout seam", () => {

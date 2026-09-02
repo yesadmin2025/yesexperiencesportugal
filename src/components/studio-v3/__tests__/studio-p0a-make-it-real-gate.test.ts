@@ -15,8 +15,8 @@ describe("Your Day progression gate", () => {
   it("separates progression truth from booking truth", () => {
     expect(STUDIO).toContain("const canProceedToLogistics =");
     expect(STUDIO).toContain("const dayHardRejected =");
-    expect(STUDIO).toContain(
-      "canProceedToLogistics && operationalGate.proven && finalDayGate.bookable",
+    expect(STUDIO).toMatch(
+      /const canReserve =\s*\n?\s*canProceedToLogistics &&\s*\n?\s*operationalGate\.proven &&\s*\n?\s*finalDayGate\.bookable/,
     );
   });
 

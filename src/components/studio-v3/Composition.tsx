@@ -21,9 +21,10 @@
 import { Minus, Plus, X } from "lucide-react";
 import { GuestStepper } from "./GuestStepper";
 import { ageBand } from "@/data/signatureTourPricing";
+import { SELF_SERVICE_MAX_PARTY } from "@/lib/studio-v3/selfServiceParty";
 
 const MAX_MINORS = 11;
-const MAX_PARTY = 14;
+const MAX_PARTY = SELF_SERVICE_MAX_PARTY;
 
 interface Props {
   adults: number | null;

@@ -51,6 +51,11 @@ export const INTEREST_TO_STOP_INTENTS: Record<string, StopIntent[]> = {
   photography: ["view"],
   wellness: ["slow-luxury"],
   "local-life": ["local-life", "craft"],
+  // SEMANTIC CLOSURE — the two interests that previously had NO structural
+  // meaning, so a coast-only day could "satisfy" faith or workshops by
+  // accident. They now resolve to the real stop intents they mean.
+  faith: ["spiritual"],
+  "hands-on": ["craft"],
 };
 
 /** `${tourId}` → `${stopLabel}` → intents. Labels must match the `label`

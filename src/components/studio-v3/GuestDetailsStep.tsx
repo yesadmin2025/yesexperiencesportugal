@@ -67,6 +67,14 @@ export interface GuestDetailsStepProps {
   readonly priceQuote?: (c: { adults: number; minorAges: number[] }) => ChargeQuote | null;
   /** Date already chosen in the Studio. When present it is shown, not asked again. */
   readonly fixedTourDate?: string;
+  /**
+   * PREFLIGHT TRUTH — when the date and the traveller composition were already
+   * committed before the day was designed, this step must NOT ask for them
+   * again. They are shown read-only, with a link back to the ONE screen that
+   * owns them. Submitting can never mutate them.
+   */
+  readonly lockedComposition?: { adults: number; minorAges: readonly number[] } | null;
+  readonly onEditOperational?: () => void;
   /** Allows each checkout path to describe the next action honestly. */
   readonly submitLabel?: string;
   readonly className?: string;
@@ -84,6 +92,8 @@ export function GuestDetailsStep({
   onStorySubmit,
   priceQuote,
   fixedTourDate,
+  lockedComposition = null,
+  onEditOperational,
   submitLabel,
   className,
   testId,
@@ -98,7 +108,9 @@ export function GuestDetailsStep({
       (initial?.tourDate && isStudioBookingDateAllowed(initial.tourDate) ? initial.tourDate : ""),
   );
   const [composition, setComposition] = useState<TravellerComposition>(() =>
-    hydrateLegacyComposition(initial),
+    lockedComposition
+      ? { adults: lockedComposition.adults, minorAges: [...lockedComposition.minorAges] }
+      : hydrateLegacyComposition(initial),
   );
   const [pickupAddress, setPickupAddress] = useState(initial?.pickupAddress ?? "");
   const [language, setLanguage] = useState<GuestDetails["language"]>(initial?.language ?? "en");
@@ -369,6 +381,16 @@ export function GuestDetailsStep({
                   month: "long",
                   year: "numeric",
                 }).format(new Date(fixedDate + "T00:00:00"))}
+                {onEditOperational ? (
+                  <button
+                    type="button"
+                    onClick={onEditOperational}
+                    data-testid="studio-v3-edit-date"
+                    className="ml-auto min-h-[44px] px-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]"
+                  >
+                    Change
+                  </button>
+                ) : null}
               </div>
             ) : (
               <input
@@ -398,13 +420,36 @@ export function GuestDetailsStep({
               tabIndex={-1}
               className="border border-[color:var(--border)] bg-[color:var(--ivory)] p-3"
             >
-              <CompositionField value={composition} onChange={setComposition} compact />
+              {lockedComposition ? (
+                <div
+                  data-testid="studio-v3-locked-composition"
+                  className="flex items-center justify-between gap-3"
+                >
+                  <span className="text-[13.5px] text-[color:var(--charcoal)]">
+                    {formatCompositionSummary(composition)}
+                  </span>
+                  {onEditOperational ? (
+                    <button
+                      type="button"
+                      onClick={onEditOperational}
+                      data-testid="studio-v3-edit-party"
+                      className="min-h-[44px] px-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]"
+                    >
+                      Change
+                    </button>
+                  ) : null}
+                </div>
+              ) : (
+                <CompositionField value={composition} onChange={setComposition} compact />
+              )}
             </div>
-            <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
-              {isCompositionComplete(composition)
-                ? formatCompositionSummary(composition)
-                : "Add an age for every child so we can price honestly."}
-            </p>
+            {lockedComposition ? null : (
+              <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+                {isCompositionComplete(composition)
+                  ? formatCompositionSummary(composition)
+                  : "Add an age for every child so we can price honestly."}
+              </p>
+            )}
           </GuestField>
 
           <GuestField

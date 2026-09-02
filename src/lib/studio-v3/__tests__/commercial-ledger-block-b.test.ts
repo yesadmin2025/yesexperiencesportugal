@@ -229,17 +229,20 @@ describe("Block B — winery ladder", () => {
 });
 
 describe("Block B — omitted core semantics", () => {
-  it("8 · a locked core omission never earns a credit", () => {
+  it("8 · a mandatory transfer is internal transit: no credit, no confirmation", () => {
     const ledger = buildCommercialLedger({
       anchorTourId: TROIA,
       kept: [blueprintRecord("troia-ruins")],
       omitted: [blueprintRecord("sado-ferry")],
     });
     const ferry = entryFor(ledger, "sado-ferry", "omitted");
-    expect(ferry.structuralValid).toBe(false);
-    expect(ferry.priceAction).toBe("requires-confirmation");
+    // The Sado ferry is how the day physically reaches Tróia: it is always
+    // operated and always inside the anchor price, so it is never a customer
+    // omission, never a credit, and never a reason to stop a booking.
+    expect(ferry.structuralValid).toBe(true);
+    expect(ferry.priceAction).toBe("none");
     expect(ferry.actionId).toBeNull();
-    expect(ledger.disposition).toBe("commercial-unresolved");
+    expect(ledger.disposition).not.toBe("commercial-unresolved");
   });
 
   it("9 · removing the included lunch is only a dedicated-lunch-removal", () => {

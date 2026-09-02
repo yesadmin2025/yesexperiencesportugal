@@ -312,6 +312,20 @@ function omittedAxes(
 
   if (bpId && index.core.has(bpId)) {
     const core = index.core.get(bpId)!;
+    // A mandatory transfer (e.g. the Sado ferry) is INTERNAL TRANSIT, never a
+    // customer-selectable moment: it is always operated and always included in
+    // the anchor price. Its absence from the visible itinerary list is not an
+    // omission and must never require confirmation.
+    if (core.lock?.reasonCode === "mandatory_transfer") {
+      return {
+        structuralRole: "core",
+        structuralValid: true,
+        structuralNote: null,
+        priceAction: "none",
+        actionId: null,
+        rule: `blueprint:mandatory-transfer:${bpId}`,
+      };
+    }
     const pricingClass = classifyTailorCoreStop(anchorTourId, bpId, {
       dedicatedCreditStopId: dedicatedLunchStopId(anchorTourId),
     });

@@ -1,4 +1,5 @@
 import { Minus, Plus } from "lucide-react";
+import { SELF_SERVICE_MAX_PARTY } from "@/lib/studio-v3/selfServiceParty";
 
 /**
  * GuestStepper — Phase 3 exact guest count selector.
@@ -13,7 +14,7 @@ import { Minus, Plus } from "lucide-react";
  */
 
 const MIN = 1;
-const MAX = 14;
+const MAX = SELF_SERVICE_MAX_PARTY;
 const PRIVATE_EVENT_THRESHOLD = 11;
 
 /** Bucket label used only for storyboard/lead display (NOT state). */

@@ -67,6 +67,11 @@ export interface CheckoutSummaryProps {
   readonly submitting?: boolean;
   readonly onEditGuestDetails: () => void;
   /**
+   * Date and party are committed in the preflight, so their edits route back
+   * there — never to the contact form that no longer owns them.
+   */
+  readonly onEditOperational?: () => void;
+  /**
    * Localized route/stops edit. Optional: when the host has no existing
    * storyboard return path, the affordance is simply not rendered — we never
    * fabricate navigation here.
@@ -116,6 +121,7 @@ export function CheckoutSummary({
   composedStops,
   submitting = false,
   onEditGuestDetails,
+  onEditOperational,
   onEditStops,
   onBack,
   onReserve,
@@ -251,14 +257,14 @@ export function CheckoutSummary({
         <Row
           label="Date"
           value={dateLabel ?? "Flexible"}
-          onEdit={onEditGuestDetails}
+          onEdit={onEditOperational ?? onEditGuestDetails}
           editLabel="Edit your date"
           editTestId="studio-v3-checkout-summary-edit-date"
         />
         <Row
           label="Guests"
           value={guestsLabel}
-          onEdit={onEditGuestDetails}
+          onEdit={onEditOperational ?? onEditGuestDetails}
           editLabel="Edit your party"
           editTestId="studio-v3-checkout-summary-edit-guests"
         />

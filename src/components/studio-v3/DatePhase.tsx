@@ -25,12 +25,19 @@ export function DatePhaseControls({
   onPickExact,
   onPickFlexible,
   onPickUndecided,
+  exactDateOnly = false,
 }: {
   dateExact: string | null;
   dateMode: DateMode | null;
   onPickExact: (iso: string) => void;
   onPickFlexible: () => void;
   onPickUndecided: () => void;
+  /**
+   * INSTANT-BOOKABLE PREFLIGHT — availability, price tier and operating rules
+   * can only be judged against a real calendar day, so the preflight hides the
+   * flexible / undecided escapes. Everywhere else keeps them.
+   */
+  exactDateOnly?: boolean;
 }) {
   // Earliest bookable day (Lisbon time, three calendar days ahead) — the same
   // rule Guest Details and checkout enforce, applied here so travellers never
@@ -123,6 +130,7 @@ export function DatePhaseControls({
       </div>
 
       {/* Secondary options */}
+      {exactDateOnly ? null : (
       <div className="mt-4 grid grid-cols-1 gap-3">
         <SecondaryOption
           label="I'm flexible"
@@ -137,6 +145,7 @@ export function DatePhaseControls({
           onClick={onPickUndecided}
         />
       </div>
+      )}
     </div>
   );
 }

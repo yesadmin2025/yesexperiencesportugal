@@ -37,7 +37,7 @@ describe("P8 — unified Your Day surface", () => {
   it("reveals the unified surface first, then logistics, then guest details", () => {
     const s: StudioV3State = { ...base, feeling: "coastal", companions: "couple", refinement: "coast-wild-beaches" };
     expect(getNextPhase(s, "refinement")).toBe("storyboard");
-    expect(getNextPhase(s, "storyboard")).toBe("logistics");
-    expect(getNextPhase(s, "logistics")).toBe("guestDetails");
+    expect(getNextPhase(s, "logistics")).toBe("feeling");
+    expect(getNextPhase(s, "storyboard")).toBe("guestDetails");
   });
 });

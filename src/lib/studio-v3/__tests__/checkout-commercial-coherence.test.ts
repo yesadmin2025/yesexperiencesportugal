@@ -171,7 +171,7 @@ describe("5 — fail closed before payment", () => {
 
   it("the live checkout aborts to the curator path when blocked", () => {
     expect(STUDIO).toContain("if (commercial.blocked) {");
-    expect(STUDIO).toMatch(/if \(commercial\.blocked\) \{[\s\S]{0,160}openLeadSheet\("book"\)/);
+    expect(STUDIO).toMatch(/if \(commercial\.blocked\) \{[\s\S]{0,200}returnToPreflight\(/);
   });
 
   it("never returns a euro amount", () => {
