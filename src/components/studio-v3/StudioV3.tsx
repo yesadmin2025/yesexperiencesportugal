@@ -1141,6 +1141,32 @@ export function StudioV3() {
     () => selectedAddOnItems.reduce((sum, i) => sum + (i.durationMinutes || 0), 0),
     [selectedAddOnItems],
   );
+
+  // P0 — DOOR-TO-DOOR RECERTIFICATION OF THE FROZEN DAY (logistics seam).
+  //
+  // The committed/edited route is re-judged, never recomposed, against the ONE
+  // canonical 540-minute door-to-door authority from the canonical pickup ZONE
+  // coordinate (drop-off defaults to the same zone — existing product truth).
+  // Before pickup is known this is `not-evaluable`: a legitimate state that
+  // must never be shown as certified and never blocks entry to Logistics.
+  const frozenDayDoorToDoor = useMemo(
+    () =>
+      certifyFrozenDayFromPickup({
+        points: state.editedRoutePoints ?? state.committedRoutePoints ?? [],
+        pickupCoord: pickupOriginCoord(state.pickup),
+        addOnsMinutes: selectedAddOnMinutes,
+        rhythm: state.rhythm ?? null,
+      }),
+    [
+      state.editedRoutePoints,
+      state.committedRoutePoints,
+      state.pickup,
+      state.rhythm,
+      selectedAddOnMinutes,
+    ],
+  );
+  /** Truthful trade-off line when the chosen pickup breaks the 9-hour limit. */
+  const pickupDoorToDoorConflict = describePickupDoorToDoorConflict(frozenDayDoorToDoor);
   // Reset add-ons when the resolved tour changes (fresh reveal ⇒ clean slate).
   useEffect(() => {
     setSelectedAddOnIds([]);
