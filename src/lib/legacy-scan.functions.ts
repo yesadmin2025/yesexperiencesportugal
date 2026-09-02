@@ -6,7 +6,20 @@
  * ship the whole repo to the worker.
  */
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { LEGACY_PATTERNS, categorizeMatch, type LegacyCategory } from "./legacy-scan-patterns";
+
+/** Admin-only gate, identical to the pattern used by other admin server fns. */
+async function assertAdmin(context: { userId: string }) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: roleRow, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", context.userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error || !roleRow) throw new Error("Forbidden");
+}
 
 export type DbHit = {
   table: string;
@@ -39,8 +52,10 @@ const PROBES: Probe[] = [
   { table: "booking_quotes", idCol: "id", cols: ["notes"] },
 ];
 
-export const scanDatabaseLegacy = createServerFn({ method: "POST" }).handler(
-  async (): Promise<{ hits: DbHit[]; skipped: string[]; scanned: number }> => {
+export const scanDatabaseLegacy = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<{ hits: DbHit[]; skipped: string[]; scanned: number }> => {
+    await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const hits: DbHit[] = [];
     const skipped: string[] = [];
@@ -93,5 +108,4 @@ export const scanDatabaseLegacy = createServerFn({ method: "POST" }).handler(
     }
 
     return { hits, skipped, scanned };
-  },
-);
+  });

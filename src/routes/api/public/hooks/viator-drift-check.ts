@@ -108,12 +108,28 @@ export const Route = createFileRoute("/api/public/hooks/viator-drift-check")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        // Canonical pattern: cron authenticates via `apikey` header (anon key).
-        const anon = process.env.SUPABASE_ANON_KEY ?? process.env.SUPABASE_PUBLISHABLE_KEY ?? "";
-        const providedKey =
-          request.headers.get("apikey") ??
-          request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
-        if (!anon || !providedKey || providedKey !== anon) {
+        // Server-only secret gate. The previous apikey check compared against
+        // the Supabase publishable key, which ships in the client bundle and
+        // blocks nobody — anyone could trigger paid Firecrawl scrapes. Use the
+        // shared internal cron secret instead (same as import-tripadvisor-reviews).
+        const secret = process.env.EMAIL_INTERNAL_SECRET;
+        if (!secret) {
+          return new Response(JSON.stringify({ error: "not_configured" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        const auth = request.headers.get("authorization") || "";
+        const provided = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+        const ok = (() => {
+          if (!provided || provided.length !== secret.length) return false;
+          let mismatch = 0;
+          for (let i = 0; i < provided.length; i++) {
+            mismatch |= provided.charCodeAt(i) ^ secret.charCodeAt(i);
+          }
+          return mismatch === 0;
+        })();
+        if (!ok) {
           return new Response(JSON.stringify({ error: "unauthorized" }), {
             status: 401,
             headers: { "Content-Type": "application/json" },
