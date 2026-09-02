@@ -881,7 +881,66 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 8 — FAQ
+        {/* 8 — Journal: local guides
+          Editorial entry point into Local Stories. Three evergreen guides
+          (wine, coast, heritage) so the homepage links the guide library
+          instead of leaving it to nav + footer only. */}
+        <section
+          id="journal"
+          className="he-section-rule section-enter py-16 md:py-20 scroll-mt-24 md:scroll-mt-28"
+          aria-labelledby="journal-title"
+        >
+          <div className="container-x">
+            <div className="reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
+              <Eyebrow className="mb-5">Journal</Eyebrow>
+              <h2
+                id="journal-title"
+                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+              >
+                Portugal, written{" "}
+                <span className="italic font-normal text-[color:var(--teal)]">
+                  by the people who drive it.
+                </span>
+              </h2>
+            </div>
+
+            <ul className="max-w-5xl mx-auto grid gap-5 md:gap-7 md:grid-cols-3 list-none p-0">
+              {homepageJournalLinks.map((entry) => (
+                <li key={entry.slug}>
+                  <Link
+                    to="/local-stories/$slug"
+                    params={{ slug: entry.slug }}
+                    className="group block h-full rounded-lg border border-[color:var(--border)] bg-[color:var(--ivory)] p-6 transition-transform duration-200 hover:-translate-y-[2px] focus-visible:-translate-y-[2px]"
+                  >
+                    <span className="block text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
+                      {entry.eyebrow}
+                    </span>
+                    <h3 className="serif mt-3 text-[1.15rem] leading-[1.25] text-[color:var(--charcoal)]">
+                      {entry.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
+                      {entry.blurb}
+                    </p>
+                    <span className="mt-4 inline-block text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                      Read the guide →
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-8 text-center">
+              <Link
+                to="/local-stories"
+                className="text-sm underline underline-offset-4 text-[color:var(--charcoal)]"
+              >
+                All local stories and guides
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* 9 — FAQ
           Reuses the shared FAQ component, which renders its own
           labelled section landmark (aria-labelledby="faq-title") with
           visible expandable answers. The wrapper here is a plain div on
