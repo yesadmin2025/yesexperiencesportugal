@@ -6434,15 +6434,6 @@ export function StoryboardHandoff({
             className="w-full max-w-[380px]"
             aria-label={CTA_MAKE_IT_REAL}
             data-testid="studio-v3-handoff-primary"
-            data-tmp-debug={JSON.stringify(
-              editedStops.map((s, i) => [
-                s.label,
-                s.durationMinutes ?? null,
-                s.durationSource ?? null,
-                s.inventoryStopId ?? s.blueprintStopId ?? null,
-                momentOptionality[i]?.removable ?? false,
-              ]),
-            )}
             data-reserve-blocked={!canReserve}
             data-day-certified={canReserve ? "true" : "false"}
             disabled={!canReserve}
