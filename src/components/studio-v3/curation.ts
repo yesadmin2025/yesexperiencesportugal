@@ -83,6 +83,7 @@ import {
   validateLivingAtlasOperations,
   type LivingAtlasValidationResult,
 } from "@/components/studio-v3/livingAtlasOperationalConfidence";
+import { attachStructuralDwell } from "@/lib/studio-v3/attachStructuralDwell";
 import {
   resolveCompositionIdentities,
   type CompositionIdentityReport,
@@ -2502,39 +2503,11 @@ export function resolveStudioV3Route(input: {
     // The legacy mapper only ever carried label/story/geo, so a day composed
     // here reached the Time Authority with no structural id and no proven
     // dwell — `not-evaluable`, therefore never reservable, even though every
-    // one of its moments is a real, already-published inventory stop. This
-    // attaches the identity and the dwell those moments ALREADY have in
-    // `REGION_STOP_POOL`, through the same scoped identity authority the
-    // Living Atlas branch uses. Nothing is invented: a moment that cannot be
-    // resolved to exactly one in-scope inventory stop is left untouched and
-    // keeps failing closed.
-    const withStructuralTruth = (points: ResolvedRoutePoint[]): ResolvedRoutePoint[] => {
-      const report = resolveCompositionIdentities({
-        anchorTourId: journey.tour.id,
-        moments: points.map((p) => ({
-          label: p.label,
-          inventoryStopId: p.inventoryStopId ?? null,
-        })),
-      });
-      return points.map((point, index) => {
-        if (point.durationMinutes != null && point.inventoryStopId) return point;
-        const record = report.records[index];
-        if (!record || record.confidence !== "verified" || !record.inventoryStopId) return point;
-        const stop = REGION_STOP_POOL.find((candidate) => candidate.id === record.inventoryStopId);
-        if (!stop || !(stop.durationMin > 0)) return point;
-        return {
-          ...point,
-          inventoryStopId: point.inventoryStopId ?? stop.id,
-          lat: point.lat ?? stop.coords?.lat ?? null,
-          lng: point.lng ?? stop.coords?.lng ?? null,
-          durationMinutes: point.durationMinutes ?? stop.durationMin,
-          durationSource: point.durationSource ?? "inventory",
-        };
-      });
-    };
-
-    composedRoutePoints = withStructuralTruth(composedRoutePoints);
-    routePoints = withStructuralTruth(routePoints);
+    // one of its moments is a real, already-published inventory stop. The
+    // shared helper attaches only the identity and dwell those moments
+    // ALREADY have; anything unresolved stays untouched and fails closed.
+    composedRoutePoints = attachStructuralDwell(journey.tour.id, composedRoutePoints);
+    routePoints = attachStructuralDwell(journey.tour.id, routePoints);
   }
 
 

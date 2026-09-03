@@ -20,6 +20,7 @@ import type { DwellSource } from "@/lib/studio-v3/timeDomain";
 
 import { resolveStudioV3Route, type ResolvedStudioV3Route } from "./curation";
 import { projectAuthoredAnchorStops } from "./authoredAnchorProjection";
+import { attachStructuralDwell } from "@/lib/studio-v3/attachStructuralDwell";
 
 import type { StudioV3State } from "./types";
 
@@ -164,7 +165,14 @@ export function resolveAuthoritativeRouteStops(args: {
 
   const catalog = args.catalogStops ?? null;
   if (catalog && catalog.length > 0) {
-    return normalize(projectAuthoredAnchorStops(args.anchorTourId ?? null, catalog).points);
+    // The raw catalogue fallback carries no dwell truth of its own, which
+    // made every day built from it `not-evaluable` at the booking gate.
+    // Recover ONLY the verified inventory dwell those exact stops already
+    // publish; unresolved moments stay untouched and keep failing closed.
+    return attachStructuralDwell(
+      args.anchorTourId ?? null,
+      normalize(projectAuthoredAnchorStops(args.anchorTourId ?? null, catalog).points),
+    );
   }
 
 
