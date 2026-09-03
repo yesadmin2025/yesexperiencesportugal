@@ -325,9 +325,15 @@ function candidatePool(request: LivingAtlasCompositionRequest): {
           .filter((value): value is string => Boolean(value)),
   );
 
+  const mustIncludeIds = new Set(request.mustIncludeStopIds ?? []);
   const candidates = active.filter((stop) => {
-    if ((request.excludedTypes ?? []).includes(stop.type)) return false;
+    // A taste-derived TYPE exclusion never overrides an EXPLICIT must-include
+    // obligation (traveller principal, verified operational node, or a
+    // product-defining locked core moment of the anchor Signature).
+    if ((request.excludedTypes ?? []).includes(stop.type) && !mustIncludeIds.has(stop.id))
+      return false;
     if (!anchorRegions.has(stop.region)) return false;
+
 
     // STRICT corridor containment whenever a corridor is known.
     if (anchorClusters.size > 0) {
