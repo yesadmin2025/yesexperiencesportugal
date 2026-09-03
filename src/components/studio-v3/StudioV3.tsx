@@ -148,6 +148,7 @@ import { validateItinerary, type ValidationStatus } from "@/lib/studio-v3/itiner
 import { alignRouteLegsToItinerary } from "@/lib/studio-v3/itineraryLegAlignment";
 import type { DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
 import { judgeRouteTimeFit } from "@/lib/studio-v3/timeAuthority";
+import { describeDayRepair, repairDayToBookable } from "@/lib/studio-v3/dayRepair";
 import { describeRouteIdentity, judgeFinalDayTime } from "@/lib/studio-v3/finalTimeGate";
 import { resolveEligibleTours } from "@/lib/studio-v3/resolveEligibleTours";
 import {
