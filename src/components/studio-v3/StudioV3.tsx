@@ -4746,6 +4746,8 @@ export function StoryboardHandoff({
         src: s.durationSource ?? null,
       })),
       resolvedStops: resolved.routePoints?.map((p) => p.label) ?? null,
+      liveResolution: (resolved as unknown as Record<string, unknown>)["liveResolution"] ?? null,
+      skeleton: resolved.skeletonTourKey ?? null,
       composed: resolved.composedRoutePoints?.map((p) => ({ label: p.label, inv: p.inventoryStopId ?? null, dur: p.durationMinutes ?? null })) ?? null,
     };
   }
