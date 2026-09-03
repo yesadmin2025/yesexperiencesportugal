@@ -61,7 +61,7 @@ test.describe("Studio V3 · guest details → checkout @ 393px", () => {
     await expect(page.getByTestId("studio-v3-checkout-summary-stripe-inline")).toBeVisible({
       timeout: 30_000,
     });
-    await expect(page.locator('iframe[name^="__privateStripeFrame"]').first()).toBeAttached({
+    await expect(page.locator('iframe[src*="stripe.com"]').first()).toBeAttached({
       timeout: 30_000,
     });
     await expect(summary).toContainText(/€/);
