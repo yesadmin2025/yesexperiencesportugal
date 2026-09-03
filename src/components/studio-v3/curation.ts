@@ -2476,7 +2476,7 @@ export function resolveStudioV3Route(input: {
     // published day is evaluable by the Time Authority instead of blocked;
     // unresolved moments stay untouched and keep failing closed.
     composedRoutePoints = attachStructuralDwell(
-      live.anchorSignatureId ?? null,
+      anchorTourId,
       live.publicPoints,
     ).map((p, i) => ({ ...p, index: i }));
     // ROUTE OUTPUT INVARIANT: the compact projection is a STRICT prefix slice
