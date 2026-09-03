@@ -29,7 +29,22 @@ type Row = {
   currency: string;
   status: string;
   stripe_session_id: string | null;
+  booking_details: Record<string, unknown> | null;
 };
+
+/** Pickup is stored inside the frozen booking_details snapshot, not as a column. */
+function pickupOf(b: Row): string | null {
+  const d = b.booking_details;
+  if (!d || typeof d !== "object") return null;
+  const guest = (d as { guestDetails?: Record<string, unknown> }).guestDetails;
+  const candidates = [
+    (d as Record<string, unknown>)["pickupAddress"],
+    (d as Record<string, unknown>)["pickupLabel"],
+    guest?.["pickupAddress"],
+  ];
+  const hit = candidates.find((v) => typeof v === "string" && v.trim().length > 0);
+  return typeof hit === "string" ? hit : null;
+}
 
 function money(cents: number, currency: string) {
   return new Intl.NumberFormat("en-GB", {
@@ -104,6 +119,9 @@ function AdminBookingsPage() {
                 <span className="text-sm text-[color:var(--charcoal-soft)]">
                   {b.preferred_date ?? "date TBC"} · {b.guests} guest{b.guests === 1 ? "" : "s"} ·{" "}
                   {money(b.amount_total, b.currency)}
+                </span>
+                <span className="text-sm text-[color:var(--charcoal-soft)]">
+                  Pickup: {pickupOf(b) ?? "—"}
                 </span>
               </Link>
             </li>
