@@ -101,6 +101,14 @@ async function runProfile(page: Page, keyword: RegExp) {
 
   const refine = page.locator('[data-studio-v3-screen="refine"]').first();
   await expect(refine).toBeVisible({ timeout: 20_000 });
+  // Certification runs async (driving times) — wait for the gate to settle.
+  await refine
+    .getByTestId("studio-v3-handoff-primary")
+    .first()
+    .and(page.locator(':not([disabled])'))
+    .waitFor({ timeout: 40_000 })
+    .catch(() => undefined);
+  await page.waitForTimeout(1500);
   const dayText = (await refine.innerText().catch(() => "")) ?? "";
   const primary = refine.getByTestId("studio-v3-handoff-primary").first();
   const certified = await primary.getAttribute("data-day-certified").catch(() => null);
