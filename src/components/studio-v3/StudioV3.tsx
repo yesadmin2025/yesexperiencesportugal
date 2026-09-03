@@ -161,7 +161,6 @@ import {
   describePickupDoorToDoorConflict,
   frozenDayAllowsCheckout,
 } from "@/lib/studio-v3/pickupDoorToDoor";
-import { publishOperationalGate } from "@/lib/studio-v3/operationalGateChannel";
 
 import {
   requiresCuratorParty,
@@ -4830,11 +4829,6 @@ export function StoryboardHandoff({
   const approvalStatus: ValidationStatus = operationalGate.status;
   // Publish the gate to the payment seam. Read-only projection of facts that
   // already exist above; it never changes what the traveller sees.
-  publishOperationalGate({
-    proven: operationalGate.proven,
-    status: operationalGate.status,
-    identity: describeRouteIdentity(editedStops),
-  });
 
 
 
@@ -5407,7 +5401,6 @@ export function StoryboardHandoff({
 
   const canReserve =
     canProceedToLogistics &&
-    operationalGate.proven &&
     finalDayGate.bookable &&
     frozenDayAllowsCheckout(frozenDayDoorToDoor);
 
