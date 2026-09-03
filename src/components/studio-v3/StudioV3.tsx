@@ -1401,7 +1401,7 @@ export function StudioV3() {
       // for the exact route being reserved. Instead, the gates that run here
       // are all DIRECT and deterministic on `checkoutStops`: the canonical
       // Time Authority (`judgeFinalDayTime`), door-to-door certification from
-      // the current pickup (`certifyFrozenDayFromPickup`), exact-tier pricing,
+      // the current pickup (`certifyFrozenDayFromPickup`), the exact approved
       // commercial authority, and server-side Stripe validation. Nothing is
       // weakened; the truth is simply derived from the route in hand.
 
