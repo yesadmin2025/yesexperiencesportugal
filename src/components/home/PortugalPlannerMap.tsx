@@ -1,22 +1,26 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
+  PLANNER_MAP,
   PLANNER_REGIONS,
+  projectPlannerPoint,
   resolvePlannerRegion,
   type PlannerRegion,
 } from "@/content/portugal-planner-map";
+import { PORTUGAL_MAINLAND_PATH } from "@/content/portugal-outline";
 
 /**
  * PortugalPlannerMap — interactive homepage map.
  *
- * Tap a region pin and the panel reveals the real Signature days and the
- * real Local Stories guides for that part of the country. Pure SVG backdrop
- * (same schematic language as EditorialMap), HTML buttons on top so every
- * pin is keyboard-reachable and 44×44 on mobile.
+ * Real geography: the outline is the traced mainland Portugal coastline and
+ * every pin sits at its true lat/lon. Tap a pin and the panel reveals the real
+ * Signature days and the real Local Stories guides for that part of the
+ * country. HTML buttons sit on top of the SVG so each pin is keyboard-reachable
+ * and 44×44 on mobile.
  */
 
-const VB_W = 100;
-const VB_H = 130;
+const VB_W = PLANNER_MAP.width;
+const VB_H = PLANNER_MAP.height;
 
 function pct(value: number, span: number) {
   return `${(value / span) * 100}%`;
@@ -35,8 +39,8 @@ export function PortugalPlannerMap() {
     <div className="grid gap-8 md:gap-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-start">
       {/* Map */}
       <div
-        className="relative overflow-hidden rounded-lg border border-[color:var(--border)] bg-[color:var(--sand)]"
-        style={{ aspectRatio: "100 / 130" }}
+        className="relative mx-auto w-full max-w-[320px] md:max-w-none overflow-hidden rounded-lg border border-[color:var(--border)] bg-[color:var(--sand)]"
+        style={{ aspectRatio: `${VB_W} / ${VB_H}` }}
       >
         <svg
           aria-hidden="true"
@@ -45,51 +49,50 @@ export function PortugalPlannerMap() {
           preserveAspectRatio="xMidYMid meet"
         >
           <defs>
-            <pattern id="ppm-grid" width="10" height="10" patternUnits="userSpaceOnUse">
-              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="var(--gold)" strokeWidth="0.2" />
+            <pattern id="ppm-grid" width="6.78" height="6.5" patternUnits="userSpaceOnUse">
+              <path d="M 6.78 0 L 0 0 0 6.5" fill="none" stroke="var(--gold)" strokeWidth="0.15" />
             </pattern>
           </defs>
-          <rect width={VB_W} height={VB_H} fill="url(#ppm-grid)" opacity="0.35" />
-          {/* Mainland silhouette, schematic — orientation only, not a survey map. */}
+          <rect width={VB_W} height={VB_H} fill="url(#ppm-grid)" opacity="0.3" />
+          {/* Mainland Portugal, traced from Natural Earth 1:10m boundaries. */}
           <path
-            d="M 26 46 C 24 38 26 30 30 24 C 36 16 44 12 52 14 C 58 15 60 22 58 30 C 57 38 58 46 60 54 C 62 64 62 74 60 84 C 58 94 54 102 48 110 C 42 118 34 122 28 118 C 22 114 20 104 21 94 C 22 84 24 74 24 64 C 24 58 25 52 26 46 Z"
-            fill="color-mix(in oklab, var(--teal) 8%, transparent)"
-            stroke="color-mix(in oklab, var(--teal) 35%, transparent)"
-            strokeWidth="0.5"
+            d={PORTUGAL_MAINLAND_PATH}
+            fill="color-mix(in oklab, var(--teal) 9%, transparent)"
+            stroke="color-mix(in oklab, var(--teal) 45%, transparent)"
+            strokeWidth="0.45"
             strokeLinejoin="round"
           />
         </svg>
 
         {PLANNER_REGIONS.map((region) => {
           const isActive = region.id === active.id;
+          const { x, y } = projectPlannerPoint(region.lat, region.lon);
           return (
             <button
               key={region.id}
               type="button"
               onClick={() => setActiveId(region.id)}
               aria-pressed={isActive}
-              className="absolute -translate-x-1/2 -translate-y-1/2 flex min-h-11 min-w-11 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] rounded-full"
-              style={{ left: pct(region.x, VB_W), top: pct(region.y, VB_H) }}
+              className="absolute -translate-x-1/2 -translate-y-1/2 flex min-h-11 min-w-11 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+              style={{ left: pct(x, VB_W), top: pct(y, VB_H), zIndex: isActive ? 2 : 1 }}
             >
               <span className="sr-only">{region.label}</span>
               <span
                 aria-hidden="true"
                 className={`block rounded-full transition-all duration-200 ${
                   isActive
-                    ? "h-3.5 w-3.5 bg-[color:var(--gold)] ring-4 ring-[color:var(--gold)]/25"
-                    : "h-2.5 w-2.5 bg-[color:var(--teal)]/70"
+                    ? "h-3 w-3 bg-[color:var(--gold)] ring-4 ring-[color:var(--gold)]/25"
+                    : "h-2 w-2 bg-[color:var(--teal)]/70"
                 }`}
               />
-              <span
-                aria-hidden="true"
-                className={`absolute left-1/2 top-[calc(50%+14px)] -translate-x-1/2 whitespace-nowrap text-[10px] uppercase tracking-[0.18em] ${
-                  isActive
-                    ? "text-[color:var(--charcoal)]"
-                    : "text-[color:var(--charcoal-soft)]"
-                }`}
-              >
-                {region.label}
-              </span>
+              {isActive && (
+                <span
+                  aria-hidden="true"
+                  className="absolute left-[calc(50%+12px)] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[color:var(--ivory)]/90 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]"
+                >
+                  {region.label}
+                </span>
+              )}
             </button>
           );
         })}
