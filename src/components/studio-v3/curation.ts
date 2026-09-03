@@ -2470,7 +2470,15 @@ export function resolveStudioV3Route(input: {
     // LIVING ATLAS BRANCH — the legacy mini-composers are NOT executed at all,
     // not even for the fallback. The public route is either the safe projected
     // Living Atlas day or the RAW authored Signature skeleton.
-    composedRoutePoints = live.publicPoints.map((p, i) => ({ ...p, index: i }));
+    // The Living Atlas branch also covers the RAW authored Signature
+    // skeleton, whose points carry no dwell of their own. Recover only the
+    // verified inventory dwell those exact stops already publish, so a real
+    // published day is evaluable by the Time Authority instead of blocked;
+    // unresolved moments stay untouched and keep failing closed.
+    composedRoutePoints = attachStructuralDwell(
+      live.anchorSignatureId ?? null,
+      live.publicPoints,
+    ).map((p, i) => ({ ...p, index: i }));
     // ROUTE OUTPUT INVARIANT: the compact projection is a STRICT prefix slice
     // of the full composed route — never a separately composed list.
     routePoints = composedRoutePoints.slice(0, 4);
