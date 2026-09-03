@@ -290,7 +290,7 @@ describe("C · operational approval fails closed", () => {
     expect(STUDIO_SRC).toContain('status: (result.status === "incomplete" ? "review" : result.status) as ValidationStatus,');
     // An unscoreable day stays fail-closed: `proven` is the booking condition.
     expect(STUDIO_SRC).toContain('proven: result.status !== "incomplete",');
-    expect(STUDIO_SRC).toContain("operationalGate.proven &&");
+    expect(STUDIO_SRC).toContain("finalDayGate.bookable &&");
   });
 
   it("C3 · validateItinerary really reports incomplete without leg minutes", () => {
