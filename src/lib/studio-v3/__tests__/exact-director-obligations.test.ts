@@ -30,6 +30,23 @@ describe("exact Director obligations", () => {
     });
   });
 
+  it("keeps the anchor on the Signature that owns the exact moment when a later, broader answer follows", () => {
+    // Live regression: choosing "make cheese" and THEN a wine-depth answer used
+    // to move the anchor to the wine Signature, whose pool has no cheese
+    // workshop — the composition became impossible and the choice was dropped.
+    const history = appendLiveDirectorAnswer(workshopAnswer("hands-make-cheese"), {
+      questionKey: "question:wine-focus",
+      uncertaintyKey: "fork:wine-focus",
+      dependencyFingerprint: "wine-focus",
+      offeredOptionIds: ["wine-cellar-depth", "wine-monumental-estates"],
+      selectedOptionId: "wine-cellar-depth",
+    });
+    const obligations = exactDirectorObligations(history);
+    expect(obligations.preferredSignatureId).toBe("azeitao-cheese");
+    expect(obligations.principalStopIds).toEqual(["quinta-velha-cheese-workshop"]);
+  });
+
+
   it("stops Faith plus an incompatible cheese answer before Your Day", () => {
     const conflict = resolveHighSignalConflict({
       ...INITIAL_STATE,
