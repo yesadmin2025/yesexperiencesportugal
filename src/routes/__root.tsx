@@ -345,6 +345,7 @@ function RootComponent() {
             <Outlet />
           </RouteFade>
           <WhatsAppSupportButton />
+          <InstallAppPrompt />
           <Toaster position="bottom-left" richColors closeButton />
           <Analytics />
         </TooltipProvider>
