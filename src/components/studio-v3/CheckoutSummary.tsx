@@ -143,6 +143,7 @@ export function CheckoutSummary({
   const [reserveAttempted, setReserveAttempted] = React.useState(false);
   const [checkoutError, setCheckoutError] = React.useState(false);
   const wasSubmittingRef = React.useRef(false);
+  const stripeSurfaceRef = React.useRef<HTMLDivElement | null>(null);
 
   // The parent owns the Stripe request. This surface can still tell whether
   // that request finished without producing an embedded session: submitting
@@ -160,7 +161,19 @@ export function CheckoutSummary({
   }, [submitting, reserveAttempted, clientSecret]);
 
   React.useEffect(() => {
-    if (clientSecret) setCheckoutError(false);
+    if (!clientSecret) return;
+    setCheckoutError(false);
+    // Embedded Checkout is intentionally below the reviewed summary. Bring
+    // the newly mounted secure form into view so Reserve always feels like a
+    // completed transition, especially on a 393px phone viewport.
+    window.requestAnimationFrame(() => {
+      stripeSurfaceRef.current?.scrollIntoView({
+        block: "start",
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+      });
+    });
   }, [clientSecret]);
 
   const handleReserve = React.useCallback(() => {
@@ -428,7 +441,11 @@ export function CheckoutSummary({
 
       {/* Inline Stripe Embedded Checkout — same page as summary. */}
       {clientSecret && publishableKey ? (
-        <div className="mt-14" data-testid="studio-v3-checkout-summary-stripe-inline">
+        <div
+          ref={stripeSurfaceRef}
+          className="mt-14 scroll-mt-5"
+          data-testid="studio-v3-checkout-summary-stripe-inline"
+        >
           <div
             aria-hidden
             className="mx-auto h-px w-16"

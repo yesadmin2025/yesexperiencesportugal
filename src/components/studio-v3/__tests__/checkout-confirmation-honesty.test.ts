@@ -49,5 +49,6 @@ describe("checkout confirmation honesty and recovery", () => {
     expect(checkoutSummary).toContain('data-testid="studio-v3-checkout-summary-reserve"');
     expect(checkoutSummary).toContain("Try secure checkout again");
     expect(checkoutSummary).toContain("onClick={handleReserve}");
+    expect(checkoutSummary).toContain("stripeSurfaceRef.current?.scrollIntoView");
   });
 });

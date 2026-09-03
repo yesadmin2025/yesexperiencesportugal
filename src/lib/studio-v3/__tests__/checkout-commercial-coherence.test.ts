@@ -169,9 +169,9 @@ describe("5 — fail closed before payment", () => {
     );
   });
 
-  it("the live checkout aborts to the curator path when blocked", () => {
+  it("the live checkout stays on Summary with a reason when blocked", () => {
     expect(STUDIO).toContain("if (commercial.blocked) {");
-    expect(STUDIO).toMatch(/if \(commercial\.blocked\) \{[\s\S]{0,200}returnToPreflight\(/);
+    expect(STUDIO).toMatch(/if \(commercial\.blocked\) \{[\s\S]{0,260}setCheckoutBlock\(/);
   });
 
   it("never returns a euro amount", () => {
