@@ -122,6 +122,7 @@ test.describe("TMP choice fidelity @393", () => {
   test("cheese-led day", async ({ page }) => {
     test.setTimeout(180_000);
     const r = await runProfile(page, /cheese|hands|craft|make/i);
+    console.log("CHEESE blocked:", await page.locator('[data-reserve-blocked], [data-testid*="blocked"]').allInnerTexts().catch(() => []));
     console.log("CHEESE matched phases:", r.matched.join(","));
     console.log("CHEESE certified:", r.certified, "disabled:", r.disabled);
     console.log("CHEESE day:\n" + r.dayText.slice(0, 2500));
