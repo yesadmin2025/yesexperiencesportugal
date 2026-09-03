@@ -928,10 +928,39 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 8 — Journal: local guides
+        {/* 8 — Plan your Portugal: interactive map
+          Region pins link the real Signature days and the real Local
+          Stories guides for that part of the country. Data derives from
+          `signatureTours` + `LOCAL_STORIES_ARTICLES` — nothing invented. */}
+        <section
+          id="plan-map"
+          className="he-section-rule section-enter py-16 md:py-20 scroll-mt-24 md:scroll-mt-28"
+          aria-labelledby="plan-map-title"
+        >
+          <div className="container-x">
+            <div className="reveal text-center max-w-2xl mx-auto mb-8 md:mb-12">
+              <Eyebrow className="mb-5">Plan your Portugal</Eyebrow>
+              <h2
+                id="plan-map-title"
+                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+              >
+                Choose a region,{" "}
+                <span className="italic font-normal text-[color:var(--teal)]">
+                  see what a day there looks like.
+                </span>
+              </h2>
+            </div>
+            <div className="reveal max-w-5xl mx-auto">
+              <PortugalPlannerMap />
+            </div>
+          </div>
+        </section>
+
+        {/* 9 — Journal: local guides
           Editorial entry point into Local Stories. Three evergreen guides
           (wine, coast, heritage) so the homepage links the guide library
           instead of leaving it to nav + footer only. */}
+
         <section
           id="journal"
           className="he-section-rule section-enter py-16 md:py-20 scroll-mt-24 md:scroll-mt-28"
