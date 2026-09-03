@@ -16,6 +16,7 @@
  * untouched and keeps failing closed.
  */
 
+import { aliasedInventoryStopId } from "@/data/catalogStopAliases";
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
 import { sotItinerary } from "@/data/signatureToursSourceOfTruth";
 import { resolveCompositionIdentity } from "@/lib/studio-v3/compositionIdentity";
@@ -51,7 +52,11 @@ export function attachStructuralDwell<P extends StructuralDwellPoint>(
       slot,
       moment: { label: point.label, inventoryStopId: point.inventoryStopId ?? null },
     });
-    if (record.confidence !== "verified" || !record.inventoryStopId) {
+    const aliasId =
+      record.confidence === "verified" && record.inventoryStopId
+        ? record.inventoryStopId
+        : aliasedInventoryStopId(anchorTourId, point.label);
+    if (!aliasId) {
       // SECOND VERIFIED SOURCE — the anchor Signature's own published
       // source-of-truth itinerary. An exact label match with a declared
       // chapter duration is real operator data, not an inference.
@@ -68,7 +73,7 @@ export function attachStructuralDwell<P extends StructuralDwellPoint>(
         durationSource: point.durationSource ?? ("sot-chapter" as DwellSource),
       };
     }
-    const stop = REGION_STOP_POOL.find((candidate) => candidate.id === record.inventoryStopId);
+    const stop = REGION_STOP_POOL.find((candidate) => candidate.id === aliasId);
     if (!stop || !(stop.durationMin > 0)) return { ...point };
     return {
       ...point,
