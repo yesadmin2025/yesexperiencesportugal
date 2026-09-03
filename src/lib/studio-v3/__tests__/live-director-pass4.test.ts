@@ -279,6 +279,7 @@ describe("Pass 4 closure — canonical history drives modern intelligence", () =
       rhythm: "balanced",
       interests: ["heritage"],
       pickup: "lisbon",
+      destinationIntent: "central-portugal",
       refinement: null,
       questionHistory: history,
     });
@@ -286,7 +287,7 @@ describe("Pass 4 closure — canonical history drives modern intelligence", () =
       feeling: "culture",
       interests: ["heritage"],
       rhythm: "balanced",
-      destinationIntent: null,
+      destinationIntent: "central-portugal",
       refinement: null,
       questionHistory: history,
     });
