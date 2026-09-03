@@ -17,6 +17,7 @@
  */
 
 import { REGION_STOP_POOL } from "@/data/regionStopPool";
+import { sotItinerary } from "@/data/signatureToursSourceOfTruth";
 import { resolveCompositionIdentity } from "@/lib/studio-v3/compositionIdentity";
 import type { DwellSource } from "@/lib/studio-v3/timeDomain";
 
@@ -27,6 +28,15 @@ export interface StructuralDwellPoint {
   inventoryStopId?: string | null;
   durationMinutes?: number | null;
   durationSource?: DwellSource | null;
+}
+
+function normalizeLabel(value: string): string {
+  return value
+    .normalize("NFKD")
+    .replace(/[\u2010-\u2015]/g, "-")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
 }
 
 export function attachStructuralDwell<P extends StructuralDwellPoint>(
@@ -41,7 +51,23 @@ export function attachStructuralDwell<P extends StructuralDwellPoint>(
       slot,
       moment: { label: point.label, inventoryStopId: point.inventoryStopId ?? null },
     });
-    if (record.confidence !== "verified" || !record.inventoryStopId) return { ...point };
+    if (record.confidence !== "verified" || !record.inventoryStopId) {
+      // SECOND VERIFIED SOURCE — the anchor Signature's own published
+      // source-of-truth itinerary. An exact label match with a declared
+      // chapter duration is real operator data, not an inference.
+      const chapter = (sotItinerary(anchorTourId) ?? []).find(
+        (candidate) =>
+          normalizeLabel(candidate.label) === normalizeLabel(point.label) &&
+          typeof candidate.durationMinutes === "number" &&
+          candidate.durationMinutes > 0,
+      );
+      if (!chapter || chapter.durationMinutes == null) return { ...point };
+      return {
+        ...point,
+        durationMinutes: point.durationMinutes ?? chapter.durationMinutes,
+        durationSource: point.durationSource ?? ("sot-chapter" as DwellSource),
+      };
+    }
     const stop = REGION_STOP_POOL.find((candidate) => candidate.id === record.inventoryStopId);
     if (!stop || !(stop.durationMin > 0)) return { ...point };
     return {
