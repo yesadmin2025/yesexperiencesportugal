@@ -148,6 +148,7 @@ import { validateItinerary, type ValidationStatus } from "@/lib/studio-v3/itiner
 import { alignRouteLegsToItinerary } from "@/lib/studio-v3/itineraryLegAlignment";
 import type { DwellSource, TimingConflict } from "@/lib/studio-v3/timeDomain";
 import { judgeRouteTimeFit } from "@/lib/studio-v3/timeAuthority";
+import { describeDayRepair, repairDayToBookable } from "@/lib/studio-v3/dayRepair";
 import { describeRouteIdentity, judgeFinalDayTime } from "@/lib/studio-v3/finalTimeGate";
 import { resolveEligibleTours } from "@/lib/studio-v3/resolveEligibleTours";
 import {
@@ -1400,7 +1401,7 @@ export function StudioV3() {
       // for the exact route being reserved. Instead, the gates that run here
       // are all DIRECT and deterministic on `checkoutStops`: the canonical
       // Time Authority (`judgeFinalDayTime`), door-to-door certification from
-      // the current pickup (`certifyFrozenDayFromPickup`), exact-tier pricing,
+      // the current pickup (`certifyFrozenDayFromPickup`), the exact approved
       // commercial authority, and server-side Stripe validation. Nothing is
       // weakened; the truth is simply derived from the route in hand.
 
@@ -5403,6 +5404,85 @@ export function StoryboardHandoff({
     canProceedToLogistics &&
     finalDayGate.bookable &&
     frozenDayAllowsCheckout(frozenDayDoorToDoor);
+
+  // ── ALWAYS LAND ON AN INSTANTLY BOOKABLE DAY ──────────────────────────
+  // Studio repairs the DAY, never the standard. When the composed day is not
+  // certifiable for reasons we can fix from verified inventory alone — a
+  // moment closed on the chosen date, or a day that runs past the canonical
+  // door-to-door budget — it is deterministically repaired once per distinct
+  // route, using the SAME authorities that block it. Anything irreducible
+  // keeps the existing in-Studio adjustment reason; nothing is invented,
+  // re-timed or re-priced here.
+  const repairedRouteSignature = useRef<string | null>(null);
+  useEffect(() => {
+    if (state.phase !== "storyboard") return;
+    if (revealLegsLoading) return;
+    if (canProceedToLogistics && finalDayGate.bookable) return;
+    if (editedStops.length < REFINE_MIN_STOPS) return;
+
+    const signature = `${describeRouteIdentity(editedStops)}|${state.dateExact ?? ""}|${selectedAddOnMinutes}`;
+    if (repairedRouteSignature.current === signature) return;
+    repairedRouteSignature.current = signature;
+
+    const dateExact = state.dateExact ?? null;
+    const closedOnDate = (label: string) => !!dateExact && isStopClosedOn(label, dateExact);
+
+    const result = repairDayToBookable<AuthoredRoutePoint>({
+      points: editedStops,
+      minStops: REFINE_MIN_STOPS,
+      certify: (points) =>
+        !points.some((s) => closedOnDate(s.label)) &&
+        judgeFinalDayTime({
+          points,
+          addOnsMinutes: selectedAddOnMinutes,
+          skeletonTourId: anchorTourKey,
+          rhythm: state.rhythm ?? null,
+        }).bookable,
+      isBlocked: (s) => closedOnDate(s.label),
+      isRemovable: (_s, index) => momentOptionality[index]?.removable ?? false,
+      substitute: (s) => {
+        const candidate = swapPool.find((c) => !closedOnDate(c.label));
+        if (!candidate) return null;
+        return {
+          ...s,
+          label: candidate.label,
+          story: candidate.story,
+          lat: candidate.lat ?? null,
+          lng: candidate.lng ?? null,
+          durationMinutes: candidate.durationMinutes ?? null,
+          durationSource: candidate.durationSource ?? null,
+          inventoryStopId: candidate.inventoryStopId ?? null,
+          blueprintStopId: candidate.blueprintStopId ?? null,
+        } as AuthoredRoutePoint;
+      },
+    });
+
+    if (!result.certified || result.repairs.length === 0) return;
+    setEdited(() => [...result.points]);
+    const note = describeDayRepair(result.repairs, revealLabel);
+    if (note) setIntentFeedback(note);
+    trackStudio("studio_composition_changed", {
+      phase: "storyboard",
+      change: "auto-repair",
+      moment_count: result.points.length,
+    });
+  }, [
+    state.phase,
+    state.dateExact,
+    state.rhythm,
+    editedStops,
+    revealLegsLoading,
+    canProceedToLogistics,
+    finalDayGate.bookable,
+    selectedAddOnMinutes,
+    anchorTourKey,
+    momentOptionality,
+    swapPool,
+    setEdited,
+    revealLabel,
+  ]);
+
+
 
 
 

@@ -35,7 +35,7 @@ describe("B — the final primary action is Make it real", () => {
 describe("C — Reserve fails closed on unresolved operational state", () => {
   it("gates the primary action on validation + approval", () => {
     expect(STUDIO_SOURCE).toContain("disabled={!canReserve}");
-    expect(STUDIO_SOURCE).toContain("operationalGate.proven &&");
+    expect(STUDIO_SOURCE).toContain("finalDayGate.bookable &&");
     expect(STUDIO_SOURCE).toContain('approvalStatus === "reject"');
     expect(STUDIO_SOURCE).toContain("studio-v3-reserve-review-path");
   });
