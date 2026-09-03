@@ -572,6 +572,7 @@ export async function reachGuestDetails(page: Page): Promise<boolean> {
   // Current instant-bookable flow can move straight from certified Your Day
   // into Guest Details; the older cinematic final-reveal beat is optional.
   const guestDetails = page.getByTestId("studio-v3-guest-details");
+  await guestDetails.waitFor({ state: "visible", timeout: 10_000 }).catch(() => undefined);
   if (await guestDetails.isVisible().catch(() => false)) return true;
 
   const reveal = page.getByTestId("studio-v3-final-reveal");
