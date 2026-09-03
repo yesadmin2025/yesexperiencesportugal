@@ -120,6 +120,9 @@ function AdminBookingsPage() {
                   {b.preferred_date ?? "date TBC"} · {b.guests} guest{b.guests === 1 ? "" : "s"} ·{" "}
                   {money(b.amount_total, b.currency)}
                 </span>
+                <span className="text-sm text-[color:var(--charcoal-soft)]">
+                  Pickup: {pickupOf(b) ?? "—"}
+                </span>
               </Link>
             </li>
           ))}
