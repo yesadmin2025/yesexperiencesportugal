@@ -4746,7 +4746,8 @@ export function StoryboardHandoff({
         src: s.durationSource ?? null,
       })),
       resolvedStops: resolved.routePoints?.map((p) => p.label) ?? null,
-      liveResolution: (resolved as unknown as Record<string, unknown>)["liveResolution"] ?? null,
+      keys: Object.keys(resolved as object),
+      la: JSON.parse(JSON.stringify((resolved as unknown as Record<string, unknown>)["livingAtlas"] ?? null, (k, v) => (Array.isArray(v) && v.length > 8 ? v.slice(0, 8) : v))),
       skeleton: resolved.skeletonTourKey ?? null,
       composed: resolved.composedRoutePoints?.map((p) => ({ label: p.label, inv: p.inventoryStopId ?? null, dur: p.durationMinutes ?? null })) ?? null,
     };
