@@ -18,7 +18,9 @@
  */
 
 import { pickPrimaryTourWithFit } from "./curation";
+import { SIGNATURE_DIMENSION_AFFINITY } from "./livingAtlasTaxonomy";
 import type { Interest, StudioV3State } from "./types";
+import { exactDirectorObligations } from "@/lib/studio-v3/exactDirectorObligations";
 
 /** Customer-facing name for each high-signal interest. */
 const PRIORITY_LABEL: Partial<Record<Interest, string>> = {
@@ -47,6 +49,29 @@ export function resolveHighSignalConflict(state: StudioV3State): HighSignalConfl
   if (!state.feeling || !state.companions) return null;
   const interests = state.interests ?? [];
   if (interests.length === 0) return null;
+
+  const exact = exactDirectorObligations(state.questionHistory ?? []);
+  if (exact.preferredSignatureId) {
+    const affinity = SIGNATURE_DIMENSION_AFFINITY[exact.preferredSignatureId];
+    const incompatible = interests.filter(
+      (interest) =>
+        (interest === "faith" && affinity["faith-reflection"] === 0) ||
+        (interest === "hands-on" && affinity["hands-on-traditions"] === 0) ||
+        (interest === "wine" && affinity["wine-table"] === 0),
+    );
+    if (incompatible.length > 0) {
+      const priorities = [...new Set([...incompatible, ...interests.filter((i) => i === "hands-on")])];
+      const names = priorities.map(highSignalPriorityLabel);
+      const list =
+        names.length === 1
+          ? names[0]
+          : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+      return {
+        unsatisfied: incompatible,
+        message: `No single private day available on your date can genuinely deliver ${list} together. Choose which matters most and Studio will design an instantly bookable day around it.`,
+      };
+    }
+  }
 
   const { unsatisfiedHighSignal } = pickPrimaryTourWithFit(
     state.feeling,

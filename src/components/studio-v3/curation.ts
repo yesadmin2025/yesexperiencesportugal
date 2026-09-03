@@ -37,6 +37,7 @@ import {
 } from "@/data/regionStopPool";
 import { presentDirectorQuestion } from "@/components/studio-v3/directorQuestionPresentation";
 import { deriveStudioDirectorRuntime } from "@/lib/studio-v3/studioDirectorRuntime";
+import { exactDirectorObligations } from "@/lib/studio-v3/exactDirectorObligations";
 import type { AdaptiveRefinementId } from "@/components/studio-v3/types";
 import type { QuestionAnswerEvent } from "@/lib/studio-v3/questionHistory";
 import { hasExplicitWineIntent, interestsImplyWine } from "./studioWineIntent";
@@ -2310,8 +2311,10 @@ export function resolveStudioV3Route(input: {
   const seed = hashSeed(input.seed ?? 0);
   // EXPLICIT (traveller answered it) outranks INFERRED (we guessed it).
   // Only the explicit one may be absolute after the hard gates.
+  const directorObligations = exactDirectorObligations(input.questionHistory ?? []);
   const explicitPreferTourId =
     input.preferTourId ??
+    directorObligations.preferredSignatureId ??
     (intelligence.decision?.status === "clear" ? intelligence.preferredTourId : null);
   const preferredTourId = explicitPreferTourId ?? intelligence.preferredTourId;
   const preferStrength: PreferenceStrength = explicitPreferTourId ? "explicit" : "inferred";
@@ -2454,6 +2457,7 @@ export function resolveStudioV3Route(input: {
         mobilityConcern,
         dateExact,
         pickupCoord: pickupOriginCoord(input.pickup),
+        principalStopIds: directorObligations.principalStopIds,
       })
 
     : null;
@@ -2642,6 +2646,8 @@ function resolveLivingAtlasLiveDay(input: {
    * `null` means the day cannot be door-to-door certified at all.
    */
   pickupCoord: { lat: number; lng: number } | null;
+  /** Concrete moments explicitly selected in the Director fork. */
+  principalStopIds: readonly string[];
 }): { block: LivingAtlasLiveBlock; publicPoints: ResolvedRoutePoint[] } {
   // RAW structural stops — the ONLY input to the membership authority.
   // No date-closure membership filter, no mobility rewrite, no wine swap, no
@@ -2691,6 +2697,7 @@ function resolveLivingAtlasLiveDay(input: {
     unverifiedConnectorLabels,
     mobilityConcern: input.mobilityConcern,
     pickupCoord: input.pickupCoord,
+    principalStopIds: input.principalStopIds,
     // LIVE self-service branch: only moments an existing commercial authority
     // can already price may enter a day the traveller can book unattended.
     commercialContainment: true,
