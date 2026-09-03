@@ -4748,7 +4748,23 @@ export function StoryboardHandoff({
       resolvedStops: resolved.routePoints?.map((p) => p.label) ?? null,
       keys: Object.keys(resolved as object),
       laKeys: Object.keys(((resolved as unknown as Record<string, unknown>)["livingAtlasLive"] ?? {}) as object),
-      la: JSON.parse(JSON.stringify((resolved as unknown as Record<string, unknown>)["livingAtlasLive"] ?? null, (k, v) => (Array.isArray(v) && v.length > 8 ? v.slice(0, 8) : v))),
+      la: (() => {
+        const blk = (resolved as unknown as Record<string, any>)["livingAtlasLive"];
+        if (!blk) return null;
+        const c = blk.composition ?? {};
+        return {
+          liveResolution: blk.liveResolution,
+          fallbackReason: blk.fallbackReason ?? null,
+          passthroughReason: blk.passthroughReason ?? null,
+          compositionResolution: blk.compositionResolution ?? null,
+          status: c.status ?? null,
+          reason: c.reason ?? c.failureReason ?? c.reasons ?? null,
+          unmet: c.unmet ?? c.unmetObligations ?? c.missing ?? null,
+          momentIds: (c.moments ?? []).map((m: any) => m.stopId),
+          doorToDoor: c.doorToDoor ? { status: c.doorToDoor.status, minutes: c.doorToDoor.doorToDoorMinutes, fits: c.doorToDoor.fitsHardMax } : null,
+          keys: Object.keys(c),
+        };
+      })(),
       skeleton: resolved.skeletonTourKey ?? null,
       composed: resolved.composedRoutePoints?.map((p) => ({ label: p.label, inv: p.inventoryStopId ?? null, dur: p.durationMinutes ?? null })) ?? null,
     };
