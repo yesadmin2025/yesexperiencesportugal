@@ -4736,41 +4736,6 @@ export function StoryboardHandoff({
   );
 
   const editedStops = state.editedRoutePoints ?? baseStops;
-  if (typeof window !== "undefined" && import.meta.env.DEV) {
-    (window as unknown as Record<string, unknown>)["__studioDebug"] = {
-      stops: editedStops.map((s) => ({
-        label: s.label,
-        inv: s.inventoryStopId ?? null,
-        bp: s.blueprintStopId ?? null,
-        dur: s.durationMinutes ?? null,
-        src: s.durationSource ?? null,
-      })),
-      resolvedStops: resolved.routePoints?.map((p) => p.label) ?? null,
-      keys: Object.keys(resolved as object),
-      laKeys: Object.keys(((resolved as unknown as Record<string, unknown>)["livingAtlasLive"] ?? {}) as object),
-      la: (() => {
-        const blk = (resolved as unknown as Record<string, any>)["livingAtlasLive"];
-        if (!blk) return null;
-        const c = blk.composition ?? {};
-        return {
-          liveResolution: blk.liveResolution,
-          fallbackReason: blk.fallbackReason ?? null,
-          passthroughReason: blk.passthroughReason ?? null,
-          compositionResolution: blk.compositionResolution ?? null,
-          status: c.status ?? null,
-          reason: c.reason ?? c.failureReason ?? c.reasons ?? null,
-          unmet: c.unmet ?? c.unmetObligations ?? c.missing ?? null,
-          momentIds: (c.moments ?? []).map((m: any) => m.stopId),
-          doorToDoor: c.doorToDoor ? { status: c.doorToDoor.status, minutes: c.doorToDoor.doorToDoorMinutes, fits: c.doorToDoor.fitsHardMax } : null,
-          keys: Object.keys(c),
-          rejected: c.rejected ?? c.rejectedStopIds ?? c.rejections ?? null,
-          mustInclude: c.mustIncludeStopIds ?? c.request?.mustIncludeStopIds ?? null,
-        };
-      })(),
-      skeleton: resolved.skeletonTourKey ?? null,
-      composed: resolved.composedRoutePoints?.map((p) => ({ label: p.label, inv: p.inventoryStopId ?? null, dur: p.durationMinutes ?? null })) ?? null,
-    };
-  }
   // PASS 4 — FROZEN ANCHOR. Once the day has been shown and committed, the
   // Signature anchor is `state.tourId`. Returning from logistics or checkout
   // can never silently switch it to a freshly resolved skeleton.
