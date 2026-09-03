@@ -201,6 +201,22 @@ export function resolveCompositionIdentity(input: {
     }
   }
 
+  // 2b · DECLARED bridge again, now that step 2 may have resolved the
+  // inventory id from the label. Without this, a composed moment whose
+  // structural id was recovered by label kept a null blueprint id and the
+  // commercial ledger saw the anchor's own core stop as both an unattributed
+  // sibling and an omitted core lock. Same declared bridge, no new guessing.
+  if (!blueprintStopId && inventoryStopId) {
+    const bridged = bridgedBlueprintStopId(input.anchorTourId, inventoryStopId);
+    if (bridged && blueprintScope.some((stop) => stop.id === bridged)) {
+      blueprintStopId = bridged;
+      if (source === "none") source = "blueprint-id";
+      if (confidence === "unresolved") confidence = "verified";
+    }
+  }
+
+
+
   // 3 · Label discriminator INSIDE the already-scoped blueprint set.
   if (!blueprintStopId) {
     const matches = matchByLabel(blueprintScope, label, (stop) => stop.label);
