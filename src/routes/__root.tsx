@@ -146,7 +146,12 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#295B61" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "YES experiences" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       {
         name: "google-site-verification",
         content: "osEeuJrBPxuoJix9iAIto7KYyWlQ5I_2Tqqfxk6ggCs",
