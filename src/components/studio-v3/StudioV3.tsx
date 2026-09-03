@@ -4763,6 +4763,8 @@ export function StoryboardHandoff({
           momentIds: (c.moments ?? []).map((m: any) => m.stopId),
           doorToDoor: c.doorToDoor ? { status: c.doorToDoor.status, minutes: c.doorToDoor.doorToDoorMinutes, fits: c.doorToDoor.fitsHardMax } : null,
           keys: Object.keys(c),
+          rejected: c.rejected ?? c.rejectedStopIds ?? c.rejections ?? null,
+          mustInclude: c.mustIncludeStopIds ?? c.request?.mustIncludeStopIds ?? null,
         };
       })(),
       skeleton: resolved.skeletonTourKey ?? null,
