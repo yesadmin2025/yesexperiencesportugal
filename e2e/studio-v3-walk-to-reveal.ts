@@ -377,7 +377,20 @@ async function dismissDirectorsRead(page: Page): Promise<boolean> {
   return true;
 }
 
-async function advanceThroughLogistics(page: Page): Promise<boolean> {
+async function setPartyAdults(page: Page, target: number): Promise<void> {
+  const inc = page.getByRole("button", { name: "Increase guest count" }).first();
+  const readout = page.locator('[aria-label="Guest count"]').first();
+  for (let i = 0; i < 20; i++) {
+    const text = (await readout.textContent().catch(() => "")) ?? "";
+    const current = Number(text.match(/\d+/)?.[0] ?? "0");
+    if (!current || current >= target) return;
+    if (await inc.isDisabled().catch(() => true)) return;
+    await inc.click({ timeout: 2_000 }).catch(() => undefined);
+    await page.waitForTimeout(120);
+  }
+}
+
+async function advanceThroughLogistics(page: Page, options: WalkOptions = {}): Promise<boolean> {
   await dismissDirectorsRead(page);
   const cta = page.locator('button[data-phase-cta="continue"]').first();
   for (let step = 0; step < 6; step++) {
@@ -404,6 +417,8 @@ async function advanceThroughLogistics(page: Page): Promise<boolean> {
         page,
         'section[aria-label="Where the day begins"] [data-testid="studio-v3-choice"]',
       );
+    } else if (moment === "who" && options.partyAdults) {
+      await setPartyAdults(page, options.partyAdults);
     }
 
     if (!(await cta.isEnabled().catch(() => false))) return false;
@@ -423,12 +438,15 @@ async function advanceThroughLogistics(page: Page): Promise<boolean> {
  * walker then asserts the expected transition instead of retrying blindly.
  * Phases without an entry fall back to the answer/continue heuristic.
  */
-const PHASE_ACTIONS: Partial<Record<string, (page: Page) => Promise<boolean>>> = {
-  intro: advanceThroughIntro,
+const PHASE_ACTIONS: Partial<
+  Record<string, (page: Page, options: WalkOptions) => Promise<boolean>>
+> = {
+  intro: (page) => advanceThroughIntro(page),
   logistics: advanceThroughLogistics,
-  map: playMomentsReel,
-  storyboard: playMomentsReel,
+  map: (page) => playMomentsReel(page),
+  storyboard: (page) => playMomentsReel(page),
 };
+
 
 /**
  * Walk the funnel to the Refine screen using explicit expected-next-phase
@@ -451,6 +469,8 @@ export interface WalkOptions {
    * without forking the walker.
    */
   preferredOptionIds?: readonly string[];
+  /** Party size to set on the logistics "who" moment (default: Studio default). */
+  partyAdults?: number;
 }
 
 export async function walkToReveal(page: Page, options: WalkOptions = {}): Promise<void> {
@@ -470,7 +490,8 @@ export async function walkToReveal(page: Page, options: WalkOptions = {}): Promi
     }
 
     const act =
-      PHASE_ACTIONS[phase] ?? ((p: Page) => walkOnce(p, options.preferredOptionIds));
+      PHASE_ACTIONS[phase] ??
+      ((p: Page, o: WalkOptions) => walkOnce(p, o.preferredOptionIds));
     // Answer phases need up to two taps (select an option, then Continue);
     // the moments reel commits in one. Anything beyond that is a stall.
     const maxActions = phase === "map" || phase === "storyboard" ? 2 : 3;
@@ -478,7 +499,7 @@ export async function walkToReveal(page: Page, options: WalkOptions = {}): Promi
     let landed: string | null = null;
     let idleActions = 0;
     for (let attempt = 0; attempt < maxActions && landed === null; attempt++) {
-      const acted = await act(page);
+      const acted = await act(page, options);
       if (!acted) {
         idleActions += 1;
         if (idleActions >= 2) break;
