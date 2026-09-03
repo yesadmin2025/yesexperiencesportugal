@@ -20,6 +20,7 @@ import { installClientErrorLogger } from "@/lib/client-error-logger";
 import { installDevHardReload } from "@/lib/dev-hard-reload";
 import { organizationLd, websiteLd, jsonLdScript } from "@/lib/jsonld";
 import { WhatsAppSupportButton } from "@/components/support/WhatsAppSupportButton";
+import { InstallAppPrompt } from "@/components/InstallAppPrompt";
 import { RouteFade } from "@/components/motion/RouteFade";
 import { pauseOffscreenLoops } from "@/lib/motion/pauseOffscreenLoops";
 import { Scene } from "@/components/motion/Scene";
@@ -145,7 +146,12 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#295B61" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "YES experiences" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       {
         name: "google-site-verification",
         content: "osEeuJrBPxuoJix9iAIto7KYyWlQ5I_2Tqqfxk6ggCs",
@@ -330,6 +336,18 @@ function RootComponent() {
   // Pause long Ken Burns / crossfade loops while they are offscreen.
   useEffect(() => pauseOffscreenLoops(), [pathname]);
 
+  // Installable app: register the conservative service worker (documents and
+  // /api are never cached, so booking truth always comes from the network).
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) return;
+    if (import.meta.env.DEV) return;
+    const register = () => {
+      void navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+    };
+    if (document.readyState === "complete") register();
+    else window.addEventListener("load", register, { once: true });
+  }, []);
+
   // Single QueryClient per browser session — keeps SignaturePriceCard and
 
   // any future useQuery hook resolvable without each route wiring its own.
@@ -344,6 +362,7 @@ function RootComponent() {
             <Outlet />
           </RouteFade>
           <WhatsAppSupportButton />
+          <InstallAppPrompt />
           <Toaster position="bottom-left" richColors closeButton />
           <Analytics />
         </TooltipProvider>
