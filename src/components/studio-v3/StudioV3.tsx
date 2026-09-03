@@ -4736,6 +4736,19 @@ export function StoryboardHandoff({
   );
 
   const editedStops = state.editedRoutePoints ?? baseStops;
+  if (typeof window !== "undefined" && import.meta.env.DEV) {
+    (window as unknown as Record<string, unknown>)["__studioDebug"] = {
+      stops: editedStops.map((s) => ({
+        label: s.label,
+        inv: s.inventoryStopId ?? null,
+        bp: s.blueprintStopId ?? null,
+        dur: s.durationMinutes ?? null,
+        src: s.durationSource ?? null,
+      })),
+      resolvedStops: resolved.routePoints?.map((p) => p.label) ?? null,
+      composed: resolved.composedRoutePoints?.map((p) => ({ label: p.label, inv: p.inventoryStopId ?? null, dur: p.durationMinutes ?? null })) ?? null,
+    };
+  }
   // PASS 4 — FROZEN ANCHOR. Once the day has been shown and committed, the
   // Signature anchor is `state.tourId`. Returning from logistics or checkout
   // can never silently switch it to a freshly resolved skeleton.
