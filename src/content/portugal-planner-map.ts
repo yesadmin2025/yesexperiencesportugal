@@ -48,15 +48,31 @@ export function projectPlannerPoint(lat: number, lon: number): { x: number; y: n
   };
 }
 
+/** Where every private day starts and ends. Not a bookable region. */
+export const PLANNER_ORIGIN = {
+  label: "Lisbon",
+  note: "Every private day starts and ends at your Lisbon door.",
+  lat: 38.72,
+  lon: -9.14,
+} as const;
+
 /** North → south, so the pin order reads like the country. */
 export const PLANNER_REGIONS: readonly PlannerRegion[] = [
   {
-    id: "centro",
-    label: "Centro & Coast",
-    note: "Templar Tomar, university Coimbra, Fátima, the Nazaré swell and walled Óbidos.",
-    lat: 40.05,
-    lon: -8.55,
-    tourIds: ["tomar-coimbra", "fatima-nazare-obidos"],
+    id: "tomar-coimbra",
+    label: "Tomar & Coimbra",
+    note: "The Templar convent at Tomar and the old university city on the Mondego.",
+    lat: 39.9,
+    lon: -8.42,
+    tourIds: ["tomar-coimbra"],
+  },
+  {
+    id: "fatima-nazare-obidos",
+    label: "Fátima, Nazaré & Óbidos",
+    note: "The sanctuary, the giant-wave headland at Nazaré, and walled Óbidos.",
+    lat: 39.52,
+    lon: -9.0,
+    tourIds: ["fatima-nazare-obidos"],
   },
   {
     id: "sintra-cascais",
@@ -71,7 +87,7 @@ export const PLANNER_REGIONS: readonly PlannerRegion[] = [
     label: "Azeitão & Sesimbra",
     note: "Cheese cellars, tile studios and a working fishing harbour under the ridge.",
     lat: 38.47,
-    lon: -9.05,
+    lon: -9.11,
     tourIds: ["azeitao-cheese", "tiles-workshop"],
   },
   {
@@ -96,7 +112,15 @@ export const PLANNER_REGIONS: readonly PlannerRegion[] = [
     note: "Roman Évora, clay-pot talha wine and cellars that still ferment the old way.",
     lat: 38.57,
     lon: -7.91,
-    tourIds: ["evora-alentejo", "roman-heritage-alentejo"],
+    tourIds: ["evora-alentejo"],
+  },
+  {
+    id: "roman-alentejo",
+    label: "Vidigueira & Roman Alentejo",
+    note: "Deep Alentejo — Roman villas, amphora wine and cellars few travellers reach.",
+    lat: 38.21,
+    lon: -7.8,
+    tourIds: ["roman-heritage-alentejo"],
   },
   {
     id: "vicentina",
@@ -107,6 +131,7 @@ export const PLANNER_REGIONS: readonly PlannerRegion[] = [
     tourIds: ["southwest-vicentine-coast"],
   },
 ] as const;
+
 
 export type PlannerRegionResolved = PlannerRegion & {
   tours: SignatureTour[];

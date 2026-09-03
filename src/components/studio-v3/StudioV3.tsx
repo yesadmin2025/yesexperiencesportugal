@@ -5417,7 +5417,7 @@ export function StoryboardHandoff({
   useEffect(() => {
     if (state.phase !== "storyboard") return;
     if (revealLegsLoading) return;
-    if (canProceedToLogistics && finalDayGate.bookable) return;
+    if (canReserve) return;
     if (editedStops.length < REFINE_MIN_STOPS) return;
 
     const signature = `${describeRouteIdentity(editedStops)}|${state.dateExact ?? ""}|${selectedAddOnMinutes}`;
@@ -5437,7 +5437,18 @@ export function StoryboardHandoff({
           addOnsMinutes: selectedAddOnMinutes,
           skeletonTourId: anchorTourKey,
           rhythm: state.rhythm ?? null,
-        }).bookable,
+        }).bookable &&
+        // The repair must satisfy the SAME gate that blocks the day: a route
+        // can pass the on-route clock and still run past the canonical
+        // 540-minute door-to-door limit from the traveller's pickup zone.
+        frozenDayAllowsCheckout(
+          certifyFrozenDayFromPickup({
+            points,
+            pickupCoord: pickupOriginCoord(state.pickup),
+            addOnsMinutes: selectedAddOnMinutes,
+            rhythm: state.rhythm ?? null,
+          }),
+        ),
       isBlocked: (s) => closedOnDate(s.label),
       isRemovable: (_s, index) => momentOptionality[index]?.removable ?? false,
       substitute: (s) => {

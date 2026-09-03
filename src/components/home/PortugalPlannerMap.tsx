@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   PLANNER_MAP,
+  PLANNER_ORIGIN,
   PLANNER_REGIONS,
   projectPlannerPoint,
   resolvePlannerRegion,
@@ -39,7 +40,7 @@ export function PortugalPlannerMap() {
     <div className="grid gap-8 md:gap-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-start">
       {/* Map */}
       <div
-        className="relative mx-auto w-full max-w-[320px] md:max-w-none overflow-hidden rounded-lg border border-[color:var(--border)] bg-[color:var(--sand)]"
+        className="relative mx-auto w-full max-w-[190px] md:max-w-none overflow-hidden rounded-lg border border-[color:var(--border)] bg-[color:var(--sand)]"
         style={{ aspectRatio: `${VB_W} / ${VB_H}` }}
       >
         <svg
@@ -64,9 +65,24 @@ export function PortugalPlannerMap() {
           />
         </svg>
 
+        {/* Lisbon — where every private day starts and ends. Not a region. */}
+        {(() => {
+          const { x, y } = projectPlannerPoint(PLANNER_ORIGIN.lat, PLANNER_ORIGIN.lon);
+          return (
+            <span
+              aria-hidden="true"
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: pct(x, VB_W), top: pct(y, VB_H) }}
+            >
+              <span className="block h-[7px] w-[7px] rotate-45 border border-[color:var(--charcoal)] bg-[color:var(--ivory)]" />
+            </span>
+          );
+        })()}
+
         {PLANNER_REGIONS.map((region) => {
           const isActive = region.id === active.id;
           const { x, y } = projectPlannerPoint(region.lat, region.lon);
+          const labelLeft = x > VB_W * 0.55;
           return (
             <button
               key={region.id}
@@ -88,7 +104,11 @@ export function PortugalPlannerMap() {
               {isActive && (
                 <span
                   aria-hidden="true"
-                  className="absolute left-[calc(50%+12px)] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[color:var(--ivory)]/90 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)]"
+                  className={`absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[color:var(--ivory)]/90 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)] ${
+                    labelLeft
+                      ? "right-[calc(50%+12px)] text-right"
+                      : "left-[calc(50%+12px)]"
+                  }`}
                 >
                   {region.label}
                 </span>
@@ -97,6 +117,7 @@ export function PortugalPlannerMap() {
           );
         })}
       </div>
+
 
       {/* Panel */}
       <div aria-live="polite" className="min-w-0">

@@ -83,6 +83,7 @@ import {
   validateLivingAtlasOperations,
   type LivingAtlasValidationResult,
 } from "@/components/studio-v3/livingAtlasOperationalConfidence";
+import { attachStructuralDwell } from "@/lib/studio-v3/attachStructuralDwell";
 import {
   resolveCompositionIdentities,
   type CompositionIdentityReport,
@@ -2469,7 +2470,15 @@ export function resolveStudioV3Route(input: {
     // LIVING ATLAS BRANCH — the legacy mini-composers are NOT executed at all,
     // not even for the fallback. The public route is either the safe projected
     // Living Atlas day or the RAW authored Signature skeleton.
-    composedRoutePoints = live.publicPoints.map((p, i) => ({ ...p, index: i }));
+    // The Living Atlas branch also covers the RAW authored Signature
+    // skeleton, whose points carry no dwell of their own. Recover only the
+    // verified inventory dwell those exact stops already publish, so a real
+    // published day is evaluable by the Time Authority instead of blocked;
+    // unresolved moments stay untouched and keep failing closed.
+    composedRoutePoints = attachStructuralDwell(
+      anchorTourId,
+      live.publicPoints,
+    ).map((p, i) => ({ ...p, index: i }));
     // ROUTE OUTPUT INVARIANT: the compact projection is a STRICT prefix slice
     // of the full composed route — never a separately composed list.
     routePoints = composedRoutePoints.slice(0, 4);
@@ -2496,6 +2505,17 @@ export function resolveStudioV3Route(input: {
       buildStory: customerStopBlurb,
     });
     routePoints = composeRoute(journey.moments.slice(0, 4).map(toRoutePoint), 4);
+
+    // STRUCTURAL TRUTH ON THE LEGACY PATH.
+    //
+    // The legacy mapper only ever carried label/story/geo, so a day composed
+    // here reached the Time Authority with no structural id and no proven
+    // dwell — `not-evaluable`, therefore never reservable, even though every
+    // one of its moments is a real, already-published inventory stop. The
+    // shared helper attaches only the identity and dwell those moments
+    // ALREADY have; anything unresolved stays untouched and fails closed.
+    composedRoutePoints = attachStructuralDwell(journey.tour.id, composedRoutePoints);
+    routePoints = attachStructuralDwell(journey.tour.id, routePoints);
   }
 
 
