@@ -2310,7 +2310,9 @@ export function resolveStudioV3Route(input: {
   const seed = hashSeed(input.seed ?? 0);
   // EXPLICIT (traveller answered it) outranks INFERRED (we guessed it).
   // Only the explicit one may be absolute after the hard gates.
-  const explicitPreferTourId = input.preferTourId ?? null;
+  const explicitPreferTourId =
+    input.preferTourId ??
+    (intelligence.decision?.status === "clear" ? intelligence.preferredTourId : null);
   const preferredTourId = explicitPreferTourId ?? intelligence.preferredTourId;
   const preferStrength: PreferenceStrength = explicitPreferTourId ? "explicit" : "inferred";
   const selection = pickPrimaryTourWithFit(

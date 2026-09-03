@@ -228,9 +228,11 @@ export async function advanceIntro(page: Page): Promise<boolean> {
  * `data-phase` moved to a STRICTLY LATER index, never merely "changed".
  */
 // Mirrors STUDIO_V3_PHASE_ORDER in src/components/studio-v3/curation.ts.
-// Studio reform (2026-08): desire before logistics; investment never asked.
+// Current instant-bookable flow: operational preflight precedes taste;
+// investment is never asked.
 export const PHASE_SEQUENCE = [
   "intro",
+  "logistics",
   "feeling",
   "destination",
   "who",
@@ -240,7 +242,6 @@ export const PHASE_SEQUENCE = [
   // Consolidated logistics beat (date + pickup + party). The legacy
   // standalone phases stay listed after it so saved/deep-linked states that
   // still report them keep a monotonic index for the transition contract.
-  "logistics",
   "date",
   "pickup",
   "guests",

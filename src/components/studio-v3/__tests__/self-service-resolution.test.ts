@@ -5,6 +5,7 @@ import { isSelfServiceComposable } from "@/lib/studio-v3/selfServiceResolution";
 
 const base = {
   moments: [1, 2, 3],
+  missingDimensions: [] as unknown[],
   missingRequiredTypes: [] as unknown[],
   conflict: null as unknown,
   requiresCuratorReview: false,
@@ -15,9 +16,19 @@ describe("self-service resolution truth", () => {
     expect(isSelfServiceComposable({ ...base, status: "complete" })).toBe(true);
   });
 
-  it("resolves a partial day whose only gap is a discretionary taste", () => {
+  it("resolves a partial day only when every selected taste is still covered", () => {
     expect(isSelfServiceComposable({ ...base, status: "partial" })).toBe(true);
     expect(resolveLivingAtlasCompositionResolution({ ...base, status: "partial" })).toBe("complete");
+  });
+
+  it("never resolves a day that drops a selected taste dimension", () => {
+    const composition = {
+      ...base,
+      status: "partial" as const,
+      missingDimensions: ["hands-on-traditions"],
+    };
+    expect(isSelfServiceComposable(composition)).toBe(false);
+    expect(resolveLivingAtlasCompositionResolution(composition)).toBe("unresolved");
   });
 
   it("never resolves a partial day with an unmet anchor obligation", () => {
