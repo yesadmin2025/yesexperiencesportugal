@@ -1,17 +1,19 @@
 /**
  * Portugal planner map — single source of truth for the interactive homepage
- * map that lets a visitor explore the country region by region and jump
- * straight into the real Signature tours and the real Local Stories guides
- * that cover that region.
+ * map that lets a visitor explore the country town by town and jump straight
+ * into the real Signature tours and the real Local Stories guides that cover
+ * that place.
  *
  * NOTHING here is invented:
- *   - regions group EXISTING `signatureTours` ids (validated at build/test time)
+ *   - every place resolves its coordinates from the curated gazetteer
+ *     (`STOP_LATLNG`) via `geoKey` — no hand-typed lat/lon
+ *   - places group EXISTING `signatureTours` ids (validated in tests)
  *   - guides are DERIVED from `LOCAL_STORIES_ARTICLES` via `signatureSlug`
- *   - coordinates are real WGS84 lat/lon projected onto a traced Portugal outline
  */
 
 import { LOCAL_STORIES_ARTICLES, type LocalStoryArticle } from "@/content/local-stories-articles";
 import { findTour, type SignatureTour } from "@/data/signatureTours";
+import { STOP_LATLNG } from "@/data/stopGeo";
 
 export type PlannerRegion = {
   id: string;
@@ -19,10 +21,12 @@ export type PlannerRegion = {
   label: string;
   /** One-line orientation copy shown in the panel. */
   note: string;
-  /** Real geographic centre of the region (WGS84 degrees). */
+  /** Key into the curated gazetteer — the only source of coordinates. */
+  geoKey: string;
+  /** Real geographic position (WGS84 degrees), resolved from `geoKey`. */
   lat: number;
   lon: number;
-  /** Existing Signature tour ids that operate in this region. */
+  /** Existing Signature tour ids that operate in this place. */
   tourIds: readonly string[];
 };
 
@@ -48,7 +52,7 @@ export function projectPlannerPoint(lat: number, lon: number): { x: number; y: n
   };
 }
 
-/** Where every private day starts and ends. Not a bookable region. */
+/** Where every private day starts and ends. Not a bookable place. */
 export const PLANNER_ORIGIN = {
   label: "Lisbon",
   note: "Every private day starts and ends at your Lisbon door.",
@@ -56,89 +60,182 @@ export const PLANNER_ORIGIN = {
   lon: -9.14,
 } as const;
 
+type PlaceSeed = Omit<PlannerRegion, "lat" | "lon">;
+
 /** North → south, so the pin order reads like the country. */
-export const PLANNER_REGIONS: readonly PlannerRegion[] = [
+const PLACE_SEEDS: readonly PlaceSeed[] = [
   {
-    id: "tomar-coimbra",
-    label: "Tomar & Coimbra",
-    note: "The Templar convent at Tomar and the old university city on the Mondego.",
-    lat: 39.9,
-    lon: -8.42,
+    id: "coimbra",
+    label: "Coimbra",
+    note: "The old university city on the Mondego, and the Joanina library.",
+    geoKey: "coimbra",
     tourIds: ["tomar-coimbra"],
   },
   {
-    id: "fatima-nazare-obidos",
-    label: "Fátima, Nazaré & Óbidos",
-    note: "The sanctuary, the giant-wave headland at Nazaré, and walled Óbidos.",
-    lat: 39.52,
-    lon: -9.0,
+    id: "nazare",
+    label: "Nazaré",
+    note: "The headland above the canyon that makes the giant winter waves.",
+    geoKey: "nazare",
     tourIds: ["fatima-nazare-obidos"],
   },
   {
-    id: "sintra-cascais",
-    label: "Sintra & Cascais",
-    note: "Palaces in the mist, Cabo da Roca, and the coast road back into Cascais.",
-    lat: 38.79,
-    lon: -9.42,
+    id: "fatima",
+    label: "Fátima",
+    note: "The sanctuary, quiet outside the pilgrimage hours.",
+    geoKey: "fatima",
+    tourIds: ["fatima-nazare-obidos"],
+  },
+  {
+    id: "tomar",
+    label: "Tomar",
+    note: "The Templar Convento de Cristo above the town.",
+    geoKey: "tomar",
+    tourIds: ["tomar-coimbra"],
+  },
+  {
+    id: "obidos",
+    label: "Óbidos",
+    note: "Walled streets, and the walk along the ramparts.",
+    geoKey: "obidos",
+    tourIds: ["fatima-nazare-obidos"],
+  },
+  {
+    id: "sintra",
+    label: "Sintra",
+    note: "Palaces in the mist, Regaleira's wells and the Colares cellars.",
+    geoKey: "sintra",
     tourIds: ["sintra-cascais"],
   },
   {
-    id: "azeitao-sesimbra",
-    label: "Azeitão & Sesimbra",
-    note: "Cheese cellars, tile studios and a working fishing harbour under the ridge.",
-    lat: 38.47,
-    lon: -9.11,
-    tourIds: ["azeitao-cheese", "tiles-workshop"],
+    id: "cabo-da-roca",
+    label: "Cabo da Roca",
+    note: "The westernmost point of continental Europe.",
+    geoKey: "cabo da roca",
+    tourIds: ["sintra-cascais"],
   },
   {
-    id: "arrabida-setubal",
-    label: "Arrábida & Setúbal",
-    note: "Moscatel cellars, the Livramento market, the ridge road and the green-water coves.",
-    lat: 38.52,
-    lon: -8.87,
+    id: "cascais",
+    label: "Cascais",
+    note: "The coast road back into town, and the bay at the end of it.",
+    geoKey: "cascais",
+    tourIds: ["sintra-cascais"],
+  },
+  {
+    id: "setubal",
+    label: "Setúbal",
+    note: "The Livramento market at opening hour, and the Sado waterfront.",
+    geoKey: "setubal",
+    tourIds: [
+      "arrabida-wine-allinclusive",
+      "arrabida-boat",
+      "wild-beaches-picnic",
+      "tiles-workshop",
+      "azeitao-cheese",
+      "troia-comporta",
+    ],
+  },
+  {
+    id: "azeitao",
+    label: "Azeitão",
+    note: "Cheese cellars, tile studios and the Moscatel houses.",
+    geoKey: "azeitao",
+    tourIds: ["azeitao-cheese", "tiles-workshop", "arrabida-wine-allinclusive"],
+  },
+  {
+    id: "arrabida",
+    label: "Arrábida",
+    note: "The ridge road, the green water and the coves below it.",
+    geoKey: "arrabida",
     tourIds: ["arrabida-wine-allinclusive", "arrabida-boat", "wild-beaches-picnic"],
   },
   {
-    id: "troia-comporta",
-    label: "Tróia & Comporta",
-    note: "Roman ruins across the estuary, rice fields, pine and long white sand.",
-    lat: 38.38,
-    lon: -8.78,
+    id: "sesimbra",
+    label: "Sesimbra",
+    note: "A working fishing harbour under the castle.",
+    geoKey: "sesimbra",
+    tourIds: ["arrabida-boat", "wild-beaches-picnic", "tiles-workshop"],
+  },
+  {
+    id: "troia",
+    label: "Tróia",
+    note: "Across the estuary by ferry — Roman ruins on the sand spit.",
+    geoKey: "troia",
     tourIds: ["troia-comporta"],
   },
   {
-    id: "alentejo",
-    label: "Évora & Alentejo",
-    note: "Roman Évora, clay-pot talha wine and cellars that still ferment the old way.",
-    lat: 38.57,
-    lon: -7.91,
+    id: "comporta",
+    label: "Comporta",
+    note: "Rice fields, pine, and the long white beaches behind them.",
+    geoKey: "comporta",
+    tourIds: ["troia-comporta"],
+  },
+  {
+    id: "evora",
+    label: "Évora",
+    note: "The Roman temple, the bone chapel and the walled centre.",
+    geoKey: "evora",
     tourIds: ["evora-alentejo"],
   },
   {
-    id: "roman-alentejo",
-    label: "Vidigueira & Roman Alentejo",
-    note: "Deep Alentejo — Roman villas, amphora wine and cellars few travellers reach.",
-    lat: 38.21,
-    lon: -7.8,
+    id: "reguengos-monsaraz",
+    label: "Reguengos de Monsaraz",
+    note: "Big Alentejo estates east of Évora, under the Monsaraz hill.",
+    geoKey: "herdade do esporao",
+    tourIds: ["evora-alentejo"],
+  },
+  {
+    id: "vidigueira",
+    label: "Vidigueira",
+    note: "Roman São Cucufate and the clay-pot talha cellars of Vila Alva.",
+    geoKey: "vila alva",
     tourIds: ["roman-heritage-alentejo"],
   },
   {
-    id: "vicentina",
-    label: "Costa Vicentina",
-    note: "The wild southwest — cliffs, empty beaches and the longest drive of the day.",
-    lat: 37.35,
-    lon: -8.8,
+    id: "porto-covo",
+    label: "Porto Covo",
+    note: "White fishing village above Ilha do Pessegueiro.",
+    geoKey: "porto covo",
+    tourIds: ["southwest-vicentine-coast"],
+  },
+  {
+    id: "vila-nova-de-milfontes",
+    label: "Vila Nova de Milfontes",
+    note: "Where the Mira river meets the Atlantic.",
+    geoKey: "vila nova de milfontes",
+    tourIds: ["southwest-vicentine-coast"],
+  },
+  {
+    id: "odeceixe",
+    label: "Odeceixe",
+    note: "The river beach at the Alentejo–Algarve border.",
+    geoKey: "odeceixe",
+    tourIds: ["southwest-vicentine-coast"],
+  },
+  {
+    id: "aljezur",
+    label: "Aljezur",
+    note: "Moorish castle town at the end of the wild southwest drive.",
+    geoKey: "aljezur",
     tourIds: ["southwest-vicentine-coast"],
   },
 ] as const;
 
+function seedToRegion(seed: PlaceSeed): PlannerRegion {
+  const geo = STOP_LATLNG[seed.geoKey];
+  if (!geo) {
+    throw new Error(`Planner map place "${seed.id}" has no gazetteer entry for "${seed.geoKey}"`);
+  }
+  return { ...seed, lat: geo.lat, lon: geo.lng };
+}
+
+export const PLANNER_REGIONS: readonly PlannerRegion[] = PLACE_SEEDS.map(seedToRegion);
 
 export type PlannerRegionResolved = PlannerRegion & {
   tours: SignatureTour[];
   guides: LocalStoryArticle[];
 };
 
-/** Resolve a region to its real tours + the guides that point at those tours. */
+/** Resolve a place to its real tours + the guides that point at those tours. */
 export function resolvePlannerRegion(region: PlannerRegion): PlannerRegionResolved {
   const tours = region.tourIds
     .map((id) => findTour(id))
