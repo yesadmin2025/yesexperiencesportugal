@@ -2705,6 +2705,25 @@ function resolveLivingAtlasLiveDay(input: {
     .filter((stop) => stop.dwellMinutesOverride == null)
     .map((stop) => stop.label);
 
+  // PRODUCT-DEFINING CORE LOCKS. The existing commercial ledger already treats
+  // the omission of a `product_defining` locked core stop as commercially
+  // unresolved (unsellable). Composing a day without it therefore produces a
+  // day that can never be booked. Those exact stops — and only those, resolved
+  // through the DECLARED structural bridge, never a label guess — travel as
+  // must-include experiences so they consume truthful time like any other
+  // moment. Nothing new is invented, priced or added.
+  const bridgeForAnchor = STRUCTURAL_STOP_BRIDGE[input.anchorTourId] ?? {};
+  const inventoryIdByBlueprintId = new Map(
+    Object.entries(bridgeForAnchor).map(([inventoryId, blueprintId]) => [
+      blueprintId,
+      inventoryId,
+    ]),
+  );
+  const lockedCoreStopIds = (blueprint?.core ?? [])
+    .filter((stop) => stop.lock?.reasonCode === "product_defining")
+    .map((stop) => inventoryIdByBlueprintId.get(stop.id))
+    .filter((id): id is string => Boolean(id));
+
   const hybrid: HybridCompositionResult = composeHybridDay(authored, {
     skeletonTourId: input.anchorTourId,
     feeling: input.feeling,
@@ -2717,7 +2736,8 @@ function resolveLivingAtlasLiveDay(input: {
     unverifiedConnectorLabels,
     mobilityConcern: input.mobilityConcern,
     pickupCoord: input.pickupCoord,
-    principalStopIds: input.principalStopIds,
+    principalStopIds: [...new Set([...input.principalStopIds, ...lockedCoreStopIds])],
+
     // LIVE self-service branch: only moments an existing commercial authority
     // can already price may enter a day the traveller can book unattended.
     commercialContainment: true,
