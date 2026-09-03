@@ -265,4 +265,35 @@ describe("Pass 4 closure — canonical history drives modern intelligence", () =
     const withHistory = resolveStudioV3Route({ ...base, questionHistory: history });
     expect(withHistory.skeletonTourKey).not.toBe(withoutHistory.skeletonTourKey);
   });
+
+  it("honours a clear Director decision as an explicit route preference", () => {
+    const history = directorAnswer(
+      [],
+      "heritage-depth",
+      ["templars-and-university", "monuments-and-palaces"],
+      "templars-and-university",
+    );
+    const resolved = resolveStudioV3Route({
+      feeling: "culture",
+      companions: "couple",
+      rhythm: "balanced",
+      interests: ["heritage"],
+      pickup: "lisbon",
+      destinationIntent: "central-portugal",
+      refinement: null,
+      questionHistory: history,
+    });
+    const intelligence = deriveStudioIntelligence({
+      feeling: "culture",
+      interests: ["heritage"],
+      rhythm: "balanced",
+      destinationIntent: "central-portugal",
+      refinement: null,
+      questionHistory: history,
+    });
+
+    expect(intelligence.decision?.status).toBe("clear");
+    expect(intelligence.preferredTourId).toBe("tomar-coimbra");
+    expect(resolved.skeletonTourKey).toBe("tomar-coimbra");
+  });
 });

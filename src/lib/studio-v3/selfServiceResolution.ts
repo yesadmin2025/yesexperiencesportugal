@@ -6,21 +6,21 @@
  *
  * `partial` qualifies ONLY when:
  *   • every anchor obligation (required types) was met,
+ *   • every selected taste dimension has verified coverage,
  *   • there is no timing tradeoff/conflict,
  *   • the composer did not itself ask for curator review,
  *   • and the day is a real multi-moment day.
  *
- * In that narrow case "partial" means only this: a DISCRETIONARY taste
- * dimension found no verified moment inside the anchor's own commercially
- * containable inventory. The day is still entirely truthful and priceable —
- * it simply does not claim to express that taste. Nothing is invented, no
- * moment is substituted and no obligation is waived.
+ * A selected taste is never discretionary at the final booking seam. If the
+ * verified inventory cannot express it, Studio must keep the traveller in the
+ * adjustment flow instead of selling a day that contradicts their choices.
  *
  * `tradeoff`, `impossible`, `invalid` and empty compositions never qualify.
  */
 export type SelfServiceCompositionInput = {
   status: "complete" | "partial" | "tradeoff" | "impossible" | "invalid" | (string & {});
   moments: readonly unknown[];
+  missingDimensions?: readonly unknown[];
   missingRequiredTypes?: readonly unknown[];
   conflict?: unknown;
   requiresCuratorReview?: boolean;
@@ -34,6 +34,7 @@ export function isSelfServiceComposable(composition: SelfServiceCompositionInput
   if (composition.status === "complete") return true;
   if (composition.status !== "partial") return false;
   return (
+    (composition.missingDimensions?.length ?? 0) === 0 &&
     (composition.missingRequiredTypes?.length ?? 0) === 0 &&
     composition.conflict == null &&
     composition.requiresCuratorReview !== true &&

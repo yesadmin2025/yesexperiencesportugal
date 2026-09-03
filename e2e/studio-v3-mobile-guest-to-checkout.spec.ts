@@ -18,7 +18,7 @@ const VIEWPORT = { width: 393, height: 706 } as const;
 test.describe("Studio V3 · guest details → checkout @ 393px", () => {
   test.use({ viewport: VIEWPORT });
 
-  test("fills guest details and lands on the checkout summary", async ({ page }) => {
+  test("fills guest details and mounts Stripe from the checkout summary", async ({ page }) => {
     test.setTimeout(180_000);
     if (!(await reachGuestDetails(page))) {
       test.skip(true, "Funnel did not reach Guest Details in this run.");
@@ -43,8 +43,27 @@ test.describe("Studio V3 · guest details → checkout @ 393px", () => {
     const summary = page.getByTestId("studio-v3-checkout-summary");
     await expect(summary).toBeVisible({ timeout: 15_000 });
 
-    // Reserve CTA present — the Stripe handoff surface. Not clicked: no live payment.
-    await expect(page.getByTestId("studio-v3-checkout-summary-reserve")).toBeVisible();
+    const checkoutResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes("create-signature-checkout") &&
+        response.request().method() === "POST",
+      { timeout: 30_000 },
+    );
+    await page.getByTestId("studio-v3-checkout-summary-reserve").click();
+    const response = await checkoutResponse;
+    expect(response.status()).toBe(200);
+    const payload = (await response.json()) as {
+      clientSecret?: string;
+      publishableKey?: string;
+    };
+    expect(payload.clientSecret).toBeTruthy();
+    expect(payload.publishableKey).toMatch(/^pk_/);
+    await expect(page.getByTestId("studio-v3-checkout-summary-stripe-inline")).toBeVisible({
+      timeout: 30_000,
+    });
+    await expect(page.locator('iframe[src*="stripe.com"]').first()).toBeAttached({
+      timeout: 30_000,
+    });
     await expect(summary).toContainText(/€/);
   });
 });

@@ -228,9 +228,11 @@ export async function advanceIntro(page: Page): Promise<boolean> {
  * `data-phase` moved to a STRICTLY LATER index, never merely "changed".
  */
 // Mirrors STUDIO_V3_PHASE_ORDER in src/components/studio-v3/curation.ts.
-// Studio reform (2026-08): desire before logistics; investment never asked.
+// Current instant-bookable flow: operational preflight precedes taste;
+// investment is never asked.
 export const PHASE_SEQUENCE = [
   "intro",
+  "logistics",
   "feeling",
   "destination",
   "who",
@@ -240,7 +242,6 @@ export const PHASE_SEQUENCE = [
   // Consolidated logistics beat (date + pickup + party). The legacy
   // standalone phases stay listed after it so saved/deep-linked states that
   // still report them keep a monotonic index for the transition contract.
-  "logistics",
   "date",
   "pickup",
   "guests",
@@ -568,12 +569,17 @@ export async function reachGuestDetails(page: Page): Promise<boolean> {
   await walkToReveal(page);
   await advanceRefineToStorytelling(page);
 
+  // Current instant-bookable flow can move straight from certified Your Day
+  // into Guest Details; the older cinematic final-reveal beat is optional.
+  const guestDetails = page.getByTestId("studio-v3-guest-details");
+  await guestDetails.waitFor({ state: "visible", timeout: 10_000 }).catch(() => undefined);
+  if (await guestDetails.isVisible().catch(() => false)) return true;
+
   const reveal = page.getByTestId("studio-v3-final-reveal");
   await reveal.waitFor({ state: "visible", timeout: 20_000 }).catch(() => undefined);
   if (!(await reveal.isVisible().catch(() => false))) return false;
 
   const continueCta = page.getByTestId("studio-v3-final-reveal-continue");
-  const guestDetails = page.getByTestId("studio-v3-guest-details");
 
   // The reveal runs a short dissolve before the CTA is interactive; retry the
   // tap a couple of times rather than assuming a single click always lands.
