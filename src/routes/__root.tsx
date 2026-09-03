@@ -336,6 +336,18 @@ function RootComponent() {
   // Pause long Ken Burns / crossfade loops while they are offscreen.
   useEffect(() => pauseOffscreenLoops(), [pathname]);
 
+  // Installable app: register the conservative service worker (documents and
+  // /api are never cached, so booking truth always comes from the network).
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) return;
+    if (import.meta.env.DEV) return;
+    const register = () => {
+      void navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+    };
+    if (document.readyState === "complete") register();
+    else window.addEventListener("load", register, { once: true });
+  }, []);
+
   // Single QueryClient per browser session — keeps SignaturePriceCard and
 
   // any future useQuery hook resolvable without each route wiring its own.
