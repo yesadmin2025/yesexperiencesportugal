@@ -28,7 +28,7 @@ function pct(value: number, span: number) {
 }
 
 export function PortugalPlannerMap() {
-  const [activeId, setActiveId] = useState<string>("arrabida-setubal");
+  const [activeId, setActiveId] = useState<string>("arrabida");
 
   const active = useMemo(() => {
     const region =
@@ -38,85 +38,106 @@ export function PortugalPlannerMap() {
 
   return (
     <div className="grid gap-8 md:gap-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-start">
-      {/* Map */}
-      <div
-        className="relative mx-auto w-full max-w-[190px] md:max-w-none overflow-hidden rounded-lg border border-[color:var(--border)] bg-[color:var(--sand)]"
-        style={{ aspectRatio: `${VB_W} / ${VB_H}` }}
-      >
-        <svg
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full"
-          viewBox={`0 0 ${VB_W} ${VB_H}`}
-          preserveAspectRatio="xMidYMid meet"
+      <div>
+        {/* Map */}
+        <div
+          className="relative mx-auto w-full max-w-[210px] md:max-w-none overflow-hidden rounded-lg border border-[color:var(--border)] bg-[color:var(--sand)]"
+          style={{ aspectRatio: `${VB_W} / ${VB_H}` }}
         >
-          <defs>
-            <pattern id="ppm-grid" width="6.78" height="6.5" patternUnits="userSpaceOnUse">
-              <path d="M 6.78 0 L 0 0 0 6.5" fill="none" stroke="var(--gold)" strokeWidth="0.15" />
-            </pattern>
-          </defs>
-          <rect width={VB_W} height={VB_H} fill="url(#ppm-grid)" opacity="0.3" />
-          {/* Mainland Portugal, traced from Natural Earth 1:10m boundaries. */}
-          <path
-            d={PORTUGAL_MAINLAND_PATH}
-            fill="color-mix(in oklab, var(--teal) 9%, transparent)"
-            stroke="color-mix(in oklab, var(--teal) 45%, transparent)"
-            strokeWidth="0.45"
-            strokeLinejoin="round"
-          />
-        </svg>
+          <svg
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full"
+            viewBox={`0 0 ${VB_W} ${VB_H}`}
+            preserveAspectRatio="xMidYMid meet"
+          >
+            <defs>
+              <pattern id="ppm-grid" width="6.78" height="6.5" patternUnits="userSpaceOnUse">
+                <path d="M 6.78 0 L 0 0 0 6.5" fill="none" stroke="var(--gold)" strokeWidth="0.15" />
+              </pattern>
+            </defs>
+            <rect width={VB_W} height={VB_H} fill="url(#ppm-grid)" opacity="0.3" />
+            {/* Mainland Portugal, traced from Natural Earth 1:10m boundaries. */}
+            <path
+              d={PORTUGAL_MAINLAND_PATH}
+              fill="color-mix(in oklab, var(--teal) 9%, transparent)"
+              stroke="color-mix(in oklab, var(--teal) 45%, transparent)"
+              strokeWidth="0.45"
+              strokeLinejoin="round"
+            />
+          </svg>
 
-        {/* Lisbon — where every private day starts and ends. Not a region. */}
-        {(() => {
-          const { x, y } = projectPlannerPoint(PLANNER_ORIGIN.lat, PLANNER_ORIGIN.lon);
-          return (
-            <span
-              aria-hidden="true"
-              className="absolute -translate-x-1/2 -translate-y-1/2"
-              style={{ left: pct(x, VB_W), top: pct(y, VB_H) }}
-            >
-              <span className="block h-[7px] w-[7px] rotate-45 border border-[color:var(--charcoal)] bg-[color:var(--ivory)]" />
-            </span>
-          );
-        })()}
-
-        {PLANNER_REGIONS.map((region) => {
-          const isActive = region.id === active.id;
-          const { x, y } = projectPlannerPoint(region.lat, region.lon);
-          const labelLeft = x > VB_W * 0.55;
-          return (
-            <button
-              key={region.id}
-              type="button"
-              onClick={() => setActiveId(region.id)}
-              aria-pressed={isActive}
-              className="absolute -translate-x-1/2 -translate-y-1/2 flex min-h-11 min-w-11 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-              style={{ left: pct(x, VB_W), top: pct(y, VB_H), zIndex: isActive ? 2 : 1 }}
-            >
-              <span className="sr-only">{region.label}</span>
+          {/* Lisbon — where every private day starts and ends. Not a place pin. */}
+          {(() => {
+            const { x, y } = projectPlannerPoint(PLANNER_ORIGIN.lat, PLANNER_ORIGIN.lon);
+            return (
               <span
                 aria-hidden="true"
-                className={`block rounded-full transition-all duration-200 ${
-                  isActive
-                    ? "h-3 w-3 bg-[color:var(--gold)] ring-4 ring-[color:var(--gold)]/25"
-                    : "h-2 w-2 bg-[color:var(--teal)]/70"
-                }`}
-              />
-              {isActive && (
+                className="absolute -translate-x-1/2 -translate-y-1/2"
+                style={{ left: pct(x, VB_W), top: pct(y, VB_H) }}
+              >
+                <span className="block h-[7px] w-[7px] rotate-45 border border-[color:var(--charcoal)] bg-[color:var(--ivory)]" />
+              </span>
+            );
+          })()}
+
+          {/* Place markers. Decorative: the chip list below is the control, so
+              every town keeps a reliable 44×44 target even where pins cluster. */}
+          {PLANNER_REGIONS.map((region) => {
+            const isActive = region.id === active.id;
+            const { x, y } = projectPlannerPoint(region.lat, region.lon);
+            const labelLeft = x > VB_W * 0.55;
+            return (
+              <span
+                key={region.id}
+                aria-hidden="true"
+                className="absolute -translate-x-1/2 -translate-y-1/2"
+                style={{ left: pct(x, VB_W), top: pct(y, VB_H), zIndex: isActive ? 2 : 1 }}
+              >
                 <span
-                  aria-hidden="true"
-                  className={`absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[color:var(--ivory)]/90 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)] ${
-                    labelLeft
-                      ? "right-[calc(50%+12px)] text-right"
-                      : "left-[calc(50%+12px)]"
+                  className={`block rounded-full transition-all duration-200 ${
+                    isActive
+                      ? "h-[9px] w-[9px] bg-[color:var(--gold)] ring-4 ring-[color:var(--gold)]/25"
+                      : "h-[5px] w-[5px] bg-[color:var(--teal)]/70"
+                  }`}
+                />
+                {isActive && (
+                  <span
+                    className={`absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[color:var(--ivory)]/90 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)] ${
+                      labelLeft ? "right-[calc(50%+10px)] text-right" : "left-[calc(50%+10px)]"
+                    }`}
+                  >
+                    {region.label}
+                  </span>
+                )}
+              </span>
+            );
+          })}
+        </div>
+
+        {/* Places — the accessible control for the map. */}
+        <ul className="mt-5 flex list-none flex-wrap justify-center gap-1.5 p-0 md:justify-start">
+          {PLANNER_REGIONS.map((region) => {
+            const isActive = region.id === active.id;
+            return (
+              <li key={region.id}>
+                <button
+                  type="button"
+                  onClick={() => setActiveId(region.id)}
+                  aria-pressed={isActive}
+                  className={`inline-flex min-h-11 items-center rounded-full border px-3.5 text-[12.5px] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] ${
+                    isActive
+                      ? "border-[color:var(--gold)] bg-[color:var(--gold)]/12 text-[color:var(--charcoal)]"
+                      : "border-[color:var(--border)] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)]"
                   }`}
                 >
                   {region.label}
-                </span>
-              )}
-            </button>
-          );
-        })}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
       </div>
+
 
 
       {/* Panel */}
