@@ -7,7 +7,7 @@
  * NOTHING here is invented:
  *   - regions group EXISTING `signatureTours` ids (validated at build/test time)
  *   - guides are DERIVED from `LOCAL_STORIES_ARTICLES` via `signatureSlug`
- *   - coordinates reuse the curated `STOP_COORDS` viewBox (0–100 × 0–130)
+ *   - coordinates are real WGS84 lat/lon projected onto a traced Portugal outline
  */
 
 import { LOCAL_STORIES_ARTICLES, type LocalStoryArticle } from "@/content/local-stories-articles";
