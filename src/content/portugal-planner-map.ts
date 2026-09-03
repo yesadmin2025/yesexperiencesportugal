@@ -19,12 +19,34 @@ export type PlannerRegion = {
   label: string;
   /** One-line orientation copy shown in the panel. */
   note: string;
-  /** stopCoords-space coordinates (x ∈ 0–100, y ∈ 0–130). */
-  x: number;
-  y: number;
+  /** Real geographic centre of the region (WGS84 degrees). */
+  lat: number;
+  lon: number;
   /** Existing Signature tour ids that operate in this region. */
   tourIds: readonly string[];
 };
+
+/**
+ * Projection used by the homepage map. Equirectangular, corrected for the
+ * latitude of mainland Portugal, matching the traced coastline path exactly.
+ */
+export const PLANNER_MAP = {
+  lonMin: -9.75,
+  lonMax: -6.1,
+  latMin: 36.85,
+  latMax: 42.25,
+  width: 67.8,
+  height: 130,
+} as const;
+
+/** Project real lat/lon into the map viewBox. */
+export function projectPlannerPoint(lat: number, lon: number): { x: number; y: number } {
+  const { lonMin, lonMax, latMin, latMax, width, height } = PLANNER_MAP;
+  return {
+    x: ((lon - lonMin) / (lonMax - lonMin)) * width,
+    y: ((latMax - lat) / (latMax - latMin)) * height,
+  };
+}
 
 /** North → south, so the pin order reads like the country. */
 export const PLANNER_REGIONS: readonly PlannerRegion[] = [
