@@ -72,7 +72,7 @@ export interface ApprovedSection {
 }
 
 /**
- * The approved 10-block structure (v6 — Journal row added).
+ * The approved 11-block structure (v7 — Plan-your-Portugal map row added).
  *
  * Order:
  *   1.  Hero
@@ -133,19 +133,25 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 8,
+    name: "Plan your Portugal — interactive region map",
+    ariaLabelledBy: "plan-map-title",
+    requiredSpacing: { kind: "py", minScale: 16 },
+  },
+  {
+    order: 9,
     name: "Journal — local guides",
     ariaLabelledBy: "journal-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 9,
+    order: 10,
     name: "FAQ — visible helpful answers",
     componentTag: "FAQ",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 10,
+    order: 11,
     name: "Final CTA — talk to a local",
     ariaLabelledBy: "final-cta-title",
     requiredSpacing: { kind: "py", minScale: 16 },

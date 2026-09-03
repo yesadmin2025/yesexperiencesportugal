@@ -43,9 +43,11 @@ import {
   studioServiceLd,
   serviceEntityListLd,
 } from "@/lib/jsonld";
-import { signatureTours, isValidTourId } from "@/data/signatureTours";
+import { signatureTours, isValidTourId, findTour } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
+import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
+import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
 
 /** Homepage Journal row — three evergreen Local Stories guides. */
 const homepageJournalLinks: { slug: string; eyebrow: string; title: string; blurb: string }[] = [
@@ -71,6 +73,25 @@ const homepageJournalLinks: { slug: string; eyebrow: string; title: string; blur
       "Roman Évora, the palaces of Sintra, Moorish walls and Alentejo cellars still fermenting wine in clay.",
   },
 ];
+
+/** Real published date + real operation photo for a Journal card, resolved
+ *  from the article record and its matching Signature tour. No invention. */
+function journalCardMeta(slug: string): { date: string; img?: string; alt?: string } {
+  const article = LOCAL_STORIES_ARTICLES.find((a) => a.slug === slug);
+  if (!article) return { date: "" };
+  const tour = findTour(article.signatureSlug);
+  return {
+    date: new Date(`${article.datePublished}T00:00:00Z`).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }),
+    img: article.heroImage ?? tour?.img,
+    alt: article.heroImageAlt ?? (tour ? `${tour.title} — photographed on our own days` : undefined),
+  };
+}
+
 
 
 /* ──────────────────────────────────────────────────────────────────
@@ -907,10 +928,39 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 8 — Journal: local guides
+        {/* 8 — Plan your Portugal: interactive map
+          Region pins link the real Signature days and the real Local
+          Stories guides for that part of the country. Data derives from
+          `signatureTours` + `LOCAL_STORIES_ARTICLES` — nothing invented. */}
+        <section
+          id="plan-map"
+          className="he-section-rule section-enter py-16 md:py-20 scroll-mt-24 md:scroll-mt-28"
+          aria-labelledby="plan-map-title"
+        >
+          <div className="container-x">
+            <div className="reveal text-center max-w-2xl mx-auto mb-8 md:mb-12">
+              <Eyebrow className="mb-5">Plan your Portugal</Eyebrow>
+              <h2
+                id="plan-map-title"
+                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+              >
+                Choose a region,{" "}
+                <span className="italic font-normal text-[color:var(--teal)]">
+                  see what a day there looks like.
+                </span>
+              </h2>
+            </div>
+            <div className="reveal max-w-5xl mx-auto">
+              <PortugalPlannerMap />
+            </div>
+          </div>
+        </section>
+
+        {/* 9 — Journal: local guides
           Editorial entry point into Local Stories. Three evergreen guides
           (wine, coast, heritage) so the homepage links the guide library
           instead of leaving it to nav + footer only. */}
+
         <section
           id="journal"
           className="he-section-rule section-enter py-16 md:py-20 scroll-mt-24 md:scroll-mt-28"
@@ -931,28 +981,54 @@ function HomePage() {
             </div>
 
             <ul className="max-w-5xl mx-auto grid gap-5 md:gap-7 md:grid-cols-3 list-none p-0">
-              {homepageJournalLinks.map((entry) => (
+              {homepageJournalLinks.map((entry) => {
+                const meta = journalCardMeta(entry.slug);
+                return (
                 <li key={entry.slug}>
                   <Link
                     to="/local-stories/$slug"
                     params={{ slug: entry.slug }}
-                    className="group block h-full rounded-lg border border-[color:var(--border)] bg-[color:var(--ivory)] p-6 transition-transform duration-200 hover:-translate-y-[2px] focus-visible:-translate-y-[2px]"
+                    className="group block h-full overflow-hidden rounded-lg border border-[color:var(--border)] bg-[color:var(--ivory)] transition-transform duration-200 hover:-translate-y-[2px] focus-visible:-translate-y-[2px]"
                   >
+                    {meta.img ? (
+                      <img
+                        src={meta.img}
+                        alt={meta.alt ?? entry.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="aspect-[3/2] w-full object-cover"
+                      />
+                    ) : null}
+                    <div className="p-6">
                     <span className="block text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
                       {entry.eyebrow}
                     </span>
                     <h3 className="serif mt-3 text-[1.15rem] leading-[1.25] text-[color:var(--charcoal)]">
                       {entry.title}
                     </h3>
+
                     <p className="mt-3 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
                       {entry.blurb}
                     </p>
-                    <span className="mt-4 inline-block text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                    <span className="mt-4 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
                       Read the guide →
+                      {meta.date ? (
+                        <time
+                          dateTime={
+                            LOCAL_STORIES_ARTICLES.find((a) => a.slug === entry.slug)?.datePublished
+                          }
+                          className="tracking-[0.14em] text-[color:var(--charcoal-soft)] normal-case"
+                        >
+                          {meta.date}
+                        </time>
+                      ) : null}
                     </span>
+                    </div>
                   </Link>
                 </li>
-              ))}
+                );
+              })}
+
             </ul>
 
             <div className="mt-8 text-center">
