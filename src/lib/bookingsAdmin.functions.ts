@@ -25,7 +25,7 @@ const listInput = z.object({
 });
 
 const LIST_COLUMNS =
-  "id, created_at, booking_type, source_tour_id, customer_name, customer_email, guests, preferred_date, amount_total, currency, status, stripe_session_id";
+  "id, created_at, booking_type, source_tour_id, customer_name, customer_email, guests, preferred_date, amount_total, currency, status, stripe_session_id, booking_details";
 
 export const listAdminBookings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
