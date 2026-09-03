@@ -952,19 +952,32 @@ function HomePage() {
             </div>
 
             <ul className="max-w-5xl mx-auto grid gap-5 md:gap-7 md:grid-cols-3 list-none p-0">
-              {homepageJournalLinks.map((entry) => (
+              {homepageJournalLinks.map((entry) => {
+                const meta = journalCardMeta(entry.slug);
+                return (
                 <li key={entry.slug}>
                   <Link
                     to="/local-stories/$slug"
                     params={{ slug: entry.slug }}
-                    className="group block h-full rounded-lg border border-[color:var(--border)] bg-[color:var(--ivory)] p-6 transition-transform duration-200 hover:-translate-y-[2px] focus-visible:-translate-y-[2px]"
+                    className="group block h-full overflow-hidden rounded-lg border border-[color:var(--border)] bg-[color:var(--ivory)] transition-transform duration-200 hover:-translate-y-[2px] focus-visible:-translate-y-[2px]"
                   >
+                    {meta.img ? (
+                      <img
+                        src={meta.img}
+                        alt={meta.alt ?? entry.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="aspect-[3/2] w-full object-cover"
+                      />
+                    ) : null}
+                    <div className="p-6">
                     <span className="block text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
                       {entry.eyebrow}
                     </span>
                     <h3 className="serif mt-3 text-[1.15rem] leading-[1.25] text-[color:var(--charcoal)]">
                       {entry.title}
                     </h3>
+
                     <p className="mt-3 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
                       {entry.blurb}
                     </p>
