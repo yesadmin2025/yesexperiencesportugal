@@ -981,12 +981,25 @@ function HomePage() {
                     <p className="mt-3 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
                       {entry.blurb}
                     </p>
-                    <span className="mt-4 inline-block text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                    <span className="mt-4 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
                       Read the guide →
+                      {meta.date ? (
+                        <time
+                          dateTime={
+                            LOCAL_STORIES_ARTICLES.find((a) => a.slug === entry.slug)?.datePublished
+                          }
+                          className="tracking-[0.14em] text-[color:var(--charcoal-soft)] normal-case"
+                        >
+                          {meta.date}
+                        </time>
+                      ) : null}
                     </span>
+                    </div>
                   </Link>
                 </li>
-              ))}
+                );
+              })}
+
             </ul>
 
             <div className="mt-8 text-center">
