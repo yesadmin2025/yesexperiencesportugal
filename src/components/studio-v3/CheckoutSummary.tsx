@@ -81,6 +81,8 @@ export interface CheckoutSummaryProps {
   readonly onReserve: () => void;
   readonly clientSecret?: string | null;
   readonly publishableKey?: string | null;
+  /** Exact final-validation reason; the reviewed summary remains mounted. */
+  readonly checkoutBlock?: string | null;
   readonly onPaymentComplete?: (sessionId: string | null) => void;
   readonly className?: string;
   readonly testId?: string;
@@ -127,6 +129,7 @@ export function CheckoutSummary({
   onReserve,
   clientSecret = null,
   publishableKey = null,
+  checkoutBlock = null,
   className,
   testId,
 }: CheckoutSummaryProps) {
@@ -465,14 +468,14 @@ export function CheckoutSummary({
           data-testid="studio-v3-checkout-summary-cta-bar"
         >
           <div className="max-w-[560px] mx-auto">
-            {checkoutError ? (
+            {checkoutError || checkoutBlock ? (
               <p
                 role="alert"
                 data-testid="studio-v3-checkout-summary-error"
                 className="mb-2 text-center text-[12px] leading-[1.45]"
                 style={{ color: "var(--charcoal)" }}
               >
-                Secure checkout couldn't open. Your details and total are still here.
+                {checkoutBlock ?? "Secure checkout couldn't open. Your details and total are still here."}
               </p>
             ) : null}
             {submitting ? (
@@ -487,7 +490,7 @@ export function CheckoutSummary({
                 onClick={handleReserve}
                 data-testid="studio-v3-checkout-summary-reserve"
               >
-                {checkoutError ? "Try secure checkout again" : CTA_RESERVE_YOUR_DAY}
+                {checkoutError || checkoutBlock ? "Try secure checkout again" : CTA_RESERVE_YOUR_DAY}
               </CtaButton>
             )}
             <p className="mt-2 text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">

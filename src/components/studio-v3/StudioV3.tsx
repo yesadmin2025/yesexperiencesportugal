@@ -1125,6 +1125,10 @@ export function StudioV3() {
   const [checkoutSummary, setCheckoutSummary] = useState<CheckoutSummary | null>(null);
   const [checkoutTourId, setCheckoutTourId] = useState<string | null>(null);
   const [checkoutPending, setCheckoutPending] = useState(false);
+  // Final checkout revalidation can fail because a live operational fact
+  // changed after the reveal. Keep the reviewed Summary and guest details in
+  // place with the exact reason instead of ejecting the traveller to Refine.
+  const [checkoutBlock, setCheckoutBlock] = useState<string | null>(null);
   // PASS 4 — a concise, honest message when an exact date cannot honour the
   // committed day. Never a silent mutation of the itinerary.
   const [logisticsConflict, setLogisticsConflict] = useState<string | null>(null);
@@ -1310,6 +1314,7 @@ export function StudioV3() {
   const handleStripeCheckout = useCallback(
     async (currentState: StudioV3State, details: GuestDetails) => {
       if (checkoutPending) return;
+      setCheckoutBlock(null);
       // PARTY TRUTH — a private group above self-service size can never invoke
       // Stripe, even from a stale/hydrated deep state. Curator path instead.
       const partyTotal =
@@ -1317,14 +1322,14 @@ export function StudioV3() {
         (currentState.adults ?? currentState.guests ?? 0) +
           (currentState.minorAges?.length ?? 0);
       if (requiresCuratorParty(partyTotal)) {
-        returnToPreflight(
+        setCheckoutBlock(
           `The Studio books parties of up to ${SELF_SERVICE_MAX_PARTY} instantly. Adjust the party and your day stays exactly as designed.`,
         );
         return;
       }
       const tour = currentState.tourId ? findTour(currentState.tourId) : null;
       if (!tour) {
-        returnToPreflight("Let's re-check the practical details and design your day again.");
+        setCheckoutBlock("This day could not be verified. Return to Your Day and choose it again.");
         return;
       }
 
@@ -1334,7 +1339,7 @@ export function StudioV3() {
       // curator instead of opening a checkout the server would refuse.
       const resolvedPerPax = resolveStudioStrictPerPaxEur(tour.id, details.guests, tourPriceTiers);
       if (!resolvedPerPax) {
-        returnToPreflight(
+        setCheckoutBlock(
           "That exact party can't be confirmed for this day. Adjust it and we continue instantly.",
         );
         return;
@@ -1371,7 +1376,7 @@ export function StudioV3() {
       // traveller to a curator instead of starting a checkout.
       if (checkoutStops.length < 2) {
         setCheckoutPending(false);
-        returnToPreflight("Your day needs at least two moments. Let's design it again from your details.");
+        setCheckoutBlock("Your day needs at least two moments. Edit the stops, then try secure checkout again.");
         return;
       }
 
@@ -1390,7 +1395,7 @@ export function StudioV3() {
       });
       if (!checkoutTimeGate.bookable) {
         setCheckoutPending(false);
-        returnToPreflight(
+        setCheckoutBlock(
           "This day runs past the nine hours we can drive door to door. Change the pickup area or remove a moment and it books instantly.",
         );
         return;
@@ -1422,7 +1427,7 @@ export function StudioV3() {
       });
       if (!frozenDayAllowsCheckout(checkoutDoorToDoor)) {
         setCheckoutPending(false);
-        returnToPreflight(
+        setCheckoutBlock(
           "We need a supported pickup area to certify the driving time. Choose one and this day books instantly.",
         );
         return;
@@ -1460,7 +1465,7 @@ export function StudioV3() {
       // base-pricing fallback.
       if (!liveAuthority.safe) {
         setCheckoutPending(false);
-        returnToPreflight("Let's re-confirm your details so this day is exact again.");
+        setCheckoutBlock("This day changed while we verified it. Edit the stops, then try secure checkout again.");
         return;
       }
       const commercial = resolveCheckoutCommercialState({
@@ -1472,7 +1477,7 @@ export function StudioV3() {
       });
       if (commercial.blocked) {
         setCheckoutPending(false);
-        returnToPreflight("Let's re-confirm your details so this day is exact again.");
+        setCheckoutBlock("One selected addition no longer matches this day. Edit the stops or additions, then try again.");
         return;
       }
       const chargeableAddOnIds = new Set(commercial.chargeableAddOnIds);
@@ -1661,6 +1666,7 @@ export function StudioV3() {
         }
         setClientSecret(resp.clientSecret);
         setPublishableKey(resp.publishableKey);
+        setCheckoutBlock(null);
         trackEvent("checkout_session_created", {
           experience_id: tour.id,
           experience_type: "studio",
@@ -1686,12 +1692,13 @@ export function StudioV3() {
           group_size: details.guests,
         });
         toast.error("Secure checkout couldn't open. Your details and selections are still here — try again.");
+        setCheckoutBlock("Secure checkout couldn't open. Your details and total are still here — try again.");
         setClientSecret(null);
       } finally {
         setCheckoutPending(false);
       }
     },
-    [checkoutPending, returnToPreflight, tourPriceTiers, selectedAddOnItems, selectedAddOnMinutes],
+    [checkoutPending, tourPriceTiers, selectedAddOnItems, selectedAddOnMinutes],
   );
 
   // Phase 7D — hydrate a saved Signature directly into the final reveal.
@@ -4273,6 +4280,7 @@ export function StudioV3() {
             onEditOperational={() => jumpBackToPhase("logistics", "checkout-edit-operational")}
             clientSecret={clientSecret}
             publishableKey={publishableKey}
+            checkoutBlock={checkoutBlock}
             onPaymentComplete={(sid) => {
               const tid = checkoutTourId ?? state.tourId ?? "";
               const qs = new URLSearchParams();
