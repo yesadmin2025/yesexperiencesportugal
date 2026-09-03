@@ -43,9 +43,11 @@ import {
   studioServiceLd,
   serviceEntityListLd,
 } from "@/lib/jsonld";
-import { signatureTours, isValidTourId } from "@/data/signatureTours";
+import { signatureTours, isValidTourId, findTour } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
+import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
+import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
 
 /** Homepage Journal row — three evergreen Local Stories guides. */
 const homepageJournalLinks: { slug: string; eyebrow: string; title: string; blurb: string }[] = [
@@ -71,6 +73,25 @@ const homepageJournalLinks: { slug: string; eyebrow: string; title: string; blur
       "Roman Évora, the palaces of Sintra, Moorish walls and Alentejo cellars still fermenting wine in clay.",
   },
 ];
+
+/** Real published date + real operation photo for a Journal card, resolved
+ *  from the article record and its matching Signature tour. No invention. */
+function journalCardMeta(slug: string): { date: string; img?: string; alt?: string } {
+  const article = LOCAL_STORIES_ARTICLES.find((a) => a.slug === slug);
+  if (!article) return { date: "" };
+  const tour = findTour(article.signatureSlug);
+  return {
+    date: new Date(`${article.datePublished}T00:00:00Z`).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }),
+    img: article.heroImage ?? tour?.img,
+    alt: article.heroImageAlt ?? (tour ? `${tour.title} — photographed on our own days` : undefined),
+  };
+}
+
 
 
 /* ──────────────────────────────────────────────────────────────────
