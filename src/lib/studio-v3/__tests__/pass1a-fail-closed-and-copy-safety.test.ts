@@ -40,9 +40,11 @@ describe("A — edited route with no structural authority is not bookable", () =
   it("the Reserve gate blocks on any unsafe authority, not only evaluable ones", () => {
     expect(STUDIO_SOURCE).toContain("if (!liveAuthority.safe) {");
     expect(STUDIO_SOURCE).not.toContain("!liveAuthority.safe && liveAuthority.evaluable");
-    // The curator/review path is the existing lead sheet.
+    // The reviewed Summary is never ejected: an unsafe authority surfaces an
+    // explicit in-place checkout block the traveller can act on.
     const gateIndex = STUDIO_SOURCE.indexOf("if (!liveAuthority.safe) {");
-    expect(STUDIO_SOURCE.slice(gateIndex, gateIndex + 320)).toContain("returnToPreflight(");
+    expect(STUDIO_SOURCE.slice(gateIndex, gateIndex + 320)).toContain("setCheckoutBlock(");
+
   });
 });
 

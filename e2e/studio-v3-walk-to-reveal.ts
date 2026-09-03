@@ -94,7 +94,7 @@ const PREFERRED_OPTION_IDS = [
   "flexible",
 ];
 
-async function walkOnce(page: Page): Promise<boolean> {
+async function walkOnce(page: Page, preferred?: readonly string[]): Promise<boolean> {
   const hasSelection = (await page.locator('[data-phase-cta][data-selected="true"]').count()) > 0;
   const contVisible = await page
     .locator(PHASE_CTA_CONTINUE_ENABLED)
@@ -103,7 +103,7 @@ async function walkOnce(page: Page): Promise<boolean> {
     .catch(() => false);
   if (contVisible && hasSelection) return safeClick(page, PHASE_CTA_CONTINUE_ENABLED);
 
-  for (const id of PREFERRED_OPTION_IDS) {
+  for (const id of [...(preferred ?? []), ...PREFERRED_OPTION_IDS]) {
     const selector = `[data-option-id="${id}"]:not([data-selected="true"])`;
     if (
       await page
@@ -445,6 +445,12 @@ export interface WalkOptions {
    * no loop, interactive CTA) before leaving for Refine.
    */
   stopAtMoments?: boolean;
+  /**
+   * Profile-specific answer priority (e.g. cheese / tile / wine / heritage).
+   * Tried before the shared default list so one spec can steer the funnel
+   * without forking the walker.
+   */
+  preferredOptionIds?: readonly string[];
 }
 
 export async function walkToReveal(page: Page, options: WalkOptions = {}): Promise<void> {
@@ -463,7 +469,8 @@ export async function walkToReveal(page: Page, options: WalkOptions = {}): Promi
       if (momentRuns > 3) return;
     }
 
-    const act = PHASE_ACTIONS[phase] ?? walkOnce;
+    const act =
+      PHASE_ACTIONS[phase] ?? ((p: Page) => walkOnce(p, options.preferredOptionIds));
     // Answer phases need up to two taps (select an option, then Continue);
     // the moments reel commits in one. Anything beyond that is a stall.
     const maxActions = phase === "map" || phase === "storyboard" ? 2 : 3;
@@ -564,9 +571,12 @@ export async function advanceRefineToStorytelling(
  * resilience, a11y) so the navigation contract lives in exactly one place.
  * Returns false when the funnel didn't get there — callers `test.skip`.
  */
-export async function reachGuestDetails(page: Page): Promise<boolean> {
+export async function reachGuestDetails(
+  page: Page,
+  options: WalkOptions = {},
+): Promise<boolean> {
   await resetStudioV3State(page);
-  await walkToReveal(page);
+  await walkToReveal(page, options);
   await advanceRefineToStorytelling(page);
 
   // Current instant-bookable flow can move straight from certified Your Day
