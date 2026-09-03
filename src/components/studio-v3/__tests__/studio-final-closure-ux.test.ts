@@ -49,12 +49,20 @@ describe("Instant-bookable closure", () => {
     expect(studio).not.toContain("openLeadSheet(");
   });
 
-  it("returns an oversized party to the preflight instead of Stripe", () => {
+  it("keeps an oversized party on the reviewed summary instead of Stripe", () => {
     expect(studio).toContain("requiresCuratorParty(partyTotal)");
     const at = studio.indexOf("if (requiresCuratorParty(partyTotal))");
     const guard = studio.slice(at, at + 300);
-    expect(guard).toContain("returnToPreflight(");
+    expect(guard).toContain("setCheckoutBlock(");
     expect(guard).toContain("return;");
+  });
+
+  it("never ejects a completed checkout summary when final validation blocks", () => {
+    const start = studio.indexOf("const handleStripeCheckout = useCallback");
+    const end = studio.indexOf("// Phase 7D", start);
+    const checkoutSeam = studio.slice(start, end);
+    expect(checkoutSeam).not.toContain("returnToPreflight(");
+    expect(checkoutSeam).toContain("setCheckoutBlock(");
   });
 
   it("keeps a single in-Studio recovery path", () => {

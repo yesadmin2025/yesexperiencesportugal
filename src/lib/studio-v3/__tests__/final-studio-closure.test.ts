@@ -128,8 +128,9 @@ describe("the live Studio surface wires both final seams to this authority", () 
     const invokeIdx = STUDIO.indexOf('supabase.functions.invoke("create-signature-checkout"');
     expect(gateIdx).toBeGreaterThan(-1);
     expect(invokeIdx).toBeGreaterThan(gateIdx);
-    // Fails closed to the EXISTING curator/lead path, never to Stripe.
-    expect(STUDIO.slice(gateIdx, gateIdx + 320)).toContain("returnToPreflight(");
+    // Fails closed on the reviewed Summary, preserving guest details and
+    // exposing an actionable retry reason; it never reaches Stripe.
+    expect(STUDIO.slice(gateIdx, gateIdx + 320)).toContain("setCheckoutBlock(");
   });
 
   it("counts the add-on minutes exactly once at the checkout seam", () => {
