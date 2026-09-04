@@ -17,8 +17,10 @@ import {
   localStoryArticleLd,
   normalizeLocalStoryReviews,
   faqPageLd,
+  regionDestinationLd,
   type NormalizedLocalStoryReview,
 } from "@/lib/jsonld";
+import { PLANNER_REGIONS } from "@/content/portugal-planner-map";
 
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
@@ -227,6 +229,23 @@ export const Route = createFileRoute("/local-stories/$slug")({
             ]),
           ),
           ...(article.faq && article.faq.length > 0 ? [jsonLdScript(faqPageLd(article.faq))] : []),
+          // Corridor / region guides describe a real place we operate in —
+          // emit a TouristDestination built from the verified planner-map
+          // coordinates so Google can tie the guide to the geography.
+          ...(article.plannerRegionIds && article.plannerRegionIds.length > 0
+            ? [
+                jsonLdScript(
+                  regionDestinationLd({
+                    slug: article.slug,
+                    name: article.h1,
+                    description: article.metaDescription,
+                    places: PLANNER_REGIONS.filter((r) =>
+                      article.plannerRegionIds!.includes(r.id),
+                    ).map((r) => ({ label: r.label, lat: r.lat, lon: r.lon })),
+                  }),
+                ),
+              ]
+            : []),
           ...reviewScripts,
         ],
       };
