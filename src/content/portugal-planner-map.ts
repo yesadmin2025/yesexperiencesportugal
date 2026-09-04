@@ -21,13 +21,16 @@ export type PlannerRegion = {
   label: string;
   /** One-line orientation copy shown in the panel. */
   note: string;
-  /** Key into the curated gazetteer — the only source of coordinates. */
-  geoKey: string;
-  /** Real geographic position (WGS84 degrees), resolved from `geoKey`. */
+  /** Key into the curated gazetteer, when the place is a real tour stop. */
+  geoKey?: string;
+  /** Real geographic position (WGS84 degrees). */
   lat: number;
   lon: number;
-  /** Existing Signature tour ids that operate in this place. */
+  /** Existing Signature tour ids that operate in this place. May be empty for
+   *  places we cover as private designed days and write about in the Journal. */
   tourIds: readonly string[];
+  /** Mainland pins project onto the map; island pins render in the inset. */
+  area: "mainland" | "islands";
 };
 
 /**
@@ -60,7 +63,9 @@ export const PLANNER_ORIGIN = {
   lon: -9.14,
 } as const;
 
-type PlaceSeed = Omit<PlannerRegion, "lat" | "lon">;
+type PlaceSeed = Omit<PlannerRegion, "lat" | "lon" | "area"> &
+  Partial<Pick<PlannerRegion, "lat" | "lon" | "area">>;
+
 
 /** North → south, so the pin order reads like the country. */
 const PLACE_SEEDS: readonly PlaceSeed[] = [
