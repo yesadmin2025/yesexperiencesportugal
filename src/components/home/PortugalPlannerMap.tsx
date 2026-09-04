@@ -249,8 +249,9 @@ export function PortugalPlannerMap() {
             Somewhere else in Portugal?
           </p>
           <p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
-            Douro, Porto, the Algarve, the Beiras — we drive the whole mainland. Tell us where you
-            want to be and the day is built around it.
+            A town, a hotel, an island, a whole week — we cover mainland Portugal, Madeira and the
+            Azores. Tell us where you want to be and the day is built around it.
+
           </p>
           <Link
             to="/portugal-travel-designer"
