@@ -327,6 +327,7 @@ function Field({
   required = true,
   min,
   autoComplete,
+  defaultValue,
 }: {
   label: string;
   name: string;
@@ -335,6 +336,7 @@ function Field({
   required?: boolean;
   min?: string;
   autoComplete?: string;
+  defaultValue?: string;
 }) {
   return (
     <label className="block">
@@ -347,6 +349,7 @@ function Field({
           rows={5}
           required={required}
           maxLength={4000}
+          defaultValue={defaultValue}
           autoComplete={autoComplete}
           className="mt-2 min-h-11 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base resize-none transition-colors"
         />
