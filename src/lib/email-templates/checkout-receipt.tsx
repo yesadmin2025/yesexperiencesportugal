@@ -17,6 +17,8 @@ import {
   ITINERARY_FLEXIBILITY_NOTE,
   CONFIRMATION_SUFFICIENCY_NOTE,
 } from "@/lib/booking-snapshot-contract";
+import { CANCELLATION, PHONE_DISPLAY, WHATSAPP_NUMBER } from "@/config/business-nap";
+
 import {
   summarizeJourneyLines,
   type CheckoutJourneyLine,
