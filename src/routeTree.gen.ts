@@ -109,6 +109,7 @@ import { Route as AdminSeoMonitorRouteImport } from './routes/admin.seo-monitor'
 import { Route as AdminSeoJsonldRouteImport } from './routes/admin.seo-jsonld'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminRedirectsMonitorRouteImport } from './routes/admin.redirects-monitor'
+import { Route as AdminPricingToolRouteImport } from './routes/admin.pricing-tool'
 import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
 import { Route as AdminPriceMapRouteImport } from './routes/admin.price-map'
 import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
@@ -665,6 +666,11 @@ const AdminRedirectsMonitorRoute = AdminRedirectsMonitorRouteImport.update({
   path: '/admin/redirects-monitor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPricingToolRoute = AdminPricingToolRouteImport.update({
+  id: '/admin/pricing-tool',
+  path: '/admin/pricing-tool',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminPricingRoute = AdminPricingRouteImport.update({
   id: '/admin/pricing',
   path: '/admin/pricing',
@@ -1010,6 +1016,7 @@ export interface FileRoutesByFullPath {
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/price-map': typeof AdminPriceMapRoute
   '/admin/pricing': typeof AdminPricingRoute
+  '/admin/pricing-tool': typeof AdminPricingToolRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
@@ -1159,6 +1166,7 @@ export interface FileRoutesByTo {
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/price-map': typeof AdminPriceMapRoute
   '/admin/pricing': typeof AdminPricingRoute
+  '/admin/pricing-tool': typeof AdminPricingToolRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
@@ -1311,6 +1319,7 @@ export interface FileRoutesById {
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/price-map': typeof AdminPriceMapRoute
   '/admin/pricing': typeof AdminPricingRoute
+  '/admin/pricing-tool': typeof AdminPricingToolRoute
   '/admin/redirects-monitor': typeof AdminRedirectsMonitorRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/seo-jsonld': typeof AdminSeoJsonldRoute
@@ -1464,6 +1473,7 @@ export interface FileRouteTypes {
     | '/admin/photos'
     | '/admin/price-map'
     | '/admin/pricing'
+    | '/admin/pricing-tool'
     | '/admin/redirects-monitor'
     | '/admin/reviews'
     | '/admin/seo-jsonld'
@@ -1613,6 +1623,7 @@ export interface FileRouteTypes {
     | '/admin/photos'
     | '/admin/price-map'
     | '/admin/pricing'
+    | '/admin/pricing-tool'
     | '/admin/redirects-monitor'
     | '/admin/reviews'
     | '/admin/seo-jsonld'
@@ -1764,6 +1775,7 @@ export interface FileRouteTypes {
     | '/admin/photos'
     | '/admin/price-map'
     | '/admin/pricing'
+    | '/admin/pricing-tool'
     | '/admin/redirects-monitor'
     | '/admin/reviews'
     | '/admin/seo-jsonld'
@@ -1916,6 +1928,7 @@ export interface RootRouteChildren {
   AdminPhotosRoute: typeof AdminPhotosRoute
   AdminPriceMapRoute: typeof AdminPriceMapRoute
   AdminPricingRoute: typeof AdminPricingRoute
+  AdminPricingToolRoute: typeof AdminPricingToolRoute
   AdminRedirectsMonitorRoute: typeof AdminRedirectsMonitorRoute
   AdminReviewsRoute: typeof AdminReviewsRoute
   AdminSeoJsonldRoute: typeof AdminSeoJsonldRoute
@@ -2668,6 +2681,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRedirectsMonitorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/pricing-tool': {
+      id: '/admin/pricing-tool'
+      path: '/admin/pricing-tool'
+      fullPath: '/admin/pricing-tool'
+      preLoaderRoute: typeof AdminPricingToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/pricing': {
       id: '/admin/pricing'
       path: '/admin/pricing'
@@ -3173,6 +3193,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminPhotosRoute: AdminPhotosRoute,
   AdminPriceMapRoute: AdminPriceMapRoute,
   AdminPricingRoute: AdminPricingRoute,
+  AdminPricingToolRoute: AdminPricingToolRoute,
   AdminRedirectsMonitorRoute: AdminRedirectsMonitorRoute,
   AdminReviewsRoute: AdminReviewsRoute,
   AdminSeoJsonldRoute: AdminSeoJsonldRoute,
