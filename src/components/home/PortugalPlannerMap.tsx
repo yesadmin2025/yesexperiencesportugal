@@ -209,6 +209,20 @@ export function PortugalPlannerMap() {
           </>
         )}
 
+        {active.tours.length === 0 && (
+          <>
+            <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+              How we cover it
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
+              No fixed Signature day here yet — this one is designed privately around your dates,
+              your pace and how long you want to be away. Journal guides for this area appear here
+              as we publish them.
+            </p>
+          </>
+        )}
+
+
         {active.guides.length > 0 && (
           <>
             <p className="mt-7 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
