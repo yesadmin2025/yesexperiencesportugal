@@ -312,6 +312,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         <Field label="Date" icon={<Calendar size={14} />}>
           <input
             type="date"
+            aria-label="Date of your experience"
             value={date}
             onChange={(e) => {
               const v = e.target.value;
@@ -621,9 +622,15 @@ function Field({
   icon?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  // The visible eyebrow is the accessible name for the whole control group,
+  // so screen readers announce "Date", "Who's travelling", etc.
+  const labelId = React.useId();
   return (
-    <div className="block">
-      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5">
+    <div className="block" role="group" aria-labelledby={labelId}>
+      <div
+        id={labelId}
+        className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5"
+      >
         {icon}
         {label}
       </div>
@@ -631,3 +638,4 @@ function Field({
     </div>
   );
 }
+
