@@ -648,6 +648,9 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           />
           <source src={HERO_CLIP.srcMobile} media="(max-width: 767px)" type="video/mp4" />
           <source src={HERO_CLIP.srcDesktop} type="video/mp4" />
+          {/* Last resort for wide viewports on engines without H.264 (some
+              Linux/Chromium builds): the AV1 encode still moves, just at 720p. */}
+          <source src={HERO_CLIP.srcMobileAv1} type='video/mp4; codecs="av01.0.05M.08"' />
         </video>
       ) : null}
     </>
