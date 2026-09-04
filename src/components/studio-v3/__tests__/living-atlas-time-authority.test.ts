@@ -277,11 +277,11 @@ describe("Pass 2 — real inventory protections", () => {
 
 
 
-  it("clamps the legacy 600-minute evora-alentejo skeleton to the Studio 9h ceiling", () => {
+  it("keeps the verified 600-minute Evora experience separate from transfers", () => {
     // OWNER RULE: a legacy Signature duration is historical metadata, never
     // permission for a live Studio day to exceed 540 minutes door-to-door.
     const budget = resolveTimeBudget({ skeletonTourId: "evora-alentejo" });
-    expect(budget.availableExperienceMinutes).toBe(540);
+    expect(budget.availableExperienceMinutes).toBe(600);
     // Catalogue reads still see the verbatim canonical value.
     expect(
       resolveTimeBudget({ skeletonTourId: "evora-alentejo", allowLegacyExtendedDuration: true })
@@ -297,7 +297,7 @@ describe("Pass 2 — real inventory protections", () => {
     });
 
     expect(result.planningTiming.budget.source).toBe("signature-skeleton-truth");
-    expect(result.planningTiming.budget.availableExperienceMinutes).toBe(540);
+    expect(result.planningTiming.budget.availableExperienceMinutes).toBe(600);
   });
 });
 

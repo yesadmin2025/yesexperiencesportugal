@@ -44,7 +44,7 @@ describe("2 — an unresolved composition can never start checkout", () => {
     expect(STUDIO).toContain("disabled={!canReserve}");
     expect(STUDIO).toContain("if (checkoutStops.length < 2) {");
     expect(STUDIO).toContain("returnToPreflight(");
-    expect(STUDIO).toContain('data-testid="studio-v3-reserve-review-path"');
+    expect(STUDIO).not.toContain('data-testid="studio-v3-reserve-review-path"');
   });
 });
 

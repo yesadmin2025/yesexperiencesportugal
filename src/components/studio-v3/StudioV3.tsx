@@ -5723,12 +5723,11 @@ export function StoryboardHandoff({
           className="mt-4 text-[14px] leading-[1.6]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
         >
-          We won't show a day that isn't fully grounded in a real, bookable tour. Let's re-check
-          your practical details and design it again — your answers are kept.
+          Studio is resolving this against verified, bookable tour inventory. Your answers are kept.
         </p>
         <div className="mt-7 flex flex-col items-center gap-3">
           <CtaButton onClick={onRefine} variant="primary">
-            Adjust this day
+            Build my bookable day
           </CtaButton>
           <button
             type="button"

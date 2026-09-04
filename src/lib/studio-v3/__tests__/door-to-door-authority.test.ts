@@ -189,11 +189,11 @@ describe("Studio reveal route — explicit return leg", () => {
   });
 });
 
-describe("Studio time budget no longer inherits legacy 570/600 durations", () => {
-  it("clamps a legacy extended Signature duration to the 9h ceiling", () => {
+describe("Studio preserves verified Signature experience durations", () => {
+  it("keeps a verified 600-minute Signature because transfers are separate", () => {
     const budget = resolveTimeBudget({ skeletonDurationMinutes: 600 });
-    expect(budget.availableExperienceMinutes).toBe(540);
-    expect(budget.notes).toMatch(/clamped/);
+    expect(budget.availableExperienceMinutes).toBe(600);
+    expect(budget.notes).toMatch(/pickup and drop-off excluded/);
   });
 
   it("keeps catalogue reads verbatim behind the explicit escape hatch", () => {

@@ -88,7 +88,7 @@ describe("Your Day has no customer-visible curator CTA", () => {
   it("keeps the fail-closed fallback but routes it back into Studio", () => {
     expect(studio).toContain('data-testid="studio-v3-reveal-fallback"');
     expect(studio).toContain("This day needs one more adjustment.");
-    expect(studio).not.toContain("Adjust this day");
+    expect(studio).not.toContain("remove or swap a moment");
   });
 
   it("never asks the traveller to repair a designed day", () => {

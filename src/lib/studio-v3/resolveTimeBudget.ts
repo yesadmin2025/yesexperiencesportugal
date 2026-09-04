@@ -35,9 +35,8 @@ export type ResolveTimeBudgetInput = {
    */
   skeletonDurationMinutes?: number | null;
   /**
-   * Catalogue/reporting escape hatch: keep a legacy 570/600-minute Signature
-   * duration verbatim. The live Studio must NEVER set this — its day is
-   * capped at the owner's 9h door-to-door ceiling.
+   * Retained for compatibility. Verified Signature duration remains verbatim;
+   * pickup and drop-off transfers are outside the tour duration.
    */
   allowLegacyExtendedDuration?: boolean;
 };

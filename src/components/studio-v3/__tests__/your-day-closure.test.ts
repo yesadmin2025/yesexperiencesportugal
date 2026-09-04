@@ -37,7 +37,7 @@ describe("C — Reserve fails closed on unresolved operational state", () => {
     expect(STUDIO_SOURCE).toContain("disabled={!canReserve}");
     expect(STUDIO_SOURCE).toContain("finalDayGate.bookable &&");
     expect(STUDIO_SOURCE).toContain('approvalStatus === "reject"');
-    expect(STUDIO_SOURCE).toContain("studio-v3-reserve-review-path");
+    expect(STUDIO_SOURCE).not.toContain("studio-v3-reserve-review-path");
   });
 });
 
