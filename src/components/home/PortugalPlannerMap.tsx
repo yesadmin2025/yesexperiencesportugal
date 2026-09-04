@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
-  PLANNER_ISLAND_REGIONS,
   PLANNER_MAINLAND_REGIONS,
   PLANNER_MAP,
   PLANNER_ORIGIN,
