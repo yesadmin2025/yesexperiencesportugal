@@ -90,7 +90,6 @@ export function PortugalPlannerMap() {
             const isActive = region.id === active.id;
             const { x, y } = projectPlannerPoint(region.lat, region.lon);
             const labelLeft = x > VB_W * 0.55;
-            const hasDay = region.tourIds.length > 0;
             return (
               <button
                 key={region.id}
