@@ -105,9 +105,7 @@ export function PortugalPlannerMap() {
                   className={`block rounded-full transition-all duration-200 ${
                     isActive
                       ? "h-[9px] w-[9px] bg-[color:var(--gold)] ring-4 ring-[color:var(--gold)]/25"
-                      : hasDay
-                        ? "h-[5px] w-[5px] bg-[color:var(--teal)]/70 group-hover:h-[7px] group-hover:w-[7px]"
-                        : "h-[5px] w-[5px] border border-[color:var(--teal)]/60 bg-[color:var(--ivory)] group-hover:h-[7px] group-hover:w-[7px]"
+                      : "h-[6px] w-[6px] bg-[color:var(--teal)]/75 group-hover:h-[8px] group-hover:w-[8px]"
                   }`}
                 />
                 <span
