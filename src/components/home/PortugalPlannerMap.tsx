@@ -167,100 +167,53 @@ export function PortugalPlannerMap() {
           {active.note}
         </h3>
 
+        {/* One clear idea per region: a private day can be designed around it.
+            Where fixed Signature days exist, link them; otherwise the CTA
+            leads straight to a designed-day request. */}
         {active.tours.length > 0 && (
-          <>
-            <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-              Private days here
-            </p>
-            <ul className="mt-3 list-none p-0 space-y-2">
-              {active.tours.map((tour) => (
-                <li key={tour.id}>
-                  <Link
-                    to="/tours/$tourId"
-                    params={{ tourId: tour.id }}
-                    className="group flex items-baseline gap-3 rounded-md border border-[color:var(--border)] bg-[color:var(--ivory)] px-4 py-3 transition-transform duration-200 hover:-translate-y-[2px] focus-visible:-translate-y-[2px]"
-                  >
-                    <span className="text-[14.5px] leading-snug text-[color:var(--charcoal)]">
-                      {tour.title}
-                    </span>
-                    <span className="ml-auto shrink-0 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
-                      View →
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </>
+          <ul className="mt-5 list-none p-0 space-y-2">
+            {active.tours.slice(0, 2).map((tour) => (
+              <li key={tour.id}>
+                <Link
+                  to="/tours/$tourId"
+                  params={{ tourId: tour.id }}
+                  className="group flex items-baseline gap-3 rounded-md border border-[color:var(--border)] bg-[color:var(--ivory)] px-4 py-3 transition-transform duration-200 hover:-translate-y-[2px] focus-visible:-translate-y-[2px]"
+                >
+                  <span className="text-[14.5px] leading-snug text-[color:var(--charcoal)]">
+                    {tour.title}
+                  </span>
+                  <span className="ml-auto shrink-0 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                    View →
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         )}
-
-        {active.tours.length === 0 && (
-          <>
-            <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-              How we cover it
-            </p>
-            <p className="mt-3 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
-              No fixed Signature day here — this one is designed privately around your dates, your
-              pace and how long you want to be away. Read the guide below, then tell us what you
-              want and we come back with a plan and a price.
-            </p>
-            <Link
-              to="/contact"
-              search={{ type: "multi_day", place: active.label }}
-              className="mt-4 inline-flex min-h-11 items-center rounded-md bg-[color:var(--teal)] px-5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] transition-colors hover:bg-[color:var(--teal-2)]"
-            >
-              Request a designed day →
-            </Link>
-          </>
-        )}
-
-
 
         {active.guides.length > 0 && (
-          <>
-            <p className="mt-7 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-              Guides for this region
-            </p>
-            <ul className="mt-3 list-none p-0 flex flex-wrap gap-2">
-              {active.guides.slice(0, 3).map((guide) => (
-                <li key={guide.slug}>
-                  <Link
-                    to="/local-stories/$slug"
-                    params={{ slug: guide.slug }}
-                    className="inline-block rounded-full border border-[color:var(--border)] px-4 py-2 text-[13px] text-[color:var(--charcoal-soft)] transition-colors duration-200 hover:text-[color:var(--teal)]"
-                  >
-                    {guide.h1}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </>
+          <ul className="mt-4 list-none p-0 flex flex-wrap gap-2">
+            {active.guides.slice(0, 2).map((guide) => (
+              <li key={guide.slug}>
+                <Link
+                  to="/local-stories/$slug"
+                  params={{ slug: guide.slug }}
+                  className="inline-block rounded-full border border-[color:var(--border)] px-4 py-2 text-[13px] text-[color:var(--charcoal-soft)] transition-colors duration-200 hover:text-[color:var(--teal)]"
+                >
+                  {guide.h1}
+                </Link>
+              </li>
+            ))}
+          </ul>
         )}
 
-        <div className="mt-7 rounded-lg border border-[color:var(--border)] bg-[color:var(--sand)] px-5 py-4">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-            Somewhere else in Portugal?
-          </p>
-          <p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
-            A town, a hotel, an island, a whole week — we cover mainland Portugal, Madeira and the
-            Azores. Tell us where you want to be and the day is built around it.
-
-          </p>
-          <Link
-            to="/portugal-travel-designer"
-            className="mt-3 inline-flex min-h-11 items-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]"
-          >
-            Design your own day →
-          </Link>
-        </div>
-
-        <div className="mt-5">
-          <Link
-            to="/local-stories"
-            className="text-sm underline underline-offset-4 text-[color:var(--charcoal)]"
-          >
-            All Portugal guides
-          </Link>
-        </div>
+        <Link
+          to="/contact"
+          search={{ type: "multi_day", place: active.label }}
+          className="mt-5 inline-flex min-h-11 items-center rounded-md bg-[color:var(--teal)] px-5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] transition-colors hover:bg-[color:var(--teal-2)]"
+        >
+          Design a day in {active.label} →
+        </Link>
 
       </div>
     </div>
