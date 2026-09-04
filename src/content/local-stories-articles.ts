@@ -1315,7 +1315,352 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     ],
     datePublished: "2026-07-27",
   },
+  {
+    slug: "arrabida-wine-tour-from-lisbon",
+    title: "Arrábida Wine Tour from Lisbon — A Local Guide (2026)",
+    metaDescription:
+      "What an Arrábida wine tour from Lisbon really involves: Moscatel and Castelão, family cellars, Azeitão cheese, a coastal lunch and how to pick the right wine day.",
+    h1: "Arrábida Wine Tour from Lisbon — What to Know Before You Book",
+    eyebrow: "Arrábida · Wine",
+    standfirst:
+      "Forty minutes south of Lisbon, between limestone hills and the Atlantic. Here is how the wine day actually works.",
+    sections: [
+      {
+        heading: "Where Arrábida wine country actually is",
+        body: "Arrábida is the ridge that runs from Setúbal to Sesimbra, and the wine sits on the plain behind it — Azeitão, Palmela, and the sandy soils of the Setúbal Peninsula. From central Lisbon it is about forty minutes across the 25 de Abril Bridge. That short drive is the whole reason this works as a day: you can be in a cellar before mid-morning and back in the city for dinner without rushing.",
+      },
+      {
+        heading: "What you will actually drink",
+        body: "Three things define the region. Moscatel de Setúbal is the fortified wine the area is known for — orange peel, dried apricot, and far less sweet on the palate than it sounds. Castelão is the classic red grape of the sandy soils, warm and earthy. And the whites, grown close enough to the Atlantic to keep their acidity, are the surprise for most visitors. A good tasting day moves between all three rather than repeating one style.",
+      },
+      {
+        heading: "The cellars are family-run, and that changes the visit",
+        body: "The wineries we work with here are small, working operations rather than visitor centres with a timetable. That means the person pouring is often the person who made the wine, tastings happen where the barrels are, and the conversation goes wherever your interest goes. It also means numbers matter: these rooms hold a handful of people comfortably, not a coach.",
+      },
+      {
+        heading: "Azeitão cheese belongs in the same day",
+        body: "Azeitão is a raw sheep's-milk cheese, thistle-set and soft enough to eat with a spoon from the top. It is made in the same few villages as the wine, and pairing it with a young Castelão or a chilled Moscatel is the local habit rather than a tourist invention. A visit to a small dairy fits naturally between two cellars.",
+      },
+      {
+        heading: "Lunch, and why it should not be rushed",
+        body: "Setúbal grills the fish that comes off its own boats — choco frito, sardines in season, whatever the day landed. Sesimbra does the same a little further west, with the harbour in front of you. A wine day that ends at three because lunch was a sandwich has missed the point of the region.",
+      },
+      {
+        heading: "Choosing between the wine days",
+        body: "If wine is the main event, the all-inclusive Arrábida Signature is the fullest version. If you want cheese, bread and the producer conversation more than the vineyard, the Azeitão day leans that way. If you want the coast as much as the cellar, a day built around Sesimbra and the coves with one tasting suits better. All three start from the same forty-minute drive.",
+      },
+    ],
+    comparison: {
+      caption: "Which wine day suits you",
+      columns: ["If you want", "Go for", "Roughly"],
+      rows: [
+        ["Full wine focus, several cellars", "Arrábida wine day, all-inclusive", "8–9 hours"],
+        ["Cheese, bread, producers, one cellar", "Azeitão cheese & wine day", "7–8 hours"],
+        ["Coast first, wine as a chapter", "Sesimbra & Arrábida coast day", "8 hours"],
+        ["Something older and stranger", "Évora & talha (clay-amphora) wines", "9–10 hours"],
+      ],
+    },
+    ctaLead:
+      "Every version is private and paced to you — the cellars, the lunch and the coast in the order that suits your day.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedSignatures: [
+      { slug: "azeitao-cheese", label: "Azeitão Cheese & Wine" },
+      { slug: "evora-alentejo", label: "Évora & Alentejo Signature" },
+    ],
+    relatedReads: [
+      { path: "/local-stories/setubal-wine-guide", label: "Setúbal wine country guide" },
+      { path: "/local-stories/best-wineries-near-lisbon", label: "Best wineries near Lisbon" },
+      {
+        path: "/local-stories/arrabida-wine-tour-what-to-expect",
+        label: "What an Arrábida wine day looks like, hour by hour",
+      },
+    ],
+    faq: [
+      {
+        q: "How long is an Arrábida wine tour from Lisbon?",
+        a: "Door to door from your Lisbon accommodation, usually eight to nine hours including two or three tastings and a proper lunch. The drive each way is about forty minutes.",
+      },
+      {
+        q: "How many wineries do you visit?",
+        a: "Two or three. More than that and the tastings blur together and lunch gets cut short — which is the part guests remember.",
+      },
+      {
+        q: "Is Moscatel de Setúbal very sweet?",
+        a: "Less than people expect. It is fortified and rich, with dried fruit and orange peel, but the older bottlings in particular are balanced rather than syrupy.",
+      },
+      {
+        q: "Can non-drinkers or children come along?",
+        a: "Yes. The cellars are working farms and the day includes cheese, food and coast, so there is plenty for someone who is not tasting. Tell us in advance and we adjust the stops.",
+      },
+      {
+        q: "What is the best time of year for Arrábida wine?",
+        a: "April to October for the weather and the coast, with September and early October best if you want to see harvest activity. Winter tastings are quieter and perfectly good if you do not need beach weather.",
+      },
+      {
+        q: "Is it better than a Douro wine tour?",
+        a: "It is different, and much closer. The Douro is a two-day proposition from Lisbon. Arrábida gives you a real wine region, cheese and the Atlantic in a single day.",
+      },
+    ],
+    datePublished: "2026-09-04",
+  },
+  {
+    slug: "lisbon-day-trips-by-drive-time",
+    title: "Lisbon Day Trips by Drive Time: 30, 60 and 90 Minutes",
+    metaDescription:
+      "Every worthwhile day trip from Lisbon sorted by how long the drive takes — 30, 60 and 90 minutes — so you can match the distance to the time you have.",
+    h1: "Lisbon Day Trips by Drive Time",
+    eyebrow: "Lisbon · Planning",
+    standfirst: "Distance decides how much of the day is yours. Start here.",
+    sections: [
+      {
+        heading: "Why drive time is the honest way to plan",
+        body: "Most day-trip lists sort by how famous a place is. That is not how a day works. What decides whether you come back relaxed is how many hours you spent in the car, and whether the drive happened at the right time of day. Lisbon traffic across the bridges is heavy between eight and nine-thirty in the morning, and again from five, so a thirty-minute drive can quietly become an hour if you leave at the wrong moment.",
+      },
+      {
+        heading: "Within 30–45 minutes",
+        body: "Sintra, Cascais, Azeitão, Sesimbra and Setúbal all sit inside this ring. These are the days where you can start unhurried, take a long lunch and still be back for dinner in the city. They also work as half-days if you only have an afternoon.",
+      },
+      {
+        heading: "Around an hour",
+        body: "Comporta, Tróia and the Palmela vineyards. The extra twenty minutes buys you a real change of landscape — rice fields, pine, and beaches wide enough that August feels empty. This distance is the sweet spot for a full day: enough travel to feel you have left, not enough to spend the day arriving.",
+      },
+      {
+        heading: "Around 90 minutes and beyond",
+        body: "Évora and the Alentejo plains at about an hour twenty; the Costa Vicentina at roughly two hours. These are worth it, but they only work as a full day with an early start. If you want to stop twice on the way and eat slowly, they are better as an overnight.",
+      },
+      {
+        heading: "What we would do with the time you have",
+        body: "One free day and no early start: stay inside the forty-minute ring. Two free days: pair a close day with a longer one, and put the longer one first while you still have energy. A week: go further once, and let the rest of the trip be short drives and long lunches.",
+      },
+    ],
+    comparison: {
+      caption: "Day trips by drive time from central Lisbon",
+      columns: ["Place", "Drive", "Works as a half-day?"],
+      rows: [
+        ["Sintra", "about 35 min", "Yes, if you start early"],
+        ["Cascais", "about 35 min", "Yes"],
+        ["Azeitão", "about 35 min", "Yes"],
+        ["Sesimbra", "about 40 min", "Yes"],
+        ["Setúbal", "about 45 min", "Yes"],
+        ["Comporta / Tróia", "about 1h", "No"],
+        ["Évora", "about 1h 20", "No"],
+        ["Costa Vicentina", "about 2h", "No"],
+      ],
+    },
+    ctaLead: "Tell us how many hours you have and we will design the day around the drive, not against it.",
+    ctaLabel: "See our Signature days",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedReads: [
+      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      {
+        path: "/local-stories/best-time-of-year-lisbon-day-trip",
+        label: "Best time of year for a day trip",
+      },
+    ],
+    faq: [
+      {
+        q: "What is the closest worthwhile day trip from Lisbon?",
+        a: "Sintra and Azeitão, both about thirty-five minutes. Sesimbra is forty and feels much further away than it is.",
+      },
+      {
+        q: "When should I leave Lisbon to avoid traffic?",
+        a: "Before eight or after nine-thirty in the morning, and avoid returning between five and seven. The bridges are the bottleneck, not the motorways.",
+      },
+      {
+        q: "Is Évora too far for one day?",
+        a: "No, but it needs an early start. An hour and twenty each way leaves a good six hours in the Alentejo if you leave by eight.",
+      },
+    ],
+    datePublished: "2026-09-04",
+  },
+  {
+    slug: "arrabida-wine-tour-what-to-expect",
+    title: "Arrábida Wine Day: What It Actually Looks Like, Hour by Hour",
+    metaDescription:
+      "An honest hour-by-hour walk through an Arrábida wine day from Lisbon — pickup, cellars, cheese, lunch by the sea and what time you are home.",
+    h1: "An Arrábida Wine Day, Hour by Hour",
+    eyebrow: "Arrábida · Behind the day",
+    standfirst: "No surprises. This is the shape of the day, from your door and back.",
+    sections: [
+      {
+        heading: "Morning — pickup and the bridge",
+        body: "We collect you from your accommodation, usually between nine and half past. The first twenty minutes are the city and the 25 de Abril Bridge, and then the landscape changes fast: cork oak, pine, and the Arrábida ridge ahead. This is the part of the day to ask questions — what you like, what you would rather skip — because the rest can still flex around it.",
+      },
+      {
+        heading: "Late morning — the first cellar",
+        body: "The first tasting happens before the day gets warm, when palates are fresh. Expect a small working winery rather than a visitor centre: barrels, concrete, someone from the family pouring. Usually four to six wines, moving from white through red to a Moscatel, with time to walk the vines if you want to.",
+      },
+      {
+        heading: "Midday — cheese and bread",
+        body: "Between cellars we stop for Azeitão cheese, bread and whatever else the counter has that day. It is a short stop but it does two useful things: it steadies the tasting, and it puts the food and the wine of the region in the same conversation, which is how people here actually eat.",
+      },
+      {
+        heading: "Early afternoon — lunch by the water",
+        body: "Lunch is in Setúbal or Sesimbra depending on the day, and it runs long on purpose. Fish off the boats, grilled simply, with a local white. Most guests tell us afterwards this was the part they did not expect to remember.",
+      },
+      {
+        heading: "Mid afternoon — the second cellar, or the coast",
+        body: "Here the day splits according to how you feel. Still curious about wine? A second cellar, often a different style entirely. Ready to stop tasting? The Arrábida road over the ridge, with the coves below, and time on a beach instead. Neither costs you anything extra — it is the same day, chosen differently.",
+      },
+      {
+        heading: "Late afternoon — back to Lisbon",
+        body: "We aim to have you back between five and six, before the evening traffic builds on the bridge. If you would rather stay for sunset on the coast and return later, say so in the morning and we build the day the other way round.",
+      },
+    ],
+    ctaLead: "This is the shape. The details are yours to move.",
+    ctaLabel: "See the Arrábida Wine Signature",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedReads: [
+      {
+        path: "/local-stories/arrabida-wine-tour-from-lisbon",
+        label: "Arrábida wine tour: the full guide",
+      },
+      { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
+    ],
+    faq: [
+      {
+        q: "What time does the day start and finish?",
+        a: "Pickup is usually between nine and nine-thirty, and you are back in Lisbon between five and six. Both ends can move if you prefer.",
+      },
+      {
+        q: "How much wine will I be tasting?",
+        a: "Typically eight to twelve small pours across the day, spread over several hours and around food. Spitting is normal at the cellars and nobody minds.",
+      },
+      {
+        q: "Is lunch included?",
+        a: "On the all-inclusive Arrábida day, yes. On other versions it is shown clearly before you book — we never leave that ambiguous.",
+      },
+      {
+        q: "What should I wear?",
+        a: "Comfortable shoes you can walk gravel and a slope in, and a light layer. Even in summer the ridge and the coast are breezier than the city.",
+      },
+    ],
+    datePublished: "2026-09-04",
+  },
+  {
+    slug: "best-time-of-year-lisbon-day-trip",
+    title: "Best Time of Year for a Day Trip from Lisbon (Month by Month)",
+    metaDescription:
+      "Month-by-month guide to day trips from Lisbon — weather, crowds, harvest, sea temperature and which month suits wine, coast or the Alentejo best.",
+    h1: "Best Time of Year for a Day Trip from Lisbon",
+    eyebrow: "Lisbon · Seasons",
+    standfirst: "There is no bad month here. There are months that suit different days.",
+    sections: [
+      {
+        heading: "Spring — the one we would choose",
+        body: "March to June is our favourite window. The Alentejo is green and full of wildflowers before the summer burns it gold, the palace gardens in Sintra are at their best, and the coast is empty on a weekday. The sea is still cold for swimming until late May, which is the only trade-off.",
+      },
+      {
+        heading: "Summer — bright, busy, and better early",
+        body: "July and August bring the warmest sea and the biggest crowds. Sintra fills by mid-morning and the roads inside the Arrábida park have seasonal access limits when the beaches are full. Everything still works — it simply needs an earlier start and a willingness to eat lunch at one rather than three.",
+      },
+      {
+        heading: "Autumn — harvest, and the light",
+        body: "September and October are the quiet favourite. Harvest is happening in the cellars, the sea holds its summer warmth into October, and the crowds thin noticeably after the first week of September. If you care about wine, this is the month to come.",
+      },
+      {
+        heading: "Winter — empty, clear, and underrated",
+        body: "November to February is cold, often bright, and almost entirely local. You trade swimming for empty streets, dramatic Atlantic weather and restaurant tables without booking. Tastings continue year-round. Sintra in winter mist is genuinely beautiful.",
+      },
+    ],
+    comparison: {
+      caption: "Month by month",
+      columns: ["Months", "Weather", "Crowds", "Best for"],
+      rows: [
+        ["March–May", "Mild, green", "Low", "Alentejo, gardens, walking"],
+        ["June", "Warm, long days", "Building", "Everything"],
+        ["July–August", "Hot, warm sea", "High", "Beaches, early starts"],
+        ["September–October", "Warm, softer light", "Moderate", "Wine and harvest"],
+        ["November–February", "Cool, clear or wet", "Very low", "Cellars, towns, quiet coast"],
+      ],
+    },
+    ctaLead: "Tell us your dates and we will tell you honestly what that month does best.",
+    ctaLabel: "Design your day",
+    signatureSlug: "arrabida-wine-allinclusive",
+    relatedReads: [
+      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      {
+        path: "/local-stories/arrabida-wine-tour-from-lisbon",
+        label: "Arrábida wine tour guide",
+      },
+    ],
+    faq: [
+      {
+        q: "What is the best month to visit Lisbon and the surrounding region?",
+        a: "May and September. Both give warm days, manageable crowds and a sea you can swim in, without the intensity of August.",
+      },
+      {
+        q: "Is winter worth it for a day trip?",
+        a: "Yes, if you are not coming for the beach. Cellars, towns and the Alentejo are all better without crowds, and the light on clear winter days is exceptional.",
+      },
+      {
+        q: "When is the grape harvest near Lisbon?",
+        a: "Usually late August into September, varying with the year and the grape. September visits often catch the cellars mid-work.",
+      },
+    ],
+    datePublished: "2026-09-04",
+  },
+  {
+    slug: "lisbon-day-trips-with-kids-and-accessibility",
+    title: "Lisbon Day Trips with Kids or Limited Mobility — A Practical Guide",
+    metaDescription:
+      "Which day trips from Lisbon work with young children, older travellers or limited mobility — cobbles, walking distances, car seats and where to skip.",
+    h1: "Day Trips from Lisbon with Kids or Limited Mobility",
+    eyebrow: "Lisbon · Practical",
+    standfirst: "The honest version: what is easy, what is hard, and what we would change.",
+    sections: [
+      {
+        heading: "The real obstacle is not distance — it is surface",
+        body: "Portugal's beauty is built on cobbles, slopes and steps. A day that looks gentle on a map can involve a steep walk from a car park, an old town paved in calçada, or a cellar with a step down into the barrel room. When guests tell us in advance, we can usually solve it by changing where we park and which stop we choose — not by cancelling the day.",
+      },
+      {
+        heading: "What works well with young children",
+        body: "Sesimbra and the Arrábida coves: short walks, sand, water and a harbour with boats to watch. Comporta: flat, wide beaches and space to run. Azeitão: cheese, bread and animals rather than long museum visits. Children are welcome in the cellars we use — they simply get juice and a chair.",
+      },
+      {
+        heading: "What is harder with children",
+        body: "Sintra in high season is the difficult one: queues, hills, and long gaps between anything a child finds interesting. It can still work if you go early, pick one estate instead of three, and treat the coast afterwards as the real reward.",
+      },
+      {
+        heading: "Limited mobility — what we can and cannot change",
+        body: "We can bring the vehicle close, choose viewpoints with level access, pick restaurants without steps, and select cellars whose tasting rooms are reachable without stairs. We cannot make the Pena Palace approach flat or the Sesimbra castle easy — and we will say so before you book rather than after. Where a stop is not workable, we replace it with something in the same spirit.",
+      },
+      {
+        heading: "Car seats, timing and rest",
+        body: "Car seats are arranged in advance at no charge — tell us the ages and we fit the right ones. Days with children or older travellers are best built around one long, comfortable stop in the middle rather than five short ones, and we plan an unhurried return so nobody is travelling exhausted.",
+      },
+    ],
+    ctaLead:
+      "Tell us who is travelling and what would make the day easier. We would rather adjust the route than have you manage it on the day.",
+    ctaLabel: "Design a day that fits",
+    signatureSlug: "wild-beaches-picnic",
+    relatedReads: [
+      { path: "/local-stories/best-day-trips-from-lisbon", label: "Best day trips from Lisbon" },
+      { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
+    ],
+    faq: [
+      {
+        q: "Are car seats provided?",
+        a: "Yes, arranged in advance at no extra cost. We need the children's ages and approximate weights to fit the right ones.",
+      },
+      {
+        q: "Which day trip is easiest with limited mobility?",
+        a: "The Arrábida and Setúbal side. Viewpoints are reachable by road, the waterfront is level, and we can choose cellars and restaurants without steps.",
+      },
+      {
+        q: "Is Sintra accessible?",
+        a: "Partly. The town and some estate grounds are manageable, but the main palace approaches involve slopes and steps that no vehicle can shortcut. We will tell you exactly which parts work before you book.",
+      },
+      {
+        q: "Can you adjust the pace during the day?",
+        a: "Yes — that is the point of a private day. Stops can be shortened, dropped or extended as you go, without changing what you paid.",
+      },
+    ],
+    datePublished: "2026-09-04",
+  },
 ];
+
 
 
 LOCAL_STORIES_ARTICLES.push(...PORTUGAL_REGION_GUIDES);
