@@ -5539,6 +5539,8 @@ export function StoryboardHandoff({
     swapPool,
     setEdited,
     revealLabel,
+    judgeOperational,
+    state.pickup,
   ]);
 
 
