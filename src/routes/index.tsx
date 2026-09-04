@@ -95,6 +95,15 @@ const homepageJournalLinks: {
   },
 ];
 
+/** Every Signature cover shot in the catalogue. Journal cards exclude all of
+ *  them so the row under the map never repeats a photo used as a tour cover
+ *  anywhere on the site. */
+const SIGNATURE_COVER_IMAGES: Set<string> = new Set(
+  signatureTours.map((t) => t.img).filter((src): src is string => Boolean(src)),
+);
+
+
+
 /** Real published date + real operation photo for a Journal card, resolved
  *  from the article record and its matching Signature tour. No invention.
  *
@@ -113,10 +122,18 @@ function journalCardMeta(
   const tourId = imgTourId ?? article.signatureSlug;
   const tour = tourId ? findTour(tourId) : undefined;
   const gallery = tourId ? (getViatorMeta(tourId)?.gallery ?? []) : [];
-  const usable = (src?: string) => Boolean(src) && src !== tour?.img && !used?.has(src!);
+  // A Journal photo must never repeat ANY Signature cover shot in the
+  // catalogue (not just its own day's cover) — those covers appear on the
+  // cards above, on /experiences and on every tour page.
+  const usable = (src?: string) =>
+    Boolean(src) && !SIGNATURE_COVER_IMAGES.has(src!) && !used?.has(src!);
   // Preferred window first (deep frames), then anything else still unused.
   const distinct = gallery.slice(imgFrom).find(usable) ?? gallery.find(usable);
-  const img = distinct ?? article.heroImage ?? tour?.img;
+  const img =
+    distinct ??
+    (usable(article.heroImage) ? article.heroImage : undefined) ??
+    gallery.find((g) => !used?.has(g)) ??
+    tour?.img;
   if (img) used?.add(img);
   return {
     date: new Date(`${article.datePublished}T00:00:00Z`).toLocaleDateString("en-GB", {

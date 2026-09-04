@@ -354,6 +354,11 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
   // using the lightweight mobile clip on phones. The poster remains
   // visible as the immediate LCP fallback and while the video loads.
   const [showVideo, setShowVideo] = useState<boolean>(false);
+  // The film only becomes visible once it is genuinely PLAYING. A film that
+  // is mounted but refused (iOS Low Power Mode, data saver, autoplay policy)
+  // is unmounted entirely, so Safari can never paint its native play badge
+  // over the hero — the still frame with its slow drift stays instead.
+  const [filmPlaying, setFilmPlaying] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -386,10 +391,53 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
     if (!v) return;
     v.muted = true;
     v.playsInline = true;
-    v.play().catch(() => {
-      /* autoplay blocked — poster remains */
-    });
+
+    let cancelled = false;
+    let retried = false;
+
+    const onPlaying = () => {
+      if (!cancelled) setFilmPlaying(true);
+    };
+    v.addEventListener("playing", onPlaying);
+
+    const attempt = () =>
+      v.play().then(
+        () => undefined,
+        () => {
+          if (cancelled) return;
+          if (retried) {
+            // Twice refused — drop the film so no play badge can appear.
+            setShowVideo(false);
+            return;
+          }
+          retried = true;
+        },
+      );
+
+    void attempt();
+
+    // A phone that refused the first attempt (Low Power Mode, background tab)
+    // often allows it after a real gesture or when the tab is foregrounded.
+    const retry = () => {
+      if (cancelled || !retried) return;
+      void attempt();
+    };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") retry();
+    };
+    window.addEventListener("pointerdown", retry, { once: true, passive: true });
+    window.addEventListener("scroll", retry, { once: true, passive: true });
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      cancelled = true;
+      v.removeEventListener("playing", onPlaying);
+      window.removeEventListener("pointerdown", retry);
+      window.removeEventListener("scroll", retry);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, [showVideo]);
+
 
   return (
     <>
@@ -553,6 +601,10 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           className="absolute inset-0 h-full w-full object-cover"
           style={{
             filter: "saturate(0.82) contrast(0.96) brightness(0.88)",
+            // When the film cannot play, the still frame keeps the same slow
+            // breath so the hero still feels alive rather than frozen.
+            animation:
+              skipMotion || filmPlaying ? undefined : "heroDrift 42s ease-in-out infinite",
             transformOrigin: "center 60%",
           }}
         />
@@ -562,6 +614,7 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
         <video
           ref={ref}
           data-hero-film="true"
+          data-hero-film-playing={filmPlaying ? "true" : "false"}
           poster={HERO_CLIP.posterWebpMobile}
           autoPlay
           muted
@@ -571,7 +624,10 @@ function HeldClip({ skipMotion }: { skipMotion: boolean }) {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
           style={{
-            opacity: 1,
+            // Invisible until the film is actually running, so a refused or
+            // stalled clip never shows a native play button over the hero.
+            opacity: filmPlaying ? 1 : 0,
+            transition: skipMotion ? undefined : "opacity 600ms ease",
             filter: "saturate(0.82) contrast(0.96) brightness(0.88)",
             animation: skipMotion ? undefined : "heroDrift 42s ease-in-out infinite",
             transformOrigin: "center 60%",
