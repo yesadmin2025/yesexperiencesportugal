@@ -148,7 +148,14 @@ function PriceMapPage() {
 
   const saveAll = async () => {
     if (changedIds.length === 0) return;
-    const payload: Array<Record<string, unknown>> = [];
+    const payload: Array<{
+      stop_id: string;
+      region: string;
+      price_cents: number;
+      pricing_unit: string;
+      min_guests: number;
+      active: boolean;
+    }> = [];
     for (const id of changedIds) {
       const stop = stops.find((candidate) => candidate.id === id);
       if (!stop) continue;
