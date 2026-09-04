@@ -20,7 +20,11 @@ export interface InternalLeadProps {
   locale?: string | null;
   userAgent?: string | null;
   submittedAt?: string | null;
+  requestType?: string | null;
+  travelDate?: string | null;
+  place?: string | null;
 }
+
 
 const main = { backgroundColor: "#ffffff", fontFamily: "Arial, Helvetica, sans-serif" } as const;
 const container = { maxWidth: 620, margin: "0 auto", padding: "28px 24px" } as const;
