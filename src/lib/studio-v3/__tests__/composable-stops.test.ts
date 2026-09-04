@@ -62,7 +62,7 @@ describe("composableStopAuthority", () => {
 });
 
 describe("commercial ledger — composable moments", () => {
-  const anchorTourId = "arrabida-wine";
+  const anchorTourId = "arrabida-wine-allinclusive";
   const sibling =
     REGION_STOP_POOL.find(
       (stop) => stop.active && stop.signatureTourId && stop.signatureTourId !== anchorTourId,
