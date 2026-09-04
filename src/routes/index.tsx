@@ -69,8 +69,11 @@ const homepageJournalLinks: {
     title: "The best wine tours from Lisbon",
     blurb:
       "Three real wine regions within 90 minutes of the city — Arrábida, Azeitão and the Alentejo — and how to choose between them.",
-    imgTourId: "arrabida-wine-allinclusive",
-    imgFrom: 4,
+    // Photographed on the Azeitão cheese & wine day — deliberately NOT one of
+    // the four Signature tours featured above, so the Journal row never
+    // repeats a card image already on this page.
+    imgTourId: "azeitao-cheese",
+    imgFrom: 1,
   },
   {
     slug: "portugal-coastal-drives-from-lisbon",
@@ -78,8 +81,8 @@ const homepageJournalLinks: {
     title: "Portugal coastal drives from Lisbon",
     blurb:
       "The Arrábida ridge road, Cabo da Roca to Cascais, Tróia to Comporta and the wild Vicentine Coast.",
-    imgTourId: "troia-comporta",
-    imgFrom: 3,
+    imgTourId: "southwest-vicentine-coast",
+    imgFrom: 1,
   },
   {
     slug: "portugal-heritage-sites-near-lisbon",
@@ -87,8 +90,8 @@ const homepageJournalLinks: {
     title: "Heritage sites near Lisbon",
     blurb:
       "Roman Évora, the palaces of Sintra, Moorish walls and Alentejo cellars still fermenting wine in clay.",
-    imgTourId: "evora-alentejo",
-    imgFrom: 2,
+    imgTourId: "tomar-coimbra",
+    imgFrom: 1,
   },
 ];
 
