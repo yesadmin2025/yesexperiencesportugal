@@ -127,6 +127,7 @@ import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
 import { Route as AdminDriftBehaviorRouteImport } from './routes/admin.drift-behavior'
 import { Route as AdminDomainsHealthRouteImport } from './routes/admin.domains-health'
 import { Route as AdminDnsWatchRouteImport } from './routes/admin.dns-watch'
+import { Route as AdminComposableStopsRouteImport } from './routes/admin.composable-stops'
 import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
 import { Route as AdminAvailabilityRouteImport } from './routes/admin.availability'
@@ -754,6 +755,11 @@ const AdminDnsWatchRoute = AdminDnsWatchRouteImport.update({
   path: '/admin/dns-watch',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminComposableStopsRoute = AdminComposableStopsRouteImport.update({
+  id: '/admin/composable-stops',
+  path: '/admin/composable-stops',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminBuilderImagesQaRoute = AdminBuilderImagesQaRouteImport.update({
   id: '/admin/builder-images-qa',
   path: '/admin/builder-images-qa',
@@ -978,6 +984,7 @@ export interface FileRoutesByFullPath {
   '/admin/availability': typeof AdminAvailabilityRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
+  '/admin/composable-stops': typeof AdminComposableStopsRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -1125,6 +1132,7 @@ export interface FileRoutesByTo {
   '/admin/availability': typeof AdminAvailabilityRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
+  '/admin/composable-stops': typeof AdminComposableStopsRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -1275,6 +1283,7 @@ export interface FileRoutesById {
   '/admin/availability': typeof AdminAvailabilityRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
+  '/admin/composable-stops': typeof AdminComposableStopsRoute
   '/admin/dns-watch': typeof AdminDnsWatchRoute
   '/admin/domains-health': typeof AdminDomainsHealthRoute
   '/admin/drift-behavior': typeof AdminDriftBehaviorRoute
@@ -1426,6 +1435,7 @@ export interface FileRouteTypes {
     | '/admin/availability'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
+    | '/admin/composable-stops'
     | '/admin/dns-watch'
     | '/admin/domains-health'
     | '/admin/drift-behavior'
@@ -1573,6 +1583,7 @@ export interface FileRouteTypes {
     | '/admin/availability'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
+    | '/admin/composable-stops'
     | '/admin/dns-watch'
     | '/admin/domains-health'
     | '/admin/drift-behavior'
@@ -1722,6 +1733,7 @@ export interface FileRouteTypes {
     | '/admin/availability'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
+    | '/admin/composable-stops'
     | '/admin/dns-watch'
     | '/admin/domains-health'
     | '/admin/drift-behavior'
@@ -1872,6 +1884,7 @@ export interface RootRouteChildren {
   AdminAvailabilityRoute: typeof AdminAvailabilityRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
   AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
+  AdminComposableStopsRoute: typeof AdminComposableStopsRoute
   AdminDnsWatchRoute: typeof AdminDnsWatchRoute
   AdminDomainsHealthRoute: typeof AdminDomainsHealthRoute
   AdminDriftBehaviorRoute: typeof AdminDriftBehaviorRoute
@@ -2768,6 +2781,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDnsWatchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/composable-stops': {
+      id: '/admin/composable-stops'
+      path: '/admin/composable-stops'
+      fullPath: '/admin/composable-stops'
+      preLoaderRoute: typeof AdminComposableStopsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/builder-images-qa': {
       id: '/admin/builder-images-qa'
       path: '/admin/builder-images-qa'
@@ -3113,6 +3133,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAvailabilityRoute: AdminAvailabilityRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
   AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,
+  AdminComposableStopsRoute: AdminComposableStopsRoute,
   AdminDnsWatchRoute: AdminDnsWatchRoute,
   AdminDomainsHealthRoute: AdminDomainsHealthRoute,
   AdminDriftBehaviorRoute: AdminDriftBehaviorRoute,

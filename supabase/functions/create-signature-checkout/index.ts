@@ -64,6 +64,11 @@ interface Body {
    *  EVIDENCE for the 4th-winery entitlement — never a boolean, never a
    *  euro amount. Validated against the server whitelist. */
   tradedStopIds?: string[];
+  /** Inventory stop ids composed into a bespoke Studio day from the owner
+   *  price list (`studio_composable_stops`). SELECTORS ONLY — every euro is
+   *  re-derived here from that table; unknown, inactive or unpriced ids are
+   *  refused rather than silently dropped. */
+  composableStopIds?: string[];
   /** Tailor: guest removed the included lunch (−€15pp, Arrábida Wine only).
    *  Boolean intent only — the euro amount is always derived server-side. */
   tailorLunchRemoved?: boolean;
@@ -499,6 +504,77 @@ Deno.serve(async (req) => {
 
 
 
+    // COMPOSABLE MOMENTS — a bespoke Studio day may hold verified regional
+    // moments from outside the anchor Signature, placed at their natural point
+    // in the day rather than bolted on at the end. Their ONLY pricing
+    // authority is the owner-maintained `studio_composable_stops` table, read
+    // here with service credentials. The client may only NAME stop ids: an id
+    // without an ACTIVE, PRICED row fails the request closed, and quantities
+    // are recomputed from the pricing unit, never taken from the client.
+    const rawComposableIds = Array.isArray(body.composableStopIds) ? body.composableStopIds : [];
+    const composableIds = [
+      ...new Set(
+        rawComposableIds.filter(
+          (id): id is string => typeof id === "string" && id.length > 0 && id.length <= 64,
+        ),
+      ),
+    ].slice(0, 8);
+
+    type ComposableLine = {
+      stopId: string;
+      unitEur: number;
+      quantity: number;
+      unit: string;
+      label: string;
+    };
+    const composableLines: ComposableLine[] = [];
+    if (composableIds.length > 0) {
+      const { data: composableRows, error: composableError } = await admin
+        .from("studio_composable_stops")
+        .select("stop_id, price_cents, pricing_unit, min_guests, active")
+        .in("stop_id", composableIds);
+      if (composableError) return jsonError("composable_stop_lookup_failed", 500);
+      const rowById = new Map(
+        (composableRows ?? []).map((r: Record<string, unknown>) => [String(r.stop_id), r]),
+      );
+      for (const stopId of composableIds) {
+        const row = rowById.get(stopId);
+        const priceCents = Number(row?.price_cents ?? 0);
+        if (!row || row.active !== true || !Number.isFinite(priceCents) || priceCents <= 0) {
+          return jsonError(`composable_stop_not_priced:${stopId}`, 409);
+        }
+        const minGuests = Math.max(1, Number(row.min_guests ?? 1));
+        if (body.guests < minGuests) {
+          return jsonError(`composable_stop_min_guests:${stopId}`, 409);
+        }
+        const unit = String(row.pricing_unit);
+        const quantity =
+          unit === "per_person"
+            ? body.guests
+            : unit === "per_vehicle"
+              ? Math.max(1, Math.ceil(body.guests / 8))
+              : 1;
+        composableLines.push({
+          stopId,
+          unitEur: Math.round(priceCents) / 100,
+          quantity,
+          unit,
+          label: stopId.replace(/[-_]+/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase()),
+        });
+      }
+    }
+    const composableChargedTotalEur = Math.round(
+      composableLines.reduce((sum, l) => sum + l.unitEur * l.quantity, 0),
+    );
+    const composableLineItems = composableLines.map((l) => ({
+      price_data: {
+        currency: "eur",
+        product_data: { name: `Experience — ${l.label}`.slice(0, 180) },
+        unit_amount: Math.round(l.unitEur * 100),
+      },
+      quantity: l.quantity,
+    }));
+
     const addOnLineItems = validatedAddOns
       .filter((a) => a.priceEur > 0)
       .map((a) => ({
@@ -555,7 +631,7 @@ Deno.serve(async (req) => {
       }));
 
     const sessionParams: Record<string, unknown> = {
-      line_items: [...tourLineItems, ...addOnLineItems],
+      line_items: [...tourLineItems, ...addOnLineItems, ...composableLineItems],
 
       mode: "payment",
       // DYNAMIC PAYMENT METHODS — do NOT pin payment_method_types here.
@@ -627,6 +703,11 @@ Deno.serve(async (req) => {
           })),
         ).slice(0, 480),
         add_ons_total_eur: String(addOnsChargedTotalEur),
+        composable_total_eur: String(composableChargedTotalEur),
+        composable_stop_ids: composableLines
+          .map((l) => l.stopId)
+          .join(",")
+          .slice(0, 480),
 
         ui_mode: uiMode,
         ...(body.guestDetails?.startTime
@@ -743,7 +824,12 @@ Deno.serve(async (req) => {
           tourSubtotalEur: Math.round(tourSubtotalCents / 100),
           addOnsPerPaxTotalEur: validatedAddOns.reduce((s, a) => s + a.priceEur, 0),
           addOnsTotalEur,
-          totalEur: Math.round(tourSubtotalCents / 100) + addOnsTotalEur,
+          // Composed moments priced from the owner catalogue, charged as their
+          // own Stripe lines — recorded here so the snapshot total matches.
+          composableStops: composableLines,
+          composableTotalEur: composableChargedTotalEur,
+          totalEur:
+            Math.round(tourSubtotalCents / 100) + addOnsTotalEur + composableChargedTotalEur,
           priceSource: real != null ? "tier" : "anchor",
         },
       };

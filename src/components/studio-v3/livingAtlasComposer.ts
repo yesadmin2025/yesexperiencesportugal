@@ -3,6 +3,7 @@ import { corridorForSignature } from "@/data/signatureCorridors";
 import { getTailorBlueprint } from "@/data/tailorBlueprints";
 import { bridgedBlueprintStopId } from "@/data/structuralStopBridge";
 import { resolveCommercialActionId } from "@/lib/studio-v3/compositionIdentity";
+import { isComposableStop } from "@/lib/studio-v3/composableStopAuthority";
 import {
   certifyDoorToDoor,
   type DoorToDoorCertification,
@@ -116,6 +117,11 @@ export type LivingAtlasCompositionRequest = {
    * identity. Nothing new is priced or invented here; moments without an
    * approved commercial identity simply stay out of the self-service day and
    * remain available to the curator path.
+   *
+   * A third authority now exists: the owner-maintained composable-stop price
+   * list (`studio_composable_stops`). A stop with an ACTIVE, PRICED row can be
+   * composed into the day wherever it belongs — the Signature stays a
+   * skeleton. Absent a row, the stop is still excluded. Nothing is invented.
    *
    * When false/absent (curator, previews, existing callers) behaviour is
    * unchanged.
@@ -554,6 +560,10 @@ export function composeLivingAtlasDay(
   const commerciallyPriceable = (stop: OptionalStop): boolean => {
     const bpId = anchorBlueprintIdOf(stop);
     if (bpId && anchorIncludedIds.has(bpId)) return true;
+    // OWNER-PRICED COMPOSABLE MOMENT — a real price exists for this exact
+    // inventory stop, so it may be composed into the day at its natural
+    // place, not appended as a trailing add-on.
+    if (isComposableStop(stop.id)) return true;
     return Boolean(
       resolveCommercialActionId(request.anchorSignatureId, {
         inventoryStopId: stop.id,

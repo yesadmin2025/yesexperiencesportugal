@@ -27,6 +27,22 @@ import { classifyTailorCoreStop } from "@/data/tailorStopPricing";
 import { ADD_ON_CATALOG, isAddOnStructurallyEligible, regionBucket } from "@/data/signatureAddOns";
 import { signatureTours } from "@/data/signatureTours";
 import type { CompositionIdentityRecord } from "@/lib/studio-v3/compositionIdentity";
+import { isComposableStop } from "@/lib/studio-v3/composableStopAuthority";
+
+/**
+ * Owner-priced composable moment. Only a VERIFIED inventory id may be looked
+ * up, and only an active, priced row counts. Absence stays fail-closed.
+ */
+function composableStopAction(
+  inventoryStopId: string | null,
+): { actionId: string; rule: string } | null {
+  if (!inventoryStopId) return null;
+  if (!isComposableStop(inventoryStopId)) return null;
+  return {
+    actionId: `composable:${inventoryStopId}`,
+    rule: `composable-stop:${inventoryStopId}`,
+  };
+}
 
 /** LEGACY, DERIVED field. Never a source of truth — see the two axes below. */
 export type CommercialClassification =
@@ -52,6 +68,13 @@ export type PriceAction =
   | "dedicated-lunch-removal"
   | "extra-winery"
   | "signature-addon"
+  /**
+   * A moment composed into a bespoke day from the owner-priced catalogue
+   * (`studio_composable_stops`). The Signature is only a skeleton, so a
+   * verified regional moment with a real owner price is a KNOWN paid action
+   * wherever it sits in the day. The server re-derives the euro at Reserve.
+   */
+  | "composable-stop"
   | "requires-confirmation"
   | "unresolved";
 
@@ -61,6 +84,7 @@ const KNOWN_PRICE_ACTIONS: ReadonlySet<PriceAction> = new Set<PriceAction>([
   "dedicated-lunch-removal",
   "extra-winery",
   "signature-addon",
+  "composable-stop",
 ]);
 
 /** True only for price actions an existing approved authority can price. */
@@ -166,7 +190,11 @@ function deriveClassification(entry: {
     return "commercial-unresolved";
   }
   if (entry.priceAction === "requires-confirmation") return "requires-confirmation";
-  if (entry.priceAction === "signature-addon" || entry.priceAction === "extra-winery") {
+  if (
+    entry.priceAction === "signature-addon" ||
+    entry.priceAction === "extra-winery" ||
+    entry.priceAction === "composable-stop"
+  ) {
     return "paid-enhancement";
   }
   if (
@@ -227,8 +255,19 @@ function keptAxes(
   }
 
   const addOn = signatureAddOnAction(anchorTourId, record.commercialId);
+  const optionalComposable = composableStopAction(record.inventoryStopId);
 
   if (bpId && index.optional.has(bpId)) {
+    if (!addOn && optionalComposable) {
+      return {
+        structuralRole: "optional",
+        structuralValid: true,
+        structuralNote: null,
+        priceAction: "composable-stop",
+        actionId: optionalComposable.actionId,
+        rule: optionalComposable.rule,
+      };
+    }
     // Blueprint optionality proves membership, NEVER free inclusion.
     return addOn
       ? {
@@ -255,6 +294,18 @@ function keptAxes(
   if (!record.inventoryStopId) return UNRESOLVED_AXIS("no-structural-identity");
 
   // Verified inventory moment outside the anchor blueprint.
+
+  const composable = composableStopAction(record.inventoryStopId);
+  if (!addOn && composable) {
+    return {
+      structuralRole: "sibling",
+      structuralValid: true,
+      structuralNote: null,
+      priceAction: "composable-stop",
+      actionId: composable.actionId,
+      rule: composable.rule,
+    };
+  }
 
   return addOn
     ? {
