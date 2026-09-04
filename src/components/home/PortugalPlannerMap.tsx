@@ -84,11 +84,12 @@ export function PortugalPlannerMap() {
           })()}
 
           {/* Place markers. Decorative: the chip list below is the control, so
-              every town keeps a reliable 44×44 target even where pins cluster. */}
-          {PLANNER_REGIONS.map((region) => {
+              every place keeps a reliable 44×44 target even where pins cluster. */}
+          {PLANNER_MAINLAND_REGIONS.map((region) => {
             const isActive = region.id === active.id;
             const { x, y } = projectPlannerPoint(region.lat, region.lon);
             const labelLeft = x > VB_W * 0.55;
+            const hasDay = region.tourIds.length > 0;
             return (
               <span
                 key={region.id}
@@ -100,7 +101,9 @@ export function PortugalPlannerMap() {
                   className={`block rounded-full transition-all duration-200 ${
                     isActive
                       ? "h-[9px] w-[9px] bg-[color:var(--gold)] ring-4 ring-[color:var(--gold)]/25"
-                      : "h-[5px] w-[5px] bg-[color:var(--teal)]/70"
+                      : hasDay
+                        ? "h-[5px] w-[5px] bg-[color:var(--teal)]/70"
+                        : "h-[5px] w-[5px] border border-[color:var(--teal)]/60 bg-[color:var(--ivory)]"
                   }`}
                 />
                 {isActive && (
@@ -119,7 +122,7 @@ export function PortugalPlannerMap() {
 
         {/* Places — the accessible control for the map. */}
         <ul className="mt-5 flex list-none flex-wrap justify-center gap-1.5 p-0 md:justify-start">
-          {PLANNER_REGIONS.map((region) => {
+          {PLANNER_MAINLAND_REGIONS.map((region) => {
             const isActive = region.id === active.id;
             return (
               <li key={region.id}>
@@ -139,6 +142,34 @@ export function PortugalPlannerMap() {
             );
           })}
         </ul>
+
+        {/* Atlantic Portugal — Madeira and the Azores sit far off the mainland
+            frame, so they get their own row rather than a distorted pin. */}
+        <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+          Atlantic Portugal
+        </p>
+        <ul className="mt-3 flex list-none flex-wrap justify-center gap-1.5 p-0 md:justify-start">
+          {PLANNER_ISLAND_REGIONS.map((region) => {
+            const isActive = region.id === active.id;
+            return (
+              <li key={region.id}>
+                <button
+                  type="button"
+                  onClick={() => setActiveId(region.id)}
+                  aria-pressed={isActive}
+                  className={`inline-flex min-h-11 items-center rounded-full border px-3.5 text-[12.5px] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] ${
+                    isActive
+                      ? "border-[color:var(--gold)] bg-[color:var(--gold)]/12 text-[color:var(--charcoal)]"
+                      : "border-[color:var(--border)] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)]"
+                  }`}
+                >
+                  {region.label}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
       </div>
 
 
