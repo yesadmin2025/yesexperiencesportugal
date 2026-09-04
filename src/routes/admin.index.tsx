@@ -318,12 +318,26 @@ function AdminOverviewPage() {
               Reservas, mensagens de contacto e pedidos do Studio em tempo real. Atualiza
               automaticamente a cada 30 s e a cada nova entrada.
             </p>
-            <Link
-              to="/admin/emails"
-              className="mt-3 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-[color:var(--teal)] underline underline-offset-4"
-            >
-              Entrega de emails
-            </Link>
+            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+              {(
+                [
+                  { to: "/admin/bookings", label: "Viagens dos hóspedes" },
+                  { to: "/admin/availability", label: "Calendário de disponibilidade" },
+                  { to: "/admin/pricing", label: "Preços das experiências" },
+                  { to: "/admin/experiences", label: "Experiências & operações" },
+                  { to: "/admin/emails", label: "Entrega de emails" },
+                ] as const
+              ).map((l) => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  className="inline-flex min-h-11 items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-[color:var(--teal)] underline underline-offset-4"
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+
 
           </div>
           <div className="flex items-center gap-3">

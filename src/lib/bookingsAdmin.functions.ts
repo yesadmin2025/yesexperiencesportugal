@@ -21,6 +21,8 @@ async function assertAdmin(context: { supabase: any; userId: string }) {
 
 const listInput = z.object({
   search: z.string().max(200).optional(),
+  /** "paid" is the operational default: only real, confirmed trips. */
+  status: z.enum(["paid", "pending", "cancelled", "refunded", "failed", "all"]).default("paid"),
   limit: z.number().int().min(1).max(200).default(50),
 });
 
@@ -39,6 +41,8 @@ export const listAdminBookings = createServerFn({ method: "POST" })
       .select(LIST_COLUMNS)
       .order("created_at", { ascending: false })
       .limit(data.limit);
+
+    if (data.status !== "all") query = query.eq("status", data.status);
 
     const term = data.search?.trim();
     if (term) {
