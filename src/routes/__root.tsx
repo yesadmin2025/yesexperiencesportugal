@@ -179,9 +179,10 @@ export const Route = createRootRoute({
 
     links: [
       // Favicons — multiple sizes so Google's image crawler can pick a
-      // sharp variant for the SERP icon. A single .ico is often ignored
-      // when there is no high-resolution PNG counterpart.
-      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      // sharp variant for the SERP icon. The 64x64 PNG is derived from the
+      // YES experiences PORTUGAL stacked lockup, padded square with a
+      // transparent background so it reads cleanly at tab/SERP size.
+      { rel: "icon", type: "image/png", sizes: "64x64", href: "/favicon.png" },
       {
         rel: "icon",
         type: "image/svg+xml",
