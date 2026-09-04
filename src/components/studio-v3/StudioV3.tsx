@@ -4831,33 +4831,45 @@ export function StoryboardHandoff({
   // coordinates, so they never matched `stops.length - 1`. They are realigned
   // to the itinerary geometry first; alignment failure stays `null`, which the
   // validator still reads as incomplete (fail closed).
-  const operationalGate = useMemo(() => {
-    if (revealLegsLoading) return { status: "review" as ValidationStatus, proven: false };
-    if (!skeletonTour) return { status: "review" as ValidationStatus, proven: false };
-    const region = tourRegionToRegionKey(skeletonTour.region);
-    const itineraryStopKeys = editedStops.map((s, i) => `${i}-${s.label}`);
-    const alignedLegMinutes = alignRouteLegsToItinerary({
-      routeStopKeys: (revealRouteStops ?? []).map((s) => s.key),
-      legMinutes: revealLegMinutes ?? null,
-      itineraryStopKeys,
-    });
-    const result = validateItinerary({
-      region,
-      stops: editedStops.map((s, i) => ({
-        key: itineraryStopKeys[i]!,
-        label: s.label,
-        category: "village",
-      })),
-      legMinutes: alignedLegMinutes,
-    });
-    // `incomplete` means the day could NOT be scored (no proven road data):
-    // it stays fail-closed. A scored `review` is a SOFT advisory only — the
-    // canonical Time Authority remains the booking truth for those days.
-    return {
-      status: (result.status === "incomplete" ? "review" : result.status) as ValidationStatus,
-      proven: result.status !== "incomplete",
-    };
-  }, [revealLegsLoading, skeletonTour, editedStops, revealLegMinutes, revealRouteStops]);
+  // ONE judgement, callable on ANY candidate route. The reveal gate reads it
+  // for the CURRENT day; the deterministic repair loop reads it for candidate
+  // days, so a route the operator would reject is repaired instead of being
+  // handed to the traveller as an un-reservable dead end.
+  const judgeOperational = useCallback(
+    (points: readonly { label: string }[]) => {
+      if (revealLegsLoading) return { status: "review" as ValidationStatus, proven: false };
+      if (!skeletonTour) return { status: "review" as ValidationStatus, proven: false };
+      const region = tourRegionToRegionKey(skeletonTour.region);
+      const itineraryStopKeys = points.map((s, i) => `${i}-${s.label}`);
+      const alignedLegMinutes = alignRouteLegsToItinerary({
+        routeStopKeys: (revealRouteStops ?? []).map((s) => s.key),
+        legMinutes: revealLegMinutes ?? null,
+        itineraryStopKeys,
+      });
+      const result = validateItinerary({
+        region,
+        stops: points.map((s, i) => ({
+          key: itineraryStopKeys[i]!,
+          label: s.label,
+          category: "village",
+        })),
+        legMinutes: alignedLegMinutes,
+      });
+      // `incomplete` means the day could NOT be scored (no proven road data):
+      // it stays fail-closed. A scored `review` is a SOFT advisory only — the
+      // canonical Time Authority remains the booking truth for those days.
+      return {
+        status: (result.status === "incomplete" ? "review" : result.status) as ValidationStatus,
+        proven: result.status !== "incomplete",
+      };
+    },
+    [revealLegsLoading, skeletonTour, revealLegMinutes, revealRouteStops],
+  );
+
+  const operationalGate = useMemo(
+    () => judgeOperational(editedStops),
+    [judgeOperational, editedStops],
+  );
   const approvalStatus: ValidationStatus = operationalGate.status;
   // Publish the gate to the payment seam. Read-only projection of facts that
   // already exist above; it never changes what the traveller sees.
@@ -5463,6 +5475,11 @@ export function StoryboardHandoff({
       minStops: REFINE_MIN_STOPS,
       certify: (points) =>
         !points.some((s) => closedOnDate(s.label)) &&
+        // The operator's own hard rules (single-hop cap, day distance, driving
+        // share, backtracking). A day this validator rejects can never be
+        // reserved, so the repair must aim at it too — otherwise Studio shows
+        // a day it cannot sell and blocks the traveller with no way forward.
+        judgeOperational(points).status !== "reject" &&
         judgeFinalDayTime({
           points,
           addOnsMinutes: selectedAddOnMinutes,
@@ -6466,6 +6483,20 @@ export function StoryboardHandoff({
             data-testid="studio-v3-handoff-primary"
             data-reserve-blocked={!canReserve}
             data-day-certified={canReserve ? "true" : "false"}
+            // Machine-readable cause of a closed gate, for regression tests.
+            data-reserve-gate={[
+              canProceedToLogistics
+                ? "structure:ok"
+                : editedStops.length < REFINE_MIN_STOPS
+                  ? "structure:too-few"
+                  : !revealValidation.ok
+                    ? "structure:unvalidated"
+                    : dayHardRejected
+                      ? "structure:rejected"
+                      : "structure:closed-moment",
+              finalDayGate.bookable ? "time:ok" : `time:${finalDayGate.fit.evaluable ? "over" : "not-evaluable"}`,
+              frozenDayAllowsCheckout(frozenDayDoorToDoor) ? "door:ok" : "door:blocked",
+            ].join(",")}
             disabled={!canReserve}
           >
             {CTA_MAKE_IT_REAL}

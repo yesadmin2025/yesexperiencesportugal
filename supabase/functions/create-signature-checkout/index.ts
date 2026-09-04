@@ -634,12 +634,15 @@ Deno.serve(async (req) => {
       line_items: [...tourLineItems, ...addOnLineItems, ...composableLineItems],
 
       mode: "payment",
-      // DYNAMIC PAYMENT METHODS — do NOT pin payment_method_types here.
-      // Stripe decides which methods are shown from the Dashboard payment
-      // method configuration, filtered by currency, amount, shopper locale,
-      // device and flow. Hard-coding a list (or hiding Link via
-      // wallet_options) silently removes eligible rails site-wide.
-
+      // INSTANT CARD PAYMENT — verified on a 393px phone: with dynamic
+      // payment methods, live Checkout opened on Stripe Link's "verify your
+      // phone number" wall, with card entry hidden behind "Pay without
+      // Link". A guest reads that as "I cannot pay". Pinning card keeps the
+      // card form as the first and only thing they see.
+      payment_method_types: ["card"],
+      // The quoted euro price is the price. No currency-conversion prompt
+      // in front of the payment form.
+      adaptive_pricing: { enabled: false },
 
       locale: "auto",
       submit_type: "book",

@@ -459,7 +459,11 @@ export function CheckoutSummary({
             <span>Secure payment · Powered by Stripe</span>
           </div>
           <div
-            className="mt-5 px-4 pt-5 pb-6 sm:px-6 sm:pt-6 sm:pb-8"
+            // Full-bleed on phones: the section's own 20px padding plus an
+            // inner inset squeezed Stripe's payment form to ~281px on a
+            // 393px screen. Pull it back out so the card fields get the
+            // whole width.
+            className="mt-5 -mx-5 px-2 pt-5 pb-6 sm:mx-0 sm:px-6 sm:pt-6 sm:pb-8"
             style={{
               borderTop: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
               borderBottom: "1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)",
