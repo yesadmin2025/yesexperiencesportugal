@@ -40,9 +40,17 @@ export type LocalStoryArticle = {
   heroImageAlt?: string;
   /** Optional FAQ block — rendered on page AND emitted as FAQPage JSON-LD. */
   faq?: { q: string; a: string }[];
+  /** Optional comparison table — used by hub guides so a reader can scan the
+   *  options instead of reading six paragraphs. Rendered responsively. */
+  comparison?: {
+    caption: string;
+    columns: string[];
+    rows: string[][];
+  };
   /** Optional related-read links (any internal path) rendered in the aside. */
   relatedReads?: { path: string; label: string }[];
 };
+
 
 export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   {
