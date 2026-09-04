@@ -215,12 +215,20 @@ export function PortugalPlannerMap() {
               How we cover it
             </p>
             <p className="mt-3 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
-              No fixed Signature day here yet — this one is designed privately around your dates,
-              your pace and how long you want to be away. Journal guides for this area appear here
-              as we publish them.
+              No fixed Signature day here — this one is designed privately around your dates, your
+              pace and how long you want to be away. Read the guide below, then tell us what you
+              want and we come back with a plan and a price.
             </p>
+            <Link
+              to="/contact"
+              search={{ type: "multi_day", place: active.label }}
+              className="mt-4 inline-flex min-h-11 items-center rounded-md bg-[color:var(--teal)] px-5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--ivory)] transition-colors hover:bg-[color:var(--teal-2)]"
+            >
+              Request a designed day →
+            </Link>
           </>
         )}
+
 
 
         {active.guides.length > 0 && (

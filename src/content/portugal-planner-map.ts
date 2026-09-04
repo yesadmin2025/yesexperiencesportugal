@@ -401,8 +401,10 @@ export function resolvePlannerRegion(region: PlannerRegion): PlannerRegionResolv
   const tours = region.tourIds
     .map((id) => findTour(id))
     .filter((t): t is SignatureTour => Boolean(t));
-  const guides = LOCAL_STORIES_ARTICLES.filter((a) =>
-    region.tourIds.includes(a.signatureSlug),
+  const guides = LOCAL_STORIES_ARTICLES.filter(
+    (a) =>
+      (a.signatureSlug ? region.tourIds.includes(a.signatureSlug) : false) ||
+      (a.plannerRegionIds?.includes(region.id) ?? false),
   ).sort((a, b) => b.datePublished.localeCompare(a.datePublished));
   return { ...region, tours, guides };
 }

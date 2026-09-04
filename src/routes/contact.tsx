@@ -56,18 +56,22 @@ const contactSchema = z.object({
 type Status = "idle" | "submitting" | "success" | "error";
 
 export const Route = createFileRoute("/contact")({
-  validateSearch: (search: Record<string, unknown>) => {
+  validateSearch: (search: Record<string, unknown>): { type?: string; place?: string } => {
     const raw = typeof search.type === "string" ? search.type : undefined;
+    const place = typeof search.place === "string" ? search.place.trim().slice(0, 80) : undefined;
     return {
       type: raw && requestTypeValues.includes(raw) ? raw : undefined,
+      place: place && place.length > 1 ? place : undefined,
     };
   },
   head: (ctx) => {
     // `?type=` only preselects the enquiry type — same content as /contact.
     // Keep the variant crawlable but out of the index (noindex, follow) while
     // the canonical continues to point at the clean URL.
-    const search = (ctx.match?.search ?? {}) as { type?: string };
-    const isParamVariant = typeof search.type === "string" && search.type.length > 0;
+    const search = (ctx.match?.search ?? {}) as { type?: string; place?: string };
+    const isParamVariant =
+      (typeof search.type === "string" && search.type.length > 0) ||
+      (typeof search.place === "string" && search.place.length > 0);
     return {
       meta: [
         ...(isParamVariant ? [{ name: "robots", content: "noindex, follow" }] : []),
@@ -137,7 +141,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Page() {
-  const { type: presetRequestType } = Route.useSearch();
+  const { type: presetRequestType, place: presetPlace } = Route.useSearch();
   useMarketingMotion();
   const [sent, setSent] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
@@ -269,6 +273,11 @@ function Page() {
                   name="message"
                   textarea
                   autoComplete="off"
+                  defaultValue={
+                    presetPlace
+                      ? `I read your guide to ${presetPlace} and I'd like a private day designed there. `
+                      : undefined
+                  }
                 />
                 {errorMsg ? (
                   <p className="text-[13px] text-red-700" role="alert">
@@ -318,6 +327,7 @@ function Field({
   required = true,
   min,
   autoComplete,
+  defaultValue,
 }: {
   label: string;
   name: string;
@@ -326,6 +336,7 @@ function Field({
   required?: boolean;
   min?: string;
   autoComplete?: string;
+  defaultValue?: string;
 }) {
   return (
     <label className="block">
@@ -338,6 +349,7 @@ function Field({
           rows={5}
           required={required}
           maxLength={4000}
+          defaultValue={defaultValue}
           autoComplete={autoComplete}
           className="mt-2 min-h-11 w-full bg-transparent border-b border-[color:var(--charcoal)]/30 focus:border-[color:var(--teal)] outline-none py-2 text-base resize-none transition-colors"
         />

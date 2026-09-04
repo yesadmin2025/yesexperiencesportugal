@@ -90,7 +90,7 @@ function articleImageUrl(a: LocalStoryArticle): string | undefined {
   if (a.heroImage) {
     return a.heroImage.startsWith("http") ? a.heroImage : `${BASE}${a.heroImage}`;
   }
-  const tour = findTour(a.signatureSlug);
+  const tour = a.signatureSlug ? findTour(a.signatureSlug) : undefined;
   const img = tour?.img;
   if (!img) return undefined;
   return img.startsWith("http") ? img : `${BASE}${img.startsWith("/") ? "" : "/"}${img}`;
@@ -145,8 +145,8 @@ export const Route = createFileRoute("/local-stories/$slug")({
         },
       };
     }
-    const tour = findTour(article.signatureSlug);
-    if (!tour) return { reviews: [], signatureTitle: null, dbPost: null };
+    const tour = article.signatureSlug ? findTour(article.signatureSlug) : undefined;
+    if (!tour || !article.signatureSlug) return { reviews: [], signatureTitle: null, dbPost: null };
     try {
       const rows = await getTourReviews({
         data: { tourId: article.signatureSlug, limit: 3 },
@@ -182,7 +182,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
       const reviews = loaderData?.reviews ?? [];
       const signatureTitle = loaderData?.signatureTitle ?? article.ctaLabel;
       const reviewScripts =
-        reviews.length > 0
+        reviews.length > 0 && article.signatureSlug
           ? localStoryReviewsLd({
               signatureSlug: article.signatureSlug,
               signatureTitle,
@@ -413,24 +413,44 @@ function StaticArticleView({
               <p className="text-[15px] text-[color:var(--charcoal-soft)] mb-6 max-w-xl mx-auto leading-[1.75]">
                 {article.ctaLead}
               </p>
-              <CtaButton
-                to="/tours/$tourId"
-                params={{ tourId: article.signatureSlug }}
-                variant="primary"
-              >
-                {article.ctaLabel}
-              </CtaButton>
+              {article.signatureSlug ? (
+                <>
+                  <CtaButton
+                    to="/tours/$tourId"
+                    params={{ tourId: article.signatureSlug }}
+                    variant="primary"
+                  >
+                    {article.ctaLabel}
+                  </CtaButton>
 
-              <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
-                Or{" "}
-                <Link
-                  to="/studio-v3"
-                  className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
-                >
-                  design your own private Portugal day in the Studio
-                </Link>
-                .
-              </p>
+                  <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
+                    Or{" "}
+                    <Link
+                      to="/studio-v3"
+                      className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
+                    >
+                      design your own private Portugal day in the Studio
+                    </Link>
+                    .
+                  </p>
+                </>
+              ) : (
+                <>
+                  <CtaButton
+                    to="/contact"
+                    search={{ type: "multi_day", place: article.h1 }}
+                    variant="primary"
+                  >
+                    {article.ctaLabel}
+                  </CtaButton>
+
+                  <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
+                    A local designer reads every request and replies personally, usually within a
+                    few hours.
+                  </p>
+                </>
+              )}
+
 
               {article.relatedSignatures && article.relatedSignatures.length > 0 && (
                 <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
