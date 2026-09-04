@@ -59,6 +59,9 @@ const homepageJournalLinks: {
   title: string;
   blurb: string;
   imgTourId?: string;
+  /** First gallery index to consider — keeps Journal photos well away from
+   *  the opening frames, which mirror the Signature cover shot. */
+  imgFrom?: number;
 }[] = [
   {
     slug: "best-wine-tours-from-lisbon",
@@ -67,6 +70,7 @@ const homepageJournalLinks: {
     blurb:
       "Three real wine regions within 90 minutes of the city — Arrábida, Azeitão and the Alentejo — and how to choose between them.",
     imgTourId: "arrabida-wine-allinclusive",
+    imgFrom: 4,
   },
   {
     slug: "portugal-coastal-drives-from-lisbon",
@@ -75,6 +79,7 @@ const homepageJournalLinks: {
     blurb:
       "The Arrábida ridge road, Cabo da Roca to Cascais, Tróia to Comporta and the wild Vicentine Coast.",
     imgTourId: "troia-comporta",
+    imgFrom: 3,
   },
   {
     slug: "portugal-heritage-sites-near-lisbon",
@@ -83,6 +88,7 @@ const homepageJournalLinks: {
     blurb:
       "Roman Évora, the palaces of Sintra, Moorish walls and Alentejo cellars still fermenting wine in clay.",
     imgTourId: "evora-alentejo",
+    imgFrom: 2,
   },
 ];
 
@@ -90,21 +96,24 @@ const homepageJournalLinks: {
  *  from the article record and its matching Signature tour. No invention.
  *
  *  Journal cards deliberately avoid the Signature *cover* image (`tour.img`)
- *  — that photo already appears on the Signature card row further up the
- *  homepage. We pick a distinct real gallery photo from the same day instead,
- *  and de-duplicate across cards. */
+ *  AND the opening gallery frames, which are usually the same shot as the
+ *  cover. We start deeper in the same day's real gallery, then de-duplicate
+ *  across cards so the three photos are always visibly different. */
 function journalCardMeta(
   slug: string,
   imgTourId?: string,
   used?: Set<string>,
+  imgFrom = 2,
 ): { date: string; img?: string; alt?: string } {
   const article = LOCAL_STORIES_ARTICLES.find((a) => a.slug === slug);
   if (!article) return { date: "" };
   const tourId = imgTourId ?? article.signatureSlug;
   const tour = tourId ? findTour(tourId) : undefined;
   const gallery = tourId ? (getViatorMeta(tourId)?.gallery ?? []) : [];
-  const distinct = gallery.find((src) => src && src !== tour?.img && !used?.has(src));
-  const img = article.heroImage ?? distinct ?? tour?.img;
+  const usable = (src?: string) => Boolean(src) && src !== tour?.img && !used?.has(src!);
+  // Preferred window first (deep frames), then anything else still unused.
+  const distinct = gallery.slice(imgFrom).find(usable) ?? gallery.find(usable);
+  const img = distinct ?? article.heroImage ?? tour?.img;
   if (img) used?.add(img);
   return {
     date: new Date(`${article.datePublished}T00:00:00Z`).toLocaleDateString("en-GB", {
@@ -117,6 +126,7 @@ function journalCardMeta(
     alt: article.heroImageAlt ?? (tour ? `${tour.title} — photographed on our own days` : undefined),
   };
 }
+
 
 
 
