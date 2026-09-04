@@ -844,7 +844,10 @@ export type Database = {
           last_name: string
           locale: string | null
           message: string
+          place: string | null
+          request_type: string | null
           source: string | null
+          travel_date: string | null
           user_agent: string | null
         }
         Insert: {
@@ -855,7 +858,10 @@ export type Database = {
           last_name: string
           locale?: string | null
           message: string
+          place?: string | null
+          request_type?: string | null
           source?: string | null
+          travel_date?: string | null
           user_agent?: string | null
         }
         Update: {
@@ -866,7 +872,10 @@ export type Database = {
           last_name?: string
           locale?: string | null
           message?: string
+          place?: string | null
+          request_type?: string | null
           source?: string | null
+          travel_date?: string | null
           user_agent?: string | null
         }
         Relationships: []
