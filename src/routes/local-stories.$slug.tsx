@@ -356,6 +356,7 @@ function StaticArticleView({
   article: LocalStoryArticle;
   reviews: NormalizedLocalStoryReview[];
 }) {
+  const trackGuideLink = useGuideLinkTracker(article.slug);
   const dateFmt = new Intl.DateTimeFormat("en-GB", {
     year: "numeric",
     month: "long",
