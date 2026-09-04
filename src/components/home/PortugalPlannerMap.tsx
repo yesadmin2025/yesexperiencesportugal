@@ -196,7 +196,23 @@ export function PortugalPlannerMap() {
           </>
         )}
 
-        <div className="mt-7">
+        <div className="mt-7 rounded-lg border border-[color:var(--border)] bg-[color:var(--sand)] px-5 py-4">
+          <p className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+            Somewhere else in Portugal?
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
+            Douro, Porto, the Algarve, the Beiras — we drive the whole mainland. Tell us where you
+            want to be and the day is built around it.
+          </p>
+          <Link
+            to="/portugal-travel-designer"
+            className="mt-3 inline-flex min-h-11 items-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]"
+          >
+            Design your own day →
+          </Link>
+        </div>
+
+        <div className="mt-5">
           <Link
             to="/local-stories"
             className="text-sm underline underline-offset-4 text-[color:var(--charcoal)]"
@@ -204,6 +220,7 @@ export function PortugalPlannerMap() {
             All Portugal guides
           </Link>
         </div>
+
       </div>
     </div>
   );

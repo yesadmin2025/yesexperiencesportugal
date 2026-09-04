@@ -49,14 +49,24 @@ import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
 
-/** Homepage Journal row — three evergreen Local Stories guides. */
-const homepageJournalLinks: { slug: string; eyebrow: string; title: string; blurb: string }[] = [
+/** Homepage Journal row — three evergreen Local Stories guides.
+ *  `imgTourId` pins each card to a distinct real operation photo so two
+ *  cards never share the same image when their articles point at the
+ *  same Signature day. */
+const homepageJournalLinks: {
+  slug: string;
+  eyebrow: string;
+  title: string;
+  blurb: string;
+  imgTourId?: string;
+}[] = [
   {
     slug: "best-wine-tours-from-lisbon",
     eyebrow: "Wine",
     title: "The best wine tours from Lisbon",
     blurb:
       "Three real wine regions within 90 minutes of the city — Arrábida, Azeitão and the Alentejo — and how to choose between them.",
+    imgTourId: "arrabida-wine-allinclusive",
   },
   {
     slug: "portugal-coastal-drives-from-lisbon",
@@ -64,6 +74,7 @@ const homepageJournalLinks: { slug: string; eyebrow: string; title: string; blur
     title: "Portugal coastal drives from Lisbon",
     blurb:
       "The Arrábida ridge road, Cabo da Roca to Cascais, Tróia to Comporta and the wild Vicentine Coast.",
+    imgTourId: "troia-comporta",
   },
   {
     slug: "portugal-heritage-sites-near-lisbon",
@@ -71,15 +82,19 @@ const homepageJournalLinks: { slug: string; eyebrow: string; title: string; blur
     title: "Heritage sites near Lisbon",
     blurb:
       "Roman Évora, the palaces of Sintra, Moorish walls and Alentejo cellars still fermenting wine in clay.",
+    imgTourId: "evora-alentejo",
   },
 ];
 
 /** Real published date + real operation photo for a Journal card, resolved
  *  from the article record and its matching Signature tour. No invention. */
-function journalCardMeta(slug: string): { date: string; img?: string; alt?: string } {
+function journalCardMeta(
+  slug: string,
+  imgTourId?: string,
+): { date: string; img?: string; alt?: string } {
   const article = LOCAL_STORIES_ARTICLES.find((a) => a.slug === slug);
   if (!article) return { date: "" };
-  const tour = findTour(article.signatureSlug);
+  const tour = findTour(imgTourId ?? article.signatureSlug);
   return {
     date: new Date(`${article.datePublished}T00:00:00Z`).toLocaleDateString("en-GB", {
       day: "numeric",
@@ -87,10 +102,11 @@ function journalCardMeta(slug: string): { date: string; img?: string; alt?: stri
       year: "numeric",
       timeZone: "UTC",
     }),
-    img: article.heroImage ?? tour?.img,
+    img: (imgTourId ? tour?.img : (article.heroImage ?? tour?.img)),
     alt: article.heroImageAlt ?? (tour ? `${tour.title} — photographed on our own days` : undefined),
   };
 }
+
 
 
 
@@ -944,12 +960,21 @@ function HomePage() {
                 id="plan-map-title"
                 className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
-                Choose a region,{" "}
+                We drive all of mainland Portugal —{" "}
                 <span className="italic font-normal text-[color:var(--teal)]">
-                  see what a day there looks like.
+                  start with a place you already have in mind.
                 </span>
               </h2>
+              <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                The pins below are the places our{" "}
+                <strong className="font-medium text-[color:var(--charcoal)]">
+                  published private days
+                </strong>{" "}
+                already visit. They are a starting point, not our limit — anywhere else in the
+                country, we design the day around you.
+              </p>
             </div>
+
             <div className="reveal max-w-5xl mx-auto">
               <PortugalPlannerMap />
             </div>
@@ -982,7 +1007,7 @@ function HomePage() {
 
             <ul className="max-w-5xl mx-auto grid gap-5 md:gap-7 md:grid-cols-3 list-none p-0">
               {homepageJournalLinks.map((entry) => {
-                const meta = journalCardMeta(entry.slug);
+                const meta = journalCardMeta(entry.slug, entry.imgTourId);
                 return (
                 <li key={entry.slug}>
                   <Link
