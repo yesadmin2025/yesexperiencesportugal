@@ -147,10 +147,6 @@ export function certifyDoorToDoor(input: DoorToDoorInput): DoorToDoorCertificati
   if (!hasMinuteTruth(input.stops)) {
     return NOT_EVALUABLE("Some moments have no verified duration yet.");
   }
-  if (!input.pickupCoord) {
-    return NOT_EVALUABLE("Pickup area not known yet, so the full day can't be certified.");
-  }
-
   // Internal experience-day truth comes from the existing authority. Its
   // budget is irrelevant here: door-to-door has its own owner-defined ceiling.
   const internal = judgeRouteTimeFit({
@@ -164,24 +160,27 @@ export function certifyDoorToDoor(input: DoorToDoorInput): DoorToDoorCertificati
 
   const dropoff = input.dropoffCoord ?? input.pickupCoord;
   const pickupToFirst =
-    typeof input.routedPickupToFirstMinutes === "number" && input.routedPickupToFirstMinutes >= 0
+    !input.pickupCoord
+      ? 0
+      : typeof input.routedPickupToFirstMinutes === "number" && input.routedPickupToFirstMinutes >= 0
       ? Math.round(input.routedPickupToFirstMinutes)
       : transferMinutes(input.pickupCoord, coordOf(input.stops[0]));
   const lastToDropoff =
-    typeof input.routedLastToDropoffMinutes === "number" && input.routedLastToDropoffMinutes >= 0
+    !dropoff
+      ? 0
+      : typeof input.routedLastToDropoffMinutes === "number" && input.routedLastToDropoffMinutes >= 0
       ? Math.round(input.routedLastToDropoffMinutes)
       : transferMinutes(coordOf(input.stops[input.stops.length - 1]), dropoff);
 
   // The transfer buffer is operational slack on the two door legs, not travel.
   const slackMinutes = internal.slackMin + PICKUP_RETURN_BUFFER_MIN;
-  const doorToDoorMinutes =
-    pickupToFirst + internal.experienceMin + internal.driveMin + slackMinutes + lastToDropoff;
-
-  const overflowMinutes = Math.max(0, doorToDoorMinutes - STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN);
+  const tourMinutes = internal.experienceMin + internal.driveMin + slackMinutes;
+  const doorToDoorMinutes = pickupToFirst + tourMinutes + lastToDropoff;
+  const overflowMinutes = Math.max(0, tourMinutes - internal.budgetMin);
   const status: DoorToDoorStatus =
     overflowMinutes > 0
       ? "over-hard-max"
-      : doorToDoorMinutes < STUDIO_DOOR_TO_DOOR_TARGET_MIN_MIN
+      : tourMinutes < STUDIO_DOOR_TO_DOOR_TARGET_MIN_MIN
         ? "underfilled-but-valid"
         : "fits";
 
@@ -195,17 +194,17 @@ export function certifyDoorToDoor(input: DoorToDoorInput): DoorToDoorCertificati
     internalTravelMinutes: internal.driveMin,
     lastToDropoffMinutes: lastToDropoff,
     slackMinutes,
-    remainingToHardMaxMinutes: Math.max(0, STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN - doorToDoorMinutes),
+    remainingToHardMaxMinutes: Math.max(0, internal.budgetMin - tourMinutes),
     hardMaxMinutes: STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN,
     targetMinMinutes: STUDIO_DOOR_TO_DOOR_TARGET_MIN_MIN,
     originIsExactAddress: input.originIsExactAddress === true,
     overflowMinutes,
     reason:
       status === "over-hard-max"
-        ? `This day runs about ${Math.round(overflowMinutes)} minutes past the 9-hour limit from your pickup area.`
+        ? `This experience runs about ${Math.round(overflowMinutes)} minutes past its verified duration.`
         : status === "underfilled-but-valid"
           ? "A shorter, coherent day — nothing padded to fill time."
-          : "Fits a full 8–9 hour day, door to door.",
+          : "Fits its verified experience duration; pickup and drop-off are separate.",
   };
 }
 
