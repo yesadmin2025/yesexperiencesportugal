@@ -199,9 +199,9 @@ export const signatureTours: SignatureTour[] = [
   {
     id: "arrabida-wine-allinclusive",
     title: "Arrábida Private Wine Tour from Lisbon — All-Inclusive",
-    seoTitle: "Private Arrábida Wine Tour from Lisbon — All-Inclusive",
+    seoTitle: "Arrábida Wine Tour from Lisbon — Private, All-Inclusive",
     seoDescription:
-      "Private Arrábida wine tour from Lisbon — all-inclusive day of 2–3 family wineries, Moscatel tastings, Livramento market and a long Portuguese lunch. Door-to-door.",
+      "Private Arrábida wine tour from Lisbon, from €135 per person: 2–3 family wineries, Moscatel de Setúbal tastings, Livramento market and a long Azeitão lunch. Licensed operator, 700+ 5-star reviews, door-to-door pickup, instant confirmation.",
     region: "Setúbal · Arrábida",
     duration: "Full Day",
     durationHours: "7–9h",
