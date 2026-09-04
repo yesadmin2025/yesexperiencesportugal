@@ -960,12 +960,21 @@ function HomePage() {
                 id="plan-map-title"
                 className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
-                Choose a region,{" "}
+                We drive all of mainland Portugal —{" "}
                 <span className="italic font-normal text-[color:var(--teal)]">
-                  see what a day there looks like.
+                  start with a place you already have in mind.
                 </span>
               </h2>
+              <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                The pins below are the places our{" "}
+                <strong className="font-medium text-[color:var(--charcoal)]">
+                  published private days
+                </strong>{" "}
+                already visit. They are a starting point, not our limit — anywhere else in the
+                country, we design the day around you.
+              </p>
             </div>
+
             <div className="reveal max-w-5xl mx-auto">
               <PortugalPlannerMap />
             </div>
