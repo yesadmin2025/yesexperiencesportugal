@@ -967,10 +967,10 @@ function HomePage() {
                 </span>
               </h2>
               <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                From Gerês and the Douro to the Algarve, Madeira and the Azores. A{" "}
-                <strong className="font-medium text-[color:var(--charcoal)]">filled pin</strong> has
-                a published private day; an open one is designed around you — and every place has
-                Journal guides as we write them.
+                From Gerês and the Douro to the Algarve, Madeira and the Azores. Tap any place and
+                see how a{" "}
+                <strong className="font-medium text-[color:var(--charcoal)]">private day</strong>{" "}
+                can be designed around it.
               </p>
 
             </div>
