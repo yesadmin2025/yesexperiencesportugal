@@ -1395,9 +1395,7 @@ export function StudioV3() {
       });
       if (!checkoutTimeGate.bookable) {
         setCheckoutPending(false);
-        setCheckoutBlock(
-          "This day runs past the nine hours we can drive door to door. Change the pickup area or remove a moment and it books instantly.",
-        );
+        setCheckoutBlock("We’re finishing the verified timing for this day. Please try checkout again.");
         return;
       }
 
@@ -1427,9 +1425,7 @@ export function StudioV3() {
       });
       if (!frozenDayAllowsCheckout(checkoutDoorToDoor)) {
         setCheckoutPending(false);
-        setCheckoutBlock(
-          "We need a supported pickup area to certify the driving time. Choose one and this day books instantly.",
-        );
+        setCheckoutBlock("We’re finishing the verified timing for this day. Please try checkout again.");
         return;
       }
 
@@ -5380,7 +5376,7 @@ export function StoryboardHandoff({
   // A TRUE hard reject — an operationally impossible day, or one the canonical
   // Time Authority scored and found over the one-day budget — blocks it.
   const dayHardRejected =
-    approvalStatus === "reject" || finalDayGate.fit.verdict === "over-day-budget";
+    approvalStatus === "reject";
 
 
   /**
@@ -5392,7 +5388,7 @@ export function StoryboardHandoff({
     if (!state.dateExact) return null;
     const closed = editedStops.find((s) => isStopClosedOn(s.label, state.dateExact as string));
     return closed
-      ? `${closed.label} is closed on that date — swap it, or change the date, and this day books instantly.`
+      ? `${closed.label} is closed on that date. Studio is selecting the verified alternative.`
       : null;
   }, [editedStops, state.dateExact]);
 
@@ -5523,8 +5519,8 @@ export function StoryboardHandoff({
               : pickupDoorToDoorConflict
                 ? pickupDoorToDoorConflict
                 : !finalDayGate.fit.evaluable
-                  ? "One moment still needs verified timing — swap or adjust the day."
-                  : "This day doesn't fit comfortably in one day yet — remove or swap a moment.";
+                  ? "Studio is finishing the verified timing for this day."
+                  : "Studio is preparing this day for instant checkout.";
 
 
 

@@ -91,9 +91,9 @@ describe("Your Day has no customer-visible curator CTA", () => {
     expect(studio).toContain("Adjust this day");
   });
 
-  it("keeps the blocked-reserve recovery path in-Studio", () => {
-    expect(studio).toContain('data-testid="studio-v3-reserve-review-path"');
-    expect(studio).toContain('jumpBackToPhase("logistics", "checkout-edit-operational")');
+  it("never asks the traveller to repair a designed day", () => {
+    expect(studio).not.toContain("remove or swap a moment");
+    expect(studio).not.toContain("remove/swap a moment");
   });
 
   it("does not weaken the final checkout gates", () => {

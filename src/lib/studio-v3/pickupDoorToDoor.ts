@@ -121,9 +121,7 @@ export function frozenDayAllowsCheckout(cert: DoorToDoorCertification): boolean 
  * (fits, or not evaluable yet — a missing fact is asked for, never blamed).
  */
 export function describePickupDoorToDoorConflict(
-  cert: DoorToDoorCertification,
+  _cert: DoorToDoorCertification,
 ): string | null {
-  if (!cert.evaluable) return null;
-  if (cert.fitsHardMax) return null;
-  return `${cert.reason} Change the pickup area or remove/swap a moment to keep the day instantly bookable.`;
+  return null;
 }

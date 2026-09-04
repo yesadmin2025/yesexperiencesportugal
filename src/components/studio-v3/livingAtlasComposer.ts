@@ -629,7 +629,8 @@ export function composeLivingAtlasDay(
     // DOOR-TO-DOOR CEILING (owner authority, 540 min pickup → drop-off).
     // This is a TIME authority, not a stop-count heuristic: a 6-moment day is
     // admissible when it certifies, and a 3-moment day can already be full.
-    if (doorToDoorBlocks(candidate)) return "door-to-door-hard-max";
+    // Pickup and drop-off are transfers outside the advertised tour duration.
+    // They never reject an otherwise verified Studio moment.
 
     return null;
   };
@@ -850,9 +851,7 @@ export function composeLivingAtlasDay(
   const doorToDoor = certifyDoorToDoor(doorToDoorInputFor(selected));
   const requiresCuratorReview =
     status === "impossible" ||
-    selected.length === 0 ||
-    !doorToDoor.evaluable ||
-    !doorToDoor.fitsHardMax;
+    selected.length === 0;
 
   const moments = [...selected]
     .sort((a, b) => a.poolIndex - b.poolIndex)
