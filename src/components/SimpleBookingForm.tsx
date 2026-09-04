@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { trackEvent } from "@/lib/analytics-events";
 import { Calendar, Sparkles, Loader2, ChevronDown } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
