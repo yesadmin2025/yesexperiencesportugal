@@ -122,7 +122,8 @@ export const template = {
     const first = typeof data.firstName === "string" ? data.firstName : "";
     const last = typeof data.lastName === "string" ? data.lastName : "";
     const who = [first, last].filter(Boolean).join(" ") || "guest";
-    return `New contact — ${who}`;
+    const place = typeof data.place === "string" && data.place ? ` · ${data.place}` : "";
+    return `New contact — ${who}${place}`;
   },
   displayName: "Internal — new contact lead",
   previewData: {
