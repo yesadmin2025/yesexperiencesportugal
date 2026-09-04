@@ -92,6 +92,19 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       "Most of these days live inside one of our Signature experiences — private, paced, and shaped to you.",
     ctaLabel: "See our Arrábida Signature",
     signatureSlug: "arrabida-wine-allinclusive",
+    comparison: {
+      caption: "Every day trip, side by side",
+      columns: ["Day trip", "Drive from Lisbon", "Best for", "Best season"],
+      rows: [
+        ["Arrábida & Azeitão wine", "about 40 min", "Wine, cheese, coastal views", "April–October"],
+        ["Sesimbra & the coves", "about 40 min", "Fishing town, seafood, swimming", "May–September"],
+        ["Sintra & Cascais", "about 35 min", "Palaces, gardens, coast road", "All year, start early"],
+        ["Setúbal & Moscatel cellars", "about 45 min", "Wine, market, grilled fish", "All year"],
+        ["Comporta & Tróia", "about 1h", "Rice fields, wide beaches, slow lunch", "May–October"],
+        ["Évora & the Alentejo", "about 1h 20", "History, talha wines, plains", "March–June, Sept–Nov"],
+        ["Costa Vicentina", "about 2h", "Wild cliffs, empty beaches", "May–October"],
+      ],
+    },
     relatedSignatures: [
       { slug: "sintra-cascais", label: "Sintra & Cascais Signature" },
       { slug: "wild-beaches-picnic", label: "Wild Beaches & Picnic" },
@@ -99,9 +112,37 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     relatedReads: [
       { path: "/local-stories/what-to-do-in-sesimbra", label: "Things to do in Sesimbra" },
       { path: "/local-stories/arrabida-vs-sintra", label: "Arrábida vs Sintra" },
+      { path: "/local-stories/lisbon-day-trips-by-drive-time", label: "Day trips by drive time" },
+      {
+        path: "/local-stories/best-time-of-year-lisbon-day-trip",
+        label: "Best time of year to go",
+      },
+    ],
+    faq: [
+      {
+        q: "What is the best day trip from Lisbon?",
+        a: "For a first visit, Sintra is the one most people cannot skip — palaces, gardens and the coast road to Cascais. For wine, seafood and a quieter day, Arrábida and Sesimbra are about forty minutes south and far less crowded.",
+      },
+      {
+        q: "How far in advance should I book a day trip?",
+        a: "Private days can usually be arranged a few days ahead, but summer weekends, harvest season and public holidays fill first. If your dates are fixed, a couple of weeks ahead is comfortable.",
+      },
+      {
+        q: "Can I do two regions in one day?",
+        a: "Sintra and Cascais work together because they sit on the same road. Sintra and Arrábida are on opposite sides of the estuary, so combining them means most of your day in the car — we do not recommend it.",
+      },
+      {
+        q: "Do I need a car for a day trip from Lisbon?",
+        a: "Sintra and Cascais are reachable by train. Arrábida, Sesimbra, Comporta and the Alentejo are not practical without a car — the interesting parts are between the towns, not in them.",
+      },
+      {
+        q: "How long is a typical day trip?",
+        a: "Ours run door to door from your Lisbon accommodation, usually eight to nine hours including lunch and travel. Shorter half-days are possible for the closer regions.",
+      },
     ],
     datePublished: "2026-06-01",
   },
+
   {
     slug: "arrabida-vs-sintra",
     title: "Arrábida vs Sintra: Which Day Trip Is Right for You?",
