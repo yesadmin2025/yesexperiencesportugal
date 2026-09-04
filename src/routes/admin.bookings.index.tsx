@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { listAdminBookings } from "@/lib/bookingsAdmin.functions";
 import { formatGuestComposition } from "@/components/studio-v3/formatGuests";
+import { BookingsAvailabilityCalendar } from "@/components/admin/BookingsAvailabilityCalendar";
 
 export const Route = createFileRoute("/admin/bookings/")({
   component: AdminBookingsPage,
