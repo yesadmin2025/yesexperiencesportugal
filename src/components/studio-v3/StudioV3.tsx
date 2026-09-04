@@ -19,6 +19,8 @@ import {
   studioExtraWineryCountFromMoments,
   studioTradedBlueprintStopIds,
 } from "./studioWineryPresentation";
+import { composableStopLine } from "@/lib/studio-v3/composableStopAuthority";
+import { useComposableStops } from "@/hooks/use-composable-stops";
 import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 
 import { useServerFn } from "@tanstack/react-start";
@@ -1031,6 +1033,10 @@ export function StudioV3() {
   const [state, setState] = useState<StudioV3State>(INITIAL_STATE);
   const isMobile = useIsMobile();
   const { data: tourPriceTiers } = useTourPriceTiers();
+  // Owner-priced composable moments. Loading this publishes the catalogue to
+  // the composer registry, which is what allows a bespoke day to hold verified
+  // regional moments from outside the anchor Signature. Empty = fail closed.
+  useComposableStops();
   // TURBO 1 — raw note is LOCAL DRAFT ONLY. Its semantics live in
   // `state.questionHistory`; the sentence itself is never persisted or sent.
   const [freeTextDraft, setFreeTextDraft] = useState("");
@@ -1540,6 +1546,22 @@ export function StudioV3() {
         chargeableAddOnItems.reduce((sum, i) => sum + partyAmountFor(i), 0),
       );
 
+      // COMPOSABLE MOMENTS — moments composed into this bespoke day from the
+      // owner-priced catalogue, wherever they sit in the day. The ledger names
+      // them structurally; we display the owner price here and send only the
+      // stop ids. The server re-queries the price list and re-derives every
+      // euro at Reserve time — no client amount is ever trusted.
+      const composableStopIds = (liveAuthority.ledger?.actions ?? [])
+        .filter((action) => action.priceAction === "composable-stop")
+        .map((action) => action.actionId.slice("composable:".length))
+        .filter((stopId) => stopId.length > 0);
+      const composableLines = composableStopIds
+        .map((stopId) => composableStopLine(stopId, details.guests))
+        .filter((line): line is NonNullable<typeof line> => line !== null);
+      const composablePartyTotalEur = Math.round(
+        composableLines.reduce((sum, line) => sum + line.totalEurCents, 0) / 100,
+      );
+
       // Canonical age-banded lines when composition is present — drives the
       // drawer's itemised breakdown and total. Falls back to flat pricing.
       const composedMinors = currentState.minorAges ?? [];
@@ -1566,8 +1588,10 @@ export function StudioV3() {
       const journeyLines = journey ? journey.lines : undefined;
       const journeyTotalEur = journey ? Math.round(journey.totalEur) : undefined;
       const totalEur = journey
-        ? Math.round(journey.totalEur + addOnsPartyTotalEur)
-        : Math.round(perPaxBase * details.guests + addOnsPartyTotalEur);
+        ? Math.round(journey.totalEur + addOnsPartyTotalEur + composablePartyTotalEur)
+        : Math.round(
+            perPaxBase * details.guests + addOnsPartyTotalEur + composablePartyTotalEur,
+          );
       setCheckoutSummary({
         tourTitle: currentState.journeyTitle ?? tour.title ?? tour.id,
         region: tour.region,
@@ -1648,6 +1672,9 @@ export function StudioV3() {
             // client euro value is ever sent for this action.
             tailorExtraWineries: composedExtraWineries,
             tradedStopIds,
+            // Selectors only. The server re-reads `studio_composable_stops`
+            // and refuses any id without an active, priced row.
+            composableStopIds,
             // Prefill Stripe with the email already captured in Guest Details.
             customerEmail: details.email ?? undefined,
             guestDetails: { ...details, hotelPickupIncluded: true },

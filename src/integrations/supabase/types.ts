@@ -1954,6 +1954,45 @@ export type Database = {
         }
         Relationships: []
       }
+      studio_composable_stops: {
+        Row: {
+          active: boolean
+          created_at: string
+          min_guests: number
+          notes: string | null
+          price_cents: number
+          pricing_unit: string
+          region: string
+          stop_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          min_guests?: number
+          notes?: string | null
+          price_cents?: number
+          pricing_unit?: string
+          region: string
+          stop_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          min_guests?: number
+          notes?: string | null
+          price_cents?: number
+          pricing_unit?: string
+          region?: string
+          stop_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       studio_drafts: {
         Row: {
           created_at: string
