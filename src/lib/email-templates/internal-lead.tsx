@@ -72,9 +72,22 @@ const InternalLead: React.FC<InternalLeadProps> = (p) => (
           <Text style={value}>{p.email ?? "—"}</Text>
         </Section>
         <Section style={row}>
+          <Text style={label}>Request type</Text>
+          <Text style={value}>{p.requestType ?? "—"}</Text>
+        </Section>
+        <Section style={row}>
+          <Text style={label}>Place</Text>
+          <Text style={value}>{p.place ?? "—"}</Text>
+        </Section>
+        <Section style={row}>
+          <Text style={label}>Preferred travel date</Text>
+          <Text style={value}>{p.travelDate ?? "—"}</Text>
+        </Section>
+        <Section style={row}>
           <Text style={label}>Message</Text>
           <Text style={value}>{p.message ?? "—"}</Text>
         </Section>
+
         <Section style={row}>
           <Text style={label}>Source</Text>
           <Text style={value}>{p.source ?? "—"}</Text>
