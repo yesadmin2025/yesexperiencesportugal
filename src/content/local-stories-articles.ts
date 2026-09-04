@@ -169,10 +169,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "what-to-do-in-sesimbra",
-    title: "Things to Do in Sesimbra (2026): Castle, Harbour, Coves",
+    title: "What to Do in Sesimbra: A Local's Guide (Castle, Coves, Fish)",
     metaDescription:
-      "We live in Sesimbra. Castle viewpoint, harbour seafood lunch, wild Arrábida coves — what to do, how long you need, best time to go, 40 min from Lisbon.",
-    h1: "Things to Do in Sesimbra, Portugal — A Fishing Town Worth the Drive",
+      "We live in Sesimbra. Exactly what to do, where locals eat the day's catch, which Arrábida coves are worth it, how long you need — and how to do it all in one day, 40 min from Lisbon.",
+
+    h1: "What to Do in Sesimbra — A Local's Guide to Our Fishing Town",
     eyebrow: "Sesimbra · Coast",
     standfirst:
       "Sesimbra is our home town, 40 minutes south of Lisbon. The short answer: the castle viewpoint, the harbour, a long seafood lunch and a wild Arrábida cove — half a day for the town, a full day with the coast.",
