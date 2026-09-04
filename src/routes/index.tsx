@@ -94,7 +94,8 @@ function journalCardMeta(
 ): { date: string; img?: string; alt?: string } {
   const article = LOCAL_STORIES_ARTICLES.find((a) => a.slug === slug);
   if (!article) return { date: "" };
-  const tour = findTour(imgTourId ?? article.signatureSlug);
+  const tourId = imgTourId ?? article.signatureSlug;
+  const tour = tourId ? findTour(tourId) : undefined;
   return {
     date: new Date(`${article.datePublished}T00:00:00Z`).toLocaleDateString("en-GB", {
       day: "numeric",

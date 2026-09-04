@@ -90,7 +90,7 @@ function articleImageUrl(a: LocalStoryArticle): string | undefined {
   if (a.heroImage) {
     return a.heroImage.startsWith("http") ? a.heroImage : `${BASE}${a.heroImage}`;
   }
-  const tour = findTour(a.signatureSlug);
+  const tour = a.signatureSlug ? findTour(a.signatureSlug) : undefined;
   const img = tour?.img;
   if (!img) return undefined;
   return img.startsWith("http") ? img : `${BASE}${img.startsWith("/") ? "" : "/"}${img}`;
@@ -145,8 +145,8 @@ export const Route = createFileRoute("/local-stories/$slug")({
         },
       };
     }
-    const tour = findTour(article.signatureSlug);
-    if (!tour) return { reviews: [], signatureTitle: null, dbPost: null };
+    const tour = article.signatureSlug ? findTour(article.signatureSlug) : undefined;
+    if (!tour || !article.signatureSlug) return { reviews: [], signatureTitle: null, dbPost: null };
     try {
       const rows = await getTourReviews({
         data: { tourId: article.signatureSlug, limit: 3 },
@@ -182,7 +182,7 @@ export const Route = createFileRoute("/local-stories/$slug")({
       const reviews = loaderData?.reviews ?? [];
       const signatureTitle = loaderData?.signatureTitle ?? article.ctaLabel;
       const reviewScripts =
-        reviews.length > 0
+        reviews.length > 0 && article.signatureSlug
           ? localStoryReviewsLd({
               signatureSlug: article.signatureSlug,
               signatureTitle,
