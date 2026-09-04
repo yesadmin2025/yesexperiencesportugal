@@ -56,7 +56,7 @@ const contactSchema = z.object({
 type Status = "idle" | "submitting" | "success" | "error";
 
 export const Route = createFileRoute("/contact")({
-  validateSearch: (search: Record<string, unknown>) => {
+  validateSearch: (search: Record<string, unknown>): { type?: string; place?: string } => {
     const raw = typeof search.type === "string" ? search.type : undefined;
     const place = typeof search.place === "string" ? search.place.trim().slice(0, 80) : undefined;
     return {
