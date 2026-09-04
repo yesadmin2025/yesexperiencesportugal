@@ -83,92 +83,74 @@ export function PortugalPlannerMap() {
             );
           })()}
 
-          {/* Place markers. Decorative: the chip list below is the control, so
-              every place keeps a reliable 44×44 target even where pins cluster. */}
+          {/* Place markers — each pin is the control. Hover or touch a pin and
+              its name appears; tap selects the region for the panel. The 44×44
+              hit area keeps pins usable even where they cluster. */}
           {PLANNER_MAINLAND_REGIONS.map((region) => {
             const isActive = region.id === active.id;
             const { x, y } = projectPlannerPoint(region.lat, region.lon);
             const labelLeft = x > VB_W * 0.55;
             const hasDay = region.tourIds.length > 0;
             return (
-              <span
+              <button
                 key={region.id}
-                aria-hidden="true"
-                className="absolute -translate-x-1/2 -translate-y-1/2"
+                type="button"
+                onClick={() => setActiveId(region.id)}
+                aria-pressed={isActive}
+                aria-label={region.label}
+                className="group absolute flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                 style={{ left: pct(x, VB_W), top: pct(y, VB_H), zIndex: isActive ? 2 : 1 }}
               >
                 <span
+                  aria-hidden="true"
                   className={`block rounded-full transition-all duration-200 ${
                     isActive
                       ? "h-[9px] w-[9px] bg-[color:var(--gold)] ring-4 ring-[color:var(--gold)]/25"
                       : hasDay
-                        ? "h-[5px] w-[5px] bg-[color:var(--teal)]/70"
-                        : "h-[5px] w-[5px] border border-[color:var(--teal)]/60 bg-[color:var(--ivory)]"
+                        ? "h-[5px] w-[5px] bg-[color:var(--teal)]/70 group-hover:h-[7px] group-hover:w-[7px]"
+                        : "h-[5px] w-[5px] border border-[color:var(--teal)]/60 bg-[color:var(--ivory)] group-hover:h-[7px] group-hover:w-[7px]"
                   }`}
                 />
-                {isActive && (
-                  <span
-                    className={`absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[color:var(--ivory)]/90 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)] ${
-                      labelLeft ? "right-[calc(50%+10px)] text-right" : "left-[calc(50%+10px)]"
-                    }`}
-                  >
-                    {region.label}
-                  </span>
-                )}
-              </span>
+                <span
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[color:var(--ivory)]/90 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal)] transition-opacity duration-150 ${
+                    isActive
+                      ? "opacity-100"
+                      : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+                  } ${labelLeft ? "right-[calc(50%+10px)] text-right" : "left-[calc(50%+10px)]"}`}
+                >
+                  {region.label}
+                </span>
+              </button>
             );
           })}
         </div>
 
-        {/* Places — the accessible control for the map. */}
-        <ul className="mt-5 flex list-none flex-wrap justify-center gap-1.5 p-0 md:justify-start">
-          {PLANNER_MAINLAND_REGIONS.map((region) => {
-            const isActive = region.id === active.id;
-            return (
-              <li key={region.id}>
-                <button
-                  type="button"
-                  onClick={() => setActiveId(region.id)}
-                  aria-pressed={isActive}
-                  className={`inline-flex min-h-11 items-center rounded-full border px-3.5 text-[12.5px] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] ${
-                    isActive
-                      ? "border-[color:var(--gold)] bg-[color:var(--gold)]/12 text-[color:var(--charcoal)]"
-                      : "border-[color:var(--border)] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)]"
-                  }`}
-                >
-                  {region.label}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-
         {/* Atlantic Portugal — Madeira and the Azores sit far off the mainland
-            frame, so they get their own row rather than a distorted pin. */}
-        <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-          Atlantic Portugal
+            frame, so they stay as a quiet single line rather than more chips. */}
+        <p className="mt-4 text-center text-[12.5px] text-[color:var(--charcoal-soft)] md:text-left">
+          <span className="text-[11px] uppercase tracking-[0.22em]">Islands</span>
+          <span aria-hidden="true" className="mx-2 text-[color:var(--gold)]">·</span>
+          {PLANNER_ISLAND_REGIONS.map((region, i) => (
+            <span key={region.id}>
+              {i > 0 && (
+                <span aria-hidden="true" className="mx-2 text-[color:var(--gold)]">·</span>
+              )}
+              <button
+                type="button"
+                onClick={() => setActiveId(region.id)}
+                aria-pressed={region.id === active.id}
+                className={`inline-flex min-h-11 items-center underline-offset-4 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] ${
+                  region.id === active.id
+                    ? "text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]"
+                    : "hover:text-[color:var(--teal)]"
+                }`}
+              >
+                {region.label}
+              </button>
+            </span>
+          ))}
         </p>
-        <ul className="mt-3 flex list-none flex-wrap justify-center gap-1.5 p-0 md:justify-start">
-          {PLANNER_ISLAND_REGIONS.map((region) => {
-            const isActive = region.id === active.id;
-            return (
-              <li key={region.id}>
-                <button
-                  type="button"
-                  onClick={() => setActiveId(region.id)}
-                  aria-pressed={isActive}
-                  className={`inline-flex min-h-11 items-center rounded-full border px-3.5 text-[12.5px] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] ${
-                    isActive
-                      ? "border-[color:var(--gold)] bg-[color:var(--gold)]/12 text-[color:var(--charcoal)]"
-                      : "border-[color:var(--border)] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)]"
-                  }`}
-                >
-                  {region.label}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
 
       </div>
 
