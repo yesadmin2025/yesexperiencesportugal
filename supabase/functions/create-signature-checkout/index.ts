@@ -713,6 +713,29 @@ Deno.serve(async (req) => {
           .slice(0, 480),
 
         ui_mode: uiMode,
+        // Marketing attribution: which Journal guide (and which acquisition
+        // source) produced this booking. Short, non-personal values only.
+        ...((): Record<string, string> => {
+          const raw = (body as Record<string, unknown>).attribution;
+          if (!raw || typeof raw !== "object") return {};
+          const allowed = [
+            "guide_slug",
+            "guide_slot",
+            "utm_source",
+            "utm_medium",
+            "utm_campaign",
+            "utm_term",
+            "utm_content",
+            "gclid",
+            "fbclid",
+          ];
+          const out: Record<string, string> = {};
+          for (const key of allowed) {
+            const v = (raw as Record<string, unknown>)[key];
+            if (typeof v === "string" && v.trim()) out[key] = v.trim().slice(0, 120);
+          }
+          return out;
+        })(),
         ...(body.guestDetails?.startTime
           ? { start_time: String(body.guestDetails.startTime).slice(0, 16) }
           : {}),
