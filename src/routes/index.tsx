@@ -87,15 +87,25 @@ const homepageJournalLinks: {
 ];
 
 /** Real published date + real operation photo for a Journal card, resolved
- *  from the article record and its matching Signature tour. No invention. */
+ *  from the article record and its matching Signature tour. No invention.
+ *
+ *  Journal cards deliberately avoid the Signature *cover* image (`tour.img`)
+ *  — that photo already appears on the Signature card row further up the
+ *  homepage. We pick a distinct real gallery photo from the same day instead,
+ *  and de-duplicate across cards. */
 function journalCardMeta(
   slug: string,
   imgTourId?: string,
+  used?: Set<string>,
 ): { date: string; img?: string; alt?: string } {
   const article = LOCAL_STORIES_ARTICLES.find((a) => a.slug === slug);
   if (!article) return { date: "" };
   const tourId = imgTourId ?? article.signatureSlug;
   const tour = tourId ? findTour(tourId) : undefined;
+  const gallery = tourId ? (getViatorMeta(tourId)?.gallery ?? []) : [];
+  const distinct = gallery.find((src) => src && src !== tour?.img && !used?.has(src));
+  const img = article.heroImage ?? distinct ?? tour?.img;
+  if (img) used?.add(img);
   return {
     date: new Date(`${article.datePublished}T00:00:00Z`).toLocaleDateString("en-GB", {
       day: "numeric",
@@ -103,10 +113,11 @@ function journalCardMeta(
       year: "numeric",
       timeZone: "UTC",
     }),
-    img: (imgTourId ? tour?.img : (article.heroImage ?? tour?.img)),
+    img,
     alt: article.heroImageAlt ?? (tour ? `${tour.title} — photographed on our own days` : undefined),
   };
 }
+
 
 
 
@@ -1006,8 +1017,9 @@ function HomePage() {
             </div>
 
             <ul className="max-w-5xl mx-auto grid gap-5 md:gap-7 md:grid-cols-3 list-none p-0">
-              {homepageJournalLinks.map((entry) => {
-                const meta = journalCardMeta(entry.slug, entry.imgTourId);
+              {((usedJournalImages: Set<string>) =>
+                homepageJournalLinks.map((entry) => {
+                const meta = journalCardMeta(entry.slug, entry.imgTourId, usedJournalImages);
                 return (
                 <li key={entry.slug}>
                   <Link
@@ -1052,7 +1064,8 @@ function HomePage() {
                   </Link>
                 </li>
                 );
-              })}
+              }))(new Set<string>())}
+
 
             </ul>
 

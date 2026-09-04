@@ -207,6 +207,7 @@ function Page() {
                         requestType: parsed.data.requestType,
                         travelDate: parsed.data.travelDate ?? null,
                         message: parsed.data.message,
+                        place: presetPlace ?? null,
                         source: "contact-page",
                         locale: typeof navigator !== "undefined" ? navigator.language : null,
                         userAgent:

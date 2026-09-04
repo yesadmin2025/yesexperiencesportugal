@@ -20,7 +20,11 @@ export interface InternalLeadProps {
   locale?: string | null;
   userAgent?: string | null;
   submittedAt?: string | null;
+  requestType?: string | null;
+  travelDate?: string | null;
+  place?: string | null;
 }
+
 
 const main = { backgroundColor: "#ffffff", fontFamily: "Arial, Helvetica, sans-serif" } as const;
 const container = { maxWidth: 620, margin: "0 auto", padding: "28px 24px" } as const;
@@ -68,9 +72,22 @@ const InternalLead: React.FC<InternalLeadProps> = (p) => (
           <Text style={value}>{p.email ?? "—"}</Text>
         </Section>
         <Section style={row}>
+          <Text style={label}>Request type</Text>
+          <Text style={value}>{p.requestType ?? "—"}</Text>
+        </Section>
+        <Section style={row}>
+          <Text style={label}>Place</Text>
+          <Text style={value}>{p.place ?? "—"}</Text>
+        </Section>
+        <Section style={row}>
+          <Text style={label}>Preferred travel date</Text>
+          <Text style={value}>{p.travelDate ?? "—"}</Text>
+        </Section>
+        <Section style={row}>
           <Text style={label}>Message</Text>
           <Text style={value}>{p.message ?? "—"}</Text>
         </Section>
+
         <Section style={row}>
           <Text style={label}>Source</Text>
           <Text style={value}>{p.source ?? "—"}</Text>
@@ -105,7 +122,8 @@ export const template = {
     const first = typeof data.firstName === "string" ? data.firstName : "";
     const last = typeof data.lastName === "string" ? data.lastName : "";
     const who = [first, last].filter(Boolean).join(" ") || "guest";
-    return `New contact — ${who}`;
+    const place = typeof data.place === "string" && data.place ? ` · ${data.place}` : "";
+    return `New contact — ${who}${place}`;
   },
   displayName: "Internal — new contact lead",
   previewData: {
