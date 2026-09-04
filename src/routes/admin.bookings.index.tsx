@@ -111,6 +111,8 @@ function AdminBookingsPage() {
         Paid reservations first, newest at the top. Open one to see the frozen purchase snapshot.
       </p>
 
+      <BookingsAvailabilityCalendar />
+
       <div className="mt-5 flex flex-wrap gap-2">
         {STATUSES.map((s) => (
           <button
