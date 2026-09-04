@@ -1405,6 +1405,36 @@ export type Database = {
         }
         Relationships: []
       }
+      guide_link_clicks: {
+        Row: {
+          created_at: string
+          destination: string
+          destination_kind: string
+          guide_slug: string
+          id: string
+          page_path: string | null
+          slot: string
+        }
+        Insert: {
+          created_at?: string
+          destination: string
+          destination_kind?: string
+          guide_slug: string
+          id?: string
+          page_path?: string | null
+          slot: string
+        }
+        Update: {
+          created_at?: string
+          destination?: string
+          destination_kind?: string
+          guide_slug?: string
+          id?: string
+          page_path?: string | null
+          slot?: string
+        }
+        Relationships: []
+      }
       hero_ab_assignments: {
         Row: {
           anonymous_id: string
