@@ -379,6 +379,33 @@ const CheckoutReceipt = ({
           ) : null}
 
 
+          <Text style={sectionTitle}>Before the day</Text>
+          <Text style={body}>
+            • Comfortable shoes — several stops involve cobbles or a short slope.
+            <br />
+            • Sun protection and a light layer: the coast can be breezy even in summer.
+            <br />
+            • A photo ID for each traveller, and a car seat request in advance if you need one.
+            <br />
+            • Let us know about allergies or dietary needs at least 48h before, so the kitchens and
+            cellars can prepare.
+          </Text>
+
+          <Text style={sectionTitle}>On the morning</Text>
+          <Text style={body}>
+            Running late, changed room, or can&apos;t find your host? Message or call us on{" "}
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} style={link}>
+              WhatsApp {PHONE_DISPLAY}
+            </a>{" "}
+            — the fastest way to reach a real person on the day.
+          </Text>
+
+          <Text style={sectionTitle}>Cancellation</Text>
+          <Text style={body}>
+            {bookingType === "signature" ? CANCELLATION.signature.en : CANCELLATION.custom.en} To
+            change or cancel, simply reply to this email with your booking reference.
+          </Text>
+
           <Text style={sectionTitle}>What happens next</Text>
           <Text style={body}>
             1. A YES host will confirm the final pickup time and driver introduction by email or
@@ -391,6 +418,7 @@ const CheckoutReceipt = ({
           <Text style={{ ...body, fontSize: "13px", color: "#5A5A5A" }}>
             {CONFIRMATION_SUFFICIENCY_NOTE}
           </Text>
+
 
           <Hr style={{ ...hr, margin: "32px 0 20px" }} />
           <Text style={footer}>
