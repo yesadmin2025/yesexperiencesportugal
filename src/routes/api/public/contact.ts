@@ -22,7 +22,19 @@ const contactSchema = z.object({
   source: z.string().trim().max(80).optional(),
   locale: z.string().trim().max(20).nullable().optional(),
   userAgent: z.string().trim().max(500).nullable().optional(),
+  /** Enquiry type chosen in the form (private_day, multi_day, corporate, proposal…). */
+  requestType: z.string().trim().max(40).nullable().optional(),
+  /** Preferred travel date, ISO yyyy-mm-dd. */
+  travelDate: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .nullable()
+    .optional(),
+  /** Region/place the guest wants a day designed around (from a guide or map pin). */
+  place: z.string().trim().max(80).nullable().optional(),
 });
+
 
 export const Route = createFileRoute("/api/public/contact")({
   server: {
