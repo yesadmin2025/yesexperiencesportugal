@@ -324,6 +324,7 @@ function AdminOverviewPage() {
                   { to: "/admin/bookings", label: "Viagens dos hóspedes" },
                   { to: "/admin/availability", label: "Calendário de disponibilidade" },
                   { to: "/admin/pricing", label: "Preços das experiências" },
+                  { to: "/admin/composable-stops", label: "Momentos compostos (preços)" },
                   { to: "/admin/experiences", label: "Experiências & operações" },
                   { to: "/admin/emails", label: "Entrega de emails" },
                 ] as const
