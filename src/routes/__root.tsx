@@ -178,22 +178,12 @@ export const Route = createRootRoute({
     ],
 
     links: [
-      // Favicons — multiple sizes so Google's image crawler can pick a
-      // sharp variant for the SERP icon. The 64x64 PNG is derived from the
-      // YES experiences PORTUGAL stacked lockup, padded square with a
-      // transparent background so it reads cleanly at tab/SERP size.
+      // Favicons — the cursive YES wordmark, trimmed to its true bounds and
+      // padded square on transparency. Small sizes (16/32) get a hardened
+      // alpha pass so the script strokes stay legible at tab/SERP size.
+      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16.png" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32.png" },
       { rel: "icon", type: "image/png", sizes: "64x64", href: "/favicon.png" },
-      {
-        rel: "icon",
-        type: "image/svg+xml",
-        href: "/brand/svg/yes-experiences-portugal-centered-full.svg",
-      },
-      {
-        rel: "icon",
-        type: "image/png",
-        sizes: "32x32",
-        href: "/icon-192.png",
-      },
       {
         rel: "icon",
         type: "image/png",
@@ -201,14 +191,8 @@ export const Route = createRootRoute({
         href: "/icon-192.png",
       },
       {
-        rel: "icon",
-        type: "image/png",
-        sizes: "512x512",
-        href: "/apple-touch-icon.png",
-      },
-      {
         rel: "apple-touch-icon",
-        sizes: "512x512",
+        sizes: "180x180",
         href: "/apple-touch-icon.png",
       },
       { rel: "manifest", href: "/site.webmanifest" },
