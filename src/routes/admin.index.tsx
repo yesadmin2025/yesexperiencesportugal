@@ -326,6 +326,7 @@ function AdminOverviewPage() {
                   { to: "/admin/pricing", label: "Preços das experiências" },
                   { to: "/admin/composable-stops", label: "Momentos compostos (preços)" },
                   { to: "/admin/price-map", label: "Mapa de preços (tudo de uma vez)" },
+                  { to: "/admin/pricing-tool", label: "Ferramenta rápida de preços" },
                   { to: "/admin/experiences", label: "Experiências & operações" },
                   { to: "/admin/emails", label: "Entrega de emails" },
                 ] as const

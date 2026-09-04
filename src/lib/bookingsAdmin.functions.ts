@@ -105,3 +105,39 @@ export const getAdminBooking = createServerFn({ method: "POST" })
 
     return { booking, snapshot: (snapshot ?? null) as Json | null };
   });
+
+/**
+ * Calendar read: every reservation with a chosen date inside a month window.
+ *
+ * Used by the admin availability calendar so the owner can see which dates
+ * are already committed (and to which Signature / moments) before pricing.
+ * Read-only, admin-gated, no pricing logic.
+ */
+const calendarInput = z.object({
+  /** Inclusive ISO yyyy-mm-dd window start. */
+  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  /** Inclusive ISO yyyy-mm-dd window end. */
+  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+});
+
+export const listAdminBookingCalendar = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => calendarInput.parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: rows, error } = await supabaseAdmin
+      .from("bookings")
+      .select(
+        "id, preferred_date, source_tour_id, booking_type, guests, customer_name, customer_email, status, booking_details",
+      )
+      .in("status", ["paid", "pending"])
+      .gte("preferred_date", data.from)
+      .lte("preferred_date", data.to)
+      .order("preferred_date", { ascending: true })
+      .limit(500);
+
+    if (error) throw new Error(error.message);
+    return { bookings: rows ?? [] };
+  });

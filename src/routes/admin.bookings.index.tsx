@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { listAdminBookings } from "@/lib/bookingsAdmin.functions";
 import { formatGuestComposition } from "@/components/studio-v3/formatGuests";
+import { BookingsAvailabilityCalendar } from "@/components/admin/BookingsAvailabilityCalendar";
 
 export const Route = createFileRoute("/admin/bookings/")({
   component: AdminBookingsPage,
@@ -109,6 +110,8 @@ function AdminBookingsPage() {
       <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
         Paid reservations first, newest at the top. Open one to see the frozen purchase snapshot.
       </p>
+
+      <BookingsAvailabilityCalendar />
 
       <div className="mt-5 flex flex-wrap gap-2">
         {STATUSES.map((s) => (
