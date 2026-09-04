@@ -624,7 +624,7 @@ function Field({
 }) {
   // The visible eyebrow is the accessible name for the whole control group,
   // so screen readers announce "Date", "Who's travelling", etc.
-  const labelId = React.useId();
+  const labelId = useId();
   return (
     <div className="block" role="group" aria-labelledby={labelId}>
       <div
