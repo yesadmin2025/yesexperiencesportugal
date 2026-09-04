@@ -15,3 +15,9 @@
 ## 3. Press kit and outreach
 - [x] /press route (already existed)
 - [ ] Researched outreach shortlist + templates document
+
+## 4. Guide attribution + internal linking
+- [x] Tagged guide links (ref=guide:<slug>) + click recording
+- [x] Attribution carried through checkout into bookings
+- [x] /admin/guide-attribution dashboard
+- [x] "Where to next" block: hub → siblings → Signature → Studio
