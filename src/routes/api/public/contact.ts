@@ -76,6 +76,9 @@ export const Route = createFileRoute("/api/public/contact")({
             source: data.source ?? "contact-page",
             locale: data.locale ?? null,
             user_agent: data.userAgent ?? null,
+            request_type: data.requestType ?? null,
+            travel_date: data.travelDate ?? null,
+            place: data.place ?? null,
           })
           .select("id")
           .maybeSingle();
@@ -96,8 +99,12 @@ export const Route = createFileRoute("/api/public/contact")({
           source: data.source ?? "contact-page",
           locale: data.locale ?? null,
           userAgent: data.userAgent ?? null,
+          requestType: data.requestType ?? null,
+          travelDate: data.travelDate ?? null,
+          place: data.place ?? null,
           submittedAt,
         };
+
 
         try {
           // Client confirmation
