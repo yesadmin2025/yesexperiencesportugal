@@ -1112,39 +1112,53 @@ function TailorPage() {
               {/* Booking context — compact, not a form wall */}
               <div
                 data-testid="tailor-booking-context"
-                className="grid gap-3 border border-[color:var(--border)] bg-[color:var(--ivory)] p-3 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:items-center"
+                className="grid gap-4 border border-[color:var(--border)] bg-[color:var(--ivory)] p-3 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:items-start"
               >
-                <input
-                  type="date"
-                  aria-label="Date"
-                  value={date}
-                  onChange={(e) => {
-                    const v = e.target.value;
-                    if (v && rule) {
-                      const check = validateDateISO(v, rule);
-                      if (!check.ok) {
-                        gaBookingValidationBlocked({
-                          tourId: tour.id,
-                          surface: "tailor",
-                          reason: `date_${check.reason}`,
-                        });
-                        const msg =
-                          check.reason === "weekday_closed"
-                            ? "This tour doesn't run on that day. Please pick another date."
-                            : check.reason === "blackout"
-                              ? "That date is unavailable. Please pick another."
-                              : "Please choose a date at least 24 hours from now.";
-                        toast.error(msg);
-                        return;
-                      }
-                    }
-                    setDate(v);
-                    if (v) gaBookingDateSelected({ tourId: tour.id, surface: "tailor", dateISO: v });
-                  }}
-                  min={minDateISO}
-                  className="min-h-[48px] w-full border border-[color:var(--border)] bg-transparent px-3 py-3 text-sm focus:border-[color:var(--gold)] focus:outline-none"
-                />
                 <div className="min-w-0">
+                  <label
+                    htmlFor="tailor-date"
+                    className="mb-1.5 block text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)]"
+                  >
+                    Date
+                  </label>
+                  <input
+                    id="tailor-date"
+                    type="date"
+                    aria-label="Date"
+                    value={date}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      if (v && rule) {
+                        const check = validateDateISO(v, rule);
+                        if (!check.ok) {
+                          gaBookingValidationBlocked({
+                            tourId: tour.id,
+                            surface: "tailor",
+                            reason: `date_${check.reason}`,
+                          });
+                          const msg =
+                            check.reason === "weekday_closed"
+                              ? "This tour doesn't run on that day. Please pick another date."
+                              : check.reason === "blackout"
+                                ? "That date is unavailable. Please pick another."
+                                : "Please choose a date at least 24 hours from now.";
+                          toast.error(msg);
+                          return;
+                        }
+                      }
+                      setDate(v);
+                      if (v)
+                        gaBookingDateSelected({ tourId: tour.id, surface: "tailor", dateISO: v });
+                    }}
+                    min={minDateISO}
+                    className="min-h-[48px] w-full border border-[color:var(--border)] bg-transparent px-3 py-3 text-[16px] sm:text-sm focus:border-[color:var(--gold)] focus:outline-none"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <span className="mb-1.5 block text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)]">
+                    Who&rsquo;s travelling
+                  </span>
+
                   <CompositionField
                     value={composition}
                     onChange={(next) => {
