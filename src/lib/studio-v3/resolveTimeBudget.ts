@@ -17,7 +17,6 @@ import { sotDurationMinutes } from "@/data/signatureToursSourceOfTruth";
 import {
   DURATION_ENVELOPES,
   LEGACY_NEUTRAL_DEFAULT_MINUTES,
-  STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN,
   type ResolvedDurationClass,
   type ResolvedTimeBudget,
   type TravellerDurationClass,
@@ -36,9 +35,8 @@ export type ResolveTimeBudgetInput = {
    */
   skeletonDurationMinutes?: number | null;
   /**
-   * Catalogue/reporting escape hatch: keep a legacy 570/600-minute Signature
-   * duration verbatim. The live Studio must NEVER set this — its day is
-   * capped at the owner's 9h door-to-door ceiling.
+   * Retained for compatibility. Verified Signature duration remains verbatim;
+   * pickup and drop-off transfers are outside the tour duration.
    */
   allowLegacyExtendedDuration?: boolean;
 };
@@ -128,22 +126,16 @@ export function resolveTimeBudget(input: ResolveTimeBudgetInput = {}): ResolvedT
     // product metadata, never permission for a Studio day to exceed the 9h
     // door-to-door ceiling. Public Signature pages are untouched; only the
     // live Studio budget is clamped (opt out explicitly for catalogue reads).
-    const clamped =
-      input.allowLegacyExtendedDuration === true
-        ? skeletonMinutes
-        : Math.min(skeletonMinutes, STUDIO_DOOR_TO_DOOR_HARD_MAX_MIN);
-    const durationClass = classifyMinutes(clamped);
+    const resolvedMinutes = skeletonMinutes;
+    const durationClass = classifyMinutes(resolvedMinutes);
     return {
       durationClass,
       // Exact canonical value — never rounded to the class target.
-      availableExperienceMinutes: clamped,
-      ...envelopeContaining(durationClass, clamped),
+      availableExperienceMinutes: resolvedMinutes,
+      ...envelopeContaining(durationClass, resolvedMinutes),
       source: "signature-skeleton-truth",
       ...(skeletonTourId ? { skeletonTourId } : {}),
-      notes:
-        clamped === skeletonMinutes
-          ? "Canonical Signature source-of-truth duration."
-          : "Canonical Signature duration clamped to the Studio 9h door-to-door ceiling.",
+      notes: "Canonical Signature source-of-truth duration; pickup and drop-off excluded.",
     };
   }
 

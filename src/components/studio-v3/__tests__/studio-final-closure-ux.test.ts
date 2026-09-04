@@ -88,12 +88,13 @@ describe("Your Day has no customer-visible curator CTA", () => {
   it("keeps the fail-closed fallback but routes it back into Studio", () => {
     expect(studio).toContain('data-testid="studio-v3-reveal-fallback"');
     expect(studio).toContain("This day needs one more adjustment.");
-    expect(studio).toContain("Adjust this day");
+    expect(studio).not.toContain("remove or swap a moment");
   });
 
-  it("keeps the blocked-reserve recovery path in-Studio", () => {
-    expect(studio).toContain('data-testid="studio-v3-reserve-review-path"');
-    expect(studio).toContain('jumpBackToPhase("logistics", "checkout-edit-operational")');
+  it("never asks the traveller to repair a designed day", () => {
+    expect(studio).not.toContain('data-testid="studio-v3-reserve-review-path"');
+    expect(studio).not.toContain("remove or swap a moment");
+    expect(studio).not.toContain("remove/swap a moment");
   });
 
   it("does not weaken the final checkout gates", () => {

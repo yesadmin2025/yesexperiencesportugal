@@ -1395,9 +1395,7 @@ export function StudioV3() {
       });
       if (!checkoutTimeGate.bookable) {
         setCheckoutPending(false);
-        setCheckoutBlock(
-          "This day runs past the nine hours we can drive door to door. Change the pickup area or remove a moment and it books instantly.",
-        );
+        setCheckoutBlock("We’re finishing the verified timing for this day. Please try checkout again.");
         return;
       }
 
@@ -1427,9 +1425,7 @@ export function StudioV3() {
       });
       if (!frozenDayAllowsCheckout(checkoutDoorToDoor)) {
         setCheckoutPending(false);
-        setCheckoutBlock(
-          "We need a supported pickup area to certify the driving time. Choose one and this day books instantly.",
-        );
+        setCheckoutBlock("We’re finishing the verified timing for this day. Please try checkout again.");
         return;
       }
 
@@ -5380,7 +5376,7 @@ export function StoryboardHandoff({
   // A TRUE hard reject — an operationally impossible day, or one the canonical
   // Time Authority scored and found over the one-day budget — blocks it.
   const dayHardRejected =
-    approvalStatus === "reject" || finalDayGate.fit.verdict === "over-day-budget";
+    approvalStatus === "reject";
 
 
   /**
@@ -5392,7 +5388,7 @@ export function StoryboardHandoff({
     if (!state.dateExact) return null;
     const closed = editedStops.find((s) => isStopClosedOn(s.label, state.dateExact as string));
     return closed
-      ? `${closed.label} is closed on that date — swap it, or change the date, and this day books instantly.`
+      ? `${closed.label} is closed on that date. Studio is selecting the verified alternative.`
       : null;
   }, [editedStops, state.dateExact]);
 
@@ -5523,8 +5519,8 @@ export function StoryboardHandoff({
               : pickupDoorToDoorConflict
                 ? pickupDoorToDoorConflict
                 : !finalDayGate.fit.evaluable
-                  ? "One moment still needs verified timing — swap or adjust the day."
-                  : "This day doesn't fit comfortably in one day yet — remove or swap a moment.";
+                  ? "Studio is finishing the verified timing for this day."
+                  : "Studio is preparing this day for instant checkout.";
 
 
 
@@ -5727,12 +5723,11 @@ export function StoryboardHandoff({
           className="mt-4 text-[14px] leading-[1.6]"
           style={{ color: "color-mix(in oklab, var(--charcoal) 70%, transparent)" }}
         >
-          We won't show a day that isn't fully grounded in a real, bookable tour. Let's re-check
-          your practical details and design it again — your answers are kept.
+          Studio is resolving this against verified, bookable tour inventory. Your answers are kept.
         </p>
         <div className="mt-7 flex flex-col items-center gap-3">
           <CtaButton onClick={onRefine} variant="primary">
-            Adjust this day
+            Build my bookable day
           </CtaButton>
           <button
             type="button"
@@ -6460,17 +6455,7 @@ export function StoryboardHandoff({
           </p>
         ) : null}
 
-        {!canReserve ? (
-          <button
-            type="button"
-            onClick={onRefine}
-            data-testid="studio-v3-reserve-review-path"
-            className="min-h-[44px] px-3 text-[11px] font-semibold uppercase tracking-[0.22em] underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-            style={{ color: "var(--teal)" }}
-          >
-            Adjust this day
-          </button>
-        ) : (
+        {canReserve ? (
           <button
             type="button"
             onClick={() => setRefineOpen(true)}
@@ -6480,7 +6465,7 @@ export function StoryboardHandoff({
           >
             Edit your day
           </button>
-        )}
+        ) : null}
 
         <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
       </div>

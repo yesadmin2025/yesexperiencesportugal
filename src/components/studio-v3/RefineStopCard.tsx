@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { ArrowUp, ArrowDown, ArrowLeftRight, X } from "lucide-react";
+import { ArrowUp, ArrowDown, ArrowLeftRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface RefineStopCandidate {
@@ -63,8 +63,6 @@ export function RefineStopCard({
   label,
   story,
   reason,
-  minStops = 1,
-  removable,
   canSwap = false,
   swapPool,
   swapOpen = false,
@@ -72,21 +70,19 @@ export function RefineStopCard({
   onMoveLater,
   onToggleSwap,
   onPickSwap,
-  onRemove,
   className,
   testId,
 }: RefineStopCardProps) {
   const [expanded, setExpanded] = React.useState(false);
   const isFirst = index === 0;
   const isLast = index === total - 1;
-  const canRemove = (removable ?? true) && total > minStops;
   const showReadMore = !!story && story.length > 140;
 
   return (
     <li
       data-testid={testId ?? "studio-v3-refine-stop-card"}
       data-index={index}
-      data-removable={canRemove ? "true" : "false"}
+      data-removable="false"
       className={cn("w-full rounded-[10px] px-4 py-4", className)}
       style={{
         background: "color-mix(in oklab, var(--sand) 45%, transparent)",
@@ -187,14 +183,6 @@ export function RefineStopCard({
           onClick={onToggleSwap}
           ariaExpanded={swapOpen}
           testId="studio-v3-refine-swap"
-        />
-        <ActionButton
-          icon={<X size={15} aria-hidden />}
-          label="Remove"
-          ariaLabel={`Remove ${label} from the day`}
-          disabled={!canRemove || !onRemove}
-          onClick={onRemove}
-          testId="studio-v3-refine-remove"
         />
       </div>
 

@@ -60,13 +60,11 @@ describe("door-to-door authority — canonical formula", () => {
     expect(a.doorToDoorMinutes).toBe(b.doorToDoorMinutes);
   });
 
-  it("a different pickup changes the available experience capacity", () => {
+  it("a different pickup changes transfers but not experience capacity", () => {
     const fromLisbon = certifyDoorToDoor({ stops: ARRABIDA_DAY, pickupCoord: LISBON });
     const fromSetubal = certifyDoorToDoor({ stops: ARRABIDA_DAY, pickupCoord: SETUBAL });
     expect(fromSetubal.doorToDoorMinutes).toBeLessThan(fromLisbon.doorToDoorMinutes);
-    expect(fromSetubal.remainingToHardMaxMinutes).toBeGreaterThan(
-      fromLisbon.remainingToHardMaxMinutes,
-    );
+    expect(fromSetubal.remainingToHardMaxMinutes).toBe(fromLisbon.remainingToHardMaxMinutes);
   });
 
   it("honours the 540 hard max and the 480 target floor", () => {
@@ -88,7 +86,7 @@ describe("door-to-door authority — canonical formula", () => {
     expect(doorToDoorAllowsCheckout(cert)).toBe(true);
   });
 
-  it("a far corridor from Lisbon fails the 9h ceiling instead of being widened", () => {
+  it("a far pickup does not make a verified tour unbookable", () => {
     const cert = certifyDoorToDoor({
       stops: [
         stop("vicentine-a", 120, VICENTINE),
@@ -96,18 +94,16 @@ describe("door-to-door authority — canonical formula", () => {
       ],
       pickupCoord: LISBON,
     });
-    expect(cert.status).toBe("over-hard-max");
-    expect(cert.overflowMinutes).toBeGreaterThan(0);
-    expect(doorToDoorAllowsCheckout(cert)).toBe(false);
-    expect(cert.reason).toMatch(/9-hour/);
+    expect(cert.status).not.toBe("over-hard-max");
+    expect(doorToDoorAllowsCheckout(cert)).toBe(true);
   });
 });
 
 describe("door-to-door authority — fail closed", () => {
-  it("is not evaluable without a pickup origin", () => {
+  it("remains evaluable without a pickup origin because transfers are separate", () => {
     const cert = certifyDoorToDoor({ stops: ARRABIDA_DAY, pickupCoord: null });
-    expect(cert.status).toBe("not-evaluable");
-    expect(doorToDoorAllowsCheckout(cert)).toBe(false);
+    expect(cert.evaluable).toBe(true);
+    expect(doorToDoorAllowsCheckout(cert)).toBe(true);
   });
 
   it("is not evaluable when a moment has no verified duration", () => {
@@ -193,11 +189,11 @@ describe("Studio reveal route — explicit return leg", () => {
   });
 });
 
-describe("Studio time budget no longer inherits legacy 570/600 durations", () => {
-  it("clamps a legacy extended Signature duration to the 9h ceiling", () => {
+describe("Studio preserves verified Signature experience durations", () => {
+  it("keeps a verified 600-minute Signature because transfers are separate", () => {
     const budget = resolveTimeBudget({ skeletonDurationMinutes: 600 });
-    expect(budget.availableExperienceMinutes).toBe(540);
-    expect(budget.notes).toMatch(/clamped/);
+    expect(budget.availableExperienceMinutes).toBe(600);
+    expect(budget.notes).toMatch(/pickup and drop-off excluded/);
   });
 
   it("keeps catalogue reads verbatim behind the explicit escape hatch", () => {
