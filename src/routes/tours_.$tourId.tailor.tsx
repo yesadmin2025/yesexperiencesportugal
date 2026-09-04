@@ -86,6 +86,7 @@ import {
   validateDateISO,
   type OperatingRule,
 } from "@/lib/availability";
+import { guideAttributionMetadata } from "@/lib/guide-attribution";
 
 /* ════════════════════════════════════════════════════════════════
  * /tours/$tourId/tailor — Tailor a Signature
@@ -944,6 +945,7 @@ function TailorPage() {
       const origin = typeof window !== "undefined" ? window.location.origin : "";
       const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
         body: {
+          attribution: guideAttributionMetadata(),
           tourId: tour.id,
           tourTitle: tour.title,
           guests: details.guests,

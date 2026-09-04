@@ -19,6 +19,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics-events";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getTourContent } from "@/lib/tourContent";
+import { guideAttributionMetadata } from "@/lib/guide-attribution";
 
 export function LivingAtlasBookingStep({
   signatureId,
@@ -104,6 +105,7 @@ export function LivingAtlasBookingStep({
       const origin = typeof window !== "undefined" ? window.location.origin : "";
       const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
         body: {
+          attribution: guideAttributionMetadata(),
           tourId: tour.id,
           tourTitle: tour.title ?? tour.id,
           guests: guestDetails.guests,
