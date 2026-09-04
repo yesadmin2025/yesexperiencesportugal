@@ -78,11 +78,11 @@ describe("resolveTimeBudget", () => {
     expect(budget.maxMinutes).toBeGreaterThanOrEqual(600);
   });
 
-  it("B. the LIVE Studio budget is clamped to the owner's 9h door-to-door ceiling", () => {
+  it("B. keeps verified Signature duration because transfers are outside the tour", () => {
     for (const minutes of [570, 600]) {
       const budget = resolveTimeBudget({ skeletonDurationMinutes: minutes });
-      expect(budget.availableExperienceMinutes).toBe(540);
-      expect(budget.maxMinutes).toBeGreaterThanOrEqual(540);
+      expect(budget.availableExperienceMinutes).toBe(minutes);
+      expect(budget.maxMinutes).toBeGreaterThanOrEqual(minutes);
     }
   });
 
