@@ -1188,3 +1188,50 @@ export function serviceEntityListLd() {
     })),
   };
 }
+
+/**
+ * TouristDestination node for a regional guide ("corridor") page.
+ *
+ * Places are passed in by the route from the planner-map gazetteer, so the
+ * coordinates are the same verified ones the homepage map plots — nothing is
+ * hand-typed or invented here. Emitted only for guides that declare the
+ * planner places they cover.
+ */
+export function regionDestinationLd(input: {
+  slug: string;
+  name: string;
+  description: string;
+  places: readonly { label: string; lat: number; lon: number }[];
+}) {
+  const url = `${SITE_URL}/local-stories/${input.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "TouristDestination",
+    "@id": `${url}#destination`,
+    name: input.name,
+    description: input.description,
+    url,
+    touristType: [
+      "Private travel",
+      "Luxury travel",
+      "Wine and gastronomy",
+      "Culture and heritage",
+    ],
+    containedInPlace: { "@type": "Country", name: "Portugal" },
+    includesAttraction: input.places.map((p) => ({
+      "@type": "TouristAttraction",
+      name: p.label,
+      geo: { "@type": "GeoCoordinates", latitude: p.lat, longitude: p.lon },
+    })),
+    ...(input.places.length > 0
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: input.places[0].lat,
+            longitude: input.places[0].lon,
+          },
+        }
+      : {}),
+    provider: { "@id": `${SITE_URL}/#organization` },
+  };
+}
