@@ -1457,15 +1457,30 @@ export function pickPrimaryTourWithFit(
   // sellable for this date / pickup / party.
   const allowed = eligibleTourIds && eligibleTourIds.length > 0 ? new Set(eligibleTourIds) : null;
   const constrainedIds = allowed ? mergedIds.filter((id) => allowed.has(id)) : mergedIds;
-  const poolIds =
+  const basePoolIds =
     constrainedIds.length > 0
       ? constrainedIds
       : allowed
         ? Array.from(allowed)
         : mergedIds;
+  // EXPLICIT CHOICE ADMISSION. A deliberate, discriminative answer (e.g.
+  // "make cheese" → `azeitao-cheese`) names a product the traveller chose.
+  // Taste-derived candidate merging can simply not contain it, which silently
+  // turned the chosen moment into a different day. The named product is
+  // therefore admitted into the pool — never widening past the preflight
+  // eligibility ceiling, which stays absolute.
+  const explicitAdmission =
+    preferStrength === "explicit" &&
+    preferTourId &&
+    (!allowed || allowed.has(preferTourId)) &&
+    !basePoolIds.includes(preferTourId)
+      ? [preferTourId]
+      : [];
+  const poolIds = [...basePoolIds, ...explicitAdmission];
   const candidates = poolIds
     .map((id) => signatureTours.find((t) => t.id === id))
     .filter((t): t is SignatureTour => Boolean(t));
+
 
   if (candidates.length === 0) {
     // Fallback must also respect the ceiling: only ever a product preflight
@@ -1599,15 +1614,28 @@ export function pickPrimaryTourWithFit(
   // as a bounded tie-break: honoured while it stays within the top band
   // (Δ ≤ 12) of the leader, never strong enough to jump over a materially
   // better semantic fit. Neither strength invents a tour or widens the pool.
-  if (preferTourId && sorted.length > 1) {
-    const preferred = sorted.find((s) => s.tour.id === preferTourId);
-    if (preferred) {
+  if (preferTourId) {
+    // An explicit choice is looked up in the FULL scored set, not only in the
+    // post-gate survivors: the semantic gates exist to rank what we guessed,
+    // never to overrule what the traveller actually chose.
+    const preferred =
+      sorted.find((s) => s.tour.id === preferTourId) ??
+      (preferStrength === "explicit"
+        ? reported.find((s) => s.tour.id === preferTourId)
+        : undefined);
+    if (preferred && preferred !== chosen) {
       if (preferStrength === "explicit") {
         chosen = preferred;
-      } else if (chosen.fit.totalScore - preferred.fit.totalScore <= 12) {
+        // Truth stays honest: report what this exact product cannot cover.
+        if (highSignal.length > 0) {
+          const hit = new Set(verifiedHighSignal(preferred));
+          unsatisfiedHighSignal = highSignal.filter((i) => !hit.has(i));
+        }
+      } else if (sorted.length > 1 && chosen.fit.totalScore - preferred.fit.totalScore <= 12) {
         chosen = preferred;
       }
     }
+
   }
 
   const alternates = sorted
