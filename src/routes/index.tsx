@@ -1029,7 +1029,12 @@ function HomePage() {
             <ul className="max-w-5xl mx-auto grid gap-5 md:gap-7 md:grid-cols-3 list-none p-0">
               {((usedJournalImages: Set<string>) =>
                 homepageJournalLinks.map((entry) => {
-                const meta = journalCardMeta(entry.slug, entry.imgTourId, usedJournalImages);
+                const meta = journalCardMeta(
+                  entry.slug,
+                  entry.imgTourId,
+                  usedJournalImages,
+                  entry.imgFrom,
+                );
                 return (
                 <li key={entry.slug}>
                   <Link
