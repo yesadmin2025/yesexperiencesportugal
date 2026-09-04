@@ -3,6 +3,8 @@
 // the prose. Each article ships with: unique <title>, meta description, H1,
 // internal link to the matching Signature tour, and Article/BlogPosting JSON-LD.
 
+import { PORTUGAL_REGION_GUIDES } from "./portugal-region-guides";
+
 export type LocalStoryArticle = {
   slug: string;
   /** <title> tag — keep under ~60 chars where possible. */
