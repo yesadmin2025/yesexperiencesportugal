@@ -446,6 +446,31 @@ export function CheckoutSummary({
           className="mt-14 scroll-mt-5"
           data-testid="studio-v3-checkout-summary-stripe-inline"
         >
+          {/* While the card fields are on screen the ledger has scrolled away.
+              A quiet sticky line keeps the amount being charged visible, so
+              nobody types a card without the total in view. */}
+          <div
+            data-testid="studio-v3-checkout-sticky-total"
+            className="sticky top-0 z-30 -mx-5 mb-2 flex items-baseline justify-between gap-3 px-5 py-2 backdrop-blur-sm sm:mx-0 sm:rounded-sm sm:px-4"
+            style={{
+              background: "color-mix(in oklab, var(--ivory) 92%, transparent)",
+              borderBottom: "1px solid color-mix(in oklab, var(--gold) 35%, transparent)",
+            }}
+          >
+            <span
+              className="text-[10px] uppercase tracking-[0.22em]"
+              style={{ color: "var(--charcoal-soft)" }}
+            >
+              Paying now
+            </span>
+            <span
+              className="text-[16px] tabular-nums font-semibold"
+              style={{ fontFamily: "var(--font-editorial)", color: "var(--charcoal)" }}
+            >
+              {formatEur(totalEur)}
+            </span>
+          </div>
+
           <div
             aria-hidden
             className="mx-auto h-px w-16"

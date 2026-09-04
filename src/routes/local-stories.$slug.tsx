@@ -402,6 +402,52 @@ function StaticArticleView({
               ))}
             </div>
 
+            {article.comparison && article.comparison.rows.length > 0 && (
+              <section
+                aria-label={article.comparison.caption}
+                className="mt-4 mb-12 reveal"
+                data-testid="local-story-comparison"
+              >
+                <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-5">
+                  {article.comparison.caption}
+                </span>
+                <div className="-mx-4 overflow-x-auto px-4 md:mx-0 md:px-0">
+                  <table className="w-full min-w-[520px] border-collapse text-left text-[14px] md:text-[15px]">
+                    <thead>
+                      <tr>
+                        {article.comparison.columns.map((c) => (
+                          <th
+                            key={c}
+                            scope="col"
+                            className="border-b border-[color:var(--gold-soft)]/60 py-3 pr-4 font-sans text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]"
+                          >
+                            {c}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {article.comparison.rows.map((row, i) => (
+                        <tr key={i}>
+                          {row.map((cell, j) => (
+                            <td
+                              key={j}
+                              className={`border-b border-[color:var(--sand)] py-3 pr-4 align-top leading-[1.6] text-[color:var(--charcoal)] ${
+                                j === 0 ? "font-medium" : ""
+                              }`}
+                            >
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+
+
             {article.faq && article.faq.length > 0 && (
               <section
                 aria-label="Frequently asked questions"
