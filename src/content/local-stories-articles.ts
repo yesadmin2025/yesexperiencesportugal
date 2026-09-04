@@ -169,18 +169,21 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "what-to-do-in-sesimbra",
-    title: "Things to Do in Sesimbra: A Local's Day Guide (2026)",
+    title: "Things to Do in Sesimbra (2026): Castle, Harbour, Coves",
     metaDescription:
-      "Things to do in Sesimbra, by locals who live here: castle viewpoint, harbour seafood lunch, wild Arrábida coves, when to go, and the 40-minute drive from Lisbon.",
-
-
+      "We live in Sesimbra. Castle viewpoint, harbour seafood lunch, wild Arrábida coves — what to do, how long you need, best time to go, 40 min from Lisbon.",
     h1: "Things to Do in Sesimbra, Portugal — A Fishing Town Worth the Drive",
     eyebrow: "Sesimbra · Coast",
     standfirst:
       "Sesimbra is our home town, 40 minutes south of Lisbon. The short answer: the castle viewpoint, the harbour, a long seafood lunch and a wild Arrábida cove — half a day for the town, a full day with the coast.",
     sections: [
       {
+        heading: "The short answer: what to do in Sesimbra",
+        body: "If you only read one paragraph: climb to Sesimbra Castle for the bay view, walk the old centre down to the harbour, eat grilled fish from the morning's catch beside the water, and finish on a cove inside the Arrábida natural park.\n\nHalf a day covers the town. A full day is what you need if you also want the coast, a swim and an unhurried lunch. The drive from Lisbon is about 40 minutes; late spring and early autumn are the best windows.\n\nEverything below is how we plan it ourselves — we live here, and we run these days privately for guests.",
+      },
+      {
         heading: "Sesimbra harbour and the castle viewpoint",
+
 
         body: "Sesimbra still feels like a fishing town because fishing remains part of its daily life. Boats return to the harbour, seafood restaurants prepare the morning’s catch, and the waterfront becomes livelier as families arrive for lunch and an evening walk beside the beach.\n\nAbove the town, Sesimbra Castle looks across the roofs, the bay and the surrounding hills. The climb reveals how naturally the town is protected between the sea and the Arrábida landscape. Closer to the water, the old centre is compact and easy to explore on foot.\n\nSesimbra is not a place built around a checklist of monuments. Its appeal lies in watching the harbour, walking through the narrow streets and allowing the pace of the coast to replace the rhythm of Lisbon.",
       },
