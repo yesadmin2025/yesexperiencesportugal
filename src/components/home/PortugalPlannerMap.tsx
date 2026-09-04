@@ -219,7 +219,7 @@ export function PortugalPlannerMap() {
               Guides for this region
             </p>
             <ul className="mt-3 list-none p-0 flex flex-wrap gap-2">
-              {active.guides.slice(0, 5).map((guide) => (
+              {active.guides.slice(0, 3).map((guide) => (
                 <li key={guide.slug}>
                   <Link
                     to="/local-stories/$slug"
