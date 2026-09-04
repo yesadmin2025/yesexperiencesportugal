@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
+  PLANNER_ISLAND_REGIONS,
+  PLANNER_MAINLAND_REGIONS,
   PLANNER_MAP,
   PLANNER_ORIGIN,
   PLANNER_REGIONS,
@@ -8,6 +10,7 @@ import {
   resolvePlannerRegion,
   type PlannerRegion,
 } from "@/content/portugal-planner-map";
+
 import { PORTUGAL_MAINLAND_PATH } from "@/content/portugal-outline";
 
 /**
