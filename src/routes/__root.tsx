@@ -28,6 +28,7 @@ import { usePageViewTracking } from "@/lib/analytics-page-view";
 import { installAnalyticsAttrs } from "@/lib/analytics";
 import { setAnalyticsLocale } from "@/lib/analytics-events";
 import { captureUtmsFromLocation } from "@/lib/utm";
+import { captureGuideRefFromLocation } from "@/lib/guide-attribution";
 import { LocaleProvider } from "@/i18n/locale-context";
 import { LOCALE_BCP47, parseLocaleFromPath } from "@/i18n/config";
 import { Analytics } from "@vercel/analytics/react";
@@ -310,6 +311,7 @@ function RootComponent() {
   usePageViewTracking();
   useEffect(() => {
     captureUtmsFromLocation();
+    captureGuideRefFromLocation();
   }, []);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { locale } = parseLocaleFromPath(pathname);
@@ -317,6 +319,7 @@ function RootComponent() {
     setAnalyticsLocale(locale);
     // Re-check UTMs on client-side navigation (SPA route changes).
     captureUtmsFromLocation();
+    captureGuideRefFromLocation();
   }, [locale, pathname]);
   // Pause long Ken Burns / crossfade loops while they are offscreen.
   useEffect(() => pauseOffscreenLoops(), [pathname]);

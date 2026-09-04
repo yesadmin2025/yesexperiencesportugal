@@ -25,6 +25,8 @@ import { PLANNER_REGIONS } from "@/content/portugal-planner-map";
 import { getTourReviews } from "@/lib/reviews.functions";
 import { findTour } from "@/data/signatureTours";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
+import { GuideNextSteps, useGuideLinkTracker } from "@/components/journal/GuideNextSteps";
+import { guideRefSearch } from "@/lib/guide-attribution";
 
 /**
  * Inline-renders `[label](/tours/slug)` tokens in article body copy as
@@ -354,6 +356,7 @@ function StaticArticleView({
   article: LocalStoryArticle;
   reviews: NormalizedLocalStoryReview[];
 }) {
+  const trackGuideLink = useGuideLinkTracker(article.slug);
   const dateFmt = new Intl.DateTimeFormat("en-GB", {
     year: "numeric",
     month: "long",
@@ -471,6 +474,8 @@ function StaticArticleView({
               </section>
             )}
 
+            <GuideNextSteps article={article} />
+
             <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
               <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-4">
                 Travel this story
@@ -483,7 +488,13 @@ function StaticArticleView({
                   <CtaButton
                     to="/tours/$tourId"
                     params={{ tourId: article.signatureSlug }}
+                    search={guideRefSearch(article.slug, "article_cta")}
                     variant="primary"
+                    onClick={trackGuideLink(
+                      "article_cta",
+                      "signature",
+                      `/tours/${article.signatureSlug}`,
+                    )}
                   >
                     {article.ctaLabel}
                   </CtaButton>
@@ -492,6 +503,8 @@ function StaticArticleView({
                     Or{" "}
                     <Link
                       to="/studio-v3"
+                      search={guideRefSearch(article.slug, "article_studio")}
+                      onClick={trackGuideLink("article_studio", "studio", "/studio-v3")}
                       className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
                     >
                       design your own private Portugal day in the Studio
@@ -503,8 +516,13 @@ function StaticArticleView({
                 <>
                   <CtaButton
                     to="/contact"
-                    search={{ type: "multi_day", place: article.h1 }}
+                    search={{
+                      type: "multi_day",
+                      place: article.h1,
+                      ...guideRefSearch(article.slug, "article_cta"),
+                    }}
                     variant="primary"
+                    onClick={trackGuideLink("article_cta", "contact", "/contact")}
                   >
                     {article.ctaLabel}
                   </CtaButton>
@@ -524,6 +542,12 @@ function StaticArticleView({
                       <Link
                         to="/tours/$tourId"
                         params={{ tourId: r.slug }}
+                        search={guideRefSearch(article.slug, "related_signature")}
+                        onClick={trackGuideLink(
+                          "related_signature",
+                          "signature",
+                          `/tours/${r.slug}`,
+                        )}
                         className="hover:text-[color:var(--teal)] transition-colors"
                       >
                         {r.label} →
@@ -538,7 +562,8 @@ function StaticArticleView({
                   {article.relatedReads.map((r) => (
                     <li key={r.path}>
                       <a
-                        href={r.path}
+                        href={`${r.path}?ref=guide:${article.slug}&ref_slot=related_read`}
+                        onClick={trackGuideLink("related_read", "guide", r.path)}
                         className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
                       >
                         {r.label} →

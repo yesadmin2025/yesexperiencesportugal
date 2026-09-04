@@ -45,6 +45,7 @@ import {
   gaBookingValidationBlocked,
   gaCheckoutDrawerOpened,
 } from "@/lib/analytics-ga4";
+import { guideAttributionMetadata } from "@/lib/guide-attribution";
 
 /**
  * SimpleBookingForm — the *reserve as-is* path.
@@ -233,6 +234,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
       const includedItems = resolveClientIncludedItems(meta, tour);
       const { data, error } = await supabase.functions.invoke("create-signature-checkout", {
         body: {
+          attribution: guideAttributionMetadata(),
           tourId: tour.id,
           tourTitle: tour.title,
           guests: details.guests,

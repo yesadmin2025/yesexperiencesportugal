@@ -95,7 +95,9 @@ export type YesAnalyticsEvent =
   | "tripadvisor_click"
   | "google_reviews_click"
   | "phone_click"
-  | "email_click";
+  | "email_click"
+  // Journal / guide internal attribution
+  | "guide_link_click";
 
 export type ExperienceType =
   | "signature"

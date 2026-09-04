@@ -119,6 +119,7 @@ import { Route as AdminLegacyDomainsMonitorRouteImport } from './routes/admin.le
 import { Route as AdminLegacyDomainUnlinkRouteImport } from './routes/admin.legacy-domain-unlink'
 import { Route as AdminImportToursRouteImport } from './routes/admin.import-tours'
 import { Route as AdminImageSwapRouteImport } from './routes/admin.image-swap'
+import { Route as AdminGuideAttributionRouteImport } from './routes/admin.guide-attribution'
 import { Route as AdminGscRouteImport } from './routes/admin.gsc'
 import { Route as AdminGbpLegacyRemovalRouteImport } from './routes/admin.gbp-legacy-removal'
 import { Route as AdminExperiencesRouteImport } from './routes/admin.experiences'
@@ -717,6 +718,11 @@ const AdminImageSwapRoute = AdminImageSwapRouteImport.update({
   path: '/admin/image-swap',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminGuideAttributionRoute = AdminGuideAttributionRouteImport.update({
+  id: '/admin/guide-attribution',
+  path: '/admin/guide-attribution',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminGscRoute = AdminGscRouteImport.update({
   id: '/admin/gsc',
   path: '/admin/gsc',
@@ -1007,6 +1013,7 @@ export interface FileRoutesByFullPath {
   '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
+  '/admin/guide-attribution': typeof AdminGuideAttributionRoute
   '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
@@ -1157,6 +1164,7 @@ export interface FileRoutesByTo {
   '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
+  '/admin/guide-attribution': typeof AdminGuideAttributionRoute
   '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
@@ -1310,6 +1318,7 @@ export interface FileRoutesById {
   '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
   '/admin/gsc': typeof AdminGscRoute
+  '/admin/guide-attribution': typeof AdminGuideAttributionRoute
   '/admin/image-swap': typeof AdminImageSwapRoute
   '/admin/import-tours': typeof AdminImportToursRoute
   '/admin/legacy-domain-unlink': typeof AdminLegacyDomainUnlinkRoute
@@ -1464,6 +1473,7 @@ export interface FileRouteTypes {
     | '/admin/experiences'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
+    | '/admin/guide-attribution'
     | '/admin/image-swap'
     | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
@@ -1614,6 +1624,7 @@ export interface FileRouteTypes {
     | '/admin/experiences'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
+    | '/admin/guide-attribution'
     | '/admin/image-swap'
     | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
@@ -1766,6 +1777,7 @@ export interface FileRouteTypes {
     | '/admin/experiences'
     | '/admin/gbp-legacy-removal'
     | '/admin/gsc'
+    | '/admin/guide-attribution'
     | '/admin/image-swap'
     | '/admin/import-tours'
     | '/admin/legacy-domain-unlink'
@@ -1919,6 +1931,7 @@ export interface RootRouteChildren {
   AdminExperiencesRoute: typeof AdminExperiencesRoute
   AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
   AdminGscRoute: typeof AdminGscRoute
+  AdminGuideAttributionRoute: typeof AdminGuideAttributionRoute
   AdminImageSwapRoute: typeof AdminImageSwapRoute
   AdminImportToursRoute: typeof AdminImportToursRoute
   AdminLegacyDomainUnlinkRoute: typeof AdminLegacyDomainUnlinkRoute
@@ -2751,6 +2764,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminImageSwapRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/guide-attribution': {
+      id: '/admin/guide-attribution'
+      path: '/admin/guide-attribution'
+      fullPath: '/admin/guide-attribution'
+      preLoaderRoute: typeof AdminGuideAttributionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/gsc': {
       id: '/admin/gsc'
       path: '/admin/gsc'
@@ -3184,6 +3204,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminExperiencesRoute: AdminExperiencesRoute,
   AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
   AdminGscRoute: AdminGscRoute,
+  AdminGuideAttributionRoute: AdminGuideAttributionRoute,
   AdminImageSwapRoute: AdminImageSwapRoute,
   AdminImportToursRoute: AdminImportToursRoute,
   AdminLegacyDomainUnlinkRoute: AdminLegacyDomainUnlinkRoute,
