@@ -998,7 +998,7 @@ function HomePage() {
 
             <ul className="max-w-5xl mx-auto grid gap-5 md:gap-7 md:grid-cols-3 list-none p-0">
               {homepageJournalLinks.map((entry) => {
-                const meta = journalCardMeta(entry.slug);
+                const meta = journalCardMeta(entry.slug, entry.imgTourId);
                 return (
                 <li key={entry.slug}>
                   <Link
