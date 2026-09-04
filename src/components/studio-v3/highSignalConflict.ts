@@ -97,7 +97,7 @@ export function resolveHighSignalConflict(state: StudioV3State): HighSignalConfl
     unsatisfied: unsatisfiedHighSignal,
     message:
       names.length === 1
-        ? `No private day available on your date can genuinely deliver ${list}. Choose a different priority — or keep it and remove the others — and we will design around it.`
+        ? `No private day available on your date can genuinely deliver ${list}. Choose the priority that matters most and Studio will design an instantly bookable day around it.`
         : `No single private day available on your date can genuinely deliver ${list} together. Tell us which one matters most and we will design the day around it.`,
   };
 }

@@ -5,7 +5,6 @@ import { bridgedBlueprintStopId } from "@/data/structuralStopBridge";
 import { resolveCommercialActionId } from "@/lib/studio-v3/compositionIdentity";
 import {
   certifyDoorToDoor,
-  certifyDoorToDoorAdmission,
   type DoorToDoorCertification,
   type LatLng,
 } from "@/lib/studio-v3/doorToDoorAuthority";
@@ -513,22 +512,6 @@ export function composeLivingAtlasDay(
    */
   // Deterministic memo keyed by the exact frozen selection + candidate, so the
   // repeated obligation passes never recertify the same admission.
-  const doorToDoorMemo = new Map<string, boolean>();
-  const doorToDoorBlocks = (candidate: ScoredStop): boolean => {
-    if (!pickupCoord) return false;
-    const key = `${selected.map((item) => item.stop.id).join(">")}|${candidate.stop.id}`;
-    const cached = doorToDoorMemo.get(key);
-    if (cached !== undefined) return cached;
-    const cert = certifyDoorToDoorAdmission(
-      doorToDoorInputFor(selected),
-      toTimeAuthorityStop(candidate.stop),
-    );
-    const blocked = cert.evaluable && !cert.fitsHardMax;
-    doorToDoorMemo.set(key, blocked);
-    return blocked;
-  };
-
-
   /* ---- ANCHOR STRUCTURAL TRUTH (Tailor blueprint), read-only ---- */
   const blueprint = getTailorBlueprint(request.anchorSignatureId) ?? null;
   const anchorChoiceIds = new Set((blueprint?.choice?.options ?? []).map((option) => option.id));

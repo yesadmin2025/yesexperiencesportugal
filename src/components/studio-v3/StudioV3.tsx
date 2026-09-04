@@ -6456,17 +6456,7 @@ export function StoryboardHandoff({
           </p>
         ) : null}
 
-        {!canReserve ? (
-          <button
-            type="button"
-            onClick={onRefine}
-            data-testid="studio-v3-reserve-review-path"
-            className="min-h-[44px] px-3 text-[11px] font-semibold uppercase tracking-[0.22em] underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
-            style={{ color: "var(--teal)" }}
-          >
-            Adjust this day
-          </button>
-        ) : (
+        {canReserve ? (
           <button
             type="button"
             onClick={() => setRefineOpen(true)}
@@ -6476,7 +6466,7 @@ export function StoryboardHandoff({
           >
             Edit your day
           </button>
-        )}
+        ) : null}
 
         <SaveSignatureButton state={state} journeyTitle={journeyTitle} />
       </div>
