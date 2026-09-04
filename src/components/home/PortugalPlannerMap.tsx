@@ -128,22 +128,27 @@ export function PortugalPlannerMap() {
         <p className="mt-4 text-center text-[12.5px] text-[color:var(--charcoal-soft)] md:text-left">
           <span className="text-[11px] uppercase tracking-[0.22em]">Islands</span>
           <span aria-hidden="true" className="mx-2 text-[color:var(--gold)]">·</span>
-          {PLANNER_ISLAND_REGIONS.map((region, i) => (
-            <span key={region.id}>
+          {/* Two simple choices — Madeira and the Azores. Each maps to a
+              representative region id; the panel copy stays generic. */}
+          {([
+            { id: "madeira", label: "Madeira" },
+            { id: "sao-miguel", label: "Azores" },
+          ] as const).map((island, i) => (
+            <span key={island.id}>
               {i > 0 && (
                 <span aria-hidden="true" className="mx-2 text-[color:var(--gold)]">·</span>
               )}
               <button
                 type="button"
-                onClick={() => setActiveId(region.id)}
-                aria-pressed={region.id === active.id}
+                onClick={() => setActiveId(island.id)}
+                aria-pressed={island.id === active.id}
                 className={`inline-flex min-h-11 items-center underline-offset-4 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] ${
-                  region.id === active.id
+                  island.id === active.id
                     ? "text-[color:var(--charcoal)] underline decoration-[color:var(--gold)]"
                     : "hover:text-[color:var(--teal)]"
                 }`}
               >
-                {region.label}
+                {island.label}
               </button>
             </span>
           ))}
