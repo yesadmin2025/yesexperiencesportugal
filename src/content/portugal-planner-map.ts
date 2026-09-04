@@ -21,13 +21,16 @@ export type PlannerRegion = {
   label: string;
   /** One-line orientation copy shown in the panel. */
   note: string;
-  /** Key into the curated gazetteer — the only source of coordinates. */
-  geoKey: string;
-  /** Real geographic position (WGS84 degrees), resolved from `geoKey`. */
+  /** Key into the curated gazetteer, when the place is a real tour stop. */
+  geoKey?: string;
+  /** Real geographic position (WGS84 degrees). */
   lat: number;
   lon: number;
-  /** Existing Signature tour ids that operate in this place. */
+  /** Existing Signature tour ids that operate in this place. May be empty for
+   *  places we cover as private designed days and write about in the Journal. */
   tourIds: readonly string[];
+  /** Mainland pins project onto the map; island pins render in the inset. */
+  area: "mainland" | "islands";
 };
 
 /**
@@ -60,7 +63,9 @@ export const PLANNER_ORIGIN = {
   lon: -9.14,
 } as const;
 
-type PlaceSeed = Omit<PlannerRegion, "lat" | "lon">;
+type PlaceSeed = Omit<PlannerRegion, "lat" | "lon" | "area"> &
+  Partial<Pick<PlannerRegion, "lat" | "lon" | "area">>;
+
 
 /** North → south, so the pin order reads like the country. */
 const PLACE_SEEDS: readonly PlaceSeed[] = [
@@ -218,17 +223,173 @@ const PLACE_SEEDS: readonly PlaceSeed[] = [
     geoKey: "aljezur",
     tourIds: ["southwest-vicentine-coast"],
   },
+
+  /* ── Places we drive and write about as private designed days.
+     No published Signature day yet — the day is built around you, and the
+     Journal guides for each area attach here automatically as they publish.
+     Coordinates are real WGS84 town/park positions. ── */
+  {
+    id: "geres",
+    label: "Peneda-Gerês",
+    note: "Portugal's only national park — granite peaks, lagoons and mountain villages.",
+    lat: 41.76,
+    lon: -8.19,
+    tourIds: [],
+  },
+  {
+    id: "braga-guimaraes",
+    label: "Braga & Guimarães",
+    note: "The baroque north and the town where Portugal was founded.",
+    lat: 41.44,
+    lon: -8.29,
+    tourIds: [],
+  },
+  {
+    id: "porto",
+    label: "Porto",
+    note: "Granite, river and the cellars across the water in Gaia.",
+    lat: 41.15,
+    lon: -8.61,
+    tourIds: [],
+  },
+  {
+    id: "douro",
+    label: "Douro Valley",
+    note: "Terraced vineyards above the river — the oldest demarcated wine region on earth.",
+    lat: 41.19,
+    lon: -7.54,
+    tourIds: [],
+  },
+  {
+    id: "aveiro",
+    label: "Aveiro",
+    note: "Canals, salt pans and the striped fishermen's houses at Costa Nova.",
+    lat: 40.64,
+    lon: -8.65,
+    tourIds: [],
+  },
+  {
+    id: "serra-da-estrela",
+    label: "Serra da Estrela",
+    note: "The highest ground in mainland Portugal — glacial valleys, cheese and stone villages.",
+    lat: 40.32,
+    lon: -7.61,
+    tourIds: [],
+  },
+  {
+    id: "leiria",
+    label: "Leiria",
+    note: "Castle town between the pine forest and the Atlantic beaches.",
+    lat: 39.75,
+    lon: -8.81,
+    tourIds: [],
+  },
+  {
+    id: "marvao",
+    label: "Marvão & Castelo de Vide",
+    note: "Walled villages on the Spanish border, high above the Alentejo plain.",
+    lat: 39.39,
+    lon: -7.38,
+    tourIds: [],
+  },
+  {
+    id: "lagos",
+    label: "Lagos",
+    note: "Golden cliffs, sea caves and the Ponta da Piedade headland.",
+    lat: 37.1,
+    lon: -8.67,
+    tourIds: [],
+  },
+  {
+    id: "sagres",
+    label: "Sagres",
+    note: "The southwest corner of Europe, where the Atlantic meets the Algarve.",
+    lat: 37.01,
+    lon: -8.94,
+    tourIds: [],
+  },
+  {
+    id: "ria-formosa",
+    label: "Faro & Ria Formosa",
+    note: "Lagoon islands, salt flats and the old walled town behind them.",
+    lat: 37.02,
+    lon: -7.93,
+    tourIds: [],
+  },
+  {
+    id: "tavira",
+    label: "Tavira",
+    note: "The quiet eastern Algarve — Roman bridge, tiled façades, island beaches.",
+    lat: 37.13,
+    lon: -7.65,
+    tourIds: [],
+  },
+
+  /* ── Atlantic Portugal. Shown in the map inset, not on the mainland. ── */
+  {
+    id: "madeira",
+    label: "Madeira",
+    note: "Levada walks, laurel forest and the cliffs above Funchal.",
+    lat: 32.65,
+    lon: -16.91,
+    area: "islands",
+    tourIds: [],
+  },
+  {
+    id: "porto-santo",
+    label: "Porto Santo",
+    note: "Nine kilometres of golden sand, an hour by air from Madeira.",
+    lat: 33.06,
+    lon: -16.34,
+    area: "islands",
+    tourIds: [],
+  },
+  {
+    id: "sao-miguel",
+    label: "São Miguel",
+    note: "Crater lakes, hot springs and tea fields on the green Azorean island.",
+    lat: 37.74,
+    lon: -25.67,
+    area: "islands",
+    tourIds: [],
+  },
+  {
+    id: "pico-faial",
+    label: "Pico & Faial",
+    note: "The volcano, the lava-stone vineyards and the whaling channel between them.",
+    lat: 38.47,
+    lon: -28.4,
+    area: "islands",
+    tourIds: [],
+  },
 ] as const;
 
 function seedToRegion(seed: PlaceSeed): PlannerRegion {
-  const geo = STOP_LATLNG[seed.geoKey];
-  if (!geo) {
-    throw new Error(`Planner map place "${seed.id}" has no gazetteer entry for "${seed.geoKey}"`);
+  const area = seed.area ?? "mainland";
+  if (seed.geoKey) {
+    const geo = STOP_LATLNG[seed.geoKey];
+    if (!geo) {
+      throw new Error(`Planner map place "${seed.id}" has no gazetteer entry for "${seed.geoKey}"`);
+    }
+    return { ...seed, area, lat: geo.lat, lon: geo.lng };
   }
-  return { ...seed, lat: geo.lat, lon: geo.lng };
+  if (typeof seed.lat !== "number" || typeof seed.lon !== "number") {
+    throw new Error(`Planner map place "${seed.id}" needs either a geoKey or explicit lat/lon`);
+  }
+  return { ...seed, area, lat: seed.lat, lon: seed.lon };
 }
 
-export const PLANNER_REGIONS: readonly PlannerRegion[] = PLACE_SEEDS.map(seedToRegion);
+/** North → south, so the pin order reads like the country. */
+export const PLANNER_REGIONS: readonly PlannerRegion[] = PLACE_SEEDS.map(seedToRegion).sort(
+  (a, b) => b.lat - a.lat,
+);
+
+/** Mainland pins, projected onto the traced coastline. */
+export const PLANNER_MAINLAND_REGIONS = PLANNER_REGIONS.filter((r) => r.area === "mainland");
+
+/** Madeira and the Azores — rendered in the inset beside the mainland. */
+export const PLANNER_ISLAND_REGIONS = PLANNER_REGIONS.filter((r) => r.area === "islands");
+
 
 export type PlannerRegionResolved = PlannerRegion & {
   tours: SignatureTour[];

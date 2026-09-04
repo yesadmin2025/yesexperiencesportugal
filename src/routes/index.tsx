@@ -960,19 +960,18 @@ function HomePage() {
                 id="plan-map-title"
                 className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
               >
-                We drive all of mainland Portugal —{" "}
+                All of Portugal, mainland and islands —{" "}
                 <span className="italic font-normal text-[color:var(--teal)]">
                   start with a place you already have in mind.
                 </span>
               </h2>
               <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
-                The pins below are the places our{" "}
-                <strong className="font-medium text-[color:var(--charcoal)]">
-                  published private days
-                </strong>{" "}
-                already visit. They are a starting point, not our limit — anywhere else in the
-                country, we design the day around you.
+                From Gerês and the Douro to the Algarve, Madeira and the Azores. A{" "}
+                <strong className="font-medium text-[color:var(--charcoal)]">filled pin</strong> has
+                a published private day; an open one is designed around you — and every place has
+                Journal guides as we write them.
               </p>
+
             </div>
 
             <div className="reveal max-w-5xl mx-auto">
