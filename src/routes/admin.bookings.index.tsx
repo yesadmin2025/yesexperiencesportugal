@@ -6,6 +6,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { listAdminBookings } from "@/lib/bookingsAdmin.functions";
+import { formatGuestComposition } from "@/components/studio-v3/formatGuests";
 
 export const Route = createFileRoute("/admin/bookings/")({
   component: AdminBookingsPage,
@@ -46,6 +47,18 @@ function pickupOf(b: Row): string | null {
   return typeof hit === "string" ? hit : null;
 }
 
+/** Party split comes from the frozen composition; never guessed. */
+function partyOf(b: Row): string {
+  const d = (b.booking_details ?? {}) as Record<string, unknown>;
+  const comp = (d["composition"] ?? {}) as Record<string, unknown>;
+  const adults = typeof comp["adults"] === "number" ? (comp["adults"] as number) : null;
+  const minorAges = Array.isArray(comp["minorAges"]) ? (comp["minorAges"] as number[]) : null;
+  return formatGuestComposition(adults, minorAges, b.guests) ?? `${b.guests} guests`;
+}
+
+const STATUSES = ["paid", "pending", "cancelled", "refunded", "all"] as const;
+type StatusFilter = (typeof STATUSES)[number];
+
 function money(cents: number, currency: string) {
   return new Intl.NumberFormat("en-GB", {
     style: "currency",
@@ -56,6 +69,7 @@ function money(cents: number, currency: string) {
 function AdminBookingsPage() {
   const list = useServerFn(listAdminBookings);
   const [search, setSearch] = useState("");
+  const [status, setStatus] = useState<StatusFilter>("paid");
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +78,7 @@ function AdminBookingsPage() {
     let active = true;
     setLoading(true);
     const t = setTimeout(() => {
-      list({ data: { search: search || undefined, limit: 100 } })
+      list({ data: { search: search || undefined, status, limit: 100 } })
         .then((r) => {
           if (!active) return;
           setRows((r.bookings ?? []) as Row[]);
@@ -77,23 +91,49 @@ function AdminBookingsPage() {
       active = false;
       clearTimeout(t);
     };
-  }, [search, list]);
+  }, [search, status, list]);
+
+  const totalCents = rows.reduce((sum, b) => sum + (b.amount_total || 0), 0);
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
-      <h1 className="font-[family-name:var(--font-editorial)] text-3xl text-[color:var(--charcoal)]">
-        Bookings
+      <Link
+        to="/admin"
+        className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]"
+      >
+        ← Admin
+      </Link>
+      <h1 className="mt-4 font-[family-name:var(--font-editorial)] text-3xl text-[color:var(--charcoal)]">
+        Guest trips
       </h1>
       <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
-        Every reservation, newest first. Open one to see the frozen purchase snapshot.
+        Paid reservations first, newest at the top. Open one to see the frozen purchase snapshot.
       </p>
+
+      <div className="mt-5 flex flex-wrap gap-2">
+        {STATUSES.map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => setStatus(s)}
+            aria-pressed={status === s}
+            className={`min-h-11 rounded-full border px-4 text-[11px] uppercase tracking-[0.16em] transition-colors ${
+              status === s
+                ? "border-[color:var(--charcoal)] bg-[color:var(--charcoal)] text-[color:var(--ivory)]"
+                : "border-[color:var(--sand)] text-[color:var(--charcoal-soft)]"
+            }`}
+          >
+            {s}
+          </button>
+        ))}
+      </div>
 
       <input
         type="search"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search name, email, tour or Stripe session"
-        className="mt-6 w-full rounded-md border border-[color:var(--sand)] bg-white px-4 py-3 text-sm"
+        className="mt-4 w-full rounded-md border border-[color:var(--sand)] bg-white px-4 py-3 text-sm"
       />
 
       {error ? <p className="mt-4 text-sm text-red-700">{error}</p> : null}
@@ -102,31 +142,40 @@ function AdminBookingsPage() {
       ) : rows.length === 0 ? (
         <p className="mt-6 text-sm text-[color:var(--charcoal-soft)]">No bookings found.</p>
       ) : (
-        <ul className="mt-6 divide-y divide-[color:var(--sand)] border-y border-[color:var(--sand)]">
-          {rows.map((b) => (
-            <li key={b.id} className="py-4">
-              <Link
-                to="/admin/bookings/$id"
-                params={{ id: b.id }}
-                className="flex flex-col gap-1 hover:opacity-80 min-h-11 justify-center"
-              >
-                <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
-                  {new Date(b.created_at).toLocaleDateString()} · {b.booking_type} · {b.status}
-                </span>
-                <span className="text-base text-[color:var(--charcoal)]">
-                  {b.customer_name || b.customer_email} — {b.source_tour_id ?? "—"}
-                </span>
-                <span className="text-sm text-[color:var(--charcoal-soft)]">
-                  {b.preferred_date ?? "date TBC"} · {b.guests} guest{b.guests === 1 ? "" : "s"} ·{" "}
-                  {money(b.amount_total, b.currency)}
-                </span>
-                <span className="text-sm text-[color:var(--charcoal-soft)]">
-                  Pickup: {pickupOf(b) ?? "—"}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <>
+          <p className="mt-6 text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+            {rows.length} trip{rows.length === 1 ? "" : "s"} · {money(totalCents, rows[0]?.currency ?? "eur")}
+          </p>
+          <ul className="mt-3 divide-y divide-[color:var(--sand)] border-y border-[color:var(--sand)]">
+            {rows.map((b) => (
+              <li key={b.id} className="py-4">
+                <Link
+                  to="/admin/bookings/$id"
+                  params={{ id: b.id }}
+                  className="flex flex-col gap-1 hover:opacity-80 min-h-11 justify-center"
+                >
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                    {b.booking_type} · {b.status} · booked{" "}
+                    {new Date(b.created_at).toLocaleDateString()}
+                  </span>
+                  <span className="text-base text-[color:var(--charcoal)]">
+                    {b.customer_name || b.customer_email}
+                  </span>
+                  <span className="text-sm text-[color:var(--charcoal-soft)]">
+                    {b.source_tour_id ?? "—"}
+                  </span>
+                  <span className="text-sm text-[color:var(--charcoal)]">
+                    {b.preferred_date ?? "date TBC"} · {partyOf(b)} ·{" "}
+                    {money(b.amount_total, b.currency)}
+                  </span>
+                  <span className="text-sm text-[color:var(--charcoal-soft)]">
+                    Pickup: {pickupOf(b) ?? "—"}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </main>
   );
