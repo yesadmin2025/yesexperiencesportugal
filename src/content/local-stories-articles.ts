@@ -20,8 +20,12 @@ export type LocalStoryArticle = {
   /** Soft CTA copy at the end of the article. */
   ctaLead: string;
   ctaLabel: string;
-  /** Matching Signature tour id (slug). */
-  signatureSlug: string;
+  /** Matching Signature tour id (slug). Absent for regional guides that cover a
+   *  place we design privately but publish no fixed Signature for. */
+  signatureSlug?: string;
+  /** Planner-map place ids this guide covers (used by the homepage map so an
+   *  open pin fills with real reading). */
+  plannerRegionIds?: readonly string[];
   /** Optional secondary internal links. */
   relatedSignatures?: { slug: string; label: string }[];
   /** ISO date for JSON-LD datePublished. */
@@ -1258,6 +1262,8 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
 ];
 
+
+LOCAL_STORIES_ARTICLES.push(...PORTUGAL_REGION_GUIDES);
 
 export const LOCAL_STORIES_ARTICLES_BY_SLUG: Record<string, LocalStoryArticle> = Object.fromEntries(
   LOCAL_STORIES_ARTICLES.map((a) => [a.slug, a]),
