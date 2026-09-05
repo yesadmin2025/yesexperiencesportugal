@@ -218,7 +218,13 @@ function ReviewsPage() {
               })}
             </div>
 
+            <GuestReviewForm
+              locale="pt"
+              tours={tours.map((t) => ({ tour_id: t.tour_id, title: t.title }))}
+            />
+
             <aside className="mt-20 pt-12 border-t border-[color:var(--gold-soft)]/40 text-center">
+
               <CtaButton to="/pt/experiences" variant="primary">
                 Ver todas as experiências Signature
               </CtaButton>
