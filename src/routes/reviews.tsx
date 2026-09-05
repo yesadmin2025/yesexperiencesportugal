@@ -120,6 +120,23 @@ export const Route = createFileRoute("/reviews")({
       },
     ];
 
+    if (tours.length > 0) {
+      scripts.push({
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Reviewed private experiences",
+          itemListElement: tours.map((t, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            name: t.title,
+            url: `${SITE_URL}/tours/${t.tour_id}`,
+          })),
+        }),
+      });
+    }
+
     return { meta, links, scripts };
   },
 });
