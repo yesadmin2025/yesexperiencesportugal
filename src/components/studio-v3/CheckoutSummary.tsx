@@ -411,7 +411,7 @@ export function CheckoutSummary({
           style={{ borderColor: "color-mix(in oklab, var(--gold) 55%, transparent)" }}
         >
           <span
-            className="text-[11px] uppercase tracking-[0.22em] font-semibold"
+            className="text-[12px] uppercase tracking-[0.22em] font-semibold"
             style={{ color: "var(--charcoal)" }}
           >
             Your total
@@ -425,7 +425,7 @@ export function CheckoutSummary({
           </span>
         </div>
         <div
-          className="flex justify-end text-[11.5px] uppercase tracking-[0.2em] text-right leading-[1.6]"
+          className="flex justify-end text-[12px] uppercase tracking-[0.2em] text-right leading-[1.6]"
           style={{ color: "var(--charcoal-soft)" }}
         >
           <PerPersonBands
@@ -489,8 +489,8 @@ export function CheckoutSummary({
             }}
           >
             <span
-              className="text-[11.5px] uppercase tracking-[0.2em]"
-              style={{ color: "var(--charcoal-soft)" }}
+              className="text-[12.5px] uppercase tracking-[0.2em]"
+              style={{ color: "var(--charcoal)" }}
             >
               Paying now
             </span>
@@ -508,7 +508,7 @@ export function CheckoutSummary({
             style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
           />
           <div
-            className="mt-6 flex items-center justify-center gap-2 text-[12px] uppercase tracking-[0.2em]"
+            className="mt-6 flex items-center justify-center gap-2 text-[12.5px] uppercase tracking-[0.2em]"
             style={{ color: "var(--charcoal-soft)" }}
             data-testid="studio-v3-checkout-security-note"
           >
@@ -593,7 +593,7 @@ function CancellationNote({ className }: { className?: string }) {
   return (
     <p
       data-testid="studio-v3-checkout-cancellation-note"
-      className={cn("text-center text-[12px] leading-[1.5]", className)}
+      className={cn("text-center text-[12.5px] leading-[1.5]", className)}
       style={{ color: "var(--charcoal-soft)" }}
     >
       {CANCELLATION.custom.en}{" "}
