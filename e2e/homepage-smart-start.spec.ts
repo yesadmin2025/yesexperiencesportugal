@@ -2,17 +2,26 @@ import { test, expect } from "@playwright/test";
 
 const SMART_START = '[data-testid="home-smart-start"]';
 
+async function openHydratedHome(page: Parameters<typeof test>[0]["page"]) {
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const smartStart = page.locator(SMART_START);
+  await expect(smartStart).toBeVisible({ timeout: 20_000 });
+  await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => undefined);
+  return smartStart;
+}
+
 test.describe("homepage Smart Start", () => {
   test("recommends Studio for a custom private day", async ({ page }) => {
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.locator(SMART_START)).toBeVisible({ timeout: 20_000 });
+    const smartStart = await openHydratedHome(page);
 
-    await page
-      .getByRole("button", { name: "One private day — I want it shaped around me" })
-      .click();
+    const intent = smartStart.getByRole("link", {
+      name: "One private day — I want it shaped around me",
+    });
+    await expect(intent).toHaveAttribute("href", "/studio-v3");
+    await intent.click();
 
-    const recommendation = page.locator('[data-testid="home-smart-start-recommendation"]');
-    await expect(page.getByText("Experience Studio", { exact: true })).toBeVisible();
+    const recommendation = smartStart.locator('[data-testid="home-smart-start-recommendation"]');
+    await expect(smartStart.getByText("Experience Studio", { exact: true })).toBeVisible();
     await expect(recommendation).toHaveAttribute("href", "/studio-v3");
     await expect(recommendation).toContainText("Start in the Studio");
 
@@ -22,13 +31,14 @@ test.describe("homepage Smart Start", () => {
   });
 
   test("recommends Travel Designer for a multi-day journey", async ({ page }) => {
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.locator(SMART_START)).toBeVisible({ timeout: 20_000 });
+    const smartStart = await openHydratedHome(page);
 
-    await page.getByRole("button", { name: "Several days in Portugal" }).click();
+    const intent = smartStart.getByRole("link", { name: "Several days in Portugal" });
+    await expect(intent).toHaveAttribute("href", "/multi-day");
+    await intent.click();
 
-    const recommendation = page.locator('[data-testid="home-smart-start-recommendation"]');
-    await expect(page.getByText("Portugal Travel Designer", { exact: true })).toBeVisible();
+    const recommendation = smartStart.locator('[data-testid="home-smart-start-recommendation"]');
+    await expect(smartStart.getByText("Portugal Travel Designer", { exact: true })).toBeVisible();
     await expect(recommendation).toHaveAttribute("href", "/multi-day");
     await expect(recommendation).toContainText("Begin my journey");
   });
@@ -54,9 +64,10 @@ test.describe("homepage Smart Start", () => {
     });
     await page.reload({ waitUntil: "domcontentloaded" });
 
-    const resume = page.locator('[data-testid="home-smart-start-resume"]');
+    const smartStart = page.locator(SMART_START);
+    const resume = smartStart.locator('[data-testid="home-smart-start-resume"]');
     await expect(resume).toBeVisible({ timeout: 20_000 });
-    await expect(page.getByText(/Coastal · Couple · Slow/)).toBeVisible();
+    await expect(smartStart.getByText(/Coastal · Couple · Slow/)).toBeVisible();
     await expect(resume).toHaveAttribute("href", "/studio-v3");
     await expect(
       page.locator('a[href="/studio-v3"][data-smart-start-recommended="true"]'),
