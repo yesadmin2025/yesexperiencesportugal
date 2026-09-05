@@ -634,12 +634,6 @@ Deno.serve(async (req) => {
       line_items: [...tourLineItems, ...addOnLineItems, ...composableLineItems],
 
       mode: "payment",
-      // INSTANT CARD PAYMENT — verified on a 393px phone: with dynamic
-      // payment methods, live Checkout opened on Stripe Link's "verify your
-      // phone number" wall, with card entry hidden behind "Pay without
-      // Link". A guest reads that as "I cannot pay". Pinning card keeps the
-      // card form as the first and only thing they see.
-      payment_method_types: ["card"],
       // The quoted euro price is the price. No currency-conversion prompt
       // in front of the payment form.
       adaptive_pricing: { enabled: false },
@@ -894,8 +888,8 @@ Deno.serve(async (req) => {
             .from("booking_snapshots")
             .upsert(
               { stripe_session_id: session.id, payload: snapshotPayload },
-              { onConflict: "stripe_session_id" },
-            )
+            { onConflict: "stripe_session_id" },
+          )
         ).error;
       }
       if (snapErr)
