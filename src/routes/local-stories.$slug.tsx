@@ -17,6 +17,10 @@ import { PLANNER_REGIONS } from "@/content/portugal-planner-map";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
 import { GuideNextSteps, useGuideLinkTracker } from "@/components/journal/GuideNextSteps";
 import { guideRefSearch } from "@/lib/guide-attribution";
+import {
+  getPublishedJournalPost,
+  type PublishedJournalPost,
+} from "@/lib/journalPublic.functions";
 
 /**
  * Static Local Stories are editorial pages first. Their primary content,
@@ -50,35 +54,6 @@ function renderBodyWithTourLinks(text: string): React.ReactNode[] {
   return nodes;
 }
 
-type JournalPostFull = {
-  slug: string;
-  title: string;
-  excerpt: string | null;
-  body: string;
-  hero_image_url: string | null;
-  hero_image_alt: string | null;
-  region: string | null;
-  author_name: string | null;
-  signature_slug: string | null;
-  published_at: string | null;
-};
-
-async function fetchPost(slug: string): Promise<JournalPostFull | null> {
-  // Dynamic import is intentional: static SEO stories never need the database,
-  // so they should not pull the Supabase client into their initial route chunk.
-  const { supabase } = await import("@/integrations/supabase/client");
-  const { data, error } = await supabase
-    .from("journal_posts")
-    .select(
-      "slug,title,excerpt,body,hero_image_url,hero_image_alt,region,author_name,signature_slug,published_at",
-    )
-    .eq("status", "published")
-    .eq("slug", slug)
-    .maybeSingle();
-  if (error) throw error;
-  return (data ?? null) as JournalPostFull | null;
-}
-
 const BASE = "https://yesexperiencesportugal.com";
 
 function articleImageUrl(article: LocalStoryArticle): string | undefined {
@@ -106,9 +81,9 @@ export const Route = createFileRoute("/local-stories/$slug")({
     const article = getLocalStoryArticle(params.slug);
     if (article) return { dbPost: null };
 
-    let post: JournalPostFull | null = null;
+    let post: PublishedJournalPost | null = null;
     try {
-      post = await fetchPost(params.slug);
+      post = await getPublishedJournalPost({ data: { slug: params.slug } });
     } catch {
       post = null;
     }

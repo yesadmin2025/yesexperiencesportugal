@@ -11,6 +11,7 @@
  * fallback we synthesise a descriptive alt using the tour title and region
  * so screen readers and crawlers never see an unlabeled image.
  */
+import "@/data/viatorImageOverrides";
 import type { SignatureTour } from "@/data/signatureTours";
 import type { ViatorMeta } from "@/data/signatureToursViator";
 
