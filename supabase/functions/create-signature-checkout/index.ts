@@ -634,12 +634,6 @@ Deno.serve(async (req) => {
       line_items: [...tourLineItems, ...addOnLineItems, ...composableLineItems],
 
       mode: "payment",
-      // DYNAMIC PAYMENT METHODS — no `payment_method_types` pin. Stripe
-      // chooses eligible methods from the account payment-method
-      // configuration (card, wallets, local rails) based on currency,
-      // device and customer eligibility. Pinning card-only here hid every
-      // other enabled rail on live sessions — regression-locked by
-      // src/lib/checkout/__tests__/dynamic-payment-methods.test.ts.
       // The quoted euro price is the price. No currency-conversion prompt
       // in front of the payment form.
       adaptive_pricing: { enabled: false },
