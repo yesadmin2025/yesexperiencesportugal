@@ -8,7 +8,7 @@ import { test, expect, request } from "@playwright/test";
  *     pointing at the canonical domain.
  *  2. sitemap.xml lists every intended canonical route (public, HTTP 200).
  *  3. sitemap.xml does NOT list any URL that robots.txt disallows, nor any known
- *     redirect / auth / QA / admin path.
+ *     redirect / auth / QA / admin / noindex utility path.
  *  4. Every <loc> uses the canonical https://yesexperiencesportugal.com origin
  *     and appears at most once.
  */
@@ -32,11 +32,10 @@ const REQUIRED_CANONICAL_PATHS = [
   "/luxury-tours-portugal",
   "/private-tours-portugal",
   "/terms",
-  "/privacy",
-  "/cookies",
 ];
 
-// Paths that must NEVER appear in sitemap.xml (redirects, auth, QA, admin, transactional).
+// Paths that must NEVER appear in sitemap.xml (redirects, auth, QA, admin,
+// transactional surfaces, and crawlable utility pages intentionally marked noindex).
 const FORBIDDEN_PATHS = [
   "/admin",
   "/auth",
@@ -62,6 +61,11 @@ const FORBIDDEN_PATHS = [
   "/alentejo-wine-tour-from-lisbon",
   "/evora-alentejo-wine-tour",
   "/local-stories/$slug",
+  "/privacy",
+  "/cookies",
+  "/pt/privacy",
+  "/pt/cookies",
+  "/pt/contact",
 ];
 
 // Robots Disallow entries that MUST be present.
@@ -133,28 +137,24 @@ test.describe("robots.txt + sitemap.xml canonical guardrails", () => {
     expect(sitemaps).toContain(`${CANONICAL_ORIGIN}/sitemap.xml`);
   });
 
-  test("sitemap.xml includes all canonical routes and excludes disallowed ones", async () => {
+  test("sitemap.xml includes all canonical routes and excludes disallowed or noindex utilities", async () => {
     const xml = await fetchText("/sitemap.xml");
     const locs = parseSitemapLocs(xml);
     expect(locs.length, "sitemap has entries").toBeGreaterThan(0);
 
-    // All URLs must use the canonical origin.
     for (const loc of locs) {
       expect(loc.startsWith(`${CANONICAL_ORIGIN}/`), `non-canonical origin: ${loc}`).toBe(true);
     }
 
-    // No duplicates.
     const dupes = locs.filter((l, i) => locs.indexOf(l) !== i);
     expect(dupes, `duplicate <loc> entries: ${dupes.join(", ")}`).toEqual([]);
 
     const paths = new Set(locs.map((l) => l.slice(CANONICAL_ORIGIN.length) || "/"));
 
-    // Required canonicals present.
     for (const path of REQUIRED_CANONICAL_PATHS) {
       expect(paths.has(path), `sitemap missing canonical: ${path}`).toBe(true);
     }
 
-    // Forbidden paths absent (exact or prefix under /admin, /builder, etc.).
     const forbiddenPrefixes = [
       "/admin",
       "/builder",
@@ -174,7 +174,6 @@ test.describe("robots.txt + sitemap.xml canonical guardrails", () => {
       }
     }
 
-    // Cross-check: nothing in sitemap is Disallow'd by robots.txt.
     const robots = parseRobots(await fetchText("/robots.txt"));
     for (const p of paths) {
       for (const dis of robots.disallows) {
