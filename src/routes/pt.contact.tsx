@@ -21,35 +21,30 @@ export const Route = createFileRoute("/pt/contact")({
     const raw = typeof search.type === "string" && search.type.length > 0 ? search.type : undefined;
     return raw ? { type: raw } : {};
   },
-  head: (ctx) => {
-    // Parity with /contact: `?type=` is only a preselection hint, so the
-    // variant stays crawlable but out of the index while the canonical keeps
-    // pointing at the clean PT URL.
-    const search = (ctx.match?.search ?? {}) as { type?: string };
-    const isParamVariant = typeof search.type === "string" && search.type.length > 0;
-    return {
-      meta: [
-        ...(isParamVariant ? [{ name: "robots", content: "noindex, follow" }] : []),
-        { title: "Contactos — YES Experiences Portugal" },
-        {
-          name: "description",
-          content:
-            "Contacte a YES Experiences Portugal por WhatsApp, telefone ou email. Respondemos diariamente em português e inglês e ajudamos a planear a sua experiência.",
-        },
-        { property: "og:title", content: "Contactos — YES Experiences Portugal" },
-        {
-          property: "og:description",
-          content: "Fale connosco por WhatsApp, telefone ou email.",
-        },
-        { property: "og:locale", content: "pt_PT" },
-        { property: "og:url", content: "https://yesexperiencesportugal.com/pt/contact" },
-      ],
-      links: [
-        { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/contact" },
-        ...localeAlternateLinks("/contact"),
-      ],
-    };
-  },
+  head: () => ({
+    meta: [
+      // Utility page: keep it accessible and crawlable for links, but do not
+      // spend search index budget on a contact-only destination.
+      { name: "robots", content: "noindex, follow" },
+      { title: "Contactos — YES Experiences Portugal" },
+      {
+        name: "description",
+        content:
+          "Contacte a YES Experiences Portugal por WhatsApp, telefone ou email. Respondemos diariamente em português e inglês e ajudamos a planear a sua experiência.",
+      },
+      { property: "og:title", content: "Contactos — YES Experiences Portugal" },
+      {
+        property: "og:description",
+        content: "Fale connosco por WhatsApp, telefone ou email.",
+      },
+      { property: "og:locale", content: "pt_PT" },
+      { property: "og:url", content: "https://yesexperiencesportugal.com/pt/contact" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://yesexperiencesportugal.com/pt/contact" },
+      ...localeAlternateLinks("/contact"),
+    ],
+  }),
   component: PtContactPage,
 });
 
