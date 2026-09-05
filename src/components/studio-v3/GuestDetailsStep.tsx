@@ -558,7 +558,7 @@ export function GuestDetailsStep({
               rows={3}
               className={`${guestInputClass} resize-none`}
             />
-            <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+            <p className="mt-1.5 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
               We consider these preferences whenever possible. They do not delay payment or booking
               confirmation.
             </p>
