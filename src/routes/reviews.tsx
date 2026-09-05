@@ -10,8 +10,6 @@
  */
 import { localeAlternateLinks } from "@/i18n/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { Star } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Scene } from "@/components/motion/Scene";
@@ -20,18 +18,8 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import ogSocialImg from "@/assets/hero-coast.jpg";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
-import {
-  getGlobalReviewStats,
-  getTourReviewStats,
-  getTourReviews,
-  type GlobalStats,
-  type PublicReview,
-  type TourStats,
-} from "@/lib/reviews.functions";
-import { VIATOR_META } from "@/data/signatureToursViator";
-import { findTour } from "@/data/signatureTours";
+import { getReviewsPageData } from "@/lib/reviews.functions";
 import { SITE_URL } from "@/lib/seo";
-import { filterVisibleReviews } from "@/lib/tour-reviews-filter";
 
 const SOURCE_LABEL: Record<string, string> = {
   viator: "Viator",
