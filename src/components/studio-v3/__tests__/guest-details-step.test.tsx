@@ -179,4 +179,19 @@ describe("GuestDetailsStep — P0 friction pass", () => {
     expect(screen.getByTestId("studio-v3-fixed-tour-date")).toBeInTheDocument();
     expect(screen.getAllByText(/already set/i).length).toBeGreaterThan(0);
   });
+
+  it("presents a locked party as a remembered fact, not a question", () => {
+    render(
+      <GuestDetailsStep
+        onBack={() => {}}
+        onSubmit={() => {}}
+        lockedComposition={{ adults: 2, minorAges: [7] }}
+        onEditOperational={() => {}}
+      />,
+    );
+    // Party is stated back, not re-asked with an editable counter.
+    expect(screen.getAllByText(/already set/i).length).toBeGreaterThan(0);
+    expect(screen.queryByRole("spinbutton", { name: /adults/i })).toBeNull();
+  });
 });
+
