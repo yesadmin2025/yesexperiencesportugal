@@ -41,5 +41,8 @@ jobs:
       - name: Brand audit
         run: bun run brand:audit
 
+      - name: Checkout dynamic payment methods contract
+        run: bunx vitest run src/lib/checkout/__tests__/dynamic-payment-methods.test.ts --reporter=dot
+
       - name: Hero accessibility (axe-core)
         run: bun run a11y:hero
