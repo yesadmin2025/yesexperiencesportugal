@@ -510,7 +510,7 @@ export function GuestDetailsStep({
                 </button>
               ))}
             </div>
-            <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+            <p className="mt-1.5 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
               Spanish available on request — subject to guide availability.
             </p>
           </GuestField>
