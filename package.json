@@ -6,7 +6,7 @@
   "scripts": {
     "predev": "node scripts/check-css-braces.mjs && node scripts/check-motion-budget.mjs && node scripts/check-route-imports.mjs && node scripts/check-route-meta.mjs && node scripts/generate-sitemap-routes.mjs --check && node scripts/check-hero-scene-ids.mjs && node scripts/site-brand-audit.mjs && node scripts/chrome-runtime-contrast.mjs && node scripts/brand-audit.mjs",
     "dev": "vite dev",
-    "prebuild": "node scripts/check-css-braces.mjs && node scripts/check-motion-budget.mjs && node scripts/check-route-imports.mjs && node scripts/check-route-meta.mjs && node scripts/generate-sitemap-routes.mjs --check && node scripts/check-hero-scene-ids.mjs && node scripts/site-brand-audit.mjs && node scripts/chrome-runtime-contrast.mjs && node scripts/brand-audit.mjs && bunx vitest run src/__tests__/hero-a11y-axe.test.tsx --reporter=dot",
+    "prebuild": "node scripts/check-css-braces.mjs && node scripts/check-motion-budget.mjs && node scripts/check-route-imports.mjs && node scripts/check-route-meta.mjs && node scripts/generate-sitemap-routes.mjs --check && node scripts/check-hero-scene-ids.mjs && node scripts/site-brand-audit.mjs && node scripts/chrome-runtime-contrast.mjs && node scripts/brand-audit.mjs && bunx vitest run src/lib/checkout/__tests__/dynamic-payment-methods.test.ts src/__tests__/hero-a11y-axe.test.tsx --reporter=dot",
     "a11y:hero": "vitest run src/__tests__/hero-a11y-axe.test.tsx",
     "build": "vite build",
     "build:dev": "vite build --mode development",

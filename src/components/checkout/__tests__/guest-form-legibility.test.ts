@@ -17,6 +17,8 @@ const GUEST_DETAILS = read("src/components/studio-v3/GuestDetailsStep.tsx");
 const SUMMARY = read("src/components/studio-v3/CheckoutSummary.tsx");
 const DRAWER = read("src/components/checkout/BrandedCheckoutDrawer.tsx");
 const CHARGE_LINE = read("src/components/checkout/ChargeSummaryLine.tsx");
+const SIGNATURE_FORM = read("src/components/SimpleBookingForm.tsx");
+const FINAL_DETAILS = read("src/components/checkout/FinalDetailsDialog.tsx");
 
 const sizes = (src: string) =>
   [...src.matchAll(/text-\[(\d+(?:\.\d+)?)px\]/g)].map((m) => Number(m[1]));
@@ -32,6 +34,12 @@ describe("guest form primitives legibility", () => {
     expect(GUEST_FORM).toContain("text-[12.5px]");
   });
 
+  it("section titles and Optional badges are not below 11.5px", () => {
+    const s = sizes(GUEST_FORM);
+    expect(s.length).toBeGreaterThan(0);
+    expect(Math.min(...s)).toBeGreaterThanOrEqual(11.5);
+  });
+
   it("the optional disclosure is collapsed by default and clears 44px", () => {
     expect(GUEST_FORM).toContain("defaultOpen = false");
     expect(GUEST_FORM).toContain("min-h-[44px]");
@@ -39,10 +47,10 @@ describe("guest form primitives legibility", () => {
 });
 
 describe("GuestDetailsStep legibility", () => {
-  it("has no functional text below 11.5px", () => {
+  it("has no functional text below 12px", () => {
     const s = sizes(GUEST_DETAILS);
     expect(s.length).toBeGreaterThan(0);
-    expect(Math.min(...s)).toBeGreaterThanOrEqual(11.5);
+    expect(Math.min(...s)).toBeGreaterThanOrEqual(12);
   });
 
   it("keeps the sticky secure-checkout line readable and in charcoal", () => {
@@ -51,10 +59,10 @@ describe("GuestDetailsStep legibility", () => {
 });
 
 describe("CheckoutSummary legibility", () => {
-  it("has no functional text below 11.5px", () => {
+  it("has no functional text below 12px", () => {
     const s = sizes(SUMMARY);
     expect(s.length).toBeGreaterThan(0);
-    expect(Math.min(...s)).toBeGreaterThanOrEqual(11.5);
+    expect(Math.min(...s)).toBeGreaterThanOrEqual(12);
   });
 
   it("keeps the sticky Paying now label at 12.5px in charcoal", () => {
@@ -76,10 +84,26 @@ describe("shared checkout surfaces legibility", () => {
     expect(Math.min(...s)).toBeGreaterThanOrEqual(12);
   });
 
-  it("charge summary line has no functional text below 11px", () => {
+  it("charge summary line has no functional text below 12px", () => {
     const s = sizes(CHARGE_LINE);
     expect(s.length).toBeGreaterThan(0);
-    expect(Math.min(...s)).toBeGreaterThanOrEqual(11);
+    expect(Math.min(...s)).toBeGreaterThanOrEqual(12);
+  });
+
+  it("Signature booking form labels/helpers are not below 12px", () => {
+    const s = sizes(SIGNATURE_FORM);
+    expect(s.length).toBeGreaterThan(0);
+    expect(Math.min(...s)).toBeGreaterThanOrEqual(12);
+    // Field labels read in charcoal, not faint soft-charcoal.
+    expect(SIGNATURE_FORM).toContain(
+      "text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] mb-1.5",
+    );
+  });
+
+  it("Final details dialog controls are not below 12px", () => {
+    const s = sizes(FINAL_DETAILS);
+    expect(s.length).toBeGreaterThan(0);
+    expect(Math.min(...s)).toBeGreaterThanOrEqual(12);
   });
 
   it("keeps 44px touch targets on disclosure toggles", () => {

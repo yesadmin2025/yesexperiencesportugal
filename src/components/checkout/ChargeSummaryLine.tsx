@@ -101,7 +101,7 @@ export function ChargeSummaryLine({
       ].join(" ")}
     >
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3">
-        <span className="min-w-0 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+        <span className="min-w-0 text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
           Total
         </span>
         <span
@@ -124,7 +124,7 @@ export function ChargeSummaryLine({
           {quote.adults === 1 ? "adult" : "adults"}
           {minors > 0 ? `, ${minors} ${minors === 1 ? "child" : "children"}` : ""}
         </span>
-        <span className="flex shrink-0 items-center gap-1 text-[11px] text-[color:var(--charcoal-soft)]">
+        <span className="flex shrink-0 items-center gap-1 text-[12px] text-[color:var(--charcoal-soft)]">
           Price details
           <ChevronDown
             className={[

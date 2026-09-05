@@ -407,7 +407,7 @@ export function GuestDetailsStep({
                     type="button"
                     onClick={onEditOperational}
                     data-testid="studio-v3-edit-date"
-                    className="ml-auto min-h-[44px] px-2 text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]"
+                    className="ml-auto min-h-[44px] px-2 text-[12px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]"
                   >
                     Change
                   </button>
@@ -455,7 +455,7 @@ export function GuestDetailsStep({
                       type="button"
                       onClick={onEditOperational}
                       data-testid="studio-v3-edit-party"
-                      className="min-h-[44px] px-2 text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]"
+                      className="min-h-[44px] px-2 text-[12px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]"
                     >
                       Change
                     </button>
