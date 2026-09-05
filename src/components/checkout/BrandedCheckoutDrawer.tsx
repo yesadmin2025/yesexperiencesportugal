@@ -217,7 +217,7 @@ export function BrandedCheckoutDrawer({
               is no policy page to link to. */}
           <p
             data-testid="checkout-drawer-trust-line"
-            className="mt-2 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]"
+            className="mt-2 text-[12px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]"
           >
             Instant confirmation · Secure payment · {CANCELLATION.signature.en}
           </p>
@@ -297,7 +297,7 @@ function ExperienceSummaryCard({
           className="mt-2 flex items-baseline justify-between gap-3"
           data-testid="checkout-drawer-total"
         >
-          <span className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
+          <span className="text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal-soft)]">
             Total
           </span>
           <span className="serif text-[1.5rem] leading-none text-[color:var(--charcoal)]">
@@ -313,7 +313,7 @@ function ExperienceSummaryCard({
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             data-testid="checkout-drawer-details-toggle"
-            className="mt-1 flex min-h-[44px] w-full items-center justify-between gap-2 text-left text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+            className="mt-1 flex min-h-[44px] w-full items-center justify-between gap-2 text-left text-[12.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
           >
             <span>Details</span>
             <ChevronDown
@@ -330,7 +330,7 @@ function ExperienceSummaryCard({
                   className="pt-1 border-t border-[color:var(--border)]"
                   data-testid="checkout-drawer-journey-lines"
                 >
-                  <p className="mt-2 text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
+                  <p className="mt-2 text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
                     Travellers
                   </p>
                   <ul className="mt-1.5 space-y-1">
@@ -358,7 +358,7 @@ function ExperienceSummaryCard({
 
               {hasAddOns ? (
                 <div className="mt-3 pt-2 border-t border-[color:var(--border)]">
-                  <p className="text-[10px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
+                  <p className="text-[12px] uppercase tracking-[0.26em] text-[color:var(--charcoal)]">
                     Add-ons
                   </p>
                   <ul className="mt-1.5 space-y-1">
@@ -459,7 +459,7 @@ function CheckoutSkeleton() {
       <div className="h-10 bg-[color:var(--sand)]/60 animate-pulse" />
       <div className="h-32 bg-[color:var(--sand)]/60 animate-pulse" />
       <div className="h-10 bg-[color:var(--sand)]/60 animate-pulse" />
-      <p className="text-center text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] pt-2">
+      <p className="text-center text-[12.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)] pt-2">
         Preparing secure checkout…
       </p>
     </div>

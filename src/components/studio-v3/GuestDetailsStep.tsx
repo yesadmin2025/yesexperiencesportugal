@@ -407,7 +407,7 @@ export function GuestDetailsStep({
                     type="button"
                     onClick={onEditOperational}
                     data-testid="studio-v3-edit-date"
-                    className="ml-auto min-h-[44px] px-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]"
+                    className="ml-auto min-h-[44px] px-2 text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]"
                   >
                     Change
                   </button>
@@ -455,7 +455,7 @@ export function GuestDetailsStep({
                       type="button"
                       onClick={onEditOperational}
                       data-testid="studio-v3-edit-party"
-                      className="min-h-[44px] px-2 text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]"
+                      className="min-h-[44px] px-2 text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]"
                     >
                       Change
                     </button>
@@ -466,7 +466,7 @@ export function GuestDetailsStep({
               )}
             </div>
             {lockedComposition ? null : (
-              <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+              <p className="mt-1.5 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
                 {isCompositionComplete(composition)
                   ? formatCompositionSummary(composition)
                   : "Add an age for every child so we can price honestly."}
@@ -510,7 +510,7 @@ export function GuestDetailsStep({
                 </button>
               ))}
             </div>
-            <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+            <p className="mt-1.5 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
               Spanish available on request — subject to guide availability.
             </p>
           </GuestField>
@@ -558,7 +558,7 @@ export function GuestDetailsStep({
               rows={3}
               className={`${guestInputClass} resize-none`}
             />
-            <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+            <p className="mt-1.5 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
               We consider these preferences whenever possible. They do not delay payment or booking
               confirmation.
             </p>
@@ -587,7 +587,7 @@ export function GuestDetailsStep({
                 {submitLabel ?? "Continue to summary"}
               </CtaButton>
             )}
-            <p className="mt-2 text-center text-[10px] uppercase tracking-[0.12em] text-[color:var(--charcoal-soft)]">
+            <p className="mt-2 text-center text-[12.5px] uppercase tracking-[0.12em] text-[color:var(--charcoal)]">
               Secure checkout · Final price shown at payment
             </p>
           </div>
