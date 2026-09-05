@@ -11,8 +11,6 @@
  * keep the original single-URL behaviour.
  */
 
-const CARD_WIDTHS = "480;800;1200";
-
 const plain = import.meta.glob<string>("/src/assets/tours/**/*.jpg", {
   eager: true,
   import: "default",
