@@ -725,6 +725,10 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       return;
     }
 
+    // Same progressive-enhancement gate as the `.reveal` observer above.
+    document.documentElement.classList.add("motion-ready");
+
+
     const markVisible = (el: Element, source: RevealSource) => {
       if (el.classList.contains("is-visible")) return;
       el.classList.add("is-visible");
