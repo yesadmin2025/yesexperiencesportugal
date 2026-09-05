@@ -1,8 +1,8 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 const SMART_START = '[data-testid="home-smart-start"]';
 
-async function openHydratedHome(page: Parameters<typeof test>[0]["page"]) {
+async function openHydratedHome(page: Page) {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   const smartStart = page.locator(SMART_START);
   await expect(smartStart).toBeVisible({ timeout: 20_000 });
