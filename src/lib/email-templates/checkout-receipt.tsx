@@ -389,8 +389,8 @@ const CheckoutReceipt = ({
             <br />
             • A photo ID for each traveller, and a car seat request in advance if you need one.
             <br />
-            • Let us know about allergies or dietary needs at least 48h before, so the kitchens and
-            cellars can prepare.
+            • Let us know about allergies or dietary needs at least two days before, so the kitchens
+            and cellars can prepare.
           </Text>
 
           <Text style={sectionTitle}>On the morning</Text>

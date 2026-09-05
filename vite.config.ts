@@ -6,6 +6,7 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
+import { imagetools } from "vite-imagetools";
 import { loadEnv } from "vite";
 import path from "node:path";
 
@@ -17,6 +18,14 @@ Object.assign(process.env, serverEnv);
 
 export default defineConfig({
   vite: {
-    plugins: [mcpPlugin()],
+    // `imagetools` only acts on imports carrying an explicit `?w=`/`?format=`
+    // query (see src/content/tour-card-images.ts). Plain image imports are
+    // untouched, so existing asset pipelines keep working.
+    plugins: [
+      mcpPlugin(),
+      // Scoped to imports that explicitly ask for a srcset, so every other
+      // image import keeps Vite's normal asset pipeline untouched.
+      imagetools({ include: /[?&]as=srcset/ }),
+    ],
   },
 });

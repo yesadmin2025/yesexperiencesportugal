@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { signatureTours } from "@/data/signatureTours";
 import { useImageQuality, type ImageQuality } from "@/hooks/use-image-quality";
+import { bundledTourCardImage } from "@/content/tour-card-images";
 
 type Row = { id: string; image_url: string | null; source_url: string };
 
@@ -97,7 +98,9 @@ export function useImportedTourImages() {
       size: CardSize = "md",
     ): { src: string; srcSet?: string; sizes?: string } => {
       const live = byUrl.get(normalize(tour.bookingUrl));
-      if (!live) return { src: tour.img };
+      // No live imported photo → serve the bundled hero, but as build-time
+      // WebP variants + srcset so phones don't download the 300 KB original.
+      if (!live) return bundledTourCardImage(tour.img, SIZES[size]);
       const widths = SRCSET_WIDTHS[size].map((w) => scaleForQuality(w, quality));
       const srcSet = widths.map((w) => `${proxied(live, w)} ${w}w`).join(", ");
       return {
