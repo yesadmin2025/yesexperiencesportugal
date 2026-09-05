@@ -143,45 +143,9 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-type Bundle = { stats: TourStats; reviews: PublicReview[] };
-
 function ReviewsPage() {
   useMarketingMotion();
-  const { stats: initialStats } = Route.useLoaderData();
-  const globalFn = useServerFn(getGlobalReviewStats);
-  const statsFn = useServerFn(getTourReviewStats);
-  const reviewsFn = useServerFn(getTourReviews);
-  const [global, setGlobal] = useState<GlobalStats>(initialStats);
-  const [bundles, setBundles] = useState<Record<string, Bundle>>({});
-
-  useEffect(() => {
-    let cancelled = false;
-    globalFn({})
-      .then((g) => !cancelled && setGlobal(g))
-      .catch(() => undefined);
-    (async () => {
-      const out: Record<string, Bundle> = {};
-      for (const id of TOUR_IDS) {
-        try {
-          const [s, r] = await Promise.all([
-            statsFn({ data: { tourId: id } }),
-            reviewsFn({ data: { tourId: id, limit: 6 } }),
-          ]);
-          const visible = filterVisibleReviews(r);
-          if (s.total_reviews > 0 || visible.length > 0) {
-            out[id] = { stats: s, reviews: visible };
-          }
-        } catch {
-          /* skip */
-        }
-        if (cancelled) return;
-        setBundles({ ...out });
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [globalFn, statsFn, reviewsFn]);
+  const { global, tours } = Route.useLoaderData();
 
   return (
     <SiteLayout>
