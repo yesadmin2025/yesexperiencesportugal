@@ -10,6 +10,8 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { getReviewsPageData } from "@/lib/reviews.functions";
+import { GuestReviewForm } from "@/components/reviews/GuestReviewForm";
+
 import { SITE_URL } from "@/lib/seo";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
