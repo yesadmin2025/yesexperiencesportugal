@@ -572,7 +572,7 @@ export function CheckoutSummary({
                 {checkoutError || checkoutBlock ? "Try secure checkout again" : CTA_RESERVE_YOUR_DAY}
               </CtaButton>
             )}
-            <p className="mt-2 text-center text-[12px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+            <p className="mt-2 text-center text-[12.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
               Secure checkout · Final price shown before payment
             </p>
             <CancellationNote className="mt-1.5" />
