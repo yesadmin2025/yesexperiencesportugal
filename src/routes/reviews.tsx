@@ -19,6 +19,8 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import ogSocialImg from "@/assets/hero-coast.jpg";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { getReviewsPageData } from "@/lib/reviews.functions";
+import { GuestReviewForm } from "@/components/reviews/GuestReviewForm";
+
 import { SITE_URL } from "@/lib/seo";
 
 const SOURCE_LABEL: Record<string, string> = {
