@@ -10,7 +10,7 @@
  * Filter applied in one place so it's easy to remove later.
  */
 
-export const MIN_VISIBLE_RATING = 3;
+export const MIN_VISIBLE_RATING = 4;
 
 export function filterVisibleReviews<T extends { rating: number }>(rows: T[]): T[] {
   return rows.filter((r) => Number(r.rating) >= MIN_VISIBLE_RATING);
