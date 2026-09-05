@@ -20,7 +20,7 @@ const plain = import.meta.glob<string>("/src/assets/tours/**/*.jpg", {
 const webpSets = import.meta.glob<string>("/src/assets/tours/**/*.jpg", {
   eager: true,
   import: "default",
-  query: `?w=${CARD_WIDTHS}&format=webp&as=srcset`,
+  query: "?w=480;800;1200&format=webp&as=srcset",
 });
 
 const byUrl = new Map<string, string>();
