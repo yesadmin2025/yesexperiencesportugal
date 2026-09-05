@@ -6,6 +6,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 export const Route = createFileRoute("/pt/privacy")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, follow" },
       { title: "Política de Privacidade — YES Experiences Portugal" },
       {
         name: "description",

@@ -14,6 +14,7 @@ const OG_IMAGE = `https://yesexperiencesportugal.com${ogImg}`;
 export const Route = createFileRoute("/pt/cookies")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, follow" },
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
       { property: "og:title", content: TITLE },
