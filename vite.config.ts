@@ -21,6 +21,11 @@ export default defineConfig({
     // `imagetools` only acts on imports carrying an explicit `?w=`/`?format=`
     // query (see src/content/tour-card-images.ts). Plain image imports are
     // untouched, so existing asset pipelines keep working.
-    plugins: [mcpPlugin(), imagetools()],
+    plugins: [
+      mcpPlugin(),
+      // Scoped to imports that explicitly ask for a srcset, so every other
+      // image import keeps Vite's normal asset pipeline untouched.
+      imagetools({ include: /[?&]as=srcset/ }),
+    ],
   },
 });
