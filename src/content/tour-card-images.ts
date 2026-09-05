@@ -48,3 +48,8 @@ export function bundledTourCardImage(
 export function bundledTourCardImageCount(): number {
   return byUrl.size;
 }
+
+/** @internal debug */
+export function __debugKeys(): string[] {
+  return Array.from(byUrl.keys());
+}
