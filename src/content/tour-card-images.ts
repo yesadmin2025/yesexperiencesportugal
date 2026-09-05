@@ -14,7 +14,6 @@
 const plain = import.meta.glob<string>("/src/assets/tours/**/*.jpg", {
   eager: true,
   import: "default",
-  query: "?url",
 });
 
 const webpSets = import.meta.glob<string>("/src/assets/tours/**/*.jpg", {
