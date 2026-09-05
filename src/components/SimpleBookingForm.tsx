@@ -357,7 +357,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             <CompositionField value={composition} onChange={setComposition} compact />
           </div>
           {!compositionReady ? (
-            <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+            <p className="mt-1.5 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
               Add an age for every child so we can price honestly.
             </p>
           ) : null}
@@ -529,7 +529,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
         <Link
           to="/tours/$tourId/tailor"
           params={{ tourId: tour.id }}
-          className="inline-flex min-h-[44px] items-center gap-1.5 text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
+          className="inline-flex min-h-[44px] items-center gap-1.5 text-[12px] uppercase tracking-[0.22em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
         >
           Tailor this day
         </Link>

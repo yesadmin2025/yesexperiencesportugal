@@ -323,7 +323,7 @@ export function CheckoutSummary({
           >
             <div className="mb-2 flex items-baseline justify-between gap-3">
               <p
-                className="text-[11.5px] uppercase tracking-[0.2em]"
+                className="text-[12px] uppercase tracking-[0.2em]"
                 style={{ color: "var(--charcoal-soft)" }}
               >
                 Stops
@@ -360,7 +360,7 @@ export function CheckoutSummary({
             style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
           >
             <p
-              className="text-[11.5px] uppercase tracking-[0.2em] mb-2"
+              className="text-[12px] uppercase tracking-[0.2em] mb-2"
               style={{ color: "var(--charcoal-soft)" }}
             >
               Your additions
@@ -626,7 +626,7 @@ function RecapEdit({
       onClick={onClick}
       aria-label={label}
       data-testid={testId}
-      className="-mr-2 inline-flex items-center min-h-[44px] px-2 text-[11.5px] uppercase tracking-[0.2em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+      className="-mr-2 inline-flex items-center min-h-[44px] px-2 text-[12px] uppercase tracking-[0.2em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
       style={{ color: "var(--teal)" }}
     >
       Edit
