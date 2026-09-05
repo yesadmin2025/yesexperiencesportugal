@@ -196,7 +196,7 @@ function ReviewsPage() {
                         params={{ tourId: id }}
                         className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
                       >
-                        {findTour(id)?.title ?? id}
+                        {b.title}
                       </Link>
                       <div className="font-sans text-[13px] text-[color:var(--charcoal-soft)]">
                         {b.stats.average_rating && (
