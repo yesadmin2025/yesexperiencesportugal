@@ -23,11 +23,11 @@ export function GuestFieldGroup({
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3">
-        <h3 className="min-w-0 text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal)]">
+        <h3 className="min-w-0 text-[12px] uppercase tracking-[0.18em] font-medium text-[color:var(--charcoal)]">
           {title}
         </h3>
         {optional ? (
-          <span className="shrink-0 text-[10.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+          <span className="shrink-0 text-[11.5px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
             Optional
           </span>
         ) : null}
@@ -135,7 +135,7 @@ export function CollapsibleFieldGroup({
         </span>
         <span
           aria-hidden
-          className="shrink-0 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--teal)]"
+          className="shrink-0 text-[11.5px] uppercase tracking-[0.16em] text-[color:var(--teal)]"
         >
           Optional
         </span>
