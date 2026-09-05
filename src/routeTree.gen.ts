@@ -134,6 +134,7 @@ import { Route as AdminComposableStopsRouteImport } from './routes/admin.composa
 import { Route as AdminBuilderImagesQaRouteImport } from './routes/admin.builder-images-qa'
 import { Route as AdminBuilderImagesRouteImport } from './routes/admin.builder-images'
 import { Route as AdminAvailabilityRouteImport } from './routes/admin.availability'
+import { Route as AdminAnalyticsHealthRouteImport } from './routes/admin.analytics-health'
 import { Route as AdminAiAuditRouteImport } from './routes/admin.ai-audit'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
@@ -793,6 +794,11 @@ const AdminAvailabilityRoute = AdminAvailabilityRouteImport.update({
   path: '/admin/availability',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAnalyticsHealthRoute = AdminAnalyticsHealthRouteImport.update({
+  id: '/admin/analytics-health',
+  path: '/admin/analytics-health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminAiAuditRoute = AdminAiAuditRouteImport.update({
   id: '/admin/ai-audit',
   path: '/admin/ai-audit',
@@ -999,6 +1005,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
+  '/admin/analytics-health': typeof AdminAnalyticsHealthRoute
   '/admin/availability': typeof AdminAvailabilityRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
@@ -1150,6 +1157,7 @@ export interface FileRoutesByTo {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
+  '/admin/analytics-health': typeof AdminAnalyticsHealthRoute
   '/admin/availability': typeof AdminAvailabilityRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
@@ -1304,6 +1312,7 @@ export interface FileRoutesById {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/ai-audit': typeof AdminAiAuditRoute
+  '/admin/analytics-health': typeof AdminAnalyticsHealthRoute
   '/admin/availability': typeof AdminAvailabilityRoute
   '/admin/builder-images': typeof AdminBuilderImagesRoute
   '/admin/builder-images-qa': typeof AdminBuilderImagesQaRoute
@@ -1459,6 +1468,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin/ai-audit'
+    | '/admin/analytics-health'
     | '/admin/availability'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
@@ -1610,6 +1620,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin/ai-audit'
+    | '/admin/analytics-health'
     | '/admin/availability'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
@@ -1763,6 +1774,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin/ai-audit'
+    | '/admin/analytics-health'
     | '/admin/availability'
     | '/admin/builder-images'
     | '/admin/builder-images-qa'
@@ -1917,6 +1929,7 @@ export interface RootRouteChildren {
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminAiAuditRoute: typeof AdminAiAuditRoute
+  AdminAnalyticsHealthRoute: typeof AdminAnalyticsHealthRoute
   AdminAvailabilityRoute: typeof AdminAvailabilityRoute
   AdminBuilderImagesRoute: typeof AdminBuilderImagesRoute
   AdminBuilderImagesQaRoute: typeof AdminBuilderImagesQaRoute
@@ -2869,6 +2882,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAvailabilityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/analytics-health': {
+      id: '/admin/analytics-health'
+      path: '/admin/analytics-health'
+      fullPath: '/admin/analytics-health'
+      preLoaderRoute: typeof AdminAnalyticsHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/ai-audit': {
       id: '/admin/ai-audit'
       path: '/admin/ai-audit'
@@ -3190,6 +3210,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminAiAuditRoute: AdminAiAuditRoute,
+  AdminAnalyticsHealthRoute: AdminAnalyticsHealthRoute,
   AdminAvailabilityRoute: AdminAvailabilityRoute,
   AdminBuilderImagesRoute: AdminBuilderImagesRoute,
   AdminBuilderImagesQaRoute: AdminBuilderImagesQaRoute,

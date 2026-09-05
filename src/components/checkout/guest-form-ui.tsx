@@ -93,3 +93,54 @@ export function GuestField({
     </Wrapper>
   );
 }
+
+/**
+ * Collapsed-by-default disclosure for secondary/optional booking information.
+ *
+ * Perceived friction: showing dietary, mobility, children, occasion and free
+ * notes expanded made the final step read like a form wall. The fields and
+ * their state are unchanged — only their visibility is deferred until the
+ * guest asks for them.
+ */
+export function CollapsibleFieldGroup({
+  title,
+  subtitle,
+  defaultOpen = false,
+  testId,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  defaultOpen?: boolean;
+  testId?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <details
+      className="border-t border-[color:var(--border)] pt-4"
+      data-testid={testId}
+      {...(defaultOpen ? { open: true } : {})}
+    >
+      <summary
+        className="flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-3 text-[13.5px] font-medium text-[color:var(--charcoal)] marker:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/45"
+        data-testid={testId ? `${testId}-toggle` : undefined}
+      >
+        <span className="min-w-0">
+          {title}
+          {subtitle ? (
+            <span className="mt-0.5 block text-[12.5px] font-normal leading-snug text-[color:var(--charcoal-soft)]">
+              {subtitle}
+            </span>
+          ) : null}
+        </span>
+        <span
+          aria-hidden
+          className="shrink-0 text-[10.5px] uppercase tracking-[0.2em] text-[color:var(--teal)]"
+        >
+          Optional
+        </span>
+      </summary>
+      <div className="mt-4 space-y-4">{children}</div>
+    </details>
+  );
+}

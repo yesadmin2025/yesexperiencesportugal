@@ -27,6 +27,8 @@ import type { StudioV3State } from "./types";
 import type { SelectedAddOnSummary } from "./SignaturePriceCard";
 import type { GuestDetails } from "@/components/checkout/FinalDetailsDialog";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics-events";
+import { CANCELLATION } from "@/config/business-nap";
 import { PriceBreakdownRows } from "@/components/checkout/PriceBreakdownRows";
 import { PerPersonBands } from "@/components/checkout/PerPersonBands";
 
@@ -140,6 +142,19 @@ export function CheckoutSummary({
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, []);
 
+  // Funnel seam: checkout summary viewed. Fires once per mount — the ref
+  // guard keeps StrictMode/rerenders from double-counting.
+  const viewTrackedRef = React.useRef(false);
+  React.useEffect(() => {
+    if (viewTrackedRef.current) return;
+    viewTrackedRef.current = true;
+    trackEvent("studio_checkout_summary_view", {
+      experience_type: "studio",
+      experience_id: state.tourId ?? null,
+      placement: "studio_checkout_summary",
+    });
+  }, [state.tourId]);
+
   const [reserveAttempted, setReserveAttempted] = React.useState(false);
   const [checkoutError, setCheckoutError] = React.useState(false);
   const wasSubmittingRef = React.useRef(false);
@@ -160,9 +175,18 @@ export function CheckoutSummary({
     if (reserveAttempted && !clientSecret) setCheckoutError(true);
   }, [submitting, reserveAttempted, clientSecret]);
 
+  const paymentTrackedRef = React.useRef(false);
   React.useEffect(() => {
     if (!clientSecret) return;
     setCheckoutError(false);
+    if (!paymentTrackedRef.current) {
+      paymentTrackedRef.current = true;
+      trackEvent("studio_payment_surface_ready", {
+        experience_type: "studio",
+        experience_id: state.tourId ?? null,
+        placement: "studio_checkout_summary",
+      });
+    }
     // Embedded Checkout is intentionally below the reviewed summary. Bring
     // the newly mounted secure form into view so Reserve always feels like a
     // completed transition, especially on a 393px phone viewport.
@@ -174,13 +198,20 @@ export function CheckoutSummary({
           : "smooth",
       });
     });
-  }, [clientSecret]);
+  }, [clientSecret, state.tourId]);
 
   const handleReserve = React.useCallback(() => {
     setReserveAttempted(true);
     setCheckoutError(false);
+    trackEvent("studio_reserve_click", {
+      experience_type: "studio",
+      experience_id: state.tourId ?? null,
+      placement: "studio_checkout_summary",
+      value: typeof totalEur === "number" ? totalEur : undefined,
+      currency: "EUR",
+    });
     onReserve();
-  }, [onReserve]);
+  }, [onReserve, state.tourId, totalEur]);
 
   const tour = state.tourId ? findTour(state.tourId) : null;
   const title = state.journeyTitle ?? tour?.title ?? "Your Signature";
@@ -292,7 +323,7 @@ export function CheckoutSummary({
           >
             <div className="mb-2 flex items-baseline justify-between gap-3">
               <p
-                className="text-[10px] uppercase tracking-[0.22em]"
+                className="text-[11.5px] uppercase tracking-[0.2em]"
                 style={{ color: "var(--charcoal-soft)" }}
               >
                 Stops
@@ -306,7 +337,7 @@ export function CheckoutSummary({
               ) : null}
             </div>
             <ul
-              className="space-y-1 text-[13.5px]"
+              className="space-y-1 text-[14.5px] leading-[1.55]"
               style={{ color: "var(--charcoal)" }}
               data-testid="studio-v3-checkout-summary-stops"
             >
@@ -329,13 +360,13 @@ export function CheckoutSummary({
             style={{ borderColor: "color-mix(in oklab, var(--charcoal) 10%, transparent)" }}
           >
             <p
-              className="text-[10px] uppercase tracking-[0.22em] mb-2"
+              className="text-[11.5px] uppercase tracking-[0.2em] mb-2"
               style={{ color: "var(--charcoal-soft)" }}
             >
               Your additions
             </p>
             <ul
-              className="space-y-1 text-[13.5px]"
+              className="space-y-1 text-[14.5px] leading-[1.55]"
               style={{ color: "var(--charcoal)" }}
               data-testid="studio-v3-add-on-lines"
             >
@@ -408,8 +439,8 @@ export function CheckoutSummary({
       {/* Guest identity recap — who is booking (not pricing) */}
       <div className="mt-6 flex items-center justify-between">
         <div
-          className="text-[12.5px]"
-          style={{ color: "color-mix(in oklab, var(--charcoal) 78%, transparent)" }}
+          className="text-[13.5px] leading-[1.5]"
+          style={{ color: "var(--charcoal-soft)" }}
         >
           <div className="font-medium" style={{ color: "var(--charcoal)" }}>
             {guestDetails.fullName}
@@ -422,7 +453,7 @@ export function CheckoutSummary({
           data-testid="studio-v3-checkout-summary-edit-guest-details"
           aria-label="Edit your details"
           onClick={onEditGuestDetails}
-          className="text-[11px] uppercase tracking-[0.22em] min-h-[44px] px-3"
+          className="text-[12px] uppercase tracking-[0.2em] min-h-[44px] px-3"
           style={{ color: "var(--teal)" }}
         >
           Edit
@@ -430,10 +461,10 @@ export function CheckoutSummary({
       </div>
 
       <p
-        className="mt-6 text-center text-[12.5px] italic"
+        className="mt-6 text-center text-[13.5px] italic"
         style={{
           fontFamily: "var(--font-editorial)",
-          color: "color-mix(in oklab, var(--charcoal) 68%, transparent)",
+          color: "var(--charcoal-soft)",
         }}
       >
         {INSTANT_CONFIRMATION}
@@ -458,7 +489,7 @@ export function CheckoutSummary({
             }}
           >
             <span
-              className="text-[10px] uppercase tracking-[0.22em]"
+              className="text-[11.5px] uppercase tracking-[0.2em]"
               style={{ color: "var(--charcoal-soft)" }}
             >
               Paying now
@@ -477,12 +508,14 @@ export function CheckoutSummary({
             style={{ background: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
           />
           <div
-            className="mt-6 flex items-center justify-center gap-2 text-[10.5px] uppercase tracking-[0.24em]"
-            style={{ color: "color-mix(in oklab, var(--charcoal) 62%, transparent)" }}
+            className="mt-6 flex items-center justify-center gap-2 text-[12px] uppercase tracking-[0.2em]"
+            style={{ color: "var(--charcoal-soft)" }}
+            data-testid="studio-v3-checkout-security-note"
           >
-            <Lock size={11} aria-hidden strokeWidth={1.75} />
+            <Lock size={13} aria-hidden strokeWidth={1.75} />
             <span>Secure payment · Powered by Stripe</span>
           </div>
+          <CancellationNote className="mt-3" />
           <div
             // Full-bleed on phones: the section's own 20px padding plus an
             // inner inset squeezed Stripe's payment form to ~281px on a
@@ -539,13 +572,41 @@ export function CheckoutSummary({
                 {checkoutError || checkoutBlock ? "Try secure checkout again" : CTA_RESERVE_YOUR_DAY}
               </CtaButton>
             )}
-            <p className="mt-2 text-center text-[10px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+            <p className="mt-2 text-center text-[12px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
               Secure checkout · Final price shown before payment
             </p>
+            <CancellationNote className="mt-1.5" />
           </div>
         </div>
       )}
     </section>
+  );
+}
+
+/**
+ * Cancellation/terms disclosure shown at the payment seam.
+ *
+ * Copy comes from the canonical `CANCELLATION` source of truth — never a
+ * hard-coded number — and links to the full terms page for the exact rules.
+ */
+function CancellationNote({ className }: { className?: string }) {
+  return (
+    <p
+      data-testid="studio-v3-checkout-cancellation-note"
+      className={cn("text-center text-[12px] leading-[1.5]", className)}
+      style={{ color: "var(--charcoal-soft)" }}
+    >
+      {CANCELLATION.custom.en}{" "}
+      <a
+        href="/terms"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline underline-offset-2"
+        style={{ color: "var(--teal)" }}
+      >
+        Booking &amp; cancellation terms
+      </a>
+    </p>
   );
 }
 
@@ -565,7 +626,7 @@ function RecapEdit({
       onClick={onClick}
       aria-label={label}
       data-testid={testId}
-      className="-mr-2 inline-flex items-center min-h-[44px] px-2 text-[10.5px] uppercase tracking-[0.22em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+      className="-mr-2 inline-flex items-center min-h-[44px] px-2 text-[11.5px] uppercase tracking-[0.2em] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
       style={{ color: "var(--teal)" }}
     >
       Edit
@@ -588,11 +649,11 @@ function Row({
 }) {
   return (
     <div
-      className="flex items-center justify-between gap-3 text-[13.5px]"
+      className="flex items-center justify-between gap-3 text-[14.5px]"
       style={{ color: "var(--charcoal)" }}
     >
       <span
-        className="text-[11px] uppercase tracking-[0.22em]"
+        className="text-[12px] uppercase tracking-[0.2em]"
         style={{ color: "var(--charcoal-soft)" }}
       >
         {label}
