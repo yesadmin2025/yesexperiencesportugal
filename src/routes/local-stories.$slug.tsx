@@ -3,38 +3,29 @@ import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-rout
 
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
-import { supabase } from "@/integrations/supabase/client";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
-import { Scene } from "@/components/motion/Scene";
-import { RevealImage } from "@/components/motion/RevealImage";
-import { ReadingProgress } from "@/components/motion/ReadingProgress";
 import {
   jsonLdScript,
   breadcrumbLd,
   personFounderLd,
-  localStoryReviewsLd,
   localStoryArticleLd,
-  normalizeLocalStoryReviews,
   faqPageLd,
   regionDestinationLd,
-  type NormalizedLocalStoryReview,
 } from "@/lib/jsonld";
 import { PLANNER_REGIONS } from "@/content/portugal-planner-map";
-
-import { getTourReviews } from "@/lib/reviews.functions";
-import { findTour } from "@/data/signatureTours";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
 import { GuideNextSteps, useGuideLinkTracker } from "@/components/journal/GuideNextSteps";
 import { guideRefSearch } from "@/lib/guide-attribution";
 
 /**
- * Inline-renders `[label](/tours/slug)` tokens in article body copy as
- * TanStack <Link> anchors. Used to weave natural-anchor internal links
- * (e.g. "private wine tour from Lisbon" → /tours/arrabida-wine-allinclusive)
- * inside longform Local Stories without breaking the plain-text body model.
- * Anything else is rendered as-is.
+ * Static Local Stories are editorial pages first. Their primary content,
+ * metadata and internal links stay in the route bundle; database-only work is
+ * loaded only for a slug that is not part of the static editorial catalogue.
+ * This keeps Supabase and review/runtime dependencies out of the critical path
+ * for the stories that receive organic traffic.
  */
+
 function renderBodyWithTourLinks(text: string): React.ReactNode[] {
   const re = /\[([^\]]+)\]\(\/tours\/([a-z0-9-]+)\)/g;
   const nodes: React.ReactNode[] = [];
@@ -73,6 +64,9 @@ type JournalPostFull = {
 };
 
 async function fetchPost(slug: string): Promise<JournalPostFull | null> {
+  // Dynamic import is intentional: static SEO stories never need the database,
+  // so they should not pull the Supabase client into their initial route chunk.
+  const { supabase } = await import("@/integrations/supabase/client");
   const { data, error } = await supabase
     .from("journal_posts")
     .select(
@@ -87,22 +81,12 @@ async function fetchPost(slug: string): Promise<JournalPostFull | null> {
 
 const BASE = "https://yesexperiencesportugal.com";
 
-/** Absolute URL for a Signature tour's hero image, when the article
- *  doesn't ship its own hero. Bundled imports resolve to root-relative
- *  URLs like `/assets/xxx.jpg`; we prefix with BASE for JSON-LD/OG. */
-function articleImageUrl(a: LocalStoryArticle): string | undefined {
-  if (a.heroImage) {
-    return a.heroImage.startsWith("http") ? a.heroImage : `${BASE}${a.heroImage}`;
-  }
-  const tour = a.signatureSlug ? findTour(a.signatureSlug) : undefined;
-  const img = tour?.img;
-  if (!img) return undefined;
-  return img.startsWith("http") ? img : `${BASE}${img.startsWith("/") ? "" : "/"}${img}`;
+function articleImageUrl(article: LocalStoryArticle): string | undefined {
+  if (!article.heroImage) return undefined;
+  return article.heroImage.startsWith("http") ? article.heroImage : `${BASE}${article.heroImage}`;
 }
 
 type LoaderData = {
-  reviews: NormalizedLocalStoryReview[];
-  signatureTitle: string | null;
   dbPost: {
     slug: string;
     title: string;
@@ -120,79 +104,37 @@ type LoaderData = {
 export const Route = createFileRoute("/local-stories/$slug")({
   loader: async ({ params }): Promise<LoaderData> => {
     const article = getLocalStoryArticle(params.slug);
-    if (!article) {
-      // No static article — try DB post. If neither exists, this URL
-      // is not a real story: throw notFound() so the response is a real
-      // 404 with noindex, not a soft-404 200.
-      let post: JournalPostFull | null = null;
-      try {
-        post = await fetchPost(params.slug);
-      } catch {
-        // Treat DB errors as "unknown" — fall through to notFound below.
-        post = null;
-      }
-      if (!post) throw notFound();
-      return {
-        reviews: [],
-        signatureTitle: null,
-        dbPost: {
-          slug: post.slug,
-          title: post.title,
-          excerpt: post.excerpt,
-          body: post.body,
-          heroImage: post.hero_image_url,
-          heroImageAlt: post.hero_image_alt,
-          region: post.region,
-          authorName: post.author_name,
-          signatureSlug: post.signature_slug,
-          publishedAt: post.published_at,
-        },
-      };
-    }
-    const tour = article.signatureSlug ? findTour(article.signatureSlug) : undefined;
-    if (!tour || !article.signatureSlug) return { reviews: [], signatureTitle: null, dbPost: null };
+    if (article) return { dbPost: null };
+
+    let post: JournalPostFull | null = null;
     try {
-      const rows = await getTourReviews({
-        data: { tourId: article.signatureSlug, limit: 3 },
-      });
-      const filtered = (rows ?? [])
-        .filter((r) => r.is_first_party && r.rating >= 4 && !!r.body)
-        .slice(0, 3)
-        .map((r) => ({
-          id: r.id,
-          rating: Number(r.rating),
-          body: r.body,
-          title: r.title,
-          reviewer_name: r.reviewer_name,
-          reviewer_country: r.reviewer_country,
-          published_at: r.published_at,
-        }));
-      // Single normalization step — visible UI and JSON-LD consume the
-      // same shape so fields cannot drift.
-      const reviews = normalizeLocalStoryReviews(filtered);
-      return { reviews, signatureTitle: tour.title, dbPost: null };
+      post = await fetchPost(params.slug);
     } catch {
-      return { reviews: [], signatureTitle: tour.title, dbPost: null };
+      post = null;
     }
+    if (!post) throw notFound();
+
+    return {
+      dbPost: {
+        slug: post.slug,
+        title: post.title,
+        excerpt: post.excerpt,
+        body: post.body,
+        heroImage: post.hero_image_url,
+        heroImageAlt: post.hero_image_alt,
+        region: post.region,
+        authorName: post.author_name,
+        signatureSlug: post.signature_slug,
+        publishedAt: post.published_at,
+      },
+    };
   },
 
   head: ({ params, loaderData }) => {
     const article = getLocalStoryArticle(params.slug);
 
-    // Every Local Story is self-canonical at /local-stories/<slug>.
-
     if (article) {
       const url = `${BASE}/local-stories/${params.slug}`;
-      const reviews = loaderData?.reviews ?? [];
-      const signatureTitle = loaderData?.signatureTitle ?? article.ctaLabel;
-      const reviewScripts =
-        reviews.length > 0 && article.signatureSlug
-          ? localStoryReviewsLd({
-              signatureSlug: article.signatureSlug,
-              signatureTitle,
-              reviews,
-            }).map((node) => jsonLdScript(node))
-          : [];
       const imageUrl = articleImageUrl(article);
       return {
         meta: [
@@ -231,9 +173,6 @@ export const Route = createFileRoute("/local-stories/$slug")({
             ]),
           ),
           ...(article.faq && article.faq.length > 0 ? [jsonLdScript(faqPageLd(article.faq))] : []),
-          // Corridor / region guides describe a real place we operate in —
-          // emit a TouristDestination built from the verified planner-map
-          // coordinates so Google can tie the guide to the geography.
           ...(article.plannerRegionIds && article.plannerRegionIds.length > 0
             ? [
                 jsonLdScript(
@@ -241,21 +180,17 @@ export const Route = createFileRoute("/local-stories/$slug")({
                     slug: article.slug,
                     name: article.h1,
                     description: article.metaDescription,
-                    places: PLANNER_REGIONS.filter((r) =>
-                      article.plannerRegionIds!.includes(r.id),
-                    ).map((r) => ({ label: r.label, lat: r.lat, lon: r.lon })),
+                    places: PLANNER_REGIONS.filter((region) =>
+                      article.plannerRegionIds!.includes(region.id),
+                    ).map((region) => ({ label: region.label, lat: region.lat, lon: region.lon })),
                   }),
                 ),
               ]
             : []),
-          ...reviewScripts,
         ],
       };
     }
 
-    // No static article and no matching DB post — the loader threw
-    // notFound() (or errored). Emit a minimal noindex head so this URL
-    // never gets indexed, and never advertise a canonical for it.
     const post = loaderData?.dbPost ?? null;
     if (!post) {
       return {
@@ -267,63 +202,51 @@ export const Route = createFileRoute("/local-stories/$slug")({
     }
 
     const url = `${BASE}/local-stories/${params.slug}`;
-    const title = post.title;
     const description = post.excerpt ?? `A local story from Portugal · ${params.slug}`;
-    const heroImage = post.heroImage ?? null;
-
-    const scripts = [
-      jsonLdScript(
-        localStoryArticleLd({
-          slug: post.slug,
-          headline: post.title,
-          name: post.title,
-          description: post.excerpt ?? undefined,
-          datePublished: post.publishedAt,
-          dateModified: post.publishedAt,
-          imageUrl: heroImage,
-          authorName: post.authorName,
-        }),
-      ),
-      jsonLdScript(
-        breadcrumbLd([
-          { name: "Home", path: "/" },
-          { name: "Local Stories", path: "/local-stories" },
-          { name: post.title, path: `/local-stories/${post.slug}` },
-        ]),
-      ),
-    ];
-
     return {
       meta: [
-        { title },
+        { title: post.title },
         { name: "description", content: description },
-        { property: "og:title", content: title },
+        { property: "og:title", content: post.title },
         { property: "og:description", content: description },
         { property: "og:url", content: url },
         { property: "og:type", content: "article" },
-        ...(heroImage ? [{ property: "og:image", content: heroImage }] : []),
+        ...(post.heroImage ? [{ property: "og:image", content: post.heroImage }] : []),
         ...(post.publishedAt
           ? [{ property: "article:published_time", content: post.publishedAt }]
           : []),
       ],
       links: [{ rel: "canonical", href: url }],
-      scripts,
+      scripts: [
+        jsonLdScript(
+          localStoryArticleLd({
+            slug: post.slug,
+            headline: post.title,
+            name: post.title,
+            description: post.excerpt ?? undefined,
+            datePublished: post.publishedAt,
+            dateModified: post.publishedAt,
+            imageUrl: post.heroImage,
+            authorName: post.authorName,
+          }),
+        ),
+        jsonLdScript(
+          breadcrumbLd([
+            { name: "Home", path: "/" },
+            { name: "Local Stories", path: "/local-stories" },
+            { name: post.title, path: `/local-stories/${post.slug}` },
+          ]),
+        ),
+      ],
     };
   },
 
   beforeLoad: ({ params }) => {
-    // Placeholder / malformed slugs ($slug, %24slug, undefined, template
-    // stubs, anything that can't be a real article) must serve a real 404
-    // with noindex — NOT a 301 to the listing. A 301 keeps the URL alive
-    // in the index and, because the listing links back into the same
-    // /local-stories/* family, Google reports it as a redirect loop.
     const raw = params.slug ?? "";
-    const s = raw.trim().toLowerCase();
-    const PLACEHOLDERS = new Set(["", "slug", "undefined", "null", "example"]);
-    const validSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s) && s.length >= 2;
-    if (PLACEHOLDERS.has(s) || s.startsWith("$") || !validSlug) {
-      throw notFound();
-    }
+    const slug = raw.trim().toLowerCase();
+    const placeholders = new Set(["", "slug", "undefined", "null", "example"]);
+    const validSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) && slug.length >= 2;
+    if (placeholders.has(slug) || slug.startsWith("$") || !validSlug) throw notFound();
     return undefined as never;
   },
 
@@ -338,29 +261,15 @@ function Page() {
   const article = getLocalStoryArticle(slug);
   const loaderData = Route.useLoaderData();
 
-  // Static SEO articles render directly (no DB needed).
-  if (article) {
-    return <StaticArticleView article={article} reviews={loaderData?.reviews ?? []} />;
-  }
+  if (article) return <StaticArticleView article={article} />;
 
-  // Loader guarantees dbPost exists here (else notFound() was thrown).
   const post = loaderData?.dbPost;
   if (!post) throw notFound();
   return <DbPostView post={post} />;
 }
 
-function StaticArticleView({
-  article,
-  reviews,
-}: {
-  article: LocalStoryArticle;
-  reviews: NormalizedLocalStoryReview[];
-}) {
+function StaticArticleView({ article }: { article: LocalStoryArticle }) {
   const trackGuideLink = useGuideLinkTracker(article.slug);
-  const dateFmt = new Intl.DateTimeFormat("en-GB", {
-    year: "numeric",
-    month: "long",
-  });
 
   return (
     <SiteLayout>
@@ -376,7 +285,7 @@ function StaticArticleView({
             ]}
           />
           <div className="container-x max-w-3xl text-center">
-            <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-5">
+            <span className="block font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-5">
               {article.eyebrow}
             </span>
             <h1 className="font-display font-bold text-[2rem] md:text-[2.6rem] leading-[1.15] tracking-[-0.01em] text-[color:var(--charcoal)]">
@@ -393,13 +302,13 @@ function StaticArticleView({
         <section className="py-20 md:py-28 bg-[color:var(--ivory)] reveal">
           <div className="container-x prose-longform">
             <div className="prose-yes">
-              {article.sections.map((s, i) => (
-                <div key={i} className="mb-12">
+              {article.sections.map((section, index) => (
+                <div key={index} className="mb-12">
                   <h2 className="font-display font-semibold text-[1.4rem] md:text-[1.6rem] leading-[1.25] text-[color:var(--charcoal)] mb-5">
-                    {s.heading}
+                    {section.heading}
                   </h2>
                   <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
-                    {renderBodyWithTourLinks(s.body)}
+                    {renderBodyWithTourLinks(section.body)}
                   </p>
                 </div>
               ))}
@@ -411,33 +320,31 @@ function StaticArticleView({
                 className="mt-4 mb-12 reveal"
                 data-testid="local-story-comparison"
               >
-                <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-5">
+                <span className="block font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-5">
                   {article.comparison.caption}
                 </span>
                 <div className="-mx-4 overflow-x-auto px-4 md:mx-0 md:px-0">
                   <table className="w-full min-w-[520px] border-collapse text-left text-[14px] md:text-[15px]">
                     <thead>
                       <tr>
-                        {article.comparison.columns.map((c) => (
+                        {article.comparison.columns.map((column) => (
                           <th
-                            key={c}
+                            key={column}
                             scope="col"
-                            className="border-b border-[color:var(--gold-soft)]/60 py-3 pr-4 font-sans text-[11px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]"
+                            className="border-b border-[color:var(--gold-soft)]/60 py-3 pr-4 font-sans text-[12px] uppercase tracking-[0.14em] text-[color:var(--charcoal-soft)]"
                           >
-                            {c}
+                            {column}
                           </th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
-                      {article.comparison.rows.map((row, i) => (
-                        <tr key={i}>
-                          {row.map((cell, j) => (
+                      {article.comparison.rows.map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {row.map((cell, cellIndex) => (
                             <td
-                              key={j}
-                              className={`border-b border-[color:var(--sand)] py-3 pr-4 align-top leading-[1.6] text-[color:var(--charcoal)] ${
-                                j === 0 ? "font-medium" : ""
-                              }`}
+                              key={cellIndex}
+                              className={`border-b border-[color:var(--sand)] py-3 pr-4 align-top leading-[1.6] text-[color:var(--charcoal)] ${cellIndex === 0 ? "font-medium" : ""}`}
                             >
                               {cell}
                             </td>
@@ -450,18 +357,17 @@ function StaticArticleView({
               </section>
             )}
 
-
             {article.faq && article.faq.length > 0 && (
               <section
                 aria-label="Frequently asked questions"
                 className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 reveal"
               >
-                <span className="block text-center font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-8">
+                <span className="block text-center font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-8">
                   Frequently asked
                 </span>
                 <dl className="space-y-8">
-                  {article.faq.map((item, i) => (
-                    <div key={i}>
+                  {article.faq.map((item, index) => (
+                    <div key={index}>
                       <dt className="font-display font-semibold text-[1.05rem] md:text-[1.15rem] leading-[1.3] text-[color:var(--charcoal)] mb-3">
                         {item.q}
                       </dt>
@@ -477,7 +383,7 @@ function StaticArticleView({
             <GuideNextSteps article={article} />
 
             <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
-              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-4">
+              <span className="block font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-4">
                 Travel this story
               </span>
               <p className="text-[15px] text-[color:var(--charcoal-soft)] mb-6 max-w-xl mx-auto leading-[1.75]">
@@ -498,7 +404,6 @@ function StaticArticleView({
                   >
                     {article.ctaLabel}
                   </CtaButton>
-
                   <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
                     Or{" "}
                     <Link
@@ -526,31 +431,28 @@ function StaticArticleView({
                   >
                     {article.ctaLabel}
                   </CtaButton>
-
                   <p className="mt-6 text-[13px] text-[color:var(--charcoal-soft)] leading-[1.7]">
-                    A local designer reads every request and replies personally, usually within a
-                    few hours.
+                    A local designer reads every request and replies personally, usually within a few hours.
                   </p>
                 </>
               )}
 
-
               {article.relatedSignatures && article.relatedSignatures.length > 0 && (
                 <ul className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-                  {article.relatedSignatures.map((r) => (
-                    <li key={r.slug}>
+                  {article.relatedSignatures.map((related) => (
+                    <li key={related.slug}>
                       <Link
                         to="/tours/$tourId"
-                        params={{ tourId: r.slug }}
+                        params={{ tourId: related.slug }}
                         search={guideRefSearch(article.slug, "related_signature")}
                         onClick={trackGuideLink(
                           "related_signature",
                           "signature",
-                          `/tours/${r.slug}`,
+                          `/tours/${related.slug}`,
                         )}
                         className="hover:text-[color:var(--teal)] transition-colors"
                       >
-                        {r.label} →
+                        {related.label} →
                       </Link>
                     </li>
                   ))}
@@ -559,14 +461,14 @@ function StaticArticleView({
 
               {article.relatedReads && article.relatedReads.length > 0 && (
                 <ul className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] tracking-[0.02em] text-[color:var(--charcoal-soft)]">
-                  {article.relatedReads.map((r) => (
-                    <li key={r.path}>
+                  {article.relatedReads.map((related) => (
+                    <li key={related.path}>
                       <a
-                        href={`${r.path}?ref=guide:${article.slug}&ref_slot=related_read`}
-                        onClick={trackGuideLink("related_read", "guide", r.path)}
+                        href={`${related.path}?ref=guide:${article.slug}&ref_slot=related_read`}
+                        onClick={trackGuideLink("related_read", "guide", related.path)}
                         className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
                       >
-                        {r.label} →
+                        {related.label} →
                       </a>
                     </li>
                   ))}
@@ -574,64 +476,10 @@ function StaticArticleView({
               )}
             </aside>
 
-            {reviews.length > 0 && (
-              <section
-                aria-label="Guest notes from this experience"
-                className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 reveal"
-              >
-                <span className="block text-center font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-8">
-                  Guest notes
-                </span>
-                <ul className="space-y-8">
-                  {reviews.map((r) => {
-                    const bylineParts: React.ReactNode[] = [];
-                    if (r.authorName) bylineParts.push(<span key="n">{r.authorName}</span>);
-                    if (r.country) bylineParts.push(<span key="c"> · {r.country}</span>);
-                    if (r.publishedAt) {
-                      bylineParts.push(
-                        <span key="d">
-                          {" · "}
-                          <time dateTime={r.publishedAt}>
-                            {dateFmt.format(new Date(r.publishedAt))}
-                          </time>
-                        </span>,
-                      );
-                    }
-                    return (
-                      <li key={r.id} className="border-l-2 border-[color:var(--gold-soft)]/60 pl-5">
-                        {r.ratingValue !== null && (
-                          <div
-                            role="img"
-                            className="text-[color:var(--gold-ink)] text-[13px] tracking-[0.2em] mb-2"
-                            aria-label={`Rated ${r.ratingValue} out of 5`}
-                          >
-                            {"★".repeat(r.ratingValue)}
-                          </div>
-                        )}
-                        {r.title && (
-                          <p className="font-display font-semibold text-[1rem] md:text-[1.05rem] text-[color:var(--charcoal)] mb-2">
-                            {r.title}
-                          </p>
-                        )}
-                        <p className="font-serif italic text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal)]">
-                          “{r.body}”
-                        </p>
-                        {bylineParts.length > 0 && (
-                          <p className="mt-3 text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
-                            {bylineParts}
-                          </p>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </section>
-            )}
-
             <nav className="mt-16 text-center">
               <Link
                 to="/local-stories"
-                className="font-sans text-[13px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors"
+                className="inline-flex min-h-[44px] items-center font-sans text-[13px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors"
               >
                 ← All Local Stories
               </Link>
@@ -646,12 +494,11 @@ function StaticArticleView({
 function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
   const paragraphs = post.body
     .split(/\n\s*\n/)
-    .map((p) => p.trim())
+    .map((paragraph) => paragraph.trim())
     .filter(Boolean);
 
   return (
     <SiteLayout>
-      <ReadingProgress />
       <article>
         <header className="pt-32 md:pt-40 pb-10 bg-[color:var(--sand)]">
           <SiteBreadcrumbs
@@ -665,7 +512,7 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
           />
           <div className="container-x max-w-3xl text-center">
             {post.region && (
-              <span className="block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-5">
+              <span className="block font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-5">
                 {post.region}
               </span>
             )}
@@ -680,13 +527,16 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
           </div>
           {post.heroImage && (
             <div className="container-x max-w-4xl mt-10">
-              <RevealImage
-                motion="mask"
-                ratio="16 / 9"
-                frameClassName="shadow-[0_24px_60px_-30px_rgba(46,46,46,0.4)]"
-                src={post.heroImage}
-                alt={post.heroImageAlt ?? post.title}
-              />
+              <div className="aspect-[16/9] overflow-hidden bg-[color:var(--sand)]">
+                <img
+                  src={post.heroImage}
+                  alt={post.heroImageAlt ?? post.title}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              </div>
             </div>
           )}
         </header>
@@ -699,43 +549,38 @@ function DbPostView({ post }: { post: NonNullable<LoaderData["dbPost"]> }) {
               </p>
             )}
             <div className="prose-yes">
-              {paragraphs.map((p, i) => (
+              {paragraphs.map((paragraph, index) => (
                 <p
-                  key={i}
+                  key={index}
                   className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85] mb-6"
                 >
-                  {p}
+                  {paragraph}
                 </p>
               ))}
             </div>
 
             {post.signatureSlug && (
-              <Scene
-                as="aside"
-                className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center"
-              >
-                <span className="scene-atmosphere block font-sans text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold-ink)] mb-4">
+              <aside className="mt-16 pt-10 border-t border-[color:var(--gold-soft)]/40 text-center">
+                <span className="block font-sans text-[12px] uppercase tracking-[0.28em] text-[color:var(--gold-ink)] mb-4">
                   Travel this story
                 </span>
-                <p className="scene-title text-[15px] text-[color:var(--charcoal-soft)] mb-6">
+                <p className="text-[15px] text-[color:var(--charcoal-soft)] mb-6">
                   The places in this piece live inside one of our private days.
                 </p>
-                <div className="scene-cta">
-                  <CtaButton
-                    to="/tours/$tourId"
-                    params={{ tourId: post.signatureSlug }}
-                    variant="primary"
-                  >
-                    See the Signature
-                  </CtaButton>
-                </div>
-              </Scene>
+                <CtaButton
+                  to="/tours/$tourId"
+                  params={{ tourId: post.signatureSlug }}
+                  variant="primary"
+                >
+                  See the Signature
+                </CtaButton>
+              </aside>
             )}
 
             <nav className="mt-16 text-center">
               <Link
                 to="/local-stories"
-                className="font-sans text-[13px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors"
+                className="inline-flex min-h-[44px] items-center font-sans text-[13px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)] hover:text-[color:var(--teal)] transition-colors"
               >
                 ← All Local Stories
               </Link>
@@ -782,7 +627,7 @@ function ErrorView({ error, reset }: { error: Error; reset: () => void }) {
               reset();
               router.invalidate();
             }}
-            className="font-sans text-[13px] uppercase tracking-[0.24em] text-[color:var(--teal)]"
+            className="inline-flex min-h-[44px] items-center font-sans text-[13px] uppercase tracking-[0.24em] text-[color:var(--teal)]"
           >
             Try again
           </button>
