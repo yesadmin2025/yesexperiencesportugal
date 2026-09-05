@@ -186,9 +186,8 @@ function ReviewsPage() {
         <section className="reveal py-20 md:py-28 bg-[color:var(--ivory)]">
           <div className="container-x max-w-5xl">
             <div className="space-y-16 md:space-y-20">
-              {TOUR_IDS.filter((id) => bundles[id]).map((id) => {
-                const b = bundles[id];
-                if (!b) return null;
+              {tours.map((b) => {
+                const id = b.tour_id;
                 return (
                   <article key={id}>
                     <header className="flex flex-wrap items-baseline justify-between gap-3 border-b border-[color:var(--gold-soft)]/40 pb-4">
