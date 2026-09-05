@@ -43,15 +43,13 @@ const SOURCE_LABEL: Record<string, string> = {
 
 export const Route = createFileRoute("/reviews")({
   component: ReviewsPage,
-  loader: async ({ context }) => {
-    // Pull stats server-side so AggregateRating ships in initial HTML.
-    const { getGlobalReviewStats: getGlobalSrv } = await import("@/lib/reviews.functions");
-    const stats = await getGlobalSrv();
-    return { stats };
-  },
+  // Whole page (stats + every review card) resolved server-side so the
+  // cards and their schema ship inside the initial HTML.
+  loader: async () => getReviewsPageData(),
   head: ({ loaderData }) => {
-    const fpCount = loaderData?.stats.first_party_count ?? 0;
-    const fpAvg = loaderData?.stats.first_party_avg ?? null;
+    const fpCount = loaderData?.global.first_party_count ?? 0;
+    const fpAvg = loaderData?.global.first_party_avg ?? null;
+    const tours = loaderData?.tours ?? [];
     const meta = [
       {
         title: "Guest Reviews — Private Portugal Tours by YES",
