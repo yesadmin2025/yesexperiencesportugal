@@ -43,7 +43,7 @@ export function PriceBreakdownRows({
       data-testid={testId}
     >
       <p
-        className="text-[10px] uppercase tracking-[0.22em] mb-2"
+        className="text-[12px] uppercase tracking-[0.18em] font-medium mb-2"
         style={{ color: "var(--charcoal-soft)" }}
       >
         {label}
