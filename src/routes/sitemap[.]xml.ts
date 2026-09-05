@@ -7,6 +7,7 @@ import { PT_PAIRED_PATHS } from "@/i18n/pt-ready";
 import { SITEMAP_STATIC_ROUTES } from "@/generated/sitemap-routes";
 
 const BASE_URL = "https://yesexperiencesportugal.com";
+const PT_NOINDEX_UTILITY_PATHS = new Set(["/contact", "/privacy", "/cookies"]);
 
 interface SitemapEntry {
   path: string;
@@ -20,30 +21,12 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async () => {
         // NOTE: internal / utility / auth / QA routes are intentionally excluded from the sitemap
-        // because they are blocked by robots.txt and should not be indexed. These include:
-        // /admin/*, /auth, /booking-confirmed, /brand-qa, /builder, /checkout, /e2e, /email,
-        // /hero-verify, /lovable, /preview-check, /qa, /s/, /i/, /studio-drift, /studio-v2,
-        // /typography-audit, /unsubscribe. /portugal-travel-designer
-        // (301 → /multi-day) is also excluded.
-        // Static entries omit <lastmod> on purpose — a rolling "today" trains
-        // crawlers to ignore the field. Dynamic DB posts keep their real
-        // published_at.
-        //
-        // Explicitly excluded from this sitemap (SEO scanner note):
-        // - /alentejo-wine-tour-from-lisbon, /arrabida-day-trip-from-lisbon, /arrabida-wine-tour:
-        //   these are 301 redirects to /local-stories/<slug>. Sitemaps must list only
-        //   HTTP 200 final destinations; the canonical article URLs are already emitted below
-        //   by LOCAL_STORIES_ARTICLES and the journal_posts query.
-        // - /auth, /booking-confirmed: both have robots noindex/nofollow and are Disallow'd in
-        //   robots.txt; they must not appear in the sitemap.
+        // because they are blocked by robots.txt or explicitly noindex and should not be indexed.
         // Static EN routes are generated from the route tree by
         // scripts/generate-sitemap-routes.mjs (redirects, noindex pages,
-        // cross-canonical aliases and internal surfaces are filtered out
-        // automatically). Run `bun run sitemap:generate` after route changes;
-        // CI fails when the generated file drifts.
-        // Static entries omit <lastmod> on purpose — a rolling "today" trains
-        // crawlers to ignore the field. Dynamic DB posts keep their real
-        // published_at.
+        // cross-canonical aliases and internal surfaces are filtered out automatically).
+        // Dynamic collections (Signature tours, Local Stories and PT twins) are
+        // added below from their source-of-truth lists.
         const staticEntries: SitemapEntry[] = SITEMAP_STATIC_ROUTES.map((r) => ({ ...r }));
 
         // Bump SEO focus tours so they surface ahead of the rest of the Signature
@@ -77,9 +60,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           isRealSlug(a.slug),
         ).map((a) => ({
           path: `/local-stories/${a.slug}`,
-          // Omit <lastmod> for static articles — the schema has no
-          // dateModified field, so datePublished would freeze the
-          // freshness signal at the original publish date.
           changefreq: "monthly",
           priority: "0.7",
         }));
@@ -110,12 +90,12 @@ export const Route = createFileRoute("/sitemap.xml")({
         );
         const dedupedDbPosts = postEntries.filter((e) => !staticSlugSet.has(e.path));
 
-        // Portuguese twins. Only paths in PT_PAIRED_PATHS ship a real,
-        // human-reviewed PT page that returns 200 — redirect stubs
-        // (/pt/faq, /pt/moments, /pt/proposals) are excluded by that list.
-        // /reviews is now listed on both locales, keeping EN and PT symmetric
-        // and matching the reciprocal hreflang pair.
-        const ptEntries: SitemapEntry[] = PT_PAIRED_PATHS.map((p) => ({
+        // Portuguese twins. PT_PAIRED_PATHS remains the bilingual/hreflang
+        // source of truth, but noindex utility pages must not be advertised in
+        // sitemap.xml even though they remain valid, linked pages for users.
+        const ptEntries: SitemapEntry[] = PT_PAIRED_PATHS.filter(
+          (p) => !PT_NOINDEX_UTILITY_PATHS.has(p),
+        ).map((p) => ({
           path: p === "/" ? "/pt" : `/pt${p}`,
           changefreq: "monthly",
           priority: p === "/" ? "0.8" : "0.5",

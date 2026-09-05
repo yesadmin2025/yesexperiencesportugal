@@ -101,15 +101,19 @@ export const WINE_TOUR_FAQ_BY_ID: Record<string, FaqItem[]> = {
   "azeitao-cheese": [
     {
       q: "Is this a good wine tasting near Lisbon?",
-      a: "Yes — it's designed for travelers who want serious wine tasting near Lisbon without a full-day drive. A morning at an Azeitão winery, a small producer of the DOP Azeitão sheep's cheese, and lunch in the village. Back in Lisbon by mid-afternoon.",
+      a: "Yes. This is a full private 8–9 hour day from Lisbon combining the Setúbal market, a hands-on Azeitão cheese-making workshop, lunch in Azeitão, a guided winery visit and tasting, and Sesimbra Castle. It is designed for guests who want food, wine and local craft in one unhurried day.",
     },
     {
       q: "How does this compare to the Arrábida private wine tour from Lisbon?",
-      a: "Same region, shorter and more focused. Arrábida All-Inclusive is the full wine-and-coast day. Azeitão Cheese & Wine is the depth-over-distance option — one estate, one cheese producer, one long lunch, and back early.",
+      a: "They explore the same wider region but with a different focus. The Arrábida Wine Signature is wine-led; Azeitão Cheese & Wine gives the cheese workshop equal weight, then adds a winery tasting, lunch and Sesimbra context. Both are full private days rather than short tasting trips.",
     },
     {
-      q: "Is a cellar tour and tasting included?",
-      a: "Yes. A guided cellar visit and a seated tasting of the estate's core range are included, alongside the cheese-maker visit and lunch. All private, only your group.",
+      q: "Is the cheese-making workshop included?",
+      a: "Yes. The hands-on Azeitão cheese workshop is part of the booked day, together with its listed tastings and accompaniments. You make the cheese with the producer rather than only watching a demonstration.",
+    },
+    {
+      q: "Is a cellar tour and wine tasting included?",
+      a: "Yes. A guided winery visit and tasting are included, alongside the cheese workshop, lunch, private transport, pickup and drop-off, and the other inclusions shown on the tour page.",
     },
   ],
   "evora-alentejo": [

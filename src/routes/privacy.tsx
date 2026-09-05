@@ -8,6 +8,7 @@ import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, follow" },
       { title: "Privacy Policy — YES Experiences Portugal" },
       {
         name: "description",
@@ -26,8 +27,6 @@ export const Route = createFileRoute("/privacy")({
     ],
     links: [
       { rel: "canonical", href: "https://yesexperiencesportugal.com/privacy" },
-      // Reciprocal hreflang — the PT twin at /pt/privacy points back with the
-      // identical set. Emitted from the shared helper so both stay in sync.
       ...localeAlternateLinks("/privacy"),
     ],
     scripts: [
