@@ -107,3 +107,76 @@ describe("GuestDetailsStep", () => {
     expect(text).not.toMatch(/All entrances included/i);
   });
 });
+
+describe("GuestDetailsStep — P0 friction pass", () => {
+  it("collapses the optional information group by default", () => {
+    render(<GuestDetailsStep onBack={() => {}} onSubmit={() => {}} />);
+    const group = screen.getByTestId("studio-v3-guest-details-optional") as HTMLDetailsElement;
+    expect(group.open).toBe(false);
+  });
+
+  it("hides Main contact person behind 'Booking for someone else?'", () => {
+    render(<GuestDetailsStep onBack={() => {}} onSubmit={() => {}} />);
+    expect(screen.queryByTestId("studio-v3-main-contact-input")).toBeNull();
+    fireEvent.click(screen.getByTestId("studio-v3-main-contact-toggle"));
+    expect(screen.getByTestId("studio-v3-main-contact-input")).toBeInTheDocument();
+  });
+
+  it("still submits every optional field once the disclosure is expanded", async () => {
+    const onSubmit = vi.fn().mockResolvedValue(undefined);
+    render(
+      <GuestDetailsStep
+        onBack={() => {}}
+        onSubmit={onSubmit}
+        initial={{ tourDate: "2027-05-10", guests: 2, pickupAddress: "Ritz Lisbon" }}
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: /full name/i }), {
+      target: { value: "Ada Lovelace" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: /email/i }), {
+      target: { value: "ada@example.com" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: /phone/i }), {
+      target: { value: "+351 900 000 000" },
+    });
+
+    fireEvent.click(screen.getByTestId("studio-v3-main-contact-toggle"));
+    fireEvent.change(screen.getByTestId("studio-v3-main-contact-input"), {
+      target: { value: "Grace Hopper" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: /dietary restrictions/i }), {
+      target: { value: "No shellfish" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: /mobility notes/i }), {
+      target: { value: "Slow on steps" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: /special occasion/i }), {
+      target: { value: "Anniversary" },
+    });
+
+    fireEvent.click(screen.getByTestId("studio-v3-guest-details-submit"));
+
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+    expect(onSubmit.mock.calls[0][0]).toMatchObject({
+      mainContact: "Grace Hopper",
+      dietary: "No shellfish",
+      mobility: "Slow on steps",
+      occasion: "Anniversary",
+    });
+  });
+
+  it("presents a locked date as a remembered fact, not a question", () => {
+    render(
+      <GuestDetailsStep
+        onBack={() => {}}
+        onSubmit={() => {}}
+        fixedTourDate="2027-05-10"
+        onEditOperational={() => {}}
+      />,
+    );
+    expect(screen.getByTestId("studio-v3-fixed-tour-date")).toBeInTheDocument();
+    expect(screen.getAllByText(/already set/i).length).toBeGreaterThan(0);
+  });
+});

@@ -61,6 +61,10 @@ export type YesAnalyticsEvent =
   | "studio_price_expanded"
   | "studio_guest_details_started"
   | "studio_abandon_by_phase"
+  // Studio checkout seam (P0 funnel completeness)
+  | "studio_checkout_summary_view"
+  | "studio_reserve_click"
+  | "studio_payment_surface_ready"
   // Lead gen
   | "whatsapp_click"
   | "contact_form_started"

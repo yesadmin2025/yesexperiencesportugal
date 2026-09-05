@@ -39,7 +39,12 @@ import {
 } from "@/components/studio-v3/dateGuards";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { GuestField, GuestFieldGroup, guestInputClass } from "@/components/checkout/guest-form-ui";
+import {
+  CollapsibleFieldGroup,
+  GuestField,
+  GuestFieldGroup,
+  guestInputClass,
+} from "@/components/checkout/guest-form-ui";
 
 export interface GuestDetailsStepProps {
   /** Signature tour id — recorded on the checkout session for the host. */
@@ -115,6 +120,9 @@ export function GuestDetailsStep({
   const [pickupAddress, setPickupAddress] = useState(initial?.pickupAddress ?? "");
   const [language, setLanguage] = useState<GuestDetails["language"]>(initial?.language ?? "en");
   const [mainContact, setMainContact] = useState("");
+  // Secondary by default: only surfaced when the guest says they are booking
+  // for someone else. Payload contract (mainContact) is unchanged.
+  const [showMainContact, setShowMainContact] = useState(false);
   const [dietary, setDietary] = useState("");
   const [mobility, setMobility] = useState("");
   const [children, setChildren] = useState("");
@@ -318,14 +326,26 @@ export function GuestDetailsStep({
               {...errorProps("fullName")}
             />
           </GuestField>
-          <GuestField label="Main contact person" hint="If different">
-            <input
-              value={mainContact}
-              onChange={(e) => setMainContact(e.target.value)}
-              placeholder={fullName || "Same as above"}
-              className={guestInputClass}
-            />
-          </GuestField>
+          {showMainContact ? (
+            <GuestField label="Main contact person on the day" hint="If different from you">
+              <input
+                value={mainContact}
+                onChange={(e) => setMainContact(e.target.value)}
+                placeholder={fullName || "Same as above"}
+                className={guestInputClass}
+                data-testid="studio-v3-main-contact-input"
+              />
+            </GuestField>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setShowMainContact(true)}
+              data-testid="studio-v3-main-contact-toggle"
+              className="inline-flex min-h-[44px] items-center text-[12.5px] font-medium text-[color:var(--teal)] underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]/45"
+            >
+              Booking for someone else?
+            </button>
+          )}
           <GuestField label="Email" required error={errors.email} errorId="studio-v3-error-email">
             <input
               ref={(el) => {
@@ -365,7 +385,8 @@ export function GuestDetailsStep({
         <GuestFieldGroup title="Your day">
           <GuestField
             label="Tour date"
-            required
+            required={!fixedDate}
+            hint={fixedDate ? "Already set — change it if you need to." : undefined}
             error={errors.tourDate}
             errorId="studio-v3-error-tourDate"
           >
@@ -408,7 +429,8 @@ export function GuestDetailsStep({
           </GuestField>
           <GuestField
             label="Who's travelling"
-            required
+            required={!lockedComposition}
+            hint={lockedComposition ? "Already set — change it if you need to." : undefined}
             as="div"
             error={errors.composition}
             errorId="studio-v3-error-composition"
@@ -494,10 +516,10 @@ export function GuestDetailsStep({
           </GuestField>
         </GuestFieldGroup>
 
-        <GuestFieldGroup
-          title="Anything we should know"
-          optional
-          subtitle="Optional — skip unless it matters for your day."
+        <CollapsibleFieldGroup
+          title="Anything your host should know?"
+          subtitle="Dietary, mobility, children, a special occasion — only if it matters."
+          testId="studio-v3-guest-details-optional"
         >
           <GuestField label="Dietary restrictions">
             <input
@@ -541,7 +563,7 @@ export function GuestDetailsStep({
               confirmation.
             </p>
           </GuestField>
-        </GuestFieldGroup>
+        </CollapsibleFieldGroup>
 
         {/* Sticky CTA — sits above the virtual keyboard via safe-area padding
             on the wrapper. */}
