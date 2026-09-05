@@ -4,25 +4,13 @@ import { localeAlternateLinks } from "@/i18n/seo";
  * Same data source as /reviews, chrome in European Portuguese.
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { Star } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import {
-  getGlobalReviewStats,
-  getTourReviewStats,
-  getTourReviews,
-  type GlobalStats,
-  type PublicReview,
-  type TourStats,
-} from "@/lib/reviews.functions";
-import { VIATOR_META } from "@/data/signatureToursViator";
-import { findTour } from "@/data/signatureTours";
+import { getReviewsPageData } from "@/lib/reviews.functions";
 import { SITE_URL } from "@/lib/seo";
-import { filterVisibleReviews } from "@/lib/tour-reviews-filter";
 
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 
@@ -36,14 +24,11 @@ const SOURCE_LABEL: Record<string, string> = {
 
 export const Route = createFileRoute("/pt/reviews")({
   component: ReviewsPage,
-  loader: async () => {
-    const { getGlobalReviewStats: getGlobalSrv } = await import("@/lib/reviews.functions");
-    const stats = await getGlobalSrv();
-    return { stats };
-  },
+  // Server-rendered: every card is in the initial HTML.
+  loader: async () => getReviewsPageData(),
   head: ({ loaderData }) => {
-    const fpCount = loaderData?.stats.first_party_count ?? 0;
-    const fpAvg = loaderData?.stats.first_party_avg ?? null;
+    const fpCount = loaderData?.global.first_party_count ?? 0;
+    const fpAvg = loaderData?.global.first_party_avg ?? null;
     const title = "Avaliações de clientes — Tours privados em Portugal pela YES";
     const description =
       "Avaliações verificadas de clientes no Viator, Tripadvisor, GetYourGuide e submissões diretas para os nossos tours privados a partir de Lisboa.";
@@ -112,8 +97,6 @@ export const Route = createFileRoute("/pt/reviews")({
   },
 });
 
-const TOUR_IDS = Object.keys(VIATOR_META);
-
 function Stars({ rating }: { rating: number }) {
   return (
     <span
@@ -132,45 +115,9 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-type Bundle = { stats: TourStats; reviews: PublicReview[] };
-
 function ReviewsPage() {
   useMarketingMotion();
-  const { stats: initialStats } = Route.useLoaderData();
-  const globalFn = useServerFn(getGlobalReviewStats);
-  const statsFn = useServerFn(getTourReviewStats);
-  const reviewsFn = useServerFn(getTourReviews);
-  const [global, setGlobal] = useState<GlobalStats>(initialStats);
-  const [bundles, setBundles] = useState<Record<string, Bundle>>({});
-
-  useEffect(() => {
-    let cancelled = false;
-    globalFn({})
-      .then((g) => !cancelled && setGlobal(g))
-      .catch(() => undefined);
-    (async () => {
-      const out: Record<string, Bundle> = {};
-      for (const id of TOUR_IDS) {
-        try {
-          const [s, r] = await Promise.all([
-            statsFn({ data: { tourId: id } }),
-            reviewsFn({ data: { tourId: id, limit: 6 } }),
-          ]);
-          const visible = filterVisibleReviews(r);
-          if (s.total_reviews > 0 || visible.length > 0) {
-            out[id] = { stats: s, reviews: visible };
-          }
-        } catch {
-          /* skip */
-        }
-        if (cancelled) return;
-        setBundles({ ...out });
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [globalFn, statsFn, reviewsFn]);
+  const { global, tours } = Route.useLoaderData();
 
   return (
     <SiteLayout>
@@ -203,9 +150,8 @@ function ReviewsPage() {
         <section className="reveal py-20 md:py-28 bg-[color:var(--ivory)]">
           <div className="container-x max-w-5xl">
             <div className="space-y-16 md:space-y-20">
-              {TOUR_IDS.filter((id) => bundles[id]).map((id) => {
-                const b = bundles[id];
-                if (!b) return null;
+              {tours.map((b) => {
+                const id = b.tour_id;
                 return (
                   <article key={id}>
                     <header className="flex flex-wrap items-baseline justify-between gap-3 border-b border-[color:var(--gold-soft)]/40 pb-4">
@@ -214,7 +160,7 @@ function ReviewsPage() {
                         params={{ tourId: id }}
                         className="font-display font-semibold text-[1.4rem] md:text-[1.7rem] leading-[1.25] text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors"
                       >
-                        {findTour(id)?.title ?? id}
+                        {b.title}
                       </Link>
                       <div className="font-sans text-[13px] text-[color:var(--charcoal-soft)]">
                         {b.stats.average_rating && (
