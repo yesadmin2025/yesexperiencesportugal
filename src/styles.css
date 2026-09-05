@@ -3056,8 +3056,10 @@ svg.lucide {
 }
 
 /* Reveal-on-scroll utility (IntersectionObserver toggles .is-visible) */
-/* Soft, slow, consistent — sections lift gently into place */
-.reveal {
+/* Soft, slow, consistent — sections lift gently into place.
+   Hidden states are gated behind `html.motion-ready` so content stays
+   visible for no-JS renders, crawlers and pre-hydration paint. */
+html.reveal-ready .reveal {
   opacity: 0;
   transform: translateY(20px);
   transition:
@@ -3065,14 +3067,14 @@ svg.lucide {
     transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: opacity, transform;
 }
-.reveal.is-visible {
+html.reveal-ready .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
   animation: siteRevealIn 560ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 /* Stagger child — opt-in reveal for individual items inside a parent. */
-.reveal-stagger {
+html.reveal-ready .reveal-stagger {
   opacity: 0;
   transform: translateY(16px);
   transition:
@@ -3080,26 +3082,27 @@ svg.lucide {
     transform 460ms cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: opacity, transform;
 }
-.reveal-stagger.is-visible {
+html.reveal-ready .reveal-stagger.is-visible {
   opacity: 1;
   transform: translateY(0);
   animation: siteRevealStaggerIn 500ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 /* Cinematic image blur-in inside reveals — no layout shift. */
-.reveal img,
-.reveal [data-reveal-image],
-.reveal-stagger img,
-.reveal-stagger [data-reveal-image] {
+html.reveal-ready .reveal img,
+html.reveal-ready .reveal [data-reveal-image],
+html.reveal-ready .reveal-stagger img,
+html.reveal-ready .reveal-stagger [data-reveal-image] {
   filter: blur(3px);
   transition: filter 560ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-.reveal.is-visible img,
-.reveal.is-visible [data-reveal-image],
-.reveal-stagger.is-visible img,
-.reveal-stagger.is-visible [data-reveal-image] {
+html.reveal-ready .reveal.is-visible img,
+html.reveal-ready .reveal.is-visible [data-reveal-image],
+html.reveal-ready .reveal-stagger.is-visible img,
+html.reveal-ready .reveal-stagger.is-visible [data-reveal-image] {
   filter: blur(0);
 }
+
 
 @media (max-width: 767.98px) {
   html.scroll-debug-mobile-reveals-off .reveal,
@@ -5183,15 +5186,20 @@ html.motion-ready[data-motion-scope="marketing"] [data-motion="fade-up-sm"] {
    as their top edge appears, not when 14% is on screen.
    ─────────────────────────────────────────────────────────────── */
 @layer utilities {
-  .section-enter {
+  /* Progressive enhancement: content stays visible until JS confirms it can
+     drive the reveal (`html.motion-ready`). Without this gate, no-JS and
+     slow-hydration renders (including search-engine renderers) see a blank
+     page — a soft-404 and LCP risk. */
+  html.reveal-ready .section-enter {
     opacity: 0;
     transition: opacity 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
     will-change: opacity;
   }
-  .section-enter.is-visible {
+  html.reveal-ready .section-enter.is-visible {
     opacity: 1;
     animation: siteSectionFadeIn 460ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
   }
+
   @media (prefers-reduced-motion: reduce) {
     .section-enter,
     .section-enter.is-visible {

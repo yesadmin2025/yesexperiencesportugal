@@ -53,8 +53,8 @@ function ruleBlock(selector: string): string {
 
 describe("reveal animation contract — CSS rules", () => {
   it(".reveal starts hidden with translateY and animates opacity + transform", () => {
-    const body = ruleBlock(".reveal {");
-    expect(body, ".reveal rule must exist").not.toBe("");
+    const body = ruleBlock("html.reveal-ready .reveal {");
+    expect(body, "gated .reveal rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*0/);
     expect(body).toMatch(/transform:\s*translateY/);
     expect(body).toMatch(/transition:[\s\S]*opacity/);
@@ -62,14 +62,14 @@ describe("reveal animation contract — CSS rules", () => {
   });
 
   it(".reveal.is-visible reaches opacity:1 and translateY(0)", () => {
-    const body = ruleBlock(".reveal.is-visible");
+    const body = ruleBlock("html.reveal-ready .reveal.is-visible");
     expect(body, ".reveal.is-visible rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*1/);
     expect(body).toMatch(/translateY\(0\)/);
   });
 
   it(".reveal-stagger starts hidden and animates opacity + transform", () => {
-    const body = ruleBlock(".reveal-stagger {");
+    const body = ruleBlock("html.reveal-ready .reveal-stagger {");
     expect(body, ".reveal-stagger rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*0/);
     expect(body).toMatch(/transform:\s*translateY/);
@@ -78,14 +78,14 @@ describe("reveal animation contract — CSS rules", () => {
   });
 
   it(".reveal-stagger.is-visible reaches opacity:1 and translateY(0)", () => {
-    const body = ruleBlock(".reveal-stagger.is-visible");
+    const body = ruleBlock("html.reveal-ready .reveal-stagger.is-visible");
     expect(body, ".reveal-stagger.is-visible rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*1/);
     expect(body).toMatch(/translateY\(0\)/);
   });
 
   it(".section-enter is opacity-only (never adds a transform that would fight inner reveals)", () => {
-    const body = ruleBlock(".section-enter {");
+    const body = ruleBlock("html.reveal-ready .section-enter {");
     expect(body, ".section-enter rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*0/);
     expect(body).toMatch(/transition:[\s\S]*opacity/);
@@ -93,7 +93,7 @@ describe("reveal animation contract — CSS rules", () => {
   });
 
   it(".section-enter.is-visible reaches opacity:1", () => {
-    const body = ruleBlock(".section-enter.is-visible");
+    const body = ruleBlock("html.reveal-ready .section-enter.is-visible");
     expect(body, ".section-enter.is-visible rule must exist").not.toBe("");
     expect(body).toMatch(/opacity:\s*1/);
   });
@@ -118,5 +118,23 @@ describe("reveal animation contract — CSS rules", () => {
     const body = rmBlock?.[1] ?? "";
     expect(body).toMatch(/opacity:\s*1\s*!important/);
     expect(body).toMatch(/animation:\s*none\s*!important/);
+  });
+});
+
+describe("reveal hidden states are progressively enhanced", () => {
+  it("no ungated .reveal / .reveal-stagger / .section-enter rule sets opacity: 0", () => {
+    for (const sel of [".reveal {", ".reveal-stagger {", ".section-enter {"]) {
+      // Only the `html.reveal-ready`-gated variants may hide content, so
+      // crawlers and no-JS visitors always see the page.
+      const re = new RegExp(`(^|[^-\\w.])\\${sel.trim().slice(0, -1)}\\s*\\{`, "g");
+      let m: RegExpExecArray | null;
+      while ((m = re.exec(CSS))) {
+        const before = CSS.slice(Math.max(0, m.index - 40), m.index + m[0].length);
+        if (before.includes("reveal-ready")) continue;
+        const open = CSS.indexOf("{", m.index);
+        const body = CSS.slice(open, CSS.indexOf("}", open));
+        expect(body, `ungated rule for ${sel} must not hide content`).not.toMatch(/opacity:\s*0/);
+      }
+    }
   });
 });
