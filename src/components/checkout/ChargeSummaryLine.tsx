@@ -78,7 +78,7 @@ export function ChargeSummaryLine({
           className,
         ].join(" ")}
       >
-        <p className="text-[11px] leading-snug text-[color:var(--charcoal-soft)]">
+        <p className="text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
           Final price confirmed before payment — add an age for every child so we can price
           honestly.
         </p>
@@ -101,7 +101,7 @@ export function ChargeSummaryLine({
       ].join(" ")}
     >
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3">
-        <span className="min-w-0 text-[9.5px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
+        <span className="min-w-0 text-[11px] uppercase tracking-[0.22em] text-[color:var(--charcoal-soft)]">
           Total
         </span>
         <span
@@ -117,14 +117,14 @@ export function ChargeSummaryLine({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         data-testid="charge-summary-toggle"
-        className="mt-1 grid min-h-[44px] w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-2 py-2 text-left text-[11px] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
+        className="mt-1 grid min-h-[44px] w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-2 py-2 text-left text-[12.5px] text-[color:var(--charcoal-soft)] hover:text-[color:var(--charcoal)]"
       >
         <span className="min-w-0 break-words leading-snug">
           {eur(quote.perPaxAdultEur)} / adult · {quote.adults}{" "}
           {quote.adults === 1 ? "adult" : "adults"}
           {minors > 0 ? `, ${minors} ${minors === 1 ? "child" : "children"}` : ""}
         </span>
-        <span className="flex shrink-0 items-center gap-1 text-[10.5px] text-[color:var(--charcoal-soft)]">
+        <span className="flex shrink-0 items-center gap-1 text-[11px] text-[color:var(--charcoal-soft)]">
           Price details
           <ChevronDown
             className={[
@@ -139,7 +139,7 @@ export function ChargeSummaryLine({
       {open ? (
         <ul
           data-testid="charge-summary-breakdown"
-          className="mt-1 max-h-[30vh] space-y-1 overflow-y-auto overscroll-contain border-t border-[color:var(--border)] pt-1.5 text-[11px]"
+          className="mt-1 max-h-[30vh] space-y-1 overflow-y-auto overscroll-contain border-t border-[color:var(--border)] pt-1.5 text-[12.5px]"
         >
           <Row
             label={`Per adult × ${quote.adults}`}
