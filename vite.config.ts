@@ -18,6 +18,9 @@ Object.assign(process.env, serverEnv);
 
 export default defineConfig({
   vite: {
-    plugins: [mcpPlugin()],
+    // `imagetools` only acts on imports carrying an explicit `?w=`/`?format=`
+    // query (see src/content/tour-card-images.ts). Plain image imports are
+    // untouched, so existing asset pipelines keep working.
+    plugins: [mcpPlugin(), imagetools()],
   },
 });
