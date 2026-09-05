@@ -124,8 +124,6 @@ export const Route = createFileRoute("/reviews")({
   },
 });
 
-const TOUR_IDS = Object.keys(VIATOR_META);
-
 function Stars({ rating }: { rating: number }) {
   return (
     <span
