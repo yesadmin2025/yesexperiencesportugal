@@ -433,7 +433,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
                   </button>
                 ))}
               </div>
-              <p className="mt-1.5 text-[10.5px] leading-snug text-[color:var(--charcoal-soft)]">
+              <p className="mt-1.5 text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
                 Spanish available on request — subject to guide availability.
               </p>
             </Field>
@@ -448,7 +448,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             data-testid="signature-price-unavailable"
             className="space-y-1.5 border-t border-[color:var(--border)] pt-4"
           >
-            <span className="block text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+            <span className="block text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
               Exact price on request
             </span>
             <p className="text-[12px] leading-snug text-[color:var(--charcoal)]">
@@ -475,7 +475,7 @@ export function SimpleBookingForm({ tour }: { tour: SignatureTour }) {
             data-testid="signature-price-anchor"
             className="flex items-baseline justify-between border-t border-[color:var(--border)] pt-4"
           >
-            <span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
+            <span className="text-[12px] uppercase tracking-[0.24em] text-[color:var(--charcoal-soft)]">
               {hasTierData ? "From · 8+ guests · per person" : "From · per person"}
             </span>
             <span className="serif text-[1.4rem] text-[color:var(--charcoal)]">
@@ -631,7 +631,7 @@ function Field({
     <div className="block" role="group" aria-labelledby={labelId}>
       <div
         id={labelId}
-        className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] text-[color:var(--charcoal-soft)] mb-1.5"
+        className="flex items-center gap-1.5 text-[12px] uppercase tracking-[0.22em] text-[color:var(--charcoal)] mb-1.5"
       >
         {icon}
         {label}

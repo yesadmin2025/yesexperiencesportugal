@@ -226,7 +226,7 @@ export function FinalDetailsDialog({
                   data-testid="final-details-edit-day"
                   aria-expanded={editDay}
                   onClick={() => setEditDay((v) => !v)}
-                  className="shrink-0 min-h-[44px] px-2 text-[11px] uppercase tracking-[0.2em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
+                  className="shrink-0 min-h-[44px] px-2 text-[12px] uppercase tracking-[0.2em] text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
                 >
                   {editDay ? "Done" : "Edit"}
                 </button>
