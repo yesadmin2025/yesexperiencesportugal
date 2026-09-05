@@ -488,6 +488,12 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       return;
     }
 
+    // Progressive enhancement gate: the hidden (`opacity: 0`) reveal states
+    // in CSS only apply under `html.motion-ready`. We set it here — i.e.
+    // only once JS is running and will definitely drive `.is-visible` —
+    // so no-JS renders, crawlers and pre-hydration paint show content.
+    document.documentElement.classList.add("motion-ready");
+
     // Unified cadence — small enough to feel continuous, slow enough to read.
     const STAGGER_MS = 110;
     const MAX_STEPS = 8; // cap so late items don't drift too far behind
