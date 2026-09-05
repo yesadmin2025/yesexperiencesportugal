@@ -47,3 +47,5 @@ jobs:
           git diff --cached --check
           git commit -m "Restore Stripe dynamic payment methods"
           git push origin HEAD:main
+
+# Intentional one-time retrigger after workflow registration.
