@@ -492,7 +492,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     // in CSS only apply under `html.motion-ready`. We set it here — i.e.
     // only once JS is running and will definitely drive `.is-visible` —
     // so no-JS renders, crawlers and pre-hydration paint show content.
-    document.documentElement.classList.add("motion-ready");
+    document.documentElement.classList.add("reveal-ready");
 
     // Unified cadence — small enough to feel continuous, slow enough to read.
     const STAGGER_MS = 110;
@@ -726,7 +726,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     }
 
     // Same progressive-enhancement gate as the `.reveal` observer above.
-    document.documentElement.classList.add("motion-ready");
+    document.documentElement.classList.add("reveal-ready");
 
 
     const markVisible = (el: Element, source: RevealSource) => {
