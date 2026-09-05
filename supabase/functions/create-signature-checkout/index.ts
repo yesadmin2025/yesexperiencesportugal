@@ -634,12 +634,12 @@ Deno.serve(async (req) => {
       line_items: [...tourLineItems, ...addOnLineItems, ...composableLineItems],
 
       mode: "payment",
-      // INSTANT CARD PAYMENT — verified on a 393px phone: with dynamic
-      // payment methods, live Checkout opened on Stripe Link's "verify your
-      // phone number" wall, with card entry hidden behind "Pay without
-      // Link". A guest reads that as "I cannot pay". Pinning card keeps the
-      // card form as the first and only thing they see.
-      payment_method_types: ["card"],
+      // Payment methods are NOT pinned here on purpose. Stripe Dynamic
+      // Payment Methods selects the eligible rails (card, Apple Pay, Google
+      // Pay, Klarna, Multibanco, MB Way, Revolut Pay, SEPA, PayPal…) from
+      // the Dashboard payment-method configuration, filtered by currency,
+      // amount, locale and device. Guarded by
+      // src/lib/checkout/__tests__/dynamic-payment-methods.test.ts.
       // The quoted euro price is the price. No currency-conversion prompt
       // in front of the payment form.
       adaptive_pricing: { enabled: false },
