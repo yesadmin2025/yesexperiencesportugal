@@ -289,22 +289,26 @@ export function FourWaysIn() {
                 {SMART_INTENTS.map((intent) => {
                   const selected = selectedIntentId === intent.id;
                   return (
-                    <button
+                    <a
                       key={intent.id}
-                      type="button"
-                      onClick={() => setSelectedIntentId(intent.id)}
-                      aria-pressed={selected}
+                      href={intent.href}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        setSelectedIntentId(intent.id);
+                      }}
+                      aria-current={selected ? "true" : undefined}
+                      data-smart-start-intent={intent.id}
                       data-analytics="smart_start_intent_selected"
                       data-analytics-intent={intent.id}
                       className={[
-                        "min-h-[52px] rounded-[4px] border px-4 py-3 text-left text-[13px] sm:text-[13.5px] leading-[1.45] font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2",
+                        "flex min-h-[52px] items-center rounded-[4px] border px-4 py-3 text-left text-[13px] sm:text-[13.5px] leading-[1.45] font-medium no-underline transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2",
                         selected
                           ? "border-[color:var(--teal)] bg-[color:var(--ivory)] text-[color:var(--charcoal)] shadow-[0_8px_24px_-20px_rgba(41,91,97,0.65)]"
                           : "border-[color:var(--border)] bg-[color:var(--ivory)]/70 text-[color:var(--charcoal)] hover:border-[color:var(--gold)]/70 hover:bg-[color:var(--ivory)]",
                       ].join(" ")}
                     >
                       {intent.prompt}
-                    </button>
+                    </a>
                   );
                 })}
               </div>
@@ -451,12 +455,6 @@ function PathCard({
           : "",
       ].join(" ")}
     >
-      {recommended ? (
-        <span className="absolute right-3 top-3 z-10 rounded-full bg-[color:var(--teal)] px-2.5 py-1 text-[9px] uppercase tracking-[0.16em] font-semibold text-[color:var(--ivory)]">
-          Best fit
-        </span>
-      ) : null}
-
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-[600ms] ease-out group-hover:opacity-100"
@@ -488,7 +486,13 @@ function PathCard({
         </span>
       </div>
 
-      <span className="relative mt-4 inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
+      {recommended ? (
+        <span className="relative mt-4 w-fit rounded-full bg-[color:var(--teal)] px-2.5 py-1 text-[9px] uppercase tracking-[0.16em] font-semibold text-[color:var(--ivory)]">
+          Best fit
+        </span>
+      ) : null}
+
+      <span className={`relative ${recommended ? "mt-2.5" : "mt-4"} inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]`}>
         {path.label}
       </span>
       <h3 className="relative serif mt-2.5 text-[1.3rem] md:text-[1.6rem] leading-[1.22] md:leading-[1.18] text-[color:var(--charcoal)] font-medium">
