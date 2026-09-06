@@ -15,6 +15,7 @@ import {
 } from "@/lib/jsonld";
 import { PLANNER_REGIONS } from "@/content/portugal-planner-map";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
+import { localStoryShareImage } from "@/content/local-story-share-images";
 import { GuideNextSteps, useGuideLinkTracker } from "@/components/journal/GuideNextSteps";
 import { guideRefSearch } from "@/lib/guide-attribution";
 import {
@@ -56,9 +57,9 @@ function renderBodyWithTourLinks(text: string): React.ReactNode[] {
 
 const BASE = "https://yesexperiencesportugal.com";
 
-function articleImageUrl(article: LocalStoryArticle): string | undefined {
-  if (!article.heroImage) return undefined;
-  return article.heroImage.startsWith("http") ? article.heroImage : `${BASE}${article.heroImage}`;
+function articleImageUrl(article: LocalStoryArticle): string {
+  const src = article.heroImage ?? localStoryShareImage(article.signatureSlug);
+  return src.startsWith("http") ? src : `${BASE}${src}`;
 }
 
 type LoaderData = {
