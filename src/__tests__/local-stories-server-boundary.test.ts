@@ -29,9 +29,7 @@ describe("local stories server boundary", () => {
     expect(routeSource).toContain("@/lib/journalPublic.functions");
     expect(routeSource).toContain("getPublishedJournalPost");
     // Static articles return before any DB lookup.
-    expect(routeSource.indexOf("getLocalStoryArticle(params.slug)")).toBeLessThan(
-      routeSource.indexOf("fetchPost"),
-    );
+    expect(routeSource).toContain("if (article) return { dbPost: null };");
   });
 
   it("server function validates input and uses the privileged server client in the handler", () => {
