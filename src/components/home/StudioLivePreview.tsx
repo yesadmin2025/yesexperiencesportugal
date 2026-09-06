@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Wine, Users, Clock3, ArrowRight, MapPin } from "lucide-react";
 
@@ -24,12 +25,12 @@ export function StudioLivePreview() {
     >
       <div className="flex items-center justify-between gap-4 border-b border-[color:var(--gold)]/18 px-4 py-3 md:px-5">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--gold)]">
+          <p className="text-[12px] uppercase tracking-[0.2em] font-semibold text-[color:var(--gold)]">
             Example Studio day
           </p>
-          <p className="mt-1 text-[13px] text-[color:var(--ivory)]/86">One custom private day</p>
+          <p className="mt-1 text-[13px] text-[color:var(--ivory)]/90">One custom private day</p>
         </div>
-        <span className="rounded-full border border-[color:var(--gold)]/35 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-[color:var(--ivory)]/80">
+        <span className="rounded-full border border-[color:var(--gold)]/35 px-2.5 py-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--ivory)]/84">
           Not your draft
         </span>
       </div>
@@ -84,10 +85,10 @@ export function StudioLivePreview() {
                   textAlign: left ? "right" : "left",
                 }}
               >
-                <span className="block text-[11px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
+                <span className="block text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--ivory)] [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
                   {stop.label}
                 </span>
-                <span className="mt-0.5 block text-[10px] text-[color:var(--ivory)]/76 [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
+                <span className="mt-0.5 block text-[12px] text-[color:var(--ivory)]/82 [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
                   {stop.caption}
                 </span>
               </li>
@@ -102,13 +103,13 @@ export function StudioLivePreview() {
             <p className="text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]">
               See your own route and live price
             </p>
-            <p className="mt-1.5 max-w-md text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)]">
+            <p className="mt-1.5 max-w-md text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
               Choose mood, group and rhythm in the Studio. This example is only here to show how the day comes together.
             </p>
           </div>
           <Link
             to="/studio-v3"
-            className="mt-4 inline-flex min-h-[46px] shrink-0 items-center justify-center gap-2 rounded-[3px] bg-[color:var(--teal)] px-4 py-2.5 text-[11.5px] uppercase tracking-[0.15em] font-semibold text-[color:var(--ivory)] hover:-translate-y-0.5 sm:mt-0"
+            className="mt-4 inline-flex min-h-[46px] shrink-0 items-center justify-center gap-2 rounded-[3px] bg-[color:var(--teal)] px-4 py-2.5 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--ivory)] hover:-translate-y-0.5 sm:mt-0"
           >
             Design yours <ArrowRight size={13} aria-hidden="true" />
           </Link>
@@ -120,7 +121,7 @@ export function StudioLivePreview() {
           </p>
           <Link
             to="/experiences"
-            className="inline-flex min-h-[44px] items-center text-[11px] uppercase tracking-[0.14em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4"
+            className="inline-flex min-h-[44px] items-center text-[12px] uppercase tracking-[0.14em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4"
           >
             Prefer a ready-made day?
           </Link>
@@ -130,11 +131,11 @@ export function StudioLivePreview() {
   );
 }
 
-function Chip({ icon, label }: { icon: React.ReactNode; label: string }) {
+function Chip({ icon, label }: { icon: ReactNode; label: string }) {
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/30 bg-[color:var(--charcoal-deep)]/60 px-2.5 py-1.5 text-[color:var(--ivory)]">
       <span className="text-[color:var(--gold)]">{icon}</span>
-      <span className="text-[11px] font-medium">{label}</span>
+      <span className="text-[12px] font-medium">{label}</span>
     </span>
   );
 }
