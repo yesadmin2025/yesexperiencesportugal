@@ -12,6 +12,7 @@
 import { Link } from "@tanstack/react-router";
 
 import { recordGuideLinkClick, type GuideLinkKind } from "@/lib/guide-attribution";
+import { guideRefDataAttrs } from "@/lib/guide-attribution-inline";
 import { resolveGuideNextSteps } from "@/lib/internal-linking";
 import type { LocalStoryArticle } from "@/content/local-stories-articles";
 
@@ -80,7 +81,7 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
             to="/studio-v3"
             className={linkClass}
             {...guideRefDataAttrs(article.slug, "next_studio")}
-              onClick={onClick("next_studio", "studio", "/studio-v3")}
+            onClick={onClick("next_studio", "studio", "/studio-v3")}
           >
             {next.studioLead}
           </Link>
@@ -99,7 +100,7 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
                     params={{ slug: s.path.replace("/local-stories/", "") }}
                     className={linkClass}
                     {...guideRefDataAttrs(article.slug, "next_sibling")}
-              onClick={onClick("next_sibling", "guide", s.path)}
+                    onClick={onClick("next_sibling", "guide", s.path)}
                   >
                     {s.label}
                   </Link>
