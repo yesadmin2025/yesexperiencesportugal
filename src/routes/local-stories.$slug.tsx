@@ -17,13 +17,17 @@ import { PLANNER_REGIONS } from "@/content/portugal-planner-map";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
 import { GuideNextSteps, useGuideLinkTracker } from "@/components/journal/GuideNextSteps";
 import { guideRefSearch } from "@/lib/guide-attribution";
+import {
+  getPublishedJournalPost,
+  type PublicJournalPost,
+} from "@/lib/journalPublic.functions";
 
 /**
  * Static Local Stories are editorial pages first. Their primary content,
  * metadata and internal links stay in the route bundle; database-only work is
  * loaded only for a slug that is not part of the static editorial catalogue.
- * This keeps Supabase and review/runtime dependencies out of the critical path
- * for the stories that receive organic traffic.
+ * Database access stays behind a TanStack server function so Supabase does not
+ * become part of the browser route just to support the dynamic fallback.
  */
 
 function renderBodyWithTourLinks(text: string): React.ReactNode[] {
@@ -50,35 +54,6 @@ function renderBodyWithTourLinks(text: string): React.ReactNode[] {
   return nodes;
 }
 
-type JournalPostFull = {
-  slug: string;
-  title: string;
-  excerpt: string | null;
-  body: string;
-  hero_image_url: string | null;
-  hero_image_alt: string | null;
-  region: string | null;
-  author_name: string | null;
-  signature_slug: string | null;
-  published_at: string | null;
-};
-
-async function fetchPost(slug: string): Promise<JournalPostFull | null> {
-  // Dynamic import is intentional: static SEO stories never need the database,
-  // so they should not pull the Supabase client into their initial route chunk.
-  const { supabase } = await import("@/integrations/supabase/client");
-  const { data, error } = await supabase
-    .from("journal_posts")
-    .select(
-      "slug,title,excerpt,body,hero_image_url,hero_image_alt,region,author_name,signature_slug,published_at",
-    )
-    .eq("status", "published")
-    .eq("slug", slug)
-    .maybeSingle();
-  if (error) throw error;
-  return (data ?? null) as JournalPostFull | null;
-}
-
 const BASE = "https://yesexperiencesportugal.com";
 
 function articleImageUrl(article: LocalStoryArticle): string | undefined {
@@ -87,18 +62,7 @@ function articleImageUrl(article: LocalStoryArticle): string | undefined {
 }
 
 type LoaderData = {
-  dbPost: {
-    slug: string;
-    title: string;
-    excerpt: string | null;
-    body: string;
-    heroImage: string | null;
-    heroImageAlt: string | null;
-    region: string | null;
-    authorName: string | null;
-    signatureSlug: string | null;
-    publishedAt: string | null;
-  } | null;
+  dbPost: PublicJournalPost | null;
 };
 
 export const Route = createFileRoute("/local-stories/$slug")({
@@ -106,28 +70,15 @@ export const Route = createFileRoute("/local-stories/$slug")({
     const article = getLocalStoryArticle(params.slug);
     if (article) return { dbPost: null };
 
-    let post: JournalPostFull | null = null;
+    let post: PublicJournalPost | null = null;
     try {
-      post = await fetchPost(params.slug);
+      post = await getPublishedJournalPost({ data: { slug: params.slug } });
     } catch {
       post = null;
     }
     if (!post) throw notFound();
 
-    return {
-      dbPost: {
-        slug: post.slug,
-        title: post.title,
-        excerpt: post.excerpt,
-        body: post.body,
-        heroImage: post.hero_image_url,
-        heroImageAlt: post.hero_image_alt,
-        region: post.region,
-        authorName: post.author_name,
-        signatureSlug: post.signature_slug,
-        publishedAt: post.published_at,
-      },
-    };
+    return { dbPost: post };
   },
 
   head: ({ params, loaderData }) => {
