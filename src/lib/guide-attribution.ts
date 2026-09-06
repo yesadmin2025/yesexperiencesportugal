@@ -1,16 +1,27 @@
 /**
  * Guide attribution — which Journal guide sent a reader to a booking.
  *
- * Internal links are tagged with `ref` / `ref_slot` (NOT utm_*) on purpose:
- * overwriting utm_source on an internal hop would destroy the original
- * acquisition source (Google, a newsletter, a partner blog). The real UTM
- * snapshot in `utm.ts` stays untouched and is carried alongside, so a
- * booking can be read as "came from Google → read the Arrábida guide →
- * booked".
+ * Model (crawl-clean):
+ *   Internal guide → tour / Studio / guide links are plain canonical URLs.
+ *   Attribution is captured at CLICK time by `recordGuideLinkClick()`, which
+ *   persists a `{ guide_slug, slot, ts }` snapshot synchronously (sessionStorage
+ *   + 30-day localStorage) before the browser or router navigates. No query
+ *   string is appended, so search engines never discover `?ref=…` variants
+ *   of pages that already have a clean canonical.
+ *
+ * Why not utm_* on internal hops: overwriting utm_source would destroy the
+ * original acquisition source (Google, a newsletter, a partner blog). The real
+ * first-touch UTM snapshot in `utm.ts` stays untouched and is carried
+ * alongside, so a booking reads as "came from Google → read the Arrábida
+ * guide → booked".
+ *
+ * Backwards compatibility: links shared or bookmarked while the older
+ * `?ref=guide:<slug>&ref_slot=<slot>` scheme was live still work —
+ * `captureGuideRefFromLocation()` keeps reading them on boot / navigation.
  *
  * Three jobs:
- *   1. tag internal guide → tour/studio links
- *   2. capture + persist that tag on the destination page (30 days)
+ *   1. persist the guide/slot snapshot when an internal guide link is clicked
+ *   2. keep reading legacy `?ref=` URLs so old shares still attribute
  *   3. hand the snapshot to checkout so Stripe metadata (and therefore the
  *      `bookings` row) records the guide that produced the sale
  */
@@ -21,6 +32,8 @@ import { utmParams } from "@/lib/utm";
 
 const KEY = "yes.guideref.v1";
 const TTL_MS = 30 * 24 * 60 * 60 * 1000;
+const MAX_SLUG = 120;
+const MAX_SLOT = 60;
 
 export type GuideLinkKind = "signature" | "studio" | "guide" | "contact" | "other";
 
@@ -34,32 +47,55 @@ function isBrowser(): boolean {
   return typeof window !== "undefined" && typeof document !== "undefined";
 }
 
-/** Search params to attach to an internal link leaving a guide. */
-export function guideRefSearch(guideSlug: string, slot: string): Record<string, string> {
-  return { ref: `guide:${guideSlug}`, ref_slot: slot };
+/**
+ * Compatibility helper. Internal guide links are now clean canonical URLs;
+ * attribution is persisted at click time by `recordGuideLinkClick()`.
+ * Returns an empty search object so any remaining caller stays crawl-clean.
+ *
+ * @deprecated Do not spread into `search` / `href` — it is intentionally empty.
+ */
+export function guideRefSearch(_guideSlug: string, _slot: string): Record<string, string> {
+  return {};
 }
 
-/** Read `?ref=guide:<slug>&ref_slot=<slot>` from the URL and persist it. */
+/** Write the snapshot to both storages. Synchronous; never throws. */
+function persistGuideRef(guideSlug: string, slot: string): GuideRefSnapshot | null {
+  if (!isBrowser()) return null;
+  const guide_slug = guideSlug.trim().slice(0, MAX_SLUG);
+  if (!guide_slug) return null;
+  const snap: GuideRefSnapshot = {
+    guide_slug,
+    slot: (slot.trim() || "unknown").slice(0, MAX_SLOT),
+    ts: Date.now(),
+  };
+  const raw = JSON.stringify(snap);
+  try {
+    window.sessionStorage.setItem(KEY, raw);
+  } catch {
+    /* private mode — silent */
+  }
+  try {
+    window.localStorage.setItem(KEY, raw);
+  } catch {
+    /* private mode — silent */
+  }
+  return snap;
+}
+
+/**
+ * Legacy support: read `?ref=guide:<slug>&ref_slot=<slot>` from the URL and
+ * persist it. New internal links no longer carry these params; this only
+ * serves old shared / bookmarked URLs. Returns the freshest known snapshot.
+ */
 export function captureGuideRefFromLocation(): GuideRefSnapshot | null {
   if (!isBrowser()) return null;
   try {
     const params = new URL(window.location.href).searchParams;
     const ref = params.get("ref") ?? "";
     if (!ref.startsWith("guide:")) return getGuideRef();
-    const guide_slug = ref.slice("guide:".length).slice(0, 120);
-    if (!guide_slug) return getGuideRef();
-    const snap: GuideRefSnapshot = {
-      guide_slug,
-      slot: (params.get("ref_slot") ?? "unknown").slice(0, 60),
-      ts: Date.now(),
-    };
-    try {
-      window.localStorage.setItem(KEY, JSON.stringify(snap));
-      window.sessionStorage.setItem(KEY, JSON.stringify(snap));
-    } catch {
-      /* private mode — silent */
-    }
-    return snap;
+    const guideSlug = ref.slice("guide:".length);
+    if (!guideSlug) return getGuideRef();
+    return persistGuideRef(guideSlug, params.get("ref_slot") ?? "unknown") ?? getGuideRef();
   } catch {
     return null;
   }
@@ -106,9 +142,19 @@ export interface GuideLinkClick {
   destination: string;
 }
 
-/** Fire-and-forget click record: internal table + GA4 event. Never throws. */
+/**
+ * Click-time attribution. Called from a link's `onClick` BEFORE navigation:
+ *   1. persists the guide/slot snapshot synchronously (this is what checkout
+ *      later reads — it replaces the old `?ref=` query string)
+ *   2. fires a GA4 event and an internal `guide_link_clicks` row, both
+ *      fire-and-forget
+ *
+ * Never touches the event, never calls preventDefault, never throws — the
+ * native / router navigation always proceeds.
+ */
 export function recordGuideLinkClick(click: GuideLinkClick): void {
   if (!isBrowser()) return;
+  persistGuideRef(click.guideSlug, click.slot);
   try {
     trackEvent("guide_link_click", {
       placement: click.slot,
@@ -123,8 +169,8 @@ export function recordGuideLinkClick(click: GuideLinkClick): void {
     void supabase
       .from("guide_link_clicks")
       .insert({
-        guide_slug: click.guideSlug.slice(0, 120),
-        slot: click.slot.slice(0, 60),
+        guide_slug: click.guideSlug.slice(0, MAX_SLUG),
+        slot: click.slot.slice(0, MAX_SLOT),
         destination: click.destination.slice(0, 240),
         destination_kind: click.kind,
         page_path: window.location.pathname.slice(0, 240),
