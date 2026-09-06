@@ -1,5 +1,4 @@
 import {
-import { GUIDE_REF_INLINE_CAPTURE_SCRIPT } from "@/lib/guide-attribution-inline";
   Outlet,
   Link,
   Navigate,
@@ -9,6 +8,7 @@ import { GUIDE_REF_INLINE_CAPTURE_SCRIPT } from "@/lib/guide-attribution-inline"
   Scripts,
   useRouterState,
 } from "@tanstack/react-router";
+import { GUIDE_REF_INLINE_CAPTURE_SCRIPT } from "@/lib/guide-attribution-inline";
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
