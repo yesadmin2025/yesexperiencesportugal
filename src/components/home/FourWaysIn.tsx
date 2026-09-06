@@ -273,10 +273,10 @@ export function FourWaysIn() {
           <div className="grid grid-cols-1 lg:grid-cols-[1.08fr_0.92fr]">
             <div className="p-5 sm:p-6 md:p-8 lg:p-9">
               <div className="flex items-center justify-between gap-4">
-                <p className="text-[10.5px] uppercase tracking-[0.24em] font-semibold text-[color:var(--teal)]">
+                <p className="text-[12px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
                   Quick match
                 </p>
-                <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
+                <span className="text-[11.5px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
                   One tap · no form
                 </span>
               </div>
@@ -292,10 +292,8 @@ export function FourWaysIn() {
                     <a
                       key={intent.id}
                       href={intent.href}
-                      onClick={(event) => {
-                        event.preventDefault();
-                        setSelectedIntentId(intent.id);
-                      }}
+                      onMouseEnter={() => setSelectedIntentId(intent.id)}
+                      onFocus={() => setSelectedIntentId(intent.id)}
                       aria-current={selected ? "true" : undefined}
                       data-smart-start-intent={intent.id}
                       data-analytics="smart_start_intent_selected"
@@ -320,7 +318,7 @@ export function FourWaysIn() {
             >
               {selectedIntent ? (
                 <>
-                  <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-[color:var(--gold)]">
+                  <p className="text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--gold)]">
                     Best starting point
                   </p>
                   <h3 className="serif mt-3 text-[1.7rem] sm:text-[2rem] leading-[1.12] text-[color:var(--ivory)] font-medium">
@@ -335,14 +333,14 @@ export function FourWaysIn() {
                       data-testid="home-smart-start-recommendation"
                       data-analytics="smart_start_recommendation_click"
                       data-analytics-intent={selectedIntent.id}
-                      className="inline-flex min-h-[46px] items-center justify-center rounded-[3px] bg-[color:var(--gold)] px-5 py-3 text-[10.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ivory)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                      className="inline-flex min-h-[46px] items-center justify-center rounded-[3px] bg-[color:var(--gold)] px-5 py-3 text-[11.5px] uppercase tracking-[0.16em] font-semibold text-[color:var(--charcoal)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ivory)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
                     >
                       {selectedIntent.cta}
                     </Link>
                     <button
                       type="button"
                       onClick={() => setSelectedIntentId(null)}
-                      className="inline-flex min-h-[44px] items-center px-1 text-[10px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)]/68 hover:text-[color:var(--ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+                      className="inline-flex min-h-[44px] items-center px-1 text-[11.5px] uppercase tracking-[0.16em] font-semibold text-[color:var(--ivory)]/78 hover:text-[color:var(--ivory)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
                     >
                       Change answer
                     </button>
@@ -350,7 +348,7 @@ export function FourWaysIn() {
                 </>
               ) : hasDraft ? (
                 <>
-                  <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-[color:var(--gold)]">
+                  <p className="text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--gold)]">
                     Welcome back
                   </p>
                   <h3 className="serif mt-3 text-[1.7rem] sm:text-[2rem] leading-[1.12] text-[color:var(--ivory)] font-medium">
@@ -365,14 +363,14 @@ export function FourWaysIn() {
                     to="/studio-v3"
                     data-testid="home-smart-start-resume"
                     data-analytics="smart_start_resume_studio"
-                    className="mt-6 inline-flex min-h-[46px] w-fit items-center justify-center rounded-[3px] bg-[color:var(--gold)] px-5 py-3 text-[10.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ivory)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
+                    className="mt-6 inline-flex min-h-[46px] w-fit items-center justify-center rounded-[3px] bg-[color:var(--gold)] px-5 py-3 text-[11.5px] uppercase tracking-[0.16em] font-semibold text-[color:var(--charcoal)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ivory)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--charcoal)]"
                   >
                     Continue my Studio day
                   </Link>
                 </>
               ) : (
                 <>
-                  <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-[color:var(--gold)]">
+                  <p className="text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[color:var(--gold)]">
                     Your route into YES
                   </p>
                   <h3 className="serif mt-3 text-[1.7rem] sm:text-[2rem] leading-[1.12] text-[color:var(--ivory)] font-medium">
@@ -388,7 +386,7 @@ export function FourWaysIn() {
         </div>
 
         <div className="mb-6 text-center">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+          <p className="text-[12px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)]">
             Or browse every way in
           </p>
         </div>
@@ -487,7 +485,7 @@ function PathCard({
       </div>
 
       {recommended ? (
-        <span className="relative mt-4 w-fit rounded-full bg-[color:var(--teal)] px-2.5 py-1 text-[9px] uppercase tracking-[0.16em] font-semibold text-[color:var(--ivory)]">
+        <span className="relative mt-4 w-fit rounded-full bg-[color:var(--teal)] px-2.5 py-1 text-[10.5px] uppercase tracking-[0.14em] font-semibold text-[color:var(--ivory)]">
           Best fit
         </span>
       ) : null}
