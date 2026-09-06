@@ -2,34 +2,32 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, Globe } from "lucide-react";
 import { Logo } from "@/components/Logo";
-
 import { CtaButton } from "@/components/ui/CtaButton";
 import { AccessibleIconLink } from "@/components/AccessibleIconLink";
 import { SOCIAL, whatsappUrl } from "@/config/business-nap";
 import { useT } from "@/i18n/locale-context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { WhatsAppIcon, InstagramIcon, TripadvisorIcon } from "@/components/BrandIcon";
 
-function useDesktopLinks() {
+function usePrimaryLinks() {
   const t = useT();
   return [
-    { to: "/experiences", label: t("nav.experiences"), hidden: false },
-    { to: "/studio-v3", label: t("nav.studio"), hidden: false },
-    { to: "/multi-day", label: t("nav.travel_designer"), hidden: false },
-    { to: "/corporate", label: t("nav.corporate"), hidden: false },
-    { to: "/proposal-in-portugal", label: t("nav.moments"), hidden: false },
+    { to: "/experiences", label: t("nav.experiences") },
+    { to: "/studio-v3", label: t("nav.studio") },
+    { to: "/multi-day", label: t("nav.travel_designer") },
   ];
 }
 
-function useMobileSecondaryLinks() {
+function useSecondaryLinks() {
   const t = useT();
   return [
+    { to: "/proposal-in-portugal", label: t("nav.moments") },
+    { to: "/corporate", label: t("nav.corporate") },
     { to: "/about", label: t("nav.about") },
     { to: "/local-stories", label: t("nav.local_stories") },
     { to: "/contact", label: t("nav.contact") },
   ];
 }
-
-import { WhatsAppIcon, InstagramIcon, TripadvisorIcon } from "@/components/BrandIcon";
 
 const mobileSocialLinks = [
   { href: whatsappUrl(), label: "WhatsApp", Icon: WhatsAppIcon },
@@ -42,14 +40,9 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
-  const desktopLinks = useDesktopLinks();
-  const mobilePrimaryLinks = desktopLinks;
-  const mobileSecondaryLinks = useMobileSecondaryLinks();
-  const t = useT();
+  const primaryLinks = usePrimaryLinks();
+  const secondaryLinks = useSecondaryLinks();
 
-  // Progressive logo reveal: at the very top of the homepage we show ONLY the
-  // handwritten "YES" mark. After ~24px of scroll (or on any non-home route)
-  // we crossfade into the full lockup. Smooth, restrained, no choreography.
   useEffect(() => {
     if (!isHome) {
       setScrolled(true);
@@ -61,49 +54,34 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isHome]);
 
+  useEffect(() => setOpen(false), [pathname]);
+
   const showMarkOnly = isHome && !scrolled;
-
-  // Solid ivory editorial bar — soft atmospheric fade dissolves into hero below.
-  const headerStyle: React.CSSProperties = {
-    background: "rgb(247, 243, 236)",
-  };
-
   const linkClass =
-    "link-hairline tap inline-flex items-center text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] ease-[cubic-bezier(0.22,0.61,0.36,1)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
-
-  const menuBtnClass =
-    "tap lg:hidden inline-flex items-center justify-center h-11 w-11 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
+    "link-hairline tap inline-flex min-h-[44px] items-center text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]";
 
   return (
     <header
       className="fixed top-0 inset-x-0 z-50 opacity-0 animate-[headerFade_900ms_ease-out_forwards]"
-      style={headerStyle}
+      style={{ background: "rgb(247, 243, 236)" }}
     >
-      {/* Soft atmospheric dissolve — editorial paper into cinema light. Felt, not noticed. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 top-full h-[124px] md:h-[144px] lg:h-[160px]"
+        className="pointer-events-none absolute left-0 right-0 top-full h-[112px] md:h-[132px] lg:h-[144px]"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(248,242,232,0.94) 0%, rgba(248,242,232,0.78) 16%, rgba(248,242,232,0.54) 36%, rgba(248,242,232,0.32) 58%, rgba(248,242,232,0.14) 78%, rgba(248,242,232,0.04) 92%, rgba(248,242,232,0) 100%)",
+            "linear-gradient(to bottom, rgba(248,242,232,0.92) 0%, rgba(248,242,232,0.68) 28%, rgba(248,242,232,0.26) 62%, rgba(248,242,232,0) 100%)",
         }}
       />
-      {/* Whisper of editorial shadow at the very edge — almost invisible. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-0 right-0 top-full h-[4px]"
-        style={{
-          background: "linear-gradient(to bottom, rgba(30,22,14,0.035) 0%, rgba(30,22,14,0) 100%)",
-        }}
-      />
+
       <div className="container-x">
-        <div className="flex items-center justify-between h-[64px] md:h-[84px] lg:h-[96px]">
+        <div className="flex h-[64px] items-center justify-between md:h-[84px] lg:h-[96px]">
           <Link
             to="/"
-            className="relative flex-shrink-0 inline-flex items-center h-full rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
             aria-label="YES experiences PORTUGAL — Home"
+            className="relative inline-flex h-full flex-shrink-0 items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
           >
-            <span className="relative inline-flex h-[45px] md:h-[50px] lg:h-[56px] w-[72px] md:w-[80px] lg:w-[90px] items-start translate-y-[4px] md:translate-y-[6px] lg:translate-y-[7px] overflow-hidden">
+            <span className="relative inline-flex h-[45px] w-[72px] items-start translate-y-[4px] overflow-hidden md:h-[50px] md:w-[80px] md:translate-y-[6px] lg:h-[56px] lg:w-[90px] lg:translate-y-[7px]">
               <Logo
                 theme="teal-on-ivory"
                 fetchPriority="high"
@@ -129,37 +107,39 @@ export function Navbar() {
           </Link>
 
           <nav
-            className="hidden lg:flex items-center h-full gap-7 xl:gap-9 text-[11px] uppercase tracking-[0.22em] leading-none"
-            style={{ fontWeight: 380 }}
+            aria-label="Primary"
+            className="hidden h-full items-center gap-7 text-[11px] uppercase tracking-[0.22em] leading-none lg:flex xl:gap-9"
+            style={{ fontWeight: 400 }}
           >
-            {desktopLinks.map((n) => (
+            {primaryLinks.map((item) => (
               <Link
-                key={n.to}
-                to={n.to}
-                className={`${linkClass}${n.hidden ? " hidden" : ""}`}
+                key={item.to}
+                to={item.to}
+                className={linkClass}
                 activeProps={{ className: "text-[color:var(--teal)]" }}
               >
-                {n.label}
+                {item.label}
               </Link>
             ))}
             <span aria-hidden className="mx-1 h-3 w-px bg-[color:var(--charcoal)]/15" />
-            <span className="inline-flex items-center gap-1.5 text-[color:var(--charcoal-soft)]">
+            <span className="inline-flex min-h-[44px] items-center gap-1.5 text-[color:var(--charcoal-soft)]">
               <Globe size={13} strokeWidth={1.6} aria-hidden />
               <LanguageSwitcher variant="header" />
             </span>
-            <CtaButton to="/studio-v3" variant="primary" size="sm" className="ml-2">
+            <CtaButton to="/studio-v3" variant="primary" size="sm" className="ml-1">
               Design &amp; Book
             </CtaButton>
           </nav>
 
-          <div className="lg:hidden inline-flex items-center gap-2 h-full">
-            <span className="inline-flex items-center gap-1 text-[color:var(--charcoal-soft)]">
+          <div className="inline-flex h-full items-center gap-2 lg:hidden">
+            <span className="inline-flex min-h-[44px] items-center gap-1 text-[color:var(--charcoal-soft)]">
               <Globe size={12} strokeWidth={1.6} aria-hidden />
               <LanguageSwitcher variant="header" />
             </span>
             <button
-              className={menuBtnClass}
-              onClick={() => setOpen(!open)}
+              type="button"
+              className="tap inline-flex h-11 w-11 items-center justify-center rounded-full text-[color:var(--charcoal)] transition-colors hover:text-[color:var(--teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
+              onClick={() => setOpen((value) => !value)}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               aria-controls="mobile-nav"
@@ -173,60 +153,67 @@ export function Navbar() {
       {open && (
         <div
           id="mobile-nav"
-          className="lg:hidden flex flex-col border-t border-[color:var(--charcoal)]/[0.06] overflow-hidden"
+          className="flex flex-col overflow-hidden border-t border-[color:var(--charcoal)]/[0.06] lg:hidden"
           style={{
             height: "calc(100vh - 64px)",
-            background: "rgba(247, 243, 236, 0.96)",
+            background: "rgba(247, 243, 236, 0.98)",
             backdropFilter: "blur(14px) saturate(1.05)",
             WebkitBackdropFilter: "blur(14px) saturate(1.05)",
           }}
         >
           <div className="flex-1 overflow-y-auto">
-            <div className="container-x py-7 flex flex-col gap-5 text-sm">
-              {mobilePrimaryLinks.map((n) => (
+            <div className="container-x flex flex-col gap-3 py-7">
+              <p className="mb-1 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
+                Start here
+              </p>
+              {primaryLinks.map((item) => (
                 <Link
-                  key={n.to}
-                  to={n.to}
+                  key={item.to}
+                  to={item.to}
                   onClick={() => setOpen(false)}
-                  className="tap text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
-                  style={{ fontWeight: 380 }}
+                  className="tap inline-flex min-h-[48px] items-center text-[14px] font-medium text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"
                   activeProps={{ className: "text-[color:var(--teal)]" }}
                 >
-                  {n.label}
+                  {item.label}
                 </Link>
               ))}
-              <div className="border-t border-[color:var(--charcoal)]/[0.06]" />
-              {mobileSecondaryLinks.map((n) => (
+
+              <div className="my-3 border-t border-[color:var(--charcoal)]/[0.08]" />
+              <p className="mb-1 text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--charcoal-soft)]">
+                More
+              </p>
+              {secondaryLinks.map((item) => (
                 <Link
-                  key={n.to}
-                  to={n.to}
+                  key={item.to}
+                  to={item.to}
                   onClick={() => setOpen(false)}
-                  className="tap text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors duration-[var(--dur-quick)] uppercase tracking-[0.22em] text-[12px] rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
-                  style={{ fontWeight: 380 }}
+                  className="tap inline-flex min-h-[44px] items-center text-[13px] text-[color:var(--charcoal)] hover:text-[color:var(--teal)]"
                   activeProps={{ className: "text-[color:var(--teal)]" }}
                 >
-                  {n.label}
+                  {item.label}
                 </Link>
               ))}
-              <div className="border-t border-[color:var(--charcoal)]/[0.06]" />
+
+              <div className="my-3 border-t border-[color:var(--charcoal)]/[0.08]" />
               <div className="flex flex-wrap items-center gap-3">
-                {mobileSocialLinks.map((n) => (
+                {mobileSocialLinks.map((item) => (
                   <AccessibleIconLink
-                    key={n.label}
-                    href={n.href}
+                    key={item.label}
+                    href={item.href}
                     external
-                    label={n.label}
-                    tooltip={n.label}
+                    label={item.label}
+                    tooltip={item.label}
                     onClick={() => setOpen(false)}
-                    className="tap inline-flex h-11 w-11 items-center justify-center rounded-full ring-1 ring-[color:var(--charcoal)]/15 text-[color:var(--charcoal)] hover:text-[color:var(--teal)] hover:ring-[color:var(--teal)]/40 transition-colors duration-[var(--dur-quick)] rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory,#FAF8F3)]"
+                    className="tap inline-flex h-11 w-11 items-center justify-center rounded-full ring-1 ring-[color:var(--charcoal)]/15 text-[color:var(--charcoal)] transition-colors hover:text-[color:var(--teal)] hover:ring-[color:var(--teal)]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
                   >
-                    <n.Icon size={16} />
+                    <item.Icon size={16} />
                   </AccessibleIconLink>
                 ))}
               </div>
             </div>
           </div>
-          <div className="container-x py-4 border-t border-[color:var(--charcoal)]/[0.06] shrink-0">
+
+          <div className="container-x shrink-0 border-t border-[color:var(--charcoal)]/[0.06] py-4">
             <CtaButton
               to="/studio-v3"
               onClick={() => setOpen(false)}
