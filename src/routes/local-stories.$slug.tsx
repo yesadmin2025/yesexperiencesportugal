@@ -56,9 +56,9 @@ function renderBodyWithTourLinks(text: string): React.ReactNode[] {
 
 const BASE = "https://yesexperiencesportugal.com";
 
-function articleImageUrl(article: LocalStoryArticle): string | undefined {
-  if (!article.heroImage) return undefined;
-  return article.heroImage.startsWith("http") ? article.heroImage : `${BASE}${article.heroImage}`;
+function articleImageUrl(article: LocalStoryArticle): string {
+  const src = article.heroImage ?? localStoryShareImage(article.signatureSlug);
+  return src.startsWith("http") ? src : `${BASE}${src}`;
 }
 
 type LoaderData = {
