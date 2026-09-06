@@ -5,9 +5,9 @@ import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { supabase } from "@/integrations/supabase/client";
 import { PT_PAIRED_PATHS } from "@/i18n/pt-ready";
 import { SITEMAP_STATIC_ROUTES } from "@/generated/sitemap-routes";
+import { ptSitemapPaths } from "@/lib/seo/sitemap-policy";
 
 const BASE_URL = "https://yesexperiencesportugal.com";
-const PT_NOINDEX_UTILITY_PATHS = new Set(["/contact", "/privacy", "/cookies"]);
 
 interface SitemapEntry {
   path: string;
