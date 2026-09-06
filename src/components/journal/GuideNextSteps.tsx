@@ -2,7 +2,7 @@
  * "Where to next" block for Journal guides.
  *
  * Implements the internal linking plan: hub → siblings → Signature → Studio.
- * Every link is a clean canonical URL (no `?ref=` query string — that only
+ * Every link is a clean canonical URL (no tracking query string — that only
  * created duplicate crawl surfaces). Attribution is captured at click time by
  * `recordGuideLinkClick()`, which persists the guide + slot synchronously
  * before the router navigates; navigation is never blocked. Presentation

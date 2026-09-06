@@ -342,7 +342,7 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
               </p>
               {/*
                 Guide → booking links are clean canonical URLs. Attribution is
-                persisted at click time (recordGuideLinkClick) — no `?ref=`
+                persisted at click time (recordGuideLinkClick) — no tracking
                 query string, so crawlers never see duplicate URL variants.
               */}
               {article.signatureSlug ? (
