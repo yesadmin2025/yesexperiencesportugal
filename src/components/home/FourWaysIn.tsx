@@ -292,10 +292,11 @@ export function FourWaysIn() {
                     <a
                       key={intent.id}
                       href={intent.href}
-                      onClick={(event) => {
-                        event.preventDefault();
-                        setSelectedIntentId(intent.id);
-                      }}
+                      // No click interception: a tap always navigates natively
+                      // and immediately, even before hydration. The preview
+                      // panel is driven by hover/focus (desktop + keyboard).
+                      onMouseEnter={() => setSelectedIntentId(intent.id)}
+                      onFocus={() => setSelectedIntentId(intent.id)}
                       aria-current={selected ? "true" : undefined}
                       data-smart-start-intent={intent.id}
                       data-analytics="smart_start_intent_selected"

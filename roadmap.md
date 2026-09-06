@@ -21,3 +21,8 @@
 - [x] Attribution carried through checkout into bookings
 - [x] /admin/guide-attribution dashboard
 - [x] "Where to next" block: hub → siblings → Signature → Studio
+
+## Current patch (commit to main, do NOT publish)
+- [ ] Smart Start: remove click interception; hover/focus preview only; update Playwright spec
+- [ ] Local Stories: server-fn boundary for dynamic journal slugs; static articles skip DB; boundary test + prebuild wiring
+- [ ] Run specs, typecheck, build; commit; report SHA
