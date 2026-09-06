@@ -47,6 +47,7 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
               to="/local-stories/$slug"
               params={{ slug: next.hub.path.replace("/local-stories/", "") }}
               className={linkClass}
+              {...guideRefDataAttrs(article.slug, "next_hub")}
               onClick={onClick("next_hub", "guide", next.hub.path)}
             >
               {next.hub.label}
@@ -63,6 +64,7 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
               to="/tours/$tourId"
               params={{ tourId: next.signatureSlug }}
               className={linkClass}
+              {...guideRefDataAttrs(article.slug, "next_signature")}
               onClick={onClick("next_signature", "signature", `/tours/${next.signatureSlug}`)}
             >
               {article.ctaLabel}
@@ -77,7 +79,8 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
           <Link
             to="/studio-v3"
             className={linkClass}
-            onClick={onClick("next_studio", "studio", "/studio-v3")}
+            {...guideRefDataAttrs(article.slug, "next_studio")}
+              onClick={onClick("next_studio", "studio", "/studio-v3")}
           >
             {next.studioLead}
           </Link>
@@ -95,7 +98,8 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
                     to="/local-stories/$slug"
                     params={{ slug: s.path.replace("/local-stories/", "") }}
                     className={linkClass}
-                    onClick={onClick("next_sibling", "guide", s.path)}
+                    {...guideRefDataAttrs(article.slug, "next_sibling")}
+              onClick={onClick("next_sibling", "guide", s.path)}
                   >
                     {s.label}
                   </Link>

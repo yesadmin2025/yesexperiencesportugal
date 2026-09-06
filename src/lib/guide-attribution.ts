@@ -30,7 +30,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics-events";
 import { utmParams } from "@/lib/utm";
 
-const KEY = "yes.guideref.v1";
+import { GUIDE_REF_STORAGE_KEY } from "@/lib/guide-attribution-inline";
+export { guideRefDataAttrs } from "@/lib/guide-attribution-inline";
+
+const KEY = GUIDE_REF_STORAGE_KEY;
 const TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const MAX_SLUG = 120;
 const MAX_SLOT = 60;

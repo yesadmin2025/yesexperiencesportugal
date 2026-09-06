@@ -1,4 +1,5 @@
 import {
+import { GUIDE_REF_INLINE_CAPTURE_SCRIPT } from "@/lib/guide-attribution-inline";
   Outlet,
   Link,
   Navigate,
@@ -221,6 +222,11 @@ export const Route = createRootRoute({
       },
     ],
     scripts: [
+      {
+        // Guide attribution safety net: persists data-guide-slug clicks that
+        // land before hydration (see src/lib/guide-attribution-inline.ts).
+        children: GUIDE_REF_INLINE_CAPTURE_SCRIPT,
+      },
       {
         // Google Consent Mode v2 — default denied, before GTM boots.
         // The cookie banner must call setAnalyticsConsent("granted") /
