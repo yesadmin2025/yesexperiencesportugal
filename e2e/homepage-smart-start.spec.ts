@@ -29,12 +29,13 @@ test.describe("homepage Smart Start", () => {
     await expect(page).toHaveURL(/\/multi-day(?:[?#].*)?$/);
   });
 
-  test("shows the inline preview on hover and keyboard focus without clicking", async ({
+  test("shows the inline preview on hover without clicking (desktop pointer)", async ({
     page,
+    hasTouch,
   }) => {
+    test.skip(Boolean(hasTouch), "hover preview is a fine-pointer desktop pattern");
     const smartStart = await openHome(page);
 
-    // Hover preview (desktop pointer)
     const journey = smartStart.getByRole("link", { name: "Several days in Portugal" });
     await journey.hover();
     await expect(smartStart.getByText("Portugal Travel Designer", { exact: true })).toBeVisible();
@@ -43,15 +44,19 @@ test.describe("homepage Smart Start", () => {
     await expect(recommendation).toContainText("Begin my journey");
     // Preview only — no navigation happened.
     expect(new URL(page.url()).pathname).toBe("/");
+  });
 
-    // Keyboard focus preview
+  test("shows the inline preview on keyboard focus without clicking", async ({ page }) => {
+    const smartStart = await openHome(page);
+
     const studio = smartStart.getByRole("link", {
       name: "One private day — I want it shaped around me",
     });
     await studio.focus();
     await expect(smartStart.getByText("Experience Studio", { exact: true })).toBeVisible();
-    await expect(smartStart.locator(RECOMMENDATION)).toHaveAttribute("href", "/studio-v3");
-    await expect(smartStart.locator(RECOMMENDATION)).toContainText("Start in the Studio");
+    const recommendation = smartStart.locator(RECOMMENDATION);
+    await expect(recommendation).toHaveAttribute("href", "/studio-v3");
+    await expect(recommendation).toContainText("Start in the Studio");
     expect(new URL(page.url()).pathname).toBe("/");
   });
 
