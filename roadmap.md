@@ -17,7 +17,15 @@
 - [ ] Researched outreach shortlist + templates document
 
 ## 4. Guide attribution + internal linking
-- [x] Tagged guide links (ref=guide:<slug>) + click recording
+- [x] Click-time guide attribution (session/local storage, 30 days) — internal links are clean canonical URLs, no query params
 - [x] Attribution carried through checkout into bookings
 - [x] /admin/guide-attribution dashboard
 - [x] "Where to next" block: hub → siblings → Signature → Studio
+
+## 5. SEO index quality (revenue recovery)
+- [x] Retire `?ref=…&ref_slot=…` internal link variants (79 crawl issues); legacy shared links still attribute
+- [x] Utility pages (`/pt/contact`, `/privacy`, `/cookies`, PT twins) = noindex, follow, out of sitemap, hreflang kept
+- [x] 10-day sample itinerary substantive + FAQ/Trip schema; Azeitão FAQ full-day truth
+- [x] Regressions: `seo-index-quality.test.ts`, `guide-attribution.test.ts`, e2e `seo-conversion-index-quality.spec.ts`
+- [ ] Request re-crawl of the affected Local Stories + tour pages in Search Console once published
+- [ ] After next SiteGuru crawl: confirm parameter-variant count drops to 0 and soft-404 flags clear
