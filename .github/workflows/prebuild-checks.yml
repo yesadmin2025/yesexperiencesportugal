@@ -44,5 +44,8 @@ jobs:
       - name: Checkout dynamic payment methods contract
         run: bunx vitest run src/lib/checkout/__tests__/dynamic-payment-methods.test.ts --reporter=dot
 
+      - name: Local Stories server boundary
+        run: bunx vitest run src/__tests__/local-stories-server-boundary.test.ts --reporter=dot
+
       - name: Hero accessibility (axe-core)
         run: bun run a11y:hero
