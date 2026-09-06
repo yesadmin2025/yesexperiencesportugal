@@ -10,84 +10,49 @@ async function openHome(page: Page) {
   return smartStart;
 }
 
-async function chooseIntent({
-  page,
-  smartStart,
-  intent,
-  expectedPath,
-  product,
-  cta,
-}: {
-  page: Page;
-  smartStart: Locator;
-  intent: Locator;
-  expectedPath: string;
-  product: string;
-  cta: string;
-}) {
-  await expect(intent).toHaveAttribute("href", expectedPath);
-  await intent.click();
-
-  const outcome = await expect
-    .poll(
-      async () => {
-        if (new URL(page.url()).pathname === expectedPath) return "native-navigation";
-
-        const recommendation = smartStart.locator(RECOMMENDATION);
-        if ((await recommendation.count()) > 0 && (await recommendation.isVisible())) {
-          return "inline-recommendation";
-        }
-
-        return "pending";
-      },
-      { timeout: 15_000 },
-    )
-    .not.toBe("pending")
-    .then(() =>
-      new URL(page.url()).pathname === expectedPath
-        ? "native-navigation"
-        : "inline-recommendation",
-    );
-
-  if (outcome === "native-navigation") {
-    await expect(page).toHaveURL(new RegExp(`${expectedPath.replaceAll("/", "\\/")}(?:[?#].*)?$`));
-    return;
-  }
-
-  const recommendation = smartStart.locator(RECOMMENDATION);
-  await expect(smartStart.getByText(product, { exact: true })).toBeVisible();
-  await expect(recommendation).toHaveAttribute("href", expectedPath);
-  await expect(recommendation).toContainText(cta);
-  await expect(
-    page.locator(`a[href="${expectedPath}"][data-smart-start-recommended="true"]`),
-  ).toHaveCount(1);
-}
-
 test.describe("homepage Smart Start", () => {
-  test("converts a custom private-day intent into Studio", async ({ page }) => {
+  test("navigates a custom private-day intent directly to the Studio", async ({ page }) => {
     const smartStart = await openHome(page);
-    await chooseIntent({
-      page,
-      smartStart,
-      intent: smartStart.getByRole("link", {
-        name: "One private day — I want it shaped around me",
-      }),
-      expectedPath: "/studio-v3",
-      product: "Experience Studio",
-      cta: "Start in the Studio",
+    const intent = smartStart.getByRole("link", {
+      name: "One private day — I want it shaped around me",
     });
+    await expect(intent).toHaveAttribute("href", "/studio-v3");
+    await intent.click();
+    await expect(page).toHaveURL(/\/studio-v3(?:[?#].*)?$/);
   });
 
-  test("converts a multi-day intent into Travel Designer", async ({ page }) => {
+  test("navigates a multi-day intent directly to Travel Designer", async ({ page }) => {
     const smartStart = await openHome(page);
-    await chooseIntent({
-      page,
-      smartStart,
-      intent: smartStart.getByRole("link", { name: "Several days in Portugal" }),
-      expectedPath: "/multi-day",
-      product: "Portugal Travel Designer",
-      cta: "Begin my journey",
+    const intent = smartStart.getByRole("link", { name: "Several days in Portugal" });
+    await expect(intent).toHaveAttribute("href", "/multi-day");
+    await intent.click();
+    await expect(page).toHaveURL(/\/multi-day(?:[?#].*)?$/);
+  });
+
+  test("shows the inline preview on hover and keyboard focus without clicking", async ({
+    page,
+  }) => {
+    const smartStart = await openHome(page);
+
+    // Hover preview (desktop pointer)
+    const journey = smartStart.getByRole("link", { name: "Several days in Portugal" });
+    await journey.hover();
+    await expect(smartStart.getByText("Portugal Travel Designer", { exact: true })).toBeVisible();
+    const recommendation = smartStart.locator(RECOMMENDATION);
+    await expect(recommendation).toHaveAttribute("href", "/multi-day");
+    await expect(recommendation).toContainText("Begin my journey");
+    // Preview only — no navigation happened.
+    expect(new URL(page.url()).pathname).toBe("/");
+
+    // Keyboard focus preview
+    const studio = smartStart.getByRole("link", {
+      name: "One private day — I want it shaped around me",
     });
+    await studio.focus();
+    await expect(smartStart.getByText("Experience Studio", { exact: true })).toBeVisible();
+    await expect(smartStart.locator(RECOMMENDATION)).toHaveAttribute("href", "/studio-v3");
+    await expect(smartStart.locator(RECOMMENDATION)).toContainText("Start in the Studio");
+    expect(new URL(page.url()).pathname).toBe("/");
   });
 
   test("recognises a privacy-safe saved Studio draft", async ({ page }) => {
