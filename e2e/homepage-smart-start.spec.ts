@@ -1,7 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
 const SMART_START = '[data-testid="home-smart-start"]';
-const RECOMMENDATION = '[data-testid="home-smart-start-recommendation"]';
 
 async function openHome(page: Page) {
   await page.goto("/", { waitUntil: "domcontentloaded" });
@@ -10,45 +9,32 @@ async function openHome(page: Page) {
   return smartStart;
 }
 
-test.describe("homepage Smart Start", () => {
-  test("sends a custom private-day intent directly to Studio", async ({ page }) => {
+test.describe("homepage conversion paths", () => {
+  test("shows exactly three primary ways to begin", async ({ page }) => {
     const smartStart = await openHome(page);
-    const intent = smartStart.getByRole("link", {
-      name: "One private day — I want it shaped around me",
-    });
+    const primary = smartStart.locator("[data-home-primary-path]");
+    await expect(primary).toHaveCount(3);
 
-    await expect(intent).toHaveAttribute("href", "/studio-v3");
-    await intent.click();
+    await expect(primary.nth(0)).toHaveAttribute("href", "/experiences");
+    await expect(primary.nth(1)).toHaveAttribute("href", "/studio-v3");
+    await expect(primary.nth(2)).toHaveAttribute("href", "/multi-day");
+
+    await expect(smartStart.getByText("Choose a private day", { exact: true })).toBeVisible();
+    await expect(smartStart.getByText("Design it in the Studio", { exact: true })).toBeVisible();
+    await expect(smartStart.getByText("Plan a Portugal journey", { exact: true })).toBeVisible();
+  });
+
+  test("does not pretend a generic visitor has a Studio draft", async ({ page }) => {
+    await openHome(page);
+    await expect(page.locator('[data-testid="home-smart-start-resume"]')).toHaveCount(0);
+    await expect(page.getByText("Your Studio draft is waiting", { exact: true })).toHaveCount(0);
+  });
+
+  test("navigates directly to Studio from the custom-day path", async ({ page }) => {
+    const smartStart = await openHome(page);
+    const studio = smartStart.locator('[data-home-primary-path="studio"]');
+    await studio.click();
     await expect(page).toHaveURL(/\/studio-v3(?:[?#].*)?$/);
-  });
-
-  test("sends a multi-day intent directly to Travel Designer", async ({ page }) => {
-    const smartStart = await openHome(page);
-    const intent = smartStart.getByRole("link", { name: "Several days in Portugal" });
-
-    await expect(intent).toHaveAttribute("href", "/multi-day");
-    await intent.click();
-    await expect(page).toHaveURL(/\/multi-day(?:[?#].*)?$/);
-  });
-
-  test("previews the intelligent recommendation on desktop hover without adding a click", async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name.includes("mobile"), "Hover preview is a desktop enhancement");
-
-    const smartStart = await openHome(page);
-    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => undefined);
-
-    const intent = smartStart.getByRole("link", {
-      name: "One private day — I want it shaped around me",
-    });
-    await intent.hover();
-
-    const recommendation = smartStart.locator(RECOMMENDATION);
-    await expect(smartStart.getByText("Experience Studio", { exact: true })).toBeVisible();
-    await expect(recommendation).toHaveAttribute("href", "/studio-v3");
-    await expect(recommendation).toContainText("Start in the Studio");
-    await expect(
-      page.locator('a[href="/studio-v3"][data-smart-start-recommended="true"]'),
-    ).toHaveCount(1);
   });
 
   test("recognises a privacy-safe saved Studio draft", async ({ page }) => {
@@ -72,13 +58,10 @@ test.describe("homepage Smart Start", () => {
     });
     await page.reload({ waitUntil: "domcontentloaded" });
 
-    const smartStart = page.locator(SMART_START);
-    const resume = smartStart.locator('[data-testid="home-smart-start-resume"]');
+    const resume = page.locator('[data-testid="home-smart-start-resume"]');
     await expect(resume).toBeVisible({ timeout: 20_000 });
-    await expect(smartStart.getByText(/Coastal · Couple · Slow/)).toBeVisible();
+    await expect(page.getByText(/Coastal · Couple · Slow/)).toBeVisible();
     await expect(resume).toHaveAttribute("href", "/studio-v3");
-    await expect(
-      page.locator('a[href="/studio-v3"][data-smart-start-recommended="true"]'),
-    ).toHaveCount(1);
+    await expect(resume).toHaveAttribute("data-smart-start-recommended", "true");
   });
 });
