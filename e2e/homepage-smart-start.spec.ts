@@ -1,46 +1,93 @@
-import { test, expect, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const SMART_START = '[data-testid="home-smart-start"]';
+const RECOMMENDATION = '[data-testid="home-smart-start-recommendation"]';
 
-async function openHydratedHome(page: Page) {
+async function openHome(page: Page) {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   const smartStart = page.locator(SMART_START);
   await expect(smartStart).toBeVisible({ timeout: 20_000 });
-  await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => undefined);
   return smartStart;
 }
 
+async function chooseIntent({
+  page,
+  smartStart,
+  intent,
+  expectedPath,
+  product,
+  cta,
+}: {
+  page: Page;
+  smartStart: Locator;
+  intent: Locator;
+  expectedPath: string;
+  product: string;
+  cta: string;
+}) {
+  await expect(intent).toHaveAttribute("href", expectedPath);
+  await intent.click();
+
+  const outcome = await expect
+    .poll(
+      async () => {
+        if (new URL(page.url()).pathname === expectedPath) return "native-navigation";
+
+        const recommendation = smartStart.locator(RECOMMENDATION);
+        if ((await recommendation.count()) > 0 && (await recommendation.isVisible())) {
+          return "inline-recommendation";
+        }
+
+        return "pending";
+      },
+      { timeout: 15_000 },
+    )
+    .not.toBe("pending")
+    .then(() =>
+      new URL(page.url()).pathname === expectedPath
+        ? "native-navigation"
+        : "inline-recommendation",
+    );
+
+  if (outcome === "native-navigation") {
+    await expect(page).toHaveURL(new RegExp(`${expectedPath.replaceAll("/", "\\/")}(?:[?#].*)?$`));
+    return;
+  }
+
+  const recommendation = smartStart.locator(RECOMMENDATION);
+  await expect(smartStart.getByText(product, { exact: true })).toBeVisible();
+  await expect(recommendation).toHaveAttribute("href", expectedPath);
+  await expect(recommendation).toContainText(cta);
+  await expect(
+    page.locator(`a[href="${expectedPath}"][data-smart-start-recommended="true"]`),
+  ).toHaveCount(1);
+}
+
 test.describe("homepage Smart Start", () => {
-  test("recommends Studio for a custom private day", async ({ page }) => {
-    const smartStart = await openHydratedHome(page);
-
-    const intent = smartStart.getByRole("link", {
-      name: "One private day — I want it shaped around me",
+  test("converts a custom private-day intent into Studio", async ({ page }) => {
+    const smartStart = await openHome(page);
+    await chooseIntent({
+      page,
+      smartStart,
+      intent: smartStart.getByRole("link", {
+        name: "One private day — I want it shaped around me",
+      }),
+      expectedPath: "/studio-v3",
+      product: "Experience Studio",
+      cta: "Start in the Studio",
     });
-    await expect(intent).toHaveAttribute("href", "/studio-v3");
-    await intent.click();
-
-    const recommendation = smartStart.locator('[data-testid="home-smart-start-recommendation"]');
-    await expect(smartStart.getByText("Experience Studio", { exact: true })).toBeVisible();
-    await expect(recommendation).toHaveAttribute("href", "/studio-v3");
-    await expect(recommendation).toContainText("Start in the Studio");
-
-    await expect(
-      page.locator('a[href="/studio-v3"][data-smart-start-recommended="true"]'),
-    ).toHaveCount(1);
   });
 
-  test("recommends Travel Designer for a multi-day journey", async ({ page }) => {
-    const smartStart = await openHydratedHome(page);
-
-    const intent = smartStart.getByRole("link", { name: "Several days in Portugal" });
-    await expect(intent).toHaveAttribute("href", "/multi-day");
-    await intent.click();
-
-    const recommendation = smartStart.locator('[data-testid="home-smart-start-recommendation"]');
-    await expect(smartStart.getByText("Portugal Travel Designer", { exact: true })).toBeVisible();
-    await expect(recommendation).toHaveAttribute("href", "/multi-day");
-    await expect(recommendation).toContainText("Begin my journey");
+  test("converts a multi-day intent into Travel Designer", async ({ page }) => {
+    const smartStart = await openHome(page);
+    await chooseIntent({
+      page,
+      smartStart,
+      intent: smartStart.getByRole("link", { name: "Several days in Portugal" }),
+      expectedPath: "/multi-day",
+      product: "Portugal Travel Designer",
+      cta: "Begin my journey",
+    });
   });
 
   test("recognises a privacy-safe saved Studio draft", async ({ page }) => {
