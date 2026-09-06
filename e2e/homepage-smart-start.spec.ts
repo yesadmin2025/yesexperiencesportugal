@@ -52,8 +52,20 @@ test.describe("homepage Smart Start", () => {
     const studio = smartStart.getByRole("link", {
       name: "One private day — I want it shaped around me",
     });
-    await studio.focus();
-    await expect(smartStart.getByText("Experience Studio", { exact: true })).toBeVisible();
+    // A focus event fired before React hydration attaches its listeners is
+    // lost by design; re-focus until the app is interactive (hydration-tolerant).
+    await expect
+      .poll(
+        async () => {
+          await page.evaluate(() => {
+            if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+          });
+          await studio.focus();
+          return smartStart.getByText("Experience Studio", { exact: true }).count();
+        },
+        { timeout: 20_000 },
+      )
+      .toBe(1);
     const recommendation = smartStart.locator(RECOMMENDATION);
     await expect(recommendation).toHaveAttribute("href", "/studio-v3");
     await expect(recommendation).toContainText("Start in the Studio");
