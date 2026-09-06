@@ -604,7 +604,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "How we choose which wineries to visit",
-        body: "We choose wineries according to the quality of the experience, not only the fame of the label. Good wine matters, but so do the people hosting, the time allowed for the visit and the ability to explain the region without turning the tasting into a rehearsed sales presentation.\n\nFor some guests, the right choice is a small family cellar. Others appreciate the history and wider range of an established estate. Some want traditional Portuguese grapes, while others are curious about natural methods, clay amphorae or premium aged wines.\n\nWe therefore build the winery combination around the traveler, availability and the rhythm of the day. The goal is contrast: different producers, different stories and enough time to understand what makes each one worth visiting.",
+        body: "We choose wineries according to the quality of the experience, not only the fame of the label. Good wine matters, but so do the people hosting, the time allowed for the visit and the ability to explain the region without turning the tasting into a rehearsed sales presentation.\n\nFor some guests, the right choice is a small family cellar. Others appreciate the history and wider range of an established estate. Some want traditional Portuguese grapes, while others are curious about natural methods, clay amphorae or premium aged wines.\n\nWe therefore build the winery combination around the traveler, availability and the rhythm of the day. The goal is contrast: different producers, different stories and enough time to understand what makes each one worth visiting.\n\nIf you are still deciding which region to give your day to, our guide to the [best wine tours from Lisbon](/local-stories/best-wine-tours-from-lisbon) sets Arrábida, Azeitão and Alentejo side by side.",
       },
     ],
     ctaLead:
@@ -886,7 +886,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Your own pace, your own pours.",
-        body: "Group wine tours run on a fixed clock and a fixed cellar list. A private [wine tour from Lisbon](/tours/arrabida-wine-allinclusive) means you choose how long to linger at each table, which wineries to add, and whether to end the day on a viewpoint or back in the city for dinner.",
+        body: "Group wine tours run on a fixed clock and a fixed cellar list. A private [wine tour from Lisbon](/tours/arrabida-wine-allinclusive) means you choose how long to linger at each table, which wineries to add, and whether to end the day on a viewpoint or back in the city for dinner. If you would rather weigh the options first, you can [compare the private wine days we run from Lisbon](/local-stories/best-wine-tours-from-lisbon) before choosing.",
       },
     ],
     ctaLead:
@@ -1091,7 +1091,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Arrábida — wine with a view.",
-        body: "The Arrábida Natural Park rises behind the wineries, and the road between them offers some of the most cinematic coastal views near Lisbon. A tasting here is as much about the landscape as the wine — which is why a [private wine tour from Lisbon](/tours/arrabida-wine-allinclusive) lingers longer than group tours can. For an [Alentejo wine tour from Lisbon](/tours/evora-alentejo) instead, the pace is different but the same principle holds: private, unrushed, local cellars.",
+        body: "The Arrábida Natural Park rises behind the wineries, and the road between them offers some of the most cinematic coastal views near Lisbon. A tasting here is as much about the landscape as the wine — which is why a [private wine tour from Lisbon](/tours/arrabida-wine-allinclusive) lingers longer than group tours can. For an [Alentejo wine tour from Lisbon](/tours/evora-alentejo) instead, the pace is different but the same principle holds: private, unrushed, local cellars. To see [how the wine regions near Lisbon compare](/local-stories/best-wine-tours-from-lisbon) as full days, start with our overview.",
       },
     ],
     ctaLead:
@@ -1347,7 +1347,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Choosing between the wine days",
-        body: "If wine is the main event, the all-inclusive Arrábida Signature is the fullest version. If you want cheese, bread and the producer conversation more than the vineyard, the Azeitão day leans that way. If you want the coast as much as the cellar, a day built around Sesimbra and the coves with one tasting suits better. All three start from the same forty-minute drive.",
+        body: "If wine is the main event, the all-inclusive Arrábida Signature is the fullest version. If you want cheese, bread and the producer conversation more than the vineyard, the Azeitão day leans that way. If you want the coast as much as the cellar, a day built around Sesimbra and the coves with one tasting suits better. All three start from the same forty-minute drive. For the wider picture, including Alentejo, read our guide to [wine tours from Lisbon](/local-stories/best-wine-tours-from-lisbon).",
       },
     ],
     comparison: {
