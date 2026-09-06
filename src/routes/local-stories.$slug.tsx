@@ -15,6 +15,7 @@ import {
 } from "@/lib/jsonld";
 import { PLANNER_REGIONS } from "@/content/portugal-planner-map";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
+import { localStoryShareImage } from "@/content/local-story-share-images";
 import { GuideNextSteps, useGuideLinkTracker } from "@/components/journal/GuideNextSteps";
 import { guideRefSearch } from "@/lib/guide-attribution";
 import {
