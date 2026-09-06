@@ -1,19 +1,17 @@
 /**
  * "Where to next" block for Journal guides.
  *
- * Implements the internal linking plan: hub → siblings → Signature → Studio,
- * with every link tagged so the guide that produced a click (and later a
- * booking) is recorded. Presentation only; all targets come from the
- * article data via resolveGuideNextSteps().
+ * Implements the internal linking plan: hub → siblings → Signature → Studio.
+ * Every link is a clean canonical URL (no tracking query string — that only
+ * created duplicate crawl surfaces). Attribution is captured at click time by
+ * `recordGuideLinkClick()`, which persists the guide + slot synchronously
+ * before the router navigates; navigation is never blocked. Presentation
+ * only; all targets come from the article data via resolveGuideNextSteps().
  */
 
 import { Link } from "@tanstack/react-router";
 
-import {
-  guideRefSearch,
-  recordGuideLinkClick,
-  type GuideLinkKind,
-} from "@/lib/guide-attribution";
+import { recordGuideLinkClick, type GuideLinkKind } from "@/lib/guide-attribution";
 import { resolveGuideNextSteps } from "@/lib/internal-linking";
 import type { LocalStoryArticle } from "@/content/local-stories-articles";
 
@@ -48,8 +46,8 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
             <Link
               to="/local-stories/$slug"
               params={{ slug: next.hub.path.replace("/local-stories/", "") }}
-              search={guideRefSearch(article.slug, "next_hub")}
               className={linkClass}
+              {...guideRefDataAttrs(article.slug, "next_hub")}
               onClick={onClick("next_hub", "guide", next.hub.path)}
             >
               {next.hub.label}
@@ -65,8 +63,8 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
             <Link
               to="/tours/$tourId"
               params={{ tourId: next.signatureSlug }}
-              search={guideRefSearch(article.slug, "next_signature")}
               className={linkClass}
+              {...guideRefDataAttrs(article.slug, "next_signature")}
               onClick={onClick("next_signature", "signature", `/tours/${next.signatureSlug}`)}
             >
               {article.ctaLabel}
@@ -80,9 +78,9 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
           </p>
           <Link
             to="/studio-v3"
-            search={guideRefSearch(article.slug, "next_studio")}
             className={linkClass}
-            onClick={onClick("next_studio", "studio", "/studio-v3")}
+            {...guideRefDataAttrs(article.slug, "next_studio")}
+              onClick={onClick("next_studio", "studio", "/studio-v3")}
           >
             {next.studioLead}
           </Link>
@@ -99,9 +97,9 @@ export function GuideNextSteps({ article }: { article: LocalStoryArticle }) {
                   <Link
                     to="/local-stories/$slug"
                     params={{ slug: s.path.replace("/local-stories/", "") }}
-                    search={guideRefSearch(article.slug, "next_sibling")}
                     className={linkClass}
-                    onClick={onClick("next_sibling", "guide", s.path)}
+                    {...guideRefDataAttrs(article.slug, "next_sibling")}
+              onClick={onClick("next_sibling", "guide", s.path)}
                   >
                     {s.label}
                   </Link>

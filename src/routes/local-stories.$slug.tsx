@@ -17,7 +17,7 @@ import { PLANNER_REGIONS } from "@/content/portugal-planner-map";
 import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
 import { localStoryShareImage } from "@/content/local-story-share-images";
 import { GuideNextSteps, useGuideLinkTracker } from "@/components/journal/GuideNextSteps";
-import { guideRefSearch } from "@/lib/guide-attribution";
+import { guideRefDataAttrs } from "@/lib/guide-attribution-inline";
 import {
   getPublishedJournalPost,
   type PublicJournalPost,
@@ -341,15 +341,19 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
               <p className="text-[15px] text-[color:var(--charcoal-soft)] mb-6 max-w-xl mx-auto leading-[1.75]">
                 {article.ctaLead}
               </p>
+              {/*
+                Guide → booking links are clean canonical URLs. Attribution is
+                persisted at click time (recordGuideLinkClick) — no tracking
+                query string, so crawlers never see duplicate URL variants.
+              */}
               {article.signatureSlug ? (
                 <>
                   <CtaButton
                     to="/tours/$tourId"
                     params={{ tourId: article.signatureSlug }}
-                    search={guideRefSearch(article.slug, "article_cta")}
                     variant="primary"
-                    onClick={trackGuideLink(
-                      "article_cta",
+                    {...guideRefDataAttrs(article.slug, "article_cta")}
+                    onClick={trackGuideLink("article_cta",
                       "signature",
                       `/tours/${article.signatureSlug}`,
                     )}
@@ -360,8 +364,8 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                     Or{" "}
                     <Link
                       to="/studio-v3"
-                      search={guideRefSearch(article.slug, "article_studio")}
-                      onClick={trackGuideLink("article_studio", "studio", "/studio-v3")}
+                      {...guideRefDataAttrs(article.slug, "article_studio")}
+                    onClick={trackGuideLink("article_studio", "studio", "/studio-v3")}
                       className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
                     >
                       design your own private Portugal day in the Studio
@@ -376,9 +380,9 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                     search={{
                       type: "multi_day",
                       place: article.h1,
-                      ...guideRefSearch(article.slug, "article_cta"),
                     }}
                     variant="primary"
+                    {...guideRefDataAttrs(article.slug, "article_cta")}
                     onClick={trackGuideLink("article_cta", "contact", "/contact")}
                   >
                     {article.ctaLabel}
@@ -396,9 +400,8 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                       <Link
                         to="/tours/$tourId"
                         params={{ tourId: related.slug }}
-                        search={guideRefSearch(article.slug, "related_signature")}
-                        onClick={trackGuideLink(
-                          "related_signature",
+                        {...guideRefDataAttrs(article.slug, "related_signature")}
+                    onClick={trackGuideLink("related_signature",
                           "signature",
                           `/tours/${related.slug}`,
                         )}
@@ -416,8 +419,9 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                   {article.relatedReads.map((related) => (
                     <li key={related.path}>
                       <a
-                        href={`${related.path}?ref=guide:${article.slug}&ref_slot=related_read`}
-                        onClick={trackGuideLink("related_read", "guide", related.path)}
+                        href={related.path}
+                        {...guideRefDataAttrs(article.slug, "related_read")}
+                    onClick={trackGuideLink("related_read", "guide", related.path)}
                         className="underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--teal)] transition-colors"
                       >
                         {related.label} →

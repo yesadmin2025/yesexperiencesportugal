@@ -5,9 +5,9 @@ import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { supabase } from "@/integrations/supabase/client";
 import { PT_PAIRED_PATHS } from "@/i18n/pt-ready";
 import { SITEMAP_STATIC_ROUTES } from "@/generated/sitemap-routes";
+import { ptSitemapPaths } from "@/lib/seo/sitemap-policy";
 
 const BASE_URL = "https://yesexperiencesportugal.com";
-const PT_NOINDEX_UTILITY_PATHS = new Set(["/contact", "/privacy", "/cookies"]);
 
 interface SitemapEntry {
   path: string;
@@ -93,12 +93,12 @@ export const Route = createFileRoute("/sitemap.xml")({
         // Portuguese twins. PT_PAIRED_PATHS remains the bilingual/hreflang
         // source of truth, but noindex utility pages must not be advertised in
         // sitemap.xml even though they remain valid, linked pages for users.
-        const ptEntries: SitemapEntry[] = PT_PAIRED_PATHS.filter(
-          (p) => !PT_NOINDEX_UTILITY_PATHS.has(p),
-        ).map((p) => ({
-          path: p === "/" ? "/pt" : `/pt${p}`,
+        // The exclusion list lives in src/lib/seo/sitemap-policy.ts so the SEO
+        // regression test asserts the same policy the route ships.
+        const ptEntries: SitemapEntry[] = ptSitemapPaths(PT_PAIRED_PATHS).map((path) => ({
+          path,
           changefreq: "monthly",
-          priority: p === "/" ? "0.8" : "0.5",
+          priority: path === "/pt" ? "0.8" : "0.5",
         }));
 
         const entries = [

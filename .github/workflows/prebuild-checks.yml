@@ -47,5 +47,8 @@ jobs:
       - name: Local Stories server-only database boundary
         run: bunx vitest run src/__tests__/local-stories-server-boundary.test.ts --reporter=dot
 
+      - name: SEO index quality + crawl-clean guide attribution
+        run: bunx vitest run src/__tests__/seo-index-quality.test.ts src/lib/__tests__/guide-attribution.test.ts src/lib/__tests__/internal-links.test.ts --reporter=dot
+
       - name: Hero accessibility (axe-core)
         run: bun run a11y:hero
