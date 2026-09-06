@@ -4,14 +4,13 @@ import { breadcrumbLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Clock, MapPin, Star, UtensilsCrossed } from "lucide-react";
-import { signatureTours } from "@/data/signatureTours";
+import { signatureTours, type SignatureTour } from "@/data/signatureTours";
 import { VIATOR_META } from "@/data/signatureToursViator";
 import { getTourContent, signatureDurationLabel, signatureIncludesLunch } from "@/lib/tourContent";
 import { getSignatureCardMoments } from "@/content/signature-card-moments";
 import { useImportedTourImages } from "@/hooks/use-imported-tour-images";
 import { TourImage } from "@/components/tours/TourImage";
 import ogImg from "@/assets/hero-coast.jpg";
-
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -19,12 +18,6 @@ import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import { PriceCurrencyChip } from "@/components/PriceCurrencyChip";
 import { PriceEur } from "@/components/ui/PriceEur";
 
-/**
- * Signature listing is intentionally light on bespoke motion components.
- * The shared marketing-motion controller is already loaded on demand and
- * gives the route its restrained reveal behaviour; the cards themselves do
- * not need Scene/Parallax/MaskReveal runtimes in the critical route chunk.
- */
 export const Route = createFileRoute("/experiences")({
   head: () => ({
     meta: [
@@ -76,16 +69,19 @@ export const Route = createFileRoute("/experiences")({
   component: ExperiencesPage,
 });
 
+const START_HERE_IDS = ["arrabida-wine-allinclusive", "sintra-cascais", "azeitao-cheese"] as const;
+
 function ExperiencesPage() {
   useMarketingMotion();
   const { resolveImg } = useImportedTourImages();
+  const startHere = START_HERE_IDS.map((id) => signatureTours.find((tour) => tour.id === id)).filter(
+    (tour): tour is SignatureTour => Boolean(tour),
+  );
+  const remaining = signatureTours.filter((tour) => !START_HERE_IDS.includes(tour.id as (typeof START_HERE_IDS)[number]));
 
   return (
     <SiteLayout>
-      <section
-        data-audit="experiences-hero"
-        className="pt-32 pb-[var(--section-y-sm)] bg-[color:var(--sand)] text-center"
-      >
+      <section className="pt-32 pb-[var(--section-y-sm)] bg-[color:var(--sand)] text-center">
         <div className="container-x">
           <SiteBreadcrumbs
             containerClassName=""
@@ -95,154 +91,58 @@ function ExperiencesPage() {
               { name: "Signature Experiences", path: "/experiences" },
             ]}
           />
-          <div className="scene-atmosphere">
-            <Eyebrow flank>Signature Collection</Eyebrow>
-          </div>
-          <SectionTitle as="h1" size="anchor" spacing="loose" className="scene-title">
-            Signature <SectionTitle.Em>Tours</SectionTitle.Em>
+          <Eyebrow flank>Signature Collection</Eyebrow>
+          <SectionTitle as="h1" size="anchor" spacing="loose">
+            Private days, <SectionTitle.Em>ready when you are.</SectionTitle.Em>
           </SectionTitle>
-          <p className="scene-body mt-5 max-w-xl mx-auto text-[color:var(--charcoal-soft)]">
-            A curated collection of private Portugal days — Sintra, Arrábida, Évora and beyond.
-            Book as designed, or quietly tailor a few details.
+          <p className="mt-5 max-w-2xl mx-auto text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+            Pick a private day that already works beautifully. Reserve it as designed, or tailor a few details after you choose.
           </p>
+          <div className="mt-7 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[13px] text-[color:var(--charcoal)]">
+            <span>Private guide &amp; vehicle</span>
+            <span aria-hidden="true">·</span>
+            <span>Door-to-door from Lisbon on listed days</span>
+            <span aria-hidden="true">·</span>
+            <span>Secure checkout</span>
+          </div>
         </div>
       </section>
 
-      <section className="reveal section-y">
+      <section className="reveal section-y-sm bg-[color:var(--ivory)] border-b border-[color:var(--border)]" aria-labelledby="start-here-title">
         <div className="container-x">
-          <h2 className="sr-only">Our Signature Collection</h2>
-          <div className="mb-6 flex justify-end">
+          <div className="max-w-2xl">
+            <Eyebrow>Start here</Eyebrow>
+            <h2 id="start-here-title" className="serif mt-3 text-[2rem] md:text-[2.6rem] leading-[1.08] text-[color:var(--charcoal)] font-medium">
+              Three easy places to begin.
+            </h2>
+            <p className="mt-4 text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+              A wine-and-food favourite, the classic Sintra coast, or a hands-on local day in Azeitão.
+            </p>
+          </div>
+          <div className="mt-9 grid gap-7 md:grid-cols-3">
+            {startHere.map((tour) => (
+              <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} featured />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="reveal section-y bg-[color:var(--ivory)]" aria-labelledby="more-signatures-title">
+        <div className="container-x">
+          <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <Eyebrow>More private days</Eyebrow>
+              <h2 id="more-signatures-title" className="serif mt-3 text-[1.9rem] md:text-[2.4rem] leading-[1.1] text-[color:var(--charcoal)] font-medium">
+                Explore the rest of the collection.
+              </h2>
+            </div>
             <PriceCurrencyChip />
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {signatureTours.map((tour) => {
-              const meta = VIATOR_META[tour.id];
-              const content = getTourContent(tour.id);
-              const topHighlights = (getSignatureCardMoments(tour.id) ?? content.highlights).slice(0, 3);
 
-              return (
-                <article key={tour.id} className="group flex flex-col text-left" aria-label={tour.title}>
-                  <div className="mb-5 overflow-hidden">
-                    <Link
-                      to="/tours/$tourId"
-                      params={{ tourId: tour.id }}
-                      className="lift-layer-sm relative block shadow-[0_10px_30px_-20px_rgba(46,46,46,0.25)] group-hover:shadow-[0_28px_55px_-22px_rgba(41,91,97,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2"
-                      aria-label={`Open ${tour.title}`}
-                    >
-                      <TourImage
-                        {...resolveImg(tour, "lg")}
-                        alt={`${tour.title} — private ${tour.theme.toLowerCase()} experience in ${tour.region}, Portugal`}
-                        ratio="3/2"
-                        focal={tour.focal ?? "50% 50%"}
-                        imgClassName="transition-transform duration-500 group-hover:scale-[1.025]"
-                      >
-                        <span className="absolute top-4 left-4 text-[12px] uppercase tracking-[0.12em] bg-[color:var(--ivory)]/90 text-[color:var(--teal)] px-3 py-1.5">
-                          {tour.theme}
-                        </span>
-                      </TourImage>
-                    </Link>
-                  </div>
-
-                  <h3 className="serif text-2xl">
-                    <Link
-                      to="/tours/$tourId"
-                      params={{ tourId: tour.id }}
-                      className="text-[color:var(--charcoal)] hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
-                    >
-                      {tour.title}
-                    </Link>
-                  </h3>
-
-                  <p className="mt-3 text-[14px] text-[color:var(--charcoal-soft)] leading-relaxed">
-                    {tour.blurb}
-                  </p>
-
-                  {topHighlights.length > 0 && (
-                    <ul className="mt-4 flex flex-col gap-1.5 text-[13px] leading-[1.55] text-[color:var(--charcoal)]">
-                      {topHighlights.map((highlight: string) => (
-                        <li key={highlight} className="flex items-start gap-2">
-                          <span
-                            aria-hidden="true"
-                            className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[color:var(--gold)]"
-                          />
-                          <span>{highlight}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  <div className="mt-4 flex flex-col gap-1.5 text-[12px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
-                    <div className="flex min-h-[16px] items-center gap-x-2.5">
-                      {meta && meta.reviewCount > 0 && (
-                        <>
-                          <span className="flex items-center gap-1.5 whitespace-nowrap text-[color:var(--charcoal)]">
-                            <Star
-                              size={12}
-                              className="text-[color:var(--gold-ink)]"
-                              fill="currentColor"
-                              strokeWidth={0}
-                              aria-hidden="true"
-                            />
-                            <span className="tabular-nums font-medium text-[color:var(--gold-ink)]">
-                              {meta.rating.toFixed(1)}
-                            </span>
-                            <span className="text-[color:var(--charcoal-soft)]">
-                              (<span className="tabular-nums">{meta.reviewCount}</span>
-                              <span className="sr-only"> reviews</span>)
-                            </span>
-                          </span>
-                          <span aria-hidden="true" className="h-px w-2 bg-[color:var(--gold)]/55" />
-                        </>
-                      )}
-                      <span className="flex items-center gap-1.5 whitespace-nowrap">
-                        <Clock size={11} /> {signatureDurationLabel(tour.id, tour.durationHours)}
-                      </span>
-                    </div>
-                    <div className="flex min-h-[16px] items-center">
-                      <span className="flex items-center gap-1.5">
-                        <MapPin size={11} className="shrink-0" /> {tour.region}
-                      </span>
-                    </div>
-                    <div className="flex min-h-[16px] items-center">
-                      <span className="whitespace-nowrap text-[color:var(--charcoal)]">
-                        From <PriceEur amountEur={tour.priceFrom} role="from" />
-                        <span className="ml-1 text-[12px] tracking-[0.12em] text-[color:var(--charcoal-soft)]">
-                          per person
-                        </span>
-                      </span>
-                    </div>
-                    {signatureIncludesLunch(tour.id) && (
-                      <div className="flex min-h-[16px] items-center">
-                        <span className="flex items-center gap-1.5 whitespace-nowrap text-[color:var(--charcoal)]">
-                          <UtensilsCrossed size={11} className="text-[color:var(--gold-ink)]" />
-                          Lunch included
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="mt-5 flex flex-col gap-2.5">
-                    <CtaButton
-                      to="/tours/$tourId"
-                      params={{ tourId: tour.id }}
-                      variant="primary"
-                      size="sm"
-                      aria-label={`Reserve ${tour.title}`}
-                    >
-                      Check availability & reserve
-                    </CtaButton>
-                    <CtaButton
-                      to="/tours/$tourId/tailor"
-                      params={{ tourId: tour.id }}
-                      variant="hairline"
-                      aria-label={`Tailor ${tour.title}`}
-                    >
-                      Tailor this day
-                    </CtaButton>
-                  </div>
-                </article>
-              );
-            })}
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {remaining.map((tour) => (
+              <TourCard key={tour.id} tour={tour} resolveImg={resolveImg} />
+            ))}
           </div>
         </div>
       </section>
@@ -252,23 +152,120 @@ function ExperiencesPage() {
   );
 }
 
+type ResolveImg = ReturnType<typeof useImportedTourImages>["resolveImg"];
+
+function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour; resolveImg: ResolveImg; featured?: boolean }) {
+  const meta = VIATOR_META[tour.id];
+  const content = getTourContent(tour.id);
+  const highlights = (getSignatureCardMoments(tour.id) ?? content.highlights).slice(0, featured ? 3 : 2);
+
+  return (
+    <article className="group flex h-full flex-col rounded-[6px] border border-[color:var(--border)] bg-[color:var(--ivory)] p-4 text-left transition-all hover:border-[color:var(--gold)]/65 hover:shadow-[0_20px_44px_-34px_rgba(46,46,46,0.4)]" aria-label={tour.title}>
+      <Link
+        to="/tours/$tourId"
+        params={{ tourId: tour.id }}
+        className="relative block overflow-hidden rounded-[4px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)]"
+        aria-label={`Open ${tour.title}`}
+      >
+        <TourImage
+          {...resolveImg(tour, featured ? "lg" : "md")}
+          alt={`${tour.title} — private ${tour.theme.toLowerCase()} experience in ${tour.region}, Portugal`}
+          ratio="3/2"
+          focal={tour.focal ?? "50% 50%"}
+          imgClassName="transition-transform duration-500 group-hover:scale-[1.025]"
+        >
+          <span className="absolute top-3 left-3 bg-[color:var(--ivory)]/94 px-2.5 py-1.5 text-[11px] uppercase tracking-[0.14em] font-semibold text-[color:var(--teal)]">
+            {tour.theme}
+          </span>
+        </TourImage>
+      </Link>
+
+      <div className="flex flex-1 flex-col px-1 pb-1 pt-5">
+        <h3 className={`serif leading-[1.16] text-[color:var(--charcoal)] ${featured ? "text-[1.65rem]" : "text-[1.45rem]"}`}>
+          <Link
+            to="/tours/$tourId"
+            params={{ tourId: tour.id }}
+            className="hover:text-[color:var(--teal)] transition-colors focus-visible:outline-none focus-visible:underline"
+          >
+            {tour.title}
+          </Link>
+        </h3>
+
+        <p className="mt-3 text-[15px] leading-[1.65] text-[color:var(--charcoal-soft)]">{tour.blurb}</p>
+
+        {highlights.length > 0 && (
+          <ul className="mt-4 space-y-1.5 text-[13.5px] leading-[1.55] text-[color:var(--charcoal)]">
+            {highlights.map((highlight: string) => (
+              <li key={highlight} className="flex items-start gap-2">
+                <span aria-hidden="true" className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[color:var(--gold)]" />
+                <span>{highlight}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="mt-5 grid gap-2 text-[12px] tracking-[0.08em] text-[color:var(--charcoal-soft)]">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            {meta && meta.reviewCount > 0 && (
+              <span className="flex items-center gap-1.5 whitespace-nowrap text-[color:var(--charcoal)]">
+                <Star size={12} className="text-[color:var(--gold-ink)]" fill="currentColor" strokeWidth={0} aria-hidden="true" />
+                <strong className="font-medium text-[color:var(--gold-ink)]">{meta.rating.toFixed(1)}</strong>
+                <span>({meta.reviewCount})</span>
+              </span>
+            )}
+            <span className="flex items-center gap-1.5 whitespace-nowrap"><Clock size={12} /> {signatureDurationLabel(tour.id, tour.durationHours)}</span>
+            <span className="flex items-center gap-1.5"><MapPin size={12} /> {tour.region}</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[color:var(--charcoal)]">
+            <span className="whitespace-nowrap">
+              From <PriceEur amountEur={tour.priceFrom} role="from" /> <span className="text-[color:var(--charcoal-soft)]">per person</span>
+            </span>
+            {signatureIncludesLunch(tour.id) && (
+              <span className="flex items-center gap-1.5 whitespace-nowrap"><UtensilsCrossed size={12} className="text-[color:var(--gold-ink)]" /> Lunch included</span>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-auto pt-6">
+          <CtaButton
+            to="/tours/$tourId"
+            params={{ tourId: tour.id }}
+            variant="primary"
+            size="sm"
+            className="w-full"
+            aria-label={`Reserve ${tour.title}`}
+          >
+            Check availability &amp; reserve
+          </CtaButton>
+          <Link
+            to="/tours/$tourId/tailor"
+            params={{ tourId: tour.id }}
+            className="mt-3 inline-flex min-h-[44px] w-full items-center justify-center text-[12px] uppercase tracking-[0.14em] font-medium text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4"
+            aria-label={`Tailor ${tour.title}`}
+          >
+            Tailor this day
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 function CtaStrip() {
   return (
-    <section data-audit="experiences-cta" className="reveal section-y-sm pt-0">
+    <section className="reveal section-y-sm pt-0 bg-[color:var(--ivory)]">
       <div className="container-x">
-        <div className="bg-[color:var(--teal)] text-[color:var(--ivory)] p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="bg-[color:var(--teal)] text-[color:var(--ivory)] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6 rounded-[6px]">
           <div>
             <h2 className="serif text-3xl md:text-4xl text-[color:var(--ivory)]">
-              Want to start from scratch?{" "}
-              <span className="italic font-normal text-[color:var(--ivory)]">Open the Studio.</span>
+              None of these feels quite right?
             </h2>
-            <p className="mt-3 text-[color:var(--ivory)]/80 max-w-lg">
-              Start your way — with a place, a region or a feeling. We'll guide you as you build,
-              shaping it within what works best on the ground.
+            <p className="mt-3 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--ivory)]/88 max-w-lg">
+              Build one private day around your mood, group and rhythm, then see the route and live price in the Studio.
             </p>
           </div>
           <CtaButton to="/studio-v3" variant="ghostDark" className="flex-shrink-0">
-            Open the Studio
+            Design a day in the Studio
           </CtaButton>
         </div>
       </div>
