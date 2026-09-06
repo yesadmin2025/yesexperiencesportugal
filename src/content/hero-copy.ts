@@ -1,31 +1,24 @@
 /**
- * Single source of truth for the home hero copy.
- *
- * Hero v4 — "One Breath": a single held cinematic clip behind one
- * centered two-line stanza, then delayed minimal CTAs. `HERO_PHRASES`
- * holds the two stanza lines; `HERO_COPY` carries the closing /
- * locked strings used by SEO, SSR probes and byte-exact e2e.
+ * Single source of truth for the homepage hero.
+ * The brand line stays editorial; the supporting copy is deliberately concrete
+ * so a first-time visitor understands what YES sells within seconds.
  */
 export const HERO_PHRASES = ["Portugal is the stage.", "You write the story."] as const;
 
 export const HERO_COPY = {
-  eyebrow: "PORTUGAL IS THE STAGE",
-  headlineLine1: "Portugal is waiting to be lived.",
-  headlineLine2: "You just have to start writing.",
-  subheadline: "Every story is different. So is yours.",
-  primaryCta: "Design your day",
-  secondaryCta: "Explore Signature Experiences",
-  microcopy:
-    "Designed in real time, with you. Reserve when it feels right — final price shown before payment.",
-  brandLine: "Whatever you have in mind, we say YES.",
+  eyebrow: "PRIVATE PORTUGAL, DESIGNED LOCALLY",
+  headlineLine1: "Portugal is the stage.",
+  headlineLine2: "You write the story.",
+  subheadline:
+    "Private Portugal tours and bespoke journeys, designed locally and booked directly.",
+  primaryCta: "Choose a private day",
+  secondaryCta: "Design a day in the Studio",
+  microcopy: "700+ five-star reviews · Private · Local support · Secure checkout",
+  brandLine: "Planning several days? Travel Designer →",
 } as const;
 
 export type HeroCopyKey = keyof typeof HERO_COPY;
 
-/**
- * Deterministic content-hash of every hero string. Used to bust SSR caches
- * and to expose a verifiable version on the rendered page.
- */
 export const HERO_COPY_VERSION = [...Object.values(HERO_COPY), ...HERO_PHRASES]
   .join("|")
   .split("")
