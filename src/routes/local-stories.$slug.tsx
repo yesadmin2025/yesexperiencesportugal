@@ -31,7 +31,7 @@ import {
  * become part of the browser route just to support the dynamic fallback.
  */
 
-function renderBodyWithTourLinks(text: string): React.ReactNode[] {
+export function renderBodyWithTourLinks(text: string): React.ReactNode[] {
   const re = /\[([^\]]+)\]\(\/(tours|local-stories)\/([a-z0-9-]+)\)/g;
   const nodes: React.ReactNode[] = [];
   let last = 0;
