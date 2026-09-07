@@ -129,7 +129,7 @@ export function CinematicHero() {
               <Link
                 to="/multi-day"
                 data-hero-field="brandLine"
-                className="inline-flex min-h-[44px] items-center text-[#F1D8AB] underline decoration-[#C9A96A]/80 underline-offset-4 hover:text-white"
+                className="inline-flex min-h-[44px] items-center text-[#F1D8AB] underline decoration-[color:var(--gold)]/80 underline-offset-4 hover:text-white"
               >
                 {HERO_COPY.brandLine}
               </Link>
