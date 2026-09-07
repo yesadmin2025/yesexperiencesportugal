@@ -51,8 +51,16 @@ export function CinematicHero() {
           className="absolute inset-0 h-full w-full object-cover"
           aria-hidden="true"
         >
-          <source media="(max-width: 767px)" src={HERO_CLIP.srcMobileAv1} type="video/mp4; codecs=av01" />
-          <source media="(max-width: 767px)" src={HERO_CLIP.srcMobileHevc} type="video/mp4; codecs=hvc1" />
+          <source
+            media="(max-width: 767px)"
+            src={HERO_CLIP.srcMobileAv1}
+            type="video/mp4; codecs=av01"
+          />
+          <source
+            media="(max-width: 767px)"
+            src={HERO_CLIP.srcMobileHevc}
+            type="video/mp4; codecs=hvc1"
+          />
           <source media="(max-width: 767px)" src={HERO_CLIP.srcMobile} type="video/mp4" />
           <source src={HERO_CLIP.srcDesktop} type="video/mp4" />
         </video>
@@ -65,25 +73,29 @@ export function CinematicHero() {
 
       <div className="relative z-10 flex min-h-[92svh] items-end px-5 pb-[max(3.25rem,calc(env(safe-area-inset-bottom)+2.25rem))] pt-28 sm:px-8 md:items-center md:pb-10 md:pt-24 lg:px-12">
         <div className="mx-auto w-full max-w-6xl">
-          <div className="max-w-3xl text-left md:text-center md:mx-auto">
+          <div className="max-w-3xl text-left md:mx-auto md:text-center">
             <p
               data-hero-field="eyebrow"
-              className="text-[11px] sm:text-[12px] uppercase tracking-[0.24em] font-semibold text-[#F1D8AB]"
+              className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#F1D8AB] sm:text-[12px]"
             >
               {HERO_COPY.eyebrow}
             </p>
 
             <h1
               data-hero-stanza="true"
-              className="mt-5 font-serif italic font-normal text-[clamp(2.4rem,6vw,5.2rem)] leading-[0.98] tracking-[-0.025em] text-[#F7E6C8] [text-shadow:0_2px_18px_rgba(0,0,0,0.38)]"
+              className="mt-5 font-serif text-[clamp(2.4rem,6vw,5.2rem)] font-normal italic leading-[0.98] tracking-[-0.025em] text-[#F7E6C8] [text-shadow:0_2px_18px_rgba(0,0,0,0.38)]"
             >
-              <span className="block">{HERO_PHRASES[0]}</span>
-              <span className="mt-2 block">{HERO_PHRASES[1]}</span>
+              <span className="block font-serif italic font-normal m-0">
+                {HERO_PHRASES[0]}
+              </span>
+              <span className="block font-serif italic font-normal mt-3 sm:mt-4">
+                {HERO_PHRASES[1]}
+              </span>
             </h1>
 
             <p
               data-hero-field="subheadline"
-              className="mt-6 max-w-2xl text-[16px] sm:text-[18px] leading-[1.65] text-white/92 md:mx-auto"
+              className="mt-6 max-w-2xl text-[16px] leading-[1.65] text-white/92 sm:text-[18px] md:mx-auto"
             >
               {HERO_COPY.subheadline}
             </p>
@@ -97,7 +109,7 @@ export function CinematicHero() {
                 data-hero-field="primaryCta"
                 data-analytics="hero_choose_experience"
                 data-analytics-placement="hero"
-                className="inline-flex min-h-[50px] items-center justify-center rounded-[3px] bg-[color:var(--gold,#C9A96A)] px-6 py-3 text-[12px] uppercase tracking-[0.14em] font-semibold text-[color:var(--charcoal)] transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                className="hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[330px] sm:max-w-[380px] lg:max-w-none lg:w-full px-5 sm:px-6 py-[14px] sm:py-[13px] min-h-[44px] text-[10.5px] sm:text-[11px] lg:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
               >
                 {HERO_COPY.primaryCta}
               </Link>
@@ -106,7 +118,7 @@ export function CinematicHero() {
                 data-hero-field="secondaryCta"
                 data-analytics="hero_open_studio"
                 data-analytics-placement="hero"
-                className="inline-flex min-h-[50px] items-center justify-center rounded-[3px] border border-white/60 bg-black/10 px-6 py-3 text-[12px] uppercase tracking-[0.14em] font-semibold text-white backdrop-blur-[2px] transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                className="hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[330px] sm:max-w-[380px] lg:max-w-none lg:w-full px-5 sm:px-6 py-[14px] sm:py-[13px] min-h-[44px] text-[10.5px] sm:text-[11px] lg:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
               >
                 {HERO_COPY.secondaryCta}
               </Link>
