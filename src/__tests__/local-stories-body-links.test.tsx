@@ -4,7 +4,7 @@ import { renderBodyWithTourLinks } from "@/routes/local-stories.$slug";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 
 function linksFrom(text: string) {
-  return renderBodyWithTourLinks(text).filter((node): node is React.ReactElement =>
+  return renderBodyWithTourLinks(text).filter((node): node is React.ReactElement<Record<string, unknown>> =>
     React.isValidElement(node),
   );
 }
@@ -23,7 +23,7 @@ describe("renderBodyWithTourLinks", () => {
     const text =
       "Read our guide to [wine tours from Lisbon](/local-stories/best-wine-tours-from-lisbon).";
     const nodes = renderBodyWithTourLinks(text);
-    const links = nodes.filter((n): n is React.ReactElement => React.isValidElement(n));
+    const links = nodes.filter((n): n is React.ReactElement<Record<string, unknown>> => React.isValidElement(n));
     expect(links).toHaveLength(1);
     expect(links[0].props.to).toBe("/local-stories/$slug");
     expect(links[0].props.params).toEqual({ slug: "best-wine-tours-from-lisbon" });
