@@ -1,16 +1,20 @@
 /**
- * FROZEN HERO COPY SPEC — approved wording for the closing hero scene
- * that follows the 10-phrase cinematic intro.
+ * FROZEN HERO COPY SPEC — approved wording for the homepage hero.
+ *
+ * Keep this byte-identical to the rendered HERO_COPY fields guarded by the
+ * source-level and browser regression tests. When the approved hero wording
+ * changes, update this frozen contract in the same change so CI validates the
+ * new copy rather than an obsolete previous concept.
  */
 export const HERO_COPY_SPEC = {
-  eyebrow: "PORTUGAL IS THE STAGE",
-  headlineLine1: "Portugal is waiting to be lived.",
-  headlineLine2: "You just have to start writing.",
-  subheadline: "Every story is different. So is yours.",
-  primaryCta: "Design your day",
-  secondaryCta: "Explore Signature Experiences",
-  microcopy:
-    "Designed in real time, with you. Reserve when it feels right — final price shown before payment.",
+  eyebrow: "PRIVATE PORTUGAL, DESIGNED LOCALLY",
+  headlineLine1: "Portugal is the stage.",
+  headlineLine2: "You write the story.",
+  subheadline:
+    "Private Portugal tours and bespoke journeys, designed locally and booked directly.",
+  primaryCta: "Choose a private day",
+  secondaryCta: "Design a day in the Studio",
+  microcopy: "700+ five-star reviews · Private · Local support · Secure checkout",
 } as const;
 
 export type HeroSpecKey = keyof typeof HERO_COPY_SPEC;
