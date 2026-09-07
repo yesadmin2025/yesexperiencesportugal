@@ -296,6 +296,26 @@ function TourDetailPage() {
       {/* ── 11b · FAQ (matches FAQPage JSON-LD in <head>) ──────── */}
       <TourFaq tourId={tour.id} />
 
+      {tour.id === "arrabida-wine-allinclusive" && (
+        <section className="pb-10">
+          <div className="container-x max-w-3xl">
+            <p className="text-[14px] leading-relaxed text-[color:var(--charcoal-soft)]">
+              Still comparing regions? Our guide to the{" "}
+              <Link
+                to="/local-stories/$slug"
+                params={{ slug: "best-wine-tours-from-lisbon" }}
+                className="underline underline-offset-4 decoration-[color:var(--gold)] hover:text-[color:var(--charcoal)]"
+              >
+                best wine tours from Lisbon
+              </Link>{" "}
+              sets Arrábida beside the other options a day from the city.
+            </p>
+          </div>
+        </section>
+      )}
+
+
+
       {/* Editorial mentions — shown ONLY on Arrábida-region signatures
           (the dataset's `arrabida-tour` placement) so other tours don't
           get the same trust strip when no real article exists for them. */}

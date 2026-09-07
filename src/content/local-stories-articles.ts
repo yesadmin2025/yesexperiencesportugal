@@ -220,7 +220,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     slug: "what-to-do-in-sesimbra",
     title: "What to Do in Sesimbra: A Local's Guide (Castle, Coves, Fish)",
     metaDescription:
-      "We live in Sesimbra. Exactly what to do, where locals eat the day's catch, which Arrábida coves are worth it, how long you need — and how to do it all in one day, 40 min from Lisbon.",
+      "We live in Sesimbra: the castle, the Arrábida coves worth the drive, and where locals eat the day's fresh fish — an easy day trip from Lisbon.",
 
     h1: "What to Do in Sesimbra — A Local's Guide to Our Fishing Town",
     eyebrow: "Sesimbra · Coast",
