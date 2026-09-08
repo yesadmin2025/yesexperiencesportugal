@@ -96,7 +96,7 @@ const variantClasses: Record<Variant, string> = {
 
 const variantStyle: Record<Variant, React.CSSProperties | undefined> = {
   primary: {
-    boxShadow: "0 10px 26px -14px color-mix(in oklab, var(--charcoal-deep) 55%, transparent)",
+    boxShadow: "0 8px 22px -16px color-mix(in oklab, var(--charcoal-deep) 48%, transparent)",
   },
   ghost: {
     border: "1px solid color-mix(in oklab, var(--teal) 55%, transparent)",
@@ -126,8 +126,8 @@ function KineticArrow({ tone = "gold" }: { tone?: "gold" | "goldSoft" }) {
         }}
       />
       <ArrowRight
-        size={18}
-        strokeWidth={1.5}
+        size={16}
+        strokeWidth={1.3}
         className="cta-arrow-idle relative transition-transform duration-[var(--dur-base)] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-x-2 group-focus-visible:translate-x-2 group-active:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
         style={{ color }}
       />
