@@ -112,8 +112,10 @@ export function CinematicHero() {
             data-hero-stanza="true"
             className="font-serif text-[clamp(2.5rem,7.2vw,5rem)] font-normal italic leading-[1.02] tracking-[-0.02em] text-[#F3E3C6] [text-shadow:0_2px_22px_rgba(0,0,0,0.42)]"
           >
-            <span className="block font-serif italic font-normal m-0">{HERO_PHRASES[0]}</span>
-            <span className="block font-serif italic font-normal mt-2 sm:mt-3">
+            <span className="block font-serif italic font-normal m-0">
+              {HERO_PHRASES[0]}
+            </span>
+            <span className="block font-serif italic font-normal mt-3 sm:mt-4">
               {HERO_PHRASES[1]}
             </span>
           </h1>
