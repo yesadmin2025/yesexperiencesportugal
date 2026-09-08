@@ -2046,6 +2046,10 @@
   animation: none !important;
 }
 
+.hero-cinematic .hero-title-line {
+  font-family: "Fraunces", Georgia, serif;
+}
+
 /* Cinematic hero reveal contract. The transition delays are deliberately
    long enough to read as story beats at 320–390px, where 200ms stacks still
    feel simultaneous. */

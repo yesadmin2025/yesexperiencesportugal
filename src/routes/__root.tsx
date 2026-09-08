@@ -214,7 +214,7 @@ export const Route = createRootRoute({
       // payload without losing any visual weight the site renders.
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..700;1,300..700&family=Inter:wght@300..700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,400&family=Montserrat:ital,wght@0,300..700;1,300..700&family=Inter:wght@300..700&display=swap",
       },
       {
         rel: "stylesheet",
