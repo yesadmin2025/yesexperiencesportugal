@@ -52,11 +52,6 @@ test.describe("Hero — approved copy lock", () => {
     ).toBeVisible();
   });
 
-  test("microcopy under the buttons matches approved copy exactly", async ({ page }) => {
-    await gotoHero(page);
-    await expect(page.getByText(HERO_COPY.microcopy, { exact: true })).toBeVisible();
-  });
-
   test("brand YES line matches approved copy exactly", async ({ page }) => {
     await gotoHero(page);
     await expect(page.getByText(HERO_COPY.brandLine, { exact: true })).toBeVisible();

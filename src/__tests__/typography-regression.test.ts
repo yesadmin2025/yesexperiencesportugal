@@ -389,14 +389,14 @@ const HEADLINES: HeadlineSpec[] = [
     // The visible stanza is the semantic <h1>; each line is a block-level
     // <span> inside it so the two-line cadence and animation are unchanged.
     pattern:
-      /<span\s+className="(block font-serif italic font-normal m-0)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
+      /<span\s+className="(hero-title-line block font-serif italic font-normal m-0)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[0\]/,
   },
   {
     page: "home",
     role: "hero stanza line 2",
     file: "src/components/home/CinematicHero.tsx",
     pattern:
-      /<span\s+className="(block font-serif italic font-normal mt-3 sm:mt-4)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[1\]/,
+      /<span\s+className="(hero-title-line block font-serif italic font-normal mt-3 sm:mt-4)"[^>]*>\s*\n[\s\S]*?HERO_PHRASES\[1\]/,
   },
   {
     page: "home",

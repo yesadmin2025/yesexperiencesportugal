@@ -18,7 +18,7 @@ import { test, expect } from "@playwright/test";
 type RGB = { r: number; g: number; b: number };
 
 const CHANNEL_TOL = 10;
-const GOLD_SOFT: RGB = { r: 0xf1, g: 0xd8, b: 0xab };
+const GOLD_SOFT: RGB = { r: 0xe1, g: 0xcf, b: 0xa6 };
 
 function parseColor(input: string): RGB {
   const m = input.replace(/\s+/g, "").match(/^rgba?\((\d+),(\d+),(\d+)/i);
@@ -46,8 +46,8 @@ test.describe("Hero color tokens — non-regression", () => {
     });
   });
 
-  test("both stanza lines stay gold-soft #F1D8AB, serif italic 400", async ({ page }) => {
-    const lines = page.locator('[data-hero-stanza="true"] > p');
+  test("both stanza lines stay on the canonical gold-soft token, serif italic 400", async ({ page }) => {
+    const lines = page.locator('[data-hero-stanza="true"] > span');
     await expect(lines).toHaveCount(2);
 
     for (let i = 0; i < 2; i += 1) {
@@ -67,9 +67,7 @@ test.describe("Hero color tokens — non-regression", () => {
       ).toBe(true);
       expect(style.fontStyle, `stanza line ${i + 1} must remain italic`).toBe("italic");
       expect(style.fontWeight, `stanza line ${i + 1} must stay weight 400`).toBe("400");
-      expect(style.fontFamily, `stanza line ${i + 1} must use the serif token`).toContain(
-        "georgia",
-      );
+      expect(style.fontFamily, `stanza line ${i + 1} must use the editorial serif`).toContain("fraunces");
     }
   });
 });

@@ -1,12 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Typography regression — headline class strings > [home] hero primary CTA 1`] = `"hero-cta group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[340px] sm:max-w-[380px] px-6 sm:px-7 py-[15px] min-h-[50px] text-[11.5px] sm:text-[12px] uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent hero-cta--primary"`;
+exports[`Typography regression — headline class strings > [home] hero primary CTA 1`] = `"hero-cta group inline-flex min-h-[54px] w-full max-w-[340px] items-center justify-between whitespace-nowrap px-6 py-[15px] text-[11px] uppercase tracking-[0.16em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:max-w-[340px] sm:px-7 sm:text-[11.5px] hero-cta--primary"`;
 
-exports[`Typography regression — headline class strings > [home] hero secondary CTA 1`] = `"hero-cta group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[340px] sm:max-w-[380px] px-6 sm:px-7 py-[15px] min-h-[50px] text-[11.5px] sm:text-[12px] uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent hero-cta--ghost"`;
+exports[`Typography regression — headline class strings > [home] hero secondary CTA 1`] = `"hero-cta group inline-flex min-h-[48px] w-full max-w-[340px] items-center justify-between whitespace-nowrap px-1 py-3 text-[10.5px] uppercase tracking-[0.14em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:max-w-[340px] sm:px-1 sm:text-[11px] hero-cta--ghost"`;
 
-exports[`Typography regression — headline class strings > [home] hero stanza line 1 1`] = `"block font-serif italic font-normal m-0"`;
+exports[`Typography regression — headline class strings > [home] hero stanza line 1 1`] = `"hero-title-line block font-serif italic font-normal m-0"`;
 
-exports[`Typography regression — headline class strings > [home] hero stanza line 2 1`] = `"block font-serif italic font-normal mt-3 sm:mt-4"`;
+exports[`Typography regression — headline class strings > [home] hero stanza line 2 1`] = `"hero-title-line block font-serif italic font-normal mt-3 sm:mt-4"`;
 
 exports[`Typography regression — token rules from styles.css > token .hero-h1 1`] = `
 "base: letter-spacing: -0.012em; line-height: 1.08;

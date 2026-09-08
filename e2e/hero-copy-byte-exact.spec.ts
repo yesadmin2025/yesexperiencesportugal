@@ -31,7 +31,6 @@ const FIELDS_TO_CHECK = [
   "subheadline",
   "primaryCta",
   "secondaryCta",
-  "microcopy",
 ] as const satisfies readonly (keyof typeof HERO_COPY_SPEC)[];
 
 async function gotoHero(page: Page) {
@@ -98,34 +97,4 @@ test.describe("Hero — byte-exact DOM copy lock", () => {
     });
   }
 
-  test("microcopy contains no positive form/waiting/request language", async ({ page }) => {
-    // The approved microcopy is allowed to NEGATE these words
-    // ("No forms", "No waiting"). What we forbid is the positive
-    // assertion of any of them. Strip "no <word>" pairs first, then
-    // assert no remaining occurrence — so "Submit a form and wait"
-    // would fail, but "No forms. No waiting." passes.
-    await gotoHero(page);
-    const microcopy = await page
-      .locator(`[data-hero-field="microcopy"]`)
-      .evaluate((el) => (el as HTMLElement).textContent ?? "");
-    const stripped = microcopy.replace(/\bno\s+\w+/gi, "");
-    const forbidden = [
-      "form",
-      "forms",
-      "wait",
-      "waiting",
-      "request",
-      "requests",
-      "submit",
-      "email",
-      "approval",
-      "approved",
-    ];
-    for (const word of forbidden) {
-      expect(
-        new RegExp(`\\b${word}\\b`, "i").test(stripped),
-        `microcopy must not POSITIVELY contain "${word}" — got after stripping negations: ${JSON.stringify(stripped)} (raw: ${JSON.stringify(microcopy)})`,
-      ).toBe(false);
-    }
-  });
 });

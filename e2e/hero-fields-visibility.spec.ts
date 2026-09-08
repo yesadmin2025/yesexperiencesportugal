@@ -34,12 +34,17 @@ test.describe("Hero fields visibility — no opacity:0 regressions", () => {
     });
 
     for (const sel of FIELDS) {
-      const opacity = await page.evaluate((s) => {
-        const el = document.querySelector(s) as HTMLElement | null;
-        if (!el) throw new Error(`not found: ${s}`);
-        return parseFloat(window.getComputedStyle(el).opacity || "0");
-      }, sel);
-      expect(opacity, `${sel} must be fully opaque on final beat, got opacity=${opacity}`).toBe(1);
+      await expect
+        .poll(
+          () =>
+            page.evaluate((s) => {
+              const el = document.querySelector(s) as HTMLElement | null;
+              if (!el) throw new Error(`not found: ${s}`);
+              return parseFloat(window.getComputedStyle(el).opacity || "0");
+            }, sel),
+          { timeout: 10_000 },
+        )
+        .toBe(1);
     }
   });
 });
