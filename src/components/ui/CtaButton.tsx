@@ -69,13 +69,15 @@ type ButtonCtaProps = CommonProps &
 
 export type CtaButtonProps = LinkCtaProps | AnchorCtaProps | ButtonCtaProps;
 
+// Restrained editorial scale, matched to the homepage hero CTAs:
+// smaller type, wider tracking, generous horizontal breathing room.
 const sizeClasses: Record<Size, string> = {
-  md: "px-6 py-3.5 min-h-[52px] text-[13px] sm:text-[13.5px] tracking-[0.1em]",
-  sm: "px-5 py-3 min-h-[46px] text-[13px] tracking-[0.1em]",
+  md: "px-7 py-[15px] min-h-[54px] text-[11.5px] sm:text-[12px] tracking-[0.16em]",
+  sm: "px-6 py-3 min-h-[46px] text-[11px] tracking-[0.16em]",
 };
 
 const baseClasses =
-  "group relative inline-flex items-center font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-[background-color,color,border-color,transform,box-shadow] duration-[var(--dur-quick)] ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] [@media(hover:hover)]:hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
+  "group relative inline-flex items-center font-sans uppercase font-semibold rounded-[2px] overflow-visible transition-[background-color,color,border-color,transform,box-shadow] duration-[var(--dur-quick)] ease-[cubic-bezier(0.22,0.61,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ivory)] [@media(hover:hover)]:hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.985] active:transition-transform active:duration-[var(--dur-tap)] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-55 disabled:shadow-none aria-busy:cursor-progress data-[cta-error]:animate-[ctaNudge_360ms_ease-in-out]";
 const baseLayoutWithTrailing = "justify-between gap-6";
 const baseLayoutNoTrailing = "justify-center gap-2.5";
 
