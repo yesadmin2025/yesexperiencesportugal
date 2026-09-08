@@ -1,28 +1,23 @@
 /**
- * Homepage hero — editorial "One Breath" cadence over a conversion-first layout.
+ * Homepage hero — the continuous YES cinematic film with chapter overlays,
+ * over a conversion-first composition.
  *
- * The two brand lines enter one after the other (opacity + slight rise + soft
- * blur), then the proposition and the two CTAs compose in. The whole sequence
- * completes well under 2.2s, so nobody waits to act. Reduced motion and
- * `?hero=last` render the final state immediately.
+ * ONE uninterrupted <video> (HERO_FILM, ~27.1s) is the visual source of
+ * truth — never a carousel, never stacked clips. HERO_SCENES supplies the
+ * chapter overlay timeline: restrained editorial lines that cross-fade as
+ * the film advances.
+ *
+ * Conversion never waits for the film: the brand stanza, proposition and
+ * both CTAs compose in well under 2s. Reduced motion and `?hero=last`
+ * render the final actionable state immediately.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
+import { HERO_FILM, HERO_SCENES, scaleHeroTimeline } from "@/content/hero-scenes-manifest";
 
-const HERO_CLIP = {
-  srcMobile: "/__l5e/assets-v1/ff4f2c39-2fde-42f1-9b4a-7230c692f1e9/hero-sunset-road-720.mp4",
-  srcDesktop: "/__l5e/assets-v1/422f19b8-dad0-4ae0-b952-e4fc9a048abe/hero-sunset-road-1080.mp4",
-  srcMobileHevc:
-    "/__l5e/assets-v1/07f8da30-1c73-4d49-a615-19beccd6bc17/hero-sunset-road-720.hevc.mp4",
-  srcMobileAv1:
-    "/__l5e/assets-v1/5b4b22ae-6087-461f-b6bb-2befd85ae8de/hero-sunset-road-720.av1.mp4",
-  posterWebp: "/video/hero-sunset-road-poster.webp",
-  posterWebpMobile: "/video/hero-sunset-road-poster-720.webp",
-} as const;
-
-/** Premium but fast: full actionable state by ~1.75s. */
+/** Premium but fast: full actionable state by ~1.6s. */
 const LINE1_DELAY_MS = 380;
 const LINE2_DELAY_MS = 1050;
 const COMPOSE_DELAY_MS = 1600;
@@ -30,6 +25,10 @@ const FADE_MS = 900;
 const COMPOSE_FADE_MS = 700;
 
 const EASE = "cubic-bezier(0.22,0.61,0.36,1)";
+
+/** Chapters that actually carry copy (the two silent frames stay silent). */
+const CHAPTERS = HERO_SCENES.filter((s) => s.main.length > 0 || !!s.support);
+const LAST_CHAPTER_ID = CHAPTERS[CHAPTERS.length - 1]?.id ?? "";
 
 function shouldSkipIntro(): boolean {
   if (typeof window === "undefined") return false;
@@ -56,7 +55,14 @@ function revealStyle(on: boolean, ms: number): React.CSSProperties {
 }
 
 const ARROW = (
-  <svg className="hero-cta__arrow" width="10" height="7" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+  <svg
+    className="hero-cta__arrow"
+    width="11"
+    height="8"
+    viewBox="0 0 14 10"
+    fill="none"
+    aria-hidden="true"
+  >
     <path
       d="M1 5h11M8.5 1.8L12.2 5l-3.7 3.2"
       stroke="currentColor"
@@ -67,12 +73,66 @@ const ARROW = (
   </svg>
 );
 
-const CTA_STYLE: React.CSSProperties = { fontFamily: "Inter, system-ui, sans-serif", fontWeight: 450 };
+const CTA_STYLE: React.CSSProperties = {
+  fontFamily: "Inter, system-ui, sans-serif",
+  fontWeight: 450,
+};
+
+/** Tracks which chapter of the continuous film is on screen. */
+function useHeroChapter(videoRef: React.RefObject<HTMLVideoElement | null>, enabled: boolean) {
+  const [activeId, setActiveId] = useState<string>(CHAPTERS[0]?.id ?? "");
+
+  useEffect(() => {
+    if (!enabled) {
+      setActiveId(LAST_CHAPTER_ID);
+      return;
+    }
+    let raf = 0;
+    const started = performance.now();
+    const tick = () => {
+      const v = videoRef.current;
+      const duration =
+        v && Number.isFinite(v.duration) && v.duration > 0 ? v.duration : HERO_FILM.durationSeconds;
+      const windows = scaleHeroTimeline(duration);
+      // If the film cannot play (codec refusal, data saver), the chapters
+      // still advance on an internal clock so the story never freezes.
+      const playing = !!v && !v.paused && v.currentTime > 0;
+      const t = playing ? v.currentTime : ((performance.now() - started) / 1000) % duration;
+      const win = windows.find((w) => t >= w.startTime && t < w.endTime);
+      if (win) setActiveId((prev) => (prev === win.id ? prev : win.id));
+      raf = window.requestAnimationFrame(tick);
+    };
+    raf = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(raf);
+  }, [enabled, videoRef]);
+
+  return activeId;
+}
 
 export function CinematicHero() {
   const [line1, setLine1] = useState(false);
   const [line2, setLine2] = useState(false);
   const [composed, setComposed] = useState(false);
+  const [cinematic, setCinematic] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const activeChapter = useHeroChapter(videoRef, cinematic);
+  const [filmSrc, setFilmSrc] = useState<string>(HERO_FILM.src1080);
+
+  // Pick the light mobile master after mount, then nudge playback — some
+  // browsers keep an autoplaying muted film paused until asked once.
+  useEffect(() => {
+    const mobile = window.matchMedia?.("(max-width: 767px)").matches;
+    if (mobile) setFilmSrc(HERO_FILM.src720);
+  }, []);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    const kick = () => void v.play().catch(() => {});
+    kick();
+    v.addEventListener("loadeddata", kick);
+    return () => v.removeEventListener("loadeddata", kick);
+  }, [filmSrc]);
 
   useEffect(() => {
     if (shouldSkipIntro()) {
@@ -81,6 +141,7 @@ export function CinematicHero() {
       setComposed(true);
       return;
     }
+    setCinematic(true);
     const t1 = window.setTimeout(() => setLine1(true), LINE1_DELAY_MS);
     const t2 = window.setTimeout(() => setLine2(true), LINE2_DELAY_MS);
     const t3 = window.setTimeout(() => setComposed(true), COMPOSE_DELAY_MS);
@@ -96,54 +157,76 @@ export function CinematicHero() {
       data-section="hero"
       data-hero-cinematic="true"
       aria-label="YES Experiences Portugal"
-      className="relative min-h-[92svh] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]"
+      className="hero-cinematic relative min-h-[100svh] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]"
     >
       <div className="hero-story-stage absolute inset-0 z-0">
         <picture className="absolute inset-0 block h-full w-full">
-          <source media="(max-width: 767px)" srcSet={HERO_CLIP.posterWebpMobile} />
           <img
-            src={HERO_CLIP.posterWebp}
+            src={HERO_FILM.poster}
             alt=""
             aria-hidden="true"
             fetchPriority="high"
+            decoding="async"
             className="h-full w-full object-cover"
           />
         </picture>
 
         <video
+          ref={videoRef}
           data-hero-film
+          src={filmSrc}
           autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
-          poster={HERO_CLIP.posterWebp}
+          preload="auto"
+          poster={HERO_FILM.poster}
           className="absolute inset-0 h-full w-full object-cover"
           aria-hidden="true"
-        >
-          <source
-            media="(max-width: 767px)"
-            src={HERO_CLIP.srcMobileAv1}
-            type="video/mp4; codecs=av01"
-          />
-          <source
-            media="(max-width: 767px)"
-            src={HERO_CLIP.srcMobileHevc}
-            type="video/mp4; codecs=hvc1"
-          />
-          <source media="(max-width: 767px)" src={HERO_CLIP.srcMobile} type="video/mp4" />
-          <source src={HERO_CLIP.srcDesktop} type="video/mp4" />
-        </video>
+        />
 
+        {/* Restrained grading so copy is AA readable without crushing the film. */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,18,16,0.32)_0%,rgba(16,18,16,0.20)_34%,rgba(16,18,16,0.58)_76%,rgba(16,18,16,0.76)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,18,16,0.46)_0%,rgba(16,18,16,0.30)_30%,rgba(16,18,16,0.44)_58%,rgba(16,18,16,0.72)_84%,rgba(16,18,16,0.84)_100%)]"
         />
       </div>
 
-      <div className="relative z-10 flex min-h-[92svh] items-end px-5 pb-[max(3.25rem,calc(env(safe-area-inset-bottom)+2.25rem))] pt-28 sm:px-8 md:items-center md:pb-10 md:pt-24 lg:px-12">
+      <div className="relative z-10 flex min-h-[100svh] items-end px-5 pb-[max(3.25rem,calc(env(safe-area-inset-bottom)+2.25rem))] pt-28 sm:px-8 md:items-center md:pb-12 md:pt-24 lg:px-12">
         <div className="mx-auto w-full max-w-6xl">
           <div className="max-w-3xl text-left md:mx-auto md:text-center">
+            {/* Chapter overlay — the film's story, cross-fading with restraint. */}
+            <div
+              data-hero-chapters
+              aria-hidden="true"
+              className="relative mb-6 hidden h-[54px] sm:block"
+            >
+              {CHAPTERS.map((chapter) => (
+                <div
+                  key={chapter.id}
+                  data-hero-chapter={chapter.id}
+                  data-hero-chapter-active={activeChapter === chapter.id ? "true" : "false"}
+                  className="absolute inset-x-0 top-0 md:mx-auto"
+                  style={{
+                    opacity: activeChapter === chapter.id ? 1 : 0,
+                    transition: `opacity 600ms ${EASE}`,
+                    pointerEvents: "none",
+                  }}
+                >
+                  {chapter.main.length > 0 && (
+                    <p className="font-serif text-[17px] italic leading-[1.35] text-[#F7E6C8]/90 sm:text-[19px]">
+                      {chapter.main.join(" ")}
+                    </p>
+                  )}
+                  {chapter.support && (
+                    <p className="mt-1 text-[12px] leading-[1.4] text-white/70">
+                      {chapter.support}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+
             <p
               data-hero-field="eyebrow"
               className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#F1D8AB]/85 sm:text-[12px]"
@@ -194,7 +277,7 @@ export function CinematicHero() {
                 data-hero-field="primaryCta"
                 data-analytics="hero_open_studio"
                 data-analytics-placement="hero"
-                className="hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[330px] sm:max-w-[380px] lg:max-w-none lg:w-full px-5 sm:px-6 py-[14px] sm:py-[13px] min-h-[44px] text-[10.5px] sm:text-[11px] lg:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+                className="hero-cta group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[340px] sm:max-w-[380px] px-6 sm:px-7 py-[15px] min-h-[50px] text-[11.5px] sm:text-[12px] uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent hero-cta--primary"
                 style={CTA_STYLE}
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
@@ -208,7 +291,7 @@ export function CinematicHero() {
                 data-hero-field="secondaryCta"
                 data-analytics="hero_choose_experience"
                 data-analytics-placement="hero"
-                className="hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[330px] sm:max-w-[380px] lg:max-w-none lg:w-full px-5 sm:px-6 py-[14px] sm:py-[13px] min-h-[44px] text-[10.5px] sm:text-[11px] lg:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+                className="hero-cta group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[340px] sm:max-w-[380px] px-6 sm:px-7 py-[15px] min-h-[50px] text-[11.5px] sm:text-[12px] uppercase tracking-[0.2em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent hero-cta--ghost"
                 style={CTA_STYLE}
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
