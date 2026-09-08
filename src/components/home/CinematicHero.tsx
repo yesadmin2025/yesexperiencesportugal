@@ -17,12 +17,12 @@ import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM, HERO_SCENES, scaleHeroTimeline } from "@/content/hero-scenes-manifest";
 
-/** Premium but fast: full actionable state by ~1.6s. */
-const LINE1_DELAY_MS = 260;
-const LINE2_DELAY_MS = 780;
-const COMPOSE_DELAY_MS = 1380;
-const FADE_MS = 840;
-const COMPOSE_FADE_MS = 620;
+/** Cinematic pace: stanza breathes in, full actionable state by ~2.2s. */
+const LINE1_DELAY_MS = 480;
+const LINE2_DELAY_MS = 1180;
+const COMPOSE_DELAY_MS = 1900;
+const FADE_MS = 980;
+const COMPOSE_FADE_MS = 760;
 
 const EASE = "cubic-bezier(0.22,0.61,0.36,1)";
 
@@ -187,7 +187,7 @@ export function CinematicHero() {
         />
       </div>
 
-      <div className="relative z-10 flex min-h-[100svh] items-end px-5 pb-[max(3.25rem,calc(env(safe-area-inset-bottom)+2.25rem))] pt-28 sm:px-8 md:items-center md:pb-12 md:pt-24 lg:px-12">
+      <div className="relative z-10 flex min-h-[100svh] items-center px-5 pb-[max(4.5rem,calc(env(safe-area-inset-bottom)+3rem))] pt-24 sm:px-8 sm:items-end md:items-center md:pb-12 md:pt-24 lg:px-12">
         <div className="mx-auto w-full max-w-6xl">
           <div className="max-w-3xl text-left md:mx-auto md:text-center">
             {/* Chapter overlay — the film's story, cross-fading with restraint. */}
