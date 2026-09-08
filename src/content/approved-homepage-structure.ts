@@ -1,5 +1,5 @@
 /**
- * Approved homepage structure spec (v3 — 13-block premium layout).
+ * Approved homepage structure spec (v8 — 9-block premium layout).
  *
  * Single source of truth for what the marketing homepage MUST contain
  * at mobile widths. Consumed by:
@@ -72,14 +72,14 @@ export interface ApprovedSection {
 }
 
 /**
- * The approved 11-block structure (v7 — Plan-your-Portugal map row added).
+ * The approved 9-block structure (v8 — homepage declutter: Map + Journal rows removed, Signature promoted above Studio).
  *
  * Order:
  *   1.  Hero
  *   2.  Trust strip (reviews + private guide line)
- *   3.  Five ways in (Signature / Studio / Designer / Occasions …)
- *   4.  Experience Studio (promoted)
- *   5.  Signature experiences preview
+ *   3.  Where to begin (Signature / Studio / Designer / Moments / Corporate)
+ *   4.  Signature experiences preview
+ *   5.  Experience Studio (promoted)
  *   6.  Travel Designer (multi-day, bespoke)
  *   7.  Occasions band (Proposals + Celebrations + Corporate)
  *   8.  FAQ (shared <FAQ /> component owns its own landmark)
@@ -108,15 +108,15 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 4,
-    name: "Experience Studio (promoted)",
-    ariaLabelledBy: "studio-title",
-    requiredSpacing: { kind: "py", minScale: 20 },
-  },
-  {
-    order: 5,
     name: "Signature experiences preview",
     ariaLabelledBy: "signatures-title",
     requiredSpacing: { kind: "py", minScale: 16 },
+  },
+  {
+    order: 5,
+    name: "Experience Studio (promoted)",
+    ariaLabelledBy: "studio-title",
+    requiredSpacing: { kind: "py", minScale: 20 },
   },
   {
     order: 6,
@@ -133,30 +133,17 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 8,
-    name: "Plan your Portugal — interactive region map",
-    ariaLabelledBy: "plan-map-title",
-    requiredSpacing: { kind: "py", minScale: 16 },
-  },
-  {
-    order: 9,
-    name: "Journal — local guides",
-    ariaLabelledBy: "journal-title",
-    requiredSpacing: { kind: "py", minScale: 16 },
-  },
-  {
-    order: 10,
     name: "FAQ — visible helpful answers",
     componentTag: "FAQ",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 11,
+    order: 9,
     name: "Final CTA — talk to a local",
     ariaLabelledBy: "final-cta-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
-
 ] as const;
 
 /** Total number of approved blocks (including componentized rows). */

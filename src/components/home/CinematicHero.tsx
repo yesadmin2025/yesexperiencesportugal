@@ -1,11 +1,18 @@
 /**
- * Homepage hero.
+ * Homepage hero — "One Breath".
  *
- * Conversion-first version: the brand remains cinematic, but the proposition
- * and booking choices are visible immediately. No 8-second wait for CTAs and
- * no visitor has to decode what the company sells before taking action.
+ * One continuous sunset-road film, full-bleed, a single centered two-line
+ * H1 and exactly two refined CTAs. No eyebrow, no explanatory subheadline,
+ * no review row, no third link: the atmosphere carries the brand and the
+ * two choices carry conversion.
+ *
+ * The CTAs are revealed quickly (~1.6s) so the page stays cinematic without
+ * costing conversion. Reduced-motion users and `?hero=last` see them
+ * immediately. The SR/SEO hero-copy probes and the HERO_COPY version
+ * contract are preserved untouched.
  */
 
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 
@@ -20,13 +27,35 @@ const HERO_CLIP = {
   posterWebpMobile: "/video/hero-sunset-road-poster-720.webp",
 } as const;
 
+/** Maximum time before the CTAs are usable. Kept well under 1.8s. */
+const CTA_REVEAL_MS = 1600;
+
 export function CinematicHero() {
+  const [ctaVisible, setCtaVisible] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const reduced =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const forcedLast = new URLSearchParams(window.location.search).get("hero") === "last";
+
+    if (reduced || forcedLast) {
+      setCtaVisible(true);
+      return;
+    }
+
+    const timer = window.setTimeout(() => setCtaVisible(true), CTA_REVEAL_MS);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   return (
     <section
       data-section="hero"
       data-hero-cinematic="true"
       aria-label="YES Experiences Portugal"
-      className="relative min-h-[92svh] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]"
+      className="relative min-h-[100svh] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]"
     >
       <div className="hero-story-stage absolute inset-0 z-0">
         <picture className="absolute inset-0 block h-full w-full">
@@ -65,75 +94,60 @@ export function CinematicHero() {
           <source src={HERO_CLIP.srcDesktop} type="video/mp4" />
         </video>
 
+        {/* Restrained cinematic grade: a soft top-to-bottom fall and a
+          quiet vignette. No glassmorphism, no decorative noise. */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,18,16,0.32)_0%,rgba(16,18,16,0.20)_34%,rgba(16,18,16,0.58)_76%,rgba(16,18,16,0.76)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,18,16,0.34)_0%,rgba(16,18,16,0.16)_38%,rgba(16,18,16,0.44)_78%,rgba(16,18,16,0.62)_100%)]"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[radial-gradient(120%_85%_at_50%_50%,transparent_38%,rgba(12,14,12,0.42)_100%)]"
         />
       </div>
 
-      <div className="relative z-10 flex min-h-[92svh] items-end px-5 pb-[max(3.25rem,calc(env(safe-area-inset-bottom)+2.25rem))] pt-28 sm:px-8 md:items-center md:pb-10 md:pt-24 lg:px-12">
-        <div className="mx-auto w-full max-w-6xl">
-          <div className="max-w-3xl text-left md:mx-auto md:text-center">
-            <p
-              data-hero-field="eyebrow"
-              className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#F1D8AB] sm:text-[12px]"
-            >
-              {HERO_COPY.eyebrow}
-            </p>
+      <div className="relative z-10 flex min-h-[100svh] items-center justify-center px-6 pb-[max(4rem,calc(env(safe-area-inset-bottom)+3rem))] pt-28 sm:px-8 md:pb-16 md:pt-24">
+        <div className="mx-auto w-full max-w-4xl text-center">
+          <h1
+            data-hero-stanza="true"
+            className="font-serif text-[clamp(2.5rem,7.2vw,5rem)] font-normal italic leading-[1.02] tracking-[-0.02em] text-[#F3E3C6] [text-shadow:0_2px_22px_rgba(0,0,0,0.42)]"
+          >
+            <span className="block font-serif italic font-normal m-0">
+              {/* film-title line 1 */}
+              {HERO_PHRASES[0]}
+            </span>
+            <span className="block font-serif italic font-normal mt-3 sm:mt-4">
+              {HERO_PHRASES[1]}
+            </span>
+          </h1>
 
-            <h1
-              data-hero-stanza="true"
-              className="mt-5 font-serif text-[clamp(2.4rem,6vw,5.2rem)] font-normal italic leading-[0.98] tracking-[-0.025em] text-[#F7E6C8] [text-shadow:0_2px_18px_rgba(0,0,0,0.38)]"
+          <div
+            data-hero-composed="true"
+            data-hero-cta-visible={ctaVisible ? "true" : "false"}
+            className={[
+              "mt-10 flex flex-col items-center justify-center gap-3 sm:mt-12 sm:flex-row sm:gap-4",
+              "transition-opacity duration-700 ease-out motion-reduce:transition-none",
+              ctaVisible ? "opacity-100" : "opacity-0",
+            ].join(" ")}
+          >
+            <Link
+              to="/studio-v3"
+              data-hero-field="primaryCta"
+              data-analytics="hero_open_studio"
+              data-analytics-placement="hero"
+              className="hero-cta hero-cta--primary group inline-flex min-h-[44px] w-full max-w-[320px] items-center justify-center whitespace-nowrap px-6 py-[14px] text-[11px] uppercase sm:w-auto sm:text-[11.5px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             >
-              <span className="block font-serif italic font-normal m-0">
-                {HERO_PHRASES[0]}
-              </span>
-              <span className="block font-serif italic font-normal mt-3 sm:mt-4">
-                {HERO_PHRASES[1]}
-              </span>
-            </h1>
-
-            <p
-              data-hero-field="subheadline"
-              className="mt-6 max-w-2xl text-[16px] leading-[1.65] text-white/92 sm:text-[18px] md:mx-auto"
+              {HERO_COPY.primaryCta}
+            </Link>
+            <Link
+              to="/experiences"
+              data-hero-field="secondaryCta"
+              data-analytics="hero_choose_experience"
+              data-analytics-placement="hero"
+              className="hero-cta hero-cta--ghost group inline-flex min-h-[44px] w-full max-w-[320px] items-center justify-center whitespace-nowrap px-6 py-[14px] text-[11px] uppercase sm:w-auto sm:text-[11.5px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
             >
-              {HERO_COPY.subheadline}
-            </p>
-
-            <div
-              className="mt-8 flex flex-col gap-3 sm:flex-row md:justify-center"
-              data-hero-composed="true"
-            >
-              <Link
-                to="/experiences"
-                data-hero-field="primaryCta"
-                data-analytics="hero_choose_experience"
-                data-analytics-placement="hero"
-                className="hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[330px] sm:max-w-[380px] lg:max-w-none lg:w-full px-5 sm:px-6 py-[14px] sm:py-[13px] min-h-[44px] text-[10.5px] sm:text-[11px] lg:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
-              >
-                {HERO_COPY.primaryCta}
-              </Link>
-              <Link
-                to="/studio-v3"
-                data-hero-field="secondaryCta"
-                data-analytics="hero_open_studio"
-                data-analytics-placement="hero"
-                className="hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[330px] sm:max-w-[380px] lg:max-w-none lg:w-full px-5 sm:px-6 py-[14px] sm:py-[13px] min-h-[44px] text-[10.5px] sm:text-[11px] lg:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
-              >
-                {HERO_COPY.secondaryCta}
-              </Link>
-            </div>
-
-            <div className="mt-5 flex flex-col gap-3 text-[13px] leading-[1.55] text-white/82 md:items-center">
-              <p data-hero-field="microcopy">{HERO_COPY.microcopy}</p>
-              <Link
-                to="/multi-day"
-                data-hero-field="brandLine"
-                className="inline-flex min-h-[44px] items-center text-[#F1D8AB] underline decoration-[color:var(--gold)]/80 underline-offset-4 hover:text-white"
-              >
-                {HERO_COPY.brandLine}
-              </Link>
-            </div>
+              {HERO_COPY.secondaryCta}
+            </Link>
           </div>
         </div>
       </div>

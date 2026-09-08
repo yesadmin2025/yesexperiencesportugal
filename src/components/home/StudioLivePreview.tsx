@@ -1,6 +1,4 @@
-import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { Wine, Users, Clock3, ArrowRight, MapPin } from "lucide-react";
 
 const STOPS = [
   { x: 68, y: 58, label: "Lisbon", caption: "Pickup" },
@@ -11,61 +9,63 @@ const STOPS = [
 const ROUTE_D = "M 68 58 C 78 92, 92 116, 108 136 S 138 178, 154 205";
 
 /**
- * Homepage Studio example.
- * This deliberately never pretends to be the visitor's own draft. A genuine
- * saved Studio draft is surfaced separately by FourWaysIn.
+ * Homepage Studio example — a quiet, clearly illustrative panel.
+ *
+ * Deliberately NOT a live dashboard: no chips, no controls, no
+ * visitor-specific state. One route drawing, three real place names and a
+ * single subordinate link. The section's own CTA ("Open the Studio") is the
+ * only primary action, so no duplicate CTA band lives inside this card.
  */
 export function StudioLivePreview() {
   return (
-    <div
-      className="studio-live overflow-hidden rounded-[6px] border border-[color:var(--gold)]/25 bg-[color:var(--charcoal-deep)] shadow-[0_18px_40px_-20px_rgba(46,46,46,0.45)]"
-      role="group"
+    <figure
+      className="studio-live m-0 overflow-hidden rounded-[6px] border border-[color:var(--gold)]/25 bg-[color:var(--charcoal-deep)] shadow-[0_18px_40px_-24px_rgba(46,46,46,0.42)]"
       aria-label="Example Experience Studio day from Lisbon through Azeitão to Sesimbra"
       data-testid="home-studio-example"
     >
-      <div className="flex items-center justify-between gap-4 border-b border-[color:var(--gold)]/18 px-4 py-3 md:px-5">
-        <div>
-          <p className="text-[12px] uppercase tracking-[0.2em] font-semibold text-[color:var(--gold)]">
-            Example Studio day
-          </p>
-          <p className="mt-1 text-[13px] text-[color:var(--ivory)]/90">One custom private day</p>
-        </div>
-        <span className="rounded-full border border-[color:var(--gold)]/35 px-2.5 py-1 text-[12px] uppercase tracking-[0.12em] text-[color:var(--ivory)]/84">
-          Not your draft
-        </span>
+      <div className="border-b border-[color:var(--gold)]/18 px-5 py-4">
+        <p className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[color:var(--gold)]">
+          Example
+        </p>
+        <p className="mt-1.5 font-serif text-[1.15rem] leading-[1.25] text-[color:var(--ivory)]">
+          One private day, Lisbon to the Arrábida coast
+        </p>
       </div>
 
-      <div className="flex flex-wrap gap-2 border-b border-[color:var(--gold)]/15 px-4 py-3 md:px-5">
-        <Chip icon={<Wine size={12} aria-hidden="true" />} label="Wine & food" />
-        <Chip icon={<Users size={12} aria-hidden="true" />} label="Couple" />
-        <Chip icon={<Clock3 size={12} aria-hidden="true" />} label="Relaxed" />
-      </div>
-
-      <div className="relative aspect-[4/3] sm:aspect-[5/4] md:aspect-[16/11] w-full overflow-hidden">
+      <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[5/4] md:aspect-[16/11]">
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(120%_90%_at_28%_18%,rgba(201,169,106,0.10)_0%,transparent_55%),radial-gradient(110%_80%_at_72%_82%,rgba(41,91,97,0.50)_0%,transparent_60%)]"
+          className="absolute inset-0 bg-[radial-gradient(120%_90%_at_28%_18%,rgba(201,169,106,0.09)_0%,transparent_58%),radial-gradient(110%_80%_at_72%_82%,rgba(41,91,97,0.46)_0%,transparent_62%)]"
         />
-        <svg aria-hidden="true" className="absolute inset-0 h-full w-full opacity-[0.16]" viewBox="0 0 200 260" preserveAspectRatio="none">
-          <defs>
-            <pattern id="studio-preview-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--gold)" strokeWidth="0.4" />
-            </pattern>
-          </defs>
-          <rect width="200" height="260" fill="url(#studio-preview-grid)" />
-        </svg>
-        <svg aria-hidden="true" className="absolute inset-0 h-full w-full" viewBox="0 0 200 260" preserveAspectRatio="xMidYMid slice">
+        <svg
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 200 260"
+          preserveAspectRatio="xMidYMid slice"
+        >
           <path
             d="M 0 70 C 30 78, 60 96, 90 120 S 130 168, 160 190 S 188 220, 200 232 L 200 260 L 0 260 Z"
             fill="rgba(41,91,97,0.22)"
             stroke="rgba(201,169,106,0.18)"
             strokeWidth="0.6"
           />
-          <path d={ROUTE_D} fill="none" stroke="var(--gold)" strokeOpacity="0.9" strokeWidth="2" strokeLinecap="round" />
+          <path
+            d={ROUTE_D}
+            fill="none"
+            stroke="var(--gold)"
+            strokeOpacity="0.9"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
           {STOPS.map((stop, index) => (
             <g key={stop.label}>
               <circle cx={stop.x} cy={stop.y} r="5.5" fill="rgba(201,169,106,0.18)" />
-              <circle cx={stop.x} cy={stop.y} r="2.8" fill={index === 0 ? "var(--teal-2)" : "var(--gold)"} />
+              <circle
+                cx={stop.x}
+                cy={stop.y}
+                r="2.8"
+                fill={index === 0 ? "var(--teal-2)" : "var(--gold)"}
+              />
             </g>
           ))}
         </svg>
@@ -97,45 +97,18 @@ export function StudioLivePreview() {
         </ul>
       </div>
 
-      <div className="border-t border-[color:var(--gold)]/15 bg-[color:var(--ivory)] px-4 py-4 md:px-5">
-        <div className="sm:flex sm:items-center sm:justify-between sm:gap-5">
-          <div>
-            <p className="text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]">
-              See your own route and live price
-            </p>
-            <p className="mt-1.5 max-w-md text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--charcoal-soft)]">
-              Choose mood, group and rhythm in the Studio. This example is only here to show how the day comes together.
-            </p>
-          </div>
+      <figcaption className="border-t border-[color:var(--gold)]/15 bg-[color:var(--ivory)] px-5 py-4">
+        <p className="text-[14px] leading-[1.65] text-[color:var(--charcoal-soft)]">
+          An illustration of how a day comes together in the{" "}
           <Link
             to="/studio-v3"
-            className="mt-4 inline-flex min-h-[46px] shrink-0 items-center justify-center gap-2 rounded-[3px] bg-[color:var(--teal)] px-4 py-2.5 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--ivory)] hover:-translate-y-0.5 sm:mt-0"
+            className="text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4"
           >
-            Design yours <ArrowRight size={13} aria-hidden="true" />
+            Studio
           </Link>
-        </div>
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-[color:var(--border)] pt-3">
-          <p className="inline-flex items-center gap-1.5 text-[12px] text-[color:var(--charcoal-soft)]">
-            <MapPin size={12} aria-hidden="true" className="text-[color:var(--teal)]" />
-            Real routes · live price before payment
-          </p>
-          <Link
-            to="/experiences"
-            className="inline-flex min-h-[44px] items-center text-[12px] uppercase tracking-[0.14em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4"
-          >
-            Prefer a ready-made day?
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Chip({ icon, label }: { icon: ReactNode; label: string }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/30 bg-[color:var(--charcoal-deep)]/60 px-2.5 py-1.5 text-[color:var(--ivory)]">
-      <span className="text-[color:var(--gold)]">{icon}</span>
-      <span className="text-[12px] font-medium">{label}</span>
-    </span>
+          . Your own route and price are drawn from your choices.
+        </p>
+      </figcaption>
+    </figure>
   );
 }
