@@ -11,8 +11,8 @@ export const HERO_COPY = {
   headlineLine2: "You write the story.",
   subheadline:
     "Private Portugal tours and bespoke journeys, designed locally and booked directly.",
-  primaryCta: "Design your day",
-  secondaryCta: "Explore Signature Experiences",
+  primaryCta: "Choose a private day",
+  secondaryCta: "Design a day in the Studio",
   microcopy: "700+ five-star reviews · Private · Local support · Secure checkout",
   brandLine: "Planning several days? Travel Designer →",
 } as const;
