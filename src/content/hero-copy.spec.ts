@@ -7,11 +7,11 @@
  * new copy rather than an obsolete previous concept.
  */
 export const HERO_COPY_SPEC = {
-  eyebrow: "PRIVATE PORTUGAL, DESIGNED LOCALLY",
+  eyebrow: "SHAPED AROUND YOU · CONFIRMED INSTANTLY",
   headlineLine1: "Portugal is the stage.",
   headlineLine2: "You write the story.",
   subheadline:
-    "Private Portugal tours and bespoke journeys, designed locally and booked directly.",
+    "Private Portugal tours and bespoke journeys, thoughtfully composed and booked directly.",
   primaryCta: "Design your day",
   secondaryCta: "Explore Signature Experiences",
   microcopy: "700+ five-star reviews · Private · Local support · Secure checkout",

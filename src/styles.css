@@ -2039,6 +2039,7 @@
    targeted the same data attributes globally and made the hero appear as one
    square block on mobile. */
 .hero-cinematic [data-hero-reveal],
+.hero-cinematic [data-hero-field="eyebrow"],
 .hero-cinematic [data-hero-field="subheadline"],
 .hero-cinematic .hero-cta-button[data-hero-field="primaryCta"],
 .hero-cinematic .hero-cta-button[data-hero-field="secondaryCta"] {
@@ -5753,9 +5754,8 @@ html {
    ----------------------------------------------------------------
    Tactile, editorial buttons — NOT teal, so they stay out of the
    sunset palette. Primary = ivory surface with quiet depth.
-   Secondary = translucent charcoal scrim with ivory edge.
-   Both share a slow sheen sweep on hover and a refined arrow
-   ramp. Used only inside .hero-cinematic.
+   Secondary = an editorial gold hairline, deliberately quieter.
+   Both share a refined arrow ramp. Used only inside .hero-cinematic.
    ──────────────────────────────────────────────────────────── */
 .hero-cta {
   position: relative;
@@ -5848,15 +5848,12 @@ html {
 
 /* ── Secondary: translucent charcoal scrim ───────────────────── */
 .hero-cta--ghost {
-  background: color-mix(in oklab, var(--charcoal) 28%, transparent);
-  backdrop-filter: blur(6px) saturate(115%);
-  -webkit-backdrop-filter: blur(6px) saturate(115%);
+  overflow: visible;
+  background: transparent;
   color: var(--ivory);
-  border: 1px solid color-mix(in oklab, var(--ivory) 38%, transparent);
-  box-shadow:
-    inset 0 1px 0 0 color-mix(in oklab, var(--ivory) 14%, transparent),
-    0 1px 1px rgba(0, 0, 0, 0.25),
-    0 12px 28px -16px rgba(0, 0, 0, 0.55);
+  border: 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--gold) 62%, transparent);
+  box-shadow: none;
 }
 .hero-cta--ghost .hero-cta__arrow {
   color: color-mix(in oklab, var(--gold-soft, #d8b97a) 88%, var(--ivory));
@@ -5864,17 +5861,13 @@ html {
 .hero-cta--ghost:hover,
 .hero-cta--ghost:focus-visible {
   transform: translateY(-1px);
-  background: color-mix(in oklab, var(--charcoal) 38%, transparent);
-  border-color: color-mix(in oklab, var(--gold) 55%, transparent);
-  box-shadow:
-    inset 0 1px 0 0 color-mix(in oklab, var(--ivory) 22%, transparent),
-    0 2px 2px rgba(0, 0, 0, 0.28),
-    0 18px 38px -18px rgba(0, 0, 0, 0.65),
-    0 0 0 1px color-mix(in oklab, var(--gold) 18%, transparent);
+  background: transparent;
+  border-bottom-color: var(--gold);
+  box-shadow: none;
 }
 .hero-cta--ghost:active {
   transform: translateY(0);
-  background: color-mix(in oklab, var(--charcoal) 44%, transparent);
+  background: transparent;
   transition-duration: 120ms;
 }
 

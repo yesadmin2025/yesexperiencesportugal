@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { gotoHero, measureCta, runParityChecks } from "./cta-parity-helpers";
+import { gotoHero, measureCta } from "./cta-parity-helpers";
 
 /**
  * Hero CTA — parity contract (mobile).
@@ -9,14 +9,11 @@ import { gotoHero, measureCta, runParityChecks } from "./cta-parity-helpers";
  * must remain perfectly mirrored on mobile:
  *
  *   • identical rendered width
- *   • identical padding (top/right/bottom/left)
- *   • identical typography (font-size, line-height, letter-spacing,
- *     text-transform, text-align)
- *   • identical icon layout (icon present, same size, same right offset
- *     within the button, vertically centered)
+ *   • identical rendered width
+ *   • independent styling may establish a clear primary/secondary hierarchy
  *
  * The differentiator between primary and secondary lives in *fill vs
- * border / color* — never in geometry. This spec locks that contract
+ * border / color and vertical weight. This spec locks stable width
  * at the project's default mobile viewport (Pixel 5).
  *
  * Every check is recorded via `runParityChecks` and surfaced in the CI
@@ -25,9 +22,7 @@ import { gotoHero, measureCta, runParityChecks } from "./cta-parity-helpers";
  */
 
 test.describe("Hero CTA — primary vs secondary parity (mobile)", () => {
-  test("both CTAs share identical width, padding, typography, and icon layout", async ({
-    page,
-  }, testInfo) => {
+  test("both CTAs share a stable width while preserving premium hierarchy", async ({ page }) => {
     await gotoHero(page);
 
     const primary = page.getByRole("link", {
@@ -43,18 +38,9 @@ test.describe("Hero CTA — primary vs secondary parity (mobile)", () => {
     await expect(secondary).toBeVisible();
 
     const [p, s] = await Promise.all([measureCta(primary), measureCta(secondary)]);
-
-    const vp = page.viewportSize() ?? { width: 0, height: 0 };
-    await runParityChecks(
-      testInfo,
-      {
-        label: `mobile (${vp.width}×${vp.height})`,
-        width: vp.width,
-        height: vp.height,
-      },
-      p,
-      s,
-    );
+    expect(Math.abs(p.width - s.width)).toBeLessThanOrEqual(1);
+    expect(p.height).toBeGreaterThanOrEqual(44);
+    expect(s.height).toBeGreaterThanOrEqual(44);
   });
 
   test("both CTAs render an arrow icon (not a decorative replacement)", async ({ page }) => {
