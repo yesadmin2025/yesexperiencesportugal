@@ -67,9 +67,6 @@ const ARROW = (
   </svg>
 );
 
-const CTA_CLASS =
-  "group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[330px] sm:max-w-[380px] lg:max-w-none lg:w-full px-5 sm:px-6 py-[14px] sm:py-[13px] min-h-[44px] text-[10.5px] sm:text-[11px] lg:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent";
-
 const CTA_STYLE: React.CSSProperties = { fontFamily: "Inter, system-ui, sans-serif", fontWeight: 450 };
 
 export function CinematicHero() {
@@ -160,15 +157,15 @@ export function CinematicHero() {
               className="hero-h1 mt-5 font-serif text-[clamp(2.4rem,6vw,5.2rem)] font-normal italic leading-[0.98] tracking-[-0.025em] text-[#F7E6C8] [text-shadow:0_2px_18px_rgba(0,0,0,0.38)]"
             >
               <span
-                data-hero-field="headlineLine1"
                 className="block font-serif italic font-normal m-0"
+                data-hero-field="headlineLine1"
                 style={revealStyle(line1, FADE_MS)}
               >
                 {HERO_PHRASES[0]}
               </span>
               <span
-                data-hero-field="headlineLine2"
                 className="block font-serif italic font-normal mt-3 sm:mt-4"
+                data-hero-field="headlineLine2"
                 style={revealStyle(line2, FADE_MS)}
               >
                 {HERO_PHRASES[1]}
@@ -197,7 +194,7 @@ export function CinematicHero() {
                 data-hero-field="primaryCta"
                 data-analytics="hero_open_studio"
                 data-analytics-placement="hero"
-                className={`hero-cta hero-cta--primary ${CTA_CLASS}`}
+                className="hero-cta hero-cta--primary group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[330px] sm:max-w-[380px] lg:max-w-none lg:w-full px-5 sm:px-6 py-[14px] sm:py-[13px] min-h-[44px] text-[10.5px] sm:text-[11px] lg:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
                 style={CTA_STYLE}
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
@@ -211,7 +208,7 @@ export function CinematicHero() {
                 data-hero-field="secondaryCta"
                 data-analytics="hero_choose_experience"
                 data-analytics-placement="hero"
-                className={`hero-cta hero-cta--ghost ${CTA_CLASS}`}
+                className="hero-cta hero-cta--ghost group inline-flex items-center justify-center whitespace-nowrap w-full max-w-[330px] sm:max-w-[380px] lg:max-w-none lg:w-full px-5 sm:px-6 py-[14px] sm:py-[13px] min-h-[44px] text-[10.5px] sm:text-[11px] lg:text-[11.5px] uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold,#C9A96A)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
                 style={CTA_STYLE}
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
