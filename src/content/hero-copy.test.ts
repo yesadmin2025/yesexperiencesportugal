@@ -23,7 +23,6 @@ const FIELDS = [
   "subheadline",
   "primaryCta",
   "secondaryCta",
-  "microcopy",
 ] as const satisfies readonly (keyof typeof HERO_COPY_SPEC)[];
 
 function describeFirstDiff(actual: string, expected: string): string {
@@ -56,29 +55,4 @@ describe("Hero copy — source-level byte-exact lock", () => {
     });
   }
 
-  it("microcopy contains no positive form/waiting/request vocabulary", () => {
-    // The approved microcopy is intentionally allowed to NEGATE these
-    // words ("No forms", "No waiting") — what we forbid is the positive
-    // assertion of any of them. Strip "no <word>" pairs first, then
-    // assert no remaining occurrence.
-    const stripped = HERO_COPY_SPEC.microcopy.replace(/\bno\s+\w+/gi, "");
-    const forbidden = [
-      "form",
-      "forms",
-      "wait",
-      "waiting",
-      "request",
-      "requests",
-      "submit",
-      "email",
-      "approval",
-      "approved",
-    ];
-    for (const word of forbidden) {
-      expect(
-        new RegExp(`\\b${word}\\b`, "i").test(stripped),
-        `microcopy must not POSITIVELY contain "${word}" — got after stripping negations: ${JSON.stringify(stripped)}`,
-      ).toBe(false);
-    }
-  });
 });

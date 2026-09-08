@@ -13,7 +13,6 @@ export const HERO_COPY = {
     "Private Portugal tours and bespoke journeys, thoughtfully composed and booked directly.",
   primaryCta: "Design your day",
   secondaryCta: "Explore Signature Experiences",
-  microcopy: "700+ five-star reviews · Private · Local support · Secure checkout",
   brandLine: "Planning several days? Travel Designer →",
 } as const;
 

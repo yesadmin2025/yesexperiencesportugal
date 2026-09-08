@@ -318,14 +318,11 @@ export function CinematicHero() {
         data-hero-subheadline={HERO_COPY.subheadline}
         data-hero-primary-cta={HERO_COPY.primaryCta}
         data-hero-secondary-cta={HERO_COPY.secondaryCta}
-        data-hero-microcopy={HERO_COPY.microcopy}
         data-hero-brand-line={HERO_COPY.brandLine}
         data-testid="hero-copy-version"
         aria-hidden="true"
         className="sr-only"
-      >
-        <span data-hero-field="microcopy">{HERO_COPY.microcopy}</span>
-      </div>
+      />
       <script
         type="application/json"
         data-probe-field="hero-copy-json"
