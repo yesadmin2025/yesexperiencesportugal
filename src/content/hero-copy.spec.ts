@@ -14,6 +14,7 @@ export const HERO_COPY_SPEC = {
     "Private Portugal tours and bespoke journeys, thoughtfully composed and booked directly.",
   primaryCta: "Design your day",
   secondaryCta: "Explore Signature Experiences",
+  microcopy: "700+ five-star reviews · Private · Local support · Secure checkout",
 } as const;
 
 export type HeroSpecKey = keyof typeof HERO_COPY_SPEC;
