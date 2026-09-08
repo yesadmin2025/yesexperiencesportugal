@@ -25,9 +25,10 @@
  * of the hero by design.
  */
 
-const FILM_1080 = "/__l5e/assets-v1/cc76b325-b728-4ce6-9356-19ec8388d94f/yes-hero-film-1080.mp4";
-const FILM_720 = "/video/film/yes-hero-film-720.mp4";
-const FILM_POSTER = "/video/film/yes-hero-poster.jpg";
+// Approved hero film: the sunset coastal road drive (car on the road).
+const FILM_1080 = "/__l5e/assets-v1/422f19b8-dad0-4ae0-b952-e4fc9a048abe/hero-sunset-road-1080.mp4";
+const FILM_720 = "/__l5e/assets-v1/ff4f2c39-2fde-42f1-9b4a-7230c692f1e9/hero-sunset-road-720.mp4";
+const FILM_POSTER = "/video/hero-sunset-road-poster.webp";
 
 export const HERO_FILM = {
   /** Total film length in seconds (matches the continuous MP4 master). */
