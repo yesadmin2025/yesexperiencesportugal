@@ -1,233 +1,239 @@
 /**
- * FourWaysIn — homepage "where to begin" section.
+ * Homepage decision block.
  *
- * Conversion hierarchy:
+ * Conversion rule: three primary choices only.
  *   1. Signature = choose a ready private day
- *   2. Studio = create one private day
- *   3. Travel Designer = compose a multi-day journey
- * Moments and Corporate remain available as secondary occasion paths.
+ *   2. Studio = build one private day around you
+ *   3. Travel Designer = plan several days with a local designer
+ *
+ * Moments and Corporate remain available, but deliberately secondary.
+ * No pricing, inventory, routing or checkout truth lives here.
  */
 
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { BookOpen, Wand2, Sparkles, Compass, Users, type LucideIcon } from "lucide-react";
+import { BookOpen, Wand2, Compass, Sparkles, Users, ArrowRight, type LucideIcon } from "lucide-react";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 
 type Path = {
-  num: string;
+  id: "signature" | "studio" | "designer";
   Icon: LucideIcon;
-  label: string;
-  title: React.ReactNode;
+  eyebrow: string;
+  title: string;
   body: string;
   cta: string;
   href: string;
   analyticsEvent: string;
 };
 
-const PRIMARY_PATHS: Path[] = [
+const PATHS: ReadonlyArray<Path> = [
   {
-    num: "01",
+    id: "signature",
     Icon: BookOpen,
-    label: "Signature Experiences",
-    title: (
-      <>
-        Private days,{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">
-          already designed by YES.
-        </span>
-      </>
-    ),
-    body: "Choose one of our private experiences and enjoy it as designed, or tailor a few details.",
-    cta: "Explore Signatures",
+    eyebrow: "Ready to book",
+    title: "Choose a private day",
+    body: "Start with a proven YES route, then tailor only the details that matter to you.",
+    cta: "Browse private days",
     href: "/experiences",
-    analyticsEvent: "five_ways_signature_click",
+    analyticsEvent: "home_path_signature_click",
   },
   {
-    num: "02",
+    id: "studio",
     Icon: Wand2,
-    label: "Studio",
-    title: (
-      <>
-        Your day,{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">designed by you.</span>
-      </>
-    ),
-    body: "Choose the mood, rhythm and route in real time. See the live price and reserve instantly, with local support if you need it.",
+    eyebrow: "One custom day",
+    title: "Design it in the Studio",
+    body: "Choose your mood, group and rhythm. See a real route and live price before you reserve.",
     cta: "Open the Studio",
     href: "/studio-v3",
-    analyticsEvent: "five_ways_studio_click",
+    analyticsEvent: "home_path_studio_click",
   },
   {
-    num: "03",
+    id: "designer",
     Icon: Compass,
-    label: "Travel Designer",
-    title: (
-      <>
-        Full Portugal journeys,{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">designed for you.</span>
-      </>
-    ),
-    body: "From a few days to a full journey across Portugal, shaped around your time, rhythm and interests.",
-    cta: "Begin with a designer",
+    eyebrow: "Several days",
+    title: "Plan a Portugal journey",
+    body: "A local Travel Designer shapes the route, pace, stays and logistics around the way you travel.",
+    cta: "Start with a designer",
     href: "/multi-day",
-    analyticsEvent: "five_ways_travel_designer_click",
+    analyticsEvent: "home_path_designer_click",
   },
-];
+] as const;
 
-const SECONDARY_PATHS: Path[] = [
-  {
-    num: "04",
-    Icon: Sparkles,
-    label: "Moments",
-    title: (
-      <>
-        Proposals & celebrations,{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">held with care.</span>
-      </>
-    ),
-    body: "The proposal on the cliff, the anniversary in a vineyard, the birthday nobody forgets — quietly composed, precisely held.",
-    cta: "Share the occasion",
-    href: "/proposal-in-portugal",
-    analyticsEvent: "five_ways_moments_click",
-  },
-  {
-    num: "05",
-    Icon: Users,
-    label: "Corporate & Groups",
-    title: (
-      <>
-        Team days, incentives{" "}
-        <span className="italic font-normal text-[color:var(--teal)]">& private groups.</span>
-      </>
-    ),
-    body: "From intimate boards to full incentives — transport, venues and timing handled with a single point of contact.",
-    cta: "Plan a group day",
-    href: "/corporate",
-    analyticsEvent: "five_ways_corporate_click",
-  },
-];
+const FEELING_LABELS: Readonly<Record<string, string>> = {
+  coastal: "Coastal",
+  "wine-food": "Wine & food",
+  hidden: "Hidden Portugal",
+  romance: "Romantic",
+  culture: "Culture",
+  adventure: "Adventure",
+  "slow-luxury": "Slow luxury",
+  faith: "Faith",
+  "hands-on": "Hands-on",
+};
+
+const COMPANION_LABELS: Readonly<Record<string, string>> = {
+  solo: "Solo",
+  couple: "Couple",
+  family: "Family",
+  friends: "Friends",
+  celebration: "Celebration",
+  proposal: "Proposal",
+  corporate: "Group",
+};
+
+const RHYTHM_LABELS: Readonly<Record<string, string>> = {
+  slow: "Slow",
+  balanced: "Balanced",
+  full: "Full day",
+  immersive: "Immersive",
+};
 
 export function FourWaysIn() {
+  const [draftSummary, setDraftSummary] = useState<ReadonlyArray<string>>([]);
+  const [hasDraft, setHasDraft] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let cancelled = false;
+
+    void import("@/lib/studio-v3/draftSnapshot")
+      .then(({ STUDIO_V3_DURABLE_DRAFT_KEY, parseDurableStudioDraft }) => {
+        if (cancelled) return;
+        let raw: string | null = null;
+        try {
+          raw = window.localStorage.getItem(STUDIO_V3_DURABLE_DRAFT_KEY);
+        } catch {
+          return;
+        }
+        const draft = parseDurableStudioDraft(raw);
+        if (!draft || cancelled) return;
+
+        const labels = [
+          draft.state.feeling ? FEELING_LABELS[draft.state.feeling] : null,
+          draft.state.companions ? COMPANION_LABELS[draft.state.companions] : null,
+          draft.state.rhythm ? RHYTHM_LABELS[draft.state.rhythm] : null,
+        ].filter((label): label is string => Boolean(label));
+
+        setHasDraft(true);
+        setDraftSummary(labels.slice(0, 3));
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <section
       id="three-paths"
-      aria-labelledby="four-ways-title"
+      aria-labelledby="choose-path-title"
       className="he-section-rule section-enter section-y bg-[color:var(--ivory)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
     >
       <div className="container-x">
-        <div className="reveal max-w-2xl mx-auto text-center mb-10 md:mb-14">
+        <div className="reveal mx-auto max-w-2xl text-center">
           <Eyebrow className="mb-5">Where to begin</Eyebrow>
           <h2
-            id="four-ways-title"
-            className="serif mt-3 text-[2rem] sm:text-[2.4rem] md:text-[3.4rem] leading-[1.1] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
+            id="choose-path-title"
+            className="serif text-[2rem] sm:text-[2.4rem] md:text-[3.25rem] leading-[1.08] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
-            Choose how you want to{" "}
-            <span className="italic font-normal text-[color:var(--teal)]">shape Portugal.</span>
+            Choose how you want to travel.
           </h2>
-          <p className="mt-5 text-[15px] md:text-[16px] leading-relaxed text-[color:var(--charcoal-soft)]">
-            Pick a private day already designed, build one live in the Studio, or let a Travel
-            Designer compose the full journey.
+          <p className="mx-auto mt-5 max-w-xl text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+            One private day ready to book, one built around you, or several days planned with a local designer.
           </p>
-          <span aria-hidden="true" className="gold-rule mt-8 md:mt-9 mx-auto block max-w-[3rem]" />
         </div>
 
-        <ul className="he-stagger max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 list-none p-0">
-          {PRIMARY_PATHS.map((path, index) => (
-            <li key={path.label} className="contents">
-              <PathCard path={path} index={index} primary />
-            </li>
+        <div
+          data-testid="home-smart-start"
+          className="reveal mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-4 md:mt-12 md:grid-cols-3 md:gap-5"
+        >
+          {PATHS.map((path) => (
+            <PathCard key={path.id} path={path} />
           ))}
-        </ul>
+        </div>
 
-        <div className="mt-8 md:mt-10 max-w-4xl mx-auto border-t border-[color:var(--border)] pt-7 md:pt-8">
-          <p className="mb-5 text-center text-[12px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
-            Planning for an occasion or a group?
-          </p>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 list-none p-0">
-            {SECONDARY_PATHS.map((path, index) => (
-              <li key={path.label} className="contents">
-                <PathCard path={path} index={index + PRIMARY_PATHS.length} />
-              </li>
-            ))}
-          </ul>
+        {hasDraft && (
+          <div className="reveal mx-auto mt-5 max-w-6xl rounded-[6px] border border-[color:var(--gold)]/45 bg-[color:var(--sand)] px-5 py-4 sm:flex sm:items-center sm:justify-between sm:gap-6">
+            <div>
+              <p className="text-[12px] uppercase tracking-[0.2em] font-semibold text-[color:var(--teal)]">
+                Your Studio draft is waiting
+              </p>
+              {draftSummary.length > 0 && (
+                <p className="mt-1.5 text-[14px] leading-[1.55] text-[color:var(--charcoal)]">
+                  {draftSummary.join(" · ")}
+                </p>
+              )}
+            </div>
+            <Link
+              to="/studio-v3"
+              data-testid="home-smart-start-resume"
+              data-smart-start-recommended="true"
+              className="mt-4 inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/70 underline-offset-4 sm:mt-0"
+            >
+              Resume your draft <ArrowRight size={14} aria-hidden="true" />
+            </Link>
+          </div>
+        )}
+
+        <div className="reveal mx-auto mt-10 max-w-6xl border-t border-[color:var(--border)] pt-7 md:mt-12 md:flex md:items-center md:justify-between md:gap-8">
+          <div>
+            <p className="serif text-[1.2rem] md:text-[1.35rem] font-medium text-[color:var(--charcoal)]">
+              Planning something special or a group?
+            </p>
+            <p className="mt-1 text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)]">
+              Proposals, celebrations and corporate days have their own planning path.
+            </p>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 md:mt-0">
+            <Link
+              to="/proposal-in-portugal"
+              data-analytics="home_secondary_moments_click"
+              className="inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
+            >
+              <Sparkles size={15} aria-hidden="true" /> Moments <ArrowRight size={13} aria-hidden="true" />
+            </Link>
+            <Link
+              to="/corporate"
+              data-analytics="home_secondary_corporate_click"
+              className="inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
+            >
+              <Users size={15} aria-hidden="true" /> Corporate & Groups <ArrowRight size={13} aria-hidden="true" />
+            </Link>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-function PathCard({
-  path,
-  index,
-  primary = false,
-}: {
-  path: Path;
-  index: number;
-  primary?: boolean;
-}) {
+function PathCard({ path }: { path: Path }) {
+  const Icon = path.Icon;
   return (
     <Link
       to={path.href}
+      data-home-primary-path={path.id}
       data-analytics={path.analyticsEvent}
-      data-analytics-placement="five_ways"
-      style={{ transitionDelay: `${index * 60}ms` }}
-      className={[
-        "fw-card reveal-stagger he-card-lift group relative flex flex-col rounded-[6px] bg-[color:var(--ivory)] overflow-hidden no-underline transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)]",
-        primary
-          ? "border border-[color:var(--gold)]/35 p-6 md:p-7 shadow-[0_8px_28px_-24px_rgba(46,46,46,0.25)] hover:border-[color:var(--gold)]/65 hover:shadow-[0_20px_42px_-25px_rgba(41,91,97,0.25)]"
-          : "border border-[#EAE2D6] p-5 md:p-6 shadow-[0_1px_2px_rgba(46,46,46,0.04)] hover:border-[color:var(--gold)]/50 hover:shadow-[0_16px_36px_-25px_rgba(46,46,46,0.18)]",
-      ].join(" ")}
+      className="group flex min-h-[255px] flex-col rounded-[6px] border border-[color:var(--border)] bg-[color:var(--sand)] p-6 no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--gold)]/70 hover:shadow-[0_18px_40px_-30px_rgba(46,46,46,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--teal)] focus-visible:ring-offset-2 md:p-7"
     >
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-[600ms] ease-out group-hover:opacity-100"
-        style={{
-          background:
-            "radial-gradient(70% 60% at 30% 0%, color-mix(in oklab, var(--gold) 18%, transparent), transparent 70%)",
-        }}
-      />
-      <span aria-hidden="true" className="gold-rule absolute left-0 top-0" />
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute left-0 bottom-0 h-px w-full origin-left scale-x-0 bg-[color:var(--gold)]/70 transition-transform duration-[600ms] ease-out group-hover:scale-x-100"
-      />
-
-      <div className="relative flex items-start justify-between gap-4 pr-1">
-        <span className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[color:var(--gold)]/35 bg-[color:var(--ivory)] transition-all duration-300 group-hover:border-[color:var(--gold)]/75 group-hover:scale-[1.04]">
-          <path.Icon
-            size={16}
-            strokeWidth={1.5}
-            aria-hidden="true"
-            className="text-[color:var(--teal)] transition-transform duration-300 ease-out group-hover:translate-x-0.5"
-          />
+      <div className="flex items-center justify-between gap-4">
+        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--gold)]/45 bg-[color:var(--ivory)] text-[color:var(--teal)]">
+          <Icon size={18} aria-hidden="true" />
         </span>
-        <span
-          className="font-serif italic text-[2.9rem] md:text-[3.2rem] leading-none tabular-nums transition-all duration-500 ease-out group-hover:-translate-y-1"
-          style={{ color: "color-mix(in oklab, var(--gold) 70%, transparent)" }}
-        >
-          {path.num}
+        <span className="text-[11.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]">
+          {path.eyebrow}
         </span>
       </div>
 
-      <span className="relative mt-4 inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.22em] font-semibold text-[color:var(--teal)]">
-        {path.label}
-      </span>
-      <h3 className="relative serif mt-2.5 text-[1.3rem] md:text-[1.6rem] leading-[1.22] md:leading-[1.18] text-[color:var(--charcoal)] font-medium">
+      <h3 className="serif mt-7 text-[1.55rem] md:text-[1.7rem] leading-[1.15] font-medium text-[color:var(--charcoal)]">
         {path.title}
       </h3>
-      <p className="relative mt-3 text-[14px] md:text-[15px] text-[color:var(--charcoal-soft)] leading-[1.6] flex-grow">
+      <p className="mt-3 text-[15px] md:text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
         {path.body}
       </p>
-      <span className="relative mt-5 inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)]">
-        {path.cta}
-        <span
-          aria-hidden="true"
-          className="text-[color:var(--gold)] transition-transform duration-300 ease-out group-hover:translate-x-1.5"
-        >
-          →
-        </span>
+      <span className="mt-auto pt-7 inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--teal)] group-hover:text-[color:var(--charcoal)]">
+        {path.cta} <ArrowRight size={14} aria-hidden="true" />
       </span>
     </Link>
   );
 }
-
-export default FourWaysIn;

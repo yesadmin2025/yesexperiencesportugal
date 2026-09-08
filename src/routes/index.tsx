@@ -46,6 +46,111 @@ import {
 import { signatureTours, isValidTourId, findTour } from "@/data/signatureTours";
 import { getViatorMeta } from "@/data/signatureToursViator";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
+import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
+import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
+
+/** Homepage Journal row — three evergreen Local Stories guides.
+ *  `imgTourId` pins each card to a distinct real operation photo so two
+ *  cards never share the same image when their articles point at the
+ *  same Signature day. */
+const homepageJournalLinks: {
+  slug: string;
+  eyebrow: string;
+  title: string;
+  blurb: string;
+  imgTourId?: string;
+  /** First gallery index to consider — keeps Journal photos well away from
+   *  the opening frames, which mirror the Signature cover shot. */
+  imgFrom?: number;
+}[] = [
+  {
+    slug: "best-wine-tours-from-lisbon",
+    eyebrow: "Wine",
+    title: "The best wine tours from Lisbon",
+    blurb:
+      "Three real wine regions within 90 minutes of the city — Arrábida, Azeitão and the Alentejo — and how to choose between them.",
+    // Photographed on the Azeitão cheese & wine day — deliberately NOT one of
+    // the four Signature tours featured above, so the Journal row never
+    // repeats a card image already on this page.
+    imgTourId: "azeitao-cheese",
+    imgFrom: 1,
+  },
+  {
+    slug: "portugal-coastal-drives-from-lisbon",
+    eyebrow: "Coast",
+    title: "Portugal coastal drives from Lisbon",
+    blurb:
+      "The Arrábida ridge road, Cabo da Roca to Cascais, Tróia to Comporta and the wild Vicentine Coast.",
+    imgTourId: "southwest-vicentine-coast",
+    imgFrom: 1,
+  },
+  {
+    slug: "portugal-heritage-sites-near-lisbon",
+    eyebrow: "Heritage",
+    title: "Heritage sites near Lisbon",
+    blurb:
+      "Roman Évora, the palaces of Sintra, Moorish walls and Alentejo cellars still fermenting wine in clay.",
+    imgTourId: "tomar-coimbra",
+    imgFrom: 1,
+  },
+];
+
+/** Every Signature cover shot in the catalogue. Journal cards exclude all of
+ *  them so the row under the map never repeats a photo used as a tour cover
+ *  anywhere on the site. */
+const SIGNATURE_COVER_IMAGES: Set<string> = new Set(
+  signatureTours.map((t) => t.img).filter((src): src is string => Boolean(src)),
+);
+
+
+
+/** Real published date + real operation photo for a Journal card, resolved
+ *  from the article record and its matching Signature tour. No invention.
+ *
+ *  Journal cards deliberately avoid the Signature *cover* image (`tour.img`)
+ *  AND the opening gallery frames, which are usually the same shot as the
+ *  cover. We start deeper in the same day's real gallery, then de-duplicate
+ *  across cards so the three photos are always visibly different. */
+function journalCardMeta(
+  slug: string,
+  imgTourId?: string,
+  used?: Set<string>,
+  imgFrom = 2,
+): { date: string; img?: string; alt?: string } {
+  const article = LOCAL_STORIES_ARTICLES.find((a) => a.slug === slug);
+  if (!article) return { date: "" };
+  const tourId = imgTourId ?? article.signatureSlug;
+  const tour = tourId ? findTour(tourId) : undefined;
+  const gallery = tourId ? (getViatorMeta(tourId)?.gallery ?? []) : [];
+  // A Journal photo must never repeat ANY Signature cover shot in the
+  // catalogue (not just its own day's cover) — those covers appear on the
+  // cards above, on /experiences and on every tour page.
+  const usable = (src?: string) =>
+    Boolean(src) && !SIGNATURE_COVER_IMAGES.has(src!) && !used?.has(src!);
+  // Preferred window first (deep frames), then anything else still unused.
+  const distinct = gallery.slice(imgFrom).find(usable) ?? gallery.find(usable);
+  const img =
+    distinct ??
+    (usable(article.heroImage) ? article.heroImage : undefined) ??
+    gallery.find((g) => !used?.has(g)) ??
+    tour?.img;
+  if (img) used?.add(img);
+  return {
+    date: new Date(`${article.datePublished}T00:00:00Z`).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }),
+    img,
+    alt: article.heroImageAlt ?? (tour ? `${tour.title} — photographed on our own days` : undefined),
+  };
+}
+
+
+
+
+
 
 /* ──────────────────────────────────────────────────────────────────
  * Featured Signature tours — exactly 4 real tours, in display order.
@@ -541,6 +646,94 @@ function HomePage() {
           the paths: Signature, Studio, Moments, Corporate, Travel Designer. */}
         <FourWaysIn />
 
+        {/* 3 — THREE PATHS + EXPERIENCE STUDIO (promoted)
+          Promoted up the page so the Builder reads as the core
+          innovation, not just another tile. The section opens with a
+          compact Three-paths primer (Signature / Tailored / Studio)
+          so users immediately understand the three distinct ways to
+          shape Portugal — then drops into the live Studio device.
+          Mobile order: paths primer → headline → live preview → CTA.
+          Desktop: text rail left, preview right. One CTA only
+          ("Open the Studio"). The "Ask a local" duplicate has been
+          removed; local guidance lives in the reassurance line, the
+          FAQ closer, and the Final CTA. */}
+        <section
+          id="builder"
+          className="he-section-rule section-enter section-y-lg bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
+          aria-labelledby="studio-title"
+        >
+          <div className="container-x">
+            {/* Inner anchor target for /#studio — sits right before the
+              "Create it live." rail so deep-links land on the Studio
+              block, not the wider builder eyebrow. scroll-mt matches
+              the same offset used elsewhere on the page. */}
+            <div id="studio" aria-hidden="true" className="scroll-mt-24 md:scroll-mt-28" />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto w-full min-w-0">
+              {/* On mobile: text rail (with the headline) renders FIRST so
+                the user reads "Create it live." before seeing the
+                device. On desktop the rail returns to the left so the
+                reading flow stays natural. */}
+              <div className="reveal lg:col-span-5 lg:order-1 order-1">
+                <Eyebrow live className="mb-5">
+                  Experience Studio
+                </Eyebrow>
+
+                <h2
+                  id="studio-title"
+                  className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] lg:text-[3.8rem] leading-[1.05] lg:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
+                >
+                  Design your day.{" "}
+                  <span className="italic font-normal text-[color:var(--teal)]">
+                    Reserve in minutes.
+                  </span>
+                </h2>
+
+                <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
+                  Choose mood, group and rhythm. The Studio draws a{" "}
+                  <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
+                  real timings and a live price — then reserve when the route is ready — final price
+                  shown before payment.
+                </p>
+
+                {/* Three differentiators — tied to the product, not a floating manifesto. */}
+                <ol className="mt-7 grid grid-cols-3 gap-1.5 max-w-md" aria-label="Why the Studio">
+                  {[
+                    { n: "01", label: "Real route" },
+                    { n: "02", label: "Instant confirm" },
+                    { n: "03", label: "Local on WhatsApp" },
+                  ].map((d) => (
+                    <li key={d.n} className="flex flex-col gap-1.5">
+                      <span aria-hidden="true" className="block h-[3px] bg-[color:var(--gold)]" />
+                      <span className="text-[10.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)] tabular-nums">
+                        {d.n} · {d.label}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+
+                <div className="mt-8 flex flex-wrap gap-x-5 gap-y-4">
+                  <CtaButton to="/studio-v3" variant="primary">
+                    Open the Studio
+                  </CtaButton>
+                </div>
+                <p className="mt-4 text-[13px] text-[color:var(--charcoal-soft)]">
+                  Prefer a human hand?{" "}
+                  <a
+                    href="/portugal-travel-designer"
+                    className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
+                  >
+                    Portugal Travel Designer →
+                  </a>
+                </p>
+              </div>
+
+              <div className="lg:col-span-7 lg:order-2 order-2">
+                <StudioLivePreview />
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 5 — SIGNATURE EXPERIENCES PREVIEW
           Moved BEFORE the Travel Designer proof so the highest-intent
           shoppable inventory sits closest to the Studio — conversion
@@ -726,94 +919,6 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 3 — THREE PATHS + EXPERIENCE STUDIO (promoted)
-          Promoted up the page so the Builder reads as the core
-          innovation, not just another tile. The section opens with a
-          compact Three-paths primer (Signature / Tailored / Studio)
-          so users immediately understand the three distinct ways to
-          shape Portugal — then drops into the live Studio device.
-          Mobile order: paths primer → headline → live preview → CTA.
-          Desktop: text rail left, preview right. One CTA only
-          ("Open the Studio"). The "Ask a local" duplicate has been
-          removed; local guidance lives in the reassurance line, the
-          FAQ closer, and the Final CTA. */}
-        <section
-          id="builder"
-          className="he-section-rule section-enter section-y-lg bg-[color:var(--sand)] border-b border-[color:var(--border)] scroll-mt-24 md:scroll-mt-28"
-          aria-labelledby="studio-title"
-        >
-          <div className="container-x">
-            {/* Inner anchor target for /#studio — sits right before the
-              "Create it live." rail so deep-links land on the Studio
-              block, not the wider builder eyebrow. scroll-mt matches
-              the same offset used elsewhere on the page. */}
-            <div id="studio" aria-hidden="true" className="scroll-mt-24 md:scroll-mt-28" />
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto w-full min-w-0">
-              {/* On mobile: text rail (with the headline) renders FIRST so
-                the user reads "Create it live." before seeing the
-                device. On desktop the rail returns to the left so the
-                reading flow stays natural. */}
-              <div className="reveal lg:col-span-5 lg:order-1 order-1">
-                <Eyebrow live className="mb-5">
-                  Experience Studio
-                </Eyebrow>
-
-                <h2
-                  id="studio-title"
-                  className="serif mt-3 text-[2.1rem] sm:text-[2.5rem] lg:text-[3.8rem] leading-[1.05] lg:leading-[0.96] tracking-[-0.02em] text-[color:var(--charcoal)] font-medium"
-                >
-                  Design your day.{" "}
-                  <span className="italic font-normal text-[color:var(--teal)]">
-                    Reserve in minutes.
-                  </span>
-                </h2>
-
-                <p className="mt-4 text-[14.5px] md:text-[16px] text-[color:var(--charcoal-soft)] leading-[1.7] max-w-md font-normal">
-                  Choose mood, group and rhythm. The Studio draws a{" "}
-                  <strong className="font-medium text-[color:var(--charcoal)]">real route</strong>,
-                  real timings and a live price — then reserve when the route is ready — final price
-                  shown before payment.
-                </p>
-
-                {/* Three differentiators — tied to the product, not a floating manifesto. */}
-                <ol className="mt-7 grid grid-cols-3 gap-1.5 max-w-md" aria-label="Why the Studio">
-                  {[
-                    { n: "01", label: "Real route" },
-                    { n: "02", label: "Instant confirm" },
-                    { n: "03", label: "Local on WhatsApp" },
-                  ].map((d) => (
-                    <li key={d.n} className="flex flex-col gap-1.5">
-                      <span aria-hidden="true" className="block h-[3px] bg-[color:var(--gold)]" />
-                      <span className="text-[10.5px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)] tabular-nums">
-                        {d.n} · {d.label}
-                      </span>
-                    </li>
-                  ))}
-                </ol>
-
-                <div className="mt-8 flex flex-wrap gap-x-5 gap-y-4">
-                  <CtaButton to="/studio-v3" variant="primary">
-                    Open the Studio
-                  </CtaButton>
-                </div>
-                <p className="mt-4 text-[13px] text-[color:var(--charcoal-soft)]">
-                  Prefer a human hand?{" "}
-                  <a
-                    href="/portugal-travel-designer"
-                    className="text-[color:var(--teal)] underline underline-offset-4 decoration-[color:var(--gold)]/60 hover:decoration-[color:var(--gold)] transition-colors"
-                  >
-                    Portugal Travel Designer →
-                  </a>
-                </p>
-              </div>
-
-              <div className="lg:col-span-7 lg:order-2 order-2">
-                <StudioLivePreview />
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* 5b — BESPOKE TRAVEL FILE (multi-day / Travel Designer proof)
           Sits AFTER Signatures so shoppable inventory converts first
           and the bespoke narrative deepens desire for higher-value
@@ -877,6 +982,135 @@ function HomePage() {
                   />
                 );
               })}
+            </div>
+          </div>
+        </section>
+
+        {/* 8 — Plan your Portugal: interactive map
+          Region pins link the real Signature days and the real Local
+          Stories guides for that part of the country. Data derives from
+          `signatureTours` + `LOCAL_STORIES_ARTICLES` — nothing invented. */}
+        <section
+          id="plan-map"
+          className="he-section-rule section-enter py-16 md:py-20 scroll-mt-24 md:scroll-mt-28"
+          aria-labelledby="plan-map-title"
+        >
+          <div className="container-x">
+            <div className="reveal text-center max-w-2xl mx-auto mb-8 md:mb-12">
+              <Eyebrow className="mb-5">Plan your Portugal</Eyebrow>
+              <h2
+                id="plan-map-title"
+                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+              >
+                All of Portugal, mainland and islands —{" "}
+                <span className="italic font-normal text-[color:var(--teal)]">
+                  start with a place you already have in mind.
+                </span>
+              </h2>
+              <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--charcoal-soft)]">
+                From Gerês and the Douro to the Algarve, Madeira and the Azores. Tap any place and
+                see how a{" "}
+                <strong className="font-medium text-[color:var(--charcoal)]">private day</strong>{" "}
+                can be designed around it.
+              </p>
+
+            </div>
+
+            <div className="reveal max-w-5xl mx-auto">
+              <PortugalPlannerMap />
+            </div>
+          </div>
+        </section>
+
+        {/* 9 — Journal: local guides
+          Editorial entry point into Local Stories. Three evergreen guides
+          (wine, coast, heritage) so the homepage links the guide library
+          instead of leaving it to nav + footer only. */}
+
+        <section
+          id="journal"
+          className="he-section-rule section-enter py-16 md:py-20 scroll-mt-24 md:scroll-mt-28"
+          aria-labelledby="journal-title"
+        >
+          <div className="container-x">
+            <div className="reveal text-center max-w-2xl mx-auto mb-7 md:mb-10">
+              <Eyebrow className="mb-5">Journal</Eyebrow>
+              <h2
+                id="journal-title"
+                className="serif mt-3 text-[1.8rem] sm:text-[2.1rem] lg:text-[2.95rem] leading-[1.12] lg:leading-[1.02] tracking-[-0.014em] text-[color:var(--charcoal)] font-medium"
+              >
+                Portugal, written{" "}
+                <span className="italic font-normal text-[color:var(--teal)]">
+                  by the people who drive it.
+                </span>
+              </h2>
+            </div>
+
+            <ul className="max-w-5xl mx-auto grid gap-5 md:gap-7 md:grid-cols-3 list-none p-0">
+              {((usedJournalImages: Set<string>) =>
+                homepageJournalLinks.map((entry) => {
+                const meta = journalCardMeta(
+                  entry.slug,
+                  entry.imgTourId,
+                  usedJournalImages,
+                  entry.imgFrom,
+                );
+                return (
+                <li key={entry.slug}>
+                  <Link
+                    to="/local-stories/$slug"
+                    params={{ slug: entry.slug }}
+                    className="group block h-full overflow-hidden rounded-lg border border-[color:var(--border)] bg-[color:var(--ivory)] transition-transform duration-200 hover:-translate-y-[2px] focus-visible:-translate-y-[2px]"
+                  >
+                    {meta.img ? (
+                      <img
+                        src={meta.img}
+                        alt={meta.alt ?? entry.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="aspect-[3/2] w-full object-cover"
+                      />
+                    ) : null}
+                    <div className="p-6">
+                    <span className="block text-[11px] uppercase tracking-[0.22em] text-[color:var(--teal)]">
+                      {entry.eyebrow}
+                    </span>
+                    <h3 className="serif mt-3 text-[1.15rem] leading-[1.25] text-[color:var(--charcoal)]">
+                      {entry.title}
+                    </h3>
+
+                    <p className="mt-3 text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
+                      {entry.blurb}
+                    </p>
+                    <span className="mt-4 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-[color:var(--gold)]">
+                      Read the guide →
+                      {meta.date ? (
+                        <time
+                          dateTime={
+                            LOCAL_STORIES_ARTICLES.find((a) => a.slug === entry.slug)?.datePublished
+                          }
+                          className="tracking-[0.14em] text-[color:var(--charcoal-soft)] normal-case"
+                        >
+                          {meta.date}
+                        </time>
+                      ) : null}
+                    </span>
+                    </div>
+                  </Link>
+                </li>
+                );
+              }))(new Set<string>())}
+
+
+            </ul>
+
+            <div className="mt-8 text-center">
+              <Link
+                to="/local-stories"
+                className="text-sm underline underline-offset-4 text-[color:var(--charcoal)]"
+              >
+                All local stories and guides
+              </Link>
             </div>
           </div>
         </section>
