@@ -7,7 +7,7 @@
  * new copy rather than an obsolete previous concept.
  */
 export const HERO_COPY_SPEC = {
-  eyebrow: "SHAPED AROUND YOU · CONFIRMED INSTANTLY",
+  eyebrow: "DESIGNED BY YOU · CONFIRMED INSTANTLY",
   headlineLine1: "Portugal is the stage.",
   headlineLine2: "You write the story.",
   subheadline:

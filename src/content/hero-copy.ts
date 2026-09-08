@@ -6,7 +6,7 @@
 export const HERO_PHRASES = ["Portugal is the stage.", "You write the story."] as const;
 
 export const HERO_COPY = {
-  eyebrow: "SHAPED AROUND YOU · CONFIRMED INSTANTLY",
+  eyebrow: "DESIGNED BY YOU · CONFIRMED INSTANTLY",
   headlineLine1: "Portugal is the stage.",
   headlineLine2: "You write the story.",
   subheadline:
