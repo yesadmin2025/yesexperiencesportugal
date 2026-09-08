@@ -157,7 +157,7 @@ export function CinematicHero() {
 
             <h1
               data-hero-stanza="true"
-              className="mt-5 font-serif text-[clamp(2.4rem,6vw,5.2rem)] font-normal italic leading-[0.98] tracking-[-0.025em] text-[#F7E6C8] [text-shadow:0_2px_18px_rgba(0,0,0,0.38)]"
+              className="hero-h1 mt-5 font-serif text-[clamp(2.4rem,6vw,5.2rem)] font-normal italic leading-[0.98] tracking-[-0.025em] text-[#F7E6C8] [text-shadow:0_2px_18px_rgba(0,0,0,0.38)]"
             >
               <span
                 data-hero-field="headlineLine1"
@@ -237,12 +237,6 @@ export function CinematicHero() {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="sr-only">
-        <p className="hero-h1">
-          <span>{HERO_COPY.headlineLine1}</span> <span>{HERO_COPY.headlineLine2}</span>
-        </p>
       </div>
 
       <div
