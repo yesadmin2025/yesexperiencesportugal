@@ -647,19 +647,19 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "Arrábida Day Trip from Lisbon — wine, hills & sea",
     eyebrow: "Lisbon · Arrábida Day",
     standfirst:
-      "Setúbal market, family wineries in Azeitão, a long Portuguese lunch and an optional close above Sesimbra harbour.",
+      "A market that has opened every morning for a century and a half, family cellars in Azeitão, a lunch nobody hurries, and the Atlantic waiting on the way home. Forty minutes from Lisbon, and nothing like it.",
     sections: [
       {
-        heading: "South of the bridge, forty minutes and a different country.",
-        body: "Cross the 25 de Abril Bridge and the road curves through cork and pine into the Arrábida Natural Park — limestone mountains dropping straight into turquoise water, small unguarded beaches, and the wine village of Azeitão at its centre. It is the closest serious wine country to Lisbon, and the most under-the-radar.",
+        heading: "South of the bridge, a different country.",
+        body: "Cross the 25 de Abril Bridge and the road turns inland through cork and pine before the Arrábida Natural Park opens up: limestone mountains falling straight into turquoise water, small unguarded beaches, and the wine village of Azeitão sitting quietly at the centre of it.\n\nIt is the closest serious wine country to Lisbon, and still the least crowded. Most visitors drive north to Sintra. The ones who turn south get the coast almost to themselves.",
       },
       {
-        heading: "Market, wineries, long lunch, viewpoint.",
-        body: "We open at Setúbal's 145-year-old Livramento market, climb to two or three family wineries, and sit down for an unhurried Portuguese lunch in Azeitão. Optional close at Cristo Rei for the Lisbon panorama or Sesimbra Castle for Atlantic light.",
+        heading: "Market, cellars, a long lunch, then the light.",
+        body: "The day opens at Setúbal's Livramento market — 145 years old, still the town's kitchen at eight in the morning: fish, cheese, bread, noise. From there we climb to two or three family wineries in Azeitão, where the pours are generous and the person pouring usually shares a surname with the barrel.\n\nLunch is Portuguese and unhurried, which is to say it is part of the day rather than a pause in it. Afterwards, an optional close — Cristo Rei for the Lisbon panorama, or Sesimbra Castle when the Atlantic light is worth the detour.",
       },
       {
-        heading: "A private car, your own pace.",
-        body: "Group Arrábida tours typically stop at one winery and rush the lunch. Private means hotel pickup, your own driver-guide, and the choice of where to linger — an extra cellar, a swim at Galápos, or a longer walk on Sesimbra's castle walls.",
+        heading: "A private car, and your own pace.",
+        body: "Group Arrábida tours tend to manage one winery and a rushed table. Private means hotel pickup, your own driver-guide, and the freedom to linger where the day asks for it — an extra cellar, a swim at Galápos, a longer walk on Sesimbra's castle walls.\n\nNothing on this page is a fixed timetable. It is the shape we know works, and the parts you keep are yours to choose.",
       },
     ],
     ctaLead:
