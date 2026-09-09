@@ -105,7 +105,7 @@ export function TheDifferenceSection() {
           </div>
         </div>
 
-        <p className="reveal mt-10 md:mt-14 text-center text-[13px] italic text-[color:var(--teal)]">
+        <p className="reveal mt-10 md:mt-14 text-center text-[13px] font-medium text-[color:var(--teal)]">
           Ready to design? Start below.
         </p>
       </div>

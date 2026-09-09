@@ -787,6 +787,21 @@
     font-family: var(--font-script);
   }
 
+  /* Homepage editorial title contract.
+     Fraunces is the single display voice for every visible H1–H3. Major
+     titles stay upright charcoal with one intentional teal italic phrase;
+     compact/card titles remain upright so the emphasis never becomes noise. */
+  .home-energy :is(h1, h2, h3) {
+    font-family: "Fraunces", serif;
+    letter-spacing: 0;
+  }
+  .home-energy :is(h1, h2) .italic,
+  .home-energy .hero-title-line {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+
   /* ─────────────────────────────────────────────────────────────
      SHARED TYPOGRAPHY SCALE — homepage + content pages.
      One source of truth so every section stays in proportion.
