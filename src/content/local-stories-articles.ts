@@ -1075,23 +1075,23 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "Best Wine Tasting Near Lisbon — by a Local",
     eyebrow: "Lisbon · Wine Tasting",
     standfirst:
-      "The most interesting wine tasting near Lisbon is not in the city — it is south of the Tagus, in Azeitão, Setúbal and Arrábida, all within about an hour of your hotel.",
+      "The most interesting wine tasting near Lisbon is not in the city. It is south of the Tagus — in Azeitão, Setúbal and Arrábida — about an hour from your hotel, and close enough to be back for dinner.",
     sections: [
       {
         heading: "Why the best tastings are south of the bridge.",
-        body: "Lisbon itself has good wine bars, but the wineries are across the Tagus. In less than an hour you reach Azeitão and Setúbal, where family producers have been making Moscatel and Castelão for generations. The cellars are small, the pours are generous, and the lunch that follows is part of the tasting.\n\nSo when travelers ask where to taste wine close to Lisbon, the honest answer is three neighbouring places rather than one: Azeitão for Moscatel and small cellars, Setúbal for the market and the fish, and Arrábida for the coastal road between them.",
+        body: "Lisbon itself has good wine bars, but the wineries are across the Tagus. In less than an hour you reach Azeitão and Setúbal, where family producers have been making Moscatel and Castelão for generations. The cellars are small, the pours are generous, and the lunch that follows is part of the tasting, not an afterthought.\n\nSo when travelers ask where to taste wine close to Lisbon, the honest answer is three neighbouring places rather than one: Azeitão for Moscatel and small cellars, Setúbal for the market and the fish, and Arrábida for the coastal road that ties them together. Taken slowly, in that order, they make one of the most complete days within reach of the city.",
       },
       {
         heading: "Azeitão — Moscatel and small cellars.",
-        body: "Azeitão is a village of wineries, cheese dairies and tile workshops. The tastings here are intimate — often in the family's own cellar or courtyard — and Moscatel de Setúbal is the star. Our [Azeitão wine tasting near Lisbon](/tours/azeitao-cheese) can include cheese, a tile atelier and two wineries without ever feeling rushed.",
+        body: "Azeitão is a village of wineries, cheese dairies and tile workshops, and it wears none of it as spectacle. The tastings are intimate — often in the family's own cellar or courtyard — and Moscatel de Setúbal is the star: amber, unhurried, poured by someone whose surname is on the barrel. Our [Azeitão wine tasting near Lisbon](/tours/azeitao-cheese) can include cheese, a tile atelier and two wineries without ever feeling rushed.",
       },
       {
         heading: "Setúbal — market, fish, wine.",
-        body: "Setúbal's Livramento market is one of the best in Portugal. A tasting day that starts here — oysters, cheese, bread — then moves to a nearby cellar feels connected to the place rather than just the grape. The best Setúbal days end with grilled fish by the water, which is how our [Arrábida private wine tour from Lisbon](/tours/arrabida-wine-allinclusive) closes.",
+        body: "Setúbal's Livramento market is one of the best in Portugal, and the right place to begin: oysters, cheese, bread, and the noise of a working town before ten in the morning. From there a nearby cellar feels connected to the place rather than just to the grape. The best Setúbal days end with grilled fish by the water, which is how our [Arrábida private wine tour from Lisbon](/tours/arrabida-wine-allinclusive) closes.",
       },
       {
         heading: "Arrábida — wine with a view.",
-        body: "The Arrábida Natural Park rises behind the wineries, and the road between them offers some of the most cinematic coastal views near Lisbon. A tasting here is as much about the landscape as the wine — which is why a [private wine tour from Lisbon](/tours/arrabida-wine-allinclusive) lingers longer than group tours can. For an [Alentejo wine tour from Lisbon](/tours/evora-alentejo) instead, the pace is different but the same principle holds: private, unrushed, local cellars. To see [how the wine regions near Lisbon compare](/local-stories/best-wine-tours-from-lisbon) as full days, start with our overview.",
+        body: "The Arrábida Natural Park rises behind the wineries, and the road between them offers some of the most cinematic coastal views near Lisbon: limestone above, turquoise below, nothing built in between. A tasting here is as much about the landscape as the wine — which is why a [private wine tour from Lisbon](/tours/arrabida-wine-allinclusive) lingers longer than group tours can. For an [Alentejo wine tour from Lisbon](/tours/evora-alentejo) instead, the pace is different but the same principle holds: private, unrushed, local cellars. To see [how the wine regions near Lisbon compare](/local-stories/best-wine-tours-from-lisbon) as full days, start with our overview.",
       },
     ],
     ctaLead:
@@ -1178,7 +1178,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "The Best Wine Tours from Lisbon",
     eyebrow: "Lisbon · Wine",
     standfirst:
-      "Three real wine regions sit within 90 minutes of Lisbon. Here are the private days we actually run — and how to choose between them.",
+      "Three real wine regions sit within 90 minutes of Lisbon. Here are the private days we actually run — what each one feels like, and how to choose between them.",
     sections: [
       {
         heading: "Lisbon is closer to serious wine country than travelers expect.",
@@ -1186,11 +1186,11 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
       },
       {
         heading: "Arrábida All-Inclusive Day — the complete wine-and-coast day.",
-        body: "Our most-booked [private wine tour from Lisbon](/tours/arrabida-wine-allinclusive). Family wineries in Azeitão, the Livramento market in Setúbal, a long Portuguese lunch, and the Arrábida Natural Park where the mountains fall into the Atlantic. Door-to-door from Lisbon, everything included, paced around you rather than a coach timetable.",
+        body: "Our most-booked [private wine tour from Lisbon](/tours/arrabida-wine-allinclusive), and the one most guests describe afterwards as the day the trip turned. Family wineries in Azeitão, the Livramento market in Setúbal, a long Portuguese lunch, and the Arrábida Natural Park where the mountains fall into the Atlantic. Door-to-door from Lisbon, everything included, paced around you rather than a coach timetable.",
       },
       {
         heading: "Azeitão Cheese & Wine Day — a shorter, more focused tasting.",
-        body: "For travelers who want depth over distance — the best [wine tasting near Lisbon](/tours/azeitao-cheese) for a half-day. A morning at a working Azeitão estate — Moscatel and JP Azeitão reds — a small producer of Azeitão sheep's cheese, and lunch in a village that has been making both for centuries. Back in Lisbon by mid-afternoon.",
+        body: "For travelers who want depth over distance — the best [wine tasting near Lisbon](/tours/azeitao-cheese) for a half-day. A morning at a working Azeitão estate — Moscatel and JP Azeitão reds — a small producer of Azeitão sheep's cheese, and lunch in a village that has been making both for centuries. Back in Lisbon by mid-afternoon, with the evening still yours.",
       },
       {
         heading: "Évora & Alentejo Wine Tour — the Alentejo day, done properly.",
