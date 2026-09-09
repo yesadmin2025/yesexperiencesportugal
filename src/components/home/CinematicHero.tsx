@@ -294,7 +294,7 @@ export function CinematicHero() {
                 data-hero-field="primaryCta"
                 data-analytics="hero_open_studio"
                 data-analytics-placement="hero"
-                className="hero-cta group inline-flex min-h-[54px] w-full max-w-[340px] items-center justify-between whitespace-nowrap px-6 py-[15px] text-[11px] uppercase tracking-[0.16em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:max-w-[340px] sm:px-7 sm:text-[11.5px] hero-cta--primary"
+                className="hero-cta group inline-flex min-h-[54px] w-full max-w-[340px] items-center justify-center whitespace-nowrap px-6 py-[15px] text-[11px] uppercase tracking-[0.16em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent sm:max-w-[340px] sm:px-7 sm:text-[11.5px] hero-cta--primary"
               >
                 <span className="hero-cta__sheen" aria-hidden="true" />
                 <span className="relative z-10 inline-flex items-center gap-2.5">
