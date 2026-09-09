@@ -14,7 +14,7 @@ export const HERO_COPY = {
   primaryCta: "Design your day",
   secondaryCta: "Explore Signature Experiences",
   microcopy: "700+ five-star reviews · Private · Local support · Secure checkout",
-  brandLine: "Planning several days? Travel Designer →",
+  brandLine: "Continue the story across Portugal →",
 } as const;
 
 export type HeroCopyKey = keyof typeof HERO_COPY;

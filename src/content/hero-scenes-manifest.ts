@@ -26,19 +26,22 @@
  */
 
 // Approved hero film: the sunset coastal road drive (car on the road).
-const FILM_1080 = "/__l5e/assets-v1/422f19b8-dad0-4ae0-b952-e4fc9a048abe/hero-sunset-road-1080.mp4";
-const FILM_720 = "/__l5e/assets-v1/ff4f2c39-2fde-42f1-9b4a-7230c692f1e9/hero-sunset-road-720.mp4";
+const FILM_1080 = "/video/hero-sunset-road-27s-1080.mp4";
+const FILM_720 = "/video/hero-sunset-road-27s-720.mp4";
 const FILM_POSTER = "/video/hero-sunset-road-poster.webp";
+const FILM_POSTER_MOBILE = "/video/hero-sunset-road-poster-720.webp";
 
 export const HERO_FILM = {
   /** Total film length in seconds (matches the continuous MP4 master). */
   durationSeconds: 27.133333,
-  /** Mobile-first source — used for ≤480px CSS pixels. */
+  /** Mobile-first source. */
   src720: FILM_720,
   /** Tablet + desktop source. */
   src1080: FILM_1080,
   /** Poster shown until the first frame decodes. */
   poster: FILM_POSTER,
+  /** Optimized mobile poster. */
+  posterMobile: "/video/hero-sunset-road-poster-720.webp",
 } as const;
 
 export type HeroPan = "drift-left" | "drift-right" | "push-in" | "pull-back";

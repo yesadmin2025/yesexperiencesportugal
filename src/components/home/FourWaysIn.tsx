@@ -182,7 +182,7 @@ export function FourWaysIn() {
               Planning something special or a group?
             </p>
             <p className="mt-1 text-[14px] leading-[1.6] text-[color:var(--charcoal-soft)]">
-              Proposals, celebrations and corporate days have their own planning path.
+              Mark a milestone beautifully, or let us shape a private day for your team.
             </p>
           </div>
           <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 md:mt-0">
@@ -191,14 +191,14 @@ export function FourWaysIn() {
               data-analytics="home_secondary_moments_click"
               className="inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
             >
-              <Sparkles size={15} aria-hidden="true" /> Moments <ArrowRight size={13} aria-hidden="true" />
+              <Sparkles size={15} aria-hidden="true" /> Plan a private moment <ArrowRight size={13} aria-hidden="true" />
             </Link>
             <Link
               to="/corporate"
               data-analytics="home_secondary_corporate_click"
               className="inline-flex min-h-[44px] items-center gap-2 text-[12px] uppercase tracking-[0.15em] font-semibold text-[color:var(--teal)] hover:text-[color:var(--charcoal)]"
             >
-              <Users size={15} aria-hidden="true" /> Corporate & Groups <ArrowRight size={13} aria-hidden="true" />
+              <Users size={15} aria-hidden="true" /> Design a team day <ArrowRight size={13} aria-hidden="true" />
             </Link>
           </div>
         </div>

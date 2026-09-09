@@ -2061,6 +2061,19 @@
   font-family: "Fraunces", Georgia, serif;
 }
 
+/* The query/reduced-motion final state is applied during HTML parsing so
+   conversion actions never wait for a delayed hydration on slower devices. */
+.hero-cinematic[data-hero-ready="true"] .hero-title-line,
+.hero-cinematic[data-hero-ready="true"] [data-hero-field="eyebrow"],
+.hero-cinematic[data-hero-ready="true"] [data-hero-field="subheadline"],
+.hero-cinematic[data-hero-ready="true"] [data-hero-composed],
+.hero-cinematic[data-hero-ready="true"] [data-hero-field="brandLine"] {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  pointer-events: auto !important;
+}
+
 /* Cinematic hero reveal contract. The transition delays are deliberately
    long enough to read as story beats at 320–390px, where 200ms stacks still
    feel simultaneous. */

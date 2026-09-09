@@ -111,14 +111,8 @@ export function CinematicHero() {
   const [cinematic, setCinematic] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const activeChapter = useHeroChapter(videoRef, cinematic);
-  const [filmSrc, setFilmSrc] = useState<string>(HERO_FILM.src1080);
 
-  // Pick the light mobile master after mount, then nudge playback — some
-  // browsers keep an autoplaying muted film paused until asked once.
-  useEffect(() => {
-    const mobile = window.matchMedia?.("(max-width: 767px)").matches;
-    if (mobile) setFilmSrc(HERO_FILM.src720);
-  }, []);
+
 
   useEffect(() => {
     const v = videoRef.current;
@@ -127,7 +121,7 @@ export function CinematicHero() {
     kick();
     v.addEventListener("loadeddata", kick);
     return () => v.removeEventListener("loadeddata", kick);
-  }, [filmSrc]);
+  }, []);
 
   useEffect(() => {
     if (shouldSkipIntro()) {
@@ -151,11 +145,17 @@ export function CinematicHero() {
     <section
       data-section="hero"
       data-hero-cinematic="true"
+      data-hero-ready="false"
       aria-label="YES Experiences Portugal"
       className="hero-cinematic relative min-h-[100svh] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]"
     >
       <div className="hero-story-stage absolute inset-0 z-0">
         <picture className="absolute inset-0 block h-full w-full">
+          <source
+            media="(max-width: 767px)"
+            srcSet={HERO_FILM.posterMobile}
+            type="image/webp"
+          />
           <img
             src={HERO_FILM.poster}
             alt=""
@@ -169,16 +169,25 @@ export function CinematicHero() {
         <video
           ref={videoRef}
           data-hero-film
-          src={filmSrc}
           autoPlay
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           poster={HERO_FILM.poster}
           className="absolute inset-0 h-full w-full object-cover"
           aria-hidden="true"
-        />
+        >
+          <source
+            src={HERO_FILM.src720}
+            media="(max-width: 767px)"
+            type="video/mp4"
+          />
+          <source
+            src={HERO_FILM.src1080}
+            type="video/mp4"
+          />
+        </video>
 
         {/* Restrained grading so copy is AA readable without crushing the film. */}
         <div
@@ -232,6 +241,7 @@ export function CinematicHero() {
 
             <h1
               data-hero-stanza="true"
+              data-mixed-emphasis="exempt"
               className="hero-h1 mt-5 font-serif text-[clamp(2.4rem,6vw,5.2rem)] font-normal italic leading-[0.98] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
             >
               <span
@@ -333,6 +343,11 @@ export function CinematicHero() {
             copy: HERO_COPY,
             phrases: HERO_PHRASES,
           }),
+        }}
+      />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `(function(){try{var s=document.currentScript&&document.currentScript.closest('[data-hero-cinematic]');if(!s)return;var q=new URLSearchParams(location.search);var reduced=matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(q.get('hero')==='last'||reduced)s.setAttribute('data-hero-ready','true')}catch(e){}})();`,
         }}
       />
     </section>

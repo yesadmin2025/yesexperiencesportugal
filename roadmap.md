@@ -29,3 +29,8 @@
 - [x] Regressions: `seo-index-quality.test.ts`, `guide-attribution.test.ts`, e2e `seo-conversion-index-quality.spec.ts`
 - [ ] Request re-crawl of the affected Local Stories + tour pages in Search Console once published
 - [ ] After next SiteGuru crawl: confirm parameter-variant count drops to 0 and soft-404 flags clear
+## 6. Cross-site premium brand alignment
+- [ ] Extend Fraunces upright + teal-italic title system to Experiences, Studio V3, and Travel Designer
+- [ ] Point hero and Four Ways secondary journeys to real pages with premium editorial copy
+- [ ] Optimize approved road-film mobile delivery and poster without blocking first paint
+- [ ] Align Multi-day and Travel Designer cinematic language and shared CTAs
