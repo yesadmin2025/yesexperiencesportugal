@@ -225,17 +225,15 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
     h1: "What to Do in Sesimbra — A Local's Guide to Our Fishing Town",
     eyebrow: "Sesimbra · Coast",
     standfirst:
-      "Sesimbra is our home town, 40 minutes south of Lisbon. The short answer: the castle viewpoint, the harbour, a long seafood lunch and a wild Arrábida cove — half a day for the town, a full day with the coast.",
+      "Sesimbra is our home town — forty minutes south of Lisbon, and a different country by the time you arrive. The castle viewpoint, the harbour, a long seafood lunch, a wild Arrábida cove: half a day for the town, a full day if you want the coast too.",
     sections: [
       {
-        heading: "The short answer: what to do in Sesimbra",
+        heading: "The short answer, before the detail.",
         body: "If you only read one paragraph: climb to Sesimbra Castle for the bay view, walk the old centre down to the harbour, eat grilled fish from the morning's catch beside the water, and finish on a cove inside the Arrábida natural park.\n\nHalf a day covers the town. A full day is what you need if you also want the coast, a swim and an unhurried lunch. The drive from Lisbon is about 40 minutes; late spring and early autumn are the best windows.\n\nEverything below is how we plan it ourselves — we live here, and we run these days privately for guests.",
       },
       {
-        heading: "Sesimbra harbour and the castle viewpoint",
-
-
-        body: "Sesimbra still feels like a fishing town because fishing remains part of its daily life. Boats return to the harbour, seafood restaurants prepare the morning’s catch, and the waterfront becomes livelier as families arrive for lunch and an evening walk beside the beach.\n\nAbove the town, Sesimbra Castle looks across the roofs, the bay and the surrounding hills. The climb reveals how naturally the town is protected between the sea and the Arrábida landscape. Closer to the water, the old centre is compact and easy to explore on foot.\n\nSesimbra is not a place built around a checklist of monuments. Its appeal lies in watching the harbour, walking through the narrow streets and allowing the pace of the coast to replace the rhythm of Lisbon.",
+        heading: "The harbour, and the castle above it.",
+        body: "Sesimbra still feels like a fishing town because the fishing never stopped. Boats come back through the morning, the restaurants take whatever they brought, and by one o'clock the waterfront belongs to families rather than visitors.\n\nAbove the roofs, the castle looks out over the bay and the hills behind it. The climb is short and the reward is immediate: you see exactly how the town was tucked between the sea and the Arrábida ridge. Back down at the water, the old centre is small enough to wander without a map.\n\nThere is no checklist here. The pleasure is the harbour, the narrow streets, and the way the coast quietly replaces the rhythm of Lisbon.",
       },
       {
         heading: "Where to eat in Sesimbra — the harbour fish lunch",
