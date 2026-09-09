@@ -137,7 +137,7 @@ export function FourWaysIn() {
             id="choose-path-title"
             className="serif text-[2rem] sm:text-[2.4rem] md:text-[3.25rem] leading-[1.08] md:leading-[1.02] tracking-[-0.018em] text-[color:var(--charcoal)] font-medium text-balance"
           >
-            Choose how you want to travel.
+            Choose how you <span className="italic font-normal text-[color:var(--teal)]">want to travel.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
             One private day ready to book, one built around you, or several days planned with a local designer.
