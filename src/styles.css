@@ -793,7 +793,7 @@
      compact/card titles remain upright so the emphasis never becomes noise. */
   .home-energy :is(h1, h2, h3) {
     font-family: "Fraunces", serif;
-    letter-spacing: 0;
+    letter-spacing: 0 !important;
   }
   .home-energy :is(h1, h2) .italic,
   .home-energy .hero-title-line {
