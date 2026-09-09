@@ -112,9 +112,9 @@ function ExperiencesPage() {
         <div className="container-x">
           <div className="max-w-2xl">
             <Eyebrow>Start here</Eyebrow>
-            <h2 id="start-here-title" className="serif mt-3 text-[2rem] md:text-[2.6rem] leading-[1.08] text-[color:var(--charcoal)] font-medium">
-              Three easy places to begin.
-            </h2>
+            <SectionTitle id="start-here-title" size="compact">
+              Three easy places <SectionTitle.Em>to begin.</SectionTitle.Em>
+            </SectionTitle>
             <p className="mt-4 text-[16px] leading-[1.7] text-[color:var(--charcoal-soft)]">
               A wine-and-food favourite, the classic Sintra coast, or a hands-on local day in Azeitão.
             </p>
@@ -132,9 +132,9 @@ function ExperiencesPage() {
           <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <Eyebrow>More private days</Eyebrow>
-              <h2 id="more-signatures-title" className="serif mt-3 text-[1.9rem] md:text-[2.4rem] leading-[1.1] text-[color:var(--charcoal)] font-medium">
-                Explore the rest of the collection.
-              </h2>
+              <SectionTitle id="more-signatures-title" size="compact">
+                Explore the rest <SectionTitle.Em>of the collection.</SectionTitle.Em>
+              </SectionTitle>
             </div>
             <PriceCurrencyChip />
           </div>
@@ -181,7 +181,7 @@ function TourCard({ tour, resolveImg, featured = false }: { tour: SignatureTour;
       </Link>
 
       <div className="flex flex-1 flex-col px-1 pb-1 pt-5">
-        <h3 className={`serif leading-[1.16] text-[color:var(--charcoal)] ${featured ? "text-[1.65rem]" : "text-[1.45rem]"}`}>
+        <h3 className={`serif font-medium tracking-[-0.012em] leading-[1.16] text-[color:var(--charcoal)] ${featured ? "text-[1.65rem]" : "text-[1.45rem]"}`}>
           <Link
             to="/tours/$tourId"
             params={{ tourId: tour.id }}
@@ -257,8 +257,8 @@ function CtaStrip() {
       <div className="container-x">
         <div className="bg-[color:var(--teal)] text-[color:var(--ivory)] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6 rounded-[6px]">
           <div>
-            <h2 className="serif text-3xl md:text-4xl text-[color:var(--ivory)]">
-              None of these feels quite right?
+            <h2 className="serif font-medium text-3xl md:text-4xl text-[color:var(--ivory)]">
+              None of these feels <span className="italic font-normal text-[color:var(--ivory)]">quite right?</span>
             </h2>
             <p className="mt-3 text-[15px] md:text-[16px] leading-[1.65] text-[color:var(--ivory)]/88 max-w-lg">
               Build one private day around your mood, group and rhythm, then see the route and live price in the Studio.

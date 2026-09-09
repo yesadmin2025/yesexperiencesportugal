@@ -16,6 +16,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { ArrowRight } from "lucide-react";
 
 import atmCoastal from "@/assets/studio/atm-coastal-cinematic.jpg";
+import { CtaButton } from "@/components/ui/CtaButton";
 
 interface Props {
   /** Called once the intro completes. */
@@ -96,7 +97,7 @@ export function StudioV3Intro({ onComplete }: Props) {
             </p>
             <h2
               data-testid="studio-v3-intro-headline"
-              className="mt-5 text-[28px] sm:text-[34px] leading-[1.12] tracking-[-0.01em] font-bold"
+              className="mt-5 text-[28px] sm:text-[34px] leading-[1.12] tracking-[-0.01em] font-medium"
               style={{
                 fontFamily: "var(--font-editorial)",
                 color: "var(--ivory)",
@@ -107,7 +108,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                   fontFamily: "var(--font-editorial)",
                   fontStyle: "italic",
                   fontWeight: 400,
-                  color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
+                  color: "color-mix(in oklab, var(--teal) 72%, var(--ivory))",
                 }}
               >
                 Portugal
@@ -125,7 +126,7 @@ export function StudioV3Intro({ onComplete }: Props) {
               interests.
             </p>
 
-            <button
+            <CtaButton
               type="button"
               onClick={() => {
                 void import("@/lib/analytics-ga4").then((m) => m.gaStudioStart());
@@ -133,16 +134,11 @@ export function StudioV3Intro({ onComplete }: Props) {
               }}
               data-phase-cta="intro-begin"
               data-testid="studio-v3-intro-begin"
-              className="mt-10 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-7 py-3 text-[11px] uppercase font-bold transition-colors hover:opacity-90"
-              style={{
-                background: "var(--ivory)",
-                color: "var(--charcoal)",
-                letterSpacing: "0.24em",
-              }}
+              variant="ghostDark"
+              className="mt-10"
             >
               Begin
-              <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.4} aria-hidden />
-            </button>
+            </CtaButton>
           </div>
         ) : (
           <form
@@ -157,7 +153,7 @@ export function StudioV3Intro({ onComplete }: Props) {
               — Before we begin
             </p>
             <h2
-              className="mt-5 text-[24px] sm:text-[30px] leading-[1.15] tracking-[-0.01em] font-bold"
+              className="mt-5 text-[24px] sm:text-[30px] leading-[1.15] tracking-[-0.01em] font-medium"
               style={{
                 fontFamily: "var(--font-editorial)",
                 color: "var(--ivory)",
@@ -169,7 +165,7 @@ export function StudioV3Intro({ onComplete }: Props) {
                   fontFamily: "var(--font-editorial)",
                   fontStyle: "italic",
                   fontWeight: 400,
-                  color: "color-mix(in oklab, var(--gold) 90%, var(--ivory))",
+                  color: "color-mix(in oklab, var(--teal) 72%, var(--ivory))",
                 }}
               >
                 you?

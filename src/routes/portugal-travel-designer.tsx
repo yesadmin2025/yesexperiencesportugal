@@ -58,7 +58,7 @@ function Section({
   tone = "ivory",
 }: {
   eyebrow?: string;
-  title?: string;
+  title?: React.ReactNode;
   children: React.ReactNode;
   tone?: "ivory" | "sand";
 }) {
@@ -89,9 +89,21 @@ function PortugalTravelDesignerPage() {
         <div className="container-x max-w-3xl text-center">
           <Eyebrow flank>Portugal Travel Designer</Eyebrow>
           <SectionTitle as="h1" size="anchor" spacing="loose">
-            Portugal Travel Designer
+            Portugal, <SectionTitle.Em>shaped around you.</SectionTitle.Em>
           </SectionTitle>
           <span className="gold-rule mt-6 mx-auto max-w-[80px]" aria-hidden="true" />
+          <p className="mt-6 mx-auto max-w-2xl text-[16px] md:text-[17px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+            One local hand connects the route, rhythm and private experiences into a journey that
+            feels entirely your own.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <CtaButton to="/multi-day" variant="primary">
+              Design a Portugal journey
+            </CtaButton>
+            <CtaButton to="/experiences" variant="ghost">
+              Explore private days
+            </CtaButton>
+          </div>
         </div>
       </section>
 
@@ -135,7 +147,7 @@ function PortugalTravelDesignerPage() {
       <Section
         tone="sand"
         eyebrow="Three ways to shape your Portugal"
-        title="Signature, Tailor, Studio."
+        title={<>Signature, Tailor, <SectionTitle.Em>Studio.</SectionTitle.Em></>}
       >
         <p>
           Our Signatures are complete private experiences designed around a particular region, story
@@ -157,7 +169,7 @@ function PortugalTravelDesignerPage() {
       <Section
         tone="ivory"
         eyebrow="From one private day to a complete journey"
-        title="A route that makes geographical and emotional sense."
+        title={<>A route with geographical <SectionTitle.Em>and emotional sense.</SectionTitle.Em></>}
       >
         <p>
           Travel design may begin with a single day from Lisbon or extend across several regions of
@@ -179,7 +191,7 @@ function PortugalTravelDesignerPage() {
       <Section
         tone="sand"
         eyebrow="Designed locally, operated personally"
-        title="A licensed local operator, not a reseller."
+        title={<>A licensed local operator, <SectionTitle.Em>not a reseller.</SectionTitle.Em></>}
       >
         <p>A beautiful itinerary is only useful when it can work in real life.</p>
         <p>
@@ -201,7 +213,7 @@ function PortugalTravelDesignerPage() {
       <Section
         tone="ivory"
         eyebrow="Who travel design is for"
-        title="Privacy and flexibility, without the coordination."
+        title={<>Privacy and flexibility, <SectionTitle.Em>without the coordination.</SectionTitle.Em></>}
       >
         <p>
           Travel design is especially valuable for travellers who want privacy and flexibility but
