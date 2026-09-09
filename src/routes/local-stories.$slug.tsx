@@ -14,9 +14,14 @@ import {
   regionDestinationLd,
 } from "@/lib/jsonld";
 import { PLANNER_REGIONS } from "@/content/portugal-planner-map";
-import { getLocalStoryArticle, type LocalStoryArticle } from "@/content/local-stories-articles";
+import {
+  getLocalStoryArticle,
+  GUIDE_INLINE_BOOKING,
+  type LocalStoryArticle,
+} from "@/content/local-stories-articles";
 import { localStoryShareImage } from "@/content/local-story-share-images";
 import { GuideNextSteps, useGuideLinkTracker } from "@/components/journal/GuideNextSteps";
+import { GuideBookingCta } from "@/components/journal/GuideBookingCta";
 import { guideRefDataAttrs } from "@/lib/guide-attribution-inline";
 import {
   getPublishedJournalPost,
@@ -273,9 +278,17 @@ function StaticArticleView({ article }: { article: LocalStoryArticle }) {
                   <p className="text-[16px] md:text-[17px] text-[color:var(--charcoal)] leading-[1.85]">
                     {renderBodyWithTourLinks(section.body)}
                   </p>
+                  {index === 0 && GUIDE_INLINE_BOOKING[article.slug] && (
+                    <GuideBookingCta
+                      guideSlug={article.slug}
+                      tourSlug={GUIDE_INLINE_BOOKING[article.slug]!.tourSlug}
+                      lead={GUIDE_INLINE_BOOKING[article.slug]!.lead}
+                    />
+                  )}
                 </div>
               ))}
             </div>
+
 
             {article.comparison && article.comparison.rows.length > 0 && (
               <section

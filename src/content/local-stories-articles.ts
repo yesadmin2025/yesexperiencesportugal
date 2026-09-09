@@ -1670,3 +1670,34 @@ export const LOCAL_STORIES_ARTICLES_BY_SLUG: Record<string, LocalStoryArticle> =
 export function getLocalStoryArticle(slug: string): LocalStoryArticle | undefined {
   return LOCAL_STORIES_ARTICLES_BY_SLUG[slug];
 }
+
+/**
+ * Inline booking cards — day-trip guides where the reader arrives with clear
+ * booking intent (Arrábida, Sesimbra). The card is rendered high in the
+ * article by `GuideBookingCta`, which reads every fact (title, duration,
+ * from-price) from `signatureTours`. Only the editorial lead lives here.
+ */
+export const GUIDE_INLINE_BOOKING: Readonly<
+  Record<string, { tourSlug: string; lead: string }>
+> = {
+  "arrabida-day-trip-from-lisbon": {
+    tourSlug: "arrabida-wine-allinclusive",
+    lead: "The Arrábida day we run ourselves: family cellars, a long Azeitão lunch and the coast road home, private to your party and confirmed instantly.",
+  },
+  "arrabida-wine-tour": {
+    tourSlug: "arrabida-wine-allinclusive",
+    lead: "Everything on this page, run as one private day from your Lisbon door — cellars, tastings and lunch already arranged.",
+  },
+  "arrabida-wine-tour-from-lisbon": {
+    tourSlug: "arrabida-wine-allinclusive",
+    lead: "Skip the driving and the guesswork: the same route, hosted door to door and confirmed the moment you book.",
+  },
+  "arrabida-wine-tour-what-to-expect": {
+    tourSlug: "arrabida-wine-allinclusive",
+    lead: "This is the day described above, exactly as we run it — private, unhurried, and bookable now.",
+  },
+  "what-to-do-in-sesimbra": {
+    tourSlug: "wild-beaches-picnic",
+    lead: "The coastal version of this guide: Arrábida viewpoints, a quiet cove and a picnic by the sea, with pickup in Lisbon.",
+  },
+} as const;
