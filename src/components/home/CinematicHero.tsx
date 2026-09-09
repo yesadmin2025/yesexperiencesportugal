@@ -117,6 +117,18 @@ export function CinematicHero() {
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
+    // Chromium ignores `media` on <video><source>, so phones would otherwise
+    // download the 1080p master. Re-point to the light mobile encode on small
+    // screens before the first play attempt.
+    try {
+      const small = window.matchMedia?.("(max-width: 767px)").matches;
+      if (small && !v.currentSrc.includes(HERO_FILM.src720)) {
+        v.src = HERO_FILM.src720;
+        v.load();
+      }
+    } catch {
+      /* keep the declarative sources */
+    }
     const kick = () => void v.play().catch(() => {});
     kick();
     v.addEventListener("loadeddata", kick);
