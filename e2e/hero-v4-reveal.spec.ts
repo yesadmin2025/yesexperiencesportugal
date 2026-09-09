@@ -25,7 +25,7 @@ test.describe("Hero v4 — one-breath reveal", () => {
 
   test("both stanza lines settle fully opaque", async ({ page }) => {
     for (const phrase of HERO_PHRASES) {
-      const line = page.getByText(phrase, { exact: true }).first();
+      const line = page.locator(`[data-hero-field="${phrase === HERO_PHRASES[0] ? "headlineLine1" : "headlineLine2"}"]`);
       await expect(line).toBeVisible();
       await expect
         .poll(async () => line.evaluate((el) => getComputedStyle(el).opacity), { timeout: 10_000 })
