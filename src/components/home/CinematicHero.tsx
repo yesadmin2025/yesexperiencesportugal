@@ -334,20 +334,21 @@ export function CinematicHero() {
             </div>
 
             <div
-              className="mt-3 flex flex-col text-[12.5px] leading-[1.55] text-[color:var(--gold-soft)] md:items-center"
+              className="mt-8 flex flex-col gap-1 text-[12.5px] leading-[1.55] md:flex-row md:items-center md:justify-center md:gap-5"
               style={revealStyle(composed, COMPOSE_FADE_MS)}
             >
               <Link
                 to="/multi-day"
                 data-hero-field="brandLine"
-                className="inline-flex min-h-[44px] items-center text-[#F1D8AB] underline decoration-[color:var(--gold)]/80 underline-offset-4 hover:text-white"
+                className="inline-flex min-h-[44px] items-center text-[#F1D8AB]/95 underline decoration-[color:var(--gold)]/60 underline-offset-[6px] transition-colors duration-500 hover:text-white"
               >
                 {HERO_COPY.brandLine}
               </Link>
+              <span aria-hidden="true" className="hidden md:inline text-[color:var(--gold)]/50">·</span>
               <Link
                 to="/book"
                 data-testid="hero-book-direct"
-                className="inline-flex min-h-[44px] items-center text-[12.5px] text-[color:var(--ivory)]/85 underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-white"
+                className="inline-flex min-h-[44px] items-center text-[12.5px] text-[color:var(--ivory)]/70 underline decoration-[color:var(--gold)]/40 underline-offset-[6px] transition-colors duration-500 hover:text-white"
               >
                 Know your dates? Book a day directly →
               </Link>
