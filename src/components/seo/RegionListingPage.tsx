@@ -9,7 +9,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
 import { signatureTours } from "@/data/signatureTours";
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
-import type { LisbonRegion } from "@/content/lisbon-regions";
+import { regionFaq, type LisbonRegion } from "@/content/lisbon-regions";
 import {
   BASED_IN,
   EMAIL,
@@ -160,6 +160,23 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
 
             <div className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-6">
               <h3 className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
+                Pickup addresses
+              </h3>
+              <ul className="mt-3 space-y-2 list-none p-0">
+                {region.pickup.map((point) => (
+                  <li
+                    key={point}
+                    className="flex items-start gap-2 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]"
+                  >
+                    <Car size={15} className="mt-1 shrink-0 text-[color:var(--gold)]" aria-hidden />
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-6">
+              <h3 className="font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]">
                 Talk to a local
               </h3>
               <p className="mt-3 flex items-start gap-2 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
@@ -202,7 +219,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
             Before <SectionTitle.Em>you set the date</SectionTitle.Em>.
           </SectionTitle>
           <dl className="mt-8 space-y-5">
-            {region.faq.map((item) => (
+            {regionFaq(region).map((item) => (
               <div
                 key={item.q}
                 className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-5 md:p-6"

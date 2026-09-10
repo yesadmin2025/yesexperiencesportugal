@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { RegionListingPage, regionTours } from "@/components/seo/RegionListingPage";
-import { findLisbonRegion } from "@/content/lisbon-regions";
+import { findLisbonRegion, regionFaq } from "@/content/lisbon-regions";
 import {
   breadcrumbLd,
   faqPageLd,
@@ -53,7 +53,7 @@ export const Route = createFileRoute("/private-tours-alentejo-evora")({
           })),
         }),
       ),
-      jsonLdScript(faqPageLd([...REGION.faq])),
+      jsonLdScript(faqPageLd(regionFaq(REGION))),
     ],
   }),
   component: () => <RegionListingPage region={REGION} />,

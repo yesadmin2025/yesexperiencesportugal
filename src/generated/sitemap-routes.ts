@@ -28,6 +28,8 @@ export const SITEMAP_STATIC_ROUTES: SitemapRoute[] = [
   { path: "/press", changefreq: "monthly", priority: "0.5" },
   { path: "/private-tours-alentejo-evora", changefreq: "monthly", priority: "0.7" },
   { path: "/private-tours-arrabida-sesimbra", changefreq: "monthly", priority: "0.7" },
+  { path: "/private-tours-azeitao-setubal", changefreq: "monthly", priority: "0.7" },
+  { path: "/private-tours-centro-silver-coast", changefreq: "monthly", priority: "0.7" },
   { path: "/private-tours-comporta-troia", changefreq: "monthly", priority: "0.7" },
   { path: "/private-tours-portugal", changefreq: "monthly", priority: "0.85" },
   { path: "/private-tours-sintra-cascais", changefreq: "monthly", priority: "0.7" },
