@@ -17,14 +17,18 @@ import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM, HERO_SCENES, scaleHeroTimeline } from "@/content/hero-scenes-manifest";
 
-/** Cinematic pace: stanza breathes in, full actionable state by ~2.2s. */
-const LINE1_DELAY_MS = 480;
-const LINE2_DELAY_MS = 1180;
-const COMPOSE_DELAY_MS = 1900;
-const FADE_MS = 980;
-const COMPOSE_FADE_MS = 760;
+/**
+ * Cinematic pace: the stanza breathes in slowly, one line at a time, and
+ * the full actionable state settles by ~3s. Longer, softer eases read as
+ * premium; nothing springs or snaps.
+ */
+const LINE1_DELAY_MS = 620;
+const LINE2_DELAY_MS = 1560;
+const COMPOSE_DELAY_MS = 2500;
+const FADE_MS = 1420;
+const COMPOSE_FADE_MS = 1150;
 
-const EASE = "cubic-bezier(0.22,0.61,0.36,1)";
+const EASE = "cubic-bezier(0.16,1,0.3,1)";
 
 /** Chapters that actually carry copy (the two silent frames stay silent). */
 const CHAPTERS = HERO_SCENES.filter((s) => s.main.length > 0 || !!s.support);
@@ -47,8 +51,8 @@ function shouldSkipIntro(): boolean {
 function revealStyle(on: boolean, ms: number): React.CSSProperties {
   return {
     opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : "translateY(16px)",
-    filter: on ? "blur(0px)" : "blur(3px)",
+    transform: on ? "translateY(0)" : "translateY(22px)",
+    filter: on ? "blur(0px)" : "blur(5px)",
     willChange: "opacity, transform, filter",
     transition: `opacity ${ms}ms ${EASE}, transform ${ms}ms ${EASE}, filter ${ms}ms ${EASE}`,
   };
