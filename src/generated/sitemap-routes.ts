@@ -13,6 +13,7 @@ export const SITEMAP_STATIC_ROUTES: SitemapRoute[] = [
   { path: "/contact", changefreq: "monthly", priority: "0.6" },
   { path: "/corporate", changefreq: "monthly", priority: "0.7" },
   { path: "/day-tours", changefreq: "weekly", priority: "0.8" },
+  { path: "/day-trips-from-lisbon", changefreq: "monthly", priority: "0.7" },
   { path: "/experiences", changefreq: "weekly", priority: "0.9" },
   { path: "/faq", changefreq: "monthly", priority: "0.7" },
   { path: "/itineraries/10-day-private-portugal-tour", changefreq: "monthly", priority: "0.8" },
