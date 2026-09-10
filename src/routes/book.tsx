@@ -41,7 +41,7 @@ export const Route = createFileRoute("/book")({
       {
         name: "description",
         content:
-          "Tell us your date, party and preferences in three short steps — a real person confirms your private day in Portugal within 24 hours. Instant booking also available.",
+          "Book a private day in Portugal: pay by card and confirm instantly, or send your dates in three short steps and a local replies personally within 24 hours.",
       },
       { property: "og:title", content: "Book a Private Day in Portugal | YES Portugal" },
       {
@@ -480,7 +480,7 @@ function BookPage() {
                 </div>
 
                 <p className="text-center text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
-                  A person replies within 24 hours — never an autoresponder. No payment taken here.
+                  A person replies within 24 hours — never an autoresponder. No payment is taken in this form; to pay now, choose a Signature day and use instant confirmation above.
                 </p>
               </div>
             </form>
