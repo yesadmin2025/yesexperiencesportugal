@@ -71,7 +71,7 @@ export function TourEditorialNote({ tour }: { tour: SignatureTour }) {
           </p>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <a
-              href="#reserve"
+              href="#book"
               className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-[4px] bg-[color:var(--teal)] px-6 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--ivory)] no-underline hover:bg-[color:var(--charcoal)]"
             >
               Check dates &amp; book
