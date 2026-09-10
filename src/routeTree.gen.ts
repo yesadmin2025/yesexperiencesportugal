@@ -146,6 +146,7 @@ import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/em
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
 import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
+import { Route as ApiPublicBookingRequestRouteImport } from './routes/api/public/booking-request'
 import { Route as ApiPublicBookingItineraryDataRouteImport } from './routes/api/public/booking-itinerary-data'
 import { Route as ApiPublicBookingItineraryRouteImport } from './routes/api/public/booking-itinerary'
 import { Route as AdminBookingsIdRouteImport } from './routes/admin.bookings.$id'
@@ -858,6 +859,11 @@ const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   path: '/api/public/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBookingRequestRoute = ApiPublicBookingRequestRouteImport.update({
+  id: '/api/public/booking-request',
+  path: '/api/public/booking-request',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicBookingItineraryDataRoute =
   ApiPublicBookingItineraryDataRouteImport.update({
     id: '/api/public/booking-itinerary-data',
@@ -1086,6 +1092,7 @@ export interface FileRoutesByFullPath {
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
+  '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1239,6 +1246,7 @@ export interface FileRoutesByTo {
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
+  '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1395,6 +1403,7 @@ export interface FileRoutesById {
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
+  '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1552,6 +1561,7 @@ export interface FileRouteTypes {
     | '/admin/bookings/$id'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
+    | '/api/public/booking-request'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
@@ -1705,6 +1715,7 @@ export interface FileRouteTypes {
     | '/admin/bookings/$id'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
+    | '/api/public/booking-request'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
@@ -1860,6 +1871,7 @@ export interface FileRouteTypes {
     | '/admin/bookings/$id'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
+    | '/api/public/booking-request'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
@@ -1999,6 +2011,7 @@ export interface RootRouteChildren {
   AdminBookingsIdRoute: typeof AdminBookingsIdRoute
   ApiPublicBookingItineraryRoute: typeof ApiPublicBookingItineraryRoute
   ApiPublicBookingItineraryDataRoute: typeof ApiPublicBookingItineraryDataRoute
+  ApiPublicBookingRequestRoute: typeof ApiPublicBookingRequestRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
@@ -2979,6 +2992,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/booking-request': {
+      id: '/api/public/booking-request'
+      path: '/api/public/booking-request'
+      fullPath: '/api/public/booking-request'
+      preLoaderRoute: typeof ApiPublicBookingRequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/booking-itinerary-data': {
       id: '/api/public/booking-itinerary-data'
       path: '/api/public/booking-itinerary-data'
@@ -3289,6 +3309,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBookingsIdRoute: AdminBookingsIdRoute,
   ApiPublicBookingItineraryRoute: ApiPublicBookingItineraryRoute,
   ApiPublicBookingItineraryDataRoute: ApiPublicBookingItineraryDataRoute,
+  ApiPublicBookingRequestRoute: ApiPublicBookingRequestRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,
