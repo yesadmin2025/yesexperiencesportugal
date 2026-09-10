@@ -218,9 +218,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "what-to-do-in-sesimbra",
-    title: "Things to Do in Sesimbra: Castle, Coves & Seafood",
+    title: "15 Things to Do in Sesimbra — And Is It Worth Visiting?",
     metaDescription:
-      "Things to do in Sesimbra, by locals: the castle viewpoint, quiet Arrábida coves, the fish market and where to eat the day's catch. 40 minutes from Lisbon.",
+      "We live in Sesimbra. Here is what is genuinely worth your time — castle viewpoint, Arrábida coves, the fish auction, where locals eat — and whether it beats Sintra as a day trip.",
 
     h1: "What to Do in Sesimbra — A Local's Guide to Our Fishing Town",
     eyebrow: "Sesimbra · Coast",
@@ -729,9 +729,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "sintra-day-tour-from-lisbon",
-    title: "Sintra Day Tour from Lisbon: Palaces & Cabo da Roca",
+    title: "Sintra Day Tour from Lisbon — Beat the Crowds (Local Guide)",
     metaDescription:
-      "A private Sintra day tour from Lisbon — palaces before the crowds, Cabo da Roca, Cascais and a small wine tasting. Door-to-door from your hotel.",
+      "How to do Sintra from Lisbon without the queues: what hour to arrive where, Pena and Regaleira, Cabo da Roca and Cascais. Private day, hotel pickup, honest advice.",
     h1: "Private Sintra Day Tour from Lisbon — without the queues",
     eyebrow: "Lisbon · Private Sintra Day",
     standfirst:
