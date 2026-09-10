@@ -8,7 +8,15 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
 import { signatureTours } from "@/data/signatureTours";
-import { breadcrumbLd, faqPageLd, itemListLd, jsonLdScript } from "@/lib/jsonld";
+import {
+  breadcrumbLd,
+  faqPageLd,
+  itemListLd,
+  jsonLdScript,
+  localBusinessLd,
+} from "@/lib/jsonld";
+import { LISBON_REGIONS } from "@/content/lisbon-regions";
+
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
 import {
   BASED_IN,
@@ -33,9 +41,10 @@ import {
 
 const PATH = "/day-trips-from-lisbon";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
-const TITLE = "Day Trips from Lisbon — Private, Local & Instantly Bookable";
+const TITLE = "Best Day Trips from Lisbon — Private Day Tours by Locals";
 const DESCRIPTION =
-  "Private day trips from Lisbon by a licensed local operator: Arrábida wine, Sintra & Cascais, Comporta, Évora and the wild Atlantic coast. Hotel pickup, your group only.";
+  "The best day trips from Lisbon, run privately by a licensed local operator: Arrábida wine, Sintra & Cascais, Comporta, Évora and the Atlantic coast. Hotel pickup, book online.";
+
 
 const crumbs = [
   { name: "Home", path: "/" },
@@ -76,10 +85,27 @@ const FAQS = [
     a: "Yes. Every Signature day shows live dates and prices and can be reserved and paid for online in a couple of minutes. If you would rather talk it through first, send a request and a local replies personally.",
   },
   {
+    q: "Do you pick up at Lisbon hotels, apartments and cruise terminals?",
+    a: "Yes — hotels, apartments, villas in Cascais or Sintra, and the Santa Apolónia cruise terminal. Tell us the address when you book and your host confirms the exact pickup time the day before.",
+  },
+  {
+    q: "What time does pickup happen?",
+    a: "Most days start between 08:00 and 09:30, and you choose the slot when you reserve. Alentejo days start earlier because the drive is around 90 minutes.",
+  },
+  {
+    q: "Can you pick us up outside Lisbon?",
+    a: "We collect from Lisbon, Cascais, Estoril, Sintra, Setúbal and Sesimbra at no extra cost. Anywhere further, tell us where you are staying and we will confirm before you pay.",
+  },
+  {
+    q: "What if our flight or ship is delayed?",
+    a: "Message the number on your confirmation. Your host waits and reshapes the day around the time you actually have — that flexibility is the point of a private day.",
+  },
+  {
     q: "What if the weather changes?",
     a: `Your host reshapes the day around it — the coast, the cellars and the villages all have good-weather and bad-weather versions. ${CANCELLATION.signature.en}`,
   },
 ];
+
 
 export const Route = createFileRoute("/day-trips-from-lisbon")({
   head: () => ({
@@ -95,6 +121,22 @@ export const Route = createFileRoute("/day-trips-from-lisbon")({
     links: [{ rel: "canonical", href: PAGE_URL }],
     scripts: [
       jsonLdScript(breadcrumbLd(crumbs)),
+      jsonLdScript(
+        localBusinessLd({
+          path: PATH,
+          name: "YES Experiences Portugal — day trips from Lisbon",
+          description: DESCRIPTION,
+          areaServed: [
+            "Lisbon",
+            "Sintra",
+            "Cascais",
+            "Sesimbra",
+            "Setúbal",
+            "Évora",
+            "Comporta",
+          ],
+        }),
+      ),
       jsonLdScript(
         itemListLd({
           name: "Private day trips from Lisbon",
@@ -272,6 +314,54 @@ function DayTripsFromLisbon() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── By region ────────────────────────────────────── */}
+      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+        <div className="container-x max-w-4xl">
+          <Eyebrow>Day tours from Lisbon, by region</Eyebrow>
+          <SectionTitle as="h2" spacing="tight">
+            Four directions, <SectionTitle.Em>each with its own listing</SectionTitle.Em>.
+          </SectionTitle>
+          <ul className="mt-8 grid gap-4 sm:grid-cols-2 list-none p-0">
+            {LISBON_REGIONS.map((region) => (
+              <li
+                key={region.path}
+                className="flex flex-col rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-6"
+              >
+                <h3 className="font-display text-[1.15rem] leading-snug text-[color:var(--charcoal)]">
+                  {region.name}
+                </h3>
+                <p className="mt-3 flex-1 text-[14.5px] leading-[1.75] text-[color:var(--charcoal-soft)]">
+                  {region.driveTime}. {region.bestSeason}
+                </p>
+                <Link
+                  to={region.path}
+                  className="mt-4 inline-flex min-h-[44px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] no-underline hover:text-[color:var(--charcoal)]"
+                >
+                  See the days
+                  <span aria-hidden className="text-[color:var(--gold)]">
+                    →
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-8 text-[14px] text-[color:var(--charcoal-soft)]">
+            Also:{" "}
+            <Link to="/lisbon-private-tours" className="underline underline-offset-4">
+              private Lisbon tours
+            </Link>{" "}
+            ·{" "}
+            <Link to="/lisbon-wine-tours" className="underline underline-offset-4">
+              Lisbon wine tours
+            </Link>{" "}
+            ·{" "}
+            <Link to="/portugal-itinerary" className="underline underline-offset-4">
+              planning a Portugal itinerary
+            </Link>
+          </p>
         </div>
       </section>
 

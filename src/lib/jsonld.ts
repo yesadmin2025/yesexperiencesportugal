@@ -1235,3 +1235,58 @@ export function regionDestinationLd(input: {
     provider: { "@id": `${SITE_URL}/#organization` },
   };
 }
+
+/**
+ * LocalBusiness node for a place-targeted landing page (Lisbon hub,
+ * regional listings). Address, hours, phone and rating all come from the
+ * authoritative NAP + review-certificate constants — never hand-typed.
+ */
+export function localBusinessLd(args: {
+  path: string;
+  name: string;
+  description: string;
+  areaServed: readonly string[];
+}) {
+  const url = `${SITE_URL}${args.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": ["TravelAgency", "LocalBusiness"],
+    "@id": `${url}#localbusiness`,
+    name: args.name,
+    description: args.description,
+    url,
+    parentOrganization: { "@id": `${SITE_URL}/#organization` },
+    telephone: PHONE_TEL,
+    priceRange: "€€€",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Sesimbra",
+      addressRegion: "Setúbal",
+      addressCountry: "PT",
+    },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+        opens: "08:00",
+        closes: "20:00",
+      },
+    ],
+    areaServed: args.areaServed.map((name) => ({ "@type": "City", name })),
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: REVIEW_CERTIFICATE.ratingValue,
+      bestRating: REVIEW_CERTIFICATE.bestRating,
+      worstRating: REVIEW_CERTIFICATE.worstRating,
+      reviewCount: REVIEW_CERTIFICATE.reviewCount,
+    },
+  };
+}
