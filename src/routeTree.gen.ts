@@ -31,6 +31,8 @@ import { Route as PrivateToursSintraCascaisRouteImport } from './routes/private-
 import { Route as PrivateToursPortugalRouteImport } from './routes/private-tours-portugal'
 import { Route as PrivateToursFromLisbonRouteImport } from './routes/private-tours-from-lisbon'
 import { Route as PrivateToursComportaTroiaRouteImport } from './routes/private-tours-comporta-troia'
+import { Route as PrivateToursCentroSilverCoastRouteImport } from './routes/private-tours-centro-silver-coast'
+import { Route as PrivateToursAzeitaoSetubalRouteImport } from './routes/private-tours-azeitao-setubal'
 import { Route as PrivateToursArrabidaSesimbraRouteImport } from './routes/private-tours-arrabida-sesimbra'
 import { Route as PrivateToursAlentejoEvoraRouteImport } from './routes/private-tours-alentejo-evora'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -283,6 +285,18 @@ const PrivateToursComportaTroiaRoute =
   PrivateToursComportaTroiaRouteImport.update({
     id: '/private-tours-comporta-troia',
     path: '/private-tours-comporta-troia',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PrivateToursCentroSilverCoastRoute =
+  PrivateToursCentroSilverCoastRouteImport.update({
+    id: '/private-tours-centro-silver-coast',
+    path: '/private-tours-centro-silver-coast',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PrivateToursAzeitaoSetubalRoute =
+  PrivateToursAzeitaoSetubalRouteImport.update({
+    id: '/private-tours-azeitao-setubal',
+    path: '/private-tours-azeitao-setubal',
     getParentRoute: () => rootRouteImport,
   } as any)
 const PrivateToursArrabidaSesimbraRoute =
@@ -1052,6 +1066,8 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/private-tours-alentejo-evora': typeof PrivateToursAlentejoEvoraRoute
   '/private-tours-arrabida-sesimbra': typeof PrivateToursArrabidaSesimbraRoute
+  '/private-tours-azeitao-setubal': typeof PrivateToursAzeitaoSetubalRoute
+  '/private-tours-centro-silver-coast': typeof PrivateToursCentroSilverCoastRoute
   '/private-tours-comporta-troia': typeof PrivateToursComportaTroiaRoute
   '/private-tours-from-lisbon': typeof PrivateToursFromLisbonRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
@@ -1215,6 +1231,8 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/private-tours-alentejo-evora': typeof PrivateToursAlentejoEvoraRoute
   '/private-tours-arrabida-sesimbra': typeof PrivateToursArrabidaSesimbraRoute
+  '/private-tours-azeitao-setubal': typeof PrivateToursAzeitaoSetubalRoute
+  '/private-tours-centro-silver-coast': typeof PrivateToursCentroSilverCoastRoute
   '/private-tours-comporta-troia': typeof PrivateToursComportaTroiaRoute
   '/private-tours-from-lisbon': typeof PrivateToursFromLisbonRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
@@ -1379,6 +1397,8 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/private-tours-alentejo-evora': typeof PrivateToursAlentejoEvoraRoute
   '/private-tours-arrabida-sesimbra': typeof PrivateToursArrabidaSesimbraRoute
+  '/private-tours-azeitao-setubal': typeof PrivateToursAzeitaoSetubalRoute
+  '/private-tours-centro-silver-coast': typeof PrivateToursCentroSilverCoastRoute
   '/private-tours-comporta-troia': typeof PrivateToursComportaTroiaRoute
   '/private-tours-from-lisbon': typeof PrivateToursFromLisbonRoute
   '/private-tours-portugal': typeof PrivateToursPortugalRoute
@@ -1545,6 +1565,8 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/private-tours-alentejo-evora'
     | '/private-tours-arrabida-sesimbra'
+    | '/private-tours-azeitao-setubal'
+    | '/private-tours-centro-silver-coast'
     | '/private-tours-comporta-troia'
     | '/private-tours-from-lisbon'
     | '/private-tours-portugal'
@@ -1708,6 +1730,8 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/private-tours-alentejo-evora'
     | '/private-tours-arrabida-sesimbra'
+    | '/private-tours-azeitao-setubal'
+    | '/private-tours-centro-silver-coast'
     | '/private-tours-comporta-troia'
     | '/private-tours-from-lisbon'
     | '/private-tours-portugal'
@@ -1871,6 +1895,8 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/private-tours-alentejo-evora'
     | '/private-tours-arrabida-sesimbra'
+    | '/private-tours-azeitao-setubal'
+    | '/private-tours-centro-silver-coast'
     | '/private-tours-comporta-troia'
     | '/private-tours-from-lisbon'
     | '/private-tours-portugal'
@@ -2036,6 +2062,8 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   PrivateToursAlentejoEvoraRoute: typeof PrivateToursAlentejoEvoraRoute
   PrivateToursArrabidaSesimbraRoute: typeof PrivateToursArrabidaSesimbraRoute
+  PrivateToursAzeitaoSetubalRoute: typeof PrivateToursAzeitaoSetubalRoute
+  PrivateToursCentroSilverCoastRoute: typeof PrivateToursCentroSilverCoastRoute
   PrivateToursComportaTroiaRoute: typeof PrivateToursComportaTroiaRoute
   PrivateToursFromLisbonRoute: typeof PrivateToursFromLisbonRoute
   PrivateToursPortugalRoute: typeof PrivateToursPortugalRoute
@@ -2293,6 +2321,20 @@ declare module '@tanstack/react-router' {
       path: '/private-tours-comporta-troia'
       fullPath: '/private-tours-comporta-troia'
       preLoaderRoute: typeof PrivateToursComportaTroiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-centro-silver-coast': {
+      id: '/private-tours-centro-silver-coast'
+      path: '/private-tours-centro-silver-coast'
+      fullPath: '/private-tours-centro-silver-coast'
+      preLoaderRoute: typeof PrivateToursCentroSilverCoastRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/private-tours-azeitao-setubal': {
+      id: '/private-tours-azeitao-setubal'
+      path: '/private-tours-azeitao-setubal'
+      fullPath: '/private-tours-azeitao-setubal'
+      preLoaderRoute: typeof PrivateToursAzeitaoSetubalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/private-tours-arrabida-sesimbra': {
@@ -3396,6 +3438,8 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   PrivateToursAlentejoEvoraRoute: PrivateToursAlentejoEvoraRoute,
   PrivateToursArrabidaSesimbraRoute: PrivateToursArrabidaSesimbraRoute,
+  PrivateToursAzeitaoSetubalRoute: PrivateToursAzeitaoSetubalRoute,
+  PrivateToursCentroSilverCoastRoute: PrivateToursCentroSilverCoastRoute,
   PrivateToursComportaTroiaRoute: PrivateToursComportaTroiaRoute,
   PrivateToursFromLisbonRoute: PrivateToursFromLisbonRoute,
   PrivateToursPortugalRoute: PrivateToursPortugalRoute,

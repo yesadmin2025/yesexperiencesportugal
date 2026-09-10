@@ -11,10 +11,10 @@ import {
 } from "@/lib/jsonld";
 import { WEBSITE_URL } from "@/config/business-nap";
 
-const REGION = findLisbonRegion("/private-tours-arrabida-sesimbra");
+const REGION = findLisbonRegion("/private-tours-centro-silver-coast");
 const PAGE_URL = `${WEBSITE_URL}${REGION.path}`;
 
-export const Route = createFileRoute("/private-tours-arrabida-sesimbra")({
+export const Route = createFileRoute("/private-tours-centro-silver-coast")({
   head: () => ({
     meta: [
       { title: REGION.title },
