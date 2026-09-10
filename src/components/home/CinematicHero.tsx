@@ -261,7 +261,7 @@ export function CinematicHero() {
 
             <p
               data-hero-field="eyebrow"
-              className="hero-promise text-[10.5px] font-medium uppercase tracking-[0.2em] text-[color:var(--gold-soft)] sm:text-[11px]"
+              className="hero-promise text-[10.5px] font-medium uppercase tracking-[0.3em] text-[color:var(--gold-soft)] sm:text-[11px]"
               style={revealStyle(composed, COMPOSE_FADE_MS)}
             >
               {HERO_COPY.eyebrow}
@@ -270,7 +270,7 @@ export function CinematicHero() {
             <h1
               data-hero-stanza="true"
               data-mixed-emphasis="exempt"
-              className="hero-h1 mt-5 font-serif text-[clamp(2.4rem,6vw,5.2rem)] font-normal italic leading-[0.98] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
+              className="hero-h1 mt-7 font-serif text-[clamp(2.4rem,6vw,5.2rem)] font-normal italic leading-[1.04] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
             >
               <span
                 className="hero-title-line block font-serif italic font-normal m-0"
