@@ -16,6 +16,11 @@ import {
   localBusinessLd,
 } from "@/lib/jsonld";
 import { LISBON_REGIONS } from "@/content/lisbon-regions";
+import {
+  DAY_TRIP_COMPARISON,
+  HEAD_TO_HEAD,
+  US_TRAVELER_NOTES,
+} from "@/content/lisbon-day-trip-comparison";
 
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
 import {
@@ -41,9 +46,9 @@ import {
 
 const PATH = "/day-trips-from-lisbon";
 const PAGE_URL = `${WEBSITE_URL}${PATH}`;
-const TITLE = "Best Day Trips from Lisbon — Private Day Tours by Locals";
+const TITLE = "Best Day Trips from Lisbon (2026) — Compared by Locals";
 const DESCRIPTION =
-  "The best day trips from Lisbon, run privately by a licensed local operator: Arrábida wine, Sintra & Cascais, Comporta, Évora and the Atlantic coast. Hotel pickup, book online.";
+  "Every day trip from Lisbon compared: drive times, miles, best season and our honest verdict on Sintra, Arrábida wine country, Évora and the coast. Private, hotel pickup, book online.";
 
 
 const crumbs = [
