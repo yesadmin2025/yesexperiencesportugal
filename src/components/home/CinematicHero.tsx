@@ -220,7 +220,7 @@ export function CinematicHero() {
         {/* Restrained grading so copy is AA readable without crushing the film. */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,18,16,0.46)_0%,rgba(16,18,16,0.30)_30%,rgba(16,18,16,0.44)_58%,rgba(16,18,16,0.72)_84%,rgba(16,18,16,0.84)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,18,16,0.42)_0%,rgba(16,18,16,0.22)_30%,rgba(16,18,16,0.34)_56%,rgba(16,18,16,0.66)_82%,rgba(16,18,16,0.80)_100%)]"
         />
       </div>
 
@@ -241,7 +241,7 @@ export function CinematicHero() {
                   className="absolute inset-x-0 top-0 md:mx-auto"
                   style={{
                     opacity: activeChapter === chapter.id ? 1 : 0,
-                    transition: `opacity 600ms ${EASE}`,
+                    transition: `opacity 900ms ${EASE}`,
                     pointerEvents: "none",
                   }}
                 >
