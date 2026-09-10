@@ -125,6 +125,7 @@ import { Route as AdminGscRouteImport } from './routes/admin.gsc'
 import { Route as AdminGbpLegacyRemovalRouteImport } from './routes/admin.gbp-legacy-removal'
 import { Route as AdminExperiencesRouteImport } from './routes/admin.experiences'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
+import { Route as AdminEnquiriesRouteImport } from './routes/admin.enquiries'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as AdminE2eReportRouteImport } from './routes/admin.e2e-report'
 import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
@@ -146,6 +147,7 @@ import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/em
 import { Route as FunctionsV1StripeWebhookRouteImport } from './routes/functions.v1.stripe-webhook'
 import { Route as ApiPublicPricingSsotRouteImport } from './routes/api/public/pricing-ssot'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
+import { Route as ApiPublicBookingRequestRouteImport } from './routes/api/public/booking-request'
 import { Route as ApiPublicBookingItineraryDataRouteImport } from './routes/api/public/booking-itinerary-data'
 import { Route as ApiPublicBookingItineraryRouteImport } from './routes/api/public/booking-itinerary'
 import { Route as AdminBookingsIdRouteImport } from './routes/admin.bookings.$id'
@@ -750,6 +752,11 @@ const AdminErrorLogsRoute = AdminErrorLogsRouteImport.update({
   path: '/admin/error-logs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminEnquiriesRoute = AdminEnquiriesRouteImport.update({
+  id: '/admin/enquiries',
+  path: '/admin/enquiries',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminEmailsRoute = AdminEmailsRouteImport.update({
   id: '/admin/emails',
   path: '/admin/emails',
@@ -856,6 +863,11 @@ const ApiPublicPricingSsotRoute = ApiPublicPricingSsotRouteImport.update({
 const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   id: '/api/public/contact',
   path: '/api/public/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicBookingRequestRoute = ApiPublicBookingRequestRouteImport.update({
+  id: '/api/public/booking-request',
+  path: '/api/public/booking-request',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicBookingItineraryDataRoute =
@@ -1023,6 +1035,7 @@ export interface FileRoutesByFullPath {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/e2e-report': typeof AdminE2eReportRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
@@ -1086,6 +1099,7 @@ export interface FileRoutesByFullPath {
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
+  '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1176,6 +1190,7 @@ export interface FileRoutesByTo {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/e2e-report': typeof AdminE2eReportRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
@@ -1239,6 +1254,7 @@ export interface FileRoutesByTo {
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
+  '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1332,6 +1348,7 @@ export interface FileRoutesById {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/e2e-report': typeof AdminE2eReportRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
@@ -1395,6 +1412,7 @@ export interface FileRoutesById {
   '/admin/bookings/$id': typeof AdminBookingsIdRoute
   '/api/public/booking-itinerary': typeof ApiPublicBookingItineraryRoute
   '/api/public/booking-itinerary-data': typeof ApiPublicBookingItineraryDataRoute
+  '/api/public/booking-request': typeof ApiPublicBookingRequestRoute
   '/api/public/contact': typeof ApiPublicContactRoute
   '/api/public/pricing-ssot': typeof ApiPublicPricingSsotRoute
   '/functions/v1/stripe-webhook': typeof FunctionsV1StripeWebhookRoute
@@ -1489,6 +1507,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/e2e-report'
     | '/admin/emails'
+    | '/admin/enquiries'
     | '/admin/error-logs'
     | '/admin/experiences'
     | '/admin/gbp-legacy-removal'
@@ -1552,6 +1571,7 @@ export interface FileRouteTypes {
     | '/admin/bookings/$id'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
+    | '/api/public/booking-request'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
@@ -1642,6 +1662,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/e2e-report'
     | '/admin/emails'
+    | '/admin/enquiries'
     | '/admin/error-logs'
     | '/admin/experiences'
     | '/admin/gbp-legacy-removal'
@@ -1705,6 +1726,7 @@ export interface FileRouteTypes {
     | '/admin/bookings/$id'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
+    | '/api/public/booking-request'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
@@ -1797,6 +1819,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/e2e-report'
     | '/admin/emails'
+    | '/admin/enquiries'
     | '/admin/error-logs'
     | '/admin/experiences'
     | '/admin/gbp-legacy-removal'
@@ -1860,6 +1883,7 @@ export interface FileRouteTypes {
     | '/admin/bookings/$id'
     | '/api/public/booking-itinerary'
     | '/api/public/booking-itinerary-data'
+    | '/api/public/booking-request'
     | '/api/public/contact'
     | '/api/public/pricing-ssot'
     | '/functions/v1/stripe-webhook'
@@ -1953,6 +1977,7 @@ export interface RootRouteChildren {
   AdminDriftBibleRoute: typeof AdminDriftBibleRoute
   AdminE2eReportRoute: typeof AdminE2eReportRoute
   AdminEmailsRoute: typeof AdminEmailsRoute
+  AdminEnquiriesRoute: typeof AdminEnquiriesRoute
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminExperiencesRoute: typeof AdminExperiencesRoute
   AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
@@ -1999,6 +2024,7 @@ export interface RootRouteChildren {
   AdminBookingsIdRoute: typeof AdminBookingsIdRoute
   ApiPublicBookingItineraryRoute: typeof ApiPublicBookingItineraryRoute
   ApiPublicBookingItineraryDataRoute: typeof ApiPublicBookingItineraryDataRoute
+  ApiPublicBookingRequestRoute: typeof ApiPublicBookingRequestRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
   ApiPublicPricingSsotRoute: typeof ApiPublicPricingSsotRoute
   FunctionsV1StripeWebhookRoute: typeof FunctionsV1StripeWebhookRoute
@@ -2832,6 +2858,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminErrorLogsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/enquiries': {
+      id: '/admin/enquiries'
+      path: '/admin/enquiries'
+      fullPath: '/admin/enquiries'
+      preLoaderRoute: typeof AdminEnquiriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/emails': {
       id: '/admin/emails'
       path: '/admin/emails'
@@ -2977,6 +3010,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/contact'
       fullPath: '/api/public/contact'
       preLoaderRoute: typeof ApiPublicContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/booking-request': {
+      id: '/api/public/booking-request'
+      path: '/api/public/booking-request'
+      fullPath: '/api/public/booking-request'
+      preLoaderRoute: typeof ApiPublicBookingRequestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/booking-itinerary-data': {
@@ -3242,6 +3282,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminDriftBibleRoute: AdminDriftBibleRoute,
   AdminE2eReportRoute: AdminE2eReportRoute,
   AdminEmailsRoute: AdminEmailsRoute,
+  AdminEnquiriesRoute: AdminEnquiriesRoute,
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminExperiencesRoute: AdminExperiencesRoute,
   AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
@@ -3289,6 +3330,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBookingsIdRoute: AdminBookingsIdRoute,
   ApiPublicBookingItineraryRoute: ApiPublicBookingItineraryRoute,
   ApiPublicBookingItineraryDataRoute: ApiPublicBookingItineraryDataRoute,
+  ApiPublicBookingRequestRoute: ApiPublicBookingRequestRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
   ApiPublicPricingSsotRoute: ApiPublicPricingSsotRoute,
   FunctionsV1StripeWebhookRoute: FunctionsV1StripeWebhookRoute,

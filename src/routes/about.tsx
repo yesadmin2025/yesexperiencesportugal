@@ -8,6 +8,8 @@ import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { TeamEnquiriesLink } from "@/components/team/TeamEnquiriesLink";
+
 import founderAsset from "@/assets/about-founder-wine-experience.jpg.asset.json";
 import { useMarketingMotion } from "@/hooks/use-marketing-motion";
 import {
@@ -456,8 +458,12 @@ function Page() {
               Open the Studio
             </CtaButton>
           </div>
+          <div className="mt-6 flex justify-center">
+            <TeamEnquiriesLink />
+          </div>
         </div>
       </section>
+
       <ServiceCrossLinks
         tone="ivory"
         eyebrow="What we do"

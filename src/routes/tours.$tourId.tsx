@@ -58,6 +58,8 @@ const SignatureRouteMap = lazy(() =>
 );
 import { CANCELLATION } from "@/config/business-nap";
 import { resolveLegacyTourId } from "@/lib/legacy-tour-redirects";
+import { TourEditorialNote } from "@/components/tours/TourEditorialNote";
+
 
 export const Route = createFileRoute("/tours/$tourId")({
   beforeLoad: ({ params }) => {
@@ -268,8 +270,12 @@ function TourDetailPage() {
       {/* ── 3 · SHORT INTRO ─────────────────────────────────────── */}
       <IntroBlock tour={tour} />
 
+      {/* ── 3b · EDITORIAL NOTE + BOOKING CTA ──────────────────── */}
+      <TourEditorialNote tour={tour} />
+
       {/* ── 4 · HIGHLIGHTS ─────────────────────────────────────── */}
       <HighlightsBlock tour={tour} />
+
 
       {/* ── 5 · ITINERARY (real Viator stops only) ────────────── */}
       <ItineraryTimeline tour={tour} meta={meta} />
