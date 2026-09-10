@@ -55,9 +55,9 @@ export type LocalStoryArticle = {
 export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   {
     slug: "best-day-trips-from-lisbon",
-    title: "Best Day Trips from Lisbon (by a Local) — Wine, Coast & Arrábida",
+    title: "Best Day Trips from Lisbon: A Local's Honest Guide",
     metaDescription:
-      "A local's guide to the best day trips from Lisbon — Arrábida wine country, the wild south coast, Sintra and Sesimbra. Written by the team that designs them.",
+      "The best day trips from Lisbon, ranked by a local team — Arrábida wine country, Sintra's palaces, Sesimbra's coves and Évora. Drive times, seasons, picks.",
     h1: "Best Day Trips from Lisbon — by a Local",
     eyebrow: "Lisbon · Day Trips",
     standfirst:
@@ -145,9 +145,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
 
   {
     slug: "arrabida-vs-sintra",
-    title: "Arrábida vs Sintra: Which Day Trip Is Right for You?",
+    title: "Arrábida vs Sintra: Which Day Trip from Lisbon to Pick",
     metaDescription:
-      "Arrábida or Sintra from Lisbon? A local's honest comparison — wine country and wild coast vs palaces and forest — to help you choose the right day.",
+      "Arrábida or Sintra for your day trip from Lisbon? An honest local comparison — wine and wild coast vs palaces and forest — and when each one wins.",
     h1: "Arrábida vs Sintra: Which Day Trip Is Right for You?",
     eyebrow: "Compare · Day Trips",
     standfirst:
@@ -179,9 +179,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "setubal-wine-guide",
-    title: "Setúbal Wine Country Guide | Moscatel & Wineries",
+    title: "Setúbal Wine Guide: Moscatel, Wineries & Azeitão",
     metaDescription:
-      "Explore Setúbal wine country near Lisbon, from Moscatel and Azeitão cheese to family wineries, Arrábida landscapes and coastal lunches.",
+      "A local's Setúbal wine guide — Moscatel cellars, family wineries in Azeitão, Arrábida views and the market lunch. 40 minutes from Lisbon.",
     h1: "Setúbal Wine Country — A Local's Guide",
     eyebrow: "Setúbal · Wine",
     standfirst:
@@ -218,9 +218,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "what-to-do-in-sesimbra",
-    title: "Things to Do in Sesimbra: Castle, Coves & Seafood — By Locals",
+    title: "Things to Do in Sesimbra: Castle, Coves & Seafood",
     metaDescription:
-      "Sesimbra from the people who live here: the castle viewpoint, quiet Arrábida coves, and where to eat the day's catch. 40 minutes from Lisbon.",
+      "Things to do in Sesimbra, by locals: the castle viewpoint, quiet Arrábida coves, the fish market and where to eat the day's catch. 40 minutes from Lisbon.",
 
     h1: "What to Do in Sesimbra — A Local's Guide to Our Fishing Town",
     eyebrow: "Sesimbra · Coast",
@@ -279,9 +279,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "private-tour-vs-group-tour",
-    title: "Private vs Group Tours in Portugal: What's Actually Worth It",
+    title: "Private vs Group Tours in Portugal: What's Worth It",
     metaDescription:
-      "Private tour or group tour in Portugal? A local operator's honest comparison — what you really get, what you actually pay, and when each makes sense.",
+      "Private or group tour in Portugal? A local operator's honest comparison — real costs, real differences, and when a private day is worth it.",
     h1: "Private vs Group Tours in Portugal — What's Actually Worth It",
     eyebrow: "Travel · How to Choose",
     standfirst:
@@ -312,9 +312,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "troia-comporta-guide",
-    title: "Tróia & Comporta from Lisbon — A Local's Slow Alentejo Day",
+    title: "Tróia & Comporta from Lisbon: Beaches, Ruins & Wine",
     metaDescription:
-      "Tróia, Comporta and the slow Alentejo coast — Roman ruins, sandy-soil wineries and untouched beaches. A local's guide to a private day south of Lisbon.",
+      "A slow day south of Lisbon — Tróia's Roman ruins, Comporta's rice fields and beaches, and sandy-soil wineries. A local's guide to the quiet coast.",
     h1: "Tróia & Comporta — Beaches, Ruins and Slow Alentejo Days",
     eyebrow: "Tróia · Comporta · Alentejo",
     standfirst:
@@ -353,9 +353,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "southwest-vicentine-coast-guide",
-    title: "Portugal's Southwest Coast: A Local's Guide to the Vicentine Coast",
+    title: "Vicentine Coast Guide: Portugal's Wild Southwest",
     metaDescription:
-      "The wild Vicentine coast from Lisbon — Porto Covo, Milfontes, Odeceixe. A local's guide to Portugal's hidden Atlantic between Alentejo and Algarve.",
+      "The Vicentine Coast from Lisbon — Porto Covo, Milfontes, Odeceixe. A local's guide to Portugal's wild Atlantic between Alentejo and the Algarve.",
     h1: "The Southwest Vicentine Coast — Portugal's Hidden Atlantic",
     eyebrow: "Vicentine Coast · Alentejo · Costa",
     standfirst:
@@ -408,9 +408,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "roman-heritage-alentejo-talha-wines",
-    title: "Roman Wines of Alentejo — A Local's Guide to Talha Wine Country",
+    title: "Talha Wines of Alentejo: A Local Roman Wine Guide",
     metaDescription:
-      "The hidden Alentejo: São Cucufate Roman ruins, Vila Alva, and family-run talha wineries making wine in clay amphorae the Roman way. A local's guide from Lisbon.",
+      "Alentejo's hidden wine country — São Cucufate's Roman ruins and family cellars still making talha wine in clay amphorae. A day trip from Lisbon.",
     h1: "The Roman Wines of Alentejo — Talha Country, a Local's Guide",
     eyebrow: "Alentejo · Wine · Heritage",
     standfirst:
