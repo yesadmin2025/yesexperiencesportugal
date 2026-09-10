@@ -153,7 +153,7 @@ export const Route = createFileRoute("/day-trips-from-lisbon")({
           })),
         }),
       ),
-      jsonLdScript(faqPageLd(FAQS)),
+      jsonLdScript(faqPageLd([...FAQS, ...US_TRAVELER_NOTES])),
     ],
   }),
   component: DayTripsFromLisbon,
@@ -242,6 +242,185 @@ function DayTripsFromLisbon() {
           </ul>
         </div>
       </section>
+
+      {/* ── Comparison table ─────────────────────────────── */}
+      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+        <div className="container-x">
+          <Eyebrow>Compare every day</Eyebrow>
+          <SectionTitle as="h2" spacing="tight">
+            Drive time, distance and <SectionTitle.Em>our honest verdict</SectionTitle.Em>.
+          </SectionTitle>
+          <p className="mt-5 max-w-2xl text-[15.5px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+            Distances are one way from central Lisbon, in miles and kilometres. Duration and price
+            come straight from each Signature page, so what you read here is what you pay there.
+          </p>
+
+          {/* Desktop table */}
+          <div className="mt-9 hidden overflow-x-auto md:block">
+            <table className="w-full border-collapse text-left text-[14.5px]">
+              <caption className="sr-only">
+                Day trips from Lisbon compared by drive time, distance, length and price
+              </caption>
+              <thead>
+                <tr className="border-b border-[color:var(--border)]">
+                  {["Day trip", "Drive", "Distance", "Length", "From", "Best for"].map((h) => (
+                    <th
+                      key={h}
+                      scope="col"
+                      className="py-3 pr-4 font-sans text-[10.5px] uppercase tracking-[0.22em] font-bold text-[color:var(--charcoal)]"
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARISON.map(({ row, tour }) => (
+                  <tr key={row.tourId} className="border-b border-[color:var(--border)] align-top">
+                    <th scope="row" className="py-4 pr-4 font-normal">
+                      <Link
+                        to="/tours/$tourId"
+                        params={{ tourId: row.tourId }}
+                        className="font-display text-[1.02rem] text-[color:var(--charcoal)] no-underline hover:text-[color:var(--teal)]"
+                      >
+                        {row.destination}
+                      </Link>
+                    </th>
+                    <td className="py-4 pr-4 text-[color:var(--charcoal-soft)]">{row.drive}</td>
+                    <td className="py-4 pr-4 text-[color:var(--charcoal-soft)]">{row.distance}</td>
+                    <td className="py-4 pr-4 text-[color:var(--charcoal-soft)]">
+                      {tour?.durationHours ?? row.shape}
+                    </td>
+                    <td className="py-4 pr-4 text-[color:var(--charcoal-soft)]">
+                      {tour ? `€${tour.priceFrom} pp` : "—"}
+                    </td>
+                    <td className="py-4 text-[color:var(--charcoal-soft)]">{row.bestFor}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile cards */}
+          <ul className="mt-8 grid gap-4 list-none p-0 md:hidden">
+            {COMPARISON.map(({ row, tour }) => (
+              <li
+                key={row.tourId}
+                className="rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-5"
+              >
+                <h3 className="font-display text-[1.1rem] leading-snug text-[color:var(--charcoal)]">
+                  {row.destination}
+                </h3>
+                <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-[13.5px] text-[color:var(--charcoal-soft)]">
+                  <div>
+                    <dt className="font-sans text-[10px] uppercase tracking-[0.2em]">Drive</dt>
+                    <dd className="mt-0.5">{row.drive}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-sans text-[10px] uppercase tracking-[0.2em]">Distance</dt>
+                    <dd className="mt-0.5">{row.distance}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-sans text-[10px] uppercase tracking-[0.2em]">Length</dt>
+                    <dd className="mt-0.5">{tour?.durationHours ?? row.shape}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-sans text-[10px] uppercase tracking-[0.2em]">From</dt>
+                    <dd className="mt-0.5">{tour ? `€${tour.priceFrom} pp` : "—"}</dd>
+                  </div>
+                </dl>
+                <p className="mt-3 text-[14px] leading-[1.7] text-[color:var(--charcoal-soft)]">
+                  {row.bestFor}.
+                </p>
+                <Link
+                  to="/tours/$tourId"
+                  params={{ tourId: row.tourId }}
+                  className="mt-4 inline-flex min-h-[44px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] no-underline"
+                >
+                  Dates &amp; prices
+                  <span aria-hidden className="text-[color:var(--gold)]">
+                    →
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ── Is it worth it / head to head ────────────────── */}
+      <section className="py-14 md:py-20">
+        <div className="container-x max-w-3xl">
+          <Eyebrow>Deciding between them</Eyebrow>
+          <SectionTitle as="h2" spacing="tight">
+            Sintra, Arrábida or Évora — <SectionTitle.Em>which one is yours?</SectionTitle.Em>
+          </SectionTitle>
+          <div className="mt-9 space-y-9">
+            {HEAD_TO_HEAD.map((item) => (
+              <article key={item.title}>
+                <h3 className="font-display text-[1.25rem] leading-snug text-[color:var(--charcoal)]">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-[15.5px] leading-[1.85] text-[color:var(--charcoal-soft)]">
+                  {item.body}
+                </p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-10 rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] p-6">
+            <h3 className="font-display text-[1.15rem] leading-snug text-[color:var(--charcoal)]">
+              Our honest verdict, day by day
+            </h3>
+            <dl className="mt-4 space-y-4">
+              {COMPARISON.map(({ row }) => (
+                <div key={row.tourId}>
+                  <dt className="font-sans text-[11px] uppercase tracking-[0.18em] font-bold text-[color:var(--charcoal)]">
+                    {row.destination}
+                  </dt>
+                  <dd className="mt-1 text-[14.5px] leading-[1.75] text-[color:var(--charcoal-soft)]">
+                    {row.verdict}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Coming from the US ───────────────────────────── */}
+      <section className="bg-[color:var(--sand)] py-14 md:py-20">
+        <div className="container-x max-w-3xl">
+          <Eyebrow>Coming from the United States</Eyebrow>
+          <SectionTitle as="h2" spacing="tight">
+            Jet lag, tipping, timing — <SectionTitle.Em>the practical answers</SectionTitle.Em>.
+          </SectionTitle>
+          <dl className="mt-8 space-y-5">
+            {US_TRAVELER_NOTES.map((item) => (
+              <div key={item.q}>
+                <dt className="font-display text-[1.05rem] leading-snug text-[color:var(--charcoal)]">
+                  {item.q}
+                </dt>
+                <dd className="mt-2 text-[14.5px] leading-[1.75] text-[color:var(--charcoal-soft)]">
+                  {item.a}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-8 text-[14px] text-[color:var(--charcoal-soft)]">
+            More for first-time visitors on our{" "}
+            <Link to="/portugal-for-american-travelers" className="underline underline-offset-4">
+              Portugal guide for American travelers
+            </Link>{" "}
+            and{" "}
+            <Link to="/how-many-days-in-portugal" className="underline underline-offset-4">
+              how many days you need in Portugal
+            </Link>
+            .
+          </p>
+        </div>
+      </section>
+
+
 
       {/* ── Real reviews ─────────────────────────────────── */}
       <RealReviewsStrip />
