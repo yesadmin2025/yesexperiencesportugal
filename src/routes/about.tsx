@@ -1,5 +1,5 @@
 import { localeAlternateLinks } from "@/i18n/seo";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
@@ -458,6 +458,13 @@ function Page() {
               Open the Studio
             </CtaButton>
           </div>
+          <p className="mt-6 text-[14px] text-[color:var(--charcoal-soft)]">
+            Practical questions first?{" "}
+            <Link to="/faq" className="underline">
+              Read the FAQs
+            </Link>{" "}
+            — trips, pricing, cancellations and booking.
+          </p>
           <div className="mt-6 flex justify-center">
             <TeamEnquiriesLink />
           </div>

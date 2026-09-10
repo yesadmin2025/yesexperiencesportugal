@@ -32,6 +32,7 @@ const REQUIRED_CANONICAL_PATHS = [
   "/luxury-tours-portugal",
   "/private-tours-portugal",
   "/terms",
+  "/faq",
 ];
 
 // Paths that must NEVER appear in sitemap.xml (redirects, auth, QA, admin,
@@ -54,7 +55,6 @@ const FORBIDDEN_PATHS = [
   "/studio-v2",
   "/typography-audit",
   "/unsubscribe",
-  "/faq",
   "/moments",
   "/arrabida-wine-tour",
   "/arrabida-day-trip-from-lisbon",
