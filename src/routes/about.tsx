@@ -458,6 +458,13 @@ function Page() {
               Open the Studio
             </CtaButton>
           </div>
+          <p className="mt-6 text-[14px] text-[color:var(--charcoal-soft)]">
+            Practical questions first?{" "}
+            <Link to="/faq" className="underline">
+              Read the FAQs
+            </Link>{" "}
+            — trips, pricing, cancellations and booking.
+          </p>
           <div className="mt-6 flex justify-center">
             <TeamEnquiriesLink />
           </div>
