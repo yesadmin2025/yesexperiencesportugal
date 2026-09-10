@@ -118,7 +118,7 @@ const cardClass =
 function DayTripsFromLisbon() {
   return (
     <SiteLayout>
-      <SiteBreadcrumbs items={crumbs} />
+      <SiteBreadcrumbs crumbs={crumbs} />
 
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="bg-[color:var(--sand)] py-14 md:py-20">
