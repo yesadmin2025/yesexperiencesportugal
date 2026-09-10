@@ -17,14 +17,18 @@ import { Link } from "@tanstack/react-router";
 import { HERO_COPY, HERO_COPY_VERSION, HERO_PHRASES } from "@/content/hero-copy";
 import { HERO_FILM, HERO_SCENES, scaleHeroTimeline } from "@/content/hero-scenes-manifest";
 
-/** Cinematic pace: stanza breathes in, full actionable state by ~2.2s. */
-const LINE1_DELAY_MS = 480;
-const LINE2_DELAY_MS = 1180;
-const COMPOSE_DELAY_MS = 1900;
-const FADE_MS = 980;
-const COMPOSE_FADE_MS = 760;
+/**
+ * Cinematic pace: the stanza breathes in slowly, one line at a time, and
+ * the full actionable state settles by ~3s. Longer, softer eases read as
+ * premium; nothing springs or snaps.
+ */
+const LINE1_DELAY_MS = 620;
+const LINE2_DELAY_MS = 1560;
+const COMPOSE_DELAY_MS = 2500;
+const FADE_MS = 1420;
+const COMPOSE_FADE_MS = 1150;
 
-const EASE = "cubic-bezier(0.22,0.61,0.36,1)";
+const EASE = "cubic-bezier(0.16,1,0.3,1)";
 
 /** Chapters that actually carry copy (the two silent frames stay silent). */
 const CHAPTERS = HERO_SCENES.filter((s) => s.main.length > 0 || !!s.support);
@@ -47,8 +51,8 @@ function shouldSkipIntro(): boolean {
 function revealStyle(on: boolean, ms: number): React.CSSProperties {
   return {
     opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : "translateY(16px)",
-    filter: on ? "blur(0px)" : "blur(3px)",
+    transform: on ? "translateY(0)" : "translateY(22px)",
+    filter: on ? "blur(0px)" : "blur(5px)",
     willChange: "opacity, transform, filter",
     transition: `opacity ${ms}ms ${EASE}, transform ${ms}ms ${EASE}, filter ${ms}ms ${EASE}`,
   };
@@ -162,7 +166,19 @@ export function CinematicHero() {
       className="hero-cinematic relative min-h-[100svh] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]"
     >
       <div className="hero-story-stage absolute inset-0 z-0">
-        <picture className="absolute inset-0 block h-full w-full">
+        {/* Slow settle: the film opens at a whisper of zoom and exhales to
+            rest over ~9s — a cinematic "exhale", not a Ken Burns drift. */}
+        <style>{`
+          @keyframes heroFilmSettle {
+            from { transform: scale(1.06); }
+            to { transform: scale(1); }
+          }
+          .hero-film-settle { animation: heroFilmSettle 9000ms cubic-bezier(0.22,1,0.36,1) both; }
+          @media (prefers-reduced-motion: reduce) {
+            .hero-film-settle { animation: none; }
+          }
+        `}</style>
+        <picture className="hero-film-settle absolute inset-0 block h-full w-full">
           <source
             media="(max-width: 767px)"
             srcSet={HERO_FILM.posterMobile}
@@ -187,7 +203,7 @@ export function CinematicHero() {
           playsInline
           preload="metadata"
           poster={HERO_FILM.poster}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="hero-film-settle absolute inset-0 h-full w-full object-cover"
           aria-hidden="true"
         >
           <source
@@ -204,11 +220,11 @@ export function CinematicHero() {
         {/* Restrained grading so copy is AA readable without crushing the film. */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,18,16,0.46)_0%,rgba(16,18,16,0.30)_30%,rgba(16,18,16,0.44)_58%,rgba(16,18,16,0.72)_84%,rgba(16,18,16,0.84)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,18,16,0.42)_0%,rgba(16,18,16,0.22)_30%,rgba(16,18,16,0.34)_56%,rgba(16,18,16,0.66)_82%,rgba(16,18,16,0.80)_100%)]"
         />
       </div>
 
-      <div className="relative z-10 flex min-h-[100svh] items-center px-5 pb-[max(4.5rem,calc(env(safe-area-inset-bottom)+3rem))] pt-24 sm:px-8 sm:items-end md:items-center md:pb-12 md:pt-24 lg:px-12">
+      <div className="relative z-10 flex min-h-[100svh] items-center px-6 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+4rem))] pt-28 sm:px-10 sm:items-end md:items-center md:pb-16 md:pt-28 lg:px-12">
         <div className="mx-auto w-full max-w-6xl">
           <div className="max-w-3xl text-left md:mx-auto md:text-center">
             {/* Chapter overlay — the film's story, cross-fading with restraint. */}
@@ -225,7 +241,7 @@ export function CinematicHero() {
                   className="absolute inset-x-0 top-0 md:mx-auto"
                   style={{
                     opacity: activeChapter === chapter.id ? 1 : 0,
-                    transition: `opacity 600ms ${EASE}`,
+                    transition: `opacity 900ms ${EASE}`,
                     pointerEvents: "none",
                   }}
                 >
@@ -245,7 +261,7 @@ export function CinematicHero() {
 
             <p
               data-hero-field="eyebrow"
-              className="hero-promise text-[10.5px] font-medium uppercase tracking-[0.2em] text-[color:var(--gold-soft)] sm:text-[11px]"
+              className="hero-promise text-[10.5px] font-medium uppercase tracking-[0.3em] text-[color:var(--gold-soft)] sm:text-[11px]"
               style={revealStyle(composed, COMPOSE_FADE_MS)}
             >
               {HERO_COPY.eyebrow}
@@ -254,7 +270,7 @@ export function CinematicHero() {
             <h1
               data-hero-stanza="true"
               data-mixed-emphasis="exempt"
-              className="hero-h1 mt-5 font-serif text-[clamp(2.4rem,6vw,5.2rem)] font-normal italic leading-[0.98] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
+              className="hero-h1 mt-7 font-serif text-[clamp(2.4rem,6vw,5.2rem)] font-normal italic leading-[1.04] tracking-normal text-[color:var(--gold-soft)] [text-shadow:0_2px_18px_color-mix(in_oklab,var(--charcoal-deep)_55%,transparent)]"
             >
               <span
                 className="hero-title-line block font-serif italic font-normal m-0"
@@ -274,14 +290,14 @@ export function CinematicHero() {
 
             <p
               data-hero-field="subheadline"
-              className="mt-6 max-w-2xl text-[15px] leading-[1.65] text-[color:var(--ivory)] sm:text-[17px] md:mx-auto"
+              className="mt-8 max-w-xl text-[15px] leading-[1.7] text-[color:var(--ivory)]/90 sm:text-[16.5px] md:mx-auto"
               style={revealStyle(composed, COMPOSE_FADE_MS)}
             >
               {HERO_COPY.subheadline}
             </p>
 
             <div
-              className="hero-cta-group mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center md:justify-center"
+              className="hero-cta-group mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center md:justify-center"
               data-hero-composed={composed ? "true" : "false"}
               style={{
                 ...revealStyle(composed, COMPOSE_FADE_MS),
@@ -318,20 +334,21 @@ export function CinematicHero() {
             </div>
 
             <div
-              className="mt-3 flex flex-col text-[12.5px] leading-[1.55] text-[color:var(--gold-soft)] md:items-center"
+              className="mt-8 flex flex-col gap-1 text-[12.5px] leading-[1.55] md:flex-row md:items-center md:justify-center md:gap-5"
               style={revealStyle(composed, COMPOSE_FADE_MS)}
             >
               <Link
                 to="/multi-day"
                 data-hero-field="brandLine"
-                className="inline-flex min-h-[44px] items-center text-[#F1D8AB] underline decoration-[color:var(--gold)]/80 underline-offset-4 hover:text-white"
+                className="inline-flex min-h-[44px] items-center text-[#F1D8AB]/95 underline decoration-[color:var(--gold)]/60 underline-offset-[6px] transition-colors duration-500 hover:text-white"
               >
                 {HERO_COPY.brandLine}
               </Link>
+              <span aria-hidden="true" className="hidden md:inline text-[color:var(--gold)]/50">·</span>
               <Link
                 to="/book"
                 data-testid="hero-book-direct"
-                className="inline-flex min-h-[44px] items-center text-[12.5px] text-[color:var(--ivory)]/85 underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-white"
+                className="inline-flex min-h-[44px] items-center text-[12.5px] text-[color:var(--ivory)]/70 underline decoration-[color:var(--gold)]/40 underline-offset-[6px] transition-colors duration-500 hover:text-white"
               >
                 Know your dates? Book a day directly →
               </Link>
