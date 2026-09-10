@@ -1,0 +1,24 @@
+# Google disavow file — yesexperiencesportugal.com
+# Prepared 2026-09-10. Upload once at
+# https://search.google.com/search-console/disavow-links
+# (select the yesexperiencesportugal.com property, upload this file).
+#
+# WHY: Semrush shows ~38 referring domains pointing at us with anchors such as
+# "buy backlinks online cheap", "premium pbn network service" and
+# "guest posting revolution". None of these links were requested, bought or
+# earned by us. They are a link scheme aimed at (or spamming) the domain, and
+# they are the single lowest-quality signal in our backlink profile.
+#
+# SCOPE: the domains below are the confirmed spam sources visible in the
+# current Semrush sample. The full referring-domain export is larger than the
+# sample; re-check quarterly and append any new domain whose anchor text sells
+# SEO services, casinos, pharma or "guest posting", then re-upload.
+#
+# DO NOT ADD: yesexperiences.pt (our own legacy domain), trustindex.io
+# (our review widget), tripaligner.com, acompio.pt — these are legitimate.
+
+domain:bestsafestonlinecasino.online
+domain:blogerreviewers.com
+domain:betulcrime.com
+domain:8coint.com
+domain:archive-hu.com

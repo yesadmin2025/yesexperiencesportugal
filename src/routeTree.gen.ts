@@ -20,6 +20,7 @@ import { Route as StudioLivingAtlasPreviewRouteImport } from './routes/studio-li
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SitemapImagesDotxmlRouteImport } from './routes/sitemap-images[.]xml'
 import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ReviewsRouteImport } from './routes/reviews'
@@ -42,6 +43,7 @@ import { Route as PortugalWineToursRouteImport } from './routes/portugal-wine-to
 import { Route as PortugalTravelDesignerRouteImport } from './routes/portugal-travel-designer'
 import { Route as PortugalToursRouteImport } from './routes/portugal-tours'
 import { Route as PortugalItineraryRouteImport } from './routes/portugal-itinerary'
+import { Route as PortugalForAmericanTravelersRouteImport } from './routes/portugal-for-american-travelers'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as MultiDayRouteImport } from './routes/multi-day'
 import { Route as MomentsRouteImport } from './routes/moments'
@@ -52,6 +54,7 @@ import { Route as LocalStoriesRouteImport } from './routes/local-stories'
 import { Route as LisbonWineToursRouteImport } from './routes/lisbon-wine-tours'
 import { Route as LisbonPrivateToursRouteImport } from './routes/lisbon-private-tours'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
+import { Route as HowManyDaysInPortugalRouteImport } from './routes/how-many-days-in-portugal'
 import { Route as HeroVerifyRouteImport } from './routes/hero-verify'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ExperiencesRouteImport } from './routes/experiences'
@@ -230,6 +233,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapImagesDotxmlRoute = SitemapImagesDotxmlRouteImport.update({
+  id: '/sitemap-images.xml',
+  path: '/sitemap-images.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SintraDayTourFromLisbonRoute = SintraDayTourFromLisbonRouteImport.update({
   id: '/sintra-day-tour-from-lisbon',
   path: '/sintra-day-tour-from-lisbon',
@@ -346,6 +354,12 @@ const PortugalItineraryRoute = PortugalItineraryRouteImport.update({
   path: '/portugal-itinerary',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortugalForAmericanTravelersRoute =
+  PortugalForAmericanTravelersRouteImport.update({
+    id: '/portugal-for-american-travelers',
+    path: '/portugal-for-american-travelers',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PartnersRoute = PartnersRouteImport.update({
   id: '/partners',
   path: '/partners',
@@ -394,6 +408,11 @@ const LisbonPrivateToursRoute = LisbonPrivateToursRouteImport.update({
 const ItineraryRoute = ItineraryRouteImport.update({
   id: '/itinerary',
   path: '/itinerary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowManyDaysInPortugalRoute = HowManyDaysInPortugalRouteImport.update({
+  id: '/how-many-days-in-portugal',
+  path: '/how-many-days-in-portugal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HeroVerifyRoute = HeroVerifyRouteImport.update({
@@ -1047,6 +1066,7 @@ export interface FileRoutesByFullPath {
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
+  '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
   '/lisbon-private-tours': typeof LisbonPrivateToursRoute
   '/lisbon-wine-tours': typeof LisbonWineToursRoute
@@ -1057,6 +1077,7 @@ export interface FileRoutesByFullPath {
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
   '/partners': typeof PartnersRouteWithChildren
+  '/portugal-for-american-travelers': typeof PortugalForAmericanTravelersRoute
   '/portugal-itinerary': typeof PortugalItineraryRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
@@ -1079,6 +1100,7 @@ export interface FileRoutesByFullPath {
   '/reviews': typeof ReviewsRoute
   '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
+  '/sitemap-images.xml': typeof SitemapImagesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio': typeof StudioRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -1213,6 +1235,7 @@ export interface FileRoutesByTo {
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
+  '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
   '/lisbon-private-tours': typeof LisbonPrivateToursRoute
   '/lisbon-wine-tours': typeof LisbonWineToursRoute
@@ -1222,6 +1245,7 @@ export interface FileRoutesByTo {
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
   '/partners': typeof PartnersRouteWithChildren
+  '/portugal-for-american-travelers': typeof PortugalForAmericanTravelersRoute
   '/portugal-itinerary': typeof PortugalItineraryRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
@@ -1243,6 +1267,7 @@ export interface FileRoutesByTo {
   '/reviews': typeof ReviewsRoute
   '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
+  '/sitemap-images.xml': typeof SitemapImagesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio': typeof StudioRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -1378,6 +1403,7 @@ export interface FileRoutesById {
   '/experiences': typeof ExperiencesRoute
   '/faq': typeof FaqRoute
   '/hero-verify': typeof HeroVerifyRoute
+  '/how-many-days-in-portugal': typeof HowManyDaysInPortugalRoute
   '/itinerary': typeof ItineraryRoute
   '/lisbon-private-tours': typeof LisbonPrivateToursRoute
   '/lisbon-wine-tours': typeof LisbonWineToursRoute
@@ -1388,6 +1414,7 @@ export interface FileRoutesById {
   '/moments': typeof MomentsRoute
   '/multi-day': typeof MultiDayRoute
   '/partners': typeof PartnersRouteWithChildren
+  '/portugal-for-american-travelers': typeof PortugalForAmericanTravelersRoute
   '/portugal-itinerary': typeof PortugalItineraryRoute
   '/portugal-tours': typeof PortugalToursRoute
   '/portugal-travel-designer': typeof PortugalTravelDesignerRoute
@@ -1410,6 +1437,7 @@ export interface FileRoutesById {
   '/reviews': typeof ReviewsRoute
   '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
+  '/sitemap-images.xml': typeof SitemapImagesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio': typeof StudioRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -1546,6 +1574,7 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/faq'
     | '/hero-verify'
+    | '/how-many-days-in-portugal'
     | '/itinerary'
     | '/lisbon-private-tours'
     | '/lisbon-wine-tours'
@@ -1556,6 +1585,7 @@ export interface FileRouteTypes {
     | '/moments'
     | '/multi-day'
     | '/partners'
+    | '/portugal-for-american-travelers'
     | '/portugal-itinerary'
     | '/portugal-tours'
     | '/portugal-travel-designer'
@@ -1578,6 +1608,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/search'
     | '/sintra-day-tour-from-lisbon'
+    | '/sitemap-images.xml'
     | '/sitemap.xml'
     | '/studio'
     | '/studio-drift'
@@ -1712,6 +1743,7 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/faq'
     | '/hero-verify'
+    | '/how-many-days-in-portugal'
     | '/itinerary'
     | '/lisbon-private-tours'
     | '/lisbon-wine-tours'
@@ -1721,6 +1753,7 @@ export interface FileRouteTypes {
     | '/moments'
     | '/multi-day'
     | '/partners'
+    | '/portugal-for-american-travelers'
     | '/portugal-itinerary'
     | '/portugal-tours'
     | '/portugal-travel-designer'
@@ -1742,6 +1775,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/search'
     | '/sintra-day-tour-from-lisbon'
+    | '/sitemap-images.xml'
     | '/sitemap.xml'
     | '/studio'
     | '/studio-drift'
@@ -1876,6 +1910,7 @@ export interface FileRouteTypes {
     | '/experiences'
     | '/faq'
     | '/hero-verify'
+    | '/how-many-days-in-portugal'
     | '/itinerary'
     | '/lisbon-private-tours'
     | '/lisbon-wine-tours'
@@ -1886,6 +1921,7 @@ export interface FileRouteTypes {
     | '/moments'
     | '/multi-day'
     | '/partners'
+    | '/portugal-for-american-travelers'
     | '/portugal-itinerary'
     | '/portugal-tours'
     | '/portugal-travel-designer'
@@ -1908,6 +1944,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/search'
     | '/sintra-day-tour-from-lisbon'
+    | '/sitemap-images.xml'
     | '/sitemap.xml'
     | '/studio'
     | '/studio-drift'
@@ -2043,6 +2080,7 @@ export interface RootRouteChildren {
   ExperiencesRoute: typeof ExperiencesRoute
   FaqRoute: typeof FaqRoute
   HeroVerifyRoute: typeof HeroVerifyRoute
+  HowManyDaysInPortugalRoute: typeof HowManyDaysInPortugalRoute
   ItineraryRoute: typeof ItineraryRoute
   LisbonPrivateToursRoute: typeof LisbonPrivateToursRoute
   LisbonWineToursRoute: typeof LisbonWineToursRoute
@@ -2053,6 +2091,7 @@ export interface RootRouteChildren {
   MomentsRoute: typeof MomentsRoute
   MultiDayRoute: typeof MultiDayRoute
   PartnersRoute: typeof PartnersRouteWithChildren
+  PortugalForAmericanTravelersRoute: typeof PortugalForAmericanTravelersRoute
   PortugalItineraryRoute: typeof PortugalItineraryRoute
   PortugalToursRoute: typeof PortugalToursRoute
   PortugalTravelDesignerRoute: typeof PortugalTravelDesignerRoute
@@ -2075,6 +2114,7 @@ export interface RootRouteChildren {
   ReviewsRoute: typeof ReviewsRoute
   SearchRoute: typeof SearchRoute
   SintraDayTourFromLisbonRoute: typeof SintraDayTourFromLisbonRoute
+  SitemapImagesDotxmlRoute: typeof SitemapImagesDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudioRoute: typeof StudioRoute
   StudioDriftRoute: typeof StudioDriftRoute
@@ -2246,6 +2286,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap-images.xml': {
+      id: '/sitemap-images.xml'
+      path: '/sitemap-images.xml'
+      fullPath: '/sitemap-images.xml'
+      preLoaderRoute: typeof SitemapImagesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sintra-day-tour-from-lisbon': {
       id: '/sintra-day-tour-from-lisbon'
       path: '/sintra-day-tour-from-lisbon'
@@ -2400,6 +2447,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortugalItineraryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portugal-for-american-travelers': {
+      id: '/portugal-for-american-travelers'
+      path: '/portugal-for-american-travelers'
+      fullPath: '/portugal-for-american-travelers'
+      preLoaderRoute: typeof PortugalForAmericanTravelersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/partners': {
       id: '/partners'
       path: '/partners'
@@ -2468,6 +2522,13 @@ declare module '@tanstack/react-router' {
       path: '/itinerary'
       fullPath: '/itinerary'
       preLoaderRoute: typeof ItineraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-many-days-in-portugal': {
+      id: '/how-many-days-in-portugal'
+      path: '/how-many-days-in-portugal'
+      fullPath: '/how-many-days-in-portugal'
+      preLoaderRoute: typeof HowManyDaysInPortugalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/hero-verify': {
@@ -3419,6 +3480,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExperiencesRoute: ExperiencesRoute,
   FaqRoute: FaqRoute,
   HeroVerifyRoute: HeroVerifyRoute,
+  HowManyDaysInPortugalRoute: HowManyDaysInPortugalRoute,
   ItineraryRoute: ItineraryRoute,
   LisbonPrivateToursRoute: LisbonPrivateToursRoute,
   LisbonWineToursRoute: LisbonWineToursRoute,
@@ -3429,6 +3491,7 @@ const rootRouteChildren: RootRouteChildren = {
   MomentsRoute: MomentsRoute,
   MultiDayRoute: MultiDayRoute,
   PartnersRoute: PartnersRouteWithChildren,
+  PortugalForAmericanTravelersRoute: PortugalForAmericanTravelersRoute,
   PortugalItineraryRoute: PortugalItineraryRoute,
   PortugalToursRoute: PortugalToursRoute,
   PortugalTravelDesignerRoute: PortugalTravelDesignerRoute,
@@ -3451,6 +3514,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewsRoute: ReviewsRoute,
   SearchRoute: SearchRoute,
   SintraDayTourFromLisbonRoute: SintraDayTourFromLisbonRoute,
+  SitemapImagesDotxmlRoute: SitemapImagesDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudioRoute: StudioRoute,
   StudioDriftRoute: StudioDriftRoute,

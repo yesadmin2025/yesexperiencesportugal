@@ -39,3 +39,4 @@ Disallow: /local-stories/$slug
 Disallow: /local-stories/%24slug
 
 Sitemap: https://yesexperiencesportugal.com/sitemap.xml
+Sitemap: https://yesexperiencesportugal.com/sitemap-images.xml

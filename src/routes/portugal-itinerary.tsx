@@ -218,7 +218,15 @@ function PortugalItinerary() {
             <Link to="/multi-day" className="underline underline-offset-4">
               multi-day journeys
             </Link>
-            .
+            . Still deciding on length? See{" "}
+            <Link to="/how-many-days-in-portugal" className="underline underline-offset-4">
+              how many days you need in Portugal
+            </Link>
+            , or{" "}
+            <Link to="/portugal-for-american-travelers" className="underline underline-offset-4">
+              Portugal for American travelers
+            </Link>{" "}
+            if you are flying from the US.
           </p>
         </div>
       </section>
