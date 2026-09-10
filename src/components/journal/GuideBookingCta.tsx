@@ -98,7 +98,7 @@ export function GuideBookingCta({
             recordGuideLinkClick({
               guideSlug,
               slot: "inline_book_request",
-              kind: "booking_request",
+              kind: "other",
               destination: `/book?tour=${tour.id}`,
             })
           }
