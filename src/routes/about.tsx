@@ -1,5 +1,5 @@
 import { localeAlternateLinks } from "@/i18n/seo";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { SiteLayout } from "@/components/SiteLayout";
 import { ServiceCrossLinks } from "@/components/entity/ServiceCrossLinks";
