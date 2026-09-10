@@ -456,8 +456,12 @@ function Page() {
               Open the Studio
             </CtaButton>
           </div>
+          <div className="mt-6 flex justify-center">
+            <TeamEnquiriesLink />
+          </div>
         </div>
       </section>
+
       <ServiceCrossLinks
         tone="ivory"
         eyebrow="What we do"
