@@ -20,6 +20,7 @@ import { Route as StudioLivingAtlasPreviewRouteImport } from './routes/studio-li
 import { Route as StudioDriftRouteImport } from './routes/studio-drift'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SitemapImagesDotxmlRouteImport } from './routes/sitemap-images[.]xml'
 import { Route as SintraDayTourFromLisbonRouteImport } from './routes/sintra-day-tour-from-lisbon'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ReviewsRouteImport } from './routes/reviews'
@@ -230,6 +231,11 @@ const StudioRoute = StudioRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapImagesDotxmlRoute = SitemapImagesDotxmlRouteImport.update({
+  id: '/sitemap-images.xml',
+  path: '/sitemap-images.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SintraDayTourFromLisbonRoute = SintraDayTourFromLisbonRouteImport.update({
@@ -1094,6 +1100,7 @@ export interface FileRoutesByFullPath {
   '/reviews': typeof ReviewsRoute
   '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
+  '/sitemap-images.xml': typeof SitemapImagesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio': typeof StudioRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -1260,6 +1267,7 @@ export interface FileRoutesByTo {
   '/reviews': typeof ReviewsRoute
   '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
+  '/sitemap-images.xml': typeof SitemapImagesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio': typeof StudioRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -1429,6 +1437,7 @@ export interface FileRoutesById {
   '/reviews': typeof ReviewsRoute
   '/search': typeof SearchRoute
   '/sintra-day-tour-from-lisbon': typeof SintraDayTourFromLisbonRoute
+  '/sitemap-images.xml': typeof SitemapImagesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/studio': typeof StudioRoute
   '/studio-drift': typeof StudioDriftRoute
@@ -1599,6 +1608,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/search'
     | '/sintra-day-tour-from-lisbon'
+    | '/sitemap-images.xml'
     | '/sitemap.xml'
     | '/studio'
     | '/studio-drift'
@@ -1765,6 +1775,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/search'
     | '/sintra-day-tour-from-lisbon'
+    | '/sitemap-images.xml'
     | '/sitemap.xml'
     | '/studio'
     | '/studio-drift'
@@ -1933,6 +1944,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/search'
     | '/sintra-day-tour-from-lisbon'
+    | '/sitemap-images.xml'
     | '/sitemap.xml'
     | '/studio'
     | '/studio-drift'
@@ -2102,6 +2114,7 @@ export interface RootRouteChildren {
   ReviewsRoute: typeof ReviewsRoute
   SearchRoute: typeof SearchRoute
   SintraDayTourFromLisbonRoute: typeof SintraDayTourFromLisbonRoute
+  SitemapImagesDotxmlRoute: typeof SitemapImagesDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudioRoute: typeof StudioRoute
   StudioDriftRoute: typeof StudioDriftRoute
@@ -2271,6 +2284,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-images.xml': {
+      id: '/sitemap-images.xml'
+      path: '/sitemap-images.xml'
+      fullPath: '/sitemap-images.xml'
+      preLoaderRoute: typeof SitemapImagesDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sintra-day-tour-from-lisbon': {
@@ -3494,6 +3514,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewsRoute: ReviewsRoute,
   SearchRoute: SearchRoute,
   SintraDayTourFromLisbonRoute: SintraDayTourFromLisbonRoute,
+  SitemapImagesDotxmlRoute: SitemapImagesDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudioRoute: StudioRoute,
   StudioDriftRoute: StudioDriftRoute,
