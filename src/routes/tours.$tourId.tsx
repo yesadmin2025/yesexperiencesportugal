@@ -270,8 +270,12 @@ function TourDetailPage() {
       {/* ── 3 · SHORT INTRO ─────────────────────────────────────── */}
       <IntroBlock tour={tour} />
 
+      {/* ── 3b · EDITORIAL NOTE + BOOKING CTA ──────────────────── */}
+      <TourEditorialNote tour={tour} />
+
       {/* ── 4 · HIGHLIGHTS ─────────────────────────────────────── */}
       <HighlightsBlock tour={tour} />
+
 
       {/* ── 5 · ITINERARY (real Viator stops only) ────────────── */}
       <ItineraryTimeline tour={tour} meta={meta} />
