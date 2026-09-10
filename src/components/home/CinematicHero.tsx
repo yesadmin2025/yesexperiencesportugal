@@ -328,6 +328,13 @@ export function CinematicHero() {
               >
                 {HERO_COPY.brandLine}
               </Link>
+              <Link
+                to="/book"
+                data-testid="hero-book-direct"
+                className="inline-flex min-h-[44px] items-center text-[12.5px] text-[color:var(--ivory)]/85 underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-white"
+              >
+                Know your dates? Book a day directly →
+              </Link>
             </div>
           </div>
         </div>

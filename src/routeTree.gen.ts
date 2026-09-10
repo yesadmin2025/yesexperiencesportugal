@@ -58,6 +58,7 @@ import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as BrandQaRouteImport } from './routes/brand-qa'
 import { Route as BookingReceiptRouteImport } from './routes/booking-receipt'
 import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
+import { Route as BookRouteImport } from './routes/book'
 import { Route as BestWineToursLisbonRouteImport } from './routes/best-wine-tours-lisbon'
 import { Route as BestWineTastingNearLisbonRouteImport } from './routes/best-wine-tasting-near-lisbon'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -407,6 +408,11 @@ const BookingReceiptRoute = BookingReceiptRouteImport.update({
 const BookingConfirmedRoute = BookingConfirmedRouteImport.update({
   id: '/booking-confirmed',
   path: '/booking-confirmed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookRoute = BookRouteImport.update({
+  id: '/book',
+  path: '/book',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BestWineToursLisbonRoute = BestWineToursLisbonRouteImport.update({
@@ -953,6 +959,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/best-wine-tasting-near-lisbon': typeof BestWineTastingNearLisbonRoute
   '/best-wine-tours-lisbon': typeof BestWineToursLisbonRoute
+  '/book': typeof BookRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/booking-receipt': typeof BookingReceiptRoute
   '/brand-qa': typeof BrandQaRoute
@@ -1107,6 +1114,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/best-wine-tasting-near-lisbon': typeof BestWineTastingNearLisbonRoute
   '/best-wine-tours-lisbon': typeof BestWineToursLisbonRoute
+  '/book': typeof BookRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/booking-receipt': typeof BookingReceiptRoute
   '/brand-qa': typeof BrandQaRoute
@@ -1260,6 +1268,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/best-wine-tasting-near-lisbon': typeof BestWineTastingNearLisbonRoute
   '/best-wine-tours-lisbon': typeof BestWineToursLisbonRoute
+  '/book': typeof BookRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
   '/booking-receipt': typeof BookingReceiptRoute
   '/brand-qa': typeof BrandQaRoute
@@ -1416,6 +1425,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/best-wine-tasting-near-lisbon'
     | '/best-wine-tours-lisbon'
+    | '/book'
     | '/booking-confirmed'
     | '/booking-receipt'
     | '/brand-qa'
@@ -1570,6 +1580,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/best-wine-tasting-near-lisbon'
     | '/best-wine-tours-lisbon'
+    | '/book'
     | '/booking-confirmed'
     | '/booking-receipt'
     | '/brand-qa'
@@ -1722,6 +1733,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/best-wine-tasting-near-lisbon'
     | '/best-wine-tours-lisbon'
+    | '/book'
     | '/booking-confirmed'
     | '/booking-receipt'
     | '/brand-qa'
@@ -1877,6 +1889,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BestWineTastingNearLisbonRoute: typeof BestWineTastingNearLisbonRoute
   BestWineToursLisbonRoute: typeof BestWineToursLisbonRoute
+  BookRoute: typeof BookRoute
   BookingConfirmedRoute: typeof BookingConfirmedRoute
   BookingReceiptRoute: typeof BookingReceiptRoute
   BrandQaRoute: typeof BrandQaRoute
@@ -2348,6 +2361,13 @@ declare module '@tanstack/react-router' {
       path: '/booking-confirmed'
       fullPath: '/booking-confirmed'
       preLoaderRoute: typeof BookingConfirmedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book': {
+      id: '/book'
+      path: '/book'
+      fullPath: '/book'
+      preLoaderRoute: typeof BookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/best-wine-tours-lisbon': {
@@ -3157,6 +3177,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BestWineTastingNearLisbonRoute: BestWineTastingNearLisbonRoute,
   BestWineToursLisbonRoute: BestWineToursLisbonRoute,
+  BookRoute: BookRoute,
   BookingConfirmedRoute: BookingConfirmedRoute,
   BookingReceiptRoute: BookingReceiptRoute,
   BrandQaRoute: BrandQaRoute,

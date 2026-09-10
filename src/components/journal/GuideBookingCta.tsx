@@ -89,6 +89,23 @@ export function GuideBookingCta({
         >
           Or design your own day
         </Link>
+
+        <Link
+          to="/book"
+          search={{ tour: tour.id }}
+          {...guideRefDataAttrs(guideSlug, "inline_book_request")}
+          onClick={() =>
+            recordGuideLinkClick({
+              guideSlug,
+              slot: "inline_book_request",
+              kind: "other",
+              destination: `/book?tour=${tour.id}`,
+            })
+          }
+          className="inline-flex min-h-[48px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.16em] font-semibold text-[color:var(--teal)] underline decoration-[color:var(--gold)]/60 underline-offset-4 hover:text-[color:var(--charcoal)] sm:ml-auto"
+        >
+          Tell us your dates
+        </Link>
       </div>
     </aside>
   );

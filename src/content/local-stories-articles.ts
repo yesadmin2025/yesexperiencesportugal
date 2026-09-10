@@ -55,9 +55,9 @@ export type LocalStoryArticle = {
 export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   {
     slug: "best-day-trips-from-lisbon",
-    title: "Best Day Trips from Lisbon (by a Local) — Wine, Coast & Arrábida",
+    title: "Best Day Trips from Lisbon: A Local's Honest Guide",
     metaDescription:
-      "A local's guide to the best day trips from Lisbon — Arrábida wine country, the wild south coast, Sintra and Sesimbra. Written by the team that designs them.",
+      "The best day trips from Lisbon, ranked by a local team — Arrábida wine country, Sintra's palaces, Sesimbra's coves and Évora. Drive times, seasons, picks.",
     h1: "Best Day Trips from Lisbon — by a Local",
     eyebrow: "Lisbon · Day Trips",
     standfirst:
@@ -145,9 +145,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
 
   {
     slug: "arrabida-vs-sintra",
-    title: "Arrábida vs Sintra: Which Day Trip Is Right for You?",
+    title: "Arrábida vs Sintra: Which Day Trip from Lisbon to Pick",
     metaDescription:
-      "Arrábida or Sintra from Lisbon? A local's honest comparison — wine country and wild coast vs palaces and forest — to help you choose the right day.",
+      "Arrábida or Sintra for your day trip from Lisbon? An honest local comparison — wine and wild coast vs palaces and forest — and when each one wins.",
     h1: "Arrábida vs Sintra: Which Day Trip Is Right for You?",
     eyebrow: "Compare · Day Trips",
     standfirst:
@@ -179,9 +179,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "setubal-wine-guide",
-    title: "Setúbal Wine Country Guide | Moscatel & Wineries",
+    title: "Setúbal Wine Guide: Moscatel, Wineries & Azeitão",
     metaDescription:
-      "Explore Setúbal wine country near Lisbon, from Moscatel and Azeitão cheese to family wineries, Arrábida landscapes and coastal lunches.",
+      "A local's Setúbal wine guide — Moscatel cellars, family wineries in Azeitão, Arrábida views and the market lunch. 40 minutes from Lisbon.",
     h1: "Setúbal Wine Country — A Local's Guide",
     eyebrow: "Setúbal · Wine",
     standfirst:
@@ -218,9 +218,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "what-to-do-in-sesimbra",
-    title: "Things to Do in Sesimbra: Castle, Coves & Seafood — By Locals",
+    title: "Things to Do in Sesimbra: Castle, Coves & Seafood",
     metaDescription:
-      "Sesimbra from the people who live here: the castle viewpoint, quiet Arrábida coves, and where to eat the day's catch. 40 minutes from Lisbon.",
+      "Things to do in Sesimbra, by locals: the castle viewpoint, quiet Arrábida coves, the fish market and where to eat the day's catch. 40 minutes from Lisbon.",
 
     h1: "What to Do in Sesimbra — A Local's Guide to Our Fishing Town",
     eyebrow: "Sesimbra · Coast",
@@ -279,9 +279,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "private-tour-vs-group-tour",
-    title: "Private vs Group Tours in Portugal: What's Actually Worth It",
+    title: "Private vs Group Tours in Portugal: What's Worth It",
     metaDescription:
-      "Private tour or group tour in Portugal? A local operator's honest comparison — what you really get, what you actually pay, and when each makes sense.",
+      "Private or group tour in Portugal? A local operator's honest comparison — real costs, real differences, and when a private day is worth it.",
     h1: "Private vs Group Tours in Portugal — What's Actually Worth It",
     eyebrow: "Travel · How to Choose",
     standfirst:
@@ -312,9 +312,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "troia-comporta-guide",
-    title: "Tróia & Comporta from Lisbon — A Local's Slow Alentejo Day",
+    title: "Tróia & Comporta from Lisbon: Beaches, Ruins & Wine",
     metaDescription:
-      "Tróia, Comporta and the slow Alentejo coast — Roman ruins, sandy-soil wineries and untouched beaches. A local's guide to a private day south of Lisbon.",
+      "A slow day south of Lisbon — Tróia's Roman ruins, Comporta's rice fields and beaches, and sandy-soil wineries. A local's guide to the quiet coast.",
     h1: "Tróia & Comporta — Beaches, Ruins and Slow Alentejo Days",
     eyebrow: "Tróia · Comporta · Alentejo",
     standfirst:
@@ -353,9 +353,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "southwest-vicentine-coast-guide",
-    title: "Portugal's Southwest Coast: A Local's Guide to the Vicentine Coast",
+    title: "Vicentine Coast Guide: Portugal's Wild Southwest",
     metaDescription:
-      "The wild Vicentine coast from Lisbon — Porto Covo, Milfontes, Odeceixe. A local's guide to Portugal's hidden Atlantic between Alentejo and Algarve.",
+      "The Vicentine Coast from Lisbon — Porto Covo, Milfontes, Odeceixe. A local's guide to Portugal's wild Atlantic between Alentejo and the Algarve.",
     h1: "The Southwest Vicentine Coast — Portugal's Hidden Atlantic",
     eyebrow: "Vicentine Coast · Alentejo · Costa",
     standfirst:
@@ -408,9 +408,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "roman-heritage-alentejo-talha-wines",
-    title: "Roman Wines of Alentejo — A Local's Guide to Talha Wine Country",
+    title: "Talha Wines of Alentejo: A Local Roman Wine Guide",
     metaDescription:
-      "The hidden Alentejo: São Cucufate Roman ruins, Vila Alva, and family-run talha wineries making wine in clay amphorae the Roman way. A local's guide from Lisbon.",
+      "Alentejo's hidden wine country — São Cucufate's Roman ruins and family cellars still making talha wine in clay amphorae. A day trip from Lisbon.",
     h1: "The Roman Wines of Alentejo — Talha Country, a Local's Guide",
     eyebrow: "Alentejo · Wine · Heritage",
     standfirst:
@@ -463,9 +463,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "is-a-wine-tour-from-lisbon-worth-it",
-    title: "Is a Wine Tour from Lisbon Worth It? An Honest Local Answer",
+    title: "Is a Wine Tour from Lisbon Worth It? An Honest Answer",
     metaDescription:
-      "Is a wine tour from Lisbon actually worth it? A local operator's honest answer — when it's brilliant, when it isn't, and how to choose the right day.",
+      "Is a wine tour from Lisbon worth it? A local operator's honest answer — when it shines, when to skip it, and how to choose the right wine day.",
     h1: "Is a Wine Tour from Lisbon Worth It?",
     eyebrow: "Lisbon · Wine",
     standfirst:
@@ -500,9 +500,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-regions-near-lisbon",
-    title: "Best Wine Regions Near Lisbon | Arrábida, Setúbal & Alentejo",
+    title: "Best Wine Regions Near Lisbon: A Local Comparison",
     metaDescription:
-      "Compare the best wine regions near Lisbon, including Arrábida, Setúbal and Alentejo, with local advice on distance, style and the right day trip.",
+      "The best wine regions near Lisbon compared — Arrábida, Setúbal and Alentejo — with local advice on drive time, wine style and the right day trip.",
     h1: "The Best Wine Regions Near Lisbon",
     eyebrow: "Wine · Regions",
     standfirst:
@@ -546,9 +546,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "arrabida-vs-alentejo",
-    title: "Arrábida vs Alentejo: Which Wine Region Should You Visit?",
+    title: "Arrábida vs Alentejo: Which Wine Day Trip to Choose",
     metaDescription:
-      "Arrábida or Alentejo from Lisbon? A local's honest comparison — coast and Moscatel vs cork oaks and talhas — to help you pick the right wine day.",
+      "Arrábida or Alentejo for your wine day trip from Lisbon? Coast and Moscatel vs cork oaks and talhas — an honest local comparison to help you pick.",
     h1: "Arrábida vs Alentejo — Which Wine Region Should You Visit?",
     eyebrow: "Compare · Wine",
     standfirst:
@@ -580,9 +580,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wineries-near-lisbon",
-    title: "Best Wineries Near Lisbon | A Local Wine Guide",
+    title: "Best Wineries Near Lisbon: A Local Wine Guide",
     metaDescription:
-      "Discover the best winery experiences near Lisbon, from family cellars in Arrábida and Setúbal to traditional talha wine in Alentejo.",
+      "The best wineries near Lisbon, chosen by locals — family cellars in Arrábida and Setúbal, Moscatel tastings and traditional talha wine in Alentejo.",
     h1: "The Best Wineries Near Lisbon",
     eyebrow: "Wine · Lisbon Region",
     standfirst:
@@ -641,9 +641,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   // -----------------------------------------------------------------------
   {
     slug: "arrabida-day-trip-from-lisbon",
-    title: "Arrábida Day Trip from Lisbon — Private Wine & Beaches",
+    title: "Arrábida Day Trip from Lisbon: Wine, Hills & Beaches",
     metaDescription:
-      "Private Arrábida day trip from Lisbon — Setúbal market, family wineries in Azeitão and a long Portuguese lunch. Door-to-door driving.",
+      "A private Arrábida day trip from Lisbon — Setúbal's market, family wineries in Azeitão, coves below the ridge and a long Portuguese lunch.",
     h1: "Arrábida Day Trip from Lisbon — wine, hills & sea",
     eyebrow: "Lisbon · Arrábida Day",
     standfirst:
@@ -684,9 +684,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "arrabida-wine-tour",
-    title: "Arrábida Wine Tour from Lisbon | Private Setúbal Day",
+    title: "Arrábida Wine Tour from Lisbon: Private Setúbal Day",
     metaDescription:
-      "Discover Arrábida and Setúbal on a private wine tour from Lisbon, with family wineries, Azeitão, coastal scenery and a relaxed Portuguese lunch.",
+      "A private Arrábida wine tour from Lisbon — family wineries, Azeitão cheese, Setúbal's market, coastal scenery and an unhurried Portuguese lunch.",
     h1: "Private Arrábida Wine Tour from Lisbon",
     eyebrow: "Arrábida · Private Wine Day",
     standfirst:
@@ -729,9 +729,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "sintra-day-tour-from-lisbon",
-    title: "Sintra Day Tour from Lisbon — Private & Cabo da Roca",
+    title: "Sintra Day Tour from Lisbon: Palaces & Cabo da Roca",
     metaDescription:
-      "Private Sintra day tour from Lisbon — quieter palaces, Cabo da Roca, Cascais and a small wine tasting. Door-to-door from your hotel.",
+      "A private Sintra day tour from Lisbon — palaces before the crowds, Cabo da Roca, Cascais and a small wine tasting. Door-to-door from your hotel.",
     h1: "Private Sintra Day Tour from Lisbon — without the queues",
     eyebrow: "Lisbon · Private Sintra Day",
     standfirst:
@@ -785,9 +785,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "portugal-wine-tours",
-    title: "Private Portugal Wine Tours | Lisbon, Alentejo & Beyond",
+    title: "Private Wine Tours in Portugal: Lisbon to Alentejo",
     metaDescription:
-      "Discover private wine tours across Portugal, from Arrábida and Setúbal near Lisbon to Alentejo traditions, family wineries and local food.",
+      "Private wine tours across Portugal — Arrábida and Setúbal near Lisbon, Alentejo's talha cellars, family wineries and long local lunches.",
     h1: "Private Wine Tours in Portugal",
     eyebrow: "Portugal · Wine Tours",
     standfirst: "Small cellars, real winemakers, and a private day paced around lunch.",
@@ -829,9 +829,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "wine-tours-lisbon",
-    title: "Private Wine Tours from Lisbon | Arrábida & Setúbal",
+    title: "Wine Tours from Lisbon: Private Arrábida & Setúbal",
     metaDescription:
-      "Explore private wine tours from Lisbon to Arrábida, Setúbal, Azeitão and Palmela, with family wineries, local lunch and a private guide.",
+      "Private wine tours from Lisbon to Arrábida, Setúbal, Azeitão and Palmela — family wineries, Moscatel tastings and a relaxed local lunch.",
     h1: "Private Wine Tours from Lisbon",
     eyebrow: "Lisbon · Private Wine Days",
     standfirst:
@@ -866,9 +866,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "private-wine-tour-lisbon",
-    title: "Private Wine Tour from Lisbon — Arrábida, Azeitão & Setúbal",
+    title: "Private Wine Tour from Lisbon: Arrábida & Azeitão",
     metaDescription:
-      "Private wine tour from Lisbon to Arrábida and Azeitão — two or three family wineries, a long Portuguese lunch and door-to-door driving.",
+      "A private wine tour from Lisbon to Arrábida and Azeitão — two or three family wineries, a long Portuguese lunch and door-to-door driving.",
     h1: "Private Wine Tour from Lisbon — Arrábida & Azeitão",
     eyebrow: "Lisbon · Private Wine Day",
     standfirst:
@@ -908,9 +908,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "alentejo-wine-tour-from-lisbon",
-    title: "Alentejo Wine Tour from Lisbon | Private Évora & Cork",
+    title: "Alentejo Wine Tour from Lisbon: Évora, Cork & Cellars",
     metaDescription:
-      "Private Alentejo wine tour from Lisbon — Évora's UNESCO old town, two family wineries and a cork stop, with a long Alentejo lunch. Door-to-door.",
+      "A private Alentejo wine tour from Lisbon — Évora's UNESCO old town, two family wineries, a cork stop and a long Alentejo lunch. Door-to-door.",
     h1: "Alentejo Wine Tour from Lisbon — wine, cork & Évora",
     eyebrow: "Lisbon · Alentejo wine country",
     standfirst:
@@ -941,9 +941,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "evora-alentejo-wine-tour",
-    title: "Évora & Alentejo Wine Tour | Private Full-Day from Lisbon",
+    title: "Évora & Alentejo Wine Tour: Private Day from Lisbon",
     metaDescription:
-      "A private full day from Lisbon combining Évora's UNESCO old town, two family Alentejo wineries and a cork tradition stop — unhurried, door-to-door.",
+      "A private full day from Lisbon — Évora's UNESCO old town, two family Alentejo wineries and a cork tradition stop, at an unhurried pace.",
     h1: "Évora & Alentejo Wine Tour — one private full day",
     eyebrow: "Lisbon · Évora & Alentejo",
     standfirst:
@@ -974,9 +974,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "evora-private-tour-from-lisbon",
-    title: "Private Évora Day Tour from Lisbon — UNESCO & Alentejo",
+    title: "Private Évora Tour from Lisbon: UNESCO, Wine & Cork",
     metaDescription:
-      "Private Évora tour from Lisbon — the Roman Temple, Chapel of Bones, two family wineries and a cork tradition stop, with an unhurried Alentejo lunch.",
+      "A private Évora day trip from Lisbon — the Roman Temple, Chapel of Bones, two family wineries and a cork stop, with an unhurried Alentejo lunch.",
     h1: "Private Évora Tour from Lisbon — heritage, wine & cork",
     eyebrow: "Lisbon · Évora private day",
     standfirst:
@@ -1007,9 +1007,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-private-day-tours-from-lisbon",
-    title: "Best Private Day Tours from Lisbon — A Local's Guide",
+    title: "Best Private Day Tours from Lisbon: A Local's Guide",
     metaDescription:
-      "A local operator's guide to the best private day tours from Lisbon — Sintra, Arrábida and Évora compared, honestly, by the team that designs them.",
+      "The best private day tours from Lisbon, compared honestly by the team that designs them — Sintra, Arrábida, Évora and the wild south coast.",
     h1: "Best Private Day Tours from Lisbon",
     eyebrow: "Lisbon · Private Day Tours",
     standfirst:
@@ -1067,9 +1067,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-tasting-near-lisbon",
-    title: "Best Wine Tasting Near Lisbon — Setúbal, Arrábida & Azeitão",
+    title: "Best Wine Tasting Near Lisbon: Setúbal & Azeitão",
     metaDescription:
-      "Best wine tasting near Lisbon — family wineries in Setúbal, Azeitão and Arrábida, with Moscatel, local reds and a long lunch. Private days.",
+      "The best wine tasting near Lisbon — family wineries in Setúbal, Azeitão and Arrábida, with Moscatel, local reds and a long lunch. Private days.",
     h1: "Best Wine Tasting Near Lisbon — by a Local",
     eyebrow: "Lisbon · Wine Tasting",
     standfirst:
@@ -1123,9 +1123,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "private-tours-from-lisbon",
-    title: "Private Tours from Lisbon — Sintra, Arrábida & Alentejo",
+    title: "Private Tours from Lisbon: Sintra, Arrábida & Beyond",
     metaDescription:
-      "Private tours from Lisbon — Sintra, Arrábida, Alentejo and the Vicentine Coast, designed around you. Licensed local operator, door-to-door.",
+      "Private tours from Lisbon — Sintra, Arrábida, Alentejo and the Vicentine Coast, designed around you by a licensed local operator. Door-to-door.",
     h1: "Private Tours from Lisbon — a local's guide to the best days",
     eyebrow: "Lisbon · Private Days",
     standfirst:
@@ -1170,9 +1170,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-wine-tours-from-lisbon",
-    title: "Best Wine Tours from Lisbon — Private Day Trips 2026",
+    title: "Best Wine Tours from Lisbon: Private Day Trips (2026)",
     metaDescription:
-      "The best wine tours from Lisbon — private day trips to Arrábida, Azeitão and Alentejo. Small-group, door-to-door, designed by a licensed local operator.",
+      "The best wine tours from Lisbon for 2026 — private day trips to Arrábida, Azeitão and Alentejo, door-to-door, by a licensed local operator.",
     h1: "The Best Wine Tours from Lisbon",
     eyebrow: "Lisbon · Wine",
     standfirst:
@@ -1224,9 +1224,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "portugal-coastal-drives-from-lisbon",
-    title: "Portugal Coastal Drives from Lisbon — 4 Routes Worth the Day",
+    title: "4 Coastal Drives from Lisbon Worth a Full Day",
     metaDescription:
-      "Four coastal drives from Lisbon, by a local operator: Arrábida's cliff road, Cabo da Roca and Cascais, Tróia to Comporta, and the wild Vicentine Coast.",
+      "Four coastal drives from Lisbon, chosen by locals — Arrábida's cliff road, Cabo da Roca and Cascais, Tróia to Comporta, and the wild Vicentine Coast.",
     h1: "Portugal Coastal Drives from Lisbon",
     eyebrow: "Portugal · Coastal Drives",
     standfirst:
@@ -1270,9 +1270,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "portugal-heritage-sites-near-lisbon",
-    title: "Heritage Sites Near Lisbon — Roman, Moorish & Royal Portugal",
+    title: "Heritage Sites Near Lisbon: Roman, Moorish & Royal",
     metaDescription:
-      "A local guide to heritage sites near Lisbon: Évora's Roman temple, Sintra's palaces, Moorish castles and Alentejo talha wine cellars. Private day trips.",
+      "A local guide to heritage sites near Lisbon — Évora's Roman temple, Sintra's palaces, Moorish castles and Alentejo talha cellars, on private day trips.",
     h1: "Heritage Sites Near Lisbon",
     eyebrow: "Portugal · Heritage",
     standfirst:
@@ -1315,9 +1315,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "arrabida-wine-tour-from-lisbon",
-    title: "Arrábida Wine Tour from Lisbon — A Local Guide (2026)",
+    title: "Arrábida Wine Tour from Lisbon: A Local Guide (2026)",
     metaDescription:
-      "What an Arrábida wine tour from Lisbon really involves: Moscatel and Castelão, family cellars, Azeitão cheese, a coastal lunch and how to pick the right wine day.",
+      "What an Arrábida wine tour from Lisbon really involves — Moscatel and Castelão, family cellars, Azeitão cheese, a coastal lunch and how to pick the right day.",
     h1: "Arrábida Wine Tour from Lisbon — What to Know Before You Book",
     eyebrow: "Arrábida · Wine",
     standfirst:
@@ -1404,9 +1404,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "lisbon-day-trips-by-drive-time",
-    title: "Lisbon Day Trips by Drive Time: 30, 60 and 90 Minutes",
+    title: "Lisbon Day Trips by Drive Time: 30, 60 & 90 Minutes",
     metaDescription:
-      "Every worthwhile day trip from Lisbon sorted by how long the drive takes — 30, 60 and 90 minutes — so you can match the distance to the time you have.",
+      "Every worthwhile day trip from Lisbon sorted by drive time — 30, 60 and 90 minutes — so you can match the distance to the time you actually have.",
     h1: "Lisbon Day Trips by Drive Time",
     eyebrow: "Lisbon · Planning",
     standfirst: "Distance decides how much of the day is yours. Start here.",
@@ -1474,9 +1474,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "arrabida-wine-tour-what-to-expect",
-    title: "Arrábida Wine Day: What It Actually Looks Like, Hour by Hour",
+    title: "An Arrábida Wine Day from Lisbon, Hour by Hour",
     metaDescription:
-      "An honest hour-by-hour walk through an Arrábida wine day from Lisbon — pickup, cellars, cheese, lunch by the sea and what time you are home.",
+      "What an Arrábida wine day from Lisbon actually looks like, hour by hour — pickup, family cellars, cheese, lunch by the sea and when you're home.",
     h1: "An Arrábida Wine Day, Hour by Hour",
     eyebrow: "Arrábida · Behind the day",
     standfirst: "No surprises. This is the shape of the day, from your door and back.",
@@ -1538,9 +1538,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "best-time-of-year-lisbon-day-trip",
-    title: "Best Time of Year for a Day Trip from Lisbon (Month by Month)",
+    title: "Best Time for Day Trips from Lisbon, Month by Month",
     metaDescription:
-      "Month-by-month guide to day trips from Lisbon — weather, crowds, harvest, sea temperature and which month suits wine, coast or the Alentejo best.",
+      "A month-by-month guide to day trips from Lisbon — weather, crowds, grape harvest, sea temperature and which month suits wine, coast or Alentejo.",
     h1: "Best Time of Year for a Day Trip from Lisbon",
     eyebrow: "Lisbon · Seasons",
     standfirst: "There is no bad month here. There are months that suit different days.",
@@ -1601,7 +1601,7 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "lisbon-day-trips-with-kids-and-accessibility",
-    title: "Lisbon Day Trips with Kids or Limited Mobility — A Practical Guide",
+    title: "Lisbon Day Trips with Kids or Limited Mobility",
     metaDescription:
       "Which day trips from Lisbon work with young children, older travellers or limited mobility — cobbles, walking distances, car seats and where to skip.",
     h1: "Day Trips from Lisbon with Kids or Limited Mobility",

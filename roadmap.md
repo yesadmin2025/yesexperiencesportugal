@@ -34,3 +34,10 @@
 - [ ] Point hero and Four Ways secondary journeys to real pages with premium editorial copy
 - [ ] Optimize approved road-film mobile delivery and poster without blocking first paint
 - [ ] Align Multi-day and Travel Designer cinematic language and shared CTAs
+
+## 7. Local Stories search snippets
+- [x] Tighter titles + meta descriptions on all 32 local stories (keyword-front-loaded, ≤60 / 120–165 chars)
+
+## 8. Booking page + Signature editorial pages
+- [x] Real booking page /book: name, date, party size, preferences; linked from hero + local stories
+- [x] Signature day pages verified as editorial pages with real booking CTAs (already shipped)

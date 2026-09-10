@@ -194,6 +194,51 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_requests: {
+        Row: {
+          adults: number
+          attribution: Json | null
+          children: number
+          created_at: string
+          email: string
+          id: string
+          name: string
+          preferences: string | null
+          preferred_date: string | null
+          source: string | null
+          status: string
+          tour_id: string | null
+        }
+        Insert: {
+          adults?: number
+          attribution?: Json | null
+          children?: number
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          preferences?: string | null
+          preferred_date?: string | null
+          source?: string | null
+          status?: string
+          tour_id?: string | null
+        }
+        Update: {
+          adults?: number
+          attribution?: Json | null
+          children?: number
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          preferences?: string | null
+          preferred_date?: string | null
+          source?: string | null
+          status?: string
+          tour_id?: string | null
+        }
+        Relationships: []
+      }
       booking_snapshots: {
         Row: {
           created_at: string
