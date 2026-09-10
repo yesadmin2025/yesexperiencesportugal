@@ -296,6 +296,14 @@ function LisbonPrivateTours() {
             <Link to="/portugal-itinerary" className="underline underline-offset-4">
               Portugal itinerary guide
             </Link>
+            . Flying in from the US? Read{" "}
+            <Link to="/portugal-for-american-travelers" className="underline underline-offset-4">
+              Portugal for American travelers
+            </Link>{" "}
+            and{" "}
+            <Link to="/how-many-days-in-portugal" className="underline underline-offset-4">
+              how many days you need
+            </Link>
             .
           </p>
         </div>
