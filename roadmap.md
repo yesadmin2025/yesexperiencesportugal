@@ -36,7 +36,7 @@
 - [ ] Align Multi-day and Travel Designer cinematic language and shared CTAs
 
 ## 7. Local Stories search snippets
-- [ ] Tighter titles + meta descriptions on all 32 local stories (keyword-front-loaded, ≤60 / 120–165 chars)
+- [x] Tighter titles + meta descriptions on all 32 local stories (keyword-front-loaded, ≤60 / 120–165 chars)
 
 ## 8. Booking page + Signature editorial pages
 - [ ] Real booking page: name, date, party size, preferences; linked from hero + local stories
