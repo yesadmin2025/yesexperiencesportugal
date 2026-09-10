@@ -264,7 +264,7 @@ export function CinematicHero() {
               className="hero-promise flex items-center gap-3.5 text-[11px] font-medium uppercase tracking-[0.32em] text-[#F2DDAE] [text-shadow:0_1px_10px_rgba(0,0,0,0.55)] sm:text-[11.5px] md:justify-center"
               style={revealStyle(composed, COMPOSE_FADE_MS)}
             >
-              <span aria-hidden="true" className="h-px w-7 shrink-0 bg-[color:var(--gold)]/70 md:block" />
+              <span aria-hidden="true" className="hidden h-px w-7 shrink-0 bg-[color:var(--gold)]/70 md:block" />
               {HERO_COPY.eyebrow}
               <span aria-hidden="true" className="hidden h-px w-7 shrink-0 bg-[color:var(--gold)]/70 md:block" />
             </p>
