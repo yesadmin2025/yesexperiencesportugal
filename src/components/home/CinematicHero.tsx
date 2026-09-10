@@ -261,10 +261,12 @@ export function CinematicHero() {
 
             <p
               data-hero-field="eyebrow"
-              className="hero-promise text-[10.5px] font-medium uppercase tracking-[0.3em] text-[color:var(--gold-soft)] sm:text-[11px]"
+              className="hero-promise flex items-center gap-3.5 text-[11px] font-medium uppercase tracking-[0.32em] text-[#F2DDAE] [text-shadow:0_1px_10px_rgba(0,0,0,0.55)] sm:text-[11.5px] md:justify-center"
               style={revealStyle(composed, COMPOSE_FADE_MS)}
             >
+              <span aria-hidden="true" className="h-px w-7 shrink-0 bg-[color:var(--gold)]/70 md:block" />
               {HERO_COPY.eyebrow}
+              <span aria-hidden="true" className="hidden h-px w-7 shrink-0 bg-[color:var(--gold)]/70 md:block" />
             </p>
 
             <h1
@@ -290,14 +292,14 @@ export function CinematicHero() {
 
             <p
               data-hero-field="subheadline"
-              className="mt-8 max-w-xl text-[15px] leading-[1.7] text-[color:var(--ivory)]/90 sm:text-[16.5px] md:mx-auto"
+              className="mt-9 max-w-[34rem] font-serif text-[18px] font-light leading-[1.6] text-[color:var(--ivory)]/95 [text-shadow:0_1px_14px_rgba(0,0,0,0.5)] sm:text-[20px] md:mx-auto"
               style={revealStyle(composed, COMPOSE_FADE_MS)}
             >
               {HERO_COPY.subheadline}
             </p>
 
             <div
-              className="hero-cta-group mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center md:justify-center"
+              className="hero-cta-group mt-11 flex flex-col items-start gap-4 sm:flex-row sm:items-center md:justify-center"
               data-hero-composed={composed ? "true" : "false"}
               style={{
                 ...revealStyle(composed, COMPOSE_FADE_MS),
@@ -334,21 +336,21 @@ export function CinematicHero() {
             </div>
 
             <div
-              className="mt-8 flex flex-col gap-1 text-[12.5px] leading-[1.55] md:flex-row md:items-center md:justify-center md:gap-5"
+              className="mt-9 flex items-center text-[12px] leading-[1.55] md:justify-center"
               style={revealStyle(composed, COMPOSE_FADE_MS)}
             >
               <Link
                 to="/multi-day"
                 data-hero-field="brandLine"
-                className="inline-flex min-h-[44px] items-center text-[#F1D8AB]/95 underline decoration-[color:var(--gold)]/60 underline-offset-[6px] transition-colors duration-500 hover:text-white"
+                className="inline-flex min-h-[44px] items-center text-[#F1D8AB]/95 transition-colors duration-500 hover:text-white"
               >
                 {HERO_COPY.brandLine}
               </Link>
-              <span aria-hidden="true" className="hidden md:inline text-[color:var(--gold)]/50">·</span>
+              <span aria-hidden="true" className="hidden md:inline mx-5 text-[color:var(--gold)]/40">·</span>
               <Link
                 to="/book"
                 data-testid="hero-book-direct"
-                className="inline-flex min-h-[44px] items-center text-[12.5px] text-[color:var(--ivory)]/70 underline decoration-[color:var(--gold)]/40 underline-offset-[6px] transition-colors duration-500 hover:text-white"
+                className="hidden md:inline-flex min-h-[44px] items-center text-[12px] text-[color:var(--ivory)]/65 transition-colors duration-500 hover:text-white"
               >
                 Know your dates? Book a day directly →
               </Link>
