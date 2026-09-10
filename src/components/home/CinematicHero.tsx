@@ -166,7 +166,19 @@ export function CinematicHero() {
       className="hero-cinematic relative min-h-[100svh] w-full overflow-hidden bg-[color:var(--charcoal-deep,#1a1816)]"
     >
       <div className="hero-story-stage absolute inset-0 z-0">
-        <picture className="absolute inset-0 block h-full w-full">
+        {/* Slow settle: the film opens at a whisper of zoom and exhales to
+            rest over ~9s — a cinematic "exhale", not a Ken Burns drift. */}
+        <style>{`
+          @keyframes heroFilmSettle {
+            from { transform: scale(1.06); }
+            to { transform: scale(1); }
+          }
+          .hero-film-settle { animation: heroFilmSettle 9000ms cubic-bezier(0.22,1,0.36,1) both; }
+          @media (prefers-reduced-motion: reduce) {
+            .hero-film-settle { animation: none; }
+          }
+        `}</style>
+        <picture className="hero-film-settle absolute inset-0 block h-full w-full">
           <source
             media="(max-width: 767px)"
             srcSet={HERO_FILM.posterMobile}
@@ -191,7 +203,7 @@ export function CinematicHero() {
           playsInline
           preload="metadata"
           poster={HERO_FILM.poster}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="hero-film-settle absolute inset-0 h-full w-full object-cover"
           aria-hidden="true"
         >
           <source
