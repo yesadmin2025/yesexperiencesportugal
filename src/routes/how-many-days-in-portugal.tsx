@@ -145,7 +145,7 @@ export const Route = createFileRoute("/how-many-days-in-portugal")({
       ),
     ],
   }),
-  component: HowManyDays;
+  component: HowManyDays,
 });
 
 function HowManyDays() {
