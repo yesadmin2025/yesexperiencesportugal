@@ -1104,12 +1104,18 @@ function HomePage() {
 
             </ul>
 
-            <div className="mt-8 text-center">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-center">
               <Link
                 to="/local-stories"
                 className="text-sm underline underline-offset-4 text-[color:var(--charcoal)]"
               >
                 All local stories and guides
+              </Link>
+              <Link
+                to="/day-trips-from-lisbon"
+                className="text-sm underline underline-offset-4 text-[color:var(--charcoal)]"
+              >
+                Day trips from Lisbon
               </Link>
             </div>
           </div>

@@ -8,6 +8,7 @@ import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { signatureTours, findTour } from "@/data/signatureTours";
+import { SimpleBookingForm } from "@/components/SimpleBookingForm";
 import { guideAttributionMetadata } from "@/lib/guide-attribution";
 import { breadcrumbLd, jsonLdScript } from "@/lib/jsonld";
 import { toast } from "sonner";
@@ -40,7 +41,7 @@ export const Route = createFileRoute("/book")({
       {
         name: "description",
         content:
-          "Tell us your date, party and preferences in three short steps — a real person confirms your private day in Portugal within 24 hours. Instant booking also available.",
+          "Book a private day in Portugal: pay by card and confirm instantly, or send your dates in three short steps and a local replies personally within 24 hours.",
       },
       { property: "og:title", content: "Book a Private Day in Portugal | YES Portugal" },
       {
@@ -167,11 +168,32 @@ function BookPage() {
             Tell us your day. <SectionTitle.Em>We take care of the rest</SectionTitle.Em>.
           </SectionTitle>
           <p className="mt-6 max-w-2xl mx-auto text-[color:var(--charcoal-soft)] leading-relaxed">
-            Three short steps — your day, your party, your details. A real person from our team
-            replies within 24 hours with your day confirmed, or a better-shaped suggestion.
+            Two ways to do it: pay and confirm your day instantly, or send your dates and a real
+            person from our team replies within 24 hours.
           </p>
         </div>
       </section>
+
+      {chosenTour && !done ? (
+        <section className="py-12 md:py-14 border-b border-[color:var(--border)]" id="pay">
+          <div className="container-x max-w-3xl">
+            <div className="text-center">
+              <Eyebrow flank>Confirm instantly</Eyebrow>
+              <SectionTitle as="h2" spacing="tight">
+                Pay securely and{" "}
+                <SectionTitle.Em>your day is confirmed on the spot</SectionTitle.Em>.
+              </SectionTitle>
+              <p className="mt-5 mx-auto max-w-xl text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
+                Live dates and the final price for {chosenTour.title}, paid by card here. No waiting
+                for a reply.
+              </p>
+            </div>
+            <div className="mt-8">
+              <SimpleBookingForm tour={chosenTour} />
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section className="py-12 md:py-14">
         <div className="container-x max-w-2xl">
@@ -458,7 +480,7 @@ function BookPage() {
                 </div>
 
                 <p className="text-center text-[12.5px] leading-snug text-[color:var(--charcoal-soft)]">
-                  A person replies within 24 hours — never an autoresponder. No payment taken here.
+                  A person replies within 24 hours — never an autoresponder. No payment is taken in this form; to pay now, choose a Signature day and use instant confirmation above.
                 </p>
               </div>
             </form>
