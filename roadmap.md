@@ -39,5 +39,5 @@
 - [x] Tighter titles + meta descriptions on all 32 local stories (keyword-front-loaded, ≤60 / 120–165 chars)
 
 ## 8. Booking page + Signature editorial pages
-- [ ] Real booking page: name, date, party size, preferences; linked from hero + local stories
-- [ ] Signature day pages rebuilt in editorial style matching local stories, with real booking CTAs
+- [x] Real booking page /book: name, date, party size, preferences; linked from hero + local stories
+- [x] Signature day pages verified as editorial pages with real booking CTAs (already shipped)
