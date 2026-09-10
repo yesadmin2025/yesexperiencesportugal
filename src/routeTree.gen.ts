@@ -125,6 +125,7 @@ import { Route as AdminGscRouteImport } from './routes/admin.gsc'
 import { Route as AdminGbpLegacyRemovalRouteImport } from './routes/admin.gbp-legacy-removal'
 import { Route as AdminExperiencesRouteImport } from './routes/admin.experiences'
 import { Route as AdminErrorLogsRouteImport } from './routes/admin.error-logs'
+import { Route as AdminEnquiriesRouteImport } from './routes/admin.enquiries'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as AdminE2eReportRouteImport } from './routes/admin.e2e-report'
 import { Route as AdminDriftBibleRouteImport } from './routes/admin.drift-bible'
@@ -751,6 +752,11 @@ const AdminErrorLogsRoute = AdminErrorLogsRouteImport.update({
   path: '/admin/error-logs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminEnquiriesRoute = AdminEnquiriesRouteImport.update({
+  id: '/admin/enquiries',
+  path: '/admin/enquiries',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminEmailsRoute = AdminEmailsRouteImport.update({
   id: '/admin/emails',
   path: '/admin/emails',
@@ -1029,6 +1035,7 @@ export interface FileRoutesByFullPath {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/e2e-report': typeof AdminE2eReportRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
@@ -1183,6 +1190,7 @@ export interface FileRoutesByTo {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/e2e-report': typeof AdminE2eReportRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
@@ -1340,6 +1348,7 @@ export interface FileRoutesById {
   '/admin/drift-bible': typeof AdminDriftBibleRoute
   '/admin/e2e-report': typeof AdminE2eReportRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
   '/admin/error-logs': typeof AdminErrorLogsRoute
   '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/gbp-legacy-removal': typeof AdminGbpLegacyRemovalRoute
@@ -1498,6 +1507,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/e2e-report'
     | '/admin/emails'
+    | '/admin/enquiries'
     | '/admin/error-logs'
     | '/admin/experiences'
     | '/admin/gbp-legacy-removal'
@@ -1652,6 +1662,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/e2e-report'
     | '/admin/emails'
+    | '/admin/enquiries'
     | '/admin/error-logs'
     | '/admin/experiences'
     | '/admin/gbp-legacy-removal'
@@ -1808,6 +1819,7 @@ export interface FileRouteTypes {
     | '/admin/drift-bible'
     | '/admin/e2e-report'
     | '/admin/emails'
+    | '/admin/enquiries'
     | '/admin/error-logs'
     | '/admin/experiences'
     | '/admin/gbp-legacy-removal'
@@ -1965,6 +1977,7 @@ export interface RootRouteChildren {
   AdminDriftBibleRoute: typeof AdminDriftBibleRoute
   AdminE2eReportRoute: typeof AdminE2eReportRoute
   AdminEmailsRoute: typeof AdminEmailsRoute
+  AdminEnquiriesRoute: typeof AdminEnquiriesRoute
   AdminErrorLogsRoute: typeof AdminErrorLogsRoute
   AdminExperiencesRoute: typeof AdminExperiencesRoute
   AdminGbpLegacyRemovalRoute: typeof AdminGbpLegacyRemovalRoute
@@ -2845,6 +2858,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminErrorLogsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/enquiries': {
+      id: '/admin/enquiries'
+      path: '/admin/enquiries'
+      fullPath: '/admin/enquiries'
+      preLoaderRoute: typeof AdminEnquiriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/emails': {
       id: '/admin/emails'
       path: '/admin/emails'
@@ -3262,6 +3282,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminDriftBibleRoute: AdminDriftBibleRoute,
   AdminE2eReportRoute: AdminE2eReportRoute,
   AdminEmailsRoute: AdminEmailsRoute,
+  AdminEnquiriesRoute: AdminEnquiriesRoute,
   AdminErrorLogsRoute: AdminErrorLogsRoute,
   AdminExperiencesRoute: AdminExperiencesRoute,
   AdminGbpLegacyRemovalRoute: AdminGbpLegacyRemovalRoute,
