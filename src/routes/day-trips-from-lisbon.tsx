@@ -70,6 +70,13 @@ const FEATURED = FEATURED_IDS.map((id) => signatureTours.find((t) => t.id === id
   (t): t is (typeof signatureTours)[number] => Boolean(t),
 );
 
+/** Comparison rows joined to their live Signature tour (duration + price). */
+const COMPARISON = DAY_TRIP_COMPARISON.map((row) => ({
+  row,
+  tour: signatureTours.find((t) => t.id === row.tourId),
+})).filter((entry) => Boolean(entry.tour));
+
+
 const OPENING_HOURS = "Every day, 08:00 – 20:00 (Lisbon time)";
 
 const FAQS = [
