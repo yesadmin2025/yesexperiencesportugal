@@ -28,6 +28,8 @@ const REQUIRED_CANONICAL_PATHS = [
   "/corporate",
   "/local-stories",
   "/itineraries/10-day-private-portugal-tour",
+  "/how-many-days-in-portugal",
+  "/portugal-for-american-travelers",
   "/portugal-tours",
   "/luxury-tours-portugal",
   "/private-tours-portugal",
