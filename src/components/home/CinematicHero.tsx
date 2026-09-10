@@ -224,7 +224,7 @@ export function CinematicHero() {
         />
       </div>
 
-      <div className="relative z-10 flex min-h-[100svh] items-center px-5 pb-[max(4.5rem,calc(env(safe-area-inset-bottom)+3rem))] pt-24 sm:px-8 sm:items-end md:items-center md:pb-12 md:pt-24 lg:px-12">
+      <div className="relative z-10 flex min-h-[100svh] items-center px-6 pb-[max(5.5rem,calc(env(safe-area-inset-bottom)+4rem))] pt-28 sm:px-10 sm:items-end md:items-center md:pb-16 md:pt-28 lg:px-12">
         <div className="mx-auto w-full max-w-6xl">
           <div className="max-w-3xl text-left md:mx-auto md:text-center">
             {/* Chapter overlay — the film's story, cross-fading with restraint. */}
@@ -290,14 +290,14 @@ export function CinematicHero() {
 
             <p
               data-hero-field="subheadline"
-              className="mt-6 max-w-2xl text-[15px] leading-[1.65] text-[color:var(--ivory)] sm:text-[17px] md:mx-auto"
+              className="mt-8 max-w-xl text-[15px] leading-[1.7] text-[color:var(--ivory)]/90 sm:text-[16.5px] md:mx-auto"
               style={revealStyle(composed, COMPOSE_FADE_MS)}
             >
               {HERO_COPY.subheadline}
             </p>
 
             <div
-              className="hero-cta-group mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center md:justify-center"
+              className="hero-cta-group mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center md:justify-center"
               data-hero-composed={composed ? "true" : "false"}
               style={{
                 ...revealStyle(composed, COMPOSE_FADE_MS),
