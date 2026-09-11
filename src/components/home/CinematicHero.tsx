@@ -48,15 +48,30 @@ function shouldSkipIntro(): boolean {
   }
 }
 
-function revealStyle(on: boolean, ms: number): React.CSSProperties {
+function revealStyle(on: boolean, ms: number, delayMs = 0, risePx = 22): React.CSSProperties {
+  // `delayMs` staggers the composed block so the closing elements arrive
+  // one after another (eyebrow → subheadline → CTAs → quiet links) rather
+  // than snapping in together. Delay only applies on the way in.
+  const delay = on ? delayMs : 0;
   return {
     opacity: on ? 1 : 0,
-    transform: on ? "translateY(0)" : "translateY(22px)",
+    transform: on ? "translateY(0)" : `translateY(${risePx}px)`,
     filter: on ? "blur(0px)" : "blur(5px)",
     willChange: "opacity, transform, filter",
-    transition: `opacity ${ms}ms ${EASE}, transform ${ms}ms ${EASE}, filter ${ms}ms ${EASE}`,
+    transition:
+      `opacity ${ms}ms ${EASE} ${delay}ms, ` +
+      `transform ${ms}ms ${EASE} ${delay}ms, ` +
+      `filter ${ms}ms ${EASE} ${delay}ms`,
   };
 }
+
+/** Sequenced arrival offsets for the composed (post-stanza) block. */
+const COMPOSE_STAGGER = {
+  eyebrow: 0,
+  subheadline: 180,
+  ctas: 360,
+  links: 540,
+} as const;
 
 const ARROW = (
   <svg
