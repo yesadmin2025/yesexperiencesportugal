@@ -123,17 +123,17 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 6,
-    name: "Live guest reviews",
-    componentTag: "LiveReviews",
-    inComponent: true,
-    requiredSpacing: { kind: "py", minScale: 16 },
-  },
-  {
-    order: 7,
     name: "Travel Designer — multi-day, written around you",
     componentTag: "RecentJourney",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 14 },
+  },
+  {
+    order: 7,
+    name: "Live guest reviews",
+    componentTag: "LiveReviews",
+    inComponent: true,
+    requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
     order: 8,
