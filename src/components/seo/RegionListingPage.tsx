@@ -6,10 +6,15 @@ import { SiteBreadcrumbs } from "@/components/SiteBreadcrumbs";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { CtaButton } from "@/components/ui/CtaButton";
-import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
+import { LiveReviews } from "@/components/reviews/LiveReviews";
 import { signatureTours } from "@/data/signatureTours";
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
-import { regionFaq, SERVICE_AREA_LINKS, type LisbonRegion } from "@/content/lisbon-regions";
+import {
+  areaProfilesFor,
+  regionFaq,
+  SERVICE_AREA_LINKS,
+  type LisbonRegion,
+} from "@/content/lisbon-regions";
 import {
   BASED_IN,
   EMAIL,
@@ -140,7 +145,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
         tourIds={region.tourIds}
         fallbackTourIds={region.tourIds}
         titleLead="What guests say about"
-        titleEm={region.shortName ?? region.name}
+        titleEm={region.name}
         limit={3}
         className="bg-[color:var(--sand)]"
       />
