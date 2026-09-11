@@ -218,9 +218,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "what-to-do-in-sesimbra",
-    title: "15 Things to Do in Sesimbra — And Is It Worth Visiting?",
+    title: "15 Things to Do in Sesimbra — By Locals Who Live Here",
     metaDescription:
-      "We live in Sesimbra. Here is what is genuinely worth your time — castle viewpoint, Arrábida coves, the fish auction, where locals eat — and whether it beats Sintra as a day trip.",
+      "We live in Sesimbra. The 15 things genuinely worth your time: castle viewpoint, hidden Arrábida coves, the fish auction and where we actually eat.",
 
     h1: "What to Do in Sesimbra — A Local's Guide to Our Fishing Town",
     eyebrow: "Sesimbra · Coast",
