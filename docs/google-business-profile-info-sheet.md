@@ -17,6 +17,7 @@ Use this to claim, verify, and complete the Google Business Profile listing.
 | Email | info@yesexperiencesportugal.com |
 | Hours | Monday–Sunday, 08:00–20:00 |
 | License | RNAAT nº 31/2023 — Registered Portuguese tourism operator |
+| Booking link | https://yesexperiencesportugal.com/book |
 
 ## Business description (750 characters max)
 
