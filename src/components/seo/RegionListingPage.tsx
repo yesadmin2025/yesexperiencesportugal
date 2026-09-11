@@ -316,6 +316,7 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                   ) : (
                     <Link
                       to={entry.path}
+                      hash={entry.anchor}
                       className="flex min-h-[64px] flex-col justify-center rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] px-4 py-3 no-underline transition-colors duration-200 hover:border-[color:var(--gold)]/60"
                     >
                       <span className="font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]">

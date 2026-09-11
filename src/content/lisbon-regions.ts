@@ -309,17 +309,19 @@ export function regionFaq(region: LisbonRegion) {
 export const SERVICE_AREA_LINKS: readonly {
   area: string;
   path: string;
+  /** Anchor of that area's local section on the host page. */
+  anchor: string;
   note: string;
 }[] = [
-  { area: "Lisbon", path: "/lisbon-private-tours", note: "Hotel, apartment or cruise terminal" },
-  { area: "Cascais", path: "/private-tours-sintra-cascais", note: "Cascais & Estoril pickups" },
-  { area: "Sintra", path: "/private-tours-sintra-cascais", note: "Sintra village and hotels" },
-  { area: "Sesimbra", path: "/private-tours-arrabida-sesimbra", note: "Our home base" },
-  { area: "Setúbal", path: "/private-tours-azeitao-setubal", note: "Setúbal city and marina" },
-  { area: "Azeitão", path: "/private-tours-azeitao-setubal", note: "Wine and cheese country" },
-  { area: "Évora", path: "/private-tours-alentejo-evora", note: "Alentejo departures" },
-  { area: "Comporta", path: "/private-tours-comporta-troia", note: "Comporta houses and hotels" },
-  { area: "Tróia", path: "/private-tours-comporta-troia", note: "Tróia peninsula and ferry" },
+  { area: "Lisbon", anchor: "lisbon", path: "/lisbon-private-tours", note: "Hotel, apartment or cruise terminal" },
+  { area: "Cascais", anchor: "cascais", path: "/private-tours-sintra-cascais", note: "Cascais & Estoril pickups" },
+  { area: "Sintra", anchor: "sintra", path: "/private-tours-sintra-cascais", note: "Sintra village and hotels" },
+  { area: "Sesimbra", anchor: "sesimbra", path: "/private-tours-arrabida-sesimbra", note: "Our home base" },
+  { area: "Setúbal", anchor: "setubal", path: "/private-tours-azeitao-setubal", note: "Setúbal city and marina" },
+  { area: "Azeitão", anchor: "azeitao", path: "/private-tours-azeitao-setubal", note: "Wine and cheese country" },
+  { area: "Évora", anchor: "evora", path: "/private-tours-alentejo-evora", note: "Alentejo departures" },
+  { area: "Comporta", anchor: "comporta", path: "/private-tours-comporta-troia", note: "Comporta houses and hotels" },
+  { area: "Tróia", anchor: "troia", path: "/private-tours-comporta-troia", note: "Tróia peninsula and ferry" },
 ] as const;
 
 /**
