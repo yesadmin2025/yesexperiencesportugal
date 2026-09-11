@@ -1314,6 +1314,18 @@ export function localBusinessLd(args: {
       },
     ],
     areaServed: args.areaServed.map((name) => ({ "@type": "City", name })),
+    potentialAction: {
+      "@type": "ReserveAction",
+      name: "Book a private day trip from Lisbon",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/book`,
+        actionPlatform: [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform",
+        ],
+      },
+    },
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: REVIEW_CERTIFICATE.ratingValue,
