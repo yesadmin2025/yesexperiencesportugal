@@ -72,7 +72,7 @@ export interface ApprovedSection {
 }
 
 /**
- * The approved 11-block structure (v7 — Plan-your-Portugal map row added).
+ * The approved 12-block structure (v8 — Proposals and Corporate separated).
  *
  * Order:
  *   1.  Hero
@@ -81,9 +81,12 @@ export interface ApprovedSection {
  *   4.  Experience Studio (promoted)
  *   5.  Signature experiences preview
  *   6.  Travel Designer (multi-day, bespoke)
- *   7.  Occasions band (Proposals + Celebrations + Corporate)
- *   8.  FAQ (shared <FAQ /> component owns its own landmark)
- *   9.  Final CTA — talk to a local
+ *   7.  Proposals & Celebrations
+ *   8.  Corporate & Private Groups
+ *   9.  Plan your Portugal map
+ *   10. Journal
+ *   11. FAQ
+ *   12. Final CTA — talk to a local
  */
 export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   {
@@ -127,31 +130,37 @@ export const APPROVED_HOMEPAGE_SECTIONS: readonly ApprovedSection[] = [
   },
   {
     order: 7,
-    name: "Occasions band — proposals + celebrations + corporate",
-    ariaLabelledBy: "groups-title",
+    name: "Proposals & Celebrations",
+    ariaLabelledBy: "proposals-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
     order: 8,
+    name: "Corporate & Private Groups",
+    ariaLabelledBy: "corporate-title",
+    requiredSpacing: { kind: "py", minScale: 16 },
+  },
+  {
+    order: 9,
     name: "Plan your Portugal — interactive region map",
     ariaLabelledBy: "plan-map-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 9,
+    order: 10,
     name: "Journal — local guides",
     ariaLabelledBy: "journal-title",
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 10,
+    order: 11,
     name: "FAQ — visible helpful answers",
     componentTag: "FAQ",
     inComponent: true,
     requiredSpacing: { kind: "py", minScale: 16 },
   },
   {
-    order: 11,
+    order: 12,
     name: "Final CTA — talk to a local",
     ariaLabelledBy: "final-cta-title",
     requiredSpacing: { kind: "py", minScale: 16 },

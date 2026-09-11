@@ -10,19 +10,27 @@ async function openHome(page: Page) {
 }
 
 test.describe("homepage conversion paths", () => {
-  test("shows exactly three primary ways to begin", async ({ page }) => {
+  test("shows exactly five first-class ways to begin", async ({ page }) => {
     const smartStart = await openHome(page);
     const primary = smartStart.locator("[data-home-primary-path]");
-    await expect(primary).toHaveCount(3);
+    await expect(primary).toHaveCount(5);
 
     await expect(primary.nth(0)).toHaveAttribute("href", "/experiences");
     await expect(primary.nth(1)).toHaveAttribute("href", "/studio-v3");
     await expect(primary.nth(2)).toHaveAttribute("href", "/multi-day");
+    await expect(primary.nth(3)).toHaveAttribute("href", "/proposal-in-portugal");
+    await expect(primary.nth(4)).toHaveAttribute("href", "/corporate");
 
     await expect(smartStart.getByText("A private day, ready to go", { exact: true })).toBeVisible();
     await expect(smartStart.getByText("Shape a day around you", { exact: true })).toBeVisible();
     await expect(
       smartStart.getByText("Plan a whole Portugal journey", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      smartStart.getByText("A private moment, planned discreetly", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      smartStart.getByText("Bring people together in Portugal", { exact: true }),
     ).toBeVisible();
   });
 
