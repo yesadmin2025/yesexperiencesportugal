@@ -215,11 +215,14 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
                 Reserve your day
               </h3>
               <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
-                Pick a date and pay online in minutes, or send your dates and a local replies
-                personally.
+                Choose your day, your date and your pickup address, see the final price for your
+                party, and confirm by card — you get the confirmation on screen and by email.
+                {tours[0] ? ` ${tours[0].title.split(" — ")[0]} starts from €${tours[0].priceFrom} per person.` : ""}
               </p>
               <div className="mt-5 flex flex-col gap-3">
-                <CtaButton to="/book">Book &amp; pay online</CtaButton>
+                <CtaButton to="/book" search={bookSearch}>
+                  Book &amp; pay online
+                </CtaButton>
                 <CtaButton to="/studio-v3" variant="ghost">
                   Design your own day
                 </CtaButton>
