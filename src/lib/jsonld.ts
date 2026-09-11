@@ -228,6 +228,18 @@ export function organizationLd() {
       availableLanguage: ["English", "Portuguese", "Spanish", "French"],
       areaServed: "PT",
     },
+    potentialAction: {
+      "@type": "ReserveAction",
+      name: "Book a private Portugal day trip or tour",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/book`,
+        actionPlatform: [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform",
+        ],
+      },
+    },
     foundingDate: "2022",
     founder: { "@id": `${SITE_URL}/about#nidia-almeida` },
     employee: [{ "@id": `${SITE_URL}/about#nidia-almeida` }],
@@ -1302,6 +1314,18 @@ export function localBusinessLd(args: {
       },
     ],
     areaServed: args.areaServed.map((name) => ({ "@type": "City", name })),
+    potentialAction: {
+      "@type": "ReserveAction",
+      name: "Book a private day trip from Lisbon",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/book`,
+        actionPlatform: [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform",
+        ],
+      },
+    },
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: REVIEW_CERTIFICATE.ratingValue,
