@@ -48,6 +48,20 @@ import { getViatorMeta } from "@/data/signatureToursViator";
 import { getTourContent, signatureDurationLabel } from "@/lib/tourContent";
 import { LOCAL_STORIES_ARTICLES } from "@/content/local-stories-articles";
 import { PortugalPlannerMap } from "@/components/home/PortugalPlannerMap";
+import { LiveReviews } from "@/components/reviews/LiveReviews";
+import { ProposalRequestForm } from "@/components/home/ProposalRequestForm";
+
+/**
+ * Tours whose already-published verified quotes fill the homepage review
+ * block until the database returns featured rows. Real tours only.
+ */
+const LIVE_REVIEW_FALLBACK_TOURS = [
+  "arrabida-wine-allinclusive",
+  "sintra-cascais",
+  "troia-comporta",
+  "arrabida-boat",
+] as const;
+
 
 /** Homepage Journal row — three evergreen Local Stories guides.
  *  `imgTourId` pins each card to a distinct real operation photo so two
