@@ -241,6 +241,14 @@ export const Route = createRootRoute({
           "(function(w,d,i){var l='dataLayer',started=false;function boot(){if(started)return;started=true;w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName('script')[0],j=d.createElement('script');j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f);cleanup();}var evts=['pointerdown','keydown','touchstart','scroll','visibilitychange','pagehide'];function cleanup(){evts.forEach(function(e){w.removeEventListener(e,boot,{passive:true});});}evts.forEach(function(e){w.addEventListener(e,boot,{passive:true,once:true});});function idle(){if(w.requestIdleCallback){w.requestIdleCallback(boot,{timeout:2000});}else{setTimeout(boot,1200);}}if(d.readyState==='complete'){idle();}else{w.addEventListener('load',idle,{once:true});setTimeout(boot,4000);}})(window,document,'GTM-M82SQS79');",
       },
 
+      {
+        // Google tag (gtag.js) for Google Ads / GA4 — same deferred boot as
+        // GTM above so it never competes with hydration or LCP. Consent Mode
+        // defaults declared inline earlier still apply.
+        children:
+          "(function(w,d,i){var started=false;function boot(){if(started)return;started=true;var s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+i;d.head.appendChild(s);w.dataLayer=w.dataLayer||[];w.gtag('js',new Date());w.gtag('config',i);cleanup();}var evts=['pointerdown','keydown','touchstart','scroll','visibilitychange','pagehide'];function cleanup(){evts.forEach(function(e){w.removeEventListener(e,boot,{passive:true});});}evts.forEach(function(e){w.addEventListener(e,boot,{passive:true,once:true});});function idle(){if(w.requestIdleCallback){w.requestIdleCallback(boot,{timeout:2000});}else{setTimeout(boot,1200);}}if(d.readyState==='complete'){idle();}else{w.addEventListener('load',idle,{once:true});setTimeout(boot,4000);}})(window,document,'G-MLYSPHSN41');",
+      },
+
       jsonLdScript(organizationLd()),
       jsonLdScript(websiteLd()),
     ],
