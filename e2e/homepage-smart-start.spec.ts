@@ -19,9 +19,11 @@ test.describe("homepage conversion paths", () => {
     await expect(primary.nth(1)).toHaveAttribute("href", "/studio-v3");
     await expect(primary.nth(2)).toHaveAttribute("href", "/multi-day");
 
-    await expect(smartStart.getByText("Choose a private day", { exact: true })).toBeVisible();
-    await expect(smartStart.getByText("Design it in the Studio", { exact: true })).toBeVisible();
-    await expect(smartStart.getByText("Plan a Portugal journey", { exact: true })).toBeVisible();
+    await expect(smartStart.getByText("A private day, ready to go", { exact: true })).toBeVisible();
+    await expect(smartStart.getByText("Shape a day around you", { exact: true })).toBeVisible();
+    await expect(
+      smartStart.getByText("Plan a whole Portugal journey", { exact: true }),
+    ).toBeVisible();
   });
 
   test("does not pretend a generic visitor has a Studio draft", async ({ page }) => {
