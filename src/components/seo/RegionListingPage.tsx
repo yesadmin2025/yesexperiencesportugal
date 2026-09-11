@@ -9,7 +9,7 @@ import { CtaButton } from "@/components/ui/CtaButton";
 import { RealReviewsStrip } from "@/components/home/RealReviewsStrip";
 import { signatureTours } from "@/data/signatureTours";
 import { REVIEW_CERTIFICATE } from "@/config/trust-certificate";
-import { regionFaq, type LisbonRegion } from "@/content/lisbon-regions";
+import { regionFaq, SERVICE_AREA_LINKS, type LisbonRegion } from "@/content/lisbon-regions";
 import {
   BASED_IN,
   EMAIL,
@@ -229,6 +229,50 @@ export function RegionListingPage({ region }: { region: LisbonRegion }) {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="border-t border-[color:var(--border)] py-14 md:py-20">
+        <div className="container-x max-w-4xl">
+          <Eyebrow>Where we collect you</Eyebrow>
+          <SectionTitle as="h2" spacing="tight">
+            Private day trips from <SectionTitle.Em>every area we serve</SectionTitle.Em>.
+          </SectionTitle>
+          <p className="mt-5 max-w-2xl text-[15.5px] leading-[1.8] text-[color:var(--charcoal-soft)]">
+            Door-to-door pickup across {SERVICE_AREA_LINKS.length} areas around Lisbon and the
+            Setúbal district. Pick the area you are staying in to see the days that run from there.
+          </p>
+          <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 list-none p-0">
+            {SERVICE_AREA_LINKS.map((entry) => {
+              const current = entry.path === region.path;
+              return (
+                <li key={entry.area}>
+                  {current ? (
+                    <span className="flex min-h-[64px] flex-col justify-center rounded-[6px] border border-[color:var(--gold)]/45 bg-[color:var(--sand)] px-4 py-3">
+                      <span className="font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--charcoal)]">
+                        {entry.area}
+                      </span>
+                      <span className="mt-1 text-[13.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                        You are here · {entry.note}
+                      </span>
+                    </span>
+                  ) : (
+                    <Link
+                      to={entry.path}
+                      className="flex min-h-[64px] flex-col justify-center rounded-[6px] border border-[color:var(--border)] bg-[color:var(--card)] px-4 py-3 no-underline transition-colors duration-200 hover:border-[color:var(--gold)]/60"
+                    >
+                      <span className="font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)]">
+                        {entry.area}
+                      </span>
+                      <span className="mt-1 text-[13.5px] leading-snug text-[color:var(--charcoal-soft)]">
+                        {entry.note}
+                      </span>
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </section>
 
