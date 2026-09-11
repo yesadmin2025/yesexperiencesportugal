@@ -218,14 +218,7 @@ export function organizationLd() {
     ],
     areaServed: [
       { "@type": "Country", name: "Portugal" },
-      { "@type": "AdministrativeArea", name: "Lisbon" },
-      { "@type": "AdministrativeArea", name: "Sintra" },
-      { "@type": "AdministrativeArea", name: "Arrábida" },
-      { "@type": "AdministrativeArea", name: "Sesimbra" },
-      { "@type": "AdministrativeArea", name: "Alentejo" },
-      { "@type": "AdministrativeArea", name: "Costa Vicentina" },
-      { "@type": "AdministrativeArea", name: "Comporta" },
-      { "@type": "AdministrativeArea", name: "Tróia" },
+      ...SERVICE_AREAS.map((name) => ({ "@type": "AdministrativeArea", name })),
     ],
     telephone: PHONE_TEL,
     contactPoint: {
