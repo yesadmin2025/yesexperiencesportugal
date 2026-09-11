@@ -999,8 +999,19 @@ function HomePage() {
                   />
                 ))}
             </div>
+
+            {/* Real request form — proposals, celebrations, corporate days
+              and private groups all land in the same enquiries inbox and
+              trigger a confirmation email to the sender and to the team. */}
+            <div className="mt-12 md:mt-14">
+              <p className="mx-auto mb-6 max-w-2xl text-center font-sans text-[11.5px] uppercase tracking-[0.2em] text-[color:var(--charcoal-soft)]">
+                Tell us the occasion — we reply personally
+              </p>
+              <ProposalRequestForm />
+            </div>
           </div>
         </section>
+
 
         {/* 8 — CORPORATE & PRIVATE GROUPS
           A separate B2B path with its own promise and direct action. */}
