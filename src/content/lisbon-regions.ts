@@ -300,3 +300,24 @@ export function findLisbonRegion(path: LisbonRegion["path"]): LisbonRegion {
 export function regionFaq(region: LisbonRegion) {
   return [...region.faq, ...PICKUP_FAQ];
 }
+
+/**
+ * The nine published service areas (see `business-nap`), each pointed at the
+ * page that actually covers pickups there. Used for the "Where we collect
+ * you" block on every region page — real internal links, no new thin pages.
+ */
+export const SERVICE_AREA_LINKS: readonly {
+  area: string;
+  path: string;
+  note: string;
+}[] = [
+  { area: "Lisbon", path: "/lisbon-private-tours", note: "Hotel, apartment or cruise terminal" },
+  { area: "Cascais", path: "/private-tours-sintra-cascais", note: "Cascais & Estoril pickups" },
+  { area: "Sintra", path: "/private-tours-sintra-cascais", note: "Sintra village and hotels" },
+  { area: "Sesimbra", path: "/private-tours-arrabida-sesimbra", note: "Our home base" },
+  { area: "Setúbal", path: "/private-tours-azeitao-setubal", note: "Setúbal city and marina" },
+  { area: "Azeitão", path: "/private-tours-azeitao-setubal", note: "Wine and cheese country" },
+  { area: "Évora", path: "/private-tours-alentejo-evora", note: "Alentejo departures" },
+  { area: "Comporta", path: "/private-tours-comporta-troia", note: "Comporta houses and hotels" },
+  { area: "Tróia", path: "/private-tours-comporta-troia", note: "Tróia peninsula and ferry" },
+] as const;
