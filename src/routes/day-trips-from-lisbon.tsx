@@ -16,6 +16,14 @@ import {
   localBusinessLd,
 } from "@/lib/jsonld";
 import { LISBON_REGIONS } from "@/content/lisbon-regions";
+
+/** Published pickup areas — factual, identical to every region page. */
+const PICKUP_FAQ_AREAS = [
+  "Door-to-door from your Lisbon hotel, apartment or villa",
+  "Lisbon cruise terminal (Santa Apolónia / Jardim do Tabaco)",
+  "Cascais, Estoril and Sintra addresses",
+  "Sesimbra and Setúbal addresses",
+] as const;
 import {
   DAY_TRIP_COMPARISON,
   HEAD_TO_HEAD,
@@ -138,6 +146,7 @@ export const Route = createFileRoute("/day-trips-from-lisbon")({
           path: PATH,
           name: "YES Experiences Portugal — day trips from Lisbon",
           description: DESCRIPTION,
+          pickup: PICKUP_FAQ_AREAS,
           areaServed: [
             "Lisbon",
             "Sintra",
@@ -234,16 +243,28 @@ function DayTripsFromLisbon() {
                 <p className="mt-4 font-sans text-[11.5px] uppercase tracking-[0.16em] text-[color:var(--charcoal-soft)]">
                   {tour.durationHours} · from €{tour.priceFrom} per person
                 </p>
-                <Link
-                  to="/tours/$tourId"
-                  params={{ tourId: tour.id }}
-                  className="mt-5 inline-flex min-h-[44px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] no-underline hover:text-[color:var(--charcoal)]"
-                >
-                  Dates &amp; prices
-                  <span aria-hidden className="text-[color:var(--gold)]">
-                    →
-                  </span>
-                </Link>
+                <div className="mt-5 flex flex-col gap-2">
+                  <Link
+                    to="/book"
+                    search={{ tour: tour.id }}
+                    className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[12px] uppercase tracking-[0.18em] font-semibold text-[color:var(--teal)] no-underline hover:text-[color:var(--charcoal)]"
+                  >
+                    Book this day · from €{tour.priceFrom}
+                    <span aria-hidden className="text-[color:var(--gold)]">
+                      →
+                    </span>
+                  </Link>
+                  <Link
+                    to="/tours/$tourId"
+                    params={{ tourId: tour.id }}
+                    className="inline-flex min-h-[44px] items-center gap-2 font-sans text-[11.5px] uppercase tracking-[0.18em] text-[color:var(--charcoal-soft)] no-underline hover:text-[color:var(--charcoal)]"
+                  >
+                    Full itinerary
+                    <span aria-hidden className="text-[color:var(--gold)]">
+                      →
+                    </span>
+                  </Link>
+                </div>
               </li>
             ))}
           </ul>
@@ -494,8 +515,9 @@ function DayTripsFromLisbon() {
                 Reserve your day
               </h3>
               <p className="mt-3 text-[15px] leading-[1.75] text-[color:var(--charcoal-soft)]">
-                Pay and confirm online in minutes, or send your dates and a local replies
-                personally.
+                Choose your day, your date and your pickup address, see the final price for your
+                party, and confirm by card — the confirmation appears on screen and arrives by
+                email.
               </p>
               <div className="mt-5 flex flex-col gap-3">
                 <CtaButton to="/book">Book &amp; pay online</CtaButton>
