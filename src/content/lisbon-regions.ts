@@ -64,12 +64,12 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
     path: "/private-tours-arrabida-sesimbra",
     slug: "arrabida-sesimbra",
     name: "Arrábida & Sesimbra",
-    title: "Private Wine Tours from Lisbon — Arrábida & Sesimbra",
+    title: "Private Wine Tours Lisbon to Arrábida & Sesimbra",
     description:
-      "Private wine tours from Lisbon into Arrábida and Sesimbra: family wineries in Azeitão, cliff viewpoints, coves and a fishing-town lunch. Hotel pickup, your group only.",
+      "Private wine tours from Lisbon to Arrábida and Sesimbra, with Azeitão cellars, Atlantic viewpoints and a fishing-town lunch. Hotel pickup; your group only.",
     eyebrow: "Setúbal district · 40 minutes from Lisbon",
-    h1Lead: "Private tours in Arrábida & Sesimbra,",
-    h1Em: "our own doorstep.",
+    h1Lead: "Private wine tours from Lisbon,",
+    h1Em: "through Arrábida & Sesimbra.",
     standfirst:
       "This is where we are based, and it is the closest real wine country to Lisbon. The Serra da Arrábida drops straight into green water, Azeitão makes wine and cheese a few kilometres inland, and Sesimbra still lands its fish every morning.",
     tourIds: [
@@ -101,18 +101,22 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
         q: "Can I combine wine and the coast in one day?",
         a: "Yes — that is exactly how our Arrábida days are built: a family winery in Azeitão in the morning, the park road and viewpoints, then Sesimbra or a cove in the afternoon.",
       },
+      {
+        q: "Why choose a private Arrábida wine tour from Lisbon?",
+        a: "The region is close enough to combine cellar time, the Arrábida ridge and Sesimbra without rushing. A private day also keeps pickup, timing and pace with your own party.",
+      },
     ],
   },
   {
     path: "/private-tours-azeitao-setubal",
     slug: "azeitao-setubal",
     name: "Azeitão & Setúbal",
-    title: "Best Lisbon Wine Tours — Private Azeitão & Setúbal Days",
+    title: "Private Wine Tours Lisbon to Azeitão & Setúbal",
     description:
       "Private wine tours from Lisbon to Azeitão and Setúbal: family cellars, Moscatel, hands-on cheese-making, tile painting and the Setúbal market. Hotel pickup, one group only.",
     eyebrow: "Azeitão · Setúbal · 40 minutes from Lisbon",
-    h1Lead: "Wine, cheese and clay in Azeitão,",
-    h1Em: "the table Lisbon eats from.",
+    h1Lead: "Private wine tours in Azeitão,",
+    h1Em: "close to Lisbon, far from the crowds.",
     standfirst:
       "Azeitão is a village of cellars, cheese rooms and tile workshops sitting between the Arrábida hills and the Sado estuary. It is where Lisbon's Moscatel comes from, and it is close enough that the day belongs to the tastings rather than the drive.",
     tourIds: ["azeitao-cheese", "arrabida-wine-allinclusive", "tiles-workshop"],
@@ -137,6 +141,10 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
       {
         q: "Do we drink at more than one place?",
         a: "It depends on the day you choose. Each Signature page lists exactly what that day includes — we never add or promise stops that are not on it.",
+      },
+      {
+        q: "Is Azeitão a good choice for a private Lisbon wine tour?",
+        a: "Yes. It is the closest concentrated wine area south of Lisbon, with Moscatel cellars and local food traditions within about forty minutes of the city.",
       },
     ],
   },
@@ -177,12 +185,12 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
     path: "/private-tours-alentejo-evora",
     slug: "alentejo-evora",
     name: "Évora & the Alentejo",
-    title: "Private Alentejo Wine Tours from Lisbon — Évora & Vidigueira",
+    title: "Private Alentejo Wine Tours from Lisbon — Évora & Talha",
     description:
       "Private Alentejo wine tours from Lisbon: Évora's Roman temple and walled streets, cork country, and talha wine still made in clay by the families who make it.",
     eyebrow: "Alentejo · 90 minutes from Lisbon",
-    h1Lead: "Private tours in Évora & the Alentejo,",
-    h1Em: "slow country, long tables.",
+    h1Lead: "Private Alentejo wine tours from Lisbon,",
+    h1Em: "through Évora and talha country.",
     standfirst:
       "Ninety minutes inland the land opens into cork oaks, marble villages and wine that is still made in clay. These are our longest wine days from Lisbon, and the ones people talk about most afterwards.",
     tourIds: ["evora-alentejo", "roman-heritage-alentejo"],
@@ -207,6 +215,10 @@ export const LISBON_REGIONS: readonly LisbonRegion[] = [
       {
         q: "What time do Alentejo days start?",
         a: "Usually 08:00 from Lisbon. Your host confirms the exact pickup time once your dates are set.",
+      },
+      {
+        q: "What is talha wine?",
+        a: "Talha wine is fermented in large clay vessels, following a tradition with Roman roots that remains alive in parts of the Alentejo. The matching Signature page lists the exact visits included on each day.",
       },
     ],
   },

@@ -1,5 +1,5 @@
 /**
- * Admin-only booking reads.
+ * Admin-only booking reads and operational actions.
  *
  * Display only — nothing here computes or mutates pricing. The detail view
  * renders the frozen purchase snapshot captured at checkout so later edits
@@ -104,6 +104,118 @@ export const getAdminBooking = createServerFn({ method: "POST" })
     }
 
     return { booking, snapshot: (snapshot ?? null) as Json | null };
+  });
+
+const cancelInput = z.object({
+  id: z.string().uuid(),
+  reason: z.string().trim().max(500).optional(),
+});
+
+type StripeRefund = { id: string; status?: string | null };
+
+/**
+ * Cancels a paid booking and refunds its full captured amount. Stripe's
+ * idempotency key and the booking status guard make repeat submissions safe.
+ */
+export const cancelAndRefundBooking = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => cancelInput.parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: booking, error: bookingError } = await supabaseAdmin
+      .from("bookings")
+      .select("id, status, stripe_session_id, stripe_payment_intent_id, customer_email, customer_name, preferred_date, amount_total, currency, source_tour_id, booking_details, metadata")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (bookingError) throw new Error(bookingError.message);
+    if (!booking) throw new Error("Booking not found.");
+    if (booking.status === "refunded" || booking.status === "cancelled") {
+      return { ok: true, status: booking.status, alreadyProcessed: true };
+    }
+    if (booking.status !== "paid") throw new Error("Only paid bookings can be cancelled and refunded.");
+    if (!booking.stripe_payment_intent_id || !booking.stripe_session_id) {
+      throw new Error("This booking has no refundable payment reference.");
+    }
+
+    const isLive = booking.stripe_session_id.startsWith("cs_live_");
+    const apiKey = isLive
+      ? process.env['STRIPE_LIVE_API_KEY']
+      : process.env['STRIPE_SANDBOX_API_KEY'];
+    if (!apiKey) throw new Error("The payment connection is not configured.");
+
+    const refundBody = new URLSearchParams({ payment_intent: booking.stripe_payment_intent_id });
+    const refundResponse = await fetch("https://api.stripe.com/v1/refunds", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Idempotency-Key": `yes-booking-refund-${booking.id}`,
+      },
+      body: refundBody,
+    });
+    if (!refundResponse.ok) {
+      const detail = await refundResponse.text().catch(() => "");
+      console.error("[booking-refund] Stripe rejected refund", {
+        bookingId: booking.id,
+        status: refundResponse.status,
+        detail: detail.slice(0, 300),
+      });
+      throw new Error("The refund could not be submitted. No booking details were changed.");
+    }
+    const refund = (await refundResponse.json()) as StripeRefund;
+    const previousMetadata =
+      booking.metadata && typeof booking.metadata === "object" && !Array.isArray(booking.metadata)
+        ? booking.metadata
+        : {};
+    const updatedAt = new Date().toISOString();
+    const { error: updateError } = await supabaseAdmin
+      .from("bookings")
+      .update({
+        status: "refunded",
+        metadata: {
+          ...previousMetadata,
+          refund_id: refund.id,
+          refund_status: refund.status ?? "submitted",
+          cancellation_reason: data.reason || null,
+          cancelled_at: updatedAt,
+          cancelled_by: context.userId,
+        },
+      })
+      .eq("id", booking.id)
+      .eq("status", "paid");
+    if (updateError) throw new Error("The refund succeeded, but the dashboard update failed. Contact support with the booking reference.");
+
+    const details =
+      booking.booking_details && typeof booking.booking_details === "object" && !Array.isArray(booking.booking_details)
+        ? (booking.booking_details as Record<string, unknown>)
+        : {};
+    const snapshot = details.snapshot && typeof details.snapshot === "object"
+      ? (details.snapshot as Record<string, unknown>)
+      : {};
+    const amountFormatted = new Intl.NumberFormat("en-GB", {
+      style: "currency",
+      currency: String(booking.currency || "EUR").toUpperCase(),
+    }).format((booking.amount_total || 0) / 100);
+    if (booking.customer_email) {
+      const { sendTransactionalInternal } = await import("@/lib/email/send-internal.server");
+      await sendTransactionalInternal({
+        templateName: "booking-cancelled",
+        recipientEmail: booking.customer_email,
+        idempotencyKey: `booking-cancelled-${booking.id}`,
+        templateData: {
+          customerName: booking.customer_name,
+          experienceName: snapshot.experienceName ?? booking.source_tour_id,
+          dateExact: booking.preferred_date,
+          amountFormatted,
+          bookingRef: booking.stripe_session_id,
+          refundStatus: refund.status ?? "submitted",
+        },
+      });
+    }
+
+    return { ok: true, status: "refunded" as const, refundStatus: refund.status ?? "submitted" };
   });
 
 /**

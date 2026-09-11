@@ -104,6 +104,12 @@ const FAQS = [
   ...US_TRAVELER_NOTES,
 ];
 
+const FEATURED_STORIES = [
+  { slug: "lisbon-neighborhoods-guide", label: "Lisbon neighborhoods: where each part of the city feels different" },
+  { slug: "portuguese-culture-for-first-time-visitors", label: "Portuguese culture: what first-time visitors should know" },
+  { slug: "must-visit-places-near-lisbon", label: "Must-visit places near Lisbon, chosen by mood" },
+] as const;
+
 export const Route = createFileRoute("/portugal-for-american-travelers")({
   head: () => ({
     meta: [
@@ -186,6 +192,29 @@ function PortugalForAmericans() {
       </section>
 
       <RealReviewsStrip />
+
+      <section className="py-14 md:py-20">
+        <div className="container-x max-w-3xl">
+          <Eyebrow>Read before you arrive</Eyebrow>
+          <SectionTitle as="h2" spacing="tight">
+            Lisbon and Portugal, <SectionTitle.Em>through local eyes</SectionTitle.Em>.
+          </SectionTitle>
+          <ul className="mt-8 divide-y divide-[color:var(--border)] border-y border-[color:var(--border)]">
+            {FEATURED_STORIES.map((story) => (
+              <li key={story.slug}>
+                <Link
+                  to="/local-stories/$slug"
+                  params={{ slug: story.slug }}
+                  className="flex min-h-[64px] items-center justify-between gap-4 py-3 font-display text-[1.05rem] leading-snug text-[color:var(--charcoal)] no-underline hover:text-[color:var(--teal)]"
+                >
+                  <span>{story.label}</span>
+                  <span aria-hidden className="shrink-0 text-[color:var(--gold)]">→</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       <section className="bg-[color:var(--sand)] py-14 md:py-20">
         <div className="container-x max-w-3xl">

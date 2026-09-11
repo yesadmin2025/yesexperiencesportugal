@@ -8,7 +8,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { getAdminBooking } from "@/lib/bookingsAdmin.functions";
+import { cancelAndRefundBooking, getAdminBooking } from "@/lib/bookingsAdmin.functions";
+import { Button } from "@/components/ui/button";
 import {
   buildSnapshotEmailPreview,
   validateBookingSnapshot,
@@ -75,10 +76,13 @@ function PreviewList({ label, items }: { label: string; items: string[] }) {
 function AdminBookingDetailPage() {
   const { id } = Route.useParams();
   const get = useServerFn(getAdminBooking);
+  const cancelAndRefund = useServerFn(cancelAndRefundBooking);
   const [booking, setBooking] = useState<AnyRec | null>(null);
   const [snapshot, setSnapshot] = useState<AnyRec | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refundBusy, setRefundBusy] = useState(false);
+  const [refundMessage, setRefundMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -122,6 +126,41 @@ function AdminBookingDetailPage() {
       <p className="mt-2 text-sm text-[color:var(--charcoal-soft)]">
         {booking.status} · {booking.booking_type} · {new Date(booking.created_at).toLocaleString()}
       </p>
+
+      {booking.status === "paid" ? (
+        <section className="mt-6 border-y border-[color:var(--border)] py-5">
+          <p className="text-sm leading-relaxed text-[color:var(--charcoal-soft)]">
+            Cancelling submits a full refund to the original payment method and emails the guest.
+          </p>
+          <Button
+            type="button"
+            variant="destructive"
+            className="mt-4 min-h-[44px]"
+            disabled={refundBusy}
+            onClick={async () => {
+              if (!window.confirm("Cancel this booking and submit a full refund? This cannot be undone.")) return;
+              setRefundBusy(true);
+              setRefundMessage(null);
+              try {
+                const result = await cancelAndRefund({ data: { id } });
+                setBooking((current) => current ? { ...current, status: result.status } : current);
+                setRefundMessage("Cancellation confirmed. The refund was submitted and the guest email was queued.");
+              } catch (cause) {
+                setRefundMessage(cause instanceof Error ? cause.message : "The refund could not be submitted.");
+              } finally {
+                setRefundBusy(false);
+              }
+            }}
+          >
+            {refundBusy ? "Submitting refund…" : "Cancel and refund booking"}
+          </Button>
+        </section>
+      ) : null}
+      {refundMessage ? (
+        <p role="status" className="mt-4 rounded-[6px] border border-[color:var(--border)] bg-[color:var(--sand)] p-4 text-sm text-[color:var(--charcoal)]">
+          {refundMessage}
+        </p>
+      ) : null}
 
       <Card title="Customer">
         <Row label="Name" value={booking.customer_name ?? snapshot?.customerName} />

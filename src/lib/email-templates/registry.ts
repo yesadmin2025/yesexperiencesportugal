@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentType } from "react";
 import { template as bookingConfirmation } from "./booking-confirmation";
+import { template as bookingCancelled } from "./booking-cancelled";
 import { template as checkoutReceipt } from "./checkout-receipt";
 import { template as stripeWebhookAlert } from "./stripe-webhook-alert";
 import { template as contactReceived } from "./contact-received";
@@ -26,6 +27,7 @@ export interface TemplateEntry {
  */
 export const TEMPLATES: Record<string, TemplateEntry> = {
   "booking-confirmation": bookingConfirmation,
+  "booking-cancelled": bookingCancelled,
   "checkout-receipt": checkoutReceipt,
   "stripe-webhook-alert": stripeWebhookAlert,
   "contact-received": contactReceived,
