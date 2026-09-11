@@ -333,30 +333,30 @@ export const Route = createFileRoute("/")({
   }),
   head: () => ({
     meta: [
-      { title: "Private Portugal Experiences, Designed With You | YES" },
+      { title: "Private Day Trips From Lisbon & Portugal Tours | YES" },
       { name: "yes-hero-copy-version", content: HERO_COPY_VERSION },
       {
         name: "description",
         content:
-          "Private day tours and bespoke multi-day trips in Portugal, designed live with you and confirmed instantly. Licensed operator, 700+ 5-star reviews.",
+          "Private day trips from Lisbon to Sintra, Arrábida, Azeitão and Évora, plus bespoke Portugal journeys. Hotel pickup, licensed local operator, instant booking.",
       },
       {
         property: "og:title",
-        content: "Private Portugal Experiences, Designed With You | YES",
+        content: "Private Day Trips From Lisbon & Portugal Tours | YES",
       },
       {
         property: "og:description",
         content:
-          "Private day tours and bespoke multi-day trips in Portugal, designed live with you and confirmed instantly. Licensed operator, 700+ 5-star reviews.",
+          "Private day trips from Lisbon to Sintra, Arrábida, Azeitão and Évora, plus bespoke Portugal journeys. Hotel pickup, licensed local operator, instant booking.",
       },
       {
         property: "twitter:title",
-        content: "Private Portugal Experiences, Designed With You | YES",
+        content: "Private Day Trips From Lisbon & Portugal Tours | YES",
       },
       {
         property: "twitter:description",
         content:
-          "Private day tours and bespoke multi-day trips in Portugal, designed live with you and confirmed instantly. Licensed operator, 700+ 5-star reviews.",
+          "Private day trips from Lisbon to Sintra, Arrábida, Azeitão and Évora, plus bespoke Portugal journeys. Hotel pickup, licensed local operator, instant booking.",
       },
       { property: "og:image", content: `https://yesexperiencesportugal.com${heroImg}` },
       { property: "twitter:image", content: `https://yesexperiencesportugal.com${heroImg}` },
