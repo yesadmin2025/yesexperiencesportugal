@@ -30,7 +30,7 @@
 - [ ] Request re-crawl of the affected Local Stories + tour pages in Search Console once published
 - [ ] After next SiteGuru crawl: confirm parameter-variant count drops to 0 and soft-404 flags clear
 ## 6. Cross-site premium brand alignment
-- [ ] Restore five first-class homepage service paths and give Proposals and Corporate distinct conversion sections
+- [x] Restore five first-class homepage service paths and give Proposals and Corporate distinct conversion sections
 - [ ] Extend Fraunces upright + teal-italic title system to Experiences, Studio V3, and Travel Designer
 - [ ] Point hero and Four Ways secondary journeys to real pages with premium editorial copy
 - [ ] Optimize approved road-film mobile delivery and poster without blocking first paint

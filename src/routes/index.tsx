@@ -467,7 +467,8 @@ function HomePage() {
     "studio",
     "signatures",
     "multi-day",
-    "occasions",
+    "proposals",
+    "corporate-groups",
     "faq",
     "final-cta",
   ] as const;
@@ -485,15 +486,15 @@ function HomePage() {
     multiday: "multi-day",
     journey: "multi-day",
     journeys: "multi-day",
-    occasion: "occasions",
-    occasions: "occasions",
-    groups: "occasions",
-    group: "occasions",
-    proposal: "occasions",
-    proposals: "occasions",
-    celebration: "occasions",
-    celebrations: "occasions",
-    corporate: "occasions",
+    occasion: "proposals",
+    occasions: "proposals",
+    proposal: "proposals",
+    proposals: "proposals",
+    celebration: "proposals",
+    celebrations: "proposals",
+    groups: "corporate-groups",
+    group: "corporate-groups",
+    corporate: "corporate-groups",
     // Reviews / trust
     review: "reviews",
     reviews: "reviews",
@@ -641,17 +642,16 @@ function HomePage() {
           </div>
         </section>
 
-        {/* 2b — FIVE WAYS TO SHAPE YOUR PORTUGAL
+        {/* 3 — FIVE WAYS INTO PORTUGAL
           Concise editorial explainer so visitors instantly understand
-          the paths: Signature, Studio, Moments, Corporate, Travel Designer. */}
+          the paths: Signature, Studio, Travel Designer, Proposals and Corporate. */}
         <FourWaysIn />
 
-        {/* 3 — THREE PATHS + EXPERIENCE STUDIO (promoted)
+        {/* 4 — EXPERIENCE STUDIO (promoted)
           Promoted up the page so the Builder reads as the core
-          innovation, not just another tile. The section opens with a
-          compact Three-paths primer (Signature / Tailored / Studio)
-          so users immediately understand the three distinct ways to
-          shape Portugal — then drops into the live Studio device.
+          innovation, not just another tile. The five-path introduction
+          gives visitors the full service picture before this focused
+          Studio moment and its live preview.
           Mobile order: paths primer → headline → live preview → CTA.
           Desktop: text rail left, preview right. One CTA only
           ("Open the Studio"). The "Ask a local" duplicate has been
