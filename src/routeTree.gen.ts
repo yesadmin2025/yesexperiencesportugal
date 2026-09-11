@@ -176,6 +176,7 @@ import { Route as ApiPublicHooksImportTripadvisorReviewsRouteImport } from './ro
 import { Route as ApiPublicHooksEmailFlushRouteImport } from './routes/api/public/hooks/email-flush'
 import { Route as ApiPublicHooksDnsWatchRouteImport } from './routes/api/public/hooks/dns-watch'
 import { Route as ApiPublicHooksCheckoutEmailRouteImport } from './routes/api/public/hooks/checkout-email'
+import { Route as ApiPublicHooksBookingCancelledEmailRouteImport } from './routes/api/public/hooks/booking-cancelled-email'
 
 const WineToursLisbonRoute = WineToursLisbonRouteImport.update({
   id: '/wine-tours-lisbon',
@@ -1040,6 +1041,12 @@ const ApiPublicHooksCheckoutEmailRoute =
     path: '/api/public/hooks/checkout-email',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksBookingCancelledEmailRoute =
+  ApiPublicHooksBookingCancelledEmailRouteImport.update({
+    id: '/api/public/hooks/booking-cancelled-email',
+    path: '/api/public/hooks/booking-cancelled-email',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -1198,6 +1205,7 @@ export interface FileRoutesByFullPath {
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings/': typeof AdminBookingsIndexRoute
+  '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/email-flush': typeof ApiPublicHooksEmailFlushRoute
@@ -1365,6 +1373,7 @@ export interface FileRoutesByTo {
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings': typeof AdminBookingsIndexRoute
+  '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/email-flush': typeof ApiPublicHooksEmailFlushRoute
@@ -1535,6 +1544,7 @@ export interface FileRoutesById {
   '/studio-v2/i/$token': typeof StudioV2ITokenRoute
   '/tours_/$tourId/tailor': typeof ToursTourIdTailorRoute
   '/admin/bookings/': typeof AdminBookingsIndexRoute
+  '/api/public/hooks/booking-cancelled-email': typeof ApiPublicHooksBookingCancelledEmailRoute
   '/api/public/hooks/checkout-email': typeof ApiPublicHooksCheckoutEmailRoute
   '/api/public/hooks/dns-watch': typeof ApiPublicHooksDnsWatchRoute
   '/api/public/hooks/email-flush': typeof ApiPublicHooksEmailFlushRoute
@@ -1706,6 +1716,7 @@ export interface FileRouteTypes {
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/admin/bookings/'
+    | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/email-flush'
@@ -1873,6 +1884,7 @@ export interface FileRouteTypes {
     | '/studio-v2/i/$token'
     | '/tours/$tourId/tailor'
     | '/admin/bookings'
+    | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/email-flush'
@@ -2042,6 +2054,7 @@ export interface FileRouteTypes {
     | '/studio-v2/i/$token'
     | '/tours_/$tourId/tailor'
     | '/admin/bookings/'
+    | '/api/public/hooks/booking-cancelled-email'
     | '/api/public/hooks/checkout-email'
     | '/api/public/hooks/dns-watch'
     | '/api/public/hooks/email-flush'
@@ -2194,6 +2207,7 @@ export interface RootRouteChildren {
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ToursTourIdTailorRoute: typeof ToursTourIdTailorRoute
   AdminBookingsIndexRoute: typeof AdminBookingsIndexRoute
+  ApiPublicHooksBookingCancelledEmailRoute: typeof ApiPublicHooksBookingCancelledEmailRoute
   ApiPublicHooksCheckoutEmailRoute: typeof ApiPublicHooksCheckoutEmailRoute
   ApiPublicHooksDnsWatchRoute: typeof ApiPublicHooksDnsWatchRoute
   ApiPublicHooksEmailFlushRoute: typeof ApiPublicHooksEmailFlushRoute
@@ -3378,6 +3392,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksCheckoutEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/booking-cancelled-email': {
+      id: '/api/public/hooks/booking-cancelled-email'
+      path: '/api/public/hooks/booking-cancelled-email'
+      fullPath: '/api/public/hooks/booking-cancelled-email'
+      preLoaderRoute: typeof ApiPublicHooksBookingCancelledEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -3596,6 +3617,8 @@ const rootRouteChildren: RootRouteChildren = {
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ToursTourIdTailorRoute: ToursTourIdTailorRoute,
   AdminBookingsIndexRoute: AdminBookingsIndexRoute,
+  ApiPublicHooksBookingCancelledEmailRoute:
+    ApiPublicHooksBookingCancelledEmailRoute,
   ApiPublicHooksCheckoutEmailRoute: ApiPublicHooksCheckoutEmailRoute,
   ApiPublicHooksDnsWatchRoute: ApiPublicHooksDnsWatchRoute,
   ApiPublicHooksEmailFlushRoute: ApiPublicHooksEmailFlushRoute,
