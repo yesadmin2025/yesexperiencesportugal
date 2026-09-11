@@ -11,6 +11,7 @@
  */
 
 import {
+  BUSINESS_LEGAL_NAME,
   EMAIL,
   PHONE_TEL,
   SERVICE_AREAS,
