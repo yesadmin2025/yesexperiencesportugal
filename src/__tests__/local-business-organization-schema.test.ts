@@ -54,7 +54,7 @@ describe("Organization / LocalBusiness structured data", () => {
       addressRegion: "Setúbal",
       addressCountry: "PT",
     });
-    expect(org.ge).toMatchObject({
+    expect(org.geo).toMatchObject({
       "@type": "GeoCoordinates",
       latitude: 38.4438,
       longitude: -9.1016,
