@@ -729,9 +729,9 @@ export const LOCAL_STORIES_ARTICLES: LocalStoryArticle[] = [
   },
   {
     slug: "sintra-day-tour-from-lisbon",
-    title: "Sintra Day Tour from Lisbon — Beat the Crowds (Local Guide)",
+    title: "Private Tours in Sintra from Lisbon — Skip the Queues",
     metaDescription:
-      "How to do Sintra from Lisbon without the queues: what hour to arrive where, Pena and Regaleira, Cabo da Roca and Cascais. Private day, hotel pickup, honest advice.",
+      "Private Sintra tours from Lisbon: Pena, Regaleira, Cabo da Roca and Cascais, timed around the crowds. Hotel pickup, licensed local guide, book online.",
     h1: "Private Sintra Day Tour from Lisbon — without the queues",
     eyebrow: "Lisbon · Private Sintra Day",
     standfirst:
