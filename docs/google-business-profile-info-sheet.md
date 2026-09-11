@@ -54,6 +54,30 @@ Sunday: 08:00–20:00
 - After verification, upload 3–5 real photos: a team/owner photo, a vineyard or coastal stop, a vehicle interior, and a happy-guest moment.
 - Add the license number (RNAAT nº 31/2023) to the business description or a post.
 
+## Booking link (add under "Booking" / "Appointments" in GBP)
+
+| Label | Value |
+|-------|-------|
+| Link URL | https://yesexperiencesportugal.com/book |
+| Link title | Book a private day trip or tour |
+| Description | Choose your day, date, pickup address and party size, then pay securely online. Instant confirmation by email. |
+
+Google may display this as a "Book" button on mobile and in Maps.
+
+## Structured data validation
+
+After publishing, test these URLs in the Google Rich Results Test / Search Console:
+- Homepage: https://yesexperiencesportugal.com (Organization + WebSite + Service)
+- Day trips hub: https://yesexperiencesportugal.com/day-trips-from-lisbon (LocalBusiness + FAQPage + ItemList)
+- Arrábida region: https://yesexperiencesportugal.com/private-tours-arrabida-sesimbra (LocalBusiness + FAQPage + ItemList)
+- Azeitão region: https://yesexperiencesportugal.com/private-tours-azeitao-setubal
+- Sintra region: https://yesexperiencesportugal.com/private-tours-sintra-cascais
+- Alentejo region: https://yesexperiencesportugal.com/private-tours-alentejo-evora
+- Comporta/Tróia: https://yesexperiencesportugal.com/private-tours-comporta-troia
+- Centro/Silver Coast: https://yesexperiencesportugal.com/private-tours-centro-silver-coast
+
+Each page emits `Organization` + `LocalBusiness` + `TravelAgency` JSON-LD containing the RNAAT licence, Sesimbra address, phone, daily hours, all service areas, aggregate rating and a `ReserveAction` pointing to `/book`.
+
 ## First post ideas (after verification)
 
 1. “Private day trips from Lisbon — pickup included. Explore Arrábida, Sintra, or Évora with a licensed local operator.”
